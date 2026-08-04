@@ -381,7 +381,17 @@
 
 ## 6. 社区（Community）
 
-> 待补表。
+### 6.1 Hub（`#community`）
+
+| 数据位                    | 是否已接 | 源                                                                  |
+| ------------------------- | -------- | ------------------------------------------------------------------- |
+| 我的邀请链接              | 是       | 本站 origin + `referralSharePath(address)`                          |
+| 邀请人地址 / 绑定         | 是       | 链 Referral `getReferral` / `bindReferral`（live + REFERRAL_BIND）  |
+| 直推人数 · 业绩 $         | 是       | API team overview `direct_referral_count` / `direct_presale_volume` |
+| 社区人数 · 业绩 $         | 是       | API `descendant_count` / `sales_team_market`                        |
+| 当前共建等级              | 是       | `useShareholderRank`（presale/创世 rank；禁 making_rank）           |
+| 社区成员表                | 是       | API team referrals；空 → `DappTableEmptyMessage`（产品：无虚线壳）  |
+| 邀请 steps / 生态卡 / FAQ | 是       | i18n 静态；生态外链 + season 模板                                   |
 
 ## 7. 创世（Genesis）
 
@@ -393,6 +403,7 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-04 | 社区 Hub §6.1：overview/referrals/rank/bind 已接；空态跟 table 默认；steps→ProcessSteps                                      |
 | 2026-08-04 | 缓冲池 §5.3：PRV claimMany live；gAGX UI 诚实 0；原型刷新替 radio；logs 分页                                                 |
 | 2026-08-04 | 释放池 §5.2：plan 链读+claimAll 写 live；累计领取 API/无源→0；≈$ 接价；右上产品改单档刷新（替稿 radio）                      |
 | 2026-08-04 | 奖励 §4.1/§4.3：纠偏 R4a 写链（推荐 CommunityFund / 参与 IncentivePool / 共建 Dao Mixed）；参与 READY 门闸记缺口             |

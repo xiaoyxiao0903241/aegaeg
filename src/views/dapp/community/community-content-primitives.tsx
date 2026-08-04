@@ -7,9 +7,10 @@ import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 
+/** Figma `4371:279`：三卡 gap 9 · PC 三列 */
 export const communityStatGrid = tv({
   base: cn(
-    'grid grid-cols-3 gap-3.5',
+    'grid grid-cols-3 gap-2',
     'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
     'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-2.5',
   ),
@@ -19,9 +20,10 @@ export { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
 
 const communityStatCard = tv({
   slots: {
+    // Figma `4301:213`：p16 · gap4 · elevated 白卡 / inverse 暗卡
     root: cn(
       revealClass(),
-      'community-stat flex min-h-25.25 flex-col items-start gap-0.5 rounded-lg px-4 py-3',
+      'community-stat relative flex min-h-25.25 flex-col items-start gap-1 overflow-clip rounded-2xl p-4',
       communityStatCardMobileShell(),
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
@@ -31,13 +33,12 @@ const communityStatCard = tv({
   variants: {
     dark: {
       true: {
-        // inverse surface owns elevation; dark sc clears shadow for art.
-        root: 'is-dark rounded-md border-0 shadow-none',
+        root: 'is-dark border-0 shadow-none',
       },
       false: {},
     },
     withImage: {
-      true: { root: 'relative overflow-visible' },
+      true: { root: 'overflow-clip' },
       false: {},
     },
   },
@@ -82,32 +83,36 @@ export function CommunityStatCard({
   return (
     <Card
       as="article"
-      surface={dark ? 'inverse' : 'soft'}
       className={cn(styles.root(), className)}
       data-reveal
+      surface={dark ? 'inverse' : 'elevated'}
     >
       <Text
         as="span"
+        className={cn(styles.label(), !dark && 'text-foreground/70')}
+        tone={dark ? 'inverse-muted' : undefined}
         variant="support"
-        tone={dark ? 'inverse-muted' : 'muted-foreground'}
-        className={styles.label()}
       >
         {label}
       </Text>
       <Text
         as="strong"
-        variant="figure"
+        className={cn(styles.value(), 'text-2xl leading-7 font-semibold tracking-tight')}
         tone={dark ? 'inverse' : 'foreground'}
-        className={cn(styles.value(), 'text-2xl leading-7 tracking-tight')}
+        variant="figure"
       >
         {value}
       </Text>
       {volume ? (
         <Text
           as="b"
-          variant="headline"
+          className={cn(
+            styles.volume(),
+            'text-sm leading-tight font-medium',
+            !dark && 'text-primary',
+          )}
           tone={dark ? 'primary-bright' : undefined}
-          className={cn(styles.volume(), 'text-sm leading-tight', !dark && 'text-coral')}
+          variant="support"
         >
           {volume}
         </Text>
@@ -116,11 +121,12 @@ export function CommunityStatCard({
       {image ? (
         <img
           alt=""
-          className="pointer-events-none absolute -right-2.5 -bottom-6 z-1 h-auto w-24 max-w-28 min-w-22"
-          height="156"
+          className="pointer-events-none absolute -right-1 bottom-0 z-0 h-auto w-17 object-contain object-bottom"
+          data-slot-id="community-stat-rank-deco"
+          height="103"
           loading="lazy"
           src={image}
-          width="104"
+          width="68"
         />
       ) : null}
     </Card>

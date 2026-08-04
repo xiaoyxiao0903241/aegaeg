@@ -1,3 +1,5 @@
+import { dappAssets } from '~/app/assets'
+import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { DappSection } from '~/app/shell/dapp-section'
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { useI18n } from '~/i18n/use-i18n'
@@ -6,14 +8,21 @@ import {
   CommunityProgramCard,
   CommunityProgramGrid,
 } from '~/views/dapp/community/community-flow-primitives'
-import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-invite-flow'
 
-export function CommunityFlowSection({ isMobileViewport = false }: { isMobileViewport?: boolean }) {
+const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const
+
+/** 右栏邀请 steps（ProcessSteps）+ 生态支持双卡。 */
+export function CommunityFlowSection({
+  isMobileViewport: _isMobile = false,
+}: {
+  isMobileViewport?: boolean
+} = {}) {
+  void _isMobile
   const { messages: t } = useI18n()
   const genesis = useGenesisPromoChrome()
 
   const inviteFlowItems = t.community.inviteFlow.items.map(({ title, body }) => ({
-    copy: body,
+    body,
     title,
   }))
 
@@ -30,20 +39,20 @@ export function CommunityFlowSection({ isMobileViewport = false }: { isMobileVie
   return (
     <>
       <DappSection title={t.community.inviteTitle}>
-        {isMobileViewport ? (
-          <InviteFlowStack items={inviteFlowItems} />
-        ) : (
-          <InviteFlow items={inviteFlowItems} />
-        )}
+        {/* Figma `4301:226` → reuse DappProcessSteps（PC 横 / H5 竖） */}
+        <div data-slot-id="community-invite-steps">
+          <DappProcessSteps className="p-4" items={inviteFlowItems} />
+        </div>
       </DappSection>
 
       <DappSection title={t.community.programs.title}>
         <CommunityProgramGrid>
-          {programItems.map((program) => (
+          {programItems.map((program, index) => (
             <CommunityProgramCard
               action={program.action}
               body={program.body}
               href={program.href}
+              image={PROGRAM_IMAGES[index]}
               key={program.label}
               label={program.label}
               title={program.title}

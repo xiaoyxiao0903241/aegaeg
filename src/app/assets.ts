@@ -164,6 +164,12 @@ export const dappAssets = {
   rewardsHubGoBurnChevron: '/assets/figma/dapp/rewards-hub/ic-go-burn-chevron.svg',
   /** Lucky Chainlink VRF 标 · `4395:240` */
   rewardsHubChainlink: '/assets/figma/dapp/rewards-hub/ic-chainlink.svg',
+  /** 社区等级暗卡 IP · Figma `4794:3809` */
+  communityRankDeco: '/assets/figma/dapp/community/rank-deco.png',
+  /** 生态支持 · 创世火箭 · `4794:3841` */
+  communityProgramRocket: '/assets/figma/dapp/community/program-rocket.png',
+  /** 生态支持 · X 学院星 · `4794:3838` */
+  communityProgramStar: '/assets/figma/dapp/community/program-star.png',
 } as const
 
 export const railItems: Array<{

@@ -1,16 +1,17 @@
 import { type ReactNode } from 'react'
 
+import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { communityInviteColWidths } from '~/app/shell/dapp-table-columns'
+import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { Text } from '~/shared/ui/text'
 import {
   CommunityStatCard,
   CommunityStatGrid,
@@ -108,6 +109,7 @@ export function CommunityContent() {
       value: genesisRankValue,
       volume: t.community.cobuildLevel,
       dark: !isMobileViewport,
+      image: isMobileViewport ? undefined : dappAssets.communityRankDeco,
     },
   ]
 
@@ -119,6 +121,8 @@ export function CommunityContent() {
     t.community.directReferrals,
     t.tables.communityVolume,
   ]
+
+  const emptyTitle = `${t.community.invitesEmpty.title}，${t.community.invitesEmpty.body}`
 
   return (
     <DappDetailPage>
@@ -157,10 +161,8 @@ export function CommunityContent() {
           {invitesTable.requiresAuth ? (
             <DappTableAuthPrompt body={t.dapp.connect.recordsBodyCommunity} embedded />
           ) : invitesTable.queryEmpty ? (
-            <div className="flex min-h-27 items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
-              <Text as="p" className="text-center" tone="muted-foreground" variant="detail">
-                {`${t.community.invitesEmpty.title}，${t.community.invitesEmpty.body}`}
-              </Text>
+            <div data-slot-id="community-members-empty">
+              <DappTableEmptyMessage embedded title={emptyTitle} />
             </div>
           ) : (
             <ResponsiveTable

@@ -1,0 +1,80 @@
+/**
+ * Community Hub (`#community` · PC `4300:212`) A5 profile — 优先子 leaf 切片。
+ *
+ * Inventory: `.scratch/.../224-gdc-a5-inventory.json`（N=15 优先面；全页扩表另开）
+ * §8.2a reuse: DappProcessSteps · FaqList · DappTableEmptyMessage
+ */
+
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const here = dirname(fileURLToPath(import.meta.url))
+const repoRoot = join(here, '../../..')
+
+/** @param {string} rel */
+function abs(rel) {
+  return join(repoRoot, rel)
+}
+
+export const profile = {
+  id: 'community-hub',
+  url: 'http://127.0.0.1:5175/zh/app.html#community',
+  session: 'a5-community-224',
+  inventory: abs('.scratch/dapp-7rail-parity/research/224-gdc-a5-inventory.json'),
+  out: abs('.scratch/dapp-7rail-parity/research/224-community-hub-measure-full.json'),
+  pageSnapshotPath: join(here, 'community-hub.page.js'),
+  viewport: { width: 1920, height: 1080 },
+  waitUntilReadyJs: `(() => {
+    const skip = [...document.querySelectorAll('button,[data-onboarding-tooltip] button')].find(
+      (b) => (b.textContent || '').trim() === '跳过',
+    );
+    if (skip) skip.click();
+    document.documentElement.classList.remove('site-fluid');
+    document.documentElement.style.setProperty('font-size', '16px', 'important');
+    for (const item of document.querySelectorAll('[data-faq-item][data-state="open"]')) {
+      item.querySelector('[data-faq-trigger],button')?.click?.();
+    }
+    const remOk = Math.abs(parseFloat(getComputedStyle(document.documentElement).fontSize) - 16) < 0.5;
+    const has = (t) =>
+      [...document.querySelectorAll('h1,h2,h3,span,p')].some((e) => (e.textContent || '').trim() === t);
+    return remOk && has('社区') && (has('我的社区') || has('开始邀请 · 共享生态成长价值'));
+  })()`,
+  /** @returns {string} */
+  loadPageSnapshotJs() {
+    return readFileSync(this.pageSnapshotPath, 'utf8')
+  },
+}
+
+/**
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
+ * @param {Record<string, unknown>} page
+ */
+export function mapLeaves(gdc, page) {
+  /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
+  const mapped = []
+  const add = (leaf, measured, locator) => {
+    mapped.push({ leaf, measured: measured ?? null, locator })
+  }
+
+  for (const leaf of gdc) {
+    const id = leaf.nodeId
+    if (id === '4300:365') add(leaf, page.referralLink, 'referral-link')
+    else if (id === '4300:370') add(leaf, page.inviterCard, 'inviter-card')
+    else if (id === '4300:372') add(leaf, page.inviterAvatar, 'inviter-avatar')
+    else if (id === '4300:374') add(leaf, page.inviterCopy, 'inviter-copy')
+    else if (id === '4301:212') add(leaf, page.myCommunityHeading, 'my-community-h')
+    else if (id === '4301:213') add(leaf, page.statDirect, 'stat-direct')
+    else if (id === '4301:217') add(leaf, page.statTeam, 'stat-team')
+    else if (id === '4301:221') add(leaf, page.statRank, 'stat-rank')
+    else if (id === '4301:226') add(leaf, page.inviteSteps, 'invite-steps')
+    else if (id === '4301:241') add(leaf, page.programsHeading, 'programs-h')
+    else if (id === '4301:242') add(leaf, page.programGenesis, 'program-genesis')
+    else if (id === '4794:3825') add(leaf, page.programAcademy, 'program-academy')
+    else if (id === '4301:252') add(leaf, page.membersHeading, 'members-h')
+    else if (id === '4301:253') add(leaf, page.membersEmpty, 'members-empty')
+    else if (id === '4301:255') add(leaf, page.faqHeading, 'faq-h')
+    else add(leaf, null, `unmapped:${id}`)
+  }
+  return mapped
+}

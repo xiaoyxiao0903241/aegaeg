@@ -15,9 +15,9 @@ const communityReferrerBindGrid = tv({
   base: 'flex gap-2',
 })
 
+/** Figma `4300:370` 行：avatar24 + 地址 + copy30 灰底（非整行灰条） */
 const communityReferrerAddressRow = tv({
-  // Figma 邀请人行 30：h-7.5
-  base: 'flex h-7.5 items-center justify-between rounded-sm bg-background px-3',
+  base: 'flex h-7.5 w-full items-center',
 })
 
 const communityReferrerAvatar = tv({
@@ -25,7 +25,7 @@ const communityReferrerAvatar = tv({
 })
 
 const communityCopyButton = tv({
-  base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
+  base: 'ml-auto grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-background',
 })
 
 export function CommunityReferralLinkCard({
@@ -42,19 +42,18 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <DappSideCard className="min-h-30 gap-1.5 rounded-2xl px-4 py-3.5">
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0 leading-4">
+    <DappSideCard className="min-h-30 gap-2 rounded-2xl px-4 py-3.5">
+      <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {linkLabel}
       </Text>
       <Text
         as="strong"
-        variant="copy"
-        tone="foreground"
         className="block max-w-full truncate text-sm leading-4 font-semibold tracking-tight"
+        tone="foreground"
+        variant="copy"
       >
         {referralLink}
       </Text>
-      {/* Figma copy CTA 38 */}
       <DappActionButton density="inverse" disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </DappActionButton>
@@ -87,7 +86,7 @@ export function CommunityReferrerBindCard({
 }) {
   return (
     <DappSideCard className="gap-2">
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
+      <Text as="p" className="m-0 text-foreground/40" variant="support">
         {referrerLabel}
       </Text>
       <div className={communityReferrerBindGrid()}>
@@ -107,13 +106,14 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </FieldActionChip>
       </div>
-      <Text as="small" variant="support" tone="muted-foreground" className="block">
+      <Text as="small" className="block text-foreground/40" variant="support">
         {hint}
       </Text>
     </DappSideCard>
   )
 }
 
+/** Figma `4300:370`：标签 · Wallet 圆标 + 地址 + copy · 永久关系注脚 */
 export function CommunityReferrerBoundPanel({
   addressLabel,
   copyLabel,
@@ -130,36 +130,35 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    <DappSideCard className="min-h-28 gap-1.5 rounded-2xl px-4 py-3.5">
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0 leading-4">
+    <DappSideCard className="gap-2 rounded-2xl px-4 py-3.5">
+      <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {addressLabel}
       </Text>
-      <div className={communityReferrerAddressRow()}>
-        <div className="flex min-w-0 items-center gap-2.5">
-          <span aria-hidden="true" className={communityReferrerAvatar()}>
-            <Wallet className={dappIcon({ size: 'xs' })} strokeWidth={1.75} />
-          </span>
-          <Text
-            as="strong"
-            variant="copy"
-            tone="foreground"
-            className="truncate text-sm leading-tight font-semibold"
-          >
-            {referrerLabel ?? '—'}
-          </Text>
-        </div>
+      <div className={communityReferrerAddressRow()} data-slot-id="community-referrer-row">
+        <span aria-hidden className={communityReferrerAvatar()}>
+          <Wallet className={dappIcon({ size: 'xs' })} strokeWidth={1.75} />
+        </span>
+        <Text
+          as="strong"
+          className="ml-2.5 truncate text-sm leading-tight font-semibold"
+          tone="foreground"
+          variant="copy"
+        >
+          {referrerLabel ?? '—'}
+        </Text>
         {referrer ? (
           <button
             aria-label={copyLabel}
             className={communityCopyButton()}
+            data-slot-id="community-referrer-copy"
             onClick={onCopy}
             type="button"
           >
-            <DappIcon alt="" size="base" src={dappAssets.copy} />
+            <DappIcon alt="" size="sm" src={dappAssets.copy} />
           </button>
         ) : null}
       </div>
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0 leading-4">
+      <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {note}
       </Text>
     </DappSideCard>

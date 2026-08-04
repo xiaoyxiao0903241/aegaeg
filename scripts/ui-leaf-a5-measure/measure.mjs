@@ -35,6 +35,7 @@ const PROFILES = {
   'release-hub': './profiles/release-hub.mjs',
   'release-queue': './profiles/release-queue.mjs',
   'release-buffer': './profiles/release-buffer.mjs',
+  'community-hub': './profiles/community-hub.mjs',
 }
 
 function usage() {

@@ -1356,7 +1356,7 @@ const app = defineMessages({
           label: 'Co-construcción Génesis · Fase {season}',
           title: 'Programa de Gobernadores de Reserva Génesis',
           body: 'Abiertas las primeras plazas globales de co-construcción',
-          action: 'Ver detalles del plan →',
+          action: 'Ver detalles del plan',
           href: 'https://xdaoaegis.notion.site/programa-del-consejo-de-reserva-genesis',
         },
         {
@@ -1364,7 +1364,7 @@ const app = defineMessages({
           title:
             'Academia Global DeFi · Academia de Liderazgo Global para la Era de la Economía Digital',
           body: 'Formar líderes para la era · Reservar talento para el futuro',
-          action: 'Ver detalles del plan →',
+          action: 'Ver detalles del plan',
           href: 'https://xdaoaegis.notion.site/academia-x-esp',
         },
       ],
