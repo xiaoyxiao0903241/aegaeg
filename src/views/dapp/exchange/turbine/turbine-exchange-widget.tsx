@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
@@ -12,7 +11,8 @@ import { TokenChip } from '~/app/shell/token-chip'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
+import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -41,13 +41,13 @@ function TurbineEqBuyTokenCell({
         {label}
       </Text>
       <div className="flex items-center gap-2">
-        <DappIcon alt="" className="size-5 rounded-md" size="token" src={icon} />
+        <Icon alt="" className="size-5 rounded-md" size="token" src={icon} />
         <Text as="span" variant="copy" className="text-base leading-5 font-semibold">
-          <DappCountValue text={value} />
+          <CountValue text={value} />
         </Text>
       </div>
       <Text as="p" variant="support" className="text-foreground/40">
-        {typeof footer === 'string' ? <DappCountValue text={footer} /> : footer}
+        {typeof footer === 'string' ? <CountValue text={footer} /> : footer}
       </Text>
     </div>
   )
@@ -123,7 +123,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   label={t.exchange.turbine.payUsd1Label}
                   value={turbine.payUsd1Label || '0'}
                 />
-                <DappIcon
+                <Icon
                   alt=""
                   className="size-3.5 shrink-0"
                   size="base"
@@ -155,7 +155,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   value: vm.willReceiveLabel,
                 },
                 {
-                  // Figma `4435:469`：固定「1 : 1 买入解锁」（数量）；勿走 DappCountValue 数字 reel
+                  // Figma `4435:469`：固定「1 : 1 买入解锁」（数量）；勿走 CountValue 数字 reel
                   label: t.exchange.turbine.unlockRatio,
                   value: (
                     <Text as="span" variant="detail" className="leading-4 font-semibold">
@@ -190,7 +190,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                         }
                         type="button"
                       >
-                        <DappIcon alt="" size="xs" src={flashExchangeAssets.externalLink} />
+                        <Icon alt="" size="xs" src={flashExchangeAssets.externalLink} />
                       </button>
                     </>
                   ),
@@ -229,7 +229,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 >
                   <div className="min-w-0">
                     <Text as="p" variant="detail" className="font-semibold">
-                      <DappCountValue
+                      <CountValue
                         text={`${formatTokenAmount(
                           row.silenceBalance,
                           // Handbook §16: silenceBalance axis = AGX decimals (UI leaf labels gAGX).

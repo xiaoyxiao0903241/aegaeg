@@ -1,8 +1,8 @@
 import { type ReactNode, useEffect, useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
@@ -101,7 +101,7 @@ export function AssetsPositionPrincipalColumn({
           !badgeVisible && 'pointer-events-none opacity-0',
         )}
       >
-        <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
+        <Icon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
         <Text as="span" className="leading-none text-primary" variant="support">
           {badgeText}
         </Text>
@@ -125,7 +125,7 @@ export function AssetsPositionBoostBadge({
         className,
       )}
     >
-      <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionBoost} />
+      <Icon alt="" className="size-3" src={dappAssets.assetsPositionBoost} />
       <Text as="span" className="leading-none text-primary" variant="support">
         {text}
       </Text>

@@ -3,14 +3,14 @@ import type { ComponentProps, ReactNode } from 'react'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Card } from '~/shared/components/card'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList, type FaqListItem } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 
@@ -86,16 +86,16 @@ export function AssetsProductDetailSections({
                 </Text>
                 <div className="flex items-center gap-1.5">
                   {iconSrc ? (
-                    <DappIcon alt="" className="rounded-control" size="lg" src={iconSrc} />
+                    <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
                   ) : null}
                   {/* 稿 stat value SemiBold 16 */}
                   <Text as="strong" className="text-base leading-5 font-semibold" variant="copy">
-                    <DappCountValue text={cell?.value ?? '0.00'} />
+                    <CountValue text={cell?.value ?? '0.00'} />
                   </Text>
                 </div>
                 {cell?.approx != null ? (
                   <Text as="span" className="leading-4 text-foreground/40" variant="support">
-                    <DappCountValue text={cell.approx} />
+                    <CountValue text={cell.approx} />
                   </Text>
                 ) : null}
               </Card>

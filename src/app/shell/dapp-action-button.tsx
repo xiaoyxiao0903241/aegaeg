@@ -1,7 +1,7 @@
+import { Loader2 } from 'lucide-react'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 import { Button } from '~/shared/components/button'
-import { ButtonLoadingIcon } from '~/shared/components/button-loading-icon'
 import { cn } from '~/shared/lib/utils'
 
 /**
@@ -54,7 +54,9 @@ export function DappActionButton({
       variant={variant}
       {...props}
     >
-      {loading ? <ButtonLoadingIcon /> : null}
+      {loading ? (
+        <Loader2 aria-hidden className="size-4 shrink-0 animate-spin" strokeWidth={2} />
+      ) : null}
       {children}
     </Button>
   )

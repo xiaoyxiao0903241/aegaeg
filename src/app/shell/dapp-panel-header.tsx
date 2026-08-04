@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
+import { Icon } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -48,7 +48,7 @@ export function DappPanelHeader({
             className="shrink-0"
             onClick={onTogglePanel}
           >
-            <DappIcon
+            <Icon
               className={cn(
                 'duration-dapp-base transition-transform ease-dapp',
                 detailCollapsed && 'rotate-90',

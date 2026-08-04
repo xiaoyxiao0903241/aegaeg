@@ -4,11 +4,8 @@ import { useEffect } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { useI18n } from '~/i18n/use-i18n'
-import {
-  AegisResponsiveDialog,
-  AegisSheetHandle,
-} from '~/shared/components/aegis-responsive-dialog'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
+import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
 import { ConnectEmbed, useActiveAccount } from '~/web3/thirdweb-react'
@@ -39,13 +36,13 @@ export function WalletConnectModal({
   }, [account, onOpenChange, open])
 
   return (
-    <AegisResponsiveDialog
+    <ResponsiveDialog
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-strong backdrop-blur-sm"
       className={walletConnectPanel()}
     >
-      <AegisSheetHandle />
+      <SheetHandle />
 
       <div className="flex items-center justify-between dapp:mb-5 max-dapp:px-0">
         <DialogPrimitive.Title asChild>
@@ -58,7 +55,7 @@ export function WalletConnectModal({
           className="aegis-wallet-connect-close"
           type="button"
         >
-          <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
+          <X aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={2} />
         </DialogPrimitive.Close>
       </div>
 
@@ -71,6 +68,6 @@ export function WalletConnectModal({
           />
         </div>
       </div>
-    </AegisResponsiveDialog>
+    </ResponsiveDialog>
   )
 }

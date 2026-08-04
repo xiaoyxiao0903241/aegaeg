@@ -1,8 +1,8 @@
 import { useI18n } from '~/i18n/use-i18n'
 
 /**
- * `{label}: {value}` string for AmountBox / DappCountValue.
- * Disconnected / preview → `0.00`; connected + empty value → `''` (retain via DappCountValue).
+ * `{label}: {value}` string for AmountBox / CountValue.
+ * Disconnected / preview → `0.00`; connected + empty value → `''` (retain via CountValue).
  */
 export function formatExchangeBalanceLabel({
   label,

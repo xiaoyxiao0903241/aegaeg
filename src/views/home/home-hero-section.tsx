@@ -1,3 +1,5 @@
+import { ArrowRight } from 'lucide-react'
+
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/shared/assets/home'
@@ -13,30 +15,7 @@ function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {
     <Button asChild className="max-dapp:w-full max-dapp:shadow-none!" size="lg" variant="primary">
       <a href={withLocalePrefix(locale, '/app.html')}>
         {enterProtocol}
-        <svg
-          aria-hidden="true"
-          className="ml-1.5 size-4 shrink-0"
-          fill="none"
-          height="16"
-          viewBox="0 0 24 24"
-          width="16"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M5 12H19"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          />
-          <path
-            d="M12 5L19 12L12 19"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          />
-        </svg>
+        <ArrowRight aria-hidden className="ml-1.5 size-4 shrink-0" strokeWidth={2} />
       </a>
     </Button>
   )

@@ -8,7 +8,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
@@ -121,7 +121,7 @@ export function ReleaseHubWidget() {
               {t.release.queue.title}
             </Text>
             <Text as="span" variant="detail">
-              <DappCountValue text={queuePct} />
+              <CountValue text={queuePct} />
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -132,10 +132,10 @@ export function ReleaseHubWidget() {
               {t.release.labels.released}
             </Text>
             <Text as="strong" variant="headline">
-              <DappCountValue text={queueReleasingLabel} />
+              <CountValue text={queueReleasingLabel} />
             </Text>
             <Text as="strong" tone="primary" variant="headline">
-              <DappCountValue text={queueClaimableLabel} />
+              <CountValue text={queueClaimableLabel} />
             </Text>
             <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {queueReleasingApprox}
@@ -157,12 +157,12 @@ export function ReleaseHubWidget() {
               {t.release.buffer.title}
             </Text>
             <Text as="span" variant="detail">
-              <DappCountValue text={bufferPct} />
+              <CountValue text={bufferPct} />
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Text as="strong" variant="headline">
-              <DappCountValue text={bufferTotalAgx} />
+              <CountValue text={bufferTotalAgx} />
             </Text>
             <Text as="strong" variant="headline">
               {gagxZeroLabel}
@@ -180,7 +180,7 @@ export function ReleaseHubWidget() {
                 {t.release.labels.released}
               </Text>
               <Text as="span" tone="primary" variant="copy">
-                <DappCountValue text={bufferClaimedAgx} />
+                <CountValue text={bufferClaimedAgx} />
               </Text>
             </div>
             <div className="flex flex-wrap items-center gap-1.5">

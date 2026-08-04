@@ -2,10 +2,10 @@ import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { Card } from '~/shared/components/card'
 import { FaqList } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import {
   AssetsHubMetricPlain,
@@ -133,12 +133,7 @@ export function AssetsHubContent() {
               >
                 {/* Figma `4424:48`：16 圆 + border + ink 切换符（禁珊瑚 exchangeFlip） */}
                 <span className="grid size-4 place-items-center overflow-hidden rounded-full border border-border">
-                  <DappIcon
-                    alt=""
-                    className="size-2.5"
-                    size="sm"
-                    src={assetsHubAssets.bufferSwap}
-                  />
+                  <Icon alt="" className="size-2.5" size="sm" src={assetsHubAssets.bufferSwap} />
                 </span>
                 <Text as="span" className="leading-4" tone="muted-foreground" variant="copy">
                   {bufferLabel}
@@ -244,7 +239,7 @@ export function AssetsHubContent() {
           <div className="flex flex-col items-start gap-2.5 dapp:flex-row dapp:flex-wrap dapp:items-center dapp:justify-between dapp:gap-x-4 dapp:gap-y-2 dapp:rounded-2xl dapp:bg-muted dapp:px-6 dapp:py-3.5">
             {rebase.tags.map((tag) => (
               <span className="flex items-center gap-2 dapp:gap-1.5" key={tag}>
-                <DappIcon
+                <Icon
                   alt=""
                   className="h-4 w-4.5 shrink-0"
                   size="sm"

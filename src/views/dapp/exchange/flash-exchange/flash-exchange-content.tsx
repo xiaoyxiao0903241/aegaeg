@@ -2,10 +2,10 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
@@ -36,13 +36,7 @@ export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel:
             {t.exchange.flash.aboutTitle}
           </DappContentHeading>
           {/* Figma `4477:412` chevron chrome; no collapse IA → decorative only (R5a). */}
-          <DappIcon
-            alt=""
-            aria-hidden
-            className="opacity-40"
-            size="base"
-            src={dappAssets.chevron}
-          />
+          <Icon alt="" aria-hidden className="opacity-40" size="base" src={dappAssets.chevron} />
         </div>
         <TokenAboutCarousel cardKeys={FLASH_ABOUT_CARD_KEYS} />
       </DappDetailBlock>

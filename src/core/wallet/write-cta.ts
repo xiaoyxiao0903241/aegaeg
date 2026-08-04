@@ -37,7 +37,7 @@ export function writeCtaLabel(
   return copy.submit
 }
 
-/** `{template}` 替换 `{balance}`；余额为空 → `''`（DappCountValue 可保留）。 */
+/** `{template}` 替换 `{balance}`；余额为空 → `''`（CountValue 可保留）。 */
 export function formatAmountBalanceLabel(template: string, args: { balance: string }): string {
   if (args.balance.trim() === '') return ''
   return template.replace('{balance}', args.balance)

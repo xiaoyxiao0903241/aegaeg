@@ -5,7 +5,6 @@ import { DappRail } from '~/app/dapp-rail'
 import { DappTopbar } from '~/app/dapp-topbar'
 import { GenesisPromoSync } from '~/app/genesis-promo-sync'
 import { useDappTabContentFade } from '~/app/shell/dapp-content-fade'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMobileNav } from '~/app/shell/dapp-mobile-nav'
 import { DappRevealObserver } from '~/app/shell/dapp-reveal-observer'
 import { DappScrollFadeHost } from '~/app/shell/dapp-scroll-fade-host'
@@ -14,8 +13,9 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
-import { DappInlineAlert } from '~/shared/components/dapp-inline-alert'
 import { HeroRaysBackground } from '~/shared/components/hero-rays-background'
+import { Icon } from '~/shared/components/icon'
+import { InlineAlert } from '~/shared/components/inline-alert'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -112,7 +112,7 @@ export function DappShell() {
       <OnboardingGuide onOpenChange={onboarding.setOpen} open={onboarding.open} />
 
       {import.meta.env.DEV && !isThirdwebConfigured ? (
-        <DappInlineAlert
+        <InlineAlert
           as="div"
           density="comfortable"
           role="status"
@@ -122,7 +122,7 @@ export function DappShell() {
           ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code> 为{' '}
           <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client ID 后重启{' '}
           <code className="font-mono">pnpm dev</code>。
-        </DappInlineAlert>
+        </InlineAlert>
       ) : null}
 
       <section
@@ -184,7 +184,7 @@ export function DappShell() {
                             onClick={() => setMobileNavOpen(true)}
                             type="button"
                           >
-                            <DappIcon alt="" size="lg" src={dappAssets.menu} />
+                            <Icon alt="" size="lg" src={dappAssets.menu} />
                           </button>
                         </div>
                         <DappMobileNav

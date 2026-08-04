@@ -1,4 +1,4 @@
-import { DappIcon } from '~/app/shell/dapp-icon'
+import { Icon } from '~/shared/components/icon'
 
 /** Provider name + external-link control for Exchange meta rows. */
 export function ExchangeProviderMetaValue({
@@ -21,7 +21,7 @@ export function ExchangeProviderMetaValue({
         onClick={onOpen}
         type="button"
       >
-        <DappIcon alt="" size="xs" src={iconSrc} />
+        <Icon alt="" size="xs" src={iconSrc} />
       </button>
     </>
   )

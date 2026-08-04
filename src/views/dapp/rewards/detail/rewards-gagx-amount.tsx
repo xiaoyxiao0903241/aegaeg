@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 
 /** gAGX icon + amount/label row used on claim widgets. */
@@ -14,7 +14,7 @@ export function RewardsGagxAmount({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <DappIcon
+      <Icon
         alt=""
         className="size-(--app-icon-lg) rounded-full"
         loading="lazy"

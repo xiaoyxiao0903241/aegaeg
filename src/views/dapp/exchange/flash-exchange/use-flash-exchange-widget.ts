@@ -189,7 +189,7 @@ export function useFlashExchangeWidget(
       sell: { ...pair.sell, decimals: sellDecimals },
       buy: { ...pair.buy, decimals: buyDecimals },
     },
-    // Pending → '' so DappCountValue retains; never coerce missing pair data to 0.00.
+    // Pending → '' so CountValue retains; never coerce missing pair data to 0.00.
     sellBalanceLabel:
       balancesQuery.data === undefined
         ? ''

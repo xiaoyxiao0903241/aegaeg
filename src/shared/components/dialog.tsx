@@ -109,3 +109,62 @@ export {
   DialogPortal,
   DialogTitle,
 }
+
+/** Shared close control — wallet modal, slippage, H5 drawer, etc. */
+export const dialogClose = tv({
+  base: [
+    // Figma wm-x 4040:5236 — 34px circle, white surface
+    'grid size-(--dapp-wallet-modal-close-size) shrink-0 cursor-pointer place-items-center rounded-full',
+    'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
+    'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
+  ],
+})
+
+export function DialogClose({
+  className,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <DialogPrimitive.Close className={dialogClose({ class: className })} type="button" {...props} />
+  )
+}
+
+export function SheetHandle() {
+  return (
+    <div
+      aria-hidden="true"
+      className="mx-auto mt-2 mb-3 hidden h-1 w-10 shrink-0 rounded-full bg-border max-dapp:block"
+    />
+  )
+}
+
+/** Responsive modal/sheet shell — panel chrome via `dialogChrome().panel`. */
+export function ResponsiveDialog({
+  children,
+  className,
+  onOpenChange,
+  open,
+  overlayClassName,
+}: {
+  children: React.ReactNode
+  className?: string
+  onOpenChange: (open: boolean) => void
+  open: boolean
+  overlayClassName?: string
+}) {
+  const styles = dialogChrome()
+
+  return (
+    <DialogPrimitive.Root onOpenChange={onOpenChange} open={open}>
+      <DialogPortal>
+        <DialogOverlay className={overlayClassName} />
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          className={styles.panel({ class: className })}
+        >
+          {children}
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    </DialogPrimitive.Root>
+  )
+}

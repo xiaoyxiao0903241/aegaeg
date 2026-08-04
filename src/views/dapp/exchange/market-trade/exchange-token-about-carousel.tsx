@@ -1,4 +1,5 @@
 import Autoplay from 'embla-carousel-autoplay'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
@@ -12,7 +13,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '~/shared/components/carousel'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { iconVariants } from '~/shared/components/icon'
 import {
   getExchangeTokenContractAddress,
   openTokenContractOnBscScan,
@@ -35,11 +36,10 @@ const exchangeTokenAboutCarousel = tv({
     dotGroup: 'inline-flex items-center gap-1.5',
     dotButton: [
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
-      dappIcon({ size: 'base' }),
+      iconVariants({ size: 'base' }),
     ],
     dot: 'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
-    chevron:
-      "block bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
+    chevron: 'block',
   },
   variants: {
     layout: {
@@ -50,8 +50,8 @@ const exchangeTokenAboutCarousel = tv({
           'gap-3.5 self-center',
           'dapp:relative dapp:z-1 dapp:-mt-(--shadow-bleed-subtle) dapp:pt-(--carousel-pc-indicator-pt)',
         ],
-        navButton: dappIcon({ size: 'base' }),
-        chevron: dappIcon({ size: 'base' }),
+        navButton: iconVariants({ size: 'base' }),
+        chevron: iconVariants({ size: 'base' }),
       },
       mobile: {
         root: 'max-dapp:mt-0',
@@ -63,12 +63,8 @@ const exchangeTokenAboutCarousel = tv({
         ],
         navButton:
           'duration-dapp-fast size-(--dapp-icon-lg) rounded-full transition-[background-color,color] ease-out hover:bg-background hover:text-muted-foreground',
-        chevron: dappIcon({ size: 'md' }),
+        chevron: iconVariants({ size: 'md' }),
       },
-    },
-    chevronDirection: {
-      prev: { chevron: '-rotate-90' },
-      next: { chevron: 'rotate-90' },
     },
     dotActive: {
       true: {},
@@ -220,10 +216,11 @@ function CarouselNavButton({
   layout: CarouselLayout
   onClick: () => void
 }) {
-  const styles = exchangeTokenAboutCarousel({ layout, chevronDirection: direction })
+  const styles = exchangeTokenAboutCarousel({ layout })
+  const Glyph = direction === 'prev' ? ChevronLeft : ChevronRight
   return (
     <button aria-label={ariaLabel} className={styles.navButton()} onClick={onClick} type="button">
-      <span aria-hidden="true" className={styles.chevron()} />
+      <Glyph aria-hidden className={styles.chevron()} strokeWidth={2} />
     </button>
   )
 }

@@ -1,8 +1,8 @@
 import { stakingHubAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
+import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
@@ -48,7 +48,7 @@ export function StakingHubWidget() {
               onClick={() => openStakingView(mode.view)}
               tourId={mode.tourId}
             >
-              <DappIcon alt="" size="xl" src={mode.icon} />
+              <Icon alt="" size="xl" src={mode.icon} />
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <Text as="span" className="font-semibold" variant="detail">
                   {title}

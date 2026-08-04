@@ -5,7 +5,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { ProgressMeter } from '~/app/shell/progress-meter'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
-import { dappDarkBanner } from '~/shared/components/dapp-dark-banner'
+import { darkBanner } from '~/shared/components/dark-banner'
 import { Text } from '~/shared/components/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
@@ -16,7 +16,7 @@ export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
   const vm = useRewardsGenesisView()
-  const banner = dappDarkBanner()
+  const banner = darkBanner()
 
   return (
     <>

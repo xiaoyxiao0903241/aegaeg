@@ -6,14 +6,44 @@ import {
   type RefObject,
   use,
   useEffect,
+  useEffectEvent,
   useId,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react'
 
-import { useDismissOnOutside } from '~/shared/components/use-dismiss-on-outside'
 import { cn } from '~/shared/lib/utils'
+
+/** Close an open layer on outside pointerdown or Escape. */
+function useDismissOnOutside(
+  open: boolean,
+  rootRef: RefObject<HTMLElement | null>,
+  onDismiss: () => void,
+) {
+  const dismiss = useEffectEvent(onDismiss)
+
+  useEffect(() => {
+    if (!open) return
+
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target
+      if (!(target instanceof Node)) return
+      if (rootRef.current && !rootRef.current.contains(target)) dismiss()
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') dismiss()
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown, { passive: true })
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open, rootRef])
+}
 
 /**
  * DApp listbox 菜单 chrome（兑换 TokenPicker / 资产排序 / SelectMenu 共用）.

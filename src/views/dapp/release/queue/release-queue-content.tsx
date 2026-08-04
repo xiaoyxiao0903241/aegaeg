@@ -4,7 +4,6 @@ import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
@@ -17,8 +16,9 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { Card } from '~/shared/components/card'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
@@ -124,14 +124,14 @@ export function ReleaseQueueContent() {
                 {stat.label}
               </Text>
               <div className="flex items-center gap-2">
-                <DappIcon
+                <Icon
                   alt=""
                   className="size-(--app-icon-rail) shrink-0 rounded-md"
                   size="rail"
                   src={tokenCarouselIcons.gagxIcon}
                 />
                 <Text as="strong" className="font-semibold" variant="section">
-                  <DappCountValue text={stat.value} />
+                  <CountValue text={stat.value} />
                 </Text>
               </div>
               <Text as="span" className="text-foreground/40" variant="caption">

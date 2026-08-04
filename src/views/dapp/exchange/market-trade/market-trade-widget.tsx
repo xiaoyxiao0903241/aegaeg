@@ -1,14 +1,14 @@
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
-import { DappInlineAlert } from '~/shared/components/dapp-inline-alert'
+import { CountValue } from '~/shared/components/count-value'
+import { Icon } from '~/shared/components/icon'
+import { InlineAlert } from '~/shared/components/inline-alert'
 import { cn } from '~/shared/lib/utils'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
@@ -57,7 +57,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                   >
                     <span className="grid size-4 place-items-center">
                       <span className="-rotate-90">
-                        <DappIcon alt="" size="base" src={flashExchangeAssets.flowDivider} />
+                        <Icon alt="" size="base" src={flashExchangeAssets.flowDivider} />
                       </span>
                     </span>
                   </span>
@@ -102,7 +102,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               label: t.exchange.exchangePrice,
               value: (
                 <>
-                  <DappCountValue text={vm.exchangePriceDisplayLabel || '0'} />
+                  <CountValue text={vm.exchangePriceDisplayLabel || '0'} />
                   <AnchoredTooltip content={t.exchange.flip}>
                     <button
                       aria-label={t.exchange.flip}
@@ -110,7 +110,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                       onClick={vm.onTogglePriceInverted}
                       type="button"
                     >
-                      <DappIcon alt="" size="xs" src={dappAssets.exchangeFlip} />
+                      <Icon alt="" size="xs" src={dappAssets.exchangeFlip} />
                     </button>
                   </AnchoredTooltip>
                 </>
@@ -121,7 +121,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               label: t.exchange.allowedSlippage,
               value: (
                 <>
-                  <DappCountValue text={`${trade.slippage}%`} />
+                  <CountValue text={`${trade.slippage}%`} />
                   <button
                     aria-label={t.exchange.slippageSettings}
                     className={cn(
@@ -132,7 +132,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                     onClick={() => vm.setSlippageOpen(true)}
                     type="button"
                   >
-                    <DappIcon alt="" size="xs" src={dappAssets.setting} />
+                    <Icon alt="" size="xs" src={dappAssets.setting} />
                   </button>
                 </>
               ),
@@ -165,9 +165,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
         />
 
         {vm.sessionReady && trade.isHighPriceImpact ? (
-          <DappInlineAlert className="mt-3">
-            {t.exchange.trade.highPriceImpactWarning}
-          </DappInlineAlert>
+          <InlineAlert className="mt-3">{t.exchange.trade.highPriceImpactWarning}</InlineAlert>
         ) : null}
 
         {vm.sessionReady && trade.walletReady ? (

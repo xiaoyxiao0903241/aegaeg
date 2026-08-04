@@ -1,4 +1,5 @@
-import { DappInfoIcon } from '~/app/shell/dapp-info-icon'
+import { Info } from 'lucide-react'
+
 import { AnchoredTooltip, type AnchoredTooltipProps } from '~/shared/components/anchored-tooltip'
 import { cn } from '~/shared/lib/utils'
 
@@ -25,7 +26,7 @@ export function DappInfoTooltip({
         )}
         type="button"
       >
-        <DappInfoIcon />
+        <Info aria-hidden className="block size-3 shrink-0 text-foreground/40" strokeWidth={1.75} />
       </button>
     </AnchoredTooltip>
   )

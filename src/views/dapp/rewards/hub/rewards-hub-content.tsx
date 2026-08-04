@@ -4,11 +4,11 @@ import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsHubStats } from '~/views/dapp/rewards/hub/use-rewards-hub-stats'
@@ -34,7 +34,7 @@ export function RewardsHubContent() {
               {stats.totalRewards}
             </Text>
             <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-              <DappIcon
+              <Icon
                 alt=""
                 className="size-4.5 shrink-0"
                 size="sm"
@@ -161,7 +161,7 @@ export function RewardsHubContent() {
                 >
                   {stats.goBurn}
                 </Text>
-                <DappIcon
+                <Icon
                   alt=""
                   className="size-3.5 shrink-0"
                   size="xs"

@@ -1,13 +1,13 @@
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
+import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text } from '~/shared/components/text'
 import { CalcDaySlider } from '~/views/dapp/staking/calc/calc-day-slider'
@@ -101,7 +101,7 @@ export function CalcWidget() {
           }}
           endAdornment={
             <span className="flex items-center gap-1.5">
-              <DappIcon alt="" shape="circle" size="rail" src={tokenSrc} />
+              <Icon alt="" shape="circle" size="rail" src={tokenSrc} />
               <Text as="span" className="font-semibold" variant="detail">
                 {vm.tokenLabel}
               </Text>

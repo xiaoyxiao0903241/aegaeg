@@ -297,7 +297,7 @@ test('emptySpotRateDash gates empty vs format', async () => {
 })
 
 test('metricDisplayText keeps prior on empty flash', async () => {
-  const { metricDisplayText } = await loadModule('/src/shared/components/metric-display-text.ts')
+  const { metricDisplayText } = await loadModule('/src/shared/components/count-value.tsx')
 
   assert.deepEqual(metricDisplayText('', null), { display: '0', retain: null })
   assert.deepEqual(metricDisplayText('', '2,000'), { display: '2,000', retain: '2,000' })

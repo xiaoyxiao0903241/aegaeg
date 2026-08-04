@@ -4,19 +4,15 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
-import {
-  AegisDialogClose,
-  AegisResponsiveDialog,
-  AegisSheetHandle,
-} from '~/shared/components/aegis-responsive-dialog'
 import { Button } from '~/shared/components/button'
+import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { cn } from '~/shared/lib/utils'
@@ -89,7 +85,7 @@ export function WalletDetailsModal({
   }
 
   return (
-    <AegisResponsiveDialog
+    <ResponsiveDialog
       onOpenChange={handleOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
@@ -105,12 +101,12 @@ export function WalletDetailsModal({
         'max-dapp:px-6 max-dapp:pt-3 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))]',
       )}
     >
-      <AegisSheetHandle />
+      <SheetHandle />
 
       <div className="relative flex w-full shrink-0 items-start justify-end">
-        <AegisDialogClose aria-label={t.common.close}>
+        <DialogClose aria-label={t.common.close}>
           <X aria-hidden className="size-3.5 shrink-0" strokeWidth={2} />
-        </AegisDialogClose>
+        </DialogClose>
       </div>
 
       <div
@@ -180,7 +176,7 @@ export function WalletDetailsModal({
               type="button"
               variant="primary"
             >
-              <DappIcon
+              <Icon
                 alt=""
                 aria-hidden="true"
                 size="action"
@@ -201,6 +197,6 @@ export function WalletDetailsModal({
         )}
       </div>
       <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
-    </AegisResponsiveDialog>
+    </ResponsiveDialog>
   )
 }

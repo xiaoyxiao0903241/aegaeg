@@ -1,6 +1,6 @@
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 
 export function StakingTokenMetricValue({
@@ -17,8 +17,8 @@ export function StakingTokenMetricValue({
     icon === 'agx' ? dappAssets.tokenAgx : icon === 'x' ? dappAssets.tokenX : dappAssets.tokenGagx
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-1.5">
-      <DappIcon alt="" shape="circle" size="lg" src={src} />
-      <DappCountValue text={value} />
+      <Icon alt="" shape="circle" size="lg" src={src} />
+      <CountValue text={value} />
       {approx ? (
         <Text as="span" className="font-normal text-foreground/40" variant="detail">
           {approx}

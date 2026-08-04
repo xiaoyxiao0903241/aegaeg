@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { Card } from '~/shared/components/card'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
 import { revealClass } from '~/shared/lib/reveal'
 
 export type MetricCardProps = {
@@ -37,7 +37,7 @@ export function MetricCard({
 }: MetricCardProps) {
   const styles = metricCard()
   const renderedValue =
-    typeof value === 'string' ? <DappCountValue animate={animateValue} text={value} /> : value
+    typeof value === 'string' ? <CountValue animate={animateValue} text={value} /> : value
 
   return (
     <Card as="article" surface="elevated" className={styles.root({ class: className })} data-reveal>
@@ -45,7 +45,7 @@ export function MetricCard({
       <Card.Value className={styles.value({ class: valueClassName })}>{renderedValue}</Card.Value>
       {hint ? (
         <Card.Description className={styles.hint({ class: hintClassName })}>
-          {typeof hint === 'string' ? <DappCountValue animate={animateValue} text={hint} /> : hint}
+          {typeof hint === 'string' ? <CountValue animate={animateValue} text={hint} /> : hint}
         </Card.Description>
       ) : null}
       {children}

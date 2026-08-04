@@ -7,7 +7,7 @@ import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { iconVariants } from '~/shared/components/icon'
 import { LanguageMenu } from '~/shared/components/language-menu'
 import { Text } from '~/shared/components/text'
 
@@ -24,7 +24,7 @@ const topbar = tv({
     brand: 'flex items-center gap-2.5',
     brandMark: [
       'object-contain',
-      dappIcon({ size: 'brand' }),
+      iconVariants({ size: 'brand' }),
       'max-dapp:size-(--dapp-icon-lg) max-dapp:w-(--dapp-icon-lg)',
     ],
     actions: [

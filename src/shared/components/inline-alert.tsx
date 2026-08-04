@@ -8,7 +8,7 @@ import { cn } from '~/shared/lib/utils'
  * Inline destructive alert chrome (border / wash / pad / color).
  * Typography stays Text `copy`; spacing (mt/mx/mb) stays at call site.
  */
-export const dappInlineAlert = tv({
+export const inlineAlert = tv({
   base: 'rounded-xl border border-destructive/30 bg-destructive/10 text-destructive',
   variants: {
     density: {
@@ -23,26 +23,26 @@ export const dappInlineAlert = tv({
   },
 })
 
-export type DappInlineAlertDensity = NonNullable<VariantProps<typeof dappInlineAlert>['density']>
+export type InlineAlertDensity = NonNullable<VariantProps<typeof inlineAlert>['density']>
 
-export type DappInlineAlertProps = Omit<TextProps, 'tone' | 'variant'> & {
+export type InlineAlertProps = Omit<TextProps, 'tone' | 'variant'> & {
   children: ReactNode
-  density?: DappInlineAlertDensity
+  density?: InlineAlertDensity
 }
 
-export function DappInlineAlert({
+export function InlineAlert({
   as = 'p',
   children,
   className,
   density = 'compact',
   ...props
-}: DappInlineAlertProps) {
+}: InlineAlertProps) {
   return (
     <Text
       as={as}
       variant="copy"
       tone="foreground"
-      className={cn(dappInlineAlert({ density }), className)}
+      className={cn(inlineAlert({ density }), className)}
       {...props}
     >
       {children}

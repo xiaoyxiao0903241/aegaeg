@@ -1,5 +1,5 @@
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 
 /** Token pill + amount on claim surfaces (mixed release/restake + simple claimable). */
@@ -13,7 +13,7 @@ export function RewardsClaimTokenRow({
   return (
     <div className="flex items-center justify-between gap-2">
       <span className="inline-flex h-8.5 items-center gap-2 rounded-full bg-card pr-3.5 pl-2">
-        <DappIcon
+        <Icon
           alt=""
           className="size-6 rounded-2xl"
           loading="lazy"

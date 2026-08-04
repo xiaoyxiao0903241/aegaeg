@@ -344,7 +344,7 @@
             return n.classList?.contains?.('grid') || (r.height >= 40 && r.height <= 80)
           })
         : null
-      // DappCountValue 拆 digit reel → 用 cell 整串 / strong 包层定位，勿依赖稿演示数
+      // CountValue 拆 digit reel → 用 cell 整串 / strong 包层定位，勿依赖稿演示数
       const value =
         (cell &&
           [...cell.querySelectorAll('strong,span')].find((e) => {

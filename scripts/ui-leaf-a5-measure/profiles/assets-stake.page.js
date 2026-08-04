@@ -474,7 +474,7 @@
         return n.tagName === 'BUTTON' || (near(r.height, 24, 10) && r.width > 40 && r.width < 100)
       })
     : null
-  // ChevronIcon = masked <span aria-hidden>，非 img/svg
+  // 展开 chevron = Lucide / masked chrome，非业务 img
   const chevronOf = (btn) =>
     btn?.querySelector?.('span[aria-hidden]') || btn?.querySelector?.('svg,img') || null
   const opsDropdown = chevronOf(opsIndicator)

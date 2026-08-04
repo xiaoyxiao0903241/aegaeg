@@ -201,16 +201,16 @@
 
 **内部约定**：
 
-- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ muted。Chevron：固定 path + CSS `.faq-chevron`；禁换 path。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。DApp 项圆角稿 `12` → `rounded-faq`（禁 `rounded-xl`：本仓 xl=28px）；pad `px-4 py-4.5`；**禁** call site `text-[Npx|Nrem]` / `rounded-[Nrem]` 覆盖 type/radius token（字阶走 `Text` variant）。
+- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ muted。Chevron：Lucide `ChevronDown` + CSS `.faq-chevron`（rotate）；展开高度走 `.faq-answer-panel` grid `0fr→1fr`。DApp 项圆角稿 `12` → `rounded-faq`（禁 `rounded-xl`：本仓 xl=28px）；pad `px-4 py-4.5`；**禁** call site `text-[Npx|Nrem]` / `rounded-[Nrem]` 覆盖 type/radius token（字阶走 `Text` variant）。
 - `Segment`：Figma `seg` 滑动白底 pill（闪兑样本 `4430:410`）；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。thumb = 白底 + **微阴影** `0 1px 2px rgba(18,26,51,0.06)`（禁 `shadow-sm` / card elevation）；**按选中 tab 实测 left/width，以轨宽 % 写出**（禁硬编码 gap/pad px 常量；轨 `gap`/`p`/`h` 一律 Tailwind spacing token）。列宽 `auto` hug。**`size`**：`sm`=`h-6`（图区间）| `md`=`h-9`（默认，周期/指标；对齐 Figma `seg` 4448:601 轨高 36）| `lg`=`h-10`（闪兑/涡轮）；call site 按稿面选。项 padding 随 size（md/lg：`px-3`；sm：`px-2.5`）。选中字色由 call site `tone` 传入：`coral`（默认，样本 `4448:601`）| `ink`（闪兑 tabs，semibold）。**Figma `htab`（珊瑚 soft / outlined 分立 pill，样本 hub `4371:233`）走 Chip，不走 Segment。** `options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
 - `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（释放%）· 右轨 `--app-claim-restake`（复投%）· 白底内嵌 `%` thumb；`aria-label` 必填（i18n）。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `WidgetPromoCard` 内部使用 `Card surface="inverse"`（深色 CTA）。
-- `DappInlineAlert`（`src/shared/components/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
-- `dappDarkBanner`（`src/shared/components/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
-- `AegisDialogClose`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
+- `InlineAlert`（`src/shared/components/inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。共享层禁 `Dapp*` 前缀（产品壳前缀只留 `app/shell` / `views/dapp`）。
+- `darkBanner`（`src/shared/components/dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
+- `DialogClose`（`dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 - `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button。**页码下拉是小号自管 portal**（≠ `DropdownMenu` / `SelectMenu`）：面板与触发器同 `rounded-tight`（6px；禁 `rounded-sm` 大面板圆角）· `p-0` · `shadow-dropdown`；行无圆角、通栏高亮；选中 `bg-accent` + `text-coral`；可见最多 5 行（`--dapp-pagination-menu-item-height` × 5）。
 - `ExchangeFlowButton`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip（`interactive`）/ Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site 再写 `rounded-[11px]`。
@@ -227,7 +227,7 @@
 
 - `dapp-shell.tsx` · `dapp-rail.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
 - `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `responsive-table.tsx` · `dapp-table-*`
-- `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`
+- `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
 - `static-layout.ts` · `views/home/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`
 

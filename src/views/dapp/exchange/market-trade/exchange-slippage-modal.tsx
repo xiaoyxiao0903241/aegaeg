@@ -4,14 +4,10 @@ import { useState } from 'react'
 
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
-import {
-  AegisDialogClose,
-  AegisResponsiveDialog,
-  AegisSheetHandle,
-} from '~/shared/components/aegis-responsive-dialog'
 import { Button } from '~/shared/components/button'
 import { Chip } from '~/shared/components/chip'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
+import { iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text, textVariants } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -73,7 +69,7 @@ function ExchangeSlippageModalOpen({
   }
 
   return (
-    <AegisResponsiveDialog
+    <ResponsiveDialog
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-dim"
@@ -85,16 +81,16 @@ function ExchangeSlippageModalOpen({
         'dapp:shadow-modal-panel',
       )}
     >
-      <AegisSheetHandle />
+      <SheetHandle />
       <div className="flex items-center justify-between pb-5 dapp:pb-5">
         <DialogPrimitive.Title asChild>
           <Text as="h2" variant="panel" className="m-0">
             {t.exchange.slippage}
           </Text>
         </DialogPrimitive.Title>
-        <AegisDialogClose aria-label={t.common.close}>
-          <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
-        </AegisDialogClose>
+        <DialogClose aria-label={t.common.close}>
+          <X aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={2} />
+        </DialogClose>
       </div>
 
       <div className="grid gap-4">
@@ -152,6 +148,6 @@ function ExchangeSlippageModalOpen({
           {t.common.confirm}
         </Button>
       </div>
-    </AegisResponsiveDialog>
+    </ResponsiveDialog>
   )
 }

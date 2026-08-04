@@ -2,10 +2,10 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { Button } from '~/shared/components/button'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
-import { dappDarkBanner } from '~/shared/components/dapp-dark-banner'
+import { CountValue } from '~/shared/components/count-value'
+import { darkBanner } from '~/shared/components/dark-banner'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -14,8 +14,8 @@ const genesisGlobeHeight = 250
 
 const genesisGlobalCard = tv({
   slots: {
-    root: cn(dappDarkBanner().root(), 'min-h-27 px-6 py-4 max-dapp:p-4.5'),
-    content: cn(dappDarkBanner().content(), 'max-dapp:max-w-none'),
+    root: cn(darkBanner().root(), 'min-h-27 px-6 py-4 max-dapp:p-4.5'),
+    content: cn(darkBanner().content(), 'max-dapp:max-w-none'),
     // H5: EN "View contract" ~150px; pr-28 was too tight → title wrapped into the button.
     kicker: 'max-dapp:block max-dapp:pr-44',
     // Outline CTA must beat Button secondary + md/pill `w-full` (absolute hug + right).
@@ -53,7 +53,7 @@ export function GenesisGlobalCard({
           {kicker}
         </Text>
         <Text as="strong" tone="inverse" variant="panel" className="block">
-          {typeof value === 'string' ? <DappCountValue text={value} /> : value}
+          {typeof value === 'string' ? <CountValue text={value} /> : value}
         </Text>
         <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
           {body}
@@ -67,7 +67,7 @@ export function GenesisGlobalCard({
         variant="secondary"
       >
         {contractLabel}
-        <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
+        <Icon alt="" size="action" src={dappAssets.arrowUpRight} />
       </Button>
       <img
         alt=""

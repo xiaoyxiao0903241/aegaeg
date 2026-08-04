@@ -1,6 +1,6 @@
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
-import { ChevronIcon } from '~/shared/components/chevron-icon'
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -69,29 +69,19 @@ export function SelectMenu({
           {selected.label}
         </Text>
         {variant === 'pill' ? (
-          <svg
+          <ChevronDown
             aria-hidden
-            className="h-1.5 w-2.5 shrink-0 text-muted-foreground"
-            fill="none"
-            viewBox="0 0 10 6"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 1L5 5L9 1"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.2"
-            />
-          </svg>
+            className="size-2.5 shrink-0 text-muted-foreground"
+            strokeWidth={2.5}
+          />
         ) : (
-          <ChevronIcon
+          <ChevronRight
             aria-hidden
             className={cn(
               'size-2.5 shrink-0 text-muted-foreground transition-transform duration-200',
               open ? 'rotate-[270deg]' : 'rotate-90',
             )}
-            direction="right"
+            strokeWidth={2}
           />
         )}
       </DropdownMenuTrigger>

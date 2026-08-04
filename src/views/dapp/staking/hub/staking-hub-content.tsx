@@ -2,11 +2,11 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { FaqList } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { MetricCard } from '~/shared/components/metric-card'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
@@ -37,7 +37,7 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
 
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
-      {src ? <DappIcon alt="" shape="circle" size="lg" src={src} /> : null}
+      {src ? <Icon alt="" shape="circle" size="lg" src={src} /> : null}
       <span className="min-w-0 wrap-break-word">{value}</span>
       {sub ? (
         <Text as="span" className="shrink-0 wrap-break-word text-foreground/40" variant="copy">

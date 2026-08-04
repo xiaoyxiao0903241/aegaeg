@@ -6,7 +6,7 @@ import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
-import { dappDarkBanner } from '~/shared/components/dapp-dark-banner'
+import { darkBanner } from '~/shared/components/dark-banner'
 import { FaqList } from '~/shared/components/faq-list'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -16,7 +16,7 @@ import { useRewardsGenesisContentView } from '~/views/dapp/rewards/detail/use-re
 export function RewardsGenesisContent() {
   const vm = useRewardsGenesisContentView()
   const t = vm.t
-  const banner = dappDarkBanner()
+  const banner = darkBanner()
 
   return (
     <DappDetailPage>

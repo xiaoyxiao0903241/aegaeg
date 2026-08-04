@@ -1,13 +1,11 @@
-import { Wallet } from 'lucide-react'
+import { Loader2, Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappSideCard } from '~/app/shell/dapp-card'
-import { DappIcon } from '~/app/shell/dapp-icon'
-import { ButtonLoadingIcon } from '~/shared/components/button-loading-icon'
 import { FieldActionChip } from '~/shared/components/chip'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text } from '~/shared/components/text'
 
@@ -102,7 +100,9 @@ export function CommunityReferrerBindCard({
           disabled={!canBind || isSubmitting}
           onClick={onBind}
         >
-          {isSubmitting ? <ButtonLoadingIcon /> : null}
+          {isSubmitting ? (
+            <Loader2 aria-hidden className="size-4 shrink-0 animate-spin" strokeWidth={2} />
+          ) : null}
           {bindLabel}
         </FieldActionChip>
       </div>
@@ -136,7 +136,7 @@ export function CommunityReferrerBoundPanel({
       </Text>
       <div className={communityReferrerAddressRow()} data-slot-id="community-referrer-row">
         <span aria-hidden className={communityReferrerAvatar()}>
-          <Wallet className={dappIcon({ size: 'xs' })} strokeWidth={1.75} />
+          <Wallet className={iconVariants({ size: 'xs' })} strokeWidth={1.75} />
         </span>
         <Text
           as="strong"
@@ -154,7 +154,7 @@ export function CommunityReferrerBoundPanel({
             onClick={onCopy}
             type="button"
           >
-            <DappIcon alt="" size="sm" src={dappAssets.copy} />
+            <Icon alt="" size="sm" src={dappAssets.copy} />
           </button>
         ) : null}
       </div>

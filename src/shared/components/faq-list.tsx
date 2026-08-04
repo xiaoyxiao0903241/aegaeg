@@ -1,4 +1,5 @@
 import * as Accordion from '@radix-ui/react-accordion'
+import { ChevronDown } from 'lucide-react'
 import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
@@ -52,38 +53,9 @@ const faqList = tv({
   },
 })
 
-/** DApp FAQ 下箭头 · Figma `4285:253`（public 直链；禁 shared→app）. */
-const DAPP_FAQ_CHEVRON_SRC = '/assets/figma/dapp/assets-hub/ic-faq-chevron.svg'
-
-/** FAQ chevron — DApp 用稿面资产；home 保留 currentColor SVG 供开合染色. */
-function FaqChevron({ variant }: { variant: FaqListVariant }) {
-  if (variant === 'dapp') {
-    return (
-      <img
-        alt=""
-        aria-hidden
-        className="faq-chevron size-4.5 shrink-0 object-contain"
-        src={DAPP_FAQ_CHEVRON_SRC}
-      />
-    )
-  }
-  return (
-    <svg
-      aria-hidden="true"
-      className="faq-chevron size-4.5 shrink-0"
-      fill="none"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4.5 6.75L9 11.25L13.5 6.75"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
+/** FAQ chevron — Lucide；开合染色靠 currentColor / group. */
+function FaqChevron() {
+  return <ChevronDown aria-hidden className="faq-chevron size-4.5 shrink-0" strokeWidth={1.5} />
 }
 
 export function FaqList({
@@ -185,7 +157,7 @@ export function FaqList({
                     >
                       {item.q}
                     </Text>
-                    <FaqChevron variant={variant} />
+                    <FaqChevron />
                   </Accordion.Trigger>
                 </Accordion.Header>
                 <Accordion.Content

@@ -1,7 +1,8 @@
-import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
+import { Menu } from 'lucide-react'
+
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
+import { iconVariants } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
@@ -19,14 +20,14 @@ export function DappPanelToggle({ className }: { className?: string }) {
         className={cn('size-9 min-h-9 shrink-0', className)}
         onClick={toggle}
       >
-        <DappIcon
+        <Menu
+          aria-hidden
           className={cn(
+            iconVariants({ size: 'lg' }),
             'duration-dapp-base transition-transform ease-dapp',
             detailCollapsed && 'rotate-90',
           )}
-          size="lg"
-          src={dappAssets.menu}
-          alt=""
+          strokeWidth={1.5}
         />
       </IconButton>
     </AnchoredTooltip>

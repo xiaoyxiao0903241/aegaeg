@@ -1,7 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -13,7 +12,8 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
+import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
@@ -138,7 +138,7 @@ export function RewardsHubWidget() {
             >
               <div className="grid gap-1.5">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <DappIcon alt="" size={icon.size} src={icon.src} />
+                  <Icon alt="" size={icon.size} src={icon.src} />
                   <Text as="span" className="font-semibold wrap-break-word" variant="detail">
                     {card.title}
                   </Text>
@@ -161,11 +161,11 @@ export function RewardsHubWidget() {
                 </Text>
                 <div className="flex min-w-0 flex-wrap items-center justify-end gap-1.5">
                   <Text as="strong" className="wrap-break-word" variant="headline">
-                    <DappCountValue text={balance.amount} />
+                    <CountValue text={balance.amount} />
                   </Text>
                   {balance.approx ? (
                     <Text as="span" className="wrap-break-word text-foreground/40" variant="copy">
-                      <DappCountValue text={balance.approx} />
+                      <CountValue text={balance.approx} />
                     </Text>
                   ) : null}
                   {isGenesis ? (
@@ -173,7 +173,7 @@ export function RewardsHubWidget() {
                       <Text as="span" className="font-medium" tone="primary" variant="copy">
                         {t.rewards.hub.enterClaim}
                       </Text>
-                      <DappIcon
+                      <Icon
                         alt=""
                         className="size-4"
                         size="sm"

@@ -9,8 +9,8 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
-import { aegisDialogClose } from '~/shared/components/aegis-responsive-dialog'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { dialogClose } from '~/shared/components/dialog'
+import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
@@ -129,11 +129,11 @@ export function DappMobileNav({
         <div className="flex items-start justify-end pb-2">
           <button
             aria-label={t.topbar.closeMenu}
-            className={aegisDialogClose()}
+            className={dialogClose()}
             onClick={onClose}
             type="button"
           >
-            <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
+            <X aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={2} />
           </button>
         </div>
 

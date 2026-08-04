@@ -3,11 +3,7 @@ import { X } from 'lucide-react'
 
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { useI18n } from '~/i18n/use-i18n'
-import {
-  AegisDialogClose,
-  AegisResponsiveDialog,
-  AegisSheetHandle,
-} from '~/shared/components/aegis-responsive-dialog'
+import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -30,7 +26,7 @@ export function AssetsRedeemConfirm({
   const { messages: t } = useI18n()
 
   return (
-    <AegisResponsiveDialog
+    <ResponsiveDialog
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-dim"
@@ -42,7 +38,7 @@ export function AssetsRedeemConfirm({
         'dapp:shadow-modal-panel',
       )}
     >
-      <AegisSheetHandle />
+      <SheetHandle />
       <div className="flex items-start justify-between gap-3 pb-4">
         <span className="inline-flex h-6 items-center rounded-full bg-background/15 px-3">
           <Text as="span" className="text-background" variant="support">
@@ -50,12 +46,12 @@ export function AssetsRedeemConfirm({
           </Text>
         </span>
         {/* 暗底：白底圆 + 浅 X 会看不见；改半透明底 + 浅色描边/字 */}
-        <AegisDialogClose
+        <DialogClose
           aria-label={t.common.close}
           className="border-background/30 bg-background/15 text-background hover:border-background/55 hover:bg-background/25"
         >
           <X aria-hidden className="size-4" strokeWidth={2} />
-        </AegisDialogClose>
+        </DialogClose>
       </div>
 
       <DialogPrimitive.Title asChild>
@@ -87,6 +83,6 @@ export function AssetsRedeemConfirm({
       >
         {t.assets.redeem.confirmCta.replace('{amount}', amountLabel || '—')}
       </DappActionButton>
-    </AegisResponsiveDialog>
+    </ResponsiveDialog>
   )
 }

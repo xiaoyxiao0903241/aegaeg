@@ -1,7 +1,6 @@
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
@@ -11,6 +10,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountMaxChip } from '~/shared/components/chip'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { BondPeriodList } from '~/views/dapp/staking/bond/bond-period-list'
@@ -88,7 +88,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" shape="circle" size="rail" src={dappAssets.tokenUsd1} />
+                <Icon alt="" shape="circle" size="rail" src={dappAssets.tokenUsd1} />
                 <Text as="span" className="font-semibold" variant="detail">
                   USD1
                 </Text>

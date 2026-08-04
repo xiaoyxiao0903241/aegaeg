@@ -1,12 +1,13 @@
+import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 
-import { DappIcon } from '~/app/shell/dapp-icon'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
 } from '~/shared/components/dropdown-menu'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -56,32 +57,16 @@ export function ExchangeTokenPicker({
         disabled={disabled}
       >
         {selected.icon ? (
-          <DappIcon
-            alt=""
-            className="rounded-full"
-            loading="lazy"
-            size="token"
-            src={selected.icon}
-          />
+          <Icon alt="" className="rounded-full" loading="lazy" size="token" src={selected.icon} />
         ) : null}
         <Text as="span" className="leading-none font-semibold" variant="copy">
           {selected.symbol}
         </Text>
-        <svg
+        <ChevronDown
           aria-hidden
           className="size-3 shrink-0 text-muted-foreground"
-          fill="none"
-          viewBox="0 0 18 18"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M13.5 6.75L9 11.25L4.5 6.75"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.8"
-          />
-        </svg>
+          strokeWidth={2}
+        />
       </DropdownMenuTrigger>
 
       <DropdownMenuPanel className="min-w-52">

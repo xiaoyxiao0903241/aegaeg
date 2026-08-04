@@ -1,13 +1,14 @@
+import { Check } from 'lucide-react'
 import { useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
 } from '~/shared/components/dropdown-menu'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -44,7 +45,7 @@ export function AssetsHubFilterMenu({
         )}
         type="button"
       >
-        <DappIcon alt="" size="lg" src={dappAssets.setting} />
+        <Icon alt="" size="lg" src={dappAssets.setting} />
       </DropdownMenuTrigger>
       <DropdownMenuPanel align={align} className="min-w-[10.5rem]">
         <DropdownMenuItem
@@ -65,19 +66,11 @@ export function AssetsHubFilterMenu({
               hideZero ? 'border-primary bg-primary' : 'border-black/30 bg-transparent',
             )}
           >
-            <svg
-              className={cn('size-[0.5625rem]', hideZero ? 'opacity-100' : 'opacity-0')}
-              fill="none"
-              viewBox="0 0 10 10"
-            >
-              <path
-                d="M1.5 5.5L4 8L8.5 2.5"
-                stroke="#ffffff"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.8"
-              />
-            </svg>
+            <Check
+              aria-hidden
+              className={cn('size-[0.5625rem] text-white', hideZero ? 'opacity-100' : 'opacity-0')}
+              strokeWidth={3}
+            />
           </span>
           <Text as="span" className="tracking-[-0.02em]" variant="copy">
             {hideZeroLabel}

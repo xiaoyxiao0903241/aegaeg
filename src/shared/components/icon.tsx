@@ -1,7 +1,8 @@
+import type { ImgHTMLAttributes } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
-/** DApp icon sizes — `tokens/theme.css` (`--app-icon-*`). */
-export const dappIcon = tv({
+/** Icon sizes / shape — `tokens/theme.css` (`--app-icon-*`). */
+export const iconVariants = tv({
   base: 'block shrink-0',
   variants: {
     size: {
@@ -32,5 +33,30 @@ export const dappIcon = tv({
   },
 })
 
-export type DappIconSize = NonNullable<VariantProps<typeof dappIcon>['size']>
-export type DappIconShape = NonNullable<VariantProps<typeof dappIcon>['shape']>
+export type IconSize = NonNullable<VariantProps<typeof iconVariants>['size']>
+export type IconShape = NonNullable<VariantProps<typeof iconVariants>['shape']>
+
+type IconProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' | 'height'> & {
+  shape?: IconShape
+  size?: IconSize
+  src: string
+}
+
+/** 文件图（SVG/PNG URL）— chrome 线框直接用 lucide-react，勿混进本组件。 */
+export function Icon({
+  alt = '',
+  className,
+  shape = 'plain',
+  size = 'base',
+  src,
+  ...props
+}: IconProps) {
+  return (
+    <img
+      alt={alt}
+      className={iconVariants({ size, shape, class: className })}
+      src={src}
+      {...props}
+    />
+  )
+}

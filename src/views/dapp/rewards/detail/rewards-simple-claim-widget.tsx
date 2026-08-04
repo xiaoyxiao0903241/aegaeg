@@ -1,3 +1,5 @@
+import { ChevronDown } from 'lucide-react'
+
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
@@ -6,7 +8,6 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
-import { ChevronIcon } from '~/shared/components/chevron-icon'
 import { Text } from '~/shared/components/text'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
@@ -83,7 +84,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
 
             <div className="flex h-11.5 items-center justify-center">
               <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
-                <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
+                <ChevronDown aria-hidden className="size-2.5 opacity-70" strokeWidth={2} />
               </span>
             </div>
           </>

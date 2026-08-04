@@ -2,11 +2,11 @@ import { RefreshCw } from 'lucide-react'
 
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { Card } from '~/shared/components/card'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { useReleaseQueueView } from '~/views/dapp/release/queue/use-release-queue-view'
@@ -44,7 +44,7 @@ export function ReleaseQueueWidget() {
               <Card.Content className="grid gap-3">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-2">
-                    <DappIcon
+                    <Icon
                       alt=""
                       className="size-(--app-icon-xl) shrink-0 rounded-md"
                       size="xl"

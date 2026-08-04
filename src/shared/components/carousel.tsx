@@ -1,5 +1,7 @@
+import type { EmblaCarouselType, EmblaOptionsType, EmblaPluginType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import {
+  createContext,
   forwardRef,
   type HTMLAttributes,
   type KeyboardEvent,
@@ -12,19 +14,30 @@ import {
   useState,
 } from 'react'
 
-import {
-  type CarouselApi,
-  CarouselContext,
-  type CarouselOptions,
-  type CarouselPlugin,
-} from '~/shared/components/carousel-context'
 import { cn } from '~/shared/lib/utils'
 
-export type {
-  CarouselApi,
-  CarouselOptions,
-  CarouselPlugin,
-} from '~/shared/components/carousel-context'
+export type CarouselApi = EmblaCarouselType | undefined
+export type CarouselOptions = EmblaOptionsType | undefined
+export type CarouselPlugin = EmblaPluginType[] | undefined
+
+type CarouselRootProps = {
+  opts?: CarouselOptions
+  plugins?: CarouselPlugin
+  orientation?: 'horizontal' | 'vertical'
+  setApi?: (api: CarouselApi) => void
+  children?: ReactNode
+}
+
+type CarouselContextProps = CarouselRootProps & {
+  carouselRef: (instance: HTMLElement | null) => void
+  api: CarouselApi
+  scrollPrev: () => void
+  scrollNext: () => void
+  canScrollPrev: boolean
+  canScrollNext: boolean
+}
+
+const CarouselContext = createContext<CarouselContextProps | null>(null)
 
 function useCarousel() {
   const context = useContext(CarouselContext)
@@ -34,150 +47,143 @@ function useCarousel() {
   return context
 }
 
-type CarouselProps = {
-  opts?: CarouselOptions
-  plugins?: CarouselPlugin
-  orientation?: 'horizontal' | 'vertical'
-  setApi?: (api: CarouselApi) => void
-  children?: ReactNode
-}
+export const Carousel = forwardRef<
+  HTMLDivElement,
+  HTMLAttributes<HTMLDivElement> & CarouselRootProps
+>(({ orientation = 'horizontal', opts, setApi, plugins, className, children, ...props }, ref) => {
+  const [carouselRef, api] = useEmblaCarousel(
+    {
+      ...opts,
+      axis: orientation === 'horizontal' ? 'x' : 'y',
+    },
+    plugins,
+  )
+  const viewportNodeRef = useRef<HTMLElement | null>(null)
+  const setViewportRef = useCallback(
+    (node: HTMLElement | null) => {
+      viewportNodeRef.current = node
+      carouselRef(node)
+    },
+    [carouselRef],
+  )
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
 
-export const Carousel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement> & CarouselProps>(
-  ({ orientation = 'horizontal', opts, setApi, plugins, className, children, ...props }, ref) => {
-    const [carouselRef, api] = useEmblaCarousel(
-      {
-        ...opts,
-        axis: orientation === 'horizontal' ? 'x' : 'y',
-      },
+  const onSelect = useCallback((api: CarouselApi) => {
+    if (!api) {
+      return
+    }
+    setCanScrollPrev(api.canScrollPrev())
+    setCanScrollNext(api.canScrollNext())
+  }, [])
+
+  const scrollPrev = useCallback(() => {
+    api?.scrollPrev()
+  }, [api])
+
+  const scrollNext = useCallback(() => {
+    api?.scrollNext()
+  }, [api])
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        scrollPrev()
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        scrollNext()
+      }
+    },
+    [scrollPrev, scrollNext],
+  )
+
+  useEffect(() => {
+    if (!api || !setApi) {
+      return
+    }
+    setApi(api)
+  }, [api, setApi])
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+    api.on('init', onSelect)
+    api.on('reInit', onSelect)
+    api.on('select', onSelect)
+    return () => {
+      api.off('init', onSelect)
+      api.off('reInit', onSelect)
+      api.off('select', onSelect)
+    }
+  }, [api, onSelect])
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+    const node = viewportNodeRef.current
+    if (!node) {
+      return
+    }
+
+    let lastWidth = node.getBoundingClientRect().width
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? 0
+      const becameVisible = lastWidth === 0 && width > 0
+      const resizedWhileVisible = width > 0 && lastWidth > 0 && Math.abs(width - lastWidth) > 1
+      if (becameVisible || resizedWhileVisible) {
+        api.reInit()
+      }
+      lastWidth = width
+    })
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [api])
+
+  const contextValue = useMemo(
+    () => ({
+      carouselRef: setViewportRef,
+      api,
+      opts,
+      orientation,
+      scrollPrev,
+      scrollNext,
+      canScrollPrev,
+      canScrollNext,
+      setApi,
       plugins,
-    )
-    const viewportNodeRef = useRef<HTMLElement | null>(null)
-    const setViewportRef = useCallback(
-      (node: HTMLElement | null) => {
-        viewportNodeRef.current = node
-        carouselRef(node)
-      },
-      [carouselRef],
-    )
-    const [canScrollPrev, setCanScrollPrev] = useState(false)
-    const [canScrollNext, setCanScrollNext] = useState(false)
+    }),
+    [
+      setViewportRef,
+      api,
+      opts,
+      orientation,
+      scrollPrev,
+      scrollNext,
+      canScrollPrev,
+      canScrollNext,
+      setApi,
+      plugins,
+    ],
+  )
 
-    const onSelect = useCallback((api: CarouselApi) => {
-      if (!api) {
-        return
-      }
-      setCanScrollPrev(api.canScrollPrev())
-      setCanScrollNext(api.canScrollNext())
-    }, [])
-
-    const scrollPrev = useCallback(() => {
-      api?.scrollPrev()
-    }, [api])
-
-    const scrollNext = useCallback(() => {
-      api?.scrollNext()
-    }, [api])
-
-    const handleKeyDown = useCallback(
-      (event: KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === 'ArrowLeft') {
-          event.preventDefault()
-          scrollPrev()
-        } else if (event.key === 'ArrowRight') {
-          event.preventDefault()
-          scrollNext()
-        }
-      },
-      [scrollPrev, scrollNext],
-    )
-
-    useEffect(() => {
-      if (!api || !setApi) {
-        return
-      }
-      setApi(api)
-    }, [api, setApi])
-
-    useEffect(() => {
-      if (!api) {
-        return
-      }
-      api.on('init', onSelect)
-      api.on('reInit', onSelect)
-      api.on('select', onSelect)
-      return () => {
-        api.off('init', onSelect)
-        api.off('reInit', onSelect)
-        api.off('select', onSelect)
-      }
-    }, [api, onSelect])
-
-    useEffect(() => {
-      if (!api) {
-        return
-      }
-      const node = viewportNodeRef.current
-      if (!node) {
-        return
-      }
-
-      let lastWidth = node.getBoundingClientRect().width
-      const observer = new ResizeObserver((entries) => {
-        const width = entries[0]?.contentRect.width ?? 0
-        const becameVisible = lastWidth === 0 && width > 0
-        const resizedWhileVisible = width > 0 && lastWidth > 0 && Math.abs(width - lastWidth) > 1
-        if (becameVisible || resizedWhileVisible) {
-          api.reInit()
-        }
-        lastWidth = width
-      })
-      observer.observe(node)
-      return () => observer.disconnect()
-    }, [api])
-
-    const contextValue = useMemo(
-      () => ({
-        carouselRef: setViewportRef,
-        api,
-        opts,
-        orientation,
-        scrollPrev,
-        scrollNext,
-        canScrollPrev,
-        canScrollNext,
-        setApi,
-        plugins,
-      }),
-      [
-        setViewportRef,
-        api,
-        opts,
-        orientation,
-        scrollPrev,
-        scrollNext,
-        canScrollPrev,
-        canScrollNext,
-        setApi,
-        plugins,
-      ],
-    )
-
-    return (
-      <CarouselContext.Provider value={contextValue}>
-        <div
-          ref={ref}
-          className={cn('relative', className)}
-          onKeyDownCapture={handleKeyDown}
-          role="region"
-          aria-roledescription="carousel"
-          {...props}
-        >
-          {children}
-        </div>
-      </CarouselContext.Provider>
-    )
-  },
-)
+  return (
+    <CarouselContext.Provider value={contextValue}>
+      <div
+        ref={ref}
+        className={cn('relative', className)}
+        onKeyDownCapture={handleKeyDown}
+        role="region"
+        aria-roledescription="carousel"
+        {...props}
+      >
+        {children}
+      </div>
+    </CarouselContext.Provider>
+  )
+})
 Carousel.displayName = 'Carousel'
 
 export const CarouselContent = forwardRef<

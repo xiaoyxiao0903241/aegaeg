@@ -1,11 +1,11 @@
 import { flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
+import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
@@ -65,7 +65,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
                     >
                       <span className="grid size-4 place-items-center">
                         <span className="-rotate-90">
-                          <DappIcon alt="" size="base" src={flashExchangeAssets.flowDivider} />
+                          <Icon alt="" size="base" src={flashExchangeAssets.flowDivider} />
                         </span>
                       </span>
                     </span>

@@ -1,10 +1,23 @@
 import { type ElementType, useEffect, useState } from 'react'
 
-import { metricDisplayText } from '~/shared/components/metric-display-text'
 import { cn } from '~/shared/lib/utils'
 
-/** DApp digit reel — faster than homepage count-up (home stays 1300ms). */
-export const DAPP_DIGIT_MS = 420
+/** Digit reel duration — faster than homepage count-up (home stays 1300ms). */
+export const COUNT_DIGIT_MS = 420
+
+/**
+ * 指标闪动守卫：空串视为「未知 / 仍在加载」→ 保留上次文案。
+ * 已结算零值须显式 `'0'` / `'0.00'` / `≈ $0.00`，禁用 `''`。
+ */
+export function metricDisplayText(
+  next: string,
+  retained: string | null,
+): { display: string; retain: string | null } {
+  if (next.trim() === '') {
+    return { display: retained ?? '0', retain: retained }
+  }
+  return { display: next, retain: next }
+}
 
 type ParsedAmount = {
   prefix: string
@@ -40,7 +53,7 @@ function DigitReel({ digit }: { digit: number }) {
         style={{
           transform: `translateY(-${safe * 10}%)`,
           transitionProperty: 'transform',
-          transitionDuration: canAnimate ? `${DAPP_DIGIT_MS}ms` : '0ms',
+          transitionDuration: canAnimate ? `${COUNT_DIGIT_MS}ms` : '0ms',
           transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
@@ -55,11 +68,11 @@ function DigitReel({ digit }: { digit: number }) {
 }
 
 /**
- * Per-digit simultaneous reel for DApp metrics / balances.
+ * Per-digit simultaneous reel for metrics / balances.
  * Unchanged digit columns stay still; only changed columns flip.
  * FAQ / static copy: pass `animate={false}`.
  */
-export function DappCountValue({
+export function CountValue({
   text,
   animate = true,
   as: Comp = 'span',

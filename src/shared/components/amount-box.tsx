@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { Card } from '~/shared/components/card'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
 import { Input } from '~/shared/components/input'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -49,7 +49,7 @@ export type AmountBoxProps = {
 }
 
 function renderMetricText(node: ReactNode) {
-  return typeof node === 'string' ? <DappCountValue text={node} /> : node
+  return typeof node === 'string' ? <CountValue text={node} /> : node
 }
 
 export function AmountBox({

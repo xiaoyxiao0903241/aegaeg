@@ -2,12 +2,12 @@ import { RefreshCw } from 'lucide-react'
 
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
@@ -16,12 +16,7 @@ import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-bu
 function BufferTokenBadge({ iconSrc, label }: { iconSrc: string; label: string }) {
   return (
     <div className="flex min-w-0 items-center gap-2">
-      <DappIcon
-        alt=""
-        className="size-(--app-icon-xl) shrink-0 rounded-md"
-        size="xl"
-        src={iconSrc}
-      />
+      <Icon alt="" className="size-(--app-icon-xl) shrink-0 rounded-md" size="xl" src={iconSrc} />
       <Text
         as="span"
         className="inline-flex items-center rounded-full bg-muted px-3 py-1.5 leading-none font-semibold text-foreground/70"

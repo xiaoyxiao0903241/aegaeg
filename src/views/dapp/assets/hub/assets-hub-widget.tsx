@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { assetsHubAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
@@ -9,7 +8,8 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
+import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
@@ -90,14 +90,14 @@ export function AssetsHubWidget() {
               <div className="pointer-events-none relative z-10 grid gap-2">
                 <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                   <div className="flex min-w-0 items-center gap-1">
-                    <DappIcon alt="" size="xl" src={ASSET_MODE_ICONS[key]} />
+                    <Icon alt="" size="xl" src={ASSET_MODE_ICONS[key]} />
                     <Text as="span" className="font-semibold wrap-break-word" variant="detail">
                       {modeCopy.title}
                     </Text>
                   </div>
                   <div className="pointer-events-auto flex items-center gap-1">
                     <Text as="span" className="wrap-break-word" variant="copy">
-                      <DappCountValue animate={false} text={stats.aprLabel} />
+                      <CountValue animate={false} text={stats.aprLabel} />
                     </Text>
                     <DappInfoTooltip
                       className="size-3 text-foreground [&_svg]:size-3"
@@ -115,7 +115,7 @@ export function AssetsHubWidget() {
                   </Text>
 
                   <Text as="strong" className="font-semibold" variant="detail">
-                    <DappCountValue text={stats.positionValue} />
+                    <CountValue text={stats.positionValue} />
                   </Text>
                   <Text
                     as="strong"
@@ -123,14 +123,14 @@ export function AssetsHubWidget() {
                     tone="primary"
                     variant="detail"
                   >
-                    <DappCountValue text={stats.yieldValue} />
+                    <CountValue text={stats.yieldValue} />
                   </Text>
 
                   <Text as="span" className="text-foreground/40" variant="copy">
-                    <DappCountValue animate={false} text={stats.positionApprox} />
+                    <CountValue animate={false} text={stats.positionApprox} />
                   </Text>
                   <Text as="span" className="justify-self-end text-foreground/40" variant="copy">
-                    <DappCountValue animate={false} text={stats.yieldApprox} />
+                    <CountValue animate={false} text={stats.yieldApprox} />
                   </Text>
                 </div>
               </div>

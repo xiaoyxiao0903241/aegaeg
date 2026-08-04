@@ -4,14 +4,10 @@ import { useRef } from 'react'
 
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
-import {
-  AegisDialogClose,
-  AegisResponsiveDialog,
-  AegisSheetHandle,
-} from '~/shared/components/aegis-responsive-dialog'
 import { Button } from '~/shared/components/button'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
+import { iconVariants } from '~/shared/components/icon'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -90,7 +86,7 @@ function AssetsClaimModalOpen({
         : `linear-gradient(to right, var(--primary) 0%, color-mix(in oklab, var(--primary) 45%, var(--claim-restake) 55%) ${vm.releasePct}%, var(--claim-restake) 100%)`
 
   return (
-    <AegisResponsiveDialog
+    <ResponsiveDialog
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-dim"
@@ -102,7 +98,7 @@ function AssetsClaimModalOpen({
         'dapp:shadow-modal-panel',
       )}
     >
-      <AegisSheetHandle />
+      <SheetHandle />
       <div className="flex items-start justify-between gap-3 pb-4">
         <div className="grid min-w-0 gap-1">
           <DialogPrimitive.Title asChild>
@@ -124,9 +120,9 @@ function AssetsClaimModalOpen({
             </Text>
           ) : null}
         </div>
-        <AegisDialogClose aria-label={t.common.close}>
-          <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
-        </AegisDialogClose>
+        <DialogClose aria-label={t.common.close}>
+          <X aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={2} />
+        </DialogClose>
       </div>
 
       <div className="grid gap-4">
@@ -215,6 +211,6 @@ function AssetsClaimModalOpen({
           </span>
         </DappActionButton>
       </div>
-    </AegisResponsiveDialog>
+    </ResponsiveDialog>
   )
 }

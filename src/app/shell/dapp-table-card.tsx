@@ -2,7 +2,7 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { Card } from '~/shared/components/card'
-import { cardVariants } from '~/shared/components/card-variants'
+import { cardVariants } from '~/shared/components/card'
 import { cn } from '~/shared/lib/utils'
 
 /**

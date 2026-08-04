@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
@@ -7,7 +8,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '~/shared/components/carousel'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { iconVariants } from '~/shared/components/icon'
 import { RadioGroup, RadioIndicator } from '~/shared/components/radio'
 import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
@@ -204,18 +205,12 @@ export function SeasonSelector({
               aria-label={t.exchange.tokenPrevious}
               className={cn(
                 'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
-                dappIcon({ size: 'base' }),
+                iconVariants({ size: 'base' }),
               )}
               onClick={() => api?.scrollPrev()}
               type="button"
             >
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "block -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
-                  dappIcon({ size: 'base' }),
-                )}
-              />
+              <ChevronLeft aria-hidden className={iconVariants({ size: 'base' })} strokeWidth={2} />
             </button>
             <span
               aria-label={t.genesis.title}
@@ -228,7 +223,7 @@ export function SeasonSelector({
                   aria-label={`${season.name}`}
                   className={cn(
                     'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
-                    dappIcon({ size: 'base' }),
+                    iconVariants({ size: 'base' }),
                   )}
                   key={season.name}
                   onClick={() => goTo(index)}
@@ -248,17 +243,15 @@ export function SeasonSelector({
               aria-label={t.exchange.tokenNext}
               className={cn(
                 'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
-                dappIcon({ size: 'base' }),
+                iconVariants({ size: 'base' }),
               )}
               onClick={() => api?.scrollNext()}
               type="button"
             >
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "block rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
-                  dappIcon({ size: 'base' }),
-                )}
+              <ChevronRight
+                aria-hidden
+                className={iconVariants({ size: 'base' })}
+                strokeWidth={2}
               />
             </button>
           </div>

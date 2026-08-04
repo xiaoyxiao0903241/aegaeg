@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
 } from '~/shared/components/dropdown-menu'
+import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -54,7 +54,7 @@ export function AssetsQuoteToolbar({
         >
           {sortLabel}
           {/* Figma `4518:7176`：ic-chevron-down 10 · 黑 40%（禁珊瑚上箭头） */}
-          <DappIcon
+          <Icon
             alt=""
             className={cn('size-2.5 transition-transform duration-200', open && 'rotate-180')}
             src={dappAssets.chevronDown}
@@ -71,7 +71,7 @@ export function AssetsQuoteToolbar({
               >
                 <span className="min-w-0 flex-1 text-xs leading-none">{option.label}</span>
                 {active ? (
-                  <DappIcon alt="" className="size-3.5" size="sm" src={dappAssets.check} />
+                  <Icon alt="" className="size-3.5" size="sm" src={dappAssets.check} />
                 ) : (
                   <span className="size-3.5" />
                 )}

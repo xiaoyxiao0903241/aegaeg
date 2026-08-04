@@ -4,7 +4,6 @@ import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
@@ -12,6 +11,7 @@ import { MetricGrid } from '~/app/shell/metric-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
 import { FaqList } from '~/shared/components/faq-list'
+import { Icon } from '~/shared/components/icon'
 import { MetricCard } from '~/shared/components/metric-card'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -148,7 +148,7 @@ export function StakingDetailAside({
           <div className="grid gap-5 rounded-md bg-dark p-6">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <DappIcon alt="" className="size-9 rounded-2xl" src={dappAssets.tokenX} />
+                <Icon alt="" className="size-9 rounded-2xl" src={dappAssets.tokenX} />
                 <div className="grid gap-1">
                   <Text as="span" className="font-semibold" tone="primary" variant="support">
                     {xValue.supplyLabel}

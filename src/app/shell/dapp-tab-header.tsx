@@ -1,8 +1,8 @@
+import { ArrowLeft } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { flashExchangeAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetSubpageHeader } from '~/shared/components/widget-header'
 
@@ -24,7 +24,7 @@ export function DappTabHeader({
       action={<DappPanelToggle />}
       backLabel={
         <>
-          <DappIcon alt="" size="sm" src={flashExchangeAssets.backArrow} />
+          <ArrowLeft aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={1.5} />
           <Text className="text-base font-medium" tone="muted-foreground" variant="headline">
             {backText}
           </Text>

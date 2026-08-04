@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
@@ -8,7 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '~/shared/components/carousel'
-import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { iconVariants } from '~/shared/components/icon'
 import { cn } from '~/shared/lib/utils'
 
 export type DappCarouselSlide = {
@@ -32,12 +33,11 @@ const dappCarouselChrome = tv({
     indicatorBar: 'inline-flex items-center justify-center self-center',
     navButton:
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
-    chevron:
-      "block bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
+    chevron: 'block',
     dotGroup: 'inline-flex items-center gap-1.5',
     dotButton: [
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
-      dappIcon({ size: 'base' }),
+      iconVariants({ size: 'base' }),
     ],
     dot: 'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
   },
@@ -50,8 +50,8 @@ const dappCarouselChrome = tv({
           'gap-3.5',
           'relative z-1 -mt-(--shadow-bleed-subtle) pt-(--carousel-pc-indicator-pt)',
         ],
-        navButton: dappIcon({ size: 'base' }),
-        chevron: dappIcon({ size: 'base' }),
+        navButton: iconVariants({ size: 'base' }),
+        chevron: iconVariants({ size: 'base' }),
       },
       mobile: {
         viewport: [
@@ -64,12 +64,8 @@ const dappCarouselChrome = tv({
           'pt-(--carousel-h5-indicator-pt)',
         ].join(' '),
         navButton: 'size-(--dapp-icon-lg) rounded-full',
-        chevron: dappIcon({ size: 'md' }),
+        chevron: iconVariants({ size: 'md' }),
       },
-    },
-    chevronDirection: {
-      prev: { chevron: '-rotate-90' },
-      next: { chevron: 'rotate-90' },
     },
     dotActive: {
       true: {},
@@ -139,10 +135,7 @@ export function DappCarousel({
           onClick={() => api?.scrollPrev()}
           type="button"
         >
-          <span
-            aria-hidden
-            className={dappCarouselChrome({ layout, chevronDirection: 'prev' }).chevron()}
-          />
+          <ChevronLeft aria-hidden className={chrome.chevron()} strokeWidth={2} />
         </button>
         <div className={chrome.dotGroup()} role="group">
           {slides.map((slide, i) => (
@@ -167,10 +160,7 @@ export function DappCarousel({
           onClick={() => api?.scrollNext()}
           type="button"
         >
-          <span
-            aria-hidden
-            className={dappCarouselChrome({ layout, chevronDirection: 'next' }).chevron()}
-          />
+          <ChevronRight aria-hidden className={chrome.chevron()} strokeWidth={2} />
         </button>
       </div>
     </Carousel>

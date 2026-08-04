@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { Card } from '~/shared/components/card'
-import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -37,7 +37,7 @@ export function DappMetaPanel({
               item.valueClassName,
             )}
           >
-            {typeof item.value === 'string' ? <DappCountValue text={item.value} /> : item.value}
+            {typeof item.value === 'string' ? <CountValue text={item.value} /> : item.value}
           </Text>
         </p>
       ))}

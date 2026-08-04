@@ -9,7 +9,7 @@ import { createRoot } from 'react-dom/client'
 
 import { HomeProviders } from '~/app/startup/home-providers'
 import { I18nProvider } from '~/i18n/i18n-provider'
-import { LocalizedErrorBoundary } from '~/shared/components/localized-error-boundary'
+import { LocalizedErrorBoundary } from '~/shared/components/error-boundary'
 import { HomePage } from '~/views/home/home-page'
 import { bootHomeReveal } from '~/views/home/home-reveal-loader'
 
