@@ -13,7 +13,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
-import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
+import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
 
 /** Figma hub right column — section titles use Text `section` token. */
 type MetricTone = 'default' | 'accent'
@@ -174,25 +174,16 @@ export function StakingHubContent() {
           tone="coral"
           value={chartMetric}
         />
-        <StakingChartCard
+        <StakingTvlChart
           chartRange={chartRange}
+          deltaLabel={chartDeltaLabel}
           emptyLabel={t.staking.aside.chartEmpty}
-          header={
-            <div className="flex items-center gap-2">
-              {/* Figma chart-card `4585:575` h3=20 → text-xl；delta caption 13 → copy */}
-              <Text as="strong" className="text-xl/none font-semibold" variant="copy">
-                {chartValueLabel}
-              </Text>
-              <Text as="span" className="text-success" variant="copy">
-                {chartDeltaLabel}
-              </Text>
-            </div>
-          }
           points={chartPoints}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
+          valueLabel={chartValueLabel}
         />
       </DappDetailBlock>
 

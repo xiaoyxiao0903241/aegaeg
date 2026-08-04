@@ -106,6 +106,41 @@
 - 平行 `DappCarousel` / 页内 indicator tv / `seasonCarousel` 轨 chrome
 - active 圆点缺 `h-*`
 
+## DApp 空态（`Empty`）
+
+> **模型**：纯文案空态 chrome。`shared/components/empty.tsx`。  
+> 居中 · `text-foreground/40` · 偏大 pad（`py-11` / H5 `py-8`）。文案由 call site。
+
+| 项     | 合同                                        |
+| ------ | ------------------------------------------- |
+| Props  | `title` · `body?`                           |
+| 复用   | `Table.Empty` / `Chart.Empty` 指向本件      |
+| 非职责 | 插画 / CTA / Auth 未登录 / 数字占位业务语义 |
+
+### MUST NOT（空态）
+
+- 页袋自写平行 `py-*` + muted 空文案（应用 `Empty`）
+- 把 `AssetsPositionEmptyCard`（插画+CTA）并进本件
+
+## DApp 图（`Chart`）
+
+> **模型**：组合式面积图壳。`shared/components/chart.tsx`。  
+> `Chart` · `Header` · `Plot` · `Empty`。点数 / tip 格式由业务件传入。
+
+| 零件           | 职责                                          |
+| -------------- | --------------------------------------------- |
+| `Chart`        | elevated 卡壳（Figma chart-card / ccard）     |
+| `Chart.Header` | 顶栏行（value+delta+range 或 hint+value）     |
+| `Chart.Plot`   | Lightweight Charts area + 点阵底 + tip + 轴标 |
+| `Chart.Empty`  | 全局 `Empty`                                  |
+
+业务：`StakingTvlChart`（hub/aside）· `StakingCurveChart`（calc，自管本地曲线）。
+
+### MUST NOT（图）
+
+- 页袋直触 `lightweight-charts` / 平行 `TvAreaChart` / `StakingChartCard`
+- shared 内嵌 locale 或拉历史索引
+
 ## DApp 表（`Table`）
 
 > **模型**：组合式 elevated 表壳。`shared/components/table.tsx`。  
@@ -120,7 +155,7 @@
 | `Table.Cell`                     | 单元格 chrome（手写表 / Body 内部）                                       |
 | `Table.Footer`                   | 卡内底槽                                                                  |
 | `Table.Pagination`               | 分页控件（贴 Footer）                                                     |
-| `Table.Empty` / `Auth` / `Shell` | 空态 / 未连接（title·body·CTA 由 call site）/ 自建壳                      |
+| `Table.Empty` / `Auth` / `Shell` | 空态（复用全局 `Empty`）/ 未连接（title·body·CTA 由 call site）/ 自建壳   |
 
 ### MUST NOT（表）
 

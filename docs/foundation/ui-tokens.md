@@ -197,6 +197,8 @@
 | `Card` elevated    | —                                  | children                                                                          | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`） |
 | `Tile`             | `Label` / `Note`                   | 主值 children；旁注用 `Tooltip.Info`                                              | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard       |
 | `Carousel`         | Content/Item/Indicators            | `opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain | 组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`             |
+| `Empty`            | —                                  | `title` · `body?`                                                                 | 纯文案空态；偏大 pad；`Table.Empty` / `Chart.Empty` 复用              |
+| `Chart`            | Header/Plot/Empty                  | `surface`；Plot 吃 `points`                                                       | 组合式面积图；业务见 StakingTvlChart / StakingCurveChart              |
 | `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                                     | 组合式 DApp 表（`shared/components/table.tsx`）                       |
 | `Accordion`        | qa / qhd                           | `items`, `variant`                                                                | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）          |
 | `WidgetPromoCard`  | promo / pcard                      | children                                                                          | 深色 CTA 卡（`Card inverse`）                                         |

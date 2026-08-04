@@ -14,7 +14,7 @@ import { Icon } from '~/shared/components/icon'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
+import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
 /**
@@ -270,24 +270,15 @@ export function StakingDetailAside({
 
       <DappDetailBlock>
         <DappContentHeading>{chartTitle}</DappContentHeading>
-        <StakingChartCard
+        <StakingTvlChart
           chartRange={chartRange}
+          deltaLabel={formatSignedPercent(null)}
           emptyLabel={t.staking.aside.chartEmpty}
-          header={
-            <div className="flex items-center gap-2">
-              {/* 无 TVL 历史源 — 头值占位 */}
-              <Text as="strong" className="text-xl font-semibold" variant="copy">
-                {formatCompactUsd(null)}
-              </Text>
-              <Text as="span" className="font-semibold text-success" variant="detail">
-                {formatSignedPercent(null)}
-              </Text>
-            </div>
-          }
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
+          valueLabel={formatCompactUsd(null)}
         />
       </DappDetailBlock>
 

@@ -3,6 +3,7 @@ import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { Card } from '~/shared/components/card'
+import { Empty } from '~/shared/components/empty'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
@@ -162,13 +163,10 @@ export function AssetsHubContent() {
         {/*
           Figma 持仓分布/empty：扁平 dashed 空壳（非 elevated）。
           与持仓/缓冲 elevated 刻意不同；勿升为 shadow-card。
+          文案 chrome = 全局 Empty（大方 pad）。
         */}
-        {/* Figma `4284:257` empty：surface 白底 + dashed · py≈45 → py-11（禁 py-[45px]） */}
-        <div className="flex items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-11">
-          {/* Figma empty copy 13 + muted 40%（禁 support12 / muted-foreground 70%） */}
-          <Text as="p" className="text-center leading-4.5 text-foreground/40" variant="copy">
-            {t.assets.hub.distribution.empty}
-          </Text>
+        <div className="overflow-hidden rounded-2xl border border-dashed border-border bg-card">
+          <Empty title={t.assets.hub.distribution.empty} />
         </div>
       </DappDetailBlock>
 

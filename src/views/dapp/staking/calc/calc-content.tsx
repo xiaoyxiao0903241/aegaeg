@@ -1,22 +1,15 @@
-import type { Time, UTCTimestamp } from 'lightweight-charts'
-
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { periodEndDays } from '~/core/staking/build-calc-estimate'
-import {
-  baseDailyPctFromEpoch,
-  buildCalcYieldCurvePoints,
-  CALC_MAX_DAYS,
-  calcLocalInterest,
-} from '~/core/staking/staking-yield-display'
+import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield-display'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
-import { TvAreaChart, type TvAreaPoint } from '~/shared/components/tv-area-chart'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { StakingCurveChart } from '~/views/dapp/staking/staking-curve-chart'
 
 const PLACEHOLDER = '0.00'
 function formatUsdOrDash(value: number) {
@@ -28,17 +21,6 @@ function formatPct(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
   const sign = value >= 0 ? '+' : ''
   return `${sign}${value.toFixed(2)}%`
-}
-
-function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): readonly string[] {
-  if (maxDays <= 0) return []
-  if (count <= 1) return [dayTemplate.replace('{day}', '1')]
-  const labels: string[] = []
-  for (let i = 0; i < count; i += 1) {
-    const day = Math.round(1 + (i / (count - 1)) * (maxDays - 1))
-    labels.push(dayTemplate.replace('{day}', String(day)))
-  }
-  return labels
 }
 
 export function CalcContent() {
@@ -80,35 +62,6 @@ export function CalcContent() {
         }
       })()
     : null
-
-  const curveEndEstimate = result
-    ? (() => {
-        const est = calcLocalInterest({
-          product: result.product,
-          period: result.period,
-          principal: result.principal,
-          days: CALC_MAX_DAYS,
-          epochRebasePct: result.epochRebasePct,
-        })
-        return est.interest * result.price
-      })()
-    : null
-
-  const curvePoints: readonly TvAreaPoint[] = result
-    ? buildCalcYieldCurvePoints({
-        product: result.product,
-        period: result.period,
-        principal: result.principal,
-        price: result.price,
-        epochRebasePct: result.epochRebasePct,
-        maxDays: CALC_MAX_DAYS,
-      }).map((p) => ({
-        time: p.day as UTCTimestamp,
-        value: p.interestUsd,
-      }))
-    : []
-
-  const curveAxisLabels = pickDayAxisLabels(CALC_MAX_DAYS, aside.tags.day, 5)
 
   const sellShare =
     result && result.sellUsd > 0 ? Math.min(100, (result.interestUsd / result.sellUsd) * 100) : 50
@@ -251,34 +204,7 @@ export function CalcContent() {
       </DappDetailBlock>
       <DappDetailBlock>
         <DappContentHeading>{aside.curve}</DappContentHeading>
-        {/* Figma `ccard` 4463:273 — elevated；曲线 = 本地公式 day 1..720 */}
-        <Card className="grid gap-3" surface="elevated">
-          <Text as="p" className="m-0 text-foreground/40" variant="copy">
-            {aside.curveHint}
-          </Text>
-          {curveEndEstimate != null ? (
-            <Text as="strong" className="font-semibold" variant="section">
-              {formatUsdOrDash(curveEndEstimate)}
-            </Text>
-          ) : null}
-          {curvePoints.length > 0 ? (
-            <TvAreaChart
-              axisLabels={curveAxisLabels}
-              formatTipDate={(time: Time) => {
-                if (typeof time !== 'number') return null
-                return aside.tags.day.replace('{day}', String(time))
-              }}
-              height={170}
-              points={curvePoints}
-            />
-          ) : (
-            <div className="flex items-center justify-center rounded-lg">
-              <Text as="span" className="text-foreground/40" variant="copy">
-                {PLACEHOLDER}
-              </Text>
-            </div>
-          )}
-        </Card>
+        <StakingCurveChart />
       </DappDetailBlock>
       <DappDetailBlock>
         <DappContentHeading>{aside.nodes}</DappContentHeading>

@@ -9,14 +9,23 @@ import {
   type Time,
   type UTCTimestamp,
 } from 'lightweight-charts'
-import { useEffect, useRef, useState } from 'react'
+import { type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from 'react'
 
 import { formatCompactUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { Card } from '~/shared/components/card'
+import { Empty } from '~/shared/components/empty'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
-export type TvAreaPoint = {
+/**
+ * DApp 面积图 — 组合式：
+ * `Chart` · `Header` · `Plot` · `Empty`
+ * Plot = Lightweight Charts chrome；点数 / 文案由业务 call site。
+ * @see docs/foundation/component-usage.md
+ */
+
+export type ChartPoint = {
   /** UTC seconds — Lightweight Charts `UTCTimestamp`. */
   time: UTCTimestamp
   value: number
@@ -37,7 +46,7 @@ type ChartTip = {
 }
 
 /** Format UTC day → Figma x-axis `YYYY-MM`. */
-export function formatTvAreaChartMonthLabel(time: UTCTimestamp): string {
+function formatChartMonthLabel(time: UTCTimestamp): string {
   const d = new Date(Number(time) * 1000)
   const y = d.getUTCFullYear()
   const m = String(d.getUTCMonth() + 1).padStart(2, '0')
@@ -48,19 +57,16 @@ export function formatTvAreaChartMonthLabel(time: UTCTimestamp): string {
  * Pick evenly spaced labels including first + last (Figma “全部” shows 6 ticks).
  * Short ranges keep all points when ≤ maxLabels.
  */
-export function pickTvAreaChartAxisLabels(
-  points: readonly TvAreaPoint[],
-  maxLabels = 6,
-): readonly string[] {
+function pickChartAxisLabels(points: readonly ChartPoint[], maxLabels = 6): readonly string[] {
   if (points.length === 0) return []
   if (points.length <= maxLabels) {
-    return points.map((p) => formatTvAreaChartMonthLabel(p.time))
+    return points.map((p) => formatChartMonthLabel(p.time))
   }
   const last = maxLabels - 1
   const labels: string[] = []
   for (let i = 0; i < maxLabels; i += 1) {
     const idx = Math.round((i / last) * (points.length - 1))
-    labels.push(formatTvAreaChartMonthLabel(points[idx]!.time))
+    labels.push(formatChartMonthLabel(points[idx]!.time))
   }
   return labels
 }
@@ -73,9 +79,8 @@ function tipValueLabel(value: number): string {
 
 function tipDateFromTime(time: Time | undefined): string | null {
   if (time == null) return null
-  if (typeof time === 'number') return formatTvAreaChartMonthLabel(time as UTCTimestamp)
+  if (typeof time === 'number') return formatChartMonthLabel(time as UTCTimestamp)
   if (typeof time === 'string') {
-    // business day `YYYY-MM-DD`
     return time.length >= 7 ? time.slice(0, 7) : time
   }
   if (typeof time === 'object' && 'year' in time) {
@@ -84,28 +89,54 @@ function tipDateFromTime(time: Time | undefined): string | null {
   return null
 }
 
-/** TradingView Lightweight Charts area chrome — 跨页复用；点数由 call site 传入. */
-export function TvAreaChart({
+type ChartRootProps = HTMLAttributes<HTMLDivElement> & {
+  surface?: 'elevated' | 'outlined'
+  children?: ReactNode
+}
+
+/** Figma chart-card / ccard 壳 — elevated 默认；outlined 仅特例。 */
+function ChartRoot({ surface = 'elevated', className, children, ...props }: ChartRootProps) {
+  return (
+    <Card
+      surface={surface}
+      className={cn(
+        'grid gap-3 rounded-2xl p-4',
+        surface === 'outlined' ? 'shadow-sm' : undefined,
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </Card>
+  )
+}
+
+function Header({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn('flex flex-wrap items-center justify-between gap-3', className)} {...props}>
+      {children}
+    </div>
+  )
+}
+
+function Plot({
   axisLabels: axisLabelsProp,
   className,
   formatTipDate,
   height = 170,
   points,
 }: {
-  /** Override auto month axis (e.g. calc day labels). */
   axisLabels?: readonly string[]
   className?: string
-  /** Crosshair date line; defaults to `YYYY-MM`. */
   formatTipDate?: (time: Time) => string | null
   height?: number
-  points: readonly TvAreaPoint[]
+  points: readonly ChartPoint[]
 }) {
-  const wrapRef = useRef<HTMLDivElement>(null)
   const hostRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const [tip, setTip] = useState<ChartTip | null>(null)
-  const axisLabels = axisLabelsProp ?? pickTvAreaChartAxisLabels(points)
+  const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points)
   const formatTipDateRef = useRef(formatTipDate)
   formatTipDateRef.current = formatTipDate
 
@@ -235,7 +266,7 @@ export function TvAreaChart({
   }, [points])
 
   return (
-    <div className={cn('grid w-full gap-2', className)} ref={wrapRef}>
+    <div className={cn('grid w-full gap-2', className)}>
       <div className="relative w-full overflow-hidden rounded-md" style={{ height }}>
         <div
           className="absolute inset-0"
@@ -279,3 +310,9 @@ export function TvAreaChart({
     </div>
   )
 }
+
+export const Chart = Object.assign(ChartRoot, {
+  Header,
+  Plot,
+  Empty,
+})

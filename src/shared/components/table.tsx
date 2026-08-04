@@ -20,6 +20,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { StatusBadge } from '~/shared/components/badge'
 import { Card, cardVariants } from '~/shared/components/card'
+import { Empty } from '~/shared/components/empty'
 import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
@@ -279,7 +280,7 @@ function Body({
   const showEmpty = !isLoading && rows.length === 0
 
   if (showEmpty) {
-    return empty != null ? <Empty embedded body={emptyBody} title={empty} /> : null
+    return empty != null ? <TableEmpty embedded body={emptyBody} title={empty} /> : null
   }
 
   return (
@@ -354,8 +355,8 @@ function RowSkeleton({ columns, isLast }: { columns: number; isLast: boolean }) 
   )
 }
 
-/** 表/列表空态：稿 muted 40%。 */
-function Empty({
+/** 表空态 — 文案 chrome 走全局 `Empty`；standalone 外包表壳。 */
+function TableEmpty({
   body,
   className,
   embedded = false,
@@ -366,34 +367,17 @@ function Empty({
   embedded?: boolean
   title: string
 }) {
-  const message = (
-    <>
-      <Text as="p" className="m-0 text-foreground/40" variant="copy">
-        {title}
-      </Text>
-      {body ? (
-        <Text as="p" className="mt-2 mb-0 text-foreground/40" variant="support">
-          {body}
-        </Text>
-      ) : null}
-    </>
-  )
-
   if (embedded) {
-    return <div className={cn('px-5 py-11 text-center max-dapp:py-8', className)}>{message}</div>
+    return <Empty body={body} className={className} title={title} />
   }
 
   return (
-    <Shell
-      className={cn(
-        revealClass(),
-        'p-(--dapp-table-empty-padding) text-center',
-        'max-dapp:p-(--dapp-table-empty-padding-h5)',
-        className,
-      )}
-      data-reveal
-    >
-      {message}
+    <Shell className={cn(revealClass(), className)} data-reveal>
+      <Empty
+        body={body}
+        className="p-(--dapp-table-empty-padding) max-dapp:p-(--dapp-table-empty-padding-h5)"
+        title={title}
+      />
     </Shell>
   )
 }
@@ -798,7 +782,7 @@ export const Table = Object.assign(TableRoot, {
   Cell,
   Footer,
   Pagination,
-  Empty,
+  Empty: TableEmpty,
   Auth,
   Shell,
 })
