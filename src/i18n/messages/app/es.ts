@@ -701,6 +701,9 @@ const app = defineMessages({
       'La suscripción on-chain está confirmada. El historial se está sincronizando; actualiza en un momento.',
     contributionsEmpty: {
       title: 'Sin registros de co-construcción',
+    },
+    contributionsEmptyEnded: {
+      title: 'Sin registros de co-construcción',
       body: 'El programa de co-construcción ha terminado. Las cuentas que no participaron no tienen registros aquí.',
     },
     goBindReferrer: 'Vincular referente',

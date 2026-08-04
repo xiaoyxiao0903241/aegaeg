@@ -682,6 +682,9 @@ const app = defineMessages({
     contributionsSyncPending: '链上认购已确认，历史记录正在同步，请稍后刷新。',
     contributionsEmpty: {
       title: '暂无共建记录',
+    },
+    contributionsEmptyEnded: {
+      title: '暂无共建记录',
       body: '共建计划已结束，未参与共建的账户此处无记录。',
     },
     goBindReferrer: '去绑定推荐人',

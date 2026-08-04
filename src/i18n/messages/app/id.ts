@@ -699,6 +699,9 @@ const app = defineMessages({
       'Langganan on-chain dikonfirmasi. Riwayat sedang disinkronkan, segarkan sebentar lagi.',
     contributionsEmpty: {
       title: 'Belum ada riwayat pembangunan bersama',
+    },
+    contributionsEmptyEnded: {
+      title: 'Belum ada riwayat pembangunan bersama',
       body: 'Program pembangunan bersama telah berakhir. Akun yang tidak berpartisipasi tidak memiliki catatan di sini.',
     },
     goBindReferrer: 'Ikat perujuk',

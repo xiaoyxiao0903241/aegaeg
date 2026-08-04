@@ -694,6 +694,9 @@ const app = defineMessages({
       '온체인 구독이 확인되었습니다. 기록 동기화 중이니 잠시 후 새로고침하세요.',
     contributionsEmpty: {
       title: '공동 구축 기록 없음',
+    },
+    contributionsEmptyEnded: {
+      title: '공동 구축 기록 없음',
       body: '공동 구축 프로그램이 종료되었습니다. 미참여자 계정에는 기록이 없습니다.',
     },
     goBindReferrer: '추천인 연결',

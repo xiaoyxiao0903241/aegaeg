@@ -682,6 +682,9 @@ const app = defineMessages({
     contributionsSyncPending: '鏈上認購已確認，歷史記錄正在同步，請稍後重新整理。',
     contributionsEmpty: {
       title: '暫無共建記錄',
+    },
+    contributionsEmptyEnded: {
+      title: '暫無共建記錄',
       body: '共建計畫已結束，未參與共建的帳戶此處無記錄。',
     },
     goBindReferrer: '去綁定推薦人',

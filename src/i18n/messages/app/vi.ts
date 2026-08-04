@@ -694,6 +694,9 @@ const app = defineMessages({
       'Đăng ký on-chain đã xác nhận, lịch sử đang đồng bộ, vui lòng làm mới sau.',
     contributionsEmpty: {
       title: 'Chưa có lịch sử cùng xây dựng',
+    },
+    contributionsEmptyEnded: {
+      title: 'Chưa có lịch sử cùng xây dựng',
       body: 'Chương trình cùng xây dựng đã kết thúc. Tài khoản chưa tham gia không có hồ sơ tại đây.',
     },
     goBindReferrer: 'Gắn người giới thiệu',

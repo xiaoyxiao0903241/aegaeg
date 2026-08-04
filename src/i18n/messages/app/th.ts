@@ -692,6 +692,9 @@ const app = defineMessages({
     contributionsSyncPending: 'ยืนยันการสมัครบนเชนแล้ว ประวัติกำลังซิงก์ — รีเฟรชในอีกสักครู่',
     contributionsEmpty: {
       title: 'ยังไม่มีบันทึกการร่วมสร้าง',
+    },
+    contributionsEmptyEnded: {
+      title: 'ยังไม่มีบันทึกการร่วมสร้าง',
       body: 'โปรแกรมร่วมสร้างสิ้นสุดแล้ว บัญชีที่ไม่ได้เข้าร่วมจะไม่มีบันทึกที่นี่',
     },
     goBindReferrer: 'ผูกผู้แนะนำ',

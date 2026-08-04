@@ -1,5 +1,6 @@
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
+import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { useI18n } from '~/i18n/use-i18n'
 import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
@@ -11,8 +12,11 @@ export function GenesisWidget({ genesis }: { genesis: GenesisWidgetState }) {
   const account = useActiveAccount()
   const formKey = walletRemountKey(account?.address)
 
-  const hasUpcomingSeason = genesis.seasonOptions.some((season) => season.status === 'Upcoming')
-  const programEnded = !genesis.isLoading && genesis.activePhase === null && !hasUpcomingSeason
+  const programEnded = isGenesisProgramEnded({
+    isLoading: genesis.isLoading,
+    activePhase: genesis.activePhase,
+    seasonOptions: genesis.seasonOptions,
+  })
   const seasonIntro = programEnded
     ? t.genesis.introEnded
     : formatGenesisSeasonIntro(

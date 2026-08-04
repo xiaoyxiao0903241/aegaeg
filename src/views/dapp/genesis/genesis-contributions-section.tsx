@@ -2,11 +2,11 @@ import { DappSection } from '~/app/shell/dapp-section'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { genesisContributionsColWidths } from '~/app/shell/dapp-table-columns'
+import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { Text } from '~/shared/ui/text'
 import {
   GenesisContributionsProgressHeader,
   GenesisContributionsReveal,
@@ -52,11 +52,7 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
           {vm.contributionsTable.requiresAuth ? (
             <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} embedded />
           ) : vm.contributionsTable.queryEmpty && !vm.showSalesSyncHint ? (
-            <div className="flex min-h-27 items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
-              <Text as="p" className="text-center" tone="muted-foreground" variant="detail">
-                {`${t.genesis.contributionsEmpty.title}，${t.genesis.contributionsEmpty.body}`}
-              </Text>
-            </div>
+            <DappTableEmptyMessage body={vm.emptyBody} embedded title={vm.emptyTitle} />
           ) : (
             <ResponsiveTable
               colWidths={[...genesisContributionsColWidths]}

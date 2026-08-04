@@ -53,9 +53,9 @@
 | 22 | 奖励 | Grant | `4410:220` | `#rewards/grant` | **page-done** | `research/219-grant-leaf.md` |
 | 23 | 奖励 | 创世奖 | `4413:220` | `#rewards/genesis` | **page-done** | `research/220-genesis-leaf.md` |
 | 24 | 释放 | Hub | `4298:212` | `#release` | **committed**（R7 条件放行；A5 待重测；禁 page-done） | `research/221-release-hub-leaf.md` |
-| 25 | 释放 | 队列 | `4466:220` | `#release/queue` | **in-progress** | `research/222-release-queue-leaf.md` |
-| 26 | 释放 | 缓冲 | `4469:220` | `#release/buffer` | not-started | |
-| 27 | 社区 | Hub | `4300:212` | `#community` | not-started | |
+| 25 | 释放 | 队列 | `4466:220` | `#release/queue` | **committed**（R7 条件放行；禁 page-done） | `research/222-release-queue-leaf.md` |
+| 26 | 释放 | 缓冲 | `4469:220` | `#release/buffer` | **committed**（R7 PASS+debt；禁 page-done） | `research/223-release-buffer-leaf.md` |
+| 27 | 社区 | Hub | `4300:212` | `#community` | **committed**（R7 PASS+debt；禁 page-done） | `research/224-community-hub-leaf.md` |
 | 28 | 创世 | Hub | `4303:212` | `#genesis` | not-started | |
 
 ## 单页硬序

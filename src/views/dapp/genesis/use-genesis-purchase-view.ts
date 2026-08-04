@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
@@ -102,8 +103,12 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
     messageFor: (err) => apiUserFacingError(err, t.errors.api) ?? t.errors.loadFailed,
   })
 
+  const programEnded = isGenesisProgramEnded({
+    isLoading: genesis.isLoading,
+    activePhase: genesis.activePhase,
+    seasonOptions: genesis.seasonOptions,
+  })
   const hasUpcomingSeason = genesis.seasonOptions.some((season) => season.status === 'Upcoming')
-  const programEnded = !genesis.isLoading && genesis.activePhase === null && !hasUpcomingSeason
   const purchaseCtaLabel =
     genesis.activePhase === null && hasUpcomingSeason ? t.genesis.seasonUpcoming : t.genesis.join
 

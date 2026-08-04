@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
+import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { useSalesLogs } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
@@ -82,6 +83,16 @@ export function useGenesisContributionsView(genesis: GenesisWidgetState) {
   const showContributionsSkeleton =
     contributionsTable.showSkeleton || (sessionReady && genesis.isPhasesLoading)
 
+  const programEnded = isGenesisProgramEnded({
+    isLoading: genesis.isLoading,
+    activePhase: genesis.activePhase,
+    seasonOptions: genesis.seasonOptions,
+  })
+  const emptyTitle = programEnded
+    ? t.genesis.contributionsEmptyEnded.title
+    : t.genesis.contributionsEmpty.title
+  const emptyBody = programEnded ? t.genesis.contributionsEmptyEnded.body : undefined
+
   return {
     t,
     sessionReady,
@@ -96,5 +107,8 @@ export function useGenesisContributionsView(genesis: GenesisWidgetState) {
     showSalesSyncHint,
     contributionsTable,
     showContributionsSkeleton,
+    programEnded,
+    emptyTitle,
+    emptyBody,
   }
 }
