@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -17,7 +18,7 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-/** Release buffer read + pending state + claim toast → everything `ReleaseBufferWidget` renders. */
+/** 缓冲池读链 + 提取门闸 + toast → `ReleaseBufferWidget`。 */
 export function useReleaseBufferView() {
   const { messages: t } = useI18n()
   const setView = useReleaseViewStore((state) => state.setView)
@@ -25,6 +26,7 @@ export function useReleaseBufferView() {
   const { writeReady } = useWriteReadiness()
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
+  const [refreshing, setRefreshing] = useState(false)
 
   const claim = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
@@ -45,28 +47,35 @@ export function useReleaseBufferView() {
   })
   const pctLabel = formatReleasePct(claimable, releasing)
 
-  const claimableLabel = `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`
-  const releasingLabel = `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`
-  const releasedPctLabel = t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))
-  const valueHint = formatApproxUsd(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd)
-  const progressWidth = pctLabel
-
   async function onClaim() {
     if (!canClaim) return
     await claim.mutate()
+  }
+
+  async function onRefresh() {
+    if (refreshing) return
+    setRefreshing(true)
+    try {
+      // 仅重拉 AGX 卡链上 snapshot；不动右栏 API / gAGX（无源）
+      await bufferQuery.refetch()
+    } finally {
+      setRefreshing(false)
+    }
   }
 
   return {
     t,
     onBack: () => setView('hub'),
     walletReady,
-    claimableLabel,
-    releasingLabel,
-    releasedPctLabel,
-    valueHint,
-    progressWidth,
+    claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`,
+    releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`,
+    releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
+    valueHint: formatApproxUsd(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
+    progressWidth: pctLabel,
     canClaim,
     pending: claim.isPending,
     onClaim,
+    onRefresh,
+    refreshing,
   }
 }

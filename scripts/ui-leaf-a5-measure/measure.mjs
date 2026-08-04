@@ -34,6 +34,7 @@ const PROFILES = {
   'rewards-lucky': './profiles/rewards-lucky.mjs',
   'release-hub': './profiles/release-hub.mjs',
   'release-queue': './profiles/release-queue.mjs',
+  'release-buffer': './profiles/release-buffer.mjs',
 }
 
 function usage() {

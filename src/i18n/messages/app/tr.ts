@@ -2465,9 +2465,8 @@ const app = defineMessages({
       intro:
         'Redeemed principal unlocks here with a second linear release. Released AGX can be withdrawn to your wallet.',
       claim: 'Withdraw',
+      refresh: 'Refresh',
       claimSuccess: 'AGX withdrawn to wallet',
-      gagxHint:
-        'PrincipalReleaseVault settles AGX only. gAGX exits convert to AGX before entering the buffer.',
       statsTitle: 'Buffer pool data',
       entered: 'Total entered',
       extracted: 'Total withdrawn',
@@ -2476,10 +2475,10 @@ const app = defineMessages({
       mechanismSubtitle:
         'Stake and bond principal use a two-stage release model for market stability.',
       mechanismSteps: [
-        { title: 'Stake / bond principal', body: 'Exit entry' },
-        { title: 'Block-level release', body: 'Inside position' },
-        { title: 'Buffer after redeem', body: '~30 days default' },
-        { title: 'Second linear release', body: 'Withdraw to wallet' },
+        { title: 'Stake /', body: 'bond principal' },
+        { title: 'Block-level', body: 'linear release' },
+        { title: 'After redeem', body: '30-day buffer' },
+        { title: 'Secondary', body: 'linear release' },
       ],
       mechanismBenefits: [
         'Avoid clustered unlocks',

@@ -121,6 +121,13 @@ export const dappAssets = {
   aboutCarouselReleaseDeco: '/assets/figma/dapp/about-carousel/release-deco.jpg',
   releasePool: '/assets/figma/dapp/release/ic-release-pool.svg',
   bufferPool: '/assets/figma/dapp/release/ic-buffer-pool.svg',
+  /** 缓冲池机制四步 · Figma `4470:331` */
+  releaseBufferMechLock: '/assets/figma/dapp/release/ic-mech-lock.svg',
+  releaseBufferMechWaves: '/assets/figma/dapp/release/ic-mech-waves.svg',
+  releaseBufferMechClock: '/assets/figma/dapp/release/ic-mech-clock.svg',
+  releaseBufferMechTrending: '/assets/figma/dapp/release/ic-mech-trending.svg',
+  releaseBufferMechArrow: '/assets/figma/dapp/release/ic-mech-arrow.svg',
+  releaseBufferMechCheck: '/assets/figma/dapp/release/ic-mech-check.svg',
   /** Assets hub 总览黑卡右侧几何底纹 · Figma `4284:215`. */
   assetsHubOverviewDeco: '/assets/figma/dapp/assets-hub/overview-deco.svg',
   /** Rebase tags 实心珊瑚勾 · Figma `4285:233`. */

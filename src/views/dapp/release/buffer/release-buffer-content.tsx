@@ -1,10 +1,13 @@
-import { tokenCarouselIcons } from '~/app/assets'
+import { useState } from 'react'
+
+import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -14,6 +17,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { FaqList } from '~/shared/ui/faq-list'
@@ -23,22 +27,31 @@ import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
+/** Figma `4793:211/217/220/214` 珊瑚描边 icon（22） */
+const MECHANISM_STEP_ICONS = [
+  dappAssets.releaseBufferMechLock,
+  dappAssets.releaseBufferMechWaves,
+  dappAssets.releaseBufferMechClock,
+  dappAssets.releaseBufferMechTrending,
+] as const
+
 function BufferStatCells({
   stats,
 }: {
   stats: ReadonlyArray<{ label: string; value: string; approx: string }>
 }) {
+  // H5 两列换行；PC（dapp）三列跟稿 `4791:3688`
   return (
-    <div className="grid gap-2 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-x-2 gap-y-3 dapp:grid-cols-3">
       {stats.map((stat) => (
-        <div className="grid gap-0.5" key={stat.label}>
-          <Text as="span" className="leading-4" tone="muted-foreground" variant="detail">
+        <div className="grid min-w-0 gap-1" key={stat.label}>
+          <Text as="span" className="font-medium text-foreground/70" variant="support">
             {stat.label}
           </Text>
-          <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
+          <Text as="strong" className="font-semibold break-all" variant="detail">
             <DappCountValue text={stat.value} />
           </Text>
-          <Text as="span" className="leading-4 text-foreground/40" variant="detail">
+          <Text as="span" className="text-foreground/40" variant="support">
             {stat.approx}
           </Text>
         </div>
@@ -51,10 +64,12 @@ export function ReleaseBufferContent() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
   const priceUsd = useAgxPriceUsd()
+  const [recordsPage, setRecordsPage] = useState(1)
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const apiSummaryQuery = useBufferPoolSummary(sessionReady)
-  const bufferLogsQuery = useBufferPoolLogs({}, sessionReady)
+  const bufferLogsQuery = useBufferPoolLogs(tablePageQuery(recordsPage), sessionReady)
   const bufferLogRows = bufferLogsQuery.data?.items.map(mapBufferPoolLogToRow) ?? []
+  const bufferLogsTotal = bufferLogsQuery.data?.total ?? 0
   const bufferLogsLoading = sessionReady && bufferLogsQuery.isLoading
   const amount = bufferQuery.data?.totalAmount ?? 0n
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
@@ -116,26 +131,31 @@ export function ReleaseBufferContent() {
     { label: t.release.labels.releasing, value: gagxZero, approx: gagxZeroApprox },
   ]
 
+  const steps = t.release.buffer.mechanismSteps
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading id="release-buffer-title">
           {t.release.buffer.statsTitle}
         </DappContentHeading>
-        {/* Figma 数据行 119：min-h-29.75；内容压紧跟稿 */}
+        {/* Figma `4791:3688`：px20 py16 gap8 · 黑圆 24 + 字 16 · 三列 w160 */}
         <Card
           as="div"
           className="mb-3 grid min-h-29.75 content-center gap-2 rounded-2xl px-5 py-3"
+          data-slot-id="release-buffer-stat-agx"
           surface="elevated"
         >
           <div className="flex items-center gap-2">
-            <DappIcon
-              alt=""
-              className="size-6 shrink-0 rounded-control"
-              size="sm"
-              src={tokenCarouselIcons.agxIcon}
-            />
-            <Text as="strong" className="leading-5 font-semibold" variant="copy">
+            <span className="grid size-(--app-icon-token) shrink-0 place-items-center overflow-hidden rounded-full bg-black">
+              <DappIcon
+                alt=""
+                className="size-(--app-icon-lg)"
+                size="lg"
+                src={tokenCarouselIcons.agxIcon}
+              />
+            </span>
+            <Text as="strong" className="font-semibold" variant="headline">
               AGX
             </Text>
           </div>
@@ -144,29 +164,40 @@ export function ReleaseBufferContent() {
         <Card
           as="div"
           className="grid min-h-29.75 content-center gap-2 rounded-2xl px-5 py-3"
+          data-slot-id="release-buffer-stat-gagx"
           surface="elevated"
         >
           <div className="flex items-center gap-2">
-            <DappIcon
-              alt=""
-              className="size-6 shrink-0 rounded-control"
-              size="sm"
-              src={tokenCarouselIcons.gagxIcon}
-            />
-            <Text as="strong" className="leading-5 font-semibold" variant="copy">
+            <span className="grid size-(--app-icon-token) shrink-0 place-items-center overflow-hidden rounded-full bg-black">
+              <DappIcon
+                alt=""
+                className="size-(--app-icon-lg)"
+                size="lg"
+                src={tokenCarouselIcons.gagxIcon}
+              />
+            </span>
+            <Text as="strong" className="font-semibold" variant="headline">
               gAGX
             </Text>
           </div>
           <BufferStatCells stats={gagxStats} />
         </Card>
-        <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-          {t.release.buffer.gagxHint}
-        </Text>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{t.release.buffer.recordsTitle}</DappContentHeading>
-        <DappTableCard>
+        <DappTableCard
+          footer={
+            shouldShowTablePagination(bufferLogsTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={bufferLogsTotal}
+              />
+            ) : undefined
+          }
+        >
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.release.recordColumns]}
@@ -181,28 +212,64 @@ export function ReleaseBufferContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.release.buffer.mechanismTitle}</DappContentHeading>
-        <Text as="p" className="mb-4" tone="muted-foreground" variant="caption">
+        <Text as="p" className="mb-4 text-foreground/40" variant="copy">
           {t.release.buffer.mechanismSubtitle}
         </Text>
-        {/* Figma fcard 183：min-h-45.75 */}
-        <Card as="div" className="min-h-45.75 rounded-2xl p-4" surface="elevated">
-          <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {t.release.buffer.mechanismSteps.map((step) => (
-              <li className="rounded-2xl bg-muted p-3 text-center" key={step.title}>
-                <Text as="p" className="font-semibold" variant="copy">
-                  {step.title}
-                </Text>
-                <Text as="p" className="mt-1" tone="muted-foreground" variant="caption">
-                  {step.body}
-                </Text>
-              </li>
-            ))}
-          </ol>
-          <ul className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1">
+        {/* Figma `4470:331`：四灰底 step 卡 140 + 箭头 + strip（非 ProcessSteps / 非 Lucide） */}
+        <Card
+          as="div"
+          className="grid gap-2 rounded-2xl p-4"
+          data-slot-id="release-buffer-mechanism"
+          surface="elevated"
+        >
+          <div
+            className="flex flex-col gap-3 lg:flex-row lg:items-center"
+            data-slot-id="release-buffer-mech-stages"
+          >
+            {steps.map((step, index) => {
+              const iconSrc = MECHANISM_STEP_ICONS[index] ?? MECHANISM_STEP_ICONS[0]
+              const isLast = index >= steps.length - 1
+              return (
+                <div className="contents" key={`${step.title}-${step.body}`}>
+                  <div className="flex w-full flex-col items-center justify-center rounded-2xl bg-muted p-4 lg:w-35 lg:shrink-0">
+                    <span
+                      className="grid size-11 place-items-center rounded-full"
+                      data-slot-id={`release-buffer-mech-icon-${index}`}
+                    >
+                      <img alt="" className="size-5.5" src={iconSrc} />
+                    </span>
+                    <Text as="p" className="m-0 text-center font-medium" variant="copy">
+                      {step.title}
+                    </Text>
+                    <Text as="p" className="m-0 text-center font-medium" variant="copy">
+                      {step.body}
+                    </Text>
+                  </div>
+                  {!isLast ? (
+                    <span
+                      className="hidden h-6 shrink-0 items-center justify-center lg:flex lg:flex-1"
+                      data-slot-id={`release-buffer-mech-conn-${index}`}
+                    >
+                      <img
+                        alt=""
+                        className="h-2.5 w-3.25"
+                        data-slot-id={`release-buffer-mech-arrow-${index}`}
+                        src={dappAssets.releaseBufferMechArrow}
+                      />
+                    </span>
+                  ) : null}
+                </div>
+              )
+            })}
+          </div>
+          <ul
+            className="m-0 flex list-none flex-wrap items-center justify-between gap-2 px-4 py-2.5"
+            data-slot-id="release-buffer-mech-strip"
+          >
             {t.release.buffer.mechanismBenefits.map((item) => (
               <li className="flex items-center gap-1.5" key={item}>
-                <span aria-hidden className="size-1.5 rounded-full bg-primary" />
-                <Text as="span" tone="muted-foreground" variant="caption">
+                <img alt="" className="size-3 shrink-0" src={dappAssets.releaseBufferMechCheck} />
+                <Text as="span" className="font-medium text-foreground/70" variant="support">
                   {item}
                 </Text>
               </li>
@@ -213,7 +280,7 @@ export function ReleaseBufferContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.release.faq.title}</DappContentHeading>
-        <FaqList items={t.release.faq.buffer} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={t.release.faq.buffer} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

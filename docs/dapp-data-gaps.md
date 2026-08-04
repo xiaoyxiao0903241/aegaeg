@@ -363,7 +363,21 @@
 
 ### 5.3 缓冲池（`#release/buffer`）
 
-> 待补表（#26）。
+| 稿面位                         | 有源？ | 真源 / 空态                                                                  |
+| ------------------------------ | ------ | ---------------------------------------------------------------------------- |
+| AGX 卡已释放 / 释放中 / % / ≈$ | 是     | 链 `readReleaseBufferSnapshot`（Multicall3 getRelease）+ spot                |
+| AGX「提取」CTA                 | 是     | **live** `claimMany(0, count)` / `submitReleaseBufferClaim`                  |
+| AGX 右上刷新                   | UI     | 原型替稿 radio → `RefreshCw`；仅 refetch buffer snapshot                     |
+| gAGX 卡全数字 / 提取 / 刷新    | 否     | **无 PRV/API gAGX 缓冲** → UI MUST；值 `0` / `≈ $0.00`；CTA/刷新 disabled    |
+| 右栏 AGX 累计进入/提取/释放中  | 是     | API `POST /buffer-pool/summary` \|\| 链 totals                               |
+| 右栏 gAGX ×3                   | 否     | 诚实 `0` / `≈ $0.00`                                                         |
+| 记录表 + 分页                  | 是     | API `POST /buffer-pool/logs`；空 → empty；`total>5` 挂 `DappTablePagination` |
+| 机制四步 + strip               | 是     | i18n 静态；稿 icon 圆（非 `DappProcessSteps`）                               |
+| FAQ                            | 是     | i18n 静态                                                                    |
+
+### 5.4（预留）
+
+> —
 
 ## 6. 社区（Community）
 
@@ -379,6 +393,7 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-04 | 缓冲池 §5.3：PRV claimMany live；gAGX UI 诚实 0；原型刷新替 radio；logs 分页                                                 |
 | 2026-08-04 | 释放池 §5.2：plan 链读+claimAll 写 live；累计领取 API/无源→0；≈$ 接价；右上产品改单档刷新（替稿 radio）                      |
 | 2026-08-04 | 奖励 §4.1/§4.3：纠偏 R4a 写链（推荐 CommunityFund / 参与 IncentivePool / 共建 Dao Mixed）；参与 READY 门闸记缺口             |
 | 2026-08-03 | 奖励详情 #19–23：§4.3–4.5 记 nextPayout/共建下一档/Grant 待审批/稿释放池张力；创世人物重导                                   |
