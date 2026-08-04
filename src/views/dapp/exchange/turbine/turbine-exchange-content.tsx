@@ -69,11 +69,8 @@ export function TurbineExchangeContent({
         {/* Figma H5：三卡竖排 */}
         <OverviewGrid columns={3} stackOnDapp>
           {overviewMetrics.map((metric) => (
-            <Tile
-              key={metric.label}
-              label={metric.label}
-              note={<CountValue text={`≈ ${metric.usd || '0.00'}`} />}
-            >
+            <Tile key={metric.label}>
+              <Tile.Label>{metric.label}</Tile.Label>
               <div className="flex items-center gap-2">
                 <Icon
                   alt=""
@@ -85,6 +82,9 @@ export function TurbineExchangeContent({
                   <CountValue text={`${metric.amount} gAGX`} />
                 </Text>
               </div>
+              <Tile.Note>
+                <CountValue text={`≈ ${metric.usd || '0.00'}`} />
+              </Tile.Note>
             </Tile>
           ))}
         </OverviewGrid>

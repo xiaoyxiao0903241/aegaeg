@@ -4,8 +4,8 @@ import { dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
-import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { Icon } from '~/shared/components/icon'
+import { Tooltip } from '~/shared/components/tooltip'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
@@ -28,12 +28,12 @@ export function WalletTopbarActions() {
   if (fullyConnected) {
     return (
       <>
-        <AnchoredTooltip content={t.nav.bscTooltip} position="bottom">
+        <Tooltip content={t.nav.bscTooltip} position="bottom">
           <div className={networkPill()} aria-label={t.topbar.currentNetwork}>
             <Icon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
             {t.common.bsc}
           </div>
-        </AnchoredTooltip>
+        </Tooltip>
         <WalletConnectChip variant="connected" />
       </>
     )

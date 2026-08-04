@@ -11,6 +11,7 @@ import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 
@@ -107,12 +108,13 @@ export function StakingHubContent() {
                 : 'text-base leading-5 font-semibold tracking-normal'
 
             return (
-              <Tile
-                className="overflow-visible"
-                key={metric.id}
-                label={metric.label}
-                tooltip={metric.hint || undefined}
-              >
+              <Tile className="overflow-visible" key={metric.id}>
+                <Tile.Label>
+                  {metric.label}
+                  {metric.hint ? (
+                    <Tooltip.Info className="text-foreground" content={metric.hint} />
+                  ) : null}
+                </Tile.Label>
                 <Text as="strong" className={valueClassName} variant="headline">
                   <MetricValueRow
                     icon={chrome.icon}

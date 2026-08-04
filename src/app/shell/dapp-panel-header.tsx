@@ -2,10 +2,10 @@ import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
-import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { Icon } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 
 export function DappPanelHeader({
@@ -41,7 +41,7 @@ export function DappPanelHeader({
         </Text>
       </div>
       {showToggle ? (
-        <AnchoredTooltip content={t.topbar.toggleTooltip}>
+        <Tooltip content={t.topbar.toggleTooltip}>
           <IconButton
             aria-expanded={!detailCollapsed}
             aria-label={detailCollapsed ? t.topbar.showDetails : t.topbar.hideDetails}
@@ -58,7 +58,7 @@ export function DappPanelHeader({
               alt=""
             />
           </IconButton>
-        </AnchoredTooltip>
+        </Tooltip>
       ) : null}
     </div>
   )

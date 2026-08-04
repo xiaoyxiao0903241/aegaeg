@@ -31,7 +31,8 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
         <OverviewGrid columns={2}>
           {tiles.map((tile) => (
-            <Tile key={tile.key} label={tile.label}>
+            <Tile key={tile.key}>
+              <Tile.Label>{tile.label}</Tile.Label>
               <Text
                 as="strong"
                 className="text-base/5 font-semibold tracking-normal"

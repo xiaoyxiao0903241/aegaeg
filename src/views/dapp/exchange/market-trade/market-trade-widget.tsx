@@ -5,10 +5,10 @@ import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
@@ -43,7 +43,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                 'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-card',
               )}
             >
-              <AnchoredTooltip content={t.exchange.flip}>
+              <Tooltip content={t.exchange.flip}>
                 <ExchangeFlowButton
                   aria-label={t.exchange.flip}
                   className="max-dapp:my-2"
@@ -62,7 +62,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                     </span>
                   </span>
                 </ExchangeFlowButton>
-              </AnchoredTooltip>
+              </Tooltip>
             </div>
           }
           onFillPercent={(percent) => trade.fillPercent(percent)}
@@ -103,7 +103,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               value: (
                 <>
                   <CountValue text={vm.exchangePriceDisplayLabel || '0'} />
-                  <AnchoredTooltip content={t.exchange.flip}>
+                  <Tooltip content={t.exchange.flip}>
                     <button
                       aria-label={t.exchange.flip}
                       className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
@@ -112,7 +112,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                     >
                       <Icon alt="" size="xs" src={dappAssets.exchangeFlip} />
                     </button>
-                  </AnchoredTooltip>
+                  </Tooltip>
                 </>
               ),
               valueClassName: 'inline-flex items-center justify-end gap-1',

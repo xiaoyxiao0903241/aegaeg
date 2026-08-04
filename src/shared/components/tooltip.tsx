@@ -1,15 +1,39 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Info as InfoIcon } from 'lucide-react'
 import * as React from 'react'
+import {
+  cloneElement,
+  type MouseEvent,
+  type PointerEvent,
+  type ReactElement,
+  useState,
+} from 'react'
 
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { Text } from '~/shared/components/text'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { cn } from '~/shared/lib/utils'
 
-const TooltipProvider = TooltipPrimitive.Provider
+export type TooltipPosition = 'top' | 'right' | 'bottom'
 
-const Tooltip = TooltipPrimitive.Root
+type TriggerChildProps = {
+  onClick?: (event: MouseEvent<HTMLElement>) => void
+  onPointerDown?: (event: PointerEvent<HTMLElement>) => void
+}
 
-const TooltipTrigger = TooltipPrimitive.Trigger
+export type TooltipProps = {
+  children: ReactElement
+  align?: 'start' | 'center' | 'end'
+  className?: string
+  content: string
+  position?: TooltipPosition
+}
+
+const positionToSide: Record<TooltipPosition, 'top' | 'right' | 'bottom'> = {
+  top: 'top',
+  right: 'right',
+  bottom: 'bottom',
+}
 
 /** Keep arrow clear of bubble corners; Radix positions the tip — do not CSS-translate it. */
 function tooltipArrowPaddingPx(align?: 'start' | 'center' | 'end') {
@@ -23,7 +47,7 @@ function tooltipArrowPaddingPx(align?: 'start' | 'center' | 'end') {
  * Figma 76:17 bubble — radius `rounded-chip`, padding/arrow/offset from `--app-tooltip-*`.
  * Copy uses Text `support` / `inverse` (type-support tokens).
  */
-const TooltipContent = React.forwardRef<
+const Bubble = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
 >(({ className, sideOffset, collisionPadding, align, children, ...props }, ref) => (
@@ -61,6 +85,83 @@ const TooltipContent = React.forwardRef<
     </TooltipPrimitive.Content>
   </TooltipPrimitive.Portal>
 ))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+Bubble.displayName = 'TooltipBubble'
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+/**
+ * 产品向 Tooltip：触发器 children + 文案 content。
+ * H5 纯 info 触发器（无自带 onClick）点按切换开合；桌面仍走悬停。
+ */
+function TooltipRoot({
+  align = 'center',
+  children,
+  className,
+  content,
+  position = 'top',
+}: TooltipProps) {
+  const isMobileViewport = useMobileViewport()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const childProps = children.props as TriggerChildProps
+  const childOnClick = childProps.onClick
+  const isInfoOnly = childOnClick == null
+
+  const trigger = cloneElement(children as ReactElement<TriggerChildProps>, {
+    onPointerDown: (event) => {
+      childProps.onPointerDown?.(event)
+      if (isMobileViewport) {
+        // Block focus-toggle flash on touch; info icons open via click below.
+        event.preventDefault()
+      }
+    },
+    onClick: (event) => {
+      childOnClick?.(event)
+      if (isMobileViewport && isInfoOnly) {
+        setMobileOpen((open) => !open)
+      }
+    },
+  })
+
+  const mobileControlled =
+    isMobileViewport && isInfoOnly ? { open: mobileOpen, onOpenChange: setMobileOpen } : {}
+
+  return (
+    <TooltipPrimitive.Root {...mobileControlled}>
+      <TooltipPrimitive.Trigger asChild>{trigger}</TooltipPrimitive.Trigger>
+      <Bubble align={align} className={className} side={positionToSide[position]}>
+        {content}
+      </Bubble>
+    </TooltipPrimitive.Root>
+  )
+}
+
+type InfoProps = Pick<TooltipProps, 'align' | 'content' | 'position'> & {
+  ariaLabel?: string
+  /** 作用在 Info 触发按钮上（≠ 气泡 className） */
+  className?: string
+}
+
+/** Info 图标触发器预设。 */
+function Info({ align, ariaLabel, className, content, position }: InfoProps) {
+  return (
+    <TooltipRoot align={align} content={content} position={position}>
+      <button
+        aria-label={ariaLabel ?? content}
+        className={cn(
+          'duration-dapp-fast inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
+          className,
+        )}
+        type="button"
+      >
+        <InfoIcon
+          aria-hidden
+          className="block size-3 shrink-0 text-foreground/40"
+          strokeWidth={1.75}
+        />
+      </button>
+    </TooltipRoot>
+  )
+}
+
+export const Tooltip = Object.assign(TooltipRoot, {
+  Provider: TooltipPrimitive.Provider,
+  Info,
+})

@@ -114,7 +114,8 @@ export function BurnExchangeContent({
               },
             ] as const
           ).map((item) => (
-            <Tile key={item.key} label={item.label}>
+            <Tile key={item.key}>
+              <Tile.Label>{item.label}</Tile.Label>
               <Text
                 as="strong"
                 className="text-base/5 font-semibold tracking-normal"

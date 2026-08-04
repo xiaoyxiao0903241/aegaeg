@@ -9,14 +9,15 @@
 
 ## MUST
 
-| #   | 规则                            | 说明                                           |
-| --- | ------------------------------- | ---------------------------------------------- |
-| 1   | 同 chrome = 一组件              | 禁止按业务名拆多份 `*Copy`                     |
-| 2   | 差异用数据，不用 index 分支     | 结构差用可选 prop                              |
-| 3   | Props 传数据，组件内渲染        | 图标优先 URL 元组，勿默认 `ReactNode icon`     |
-| 4   | Call site 组内容，组件管 chrome | 文案 / 跳转在页袋；圆角阴影字阶在组件          |
-| 5   | 可点才用 `button`               | 禁止用原生 `disabled` 冒充「不可点但样式不变」 |
-| 6   | 小 API                          | 没有第二 call site 不要提前升 shell            |
+| #   | 规则                            | 说明                                                                                                                            |
+| --- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | 同 chrome = 一组件              | 禁止按业务名拆多份 `*Copy`                                                                                                      |
+| 2   | 差异用数据，不用 index 分支     | 结构差用可选 prop                                                                                                               |
+| 3   | Props 传数据，组件内渲染        | 图标优先 URL 元组，勿默认 `ReactNode icon`                                                                                      |
+| 4   | Call site 组内容，组件管 chrome | 文案 / 跳转在页袋；圆角阴影字阶在组件                                                                                           |
+| 5   | 可点才用 `button`               | 禁止用原生 `disabled` 冒充「不可点但样式不变」                                                                                  |
+| 6   | 小 API                          | 没有第二 call site 不要提前升 shell                                                                                             |
+| 7   | **优先组合式**                  | 壳 + 具名子件（`Tile.Label` / `Table.Header`）；槽用子树表达，禁袋装 `header=`/`tooltip=` 冒充结构。无第二 call site 不硬抽子件 |
 
 ## Hub 左栏（B+D · `InteractiveCard`）
 
@@ -56,9 +57,9 @@
 
 ## 右栏数据卡（B+D · `Tile`）
 
-> **模型**：`Tile` = elevated 数据卡薄壳。网格仍走 `OverviewGrid`。  
-> 主值 / 图标行 → **`children`**；主值下**另起一行**的说明 → **`note`**（≠ tooltip；内容可为任意文案，恰巧常是 `≈ $…`）。  
-> **禁止** `MetricCard` / `*StatCard` / `*OverviewTiles` / `variant` 选布局。
+> **模型**：组合式 elevated 薄壳。网格仍走 `OverviewGrid`。  
+> `Tile.Label`（可嵌 `Tooltip.Info`）· 主值 **children** · 可选 `Tile.Note`（另起一行说明；≠ info tip；内容恰巧常是 `≈ $…`）。  
+> **禁止** `MetricCard` / `*StatCard` / `*OverviewTiles` / `variant` 选布局；禁 `label=`/`note=`/`tooltip=` 袋装 API。
 
 ### 壳 — `Tile`（`src/app/shell/tile.tsx`）
 
@@ -66,19 +67,19 @@
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                                                            |
 | 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                                                       |
-| API  | `label: string` · `tooltip?: string`（label 旁 info）· `children` · `note?: ReactNode`（另起一行说明）                                                            |
+| API  | `Tile` · `Tile.Label` · 主值 children · `Tile.Note`                                                                                                               |
 | 网格 | `OverviewGrid`（PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数 |
 | OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 表壳/空态 · 奖励 Hub（pill/deco）→ **自建组件**                                                      |
 
 ### 内容 — 页袋组合
 
-| 角色            | 写法                                                   |
-| --------------- | ------------------------------------------------------ |
-| 标签            | `Tile` 的 `label`（string；字阶由 Tile 钉）            |
-| tooltip         | `Tile` 的 `tooltip`（string → `DappInfoTooltip`）      |
-| 主值 / 图标行   | **`children`**（`Text` / `CountValue` / `Icon`）       |
-| 另起一行说明    | **`note`**（Tile 钉弱字阶；同行内联旁注仍进 children） |
-| pill CTA / deco | OUT：自建组件                                          |
+| 角色            | 写法                                                  |
+| --------------- | ----------------------------------------------------- |
+| 标签            | `Tile.Label`（字阶由 Label 钉）                       |
+| tooltip         | `Tooltip.Info` 嵌在 Label 内                          |
+| 主值 / 图标行   | **`Tile` children**（`Text` / `CountValue` / `Icon`） |
+| 另起一行说明    | `Tile.Note`（弱字阶；同行内联旁注仍进主值 children）  |
+| pill CTA / deco | OUT：自建组件                                         |
 
 ### MUST NOT（右栏）
 

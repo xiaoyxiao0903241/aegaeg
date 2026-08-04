@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { assetsHubAssets } from '~/app/assets'
-import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
@@ -12,6 +11,7 @@ import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { WidgetHeader } from '~/shared/components/widget-header'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { openAssetsView } from '~/shared/config/dapp-open-views'
@@ -99,7 +99,7 @@ export function AssetsHubWidget() {
                     <Text as="span" className="wrap-break-word" variant="copy">
                       <CountValue animate={false} text={stats.aprLabel} />
                     </Text>
-                    <DappInfoTooltip
+                    <Tooltip.Info
                       className="size-3 text-foreground [&_svg]:size-3"
                       content={modeCopy.aprHint}
                     />

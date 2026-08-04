@@ -50,8 +50,8 @@ function AsideMetricLayout({
                   : 'col-span-3',
             )}
             key={item.label}
-            label={item.label}
           >
+            <Tile.Label>{item.label}</Tile.Label>
             <Text
               as="strong"
               className="block min-w-0 text-base leading-5 font-semibold tracking-normal"
@@ -67,7 +67,8 @@ function AsideMetricLayout({
   return (
     <OverviewGrid columns={2}>
       {items.map((item) => (
-        <Tile className="min-w-0" key={item.label} label={item.label}>
+        <Tile className="min-w-0" key={item.label}>
+          <Tile.Label>{item.label}</Tile.Label>
           <Text
             as="strong"
             className="block min-w-0 text-base leading-5 font-semibold tracking-normal"

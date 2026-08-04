@@ -1,10 +1,10 @@
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappMetaList } from '~/app/shell/dapp-meta-list'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { formatGroupedNumber } from '~/shared/api/format-display'
+import { Tooltip } from '~/shared/components/tooltip'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
@@ -63,7 +63,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
             label: (
               <span className="inline-flex items-center gap-1">
                 {t.genesis.xTokenAirdrop}
-                <DappInfoTooltip content={vm.xTokenAirdropHint} />
+                <Tooltip.Info content={vm.xTokenAirdropHint} />
               </span>
             ),
             value: genesis.xTokenAirdropLabel,

@@ -40,7 +40,8 @@ export function RewardsGrantContent() {
         <DappContentHeading>{grant.dataTitle}</DappContentHeading>
         <OverviewGrid className="mt-4" columns={2}>
           {overviewTiles.map((item) => (
-            <Tile key={item.key} label={item.label}>
+            <Tile key={item.key}>
+              <Tile.Label>{item.label}</Tile.Label>
               <Text
                 as="strong"
                 className="leading-none font-semibold wrap-break-word"

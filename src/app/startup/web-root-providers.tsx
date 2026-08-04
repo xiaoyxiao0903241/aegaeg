@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { AuthProvider } from '~/app/startup/auth-provider'
 import { QueryProvider } from '~/app/startup/query-provider'
 import { AccountBannedNotifier } from '~/shared/components/account-banned-notifier'
-import { TooltipProvider } from '~/shared/components/tooltip'
+import { Tooltip } from '~/shared/components/tooltip'
 import { assertWeb3EnvConfigured, thirdwebClient } from '~/web3/thirdweb'
 import { AutoConnect, ThirdwebProvider } from '~/web3/thirdweb-react'
 
@@ -28,13 +28,13 @@ export function WebRootProviders({ children }: { children: ReactNode }) {
   return (
     <ThirdwebProvider>
       <QueryProvider>
-        <TooltipProvider delayDuration={200} skipDelayDuration={0}>
+        <Tooltip.Provider delayDuration={200} skipDelayDuration={0}>
           <AutoConnect client={thirdwebClient} timeout={15_000} />
           <AuthProvider>
             <AccountBannedNotifier />
             {children}
           </AuthProvider>
-        </TooltipProvider>
+        </Tooltip.Provider>
       </QueryProvider>
     </ThirdwebProvider>
   )

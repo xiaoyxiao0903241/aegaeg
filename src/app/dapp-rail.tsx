@@ -10,8 +10,8 @@ import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
 import { prefetchTabQueries } from '~/shared/api/query/prefetch'
-import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
 
@@ -141,7 +141,7 @@ export function DappRail({
         const active = item.id === activeTab
 
         return (
-          <AnchoredTooltip content={tooltips[item.id]} key={item.id} position="right">
+          <Tooltip content={tooltips[item.id]} key={item.id} position="right">
             <button
               aria-label={label}
               aria-selected={active}
@@ -193,7 +193,7 @@ export function DappRail({
                 {label}
               </Text>
             </button>
-          </AnchoredTooltip>
+          </Tooltip>
         )
       })}
     </nav>

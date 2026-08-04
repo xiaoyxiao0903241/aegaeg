@@ -4,9 +4,9 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
+import { Tooltip } from '~/shared/components/tooltip'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import {
@@ -50,7 +50,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           middleSlot={
             <div className="flex items-center justify-center py-1.5">
               {flash.canFlip ? (
-                <AnchoredTooltip content={t.exchange.flip}>
+                <Tooltip content={t.exchange.flip}>
                   <ExchangeFlowButton
                     aria-label={t.exchange.flip}
                     disabled={
@@ -70,7 +70,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
                       </span>
                     </span>
                   </ExchangeFlowButton>
-                </AnchoredTooltip>
+                </Tooltip>
               ) : (
                 <ExchangeOneWayFlowIndicator />
               )}

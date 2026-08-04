@@ -2,11 +2,11 @@ import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { Card } from '~/shared/components/card'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import {
   AssetsHubMetricPlain,
   AssetsHubMetricWithIcon,
@@ -47,7 +47,7 @@ export function AssetsHubContent() {
                 <Text as="span" className="leading-4" tone="inverse" variant="copy">
                   {overview.totalValue}
                 </Text>
-                <DappInfoTooltip
+                <Tooltip.Info
                   className="size-3 [&_svg]:size-3 [&_svg]:text-white"
                   content={overview.totalValueHint}
                 />
@@ -65,7 +65,7 @@ export function AssetsHubContent() {
               <Text as="span" className="leading-4" tone="inverse" variant="copy">
                 {overview.claimable}
               </Text>
-              <Text as="strong" className="text-base leading-5 font-semibold" tone="inverse">
+              <Text as="strong" className="text-base/5 font-semibold" tone="inverse">
                 {values.claimable}
               </Text>
               <Text as="span" className="leading-4 text-white/70" variant="copy">
@@ -76,7 +76,7 @@ export function AssetsHubContent() {
               <Text as="span" className="leading-4" tone="inverse" variant="copy">
                 {overview.claimed}
               </Text>
-              <Text as="strong" className="text-base leading-5 font-semibold" tone="inverse">
+              <Text as="strong" className="text-base/5 font-semibold" tone="inverse">
                 {values.claimed}
               </Text>
               <Text as="span" className="leading-4 text-white/70" variant="copy">
@@ -87,7 +87,7 @@ export function AssetsHubContent() {
               <Text as="span" className="leading-4" tone="inverse" variant="copy">
                 {overview.contribution}
               </Text>
-              <Text as="strong" className="text-base leading-5 font-semibold" tone="inverse">
+              <Text as="strong" className="text-base/5 font-semibold" tone="inverse">
                 {values.contribution}
               </Text>
               <Text as="span" className="leading-4 text-white/70" variant="copy">
@@ -206,7 +206,7 @@ export function AssetsHubContent() {
 
           {/* PC 横轴 */}
           <div className="relative hidden grid-cols-4 items-center dapp:grid">
-            <div className="absolute top-1/2 right-[12.5%] left-[12.5%] -translate-y-1/2 bg-border" />
+            <div className="absolute inset-x-[12.5%] top-1/2 -translate-y-1/2 bg-border" />
             {rebase.steps.map((step) => (
               <span
                 className="relative z-1 flex justify-center"

@@ -55,7 +55,8 @@ export function RewardsReferralContent() {
         {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
         <OverviewGrid className="mt-4" columns={3}>
           {topTiles.map((item) => (
-            <Tile key={item.key} label={item.label}>
+            <Tile key={item.key}>
+              <Tile.Label>{item.label}</Tile.Label>
               <Text
                 as="strong"
                 className="leading-none font-semibold wrap-break-word"
@@ -68,7 +69,8 @@ export function RewardsReferralContent() {
         </OverviewGrid>
         <OverviewGrid className="mt-3" columns={2}>
           {bottomTiles.map((item) => (
-            <Tile key={item.key} label={item.label}>
+            <Tile key={item.key}>
+              <Tile.Label>{item.label}</Tile.Label>
               <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                 <Text
                   as="strong"

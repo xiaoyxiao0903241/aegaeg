@@ -3,9 +3,9 @@ import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
@@ -162,11 +162,7 @@ export function ExchangePromoCard({
   const isDesktop = !useMobileViewport()
   const layout: PromoLayout = isDesktop ? 'desktop' : 'mobile'
   const styles = exchangePromoCard({ layout, rays })
-  const actionNode = actionTooltip ? (
-    <AnchoredTooltip content={actionTooltip}>{action}</AnchoredTooltip>
-  ) : (
-    action
-  )
+  const actionNode = actionTooltip ? <Tooltip content={actionTooltip}>{action}</Tooltip> : action
 
   return (
     <Card

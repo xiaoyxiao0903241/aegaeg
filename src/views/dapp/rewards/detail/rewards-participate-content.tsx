@@ -47,7 +47,8 @@ export function RewardsParticipateContent() {
         {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
         <OverviewGrid className="mt-4" columns={2}>
           {overviewTiles.map((item) => (
-            <Tile key={item.key} label={item.label}>
+            <Tile key={item.key}>
+              <Tile.Label>{item.label}</Tile.Label>
               <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                 <Text
                   as="strong"

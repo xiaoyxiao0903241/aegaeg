@@ -67,17 +67,19 @@ export function AssetsProductDetailSections({
             ? tokenCarouselIcons.xIcon
             : null
     return (
-      <Tile
-        key={metric.label}
-        label={metric.label}
-        note={cell?.approx != null ? <CountValue text={cell.approx} /> : undefined}
-      >
+      <Tile key={metric.label}>
+        <Tile.Label>{metric.label}</Tile.Label>
         <div className="flex items-center gap-1.5">
           {iconSrc ? <Icon alt="" className="rounded-control" size="lg" src={iconSrc} /> : null}
           <Text as="strong" className="text-base leading-5 font-semibold" variant="copy">
             <CountValue text={cell?.value ?? '0.00'} />
           </Text>
         </div>
+        {cell?.approx != null ? (
+          <Tile.Note>
+            <CountValue text={cell.approx} />
+          </Tile.Note>
+        ) : null}
       </Tile>
     )
   })
