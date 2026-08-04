@@ -1,5 +1,7 @@
-import type { EmblaCarouselType, EmblaOptionsType, EmblaPluginType } from 'embla-carousel'
+import type { EmblaOptionsType } from 'embla-carousel'
+import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   createContext,
   forwardRef,
@@ -13,31 +15,34 @@ import {
   useRef,
   useState,
 } from 'react'
+import { tv } from 'tailwind-variants'
 
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { iconVariants } from '~/shared/components/icon'
 import { cn } from '~/shared/lib/utils'
 
-export type CarouselApi = EmblaCarouselType | undefined
-export type CarouselOptions = EmblaOptionsType | undefined
-export type CarouselPlugin = EmblaPluginType[] | undefined
+/**
+ * DApp 轮播 — 组合式（Embla 全封装，页袋不碰 api）：
+ * `Carousel` · `Content` · `Item` · `Indicators`
+ * peek 内建 EdgeFade。
+ * @see docs/foundation/component-usage.md
+ */
 
-type CarouselRootProps = {
-  opts?: CarouselOptions
-  plugins?: CarouselPlugin
-  orientation?: 'horizontal' | 'vertical'
-  setApi?: (api: CarouselApi) => void
-  children?: ReactNode
-}
+type SlideChrome = 'about' | 'peek'
 
-type CarouselContextProps = CarouselRootProps & {
+type CarouselContextValue = {
   carouselRef: (instance: HTMLElement | null) => void
-  api: CarouselApi
   scrollPrev: () => void
   scrollNext: () => void
+  scrollTo: (index: number) => void
   canScrollPrev: boolean
   canScrollNext: boolean
+  selectedIndex: number
+  snapCount: number
 }
 
-const CarouselContext = createContext<CarouselContextProps | null>(null)
+const CarouselContext = createContext<CarouselContextValue | null>(null)
+const SlideChromeContext = createContext<SlideChrome>('about')
 
 function useCarousel() {
   const context = useContext(CarouselContext)
@@ -47,18 +52,126 @@ function useCarousel() {
   return context
 }
 
-export const Carousel = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement> & CarouselRootProps
->(({ orientation = 'horizontal', opts, setApi, plugins, className, children, ...props }, ref) => {
+const carouselChrome = tv({
+  slots: {
+    root: 'grid w-full overflow-visible',
+    viewport: '',
+    track: '-ml-8 flex items-stretch',
+    slide: 'flex w-full max-w-full min-w-0 shrink-0 grow-0 basis-full flex-col pl-8',
+    /** peek（季卡）外罩 */
+    peekBleed: 'relative -mx-5 w-[calc(100%+2.5rem)] min-w-0 overflow-visible px-5',
+    peekViewport: 'w-full min-w-0 overflow-x-hidden overflow-y-visible',
+    peekTrack: '-ml-2.5 flex items-stretch',
+    peekSlide: 'min-w-0 shrink-0 grow-0 basis-auto pl-2.5',
+    fade: 'pointer-events-none absolute inset-y-0 z-1 w-5 from-card to-transparent transition-opacity duration-200',
+    indicatorBar: 'inline-flex items-center justify-center self-center',
+    navButton:
+      'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
+    chevron: 'block',
+    dotGroup: 'inline-flex items-center gap-1.5',
+    dotButton: [
+      'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
+      iconVariants({ size: 'base' }),
+    ],
+    // active 必须钉 h-1.5；禁只改 width（否则塌成线）
+    dot: 'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+  },
+  variants: {
+    layout: {
+      desktop: {
+        root: 'gap-0',
+        viewport: 'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-(--shadow-bleed-subtle)',
+        indicatorBar: [
+          'gap-3.5',
+          'relative z-1 -mt-(--shadow-bleed-subtle) pt-(--carousel-pc-indicator-pt)',
+        ],
+        navButton: iconVariants({ size: 'base' }),
+        chevron: iconVariants({ size: 'base' }),
+      },
+      mobile: {
+        viewport: [
+          '-mx-(--shadow-bleed-h5) w-[calc(100%+2*var(--shadow-bleed-h5))]',
+          'px-(--shadow-bleed-h5) pt-(--carousel-h5-viewport-pad-y) pb-(--shadow-bleed-subtle)',
+        ].join(' '),
+        indicatorBar: [
+          'gap-2.5',
+          'relative z-1 -mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))]',
+          'pt-(--carousel-h5-indicator-pt)',
+        ].join(' '),
+        navButton: [
+          'size-(--dapp-icon-lg) rounded-full',
+          'duration-dapp-fast transition-[background-color,color] ease-out',
+          'hover:bg-background hover:text-muted-foreground',
+        ].join(' '),
+        chevron: iconVariants({ size: 'md' }),
+      },
+    },
+    fadeSide: {
+      left: { fade: 'left-0 bg-linear-to-r' },
+      right: { fade: 'right-0 bg-linear-to-l' },
+    },
+    fadeVisible: {
+      true: { fade: 'opacity-100' },
+      false: { fade: 'opacity-0' },
+    },
+    dotActive: {
+      true: {},
+      false: {},
+    },
+  },
+  compoundVariants: [
+    { layout: 'desktop', dotActive: true, class: { dot: 'h-1.5 w-5.5 bg-primary' } },
+    { layout: 'mobile', dotActive: true, class: { dot: 'h-1.5 w-4.5 bg-primary' } },
+    { layout: 'desktop', dotActive: false, class: { dot: 'size-1.5' } },
+    { layout: 'mobile', dotActive: false, class: { dot: 'size-1.5' } },
+  ],
+})
+
+type CarouselRootProps = HTMLAttributes<HTMLDivElement> & {
+  /** Embla 选项（loop / align / startIndex…）；禁把 api 漏到页袋。 */
+  opts?: EmblaOptionsType
+  /**
+   * 自动播放间隔 ms。仅 PC 生效（H5 不播）。
+   * 页袋勿再 import `embla-carousel-autoplay`。
+   */
+  autoplayMs?: number
+  /** 外部索引变化时静默对齐（如创世当前季）。无有效索引时勿传。 */
+  syncIndex?: number
+  children?: ReactNode
+}
+
+function CarouselRoot({
+  opts,
+  autoplayMs,
+  syncIndex,
+  className,
+  children,
+  ...props
+}: CarouselRootProps) {
+  const isMobile = useMobileViewport()
+  const layout = isMobile ? 'mobile' : 'desktop'
+
+  const plugins = useMemo(() => {
+    if (autoplayMs == null || isMobile) return undefined
+    return [
+      Autoplay({
+        delay: autoplayMs,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        stopOnFocusIn: true,
+      }),
+    ]
+  }, [autoplayMs, isMobile])
+
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
-      axis: orientation === 'horizontal' ? 'x' : 'y',
+      axis: 'x',
     },
     plugins,
   )
   const viewportNodeRef = useRef<HTMLElement | null>(null)
+  const syncedIndexRef = useRef<number | null>(null)
   const setViewportRef = useCallback(
     (node: HTMLElement | null) => {
       viewportNodeRef.current = node
@@ -68,22 +181,28 @@ export const Carousel = forwardRef<
   )
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(opts?.startIndex ?? 0)
+  const [snapCount, setSnapCount] = useState(0)
 
-  const onSelect = useCallback((api: CarouselApi) => {
-    if (!api) {
-      return
-    }
-    setCanScrollPrev(api.canScrollPrev())
-    setCanScrollNext(api.canScrollNext())
+  const onSelect = useCallback((instance: NonNullable<typeof api>) => {
+    setCanScrollPrev(instance.canScrollPrev())
+    setCanScrollNext(instance.canScrollNext())
+    setSelectedIndex(instance.selectedScrollSnap())
+    setSnapCount(instance.scrollSnapList().length)
   }, [])
 
   const scrollPrev = useCallback(() => {
     api?.scrollPrev()
   }, [api])
-
   const scrollNext = useCallback(() => {
     api?.scrollNext()
   }, [api])
+  const scrollTo = useCallback(
+    (index: number) => {
+      api?.scrollTo(index)
+    },
+    [api],
+  )
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
@@ -99,16 +218,8 @@ export const Carousel = forwardRef<
   )
 
   useEffect(() => {
-    if (!api || !setApi) {
-      return
-    }
-    setApi(api)
-  }, [api, setApi])
-
-  useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api) return
+    onSelect(api)
     api.on('init', onSelect)
     api.on('reInit', onSelect)
     api.on('select', onSelect)
@@ -120,22 +231,23 @@ export const Carousel = forwardRef<
   }, [api, onSelect])
 
   useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api || syncIndex == null || syncIndex < 0) return
+    if (syncedIndexRef.current === syncIndex) return
+    api.scrollTo(syncIndex, false)
+    syncedIndexRef.current = syncIndex
+  }, [api, syncIndex])
+
+  useEffect(() => {
+    if (!api) return
     const node = viewportNodeRef.current
-    if (!node) {
-      return
-    }
+    if (!node) return
 
     let lastWidth = node.getBoundingClientRect().width
     const observer = new ResizeObserver((entries) => {
       const width = entries[0]?.contentRect.width ?? 0
       const becameVisible = lastWidth === 0 && width > 0
       const resizedWhileVisible = width > 0 && lastWidth > 0 && Math.abs(width - lastWidth) > 1
-      if (becameVisible || resizedWhileVisible) {
-        api.reInit()
-      }
+      if (becameVisible || resizedWhileVisible) api.reInit()
       lastWidth = width
     })
     observer.observe(node)
@@ -145,35 +257,32 @@ export const Carousel = forwardRef<
   const contextValue = useMemo(
     () => ({
       carouselRef: setViewportRef,
-      api,
-      opts,
-      orientation,
       scrollPrev,
       scrollNext,
+      scrollTo,
       canScrollPrev,
       canScrollNext,
-      setApi,
-      plugins,
+      selectedIndex,
+      snapCount,
     }),
     [
       setViewportRef,
-      api,
-      opts,
-      orientation,
       scrollPrev,
       scrollNext,
+      scrollTo,
       canScrollPrev,
       canScrollNext,
-      setApi,
-      plugins,
+      selectedIndex,
+      snapCount,
     ],
   )
+
+  const chrome = carouselChrome({ layout })
 
   return (
     <CarouselContext.Provider value={contextValue}>
       <div
-        ref={ref}
-        className={cn('relative', className)}
+        className={cn(chrome.root(), 'relative', className)}
         onKeyDownCapture={handleKeyDown}
         role="region"
         aria-roledescription="carousel"
@@ -183,58 +292,157 @@ export const Carousel = forwardRef<
       </div>
     </CarouselContext.Provider>
   )
-})
-Carousel.displayName = 'Carousel'
+}
 
-export const CarouselContent = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement> & {
-    spacing?: 'default' | 'none'
-    viewportClassName?: string
-  }
->(({ className, spacing = 'default', viewportClassName, children, ...props }, ref) => {
-  const { carouselRef, orientation } = useCarousel()
-  const isHorizontal = orientation === 'horizontal'
-  return (
-    <div ref={carouselRef} className={cn('overflow-hidden', viewportClassName)}>
-      <div
-        ref={ref}
-        className={cn(
-          'flex',
-          spacing === 'default' && (isHorizontal ? '-ml-4' : '-mt-4'),
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </div>
+type ContentProps = HTMLAttributes<HTMLDivElement> & {
+  /** `about` = 全幅 about 卡；`peek` = 多卡窥视（创世季）+ 内建 EdgeFade。 */
+  chrome?: SlideChrome
+}
+
+const Content = forwardRef<HTMLDivElement, ContentProps>(function CarouselContent(
+  { className, chrome = 'about', children, ...props },
+  ref,
+) {
+  const { carouselRef, canScrollNext, canScrollPrev } = useCarousel()
+  const isMobile = useMobileViewport()
+  const layout = isMobile ? 'mobile' : 'desktop'
+  const styles = carouselChrome({ layout })
+
+  const track = (
+    <div
+      ref={ref}
+      className={cn(chrome === 'peek' ? styles.peekTrack() : styles.track(), className)}
+      {...props}
+    >
+      {children}
     </div>
   )
-})
-CarouselContent.displayName = 'CarouselContent'
 
-export const CarouselItem = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement> & {
-    spacing?: 'default' | 'none'
-  }
->(({ className, spacing = 'default', children, ...props }, ref) => {
-  const { orientation } = useCarousel()
-  const isHorizontal = orientation === 'horizontal'
+  return (
+    <SlideChromeContext.Provider value={chrome}>
+      {chrome === 'peek' ? (
+        <div className={styles.peekBleed()}>
+          <div ref={carouselRef} className={styles.peekViewport()}>
+            {track}
+          </div>
+          <div
+            aria-hidden
+            className={carouselChrome({ fadeSide: 'left', fadeVisible: canScrollPrev }).fade()}
+          />
+          <div
+            aria-hidden
+            className={carouselChrome({ fadeSide: 'right', fadeVisible: canScrollNext }).fade()}
+          />
+        </div>
+      ) : (
+        <div ref={carouselRef} className={styles.viewport()}>
+          {track}
+        </div>
+      )}
+    </SlideChromeContext.Provider>
+  )
+})
+
+type ItemProps = HTMLAttributes<HTMLDivElement> & {
+  /** 传入后由 Carousel 管 `aria-hidden`（禁页袋再读 selectedIndex）。 */
+  index?: number
+}
+
+const Item = forwardRef<HTMLDivElement, ItemProps>(function CarouselItem(
+  { className, index, children, ...props },
+  ref,
+) {
+  const { selectedIndex } = useCarousel()
+  const slideChrome = useContext(SlideChromeContext)
+  const styles = carouselChrome()
+  const active = index === undefined || index === selectedIndex
+
   return (
     <div
       ref={ref}
       role="group"
       aria-roledescription="slide"
-      className={cn(
-        'min-w-0 shrink-0 grow-0 basis-full',
-        spacing === 'default' && (isHorizontal ? 'pl-4' : 'pt-4'),
-        className,
-      )}
+      aria-hidden={index === undefined ? undefined : !active}
+      className={cn(slideChrome === 'about' ? styles.slide() : styles.peekSlide(), className)}
       {...props}
     >
       {children}
     </div>
   )
 })
-CarouselItem.displayName = 'CarouselItem'
+
+type IndicatorsProps = {
+  className?: string
+  /** `about` = bleed 补偿间距；`plain` = 紧凑控件簇（peek 季卡底栏，不跟 about H5 大圆钮）。 */
+  chrome?: 'about' | 'plain'
+  dotLabel?: (index: number) => string
+  nextLabel: string
+  prevLabel: string
+}
+
+function Indicators({
+  className,
+  chrome = 'about',
+  dotLabel,
+  nextLabel,
+  prevLabel,
+}: IndicatorsProps) {
+  const { scrollNext, scrollPrev, scrollTo, selectedIndex, snapCount } = useCarousel()
+  const isMobile = useMobileViewport()
+  // plain：始终紧凑桌面档；about：跟 viewport layout
+  const layout = chrome === 'plain' ? 'desktop' : isMobile ? 'mobile' : 'desktop'
+  const styles = carouselChrome({ layout })
+
+  if (snapCount <= 1) return null
+
+  return (
+    <div
+      className={cn(
+        chrome === 'about'
+          ? styles.indicatorBar()
+          : 'inline-flex items-center justify-center gap-3.5 self-center',
+        className,
+      )}
+    >
+      <button
+        aria-label={prevLabel}
+        className={styles.navButton()}
+        onClick={scrollPrev}
+        type="button"
+      >
+        <ChevronLeft aria-hidden className={styles.chevron()} strokeWidth={2} />
+      </button>
+      <div className={styles.dotGroup()} role="group">
+        {Array.from({ length: snapCount }, (_, i) => (
+          <button
+            aria-current={i === selectedIndex ? 'true' : undefined}
+            aria-label={dotLabel?.(i) ?? String(i + 1)}
+            className={styles.dotButton()}
+            key={i}
+            onClick={() => scrollTo(i)}
+            type="button"
+          >
+            <span
+              aria-hidden
+              className={carouselChrome({ layout, dotActive: i === selectedIndex }).dot()}
+            />
+          </button>
+        ))}
+      </div>
+      <button
+        aria-label={nextLabel}
+        className={styles.navButton()}
+        onClick={scrollNext}
+        type="button"
+      >
+        <ChevronRight aria-hidden className={styles.chevron()} strokeWidth={2} />
+      </button>
+    </div>
+  )
+}
+
+export const Carousel = Object.assign(CarouselRoot, {
+  Content,
+  Item,
+  Indicators,
+})

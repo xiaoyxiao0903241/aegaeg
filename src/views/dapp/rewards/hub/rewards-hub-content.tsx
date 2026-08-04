@@ -2,13 +2,13 @@ import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
-import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
+import { Carousel } from '~/shared/components/carousel'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
@@ -181,24 +181,30 @@ export function RewardsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.hub.aboutTitle}</DappContentHeading>
-        <DappCarousel
-          nextLabel={t.common.paginationNext}
-          prevLabel={t.common.paginationPrev}
-          slides={ABOUT_VIEWS.map((view) => {
-            const slide = t.rewards.hub.aboutSlides[view]
-            return {
-              key: view,
-              content: (
-                <DappAboutCard
-                  body={slide.body}
-                  decoSrc={dappAssets.aboutCarouselRewardsMascot}
-                  title={slide.title}
-                  wash="lavender"
-                />
-              ),
+        <Carousel opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}>
+          <Carousel.Content>
+            {ABOUT_VIEWS.map((view) => {
+              const slide = t.rewards.hub.aboutSlides[view]
+              return (
+                <Carousel.Item key={view}>
+                  <DappAboutCard
+                    body={slide.body}
+                    decoSrc={dappAssets.aboutCarouselRewardsMascot}
+                    title={slide.title}
+                    wash="lavender"
+                  />
+                </Carousel.Item>
+              )
+            })}
+          </Carousel.Content>
+          <Carousel.Indicators
+            dotLabel={(index) =>
+              t.rewards.hub.aboutSlides[ABOUT_VIEWS[index]!]?.title ?? String(index + 1)
             }
-          })}
-        />
+            nextLabel={t.common.paginationNext}
+            prevLabel={t.common.paginationPrev}
+          />
+        </Carousel>
       </DappDetailBlock>
 
       <DappDetailBlock>

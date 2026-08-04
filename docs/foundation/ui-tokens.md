@@ -186,19 +186,20 @@
 
 按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-| Composite          | Figma 层                           | 核心 props                                                      | 提升理由                                                              |
-| ------------------ | ---------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                   | 全局 shell                                                            |
-| `NavRail`          | rail / rit                         | `items`, `activeTab`, `onSelect`                                | 4 页共用                                                              |
-| `PanelHeader`      | wh                                 | `title`, `subtitle`, `action`                                   | 4 页共用                                                              |
-| `AmountBox`        | box / tk / rr / mx                 | `token`, `value`, `balance`, `sessionReady`                     | 金额输入卡                                                            |
-| `Segment`          | seg / pcts / htab                  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                |
-| `ClaimSplitSlider` | slider `4812:221`                  | `value` (release%), `onChange`, `aria-label`                    | 双色轨 + `%` thumb；Radix；文案由 call site 传入                      |
-| `Card` elevated    | —                                  | children                                                        | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`） |
-| `Tile`             | `Label` / `Note`                   | 主值 children；旁注用 `Tooltip.Info`                            | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard       |
-| `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                   | 组合式 DApp 表（`shared/components/table.tsx`）                       |
-| `Accordion`        | qa / qhd                           | `items`, `variant`                                              | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）          |
-| `WidgetPromoCard`  | promo / pcard                      | children                                                        | 深色 CTA 卡（`Card inverse`）                                         |
+| Composite          | Figma 层                           | 核心 props                                                                        | 提升理由                                                              |
+| ------------------ | ---------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                                     | 全局 shell                                                            |
+| `NavRail`          | rail / rit                         | `items`, `activeTab`, `onSelect`                                                  | 4 页共用                                                              |
+| `PanelHeader`      | wh                                 | `title`, `subtitle`, `action`                                                     | 4 页共用                                                              |
+| `AmountBox`        | box / tk / rr / mx                 | `token`, `value`, `balance`, `sessionReady`                                       | 金额输入卡                                                            |
+| `Segment`          | seg / pcts / htab                  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg                   | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                |
+| `ClaimSplitSlider` | slider `4812:221`                  | `value` (release%), `onChange`, `aria-label`                                      | 双色轨 + `%` thumb；Radix；文案由 call site 传入                      |
+| `Card` elevated    | —                                  | children                                                                          | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`） |
+| `Tile`             | `Label` / `Note`                   | 主值 children；旁注用 `Tooltip.Info`                                              | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard       |
+| `Carousel`         | Content/Item/Indicators            | `opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain | 组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`             |
+| `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                                     | 组合式 DApp 表（`shared/components/table.tsx`）                       |
+| `Accordion`        | qa / qhd                           | `items`, `variant`                                                                | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）          |
+| `WidgetPromoCard`  | promo / pcard                      | children                                                                          | 深色 CTA 卡（`Card inverse`）                                         |
 
 **内部约定**：
 

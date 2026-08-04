@@ -1,12 +1,12 @@
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
-import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
+import { Carousel } from '~/shared/components/carousel'
 import { FaqList } from '~/shared/components/faq-list'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -26,23 +26,27 @@ export function ReleaseHubContent() {
       {/* Figma right-col 4371:262：section gap 34 → DappDetailBlock mt-8.5 */}
       <DappDetailBlock>
         <DappContentHeading id="release-hub-title">{t.release.hub.aboutTitle}</DappContentHeading>
-        <DappCarousel
-          nextLabel={t.common.paginationNext}
-          prevLabel={t.common.paginationPrev}
-          slides={slides.map((slide) => ({
-            key: slide.title,
-            content: (
-              <DappAboutCard
-                // 4299:213：p16 · radius/lg · deco 91×91 右上；高随文案
-                body={slide.body}
-                className="min-h-0 gap-2 px-4 py-4"
-                decoClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
-                decoSrc={dappAssets.aboutCarouselReleaseDeco}
-                title={slide.title}
-              />
-            ),
-          }))}
-        />
+        <Carousel opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}>
+          <Carousel.Content>
+            {slides.map((slide) => (
+              <Carousel.Item key={slide.title}>
+                <DappAboutCard
+                  // 4299:213：p16 · radius/lg · deco 91×91 右上；高随文案
+                  body={slide.body}
+                  className="min-h-0 gap-2 px-4 py-4"
+                  decoClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
+                  decoSrc={dappAssets.aboutCarouselReleaseDeco}
+                  title={slide.title}
+                />
+              </Carousel.Item>
+            ))}
+          </Carousel.Content>
+          <Carousel.Indicators
+            dotLabel={(index) => slides[index]?.title ?? String(index + 1)}
+            nextLabel={t.common.paginationNext}
+            prevLabel={t.common.paginationPrev}
+          />
+        </Carousel>
       </DappDetailBlock>
 
       <DappDetailBlock>

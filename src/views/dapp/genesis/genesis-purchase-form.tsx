@@ -9,8 +9,8 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
+import { GenesisSeasonCarousel } from '~/views/dapp/genesis/season/genesis-season-carousel'
 import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season/genesis-season-option-skeleton'
-import { SeasonSelector } from '~/views/dapp/genesis/season/genesis-season-selector'
 import { useGenesisPurchaseView } from '~/views/dapp/genesis/use-genesis-purchase-view'
 
 /**
@@ -32,7 +32,10 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
           </div>
         </div>
       ) : (
-        <SeasonSelector activePhaseIndex={genesis.phaseIndex} seasons={genesis.seasonOptions} />
+        <GenesisSeasonCarousel
+          activePhaseIndex={genesis.phaseIndex}
+          seasons={genesis.seasonOptions}
+        />
       )}
 
       <GenesisPurchaseSharesField

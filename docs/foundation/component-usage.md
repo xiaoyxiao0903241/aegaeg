@@ -87,6 +87,25 @@
 - `*StatCard` / `*MetricCard` / `*OverviewTiles`；call site 再抹 `p-*` / `rounded-*` / `shadow-*`
 - 指标瓦网格自写平行 `gap-*`（唯一 owner = `OverviewGrid`）
 
+## DApp 轮播（`Carousel`）
+
+> **模型**：组合式 Embla 壳。`shared/components/carousel.tsx`。  
+> 页袋**只组卡片**；禁 `setApi` / `CarouselApi` / 自建 indicator / 自管 autoplay。  
+> `Carousel.Content` · `Carousel.Item` · `Carousel.Indicators`（peek 内建 EdgeFade）。
+
+| 零件                  | 职责                                                                                          |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `Carousel`            | Embla 根；`opts` · `autoplayMs`（仅 PC）· `syncIndex`                                         |
+| `Carousel.Content`    | `chrome="about"`（全幅）\|`"peek"`（多卡窥视+淡出）；chrome 下传给 Item                       |
+| `Carousel.Item`       | 单页；可选 `index` → 组件管 `aria-hidden`                                                     |
+| `Carousel.Indicators` | 箭头+圆点；`chrome="about"`\|`"plain"`（plain 不跟 about H5 大圆钮）；active **必须** `h-1.5` |
+
+### MUST NOT（轮播）
+
+- 页袋持有 Embla api / `selectedScrollSnap` / 平行 autoplay import
+- 平行 `DappCarousel` / 页内 indicator tv / `seasonCarousel` 轨 chrome
+- active 圆点缺 `h-*`
+
 ## DApp 表（`Table`）
 
 > **模型**：组合式 elevated 表壳。`shared/components/table.tsx`。  
