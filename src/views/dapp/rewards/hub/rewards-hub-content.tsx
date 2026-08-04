@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
 import { DappCarousel } from '~/app/shell/dapp-carousel'
@@ -5,17 +7,30 @@ import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
+import { OverviewGrid } from '~/app/shell/overview-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useI18n } from '~/i18n/use-i18n'
+import { Card } from '~/shared/components/card'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsHubStats } from '~/views/dapp/rewards/hub/use-rewards-hub-stats'
-import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
 /** Figma `4297:213` about · 4 张；lavender wash + 同一人物 deco（发展/创世不进轮播）。 */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
+
+type HubStatTile = {
+  key: string
+  label: string
+  value?: string
+  approx?: string
+  iconSrc?: string
+  mutedBody?: string
+  decoSrc?: string
+  labelAction?: ReactNode
+}
 
 export function RewardsHubContent() {
   const { messages: t } = useI18n()
@@ -23,172 +38,146 @@ export function RewardsHubContent() {
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
 
+  const tiles: HubStatTile[] = [
+    {
+      key: 'totalRewards',
+      label: stats.totalRewards,
+      value: statsView.totalRewardGagx,
+      approx: statsView.totalRewardApprox,
+      iconSrc: dappAssets.rewardsHubGagxDot,
+    },
+    {
+      key: 'tier',
+      label: stats.tier,
+      mutedBody: statsView.tierLabel,
+      decoSrc: dappAssets.rewardsHubTierDeco,
+    },
+    {
+      key: 'personalHolding',
+      label: stats.personalHolding,
+      value: statsView.personalUsd,
+      approx: statsView.personalAgx,
+    },
+    {
+      key: 'totalPerformance',
+      label: stats.totalPerformance,
+      value: statsView.makingMarketUsd,
+      approx: statsView.makingMarketAgx,
+    },
+    {
+      key: 'smallAreaPerformance',
+      label: stats.smallAreaPerformance,
+      value: statsView.smallMarketUsd,
+      approx: statsView.smallMarketAgx,
+    },
+    {
+      key: 'contribution',
+      label: stats.contribution,
+      value: statsView.contributionValue.startsWith('$')
+        ? statsView.contributionValue
+        : `$${statsView.contributionValue}`,
+      approx: stats.contributionHint,
+      labelAction: (
+        // Figma 去销毁 pill · coral；禁 Button sm→min-h-9；多语完整可见
+        <button
+          className="inline-flex max-w-full shrink-0 items-center gap-0.5 rounded-full bg-coral-emphasis px-2 py-0.5 text-primary-foreground hover:opacity-90"
+          onClick={() => openExchangeView('burn')}
+          type="button"
+        >
+          <Text
+            as="span"
+            className="leading-none whitespace-nowrap"
+            tone="inverse"
+            variant="caption"
+          >
+            {stats.goBurn}
+          </Text>
+          <Icon
+            alt=""
+            className="size-3.5 shrink-0"
+            size="xs"
+            src={dappAssets.rewardsHubGoBurnChevron}
+          />
+        </button>
+      ),
+    },
+  ]
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
-        {/* PC 三列；H5 一行两卡（≡ staking hub max-dapp:grid-cols-2） */}
-        <div className="mb-6 grid grid-cols-2 gap-2.5 dapp:grid-cols-3">
-          <RewardsStatCard label={stats.totalRewards}>
-            {/* Figma tile label：13 Medium body70 */}
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {stats.totalRewards}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-              <Icon
-                alt=""
-                className="size-4.5 shrink-0"
-                size="sm"
-                src={dappAssets.rewardsHubGagxDot}
-              />
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                variant="headline"
-              >
-                {statsView.totalRewardGagx}
-              </Text>
-              <Text
-                as="p"
-                className="leading-none wrap-break-word text-foreground/40"
-                variant="copy"
-              >
-                {statsView.totalRewardApprox}
-              </Text>
-            </div>
-          </RewardsStatCard>
-          {/* Figma 4296:218：overflow-clip；IP `-scale-y-100 rotate-180` ≡ `-scale-x-100` 朝左 */}
-          <RewardsStatCard className="relative overflow-hidden" label={stats.tier}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {stats.tier}
-            </Text>
-            <Text
-              as="p"
-              className="mt-1.5 leading-none wrap-break-word text-foreground/40"
-              variant="copy"
+        {/* PC 三列；H5 一行两卡 — OverviewGrid gap SSOT */}
+        <OverviewGrid className="mb-6" columns={3}>
+          {tiles.map((tile) => (
+            <Card
+              as="div"
+              className={
+                tile.decoSrc != null
+                  ? 'relative flex flex-col gap-1.5 overflow-hidden'
+                  : 'flex flex-col gap-1.5'
+              }
+              key={tile.key}
+              surface="elevated"
             >
-              {statsView.tierLabel}
-            </Text>
-            {/* Figma 62×88 → w-16 h-22；资产朝右，跟稿水平翻转；禁溢出圆角 */}
-            <img
-              alt=""
-              className="pointer-events-none absolute top-1.5 right-0 h-22 w-16 -scale-x-100 object-contain object-right max-dapp:hidden"
-              src={dappAssets.rewardsHubTierDeco}
-            />
-          </RewardsStatCard>
-          <RewardsStatCard label={stats.personalHolding}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {stats.personalHolding}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                variant="headline"
-              >
-                {statsView.personalUsd}
-              </Text>
-              <Text
-                as="p"
-                className="leading-none wrap-break-word text-foreground/40"
-                variant="copy"
-              >
-                {statsView.personalAgx}
-              </Text>
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard label={stats.totalPerformance}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {stats.totalPerformance}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                variant="headline"
-              >
-                {statsView.makingMarketUsd}
-              </Text>
-              <Text
-                as="p"
-                className="leading-none wrap-break-word text-foreground/40"
-                variant="copy"
-              >
-                {statsView.makingMarketAgx}
-              </Text>
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard label={stats.smallAreaPerformance}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {stats.smallAreaPerformance}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                variant="headline"
-              >
-                {statsView.smallMarketUsd}
-              </Text>
-              <Text
-                as="p"
-                className="leading-none wrap-break-word text-foreground/40"
-                variant="copy"
-              >
-                {statsView.smallMarketAgx}
-              </Text>
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard label={stats.contribution}>
-            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
-              <Text
-                as="p"
-                className="min-w-0 leading-none font-medium wrap-break-word text-foreground/70"
-                variant="copy"
-              >
-                {stats.contribution}
-              </Text>
-              {/* Figma 去销毁 pill · coral；禁 Button sm→min-h-9；多语完整可见 */}
-              <button
-                className="inline-flex min-h-4 max-w-full shrink-0 items-center gap-0.5 rounded-full bg-coral-emphasis px-2 py-0.5 text-primary-foreground hover:opacity-90"
-                onClick={() => openExchangeView('burn')}
-                type="button"
-              >
-                <Text
-                  as="span"
-                  className="leading-none whitespace-nowrap"
-                  tone="inverse"
-                  variant="caption"
-                >
-                  {stats.goBurn}
+              {tile.labelAction != null ? (
+                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
+                  <Text
+                    as="p"
+                    className="min-w-0 leading-none font-medium wrap-break-word text-foreground/70"
+                    variant="copy"
+                  >
+                    {tile.label}
+                  </Text>
+                  {tile.labelAction}
+                </div>
+              ) : (
+                <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
+                  {tile.label}
                 </Text>
-                <Icon
+              )}
+              {tile.value != null ? (
+                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                  {tile.iconSrc != null ? (
+                    <Icon alt="" className="size-4.5 shrink-0" size="sm" src={tile.iconSrc} />
+                  ) : null}
+                  <Text
+                    as="p"
+                    className="leading-none font-semibold wrap-break-word"
+                    variant="headline"
+                  >
+                    <CountValue text={tile.value} />
+                  </Text>
+                  {tile.approx != null ? (
+                    <Text
+                      as="p"
+                      className="leading-none wrap-break-word text-foreground/40"
+                      variant="copy"
+                    >
+                      <CountValue text={tile.approx} />
+                    </Text>
+                  ) : null}
+                </div>
+              ) : null}
+              {tile.mutedBody != null ? (
+                <Text
+                  as="p"
+                  className="leading-none wrap-break-word text-foreground/40"
+                  variant="copy"
+                >
+                  {tile.mutedBody}
+                </Text>
+              ) : null}
+              {tile.decoSrc != null ? (
+                // Figma 62×88 → w-16 h-22；资产朝右，跟稿水平翻转；禁溢出圆角
+                <img
                   alt=""
-                  className="size-3.5 shrink-0"
-                  size="xs"
-                  src={dappAssets.rewardsHubGoBurnChevron}
+                  className="pointer-events-none absolute top-1.5 right-0 w-16 -scale-x-100 object-contain object-right max-dapp:hidden"
+                  src={tile.decoSrc}
                 />
-              </button>
-            </div>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                variant="headline"
-              >
-                {statsView.contributionValue.startsWith('$')
-                  ? statsView.contributionValue
-                  : `$${statsView.contributionValue}`}
-              </Text>
-              <Text
-                as="p"
-                className="leading-none wrap-break-word text-foreground/40"
-                variant="copy"
-              >
-                {stats.contributionHint}
-              </Text>
-            </div>
-          </RewardsStatCard>
-        </div>
+              ) : null}
+            </Card>
+          ))}
+        </OverviewGrid>
       </DappDetailBlock>
 
       <DappDetailBlock>

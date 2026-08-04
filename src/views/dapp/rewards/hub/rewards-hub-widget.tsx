@@ -143,7 +143,7 @@ export function RewardsHubWidget() {
                     {card.title}
                   </Text>
                   {isGenesis ? (
-                    <span className="inline-flex h-4.5 items-center rounded-full bg-primary-soft px-2">
+                    <span className="inline-flex items-center rounded-full bg-primary-soft px-2">
                       <Text as="span" className="leading-none" tone="primary" variant="caption">
                         {t.rewards.cards.genesis.badge}
                       </Text>

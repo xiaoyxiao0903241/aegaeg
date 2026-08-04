@@ -10,7 +10,7 @@ export const seasonCard = tv({
   slots: {
     root: [
       'flex shrink-0 flex-col gap-1.5 border bg-card p-3',
-      'min-h-31.25 w-35',
+      'w-35',
       'rounded-(--dapp-season-card-radius)',
     ],
     /** Display size only — weight/leading/tracking from Text variant unless noted. */

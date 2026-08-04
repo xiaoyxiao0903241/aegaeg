@@ -97,7 +97,7 @@ export function AssetsXminePositionCard({
   return (
     <Card surface="outlined" className="grid gap-2">
       <div className="flex items-center gap-2">
-        <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs leading-none text-muted-foreground">
+        <span className="inline-flex items-center rounded-full bg-muted px-3 text-xs leading-none text-muted-foreground">
           {periodPill}
         </span>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
@@ -118,7 +118,7 @@ export function AssetsXminePositionCard({
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
           {/* Figma `4525:797` chip 锁 12 · 与仓位共用 assetsPositionLock */}
-          <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+          <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
             <Icon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
             <Text as="span" className="leading-none text-primary" variant="support">
               {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX

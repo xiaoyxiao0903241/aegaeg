@@ -28,7 +28,7 @@ export function RewardsGenesisClaimWidget() {
       />
       <DappWidgetStack className="gap-4">
         {/* level-dark 4413:615 — root 须 flex 才能吃 gap-3.5(14)；左栏卡间稿 gap16→gap-4 */}
-        <div className={banner.root({ className: 'flex min-h-42.75 flex-col gap-3.5 p-4' })}>
+        <div className={banner.root({ className: 'flex flex-col gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
             <Text as="p" className="font-medium" tone="primary-bright" variant="caption">
               {t.rewards.heroKicker}
@@ -71,7 +71,7 @@ export function RewardsGenesisClaimWidget() {
               </Text>
             </div>
             <ProgressMeter
-              className="h-1.5 bg-white/12"
+              className="bg-white/12"
               label={vm.personalProgressLabel}
               value={vm.personalProgressPercent}
             />
@@ -86,7 +86,7 @@ export function RewardsGenesisClaimWidget() {
               </Text>
             </div>
             <ProgressMeter
-              className="h-1.5 bg-white/12"
+              className="bg-white/12"
               label={t.rewards.teamVolume}
               value={vm.teamProgressPercent}
             />
@@ -94,7 +94,7 @@ export function RewardsGenesisClaimWidget() {
         </div>
 
         {/* 直推 4413:634 · 自动支付 coral */}
-        <Card surface="outlined" className="min-h-25 rounded-2xl px-5 py-4">
+        <Card surface="outlined" className="rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.referralRewards}
@@ -112,7 +112,7 @@ export function RewardsGenesisClaimWidget() {
         </Card>
 
         {/* 等级奖励 4413:640 · 右侧累计 body70 */}
-        <Card surface="outlined" className="min-h-31.25 rounded-2xl px-5 py-3.5">
+        <Card surface="outlined" className="rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.teamRewards}
@@ -144,7 +144,7 @@ export function RewardsGenesisClaimWidget() {
         </Card>
 
         {/* 发展基金 4413:647 */}
-        <Card surface="outlined" className="min-h-31.25 rounded-2xl px-5 py-3.5">
+        <Card surface="outlined" className="rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.communityFund}

@@ -24,7 +24,7 @@ export function RewardsGenesisContent() {
         <DappContentHeading>{t.rewards.heroTitle}</DappContentHeading>
         <div
           className={banner.root({
-            className: 'mt-4 min-h-34 overflow-visible p-6 max-dapp:p-4.5',
+            className: 'mt-4 overflow-visible p-6 max-dapp:p-4.5',
           })}
         >
           <div className={banner.content({ className: 'min-w-0 flex-1 pr-36 max-dapp:pr-0' })}>
@@ -61,7 +61,7 @@ export function RewardsGenesisContent() {
           {/* Figma 4719:2483 IP动作3 · 103×155 → rem；无镜像；素材 2026-08-03 自稿重导 */}
           <img
             alt=""
-            className="pointer-events-none absolute top-1.5 right-6.5 z-0 hidden h-38.75 w-25.75 object-contain select-none md:block"
+            className="pointer-events-none absolute top-1.5 right-6.5 z-0 hidden w-25.75 object-contain select-none md:block"
             height="155"
             loading="lazy"
             src={dappAssets.rewardsCharacter}

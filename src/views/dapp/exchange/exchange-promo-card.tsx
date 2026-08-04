@@ -20,7 +20,7 @@ const exchangePromoCard = tv({
     body: 'm-0 min-w-0 wrap-break-word',
     titleIcon: 'grid shrink-0 overflow-hidden rounded-full',
     mobileActionWrap: 'inline-flex shrink-0 self-center',
-    decorationMobile: 'pointer-events-none absolute top-0 right-0 h-18 w-30',
+    decorationMobile: 'pointer-events-none absolute top-0 right-0 w-30',
     decorationDesktop:
       'pointer-events-none absolute inset-y-0 right-0 h-full w-80 object-cover object-right',
   },

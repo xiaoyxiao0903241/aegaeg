@@ -43,7 +43,7 @@ export function StakingHubWidget() {
           const { title, body } = copy[mode.view]
           return (
             <InteractiveCard
-              className="flex min-h-17.5 items-center gap-3"
+              className="flex items-center gap-3"
               key={mode.view}
               onClick={() => openStakingView(mode.view)}
               tourId={mode.tourId}

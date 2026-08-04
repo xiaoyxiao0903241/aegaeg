@@ -142,7 +142,7 @@ export function ReleaseBufferContent() {
         {/* Figma `4791:3688`：px20 py16 gap8 · 黑圆 24 + 字 16 · 三列 w160 */}
         <Card
           as="div"
-          className="mb-3 grid min-h-29.75 content-center gap-2 rounded-2xl px-5 py-3"
+          className="mb-3 grid content-center gap-2 rounded-2xl px-5 py-3"
           data-slot-id="release-buffer-stat-agx"
           surface="elevated"
         >
@@ -163,7 +163,7 @@ export function ReleaseBufferContent() {
         </Card>
         <Card
           as="div"
-          className="grid min-h-29.75 content-center gap-2 rounded-2xl px-5 py-3"
+          className="grid content-center gap-2 rounded-2xl px-5 py-3"
           data-slot-id="release-buffer-stat-gagx"
           surface="elevated"
         >
@@ -247,7 +247,7 @@ export function ReleaseBufferContent() {
                   </div>
                   {!isLast ? (
                     <span
-                      className="hidden h-6 shrink-0 items-center justify-center lg:flex lg:flex-1"
+                      className="hidden shrink-0 items-center justify-center lg:flex lg:flex-1"
                       data-slot-id={`release-buffer-mech-conn-${index}`}
                     >
                       <img

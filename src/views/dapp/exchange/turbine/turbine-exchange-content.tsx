@@ -4,7 +4,9 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { OverviewGrid } from '~/app/shell/overview-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useTurbineLogs } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
@@ -14,7 +16,6 @@ import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
-import { cn } from '~/shared/lib/utils'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
 /** Overview label scalars — unlockAmount draft must not wake Content. */
@@ -65,17 +66,14 @@ export function TurbineExchangeContent({
         <DappContentHeading className="pb-0" id="exchange-title">
           {t.exchange.turbine.dataTitle}
         </DappContentHeading>
-        <div className={cn('grid grid-cols-3 gap-4', 'max-dapp:grid-cols-1 max-dapp:gap-3')}>
+        {/* Figma H5：三卡竖排 */}
+        <OverviewGrid columns={3} stackOnDapp>
           {overviewMetrics.map((metric) => (
-            <Card
+            <Tile
               key={metric.label}
-              surface="elevated"
-              // Figma `4436:223` stat：p16 · 三行；稿高 100（禁任意 px；用间距收 Δ）
-              className="flex h-25 flex-col justify-between rounded-md border-0 p-4 shadow-card"
+              label={metric.label}
+              note={<CountValue text={`≈ ${metric.usd || '0.00'}`} />}
             >
-              <Text as="p" variant="support" tone="muted-foreground" className="m-0 font-medium">
-                {metric.label}
-              </Text>
               <div className="flex items-center gap-2">
                 <Icon
                   alt=""
@@ -83,16 +81,13 @@ export function TurbineExchangeContent({
                   size="rail"
                   src={tokenCarouselIcons.gagxIcon}
                 />
-                <Text as="strong" variant="copy" className="m-0 text-base leading-5 font-semibold">
+                <Text as="strong" className="m-0 text-base leading-5 font-semibold" variant="copy">
                   <CountValue text={`${metric.amount} gAGX`} />
                 </Text>
               </div>
-              <Text as="p" variant="support" className="m-0 text-foreground/40">
-                <CountValue text={`≈ ${metric.usd || '0.00'}`} />
-              </Text>
-            </Card>
+            </Tile>
           ))}
-        </div>
+        </OverviewGrid>
       </section>
 
       <DappDetailBlock>

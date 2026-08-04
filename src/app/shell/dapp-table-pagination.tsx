@@ -239,7 +239,7 @@ export function DappTablePagination({
                 aria-haspopup="listbox"
                 className={cn(
                   // 稿 page-indicator 61×24
-                  'inline-flex h-6 min-w-15.25 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
+                  'inline-flex min-w-15.25 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
                   PAGINATION_BTN_RADIUS,
                   'bg-accent',
                 )}
@@ -294,7 +294,7 @@ export function DappTablePagination({
                           >
                             <button
                               className={cn(
-                                'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
+                                'flex w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
                                 active
                                   ? 'bg-accent font-semibold text-coral'
                                   : 'bg-card text-foreground',

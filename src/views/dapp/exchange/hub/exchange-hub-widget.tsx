@@ -13,23 +13,12 @@ import { openExchangeView } from '~/shared/config/dapp-open-views'
 const EXCHANGE_MODES: readonly {
   view: Exclude<ExchangeView, 'hub'>
   icon: string
-  minHeight: string
   tourId?: string
 }[] = [
-  { view: 'flash', icon: exchangeHubAssets.modeFlash, minHeight: 'min-h-22' },
-  {
-    view: 'trade',
-    icon: exchangeHubAssets.modeTrade,
-    minHeight: 'min-h-17.5',
-    tourId: 'swap-trade',
-  },
-  { view: 'burn', icon: exchangeHubAssets.modeBurn, minHeight: 'min-h-17.5' },
-  {
-    view: 'turbine',
-    icon: exchangeHubAssets.modeTurbine,
-    minHeight: 'min-h-17.5',
-    tourId: 'swap-turbine',
-  },
+  { view: 'flash', icon: exchangeHubAssets.modeFlash },
+  { view: 'trade', icon: exchangeHubAssets.modeTrade, tourId: 'swap-trade' },
+  { view: 'burn', icon: exchangeHubAssets.modeBurn },
+  { view: 'turbine', icon: exchangeHubAssets.modeTurbine, tourId: 'swap-turbine' },
 ]
 
 export function ExchangeHubWidget() {
@@ -50,7 +39,7 @@ export function ExchangeHubWidget() {
           const text = copy[mode.view]
           return (
             <InteractiveCard
-              className={`flex items-center gap-3 ${mode.minHeight}`}
+              className="flex items-center gap-3"
               key={mode.view}
               onClick={() => openExchangeView(mode.view)}
               tourId={mode.tourId}

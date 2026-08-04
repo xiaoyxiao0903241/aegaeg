@@ -311,6 +311,14 @@ test('metricDisplayText keeps prior on empty flash', async () => {
   })
 })
 
+test('parseLeadingMetricNumber: rebase countdown suffix still has digits (no DigitReel)', async () => {
+  const { parseLeadingMetricNumber } = await loadModule('/src/shared/components/count-value.tsx')
+  const parsed = parseLeadingMetricNumber('08 小时 27 分钟 13 秒')
+  assert.ok(parsed)
+  assert.equal(parsed.raw, '08')
+  assert.match(parsed.suffix, /\d/)
+})
+
 test('viewsNeedingProvider mounts only active swap subviews', async () => {
   const { viewsNeedingProvider } = await loadModule(
     '/src/views/dapp/exchange/exchange-views-needing-provider.ts',

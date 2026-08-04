@@ -42,7 +42,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             value={vm.cobuildRewardType}
           />
         ) : null}
-        <Card surface="outlined" className="min-h-19.75">
+        <Card surface="outlined">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
               <Text as="p" className="leading-4 text-foreground/40" variant="copy">
@@ -116,7 +116,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         </Card>
 
         {/* Figma 4393:244 领取卡：coral-soft + border 35% · gap8 · p16 · 标题 body16 */}
-        <div className="grid min-h-33.75 gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
+        <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 font-normal text-primary" variant="headline">
               {t.rewards.claim}
@@ -141,7 +141,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         </div>
 
         {/* Figma 4394:233 复投卡：mint #f3fdf6 + success 边/字 */}
-        <div className="grid min-h-33.75 gap-2 rounded-2xl border border-success/35 bg-success-soft p-4">
+        <div className="grid gap-2 rounded-2xl border border-success/35 bg-success-soft p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 font-normal text-success" variant="headline">
               {vm.mixed.restakeLabel}
@@ -167,21 +167,21 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
         {vm.walletReady ? (
           <DappActionButton
-            className="min-h-13 !py-2 !font-normal"
+            className="min-h-13 py-2! font-normal!"
             density="external"
             disabled={!vm.canConfirm}
             loading={vm.submitting}
             onClick={vm.onConfirm}
           >
             {/* Figma 4394:248：高 52 · 双行；detail + leading-4（标准刻度，禁任意 rem） */}
-            <span className="flex flex-col items-start gap-0.5 text-left !font-normal text-white">
-              <Text as="span" className="leading-4 !font-normal text-white" variant="detail">
+            <span className="flex flex-col items-start gap-0.5 text-left font-normal! text-white">
+              <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
                 {vm.mixed.ctaReleaseLine.replace(
                   '{amount}',
                   `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,
                 )}
               </Text>
-              <Text as="span" className="leading-4 !font-normal text-white" variant="detail">
+              <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
                 {vm.mixed.ctaRestakeLine.replace(
                   '{amount}',
                   `${vm.restakeAmountText} ${vm.mixed.tokenGagx}`,

@@ -95,13 +95,10 @@ export function ReleaseQueueWidget() {
                 </div>
 
                 <div
-                  className="h-1.5 overflow-hidden rounded-full bg-muted"
+                  className="overflow-hidden rounded-full bg-muted"
                   data-slot-id={`release-queue-bar-${row.days}`}
                 >
-                  <div
-                    className="h-full rounded-full bg-primary"
-                    style={{ width: row.progressWidth }}
-                  />
+                  <div className="rounded-full bg-primary" style={{ width: row.progressWidth }} />
                 </div>
 
                 <div className="flex justify-between gap-2">

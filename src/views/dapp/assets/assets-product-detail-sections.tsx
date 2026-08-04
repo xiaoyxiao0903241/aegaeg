@@ -6,8 +6,9 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { OverviewGrid } from '~/app/shell/overview-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
-import { Card } from '~/shared/components/card'
+import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList, type FaqListItem } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
@@ -25,7 +26,8 @@ export function AssetsProductDetailSections({
   statsTitle,
   metrics,
   values,
-  metricsGridClassName = 'grid grid-cols-2 gap-3',
+  /** 等列 OverviewGrid；`upper3-lower2` = LP/Burn 上三下二 span（gap 对齐 OverviewGrid） */
+  metricsLayout = 2,
   opsTitle,
   opsEmpty,
   opsColumns,
@@ -38,7 +40,7 @@ export function AssetsProductDetailSections({
   statsTitle: string
   metrics: ReadonlyArray<{ label: string }>
   values: ReadonlyArray<AssetsDetailMetricCell | undefined>
-  metricsGridClassName?: string
+  metricsLayout?: 2 | 3 | 'upper3-lower2'
   opsTitle: string
   opsEmpty: string
   opsColumns: ReadonlyArray<string>
@@ -54,54 +56,43 @@ export function AssetsProductDetailSections({
   faqTitle: string
   faqItems: ReadonlyArray<FaqListItem>
 }) {
+  const tiles = metrics.map((metric, index) => {
+    const cell = values[index]
+    const iconSrc =
+      cell?.icon === 'agx'
+        ? tokenCarouselIcons.agxIcon
+        : cell?.icon === 'gagx'
+          ? tokenCarouselIcons.gagxIcon
+          : cell?.icon === 'x'
+            ? tokenCarouselIcons.xIcon
+            : null
+    return (
+      <Tile
+        key={metric.label}
+        label={metric.label}
+        note={cell?.approx != null ? <CountValue text={cell.approx} /> : undefined}
+      >
+        <div className="flex items-center gap-1.5">
+          {iconSrc ? <Icon alt="" className="rounded-control" size="lg" src={iconSrc} /> : null}
+          <Text as="strong" className="text-base leading-5 font-semibold" variant="copy">
+            <CountValue text={cell?.value ?? '0.00'} />
+          </Text>
+        </div>
+      </Tile>
+    )
+  })
+
   return (
     <>
       <DappDetailBlock>
         <DappContentHeading>{statsTitle}</DappContentHeading>
-        <div className={metricsGridClassName}>
-          {metrics.map((metric, index) => {
-            const cell = values[index]
-            const iconSrc =
-              cell?.icon === 'agx'
-                ? tokenCarouselIcons.agxIcon
-                : cell?.icon === 'gagx'
-                  ? tokenCarouselIcons.gagxIcon
-                  : cell?.icon === 'x'
-                    ? tokenCarouselIcons.xIcon
-                    : null
-            return (
-              // Figma 仓位数据 stat 94：min-h-23.5 + support leading（禁 h-[94px]）
-              <Card
-                as="div"
-                className="grid min-h-23.5 gap-1 rounded-2xl p-4"
-                key={metric.label}
-                surface="elevated"
-              >
-                <Text
-                  as="span"
-                  className="leading-4 font-medium text-foreground/40"
-                  variant="support"
-                >
-                  {metric.label}
-                </Text>
-                <div className="flex items-center gap-1.5">
-                  {iconSrc ? (
-                    <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
-                  ) : null}
-                  {/* 稿 stat value SemiBold 16 */}
-                  <Text as="strong" className="text-base leading-5 font-semibold" variant="copy">
-                    <CountValue text={cell?.value ?? '0.00'} />
-                  </Text>
-                </div>
-                {cell?.approx != null ? (
-                  <Text as="span" className="leading-4 text-foreground/40" variant="support">
-                    <CountValue text={cell.approx} />
-                  </Text>
-                ) : null}
-              </Card>
-            )
-          })}
-        </div>
+        {metricsLayout === 'upper3-lower2' ? (
+          <div className="grid grid-cols-2 gap-3 dapp:grid-cols-6 max-dapp:min-w-0 max-dapp:gap-2.5 dapp:[&>*]:col-span-2 max-dapp:[&>*]:min-w-0 dapp:[&>*:nth-child(n+4)]:col-span-3">
+            {tiles}
+          </div>
+        ) : (
+          <OverviewGrid columns={metricsLayout}>{tiles}</OverviewGrid>
+        )}
       </DappDetailBlock>
 
       <DappDetailBlock>

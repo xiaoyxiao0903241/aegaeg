@@ -75,12 +75,12 @@ const exchangeTokenAboutCarousel = tv({
     {
       layout: 'desktop',
       dotActive: true,
-      class: { dot: 'h-1.5 w-5.5 bg-primary' },
+      class: { dot: 'w-5.5 bg-primary' },
     },
     {
       layout: 'mobile',
       dotActive: true,
-      class: { dot: 'h-1.5 w-4.5 bg-primary' },
+      class: { dot: 'w-4.5 bg-primary' },
     },
     {
       layout: 'desktop',
@@ -148,7 +148,6 @@ function TokenCarouselCard({
         body={token.body}
         rays="muted"
         reveal={false}
-        shellClassName={isDesktop ? 'min-h-30' : undefined}
         title={token.title}
         titleIconSrc={token.asset}
       />

@@ -44,13 +44,13 @@ const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undef
 const CONTRIBUTION_CARD_INDEX = 5
 
 /**
- * Exchange hub right-rail tile — Figma `4323:704` h70.
- * `min-h-17.5` + `px-4 py-3` 合成稿高（禁 `h-[70px]`）；grid `size-full` 拉齐行高。
+ * Exchange hub right-rail tile — Figma `4323:704`.
+ * 高度由内容 + pad；同行等高靠父级 grid `items-stretch`（禁 min-h / size-full / h-*）。
  * No onClick → `article`（同视觉）；禁 HTML `disabled`（会毁 elevation）。
  */
 const exchangeProgramCard = tv({
-  // p-0：清 elevated 默认 pad，改由 px/py 合成稿高
-  base: 'flex size-full min-h-17.5 p-0 px-4 py-3 text-left',
+  // p-0：清 elevated 默认 pad，改由 px/py
+  base: 'flex w-full p-0 px-4 py-3 text-left',
   variants: {
     hasIcon: {
       true: 'items-center justify-between gap-2',
@@ -76,7 +76,7 @@ function ProgramCoinIcon({ icon }: { icon: readonly [string] | readonly [string,
     )
   }
 
-  // Dual overlap: size-7 + left-6 offset → track w-13 (Tailwind spacing tokens).
+  // Dual overlap: 轨必须 h-7（稿 coins 28px）；绝对定位不占流，无高则塌 0，父 items-center 失效。
   return (
     <span className="relative flex h-7 w-13 shrink-0 items-center">
       <img
@@ -149,7 +149,7 @@ export function ExchangeProgramCards() {
       : formatBurnContributionRatioColon(configQuery.data.rateBps)
 
   return (
-    <div className="grid auto-rows-fr gap-2 dapp:grid-cols-2 dapp:gap-x-2.5">
+    <div className="grid gap-2 dapp:grid-cols-2 dapp:gap-x-2.5">
       {cards.map((card, index) => {
         const target = PROGRAM_TARGETS[index] ?? null
         const body =

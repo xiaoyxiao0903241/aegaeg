@@ -81,7 +81,7 @@ function SeasonCard({
   return (
     <article aria-checked={selected} className={styles.root()} role="radio">
       <div className="flex w-full flex-col gap-0.75 overflow-hidden">
-        <div className="flex h-4.5 items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1">
           <Text as="strong" variant="headline" className={styles.title()}>
             {season.name}
           </Text>
@@ -233,7 +233,7 @@ export function SeasonSelector({
                     aria-hidden="true"
                     className={cn(
                       'duration-dapp-base block rounded-full bg-border transition-[width,background-color] ease-out',
-                      current === index ? 'h-1.75 w-5.5 bg-primary' : 'size-1.75',
+                      current === index ? 'w-5.5 bg-primary' : 'size-1.75',
                     )}
                   />
                 </button>

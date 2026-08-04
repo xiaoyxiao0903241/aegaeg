@@ -23,7 +23,7 @@ const communityStatCard = tv({
     // Figma `4301:213`：p16 · gap4 · elevated 白卡 / inverse 暗卡
     root: cn(
       revealClass(),
-      'community-stat relative flex min-h-25.25 flex-col items-start gap-1 overflow-clip rounded-2xl p-4',
+      'community-stat relative flex flex-col items-start gap-1 overflow-clip rounded-2xl p-4',
       communityStatCardMobileShell(),
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),

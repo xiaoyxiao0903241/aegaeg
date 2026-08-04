@@ -32,7 +32,7 @@ export function AssetsHubContent() {
         {/* Figma PC `4284:213` 右侧几何底纹；H5 `4645:650` 底纹在屏外 = 可见无底纹 → max-dapp 隐藏 */}
         <Card
           surface="inverse"
-          className="relative flex min-h-29 items-center overflow-hidden p-4 max-dapp:min-h-60 max-dapp:items-start max-dapp:pt-7.5 max-dapp:pb-4"
+          className="relative flex items-center overflow-hidden p-4 max-dapp:items-start max-dapp:pt-7.5 max-dapp:pb-4"
         >
           <img
             alt=""
@@ -99,8 +99,8 @@ export function AssetsHubContent() {
 
         {/* H5 `4645:682`：持仓/缓冲纵向 gap-8；PC 仍两列 */}
         <div className="mt-2 grid gap-2 sm:grid-cols-2 max-dapp:gap-2">
-          {/* Figma 持仓/缓冲 110：min-h-27.5 + elevated（禁 h-[110px]） */}
-          <Card surface="elevated" className="grid min-h-27.5 gap-1.5 p-4 shadow-card">
+          {/* Figma 持仓/缓冲 elevated；高度由内容，同行靠 grid stretch */}
+          <Card surface="elevated" className="grid gap-1.5">
             {/* Figma 持仓标题 13 medium → copy（禁 support 12） */}
             <Text as="span" className="leading-4 font-medium" variant="copy">
               {overview.holdingsTitle}
@@ -120,7 +120,7 @@ export function AssetsHubContent() {
             </div>
           </Card>
 
-          <Card surface="elevated" className="grid min-h-27.5 gap-1.5 p-4 shadow-card">
+          <Card surface="elevated" className="grid gap-1.5">
             <div className="flex items-center justify-between gap-2">
               <Text as="span" className="leading-4 font-medium" variant="copy">
                 {overview.bufferTitle}
@@ -164,7 +164,7 @@ export function AssetsHubContent() {
           与持仓/缓冲 elevated 刻意不同；勿升为 shadow-card。
         */}
         {/* Figma `4284:257` empty：surface 白底 + dashed · py≈45 → py-11（禁 py-[45px]） */}
-        <div className="flex min-h-27 items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-11">
+        <div className="flex items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-11">
           {/* Figma empty copy 13 + muted 40%（禁 support12 / muted-foreground 70%） */}
           <Text as="p" className="text-center leading-4.5 text-foreground/40" variant="copy">
             {t.assets.hub.distribution.empty}
@@ -181,7 +181,7 @@ export function AssetsHubContent() {
         {/*
           Rebase/card：PC `4285:214` 横轴四列；H5 `4645:728` 竖向时间轴 + tags 无灰底条
         */}
-        <Card surface="elevated" className="grid gap-1.5 px-4 py-6 shadow-card">
+        <Card surface="elevated" className="grid gap-1.5 py-6">
           {/* H5 `4645:728`：左珊瑚点 + 竖线轨道 */}
           <ol className="m-0 flex list-none flex-col p-0 dapp:hidden">
             {rebase.steps.map((step, index) => (
@@ -205,8 +205,8 @@ export function AssetsHubContent() {
           </ol>
 
           {/* PC 横轴 */}
-          <div className="relative hidden h-2.5 grid-cols-4 items-center dapp:grid">
-            <div className="absolute top-1/2 right-[12.5%] left-[12.5%] h-0.5 -translate-y-1/2 bg-border" />
+          <div className="relative hidden grid-cols-4 items-center dapp:grid">
+            <div className="absolute top-1/2 right-[12.5%] left-[12.5%] -translate-y-1/2 bg-border" />
             {rebase.steps.map((step) => (
               <span
                 className="relative z-1 flex justify-center"
@@ -219,7 +219,7 @@ export function AssetsHubContent() {
 
           <ol className="m-0 hidden list-none grid-cols-4 gap-2 p-0 dapp:grid">
             {rebase.steps.map((step) => (
-              <li className="min-h-25.5 px-1 pt-4 text-center" key={step.title + step.body}>
+              <li className="px-1 pt-4 text-center" key={step.title + step.body}>
                 <Text as="p" className="leading-5 font-bold" variant="headline">
                   {step.title}
                 </Text>

@@ -88,8 +88,10 @@ export function CountValue({
   if (retain !== retained) setRetained(retain)
 
   const parsed = parseLeadingMetricNumber(display)
+  // 多段数字（倒计时 `08 小时 27 分钟…`）禁 DigitReel：只卷首位会裁成空白/残缺
+  const multiNumeric = parsed != null && /\d/.test(parsed.suffix)
 
-  if (!animate || parsed == null) {
+  if (!animate || parsed == null || multiNumeric) {
     return <Comp className={cn(className)}>{display}</Comp>
   }
 

@@ -12,18 +12,18 @@ type AboutWash = 'lavender' | 'none'
  * DApp about 轮播卡。
  * - 奖励 Figma `4297:213`：E3 · px16 py24 · lavender wash；人物仅 PC（`-scale-x-100` 朝左）
  * - 卡壳 **必须** `overflow-hidden`：稿 `overflow-clip`，wash / 人物均不得超出圆角
- * - 正文用 min-h + 换行增高；禁定高裁切（与右栏瓦不同：瓦曾用 h-18.5）
+ * - 正文随换行增高；禁 Card `h-*` / `min-h-*`（同行等高交给轮播/grid stretch）
  * - 兑换 Token 卡仍走 `ExchangePromoCard`
  */
 const aboutCard = tv({
   slots: {
     shell:
-      'relative flex min-h-30 min-w-0 flex-col justify-center overflow-hidden rounded-2xl px-4 py-6 shadow-subtle',
+      'relative flex min-w-0 flex-col justify-center overflow-hidden rounded-2xl px-4 py-6 shadow-subtle',
     washLavender:
-      'pointer-events-none absolute -top-2 right-0 h-42 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
+      'pointer-events-none absolute -top-2 right-0 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
     body: 'relative z-1 grid min-w-0 gap-3',
     /** Figma 4297:213 mascot ≈101×143 → w-25 h-36；IP 水平翻转朝左；仅 desktop；壳 overflow-clip 裁切 */
-    deco: 'pointer-events-none absolute top-2 right-4 z-2 h-36 w-25 -scale-x-100 object-contain object-bottom',
+    deco: 'pointer-events-none absolute top-2 right-4 z-2 w-25 -scale-x-100 object-contain object-bottom',
   },
   variants: {
     withDeco: {

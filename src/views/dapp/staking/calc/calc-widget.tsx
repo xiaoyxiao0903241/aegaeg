@@ -34,7 +34,7 @@ function CalcHtabRow({
         return (
           <Chip
             aria-selected={active}
-            className="h-7 min-w-0 flex-1 px-4 font-medium"
+            className="min-w-0 flex-1 px-4 font-medium"
             key={option.value}
             onClick={() => onChange(option.value)}
             role="tab"

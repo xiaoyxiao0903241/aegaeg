@@ -4,11 +4,14 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Tile } from '~/app/shell/tile'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
+import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsGrantContentView } from '~/views/dapp/rewards/detail/use-rewards-grant-content-view'
-import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
 export function RewardsGrantContent() {
   const {
@@ -26,14 +29,28 @@ export function RewardsGrantContent() {
     recordsTotal,
   } = useRewardsGrantContentView()
 
+  const overviewTiles = [
+    { key: 'tier', label: grant.tier, value: tier },
+    { key: 'totalClaimed', label: grant.totalClaimed, value: totalClaimed },
+  ]
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{grant.dataTitle}</DappContentHeading>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={grant.tier} value={tier} />
-          <RewardsStatCard label={grant.totalClaimed} value={totalClaimed} />
-        </div>
+        <OverviewGrid className="mt-4" columns={2}>
+          {overviewTiles.map((item) => (
+            <Tile key={item.key} label={item.label}>
+              <Text
+                as="strong"
+                className="leading-none font-semibold wrap-break-word"
+                variant="headline"
+              >
+                <CountValue text={item.value} />
+              </Text>
+            </Tile>
+          ))}
+        </OverviewGrid>
       </DappDetailBlock>
 
       <DappDetailBlock>

@@ -15,7 +15,7 @@ const communityReferrerBindGrid = tv({
 
 /** Figma `4300:370` 行：avatar24 + 地址 + copy30 灰底（非整行灰条） */
 const communityReferrerAddressRow = tv({
-  base: 'flex h-7.5 w-full items-center',
+  base: 'flex w-full items-center',
 })
 
 const communityReferrerAvatar = tv({
@@ -40,7 +40,7 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <DappSideCard className="min-h-30 gap-2 rounded-2xl px-4 py-3.5">
+    <DappSideCard className="gap-2 rounded-2xl px-4 py-3.5">
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {linkLabel}
       </Text>

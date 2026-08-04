@@ -1,7 +1,8 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { MetricGrid } from '~/app/shell/metric-grid'
+import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
@@ -9,11 +10,11 @@ import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/to
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exchange-history-section'
-import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
 
@@ -91,29 +92,48 @@ export function BurnExchangeContent({
     <DappDetailPage>
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
-        <MetricGrid columns={2}>
-          <ExchangeMetricCard label={t.exchange.burn.burnRate} value={overviewRateLabel || '0'} />
-          <ExchangeMetricCard
-            label={t.exchange.burn.metrics.totalBurnedAgx}
-            value={
-              <>
-                {burnedAgxLabel}
-                <Text as="span" variant="copy" tone="muted-foreground" className="text-xs">
-                  {' '}
-                  {burnedUsdApprox}
-                </Text>
-              </>
-            }
-          />
-          <ExchangeMetricCard
-            label={t.exchange.burn.metrics.totalEarnedContribution}
-            value={earnedLabel}
-          />
-          <ExchangeMetricCard
-            label={t.exchange.burn.metrics.totalConsumedContribution}
-            value={consumedLabel}
-          />
-        </MetricGrid>
+        <OverviewGrid columns={2}>
+          {(
+            [
+              { key: 'rate', label: t.exchange.burn.burnRate, value: overviewRateLabel || '0' },
+              {
+                key: 'burned',
+                label: t.exchange.burn.metrics.totalBurnedAgx,
+                value: burnedAgxLabel,
+                valueHint: burnedUsdApprox || undefined,
+              },
+              {
+                key: 'earned',
+                label: t.exchange.burn.metrics.totalEarnedContribution,
+                value: earnedLabel,
+              },
+              {
+                key: 'consumed',
+                label: t.exchange.burn.metrics.totalConsumedContribution,
+                value: consumedLabel,
+              },
+            ] as const
+          ).map((item) => (
+            <Tile key={item.key} label={item.label}>
+              <Text
+                as="strong"
+                className="text-base/5 font-semibold tracking-normal"
+                variant="headline"
+              >
+                {'valueHint' in item && item.valueHint != null ? (
+                  <span className="inline-flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                    <CountValue text={item.value} />
+                    <Text as="span" className="text-xs" tone="muted-foreground" variant="copy">
+                      {item.valueHint}
+                    </Text>
+                  </span>
+                ) : (
+                  <CountValue text={item.value} />
+                )}
+              </Text>
+            </Tile>
+          ))}
+        </OverviewGrid>
       </section>
 
       <DappDetailBlock>

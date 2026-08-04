@@ -141,7 +141,7 @@
 | surface  | Elevation            | radius               | padding                       | 用途                                                                                                             |
 | -------- | -------------------- | -------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta / `DappSideCard`；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`） |
-| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-3.5` (14px)                | MetricCard、`ExchangeProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）            |
+| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）        |
 | soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）                    |
 | inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                                 |
 
@@ -154,7 +154,7 @@
 **禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
 **Composite 豁免（须文档）**：`CommunityStatCard` / `ExchangePromoCard` 可用 className 抹平 radius/pad，**禁止**再叠 `shadow-*` 改 elevation。
 **依赖**：Text（§2）
-**探针**：InteractiveCard hub · program-card · faq card layout · metric-card · community-stat · swap-promo
+**探针**：InteractiveCard hub · program-card · faq card layout · elevated 右栏瓦 · community-stat · swap-promo
 **Gate**：`surface` 键 = **4**
 
 ---
@@ -186,18 +186,19 @@
 
 按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-| Composite          | Figma 层           | 核心 props                                                      | 提升理由                                                     |
-| ------------------ | ------------------ | --------------------------------------------------------------- | ------------------------------------------------------------ |
-| `TopBar`           | topbar / tb / tr   | `wallet`, `network`, `locale`                                   | 全局 shell                                                   |
-| `NavRail`          | rail / rit         | `items`, `activeTab`, `onSelect`                                | 4 页共用                                                     |
-| `PanelHeader`      | wh                 | `title`, `subtitle`, `action`                                   | 4 页共用                                                     |
-| `AmountBox`        | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady`                     | 金额输入卡                                                   |
-| `Segment`          | seg / pcts / htab  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n       |
-| `ClaimSplitSlider` | slider `4812:221`  | `value` (release%), `onChange`, `aria-label`                    | 双色轨 + `%` thumb；Radix；文案由 call site 传入             |
-| `MetricCard`       | sc / mc            | `label`, `value`, `hint`, `tone`                                | 跨页指标                                                     |
-| `ResponsiveTable`  | tbl / trow / cell  | `headers`, `rows`, …                                            | DApp 表；壳见 `DappTableCard`                                |
-| `Accordion`        | qa / qhd           | `items`, `variant`                                              | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`） |
-| `WidgetPromoCard`  | promo / pcard      | children                                                        | 深色 CTA 卡（`Card inverse`）                                |
+| Composite          | Figma 层                 | 核心 props                                                      | 提升理由                                                                    |
+| ------------------ | ------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `TopBar`           | topbar / tb / tr         | `wallet`, `network`, `locale`                                   | 全局 shell                                                                  |
+| `NavRail`          | rail / rit               | `items`, `activeTab`, `onSelect`                                | 4 页共用                                                                    |
+| `PanelHeader`      | wh                       | `title`, `subtitle`, `action`                                   | 4 页共用                                                                    |
+| `AmountBox`        | box / tk / rr / mx       | `token`, `value`, `balance`, `sessionReady`                     | 金额输入卡                                                                  |
+| `Segment`          | seg / pcts / htab        | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                      |
+| `ClaimSplitSlider` | slider `4812:221`        | `value` (release%), `onChange`, `aria-label`                    | 双色轨 + `%` thumb；Radix；文案由 call site 传入                            |
+| `Card` elevated    | —                        | children                                                        | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`）       |
+| `Tile`             | label · tooltip? · note? | children（主值 / 图标行）                                       | 右栏数据卡；tooltip=info；note=另起一行说明；禁 layout variant / MetricCard |
+| `ResponsiveTable`  | tbl / trow / cell        | `headers`, `rows`, …                                            | DApp 表；壳见 `DappTableCard`                                               |
+| `Accordion`        | qa / qhd                 | `items`, `variant`                                              | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）                |
+| `WidgetPromoCard`  | promo / pcard            | children                                                        | 深色 CTA 卡（`Card inverse`）                                               |
 
 **内部约定**：
 
@@ -239,14 +240,14 @@
 
 ## §9 组件地图
 
-| 层        | 文件 / 入口                                                                                        | Gate                       |
-| --------- | -------------------------------------------------------------------------------------------------- | -------------------------- |
-| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                          | §1                         |
-| Text      | `shared/components/text.tsx`                                                                       | 12 variant · 7 tone        |
-| Button    | `shared/components/button.tsx`                                                                     | 4×3×2                      |
-| Chip      | `shared/components/chip.tsx`                                                                       | 3×3×2×4                    |
-| Card      | `shared/components/card.tsx`                                                                       | 4 surface                  |
-| Input     | `shared/components/input.tsx`                                                                      | default / numeric / amount |
-| Composite | FaqList · WidgetPromoCard · MetricCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome       |
+| 层        | 文件 / 入口                                                                           | Gate                                                    |
+| --------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                             | §1                                                      |
+| Text      | `shared/components/text.tsx`                                                          | 12 variant · 7 tone                                     |
+| Button    | `shared/components/button.tsx`                                                        | 4×3×2                                                   |
+| Chip      | `shared/components/chip.tsx`                                                          | 3×3×2×4                                                 |
+| Card      | `shared/components/card.tsx`                                                          | 4 surface                                               |
+| Input     | `shared/components/input.tsx`                                                         | default / numeric / amount                              |
+| Composite | FaqList · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。

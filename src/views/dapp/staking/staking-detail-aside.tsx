@@ -7,25 +7,24 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { MetricGrid } from '~/app/shell/metric-grid'
+import { OverviewGrid } from '~/app/shell/overview-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
-import { MetricCard } from '~/shared/components/metric-card'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
-const metricCardClass = 'gap-1.5 p-4 [&>*:first-child]:leading-none'
-const metricValueClass = 'text-base leading-5 font-semibold tracking-normal'
-
 /**
  * 右栏指标排布 — 跟各帧稿面，不抽万能仓位组件。
- * - cards-2：概览/仓位 2×2（稿 gap 16）
+ * - cards-2：概览/仓位 2×2（OverviewGrid gap SSOT）
  * - triple-plus：6 列 span — PC 上三(span2)下二(span3)；H5 一律 span3=每行两卡
  * - pair-plus：Xmine 概览 — PC 上二(span3)下三(span2)；H5 一律 span3
+ * 等列走 OverviewGrid；span 布局自写列，gap 对齐 OverviewGrid（PC 3 · H5 2.5）。
  */
 function AsideMetricLayout({
   items,
@@ -37,43 +36,48 @@ function AsideMetricLayout({
   if (layout === 'triple-plus' || layout === 'pair-plus') {
     const pairFirst = layout === 'pair-plus'
     return (
-      <div className="grid grid-cols-6 gap-4 max-dapp:min-w-0 max-dapp:gap-2.5">
+      <div className="grid grid-cols-6 gap-3 max-dapp:min-w-0 max-dapp:gap-2.5 max-dapp:[&>*]:min-w-0">
         {items.map((item, index) => (
-          <MetricCard
+          <Tile
             className={cn(
-              metricCardClass,
               'min-w-0',
               pairFirst
-                ? // PC：前二 span3 → 一行两卡；其后 span2 → 一行三卡。H5：全 span3。
-                  index < 2
+                ? index < 2
                   ? 'col-span-3'
                   : 'col-span-2 max-dapp:col-span-3'
-                : // PC：前三 span2 → 一行三卡；其后 span3 → 一行两卡。H5：全 span3。
-                  index < 3
+                : index < 3
                   ? 'col-span-2 max-dapp:col-span-3'
                   : 'col-span-3',
             )}
             key={item.label}
             label={item.label}
-            value={item.value}
-            valueClassName={metricValueClass}
-          />
+          >
+            <Text
+              as="strong"
+              className="block min-w-0 text-base leading-5 font-semibold tracking-normal"
+              variant="headline"
+            >
+              {typeof item.value === 'string' ? <CountValue text={item.value} /> : item.value}
+            </Text>
+          </Tile>
         ))}
       </div>
     )
   }
   return (
-    <MetricGrid className="gap-4" columns={2}>
+    <OverviewGrid columns={2}>
       {items.map((item) => (
-        <MetricCard
-          className={metricCardClass}
-          key={item.label}
-          label={item.label}
-          value={item.value}
-          valueClassName={metricValueClass}
-        />
+        <Tile className="min-w-0" key={item.label} label={item.label}>
+          <Text
+            as="strong"
+            className="block min-w-0 text-base leading-5 font-semibold tracking-normal"
+            variant="headline"
+          >
+            {typeof item.value === 'string' ? <CountValue text={item.value} /> : item.value}
+          </Text>
+        </Tile>
       ))}
-    </MetricGrid>
+    </OverviewGrid>
   )
 }
 
@@ -213,7 +217,7 @@ export function StakingDetailAside({
         <div className="mb-4 flex items-center gap-2.5">
           <DappContentHeading className="m-0 pb-0">{t.staking.aside.positions}</DappContentHeading>
           <button
-            className="inline-flex h-5.25 items-center rounded-full bg-primary/15 px-2.5"
+            className="inline-flex items-center rounded-full bg-primary/15 px-2.5"
             onClick={() => selectTab('assets')}
             type="button"
           >

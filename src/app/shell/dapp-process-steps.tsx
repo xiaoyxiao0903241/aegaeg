@@ -51,7 +51,7 @@ export function DappProcessSteps({
                     aria-hidden
                     className={cn(
                       // H5 竖线 2px；PC 横线
-                      'min-h-4 w-0.5 flex-1 bg-border',
+                      'w-0.5 flex-1 bg-border',
                       'dapp:h-0.5 dapp:min-h-0 dapp:w-auto dapp:flex-1',
                     )}
                   />

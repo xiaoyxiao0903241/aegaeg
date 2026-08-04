@@ -4,16 +4,19 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Tile } from '~/app/shell/tile'
 import { Card } from '~/shared/components/card'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsCobuildContentView } from '~/views/dapp/rewards/detail/use-rewards-cobuild-content-view'
 import { NON_NUMERIC_EMPTY } from '~/views/dapp/rewards/rewards-display'
-import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
 /** Figma 4408:631 levelcard — 当前级 coral rate · 下级 muted rate · req 卡徽章+/目标 */
+
 export function RewardsCobuildContent() {
   const {
     cobuild,
@@ -44,22 +47,50 @@ export function RewardsCobuildContent() {
     recordsTabOptions,
   } = useRewardsCobuildContentView()
 
+  const overviewTiles = [
+    { key: 'totalRewards', label: cobuild.totalRewards, value: totalRewards },
+    { key: 'totalPerformance', label: cobuild.totalPerformance, value: totalPerformance },
+    { key: 'myPosition', label: cobuild.myPosition, value: myPosition },
+    { key: 'directCount', label: cobuild.directCount, value: referralCount },
+    {
+      key: 'contribution',
+      label: cobuild.contribution,
+      value: contributionValue,
+      valueHint: cobuild.contributionHint,
+    },
+    { key: 'nextPayout', label: cobuild.nextPayout, value: nextPayout },
+  ]
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{cobuild.dataTitle}</DappContentHeading>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={cobuild.totalRewards} value={totalRewards} />
-          <RewardsStatCard label={cobuild.totalPerformance} value={totalPerformance} />
-          <RewardsStatCard label={cobuild.myPosition} value={myPosition} />
-          <RewardsStatCard label={cobuild.directCount} value={referralCount} />
-          <RewardsStatCard
-            label={cobuild.contribution}
-            value={contributionValue}
-            valueHint={cobuild.contributionHint}
-          />
-          <RewardsStatCard label={cobuild.nextPayout} value={nextPayout} />
-        </div>
+        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
+        <OverviewGrid className="mt-4" columns={3}>
+          {overviewTiles.map((item) => (
+            <Tile key={item.key} label={item.label}>
+              <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                <Text
+                  as="strong"
+                  className="leading-none font-semibold wrap-break-word"
+                  variant="headline"
+                >
+                  <CountValue text={item.value} />
+                </Text>
+                {'valueHint' in item && item.valueHint != null ? (
+                  <Text
+                    as="span"
+                    className="leading-none wrap-break-word text-foreground/40"
+                    variant="copy"
+                  >
+                    {item.valueHint}
+                  </Text>
+                ) : null}
+              </span>
+            </Tile>
+          ))}
+        </OverviewGrid>
+        {/* jscpd:ignore-end */}
       </DappDetailBlock>
 
       <DappDetailBlock>

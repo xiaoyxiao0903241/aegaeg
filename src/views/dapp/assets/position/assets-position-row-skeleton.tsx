@@ -6,7 +6,7 @@ export function AssetsPositionRowSkeleton() {
   return (
     <Card aria-busy aria-hidden className="grid gap-2" surface="outlined">
       <div className="flex items-center gap-2">
-        <DappSkeleton className="h-6 w-12 rounded-full" />
+        <DappSkeleton className="w-12 rounded-full" />
         <div className="ml-auto flex items-center gap-2">
           <DappSkeleton className="h-3.5 w-12" />
           <DappSkeleton className="h-3.5 w-16" />
@@ -16,7 +16,7 @@ export function AssetsPositionRowSkeleton() {
         <div className="grid gap-1">
           <DappSkeleton className="h-3 w-12" />
           <DappSkeleton className="h-5 w-20" />
-          <DappSkeleton className="h-5 w-16 rounded-control" />
+          <DappSkeleton className="w-16 rounded-control" />
         </div>
         <div className="grid justify-items-end gap-1">
           <DappSkeleton className="h-3 w-8" />
@@ -24,8 +24,8 @@ export function AssetsPositionRowSkeleton() {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <DappSkeleton className="h-7 w-full rounded-full" />
-        <DappSkeleton className="h-7 w-full rounded-full" />
+        <DappSkeleton className="w-full rounded-full" />
+        <DappSkeleton className="w-full rounded-full" />
       </div>
     </Card>
   )

@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatRebaseCountdown } from '~/core/staking/format-rebase-countdown'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeFlowPositions } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -12,6 +11,7 @@ import { mapStakePositionToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { RebaseCountdownValue } from '~/views/dapp/staking/rebase-countdown-value'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,
@@ -49,10 +49,6 @@ export function useStakeDetailAsideView() {
       : 0
   const epochNumber = overviewQuery.data?.epochNumber ?? 0n
   const rebaseLabel = formatAsideRebasePct(overviewQuery.data?.rebaseRate1e18)
-  const countdown = formatRebaseCountdown(
-    overviewQuery.data?.epochEndBlock,
-    overviewQuery.data?.currentBlock,
-  )
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
     {
@@ -71,7 +67,12 @@ export function useStakeDetailAsideView() {
     },
     {
       label: t.staking.stake.overviewMetrics[2]?.label ?? '下一次 Rebase 发放',
-      value: countdown,
+      value: (
+        <RebaseCountdownValue
+          currentBlock={overviewQuery.data?.currentBlock}
+          epochEndBlock={overviewQuery.data?.epochEndBlock}
+        />
+      ),
     },
     {
       label: t.staking.stake.overviewMetrics[3]?.label ?? '当前 Rebase 收益率',

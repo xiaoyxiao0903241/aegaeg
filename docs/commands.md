@@ -15,6 +15,7 @@
 | 命令                                 | 用途                                                                                    |
 | ------------------------------------ | --------------------------------------------------------------------------------------- |
 | **`pnpm check`**                     | 收工最小门禁：tokens + tsc + lint(src/arch/hex/css/deadcode/duplicates) + format + unit |
+| `pnpm lint:duplicates`               | jscpd（threshold 0）。右栏指标瓦页内同构 map 用 `/* jscpd:ignore-start/end */` 跳过     |
 | `pnpm build:tokens` / `check:tokens` | 从 `tokens.json` 生成并防手改漂移                                                       |
 | `pnpm probe:bundle`                  | Home sync 污染 / 体积上限（build 后）                                                   |
 | `pnpm audit:prod`                    | prod 依赖 high+（CI 可 soft-fail）                                                      |

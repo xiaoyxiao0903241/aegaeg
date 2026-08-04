@@ -11,7 +11,7 @@ export function SeasonOptionSkeleton() {
       <DappSkeleton className="h-3 w-full max-w-24" />
       <DappSkeleton className="h-3 w-full max-w-28" />
       <DappSkeleton className="h-3 w-20" />
-      <DappSkeleton className="mt-auto h-5 w-full rounded-full" />
+      <DappSkeleton className="mt-auto w-full rounded-full" />
     </div>
   )
 }

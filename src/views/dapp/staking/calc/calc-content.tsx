@@ -162,7 +162,7 @@ export function CalcContent() {
         </div>
         {result ? (
           /* Figma `rcard` 4463:230 — elevated（无描边 + shadow-card），禁 outlined */
-          <Card className="grid gap-1.5 p-4" surface="elevated">
+          <Card className="grid gap-1.5" surface="elevated">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="grid gap-1">
                 <Text as="span" className="text-foreground/40" variant="copy">
@@ -191,7 +191,7 @@ export function CalcContent() {
                   {formatUsdOrDash(result.sellUsd)}
                 </Text>
               </div>
-              <div className="flex h-3.5 overflow-hidden rounded-full">
+              <div className="flex overflow-hidden rounded-full">
                 <span className="bg-primary-soft" style={{ flex: `${100 - sellShare} 0 0` }} />
                 <span className="bg-coral-emphasis" style={{ flex: `${sellShare} 0 0` }} />
               </div>
@@ -206,7 +206,7 @@ export function CalcContent() {
                   {formatUsdOrDash(result.investedUsd)}
                 </Text>
               </div>
-              <div className="flex h-3.5 overflow-hidden rounded-full">
+              <div className="flex overflow-hidden rounded-full">
                 <span className="bg-border" style={{ flex: `${100 - investShare} 0 0` }} />
                 <span
                   className="flex items-center justify-center bg-success"
@@ -252,7 +252,7 @@ export function CalcContent() {
       <DappDetailBlock>
         <DappContentHeading>{aside.curve}</DappContentHeading>
         {/* Figma `ccard` 4463:273 — elevated；曲线 = 本地公式 day 1..720 */}
-        <Card className="grid gap-3 p-4" surface="elevated">
+        <Card className="grid gap-3" surface="elevated">
           <Text as="p" className="m-0 text-foreground/40" variant="copy">
             {aside.curveHint}
           </Text>
@@ -272,7 +272,7 @@ export function CalcContent() {
               points={curvePoints}
             />
           ) : (
-            <div className="flex min-h-50 items-center justify-center rounded-lg">
+            <div className="flex items-center justify-center rounded-lg">
               <Text as="span" className="text-foreground/40" variant="copy">
                 {PLACEHOLDER}
               </Text>
@@ -299,7 +299,7 @@ export function CalcContent() {
             }
             return (
               /* Figma `kc` 4463:289 — elevated */
-              <Card className="grid gap-1.5 p-4" key={card.label} surface="elevated">
+              <Card className="grid gap-1.5" key={card.label} surface="elevated">
                 <Text as="span" className="text-foreground/70" variant="support">
                   {index === 2 ? aside.nodeEndLabel.replace('{day}', String(endDays)) : card.label}
                 </Text>
@@ -331,7 +331,7 @@ export function CalcContent() {
       <DappDetailBlock>
         <DappContentHeading>{aside.notes}</DappContentHeading>
         {/* Figma `ncard` 4463:303 — elevated */}
-        <Card className="grid gap-1.5 p-4" surface="elevated">
+        <Card className="grid gap-1.5" surface="elevated">
           <ul className="m-0 grid list-none gap-1.5 p-0">
             {notesItems.map((item) => (
               <li className="flex items-center gap-2.5" key={item}>

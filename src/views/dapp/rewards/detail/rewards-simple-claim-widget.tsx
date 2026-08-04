@@ -37,7 +37,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         {view === 'grant' ? (
           <>
             {/* 待审批 4719:1941：顶行标签|hint · 中行 gAGX|金额24 · 客服链+说明 */}
-            <Card surface="outlined" className="min-h-31">
+            <Card surface="outlined">
               <div className="flex items-start justify-between gap-3">
                 <Text as="p" className="leading-4 text-foreground/40" variant="copy">
                   {vm.grant.pendingLabel}
@@ -82,7 +82,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
               </div>
             </Card>
 
-            <div className="flex h-11.5 items-center justify-center">
+            <div className="flex items-center justify-center">
               <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
                 <ChevronDown aria-hidden className="size-2.5 opacity-70" strokeWidth={2} />
               </span>
@@ -91,8 +91,8 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         ) : null}
 
         {/* 可领取：grant 稿 primary-soft；participate/referral 同槽位至钱包 */}
-        <div className="grid min-h-23.25 gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
-          <div className="flex h-5 items-center justify-between gap-2">
+        <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
+          <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 text-foreground" variant="copy">
               {t.rewards.detail.claimable}
             </Text>
@@ -131,7 +131,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
 
         {walletReady ? (
           <DappActionButton
-            className="min-h-13 py-2 text-sm leading-4"
+            className="min-h-13 py-2 text-sm/4"
             density="external"
             disabled={!vm.canSubmit}
             loading={vm.isClaiming}

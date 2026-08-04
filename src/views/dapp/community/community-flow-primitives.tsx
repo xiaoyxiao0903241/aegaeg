@@ -15,7 +15,7 @@ const communityProgramCard = tv({
   slots: {
     root: cn(
       revealClass(),
-      'relative flex min-h-32 w-full min-w-0 flex-col gap-3 overflow-clip rounded-2xl p-4',
+      'relative flex w-full min-w-0 flex-col gap-3 overflow-clip rounded-2xl p-4',
     ),
     action: cn(
       'm-0 cursor-pointer border-0 bg-transparent p-0 text-left font-medium text-primary underline',

@@ -92,10 +92,10 @@ export function ReleaseBufferWidget() {
             </div>
 
             <div
-              className="h-1.5 overflow-hidden rounded-full bg-muted"
+              className="overflow-hidden rounded-full bg-muted"
               data-slot-id="release-buffer-bar-agx"
             >
-              <div className="h-full rounded-full bg-primary" style={{ width: vm.progressWidth }} />
+              <div className="rounded-full bg-primary" style={{ width: vm.progressWidth }} />
             </div>
 
             <div className="flex justify-between gap-2">
@@ -159,10 +159,10 @@ export function ReleaseBufferWidget() {
             </div>
 
             <div
-              className="h-1.5 overflow-hidden rounded-full bg-muted"
+              className="overflow-hidden rounded-full bg-muted"
               data-slot-id="release-buffer-bar-gagx"
             >
-              <div className="h-full w-0 rounded-full bg-primary" />
+              <div className="w-0 rounded-full bg-primary" />
             </div>
 
             <div className="flex justify-between gap-2">

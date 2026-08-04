@@ -4,10 +4,13 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Tile } from '~/app/shell/tile'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
+import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useRewardsParticipateContentView } from '~/views/dapp/rewards/detail/use-rewards-participate-content-view'
-import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
 export function RewardsParticipateContent() {
   const {
@@ -25,20 +28,48 @@ export function RewardsParticipateContent() {
     inviterLoading,
   } = useRewardsParticipateContentView()
 
+  const overviewTiles = [
+    { key: 'totalRewards', label: participate.totalRewards, value: totalRewards },
+    { key: 'myPosition', label: participate.myPosition, value: myPosition },
+    {
+      key: 'contribution',
+      label: participate.contribution,
+      value: contributionValue,
+      valueHint: participate.contributionHint,
+    },
+    { key: 'nextPayout', label: participate.nextPayout, value: nextPayout },
+  ]
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{participate.dataTitle}</DappContentHeading>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={participate.totalRewards} value={totalRewards} />
-          <RewardsStatCard label={participate.myPosition} value={myPosition} />
-          <RewardsStatCard
-            label={participate.contribution}
-            value={contributionValue}
-            valueHint={participate.contributionHint}
-          />
-          <RewardsStatCard label={participate.nextPayout} value={nextPayout} />
-        </div>
+        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
+        <OverviewGrid className="mt-4" columns={2}>
+          {overviewTiles.map((item) => (
+            <Tile key={item.key} label={item.label}>
+              <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                <Text
+                  as="strong"
+                  className="leading-none font-semibold wrap-break-word"
+                  variant="headline"
+                >
+                  <CountValue text={item.value} />
+                </Text>
+                {'valueHint' in item && item.valueHint != null ? (
+                  <Text
+                    as="span"
+                    className="leading-none wrap-break-word text-foreground/40"
+                    variant="copy"
+                  >
+                    {item.valueHint}
+                  </Text>
+                ) : null}
+              </span>
+            </Tile>
+          ))}
+        </OverviewGrid>
+        {/* jscpd:ignore-end */}
       </DappDetailBlock>
 
       <DappDetailBlock>

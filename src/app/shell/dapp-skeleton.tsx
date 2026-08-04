@@ -6,7 +6,7 @@ import { cn } from '~/shared/lib/utils'
 /** Mobile community stat shell — shared by live cards (≥2 call sites → shell). */
 export const communityStatCardMobileShell = tv({
   base: cn(
-    'max-dapp:min-h-22 max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
+    'max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
     'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
   ),
 })

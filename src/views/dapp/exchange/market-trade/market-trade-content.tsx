@@ -3,10 +3,12 @@ import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
-import { MetricGrid } from '~/app/shell/metric-grid'
+import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
-import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
+import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
 
@@ -18,14 +20,28 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
   const vm = useMarketTradeContentView(exchangePriceLabel)
   const { t } = vm
 
+  const tiles = [
+    { key: 'rate', label: t.exchange.exchangeRate, value: vm.poolRateLabel || '0' },
+    { key: 'settlement', label: t.exchange.settlement, value: t.exchange.settlementValue },
+  ]
+
   return (
     <DappDetailPage>
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
-        <MetricGrid columns={2}>
-          <ExchangeMetricCard label={t.exchange.exchangeRate} value={vm.poolRateLabel || '0'} />
-          <ExchangeMetricCard label={t.exchange.settlement} value={t.exchange.settlementValue} />
-        </MetricGrid>
+        <OverviewGrid columns={2}>
+          {tiles.map((tile) => (
+            <Tile key={tile.key} label={tile.label}>
+              <Text
+                as="strong"
+                className="text-base/5 font-semibold tracking-normal"
+                variant="headline"
+              >
+                <CountValue text={tile.value} />
+              </Text>
+            </Tile>
+          ))}
+        </OverviewGrid>
       </section>
 
       <DappDetailBlock>

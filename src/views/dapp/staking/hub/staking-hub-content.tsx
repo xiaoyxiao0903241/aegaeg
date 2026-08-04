@@ -2,12 +2,13 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
+import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Tile } from '~/app/shell/tile'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
-import { MetricCard } from '~/shared/components/metric-card'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
@@ -38,10 +39,12 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
       {src ? <Icon alt="" shape="circle" size="lg" src={src} /> : null}
-      <span className="min-w-0 wrap-break-word">{value}</span>
+      <span className="min-w-0 wrap-break-word">
+        <CountValue text={value} />
+      </span>
       {sub ? (
         <Text as="span" className="shrink-0 wrap-break-word text-foreground/40" variant="copy">
-          {sub}
+          <CountValue text={sub} />
         </Text>
       ) : null}
     </span>
@@ -92,8 +95,8 @@ export function StakingHubContent() {
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{overview.title}</DappContentHeading>
-        {/* PC 三列；H5 每行两卡（用户锁定）· tile 高跟稿 min-h-18.75 */}
-        <div className="grid auto-rows-fr grid-cols-3 gap-2 max-dapp:grid-cols-2">
+        {/* PC 三列；H5 每行两卡；同行等高靠 OverviewGrid stretch */}
+        <OverviewGrid columns={3}>
           {overview.metrics.map((metric) => {
             if (!isHubMetricId(metric.id)) return null
             const chrome = METRIC_CHROME[metric.id]
@@ -104,29 +107,23 @@ export function StakingHubContent() {
                 : 'text-base leading-5 font-semibold tracking-normal'
 
             return (
-              <MetricCard
-                className="h-full min-h-18.75 gap-1.5 overflow-visible rounded-2xl p-4 [&>*:first-child]:leading-none!"
+              <Tile
+                className="overflow-visible"
                 key={metric.id}
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>{metric.label}</span>
-                    {metric.hint ? (
-                      <DappInfoTooltip className="text-foreground" content={metric.hint} />
-                    ) : null}
-                  </span>
-                }
-                value={
+                label={metric.label}
+                tooltip={metric.hint || undefined}
+              >
+                <Text as="strong" className={valueClassName} variant="headline">
                   <MetricValueRow
                     icon={chrome.icon}
                     sub={chrome.hasSub ? metricSub(metric.id) : undefined}
                     value={value}
                   />
-                }
-                valueClassName={valueClassName}
-              />
+                </Text>
+              </Tile>
             )
           })}
-        </div>
+        </OverviewGrid>
       </DappDetailBlock>
 
       <DappDetailBlock>

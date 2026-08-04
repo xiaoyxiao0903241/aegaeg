@@ -7,7 +7,7 @@ import { cn } from '~/shared/lib/utils'
 
 /**
  * Table shell chrome on Card `elevated` (E2).
- * INTENTIONAL vs MetricCard: `rounded-2xl` + `p-0` (header/body/footer own pad).
+ * INTENTIONAL vs elevated metric tiles: `rounded-2xl` + `p-0` (header/body/footer own pad).
  * No outer border — elevation only (`shadow-card`); row/header dividers stay inside.
  * Not Card `soft` (E1 / FAQ).
  */

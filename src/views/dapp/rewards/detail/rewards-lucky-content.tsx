@@ -5,15 +5,17 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { OverviewGrid } from '~/app/shell/overview-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Tile } from '~/app/shell/tile'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
+import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useRewardsLuckyContentView } from '~/views/dapp/rewards/detail/use-rewards-lucky-content-view'
-import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
 export function RewardsLuckyContent() {
   const {
@@ -53,72 +55,61 @@ export function RewardsLuckyContent() {
       />
     ) : null
 
+  const overviewTiles = [
+    {
+      key: 'todayPool',
+      label: lucky.todayPool,
+      value: todayPool,
+      valueHint: todayPoolHint || undefined,
+      animateValue: true as const,
+    },
+    {
+      key: 'eligibility',
+      label: lucky.eligibility,
+      value: eligibility,
+      animateValue: false as const,
+      valueTone: (eligibility === lucky.eligibilityYes ? 'primary' : undefined) as
+        'primary' | undefined,
+      valueHint: eligibilityHint || undefined,
+    },
+    {
+      key: 'cumulativeWins',
+      label: lucky.cumulativeWins,
+      value: cumulativeWins,
+      animateValue: true as const,
+    },
+  ]
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{lucky.dataTitle}</DappContentHeading>
         {/* Figma 4395:223 tiles：label copy13 medium body70 · value headline16 */}
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={lucky.todayPool}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {lucky.todayPool}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                variant="headline"
-              >
-                {todayPool}
-              </Text>
-              {todayPoolHint ? (
+        <OverviewGrid className="mt-4" columns={3}>
+          {overviewTiles.map((item) => (
+            <Tile key={item.key} label={item.label}>
+              <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                 <Text
-                  as="p"
-                  className="leading-none wrap-break-word text-foreground/40"
-                  variant="copy"
+                  as="strong"
+                  className="leading-none font-semibold wrap-break-word"
+                  tone={'valueTone' in item ? item.valueTone : undefined}
+                  variant="headline"
                 >
-                  {todayPoolHint}
+                  {item.animateValue === false ? item.value : <CountValue text={item.value} />}
                 </Text>
-              ) : null}
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard label={lucky.eligibility}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {lucky.eligibility}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-              <Text
-                as="p"
-                className="leading-none font-semibold wrap-break-word"
-                tone={eligibility === lucky.eligibilityYes ? 'primary' : undefined}
-                variant="headline"
-              >
-                {eligibility}
-              </Text>
-              {eligibilityHint ? (
-                <Text
-                  as="p"
-                  className="leading-none wrap-break-word text-foreground/40"
-                  variant="copy"
-                >
-                  {eligibilityHint}
-                </Text>
-              ) : null}
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard label={lucky.cumulativeWins}>
-            <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
-              {lucky.cumulativeWins}
-            </Text>
-            <Text
-              as="p"
-              className="mt-1.5 leading-none font-semibold wrap-break-word"
-              variant="headline"
-            >
-              {cumulativeWins}
-            </Text>
-          </RewardsStatCard>
-        </div>
+                {'valueHint' in item && item.valueHint != null ? (
+                  <Text
+                    as="span"
+                    className="leading-none wrap-break-word text-foreground/40"
+                    variant="copy"
+                  >
+                    {item.valueHint}
+                  </Text>
+                ) : null}
+              </span>
+            </Tile>
+          ))}
+        </OverviewGrid>
       </DappDetailBlock>
 
       <DappDetailBlock>
@@ -141,7 +132,7 @@ export function RewardsLuckyContent() {
               </Text>
             </div>
             <Button
-              className="h-7.5 min-h-0 w-auto shrink-0 rounded-full border border-white/25 bg-transparent px-4 text-white hover:bg-white/10"
+              className="w-auto shrink-0 rounded-full border border-white/25 bg-transparent px-4 text-white hover:bg-white/10"
               disabled
               type="button"
               variant="secondary"

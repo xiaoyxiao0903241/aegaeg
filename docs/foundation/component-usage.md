@@ -52,7 +52,39 @@
 - 硬套 `Card.Title` / `Card.Description` 再拧字阶
 - 平行文案子件 API（`HubEntry.*` / `InteractiveCard.Title`）
 - 万能卡 / `switch (index)` 吞多种骨架
-- 布局词冒充业务名（`Row` / `Nav` / `Tile` / 泛 `Entry`）
+- 布局词冒充**左栏入口**业务名（`Row` / `Nav` / 泛 `Entry`）；右栏数据卡壳 `Tile` 见下节
+
+## 右栏数据卡（B+D · `Tile`）
+
+> **模型**：`Tile` = elevated 数据卡薄壳。网格仍走 `OverviewGrid`。  
+> 主值 / 图标行 → **`children`**；主值下**另起一行**的说明 → **`note`**（≠ tooltip；内容可为任意文案，恰巧常是 `≈ $…`）。  
+> **禁止** `MetricCard` / `*StatCard` / `*OverviewTiles` / `variant` 选布局。
+
+### 壳 — `Tile`（`src/app/shell/tile.tsx`）
+
+| 项   | 合同                                                                                                                             |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                           |
+| 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                      |
+| API  | `label: string` · `tooltip?: string`（label 旁 info）· `children` · `note?: ReactNode`（另起一行说明）                           |
+| 网格 | `OverviewGrid`（PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数 |
+| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 表壳/空态 · 奖励 Hub（pill/deco）→ **自建组件**                     |
+
+### 内容 — 页袋组合
+
+| 角色            | 写法                                                   |
+| --------------- | ------------------------------------------------------ |
+| 标签            | `Tile` 的 `label`（string；字阶由 Tile 钉）            |
+| tooltip         | `Tile` 的 `tooltip`（string → `DappInfoTooltip`）      |
+| 主值 / 图标行   | **`children`**（`Text` / `CountValue` / `Icon`）       |
+| 另起一行说明    | **`note`**（Tile 钉弱字阶；同行内联旁注仍进 children） |
+| pill CTA / deco | OUT：自建组件                                          |
+
+### MUST NOT（右栏）
+
+- `variant` / layout 参数；`hint` 双义（tooltip 与说明行）
+- `*StatCard` / `*MetricCard` / `*OverviewTiles`；call site 再抹 `p-*` / `rounded-*` / `shadow-*`
+- 指标瓦网格自写平行 `gap-*`（唯一 owner = `OverviewGrid`）
 
 ## MUST NOT
 

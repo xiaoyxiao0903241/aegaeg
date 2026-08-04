@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatRebaseCountdown } from '~/core/staking/format-rebase-countdown'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -13,6 +12,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
+import { RebaseCountdownValue } from '~/views/dapp/staking/rebase-countdown-value'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,
@@ -50,10 +50,6 @@ export function useBondDetailAsideView(kind: BondKind) {
   const burnPurchases = useBondFlowBurnPurchases({}, sessionReady && kind === 'burn')
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
 
-  const countdown = formatRebaseCountdown(
-    overviewQuery.data?.epochEndBlock,
-    overviewQuery.data?.currentBlock,
-  )
   const rebaseLabel = formatAsideRebasePct(overviewQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
@@ -73,7 +69,12 @@ export function useBondDetailAsideView(kind: BondKind) {
     },
     {
       label: copy.overviewMetrics[2]?.label ?? '',
-      value: countdown,
+      value: (
+        <RebaseCountdownValue
+          currentBlock={overviewQuery.data?.currentBlock}
+          epochEndBlock={overviewQuery.data?.epochEndBlock}
+        />
+      ),
     },
     {
       label: copy.overviewMetrics[3]?.label ?? '',

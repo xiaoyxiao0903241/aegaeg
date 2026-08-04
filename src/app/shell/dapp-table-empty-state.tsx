@@ -7,12 +7,12 @@ import { cn } from '~/shared/lib/utils'
 function SkeletonRow({ className }: { className?: string }) {
   return (
     <div className={cn('flex w-full items-center gap-3.5 max-dapp:gap-2.5', className)}>
-      <span className="h-3.5 w-30 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-18" />
+      <span className="w-30 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-18" />
       <span className="flex min-w-0 flex-1 items-center">
-        <span className="h-3.5 w-2.5 rounded-sm bg-border max-dapp:h-3 max-dapp:w-2" />
+        <span className="w-2.5 rounded-sm bg-border max-dapp:h-3 max-dapp:w-2" />
       </span>
-      <span className="h-3.5 w-22 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-14" />
-      <span className="h-3.5 w-18 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-10" />
+      <span className="w-22 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-14" />
+      <span className="w-18 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-10" />
     </div>
   )
 }

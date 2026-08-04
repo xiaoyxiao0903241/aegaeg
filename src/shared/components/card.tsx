@@ -19,7 +19,8 @@ export const cardVariants = tv({
   variants: {
     surface: {
       outlined: 'rounded-md border border-border p-4',
-      elevated: 'rounded-md bg-card p-3.5 shadow-card',
+      /** 右栏指标瓦 / elevated chrome SSOT：稿 p16 · radius/md · shadow-card（禁 call site 再抹 p/rounded/shadow） */
+      elevated: 'rounded-md bg-card p-4 shadow-card',
       /** FAQ / Accordion shell — elevation + radius; body owns padding. */
       soft: 'overflow-hidden rounded-2xl bg-card shadow-faq',
       inverse: 'rounded-md bg-dark p-4 text-white shadow-subtle',
