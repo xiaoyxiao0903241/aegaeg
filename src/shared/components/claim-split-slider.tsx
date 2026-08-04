@@ -1,7 +1,7 @@
 import * as SliderPrimitive from '@radix-ui/react-slider'
 
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 export type ClaimSplitSliderProps = {
   /** Accessible name — call site supplies i18n. */

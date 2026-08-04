@@ -19,8 +19,8 @@ import {
   formatGroupedNumber,
   formatSignedPercent,
 } from '~/shared/api/format-display'
+import type { TvAreaPoint } from '~/shared/components/tv-area-chart'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { TvAreaPoint } from '~/shared/ui/tv-area-chart'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`

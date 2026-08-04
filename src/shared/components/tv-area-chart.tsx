@@ -12,9 +12,9 @@ import {
 import { useEffect, useRef, useState } from 'react'
 
 import { formatCompactUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { colorHex } from '~/shared/styles/tokens/tokens'
-import { Text } from '~/shared/ui/text'
 
 export type TvAreaPoint = {
   /** UTC seconds — Lightweight Charts `UTCTimestamp`. */

@@ -1,13 +1,13 @@
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/shared/assets/home'
+import { Text } from '~/shared/components/text'
 import {
   COMMUNITY_SOCIAL_LINKS,
   communitySocialLink,
   type CommunitySocialLinkId,
 } from '~/shared/config/community-links'
 import { notionLink } from '~/shared/config/notion-links'
-import { Text } from '~/shared/ui/text'
 
 function footerLinkHref(
   locale: ReturnType<typeof useI18n>['locale'],

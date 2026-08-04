@@ -10,10 +10,10 @@ import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
 import { prefetchTabQueries } from '~/shared/api/query/prefetch'
+import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
+import { Text } from '~/shared/components/text'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { Text } from '~/shared/ui/text'
 
 type RailIndicator = {
   height: number

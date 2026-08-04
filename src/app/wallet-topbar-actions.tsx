@@ -5,7 +5,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 

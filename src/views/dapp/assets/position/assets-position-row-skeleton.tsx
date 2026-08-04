@@ -1,5 +1,5 @@
 import { DappSkeleton } from '~/app/shell/dapp-skeleton'
-import { Card } from '~/shared/ui/card'
+import { Card } from '~/shared/components/card'
 
 /** 仓位卡 loading 骨架（对齐 outlined 卡：period · 双列 · 双 CTA）。 */
 export function AssetsPositionRowSkeleton() {

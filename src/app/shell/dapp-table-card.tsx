@@ -1,9 +1,9 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
+import { Card } from '~/shared/components/card'
+import { cardVariants } from '~/shared/components/card-variants'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { cardVariants } from '~/shared/ui/card-variants'
 
 /**
  * Table shell chrome on Card `elevated` (E2).

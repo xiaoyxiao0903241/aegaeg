@@ -3,8 +3,8 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
-import { Text } from '~/shared/ui/text'
-import { WidgetPromoCard } from '~/shared/ui/widget-promo-card'
+import { Text } from '~/shared/components/text'
+import { WidgetPromoCard } from '~/shared/components/widget-promo-card'
 
 export function DappConnectPromoCard({ className }: { className?: string }) {
   const { locale, messages: t } = useI18n()

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
-import { Text } from '~/shared/ui/text'
+import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { Text } from '~/shared/components/text'
 
 function renderMetric(node: ReactNode) {
   return typeof node === 'string' ? <DappCountValue text={node} /> : node

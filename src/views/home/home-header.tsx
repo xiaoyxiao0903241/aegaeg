@@ -3,10 +3,10 @@ import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/shared/assets/home'
+import { Button } from '~/shared/components/button'
+import { LanguageMenu } from '~/shared/components/language-menu'
+import { Text } from '~/shared/components/text'
 import { getNotionLinks } from '~/shared/config/notion-links'
-import { Button } from '~/shared/ui/button'
-import { LanguageMenu } from '~/shared/ui/language-menu'
-import { Text } from '~/shared/ui/text'
 
 export function HomeHeader() {
   const { locale, messages, setLocale } = useI18n()

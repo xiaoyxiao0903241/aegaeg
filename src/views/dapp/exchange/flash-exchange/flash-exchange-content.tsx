@@ -5,7 +5,7 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { useI18n } from '~/i18n/use-i18n'
-import { FaqList } from '~/shared/ui/faq-list'
+import { FaqList } from '~/shared/components/faq-list'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 

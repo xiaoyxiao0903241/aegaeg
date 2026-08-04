@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
+import { Card } from '~/shared/components/card'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
 
 /** Left-column outlined card (`p-3.5` / `rounded-md`); stack gap defaults to `gap-2`. */
 export function DappSideCard({ children, className }: { children: ReactNode; className?: string }) {

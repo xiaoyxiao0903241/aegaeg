@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('clampGenesisShares keeps empty draft at zero', async () => {
@@ -296,7 +297,7 @@ test('emptySpotRateDash gates empty vs format', async () => {
 })
 
 test('metricDisplayText keeps prior on empty flash', async () => {
-  const { metricDisplayText } = await loadModule('/src/shared/ui/metric-display-text.ts')
+  const { metricDisplayText } = await loadModule('/src/shared/components/metric-display-text.ts')
 
   assert.deepEqual(metricDisplayText('', null), { display: '0', retain: null })
   assert.deepEqual(metricDisplayText('', '2,000'), { display: '2,000', retain: '2,000' })

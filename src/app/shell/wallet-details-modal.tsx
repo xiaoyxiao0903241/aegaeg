@@ -11,15 +11,15 @@ import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
-import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
-import { cn } from '~/shared/lib/utils'
 import {
   AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '~/shared/ui/aegis-responsive-dialog'
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/aegis-responsive-dialog'
+import { Button } from '~/shared/components/button'
+import { Text } from '~/shared/components/text'
+import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
+import { cn } from '~/shared/lib/utils'
 import { useUsd1PresaleWalletQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount, useActiveWallet, useDisconnect } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'

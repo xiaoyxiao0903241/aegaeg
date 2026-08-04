@@ -7,9 +7,9 @@ import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
 
 /** 稿 icon20 + 币种 pill（AGX / gAGX 双卡共用 chrome） */

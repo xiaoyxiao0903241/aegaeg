@@ -12,11 +12,11 @@ import { createPortal } from 'react-dom'
 
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
+import { ChevronIcon } from '~/shared/components/chevron-icon'
+import { Text } from '~/shared/components/text'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
-import { ChevronIcon } from '~/shared/ui/chevron-icon'
-import { Text } from '~/shared/ui/text'
 
 const PAGE_MENU_VISIBLE_ITEMS = 5
 

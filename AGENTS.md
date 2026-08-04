@@ -94,7 +94,7 @@
 | 词表 / 命令     | [`docs/ubiquitous-language.md`](docs/ubiquitous-language.md) · [`docs/commands.md`](docs/commands.md) |
 
 - **手册入仓只读：** `onchain-manual/` 与 legacy 正文来自外部手册拷贝；**禁止**为贴本仓路径 / 去考古句 / 审文档而改写。正文若写合约仓 `abi/`、`src/*.sol`、`deployments/` 等，以方法表语义为准；本仓运行时仍走 `abis.ts` + `VITE_BSC_*` / `contracts.ts`。换手册 → 从源重新拷贝，勿手改。
-- **shared 只扩 chrome**；业务档位/locale/地址不进 `shared/ui`；不确定宁放页袋。
+- **shared 只扩 chrome**；业务档位/locale/地址不进 `shared/components`；不确定宁放页袋。
 - **钱路**：新手册有 → 按新；新沉默且旧手册/可证旧码有 → 按旧；皆无 → 停手、写链 fail-closed。旧码须 `git`/commit+符号可证。钱路专文暂缺。
 - **稿 ∩ 手册**：稿有控件 → UI MUST；缺数诚实空；禁因手册缺数砍控件；数/写跟手册。
 - **裁决序：** §0 → 全局 MUST NOT → 本层表 → 产品 Answer → 过程稿（仅参考）。

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 type StatusBadgeTone = 'pending' | 'muted' | 'processing' | 'success' | 'failed'
 

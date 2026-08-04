@@ -2,10 +2,10 @@ import type { CSSProperties } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/shared/assets/home'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { HomeSection } from '~/views/home/home-section'
 import { HomeSectionHead } from '~/views/home/home-section-head'
 

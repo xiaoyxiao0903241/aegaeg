@@ -1,7 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { Button } from '~/shared/components/button'
+import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
 
 /** 左栏仓位列表分页（稿：共 N · 每页 M + 上一页 / `1 / N` / 下一页）。≤pageSize 不渲染。 */
 export function AssetsListPager({

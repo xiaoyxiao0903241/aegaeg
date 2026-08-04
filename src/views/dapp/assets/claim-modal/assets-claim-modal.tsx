@@ -4,17 +4,17 @@ import { useRef } from 'react'
 
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
-import { cn } from '~/shared/lib/utils'
 import {
   AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '~/shared/ui/aegis-responsive-dialog'
-import { Button } from '~/shared/ui/button'
-import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { SelectMenu } from '~/shared/ui/select-menu'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/aegis-responsive-dialog'
+import { Button } from '~/shared/components/button'
+import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { SelectMenu } from '~/shared/components/select-menu'
+import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 import { useAssetsClaimModalView } from '~/views/dapp/assets/claim-modal/use-assets-claim-modal-view'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 

@@ -13,10 +13,10 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import type { SelectMenuOption } from '~/shared/components/select-menu'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
-import type { SelectMenuOption } from '~/shared/ui/select-menu'
 import {
   formatApiCountLabel,
   formatApiStatLabel,

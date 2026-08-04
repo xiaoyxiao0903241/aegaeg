@@ -4,9 +4,9 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { Card } from '~/shared/ui/card'
-import { FaqList } from '~/shared/ui/faq-list'
-import { Text } from '~/shared/ui/text'
+import { Card } from '~/shared/components/card'
+import { FaqList } from '~/shared/components/faq-list'
+import { Text } from '~/shared/components/text'
 import {
   AssetsHubMetricPlain,
   AssetsHubMetricWithIcon,

@@ -14,8 +14,8 @@ import {
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
 } from '~/shared/api/format-display'
+import { Text } from '~/shared/components/text'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { Text } from '~/shared/ui/text'
 import {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,

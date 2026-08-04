@@ -8,11 +8,11 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Card } from '~/shared/components/card'
+import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { FaqList, type FaqListItem } from '~/shared/components/faq-list'
+import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
-import { Card } from '~/shared/ui/card'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
-import { FaqList, type FaqListItem } from '~/shared/ui/faq-list'
-import { Text } from '~/shared/ui/text'
 
 export type AssetsDetailMetricCell = {
   value: string

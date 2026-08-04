@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
+import { Text, type TextProps } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text, type TextProps } from '~/shared/ui/text'
 
 /**
  * Inline destructive alert chrome (border / wash / pad / color).

@@ -10,8 +10,8 @@ import { createRoot } from 'react-dom/client'
 import { DappShell } from '~/app/dapp-shell'
 import { WebRootProviders } from '~/app/startup/web-root-providers'
 import { I18nProvider } from '~/i18n/i18n-provider'
-import { AppToaster } from '~/shared/ui/app-toaster'
-import { LocalizedErrorBoundary } from '~/shared/ui/localized-error-boundary'
+import { AppToaster } from '~/shared/components/app-toaster'
+import { LocalizedErrorBoundary } from '~/shared/components/localized-error-boundary'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

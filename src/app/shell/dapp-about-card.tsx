@@ -2,9 +2,9 @@ import type { ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 
 type AboutWash = 'lavender' | 'none'
 

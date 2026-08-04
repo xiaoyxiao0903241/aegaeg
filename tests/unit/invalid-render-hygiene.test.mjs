@@ -90,7 +90,10 @@ test('genesis countdown clock owns nowSeconds; chain-reads does not', async () =
 
 test('carousel provider value is memoized', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../../src/shared/ui/carousel.tsx', import.meta.url), 'utf8')
+  const src = await readFile(
+    new URL('../../src/shared/components/carousel.tsx', import.meta.url),
+    'utf8',
+  )
   assert.match(src, /useMemo/)
   assert.match(src, /contextValue/)
 })

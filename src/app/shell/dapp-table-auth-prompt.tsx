@@ -1,8 +1,8 @@
 import { DappTableEmptyState } from '~/app/shell/dapp-table-empty-state'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useI18n } from '~/i18n/use-i18n'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 export function DappTableAuthPrompt({
   body,

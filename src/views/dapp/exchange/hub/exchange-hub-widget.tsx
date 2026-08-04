@@ -3,8 +3,8 @@ import { DappModeCard } from '~/app/shell/dapp-mode-card'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
+import { WidgetHeader } from '~/shared/components/widget-header'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
-import { WidgetHeader } from '~/shared/ui/widget-header'
 
 export function ExchangeHubWidget() {
   const { messages: t } = useI18n()

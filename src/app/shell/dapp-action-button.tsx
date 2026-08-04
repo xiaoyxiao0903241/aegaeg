@@ -1,8 +1,8 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
+import { Button } from '~/shared/components/button'
+import { ButtonLoadingIcon } from '~/shared/components/button-loading-icon'
 import { cn } from '~/shared/lib/utils'
-import { Button } from '~/shared/ui/button'
-import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
 
 /**
  * DApp primary CTA wrapper.

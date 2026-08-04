@@ -5,9 +5,9 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
+import { Segment } from '~/shared/components/segment'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { Segment } from '~/shared/ui/segment'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import {
   ExchangeFlowButton,

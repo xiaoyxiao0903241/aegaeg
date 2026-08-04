@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 
 import { AuthProvider } from '~/app/startup/auth-provider'
 import { QueryProvider } from '~/app/startup/query-provider'
-import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'
-import { TooltipProvider } from '~/shared/ui/tooltip'
+import { AccountBannedNotifier } from '~/shared/components/account-banned-notifier'
+import { TooltipProvider } from '~/shared/components/tooltip'
 import { assertWeb3EnvConfigured, thirdwebClient } from '~/web3/thirdweb'
 import { AutoConnect, ThirdwebProvider } from '~/web3/thirdweb-react'
 

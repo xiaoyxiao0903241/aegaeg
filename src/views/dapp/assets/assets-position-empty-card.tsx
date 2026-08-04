@@ -1,7 +1,7 @@
 import { dappAssets } from '~/app/assets'
-import { Button } from '~/shared/ui/button'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+import { Button } from '~/shared/components/button'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 
 /** HTML 原型 stakePosEmpty：顶部 skeleton 行 + 插画空态卡 + 深色 CTA. */
 export function AssetsPositionEmptyCard({

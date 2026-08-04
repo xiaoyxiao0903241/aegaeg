@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import * as React from 'react'
 import { tv } from 'tailwind-variants'
 
-import { Text } from '~/shared/ui/text'
+import { Text } from '~/shared/components/text'
 
 const DialogPortal = DialogPrimitive.Portal
 

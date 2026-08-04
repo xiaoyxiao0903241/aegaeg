@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 /**
  * Figma calc `slider` 4462:634 / `handle` 4462:639：

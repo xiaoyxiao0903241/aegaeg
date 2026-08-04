@@ -7,12 +7,17 @@ import { exchangeTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
 import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from '~/shared/components/carousel'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import {
   getExchangeTokenContractAddress,
   openTokenContractOnBscScan,
 } from '~/shared/config/token-contracts'
 import { revealClass } from '~/shared/lib/reveal'
-import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from '~/shared/ui/carousel'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import {
   ExchangePromoCard,
   ExchangePromoPillAction,

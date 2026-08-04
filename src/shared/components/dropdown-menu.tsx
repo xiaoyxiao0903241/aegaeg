@@ -12,8 +12,8 @@ import {
   useState,
 } from 'react'
 
+import { useDismissOnOutside } from '~/shared/components/use-dismiss-on-outside'
 import { cn } from '~/shared/lib/utils'
-import { useDismissOnOutside } from '~/shared/ui/use-dismiss-on-outside'
 
 /**
  * DApp listbox 菜单 chrome（兑换 TokenPicker / 资产排序 / SelectMenu 共用）.

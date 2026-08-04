@@ -1,7 +1,7 @@
 import type { BondPeriod } from '~/core/staking/staking-period'
+import { chipVariants } from '~/shared/components/chip'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { chipVariants } from '~/shared/ui/chip'
-import { Text } from '~/shared/ui/text'
 
 const PERIODS: BondPeriod[] = ['180', '360', '540']
 

@@ -9,11 +9,11 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
+import { aegisDialogClose } from '~/shared/components/aegis-responsive-dialog'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { Text } from '~/shared/components/text'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
-import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { Text } from '~/shared/ui/text'
 
 const drawerItem = tv({
   base: cn(

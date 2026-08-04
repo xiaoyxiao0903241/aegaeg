@@ -4,9 +4,9 @@ import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-position-voucher-link'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals

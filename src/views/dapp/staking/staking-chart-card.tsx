@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react'
 
-import { Card } from '~/shared/ui/card'
-import { Segment } from '~/shared/ui/segment'
-import { Text } from '~/shared/ui/text'
-import { TvAreaChart, type TvAreaPoint } from '~/shared/ui/tv-area-chart'
+import { Card } from '~/shared/components/card'
+import { Segment } from '~/shared/components/segment'
+import { Text } from '~/shared/components/text'
+import { TvAreaChart, type TvAreaPoint } from '~/shared/components/tv-area-chart'
 
 /** Staking TVL/range chart — TradingView Lightweight Charts when `points` set; else empty copy (not 0.00). */
 export function StakingChartCard({

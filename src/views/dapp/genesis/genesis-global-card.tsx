@@ -3,11 +3,11 @@ import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { Button } from '~/shared/components/button'
+import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { dappDarkBanner } from '~/shared/components/dapp-dark-banner'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Button } from '~/shared/ui/button'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
-import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
-import { Text } from '~/shared/ui/text'
 
 const genesisGlobeWidth = 597
 const genesisGlobeHeight = 250

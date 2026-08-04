@@ -1,6 +1,6 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 export function TokenChip({
   icon,

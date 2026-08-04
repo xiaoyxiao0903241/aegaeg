@@ -1,5 +1,5 @@
+import { Chip, type ChipProps } from '~/shared/components/chip'
 import { cn } from '~/shared/lib/utils'
-import { Chip, type ChipProps } from '~/shared/ui/chip'
 
 /**
  * Figma `htab` 分立 pill 组（样本 Grant `4719:2447` · Staking hub `4371:233`）。

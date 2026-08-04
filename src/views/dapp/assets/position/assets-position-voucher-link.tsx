@@ -1,6 +1,6 @@
 import { formatShortAddress } from '~/shared/api/format-display'
+import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { Text } from '~/shared/ui/text'
 
 /** 仓位卡「凭证」行：短地址链到 BSCScan。 */
 export function AssetsPositionVoucherLink({ address, label }: { address: string; label: string }) {

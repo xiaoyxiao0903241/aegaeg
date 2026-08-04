@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { Text } from '~/shared/ui/text'
-import { WidgetSubpageHeader } from '~/shared/ui/widget-header'
+import { Text } from '~/shared/components/text'
+import { WidgetSubpageHeader } from '~/shared/components/widget-header'
 
 export function DappTabHeader({
   backText,

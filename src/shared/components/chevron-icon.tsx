@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants'
 
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
 
 const CHEVRON_MASK = {
   up: "[mask:url('/assets/figma/dapp/ic-chevron-up.svg')_center/contain_no-repeat]",

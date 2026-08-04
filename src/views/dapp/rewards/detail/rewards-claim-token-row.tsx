@@ -1,6 +1,6 @@
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { Text } from '~/shared/ui/text'
+import { Text } from '~/shared/components/text'
 
 /** Token pill + amount on claim surfaces (mixed release/restake + simple claimable). */
 export function RewardsClaimTokenRow({

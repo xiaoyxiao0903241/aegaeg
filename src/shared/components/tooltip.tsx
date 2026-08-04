@@ -1,9 +1,9 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import * as React from 'react'
 
+import { Text } from '~/shared/components/text'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 const TooltipProvider = TooltipPrimitive.Provider
 

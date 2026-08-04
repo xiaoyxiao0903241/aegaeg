@@ -1,8 +1,8 @@
 import type { RefObject } from 'react'
 
-import { FieldActionChip } from '~/shared/ui/chip'
-import { Input } from '~/shared/ui/input'
-import { Text } from '~/shared/ui/text'
+import { FieldActionChip } from '~/shared/components/chip'
+import { Input } from '~/shared/components/input'
+import { Text } from '~/shared/components/text'
 
 export function GenesisPurchaseSharesField({
   disabled,

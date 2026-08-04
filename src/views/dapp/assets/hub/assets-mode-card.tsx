@@ -1,9 +1,9 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
+import { Card } from '~/shared/components/card'
+import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
-import { Text } from '~/shared/ui/text'
 
 /**
  * Figma `asset/*` · `4282:223`（h117 · p16 · gap8 · radius/md16）.

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { MetricCard } from '~/shared/ui/metric-card'
+import { MetricCard } from '~/shared/components/metric-card'
 
 /**
  * Flash/Trade/Burn 概览 ovc（Figma `4477:492`）：p16 · gap6 · label12/≈15 · value16/20 → 合成 h73。

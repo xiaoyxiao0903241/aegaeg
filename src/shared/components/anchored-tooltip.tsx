@@ -7,7 +7,7 @@ import {
 } from 'react'
 
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { Tooltip, TooltipContent, TooltipTrigger } from '~/shared/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '~/shared/components/tooltip'
 
 export type AnchoredTooltipPosition = 'top' | 'right' | 'bottom'
 

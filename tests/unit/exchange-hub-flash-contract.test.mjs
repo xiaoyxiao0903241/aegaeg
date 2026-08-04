@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('exchange hub copy contract: 4 modes, 6 program cards, 5 FAQs', async () => {
@@ -30,7 +31,7 @@ test('flash pair tabs expose both live pair labels', async () => {
 })
 
 test('isSegmentOptionEnabled respects option.disabled and list disabled', async () => {
-  const { isSegmentOptionEnabled } = await loadModule('/src/shared/ui/segment.tsx')
+  const { isSegmentOptionEnabled } = await loadModule('/src/shared/components/segment.tsx')
 
   assert.equal(isSegmentOptionEnabled({ label: 'A', value: 'a' }, false), true)
   assert.equal(isSegmentOptionEnabled({ label: 'A', value: 'a', disabled: true }, false), false)

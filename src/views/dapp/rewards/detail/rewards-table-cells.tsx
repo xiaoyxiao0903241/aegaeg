@@ -9,8 +9,8 @@ import type {
   RankRewardPeerSurpassLogItem,
   ReferralAwardLogItem,
 } from '~/shared/api/types'
-import { StatusBadge } from '~/shared/ui/badge'
-import { Text } from '~/shared/ui/text'
+import { StatusBadge } from '~/shared/components/badge'
+import { Text } from '~/shared/components/text'
 import {
   daoGrantStatusTone,
   formatApiDecimalAmount,

@@ -1,8 +1,8 @@
 import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 /** Figma `seg` sliding-pill motion (issue 05 / ticket 01). */
 export const SEGMENT_MOTION_MS = 220

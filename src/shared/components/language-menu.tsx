@@ -1,7 +1,7 @@
 import { type MouseEvent, type ReactNode, useEffect, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { Text } from '~/shared/ui/text'
+import { Text } from '~/shared/components/text'
 
 const languageMenu = tv({
   slots: {

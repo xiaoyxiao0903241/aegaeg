@@ -2,10 +2,10 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 
 /** Figma `4371:279`：三卡 gap 9 · PC 三列 */
 export const communityStatGrid = tv({

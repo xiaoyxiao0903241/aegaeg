@@ -5,11 +5,11 @@ import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappSideCard } from '~/app/shell/dapp-card'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
-import { FieldActionChip } from '~/shared/ui/chip'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { Input } from '~/shared/ui/input'
-import { Text } from '~/shared/ui/text'
+import { ButtonLoadingIcon } from '~/shared/components/button-loading-icon'
+import { FieldActionChip } from '~/shared/components/chip'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { Input } from '~/shared/components/input'
+import { Text } from '~/shared/components/text'
 
 const communityReferrerBindGrid = tv({
   base: 'flex gap-2',

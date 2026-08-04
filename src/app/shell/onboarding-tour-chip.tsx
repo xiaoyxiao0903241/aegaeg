@@ -1,5 +1,5 @@
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 /** Figma topbar `chip/新手教程` (`4305:358`) — replay entry for OnboardingGuide. */
 export function OnboardingTourChip({

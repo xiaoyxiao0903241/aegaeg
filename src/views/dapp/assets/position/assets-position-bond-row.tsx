@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { Card } from '~/shared/ui/card'
+import { Card } from '~/shared/components/card'
 import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
 import {
   ASSETS_POSITION_AGX_DECIMALS,

@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-import { Text } from '~/shared/ui/text'
+import { Text } from '~/shared/components/text'
 
 const HTML_CONTENT_RE = /<[a-z][\s\S]*>/i
 const URL_RE = /(https?:\/\/[^\s<>"']+)/g

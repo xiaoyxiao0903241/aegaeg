@@ -19,7 +19,7 @@
 - 用户可见文案必须 `<Text variant tone>`。
 - Shell（rail / topbar / mobile-nav）只留布局 / 色 / 间距；字阶归 `<Text>`。
 - 禁止组件硬编码 `text-[Npx]` / `#hex`；色进 `tokens.json`。
-- 禁止在 `shared/ui` 硬编码业务枚举与 locale 文案。
+- 禁止在 `shared/components` 硬编码业务枚举与 locale 文案。
 
 ## MUST NOT
 

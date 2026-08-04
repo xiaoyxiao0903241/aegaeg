@@ -206,8 +206,8 @@
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `WidgetPromoCard` 内部使用 `Card surface="inverse"`（深色 CTA）。
-- `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
-- `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
+- `DappInlineAlert`（`src/shared/components/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
+- `dappDarkBanner`（`src/shared/components/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `AegisDialogClose`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 - `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button。**页码下拉是小号自管 portal**（≠ `DropdownMenu` / `SelectMenu`）：面板与触发器同 `rounded-tight`（6px；禁 `rounded-sm` 大面板圆角）· `p-0` · `shadow-dropdown`；行无圆角、通栏高亮；选中 `bg-accent` + `text-coral`；可见最多 5 行（`--dapp-pagination-menu-item-height` × 5）。
@@ -240,11 +240,11 @@
 | 层        | 文件 / 入口                                                                                        | Gate                       |
 | --------- | -------------------------------------------------------------------------------------------------- | -------------------------- |
 | Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                          | §1                         |
-| Text      | `shared/ui/text.tsx`                                                                               | 12 variant · 7 tone        |
-| Button    | `shared/ui/button.tsx`                                                                             | 4×3×2                      |
-| Chip      | `shared/ui/chip.tsx`                                                                               | 3×3×2×4                    |
-| Card      | `shared/ui/card.tsx`                                                                               | 4 surface                  |
-| Input     | `shared/ui/input.tsx`                                                                              | default / numeric / amount |
+| Text      | `shared/components/text.tsx`                                                                       | 12 variant · 7 tone        |
+| Button    | `shared/components/button.tsx`                                                                     | 4×3×2                      |
+| Chip      | `shared/components/chip.tsx`                                                                       | 3×3×2×4                    |
+| Card      | `shared/components/card.tsx`                                                                       | 4 surface                  |
+| Input     | `shared/components/input.tsx`                                                                      | default / numeric / amount |
 | Composite | FaqList · WidgetPromoCard · MetricCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome       |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。

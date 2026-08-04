@@ -3,11 +3,11 @@ import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { AnchoredTooltip } from '~/shared/components/anchored-tooltip'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 
 type PromoLayout = 'desktop' | 'mobile'
 

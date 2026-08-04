@@ -1,8 +1,8 @@
 import { CircleAlert } from 'lucide-react'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
+import { Button } from '~/shared/components/button'
+import { Text } from '~/shared/components/text'
 
 interface ErrorBoundaryProps {
   children: ReactNode

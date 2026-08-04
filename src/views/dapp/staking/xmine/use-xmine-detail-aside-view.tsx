@@ -13,9 +13,9 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapX0MiningLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { Text } from '~/shared/ui/text'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,

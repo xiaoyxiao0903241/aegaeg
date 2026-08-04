@@ -3,8 +3,8 @@ import { tv } from 'tailwind-variants'
 
 import { TableRowSkeleton } from '~/app/shell/dapp-skeleton'
 import { dappTableCell } from '~/app/shell/dapp-table-card'
-import { StatusBadge } from '~/shared/ui/badge'
-import { Text } from '~/shared/ui/text'
+import { StatusBadge } from '~/shared/components/badge'
+import { Text } from '~/shared/components/text'
 
 const tableCell = dappTableCell()
 

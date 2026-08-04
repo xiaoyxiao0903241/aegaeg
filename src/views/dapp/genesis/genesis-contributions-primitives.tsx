@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { ProgressMeter } from '~/app/shell/progress-meter'
+import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 const genesisContributionsSection = tv({
   slots: {

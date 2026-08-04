@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { cn } from '~/shared/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
-} from '~/shared/ui/dropdown-menu'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/dropdown-menu'
+import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 
 export type ExchangeTokenPickerOption = {
   key: string

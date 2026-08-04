@@ -4,17 +4,17 @@ import { useState } from 'react'
 
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/shared/lib/utils'
 import {
   AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '~/shared/ui/aegis-responsive-dialog'
-import { Button } from '~/shared/ui/button'
-import { Chip } from '~/shared/ui/chip'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { Input } from '~/shared/ui/input'
-import { Text, textVariants } from '~/shared/ui/text'
+} from '~/shared/components/aegis-responsive-dialog'
+import { Button } from '~/shared/components/button'
+import { Chip } from '~/shared/components/chip'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { Input } from '~/shared/components/input'
+import { Text, textVariants } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
 

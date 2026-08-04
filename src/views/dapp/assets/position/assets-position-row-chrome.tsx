@@ -3,9 +3,9 @@ import { type ReactNode, useEffect, useState } from 'react'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
+import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 export const ASSETS_POSITION_GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals

@@ -27,6 +27,14 @@ export {
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
 } from '../../src/shared/api/format-display'
+export { ClaimSplitSlider } from '../../src/shared/components/claim-split-slider'
+export {
+  isSegmentOptionEnabled,
+  Segment,
+  SEGMENT_MOTION_EASING,
+  SEGMENT_MOTION_MS,
+  segmentPillThumbStyle,
+} from '../../src/shared/components/segment'
 export {
   BREAKPOINT_DESIGN_BASE_PX,
   BREAKPOINT_FLUID_MAX_ROOT_PX,
@@ -37,14 +45,6 @@ export {
   BREAKPOINT_TABLET_MAX_PX,
   BREAKPOINT_ULTRA_WIDE_SCALE,
 } from '../../src/shared/config/breakpoints'
-export { ClaimSplitSlider } from '../../src/shared/ui/claim-split-slider'
-export {
-  isSegmentOptionEnabled,
-  Segment,
-  SEGMENT_MOTION_EASING,
-  SEGMENT_MOTION_MS,
-  segmentPillThumbStyle,
-} from '../../src/shared/ui/segment'
 export {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,

@@ -1,12 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from '~/shared/components/carousel'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { RadioGroup, RadioIndicator } from '~/shared/components/radio'
+import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from '~/shared/ui/carousel'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
-import { Text } from '~/shared/ui/text'
 import { seasonCard, seasonCarousel } from '~/views/dapp/genesis/season/genesis-season-card'
 
 function translateSeasonStatus(status: string, t: ReturnType<typeof useI18n>['messages']) {

@@ -4,9 +4,12 @@ import { useEffect } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { useI18n } from '~/i18n/use-i18n'
-import { AegisResponsiveDialog, AegisSheetHandle } from '~/shared/ui/aegis-responsive-dialog'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { Text } from '~/shared/ui/text'
+import {
+  AegisResponsiveDialog,
+  AegisSheetHandle,
+} from '~/shared/components/aegis-responsive-dialog'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
+import { Text } from '~/shared/components/text'
 import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
 import { ConnectEmbed, useActiveAccount } from '~/web3/thirdweb-react'
 

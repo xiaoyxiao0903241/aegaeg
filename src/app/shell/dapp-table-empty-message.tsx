@@ -1,7 +1,7 @@
 import { DappTableCardShell } from '~/app/shell/dapp-table-card'
+import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 /** 表/列表空态文案色：稿 muted 40% → `text-foreground/40`（禁 `muted-foreground` 70%）。 */
 export function DappTableEmptyMessage({

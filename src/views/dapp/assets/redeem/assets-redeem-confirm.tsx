@@ -3,13 +3,13 @@ import { X } from 'lucide-react'
 
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/shared/lib/utils'
 import {
   AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '~/shared/ui/aegis-responsive-dialog'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/aegis-responsive-dialog'
+import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 
 /**
  * 赎回确认 — Figma 暗色卡；手册 §13：本金进 PrincipalReleaseVault，新单默认 30 天线性释放，非即时到钱包。

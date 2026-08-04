@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
-import { cn } from '~/shared/lib/utils'
-import { ChevronIcon } from '~/shared/ui/chevron-icon'
+import { ChevronIcon } from '~/shared/components/chevron-icon'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
-} from '~/shared/ui/dropdown-menu'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/dropdown-menu'
+import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 
 export type SelectMenuOption = {
   label: string

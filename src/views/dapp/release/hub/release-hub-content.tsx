@@ -6,10 +6,10 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { useI18n } from '~/i18n/use-i18n'
+import { Card } from '~/shared/components/card'
+import { FaqList } from '~/shared/components/faq-list'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { FaqList } from '~/shared/ui/faq-list'
-import { Text } from '~/shared/ui/text'
 
 /** 税率表高亮列：稿 20 天 / 60 天（4791:3602/3603） */
 const TAX_HIGHLIGHT_PERIOD_INDEX = new Set([1, 3])

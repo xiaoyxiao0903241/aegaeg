@@ -2,15 +2,15 @@ import { useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { cn } from '~/shared/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
-} from '~/shared/ui/dropdown-menu'
-import { Segment } from '~/shared/ui/segment'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/dropdown-menu'
+import { Segment } from '~/shared/components/segment'
+import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 
 export type AssetsQuoteCurrency = 'agx' | 'usd'
 

@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { HomeSection } from '~/views/home/home-section'
 import { partners } from '~/views/home/static-layout'
 

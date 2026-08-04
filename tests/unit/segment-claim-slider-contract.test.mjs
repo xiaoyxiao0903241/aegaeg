@@ -5,7 +5,7 @@ import { loadModule } from './load-module.mjs'
 
 test('Segment pill thumb uses rem spacing tokens + sliding transform (220ms)', async () => {
   const { SEGMENT_MOTION_EASING, SEGMENT_MOTION_MS, segmentPillThumbStyle } = await loadModule(
-    '/src/shared/ui/segment.tsx',
+    '/src/shared/components/segment.tsx',
   )
 
   assert.equal(SEGMENT_MOTION_MS, 220)
@@ -24,7 +24,7 @@ test('Segment pill thumb uses rem spacing tokens + sliding transform (220ms)', a
 
 test('Segment source documents coral + ink active tones and size sm|md|lg', async () => {
   const source = await import('node:fs/promises').then((fs) =>
-    fs.readFile(new URL('../../src/shared/ui/segment.tsx', import.meta.url), 'utf8'),
+    fs.readFile(new URL('../../src/shared/components/segment.tsx', import.meta.url), 'utf8'),
   )
   assert.match(source, /tone\?: 'coral' \| 'ink'/)
   assert.match(source, /tone = 'coral'/)

@@ -6,9 +6,9 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { useReleaseQueueView } from '~/views/dapp/release/queue/use-release-queue-view'
 
 /**

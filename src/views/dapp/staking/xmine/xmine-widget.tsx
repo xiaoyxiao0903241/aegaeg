@@ -7,10 +7,10 @@ import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
+import { AmountBox } from '~/shared/components/amount-box'
+import { AmountMaxChip } from '~/shared/components/chip'
+import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { AmountBox } from '~/shared/ui/amount-box'
-import { AmountMaxChip } from '~/shared/ui/chip'
-import { Text } from '~/shared/ui/text'
 import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine-view'
 
 export function XmineWidget() {

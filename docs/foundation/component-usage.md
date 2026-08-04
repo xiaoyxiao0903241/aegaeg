@@ -20,6 +20,6 @@
 
 ## MUST NOT
 
-- 业务档位 / locale 默认值进 `shared/ui`
+- 业务档位 / locale 默认值进 `shared/components`
 - `switch (index)` 画不同 chrome
 - 一个万能卡吃全部 rail variant

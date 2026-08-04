@@ -5,9 +5,9 @@ import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import type { HomePopupNotice } from '~/shared/api/types'
 import { homeAssets } from '~/shared/assets/home'
+import { dialogChrome } from '~/shared/components/dialog'
+import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { dialogChrome } from '~/shared/ui/dialog'
-import { Text } from '~/shared/ui/text'
 import { PopupNoticeContent } from '~/views/home/popup-notice-content'
 
 export function HomePopupNoticeModal({

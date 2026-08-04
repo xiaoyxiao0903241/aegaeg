@@ -5,11 +5,11 @@ import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribut
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { Card } from '~/shared/components/card'
+import { Text } from '~/shared/components/text'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { cn } from '~/shared/lib/utils'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
 

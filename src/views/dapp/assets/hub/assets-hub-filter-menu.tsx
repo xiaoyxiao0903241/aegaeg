@@ -2,14 +2,14 @@ import { useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { cn } from '~/shared/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuPanel,
   DropdownMenuTrigger,
-} from '~/shared/ui/dropdown-menu'
-import { Text } from '~/shared/ui/text'
+} from '~/shared/components/dropdown-menu'
+import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 
 /**
  * 资产 Hub 筛选：齿轮 → DropdownMenu（与兑换/排序同一套 chrome）.

@@ -1,6 +1,10 @@
 import type { ImgHTMLAttributes } from 'react'
 
-import { dappIcon, type DappIconShape, type DappIconSize } from '~/shared/ui/dapp-icon-scale'
+import {
+  dappIcon,
+  type DappIconShape,
+  type DappIconSize,
+} from '~/shared/components/dapp-icon-scale'
 
 type DappIconProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' | 'height'> & {
   shape?: DappIconShape

@@ -2,9 +2,14 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from '~/shared/components/carousel'
+import { dappIcon } from '~/shared/components/dapp-icon-scale'
 import { cn } from '~/shared/lib/utils'
-import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from '~/shared/ui/carousel'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 
 export type DappCarouselSlide = {
   key: string

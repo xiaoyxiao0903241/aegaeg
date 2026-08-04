@@ -1,5 +1,5 @@
+import { Chip } from '~/shared/components/chip'
 import { cn } from '~/shared/lib/utils'
-import { Chip } from '~/shared/ui/chip'
 
 export type PercentButtonRowProps = {
   'aria-label': string

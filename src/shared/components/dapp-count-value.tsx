@@ -1,7 +1,7 @@
 import { type ElementType, useEffect, useState } from 'react'
 
+import { metricDisplayText } from '~/shared/components/metric-display-text'
 import { cn } from '~/shared/lib/utils'
-import { metricDisplayText } from '~/shared/ui/metric-display-text'
 
 /** DApp digit reel — faster than homepage count-up (home stays 1300ms). */
 export const DAPP_DIGIT_MS = 420

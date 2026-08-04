@@ -12,15 +12,19 @@ import {
   useState,
 } from 'react'
 
-import { cn } from '~/shared/lib/utils'
 import {
   type CarouselApi,
   CarouselContext,
   type CarouselOptions,
   type CarouselPlugin,
-} from '~/shared/ui/carousel-context'
+} from '~/shared/components/carousel-context'
+import { cn } from '~/shared/lib/utils'
 
-export type { CarouselApi, CarouselOptions, CarouselPlugin } from '~/shared/ui/carousel-context'
+export type {
+  CarouselApi,
+  CarouselOptions,
+  CarouselPlugin,
+} from '~/shared/components/carousel-context'
 
 function useCarousel() {
   const context = useContext(CarouselContext)
