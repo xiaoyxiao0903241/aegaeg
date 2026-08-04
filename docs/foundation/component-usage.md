@@ -62,13 +62,13 @@
 
 ### 壳 — `Tile`（`src/app/shell/tile.tsx`）
 
-| 项   | 合同                                                                                                                             |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------- |
-| 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                           |
-| 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                      |
-| API  | `label: string` · `tooltip?: string`（label 旁 info）· `children` · `note?: ReactNode`（另起一行说明）                           |
-| 网格 | `OverviewGrid`（PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数 |
-| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 表壳/空态 · 奖励 Hub（pill/deco）→ **自建组件**                     |
+| 项   | 合同                                                                                                                                                              |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                                                            |
+| 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                                                       |
+| API  | `label: string` · `tooltip?: string`（label 旁 info）· `children` · `note?: ReactNode`（另起一行说明）                                                            |
+| 网格 | `OverviewGrid`（PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数 |
+| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 表壳/空态 · 奖励 Hub（pill/deco）→ **自建组件**                                                      |
 
 ### 内容 — 页袋组合
 

@@ -1938,6 +1938,7 @@ const app = defineMessages({
       },
     },
     aside: {
+      countdownUnits: { hours: 'ชม.', minutes: 'น.', seconds: 'วิ' },
       overview: 'Overview',
       positions: 'My positions',
       positionsHint: 'Claims, redeems, and unstakes are on the Assets tab.',

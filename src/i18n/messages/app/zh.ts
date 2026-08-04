@@ -1864,6 +1864,7 @@ const app = defineMessages({
       },
     },
     aside: {
+      countdownUnits: { hours: '小时', minutes: '分钟', seconds: '秒' },
       overview: '概览',
       positions: '我的仓位',
       positionsHint: '仓位领取、赎回与解押请在资产页操作。',

@@ -21,10 +21,10 @@ import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-deta
 
 /**
  * 右栏指标排布 — 跟各帧稿面，不抽万能仓位组件。
- * - cards-2：概览/仓位 2×2（OverviewGrid gap SSOT）
+ * - cards-2：概览/仓位 2×2（OverviewGrid）
  * - triple-plus：6 列 span — PC 上三(span2)下二(span3)；H5 一律 span3=每行两卡
  * - pair-plus：Xmine 概览 — PC 上二(span3)下三(span2)；H5 一律 span3
- * 等列走 OverviewGrid；span 布局自写列，gap 对齐 OverviewGrid（PC 3 · H5 2.5）。
+ * gap SSOT = OverviewGrid；span 仅子项 `col-span-*`。
  */
 function AsideMetricLayout({
   items,
@@ -36,7 +36,7 @@ function AsideMetricLayout({
   if (layout === 'triple-plus' || layout === 'pair-plus') {
     const pairFirst = layout === 'pair-plus'
     return (
-      <div className="grid grid-cols-6 gap-3 max-dapp:min-w-0 max-dapp:gap-2.5 max-dapp:[&>*]:min-w-0">
+      <OverviewGrid columns={6}>
         {items.map((item, index) => (
           <Tile
             className={cn(
@@ -61,7 +61,7 @@ function AsideMetricLayout({
             </Text>
           </Tile>
         ))}
-      </div>
+      </OverviewGrid>
     )
   }
   return (

@@ -2,24 +2,22 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import {
-  formatRebaseCountdown,
   formatRebaseCountdownParts,
   remainingSecFromBlocks,
 } from '../../src/core/staking/format-rebase-countdown.ts'
 
-test('formatRebaseCountdown zeros when missing or past', () => {
-  assert.equal(formatRebaseCountdown(undefined, 10n), '00 小时 00 分钟 00 秒')
-  assert.equal(formatRebaseCountdown(10n, 10n), '00 小时 00 分钟 00 秒')
-  assert.equal(formatRebaseCountdown(5n, 10n), '00 小时 00 分钟 00 秒')
+test('remainingSecFromBlocks zeros when missing or past', () => {
+  assert.equal(remainingSecFromBlocks(undefined, 10n), 0)
+  assert.equal(remainingSecFromBlocks(10n, 10n), 0)
+  assert.equal(remainingSecFromBlocks(5n, 10n), 0)
 })
 
-test('formatRebaseCountdown uses 3s/block (manual FAQ)', () => {
-  assert.equal(formatRebaseCountdown(1200n, 0n), '01 小时 00 分钟 00 秒')
-  assert.equal(formatRebaseCountdown(101n, 100n), '00 小时 00 分钟 03 秒')
-})
-
-test('remainingSecFromBlocks + formatRebaseCountdownParts feed live clock', () => {
+test('remainingSecFromBlocks uses 3s/block (manual FAQ)', () => {
+  assert.equal(remainingSecFromBlocks(1200n, 0n), 3600)
   assert.equal(remainingSecFromBlocks(101n, 100n), 3)
+})
+
+test('formatRebaseCountdownParts pads HH/MM/SS for DigitReel', () => {
   assert.deepEqual(formatRebaseCountdownParts(3661), {
     hours: '01',
     minutes: '01',
@@ -27,6 +25,11 @@ test('remainingSecFromBlocks + formatRebaseCountdownParts feed live clock', () =
   })
   assert.deepEqual(formatRebaseCountdownParts(0), {
     hours: '00',
+    minutes: '00',
+    seconds: '00',
+  })
+  assert.deepEqual(formatRebaseCountdownParts(3600), {
+    hours: '01',
     minutes: '00',
     seconds: '00',
   })

@@ -26,7 +26,7 @@ export function AssetsProductDetailSections({
   statsTitle,
   metrics,
   values,
-  /** 等列 OverviewGrid；`upper3-lower2` = LP/Burn 上三下二 span（gap 对齐 OverviewGrid） */
+  /** 等列 OverviewGrid；`upper3-lower2` = LP/Burn 上三下二 span（OverviewGrid 列变体） */
   metricsLayout = 2,
   opsTitle,
   opsEmpty,
@@ -86,13 +86,9 @@ export function AssetsProductDetailSections({
     <>
       <DappDetailBlock>
         <DappContentHeading>{statsTitle}</DappContentHeading>
-        {metricsLayout === 'upper3-lower2' ? (
-          <div className="grid grid-cols-2 gap-3 dapp:grid-cols-6 max-dapp:min-w-0 max-dapp:gap-2.5 dapp:[&>*]:col-span-2 max-dapp:[&>*]:min-w-0 dapp:[&>*:nth-child(n+4)]:col-span-3">
-            {tiles}
-          </div>
-        ) : (
-          <OverviewGrid columns={metricsLayout}>{tiles}</OverviewGrid>
-        )}
+        <OverviewGrid columns={metricsLayout === 'upper3-lower2' ? 'upper3-lower2' : metricsLayout}>
+          {tiles}
+        </OverviewGrid>
       </DappDetailBlock>
 
       <DappDetailBlock>

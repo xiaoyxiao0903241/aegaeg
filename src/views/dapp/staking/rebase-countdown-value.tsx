@@ -4,6 +4,7 @@ import {
   formatRebaseCountdownParts,
   remainingSecFromBlocks,
 } from '~/core/staking/format-rebase-countdown'
+import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
 
@@ -24,6 +25,8 @@ export function RebaseCountdownValue({
   epochEndBlock: bigint | undefined
   currentBlock: bigint | undefined
 }) {
+  const { messages: t } = useI18n()
+  const units = t.staking.aside.countdownUnits
   const chainRemainingSec = remainingSecFromBlocks(epochEndBlock, currentBlock)
 
   const [endAtMs, setEndAtMs] = useState(() => anchorEndAtMs(chainRemainingSec))
@@ -56,15 +59,15 @@ export function RebaseCountdownValue({
     <span className="inline-flex flex-wrap items-baseline gap-x-1 tabular-nums">
       <CountValue text={parts.hours} />
       <Text as="span" variant="detail">
-        小时
+        {units.hours}
       </Text>
       <CountValue text={parts.minutes} />
       <Text as="span" variant="detail">
-        分钟
+        {units.minutes}
       </Text>
       <CountValue text={parts.seconds} />
       <Text as="span" variant="detail">
-        秒
+        {units.seconds}
       </Text>
     </span>
   )

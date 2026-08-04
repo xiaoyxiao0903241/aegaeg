@@ -34,15 +34,3 @@ export function formatRebaseCountdownParts(totalSec: number): RebaseCountdownPar
     seconds: pad2(safe % 60),
   }
 }
-
-/**
- * Format blocks remaining until `epochEndBlock` as `HH 小时 MM 分钟 SS 秒`.
- * Past / unknown → zero countdown (honest empty, not demo clock).
- */
-export function formatRebaseCountdown(
-  epochEndBlock: bigint | undefined,
-  currentBlock: bigint | undefined,
-): string {
-  const parts = formatRebaseCountdownParts(remainingSecFromBlocks(epochEndBlock, currentBlock))
-  return `${parts.hours} 小时 ${parts.minutes} 分钟 ${parts.seconds} 秒`
-}
