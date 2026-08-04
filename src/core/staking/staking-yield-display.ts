@@ -105,6 +105,8 @@ export function buildCalcYieldCurvePoints(args: {
   maxDays?: number
 }): CalcYieldCurvePoint[] {
   const maxDays = args.maxDays ?? CALC_MAX_DAYS
+  const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
+  const price = Math.max(0, args.price)
   const points: CalcYieldCurvePoint[] = []
   for (let day = 1; day <= maxDays; day += 1) {
     const { interest } = calcLocalInterest({
@@ -114,9 +116,10 @@ export function buildCalcYieldCurvePoints(args: {
       days: day,
       epochRebasePct: args.epochRebasePct,
     })
+    // 债券利息已是 USD；质押利息为 AGX × 现价。
     points.push({
       day,
-      interestUsd: interest * Math.max(0, args.price),
+      interestUsd: isBondUsd1 ? interest : interest * price,
     })
   }
   return points

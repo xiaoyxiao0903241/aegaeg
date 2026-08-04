@@ -1,11 +1,12 @@
-import { parseAbi, zeroAddress } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, parseAbi, zeroAddress } from 'viem'
 
-import { isLuckyClaimable } from '~/core/rewards/rewards-block-reasons'
+import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
+import { readAggregate3 } from '~/web3/multicall3-read'
 
 const luckyAbi = parseAbi([
   LUCKY_POOL_METHODS.paused,
@@ -18,6 +19,9 @@ const luckyAbi = parseAbi([
 ])
 
 const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getUserRoundStat])
+
+/** 回溯闭轮上限（手册：旧轮按 ID 可查；禁只看上一轮）。 */
+const LUCKY_CLAIM_LOOKBACK = 90n
 
 export type LuckyClaimSnapshot = {
   paused: boolean
@@ -39,37 +43,99 @@ export async function readLuckyClaimSnapshot(
       functionName: 'paused',
     }),
   )
-  const roundId = (await client.readContract({
+  const openRoundId = (await client.readContract({
     address: BSC_CONTRACTS.luckyPool,
     abi: luckyAbi,
     functionName: 'currentRoundId',
   })) as bigint
 
-  // Prefer previous closed round for winners: currentRoundId is Open; winners are on prior.
-  const candidateRound = roundId > 0n ? roundId - 1n : 0n
-  const info = (await client.readContract({
-    address: BSC_CONTRACTS.luckyPool,
-    abi: luckyAbi,
-    functionName: 'getWinnerInfo',
-    args: [candidateRound, user],
-  })) as readonly [boolean, bigint]
-  const rewardClaimed = Boolean(
-    await client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
+  // currentRoundId 为 Open；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
+  const latestClosed = openRoundId > 0n ? openRoundId - 1n : 0n
+  const oldest =
+    latestClosed === 0n
+      ? 0n
+      : latestClosed > LUCKY_CLAIM_LOOKBACK
+        ? latestClosed - LUCKY_CLAIM_LOOKBACK + 1n
+        : 1n
+
+  const roundIds: bigint[] = []
+  if (latestClosed > 0n) {
+    for (let id = latestClosed; id >= oldest; id--) {
+      roundIds.push(id)
+      if (id === 0n) break
+    }
+  }
+
+  const pool = BSC_CONTRACTS.luckyPool
+  const results =
+    roundIds.length === 0
+      ? []
+      : await readAggregate3(
+          client,
+          roundIds.flatMap((roundId) => [
+            {
+              target: pool,
+              allowFailure: true,
+              callData: encodeFunctionData({
+                abi: luckyAbi,
+                functionName: 'getWinnerInfo',
+                args: [roundId, user],
+              }),
+            },
+            {
+              target: pool,
+              allowFailure: true,
+              callData: encodeFunctionData({
+                abi: luckyAbi,
+                functionName: 'rewardClaimed',
+                args: [roundId, user],
+              }),
+            },
+          ]),
+        )
+
+  const rows = []
+  for (let i = 0; i < roundIds.length; i++) {
+    const infoSlot = results[i * 2]
+    const claimedSlot = results[i * 2 + 1]
+    const roundId = roundIds[i]!
+    if (!infoSlot?.success || !claimedSlot?.success) {
+      rows.push({
+        roundId,
+        won: false,
+        rewardAmount: 0n,
+        rewardClaimed: false,
+      })
+      continue
+    }
+    const info = decodeFunctionResult({
       abi: luckyAbi,
-      functionName: 'rewardClaimed',
-      args: [candidateRound, user],
-    }),
-  )
-  const won = Boolean(info[0])
-  const rewardAmount = info[1] ?? 0n
+      functionName: 'getWinnerInfo',
+      data: infoSlot.returnData,
+    }) as readonly [boolean, bigint]
+    const rewardClaimed = Boolean(
+      decodeFunctionResult({
+        abi: luckyAbi,
+        functionName: 'rewardClaimed',
+        data: claimedSlot.returnData,
+      }),
+    )
+    rows.push({
+      roundId,
+      won: Boolean(info[0]),
+      rewardAmount: info[1] ?? 0n,
+      rewardClaimed,
+    })
+  }
+
+  const selected = selectLuckyClaimRound({ openRoundId, paused, rows })
   return {
     paused,
-    roundId: candidateRound,
-    won,
-    rewardAmount,
-    rewardClaimed,
-    claimable: isLuckyClaimable({ paused, won, rewardClaimed, rewardAmount }),
+    roundId: selected.roundId,
+    won: selected.won,
+    rewardAmount: selected.rewardAmount,
+    rewardClaimed: selected.rewardClaimed,
+    claimable: selected.claimable,
   }
 }
 

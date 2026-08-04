@@ -94,3 +94,24 @@ test('buildCalcYieldCurvePoints spans day 1..720', () => {
   assert.equal(points[CALC_MAX_DAYS - 1]?.day, 720)
   assert.ok((points[CALC_MAX_DAYS - 1]?.interestUsd ?? 0) >= (points[0]?.interestUsd ?? 0))
 })
+
+test('buildCalcYieldCurvePoints: bond interestUsd skips AGX price', () => {
+  const bond = buildCalcYieldCurvePoints({
+    product: 'lpbond',
+    period: '180',
+    principal: 100,
+    price: 65,
+    epochRebasePct: 0.41,
+    maxDays: 2,
+  })
+  const stake = buildCalcYieldCurvePoints({
+    product: 'stake',
+    period: 'liquid',
+    principal: 100,
+    price: 65,
+    epochRebasePct: 0.41,
+    maxDays: 2,
+  })
+  assert.ok((bond[1]?.interestUsd ?? 0) > 0)
+  assert.ok((bond[1]?.interestUsd ?? 0) * 10 < (stake[1]?.interestUsd ?? 0))
+})
