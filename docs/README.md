@@ -1,24 +1,39 @@
 # docs/ — 索引
 
-> Baseline = 当前分支 + Figma 正式稿。只留现状 SSOT。
+> 仓库根**仅** [`../AGENTS.md`](../AGENTS.md)。最高原则 + Matt 流程见该文件 §0–§1。
 
-| 任务                                                                                       | 读                                                                                                                                                                                                                                         |
-| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **文档分层 / 冲突裁决**（产品语言 ≠ 实现归属；**R4a** 钱路：手册有→手册，手册无→可证旧码） | [`../AGENTS.md`](../AGENTS.md) §8.0                                                                                                                                                                                                        |
-| **`/implement` 编码检查单** + ticket 归属模板                                              | [`agents/implement-checklist.md`](./agents/implement-checklist.md) · [`agents/issue-tracker.md`](./agents/issue-tracker.md)                                                                                                                |
-| **任意页 UI 贴稿**（page-done SSOT；R5a 手册不取消控件）                                   | [`agents/ui-leaf-parity-workflow.md`](./agents/ui-leaf-parity-workflow.md) · 勾选见 [`agents/implement-checklist.md`](./agents/implement-checklist.md)                                                                                     |
-| 命令 / 门禁                                                                                | [`agents/commands.md`](./agents/commands.md)                                                                                                                                                                                               |
-| 词表                                                                                       | [`../UBIQUITOUS_LANGUAGE.md`](../UBIQUITOUS_LANGUAGE.md)                                                                                                                                                                                   |
-| `src/` 落点                                                                                | [`src-layout.md`](./src-layout.md)                                                                                                                                                                                                         |
-| React / Compiler                                                                           | [`react-runtime.md`](./react-runtime.md)                                                                                                                                                                                                   |
-| 金钱路径                                                                                   | [`money-path-map.md`](./money-path-map.md)                                                                                                                                                                                                 |
-| **DApp 展示数据缺口 / 精度**（每页：手册+OpenAPI 尽量接线 · 无源诚实空 · AGX 价两源）      | [`dapp-data-gaps.md`](./dapp-data-gaps.md) · 流程 [`agents/ui-leaf-parity-workflow.md`](./agents/ui-leaf-parity-workflow.md) §2.1b                                                                                                         |
-| **代码注释**（中文 · 只写结论）                                                            | [`code-comments.md`](./code-comments.md)                                                                                                                                                                                                   |
-| Home / 动效                                                                                | [`homepage-architecture.md`](./homepage-architecture.md) · [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md)                                                                                                        |
-| Foundation                                                                                 | [`foundation/README.md`](./foundation/README.md) · 用法 [`foundation/component-usage.md`](./foundation/component-usage.md)                                                                                                                 |
-| DApp / Web3                                                                                | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md)                                                                                                                                                                                                         |
-| 合约行为（已实现）                                                                         | [`contract.md`](./contract.md)                                                                                                                                                                                                             |
-| **新功能前端手册（地址 / ABI / 流程 SSOT）**                                               | [`frontend-manual/AEGIS_X_FRONTEND_MANUAL.html`](./frontend-manual/AEGIS_X_FRONTEND_MANUAL.html)（原始 HTML）· [`frontend-manual/`](./frontend-manual/)（MD 阅读版）· 入仓/对账 [`frontend-manual-ingest.md`](./frontend-manual-ingest.md) |
-| Env / 地址模板                                                                             | [`../.env.example`](../.env.example) · [`../env/manual.bsc.addresses.env`](../env/manual.bsc.addresses.env) · [`../env/ci.env`](../env/ci.env)                                                                                             |
-| **7-rail DApp 落地 Spec（可实现）**                                                        | [`superpowers/specs/2026-07-29-dapp-7rail-parity.md`](./superpowers/specs/2026-07-29-dapp-7rail-parity.md) · tickets：`.scratch/dapp-7rail-parity/tickets/` · map：`.scratch/dapp-7rail-parity/`                                           |
-| Figma 归档（**非**现行 UI SSOT）                                                           | [`figma-export/README.md`](./figma-export/README.md)                                                                                                                                                                                       |
+## 入门
+
+React + Vite + TypeScript · AEGIS X DApp（BSC）。
+
+- Node **22+** · pnpm **11.17+**（Corepack）
+- `cp .env.example .env` → `pnpm install` → `pnpm dev`（`:5174`）
+- `pnpm env:staging` | `env:prod` | `env:status`
+- 门禁：`pnpm check` · 命令 SSOT：[`commands.md`](./commands.md)
+
+## 文档表
+
+| 任务                     | 读                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| 契约 / 五柱 / Matt 路由  | [`../AGENTS.md`](../AGENTS.md)                                                       |
+| 命令                     | [`commands.md`](./commands.md)                                                       |
+| 词表                     | [`ubiquitous-language.md`](./ubiquitous-language.md)                                 |
+| 链上手册（新）           | [`onchain-manual/`](./onchain-manual/)                                               |
+| 链上手册（旧）           | [`onchain-manual-legacy.md`](./onchain-manual-legacy.md)                             |
+| 后端 API                 | [`backend-api/`](./backend-api/)                                                     |
+| Figma 页 nodeId          | [`figma-pages.md`](./figma-pages.md)                                                 |
+| UI token / 组件          | [`foundation/`](./foundation/)                                                       |
+| Matt 决策 / 票 / handoff | [`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/) |
+
+## 手册优先级
+
+1. 新 `onchain-manual/` → 2. 旧 `onchain-manual-legacy.md`（仅补缺口）→ 3. `backend-api/`  
+   钱路专文暂缺。  
+   **禁止改写手册正文**；更新则整树替换入仓拷贝，勿手改。
+
+## Matt 落盘
+
+- grilling / wayfinder 决策 → `docs/decisions/`
+- to-tickets / triage 票 → `docs/tickets/`
+- 跨会话 handoff → `docs/handoffs/`（用后可删）
+- **禁止** `.scratch/` 过程坟作 SSOT

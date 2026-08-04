@@ -78,7 +78,7 @@ export const USD1_SWAP_METHODS = {
     'function getConfig() view returns (address usdtToken, address usd1Token, address wallet, uint256 currentRateBps, uint8 usdtDec, uint8 usd1Dec, bool isPaused, uint256 minIn, uint256 maxIn, uint256 reserve)',
 } as const
 
-/** AegisUsd1Swap custom errors — docs/frontend-manual/contracts/usd1swap.md */
+/** AegisUsd1Swap custom errors — docs/onchain-manual/contracts/usd1swap.md */
 export const USD1_SWAP_ERRORS = [
   'error ErrorPaused()',
   'error ErrorInsufficientUsd1(uint256 available, uint256 required)',
@@ -111,7 +111,7 @@ export const AGX_CONTRIBUTION_SWAP_METHODS = {
   convert: 'function convert(uint256 agxAmount)',
 } as const
 
-/** AegisAgxContributionSwap custom errors — docs/frontend-manual/contracts/agxcontributionswap.md */
+/** AegisAgxContributionSwap custom errors — docs/onchain-manual/contracts/agxcontributionswap.md */
 export const AGX_CONTRIBUTION_SWAP_ERRORS = [
   'error ErrorPaused()',
   'error ErrorZeroAmount()',
@@ -158,7 +158,7 @@ export const REDEEMABLE_GAGX_METHODS = {
   wrap: 'function wrap(uint256 _amount)',
 } as const
 
-/** RedeemableGAGX custom errors — docs/frontend-manual/contracts/redeemablegagx.md */
+/** RedeemableGAGX custom errors — docs/onchain-manual/contracts/redeemablegagx.md */
 export const REDEEMABLE_GAGX_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',
@@ -173,7 +173,7 @@ export const LIQUID_STAKING_METHODS = {
   isWarmupExpired: 'function isWarmupExpired(address user) view returns (bool)',
 } as const
 
-/** LiquidStaking custom errors — docs/frontend-manual/contracts/liquidstaking.md */
+/** LiquidStaking custom errors — docs/onchain-manual/contracts/liquidstaking.md */
 export const LIQUID_STAKING_ERRORS = [
   'error ErrorStakeAmount()',
   'error ErrorStakeNotApproved()',
@@ -197,7 +197,7 @@ export const LOCKED_STAKING_METHODS = {
   periodTime: 'function periodTime() view returns (uint256)',
 } as const
 
-/** LockedStaking custom errors — docs/frontend-manual/contracts/lockedstaking.md */
+/** LockedStaking custom errors — docs/onchain-manual/contracts/lockedstaking.md */
 export const LOCKED_STAKING_ERRORS = [
   'error ErrorAmountZero()',
   'error ErrorStakeNotApproved()',
@@ -222,7 +222,7 @@ export const BOND_HELPER_METHODS = {
     'function zapIntoBurnBond(address burnBondDepository, address token, uint256 amount)',
 } as const
 
-/** BondHelper custom errors — docs/frontend-manual/contracts/bondhelper.md */
+/** BondHelper custom errors — docs/onchain-manual/contracts/bondhelper.md */
 export const BOND_HELPER_ERRORS = [
   'error ErrorNotApproved()',
   'error ErrorPairNotExist()',
@@ -253,7 +253,7 @@ export const X_STAKING_POOL_METHODS = {
   startUnstake: 'function startUnstake()',
 } as const
 
-/** XStakingPool custom errors — docs/frontend-manual/contracts/xstakingpool.md */
+/** XStakingPool custom errors — docs/onchain-manual/contracts/xstakingpool.md */
 export const X_STAKING_POOL_ERRORS = [
   'error ErrorAmountZero()',
   'error ErrorStakeNotExist()',
@@ -345,7 +345,7 @@ export const BOND_DEPOSITORY_ASSETS_METHODS = {
 } as const
 
 /**
- * Bond / BurnBond custom errors — docs/frontend-manual/contracts/bonddepository.md
+ * Bond / BurnBond custom errors — docs/onchain-manual/contracts/bonddepository.md
  * (burnbonddepository.md: same user-facing set).
  */
 export const BOND_DEPOSITORY_ERRORS = [
@@ -380,7 +380,7 @@ export const REWARD_QUEUE_METHODS = {
   claimAllVestedRewards: 'function claimAllVestedRewards(uint8 planIndex)',
 } as const
 
-/** RewardQueue custom errors — docs/frontend-manual/contracts/rewardqueue.md */
+/** RewardQueue custom errors — docs/onchain-manual/contracts/rewardqueue.md */
 export const REWARD_QUEUE_ERRORS = [
   'error ErrorZeroAmount()',
   'error ErrorIndexOutOfBounds()',
@@ -398,7 +398,7 @@ export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   claimMany: 'function claimMany(uint256 start, uint256 limit)',
 } as const
 
-/** PrincipalReleaseVault custom errors — docs/frontend-manual/contracts/principalreleasevault.md */
+/** PrincipalReleaseVault custom errors — docs/onchain-manual/contracts/principalreleasevault.md */
 export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',
@@ -464,7 +464,7 @@ export const DAILY_PURCHASE_TRACKER_METHODS = {
     'function getUserRoundStat(uint256 roundId, address user) view returns (uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
 } as const
 
-/** LuckyPool custom errors — docs/frontend-manual/contracts/aegisluckypool.md (user claim path). */
+/** LuckyPool custom errors — docs/onchain-manual/contracts/aegisluckypool.md (user claim path). */
 export const LUCKY_POOL_ERRORS = [
   'error ErrorPaused()',
   'error ErrorNotWinner(uint256 roundId, address user)',
@@ -474,7 +474,7 @@ export const LUCKY_POOL_ERRORS = [
   'error ErrorInsufficientContribution(address user, uint256 required, uint256 available)',
 ] as const
 
-/** AegisPresaleRewardClaimer custom errors — see docs/contract.md §4.4. */
+/** AegisPresaleRewardClaimer custom errors — see docs/onchain-manual-legacy.md §4.4. */
 export const REWARD_CLAIMER_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',
@@ -489,7 +489,7 @@ export const ERC20_ERRORS = [
   'error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed)',
 ] as const
 
-/** AegisPreSale custom errors — see docs/contract.md §3. */
+/** AegisPreSale custom errors — see docs/onchain-manual-legacy.md §3. */
 export const PRESALE_ERRORS = [
   'error PreSalePaused()',
   'error PreSaleUserNotBound()',
@@ -505,7 +505,7 @@ export const PRESALE_ERRORS = [
   'error PreSaleUserPurchaseLimitExceeded(uint256 phaseIndex, uint256 limit, uint256 currentAmount, uint256 attemptedAmount)',
 ] as const
 
-/** AegisReferral custom errors — see docs/contract.md §2.4. */
+/** AegisReferral custom errors — see docs/onchain-manual-legacy.md §2.4. */
 export const REFERRAL_ERRORS = [
   'error Referral__RootZero()',
   'error Referral__UserZero()',

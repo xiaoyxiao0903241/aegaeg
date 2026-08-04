@@ -1,5 +1,5 @@
 # =============================================================================
-# Staging 覆盖 — 与 docs/frontend-manual/00-addresses.md 对齐的部署地址
+# Staging 覆盖 — 与 docs/onchain-manual/00-addresses.md 对齐的部署地址
 # Vite 优先级高于 .env；pnpm env:staging 写入本文件到 .env.local
 # Fail-closed：下列键均必填；勿依赖代码 fallback。
 # =============================================================================
@@ -13,7 +13,7 @@ VITE_APP_HOST=xdpro.cc
 # - USDT 为 staging 测试币（非官方 BSC-USD）；须与 usd1Swap.getConfig() 一致
 # - Router / Quoter / WBNB / Multicall3 为 BSC 公共基础设施
 # - Referral / PreSale / RewardClaimer / CommunityFund / Usd1Swap / AGX / gAGX / XToken
-#   与 docs/frontend-manual/00-addresses.md 一致
+#   与 docs/onchain-manual/00-addresses.md 一致
 
 VITE_BSC_WBNB=0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
 VITE_BSC_USD1=0x32Bb0be09F62bbE69764906d80e9A5782C7F7633

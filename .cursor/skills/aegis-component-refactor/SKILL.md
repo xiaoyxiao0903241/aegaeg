@@ -2,15 +2,17 @@
 name: aegis-component-refactor
 description: >-
   AEGIS Foundation — current-branch baseline. Read docs/foundation/ only.
-  One-step API; full call-site migration per slice.
+  One-step token axes; full call-site migration per slice.
 ---
 
 # AEGIS Foundation Skill
 
 > **文档链**
+>
 > 1. 本 skill（门禁）
-> 2. [`docs/foundation/runbook.md`](../../docs/foundation/runbook.md) — 怎么改
-> 3. [`docs/foundation/api.md`](../../docs/foundation/api.md) — 改什么
+> 2. [`docs/foundation/runbook.md`](../../../docs/foundation/runbook.md) — 怎么改
+> 3. [`docs/foundation/ui-tokens.md`](../../../docs/foundation/ui-tokens.md) — 改什么（公开轴）
+> 4. [`docs/foundation/component-usage.md`](../../../docs/foundation/component-usage.md) — leaf / call site
 
 **Baseline**：当前分支 + Figma 正式稿。
 
@@ -20,8 +22,8 @@ description: >-
 
 - 一步到位；无 `deprecatedAliases`
 - 每切片：primitive + **全仓**相关 call site
-- 完成 = API gate + 人工对照；探针 alone ≠ DONE
-- Class / CSS 减法与视觉同级 — 见 runbook §5
+- 完成 = token-axis gate + 人工对照；探针 alone ≠ DONE
+- Class / CSS 减法与视觉同级 — 见 runbook
 - **禁止**导出 Tailwind class 常量（`*Class` / 平行 layout 文件）；单用处 inline；多处复用 → **抽组件**
 
 ---
@@ -29,7 +31,7 @@ description: >-
 ## 写盘前
 
 ```
-[ ] 已读 runbook + api 对应 §
+[ ] 已读 runbook + ui-tokens 对应 §
 [ ] 根因 + REGRESSION|INTENTIONAL|IGNORE 已写明
 [ ] 不扩公开轴；细微差异用 className
 [ ] 不碰无关 theme / shell / 页面
@@ -40,7 +42,7 @@ description: >-
 ## 写盘后
 
 ```
-[ ] API gate + 人工对照通过（tsc / 肉眼；见 runbook §2）
+[ ] token-axis gate + 人工对照通过（tsc / 肉眼；见 runbook）
 ```
 
 ## 视觉（红块优先）

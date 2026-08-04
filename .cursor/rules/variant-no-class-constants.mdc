@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Variant 优先 · 禁止 class 常量
 
-> 设计系统细则：[`docs/foundation/runbook.md`](../../docs/foundation/runbook.md) · [`api.md`](../../docs/foundation/api.md)
+> 设计系统细则：[`docs/foundation/runbook.md`](../../docs/foundation/runbook.md) · [`ui-tokens.md`](../../docs/foundation/ui-tokens.md)
 
 ## MUST NOT
 

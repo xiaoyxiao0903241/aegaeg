@@ -97,8 +97,8 @@ test('BSC_CONTRACTS matches Vite-resolved env (fail-closed)', async () => {
   }
 })
 
-test('env/manual.bsc.addresses.env matches docs/frontend-manual/00-addresses.md', () => {
-  const md = readFileSync(resolve(projectRoot, 'docs/frontend-manual/00-addresses.md'), 'utf8')
+test('env/manual.bsc.addresses.env matches docs/onchain-manual/00-addresses.md', () => {
+  const md = readFileSync(resolve(projectRoot, 'docs/onchain-manual/00-addresses.md'), 'utf8')
   const envText = readFileSync(resolve(projectRoot, 'env/manual.bsc.addresses.env'), 'utf8')
 
   const mdAddresses = [...md.matchAll(/`\[?(0x[a-fA-F0-9]{40})`\]?/g)].map((m) =>

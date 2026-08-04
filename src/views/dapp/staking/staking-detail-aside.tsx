@@ -272,7 +272,7 @@ export function StakingDetailAside({
           emptyLabel={t.staking.aside.chartEmpty}
           header={
             <div className="flex items-center gap-2">
-              {/* 无 TVL 历史源 — 头值占位；见 dapp-data-gaps §3.2 */}
+              {/* 无 TVL 历史源 — 头值占位 */}
               <Text as="strong" className="text-xl font-semibold" variant="copy">
                 {formatCompactUsd(null)}
               </Text>

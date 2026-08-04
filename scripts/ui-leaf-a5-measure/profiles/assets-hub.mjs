@@ -1,7 +1,7 @@
 /**
  * Assets Hub (`#assets` · PC `4281:212`) A5 profile.
  *
- * Inventory: `.scratch/dapp-7rail-parity/research/206-gdc-merged.json` (N=140)
+ * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
  * Page snapshot JS returns structural packs; `mapLeaves` zips A4 order → measured nodes.
  * Adding a new page = copy this profile + write a new `*.page.js` + mapLeaves.
  */
@@ -22,8 +22,8 @@ export const profile = {
   id: 'assets-hub',
   url: 'http://127.0.0.1:5174/zh/app.html#assets',
   session: 'a5-assets-hub',
-  inventory: abs('.scratch/dapp-7rail-parity/research/206-gdc-merged.json'),
-  out: abs('.scratch/dapp-7rail-parity/research/206-assets-hub-measure-full.json'),
+  inventory: abs('tmp/ui-leaf-measure/206-gdc-merged.json'),
+  out: abs('tmp/ui-leaf-measure/206-assets-hub-measure-full.json'),
   pageSnapshotPath: join(here, 'assets-hub.page.js'),
   viewport: { width: 1920, height: 1080 },
   /** 等到详情列「资产总览」可见再采（防语言层/未进 tab） */

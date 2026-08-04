@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify docs/frontend-manual Markdown+ABI match the ingested HTML SSOT."""
+"""Verify docs/onchain-manual Markdown+ABI match the ingested HTML SSOT."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from html import unescape
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MANUAL = ROOT / "docs" / "frontend-manual"
+MANUAL = ROOT / "docs" / "onchain-manual"
 HTML_PATH = MANUAL / "AEGIS_X_FRONTEND_MANUAL.html"
 EXPECTED_SHA256 = "d8fcab922773c7c44944e0896e17657c368a432746ad47a569d81f774fd370be"
 

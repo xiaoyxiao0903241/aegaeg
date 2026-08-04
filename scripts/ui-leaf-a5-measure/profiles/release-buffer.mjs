@@ -1,10 +1,10 @@
 /**
  * Release Buffer (`#release/buffer` · PC `4469:220`) A5 profile.
  *
- * Inventory: `.scratch/dapp-7rail-parity/research/223-gdc-a5-inventory.json` (N=119)
- * Order = `223-release-buffer-min-leaves.md` 全表（§2.3a）。
+ * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
+ * Order = `223-release-buffer-min-leaves.md` 全表。
  * Left: ReleaseBufferWidget · Right: ReleaseBufferContent
- * §8.2a reuse: DappTabHeader · FaqList（各 1 leaf）
+ *
  * 机制否决 DappProcessSteps → 全叶（icon/line/conn/strip）
  */
 
@@ -24,8 +24,8 @@ export const profile = {
   id: 'release-buffer',
   url: 'http://127.0.0.1:5175/zh/app.html#release/buffer',
   session: 'a5-rb-1785781532',
-  inventory: abs('.scratch/dapp-7rail-parity/research/223-gdc-a5-inventory.json'),
-  out: abs('.scratch/dapp-7rail-parity/research/223-release-buffer-measure-full.json'),
+  inventory: abs('tmp/ui-leaf-measure/223-gdc-a5-inventory.json'),
+  out: abs('tmp/ui-leaf-measure/223-release-buffer-measure-full.json'),
   pageSnapshotPath: join(here, 'release-buffer.page.js'),
   viewport: { width: 1920, height: 1080 },
   waitUntilReadyJs: `(() => {
@@ -98,7 +98,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[0], S.dividerL, 'shell.dividerL')
   add(gdc[1], S.dividerR, 'shell.dividerR')
 
-  // 2 DappTabHeader（§8.2a reuse · 整块）
+  // 2 DappTabHeader
   add(gdc[2], H.tabHeader, 'header.tabHeader')
 
   // 3–30 buf×2（AGX / gAGX · 各 14 leaf：card→claimText；radio 稿有现码可无→null）
@@ -176,7 +176,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], b.text, `mech.benefits[${i}].text`)
   }
 
-  // 118 FaqList（§8.2a reuse · 整块）
+  // 118 FaqList
   add(gdc[gi++], F.list, 'faq.list')
 
   if (mapped.length !== gdc.length) {

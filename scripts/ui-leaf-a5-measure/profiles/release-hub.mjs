@@ -1,8 +1,8 @@
 /**
  * Release Hub (`#release` · PC `4298:212`) A5 profile.
  *
- * Inventory: `.scratch/dapp-7rail-parity/research/221-gdc-a5-inventory.json` (N=85)
- * Order = `221-release-hub-min-leaves.md` 全表（§2.3a；作废 prior N=65 reuse 折叠）.
+ * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
+ * Order = `221-release-hub-min-leaves.md` 全表.
  * Left: ReleaseHubWidget · Right: ReleaseHubContent
  */
 
@@ -22,8 +22,8 @@ export const profile = {
   id: 'release-hub',
   url: 'http://127.0.0.1:5175/zh/app.html#release',
   session: 'a5-rh-1785781532',
-  inventory: abs('.scratch/dapp-7rail-parity/research/221-gdc-a5-inventory.json'),
-  out: abs('.scratch/dapp-7rail-parity/research/221-release-hub-measure-full.json'),
+  inventory: abs('tmp/ui-leaf-measure/221-gdc-a5-inventory.json'),
+  out: abs('tmp/ui-leaf-measure/221-release-hub-measure-full.json'),
   pageSnapshotPath: join(here, 'release-hub.page.js'),
   viewport: { width: 1920, height: 1080 },
   waitUntilReadyJs: `(() => {

@@ -1,7 +1,7 @@
 /**
  * Staking Stake (`#staking/stake` · PC `4448:220`) A5 profile.
  *
- * Inventory: `.scratch/dapp-7rail-parity/research/208-gdc-merged.json` (N=148)
+ * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
  */
 
 import { readFileSync } from 'node:fs'
@@ -20,8 +20,8 @@ export const profile = {
   id: 'staking-stake',
   url: 'http://127.0.0.1:5174/zh/app.html#staking/stake',
   session: 'a5-staking-stake',
-  inventory: abs('.scratch/dapp-7rail-parity/research/208-gdc-merged.json'),
-  out: abs('.scratch/dapp-7rail-parity/research/208-staking-stake-measure-full.json'),
+  inventory: abs('tmp/ui-leaf-measure/208-gdc-merged.json'),
+  out: abs('tmp/ui-leaf-measure/208-staking-stake-measure-full.json'),
   pageSnapshotPath: join(here, 'staking-stake.page.js'),
   viewport: { width: 1920, height: 1080 },
   waitUntilReadyJs: `(() => {

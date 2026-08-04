@@ -90,7 +90,7 @@ export interface BscContracts {
 /**
  * BSC contract addresses — **fail-closed**.
  * Every field comes from `VITE_BSC_*` env. Missing / invalid → throw (no code defaults).
- * Address catalog SSOT: `docs/frontend-manual/00-addresses.md`.
+ * Address catalog SSOT: `docs/onchain-manual/00-addresses.md`.
  * Env template: `env/manual.bsc.addresses.env` + `.env.example`.
  */
 export const BSC_CONTRACTS = {

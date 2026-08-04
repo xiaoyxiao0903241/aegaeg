@@ -1,8 +1,8 @@
 /**
  * Assets Stake (`#assets/stake` · PC `4518:5594`) A5 profile.
  *
- * Inventory: `.scratch/dapp-7rail-parity/research/212-assets-stake-a5-inventory.json` (N=114)
- * Order = min-leaves / leaf 表序（含 §8.2a reuse）。
+ * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
+ * Order = min-leaves / leaf 表序。
  */
 
 import { readFileSync } from 'node:fs'
@@ -21,8 +21,8 @@ export const profile = {
   id: 'assets-stake',
   url: 'http://127.0.0.1:5174/zh/app.html#assets/stake',
   session: 'a5-assets-stake-r3',
-  inventory: abs('.scratch/dapp-7rail-parity/research/212-assets-stake-a5-inventory.json'),
-  out: abs('.scratch/dapp-7rail-parity/research/212-assets-stake-measure-full.json'),
+  inventory: abs('tmp/ui-leaf-measure/212-assets-stake-a5-inventory.json'),
+  out: abs('tmp/ui-leaf-measure/212-assets-stake-measure-full.json'),
   pageSnapshotPath: join(here, 'assets-stake.page.js'),
   viewport: { width: 1920, height: 1080 },
   waitUntilReadyJs: `(() => {

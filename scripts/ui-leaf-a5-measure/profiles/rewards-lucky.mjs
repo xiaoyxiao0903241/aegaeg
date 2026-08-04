@@ -1,7 +1,7 @@
 /**
  * Rewards Lucky (`#rewards/lucky` · PC `4390:220`) A5 profile.
  *
- * Inventory: `.scratch/dapp-7rail-parity/research/215-lucky-a5-inventory.json` (N=196)
+ * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
  * Order = `215-lucky-min-leaves.json` leaves[]（与 `215-gdc-merged.json` 同序）.
  * Left: RewardsMixedClaimWidget · Right: RewardsLuckyContent
  */
@@ -22,8 +22,8 @@ export const profile = {
   id: 'rewards-lucky',
   url: 'http://127.0.0.1:5174/zh/app.html#rewards/lucky',
   session: 'a5-rewards-lucky',
-  inventory: abs('.scratch/dapp-7rail-parity/research/215-lucky-a5-inventory.json'),
-  out: abs('.scratch/dapp-7rail-parity/research/215-lucky-measure-full.json'),
+  inventory: abs('tmp/ui-leaf-measure/215-lucky-a5-inventory.json'),
+  out: abs('tmp/ui-leaf-measure/215-lucky-measure-full.json'),
   pageSnapshotPath: join(here, 'rewards-lucky.page.js'),
   viewport: { width: 1920, height: 1080 },
   waitUntilReadyJs: `(() => {

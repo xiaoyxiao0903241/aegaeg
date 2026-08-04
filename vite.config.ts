@@ -1,12 +1,14 @@
-import legacy from '@vitejs/plugin-legacy'
+import { resolve } from 'node:path'
+
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
+import legacy from '@vitejs/plugin-legacy'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
+
+import localesJson from './src/i18n/locales.json'
 import { flattenCssCascadeLayersPlugin } from './vite-plugins/flatten-css-cascade-layers'
 import { viewportUnitFallbacksPlugin } from './vite-plugins/viewport-unit-fallbacks'
-import localesJson from './src/i18n/locales.json'
 
 /** Inline boot polyfill must parse before plugin-legacy module polyfills in <head>. */
 function legacyBootFirstPlugin(): Plugin {
@@ -88,8 +90,7 @@ export default defineConfig(({ command }) => ({
          * thirdweb/viem: do not add here. Named chunks absorb shared deps; Home then
          * sync-loads ~3.5MB via LocalizedErrorBoundary. codeSplitting +
          * includeDependenciesRecursively:false keeps Home clean but inflates DApp
-         * sync (~1.6MB→~4.6MB) by collapsing thirdweb async splits. Debt:
-         * docs/homepage-architecture.md (S6).
+         * sync (~1.6MB→~4.6MB) by collapsing thirdweb async splits.
          */
         manualChunks(id) {
           if (!id.includes('node_modules')) return
@@ -126,7 +127,7 @@ export default defineConfig(({ command }) => ({
   },
   plugins: [
     react(),
-    // React Compiler — full mode after Chrome90 build smoke (docs/react-runtime.md).
+    // React Compiler — full mode after Chrome90 build smoke.
     // Must not share a PR with auth/home-reveal/blind memo deletion.
     babel({
       presets: [reactCompilerPreset()],
