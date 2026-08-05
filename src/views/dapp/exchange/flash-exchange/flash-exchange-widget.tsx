@@ -1,4 +1,4 @@
-import { flashExchangeAssets } from '~/app/assets'
+import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
@@ -108,7 +108,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
                     '_blank',
                     'noopener,noreferrer',
                   ),
-                iconSrc: flashExchangeAssets.externalLink,
+                iconSrc: dappAssets.arrowUpRight,
               }),
             ]}
           />

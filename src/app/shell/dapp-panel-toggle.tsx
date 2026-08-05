@@ -1,7 +1,6 @@
-import { Menu } from 'lucide-react'
-
+import { dappAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
-import { iconVariants } from '~/shared/components/icon'
+import { Icon, iconVariants } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
@@ -20,14 +19,14 @@ export function DappPanelToggle({ className }: { className?: string }) {
         className={cn('size-9 min-h-9 shrink-0', className)}
         onClick={toggle}
       >
-        <Menu
-          aria-hidden
+        <Icon
+          alt=""
           className={cn(
             iconVariants({ size: 'lg' }),
             'duration-dapp-base transition-transform ease-dapp',
             detailCollapsed && 'rotate-90',
           )}
-          strokeWidth={1.5}
+          src={dappAssets.menu}
         />
       </IconButton>
     </Tooltip>

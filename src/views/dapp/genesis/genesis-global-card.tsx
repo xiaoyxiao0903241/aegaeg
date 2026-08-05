@@ -24,7 +24,7 @@ const genesisGlobalCard = tv({
       'w-auto! gap-1.5! border-white/45! bg-transparent! px-4.5! text-white!',
       'hover:translate-y-0! hover:border-white/80! hover:shadow-none!',
       'focus-visible:translate-y-0! focus-visible:border-white/80! focus-visible:shadow-none!',
-      '[&_img]:size-(--dapp-icon-action) [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
+      '[&_img]:size-2.5 [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe: 'pointer-events-none absolute top-0 right-0 size-auto max-w-3/5 opacity-80 select-none',
   },
@@ -66,7 +66,7 @@ export function GenesisGlobalCard({
         variant="secondary"
       >
         {contractLabel}
-        <Icon alt="" size="action" src={dappAssets.arrowUpRight} />
+        <Icon alt="" className="size-2.5" src={dappAssets.arrowUpRight} />
       </Button>
       <img
         alt=""

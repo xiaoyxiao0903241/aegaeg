@@ -26,7 +26,7 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
             href={homeHref}
           >
             {t.dapp.connect.promoBrandLine}
-            <Icon alt="" size="action" src={dappAssets.arrowUpRight} />
+            <Icon alt="" className="size-2.5" src={dappAssets.arrowUpRight} />
           </Text>
         </div>
       </div>

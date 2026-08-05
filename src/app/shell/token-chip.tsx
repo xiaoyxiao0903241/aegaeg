@@ -1,5 +1,4 @@
-import { ChevronDown } from 'lucide-react'
-
+import { dappAssets } from '~/app/assets'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -22,13 +21,7 @@ export function TokenChip({
       <Text as="span" variant="detail" className="leading-[1.2] font-semibold">
         {label}
       </Text>
-      {picker ? (
-        <ChevronDown
-          aria-hidden
-          className="size-2.5 shrink-0 text-muted-foreground"
-          strokeWidth={2.5}
-        />
-      ) : null}
+      {picker ? <Icon alt="" className="size-2.5 shrink-0" src={dappAssets.chevronDown} /> : null}
     </>
   )
 

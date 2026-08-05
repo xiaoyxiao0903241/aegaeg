@@ -14,9 +14,7 @@ export const tokenCarouselIcons = {
 
 /** Flash exchange icons. */
 export const flashExchangeAssets = {
-  backArrow: '/assets/figma/dapp/flash/ic-back-arrow.svg',
   flowDivider: '/assets/figma/dapp/flash/ic-flow-divider.svg',
-  externalLink: '/assets/figma/dapp/flash/ic-external-link.svg',
 } as const
 
 /** Burn exchange icons. */
@@ -91,8 +89,6 @@ export const dappAssets = {
   chevronUp: '/assets/figma/dapp/ic-chevron-up.svg',
   /** Figma `4518:7176` — 排序等 pill trigger 下箭头 10. */
   chevronDown: '/assets/figma/dapp/ic-chevron-down.svg',
-  /** H5 Exchange pager — double chevron (down); rotate 180° for previous page. */
-  swipeChevronDouble: '/assets/figma/dapp/ic-swipe-chevron-double.svg',
   community: '/assets/figma/dapp/ic-community.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',
   globe: '/assets/figma/dapp/ic-globe.svg',
@@ -101,10 +97,7 @@ export const dappAssets = {
   setting: '/assets/figma/dapp/ic-setting.svg',
   /** 滑点等 CTA 齿轮 · 同叶 primary 描边（`ic-setting` 为黑，供 Hub 筛选） */
   settingPrimary: '/assets/figma/dapp/ic-setting-primary.svg',
-  infoHint: '/assets/figma/dapp/ic-info-hint.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
-  /** Figma `4742:248` 外链 ↗ 9×9（申请解锁等） */
-  arrowUpRightSm: '/assets/figma/dapp/ic-arrow-up-right-sm.svg',
   /** Rail icon for exchange tab (glyph file name historical). */
   exchange: '/assets/figma/dapp/ic-swap.svg',
   assets: '/assets/figma/dapp/ic-assets.svg',

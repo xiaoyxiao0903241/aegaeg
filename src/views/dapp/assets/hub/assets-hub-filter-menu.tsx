@@ -1,3 +1,4 @@
+/** Assets hub：隐藏零余额筛选（齿轮 + checkbox）. */
 import { Check } from 'lucide-react'
 import { useState } from 'react'
 
@@ -15,6 +16,7 @@ import { cn } from '~/shared/lib/utils'
 /**
  * 资产 Hub 筛选：齿轮 → DropdownMenu（与兑换/排序同一套 chrome）.
  * 勾选盒对齐 HTML 原型 15×15 · r4 · #e86a43；行圆角走 Item 的 rounded-control.
+ * 盒内勾用 Lucide（需白描边 currentColor；稿 `ic-check` 为珊瑚烘焙，不适合 img）.
  */
 export function AssetsHubFilterMenu({
   align = 'end',
@@ -58,7 +60,7 @@ export function AssetsHubFilterMenu({
           role="menuitemcheckbox"
           selected={hideZero}
         >
-          {/* 原型 checkbox：15×15 · border 1.5 · r4 · 勾选 #e86a43 */}
+          {/* 原型 checkbox：15×15 · border 1.5 · r4 · 勾选白 */}
           <span
             aria-hidden
             className={cn(

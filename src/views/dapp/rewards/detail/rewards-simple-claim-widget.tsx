@@ -1,5 +1,3 @@
-import { ChevronDown } from 'lucide-react'
-
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
@@ -8,6 +6,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
+import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
@@ -57,7 +56,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
                 </Text>
               </div>
               <div className="mt-1.5 grid gap-1">
-                {/* Figma 4742:246 — 文案 + ↗ 9（非 chevron） */}
+                {/* Figma 4742:246 — 文案 + ↗ 10（非 chevron） */}
                 <a
                   className="inline-flex w-fit items-center gap-1 font-medium text-coral-emphasis underline"
                   href={COMMUNITY_SOCIAL_LINKS.telegram}
@@ -70,10 +69,8 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
                   <img
                     alt=""
                     aria-hidden
-                    className="size-2 shrink-0"
-                    height={8}
-                    src={dappAssets.arrowUpRightSm}
-                    width={8}
+                    className="size-2.5 shrink-0"
+                    src={dappAssets.arrowUpRight}
                   />
                 </a>
                 <Text as="p" className="leading-none text-foreground/40" variant="copy">
@@ -84,7 +81,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
 
             <div className="flex items-center justify-center">
               <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
-                <ChevronDown aria-hidden className="size-2.5 opacity-70" strokeWidth={2} />
+                <Icon alt="" className="size-2.5 opacity-70" src={dappAssets.chevronDown} />
               </span>
             </div>
           </>

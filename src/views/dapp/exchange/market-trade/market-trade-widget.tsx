@@ -75,6 +75,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
             <ExchangeTokenPicker
               ariaLabel={t.exchange.trade.selectSellToken}
               checkIcon={dappAssets.check}
+              chevronIcon={dappAssets.chevronDown}
               disabled={vm.pickDisabled}
               onSelect={(key) => vm.handleTokenPick('sell', key)}
               options={vm.sellPickerOptions}
@@ -85,6 +86,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
             <ExchangeTokenPicker
               ariaLabel={t.exchange.trade.selectBuyToken}
               checkIcon={dappAssets.check}
+              chevronIcon={dappAssets.chevronDown}
               disabled={vm.pickDisabled}
               onSelect={(key) => vm.handleTokenPick('buy', key)}
               options={vm.buyPickerOptions}

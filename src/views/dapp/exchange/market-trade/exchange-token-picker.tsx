@@ -1,4 +1,3 @@
-import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 
 import {
@@ -27,6 +26,7 @@ export type ExchangeTokenPickerOption = {
 export function ExchangeTokenPicker({
   ariaLabel,
   checkIcon,
+  chevronIcon,
   disabled = false,
   onSelect,
   options,
@@ -34,6 +34,8 @@ export function ExchangeTokenPicker({
 }: {
   ariaLabel: string
   checkIcon?: string
+  /** Figma 下箭头稿面叶；由 call site 传入. */
+  chevronIcon: string
   disabled?: boolean
   onSelect: (key: string) => void
   options: ExchangeTokenPickerOption[]
@@ -62,11 +64,7 @@ export function ExchangeTokenPicker({
         <Text as="span" className="leading-none font-semibold" variant="copy">
           {selected.symbol}
         </Text>
-        <ChevronDown
-          aria-hidden
-          className="size-3 shrink-0 text-muted-foreground"
-          strokeWidth={2}
-        />
+        <Icon alt="" className="size-3 shrink-0" src={chevronIcon} />
       </DropdownMenuTrigger>
 
       <DropdownMenuPanel className="min-w-52">

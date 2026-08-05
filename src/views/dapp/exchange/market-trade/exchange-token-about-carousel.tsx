@@ -45,12 +45,7 @@ function TokenCarouselCard({
       withArrow
     >
       {contractLabel}
-      <img
-        alt=""
-        height={isDesktop ? 15 : 13}
-        src={dappAssets.arrowUpRight}
-        width={isDesktop ? 15 : 13}
-      />
+      <img alt="" className="size-2.5" src={dappAssets.arrowUpRight} />
     </ExchangePromoPillAction>
   )
 

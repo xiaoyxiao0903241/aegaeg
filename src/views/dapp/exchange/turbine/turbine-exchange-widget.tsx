@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
+import { dappAssets, turbineExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
@@ -43,7 +43,7 @@ function TurbineEqBuyTokenCell({
       </Text>
       <div className="flex items-center gap-2">
         <Icon alt="" className="size-5 rounded-md" size="token" src={icon} />
-        <Text as="span" variant="copy" className="text-base leading-5 font-semibold">
+        <Text as="span" variant="copy" className="text-base/5 font-semibold">
           <CountValue text={value} />
         </Text>
       </div>
@@ -186,7 +186,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                           }
                           type="button"
                         >
-                          <Icon alt="" size="xs" src={flashExchangeAssets.externalLink} />
+                          <Icon alt="" className="size-2.5" src={dappAssets.arrowUpRight} />
                         </button>
                       </>
                     ),

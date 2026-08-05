@@ -1,8 +1,8 @@
-import { ChevronUp } from 'lucide-react'
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 
+import { dappAssets } from '~/app/assets'
 import { DappSection } from '~/app/shell/dapp-section'
-import { iconVariants } from '~/shared/components/icon'
+import { Icon, iconVariants } from '~/shared/components/icon'
 import { cn } from '~/shared/lib/utils'
 
 const COLLAPSE_MS = 320
@@ -68,14 +68,14 @@ export function DappCollapsibleSection({
           type="button"
         >
           <span className="min-w-0 flex-1">{title}</span>
-          <ChevronUp
-            aria-hidden
+          <Icon
+            alt=""
             className={cn(
               iconVariants({ size: 'base' }),
               'transition-transform duration-320 ease-[cubic-bezier(0.2,0.8,0.2,1)]',
               open ? 'rotate-0' : 'rotate-180',
             )}
-            strokeWidth={1.5}
+            src={dappAssets.chevronUp}
             style={{ transitionDuration: `${COLLAPSE_MS}ms` }}
           />
         </button>
