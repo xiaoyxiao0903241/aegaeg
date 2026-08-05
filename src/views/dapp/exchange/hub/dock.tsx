@@ -4,10 +4,10 @@
  * 列出四种兑换模式入口卡片，点击切换子视图；
  * 顶部为面板标题与收起按钮。
  */
-import { exchangeHubAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { ModeCard } from '~/shared/components/mode-card'
 import { WidgetHeader } from '~/shared/components/widget-header'
+import { exchangeHubAssets } from '~/shared/config/assets'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { DetailToggle } from '~/views/dapp/shared/detail-toggle'

@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/go-bind-referral'
-import { useAppShell } from '~/app/use-app-shell'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
+import { goBindReferral } from '~/shared/config/go-bind-referral'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 
@@ -22,7 +22,7 @@ import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-ho
  */
 export function useGenesisDock(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const setShares = genesis.setShares
 
   const [sharesText, setSharesText] = useState('')

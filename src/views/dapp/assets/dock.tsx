@@ -7,7 +7,7 @@ import { HubDock } from '~/views/dapp/assets/hub/dock'
 import { PositionDock } from '~/views/dapp/assets/position/dock'
 import { XmineDock } from '~/views/dapp/assets/xmine/dock'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDockShell } from '~/views/dapp/shared/tab-shell'
+import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function AssetsDockBody() {
   const view = useSubviewDisplayView<AssetsView>()
@@ -21,8 +21,8 @@ function AssetsDockBody() {
 export function AssetsDock() {
   const subview = useAssetsViewMotion()
   return (
-    <TabDockShell subview={subview}>
+    <TabDockHost subview={subview}>
       <AssetsDockBody />
-    </TabDockShell>
+    </TabDockHost>
   )
 }

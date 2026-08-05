@@ -5,7 +5,6 @@ import { Loader2, Wallet } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { dappAssets } from '~/app/assets'
 import { Card } from '~/shared/components/card'
 import { FieldActionChip } from '~/shared/components/chip'
 import { Icon, iconVariants } from '~/shared/components/icon'
@@ -13,12 +12,13 @@ import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn, navigableHref } from '~/shared/lib/utils'
 import { SideCard } from '~/views/dapp/community/side-card'
 
 /** 社区数据卡在 H5 下共用的容器样式。 */
-export const communityStatCardMobileShell = tv({
+export const communityStatCardMobileFrame = tv({
   base: cn(
     'max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
     'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
@@ -128,7 +128,7 @@ const communityStatCard = tv({
     root: cn(
       revealClass(),
       'community-stat relative flex flex-col items-start gap-1 overflow-clip rounded-2xl p-4',
-      communityStatCardMobileShell(),
+      communityStatCardMobileFrame(),
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
     value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),

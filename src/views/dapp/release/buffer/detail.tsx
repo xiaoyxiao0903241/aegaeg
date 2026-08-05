@@ -7,11 +7,10 @@
  */
 import { useState } from 'react'
 
-import { tokenCarouselIcons } from '~/app/assets'
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
@@ -19,6 +18,7 @@ import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
+import { tokenCarouselIcons } from '~/shared/config/assets'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { BufferAssetCard, BufferMechanismCard } from '~/views/dapp/release/buffer/primitives'
@@ -29,7 +29,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function BufferDetail() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const [recordsPage, setRecordsPage] = useState(1)
   const bufferQuery = useReleaseBufferSnapshot(walletReady)

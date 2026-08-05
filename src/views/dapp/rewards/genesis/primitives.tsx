@@ -3,11 +3,11 @@
  */
 import type { ReactNode } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import { Card } from '~/shared/components/card'
 import { darkBanner } from '~/shared/components/dark-banner'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 
 /**

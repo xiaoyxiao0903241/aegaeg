@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 
-import { WalletConnectModal } from '~/app/wallet/wallet-connect-modal'
-import { WalletDetailsModal } from '~/app/wallet/wallet-details-modal'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import {
@@ -18,6 +16,8 @@ import { Button } from '~/shared/components/button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { useAuthStore } from '~/stores/auth-store'
+import { WalletConnectModal } from '~/views/dapp/host/wallet/wallet-connect-modal'
+import { WalletDetailsModal } from '~/views/dapp/host/wallet/wallet-details-modal'
 import { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/contract-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
@@ -30,7 +30,7 @@ const walletConnectChip = tv({
       'after:absolute after:top-0.5 after:right-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
     ],
     connected: 'aegis-connected-wallet-chip',
-    shell: '',
+    root: '',
     action: '',
   },
   variants: {
@@ -41,11 +41,11 @@ const walletConnectChip = tv({
     },
     fullWidth: {
       true: {
-        shell: 'flex w-full',
+        root: 'flex w-full',
         action: 'w-full',
       },
       false: {
-        shell: 'inline-flex items-center',
+        root: 'inline-flex items-center',
         action: 'w-auto',
       },
     },
@@ -210,7 +210,7 @@ function WalletConnectButton({
   )
 
   return (
-    <div className={styles.shell()}>
+    <div className={styles.root()}>
       {variant === 'primary' ? (
         <Button
           aria-busy={isLoggingIn || undefined}

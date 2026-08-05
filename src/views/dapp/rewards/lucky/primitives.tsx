@@ -4,10 +4,10 @@
  *
  * 深色底展示 Chainlink 随机开奖说明；验证教程按钮暂不可点。
  */
-import { dappAssets } from '~/app/assets'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 
 export function LuckyVrfCard({
   body,

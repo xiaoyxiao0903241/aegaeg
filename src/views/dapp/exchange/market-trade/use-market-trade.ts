@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-import type { ExchangeTokenKey } from '~/app/data'
-import { useAppShell } from '~/app/use-app-shell'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
+import type { ExchangeTokenKey } from '~/shared/config/data'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -32,7 +32,7 @@ function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTrad
 export function useMarketTradeDock(trade: MarketTradeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const [slippageOpen, setSlippageOpen] = useState(false)
   const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 

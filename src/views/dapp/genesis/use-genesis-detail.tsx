@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { useSalesLogs } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Text } from '~/shared/components/text'
@@ -22,7 +22,7 @@ import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/shared'
  */
 export function useGenesisDetail(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const { isLoggingIn } = useAuth()
   const [contributionsPage, setContributionsPage] = useState(1)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(

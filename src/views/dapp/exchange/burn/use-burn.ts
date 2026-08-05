@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { useAgxContributionBurnLogs, useAgxContributionConsumeLogs } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
 import {
@@ -17,7 +17,7 @@ import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-b
 export function useBurn(burn: BurnExchangeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const { pair } = burn
 
   const sellBalanceLabel = formatExchangeBalanceLabel({
@@ -65,7 +65,7 @@ export type BurnHistoryTab = 'burn' | 'consume'
  */
 export function useBurnHistory() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const [tab, setTab] = useState<BurnHistoryTab>('burn')
   const burnLogs = useAgxContributionBurnLogs({}, sessionReady && tab === 'burn')
   const consumeLogs = useAgxContributionConsumeLogs({}, sessionReady && tab === 'consume')

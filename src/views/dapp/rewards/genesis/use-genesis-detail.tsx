@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { getTeamRequirementLegRank, rewardTierRows } from '~/core/presale/tier-table'
 import {
   useCommunityFundLogs,
@@ -8,6 +7,7 @@ import {
   useRewardLogs,
   useTeamRewardClaimLogs,
 } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import {
   formatPresaleRank,
@@ -55,7 +55,7 @@ function withSignedUsdPrefix(amount: string): string {
 export function useGenesisDetail() {
   const { messages: t } = useI18n()
   const g = t.rewards.genesisDetail
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const { displayRank, heroTitle, isRankLoading } = useShareholderRankLabels(t)
   const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true

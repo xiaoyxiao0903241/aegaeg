@@ -188,7 +188,7 @@
 
 | Composite          | Figma 层                           | 核心 props                                                                        | 提升理由                                                                                                                    |
 | ------------------ | ---------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                                     | 全局 shell                                                                                                                  |
+| `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                                     | 全局 host                                                                                                                   |
 | `NavRail`          | rail / rit                         | `items`, `activeTab`, `onSelect`                                                  | 4 页共用                                                                                                                    |
 | `DockHeader`       | wh                                 | `title`, `subtitle`, `action`                                                     | 4 页共用                                                                                                                    |
 | `AmountBox`        | box / tk / rr / mx                 | `token`, `value`, `balance`, `sessionReady`                                       | 金额输入卡                                                                                                                  |
@@ -218,7 +218,7 @@
 - `CollapseChevron`：DApp 开合箭头唯一 owner（`shared/components/collapse-chevron.tsx`）。Lucide `ChevronDown`；收起 foreground@40% · 展开 `rotate-180` + primary；动效 CSS `.collapse-chevron` 280ms / `cubic-bezier(0.2,0.8,0.2,1)`（禁 `duration-280` 等未登记 token）。`size`：`sm` 10 / `md` 12（`--app-icon-xs`）/ `lg` 18（FAQ·Section 默认）。FAQ、`Section.collapsible`、SelectMenu、TokenPicker、TokenChip picker、报价排序、Table.Pagination 页码触发器必须用本件；禁平行 `.faq-chevron` / 稿面 img 开合 / 上下图标对换冒充旋转。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `WidgetPromoCard` 内部使用 `Card surface="inverse"`（深色 CTA）。
-- `InlineAlert`（`src/shared/components/inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。共享层禁 `Dapp*` 前缀（产品壳前缀只留 `views/dapp/shared` / `views/dapp`）。
+- `InlineAlert`（`src/shared/components/inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。共享层禁 `Dapp*` 前缀（产品壳前缀只留 `views/dapp/shared` / `views/dapp/host` / 页袋）。
 - `darkBanner`（`src/shared/components/dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `DialogClose`（`dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
@@ -235,12 +235,12 @@
 
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
-- `app/app-shell.tsx` · `app/rail.tsx` · `app/topbar.tsx` · `app/mobile-nav.tsx`
-- `views/dapp/shared/dock-frame.tsx` · `views/dapp/shared/tab-shell.tsx` · `views/dapp/shared/subview-panel.tsx` · `views/dapp/shared/dock-connect-promo.tsx`
+- `views/dapp/host/dapp-host.tsx` · `views/dapp/host/rail.tsx` · `views/dapp/host/topbar.tsx` · `views/dapp/host/mobile-nav.tsx`
+- `views/dapp/shared/dock-frame.tsx` · `views/dapp/shared/tab-host.tsx` · `views/dapp/shared/subview-panel.tsx` · `views/dapp/shared/dock-connect-promo.tsx`
 - `shared/components/detail.tsx` · `shared/components/section.tsx` · `shared/components/table.tsx`
 - `shared/components/steps.tsx` · `shared/components/carousel.tsx`
 - `shared/components/grid.tsx` · `shared/components/tile.tsx` · `shared/components/mode-card.tsx`
-- `app/wallet/wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
+- `views/dapp/host/wallet/wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
 - `static-layout.ts` · `views/home/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`
 

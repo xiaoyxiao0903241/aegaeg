@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -87,7 +87,7 @@ export function useReferral() {
     },
     // 链上绑定态：仅需钱包（不要求 SIWE）。
   })
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const performanceQuery = usePerformance(sessionReady && Boolean(address))
 
   const bindMutation = useChainMutation({

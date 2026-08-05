@@ -36,7 +36,7 @@ description: >-
 [ ] 已读 runbook + ui-tokens 对应 §
 [ ] 根因 + REGRESSION|INTENTIONAL|IGNORE 已写明
 [ ] 不扩公开轴；细微差异用 className
-[ ] 不碰无关 theme / shell / 页面
+[ ] 不碰无关 theme / host / 页面
 [ ] 动 class/CSS 时已按减法删冗余
 [ ] 无新 *Class 常量 / 无平行 layout class 文件
 [ ] 新增/改写注释已按 comment-conventions（分层、去节点引用、禁黑话）

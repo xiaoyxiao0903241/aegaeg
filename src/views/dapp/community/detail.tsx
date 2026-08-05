@@ -7,8 +7,6 @@
  */
 import { type ReactNode } from 'react'
 
-import { dappAssets } from '~/app/assets'
-import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
@@ -16,6 +14,7 @@ import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
+import { dappAssets } from '~/shared/config/assets'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import {
@@ -28,6 +27,7 @@ import {
   mapTeamReferralToCompactRow,
 } from '~/views/dapp/community/shared'
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
+import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 
 const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const
 

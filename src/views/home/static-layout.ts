@@ -4,7 +4,7 @@ import { homeAssets } from '~/shared/assets/home'
 const tokenShapeInset = 'left-[56.54%] right-[-3.53%] top-[55%] bottom-[0.71%]'
 
 /** 代币飞轮卡片（装饰与图标随卡片缩放） */
-export const tokenCardShells = [
+export const tokenCardFrames = [
   {
     className: 'bg-token-agx',
     icon: homeAssets.token.agxIcon,

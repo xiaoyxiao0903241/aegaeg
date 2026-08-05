@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-import { useAppShell } from '~/app/use-app-shell'
 import {
   formatTokenAmount,
   formatTokenAmountInputDisplay,
@@ -19,6 +18,7 @@ import {
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapX0MiningLogToOpsRow } from '~/shared/api/map-flow-log-rows'
@@ -175,7 +175,7 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
 export function useXmineDock() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const overviewQuery = useXmineOverviewQuery()
   const xmine = useXmineWidget(sessionReady, {
     onSuccess: () => {
@@ -221,7 +221,7 @@ const NEXT_EMISSION_EMPTY = '—'
  */
 export function useXmineDetail() {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const positionsQuery = useX0MiningPositions({}, sessionReady)
   const logsQuery = useX0MiningLogs({}, sessionReady)

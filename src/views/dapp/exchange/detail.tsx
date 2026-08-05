@@ -16,7 +16,7 @@ import { HubDetail } from '~/views/dapp/exchange/hub/detail'
 import { MarketTradeDetail } from '~/views/dapp/exchange/market-trade/detail'
 import { TurbineExchangeDetail } from '~/views/dapp/exchange/turbine/detail'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
+import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function ExchangeDetailBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   const view = useSubviewDisplayView<ExchangeView>()
@@ -59,8 +59,8 @@ function ExchangeDetailBody({ trade, flash, burn, turbine }: ExchangeSessions) {
 export function ExchangeDetail(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <TabDetailShell subview={subview}>
+    <TabDetailHost subview={subview}>
       <ExchangeDetailBody {...sessions} />
-    </TabDetailShell>
+    </TabDetailHost>
   )
 }

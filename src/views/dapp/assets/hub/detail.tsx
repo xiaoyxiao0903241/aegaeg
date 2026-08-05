@@ -5,7 +5,6 @@
  * Rebase 步骤说明与常见问题。
  * 未连接钱包时各项展示 0 值占位。
  */
-import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { Detail } from '~/shared/components/detail'
 import { Empty } from '~/shared/components/empty'
 import { Faq } from '~/shared/components/faq'
@@ -13,6 +12,7 @@ import { Grid } from '~/shared/components/grid'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
+import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/shared/config/assets'
 import {
   AssetsHubMetricPlain,
   AssetsHubMetricWithIcon,

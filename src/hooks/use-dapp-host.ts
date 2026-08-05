@@ -1,10 +1,10 @@
 import { useAuth } from '~/hooks/use-auth'
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 import { useActiveAccount, useIsAutoConnecting } from '~/web3/thirdweb-react'
 import { hasWalletAccount, isWalletRestorePending } from '~/web3/wallet/wallet-connection-state'
 
-export interface AppShellState {
+export interface DappHostState {
   tab: DappTab
   /** SIWE 会话已就绪——决定接口数据与登录态界面。 */
   sessionReady: boolean
@@ -19,19 +19,19 @@ export interface AppShellState {
 }
 
 /**
- * 汇总 DApp 外壳当前所需的连接与会话状态。
+ * 汇总 DApp 宿主当前所需的连接与会话状态。
  *
- * 同时读取钱包 SDK 的实时账户、登录状态仓库与外壳状态仓库，
+ * 同时读取钱包 SDK 的实时账户、登录状态仓库与宿主状态仓库，
  * 把「钱包已连接 / 会话就绪 / 需要登录」等布尔值一次集齐。
  *
- * @returns 连接与会话状态，各字段语义见 {@link AppShellState}
+ * @returns 连接与会话状态，各字段语义见 {@link DappHostState}
  */
-export function useAppShell(): AppShellState {
+export function useDappHost(): DappHostState {
   const account = useActiveAccount()
   const isAutoConnecting = useIsAutoConnecting()
   const { sessionReady, needsSignIn } = useAuth()
-  const tab = useDappShellStore((state) => state.activeTab)
-  const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
+  const tab = useDappHostStore((state) => state.activeTab)
+  const detailCollapsed = useDappHostStore((state) => state.detailCollapsed)
   const walletReady = hasWalletAccount(account)
   const isWalletConnecting = isWalletRestorePending(account, isAutoConnecting)
 

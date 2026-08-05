@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { queryClient } from '~/shared/api/query/query-client'
@@ -52,7 +52,7 @@ export type ReleaseQueueRowView = {
 export function useQueue() {
   const { messages: t } = useI18n()
   const setView = useReleaseViewStore((state) => state.setView)
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()

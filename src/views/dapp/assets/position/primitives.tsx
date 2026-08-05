@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
@@ -11,6 +10,7 @@ import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -20,7 +20,7 @@ import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 export const ASSETS_POSITION_GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
-export type AssetsPositionRowShellProps<TRow> = {
+export type AssetsPositionRowFrameProps<TRow> = {
   row: TRow
   quote: 'agx' | 'usd'
   locked: boolean
@@ -343,7 +343,7 @@ export function AssetsPositionBondRow({
   onClaim,
   onRedeem,
   row,
-}: AssetsPositionRowShellProps<AssetsBondRow>) {
+}: AssetsPositionRowFrameProps<AssetsBondRow>) {
   const { messages: t } = useI18n()
   // 测试期放开领取入口；profit=0 时弹窗仍可开，写链双重校验拦截
   const canClaim = true
@@ -400,7 +400,7 @@ export function AssetsPositionBondRow({
  * 底部操作随状态变化：warmup 结束可激活，活期可随时赎回。
  */
 export function AssetsPositionStakeRow(
-  props: AssetsPositionRowShellProps<AssetsStakeRow> & {
+  props: AssetsPositionRowFrameProps<AssetsStakeRow> & {
     /** 当前 staking epoch；warmup 剩余 epoch 倒计时用。 */
     currentEpoch?: bigint | null
     onActivate?: (row: AssetsStakeRow) => void

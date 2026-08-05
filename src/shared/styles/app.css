@@ -2,7 +2,7 @@
 @import 'tailwindcss/utilities';
 @import './wallet.css';
 
-/* DApp — 锁视口高度；H5 底色与 shell 固定渐变一致，避免安全区/刘海外露黑底 */
+/* DApp — 锁视口高度；H5 底色与 host 固定渐变一致，避免安全区/刘海外露黑底 */
 html.dapp-app,
 html.dapp-app body,
 html.dapp-app #root {
@@ -27,17 +27,17 @@ html.dapp-app #root {
   }
 }
 
-/* DApp PC shell — 设计基准 80rem（1280px @ 16px）；超宽屏随根字号同比放大 */
+/* DApp PC host — 设计基准 80rem（1280px @ 16px）；超宽屏随根字号同比放大 */
 @media (min-width: 821px) {
   [data-dapp-window] {
-    --shell-detail-col: minmax(0, 1fr);
+    --host-detail-col: minmax(0, 1fr);
     width: min(80rem, 100%);
     max-width: min(80rem, 100%);
     margin-inline: auto;
     grid-template-columns:
       minmax(4.75rem, 5.25rem)
       minmax(min(20rem, 100%), 25rem)
-      var(--shell-detail-col);
+      var(--host-detail-col);
     transition:
       grid-template-columns var(--motion-dapp-emphasis) var(--motion-dapp-ease),
       width var(--motion-dapp-emphasis) var(--motion-dapp-ease),
@@ -47,7 +47,7 @@ html.dapp-app #root {
   }
 
   [data-dapp-window][data-collapsed='true'] {
-    --shell-detail-col: minmax(0, 0fr);
+    --host-detail-col: minmax(0, 0fr);
     width: min(30rem, 100%);
     max-width: min(30rem, 100%);
   }

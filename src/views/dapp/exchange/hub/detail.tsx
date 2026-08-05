@@ -4,7 +4,6 @@
  * 上部为兑换模式入口卡片（闪兑 / 市价交易 / 销毁 / Turbine），
  * 点击跳转到对应模式；下部为常见问题折叠列表。
  */
-import { exchangeHubAssets } from '~/app/assets'
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
@@ -13,6 +12,7 @@ import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
+import { exchangeHubAssets } from '~/shared/config/assets'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { cn } from '~/shared/lib/utils'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 import { DockHeader } from '~/views/dapp/shared/dock-header'
 
 /** 操作区纵向堆叠容器：PC 撑满剩余列高，H5 按内容定高。 */
@@ -25,7 +25,7 @@ export function DockStack({ children, className }: { children: ReactNode; classN
 /**
  * 操作区面板框架：标题区 + 纵向堆叠的内容区。
  *
- * 标题区带折叠右侧详情面板的开关，状态读写 dapp-shell-store。
+ * 标题区带折叠右侧详情面板的开关，状态读写 dapp-host-store。
  */
 export function DockFrame({
   bodyClassName,
@@ -42,8 +42,8 @@ export function DockFrame({
   subtitle: ReactNode
   title: string
 }) {
-  const collapsed = useDappShellStore((state) => state.detailCollapsed)
-  const onToggle = useDappShellStore((state) => state.toggleDetailCollapsed)
+  const collapsed = useDappHostStore((state) => state.detailCollapsed)
+  const onToggle = useDappHostStore((state) => state.toggleDetailCollapsed)
 
   return (
     <div className={cn('flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0', className)}>

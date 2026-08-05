@@ -31,11 +31,11 @@ const heroRays = tv({
   variants: {
     variant: {
       home: 'hero-rays--home',
-      shell: 'hero-rays--shell',
+      host: 'hero-rays--host',
     },
   },
   defaultVariants: {
-    variant: 'shell',
+    variant: 'host',
   },
 })
 
@@ -45,14 +45,14 @@ const heroRays = tv({
  * 用 SVG 生成向外辐射的光线，作为页面装饰背景；
  * 仅供装饰，对辅助功能隐藏。
  *
- * @param variant home（首页）/ shell（应用外壳）
+ * @param variant home（首页）/ host（DApp 宿主）
  */
 export function HeroRaysBackground({
   className,
-  variant = 'shell',
+  variant = 'host',
 }: {
   className?: string
-  variant?: 'home' | 'shell'
+  variant?: 'home' | 'host'
 }) {
   const uid = useId().replace(/:/g, '')
   const hubGradientId = `hero-rays-hub-${uid}`

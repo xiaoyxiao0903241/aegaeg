@@ -16,8 +16,7 @@ type AboutWash = 'lavender' | 'none'
  */
 const aboutCard = tv({
   slots: {
-    shell:
-      'relative flex min-w-0 flex-col justify-center overflow-hidden rounded-2xl px-4 py-6 shadow-subtle',
+    root: 'relative flex min-w-0 flex-col justify-center overflow-hidden rounded-2xl px-4 py-6 shadow-subtle',
     washLavender:
       'pointer-events-none absolute -top-2 right-0 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
     body: 'relative z-1 grid min-w-0 gap-3',
@@ -56,7 +55,7 @@ export function AboutCard({
   const showDeco = Boolean(decoSrc) && !isMobile
   const styles = aboutCard({ withDeco: showDeco })
   return (
-    <Card as="article" surface="elevated" className={cn(styles.shell(), className)}>
+    <Card as="article" surface="elevated" className={cn(styles.root(), className)}>
       {wash === 'lavender' ? <div aria-hidden className={styles.washLavender()} /> : null}
       <div className={styles.body()}>
         <Text

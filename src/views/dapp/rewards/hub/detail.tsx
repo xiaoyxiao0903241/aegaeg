@@ -5,7 +5,6 @@
  * 中部为四种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
  * 未登录时摘要卡显示空态占位。
  */
-import { dappAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
@@ -15,6 +14,7 @@ import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import {
   RewardsSummaryCard,

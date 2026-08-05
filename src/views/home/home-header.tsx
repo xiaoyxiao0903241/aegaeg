@@ -1,4 +1,3 @@
-import { dappAssets } from '~/app/assets'
 import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
@@ -6,6 +5,7 @@ import { homeAssets } from '~/shared/assets/home'
 import { Button } from '~/shared/components/button'
 import { LanguageMenu } from '~/shared/components/language-menu'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { getNotionLinks } from '~/shared/config/notion-links'
 
 /**

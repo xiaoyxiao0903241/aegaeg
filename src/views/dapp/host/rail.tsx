@@ -1,10 +1,8 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { railItems } from '~/app/assets'
-import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
-import { useAppShell } from '~/app/use-app-shell'
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
@@ -12,8 +10,10 @@ import { useI18n } from '~/i18n/use-i18n'
 import { prefetchTabQueries } from '~/shared/api/query/prefetch'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
+import { railItems } from '~/shared/config/assets'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/rail-shared'
 
 type RailIndicator = {
   height: number
@@ -77,7 +77,7 @@ export function Rail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const tooltips = useRailTooltips()
   const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
   const releaseClaimable = useReleaseRailDot(walletReady)

@@ -6,7 +6,7 @@ module.exports = {
       severity: 'error',
       from: { path: '^src/core/' },
       to: {
-        path: '^(react|react-dom|thirdweb|viem|@tanstack|zustand|src/views|src/shared|src/app)',
+        path: '^(react|react-dom|thirdweb|viem|@tanstack|zustand|src/views|src/shared|src/bootstrap)',
         pathNot: '^src/core/',
       },
     },
@@ -18,10 +18,11 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
-      name: 'shared-no-app',
+      name: 'shared-no-bootstrap',
+      comment: 'shared must not import bootstrap (composition root / providers).',
       severity: 'error',
       from: { path: '^src/shared/' },
-      to: { path: '^src/app/' },
+      to: { path: '^src/bootstrap/' },
     },
     {
       name: 'web3-gateway',
@@ -39,16 +40,24 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
+      name: 'stores-no-bootstrap',
+      comment: 'stores must not import bootstrap; tab init helpers live in shared/config.',
+      severity: 'error',
+      from: { path: '^src/stores/' },
+      to: { path: '^src/bootstrap/' },
+    },
+    {
       name: 'hooks-no-views',
       severity: 'error',
       from: { path: '^src/hooks/' },
       to: { path: '^src/views/' },
     },
     {
-      name: 'hooks-no-app',
+      name: 'hooks-no-bootstrap',
+      comment: 'hooks must not import bootstrap composition root.',
       severity: 'error',
       from: { path: '^src/hooks/' },
-      to: { path: '^src/app/' },
+      to: { path: '^src/bootstrap/' },
     },
     {
       name: 'no-circular',
@@ -66,41 +75,36 @@ module.exports = {
       name: 'ui-is-dumb',
       severity: 'warn',
       from: { path: '^src/shared/ui/' },
-      to: { path: '^src/(views|core|app)/' },
-    },
-    {
-      name: 'stores-no-app',
-      comment:
-        'stores must not import app/. Tab init helpers live in shared/config (getInitialTab).',
-      severity: 'error',
-      from: { path: '^src/stores/' },
-      to: { path: '^src/app/' },
+      to: { path: '^src/(views|core|bootstrap)/' },
     },
     {
       name: 'views-no-cross-tab',
       comment:
-        'DApp tab page-bags must not import sibling tabs. Cross-tab DApp product chrome lives in views/dapp/shared (not a tab). Design-system primitives: src/shared/components. Other helpers: hooks / core.',
+        'DApp tab page-bags must not import sibling tabs. Cross-tab chrome: views/dapp/shared + views/dapp/host (not tabs). Primitives: shared/components. Helpers: hooks / core.',
       severity: 'error',
-      from: { path: '^src/views/dapp/(?!shared/)([^/]+)/' },
+      from: { path: '^src/views/dapp/(?!shared/|host/)([^/]+)/' },
       to: {
-        path: '^src/views/dapp/(?!shared/)([^/]+)/',
+        path: '^src/views/dapp/(?!shared/|host/)([^/]+)/',
         pathNot: '^src/views/dapp/$1/',
       },
     },
     {
       name: 'dapp-shared-no-tabs',
-      comment: 'views/dapp/shared must not import any tab page-bag (prevent reverse coupling).',
+      comment:
+        'views/dapp/shared must not import tab page-bags. Host wallet chip etc. are OK (shared→host); forbid reverse tab coupling only.',
       severity: 'error',
       from: { path: '^src/views/dapp/shared/' },
-      to: { path: '^src/views/dapp/(?!shared/)([^/]+)/' },
+      to: { path: '^src/views/dapp/(?!shared/|host/)([^/]+)/' },
     },
     {
-      name: 'app-views-composition',
+      name: 'host-views-composition',
       comment:
-        'Document app→views. known-ok: tab hosts / session hosts; app must not import views/dapp/shared or DApp Cta for wallet chip (use shared Button). Warn-only.',
+        'Document host→tab composition. known-ok: tab/session hosts via tab-slots; warn-only.',
       severity: 'warn',
-      from: { path: '^src/app/' },
-      to: { path: '^src/views/' },
+      from: { path: '^src/views/dapp/host/' },
+      to: {
+        path: '^src/views/dapp/(?!shared/|host/)([^/]+)/',
+      },
     },
     {
       name: 'section-only-in-detail',

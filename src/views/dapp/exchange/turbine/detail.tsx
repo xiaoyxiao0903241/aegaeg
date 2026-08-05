@@ -4,9 +4,8 @@
  * 概览区展示待解锁、冷却中与累计提现三张统计卡，下方为代币
  * 介绍轮播、解锁记录、机制说明与 FAQ。
  */
-import { tokenCarouselIcons } from '~/app/assets'
-import { useAppShell } from '~/app/use-app-shell'
 import { useTurbineLogs } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { mapTurbineLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { CountValue } from '~/shared/components/count-value'
@@ -18,6 +17,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { tokenCarouselIcons } from '~/shared/config/assets'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import { TurbineMechanismCard } from '~/views/dapp/exchange/turbine/primitives'
 
@@ -40,7 +40,7 @@ export function TurbineExchangeDetail({
   totalWithdrawnUsdHint,
 }: TurbineExchangeDetailProps) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const turbineLogsQuery = useTurbineLogs({}, sessionReady)
   const turbineLogRows = turbineLogsQuery.data?.items.map(mapTurbineLogToOpsRow) ?? []
   const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading

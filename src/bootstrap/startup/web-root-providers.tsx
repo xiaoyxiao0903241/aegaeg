@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 
-import { AuthProvider } from '~/app/startup/auth-provider'
-import { QueryProvider } from '~/app/startup/query-provider'
+import { AuthProvider } from '~/bootstrap/startup/auth-provider'
+import { QueryProvider } from '~/bootstrap/startup/query-provider'
 import { AccountBannedNotifier } from '~/shared/components/account-banned-notifier'
 import { Tooltip } from '~/shared/components/tooltip'
 import { assertWeb3EnvConfigured, thirdwebClient } from '~/web3/thirdweb'
 import { AutoConnect, ThirdwebProvider } from '~/web3/thirdweb-react'
 
 /**
- * DApp 专用 Provider 栈（`app.html` / `src/app/main.tsx`）。
+ * DApp 专用 Provider 栈（`app.html` / `src/bootstrap/main.tsx`）。
  * 首页使用 `HomeProviders`（仅 Query，无 thirdweb）。
  *
  * QueryProvider 必须放在 ThirdwebProvider 内部：thirdweb 的 Provider

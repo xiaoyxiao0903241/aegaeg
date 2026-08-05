@@ -4,7 +4,7 @@
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDockShell } from '~/views/dapp/shared/tab-shell'
+import { TabDockHost } from '~/views/dapp/shared/tab-host'
 import { BondDock } from '~/views/dapp/staking/bond/dock'
 import { CalcDock } from '~/views/dapp/staking/calc/dock'
 import { HubDock } from '~/views/dapp/staking/hub/dock'
@@ -24,8 +24,8 @@ function StakingDockBody() {
 export function StakingDock() {
   const subview = useStakingViewMotion()
   return (
-    <TabDockShell subview={subview}>
+    <TabDockHost subview={subview}>
       <StakingDockBody />
-    </TabDockShell>
+    </TabDockHost>
   )
 }

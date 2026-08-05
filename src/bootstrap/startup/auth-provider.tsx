@@ -16,7 +16,7 @@ import {
   invalidateAfterWalletSwitch,
 } from '~/shared/api/query/invalidate'
 import { useAuthStore } from '~/stores/auth-store'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 import { loginWithWallet, toLoginErrorSentinel } from '~/web3/auth/login-with-wallet'
 import { defaultChain } from '~/web3/thirdweb'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -71,7 +71,7 @@ const RENEW_THRESHOLD_MS = 60_000
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
   const walletAddress = account?.address
-  const activeTab = useDappShellStore((state) => state.activeTab)
+  const activeTab = useDappHostStore((state) => state.activeTab)
   const sessionsByAddress = useAuthStore((state) => state.sessionsByAddress)
   const signaturesByAddress = useAuthStore((state) => state.signaturesByAddress)
   const hasHydrated = useAuthStore((state) => state.hasHydrated)

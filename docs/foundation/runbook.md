@@ -4,7 +4,7 @@
 
 ## 何时走本 runbook
 
-触达 **Token / Text / Button / Card / InteractiveCard / Chip / Input / shell primitive** 时必走。  
+触达 **Token / Text / Button / Card / InteractiveCard / Chip / Input / host primitive** 时必走。  
 新建 / 重构 hub 入口卡、同 chrome 多实例 → 同时读 [`component-usage.md`](./component-usage.md)。  
 动到的注释跟 [`comment-conventions.md`](./comment-conventions.md)（严格层通俗短；禁 Figma 节点注释）。
 
@@ -18,7 +18,7 @@
 ## 全站文本
 
 - 用户可见文案必须 `<Text variant tone>`。
-- Shell（rail / topbar / mobile-nav）只留布局 / 色 / 间距；字阶归 `<Text>`。
+- Host（rail / topbar / mobile-nav）只留布局 / 色 / 间距；字阶归 `<Text>`。
 - 禁止组件硬编码 `text-[Npx]` / `#hex`；色进 `tokens.json`。
 - 禁止在 `shared/components` 硬编码业务枚举与 locale 文案。
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/primitives'
 

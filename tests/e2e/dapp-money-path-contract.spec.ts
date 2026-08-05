@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
  * Money-path behavior contracts (not pixel). Keep optional — not in `pnpm check`.
@@ -6,10 +6,10 @@ import { test, expect } from '@playwright/test'
  * - Flash hub entry exists when disconnected
  * - Genesis shares disabled when disconnected
  * - Rewards claim CTAs disabled / gated when disconnected
- * - Shell exposes Connect when disconnected
+ * - Host exposes Connect when disconnected
  */
 test.describe('DApp money-path — behavior contracts', () => {
-  test('disconnected shell shows connect affordance', async ({ page }) => {
+  test('disconnected host shows connect affordance', async ({ page }) => {
     await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
 

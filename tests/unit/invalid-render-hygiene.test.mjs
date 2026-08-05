@@ -35,18 +35,24 @@ test('refetchStaleTabQueries uses active+stale; prefetch uses inactive+stale', a
   }
 })
 
-test('dapp-shell displayTab uses refetchStaleTabQueries not invalidateTabQueries', async () => {
+test('dapp-host displayTab uses refetchStaleTabQueries not invalidateTabQueries', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(new URL('../../src/app/dapp-shell.tsx', import.meta.url), 'utf8')
+  const src = await readFile(
+    new URL('../../src/views/dapp/host/dapp-host.tsx', import.meta.url),
+    'utf8',
+  )
   assert.match(src, /refetchStaleTabQueries\(displayTab\)/)
   assert.doesNotMatch(src, /invalidateTabQueries\(displayTab\)/)
 })
 
 test('rail and community subscribe via useGenesisPromoChrome only', async () => {
   const { readFile } = await import('node:fs/promises')
-  const rail = await readFile(new URL('../../src/app/dapp-rail.tsx', import.meta.url), 'utf8')
+  const rail = await readFile(
+    new URL('../../src/views/dapp/host/rail.tsx', import.meta.url),
+    'utf8',
+  )
   const community = await readFile(
-    new URL('../../src/views/dapp/community/community-flow-section.tsx', import.meta.url),
+    new URL('../../src/views/dapp/community/detail.tsx', import.meta.url),
     'utf8',
   )
   const hook = await readFile(
@@ -62,7 +68,7 @@ test('rail and community subscribe via useGenesisPromoChrome only', async () => 
 test('xmine parent view has no 1Hz interval; position card owns warmup clock', async () => {
   const { readFile } = await import('node:fs/promises')
   const parent = await readFile(
-    new URL('../../src/views/dapp/assets/xmine/use-xmine.ts', import.meta.url),
+    new URL('../../src/views/dapp/assets/xmine/use-xmine.tsx', import.meta.url),
     'utf8',
   )
   const card = await readFile(
@@ -101,20 +107,19 @@ test('carousel provider value is memoized', async () => {
 test('exchange Detail files do not reference sellAmount', async () => {
   const { readFile } = await import('node:fs/promises')
   const files = [
-    '../../src/views/dapp/exchange/market-trade/market-trade-detail.tsx',
-    '../../src/views/dapp/exchange/market-trade/use-market-trade-detail.ts',
-    '../../src/views/dapp/exchange/flash-exchange/flash-exchange-detail.tsx',
-    '../../src/views/dapp/exchange/burn/burn-exchange-detail.tsx',
-    '../../src/views/dapp/exchange/turbine/turbine-exchange-detail.tsx',
+    '../../src/views/dapp/exchange/market-trade/detail.tsx',
+    '../../src/views/dapp/exchange/flash-exchange/detail.tsx',
+    '../../src/views/dapp/exchange/burn/detail.tsx',
+    '../../src/views/dapp/exchange/turbine/detail.tsx',
   ]
   for (const rel of files) {
     const src = await readFile(new URL(rel, import.meta.url), 'utf8')
     assert.doesNotMatch(src, /sellAmount/, `${rel} must not reference sellAmount`)
   }
-  const index = await readFile(
-    new URL('../../src/views/dapp/exchange/index.tsx', import.meta.url),
+  const detail = await readFile(
+    new URL('../../src/views/dapp/exchange/detail.tsx', import.meta.url),
     'utf8',
   )
-  assert.match(index, /exchangePriceLabel=\{session\.exchangePriceLabel\}/)
-  assert.match(index, /overviewRateLabel=\{session\.overviewRateLabel\}/)
+  assert.match(detail, /exchangePriceLabel=\{session\.exchangePriceLabel\}/)
+  assert.match(detail, /overviewRateLabel=\{session\.overviewRateLabel\}/)
 })

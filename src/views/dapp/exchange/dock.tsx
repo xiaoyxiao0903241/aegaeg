@@ -16,7 +16,7 @@ import { HubDock } from '~/views/dapp/exchange/hub/dock'
 import { MarketTradeDock } from '~/views/dapp/exchange/market-trade/dock'
 import { TurbineDock } from '~/views/dapp/exchange/turbine/dock'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDockShell } from '~/views/dapp/shared/tab-shell'
+import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function ExchangeDockBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   const view = useSubviewDisplayView<ExchangeView>()
@@ -30,8 +30,8 @@ function ExchangeDockBody({ trade, flash, burn, turbine }: ExchangeSessions) {
 export function ExchangeDock(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <TabDockShell subview={subview}>
+    <TabDockHost subview={subview}>
       <ExchangeDockBody {...sessions} />
-    </TabDockShell>
+    </TabDockHost>
   )
 }

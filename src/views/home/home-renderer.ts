@@ -106,7 +106,7 @@ ${faviconHead}
 /**
  * DApp 应用文档模板
  *
- * 与首页模板结构一致，注入完整文案袋，页面主体由 /src/app/main.tsx 在客户端挂载。
+ * 与首页模板结构一致，注入完整文案袋，页面主体由 /src/bootstrap/main.tsx 在客户端挂载。
  *
  * @param locale 目标语言
  */
@@ -136,7 +136,7 @@ ${faviconHead}
     ${serializeMessagesBootstrap(locale)}
     <div id="root"></div>
     ${legacyCoreJsScript}
-    <script type="module" src="/src/app/main.tsx"></script>
+    <script type="module" src="/src/bootstrap/main.tsx"></script>
   </body>
 </html>
 `

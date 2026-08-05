@@ -1,7 +1,7 @@
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -20,7 +20,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  */
 export function useHub() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const bufferQuery = useReleaseBufferSnapshot(walletReady)

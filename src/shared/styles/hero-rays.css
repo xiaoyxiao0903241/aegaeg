@@ -25,7 +25,7 @@
   animation: hero-rays-drift 48s linear infinite;
 }
 
-.hero-rays--shell {
+.hero-rays--host {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -39,7 +39,7 @@
 }
 
 @supports (width: hypot(100vw, 100vh)) {
-  .hero-rays--shell {
+  .hero-rays--host {
     width: hypot(100vw, 100vh);
     height: hypot(100vw, 100vh);
   }

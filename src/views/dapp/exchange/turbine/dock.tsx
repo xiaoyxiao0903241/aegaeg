@@ -5,7 +5,6 @@
  * 领取段：列出冷却中的静默期条目，冷却完成可领取。
  * 滑点由合约固定，页面不可修改。
  */
-import { dappAssets, turbineExchangeAssets } from '~/app/assets'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -16,6 +15,7 @@ import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
+import { dappAssets, turbineExchangeAssets } from '~/shared/config/assets'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { cn } from '~/shared/lib/utils'

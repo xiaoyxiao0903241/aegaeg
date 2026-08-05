@@ -4,11 +4,11 @@
  * 概览区展示销毁率、累计销毁 AGX 与贡献点统计，下方为代币
  * 介绍轮播、销毁记录与 FAQ；未连接钱包时统计展示全局累计值。
  */
-import { useAppShell } from '~/app/use-app-shell'
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { ChipTabs } from '~/shared/components/chip-tabs'
@@ -50,7 +50,7 @@ export function BurnExchangeDetail({
   userStats,
 }: BurnExchangeDetailProps) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const agxPriceUsd = useAgxPriceUsd()
   const history = useBurnHistory()
 

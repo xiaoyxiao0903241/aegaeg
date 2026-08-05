@@ -1,20 +1,20 @@
-import { dappAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { Tooltip } from '~/shared/components/tooltip'
+import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 
 /**
  * 折叠右侧详情面板的开关按钮。
  *
- * 展开时图标竖排，折叠后横排；状态读写 dapp-shell-store。
+ * 展开时图标竖排，折叠后横排；状态读写 dapp-host-store。
  */
 export function DetailToggle({ className }: { className?: string }) {
   const { messages: t } = useI18n()
-  const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
-  const toggle = useDappShellStore((state) => state.toggleDetailCollapsed)
+  const detailCollapsed = useDappHostStore((state) => state.detailCollapsed)
+  const toggle = useDappHostStore((state) => state.toggleDetailCollapsed)
 
   return (
     <Tooltip content={t.topbar.toggleTooltip}>

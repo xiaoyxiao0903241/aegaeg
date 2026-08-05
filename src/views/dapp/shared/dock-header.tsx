@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { Icon } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
+import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 
 /**

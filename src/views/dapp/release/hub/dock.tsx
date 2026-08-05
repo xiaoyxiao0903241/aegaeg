@@ -4,10 +4,10 @@
  * 两张入口卡展示释放队列与缓冲池的进度与金额，
  * 点击进入对应子视图；未连接钱包时展示连接引导。
  */
-import { dappAssets } from '~/app/assets'
 import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
+import { dappAssets } from '~/shared/config/assets'
 import { openReleaseView } from '~/shared/config/dapp-open-views'
 import { ReleaseEntryCard } from '~/views/dapp/release/hub/primitives'
 import { useHub } from '~/views/dapp/release/hub/use-hub'

@@ -2,7 +2,6 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { formatUnits } from 'viem'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import {
   useLuckyRewardMyRounds,
@@ -10,6 +9,7 @@ import {
   useLuckyRewardWinners,
 } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -98,7 +98,7 @@ function formatUsd1Label(raw: bigint | null | undefined): string {
 export function useLucky() {
   const { messages: t } = useI18n()
   const lucky = t.rewards.lucky
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
 
   const summaryQuery = useLuckyRewardSummary(sessionReady)

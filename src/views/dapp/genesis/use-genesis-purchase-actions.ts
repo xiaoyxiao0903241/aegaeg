@@ -1,7 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/go-bind-referral'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
@@ -11,6 +10,7 @@ import {
 } from '~/shared/api/query/invalidate'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { goBindReferral } from '~/shared/config/go-bind-referral'
 import { fetchLiveGenesisPostApprove } from '~/views/dapp/genesis/fetch-live-genesis-post-approve'
 import { GENESIS_PURCHASE_ERROR } from '~/web3/contract-error-message'
 import { readErrorText } from '~/web3/errors/error-text'

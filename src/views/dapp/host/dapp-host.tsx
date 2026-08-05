@@ -1,26 +1,29 @@
 import { useEffect, useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
-import { useTabContentFade } from '~/app/content-fade'
-import { GenesisPromoSync } from '~/app/genesis-promo-sync'
-import { MobileNav } from '~/app/mobile-nav'
-import { OnboardingGuide, useOnboardingAutoStart } from '~/app/onboarding/onboarding-guide'
-import { Rail } from '~/app/rail'
-import { RevealObserver } from '~/app/reveal-observer'
-import { ScrollFadeHost } from '~/app/scroll-fade-host'
-import { Topbar } from '~/app/topbar'
-import { useAppShell } from '~/app/use-app-shell'
-import { scrollDappPanelsToTop } from '~/app/utils'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
 import { HeroRaysBackground } from '~/shared/components/hero-rays-background'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
+import { useTabContentFade } from '~/views/dapp/host/content-fade'
+import { GenesisPromoSync } from '~/views/dapp/host/genesis-promo-sync'
+import { MobileNav } from '~/views/dapp/host/mobile-nav'
+import {
+  OnboardingGuide,
+  useOnboardingAutoStart,
+} from '~/views/dapp/host/onboarding/onboarding-guide'
+import { Rail } from '~/views/dapp/host/rail'
+import { RevealObserver } from '~/views/dapp/host/reveal-observer'
+import { ScrollFadeHost } from '~/views/dapp/host/scroll-fade-host'
+import { Topbar } from '~/views/dapp/host/topbar'
+import { scrollDappPanelsToTop } from '~/views/dapp/host/utils'
 import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { useConnectWarmPrefetch } from '~/web3/wallet/use-connect-warm-prefetch'
@@ -30,23 +33,23 @@ function replaceTabHash(tab: string) {
 }
 
 /**
- * DApp 主外壳
+ * DApp 宿主窗口
  *
  * 组装左侧导航、顶部栏与左右两个内容面板（左侧操作区、右侧详情区），
  * 并托管移动端抽屉、新手指引、创世促销数据同步等全局行为。
- * 当前 Tab 存于 dapp-shell-store，URL hash 变化与点击导航都会驱动它；
+ * 当前 Tab 存于 dapp-host-store，URL hash 变化与点击导航都会驱动它；
  * 切换 Tab 时先播放内容淡出，再替换面板，保持会话组件在透明层下重挂载。
  */
-export function AppShell() {
+export function DappHost() {
   const { messages } = useI18n()
-  const activeTab = useDappShellStore((state) => state.activeTab)
-  const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
-  const selectTabInStore = useDappShellStore((state) => state.selectTab)
-  const selectMobileTabInStore = useDappShellStore((state) => state.selectMobileTab)
-  const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
-  const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
-  const resetForeignSubviewStores = useDappShellStore((state) => state.resetForeignSubviewStores)
-  const shellState = useAppShell()
+  const activeTab = useDappHostStore((state) => state.activeTab)
+  const mobileNavOpen = useDappHostStore((state) => state.mobileNavOpen)
+  const selectTabInStore = useDappHostStore((state) => state.selectTab)
+  const selectMobileTabInStore = useDappHostStore((state) => state.selectMobileTab)
+  const setMobileNavOpen = useDappHostStore((state) => state.setMobileNavOpen)
+  const syncTabFromHash = useDappHostStore((state) => state.syncTabFromHash)
+  const resetForeignSubviewStores = useDappHostStore((state) => state.resetForeignSubviewStores)
+  const hostState = useDappHost()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
   const { displayTab, phase } = useTabContentFade(activeTab)
   const onboarding = useOnboardingAutoStart()
@@ -97,7 +100,7 @@ export function AppShell() {
   }, [])
 
   const mobileNavId = 'dapp-mobile-nav'
-  const effectiveDetailCollapsed = shellState.detailCollapsed
+  const effectiveDetailCollapsed = hostState.detailCollapsed
 
   return (
     <main
@@ -115,7 +118,7 @@ export function AppShell() {
           'bg-[linear-gradient(180deg,var(--dapp-h5-gradient-top)_0%,var(--background)_25%,var(--background)_100%)]',
         )}
       />
-      <HeroRaysBackground variant="shell" />
+      <HeroRaysBackground variant="host" />
       <Topbar onStartOnboarding={onboarding.startTour} onboardingDone={onboarding.done} />
       <OnboardingGuide onOpenChange={onboarding.setOpen} open={onboarding.open} />
 
@@ -146,7 +149,7 @@ export function AppShell() {
             'dapp:max-w-none dapp:items-center dapp:px-0',
             'max-dapp:max-w-none max-dapp:px-0',
           )}
-          data-dapp-shell-container
+          data-dapp-host-container
         >
           <GenesisPromoSync />
           <GenesisSessionHost active={displayTab === 'genesis'}>
@@ -156,18 +159,18 @@ export function AppShell() {
                   <div
                     ref={setWindowNode}
                     className={cn(
-                      'group/shell relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
+                      'group/host relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
                       'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
-                      !shellState.sessionReady && 'shadow-window-compact',
+                      !hostState.sessionReady && 'shadow-window-compact',
                       'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
                       'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
                       'max-dapp:px-4.5 max-dapp:pt-4.5 max-dapp:pb-8 max-dapp:shadow-card',
                     )}
                     data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
-                    data-session-ready={shellState.sessionReady ? 'true' : 'false'}
+                    data-session-ready={hostState.sessionReady ? 'true' : 'false'}
                     data-dapp-window
                     data-tab={displayTab}
-                    data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
+                    data-wallet-ready={hostState.walletReady ? 'true' : 'false'}
                   >
                     <Rail activeTab={activeTab} onSelectTab={selectTab} />
 

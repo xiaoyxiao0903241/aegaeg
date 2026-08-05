@@ -1,4 +1,4 @@
-import { useAppShell } from '~/app/use-app-shell'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -11,7 +11,7 @@ import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 export function useFlashExchange(flash: FlashExchangeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const { pair } = flash
 
   const { isFlipping, rotation, flipCardClass, onFlip } = useExchangeFlip({

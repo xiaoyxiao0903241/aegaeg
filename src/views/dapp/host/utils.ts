@@ -6,11 +6,11 @@
  */
 export function scrollDappPanelsToTop() {
   requestAnimationFrame(() => {
-    const shellWindow = document.querySelector('[data-dapp-window]')
+    const hostWindow = document.querySelector('[data-dapp-window]')
     const widget = document.querySelector('[data-dapp-widget-panel]')
     const detail = document.querySelector('[data-dapp-detail]')
-    if (shellWindow instanceof HTMLElement) {
-      shellWindow.scrollTop = 0
+    if (hostWindow instanceof HTMLElement) {
+      hostWindow.scrollTop = 0
     }
     if (widget instanceof HTMLElement) {
       widget.scrollTop = 0

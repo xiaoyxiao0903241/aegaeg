@@ -3,9 +3,9 @@
  *
  * 深色底展示供应量、徽章与两栏权益说明。
  */
-import { dappAssets } from '~/app/assets'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 
 type XValueColumn = {
   title: string

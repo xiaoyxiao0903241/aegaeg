@@ -8,7 +8,7 @@ import { useReleaseViewStore } from '~/stores/release-view-store'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 
-interface DappShellStore {
+interface DappHostStore {
   activeTab: DappTab
   detailCollapsed: boolean
   mobileNavOpen: boolean
@@ -81,7 +81,7 @@ function resetForeignSubviewStores(tab: DappTab) {
 }
 
 /** 纯 Tab 状态；URL hash 同步属于外部系统（路由层），本仓库不负责。 */
-export const useDappShellStore = create<DappShellStore>((set) => ({
+export const useDappHostStore = create<DappHostStore>((set) => ({
   activeTab: getInitialTab(),
   detailCollapsed: false,
   mobileNavOpen: false,

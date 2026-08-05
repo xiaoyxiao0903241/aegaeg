@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/go-bind-referral'
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   baseDailyPctFromEpoch,
@@ -15,12 +13,14 @@ import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeFlowPositions } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapStakePositionToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { goBindReferral } from '~/shared/config/go-bind-referral'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import {
@@ -58,7 +58,7 @@ function formatBonusPct(bps: number): string {
 export function useStakeDock() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const overviewQuery = useStakingHubOverviewQuery()
 
   const stake = useStakeWidget(sessionReady, {
@@ -142,7 +142,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  */
 export function useStakeDetail() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const account = useActiveAccount()
   const walletReady = hasWalletAccount(account)
   const priceUsd = useAgxPriceUsd()

@@ -1,11 +1,11 @@
 import { tv } from 'tailwind-variants'
 
-import { dappAssets } from '~/app/assets'
-import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import { Icon } from '~/shared/components/icon'
 import { Tooltip } from '~/shared/components/tooltip'
+import { dappAssets } from '~/shared/config/assets'
+import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 

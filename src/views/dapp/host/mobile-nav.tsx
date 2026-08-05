@@ -3,17 +3,17 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
-import { railItems } from '~/app/assets'
-import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
-import { useAppShell } from '~/app/use-app-shell'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
 import { dialogClose } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
+import { railItems } from '~/shared/config/assets'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/rail-shared'
 
 const drawerItem = tv({
   base: cn(
@@ -51,7 +51,7 @@ export function MobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
   const releaseClaimable = useReleaseRailDot(walletReady)
   const [mounted, setMounted] = useState(open)

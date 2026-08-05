@@ -4,7 +4,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { CollapseChevron } from '~/shared/components/collapse-chevron'
@@ -18,6 +17,7 @@ import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import {
   useMarketAllowanceClaimLogs,
   useMarketAllowancePaidLogs,
   useMarketAllowanceSummary,
 } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
@@ -26,7 +26,7 @@ type GrantRecordsTab = 'issue' | 'claim'
 export function useGrant() {
   const { messages: t } = useI18n()
   const grant = t.rewards.grant
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const [recordsTab, setRecordsTab] = useState<GrantRecordsTab>('issue')
   const [recordsPage, setRecordsPage] = useState(1)
   const tierEmpty = t.rewards.hub.stats.tierEmpty

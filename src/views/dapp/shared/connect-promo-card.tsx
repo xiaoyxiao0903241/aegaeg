@@ -1,10 +1,10 @@
-import { dappAssets, homeAssets } from '~/app/assets'
-import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetPromoCard } from '~/shared/components/widget-promo-card'
+import { dappAssets, homeAssets } from '~/shared/config/assets'
+import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 
 /**
  * 未连接钱包时的引导卡片。

@@ -1,4 +1,4 @@
-import { useAppShell } from '~/app/use-app-shell'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -8,7 +8,7 @@ import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/shared'
 export function useTurbine(turbine: TurbineExchangeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const exchangePreview = !sessionReady
   const sellDisabled = (sessionReady && !turbine.walletReady) || turbine.isSubmitting
 

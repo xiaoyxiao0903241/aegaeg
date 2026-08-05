@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
@@ -91,7 +91,7 @@ export function useCommunityDock() {
  */
 export function useCommunityDetail() {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)

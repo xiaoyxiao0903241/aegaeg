@@ -12,7 +12,7 @@ alwaysApply: false
 
 - 新建或导出 Tailwind **class 常量**：`*Class`、`*ClassName`、裸字符串、`cn('…')` 模块级样式块
 - 用平行 `*-layout.ts` 堆间距 / chrome 字符串
-- 用 `group-data-[tab=*]/shell` 在共享组件里堆 tab 响应式 — 样式归 tab 复合组件 + variant
+- 用 `group-data-[tab=*]/host` 在共享组件里堆 tab 响应式 — 样式归 tab 复合组件 + variant
 
 ## MUST
 
@@ -37,7 +37,7 @@ const swapMetricCard = tv({
 })
 
 export function SwapMetricCard({ label, value }: Props) {
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   return (
     <MetricCard className={swapMetricCard({ sessionReady })} label={label} value={value} />
   )

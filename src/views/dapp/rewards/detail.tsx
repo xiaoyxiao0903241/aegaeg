@@ -11,7 +11,7 @@ import { LuckyDetail } from '~/views/dapp/rewards/lucky/detail'
 import { ParticipateDetail } from '~/views/dapp/rewards/participate/detail'
 import { ReferralDetail } from '~/views/dapp/rewards/referral/detail'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
+import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function RewardsDetailBody() {
   const view = useSubviewDisplayView<RewardsView>()
@@ -27,8 +27,8 @@ function RewardsDetailBody() {
 export function RewardsDetail() {
   const subview = useRewardsViewMotion()
   return (
-    <TabDetailShell subview={subview}>
+    <TabDetailHost subview={subview}>
       <RewardsDetailBody />
-    </TabDetailShell>
+    </TabDetailHost>
   )
 }

@@ -6,7 +6,7 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { HomeSection } from '~/views/home/home-section'
 import { HomeSectionHead } from '~/views/home/home-section-head'
-import { tokenCardShells } from '~/views/home/static-layout'
+import { tokenCardFrames } from '~/views/home/static-layout'
 
 type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
   className: string
@@ -105,9 +105,9 @@ export function HomeTokenSection() {
   const { messages } = useI18n()
   const content = messages.home.sections.token
   const cards: TokenCard[] = content.cards.flatMap((card, index) => {
-    const shell = tokenCardShells[index]
-    if (!shell) return []
-    return [{ ...shell, ...card }]
+    const frame = tokenCardFrames[index]
+    if (!frame) return []
+    return [{ ...frame, ...card }]
   })
 
   return (

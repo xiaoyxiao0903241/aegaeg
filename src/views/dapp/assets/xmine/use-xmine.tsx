@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useX0MiningLogs } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { mapX0MiningLogToOpsRow } from '~/shared/api/map-flow-log-rows'
@@ -34,7 +34,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 export function useXmineDock() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [sort, setSort] = useState<AssetsSortKey>('startNear')
@@ -144,7 +144,7 @@ export type AssetsXmineStatCell = {
 
 /** X 挖矿右侧统计：仅读取链上仓位；累计产出暂无数据来源 */
 export function useAssetsXmineStats(): AssetsXmineStatCell[] {
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
   const priceUsd = useAgxPriceUsd()
@@ -201,7 +201,7 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
 
 /** X 挖矿操作记录：拉取挖矿日志并映射为表格行 */
 export function useAssetsXmineOpsRows() {
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const logs = useX0MiningLogs({}, sessionReady)
   return {
     rows: logs.data?.items.map(mapX0MiningLogToOpsRow) ?? [],

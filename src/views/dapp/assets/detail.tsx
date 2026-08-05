@@ -7,7 +7,7 @@ import { HubDetail } from '~/views/dapp/assets/hub/detail'
 import { PositionDetail } from '~/views/dapp/assets/position/detail'
 import { XmineDetail } from '~/views/dapp/assets/xmine/detail'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
+import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function AssetsDetailBody() {
   const view = useSubviewDisplayView<AssetsView>()
@@ -21,8 +21,8 @@ function AssetsDetailBody() {
 export function AssetsDetail() {
   const subview = useAssetsViewMotion()
   return (
-    <TabDetailShell subview={subview}>
+    <TabDetailHost subview={subview}>
       <AssetsDetailBody />
-    </TabDetailShell>
+    </TabDetailHost>
   )
 }

@@ -11,7 +11,7 @@ export { useSubviewDisplayView } from '~/views/dapp/shared/subview-display-conte
 export const DAPP_SUBVIEW_TRANSITION_STACK =
   'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0'
 
-type SubviewShellProps = {
+type SubviewHostProps = {
   subview: DappSubviewMotion
   className?: string
   /** 过渡期使用的网格样式，默认 {@link DAPP_SUBVIEW_TRANSITION_STACK}。 */
@@ -27,13 +27,13 @@ type SubviewShellProps = {
  * 静止时直接提供当前视图；过渡期间拆成退场 / 入场两层，
  * 子组件通过 display context 读取各自应展示的视图。
  */
-export function SubviewShell({
+export function SubviewHost({
   subview,
   className,
   transitionClassName = DAPP_SUBVIEW_TRANSITION_STACK,
   panel,
   children,
-}: SubviewShellProps) {
+}: SubviewHostProps) {
   const { view, motion, direction, outgoingView, incomingView } = subview
   const isTransitioning = Boolean(motion && outgoingView && incomingView)
 

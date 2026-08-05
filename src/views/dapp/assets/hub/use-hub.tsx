@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { tokenCarouselIcons } from '~/app/assets'
-import { useAppShell } from '~/app/use-app-shell'
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -11,6 +9,7 @@ import {
   useAssetsRewardSummary,
 } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import {
   formatApiDecimalAmount,
@@ -19,6 +18,7 @@ import {
   parseApiAmount,
 } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { tokenCarouselIcons } from '~/shared/config/assets'
 import type { Address } from '~/shared/config/contracts'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -130,7 +130,7 @@ function modeFromApiAmount(
  * 未连接、加载中或出错时统一返回 0 值格式化指标。
  */
 export function useHub(): AssetsHubOverview {
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
   const enabled = walletReady && Boolean(address)

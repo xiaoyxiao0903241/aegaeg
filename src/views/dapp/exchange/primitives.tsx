@@ -1,7 +1,6 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactElement, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { burnExchangeAssets, dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -11,6 +10,7 @@ import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
+import { burnExchangeAssets, dappAssets } from '~/shared/config/assets'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { TokenChip } from '~/views/dapp/exchange/token-chip'
@@ -378,7 +378,7 @@ export function ExchangePromoCard({
   className,
   rays = 'usd1',
   reveal = true,
-  shellClassName,
+  frameClassName,
   title,
   titleIconSrc,
 }: {
@@ -388,7 +388,7 @@ export function ExchangePromoCard({
   className?: string
   rays?: 'usd1' | 'muted'
   reveal?: boolean
-  shellClassName?: string
+  frameClassName?: string
   title: string
   titleIconSrc?: string
 }) {
@@ -404,7 +404,7 @@ export function ExchangePromoCard({
       className={cn(
         // 圆角与阴影由 soft 表面提供，内边距由正文容器承担（此处清零）
         'relative min-w-0 p-0',
-        shellClassName,
+        frameClassName,
         reveal && revealClass(),
         className,
       )}

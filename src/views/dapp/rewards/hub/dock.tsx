@@ -6,18 +6,18 @@
  */
 import { keepPreviousData } from '@tanstack/react-query'
 
-import { dappAssets } from '~/app/assets'
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
+import { dappAssets } from '~/shared/config/assets'
 import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
@@ -69,7 +69,7 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
 
 export function HubDock() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)

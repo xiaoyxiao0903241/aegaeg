@@ -1,6 +1,6 @@
-import { useAppShell } from '~/app/use-app-shell'
 import { useAgxContributionSummary } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -20,7 +20,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * @see docs/backend-api/api.md #agx-contribution/summary
  */
 export function useRewardsContributionDisplay(walletReady: boolean) {
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
   const apiSummary = useAgxContributionSummary(sessionReady)

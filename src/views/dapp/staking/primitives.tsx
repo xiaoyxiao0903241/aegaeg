@@ -4,7 +4,6 @@
 import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode, useEffect, useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import {
   formatRebaseCountdownParts,
   remainingSecFromBlocks,
@@ -23,6 +22,7 @@ import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
 /** 链读与墙钟偏差超过此值才重锚定（避免 refetch 抖动）。 */

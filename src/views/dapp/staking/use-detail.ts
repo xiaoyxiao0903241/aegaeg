@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 
 /**
  * 质押各详情区块的共享文案与状态
@@ -11,7 +11,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
  */
 export function useStakingDetail() {
   const { messages: t } = useI18n()
-  const selectTab = useDappShellStore((state) => state.selectTab)
+  const selectTab = useDappHostStore((state) => state.selectTab)
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
 
   return {

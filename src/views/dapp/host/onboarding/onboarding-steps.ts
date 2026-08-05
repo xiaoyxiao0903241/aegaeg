@@ -1,16 +1,16 @@
+import type { DappTab } from '~/shared/config/dapp-tabs'
+import { useAssetsViewStore } from '~/stores/assets-view-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { useReleaseViewStore } from '~/stores/release-view-store'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
+import { useStakingViewStore } from '~/stores/staking-view-store'
 import {
   isOnboardingNavStep,
   ONBOARDING_STEP_IDS,
   type OnboardingStepId,
   tourSelector,
-} from '~/app/onboarding/onboarding-step-ids'
-import type { DappTab } from '~/shared/config/dapp-tabs'
-import { useAssetsViewStore } from '~/stores/assets-view-store'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
-import { useReleaseViewStore } from '~/stores/release-view-store'
-import { useRewardsViewStore } from '~/stores/rewards-view-store'
-import { useStakingViewStore } from '~/stores/staking-view-store'
+} from '~/views/dapp/host/onboarding/onboarding-step-ids'
 
 export {
   isOnboardingNavStep,
@@ -18,7 +18,7 @@ export {
   ONBOARDING_STEP_IDS,
   type OnboardingStepId,
   tourSelector,
-} from '~/app/onboarding/onboarding-step-ids'
+} from '~/views/dapp/host/onboarding/onboarding-step-ids'
 
 type StepGo = {
   tab: DappTab
@@ -56,7 +56,7 @@ function ensureHub(hub: StepGo['hub']) {
 }
 
 /**
- * 把外壳导航到该步骤锚点所在的页面，并等待锚点可见后返回。
+ * 把宿主导航到该步骤锚点所在的页面，并等待锚点可见后返回。
  *
  * 每个步骤先切换到对应 Tab（必要时回到中心页、H5 下打开抽屉），
  * 让锚点元素得以挂载；随后轮询等待其出现在视口。
@@ -74,14 +74,14 @@ export async function prepareOnboardingStep(
   if (signal?.aborted) return null
 
   const go = STEP_GO[id]
-  const shell = useDappShellStore.getState()
-  shell.selectTab(go.tab)
+  const host = useDappHostStore.getState()
+  host.selectTab(go.tab)
   ensureHub(go.hub)
 
   if (isOnboardingNavStep(id) && isMaxDappViewport()) {
-    shell.setMobileNavOpen(true)
+    host.setMobileNavOpen(true)
   } else {
-    shell.setMobileNavOpen(false)
+    host.setMobileNavOpen(false)
   }
 
   return waitForVisibleTourTarget(id, signal)

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import {
   useReferralAwardDirectReferrals,
   useReferralAwardLogs,
   useReferralAwardSummary,
 } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/primitives'
@@ -26,7 +26,7 @@ import {
 export function useReferral() {
   const { messages: t } = useI18n()
   const referral = t.rewards.referral
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const [recordsPage, setRecordsPage] = useState(1)
   const [referralsPage, setReferralsPage] = useState(1)

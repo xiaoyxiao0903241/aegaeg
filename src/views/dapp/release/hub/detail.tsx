@@ -4,12 +4,12 @@
  * 顶部轮播介绍释放机制，中部为流程步骤、目的说明与税率表，
  * 底部为常见问题。
  */
-import { dappAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
+import { dappAssets } from '~/shared/config/assets'
 import { ReleaseMechanismCard, ReleaseTaxCard } from '~/views/dapp/release/hub/primitives'
 import { AboutCard } from '~/views/dapp/shared/about-card'
 

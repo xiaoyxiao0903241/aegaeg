@@ -1,19 +1,19 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/go-bind-referral'
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapBondPurchaseToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { goBindReferral } from '~/shared/config/go-bind-referral'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { BOND_ZAP_BLOCKED, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
@@ -41,7 +41,7 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 export function useBondDock(kind: BondKind) {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useAppShell()
+  const { sessionReady, walletReady } = useDappHost()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
 
   const bond = useBondWidget(kind, sessionReady, {
@@ -105,7 +105,7 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
  */
 export function useBondDetail(kind: BondKind) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const account = useActiveAccount()
   const walletReady = hasWalletAccount(account)
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond

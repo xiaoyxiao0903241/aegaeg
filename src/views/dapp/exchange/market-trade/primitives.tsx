@@ -5,8 +5,6 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useState } from 'react'
 
-import { dappAssets, tokenCarouselIcons } from '~/app/assets'
-import { exchangeTokenCardKeys, type ExchangeTokenKey, exchangeTokenKeys } from '~/app/data'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
@@ -25,6 +23,12 @@ import {
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text, textVariants } from '~/shared/components/text'
+import { dappAssets, tokenCarouselIcons } from '~/shared/config/assets'
+import {
+  exchangeTokenCardKeys,
+  type ExchangeTokenKey,
+  exchangeTokenKeys,
+} from '~/shared/config/data'
 import {
   getExchangeTokenContractAddress,
   openTokenContractOnBscScan,

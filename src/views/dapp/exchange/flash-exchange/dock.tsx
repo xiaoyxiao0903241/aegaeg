@@ -5,13 +5,13 @@
  * gAGX 对可翻转方向；底部信息行列出汇率、路由与提供方合约链接。
  * 未连接钱包时展示连接引导。
  */
-import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
+import { dappAssets, flashExchangeAssets } from '~/shared/config/assets'
 import { bscscanAddress } from '~/shared/config/explorer'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { useFlashExchange } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange'

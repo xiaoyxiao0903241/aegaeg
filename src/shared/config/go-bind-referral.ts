@@ -1,4 +1,4 @@
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 
 /**
  * 跳转到社区页，让用户补绑推荐人。
@@ -9,5 +9,5 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
  * @see 手册 §5 推荐关系 Referral
  */
 export function goBindReferral(): void {
-  useDappShellStore.getState().selectTab('community')
+  useDappHostStore.getState().selectTab('community')
 }

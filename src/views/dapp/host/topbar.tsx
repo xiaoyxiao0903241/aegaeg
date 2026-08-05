@@ -1,15 +1,15 @@
 import { tv } from 'tailwind-variants'
 
-import { dappAssets, homeAssets } from '~/app/assets'
-import { OnboardingTourChip } from '~/app/onboarding/onboarding-tour-chip'
-import { useAppShell } from '~/app/use-app-shell'
-import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { iconVariants } from '~/shared/components/icon'
 import { LanguageMenu } from '~/shared/components/language-menu'
 import { Text } from '~/shared/components/text'
+import { dappAssets, homeAssets } from '~/shared/config/assets'
+import { OnboardingTourChip } from '~/views/dapp/host/onboarding/onboarding-tour-chip'
+import { WalletTopbarActions } from '~/views/dapp/host/wallet/wallet-topbar-actions'
 
 const topbar = tv({
   slots: {
@@ -61,7 +61,7 @@ export function Topbar({
   onStartOnboarding?: () => void
 }) {
   const { locale, messages: t, setLocale } = useI18n()
-  const { sessionReady, tab } = useAppShell()
+  const { sessionReady, tab } = useDappHost()
   const styles = topbar({ hideBrandLabel: sessionReady })
 
   const languageOptions = languageMenuOptions(locale, setLocale)

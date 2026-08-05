@@ -7,7 +7,7 @@ import { BufferDetail } from '~/views/dapp/release/buffer/detail'
 import { HubDetail } from '~/views/dapp/release/hub/detail'
 import { QueueDetail } from '~/views/dapp/release/queue/detail'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
+import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function ReleaseDetailBody() {
   const view = useSubviewDisplayView<ReleaseView>()
@@ -19,8 +19,8 @@ function ReleaseDetailBody() {
 export function ReleaseDetail() {
   const subview = useReleaseViewMotion()
   return (
-    <TabDetailShell subview={subview}>
+    <TabDetailHost subview={subview}>
       <ReleaseDetailBody />
-    </TabDetailShell>
+    </TabDetailHost>
   )
 }

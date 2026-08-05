@@ -32,14 +32,14 @@ import { cn } from '~/shared/lib/utils'
  * DApp 表 — 组合组件
  *
  * `Table` · `Header`（卡内顶槽）· `Body` · `Cell` · `Footer` · `Pagination`
- * · `Empty` / `Auth` / `Shell`。
+ * · `Empty` / `Auth` / `Frame`。
  * Header 不是列名 thead；区块标题仍放在卡外 `Section.Title`。
  * @see docs/foundation/component-usage.md
  */
 
-const tableShell = tv({
+const tableFrame = tv({
   slots: {
-    shell: 'overflow-hidden rounded-2xl border-0 p-0',
+    root: 'overflow-hidden rounded-2xl border-0 p-0',
     header: 'border-b border-border/50 px-4 pt-3.5 pb-2.5 max-dapp:px-3.5',
     content: 'px-4 py-1.5 max-dapp:px-3.5',
     contentBelowHeader: 'px-4 pt-0 pb-1.5 max-dapp:px-3.5',
@@ -68,7 +68,7 @@ const cellTv = tv({
       false: '',
     },
     positive: {
-      true: 'font-bold text-success group-data-[tab=genesis]/shell:font-normal group-data-[tab=rewards]/shell:font-normal',
+      true: 'font-bold text-success group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
       false: '',
     },
   },
@@ -86,7 +86,7 @@ const cellTextTv = tv({
     link: { true: 'text-primary', false: '' },
     emphasis: { true: 'font-bold', false: '' },
     positive: {
-      true: 'font-bold text-success group-data-[tab=genesis]/shell:font-normal group-data-[tab=rewards]/shell:font-normal',
+      true: 'font-bold text-success group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
       false: '',
     },
   },
@@ -118,7 +118,7 @@ function isSlot(child: ReactNode, slot: unknown): child is ReactElement {
 }
 
 function TableRoot({ children, className, contentClassName }: TableRootProps) {
-  const styles = tableShell()
+  const styles = tableFrame()
   const list = Children.toArray(children)
   let header: ReactNode = null
   let footer: ReactNode = null
@@ -134,7 +134,7 @@ function TableRoot({ children, className, contentClassName }: TableRootProps) {
     <Card
       as="article"
       surface="elevated"
-      className={cn(styles.shell(), 'flex max-w-full min-w-0 flex-col', className)}
+      className={cn(styles.root(), 'flex max-w-full min-w-0 flex-col', className)}
     >
       {header}
       <div
@@ -154,19 +154,19 @@ function TableRoot({ children, className, contentClassName }: TableRootProps) {
 
 /** 卡内顶槽（pill / 进度等）；≠ 列名 thead。 */
 function Header({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn(tableShell().header(), className)}>{children}</div>
+  return <div className={cn(tableFrame().header(), className)}>{children}</div>
 }
 
 /** 卡内底槽（分页 / 脚注）。 */
 function Footer({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn(tableShell().footer(), className)}>{children}</div>
+  return <div className={cn(tableFrame().footer(), className)}>{children}</div>
 }
 
 /** 空态 / Auth 自建容器（与 Card elevated 平行） */
-function Shell({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+function Frame({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(cardVariants({ surface: 'elevated' }), tableShell().shell(), className)}
+      className={cn(cardVariants({ surface: 'elevated' }), tableFrame().root(), className)}
       {...props}
     />
   )
@@ -374,13 +374,13 @@ function TableEmpty({
   }
 
   return (
-    <Shell className={cn(revealClass(), className)} data-reveal>
+    <Frame className={cn(revealClass(), className)} data-reveal>
       <Empty
         body={body}
         className="p-(--dapp-table-empty-padding) max-dapp:p-(--dapp-table-empty-padding-h5)"
         title={title}
       />
-    </Shell>
+    </Frame>
   )
 }
 
@@ -421,7 +421,7 @@ function EmptyState({
   }
 
   return (
-    <Shell
+    <Frame
       aria-hidden={children ? undefined : true}
       className={cn(
         revealClass(),
@@ -434,7 +434,7 @@ function EmptyState({
     >
       {skeleton}
       {children}
-    </Shell>
+    </Frame>
   )
 }
 
@@ -774,5 +774,5 @@ export const Table = Object.assign(TableRoot, {
   Pagination,
   Empty: TableEmpty,
   Auth,
-  Shell,
+  Frame,
 })

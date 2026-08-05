@@ -9,7 +9,7 @@ import {
 } from '~/core/presale/presale-math'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import {
   usePresaleActivePhaseQuery,
@@ -42,7 +42,7 @@ export function useGenesisChainReads() {
 
   const address = account?.address
   const walletReady = Boolean(address)
-  const purchaseQueriesEnabled = useDappShellStore((state) => state.activeTab === 'genesis')
+  const purchaseQueriesEnabled = useDappHostStore((state) => state.activeTab === 'genesis')
 
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()

@@ -4,7 +4,7 @@
  * 绑定推荐关系是链上操作，需要已连接钱包；
  * 成员表格与业绩数据仍留在正文中按登录会话态展示。
  */
-import { useAppShell } from '~/app/use-app-shell'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { communityQuickLinkItems } from '~/shared/config/community-links'
 import {
@@ -18,7 +18,7 @@ import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 
 export function CommunityDock() {
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   return walletReady ? <CommunityConnectedDock /> : <CommunityDisconnectedDock />
 }
 

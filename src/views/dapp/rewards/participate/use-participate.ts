@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import { useAppShell } from '~/app/use-app-shell'
 import {
   useParticipationAwardInviter,
   useParticipationAwardLogs,
   useParticipationAwardSummary,
 } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapParticipationAwardLogToCells } from '~/views/dapp/rewards/primitives'
@@ -26,7 +26,7 @@ import {
 export function useParticipate() {
   const { messages: t } = useI18n()
   const participate = t.rewards.participate
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const [recordsPage, setRecordsPage] = useState(1)
 

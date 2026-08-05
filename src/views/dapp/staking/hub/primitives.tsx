@@ -1,7 +1,7 @@
-import { dappAssets } from '~/app/assets'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
+import { dappAssets } from '~/shared/config/assets'
 
 type MetricIcon = 'agx' | 'usd1' | null
 

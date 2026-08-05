@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapBondFlowLogToOpsRow, mapStakeFlowLogToOpsRow } from '~/shared/api/map-flow-log-rows'
@@ -133,7 +133,7 @@ function compareBySort(
  */
 export function usePositionDock(product: AssetsProduct) {
   const { messages: t } = useI18n()
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
 
@@ -377,7 +377,7 @@ function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPosit
 
 /** 仓位右侧统计：汇总链上持仓数据，读失败展示占位横线，不伪造数字 */
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
   const priceUsd = useAgxPriceUsd()
@@ -447,7 +447,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
 
 /** 仓位产品的操作记录：按产品类型拉取对应日志并映射为表格行 */
 export function useAssetsPositionOpsRows(product: AssetsProduct) {
-  const { sessionReady } = useAppShell()
+  const { sessionReady } = useDappHost()
   const [page, setPage] = useState(1)
   const params = tablePageQuery(page)
 

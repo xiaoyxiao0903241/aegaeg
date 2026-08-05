@@ -11,7 +11,7 @@ import { LuckyDock } from '~/views/dapp/rewards/lucky/dock'
 import { ParticipateDock } from '~/views/dapp/rewards/participate/dock'
 import { ReferralDock } from '~/views/dapp/rewards/referral/dock'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
-import { TabDockShell } from '~/views/dapp/shared/tab-shell'
+import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function RewardsDockBody() {
   const view = useSubviewDisplayView<RewardsView>()
@@ -27,8 +27,8 @@ function RewardsDockBody() {
 export function RewardsDock() {
   const subview = useRewardsViewMotion()
   return (
-    <TabDockShell subview={subview}>
+    <TabDockHost subview={subview}>
       <RewardsDockBody />
-    </TabDockShell>
+    </TabDockHost>
   )
 }

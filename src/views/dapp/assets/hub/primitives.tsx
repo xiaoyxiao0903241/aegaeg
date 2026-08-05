@@ -2,7 +2,6 @@ import { Check } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import {
@@ -14,6 +13,7 @@ import {
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
+import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 
 /**

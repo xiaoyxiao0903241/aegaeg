@@ -1,7 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
-import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
@@ -9,6 +8,7 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { dappAssets, tokenCarouselIcons } from '~/shared/config/assets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {

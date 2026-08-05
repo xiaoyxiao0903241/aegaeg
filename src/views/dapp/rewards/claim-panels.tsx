@@ -1,11 +1,11 @@
 /**
- * 奖励域共享领取壳：SimpleClaimDock / MixedClaimDock。
+ * 奖励域共享领取面板：SimpleClaimDock / MixedClaimDock。
  *
  * 供 referral / participate / grant / lucky / cobuild 等 mode dock 组装；
  * 禁止再扩成域级 mega primitives。
  */
-import { useAppShell } from '~/app/use-app-shell'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
@@ -37,7 +37,7 @@ import { TabHeader } from '~/views/dapp/shared/tab-header'
 export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const vm = useSimpleClaim(view, sessionReady)
 
   return (

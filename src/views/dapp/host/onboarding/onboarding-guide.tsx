@@ -1,20 +1,20 @@
 import type { StepType, TourProps } from '@reactour/tour'
 import { type ComponentType, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 
+import { useI18n } from '~/i18n/use-i18n'
 import {
   readOnboardingPersistence,
   writeOnboardingDone,
-} from '~/app/onboarding/onboarding-persistence'
+} from '~/views/dapp/host/onboarding/onboarding-persistence'
 import {
   ONBOARDING_STEP_IDS,
   prepareOnboardingStep,
   tourSelector,
-} from '~/app/onboarding/onboarding-steps'
+} from '~/views/dapp/host/onboarding/onboarding-steps'
 import {
   type OnboardingChromeCopy,
   OnboardingTourTooltip,
-} from '~/app/onboarding/onboarding-tooltip'
-import { useI18n } from '~/i18n/use-i18n'
+} from '~/views/dapp/host/onboarding/onboarding-tooltip'
 
 type TourComponent = ComponentType<TourProps>
 

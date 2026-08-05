@@ -1,7 +1,7 @@
-import { stakingHubAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { ModeCard } from '~/shared/components/mode-card'
 import { WidgetHeader } from '~/shared/components/widget-header'
+import { stakingHubAssets } from '~/shared/config/assets'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { DetailToggle } from '~/views/dapp/shared/detail-toggle'

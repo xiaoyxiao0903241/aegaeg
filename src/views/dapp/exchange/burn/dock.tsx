@@ -4,10 +4,10 @@
  * 卖出 AGX 换取贡献点，买入侧为只读展示；下方列出销毁率、
  * 去向与提供方合约链接。未连接钱包时展示连接引导。
  */
-import { dappAssets } from '~/app/assets'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
+import { dappAssets } from '~/shared/config/assets'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useBurn } from '~/views/dapp/exchange/burn/use-burn'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'

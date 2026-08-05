@@ -191,7 +191,7 @@
 ## 右栏详情壳（`Detail`）
 
 > **模型**：右栏内容区外壳。`shared/components/detail.tsx`。  
-> PC `px-7 pt-10` + shadow-bleed 底距；H5 `p-0`（边距归 shell window）。节距由 Detail `gap-8.5` / `max-dapp:gap-6` 承担（PC 34 / H5 24）；子级直接列 Section（禁 bag Fragment 藏节）。
+> PC `px-7 pt-10` + shadow-bleed 底距；H5 `p-0`（边距归 host window）。节距由 Detail `gap-8.5` / `max-dapp:gap-6` 承担（PC 34 / H5 24）；子级直接列 Section（禁 bag Fragment 藏节）。
 
 ### MUST NOT（详情壳）
 
@@ -238,7 +238,7 @@
 | `Table.Cell`                     | 单元格 chrome（手写表 / Body 内部）                                       |
 | `Table.Footer`                   | 卡内底槽                                                                  |
 | `Table.Pagination`               | 分页控件（贴 Footer）                                                     |
-| `Table.Empty` / `Auth` / `Shell` | 空态（复用全局 `Empty`）/ 未连接（title·body·CTA 由 call site）/ 自建壳   |
+| `Table.Empty` / `Auth` / `Frame` | 空态（复用全局 `Empty`）/ 未连接（title·body·CTA 由 call site）/ 自建壳   |
 
 ### MUST NOT（表）
 

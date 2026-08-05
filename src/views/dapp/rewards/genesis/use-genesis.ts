@@ -1,4 +1,3 @@
-import { useAppShell } from '~/app/use-app-shell'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { nextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
@@ -9,6 +8,7 @@ import {
   useTeamOverview,
   useTeamRewardTotal,
 } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import {
@@ -30,7 +30,7 @@ import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-r
 export function useGenesisDock() {
   const { messages: t } = useI18n()
   const g = t.rewards.genesisDetail
-  const { walletReady, sessionReady } = useAppShell()
+  const { walletReady, sessionReady } = useDappHost()
   const {
     displayRank,
     isRankLoading,

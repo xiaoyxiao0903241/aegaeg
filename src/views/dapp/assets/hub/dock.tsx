@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
-import { assetsHubAssets } from '~/app/assets'
-import { useAppShell } from '~/app/use-app-shell'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
@@ -10,6 +9,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { WidgetHeader } from '~/shared/components/widget-header'
+import { assetsHubAssets } from '~/shared/config/assets'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { openAssetsView } from '~/shared/config/dapp-open-views'
 import { AssetsHubFilterMenu } from '~/views/dapp/assets/hub/primitives'
@@ -36,7 +36,7 @@ const ASSET_MODE_ICONS = {
 /** 资产 Hub 侧栏：四个仓位模式的入口卡，勾选隐藏零余额时过滤；未连接钱包时展示引导 */
 export function HubDock() {
   const { messages: t } = useI18n()
-  const { walletReady } = useAppShell()
+  const { walletReady } = useDappHost()
   const overview = useHub()
   const [hideZero, setHideZero] = useState(false)
 

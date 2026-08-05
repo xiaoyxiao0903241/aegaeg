@@ -4,7 +4,7 @@
  * 按天数档位逐卡展示已释放、释放中与进度条；
  * 可刷新单档快照并领取已释放部分。
  */
-import { tokenCarouselIcons } from '~/app/assets'
+import { tokenCarouselIcons } from '~/shared/config/assets'
 import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 import { useQueue } from '~/views/dapp/release/queue/use-queue'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'

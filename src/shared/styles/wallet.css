@@ -1,4 +1,4 @@
-/* Wallet chrome — connected chip + ConnectEmbed / modal shell.
+/* Wallet chrome — connected chip + ConnectEmbed / modal frame.
  * Connect primary chrome → Button (wallet-connect-chip.tsx). */
 
 /* Connected wallet chip — address only, opens custom wallet details modal */
