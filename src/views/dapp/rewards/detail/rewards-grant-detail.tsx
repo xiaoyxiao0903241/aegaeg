@@ -1,14 +1,14 @@
 /**
  * 发展津贴详情页
  *
- * 顶部两张统计瓦片（等级、累计已领），
+ * 顶部两张统计卡（等级、累计已领），
  * 下方按「发放 / 领取」Tab 切换明细表格，底部为 FAQ。
  */
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -96,7 +96,7 @@ export function RewardsGrantDetail() {
 
       <Section>
         <Section.Title>{grant.faq.title}</Section.Title>
-        <FaqList items={grant.faq.items} variant="dapp" />
+        <Faq items={grant.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

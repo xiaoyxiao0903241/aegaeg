@@ -1,14 +1,14 @@
 /**
  * 推荐奖详情页
  *
- * 顶部五张统计瓦片（总奖励、我的位置、直推数、贡献、下次发放），
+ * 顶部五张统计卡（总奖励、我的位置、直推数、贡献、下次发放），
  * 下方为奖励记录表与直推成员表，底部为 FAQ。
  */
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -54,8 +54,8 @@ export function RewardsReferralDetail() {
     <Detail>
       <Section>
         <Section.Title>{referral.dataTitle}</Section.Title>
-        {/* 统计瓦片：上方三张 + 下方两张 */}
-        {/* jscpd:ignore-start — 统计瓦片页内拼装（禁再抽统一组件） */}
+        {/* 统计卡：上方三张 + 下方两张 */}
+        {/* jscpd:ignore-start — Tile 页内拼装（禁再抽统一包装） */}
         <Grid columns={3}>
           {topTiles.map((item) => (
             <Tile key={item.key}>
@@ -150,7 +150,7 @@ export function RewardsReferralDetail() {
 
       <Section>
         <Section.Title>{referral.faq.title}</Section.Title>
-        <FaqList items={referral.faq.items} variant="dapp" />
+        <Faq items={referral.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

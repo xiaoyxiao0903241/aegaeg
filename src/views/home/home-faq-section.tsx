@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { HomeSection } from '~/views/home/home-section'
 import { HomeSectionHead } from '~/views/home/home-section-head'
 
@@ -11,7 +11,7 @@ export function HomeFaqSection() {
   return (
     <HomeSection spacing="faq" container="page" id="faq" aria-labelledby="faq-title">
       <HomeSectionHead eyebrow={content.eyebrow} title={content.title} />
-      <FaqList items={content.items} variant="home" />
+      <Faq items={content.items} variant="home" />
     </HomeSection>
   )
 }

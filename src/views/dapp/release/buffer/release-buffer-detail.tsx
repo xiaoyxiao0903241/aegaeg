@@ -7,7 +7,7 @@
  */
 import { useState } from 'react'
 
-import { dappAssets, tokenCarouselIcons } from '~/app/assets'
+import { tokenCarouselIcons } from '~/app/assets'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -15,27 +15,18 @@ import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
-import { Card } from '~/shared/components/card'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
-import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { BufferAssetCard } from '~/views/dapp/release/buffer/buffer-asset-card'
+import { BufferMechanismCard } from '~/views/dapp/release/buffer/buffer-mechanism-card'
 import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/format-release-api-or-chain-label'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-
-/** 缓冲机制四步图标 */
-const MECHANISM_STEP_ICONS = [
-  dappAssets.releaseBufferMechLock,
-  dappAssets.releaseBufferMechWaves,
-  dappAssets.releaseBufferMechClock,
-  dappAssets.releaseBufferMechTrending,
-] as const
 
 export function ReleaseBufferDetail() {
   const { messages: t } = useI18n()
@@ -153,72 +144,12 @@ export function ReleaseBufferDetail() {
       <Section>
         <Section.Title>{t.release.buffer.mechanismTitle}</Section.Title>
         <Section.Description>{t.release.buffer.mechanismSubtitle}</Section.Description>
-        {/* 机制区：四张步骤卡 + 连接箭头 + 底部收益条；不用 Steps 组件与 Lucide 图标 */}
-        <Card
-          as="div"
-          className="grid gap-2 rounded-2xl p-4"
-          data-slot-id="release-buffer-mechanism"
-          surface="elevated"
-        >
-          <div
-            className="flex flex-col gap-3 lg:flex-row lg:items-center"
-            data-slot-id="release-buffer-mech-stages"
-          >
-            {steps.map((step, index) => {
-              const iconSrc = MECHANISM_STEP_ICONS[index] ?? MECHANISM_STEP_ICONS[0]
-              const isLast = index >= steps.length - 1
-              return (
-                <div className="contents" key={`${step.title}-${step.body}`}>
-                  <div className="flex w-full flex-col items-center justify-center rounded-2xl bg-muted p-4 lg:w-35 lg:shrink-0">
-                    <span
-                      className="grid size-11 place-items-center rounded-full"
-                      data-slot-id={`release-buffer-mech-icon-${index}`}
-                    >
-                      <img alt="" className="size-5.5" src={iconSrc} />
-                    </span>
-                    <Text as="p" className="m-0 text-center font-medium" variant="copy">
-                      {step.title}
-                    </Text>
-                    <Text as="p" className="m-0 text-center font-medium" variant="copy">
-                      {step.body}
-                    </Text>
-                  </div>
-                  {!isLast ? (
-                    <span
-                      className="hidden shrink-0 items-center justify-center lg:flex lg:flex-1"
-                      data-slot-id={`release-buffer-mech-conn-${index}`}
-                    >
-                      <img
-                        alt=""
-                        className="h-2.5 w-3.25"
-                        data-slot-id={`release-buffer-mech-arrow-${index}`}
-                        src={dappAssets.releaseBufferMechArrow}
-                      />
-                    </span>
-                  ) : null}
-                </div>
-              )
-            })}
-          </div>
-          <ul
-            className="m-0 flex list-none flex-wrap items-center justify-between gap-2 px-4 py-2.5"
-            data-slot-id="release-buffer-mech-strip"
-          >
-            {t.release.buffer.mechanismBenefits.map((item) => (
-              <li className="flex items-center gap-1.5" key={item}>
-                <img alt="" className="size-3 shrink-0" src={dappAssets.releaseBufferMechCheck} />
-                <Text as="span" className="font-medium text-foreground/70" variant="support">
-                  {item}
-                </Text>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <BufferMechanismCard benefits={t.release.buffer.mechanismBenefits} steps={steps} />
       </Section>
 
       <Section>
         <Section.Title>{t.release.faq.title}</Section.Title>
-        <FaqList defaultOpenFirst={false} items={t.release.faq.buffer} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.release.faq.buffer} variant="dapp" />
       </Section>
     </Detail>
   )

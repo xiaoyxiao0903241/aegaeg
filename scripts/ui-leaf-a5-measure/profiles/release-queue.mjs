@@ -147,7 +147,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[gi++], P.nextBtn, 'pager.nextBtn')
   add(gdc[gi++], P.nextIcon, 'pager.nextIcon')
 
-  // 110 FaqList
+  // 110 Faq
   add(gdc[gi++], F.list, 'faq.list')
 
   if (mapped.length !== gdc.length) {

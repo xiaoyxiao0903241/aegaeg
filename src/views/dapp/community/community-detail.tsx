@@ -8,24 +8,24 @@
 import { type ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
+import { Grid } from '~/app/shell/grid'
 import { communityInviteColWidths } from '~/app/shell/table-columns'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
+import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
+import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import {
-  CommunityStatCard,
-  CommunityStatGrid,
-} from '~/views/dapp/community/community-content-primitives'
+import { CommunityStatCard } from '~/views/dapp/community/community-content-primitives'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
-import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
-import {
-  CommunityInviteSection,
-  CommunityProgramsSection,
-} from '~/views/dapp/community/community-flow-section'
+import { CommunityProgramCard } from '~/views/dapp/community/community-flow-primitives'
+import { CommunityInviteCard } from '~/views/dapp/community/community-invite-card'
 import { useCommunityDetail } from '~/views/dapp/community/use-community-detail'
+
+const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const
 
 type CommunityStat = {
   dark?: boolean
@@ -49,6 +49,43 @@ export function CommunityDetail() {
     referrals,
     referralsLoading,
   } = useCommunityDetail()
+  const genesis = useGenesisPromoChrome()
+
+  const inviteSteps = t.community.inviteFlow.items.map(({ title, body }) => ({ body, title }))
+  const programItems = t.community.programs.items.map((program, index) => {
+    if (index !== 0) return program
+    return {
+      ...program,
+      label: applyMessageTemplate(program.label, {
+        season: String(genesis.activeSeasonNumber),
+      }),
+    }
+  })
+
+  const browseSections = (
+    <>
+      <Section reveal>
+        <Section.Title>{t.community.inviteTitle}</Section.Title>
+        <CommunityInviteCard steps={inviteSteps} />
+      </Section>
+      <Section reveal>
+        <Section.Title>{t.community.programs.title}</Section.Title>
+        <Grid columns={2} stackOnDapp>
+          {programItems.map((program, index) => (
+            <CommunityProgramCard
+              action={program.action}
+              body={program.body}
+              href={program.href}
+              image={PROGRAM_IMAGES[index]}
+              key={program.label}
+              label={program.label}
+              title={program.title}
+            />
+          ))}
+        </Grid>
+      </Section>
+    </>
+  )
 
   const inviteRowsCompact = referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
   const compactRows = inviteRowsCompact
@@ -72,9 +109,11 @@ export function CommunityDetail() {
   if (!walletReady) {
     return (
       <Detail>
-        <CommunityInviteSection />
-        <CommunityProgramsSection />
-        <CommunityFaqSection />
+        {browseSections}
+        <Section collapsible>
+          <Section.Title>{t.community.faq.title}</Section.Title>
+          <Faq items={t.community.faq.items} variant="dapp" />
+        </Section>
       </Detail>
     )
   }
@@ -135,7 +174,7 @@ export function CommunityDetail() {
     <Detail>
       <Section reveal>
         <Section.Title id="community-title">{t.community.myCommunity}</Section.Title>
-        <CommunityStatGrid>
+        <Grid columns={4} stackOnDapp>
           {stats.map((stat, index) => (
             <CommunityStatCard
               dark={stat.dark}
@@ -146,11 +185,10 @@ export function CommunityDetail() {
               volume={stat.volume}
             />
           ))}
-        </CommunityStatGrid>
+        </Grid>
       </Section>
 
-      <CommunityInviteSection />
-      <CommunityProgramsSection />
+      {browseSections}
 
       <Section reveal>
         <Section.Title>{inviteSectionTitle}</Section.Title>
@@ -189,7 +227,10 @@ export function CommunityDetail() {
         </Table>
       </Section>
 
-      <CommunityFaqSection />
+      <Section collapsible>
+        <Section.Title>{t.community.faq.title}</Section.Title>
+        <Faq items={t.community.faq.items} variant="dapp" />
+      </Section>
     </Detail>
   )
 }

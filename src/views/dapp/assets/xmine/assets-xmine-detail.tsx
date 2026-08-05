@@ -1,15 +1,19 @@
 /**
  * X 挖矿详情页
  *
- * 顶部为挖矿统计指标，中部为操作记录表格，底部为 FAQ。
+ * 顶部为挖矿统计数字，中部为操作记录表格，底部为常见问题。
  */
+import { tokenCarouselIcons } from '~/app/assets'
+import { Grid } from '~/app/shell/grid'
+import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
+import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import {
-  AssetsFaqSection,
-  AssetsOpsSection,
-  AssetsStatsSection,
-} from '~/views/dapp/assets/assets-detail-sections'
+import { Faq } from '~/shared/components/faq'
+import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
+import { Text } from '~/shared/components/text'
+import { AssetsOpsTable } from '~/views/dapp/assets/assets-ops-table'
 import { useAssetsXmineOpsRows } from '~/views/dapp/assets/xmine/use-assets-xmine-ops-rows'
 import { useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-assets-xmine-stats'
 
@@ -21,20 +25,53 @@ export function AssetsXmineDetail() {
 
   return (
     <Detail>
-      <AssetsStatsSection
-        metrics={copy.stats.metrics}
-        metricsLayout={2}
-        statsTitle={copy.stats.title}
-        values={values}
-      />
-      <AssetsOpsSection
-        opsColumns={t.assets.opsColumns}
-        opsEmpty={copy.ops.empty}
-        opsLoading={ops.isLoading}
-        opsRows={ops.rows}
-        opsTitle={copy.ops.title}
-      />
-      <AssetsFaqSection faqItems={copy.faq.items} faqTitle={copy.faq.title} />
+      <Section>
+        <Section.Title>{copy.stats.title}</Section.Title>
+        {/* jscpd:ignore-start — 右栏指标瓦页内同构 map */}
+        <Grid columns={2}>
+          {copy.stats.metrics.map((metric, index) => {
+            const cell = values[index]
+            const iconSrc =
+              cell?.icon === 'gagx'
+                ? tokenCarouselIcons.gagxIcon
+                : cell?.icon === 'x'
+                  ? tokenCarouselIcons.xIcon
+                  : null
+            return (
+              <Tile key={metric.label}>
+                <Tile.Label>{metric.label}</Tile.Label>
+                <div className="flex items-center gap-1.5">
+                  {iconSrc ? (
+                    <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
+                  ) : null}
+                  <Text as="strong" className="text-base/5 font-semibold" variant="copy">
+                    <CountValue text={cell?.value ?? '0.00'} />
+                  </Text>
+                </div>
+                {cell?.approx != null ? (
+                  <Tile.Note>
+                    <CountValue text={cell.approx} />
+                  </Tile.Note>
+                ) : null}
+              </Tile>
+            )
+          })}
+        </Grid>
+        {/* jscpd:ignore-end */}
+      </Section>
+      <Section>
+        <Section.Title>{copy.ops.title}</Section.Title>
+        <AssetsOpsTable
+          empty={copy.ops.empty}
+          headers={t.assets.opsColumns}
+          isLoading={ops.isLoading}
+          rows={ops.rows}
+        />
+      </Section>
+      <Section>
+        <Section.Title>{copy.faq.title}</Section.Title>
+        <Faq items={[...copy.faq.items]} variant="dapp" />
+      </Section>
     </Detail>
   )
 }

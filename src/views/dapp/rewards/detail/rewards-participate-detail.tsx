@@ -1,14 +1,14 @@
 /**
  * 参与奖详情页
  *
- * 顶部统计瓦片（总奖励、我的位置、贡献、下次发放），
+ * 顶部统计卡（总奖励、我的位置、贡献、下次发放），
  * 下方为参与奖励记录表、邀请人信息表与 FAQ。
  */
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -47,7 +47,7 @@ export function RewardsParticipateDetail() {
     <Detail>
       <Section>
         <Section.Title>{participate.dataTitle}</Section.Title>
-        {/* jscpd:ignore-start — 统计瓦片页内拼装（禁再抽统一组件） */}
+        {/* jscpd:ignore-start — Tile 页内拼装（禁再抽统一包装） */}
         <Grid columns={2}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
@@ -118,7 +118,7 @@ export function RewardsParticipateDetail() {
 
       <Section>
         <Section.Title>{participate.faq.title}</Section.Title>
-        <FaqList items={participate.faq.items} variant="dapp" />
+        <Faq items={participate.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

@@ -168,7 +168,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[65], rates[2], 'mechanism.rate[2]')
   add(gdc[66], rates[3], 'mechanism.rate[3]')
 
-  // 67–82 FAQ（FaqList 展开 5× row/q/chevron）
+  // 67–82 FAQ（Faq 展开 5× row/q/chevron）
   add(gdc[67], F.heading, 'faq.heading')
   for (let i = 0; i < 5; i++) {
     const item = faqItems[i] ?? {}

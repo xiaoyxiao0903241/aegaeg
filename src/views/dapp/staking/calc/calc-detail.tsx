@@ -10,12 +10,12 @@ import { periodEndDays } from '~/core/staking/build-calc-estimate'
 import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield-display'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { CalcNotesCard } from '~/views/dapp/staking/calc/calc-notes-card'
 import { CalcResultCard, formatPct, formatUsd } from '~/views/dapp/staking/calc/result-card'
 import { StakingCurveChart } from '~/views/dapp/staking/staking-curve-chart'
 
@@ -179,18 +179,7 @@ export function CalcDetail() {
       </Section>
       <Section>
         <Section.Title>{aside.notes}</Section.Title>
-        <Card className="grid gap-1.5" surface="elevated">
-          <ul className="m-0 grid list-none gap-1.5 p-0">
-            {notesItems.map((item) => (
-              <li className="flex items-center gap-2.5" key={item}>
-                <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-coral-emphasis" />
-                <Text as="p" className="m-0 text-foreground/70" variant="copy">
-                  {item}
-                </Text>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <CalcNotesCard items={notesItems} />
       </Section>
     </Detail>
   )

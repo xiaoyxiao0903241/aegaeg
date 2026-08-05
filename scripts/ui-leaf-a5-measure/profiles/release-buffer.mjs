@@ -176,7 +176,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], b.text, `mech.benefits[${i}].text`)
   }
 
-  // 118 FaqList
+  // 118 Faq
   add(gdc[gi++], F.list, 'faq.list')
 
   if (mapped.length !== gdc.length) {

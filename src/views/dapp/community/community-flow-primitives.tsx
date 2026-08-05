@@ -1,3 +1,8 @@
+/**
+ * 社区项目推广卡
+ *
+ * 有链接时打开外链，否则渲染为按钮；右下角可带装饰图。
+ */
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
@@ -6,11 +11,6 @@ import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn, navigableHref } from '~/shared/lib/utils'
 
-export const communityProgramGrid = tv({
-  base: cn('grid grid-cols-2 gap-4', 'max-dapp:grid-cols-1 max-dapp:gap-2'),
-})
-
-/** 推广卡样式：浮起卡片、右下角装饰图、带下划线的文字 CTA */
 const communityProgramCard = tv({
   slots: {
     root: cn(
@@ -24,21 +24,6 @@ const communityProgramCard = tv({
   },
 })
 
-export function CommunityProgramGrid({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
-  return <div className={cn(communityProgramGrid(), className)}>{children}</div>
-}
-
-/**
- * 社区项目推广卡
- *
- * 有 href 时渲染为外链，否则渲染为按钮；右下角可带装饰图。
- */
 export function CommunityProgramCard({
   action,
   body,

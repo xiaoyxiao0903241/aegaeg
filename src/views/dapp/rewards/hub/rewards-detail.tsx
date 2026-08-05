@@ -1,9 +1,9 @@
 /**
  * 奖励总览详情页
  *
- * 顶部六张统计瓦片汇总总奖励、等级、持仓与做市数据；
+ * 顶部六张摘要卡汇总总奖励、等级、持仓与做市数据；
  * 中部为四种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
- * 未登录时统计瓦片显示空态占位。
+ * 未登录时摘要卡显示空态占位。
  */
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
@@ -11,7 +11,7 @@ import { Grid } from '~/app/shell/grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
@@ -102,7 +102,7 @@ export function RewardsDetail() {
   return (
     <Detail>
       <Section>
-        {/* 统计瓦片间距由 Grid 统一控制 */}
+        {/* 摘要卡间距由 Grid 统一控制 */}
         <Grid className="mb-6" columns={3}>
           {tiles.map((tile) => {
             const { key, ...cardProps } = tile
@@ -196,11 +196,7 @@ export function RewardsDetail() {
       <Section>
         <Section.Title>{t.rewards.faq.title}</Section.Title>
         {/* FAQ 收起项间距覆盖 dapp 默认值 */}
-        <FaqList
-          className="[&_[data-faq-item]>div]:py-4"
-          items={t.rewards.faq.items}
-          variant="dapp"
-        />
+        <Faq className="[&_[data-faq-item]>div]:py-4" items={t.rewards.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

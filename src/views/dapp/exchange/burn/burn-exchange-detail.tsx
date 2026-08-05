@@ -4,6 +4,7 @@
  * 概览区展示销毁率、累计销毁 AGX 与贡献点统计，下方为代币
  * 介绍轮播、销毁记录与 FAQ；未连接钱包时统计展示全局累计值。
  */
+import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -15,11 +16,12 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exchange-history-section'
+import { useBurnExchangeHistoryView } from '~/views/dapp/exchange/burn/use-burn-exchange-history-view'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
 
@@ -50,6 +52,7 @@ export function BurnExchangeDetail({
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const agxPriceUsd = useAgxPriceUsd()
+  const history = useBurnExchangeHistoryView()
 
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
   const walletReady = sessionReady && burnWalletReady
@@ -150,12 +153,36 @@ export function BurnExchangeDetail({
       <Section>
         {/* 销毁记录标题；测试贡献控件不渲染 */}
         <Section.Title>{t.exchange.burn.history.title}</Section.Title>
-        <BurnExchangeHistorySection />
+        <Table>
+          <Table.Header>
+            <DappPillTabs
+              activeTone="coral"
+              ariaLabel={history.t.exchange.burn.history.tabsAriaLabel}
+              className="flex items-center justify-start gap-2 [&_button]:h-6 [&_button]:min-h-6 [&_button]:py-0"
+              items={history.tabOptions.map((option) => ({
+                active: option.value === history.tab,
+                label: option.label,
+              }))}
+              onSelect={(index) => {
+                const next = history.tabOptions[index]
+                if (next) history.setTab(next.value)
+              }}
+              size="md"
+            />
+          </Table.Header>
+          <Table.Body
+            colWidths={[...history.colWidths]}
+            empty={history.emptyTitle}
+            headers={history.headers}
+            isLoading={history.isLoading}
+            rows={history.rows}
+          />
+        </Table>
       </Section>
 
       <Section>
         <Section.Title>{t.exchange.faq.title}</Section.Title>
-        <FaqList defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

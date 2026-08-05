@@ -13,18 +13,19 @@ React + Vite + TypeScript · AEGIS X DApp（BSC）。
 
 ## 文档表
 
-| 任务                     | 读                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------------ |
-| 契约 / 五柱 / Matt 路由  | [`../AGENTS.md`](../AGENTS.md)                                                       |
-| 命令                     | [`commands.md`](./commands.md)                                                       |
-| 词表                     | [`ubiquitous-language.md`](./ubiquitous-language.md)                                 |
-| 链上手册（新）           | [`onchain-manual/`](./onchain-manual/)                                               |
-| 链上手册（旧）           | [`onchain-manual-legacy.md`](./onchain-manual-legacy.md)                             |
-| 后端 API                 | [`backend-api/`](./backend-api/)                                                     |
-| Figma 页 nodeId          | [`figma-pages.md`](./figma-pages.md)                                                 |
-| UI token / 组件          | [`foundation/`](./foundation/)                                                       |
-| 代码注释                 | [`foundation/comment-conventions.md`](./foundation/comment-conventions.md)           |
-| Matt 决策 / 票 / handoff | [`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/) |
+| 任务                              | 读                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| 契约 / 五柱 / Matt 路由           | [`../AGENTS.md`](../AGENTS.md)                                                       |
+| 命令                              | [`commands.md`](./commands.md)                                                       |
+| 词表                              | [`ubiquitous-language.md`](./ubiquitous-language.md)                                 |
+| 链上手册（新）                    | [`onchain-manual/`](./onchain-manual/)                                               |
+| 链上手册（旧）                    | [`onchain-manual-legacy.md`](./onchain-manual-legacy.md)                             |
+| 后端 API                          | [`backend-api/`](./backend-api/)                                                     |
+| Figma 页 nodeId                   | [`figma-pages.md`](./figma-pages.md)                                                 |
+| UI token / 组件                   | [`foundation/`](./foundation/)                                                       |
+| 代码注释                          | [`foundation/comment-conventions.md`](./foundation/comment-conventions.md)           |
+| Matt 决策 / 票 / handoff          | [`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/) |
+| 页袋 Dock/Detail 合同（deferred） | [`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md) |
 
 ## 手册优先级
 

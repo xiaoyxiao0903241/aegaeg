@@ -8,15 +8,15 @@ import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
-export type FaqListItem = {
+export type FaqItem = {
   a: ReactNode
   open?: boolean
   q: ReactNode
 }
 
-type FaqListVariant = 'home' | 'dapp'
+type FaqVariant = 'home' | 'dapp'
 
-const faqList = tv({
+const faqStyles = tv({
   slots: {
     list: '',
     cardBody: [
@@ -54,15 +54,15 @@ const faqList = tv({
 })
 
 /**
- * 手风琴问答列表
+ * 常见问题折叠列表
  *
  * 每条一个可展开卡片；DApp 版默认展开首条。
  *
- * @param items 问答条目数组
+ * @param items 问答条目
  * @param variant home（首页样式）/ dapp（DApp 内样式）
  * @param defaultOpenFirst 是否默认展开首条（dapp 默认开启）
  */
-export function FaqList({
+export function Faq({
   className,
   'data-reveal': dataReveal,
   defaultOpenFirst,
@@ -74,10 +74,10 @@ export function FaqList({
   'data-reveal'?: boolean
   defaultOpenFirst?: boolean
   itemClassName?: string
-  items: FaqListItem[]
-  variant?: FaqListVariant
+  items: FaqItem[]
+  variant?: FaqVariant
 }) {
-  const styles = faqList({ variant })
+  const styles = faqStyles({ variant })
   const openFirst = defaultOpenFirst ?? variant === 'dapp'
 
   const defaultValue = useMemo(() => {

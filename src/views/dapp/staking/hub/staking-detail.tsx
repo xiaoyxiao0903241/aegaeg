@@ -4,7 +4,7 @@ import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Segment } from '~/shared/components/segment'
@@ -55,7 +55,7 @@ function isHubMetricId(id: string): id is HubMetricId {
 }
 
 /**
- * 质押 Hub 详情页（右栏）
+ * 质押总览详情页（右栏）
  *
  * 依次展示协议概览指标卡、周期收益率表、TVL / 市值趋势图与 FAQ。
  * 周期表与图表支持 Tab / 时间范围切换；
@@ -192,7 +192,7 @@ export function StakingDetail() {
 
       <Section>
         <Section.Title>{t.staking.hub.faq.title}</Section.Title>
-        <FaqList items={t.staking.hub.faq.items} variant="dapp" />
+        <Faq items={t.staking.hub.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

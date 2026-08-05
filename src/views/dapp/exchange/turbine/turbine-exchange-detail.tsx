@@ -11,15 +11,15 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useTurbineLogs } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { mapTurbineLogToOpsRow } from '~/shared/api/map-flow-log-rows'
-import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
+import { TurbineMechanismCard } from '~/views/dapp/exchange/turbine/turbine-mechanism-card'
 
 /** 详情页只接收概览标量，解锁金额输入不触达详情。 */
 export type TurbineExchangeDetailProps = {
@@ -113,27 +113,16 @@ export function TurbineExchangeDetail({
       <Section>
         <Section.Title>{t.exchange.turbine.mechanismTitle}</Section.Title>
         <Section.Description>{t.exchange.turbine.mechanismIntro}</Section.Description>
-        <div className="grid grid-cols-2 gap-4 max-dapp:grid-cols-1 max-dapp:gap-3">
+        <Grid columns={2} stackOnDapp>
           {t.exchange.turbine.mechanism.map((item) => (
-            <Card
-              key={item.title}
-              surface="elevated"
-              className="flex flex-col gap-2 rounded-2xl border-0 p-4 shadow-card"
-            >
-              <Text as="p" variant="detail" className="m-0 font-semibold">
-                {item.title}
-              </Text>
-              <Text as="p" variant="copy" className="m-0 text-foreground/70">
-                {item.body}
-              </Text>
-            </Card>
+            <TurbineMechanismCard body={item.body} key={item.title} title={item.title} />
           ))}
-        </div>
+        </Grid>
       </Section>
 
       <Section>
         <Section.Title>{t.exchange.faq.title}</Section.Title>
-        <FaqList defaultOpenFirst={false} items={t.exchange.turbine.faq.items} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.exchange.turbine.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

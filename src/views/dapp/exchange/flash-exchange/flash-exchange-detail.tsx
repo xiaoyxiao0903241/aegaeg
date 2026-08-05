@@ -9,7 +9,7 @@ import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
@@ -30,7 +30,7 @@ export function FlashExchangeDetail({ overviewRateLabel }: { overviewRateLabel: 
     <Detail>
       <Section>
         <Section.Title id="exchange-title">{t.exchange.overview}</Section.Title>
-        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
+        {/* jscpd:ignore-start — 右栏 Tile 页内组合 */}
         <Grid columns={2}>
           {tiles.map((tile) => (
             <Tile key={tile.key}>
@@ -55,7 +55,7 @@ export function FlashExchangeDetail({ overviewRateLabel }: { overviewRateLabel: 
 
       <Section>
         <Section.Title>{t.exchange.faq.title}</Section.Title>
-        <FaqList items={t.exchange.flash.faq.items} variant="dapp" />
+        <Faq items={t.exchange.flash.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

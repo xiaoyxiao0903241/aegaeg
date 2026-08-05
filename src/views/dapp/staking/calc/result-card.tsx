@@ -2,7 +2,6 @@
  * 收益计算器结果卡
  *
  * 展示总收益、收益率徽章、卖出/投入进度条与图例。
- * 特制布局，不走 Tile。
  */
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'

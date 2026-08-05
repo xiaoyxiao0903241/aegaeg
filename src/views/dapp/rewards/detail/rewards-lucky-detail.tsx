@@ -5,19 +5,17 @@
  * 中部为 Chainlink VRF 随机开奖说明卡；
  * 下方按开奖日期查看中奖名单与我的参与记录，底部为 FAQ。
  */
-import { dappAssets } from '~/app/assets'
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
-import { Button } from '~/shared/components/button'
-import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
+import { RewardsLuckyVrfCard } from '~/views/dapp/rewards/detail/rewards-lucky-vrf-card'
 import { useRewardsLuckyDetail } from '~/views/dapp/rewards/detail/use-rewards-lucky-detail'
 
 export function RewardsLuckyDetail() {
@@ -116,39 +114,11 @@ export function RewardsLuckyDetail() {
       </Section>
 
       <Section>
-        {/* VRF 卡片：自定义 dark-panel 底色，区别于 Card inverse 默认深色 */}
-        <Card
-          surface="inverse"
-          className="flex flex-col gap-3.5 rounded-2xl bg-dark-panel px-5.5 py-5 shadow-sm"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="inline-flex size-7.5 shrink-0 items-center justify-center rounded-control bg-white">
-                <img
-                  alt=""
-                  className="size-4.5 object-contain"
-                  src={dappAssets.rewardsHubChainlink}
-                />
-              </span>
-              <Text as="p" className="font-semibold text-white" variant="detail">
-                {lucky.vrfTitle}
-              </Text>
-            </div>
-            <Button
-              className="w-auto shrink-0 rounded-full border border-white/25 bg-transparent px-4 text-white hover:bg-white/10"
-              disabled
-              type="button"
-              variant="secondary"
-            >
-              <Text as="span" className="font-semibold text-white" variant="copy">
-                {lucky.verifyTutorial}
-              </Text>
-            </Button>
-          </div>
-          <Text as="p" className="text-white/65" variant="support">
-            {lucky.vrfBody}
-          </Text>
-        </Card>
+        <RewardsLuckyVrfCard
+          body={lucky.vrfBody}
+          title={lucky.vrfTitle}
+          verifyTutorial={lucky.verifyTutorial}
+        />
       </Section>
 
       <Section>
@@ -212,7 +182,7 @@ export function RewardsLuckyDetail() {
 
       <Section>
         <Section.Title>{lucky.faq.title}</Section.Title>
-        <FaqList items={lucky.faq.items} variant="dapp" />
+        <Faq items={lucky.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

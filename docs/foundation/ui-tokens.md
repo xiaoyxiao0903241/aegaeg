@@ -204,12 +204,12 @@
 | `Detail`           | —                                  | children                                                                          | 右栏详情壳（pad + 节距 gap-8.5 / max-dapp:gap-6）；原 DappDetailPage                                                        |
 | `Section`          | Title / Description                | `collapsible?` · `defaultOpen?` · `reveal?`                                       | 右栏内容节；无节间 mt；节内 `gap-4`；Title/Description 无 className；`collapsible` 隐含 reveal + settle 后 overflow-visible |
 | `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                                     | 组合式 DApp 表（`shared/components/table.tsx`）                                                                             |
-| `Accordion`        | qa / qhd                           | `items`, `variant`                                                                | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）                                                                |
+| `Accordion`        | qa / qhd                           | `items`, `variant`                                                                | 折叠行为 + a11y；实现文件为 `faq.tsx`（导出 `Faq`）                                                                         |
 | `WidgetPromoCard`  | promo / pcard                      | children                                                                          | 深色 CTA 卡（`Card inverse`）                                                                                               |
 
 **内部约定**：
 
-- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ muted。折叠箭头 ≡ `CollapseChevron`（与 `Section.collapsible` 同 SSOT：收起 `ChevronDown`+foreground@40%，展开 rotate-180+primary）；展开高度走 `.faq-answer-panel` grid `0fr→1fr`。DApp 项圆角稿 `12` → `rounded-faq`（禁 `rounded-xl`：本仓 xl=28px）；pad `px-4 py-4.5`；**禁** call site `text-[Npx|Nrem]` / `rounded-[Nrem]` 覆盖 type/radius token（字阶走 `Text` variant）。
+- `Faq` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ muted。折叠箭头 ≡ `CollapseChevron`（与 `Section.collapsible` 同 SSOT：收起 `ChevronDown`+foreground@40%，展开 rotate-180+primary）；展开高度走 `.faq-answer-panel` grid `0fr→1fr`。DApp 项圆角稿 `12` → `rounded-faq`（禁 `rounded-xl`：本仓 xl=28px）；pad `px-4 py-4.5`；**禁** call site `text-[Npx|Nrem]` / `rounded-[Nrem]` 覆盖 type/radius token（字阶走 `Text` variant）。
 - `Segment`：Figma `seg` 滑动白底 pill（闪兑样本 `4430:410`）；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。thumb = 白底 + **微阴影** `0 1px 2px rgba(18,26,51,0.06)`（禁 `shadow-sm` / card elevation）；**按选中 tab 实测 left/width，以轨宽 % 写出**（禁硬编码 gap/pad px 常量；轨 `gap`/`p`/`h` 一律 Tailwind spacing token）。列宽 `auto` hug。**`size`**：`sm`=`h-6`（图区间）| `md`=`h-9`（默认，周期/指标；对齐 Figma `seg` 4448:601 轨高 36）| `lg`=`h-10`（闪兑/涡轮）；call site 按稿面选。项 padding 随 size（md/lg：`px-3`；sm：`px-2.5`）。选中字色由 call site `tone` 传入：`coral`（默认，样本 `4448:601`）| `ink`（闪兑 tabs，semibold）。**Figma `htab`（珊瑚 soft / outlined 分立 pill，样本 hub `4371:233`）走 Chip，不走 Segment。** `options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
 - `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（释放%）· 右轨 `--app-claim-restake`（复投%）· 白底内嵌 `%` thumb；`aria-label` 必填（i18n）。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
@@ -250,14 +250,14 @@
 
 ## §9 组件地图
 
-| 层        | 文件 / 入口                                                                                                                             | Gate                                                    |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                                                               | §1                                                      |
-| Text      | `shared/components/text.tsx`                                                                                                            | 12 variant · 7 tone                                     |
-| Button    | `shared/components/button.tsx`                                                                                                          | 4×3×2                                                   |
-| Chip      | `shared/components/chip.tsx`                                                                                                            | 3×3×2×4                                                 |
-| Card      | `shared/components/card.tsx`                                                                                                            | 4 surface                                               |
-| Input     | `shared/components/input.tsx`                                                                                                           | default / numeric / amount                              |
-| Composite | FaqList · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · List · Steps · Carousel · Chart · Empty · Table · … | 见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text |
+| 层        | 文件 / 入口                                                                                                                         | Gate                                                    |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                                                           | §1                                                      |
+| Text      | `shared/components/text.tsx`                                                                                                        | 12 variant · 7 tone                                     |
+| Button    | `shared/components/button.tsx`                                                                                                      | 4×3×2                                                   |
+| Chip      | `shared/components/chip.tsx`                                                                                                        | 3×3×2×4                                                 |
+| Card      | `shared/components/card.tsx`                                                                                                        | 4 surface                                               |
+| Input     | `shared/components/input.tsx`                                                                                                       | default / numeric / amount                              |
+| Composite | Faq · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · List · Steps · Carousel · Chart · Empty · Table · … | 见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。

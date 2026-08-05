@@ -1,8 +1,7 @@
 /**
- * 缓冲池币种统计复卡
+ * 缓冲池单个币种数据卡
  *
- * 黑底币种圆标 + 币种名 + 三列入池/提取/释放中数据。
- * 手册 OUT：缓冲复卡，不进 Tile。
+ * 显示币种图标与名称，以及入池、已提取、释放中三组数字。
  */
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'

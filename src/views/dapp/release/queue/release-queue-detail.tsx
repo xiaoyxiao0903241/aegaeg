@@ -18,7 +18,7 @@ import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-displa
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
-import { FaqList } from '~/shared/components/faq-list'
+import { Faq } from '~/shared/components/faq'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
@@ -157,7 +157,7 @@ export function ReleaseQueueDetail() {
 
       <Section>
         <Section.Title>{t.release.faq.title}</Section.Title>
-        <FaqList defaultOpenFirst={false} items={t.release.faq.queue} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.release.faq.queue} variant="dapp" />
       </Section>
     </Detail>
   )

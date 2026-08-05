@@ -7,17 +7,6 @@ import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
-/** 三张统计卡布局：桌面三列，窄屏自适应折叠为单列 */
-export const communityStatGrid = tv({
-  base: cn(
-    'grid grid-cols-3 gap-2',
-    'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
-    'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-2.5',
-  ),
-})
-
-export { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
-
 const communityStatCard = tv({
   slots: {
     // 普通态用 elevated 白卡，深色态用 inverse 暗卡
@@ -47,16 +36,6 @@ const communityStatCard = tv({
     withImage: false,
   },
 })
-
-export function CommunityStatGrid({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
-  return <div className={cn(communityStatGrid(), className)}>{children}</div>
-}
 
 /**
  * 社区统计卡

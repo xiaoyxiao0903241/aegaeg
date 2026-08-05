@@ -1,7 +1,7 @@
 /**
  * 奖励总览摘要卡
  *
- * 含 pill CTA、装饰图、图标主值等特制槽；手册 OUT，不进 Tile。
+ * 展示一项奖励数据；可带跳转按钮、右侧装饰图和币种图标。
  */
 import type { ReactNode } from 'react'
 
