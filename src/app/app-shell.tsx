@@ -21,7 +21,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
-import { TabContent, TabWidget } from '~/views/dapp/tab-slots'
+import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { useConnectWarmPrefetch } from '~/web3/wallet/use-connect-warm-prefetch'
 
@@ -201,7 +201,7 @@ export function AppShell() {
                           onSelectTab={selectMobileTab}
                           open={mobileNavOpen}
                         />
-                        <TabWidget
+                        <TabDock
                           activeTab={displayTab}
                           burn={burn}
                           flash={flash}
@@ -232,7 +232,7 @@ export function AppShell() {
                         data-dapp-detail
                         data-phase={effectiveDetailCollapsed ? 'idle' : phase}
                       >
-                        <TabContent
+                        <TabDetail
                           activeTab={displayTab}
                           burn={burn}
                           flash={flash}

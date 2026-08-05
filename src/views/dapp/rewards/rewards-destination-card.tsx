@@ -7,7 +7,7 @@ import { type ReactNode } from 'react'
 
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
+import { RewardsClaimTokenRow } from '~/views/dapp/rewards/claim-token-row'
 
 type DestinationTone = 'release' | 'restake'
 

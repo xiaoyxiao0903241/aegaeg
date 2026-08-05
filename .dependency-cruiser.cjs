@@ -98,13 +98,27 @@ module.exports = {
     {
       name: 'section-only-in-detail',
       comment:
-        'Section 仅允许 *-detail.tsx import。禁为消 jscpd 抽 Section/Title 薄壳；页内同构用 jscpd:ignore。',
+        'Section 仅允许 *-detail.tsx 或短名 detail.tsx import。禁为消 jscpd 抽 Section/Title 薄壳；页内同构用 jscpd:ignore。',
       severity: 'error',
       from: {
         path: '^src/views/',
-        pathNot: '-detail\\.tsx$',
+        pathNot: '(-detail\\.tsx$|/detail\\.tsx$)',
       },
       to: { path: 'shared/components/section(\\.tsx)?$' },
+    },
+    {
+      name: 'registry-only-domain-dock-detail',
+      comment:
+        'Tab 注册表只允许 import 域根 dock.tsx / detail.tsx；禁止 mode 子路径与旧 *Widget 入口。',
+      severity: 'error',
+      from: { path: '^src/views/dapp/dapp-tab-registry\\.tsx$' },
+      to: {
+        path: '^src/views/dapp/',
+        pathNot: [
+          '^src/views/dapp/[^/]+/(dock|detail)\\.tsx$',
+          '^src/views/dapp/dapp-tab-sessions',
+        ],
+      },
     },
   ],
   options: {

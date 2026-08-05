@@ -2,7 +2,7 @@ import type { DappTab } from '~/shared/config/dapp-tabs'
 import { getDappTabEntry } from '~/views/dapp/dapp-tab-registry'
 import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
 
-export function TabWidget({
+export function TabDock({
   activeTab,
   onSelectTab,
   trade,
@@ -14,9 +14,9 @@ export function TabWidget({
   activeTab: DappTab
   onSelectTab: (tab: DappTab) => void
 } & DappTabSessions) {
-  const { Widget } = getDappTabEntry(activeTab)
+  const { Dock } = getDappTabEntry(activeTab)
   return (
-    <Widget
+    <Dock
       burn={burn}
       flash={flash}
       genesis={genesis}
@@ -27,7 +27,7 @@ export function TabWidget({
   )
 }
 
-export function TabContent({
+export function TabDetail({
   activeTab,
   trade,
   flash,
@@ -37,6 +37,6 @@ export function TabContent({
 }: {
   activeTab: DappTab
 } & DappTabSessions) {
-  const { Content } = getDappTabEntry(activeTab)
-  return <Content burn={burn} flash={flash} genesis={genesis} trade={trade} turbine={turbine} />
+  const { Detail } = getDappTabEntry(activeTab)
+  return <Detail burn={burn} flash={flash} genesis={genesis} trade={trade} turbine={turbine} />
 }

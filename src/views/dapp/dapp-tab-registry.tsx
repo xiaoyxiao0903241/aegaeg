@@ -2,71 +2,76 @@ import type { ComponentType } from 'react'
 
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
-import { AssetsContent, AssetsWidget } from '~/views/dapp/assets'
-import { CommunityDetail } from '~/views/dapp/community/community-detail'
-import { CommunityWidget } from '~/views/dapp/community/community-widget'
+import { AssetsDetail } from '~/views/dapp/assets/detail'
+import { AssetsDock } from '~/views/dapp/assets/dock'
+import { CommunityDetail } from '~/views/dapp/community/detail'
+import { CommunityDock } from '~/views/dapp/community/dock'
 import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
-import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
-import { GenesisDetail } from '~/views/dapp/genesis/genesis-detail'
-import { GenesisWidget } from '~/views/dapp/genesis/genesis-widget'
-import { ReleaseContent, ReleaseWidget } from '~/views/dapp/release'
-import { RewardsContent, RewardsWidget } from '~/views/dapp/rewards'
-import { StakingContent, StakingWidget } from '~/views/dapp/staking'
+import { ExchangeDetail } from '~/views/dapp/exchange/detail'
+import { ExchangeDock } from '~/views/dapp/exchange/dock'
+import { GenesisDetail } from '~/views/dapp/genesis/detail'
+import { GenesisDock } from '~/views/dapp/genesis/dock'
+import { ReleaseDetail } from '~/views/dapp/release/detail'
+import { ReleaseDock } from '~/views/dapp/release/dock'
+import { RewardsDetail } from '~/views/dapp/rewards/detail'
+import { RewardsDock } from '~/views/dapp/rewards/dock'
+import { StakingDetail } from '~/views/dapp/staking/detail'
+import { StakingDock } from '~/views/dapp/staking/dock'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
-type TabWidgetProps = {
+type TabDockProps = {
   onSelectTab: (tab: DappTab) => void
 } & DappTabSessions
 
-type TabContentProps = DappTabSessions
+type TabDetailProps = DappTabSessions
 
 export type DappTabEntry = {
   id: DappTab
-  Widget: ComponentType<TabWidgetProps>
-  Content: ComponentType<TabContentProps>
+  Dock: ComponentType<TabDockProps>
+  Detail: ComponentType<TabDetailProps>
 }
 
-function ExchangeTabWidget({ trade, flash, burn, turbine }: TabWidgetProps) {
-  return <ExchangeWidget burn={burn} flash={flash} trade={trade} turbine={turbine} />
+function ExchangeTabDock({ trade, flash, burn, turbine }: TabDockProps) {
+  return <ExchangeDock burn={burn} flash={flash} trade={trade} turbine={turbine} />
 }
 
-function ExchangeTabContent({ trade, flash, burn, turbine }: TabContentProps) {
-  return <ExchangeContent burn={burn} flash={flash} trade={trade} turbine={turbine} />
+function ExchangeTabDetail({ trade, flash, burn, turbine }: TabDetailProps) {
+  return <ExchangeDetail burn={burn} flash={flash} trade={trade} turbine={turbine} />
 }
 
-function GenesisTabWidget({ genesis }: TabWidgetProps) {
+function GenesisTabDock({ genesis }: TabDockProps) {
   if (!genesis) {
-    throw new Error('GenesisWidget requires a lifted genesis session')
+    throw new Error('GenesisDock requires a lifted genesis session')
   }
-  return <GenesisWidget genesis={genesis} />
+  return <GenesisDock genesis={genesis} />
 }
 
-function GenesisTabContent({ genesis }: TabContentProps) {
+function GenesisTabDetail({ genesis }: TabDetailProps) {
   if (!genesis) {
     throw new Error('GenesisDetail requires a lifted genesis session')
   }
   return <GenesisDetail genesis={genesis} />
 }
 
-function CommunityTabWidget() {
+function CommunityTabDock() {
   const account = useActiveAccount()
   const remountKey = walletRemountKey(account?.address)
-  return <CommunityWidget key={remountKey} />
+  return <CommunityDock key={remountKey} />
 }
 
-function CommunityTabContent() {
+function CommunityTabDetail() {
   return <CommunityDetail />
 }
 
-/** Tab 注册表：加载交互由各 Tab 内部数据驱动，不做代码分割的 Suspense。 */
+/** Tab 注册表：只挂域根 Dock / Detail。 */
 export const dappTabEntries: readonly DappTabEntry[] = [
-  { id: 'exchange', Widget: ExchangeTabWidget, Content: ExchangeTabContent },
-  { id: 'assets', Widget: AssetsWidget, Content: AssetsContent },
-  { id: 'staking', Widget: StakingWidget, Content: StakingContent },
-  { id: 'rewards', Widget: RewardsWidget, Content: RewardsContent },
-  { id: 'release', Widget: ReleaseWidget, Content: ReleaseContent },
-  { id: 'community', Widget: CommunityTabWidget, Content: CommunityTabContent },
-  { id: 'genesis', Widget: GenesisTabWidget, Content: GenesisTabContent },
+  { id: 'exchange', Dock: ExchangeTabDock, Detail: ExchangeTabDetail },
+  { id: 'assets', Dock: AssetsDock, Detail: AssetsDetail },
+  { id: 'staking', Dock: StakingDock, Detail: StakingDetail },
+  { id: 'rewards', Dock: RewardsDock, Detail: RewardsDetail },
+  { id: 'release', Dock: ReleaseDock, Detail: ReleaseDetail },
+  { id: 'community', Dock: CommunityTabDock, Detail: CommunityTabDetail },
+  { id: 'genesis', Dock: GenesisTabDock, Detail: GenesisTabDetail },
 ]
 
 const dappTabEntryById = Object.fromEntries(

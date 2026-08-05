@@ -27,7 +27,7 @@ test('assetsHubNeedsChainFallback: API path skips full-table chain reads', async
 
 test('hub overview sources assetsHubNeedsChainFallback for chain query enabled', () => {
   const src = readFileSync(
-    new URL('../../src/views/dapp/assets/hub/use-assets-hub-overview-stats.ts', import.meta.url),
+    new URL('../../src/views/dapp/assets/hub/use-hub.ts', import.meta.url),
     'utf8',
   )
   assert.match(src, /assetsHubNeedsChainFallback/)

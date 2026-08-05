@@ -14,6 +14,33 @@ export type FlashExchangeState = ReturnType<typeof useFlashExchangeWidget>
 export type BurnExchangeState = ReturnType<typeof useBurnExchangeWidget>
 export type TurbineExchangeState = ReturnType<typeof useTurbineExchangeWidget>
 
+export type ExchangeSessions = {
+  trade: MarketTradeState | null
+  flash: FlashExchangeState | null
+  burn: BurnExchangeState | null
+  turbine: TurbineExchangeState | null
+}
+
+export function requireTrade(trade: MarketTradeState | null): MarketTradeState {
+  if (!trade) throw new Error('MarketTrade view requires a lifted trade session')
+  return trade
+}
+
+export function requireFlash(flash: FlashExchangeState | null): FlashExchangeState {
+  if (!flash) throw new Error('FlashExchange view requires a lifted flash session')
+  return flash
+}
+
+export function requireBurn(burn: BurnExchangeState | null): BurnExchangeState {
+  if (!burn) throw new Error('BurnExchange view requires a lifted burn session')
+  return burn
+}
+
+export function requireTurbine(turbine: TurbineExchangeState | null): TurbineExchangeState {
+  if (!turbine) throw new Error('TurbineExchange view requires a lifted turbine session')
+  return turbine
+}
+
 function MarketTradeSessionMounted({
   sessionReady,
   quotesEnabled,

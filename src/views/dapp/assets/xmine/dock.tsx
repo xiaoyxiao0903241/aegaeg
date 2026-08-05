@@ -1,0 +1,107 @@
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { openStakingView } from '~/shared/config/dapp-open-views'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
+import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
+import {
+  AssetsListPager,
+  AssetsPositionListSkeleton,
+} from '~/views/dapp/assets/position/primitives'
+import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
+import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/primitives'
+import { useAssetsXmineView } from '~/views/dapp/assets/xmine/use-xmine'
+
+/** X 挖矿侧栏：报价 / 排序工具条 + 挖矿持仓卡（含空态、加载态）与赎回确认弹窗 */
+export function XmineDock() {
+  const vm = useAssetsXmineView()
+  const { t, copy, position } = vm
+
+  return (
+    <>
+      <TabHeader
+        backText={t.assets.backToHub}
+        onBack={() => vm.setView('hub')}
+        subtitle={copy.intro}
+        title={copy.title}
+      />
+      <WidgetStack>
+        <AssetsQuoteToolbar
+          onQuoteChange={vm.setQuote}
+          onSortChange={vm.setSort}
+          quote={vm.quote}
+          quoteLabel={t.assets.position.quoteCurrency}
+          sortLabel={t.assets.position.sort}
+          sortOptions={vm.sortOptions}
+          sortValue={vm.sort}
+        />
+
+        {!vm.walletReady ? (
+          <WidgetConnectPromo />
+        ) : vm.isLoading ? (
+          <AssetsPositionListSkeleton count={1} />
+        ) : vm.isEmpty || !position ? (
+          <AssetsPositionEmptyCard
+            body={copy.empty}
+            ctaLabel={copy.emptyCta}
+            onCta={() => openStakingView('xmine')}
+            title={t.assets.position.emptyTitle}
+          />
+        ) : (
+          <AssetsXminePositionCard
+            activateWarmupLabel={t.assets.position.activateWarmup}
+            busy={vm.busy}
+            claimLabel={t.assets.position.claim}
+            gons={position.gons}
+            locked={vm.locked}
+            lockedPrefix={t.assets.position.lockedPrefix}
+            miningStake={position.miningStake}
+            onActivateWarmup={() => void vm.handleActivateWarmup()}
+            onClaim={() => void vm.handleClaim()}
+            onRequestUnstake={vm.requestUnstake}
+            outputCaption={copy.output}
+            pending={position.pending}
+            periodPill={copy.periodPill}
+            quote={vm.quote}
+            redeemAnytimeLabel={t.assets.position.redeemAnytime}
+            redeemLabel={t.assets.position.redeem}
+            remainingCaption={t.assets.position.remaining}
+            stakedCaption={t.assets.position.staked}
+            voucherAddress={vm.voucherAddress}
+            voucherCaption={t.assets.position.voucher}
+            warmupEndTime={position.warmupEndTime}
+            warmupGons={position.warmupGons}
+          />
+        )}
+
+        {!vm.isEmpty && vm.walletReady ? (
+          <AssetsListPager
+            onPageChange={() => {}}
+            page={0}
+            pageCount={1}
+            pageSize={vm.pageSize}
+            total={vm.totalRows}
+          />
+        ) : null}
+      </WidgetStack>
+
+      <AssetsRedeemConfirm
+        amountLabel={
+          vm.position
+            ? `${formatTokenAmount(
+                vm.position.warmupGons > 0n ? 0n : vm.position.miningStake,
+                EXCHANGE_CONFIG.tokens.gagx.decimals,
+                2,
+              )} gAGX`
+            : ''
+        }
+        busy={vm.busy}
+        onConfirm={() => void vm.handleUnstake()}
+        onOpenChange={vm.setConfirmUnstake}
+        open={vm.confirmUnstake}
+      />
+    </>
+  )
+}

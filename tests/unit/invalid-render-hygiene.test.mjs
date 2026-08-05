@@ -62,11 +62,11 @@ test('rail and community subscribe via useGenesisPromoChrome only', async () => 
 test('xmine parent view has no 1Hz interval; position card owns warmup clock', async () => {
   const { readFile } = await import('node:fs/promises')
   const parent = await readFile(
-    new URL('../../src/views/dapp/assets/xmine/use-assets-xmine-view.ts', import.meta.url),
+    new URL('../../src/views/dapp/assets/xmine/use-xmine.ts', import.meta.url),
     'utf8',
   )
   const card = await readFile(
-    new URL('../../src/views/dapp/assets/xmine/assets-xmine-position-card.tsx', import.meta.url),
+    new URL('../../src/views/dapp/assets/xmine/primitives.tsx', import.meta.url),
     'utf8',
   )
   assert.doesNotMatch(parent, /setInterval/)
