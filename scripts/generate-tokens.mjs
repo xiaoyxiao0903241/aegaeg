@@ -47,7 +47,6 @@ const tsOutPath = resolve(root, 'src/shared/styles/tokens/tokens.ts')
  * @typedef {object} TokenSet
  * @property {Record<string, ColorToken>} colors
  * @property {Record<string, TypeToken>} type
- * @property {Record<string, string>} [space]
  * @property {Record<string, string>} radius
  * @property {Record<string, ShadowToken>} shadows
  */
@@ -119,17 +118,6 @@ function buildH5TypeMedia(type) {
   }
   if (overrides.length === 0) return ''
   return `/* H5 typography — per-variant Figma table (not blanket +1) */\n@media (max-width: 820px) {\n  :root {\n${overrides.join('\n')}\n  }\n}\n`
-}
-
-/**
- * Build space variables (optional — tokens.json 已删除未消费的 space 轴)。
- * @param {Record<string, string> | undefined} space
- * @returns {string}
- */
-function buildSpaceVars(space) {
-  if (!space || Object.keys(space).length === 0) return ''
-  const lines = Object.entries(space).map(([key, value]) => `  --space-${key}: ${value};`)
-  return ['  /* ---- spacing scale ---- */', ...lines].join('\n')
 }
 
 /**
@@ -528,16 +516,13 @@ function staticExtraTheme() {
 function buildThemeCss(tokens) {
   const colorBlock = buildColorVars(tokens.colors)
   const typeBlock = buildTypeVars(tokens.type)
-  const spaceBlock = buildSpaceVars(tokens.space)
   const radiusBlock = buildRadiusVars(tokens.radius)
   const elevationBlock = buildElevationVars(tokens.shadows)
   const h5Media = buildH5TypeMedia(tokens.type)
   const themeBlock = buildThemeBlock(tokens.shadows, tokens.radius)
   const themeInline = buildThemeInline(tokens.colors)
 
-  const rootMiddle = [typeBlock, spaceBlock, radiusBlock, elevationBlock]
-    .filter(Boolean)
-    .join('\n\n')
+  const rootMiddle = [typeBlock, radiusBlock, elevationBlock].filter(Boolean).join('\n\n')
 
   return `/**
  * Design system tokens — single source of truth

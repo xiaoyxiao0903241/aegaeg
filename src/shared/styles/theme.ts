@@ -6,22 +6,12 @@
  */
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
-/** 品牌 / 外观色值：供 meta theme-color 与非 CSS 消费方使用。 */
+/** 品牌 / 外观色值：仅保留现有 JS 消费方（home meta · thirdweb）。 */
 export const themeHex = {
-  background: colorHex.background,
-  foreground: colorHex.foreground,
   card: colorHex.card,
-  primary: colorHex.primary,
-  primaryForeground: colorHex['primary-foreground'],
-  secondary: colorHex.secondary,
-  border: colorHex.border,
   success: colorHex.success,
-  onDark: colorHex['inverse-muted'],
   metaTheme: colorHex.background,
-  coral: colorHex.coral,
   coralEmphasis: colorHex['coral-emphasis'],
-  footer: colorHex.footer,
-  modalOverlay: colorHex['modal-overlay'],
   modalOverlayStrong: colorHex['modal-overlay-strong'],
 } as const
 
