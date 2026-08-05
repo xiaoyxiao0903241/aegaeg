@@ -1,5 +1,5 @@
-import { QuickLink, type QuickLinkProps } from '~/app/shell/quick-link'
 import { cn } from '~/shared/lib/utils'
+import { QuickLink, type QuickLinkProps } from '~/views/dapp/community/quick-link'
 
 export type { QuickLinkProps as QuickLinkItem }
 

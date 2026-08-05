@@ -7,9 +7,9 @@
 import { RefreshCw } from 'lucide-react'
 import { type ReactNode } from 'react'
 
-import { CtaButton } from '~/app/shell/cta-button'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
+import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -146,9 +146,15 @@ function Action({
   onClick?: () => void
 }) {
   return (
-    <CtaButton density="card" disabled={disabled} loading={loading} onClick={onClick} type="button">
+    <MainButton
+      density="card"
+      disabled={disabled}
+      loading={loading}
+      onClick={onClick}
+      type="button"
+    >
       {children}
-    </CtaButton>
+    </MainButton>
   )
 }
 

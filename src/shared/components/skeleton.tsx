@@ -1,15 +1,5 @@
 import { tv } from 'tailwind-variants'
 
-import { cn } from '~/shared/lib/utils'
-
-/** 社区数据卡在 H5 下共用的容器样式（被多张实时卡引用，故抽成一处）。 */
-export const communityStatCardMobileShell = tv({
-  base: cn(
-    'max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
-    'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
-  ),
-})
-
 const dappSkeleton = tv({
   base: ['block rounded-md', 'motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'],
   variants: {

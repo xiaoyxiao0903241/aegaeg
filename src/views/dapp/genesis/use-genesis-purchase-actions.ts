@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { goBindReferral } from '~/app/go-bind-referral'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'

@@ -6,15 +6,12 @@
  * 高价格影响时给出告警。
  */
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { CountValue } from '~/shared/components/count-value'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { MainButton } from '~/shared/components/main-button'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -28,6 +25,9 @@ import {
   ExchangeFlowButton,
   exchangeProviderMetaRow,
 } from '~/views/dapp/exchange/primitives'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
   const vm = useMarketTradeDock(trade)
@@ -41,7 +41,7 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
         subtitle={t.exchange.trade.intro}
         title={t.exchange.trade.title}
       />
-      <WidgetStack className="gap-0">
+      <DockStack className="gap-0">
         <ExchangeAmountFlow
           amountBoxClassName={vm.flipCardClass}
           buy={pair.buy}
@@ -106,8 +106,8 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
           amountLocked={trade.isSubmitting || vm.isFlipping}
         />
 
-        <MetaListCard className="mt-3.5 max-dapp:mt-3">
-          <MetaListCard.Rows
+        <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+          <FormInfoCard.Rows
             items={[
               {
                 label: t.exchange.exchangePrice,
@@ -174,15 +174,15 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
               }),
             ]}
           />
-        </MetaListCard>
+        </FormInfoCard>
 
         {vm.sessionReady && trade.isHighPriceImpact ? (
           <InlineAlert className="mt-3">{t.exchange.trade.highPriceImpactWarning}</InlineAlert>
         ) : null}
 
         {vm.sessionReady && trade.walletReady ? (
-          <ActionRow className="mt-3.5 max-dapp:mt-3">
-            <CtaButton
+          <FormActions className="mt-3.5 max-dapp:mt-3">
+            <MainButton
               className="col-span-full"
               density="external"
               disabled={!trade.canSubmit}
@@ -190,12 +190,12 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
               onClick={() => void vm.onSubmit()}
             >
               {t.exchange.trade.action}
-            </CtaButton>
-          </ActionRow>
+            </MainButton>
+          </FormActions>
         ) : (
-          <WidgetConnectPromo className="mt-3.5" />
+          <DockConnectPromo className="mt-3.5" />
         )}
-      </WidgetStack>
+      </DockStack>
 
       <ExchangeSlippageModal
         onConfirm={trade.setSlippage}

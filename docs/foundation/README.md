@@ -1,7 +1,7 @@
 # Foundation — UI token 与组件轴
 
 > **Baseline**：当前分支 + [Figma](https://www.figma.com/design/uiKwzwIoD06phS0husdqjB/AEGIS-X--Copy---Copy-?node-id=4253-365&m=dev)  
-> **范围**：Token · Text · Button · Card · InteractiveCard（Hub 壳）· Chip · Input · shell chrome
+> **范围**：Token · Text · Button · Card · InteractiveCard（Hub 壳）· Chip · Input · DApp 布局 primitive（`Tile`/`Grid`…）
 
 ## 必读
 
@@ -18,7 +18,7 @@
 | 颜色              | **`src/shared/styles/tokens/tokens.json`** → `theme.css`（色值真源）；轴说明见 `ui-tokens.md`；禁新遗留色 / 平行语义 class |
 | 文本              | 用户可见文案必须 `<Text>`                                                                                                  |
 | 样式复用          | 禁导出 `*Class`；单用处 inline；多处 → 组件 / `tv()`                                                                       |
-| shared/components | 只扩 chrome；业务档位 / locale 不进 primitive                                                                              |
+| shared/components | 无业务数据的布局/控件 primitive；业务档位 / locale / 产品壳（store/钱包）不进；跨 tab 产品壳 → `views/dapp/shared/`        |
 | H5                | PC 文案 SSOT；H5 只做响应式                                                                                                |
 
 ## 易混色

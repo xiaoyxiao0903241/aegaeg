@@ -6,10 +6,10 @@
  * 未连接钱包时各项展示 0 值占位。
  */
 import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/app/assets'
-import { Grid } from '~/app/shell/grid'
 import { Detail } from '~/shared/components/detail'
 import { Empty } from '~/shared/components/empty'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'

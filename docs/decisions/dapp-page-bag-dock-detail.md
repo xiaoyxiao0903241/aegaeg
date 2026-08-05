@@ -9,7 +9,9 @@
 2. **禁止** registry（或等价入口）import 任意 mode 目录下的 `dock` / `detail`。
 3. 左栏组装一律叫 **`*Dock`**，右栏一律叫 **`*Detail`**（域与 mode 同词表）。
 4. **首页营销页**不在本合同内。
-5. 壳层名（如 `WidgetFrame`）**不**与页袋 `*Dock` 绑死；另波次再统一措辞亦可。
+5. 壳层名（如 `DockFrame`）**不**与页袋 `*Dock` 绑死。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认）住在 [`views/dapp/shared/`](../../src/views/dapp/shared/)（**不是 tab**）；无业务数据的布局 primitive（`Tile`/`Grid`/`MainButton`…）住在 `src/shared/components`；窗口级 onboarding/wallet/nav 住在 `app/`。
+
+> 命名对照：`src/shared/` = 设计系统；`views/dapp/shared/` = 跨 tab 产品壳；`{tab}/shared.ts` = 域内非 UI 纯函数。三者路径不撞。
 
 ## 何时开 mode 袋
 
@@ -99,7 +101,9 @@ community/
 
 - 右栏仍：`Detail → Section → Grid|具名 → Tile|*Card`；禁 Section 薄壳（`Section` 仅 `*-detail` / 此处 `detail.tsx` import）。
 - 页内同构拼装 → `jscpd:ignore`（理由含「页内拼装」）；**禁止**为过 jscpd 抽薄包装。
-- `shared/components` 只扩 chrome；业务零件留在域/mode `primitives.tsx`。
+- `shared/components` 扩无业务数据的布局/控件 primitive（含 `Tile`/`Grid`/`MainButton`/`ModeCard` 等）。产品色/奖励 wash 等域味卡（如 `AboutCard`）留在 `views/dapp/shared/`，勿冒充 Foundation。
+- 跨 tab **产品壳**（`DockFrame` / Subview / ConnectPromo 等）→ `views/dapp/shared/`（准入：≥2 无关 tab；禁域常量/单域卡）；业务零件留在域/mode `primitives.tsx`。
+- 门禁：`views-no-cross-tab` 禁 tab↔tab，允许 tab→`views/dapp/shared`；`dapp-shared-no-tabs` 禁 `views/dapp/shared`→tab。
 
 ## 命名对照（执行波次）
 

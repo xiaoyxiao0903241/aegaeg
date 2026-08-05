@@ -2,14 +2,14 @@ import { Chip, type ChipProps } from '~/shared/components/chip'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 分立式 pill Tab 组。
+ * 分立式 Chip Tab 组。
  *
  * 选中项以主题色高亮，未选项白底描边。
  *
  * @param items 各 Tab 项，active 标记当前选中
  * @param onSelect 点击某个 Tab 时回调其下标
  */
-export function PillTabs({
+export function ChipTabs({
   activeTone = 'primary',
   ariaLabel,
   className,

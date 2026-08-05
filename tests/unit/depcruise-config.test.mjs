@@ -18,6 +18,7 @@ test('dependency-cruiser config defines required rules', () => {
   assert.ok(ruleNames.includes('ui-is-dumb'))
   assert.ok(ruleNames.includes('stores-no-app'))
   assert.ok(ruleNames.includes('views-no-cross-tab'))
+  assert.ok(ruleNames.includes('dapp-shared-no-tabs'))
   assert.ok(ruleNames.includes('app-views-composition'))
 
   const homeNoWeb3 = config.forbidden.find((rule) => rule.name === 'home-no-web3')
@@ -28,5 +29,10 @@ test('dependency-cruiser config defines required rules', () => {
 
   const viewsNoCrossTab = config.forbidden.find((rule) => rule.name === 'views-no-cross-tab')
   assert.equal(viewsNoCrossTab.severity, 'error')
+  assert.match(viewsNoCrossTab.from.path, /shared/)
   assert.match(viewsNoCrossTab.to.pathNot, /\$1/)
+
+  const dappSharedNoTabs = config.forbidden.find((rule) => rule.name === 'dapp-shared-no-tabs')
+  assert.equal(dappSharedNoTabs.severity, 'error')
+  assert.match(dappSharedNoTabs.from.path, /shared/)
 })

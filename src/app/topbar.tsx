@@ -1,7 +1,7 @@
 import { tv } from 'tailwind-variants'
 
 import { dappAssets, homeAssets } from '~/app/assets'
-import { OnboardingTourChip } from '~/app/shell/onboarding-tour-chip'
+import { OnboardingTourChip } from '~/app/onboarding/onboarding-tour-chip'
 import { useAppShell } from '~/app/use-app-shell'
 import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { languageMenuOptions } from '~/i18n/language-menu-options'

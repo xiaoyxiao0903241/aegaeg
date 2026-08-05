@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 
-import { PillTabs } from '~/app/shell/pill-tabs'
 import { formatApiDecimalAmount, parseApiAmount } from '~/shared/api/format-display'
 import type {
   DaoGrantStatus,
@@ -12,6 +11,7 @@ import type {
   ReferralAwardLogItem,
 } from '~/shared/api/types'
 import { StatusBadge } from '~/shared/components/badge'
+import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Text } from '~/shared/components/text'
 import {
   daoGrantStatusTone,
@@ -35,7 +35,7 @@ type PillOption = { label: string; value: string }
  * @param args.value 当前选中值
  * @param args.onChange 切换回调
  */
-export function rewardsRecordsPillTabsHeader(args: {
+export function rewardsRecordsChipTabsHeader(args: {
   ariaLabel: string
   options: readonly PillOption[]
   value: string
@@ -43,7 +43,7 @@ export function rewardsRecordsPillTabsHeader(args: {
 }) {
   const { ariaLabel, options, value, onChange } = args
   return (
-    <PillTabs
+    <ChipTabs
       activeTone="coral"
       ariaLabel={ariaLabel}
       className="justify-start"

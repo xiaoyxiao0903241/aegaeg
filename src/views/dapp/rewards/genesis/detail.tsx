@@ -13,7 +13,7 @@ import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { GenesisBanner } from '~/views/dapp/rewards/genesis/primitives'
 import { useGenesisDetail } from '~/views/dapp/rewards/genesis/use-genesis-detail'
-import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/primitives'
+import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 
 export function GenesisDetail() {
   const vm = useGenesisDetail()
@@ -73,7 +73,7 @@ export function GenesisDetail() {
         <Section.Title>{t.rewards.history}</Section.Title>
         <Table>
           <Table.Header>
-            {rewardsRecordsPillTabsHeader({
+            {rewardsRecordsChipTabsHeader({
               ariaLabel: vm.g.recordsTabsAria,
               options: vm.historyTabOptions,
               value: vm.historyTab,

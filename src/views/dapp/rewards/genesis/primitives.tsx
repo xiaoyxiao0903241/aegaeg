@@ -4,9 +4,9 @@
 import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { CtaButton } from '~/app/shell/cta-button'
 import { Card } from '~/shared/components/card'
 import { darkBanner } from '~/shared/components/dark-banner'
+import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -106,7 +106,7 @@ function Action({
   onClick?: () => void
 }) {
   return (
-    <CtaButton
+    <MainButton
       className="mt-2.5"
       density="inverse"
       disabled={disabled}
@@ -114,7 +114,7 @@ function Action({
       onClick={onClick}
     >
       {children}
-    </CtaButton>
+    </MainButton>
   )
 }
 /* jscpd:ignore-end */

@@ -4,14 +4,14 @@
  * 顶部统计卡（总奖励、我的位置、贡献、下次发放），
  * 下方为参与奖励记录表、邀请人信息表与 FAQ。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useParticipate } from '~/views/dapp/rewards/participate/use-participate'
 

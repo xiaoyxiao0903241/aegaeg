@@ -4,16 +4,13 @@
  * 供 referral / participate / grant / lucky / cobuild 等 mode dock 组装；
  * 禁止再扩成域级 mega primitives。
  */
-import { CtaButton } from '~/app/shell/cta-button'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { useAppShell } from '~/app/use-app-shell'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
+import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
@@ -30,6 +27,9 @@ import {
 import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/shared'
 import { useMixedClaim } from '~/views/dapp/rewards/use-mixed-claim'
 import { type SimpleClaimView, useSimpleClaim } from '~/views/dapp/rewards/use-simple-claim'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /**
  * 简单领取左栏面板（发展津贴 / 参与奖 / 推荐奖）
@@ -48,7 +48,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
         subtitle={vm.card.body}
         title={vm.card.title}
       />
-      <WidgetStack>
+      <DockStack>
         {view === 'grant' ? (
           <>
             <GrantPendingCard
@@ -89,7 +89,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
         </SimpleClaimableCard>
 
         {walletReady ? (
-          <CtaButton
+          <MainButton
             className="min-h-13 py-2 text-sm/4"
             density="external"
             disabled={!vm.canSubmit}
@@ -97,11 +97,11 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
             onClick={vm.onClaim}
           >
             {vm.ctaLabel}
-          </CtaButton>
+          </MainButton>
         ) : (
-          <WidgetConnectPromo />
+          <DockConnectPromo />
         )}
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }
@@ -122,7 +122,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
         subtitle={vm.card.body}
         title={vm.card.title}
       />
-      <WidgetStack>
+      <DockStack>
         {vm.showCobuildRewardType ? (
           <Segment
             aria-label={t.rewards.cobuild.recordsTabsAria}
@@ -235,7 +235,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
         </RewardsDestinationCard>
 
         {vm.walletReady ? (
-          <CtaButton
+          <MainButton
             className="min-h-13 py-2! font-normal!"
             density="external"
             disabled={!vm.canConfirm}
@@ -256,11 +256,11 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
                 )}
               </Text>
             </span>
-          </CtaButton>
+          </MainButton>
         ) : (
-          <WidgetConnectPromo />
+          <DockConnectPromo />
         )}
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }

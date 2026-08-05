@@ -4,9 +4,6 @@
  * 概览区展示销毁率、累计销毁 AGX 与贡献点统计，下方为代币
  * 介绍轮播、销毁记录与 FAQ；未连接钱包时统计展示全局累计值。
  */
-import { Grid } from '~/app/shell/grid'
-import { PillTabs } from '~/app/shell/pill-tabs'
-import { Tile } from '~/app/shell/tile'
 import { useAppShell } from '~/app/use-app-shell'
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
@@ -14,12 +11,15 @@ import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/to
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
+import { ChipTabs } from '~/shared/components/chip-tabs'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
@@ -155,7 +155,7 @@ export function BurnExchangeDetail({
         <Section.Title>{t.exchange.burn.history.title}</Section.Title>
         <Table>
           <Table.Header>
-            <PillTabs
+            <ChipTabs
               activeTone="coral"
               ariaLabel={history.t.exchange.burn.history.tabsAriaLabel}
               className="flex items-center justify-start gap-2 [&_button]:h-6 [&_button]:min-h-6 [&_button]:py-0"

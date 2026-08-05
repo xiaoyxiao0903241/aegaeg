@@ -6,12 +6,11 @@
  * 未登录时摘要卡显示空态占位。
  */
 import { dappAssets } from '~/app/assets'
-import { AboutCard } from '~/app/shell/about-card'
-import { Grid } from '~/app/shell/grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
@@ -22,6 +21,7 @@ import {
   type RewardsSummaryCardProps,
 } from '~/views/dapp/rewards/hub/primitives'
 import { useHub } from '~/views/dapp/rewards/hub/use-hub'
+import { AboutCard } from '~/views/dapp/shared/about-card'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const

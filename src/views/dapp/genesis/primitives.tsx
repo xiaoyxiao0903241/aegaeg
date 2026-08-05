@@ -8,14 +8,7 @@ import { useMemo } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { ProgressMeter } from '~/app/shell/progress-meter'
-import { Skeleton } from '~/app/shell/skeleton'
-import { genesisContributionsColWidths } from '~/app/shell/table-columns'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { goBindReferral } from '~/app/go-bind-referral'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import type { SeasonOption } from '~/core/presale/genesis-promo-types'
 import { useI18n } from '~/i18n/use-i18n'
@@ -25,17 +18,24 @@ import { Carousel } from '~/shared/components/carousel'
 import { FieldActionChip } from '~/shared/components/chip'
 import { CountValue } from '~/shared/components/count-value'
 import { darkBanner } from '~/shared/components/dark-banner'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
+import { MainButton } from '~/shared/components/main-button'
+import { ProgressBar } from '~/shared/components/progress-bar'
 import { RadioGroup, RadioIndicator } from '~/shared/components/radio'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
+import { genesisContributionsColWidths } from '~/views/dapp/genesis/shared'
 import type { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
 import { useGenesisDock } from '~/views/dapp/genesis/use-genesis-dock'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 
 // --- from genesis-purchase-shares-field.tsx ---
 export function GenesisPurchaseSharesField({
@@ -315,8 +315,8 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
         value={vm.sharesTextDisplay}
       />
 
-      <MetaListCard>
-        <MetaListCard.Rows
+      <FormInfoCard>
+        <FormInfoCard.Rows
           items={[
             { label: t.genesis.quota, value: genesis.quotaLabel },
             { label: t.genesis.pay, value: genesis.payUsd1Label },
@@ -334,20 +334,20 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
             },
           ]}
         />
-      </MetaListCard>
+      </FormInfoCard>
 
       {vm.walletReady ? (
-        <ActionRow className="grid-cols-1">
+        <FormActions className="grid-cols-1">
           {vm.programEnded ? (
-            <CtaButton density="card" disabled variant="secondary">
+            <MainButton density="card" disabled variant="secondary">
               {t.genesis.joinEnded}
-            </CtaButton>
+            </MainButton>
           ) : genesis.needsReferralBind ? (
-            <CtaButton density="card" onClick={() => goBindReferral()} variant="primary">
+            <MainButton density="card" onClick={() => goBindReferral()} variant="primary">
               {t.genesis.goBindReferrer}
-            </CtaButton>
+            </MainButton>
           ) : (
-            <CtaButton
+            <MainButton
               className="min-h-11"
               density="card"
               disabled={!genesis.canPurchase || genesis.isSubmitting}
@@ -356,11 +356,11 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
               variant="primary"
             >
               {vm.purchaseCtaLabel}
-            </CtaButton>
+            </MainButton>
           )}
-        </ActionRow>
+        </FormActions>
       ) : (
-        <WidgetConnectPromo />
+        <DockConnectPromo />
       )}
     </>
   )
@@ -421,7 +421,7 @@ export function GenesisContributionsProgressHeader({
           {contributedLabel}
         </Text>
       </div>
-      <ProgressMeter label={label} value={progress} />
+      <ProgressBar label={label} value={progress} />
     </div>
   )
 }

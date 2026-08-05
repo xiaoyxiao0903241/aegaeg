@@ -4,14 +4,14 @@
  * 展示协议概览、我的持仓、释放记录、机制说明、趋势图与 FAQ。
  * 未连接钱包时仓位与记录为空态。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import {
   StakingMechanismCard,
   StakingMetricValue,

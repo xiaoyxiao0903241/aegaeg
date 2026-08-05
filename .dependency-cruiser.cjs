@@ -79,18 +79,25 @@ module.exports = {
     {
       name: 'views-no-cross-tab',
       comment:
-        'DApp tab page-bags must not import sibling tabs. Shared helpers belong in hooks/shared/core.',
+        'DApp tab page-bags must not import sibling tabs. Cross-tab DApp product chrome lives in views/dapp/shared (not a tab). Design-system primitives: src/shared/components. Other helpers: hooks / core.',
       severity: 'error',
-      from: { path: '^src/views/dapp/([^/]+)/' },
+      from: { path: '^src/views/dapp/(?!shared/)([^/]+)/' },
       to: {
-        path: '^src/views/dapp/([^/]+)/',
+        path: '^src/views/dapp/(?!shared/)([^/]+)/',
         pathNot: '^src/views/dapp/$1/',
       },
     },
     {
+      name: 'dapp-shared-no-tabs',
+      comment: 'views/dapp/shared must not import any tab page-bag (prevent reverse coupling).',
+      severity: 'error',
+      from: { path: '^src/views/dapp/shared/' },
+      to: { path: '^src/views/dapp/(?!shared/)([^/]+)/' },
+    },
+    {
       name: 'app-views-composition',
       comment:
-        'Document app→views. known-ok: shell hosts, auth→login (src-layout invariant 4), rail dots/promo. known-leak: skeleton→community (phase E). Warn-only.',
+        'Document app→views. known-ok: tab hosts / session hosts; app must not import views/dapp/shared or DApp Cta for wallet chip (use shared Button). Warn-only.',
       severity: 'warn',
       from: { path: '^src/app/' },
       to: { path: '^src/views/' },

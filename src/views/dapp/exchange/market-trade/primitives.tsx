@@ -7,13 +7,13 @@ import { useState } from 'react'
 
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { exchangeTokenCardKeys, type ExchangeTokenKey, exchangeTokenKeys } from '~/app/data'
-import { PillTabs } from '~/app/shell/pill-tabs'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Carousel } from '~/shared/components/carousel'
 import { Chip } from '~/shared/components/chip'
+import { ChipTabs } from '~/shared/components/chip-tabs'
 import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import {
@@ -415,7 +415,7 @@ export function MarketTradeFaqTabs({
   }
 
   return (
-    <PillTabs
+    <ChipTabs
       ariaLabel={t.exchange.faq.tabsTitle}
       className="flex flex-wrap gap-2"
       items={exchangeTokenKeys.map((key) => ({

@@ -1,10 +1,10 @@
-import { WidgetFrame } from '~/app/shell/widget-frame'
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { useI18n } from '~/i18n/use-i18n'
 import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisPurchaseForm } from '~/views/dapp/genesis/primitives'
+import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 /**
@@ -33,8 +33,8 @@ export function GenesisDock({ genesis }: { genesis: GenesisWidgetState }) {
       )
 
   return (
-    <WidgetFrame subtitle={seasonIntro} title={t.genesis.title}>
+    <DockFrame subtitle={seasonIntro} title={t.genesis.title}>
       <GenesisPurchaseForm key={formKey} genesis={genesis} />
-    </WidgetFrame>
+    </DockFrame>
   )
 }

@@ -1,6 +1,3 @@
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -12,6 +9,9 @@ import { AssetsPositionEmptyCard, AssetsQuoteToolbar } from '~/views/dapp/assets
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/primitives'
 import { useXmineDock } from '~/views/dapp/assets/xmine/use-xmine'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /** X 挖矿侧栏：报价 / 排序工具条 + 挖矿持仓卡（含空态、加载态）与赎回确认弹窗 */
 export function XmineDock() {
@@ -26,7 +26,7 @@ export function XmineDock() {
         subtitle={copy.intro}
         title={copy.title}
       />
-      <WidgetStack>
+      <DockStack>
         <AssetsQuoteToolbar
           onQuoteChange={vm.setQuote}
           onSortChange={vm.setSort}
@@ -38,7 +38,7 @@ export function XmineDock() {
         />
 
         {!vm.walletReady ? (
-          <WidgetConnectPromo />
+          <DockConnectPromo />
         ) : vm.isLoading ? (
           <AssetsPositionListSkeleton count={1} />
         ) : vm.isEmpty || !position ? (
@@ -84,7 +84,7 @@ export function XmineDock() {
             total={vm.totalRows}
           />
         ) : null}
-      </WidgetStack>
+      </DockStack>
 
       <AssetsRedeemConfirm
         amountLabel={

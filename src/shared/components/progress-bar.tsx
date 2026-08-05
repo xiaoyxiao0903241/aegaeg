@@ -6,7 +6,7 @@ import { cn } from '~/shared/lib/utils'
  * @param label 无障碍标签
  * @param value 进度值，越界时收拢到 0–100，非法值按 0
  */
-export function ProgressMeter({
+export function ProgressBar({
   className,
   label,
   value,

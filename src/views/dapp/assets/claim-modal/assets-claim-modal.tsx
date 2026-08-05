@@ -2,12 +2,12 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useRef } from 'react'
 
-import { CtaButton } from '~/app/shell/cta-button'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { Button } from '~/shared/components/button'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
+import { MainButton } from '~/shared/components/main-button'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -194,7 +194,7 @@ function AssetsClaimModalOpen({
           </Text>
         ) : null}
 
-        <CtaButton
+        <MainButton
           className={cn(
             'min-h-13 w-full border-0 bg-transparent py-2 text-primary-foreground shadow-none',
             'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
@@ -213,7 +213,7 @@ function AssetsClaimModalOpen({
               {vm.releaseAmountText} & {vm.restakeAmountText}
             </span>
           </span>
-        </CtaButton>
+        </MainButton>
       </div>
     </ResponsiveDialog>
   )

@@ -50,3 +50,13 @@ export function readAndClearBindSuccess(flag: { current: boolean }): boolean {
   flag.current = false
   return ok
 }
+
+/** 社区邀请表列宽预设（16px 根字号）。 */
+export const communityInviteColWidths = [
+  '6.5rem',
+  '6.5rem',
+  '6.5rem',
+  '5.5rem',
+  '6rem',
+  '7.5rem',
+] as const

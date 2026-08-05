@@ -1,12 +1,12 @@
-import { Grid } from '~/app/shell/grid'
-import { PillTabs } from '~/app/shell/pill-tabs'
-import { Tile } from '~/app/shell/tile'
+import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Segment } from '~/shared/components/segment'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
 import { HubMetricValueRow } from '~/views/dapp/staking/hub/primitives'
 import { useHubDetail } from '~/views/dapp/staking/hub/use-hub'
@@ -113,8 +113,8 @@ export function HubDetail() {
 
       <Section>
         <Section.Title>{table.title}</Section.Title>
-        {/* 周期筛选：复用通用 PillTabs，不用 Segment */}
-        <PillTabs
+        {/* 周期筛选：复用通用 ChipTabs，不用 Segment */}
+        <ChipTabs
           activeTone="coral"
           ariaLabel={table.segmentAria}
           className="mb-3"

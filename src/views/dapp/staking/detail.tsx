@@ -1,10 +1,10 @@
 /**
  * 质押右栏 Detail：按子视图切换对应详情。
  */
-import { useSubviewDisplayView } from '~/app/shell/subview-panel'
-import { TabDetailShell } from '~/app/shell/tab-panel-shell'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
+import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
 import { BondDetail } from '~/views/dapp/staking/bond/detail'
 import { CalcDetail } from '~/views/dapp/staking/calc/detail'
 import { HubDetail } from '~/views/dapp/staking/hub/detail'

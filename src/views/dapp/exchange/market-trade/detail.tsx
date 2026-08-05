@@ -4,13 +4,13 @@
  * 概览区展示汇率与结算方式，下方为代币介绍轮播，
  * 以及按代币分组的 FAQ 标签页。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import {
   MarketTradeFaqTabs,
   TokenAboutCarousel,

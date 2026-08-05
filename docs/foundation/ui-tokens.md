@@ -80,7 +80,7 @@
 - `sm` = **36**（`min-h-9` · `px-4.5`）· 默认 pill / topbar Connect / Enter App · `text-sm` · leading-none — Figma `4040:220`
 - `md` = **44**（`min-h-11`）· 卡外 / widget 栈主 CTA · `text-sm` · leading-snug · `px-5`
 - `lg` = **48**（`min-h-12`）· Home hero · Community「参与共建」· `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
-  **`CtaButton` density 高度**（叠在 size 上，**不是**第 4 个 size）：
+  **`MainButton` density 高度**（叠在 size 上，**不是**第 4 个 size）：
 - `inverse` = **38**（`min-h-9.5`）· 暗色 promo CTA
 - `card` = **42**（`min-h-10.5`）· 白卡 / outlined·elevated 卡内 CTA — Figma claim `4040:4904`
 - `external` = **44**（→ `size=md`）· 卡外主 CTA（Swap / Genesis 认购等）
@@ -120,9 +120,9 @@
 
 **`outlined` + `default`**：未选 htab / 分立 pill — `bg-card` + `border-border` + **`text-foreground/40`**（Figma `text/muted` 40%；**勿**用 `muted-foreground` 70%）。
 
-**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。选中 htab 字色由 `PillTabs` 叠 `text-coral-emphasis`（样本 Grant `4719:2447`）。
+**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。选中 htab 字色由 `ChipTabs` 叠 `text-coral-emphasis`（样本 Grant `4719:2447`）。
 
-**Field-adjacent action**：Genesis MAX · Community Bind → `FieldActionChip`（`Chip soft` + `coral` · `h-11` / `rounded-control`）；**不是** `CtaButton` / Button secondary。
+**Field-adjacent action**：Genesis MAX · Community Bind → `FieldActionChip`（`Chip soft` + `coral` · `h-11` / `rounded-control`）；**不是** `MainButton` / Button secondary。
 
 **禁止**：在 Chip 内 hand-roll typography
 **依赖**：Text（§2）
@@ -147,7 +147,7 @@
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`（**通用内容卡**字阶合同；≠ Hub 入口）
 
-**Hub 可点壳**：`InteractiveCard`（`Card outlined` + 交互）— 无文案子件；内容用 `Text`。同骨架「图标+标题+说明」入口用组合式 `DockModeCard`（exchange / staking）；见 [`component-usage.md`](./component-usage.md)「Hub 左栏」。
+**Hub 可点壳**：`InteractiveCard`（`Card outlined` + 交互）— 无文案子件；内容用 `Text`。同骨架「图标+标题+说明」入口用组合式 `ModeCard`（exchange / staking）；见 [`component-usage.md`](./component-usage.md)「Hub 左栏」。
 
 **用法**：同 chrome 入口卡 / hub tile 的 props 合同与「可点才 button」见 [`component-usage.md`](./component-usage.md)。
 
@@ -190,11 +190,11 @@
 | ------------------ | ---------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                                     | 全局 shell                                                                                                                  |
 | `NavRail`          | rail / rit                         | `items`, `activeTab`, `onSelect`                                                  | 4 页共用                                                                                                                    |
-| `PanelHeader`      | wh                                 | `title`, `subtitle`, `action`                                                     | 4 页共用                                                                                                                    |
+| `DockHeader`       | wh                                 | `title`, `subtitle`, `action`                                                     | 4 页共用                                                                                                                    |
 | `AmountBox`        | box / tk / rr / mx                 | `token`, `value`, `balance`, `sessionReady`                                       | 金额输入卡                                                                                                                  |
 | `Segment`          | seg / pcts / htab                  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg                   | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                                                                      |
 | `ClaimSplitSlider` | slider `4812:221`                  | `value` (release%), `onChange`, `aria-label`                                      | 双色轨 + `%` thumb；Radix；文案由 call site 传入                                                                            |
-| `Card` elevated    | —                                  | children                                                                          | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`）                                                       |
+| `Card` elevated    | —                                  | children                                                                          | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`shared/components/tile.tsx`）                                               |
 | `Tile`             | `Label` / `Note`                   | 主值 children；旁注用 `Tooltip.Info`                                              | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard                                                             |
 | `Carousel`         | Content/Item/Indicators            | `opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain | 组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`                                                                   |
 | `Empty`            | —                                  | `title` · `body?`                                                                 | 纯文案空态；偏大 pad；`Table.Empty` / `Chart.Empty` 复用                                                                    |
@@ -218,7 +218,7 @@
 - `CollapseChevron`：DApp 开合箭头唯一 owner（`shared/components/collapse-chevron.tsx`）。Lucide `ChevronDown`；收起 foreground@40% · 展开 `rotate-180` + primary；动效 CSS `.collapse-chevron` 280ms / `cubic-bezier(0.2,0.8,0.2,1)`（禁 `duration-280` 等未登记 token）。`size`：`sm` 10 / `md` 12（`--app-icon-xs`）/ `lg` 18（FAQ·Section 默认）。FAQ、`Section.collapsible`、SelectMenu、TokenPicker、TokenChip picker、报价排序、Table.Pagination 页码触发器必须用本件；禁平行 `.faq-chevron` / 稿面 img 开合 / 上下图标对换冒充旋转。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `WidgetPromoCard` 内部使用 `Card surface="inverse"`（深色 CTA）。
-- `InlineAlert`（`src/shared/components/inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。共享层禁 `Dapp*` 前缀（产品壳前缀只留 `app/shell` / `views/dapp`）。
+- `InlineAlert`（`src/shared/components/inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。共享层禁 `Dapp*` 前缀（产品壳前缀只留 `views/dapp/shared` / `views/dapp`）。
 - `darkBanner`（`src/shared/components/dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `DialogClose`（`dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
@@ -235,10 +235,12 @@
 
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
-- `dapp-shell.tsx` · `dapp-rail.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
-- `dapp-widget-frame.tsx` · `shared/components/detail.tsx` · `shared/components/section.tsx` · `shared/components/table.tsx`
+- `app/app-shell.tsx` · `app/rail.tsx` · `app/topbar.tsx` · `app/mobile-nav.tsx`
+- `views/dapp/shared/dock-frame.tsx` · `views/dapp/shared/tab-shell.tsx` · `views/dapp/shared/subview-panel.tsx` · `views/dapp/shared/dock-connect-promo.tsx`
+- `shared/components/detail.tsx` · `shared/components/section.tsx` · `shared/components/table.tsx`
 - `shared/components/steps.tsx` · `shared/components/carousel.tsx`
-- `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
+- `shared/components/grid.tsx` · `shared/components/tile.tsx` · `shared/components/mode-card.tsx`
+- `app/wallet/wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
 - `static-layout.ts` · `views/home/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`
 

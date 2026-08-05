@@ -1,6 +1,6 @@
 import type { PopoverContentProps } from '@reactour/tour'
 
-import { ONBOARDING_STEP_COUNT } from '~/app/shell/onboarding-step-ids'
+import { ONBOARDING_STEP_COUNT } from '~/app/onboarding/onboarding-step-ids'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 

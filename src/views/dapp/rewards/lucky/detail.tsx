@@ -5,15 +5,15 @@
  * 中部为 Chainlink VRF 随机开奖说明卡；
  * 下方按开奖日期查看中奖名单与我的参与记录，底部为 FAQ。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { LuckyVrfCard } from '~/views/dapp/rewards/lucky/primitives'
 import { useLucky } from '~/views/dapp/rewards/lucky/use-lucky'

@@ -1,16 +1,16 @@
 import { dappAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
+import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { useXmineDock } from '~/views/dapp/staking/xmine/use-xmine'
 
 /**
@@ -37,7 +37,7 @@ export function XmineDock() {
         subtitle={t.staking.xmine.intro}
         title={t.staking.xmine.title}
       />
-      <WidgetStack>
+      <DockStack>
         <AmountBox
           amountProps={{
             'aria-label': t.staking.xmine.amountAria,
@@ -61,8 +61,8 @@ export function XmineDock() {
           startAdornment={null}
         />
 
-        <MetaListCard>
-          <MetaListCard.Rows
+        <FormInfoCard>
+          <FormInfoCard.Rows
             items={[
               {
                 label: t.staking.xmine.meta.daily,
@@ -88,23 +88,23 @@ export function XmineDock() {
               },
             ]}
           />
-        </MetaListCard>
+        </FormInfoCard>
 
         {walletReady ? (
-          <ActionRow>
-            <CtaButton
+          <FormActions>
+            <MainButton
               density="external"
               disabled={!xmine.canSubmit}
               loading={xmine.isSubmitting}
               onClick={() => void onSubmit()}
             >
               {t.staking.xmine.submit}
-            </CtaButton>
-          </ActionRow>
+            </MainButton>
+          </FormActions>
         ) : (
-          <WidgetConnectPromo />
+          <DockConnectPromo />
         )}
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }

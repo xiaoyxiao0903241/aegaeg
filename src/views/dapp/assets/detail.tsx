@@ -1,13 +1,13 @@
 /**
  * 资产右栏 Detail：按子视图切换 Hub / 仓位 / XMine 详情。
  */
-import { useSubviewDisplayView } from '~/app/shell/subview-panel'
-import { TabDetailShell } from '~/app/shell/tab-panel-shell'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import { HubDetail } from '~/views/dapp/assets/hub/detail'
 import { PositionDetail } from '~/views/dapp/assets/position/detail'
 import { XmineDetail } from '~/views/dapp/assets/xmine/detail'
+import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
 
 function AssetsDetailBody() {
   const view = useSubviewDisplayView<AssetsView>()

@@ -6,12 +6,10 @@
  * 未连接钱包时展示连接引导。
  */
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetStack } from '~/app/shell/widget-frame'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
+import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -24,6 +22,8 @@ import {
   exchangeProviderMetaRow,
   ExchangeWidgetSessionFooter,
 } from '~/views/dapp/exchange/primitives'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
   const vm = useFlashExchange(flash)
@@ -37,7 +37,7 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
         subtitle={t.exchange.flash.intros[flash.introKey]}
         title={t.exchange.flash.title}
       />
-      <WidgetStack className="gap-0">
+      <DockStack className="gap-0">
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
           className="mb-3"
@@ -93,8 +93,8 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
           amountLocked={flash.isSubmitting || vm.isFlipping}
         />
 
-        <MetaListCard className="mt-3.5 max-dapp:mt-3">
-          <MetaListCard.Rows
+        <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+          <FormInfoCard.Rows
             items={[
               {
                 label: t.exchange.exchangePrice,
@@ -118,11 +118,11 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
               }),
             ]}
           />
-        </MetaListCard>
+        </FormInfoCard>
 
         {vm.sessionReady && flash.walletReady ? (
-          <ActionRow className="mt-3.5 max-dapp:mt-3">
-            <CtaButton
+          <FormActions className="mt-3.5 max-dapp:mt-3">
+            <MainButton
               className="col-span-full"
               density="external"
               disabled={!flash.canSubmit}
@@ -130,12 +130,12 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
               onClick={() => void vm.onSubmit()}
             >
               {t.exchange.flash.action}
-            </CtaButton>
-          </ActionRow>
+            </MainButton>
+          </FormActions>
         ) : null}
 
         <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }

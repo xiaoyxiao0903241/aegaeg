@@ -5,11 +5,11 @@
  * 可刷新单档快照并领取已释放部分。
  */
 import { tokenCarouselIcons } from '~/app/assets'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 import { useQueue } from '~/views/dapp/release/queue/use-queue'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function QueueDock() {
   const vm = useQueue()
@@ -23,7 +23,7 @@ export function QueueDock() {
         subtitle={t.release.queue.intro}
         title={t.release.queue.title}
       />
-      <WidgetStack>
+      <DockStack>
         <div
           aria-label={t.release.queue.title}
           className="grid gap-3"
@@ -66,8 +66,8 @@ export function QueueDock() {
           ))}
         </div>
 
-        {vm.walletReady ? null : <WidgetConnectPromo />}
-      </WidgetStack>
+        {vm.walletReady ? null : <DockConnectPromo />}
+      </DockStack>
     </>
   )
 }

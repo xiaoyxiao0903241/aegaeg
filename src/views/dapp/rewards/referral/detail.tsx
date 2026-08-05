@@ -4,14 +4,14 @@
  * 顶部五张统计卡（总奖励、我的位置、直推数、贡献、下次发放），
  * 下方为奖励记录表与直推成员表，底部为 FAQ。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useReferral } from '~/views/dapp/rewards/referral/use-referral'
 

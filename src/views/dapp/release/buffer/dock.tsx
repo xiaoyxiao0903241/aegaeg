@@ -5,12 +5,12 @@
  * 右上角刷新按钮重读 AGX 链上快照，gAGX 无数据源时显示 0。
  */
 import { tokenCarouselIcons } from '~/app/assets'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
 import { ReleasePlanCard } from '~/views/dapp/release/primitives'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function BufferDock() {
   const vm = useBuffer()
@@ -25,7 +25,7 @@ export function BufferDock() {
         subtitle={t.release.buffer.intro}
         title={t.release.buffer.title}
       />
-      <WidgetStack>
+      <DockStack>
         <ReleasePlanCard data-slot-id="release-buffer-card-agx">
           <ReleasePlanCard.Header>
             <ReleasePlanCard.Token iconSrc={tokenCarouselIcons.agxIcon} label="AGX" />
@@ -77,8 +77,8 @@ export function BufferDock() {
           <ReleasePlanCard.Action disabled>{t.release.buffer.claim}</ReleasePlanCard.Action>
         </ReleasePlanCard>
 
-        {vm.walletReady ? null : <WidgetConnectPromo />}
-      </WidgetStack>
+        {vm.walletReady ? null : <DockConnectPromo />}
+      </DockStack>
     </>
   )
 }

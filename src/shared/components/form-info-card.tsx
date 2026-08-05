@@ -21,4 +21,4 @@ function Rows(props: ComponentProps<typeof List>) {
   return <List {...props} />
 }
 
-export const MetaListCard = Object.assign(Root, { Rows })
+export const FormInfoCard = Object.assign(Root, { Rows })

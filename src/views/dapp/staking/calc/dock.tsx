@@ -1,14 +1,14 @@
 import { dappAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'
+import { FormActions } from '~/shared/components/form-actions'
 import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
+import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { CalcDaySlider, CalcHtabRow } from '~/views/dapp/staking/calc/primitives'
 import { useCalcDock } from '~/views/dapp/staking/calc/use-calc'
 
@@ -38,7 +38,7 @@ export function CalcDock() {
         subtitle={t.staking.calc.intro}
         title={t.staking.calc.title}
       />
-      <WidgetStack className="gap-4">
+      <DockStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
           onChange={vm.onProductChange}
@@ -124,16 +124,16 @@ export function CalcDock() {
           />
         </div>
 
-        <ActionRow className="mt-6">
-          <CtaButton
+        <FormActions className="mt-6">
+          <MainButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base leading-5 text-white"
             density="external"
             type="button"
           >
             {t.staking.calc.submit}
-          </CtaButton>
-        </ActionRow>
-      </WidgetStack>
+          </MainButton>
+        </FormActions>
+      </DockStack>
     </>
   )
 }

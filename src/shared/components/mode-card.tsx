@@ -47,7 +47,7 @@ function Copy({ children, className }: { children: ReactNode; className?: string
   return <div className={cn('grid min-w-0 flex-1 gap-1.5', className)}>{children}</div>
 }
 
-export const DockModeCard = Object.assign(Root, {
+export const ModeCard = Object.assign(Root, {
   Icon: ModeIcon,
   Copy,
   Title,

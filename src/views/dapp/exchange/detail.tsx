@@ -1,8 +1,6 @@
 /**
  * 兑换右栏 Detail：按子视图分发会话展示标量到各 mode。
  */
-import { useSubviewDisplayView } from '~/app/shell/subview-panel'
-import { TabDetailShell } from '~/app/shell/tab-panel-shell'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import { BurnExchangeDetail } from '~/views/dapp/exchange/burn/detail'
@@ -17,6 +15,8 @@ import { FlashExchangeDetail } from '~/views/dapp/exchange/flash-exchange/detail
 import { HubDetail } from '~/views/dapp/exchange/hub/detail'
 import { MarketTradeDetail } from '~/views/dapp/exchange/market-trade/detail'
 import { TurbineExchangeDetail } from '~/views/dapp/exchange/turbine/detail'
+import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
 
 function ExchangeDetailBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   const view = useSubviewDisplayView<ExchangeView>()

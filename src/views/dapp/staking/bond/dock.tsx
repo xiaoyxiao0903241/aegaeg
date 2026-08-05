@@ -1,18 +1,18 @@
 import { dappAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import type { BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
+import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
@@ -71,7 +71,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
         subtitle={copy.intro}
         title={copy.title}
       />
-      <WidgetStack>
+      <DockStack>
         <BondPeriodList
           ariaLabel={copy.periodAria}
           copy={copy.card}
@@ -105,8 +105,8 @@ export function BondDock({ kind }: { kind: BondKind }) {
           startAdornment={null}
         />
 
-        <MetaListCard>
-          <MetaListCard.Rows
+        <FormInfoCard>
+          <FormInfoCard.Rows
             items={[
               {
                 label: copy.meta.discount.replace(
@@ -171,27 +171,27 @@ export function BondDock({ kind }: { kind: BondKind }) {
               },
             ]}
           />
-        </MetaListCard>
+        </FormInfoCard>
 
         <Text as="p" className="m-0 text-foreground/40" variant="support">
           {copy.footnote}
         </Text>
 
         {!walletReady ? (
-          <WidgetConnectPromo />
+          <DockConnectPromo />
         ) : (
-          <ActionRow>
-            <CtaButton
+          <FormActions>
+            <MainButton
               density="external"
               disabled={!bond.canSubmit && bond.blockReason !== 'notBound'}
               loading={bond.isSubmitting}
               onClick={() => void onSubmit()}
             >
               {ctaLabel}
-            </CtaButton>
-          </ActionRow>
+            </MainButton>
+          </FormActions>
         )}
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }

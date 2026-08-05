@@ -1,9 +1,6 @@
 import { useState } from 'react'
 
 import { assetsHubAssets } from '~/app/assets'
-import { PanelToggle } from '~/app/shell/panel-toggle'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { useAppShell } from '~/app/use-app-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
@@ -17,6 +14,9 @@ import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { openAssetsView } from '~/shared/config/dapp-open-views'
 import { AssetsHubFilterMenu } from '~/views/dapp/assets/hub/primitives'
 import { useHub } from '~/views/dapp/assets/hub/use-hub'
+import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
 
 /** 资产 Hub：质押 / LP 债券 / 燃烧债券 / XMine 仓位概览 */
 const ASSET_MODES = [
@@ -57,7 +57,7 @@ export function HubDock() {
               hideZeroLabel={t.assets.hub.hideZero}
               onHideZeroChange={setHideZero}
             />
-            <PanelToggle />
+            <DetailToggle />
           </div>
         }
         subtitle={t.assets.intro}
@@ -76,7 +76,7 @@ export function HubDock() {
         }
         titleClassName="flex w-full items-center justify-between gap-3"
       />
-      <WidgetStack>
+      <DockStack>
         {modes.map((key) => {
           const stats = overview.modes[key]
           const modeCopy = t.assets.hub.modes[key]
@@ -143,8 +143,8 @@ export function HubDock() {
           <Table.Empty embedded title={t.assets.hub.hideZeroEmpty} />
         ) : null}
 
-        {!walletReady ? <WidgetConnectPromo /> : null}
-      </WidgetStack>
+        {!walletReady ? <DockConnectPromo /> : null}
+      </DockStack>
     </>
   )
 }

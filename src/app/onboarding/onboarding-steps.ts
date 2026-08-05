@@ -3,7 +3,7 @@ import {
   ONBOARDING_STEP_IDS,
   type OnboardingStepId,
   tourSelector,
-} from '~/app/shell/onboarding-step-ids'
+} from '~/app/onboarding/onboarding-step-ids'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
@@ -18,7 +18,7 @@ export {
   ONBOARDING_STEP_IDS,
   type OnboardingStepId,
   tourSelector,
-} from '~/app/shell/onboarding-step-ids'
+} from '~/app/onboarding/onboarding-step-ids'
 
 type StepGo = {
   tab: DappTab

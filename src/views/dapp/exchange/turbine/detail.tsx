@@ -5,8 +5,6 @@
  * 介绍轮播、解锁记录、机制说明与 FAQ。
  */
 import { tokenCarouselIcons } from '~/app/assets'
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { useAppShell } from '~/app/use-app-shell'
 import { useTurbineLogs } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
@@ -14,10 +12,12 @@ import { mapTurbineLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import { TurbineMechanismCard } from '~/views/dapp/exchange/turbine/primitives'
 

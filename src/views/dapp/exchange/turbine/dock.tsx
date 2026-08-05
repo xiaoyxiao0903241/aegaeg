@@ -6,18 +6,14 @@
  * 滑点由合约固定，页面不可修改。
  */
 import { dappAssets, turbineExchangeAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { TabHeader } from '~/app/shell/tab-header'
-import { TokenChip } from '~/app/shell/token-chip'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
 import { CountValue } from '~/shared/components/count-value'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
+import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -25,8 +21,12 @@ import { bscscanAddress } from '~/shared/config/explorer'
 import { cn } from '~/shared/lib/utils'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { ExchangeOneWayFlowIndicator, PercentButtonRow } from '~/views/dapp/exchange/primitives'
+import { TokenChip } from '~/views/dapp/exchange/token-chip'
 import { TurbineEqBuyTokenCell } from '~/views/dapp/exchange/turbine/primitives'
 import { useTurbine } from '~/views/dapp/exchange/turbine/use-turbine'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
   const vm = useTurbine(turbine)
@@ -44,7 +44,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
         subtitle={t.exchange.hub.modes.turbine.body}
         title={t.exchange.turbine.title}
       />
-      <WidgetStack className="gap-0">
+      <DockStack className="gap-0">
         <Segment
           aria-label={t.exchange.turbine.segmentAriaLabel}
           className="mb-3.5"
@@ -113,8 +113,8 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
               </div>
             </div>
 
-            <MetaListCard className="mt-3.5 max-dapp:mt-3">
-              <MetaListCard.Rows
+            <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+              <FormInfoCard.Rows
                 items={[
                   {
                     label: t.exchange.turbine.agxPrice,
@@ -168,11 +168,11 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                   },
                 ]}
               />
-            </MetaListCard>
+            </FormInfoCard>
 
             {vm.sessionReady && turbine.walletReady ? (
-              <ActionRow className="mt-3.5 max-dapp:mt-3">
-                <CtaButton
+              <FormActions className="mt-3.5 max-dapp:mt-3">
+                <MainButton
                   className="col-span-full"
                   density="external"
                   disabled={!turbine.canUnlock}
@@ -180,8 +180,8 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                   onClick={() => void vm.handleUnlock()}
                 >
                   {t.exchange.turbine.unlockAction}
-                </CtaButton>
-              </ActionRow>
+                </MainButton>
+              </FormActions>
             ) : null}
           </>
         ) : (
@@ -218,7 +218,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                           )}
                     </Text>
                   </div>
-                  <CtaButton
+                  <MainButton
                     density="external"
                     disabled={
                       !vm.sessionReady ||
@@ -230,15 +230,15 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                     onClick={() => void vm.handleClaim(row.index)}
                   >
                     {t.exchange.turbine.claimAction}
-                  </CtaButton>
+                  </MainButton>
                 </div>
               ))
             )}
           </div>
         )}
 
-        {!vm.sessionReady || !turbine.walletReady ? <WidgetConnectPromo /> : null}
-      </WidgetStack>
+        {!vm.sessionReady || !turbine.walletReady ? <DockConnectPromo /> : null}
+      </DockStack>
     </>
   )
 }

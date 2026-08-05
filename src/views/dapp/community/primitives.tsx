@@ -6,17 +6,24 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
-import { CtaButton } from '~/app/shell/cta-button'
-import { SideCard } from '~/app/shell/side-card'
-import { communityStatCardMobileShell } from '~/app/shell/skeleton'
 import { Card } from '~/shared/components/card'
 import { FieldActionChip } from '~/shared/components/chip'
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
+import { MainButton } from '~/shared/components/main-button'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn, navigableHref } from '~/shared/lib/utils'
+import { SideCard } from '~/views/dapp/community/side-card'
+
+/** 社区数据卡在 H5 下共用的容器样式。 */
+export const communityStatCardMobileShell = tv({
+  base: cn(
+    'max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
+    'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
+  ),
+})
 
 export function CommunityInviteCard({
   steps,
@@ -262,9 +269,9 @@ export function CommunityReferralLinkCard({
       >
         {referralLink}
       </Text>
-      <CtaButton density="inverse" disabled={disabled} onClick={onCopy}>
+      <MainButton density="inverse" disabled={disabled} onClick={onCopy}>
         {copyLabel}
-      </CtaButton>
+      </MainButton>
     </SideCard>
   )
 }

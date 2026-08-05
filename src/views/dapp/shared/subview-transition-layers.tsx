@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import { SubviewDisplayViewContext } from '~/app/shell/subview-display-context'
 import type { DappViewDirection } from '~/stores/create-dapp-subview-store'
+import { SubviewDisplayViewContext } from '~/views/dapp/shared/subview-display-context'
 
 /**
  * 子视图切换时的退场 / 入场两层。

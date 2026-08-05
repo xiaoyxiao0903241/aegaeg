@@ -4,14 +4,14 @@
  * 展示汇率与结算方式两张概览卡，下方为代币介绍轮播与 FAQ；
  * 详情页只读，不承载金额输入。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 
 // 代币介绍卡顺序：gAGX 结算 · USD1 · X · gAGX 质押凭证（第 4 张是 gAGX 质押，不是 AGX）

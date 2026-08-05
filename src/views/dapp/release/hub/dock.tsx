@@ -5,15 +5,15 @@
  * 点击进入对应子视图；未连接钱包时展示连接引导。
  */
 import { dappAssets } from '~/app/assets'
-import { PanelToggle } from '~/app/shell/panel-toggle'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
 import { openReleaseView } from '~/shared/config/dapp-open-views'
 import { ReleaseEntryCard } from '~/views/dapp/release/hub/primitives'
 import { useHub } from '~/views/dapp/release/hub/use-hub'
+import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
 
 export function HubDock() {
   const vm = useHub()
@@ -22,12 +22,12 @@ export function HubDock() {
   return (
     <>
       <WidgetHeader
-        action={<PanelToggle />}
+        action={<DetailToggle />}
         className="[&_h1]:text-xl/none! [&_h1]:tracking-normal"
         subtitle={t.release.intro}
         title={t.release.title}
       />
-      <WidgetStack>
+      <DockStack>
         <ReleaseEntryCard
           className="gap-1.5"
           data-slot-id="release-pool-card"
@@ -104,8 +104,8 @@ export function HubDock() {
           </div>
         </ReleaseEntryCard>
 
-        {!vm.walletReady ? <WidgetConnectPromo /> : null}
-      </WidgetStack>
+        {!vm.walletReady ? <DockConnectPromo /> : null}
+      </DockStack>
     </>
   )
 }

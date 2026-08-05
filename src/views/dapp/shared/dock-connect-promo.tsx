@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { ConnectPromoCard } from '~/app/shell/connect-promo-card'
 import { cn } from '~/shared/lib/utils'
+import { ConnectPromoCard } from '~/views/dapp/shared/connect-promo-card'
 
-const dappWidgetConnectFooter = tv({
+const dappDockConnectFooter = tv({
   slots: {
     spacer: 'min-h-3.5 shrink-0 grow basis-3.5 max-dapp:hidden',
     bottom: 'mt-3.5 w-full shrink-0 dapp:mt-auto max-dapp:mt-3',
@@ -12,8 +12,8 @@ const dappWidgetConnectFooter = tv({
 })
 
 /** 操作区底部预留间距后放置内容（PC 下贴底，H5 下跟随内容）。 */
-function WidgetConnectFooter({ children, className }: { children: ReactNode; className?: string }) {
-  const styles = dappWidgetConnectFooter()
+function DockConnectFooter({ children, className }: { children: ReactNode; className?: string }) {
+  const styles = dappDockConnectFooter()
   return (
     <>
       <div aria-hidden="true" className={styles.spacer()} />
@@ -23,10 +23,10 @@ function WidgetConnectFooter({ children, className }: { children: ReactNode; cla
 }
 
 /** 操作区底部贴底的「连接钱包」引导卡容器。 */
-export function WidgetConnectPromo({ className }: { className?: string }) {
+export function DockConnectPromo({ className }: { className?: string }) {
   return (
-    <WidgetConnectFooter className={className}>
+    <DockConnectFooter className={className}>
       <ConnectPromoCard />
-    </WidgetConnectFooter>
+    </DockConnectFooter>
   )
 }

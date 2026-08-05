@@ -16,10 +16,10 @@
 | 3   | Props 传数据，组件内渲染        | 图标优先 URL 元组，勿默认 `ReactNode icon`                                                                                      |
 | 4   | Call site 组内容，组件管 chrome | 文案 / 跳转在页袋；圆角阴影字阶在组件                                                                                           |
 | 5   | 可点才用 `button`               | 禁止用原生 `disabled` 冒充「不可点但样式不变」                                                                                  |
-| 6   | 小 API                          | 没有第二 call site 不要提前升 shell                                                                                             |
+| 6   | 小 API                          | 没有第二 call site 不要提前抽到 shared/components 或 views/dapp/shared                                                          |
 | 7   | **优先组合式**                  | 壳 + 具名子件（`Tile.Label` / `Table.Header`）；槽用子树表达，禁袋装 `header=`/`tooltip=` 冒充结构。无第二 call site 不硬抽子件 |
 
-## Hub 左栏（B+D · `InteractiveCard` / `DockModeCard`）
+## Hub 左栏（B+D · `InteractiveCard` / `ModeCard`）
 
 > **模型**：薄壳（B）+ 同骨架 ≥2 call site 抽组合壳（D）。壳管 chrome；字阶走 `Text` 或壳内钉死的子件。
 
@@ -32,17 +32,17 @@
 | 非职责 | 无 Title / Description 等文案子件；不挂文案角色 prop                |
 | 布局   | call site `className`（gap / grid / min-h）                         |
 
-### 同骨架入口 — `DockModeCard`（`app/shell/dock-mode-card.tsx`）
+### 同骨架入口 — `ModeCard`（`shared/components/mode-card.tsx`）
 
 > **何时用**：左栏 Hub「图标 + 标题 + 一行说明」且 ≥2 域同骨架（现：exchange / staking）。  
-> **组合式**：`DockModeCard` · `Icon` · `Copy`（文案列容器）· `Title` · `Body`；页袋只传文案 / 图标 URL / `onClick`。  
+> **组合式**：`ModeCard` · `Icon` · `Copy`（文案列容器）· `Title` · `Body`；页袋只传文案 / 图标 URL / `onClick`。  
 > **不要用**：Assets Hub（仓位/收益双列）、已有业务卡（`ReleaseEntryCard` / `RewardsTypeCard`）——骨架不同，保持分立。
 
-### 内容 — `Text`（页袋按业务组合；或 `DockModeCard.*` 已钉字阶）
+### 内容 — `Text`（页袋按业务组合；或 `ModeCard.*` 已钉字阶）
 
 | Hub 角色（稿）                 | 写法                                                                                                                                |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 标题（14 SB）                  | `variant="detail"` + `font-semibold`（或 `DockModeCard.Title`）                                                                     |
+| 标题（14 SB）                  | `variant="detail"` + `font-semibold`（或 `ModeCard.Title`）                                                                         |
 | 说明 / 列旁注 / ≈（copy @40%） | `variant="copy"` + `text-foreground/40`（资产仓位/收益列标、释放 releasing 等；**勿** `Card.Description` / `muted-foreground`≈70%） |
 | 贴主额的字段标签（copy @70%）  | `variant="copy"` + `text-foreground/70`（如奖励「余额」）                                                                           |
 | 中额（14 SB）                  | `as="strong"` `variant="detail"` + `font-semibold`                                                                                  |
@@ -51,13 +51,13 @@
 ### 命名与抽取
 
 - **数据 / 常量用业务名**：`EXCHANGE_MODES`、`STAKING_MODES`、`REWARD_CARDS`、释放队列/缓冲池——跟产品说话。
-- **同 chrome 骨架** → 抽 shell 组合件（如 `DockModeCard`）；**不同骨架** → 页袋内联或域内具名业务卡，禁万能 `variant` 吞多种布局。
+- **同 chrome 骨架** → 抽 shared/components 组合件（如 `ModeCard`）；**不同骨架** → 页袋内联或域内具名业务卡，禁万能 `variant` 吞多种布局。
 - **何时抽业务零件**：有稳定业务身份（如「LP 债券仓位」）且 ≥2 处复用。
 
 ### MUST NOT（Hub）
 
 - 硬套 `Card.Title` / `Card.Description` 再拧字阶
-- 用 `DockModeCard` 硬塞 Assets / 释放 / 奖励等不同骨架
+- 用 `ModeCard` 硬塞 Assets / 释放 / 奖励等不同骨架
 - 万能卡 / `switch (index)` 吞多种骨架
 - 右栏数据卡壳误用本壳（右栏走 `Tile`）
 
@@ -67,14 +67,14 @@
 > `Tile.Label`（可嵌 `Tooltip.Info`）· 主值 **children** · 可选 `Tile.Note`（另起一行说明；≠ info tip；内容恰巧常是 `≈ $…`）。  
 > **禁止** `MetricCard` / `*StatCard` / `*OverviewTiles` / `variant` 选布局；禁 `label=`/`note=`/`tooltip=` 袋装 API。
 
-### 壳 — `Tile`（`src/app/shell/tile.tsx`）
+### 壳 — `Tile`（`src/shared/components/tile.tsx`）
 
 | 项   | 合同                                                                                                                                                                                                                                                                       |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                                                                                                                                                                     |
 | 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                                                                                                                                                                |
 | API  | `Tile` · `Tile.Label` · 主值 children · `Tile.Note`                                                                                                                                                                                                                        |
-| 网格 | `Grid`（`app/shell/grid.tsx`；PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数                                                                                            |
+| 网格 | `Grid`（`shared/components/grid.tsx`；PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数                                                                                    |
 | OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 奖励 Hub（pill/deco）→ **自建具名组件**（禁 `*-content` 内联 Card+div 汤）；表 → `Table`（下节）。标准 Label+主值+可选 Note 的 elevated 指标瓦漏迁必须 `Tile`+`Grid`；缓冲池 AGX/gAGX 多列行归「缓冲复卡」OUT |
 
 ### 内容 — 页袋组合

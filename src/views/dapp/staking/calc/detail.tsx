@@ -4,16 +4,16 @@
  * 展示收益结果：总收益、卖出占比、投入占比、节点卡与曲线图。
  * 未填写表单或结果缺失时展示占位提示。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { periodEndDays } from '~/core/staking/build-calc-estimate'
 import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield-display'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import {
   CalcNotesCard,

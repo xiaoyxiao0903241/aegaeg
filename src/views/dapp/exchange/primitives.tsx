@@ -2,8 +2,6 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactElement, ReactNode
 import { tv } from 'tailwind-variants'
 
 import { burnExchangeAssets, dappAssets } from '~/app/assets'
-import { TokenChip } from '~/app/shell/token-chip'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -15,6 +13,8 @@ import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { TokenChip } from '~/views/dapp/exchange/token-chip'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 
 // —— percent-button-row ——
 
@@ -224,7 +224,7 @@ export function ExchangeWidgetSessionFooter({
 }) {
   return (
     <>
-      {!sessionReady ? <WidgetConnectPromo className="mt-3.5" /> : null}
+      {!sessionReady ? <DockConnectPromo className="mt-3.5" /> : null}
       {blockHint ? (
         <InlineAlert className="mt-3" role="status">
           {blockHint}

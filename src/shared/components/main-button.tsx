@@ -4,11 +4,11 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Button } from '~/shared/components/button'
 import { cn } from '~/shared/lib/utils'
 
-type CtaButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type MainButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
   /**
-   * card = 白卡 CTA · external = 操作区大按钮 · inverse = 深色促销 ·
-   * modal = 弹窗底部 · hero = 社区 / 页头横幅 CTA
+   * card = 白卡主按钮 · external = 操作区大按钮 · inverse = 深色促销 ·
+   * modal = 弹窗底部 · hero = 社区 / 页头横幅主按钮
    */
   density?: 'card' | 'external' | 'inverse' | 'modal' | 'hero'
   loading?: boolean
@@ -16,14 +16,14 @@ type CtaButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 /**
- * 主 CTA 按钮。
+ * 主操作按钮。
  *
  * 按 density 档位固定高度，可带加载态；输入框旁小操作、顶栏连接请用对应轻量组件。
  *
- * @param density 高度档位，见 {@link CtaButtonProps}
+ * @param density 高度档位，见 {@link MainButtonProps}
  * @param loading 为 true 时禁用并显示加载圈
  */
-export function CtaButton({
+export function MainButton({
   children,
   className,
   density = 'card',
@@ -32,7 +32,7 @@ export function CtaButton({
   type = 'button',
   variant = 'primary',
   ...props
-}: CtaButtonProps) {
+}: MainButtonProps) {
   const size = density === 'hero' || density === 'external' ? 'lg' : 'sm'
 
   return (

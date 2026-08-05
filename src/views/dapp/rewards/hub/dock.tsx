@@ -7,9 +7,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
 import { dappAssets } from '~/app/assets'
-import { PanelToggle } from '~/app/shell/panel-toggle'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -28,6 +25,9 @@ import { openRewardsView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
+import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -109,8 +109,8 @@ export function HubDock() {
 
   return (
     <>
-      <WidgetHeader action={<PanelToggle />} subtitle={t.rewards.intro} title={t.rewards.title} />
-      <WidgetStack>
+      <WidgetHeader action={<DetailToggle />} subtitle={t.rewards.intro} title={t.rewards.title} />
+      <DockStack>
         {REWARD_CARDS.map((view) => {
           const card = t.rewards.cards[view]
           const value = amountValue(view)
@@ -170,13 +170,13 @@ export function HubDock() {
         })}
 
         {!walletReady ? (
-          <WidgetConnectPromo />
+          <DockConnectPromo />
         ) : !sessionReady ? (
           <Text as="p" tone="muted-foreground" variant="copy">
             {t.rewards.hub.sessionHint}
           </Text>
         ) : null}
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }

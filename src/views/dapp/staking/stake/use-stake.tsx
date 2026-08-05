@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { goBindReferral } from '~/app/go-bind-referral'
 import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {

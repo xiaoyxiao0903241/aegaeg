@@ -5,11 +5,9 @@
  * 去向与提供方合约链接。未连接钱包时展示连接引导。
  */
 import { dappAssets } from '~/app/assets'
-import { ActionRow } from '~/app/shell/action-row'
-import { CtaButton } from '~/app/shell/cta-button'
-import { MetaListCard } from '~/app/shell/meta-list-card'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetStack } from '~/app/shell/widget-frame'
+import { FormActions } from '~/shared/components/form-actions'
+import { FormInfoCard } from '~/shared/components/form-info-card'
+import { MainButton } from '~/shared/components/main-button'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useBurn } from '~/views/dapp/exchange/burn/use-burn'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -19,6 +17,8 @@ import {
   exchangeProviderMetaRow,
   ExchangeWidgetSessionFooter,
 } from '~/views/dapp/exchange/primitives'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const vm = useBurn(burn)
@@ -32,7 +32,7 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
         subtitle={t.exchange.burn.subtitle}
         title={t.exchange.burn.title}
       />
-      <WidgetStack className="gap-0">
+      <DockStack className="gap-0">
         <ExchangeAmountFlow
           buy={{ symbol: t.exchange.burn.pointsToken }}
           buyAmount={burn.buyAmount}
@@ -54,8 +54,8 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
           amountLocked={burn.isSubmitting}
         />
 
-        <MetaListCard className="mt-3.5 max-dapp:mt-3">
-          <MetaListCard.Rows
+        <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+          <FormInfoCard.Rows
             items={[
               {
                 label: t.exchange.burn.burnRate,
@@ -79,11 +79,11 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
               }),
             ]}
           />
-        </MetaListCard>
+        </FormInfoCard>
 
         {vm.sessionReady && burn.walletReady ? (
-          <ActionRow className="mt-3.5 max-dapp:mt-3">
-            <CtaButton
+          <FormActions className="mt-3.5 max-dapp:mt-3">
+            <MainButton
               className="col-span-full"
               density="external"
               disabled={!burn.canSubmit}
@@ -91,12 +91,12 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
               onClick={() => void vm.onSubmit()}
             >
               {t.exchange.burn.action}
-            </CtaButton>
-          </ActionRow>
+            </MainButton>
+          </FormActions>
         ) : null}
 
         <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
-      </WidgetStack>
+      </DockStack>
     </>
   )
 }

@@ -4,15 +4,15 @@
  * 顶部为挖矿统计数字，中部为操作记录表格，底部为常见问题。
  */
 import { tokenCarouselIcons } from '~/app/assets'
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { AssetsOpsTable } from '~/views/dapp/assets/primitives'
 import { useAssetsXmineOpsRows, useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-xmine'
 

@@ -4,17 +4,17 @@
  * 深色等级卡展示当前等级与个人 / 团队进度，
  * 下方为直推奖励、等级奖励、发展基金三张领取卡；未连接钱包时显示引导。
  */
-import { ProgressMeter } from '~/app/shell/progress-meter'
-import { TabHeader } from '~/app/shell/tab-header'
-import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
-import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { darkBanner } from '~/shared/components/dark-banner'
+import { ProgressBar } from '~/shared/components/progress-bar'
 import { Text } from '~/shared/components/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { GenesisClaimCard } from '~/views/dapp/rewards/genesis/primitives'
 import { useGenesisDock } from '~/views/dapp/rewards/genesis/use-genesis'
 import { formatApiDecimalAmount } from '~/views/dapp/rewards/shared'
+import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
+import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function GenesisDock() {
   const { messages: t } = useI18n()
@@ -30,7 +30,7 @@ export function GenesisDock() {
         subtitle={vm.g.pageSubtitle}
         title={vm.g.pageTitle}
       />
-      <WidgetStack className="gap-4">
+      <DockStack className="gap-4">
         <div className={banner.root({ className: 'flex flex-col gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
             <Text as="p" className="font-medium" tone="primary-bright" variant="caption">
@@ -73,7 +73,7 @@ export function GenesisDock() {
                 {vm.rankBusy ? '0' : vm.personalProgressValue}
               </Text>
             </div>
-            <ProgressMeter
+            <ProgressBar
               className="bg-white/12"
               label={vm.personalProgressLabel}
               value={vm.personalProgressPercent}
@@ -88,7 +88,7 @@ export function GenesisDock() {
                 {vm.rankBusy ? '0' : vm.teamProgressValue}
               </Text>
             </div>
-            <ProgressMeter
+            <ProgressBar
               className="bg-white/12"
               label={t.rewards.teamVolume}
               value={vm.teamProgressPercent}
@@ -151,8 +151,8 @@ export function GenesisDock() {
           ) : null}
         </GenesisClaimCard>
 
-        {!vm.walletReady ? <WidgetConnectPromo /> : null}
-      </WidgetStack>
+        {!vm.walletReady ? <DockConnectPromo /> : null}
+      </DockStack>
     </>
   )
 }

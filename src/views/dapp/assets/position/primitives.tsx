@@ -2,14 +2,14 @@ import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { CtaButton } from '~/app/shell/cta-button'
-import { Skeleton } from '~/app/shell/skeleton'
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
+import { MainButton } from '~/shared/components/main-button'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -187,15 +187,15 @@ export function AssetsPositionRowActions({
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <CtaButton
+      <MainButton
         className="h-7 min-h-7 text-xs"
         density="inverse"
         disabled={!canClaim || locked || busy}
         onClick={onClaim}
       >
         {claimLabel}
-      </CtaButton>
-      <CtaButton
+      </MainButton>
+      <MainButton
         className={cn(
           'h-7 min-h-7',
           redeemEnabled ? 'text-sm' : 'text-xs disabled:bg-muted disabled:text-foreground/40',
@@ -206,7 +206,7 @@ export function AssetsPositionRowActions({
         variant="secondary"
       >
         {redeemLabel}
-      </CtaButton>
+      </MainButton>
     </div>
   )
 }

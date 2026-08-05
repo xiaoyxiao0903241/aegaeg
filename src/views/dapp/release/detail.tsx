@@ -1,13 +1,13 @@
 /**
  * 释放右栏 Detail。
  */
-import { useSubviewDisplayView } from '~/app/shell/subview-panel'
-import { TabDetailShell } from '~/app/shell/tab-panel-shell'
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
 import { useReleaseViewMotion } from '~/stores/release-view-store'
 import { BufferDetail } from '~/views/dapp/release/buffer/detail'
 import { HubDetail } from '~/views/dapp/release/hub/detail'
 import { QueueDetail } from '~/views/dapp/release/queue/detail'
+import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { TabDetailShell } from '~/views/dapp/shared/tab-shell'
 
 function ReleaseDetailBody() {
   const view = useSubviewDisplayView<ReleaseView>()

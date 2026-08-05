@@ -5,13 +5,13 @@
  * 点击跳转到对应模式；下部为常见问题折叠列表。
  */
 import { exchangeHubAssets } from '~/app/assets'
-import { Grid } from '~/app/shell/grid'
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { openExchangeView } from '~/shared/config/dapp-open-views'

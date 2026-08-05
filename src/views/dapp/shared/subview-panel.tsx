@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
-import { SubviewDisplayViewContext } from '~/app/shell/subview-display-context'
-import { SubviewTransitionLayers } from '~/app/shell/subview-transition-layers'
 import { cn } from '~/shared/lib/utils'
 import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
+import { SubviewDisplayViewContext } from '~/views/dapp/shared/subview-display-context'
+import { SubviewTransitionLayers } from '~/views/dapp/shared/subview-transition-layers'
 
-export { useSubviewDisplayView } from '~/app/shell/subview-display-context'
+export { useSubviewDisplayView } from '~/views/dapp/shared/subview-display-context'
 
 /** 中心页与子视图切换共用的交叉淡入网格（每个 DApp Tab 面板都使用）。 */
 export const DAPP_SUBVIEW_TRANSITION_STACK =

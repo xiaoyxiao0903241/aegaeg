@@ -4,17 +4,17 @@
  * 顶部两张统计卡（等级、累计已领），
  * 下方按「发放 / 领取」Tab 切换明细表格，底部为 FAQ。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useGrant } from '~/views/dapp/rewards/grant/use-grant'
-import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/primitives'
+import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 
 export function GrantDetail() {
   const {
@@ -62,7 +62,7 @@ export function GrantDetail() {
         {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Header>
-            {rewardsRecordsPillTabsHeader({
+            {rewardsRecordsChipTabsHeader({
               ariaLabel: grant.recordsTabsAria,
               options: recordsTabOptions,
               value: recordsTab,

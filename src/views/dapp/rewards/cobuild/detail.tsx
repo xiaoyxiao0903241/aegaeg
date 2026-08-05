@@ -5,18 +5,18 @@
  * 中部等级卡展示当前/下一级档位与需求进度徽章，
  * 下方为等级记录 / 超越记录双 Tab 表格与直推成员表，底部为 FAQ。
  */
-import { Grid } from '~/app/shell/grid'
-import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
-import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/primitives'
+import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 
 export function CobuildDetail() {
   const {
@@ -113,7 +113,7 @@ export function CobuildDetail() {
         <Section.Title>{cobuild.recordsTitle}</Section.Title>
         <Table>
           <Table.Header>
-            {rewardsRecordsPillTabsHeader({
+            {rewardsRecordsChipTabsHeader({
               ariaLabel: cobuild.recordsTabsAria,
               options: recordsTabOptions,
               value: recordsTab,

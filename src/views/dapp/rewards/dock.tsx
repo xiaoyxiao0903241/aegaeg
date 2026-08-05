@@ -1,8 +1,6 @@
 /**
  * 奖励左栏 Dock：按子视图切换领取面板。
  */
-import { useSubviewDisplayView } from '~/app/shell/subview-panel'
-import { TabWidgetShell } from '~/app/shell/tab-panel-shell'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import { CobuildDock } from '~/views/dapp/rewards/cobuild/dock'
@@ -12,6 +10,8 @@ import { HubDock } from '~/views/dapp/rewards/hub/dock'
 import { LuckyDock } from '~/views/dapp/rewards/lucky/dock'
 import { ParticipateDock } from '~/views/dapp/rewards/participate/dock'
 import { ReferralDock } from '~/views/dapp/rewards/referral/dock'
+import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { TabDockShell } from '~/views/dapp/shared/tab-shell'
 
 function RewardsDockBody() {
   const view = useSubviewDisplayView<RewardsView>()
@@ -27,8 +27,8 @@ function RewardsDockBody() {
 export function RewardsDock() {
   const subview = useRewardsViewMotion()
   return (
-    <TabWidgetShell subview={subview}>
+    <TabDockShell subview={subview}>
       <RewardsDockBody />
-    </TabWidgetShell>
+    </TabDockShell>
   )
 }

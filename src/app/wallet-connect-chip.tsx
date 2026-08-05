@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 
-import { CtaButton } from '~/app/shell/cta-button'
-import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
-import { WalletDetailsModal } from '~/app/shell/wallet-details-modal'
+import { WalletConnectModal } from '~/app/wallet/wallet-connect-modal'
+import { WalletDetailsModal } from '~/app/wallet/wallet-details-modal'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import {
@@ -17,6 +16,7 @@ import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { Button } from '~/shared/components/button'
 import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 import { useAuthStore } from '~/stores/auth-store'
 import { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/contract-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -212,16 +212,23 @@ function WalletConnectButton({
   return (
     <div className={styles.shell()}>
       {variant === 'primary' ? (
-        <CtaButton
+        <Button
           aria-busy={isLoggingIn || undefined}
-          className={styles.action({ class: className })}
-          density={density}
+          className={cn(
+            'gap-2',
+            density === 'card' && 'min-h-10.5',
+            density === 'inverse' && 'min-h-9.5 text-xs',
+            density === 'external' && 'min-h-0 py-4 text-base leading-5',
+            styles.action({ class: className }),
+          )}
           disabled={isLoggingIn}
           onClick={() => void handleClick()}
+          size={density === 'external' ? 'lg' : 'sm'}
           type="button"
+          variant="primary"
         >
           {labelNode}
-        </CtaButton>
+        </Button>
       ) : (
         <Button
           aria-busy={isLoggingIn || undefined}

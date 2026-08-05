@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { goBindReferral } from '~/app/go-bind-referral'
 import { useAppShell } from '~/app/use-app-shell'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'

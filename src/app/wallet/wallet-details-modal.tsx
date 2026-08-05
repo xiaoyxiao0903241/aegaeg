@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { dappAssets } from '~/app/assets'
-import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
+import { WalletConnectModal } from '~/app/wallet/wallet-connect-modal'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { useAuth } from '~/hooks/use-auth'
