@@ -12,7 +12,7 @@ export function HomePartnersSection() {
   return (
     <HomeSection
       container="page"
-      className="border-b border-border bg-secondary pb-30 text-center dapp:min-h-52 max-dapp:min-h-64 max-dapp:py-12"
+      className="border-b border-border bg-muted pb-30 text-center dapp:min-h-52 max-dapp:min-h-64 max-dapp:py-12"
       data-partners
       aria-labelledby="partners-title"
     >

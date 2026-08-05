@@ -4,6 +4,7 @@
  *
  * 上方对比当前档与下一档；下方三列展示升级要求与完成徽章。
  */
+import { StatusBadge } from '~/shared/components/badge'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 import type { CobuildTierReq } from '~/views/dapp/rewards/cobuild/use-cobuild'
@@ -44,13 +45,9 @@ export function CobuildTierCard({
               {currentValue}
             </Text>
             {currentRate !== NON_NUMERIC_EMPTY ? (
-              <Text
-                as="span"
-                className="rounded-full bg-primary-soft px-2 py-0.5 leading-none font-semibold text-primary"
-                variant="caption"
-              >
+              <StatusBadge className="font-semibold" size="compact" tone="pending">
                 {currentRate}
-              </Text>
+              </StatusBadge>
             ) : null}
           </div>
         </div>
@@ -93,13 +90,9 @@ export function CobuildTierCard({
                   {achievedLabel}
                 </Text>
               ) : req.badge.kind === 'pct' ? (
-                <Text
-                  as="span"
-                  className="rounded-full bg-primary-soft px-2 py-0.5 leading-none font-semibold text-primary"
-                  variant="caption"
-                >
+                <StatusBadge className="font-semibold" size="compact" tone="pending">
                   {req.badge.value}
-                </Text>
+                </StatusBadge>
               ) : null}
             </div>
             <div className="flex items-baseline gap-1.5">

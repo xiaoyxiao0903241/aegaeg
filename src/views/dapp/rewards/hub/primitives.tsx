@@ -3,6 +3,7 @@
  */
 import { type ReactNode } from 'react'
 
+import { StatusBadge } from '~/shared/components/badge'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
@@ -37,11 +38,9 @@ function TypeBody({ children }: { children: ReactNode }) {
 
 function TypeBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full bg-primary-soft px-2">
-      <Text as="span" className="leading-none" tone="primary" variant="caption">
-        {children}
-      </Text>
-    </span>
+    <StatusBadge size="compact" tone="pending">
+      {children}
+    </StatusBadge>
   )
 }
 

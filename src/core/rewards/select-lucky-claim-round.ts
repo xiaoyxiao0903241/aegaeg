@@ -70,11 +70,7 @@ export function selectLuckyClaimRound(args: {
     won: fallback.won,
     rewardAmount: fallback.rewardAmount,
     rewardClaimed: fallback.rewardClaimed,
-    claimable: isLuckyClaimable({
-      paused,
-      won: fallback.won,
-      rewardClaimed: fallback.rewardClaimed,
-      rewardAmount: fallback.rewardAmount,
-    }),
+    // 上方循环已穷尽可领行，回退仅供展示。
+    claimable: false,
   }
 }

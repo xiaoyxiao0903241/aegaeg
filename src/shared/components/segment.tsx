@@ -49,7 +49,7 @@ export function segmentPillThumbStyle(index: number, count: number): CSSProperti
 }
 
 const segmentTrack = tv({
-  base: 'relative grid rounded-full bg-secondary',
+  base: 'relative grid rounded-full bg-muted',
   variants: {
     size: {
       sm: 'h-6 gap-0.5 p-0.5',

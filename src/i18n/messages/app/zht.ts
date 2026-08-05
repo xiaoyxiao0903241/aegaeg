@@ -344,6 +344,7 @@ const app = defineMessages({
         belowMin: '低于单笔最小销毁限额。',
         aboveMax: '超过单笔最大销毁限额。',
         zeroRate: '销毁比率未就绪，请稍后再试。',
+        zeroAmount: '請輸入大於 0 的銷毀金額。',
       },
       metrics: {
         totalBurnedAgx: '累计销毁 AGX 数量',

@@ -14,6 +14,7 @@ import {
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
 } from '~/shared/api/format-display'
+import { StatusBadge } from '~/shared/components/badge'
 import { Text } from '~/shared/components/text'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
@@ -108,11 +109,9 @@ export function useGenesisDetail() {
         <Text as="span" className="font-semibold" variant="copy">
           {rankLabel}
         </Text>
-        <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5">
-          <Text as="span" className="leading-none font-semibold text-coral" variant="caption">
-            {t.rewards.currentTierSuffix}
-          </Text>
-        </span>
+        <StatusBadge className="font-semibold text-coral" size="compact" tone="pending">
+          {t.rewards.currentTierSuffix}
+        </StatusBadge>
       </span>
     ) : (
       rankLabel

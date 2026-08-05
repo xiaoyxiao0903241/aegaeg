@@ -118,6 +118,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [BURN_BLOCKED.belowMin]: (t) => t.exchange.burn.blocked.belowMin,
   [BURN_BLOCKED.aboveMax]: (t) => t.exchange.burn.blocked.aboveMax,
   [BURN_BLOCKED.zeroRate]: (t) => t.exchange.burn.blocked.zeroRate,
+  [BURN_BLOCKED.zeroAmount]: (t) => t.exchange.burn.blocked.zeroAmount,
 
   // —— 推荐阻断 ——
   [REFERRAL_BIND_ERROR.INVALID_PARENT]: (t) => t.community.bindErrors.invalidParent,

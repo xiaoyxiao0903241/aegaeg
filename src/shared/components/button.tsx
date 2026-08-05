@@ -11,6 +11,8 @@ export const buttonVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
     'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-160 ease-out',
+    'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
+    'active:scale-[0.992] active:duration-75',
     'disabled:pointer-events-none disabled:cursor-not-allowed',
     'disabled:scale-100 disabled:shadow-none',
     'disabled:hover:scale-100 disabled:hover:shadow-none',
@@ -20,29 +22,24 @@ export const buttonVariants = tv({
     variant: {
       primary: [
         'border border-transparent bg-primary text-primary-foreground',
-        'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
-        'active:scale-[0.992] active:duration-75',
         'hover:shadow-primary-hover focus-visible:shadow-primary-hover',
         'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
         'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
       ],
       secondary: [
         'gap-2 border border-border bg-card text-foreground',
-        'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
-        'active:scale-[0.992] active:duration-75',
         'hover:shadow-card focus-visible:shadow-card',
         'disabled:border-border disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100',
         'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       ],
       ghost: [
         'gap-2 border border-border bg-card text-muted-foreground',
-        'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
-        'active:scale-[0.992] active:duration-75',
         'hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:text-primary',
         'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
       ],
       link: [
         'min-h-0 w-auto justify-start border-0 bg-transparent p-0 text-left font-normal whitespace-normal text-primary',
+        'hover:scale-100 focus-visible:scale-100 active:scale-100',
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },

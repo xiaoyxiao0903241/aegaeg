@@ -116,7 +116,7 @@ export function AssetsXminePositionCard({
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
           {/* 锁定徽标：与仓位卡共用锁图标 */}
-          <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+          <span className="inline-flex w-fit items-center gap-1 rounded-control bg-accent px-2">
             <Icon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
             <Text as="span" className="leading-none text-primary" variant="support">
               {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX

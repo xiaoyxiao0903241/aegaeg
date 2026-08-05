@@ -128,13 +128,18 @@ FieldActionChip.displayName = 'FieldActionChip'
  * 浅珊瑚底 + 珊瑚字；比 FieldActionChip 矮，不另设任意尺寸。
  */
 const amountMaxChip = tv({
+  extend: chipVariants,
   base: [
-    'inline-flex h-6.75 min-w-0 shrink-0 cursor-pointer items-center justify-center',
-    'rounded-chip bg-accent px-3 text-xs leading-3.75 font-semibold text-coral-emphasis',
-    'transition-[border-color,background-color,color,box-shadow,transform] duration-160 ease-out',
-    'origin-center hover:scale-[1.008] focus-visible:scale-[1.008] active:scale-[0.992] active:duration-75',
-    'disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+    'h-6.75 min-w-0 shrink-0 gap-0 rounded-chip px-3 text-xs leading-3.75 font-semibold',
+    'bg-accent text-coral-emphasis',
+    'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
   ],
+  defaultVariants: {
+    variant: 'soft',
+    size: 'md',
+    shape: 'rounded',
+    tone: 'coral',
+  },
 })
 
 export type AmountMaxChipProps = Omit<ChipProps, 'variant' | 'size' | 'shape' | 'tone'>

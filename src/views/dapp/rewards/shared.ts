@@ -117,10 +117,8 @@ export function formatDaoGrantStatus(
   }
 }
 
-/** StatusBadge 配色：待领 coral · 已领 muted · 处理中 coral · 失败 destructive */
-export function daoGrantStatusTone(
-  status: DaoGrantStatus,
-): 'pending' | 'muted' | 'processing' | 'failed' {
+/** StatusBadge 配色：待领 coral · 已领 muted · 处理中同 pending · 失败 destructive */
+export function daoGrantStatusTone(status: DaoGrantStatus): 'pending' | 'muted' | 'failed' {
   switch (status) {
     case 'READY':
       return 'pending'
@@ -129,7 +127,7 @@ export function daoGrantStatusTone(
     case 'CANCELLED':
       return 'failed'
     default:
-      return 'processing'
+      return 'pending'
   }
 }
 

@@ -459,11 +459,10 @@ export function presaleAirdropThresholdToUsd(thresholdWei: bigint): number {
 /**
  * 读取阶段的空投比例（airdropValueRatio，万分之一）。
  *
- * @param _phaseIndex 阶段索引（当前未使用，仅保留签名）
  * @param phase 链上阶段
  * @returns 空投 bps；未配置或为 0 返回 0
  */
-export function getAirdropBpsForPhase(_phaseIndex: number, phase?: PresalePhaseOnChain): number {
+export function getAirdropBpsForPhase(phase?: PresalePhaseOnChain): number {
   if (phase?.airdropValueRatio !== undefined && phase.airdropValueRatio > 0n) {
     return Number(phase.airdropValueRatio)
   }
@@ -473,7 +472,8 @@ export function getAirdropBpsForPhase(_phaseIndex: number, phase?: PresalePhaseO
 /**
  * 估算本次购买对贡献值的贡献（USD）。
  *
- * 按参考价而非折后价计算 AGX 价值。
+ * 公式等价于 `amountUsd1 / (1 - discount)`；仍要求 `agxPriceUsd > 0`
+ * 作为报价门闸（与 `estimateAgxFromUsd1` 同向 fail-closed）。
  *
  * @param amountUsd1 投入金额（USD1）
  * @param discountBps 折扣（万分之一）
@@ -485,26 +485,23 @@ export function estimateContributionValueUsd(
   discountBps: number,
   agxPriceUsd: number,
 ): number {
-  const agx = estimateAgxFromUsd1(amountUsd1, discountBps, agxPriceUsd)
-  return agx * agxPriceUsd
+  if (amountUsd1 <= 0 || agxPriceUsd <= 0) return 0
+  const keep = 1 - discountBps / 10_000
+  if (keep <= 0) return 0
+  return amountUsd1 / keep
 }
 
 /**
  * 估算 X token 空投的 USD 价值 = 购买额 × 空投比例。
  *
  * @param amountUsd1 投入金额（USD1）
- * @param phaseIndex 阶段索引
  * @param phase 链上阶段
  * @returns 空投价值（USD）；购买额非正返回 0
  * @see 手册 §6.3 展示字段
  */
-export function estimateXTokenAirdropUsd(
-  amountUsd1: number,
-  phaseIndex: number,
-  phase?: PresalePhaseOnChain,
-): number {
+export function estimateXTokenAirdropUsd(amountUsd1: number, phase?: PresalePhaseOnChain): number {
   if (amountUsd1 <= 0) return 0
-  return amountUsd1 * (getAirdropBpsForPhase(phaseIndex, phase) / 10_000)
+  return amountUsd1 * (getAirdropBpsForPhase(phase) / 10_000)
 }
 
 /**
@@ -514,7 +511,6 @@ export function estimateXTokenAirdropUsd(
  *
  * @param periodContributedUsd 当期已贡献金额
  * @param payUsd1 本次购买金额
- * @param phaseIndex 阶段索引
  * @param minPeriodUsd 最低周期额
  * @param phase 链上阶段
  * @returns 计入的空投价值（USD）
@@ -522,11 +518,10 @@ export function estimateXTokenAirdropUsd(
 export function xTokenAirdropUsdForPurchase(
   periodContributedUsd: number,
   payUsd1: number,
-  phaseIndex: number,
   minPeriodUsd: number,
   phase?: PresalePhaseOnChain,
 ): number {
   const periodTotalUsd = periodContributedUsd + payUsd1
   if (minPeriodUsd <= 0 || periodTotalUsd < minPeriodUsd || payUsd1 <= 0) return 0
-  return estimateXTokenAirdropUsd(payUsd1, phaseIndex, phase)
+  return estimateXTokenAirdropUsd(payUsd1, phase)
 }

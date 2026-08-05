@@ -12,13 +12,22 @@
 
 `src/shared/styles/tokens/tokens.json` 为唯一真源，CI 生成 `theme.css` 与 `tokens.ts`。
 
-| 维度   | 集合                                                                                                                                                                                                                                                                                                                                            | 键数                           |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| color  | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `faq` · `skeleton` · `modal-overlay` · `warning` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*` | 公开语义；工程色见 tokens.json |
-| type   | `caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`                                                                                                                                                                                                             | 12                             |
-| space  | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)`                                                                                                                                                                                                                                                            | 9                              |
-| radius | `tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`                                                                                                                                                                                                                                         | 9                              |
-| shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `elevated-strong(E4)` · `window(E5)` · `modal(E6)` · `modal-panel(E7)` · `tooltip(E8)` · `menu(E9)` · `dropdown(E10)`                                                                                                                                                                                   | 10                             |
+**消费原则**：浅洗底色 SSOT 为 shadcn 槽 **`accent`**（原 `primary-soft`，同 hex `#fceae2`，纯改名无视觉差）。灰底业务面写 **`muted`**；shadcn 槽 **`secondary`**（≡`muted`）保留勿删。间距用 Tailwind spacing（`p-*` / `gap-*`），**不**维护未接入 `@theme` 的 `--space-*` 轴。
+
+| 维度   | 集合                                                                                                                                                                                                                                                                                                                                           | 键数                           |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| color  | `background` · `foreground` · `card` · `secondary` · `muted` · `muted-foreground` · `primary` · `accent` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `skeleton` · `modal-overlay*` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*` | 公开语义；工程色见 tokens.json |
+| type   | `caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`                                                                                                                                                                                                            | 12                             |
+| radius | `tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`                                                                                                                                                                                                                                        | 9                              |
+| shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `window(E4)` · `modal-panel(E5)` · `tooltip(E6)` · `menu(E7)` · `dropdown(E8)`                                                                                                                                                                                                                         | 8                              |
+
+**Radius 名实（接受现状，勿整仓重命名 TW）**：
+
+- `--radius-md` = **16px** ≡ Tailwind `rounded-2xl`（本仓 `@theme` 把 `rounded-md` 也绑到 16）
+- `--radius-xl` = **28px**
+- 日常 UI：`rounded-md` / `rounded-2xl`（16）；**禁**误用 `rounded-xl` 当 16（xl=28）
+
+**已删除**：未消费的 `space` 轴；`primary-soft`（并入 `accent`）；shadcn 冗余键（`popover*`、`*-foreground` 等）；死阴影名（`elevated-strong` / bare `modal` / `outlined` / `card-strong`）；死色 `faq` / `warning` / `surface-wash-strong`。**保留** shadcn 槽 `secondary` / `accent`。
 
 **禁止**：新增 `--ink-strong`、`--faq-text`、`--on-dark`、`--coral-bright` 等代码臆造色（深底亮珊瑚用正式 token `primary-bright` ≡ Figma `accent/coral-bright`）。
 
@@ -151,10 +160,15 @@
 
 **用法**：同 chrome 入口卡 / hub tile 的 props 合同与「可点才 button」见 [`component-usage.md`](./component-usage.md)。
 
-**禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
-**Composite 豁免（须文档）**：`CommunityStatCard` / `ExchangePromoCard` 可用 className 抹平 radius/pad，**禁止**再叠 `shadow-*` 改 elevation。
+**禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` 改 elevation；**默认**禁叠 `rounded-*` / `p-*` 覆盖 surface（见下豁免）。
+**Composite 豁免（须文档）**：下列 **域 content panel**（非 elevated 指标瓦）可用 className 抹 `rounded-*` / `p-*` 贴稿，**仍禁止**叠 `shadow-*` 改 elevation：
+
+- `CommunityStatCard` / `ExchangePromoCard`（既有）
+- community / staking / rewards / release / turbine 等页袋 **content card**（FAQ 旁说明卡、机制说明壳等）
+
+不新增第 5 个 `surface="panel"`；豁免只放开 radius/pad，不放开 elevation 平行方案。
 **依赖**：Text（§2）
-**探针**：InteractiveCard hub · program-card · faq card layout · elevated 右栏瓦 · community-stat · swap-promo
+**探针**：InteractiveCard hub · program-card · faq card layout · elevated 右栏瓦 · community-stat · swap-promo · 域 content cards
 **Gate**：`surface` 键 = **4**
 
 ---
@@ -164,7 +178,6 @@
 | 公开轴    | 值                                          |
 | --------- | ------------------------------------------- |
 | `variant` | `default` · `numeric` · `amount`            |
-| `size`    | `sm` · `md` · `lg`                          |
 | 可选      | `startAdornment` · `endAdornment` · `error` |
 
 覆盖：普通表单输入、swap amount、genesis shares（numeric）、community referrer（default）。

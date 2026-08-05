@@ -34,12 +34,13 @@ export function formatBurnSplitPercent(splitBps: bigint): string {
   return `${whole.toString()}.${frac}`
 }
 
-export type BurnContributionSwapBlockReason = 'paused' | 'belowMin' | 'aboveMax' | 'zeroRate'
+export type BurnContributionSwapBlockReason =
+  'paused' | 'belowMin' | 'aboveMax' | 'zeroRate' | 'zeroAmount'
 
 /**
  * 销毁贡献兑换提交前检查。
  *
- * 池暂停、费率为 0 或输入越出上下限时阻断，避免链上销毁必然失败；
+ * 池暂停、费率为 0、零额或输入越出上下限时阻断，避免链上销毁必然失败；
  * 配置未加载时不做判断。
  *
  * @param args.amountIn 拟兑换的 AGX 数量
@@ -55,7 +56,7 @@ export function evaluateBurnContributionSwap(args: {
   if (!config) return null
   if (config.isPaused) return 'paused'
   if (config.rateBps === 0n) return 'zeroRate'
-  if (amountIn === 0n) return null
+  if (amountIn <= 0n) return 'zeroAmount'
   if (config.minIn > 0n && amountIn < config.minIn) return 'belowMin'
   if (config.maxIn > 0n && amountIn > config.maxIn) return 'aboveMax'
   return null

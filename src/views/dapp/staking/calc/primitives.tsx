@@ -233,7 +233,7 @@ export function CalcResultCard({
           </Text>
         </div>
         <div className="flex overflow-hidden rounded-full">
-          <span className="bg-primary-soft" style={{ flex: `${100 - sellShare} 0 0` }} />
+          <span className="bg-accent" style={{ flex: `${100 - sellShare} 0 0` }} />
           <span className="bg-coral-emphasis" style={{ flex: `${sellShare} 0 0` }} />
         </div>
       </div>
@@ -263,7 +263,7 @@ export function CalcResultCard({
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {(
           [
-            ['released', investedUsd, 'bg-primary-soft'],
+            ['released', investedUsd, 'bg-accent'],
             ['netYield', interestUsd, 'bg-coral-emphasis'],
             ['cost', investedUsd, 'bg-border'],
             ['grossYield', interestUsd, 'bg-success'],

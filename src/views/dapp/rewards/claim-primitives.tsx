@@ -84,7 +84,7 @@ export function RewardsClaimTokenRow({
 type DestinationTone = 'release' | 'restake'
 
 const toneClass: Record<DestinationTone, string> = {
-  release: 'border-primary/35 bg-primary-soft',
+  release: 'border-primary/35 bg-accent',
   restake: 'border-success/35 bg-success-soft',
 }
 
@@ -221,7 +221,7 @@ export function SimpleClaimableCard({
   usdLabel: string
 }) {
   return (
-    <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
+    <div className="grid gap-2 rounded-2xl border border-primary/35 bg-accent p-4">
       <div className="flex items-center justify-between gap-2">
         <Text as="span" className="leading-5 text-foreground" variant="copy">
           {claimableLabel}
@@ -289,5 +289,5 @@ export function MixedClaimSummaryCard({
 
 /** 贡献不足提醒条 */
 export function ContributionShortBanner({ children }: { children: ReactNode }) {
-  return <div className="rounded-2xl bg-primary-soft px-4 py-3">{children}</div>
+  return <div className="rounded-2xl bg-accent px-4 py-3">{children}</div>
 }

@@ -241,9 +241,9 @@ export function DropdownMenuItem({
         props.disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
         !props.disabled &&
           (selected
-            ? cn('bg-primary-soft text-foreground', weightClass)
+            ? cn('bg-accent text-foreground', weightClass)
             : 'bg-transparent font-normal text-foreground hover:bg-background focus-visible:bg-background'),
-        props.disabled && selected && cn('bg-primary-soft', weightClass),
+        props.disabled && selected && cn('bg-accent', weightClass),
         className,
       )}
       onClick={(event) => {

@@ -53,10 +53,10 @@ const topbar = tv({
 
 const networkPill = tv({
   base: [
-    // 网络胶囊：PC 与 H5 通用，白色底圆角，高度 36
+    // 网络胶囊：PC 与 H5 通用，白色底圆角，高度 36；字号走 Text / 本处 text-xs，禁 max-dapp:text-*
     'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-card px-3.5',
     'text-xs leading-[1.2] font-semibold shadow-none',
-    'max-dapp:px-3 max-dapp:text-xs',
+    'max-dapp:px-3',
   ],
 })
 

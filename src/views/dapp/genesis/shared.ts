@@ -193,7 +193,7 @@ export function genesisPurchaseSummary(args: {
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,
       referencePriceLabel: formatGroupedNumber(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
-      airdropLabel: `+${(getAirdropBpsForPhase(reads.phaseIndex, reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
+      airdropLabel: `+${(getAirdropBpsForPhase(reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
       agxPriceUsd: reads.agxPriceUsd,
       activeSeasonNumber: reads.activeSeasonNumber,
       seasonOptions: reads.seasonOptions,

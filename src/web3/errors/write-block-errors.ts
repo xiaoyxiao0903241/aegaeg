@@ -49,6 +49,7 @@ export const BURN_BLOCKED = {
   belowMin: 'BURN_CONTRIBUTION_BELOW_MIN',
   aboveMax: 'BURN_CONTRIBUTION_ABOVE_MAX',
   zeroRate: 'BURN_CONTRIBUTION_ZERO_RATE',
+  zeroAmount: 'BURN_CONTRIBUTION_ZERO_AMOUNT',
 } as const
 
 export const REWARDS_BLOCKED = {

@@ -105,7 +105,7 @@ export function AssetsPositionPrincipalColumn({
       <span
         aria-hidden={!badgeVisible}
         className={cn(
-          'inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2',
+          'inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-accent px-2',
           !badgeVisible && 'pointer-events-none opacity-0',
         )}
       >
@@ -129,7 +129,7 @@ export function AssetsPositionBoostBadge({
   return (
     <span
       className={cn(
-        'inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2',
+        'inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-accent px-2',
         className,
       )}
     >

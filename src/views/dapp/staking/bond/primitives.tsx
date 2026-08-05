@@ -28,7 +28,7 @@ function Root({
       as="button"
       className={cn(
         'flex w-full items-start justify-between gap-3 text-left transition-colors',
-        selected && 'border-coral-emphasis bg-primary-soft',
+        selected && 'border-coral-emphasis bg-accent',
       )}
       onClick={onSelect}
       role="radio"

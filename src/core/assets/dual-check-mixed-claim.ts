@@ -60,16 +60,9 @@ export function dualCheckMixedClaim(args: {
     return { ok: false, fail: { phase: 'live', reason: liveReason } }
   }
 
-  const { releasePlanIndex, restakePlanIndex } = args.live
-  if (releasePlanIndex == null || restakePlanIndex == null) {
-    return {
-      ok: false,
-      fail: {
-        phase: 'live',
-        reason: releasePlanIndex == null ? 'releasePlanUnresolved' : 'restakePlanUnresolved',
-      },
-    }
-  }
+  // evaluateMixedClaim 已拒绝 null 计划索引；此处仅收窄到 MixedClaimReady。
+  const releasePlanIndex = args.live.releasePlanIndex!
+  const restakePlanIndex = args.live.restakePlanIndex!
 
   return {
     ok: true,

@@ -352,6 +352,7 @@ const app = defineMessages({
         belowMin: 'Amount is below the minimum burn limit.',
         aboveMax: 'Amount exceeds the maximum burn limit.',
         zeroRate: 'Burn rate is unavailable. Please try again later.',
+        zeroAmount: 'Enter an amount greater than zero.',
       },
       metrics: {
         totalBurnedAgx: 'Total AGX burned',

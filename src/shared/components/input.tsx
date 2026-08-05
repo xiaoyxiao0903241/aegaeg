@@ -4,7 +4,7 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 输入框 — 变体 × 尺寸
+ * 输入框 — 变体
  * default：表单；numeric：份额；amount：兑换 / 代币，大号右对齐。
  */
 export const inputVariants = tv({
@@ -23,27 +23,9 @@ export const inputVariants = tv({
       amount:
         'border-0 bg-transparent p-0 text-right text-(length:--type-figure-size) leading-(--type-figure-leading) font-semibold tracking-(--type-figure-tracking) caret-coral outline-0 focus:border-0',
     },
-    size: {
-      sm: '',
-      md: '',
-      lg: '',
-    },
   },
-  compoundVariants: [
-    {
-      variant: ['default', 'numeric'],
-      size: 'sm',
-      class: 'px-3 py-2',
-    },
-    {
-      variant: ['default', 'numeric'],
-      size: 'lg',
-      class: 'px-4 py-3 text-(length:--type-detail-size)',
-    },
-  ],
   defaultVariants: {
     variant: 'default',
-    size: 'md',
   },
 })
 
@@ -55,11 +37,10 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & VariantProps<ty
  * 样式由 `inputVariants` 定义；变体见上方说明。
  *
  * @param variant default / numeric / amount
- * @param size sm / md / lg
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, size, ...props }, ref) => (
-    <input className={cn(inputVariants({ variant, size }), className)} ref={ref} {...props} />
+  ({ className, variant, ...props }, ref) => (
+    <input className={cn(inputVariants({ variant }), className)} ref={ref} {...props} />
   ),
 )
 Input.displayName = 'Input'

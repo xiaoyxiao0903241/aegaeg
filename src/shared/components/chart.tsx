@@ -32,9 +32,26 @@ export type ChartPoint = {
   value: number
 }
 
+/** `#rrggbb` → `rgba(r,g,b,a)`；非法 hex 回退 primary 不透明。 */
+function withAlpha(hex: string, alpha: number): string {
+  const raw = hex.replace('#', '')
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw
+  if (!/^[0-9a-fA-F]{6}$/.test(full)) return hex
+  const r = Number.parseInt(full.slice(0, 2), 16)
+  const g = Number.parseInt(full.slice(2, 4), 16)
+  const b = Number.parseInt(full.slice(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
 const LINE = colorHex.primary
-const AREA_TOP = 'rgba(232, 106, 67, 0.38)'
-const AREA_BOTTOM = 'rgba(232, 106, 67, 0.02)'
+const AREA_TOP = withAlpha(colorHex.primary, 0.38)
+const AREA_BOTTOM = withAlpha(colorHex.primary, 0.02)
 
 /** 浅灰点阵底纹（不是实线网格） */
 const DOT_BG = 'radial-gradient(circle, rgba(0, 0, 0, 0.14) 0.9px, transparent 1px)'
@@ -175,13 +192,13 @@ function Plot({
         horzLine: {
           visible: true,
           labelVisible: false,
-          color: 'rgba(232, 106, 67, 0.25)',
+          color: withAlpha(colorHex.primary, 0.25),
           style: 3,
         },
         vertLine: {
           visible: true,
           labelVisible: false,
-          color: 'rgba(232, 106, 67, 0.45)',
+          color: withAlpha(colorHex.primary, 0.45),
           style: 0,
         },
       },

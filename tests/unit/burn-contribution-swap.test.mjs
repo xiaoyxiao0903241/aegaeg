@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('burn contribution swap gates: paused / min / max / zero rate', async () => {
@@ -46,6 +47,7 @@ test('burn contribution swap gates: paused / min / max / zero rate', async () =>
     }),
     'zeroRate',
   )
+  assert.equal(evaluateBurnContributionSwap({ amountIn: 0n, config: base }), 'zeroAmount')
   assert.equal(evaluateBurnContributionSwap({ amountIn: 1n, config: base }), null)
 })
 

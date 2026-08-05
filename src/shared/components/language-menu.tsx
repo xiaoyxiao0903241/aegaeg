@@ -16,7 +16,7 @@ const languageMenu = tv({
       'in-[[open]]:border-coral-hover-border in-[[open]]:bg-coral-wash in-[[open]]:shadow-card',
       'in-data-open:border-coral-hover-border in-data-open:bg-coral-wash in-data-open:shadow-card',
       '[&_img]:size-4 [&::-webkit-details-marker]:hidden',
-      'max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-3 max-dapp:text-xs',
+      'max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-3',
     ],
     /** 语言面板样式槽位 */
     panel: [
@@ -38,7 +38,7 @@ const languageMenuItem = tv({
   ],
   variants: {
     active: {
-      true: 'bg-primary-soft',
+      true: 'bg-accent',
       false: 'hover:bg-background focus-visible:bg-background',
     },
     disabled: {

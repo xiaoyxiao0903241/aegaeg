@@ -6,6 +6,7 @@
  * 未登录时摘要卡显示空态占位。
  */
 import { useI18n } from '~/i18n/use-i18n'
+import { StatusBadge } from '~/shared/components/badge'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -156,11 +157,9 @@ export function HubDetail() {
                   <Text as="span" className="font-semibold" variant="copy">
                     {row.level}
                   </Text>
-                  <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5">
-                    <Text as="span" className="leading-none text-coral" variant="caption">
-                      {t.rewards.currentTierSuffix}
-                    </Text>
-                  </span>
+                  <StatusBadge className="font-normal text-coral" size="compact" tone="pending">
+                    {t.rewards.currentTierSuffix}
+                  </StatusBadge>
                 </span>
               ) : (
                 row.level

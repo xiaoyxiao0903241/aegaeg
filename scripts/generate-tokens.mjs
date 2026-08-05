@@ -47,7 +47,7 @@ const tsOutPath = resolve(root, 'src/shared/styles/tokens/tokens.ts')
  * @typedef {object} TokenSet
  * @property {Record<string, ColorToken>} colors
  * @property {Record<string, TypeToken>} type
- * @property {Record<string, string>} space
+ * @property {Record<string, string>} [space]
  * @property {Record<string, string>} radius
  * @property {Record<string, ShadowToken>} shadows
  */
@@ -122,11 +122,12 @@ function buildH5TypeMedia(type) {
 }
 
 /**
- * Build space variables.
- * @param {Record<string, string>} space
+ * Build space variables (optional — tokens.json 已删除未消费的 space 轴)。
+ * @param {Record<string, string> | undefined} space
  * @returns {string}
  */
 function buildSpaceVars(space) {
+  if (!space || Object.keys(space).length === 0) return ''
   const lines = Object.entries(space).map(([key, value]) => `  --space-${key}: ${value};`)
   return ['  /* ---- spacing scale ---- */', ...lines].join('\n')
 }
@@ -218,7 +219,6 @@ function buildColorHexMap(colors) {
 function buildTokensTs(tokens) {
   const colorKeys = Object.keys(tokens.colors)
   const typeKeys = Object.keys(tokens.type)
-  const spaceKeys = Object.keys(tokens.space)
   const radiusKeys = Object.keys(tokens.radius)
   const shadowKeys = Object.keys(tokens.shadows)
   const colorHex = buildColorHexMap(tokens.colors)
@@ -238,10 +238,6 @@ export type ColorHexToken = keyof typeof colorHex
 export const typeVariants = ${JSON.stringify(typeKeys, null, 2)} as const
 
 export type TypeVariant = (typeof typeVariants)[number]
-
-export const space = ${JSON.stringify(spaceKeys, null, 2)} as const
-
-export type SpaceToken = (typeof space)[number]
 
 export const radii = ${JSON.stringify(radiusKeys, null, 2)} as const
 
@@ -502,7 +498,6 @@ function staticExtraTheme() {
 /* ---- extra theme entries (component-specific shadows / layout) ---- */
 
 @theme {
-  --shadow-card-strong: var(--elevation-e4);
   --shadow-window-compact: 0 1rem 2.5rem rgba(18, 26, 51, 0.1);
   --shadow-primary-hover: 0 0.625rem 1.5rem rgba(232, 106, 67, 0.24);
   --shadow-token: 0 1rem 3.125rem rgba(18, 26, 51, 0.12);
@@ -540,6 +535,10 @@ function buildThemeCss(tokens) {
   const themeBlock = buildThemeBlock(tokens.shadows, tokens.radius)
   const themeInline = buildThemeInline(tokens.colors)
 
+  const rootMiddle = [typeBlock, spaceBlock, radiusBlock, elevationBlock]
+    .filter(Boolean)
+    .join('\n\n')
+
   return `/**
  * Design system tokens — single source of truth
  *
@@ -547,7 +546,7 @@ function buildThemeCss(tokens) {
  * Source: src/shared/styles/tokens/tokens.json
  * Do not edit manually; run: pnpm build:tokens
  *
- * - :root — semantic colors, typography (rem @16px), space, radius, elevation
+ * - :root — semantic colors, typography (rem @16px), radius, elevation
  * - @theme — radius, elevation shadows, Tailwind utilities
  * - @theme inline — color utility mappings
  * - @layer base — global reset
@@ -558,13 +557,7 @@ function buildThemeCss(tokens) {
 :root {
 ${colorBlock}
 
-${typeBlock}
-
-${spaceBlock}
-
-${radiusBlock}
-
-${elevationBlock}
+${rootMiddle}
 }
 
 ${h5Media}/* H5 Tailwind text scale bump (+1px) — ≡ 4175 mobile-type-scale.css (:root, Home+DApp) */

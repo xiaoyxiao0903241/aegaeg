@@ -11,6 +11,15 @@ import type {
   X0MiningLogsParams,
 } from '~/shared/api/types'
 
+/** 分页查询键尾段：page / page_size 默认 1 / 20。 */
+function paginated<const P extends readonly unknown[]>(
+  prefix: P,
+  params: PaginationParams = {},
+  ...extra: unknown[]
+) {
+  return [...prefix, params.page ?? 1, params.page_size ?? 20, ...extra] as const
+}
+
 const erc20BalancePrefix = (token: string) =>
   ['chain', 'erc20', 'balance', token.toLowerCase()] as const
 const flashSwapBalancesPrefix = (pairId: string, direction: string) =>
@@ -29,171 +38,115 @@ export const queryKeys = {
     makingOverview: ['api', 'performance', 'makingOverview'] as const,
     stakeAddressCount: ['api', 'performance', 'stakeAddressCount'] as const,
     salesLogsRoot: ['api', 'salesLogs'] as const,
-    salesLogs: (params: PaginationParams = {}) =>
-      ['api', 'salesLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    salesLogs: (params: PaginationParams = {}) => paginated(['api', 'salesLogs'] as const, params),
     rewardLogsRoot: ['api', 'rewardLogs'] as const,
     rewardLogs: (params: PaginationParams = {}) =>
-      ['api', 'rewardLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'rewardLogs'] as const, params),
     referralTotal: ['api', 'referralTotal'] as const,
     teamRewardTotal: ['api', 'teamRewardTotal'] as const,
     communityFundTotal: ['api', 'communityFundTotal'] as const,
     communityFundLogsRoot: ['api', 'communityFundLogs'] as const,
     communityFundLogs: (params: PaginationParams = {}) =>
-      ['api', 'communityFundLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'communityFundLogs'] as const, params),
     teamRewardClaimLogsRoot: ['api', 'teamRewardClaimLogs'] as const,
     teamRewardClaimLogs: (params: PaginationParams = {}) =>
-      ['api', 'teamRewardClaimLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'teamRewardClaimLogs'] as const, params),
     teamReferralsRoot: ['api', 'teamReferrals'] as const,
     teamReferrals: (params: PaginationParams = {}) =>
-      ['api', 'teamReferrals', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'teamReferrals'] as const, params),
     teamOverview: ['api', 'teamOverview'] as const,
     qualifiedPartitions: ['api', 'performance', 'qualified-partitions'] as const,
     homePopupNotices: (locale: string) => ['api', 'home', 'popupNotices', locale] as const,
     agxContributionSummary: ['api', 'agxContribution', 'summary'] as const,
     agxContributionBurnLogsRoot: ['api', 'agxContribution', 'burnLogs'] as const,
     agxContributionBurnLogs: (params: PaginationParams = {}) =>
-      ['api', 'agxContribution', 'burnLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'agxContribution', 'burnLogs'] as const, params),
     agxContributionConsumeLogsRoot: ['api', 'agxContribution', 'consumeLogs'] as const,
     agxContributionConsumeLogs: (params: PaginationParams = {}) =>
-      ['api', 'agxContribution', 'consumeLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'agxContribution', 'consumeLogs'] as const, params),
     assetsHoldingsDistribution: ['api', 'assets', 'holdingsDistribution'] as const,
     assetsHoldingsSummary: ['api', 'assets', 'holdingsSummary'] as const,
     assetsRewardSummary: ['api', 'assets', 'rewardSummary'] as const,
     bondFlowLpLogsRoot: ['api', 'bondFlow', 'lpLogs'] as const,
     bondFlowLpLogs: (params: BondFlowLogsParams = {}) =>
-      [
-        'api',
-        'bondFlow',
-        'lpLogs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.operation ?? null,
-      ] as const,
+      paginated(['api', 'bondFlow', 'lpLogs'] as const, params, params.operation ?? null),
     bondFlowBurnLogsRoot: ['api', 'bondFlow', 'burnLogs'] as const,
     bondFlowBurnLogs: (params: BondFlowLogsParams = {}) =>
-      [
-        'api',
-        'bondFlow',
-        'burnLogs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.operation ?? null,
-      ] as const,
+      paginated(['api', 'bondFlow', 'burnLogs'] as const, params, params.operation ?? null),
     bondFlowLpPurchasesRoot: ['api', 'bondFlow', 'lpPurchases'] as const,
     bondFlowLpPurchases: (params: PaginationParams = {}) =>
-      ['api', 'bondFlow', 'lpPurchases', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'bondFlow', 'lpPurchases'] as const, params),
     bondFlowBurnPurchasesRoot: ['api', 'bondFlow', 'burnPurchases'] as const,
     bondFlowBurnPurchases: (params: PaginationParams = {}) =>
-      ['api', 'bondFlow', 'burnPurchases', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'bondFlow', 'burnPurchases'] as const, params),
     bufferPoolSummary: ['api', 'bufferPool', 'summary'] as const,
     bufferPoolLogsRoot: ['api', 'bufferPool', 'logs'] as const,
     bufferPoolLogs: (params: BufferPoolLogsParams = {}) =>
-      [
-        'api',
-        'bufferPool',
-        'logs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.event_type ?? null,
-      ] as const,
+      paginated(['api', 'bufferPool', 'logs'] as const, params, params.event_type ?? null),
     luckyRewardSummary: ['api', 'luckyReward', 'summary'] as const,
     luckyRewardMyRoundsRoot: ['api', 'luckyReward', 'myRounds'] as const,
     luckyRewardMyRounds: (params: PaginationParams = {}) =>
-      ['api', 'luckyReward', 'myRounds', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'luckyReward', 'myRounds'] as const, params),
     luckyRewardWinnersRoot: ['api', 'luckyReward', 'winners'] as const,
     luckyRewardWinners: (date: string) => ['api', 'luckyReward', 'winners', date] as const,
     marketAllowanceSummary: ['api', 'marketAllowance', 'summary'] as const,
     marketAllowanceClaimLogsRoot: ['api', 'marketAllowance', 'claimLogs'] as const,
     marketAllowanceClaimLogs: (params: PaginationParams = {}) =>
-      ['api', 'marketAllowance', 'claimLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'marketAllowance', 'claimLogs'] as const, params),
     marketAllowancePaidLogsRoot: ['api', 'marketAllowance', 'paidLogs'] as const,
     marketAllowancePaidLogs: (params: PaginationParams = {}) =>
-      ['api', 'marketAllowance', 'paidLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'marketAllowance', 'paidLogs'] as const, params),
     participationAwardSummary: ['api', 'participationAward', 'summary'] as const,
     participationAwardLogsRoot: ['api', 'participationAward', 'logs'] as const,
     participationAwardLogs: (params: PaginationParams = {}) =>
-      ['api', 'participationAward', 'logs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'participationAward', 'logs'] as const, params),
     participationAwardInviter: ['api', 'participationAward', 'inviter'] as const,
     rankRewardSummary: ['api', 'rankReward', 'summary'] as const,
     rankRewardLogsRoot: ['api', 'rankReward', 'logs'] as const,
     rankRewardLogs: (params: PaginationParams = {}) =>
-      ['api', 'rankReward', 'logs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'rankReward', 'logs'] as const, params),
     rankRewardPeerSurpassLogsRoot: ['api', 'rankReward', 'peerSurpassLogs'] as const,
     rankRewardPeerSurpassLogs: (params: PaginationParams = {}) =>
-      ['api', 'rankReward', 'peerSurpassLogs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'rankReward', 'peerSurpassLogs'] as const, params),
     rankRewardTeamMembersRoot: ['api', 'rankReward', 'teamMembers'] as const,
     rankRewardTeamMembers: (params: RankRewardTeamMembersParams = {}) =>
-      [
-        'api',
-        'rankReward',
-        'teamMembers',
-        params.page ?? 1,
-        params.page_size ?? 20,
+      paginated(
+        ['api', 'rankReward', 'teamMembers'] as const,
+        params,
         params.sort_time ?? null,
         params.hide_zero_market ?? null,
-      ] as const,
+      ),
     referralAwardSummary: ['api', 'referralAward', 'summary'] as const,
     referralAwardLogsRoot: ['api', 'referralAward', 'logs'] as const,
     referralAwardLogs: (params: PaginationParams = {}) =>
-      ['api', 'referralAward', 'logs', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'referralAward', 'logs'] as const, params),
     referralAwardDirectReferralsRoot: ['api', 'referralAward', 'directReferrals'] as const,
     referralAwardDirectReferrals: (params: ReferralAwardDirectReferralsParams = {}) =>
-      [
-        'api',
-        'referralAward',
-        'directReferrals',
-        params.page ?? 1,
-        params.page_size ?? 20,
+      paginated(
+        ['api', 'referralAward', 'directReferrals'] as const,
+        params,
         params.hide_zero_position ?? null,
-      ] as const,
+      ),
     releasePoolSummary: ['api', 'releasePool', 'summary'] as const,
     releasePoolLogsRoot: ['api', 'releasePool', 'logs'] as const,
     releasePoolLogs: (params: ReleasePoolLogsParams = {}) =>
-      [
-        'api',
-        'releasePool',
-        'logs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.event_type ?? null,
-      ] as const,
+      paginated(['api', 'releasePool', 'logs'] as const, params, params.event_type ?? null),
     stakeFlowLogsRoot: ['api', 'stakeFlow', 'logs'] as const,
     stakeFlowLogs: (params: StakeFlowLogsParams = {}) =>
-      [
-        'api',
-        'stakeFlow',
-        'logs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.operation ?? null,
-      ] as const,
+      paginated(['api', 'stakeFlow', 'logs'] as const, params, params.operation ?? null),
     stakeFlowPositionsRoot: ['api', 'stakeFlow', 'positions'] as const,
     stakeFlowPositions: (params: PaginationParams = {}) =>
-      ['api', 'stakeFlow', 'positions', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'stakeFlow', 'positions'] as const, params),
     turbineSummary: ['api', 'turbine', 'summary'] as const,
     turbineLogsRoot: ['api', 'turbine', 'logs'] as const,
     turbineLogs: (params: TurbineLogsParams = {}) =>
-      [
-        'api',
-        'turbine',
-        'logs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.turbine_type ?? null,
-      ] as const,
+      paginated(['api', 'turbine', 'logs'] as const, params, params.turbine_type ?? null),
     x0MiningLogsRoot: ['api', 'x0Mining', 'logs'] as const,
     x0MiningLogs: (params: X0MiningLogsParams = {}) =>
-      [
-        'api',
-        'x0Mining',
-        'logs',
-        params.page ?? 1,
-        params.page_size ?? 20,
-        params.operation ?? null,
-      ] as const,
+      paginated(['api', 'x0Mining', 'logs'] as const, params, params.operation ?? null),
     x0MiningPositionsRoot: ['api', 'x0Mining', 'positions'] as const,
     x0MiningPositions: (params: PaginationParams = {}) =>
-      ['api', 'x0Mining', 'positions', params.page ?? 1, params.page_size ?? 20] as const,
+      paginated(['api', 'x0Mining', 'positions'] as const, params),
   },
   chain: {
     erc20Root: ['chain', 'erc20'] as const,
