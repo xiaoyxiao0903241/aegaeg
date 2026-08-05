@@ -7,3 +7,8 @@ import { queryClient } from '~/shared/api/query/query-client'
 export function QueryProvider({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
+
+/** 首页专用 Provider 栈——不包含 thirdweb / 登录 / 钱包自动连接。 */
+export function HomeProviders({ children }: { children: ReactNode }) {
+  return <QueryProvider>{children}</QueryProvider>
+}

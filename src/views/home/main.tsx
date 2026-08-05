@@ -4,7 +4,7 @@
  * 模块加载时先执行应用引导与旧浏览器垫片（bootHomeApp），
  * 随后挂载 React 根组件；挂载后恢复滚动位置并启动首页动效。
  */
-import { bootHomeApp, restoreHomeScroll } from '~/bootstrap/startup/home-boot'
+import { bootHomeApp, restoreHomeScroll } from '~/boot/startup/boot'
 
 bootHomeApp()
 
@@ -13,7 +13,7 @@ import '~/shared/styles/home.css'
 import { useLayoutEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { HomeProviders } from '~/bootstrap/startup/home-providers'
+import { HomeProviders } from '~/boot/startup/query-providers'
 import { I18nProvider } from '~/i18n/i18n-provider'
 import { LocalizedErrorBoundary } from '~/shared/components/error-boundary'
 import { HomePage } from '~/views/home/home-page'

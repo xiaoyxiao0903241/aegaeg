@@ -138,12 +138,12 @@
 | `surface` | `outlined` · `elevated` · `soft` · `inverse`                  |
 | `as`      | `article` · `button` · `div` · `section` · `details` · `span` |
 
-| surface  | Elevation            | radius               | padding                       | 用途                                                                                                         |
-| -------- | -------------------- | -------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta / `SideCard`；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`） |
-| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）            |
-| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）                |
-| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                             |
+| surface  | Elevation            | radius               | padding                       | 用途                                                                                              |
+| -------- | -------------------- | -------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`）   |
+| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
+| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）     |
+| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                  |
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`（**通用内容卡**字阶合同；≠ Hub 入口）
 

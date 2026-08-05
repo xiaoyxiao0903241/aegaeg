@@ -11,7 +11,7 @@ import { MainButton } from '~/shared/components/main-button'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { useAssetsClaimModalView } from '~/views/dapp/assets/claim-modal/use-assets-claim-modal-view'
+import { useAssetsClaimModal } from '~/views/dapp/assets/claim-modal/use-assets-claim-modal'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 
 /**
@@ -79,7 +79,7 @@ function AssetsClaimModalOpen({
   positionLabel: string
   amountLabel: string
 }) {
-  const vm = useAssetsClaimModalView({ open, onOpenChange, owner, target })
+  const vm = useAssetsClaimModal({ open, onOpenChange, owner, target })
   const { t } = vm
   // 始终 backgroundImage：两端同色渐变≈纯色，避免 Image↔Color 切换闪烁
   const ctaBackgroundImage =

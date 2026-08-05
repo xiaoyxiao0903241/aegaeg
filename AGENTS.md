@@ -96,7 +96,7 @@
 | 词表 / 命令     | [`docs/ubiquitous-language.md`](docs/ubiquitous-language.md) · [`docs/commands.md`](docs/commands.md) |
 
 - **手册入仓只读：** `onchain-manual/` 与 legacy 正文来自外部手册拷贝；**禁止**为贴本仓路径 / 去考古句 / 审文档而改写。正文若写合约仓 `abi/`、`src/*.sol`、`deployments/` 等，以方法表语义为准；本仓运行时仍走 `abis.ts` + `VITE_BSC_*` / `contracts.ts`。换手册 → 从源重新拷贝，勿手改。
-- **`shared/components`**：只扩**无业务数据**的布局/控件 primitive（`Tile`/`Grid`/`MainButton`…）；业务档位 / locale / 地址不进。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认，如 `DockFrame`）进 `views/dapp/shared/`（非 tab）；**窗口级宿主**（rail / topbar / onboarding / wallet UI）进 `views/dapp/host/`；**组合根**（`main` + startup providers）进 `src/bootstrap/`。不确定宁放页袋。详见 [`docs/decisions/dapp-page-bag-dock-detail.md`](docs/decisions/dapp-page-bag-dock-detail.md)。
+- **`shared/components`**：只扩**无业务数据**的布局/控件 primitive（`Tile`/`Grid`/`MainButton`…）；业务档位 / locale / 地址不进。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认，如 `DockFrame`）进 `views/dapp/shared/`（非 tab）；**窗口级宿主**（`primitives` + `use-*` + rail/topbar/…；onboarding/wallet 子袋）进 `views/dapp/host/`；**组合根**（`main` + startup）进 `src/boot/`。不确定宁放页袋。详见 [`docs/decisions/dapp-page-bag-dock-detail.md`](docs/decisions/dapp-page-bag-dock-detail.md)。
 - **组合式优先**：壳 + 具名子件表达槽位（`Tile.Label` / `Table.Header`）；禁袋装 `header=`/`tooltip=` 冒充结构。无第二 call site 不硬抽子件。见 [`docs/foundation/component-usage.md`](docs/foundation/component-usage.md) MUST §7。
 - **钱路**：新手册有 → 按新；新沉默且旧手册/可证旧码有 → 按旧；皆无 → 停手、写链 fail-closed。旧码须 `git`/commit+符号可证。钱路专文暂缺。
 - **稿 ∩ 手册**：稿有控件 → UI MUST；缺数诚实空；禁因手册缺数砍控件；数/写跟手册。

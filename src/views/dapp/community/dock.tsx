@@ -11,8 +11,8 @@ import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,
   CommunityReferrerBoundPanel,
+  QuickLink,
 } from '~/views/dapp/community/primitives'
-import { QuickLinks } from '~/views/dapp/community/quick-links'
 import { useCommunityDock } from '~/views/dapp/community/use-community'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
@@ -70,7 +70,11 @@ function CommunityConnectedDock() {
         />
       )}
 
-      <QuickLinks items={quickLinkItems} />
+      <div className="flex flex-col gap-2">
+        {quickLinkItems.map((item) => (
+          <QuickLink key={item.href} {...item} />
+        ))}
+      </div>
     </DockFrame>
   )
 }
@@ -90,7 +94,11 @@ function CommunityDisconnectedDock() {
 
   return (
     <DockFrame subtitle={t.community.disconnectedIntro} title={t.community.title}>
-      <QuickLinks items={quickLinkItems} />
+      <div className="flex flex-col gap-2">
+        {quickLinkItems.map((item) => (
+          <QuickLink key={item.href} {...item} />
+        ))}
+      </div>
       <DockConnectPromo />
     </DockFrame>
   )

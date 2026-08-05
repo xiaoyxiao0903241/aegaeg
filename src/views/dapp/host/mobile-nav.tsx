@@ -13,7 +13,7 @@ import { Text } from '~/shared/components/text'
 import { railItems } from '~/shared/config/assets'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
-import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/rail-shared'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
 
 const drawerItem = tv({
   base: cn(

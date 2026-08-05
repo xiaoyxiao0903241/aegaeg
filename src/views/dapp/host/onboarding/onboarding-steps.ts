@@ -10,15 +10,7 @@ import {
   ONBOARDING_STEP_IDS,
   type OnboardingStepId,
   tourSelector,
-} from '~/views/dapp/host/onboarding/onboarding-step-ids'
-
-export {
-  isOnboardingNavStep,
-  ONBOARDING_STEP_COUNT,
-  ONBOARDING_STEP_IDS,
-  type OnboardingStepId,
-  tourSelector,
-} from '~/views/dapp/host/onboarding/onboarding-step-ids'
+} from '~/views/dapp/host/onboarding/shared'
 
 type StepGo = {
   tab: DappTab

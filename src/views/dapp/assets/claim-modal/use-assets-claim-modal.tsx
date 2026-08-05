@@ -31,7 +31,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  * 领奖弹窗的状态编排：释放比例、释放 / 复投周期选择、
  * 贡献值与计划可用性校验，以及提交成功后的关闭处理。
  */
-export function useAssetsClaimModalView(args: {
+export function useAssetsClaimModal(args: {
   open: boolean
   onOpenChange: (open: boolean) => void
   owner: string

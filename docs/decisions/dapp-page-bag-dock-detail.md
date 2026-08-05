@@ -1,6 +1,6 @@
 # DApp 页袋：Dock + Detail（域 Facade + 按需 mode 袋）
 
-> **状态：合同已修订** — 2026-08-06；Dock/Detail + `views/dapp/shared` 已落地；`src/app` 已拆为 `bootstrap` + `views/dapp/host`（shell→host）。  
+> **状态：合同已修订** — 2026-08-06；Dock/Detail + `views/dapp/shared` 已落地；组合根 `src/boot/`；窗口宿主 `views/dapp/host/`（页袋同构：primitives + use-* + 具名大件；shell→host）。  
 > 取代原稿「每域固定四文件」表述。
 
 ## 不变量（硬）
@@ -9,9 +9,9 @@
 2. **禁止** registry（或等价入口）import 任意 mode 目录下的 `dock` / `detail`。
 3. 左栏组装一律叫 **`*Dock`**，右栏一律叫 **`*Detail`**（域与 mode 同词表）。
 4. **首页营销页**不在本合同内。
-5. 壳层名（如 `DockFrame`）**不**与页袋 `*Dock` 绑死。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认）住在 [`views/dapp/shared/`](../../src/views/dapp/shared/)（**不是 tab**）；无业务数据的布局 primitive（`Tile`/`Grid`/`MainButton`…）住在 `src/shared/components`；窗口级 onboarding/wallet/nav 住在 [`views/dapp/host/`](../../src/views/dapp/host/)；组合根住在 [`src/bootstrap/`](../../src/bootstrap/)。
+5. 壳层名（如 `DockFrame`）**不**与页袋 `*Dock` 绑死。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认）住在 [`views/dapp/shared/`](../../src/views/dapp/shared/)（**不是 tab**）；无业务数据的布局 primitive（`Tile`/`Grid`/`MainButton`…）住在 `src/shared/components`；窗口级 onboarding/wallet/nav 住在 [`views/dapp/host/`](../../src/views/dapp/host/)；组合根住在 [`src/boot/`](../../src/boot/)。
 
-> 命名对照：`src/shared/` = 设计系统；`views/dapp/shared/` = 跨 tab 产品壳；`views/dapp/host/` = 窗口宿主（≠ 页袋 Dock）；`src/bootstrap/` = 入口；`{tab}/shared.ts` = 域内非 UI 纯函数。路径不撞。
+> 命名对照：`src/shared/` = 设计系统；`views/dapp/shared/` = 跨 tab 产品壳；`views/dapp/host/` = 窗口宿主（≠ 页袋 Dock）；`src/boot/` = 入口；`{tab}/shared.ts` = 域内非 UI 纯函数。路径不撞。
 
 ## 何时开 mode 袋
 
@@ -107,13 +107,15 @@ community/
 
 ## 命名对照（执行波次）
 
-| 旧                                            | 新                                     |
-| --------------------------------------------- | -------------------------------------- |
-| 域/mode `*Widget` 页袋入口                    | `*Dock`（文件 `dock.tsx`）             |
-| 已有 `*Detail`                                | 保持；归入 mode 或域根 `detail.tsx`    |
-| `hub` 总览 widget                             | `hub/dock.tsx` 等四件套                |
-| 散落 `*-primitives` / 一卡一文件              | 收进该袋 `primitives.tsx`              |
-| 页袋 `*View` / `*Aside` / 左栏 `*Widget` hook | 左右分离时 → `use*Dock` / `use*Detail` |
+| 旧                                            | 新                                                                                                        |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 域/mode `*Widget` 页袋入口                    | `*Dock`（文件 `dock.tsx`）                                                                                |
+| 已有 `*Detail`                                | 保持；归入 mode 或域根 `detail.tsx`                                                                       |
+| `hub` 总览 widget                             | `hub/dock.tsx` 等四件套                                                                                   |
+| 散落 `*-primitives` / 一卡一文件              | 收进该袋 `primitives.tsx`                                                                                 |
+| 页袋 `*View` / `*Aside` / 左栏 `*Widget` hook | 左右分离时 → `use*Dock` / `use*Detail`；弹层 VM 用中性名（如 `useAssetsClaimModal`，禁残留 `*View` 后缀） |
+| 域内 `SideCard` / `QuickLinks` 一类薄包装     | 删；`Card` / call site 列表；单列链接栈**不**硬套右栏 `Grid`                                              |
+| 提议 `views/dapp/shared` → `components`       | **不做**：与 `src/shared/components` 抢词；目录含 context/host，仍叫跨 tab 产品壳 `shared`                |
 
 ## 执行顺序
 

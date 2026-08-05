@@ -5,7 +5,7 @@ import { loadModule } from './load-module.mjs'
 
 test('onboarding persistence read/write', async () => {
   const { ONBOARDING_STORAGE_KEY, readOnboardingPersistence, writeOnboardingDone } =
-    await loadModule('/src/views/dapp/host/onboarding/onboarding-persistence.ts')
+    await loadModule('/src/views/dapp/host/onboarding/shared.ts')
 
   /** @type {Map<string, string>} */
   const map = new Map()
@@ -32,7 +32,7 @@ test('onboarding persistence read/write', async () => {
 
 test('onboarding step ids are 12 and exclude genesis', async () => {
   const { ONBOARDING_STEP_COUNT, ONBOARDING_STEP_IDS, isOnboardingNavStep, tourSelector } =
-    await loadModule('/src/views/dapp/host/onboarding/onboarding-step-ids.ts')
+    await loadModule('/src/views/dapp/host/onboarding/shared.ts')
 
   assert.equal(ONBOARDING_STEP_COUNT, 12)
   assert.equal(ONBOARDING_STEP_IDS.length, 12)

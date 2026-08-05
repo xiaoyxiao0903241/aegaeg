@@ -6,7 +6,7 @@ module.exports = {
       severity: 'error',
       from: { path: '^src/core/' },
       to: {
-        path: '^(react|react-dom|thirdweb|viem|@tanstack|zustand|src/views|src/shared|src/bootstrap)',
+        path: '^(react|react-dom|thirdweb|viem|@tanstack|zustand|src/views|src/shared|src/boot)',
         pathNot: '^src/core/',
       },
     },
@@ -18,11 +18,11 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
-      name: 'shared-no-bootstrap',
-      comment: 'shared must not import bootstrap (composition root / providers).',
+      name: 'shared-no-boot',
+      comment: 'shared must not import boot (composition root / providers).',
       severity: 'error',
       from: { path: '^src/shared/' },
-      to: { path: '^src/bootstrap/' },
+      to: { path: '^src/boot/' },
     },
     {
       name: 'web3-gateway',
@@ -40,11 +40,11 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
-      name: 'stores-no-bootstrap',
-      comment: 'stores must not import bootstrap; tab init helpers live in shared/config.',
+      name: 'stores-no-boot',
+      comment: 'stores must not import boot; tab init helpers live in shared/config.',
       severity: 'error',
       from: { path: '^src/stores/' },
-      to: { path: '^src/bootstrap/' },
+      to: { path: '^src/boot/' },
     },
     {
       name: 'hooks-no-views',
@@ -53,11 +53,11 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
-      name: 'hooks-no-bootstrap',
-      comment: 'hooks must not import bootstrap composition root.',
+      name: 'hooks-no-boot',
+      comment: 'hooks must not import boot composition root.',
       severity: 'error',
       from: { path: '^src/hooks/' },
-      to: { path: '^src/bootstrap/' },
+      to: { path: '^src/boot/' },
     },
     {
       name: 'no-circular',
@@ -75,7 +75,7 @@ module.exports = {
       name: 'ui-is-dumb',
       severity: 'warn',
       from: { path: '^src/shared/ui/' },
-      to: { path: '^src/(views|core|bootstrap)/' },
+      to: { path: '^src/(views|core|boot)/' },
     },
     {
       name: 'views-no-cross-tab',

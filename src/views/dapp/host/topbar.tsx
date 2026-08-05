@@ -1,15 +1,19 @@
 import { tv } from 'tailwind-variants'
 
+import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
-import { iconVariants } from '~/shared/components/icon'
+import { Icon, iconVariants } from '~/shared/components/icon'
 import { LanguageMenu } from '~/shared/components/language-menu'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { dappAssets, homeAssets } from '~/shared/config/assets'
-import { OnboardingTourChip } from '~/views/dapp/host/onboarding/onboarding-tour-chip'
-import { WalletTopbarActions } from '~/views/dapp/host/wallet/wallet-topbar-actions'
+import { OnboardingTourChip } from '~/views/dapp/host/primitives'
+import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const topbar = tv({
   slots: {
@@ -46,6 +50,46 @@ const topbar = tv({
     hideBrandLabel: false,
   },
 })
+
+const networkPill = tv({
+  base: [
+    // 网络胶囊：PC 与 H5 通用，白色底圆角，高度 36
+    'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-card px-3.5',
+    'text-xs leading-[1.2] font-semibold shadow-none',
+    'max-dapp:px-3 max-dapp:text-xs',
+  ],
+})
+
+/** 顶部栏钱包区：会话就绪时网络胶囊 + 已连接入口，否则连接 / 登录。 */
+function WalletTopbarActions() {
+  const account = useActiveAccount()
+  const { sessionReady, needsSignIn, isLoggingIn } = useAuth()
+  const { messages: t } = useI18n()
+  const walletReady = hasWalletAccount(account)
+  const fullyConnected = walletReady && sessionReady
+
+  if (fullyConnected) {
+    return (
+      <>
+        <Tooltip content={t.nav.bscTooltip} position="bottom">
+          <div className={networkPill()} aria-label={t.topbar.currentNetwork}>
+            <Icon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
+            {t.common.bsc}
+          </div>
+        </Tooltip>
+        <WalletConnectChip variant="connected" />
+      </>
+    )
+  }
+
+  const label = needsSignIn
+    ? isLoggingIn
+      ? t.wallet.connecting
+      : t.wallet.signInRequired
+    : t.common.connectWallet
+
+  return <WalletConnectChip className="min-h-9" label={label} variant="primary" />
+}
 
 /**
  * DApp 顶部栏

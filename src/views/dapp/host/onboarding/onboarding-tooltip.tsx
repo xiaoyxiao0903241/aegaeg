@@ -2,7 +2,7 @@ import type { PopoverContentProps } from '@reactour/tour'
 
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { ONBOARDING_STEP_COUNT } from '~/views/dapp/host/onboarding/onboarding-step-ids'
+import { ONBOARDING_STEP_COUNT } from '~/views/dapp/host/onboarding/shared'
 
 export type OnboardingStepCopy = {
   title: string

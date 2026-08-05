@@ -15,7 +15,6 @@ import { Text } from '~/shared/components/text'
 import { dappAssets } from '~/shared/config/assets'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn, navigableHref } from '~/shared/lib/utils'
-import { SideCard } from '~/views/dapp/community/side-card'
 
 /** 社区数据卡在 H5 下共用的容器样式。 */
 export const communityStatCardMobileFrame = tv({
@@ -257,7 +256,12 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <SideCard className="gap-2 rounded-2xl px-4 py-3.5">
+    <Card
+      as="section"
+      surface="outlined"
+      className={cn(revealClass(), 'flex flex-col gap-2 rounded-2xl px-4 py-3.5')}
+      data-reveal
+    >
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {linkLabel}
       </Text>
@@ -272,7 +276,7 @@ export function CommunityReferralLinkCard({
       <MainButton density="inverse" disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </MainButton>
-    </SideCard>
+    </Card>
   )
 }
 
@@ -300,7 +304,12 @@ export function CommunityReferrerBindCard({
   value: string
 }) {
   return (
-    <SideCard className="gap-2">
+    <Card
+      as="section"
+      surface="outlined"
+      className={cn(revealClass(), 'flex flex-col gap-2')}
+      data-reveal
+    >
       <Text as="p" className="m-0 text-foreground/40" variant="support">
         {referrerLabel}
       </Text>
@@ -326,7 +335,7 @@ export function CommunityReferrerBindCard({
       <Text as="small" className="block text-foreground/40" variant="support">
         {hint}
       </Text>
-    </SideCard>
+    </Card>
   )
 }
 
@@ -346,7 +355,12 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    <SideCard className="gap-2 rounded-2xl px-4 py-3.5">
+    <Card
+      as="section"
+      surface="outlined"
+      className={cn(revealClass(), 'flex flex-col gap-2 rounded-2xl px-4 py-3.5')}
+      data-reveal
+    >
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {addressLabel}
       </Text>
@@ -377,6 +391,57 @@ export function CommunityReferrerBoundPanel({
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {note}
       </Text>
-    </SideCard>
+    </Card>
+  )
+}
+
+export type QuickLinkProps = {
+  href: string
+  icon: string
+  iconTone?: 'coral' | 'dark' | 'plain'
+  label: ReactNode
+}
+
+/**
+ * 快捷入口链接卡：图标 + 文字，外部链接新窗口打开。
+ */
+export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkProps) {
+  const isExternal = href.startsWith('http://') || href.startsWith('https://')
+  const isBrandIcon = iconTone === 'plain'
+  const insetIconClass = iconVariants({ size: iconTone === 'dark' ? 'md' : 'lg' })
+
+  return (
+    <a
+      className={cn(
+        'flex items-center gap-3 rounded-md border border-border-subtle bg-card px-3.5 py-3',
+        'duration-dapp-fast transition-[border-color,transform] ease-out',
+        'hover:translate-x-0.5 hover:border-coral-hover-border',
+      )}
+      href={href}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      target={isExternal ? '_blank' : undefined}
+    >
+      <span
+        className={cn(
+          'grid size-7.5 flex-none place-items-center rounded-full',
+          iconTone === 'coral' && 'bg-primary text-white',
+          iconTone === 'dark' && 'bg-foreground',
+          isBrandIcon && 'bg-transparent',
+        )}
+      >
+        <img
+          alt=""
+          className={cn(
+            'block shrink-0 object-contain',
+            isBrandIcon ? 'size-full' : insetIconClass,
+          )}
+          loading="lazy"
+          src={icon}
+        />
+      </span>
+      <Text as="span" variant="headline" className="text-sm/normal">
+        {label}
+      </Text>
+    </a>
   )
 }

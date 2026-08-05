@@ -19,16 +19,16 @@ test('dependency-cruiser config defines required rules', () => {
   assert.ok(ruleNames.includes('views-no-cross-tab'))
   assert.ok(ruleNames.includes('dapp-shared-no-tabs'))
   assert.ok(ruleNames.includes('host-views-composition'))
-  assert.ok(ruleNames.includes('shared-no-bootstrap'))
-  assert.ok(ruleNames.includes('hooks-no-bootstrap'))
-  assert.ok(ruleNames.includes('stores-no-bootstrap'))
+  assert.ok(ruleNames.includes('shared-no-boot'))
+  assert.ok(ruleNames.includes('hooks-no-boot'))
+  assert.ok(ruleNames.includes('stores-no-boot'))
   assert.ok(!ruleNames.includes('stores-no-app'))
   assert.ok(!ruleNames.includes('app-views-composition'))
 
   const homeNoWeb3 = config.forbidden.find((rule) => rule.name === 'home-no-web3')
   assert.match(homeNoWeb3.to.path, /viem/)
 
-  const storesNoBootstrap = config.forbidden.find((rule) => rule.name === 'stores-no-bootstrap')
+  const storesNoBootstrap = config.forbidden.find((rule) => rule.name === 'stores-no-boot')
   assert.equal(storesNoBootstrap.severity, 'error')
 
   const viewsNoCrossTab = config.forbidden.find((rule) => rule.name === 'views-no-cross-tab')

@@ -27,7 +27,7 @@ test('assetsHubNeedsChainFallback: API path skips full-table chain reads', async
 
 test('hub overview sources assetsHubNeedsChainFallback for chain query enabled', () => {
   const src = readFileSync(
-    new URL('../../src/views/dapp/assets/hub/use-hub.ts', import.meta.url),
+    new URL('../../src/views/dapp/assets/hub/use-hub.tsx', import.meta.url),
     'utf8',
   )
   assert.match(src, /assetsHubNeedsChainFallback/)
@@ -61,7 +61,7 @@ test('money decision call sites wire decisionBigint / isDecisionFresh / liveQuot
     '../../src/views/dapp/exchange/flash-exchange/use-flash-exchange-widget.ts',
     '../../src/views/dapp/exchange/burn/use-burn-exchange-widget.ts',
     '../../src/views/dapp/staking/stake/use-stake-widget.ts',
-    '../../src/views/dapp/staking/bond/use-bond-widget.ts',
+    '../../src/views/dapp/staking/bond/use-bond-widget.tsx',
   ]
   for (const rel of files) {
     const src = readFileSync(new URL(rel, import.meta.url), 'utf8')
@@ -131,10 +131,7 @@ test('submitMixedClaim / redeem reject owner mismatch before chain reads', async
 
 test('assets claim modal closes when wallet address drifts from captured owner', () => {
   const src = readFileSync(
-    new URL(
-      '../../src/views/dapp/assets/claim-modal/use-assets-claim-modal-view.ts',
-      import.meta.url,
-    ),
+    new URL('../../src/views/dapp/assets/claim-modal/use-assets-claim-modal.tsx', import.meta.url),
     'utf8',
   )
   assert.match(src, /account\?\.address/)
