@@ -11,7 +11,7 @@ import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
-import { burnExchangeAssets, dappAssets } from '~/shared/config/assets'
+import { burnExchangeAssets, dappAssets, flashExchangeAssets } from '~/shared/config/assets'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
@@ -188,6 +188,22 @@ export function ExchangeFlowButton({
     <div {...aria} className={cn(exchangeFlowButton({ interactive: false }), className)}>
       {children}
     </div>
+  )
+}
+
+/** 翻转钮内箭头：随 rotation 旋转。 */
+export function ExchangeFlipGlyph({ rotation }: { rotation: number }) {
+  return (
+    <span
+      className="duration-dapp-emphasis grid place-items-center transition-transform ease-dapp"
+      style={{ transform: `rotate(${rotation}deg)` }}
+    >
+      <span className="grid size-4 place-items-center">
+        <span className="-rotate-90">
+          <Icon alt="" size="base" src={flashExchangeAssets.flowDivider} />
+        </span>
+      </span>
+    </span>
   )
 }
 

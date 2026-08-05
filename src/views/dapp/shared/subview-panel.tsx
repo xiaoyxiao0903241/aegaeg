@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { cn } from '~/shared/lib/utils'
 import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
 import { SubviewDisplayViewContext } from '~/views/dapp/shared/subview-display-context'
@@ -7,7 +8,7 @@ import { SubviewTransitionLayers } from '~/views/dapp/shared/subview-transition-
 
 export { useSubviewDisplayView } from '~/views/dapp/shared/subview-display-context'
 
-/** 中心页与子视图切换共用的交叉淡入网格（每个 DApp Tab 面板都使用）。 */
+/** 中心页与子视图切换共用的叠层网格（每个 DApp Tab 面板都使用）。 */
 export const DAPP_SUBVIEW_TRANSITION_STACK =
   'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0'
 
@@ -26,6 +27,8 @@ type SubviewHostProps = {
  *
  * 静止时直接提供当前视图；过渡期间拆成退场 / 入场两层，
  * 子组件通过 display context 读取各自应展示的视图。
+ *
+ * H5 左栏：过渡期锁退场高度，避免双层叠放 / 入场变矮时整窗跳动。
  */
 export function SubviewHost({
   subview,
@@ -36,13 +39,39 @@ export function SubviewHost({
 }: SubviewHostProps) {
   const { view, motion, direction, outgoingView, incomingView } = subview
   const isTransitioning = Boolean(motion && outgoingView && incomingView)
+  const isMobile = useMobileViewport()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const idleHeightRef = useRef(0)
+  const [lockedHeight, setLockedHeight] = useState<number | null>(null)
+
+  useLayoutEffect(() => {
+    const node = rootRef.current
+    if (!node || panel !== 'widget' || !isMobile) {
+      setLockedHeight((prev) => (prev == null ? prev : null))
+      return
+    }
+    if (!isTransitioning) {
+      idleHeightRef.current = node.offsetHeight
+      setLockedHeight((prev) => (prev == null ? prev : null))
+      return
+    }
+    const next = idleHeightRef.current
+    if (next > 0) {
+      setLockedHeight((prev) => (prev === next ? prev : next))
+    }
+  }, [isMobile, isTransitioning, panel])
+
+  const lockStyle: CSSProperties | undefined =
+    lockedHeight != null ? { height: lockedHeight, overflow: 'hidden' } : undefined
 
   return (
     <div
+      ref={rootRef}
       className={cn(className, isTransitioning && transitionClassName)}
       data-dapp-detail-panel={panel === 'detail' ? '' : undefined}
       data-dapp-transitioning={isTransitioning ? 'true' : undefined}
       data-dapp-widget-panel={panel === 'widget' ? '' : undefined}
+      style={lockStyle}
     >
       {isTransitioning && outgoingView && incomingView ? (
         <SubviewTransitionLayers

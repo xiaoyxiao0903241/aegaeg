@@ -191,7 +191,7 @@
 ## 右栏详情壳（`Detail`）
 
 > **模型**：右栏内容区外壳。`shared/components/detail.tsx`。  
-> PC `px-7 pt-10` + shadow-bleed 底距；H5 `p-0`（边距归 host window）。节距由 Detail `gap-8.5` / `max-dapp:gap-6` 承担（PC 34 / H5 24）；子级直接列 Section（禁 bag Fragment 藏节）。
+> PC `px-6 pt-7.5` + shadow-bleed 底距（内容底 24）；H5 `p-0`（边距归 host window）。节距由 Detail `gap-8.5` / `max-dapp:gap-6` 承担（PC 34 / H5 24）；子级直接列 Section（禁 bag Fragment 藏节）。
 
 ### MUST NOT（详情壳）
 

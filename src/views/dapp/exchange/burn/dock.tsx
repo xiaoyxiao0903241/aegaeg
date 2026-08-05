@@ -25,13 +25,12 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const { t, pair } = vm
 
   return (
-    <>
-      <TabHeader
-        backText={t.exchange.backToHub}
-        onBack={vm.onBack}
-        subtitle={t.exchange.burn.subtitle}
-        title={t.exchange.burn.title}
-      />
+    <TabHeader
+      backText={t.exchange.backToHub}
+      onBack={vm.onBack}
+      subtitle={t.exchange.burn.subtitle}
+      title={t.exchange.burn.title}
+    >
       <DockStack className="gap-0">
         <ExchangeAmountFlow
           buy={{ symbol: t.exchange.burn.pointsToken }}
@@ -97,6 +96,6 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
 
         <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

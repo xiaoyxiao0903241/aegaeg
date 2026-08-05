@@ -7,16 +7,16 @@
  */
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
-import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
-import { dappAssets, flashExchangeAssets } from '~/shared/config/assets'
+import { dappAssets } from '~/shared/config/assets'
 import { bscscanAddress } from '~/shared/config/explorer'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { useFlashExchange } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange'
 import {
   ExchangeAmountFlow,
+  ExchangeFlipGlyph,
   ExchangeFlowButton,
   ExchangeOneWayFlowIndicator,
   exchangeProviderMetaRow,
@@ -30,13 +30,12 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
   const { t, pair } = vm
 
   return (
-    <>
-      <TabHeader
-        backText={t.exchange.backToHub}
-        onBack={vm.onBack}
-        subtitle={t.exchange.flash.intros[flash.introKey]}
-        title={t.exchange.flash.title}
-      />
+    <TabHeader
+      backText={t.exchange.backToHub}
+      onBack={vm.onBack}
+      subtitle={t.exchange.flash.intros[flash.introKey]}
+      title={t.exchange.flash.title}
+    >
       <DockStack className="gap-0">
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
@@ -66,16 +65,7 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
                     interactive
                     onClick={vm.onFlip}
                   >
-                    <span
-                      className="duration-dapp-emphasis grid place-items-center transition-transform ease-dapp"
-                      style={{ transform: `rotate(${vm.rotation}deg)` }}
-                    >
-                      <span className="grid size-4 place-items-center">
-                        <span className="-rotate-90">
-                          <Icon alt="" size="base" src={flashExchangeAssets.flowDivider} />
-                        </span>
-                      </span>
-                    </span>
+                    <ExchangeFlipGlyph rotation={vm.rotation} />
                   </ExchangeFlowButton>
                 </Tooltip>
               ) : (
@@ -136,6 +126,6 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
 
         <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

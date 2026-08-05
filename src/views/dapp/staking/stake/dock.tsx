@@ -36,13 +36,12 @@ export function StakeDock() {
   } = useStakeDock()
 
   return (
-    <>
-      <TabHeader
-        backText={t.staking.backToHub}
-        onBack={() => setView('hub')}
-        subtitle={t.staking.stake.intro}
-        title={t.staking.stake.title}
-      />
+    <TabHeader
+      backText={t.staking.backToHub}
+      onBack={() => setView('hub')}
+      subtitle={t.staking.stake.intro}
+      title={t.staking.stake.title}
+    >
       <DockStack>
         <div className="grid gap-2.5">
           <Text as="span" className="text-foreground/40" variant="copy">
@@ -119,6 +118,6 @@ export function StakeDock() {
           <DockConnectPromo />
         )}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

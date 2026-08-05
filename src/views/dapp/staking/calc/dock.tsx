@@ -31,13 +31,12 @@ export function CalcDock() {
         : dappAssets.tokenAgx
 
   return (
-    <>
-      <TabHeader
-        backText={t.staking.backToHub}
-        onBack={() => vm.setView('hub')}
-        subtitle={t.staking.calc.intro}
-        title={t.staking.calc.title}
-      />
+    <TabHeader
+      backText={t.staking.backToHub}
+      onBack={() => vm.setView('hub')}
+      subtitle={t.staking.calc.intro}
+      title={t.staking.calc.title}
+    >
       <DockStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
@@ -134,6 +133,6 @@ export function CalcDock() {
           </MainButton>
         </FormActions>
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

@@ -4,9 +4,7 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
 import { HeroRaysBackground } from '~/shared/components/hero-rays-background'
-import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
-import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -22,6 +20,7 @@ import { RevealObserver, scrollDappPanelsToTop, ScrollFadeHost } from '~/views/d
 import { Rail } from '~/views/dapp/host/rail'
 import { Topbar } from '~/views/dapp/host/topbar'
 import { useTabContentFade } from '~/views/dapp/host/use-content-fade'
+import { DockH5ChromeSlot } from '~/views/dapp/shared/dock-frame'
 import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { useConnectWarmPrefetch } from '~/web3/wallet/use-connect-warm-prefetch'
@@ -97,7 +96,6 @@ export function DappHost() {
     })
   }, [])
 
-  const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = hostState.detailCollapsed
 
   return (
@@ -162,7 +160,8 @@ export function DappHost() {
                       !hostState.sessionReady && 'shadow-window-compact',
                       'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
                       'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
-                      'max-dapp:px-4.5 max-dapp:pt-4.5 max-dapp:pb-8 max-dapp:shadow-card',
+                      // 顶距由 H5 chrome slot 承担
+                      'max-dapp:px-4.5 max-dapp:pt-0 max-dapp:pb-8 max-dapp:shadow-card',
                     )}
                     data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
                     data-session-ready={hostState.sessionReady ? 'true' : 'false'}
@@ -172,60 +171,47 @@ export function DappHost() {
                   >
                     <Rail activeTab={activeTab} onSelectTab={selectTab} />
 
-                    <ScrollFadeHost>
-                      <aside
-                        className={cn(
-                          'dapp-content-fade overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
-                          // PC：占满列高，面板内部滚动
-                          'dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:overflow-y-auto',
-                          // H5：按内容定高，由外层窗口统一滚动（避免 flex-shrink 重叠）
-                          'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
-                        )}
-                        data-dapp-widget-panel
-                        data-phase={phase}
-                      >
-                        <div className="relative hidden max-dapp:block" data-dapp-h5-menu>
-                          <button
-                            aria-controls={mobileNavId}
-                            aria-expanded={mobileNavOpen}
-                            aria-label={messages.topbar.openMenu}
-                            className="grid aspect-square w-10 cursor-pointer list-none place-items-center rounded-md border border-border bg-card"
-                            onClick={() => setMobileNavOpen(true)}
-                            type="button"
-                          >
-                            <Icon alt="" size="lg" src={dappAssets.menu} />
-                          </button>
-                        </div>
-                        <MobileNav
-                          activeTab={activeTab}
-                          onClose={() => setMobileNavOpen(false)}
-                          onSelectTab={selectMobileTab}
-                          open={mobileNavOpen}
-                        />
-                        <TabDock
-                          activeTab={displayTab}
-                          burn={burn}
-                          flash={flash}
-                          genesis={genesis}
-                          onSelectTab={selectTab}
-                          trade={trade}
-                          turbine={turbine}
-                        />
-                      </aside>
-                    </ScrollFadeHost>
+                    <DockH5ChromeSlot />
+
+                    <aside
+                      className={cn(
+                        'dapp-content-fade border-r border-border bg-card',
+                        'dapp:flex dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:flex-col dapp:overflow-hidden',
+                        'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0',
+                      )}
+                      data-dapp-widget-panel
+                      data-phase={phase}
+                    >
+                      <MobileNav
+                        activeTab={activeTab}
+                        onClose={() => setMobileNavOpen(false)}
+                        onSelectTab={selectMobileTab}
+                        open={mobileNavOpen}
+                      />
+                      <TabDock
+                        activeTab={displayTab}
+                        burn={burn}
+                        flash={flash}
+                        genesis={genesis}
+                        onSelectTab={selectTab}
+                        trade={trade}
+                        turbine={turbine}
+                      />
+                    </aside>
 
                     <ScrollFadeHost
-                      className={effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined}
+                      className={cn(
+                        'max-dapp:contents',
+                        effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined,
+                      )}
                     >
                       <section
                         className={cn(
                           'dapp-content-fade min-w-0 overflow-x-hidden bg-card',
-                          // PC：占满列高，面板内部滚动
                           'dapp:max-h-full dapp:min-h-0',
                           effectiveDetailCollapsed
                             ? 'pointer-events-none overflow-y-hidden opacity-0'
                             : 'dapp:overflow-y-auto',
-                          // H5：按内容定高，置于共享窗口滚动器下方
                           'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible',
                         )}
                         aria-hidden={effectiveDetailCollapsed}

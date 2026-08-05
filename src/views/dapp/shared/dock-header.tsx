@@ -1,39 +1,33 @@
 import type { ReactNode } from 'react'
 
-import { useI18n } from '~/i18n/use-i18n'
-import { Icon } from '~/shared/components/icon'
-import { IconButton } from '~/shared/components/icon-button'
 import { Text } from '~/shared/components/text'
-import { Tooltip } from '~/shared/components/tooltip'
-import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
+import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
 
 /**
- * 内容面板顶部标题区。
+ * Hub 顶栏 leaf（稿 header）：titleblock | btns。
  *
- * 左侧展示面板标题与副标题，右侧为折叠详情面板的开关按钮。
+ * title 20 / caption 13、块内 gap 6；右侧主图标 + 可选第二图标 gap 8；垂直居中。
  */
 export function DockHeader({
   className,
-  detailCollapsed,
-  onTogglePanel,
+  endAction,
   showToggle = true,
   subtitle,
   title,
+  titleClassName,
 }: {
   className?: string
-  detailCollapsed: boolean
-  onTogglePanel: () => void
+  endAction?: ReactNode
   showToggle?: boolean
   subtitle: ReactNode
-  title: string
+  title: ReactNode
+  titleClassName?: string
 }) {
-  const { messages: t } = useI18n()
-
   return (
-    <div className={cn('flex items-start justify-between gap-4 max-dapp:mt-6', className)}>
+    <div className={cn('flex w-full items-center justify-between gap-4', className)}>
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <Text as="h1" variant="panel" className="m-0">
+        <Text as="h1" variant="panel" className={cn('m-0', titleClassName)}>
           {title}
         </Text>
         <Text
@@ -45,25 +39,11 @@ export function DockHeader({
           {subtitle}
         </Text>
       </div>
-      {showToggle ? (
-        <Tooltip content={t.topbar.toggleTooltip}>
-          <IconButton
-            aria-expanded={!detailCollapsed}
-            aria-label={detailCollapsed ? t.topbar.showDetails : t.topbar.hideDetails}
-            className="shrink-0"
-            onClick={onTogglePanel}
-          >
-            <Icon
-              className={cn(
-                'duration-dapp-base transition-transform ease-dapp',
-                detailCollapsed && 'rotate-90',
-              )}
-              size="lg"
-              src={dappAssets.menu}
-              alt=""
-            />
-          </IconButton>
-        </Tooltip>
+      {endAction || showToggle ? (
+        <div className="flex shrink-0 items-center gap-2">
+          {endAction}
+          {showToggle ? <DetailToggle /> : null}
+        </div>
       ) : null}
     </div>
   )

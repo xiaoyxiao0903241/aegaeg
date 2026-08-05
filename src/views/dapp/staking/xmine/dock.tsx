@@ -30,13 +30,12 @@ export function XmineDock() {
   )
 
   return (
-    <>
-      <TabHeader
-        backText={t.staking.backToHub}
-        onBack={() => setView('hub')}
-        subtitle={t.staking.xmine.intro}
-        title={t.staking.xmine.title}
-      />
+    <TabHeader
+      backText={t.staking.backToHub}
+      onBack={() => setView('hub')}
+      subtitle={t.staking.xmine.intro}
+      title={t.staking.xmine.title}
+    >
       <DockStack>
         <AmountBox
           amountProps={{
@@ -105,6 +104,6 @@ export function XmineDock() {
           <DockConnectPromo />
         )}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

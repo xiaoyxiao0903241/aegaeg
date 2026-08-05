@@ -1,11 +1,9 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { ModeCard } from '~/shared/components/mode-card'
-import { WidgetHeader } from '~/shared/components/widget-header'
 import { stakingHubAssets } from '~/shared/config/assets'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { openStakingView } from '~/shared/config/dapp-open-views'
-import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
-import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { DockFrame } from '~/views/dapp/shared/dock-frame'
 
 /** 质押 Hub 模式：质押 / LP 债券 / 燃烧债券 / XMine / 计算器 */
 const STAKING_MODES: readonly {
@@ -34,31 +32,23 @@ export function HubDock() {
   const copy = t.staking.hub.modes
 
   return (
-    <>
-      <WidgetHeader
-        action={<DetailToggle />}
-        className="mb-4 gap-4 [&_h1]:text-xl/none! [&_h1]:tracking-normal"
-        subtitle={t.staking.intro}
-        title={t.staking.title}
-      />
-      <DockStack>
-        {STAKING_MODES.map((mode) => {
-          const { title, body } = copy[mode.view]
-          return (
-            <ModeCard
-              key={mode.view}
-              onClick={() => openStakingView(mode.view)}
-              tourId={mode.tourId}
-            >
-              <ModeCard.Icon src={mode.icon} />
-              <ModeCard.Copy>
-                <ModeCard.Title>{title}</ModeCard.Title>
-                <ModeCard.Body>{body}</ModeCard.Body>
-              </ModeCard.Copy>
-            </ModeCard>
-          )
-        })}
-      </DockStack>
-    </>
+    <DockFrame
+      subtitle={t.staking.intro}
+      title={t.staking.title}
+      titleClassName="text-xl/none tracking-normal"
+    >
+      {STAKING_MODES.map((mode) => {
+        const { title, body } = copy[mode.view]
+        return (
+          <ModeCard key={mode.view} onClick={() => openStakingView(mode.view)} tourId={mode.tourId}>
+            <ModeCard.Icon src={mode.icon} />
+            <ModeCard.Copy>
+              <ModeCard.Title>{title}</ModeCard.Title>
+              <ModeCard.Body>{body}</ModeCard.Body>
+            </ModeCard.Copy>
+          </ModeCard>
+        )
+      })}
+    </DockFrame>
   )
 }

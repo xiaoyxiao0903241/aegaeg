@@ -3,7 +3,8 @@ import type { ReactNode } from 'react'
 import type { DappSubviewMotion } from '~/stores/create-dapp-subview-store'
 import { SubviewHost } from '~/views/dapp/shared/subview-panel'
 
-const DOCK_PANEL_CLASS = 'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0'
+const DOCK_PANEL_CLASS =
+  'flex flex-col dapp:h-full dapp:min-h-0 dapp:flex-1 max-dapp:h-auto max-dapp:min-h-0 max-dapp:flex-none'
 const DETAIL_PANEL_CLASS = 'min-h-0'
 
 type TabHostProps = {

@@ -37,13 +37,12 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
   const usd1Balance = `${t.exchange.balance} ${vm.usd1AmountLabel}`
 
   return (
-    <>
-      <TabHeader
-        backText={t.exchange.backToHub}
-        onBack={vm.onBack}
-        subtitle={t.exchange.hub.modes.turbine.body}
-        title={t.exchange.turbine.title}
-      />
+    <TabHeader
+      backText={t.exchange.backToHub}
+      onBack={vm.onBack}
+      subtitle={t.exchange.hub.modes.turbine.body}
+      title={t.exchange.turbine.title}
+    >
       <DockStack className="gap-0">
         <Segment
           aria-label={t.exchange.turbine.segmentAriaLabel}
@@ -239,6 +238,6 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
 
         {!vm.sessionReady || !turbine.walletReady ? <DockConnectPromo /> : null}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

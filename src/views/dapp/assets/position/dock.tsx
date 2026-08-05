@@ -30,71 +30,72 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
         onBack={() => setView('hub')}
         subtitle={w.copy.intro}
         title={w.copy.title}
-      />
-      <DockStack>
-        <AssetsQuoteToolbar
-          onQuoteChange={w.setQuote}
-          onSortChange={w.setSort}
-          quote={w.quote}
-          quoteLabel={t.assets.position.quoteCurrency}
-          sortLabel={t.assets.position.sort}
-          sortOptions={w.sortOptions}
-          sortValue={w.sort}
-        />
-
-        {!w.walletReady ? (
-          <DockConnectPromo />
-        ) : w.isLoading ? (
-          <AssetsPositionListSkeleton />
-        ) : w.isEmpty ? (
-          <AssetsPositionEmptyCard
-            body={w.copy.empty}
-            ctaLabel={w.copy.emptyCta}
-            onCta={() => openStakingView(w.stakingTarget)}
-            title={t.assets.position.emptyTitle}
+      >
+        <DockStack>
+          <AssetsQuoteToolbar
+            onQuoteChange={w.setQuote}
+            onSortChange={w.setSort}
+            quote={w.quote}
+            quoteLabel={t.assets.position.quoteCurrency}
+            sortLabel={t.assets.position.sort}
+            sortOptions={w.sortOptions}
+            sortValue={w.sort}
           />
-        ) : product === 'stake' ? (
-          w.pagedStakeRows.map((row) => (
-            <AssetsPositionStakeRow
-              busy={w.busy}
-              currentEpoch={w.currentEpoch}
-              formatAmount={w.formatAmount}
-              formatPeriodLabel={w.formatPeriodLabel}
-              key={row.id}
-              locked={w.locked}
-              onActivate={w.activateWarmup}
-              onClaim={w.openStakeClaim}
-              onRedeem={(claimRow) => w.requestRedeem('stake', claimRow)}
-              quote={w.quote}
-              row={row}
-            />
-          ))
-        ) : (
-          w.pagedBondRows.map((row) => (
-            <AssetsPositionBondRow
-              busy={w.busy}
-              formatAmount={w.formatAmount}
-              formatPeriodLabel={w.formatPeriodLabel}
-              key={row.id}
-              locked={w.locked}
-              onClaim={w.openBondClaim}
-              onRedeem={(claimRow) => w.requestRedeem('bond', claimRow)}
-              quote={w.quote}
-              row={row}
-            />
-          ))
-        )}
 
-        {!w.isEmpty && w.walletReady ? (
-          <AssetsListPager
-            onPageChange={w.setPage}
-            page={w.safePage}
-            pageCount={w.pageCount}
-            pageSize={w.pageSize}
-            total={w.totalRows}
-          />
-        ) : null}
-      </DockStack>
+          {!w.walletReady ? (
+            <DockConnectPromo />
+          ) : w.isLoading ? (
+            <AssetsPositionListSkeleton />
+          ) : w.isEmpty ? (
+            <AssetsPositionEmptyCard
+              body={w.copy.empty}
+              ctaLabel={w.copy.emptyCta}
+              onCta={() => openStakingView(w.stakingTarget)}
+              title={t.assets.position.emptyTitle}
+            />
+          ) : product === 'stake' ? (
+            w.pagedStakeRows.map((row) => (
+              <AssetsPositionStakeRow
+                busy={w.busy}
+                currentEpoch={w.currentEpoch}
+                formatAmount={w.formatAmount}
+                formatPeriodLabel={w.formatPeriodLabel}
+                key={row.id}
+                locked={w.locked}
+                onActivate={w.activateWarmup}
+                onClaim={w.openStakeClaim}
+                onRedeem={(claimRow) => w.requestRedeem('stake', claimRow)}
+                quote={w.quote}
+                row={row}
+              />
+            ))
+          ) : (
+            w.pagedBondRows.map((row) => (
+              <AssetsPositionBondRow
+                busy={w.busy}
+                formatAmount={w.formatAmount}
+                formatPeriodLabel={w.formatPeriodLabel}
+                key={row.id}
+                locked={w.locked}
+                onClaim={w.openBondClaim}
+                onRedeem={(claimRow) => w.requestRedeem('bond', claimRow)}
+                quote={w.quote}
+                row={row}
+              />
+            ))
+          )}
+
+          {!w.isEmpty && w.walletReady ? (
+            <AssetsListPager
+              onPageChange={w.setPage}
+              page={w.safePage}
+              pageCount={w.pageCount}
+              pageSize={w.pageSize}
+              total={w.totalRows}
+            />
+          ) : null}
+        </DockStack>
+      </TabHeader>
 
       <AssetsClaimModal
         amountLabel={w.claim.open ? w.claim.amountLabel : ''}

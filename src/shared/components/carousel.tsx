@@ -81,7 +81,7 @@ const carouselChrome = tv({
     layout: {
       desktop: {
         root: 'gap-0',
-        viewport: 'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-(--shadow-bleed-subtle)',
+        viewport: 'dapp:-mx-6 dapp:w-[calc(100%+3rem)] dapp:px-6 dapp:pb-(--shadow-bleed-subtle)',
         indicatorBar: [
           'gap-3.5',
           'relative z-1 -mt-(--shadow-bleed-subtle) pt-(--carousel-pc-indicator-pt)',

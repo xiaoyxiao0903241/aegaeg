@@ -7,7 +7,7 @@ import { SubviewDisplayViewContext } from '~/views/dapp/shared/subview-display-c
  * 子视图切换时的退场 / 入场两层。
  *
  * 各层通过 display context 注入自己的视图名，子组件据此渲染对应内容；
- * 两层叠放后由 CSS 动画驱动交叉淡入淡出。
+ * 两层叠放后由 CSS 动画驱动（左栏整层横滑 / 右栏升降淡）。
  */
 export function SubviewTransitionLayers({
   direction,

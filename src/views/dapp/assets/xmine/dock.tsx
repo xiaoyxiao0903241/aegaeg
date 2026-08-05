@@ -25,66 +25,67 @@ export function XmineDock() {
         onBack={() => vm.setView('hub')}
         subtitle={copy.intro}
         title={copy.title}
-      />
-      <DockStack>
-        <AssetsQuoteToolbar
-          onQuoteChange={vm.setQuote}
-          onSortChange={vm.setSort}
-          quote={vm.quote}
-          quoteLabel={t.assets.position.quoteCurrency}
-          sortLabel={t.assets.position.sort}
-          sortOptions={vm.sortOptions}
-          sortValue={vm.sort}
-        />
-
-        {!vm.walletReady ? (
-          <DockConnectPromo />
-        ) : vm.isLoading ? (
-          <AssetsPositionListSkeleton count={1} />
-        ) : vm.isEmpty || !position ? (
-          <AssetsPositionEmptyCard
-            body={copy.empty}
-            ctaLabel={copy.emptyCta}
-            onCta={() => openStakingView('xmine')}
-            title={t.assets.position.emptyTitle}
-          />
-        ) : (
-          <AssetsXminePositionCard
-            activateWarmupLabel={t.assets.position.activateWarmup}
-            busy={vm.busy}
-            claimLabel={t.assets.position.claim}
-            gons={position.gons}
-            locked={vm.locked}
-            lockedPrefix={t.assets.position.lockedPrefix}
-            miningStake={position.miningStake}
-            onActivateWarmup={() => void vm.handleActivateWarmup()}
-            onClaim={() => void vm.handleClaim()}
-            onRequestUnstake={vm.requestUnstake}
-            outputCaption={copy.output}
-            pending={position.pending}
-            periodPill={copy.periodPill}
+      >
+        <DockStack>
+          <AssetsQuoteToolbar
+            onQuoteChange={vm.setQuote}
+            onSortChange={vm.setSort}
             quote={vm.quote}
-            redeemAnytimeLabel={t.assets.position.redeemAnytime}
-            redeemLabel={t.assets.position.redeem}
-            remainingCaption={t.assets.position.remaining}
-            stakedCaption={t.assets.position.staked}
-            voucherAddress={vm.voucherAddress}
-            voucherCaption={t.assets.position.voucher}
-            warmupEndTime={position.warmupEndTime}
-            warmupGons={position.warmupGons}
+            quoteLabel={t.assets.position.quoteCurrency}
+            sortLabel={t.assets.position.sort}
+            sortOptions={vm.sortOptions}
+            sortValue={vm.sort}
           />
-        )}
 
-        {!vm.isEmpty && vm.walletReady ? (
-          <AssetsListPager
-            onPageChange={() => {}}
-            page={0}
-            pageCount={1}
-            pageSize={vm.pageSize}
-            total={vm.totalRows}
-          />
-        ) : null}
-      </DockStack>
+          {!vm.walletReady ? (
+            <DockConnectPromo />
+          ) : vm.isLoading ? (
+            <AssetsPositionListSkeleton count={1} />
+          ) : vm.isEmpty || !position ? (
+            <AssetsPositionEmptyCard
+              body={copy.empty}
+              ctaLabel={copy.emptyCta}
+              onCta={() => openStakingView('xmine')}
+              title={t.assets.position.emptyTitle}
+            />
+          ) : (
+            <AssetsXminePositionCard
+              activateWarmupLabel={t.assets.position.activateWarmup}
+              busy={vm.busy}
+              claimLabel={t.assets.position.claim}
+              gons={position.gons}
+              locked={vm.locked}
+              lockedPrefix={t.assets.position.lockedPrefix}
+              miningStake={position.miningStake}
+              onActivateWarmup={() => void vm.handleActivateWarmup()}
+              onClaim={() => void vm.handleClaim()}
+              onRequestUnstake={vm.requestUnstake}
+              outputCaption={copy.output}
+              pending={position.pending}
+              periodPill={copy.periodPill}
+              quote={vm.quote}
+              redeemAnytimeLabel={t.assets.position.redeemAnytime}
+              redeemLabel={t.assets.position.redeem}
+              remainingCaption={t.assets.position.remaining}
+              stakedCaption={t.assets.position.staked}
+              voucherAddress={vm.voucherAddress}
+              voucherCaption={t.assets.position.voucher}
+              warmupEndTime={position.warmupEndTime}
+              warmupGons={position.warmupGons}
+            />
+          )}
+
+          {!vm.isEmpty && vm.walletReady ? (
+            <AssetsListPager
+              onPageChange={() => {}}
+              page={0}
+              pageCount={1}
+              pageSize={vm.pageSize}
+              total={vm.totalRows}
+            />
+          ) : null}
+        </DockStack>
+      </TabHeader>
 
       <AssetsRedeemConfirm
         amountLabel={

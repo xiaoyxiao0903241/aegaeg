@@ -23,13 +23,12 @@ export function GenesisDock() {
   const banner = darkBanner()
 
   return (
-    <>
-      <TabHeader
-        backText={t.rewards.backToHub}
-        onBack={() => setView('hub')}
-        subtitle={vm.g.pageSubtitle}
-        title={vm.g.pageTitle}
-      />
+    <TabHeader
+      backText={t.rewards.backToHub}
+      onBack={() => setView('hub')}
+      subtitle={vm.g.pageSubtitle}
+      title={vm.g.pageTitle}
+    >
       <DockStack className="gap-4">
         <div className={banner.root({ className: 'flex flex-col gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
@@ -153,6 +152,6 @@ export function GenesisDock() {
 
         {!vm.walletReady ? <DockConnectPromo /> : null}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

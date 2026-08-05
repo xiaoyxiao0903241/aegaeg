@@ -64,13 +64,12 @@ export function BondDock({ kind }: { kind: BondKind }) {
       : formatGroupedNumber(0, { digits: 2, prefix: '$' })
 
   return (
-    <>
-      <TabHeader
-        backText={t.staking.backToHub}
-        onBack={() => setView('hub')}
-        subtitle={copy.intro}
-        title={copy.title}
-      />
+    <TabHeader
+      backText={t.staking.backToHub}
+      onBack={() => setView('hub')}
+      subtitle={copy.intro}
+      title={copy.title}
+    >
       <DockStack>
         <BondPeriodList
           ariaLabel={copy.periodAria}
@@ -192,6 +191,6 @@ export function BondDock({ kind }: { kind: BondKind }) {
           </FormActions>
         )}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

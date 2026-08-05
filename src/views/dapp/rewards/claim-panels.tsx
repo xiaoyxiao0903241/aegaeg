@@ -41,13 +41,12 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
   const vm = useSimpleClaim(view, sessionReady)
 
   return (
-    <>
-      <TabHeader
-        backText={t.rewards.backToHub}
-        onBack={() => setView('hub')}
-        subtitle={vm.card.body}
-        title={vm.card.title}
-      />
+    <TabHeader
+      backText={t.rewards.backToHub}
+      onBack={() => setView('hub')}
+      subtitle={vm.card.body}
+      title={vm.card.title}
+    >
       <DockStack>
         {view === 'grant' ? (
           <>
@@ -102,7 +101,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
           <DockConnectPromo />
         )}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }
 
@@ -115,13 +114,12 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const t = vm.t
 
   return (
-    <>
-      <TabHeader
-        backText={t.rewards.backToHub}
-        onBack={() => setView('hub')}
-        subtitle={vm.card.body}
-        title={vm.card.title}
-      />
+    <TabHeader
+      backText={t.rewards.backToHub}
+      onBack={() => setView('hub')}
+      subtitle={vm.card.body}
+      title={vm.card.title}
+    >
       <DockStack>
         {vm.showCobuildRewardType ? (
           <Segment
@@ -261,6 +259,6 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           <DockConnectPromo />
         )}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

@@ -16,13 +16,12 @@ export function QueueDock() {
   const { t } = vm
 
   return (
-    <>
-      <TabHeader
-        backText={t.release.backToHub}
-        onBack={vm.onBack}
-        subtitle={t.release.queue.intro}
-        title={t.release.queue.title}
-      />
+    <TabHeader
+      backText={t.release.backToHub}
+      onBack={vm.onBack}
+      subtitle={t.release.queue.intro}
+      title={t.release.queue.title}
+    >
       <DockStack>
         <div
           aria-label={t.release.queue.title}
@@ -68,6 +67,6 @@ export function QueueDock() {
 
         {vm.walletReady ? null : <DockConnectPromo />}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }

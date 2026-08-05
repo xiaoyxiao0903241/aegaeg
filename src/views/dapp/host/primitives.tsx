@@ -54,14 +54,15 @@ export function railIconMask(icon: string): CSSProperties {
 export function scrollDappPanelsToTop() {
   requestAnimationFrame(() => {
     const hostWindow = document.querySelector('[data-dapp-window]')
-    const widget = document.querySelector('[data-dapp-widget-panel]')
     const detail = document.querySelector('[data-dapp-detail]')
     if (hostWindow instanceof HTMLElement) {
       hostWindow.scrollTop = 0
     }
-    if (widget instanceof HTMLElement) {
-      widget.scrollTop = 0
-    }
+    document.querySelectorAll('[data-dapp-widget-scroll]').forEach((node) => {
+      if (node instanceof HTMLElement) {
+        node.scrollTop = 0
+      }
+    })
     if (detail instanceof HTMLElement) {
       detail.scrollTop = 0
     }
@@ -83,7 +84,7 @@ export function ScrollFadeHost({
   return (
     <div
       className={cn(
-        'dapp-scroll-fade-host max-dapp:contents',
+        'dapp-scroll-fade-host',
         'dapp:relative dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:min-w-0',
         className,
       )}

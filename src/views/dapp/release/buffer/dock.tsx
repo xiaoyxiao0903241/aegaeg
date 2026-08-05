@@ -18,13 +18,12 @@ export function BufferDock() {
   const gagxZero = `${formatGroupedNumber(0, { digits: 4 })} gAGX`
 
   return (
-    <>
-      <TabHeader
-        backText={t.release.backToHub}
-        onBack={vm.onBack}
-        subtitle={t.release.buffer.intro}
-        title={t.release.buffer.title}
-      />
+    <TabHeader
+      backText={t.release.backToHub}
+      onBack={vm.onBack}
+      subtitle={t.release.buffer.intro}
+      title={t.release.buffer.title}
+    >
       <DockStack>
         <ReleasePlanCard data-slot-id="release-buffer-card-agx">
           <ReleasePlanCard.Header>
@@ -79,6 +78,6 @@ export function BufferDock() {
 
         {vm.walletReady ? null : <DockConnectPromo />}
       </DockStack>
-    </>
+    </TabHeader>
   )
 }
