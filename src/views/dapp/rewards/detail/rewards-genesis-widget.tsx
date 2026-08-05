@@ -11,7 +11,12 @@ import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
 import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 
-/** Figma 4413:603 左栏 — 深色等级卡 + 直推/等级/发展基金 */
+/**
+ * 创世左栏面板
+ *
+ * 深色等级卡展示当前等级与个人 / 团队进度，
+ * 下方为直推奖励、等级奖励、发展基金三张领取卡；未连接钱包时显示引导。
+ */
 export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
@@ -27,7 +32,6 @@ export function RewardsGenesisClaimWidget() {
         title={vm.g.pageTitle}
       />
       <DappWidgetStack className="gap-4">
-        {/* level-dark 4413:615 — root 须 flex 才能吃 gap-3.5(14)；左栏卡间稿 gap16→gap-4 */}
         <div className={banner.root({ className: 'flex flex-col gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
             <Text as="p" className="font-medium" tone="primary-bright" variant="caption">
@@ -93,7 +97,7 @@ export function RewardsGenesisClaimWidget() {
           </div>
         </div>
 
-        {/* 直推 4413:634 · 自动支付 coral */}
+        {/* 直推奖励卡：自动支付 */}
         <Card surface="outlined" className="rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
@@ -111,7 +115,7 @@ export function RewardsGenesisClaimWidget() {
           </Text>
         </Card>
 
-        {/* 等级奖励 4413:640 · 右侧累计 body70 */}
+        {/* 等级奖励卡：右侧显示累计已领金额 */}
         <Card surface="outlined" className="rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
@@ -143,7 +147,7 @@ export function RewardsGenesisClaimWidget() {
           ) : null}
         </Card>
 
-        {/* 发展基金 4413:647 */}
+        {/* 发展基金卡：仅超级社区可领取，其余显示锁定金额 */}
         <Card surface="outlined" className="rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">

@@ -16,11 +16,11 @@ type UseMarketTradeSpotRatesArgs = {
   pathKey: string
   quotesEnabled: boolean
   poolContext: ExchangePoolReadContext | undefined
-  /** Live sell amountIn — when zero, spot quoting drives the empty-rate skeleton. */
+  /** 当前卖出金额；为 0 时用行情报价驱动空态汇率骨架。 */
   amountIn: bigint
 }
 
-/** Current sell→buy spot (+ inverted buy→sell) for meta / overview. */
+/** 当前币对的正向 / 反向行情报价，供信息行与概览使用。 */
 export function useMarketTradeSpotRates({
   pair,
   path,
@@ -78,7 +78,7 @@ export function useMarketTradeSpotRates({
     placeholderData: keepPreviousData,
   })
 
-  /** Face rates keep previous quote; do not zero via liveQuotedOut (submit gate only). */
+  // 展示面保留上一次报价，不用 liveQuotedOut 置零（那是提交门禁专用）
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const invertedQuotedOut = invertedSpotQuoteQuery.data?.quotedOut ?? 0n
   const isSpotQuoting =

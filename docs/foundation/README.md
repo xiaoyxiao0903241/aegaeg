@@ -9,6 +9,7 @@
 2. [`ui-tokens.md`](./ui-tokens.md) — 设计 token / 组件公开轴
 3. [`runbook.md`](./runbook.md) — 改 primitive 流程
 4. [`component-usage.md`](./component-usage.md) — leaf / call site 用法
+5. [`comment-conventions.md`](./comment-conventions.md) — 代码注释（严格层 / 逻辑层）
 
 ## 定稿规则
 

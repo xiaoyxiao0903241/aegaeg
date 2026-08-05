@@ -7,9 +7,9 @@ import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 const METAMASK_WALLET_ID = 'io.metamask' as WalletId
 
 /**
- * Wallet ids that never correspond to a browser-injected provider. Routing
- * their writes to `window.ethereum` would target a different wallet than the
- * one the user connected (e.g. WalletConnect session + MetaMask installed).
+ * 与浏览器注入 provider 永远不对应的钱包 id。
+ * 把这些钱包的写请求路由到 `window.ethereum` 会指向别的钱包
+ * （如已装 MetaMask 时，WalletConnect 会话被错误替换）。
  */
 const NON_INJECTED_WALLET_IDS = new Set<string>(['walletConnect', 'inApp', 'embedded', 'smart'])
 
@@ -121,16 +121,19 @@ function createDeferredWalletProvider(wallet: Wallet): EIP1193Provider {
     return bound(args)
   }
 
-  // Minimal EIP-1193 surface — only `request` is used by wallet writes.
-  // Full viem `EIP1193Provider` is a large method union; widen at the adapter edge.
+  // 只暴露最小 EIP-1193 面：钱包写仅用到 `request`。
+  // viem 完整 `EIP1193Provider` 是很大的方法联合类型，在适配边界放宽类型。
   return { request } as unknown as EIP1193Provider
 }
 
 /**
- * Resolves the wallet's EIP-1193 provider for contract writes.
- * Injected wallets prefer the EIP-6963 provider. Legacy `window.ethereum` is
- * only used when `eth_accounts` includes the connected address; otherwise
- * thirdweb's adapter routes through the active session.
+ * 解析钱包的 EIP-1193 provider（用于合约写）
+ *
+ * 注入式钱包优先 EIP-6963 provider；仅当 `eth_accounts` 含已连接地址时才
+ * 回退使用 `window.ethereum`；否则经 thirdweb 适配器走当前会话。
+ *
+ * @param wallet 当前钱包
+ * @returns 可用于请求的 EIP-1193 provider
  */
 export function walletEip1193Provider(wallet: Wallet): EIP1193Provider {
   if (NON_INJECTED_WALLET_IDS.has(wallet.id)) {

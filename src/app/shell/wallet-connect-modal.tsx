@@ -19,6 +19,12 @@ const walletConnectPanel = tv({
   ],
 })
 
+/**
+ * 钱包连接弹窗（H5 下为底部抽屉）。
+ *
+ * 内嵌 thirdweb ConnectEmbed；连接成功后自动关闭。
+ * 已连接时打开则立即关闭，避免重复拉起。
+ */
 export function WalletConnectModal({
   onOpenChange,
   open,

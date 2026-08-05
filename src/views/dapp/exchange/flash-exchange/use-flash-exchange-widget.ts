@@ -29,14 +29,21 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
- * Handbook `usd1swap.md` sample: `minOut = (usd1Out * 99n) / 100n` (1% floor).
- * Wrap/redeem is protocol 1:1 → 0 bps.
+ * USDT 兑换滑点 1%（合约示例 minOut 取 99%）；gAGX 包装 / 赎回为 1:1，无滑点。
+ *
+ * @see docs/onchain-manual/contracts/usd1swap.md
  */
 const FLASH_USDT_SLIPPAGE_BPS = 100
 
-/** Dual-pair Flash: gAGX wrap↔redeem + USDT→USD1; dual amount fields; no slippage UI. */
+/** 双币对闪兑：gAGX 包装↔赎回 + USDT→USD1，双向金额输入，无滑点设置项。 */
 type FlashIntroKey = 'gagx' | 'gagxWrap' | 'usdt'
 
+/**
+ * 闪电兑换会话状态
+ *
+ * 管理币对、方向、余额 / 授权、报价与提交；gAGX 对可翻转方向，
+ * USDT 对需等链上配置就绪后才开启报价。
+ */
 export function useFlashExchangeWidget(
   sessionReady: boolean,
   quotesEnabled = true,
@@ -51,7 +58,7 @@ export function useFlashExchangeWidget(
 
   const walletReady = hasWalletAccount(account)
 
-  // Warm config whenever Flash session is mounted (not only on USDT segment).
+  // 闪兑会话挂载即预热配置，而非只在切到 USDT 段时读取
   const configQuery = useChainQuery({
     queryKey: queryKeys.chain.flashUsd1SwapConfig,
     queryFn: () => readUsd1SwapConfig(),
@@ -61,7 +68,7 @@ export function useFlashExchangeWidget(
     placeholderData: keepPreviousData,
   })
 
-  // Handbook: never hardcode input/output decimals — wait for getConfig.usdtDec/usd1Dec.
+  // 不写死输入 / 输出小数位，等链上配置返回 usdtDec / usd1Dec
   const usd1ConfigReady = isRedeemPair || configQuery.data !== undefined
   const usdtQuotesEnabled = quotesEnabled && usd1ConfigReady
 
@@ -70,7 +77,7 @@ export function useFlashExchangeWidget(
   const buyDecimals =
     !isRedeemPair && configQuery.data ? configQuery.data.usd1Dec : pair.buy.decimals
 
-  // Sibling observers warm Segment/flip slots — cross-pair keepPrevious would show wrong token.
+  // 三个方向的余额查询常驻预热；跨币对复用旧值会显示错误代币
   const gagxForwardBalances = useChainQuery({
     queryKey: queryKeys.chain.flashSwapBalances('gagx', 'forward'),
     queryFn: (addr) => readFlashPairBalances('gagx', 'forward', addr),
@@ -189,7 +196,7 @@ export function useFlashExchangeWidget(
       sell: { ...pair.sell, decimals: sellDecimals },
       buy: { ...pair.buy, decimals: buyDecimals },
     },
-    // Pending → '' so CountValue retains; never coerce missing pair data to 0.00.
+    // 未加载返回空串，由 CountValue 保留占位；缺失的币对数据不强行归零
     sellBalanceLabel:
       balancesQuery.data === undefined
         ? ''

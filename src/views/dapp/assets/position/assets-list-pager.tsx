@@ -3,7 +3,7 @@ import { Button } from '~/shared/components/button'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 
-/** 左栏仓位列表分页（稿：共 N · 每页 M + 上一页 / `1 / N` / 下一页）。≤pageSize 不渲染。 */
+/** 左栏仓位列表分页：总数与每页条数 + 上一页 / 页码 / 下一页；不足一页时不渲染 */
 export function AssetsListPager({
   page,
   pageCount,

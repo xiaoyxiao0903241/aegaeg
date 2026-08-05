@@ -16,8 +16,11 @@ function GenesisSessionMounted({
 }
 
 /**
- * Lifts Genesis widget hook once (wallet remount clears draft) and passes state as props.
- * Only mounts while Genesis tab is active — same as former GenesisWidgetProvider check.
+ * 创世会话宿主
+ *
+ * 把创世 widget 的 hook 提升为单一实例并以 props 下发；
+ * 钱包切换时通过 key 重建以清空购买草稿，
+ * 仅在创世 Tab 激活时挂载，未激活时向子级传 null。
  */
 export function GenesisSessionHost({
   active,

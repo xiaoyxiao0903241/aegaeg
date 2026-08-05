@@ -10,8 +10,10 @@ import {
 } from '~/web3/exchange/read-exchange-pool'
 
 /**
- * Shared V2 pair metadata + reserves.
- * `readsEnabled` warms cache on Exchange tab; `spotLive` polls only for the active Trade view.
+ * 市价交易资金池元数据与实时储备
+ *
+ * readsEnabled 在兑换页挂载时预热缓存；spotLive 只对当前
+ * 市价交易视图轮询实时报价。
  */
 export function useExchangePoolReads(readsEnabled = true, spotLive = readsEnabled) {
   const metadataQuery = useChainQuery({

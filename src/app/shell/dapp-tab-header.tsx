@@ -6,6 +6,9 @@ import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetSubpageHeader } from '~/shared/components/widget-header'
 
+/**
+ * 子页面顶部标题栏：返回按钮 + 标题 + 折叠开关。
+ */
 export function DappTabHeader({
   backText,
   className,

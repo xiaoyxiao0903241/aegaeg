@@ -16,6 +16,13 @@ import { formatApiStatLabel, formatMakingRankLabel } from '~/views/dapp/rewards/
 
 type GrantRecordsTab = 'issue' | 'claim'
 
+/**
+ * 发展津贴详情视图模型
+ *
+ * 聚合发展津贴汇总与发放 / 领取明细，按 Tab 切换列表。
+ *
+ * @see docs/backend-api/api.md #market-allowance/summary
+ */
 export function useRewardsGrantContentView() {
   const { messages: t } = useI18n()
   const grant = t.rewards.grant

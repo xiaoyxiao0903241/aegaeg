@@ -1,3 +1,9 @@
+/**
+ * 兑换 Hub 交互面板
+ *
+ * 列出四种兑换模式入口卡片，点击切换子视图；
+ * 顶部为面板标题与收起按钮。
+ */
 import { exchangeHubAssets } from '~/app/assets'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'

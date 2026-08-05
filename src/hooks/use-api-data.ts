@@ -76,6 +76,28 @@ import type {
 } from '~/shared/api/types'
 import { useAuthStore } from '~/stores/auth-store'
 
+/**
+ * 后端 API 数据查询 hooks
+ *
+ * 本文件所有导出 hook 均为 {@link useAuthenticatedQuery} 的薄封装：自动携带会话 token、
+ * 缓存键按钱包地址隔离、失败统一转为面向用户的错误文案。分页类 hook 翻页期间保留上一页数据，
+ * 避免切换页时闪空。
+ *
+ * @see docs/backend-api/api.md
+ */
+/**
+ * 带会话的 API 查询（本模块核心）
+ *
+ * 缓存键追加规范化钱包地址：JWT 续期不丢缓存，切换钱包自动隔离账号数据。
+ * token 优先取状态仓库中的最新值，静默续期可立即用于下一次拉取。
+ * 未登录、未水合或会话未就绪时不发起查询，避免匿名请求。
+ *
+ * @param queryKey 基础缓存键，内部追加当前钱包地址
+ * @param fetcher 携带 token 的请求函数
+ * @param enabled 领域开关，与登录状态取交集
+ * @param options.keepPreviousData 翻页时保留上一页数据
+ * @returns 归一化的查询视图（data/error/isLoading/refresh）
+ */
 function useAuthenticatedQuery<T>(
   queryKey: QueryKey,
   fetcher: (token: string) => Promise<T>,
@@ -84,13 +106,13 @@ function useAuthenticatedQuery<T>(
 ) {
   const { token, invalidateSession, sessionReady, hasHydrated, session } = useAuth()
   const { messages: t } = useI18n()
-  // Address-scoped key: JWT renew keeps cache; wallet switch isolates accounts.
+  // 缓存键带钱包地址：JWT 续期不清缓存，切换钱包隔离数据
   const scopeKey = session?.address ? normalizeAuthAddress(session.address) : undefined
 
   const query = useQuery({
     queryKey: scopeKey ? [...queryKey, scopeKey] : queryKey,
     queryFn: () => {
-      // Prefer store token so silent renew updates mid-flight refetch without waiting for re-render.
+      // 优先取状态仓库里的最新 token，静默续期后无需等重渲染即可用于拉取
       const latestToken = scopeKey
         ? (useAuthStore.getState().sessionsByAddress[scopeKey]?.token ?? token)
         : token
@@ -120,6 +142,15 @@ function useAuthenticatedQuery<T>(
   return toApiQueryView(query, t.errors.api)
 }
 
+/**
+ * 把 react-query 结果归一化为面向视图的查询视图
+ *
+ * 未加载/未知统一映射为 null，错误转为面向用户的文案，另暴露 refresh 重新拉取。
+ *
+ * @param query 原始 react-query 结果
+ * @param apiErrorMessages 各错误码对应的文案表
+ * @returns 归一化视图：data/error/isLoading/refresh
+ */
 function toApiQueryView<T>(
   query: {
     data: T | undefined
@@ -143,6 +174,15 @@ export function usePerformance(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.performance, getPerformance, enabled)
 }
 
+/**
+ * 按地址搜索做市业绩（公开接口，不依赖登录会话）
+ *
+ * 地址为空时不发起查询，避免无效请求。
+ *
+ * @param address 待搜索的钱包地址
+ * @param enabled 是否允许执行
+ * @see docs/backend-api/api.md #search/performance
+ */
 export function useSearchPerformance(address: string | null | undefined, enabled = true) {
   const { messages: t } = useI18n()
   const normalized = address?.trim() ?? ''

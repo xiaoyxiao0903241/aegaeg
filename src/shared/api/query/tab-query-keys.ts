@@ -1,7 +1,7 @@
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 
-/** Per-tab query root prefixes — shared by invalidate + prefetch. */
+/** 各 Tab 的查询根前缀——失效与预取共用。 */
 export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
   genesis: [
     queryKeys.api.performance,

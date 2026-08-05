@@ -25,6 +25,16 @@ export type BurnUserStats = {
   contributionEarned: bigint
 }
 
+/**
+ * 读取销毁换贡献值的全局配置
+ *
+ * 调用 AgxContributionSwap.getConfig / getSplitConfig，
+ * 返回汇率、暂停、上下限、累计销毁与分配比例等展示与预检所需字段。
+ *
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 销毁配置（含 agxToken 地址）
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
 export async function readBurnContributionSwapConfig(
   client: ChainReadClient = bscReadClient,
 ): Promise<BurnContributionSwapConfig & { agxToken: `0x${string}` }> {
@@ -55,6 +65,16 @@ export async function readBurnContributionSwapConfig(
   }
 }
 
+/**
+ * 估算销毁 AGX 可获得的贡献值数量
+ *
+ * 调用 `quoteContributionOut`；数量为 0 时直接返回 0，不发起链上读取。
+ *
+ * @param agxAmount 拟销毁的 AGX 数量
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 预期贡献值数量；agxAmount 为 0 时返回 0
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
 export async function readBurnContributionQuote(
   agxAmount: bigint,
   client: ChainReadClient = bscReadClient,
@@ -68,6 +88,18 @@ export async function readBurnContributionQuote(
   })
 }
 
+/**
+ * 读取用户销毁页统计
+ *
+ * 先经 `originalOf` 解析迁移根地址（别名感知），再按根地址读贡献值、
+ * 按原地址读已销毁 AGX 与已消耗贡献值；已得贡献值 = 余额 + 已消耗。
+ *
+ * @param user 钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 贡献值余额 / 已销毁 AGX / 已消耗 / 已得贡献值
+ * @see 手册 §9.2 贡献值页面
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
 export async function readBurnUserStats(
   user: string,
   client: ChainReadClient = bscReadClient,
@@ -109,6 +141,16 @@ export async function readBurnUserStats(
   }
 }
 
+/**
+ * 读取销毁页 AGX 余额与授权
+ *
+ * 返回 AGX 可卖余额与对 AgxContributionSwap 的授权额度，
+ * 供输入上限与 approve 判断使用。
+ *
+ * @param owner 钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns AGX 余额与授权额度
+ */
 export async function readBurnExchangeBalances(
   owner: string,
   client: ChainReadClient = bscReadClient,

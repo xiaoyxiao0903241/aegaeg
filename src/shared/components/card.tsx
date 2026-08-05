@@ -11,17 +11,18 @@ import { Text, type TextProps } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Card — four surfaces; fine-tune layout via className.
- * outlined chrome SSOT（hub 左卡 / InteractiveCard）：border · radius/md · p-4 · 无阴影。
+ * 卡片 — 四种表面
+ *
+ * outlined 为默认描边卡片，布局微调用 className。
  */
 export const cardVariants = tv({
   base: 'bg-card text-card-foreground',
   variants: {
     surface: {
       outlined: 'rounded-md border border-border p-4',
-      /** 右栏指标瓦 / elevated chrome SSOT：稿 p16 · radius/md · shadow-card（禁 call site 再抹 p/rounded/shadow） */
+      /** 右栏指标瓦；禁止调用方再改内边距 / 圆角 / 阴影 */
       elevated: 'rounded-md bg-card p-4 shadow-card',
-      /** FAQ / Accordion shell — elevation + radius; body owns padding. */
+      /** FAQ / 手风琴外壳；内边距由内容自己负责 */
       soft: 'overflow-hidden rounded-2xl bg-card shadow-faq',
       inverse: 'rounded-md bg-dark p-4 text-white shadow-subtle',
     },
@@ -54,6 +55,11 @@ function CardRoot(
   )
 }
 
+/**
+ * 卡片容器
+ *
+ * 与 Header / Title / Description / Content / Footer / Label / Value 子件组合使用。
+ */
 export const Card = Object.assign(forwardRef(CardRoot), {
   Header,
   Title,
@@ -86,12 +92,12 @@ function Footer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('flex items-center gap-3', className)} {...props} />
 }
 
-/** Tier B · metric / meta 行标签（Figma 12px support） */
+/** 指标 / 元数据行标签 */
 function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
   return <Text variant="support" tone="foreground" className={className} {...props} />
 }
 
-/** Tier B · 数值（默认 figure 字阶；比例字，无 tabular-nums） */
+/** 指标数值 */
 function Value({ className, ...props }: Omit<TextProps, 'variant'>) {
   return (
     <Text

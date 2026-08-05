@@ -4,24 +4,28 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 export type ClaimSplitSliderProps = {
-  /** Accessible name — call site supplies i18n. */
+  /** 无障碍名称；文案由调用方提供 */
   'aria-label': string
   className?: string
   disabled?: boolean
   onChange: (releasePct: number) => void
-  /** Share sent to the release pool (0–100). Restake = 100 − value. */
+  /** 归入释放池的比例（0–100）；再质押比例 = 100 − 该值 */
   value: number
 }
 
-/** UI-only 0–100 clamp — domain SSOT remains `claimSplitFromReleasePct` in core. */
+/** 仅界面层的 0–100 截断；真实比例仍由 core 的 `claimSplitFromReleasePct` 决定 */
 function clampSliderPct(value: number): number {
   return Math.min(100, Math.max(0, Math.round(value)))
 }
 
 /**
- * Dual-tone claim split chrome — Figma `4812:221`.
- * Coral track = release; blue = restake; white thumb embeds `%`.
- * Labels / aria / split math are call-site owned (`claimSplitFromReleasePct`).
+ * 双色领取分配滑杆
+ *
+ * 珊瑚段 = 释放池；蓝色段 = 再质押；白色滑块内嵌百分比。
+ * 标签 / 无障碍文案 / 分配计算由调用方负责（见 `claimSplitFromReleasePct`）。
+ *
+ * @param value 归入释放池的比例（0–100）
+ * @param onChange 比例变化时回调（0–100）
  */
 export function ClaimSplitSlider({
   'aria-label': ariaLabel,

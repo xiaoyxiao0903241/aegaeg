@@ -1,6 +1,6 @@
 import { Icon } from '~/shared/components/icon'
 
-/** Provider name + external-link control for Exchange meta rows. */
+/** 兑换信息行内的提供方名称 + 外链打开按钮。 */
 export function ExchangeProviderMetaValue({
   name,
   ariaLabel,
@@ -27,7 +27,7 @@ export function ExchangeProviderMetaValue({
   )
 }
 
-/** One List row for an external provider link. */
+/** 构造一条外部提供方链接的列表行。 */
 export function exchangeProviderMetaRow({
   label,
   name,

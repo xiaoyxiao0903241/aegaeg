@@ -29,10 +29,11 @@ import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/ta
 import { cn } from '~/shared/lib/utils'
 
 /**
- * DApp 表 — 组合式：
+ * DApp 表 — 组合组件
+ *
  * `Table` · `Header`（卡内顶槽）· `Body` · `Cell` · `Footer` · `Pagination`
  * · `Empty` / `Auth` / `Shell`。
- * Header ≠ 列名 thead；区块标题仍在卡外 `Section.Title`。
+ * Header 不是列名 thead；区块标题仍放在卡外 `Section.Title`。
  * @see docs/foundation/component-usage.md
  */
 
@@ -161,7 +162,7 @@ function Footer({ children, className }: { children: ReactNode; className?: stri
   return <div className={cn(tableShell().footer(), className)}>{children}</div>
 }
 
-/** 空态 / Auth 自建壳（与 Card elevated 平行）。 */
+/** 空态 / Auth 自建容器（与 Card elevated 平行） */
 function Shell({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -186,7 +187,7 @@ type CellProps = {
   status?: boolean
 }
 
-/** 单元格 chrome；手写表 / Body 内部共用。 */
+/** 单元格样式；手写表 / Body 内部共用 */
 function Cell({
   accent = false,
   as = 'td',
@@ -356,7 +357,7 @@ function RowSkeleton({ columns, isLast }: { columns: number; isLast: boolean }) 
   )
 }
 
-/** 表空态 — 文案 chrome 走全局 `Empty`；standalone 外包表壳。 */
+/** 表空态 — 文案用全局 `Empty`；独立使用时外包表容器 */
 function TableEmpty({
   body,
   className,
@@ -451,7 +452,7 @@ function EmptySkeletonRow({ className }: { className?: string }) {
 }
 
 /**
- * 未连接空态。title/body/连接 CTA 均由 call site 传入（shared 不嵌 locale）。
+ * 未连接钱包空态。标题 / 正文 / 连接 CTA 均由调用方传入（shared 不嵌入文案）。
  * @example
  * <Table.Auth title={t…} body={t…}>
  *   <WalletConnectChip variant="primary" />
@@ -487,7 +488,7 @@ function Auth({
   )
 }
 
-/* ── Pagination（贴 Footer；无外顶距） ─────────────────────────── */
+/* ── 分页（贴 Footer；无外顶距） ─────────────────────────── */
 
 const PAGE_MENU_VISIBLE_ITEMS = 5
 const PAGINATION_BTN_RADIUS = 'rounded-tight'
@@ -683,7 +684,7 @@ function Pagination({
                 aria-expanded={menuOpen}
                 aria-haspopup="listbox"
                 className={cn(
-                  // 稿 page-indicator 61×24（与两侧 chevron `size-6` 同高）
+                  // 页码指示器与两侧 chevron 等高
                   'inline-flex h-6 min-w-15.25 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
                   PAGINATION_BTN_RADIUS,
                   'bg-accent',

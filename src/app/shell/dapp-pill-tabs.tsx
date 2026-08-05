@@ -2,8 +2,12 @@ import { Chip, type ChipProps } from '~/shared/components/chip'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Figma `htab` 分立 pill 组（样本 Grant `4719:2447` · Staking hub `4371:233`）。
- * 选中：soft + coral/primary；未选：outlined 白底描边 + text-foreground/40（≠ muted-foreground 70%）。
+ * 分立式 pill Tab 组。
+ *
+ * 选中项以主题色高亮，未选项白底描边。
+ *
+ * @param items 各 Tab 项，active 标记当前选中
+ * @param onSelect 点击某个 Tab 时回调其下标
  */
 export function DappPillTabs({
   activeTone = 'primary',
@@ -13,13 +17,13 @@ export function DappPillTabs({
   onSelect,
   size = 'md',
 }: {
-  /** Active pill text/bg tone — Rewards history uses `coral` (Figma accent/coral ≈ coral-emphasis). */
+  /** 选中 pill 的文字/底色——奖励历史页使用 coral。 */
   activeTone?: 'primary' | 'coral'
   ariaLabel: string
   className?: string
   items: Array<{ active?: boolean; label: string }>
   onSelect?: (index: number) => void
-  /** Figma tokTabs/htab ≈ h-7；销毁记录 tt ≈ sm。 */
+  /** 尺寸档位；销毁记录等紧凑场景用 sm。 */
   size?: NonNullable<ChipProps['size']>
 }) {
   return (

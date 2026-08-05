@@ -8,5 +8,6 @@ const rewardsView = createDappSubviewStore<RewardsView>({
   hashForView: rewardsHashForView,
 })
 
+/** 纯视图与切换动画状态；面板滚动复位属 DOM 副作用，由外壳页面处理。 */
 export const useRewardsViewStore = rewardsView.useStore
 export const useRewardsViewMotion = rewardsView.useMotion

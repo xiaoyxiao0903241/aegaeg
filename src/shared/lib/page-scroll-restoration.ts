@@ -1,3 +1,4 @@
+/** 启动脚本：关闭浏览器原生滚动恢复，改由本模块持久化与恢复。 */
 export const PAGE_SCROLL_RESTORATION_BOOT_SCRIPT =
   "try{if('scrollRestoration' in history){history.scrollRestoration='manual'}}catch{}"
 
@@ -35,10 +36,11 @@ function writeSavedPageScroll(storageKey: string) {
     }
     sessionStorage.setItem(storageKey, JSON.stringify(payload))
   } catch {
-    // sessionStorage may be unavailable in private mode
+    // 隐私模式下 sessionStorage 可能不可用
   }
 }
 
+/** 监听 pagehide，把当前 hash 与滚动位置写入 sessionStorage。 */
 export function bindPageScrollPersistence(storageKey: string) {
   if (typeof window === 'undefined') {
     return
@@ -49,6 +51,14 @@ export function bindPageScrollPersistence(storageKey: string) {
   })
 }
 
+/**
+ * 恢复持久化的页面滚动位置
+ *
+ * 若启用 hash 锚点且页面存在对应元素，优先滚动到锚点；否则恢复保存的滚动位置。
+ *
+ * @param storageKey 保存滚动位置的 sessionStorage 键
+ * @param options.honorHashAnchor 是否优先滚动到 hash 锚点
+ */
 export function restorePersistedPageScroll(
   storageKey: string,
   options?: { honorHashAnchor?: boolean },

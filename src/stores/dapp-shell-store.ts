@@ -18,8 +18,10 @@ interface DappShellStore {
   setMobileNavOpen: (open: boolean) => void
   syncTabFromHash: () => void
   /**
-   * Reset inactive tab subview stores to hub after content fade swaps displayTab.
-   * Must not run on selectTab — that flashes hub during fade-out of a subview.
+   * 重置非当前 Tab 的子视图仓库回 hub
+   *
+   * 需在内容淡出、displayTab 切换后调用；
+   * 不能在 selectTab 时执行，否则子视图淡出期间会闪回 hub。
    */
   resetForeignSubviewStores: (tab: DappTab) => void
 }
@@ -78,7 +80,7 @@ function resetForeignSubviewStores(tab: DappTab) {
   }
 }
 
-/** Pure tab state — URL hash sync lives in the shell (external system). */
+/** 纯 Tab 状态；URL hash 同步属于外部系统（路由层），本仓库不负责。 */
 export const useDappShellStore = create<DappShellStore>((set) => ({
   activeTab: getInitialTab(),
   detailCollapsed: false,

@@ -1,7 +1,7 @@
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { InlineAlert } from '~/shared/components/inline-alert'
 
-/** Shared connect / block chrome under Exchange write CTAs. */
+/** 兑换提交按钮下方的通用提示区：未连接时引导连接，有阻断原因时展示告警。 */
 export function ExchangeWidgetSessionFooter({
   sessionReady,
   blockHint,

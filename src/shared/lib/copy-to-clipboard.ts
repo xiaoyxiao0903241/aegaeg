@@ -26,7 +26,7 @@ async function preflightClipboardPermission(): Promise<void> {
   try {
     await navigator.permissions?.query({ name: 'clipboard-write' as PermissionName })
   } catch {
-    // Permission query is optional; copy fallbacks still run.
+    // 权限查询非必需；失败后仍会走降级复制方案
   }
 }
 
@@ -77,7 +77,7 @@ function copyViaSelectionApi(input: HTMLInputElement): boolean {
   }
 }
 
-/** Hidden-input + execCommand fallbacks for mobile WebViews (Huawei/Vivo, etc.). */
+/** 隐藏输入框 + execCommand 降级方案，用于华为/Vivo 等移动 WebView。 */
 async function fallbackCopyText(text: string): Promise<boolean> {
   if (typeof document === 'undefined' || !text) return false
 
@@ -103,7 +103,15 @@ async function fallbackCopyText(text: string): Promise<boolean> {
   }
 }
 
-/** Clipboard API first, then legacy fallbacks — call from a user gesture (click). */
+/**
+ * 复制文本到剪贴板
+ *
+ * 优先使用 Clipboard API，失败时降级到隐藏输入框 + execCommand（兼容华为/Vivo 等 WebView）。
+ * 相同文本在冷却窗口内重复复制直接返回 skipped，避免连续点击重复触发系统弹窗。
+ *
+ * @param text 待复制文本
+ * @returns copied 复制成功；skipped 冷却期内重复；failed 全部方案失败
+ */
 export async function copyTextToClipboard(text: string): Promise<CopyToClipboardResult> {
   if (!text) return 'failed'
   if (isWithinCopyCooldown(text)) return 'skipped'

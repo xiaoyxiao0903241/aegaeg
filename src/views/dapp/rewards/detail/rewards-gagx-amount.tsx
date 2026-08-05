@@ -4,7 +4,12 @@ import { dappAssets } from '~/app/assets'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 
-/** gAGX icon + amount/label row used on claim widgets. */
+/**
+ * gAGX 图标 + 数值 / 标签行（领取控件共用）
+ *
+ * @param children 数值或标签内容
+ * @param textVariant 文字样式
+ */
 export function RewardsGagxAmount({
   children,
   textVariant = 'copy',

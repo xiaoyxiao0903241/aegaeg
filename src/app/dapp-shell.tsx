@@ -29,6 +29,14 @@ function replaceTabHash(tab: string) {
   window.history.replaceState(null, '', `#${tab}`)
 }
 
+/**
+ * DApp 主外壳
+ *
+ * 组装左侧导航、顶部栏与左右两个内容面板（左侧操作区、右侧详情区），
+ * 并托管移动端抽屉、新手指引、创世促销数据同步等全局行为。
+ * 当前 Tab 存于 dapp-shell-store，URL hash 变化与点击导航都会驱动它；
+ * 切换 Tab 时先播放内容淡出，再替换面板，保持会话组件在透明层下重挂载。
+ */
 export function DappShell() {
   const { messages } = useI18n()
   const activeTab = useDappShellStore((state) => state.activeTab)
@@ -71,11 +79,11 @@ export function DappShell() {
   useEffect(() => {
     scrollDappPanelsToTop()
     refetchStaleTabQueries(displayTab)
-    // After fade-out swaps displayTab, reset inactive rails — keeps leaving subview stable during fade.
+    // 淡出结束后 displayTab 已切换，重置非当前页的子视图状态，保证淡出期间旧视图稳定
     resetForeignSubviewStores(displayTab)
   }, [displayTab, resetForeignSubviewStores])
 
-  // Mirror former store-side scroll: fire when an exchange subview transition starts.
+  // 复刻原先状态仓库里的滚动行为：兑换子视图切换开始时把面板滚回顶部
   useEffect(() => {
     let prevView = useExchangeViewStore.getState().view
     let prevMotion = useExchangeViewStore.getState().motion
@@ -98,7 +106,7 @@ export function DappShell() {
         'max-dapp:bg-transparent',
       )}
     >
-      {/* H5: peach→background wash fixed to the viewport (not the scrolling card). */}
+      {/* H5：桃色渐变底色固定铺满视口，不随滚动卡片移动。 */}
       <div
         aria-hidden="true"
         className={cn(
@@ -167,9 +175,9 @@ export function DappShell() {
                       <aside
                         className={cn(
                           'dapp-content-fade overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
-                          // PC: fill column and scroll inside the panel
+                          // PC：占满列高，面板内部滚动
                           'dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:overflow-y-auto',
-                          // H5: size to content; window is the only scroller (avoid flex-shrink overlap)
+                          // H5：按内容定高，由外层窗口统一滚动（避免 flex-shrink 重叠）
                           'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
                         )}
                         data-dapp-widget-panel
@@ -211,12 +219,12 @@ export function DappShell() {
                       <section
                         className={cn(
                           'dapp-content-fade min-w-0 overflow-x-hidden bg-card',
-                          // PC: fill column and scroll inside the panel
+                          // PC：占满列高，面板内部滚动
                           'dapp:max-h-full dapp:min-h-0',
                           effectiveDetailCollapsed
                             ? 'pointer-events-none overflow-y-hidden opacity-0'
                             : 'dapp:overflow-y-auto',
-                          // H5: size to content under the shared window scroller
+                          // H5：按内容定高，置于共享窗口滚动器下方
                           'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible',
                         )}
                         aria-hidden={effectiveDetailCollapsed}

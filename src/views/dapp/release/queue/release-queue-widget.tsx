@@ -12,9 +12,10 @@ import { cn } from '~/shared/lib/utils'
 import { useReleaseQueueView } from '~/views/dapp/release/queue/use-release-queue-view'
 
 /**
- * Figma `4466:442` plan 卡：icon20 + pill · 金额行 · bar6 · 领取 pill。
- * 右上：产品改刷新（替稿 radio）；只重读被点档并 patch 缓存，loading 时图标旋转。
- * 高随内容（禁 min-h 钉稿 183）。
+ * 释放队列交互面板
+ *
+ * 按天数档位逐卡展示已释放、释放中与进度条；
+ * 右上角刷新只重读被点击的档位并回填缓存，加载时图标旋转。
  */
 export function ReleaseQueueWidget() {
   const vm = useReleaseQueueView()

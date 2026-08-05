@@ -29,6 +29,14 @@ function formatBonusPct(bps: number): string {
   return `${formatGroupedNumber(bps / 100, { digits: 0, trimZeros: true })}%`
 }
 
+/**
+ * 质押视图：组合表单状态、CTA 文案与提交入口
+ *
+ * 提交被推荐关系拦截时引导补绑；
+ * 被迁移拦截时停留在原页。
+ *
+ * @returns 质押表单状态与交互回调
+ */
 export function useStakeView() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)

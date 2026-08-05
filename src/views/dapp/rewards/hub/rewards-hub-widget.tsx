@@ -1,3 +1,9 @@
+/**
+ * 奖励 Hub 左栏面板
+ *
+ * 六张奖励类型卡片，点击进入对应详情；
+ * 各卡片金额来自不同数据源（链上快照 / 汇总接口），未登录显示空态占位。
+ */
 import { keepPreviousData } from '@tanstack/react-query'
 
 import { dappAssets } from '~/app/assets'
@@ -26,7 +32,7 @@ import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
-/** 奖励 Hub：幸运 / 推荐 / 参与 / 共建 / 发展 / 创世 */
+/** 六种奖励类型：幸运 / 推荐 / 参与 / 共建 / 发展 / 创世 */
 const REWARD_CARDS = [
   'lucky',
   'referral',
@@ -38,7 +44,7 @@ const REWARD_CARDS = [
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-/** Figma：参与/共建/发展 24（token）；其余 20（xl）。 */
+/** 卡片图标：参与 / 共建 / 发展用较大尺寸，其余用常规 */
 const REWARD_CARD_ICONS = {
   lucky: { src: dappAssets.rewardsHubLucky, size: 'xl' },
   referral: { src: dappAssets.rewardsHubReferral, size: 'xl' },
@@ -49,7 +55,7 @@ const REWARD_CARD_ICONS = {
 } as const
 
 function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
-  // 无数据稿：0.0000gAGX / ≈ $0.00（未登录同空态；登录提示在 Widget 底栏）
+  // 未就绪/无数据：显示 0.0000gAGX / ≈ $0.00；登录提示放在 Widget 底栏
   if (!ready || value == null) {
     return {
       amount: `${formatGroupedNumber(0, { digits: 4 })}gAGX`,
@@ -101,7 +107,7 @@ export function RewardsHubWidget() {
     if (view === 'genesis') return genesisAmount
     if (view === 'grant') return grantAmount
     if (view === 'lucky') return luckyAmount
-    // referral / participate / cobuild：可领额来自签名，Hub 无预览 → 诚实空态
+    // 推荐/参与/共建：可领额来自领取签名，Hub 无预览，显示空态
     return null
   }
 

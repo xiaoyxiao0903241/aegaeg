@@ -2,17 +2,21 @@ import { useEffect, useState } from 'react'
 
 import type { DappTab } from '~/shared/config/dapp-tabs'
 
-/** Keep in sync with `--motion-dapp-fade-out` / `--motion-dapp-fade-in` in theme.css. */
+/** 与 theme.css 中 `--motion-dapp-fade-out` / `--motion-dapp-fade-in` 保持一致。 */
 export const DAPP_CONTENT_FADE_OUT_MS = 160
 export const DAPP_CONTENT_FADE_IN_MS = 220
 
 export type DappContentFadePhase = 'idle' | 'out' | 'in'
 
 /**
- * Delays tab content swap until fade-out finishes so session hosts can remount
- * under opacity 0 without killing the outgoing animation.
- * Enter uses rise + fade (same language as former `dapp-panel-enter`).
- * Rail should keep using the live `activeTab`; panels use `displayTab`.
+ * 延迟 Tab 内容切换，直到淡出动画播完。
+ *
+ * 这样会话组件可以在透明度为 0 时重挂载，不打断退场动画；
+ * 入场沿用上浮 + 淡入。
+ * 导航条应继续使用实时的 `activeTab`，两个内容面板用返回的 `displayTab`。
+ *
+ * @param activeTab 当前选中的 Tab
+ * @returns displayTab 当前实际展示的 Tab；phase 淡出 / 淡入 / 静止三态
  */
 export function useDappTabContentFade(activeTab: DappTab): {
   displayTab: DappTab

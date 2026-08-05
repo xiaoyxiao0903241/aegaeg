@@ -17,8 +17,12 @@ import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-reward
 import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 
 /**
- * Mixed 领取左栏 — Figma lucky / cobuild（participate/referral 走简单签）
- *（可领卡 · 贡献 warning · 双色 slider · 领取/复投卡 · 双行 CTA）。
+ * 混合领取左栏面板（幸运奖 / 共建奖）
+ *
+ * 顶部展示可领金额与所需贡献，贡献不足时给出提醒并引导去销毁；
+ * 下方为领取 / 复投比例滑块、释放与复投计划卡，最后是双行提交按钮。
+ *
+ * @param view 子视图类型（lucky / cobuild）
  */
 export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
@@ -115,7 +119,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         </Card>
 
-        {/* Figma 4393:244 领取卡：coral-soft + border 35% · gap8 · p16 · 标题 body16 */}
+        {/* 领取卡：突出主操作 */}
         <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 font-normal text-primary" variant="headline">
@@ -140,7 +144,6 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         </div>
 
-        {/* Figma 4394:233 复投卡：mint #f3fdf6 + success 边/字 */}
         <div className="grid gap-2 rounded-2xl border border-success/35 bg-success-soft p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 font-normal text-success" variant="headline">
@@ -173,7 +176,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             loading={vm.submitting}
             onClick={vm.onConfirm}
           >
-            {/* Figma 4394:248：高 52 · 双行；detail + leading-4（标准刻度，禁任意 rem） */}
+            {/* 提交按钮：双行文案（释放 + 复投） */}
             <span className="flex flex-col items-start gap-0.5 text-left font-normal! text-white">
               <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
                 {vm.mixed.ctaReleaseLine.replace(

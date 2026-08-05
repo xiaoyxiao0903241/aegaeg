@@ -1,7 +1,9 @@
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
-/** Figma topbar `chip/新手教程` (`4305:358`) — replay entry for OnboardingGuide. */
+/**
+ * 顶部栏「新手教程」入口，点击重播引导；未完成时右上角带提示点。
+ */
 export function OnboardingTourChip({
   done,
   label,

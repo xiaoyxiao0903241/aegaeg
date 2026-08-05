@@ -41,7 +41,16 @@ export type BondZapAgxPreview = {
   grossPayout: bigint
 }
 
-/** BondHelper.slippage — percent 0–99 (manual bondhelper.md). */
+/**
+ * 读取 BondHelper.slippage
+ *
+ * 返回 0–99 的整数百分比，作为 zap 换币时的保守滑点上限，
+ * 前端用它把 `quoteV2AmountsOut` 与 LP 铸出量打折扣，避免成交价劣于预期。
+ *
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 滑点百分比（0–99）
+ * @see docs/onchain-manual/contracts/bondhelper.md
+ */
 export async function readBondHelperSlippage(
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -53,8 +62,18 @@ export async function readBondHelperSlippage(
 }
 
 /**
- * Handbook §10 + bondhelper: front-end estimates net AGX bond payout for a USD1 zap.
- * Failures throw — callers map to honest `—`.
+ * 估算单笔 USD1 zap 可得到的净 / 毛 AGX 数量
+ *
+ * burn 路径全量换 AGX，lp 路径半额换 AGX 并铸 LP，再按债券市场折扣与手续费
+ * 折算出 AGX 预期回报，供下单前展示。链上读取失败直接抛出，由调用方映射为「—」。
+ *
+ * @param args.kind 债券类型：'lp' 走 LP 债券、'burn' 走销毁债券
+ * @param args.depository 债券市场合约地址
+ * @param args.depositUsd1 投入的 USD1 数量（wei，18 位小数）
+ * @param args.client 链上读取客户端，默认公共 RPC
+ * @returns 净 / 毛 AGX 预期数量；depositUsd1 为 0 时两者皆 0
+ * @see 手册 §10 债券 Bond / BurnBond
+ * @see docs/onchain-manual/contracts/bondhelper.md
  */
 export async function readBondZapAgxPreview(args: {
   kind: BondZapKind
@@ -117,6 +136,18 @@ export async function readBondZapAgxPreview(args: {
   return { netPayout, grossPayout }
 }
 
+/**
+ * 计算 zap 实际进入债券市场的 principle 数量
+ *
+ * burn 路径：USD1 全量换 AGX，再按 helper 滑点打折；
+ * lp 路径：半额 USD1 换 AGX，另一半与 AGX 一起铸 LP，LP 铸出量同样打折。
+ * 滑点同时作用于换币与 LP 铸出，避免高估可质押额度。
+ *
+ * @param args.kind 债券类型，决定单币兑换还是 LP 铸造
+ * @param args.depositUsd1 投入的 USD1 数量
+ * @param args.slippagePercent helper 滑点百分比
+ * @returns 打折后的 principle 数量（wei）
+ */
 async function zapPrincipleAmount(args: {
   kind: BondZapKind
   depository: Address
@@ -172,7 +203,7 @@ async function zapPrincipleAmount(args: {
     reserveB: spot.reserve1,
     totalSupply: totalSupply as bigint,
   })
-  // Conservative: apply helper slippage to LP mint estimate as well.
+  // 保守处理：LP 铸出量同样按 helper 滑点打折
   return applyPercentSlippage(lpMinted, args.slippagePercent)
 }
 

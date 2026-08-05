@@ -38,10 +38,21 @@ const BOND_PERIODS: BondPeriod[] = ['180', '360', '540']
 
 export type BondWritePresent = {
   onSuccess: () => void | Promise<void>
-  /** Extra side effects only — default error toast always runs after. */
+  /** 仅附加副作用，默认错误提示始终随后执行。 */
   onError?: (error: unknown) => void
 }
 
+/**
+ * 债券买入表单核心状态
+ *
+ * 维护周期 / 数量 / 预检 / 市场 / 滑点等状态，
+ * 通过 evaluateBondZapLive 判定可写条件并执行 zap 提交。
+ *
+ * @param kind 债券类型：lp / burn
+ * @param sessionReady 会话是否就绪（决定是否取数）
+ * @param present 写入成功 / 失败的附加副作用
+ * @returns 表单展示值与提交控制
+ */
 export function useBondWidget(kind: BondKind, sessionReady: boolean, present: BondWritePresent) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
@@ -55,7 +66,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
   const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
   const depository = depositoryAddress(period)
 
-  // Warm every period depository so Segment switch hits cache.
+  // 预热各周期仓库，切换周期时命中缓存。
   const preflight180 = useBondZapPreflightQuery(depositoryAddress('180'), {
     enabled: sessionReady,
   })

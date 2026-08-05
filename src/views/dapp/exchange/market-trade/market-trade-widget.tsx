@@ -1,3 +1,10 @@
+/**
+ * 市价交易交互面板
+ *
+ * 卖出 / 买入代币可下拉选择，中间可翻转方向；信息行展示汇率
+ * （可反向）、滑点设置、价格影响与预估 Gas。滑点通过弹窗修改，
+ * 高价格影响时给出告警。
+ */
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'

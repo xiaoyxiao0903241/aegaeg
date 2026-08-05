@@ -80,7 +80,7 @@ export function ExchangePromoPillAction({
         withArrow ? 'gap-1.5' : 'justify-center',
         layout === 'desktop'
           ? cn(
-              // Figma btn-contract `4477:426`：px16 py10 · copy13 · leading 1.2 → 合成 h36
+              // 桌面端操作按钮悬浮在卡片右侧
               'absolute top-1/2 right-4 z-2 -translate-y-1/2 px-4 py-2.5',
               'text-(length:--type-copy-size) leading-[1.2] font-semibold',
               !withArrow && minConnectWidth && 'min-w-31',
@@ -138,6 +138,12 @@ function TitleIcon({ layout, src }: { layout: PromoLayout; src: string }) {
   )
 }
 
+/**
+ * 推广卡片（代币介绍 / 兑换引导）
+ *
+ * 桌面端操作按钮绝对定位在右侧，移动端按钮内联到标题行；
+ * 装饰图与卡片图标按 layout / rays 变体渲染，进入视口时渐显。
+ */
 export function ExchangePromoCard({
   action,
   actionTooltip,
@@ -169,7 +175,7 @@ export function ExchangePromoCard({
       as="article"
       surface="soft"
       className={cn(
-        // soft owns radius + shadow-faq; body owns pad (p-0 here).
+        // 圆角与阴影由 soft 表面提供，内边距由正文容器承担（此处清零）
         'relative min-w-0 p-0',
         shellClassName,
         reveal && revealClass(),

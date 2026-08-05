@@ -18,7 +18,7 @@ export type AssetsXmineStatCell = {
   icon?: 'gagx' | 'x'
 }
 
-/** Right-rail Xmine stats — `readXminePosition` only; total mined DEFER-数据. */
+/** X 挖矿右侧统计：仅读取链上仓位；累计产出暂无数据来源 */
 export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
@@ -44,7 +44,7 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   }
 
   const { miningStake, pending, warmupGons } = positionQuery.data
-  // No gons→amount view: redeemable estimate = full stake after warmup, else 0.
+  // 无份额转金额的接口，可赎回估算为 warmup 结束后的全部质押，否则为 0
   const released = warmupGons > 0n ? 0n : miningStake
 
   return [

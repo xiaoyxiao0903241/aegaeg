@@ -7,7 +7,7 @@ type InteractiveCardBase = {
   children: ReactNode
   className?: string
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick']
-  /** OnboardingGuide `data-tour-id`. */
+  /** 新手引导用的 `data-tour-id` */
   tourId?: string
   'data-slot-id'?: string
 }
@@ -20,7 +20,7 @@ export type InteractiveCardProps = InteractiveCardBase &
         'aria-label'?: string
       }
     | {
-        /** 壳 `article` + 全卡透明 button（嵌套 tooltip 等） */
+        /** `article` 容器 + 全卡透明 button（供嵌套 tooltip 等） */
         hitArea: 'overlay'
         /** 全卡 button 的无障碍名 */
         'aria-label': string
@@ -28,7 +28,9 @@ export type InteractiveCardProps = InteractiveCardBase &
   )
 
 /**
- * 可点 outlined 壳 — 只管 chrome + 交互；内容用 Text，在页袋按业务组合。
+ * 可点击描边卡片
+ *
+ * 只管外观与交互；内容用 Text，由调用方按业务组合。
  * @see docs/foundation/component-usage.md B+D
  */
 export function InteractiveCard({

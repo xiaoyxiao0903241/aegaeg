@@ -1,7 +1,15 @@
-/** Stake open periods — liquid + three locked pools (Pre-Design §1). */
+/**
+ * 质押开放周期：活期 + 三个定期池。
+ *
+ * @see 手册 §8 质押 Staking
+ */
 export type StakePeriod = 'liquid' | '180' | '360' | '540'
 
-/** Bond open periods — no liquid (Pre-Design §1). */
+/**
+ * 债券开放周期：无活期，仅三个定期档。
+ *
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export type BondPeriod = '180' | '360' | '540'
 
 export type StakePoolContractKey =
@@ -12,7 +20,7 @@ export type LpBondDepositoryKey = 'bondDepository180d' | 'bondDepository360d' | 
 export type BurnBondDepositoryKey =
   'burnBondDepository180d' | 'burnBondDepository360d' | 'burnBondDepository540d'
 
-/** Period → BSC_CONTRACTS field key for AGX stake open path. */
+/** 周期 → BSC_CONTRACTS 字段 key，用于 AGX 质押路径。 */
 export function stakePoolKey(period: StakePeriod): StakePoolContractKey {
   if (period === 'liquid') return 'liquidStaking'
   if (period === '180') return 'lockedStaking180d'
@@ -20,14 +28,14 @@ export function stakePoolKey(period: StakePeriod): StakePoolContractKey {
   return 'lockedStaking540d'
 }
 
-/** Period → LP Bond depository key for BondHelper zap. */
+/** 周期 → LP 债券合约 key，供 BondHelper zap 使用。 */
 export function lpBondDepositoryKey(period: BondPeriod): LpBondDepositoryKey {
   if (period === '180') return 'bondDepository180d'
   if (period === '360') return 'bondDepository360d'
   return 'bondDepository540d'
 }
 
-/** Period → Burn Bond depository key for BondHelper zap. */
+/** 周期 → 燃烧债券合约 key，供 BondHelper zap 使用。 */
 export function burnBondDepositoryKey(period: BondPeriod): BurnBondDepositoryKey {
   if (period === '180') return 'burnBondDepository180d'
   if (period === '360') return 'burnBondDepository360d'

@@ -1,3 +1,9 @@
+/**
+ * 释放 Hub 详情页
+ *
+ * 顶部轮播介绍释放机制，中部为机制步骤、目的说明与税率表，
+ * 底部为常见问题折叠列表。
+ */
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
 import { useI18n } from '~/i18n/use-i18n'
@@ -10,7 +16,7 @@ import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
-/** 税率表高亮列：稿 20 天 / 60 天（4791:3602/3603） */
+/** 税率表高亮列：20 天与 60 天档 */
 const TAX_HIGHLIGHT_PERIOD_INDEX = new Set([1, 3])
 
 export function ReleaseHubContent() {
@@ -22,7 +28,7 @@ export function ReleaseHubContent() {
 
   return (
     <Detail>
-      {/* Figma right-col 4371:262：节距 ≡ Detail gap-8.5 */}
+      {/* 区块间距由外层 Detail 统一提供 */}
       <Section>
         <Section.Title id="release-hub-title">{t.release.hub.aboutTitle}</Section.Title>
         <Carousel opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}>
@@ -30,7 +36,7 @@ export function ReleaseHubContent() {
             {slides.map((slide) => (
               <Carousel.Item key={slide.title}>
                 <DappAboutCard
-                  // 4299:213：p16 · radius/lg · deco 91×91 右上；高随文案
+                  // 介绍卡：右上角装饰图，高度随文案
                   body={slide.body}
                   className="min-h-0 gap-2 p-4"
                   decoClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
@@ -51,7 +57,7 @@ export function ReleaseHubContent() {
       <Section>
         <Section.Title>{t.release.hub.mechanismTitle}</Section.Title>
         <Section.Description>{t.release.hub.mechanismSubtitle}</Section.Description>
-        {/* Figma `4359:531` — Steps center + activeIndex=2（进入释放池） */}
+        {/* 机制步骤：居中排列，当前位于「进入释放池」一步 */}
         <div data-slot-id="release-mechanism-steps">
           <Card className="rounded-2xl p-6" surface="elevated">
             <Steps activeIndex={2} align="center">
@@ -62,7 +68,7 @@ export function ReleaseHubContent() {
           </Card>
         </div>
 
-        {/* 目的 + 税率：稿独立区块；跟在步骤卡下 */}
+        {/* 目的与税率：独立区块，位于步骤卡下方 */}
         <Card
           as="div"
           surface="elevated"
@@ -133,7 +139,7 @@ export function ReleaseHubContent() {
 
       <Section>
         <Section.Title>{t.release.faq.title}</Section.Title>
-        {/* 稿空态 FAQ 全关；禁 dapp 默认展开首项撑破节奏 */}
+        {/* FAQ 默认全部折叠，避免 dapp 样式默认展开首项撑乱节奏 */}
         <FaqList defaultOpenFirst={false} items={t.release.faq.hub} variant="dapp" />
       </Section>
     </Detail>

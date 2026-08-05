@@ -12,8 +12,11 @@ import {
 } from '~/web3/presale/use-presale-queries'
 
 /**
- * Shell-resident syncer: light presale reads → genesis-promo-store.
- * Mount once under DApp shell; do not mount inside GenesisSessionHost.
+ * 创世促销数据同步器
+ *
+ * 挂在 DApp 外壳下、只挂载一次：读取预售各阶段、当前阶段与 AGX 价格等轻量查询，
+ * 汇总成导航与促销位需要的快照，写入 genesis-promo-store。
+ * 不要放进 GenesisSessionHost，避免重复挂载导致重复查询。
  */
 export function GenesisPromoSync() {
   const setPromo = useGenesisPromoStore((state) => state.setPromo)

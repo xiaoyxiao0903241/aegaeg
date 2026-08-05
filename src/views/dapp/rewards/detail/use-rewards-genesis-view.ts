@@ -16,6 +16,14 @@ import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 
+/**
+ * 创世左栏面板视图模型
+ *
+ * 聚合股东等级、团队 / 社区基金汇总，计算个人与团队进度、
+ * 直推奖励与各可领金额，并封装团队奖励与社区基金领取动作。
+ *
+ * @see docs/backend-api/api.md #team-reward/total
+ */
 export function useRewardsGenesisView() {
   const { messages: t } = useI18n()
   const g = t.rewards.genesisDetail

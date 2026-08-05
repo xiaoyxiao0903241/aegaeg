@@ -12,7 +12,7 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
 
-/** 稿 icon20 + 币种 pill（AGX / gAGX 双卡共用 chrome） */
+/** 币种标识：图标 + 圆角 pill（AGX / gAGX 双卡共用） */
 function BufferTokenBadge({ iconSrc, label }: { iconSrc: string; label: string }) {
   return (
     <div className="flex min-w-0 items-center gap-2">
@@ -29,9 +29,10 @@ function BufferTokenBadge({ iconSrc, label }: { iconSrc: string; label: string }
 }
 
 /**
- * Figma `4469:442/464` buf 卡：icon20 + pill · 金额行 · bar6 · 提取。
- * 右上：原型/产品「刷新」（替稿 radio）；AGX 重读 snapshot；gAGX 无源仍诚实 0。
- * 高随内容（禁 min-h 钉稿 183）。
+ * 缓冲池交互面板
+ *
+ * AGX / gAGX 双卡展示已释放、释放中与进度条；
+ * 右上角刷新按钮重读 AGX 链上快照，gAGX 无数据源时显示 0。
  */
 export function ReleaseBufferWidget() {
   const vm = useReleaseBufferView()
@@ -138,7 +139,7 @@ export function ReleaseBufferWidget() {
               </button>
             </div>
 
-            {/* PRV 无 gAGX 源：UI 跟稿，值诚实 0 */}
+            {/* 释放合约无 gAGX 数据源：数值显示 0 */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1">
                 <Text as="span" className="text-foreground/40" variant="copy">

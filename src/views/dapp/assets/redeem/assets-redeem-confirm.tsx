@@ -8,7 +8,12 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 赎回确认 — Figma 暗色卡；手册 §13：本金进 PrincipalReleaseVault，新单默认 30 天线性释放，非即时到钱包。
+ * 赎回确认弹窗
+ *
+ * 提示本金将进入 PrincipalReleaseVault，默认按 30 天线性释放，不会即时到账；
+ * 确认后发起赎回写交易。整体使用暗色卡片样式。
+ *
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
  */
 export function AssetsRedeemConfirm({
   amountLabel,

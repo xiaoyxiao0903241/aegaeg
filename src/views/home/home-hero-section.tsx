@@ -21,6 +21,12 @@ function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {
   )
 }
 
+/**
+ * 首页 Hero 区
+ *
+ * 左侧为标题、正文与「进入 App」「白皮书」双按钮，右侧为守卫角色视频；
+ * H5 下改为单列，视频移至文字上方。
+ */
 export function HomeHeroSection() {
   const { locale, messages } = useI18n()
   const content = messages.home.hero

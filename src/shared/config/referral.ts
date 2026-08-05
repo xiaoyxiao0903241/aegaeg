@@ -14,7 +14,7 @@ export function parseReferrerAddress(value: unknown): `0x${string}` | null {
   return trimmed as `0x${string}`
 }
 
-/** Bound users: prefer /performance invite_address, fall back to on-chain referrer. */
+/** 已绑定用户：优先取 /performance 返回的 invite_address，缺失时回退到链上推荐人。 */
 export function displayReferrer(params: {
   isBound: boolean
   inviteAddress?: string | null

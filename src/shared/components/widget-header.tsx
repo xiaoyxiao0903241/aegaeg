@@ -4,6 +4,7 @@ import { tv } from 'tailwind-variants'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
+/** 页面标题区样式槽位 */
 export const widgetHeader = tv({
   slots: {
     root: 'mb-3.5 flex items-start justify-between gap-4 max-dapp:mt-6 max-dapp:mb-7.5',
@@ -18,7 +19,7 @@ type WidgetHeaderProps = {
   className?: string
   subtitle?: ReactNode
   title: ReactNode
-  /** 覆盖 h1 字阶/行高（兑换 Hub 稿 h3 20 / leading normal）。 */
+  /** 覆盖标题字号与行高 */
   titleClassName?: string
 }
 
@@ -54,6 +55,11 @@ function WidgetHeaderCopy({
   )
 }
 
+/**
+ * 页面顶部标题区
+ *
+ * 标题 + 可选副标题 + 右侧操作区（action）。
+ */
 export function WidgetHeader({
   action,
   className,
@@ -77,6 +83,7 @@ export function WidgetHeader({
   )
 }
 
+/** 子页面标题区样式槽位 */
 export const widgetSubpageHeader = tv({
   slots: {
     root: 'mb-3.5 grid gap-3.5 max-dapp:mb-7.5',
@@ -99,6 +106,11 @@ type WidgetSubpageHeaderProps = {
   title: ReactNode
 }
 
+/**
+ * 子页面标题区
+ *
+ * 带返回按钮的导航行 + 标题 / 副标题 + 右侧操作区（action）。
+ */
 export function WidgetSubpageHeader({
   action,
   backLabel,

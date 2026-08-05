@@ -9,6 +9,12 @@ import { cn } from '~/shared/lib/utils'
 import { HomeSection } from '~/views/home/home-section'
 import { HomeSectionHead } from '~/views/home/home-section-head'
 
+/**
+ * 安全特性区块
+ *
+ * 左侧为安全角色插画与连线装饰，右侧逐条列出安全检查项；
+ * 卡片进入视口后按序号错峰渐显。
+ */
 export function HomeSecuritySection() {
   const { messages } = useI18n()
   const content = messages.home.sections.security

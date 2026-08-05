@@ -1,8 +1,10 @@
 import { useI18n } from '~/i18n/use-i18n'
 
 /**
- * `{label}: {value}` string for AmountBox / CountValue.
- * Disconnected / preview → `0.00`; connected + empty value → `''` (retain via CountValue).
+ * 拼接 `标签: 值` 余额文案（供 AmountBox / CountValue 使用）
+ *
+ * 未连接或预览态返回 `0.00`；已连接且值为空返回 `''`，
+ * 由 CountValue 保留占位。
  */
 export function formatExchangeBalanceLabel({
   label,

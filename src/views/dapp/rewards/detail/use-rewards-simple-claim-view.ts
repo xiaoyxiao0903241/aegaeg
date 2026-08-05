@@ -15,12 +15,20 @@ import {
 
 const TOKEN_GAGX = 'gAGX'
 
-/** 参与奖 summary 无 unlocked_claimable；用发放记录可领态作门闸（OpenAPI LogItem.status）。 */
+/**
+ * 参与奖没有 unlocked_claimable 字段，
+ * 用发放记录中可领取状态（READY / PARTIALLY_CLAIMED）作为「有可领额」的信号。
+ */
 const PARTICIPATE_CLAIMABLE_STATUSES = new Set(['READY', 'PARTIALLY_CLAIMED'])
 
 export type SimpleClaimView = 'grant' | 'participate' | 'referral'
 
-/** grant=MarketFund · participate=IncentivePool · referral=CommunityFund（8f4e8b8 简单签）。 */
+/**
+ * 简单领取视图模型（发展津贴 / 参与奖 / 推荐奖）
+ *
+ * 三种类型分别走市场基金、激励池、社区基金的领取签名；
+ * 汇总各可领金额并决定提交按钮可用性。
+ */
 export function useRewardsSimpleClaimView(view: SimpleClaimView, sessionReady: boolean) {
   const { messages: t } = useI18n()
   const card = t.rewards.cards[view]

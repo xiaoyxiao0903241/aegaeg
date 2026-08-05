@@ -1,3 +1,9 @@
+/**
+ * 释放队列页
+ *
+ * 顶部三张统计卡展示释放中、已释放与累计领取；
+ * 中部为释放记录表，底部为常见问题折叠列表。
+ */
 import { useState } from 'react'
 
 import { tokenCarouselIcons } from '~/app/assets'
@@ -71,7 +77,7 @@ export function ReleaseQueueContent() {
       const n = Number(api.total_claimed_amount)
       if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     }
-    /** 无 lifetime 链上源 → 空态 0 */
+    /** 累计领取无链上数据源：空态显示 0 */
     return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
   }
 

@@ -10,6 +10,18 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { PopupNoticeContent } from '~/views/home/popup-notice-content'
 
+/**
+ * 首页公告弹窗
+ *
+ * 用 Radix Dialog 实现，顶部为品牌与关闭按钮，正文支持图片与富文本；
+ * 图片加载失败时隐藏图片区，若正文也为空则整窗关闭。
+ * 按 Esc 或点击遮罩不会关闭，只能点关闭按钮退出。
+ *
+ * @param notice 待展示的公告内容
+ * @param open 是否显示弹窗
+ * @param onDismiss 点击关闭按钮时回调
+ * @param onImageLoadError 图片加载失败时回调
+ */
 export function HomePopupNoticeModal({
   notice,
   onDismiss,

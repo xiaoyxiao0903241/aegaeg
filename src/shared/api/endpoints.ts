@@ -67,6 +67,15 @@ import type {
   X0MiningPositionsPage,
 } from '~/shared/api/types'
 
+/**
+ * 后端 API 端点封装
+ *
+ * 每个导出函数对应 docs/backend-api/api.md 中的一个 POST 端点，是 apiRequest 的薄封装：
+ * 统一处理分页参数、可选过滤字段与鉴权 token。
+ * 分页默认 page=1、page_size=20。
+ *
+ * @see docs/backend-api/api.md
+ */
 function paginationBody(params: PaginationParams = {}) {
   return {
     page: params.page ?? 1,
@@ -74,7 +83,7 @@ function paginationBody(params: PaginationParams = {}) {
   }
 }
 
-/** POST paginated list with one optional filter field. */
+/** POST 分页列表，附带一个可选的过滤字段。 */
 function postFilteredPage<TItem>(
   path: string,
   token: string,

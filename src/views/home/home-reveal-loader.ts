@@ -93,7 +93,12 @@ function startCountPanel(panel: HTMLElement) {
   }, 520)
 }
 
-/** Home motion boot — call after React mount (useLayoutEffect) so [data-reveal] exists. */
+/**
+ * 首页动效启动
+ *
+ * 在 React 挂载后（useLayoutEffect）调用，确保 [data-reveal] 等节点已存在。
+ * 负责滚动渐显、图片延迟加载与指标计数动画；不支持 IntersectionObserver 时降级为直接展示。
+ */
 export function bootHomeReveal() {
   if (booted) {
     return

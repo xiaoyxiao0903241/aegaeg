@@ -23,7 +23,15 @@ export type XmineOverview = {
   activeGons: bigint
 }
 
-/** 公共读 — Xmine 概览/meta（手册 contracts/xstakingpool 管理员视图）。 */
+/**
+ * 读取 Xmine 概览（公开，无钱包依赖）
+ *
+ * 并行读取 xPerAgx、日收益率基点与 activeGons，供 X 挖矿页展示。
+ *
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns xPerAgx / yieldRateBP / activeGons
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export async function readXmineOverview(
   client: ChainReadClient = bscReadClient,
 ): Promise<XmineOverview> {

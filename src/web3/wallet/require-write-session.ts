@@ -12,8 +12,14 @@ export type WriteSession = {
 }
 
 /**
- * Fail-closed write boundary: derive account + L-tier read client from wallet.
- * Call sites receive this from `useChainMutation` (or pass an explicit wallet).
+ * 从钱包派生写会话
+ *
+ * 未连接或无可读账户时直接抛阻断，写流程拿不到会话即中止；成功则返回
+ * 钱包、账户、地址与读客户端，供写流程使用。调用方通常从
+ * `useChainMutation` 取得，也可显式传入钱包。
+ *
+ * @param wallet 当前钱包，可能未连接
+ * @returns 写会话（钱包 / 账户 / 地址 / 读客户端）
  */
 export function makeWriteSession(wallet: Wallet | undefined | null): WriteSession {
   if (!wallet) {

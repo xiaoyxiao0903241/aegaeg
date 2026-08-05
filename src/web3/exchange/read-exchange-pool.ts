@@ -21,15 +21,23 @@ export interface ExchangePoolSpotPrice {
   reserve1: bigint
 }
 
-// Keyed by pair address — a single-slot cache would serve stale metadata if
-// callers ever read more than one pair.
+// 按交易对地址缓存：若用单槽缓存，调用方读取多个交易对时会拿到过期元数据
 const cachedImmutablePools = new Map<string, ExchangePoolImmutableMetadata>()
 
-/** Test helper — pair token0/token1 are cached for the process lifetime. */
+/** 测试辅助：清空 token0/token1 进程级缓存。 */
 export function clearExchangePoolImmutableCache() {
   cachedImmutablePools.clear()
 }
 
+/**
+ * 读取交易对不可变元数据（token0 / token1）
+ *
+ * token0/token1 永不变更，故按地址进程内缓存；第二次起直接命中。
+ *
+ * @param poolAddress 交易对合约地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns token0 / token1 地址
+ */
 export async function readExchangePoolImmutableMetadata(
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
   client: ChainReadClient = bscReadClient,
@@ -56,6 +64,15 @@ export async function readExchangePoolImmutableMetadata(
   return metadata
 }
 
+/**
+ * 读取交易对实时储备（价格相关，不缓存）
+ *
+ * 调用 `getReserves` 返回两个方向储备，用于报价与价格影响计算。
+ *
+ * @param poolAddress 交易对合约地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 两个方向的储备量
+ */
 export async function readExchangePoolSpotPrice(
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
   client: ChainReadClient = bscReadClient,
@@ -72,6 +89,18 @@ export async function readExchangePoolSpotPrice(
   }
 }
 
+/**
+ * 按输入代币方向取对应储备
+ *
+ * 输入代币不是交易对两币种之一时返回 null，表示无法计算该方向。
+ *
+ * @param tokenIn 输入代币地址
+ * @param token0 交易对 token0
+ * @param token1 交易对 token1
+ * @param reserve0 token0 储备
+ * @param reserve1 token1 储备
+ * @returns 输入 / 输出方向储备；输入代币不在交易对内 → null
+ */
 export function pairReservesForTokenIn({
   tokenIn,
   token0,

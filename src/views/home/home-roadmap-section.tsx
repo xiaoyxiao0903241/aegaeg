@@ -8,7 +8,7 @@ import { cn } from '~/shared/lib/utils'
 import { HomeSection } from '~/views/home/home-section'
 import { HomeSectionHead } from '~/views/home/home-section-head'
 
-/** PC absolute top offsets per phase index (timeline layout data). */
+/** PC 端各阶段卡片的纵向定位偏移（按阶段序号取用）。 */
 const phaseTopOffsets = [
   'dapp:top-4',
   'dapp:top-40',
@@ -18,6 +18,12 @@ const phaseTopOffsets = [
   'dapp:top-176',
 ] as const
 
+/**
+ * 路线图区块
+ *
+ * 纵向时间线：PC 为居中主轴、卡片左右交错排列；H5 为单列流式。
+ * 当前阶段带 NOW 徽标并高亮描边。
+ */
 export function HomeRoadmapSection() {
   const { messages } = useI18n()
   const content = messages.home.sections.roadmap

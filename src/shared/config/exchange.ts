@@ -11,15 +11,15 @@ export interface ExchangeTokenConfig {
 
 export interface ExchangeConfig {
   chainId: 56
-  /** Pancake V2 Router — handbook §7.1 */
+  /** Pancake V2 路由器——手册 §7.1 PancakeRouter 买 AGX */
   router: `0x${string}`
-  /** Pancake V2 AGX/USD1 pair */
+  /** Pancake V2 AGX/USD1 交易对 */
   pool: `0x${string}`
   defaultSlippageBps: number
   deadlineSeconds: number
-  /** Poll on-chain swap quote while amount is set (ms). */
+  /** 输入数量已填写时，轮询链上兑换报价的间隔（毫秒）。 */
   quoteRefreshIntervalMs: number
-  /** Poll pair spot rate for overview metric (ms). */
+  /** 轮询交易对即时价、用于概览指标的间隔（毫秒）。 */
   spotRateRefreshIntervalMs: number
   tradePair: {
     enabled: true

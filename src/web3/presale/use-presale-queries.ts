@@ -17,6 +17,11 @@ import {
   readUserPresaleTotal,
 } from '~/web3/presale/presale-read'
 
+/**
+ * 查询全部预售档位（公开数据）。
+ *
+ * @see 手册 §6 预售 PreSale
+ */
 export function usePresalePhasesQuery() {
   return useChainQuery({
     queryKey: queryKeys.chain.presalePhases,
@@ -31,6 +36,11 @@ type PresaleActivePhaseQueryResult = Pick<
   'data' | 'error' | 'isLoading' | 'isSuccess' | 'isError' | 'isFetching' | 'status'
 >
 
+/**
+ * 查询当前处于生效期的预售档位。
+ *
+ * 依赖档位列表查询，列表未加载完成时保持 undefined。
+ */
 export function usePresaleActivePhaseQuery(): PresaleActivePhaseQueryResult {
   const phasesQuery = usePresalePhasesQuery()
 
@@ -47,6 +57,9 @@ export function usePresaleActivePhaseQuery(): PresaleActivePhaseQueryResult {
   }
 }
 
+/**
+ * 查询预售 AGX 单价（公开数据）。
+ */
 export function usePresaleAgxPriceQuery() {
   return useChainQuery({
     queryKey: queryKeys.chain.presaleAgxPrice,
@@ -56,6 +69,11 @@ export function usePresaleAgxPriceQuery() {
   })
 }
 
+/**
+ * 查询全网预售累计购买额（公开数据）。
+ *
+ * @param options 查询选项（enabled 等）
+ */
 export function usePresaleTotalPurchasedQuery(options?: ChainQueryOptions) {
   const enabled = options?.enabled ?? true
 
@@ -65,11 +83,16 @@ export function usePresaleTotalPurchasedQuery(options?: ChainQueryOptions) {
     freshness: 'presale',
     enabled,
     queryFn: () => readTotalPresalePurchased(),
-    // Cumulative contribution refreshes every 30s while the Genesis tab is active.
+    // 累计购买额在 Genesis 页激活期间每 30 秒刷新。
     refetchInterval: enabled ? QUERY_STALE_TIME.presale : false,
   })
 }
 
+/**
+ * 查询空投门槛（公开数据）。
+ *
+ * @param options 查询选项（enabled 等）
+ */
 export function usePresaleAirdropThresholdQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.presaleAirdropThreshold,
@@ -80,6 +103,11 @@ export function usePresaleAirdropThresholdQuery(options?: ChainQueryOptions) {
   })
 }
 
+/**
+ * 查询预售暂停状态（公开数据）。
+ *
+ * @param options 查询选项（enabled 等）
+ */
 export function usePresalePausedQuery(options?: ChainQueryOptions) {
   const enabled = options?.enabled ?? true
 
@@ -93,6 +121,11 @@ export function usePresalePausedQuery(options?: ChainQueryOptions) {
   })
 }
 
+/**
+ * 查询用户预售累计购买额（钱包作用域）。
+ *
+ * @param options 查询选项（enabled 等）
+ */
 export function usePresaleUserTotalQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.presaleUserTotal,
@@ -102,6 +135,13 @@ export function usePresaleUserTotalQuery(options?: ChainQueryOptions) {
   })
 }
 
+/**
+ * 查询用户在指定档位的剩余可购额度。
+ *
+ * @param address 钱包地址
+ * @param phaseIndex 档位 index
+ * @param options 查询选项（enabled 等）
+ */
 export function usePresaleUserPhaseRemainingQuery(
   address?: string,
   phaseIndex?: number,
@@ -137,6 +177,12 @@ export function usePresalePreviewAirdropValueQuery(
   })
 }
 
+/**
+ * 查询钱包 USD1 余额与预售授权额度。
+ *
+ * @param address 钱包地址
+ * @param options 查询选项（enabled 等）
+ */
 export function useUsd1PresaleWalletQuery(address?: string, options?: ChainQueryOptions) {
   const queryEnabled = (options?.enabled ?? true) && Boolean(address)
 

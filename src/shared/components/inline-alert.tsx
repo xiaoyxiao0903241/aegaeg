@@ -5,16 +5,17 @@ import { Text, type TextProps } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Inline destructive alert chrome (border / wash / pad / color).
- * Typography stays Text `copy`; spacing (mt/mx/mb) stays at call site.
+ * 行内错误提示外观
+ *
+ * 文案排版交给 Text；外间距由调用方控制。
  */
 export const inlineAlert = tv({
   base: 'rounded-xl border border-destructive/30 bg-destructive/10 text-destructive',
   variants: {
     density: {
-      /** Widget stack (trade / flash). */
+      /** 组件内紧凑提示（交易 / 闪电兑换） */
       compact: 'px-3.5 py-2.5',
-      /** Shell-level banner. */
+      /** 页面级横幅 */
       comfortable: 'px-4 py-3',
     },
   },
@@ -30,6 +31,13 @@ export type InlineAlertProps = Omit<TextProps, 'tone' | 'variant'> & {
   density?: InlineAlertDensity
 }
 
+/**
+ * 行内错误提示
+ *
+ * 红色描边底色，用于表单错误等场景。
+ *
+ * @param density compact（组件内）/ comfortable（页面级）
+ */
 export function InlineAlert({
   as = 'p',
   children,

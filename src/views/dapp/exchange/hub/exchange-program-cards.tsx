@@ -14,9 +14,9 @@ import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
 
 /**
- * Figma hub program grid (PC `4267:212`):
- * 0 Trade gAGX → flash · 1 Turbine → turbine · 2 Get USD1 → flash
- * 3 Get AGX → trade · 4 Sell X → trade（X 选币 DEFER：§7.1 仅 USD1↔AGX，进交易默认对） · 5 Points → burn
+ * 程序卡片点击目标：0 Trade gAGX → 闪兑 · 1 Turbine → 涡轮
+ * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 市价交易
+ * 5 Points → 销毁
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'flash',
@@ -27,10 +27,10 @@ const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'burn',
 ]
 
-/** Index of「出售 X」— opens trade; X preselect DEFER until handbook lists X. */
+/** 「出售 X」卡片索引：进入市价交易；X 暂未上架，代币预选延后到手册收录。 */
 const SELL_X_CARD_INDEX = 4
 
-/** Parallel to i18n cards — `undefined` = text-only leaf. */
+/** 与 i18n 卡片一一对应；undefined 表示纯文字卡片。 */
 const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undefined> = [
   [exchangeHubAssets.programGagx, exchangeHubAssets.programAgx],
   [exchangeHubAssets.programUsd1, exchangeHubAssets.programGagx],
@@ -40,13 +40,14 @@ const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undef
   undefined,
 ]
 
-/** Index of「获取贡献点数」— body ratio from on-chain `rateBps`, not static 1:6. */
+/** 「获取贡献点数」卡片索引：比例取自链上 rateBps，非静态 1:6。 */
 const CONTRIBUTION_CARD_INDEX = 5
 
 /**
- * Exchange hub right-rail tile — Figma `4323:704`.
- * 高度由内容 + pad；同行等高靠父级 grid `items-stretch`（禁 min-h / size-full / h-*）。
- * No onClick → `article`（同视觉）；禁 HTML `disabled`（会毁 elevation）。
+ * 兑换 Hub 程序卡片
+ *
+ * 无点击行为时渲染为 article（视觉一致）；禁用不用 HTML disabled，
+ * 以免破坏悬浮抬升样式。
  */
 const exchangeProgramCard = tv({
   // p-0：清 elevated 默认 pad，改由 px/py
@@ -76,7 +77,7 @@ function ProgramCoinIcon({ icon }: { icon: readonly [string] | readonly [string,
     )
   }
 
-  // Dual overlap: 轨必须 h-7（稿 coins 28px）；绝对定位不占流，无高则塌 0，父 items-center 失效。
+  // 双币叠加需外层固定高度：绝对定位不占文档流，否则高度塌成 0
   return (
     <span className="relative flex h-7 w-13 shrink-0 items-center">
       <img
@@ -104,7 +105,7 @@ function ExchangeProgramCard({
   title,
 }: {
   body: string
-  /** 1 = single coin · 2 = overlapping dual · omit = text-only. */
+  /** 1 个为单币图 · 2 个为叠加双币 · 不传为纯文字。 */
   icon?: readonly [string] | readonly [string, string]
   onClick?: () => void
   title: string
@@ -119,7 +120,6 @@ function ExchangeProgramCard({
       {...(interactive ? { onClick, type: 'button' as const } : {})}
     >
       <Card.Content className={cn('grid min-w-0 gap-1.5 text-left', icon && 'flex-1')}>
-        {/* 稿 title 14 / body 13；leading-tight 合成 h70（禁 leading-[…] 任意值） */}
         <Text as="strong" className="leading-tight font-semibold wrap-break-word" variant="detail">
           {title}
         </Text>
@@ -132,6 +132,12 @@ function ExchangeProgramCard({
   )
 }
 
+/**
+ * 兑换 Hub 程序入口卡片网格
+ *
+ * 六张卡片来自 i18n 文案，点击跳转到对应兑换模式；
+ * 「获取贡献点数」卡片的比例用链上配置实时替换。
+ */
 export function ExchangeProgramCards() {
   const { messages: t } = useI18n()
   const cards = t.exchange.hub.program.cards
@@ -165,7 +171,7 @@ export function ExchangeProgramCards() {
             onClick={
               target
                 ? () => {
-                    // Sell X: open trade on handbook default pair; X preselect DEFER (T-D1c).
+                    // 出售 X：按默认币对打开市价交易；X 暂未上架不做预选
                     if (index === SELL_X_CARD_INDEX) {
                       useExchangeTradePairStore.getState().setSellKey('usd1')
                     }

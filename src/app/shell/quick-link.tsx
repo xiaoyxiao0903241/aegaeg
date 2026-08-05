@@ -11,6 +11,14 @@ export type QuickLinkProps = {
   label: ReactNode
 }
 
+/**
+ * 快捷入口链接卡：图标 + 文字，外部链接新窗口打开。
+ *
+ * @param href 跳转地址
+ * @param icon 图标资源路径
+ * @param iconTone coral=主色圆底 · dark=深色圆底 · plain=品牌图标原样
+ * @param label 文字内容
+ */
 export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkProps) {
   const isExternal = href.startsWith('http://') || href.startsWith('https://')
   const isBrandIcon = iconTone === 'plain'

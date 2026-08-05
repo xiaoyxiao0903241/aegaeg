@@ -10,6 +10,7 @@ const burnSwapWriteAbi = parseWriteAbi(
   AGX_CONTRIBUTION_SWAP_ERRORS,
 )
 
+/** AGX → AgxContributionSwap 授权：销毁前按需补 approve。 */
 export async function approveAgxForBurnExchangeIfNeeded({
   wallet,
   amountIn,
@@ -25,6 +26,7 @@ export async function approveAgxForBurnExchangeIfNeeded({
   })
 }
 
+/** 销毁 AGX 换贡献值：调用 AgxContributionSwap.convert。 */
 export async function burnExchangeConvert({
   wallet,
   agxAmount,

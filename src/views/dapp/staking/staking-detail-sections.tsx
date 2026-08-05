@@ -19,11 +19,11 @@ import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
 /**
- * 右栏指标排布 — 跟各帧稿面，不抽万能仓位组件。
- * - cards-2：概览/仓位 2×2（OverviewGrid）
- * - triple-plus：6 列 span — PC 上三(span2)下二(span3)；H5 一律 span3=每行两卡
- * - pair-plus：Xmine 概览 — PC 上二(span3)下三(span2)；H5 一律 span3
- * gap SSOT = OverviewGrid；span 仅子项 `col-span-*`。
+ * 右栏指标排布（概览 / 仓位共用）
+ *
+ * - cards-2：两列均分
+ * - triple-plus：首行三卡，其余两卡
+ * - pair-plus：首行两卡，其余三卡
  */
 function AsideMetricLayout({
   items,
@@ -83,12 +83,15 @@ function AsideMetricLayout({
 
 type MetricItem = { label: string; value: ReactNode }
 
+/**
+ * 概览区块：默认列表，或按 layout 参数切换卡片网格排布。
+ */
 export function StakingOverviewSection({
   overviewItems,
   overviewLayout = 'list',
 }: {
   overviewItems: MetricItem[]
-  /** Figma stake/bond: 2×2；xmine 概览: pair-plus（2+3）。 */
+  /** 概览排布：stake/bond 用两列，xmine 用首行两卡。 */
   overviewLayout?: 'list' | 'cards-2' | 'triple-plus' | 'pair-plus'
 }) {
   const { t } = useStakingDetailAsideView()
@@ -110,6 +113,9 @@ export function StakingOverviewSection({
   )
 }
 
+/**
+ * X 价值说明区块，深色底双栏数据（Xmine 详情专用）。
+ */
 export function StakingXValueSection() {
   const { xValue } = useStakingDetailAsideView()
 
@@ -138,7 +144,7 @@ export function StakingXValueSection() {
             {xValue.badge}
           </Text>
         </div>
-        {/* H5 `4665:1656`：双栏并排 + 顶对齐；窄列 %/标题上下排（稿横排放不下，产品纠偏） */}
+        {/* H5 双栏并排、顶对齐；窄列内百分比与标题上下排（横排放不下） */}
         <div className="grid grid-cols-2 items-start gap-10">
           {xValue.columns.map((col) => (
             <div className="grid min-w-0 content-start gap-2.5" key={col.title}>
@@ -176,12 +182,15 @@ export function StakingXValueSection() {
   )
 }
 
+/**
+ * 我的仓位区块：卡片网格，附跳转资产页按钮。
+ */
 export function StakingPositionsSection({
   positionItems,
   positionLayout = 'triple-plus',
 }: {
   positionItems?: MetricItem[]
-  /** Bond Figma: 2×2; stake: 3 + remainder. */
+  /** 仓位排布：bond 用两列，stake 用首行三卡。 */
   positionLayout?: 'triple-plus' | 'cards-2'
 }) {
   const { t, selectTab } = useStakingDetailAsideView()
@@ -222,6 +231,9 @@ export function StakingPositionsSection({
   )
 }
 
+/**
+ * 操作记录表区块：列定义 / 空态文案可覆盖。
+ */
 export function StakingRecordsSection({
   recordsTitle,
   recordColumns,
@@ -256,6 +268,9 @@ export function StakingRecordsSection({
   )
 }
 
+/**
+ * 机制说明区块：有步骤时展示步骤卡，否则展示纯文案。
+ */
 export function StakingMechanismSection({
   mechanism,
   mechanismTitle,
@@ -287,6 +302,9 @@ export function StakingMechanismSection({
   )
 }
 
+/**
+ * 趋势图区块：数据源未接通时展示空态图。
+ */
 export function StakingChartSection({ chartTitle }: { chartTitle: string }) {
   const { t, chartRange, setChartRange } = useStakingDetailAsideView()
 
@@ -307,6 +325,9 @@ export function StakingChartSection({ chartTitle }: { chartTitle: string }) {
   )
 }
 
+/**
+ * FAQ 区块，默认折叠。
+ */
 export function StakingFaqSection({ faq }: { faq: Array<{ q: string; a: string }> }) {
   const { t } = useStakingDetailAsideView()
 

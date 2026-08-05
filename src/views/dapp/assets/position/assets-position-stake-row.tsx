@@ -13,6 +13,12 @@ import {
 import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-position-voucher-link'
 import type { AssetsStakeRow } from '~/web3/assets/assets-read'
 
+/**
+ * 质押仓位卡
+ *
+ * 展示周期与剩余 / warmup 状态、本金与收益、凭证链接；
+ * 底部操作随状态变化：warmup 结束可激活，活期可随时赎回。
+ */
 export function AssetsPositionStakeRow(
   props: AssetsPositionRowShellProps<AssetsStakeRow> & {
     /** 当前 staking epoch；warmup 剩余 epoch 倒计时用。 */
@@ -27,7 +33,7 @@ export function AssetsPositionStakeRow(
   const boost = row.extraInterest
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
-  // 测试期放开领取入口：warmup 外可点开弹窗；金额=0 / 贡献不足由 Mixed 写链诚实报错
+  // 测试期放开领取入口：warmup 外可点开弹窗；金额=0 / 贡献不足由写链校验拦截
   const canClaim = !inWarmup
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
@@ -78,7 +84,7 @@ export function AssetsPositionStakeRow(
         <AssetsPositionYieldColumn
           amountText={formatAmount(reward, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
           badge={
-            // 稿：收益 + 加成双属性；无加成仍占位，与左侧本金数字对齐
+            // 收益与加成双属性；无加成时仍占位，与左侧本金数字对齐
             <AssetsPositionBoostBadge
               className={boost > 0n ? undefined : 'pointer-events-none opacity-0'}
               text={formatAmount(boost, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}

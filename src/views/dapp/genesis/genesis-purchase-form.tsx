@@ -15,8 +15,11 @@ import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season/genesis-season
 import { useGenesisPurchaseView } from '~/views/dapp/genesis/use-genesis-purchase-view'
 
 /**
- * Remount via `key={address}` from parent when wallet changes — clears draft text
- * without an effect that mirrors genesis.shares.
+ * 创世购买表单
+ *
+ * 顶部为季度选择轮播，下方为份额输入与购买清单；
+ * 钱包切换时由父级以 key={address} 重建本组件以清空草稿，
+ * 无需用副作用去镜像 genesis.shares。
  */
 export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }) {
   const vm = useGenesisPurchaseView(genesis)
@@ -64,7 +67,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
             { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
             { label: t.genesis.value, value: genesis.contributionValueLabel },
             {
-              // Label 已是 detail + muted；内层勿再套 Text variant/tone
+              // 该行 Label 已自带样式，内层勿再套 Text variant/tone
               label: (
                 <span className="inline-flex items-center gap-1">
                   {t.genesis.xTokenAirdrop}

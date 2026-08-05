@@ -1,10 +1,10 @@
 import { homeAssets as canonicalHomeAssets } from '~/shared/assets/home'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 
-/** Homepage token flywheel icons. */
+/** 首页代币转轮图标。 */
 const tokenFlywheelIcons = canonicalHomeAssets.token
 
-/** DApp exchange carousel icons. */
+/** 兑换页轮播代币图标。 */
 export const tokenCarouselIcons = {
   agxIcon: '/assets/figma/dapp/carousel/token-agx.png',
   usd1Icon: '/assets/figma/dapp/carousel/token-usd1.png',
@@ -12,23 +12,23 @@ export const tokenCarouselIcons = {
   gagxIcon: '/assets/figma/dapp/carousel/token-gagx.png',
 } as const
 
-/** Flash exchange icons. */
+/** 闪电兑换图标。 */
 export const flashExchangeAssets = {
   flowDivider: '/assets/figma/dapp/flash/ic-flow-divider.svg',
 } as const
 
-/** Burn exchange icons. */
+/** 销毁兑换图标。 */
 export const burnExchangeAssets = {
   flowDown: '/assets/figma/dapp/burn/ic-flow-down.svg',
 } as const
 
-/** Turbine exchange icons. */
+/** Turbine 兑换图标。 */
 export const turbineExchangeAssets = {
-  /** Figma `4435:445` eqBuy row arrow (coral right). */
+  /** 市价买入行右侧珊瑚色箭头。 */
   eqBuyArrow: '/assets/figma/dapp/turbine/ic-eq-buy-arrow.svg',
 } as const
 
-/** Exchange hub icons. */
+/** 兑换中心图标。 */
 export const exchangeHubAssets = {
   modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',
   modeTrade: '/assets/figma/dapp/hub/ic-hub-mode-trade.svg',
@@ -41,7 +41,7 @@ export const exchangeHubAssets = {
   programGagx: '/assets/figma/dapp/hub/program-gagx.png',
 } as const
 
-/** Staking hub mode icons. */
+/** 质押中心各模式图标。 */
 export const stakingHubAssets = {
   modeStake: '/assets/figma/dapp/staking/ic-mode-stake.svg',
   modeLpBond: '/assets/figma/dapp/staking/ic-mode-lpbond.svg',
@@ -50,13 +50,13 @@ export const stakingHubAssets = {
   modeCalc: '/assets/figma/dapp/staking/ic-mode-calc.svg',
 } as const
 
-/** Assets hub — Figma `asset/*` leaf icons（与质押 hub mode 图标不同稿）. */
+/** 资产中心各模式图标（与质押中心图标不是同一套）。 */
 export const assetsHubAssets = {
   modeStake: '/assets/figma/dapp/assets-hub/ic-mode-stake.svg',
   modeLpBond: '/assets/figma/dapp/assets-hub/ic-mode-lpbond.svg',
   modeBurnBond: '/assets/figma/dapp/assets-hub/ic-mode-burnbond.svg',
   modeXmine: '/assets/figma/dapp/assets-hub/ic-mode-xmine.svg',
-  /** 缓冲池币种切换 · Figma `4424:49` stroke `#0B0E14`（勿用珊瑚色 exchangeFlip） */
+  /** 缓冲池币种切换图标（深色描边，勿用珊瑚色 exchangeFlip）。 */
   bufferSwap: '/assets/figma/dapp/assets-hub/ic-buffer-swap.svg',
 } as const
 
@@ -91,15 +91,15 @@ export const dappAssets = {
   menu: '/assets/figma/dapp/ic-menu.svg',
   rewards: '/assets/figma/dapp/ic-rewards.svg',
   setting: '/assets/figma/dapp/ic-setting.svg',
-  /** 滑点等 CTA 齿轮 · 同叶 primary 描边（`ic-setting` 为黑，供 Hub 筛选） */
+  /** 主色描边齿轮（用于滑点等 CTA；`ic-setting` 为黑色，供中心筛选使用）。 */
   settingPrimary: '/assets/figma/dapp/ic-setting-primary.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
-  /** Rail icon for exchange tab (glyph file name historical). */
+  /** 兑换页导航图标（文件名沿用旧命名）。 */
   exchange: '/assets/figma/dapp/ic-swap.svg',
   assets: '/assets/figma/dapp/ic-assets.svg',
   staking: '/assets/figma/dapp/ic-staking.svg',
   release: '/assets/figma/dapp/ic-release.svg',
-  /** Direction flip control in market trade (glyph file name historical). */
+  /** 市价交易的方向切换按钮（文件名沿用旧命名）。 */
   exchangeFlip: '/assets/figma/dapp/ic-swap-exchange.svg',
   telegram: '/assets/figma/dapp/ic-telegram.svg',
   twitter: '/assets/figma/dapp/ic-twitter.svg',
@@ -107,31 +107,31 @@ export const dappAssets = {
   medium: '/assets/figma/dapp/ic-medium.svg',
   tokenCardRays: '/assets/figma/dapp/token-card-rays.svg',
   tokenCardCorner: '/assets/figma/dapp/token-card-corner.svg',
-  /** 奖励 about 轮播人物 · Figma `4585:1026` */
+  /** 奖励关于轮播人物。 */
   aboutCarouselRewardsMascot: '/assets/figma/dapp/about-carousel/rewards-mascot.webp',
   aboutCarouselReleaseDeco: '/assets/figma/dapp/about-carousel/release-deco.jpg',
   releasePool: '/assets/figma/dapp/release/ic-release-pool.svg',
   bufferPool: '/assets/figma/dapp/release/ic-buffer-pool.svg',
-  /** 缓冲池机制四步 · Figma `4470:331` */
+  /** 缓冲池机制说明四步图标。 */
   releaseBufferMechLock: '/assets/figma/dapp/release/ic-mech-lock.svg',
   releaseBufferMechWaves: '/assets/figma/dapp/release/ic-mech-waves.svg',
   releaseBufferMechClock: '/assets/figma/dapp/release/ic-mech-clock.svg',
   releaseBufferMechTrending: '/assets/figma/dapp/release/ic-mech-trending.svg',
   releaseBufferMechArrow: '/assets/figma/dapp/release/ic-mech-arrow.svg',
   releaseBufferMechCheck: '/assets/figma/dapp/release/ic-mech-check.svg',
-  /** Assets hub 总览黑卡右侧几何底纹 · Figma `4284:215`. */
+  /** 资产中心总览黑卡右侧几何底纹。 */
   assetsHubOverviewDeco: '/assets/figma/dapp/assets-hub/overview-deco.svg',
-  /** Rebase tags 实心珊瑚勾 · Figma `4285:233`. */
+  /** Rebase 标签实心珊瑚勾。 */
   assetsHubCheckBadge: '/assets/figma/dapp/assets-hub/ic-check-badge.svg',
-  /** 资产仓位空态插画 · HTML 原型 `r23` / `ip-gift`. */
+  /** 资产仓位空状态插画。 */
   assetsPositionEmptyArt: '/assets/figma/dapp/assets-hub/stake-position-empty-art.webp',
-  /** 仓位本金 chip 锁 · Figma `4525:242` 12. */
+  /** 仓位本金徽标锁。 */
   assetsPositionLock: '/assets/figma/dapp/assets-hub/ic-position-lock-12.svg',
-  /** 仓位加成 chip 双上箭头 · Figma `4525:253` 12. */
+  /** 仓位加成徽标双上箭头。 */
   assetsPositionBoost: '/assets/figma/dapp/assets-hub/ic-position-boost-12.svg',
   tokenAgx: tokenCarouselIcons.agxIcon,
   tokenGagx: tokenCarouselIcons.gagxIcon,
-  /** 与 `tokenGagx` 同图（carousel 128²）；旧涡轮引用保留 */
+  /** 与 `tokenGagx` 同一张图（轮播 128²），旧涡轮使用处保留。 */
   tokenGagxMark: tokenCarouselIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,
   tokenX: tokenFlywheelIcons.xIcon,
@@ -139,7 +139,7 @@ export const dappAssets = {
   usd1: '/assets/figma/dapp/token-usd1.svg',
   genesisGlobe: '/assets/figma/dapp/genesis-globe.webp',
   rewardsCharacter: '/assets/figma/dapp/rewards-character.webp',
-  /** Hub reward/* 分卡图标 · Figma `4291:212` 左栏直拉 */
+  /** 奖励中心各奖励卡片图标。 */
   rewardsHubLucky: '/assets/figma/dapp/rewards-hub/ic-mode-lucky.svg',
   rewardsHubReferral: '/assets/figma/dapp/rewards-hub/ic-mode-referral.svg',
   rewardsHubParticipate: '/assets/figma/dapp/rewards-hub/ic-mode-participate.svg',
@@ -147,19 +147,19 @@ export const dappAssets = {
   rewardsHubGrant: '/assets/figma/dapp/rewards-hub/ic-mode-grant.svg',
   rewardsHubGenesis: '/assets/figma/dapp/rewards-hub/ic-mode-genesis.svg',
   rewardsHubEnterClaim: '/assets/figma/dapp/rewards-hub/ic-enter-claim.svg',
-  /** tile/总奖励 gAGX 圆标 · `4296:214` */
+  /** 总奖励卡 gAGX 圆标。 */
   rewardsHubGagxDot: '/assets/figma/dapp/rewards-hub/ic-gagx-ellipse.svg',
-  /** tile/共建级别 右侧角色 · `4585:1024` */
+  /** 共建级别卡右侧角色装饰。 */
   rewardsHubTierDeco: '/assets/figma/dapp/rewards-hub/deco-character.png',
-  /** 贡献点数「去销毁」chevron · `4629:934` */
+  /** 贡献点数「去销毁」箭头。 */
   rewardsHubGoBurnChevron: '/assets/figma/dapp/rewards-hub/ic-go-burn-chevron.svg',
-  /** Lucky Chainlink VRF 标 · `4395:240` */
+  /** 抽奖 Chainlink VRF 标识。 */
   rewardsHubChainlink: '/assets/figma/dapp/rewards-hub/ic-chainlink.svg',
-  /** 社区等级暗卡 IP · Figma `4794:3809` */
+  /** 社区等级暗色卡片插画。 */
   communityRankDeco: '/assets/figma/dapp/community/rank-deco.png',
-  /** 生态支持 · 创世火箭 · `4794:3841` */
+  /** 生态支持·创世火箭。 */
   communityProgramRocket: '/assets/figma/dapp/community/program-rocket.png',
-  /** 生态支持 · X 学院星 · `4794:3838` */
+  /** 生态支持·X 学院星。 */
   communityProgramStar: '/assets/figma/dapp/community/program-star.png',
 } as const
 

@@ -8,6 +8,7 @@ import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-cont
 const buyAbi = parseWriteAbi(TURBINE_METHODS.buyAgxAndStartCooldown, TURBINE_ERRORS)
 const claimAbi = parseWriteAbi(TURBINE_METHODS.claimCooledGagx, TURBINE_ERRORS)
 
+/** USD1 → Turbine 授权：买入前按需补 approve。 */
 export async function approveUsd1ForTurbineIfNeeded({
   wallet,
   amountIn,
@@ -23,6 +24,7 @@ export async function approveUsd1ForTurbineIfNeeded({
   })
 }
 
+/** 用 USD1 买入 AGX 并开启冷却：调用 Turbine.buyAgxAndStartCooldown。 */
 export async function buyAgxAndStartCooldown({
   wallet,
   usdAmount,
@@ -39,6 +41,7 @@ export async function buyAgxAndStartCooldown({
   })
 }
 
+/** 领取已冷却的 gAGX：调用 Turbine.claimCooledGagx，按下标领取单条买入。 */
 export async function claimCooledGagx({ wallet, index }: { wallet: Wallet; index: number }) {
   return writeContractViaWallet({
     wallet,

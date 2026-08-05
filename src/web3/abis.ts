@@ -1,3 +1,4 @@
+/** ERC20 标准方法（balanceOf / allowance / approve / decimals / mint）。 */
 export const ERC20_METHODS = {
   balanceOf: 'function balanceOf(address owner) view returns (uint256)',
   allowance: 'function allowance(address owner, address spender) view returns (uint256)',
@@ -6,25 +7,37 @@ export const ERC20_METHODS = {
   mint: 'function mint(address to, uint256 amount)',
 } as const
 
-/** PancakeSwap V2 Router — handbook §7.1 Trade (USD1↔AGX). */
+/**
+ * PancakeSwap V2 Router — USD1↔AGX 兑换。
+ * @see 手册 §7.1 PancakeRouter 买 AGX
+ */
 export const PANCAKE_ROUTER_V2_METHODS = {
   getAmountsOut:
     'function getAmountsOut(uint256 amountIn, address[] path) view returns (uint256[] amounts)',
   swapExactTokensForTokens:
     'function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) returns (uint256[] amounts)',
-  /** AGX→USD1 sell — AGX takes sell tax into the pair (contracts/agx.md). */
+  /**
+   * AGX→USD1 卖出：AGX 卖税计入交易对。
+   * @see docs/onchain-manual/contracts/agx.md
+   */
   swapExactTokensForTokensSupportingFeeOnTransferTokens:
     'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)',
 } as const
 
-/** AGX sell-tax views — handbook `contracts/agx.md`. */
+/**
+ * AGX 卖税查询方法。
+ * @see docs/onchain-manual/contracts/agx.md
+ */
 export const AGX_SELL_TAX_METHODS = {
   sellRatio: 'function sellRatio() view returns (uint256)',
   extraSellBP: 'function extraSellBP() view returns (uint256)',
   crashFuseActive: 'function crashFuseActive() view returns (bool)',
 } as const
 
-/** Pancake V2 Pair — reserves for spot / price impact. */
+/**
+ * Pancake V2 交易对 — 储备与实时价格影响计算。
+ * @see docs/onchain-manual/contracts/pancakepair.md
+ */
 export const PANCAKE_PAIR_V2_METHODS = {
   token0: 'function token0() view returns (address)',
   token1: 'function token1() view returns (address)',
@@ -33,6 +46,10 @@ export const PANCAKE_PAIR_V2_METHODS = {
   totalSupply: 'function totalSupply() view returns (uint256)',
 } as const
 
+/**
+ * AegisPreSale — 预售档位 / 额度 / 购买。
+ * @see 手册 §6 预售 PreSale
+ */
 export const PRESALE_METHODS = {
   getPhaseCount: 'function getPhaseCount() view returns (uint256)',
   phases:
@@ -49,11 +66,16 @@ export const PRESALE_METHODS = {
   purchase: 'function purchase(uint256 _phaseIndex, uint256 _amount)',
 } as const
 
+/** Multicall3 — 批量 eth_call，允许部分调用失败。 */
 export const MULTICALL3_METHODS = {
   aggregate3:
     'function aggregate3((address target, bool allowFailure, bytes callData)[] calls) payable returns ((bool success, bytes returnData)[] returnData)',
 } as const
 
+/**
+ * AegisReferral — 推荐关系查询 / 绑定。
+ * @see 手册 §5 推荐关系 Referral
+ */
 export const REFERRAL_METHODS = {
   isBindReferral: 'function isBindReferral(address user) view returns (bool)',
   getReferral: 'function getReferral(address user) view returns (address)',
@@ -62,13 +84,20 @@ export const REFERRAL_METHODS = {
   bindReferral: 'function bindReferral(address referrer)',
 } as const
 
-/** AccountMigrationManager — handbook §17 read-only this round (writes DEFER). */
+/**
+ * AccountMigrationManager — 迁移状态查询（本期只读，写操作延后）。
+ * @see 手册 §17 账户迁移
+ */
 export const ACCOUNT_MIGRATION_METHODS = {
   migrationEnabled: 'function migrationEnabled() view returns (bool)',
   isOldAccount: 'function isOldAccount(address account) view returns (bool)',
   migratedFrom: 'function migratedFrom(address account) view returns (address)',
 } as const
 
+/**
+ * AegisUsd1Swap — USDT→USD1 兑换。
+ * @see docs/onchain-manual/contracts/usd1swap.md
+ */
 export const USD1_SWAP_METHODS = {
   quoteUsd1Out: 'function quoteUsd1Out(uint256 usdtAmount) view returns (uint256)',
   swap: 'function swap(uint256 usdtAmount, uint256 minUsd1Out)',
@@ -78,7 +107,10 @@ export const USD1_SWAP_METHODS = {
     'function getConfig() view returns (address usdtToken, address usd1Token, address wallet, uint256 currentRateBps, uint8 usdtDec, uint8 usd1Dec, bool isPaused, uint256 minIn, uint256 maxIn, uint256 reserve)',
 } as const
 
-/** AegisUsd1Swap custom errors — docs/onchain-manual/contracts/usd1swap.md */
+/**
+ * AegisUsd1Swap 自定义错误。
+ * @see docs/onchain-manual/contracts/usd1swap.md
+ */
 export const USD1_SWAP_ERRORS = [
   'error ErrorPaused()',
   'error ErrorInsufficientUsd1(uint256 available, uint256 required)',
@@ -94,7 +126,10 @@ export const USD1_SWAP_ERRORS = [
   'error ErrorInvalidLimits(uint256 minAmount, uint256 maxAmount)',
 ] as const
 
-/** AegisAgxContributionSwap — handbook §9.2 burn AGX → contribution points. */
+/**
+ * AegisAgxContributionSwap — 销毁 AGX 换贡献值。
+ * @see 手册 §9.2 贡献值页面
+ */
 export const AGX_CONTRIBUTION_SWAP_METHODS = {
   quoteContributionOut: 'function quoteContributionOut(uint256 agxAmount) view returns (uint256)',
   getConfig:
@@ -111,7 +146,10 @@ export const AGX_CONTRIBUTION_SWAP_METHODS = {
   convert: 'function convert(uint256 agxAmount)',
 } as const
 
-/** AegisAgxContributionSwap custom errors — docs/onchain-manual/contracts/agxcontributionswap.md */
+/**
+ * AegisAgxContributionSwap 自定义错误。
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
 export const AGX_CONTRIBUTION_SWAP_ERRORS = [
   'error ErrorPaused()',
   'error ErrorZeroAmount()',
@@ -125,7 +163,10 @@ export const AGX_CONTRIBUTION_SWAP_ERRORS = [
   'error ErrorAccountMigrated(address oldAccount)',
 ] as const
 
-/** AegisTurbineVestingHub — handbook §16 unlock / claim. */
+/**
+ * AegisTurbineVestingHub — 解锁 / 领取。
+ * @see 手册 §16 Turbine
+ */
 export const TURBINE_METHODS = {
   turbineBalances: 'function turbineBalances(address user) view returns (uint256)',
   silencesSize: 'function silencesSize(address user) view returns (uint256)',
@@ -140,6 +181,10 @@ export const TURBINE_METHODS = {
   claimCooledGagx: 'function claimCooledGagx(uint256 index)',
 } as const
 
+/**
+ * AegisTurbineVestingHub 自定义错误。
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export const TURBINE_ERRORS = [
   'error ErrorInsufficientBalance()',
   'error ErrorSilentTime()',
@@ -152,20 +197,29 @@ export const TURBINE_ERRORS = [
   'error ErrorNotAuthorized()',
 ] as const
 
-/** AegisRedeemableGAGX — gAGX↔AGX wrap/redeem (manual: redeemablegagx). */
+/**
+ * AegisRedeemableGAGX — gAGX↔AGX 封装 / 赎回。
+ * @see docs/onchain-manual/contracts/redeemablegagx.md
+ */
 export const REDEEMABLE_GAGX_METHODS = {
   redeem: 'function redeem(uint256 _amount)',
   wrap: 'function wrap(uint256 _amount)',
 } as const
 
-/** RedeemableGAGX custom errors — docs/onchain-manual/contracts/redeemablegagx.md */
+/**
+ * RedeemableGAGX 自定义错误。
+ * @see docs/onchain-manual/contracts/redeemablegagx.md
+ */
 export const REDEEMABLE_GAGX_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',
   'error ErrorNotAuthorized()',
 ] as const
 
-/** LiquidStaking — AGX flexible stake (manual §8.2). */
+/**
+ * LiquidStaking — AGX 活期质押。
+ * @see 手册 §8.2 活期 LiquidStaking
+ */
 export const LIQUID_STAKING_METHODS = {
   liquidStake: 'function liquidStake(uint256 amount)',
   claim: 'function claim()',
@@ -173,7 +227,10 @@ export const LIQUID_STAKING_METHODS = {
   isWarmupExpired: 'function isWarmupExpired(address user) view returns (bool)',
 } as const
 
-/** LiquidStaking custom errors — docs/onchain-manual/contracts/liquidstaking.md */
+/**
+ * LiquidStaking 自定义错误。
+ * @see docs/onchain-manual/contracts/liquidstaking.md
+ */
 export const LIQUID_STAKING_ERRORS = [
   'error ErrorStakeAmount()',
   'error ErrorStakeNotApproved()',
@@ -187,7 +244,10 @@ export const LIQUID_STAKING_ERRORS = [
   'error ErrorPrincipalReleaseVaultNotSet()',
 ] as const
 
-/** LockedStaking — AGX term stake (manual §8.3). */
+/**
+ * LockedStaking — AGX 定期质押。
+ * @see 手册 §8.3 定期 LockedStaking
+ */
 export const LOCKED_STAKING_METHODS = {
   lockedStake: 'function lockedStake(uint256 amount)',
   remainingStakeAmount: 'function remainingStakeAmount() view returns (uint256)',
@@ -197,7 +257,10 @@ export const LOCKED_STAKING_METHODS = {
   periodTime: 'function periodTime() view returns (uint256)',
 } as const
 
-/** LockedStaking custom errors — docs/onchain-manual/contracts/lockedstaking.md */
+/**
+ * LockedStaking 自定义错误。
+ * @see docs/onchain-manual/contracts/lockedstaking.md
+ */
 export const LOCKED_STAKING_ERRORS = [
   'error ErrorAmountZero()',
   'error ErrorStakeNotApproved()',
@@ -212,7 +275,10 @@ export const LOCKED_STAKING_ERRORS = [
   'error ErrorPrincipalReleaseVaultNotSet()',
 ] as const
 
-/** BondHelper — LP / Burn zap (manual §10). */
+/**
+ * BondHelper — LP / Burn 债券 zap 辅助。
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export const BOND_HELPER_METHODS = {
   authContracts: 'function authContracts(address target) view returns (bool)',
   slippage: 'function slippage() view returns (uint256)',
@@ -222,7 +288,10 @@ export const BOND_HELPER_METHODS = {
     'function zapIntoBurnBond(address burnBondDepository, address token, uint256 amount)',
 } as const
 
-/** BondHelper custom errors — docs/onchain-manual/contracts/bondhelper.md */
+/**
+ * BondHelper 自定义错误。
+ * @see docs/onchain-manual/contracts/bondhelper.md
+ */
 export const BOND_HELPER_ERRORS = [
   'error ErrorNotApproved()',
   'error ErrorPairNotExist()',
@@ -232,16 +301,25 @@ export const BOND_HELPER_ERRORS = [
   'error ErrorZeroAddress()',
 ] as const
 
-/** XStakingPool — gAGX mining (manual §15). */
+/**
+ * XStakingPool — gAGX 挖矿。
+ * @see 手册 §15 XStakingPool X 挖矿
+ */
 export const X_STAKING_POOL_METHODS = {
   miningQuotaOf: 'function miningQuotaOf(address user) view returns (uint256)',
   stakeGagxForMining: 'function stakeGagxForMining(uint256 amount)',
   activateWarmup: 'function activateWarmup()',
   pendingReward: 'function pendingReward(address user) view returns (uint256)',
-  /** 手册 §15.3 — pending 的 AGX/gAGX 价值口径 */
+  /**
+   * pending 的 AGX/gAGX 价值口径。
+   * @see 手册 §15.3 展示字段
+   */
   pendingRewardValue: 'function pendingRewardValue(address user) view returns (uint256)',
   miningStakeAmountOf: 'function miningStakeAmountOf(address user) view returns (uint256)',
-  /** 手册 contracts/xstakingpool：X/AGX 价格比（1e18 标度 · X per AGX） */
+  /**
+   * X/AGX 价格比（1e18 标度，X per AGX）。
+   * @see docs/onchain-manual/contracts/xstakingpool.md
+   */
   xPerAgx: 'function xPerAgx() view returns (uint256)',
   /** 按天计息 BP；日收益率% = BP / 100 */
   yieldRateBP: 'function yieldRateBP() view returns (uint256)',
@@ -253,7 +331,10 @@ export const X_STAKING_POOL_METHODS = {
   startUnstake: 'function startUnstake()',
 } as const
 
-/** XStakingPool custom errors — docs/onchain-manual/contracts/xstakingpool.md */
+/**
+ * XStakingPool 自定义错误。
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export const X_STAKING_POOL_ERRORS = [
   'error ErrorAmountZero()',
   'error ErrorStakeNotExist()',
@@ -268,7 +349,10 @@ export const X_STAKING_POOL_ERRORS = [
   'error ErrorCallerNotAuthorized()',
 ] as const
 
-/** LiquidStaking claim / exit (manual §8.2) — assets rail. */
+/**
+ * LiquidStaking 领取 / 退出（资产页用）。
+ * @see 手册 §8.2 活期 LiquidStaking
+ */
 export const LIQUID_STAKING_ASSETS_METHODS = {
   claimPrincipal: 'function claimPrincipal(uint256 amount)',
   claimRewardMixed:
@@ -277,12 +361,18 @@ export const LIQUID_STAKING_ASSETS_METHODS = {
     'function getStakeRewards(address user) view returns (uint256 warmupReward, uint256 activeReward)',
   stakes:
     'function stakes(address user) view returns (uint256 principal, uint256 gons, uint256 startEpoch, uint256 expiry, bool exists)',
-  /** 手册 §8.2 — liquidStake 先进 warmup；与 stakes 同形，须 AMM root。 */
+  /**
+   * liquidStake 先进 warmup；与 stakes 同形，须先解析迁移 root。
+   * @see 手册 §8.2 活期 LiquidStaking
+   */
   warmupStakes:
     'function warmupStakes(address user) view returns (uint256 principal, uint256 gons, uint256 startEpoch, uint256 expiry, bool exists)',
 } as const
 
-/** LockedStaking claim / exit (manual §8.3) — assets rail. */
+/**
+ * LockedStaking 领取 / 退出（资产页用）。
+ * @see 手册 §8.3 定期 LockedStaking
+ */
 export const LOCKED_STAKING_ASSETS_METHODS = {
   getStakesCount: 'function getStakesCount(address user) view returns (uint256)',
   getStakes:
@@ -298,7 +388,10 @@ export const LOCKED_STAKING_ASSETS_METHODS = {
     'function claimExtraRewardMixed(uint256 stakeIndex, uint256 amount, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
 
-/** Bond / BurnBond market reads (manual §10) — staking buy meta. */
+/**
+ * Bond / BurnBond 市场查询（质押购买页用）。
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export const BOND_DEPOSITORY_MARKET_METHODS = {
   discountRateBP: 'function discountRateBP() view returns (uint256)',
   terms:
@@ -309,19 +402,29 @@ export const BOND_DEPOSITORY_MARKET_METHODS = {
   restakeConfig: 'function restakeConfig() view returns (address)',
 } as const
 
+/**
+ * Treasury — 资产估值 / 总储备。
+ * @see docs/onchain-manual/contracts/treasury.md
+ */
 export const TREASURY_METHODS = {
   valueOf: 'function valueOf(address token, uint256 amount) view returns (uint256)',
   totalReserves: 'function totalReserves() view returns (uint256)',
 } as const
 
-/** StakingPool — hub TVL / epoch (manual stakingpool.md). */
+/**
+ * StakingPool — 质押池 TVL / epoch。
+ * @see docs/onchain-manual/contracts/stakingpool.md
+ */
 export const STAKING_POOL_METHODS = {
   poolAgxBalance: 'function poolAgxBalance() view returns (uint256)',
   epoch:
     'function epoch() view returns (uint256 length, uint256 number, uint256 endBlock, uint256 distribute)',
 } as const
 
-/** sAGX — circulating + rebase history (manual sagx.md). */
+/**
+ * sAGX — 流通量与 rebase 历史。
+ * @see docs/onchain-manual/contracts/sagx.md
+ */
 export const SAGX_METHODS = {
   circulatingSupply: 'function circulatingSupply() view returns (uint256)',
   totalSupply: 'function totalSupply() view returns (uint256)',
@@ -329,7 +432,10 @@ export const SAGX_METHODS = {
     'function rebases(uint256 epoch) view returns (uint256 epoch_, uint256 rebase, uint256 totalStakedBefore, uint256 totalStakedAfter, uint256 amountRebased, uint256 index, uint256 blockNumberOccured)',
 } as const
 
-/** Bond / BurnBond position ops (manual §10) — assets rail. */
+/**
+ * Bond / BurnBond 仓位操作（资产页用）。
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export const BOND_DEPOSITORY_ASSETS_METHODS = {
   getBondCount: 'function getBondCount(address depositor) view returns (uint256)',
   getBondInfo:
@@ -345,8 +451,9 @@ export const BOND_DEPOSITORY_ASSETS_METHODS = {
 } as const
 
 /**
- * Bond / BurnBond custom errors — docs/onchain-manual/contracts/bonddepository.md
- * (burnbonddepository.md: same user-facing set).
+ * Bond / BurnBond 自定义错误。
+ * @see docs/onchain-manual/contracts/bonddepository.md
+ * @see docs/onchain-manual/contracts/burnbonddepository.md（与 BondDepository 为同一面向用户的错误集）
  */
 export const BOND_DEPOSITORY_ERRORS = [
   'error ErrorNotApproved()',
@@ -368,7 +475,10 @@ export const BOND_DEPOSITORY_ERRORS = [
   'error ErrorCallerNotAuthorized()',
 ] as const
 
-/** RewardQueue plans (manual §12) — duration → releasePlanIndex. */
+/**
+ * RewardQueue 释放计划 — 时长 → releasePlanIndex。
+ * @see 手册 §12 RewardQueue 奖励释放队列
+ */
 export const REWARD_QUEUE_METHODS = {
   queuePlans:
     'function queuePlans() view returns ((uint256 releaseDuration, uint256 feeRate, address feeRecipient)[])',
@@ -380,7 +490,10 @@ export const REWARD_QUEUE_METHODS = {
   claimAllVestedRewards: 'function claimAllVestedRewards(uint8 planIndex)',
 } as const
 
-/** RewardQueue custom errors — docs/onchain-manual/contracts/rewardqueue.md */
+/**
+ * RewardQueue 自定义错误。
+ * @see docs/onchain-manual/contracts/rewardqueue.md
+ */
 export const REWARD_QUEUE_ERRORS = [
   'error ErrorZeroAmount()',
   'error ErrorIndexOutOfBounds()',
@@ -388,7 +501,10 @@ export const REWARD_QUEUE_ERRORS = [
   'error ErrorZeroAddress()',
 ] as const
 
-/** PrincipalReleaseVault (manual §13) — principal linear release → wallet AGX. */
+/**
+ * PrincipalReleaseVault — 本金线性释放到钱包 AGX。
+ * @see 手册 §13 PrincipalReleaseVault 本金释放
+ */
 export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   getReleaseCount: 'function getReleaseCount(address user) view returns (uint256)',
   getRelease:
@@ -398,7 +514,10 @@ export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   claimMany: 'function claimMany(uint256 start, uint256 limit)',
 } as const
 
-/** PrincipalReleaseVault custom errors — docs/onchain-manual/contracts/principalreleasevault.md */
+/**
+ * PrincipalReleaseVault 自定义错误。
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
+ */
 export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',
@@ -409,7 +528,10 @@ export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
   'error ErrorAlreadyMigrated()',
 ] as const
 
-/** RestakeConfig plans (manual §9) — duration → restakePlanIndex (raw index). */
+/**
+ * RestakeConfig 复投计划 — 时长 → restakePlanIndex（保留链上原始 index）。
+ * @see 手册 §9 贡献值与 Mixed 领奖
+ */
 export const RESTAKE_CONFIG_METHODS = {
   getPlanCount: 'function getPlanCount() view returns (uint256)',
   getPlan:
@@ -418,32 +540,45 @@ export const RESTAKE_CONFIG_METHODS = {
 } as const
 
 export const REWARD_CLAIMER_METHODS = {
-  // Verified on-chain (impl 0x0265…fb7b, selector 0xf2ee58d4) and per
-  // contract.md §4.1: claimReward(signType, amount, expireTime, salt, signature).
+  // 已在链上验证（实现 0x0265…fb7b，selector 0xf2ee58d4），
+  // 签名方法与 docs/onchain-manual-legacy.md §4.1 一致：
+  // claimReward(signType, amount, expireTime, salt, signature)。
   claimReward:
     'function claimReward(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes signature)',
   rewardSigner: 'function rewardSigner() view returns (address)',
 } as const
 
-/** IncentivePool — participation signed claim (manual §9.5). */
+/**
+ * IncentivePool — 参与奖签名领取。
+ * @see 手册 §9.5 签名奖励
+ */
 export const INCENTIVE_POOL_METHODS = {
   claimRewards:
     'function claimRewards(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
 } as const
 
-/** MarketFund — simple signed claim (manual §9.5). */
+/**
+ * MarketFund — 简单签名领取。
+ * @see 手册 §9.5 签名奖励
+ */
 export const MARKET_FUND_METHODS = {
   claimReward:
     'function claimReward(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
 } as const
 
-/** DaoPool — Mixed signed claim; OpenAPI dao-reward uses signType 41–45 per rewardType. */
+/**
+ * DaoPool — Mixed 签名领取；后端按 rewardType 下发 signType 41–45。
+ * @see docs/backend-api/api.md #claim/dao-reward
+ */
 export const DAO_POOL_METHODS = {
   claimRewardsMixed:
     'function claimRewardsMixed(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
 
-/** LuckyPool — Mixed claim + pause / winner / round reads (manual §14). */
+/**
+ * LuckyPool — Mixed 领取 + 暂停 / 中奖 / 轮次查询。
+ * @see 手册 §14 LuckyPool 去中心化抽奖
+ */
 export const LUCKY_POOL_METHODS = {
   paused: 'function paused() view returns (bool)',
   currentRoundId: 'function currentRoundId() view returns (uint256)',
@@ -458,13 +593,19 @@ export const LUCKY_POOL_METHODS = {
     'function claimRewardMixed(uint256 roundId, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
 
-/** DailyPurchaseTracker — qualification stats (manual §14.1). */
+/**
+ * DailyPurchaseTracker — 轮内购买资格统计。
+ * @see 手册 §14.1 用户抽奖页
+ */
 export const DAILY_PURCHASE_TRACKER_METHODS = {
   getUserRoundStat:
     'function getUserRoundStat(uint256 roundId, address user) view returns (uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
 } as const
 
-/** LuckyPool custom errors — docs/onchain-manual/contracts/aegisluckypool.md (user claim path). */
+/**
+ * LuckyPool 自定义错误（用户领取路径）。
+ * @see docs/onchain-manual/contracts/aegisluckypool.md
+ */
 export const LUCKY_POOL_ERRORS = [
   'error ErrorPaused()',
   'error ErrorNotWinner(uint256 roundId, address user)',
@@ -474,7 +615,10 @@ export const LUCKY_POOL_ERRORS = [
   'error ErrorInsufficientContribution(address user, uint256 required, uint256 available)',
 ] as const
 
-/** AegisPresaleRewardClaimer custom errors — see docs/onchain-manual-legacy.md §4.4. */
+/**
+ * AegisPresaleRewardClaimer 自定义错误。
+ * @see docs/onchain-manual-legacy.md §4.4 自定义错误
+ */
 export const REWARD_CLAIMER_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',
@@ -483,13 +627,16 @@ export const REWARD_CLAIMER_ERRORS = [
   'error ErrorSignatureExpired()',
 ] as const
 
-/** OpenZeppelin ERC20 custom errors — selectors verified in contract-error-message. */
+/** OpenZeppelin ERC20 自定义错误（selector 已在 contract-error-message 中验证）。 */
 export const ERC20_ERRORS = [
   'error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)',
   'error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed)',
 ] as const
 
-/** AegisPreSale custom errors — see docs/onchain-manual-legacy.md §3. */
+/**
+ * AegisPreSale 自定义错误。
+ * @see docs/onchain-manual-legacy.md §3 模块二：创世预售（AegisPreSale）
+ */
 export const PRESALE_ERRORS = [
   'error PreSalePaused()',
   'error PreSaleUserNotBound()',
@@ -505,7 +652,10 @@ export const PRESALE_ERRORS = [
   'error PreSaleUserPurchaseLimitExceeded(uint256 phaseIndex, uint256 limit, uint256 currentAmount, uint256 attemptedAmount)',
 ] as const
 
-/** AegisReferral custom errors — see docs/onchain-manual-legacy.md §2.4. */
+/**
+ * AegisReferral 自定义错误。
+ * @see docs/onchain-manual-legacy.md §2.4 自定义错误
+ */
 export const REFERRAL_ERRORS = [
   'error Referral__RootZero()',
   'error Referral__UserZero()',

@@ -6,6 +6,11 @@ import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
+/**
+ * 折叠右侧详情面板的开关按钮。
+ *
+ * 展开时图标竖排，折叠后横排；状态读写 dapp-shell-store。
+ */
 export function DappPanelToggle({ className }: { className?: string }) {
   const { messages: t } = useI18n()
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)

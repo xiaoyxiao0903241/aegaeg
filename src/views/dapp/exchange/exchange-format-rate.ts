@@ -6,8 +6,11 @@ function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn
 }
 
 /**
- * Empty spot rate display: zero → `'0'` (never blank — blank caused 2000→0 flash via `|| '0'`).
- * Non-zero → null (caller formats).
+ * 空行情占位
+ *
+ * 报价为 0 时返回 `'0'` 而非空串，避免空态与真实 0 值之间闪跳。
+ *
+ * @param quotedOut 链上报价
  */
 export function emptySpotRateDash(quotedOut: bigint): '0' | null {
   return quotedOut === 0n ? '0' : null
@@ -24,13 +27,13 @@ function formatRateRatioFixed(
   })
 }
 
-/** Trim trailing zeros — Figma flash meta/overview uses `1 : 1`, not `1 : 1.0000`. */
+/** 去掉小数尾零：兑换率显示 `1 : 1` 而非 `1 : 1.0000`。 */
 function trimTrailingZeros(value: string): string {
   if (!value.includes('.')) return value
   return value.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
 }
 
-/** Exchange widget rate label — `1 : 1` / `1 : 1.001` (up to 4 fraction digits). */
+/** 兑换率标签：`1 : 1` 冒号形式，最多 4 位小数。 */
 export function formatExchangeRateColon({
   amountIn,
   amountOut,
@@ -51,7 +54,7 @@ export function formatExchangeRateColon({
   return `1 : ${trimTrailingZeros(formatRateRatioFixed(normalizedOut, decimalsOut))}`
 }
 
-/** Market-trade spot / meta — Figma PC `1 USD1 = 0.015385 AGX` (`=` · up to 6 fraction digits). */
+/** 市价交易行情标签：`1 USD1 = 0.015385 AGX` 等号形式，最多 6 位小数。 */
 export function formatExchangeRateApprox({
   amountIn,
   amountOut,

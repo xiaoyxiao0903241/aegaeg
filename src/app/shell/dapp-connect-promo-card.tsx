@@ -6,6 +6,11 @@ import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetPromoCard } from '~/shared/components/widget-promo-card'
 
+/**
+ * 未连接钱包时的引导卡片。
+ *
+ * 展示品牌标语与返回首页的链接，下方是深色外观的「连接钱包」按钮。
+ */
 export function DappConnectPromoCard({ className }: { className?: string }) {
   const { locale, messages: t } = useI18n()
   const homeHref = withLocalePrefix(locale, '/')

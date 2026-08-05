@@ -23,6 +23,7 @@ function ReleaseContentBody() {
   return <ReleaseHubContent />
 }
 
+/** 释放侧栏面板：按当前子视图渲染对应 Widget，并带切换动画 */
 export function ReleaseWidget() {
   const subview = useReleaseViewMotion()
   return (
@@ -32,6 +33,7 @@ export function ReleaseWidget() {
   )
 }
 
+/** 释放详情容器：按当前子视图渲染对应 Content，并带切换动画 */
 export function ReleaseContent() {
   const subview = useReleaseViewMotion()
   return (

@@ -87,6 +87,14 @@ function formatUsd1Label(raw: bigint | null | undefined): string {
   return `$${formatTokenAmount(raw, USD1_DECIMALS, 2)}`
 }
 
+/**
+ * 幸运奖详情视图模型
+ *
+ * 聚合今日奖池汇总、开奖名单与我的参与记录，
+ * 另从链上读取本轮开奖快照计算参与资格与倒计时。
+ *
+ * @see docs/backend-api/api.md #lucky-reward/summary
+ */
 export function useRewardsLuckyContentView() {
   const { messages: t } = useI18n()
   const lucky = t.rewards.lucky
@@ -178,7 +186,7 @@ export function useRewardsLuckyContentView() {
   const pagedWinners = winners.slice(winnersPageStart, winnersPageStart + DAPP_TABLE_PAGE_SIZE)
   const winnerRows = pagedWinners.map((item) => mapLuckyWinnerToRow(item))
   const winnersLoading = sessionReady && Boolean(drawDate) && winnersQuery.isLoading
-  /** 无中奖行时不展示表顶 controls（日期 / 摘要 / 哈希） */
+  /** 无中奖行时不展示表顶的日期 / 摘要 / 哈希控件 */
   const showResultsChrome = !winnersLoading && winnersTotal > 0
   const drawHash = winnersQuery.data?.draw_tx_hash
   const resultsSummary = lucky.resultsSummary.replace('{count}', String(winnersTotal))

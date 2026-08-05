@@ -42,7 +42,17 @@ const agxSellTaxAbi = parseAbi([
   AGX_SELL_TAX_METHODS.crashFuseActive,
 ])
 
-/** Live AGX sell-tax bps for non-whitelist pair sells. */
+/**
+ * 读取 AGX 卖税基点
+ *
+ * 对非白名单卖币路径，卖出要扣卖税；crash 熔断开启时税率提高。
+ * 卖税用于把用户输入折成路由器实际收到的净额。
+ *
+ * @param client 链上读取客户端，默认公共 RPC
+ * @param agx AGX 合约地址
+ * @returns 当前卖税基点（含熔断加成）
+ * @see docs/onchain-manual/contracts/agx.md
+ */
 export async function readAgxSellTaxBps(
   client: ChainReadClient = bscReadClient,
   agx: `0x${string}` = BSC_CONTRACTS.agx,
@@ -67,6 +77,7 @@ export async function readAgxSellTaxBps(
 
   return agxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
 }
+/** 读取任意 ERC20 代币余额（原始单位，未按 decimals 换算）。 */
 export async function readErc20Balance(
   address: `0x${string}`,
   owner: string,
@@ -80,6 +91,7 @@ export async function readErc20Balance(
   })
 }
 
+/** 读取 ERC20 授权额度（owner 对 spender 的剩余额度）。 */
 export async function readErc20Allowance(
   token: `0x${string}`,
   owner: string,
@@ -94,6 +106,23 @@ export async function readErc20Allowance(
   })
 }
 
+/**
+ * 获取市价兑换报价
+ *
+ * 通过 Pancake Router `getAmountsOut` 计算预期输出；AGX 卖币路径先扣卖税，
+ * 再按净额报价。价格影响仅在直连 USD1/AGX 池时计算，其余路径返回 0（UI 显示 —）。
+ * V2 路由器没有 gas 估算，gasEstimate 恒为 0。
+ *
+ * @param amountIn 输入代币数量
+ * @param tokenIn 输入代币地址
+ * @param tokenOut 输出代币地址
+ * @param path 兑换路径；省略时为直连 `[tokenIn, tokenOut]`
+ * @param client 链上读取客户端，默认公共 RPC
+ * @param poolContext 复用 React Query 中短暂过期的池读取，避免重复拉取
+ * @returns 预期输出 / 输入输出地址 / gas 估算 / 价格影响基点
+ * @see docs/onchain-manual/contracts/usd1swap.md
+ * @see docs/onchain-manual/contracts/agx.md
+ */
 export async function fetchExchangeQuote({
   amountIn,
   tokenIn,
@@ -105,10 +134,10 @@ export async function fetchExchangeQuote({
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  /** When omitted, path is the direct `[tokenIn, tokenOut]` hop. */
+  /** 省略时使用直连 `[tokenIn, tokenOut]` 一跳。 */
   path?: readonly `0x${string}`[]
   client?: ChainReadClient
-  /** Reuse short-stale pool reads from React Query when available. */
+  /** 复用 React Query 中短暂过期的池读取，避免重复拉取。 */
   poolContext?: ExchangePoolReadContext
 }): Promise<ExchangeQuoteResult> {
   const path = pathArg ?? ([tokenIn, tokenOut] as const)
@@ -124,7 +153,7 @@ export async function fetchExchangeQuote({
     sellingAgx ? readAgxSellTaxBps(client) : Promise.resolve(0),
   ])
 
-  /** Pair receives post-tax AGX; Router getAmountsOut must use net in (contracts/agx.md). */
+  // 交易对收到的是扣税后的 AGX，Router.getAmountsOut 必须用净额报价
   const amountInForQuote = sellingAgx ? applyAgxSellTaxToAmountIn(amountIn, sellTaxBps) : amountIn
 
   const quotedOut = await quoteV2AmountsOut({
@@ -134,7 +163,7 @@ export async function fetchExchangeQuote({
     client,
   })
 
-  /** Price impact only for the known USD1/AGX pool direct hop; else honest 0 (UI shows —). */
+  // 价格影响只在已知的 USD1/AGX 池直连一跳计算；否则如实返回 0（UI 显示 —）
   const isDirectUsd1AgxPoolHop =
     path.length === 2 &&
     path[0] === tokenIn &&

@@ -1,9 +1,15 @@
-/** Nested keys commonly used by wallet / viem / RPC error wrappers. */
+/** 钱包 / viem / RPC 错误包装常用的嵌套键。 */
 const NESTED_ERROR_KEYS = ['data', 'cause', 'error', 'originalError'] as const
 
 /**
- * Depth-first walk of wallet / viem error trees with cycle protection.
- * `visit` may return `true` to stop early.
+ * 深度优先遍历钱包 / viem 错误树（带循环保护）
+ *
+ * `visit` 返回 true 可提前终止遍历。
+ *
+ * @param error 待遍历的错误
+ * @param visit 每个节点回调
+ * @param options.maxDepth 最大深度，默认 10
+ * @param options.seen 循环保护用的已见对象集合
  */
 export function walkErrorTree(
   error: unknown,

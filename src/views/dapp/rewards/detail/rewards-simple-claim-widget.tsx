@@ -18,7 +18,14 @@ import {
   useRewardsSimpleClaimView,
 } from '~/views/dapp/rewards/detail/use-rewards-simple-claim-view'
 
-/** grant 跟稿 pending+claim；participate/referral 简单签至钱包（8f4e8b8）。 */
+/**
+ * 简单领取左栏面板（发展津贴 / 参与奖 / 推荐奖）
+ *
+ * 发展津贴先展示待审批金额，再展示可领取额；
+ * 参与奖与推荐奖直接按签名将奖励领取至钱包。
+ *
+ * @param view 子视图类型
+ */
 export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
@@ -36,7 +43,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
       <DappWidgetStack>
         {view === 'grant' ? (
           <>
-            {/* 待审批 4719:1941：顶行标签|hint · 中行 gAGX|金额24 · 客服链+说明 */}
+            {/* 待审批卡：金额 + 客服链接与说明 */}
             <Card surface="outlined">
               <div className="flex items-start justify-between gap-3">
                 <Text as="p" className="leading-4 text-foreground/40" variant="copy">
@@ -57,7 +64,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
                 </Text>
               </div>
               <div className="mt-1.5 grid gap-1">
-                {/* Figma 4742:246 — 文案 + ↗ 10（非 chevron） */}
+                {/* 客服外链：用 ↗ 箭头（非折叠 chevron） */}
                 <a
                   className="inline-flex w-fit items-center gap-1 font-medium text-coral-emphasis underline"
                   href={COMMUNITY_SOCIAL_LINKS.telegram}
@@ -82,7 +89,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
 
             <div className="flex items-center justify-center">
               <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
-                {/* 静态分隔箭头（非开合 IA）— 禁 CollapseChevron */}
+                {/* 静态分隔箭头（仅示意，无开合交互） */}
                 <ChevronDown
                   aria-hidden
                   className="size-2.5 text-foreground/40"
@@ -93,7 +100,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
           </>
         ) : null}
 
-        {/* 可领取：grant 稿 primary-soft；participate/referral 同槽位至钱包 */}
+        {/* 可领取卡：三种类型共用，领取至钱包 */}
         <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 text-foreground" variant="copy">

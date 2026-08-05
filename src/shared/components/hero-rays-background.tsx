@@ -39,6 +39,14 @@ const heroRays = tv({
   },
 })
 
+/**
+ * 首页 / 应用外壳的背景射线
+ *
+ * 用 SVG 生成向外辐射的光线，作为页面装饰背景；
+ * 仅供装饰，对辅助功能隐藏。
+ *
+ * @param variant home（首页）/ shell（应用外壳）
+ */
 export function HeroRaysBackground({
   className,
   variant = 'shell',

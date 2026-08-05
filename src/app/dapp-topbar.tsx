@@ -47,6 +47,12 @@ const topbar = tv({
   },
 })
 
+/**
+ * DApp 顶部栏
+ *
+ * 左侧品牌标识（连接后隐藏品牌文字），右侧依次为新手教程入口、
+ * 钱包连接区与语言切换；H5 下吸顶并带半透明毛玻璃底色。
+ */
 export function DappTopbar({
   onboardingDone,
   onStartOnboarding,

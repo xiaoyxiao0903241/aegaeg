@@ -16,7 +16,18 @@ import type { WriteSession } from '~/web3/wallet/require-write-session'
 export { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
 export { submitLiquidWarmupClaim } from '~/web3/staking/submit-liquid-warmup-claim'
 
-/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
+/**
+ * 提交质押（活期 / 定期共用）
+ *
+ * 先读链上预检（余额 / 授权 / 剩余额度 / 池开关 / 迁移状态）并判定阻塞原因，
+ * 授权不足时内联 approve 后继续写；写入完成后失效质押相关缓存。
+ *
+ * @param session 已就绪的写会话
+ * @param period 质押周期（liquid / 180 / 360 / 540）
+ * @param amount 质押数量（AGX 最小单位）
+ * @see docs/onchain-manual/contracts/liquidstaking.md
+ * @see docs/onchain-manual/contracts/stakingpool.md
+ */
 export async function submitStakeOpen(args: {
   session: WriteSession
   period: StakePeriod

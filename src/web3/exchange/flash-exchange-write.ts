@@ -17,6 +17,7 @@ const redeemableGagxRedeemAbi = parseWriteAbi(
 )
 const redeemableGagxWrapAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.wrap, REDEEMABLE_GAGX_ERRORS)
 
+/** USDT → Usd1Swap 授权：USDT 兑换 USD1 前按需补 approve。 */
 export async function approveUsdtForFlashExchangeIfNeeded({
   wallet,
   amountIn,
@@ -32,6 +33,7 @@ export async function approveUsdtForFlashExchangeIfNeeded({
   })
 }
 
+/** AGX → gAGX 授权：换包前按需补 approve。 */
 export async function approveAgxForWrapIfNeeded({
   wallet,
   amountIn,
@@ -47,6 +49,7 @@ export async function approveAgxForWrapIfNeeded({
   })
 }
 
+/** 闪电兑换：调用 Usd1Swap.swap，用 USDT 按最低输出换 USD1。 */
 export async function flashExchange({
   wallet,
   usdtAmount,
@@ -65,7 +68,16 @@ export async function flashExchange({
   })
 }
 
-/** gAGX → AGX via RewardGAGX.redeem — burns caller balance; no ERC20 approve. */
+/**
+ * gAGX 赎回为 AGX
+ *
+ * 调用 RewardGAGX.redeem，直接销毁调用方余额换回 AGX；
+ * 由于是赎回自身资产，无需 ERC20 approve。
+ *
+ * @param wallet 当前钱包
+ * @param gagxAmount 拟赎回的 gAGX 数量
+ * @see docs/onchain-manual/contracts/redeemablegagx.md
+ */
 export async function redeemGagxFlashExchange({
   wallet,
   gagxAmount,
@@ -82,7 +94,15 @@ export async function redeemGagxFlashExchange({
   })
 }
 
-/** AGX → gAGX via RewardGAGX.wrap — requires AGX approve first (manual §15). */
+/**
+ * AGX 换包为 gAGX
+ *
+ * 调用 RewardGAGX.wrap；需要先对 gAGX 合约授权 AGX，否则被阻断。
+ *
+ * @param wallet 当前钱包
+ * @param agxAmount 拟换包的 AGX 数量
+ * @see docs/onchain-manual/contracts/redeemablegagx.md
+ */
 export async function wrapAgxFlashExchange({
   wallet,
   agxAmount,

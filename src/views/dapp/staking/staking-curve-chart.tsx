@@ -29,7 +29,12 @@ function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): rea
   return labels
 }
 
-/** Staking 测算累计收益曲线 — Figma ccard `4463:273`；曲线 = 本地公式 day 1..720。 */
+/**
+ * 测算累计收益曲线
+ *
+ * 曲线由本地公式按 day 1..720 生成；
+ * 无测算结果时展示占位文案。
+ */
 export function StakingCurveChart() {
   const { messages: t } = useI18n()
   const aside = t.staking.calc.aside

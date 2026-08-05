@@ -25,7 +25,15 @@ import {
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
-/** Chain + promo reads for Genesis — no shares draft, no write actions. */
+/**
+ * 创世链上数据与活动文案
+ *
+ * 汇总预售各阶段、币价、暂停态、推荐绑定等只读数据，
+ * 计算阶段与用户剩余额度、可购份额上限；
+ * 不含份额草稿与写操作。
+ *
+ * @see docs/onchain-manual/contracts/presale.md
+ */
 export function useGenesisChainReads() {
   const account = useActiveAccount()
   const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
@@ -55,7 +63,7 @@ export function useGenesisChainReads() {
   const { usd1Balance, usd1BalanceKnown, allowance } = useUsd1PresaleWalletQuery(address, {
     enabled: purchaseQueriesEnabled,
   })
-  /** U-tier bind display only — L-tier paths read/fetchQuery `readIsBindReferral` directly. */
+  /** 推荐绑定状态由这里统一查询；其它调用方直接使用 readIsBindReferral */
   const isBoundQuery = useChainQuery({
     queryKey: queryKeys.chain.referralIsBound,
     freshness: 'balances',

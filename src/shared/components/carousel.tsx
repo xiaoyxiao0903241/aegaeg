@@ -22,9 +22,10 @@ import { iconVariants } from '~/shared/components/icon'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * DApp 轮播 — 组合式（Embla 全封装，页袋不碰 api）：
- * `Carousel` · `Content` · `Item` · `Indicators`
- * peek 内建 EdgeFade。
+ * DApp 轮播
+ *
+ * 组合组件：`Carousel` · `Content` · `Item` · `Indicators`。
+ * Embla 全部封装在内，调用方不接触其 API；`peek` 形态自带两侧渐隐。
  * @see docs/foundation/component-usage.md
  */
 
@@ -73,7 +74,7 @@ const carouselChrome = tv({
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
       iconVariants({ size: 'base' }),
     ],
-    // active 必须钉 h-1.5；禁只改 width（否则塌成线）
+    // 选中点高度固定，仅改宽度会塌成一条线
     dot: 'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
   },
   variants: {
@@ -128,14 +129,14 @@ const carouselChrome = tv({
 })
 
 type CarouselRootProps = HTMLAttributes<HTMLDivElement> & {
-  /** Embla 选项（loop / align / startIndex…）；禁把 api 漏到页袋。 */
+  /** 轮播选项（loop / align / startIndex 等）；Embla 内部实现，调用方无需关心 */
   opts?: EmblaOptionsType
   /**
-   * 自动播放间隔 ms。仅 PC 生效（H5 不播）。
-   * 页袋勿再 import `embla-carousel-autoplay`。
+   * 自动播放间隔（ms）。仅桌面生效，移动端不播放；
+   * 调用方无需自行引入自动播放插件。
    */
   autoplayMs?: number
-  /** 外部索引变化时静默对齐（如创世当前季）。无有效索引时勿传。 */
+  /** 外部索引变化时静默对齐（如创世当前季）；无有效索引时不传 */
   syncIndex?: number
   children?: ReactNode
 }
@@ -295,10 +296,15 @@ function CarouselRoot({
 }
 
 type ContentProps = HTMLAttributes<HTMLDivElement> & {
-  /** `about` = 全幅 about 卡；`peek` = 多卡窥视（创世季）+ 内建 EdgeFade。 */
+  /** `about` = 全幅卡片；`peek` = 多卡窥视形态（创世季），自带两侧渐隐 */
   chrome?: SlideChrome
 }
 
+/**
+ * 轮播滚动区
+ *
+ * `chrome="peek"` 时为多卡窥视形态，自带两侧渐隐边。
+ */
 const Content = forwardRef<HTMLDivElement, ContentProps>(function CarouselContent(
   { className, chrome = 'about', children, ...props },
   ref,
@@ -344,10 +350,15 @@ const Content = forwardRef<HTMLDivElement, ContentProps>(function CarouselConten
 })
 
 type ItemProps = HTMLAttributes<HTMLDivElement> & {
-  /** 传入后由 Carousel 管 `aria-hidden`（禁页袋再读 selectedIndex）。 */
+  /** 传入后由轮播管理 `aria-hidden`，调用方无需读取当前索引 */
   index?: number
 }
 
+/**
+ * 轮播项
+ *
+ * 传入 `index` 时，非当前项自动设置 `aria-hidden`。
+ */
 const Item = forwardRef<HTMLDivElement, ItemProps>(function CarouselItem(
   { className, index, children, ...props },
   ref,
@@ -373,13 +384,18 @@ const Item = forwardRef<HTMLDivElement, ItemProps>(function CarouselItem(
 
 type IndicatorsProps = {
   className?: string
-  /** `about` = bleed 补偿间距；`plain` = 紧凑控件簇（peek 季卡底栏，不跟 about H5 大圆钮）。 */
+  /** `about` = 常规间距；`plain` = 紧凑控件组（peek 季卡底栏） */
   chrome?: 'about' | 'plain'
   dotLabel?: (index: number) => string
   nextLabel: string
   prevLabel: string
 }
 
+/**
+ * 轮播指示器
+ *
+ * 上一页 / 下一页按钮加圆点；仅一个时整组不渲染。
+ */
 function Indicators({
   className,
   chrome = 'about',
@@ -389,7 +405,7 @@ function Indicators({
 }: IndicatorsProps) {
   const { scrollNext, scrollPrev, scrollTo, selectedIndex, snapCount } = useCarousel()
   const isMobile = useMobileViewport()
-  // plain：始终紧凑桌面档；about：跟 viewport layout
+  // plain 始终用紧凑桌面档；about 跟随视口布局
   const layout = chrome === 'plain' ? 'desktop' : isMobile ? 'mobile' : 'desktop'
   const styles = carouselChrome({ layout })
 

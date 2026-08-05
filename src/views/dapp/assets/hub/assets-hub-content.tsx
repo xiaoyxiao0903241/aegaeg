@@ -1,3 +1,10 @@
+/**
+ * 资产 Hub 详情页
+ *
+ * 顶部总览卡展示总资产、可领、已领、贡献值；下方为持仓 / 缓冲对比、
+ * Rebase 时间轴与标签、FAQ。
+ * 未连接钱包时各项展示 0 值占位。
+ */
 import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { Card } from '~/shared/components/card'
 import { Detail } from '~/shared/components/detail'
@@ -29,7 +36,7 @@ export function AssetsHubContent() {
     <Detail>
       <Section>
         <Section.Title>{overview.title}</Section.Title>
-        {/* Figma PC `4284:213` 右侧几何底纹；H5 `4645:650` 底纹在屏外 = 可见无底纹 → max-dapp 隐藏 */}
+        {/* 总览卡右侧几何底纹；移动端底纹在屏外，故隐藏 */}
         <Card
           surface="inverse"
           className="relative flex items-center overflow-hidden p-4 max-dapp:items-start max-dapp:pt-7.5 max-dapp:pb-4"
@@ -43,7 +50,6 @@ export function AssetsHubContent() {
           <div className="relative z-1 grid w-full grid-cols-2 gap-4 dapp:grid-cols-4 dapp:gap-6">
             <div className="col-span-2 grid gap-1 dapp:col-span-1">
               <div className="flex items-center gap-1">
-                {/* Figma 总览标签 13 → copy（禁 support 12） */}
                 <Text as="span" className="leading-4" tone="inverse" variant="copy">
                   {overview.totalValue}
                 </Text>
@@ -97,11 +103,9 @@ export function AssetsHubContent() {
           </div>
         </Card>
 
-        {/* H5 `4645:682`：持仓/缓冲纵向 gap-8；PC 仍两列 */}
+        {/* 持仓 / 缓冲两卡 */}
         <div className="mt-2 grid gap-2 sm:grid-cols-2 max-dapp:gap-2">
-          {/* Figma 持仓/缓冲 elevated；高度由内容，同行靠 grid stretch */}
           <Card surface="elevated" className="grid gap-1.5">
-            {/* Figma 持仓标题 13 medium → copy（禁 support 12） */}
             <Text as="span" className="leading-4 font-medium" variant="copy">
               {overview.holdingsTitle}
             </Text>
@@ -131,7 +135,7 @@ export function AssetsHubContent() {
                 onClick={() => setBufferAsset((v) => (v === 'agx' ? 'gagx' : 'agx'))}
                 type="button"
               >
-                {/* Figma `4424:48`：16 圆 + border + ink 切换符（禁珊瑚 exchangeFlip） */}
+                {/* 缓冲币种切换符：描边圆形，用中性色而非兑换页的珊瑚色 */}
                 <span className="grid size-4 place-items-center overflow-hidden rounded-full border border-border">
                   <Icon alt="" className="size-2.5" size="sm" src={assetsHubAssets.bufferSwap} />
                 </span>
@@ -160,9 +164,8 @@ export function AssetsHubContent() {
       <Section>
         <Section.Title>{t.assets.hub.distribution.title}</Section.Title>
         {/*
-          Figma 持仓分布/empty：扁平 dashed 空壳（非 elevated）。
-          与持仓/缓冲 elevated 刻意不同；勿升为 shadow-card。
-          文案 chrome = 全局 Empty（大方 pad）。
+          持仓分布空态：扁平虚线边框卡，与上方 elevated 卡刻意区分，不要升级为阴影卡；
+          内容用全局空态组件。
         */}
         <div className="overflow-hidden rounded-2xl border border-dashed border-border bg-card">
           <Empty title={t.assets.hub.distribution.empty} />
@@ -170,14 +173,10 @@ export function AssetsHubContent() {
       </Section>
 
       <Section>
-        {/* Figma Rebase 标题 18 → Section.Title（禁 headline 16） */}
         <Section.Title>{rebase.title}</Section.Title>
         <Section.Description>{rebase.subtitle}</Section.Description>
-        {/*
-          Rebase/card：PC `4285:214` 横轴四列；H5 `4645:728` 竖向时间轴 + tags 无灰底条
-        */}
         <Card surface="elevated" className="grid gap-1.5 py-6">
-          {/* H5 `4645:728`：左珊瑚点 + 竖线轨道 */}
+          {/* 移动端时间轴：左端点 + 竖线连接 */}
           <ol className="m-0 flex list-none flex-col p-0 dapp:hidden">
             {rebase.steps.map((step, index) => (
               <li className="flex gap-3" key={`h5-${step.title}-${step.body}-${index}`}>
@@ -199,7 +198,7 @@ export function AssetsHubContent() {
             ))}
           </ol>
 
-          {/* PC 横轴 — 连线 2px（Figma `4285:215`）；禁漏 h-*（会消失） */}
+          {/* 桌面端横轴连线：线高须显式声明，否则不渲染 */}
           <div className="relative hidden grid-cols-4 items-center dapp:grid">
             <div
               aria-hidden
@@ -233,7 +232,6 @@ export function AssetsHubContent() {
             ))}
           </ol>
 
-          {/* PC tags 灰底横排；H5 `4650:308` 竖排无灰底 · Regular 13 */}
           <div className="flex flex-col items-start gap-2.5 dapp:flex-row dapp:flex-wrap dapp:items-center dapp:justify-between dapp:gap-x-4 dapp:gap-y-2 dapp:rounded-2xl dapp:bg-muted dapp:px-6 dapp:py-3.5">
             {rebase.tags.map((tag) => (
               <span className="flex items-center gap-2 dapp:gap-1.5" key={tag}>
@@ -250,7 +248,6 @@ export function AssetsHubContent() {
             ))}
           </div>
 
-          {/* Figma `4285:249` / H5 `4645:771` footer：13 + muted 40% */}
           <Text as="p" className="leading-4 text-foreground/40" variant="copy">
             {rebase.footer}
           </Text>

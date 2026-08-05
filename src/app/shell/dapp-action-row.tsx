@@ -3,8 +3,9 @@ import type { ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * CTA row under widget forms.
- * 1 child → full width; 2+ children → equal columns (Figma single bigBtn / dual CTAs).
+ * 表单下方的操作按钮行。
+ *
+ * 单个子元素占满整行，两个及以上子元素等分两列。
  */
 export function DappActionRow({
   children,

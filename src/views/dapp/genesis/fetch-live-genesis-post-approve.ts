@@ -9,7 +9,18 @@ import {
 } from '~/core/presale/presale-math'
 
 /**
- * approve（或任意 await）后重读绑定/暂停/阶段额度，禁闭包渲染快照。
+ * 写操作后重读实时门闸状态
+ *
+ * 授权（或任意等待）之后重新读取绑定 / 暂停 / 阶段剩余额度，
+ * 避免沿用闭包中的渲染快照；任一读取失败一律按不可用处理。
+ *
+ * @param args.address 钱包地址，缺失时直接判定未绑定
+ * @param args.purchaseAmount 本次计划购买的金额
+ * @param args.activePhase 当前预售阶段
+ * @param args.fetchIsBound 读取推荐绑定状态的函数
+ * @param args.fetchPaused 读取暂停状态的函数
+ * @param args.fetchPhaseRemaining 读取阶段剩余额度的函数
+ * @see docs/onchain-manual/contracts/presale.md
  */
 export async function fetchLiveGenesisPostApprove(args: {
   address: string | undefined

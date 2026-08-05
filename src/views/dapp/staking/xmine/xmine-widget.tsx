@@ -14,6 +14,12 @@ import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine-view'
 
+/**
+ * Xmine 质押表单（左栏）
+ *
+ * 输入 gAGX 数量后提交挖矿质押；
+ * 未连接钱包时展示连接引导。
+ */
 export function XmineWidget() {
   const { t, xmine, sessionReady, walletReady, setView, amountLabel, dailyYieldLabel, onSubmit } =
     useXmineView()

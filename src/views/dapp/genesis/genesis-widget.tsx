@@ -7,6 +7,12 @@ import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
+/**
+ * 创世侧栏面板
+ *
+ * 顶部为创世活动介绍与倒计时，下方为购买表单；
+ * 项目结束时展示结束文案，不再提供购买入口。
+ */
 export function GenesisWidget({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()

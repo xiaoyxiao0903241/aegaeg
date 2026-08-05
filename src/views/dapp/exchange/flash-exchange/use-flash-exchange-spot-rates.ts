@@ -11,7 +11,7 @@ import {
 import type { ExchangePairTokens, FlashPairId } from '~/views/dapp/exchange/exchange-pair'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
 
-/** Fixed 10^decimals spot quote for flash exchange / overview rate labels. */
+/** 闪电兑换行情：固定 1 单位卖出币的链上报价，供面板与概览汇率标签使用。 */
 export function useFlashExchangeSpotRates({
   pairId,
   direction,
@@ -31,7 +31,7 @@ export function useFlashExchangeSpotRates({
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled,
-    // gagx has no live spot pool — one-shot read only
+    // gAGX 无实时行情池，只做一次性读取
     refetchInterval: pairId === 'gagx' ? false : EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
@@ -43,7 +43,7 @@ export function useFlashExchangeSpotRates({
       : (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
 
   const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut)
-  // Figma flash meta + overview both use colon form (`1 : 1`), not `1 TOKEN = …`.
+  // 面板与概览统一用冒号形式（`1 : 1`），不用 `1 TOKEN = …` 形式
   const rateLabel =
     exchangePriceEmpty !== null
       ? exchangePriceEmpty

@@ -3,6 +3,11 @@ import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import { Button } from '~/shared/components/button'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * 图标按钮
+ *
+ * 桌面端专用的方形图标按钮；移动端隐藏。
+ */
 export const IconButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className, type = 'button', ...props }, ref) => (
     <Button

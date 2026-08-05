@@ -28,11 +28,17 @@ const drawerItem = tv({
   },
 })
 
-/** Keep in sync with `--motion-dapp-emphasis` (theme.css). */
+/** 与 theme.css 中 `--motion-dapp-emphasis` 保持一致。 */
 const NAV_MOTION_MS = 300
 
 type NavMotion = 'enter' | 'exit'
 
+/**
+ * H5 移动端导航抽屉。
+ *
+ * 从左侧滑出，带半透明遮罩与毛玻璃面板；列出全部 Tab 并高亮当前项。
+ * 关闭时先播放退场动画再卸载，期间锁定页面滚动。
+ */
 export function DappMobileNav({
   activeTab,
   onClose,
@@ -52,7 +58,7 @@ export function DappMobileNav({
   const [motion, setMotion] = useState<NavMotion | null>(open ? 'enter' : null)
   const [prevOpen, setPrevOpen] = useState(open)
 
-  // Adjust mount/motion during render when `open` flips (React “adjust state from props”).
+  // 渲染期间 `open` 翻转时同步挂载/动画状态（React「依据 props 调整 state」模式）
   if (open !== prevOpen) {
     setPrevOpen(open)
     if (open) {

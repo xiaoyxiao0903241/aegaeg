@@ -1,10 +1,10 @@
 /**
- * Inline boot polyfills for Chromium <93 (e.g. Android 11 Chrome 91).
- * Must run in a classic <script> before any `type="module"` — ESM / plugin-legacy polyfills load later.
+ * Chromium <93（如 Android 11 Chrome 91）的内联启动 polyfill。
+ * 必须在任何 `type="module"` 之前以经典 <script> 运行——ESM / plugin-legacy polyfill 加载更晚。
  *
- * - Object.hasOwn, Array/String .at — language APIs
- * - PerformanceEntryList — NOT a global in Chrome 91; patch prototype via performance APIs + PO wrapper
- * - web-vitals LCP: `entries.at(-1)`; some builds also use `_sessionEntries.at`
+ * - Object.hasOwn、Array/String .at —— 语言 API
+ * - PerformanceEntryList —— Chrome 91 中并非全局对象；通过 performance API 与 PO 包装补原型
+ * - web-vitals LCP 使用 `entries.at(-1)`；部分构建也用 `_sessionEntries.at`
  */
 export const LEGACY_DOM_POLYFILLS_BOOT_SCRIPT = [
   'try{',

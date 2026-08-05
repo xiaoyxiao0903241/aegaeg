@@ -41,7 +41,7 @@ const aegisConnectTheme = lightTheme({
   },
 })
 
-/** Public BSC RPC — disconnected reads only; connected wallet uses EIP-1193 provider. */
+/** 公共 BSC RPC——仅未连接钱包时用于只读；已连接时走钱包的 EIP-1193 provider。 */
 export const BSC_RPC_URL = appEnv.bscRpcUrl
 
 export const defaultChain = defineChain({
@@ -51,7 +51,7 @@ export const defaultChain = defineChain({
 
 export const thirdwebClientId = appEnv.thirdwebClientId
 
-/** Fail-closed: `appEnv` throws if unset, so this is always true when the module loads. */
+/** 缺配置即失败：`appEnv` 未配置会直接抛错，因此模块加载时这里恒为 true。 */
 export const isThirdwebConfigured = thirdwebClientId.length > 0
 
 export const thirdwebClient = createThirdwebClient({
@@ -69,7 +69,10 @@ const THIRDWEB_SETUP_HINT = [
 ].join('\n')
 
 /**
- * Boot guard: re-check raw env (defense in depth; `appEnv` already fail-closed).
+ * 启动守卫：二次核对原始环境变量
+ *
+ * `appEnv` 已缺配置即抛错，这里再从 import.meta.env 复核一遍，作为纵深防御。
+ * 仍未配置时抛出带排障步骤的报错。
  */
 export function assertWeb3EnvConfigured() {
   const fromEnv =

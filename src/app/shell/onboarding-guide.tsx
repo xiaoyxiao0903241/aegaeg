@@ -28,8 +28,10 @@ function onboardingSteps(): StepType[] {
 }
 
 /**
- * DApp-only 12-step guide (no genesis). Auto-starts once; replay via topbar chip.
- * `@reactour/tour` loads only when the tour opens.
+ * DApp 新手引导（不包含创世页）。
+ *
+ * 首次访问自动启动一次，之后可通过顶部栏入口重播；
+ * `@reactour/tour` 仅在引导打开时才加载，避免拖慢首屏。
  */
 export function OnboardingGuide({
   open,
@@ -126,7 +128,12 @@ export function OnboardingGuide({
   )
 }
 
-/** Auto-open on first DApp visit when persistence says not done. */
+/**
+ * 首次访问 DApp 时自动打开引导（持久化标记未完成时）。
+ *
+ * @returns open 是否打开 · setOpen 手动开关 · startTour 重播入口 ·
+ *          done 本版本是否已完成过
+ */
 export function useOnboardingAutoStart(): {
   open: boolean
   setOpen: (open: boolean) => void

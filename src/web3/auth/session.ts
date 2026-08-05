@@ -9,6 +9,14 @@ export {
   isSessionForAddress,
 } from '~/core/auth/types'
 
+/**
+ * 基于 localStorage 的会话存储。
+ *
+ * 读取时校验 address / token 字段完整，解析失败视为无会话。
+ *
+ * @param storage 底层存储（localStorage 等）
+ * @returns 会话存储实现
+ */
 export function createLocalAuthSessionStorage(
   storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,
 ): AuthSessionStorage {
@@ -34,6 +42,11 @@ export function createLocalAuthSessionStorage(
   }
 }
 
+/**
+ * 基于内存的会话存储，仅本次会话有效。
+ *
+ * @returns 会话存储实现
+ */
 export function createMemoryAuthSessionStorage(): AuthSessionStorage {
   let value: StoredAuthSession | null = null
 

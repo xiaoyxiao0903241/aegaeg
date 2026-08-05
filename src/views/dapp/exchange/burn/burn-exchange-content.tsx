@@ -1,3 +1,9 @@
+/**
+ * 销毁详情页
+ *
+ * 概览区展示销毁率、累计销毁 AGX 与贡献点统计，下方为代币
+ * 介绍轮播、销毁记录与 FAQ；未连接钱包时统计展示全局累计值。
+ */
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -17,10 +23,10 @@ import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exch
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
 
-/** FAQ index — 「销毁的 AGX 去了哪里？」 uses live getSplitConfig. */
+// 「销毁的 AGX 去了哪里？」FAQ 的销毁 / 注入比例来自链上 splitBps
 const FAQ_DESTINATION_INDEX = 3
 
-/** Overview scalars — no amount draft; keystroke must not wake metrics/FAQ. */
+/** 详情页只接收概览标量，不承载金额输入。 */
 export type BurnExchangeContentProps = {
   overviewRateLabel: string
   walletReady: boolean
@@ -57,7 +63,7 @@ export function BurnExchangeContent({
   const totalConsumedContribution = walletReady ? (userStats?.contributionConsumed ?? 0n) : null
 
   const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
-  // 空态 SSOT：无价 → ≈ $0.00（禁 ≈ —）
+  // 空态统一：无价格时显示 ≈ $0.00（不显示 ≈ —）
   const burnedUsdApprox = formatApproxUsd(
     formatTokenAmountToNumber(totalBurnedAgx, decimals),
     agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,

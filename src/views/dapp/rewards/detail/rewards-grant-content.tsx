@@ -1,3 +1,9 @@
+/**
+ * 发展津贴详情页
+ *
+ * 顶部两张统计瓦片（等级、累计已领），
+ * 下方按「发放 / 领取」Tab 切换明细表格，底部为 FAQ。
+ */
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
@@ -53,7 +59,7 @@ export function RewardsGrantContent() {
 
       <Section>
         <Section.Title>{grant.recordsTitle}</Section.Title>
-        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Header>
             {rewardsRecordsPillTabsHeader({

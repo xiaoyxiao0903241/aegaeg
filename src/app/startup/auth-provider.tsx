@@ -29,7 +29,11 @@ type AuthStoreGetter = Pick<
   | 'clearSignatureForAddress'
 >
 
-/** loginWithWallet → 按地址 Zustand 表；read/clear 为空（会话由 sessionsByAddress 派生）。 */
+/**
+ * 会话存储适配层：登录写入按地址存入状态仓库。
+ *
+ * 读 / 清空返回空操作——会话没有独立对象，统一由 sessionsByAddress 派生。
+ */
 function createStoreAuthSessionStorage(
   getStore: () => AuthStoreGetter = () => useAuthStore.getState(),
 ): AuthSessionStorage {
@@ -42,6 +46,7 @@ function createStoreAuthSessionStorage(
   }
 }
 
+/** 登录签名存储适配层：签名按地址写入状态仓库。 */
 function createStoreLoginSignatureStorage(
   getStore: () => AuthStoreGetter = () => useAuthStore.getState(),
 ): LoginSignatureStorage {
@@ -57,6 +62,12 @@ const signatureStorage = createStoreLoginSignatureStorage()
 
 const RENEW_THRESHOLD_MS = 60_000
 
+/**
+ * 登录状态 Provider。
+ *
+ * 订阅钱包地址与按地址存储的 JWT / 签名，派生会话状态；
+ * 根据状态机输出在后台静默登录、续期或等待用户操作。
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
   const walletAddress = account?.address
@@ -68,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginError = useAuthStore((state) => state.loginError)
 
   const loginInProgressRef = useRef(false)
-  /** 最近一次静默登录的 attempt 指纹，防止同指纹死循环。 */
+  /** 最近一次静默登录的尝试指纹，防止同一指纹反复重试。 */
   const lastAttemptRef = useRef<string | null>(null)
 
   /** 会话状态由「当前钱包 + 按地址 JWT 表」派生，无独立 session 对象可同步。 */
@@ -91,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { setIsLoggingIn, setLoginError, sessionsByAddress } = useAuthStore.getState()
     const existingSession = sessionsByAddress[account.address.toLowerCase()]
     const isSilentRenew = Boolean(existingSession?.token)
-    // Renew must not flip isLoggingIn — pages treat it as full-page skeleton.
+    // 续期不触发 isLoggingIn——页面把它当作整页骨架屏
     if (!isSilentRenew) {
       setIsLoggingIn(true)
     }
@@ -180,13 +191,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     prevAuthedRef.current = sessionReady
-    // 切钱包常为 A → undefined → B；断开时保留上一地址，才能识别真正的切换。
+    // 切钱包常为 A → undefined → B；断开时保留上一地址，才能识别真正的切换
     if (walletAddress) {
       prevAddressRef.current = walletAddress
     }
   }, [hasHydrated, sessionReady, walletAddress, activeTab])
 
-  /** 用户点击登录：清闩锁，可弹出签名。 */
+  /** 用户点击登录：清除防重试锁定，允许再次弹出签名。 */
   const login = useCallback(async () => {
     lastAttemptRef.current = null
     useAuthStore.getState().setLoginError(null)
@@ -194,8 +205,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [runLogin])
 
   /**
-   * 401：只清当前地址 JWT，保留签名以便静默换票。
-   * 故意不重置 attempt 闩锁——新票再被拒时同指纹停止静默重试。
+   * 401 处理：只清当前地址的 JWT，保留签名以便静默换票。
+   * 故意不重置防重试锁定——新票再被拒时，同一指纹会停止静默重试。
    */
   const invalidateSession = useCallback(() => {
     const store = useAuthStore.getState()

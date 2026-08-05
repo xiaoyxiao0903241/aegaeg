@@ -1,3 +1,10 @@
+/**
+ * 缓冲池页
+ *
+ * 顶部双卡展示 AGX 与 gAGX 的入池、已提取、释放中三组数据；
+ * 中部为缓冲记录表，底部为机制步骤与收益说明。
+ * gAGX 无链上数据源，数值显示为 0。
+ */
 import { useState } from 'react'
 
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
@@ -23,7 +30,7 @@ import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-/** Figma `4793:211/217/220/214` 珊瑚描边 icon（22） */
+/** 缓冲机制四步图标 */
 const MECHANISM_STEP_ICONS = [
   dappAssets.releaseBufferMechLock,
   dappAssets.releaseBufferMechWaves,
@@ -36,7 +43,6 @@ function BufferStatCells({
 }: {
   stats: ReadonlyArray<{ label: string; value: string; approx: string }>
 }) {
-  // H5 两列换行；PC（dapp）三列跟稿 `4791:3688`
   return (
     <div className="grid grid-cols-2 gap-x-2 gap-y-3 dapp:grid-cols-3">
       {stats.map((stat) => (
@@ -133,7 +139,7 @@ export function ReleaseBufferContent() {
     <Detail>
       <Section>
         <Section.Title id="release-buffer-title">{t.release.buffer.statsTitle}</Section.Title>
-        {/* Figma `4791:3688`：px20 py16 gap8 · 黑圆 24 + 字 16 · 三列 w160 */}
+        {/* 统计卡：黑底币种圆标 + 币种名 + 三列数据 */}
         <Card
           as="div"
           className="grid content-center gap-2 rounded-2xl px-5 py-3"
@@ -203,7 +209,7 @@ export function ReleaseBufferContent() {
       <Section>
         <Section.Title>{t.release.buffer.mechanismTitle}</Section.Title>
         <Section.Description>{t.release.buffer.mechanismSubtitle}</Section.Description>
-        {/* Figma `4470:331`：四灰底 step 卡 140 + 箭头 + strip（非 ProcessSteps / 非 Lucide） */}
+        {/* 机制区：四张步骤卡 + 连接箭头 + 底部收益条；不用 Steps 组件与 Lucide 图标 */}
         <Card
           as="div"
           className="grid gap-2 rounded-2xl p-4"

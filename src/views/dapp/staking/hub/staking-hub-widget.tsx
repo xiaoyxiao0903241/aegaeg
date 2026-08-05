@@ -26,6 +26,11 @@ const STAKING_MODES: readonly {
   { view: 'calc', icon: stakingHubAssets.modeCalc },
 ]
 
+/**
+ * 质押 Hub 左侧入口列表
+ *
+ * 展示五种质押模式的入口卡片，点击跳转到对应子视图。
+ */
 export function StakingHubWidget() {
   const { messages: t } = useI18n()
   const copy = t.staking.hub.modes

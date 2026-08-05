@@ -6,7 +6,7 @@ import type {
 } from '~/shared/api/types'
 
 const DISMISSED_KEYS_STORAGE_KEY = 'aegis.home.popupNotice.dismissedKeys'
-/** @deprecated migrated to dismissedKeys */
+/** @deprecated 已迁移至 dismissedKeys */
 const LEGACY_DISMISSED_VERSION_KEY = 'aegis.home.popupNotice.dismissedVersion'
 
 /** display_mode: 1=只弹一次, 2=每次进首页都弹 */
@@ -74,7 +74,16 @@ export function isHomePopupNoticeWithinSchedule(
   return true
 }
 
-/** Normalize a single API item — resolves i18n image/title when locale is provided. */
+/**
+ * 归一化单条公告数据
+ *
+ * 按 locale 解析 i18n 标题/图片，超出投放时间窗口时返回 null；
+ * 图片、标题、正文全为空也视为无效公告。
+ *
+ * @param raw 后端返回的原始公告项
+ * @param locale 当前语言
+ * @returns 规范化后的公告，无效时返回 null
+ */
 export function normalizeHomePopupNotice(
   raw: unknown,
   locale?: string,
@@ -108,6 +117,7 @@ export function normalizeHomePopupNotice(
   }
 }
 
+/** 归一化公告列表：按 sort_order 升序，丢弃无效项。 */
 export function normalizeHomePopupNotices(
   raw: HomePopupNoticesResponse | undefined,
   locale?: string,
@@ -145,6 +155,7 @@ function parseDismissedKeys(raw: string | null): Set<string> {
   }
 }
 
+/** 读取已关闭公告 key 集合，兼容旧版单值存储。 */
 export function readDismissedPopupKeys(): Set<string> {
   const storage = getPopupNoticeStorage()
   if (!storage) return new Set()
@@ -160,6 +171,7 @@ export function readDismissedPopupKeys(): Set<string> {
   }
 }
 
+/** 持久化已关闭公告 key，并清理旧版存储键。 */
 export function persistDismissedPopupKey(key: string): void {
   const storage = getPopupNoticeStorage()
   if (!storage) return
@@ -170,10 +182,11 @@ export function persistDismissedPopupKey(key: string): void {
     storage.setItem(DISMISSED_KEYS_STORAGE_KEY, JSON.stringify([...next]))
     storage.removeItem(LEGACY_DISMISSED_VERSION_KEY)
   } catch {
-    // private mode / quota — ignore
+    // 隐私模式或存储配额满时忽略
   }
 }
 
+/** 是否展示该公告：一次性公告需未被持久化关闭，常驻公告始终展示。 */
 export function shouldShowHomePopupNotice(
   notice: HomePopupNotice,
   dismissedKeys: ReadonlySet<string> = readDismissedPopupKeys(),
@@ -184,7 +197,15 @@ export function shouldShowHomePopupNotice(
   return !dismissedKeys.has(noticeDismissKey(notice))
 }
 
-/** 按 sort_order 取队列中第一条尚未在本会话关闭、且满足持久化规则的公告。 */
+/**
+ * 取队列中应展示的第一条公告
+ *
+ * 按 sort_order 升序遍历，跳过本会话已关闭、图片已损坏或满足持久化
+ * 关闭规则的公告，全部被跳过则返回 null。
+ *
+ * @param notices 已归一化的公告队列
+ * @returns 应展示的公告，无可用公告时返回 null
+ */
 export function selectNextHomePopupNotice(
   notices: HomePopupNotice[],
   options: {

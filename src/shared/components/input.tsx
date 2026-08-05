@@ -4,8 +4,8 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Input — variant × size.
- * default: form · numeric: shares · amount: swap/token, large right-aligned.
+ * 输入框 — 变体 × 尺寸
+ * default：表单；numeric：份额；amount：兑换 / 代币，大号右对齐。
  */
 export const inputVariants = tv({
   base: [
@@ -49,6 +49,14 @@ export const inputVariants = tv({
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & VariantProps<typeof inputVariants>
 
+/**
+ * 输入框
+ *
+ * 样式由 `inputVariants` 定义；变体见上方说明。
+ *
+ * @param variant default / numeric / amount
+ * @param size sm / md / lg
+ */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, variant, size, ...props }, ref) => (
     <input className={cn(inputVariants({ variant, size }), className)} ref={ref} {...props} />

@@ -1,3 +1,8 @@
+/**
+ * 仓位产品详情页
+ *
+ * 顶部为产品统计指标，中部为操作记录表格（可分页），底部为 FAQ。
+ */
 import { useI18n } from '~/i18n/use-i18n'
 import { Detail } from '~/shared/components/detail'
 import {
@@ -23,7 +28,7 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
         metricsLayout={
           product === 'stake'
             ? 3
-            : // LP/Burn：上 3 下 2（Figma 250 / 384）；gap 对齐 OverviewGrid
+            : // LP/Burn 用上三下二的指标排布，与总览网格间距对齐
               'upper3-lower2'
         }
         statsTitle={stats.title}

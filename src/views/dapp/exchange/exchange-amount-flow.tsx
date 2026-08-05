@@ -8,6 +8,13 @@ import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
 
 type AmountToken = { icon?: string; symbol: string }
 
+/**
+ * 卖出 / 买入双向金额输入区
+ *
+ * 上方为可输入的卖出金额与百分比快捷按钮，中间插槽放置方向切换
+ * 或单向指示，下方为只读买入金额；会话未就绪时整体进入预览态，
+ * 未连接钱包或提交中时锁定卖出输入。
+ */
 export function ExchangeAmountFlow({
   amountBoxClassName,
   buy,
@@ -31,9 +38,9 @@ export function ExchangeAmountFlow({
   buy: AmountToken
   buyAmount: string
   buyBalance: ReactNode
-  /** Override default Sell/Buy card labels (Burn uses destroy / receive copy). */
+  /** 覆盖默认卖出 / 买入卡片标签（销毁模式用「销毁 / 获得」文案）。 */
   buyLabel?: string
-  /** Trade: real token picker (chevron + open list). Flash/Burn omit → static chip. */
+  /** 市价交易传真实代币选择器（箭头 + 展开列表）；闪兑 / 销毁不传则渲染静态代币标签。 */
   buyTokenAdornment?: ReactNode
   middleSlot: ReactNode
   onFillPercent: (percent: number) => void
@@ -45,7 +52,7 @@ export function ExchangeAmountFlow({
   sellTokenAdornment?: ReactNode
   sessionReady: boolean
   walletReady: boolean
-  /** Lock sell input / percent while a tx is in flight (amount already snapshotted). */
+  /** 交易进行中锁定卖出输入与百分比按钮（金额已快照）。 */
   amountLocked?: boolean
 }) {
   const { messages: t } = useI18n()
@@ -86,7 +93,7 @@ export function ExchangeAmountFlow({
       <AmountBox
         amountProps={{
           'aria-label': `${buy.symbol} receive amount`,
-          // Display-only: no typing, no focus chrome (Figma caret frame is Sell-side only in product).
+          // 仅展示：禁止输入与聚焦（产品中只有卖出侧可输入）
           onMouseDown: (event) => event.preventDefault(),
           placeholder: '0.00',
           readOnly: true,

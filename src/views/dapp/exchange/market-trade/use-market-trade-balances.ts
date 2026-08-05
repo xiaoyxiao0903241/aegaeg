@@ -8,7 +8,7 @@ type UseMarketTradeBalancesArgs = {
   address: string | undefined
   sellKey: TradeTokenKey
   buyKey: TradeTokenKey
-  /** 余额/授权读（仅挂载的 Trade 会话）。 */
+  /** 余额 / 授权查询开关（仅挂载中的市价交易会话）。 */
   readsEnabled: boolean
   walletReady: boolean
 }
@@ -47,7 +47,7 @@ export function useMarketTradeBalances({
     x: xQuery.isPlaceholderData,
   }
 
-  // 决策面：placeholder（含钱包切换 keepPreviousData）不算已加载。
+  // 判断用余额：含钱包切换时的旧值（keepPreviousData）不算已加载
   const balancesLoaded =
     isDecisionFresh(usd1Query.isPlaceholderData, usd1Query.data) &&
     isDecisionFresh(agxQuery.isPlaceholderData, agxQuery.data) &&
@@ -55,10 +55,10 @@ export function useMarketTradeBalances({
     isDecisionFresh(allowanceQuery.isPlaceholderData, allowanceQuery.data)
 
   return {
-    /** 决策用：非 fresh → 0，且须配合 balancesLoaded。 */
+    /** 判断用余额：数据不新鲜时置 0，须配合 balancesLoaded 使用。 */
     sellBalance: decisionBigint(byKey[sellKey], placeholderByKey[sellKey]) ?? 0n,
     buyBalance: decisionBigint(byKey[buyKey], placeholderByKey[buyKey]) ?? 0n,
-    /** 展示用：可含 placeholder 旧值（勿与决策零值混画）。 */
+    /** 展示用余额：允许旧值（勿与判断用的零值混画）。 */
     sellBalanceKnown: byKey[sellKey] !== undefined,
     buyBalanceKnown: byKey[buyKey] !== undefined,
     balanceByKey: {

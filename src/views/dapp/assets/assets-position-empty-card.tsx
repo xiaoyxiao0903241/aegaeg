@@ -3,7 +3,7 @@ import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 
-/** HTML 原型 stakePosEmpty：顶部 skeleton 行 + 插画空态卡 + 深色 CTA. */
+/** 空态卡片：顶部骨架行 + 插画空态提示 + 底部主操作按钮 */
 export function AssetsPositionEmptyCard({
   title,
   body,
@@ -17,7 +17,7 @@ export function AssetsPositionEmptyCard({
 }) {
   return (
     <div className="grid gap-3">
-      {/* HTML 原型空态顶行：elevated 阴影卡，无 border */}
+      {/* 空态顶部的骨架占位行：阴影卡，无边框 */}
       <Card surface="elevated" className="flex items-center gap-4 rounded-2xl px-5">
         <span aria-hidden className="size-11 shrink-0 rounded-full bg-muted" />
         <span aria-hidden className="grid min-w-0 flex-1 justify-items-start gap-2">

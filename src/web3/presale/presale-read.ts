@@ -66,6 +66,13 @@ function mapPhaseTupleToOnChain(
   }
 }
 
+/**
+ * 读取预售档位总数（AegisPreSale.getPhaseCount）。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 档位数
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readPresalePhaseCount(
   client: ChainReadClient = bscReadClient,
 ): Promise<number> {
@@ -78,6 +85,15 @@ export async function readPresalePhaseCount(
   return Number(phaseCount)
 }
 
+/**
+ * 批量读取全部预售档位。
+ *
+ * 各档 phases() 合并为一次 Multicall3，任一档读取失败即抛错。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 全部档位数组；无档位时为空数组
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readAllPresalePhases(
   client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseOnChain[]> {
@@ -114,6 +130,17 @@ export async function readAllPresalePhases(
   })
 }
 
+/**
+ * 读取用户在指定档位的剩余可购额度。
+ *
+ * 额度按迁移 root 键控，须先解析 root 再调 view，与 userTotalAmount 同口径。
+ *
+ * @param address 钱包地址
+ * @param phaseIndex 档位 index
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 档位/个人剩余额度与个人限购
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readUserPhaseRemainingAmount(
   address: string,
   phaseIndex: number,
@@ -138,6 +165,16 @@ export async function readUserPhaseRemainingAmount(
   }
 }
 
+/**
+ * 读取用户预售累计购买额（wei）。
+ *
+ * userTotalAmount 为按迁移 root 键控的 public mapping，须先解析 root。
+ *
+ * @param address 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 累计购买额（wei）
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readUserPresaleTotal(
   address: string,
   client: ChainReadClient = bscReadClient,
@@ -153,6 +190,13 @@ export async function readUserPresaleTotal(
   })
 }
 
+/**
+ * 读取全网预售累计购买额（AegisPreSale.totalPurchasedAmount）。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 累计购买额（wei）
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readTotalPresalePurchased(
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -163,6 +207,13 @@ export async function readTotalPresalePurchased(
   })
 }
 
+/**
+ * 读取空投门槛（AegisPreSale.AIRDROP_THRESHOLD，wei）。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 空投门槛（wei）
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readPresaleAirdropThresholdWei(
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -173,6 +224,13 @@ export async function readPresaleAirdropThresholdWei(
   })
 }
 
+/**
+ * 读取预售 AGX 单价（AegisPreSale.agxPrice，wei）。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 单价（wei）
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readPresaleAgxPriceWei(
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -183,6 +241,13 @@ export async function readPresaleAgxPriceWei(
   })
 }
 
+/**
+ * 读取预售暂停状态（AegisPreSale.paused）。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 暂停时返回 true
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readPresalePaused(client: ChainReadClient = bscReadClient): Promise<boolean> {
   return client.readContract({
     address: BSC_CONTRACTS.preSale,
@@ -191,7 +256,18 @@ export async function readPresalePaused(client: ChainReadClient = bscReadClient)
   })
 }
 
-/** `previewAirdropValue` — 仅取 addedAirdropValue（wei / 18 → USD 展示）。 */
+/**
+ * 预估某笔购买可新增的空投价值（previewAirdropValue）。
+ *
+ * 仅取返回的 addedAirdropValue（wei），页面按 18 位小数转 USD 展示。
+ *
+ * @param user 钱包地址（可为零地址）
+ * @param phaseIndex 档位 index
+ * @param purchaseAmount 拟购金额（wei）
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 新增空投价值（wei）
+ * @see 手册 §6 预售 PreSale
+ */
 export async function readPreviewAirdropValue(
   user: string,
   phaseIndex: number,

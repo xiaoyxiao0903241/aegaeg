@@ -1,7 +1,7 @@
 import type { ImgHTMLAttributes } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
-/** Icon sizes / shape — `tokens/theme.css` (`--app-icon-*`). */
+/** 图标尺寸 / 形状变体 */
 export const iconVariants = tv({
   base: 'block shrink-0',
   variants: {
@@ -19,8 +19,7 @@ export const iconVariants = tv({
       brand: 'size-(--app-icon-brand)',
     },
     /**
-     * `circle`：稿面 token 圆标（AmountBox / 指标行）。
-     * 用 `object-cover` 填满圆盘；方图靠 `rounded-full` 裁成圆（Figma inputBox `4448:615`）。
+     * `circle`：圆形代币图标（数量输入 / 指标行）。
      */
     shape: {
       plain: 'object-contain',
@@ -42,7 +41,15 @@ type IconProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' | 'he
   src: string
 }
 
-/** 文件图（SVG/PNG URL）— chrome 线框直接用 lucide-react，勿混进本组件。 */
+/**
+ * 图片图标
+ *
+ * 通过 URL 加载 SVG / PNG 图标；线框图标直接用 lucide-react，不混入本组件。
+ *
+ * @param src 图标文件地址
+ * @param size 图标尺寸
+ * @param shape plain（原样）/ circle（圆形裁剪）
+ */
 export function Icon({
   alt = '',
   className,

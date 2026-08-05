@@ -33,7 +33,7 @@ import { assertWalletTransactionHash } from '~/web3/wallet/wallet-write-error'
 
 export type ConfirmedWalletWrite = TransactionReceipt & { transactionHash: Hash }
 
-/** +20% headroom so marginal state drift between estimate and mine still succeeds. */
+/** +20% 余量：估算与出块之间轻微的链上状态漂移仍能成功。 */
 const GAS_BUFFER_NUMERATOR = 120n
 const GAS_BUFFER_DENOMINATOR = 100n
 
@@ -75,6 +75,14 @@ function writeCallParams(input: WalletWriteCallInput): WriteCallParams {
   }
 }
 
+/**
+ * 给估算 gas 加 20% 缓冲
+ *
+ * 估算为 0 或负数视为估算失败，抛 GAS_ESTIMATE_FAILED。
+ *
+ * @param estimatedGas 估算结果
+ * @returns 加缓冲后的 gas 上限
+ */
 export function applyGasBuffer(estimatedGas: bigint): bigint {
   if (estimatedGas <= 0n) {
     throw new Error(WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED)
@@ -83,17 +91,24 @@ export function applyGasBuffer(estimatedGas: bigint): bigint {
 }
 
 /**
- * Simulate → gas (+20% buffer); on non-revert simulate failure, fall back to
- * wallet then public `estimateContractGas`. Reverts surface before the wallet prompt.
- * Exported for unit tests with injected clients.
+ * 估算写交易 gas
+ *
+ * 先 simulate 取 gas 并加缓冲；simulate 因非 revert 原因失败时，
+ * 依次回退到钱包读客户端与公共 RPC 的 `estimateContractGas`。
+ * revert 会在钱包弹窗前暴露。导出供单测注入客户端。
+ *
+ * @param call 写调用参数
+ * @param walletClient 钱包读客户端
+ * @param fallbackClient 回退读客户端，默认公共 RPC
+ * @returns 加缓冲后的 gas 上限
  */
 export async function estimateWriteGasLimit(
   call: WriteCallParams,
   walletClient: ChainReadClient,
   fallbackClient: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  // viem simulate/estimate overloads require concrete ABI function names; dynamic
-  // write paths intentionally erase here (same pattern as thirdweb adapters).
+  // viem 的 simulate/estimate 重载需要具体 ABI 函数名；
+  // 动态写路径在此刻意擦除类型（与 thirdweb 适配器同一模式）
   const callRequest = call as never
 
   try {
@@ -133,8 +148,13 @@ async function preflightContractWrite(input: WalletWriteCallInput): Promise<bigi
 }
 
 /**
- * Simulates the write, estimates gas (+ buffer), then submits via wallet `eth_sendTransaction`.
- * Reverts surface before the wallet prompt; gas is set explicitly so wallets need not estimate.
+ * 通过钱包提交合约写交易
+ *
+ * simulate 估 gas（加缓冲）→ 核对写意图 → `eth_sendTransaction` 提交 →
+ * 等待确认收据。revert 在钱包弹窗前暴露；gas 显式传入，钱包无需再估算。
+ *
+ * @param input 钱包与写调用参数
+ * @returns 确认收据（含交易 hash）
  */
 export async function writeContractViaWallet(
   input: WalletWriteCallInput,
@@ -194,7 +214,7 @@ export async function writeContractViaWallet(
   return { ...receipt, transactionHash: hash }
 }
 
-/** Parses write ABI lines plus optional custom error definitions from `~/web3/abis`. */
+/** 解析写 ABI 签名，并附加 `~/web3/abis` 提供的自定义错误定义。 */
 export function parseWriteAbi(signature: string, errors: readonly string[] = []) {
   return parseAbi(errors.length > 0 ? [signature, ...errors] : [signature])
 }

@@ -1,3 +1,9 @@
+/**
+ * DApp 入口
+ *
+ * 先执行启动副作用，再挂载 React 根节点；
+ * 组装顺序为国际化 → 全局 Provider → 错误边界 → 主外壳。
+ */
 import { bootDappApp } from '~/app/startup/dapp-boot'
 
 bootDappApp()

@@ -12,6 +12,12 @@ import {
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { useGenesisContributionsView } from '~/views/dapp/genesis/use-genesis-contributions-view'
 
+/**
+ * 我的贡献区块
+ *
+ * 展示累计贡献进度表头与贡献记录分页表；
+ * 未登录时展示登录引导，数据同步未完成时展示提示条。
+ */
 export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
   const vm = useGenesisContributionsView(genesis)

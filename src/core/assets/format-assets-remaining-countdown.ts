@@ -1,6 +1,14 @@
 /**
- * 资产仓位「剩余时间」倒计时（稿：`167 天 08:27:15` / `<1天` → `23:59:59`）。
- * `expiryUnixSec` 为链上 unix 秒；过期 → `00:00:00`（诚实空，非演示钟）。
+ * 资产仓位「剩余时间」倒计时文本。
+ *
+ * 大于一天显示 `天数 时:分:秒`（如 `167 天 08:27:15`），不足一天仅显示
+ * `时:分:秒`；已过期或时间差非有限数时返回 `00:00:00`，不做虚假跳动。
+ *
+ * @param expiryUnixSec 链上到期时间（unix 秒）
+ * @param nowSec 当前时间（unix 秒）
+ * @param dayUnit 「天」单位文案
+ * @returns 倒计时文本
+ * @see 手册 §13.3 展示字段
  */
 export function formatAssetsRemainingCountdown(
   expiryUnixSec: bigint,

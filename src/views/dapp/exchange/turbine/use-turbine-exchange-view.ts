@@ -4,7 +4,7 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
 
-/** Session state + i18n + unlock/claim toast orchestration → everything `TurbineExchangeWidget` renders. */
+/** 组装 Turbine 面板渲染所需：会话状态 + 文案 + 解锁 / 领取提示编排。 */
 export function useTurbineExchangeView(turbine: TurbineExchangeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
@@ -34,7 +34,7 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
   const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '—'
 
   async function handleUnlock() {
-    // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
+    // 错误由写链统一 toast（getErrorMessage），这里避免重复提示
     await submitExchangeWithSuccessToast(turbine.submitUnlock, t.exchange.turbine.unlockSuccess)
   }
 

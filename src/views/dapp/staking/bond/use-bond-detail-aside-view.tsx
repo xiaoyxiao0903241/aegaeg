@@ -29,8 +29,13 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
 
 /**
- * Bond 右栏 — chrome 跟 Stake（`staking-detail-sections`）；仓位与资产仓位同源链读。
- * 协议 TVL / 溢价率：无 OpenAPI/手册读 → 诚实 0（gaps §3.3）。
+ * 债券详情右栏（LP / 燃烧债券共用）
+ *
+ * 概览与仓位数值与资产页同源链读；
+ * 协议 TVL / 溢价率暂无数据源，显示 0。
+ *
+ * @param kind 债券类型：lp / burn
+ * @returns 右栏概览、仓位、记录表的展示数据
  */
 export function useBondDetailAsideView(kind: BondKind) {
   const { messages: t } = useI18n()

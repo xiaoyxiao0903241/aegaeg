@@ -1,3 +1,10 @@
+/**
+ * 社区页
+ *
+ * 顶部统计卡展示直邀人数、团队规模与创世共建等级；
+ * 正文依次为邀请引导、生态支持双卡、邀请明细表与常见问题。
+ * 未连接钱包时只展示浏览类区块与 FAQ，不出现空成员态。
+ */
 import { type ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
@@ -61,7 +68,7 @@ export function CommunityContent() {
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
 
-  // Disconnected: browse flow + FAQ only (no invented empty-member state).
+  // 未连接钱包：只展示浏览流程与 FAQ，不造空成员态。
   if (!walletReady) {
     return (
       <Detail>
@@ -72,7 +79,7 @@ export function CommunityContent() {
     )
   }
 
-  // Never `isLoading ? 0` — that flashes 2000→0→3000; use ?? 0 on cached/missing fields.
+  // 不能用 isLoading ? 0：加载中 2000 会闪成 0 再变回 3000，用 ?? 0 兜底缺失字段
   const directCount = formatGroupedNumber(overview?.direct_referral_count ?? 0, {
     digits: 0,
     trimZeros: true,
@@ -84,8 +91,8 @@ export function CommunityContent() {
   })
   const teamVolume = formatGroupedNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
 
-  // Figma `4300:212` stats = label / value / 业绩|共建等级 only（无「今日」行）.
-  // Value = genesis (presale) rank only — never substitute making_rank (A0–A13 做市等级).
+  // 统计卡只有标签 / 数值 / 业绩|共建等级三行，无「今日」行。
+  // 等级只取创世（预售）共建等级，绝不用做市等级 making_rank（A0–A13）。
   const genesisRankValue =
     !sessionReady || authPending
       ? formatPresaleRank(0)

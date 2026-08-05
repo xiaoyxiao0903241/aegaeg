@@ -12,7 +12,15 @@ function gateError(
   return RELEASE_BLOCKED[reason]
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * 领取释放队列：只做领域层写操作
+ *
+ * 写前先读快照做门闸检查，再读一次确认；不通过则抛错中断。
+ *
+ * @param args.session 已就绪的写会话
+ * @param args.planIndex 要领取的天数档位
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
+ */
 export async function submitReleaseQueueClaim(args: {
   session: WriteSession
   planIndex: number
@@ -47,7 +55,14 @@ export async function submitReleaseQueueClaim(args: {
   invalidateAfterReleaseClaim()
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * 领取缓冲池：只做领域层写操作
+ *
+ * 写前对快照做两轮门闸检查，不通过即抛错中断。
+ *
+ * @param args.session 已就绪的写会话
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
+ */
 export async function submitReleaseBufferClaim(args: { session: WriteSession }): Promise<void> {
   const { session } = args
   const { wallet, address, readClient } = session

@@ -1,0 +1,27 @@
+---
+description: 写/改 src 注释时遵循 comment-conventions（分层密度、中文说明、禁 Figma 节点引用）
+globs: "src/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# 代码注释
+
+SSOT：[`docs/foundation/comment-conventions.md`](../../docs/foundation/comment-conventions.md)
+
+## MUST
+
+- 说明文字中文；标识符 / props / 类型保持英文
+- 导出组件与非平凡函数用 `/** */` JSDoc；`@param` 名与签名一致
+- 严格层（`shared/components`、`views`）：通俗短、去黑话
+- 逻辑层（`core` / `web3` / `hooks` / `stores` / `app` / `shared/{lib,config,api}`）：四要素 + `@see`（手册 § / `docs/onchain-manual/` / `docs/backend-api/`）
+- 行内注释只写「为什么」
+
+## MUST NOT
+
+- `Figma <node>`、`稿/稿面` 节点坐标注释（`/assets/figma/...` 路径本身不动）
+- 黑话：SSOT、chrome、call site、组合式、闩锁、轨、wash、deco 等（见规范词表）
+- 只改注释时改业务逻辑 / 格式化无关代码
+
+## 豁免
+
+`src/i18n/**`、`src/shared/styles/tokens/**`（生成）、测试文件。

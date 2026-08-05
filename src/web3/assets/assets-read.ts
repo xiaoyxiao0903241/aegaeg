@@ -71,9 +71,9 @@ export type AssetsStakeRow = {
   extraInterest: bigint
   claimableBalance: bigint
   expiry: bigint
-  /** 活期 warmup 仓（手册 §8.2）：禁本金退出 / Mixed；须 claim() 激活。 */
+  /** 活期 warmup 仓：禁本金退出 / Mixed，须 claim() 激活。 */
   inWarmup?: boolean
-  /** live `isWarmupExpired`；仅 warmup 行有意义。 */
+  /** 是否已过 warmup（isWarmupExpired），仅 warmup 行有意义。 */
   warmupExpired?: boolean
 }
 
@@ -92,7 +92,7 @@ export type AssetsBondRow = {
 
 export type AssetsXminePosition = {
   pending: bigint
-  /** `pendingRewardValue` — AGX/gAGX 价值口径（手册 §15.3） */
+  /** pending 的 AGX/gAGX 价值口径（§15.3）。 */
   pendingValue: bigint
   miningStake: bigint
   gons: bigint
@@ -100,6 +100,17 @@ export type AssetsXminePosition = {
   warmupEndTime: bigint
 }
 
+/**
+ * 读取释放计划与复投计划。
+ *
+ * 释放计划由 RewardQueue.queuePlans 一次取回；复投计划逐档 RestakeConfig.getPlan 读取，
+ * 保留链上原始 index，供 Mixed 领取参数使用。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns releasePlans / restakePlans 两个时长计划数组
+ * @see 手册 §12 RewardQueue 奖励释放队列
+ * @see 手册 §9 贡献值与 Mixed 领奖
+ */
 export async function readClaimPlans(client: ChainReadClient = bscReadClient): Promise<{
   releasePlans: DurationPlan[]
   restakePlans: DurationPlan[]
@@ -150,6 +161,18 @@ export async function readClaimPlans(client: ChainReadClient = bscReadClient): P
   return { releasePlans, restakePlans }
 }
 
+/**
+ * 读取用户贡献值，以及领取 rewardAmount 所需贡献值。
+ *
+ * 贡献值按迁移 root 键控（AgxContributionSwap.originalOf 解析 root）；required 由
+ * quoteRequiredContribution 预估。前端据此判断 Mixed 领取前是否满足贡献值门槛。
+ *
+ * @param user 钱包地址
+ * @param rewardAmount 待领取奖励金额（wei）
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 当前贡献值 contribution 与所需贡献值 requiredContribution
+ * @see 手册 §9.2 贡献值页面
+ */
 export async function readContributionSnapshot(
   user: Address,
   rewardAmount: bigint,
@@ -189,6 +212,18 @@ const LOCKED_PERIODS = ['180', '360', '540'] as const satisfies readonly Exclude
   'liquid'
 >[]
 
+/**
+ * 读取用户全部质押仓位（活期 + 180/360/540 定期）。
+ *
+ * 活期含 warmup 仓；定期先按 getStakesCount 判断，空仓跳过不调 getStakes。
+ * 仅返回有余额的仓位。
+ *
+ * @param user 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 资产页质押行数组，无仓位时为空数组
+ * @see 手册 §8.2 活期 LiquidStaking
+ * @see 手册 §8.3 定期 LockedStaking
+ */
 export async function readStakePositions(
   user: Address,
   client: ChainReadClient = bscReadClient,
@@ -196,7 +231,7 @@ export async function readStakePositions(
   const rows: AssetsStakeRow[] = []
 
   const liquidPool = stakePoolAddress('liquid')
-  // `stakes`/`warmupStakes` 为裸 mapping：须 AMM migratedFrom 得 root；`getStakeRewards` 别名感知，传当前钱包。
+  // `stakes`/`warmupStakes` 为裸 mapping：须先解析迁移 root；`getStakeRewards` 别名感知，直接传当前钱包。
   const liquidMigratedFrom = await readMigratedFrom(user, client)
   const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
   const [liquidStake, liquidWarmup, liquidRewards, warmupExpired] = await Promise.all([
@@ -468,14 +503,40 @@ async function readBondPositionsFor(
   return rows
 }
 
+/**
+ * 读取用户全部 LP 债券仓位。
+ *
+ * @param user 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 资产页 LP 债券行数组
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export function readLpBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
   return readBondPositionsFor('lp', user, client)
 }
 
+/**
+ * 读取用户全部 Burn 债券仓位。
+ *
+ * @param user 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 资产页 Burn 债券行数组
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export function readBurnBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
   return readBondPositionsFor('burn', user, client)
 }
 
+/**
+ * 读取 X 挖矿持仓（pending 奖励、挖矿质押量、warmup 状态）。
+ *
+ * `stakes` 为裸 mapping，须先解析迁移 root；其余业务 view 直接传当前地址。
+ *
+ * @param user 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 挖矿持仓快照，含 pending 价值口径
+ * @see 手册 §15 XStakingPool X 挖矿
+ */
 export async function readXminePosition(
   user: Address,
   client: ChainReadClient = bscReadClient,
@@ -527,7 +588,17 @@ export async function readXminePosition(
   }
 }
 
-/** Live Mixed claimable for block — never trust modal snapshot alone. */
+/**
+ * 读取某一来源当前可 Mixed 领取的实时奖励。
+ *
+ * 弹窗里的快照可能已过期，提交前用本函数复读，避免基于旧数据下单。
+ *
+ * @param target 领取来源：活期 / 定期（可选额外利息）/ 债券
+ * @param user 钱包地址
+ * @param client 链读取客户端
+ * @returns 可领取奖励金额（wei）
+ * @see 手册 §9.3 Mixed 领奖前端流程
+ */
 export async function readMixedRewardAvailable(
   target:
     | { source: 'liquid' }
@@ -567,6 +638,17 @@ export async function readMixedRewardAvailable(
   return profit as bigint
 }
 
+/**
+ * 读取质押行当前可赎回本金。
+ *
+ * 活期按迁移 root 查裸 mapping；定期读 getReleasedPrincipal。
+ *
+ * @param row 资产页质押行
+ * @param user 钱包地址
+ * @param client 链读取客户端
+ * @returns 可赎回本金（wei）；无仓位返回 0n
+ * @see 手册 §13 PrincipalReleaseVault 本金释放
+ */
 export async function readStakeRedeemableAmount(
   row: AssetsStakeRow,
   user: Address,
@@ -602,6 +684,15 @@ export async function readStakeRedeemableAmount(
   return released as bigint
 }
 
+/**
+ * 读取债券行当前可赎回金额（pendingPayoutFor）。
+ *
+ * @param row 资产页债券行
+ * @param user 钱包地址
+ * @param client 链读取客户端
+ * @returns 可赎回金额（wei）
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export async function readBondRedeemableAmount(
   row: AssetsBondRow,
   user: Address,

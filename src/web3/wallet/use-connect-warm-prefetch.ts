@@ -5,13 +5,13 @@ import { chainReadClient } from '~/web3/chain-read-client'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
-/** Prefer the connected wallet's RPC; fall back to app read RPC when disconnected. */
+/** 优先用已连接钱包的 RPC；未连接时回退到应用读 RPC。 */
 function useChainReadClient() {
   const wallet = useActiveWallet()
   return useMemo(() => chainReadClient(wallet), [wallet])
 }
 
-/** On wallet ready: warm bind + AGX/USD1/gAGX/USDT/X balances into RQ. */
+/** 钱包就绪后：把推荐绑定与 AGX/USD1/gAGX/USDT/X 余额预热进 React Query。 */
 export function useConnectWarmPrefetch() {
   const account = useActiveAccount()
   const readClient = useChainReadClient()

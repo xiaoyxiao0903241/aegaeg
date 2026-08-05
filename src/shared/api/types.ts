@@ -33,7 +33,7 @@ export interface SalesLogItem {
   block_number: number
   block_time: number
   log_index: number
-  /** 0=pending, 1=processing, 2=completed, 3=failed */
+  /** 状态码：0=待处理 1=处理中 2=已完成 3=失败 */
   status: number
   created_at: string | null
 }
@@ -43,13 +43,13 @@ export interface RewardLogItem {
   from_address: string
   to_address: string
   amount: string
-  /** floor(amount / 0.03) */
+  /** 公式 floor(amount / 0.03) 计算所得 */
   order_amount: string
   tx_hash: string | null
   block_number: number
   block_time: number
   log_index: number
-  /** referral_paid | referral_withdrawn */
+  /** 取值：referral_paid 推荐已支付 / referral_withdrawn 推荐已提取 */
   reward_type: string
   status: number
   created_at: string | null
@@ -70,7 +70,7 @@ export interface RewardTotals {
   items?: RewardTotalItem[]
 }
 
-/** Matches OpenAPI UserPerformanceItem (`/performance`, `/search/performance`). */
+/** 与 OpenAPI UserPerformanceItem 对齐（`/performance`、`/search/performance`）。 */
 export interface UserPerformance {
   address: string
   sales_team_market: string
@@ -82,11 +82,11 @@ export interface UserPerformance {
   presale_rank: number
   presale_referral_reward: string
   direct_presale_volume: string
-  /** Inviter address from backend; preferred over on-chain referrer when present. */
+  /** 后端返回的推荐人地址；存在时优先于链上推荐人。 */
   invite_address?: string | null
 }
 
-/** Matches OpenAPI QualifiedPartitionStats. */
+/** 与 OpenAPI QualifiedPartitionStats 对齐。 */
 export interface QualifiedPartitionsResponse {
   my_presale_rank: number
   target_rank: number | null
@@ -100,7 +100,7 @@ export interface QualifiedPartitionsResponse {
 export type DaoRewardType =
   'RANK_REWARD' | 'REFERRAL_REWARD' | 'PARTICIPATION_REWARD' | 'SURPASS_REWARD' | 'LIFETIME_REWARD'
 
-/** OpenAPI `/claim/dao-reward`: RANK=41 … LIFETIME=45 (supersedes handbook DaoPool signType=4). */
+/** OpenAPI `/claim/dao-reward`：RANK=41 … LIFETIME=45（取代手册 DaoPool 的 signType=4）。 */
 export const DAO_REWARD_SIGN_TYPE = {
   RANK_REWARD: 41n,
   REFERRAL_REWARD: 42n,
@@ -122,7 +122,7 @@ export type X0MiningPositionOperation = 'STAKE_X' | 'UNSTAKE_X'
 export interface TeamReferralItem {
   address: string
   register_time: string | null
-  /** Personal co-build / subscription amount (USD). */
+  /** 个人共建 / 认购金额（USD）。 */
   presale_volume?: string
   presale_rank: number
   direct_referral_count: number
@@ -165,7 +165,7 @@ export interface CommunityFundTotals {
 
 export interface CommunityFundLogItem {
   block_time: number
-  /** 0=pending, 1=claimed, 2=completed, 3=failed */
+  /** 状态码：0=待领取 1=已领取 2=已完成 3=失败 */
   status: number
   presale_rank: number
   amount: string
@@ -189,9 +189,8 @@ export interface ClaimSignatureServiceResponse {
 export interface TeamRewardSignature {
   signature: string
   /**
-   * On-chain claimReward(signType, amount, expireTime, salt, signature) needs
-   * all of these; the backend signs over them, so they must be returned here.
-   * Field names are matched flexibly in parseTeamRewardClaim.
+   * 链上 claimReward(signType, amount, expireTime, salt, signature) 需要这些字段；
+   * 后端基于这些值签名，因此必须原样返回。字段名在 parseTeamRewardClaim 中宽松匹配。
    */
   salt?: string
   amount?: string
@@ -272,7 +271,7 @@ export interface HomePopupNoticesResponse {
   items: HomePopupNoticeApiItem[]
 }
 
-/** 归一化后的首页公告（供 UI 消费） */
+/** 归一化后的首页公告，供弹窗展示。 */
 export interface HomePopupNotice {
   id: number
   version: string

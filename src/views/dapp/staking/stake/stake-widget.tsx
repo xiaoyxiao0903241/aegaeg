@@ -15,6 +15,12 @@ import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useStakeView } from '~/views/dapp/staking/stake/use-stake-view'
 
+/**
+ * 质押表单（左栏）
+ *
+ * 选择质押周期、输入 AGX 数量后提交；
+ * 未连接钱包时展示连接引导。
+ */
 export function StakeWidget() {
   const {
     t,

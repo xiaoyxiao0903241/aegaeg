@@ -4,37 +4,38 @@ import { tv } from 'tailwind-variants'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
-/** Figma `seg` sliding-pill motion (issue 05 / ticket 01). */
+/** 分段控件滑块的动画时长 / 缓动 */
 export const SEGMENT_MOTION_MS = 220
 export const SEGMENT_MOTION_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
 /**
- * Track height — Tailwind tokens only:
- * - `sm` → `h-6` — chart range `4585:578`
- * - `md` → `h-9` — period / metric `4448:601`（轨高 36）
- * - `lg` → `h-10.5` — flash/turbine tabs `4430:410` / `4435:410`（稿轨高 42）
+ * 轨道高度档位：sm（图表范围）/ md（周期 / 指标）/ lg（闪电 / Turbine 标签）
  */
 export type SegmentSize = 'sm' | 'md' | 'lg'
 
 export type SegmentOption = {
   label: string
   value: string
-  /** Per-option disable. List-level `disabled` still wins. */
+  /** 单项禁用；列表级 `disabled` 优先级更高 */
   disabled?: boolean
 }
 
-/** Whether a Segment option can receive pointer / keyboard activation. */
+/** 判断选项是否可被指针 / 键盘激活 */
 export function isSegmentOptionEnabled(option: SegmentOption, listDisabled: boolean): boolean {
   return !listDisabled && !option.disabled
 }
 
-/** Tailwind `spacing-1` / `p-1` / `gap-1` — rem, not raw px. */
+/** 轨道内边距 / 间距统一用 rem */
 const TRACK_PAD_REM = '0.25rem'
 const TRACK_GAP_REM = '0.25rem'
 
 /**
- * Equal-column thumb geometry (unit tests). Live Segment measures the active tab
- * and places the thumb in **% of track** so zoom / root font-size stay aligned.
+ * 等分列的滑块几何（供单元测试）。
+ * 实际组件测量激活标签，以轨道宽度百分比定位滑块，缩放安全。
+ *
+ * @param index 激活选项下标
+ * @param count 选项总数
+ * @returns 滑块的定位 / 宽度 / 位移样式
  */
 export function segmentPillThumbStyle(index: number, count: number): CSSProperties {
   const n = Math.max(1, count)
@@ -52,9 +53,7 @@ const segmentTrack = tv({
   variants: {
     size: {
       sm: 'h-6 gap-0.5 p-0.5',
-      /** Figma `seg` 4448:601 — track 36 / pad 4 → pill 28. */
       md: 'h-9 gap-1 p-1',
-      /** Figma flash tabs `4430:410` — track 42 / pad 4 → pill 34. */
       lg: 'h-10.5 gap-1 p-1',
     },
     disabled: {
@@ -94,29 +93,26 @@ const segmentItem = tv({
 })
 
 export type SegmentProps = {
-  /** Accessible name — call site supplies i18n. */
+  /** 无障碍名称；文案由调用方提供 */
   'aria-label': string
   className?: string
   disabled?: boolean
   onChange: (value: string) => void
-  /** Labels are call-site / i18n owned — not domain presets inside this primitive. */
+  /** 标签文案由调用方 / i18n 提供，本组件不内置领域文案 */
   options: readonly SegmentOption[]
   value: string
   /**
-   * Track height via Tailwind tokens: `sm`=`h-6` · `md`=`h-9` · `lg`=`h-10.5`.
-   * Call site picks per Figma surface — not one global height.
+   * 轨道高度档位；调用方按界面场景选择，不设全局统一高度。
    * @default 'md'
    */
   size?: SegmentSize
   /**
-   * Active label tone — Figma variants:
-   * - `coral` = `seg` sample `4448:601` (coral + medium)
-   * - `ink` = flash/trade tabs `4430:410` (ink + semibold)
+   * 激活标签的语义色：coral（珊瑚）/ ink（深色）
    */
   tone?: 'coral' | 'ink'
 }
 
-/** Thumb box as % of track width — zoom-safe (no hardcoded px geometry). */
+/** 滑块盒：以轨道宽度百分比表示 */
 type ThumbBox = { leftPct: number; widthPct: number }
 
 function thumbsEqual(a: ThumbBox, b: ThumbBox): boolean {
@@ -124,9 +120,9 @@ function thumbsEqual(a: ThumbBox, b: ThumbBox): boolean {
 }
 
 /**
- * Figma `seg` sliding white pill. Height via {@link SegmentProps.size}
- * (`sm` | `md` | `lg` → `h-6` | `h-9` | `h-10.5`). Gap/pad are Tailwind
- * spacing tokens; thumb left/width are % of the track (not raw px constants).
+ * 分段控件 — 白色滑块在轨道内滑动
+ *
+ * 高度走 `size`；滑块定位以轨道宽度百分比计算。
  */
 export function Segment({
   'aria-label': ariaLabel,
@@ -145,7 +141,7 @@ export function Segment({
   )
   const listRef = useRef<HTMLDivElement>(null)
   const [thumb, setThumb] = useState<ThumbBox>({ leftPct: 0, widthPct: 0 })
-  /** Gate CSS transition so first geometry apply is instant (no flash). */
+  /** 首次测量前关闭过渡动画，避免闪烁 */
   const [motionReady, setMotionReady] = useState(false)
 
   useLayoutEffect(() => {
@@ -176,7 +172,7 @@ export function Segment({
     return () => ro.disconnect()
   }, [index, options, size])
 
-  // Enable slide only after the measured thumb has painted once without transition.
+  // 滑块首次无过渡地绘制完成后才启用滑动动画
   useEffect(() => {
     if (motionReady || thumb.widthPct <= 0) return
     let inner = 0
@@ -236,13 +232,13 @@ export function Segment({
           >
             <Text
               as="span"
-              // lg（flash/turbine tabs）稿 13 semibold → copy；sm/md 仍 support 12
+              // lg 标签用 copy 字阶，sm/md 用 support
               variant={size === 'lg' ? 'copy' : 'support'}
               className={cn(
                 'whitespace-nowrap',
                 active
                   ? tone === 'ink'
-                    ? // sm Quote Currency 稿 Regular 400；lg tabs 仍 semibold
+                    ? // sm 报价币种常规字重；lg 标签仍加粗
                       size === 'lg'
                       ? 'font-semibold text-foreground'
                       : 'font-normal text-foreground'

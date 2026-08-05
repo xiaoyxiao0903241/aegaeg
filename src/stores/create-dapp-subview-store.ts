@@ -2,14 +2,14 @@ import { create, type StoreApi, type UseBoundStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 
 /**
- * Hub↔subview enter/exit duration — must match `--motion-dapp-subview` in theme.css
- * (+ small buffer so layers unmount after CSS finishes).
+ * hub 与子视图切换动画时长，须与 theme.css 中 `--motion-dapp-subview` 一致
+ * （另加少量缓冲，确保层在 CSS 动画结束后再卸载）。
  */
 const DAPP_VIEW_MOTION_MS = 460
 
 export type DappViewDirection = 'forward' | 'back'
 
-/** Shared subview navigation fields for DApp tab view stores. */
+/** DApp 各 Tab 视图仓库共享的子视图导航字段。 */
 export type DappSubviewState<TView extends string> = {
   view: TView
   motion: boolean
@@ -18,12 +18,12 @@ export type DappSubviewState<TView extends string> = {
   incomingView: TView | null
   hasSubviewHistory: boolean
   setView: (view: TView) => void
-  /** Hash hydrate — no motion, no hash write (caller owns URL). */
+  /** 由 hash 直接水合——无动画、不写 hash（URL 由调用方负责）。 */
   hydrateView: (view: TView) => void
   backToHub: (options?: { syncHash?: boolean }) => void
 }
 
-/** Hub↔subview motion slice (shallow-subscribed). */
+/** hub 与子视图切换动画切片（浅订阅）。 */
 export type DappSubviewMotion<TView extends string = string> = {
   view: TView
   motion: boolean
@@ -39,9 +39,9 @@ export type DappSubviewStoreApi<TView extends string, TExtra extends object = ob
 
 type CreateDappSubviewStoreOptions<TView extends string, TExtra extends object> = {
   hub: TView
-  /** Hash string for a view (e.g. `#/assets/claim`); factory owns write. */
+  /** 视图对应的 hash 字符串（如 `#/assets/claim`）；由工厂负责写入。 */
   hashForView: (view: TView) => string
-  /** Extra slice fields merged into the store (e.g. staking periods). */
+  /** 合并进仓库的额外切片字段（如质押周期）。 */
   extra?: TExtra | ((set: StoreApi<DappSubviewState<TView> & TExtra>['setState']) => TExtra)
 }
 
@@ -53,8 +53,9 @@ function writeHash(hash: string) {
 }
 
 /**
- * Factory for isomorphic DApp tab view stores (hub ↔ subview + enter/exit motion).
- * Each tab owns its hash map + optional extra fields — keeps fade-out stable.
+ * DApp Tab 视图仓库工厂（hub ↔ 子视图 + 进入/退出动画）
+ *
+ * 每个 Tab 各自持有 hash 映射与可选扩展字段，保证淡出动画期间状态稳定。
  */
 export function createDappSubviewStore<TView extends string, TExtra extends object = object>(
   options: CreateDappSubviewStoreOptions<TView, TExtra>,
@@ -119,9 +120,9 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
       },
       hydrateView: (view) => {
         const state = get()
-        // setView writes the hash → hashchange → syncTabFromHash → here.
-        // If we clobber motion, forward enter snaps; back-to-hub is fine because
-        // hub hashes omit the view segment and skip hydrate.
+        // setView 写 hash → hashchange → syncTabFromHash → 回到本函数。
+        // 若在此覆盖 motion，正向进入动画会跳帧；返回 hub 无碍，因为
+        // hub 的 hash 不含视图段，不会走进 hydrate。
         if (state.view === view && !state.motion) return
         if (state.motion && state.incomingView === view) return
 

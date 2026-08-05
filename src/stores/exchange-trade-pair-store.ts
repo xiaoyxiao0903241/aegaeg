@@ -14,7 +14,7 @@ interface ExchangeTradePairStore {
   flipPair: () => void
 }
 
-/** Figma default: Sell USD1 / Buy AGX. Non-live keys (X) rejected until handbook DEFER lifts. */
+/** 默认交易对 Sell USD1 / Buy AGX（设计稿默认）；尚未启用的代币键会被拒绝。 */
 export const useExchangeTradePairStore = create<ExchangeTradePairStore>((set) => ({
   sellKey: 'usd1',
   buyKey: 'agx',

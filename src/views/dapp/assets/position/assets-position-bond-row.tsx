@@ -13,6 +13,11 @@ import {
 import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-position-voucher-link'
 import type { AssetsBondRow } from '~/web3/assets/assets-read'
 
+/**
+ * LP / 燃烧债券仓位卡
+ *
+ * 展示周期与剩余时间、本金与收益、凭证链接，底部提供领取 / 赎回操作。
+ */
 export function AssetsPositionBondRow({
   formatPeriodLabel,
   formatAmount,
@@ -23,7 +28,7 @@ export function AssetsPositionBondRow({
   row,
 }: AssetsPositionRowShellProps<AssetsBondRow>) {
   const { messages: t } = useI18n()
-  // 测试期放开领取入口；profit=0 时弹窗仍可开，写链 dual-check 诚实失败
+  // 测试期放开领取入口；profit=0 时弹窗仍可开，写链双重校验拦截
   const canClaim = true
   const canRedeem = row.pendingPayout > 0n
   const periodLabel = formatPeriodLabel(String(row.period))

@@ -19,14 +19,15 @@ import { cn } from '~/shared/lib/utils'
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
 /**
- * DApp 面积图 — 组合式：
- * `Chart` · `Header` · `Plot` · `Empty`
- * Plot = Lightweight Charts chrome；点数 / 文案由业务 call site。
+ * DApp 面积图
+ *
+ * 组合组件：`Chart` · `Header` · `Plot` · `Empty`。
+ * 绘图区用 Lightweight Charts 实现；数据点与文案由调用方提供。
  * @see docs/foundation/component-usage.md
  */
 
 export type ChartPoint = {
-  /** UTC seconds — Lightweight Charts `UTCTimestamp`. */
+  /** UTC 秒（Lightweight Charts 的 `UTCTimestamp`） */
   time: UTCTimestamp
   value: number
 }
@@ -35,7 +36,7 @@ const LINE = colorHex.primary
 const AREA_TOP = 'rgba(232, 106, 67, 0.38)'
 const AREA_BOTTOM = 'rgba(232, 106, 67, 0.02)'
 
-/** Figma `4585:572` plot — light grey dot lattice (not solid grid lines). */
+/** 浅灰点阵底纹（不是实线网格） */
 const DOT_BG = 'radial-gradient(circle, rgba(0, 0, 0, 0.14) 0.9px, transparent 1px)'
 
 type ChartTip = {
@@ -45,7 +46,7 @@ type ChartTip = {
   valueLabel: string
 }
 
-/** Format UTC day → Figma x-axis `YYYY-MM`. */
+/** 格式化 UTC 时间为坐标轴月份 `YYYY-MM` */
 function formatChartMonthLabel(time: UTCTimestamp): string {
   const d = new Date(Number(time) * 1000)
   const y = d.getUTCFullYear()
@@ -54,8 +55,8 @@ function formatChartMonthLabel(time: UTCTimestamp): string {
 }
 
 /**
- * Pick evenly spaced labels including first + last (Figma “全部” shows 6 ticks).
- * Short ranges keep all points when ≤ maxLabels.
+ * 均匀挑选坐标轴标签，保证首尾都出现（最多 6 个）。
+ * 点数不超过上限时全部保留。
  */
 function pickChartAxisLabels(points: readonly ChartPoint[], maxLabels = 6): readonly string[] {
   if (points.length === 0) return []
@@ -94,7 +95,7 @@ type ChartRootProps = HTMLAttributes<HTMLDivElement> & {
   children?: ReactNode
 }
 
-/** Figma chart-card / ccard 壳 — elevated 默认；outlined 仅特例。 */
+/** 图表卡片外壳：elevated 默认；outlined 仅特例 */
 function ChartRoot({ surface = 'elevated', className, children, ...props }: ChartRootProps) {
   return (
     <Card
@@ -119,6 +120,12 @@ function Header({ className, children, ...props }: HTMLAttributes<HTMLDivElement
   )
 }
 
+/**
+ * 绘图区
+ *
+ * 面积图渲染并跟随鼠标显示数值提示；
+ * 坐标轴标签与提示文案可自定义。
+ */
 function Plot({
   axisLabels: axisLabelsProp,
   className,

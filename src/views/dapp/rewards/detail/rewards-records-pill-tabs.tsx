@@ -2,7 +2,14 @@ import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 
 type PillOption = { label: string; value: string }
 
-/** Shared coral pill-tabs header for rewards records tables（Figma htab → DappPillTabs）. */
+/**
+ * 奖励记录表的 pill Tab 表头
+ *
+ * @param args.ariaLabel Tab 组无障碍标签
+ * @param args.options Tab 选项
+ * @param args.value 当前选中值
+ * @param args.onChange 切换回调
+ */
 export function rewardsRecordsPillTabsHeader(args: {
   ariaLabel: string
   options: readonly PillOption[]

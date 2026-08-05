@@ -1,3 +1,9 @@
+/**
+ * Turbine 详情页
+ *
+ * 概览区展示待解锁、冷却中与累计提现三张统计卡，下方为代币
+ * 介绍轮播、解锁记录、机制说明与 FAQ。
+ */
 import { tokenCarouselIcons } from '~/app/assets'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
@@ -15,7 +21,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
-/** Overview label scalars — unlockAmount draft must not wake Content. */
+/** 详情页只接收概览标量，解锁金额输入不触达详情。 */
 export type TurbineExchangeContentProps = {
   pendingUnlockLabel: string
   pendingUnlockUsdHint: string
@@ -38,7 +44,7 @@ export function TurbineExchangeContent({
   const turbineLogsQuery = useTurbineLogs({}, sessionReady)
   const turbineLogRows = turbineLogsQuery.data?.items.map(mapTurbineLogToOpsRow) ?? []
   const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading
-  // Figma 4436:220 — three elevated stats; empty → 0.00 / ≈ $0.00 (never —).
+  // 三张概览卡：空态显示 0.00 / ≈ $0.00（不显示 —）
   const overviewMetrics = [
     {
       label: t.exchange.turbine.metrics.pendingUnlock,
@@ -61,7 +67,7 @@ export function TurbineExchangeContent({
     <Detail>
       <Section>
         <Section.Title id="exchange-title">{t.exchange.turbine.dataTitle}</Section.Title>
-        {/* Figma H5：三卡竖排 */}
+        {/* 移动端三卡竖排 */}
         <OverviewGrid columns={3} stackOnDapp>
           {overviewMetrics.map((metric) => (
             <Tile key={metric.label}>
@@ -87,7 +93,7 @@ export function TurbineExchangeContent({
 
       <Section>
         <Section.Title>{t.exchange.turbine.aboutTitle}</Section.Title>
-        {/* Figma 4435:220 about-carousel: gAGX · USD1 · X · gAGX质押 */}
+        {/* 代币介绍轮播顺序：gAGX · USD1 · X · gAGX 质押 */}
         <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'gagxStake']} />
       </Section>
 

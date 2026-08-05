@@ -13,6 +13,12 @@ import {
   selectNextHomePopupNotice,
 } from '~/views/home/popup-notice'
 
+/**
+ * 首页公告状态
+ *
+ * 拉取并按语言归一化公告队列，维护持久化 / 会话级关闭与坏图集合，
+ * 返回当前应展示的公告及关闭、坏图回调。
+ */
 export function useHomePopupNotice(): {
   notice: HomePopupNotice | null
   open: boolean

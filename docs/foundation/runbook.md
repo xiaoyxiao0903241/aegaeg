@@ -1,11 +1,12 @@
 # Foundation Runbook
 
-> Token / 轴：[`ui-tokens.md`](./ui-tokens.md) · 用法：[`component-usage.md`](./component-usage.md)
+> Token / 轴：[`ui-tokens.md`](./ui-tokens.md) · 用法：[`component-usage.md`](./component-usage.md) · 注释：[`comment-conventions.md`](./comment-conventions.md)
 
 ## 何时走本 runbook
 
 触达 **Token / Text / Button / Card / InteractiveCard / Chip / Input / shell primitive** 时必走。  
-新建 / 重构 hub 入口卡、同 chrome 多实例 → 同时读 [`component-usage.md`](./component-usage.md)。
+新建 / 重构 hub 入口卡、同 chrome 多实例 → 同时读 [`component-usage.md`](./component-usage.md)。  
+动到的注释跟 [`comment-conventions.md`](./comment-conventions.md)（严格层通俗短；禁 Figma 节点注释）。
 
 ## 流程
 

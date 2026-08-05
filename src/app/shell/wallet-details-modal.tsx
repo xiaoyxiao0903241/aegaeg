@@ -21,8 +21,10 @@ import { useActiveAccount, useActiveWallet, useDisconnect } from '~/web3/thirdwe
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
- * Wallet details / disconnect modal — Figma `4040:5234`.
- * Address + USD1 balance + Copy / Disconnect. No token list rows.
+ * 钱包详情 / 断开连接弹窗（H5 下为底部抽屉）。
+ *
+ * 展示地址、USD1 余额与复制 / 断开操作，不含代币列表；
+ * 未连接时展示重新连接入口。
  */
 export function WalletDetailsModal({
   onOpenChange,
@@ -71,8 +73,8 @@ export function WalletDetailsModal({
   }
 
   async function handleDisconnect() {
-    // Close first so Radix can play data-state=closed exit animation (same as connect modal).
-    // Teardown after the longest sheet/modal out duration in animations.css.
+    // 先关闭，让 Radix 播放 data-state=closed 的退场动画（与连接弹窗一致）。
+    // 拆除动作延后到 animations.css 中最长的抽屉/弹窗退场时长之后。
     onOpenChange(false)
     window.setTimeout(() => {
       void (async () => {
@@ -90,11 +92,11 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(
-        // PC centered card (Figma 4040:5234) — same responsive shell as slippage / connect
+        // PC 居中卡片（与滑点 / 连接弹窗同一套响应式外壳）
         'border-0 bg-card text-center shadow-modal-panel',
         'w-full max-w-(--dapp-wallet-modal-max-width) p-6',
         'dapp:rounded-2xl',
-        // H5 bottom sheet — full bleed, top radius only
+        // H5 底部抽屉：通栏，仅顶部圆角
         'max-dapp:w-full max-dapp:max-w-none',
         'max-dapp:rounded-t-2xl max-dapp:rounded-b-none',
         'max-dapp:border-x-0 max-dapp:border-t max-dapp:border-b-0 max-dapp:border-border',

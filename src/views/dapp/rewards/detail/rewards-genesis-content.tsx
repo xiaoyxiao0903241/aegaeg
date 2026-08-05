@@ -1,3 +1,10 @@
+/**
+ * 创世荣誉详情页
+ *
+ * 顶部深色横幅展示当前股东等级与超级社区徽章，
+ * 下方为全档位荣誉表与可切换（推荐 / 团队 / 社区基金）的历史记录。
+ * 未登录时历史表显示登录引导，荣誉档位表仍完整展示。
+ */
 import { dappAssets } from '~/app/assets'
 import { darkBanner } from '~/shared/components/dark-banner'
 import { Detail } from '~/shared/components/detail'
@@ -54,7 +61,7 @@ export function RewardsGenesisContent() {
               </>
             )}
           </div>
-          {/* Figma 4719:2483 IP动作3 · 103×155 → rem；无镜像；素材 2026-08-03 自稿重导 */}
+          {/* 荣誉头图：吉祥物 IP 动作素材，无镜像 */}
           <img
             alt=""
             className="pointer-events-none absolute top-1.5 right-6.5 z-0 hidden w-25.75 object-contain select-none md:block"

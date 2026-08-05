@@ -5,7 +5,7 @@ function readRaw(key: keyof ImportMetaEnv): string {
   return typeof raw === 'string' ? raw.trim() : ''
 }
 
-/** Pure parse — unit-tested; runtime readers call this. */
+/** 纯解析函数——有单元测试；运行时读取器调用它。 */
 export function parseRequiredString(key: string, raw: string | undefined): string {
   const trimmed = typeof raw === 'string' ? raw.trim() : ''
   if (!trimmed) {
@@ -16,7 +16,7 @@ export function parseRequiredString(key: string, raw: string | undefined): strin
   return trimmed
 }
 
-/** Pure parse — unit-tested; runtime readers call this. */
+/** 纯解析函数——有单元测试；运行时读取器调用它。 */
 export function parseRequiredAddress(key: string, raw: string | undefined): `0x${string}` {
   const trimmed = parseRequiredString(key, raw)
   if (!EVM_ADDRESS_RE.test(trimmed)) {
@@ -25,7 +25,7 @@ export function parseRequiredAddress(key: string, raw: string | undefined): `0x$
   return trimmed as `0x${string}`
 }
 
-/** Pure parse — unit-tested; runtime readers call this. */
+/** 纯解析函数——有单元测试；运行时读取器调用它。 */
 export function parseRequiredNumber(key: string, raw: string | undefined): number {
   const trimmed = parseRequiredString(key, raw)
   const parsed = Number(trimmed)
@@ -35,7 +35,7 @@ export function parseRequiredNumber(key: string, raw: string | undefined): numbe
   return parsed
 }
 
-/** Pure parse — unit-tested; runtime readers call this. */
+/** 纯解析函数——有单元测试；运行时读取器调用它。 */
 export function parseRequiredBoolean(key: string, raw: string | undefined): boolean {
   const trimmed = parseRequiredString(key, raw)
   if (trimmed === 'true' || trimmed === '1') return true
@@ -43,7 +43,7 @@ export function parseRequiredBoolean(key: string, raw: string | undefined): bool
   throw new Error(`Invalid ${key} boolean (expected true/false/1/0): ${trimmed}`)
 }
 
-/** Pure parse — unit-tested; runtime readers call this. */
+/** 纯解析函数——有单元测试；运行时读取器调用它。 */
 export function parseOptionalCsvUrls(raw: string | undefined): string[] {
   if (typeof raw !== 'string' || !raw.trim()) return []
   return raw
@@ -69,8 +69,8 @@ export function requireEnvBoolean(key: keyof ImportMetaEnv): boolean {
 }
 
 /**
- * Fail-closed app config. Missing / invalid values throw at module load —
- * never silently ship hardcoded infra or product overrides.
+ * Fail-closed 的应用配置。缺失 / 非法的值在模块加载时即抛错——
+ * 绝不静默地带入硬编码的基础设施或产品配置。
  */
 export const appEnv = {
   thirdwebClientId: requireEnvString('VITE_THIRDWEB_CLIENT_ID'),
@@ -79,7 +79,7 @@ export const appEnv = {
   /** 可选；逗号分隔。缺省时读客户端仍挂公共 BSC 种子作 failover。 */
   bscRpcFallbackUrls: parseOptionalCsvUrls(readRaw('VITE_BSC_RPC_FALLBACK_URLS')),
   apiBaseUrl: requireEnvString('VITE_API_BASE_URL'),
-  /** Hostname only (no protocol) when runtime `location` is unreadable. */
+  /** 仅主机名（不含协议），用于运行时 `location` 不可读时的兜底。 */
   appHost: requireEnvString('VITE_APP_HOST'),
   apiDeriveFromDomain: requireEnvBoolean('VITE_API_DERIVE_FROM_DOMAIN'),
   authMessageFormat: requireEnvString('VITE_AUTH_MESSAGE_FORMAT'),

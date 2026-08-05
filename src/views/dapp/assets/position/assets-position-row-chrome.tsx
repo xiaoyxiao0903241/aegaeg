@@ -22,7 +22,7 @@ export type AssetsPositionRowShellProps<TRow> = {
   onRedeem: (row: TRow) => void
 }
 
-/** Period pill + remaining time header shared by bond/stake position rows. */
+/** 仓位卡头部：周期胶囊 + 剩余时间，债券与质押卡共用 */
 export function AssetsPositionRowHeader({
   periodLabel,
   remainingLabel,
@@ -35,7 +35,7 @@ export function AssetsPositionRowHeader({
   remainingAt: bigint
   /** 活期可随时赎回 / warmup 文案；缺省且 remainingAt>0 → 倒计时 */
   remainingValue?: string
-  /** 稿 `167 天 08:27:15` 的「天」locale */
+  /** 倒计时「天」单位的本地化文案 */
   dayUnit: string
 }) {
   const needsClock = remainingValue == null && remainingAt > 0n
@@ -55,12 +55,11 @@ export function AssetsPositionRowHeader({
 
   return (
     <div className="flex items-center gap-2">
-      {/* Figma period pill 24 · body 70% */}
       <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs leading-none text-muted-foreground">
         {periodLabel}
       </span>
       <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-        {/* 稿 text/muted 40% → text-foreground/40（禁 muted-foreground 70%） */}
+        {/* 剩余时间标签：弱化字色而非 muted 变体 */}
         <Text as="span" className="leading-4 text-foreground/40" variant="support">
           {remainingLabel}
         </Text>
@@ -72,7 +71,7 @@ export function AssetsPositionRowHeader({
   )
 }
 
-/** Principal column + 锁 chip（无已释放仍 opacity-0 占位，与收益列数字对齐）. */
+/** 本金列 + 锁定徽标；无已释放时仍占位透明，与收益列数字对齐 */
 export function AssetsPositionPrincipalColumn({
   label,
   amountText,
@@ -90,7 +89,6 @@ export function AssetsPositionPrincipalColumn({
       <Text as="span" className="leading-4 text-foreground/40" variant="support">
         {label}
       </Text>
-      {/* 稿 amount SemiBold 16 */}
       <Text as="strong" className="text-base/5 font-semibold" variant="copy">
         {amountText}
       </Text>
@@ -110,7 +108,7 @@ export function AssetsPositionPrincipalColumn({
   )
 }
 
-/** Yield chip 内双上箭头 · Figma `4525:253`. */
+/** 收益加成徽标：双上箭头图标 + 文本 */
 export function AssetsPositionBoostBadge({
   text,
   className,
@@ -147,7 +145,6 @@ export function AssetsPositionYieldColumn({
       <Text as="span" className="leading-4 text-foreground/40" variant="support">
         {yieldLabel}
       </Text>
-      {/* 稿 yield SemiBold 16 coral */}
       <Text as="strong" className="text-base/5 font-semibold text-primary" variant="copy">
         {amountText}
       </Text>

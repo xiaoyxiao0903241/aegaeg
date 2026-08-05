@@ -4,6 +4,7 @@ import { DappPanelHeader } from '~/app/shell/dapp-panel-header'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
+/** 操作区纵向堆叠容器：PC 撑满剩余列高，H5 按内容定高。 */
 export function DappWidgetStack({
   children,
   className,
@@ -16,7 +17,7 @@ export function DappWidgetStack({
       className={cn(
         'flex flex-col gap-2',
         '[&>*:first-child]:mt-0! max-dapp:[&>*:first-child]:mt-0!',
-        // PC: fill remaining column height; H5: hug content (shell window scrolls)
+        // PC：撑满剩余列高；H5：按内容定高（外层窗口负责滚动）
         'dapp:min-h-0 dapp:flex-1 dapp:*:shrink-0',
         'max-dapp:min-h-0 max-dapp:flex-none',
         className,
@@ -27,6 +28,11 @@ export function DappWidgetStack({
   )
 }
 
+/**
+ * 操作区面板框架：标题区 + 纵向堆叠的内容区。
+ *
+ * 标题区带折叠右侧详情面板的开关，状态读写 dapp-shell-store。
+ */
 export function DappWidgetFrame({
   bodyClassName,
   children,

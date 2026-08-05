@@ -1,3 +1,10 @@
+/**
+ * 兑换中心（DApp 内子视图入口）
+ *
+ * 按当前子视图把交互面板（Widget）与详情面板（Content）分发到
+ * Hub / 闪电兑换 / 市价交易 / 销毁 / Turbine 五个页面；
+ * 各模式的会话状态由外部注入，金额草稿保留在交互面板侧。
+ */
 import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
@@ -63,7 +70,7 @@ function ExchangeWidgetBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   return <ExchangeHubWidget />
 }
 
-/** Content gets scalars only — amount drafts stay on Widget. */
+// 详情面板只接收展示用标量，金额草稿留在交互面板，避免输入抖动刷新 FAQ / 代币介绍
 function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   const view = useDappSubviewDisplayView<ExchangeView>()
   if (view === 'flash') {

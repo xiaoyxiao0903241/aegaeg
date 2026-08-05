@@ -19,6 +19,15 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * 解析 API 信封，成功时返回 data
+ *
+ * code 非 0 抛 ApiError；data 缺失抛 MISSING_DATA，
+ * 防止上层误把 undefined 当正常结果。
+ *
+ * @param payload 后端信封
+ * @returns 业务数据
+ */
 export function parseApiResponse<T>(payload: ApiEnvelope<T>): T {
   if (payload.code !== 0) {
     throw new ApiError(payload)
@@ -31,6 +40,7 @@ export function parseApiResponse<T>(payload: ApiEnvelope<T>): T {
   return payload.data
 }
 
+/** 构造 Bearer 认证请求头。 */
 export function createAuthHeader(token: string): { Authorization: string } {
   return { Authorization: `Bearer ${token}` }
 }
@@ -39,6 +49,7 @@ export interface ApiClient {
   urlFor: (path: string) => string
 }
 
+/** 基于基础地址构造 API 客户端；负责规范化路径与地址拼接。 */
 export function createApiClient(options: { baseUrl: string }): ApiClient {
   const normalizedBase = options.baseUrl.replace(/\/$/, '')
 
@@ -50,10 +61,12 @@ export function createApiClient(options: { baseUrl: string }): ApiClient {
   }
 }
 
+/** 计算当前环境下的 API 基础地址。 */
 export function getApiBaseUrl(): string {
   return apiBaseUrl()
 }
 
+/** 把 API 路径拼为完整 URL。 */
 export function apiClientUrl(path: string): string {
   return createApiClient({ baseUrl: getApiBaseUrl() }).urlFor(path)
 }

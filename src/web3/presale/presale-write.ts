@@ -7,6 +7,13 @@ import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-cont
 
 const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase, PRESALE_ERRORS)
 
+/**
+ * 若不足则为预售购买给 preSale 授权 USD1 额度。
+ *
+ * @param wallet 钱包
+ * @param amount 需要授权的金额（wei）
+ * @returns 已确认的写交易结果；无需授权时返回 null
+ */
 export async function approveUsd1ForPresaleIfNeeded({
   wallet,
   amount,
@@ -23,7 +30,16 @@ export async function approveUsd1ForPresaleIfNeeded({
 }
 
 /**
- * 调用方负责额度（见 genesis approve 步与购前检查）——此处不隐式 approve，避免购中途二次弹窗。
+ * 购买预售档位（AegisPreSale.purchase）。
+ *
+ * 调用方负责额度（见 genesis approve 步与购前检查），此处不隐式 approve，
+ * 避免购买中途二次弹窗。
+ *
+ * @param wallet 钱包
+ * @param phase 档位 index
+ * @param amount 购买金额（wei）
+ * @returns 已确认的写交易结果
+ * @see 手册 §6 预售 PreSale
  */
 export async function purchasePresale({
   wallet,

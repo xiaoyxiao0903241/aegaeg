@@ -1,18 +1,19 @@
-/** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
+/** 表格空单元格 / 未知值的占位符（ASCII 连字符，不用破折号）。 */
 export const TABLE_EMPTY = '-'
 
+/** 把预售等级数字格式化为 `S<等级>`；非法或非正数返回 S0。 */
 export function formatPresaleRank(rank: number): string {
   if (!Number.isFinite(rank) || rank <= 0) return 'S0'
   return `S${rank}`
 }
 
-/** Community member table — missing rank or S0 shows `-`, otherwise S1–S10. */
+/** 社区成员表格——缺失等级或 S0 显示 `-`，否则 S1–S10。 */
 export function formatTableGenesisRank(rank: number | undefined | null): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return TABLE_EMPTY
   return `S${Math.trunc(rank)}`
 }
 
-/** Maps API presale_rank (S1=1 …) to 0-based row indices in the tier table. */
+/** 把 API 的 presale_rank（S1=1 …）映射为等级表中 0 基行号。 */
 export function getPresaleRankHighlightedRows(
   rank: number | undefined,
   rowCount: number,
@@ -22,6 +23,7 @@ export function getPresaleRankHighlightedRows(
   return index >= 0 ? [index] : []
 }
 
+/** 按等级取股东提示模板，替换 `{bonus}` 占位；非法等级回退到默认文案。 */
 export function formatShareholderHintForRank(
   rank: number,
   template: string,
@@ -37,13 +39,13 @@ export function formatShareholderHintForRank(
 
 export type FormatGroupedNumberOptions = {
   digits?: number
-  /** Default `false` (pad). `true` allows fewer than `digits` trailing zeros. */
+  /** 默认 `false`（补足位数）。`true` 允许少于 `digits` 个尾随零。 */
   trimZeros?: boolean
   prefix?: string
   suffix?: string
 }
 
-/** Human-readable grouped number — single display core for fiat/count shells. */
+/** 带千分位分组的人类可读数字——法币/计数展示的唯一核心。 */
 export function formatGroupedNumber(
   value: string | number | bigint,
   options: FormatGroupedNumberOptions = {},
@@ -68,8 +70,8 @@ export function formatGroupedNumber(
 }
 
 /**
- * Token amount × USD price → `≈ $x.xx`.
- * Missing / NaN / no price → `≈ $0.00` (empty-state SSOT; no em dash).
+ * Token 数量 × USD 单价 → `≈ $x.xx`。
+ * 缺失 / NaN / 无价格 → `≈ $0.00`（空态统一占位，不用破折号）。
  */
 export function formatApproxUsd(amount: number, priceUsd: number | null): string {
   if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
@@ -79,16 +81,16 @@ export function formatApproxUsd(amount: number, priceUsd: number | null): string
 }
 
 export type FormatCompactNumberOptions = {
-  /** Max fraction digits after K/M scale (default 2, trimmed). */
+  /** K/M 缩放后的最大小数位（默认 2，且去掉尾随零）。 */
   digits?: number
   prefix?: string
   suffix?: string
 }
 
 /**
- * Compact display for hub tiles / chart shells — Figma `129K` / `$8.41M`.
- * Below 1000 stays grouped **and pads** `digits`（空态 `0.00`）；≥1e3 → K；≥1e6 → M.
- * Empty/NaN → `0`/`0.00` (+ prefix/suffix，视 digits).
+ * 概览卡片 / 图表的紧凑数值展示——`129K` / `$8.41M`。
+ * 小于 1000 保持分组且补足 `digits` 位（空态 `0.00`）；≥1e3 用 K；≥1e6 用 M。
+ * 空值 / NaN → `0` / `0.00`（按 digits 附带前缀/后缀）。
  */
 export function formatCompactNumber(
   value: string | number | bigint,
@@ -115,7 +117,7 @@ export function formatCompactNumber(
   return `${prefix}${formatGroupedNumber(num, { digits, trimZeros: false })}${suffix}`
 }
 
-/** Chart / tile USD with compact M/K — empty → `$0.00` (pad, no unit). */
+/** 图表/卡片 USD 紧凑展示（M/K）——空态 → `$0.00`（补足位数，不带单位）。 */
 export function formatCompactUsd(value: number | null | undefined): string {
   if (value == null || !Number.isFinite(value)) {
     return formatGroupedNumber(0, { digits: 2, prefix: '$' })
@@ -126,7 +128,7 @@ export function formatCompactUsd(value: number | null | undefined): string {
   return formatCompactNumber(value, { digits: 2, prefix: '$' })
 }
 
-/** `≈ $…` compact twin of {@link formatApproxUsd} for hub TVL/treasury subs. */
+/** `≈ $…` 的紧凑版 {@link formatApproxUsd}，用于 hub TVL / treasury 子项。 */
 export function formatApproxCompactUsd(amount: number, priceUsd: number | null): string {
   if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
     return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
@@ -138,7 +140,7 @@ export function formatApproxCompactUsd(amount: number, priceUsd: number | null):
   return formatCompactNumber(usd, { digits: 2, prefix: '≈ $' })
 }
 
-/** Signed percent for chart delta — Figma `+412.4%`; empty → `+0.0%`. */
+/** 图表涨跌的有符号百分比——`+412.4%`；空态 → `+0.0%`。 */
 export function formatSignedPercent(value: number | null | undefined, digits = 1): string {
   if (value == null || !Number.isFinite(value)) {
     return `+${formatGroupedNumber(0, { digits })}%`
@@ -180,7 +182,7 @@ export function formatRegisterDate(iso: string | null): string {
   return date.toISOString().slice(0, 10)
 }
 
-/** Community member table address — 4+…+4. Default wallet/tx shorten is 6+…+4. */
+/** 社区成员表格地址缩略——4+…+4；默认钱包/交易缩略为 6+…+4。 */
 export function formatShortAddress(
   address: string,
   options: { head?: number; tail?: number } = {},

@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
-/** Dark banner layout + surface colors. Typography via call-site `<Text>` + these slots. */
+/** 深色横幅布局与表面配色；文案排版由调用方用 `<Text>` 配合这些槽位完成 */
 export const darkBanner = tv({
   slots: {
     root: cn(revealClass(), 'relative overflow-hidden rounded-md bg-dark text-white shadow-card'),

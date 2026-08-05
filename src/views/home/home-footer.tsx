@@ -9,6 +9,14 @@ import {
 } from '~/shared/config/community-links'
 import { notionLink } from '~/shared/config/notion-links'
 
+/**
+ * 解析页脚链接的目标地址
+ *
+ * 优先按 socialId / linkId 查预设配置，其余相对路径补语言前缀。
+ *
+ * @param locale 当前语言
+ * @param link 页脚链接配置
+ */
 function footerLinkHref(
   locale: ReturnType<typeof useI18n>['locale'],
   link: { href?: string; linkId?: string; socialId?: string },
@@ -47,6 +55,12 @@ function FooterBrandCopy({ copy }: { copy: string }) {
   )
 }
 
+/**
+ * 首页页脚
+ *
+ * 品牌文案与多组链接导航；链接按配置解析为社交外链、Notion 文档
+ * 或站内多语言路径，外链自动加 noopener 并在新窗口打开。
+ */
 export function HomeFooter() {
   const { locale, messages } = useI18n()
   const content = messages.home.footer

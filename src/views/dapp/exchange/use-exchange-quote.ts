@@ -44,7 +44,7 @@ export type UseExchangeQuoteOptions<TQuote> = {
   allowance: bigint
   balancesLoaded: boolean
   walletReady: boolean
-  /** When set, gates submit (not balance reads). Defaults to `walletReady`. */
+  /** 设置后仅门禁提交（不影响余额读取），默认跟随 walletReady。 */
   writeReady?: boolean
   isBalancesLoading: boolean
   slippageBps: number
@@ -56,6 +56,12 @@ export type UseExchangeQuoteOptions<TQuote> = {
   onBeforeCap?: () => void
 }
 
+/**
+ * 报价型兑换的核心状态机（市价交易 / 闪电兑换 / 销毁共用）
+ *
+ * 统一维护金额输入防抖、链上报价、最小收到数量与提交门禁；
+ * 提交时先实时复检报价再写链，失败由调用方提示阻断原因。
+ */
 export function useExchangeQuote<TQuote>({
   sessionReady,
   quotesEnabled,
@@ -106,7 +112,7 @@ export function useExchangeQuote<TQuote>({
   })
 
   const rawQuotedOut = selectQuotedOut(amountQuoteQuery.data) ?? 0n
-  /** Submit gate only — placeholder must not drive canSubmit / amountOutMin. */
+  // 提交门禁专用：占位旧值不得影响 canSubmit / amountOutMin
   const quotedOut = liveQuotedOut(amountQuoteQuery.isPlaceholderData, rawQuotedOut)
 
   const isQuoting =
@@ -119,13 +125,13 @@ export function useExchangeQuote<TQuote>({
 
   const validationError = amountQuoteQuery.error ? EXCHANGE_QUOTE_FAILED : null
 
-  /** Bumps on each failed quote fetch so UI can re-toast the same sentinel. */
+  // 每次报价失败自增，UI 可据此避免对同一错误重复提示
   const quoteErrorUpdatedAt = amountQuoteQuery.error ? amountQuoteQuery.errorUpdatedAt : 0
 
   const sellAmountDisplay = formatTokenAmountInputDisplay(sellAmount)
 
   const [retainedBuyAmount, setRetainedBuyAmount] = useState('')
-  /** Face uses raw quote (incl. keepPreviousData); gate stays on liveQuotedOut. */
+  // 展示面用原始报价（含防抖期间的旧值）；门禁始终用 liveQuotedOut
   const faceBuyAmount =
     sessionReady && amountIn > 0n && !isAmountDebouncing && rawQuotedOut > 0n
       ? formatTokenAmountInputDisplay(formatTokenAmountDraft(rawQuotedOut, buyDecimals, 6))
@@ -137,7 +143,7 @@ export function useExchangeQuote<TQuote>({
     setRetainedBuyAmount(faceBuyAmount)
   }
 
-  /** Keep last buy face while debounce/empty raw; settled empty stays `''`. */
+  // 防抖或空报价期间保留上一帧买入面值；稳定为空时保持 `''`
   const buyAmount = amountIn === 0n || !sessionReady ? '' : (faceBuyAmount ?? retainedBuyAmount)
 
   const amountOutMin = quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n
@@ -187,9 +193,9 @@ export function useExchangeQuote<TQuote>({
 
     submitOutcomeRef.current = { ok: false, error: null }
 
-    // Live re-check: force-refresh quote after approve (may exceed maxQuoteAgeMs),
-    // then read from query cache — not the render snapshot that started submit.
-    // Callers must pass post-refetch sellBalance; render-closure balance is stale.
+    // 提交前实时复检：授权后强制刷新报价（可能已超过报价有效期），
+    // 再从查询缓存读取，而非用发起提交时的渲染快照。
+    // 调用方必须传入刷新后的 sellBalance，闭包里的余额已过期。
     const assertStillSubmittable = async (live?: {
       sellBalance: bigint
     }): Promise<{ amountOutMin: bigint; quotedOut: bigint }> => {

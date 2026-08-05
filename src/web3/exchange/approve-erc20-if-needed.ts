@@ -8,7 +8,18 @@ import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-cont
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 
-/** Fail-closed ERC20 approve when allowance is below intended spend. */
+/**
+ * 授权不足时按需发起 ERC20 approve
+ *
+ * 先读取当前授权额度，低于本次所需才写 approve；未连接钱包直接抛阻断。
+ * 授权已足够时返回 null，表示无需写交易。
+ *
+ * @param wallet 当前钱包
+ * @param token 代币合约地址
+ * @param spender 被授权方（兑换路由器 / 质押池等）
+ * @param amountIn 本次需要的授权额度
+ * @returns 已发起 approve 的交易结果；额度已够时返回 null
+ */
 export async function approveErc20IfNeeded({
   wallet,
   token,

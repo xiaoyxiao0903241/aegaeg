@@ -45,6 +45,16 @@ const xmineActivateWarmupAbi = parseWriteAbi(
   X_STAKING_POOL_ERRORS,
 )
 
+/**
+ * 活期奖励 Mixed 领取（LiquidStaking.claimRewardMixed）。
+ *
+ * @param args.wallet 钱包
+ * @param args.releasePlanIndex 释放计划 index
+ * @param args.amount 领取金额（wei）
+ * @param args.restakePlanIndex 复投计划 index
+ * @param args.restakeBps 复投比例（0–10000）
+ * @see 手册 §8.2 活期 LiquidStaking
+ */
 export async function writeLiquidClaimMixed(args: {
   wallet: Wallet
   releasePlanIndex: number
@@ -66,6 +76,13 @@ export async function writeLiquidClaimMixed(args: {
   })
 }
 
+/**
+ * 活期本金领取（LiquidStaking.claimPrincipal），须已过 warmup。
+ *
+ * @param args.wallet 钱包
+ * @param args.amount 领取金额（wei）
+ * @see 手册 §8.2 活期 LiquidStaking
+ */
 export async function writeLiquidClaimPrincipal(args: { wallet: Wallet; amount: bigint }) {
   return writeContractViaWallet({
     wallet: args.wallet,
@@ -76,6 +93,21 @@ export async function writeLiquidClaimPrincipal(args: { wallet: Wallet; amount: 
   })
 }
 
+/**
+ * 定期奖励 Mixed 领取（LockedStaking.claimRewardMixed / claimExtraRewardMixed）。
+ *
+ * extra 为 true 时领额外利息（extraInterest），否则领普通奖励（blockReward）。
+ *
+ * @param args.wallet 钱包
+ * @param args.pool 定期质押池地址（180/360/540）
+ * @param args.stakeIndex 仓位 index
+ * @param args.amount 领取金额（wei）
+ * @param args.releasePlanIndex 释放计划 index
+ * @param args.restakePlanIndex 复投计划 index
+ * @param args.restakeBps 复投比例（0–10000）
+ * @param args.extra 是否领取额外利息
+ * @see 手册 §8.3 定期 LockedStaking
+ */
 export async function writeLockedClaimMixed(args: {
   wallet: Wallet
   pool: Address
@@ -101,6 +133,14 @@ export async function writeLockedClaimMixed(args: {
   })
 }
 
+/**
+ * 定期本金领取（LockedStaking.claimPrincipal），须到期或已释放。
+ *
+ * @param args.wallet 钱包
+ * @param args.pool 定期质押池地址（180/360/540）
+ * @param args.stakeIndex 仓位 index
+ * @see 手册 §8.3 定期 LockedStaking
+ */
 export async function writeLockedClaimPrincipal(args: {
   wallet: Wallet
   pool: Address
@@ -115,6 +155,19 @@ export async function writeLockedClaimPrincipal(args: {
   })
 }
 
+/**
+ * 债券利润 Mixed 领取（BondDepository.claimStakeProfitMixed）。
+ *
+ * @param args.wallet 钱包
+ * @param args.depository 债券金库地址
+ * @param args.recipient 收益接收地址
+ * @param args.amount 领取金额（wei）
+ * @param args.releasePlanIndex 释放计划 index
+ * @param args.bondIndex 债券仓位 index
+ * @param args.restakePlanIndex 复投计划 index
+ * @param args.restakeBps 复投比例（0–10000）
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export async function writeBondClaimMixed(args: {
   wallet: Wallet
   depository: Address
@@ -141,6 +194,15 @@ export async function writeBondClaimMixed(args: {
   })
 }
 
+/**
+ * 债券赎回（BondDepository.redeem），固定不复投。
+ *
+ * @param args.wallet 钱包
+ * @param args.depository 债券金库地址
+ * @param args.recipient 赎回接收地址
+ * @param args.bondIndex 债券仓位 index
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export async function writeBondRedeem(args: {
   wallet: Wallet
   depository: Address
@@ -156,6 +218,12 @@ export async function writeBondRedeem(args: {
   })
 }
 
+/**
+ * X 挖矿奖励领取（XStakingPool.claimReward）。
+ *
+ * @param args.wallet 钱包
+ * @see 手册 §15 XStakingPool X 挖矿
+ */
 export async function writeXmineClaimReward(args: { wallet: Wallet }) {
   return writeContractViaWallet({
     wallet: args.wallet,
@@ -166,6 +234,12 @@ export async function writeXmineClaimReward(args: { wallet: Wallet }) {
   })
 }
 
+/**
+ * X 挖矿发起解押（XStakingPool.startUnstake）。
+ *
+ * @param args.wallet 钱包
+ * @see 手册 §15 XStakingPool X 挖矿
+ */
 export async function writeXmineStartUnstake(args: { wallet: Wallet }) {
   return writeContractViaWallet({
     wallet: args.wallet,
@@ -176,6 +250,12 @@ export async function writeXmineStartUnstake(args: { wallet: Wallet }) {
   })
 }
 
+/**
+ * X 挖矿激活 warmup（XStakingPool.activateWarmup），质押后需先激活才计息。
+ *
+ * @param args.wallet 钱包
+ * @see 手册 §15 XStakingPool X 挖矿
+ */
 export async function writeXmineActivateWarmup(args: { wallet: Wallet }) {
   return writeContractViaWallet({
     wallet: args.wallet,

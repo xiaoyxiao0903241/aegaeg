@@ -6,7 +6,7 @@ import { Text } from '~/shared/components/text'
 const languageMenu = tv({
   slots: {
     trigger: [
-      // Figma topbar lang — h 36, pill, white (H5 226:205 / PC 12:14)
+      // 顶部语言触发按钮：胶囊、白底
       'inline-flex h-9 min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-full',
       'border border-border bg-card px-3 text-xs leading-none font-semibold text-foreground shadow-none',
       'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
@@ -18,7 +18,7 @@ const languageMenu = tv({
       '[&_img]:size-4 [&::-webkit-details-marker]:hidden',
       'max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-3 max-dapp:text-xs',
     ],
-    /** Figma `lang-popup` 4140:286 — sizes via `--dapp-lang-menu-*` (rem / site-fluid). */
+    /** 语言面板样式槽位 */
     panel: [
       'hidden in-data-open:flex in-data-open:flex-col in-[[open]]:flex in-[[open]]:flex-col',
       'in-data-open:animate-[language-menu-in_180ms_ease_both] in-[[open]]:animate-[language-menu-in_180ms_ease_both]',
@@ -32,7 +32,7 @@ const languageMenu = tv({
 const languageMenuItem = tv({
   base: [
     'flex h-(--dapp-lang-menu-row-height) w-full cursor-pointer items-center gap-2 bg-transparent px-2.5 text-left',
-    // 与 DropdownMenuItem 同 guideline：rounded-control
+    // 与列表菜单项同规格
     'rounded-control',
     'transition-colors duration-150 ease-out focus-visible:outline-none',
   ],
@@ -77,9 +77,8 @@ export type LanguageMenuProps = {
   triggerLabel?: ReactNode
   menuClassName?: string
   /**
-   * Use a native `<details>` disclosure. Ideal for static/SSR pages where no
-   * React runtime hydrates the component, because open/close is handled by the
-   * browser and project CSS without external scripts.
+   * 使用原生 `<details>` 实现开合。适合静态 / SSR 页面：
+   * 由浏览器与项目样式处理开合，无需 React 运行时接管。
    */
   native?: boolean
 }
@@ -338,6 +337,14 @@ function ReactLanguageMenu({
   )
 }
 
+/**
+ * 语言切换菜单
+ *
+ * 默认用 React 实现开合；`native` 为 true 时改用原生 `<details>`（适合 SSR）。
+ *
+ * @param options 语言选项列表
+ * @param native 是否使用原生 `<details>` 实现
+ */
 export function LanguageMenu({ native, ...props }: LanguageMenuProps) {
   if (native) {
     return <NativeLanguageMenu {...props} />

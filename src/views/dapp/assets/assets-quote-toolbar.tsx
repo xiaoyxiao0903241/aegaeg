@@ -22,7 +22,7 @@ export type AssetsSortOption = {
   label: string
 }
 
-/** Shared AGX/USD Segment + sort menu — 菜单 chrome 走 DropdownMenu. */
+/** 计价币种切换与排序菜单：报价币在 Segment 切换，排序项走下拉菜单 */
 export function AssetsQuoteToolbar({
   quote,
   onQuoteChange,
@@ -47,7 +47,7 @@ export function AssetsQuoteToolbar({
       <DropdownMenu onOpenChange={setOpen} open={open}>
         <DropdownMenuTrigger
           className={cn(
-            // Figma `4518:7174` period：pill · px12 · gap4 · text12
+            // 排序按钮：胶囊样式，选中时主色高亮
             'inline-flex h-6 cursor-pointer items-center gap-1 rounded-full bg-muted px-3',
             'border-0 text-xs leading-none font-normal text-foreground',
             open && 'text-primary',

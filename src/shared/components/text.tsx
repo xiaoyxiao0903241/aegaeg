@@ -4,22 +4,20 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * tone = 语义色 | variant = 字阶/角色（字号/行高/字重由 --type-* token 驱动）。
- * 高频语义；页面可用 className 微调。12 variant × 7 tone；无 weight prop。
+ * 文本 — `tone` 选语义色，`variant` 选字阶，`as` 指定渲染标签。
+ * 高频语义；页面可用 className 微调。无 weight prop。
  *
- * 若 className 含字号 utility（`text-4xl` / `text-[…]`），视为显示阶覆盖：
- * 剥掉 size / leading / tracking type token（twMerge 对 arbitrary tracking 冲突不全），
- * 保留 weight——call site 通常只覆盖字号/行高。
+ * className 含字号工具类时视为显示阶覆盖：覆盖类型令牌的字号 / 行高 / 字距，保留字重。
  */
 const toneClass = {
   foreground: 'text-foreground',
   'muted-foreground': 'text-muted-foreground',
   primary: 'text-primary',
-  /** Dark-surface coral accent (not primary). */
+  /** 深色面上的珊瑚强调色（非 primary） */
   'primary-bright': 'text-primary-bright',
   success: 'text-success',
   inverse: 'text-inverse',
-  /** Secondary copy on dark / inverse surfaces. */
+  /** 深色 / 反色面上的次级文字 */
   'inverse-muted': 'text-inverse-muted',
 } as const
 
@@ -47,7 +45,7 @@ export const textVariants = tv({
         'text-(length:--type-panel-size) leading-(--type-panel-leading) font-(--type-panel-weight) tracking-(--type-panel-tracking)',
       figure:
         'text-(length:--type-figure-size) leading-(--type-figure-leading) font-(--type-figure-weight) tracking-(--type-figure-tracking)',
-      /** Rcard / 结果区大额 — `--type-stat-*`（Figma 32）；禁 call site text-[2rem] */
+      /** 结果区大额数字 */
       stat: 'text-(length:--type-stat-size) leading-(--type-stat-leading) font-(--type-stat-weight) tracking-(--type-stat-tracking)',
     },
     tone: toneClass,
@@ -89,16 +87,15 @@ export type TextProps = HTMLAttributes<HTMLElement> & {
 } & VariantProps<typeof textVariants>
 
 /**
- * Unprefixed Tailwind font-size utility (`text-*`, `!text-*`, or TW4 `text-*!`).
- * Responsive prefixes (`max-dapp:text-lg`) must not strip base `--type-*` size —
- * otherwise desktop keeps the override flag while the media query is inactive,
- * collapsing panel/section figures to inherited 16px.
+ * 匹配无前缀的字号工具类（text-* 系列，含响应式变体）。
+ * 响应式前缀（如 `max-dapp:text-lg`）会连同基础字号一起剥掉，
+ * 否则媒体查询未生效时，面板 / 区块的数字字阶会塌回继承的 16px。
  */
-/** Named sizes + size-like arbitrary / CSS-var shorthand. Not `text-[#hex]` colors. */
+/** 命名尺寸 + 类尺寸的任意值 / CSS 变量简写；不含 `text-[#hex]` 颜色 */
 const FONT_SIZE_UTILITY_RE =
   /(?:^|[\s])!?text-(?:xs|sm|base|lg|xl|[2-9]xl|(?:\[(?:length:|\d|\.\d)[^\]]*\]|\((?:length:)?--[^)]+\)))(?:\/[^\s]*)?!?(?=[\s]|$)/
 
-/** Type tokens to drop on display-size override (keep font-weight). */
+/** 显示阶覆盖时剥掉的字号 / 行高 / 字距令牌（保留字重） */
 const VARIANT_TYPE_TOKEN_RE =
   /^(?:text-(?:\[length:|\(length:--)|leading-(?:\[var\(--type-|\(--type-)|tracking-(?:\[var\(--type-|\(--type-))/
 
@@ -114,6 +111,12 @@ function stripVariantTypeTokens(variantClassName: string): string {
     .join(' ')
 }
 
+/**
+ * 文本
+ *
+ * 用 `variant` 选字阶、`tone` 选语义色，`as` 指定渲染标签；
+ * 样式由 `textVariants` 定义（见上）。
+ */
 export function Text({ as = 'span', children, className, variant, tone, ...props }: TextProps) {
   const variantClassName = textVariants({
     variant: variant ?? 'copy',

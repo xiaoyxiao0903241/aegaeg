@@ -11,6 +11,12 @@ import {
 } from '~/views/dapp/staking/staking-detail-sections'
 import { useXmineDetailAsideView } from '~/views/dapp/staking/xmine/use-xmine-detail-aside-view'
 
+/**
+ * Xmine 详情页（右栏）
+ *
+ * 展示 X 价值说明、协议概览、我的仓位、释放记录、
+ * 机制说明、趋势图与 FAQ。
+ */
 export function XmineContent() {
   const { messages: t } = useI18n()
   const { overviewItems, positionItems, recordRows, recordsLoading } = useXmineDetailAsideView()

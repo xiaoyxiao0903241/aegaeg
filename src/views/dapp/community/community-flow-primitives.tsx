@@ -10,7 +10,7 @@ export const communityProgramGrid = tv({
   base: cn('grid grid-cols-2 gap-4', 'max-dapp:grid-cols-1 max-dapp:gap-2'),
 })
 
-/** Figma `4301:242` / `4794:3825`：elevated · 右下 deco · 下划线珊瑚 CTA */
+/** 推广卡样式：浮起卡片、右下角装饰图、带下划线的文字 CTA */
 const communityProgramCard = tv({
   slots: {
     root: cn(
@@ -34,6 +34,11 @@ export function CommunityProgramGrid({
   return <div className={cn(communityProgramGrid(), className)}>{children}</div>
 }
 
+/**
+ * 社区项目推广卡
+ *
+ * 有 href 时渲染为外链，否则渲染为按钮；右下角可带装饰图。
+ */
 export function CommunityProgramCard({
   action,
   body,

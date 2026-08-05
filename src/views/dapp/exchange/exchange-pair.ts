@@ -93,7 +93,7 @@ export function getTradeToken(key: TradeTokenKey): ExchangePairToken {
   return TRADE_TOKENS[key]
 }
 
-/** Trade — proto three-token picker; path via `tradePath`. */
+/** 市价交易币对：三种代币两两组合，路由路径由 tradePath 计算。 */
 export function getTradePairTokens(
   sellKey: TradeTokenKey,
   buyKey: TradeTokenKey,
@@ -116,7 +116,7 @@ export function formatTradeRouteLabel(sellKey: TradeTokenKey, buyKey: TradeToken
   return path.map((address) => byAddress.get(address.toLowerCase()) ?? '?').join(' → ')
 }
 
-/** Flash dual pairs — direction flips gAGX wrap↔redeem; USDT is forward-only (Usd1Swap). */
+/** 闪电兑换双币对：反向时 gAGX 包装↔赎回互换；USDT 仅正向（Usd1Swap 合约）。 */
 export function getFlashExchangePairTokens(
   pairId: FlashPairId,
   direction: ExchangeDirection = 'forward',

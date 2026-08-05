@@ -12,6 +12,12 @@ import { useReferral } from '~/views/dapp/community/use-referral'
 import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
+/**
+ * 社区侧栏数据组装
+ *
+ * 汇总推荐关系、推荐链接与复制/绑定操作；
+ * 链上错误统一通过全局提示展示，复制结果用 toast 反馈。
+ */
 export function useCommunityConnectedView() {
   const { locale, messages: t } = useI18n()
   const account = useActiveAccount()

@@ -12,28 +12,28 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export type ChainQueryFreshness = keyof typeof QUERY_STALE_TIME
 
-/** Shared options bag for domain chain-query hooks (`enabled` only). */
+/** 链上查询通用选项（当前仅支持 enabled）。 */
 export type ChainQueryOptions = {
   enabled?: boolean
 }
 
 type ChainQueryBase<TData> = {
-  /** Default `balances` (U). Never use for submit-time live gates (L). */
+  /** 数据新鲜度档位，默认 balances（普通余额级）；提交时需实时校验的数据不得用本 hook。 */
   freshness?: ChainQueryFreshness
-  /** Domain enabled; AND-ed with scope. Default true. */
+  /** 领域开关，与作用域判断取交集，默认 true。 */
   enabled?: boolean
   placeholderData?: UseQueryOptions<TData, Error, TData, QueryKey>['placeholderData']
   refetchInterval?: number | false
 }
 
-/** Wallet-scoped: `queryKey` is a prefix; hook appends active address. */
+/** 钱包作用域：queryKey 为前缀，hook 自动追加当前钱包地址。 */
 export type UseWalletChainQueryArgs<TData> = ChainQueryBase<TData> & {
   scope?: 'wallet'
   queryKey: QueryKey
   queryFn: (address: string) => Promise<TData>
 }
 
-/** Public: caller owns the full `queryKey`; no address injection. */
+/** 公开作用域：调用方持有完整 queryKey，不注入钱包地址。 */
 export type UsePublicChainQueryArgs<TData> = ChainQueryBase<TData> & {
   scope: 'public'
   queryKey: QueryKey
@@ -44,19 +44,20 @@ export type UseChainQueryArgs<TData> =
   UseWalletChainQueryArgs<TData> | UsePublicChainQueryArgs<TData>
 
 /**
- * Chain display reads: freshness → staleTime, wallet scope owns address (key + queryFn).
- * Uses `bscReadClient` via `read*` defaults — no client injection.
- * L-tier live gates must not use this hook (direct read / fetchQuery staleTime:0).
+ * 链上展示数据查询 hook
+ *
+ * 按新鲜度档位设置 staleTime；钱包作用域自动以当前地址作为缓存键后缀并注入 queryFn。
+ * 通过 read* 系列默认的 BSC 只读客户端读取，无需外部注入客户端。
+ * 提交时需实时校验的门禁数据不得使用本 hook，应直接读取或 staleTime 置 0。
  */
 export function useChainQuery<TData>(args: UseChainQueryArgs<TData>): UseQueryResult<TData> {
   const account = useActiveAccount()
   const scope: ChainQueryScope = args.scope ?? 'wallet'
   const freshness = args.freshness ?? 'balances'
-  /** Lowercase so key and queryFn always share one identity (checksum-safe). */
+  /** 统一小写，保证缓存键与 queryFn 的地址一致（校验和大小写安全）。 */
   const walletAddress = account?.address?.toLowerCase()
 
-  // Wallet + disconnected: still suffix '' so the key never equals a bare prefix
-  // that could collide if something incorrectly enables the query.
+  // 钱包断开时仍追加空串后缀，避免缓存键退化为裸前缀而与误启用的查询碰撞
   const queryKey =
     scope === 'wallet' ? chainWalletQueryKey(args.queryKey, walletAddress ?? '') : args.queryKey
 

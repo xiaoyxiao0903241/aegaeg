@@ -25,6 +25,17 @@ export type TurbineSilenceRow = {
   unlockAt: bigint
 }
 
+/**
+ * 读取用户 Turbine 买入配额
+ *
+ * 调用 `turbineBalances`，返回该地址累计已买入的 USD1 金额
+ * （用于判断冷却 / 领取资格）。
+ *
+ * @param user 钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 已买入累计金额（wei）
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function readTurbineQuota(
   user: string,
   client: ChainReadClient = bscReadClient,
@@ -37,6 +48,7 @@ export async function readTurbineQuota(
   })
 }
 
+/** 读取当前冷却时长（秒），用于计算每条买入的可领时间。 */
 export async function readTurbineCooldownDuration(
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -47,6 +59,16 @@ export async function readTurbineCooldownDuration(
   })
 }
 
+/**
+ * 估算 AGX 买入所需的 USD1 数量
+ *
+ * 调用 `quoteUsdInForAgxOut`；数量为 0 时直接返回 0，不发起链上读取。
+ *
+ * @param agxAmount 拟买入的 AGX 数量
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 所需 USD1 数量；agxAmount 为 0 时返回 0
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function readTurbineUsdQuote(
   agxAmount: bigint,
   client: ChainReadClient = bscReadClient,
@@ -60,7 +82,15 @@ export async function readTurbineUsdQuote(
   })
 }
 
-/** 手册 contracts/turbine：`swapSlippageBP` 默认 300（3%）；仅 owner 可改，前端只读展示。 */
+/**
+ * 读取 Turbine 交易滑点基点
+ *
+ * `swapSlippageBP` 默认 300（3%），仅 owner 可改，前端只读展示。
+ *
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 滑点基点
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function readTurbineSwapSlippageBP(
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -71,6 +101,18 @@ export async function readTurbineSwapSlippageBP(
   })
 }
 
+/**
+ * 读取用户全部冷却买入记录
+ *
+ * 先取 `silencesSize`，再通过 multicall 批量读每条买入的余额、开始时间
+ * 与是否可领；可领条数 = isVested 为 true 的条数。任一子调用失败即抛错。
+ *
+ * @param user 钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 买入明细行、冷却时长与可领条数；无记录时返回空数组
+ * @see 手册 §16.3 展示字段
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function readTurbineSilences(
   user: string,
   client: ChainReadClient = bscReadClient,
@@ -148,6 +190,15 @@ export async function readTurbineSilences(
   return { rows, cooldownDuration, claimableCount }
 }
 
+/**
+ * 读取用户 USD1 余额与授权
+ *
+ * 返回 USD1 可卖余额与对 Turbine 的授权额度，供输入上限与 approve 判断使用。
+ *
+ * @param owner 钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns USD1 余额与授权额度
+ */
 export async function readTurbineUsd1Balances(
   owner: string,
   client: ChainReadClient = bscReadClient,
@@ -170,7 +221,18 @@ export async function readTurbineUsd1Balances(
   return { usd1, approved }
 }
 
-/** 单条冷却是否可领（手册 §16.4 claim 前置）。 */
+/**
+ * 单条冷却买入是否已可领取
+ *
+ * 调用 `isVested`，是 Turbine claim 写前的前置条件检查。
+ *
+ * @param user 钱包地址
+ * @param index 买入记录下标
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 冷却结束后可领返回 true
+ * @see 手册 §16.4 用户写方法
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function readTurbineIsVested(
   user: string,
   index: number,
@@ -184,7 +246,17 @@ export async function readTurbineIsVested(
   })
 }
 
-/** 兑换轨红点：只 probe `silencesSize` + `isVested`，首个可领即停（不拉全表 silences）。 */
+/**
+ * 判断是否有冷却买入可领取（兑换入口红点）
+ *
+ * 只探测 `silencesSize` + 逐条 `isVested`，找到第一条可领即返回，
+ * 不拉全表 silences，减少 RPC 调用。
+ *
+ * @param user 钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 存在可领记录返回 true
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function readTurbineHasClaimable(
   user: string,
   client: ChainReadClient = bscReadClient,

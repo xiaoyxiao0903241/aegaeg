@@ -33,7 +33,13 @@ const BURN_PAIR = {
   },
 }
 
-/** Burn AGX for contribution points — readonly receive side, protocol rate. */
+/**
+ * 销毁 AGX 换贡献点会话状态
+ *
+ * 买入侧只读，兑换比例来自链上 rateBps；管理余额、报价与提交。
+ *
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
 export function useBurnExchangeWidget(
   sessionReady: boolean,
   quotesEnabled = true,

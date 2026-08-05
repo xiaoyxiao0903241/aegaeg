@@ -34,7 +34,7 @@ function mapPricedStats(
   }))
 }
 
-/** 读失败诚实空（禁用 0.00 冒充）。未连接 / 加载中仍用稿空态 0.00。 */
+/** 读失败展示占位横线，不用 0.00 冒充实数；未连接 / 加载中仍用 0.00 空态 */
 function errorStatCells(count: number): AssetsPositionStatCell[] {
   return Array.from({ length: count }, () => ({ value: '—' }))
 }
@@ -46,7 +46,7 @@ function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPosit
   }))
 }
 
-/** Right-rail position stats — aggregates existing assets reads (38 §4, no fake numbers). */
+/** 仓位右侧统计：汇总链上持仓数据，读失败展示占位横线，不伪造数字 */
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
@@ -88,7 +88,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     )
   }
 
-  // LP / Burn：总收益无累计 API → 诚实 `—`（禁硬编码 0.00 冒充实数）
+  // LP / Burn：总收益无累计 API → 用「—」占位，不硬编码 0.00
   if (bondQuery.isError) return errorStatCells(bondCount)
   if (bondQuery.data === undefined) return zeroStatCells(bondCount)
 

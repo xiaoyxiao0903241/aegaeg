@@ -4,9 +4,16 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Figma calc `slider` 4462:634 / `handle` 4462:639：
- * track h-1.5（6）· fill coral · handle pill + caption 字（非原生 range thumb）。
- * 尺寸走标准刻度 / token；禁任意 px / hex。
+ * 测算天数滑杆
+ *
+ * 自定义轨道与胶囊手柄（非原生 range 控件），
+ * 轨道填充 coral 色，手柄显示当前天数。
+ *
+ * @param ariaLabel 滑杆无障碍标签
+ * @param max 最大天数，默认 720
+ * @param min 最小天数，默认 1
+ * @param onChange 天数变化回调
+ * @param value 当前天数
  */
 export function CalcDaySlider({
   ariaLabel,

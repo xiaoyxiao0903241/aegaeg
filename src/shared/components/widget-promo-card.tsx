@@ -13,6 +13,11 @@ const widgetPromoCard = tv({
   ],
 })
 
+/**
+ * 深色促销卡片
+ *
+ * 反色表面，用于活动 / 推广区块；带进场动画。
+ */
 export function WidgetPromoCard({
   children,
   className,

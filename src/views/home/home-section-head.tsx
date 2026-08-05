@@ -4,6 +4,15 @@ import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * 首页区块标题
+ *
+ * 居中排版：眉题 + 主标题 + 可选副标题，整体带渐显动画。
+ *
+ * @param eyebrow 眉题文案
+ * @param title 主标题
+ * @param subtitle 可选副标题
+ */
 export function HomeSectionHead({
   eyebrow,
   title,

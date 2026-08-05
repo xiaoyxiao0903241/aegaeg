@@ -39,6 +39,12 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
+/**
+ * 混合领取（幸运 / 共建）视图模型
+ *
+ * 管理释放 / 复投比例与时长、共建奖类型选择，
+ * 汇总链上领取快照、释放计划与贡献校验，决定提交按钮可用性。
+ */
 export function useRewardsMixedClaimView(view: MixedClaimView) {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
@@ -49,11 +55,11 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const [releasePct, setReleasePct] = useState(50)
   const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(60)
   const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
-  /** Cobuild CTA covers one ledger per submit — RANK or SURPASS (OpenAPI: one rewardType per order). */
+  /** 共建奖每次提交只能选一个账本：等级奖励 或 超越奖励（一次订单一种类型） */
   const [cobuildRewardType, setCobuildRewardType] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
     'RANK_REWARD',
   )
-  /** Dao amount unknown until signature; set when live check reports insufficient contribution. */
+  /** 共建奖金额需领取签名后才可知；实时校验发现贡献不足时置位 */
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
@@ -65,7 +71,9 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   })
 
   const amount =
-    view === 'lucky' ? (luckyQuery.data?.rewardAmount ?? 0n) : 0n /* Dao: signature at submit */
+    view === 'lucky'
+      ? (luckyQuery.data?.rewardAmount ?? 0n)
+      : 0n /* 共建奖：金额在提交签名时才可知 */
 
   const plansQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,

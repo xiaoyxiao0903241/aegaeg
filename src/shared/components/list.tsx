@@ -4,12 +4,11 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * DApp 键值列表（Figma `infoBox` 行轨）— 数据驱动 · **不含 Card**：
- * `List` · `Label` · `Value`
+ * DApp 键值列表（数据驱动，不含卡片）
  *
- * Call site：`items` map；卡壳外提 `<Card surface="outlined"><List items={…} /></Card>`。
- * 行距 SSOT：`gap-2.5`（稿 10；禁 call site 再盖）。
- * Value：string / ReactNode 一律按内容渲染；数字 reel 由 call site 显式塞 `<CountValue>`。
+ * 组合组件：`List` · `Label` · `Value`。用法：
+ * 外层套 `<Card surface="outlined">`，`items` 传入条目数组。
+ * 数值默认原样渲染；需要数字滚动时由调用方显式塞 `<CountValue>`。
  *
  * @see docs/foundation/component-usage.md
  */
@@ -41,7 +40,7 @@ function ListRoot({ items, className, ...props }: ListProps) {
   )
 }
 
-/** 左标：detail · Figma text/muted ≡ foreground@40%（≠ muted-foreground≈70%） */
+/** 左侧标签（次要文字色，区别于弱化文字） */
 function Label({ className, children, ...props }: HTMLAttributes<HTMLSpanElement>) {
   return (
     <Text
@@ -55,7 +54,7 @@ function Label({ className, children, ...props }: HTMLAttributes<HTMLSpanElement
   )
 }
 
-/** 右值：detail semibold；内容原样（含 string）；禁隐式 CountValue */
+/** 右侧数值：内容原样渲染，不做隐式数字滚动 */
 function Value({ className, children, ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <Text

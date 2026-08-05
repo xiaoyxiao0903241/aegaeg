@@ -10,11 +10,11 @@ import { bsc } from 'viem/chains'
 import { sleep } from '~/shared/lib/sleep'
 
 const RECEIPT_POLL_MS = 2_000
-/** Max wait for a broadcast tx to mine. */
+/** 广播交易等待出块的最长时间。 */
 const RECEIPT_TIMEOUT_MS = 60_000
-/** Public RPC never sees the hash — wallet-local failure / not broadcast. */
+/** 公共 RPC 一直看不到该 hash：钱包本地失败或交易未广播。 */
 const NOT_ON_CHAIN_FAIL_MS = 8_000
-/** Pending tx visible but no receipt — MetaMask can leave a local pending entry after failed send. */
+/** 交易可见但始终无收据：MetaMask 可能在发送失败后残留本地 pending 项。 */
 const PENDING_WITHOUT_RECEIPT_MS = 20_000
 
 async function readReceipt(
@@ -41,11 +41,10 @@ async function readTransaction(
 }
 
 /**
- * `failed` — the tx definitively will not land (on-chain revert); resubmitting is safe.
- * `unknown` — confirmation is inconclusive (not yet visible, pending without receipt,
- * or timed out); it may still confirm, so resubmitting risks double execution.
- * Slow wallet RPC must not be classified as `failed` — a missing hash for a few seconds
- * is not proof the tx was never broadcast.
+ * `failed` — 交易确定不会上链（链上 revert），重提安全。
+ * `unknown` — 确认不明确（尚未可见、无收据 pending 或超时）；
+ *   它仍可能最终确认，重提有双花风险。
+ * 钱包 RPC 慢不得归类为 `failed`：hash 暂缺几秒不能证明从未广播。
  */
 export type WalletTransactionWaitOutcome = 'failed' | 'unknown'
 
@@ -62,7 +61,14 @@ export class WalletTransactionWaitError extends Error {
 }
 
 /**
- * Waits for confirmation via the wallet's EIP-1193 provider only.
+ * 通过钱包的 EIP-1193 provider 等待交易确认
+ *
+ * 轮询收据；revert 抛 failed，未广播 / 久挂 pending / 超时抛 unknown。
+ * 只有拿到成功收据才返回，避免在结果不明确时让调用方重提。
+ *
+ * @param provider 钱包 EIP-1193 provider
+ * @param hash 已广播的交易 hash
+ * @returns 成功交易收据；revert 或超时抛 WalletTransactionWaitError
  */
 export async function waitForWalletTransactionConfirmation({
   provider,

@@ -79,7 +79,7 @@ const ZERO_FAQ: GenesisFaqTemplateValues = {
   airdropRatios: '0%',
 }
 
-/** FAQ interpolations — zeros when unloaded; callers must not animate FAQ digits. */
+/** FAQ 文案插值：未加载时全部回退为 0；调用方不得对 FAQ 数字做动画 */
 export function genesisFaqTemplateValues(
   phases: PresalePhaseOnChain[],
   airdropThresholdUsd: number,

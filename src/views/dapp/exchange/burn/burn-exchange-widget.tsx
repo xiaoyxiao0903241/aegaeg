@@ -1,3 +1,9 @@
+/**
+ * 销毁交互面板
+ *
+ * 卖出 AGX 换取贡献点，买入侧为只读展示；下方列出销毁率、
+ * 去向与提供方合约链接。未连接钱包时展示连接引导。
+ */
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'

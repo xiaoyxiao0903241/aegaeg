@@ -1,3 +1,9 @@
+/**
+ * 推荐奖详情页
+ *
+ * 顶部五张统计瓦片（总奖励、我的位置、直推数、贡献、下次发放），
+ * 下方为奖励记录表与直推成员表，底部为 FAQ。
+ */
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
@@ -48,8 +54,8 @@ export function RewardsReferralContent() {
     <Detail>
       <Section>
         <Section.Title>{referral.dataTitle}</Section.Title>
-        {/* Figma 4404:223 · elevated tiles · 3+2 */}
-        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
+        {/* 统计瓦片：上方三张 + 下方两张 */}
+        {/* jscpd:ignore-start — 统计瓦片页内拼装（禁再抽统一组件） */}
         <OverviewGrid columns={3}>
           {topTiles.map((item) => (
             <Tile key={item.key}>
@@ -94,7 +100,7 @@ export function RewardsReferralContent() {
 
       <Section>
         <Section.Title>{referral.recordsTitle}</Section.Title>
-        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Body
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
@@ -119,7 +125,7 @@ export function RewardsReferralContent() {
 
       <Section>
         <Section.Title>{referral.referralsTitle}</Section.Title>
-        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}

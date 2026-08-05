@@ -27,8 +27,14 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 /**
- * Stake 右栏：协议概览走 StakingPool/sAGX；仓位五卡与资产仓位同源链读；
- * 记录表走 OpenAPI `stake-flow/positions`（非假数 / 非 reward-summary 混桶）。
+ * 质押详情右栏
+ *
+ * 协议概览走 StakingPool / sAGX；
+ * 仓位五卡与资产页同源链读；
+ * 记录表走 OpenAPI `stake-flow/positions`。
+ *
+ * @returns 右栏概览、仓位、记录表的展示数据
+ * @see docs/backend-api/api.md #stake-flow/positions
  */
 export function useStakeDetailAsideView() {
   const { messages: t } = useI18n()

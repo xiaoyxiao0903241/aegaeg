@@ -8,6 +8,12 @@ import { LanguageMenu } from '~/shared/components/language-menu'
 import { Text } from '~/shared/components/text'
 import { getNotionLinks } from '~/shared/config/notion-links'
 
+/**
+ * 首页顶部导航
+ *
+ * 固定吸顶，含品牌标识、锚点导航、白皮书链接、「进入 App」按钮与语言切换。
+ * H5 下隐藏导航链接与白皮书按钮，仅保留品牌与关键操作。
+ */
 export function HomeHeader() {
   const { locale, messages, setLocale } = useI18n()
   const content = messages.home.nav
@@ -33,7 +39,7 @@ export function HomeHeader() {
             width="28"
             height="27"
           />
-          {/* Keep text-lg — brand token is 17px; header lock is 18px / H5 16px */}
+          {/* 保持 text-lg：品牌字号 token 为 17px，头部行高锁定 18px / H5 为 16px */}
           <Text
             as="span"
             variant="brand"

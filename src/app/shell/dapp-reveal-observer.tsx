@@ -1,5 +1,13 @@
 import { useEffect, useRef } from 'react'
 
+/**
+ * 滚动进入视口的元素显示监听器。
+ *
+ * 在容器内查找 `[data-reveal]` 元素，进入视口后打上 `data-visible`，
+ * 只触发一次并停止观察；容器 DOM 变化（新增子元素）时重新扫描。
+ *
+ * @param container 监听范围，为 null 时不工作
+ */
 export function DappRevealObserver({ container }: { container: HTMLElement | null }) {
   const observerRef = useRef<IntersectionObserver | null>(null)
   const observedRef = useRef(new WeakSet<Element>())

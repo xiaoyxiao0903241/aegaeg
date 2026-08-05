@@ -75,8 +75,10 @@ function TurbineExchangeSessionMounted({
 }
 
 /**
- * Lifts Trade/Flash/Burn/Turbine widget hooks once and passes state as props.
- * Mount / reads follow `viewsNeedingProvider`（离开子视图丢本地 quote/submit；money-path §7）。
+ * 把四个模式的会话 hook 各提升一次，再把状态作为 props 注入
+ *
+ * 挂载与读取跟随 viewsNeedingProvider：离开子视图即卸载对应
+ * 会话，丢弃本地报价与提交状态。
  */
 export function ExchangeSessionHosts({
   activeTab,

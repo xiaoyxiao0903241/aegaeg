@@ -8,6 +8,11 @@ import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * 内容面板顶部标题区。
+ *
+ * 左侧展示面板标题与副标题，右侧为折叠详情面板的开关按钮。
+ */
 export function DappPanelHeader({
   className,
   detailCollapsed,

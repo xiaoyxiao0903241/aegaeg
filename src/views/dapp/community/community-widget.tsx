@@ -11,9 +11,14 @@ import {
 } from '~/views/dapp/community/community-widget-primitives'
 import { useCommunityConnectedView } from '~/views/dapp/community/use-community-connected-view'
 
+/**
+ * 社区侧栏组件
+ *
+ * 绑定推荐关系是链上操作，需要已连接钱包；
+ * 成员表格与业绩数据仍留在正文中按登录会话态展示。
+ */
 export function CommunityWidget() {
   const { walletReady } = useDappShell()
-  // Bind is on-chain (walletReady). Member tables / performance stay session-gated in content.
   return walletReady ? <CommunityConnectedWidget /> : <CommunityDisconnectedWidget />
 }
 

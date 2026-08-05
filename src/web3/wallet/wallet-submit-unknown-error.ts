@@ -1,6 +1,8 @@
 /**
- * Pre-hash submit uncertainty (e.g. eth_sendTransaction timed out).
- * May still have been broadcast — same double-submit risk as receipt `unknown`.
+ * 提交结果未知（如 eth_sendTransaction 超时）
+ *
+ * 交易可能已广播——与收据状态 unknown 有同样的双花风险，
+ * 重提前必须等待确认。
  */
 export class WalletSubmitUnknownError extends Error {
   readonly outcome = 'unknown' as const
@@ -11,6 +13,7 @@ export class WalletSubmitUnknownError extends Error {
   }
 }
 
+/** 判断错误是否为「结果未知」型提交错误（`outcome === 'unknown'`）。 */
 export function isUnknownSubmitOutcome(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false
   if ('outcome' in error && (error as { outcome?: unknown }).outcome === 'unknown') {

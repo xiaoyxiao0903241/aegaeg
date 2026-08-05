@@ -3,8 +3,10 @@ import type { ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 右栏详情壳 — PC padding；H5 由 shell window 出边距。
- * 节距由 Detail gap 承担（PC 34 / H5 24）。
+ * 右栏详情容器
+ *
+ * 桌面端自带左右内边距；移动端由外层窗口给出边距。
+ * 区块间距由容器统一承担。
  *
  * @see docs/foundation/component-usage.md
  */

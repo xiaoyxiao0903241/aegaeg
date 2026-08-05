@@ -1,6 +1,6 @@
 export type ExchangeSubview = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
 
-/** Pure mount matrix — leaving a subview unmounts its provider (quote/submit state discarded). */
+/** 纯挂载矩阵：离开子视图即卸载其会话提供者，丢弃本地报价与提交状态。 */
 export function viewsNeedingProvider(
   view: ExchangeSubview,
   motion: boolean,

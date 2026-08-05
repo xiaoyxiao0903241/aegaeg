@@ -15,9 +15,10 @@ import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 
 /**
- * Owns Genesis purchase form chrome (share draft, focus, submit/present).
- * Parent remounts via `key={address}` when wallet changes — clears draft text
- * without an effect that mirrors genesis.shares.
+ * 创世购买表单状态
+ *
+ * 管理份额草稿、输入框焦点与提交/错误呈现；
+ * 钱包切换时由父级以 key={address} 重建以清空草稿。
  */
 export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
@@ -26,7 +27,7 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
 
   const [sharesText, setSharesText] = useState('')
 
-  // Derive display when maxShares drops under the typed draft (no setState-in-effect).
+  // 当 maxShares 降到已输入草稿以下时按上限派生展示值（避免在副作用里 setState）
   const sharesTextDisplay =
     sharesText === ''
       ? ''

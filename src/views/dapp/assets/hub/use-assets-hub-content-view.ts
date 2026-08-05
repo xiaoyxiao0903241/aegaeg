@@ -7,6 +7,10 @@ import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hu
 
 const ZERO_APPROX = formatApproxUsd(0, null)
 
+/**
+ * 资产 Hub 详情页状态：汇总总览文案与指标数据，
+ * 并管理缓冲币种（AGX / gAGX）切换。
+ */
 export function useAssetsHubContentView() {
   const { messages: t } = useI18n()
   const overview = t.assets.hub.overview

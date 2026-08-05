@@ -2,6 +2,14 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import { formatPresaleRank } from '~/shared/api/format-display'
 
+/**
+ * 股东等级标题文案
+ *
+ * 依据股东等级（displayRank）生成标题：无等级 → 未定级标题；
+ * 有等级 → 用 A# 档位文本替换标题模板。加载中返回空串由调用方自行占位。
+ *
+ * @param t 文案字典（需含 rewards.shareholderNoRankTitle / shareholderTitleForRank）
+ */
 export function useShareholderRankLabels(t: {
   rewards: {
     shareholderNoRankTitle: string

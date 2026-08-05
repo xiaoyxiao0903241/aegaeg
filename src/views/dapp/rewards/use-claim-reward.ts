@@ -26,13 +26,24 @@ type RewardClaimExecutor = (args: {
   onUnauthorized: () => void
 }) => Promise<ClaimRewardExecuteResult>
 
-/** UI-facing claim result — `confirm_failed` is success-path (not thrown). */
+/**
+ * 面向界面的领取结果
+ *
+ * confirm_failed 属于成功路径（链上已确认），不作为异常抛出。
+ */
 export type ClaimRewardUiResult = {
   status: 'success' | 'confirm_failed'
   confirmResult: ClaimConfirmResult | null
   txHash?: string
 }
 
+/**
+ * 领取通用封装：串起登录会话、写就绪检查与链上提交
+ *
+ * 提交失败时返回结果而非抛出，由调用方决定提示方式。
+ *
+ * @param execute 具体领取执行函数（签发 + 上链）
+ */
 export function useClaimReward(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
@@ -51,7 +62,7 @@ export function useClaimReward(execute: RewardClaimExecutor) {
         onUnauthorized: invalidateSession,
       })
       const outcome = claimRewardOutcome(result)
-      // confirm_failed: on-chain succeeded — do not throw; views toast.warning vs success.
+      // confirm_failed 表示链上已成功，不抛错；由视图 toast 区分警告与成功
       if (outcome.shouldInvalidate) {
         invalidateAfterTeamClaim()
       }
@@ -70,6 +81,9 @@ export function useClaimReward(execute: RewardClaimExecutor) {
   }
 }
 
+/** 团队奖励（预售等级奖励）领取
+ * @see docs/backend-api/api.md #claim/team-reward
+ */
 export function useTeamRewardClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimTeamReward>[0]) => claimTeamReward(args),
@@ -78,6 +92,9 @@ export function useTeamRewardClaim() {
   return useClaimReward(execute)
 }
 
+/** 发展基金（市场津贴）领取
+ * @see docs/backend-api/api.md #claim/market-fund
+ */
 export function useMarketFundClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimMarketFundReward>[0]) => claimMarketFundReward(args),
@@ -86,6 +103,7 @@ export function useMarketFundClaim() {
   return useClaimReward(execute)
 }
 
+/** 参与奖激励领取 */
 export function useIncentiveClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimIncentiveReward>[0]) => claimIncentiveReward(args),
@@ -94,6 +112,9 @@ export function useIncentiveClaim() {
   return useClaimReward(execute)
 }
 
+/** 社区基金领取
+ * @see docs/backend-api/api.md #claim/community-fund
+ */
 export function useCommunityFundClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimCommunityFund>[0]) => claimCommunityFund(args),

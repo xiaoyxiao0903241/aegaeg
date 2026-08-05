@@ -9,6 +9,14 @@ import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-s
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
+/**
+ * 计算器表单状态
+ *
+ * 维护产品 / 周期 / 金额 / 价格 / 天数，
+ * 任一变化即重新计算并写入结果仓库。
+ *
+ * @returns 表单状态与各变更回调
+ */
 export function useCalcView() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
@@ -24,14 +32,14 @@ export function useCalcView() {
 
   const epochRebasePct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
 
-  // Seed editable price once from live spot when available.
+  // 价格字段仅在首次拿到实时行情时写入一次，之后不覆盖用户输入。
   useEffect(() => {
     if (priceSeeded || spotUsd == null) return
     setPrice(formatGroupedNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
     setPriceSeeded(true)
   }, [priceSeeded, spotUsd])
 
-  // Live sync: every left-rail change updates right-rail result (Figma 测算结果).
+  // 实时联动：左侧任一输入变化即重算右侧结果。
   useEffect(() => {
     setResult(
       buildCalcEstimate({

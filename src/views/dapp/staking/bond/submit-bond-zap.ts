@@ -20,7 +20,19 @@ export type BondKind = 'lp' | 'burn'
 
 export { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * 提交债券买入（zap）
+ *
+ * 先读链上预检（余额 / 授权 / 仓库授权 / 老账户迁移状态）并判定阻塞原因，
+ * 授权不足时内联 approve 后继续写；写入完成后失效质押相关缓存。
+ *
+ * @param session 已就绪的写会话
+ * @param kind 债券类型：lp 流动性质押债券 / burn 燃烧债券
+ * @param period 锁定期（180 / 360 / 540 天）
+ * @param amount 买入数量（USD1 最小单位）
+ * @see docs/onchain-manual/contracts/bonddepository.md
+ * @see docs/onchain-manual/contracts/burnbonddepository.md
+ */
 export async function submitBondZap(args: {
   session: WriteSession
   kind: BondKind

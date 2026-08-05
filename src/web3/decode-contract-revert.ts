@@ -31,14 +31,18 @@ export interface DecodedContractRevert {
   args?: readonly unknown[]
 }
 
-/** Deduplicate error ABI lines that share the same signature text. */
+/** 去掉签名文本相同的重复错误 ABI 行。 */
 function uniqueErrorAbiLines(lines: readonly string[]): string[] {
   return [...new Set(lines)]
 }
 
 /**
- * Union ABI for decoding revert data when the calling contract is unknown.
- * Sourced from handbook contract error tables (write-path + flash/burn/presale).
+ * 合并全部合约的自定义错误 ABI
+ *
+ * 当调用方合约未知时，用这份联合 ABI 解码 revert 数据。
+ * 错误表取自手册的合约错误表（写路径 + 闪电 / 销毁 / 预售）。
+ *
+ * @see 手册 §19 常见错误与前端提示
  */
 export const ALL_CONTRACT_ERRORS_ABI = parseAbi(
   uniqueErrorAbiLines([
@@ -80,7 +84,7 @@ function isRevertHex(value: string): value is `0x${string}` {
   return value.startsWith('0x') && value.length >= 10
 }
 
-/** Walk wallet / viem error trees and find the first revert payload hex. */
+/** 在钱包 / viem 错误树中查找第一段 revert 载荷十六进制；找不到返回 null。 */
 export function extractRevertData(error: unknown): `0x${string}` | null {
   if (error instanceof BaseError) {
     const reverted = error.walk((entry) => entry instanceof ContractFunctionRevertedError)
@@ -159,7 +163,7 @@ export function isContractRevert(error: unknown): boolean {
   return extractRevertData(error) !== null
 }
 
-/** Normalize a revert into ContractRevertError so UI parsers see a stable error name. */
+/** 把 revert 归一化为 ContractRevertError，让 UI 解析看到稳定的错误名。 */
 export function normalizeContractRevertError(error: unknown, abi?: Abi): ContractRevertError {
   const revertData = extractRevertData(error) ?? '0x'
   const decoded =

@@ -16,15 +16,15 @@ export const queryClient = new QueryClient({
 })
 
 /**
- * Maps Spec freshness tiers (S/U/Q/L):
- * - S (quasi-static) → `api` / `static` (Infinity for immutable pool metadata)
- * - U (user balances/positions) → `balances` / `presale` 30s
- * - Q (quotes) → `quote` 10s
- * - L (submit live) → staleTime 0 / direct read — not listed here; never via useChainQuery
+ * 按新鲜度档位（S/U/Q/L）映射 staleTime：
+ * - S（近乎静态）→ `api` / `static`（不可变池元数据为 Infinity）
+ * - U（用户余额/持仓）→ `balances` / `presale` 30s
+ * - Q（报价）→ `quote` 10s
+ * - L（提交时实时校验）→ staleTime 0 / 直接读取——不在此列出，绝不通过 useChainQuery
  */
 export const QUERY_STALE_TIME = {
   api: FIVE_MINUTES,
-  /** Immutable on-chain metadata (pair token0/token1, etc.). */
+  /** 链上不可变元数据（pair token0/token1 等）。 */
   static: Number.POSITIVE_INFINITY,
   presale: 30_000,
   balances: 30_000,

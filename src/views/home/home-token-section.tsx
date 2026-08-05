@@ -95,6 +95,12 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
   )
 }
 
+/**
+ * 代币展示区块
+ *
+ * 四张飞轮卡片（AGX / USD1 / X / gAGX），装饰与图标来自静态布局表，
+ * 悬停时显示光泽扫过与描边高亮。
+ */
 export function HomeTokenSection() {
   const { messages } = useI18n()
   const content = messages.home.sections.token

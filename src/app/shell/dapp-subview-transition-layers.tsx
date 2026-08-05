@@ -3,7 +3,12 @@ import type { ReactNode } from 'react'
 import { DappSubviewDisplayViewContext } from '~/app/shell/dapp-subview-display-context'
 import type { DappViewDirection } from '~/stores/create-dapp-subview-store'
 
-/** Shared hub↔subview enter/exit layers — children read view from display context. */
+/**
+ * 子视图切换时的退场 / 入场两层。
+ *
+ * 各层通过 display context 注入自己的视图名，子组件据此渲染对应内容；
+ * 两层叠放后由 CSS 动画驱动交叉淡入淡出。
+ */
 export function DappSubviewTransitionLayers({
   direction,
   incoming,

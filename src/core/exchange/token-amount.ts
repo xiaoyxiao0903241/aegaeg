@@ -7,7 +7,7 @@ function formatIntegerGrouping(digits: string): string {
   return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-/** Strip trailing fraction zeros on an ungrouped amount string (keep mid-edit trailing `.`). */
+/** 去除未分组金额字符串尾部的零（保留编辑中残留的尾部小数点）。 */
 export function stripTrailingAmountZeros(value: string): string {
   const raw = stripTokenAmountGrouping(value)
   if (!raw || raw.endsWith('.')) return raw
@@ -18,6 +18,12 @@ export function stripTrailingAmountZeros(value: string): string {
   return frac ? `${whole}.${frac}` : whole
 }
 
+/**
+ * 将金额输入草稿规范为分组展示：整数千分位逗号，保留编辑中的尾部小数点。
+ *
+ * @param value 输入草稿（可能含逗号）
+ * @returns 规范化的展示字符串
+ */
 export function formatTokenAmountInputDisplay(value: string): string {
   const raw = stripTokenAmountGrouping(value)
   if (!raw) return ''
@@ -45,6 +51,15 @@ export function formatTokenAmountInputDisplay(value: string): string {
   return `${groupedWhole}.${fractionPart}`
 }
 
+/**
+ * 解析金额字符串为最小单位数值（wei）。
+ *
+ * 仅接受数字与单个小数点；小数位超出精度部分截断。
+ *
+ * @param value 金额字符串（可含逗号）
+ * @param decimals 代币精度
+ * @returns 最小单位数值；非法输入返回 0n
+ */
 export function parseTokenAmount(value: string, decimals: number): bigint {
   const trimmed = stripTokenAmountGrouping(value.trim())
   if (!trimmed) return 0n
@@ -65,11 +80,11 @@ export function parseTokenAmount(value: string, decimals: number): bigint {
 }
 
 export type FormatTokenAmountOptions = {
-  /** Fraction digits to keep (default 4 when omitted). */
+  /** 保留的小数位（缺省 4）。 */
   digits?: number
   /**
-   * `true` (default): strip trailing zeros (`12.3`).
-   * `false`: pad to `digits` (`12.30`).
+   * `true`（默认）：去掉尾部零（`12.3`）。
+   * `false`：按 `digits` 补零（`12.30`）。
    */
   trimZeros?: boolean
 }
@@ -87,8 +102,14 @@ function tokenAmountOptions(
 }
 
 /**
- * On-chain amount → grouped human string.
- * Third arg: max fraction digits (trim) or `{ digits, trimZeros }`.
+ * 链上最小单位数量 → 千分位分组的人类可读字符串。
+ *
+ * 第三个参数为最大小数位（去尾零）或 `{ digits, trimZeros }`。
+ *
+ * @param amount 最小单位数量
+ * @param decimals 代币精度
+ * @param maxFractionDigitsOrOptions 最大小数位或配置对象；缺省 4
+ * @returns 分组后的金额字符串
  */
 export function formatTokenAmount(
   amount: bigint,
@@ -121,8 +142,14 @@ export function formatTokenAmount(
 }
 
 /**
- * Amount-input draft from wei — ungrouped, trailing zeros stripped.
- * Fraction length is `min(decimals, maxFractionDigits)` (callers pass the cap they want).
+ * 金额输入草稿（wei → 字符串）：不分组、去掉尾部零。
+ *
+ * 小数位取 `min(decimals, maxFractionDigits)`（调用方传想要的上限）。
+ *
+ * @param amount 最小单位数量
+ * @param decimals 代币精度
+ * @param maxFractionDigits 最大小数位，缺省为 decimals
+ * @returns 输入草稿字符串
  */
 export function formatTokenAmountDraft(
   amount: bigint,
@@ -135,26 +162,50 @@ export function formatTokenAmountDraft(
   )
 }
 
-/** Parse a token amount to a plain number without grouping separators.
- *  Only use when downstream code needs a number (e.g. arithmetic / comparisons).
- *  Prefer `formatTokenAmount` for display.
+/**
+ * 最小单位数量 → 不带分组符的普通数字。
+ *
+ * 仅当下游需要数字运算/比较时使用；展示请优先用 formatTokenAmount。
+ *
+ * @param amount 最小单位数量
+ * @param decimals 代币精度
+ * @returns 换算后的普通数字
  */
 export function formatTokenAmountToNumber(amount: bigint, decimals: number): number {
   return Number(amount) / 10 ** decimals
 }
 
-/** Highest accepted slippage (%): keeps bps strictly below the 10_000 hard limit. */
+/** 可接受的最高滑点（%）：保证 BPS 严格低于 10_000 硬上限。 */
 export const MAX_SLIPPAGE_PERCENT = 99
 
+/**
+ * 将滑点百分比收敛到 [0, MAX_SLIPPAGE_PERCENT]。
+ *
+ * @param percent 滑点百分比
+ * @returns 收敛后的百分比
+ */
 export function clampSlippagePercent(percent: number): number {
   if (!Number.isFinite(percent) || percent < 0) return 0
   return Math.min(percent, MAX_SLIPPAGE_PERCENT)
 }
 
+/**
+ * 滑点百分比 → BPS（×100）。
+ *
+ * @param percent 滑点百分比
+ * @returns BPS 值
+ */
 export function slippagePercentToBps(percent: number): number {
   return Math.round(percent * 100)
 }
 
+/**
+ * 清洗金额输入：仅保留数字与单个小数点，并限制小数位。
+ *
+ * @param value 原始输入
+ * @param maxFractionDigits 允许的最大小数位
+ * @returns 清洗后的字符串；空输入返回 ''
+ */
 export function sanitizeTokenAmountInput(value: string, maxFractionDigits: number): string {
   if (!value) {
     return ''
@@ -204,6 +255,15 @@ export function sanitizeTokenAmountInput(value: string, maxFractionDigits: numbe
   return `${normalizedWhole}.${fractionPart}`
 }
 
+/**
+ * 将金额输入限制在最大数量内。
+ *
+ * @param value 当前输入
+ * @param maxAmount 允许的最大数量（最小单位）
+ * @param decimals 代币精度
+ * @param maxFractionDigits 最大小数位
+ * @returns 受限后的输入字符串；超限时回退为最大数量的草稿
+ */
 export function capTokenAmountInput(
   value: string,
   maxAmount: bigint,
@@ -211,7 +271,7 @@ export function capTokenAmountInput(
   maxFractionDigits = 6,
 ): string {
   const fractionLimit = Math.min(decimals, maxFractionDigits)
-  // Do not strip trailing zeros here — that breaks typing `1.10`.
+  // 此处不去尾零——否则输入 `1.10` 会被破坏
   const sanitized = sanitizeTokenAmountInput(value, fractionLimit)
 
   if (!sanitized) {
@@ -231,8 +291,17 @@ export function capTokenAmountInput(
 }
 
 /**
- * Balance re-cap policy for controlled sell amount.
- * Do not wipe draft while session not ready or balances still loading.
+ * 受控卖出金额的余额重新封顶策略。
+ *
+ * 会话未就绪或余额仍在加载时不改写草稿，避免误清空用户输入。
+ *
+ * @param amount 当前金额草稿
+ * @param sessionReady 会话是否就绪
+ * @param balancesLoaded 余额是否已加载
+ * @param balance 可用的最大数量
+ * @param decimals 代币精度
+ * @param maxFractionDigits 最大小数位
+ * @returns 封顶后的金额草稿
  */
 export function cappedTokenAmountRaw({
   amount,

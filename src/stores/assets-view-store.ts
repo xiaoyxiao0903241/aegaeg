@@ -8,6 +8,6 @@ const assetsView = createDappSubviewStore<AssetsView>({
   hashForView: assetsHashForView,
 })
 
-/** Pure view/motion state — panel scroll lives in the shell (DOM side effect). */
+/** 纯视图与切换动画状态；面板滚动复位属 DOM 副作用，由外壳页面处理。 */
 export const useAssetsViewStore = assetsView.useStore
 export const useAssetsViewMotion = assetsView.useMotion

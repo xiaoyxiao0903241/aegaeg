@@ -6,7 +6,7 @@ import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-er
 const USER_REJECTED_PATTERN =
   /user rejected|action_rejected|request rejected|user denied|rejected the request|denied transaction signature/i
 
-/** Wallet send/simulation failures — must surface in the app even when code is 4001. */
+/** 钱包发送 / 模拟失败：即使错误码是 4001 也必须展示给用户。 */
 const WALLET_SEND_FAILURE_PATTERN =
   /transaction failed|interaction failed|likely to fail|execution reverted|cannot estimate gas|intrinsic gas too low|insufficient funds|not broadcast|reverted on-chain|wallet may have failed/i
 
@@ -15,13 +15,20 @@ export interface WalletTransactionErrorMessages {
   gasEstimateFailed: string
   insufficientFunds: string
   transactionFailed: string
-  /** Pending tx timed out without receipt — do not resubmit. */
+  /** pending 交易超时无收据——确认前不得重提。 */
   transactionUnknown?: string
 }
 
 /**
- * Instance-typed wallet outcomes only (unknown receipt / submit timeout / write sentinels).
- * Gas / insufficient-funds string rules live in `error-messages.ts` revert table — do not duplicate.
+ * 仅处理「实例型」钱包结果
+ *
+ * 覆盖未知收据 / 提交超时 / 写阻断 sentinel；
+ * gas 与余额不足等字符串规则在 `error-messages.ts` 的 revert 表，
+ * 不在本函数重复。
+ *
+ * @param error 待判断的错误
+ * @param messages 钱包交易文案包
+ * @returns 对应文案；无法归为实例型结果时返回 null
  */
 export function walletTransactionError(
   error: unknown,
@@ -60,7 +67,7 @@ export function isUserRejectedWalletError(error: unknown): boolean {
   if (code === 4001 || code === '4001' || code === 'ACTION_REJECTED') {
     if (!text.trim()) return true
     if (USER_REJECTED_PATTERN.test(text)) return true
-    // Some wallets reuse 4001 for failed sends; only treat explicit cancel copy as rejection.
+    // 部分钱包把发送失败也复用作 4001；仅明确的取消文案才算拒绝
     return false
   }
 
@@ -73,8 +80,14 @@ export function isUserRejectedWalletError(error: unknown): boolean {
 }
 
 /**
- * Last-resort wallet toast copy. Never returns raw RPC / backend English —
- * callers must pass an i18n fallback (e.g. `errors.chain.fallback`).
+ * 兜底的钱包 toast 文案
+ *
+ * 绝不返回原始 RPC / 后端英文——调用方必须传入 i18n 兜底文案
+ * （如 `errors.chain.fallback`）。
+ *
+ * @param error 待处理错误
+ * @param fallback 兜底文案
+ * @returns 文案；用户拒绝或错误为空时返回 null
  */
 export function toWalletUserFacingMessage(error: unknown, fallback: string): string | null {
   if (isUserRejectedWalletError(error)) return null

@@ -74,7 +74,7 @@ function formatSignedAllowance(raw: string): {
   return { text: `−${abs}`, positive: false, negative: true }
 }
 
-/** Grant 发放表：类型 pill · 津贴数量 +/- 色（稿 4411:238） */
+/** 发展津贴发放表：类型标签 + 带正负色的津贴数量 */
 export function mapMarketAllowancePaidLogToCells(item: MarketAllowancePaidLogItem): ReactNode[] {
   const base = mapMarketAllowancePaidLogToRow(item)
   const op = item.operation_type

@@ -41,7 +41,14 @@ type UseGenesisPurchaseActionsArgs = {
   }
 }
 
-/** Approve → re-check → purchase orchestration for Genesis. Envelope in `useChainMutation`. */
+/**
+ * 创世购买编排：授权 → 重读门闸 → 购买
+ *
+ * 前置条件不满足时抛错中断，不进入写操作；
+ * 推荐未绑定错误用带操作按钮的提示呈现。
+ *
+ * @see docs/onchain-manual/contracts/presale.md
+ */
 export function useGenesisPurchaseActions({
   wallet: { address },
   phase: { activePhase, isPaused, isPausedUnknown, isBoundQueryData },
@@ -58,9 +65,9 @@ export function useGenesisPurchaseActions({
     path: WRITE_PATH.GENESIS,
     mutation: async (_vars, session): Promise<true> => {
       const { wallet, account, address: sessionAddress } = session
-      // Contract requires a bound referrer before purchase; block early with a
-      // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
-      // Fail-closed while bind status is still loading (`undefined`).
+      // 合约要求购买前已绑定推荐人；提前拦截并给出友好提示，
+      // 避免交易在链上回滚（PreSaleUserNotBound）。
+      // 绑定态仍在加载（undefined）时按未绑定处理。
       if (isBoundQueryData !== true) {
         throw GENESIS_PURCHASE_ERROR.NOT_BOUND
       }
@@ -85,7 +92,7 @@ export function useGenesisPurchaseActions({
         }
       }
 
-      // live：绑定/暂停 + 阶段与用户剩余（禁闭包快照）。
+      // 实时重读：绑定/暂停 + 阶段与用户剩余，避免沿用闭包快照
       const blockReason = await fetchLiveGenesisPostApprove({
         address: sessionAddress,
         purchaseAmount,
@@ -148,7 +155,7 @@ export function useGenesisPurchaseActions({
       return true
     },
     onError: (error) => {
-      // GX-R1: referral check — action toast replaces default (suppress double toast).
+      // 推荐未绑定错误用带操作按钮的提示替代默认提示，避免双重 toast
       if (readErrorText(error) !== GENESIS_PURCHASE_ERROR.NOT_BOUND) return
       toast.error(t.genesis.errors.notBound, {
         id: 'genesis-not-bound',

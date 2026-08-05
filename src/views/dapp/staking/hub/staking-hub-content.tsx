@@ -14,7 +14,6 @@ import { Tooltip } from '~/shared/components/tooltip'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
 import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
 
-/** Figma hub right column — section titles use Text `section` token. */
 type MetricTone = 'default' | 'accent'
 type MetricIcon = 'agx' | 'usd1' | null
 type HubMetricId =
@@ -55,7 +54,13 @@ function isHubMetricId(id: string): id is HubMetricId {
   return id in METRIC_CHROME
 }
 
-/** Hub right rail: overview grid + period table + chart chrome + FAQ. */
+/**
+ * 质押 Hub 详情页（右栏）
+ *
+ * 依次展示协议概览指标卡、周期收益率表、TVL / 市值趋势图与 FAQ。
+ * 周期表与图表支持 Tab / 时间范围切换；
+ * 未连接钱包或数据未就绪时部分数值以 0 或占位展示。
+ */
 export function StakingHubContent() {
   const {
     t,
@@ -95,7 +100,6 @@ export function StakingHubContent() {
     <Detail>
       <Section>
         <Section.Title>{overview.title}</Section.Title>
-        {/* PC 三列；H5 每行两卡；同行等高靠 OverviewGrid stretch */}
         <OverviewGrid columns={3}>
           {overview.metrics.map((metric) => {
             if (!isHubMetricId(metric.id)) return null
@@ -129,7 +133,7 @@ export function StakingHubContent() {
 
       <Section>
         <Section.Title>{table.title}</Section.Title>
-        {/* Figma htab `4371:233` → 通用 DappPillTabs（≠ Segment） */}
+        {/* 周期筛选：复用通用 DappPillTabs，不用 Segment */}
         <DappPillTabs
           activeTone="coral"
           ariaLabel={table.segmentAria}
@@ -160,7 +164,7 @@ export function StakingHubContent() {
 
       <Section>
         <Section.Title>{chart.title}</Section.Title>
-        {/* Figma metric-tabs `4585:44` 轨高 32 — `h-8` 标准刻度；size sm 对齐 pad/thumb */}
+        {/* 指标切换：小尺寸 Segment，高度用标准刻度 */}
         <Segment
           aria-label={chart.metricAria}
           className="mb-3 h-8 w-fit"

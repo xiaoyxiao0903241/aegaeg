@@ -27,6 +27,10 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
+/**
+ * 领奖弹窗的状态编排：释放比例、释放 / 复投周期选择、
+ * 贡献值与计划可用性校验，以及提交成功后的关闭处理。
+ */
 export function useAssetsClaimModalView(args: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -38,7 +42,7 @@ export function useAssetsClaimModalView(args: {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const [releasePct, setReleasePctState] = useState(50)
-  // 手册 rewardqueue 默认 plan3=60 天最低费率；稿示意同选 60
+  // RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60
   const [releaseDays, setReleaseDaysState] = useState<ReleaseDurationDays>(60)
   const [restakeDays, setRestakeDaysState] = useState<RestakeDurationDays>(540)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
@@ -92,7 +96,7 @@ export function useAssetsClaimModalView(args: {
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
   const plansOk = releaseIndex != null && restakeIndex != null
-  // 链上门闸仍在 mutate 内 fail-closed；CTA 要求贡献与 plan 就绪
+  // 链上校验仍在写交易内兜底；CTA 需贡献值充足且释放 / 复投计划就绪
   const canConfirm = walletReady && !claim.isLocked && !claim.isPending && contributionOk && plansOk
 
   const releaseAmount = (target.amount * BigInt(releasePct)) / 100n

@@ -45,9 +45,7 @@ export type AssetsXminePositionCardProps = {
   onRequestUnstake: () => void
 }
 
-/**
- * 持仓卡叶子：1Hz warmup 钟只活在此组件，不拖父级 widget/header/toolbar。
- */
+/** X 挖矿持仓卡：warmup 倒计时只在此组件内运行，避免拖累外层页面 */
 export function AssetsXminePositionCard({
   periodPill,
   remainingCaption,
@@ -117,7 +115,7 @@ export function AssetsXminePositionCard({
           <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
-          {/* Figma `4525:797` chip 锁 12 · 与仓位共用 assetsPositionLock */}
+          {/* 锁定徽标：与仓位卡共用锁图标 */}
           <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
             <Icon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
             <Text as="span" className="leading-none text-primary" variant="support">
@@ -139,7 +137,7 @@ export function AssetsXminePositionCard({
           ) : null}
         </div>
       </div>
-      {/* Figma `4525:812` vr：左 x16（禁 justify-end） */}
+      {/* 凭证行：左对齐，不用右对齐 */}
       <AssetsPositionVoucherLink address={voucherAddress} label={voucherCaption} />
       <div className="grid grid-cols-2 gap-3">
         {warmupReady ? (

@@ -1,5 +1,10 @@
 import type { GenesisPromoSnapshot, SeasonOption } from '~/core/presale/genesis-promo-types'
 
+/**
+ * 预售首页横幅的展示数据：季节序号、当前主推折扣、加载态与季节选项。
+ *
+ * @see 手册 §6 预售 PreSale
+ */
 export type GenesisPromoChrome = {
   activeSeasonNumber: number
   discountLabel: string
@@ -48,7 +53,14 @@ function promoSnapshotEqual(
   )
 }
 
-/** chrome 语义相等：引用可不同，字段值相同则不应触发 zustand 订阅方。 */
+/**
+ * 横幅数据是否语义相等：引用可不同，字段值相同则不应触发状态仓库订阅方刷新。
+ *
+ * @param a 横幅数据
+ * @param b 横幅数据
+ * @returns 字段值全部相等返回 true
+ * @see 手册 §6 预售 PreSale
+ */
 export function genesisPromoChromeEqual(a: GenesisPromoChrome, b: GenesisPromoChrome): boolean {
   return (
     a.activeSeasonNumber === b.activeSeasonNumber &&

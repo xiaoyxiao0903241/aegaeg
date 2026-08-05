@@ -10,10 +10,10 @@ import {
 
 export { ApiError }
 
-/** Abort hung requests so callers (and react-query retries) never wait forever. */
+/** 中止挂起的请求，让调用方（以及 react-query 重试）不会无限等待。 */
 const REQUEST_TIMEOUT_MS = 20_000
 
-/** Wallet in-app WebViews often ship Chrome < 124 — no AbortSignal.timeout(). */
+/** 钱包内置 WebView 常带 Chrome < 124——没有 AbortSignal.timeout()。 */
 function createRequestAbortSignal(timeoutMs: number): AbortSignal {
   if (typeof AbortSignal.timeout === 'function') {
     return AbortSignal.timeout(timeoutMs)
@@ -27,8 +27,8 @@ function createRequestAbortSignal(timeoutMs: number): AbortSignal {
 
 export interface ApiRequestOptions {
   /**
-   * Defaults to POST — matches DApp business API SSOT (see endpoints.ts).
-   * Pass GET only for rare non-envelope probes; never omit and expect GET.
+   * 默认 POST——与 DApp 业务 API 的约定一致（见 endpoints.ts）。
+   * 仅在极少数非信封探测时传 GET；不要省略并默认它是 GET。
    */
   method?: 'GET' | 'POST'
   body?: unknown
@@ -88,7 +88,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
   try {
     payload = (await response.json()) as ApiEnvelope<T>
   } catch {
-    // Gateway HTML / empty body — map HTTP status so 401/403 still hit auth + ban hooks.
+    // 网关 HTML / 空响应体——按 HTTP 状态映射，保证 401/403 仍触发认证与封禁钩子
     rethrowAfterIntercept(apiErrorFromHttpStatus(response.status))
   }
 

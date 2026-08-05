@@ -2,8 +2,9 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * DApp 纯文案空态 — 居中 · muted 40% · 偏大 pad。
- * 文案由 call site（i18n）传入；禁插画 / CTA / 业务文案进本件。
+ * DApp 纯文案空态
+ *
+ * 文案由调用方传入；不放插画 / CTA / 业务文案。
  * @see docs/foundation/component-usage.md
  */
 export function Empty({

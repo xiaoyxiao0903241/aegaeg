@@ -33,7 +33,17 @@ function mapMixedReason(
   return reason
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * 幸运奖混合领取提交（仅领域写入）
+ *
+ * 先读链上快照确定领取意图，再二次读取链上数据做实时校验，
+ * 任一软性拦截条件成立即抛出对应错误码（错误提示由 useChainMutation 统一包装）。
+ *
+ * @param args.session 写会话（钱包 + 地址 + 读客户端）
+ * @param args.releaseDays 释放时长档位
+ * @param args.restakeDays 复投时长档位
+ * @param args.restakePct 复投占比
+ */
 export async function submitLuckyMixedClaim(args: {
   session: WriteSession
   releaseDays: ReleaseDurationDays
@@ -45,7 +55,7 @@ export async function submitLuckyMixedClaim(args: {
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const snapshot = await readLuckyClaimSnapshot(user, readClient)
-  // Intent from first read; live check must compare against a second chain read (never self-certify).
+  // 首次读取确定领取意图；实时校验必须二次读链，不能只凭第一次读到的数据自证
   const amount = snapshot.rewardAmount
   const plans = await readClaimPlans(readClient)
   const { releaseIndex: releasePlanIndex, restakeIndex: restakePlanIndex } = matchClaimPlanIndices(
@@ -102,7 +112,21 @@ export async function submitLuckyMixedClaim(args: {
   invalidateAfterTeamClaim()
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * 共建奖混合领取提交（仅领域写入）
+ *
+ * 先向后端申请领取签名，校验签名类型与过期时间，
+ * 再按释放 / 复投计划做预检查与二次实时校验，全部通过后上链。
+ *
+ * @param args.session 写会话
+ * @param args.token 登录会话令牌
+ * @param args.onUnauthorized 令牌失效回调
+ * @param args.rewardType 共建奖励类型（等级 / 超越）
+ * @param args.releaseDays 释放时长档位
+ * @param args.restakeDays 复投时长档位
+ * @param args.restakePct 复投占比
+ * @see docs/backend-api/api.md #claim/dao-reward
+ */
 export async function submitDaoMixedClaim(args: {
   session: WriteSession
   token: string
@@ -154,7 +178,7 @@ export async function submitDaoMixedClaim(args: {
   const preErr = gateError(mapMixedReason(preBlock))
   if (preErr) throw preErr
 
-  // Live: re-read DaoPool AGX solvency + contribution + plans (never signature-self-certify).
+  // 实时校验：重读 DaoPool 池余额、贡献快照与释放计划，签名不能作为唯一依据
   const livePlans = await readClaimPlans(readClient)
   const { releaseIndex: liveRelease, restakeIndex: liveRestake } = matchClaimPlanIndices(
     livePlans,

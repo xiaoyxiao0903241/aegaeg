@@ -1,6 +1,6 @@
 /**
- * 模块级 unknown 闩锁 + 按 WRITE_PATH 的在飞互斥（禁双提交）。
- * 闩锁跨 React 卸载仍在；仅 owner 配对成功清除或显式 clearLock / 刷新可解。
+ * 模块级 unknown 结果锁 + 按 WRITE_PATH 的在飞互斥（禁双提交）。
+ * 锁跨 React 卸载仍有效；仅 owner 配对成功清除，或显式 clearLock / 刷新可解。
  */
 const latchedOwners = new Map<string, symbol>()
 const inFlightPaths = new Set<string>()
@@ -11,7 +11,7 @@ function notifyWritePathBusy(): void {
 }
 
 export const WRITE_PATH = {
-  /** 闩锁键历史值 `'swap'`，禁改。 */
+  /** 锁键历史值 `'swap'`，禁改。 */
   EXCHANGE: 'swap',
   GENESIS: 'genesis',
   REWARD_CLAIM: 'reward-claim',
@@ -39,7 +39,7 @@ function isWritePathInFlight(path: WritePath): boolean {
   return inFlightPaths.has(path)
 }
 
-/** 闩锁或在飞：同 path 兄弟 CTA 须视为 busy。 */
+/** 已上锁或在飞：同路径的其他提交按钮须视为 busy。 */
 export function isWritePathBusy(path: WritePath): boolean {
   return isUnknownReceiptLocked(path) || isWritePathInFlight(path)
 }
@@ -52,8 +52,9 @@ export function subscribeWritePathBusy(onStoreChange: () => void): () => void {
 }
 
 /**
- * 原子占用 path 在飞槽。
- * 成功返回 owner；已闩锁或已在飞则 `{ ok: false, reason }`。
+ * 原子占用路径的在飞槽
+ *
+ * 成功返回 owner；已上锁或已在飞则返回 `{ ok: false, reason }`。
  */
 export function tryBeginWritePath(
   path: WritePath,
@@ -77,8 +78,9 @@ export function lockUnknownReceipt(path: WritePath, owner: symbol): void {
 }
 
 /**
- * 清除 unknown 闩锁。
- * 带 `owner`：仅设置者可清；不带：显式 clearLock。
+ * 清除 unknown 结果锁
+ *
+ * 带 `owner`：仅设置者可清；不带：显式 clearLock 强制清除。
  */
 export function clearUnknownReceiptLock(path: WritePath, owner?: symbol): void {
   if (owner !== undefined) {

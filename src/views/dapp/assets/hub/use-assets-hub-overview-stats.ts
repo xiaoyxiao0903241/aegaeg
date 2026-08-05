@@ -33,7 +33,7 @@ export type AssetsHubModeStats = {
   positionApprox: string
   yieldValue: string
   yieldApprox: string
-  /** 仓位本金（或 X 挖矿 stake/pending）是否非零 — 供「隐藏0资产」筛选. */
+  /** 仓位本金（或 X 挖矿 stake/pending）是否非零 — 供「隐藏0资产」筛选。 */
   hasBalance: boolean
 }
 
@@ -52,13 +52,17 @@ export type AssetsHubOverview = {
   bufferTotalApprox: string
   bufferReleased: string
   bufferReleasedApprox: string
-  /** gAGX buffer column — handbook PRV is AGX-only; stay zero until sourced. */
+  /**
+   * gAGX 缓冲列：PRV 合约仅按 AGX 口径记录，暂无数据来源时保持 0
+   *
+   * @see docs/onchain-manual/contracts/principalreleasevault.md
+   */
   bufferGagxTotal: string
   bufferGagxReleased: string
   modes: Record<'stake' | 'lpbond' | 'burnbond' | 'xmine', AssetsHubModeStats>
 }
 
-/** 无协议 APR 读源 → 稿/原型无数据态展示 `0.00%`（禁 `—`）. */
+/** 暂无协议 APR 数据源，无数据态展示 0.00% 而非占位横线 */
 const APR_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
 
 const EMPTY_MODE: AssetsHubModeStats = {
@@ -121,9 +125,10 @@ function modeFromApiAmount(
 }
 
 /**
- * Hub overview + per-mode leaf amounts.
- * sessionReady + API data wins for display; chain remains fallback / write-adjacent.
- * Empty / pending / error → zero-formatted metrics (prototype 无数据).
+ * 资产 Hub 总览与各模式持仓数据
+ *
+ * 已登录会话时优先用后端 API 数据展示；API 缺失时退回链上读取。
+ * 未连接、加载中或出错时统一返回 0 值格式化指标。
  */
 export function useAssetsHubOverviewStats(): AssetsHubOverview {
   const { walletReady, sessionReady } = useDappShell()

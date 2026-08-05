@@ -11,7 +11,7 @@ function pancakeSwapUrl(inputCurrency: string, outputCurrency: string): string {
   return `${pancakeSwapBase}?${params.toString()}`
 }
 
-/** PancakeSwap deep links for Trade on BSC (addresses, not symbols). */
+/** PancakeSwap 深链接，用于 BSC 上交易（参数为合约地址而非符号）。 */
 export function pancakeSwapDeepLink(sellAddress: `0x${string}`, buyAddress: `0x${string}`): string {
   return pancakeSwapUrl(sellAddress, buyAddress)
 }

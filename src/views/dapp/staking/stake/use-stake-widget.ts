@@ -25,10 +25,20 @@ const STAKE_PERIODS: readonly StakePeriod[] = ['liquid', '180', '360', '540']
 
 export type StakeWritePresent = {
   onOpenSuccess: () => void | Promise<void>
-  /** Extra side effects only — default error toast always runs after. */
+  /** 仅附加副作用，默认错误提示始终随后执行。 */
   onError?: (error: unknown) => void
 }
 
+/**
+ * 质押表单核心状态
+ *
+ * 维护周期 / 数量 / 预检 / 迁移状态，
+ * 通过 evaluateStakeLive 判定可写条件并执行质押提交。
+ *
+ * @param sessionReady 会话是否就绪（决定是否取数）
+ * @param present 写入成功 / 失败的附加副作用
+ * @returns 表单展示值与提交控制
+ */
 export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
@@ -39,7 +49,7 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
   const walletReady = hasWalletAccount(account)
   const pool = stakePoolAddress(period)
 
-  // Warm every period pool so Segment switch hits cache (pool address is in the query key).
+  // 预热各周期池，切换周期时命中缓存（池地址在查询键内）。
   const preflightLiquid = useStakeOpenPreflightQuery(stakePoolAddress('liquid'), true, {
     enabled: sessionReady,
   })

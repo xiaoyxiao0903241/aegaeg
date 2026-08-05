@@ -15,7 +15,7 @@ import {
 
 import { cn } from '~/shared/lib/utils'
 
-/** Close an open layer on outside pointerdown or Escape. */
+/** 点击外部或按 Escape 时关闭已展开的菜单 */
 function useDismissOnOutside(
   open: boolean,
   rootRef: RefObject<HTMLElement | null>,
@@ -46,9 +46,10 @@ function useDismissOnOutside(
 }
 
 /**
- * DApp listbox 菜单 chrome（兑换 TokenPicker / 资产排序 / SelectMenu 共用）.
- * trigger↔panel 间距：HTML 原型 `calc(100% + 6px)` → `0.375rem`（禁 0.5rem 撑开）.
- * Panel 按视口上下翻转；只吃 chrome；options / 文案 / 图标由 call site 组进 Item children.
+ * DApp 列表菜单（兑换 TokenPicker / 资产排序 / SelectMenu 共用）
+ *
+ * 面板按视口剩余空间上下翻转；只提供外壳与交互，
+ * 选项 / 文案 / 图标由调用方组装进 Item。
  */
 
 const MENU_GAP_PX = 6
@@ -80,6 +81,11 @@ function placementForPanel(triggerRect: DOMRect, panelHeight: number): MenuPlace
   return spaceBelow >= spaceAbove ? 'below' : 'above'
 }
 
+/**
+ * 列表菜单根节点
+ *
+ * 管理开合状态，支持受控（传 `open`）与非受控两种用法。
+ */
 export function DropdownMenu({
   className,
   open: openProp,
@@ -118,6 +124,7 @@ export function DropdownMenu({
   )
 }
 
+/** 列表菜单触发按钮：切换面板开合并带无障碍状态 */
 export function DropdownMenuTrigger({
   className,
   children,
@@ -144,6 +151,7 @@ export function DropdownMenuTrigger({
   )
 }
 
+/** 列表菜单面板：按视口剩余空间决定向上或向下展开 */
 export function DropdownMenuPanel({
   align = 'start',
   className,
@@ -207,6 +215,7 @@ export function DropdownMenuPanel({
   )
 }
 
+/** 列表菜单项：点击后选中并关闭面板 */
 export function DropdownMenuItem({
   selected = false,
   tone = 'accent',
@@ -216,7 +225,7 @@ export function DropdownMenuItem({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
   selected?: boolean
-  /** accent = 字重 semibold；muted = medium。选中底一律 primary-soft。 */
+  /** accent = 强调；muted = 弱化 */
   tone?: 'accent' | 'muted'
   onSelect?: () => void
 }) {

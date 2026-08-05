@@ -16,13 +16,15 @@ export type ExchangeTokenPickerOption = {
   symbol: string
   icon?: string
   balanceLabel: string
-  /** Shown in list but not selectable (handbook-silent / DEFER tokens). */
+  /** 列表中可见但不可选（手册未收录 / 延后代币）。 */
   disabled?: boolean
 }
 
 /**
- * Sell/Buy token pill + open list — panel/item chrome 走 DropdownMenu；
- * 行内 icon / symbol / balance 由本 leaf 组；开合箭头 ≡ CollapseChevron。
+ * 卖出 / 买入代币选择
+ *
+ * 胶囊触发器展示当前选中代币，下拉列表供选择；
+ * 未上架代币可见但不可选。
  */
 export function ExchangeTokenPicker({
   ariaLabel,
@@ -49,7 +51,6 @@ export function ExchangeTokenPicker({
       <DropdownMenuTrigger
         aria-label={ariaLabel}
         className={cn(
-          // Figma tk `4433:415`：icon24 + py-1.5 → pill h36
           'inline-flex items-center gap-2 rounded-full border-0 bg-background px-2.5 py-1.5',
           'transition-colors duration-150 ease-out hover:bg-muted',
           disabled ? 'cursor-default opacity-40' : 'cursor-pointer',

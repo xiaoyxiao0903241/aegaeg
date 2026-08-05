@@ -35,6 +35,14 @@ function readSignatureMap(
   }
 }
 
+/**
+ * 基于 localStorage 的登录签名缓存。
+ *
+ * 兼容旧版单条与新版映射两种存储结构，key 统一按小写地址。
+ *
+ * @param storage 底层存储（localStorage 等）
+ * @returns 登录签名存储实现
+ */
 export function createLocalLoginSignatureStorage(
   storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,
 ): LoginSignatureStorage {
@@ -61,6 +69,11 @@ export function createLocalLoginSignatureStorage(
   }
 }
 
+/**
+ * 基于内存的登录签名缓存，仅本次会话有效。
+ *
+ * @returns 登录签名存储实现
+ */
 export function createMemoryLoginSignatureStorage(): LoginSignatureStorage {
   const values = new Map<string, StoredLoginSignature>()
 
@@ -77,6 +90,13 @@ export function createMemoryLoginSignatureStorage(): LoginSignatureStorage {
   }
 }
 
+/**
+ * 判断缓存签名是否属于指定地址（大小写不敏感）。
+ *
+ * @param cached 缓存签名，可为 null
+ * @param address 目标地址，可为 undefined
+ * @returns 属于该地址时返回 true
+ */
 export function isLoginSignatureForAddress(
   cached: StoredLoginSignature | null,
   address: string | undefined,
@@ -93,17 +113,36 @@ function parseSiweExpirationMs(message: string): number | null {
   return Number.isFinite(parsed) ? parsed : null
 }
 
-/** SIWE message still within its Expiration Time window. */
+/**
+ * 判断 SIWE 签名消息是否仍在有效期内。
+ *
+ * 以消息中的 Expiration Time 为准；解析不到时退化为 5 分钟短窗
+ * （login-message 生成的固定格式消息总会带上 Expiration Time）。
+ *
+ * @param cached 缓存签名
+ * @param now 当前时间戳（毫秒），默认 Date.now()
+ * @returns 未过期时返回 true
+ */
 export function isLoginSignatureUsable(cached: StoredLoginSignature, now = Date.now()): boolean {
   const expirationMs = parseSiweExpirationMs(cached.message)
   if (expirationMs === null) {
-    // No Expiration Time: short fallback only (messages from login-message always include one).
+    // 无 Expiration Time：仅作 5 分钟短窗回退（login-message 生成的消息总会带上）。
     return now - cached.savedAt < 5 * 60 * 1000
   }
 
   return now < expirationMs
 }
 
+/**
+ * 读取指定地址可用（未过期）的缓存签名。
+ *
+ * 任一条件不满足（无缓存、地址不符、已过期）都返回 null。
+ *
+ * @param address 钱包地址，可为 undefined
+ * @param storage 签名存储
+ * @param now 当前时间戳（毫秒），默认 Date.now()
+ * @returns 可用缓存签名；无则返回 null
+ */
 export function readUsableLoginSignature(
   address: string | undefined,
   storage: LoginSignatureStorage,

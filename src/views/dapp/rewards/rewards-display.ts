@@ -27,17 +27,24 @@ import type {
 } from '~/shared/api/types'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
-/** 数值指标空 / pending → 经格式化器出零（不用命名 dash/loading 别名）。 */
-
 /**
- * 非数值空态（日期、哈希、标签）。
- * 禁走 `formatApiDecimalAmount(null)`（会得到 `"0.00"`）。
+ * 非数值空态占位（日期、哈希、标签用「—」）。
+ * 数值字段不能走 `formatApiDecimalAmount(null)`，否则会显示「0.00」。
  */
 export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild'>
 
-/** 后端 SUM / 小数字符串金额 → 分组展示（禁臆造）。 */
+/**
+ * 后端金额字符串 → 分组展示（含千分位与前后缀）
+ *
+ * 空值 / 非数字统一兜底为 0，保证数值列不出现异常字符。
+ *
+ * @param raw 后端金额字符串
+ * @param options.digits 小数位（默认 2）
+ * @param options.prefix 前缀（如 `$`）
+ * @param options.suffix 后缀（如 `gAGX`）
+ */
 export function formatApiDecimalAmount(
   raw: string | null | undefined,
   options: { digits?: number; prefix?: string; suffix?: string } = {},
@@ -57,6 +64,16 @@ export function formatApiDecimalAmount(
   })
 }
 
+/**
+ * 指标统计标签：会话未就绪或冷启动加载中 → 显示 0
+ *
+ * 重新拉取时 keepPreviousData 会保留旧值，因此只有
+ * 「会话未就绪」或「首次加载且无数据」才回退成 0。
+ *
+ * @param sessionReady 登录会话是否就绪
+ * @param isPending 是否加载中
+ * @param raw 后端数值字符串
+ */
 export function formatApiStatLabel(
   sessionReady: boolean,
   isPending: boolean,
@@ -68,7 +85,11 @@ export function formatApiStatLabel(
   return formatApiDecimalAmount(raw, options)
 }
 
-/** API 整数 / 计数；session/pending 门闸同 formatApiStatLabel。 */
+/**
+ * 后端整数字段（计数）→ 文本
+ *
+ * 会话未就绪或加载中且无数据时返回「0」，规则同 formatApiStatLabel。
+ */
 export function formatApiCountLabel(
   sessionReady: boolean,
   isPending: boolean,
@@ -80,7 +101,9 @@ export function formatApiCountLabel(
   return String(raw)
 }
 
-/** 绑定 session/pending，避免详情视图重复三件套门闸。 */
+/**
+ * 把会话就绪与加载中状态绑进格式化器，避免各详情视图重复判断
+ */
 export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean) {
   return {
     stat: (
@@ -91,6 +114,12 @@ export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean
   }
 }
 
+/**
+ * DAO 发放状态 → 展示文案
+ *
+ * @param status 后端状态枚举
+ * @param labels 各状态对应的多语文案
+ */
 export function formatDaoGrantStatus(
   status: DaoGrantStatus,
   labels: RewardLogStatusLabels,
@@ -110,7 +139,7 @@ export function formatDaoGrantStatus(
   }
 }
 
-/** 表 StatusBadge tone：待领 coral · 已领 muted · 处理中 coral · 失败 destructive */
+/** StatusBadge 配色：待领 coral · 已领 muted · 处理中 coral · 失败 destructive */
 export function daoGrantStatusTone(
   status: DaoGrantStatus,
 ): 'pending' | 'muted' | 'processing' | 'failed' {
@@ -135,7 +164,16 @@ export function splitAmountByPct(amount: bigint, pct: number): bigint {
   return (amount * BigInt(pct)) / 100n
 }
 
-/** 贡献快照占位：未连接 / 加载中 / 有值。 */
+/**
+ * 贡献快照占位文本：未连接 / 加载中 → 空，有值 → 代币金额
+ *
+ * @param input.walletReady 钱包是否就绪
+ * @param input.hasAddress 是否已连接地址
+ * @param input.isPending 链上查询是否加载中
+ * @param input.contribution 贡献值（bigint）
+ * @param input.decimals 代币精度
+ * @param input.fractionDigits 小数位
+ */
 export function formatContributionPlaceholder(input: {
   walletReady: boolean
   hasAddress: boolean
@@ -173,7 +211,7 @@ function rewardLogStatusKey(status: number): RewardLogStatusKey {
   }
 }
 
-/** reward_claim_orders: 0=待领取, 1=已领取, 2=已领取, 3=领取失败 */
+/** 团队奖励领取单状态码映射：0 待领取 · 1/2 已领取 · 3 领取失败 */
 function teamRewardClaimStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
     case 0:

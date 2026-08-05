@@ -12,7 +12,11 @@ import {
 
 const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const
 
-/** 右栏邀请 Steps。 */
+/**
+ * 邀请引导区块
+ *
+ * 把文案中的邀请步骤条目逐条渲染为步骤列表。
+ */
 export function CommunityInviteSection() {
   const { messages: t } = useI18n()
 
@@ -24,7 +28,6 @@ export function CommunityInviteSection() {
   return (
     <Section reveal>
       <Section.Title>{t.community.inviteTitle}</Section.Title>
-      {/* Figma `4301:226` — Steps start；卡壳在页袋 */}
       <div data-slot-id="community-invite-steps">
         <Card className="rounded-2xl p-4" surface="elevated">
           <Steps align="start">
@@ -38,7 +41,11 @@ export function CommunityInviteSection() {
   )
 }
 
-/** 右栏生态支持双卡。 */
+/**
+ * 生态支持区块
+ *
+ * 渲染两张项目推广卡；首张卡标题按当前创世季度动态替换。
+ */
 export function CommunityProgramsSection() {
   const { messages: t } = useI18n()
   const genesis = useGenesisPromoChrome()

@@ -64,6 +64,14 @@ export type HubPeriodTableRow = {
   periodYield: string
 }
 
+/**
+ * 质押 Hub 详情数据组装
+ *
+ * 聚合协议概览、周期收益率、图表序列等展示数据；
+ * 数据未就绪或未连接钱包时各标签回落为 0 或占位文案。
+ *
+ * @returns 右栏所需的全部展示字段与状态（概览 / 周期表 / 图表 / 文案）
+ */
 export function useStakingHubContentView() {
   const { messages: t } = useI18n()
   const { sessionReady } = useAuth()
@@ -115,7 +123,7 @@ export function useStakingHubContentView() {
           })
         : formatGroupedNumber(0, { digits: 0, trimZeros: true })
 
-  // No history indexer/API yet — empty series; header stays formatted `$0.00` / `+0.0%`.
+  // 暂无历史数据源，序列为空；头部仍按 `$0.00` / `+0.0%` 格式展示。
   const chartPoints: readonly ChartPoint[] = []
   const chartValueLabel = formatCompactUsd(null)
   const chartDeltaLabel = formatSignedPercent(null)
@@ -169,7 +177,7 @@ export function useStakingHubContentView() {
       price: agxPriceLabel,
       burned: burnedLabel,
       rebase: rebaseLabel,
-      // No runway formula / on-chain source yet — honest unknown (not fake "0 days").
+      // 暂无跑道公式 / 链上源，显示未知，不伪造「0 天」。
       runway: t.staking.hub.runwayUnknown,
       stakers: stakersLabel,
     },

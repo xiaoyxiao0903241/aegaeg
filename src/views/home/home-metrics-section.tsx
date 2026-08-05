@@ -2,6 +2,12 @@ import { useI18n } from '~/i18n/use-i18n'
 import { Text } from '~/shared/components/text'
 import { HomeSection } from '~/views/home/home-section'
 
+/**
+ * 数据指标区块
+ *
+ * 深色面板内展示四项指标，数字进入视口后从 0 滚动到目标值；
+ * 通过 data-count-* 属性驱动首页动效脚本。
+ */
 export function HomeMetricsSection() {
   const { messages } = useI18n()
   const metrics = messages.home.metrics

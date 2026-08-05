@@ -1,7 +1,7 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 
-/** 优先 API 小数字符串；否则链上额；否则格式化零。 */
+/** 依次取 API 小数字符串、链上数值，最后回退到格式化后的零 */
 export function formatReleaseApiOrChainLabel(args: {
   sessionReady: boolean
   apiRaw: string | undefined
@@ -16,6 +16,6 @@ export function formatReleaseApiOrChainLabel(args: {
     if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
   }
   if (chainReady) return `${formatTokenAmount(chainValue, decimals, 4)} ${unit}`
-  // 冷启动 / 未连接：禁空白；keepPreviousData 时仍有 apiRaw 走上方分支。
+  // 冷启动 / 未连接时不能留空；keepPreviousData 场景下 apiRaw 仍可用，走上方分支
   return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
 }

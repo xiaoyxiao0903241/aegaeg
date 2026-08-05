@@ -1,4 +1,4 @@
-/** Stable React remount key for wallet-scoped draft state. */
+/** 按钱包隔离草稿状态的稳定 React 重挂载键。 */
 export function walletRemountKey(address: string | null | undefined): string {
   return address?.toLowerCase() ?? 'disconnected'
 }

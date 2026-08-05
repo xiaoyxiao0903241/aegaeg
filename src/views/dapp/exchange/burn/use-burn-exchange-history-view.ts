@@ -10,6 +10,15 @@ import {
 
 export type BurnHistoryTab = 'burn' | 'consume'
 
+/**
+ * 销毁记录视图：销毁 / 贡献点消耗两个 Tab 的列表数据
+ *
+ * 按当前 Tab 拉取对应日志接口并映射为表格行；
+ * 会话未就绪时不发起请求。
+ *
+ * @see docs/backend-api/api.md #agx-contribution/burn-logs
+ * @see docs/backend-api/api.md #agx-contribution/consume-logs
+ */
 export function useBurnExchangeHistoryView() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()

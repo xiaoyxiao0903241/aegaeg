@@ -1,3 +1,9 @@
+/**
+ * 闪电兑换详情页
+ *
+ * 展示汇率与结算方式两张概览卡，下方为代币介绍轮播与 FAQ；
+ * 详情页只读，不承载金额输入。
+ */
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
@@ -8,10 +14,10 @@ import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
-/** Figma About order: gAGX settle · USD1 · X · gAGX stake voucher (4th ≠ AGX). */
+// 代币介绍卡顺序：gAGX 结算 · USD1 · X · gAGX 质押凭证（第 4 张是 gAGX 质押，不是 AGX）
 const FLASH_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'gagxStake'] as const
 
-/** Rate scalar only — amount draft keystrokes must not wake FAQ / About. */
+/** 详情页只接收汇率标量，金额输入不触达 FAQ / 代币介绍，避免每敲一键都刷新。 */
 export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel: string }) {
   const { messages: t } = useI18n()
 

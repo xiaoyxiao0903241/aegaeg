@@ -1,6 +1,11 @@
 /**
- * 将登录失败归类为稳定种类（不依赖 React / API 客户端类型）。
- * AuthProvider 再映射到 LOGIN_ERROR / ACCOUNT_BANNED sentinel。
+ * 登录失败分类：将钱包 / 后端抛出的异常归类为稳定种类。
+ *
+ * 永久类（封禁、用户拒绝、签名被拒）用于锁定静默重试，transient 允许
+ * 下一轮再试。分类只依赖错误对象本身，不依赖 React 或 API 客户端类型，
+ * AuthProvider 再映射到 LOGIN_ERROR / ACCOUNT_BANNED 哨兵值。
+ *
+ * @see 手册 §19 常见错误与前端提示
  */
 export type LoginFailureKind =
   'banned' | 'user_rejected' | 'signature_rejected' | 'failed' | 'transient'
@@ -29,7 +34,7 @@ function isBannedShape(error: unknown): boolean {
   const code = readErrorCode(error)
   if (code !== 403) return false
   const text = readErrorText(error)
-  // 仅当文案/业务码指向封禁时视为 banned；裸 403 走 transient，避免误闩。
+  // 仅当文案 / 业务码指向封禁时视为 banned；裸 403 走 transient，避免误锁定。
   return /ban|封|ACCOUNT_BANNED|account.?disabled|forbidden.?account/i.test(text)
 }
 
@@ -64,7 +69,15 @@ function isSignatureRejectedShape(error: unknown): boolean {
   return SIGNATURE_REJECTED.test(readErrorText(error))
 }
 
-/** 登录失败分类：永久类用于闩锁静默重试；transient 允许下一轮再试。 */
+/**
+ * 登录失败归类入口。
+ *
+ * 按 封禁 → 用户拒绝 → 签名被拒 顺序判断，未命中走 transient。
+ * 传输层错误或无稳定语义的错误归为 transient，允许重试。
+ *
+ * @param error 登录抛出的异常
+ * @returns 稳定的失败种类
+ */
 export function classifyLoginFailure(error: unknown): LoginFailureKind {
   if (isBannedShape(error)) return 'banned'
   if (isUserRejectedShape(error)) return 'user_rejected'
@@ -73,7 +86,14 @@ export function classifyLoginFailure(error: unknown): LoginFailureKind {
   return 'transient'
 }
 
-/** 后端已消费 nonce 等业务 4xx：应清除本地 SIWE 签名缓存。 */
+/**
+ * 签名被拒（业务 4xx）时是否应清除本地 SIWE 签名缓存。
+ *
+ * 后端已消费 nonce 等一次性值，缓存签名不可复用，需清除以便重新生成。
+ *
+ * @param error 登录抛出的异常
+ * @returns 需要清除时返回 true
+ */
 export function shouldClearCachedLoginSignature(error: unknown): boolean {
   return classifyLoginFailure(error) === 'signature_rejected'
 }

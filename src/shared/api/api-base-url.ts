@@ -6,7 +6,7 @@ function isLocalHostname(hostname: string): boolean {
   return host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host === '::1'
 }
 
-/** e.g. app.x-123.io → x-123.io; x-123.io stays x-123.io */
+/** 例：app.x-123.io → x-123.io；x-123.io 本身保持不变。 */
 export function extractRootDomain(hostname: string): string {
   const host = hostname.toLowerCase().trim()
   if (!host || isLocalHostname(host) || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {
@@ -18,6 +18,18 @@ export function extractRootDomain(hostname: string): string {
   return parts.slice(-2).join('.')
 }
 
+/**
+ * 计算后端 API 基础地址
+ *
+ * 开发环境或本地主机名直接用环境变量配置；生产环境按域名派生
+ * `https://api.<根域名>/api`，除非显式关闭派生或配置了环境地址。
+ *
+ * @param options.hostname 覆盖运行时主机名（测试注入）
+ * @param options.isDev 覆盖开发态判断
+ * @param options.envBaseUrl 覆盖环境变量中的 API 地址
+ * @param options.deriveFromDomain 覆盖是否按域名派生
+ * @returns 去掉末尾斜杠的 API 基础地址
+ */
 export function apiBaseUrl(
   options: {
     hostname?: string

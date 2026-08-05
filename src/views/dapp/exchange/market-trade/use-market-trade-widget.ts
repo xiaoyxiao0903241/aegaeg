@@ -31,8 +31,14 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
- * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
- * Balances load on wallet account presence (`walletReady`), independent of SIWE.
+ * 市价交易会话状态
+ *
+ * 管理币对选择、滑点、余额 / 授权、报价与提交；余额跟随钱包
+ * 账户加载，报价 / 提交 / 金额上限跟随会话就绪。
+ *
+ * @param sessionReady 会话就绪（SIWE），控制报价、提交与金额上限
+ * @param quotesEnabled 是否开启报价轮询
+ * @param readsEnabled 是否开启链上读取
  */
 export function useMarketTradeWidget(
   sessionReady: boolean,

@@ -12,6 +12,7 @@ import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-co
 import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/assets-xmine-position-card'
 import { useAssetsXmineView } from '~/views/dapp/assets/xmine/use-assets-xmine-view'
 
+/** X 挖矿侧栏：报价 / 排序工具条 + 挖矿持仓卡（含空态、加载态）与赎回确认弹窗 */
 export function AssetsXmineWidget() {
   const vm = useAssetsXmineView()
   const { t, copy, position } = vm

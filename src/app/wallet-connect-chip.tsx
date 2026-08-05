@@ -56,6 +56,17 @@ const walletConnectChip = tv({
   },
 })
 
+/**
+ * 计算登录失败时展示的错误提示文案。
+ *
+ * 账号封禁与用户主动拒绝签名不弹提示（前者由全局通知处理，后者静默）；
+ * 其余错误优先取登录接口返回码，再退回通用接口 / 钱包错误文案。
+ *
+ * @param error 登录抛出的原始错误
+ * @param loginError 登录状态仓库中的错误标记
+ * @param messages 各错误文案
+ * @returns 需要展示的错误提示文案
+ */
 function loginToastMessage(
   error: unknown,
   loginError: string | null,
@@ -153,7 +164,7 @@ function ConnectedWalletChip() {
           {formatShortAddress(address)}
         </Text>
       </button>
-      {/* Keep mounted so Radix can play the closed-state exit animation (same as connect modal). */}
+      {/* 保持挂载，让 Radix 能播放关闭态退场动画（与连接弹窗一致）。 */}
       <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} />
     </>
   )
@@ -170,7 +181,7 @@ function WalletConnectButton({
   label?: string
   variant?: 'pill' | 'primary' | 'inline'
   fullWidth?: boolean
-  /** primary only — inverse = dark promo 38; card = white-card 42; external = Button md 44 */
+  /** 高度档位：inverse 深色促销 38 · card 白卡 42 · external 外部链接 44 */
   density?: 'card' | 'external' | 'inverse'
 }) {
   const { isLoggingIn, login, loginError, needsSignIn } = useAuth()
@@ -232,6 +243,13 @@ function WalletConnectButton({
   )
 }
 
+/**
+ * 钱包连接入口
+ *
+ * 已连接且会话就绪时渲染地址胶囊（点击打开钱包详情）；
+ * 否则渲染连接 / 登录按钮，登录失败或需要登录时点击直接触发登录。
+ * 支持 pill（胶囊）与 primary（主按钮）等外观变体。
+ */
 export function WalletConnectChip({
   className,
   label,

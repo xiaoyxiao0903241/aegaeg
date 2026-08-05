@@ -207,7 +207,7 @@ export const queryKeys = {
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
     presalePaused: ['chain', 'presale', 'paused'] as const,
-    /** Wallet prefix — useChainQuery appends address. */
+    /** 钱包前缀键——useChainQuery 自动追加地址。 */
     presaleUserTotal: ['chain', 'presale', 'userTotal'] as const,
     presaleUserTotalOf: (address: string) =>
       chainWalletQueryKey(['chain', 'presale', 'userTotal'], address),
@@ -247,7 +247,7 @@ export const queryKeys = {
       chainWalletQueryKey(['chain', 'migration', 'status'], address),
     swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
-    /** AGX/USD1 V2 spot — USD1 wei per 1 AGX（展示/估值；非 Presale 定价）。 */
+    /** AGX/USD1 V2 即时价——每 1 AGX 对应 USD1 wei 数（展示/估值用；非 PreSale 定价）。 */
     agxUsd1SpotPrice: ['chain', 'swap', 'agxUsd1SpotPrice'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string, pathKey = '') =>
       pathKey
@@ -314,7 +314,7 @@ export const queryKeys = {
     xminePreflight: ['chain', 'staking', 'xmine'] as const,
     xminePreflightOf: (address: string) =>
       chainWalletQueryKey(['chain', 'staking', 'xmine'], address),
-    /** Public — xPerAgx / yieldRateBP / activeGons */
+    /** 公开键——xPerAgx / yieldRateBP / activeGons 概览数据。 */
     xmineOverview: ['chain', 'staking', 'xmine', 'overview'] as const,
     assetsRoot: ['chain', 'assets'] as const,
     assetsStakePositions: ['chain', 'assets', 'stake'] as const,
@@ -330,7 +330,7 @@ export const queryKeys = {
     assetsContribution: ['chain', 'assets', 'contribution'] as const,
     assetsContributionOf: (address: string) =>
       chainWalletQueryKey(['chain', 'assets', 'contribution'], address),
-    /** Wallet prefix — amount varies; useChainQuery appends address. */
+    /** 钱包前缀键——金额不同键不同；useChainQuery 自动追加地址。 */
     assetsContributionForAmount: (amount: string) =>
       ['chain', 'assets', 'contribution', amount] as const,
     rewardsRoot: ['chain', 'rewards'] as const,

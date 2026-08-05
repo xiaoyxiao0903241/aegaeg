@@ -4,6 +4,7 @@ import { Text } from '~/shared/components/text'
 import { HomeSection } from '~/views/home/home-section'
 import { partners } from '~/views/home/static-layout'
 
+/** 合作伙伴区块：居中展示合作方徽标行，图标来自静态布局表。 */
 export function HomePartnersSection() {
   const { messages } = useI18n()
   const title = messages.home.sections.partners.title

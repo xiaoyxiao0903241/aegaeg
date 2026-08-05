@@ -25,10 +25,14 @@ type TurbineSubmitCore = {
   ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
-/** Turbine 解锁：approve → live 重读报价/余额/授权/配额 → buyAgxAndStartCooldown。 */
+/**
+ * Turbine 解锁：授权后实时重读报价 / 余额 / 授权 / 配额，再买入 AGX 并进入冷却
+ *
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function submitTurbineUnlock(args: {
   core: TurbineSubmitCore
-  /** 解锁 AGX 配额（手册 turbineBalances）。 */
+  /** 本次解锁的 AGX 数量（以链上 turbineBalances 为准）。 */
   unlockAmountAgx: bigint
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { core, unlockAmountAgx } = args
@@ -66,7 +70,11 @@ export async function submitTurbineUnlock(args: {
   })
 }
 
-/** Turbine claim：live `isVested` 通过后再写；成功后整表 refetch（swap-and-pop）。 */
+/**
+ * Turbine 领取：先实时确认已解锁，写入成功后整表刷新
+ *
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export async function submitTurbineClaim(args: {
   core: TurbineSubmitCore
   index: number

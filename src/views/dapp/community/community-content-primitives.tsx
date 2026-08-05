@@ -7,7 +7,7 @@ import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
-/** Figma `4371:279`：三卡 gap 9 · PC 三列 */
+/** 三张统计卡布局：桌面三列，窄屏自适应折叠为单列 */
 export const communityStatGrid = tv({
   base: cn(
     'grid grid-cols-3 gap-2',
@@ -20,7 +20,7 @@ export { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
 
 const communityStatCard = tv({
   slots: {
-    // Figma `4301:213`：p16 · gap4 · elevated 白卡 / inverse 暗卡
+    // 普通态用 elevated 白卡，深色态用 inverse 暗卡
     root: cn(
       revealClass(),
       'community-stat relative flex flex-col items-start gap-1 overflow-clip rounded-2xl p-4',
@@ -58,6 +58,11 @@ export function CommunityStatGrid({
   return <div className={cn(communityStatGrid(), className)}>{children}</div>
 }
 
+/**
+ * 社区统计卡
+ *
+ * 展示标签、数值与业绩/等级说明；深色模式换反色底，可带右下角装饰图。
+ */
 export function CommunityStatCard({
   children,
   className,

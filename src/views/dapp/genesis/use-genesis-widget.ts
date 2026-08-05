@@ -11,7 +11,7 @@ import { usePresalePreviewAirdropValueQuery } from '~/web3/presale/use-presale-q
 import { useActiveWallet } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
-/** Assembles Genesis reads + purchase actions; public API for lifted session props. */
+/** 组装创世读取与购买动作，作为提升到会话的公开属性接口 */
 export function useGenesisWidget() {
   const { messages: t } = useI18n()
   const wallet = useActiveWallet()

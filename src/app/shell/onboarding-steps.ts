@@ -22,7 +22,7 @@ export {
 
 type StepGo = {
   tab: DappTab
-  /** When set, force that rail's hub (mode cards live on hub). */
+  /** 非空时强制回到该中心页（模式卡片位于中心页）。 */
   hub?: 'exchange' | 'staking' | 'assets' | 'release' | 'rewards'
 }
 
@@ -41,11 +41,12 @@ const STEP_GO: Record<OnboardingStepId, StepGo> = {
   'nav-community': { tab: 'community' },
 }
 
-/** Align with `--breakpoint-dapp` / `@custom-variant max-dapp` (820px). */
+/** 与 `--breakpoint-dapp` / `@custom-variant max-dapp`（820px）保持一致。 */
 function isMaxDappViewport(): boolean {
   return window.matchMedia('(max-width: 820px)').matches
 }
 
+/** 回到指定中心页，保证模式卡片挂载。 */
 function ensureHub(hub: StepGo['hub']) {
   if (hub === 'exchange') useExchangeViewStore.getState().backToHub()
   if (hub === 'staking') useStakingViewStore.getState().backToHub()
@@ -54,7 +55,16 @@ function ensureHub(hub: StepGo['hub']) {
   if (hub === 'rewards') useRewardsViewStore.getState().backToHub()
 }
 
-/** Navigate shell so the step's anchor can mount, then resolve a visible target. */
+/**
+ * 把外壳导航到该步骤锚点所在的页面，并等待锚点可见后返回。
+ *
+ * 每个步骤先切换到对应 Tab（必要时回到中心页、H5 下打开抽屉），
+ * 让锚点元素得以挂载；随后轮询等待其出现在视口。
+ *
+ * @param stepIndex 步骤下标
+ * @param signal 中止信号
+ * @returns 步骤锚点元素
+ */
 export async function prepareOnboardingStep(
   stepIndex: number,
   signal?: AbortSignal,

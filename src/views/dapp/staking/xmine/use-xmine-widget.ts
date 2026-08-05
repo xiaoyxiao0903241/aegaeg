@@ -17,10 +17,20 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 export type XmineWritePresent = {
   onSuccess: () => void | Promise<void>
-  /** Extra side effects only — default error toast always runs after. */
+  /** 仅附加副作用，默认错误提示始终随后执行。 */
   onError?: (error: unknown) => void
 }
 
+/**
+ * Xmine 质押表单核心状态
+ *
+ * 输入上限取「钱包 gAGX 与剩余挖矿额度」的较小值；
+ * 授权不足仍允许提交，由内联 approve 完成授权。
+ *
+ * @param sessionReady 会话是否就绪（决定是否取数）
+ * @param present 写入成功 / 失败的附加副作用
+ * @returns 表单展示值与提交控制
+ */
 export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
@@ -41,7 +51,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     decisionBigint(preflightQuery.data?.miningStaked, preflightQuery.isPlaceholderData) ?? 0n
   const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
-  // Max / 键入封顶：min(钱包 gAGX, 剩余挖矿额度)
+  // 上限：钱包 gAGX 与剩余挖矿额度取较小值
   const spendable = xmineSpendableCap(balance, miningQuota, miningStaked)
   const remainingQuota = miningQuota > miningStaked ? miningQuota - miningStaked : 0n
 

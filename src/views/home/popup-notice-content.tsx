@@ -35,8 +35,12 @@ function linkifyPlainText(text: string) {
 }
 
 /**
- * Popup HTML is authored by our backend/CMS and rendered as-is (including
- * embedded script/style). Do not sanitize or strip — trust the admin channel.
+ * 公告正文渲染
+ *
+ * 含 HTML 标记时按原文渲染（含脚本/样式），内容由后台或 CMS 提供，
+ * 不做过滤；纯文本则分段，并自动把其中的链接渲染为可点击样式。
+ *
+ * @param content 公告正文
  */
 export function PopupNoticeContent({ content }: { content: string }) {
   if (!content.trim()) return null

@@ -11,6 +11,17 @@ const referralAbi = parseAbi([
   REFERRAL_METHODS.getReferralCount,
 ])
 
+/**
+ * 查询地址是否已绑定推荐关系
+ *
+ * 绑定关系是质押 / 债券 / 治理写操作的前置条件，未绑定会被前端阻断。
+ *
+ * @param address 待检查的钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 已绑定返回 true
+ * @see 手册 §5 推荐关系 Referral
+ * @see docs/onchain-manual/contracts/referral.md
+ */
 export async function readIsBindReferral(
   address: string,
   client: ChainReadClient = bscReadClient,
@@ -23,6 +34,17 @@ export async function readIsBindReferral(
   })
 }
 
+/**
+ * 读取地址绑定的推荐人
+ *
+ * 返回零地址表示未绑定。
+ *
+ * @param address 待查询的钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 推荐人地址（未绑定为 0x0）
+ * @see 手册 §5.3 展示字段
+ * @see docs/onchain-manual/contracts/referral.md
+ */
 export async function readReferrer(
   address: string,
   client: ChainReadClient = bscReadClient,
@@ -35,6 +57,15 @@ export async function readReferrer(
   })
 }
 
+/**
+ * 读取地址作为推荐人带来的绑定人数
+ *
+ * @param address 待查询的钱包地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 直接推荐人数
+ * @see 手册 §5.3 展示字段
+ * @see docs/onchain-manual/contracts/referral.md
+ */
 export async function readReferralCount(
   address: string,
   client: ChainReadClient = bscReadClient,

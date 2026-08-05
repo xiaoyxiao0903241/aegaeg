@@ -3,6 +3,12 @@ import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * 代币徽标：图标 + 名称。
+ *
+ * 默认纯展示；`picker` 为 true 时渲染成可点击的选择按钮，
+ * 并带下拉箭头，`open` 控制箭头朝向。
+ */
 export function TokenChip({
   icon,
   label,
@@ -12,9 +18,9 @@ export function TokenChip({
 }: {
   icon?: string
   label: string
-  /** Figma trade sell/buy token pill with chevron. */
+  /** 是否带下拉箭头的选择按钮形态。 */
   picker?: boolean
-  /** 下拉开合；picker 时驱动 CollapseChevron */
+  /** 下拉是否展开；picker 时驱动 CollapseChevron */
   open?: boolean
   onClick?: () => void
 }) {

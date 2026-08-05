@@ -18,7 +18,12 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-/** 缓冲池读链 + 提取门闸 + toast → `ReleaseBufferWidget`。 */
+/**
+ * 缓冲池交互面板状态
+ *
+ * 读取链上缓冲快照，组合「可提取」门闸与进度文案；
+ * 提取成功后提示并重读快照，刷新仅重拉 AGX 卡。
+ */
 export function useReleaseBufferView() {
   const { messages: t } = useI18n()
   const setView = useReleaseViewStore((state) => state.setView)
@@ -56,7 +61,7 @@ export function useReleaseBufferView() {
     if (refreshing) return
     setRefreshing(true)
     try {
-      // 仅重拉 AGX 卡链上 snapshot；不动右栏 API / gAGX（无源）
+      // 只重读 AGX 卡链上快照；右侧 API 与 gAGX（无源）不动
       await bufferQuery.refetch()
     } finally {
       setRefreshing(false)

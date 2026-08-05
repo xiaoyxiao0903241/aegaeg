@@ -16,11 +16,12 @@ const exchangeRouterWriteAbi = parseAbi([
   PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokensSupportingFeeOnTransferTokens,
 ])
 
-/** True when router allowance is below the intended spend — approve before swap. */
+/** 路由器授权额度低于本次所需时返回 true，需在兑换前补 approve。 */
 export function needsTokenApproval(allowance: bigint, amountIn: bigint): boolean {
   return allowance < amountIn
 }
 
+/** 输入代币 → 兑换路由器授权：按需补 approve。 */
 export async function approveTokenIfNeeded({
   wallet,
   token,
@@ -38,6 +39,19 @@ export async function approveTokenIfNeeded({
   })
 }
 
+/**
+ * 提交市价兑换
+ *
+ * 走 Pancake Router；AGX 卖币路径扣卖税，须用带费率转移支持的
+ * `swapExactTokensForTokensSupportingFeeOnTransferTokens`。
+ * 路径少于两跳或输入代币缺失时直接抛错，杜绝用非法路径发交易。
+ *
+ * @param wallet 当前钱包
+ * @param amountIn 输入代币数量
+ * @param path 兑换路径，直连两跳或经中间币三跳，须与实时报价路径一致
+ * @param amountOutMin 授权后实时重算的最低输出下限，不在本函数内重算
+ * @see docs/onchain-manual/contracts/agx.md
+ */
 export async function exchangeTokens({
   wallet,
   amountIn,
@@ -46,9 +60,9 @@ export async function exchangeTokens({
 }: {
   wallet: Wallet
   amountIn: bigint
-  /** Direct (2) or via-mid (3) hop — must match live quote path. */
+  /** 直连（2）或经中间币（3）跳，须与实时报价路径一致。 */
   path: readonly `0x${string}`[]
-  /** Live post-approve floor from assertStillSubmittable — not recomputed here. */
+  /** 授权后实时重算的最低输出下限，不在本函数内重算。 */
   amountOutMin: bigint
 }) {
   const account = wallet.getAccount()
@@ -64,7 +78,7 @@ export async function exchangeTokens({
   }
 
   const deadline = BigInt(exchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
-  /** AGX pair sells take sell tax — use SupportingFee path (contracts/agx.md). */
+  // AGX 卖币路径扣卖税，须走带费率转移支持的路径
   const functionName = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
     ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
     : 'swapExactTokensForTokens'

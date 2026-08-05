@@ -8,6 +8,12 @@ import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 
+/**
+ * 社区正文数据组装
+ *
+ * 汇总团队概览、共建等级与邀请明细分页数据；
+ * 分页状态在本地维护，取数均要求登录会话就绪。
+ */
 export function useCommunityContentView() {
   const { messages: t } = useI18n()
   const { sessionReady, walletReady } = useDappShell()

@@ -4,8 +4,15 @@ import { readErrorText } from '~/web3/errors/error-text'
 import { isUserRejectedWalletError, walletTransactionError } from '~/web3/errors/wallet-error'
 
 /**
- * 链上写错误 → 用户文案（或 null 跳过 toast）。
- * 对照表 SSOT：`error-messages.ts`；调用方传入当前 i18n 包，禁自建各轨文案袋。
+ * 链上写错误 → 用户文案（或 null 跳过 toast）
+ *
+ * 文案对照表集中在 `error-messages.ts`；调用方传入当前 i18n 包，
+ * 禁止在调用方各自维护文案。
+ *
+ * @param error 待映射的错误
+ * @param t 当前 i18n 文案包
+ * @returns 用户可见文案；用户主动拒绝或错误为空时返回 null
+ * @see 手册 §19 常见错误与前端提示
  */
 export function getErrorMessage(error: unknown, t: AppMessagesBundle): string | null {
   if (error == null) return null

@@ -8,7 +8,7 @@ import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 
-/** Connect warm tokens — Trade/Flash sell faces (no allowances). */
+/** 连接后需暖热的代币——Trade/Flash 卖出面（无需授权）。 */
 const CONNECT_WARM_TOKENS: readonly Address[] = [
   BSC_CONTRACTS.agx,
   BSC_CONTRACTS.usd1,
@@ -18,8 +18,8 @@ const CONNECT_WARM_TOKENS: readonly Address[] = [
 ]
 
 /**
- * Prefetch bind + core ERC20 balances when wallet is ready.
- * Uses parallel `prefetchQuery` (atomic keys); Multicall3 left optional.
+ * 钱包就绪后预取推荐绑定状态与核心 ERC20 余额。
+ * 使用并行 `prefetchQuery`（原子键）；Multicall3 聚合读取保持可选。
  */
 export function prefetchConnectWarm(address: string, readClient: ChainReadClient): void {
   void queryClient.prefetchQuery({
@@ -38,8 +38,8 @@ export function prefetchConnectWarm(address: string, readClient: ChainReadClient
 }
 
 /**
- * Warm inactive observers for a tab’s query roots (hover / revisit).
- * 只 refetch 已 stale 的 inactive；fresh 缓存不动。从未 fetch 的 key 无 observer → no-op。
+ * 暖热某 Tab 各查询根的未激活观察者（悬停 / 回访）。
+ * 只 refetch 已 stale 的 inactive 查询；fresh 缓存不动。从未 fetch 的 key 无观察者 → no-op。
  */
 export function prefetchTabQueries(tab: DappTab): void {
   for (const queryKey of TAB_QUERY_KEYS[tab]) {

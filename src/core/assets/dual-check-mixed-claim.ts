@@ -1,6 +1,6 @@
 import { evaluateMixedClaim, type MixedClaimBlockReason } from '~/core/assets/assets-block-reasons'
 
-/** One independent chain read assembled by the caller — never reuse as both intent and live. */
+/** 一次独立的链上快照，由调用方组装；不可同时充当 intent 与 live。 */
 export type MixedClaimSnapshot = {
   rewardAvailable: bigint
   contribution: bigint
@@ -20,8 +20,16 @@ export type DualCheckMixedClaimResult =
   | { ok: false; fail: { phase: 'intent' | 'live'; reason: MixedClaimBlockReason } }
 
 /**
- * Dual live-block for assets Mixed: frozen intent amount vs two independent snapshots.
- * Pure — no wallet, WRITE_PATH, or invalidate.
+ * Mixed 领取双重校验：对同一提交，用两次独立链上快照分别校验。
+ *
+ * intent 与 live 必须是两次独立读取，禁止复用同一份数据；若两次均通过，
+ * 则以 live 的计划索引作为提交参数。纯函数，不触达钱包、不写链、不清缓存。
+ *
+ * @param args.amount 拟领取金额
+ * @param args.intent 写前第一份快照
+ * @param args.live 写前第二份快照（作为最终提交依据）
+ * @returns 通过时返回 ok 与提交参数；否则返回失败阶段与阻断原因
+ * @see 手册 §9.3 Mixed 领奖前端流程
  */
 export function dualCheckMixedClaim(args: {
   amount: bigint

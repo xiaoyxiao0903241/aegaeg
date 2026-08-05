@@ -93,7 +93,15 @@ async function readMixedClaimSnapshot(
   }
 }
 
-/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。打开时捕获的 owner 须与 session 一致。 */
+/**
+ * Mixed 领奖写交易
+ *
+ * 写前连续读取两次链上状态做双重校验，通过后按来源路由到对应合约的
+ * 领取方法（活期 / 定期 / 债券），最后失效相关缓存。
+ * 打开弹窗时捕获的 owner 须与会话钱包一致，否则拒绝提交。
+ *
+ * @see docs/onchain-manual/contracts/rewardqueue.md
+ */
 export async function submitMixedClaim(args: {
   session: WriteSession
   owner: string
@@ -166,7 +174,15 @@ export async function submitMixedClaim(args: {
   invalidateAfterAssetsClaim()
 }
 
-/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
+/**
+ * 质押本金赎回写交易
+ *
+ * 写前重新读取链上可赎回金额并校验；活期走本金领取，定期走
+ * 定期本金领取，成功后失效相关缓存。
+ * warmup 中的仓位禁止赎回。
+ *
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
+ */
 export async function submitStakeRedeem(args: {
   session: WriteSession
   owner: string
@@ -195,7 +211,14 @@ export async function submitStakeRedeem(args: {
   invalidateAfterAssetsClaim()
 }
 
-/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
+/**
+ * 债券本金赎回写交易
+ *
+ * 写前重新读取链上可赎回金额并校验，通过后写入债券赎回，
+ * 成功后失效相关缓存。
+ *
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
+ */
 export async function submitBondRedeem(args: {
   session: WriteSession
   owner: string
@@ -218,7 +241,12 @@ export async function submitBondRedeem(args: {
   invalidateAfterAssetsClaim()
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * X 挖矿写交易通用流程
+ *
+ * 写前连续读取两次仓位状态并按规则校验，均通过后执行写操作并失效缓存；
+ * 任一校验不通过即抛对应错误码。
+ */
 async function submitXmineDualCheck(args: {
   session: WriteSession
   evaluate: (
@@ -240,7 +268,11 @@ async function submitXmineDualCheck(args: {
   invalidateAfterAssetsClaim()
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * X 挖矿奖励领取写交易：校验待领奖励与 warmup 状态后领取，成功后失效缓存
+ *
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export async function submitXmineClaim(args: { session: WriteSession }): Promise<void> {
   await submitXmineDualCheck({
     session: args.session,
@@ -255,7 +287,11 @@ export async function submitXmineClaim(args: { session: WriteSession }): Promise
   })
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * X 挖矿退出写交易：校验生效中与 warmup 的份额后发起退出，成功后失效缓存
+ *
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export async function submitXmineUnstake(args: { session: WriteSession }): Promise<void> {
   await submitXmineDualCheck({
     session: args.session,
@@ -270,7 +306,11 @@ export async function submitXmineUnstake(args: { session: WriteSession }): Promi
   })
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * X 挖矿 warmup 激活写交易：校验 warmup 状态结束后激活，成功后失效缓存
+ *
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export async function submitXmineActivateWarmup(args: { session: WriteSession }): Promise<void> {
   await submitXmineDualCheck({
     session: args.session,

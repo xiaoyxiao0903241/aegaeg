@@ -51,6 +51,13 @@ function durationDaysFromSeconds(seconds: bigint): number | null {
   return days
 }
 
+/**
+ * 读取 RewardQueue 释放计划（queuePlans）。
+ *
+ * @param readClient 链读取客户端，默认 BSC 主网
+ * @returns 释放计划数组（含 index 与时长）
+ * @see 手册 §12 RewardQueue 奖励释放队列
+ */
 export async function readReleaseQueuePlans(
   readClient: ChainReadClient = bscReadClient,
 ): Promise<DurationPlan[]> {
@@ -65,6 +72,17 @@ export async function readReleaseQueuePlans(
   }))
 }
 
+/**
+ * 读取用户释放队列汇总。
+ *
+ * 按前端四档（5/20/40/60 天）匹配链上计划写入固定槽位；链上多出的档位
+ * 仅在有余额时追加（fail-open）。每档两读合并为一次 Multicall3。
+ *
+ * @param address 钱包地址
+ * @param readClient 链读取客户端，默认 BSC 主网
+ * @returns 释放队列汇总快照
+ * @see 手册 §12 RewardQueue 奖励释放队列
+ */
 export async function readReleaseQueueSnapshot(
   address: Address,
   readClient: ChainReadClient = bscReadClient,
@@ -260,6 +278,14 @@ export function patchReleaseQueuePlan(
   return { plans, totalClaimable, totalLocked, totalReleasing }
 }
 
+/**
+ * 读取用户释放队列可领总额（getUserTotalClaimable）。
+ *
+ * @param address 钱包地址
+ * @param readClient 链读取客户端，默认 BSC 主网
+ * @returns 可领总额（wei）
+ * @see 手册 §12 RewardQueue 奖励释放队列
+ */
 export async function readReleaseQueueClaimable(
   address: Address,
   readClient: ChainReadClient = bscReadClient,
@@ -272,6 +298,16 @@ export async function readReleaseQueueClaimable(
   }) as Promise<bigint>
 }
 
+/**
+ * 读取用户本金释放（PrincipalReleaseVault）汇总。
+ *
+ * 逐仓 getRelease 经一次 Multicall3 读取，累加总量 / 已领 / 可领 / 剩余。
+ *
+ * @param address 钱包地址
+ * @param readClient 链读取客户端，默认 BSC 主网
+ * @returns 本金释放汇总；无仓位时全零
+ * @see 手册 §13 PrincipalReleaseVault 本金释放
+ */
 export async function readReleaseBufferSnapshot(
   address: Address,
   readClient: ChainReadClient = bscReadClient,
@@ -347,7 +383,7 @@ export async function readReleaseBufferSnapshot(
   }
 }
 
-/** Release 轨红点：queue 用汇总 view；buffer 用 `claimable` 短电路（不扫全表 getRelease）。 */
+/** Release 页红点：queue 用汇总 view；buffer 用 `claimable` 短电路（不扫全表 getRelease）。 */
 export async function readReleaseHasClaimable(
   address: Address,
   readClient: ChainReadClient = bscReadClient,

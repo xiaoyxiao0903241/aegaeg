@@ -13,15 +13,11 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * DApp 步骤条 — 组合式（不含 Card）：
- * `Steps` · `Item`
+ * DApp 步骤条（不含卡片）
  *
- * - 列间**不用 gap**：非末项 `pr-4`（16）做间距；圆标轨 `-mr-4` 把连线伸过 padding，圆↔圆相接
- * - 连线一律 **2px**（`h-0.5`）
- * - `start` `4301:226`：圆 26 · 文左齐 · 圆→文 12 · 题→说明 8
- * - `center` `4359:531`：圆 28 · 文居中 max≈148 · 圆→文 16 · 题→说明 4 · 贯通线首末圆心
- *
- * `activeIndex`：0-based；缺省 = 全实心说明态。
+ * 组合组件：`Steps` · `Item`。
+ * `align` 控制布局：`start` 左对齐、`center` 居中。
+ * `activeIndex`：0 起；缺省 = 全部实心说明态。
  * @see docs/foundation/component-usage.md
  */
 
@@ -87,10 +83,6 @@ function StepsRoot({
   )
 }
 
-/**
- * start PC：无 gap · 非末项 pr-4；
- * 轨 `-mr-4` 伸进 padding，[圆][h-0.5 线] 接到下一列圆左缘。
- */
 function StartDesktop({ count, children }: { count: number; children: ReactElement<ItemProps>[] }) {
   return (
     <div className="flex w-full items-start">
@@ -119,10 +111,6 @@ function StartDesktop({ count, children }: { count: number; children: ReactEleme
   )
 }
 
-/**
- * center PC：无 gap · 非末项 pr-4；圆居中于整列（含 padding 区用轨拉满）；
- * 贯通 h-0.5，inset = 半列。
- */
 function CenterDesktop({
   count,
   children,
@@ -151,7 +139,7 @@ function CenterDesktop({
             )}
             key={child.key ?? index}
           >
-            {/* 圆相对「列宽含 pr」居中：轨拉满到下一列边界 */}
+            {/* 圆在含内边距的整列内居中，连线拉满到下一列边界 */}
             <div className={cn('flex w-full justify-center', !isLast && '-mr-4')}>
               <StepBadge align="center" index={index} />
             </div>

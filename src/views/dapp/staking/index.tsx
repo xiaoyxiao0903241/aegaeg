@@ -1,3 +1,9 @@
+/**
+ * 质押模块（Tab 容器）
+ *
+ * 子视图为质押 / LP 债券 / 燃烧债券 / XMine / 计算器，
+ * 左侧表单与右侧详情随子视图联动，默认展示质押 Hub。
+ */
 import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { StakingView } from '~/shared/config/dapp-deep-links'

@@ -6,8 +6,15 @@ import type { Address } from '~/shared/config/contracts'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 
 /**
- * Atomic ERC20 balance — wallet-scoped SSOT（`queryKeys.chain.erc20Balance` + address）。
- * 展示可 keepPreviousData；决策面须看 `isPlaceholderData`（见 `decision-freshness`）。
+ * 原子 ERC20 余额查询（钱包作用域）
+ *
+ * 查询键含 token 与地址（`queryKeys.chain.erc20Balance`）。
+ * 展示可用 `keepPreviousData`；判断用数据须排除占位数据
+ * （见 `decision-freshness` 约定）。
+ *
+ * @param token 代币地址，未提供时查询禁用
+ * @param owner 持有人地址，未提供时查询禁用
+ * @param options 查询选项
  */
 export function useErc20BalanceQuery(
   token: Address | undefined,
@@ -24,8 +31,15 @@ export function useErc20BalanceQuery(
 }
 
 /**
- * Atomic ERC20 allowance — spender 进 key；非 connect prefetch。
- * 展示可 keepPreviousData；决策面须排除 placeholder。
+ * 原子 ERC20 授权额度查询
+ *
+ * spender 进查询键；非连接预热路径。
+ * 展示可用 `keepPreviousData`；判断用数据须排除占位数据。
+ *
+ * @param token 代币地址
+ * @param owner 持有人地址
+ * @param spender 被授权方地址
+ * @param options 查询选项
  */
 export function useErc20AllowanceQuery(
   token: Address | undefined,

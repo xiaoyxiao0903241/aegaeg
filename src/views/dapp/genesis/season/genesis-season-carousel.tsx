@@ -10,10 +10,10 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Genesis season card chrome.
- * Layout / color only — typography via `<Text>`.
- * Colors: `coral` selected/LIVE · `coral-emphasis` discount · `band` Ended.
- * H5 sizes via `--dapp-season-*` as display-size overrides on Text.
+ * 创世季卡样式
+ *
+ * 只负责布局与配色，字重行距跟随 Text 组件；
+ * 选中/进行中为强调色，已结束为弱化色。
  */
 export const seasonCard = tv({
   slots: {
@@ -22,9 +22,9 @@ export const seasonCard = tv({
       'w-35',
       'rounded-(--dapp-season-card-radius)',
     ],
-    /** Display size only — weight/leading/tracking from Text variant unless noted. */
+    /** 仅设置字号；字重/行高/字距跟随 Text 变体 */
     title: 'text-(length:--dapp-season-title-size) text-foreground',
-    // Figma 4151:340 — meta Regular (400) via caption; badge Medium (500) override.
+    // meta 用常规字重；badge 覆盖为中粗字重
     meta: 'm-0 text-(length:--dapp-season-meta-size) text-muted-foreground',
     metaAccent: 'text-coral-emphasis',
     radio: 'size-(--dapp-season-radio-size) rounded-[calc(var(--dapp-season-radio-size)/2)]',
@@ -107,7 +107,11 @@ function SeasonCard({
   )
 }
 
-/** 创世季卡 peek 轮播 — 卡片自管；轨 / fade / indicator 走 `Carousel`。 */
+/**
+ * 创世季卡轮播
+ *
+ * 卡片选中态自管；滚动条带、渐隐与指示器交给 Carousel 组件。
+ */
 export function GenesisSeasonCarousel({
   activePhaseIndex,
   seasons,

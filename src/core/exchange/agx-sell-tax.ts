@@ -1,10 +1,22 @@
-/** AGX sell-tax helpers — handbook `contracts/agx.md` (sellRatio / extraSellBP / crash fuse). */
+/**
+ * AGX 卖出税相关辅助函数（sellRatio / extraSellBP / 价格熔断）。
+ *
+ * @see docs/onchain-manual/contracts/agx.md
+ */
 
 import { BPS_DENOM, BPS_DENOM_NUMBER } from '~/core/exchange/bps'
 
 /**
- * Effective sell-tax bps for a non-whitelist transfer into the AGX pair.
- * Fuse on → defense tax; else base `sellRatio`.
+ * 非白名单地址向 AGX 池转账时的实际卖出税（BPS）。
+ *
+ * 价格熔断激活时用防御税率 extraSellBP，否则用基础 sellRatio。
+ * 税率越界直接抛错，避免以非法 BPS 继续交易。
+ *
+ * @param args.crashFuseActive 价格熔断是否激活
+ * @param args.sellRatio 基础卖出税率（BPS）
+ * @param args.extraSellBP 防御税率（BPS）
+ * @returns 有效卖出税（BPS）
+ * @see docs/onchain-manual/contracts/agx.md
  */
 export function agxSellTaxBps(args: {
   crashFuseActive: boolean
@@ -18,7 +30,13 @@ export function agxSellTaxBps(args: {
   return Number(raw)
 }
 
-/** Gross sell amount → amount that arrives in the pair after sell tax. */
+/**
+ * 毛卖出量 → 扣除卖出税后实际进入池子的数量。
+ *
+ * @param amountIn 毛卖出量
+ * @param taxBps 卖出税（BPS）
+ * @returns 税后进入池子的数量；金额 ≤ 0 或税率为 0 时原样返回
+ */
 export function applyAgxSellTaxToAmountIn(amountIn: bigint, taxBps: number): bigint {
   if (taxBps < 0 || taxBps >= BPS_DENOM_NUMBER) {
     throw new Error(`Invalid AGX sell tax bps: ${taxBps}`)
@@ -27,7 +45,13 @@ export function applyAgxSellTaxToAmountIn(amountIn: bigint, taxBps: number): big
   return (amountIn * BigInt(BPS_DENOM_NUMBER - taxBps)) / BPS_DENOM
 }
 
-/** True when Trade path sells AGX into the pool (fee-on-transfer sell). */
+/**
+ * 判断交易路径是否向池子卖出 AGX（走代币转账税）。
+ *
+ * @param tokenIn 输入代币地址
+ * @param agx AGX 合约地址
+ * @returns 输入为 AGX 时返回 true
+ */
 export function isAgxSellPath(tokenIn: `0x${string}`, agx: `0x${string}`): boolean {
   return tokenIn.toLowerCase() === agx.toLowerCase()
 }

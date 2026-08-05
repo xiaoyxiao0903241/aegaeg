@@ -13,8 +13,10 @@ import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 type CountdownUnits = Parameters<typeof formatPhaseCountdown>[2]
 
 /**
- * Genesis 倒计时叶子订阅：只订 nowSeconds，不拖 chain-reads 整袋。
- * 相位边界 elapsed 仍在此触发 invalidate。
+ * 创世倒计时订阅
+ *
+ * 只订阅时钟秒数，不随 chain-reads 整包重渲染；
+ * 阶段切换越过时间边界时在此触发相关缓存失效。
  */
 export function useGenesisCountdownClock(
   phases: readonly PresalePhaseOnChain[],

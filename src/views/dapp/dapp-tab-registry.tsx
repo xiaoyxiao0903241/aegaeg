@@ -58,7 +58,7 @@ function CommunityTabContent() {
   return <CommunityContent />
 }
 
-/** Sync registry — loading UX is data-driven inside tabs, not code-split Suspense. */
+/** Tab 注册表：加载交互由各 Tab 内部数据驱动，不做代码分割的 Suspense。 */
 export const dappTabEntries: readonly DappTabEntry[] = [
   { id: 'exchange', Widget: ExchangeTabWidget, Content: ExchangeTabContent },
   { id: 'assets', Widget: AssetsWidget, Content: AssetsContent },

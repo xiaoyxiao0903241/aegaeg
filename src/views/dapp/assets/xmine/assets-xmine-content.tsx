@@ -1,3 +1,8 @@
+/**
+ * X 挖矿详情页
+ *
+ * 顶部为挖矿统计指标，中部为操作记录表格，底部为 FAQ。
+ */
 import { useI18n } from '~/i18n/use-i18n'
 import { Detail } from '~/shared/components/detail'
 import {

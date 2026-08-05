@@ -20,6 +20,12 @@ function parseSlippageInput(value: string) {
   return parsed
 }
 
+/**
+ * 滑点设置弹窗
+ *
+ * 支持预设档位与手动输入，输入无效时回退到当前值；
+ * 打开时按当前滑点重置草稿。
+ */
 export function ExchangeSlippageModal({
   onConfirm,
   onOpenChange,
@@ -32,7 +38,7 @@ export function ExchangeSlippageModal({
   onConfirm: (value: number) => void
 }) {
   const { messages: t } = useI18n()
-  // Remount when opened so draft resets from current slippage without an effect.
+  // 打开时重建组件，使草稿值从当前滑点重置，免去 effect
   return open ? (
     <ExchangeSlippageModalOpen
       key={slippage}

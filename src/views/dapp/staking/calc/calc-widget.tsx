@@ -15,7 +15,7 @@ import { useCalcView } from '~/views/dapp/staking/calc/use-calc-view'
 
 const priceBox = amountBox()
 
-/** Figma calc `ptabs`/`perRow` 4462:600 — htab Chip h-28，≠ Segment 滑动轨. */
+/** 产品 / 周期 Tab 行：用 Chip 拼装，不用 Segment 滑动条 */
 function CalcHtabRow({
   ariaLabel,
   options,
@@ -51,7 +51,12 @@ function CalcHtabRow({
   )
 }
 
-/** Local-only calculator — zero chain writes; left inputs live-sync right rail. */
+/**
+ * 收益率计算器（左栏表单）
+ *
+ * 纯本地计算，不发起任何链上写操作；
+ * 产品 / 周期 / 金额 / 价格 / 天数变化时实时联动右侧结果。
+ */
 export function CalcWidget() {
   const vm = useCalcView()
   const { t } = vm
@@ -70,7 +75,6 @@ export function CalcWidget() {
         subtitle={t.staking.calc.intro}
         title={t.staking.calc.title}
       />
-      {/* Figma `form` 4462:599 内组 gap-16；CTA 另用 mt-6 ≡ form→bigBtn gap-24 */}
       <DappWidgetStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
@@ -122,7 +126,7 @@ export function CalcWidget() {
               {t.staking.calc.priceCurrent.replace('{price}', vm.spotLabel)}
             </Text>
           </div>
-          {/* Reuse AmountBox headerOutside chrome — figure token via Input amount */}
+          {/* 复用 AmountBox 外部标签样式，价格输入仍用 Input */}
           <Card as="div" className={priceBox.rootOutside()} surface="outlined">
             <div className={priceBox.body()}>
               <Input
@@ -157,7 +161,6 @@ export function CalcWidget() {
           />
         </div>
 
-        {/* Figma `bigBtn` 4462:641 — py-4 + text-base/leading-5 合成；清 density min-h */}
         <DappActionRow className="mt-6">
           <DappActionButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base leading-5 text-white"

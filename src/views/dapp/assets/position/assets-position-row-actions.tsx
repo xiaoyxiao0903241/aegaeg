@@ -1,7 +1,7 @@
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { cn } from '~/shared/lib/utils'
 
-/** Claim + redeem/unlock pair shared by stake/bond position cards. */
+/** 仓位卡的领取 + 赎回 / 解锁操作按钮组，质押与债券卡共用 */
 export function AssetsPositionRowActions({
   canClaim,
   canRedeem,
@@ -36,7 +36,6 @@ export function AssetsPositionRowActions({
       <DappActionButton
         className={cn(
           'h-7 min-h-7',
-          // 稿：禁用次按钮 page 底 #f5f6f8 + muted 40%；可点赎回 14 Medium ink
           redeemEnabled ? 'text-sm' : 'text-xs disabled:bg-muted disabled:text-foreground/40',
         )}
         density="inverse"

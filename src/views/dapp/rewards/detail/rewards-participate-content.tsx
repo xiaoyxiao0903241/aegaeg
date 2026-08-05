@@ -1,3 +1,9 @@
+/**
+ * 参与奖详情页
+ *
+ * 顶部统计瓦片（总奖励、我的位置、贡献、下次发放），
+ * 下方为参与奖励记录表、邀请人信息表与 FAQ。
+ */
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
@@ -41,7 +47,7 @@ export function RewardsParticipateContent() {
     <Detail>
       <Section>
         <Section.Title>{participate.dataTitle}</Section.Title>
-        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
+        {/* jscpd:ignore-start — 统计瓦片页内拼装（禁再抽统一组件） */}
         <OverviewGrid columns={2}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
@@ -72,7 +78,7 @@ export function RewardsParticipateContent() {
 
       <Section>
         <Section.Title>{participate.recordsTitle}</Section.Title>
-        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Body
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}

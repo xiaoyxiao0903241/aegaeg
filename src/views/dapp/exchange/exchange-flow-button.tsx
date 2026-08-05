@@ -49,7 +49,7 @@ type ExchangeFlowButtonProps = {
   onClick?: () => void
 }
 
-/** Trade flip / Flash divider — 34×34 control chrome. Children = glyph only. */
+/** 方向切换 / 翻转按钮。 */
 export function ExchangeFlowButton({
   children,
   className,
@@ -80,8 +80,9 @@ export function ExchangeFlowButton({
 }
 
 /**
- * Figma burn `4434:429` chevCircle — full 34×34 asset (border + single chevron).
- * Do **not** wrap in `ExchangeFlowButton` (asset already includes chrome).
+ * 单向流程指示（销毁、闪兑 USDT 等不可翻转场景）
+ *
+ * 完整箭头图片自带外观，直接渲染，勿再包方向切换按钮。
  */
 export function ExchangeOneWayFlowIndicator({ className }: { className?: string }) {
   return (

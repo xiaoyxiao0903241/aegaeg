@@ -5,9 +5,10 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 右栏数据卡 — 组合式：
- * `Tile` 壳 · `Tile.Label`（可嵌 `Tooltip.Info`）· 主值 children · 可选 `Tile.Note`。
- * Note = 主值下另起一行说明；同行内联旁注仍进主值 children。禁 layout variant。
+ * 右栏数据卡，组合组件：
+ * `Tile` 容器 · `Tile.Label`（可嵌 `Tooltip.Info`）· 主值 children · 可选 `Tile.Note`。
+ * Note = 主值下另起一行说明；同行内联旁注仍进主值 children。禁用布局 variant。
+ *
  * @see docs/foundation/component-usage.md 右栏数据卡
  */
 function TileRoot({ children, className }: { children: ReactNode; className?: string }) {

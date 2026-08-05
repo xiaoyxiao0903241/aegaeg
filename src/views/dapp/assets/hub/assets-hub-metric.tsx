@@ -8,7 +8,7 @@ function renderMetric(node: ReactNode) {
   return typeof node === 'string' ? <CountValue text={node} /> : node
 }
 
-/** Icon + primary value + approx used in assets hub overview cards. */
+/** 带币种图标的指标项：标签 + 图标 + 主值 + 约值 */
 export function AssetsHubMetricWithIcon({
   label,
   icon,
@@ -21,7 +21,6 @@ export function AssetsHubMetricWithIcon({
   approx: ReactNode
 }) {
   return (
-    // Figma 持仓/缓冲：label/≈ = copy13 + muted40%；主值 16 semibold（禁 support12 / text-sm）
     <div className="grid gap-0.5">
       <Text as="span" className="leading-4 text-foreground/40" variant="copy">
         {label}
@@ -41,7 +40,7 @@ export function AssetsHubMetricWithIcon({
   )
 }
 
-/** Label + value + approx without icon. */
+/** 无图标的指标项：标签 + 主值 + 约值 */
 export function AssetsHubMetricPlain({
   label,
   value,

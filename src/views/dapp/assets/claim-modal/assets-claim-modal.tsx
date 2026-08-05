@@ -15,8 +15,12 @@ import { useAssetsClaimModalView } from '~/views/dapp/assets/claim-modal/use-ass
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 
 /**
- * Mixed 领奖弹窗 — 手册 §9：贡献值门闸 + releasePlanIndex（RewardQueue 5/20/40/60）+ restakePlanIndex。
- * 稿 `4812:209`：数量 / 贡献提示 / 分流滑条 / 释放·复投下拉（含税率）/ CTA。
+ * Mixed 领奖弹窗
+ *
+ * 内容自顶向下：可领数量与贡献提示、分流滑条、释放 / 复投周期下拉（含税率）、确认 CTA。
+ * 贡献值不足或释放 / 复投计划未就绪时展示拦截说明并禁写。
+ *
+ * @see docs/onchain-manual/contracts/rewardqueue.md
  */
 export function AssetsClaimModal({
   amountLabel,
@@ -34,7 +38,7 @@ export function AssetsClaimModal({
   positionLabel: string
   amountLabel: string
 }) {
-  // 关闭时 call site 会清空 target/owner；缓存上一帧以免 Portal 被立刻拆掉、关掉关闭动画
+  // 关闭时调用方会清空 target/owner；这里缓存上一帧，避免弹窗被立刻卸载导致关闭动画中断
   const heldRef = useRef<{
     owner: string
     target: MixedClaimTarget

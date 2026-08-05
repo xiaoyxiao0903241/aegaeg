@@ -1,6 +1,6 @@
 import { ApiError } from '~/shared/api/client'
 
-/** Stable transport / client `ApiError.error` values — never show `message` to users. */
+/** 稳定的传输/客户端 `ApiError.error` 值——绝不把 `message` 直接展示给用户。 */
 export const API_TRANSPORT_ERROR = {
   NETWORK: 'NETWORK',
   TIMEOUT: 'TIMEOUT',
@@ -27,7 +27,7 @@ export function isTimeoutError(error: unknown): boolean {
   return false
 }
 
-/** Wrap fetch failures so toast paths only see `ApiError.error` codes. */
+/** 把 fetch 失败包装为 ApiError，让 toast 路径只认 `ApiError.error` 码。 */
 export function toTransportApiError(error: unknown): ApiError {
   if (isTimeoutError(error)) {
     return new ApiError({
@@ -97,8 +97,12 @@ function mapTransportCode(
 }
 
 /**
- * Map API / transport failures to i18n. Never returns `ApiError.message`.
- * Returns null when `error` is not an API/transport failure (chain resolvers handle those).
+ * 把 API / 传输失败映射为 i18n 文案，绝不返回 `ApiError.message`。
+ * 当 `error` 不属于 API/传输失败时返回 null（链上错误由链上解析处理）。
+ *
+ * @param error 待映射的错误对象
+ * @param messages 各场景文案表
+ * @returns 面向用户的错误文案
  */
 export function apiUserFacingError(
   error: unknown,

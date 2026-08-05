@@ -1,2 +1,2 @@
-/** EIP-55 zero address — unbound / empty mapping sentinel (not a deployment). */
+/** EIP-55 零地址——未绑定 / 空映射的哨兵值（非真实部署地址）。 */
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const

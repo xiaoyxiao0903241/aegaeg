@@ -3,7 +3,14 @@ import { writeCtaDisabled } from '~/core/wallet/write-cta'
 
 type StakingMoneyBlock = Parameters<typeof evaluateWriteButtonPhase>[0]['moneyBlock']
 
-/** Shared locked / canSubmit / writePhase for stake + bond amount writes. */
+/**
+ * 质押 / 债券写入按钮状态判定（共享）
+ *
+ * 授权不足不算阻塞：CTA 可点，由 approveThenLiveWrite 内联授权。
+ *
+ * @param args 写入状态、金额、阻塞原因等输入
+ * @returns locked / canSubmit / writePhase 三态
+ */
 export function evaluateStakingAmountWrite(args: {
   unknownReceiptLocked: boolean
   isSubmitting: boolean
@@ -38,7 +45,13 @@ export function evaluateStakingAmountWrite(args: {
   return { locked, canSubmit, writePhase }
 }
 
-/** Unlock-then-edit amount helpers shared by stake / bond widgets. */
+/**
+ * 编辑金额前先解锁（stake / bond 共用）
+ *
+ * @param unlock 解除未知回执锁定
+ * @param amountInput 金额输入控制
+ * @returns 包一层解锁的 setAmount / fillMax
+ */
 export function bindUnlockedAmountEditors(
   unlock: () => void,
   amountInput: {

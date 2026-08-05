@@ -18,12 +18,10 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 右栏内容节（组合式）— `Section` · `Title` · `Description`
+ * 右栏内容节
  *
- * 节间距归 Detail（PC 34 / H5 24）；节内节奏一律 `gap-4`（Title / Description / body）。
- * 标题字阶 ≡ `Text variant="section"`（禁 call site className 改字阶/间距）。
- * `collapsible`：标题行可折叠；**必然** reveal；settle 后 `overflow-visible`。
- * 折叠箭头 ≡ `CollapseChevron`（与 FAQ 同 SSOT）。
+ * 组合组件：`Section` · `Title` · `Description`。
+ * 可折叠：点击标题收起 / 展开正文。
  *
  * @see docs/foundation/component-usage.md
  */
@@ -45,10 +43,10 @@ function useSectionContext() {
 
 type SectionProps = HTMLAttributes<HTMLElement> & {
   children: ReactNode
-  /** 标题行可折叠；隐含 reveal + settle 后 overflow-visible */
+  /** 标题行可折叠：点击收起 / 展开正文 */
   collapsible?: boolean
   defaultOpen?: boolean
-  /** 进场 reveal（非折叠节可选；折叠节必然 reveal） */
+  /** 可选进场动画（折叠节默认带动画） */
   reveal?: boolean
 }
 
@@ -176,7 +174,7 @@ type DescriptionProps = {
   children: ReactNode
 }
 
-/** 节说明：copy · foreground@40%；与 Title/body 间距由 Section gap-4 承担 */
+/** 节说明文字 */
 function Description({ children }: DescriptionProps) {
   return (
     <Text as="p" className="m-0 text-foreground/40" variant="copy">

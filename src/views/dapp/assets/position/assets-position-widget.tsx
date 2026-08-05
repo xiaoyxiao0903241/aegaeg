@@ -19,6 +19,7 @@ import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-co
 
 export type { AssetsProduct }
 
+/** 仓位产品侧栏：报价 / 排序工具条 + 持仓卡列表（含空态、加载态），及领奖 / 赎回弹窗 */
 export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)

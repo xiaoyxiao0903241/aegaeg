@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 
-/** Run quoted exchange submit and toast success when ok. */
+/** 执行兑换提交，成功后弹出成功提示。 */
 export async function submitExchangeWithSuccessToast(
   submit: () => Promise<{ ok: boolean }>,
   successMessage: string,

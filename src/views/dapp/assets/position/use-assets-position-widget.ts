@@ -82,6 +82,12 @@ function compareBySort(
   }
 }
 
+/**
+ * 仓位产品侧栏的状态编排
+ *
+ * 管理计价币种与排序、持仓分页、领奖与赎回弹窗状态，
+ * 并组装链上写交易（赎回、warmup 激活）与成功后失效缓存。
+ */
 export function useAssetsPositionWidget(product: AssetsProduct) {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()

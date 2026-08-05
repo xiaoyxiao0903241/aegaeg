@@ -28,7 +28,14 @@ import {
 } from '~/web3/auth/session'
 import { isUserRejectedWalletError } from '~/web3/contract-error-message'
 
-/** 将 classifyLoginFailure 结果映射为 AuthStore 可持久化的 sentinel。 */
+/**
+ * 将 classifyLoginFailure 的结果映射为 AuthStore 可持久化的 sentinel 值。
+ *
+ * 临时性失败（transient）返回 null，不落盘，避免误判。
+ *
+ * @param error 登录过程中的异常
+ * @returns 错误 sentinel 字符串；transient 返回 null
+ */
 export function toLoginErrorSentinel(error: unknown): string | null {
   switch (classifyLoginFailure(error)) {
     case 'banned':
@@ -59,7 +66,13 @@ export interface WalletLoginResult {
   signature: string
 }
 
-/** SIWE first; fall back to plain text for wallets that reject EIP-4361 payloads. */
+/**
+ * 返回尝试的登录消息格式顺序。
+ *
+ * 优先 SIWE；钱包拒绝 EIP-4361 载荷时回退为简版明文。
+ *
+ * @returns 格式数组，环境配置为 simple 时仅含 'simple'
+ */
 export function loginMessageFormats(): LoginMessageFormat[] {
   return loginMessageFormat() === 'simple' ? ['simple'] : ['siwe', 'simple']
 }
@@ -69,6 +82,15 @@ function isLoginSignatureRejected(error: unknown): boolean {
   return shouldClearCachedLoginSignature(error)
 }
 
+/**
+ * 用签名向后端 /login 换 token 并写入会话存储。
+ *
+ * @param params.address 钱包地址
+ * @param params.message 已签名的消息
+ * @param params.signature 签名
+ * @param params.storage 会话存储
+ * @returns 后端返回的 token
+ */
 async function exchangeLoginSignature({
   address,
   message,
@@ -97,6 +119,19 @@ async function exchangeLoginSignature({
   return token
 }
 
+/**
+ * 依次尝试各消息格式完成签名换 token，成功后缓存签名。
+ *
+ * 钱包拒绝签名仅在最后一种格式时抛错；后端拒绝签名则切换下一种格式。
+ *
+ * @param params.account 钱包账户
+ * @param params.chainId 当前链 ID
+ * @param params.domain 站点域名
+ * @param params.signMessage 签名回调
+ * @param params.storage 会话存储
+ * @param params.signatureStorage 签名缓存
+ * @returns 登录结果（token / message / signature）
+ */
 async function signAndExchangeLogin({
   account,
   chainId,
@@ -173,6 +208,20 @@ async function signAndExchangeLogin({
   throw lastError instanceof Error ? lastError : new Error('Login failed')
 }
 
+/**
+ * 用钱包完成登录：签名消息并向后端换取 token。
+ *
+ * 优先复用未过期的缓存签名；无缓存或签名被后端拒绝时，重新走
+ * 签名 → 换 token 流程。token 存入会话存储。
+ *
+ * @param params.account 钱包账户
+ * @param params.chainId 当前链 ID
+ * @param params.domain 站点域名
+ * @param params.signMessage 签名回调，默认用 account.signMessage
+ * @param params.storage 会话存储，默认 localStorage
+ * @param params.signatureStorage 签名缓存，默认 localStorage
+ * @returns 登录结果（token / message / signature）
+ */
 export async function loginWithWallet({
   account,
   chainId,
@@ -215,6 +264,15 @@ export async function loginWithWallet({
   })
 }
 
+/**
+ * 读取指定地址的有效会话。
+ *
+ * 会话必须属于该地址且 JWT 未过期，否则视为无会话。
+ *
+ * @param address 钱包地址，可为 undefined
+ * @param storage 会话存储，默认 localStorage
+ * @returns 有效会话；无或已过期返回 null
+ */
 export function readWalletSession(
   address: string | undefined,
   storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),

@@ -23,6 +23,7 @@ React + Vite + TypeScript · AEGIS X DApp（BSC）。
 | 后端 API                 | [`backend-api/`](./backend-api/)                                                     |
 | Figma 页 nodeId          | [`figma-pages.md`](./figma-pages.md)                                                 |
 | UI token / 组件          | [`foundation/`](./foundation/)                                                       |
+| 代码注释                 | [`foundation/comment-conventions.md`](./foundation/comment-conventions.md)           |
 | Matt 决策 / 票 / handoff | [`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/) |
 
 ## 手册优先级

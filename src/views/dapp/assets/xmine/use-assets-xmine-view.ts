@@ -17,6 +17,12 @@ import {
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
+/**
+ * X 挖矿侧栏的状态编排
+ *
+ * 管理报价币与排序、挖矿仓位查询、领取 / 激活 / 退出写交易
+ * 及退出确认弹窗状态。
+ */
 export function useAssetsXmineView() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)

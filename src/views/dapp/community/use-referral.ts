@@ -31,6 +31,14 @@ function readPendingReferrerFromEnvironment(): Address | null {
   return parseReferrerFromSearch(window.location.search) ?? readStoredPendingReferrer()
 }
 
+/**
+ * 推荐关系状态与绑定操作
+ *
+ * 链上读取是否已绑定、推荐人与直邀数；绑定前校验目标推荐人已绑定，
+ * 成功后失效相关查询缓存。绑定有 5 秒冷却，防止重复提交。
+ *
+ * @see docs/onchain-manual/contracts/referral.md
+ */
 export function useReferral() {
   const account = useActiveAccount()
   const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
@@ -38,7 +46,7 @@ export function useReferral() {
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const bindSucceededRef = useRef(false)
-  // 仅软预检错误；链上 / unknown 由信封 toast。
+  // 这里只存软预检错误；链上错误与未知结果由统一提示展示
   const [error, setError] = useState<unknown>(null)
 
   const address = account?.address

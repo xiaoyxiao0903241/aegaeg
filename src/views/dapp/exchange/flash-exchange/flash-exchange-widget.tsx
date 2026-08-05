@@ -1,3 +1,10 @@
+/**
+ * 闪电兑换交互面板
+ *
+ * 顶部币对分段（gAGX / USDT），中间为卖出 / 买入金额区，
+ * gAGX 对可翻转方向；底部信息行列出汇率、路由与提供方合约链接。
+ * 未连接钱包时展示连接引导。
+ */
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'

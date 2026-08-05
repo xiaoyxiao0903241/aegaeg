@@ -41,7 +41,14 @@ export type ReleaseQueueRowView = {
   progressWidth: string
 }
 
-/** Release queue reads + per-plan pending state + claim toast → everything `ReleaseQueueWidget` renders. */
+/**
+ * 释放队列交互面板状态
+ *
+ * 逐档位读取链上快照，组合领取门闸与进度文案；
+ * 领取成功后提示并重读快照，刷新只重读被点档位并回填缓存。
+ *
+ * @see docs/onchain-manual/contracts/principalreleasevault.md
+ */
 export function useReleaseQueueView() {
   const { messages: t } = useI18n()
   const setView = useReleaseViewStore((state) => state.setView)
@@ -108,7 +115,7 @@ export function useReleaseQueueView() {
     setRefreshingDays(days)
     try {
       const hint = queueQuery.data?.plans.find((p) => p.durationDays === days)?.planIndex ?? -1
-      // 只读被点档；有 planIndex 时 1× Multicall，不碰其它档
+      // 只重读被点击的档位；有 planIndex 时用单次 Multicall，不读其它档
       const row = await readReleaseQueuePlanByDays(address as Address, days, hint)
       queryClient.setQueryData(
         queryKeys.chain.releaseQueueOf(address),

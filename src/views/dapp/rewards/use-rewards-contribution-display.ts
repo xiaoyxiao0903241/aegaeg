@@ -13,7 +13,15 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-/** Wallet contribution snapshot for rewards hub/detail stat cards. */
+/**
+ * 奖励页统计卡所需的贡献快照
+ *
+ * 会话就绪时优先取后端可用贡献（agx-contribution/summary）；
+ * 否则回退链上贡献快照，并按未连接 / 加载中 / 有值出占位文本。
+ *
+ * @param walletReady 钱包是否就绪
+ * @see docs/backend-api/api.md #agx-contribution/summary
+ */
 export function useRewardsContributionDisplay(walletReady: boolean) {
   const { sessionReady } = useDappShell()
   const account = useActiveAccount()

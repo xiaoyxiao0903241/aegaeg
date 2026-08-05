@@ -69,7 +69,7 @@ export function releaseHashForView(view: ReleaseView): string {
   return hashForTabView('release', view, 'hub')
 }
 
-/** Card → contract key (grilling 14 / ticket 08). */
+/** 奖励卡片 → 对应合约 key 的映射。 */
 export const REWARDS_CARD_CONTRACT = {
   lucky: 'LuckyPool',
   referral: 'CommunityFund',
@@ -101,10 +101,10 @@ function emptyViews(tab: DappTab, patch: Partial<DappLocation> = {}): DappLocati
 }
 
 /**
- * Deep-link surface for exchange + staking + assets + rewards + release subviews.
- * Hash forms: `#exchange` | `#exchange/burn` | `#staking/stake` | `#assets/lpbond` | `#rewards/lucky` | `#release/queue` | …
- * Legacy: `#swap` → exchange hub.
- * Release subviews are `hub|queue|buffer` only — never `rewards`.
+ * 各 Tab 子视图的深链接解析（exchange / staking / assets / rewards / release）。
+ * hash 形式：`#exchange` | `#exchange/burn` | `#staking/stake` | `#assets/lpbond` | `#rewards/lucky` | `#release/queue` | …
+ * 旧版：`#swap` 映射到 exchange hub。
+ * release 子视图只有 `hub|queue|buffer`，不接受 `rewards`。
  */
 export function dappLocationFromHash(hash: string): DappLocation | null {
   const raw = hash.replace(/^#/, '').trim()
@@ -142,7 +142,7 @@ export function dappLocationFromHash(hash: string): DappLocation | null {
 
   if (tabPart === 'release') {
     if (!viewPart) return emptyViews('release')
-    // Reject legacy prototype name `rewards` as a release subview.
+    // 拒绝旧原型名 `rewards` 作为 release 子视图
     if (viewPart === 'rewards' || !isReleaseView(viewPart)) {
       return emptyViews('release', { releaseView: 'hub' })
     }
@@ -152,12 +152,12 @@ export function dappLocationFromHash(hash: string): DappLocation | null {
   return emptyViews(tabPart)
 }
 
-/** Map URL hash → tab; legacy `#swap` and `#exchange/<view>` supported. */
+/** 由 URL hash 解析出当前 Tab；兼容旧版 `#swap` 与 `#exchange/<view>`。 */
 export function tabFromHash(hash: string): DappTab | null {
   return dappLocationFromHash(hash)?.tab ?? null
 }
 
-/** Initial DApp tab from `window.location.hash` (browser-only). */
+/** 从 `window.location.hash` 得到初始 Tab（仅浏览器环境）。 */
 export function getInitialTab(): DappTab {
   return tabFromHash(window.location.hash.slice(1)) ?? 'exchange'
 }

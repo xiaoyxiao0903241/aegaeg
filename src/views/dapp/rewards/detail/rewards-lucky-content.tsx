@@ -1,3 +1,10 @@
+/**
+ * 幸运奖详情页
+ *
+ * 顶部展示今日奖池、参与资格与累计中奖；
+ * 中部为 Chainlink VRF 随机开奖说明卡；
+ * 下方按开奖日期查看中奖名单与我的参与记录，底部为 FAQ。
+ */
 import { dappAssets } from '~/app/assets'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
@@ -80,7 +87,6 @@ export function RewardsLuckyContent() {
     <Detail>
       <Section>
         <Section.Title>{lucky.dataTitle}</Section.Title>
-        {/* Figma 4395:223 tiles：label copy13 medium body70 · value headline16 */}
         <OverviewGrid columns={3}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
@@ -110,7 +116,7 @@ export function RewardsLuckyContent() {
       </Section>
 
       <Section>
-        {/* Figma 4395:236：#1c2234 → token dark-panel（≠ Card inverse 的 dark #111625） */}
+        {/* VRF 卡片：自定义 dark-panel 底色，区别于 Card inverse 默认深色 */}
         <Card
           surface="inverse"
           className="flex flex-col gap-3.5 rounded-2xl bg-dark-panel px-5.5 py-5 shadow-sm"

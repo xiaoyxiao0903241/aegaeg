@@ -11,6 +11,7 @@ const dappWidgetConnectFooter = tv({
   },
 })
 
+/** 操作区底部预留间距后放置内容（PC 下贴底，H5 下跟随内容）。 */
 function DappWidgetConnectFooter({
   children,
   className,
@@ -27,6 +28,7 @@ function DappWidgetConnectFooter({
   )
 }
 
+/** 操作区底部贴底的「连接钱包」引导卡容器。 */
 export function DappWidgetConnectPromo({ className }: { className?: string }) {
   return (
     <DappWidgetConnectFooter className={className}>

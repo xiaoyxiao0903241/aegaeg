@@ -3,8 +3,10 @@ import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 
 /**
- * Staking TVL/MCap 历史图 — Figma chart-card `4585:510`。
- * Range / 空态文案在本件；序列由 call site 传入（索引源未通时为空）。
+ * 质押 TVL / 市值历史图
+ *
+ * 范围切换与空态文案在本组件内；
+ * 序列数据由调用方传入（数据源未接通时为空数组，展示空态）。
  */
 export function StakingTvlChart({
   chartRange,
@@ -33,7 +35,6 @@ export function StakingTvlChart({
     <Chart surface={surface}>
       <Chart.Header>
         <div className="flex items-center gap-2">
-          {/* Figma chart-card `4585:575` h3=20 → text-xl；delta caption 13 → copy */}
           <Text as="strong" className="text-xl/none font-semibold" variant="copy">
             {valueLabel}
           </Text>

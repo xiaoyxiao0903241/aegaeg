@@ -132,8 +132,11 @@ type MatchRule = {
 }
 
 /**
- * 链上 revert 名 / selector / 模糊文本 → i18n。
- * 更具体的规则在前；重名时以合约文档语义为准（盖过手册 §19 笼统归并）。
+ * 链上 revert 名 / selector / 模糊文本 → i18n
+ *
+ * 更具体的规则在前；重名时以合约文档语义为准，盖过 §19 的笼统归并。
+ *
+ * @see 手册 §19 常见错误与前端提示
  */
 export const REVERT_MATCH_RULES: MatchRule[] = [
   // —— ERC20 ——
@@ -279,10 +282,10 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.rewards.claimErrors.noOrder,
   },
 
-  // —— 手册 §19 共用 tip（用户可见）——
+  // —— 手册 §19 共用提示（用户可见）——
   // ErrorStakeNotApproved = 未绑定（活期/锁仓质押）。
-  // ErrorNotApproved = bond 未授权；与 §19 笼统归并不同，按合约文档分轨。
-  // 钱包仅嵌 revert hex、无 errorName 时按 selector fail-closed。
+  // ErrorNotApproved = bond 未授权；与 §19 笼统归并不同，按合约文档分别归类。
+  // 钱包只回传 revert hex、没有 errorName 时，按 selector 兜底归类，避免误判为未匹配。
   {
     id: 'stake-not-approved',
     match: nameOrSelector(/ErrorStakeNotApproved/i, '0xaa6a22bc'),

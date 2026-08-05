@@ -4,8 +4,8 @@ import { requireEnvAddress } from '~/shared/config/env'
 export type Address = `0x${string}`
 
 /**
- * EIP zero address — protocol sentinel (unbound referrer / disabled slot marker),
- * not a deployment address and not an env fallback. SSOT: `core/address`.
+ * EIP 零地址——协议哨兵值（未绑定推荐人 / 禁用槽位标记）。
+ * 不是部署地址，也不作为环境变量兜底。定义唯一来源：`core/address`。
  */
 export const ZERO_ADDRESS = CORE_ZERO_ADDRESS satisfies Address
 
@@ -14,84 +14,84 @@ export interface BscContracts {
   wbnb: Address
   usd1: Address
   usdt: Address
-  /** PancakeSwap V2 Router — handbook §7.1 Trade */
+  /** PancakeSwap V2 路由器——手册 §7.1 PancakeRouter 买 AGX */
   pancakeRouter: Address
-  /** Pancake V2 AGX/USD1 pair (manual deployment key `PancakePair`) */
+  /** Pancake V2 AGX/USD1 交易对（部署 key 为 `PancakePair`） */
   pancakePair: Address
-  /** PreSale proxy — Genesis purchase */
+  /** PreSale 代理——Genesis 购买入口 */
   preSale: Address
   multicall3: Address
-  /** Referral proxy — bind referrer / network tree */
+  /** Referral 代理——绑定推荐人 / 网络树 */
   referral: Address
-  /** RewardClaimer proxy — team reward claim */
+  /** RewardClaimer 代理——团队奖励领取 */
   rewardClaimer: Address
-  /** CommunityFund proxy — referral / genesis development fund claim */
+  /** CommunityFund 代理——推荐 / Genesis 发展基金领取 */
   communityFundVault: Address
-  /** DaoPool — DAO Mixed signed claim (manual §9.5) */
+  /** DaoPool——DAO Mixed 签名领取（手册 §9.5 签名奖励） */
   daoPool: Address
-  /** IncentivePool — participation signed claim */
+  /** IncentivePool——参与奖签名领取 */
   incentivePool: Address
-  /** MarketFund — development stipend signed claim */
+  /** MarketFund——发展津贴签名领取 */
   marketFund: Address
-  /** LuckyPool — lucky Mixed claim (manual §14; may be paused) */
+  /** LuckyPool——幸运 Mixed 领取（手册 §14 LuckyPool 去中心化抽奖；可能暂停） */
   luckyPool: Address
-  /** Usd1Swap proxy — USDT → USD1 flash swap */
+  /** Usd1Swap 代理——USDT → USD1 兑换（手册 §7.2 Usd1Swap） */
   usd1Swap: Address
-  /** AGX token (manual deployment key `AGX`) */
+  /** AGX 代币（部署 key 为 `AGX`） */
   agx: Address
-  /** gAGX / RewardGAGX proxy (manual deployment key `RewardGAGX`) */
+  /** gAGX / RewardGAGX 代理（部署 key 为 `RewardGAGX`） */
   gagx: Address
-  /** XToken (manual deployment key `XToken`) */
+  /** XToken（部署 key 为 `XToken`） */
   xToken: Address
-  /** AgxContributionSwap — burn AGX → contribution points (manual §9.2) */
+  /** AgxContributionSwap——销毁 AGX 兑换贡献值（手册 §9.2 贡献值页面） */
   agxContributionSwap: Address
-  /** Turbine vesting hub — unlock / claim gAGX (manual §16) */
+  /** Turbine 配额中心——解锁 / 领取 gAGX（手册 §16 Turbine） */
   turbine: Address
-  /** LiquidStaking — AGX flexible stake (manual §8.2) */
+  /** LiquidStaking——AGX 活期质押（手册 §8.2 活期 LiquidStaking） */
   liquidStaking: Address
-  /** LockedStaking 180d (manual §8.3) */
+  /** LockedStaking 180 天（手册 §8.3 定期 LockedStaking） */
   lockedStaking180d: Address
-  /** LockedStaking 360d */
+  /** LockedStaking 360 天 */
   lockedStaking360d: Address
-  /** LockedStaking 540d */
+  /** LockedStaking 540 天 */
   lockedStaking540d: Address
-  /** BondHelper — LP / Burn bond zap entry (manual §10) */
+  /** BondHelper——LP / Burn 债券一键入口（手册 §10 债券 Bond / BurnBond） */
   bondHelper: Address
-  /** BondDepository 180d */
+  /** BondDepository 180 天 */
   bondDepository180d: Address
-  /** BondDepository 360d */
+  /** BondDepository 360 天 */
   bondDepository360d: Address
-  /** BondDepository 540d */
+  /** BondDepository 540 天 */
   bondDepository540d: Address
-  /** BurnBondDepository 180d */
+  /** BurnBondDepository 180 天 */
   burnBondDepository180d: Address
-  /** BurnBondDepository 360d */
+  /** BurnBondDepository 360 天 */
   burnBondDepository360d: Address
-  /** BurnBondDepository 540d */
+  /** BurnBondDepository 540 天 */
   burnBondDepository540d: Address
-  /** XStakingPool — gAGX mining stake (manual §15) */
+  /** XStakingPool——gAGX 挖矿质押（手册 §15 XStakingPool X 挖矿） */
   xStakingPool: Address
-  /** RewardQueue — Mixed release vesting (manual §12) */
+  /** RewardQueue——Mixed 线性释放队列（手册 §12 RewardQueue 奖励释放队列） */
   rewardQueue: Address
-  /** RestakeConfig — Mixed restake plan index (manual §9) */
+  /** RestakeConfig——Mixed 复投计划索引（手册 §9 贡献值与 Mixed 领奖） */
   restakeConfig: Address
-  /** PrincipalReleaseVault — principal exit buffer (manual §13) */
+  /** PrincipalReleaseVault——本金释放缓冲池（手册 §13 PrincipalReleaseVault 本金释放） */
   principalReleaseVault: Address
-  /** AccountMigrationManager — §17; this round migrationEnabled=false */
+  /** AccountMigrationManager——手册 §17 账户迁移；本轮 migrationEnabled=false */
   accountMigrationManager: Address
-  /** sAGX — rebasing stake share (manual StakingPool / sAGX) */
+  /** sAGX——rebase 型质押份额（合约文档 docs/onchain-manual/contracts/sagx.md） */
   sagx: Address
-  /** StakingPool — epoch / pool AGX TVL (manual StakingPool) */
+  /** StakingPool——周期 / 池 AGX 总量（合约文档 docs/onchain-manual/contracts/stakingpool.md） */
   stakingPool: Address
-  /** Treasury — totalReserves hub chrome (manual Treasury) */
+  /** Treasury——总储备数据来源（合约文档 docs/onchain-manual/contracts/treasury.md） */
   treasury: Address
 }
 
 /**
- * BSC contract addresses — **fail-closed**.
- * Every field comes from `VITE_BSC_*` env. Missing / invalid → throw (no code defaults).
- * Address catalog SSOT: `docs/onchain-manual/00-addresses.md`.
- * Env template: `env/manual.bsc.addresses.env` + `.env.example`.
+ * BSC 合约地址。
+ * 每个字段均来自 `VITE_BSC_*` 环境变量；缺失 / 非法即抛错（不提供代码默认值）。
+ * 地址目录唯一来源：`docs/onchain-manual/00-addresses.md`。
+ * 环境变量模板：`env/manual.bsc.addresses.env` + `.env.example`。
  */
 export const BSC_CONTRACTS = {
   chainId: 56,

@@ -32,25 +32,27 @@ function openSubview<T extends string>(
   syncHash(hashForView(view))
 }
 
-/** Navigate other rails to a concrete exchange subview (e.g. rewards → burn). EX-B4. */
+/** 跳转到指定 exchange 子视图（如从 rewards 页打开 burn）。 */
 export function openExchangeView(view: ExchangeView) {
   openSubview(useExchangeViewStore.getState().setView, exchangeHashForView, view)
 }
 
-/** Navigate to a concrete assets subview (hub cards / empty CTAs / deep links). */
+/** 跳转到指定 assets 子视图（hub 卡片 / 空态按钮 / 深链接）。 */
 export function openAssetsView(view: AssetsView) {
   openSubview(useAssetsViewStore.getState().setView, assetsHashForView, view)
 }
 
-/** Navigate to a concrete staking subview (hub mode cards / deep links). */
+/** 跳转到指定 staking 子视图（hub 模式卡片 / 深链接）。 */
 export function openStakingView(view: StakingView) {
   openSubview(useStakingViewStore.getState().setView, stakingHashForView, view)
 }
 
+/** 跳转到指定 rewards 子视图。 */
 export function openRewardsView(view: RewardsView) {
   openSubview(useRewardsViewStore.getState().setView, rewardsHashForView, view)
 }
 
+/** 跳转到指定 release 子视图。 */
 export function openReleaseView(view: ReleaseView) {
   openSubview(useReleaseViewStore.getState().setView, releaseHashForView, view)
 }

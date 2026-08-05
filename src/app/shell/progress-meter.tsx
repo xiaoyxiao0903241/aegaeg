@@ -1,5 +1,11 @@
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * 进度条，按 0–100 数值显示填充比例。
+ *
+ * @param label 无障碍标签
+ * @param value 进度值，越界时收拢到 0–100，非法值按 0
+ */
 export function ProgressMeter({
   className,
   label,

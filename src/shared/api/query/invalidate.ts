@@ -8,12 +8,12 @@ import { sleep } from '~/shared/lib/sleep'
 
 type SalesLogFingerprint = { total: number; firstId: number | null }
 
-/** Indexer/API page fingerprint — total + head key (tx_hash / id). */
+/** 索引器/API 页指纹——总量 + 首条键（tx_hash / id）。 */
 export type IndexerPageFingerprint = { total: number; head: string | null }
 
 type IndexerPage = { total: number; items: ReadonlyArray<{ tx_hash?: string | null }> }
 
-/** Pure: pick strongest paginated fingerprint (total, else fill head). */
+/** 纯函数：从多个分页页中取最强指纹（先比总量，再补首条 head）。 */
 export function pickIndexerPageFingerprint(
   pages: Array<IndexerPage | undefined | null>,
 ): IndexerPageFingerprint {
@@ -32,7 +32,7 @@ export function pickIndexerPageFingerprint(
   return best
 }
 
-/** Pure: whether polling should stop because a newer page appeared. */
+/** 纯函数：是否应停止轮询（出现了更新的页）。 */
 export function indexerPageAdvanced(
   baseline: IndexerPageFingerprint,
   current: IndexerPageFingerprint,
@@ -44,7 +44,7 @@ export function indexerPageAdvanced(
   return false
 }
 
-/** Pure: pick the strongest sales-log fingerprint from cached pages. */
+/** 纯函数：从缓存的销售日志分页中取最强指纹。 */
 export function pickSalesLogFingerprint(
   pages: Array<Paginated<SalesLogItem> | undefined | null>,
 ): SalesLogFingerprint {
@@ -63,7 +63,7 @@ export function pickSalesLogFingerprint(
   return best
 }
 
-/** Pure: whether polling should stop because a newer sales log appeared. */
+/** 纯函数：是否应停止轮询（出现了更新的销售日志）。 */
 export function salesLogAdvanced(
   baseline: SalesLogFingerprint,
   current: SalesLogFingerprint,
@@ -202,7 +202,7 @@ export function invalidateAfterWalletSwitch(nextAddress?: string, tab?: DappTab)
   }
 }
 
-/** User SIWE session became active — refresh API + wallet-scoped chain reads. */
+/** 用户 SIWE 会话变为活跃——刷新 API 与钱包作用域的链上读取。 */
 export function invalidateAfterAuthLogin(address?: string) {
   void invalidateApiQueries()
   invalidatePresaleChainQueries(address)
@@ -213,7 +213,7 @@ export function invalidateAfterAuthLogin(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBoundOf(address) })
 }
 
-/** Genesis phase start/end boundary crossed — refresh presale + session API. */
+/** 跨过 Genesis 阶段起止边界——刷新预售链上读取与会话 API。 */
 export function invalidateAfterGenesisPhaseTransition(address?: string) {
   invalidatePresaleChainQueries(address)
   void invalidateApiQueries()
@@ -256,7 +256,7 @@ export function refetchStaleTabQueries(tab: DappTab) {
   })
 }
 
-/** Invalidate every query that makes up the Genesis page. */
+/** 使构成 Genesis 页的全部查询失效。 */
 export function invalidateGenesisPage() {
   invalidateTabQueries('genesis')
 }
@@ -319,15 +319,15 @@ export function invalidateAfterStaking() {
   void pollStakingIndexer(baselines)
 }
 
-/** Mixed claim / redeem / xmine claim+unstake — refresh positions + plans + contribution. */
+/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划与贡献值相关查询。 */
 export function invalidateAfterAssetsClaim() {
   invalidateTabQueries('assets')
   invalidateTabQueries('staking')
 }
 
 /**
- * Queue vested claim → Turbine quota (EX-U5) + release reads.
- * Buffer claim → release + AGX balance (turbineRoot invalidation is cheap/harmless).
+ * 释放队列领取 → 可能增加 Turbine 配额 + 释放相关读取。
+ * 缓冲池领取 → 释放 + AGX 余额（turbineRoot 失效开销小、无副作用）。
  */
 export function invalidateAfterReleaseClaim() {
   invalidateTabQueries('release')

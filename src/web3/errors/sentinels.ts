@@ -40,7 +40,7 @@ export const WALLET_WRITE_ERROR = {
 /** 报价 RPC / 路由失败 → i18n `errors.quoteFailed`。 */
 export const EXCHANGE_QUOTE_FAILED = 'EXCHANGE_QUOTE_FAILED'
 
-/** Approve 后二次阻断失败（报价过期等）— 与 quoteFailed 同文案。SSOT: core。 */
+/** Approve 后二次阻断失败（报价过期等）— 与 quoteFailed 同文案；定义在 core 一处。 */
 export { EXCHANGE_SUBMIT_BLOCKED } from '~/core/exchange/exchange-sentinels'
 
 /** Flash Usd1Swap 写前阻断 → i18n `exchange.flash.blocked`。 */

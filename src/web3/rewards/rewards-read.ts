@@ -23,6 +23,7 @@ const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getUserRoundStat])
 /** 回溯闭轮上限（手册：旧轮按 ID 可查；禁只看上一轮）。 */
 const LUCKY_CLAIM_LOOKBACK = 90n
 
+/** 用户幸运奖领取快照。 */
 export type LuckyClaimSnapshot = {
   paused: boolean
   roundId: bigint
@@ -32,6 +33,17 @@ export type LuckyClaimSnapshot = {
   claimable: boolean
 }
 
+/**
+ * 读取用户可领的幸运奖快照。
+ *
+ * currentRoundId 为进行中轮，中奖发生在已关闭轮；从新到旧回溯（上限 90 轮），
+ * 取第一笔可领记录。每轮两读经 Multicall3（允许失败）。
+ *
+ * @param user 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 暂停状态 / 选中轮 / 是否中奖 / 是否已领 / 是否可领
+ * @see 手册 §14 LuckyPool 去中心化抽奖
+ */
 export async function readLuckyClaimSnapshot(
   user: Address,
   client: ChainReadClient = bscReadClient,
@@ -140,8 +152,14 @@ export async function readLuckyClaimSnapshot(
 }
 
 /**
- * Dao Mixed has no per-user on-chain pending — signed `amount` is intent.
- * Independent solvency read: AGX held by DaoPool (never treat signature amount as available).
+ * 读取 DaoPool 可领奖励的独立偿付能力。
+ *
+ * Dao Mixed 无链上按用户的 pending，签名 amount 只是意图；这里读 DaoPool 持有的
+ * AGX 余额作为偿付上限，签名金额不可直接当作可用。
+ *
+ * @param client 链读取客户端
+ * @returns DaoPool 持有的 AGX 余额（wei）
+ * @see docs/backend-api/api.md #claim/dao-reward
  */
 export async function readDaoPoolRewardAvailable(client: ChainReadClient): Promise<bigint> {
   return readErc20Balance(BSC_CONTRACTS.agx, BSC_CONTRACTS.daoPool, client)
@@ -156,6 +174,14 @@ export type LuckyRoundDisplaySnapshot = {
   roundPurchaseUsd1: bigint | null
 }
 
+/**
+ * 读取幸运详情右栏展示数据：当前轮倒计时 + 迁移感知资格 + Tracker 轮内购买额。
+ *
+ * @param user 钱包地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 当前轮 id / 结束时间 / 资格 / 轮内购买额（USD1，18 位小数）
+ * @see 手册 §14.1 用户抽奖页
+ */
 export async function readLuckyRoundDisplaySnapshot(
   user: Address,
   client: ChainReadClient = bscReadClient,

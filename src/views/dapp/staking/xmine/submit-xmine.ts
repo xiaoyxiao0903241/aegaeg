@@ -9,7 +9,17 @@ import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export { XMINE_BLOCKED } from '~/web3/errors/write-block-errors'
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/**
+ * 提交 XMine 质押
+ *
+ * 先读链上预检（余额 / 授权 / 剩余挖矿额度）并判定阻塞原因；
+ * 余额不足且尚未开始授权时跳转闪电兑换补齐 gAGX，
+ * 授权不足时内联 approve 后继续写；完成后失效质押相关缓存。
+ *
+ * @param session 已就绪的写会话
+ * @param amount 质押数量（gAGX 最小单位）
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export async function submitXmineStake(args: {
   session: WriteSession
   amount: bigint

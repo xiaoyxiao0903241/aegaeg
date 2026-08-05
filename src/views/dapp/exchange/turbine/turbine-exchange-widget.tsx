@@ -1,3 +1,10 @@
+/**
+ * Turbine 交互面板
+ *
+ * 解锁段：输入 gAGX 数量并预览等值的 USD1 / AGX 换算；
+ * 领取段：列出冷却中的静默期条目，冷却完成可领取。
+ * 滑点由合约固定，页面不可修改。
+ */
 import type { ReactNode } from 'react'
 
 import { dappAssets, turbineExchangeAssets } from '~/app/assets'
@@ -24,7 +31,7 @@ import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-sessio
 import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
 import { useTurbineExchangeView } from '~/views/dapp/exchange/turbine/use-turbine-exchange-view'
 
-/** Figma `4435:436` eqBuy half：bg page · p12 · gap6 · label12@40% · value16 · footer12@40%. */
+/** 等值买入一侧的金额单元。 */
 function TurbineEqBuyTokenCell({
   label,
   icon,
@@ -112,7 +119,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               <ExchangeOneWayFlowIndicator />
             </div>
 
-            {/* Figma `4435:436` eqBuy：p16 · gap12 · hint copy@40% */}
+            {/* 等值买入卡片：提示文字弱化 */}
             <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
               <Text as="p" variant="copy" className="text-foreground/40">
                 {t.exchange.turbine.equivalentBuyHint}
@@ -229,7 +236,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                       <CountValue
                         text={`${formatTokenAmount(
                           row.silenceBalance,
-                          // Handbook §16: silenceBalance axis = AGX decimals (UI leaf labels gAGX).
+                          // silenceBalance 的小数位与 AGX 一致（界面上标注为 gAGX）
                           EXCHANGE_CONFIG.tokens.agx.decimals,
                           4,
                         )} gAGX`}

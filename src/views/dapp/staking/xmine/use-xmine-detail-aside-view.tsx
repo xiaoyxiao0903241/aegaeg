@@ -34,12 +34,18 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-/** 下次产出倒计时：无结算时刻 view → 诚实占位（gaps §3.4） */
+/** 下次产出倒计时：无结算时刻 → 显示占位符（gaps §3.4） */
 const NEXT_EMISSION_EMPTY = '—'
 
 /**
- * Xmine aside — 仓位链读 `readXminePosition`；记录 `/x0-mining/logs`。
- * 协议概览：`readXmineOverview`（activeGons / xPerAgx / yieldRateBP）；累计产出仍无源。
+ * Xmine 详情右栏
+ *
+ * 仓位链读 `readXminePosition`，记录走 `/x0-mining/logs`；
+ * 协议概览走 `readXmineOverview`（activeGons / xPerAgx / yieldRateBP）。
+ * 累计产出暂无数据源，显示 0。
+ *
+ * @returns 右栏概览、仓位、记录表的展示数据
+ * @see docs/backend-api/api.md #x0-mining/logs
  */
 export function useXmineDetailAsideView() {
   const { messages: t } = useI18n()
@@ -93,7 +99,7 @@ export function useXmineDetailAsideView() {
       ),
     },
     {
-      // 累计产出：无协议累计 X view / 历史 API → 诚实 0（gaps §3.4）
+      // 累计产出：无协议累计 X view / 历史 API → 显示 0（gaps §3.4）
       label: t.staking.xmine.overviewMetrics[2]?.label ?? '',
       value: <StakingTokenMetricValue icon="x" value={formatAsideXLabel(0)} />,
     },
@@ -146,7 +152,7 @@ export function useXmineDetailAsideView() {
     },
     {
       label: t.staking.xmine.positionMetrics[1]?.label ?? '',
-      // 已释放：本页无 PRV 已释字段 → 诚实 0（资产页启发式另记 gaps）
+      // 已释放：本页无 PRV 已释字段 → 显示 0（资产页启发式另记 gaps）
       value: (
         <StakingTokenMetricValue
           approx={formatApproxUsd(0, priceUsd)}

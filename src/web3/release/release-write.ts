@@ -15,6 +15,14 @@ const claimManyAbi = parseWriteAbi(
   PRINCIPAL_RELEASE_VAULT_ERRORS,
 )
 
+/**
+ * 领取某释放计划全部已解锁奖励（RewardQueue.claimAllVestedRewards）。
+ *
+ * @param args.wallet 钱包
+ * @param args.planIndex 释放计划 index
+ * @returns 已确认的写交易结果
+ * @see 手册 §12 RewardQueue 奖励释放队列
+ */
 export async function writeClaimAllVestedRewards(args: { wallet: Wallet; planIndex: number }) {
   return writeContractViaWallet({
     wallet: args.wallet,
@@ -25,6 +33,15 @@ export async function writeClaimAllVestedRewards(args: { wallet: Wallet; planInd
   })
 }
 
+/**
+ * 批量领取本金释放（PrincipalReleaseVault.claimMany）。
+ *
+ * @param args.wallet 钱包
+ * @param args.start 起始仓位 index
+ * @param args.limit 领取数量上限
+ * @returns 已确认的写交易结果
+ * @see 手册 §13 PrincipalReleaseVault 本金释放
+ */
 export async function writeClaimManyReleases(args: {
   wallet: Wallet
   start: number

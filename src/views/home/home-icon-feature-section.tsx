@@ -25,6 +25,7 @@ const sectionConfig = {
   },
 } as const
 
+/** 按 variant 与序号生成卡片分隔边框类名。 */
 function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
   if (variant === 'protocol') {
     return cn(
@@ -105,6 +106,14 @@ function HomeIconCard({
   )
 }
 
+/**
+ * 特性卡片区块（协议 / 引擎）
+ *
+ * 按 variant 复用同一布局：协议为三卡一行、引擎为 2×2 网格，
+ * 卡片图标来自静态布局表，正文由 i18n 文案提供，H5 下收敛为单列。
+ *
+ * @param variant 区块类型，决定图标组、网格行列与卡片内边距
+ */
 export function HomeIconFeatureSection({ variant }: { variant: 'protocol' | 'engine' }) {
   const { messages } = useI18n()
   const content = messages.home.sections[variant]

@@ -24,7 +24,7 @@ function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTrad
   })
 }
 
-/** Session state + i18n + flip/present orchestration → everything `MarketTradeWidget` renders. */
+/** 组装市价交易面板渲染所需：会话状态 + 文案 + 翻转 / 错误提示编排。 */
 export function useMarketTradeView(trade: MarketTradeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
@@ -59,7 +59,7 @@ export function useMarketTradeView(trade: MarketTradeState) {
     else trade.selectBuyToken(key)
   }
 
-  // Quote/validation only — submit errors toast via useChainMutation.
+  // 仅报价校验错误在此提示；提交错误由写链统一 toast
   usePresentUserFacingError(trade.validationError, {
     id: 'market-trade-quote-error',
     trigger: trade.quoteErrorUpdatedAt,

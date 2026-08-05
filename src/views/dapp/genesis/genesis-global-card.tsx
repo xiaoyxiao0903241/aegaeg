@@ -16,9 +16,9 @@ const genesisGlobalCard = tv({
   slots: {
     root: cn(darkBanner().root(), 'px-6 py-4 max-dapp:p-4.5'),
     content: cn(darkBanner().content(), 'max-dapp:max-w-none'),
-    // H5: EN "View contract" ~150px; pr-28 was too tight → title wrapped into the button.
+    // 移动端右留白不足会让标题折进按钮，故加大
     kicker: 'max-dapp:block max-dapp:pr-44',
-    // Outline CTA must beat Button secondary + md/pill `w-full` (absolute hug + right).
+    // 描边样式的按钮要压过 Button 次级样式的默认全宽，改用绝对定位贴右上
     contractButton: cn(
       'absolute top-11 right-5.5 z-2 max-dapp:top-4.5 max-dapp:right-4.5',
       'w-auto! gap-1.5! border-white/45! bg-transparent! px-4.5! text-white!',

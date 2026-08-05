@@ -17,6 +17,13 @@ import type {
   X0MiningLogItem,
 } from '~/shared/api/types'
 
+/**
+ * 各类流水/持仓记录 → 表格行映射
+ *
+ * 统一把 API 原始记录格式化为展示用字符串数组，列序固定，
+ * 数值使用 formatGroupedNumber，缺失值以 TABLE_EMPTY 占位。
+ */
+
 function formatAmount(raw: string): string {
   const n = Number(raw)
   if (!Number.isFinite(n)) return TABLE_EMPTY
@@ -27,7 +34,7 @@ function formatTx(tx: string | null | undefined): string {
   return tx ? formatShortAddress(tx) : TABLE_EMPTY
 }
 
-/** Assets ops / release records: [time, operation, amount, tx] */
+/** 资产操作 / 释放记录：[时间, 操作, 数量, 交易] */
 export function mapStakeFlowLogToOpsRow(item: StakeFlowLogItem): string[] {
   return [
     formatBlockTime(item.block_time),

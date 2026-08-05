@@ -22,7 +22,7 @@ export interface CommunityQuickLinkLabels {
   telegram: string
 }
 
-/** Link row shape for Community quick links (consumed by shell `QuickLink`). */
+/** 社区快捷链接项的形状（由外壳页面的 QuickLink 消费）。 */
 export interface CommunityQuickLinkItem {
   href: string
   icon: string

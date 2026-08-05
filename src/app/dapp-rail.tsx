@@ -60,6 +60,13 @@ function useRailTooltips() {
   )
 }
 
+/**
+ * DApp 左侧导航条
+ *
+ * 列出一级 Tab（兑换、资产、质押等），高亮当前项并显示跟随滚动的选中指示条。
+ * 兑换与释放页有可领奖状态时右上角显示珊瑚色小点；
+ * 悬停 / 聚焦非当前项时预取该页查询。`mobile` 模式用于抽屉内横向布局。
+ */
 export function DappRail({
   activeTab,
   mobile = false,

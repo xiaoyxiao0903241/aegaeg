@@ -10,7 +10,7 @@ export type RewardsHubStats = {
   totalRewardGagx: string
   totalRewardApprox: string
   tierLabel: string
-  /** 机制表高亮行：有 making_rank 跟真档；无数据稿跟 A4（index 3） */
+  /** 机制表高亮行：有 making_rank 跟真实档位；无数据时演示为 A4（index 3） */
   tierRowIndex: number
   personalUsd: string
   personalAgx: string
@@ -38,7 +38,7 @@ function formatMakingTierLabel(rank: number | null | undefined, emptyLabel: stri
   return `A${Math.trunc(rank)}`
 }
 
-/** A1→0 … A13→12；无档跟无数据稿 A4；>13 → 终身成就行 */
+/** 档位序号映射：A1→0 … A13→12；无档位演示为 A4（3）；>13 → 终身成就行（13） */
 function makingRankToRowIndex(rank: number | null | undefined): number {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return 3
   const n = Math.trunc(rank)
@@ -46,7 +46,14 @@ function makingRankToRowIndex(rank: number | null | undefined): number {
   return 13
 }
 
-/** 奖励 Hub 右栏六瓦：making-overview + spot + 贡献（已接）. */
+/**
+ * 奖励 Hub 统计瓦片数据
+ *
+ * 汇总做市概览（总奖励、档位、持仓、做市额）与贡献快照，
+ * 全部金额按 AGX 折算 USD 展示；未登录走空态占位。
+ *
+ * @see docs/backend-api/api.md #performance/making-overview
+ */
 export function useRewardsHubStats(): RewardsHubStats {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()

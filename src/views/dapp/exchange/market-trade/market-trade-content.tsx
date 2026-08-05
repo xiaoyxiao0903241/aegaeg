@@ -1,3 +1,9 @@
+/**
+ * 市价交易详情页
+ *
+ * 概览区展示汇率与结算方式，下方为代币介绍轮播，
+ * 以及按代币分组的 FAQ 标签页。
+ */
 import { type ExchangeTokenKey, exchangeTokenKeys } from '~/app/data'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { OverviewGrid } from '~/app/shell/overview-grid'
@@ -11,10 +17,10 @@ import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
 
-/** Figma PC `4433:220` about carousel order — same as flash. */
+// 代币介绍卡顺序与闪兑一致
 const TRADE_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'agx'] as const
 
-/** Rate scalars only — amount draft keystrokes must not wake FAQ / About. */
+/** 详情页只接收汇率标量，金额输入不触达 FAQ / 代币介绍。 */
 export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel: string }) {
   const vm = useMarketTradeContentView(exchangePriceLabel)
   const { t } = vm

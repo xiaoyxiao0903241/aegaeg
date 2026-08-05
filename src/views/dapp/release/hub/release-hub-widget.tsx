@@ -29,6 +29,12 @@ function parseApiAmount(raw: string | undefined): number | null {
   return Number.isFinite(n) ? n : null
 }
 
+/**
+ * 释放 Hub 交互面板
+ *
+ * 两张入口卡展示释放队列与缓冲池的进度与金额，
+ * 点击进入对应子视图；未连接钱包时展示连接引导。
+ */
 export function ReleaseHubWidget() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
@@ -83,7 +89,7 @@ export function ReleaseHubWidget() {
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
-  /** PRV 无 gAGX 源：空态用 0（禁 —） */
+  /** 释放合约无 gAGX 数据源：空态用 0 而非「—」 */
   const gagxZeroLabel = `${formatGroupedNumber(0, { digits: 4 })} ${t.release.units.queue}`
 
   const queueReleasingNum =

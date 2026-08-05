@@ -16,6 +16,13 @@ import {
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 
+/**
+ * 推荐奖详情视图模型
+ *
+ * 聚合推荐奖汇总、奖励记录与直推成员列表。
+ *
+ * @see docs/backend-api/api.md #referral-award/summary
+ */
 export function useRewardsReferralContentView() {
   const { messages: t } = useI18n()
   const referral = t.rewards.referral

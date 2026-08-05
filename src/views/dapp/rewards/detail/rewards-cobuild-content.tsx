@@ -1,3 +1,10 @@
+/**
+ * 共建奖详情页
+ *
+ * 顶部六张统计瓦片（总奖励、做市、我的位置、直推数、贡献、下次发放），
+ * 中部等级卡展示当前/下一级档位与需求进度徽章，
+ * 下方为等级记录 / 超越记录双 Tab 表格与直推成员表，底部为 FAQ。
+ */
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { Card } from '~/shared/components/card'
@@ -11,8 +18,6 @@ import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsCobuildContentView } from '~/views/dapp/rewards/detail/use-rewards-cobuild-content-view'
 import { NON_NUMERIC_EMPTY } from '~/views/dapp/rewards/rewards-display'
-
-/** Figma 4408:631 levelcard — 当前级 coral rate · 下级 muted rate · req 卡徽章+/目标 */
 
 export function RewardsCobuildContent() {
   const {
@@ -62,7 +67,7 @@ export function RewardsCobuildContent() {
     <Detail>
       <Section>
         <Section.Title>{cobuild.dataTitle}</Section.Title>
-        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
+        {/* jscpd:ignore-start — 统计瓦片页内拼装（禁再抽统一组件） */}
         <OverviewGrid columns={3}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
@@ -93,7 +98,6 @@ export function RewardsCobuildContent() {
 
       <Section>
         <Section.Title>{cobuild.tierTitle}</Section.Title>
-        {/* Figma 4408:631 — flex+gap-4.5(18) 标题区↔req；req 横 gap-3(12)；req 内 gap-1.5(6) */}
         <Card surface="elevated" className="flex flex-col gap-4.5 overflow-visible rounded-2xl p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="grid gap-1">

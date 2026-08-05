@@ -11,10 +11,19 @@ export type SubmitWithUnknownReceiptLockResult<T> =
   { ok: true; value: T } | { ok: false; error: unknown }
 
 /**
- * 钱路信封：unknown 闩锁 + 同 path 在飞互斥。
- * 已闩锁 → `whenLocked`；在飞 → `whenInFlight`（须与 whenLocked 区分，供 toast）。
- * 成功仅做 owner 配对清除（不解历史 unknown）；unknown 结果用本调用 owner 上锁。
- * 不拥有门闸 / approve / invalidate；软失败须抛非 unknown，以免误闩。
+ * 资金提交信封：未知结果锁 + 同路径在飞互斥
+ *
+ * 已上锁 → 返回 `whenLocked`；在飞 → 返回 `whenInFlight`
+ * （两者须区分，供 toast 不同提示）。成功仅做 owner 配对清除，
+ * 不解历史 unknown；unknown 结果用本调用 owner 上锁。
+ * 本函数不拥有预检门闸 / approve / invalidate；
+ * 软失败必须抛非 unknown 错误，以免误上锁。
+ *
+ * @param args.path 写路径键（WRITE_PATH 之一）
+ * @param args.whenLocked 已锁时的返回错误
+ * @param args.whenInFlight 在飞时的返回错误
+ * @param args.run 实际提交逻辑
+ * @returns 成功值或失败错误
  */
 export async function submitWithUnknownReceiptLock<T>(args: {
   path: WritePath

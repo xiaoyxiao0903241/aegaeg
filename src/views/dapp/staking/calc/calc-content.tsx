@@ -10,6 +10,12 @@ import { Text } from '~/shared/components/text'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { StakingCurveChart } from '~/views/dapp/staking/staking-curve-chart'
 
+/**
+ * 测算结果详情页（右栏）
+ *
+ * 展示收益结果：总收益、卖出占比、投入占比、节点卡与曲线图。
+ * 未填写表单或结果缺失时展示占位提示。
+ */
 const PLACEHOLDER = '0.00'
 function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
@@ -86,7 +92,6 @@ export function CalcContent() {
           <Section.Title>{aside.result}</Section.Title>
           {result ? (
             <div className="flex flex-wrap gap-2">
-              {/* Figma `bd` 4463:224 — coral-soft / coral-emphasis pill */}
               {(
                 [
                   productLabel,
@@ -113,7 +118,7 @@ export function CalcContent() {
           ) : null}
         </div>
         {result ? (
-          /* Figma `rcard` 4463:230 — elevated（无描边 + shadow-card），禁 outlined */
+          /* 结果卡用 elevated 表面（无描边） */
           <Card className="grid gap-1.5" surface="elevated">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="grid gap-1">
@@ -223,7 +228,6 @@ export function CalcContent() {
               hint = formatPct(endEstimate.ratePct)
             }
             return (
-              /* Figma `kc` 4463:289 — elevated */
               <Card className="grid gap-1.5" key={card.label} surface="elevated">
                 <Text as="span" className="text-foreground/70" variant="support">
                   {index === 2 ? aside.nodeEndLabel.replace('{day}', String(endDays)) : card.label}
@@ -255,7 +259,6 @@ export function CalcContent() {
       </Section>
       <Section>
         <Section.Title>{aside.notes}</Section.Title>
-        {/* Figma `ncard` 4463:303 — elevated */}
         <Card className="grid gap-1.5" surface="elevated">
           <ul className="m-0 grid list-none gap-1.5 p-0">
             {notesItems.map((item) => (

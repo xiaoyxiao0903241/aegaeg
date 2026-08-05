@@ -25,7 +25,7 @@ const faqList = tv({
     ],
     question: 'min-w-px flex-[1_0_0] text-left wrap-anywhere',
     answer: 'w-full text-left wrap-anywhere',
-    // font-normal: reset button UA bold so Text `question` weight is the owner
+    // 重置按钮默认粗体，让 Text `question` 控制字重
     trigger:
       'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left font-normal text-inherit outline-none',
   },
@@ -37,11 +37,11 @@ const faqList = tv({
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
         cardBody: 'px-6 py-4.5 max-dapp:px-4 max-dapp:py-3.5',
-        // Color only — size/weight from Text `copy` (shadcn semantic; replaces legacy text-faq)
+        // 只改颜色；字号字重由 Text `copy` 决定
         answer: 'text-muted-foreground',
       },
       dapp: {
-        // Figma DApp FAQ (hub `4273:242`): pad + gap via spacing tokens; question = Text `question`.
+        // 问句用 Text `question`
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
         cardBody: 'px-4 py-4.5',
         answer: 'my-0 py-4 text-muted-foreground',
@@ -53,6 +53,15 @@ const faqList = tv({
   },
 })
 
+/**
+ * 手风琴问答列表
+ *
+ * 每条一个可展开卡片；DApp 版默认展开首条。
+ *
+ * @param items 问答条目数组
+ * @param variant home（首页样式）/ dapp（DApp 内样式）
+ * @param defaultOpenFirst 是否默认展开首条（dapp 默认开启）
+ */
 export function FaqList({
   className,
   'data-reveal': dataReveal,
@@ -133,19 +142,14 @@ export function FaqList({
             <Card
               as="div"
               surface="soft"
-              className={cn(
-                'group',
-                // Figma FAQ `4273:242` radius 12 → `rounded-faq` (soft default 2xl ≠ 稿).
-                variant === 'dapp' && 'rounded-faq',
-                itemClassName,
-              )}
+              className={cn('group', variant === 'dapp' && 'rounded-faq', itemClassName)}
               data-faq-item
               data-faq-motion={motionEnabled ? 'true' : 'false'}
             >
               <div className={styles.cardBody()}>
                 <Accordion.Header className="m-0 w-full">
                   <Accordion.Trigger className={styles.trigger()} data-faq-trigger>
-                    {/* DApp FAQ 问句稿 16 semibold → headline；home 仍 question */}
+                    {/* DApp 问句用 headline，home 仍用 question */}
                     <Text
                       variant={variant === 'dapp' ? 'headline' : 'question'}
                       className={styles.question()}

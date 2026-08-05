@@ -11,7 +11,7 @@ export function tablePageQuery(page: number) {
   return { page, page_size: DAPP_TABLE_PAGE_SIZE }
 }
 
-/** Authenticated DApp tables: sign-in check, empty query, and skeleton loading. */
+/** 需登录的 DApp 表格视图状态：登录校验、空结果、骨架屏加载。 */
 export function dappTableViewState({
   isLoading,
   isLoggingIn,

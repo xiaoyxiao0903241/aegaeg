@@ -1,3 +1,9 @@
+/**
+ * 资产页入口
+ *
+ * 根据当前子视图切换 Hub 总览、质押、LP 债券、燃烧债券、XMine 五种模式，
+ * 详情区与侧栏组件分别渲染对应模式的内容。
+ */
 import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'

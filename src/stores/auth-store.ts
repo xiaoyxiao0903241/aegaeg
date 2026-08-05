@@ -53,8 +53,8 @@ function normalizePersistedSessions(
 }
 
 /**
- * Migrate the pre-v2 single-session/single-signature localStorage keys into the
- * address-keyed tables. Runs once; the legacy keys are removed after reading.
+ * 迁移 v2 之前旧的单会话/单签名 localStorage 键到按地址存储的表。
+ * 仅执行一次；读取后移除旧键。
  */
 function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
   if (typeof localStorage === 'undefined') return null
@@ -97,7 +97,7 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
   }
 }
 
-/** Merge persisted + legacy address-keyed auth tables (exported for unit tests). */
+/** 合并持久化状态与旧版迁移结果，生成按地址存储的认证表（导出供单元测试使用）。 */
 export function mergePersistedState(
   persistedState: Partial<
     AuthPersistState & {
@@ -122,7 +122,7 @@ export function mergePersistedState(
     ...(persistedState.sessionsByAddress ?? {}),
   })
 
-  // Fold any leftover pre-v2 top-level session into the address table.
+  // 把旧版顶层 session 归并进按地址的表
   const legacySession = normalizePersistedSession(persistedState.session ?? null)
   if (legacySession) {
     sessionsByAddress[normalizeAuthAddress(legacySession.address)] = legacySession

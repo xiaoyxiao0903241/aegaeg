@@ -35,7 +35,7 @@ const positionToSide: Record<TooltipPosition, 'top' | 'right' | 'bottom'> = {
   bottom: 'bottom',
 }
 
-/** Keep arrow clear of bubble corners; Radix positions the tip — do not CSS-translate it. */
+/** 让箭头避开气泡圆角；位置由 Radix 计算，不要用 CSS 位移 */
 function tooltipArrowPaddingPx(align?: 'start' | 'center' | 'end') {
   if (align === 'end' || align === 'start') {
     return cssRemVarPx('--app-tooltip-arrow-padding-edge', 1.125)
@@ -44,8 +44,9 @@ function tooltipArrowPaddingPx(align?: 'start' | 'center' | 'end') {
 }
 
 /**
- * Figma 76:17 bubble — radius `rounded-chip`, padding/arrow/offset from `--app-tooltip-*`.
- * Copy uses Text `support` / `inverse` (type-support tokens).
+ * 气泡外观
+ *
+ * 文案用 Text `support` / `inverse`。
  */
 const Bubble = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
@@ -89,7 +90,7 @@ Bubble.displayName = 'TooltipBubble'
 
 /**
  * 产品向 Tooltip：触发器 children + 文案 content。
- * H5 纯 info 触发器（无自带 onClick）点按切换开合；桌面仍走悬停。
+ * 移动端纯 info 触发器（无自带 onClick）点按切换开合；桌面仍走悬停。
  */
 function TooltipRoot({
   align = 'center',
@@ -108,7 +109,7 @@ function TooltipRoot({
     onPointerDown: (event) => {
       childProps.onPointerDown?.(event)
       if (isMobileViewport) {
-        // Block focus-toggle flash on touch; info icons open via click below.
+        // 阻止触摸时焦点切换闪烁；info 图标走下方点击开合
         event.preventDefault()
       }
     },

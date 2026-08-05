@@ -1,6 +1,6 @@
 /**
- * Pure live-block helpers for staking / bond zap / xmine (approve → live → write).
- * Call sites must re-read chain state after approve; do not trust render snapshots.
+ * 质押 / 债券 zap / X 挖矿的写前实时门闸辅助函数（approve → 实时检查 → 写交易）。
+ * 调用方在 approve 后必须重新读取链上状态，不能依赖渲染时的旧快照。
  */
 
 export type StakeLiveBlockReason =
@@ -26,11 +26,21 @@ export type XmineLiveBlockReason =
   'insufficientBalance' | 'insufficientAllowance' | 'insufficientQuota' | 'zeroAmount'
 
 /**
- * `isOldAccount`:
- * - `true` → migrated (block)
- * - `false` → ok
- * - `null` → status unknown (fail-closed)
- * - omit / `undefined` → migration check not in scope for this call site
+ * 质押入金前的实时门闸检查。
+ *
+ * 迁移旧地址不得再写、推荐必须已绑定、池未暂停、余额 / 授权 / 额度
+ * 足够覆盖拟质押量，任一项不满足即阻断；迁移状态未知按阻断处理，
+ * 避免合约拒绝或写错账户。
+ *
+ * @param args.amount 拟质押数量
+ * @param args.isBound 推荐是否已绑定
+ * @param args.balance 钱包 AGX 余额
+ * @param args.allowance 对质押合约的授权
+ * @param args.remainingQuota 剩余额度
+ * @param args.poolOpen 仅定期池使用；活期恒视为开放
+ * @param args.isOldAccount 迁移状态：true 阻断；false 正常；null 未知按阻断处理；undefined 本次不检查
+ * @returns 首个阻断原因
+ * @see 手册 §8 质押 Staking
  */
 export function evaluateStakeLive(args: {
   amount: bigint
@@ -38,9 +48,9 @@ export function evaluateStakeLive(args: {
   balance: bigint
   allowance: bigint
   remainingQuota: bigint
-  /** Locked pools only — liquid always treated as open. */
+  /** 仅定期池使用；活期恒视为开放。 */
   poolOpen?: boolean
-  /** Handbook §17 — migrated old address must not keep writing. */
+  /** 手册 §17：已迁移旧地址不得继续写。 */
   isOldAccount?: boolean | null
 }): StakeLiveBlockReason | null {
   if (args.isOldAccount === null) return 'unavailable'
@@ -54,6 +64,21 @@ export function evaluateStakeLive(args: {
   return null
 }
 
+/**
+ * 债券 zap 入金前的实时门闸检查。
+ *
+ * 迁移旧地址不得再写、推荐必须已绑定、depository 已授权，且余额与
+ * 授权足够覆盖拟认购额，任一项不满足即阻断，避免链上交易必然失败。
+ *
+ * @param args.amount 拟认购的 USD1 数量
+ * @param args.isBound 推荐是否已绑定
+ * @param args.balance 钱包 USD1 余额
+ * @param args.allowance 对 BondHelper 的授权
+ * @param args.depositoryAuthorized 目标债券是否已授权（authContracts）
+ * @param args.isOldAccount 迁移状态：true 阻断；false 正常；null 未知按阻断处理；undefined 本次不检查
+ * @returns 首个阻断原因
+ * @see 手册 §10 债券 Bond / BurnBond
+ */
 export function evaluateBondZapLive(args: {
   amount: bigint
   isBound: boolean
@@ -72,6 +97,18 @@ export function evaluateBondZapLive(args: {
   return null
 }
 
+/**
+ * X 挖矿质押前的实时门闸检查。
+ *
+ * 拟质押量须为正，余额与授权足够覆盖，且未超过挖矿额度。
+ *
+ * @param args.amount 拟质押的 gAGX 数量
+ * @param args.balance 钱包 gAGX 余额
+ * @param args.allowance 对 XStakingPool 的授权
+ * @param args.miningQuota 挖矿额度剩余
+ * @returns 首个阻断原因
+ * @see 手册 §15 XStakingPool X 挖矿
+ */
 export function evaluateXmineLive(args: {
   amount: bigint
   balance: bigint
@@ -86,8 +123,16 @@ export function evaluateXmineLive(args: {
 }
 
 /**
+ * X 挖矿可投入上限。
+ *
  * 手册 §15：current + amount ≤ miningQuotaOf。
- * Max / 输入封顶 = min(gAGX 余额, max(0, quota − staked))。
+ * 输入封顶 = min(gAGX 余额, max(0, quota − 已质押))。
+ *
+ * @param balance 钱包 gAGX 余额
+ * @param miningQuota 挖矿额度
+ * @param miningStaked 已质押并计入额度的数量
+ * @returns 可投入的 gAGX 上限
+ * @see 手册 §15 XStakingPool X 挖矿
  */
 export function xmineSpendableCap(
   balance: bigint,
@@ -98,7 +143,15 @@ export function xmineSpendableCap(
   return balance < remaining ? balance : remaining
 }
 
-/** 活期 warmup 激活：live `isWarmupExpired` 未到期则禁写。 */
+/**
+ * 活期 warmup 激活前的实时门闸。
+ *
+ * 手册 §8.2：warmup 未到期时不允许 claim() 激活。
+ *
+ * @param isWarmupExpired 当前 warmup 是否已到期
+ * @returns 未到期返回 'unavailable'；已到期返回 null
+ * @see 手册 §8.2 活期 LiquidStaking
+ */
 export function evaluateLiquidWarmupClaimLive(
   isWarmupExpired: boolean,
 ): Extract<StakeLiveBlockReason, 'unavailable'> | null {

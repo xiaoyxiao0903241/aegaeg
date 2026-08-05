@@ -1,3 +1,9 @@
+/**
+ * 首页客户端入口
+ *
+ * 模块加载时先执行应用引导与旧浏览器垫片（bootHomeApp），
+ * 随后挂载 React 根组件；挂载后恢复滚动位置并启动首页动效。
+ */
 import { bootHomeApp, restoreHomeScroll } from '~/app/startup/home-boot'
 
 bootHomeApp()

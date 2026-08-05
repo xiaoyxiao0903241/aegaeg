@@ -36,7 +36,7 @@ function parseMoneyish(raw: string | null | undefined): number | null {
   return Number.isFinite(n) ? n : null
 }
 
-/** 稿 req 徽章：已达成 | n%（含 0%）| 无数字门槛则不画 */
+/** 需求进度徽章：已达成 | n%（含 0%）| 无数字门槛则不画 */
 function progressPct(current: number | null, targetRaw: string): TierReqBadge {
   const target = parseMoneyish(targetRaw)
   if (current == null) return { kind: 'empty' }
@@ -46,6 +46,14 @@ function progressPct(current: number | null, targetRaw: string): TierReqBadge {
   return { kind: 'pct', value: `${pct}%` }
 }
 
+/**
+ * 共建奖详情视图模型
+ *
+ * 聚合等级奖励接口（rank-reward）的汇总、等级记录与直推成员数据，
+ * 计算当前 / 下一级档位与需求进度徽章，供详情页渲染。
+ *
+ * @see docs/backend-api/api.md #rank-reward/summary
+ */
 export function useRewardsCobuildContentView() {
   const { messages: t } = useI18n()
   const cobuild = t.rewards.cobuild
@@ -89,8 +97,8 @@ export function useRewardsCobuildContentView() {
   const currentRow = hasRank ? tierRows.find((row) => row.level === `A${truncRank}`) : undefined
   const currentIndex = hasRank ? tierRows.findIndex((row) => row.level === `A${truncRank}`) : -1
   /**
-   * 下一级：未达任何档 → A1；已达 → 机制表下一行（A4→A5；A13→终身成就奖）。
-   * 门槛 / 进度徽章一律对齐「下一级」（稿 4408:631）。
+   * 下一级档位：未达任何档 → A1；已达 → 机制表下一行（A4→A5；A13→终身成就奖）。
+   * 需求门槛与进度徽章一律对齐「下一级」档位。
    */
   const nextRow = hasRank
     ? currentIndex >= 0
@@ -107,8 +115,8 @@ export function useRewardsCobuildContentView() {
   const performanceValue = label.stat(summary?.making_market)
   const teamMoney = reqRow?.team?.match(/\$[\d,]+/)?.[0] ?? ''
   /**
-   * 进度徽章读数：未连接按 0（与值面 0.00 对齐，出「0%」）；
-   * 冷启动 loading 未知 → null（不画徽章）；已加载缺字段按 0。
+   * 进度徽章读数：未连接按 0（与展示的 0.00 对齐，显示「0%」）；
+   * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0。
    */
   const holdingCurrent = !sessionReady
     ? 0

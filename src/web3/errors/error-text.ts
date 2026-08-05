@@ -24,7 +24,7 @@ export function readErrorCode(error: unknown): number | string | undefined {
   return coded.code
 }
 
-/** Walk wallet / viem error trees and collect message / hex fragments for rule matching. */
+/** 遍历钱包 / viem 错误树，收集 message 与 hex 片段供规则匹配。 */
 export function collectErrorFragments(error: unknown): string[] {
   const parts: string[] = []
 

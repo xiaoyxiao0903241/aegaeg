@@ -22,7 +22,14 @@ function escapeAttr(value: string) {
     .replace(/"/g, '&quot;')
 }
 
-/** JSON in <script> — 中和 `</script>` 断出。首页只注入 home+common+errors。 */
+/**
+ * 首页文案引导脚本
+ *
+ * 把按语言取到的文案子集序列化成 JSON 内联进 <script>，
+ * 转义 `<` 防止 `</script>` 提前闭合文档。首页只需注入 home、common、errors 三组。
+ *
+ * @param locale 目标语言
+ */
 function serializeHomeMessagesBootstrap(locale: Locale) {
   const full = getMessagesForRender(locale)
   const bag = {
@@ -34,7 +41,13 @@ function serializeHomeMessagesBootstrap(locale: Locale) {
   return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
 }
 
-/** DApp 注入完整文案袋。 */
+/**
+ * DApp 文档文案引导脚本
+ *
+ * 注入完整文案袋，供应用运行时按语言读取。
+ *
+ * @param locale 目标语言
+ */
 function serializeMessagesBootstrap(locale: Locale) {
   const json = JSON.stringify(getMessagesForRender(locale)).replace(/</g, '\\u003c')
   return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
@@ -49,8 +62,12 @@ const faviconHead = `
 const viewportContent = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
 
 /**
- * 首页文档：纯客户端 SPA 薄壳（不做 SSR / 不预渲染内容）。
- * 仅内联关键引导脚本与本地化 <title>/<meta>，由 /src/views/home/main.tsx 客户端挂载。
+ * 首页文档模板
+ *
+ * 纯客户端 SPA 外壳，不做 SSR 也不预渲染内容；只内联关键引导脚本与
+ * 本地化的 <title>/<meta>，页面主体由 /src/views/home/main.tsx 在客户端挂载。
+ *
+ * @param locale 目标语言
  */
 export function renderHomeDocument(locale: Locale) {
   const lang = getHtmlLang(locale)
@@ -86,6 +103,13 @@ ${faviconHead}
 `
 }
 
+/**
+ * DApp 应用文档模板
+ *
+ * 与首页模板结构一致，注入完整文案袋，页面主体由 /src/app/main.tsx 在客户端挂载。
+ *
+ * @param locale 目标语言
+ */
 export function renderAppDocument(locale: Locale) {
   const lang = getHtmlLang(locale)
   const meta = getMessagesForRender(locale).home.meta
@@ -118,6 +142,14 @@ ${faviconHead}
 `
 }
 
+/**
+ * 生成浏览器语言探测脚本
+ *
+ * 优先读 localStorage 中已保存的语言，其次按浏览器语言匹配，
+ * 都不匹配时兜底为英文，随后跳转到对应语言前缀的地址。
+ *
+ * @param pathSuffix 重定向 URL 追加的路径后缀
+ */
 function renderBrowserLocaleDetectionScript(pathSuffix = '') {
   return `
         const supported = new Set(${supportedLocalesJson})
@@ -149,6 +181,7 @@ function renderBrowserLocaleDetectionScript(pathSuffix = '') {
       `
 }
 
+/** 根路径入口：按浏览器语言重定向到对应语言前缀的首页。 */
 export function renderRootRedirectDocument() {
   return `<!doctype html>
 <html lang="en">
@@ -169,6 +202,7 @@ ${faviconHead}
 `
 }
 
+/** app.html 入口：按浏览器语言重定向到对应语言前缀的 DApp 页面。 */
 export function renderAppRedirectDocument() {
   return `<!doctype html>
 <html lang="en">

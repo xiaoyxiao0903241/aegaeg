@@ -5,25 +5,28 @@ import { Button } from '~/shared/components/button'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * DApp primary CTA wrapper.
- * density → height:
- *   inverse 38 · card 42 · external 52 · modal 46 · hero 48
- * external = Button lg + py-4 + text-base/leading-5 合成（稿 bigBtn 52；禁 h-[52px]）
- * Field-adjacent actions (MAX / Bind) → FieldActionChip.
- * Header / topbar Connect stays Button `sm` (36) — not this density map.
- * Home hero uses Button `size="lg"` (48) directly — same height as density="hero".
+ * DApp 主操作按钮。
+ *
+ * 高度按 density 档位适配，供各页面主 CTA 使用；
+ * 输入框旁的小操作、顶部栏连接按钮不适用本密度表，请用对应轻量组件。
  */
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
   /**
-   * card = white-card CTA · external = widget stack bigBtn · inverse = dark promo ·
-   * modal = dialog footer · hero = community / page banner CTA (≡ Button lg)
+   * card = 白卡 CTA · external = 操作区大按钮 · inverse = 深色促销 ·
+   * modal = 弹窗底部 · hero = 社区 / 页头横幅 CTA
    */
   density?: 'card' | 'external' | 'inverse' | 'modal' | 'hero'
   loading?: boolean
   variant?: 'primary' | 'secondary'
 }
 
+/**
+ * 主操作按钮，按 density 档位固定高度。
+ *
+ * @param density 高度档位，见 {@link DappActionButtonProps}
+ * @param loading 为 true 时禁用按钮并显示加载圈
+ */
 export function DappActionButton({
   children,
   className,

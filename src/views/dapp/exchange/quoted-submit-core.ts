@@ -7,7 +7,7 @@ export type QuotedSubmitExecute = (helpers: {
   }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
 }) => Promise<void>
 
-/** Shared surface for flash / market / burn quoted submits. */
+/** 闪电兑换 / 市价交易 / 销毁共用的报价提交流程接口。 */
 export type QuotedSubmitCore = {
   debouncedAmountIn: bigint
   runQuotedSubmit: (

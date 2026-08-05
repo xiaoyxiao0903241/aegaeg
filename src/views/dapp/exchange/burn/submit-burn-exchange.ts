@@ -11,7 +11,11 @@ import {
   burnExchangeConvert,
 } from '~/web3/exchange/burn-exchange-write'
 
-/** Burn AGX → contribution points: approve + convert + invalidate. */
+/**
+ * 销毁 AGX 换贡献点：授权 + 转换 + 成功后失效相关缓存
+ *
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
 export async function submitBurnExchange(args: {
   core: QuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
@@ -22,7 +26,7 @@ export async function submitBurnExchange(args: {
 
     await approveAgxForBurnExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
 
-    // L-tier: direct reads — not display-query refetch.
+    // 直接读链上余额与配置，而非依赖展示查询的刷新结果
     const liveBalances = await readBurnExchangeBalances(address)
     await assertStillSubmittable({ sellBalance: liveBalances.sell })
 

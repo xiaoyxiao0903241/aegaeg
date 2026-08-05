@@ -21,10 +21,11 @@ type AssetsStatsProps = {
   statsTitle: string
   metrics: ReadonlyArray<{ label: string }>
   values: ReadonlyArray<AssetsDetailMetricCell | undefined>
-  /** 等列 OverviewGrid；`upper3-lower2` = LP/Burn 上三下二 span（OverviewGrid 列变体） */
+  /** 指标列数；`upper3-lower2` 表示上三下二的分栏排布 */
   metricsLayout?: 2 | 3 | 'upper3-lower2'
 }
 
+/** 产品详情页的统计区块：标题 + 指标瓦片网格 */
 export function AssetsStatsSection({
   statsTitle,
   metrics,
@@ -75,7 +76,7 @@ type AssetsOpsProps = {
   opsColumns: ReadonlyArray<string>
   opsRows: ComponentProps<typeof Table.Body>['rows']
   opsLoading: boolean
-  /** 右栏操作记录分页（稿 Table.Pagination）；缺省不渲染 */
+  /** 操作记录分页配置；缺省时不渲染分页 */
   opsPagination?: {
     page: number
     total: number
@@ -84,6 +85,7 @@ type AssetsOpsProps = {
   }
 }
 
+/** 产品详情页的操作记录区块：标题 + 记录表格（可加载态、可分页） */
 export function AssetsOpsSection({
   opsTitle,
   opsEmpty,
@@ -118,6 +120,7 @@ export function AssetsOpsSection({
   )
 }
 
+/** 产品详情页的 FAQ 区块：标题 + 折叠问答列表 */
 export function AssetsFaqSection({
   faqTitle,
   faqItems,

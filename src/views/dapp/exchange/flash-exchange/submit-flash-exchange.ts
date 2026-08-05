@@ -13,7 +13,11 @@ import {
   wrapAgxFlashExchange,
 } from '~/web3/exchange/flash-exchange-write'
 
-/** Flash dual-pair submit: redeem / wrap / USDT swap + invalidate. */
+/**
+ * 闪电兑换提交：gAGX 赎回 / 包装或 USDT 兑换，成功后失效相关缓存
+ *
+ * @see docs/onchain-manual/contracts/usd1swap.md
+ */
 export async function submitFlashExchange(args: {
   pairId: FlashPairId
   direction: ExchangeDirection
@@ -30,7 +34,7 @@ export async function submitFlashExchange(args: {
       await approveAgxForWrapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
     }
 
-    // L-tier: direct balance read — not display-query refetch.
+    // 直接读链上余额，而非依赖展示查询的刷新结果
     const liveBalances = await readFlashPairBalances(pairId, direction, address)
     const { amountOutMin: minOut, quotedOut } = await assertStillSubmittable({
       sellBalance: liveBalances.sell,

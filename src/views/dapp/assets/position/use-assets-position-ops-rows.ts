@@ -6,6 +6,7 @@ import { mapBondFlowLogToOpsRow, mapStakeFlowLogToOpsRow } from '~/shared/api/ma
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import type { AssetsProduct } from '~/views/dapp/assets/position/use-assets-position-widget'
 
+/** 仓位产品的操作记录：按产品类型拉取对应日志并映射为表格行 */
 export function useAssetsPositionOpsRows(product: AssetsProduct) {
   const { sessionReady } = useDappShell()
   const [page, setPage] = useState(1)

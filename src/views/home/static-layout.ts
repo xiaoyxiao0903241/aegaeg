@@ -1,11 +1,9 @@
 import { homeAssets } from '~/shared/assets/home'
 
-/** 飞轮卡片右下角装饰层 — 与 AGX 相同的百分比锚点，随卡片 rem 同比缩放。 */
+/** 飞轮卡片右下角装饰层 */
 const tokenShapeInset = 'left-[56.54%] right-[-3.53%] top-[55%] bottom-[0.71%]'
 
-/**
- * Token 飞轮卡片 — 装饰层走百分比 inset；卡片壳层走 Tailwind rem。
- */
+/** 代币飞轮卡片（装饰与图标随卡片缩放） */
 export const tokenCardShells = [
   {
     className: 'bg-token-agx',

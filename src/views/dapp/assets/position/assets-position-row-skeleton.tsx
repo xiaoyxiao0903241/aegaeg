@@ -1,7 +1,7 @@
 import { DappSkeleton } from '~/app/shell/dapp-skeleton'
 import { Card } from '~/shared/components/card'
 
-/** 仓位卡 loading 骨架（对齐 outlined 卡：period · 双列 · 双 CTA）。 */
+/** 仓位卡加载骨架（对齐描边卡：周期 · 双列 · 双操作按钮） */
 export function AssetsPositionRowSkeleton() {
   return (
     <Card aria-busy aria-hidden className="grid gap-2" surface="outlined">
@@ -31,7 +31,7 @@ export function AssetsPositionRowSkeleton() {
   )
 }
 
-/** 左栏仓位列表 loading：3 张骨架卡。 */
+/** 左栏仓位列表加载骨架：多张骨架卡 */
 export function AssetsPositionListSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div aria-busy="true" aria-live="polite" className="grid gap-3">

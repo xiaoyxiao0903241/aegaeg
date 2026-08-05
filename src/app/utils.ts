@@ -1,4 +1,9 @@
-/** Scroll both DApp panels and the H5 window to top — used after tab switch or promo CTA navigation. */
+/**
+ * 将 DApp 左右两个面板与整个窗口滚动到顶部。
+ *
+ * 切换 Tab 或点击引导类 CTA 后调用；
+ * 用 requestAnimationFrame 延后到下一帧执行，确保新的面板已挂载。
+ */
 export function scrollDappPanelsToTop() {
   requestAnimationFrame(() => {
     const shellWindow = document.querySelector('[data-dapp-window]')

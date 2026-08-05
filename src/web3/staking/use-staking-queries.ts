@@ -12,7 +12,7 @@ import {
 } from '~/web3/staking/staking-read'
 import { readXmineOverview } from '~/web3/staking/xmine-overview-read'
 
-/** Public hub overview — TVL / circulating / treasury / burn / rebase (no wallet). */
+/** 质押中心页公开概览查询：质押池 / 流通 / 国库 / 销毁 / rebase，无钱包依赖。 */
 export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.stakingHubOverview,
@@ -24,7 +24,16 @@ export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
   })
 }
 
-/** Wallet-scoped preflight — address from useChainQuery (active account). */
+/**
+ * 质押开仓写前预检查询（钱包作用域）
+ *
+ * 地址由 `useChainQuery` 取当前活跃账户；结果含绑定、余额、授权与剩余额度。
+ *
+ * @param pool 质押池合约地址
+ * @param isLiquid 是否为活期质押
+ * @param options 查询选项（可禁用）
+ * @see 手册 §8 质押 Staking
+ */
 export function useStakeOpenPreflightQuery(
   pool: Address,
   isLiquid: boolean,
@@ -44,6 +53,15 @@ export function useStakeOpenPreflightQuery(
   })
 }
 
+/**
+ * 债券 zap 写前预检查询（钱包作用域）
+ *
+ * 读取推荐绑定、USD1 余额与对 BondHelper 的授权、depository 是否被授权。
+ *
+ * @param depository 债券市场合约地址
+ * @param options 查询选项（可禁用）
+ * @see 手册 §10.4 用户写方法
+ */
 export function useBondZapPreflightQuery(depository: Address, options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.bondZapPreflight(depository),
@@ -58,6 +76,7 @@ export function useBondZapPreflightQuery(depository: Address, options?: ChainQue
   })
 }
 
+/** BondHelper 滑点查询（公开，报价级新鲜度）。 */
 export function useBondHelperSlippageQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.bondHelperSlippage,
@@ -69,6 +88,17 @@ export function useBondHelperSlippageQuery(options?: ChainQueryOptions) {
   })
 }
 
+/**
+ * 债券 zap 净 / 毛 AGX 预期查询（公开，报价级新鲜度）
+ *
+ * 仅当 `depositUsd1 > 0` 时启用。
+ *
+ * @param kind 债券类型：'lp' 或 'burn'
+ * @param depository 债券市场合约地址
+ * @param depositUsd1 投入的 USD1 数量
+ * @param options 查询选项（可禁用）
+ * @see docs/onchain-manual/contracts/bondhelper.md
+ */
 export function useBondZapAgxPreviewQuery(
   kind: 'lp' | 'burn',
   depository: Address,
@@ -90,6 +120,7 @@ export function useBondZapAgxPreviewQuery(
   })
 }
 
+/** X 挖矿写前预检查询（钱包作用域）：余额 / 授权 / 配额 / 已质押。 */
 export function useXminePreflightQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.xminePreflight,
@@ -100,7 +131,7 @@ export function useXminePreflightQuery(options?: ChainQueryOptions) {
   })
 }
 
-/** Public — Xmine 概览/meta（xPerAgx · yieldRateBP · activeGons）。 */
+/** Xmine 概览查询（公开）：xPerAgx · yieldRateBP · activeGons。 */
 export function useXmineOverviewQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.xmineOverview,

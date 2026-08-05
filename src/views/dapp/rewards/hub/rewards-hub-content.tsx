@@ -1,3 +1,10 @@
+/**
+ * 奖励 Hub 页
+ *
+ * 顶部六张统计瓦片汇总总奖励、等级、持仓与做市数据；
+ * 中部为四种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
+ * 未登录时统计瓦片显示空态占位。
+ */
 import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
@@ -16,7 +23,7 @@ import { Text } from '~/shared/components/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsHubStats } from '~/views/dapp/rewards/hub/use-rewards-hub-stats'
 
-/** Figma `4297:213` about · 4 张；lavender wash + 同一人物 deco（发展/创世不进轮播）。 */
+/** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
 
 type HubStatTile = {
@@ -76,7 +83,7 @@ export function RewardsHubContent() {
         : `$${statsView.contributionValue}`,
       approx: stats.contributionHint,
       labelAction: (
-        // Figma 去销毁 pill · coral；禁 Button sm→min-h-9；多语完整可见
+        // 去销毁按钮：用原生 button 而非 Button 组件，保证多语文案完整可见
         <button
           className="inline-flex max-w-full shrink-0 items-center gap-0.5 rounded-full bg-coral-emphasis px-2 py-0.5 text-primary-foreground hover:opacity-90"
           onClick={() => openExchangeView('burn')}
@@ -104,7 +111,7 @@ export function RewardsHubContent() {
   return (
     <Detail>
       <Section>
-        {/* PC 三列；H5 一行两卡 — OverviewGrid gap SSOT */}
+        {/* 统计瓦片间距统一由 OverviewGrid 控制 */}
         <OverviewGrid className="mb-6" columns={3}>
           {tiles.map((tile) => (
             <Card
@@ -166,7 +173,7 @@ export function RewardsHubContent() {
                 </Text>
               ) : null}
               {tile.decoSrc != null ? (
-                // Figma 62×88 → w-16 h-22；资产朝右，跟稿水平翻转；禁溢出圆角
+                // 装饰图：水平翻转朝右，超出卡片圆角部分裁掉
                 <img
                   alt=""
                   className="pointer-events-none absolute top-1.5 right-0 w-16 -scale-x-100 object-contain object-right max-dapp:hidden"
@@ -210,14 +217,14 @@ export function RewardsHubContent() {
         <Section.Title>{t.rewards.hub.mechanismTitle}</Section.Title>
         <Section.Description>{t.rewards.hub.mechanismBody}</Section.Description>
         <Table>
-          {/* 无数据稿 A4「当前」徽章；有 making_rank 时跟真档，否则跟稿演示 A4 */}
+          {/* 当前等级徽章：有 making_rank 跟真实档位，无数据时演示为 A4 */}
           <Table.Body
             colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
             headers={[...tier.columns]}
             highlightedRows={[statsView.tierRowIndex]}
             rows={tier.rows.map((row, rowIndex) => {
               const isCurrent = rowIndex === statsView.tierRowIndex
-              // Figma 4699:234：等级 ink semibold + coral-soft「当前」pill（非等级染 coral）
+              // 当前档：仅「当前」标签高亮，等级名本身不着色
               const levelCell = isCurrent ? (
                 <span className="inline-flex items-center gap-2">
                   <Text as="span" className="font-semibold" variant="copy">
@@ -232,7 +239,7 @@ export function RewardsHubContent() {
               ) : (
                 row.level
               )
-              // Figma 末行：130% semibold +「+全球分红 5%」primary 竖排
+              // 末行利率：附加说明（如「+全球分红 5%」）拆行展示
               const plusIdx = row.rate.indexOf('+')
               const rateCell =
                 plusIdx > 0 ? (
@@ -262,7 +269,7 @@ export function RewardsHubContent() {
 
       <Section>
         <Section.Title>{t.rewards.faq.title}</Section.Title>
-        {/* Figma FAQ 收起 50：py-4 覆盖 dapp 默认 py-4.5（禁任意 px） */}
+        {/* FAQ 收起项间距覆盖 dapp 默认值 */}
         <FaqList
           className="[&_[data-faq-item]>div]:py-4"
           items={t.rewards.faq.items}

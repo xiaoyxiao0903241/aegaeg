@@ -18,8 +18,9 @@ export type OnboardingChromeCopy = {
 }
 
 /**
- * Figma tooltip `4474:220` — title / skip / body / prev · dots · next|done.
- * Replaces Reactour default chrome (showNavigation/badge/close off at Tour call site).
+ * 引导提示气泡：标题 / 跳过 / 正文 / 上一步 · 进度点 · 下一步或完成。
+ *
+ * 替代 Reactour 默认的导航外观（在调用处关掉导航、徽标与关闭按钮）。
  */
 export function OnboardingTourTooltip({
   copy,

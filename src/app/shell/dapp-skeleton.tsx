@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants'
 
 import { cn } from '~/shared/lib/utils'
 
-/** Mobile community stat shell — shared by live cards (≥2 call sites → shell). */
+/** 社区数据卡在 H5 下共用的容器样式（被多张实时卡引用，故抽成一处）。 */
 export const communityStatCardMobileShell = tv({
   base: cn(
     'max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
@@ -23,6 +23,11 @@ const dappSkeleton = tv({
   },
 })
 
+/**
+ * 加载占位块，带脉冲动画。
+ *
+ * @param tone surface=普通背景 · dark=深色背景上的占位
+ */
 export function DappSkeleton({
   className,
   tone = 'surface',

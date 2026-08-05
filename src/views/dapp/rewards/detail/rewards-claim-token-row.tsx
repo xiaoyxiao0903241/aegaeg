@@ -2,7 +2,14 @@ import { dappAssets } from '~/app/assets'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 
-/** Token pill + amount on claim surfaces (mixed release/restake + simple claimable). */
+/**
+ * 领取界面上的代币胶囊 + 金额行
+ *
+ * 用于混合领取的释放 / 复投金额，以及简单领取的可领金额。
+ *
+ * @param tokenLabel 代币名称
+ * @param amountText 金额文本
+ */
 export function RewardsClaimTokenRow({
   tokenLabel,
   amountText,

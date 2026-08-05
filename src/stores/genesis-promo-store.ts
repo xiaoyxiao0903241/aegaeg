@@ -4,7 +4,7 @@ import { genesisPromoChromeEqual } from '~/core/presale/genesis-promo-equality'
 import type { GenesisPromoSnapshot, SeasonOption } from '~/core/presale/genesis-promo-types'
 
 export type GenesisPromoState = {
-  /** Shell 时钟 SSOT（GenesisPromoSync 15s tick）。与 setPromo 分轨，勿并入 chrome 短路。 */
+  /** 外壳时钟（GenesisPromoSync 每 15 秒推进一次）；与 setPromo 分离更新，避免被推广位等值判断短路。 */
   nowSeconds: number
   activeSeasonNumber: number
   discountLabel: string
@@ -22,8 +22,8 @@ export type GenesisPromoState = {
 }
 
 /**
- * 跨 Tab Genesis chrome（rail / swap footer / community / 购买季选择）。
- * 不持久化；链上读仍以 React Query 为 SSOT。GenesisPromoSync 是唯一写入方。
+ * 跨 Tab 的 Genesis 推广位数据（导航栏 / swap 页脚 / 社区 / 购买季选择）。
+ * 不持久化；链上读取仍以 React Query 缓存为唯一来源。GenesisPromoSync 是唯一写入方。
  */
 export const useGenesisPromoStore = create<GenesisPromoState>((set) => ({
   nowSeconds: Math.floor(Date.now() / 1000),

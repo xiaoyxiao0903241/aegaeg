@@ -6,20 +6,20 @@ export type CalcEstimateResult = {
   product: CalcProduct
   period: string
   days: number
-  /** Token principal used in the estimate. */
+  /** 估算使用的本金金额。 */
   principal: number
-  /** USD price assumption. */
+  /** 假设的 USD 单价。 */
   price: number
   interestTokens: number
   totalTokens: number
-  /** Net yield value (收益总额). */
+  /** 净收益价值（收益总额）。 */
   interestUsd: number
-  /** Principal × price (总投入 / 已释放本金价值 for liquid). */
+  /** 本金 × 单价（总投入 / 液态已释放本金价值）。 */
   investedUsd: number
-  /** Invested + interest (卖出总值). */
+  /** 投入 + 收益（卖出总值）。 */
   sellUsd: number
   ratePct: number
-  /** Epoch rebase % used for this snapshot (null → zero yield). */
+  /** 该快照使用的周期 rebase 百分比（null 表示零收益）。 */
   epochRebasePct: number | null
 }
 
@@ -28,7 +28,7 @@ interface CalcEstimateStore {
   setResult: (result: CalcEstimateResult | null) => void
 }
 
-/** Local calc widget ↔ aside — no chain I/O. */
+/** 计算器部件与侧栏共享的本地状态，不涉及链上读写。 */
 export const useCalcEstimateStore = create<CalcEstimateStore>((set) => ({
   result: null,
   setResult: (result) => set({ result }),

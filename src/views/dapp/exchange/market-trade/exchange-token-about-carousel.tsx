@@ -85,7 +85,12 @@ function getExchangeTokenContent(
   })
 }
 
-/** 兑换 Token about — 只组卡片；轮播 / indicator / autoplay 全在 `Carousel`。 */
+/**
+ * 代币介绍轮播（闪电兑换 / 市价交易 / 销毁 / Turbine 共用）
+ *
+ * 按传入的卡片键从 i18n 取文案并组装卡片，轮播行为由 Carousel
+ * 提供；每张卡片可跳转到代币合约浏览器。
+ */
 export function TokenAboutCarousel({
   cardKeys = exchangeTokenCardKeys,
 }: {

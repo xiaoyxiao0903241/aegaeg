@@ -16,6 +16,13 @@ import {
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 
+/**
+ * 参与奖详情视图模型
+ *
+ * 聚合参与奖汇总、参与记录与邀请人信息。
+ *
+ * @see docs/backend-api/api.md #participation-award/summary
+ */
 export function useRewardsParticipateContentView() {
   const { messages: t } = useI18n()
   const participate = t.rewards.participate

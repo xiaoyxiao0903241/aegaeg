@@ -6,7 +6,14 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 export type ExchangeSubmitOutcome = { ok: true } | { ok: false; error: unknown | null }
 
-/** Shared EXCHANGE write envelope + outcome latch for market/flash/burn quote and turbine. */
+/**
+ * 兑换写链的统一外壳
+ *
+ * 包装 useChainMutation，统一提交中标志、提交结果引用与
+ * 未知结果锁定，供各兑换模式复用。
+ *
+ * @param onClearAmount 提交成功后清空金额草稿的回调
+ */
 export function useExchangeWriteMutation(onClearAmount: () => void) {
   const submitOutcomeRef = useRef<ExchangeSubmitOutcome>({ ok: false, error: null })
 
@@ -20,7 +27,7 @@ export function useExchangeWriteMutation(onClearAmount: () => void) {
       submitOutcomeRef.current = { ok: true }
     },
     onError: (err) => {
-      // Unknown outcome locks the path inside the envelope → `isLocked` / blockResubmit.
+      // 未知结果会锁定写路径，从而置位 isLocked / blockResubmit
       submitOutcomeRef.current = { ok: false, error: err }
     },
   })

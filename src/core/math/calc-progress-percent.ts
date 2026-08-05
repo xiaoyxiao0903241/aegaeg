@@ -1,4 +1,12 @@
-/** Clamp current/target ratio to 0..100 for progress bars. */
+/**
+ * 计算进度百分比（current / target），夹取到 0–100。
+ *
+ * target 非正或任一输入非有限数时返回 0，避免除零与异常输入。
+ *
+ * @param current 当前值
+ * @param target 目标值
+ * @returns 0–100 的百分比
+ */
 export function calcProgressPercent(current: string | number, target: string | number): number {
   const currentNum = Number(current)
   const targetNum = Number(target)

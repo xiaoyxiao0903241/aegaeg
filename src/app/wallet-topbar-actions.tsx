@@ -11,13 +11,19 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const networkPill = tv({
   base: [
-    // Figma H5/PC topbar net — h 36, white surface (226:199 / 12:*)
+    // 网络胶囊：PC 与 H5 通用，白色底圆角，高度 36
     'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-card px-3.5',
     'text-xs leading-[1.2] font-semibold shadow-none',
     'max-dapp:px-3 max-dapp:text-xs',
   ],
 })
 
+/**
+ * 顶部栏钱包区
+ *
+ * 会话就绪时展示当前网络胶囊与已连接钱包入口；
+ * 否则展示连接 / 登录按钮，按登录态切换文案。
+ */
 export function WalletTopbarActions() {
   const account = useActiveAccount()
   const { sessionReady, needsSignIn, isLoggingIn } = useAuth()

@@ -12,6 +12,12 @@ const migrationReadAbi = parseAbi([
   ACCOUNT_MIGRATION_METHODS.migratedFrom,
 ])
 
+/**
+ * 读取迁移开关是否开启（AccountMigrationManager.migrationEnabled）。
+ *
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 迁移开启时返回 true
+ */
 async function readMigrationEnabled(client: ChainReadClient = bscReadClient): Promise<boolean> {
   return client.readContract({
     address: BSC_CONTRACTS.accountMigrationManager,
@@ -20,6 +26,13 @@ async function readMigrationEnabled(client: ChainReadClient = bscReadClient): Pr
   })
 }
 
+/**
+ * 判断地址是否旧账户（AccountMigrationManager.isOldAccount）。
+ *
+ * @param address 待检查地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 旧账户返回 true
+ */
 async function readIsOldAccount(
   address: string,
   client: ChainReadClient = bscReadClient,
@@ -32,7 +45,16 @@ async function readIsOldAccount(
   })
 }
 
-/** First migration root for public mapping getters; zero address → current. */
+/**
+ * 读取迁移首地址（root），供 public mapping 键控查询使用。
+ *
+ * 返回零地址表示该地址未迁移，此时调用方按当前地址处理。
+ *
+ * @param address 待查询地址
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 迁移 root 地址
+ * @see 手册 §17 账户迁移
+ */
 export async function readMigratedFrom(
   address: string,
   client: ChainReadClient = bscReadClient,
@@ -45,6 +67,16 @@ export async function readMigratedFrom(
   })
 }
 
+/**
+ * 读取地址的迁移状态（开关 + 是否旧账户）。
+ *
+ * 未传入地址时只返回迁移开关，isOldAccount 固定 false。
+ *
+ * @param address 钱包地址，可为 undefined
+ * @param client 链读取客户端，默认 BSC 主网
+ * @returns 迁移状态快照
+ * @see 手册 §17 账户迁移
+ */
 export async function readMigrationStatus(
   address: string | undefined,
   client: ChainReadClient = bscReadClient,

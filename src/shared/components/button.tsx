@@ -2,6 +2,11 @@ import { Slot } from '@radix-ui/react-slot'
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
+/**
+ * 按钮样式变体
+ *
+ * 变体 / 尺寸 / 形状组合见 `Button`。
+ */
 export const buttonVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
@@ -85,6 +90,17 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     asChild?: boolean
   }
 
+/**
+ * 按钮
+ *
+ * 样式由 `buttonVariants` 定义；`asChild` 为 true 时把样式转交给子元素
+ * （如路由链接），自身不渲染标签。
+ *
+ * @param variant primary（主操作） / secondary（次操作） / ghost（弱化） / link（文本链接）
+ * @param size sm / md / lg
+ * @param shape pill（胶囊） / rounded（圆角）
+ * @param asChild 为 true 时渲染为子元素
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, shape, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'

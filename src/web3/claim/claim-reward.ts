@@ -45,6 +45,19 @@ export type SignedRewardClaimResult = {
   txHash: string
 }
 
+/**
+ * 将签名领取参数提交到指定合约的 claimReward。
+ *
+ * @param wallet 钱包
+ * @param contractAddress 领取合约地址
+ * @param signType 签名类型
+ * @param amount 领取金额（wei）
+ * @param expireTime 签名过期时间（unix 秒）
+ * @param salt 随机盐
+ * @param signature 后端下发的签名
+ * @returns 已确认的链上写交易结果
+ * @see docs/onchain-manual-legacy.md §4.1 用户操作：签名领奖
+ */
 export async function claimRewardOnChain({
   wallet,
   contractAddress,
@@ -93,7 +106,20 @@ function assertClaimSignatureNotExpired(
   }
 }
 
-/** 幂等 confirm：短暂失败重试；耗尽后抛出最后一次错误。 */
+/**
+ * 幂等 confirm：短暂失败按延迟重试，耗尽后抛出最后一次错误。
+ *
+ * 后端 /claim/confirm 需 salt + txHash；网络抖动时重试提升成功率。
+ *
+ * @param token 会话 token
+ * @param request.salt 签名盐
+ * @param request.txHash 链上交易哈希
+ * @param onUnauthorized 未授权回调（登出等）
+ * @param options.attempts 重试次数，默认 3
+ * @param options.delayMs 重试间隔毫秒，默认 800
+ * @returns 后端确认结果
+ * @see docs/backend-api/api.md #claim/confirm
+ */
 export async function confirmClaimWithRetry(
   token: string,
   request: { salt: string; txHash: string },
@@ -205,11 +231,21 @@ function createSignedClaim(
     })
 }
 
+/**
+ * 团队奖励签名领取（RewardClaimer.claimReward）。
+ *
+ * @see docs/backend-api/api.md #claim/team-reward
+ */
 export const claimTeamReward = createSignedClaim(
   requestTeamRewardSignature,
   claimOnVault(BSC_CONTRACTS.rewardClaimer),
 )
 
+/**
+ * 社区基金签名领取（CommunityFundVault.claimReward）。
+ *
+ * @see docs/backend-api/api.md #claim/community-fund
+ */
 export const claimCommunityFund = createSignedClaim(
   requestCommunityFundClaim,
   claimOnVault(BSC_CONTRACTS.communityFundVault),

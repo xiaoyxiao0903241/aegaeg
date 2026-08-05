@@ -36,6 +36,7 @@
 - [ ] 成功标准已验证（测试 / `pnpm check` / 手册）？无投机抽象？
 - [ ] 金钱 fail-closed？手册/API/Foundation 未开平行方案？
 - [ ] 是否符合语言/框架/行业通行实践（且未与本仓 SSOT 打架）？
+- [ ] 新增/改动注释是否符合 [`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)（分层密度、去 Figma 节点引用、禁黑话）？
 - [ ] 是否符合 §0.4（DRY/KISS/YAGNI/deletion-first）？
 
 ### 0.4 工程原则
@@ -86,6 +87,7 @@
 | --------------- | ----------------------------------------------------------------------------------------------------- |
 | 用户可见行为    | 产品 Answer / Spec                                                                                    |
 | UI token / 用法 | [`docs/foundation/`](docs/foundation/)                                                                |
+| 代码注释        | [`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)（严格层 / 逻辑层） |
 | 文案            | `src/i18n/messages/` · PC 为文案 SSOT                                                                 |
 | 静态 UI         | Figma `uiKwzwIoD06phS0husdqjB` · [`docs/figma-pages.md`](docs/figma-pages.md)                         |
 | 链上默认        | [`docs/onchain-manual/`](docs/onchain-manual/)（入仓原文；**禁止**改写正文）                          |
@@ -107,7 +109,7 @@
 
 - 默认端到端；「只分析」才停。
 - 样式重构 → [`docs/foundation/`](docs/foundation/) + [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。
-- 注释：简体中文、只写现行结论。
+- 注释 → [`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)：说明中文、标识符英文；严格层通俗短、逻辑层四要素+`@see`；禁 Figma 节点坐标注释；只改注释时禁改业务逻辑。
 - 报告：改了什么、根因、验证、风险；对照 §0 一句自评。
 
 ---

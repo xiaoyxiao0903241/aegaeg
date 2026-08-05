@@ -15,7 +15,7 @@ export const railNavLabelKeys = {
   'exchange' | 'assets' | 'staking' | 'rewards' | 'release' | 'community' | 'genesis'
 >
 
-/** Prototype Shell tour ids for nav steps (ticket 02). Genesis is not in the tour. */
+/** 导航各步骤在引导流程中的锚点标识；创世页不在引导范围内。 */
 export const railTourIds = {
   exchange: 'nav-swap',
   assets: 'nav-assets',
@@ -26,6 +26,12 @@ export const railTourIds = {
   genesis: undefined,
 } as const satisfies Record<DappTab, string | undefined>
 
+/**
+ * 将图标文件作为 CSS 遮罩，使其显示为当前文字色。
+ *
+ * @param icon 图标资源路径
+ * @returns 遮罩相关样式，供 `style` 内联使用
+ */
 export function railIconMask(icon: string): CSSProperties {
   return {
     maskImage: `url(${icon})`,

@@ -2,12 +2,16 @@ import { type ElementType, useEffect, useState } from 'react'
 
 import { cn } from '~/shared/lib/utils'
 
-/** Digit reel duration — faster than homepage count-up (home stays 1300ms). */
+/** 数字滚动单格时长；比首页计数快（首页保持 1300ms） */
 export const COUNT_DIGIT_MS = 420
 
 /**
  * 指标闪动守卫：空串视为「未知 / 仍在加载」→ 保留上次文案。
  * 已结算零值须显式 `'0'` / `'0.00'` / `≈ $0.00`，禁用 `''`。
+ *
+ * @param next 新传入的指标文案
+ * @param retained 上次展示的文案（可能为 null）
+ * @returns 本次展示的文案与需要保留的文案
  */
 export function metricDisplayText(
   next: string,
@@ -25,7 +29,12 @@ type ParsedAmount = {
   suffix: string
 }
 
-/** Parse the first numeric token (grouped or plain) from a metric display string. */
+/**
+ * 提取指标文案中的首个数字段（含分组或纯数字）
+ *
+ * @param text 指标文案
+ * @returns 数字段的前缀 / 数字 / 后缀；无数字段时返回 null
+ */
 export function parseLeadingMetricNumber(text: string): ParsedAmount | null {
   const match = text.match(/^(.*?)([+-]?\d{1,3}(?:,\d{3})*(?:\.\d+)?|[+-]?\d+(?:\.\d+)?)(.*)$/s)
   if (!match) return null
@@ -35,7 +44,7 @@ export function parseLeadingMetricNumber(text: string): ParsedAmount | null {
 
 function DigitReel({ digit }: { digit: number }) {
   const safe = Number.isFinite(digit) ? Math.min(9, Math.max(0, Math.trunc(digit))) : 0
-  /** Skip mount transition (0→digit); only animate when this column's digit changes. */
+  /** 首次挂载不滚动（0→数字），只在数字变化时动画 */
   const [canAnimate, setCanAnimate] = useState(false)
 
   useEffect(() => {
@@ -68,9 +77,13 @@ function DigitReel({ digit }: { digit: number }) {
 }
 
 /**
- * Per-digit simultaneous reel for metrics / balances.
- * Unchanged digit columns stay still; only changed columns flip.
- * FAQ / static copy: pass `animate={false}`.
+ * 指标数字滚动
+ *
+ * 逐位同时滚动；未变化的数字列保持不动，仅变化的列翻转。
+ * 静态文案（FAQ 等）传 `animate={false}`。
+ *
+ * @param text 要展示的指标文案（如 `'12,345.67'`）
+ * @param animate 是否启用逐位滚动动画
  */
 export function CountValue({
   text,

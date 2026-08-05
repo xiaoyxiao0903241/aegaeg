@@ -33,6 +33,7 @@ const ASSET_MODE_ICONS = {
   xmine: assetsHubAssets.modeXmine,
 } as const
 
+/** 资产 Hub 侧栏：四个仓位模式的入口卡，勾选隐藏零余额时过滤；未连接钱包时展示引导 */
 export function AssetsHubWidget() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()

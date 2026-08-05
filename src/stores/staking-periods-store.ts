@@ -3,16 +3,16 @@ import { create } from 'zustand'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 
 type StakingPeriodsStore = {
-  /** Shared with stake widget + aside — SSOT for remainingQuota period. */
+  /** 质押部件与侧栏共享——剩余配额周期的唯一来源。 */
   stakePeriod: StakePeriod
-  /** Shared with bond widget + aside — SSOT for discount/cap per kind. */
+  /** 债券部件与侧栏共享——各类型折扣/上限的唯一来源。 */
   lpBondPeriod: BondPeriod
   burnBondPeriod: BondPeriod
   setStakePeriod: (period: StakePeriod) => void
   setBondPeriod: (kind: 'lp' | 'burn', period: BondPeriod) => void
 }
 
-/** Staking period UI state — separate from hub↔subview navigation. */
+/** 质押周期选择 UI 状态，与 hub↔子视图导航相互独立。 */
 export const useStakingPeriodsStore = create<StakingPeriodsStore>((set) => ({
   stakePeriod: 'liquid',
   lpBondPeriod: '180',

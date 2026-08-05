@@ -16,7 +16,12 @@ function anchorEndAtMs(chainRemainingSec: number, now = Date.now()): number {
 }
 
 /**
- * 下一次 Rebase 发放 — 链上块差锚定墙钟，每秒滴答；时/分/秒各走 CountValue DigitReel。
+ * 下一次 Rebase 发放倒计时
+ *
+ * 以链上块差锚定墙钟后每秒滴答更新。
+ *
+ * @param epochEndBlock 周期结束区块高度
+ * @param currentBlock 当前区块高度
  */
 export function RebaseCountdownValue({
   epochEndBlock,

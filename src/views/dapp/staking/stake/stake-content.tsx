@@ -10,6 +10,12 @@ import {
   StakingRecordsSection,
 } from '~/views/dapp/staking/staking-detail-sections'
 
+/**
+ * 质押详情页（右栏）
+ *
+ * 展示协议概览、我的持仓、释放记录、机制说明、趋势图与 FAQ。
+ * 未连接钱包时仓位与记录为空态。
+ */
 export function StakeContent() {
   const { messages: t } = useI18n()
   const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetailAsideView()

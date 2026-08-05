@@ -7,7 +7,7 @@ import { Text } from '~/shared/components/text'
 
 interface ErrorBoundaryProps {
   children: ReactNode
-  /** Optional label for logs / recovery UI. */
+  /** 日志与恢复界面使用的名称标识（可选） */
   name?: string
   fallbackTitle?: string
   fallbackBody?: string
@@ -19,9 +19,10 @@ interface ErrorBoundaryState {
 }
 
 /**
- * Page/shell isolation — render failures stay in this subtree.
- * Behavior SSOT: recover via full reload; do not swallow chain/API errors here
- * (those use toast / auth-machine classification).
+ * 页面 / 外层隔离
+ *
+ * 渲染失败只影响本子树，恢复方式为整页刷新。
+ * 不在此吞掉链上 / API 错误（那些走 toast / 认证状态机分类）。
  */
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { error: null }
@@ -80,7 +81,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 }
 
-/** Wraps ErrorBoundary with catalog copy so defaults are never English-only. */
+/** 用多语言文案包装 ErrorBoundary，避免兜底文案只有英文 */
 export function LocalizedErrorBoundary({ children, name }: { children: ReactNode; name?: string }) {
   const { messages: t } = useI18n()
   return (

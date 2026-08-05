@@ -7,12 +7,14 @@ export type PercentButtonRowProps = {
   disabled?: boolean
   onSelect: (percent: number) => void
   values?: number[]
-  /** Figma turbine pct 末档「Max」；默认仍渲染 `N%`。 */
+  /** 快捷按钮的文案格式；Turbine 末档渲染「Max」，默认渲染 `N%`。 */
   formatLabel?: (percent: number) => string
 }
 
 /**
- * Exchange sell-amount % chips (25/50/75/100) — page-bag chrome, not Segment contract.
+ * 卖出金额百分比快捷按钮行（25/50/75/100）
+ *
+ * 纯页面控件，非分段选择器；点击回调传入对应百分比。
  */
 export function PercentButtonRow({
   'aria-label': ariaLabel,

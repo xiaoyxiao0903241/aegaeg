@@ -7,21 +7,26 @@ import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
 
 export { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-display-context'
 
-/** Shared hub↔subview crossfade grid — used by every DApp tab shell. */
+/** 中心页与子视图切换共用的交叉淡入网格（每个 DApp Tab 面板都使用）。 */
 export const DAPP_SUBVIEW_TRANSITION_STACK =
   'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0'
 
 type DappSubviewShellProps = {
   subview: DappSubviewMotion
   className?: string
-  /** Defaults to {@link DAPP_SUBVIEW_TRANSITION_STACK}. */
+  /** 过渡期使用的网格样式，默认 {@link DAPP_SUBVIEW_TRANSITION_STACK}。 */
   transitionClassName?: string
-  /** DOM marker: widget vs detail panel. */
+  /** DOM 标记：widget=左侧操作区 · detail=右侧详情区。 */
   panel: 'widget' | 'detail'
   children: ReactNode
 }
 
-/** Presentational shell — motion data in, view body as children (via display context). */
+/**
+ * 子视图展示外壳：接收动画状态，把视图内容作为子节点渲染。
+ *
+ * 静止时直接提供当前视图；过渡期间拆成退场 / 入场两层，
+ * 子组件通过 display context 读取各自应展示的视图。
+ */
 export function DappSubviewShell({
   subview,
   className,

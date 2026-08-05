@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-/** Returns href when it is a non-empty http(s) URL; otherwise null (no navigation). */
+/** 规范化 http(s) URL；非 http(s) 链接返回 null（不跳转）。 */
 export function navigableHref(href: string): string | null {
   const trimmed = href.trim()
   if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {

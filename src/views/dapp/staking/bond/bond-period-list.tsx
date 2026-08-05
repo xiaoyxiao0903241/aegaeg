@@ -6,7 +6,7 @@ import { cn } from '~/shared/lib/utils'
 
 const PERIODS: BondPeriod[] = ['180', '360', '540']
 
-/** FAQ / product invariant discount bands — not market demo numbers. */
+/** 折扣区间为产品固定档位，非市场演示数字。 */
 export const BOND_DISCOUNT_RANGES: Record<BondPeriod, string> = {
   '180': '85% – 100%',
   '360': '80% – 100%',
@@ -22,8 +22,19 @@ type BondPeriodCardCopy = {
 }
 
 /**
- * Figma `bond` 4454:615 — chrome 走 `Card outlined`（p-4 / radius-md / border）。
- * 选中态仅改 border/bg；Yield chrome → Chip soft success。
+ * 债券周期单选列表
+ *
+ * 选中态仅改边框与底色，收益率以成功色徽标展示；
+ * 折扣价缺失时显示 $0.00。
+ *
+ * @param ariaLabel 单选框组无障碍标签
+ * @param periodLabel 周期组标题
+ * @param value 当前选中周期
+ * @param onChange 切换周期回调
+ * @param periodLabels 各周期的展示文案
+ * @param discounts 各周期的折扣百分比
+ * @param discountPrices 各周期的折扣后美元价
+ * @param copy 卡片内文案
  */
 export function BondPeriodList({
   ariaLabel,
@@ -41,7 +52,7 @@ export function BondPeriodList({
   onChange: (period: BondPeriod) => void
   periodLabels: Record<BondPeriod, string>
   discounts: Record<BondPeriod, string>
-  /** Spot × discount% → `$59.80`; missing → `$0.00`. */
+  /** 现价 × 折扣% → `$59.80`；缺失 → `$0.00`。 */
   discountPrices: Record<BondPeriod, string>
   copy: BondPeriodCardCopy
 }) {
@@ -93,14 +104,14 @@ export function BondPeriodList({
                       variant: 'soft',
                     })}
                   >
-                    {/* 周期收益率：无源 → 诚实 0（gaps §3.3） */}
+                    {/* 周期收益率：无源 → 显示 0（gaps §3.3） */}
                     {copy.yield} 0.00%
                   </span>
                 </div>
                 <Text as="span" className="text-foreground/40" variant="support">
                   {copy.discountRange} {BOND_DISCOUNT_RANGES[period]}
                 </Text>
-                {/* 已售：无源 → 诚实 $0.00（gaps §3.3） */}
+                {/* 已售：无源 → 显示 $0.00（gaps §3.3） */}
                 <Text as="span" className="text-foreground/40" variant="support">
                   {copy.sold} $0.00
                 </Text>

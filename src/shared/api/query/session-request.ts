@@ -45,7 +45,7 @@ export function toQueryErrorMessage(
   return apiUserFacingError(error, messages) ?? messages.fallback
 }
 
-/** Authenticated React Query `enabled` check — fail-closed until hydrated + session + token. */
+/** 认证查询的 React Query `enabled` 判断——水合、会话、token 任一未就绪时不发起请求。 */
 export function canRunAuthenticatedQuery({
   enabled = true,
   hasHydrated,

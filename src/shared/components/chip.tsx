@@ -1,6 +1,11 @@
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
+/**
+ * 标签胶囊
+ *
+ * 用作筛选、切换等轻量操作；样式由变体 / 尺寸 / 形状 / 语义色组合。
+ */
 export const chipVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center whitespace-nowrap',
@@ -17,7 +22,6 @@ export const chipVariants = tv({
     size: {
       sm: 'px-2 py-1.5 text-(length:--type-caption-size) leading-none font-(--type-caption-weight) tracking-(--type-caption-tracking)',
       md: 'justify-center px-1.5 py-1.25 text-xs/normal font-semibold tracking-[-0.02em] max-dapp:py-1.5',
-      // Figma htab / tokTabs（Trade `4433:484`）h30：py-1.5 + text-base/leading-none → 28（Δ≤2）
       lg: 'justify-center px-4 py-1.5 text-base leading-none font-semibold tracking-[-0.02em]',
     },
     shape: {
@@ -41,7 +45,7 @@ export const chipVariants = tv({
     { variant: 'soft', tone: 'coral', class: 'bg-accent text-coral' },
     { variant: 'soft', tone: 'success', class: 'bg-success-soft text-success' },
     {
-      // Figma text/muted = foreground/40；禁 muted-foreground(70%) 冒充未选 htab
+      // 未选中态用次要文字色；避免弱化文字被当作已选态
       variant: 'outlined',
       tone: 'default',
       class: 'border-border bg-card text-foreground/40 hover:border-primary hover:text-primary',
@@ -72,6 +76,14 @@ export const chipVariants = tv({
 
 export type ChipProps = ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof chipVariants>
 
+/**
+ * 标签胶囊
+ *
+ * 用作筛选、切换等轻量操作；样式由 `chipVariants` 组合。
+ *
+ * @param variant solid（实底） / soft（浅底） / outlined（描边）
+ * @param tone default / primary / coral / success
+ */
 export const Chip = forwardRef<HTMLButtonElement, ChipProps>(
   ({ className, variant, size, shape, tone, ...props }, ref) => (
     <button
@@ -87,7 +99,7 @@ Chip.displayName = 'Chip'
 const fieldActionChip = tv({
   extend: chipVariants,
   base: [
-    // Enabled: soft coral (bg-accent / text-coral). Disabled: muted chrome, full opacity.
+    // 可用：浅珊瑚（accent 底 / coral 字）；禁用：灰底、不透明
     'h-11 min-w-16 shrink-0 gap-1.5 rounded-control px-3.75 text-xs font-semibold',
     'bg-accent text-coral',
     'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
@@ -100,7 +112,7 @@ const fieldActionChip = tv({
   },
 })
 
-/** Genesis MAX / Community Bind — field-adjacent soft coral chip (h-11). */
+/** 输入框旁的软珊瑚操作胶囊（Genesis MAX / 社区绑定） */
 export type FieldActionChipProps = Omit<ChipProps, 'variant' | 'size' | 'shape' | 'tone'>
 
 export const FieldActionChip = forwardRef<HTMLButtonElement, FieldActionChipProps>(
@@ -111,9 +123,9 @@ export const FieldActionChip = forwardRef<HTMLButtonElement, FieldActionChipProp
 FieldActionChip.displayName = 'FieldActionChip'
 
 /**
- * Figma `maxB` 4454:648 inside inputBox：
- * 合成 h27 = py-1.5（6）+ text-xs/leading-3.75（12/15）+ py-1.5；圆角 `rounded-chip`（--radius-chip）；
- * bg accent · text coral-emphasis — 非 FieldActionChip h-11。禁任意 *[Npx]。
+ * 金额输入框内的「最大」胶囊
+ *
+ * 浅珊瑚底 + 珊瑚字；比 FieldActionChip 矮，不另设任意尺寸。
  */
 const amountMaxChip = tv({
   base: [

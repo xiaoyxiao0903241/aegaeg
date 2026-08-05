@@ -1,8 +1,10 @@
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 
 /**
- * Rail / community chrome：只订标量，避免 seasonOptions/promoSnapshot 新引用每 15s 打醒。
- * 购买季列表由 genesis chain-reads 另订 seasonOptions。
+ * Genesis 推广位展示数据（导航栏/社区角标）
+ *
+ * 只订阅标量字段，避免 seasonOptions/promoSnapshot 每 15 秒刷新产生新引用而触发整块重渲染；
+ * 购买季列表由 genesis 链上读取单独订阅。
  */
 export function useGenesisPromoChrome() {
   const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
@@ -16,7 +18,7 @@ export function useGenesisPromoChrome() {
   }
 }
 
-/** @deprecated 用 {@link useGenesisPromoChrome}；保留别名避免旧 import 过宽订阅。 */
+/** @deprecated 改用 {@link useGenesisPromoChrome}；保留别名避免旧调用方订阅过宽。 */
 export function useGenesisPromo() {
   return useGenesisPromoChrome()
 }

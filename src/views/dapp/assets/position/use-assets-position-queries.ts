@@ -9,7 +9,7 @@ import {
 
 export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
 
-/** Shared stake/bond position reads for widget table + right-rail stats. */
+/** 质押 / 债券仓位链上读取，供持仓列表与右侧统计共用 */
 export function useAssetsPositionQueries(product: AssetsProduct) {
   const stakeQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsStakePositions,

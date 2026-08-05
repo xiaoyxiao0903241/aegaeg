@@ -25,13 +25,19 @@ function parseDiscountPct(label: string): number | null {
   return Number.isFinite(n) ? n : null
 }
 
-/** Market spot × (discount%/100) — Figma dual price; missing → `$0.00`. */
+/** 现价 × (折扣% / 100) 得折扣后单价；缺失 → `$0.00`。 */
 function formatBondDiscountUsd(spot: number | null, discountLabel: string): string {
   const pct = parseDiscountPct(discountLabel)
   if (spot == null || pct == null) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
   return formatGroupedNumber(spot * (pct / 100), { digits: 2, prefix: '$' })
 }
 
+/**
+ * 债券买入表单（LP / 燃烧债券共用）
+ *
+ * 选择锁定期、输入 USD1 数量后提交买入；
+ * 未连接钱包时展示连接引导。
+ */
 export function BondWidget({ kind }: { kind: BondKind }) {
   const {
     t,
@@ -166,7 +172,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
                     {formatShortAddress(bond.depository)}
                   </a>
                 ),
-                // Figma accent/coral #e9785a → coral-emphasis；稿无下划线
+                // 合约地址用强调色高亮（设计稿无下划线）
                 valueClassName: 'text-coral-emphasis',
               },
             ]}

@@ -7,6 +7,7 @@ import { Text } from '~/shared/components/text'
 
 const DialogPortal = DialogPrimitive.Portal
 
+/** 弹窗各部位样式槽位 */
 export const dialogChrome = tv({
   slots: {
     overlay: 'aegis-modal-overlay fixed inset-0 z-50 backdrop-blur-sm',
@@ -17,6 +18,7 @@ export const dialogChrome = tv({
   },
 })
 
+/** 弹窗遮罩：半透明黑 + 背景模糊 */
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -32,6 +34,7 @@ const DialogOverlay = React.forwardRef<
 })
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+/** 弹窗内容：居中面板 + 右上角关闭按钮 */
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -64,18 +67,21 @@ const DialogContent = React.forwardRef<
 })
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+/** 弹窗头部（标题区） */
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
   const styles = dialogChrome()
   return <div className={styles.header({ class: className })} {...props} />
 }
 DialogHeader.displayName = 'DialogHeader'
 
+/** 弹窗底部操作区 */
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
   const styles = dialogChrome()
   return <div className={styles.footer({ class: className })} {...props} />
 }
 DialogFooter.displayName = 'DialogFooter'
 
+/** 弹窗标题 */
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
@@ -88,6 +94,7 @@ const DialogTitle = React.forwardRef<
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
+/** 弹窗描述 */
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
@@ -110,16 +117,17 @@ export {
   DialogTitle,
 }
 
-/** Shared close control — wallet modal, slippage, H5 drawer, etc. */
+/** 通用关闭按钮：圆形描边样式 — 钱包弹窗、滑点、移动端抽屉等共用 */
 export const dialogClose = tv({
   base: [
-    // Figma wm-x 4040:5236 — 34px circle, white surface
+    // 圆形关闭按钮：描边 + 卡片底
     'grid size-(--dapp-wallet-modal-close-size) shrink-0 cursor-pointer place-items-center rounded-full',
     'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
     'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
   ],
 })
 
+/** 弹窗关闭按钮：圆形描边样式 */
 export function DialogClose({
   className,
   ...props
@@ -129,6 +137,7 @@ export function DialogClose({
   )
 }
 
+/** 移动端抽屉顶部把手 */
 export function SheetHandle() {
   return (
     <div
@@ -138,7 +147,7 @@ export function SheetHandle() {
   )
 }
 
-/** Responsive modal/sheet shell — panel chrome via `dialogChrome().panel`. */
+/** 响应式弹窗 / 抽屉外壳 — 面板样式走 `dialogChrome().panel` */
 export function ResponsiveDialog({
   children,
   className,

@@ -1,8 +1,15 @@
 import type { SeasonOption } from '~/core/presale/genesis-promo-types'
 
 /**
- * 共建计划是否已全部结束：无进行中 phase，且无 Upcoming。
- * loading 中 fail-closed 为未结束，避免 CTA/空态闪成「已结束」。
+ * 创世预售计划是否已全部结束：无进行中阶段，且无 Upcoming 季节。
+ *
+ * 加载中按「未结束」返回，避免页面 CTA / 空态短暂闪现成「已结束」。
+ *
+ * @param args.isLoading 数据加载中
+ * @param args.activePhase 当前进行中阶段；null 表示无
+ * @param args.seasonOptions 各季节的状态（只读 status）
+ * @returns 全部结束返回 true
+ * @see 手册 §6.1 页面用途
  */
 export function isGenesisProgramEnded(args: {
   isLoading: boolean

@@ -14,6 +14,12 @@ import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-paginatio
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
 
+/**
+ * 我的贡献区块数据组装
+ *
+ * 汇总销售记录分页、本季与累计贡献进度、同步提示与空态判断；
+ * 未登录时由表格状态驱动展示登录引导。
+ */
 export function useGenesisContributionsView(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()

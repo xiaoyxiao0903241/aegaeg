@@ -21,6 +21,7 @@ const bondLpZapAbi = parseWriteAbi(BOND_HELPER_METHODS.zapIntoLiquidityBond, BON
 const bondBurnZapAbi = parseWriteAbi(BOND_HELPER_METHODS.zapIntoBurnBond, BOND_HELPER_ERRORS)
 const xStakeAbi = parseWriteAbi(X_STAKING_POOL_METHODS.stakeGagxForMining, X_STAKING_POOL_ERRORS)
 
+/** AGX → 质押池授权：余额不足以覆盖本次质押时补 approve。 */
 export async function approveAgxForStakeIfNeeded({
   wallet,
   pool,
@@ -38,6 +39,7 @@ export async function approveAgxForStakeIfNeeded({
   })
 }
 
+/** 活期质押：调用 LiquidStaking.liquidStake 写入 AGX。 */
 export async function liquidStakeAgx({ wallet, amount }: { wallet: Wallet; amount: bigint }) {
   return writeContractViaWallet({
     wallet,
@@ -48,6 +50,7 @@ export async function liquidStakeAgx({ wallet, amount }: { wallet: Wallet; amoun
   })
 }
 
+/** 定期质押：调用 LockedStaking.lockedStake 写入 AGX。 */
 export async function lockedStakeAgx({
   wallet,
   pool,
@@ -66,7 +69,15 @@ export async function lockedStakeAgx({
   })
 }
 
-/** Warmup activation on LiquidStaking — not Mixed claim. */
+/**
+ * 激活活期质押 warmup
+ *
+ * 调用 LiquidStaking.claim 使已过 warmup 的质押生效；
+ * 是活期路径的激活操作，与 Mixed 领奖不是同一语义。
+ *
+ * @param wallet 当前钱包
+ * @see 手册 §8.2 活期 LiquidStaking
+ */
 export async function claimLiquidWarmup({ wallet }: { wallet: Wallet }) {
   return writeContractViaWallet({
     wallet,
@@ -77,6 +88,7 @@ export async function claimLiquidWarmup({ wallet }: { wallet: Wallet }) {
   })
 }
 
+/** USD1 → BondHelper 授权：债券 zap 前按需补 approve。 */
 export async function approveUsd1ForBondHelperIfNeeded({
   wallet,
   amount,
@@ -92,6 +104,7 @@ export async function approveUsd1ForBondHelperIfNeeded({
   })
 }
 
+/** LP 债券 zap：BondHelper.zapIntoLiquidityBond 用 USD1 铸 LP 债券。 */
 export async function zapIntoLiquidityBond({
   wallet,
   depository,
@@ -110,6 +123,7 @@ export async function zapIntoLiquidityBond({
   })
 }
 
+/** 销毁债券 zap：BondHelper.zapIntoBurnBond 用 USD1 购买销毁债券。 */
 export async function zapIntoBurnBond({
   wallet,
   depository,
@@ -128,6 +142,7 @@ export async function zapIntoBurnBond({
   })
 }
 
+/** gAGX → XStakingPool 授权：X 挖矿质押前按需补 approve。 */
 export async function approveGagxForXmineIfNeeded({
   wallet,
   amount,
@@ -143,6 +158,7 @@ export async function approveGagxForXmineIfNeeded({
   })
 }
 
+/** X 挖矿质押：XStakingPool.stakeGagxForMining 写入 gAGX。 */
 export async function stakeGagxForMining({ wallet, amount }: { wallet: Wallet; amount: bigint }) {
   return writeContractViaWallet({
     wallet,

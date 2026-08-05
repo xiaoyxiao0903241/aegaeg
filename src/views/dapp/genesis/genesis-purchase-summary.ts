@@ -13,13 +13,13 @@ import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chai
 
 type GenesisReads = ReturnType<typeof useGenesisChainReads>
 
-/** Pure display + block assembly from chain reads + share draft + countdown leaf. */
+/** 纯展示组装：由链上读取、份额草稿与倒计时汇总购买区块数据 */
 export function genesisPurchaseSummary(args: {
   reads: GenesisReads
   sharesDraft: number
   countdown: string
   countdownMode: PhaseCountdownMode | null
-  /** `previewAirdropValue` 的 addedAirdropValue；缺省 / 金额为 0 → 展示 $0。 */
+  /** previewAirdropValue 的 addedAirdropValue；缺省或金额为 0 时展示 $0 */
   previewAddedAirdropValueWei?: bigint | null
 }) {
   const { reads, sharesDraft, countdown, countdownMode, previewAddedAirdropValueWei } = args

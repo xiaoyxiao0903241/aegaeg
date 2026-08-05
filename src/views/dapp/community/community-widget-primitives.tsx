@@ -13,7 +13,7 @@ const communityReferrerBindGrid = tv({
   base: 'flex gap-2',
 })
 
-/** Figma `4300:370` 行：avatar24 + 地址 + copy30 灰底（非整行灰条） */
+/** 已绑定行：头像 + 地址 + 复制按钮，仅按钮灰底而非整行灰条 */
 const communityReferrerAddressRow = tv({
   base: 'flex w-full items-center',
 })
@@ -26,6 +26,7 @@ const communityCopyButton = tv({
   base: 'ml-auto grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-background',
 })
 
+/** 推荐链接卡：展示分享链接并支持一键复制 */
 export function CommunityReferralLinkCard({
   copyLabel,
   disabled = false,
@@ -59,6 +60,7 @@ export function CommunityReferralLinkCard({
   )
 }
 
+/** 推荐人绑定卡：输入地址提交绑定，提交中展示加载态 */
 export function CommunityReferrerBindCard({
   bindLabel,
   canBind,
@@ -113,7 +115,7 @@ export function CommunityReferrerBindCard({
   )
 }
 
-/** Figma `4300:370`：标签 · Wallet 圆标 + 地址 + copy · 永久关系注脚 */
+/** 已绑定面板：钱包圆标 + 地址 + 复制按钮 + 永久关系注脚 */
 export function CommunityReferrerBoundPanel({
   addressLabel,
   copyLabel,

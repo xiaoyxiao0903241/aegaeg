@@ -1,3 +1,10 @@
+/**
+ * 奖励模块入口
+ *
+ * 左侧面板与右侧正文共用同一子视图状态，
+ * 按子视图分别渲染 hub 聚合页或幸运 / 推荐 / 参与 / 共建 / 发展 / 创世详情页。
+ * 未连接钱包时各领取控件显示引导卡。
+ */
 import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
@@ -26,6 +33,7 @@ function RewardsContentBody() {
   return <RewardsDetailContent view={view} />
 }
 
+/** 奖励左栏面板：按当前子视图切换对应的领取控件 */
 export function RewardsWidget() {
   const subview = useRewardsViewMotion()
   return (
@@ -35,6 +43,7 @@ export function RewardsWidget() {
   )
 }
 
+/** 奖励正文区：按当前子视图切换 hub 聚合页或对应详情页 */
 export function RewardsContent() {
   const subview = useRewardsViewMotion()
   return (

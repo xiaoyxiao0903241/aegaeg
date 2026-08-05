@@ -9,11 +9,10 @@ import { cn } from '~/shared/lib/utils'
 type AboutWash = 'lavender' | 'none'
 
 /**
- * DApp about 轮播卡。
- * - 奖励 Figma `4297:213`：E3 · px16 py24 · lavender wash；人物仅 PC（`-scale-x-100` 朝左）
- * - 卡壳 **必须** `overflow-hidden`：稿 `overflow-clip`，wash / 人物均不得超出圆角
- * - 正文随换行增高；禁 Card `h-*` / `min-h-*`（同行等高交给轮播/grid stretch）
- * - 兑换 Token 卡仍走 `ExchangePromoCard`
+ * DApp 关于轮播卡。
+ *
+ * 奖励活动卡（渐变底、PC 展示人物）与兑换入口卡，供首页轮播展示。
+ * 容器须 overflow-hidden，防止底色 / 人物超出圆角；卡内高度随内容增高。
  */
 const aboutCard = tv({
   slots: {
@@ -22,7 +21,7 @@ const aboutCard = tv({
     washLavender:
       'pointer-events-none absolute -top-2 right-0 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
     body: 'relative z-1 grid min-w-0 gap-3',
-    /** Figma 4297:213 mascot ≈101×143 → w-25 h-36；IP 水平翻转朝左；仅 desktop；壳 overflow-clip 裁切 */
+    /** 装饰插画：水平翻转朝左，仅 PC 渲染，由容器 overflow-hidden 裁切。 */
     deco: 'pointer-events-none absolute top-2 right-4 z-2 w-25 -scale-x-100 object-contain object-bottom',
   },
   variants: {
@@ -45,12 +44,12 @@ export function DappAboutCard({
   action?: ReactElement
   body: string
   className?: string
-  /** 覆盖 deco 几何（释放稿 91×91 ≠ 奖励人物框） */
+  /** 覆盖装饰插画的默认尺寸与位置。 */
   decoClassName?: string
-  /** Figma IP 人物（H5 不渲染） */
+  /** 装饰插画（移动端不渲染） */
   decoSrc?: string
   title: string
-  /** `lavender`=奖励稿紫渐变；默认 none */
+  /** `lavender`=奖励卡紫色渐变底色；默认 none */
   wash?: AboutWash
 }) {
   const isMobile = useMobileViewport()

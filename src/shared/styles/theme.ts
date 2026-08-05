@@ -1,10 +1,12 @@
 /**
- * JS runtime color helpers — hex from tokens.json via generated `colorHex`.
- * CSS / Tailwind live in theme.css; thirdweb Connect needs a JS object.
+ * 运行时颜色帮助常量
+ *
+ * 从生成好的 tokens 里取 hex 色值供 JS 使用；CSS / Tailwind 侧在 theme.css。
+ * thirdweb Connect 弹窗需要 JS 对象形式的色值，故单独维护一份。
  */
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
-/** Brand / chrome hex for meta theme-color and non-CSS consumers. */
+/** 品牌 / 外观色值：供 meta theme-color 与非 CSS 消费方使用。 */
 export const themeHex = {
   background: colorHex.background,
   foreground: colorHex.foreground,
@@ -26,8 +28,9 @@ export const themeHex = {
 } as const
 
 /**
- * thirdweb Connect Modal palette.
- * Token aliases where 1:1; remaining hexes are Connect-chrome-only (not product axes).
+ * thirdweb Connect 弹窗配色
+ *
+ * 与产品 token 一一对应的别名直接用主题色；其余是弹窗专属色值（不属产品色板）。
  */
 export const thirdwebConnectHex = {
   accentButtonBg: themeHex.coralEmphasis,

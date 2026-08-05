@@ -33,10 +33,12 @@ export type TurbineSegment = 'unlock' | 'claim'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
-/** One whole AGX in base units — unit spot via handbook `quoteUsdInForAgxOut`. */
+/** 1 个完整 AGX 的最小单位；单位行情通过合约 quoteUsdInForAgxOut 获取。 */
 const ONE_AGX = 10n ** BigInt(AGX_DECIMALS)
 
-/** Overview USD hint: missing unit quote → `$0.00` (empty-state SSOT). */
+/**
+ * 概览 USD 提示：缺少单位报价时显示 `$0.00`（空态统一值）
+ */
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
   if (unitUsdPerAgx === undefined || unitUsdPerAgx === 0n || amountAgx === 0n) {
     return formatGroupedNumber(0, { digits: 2, prefix: '$' })
@@ -48,13 +50,19 @@ function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined)
   return formatGroupedNumber(usdNumber, { digits: 2, prefix: '$' })
 }
 
-/** OpenAPI turbine summary/logs 金额：小数字符串（与 `mapTurbineLogToOpsRow` 同族，禁当 wei）。 */
+/** OpenAPI 的 turbine summary/logs 金额为小数字符串（勿当作 wei）。 */
 function formatTurbineSummaryAmount(raw: string | null | undefined): string {
   const n = raw == null || raw.trim() === '' ? Number.NaN : Number(raw)
   return formatGroupedNumber(Number.isFinite(n) ? n : 0, { digits: 2 })
 }
 
-/** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
+/**
+ * Turbine 会话状态：解锁（USD1 → AGX 进入冷却）+ 领取冷却完成的 gAGX
+ *
+ * 配额、余额、静默期与冷却时长均来自链上；概览金额按合约单位换算。
+ *
+ * @see docs/onchain-manual/contracts/turbine.md
+ */
 export function useTurbineExchangeWidget(
   sessionReady: boolean,
   quotesEnabled = true,
@@ -99,7 +107,7 @@ export function useTurbineExchangeWidget(
 
   const quota = quotaQuery.data ?? 0n
   const usd1Balance = balancesQuery.data?.usd1 ?? 0n
-  // 决策面：钱包切换 placeholder 不算已加载。
+  // 判断用余额：钱包切换时的旧值（keepPreviousData）不算已加载
   const balancesLoaded =
     isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data) &&
     isDecisionFresh(quotaQuery.isPlaceholderData, quotaQuery.data)
@@ -146,7 +154,7 @@ export function useTurbineExchangeWidget(
     enabled: quotesEnabled && sessionReady && unlockAmountIn > 0n,
   })
 
-  // Unit spot for meta「AGX 价格」— handbook quoteUsdInForAgxOut(1 AGX); fail → honest —.
+  // 概览「AGX 价格」用 1 AGX 的单位报价；读取失败时显示 —
   const unitPriceQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineUsdQuote(ONE_AGX.toString()),
     queryFn: () => readTurbineUsdQuote(ONE_AGX),
@@ -155,7 +163,7 @@ export function useTurbineExchangeWidget(
     enabled: quotesEnabled && sessionReady,
   })
 
-  // 手册 contracts/turbine：`swapSlippageBP` 合约内固定（owner setSwapConfig）；非交易页用户滑点。
+  // 滑点由合约 swapSlippageBP 固定（owner 配置），此处只读展示
   const slippageQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineSwapSlippage,
     queryFn: () => readTurbineSwapSlippageBP(),
@@ -169,7 +177,7 @@ export function useTurbineExchangeWidget(
   const usdNeeded = quoteQuery.data ?? 0n
   const buyAgxLabel =
     unlockAmountIn > 0n ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4) : '0.00'
-  // Handbook §16: USD1 needed = quoteUsdInForAgxOut(agxAmount) — never fake 1:1 / mid-quote 0.00.
+  // 所需 USD1 = 合约 quoteUsdInForAgxOut(agxAmount)，不伪造 1:1 或中间价
   const payUsd1Label =
     unlockAmountIn <= 0n
       ? '0.00'
@@ -187,7 +195,7 @@ export function useTurbineExchangeWidget(
       ? ''
       : formatGroupedNumber(unitUsdNumber, { digits: 2, prefix: '$' })
 
-  // BPS → 展示百分数：300 → 3%；30 → 0.3%（跟稿位数，不跟稿演示 0.3 当死值）
+  // BPS 转百分数：300 → 3%；30 → 0.3%（按位数精确转换，不硬编码示例值）
   const slippageLabel = (() => {
     if (slippageQuery.isError) return '—'
     if (slippageQuery.data === undefined) return ''
@@ -209,7 +217,7 @@ export function useTurbineExchangeWidget(
 
   const unitUsdReady = unitUsd !== undefined && unitUsd > 0n && !unitPriceQuery.isError
 
-  // OpenAPI `/turbine/summary`：claimed_total = SUM(cooled_claimed.amount)，与 logs.amount 同族小数字符串（禁当 wei）。
+  // OpenAPI `/turbine/summary` 的 claimed_total 为已领取金额（小数字符串，勿当 wei）
   const claimedRaw = turbineSummaryQuery.data?.claimed_total
   const totalWithdrawnLabel = !sessionReady
     ? formatTurbineSummaryAmount(null)
@@ -266,7 +274,7 @@ export function useTurbineExchangeWidget(
     segment,
     setSegment,
     pair: {
-      // Handbook §16: turbineBalances amount axis = AGX decimals. Figma unlock leaf labels gAGX.
+      // turbineBalances 以 AGX 小数位计量，界面解锁标签显示为 gAGX
       // 图标与兑换 Hub「交易 gAGX」同套：carousel/hub 128²（勿用 home mark.webp）
       unlock: { icon: tokenCarouselIcons.gagxIcon, symbol: 'gAGX', decimals: AGX_DECIMALS },
       pay: { icon: dappAssets.tokenUsd1, symbol: 'USD1', decimals: USD1_DECIMALS },

@@ -2,12 +2,11 @@ import { useState } from 'react'
 
 import { exchangeFlipCard } from '~/views/dapp/exchange/exchange-flow-button'
 
-/**
- * Keep in sync with `exchange-card-flip` / `--motion-dapp-emphasis` in theme.css.
- * Apply direction change mid-animation; settle after the flip completes.
- */
+// 时长需与 theme.css 中 `exchange-card-flip` / `--motion-dapp-emphasis` 保持一致
 const EXCHANGE_FLIP_APPLY_MS = 160
 const EXCHANGE_FLIP_SETTLE_MS = 320
+
+/** 兑换方向翻转动画：翻转期间锁定按钮，并通知方向切换。 */
 
 export function useExchangeFlip({
   flipDirection,

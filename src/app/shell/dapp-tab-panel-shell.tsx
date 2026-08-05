@@ -11,7 +11,7 @@ type DappTabPanelShellProps = {
   children: ReactNode
 }
 
-/** 跨 Tab widget 面板壳：固化 layout class，避免五处 index 复制。 */
+/** 跨 Tab 操作区面板容器：固化布局类，避免五处页面各自复制。 */
 export function DappTabWidgetShell({ subview, children }: DappTabPanelShellProps) {
   return (
     <DappSubviewShell className={WIDGET_PANEL_CLASS} panel="widget" subview={subview}>
@@ -20,7 +20,7 @@ export function DappTabWidgetShell({ subview, children }: DappTabPanelShellProps
   )
 }
 
-/** 跨 Tab detail 面板壳：固化 min-h-0。 */
+/** 跨 Tab 详情面板容器：固化 min-h-0。 */
 export function DappTabDetailShell({ subview, children }: DappTabPanelShellProps) {
   return (
     <DappSubviewShell className={DETAIL_PANEL_CLASS} panel="detail" subview={subview}>

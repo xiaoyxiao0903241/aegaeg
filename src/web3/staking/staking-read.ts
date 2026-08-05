@@ -46,6 +46,21 @@ export type StakeOpenPreflight = {
   isWarmupExpired: boolean
 }
 
+/**
+ * 质押开仓前的写前状态读取
+ *
+ * 并行读取推荐绑定、AGX 余额与对质押池的授权、池剩余额度，一次取齐
+ * 写前所需数据；活期额外检查 warmup 是否过期，定期把个人额度与池额度
+ * 取较小者，并按迁移根地址读取 `userStakingAmounts`（该映射非别名感知）。
+ *
+ * @param args.pool 质押池合约地址
+ * @param args.isLiquid 是否为活期质押
+ * @param args.user 钱包地址
+ * @param args.client 链上读取客户端，默认公共 RPC
+ * @returns 是否绑定 / 余额 / 授权 / 有效剩余额度 / 池是否开放 / warmup 状态
+ * @see 手册 §8.2 活期 LiquidStaking
+ * @see 手册 §8.3 定期 LockedStaking
+ */
 export async function readStakeOpenPreflight(args: {
   pool: Address
   isLiquid: boolean
@@ -117,6 +132,19 @@ export async function readStakeOpenPreflight(args: {
   }
 }
 
+/**
+ * 债券 zap 前的写前状态读取
+ *
+ * 并行读取推荐绑定、USD1 余额与对 BondHelper 的授权，
+ * 以及目标 depository 是否在 BondHelper 的授权白名单内。
+ *
+ * @param args.depository 债券市场合约地址
+ * @param args.user 钱包地址
+ * @param args.client 链上读取客户端，默认公共 RPC
+ * @returns 是否绑定 / 余额 / 授权 / depository 是否被授权
+ * @see 手册 §10.4 用户写方法
+ * @see docs/onchain-manual/contracts/bondhelper.md
+ */
 export async function readBondZapPreflight(args: {
   depository: Address
   user: string
@@ -142,7 +170,18 @@ export async function readBondZapPreflight(args: {
   return { isBound, balance, allowance, depositoryAuthorized }
 }
 
-/** Public bond market chrome — discountRateBP + debt capacity (manual §10). */
+/**
+ * 读取债券市场公开元数据
+ *
+ * 返回折扣率、手续费、最大债务与已收总存款，
+ * 供债券页展示与 zap 预期回报计算使用。
+ *
+ * @param depository 债券市场合约地址
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 折扣基点 / 手续费基点 / 最大债务 / 总存款
+ * @see 手册 §10.3 展示字段
+ * @see docs/onchain-manual/contracts/bonddepository.md
+ */
 export async function readBondMarketMeta(
   depository: Address,
   client: ChainReadClient = bscReadClient,
@@ -180,8 +219,14 @@ export async function readBondMarketMeta(
 }
 
 /**
- * Figma「当前折扣」shows discountRateBP as % of market (9200 → 92%).
- * Manual: 10000 = par; lower BP = more discount (e.g. 9500 ≈ 5% off).
+ * 债券折扣率 → 百分比文案
+ *
+ * 链上 `discountRateBP` 以 10000 为平价：9200 表示 92%、即约 8% 折扣；
+ * 0 或超出平价视为无折扣。仅保留两位以内小数。
+ *
+ * @param discountRateBP 债券折扣率（基点）
+ * @returns 百分比字符串，如「92%」「5.5%」
+ * @see 手册 §10.3 展示字段
  */
 export function formatBondDiscountLabel(discountRateBP: bigint): string {
   if (discountRateBP === 0n || discountRateBP > BPS_DENOM) return '0%'
@@ -191,6 +236,18 @@ export function formatBondDiscountLabel(discountRateBP: bigint): string {
   return `${whole}.${frac.toString().padStart(2, '0').replace(/0+$/, '')}%`
 }
 
+/**
+ * X 挖矿质押前的写前状态读取
+ *
+ * 并行读取 gAGX 余额、对 XStakingPool 的授权、个人挖矿配额与已质押量；
+ * 「Max / 可用」用 quota − staked 计算。
+ *
+ * @param args.user 钱包地址
+ * @param args.client 链上读取客户端，默认公共 RPC
+ * @returns 余额 / 授权 / 挖矿配额 / 已质押量
+ * @see 手册 §15 XStakingPool X 挖矿
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
 export async function readXminePreflight(args: {
   user: string
   client?: ChainReadClient

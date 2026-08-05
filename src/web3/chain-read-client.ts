@@ -7,7 +7,7 @@ import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
 
 export type ChainReadClient = PublicClient
 
-/** Viem public client backed by the connected wallet's EIP-1193 provider. */
+/** 钱包连接时，用钱包的 EIP-1193 provider 建立只读客户端，链上只读查询走钱包节点。 */
 export function createWalletReadClient(wallet: Wallet): ChainReadClient {
   return createPublicClient({
     chain: bsc,
@@ -15,7 +15,7 @@ export function createWalletReadClient(wallet: Wallet): ChainReadClient {
   })
 }
 
-/** Wallet RPC when connected; otherwise the app public read RPC (SSR / disconnected). */
+/** 已连接钱包时返回钱包节点只读客户端，未连接时退回应用公共只读 RPC（SSR / 未连接）。 */
 export function chainReadClient(wallet?: Wallet | null): ChainReadClient {
   return wallet ? createWalletReadClient(wallet) : bscReadClient
 }

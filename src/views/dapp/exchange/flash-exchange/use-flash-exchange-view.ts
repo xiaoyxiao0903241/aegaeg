@@ -7,7 +7,7 @@ import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exc
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 
-/** Session state + i18n + flip/present orchestration → everything `FlashExchangeWidget` renders. */
+/** 组装闪电兑换面板渲染所需：会话状态 + 文案 + 翻转 / 错误提示编排。 */
 export function useFlashExchangeView(flash: FlashExchangeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)

@@ -6,7 +6,7 @@ import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-h
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
 import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
 
-/** Session state + i18n + present orchestration → everything `BurnExchangeWidget` renders. */
+/** 组装销毁面板渲染所需：会话状态 + 文案 + 错误提示编排。 */
 export function useBurnExchangeView(burn: BurnExchangeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
