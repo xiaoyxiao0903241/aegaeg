@@ -3,11 +3,11 @@ import type { ComponentType } from 'react'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 import { AssetsContent, AssetsWidget } from '~/views/dapp/assets'
-import { CommunityContent } from '~/views/dapp/community/community-content'
+import { CommunityDetail } from '~/views/dapp/community/community-detail'
 import { CommunityWidget } from '~/views/dapp/community/community-widget'
 import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
 import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
-import { GenesisContent } from '~/views/dapp/genesis/genesis-content'
+import { GenesisDetail } from '~/views/dapp/genesis/genesis-detail'
 import { GenesisWidget } from '~/views/dapp/genesis/genesis-widget'
 import { ReleaseContent, ReleaseWidget } from '~/views/dapp/release'
 import { RewardsContent, RewardsWidget } from '~/views/dapp/rewards'
@@ -43,9 +43,9 @@ function GenesisTabWidget({ genesis }: TabWidgetProps) {
 
 function GenesisTabContent({ genesis }: TabContentProps) {
   if (!genesis) {
-    throw new Error('GenesisContent requires a lifted genesis session')
+    throw new Error('GenesisDetail requires a lifted genesis session')
   }
-  return <GenesisContent genesis={genesis} />
+  return <GenesisDetail genesis={genesis} />
 }
 
 function CommunityTabWidget() {
@@ -55,7 +55,7 @@ function CommunityTabWidget() {
 }
 
 function CommunityTabContent() {
-  return <CommunityContent />
+  return <CommunityDetail />
 }
 
 /** Tab 注册表：加载交互由各 Tab 内部数据驱动，不做代码分割的 Suspense。 */

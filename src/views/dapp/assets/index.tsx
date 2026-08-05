@@ -8,11 +8,11 @@ import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
-import { AssetsHubContent } from '~/views/dapp/assets/hub/assets-hub-content'
+import { AssetsDetail } from '~/views/dapp/assets/hub/assets-detail'
 import { AssetsHubWidget } from '~/views/dapp/assets/hub/assets-hub-widget'
-import { AssetsPositionContent } from '~/views/dapp/assets/position/assets-position-content'
+import { AssetsPositionDetail } from '~/views/dapp/assets/position/assets-position-detail'
 import { AssetsPositionWidget } from '~/views/dapp/assets/position/assets-position-widget'
-import { AssetsXmineContent } from '~/views/dapp/assets/xmine/assets-xmine-content'
+import { AssetsXmineDetail } from '~/views/dapp/assets/xmine/assets-xmine-detail'
 import { AssetsXmineWidget } from '~/views/dapp/assets/xmine/assets-xmine-widget'
 
 function AssetsWidgetBody() {
@@ -26,11 +26,11 @@ function AssetsWidgetBody() {
 
 function AssetsContentBody() {
   const view = useDappSubviewDisplayView<AssetsView>()
-  if (view === 'stake') return <AssetsPositionContent product="stake" />
-  if (view === 'lpbond') return <AssetsPositionContent product="lpbond" />
-  if (view === 'burnbond') return <AssetsPositionContent product="burnbond" />
-  if (view === 'xmine') return <AssetsXmineContent />
-  return <AssetsHubContent />
+  if (view === 'stake') return <AssetsPositionDetail product="stake" />
+  if (view === 'lpbond') return <AssetsPositionDetail product="lpbond" />
+  if (view === 'burnbond') return <AssetsPositionDetail product="burnbond" />
+  if (view === 'xmine') return <AssetsXmineDetail />
+  return <AssetsDetail />
 }
 
 export function AssetsWidget() {

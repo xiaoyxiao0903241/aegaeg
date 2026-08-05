@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
 
 import { tokenCarouselIcons } from '~/app/assets'
-import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList, type FaqListItem } from '~/shared/components/faq-list'
@@ -63,9 +63,9 @@ export function AssetsStatsSection({
   return (
     <Section>
       <Section.Title>{statsTitle}</Section.Title>
-      <OverviewGrid columns={metricsLayout === 'upper3-lower2' ? 'upper3-lower2' : metricsLayout}>
+      <Grid columns={metricsLayout === 'upper3-lower2' ? 'upper3-lower2' : metricsLayout}>
         {tiles}
-      </OverviewGrid>
+      </Grid>
     </Section>
   )
 }

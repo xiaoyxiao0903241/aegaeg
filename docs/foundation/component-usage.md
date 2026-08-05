@@ -57,19 +57,19 @@
 
 ## 右栏数据卡（B+D · `Tile`）
 
-> **模型**：组合式 elevated 薄壳。网格仍走 `OverviewGrid`。  
+> **模型**：组合式 elevated 薄壳。网格仍走 `Grid`。  
 > `Tile.Label`（可嵌 `Tooltip.Info`）· 主值 **children** · 可选 `Tile.Note`（另起一行说明；≠ info tip；内容恰巧常是 `≈ $…`）。  
 > **禁止** `MetricCard` / `*StatCard` / `*OverviewTiles` / `variant` 选布局；禁 `label=`/`note=`/`tooltip=` 袋装 API。
 
 ### 壳 — `Tile`（`src/app/shell/tile.tsx`）
 
-| 项   | 合同                                                                                                                                                              |
-| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                                                            |
-| 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                                                       |
-| API  | `Tile` · `Tile.Label` · 主值 children · `Tile.Note`                                                                                                               |
-| 网格 | `OverviewGrid`（PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数 |
-| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 奖励 Hub（pill/deco）→ **自建组件**；表 → `Table`（下节）                                            |
+| 项   | 合同                                                                                                                                                                                                                                                                       |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 表面 | 内建 `Card surface="elevated"`（`rounded-md` · `p-4` · `shadow-card`）                                                                                                                                                                                                     |
+| 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                                                                                                                                                                |
+| API  | `Tile` · `Tile.Label` · 主值 children · `Tile.Note`                                                                                                                                                                                                                        |
+| 网格 | `Grid`（`app/shell/grid.tsx`；PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数                                                                                            |
+| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 奖励 Hub（pill/deco）→ **自建具名组件**（禁 `*-content` 内联 Card+div 汤）；表 → `Table`（下节）。标准 Label+主值+可选 Note 的 elevated 指标瓦漏迁必须 `Tile`+`Grid`；缓冲池 AGX/gAGX 多列行归「缓冲复卡」OUT |
 
 ### 内容 — 页袋组合
 
@@ -85,7 +85,7 @@
 
 - `variant` / layout 参数；`hint` 双义（tooltip 与说明行）
 - `*StatCard` / `*MetricCard` / `*OverviewTiles`；call site 再抹 `p-*` / `rounded-*` / `shadow-*`
-- 指标瓦网格自写平行 `gap-*`（唯一 owner = `OverviewGrid`）
+- 指标瓦网格自写平行 `gap-*`（唯一 owner = `Grid`）
 
 ## DApp 轮播（`Carousel`）
 

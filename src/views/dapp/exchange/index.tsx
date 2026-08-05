@@ -9,7 +9,7 @@ import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
-import { BurnExchangeContent } from '~/views/dapp/exchange/burn/burn-exchange-content'
+import { BurnExchangeDetail } from '~/views/dapp/exchange/burn/burn-exchange-detail'
 import { BurnExchangeWidget } from '~/views/dapp/exchange/burn/burn-exchange-widget'
 import type {
   BurnExchangeState,
@@ -17,13 +17,13 @@ import type {
   MarketTradeState,
   TurbineExchangeState,
 } from '~/views/dapp/exchange/exchange-session-hosts'
-import { FlashExchangeContent } from '~/views/dapp/exchange/flash-exchange/flash-exchange-content'
+import { FlashExchangeDetail } from '~/views/dapp/exchange/flash-exchange/flash-exchange-detail'
 import { FlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/flash-exchange-widget'
-import { ExchangeHubContent } from '~/views/dapp/exchange/hub/exchange-hub-content'
+import { ExchangeDetail } from '~/views/dapp/exchange/hub/exchange-detail'
 import { ExchangeHubWidget } from '~/views/dapp/exchange/hub/exchange-hub-widget'
-import { MarketTradeContent } from '~/views/dapp/exchange/market-trade/market-trade-content'
+import { MarketTradeDetail } from '~/views/dapp/exchange/market-trade/market-trade-detail'
 import { MarketTradeWidget } from '~/views/dapp/exchange/market-trade/market-trade-widget'
-import { TurbineExchangeContent } from '~/views/dapp/exchange/turbine/turbine-exchange-content'
+import { TurbineExchangeDetail } from '~/views/dapp/exchange/turbine/turbine-exchange-detail'
 import { TurbineExchangeWidget } from '~/views/dapp/exchange/turbine/turbine-exchange-widget'
 
 type ExchangeSessions = {
@@ -75,16 +75,16 @@ function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) 
   const view = useDappSubviewDisplayView<ExchangeView>()
   if (view === 'flash') {
     const session = requireFlash(flash)
-    return <FlashExchangeContent overviewRateLabel={session.overviewRateLabel} />
+    return <FlashExchangeDetail overviewRateLabel={session.overviewRateLabel} />
   }
   if (view === 'trade') {
     const session = requireTrade(trade)
-    return <MarketTradeContent exchangePriceLabel={session.exchangePriceLabel} />
+    return <MarketTradeDetail exchangePriceLabel={session.exchangePriceLabel} />
   }
   if (view === 'burn') {
     const session = requireBurn(burn)
     return (
-      <BurnExchangeContent
+      <BurnExchangeDetail
         overviewRateLabel={session.overviewRateLabel}
         walletReady={session.walletReady}
         config={session.config}
@@ -96,7 +96,7 @@ function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) 
     const session = requireTurbine(turbine)
     const { overview } = session
     return (
-      <TurbineExchangeContent
+      <TurbineExchangeDetail
         pendingUnlockLabel={overview.pendingUnlockLabel}
         pendingUnlockUsdHint={overview.pendingUnlockUsdHint}
         coolingLabel={overview.coolingLabel}
@@ -106,7 +106,7 @@ function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) 
       />
     )
   }
-  return <ExchangeHubContent />
+  return <ExchangeDetail />
 }
 
 export function ExchangeWidget(sessions: ExchangeSessions) {

@@ -2,11 +2,11 @@ import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
 import { useReleaseViewMotion } from '~/stores/release-view-store'
-import { ReleaseBufferContent } from '~/views/dapp/release/buffer/release-buffer-content'
+import { ReleaseBufferDetail } from '~/views/dapp/release/buffer/release-buffer-detail'
 import { ReleaseBufferWidget } from '~/views/dapp/release/buffer/release-buffer-widget'
-import { ReleaseHubContent } from '~/views/dapp/release/hub/release-hub-content'
+import { ReleaseDetail } from '~/views/dapp/release/hub/release-detail'
 import { ReleaseHubWidget } from '~/views/dapp/release/hub/release-hub-widget'
-import { ReleaseQueueContent } from '~/views/dapp/release/queue/release-queue-content'
+import { ReleaseQueueDetail } from '~/views/dapp/release/queue/release-queue-detail'
 import { ReleaseQueueWidget } from '~/views/dapp/release/queue/release-queue-widget'
 
 function ReleaseWidgetBody() {
@@ -18,9 +18,9 @@ function ReleaseWidgetBody() {
 
 function ReleaseContentBody() {
   const view = useDappSubviewDisplayView<ReleaseView>()
-  if (view === 'queue') return <ReleaseQueueContent />
-  if (view === 'buffer') return <ReleaseBufferContent />
-  return <ReleaseHubContent />
+  if (view === 'queue') return <ReleaseQueueDetail />
+  if (view === 'buffer') return <ReleaseBufferDetail />
+  return <ReleaseDetail />
 }
 
 /** 释放侧栏面板：按当前子视图渲染对应 Widget，并带切换动画 */

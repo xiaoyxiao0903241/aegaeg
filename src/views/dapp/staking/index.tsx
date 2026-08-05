@@ -8,15 +8,15 @@ import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
-import { BondContent } from '~/views/dapp/staking/bond/bond-content'
+import { BondDetail } from '~/views/dapp/staking/bond/bond-detail'
 import { BondWidget } from '~/views/dapp/staking/bond/bond-widget'
-import { CalcContent } from '~/views/dapp/staking/calc/calc-content'
+import { CalcDetail } from '~/views/dapp/staking/calc/calc-detail'
 import { CalcWidget } from '~/views/dapp/staking/calc/calc-widget'
-import { StakingHubContent } from '~/views/dapp/staking/hub/staking-hub-content'
+import { StakingDetail } from '~/views/dapp/staking/hub/staking-detail'
 import { StakingHubWidget } from '~/views/dapp/staking/hub/staking-hub-widget'
-import { StakeContent } from '~/views/dapp/staking/stake/stake-content'
+import { StakeDetail } from '~/views/dapp/staking/stake/stake-detail'
 import { StakeWidget } from '~/views/dapp/staking/stake/stake-widget'
-import { XmineContent } from '~/views/dapp/staking/xmine/xmine-content'
+import { StakingXmineDetail } from '~/views/dapp/staking/xmine/staking-xmine-detail'
 import { XmineWidget } from '~/views/dapp/staking/xmine/xmine-widget'
 
 function StakingWidgetBody() {
@@ -31,12 +31,12 @@ function StakingWidgetBody() {
 
 function StakingContentBody() {
   const view = useDappSubviewDisplayView<StakingView>()
-  if (view === 'stake') return <StakeContent />
-  if (view === 'lpbond') return <BondContent kind="lp" />
-  if (view === 'burnbond') return <BondContent kind="burn" />
-  if (view === 'xmine') return <XmineContent />
-  if (view === 'calc') return <CalcContent />
-  return <StakingHubContent />
+  if (view === 'stake') return <StakeDetail />
+  if (view === 'lpbond') return <BondDetail kind="lp" />
+  if (view === 'burnbond') return <BondDetail kind="burn" />
+  if (view === 'xmine') return <StakingXmineDetail />
+  if (view === 'calc') return <CalcDetail />
+  return <StakingDetail />
 }
 
 export function StakingWidget() {

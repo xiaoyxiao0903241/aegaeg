@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { OverviewGrid } from '~/app/shell/overview-grid'
+import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
@@ -35,7 +35,7 @@ function AsideMetricLayout({
   if (layout === 'triple-plus' || layout === 'pair-plus') {
     const pairFirst = layout === 'pair-plus'
     return (
-      <OverviewGrid columns={6}>
+      <Grid columns={6}>
         {items.map((item, index) => (
           <Tile
             className={cn(
@@ -60,11 +60,11 @@ function AsideMetricLayout({
             </Text>
           </Tile>
         ))}
-      </OverviewGrid>
+      </Grid>
     )
   }
   return (
-    <OverviewGrid columns={2}>
+    <Grid columns={2}>
       {items.map((item) => (
         <Tile className="min-w-0" key={item.label}>
           <Tile.Label>{item.label}</Tile.Label>
@@ -77,7 +77,7 @@ function AsideMetricLayout({
           </Text>
         </Tile>
       ))}
-    </OverviewGrid>
+    </Grid>
   )
 }
 

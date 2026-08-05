@@ -11,9 +11,23 @@ import { cn } from '~/shared/lib/utils'
  *
  * @see docs/foundation/component-usage.md 右栏数据卡
  */
-function TileRoot({ children, className }: { children: ReactNode; className?: string }) {
+function TileRoot({
+  children,
+  className,
+  'data-slot-id': dataSlotId,
+}: {
+  children: ReactNode
+  className?: string
+  /** 探针 / 测量槽位；禁借此扩布局 API */
+  'data-slot-id'?: string
+}) {
   return (
-    <Card as="div" className={cn('flex flex-col gap-1.5', className)} surface="elevated">
+    <Card
+      as="div"
+      className={cn('flex flex-col gap-1.5', className)}
+      data-slot-id={dataSlotId}
+      surface="elevated"
+    >
       {children}
     </Card>
   )

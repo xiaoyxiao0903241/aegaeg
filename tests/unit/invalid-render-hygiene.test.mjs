@@ -98,14 +98,14 @@ test('carousel provider value is memoized', async () => {
   assert.match(src, /contextValue/)
 })
 
-test('exchange Content files do not reference sellAmount', async () => {
+test('exchange Detail files do not reference sellAmount', async () => {
   const { readFile } = await import('node:fs/promises')
   const files = [
-    '../../src/views/dapp/exchange/market-trade/market-trade-content.tsx',
-    '../../src/views/dapp/exchange/market-trade/use-market-trade-content-view.ts',
-    '../../src/views/dapp/exchange/flash-exchange/flash-exchange-content.tsx',
-    '../../src/views/dapp/exchange/burn/burn-exchange-content.tsx',
-    '../../src/views/dapp/exchange/turbine/turbine-exchange-content.tsx',
+    '../../src/views/dapp/exchange/market-trade/market-trade-detail.tsx',
+    '../../src/views/dapp/exchange/market-trade/use-market-trade-detail.ts',
+    '../../src/views/dapp/exchange/flash-exchange/flash-exchange-detail.tsx',
+    '../../src/views/dapp/exchange/burn/burn-exchange-detail.tsx',
+    '../../src/views/dapp/exchange/turbine/turbine-exchange-detail.tsx',
   ]
   for (const rel of files) {
     const src = await readFile(new URL(rel, import.meta.url), 'utf8')
