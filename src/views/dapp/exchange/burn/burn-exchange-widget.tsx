@@ -9,8 +9,7 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { Card } from '~/shared/components/card'
-import { List } from '~/shared/components/list'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useBurnExchangeView } from '~/views/dapp/exchange/burn/use-burn-exchange-view'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
@@ -53,8 +52,8 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
           amountLocked={burn.isSubmitting}
         />
 
-        <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
-          <List
+        <MetaListCard className="mt-3.5 max-dapp:mt-3">
+          <MetaListCard.Rows
             items={[
               {
                 label: t.exchange.burn.burnRate,
@@ -78,7 +77,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
               }),
             ]}
           />
-        </Card>
+        </MetaListCard>
 
         {vm.sessionReady && burn.walletReady ? (
           <DappActionRow className="mt-3.5 max-dapp:mt-3">

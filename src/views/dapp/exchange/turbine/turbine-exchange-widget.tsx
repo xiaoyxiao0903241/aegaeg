@@ -13,14 +13,13 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import { TokenChip } from '~/app/shell/token-chip'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
-import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
-import { List } from '~/shared/components/list'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -146,8 +145,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               </div>
             </div>
 
-            <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
-              <List
+            <MetaListCard className="mt-3.5 max-dapp:mt-3">
+              <MetaListCard.Rows
                 items={[
                   {
                     label: t.exchange.turbine.agxPrice,
@@ -201,7 +200,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   },
                 ]}
               />
-            </Card>
+            </MetaListCard>
 
             {vm.sessionReady && turbine.walletReady ? (
               <DappActionRow className="mt-3.5 max-dapp:mt-3">

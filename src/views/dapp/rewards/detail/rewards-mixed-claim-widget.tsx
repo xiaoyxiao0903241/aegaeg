@@ -11,9 +11,9 @@ import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
-import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
+import { RewardsDestinationCard } from '~/views/dapp/rewards/rewards-destination-card'
 import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 
 /**
@@ -119,21 +119,17 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         </Card>
 
-        {/* 领取卡：突出主操作 */}
-        <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-5 font-normal text-primary" variant="headline">
-              {t.rewards.claim}
-            </Text>
-            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
-              {vm.mixed.releaseInto}
-            </Text>
-          </div>
-          <RewardsClaimTokenRow amountText={vm.releaseAmountText} tokenLabel={vm.mixed.tokenGagx} />
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
-              {vm.mixed.releasePeriod}
-            </Text>
+        <RewardsDestinationCard tone="release">
+          <RewardsDestinationCard.Header
+            title={t.rewards.claim}
+            tone="release"
+            trailing={vm.mixed.releaseInto}
+          />
+          <RewardsDestinationCard.Amount
+            amountText={vm.releaseAmountText}
+            tokenLabel={vm.mixed.tokenGagx}
+          />
+          <RewardsDestinationCard.Period label={vm.mixed.releasePeriod}>
             <SelectMenu
               ariaLabel={vm.mixed.releaseAria}
               onSelect={(value) => vm.setReleaseDays(Number(value) as ReleaseDurationDays)}
@@ -141,23 +137,20 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               value={String(vm.releaseDays)}
               variant="pill"
             />
-          </div>
-        </div>
+          </RewardsDestinationCard.Period>
+        </RewardsDestinationCard>
 
-        <div className="grid gap-2 rounded-2xl border border-success/35 bg-success-soft p-4">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-5 font-normal text-success" variant="headline">
-              {vm.mixed.restakeLabel}
-            </Text>
-            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
-              {vm.mixed.restakeInto}
-            </Text>
-          </div>
-          <RewardsClaimTokenRow amountText={vm.restakeAmountText} tokenLabel={vm.mixed.tokenGagx} />
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
-              {vm.mixed.restakePeriod}
-            </Text>
+        <RewardsDestinationCard tone="restake">
+          <RewardsDestinationCard.Header
+            title={vm.mixed.restakeLabel}
+            tone="restake"
+            trailing={vm.mixed.restakeInto}
+          />
+          <RewardsDestinationCard.Amount
+            amountText={vm.restakeAmountText}
+            tokenLabel={vm.mixed.tokenGagx}
+          />
+          <RewardsDestinationCard.Period label={vm.mixed.restakePeriod}>
             <SelectMenu
               ariaLabel={vm.mixed.restakeAria}
               onSelect={(value) => vm.setRestakeDays(Number(value) as RestakeDurationDays)}
@@ -165,8 +158,8 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               value={String(vm.restakeDays)}
               variant="pill"
             />
-          </div>
-        </div>
+          </RewardsDestinationCard.Period>
+        </RewardsDestinationCard>
 
         {vm.walletReady ? (
           <DappActionButton

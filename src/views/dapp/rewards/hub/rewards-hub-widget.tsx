@@ -1,5 +1,5 @@
 /**
- * 奖励 Hub 左栏面板
+ * 奖励总览左栏面板
  *
  * 六张奖励类型卡片，点击进入对应详情；
  * 各卡片金额来自不同数据源（链上快照 / 汇总接口），未登录显示空态占位。
@@ -18,9 +18,7 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
-import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
 import type { Address } from '~/shared/config/contracts'
@@ -29,6 +27,7 @@ import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { openRewardsView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
+import { RewardsTypeCard } from '~/views/dapp/rewards/rewards-type-card'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -137,44 +136,28 @@ export function RewardsHubWidget() {
             isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
           return (
-            <InteractiveCard
-              className="grid gap-3"
+            <RewardsTypeCard
               key={`${view}:${REWARDS_CARD_CONTRACT[view]}`}
               onClick={() => openRewardsView(view)}
             >
-              <div className="grid gap-1.5">
-                <div className="flex flex-wrap items-center gap-1.5">
+              <RewardsTypeCard.Head>
+                <RewardsTypeCard.TitleRow>
                   <Icon alt="" size={icon.size} src={icon.src} />
                   <Text as="span" className="font-semibold wrap-break-word" variant="detail">
                     {card.title}
                   </Text>
                   {isGenesis ? (
-                    <span className="inline-flex items-center rounded-full bg-primary-soft px-2">
-                      <Text as="span" className="leading-none" tone="primary" variant="caption">
-                        {t.rewards.cards.genesis.badge}
-                      </Text>
-                    </span>
+                    <RewardsTypeCard.Badge>{t.rewards.cards.genesis.badge}</RewardsTypeCard.Badge>
                   ) : null}
-                </div>
-                <Text as="p" className="m-0 wrap-break-word text-foreground/40" variant="copy">
-                  {card.body}
-                </Text>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                <Text as="span" className="text-foreground/70" variant="copy">
-                  {balanceLabel}
-                </Text>
-                <div className="flex min-w-0 flex-wrap items-center justify-end gap-1.5">
-                  <Text as="strong" className="wrap-break-word" variant="headline">
-                    <CountValue text={balance.amount} />
-                  </Text>
-                  {balance.approx ? (
-                    <Text as="span" className="wrap-break-word text-foreground/40" variant="copy">
-                      <CountValue text={balance.approx} />
-                    </Text>
-                  ) : null}
-                  {isGenesis ? (
+                </RewardsTypeCard.TitleRow>
+                <RewardsTypeCard.Body>{card.body}</RewardsTypeCard.Body>
+              </RewardsTypeCard.Head>
+              <RewardsTypeCard.Balance
+                amount={balance.amount}
+                approx={balance.approx}
+                label={balanceLabel}
+                trailing={
+                  isGenesis ? (
                     <span className="inline-flex items-center gap-1">
                       <Text as="span" className="font-medium" tone="primary" variant="copy">
                         {t.rewards.hub.enterClaim}
@@ -186,10 +169,10 @@ export function RewardsHubWidget() {
                         src={dappAssets.rewardsHubEnterClaim}
                       />
                     </span>
-                  ) : null}
-                </div>
-              </div>
-            </InteractiveCard>
+                  ) : null
+                }
+              />
+            </RewardsTypeCard>
           )
         })}
 

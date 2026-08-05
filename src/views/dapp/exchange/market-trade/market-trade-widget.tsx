@@ -11,11 +11,10 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { Card } from '~/shared/components/card'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
-import { List } from '~/shared/components/list'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
@@ -103,8 +102,8 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           amountLocked={trade.isSubmitting || vm.isFlipping}
         />
 
-        <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
-          <List
+        <MetaListCard className="mt-3.5 max-dapp:mt-3">
+          <MetaListCard.Rows
             items={[
               {
                 label: t.exchange.exchangePrice,
@@ -171,7 +170,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               }),
             ]}
           />
-        </Card>
+        </MetaListCard>
 
         {vm.sessionReady && trade.isHighPriceImpact ? (
           <InlineAlert className="mt-3">{t.exchange.trade.highPriceImpactWarning}</InlineAlert>

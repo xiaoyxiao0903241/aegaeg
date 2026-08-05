@@ -10,9 +10,8 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { Card } from '~/shared/components/card'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import { Icon } from '~/shared/components/icon'
-import { List } from '~/shared/components/list'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -94,8 +93,8 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           amountLocked={flash.isSubmitting || vm.isFlipping}
         />
 
-        <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
-          <List
+        <MetaListCard className="mt-3.5 max-dapp:mt-3">
+          <MetaListCard.Rows
             items={[
               {
                 label: t.exchange.exchangePrice,
@@ -119,7 +118,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
               }),
             ]}
           />
-        </Card>
+        </MetaListCard>
 
         {vm.sessionReady && flash.walletReady ? (
           <DappActionRow className="mt-3.5 max-dapp:mt-3">

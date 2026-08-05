@@ -1,22 +1,21 @@
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { ProgressMeter } from '~/app/shell/progress-meter'
-import { useI18n } from '~/i18n/use-i18n'
-import { Card } from '~/shared/components/card'
-import { darkBanner } from '~/shared/components/dark-banner'
-import { Text } from '~/shared/components/text'
-import { useRewardsViewStore } from '~/stores/rewards-view-store'
-import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
-import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
-
 /**
  * 创世左栏面板
  *
  * 深色等级卡展示当前等级与个人 / 团队进度，
  * 下方为直推奖励、等级奖励、发展基金三张领取卡；未连接钱包时显示引导。
  */
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
+import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ProgressMeter } from '~/app/shell/progress-meter'
+import { useI18n } from '~/i18n/use-i18n'
+import { darkBanner } from '~/shared/components/dark-banner'
+import { Text } from '~/shared/components/text'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
+import { GenesisClaimCard } from '~/views/dapp/rewards/detail/genesis-claim-card'
+import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
+
 export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
@@ -97,41 +96,21 @@ export function RewardsGenesisClaimWidget() {
           </div>
         </div>
 
-        {/* 直推奖励卡：自动支付 */}
-        <Card surface="outlined" className="rounded-2xl px-5 py-4">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-              {t.rewards.referralRewards}
-            </Text>
-            <Text as="p" className="leading-4 font-semibold text-primary" variant="support">
-              {t.rewards.autoPaidLabel}
-            </Text>
-          </div>
-          <Text as="p" className="mt-2 font-semibold" variant="headline">
-            {vm.referralValue}
-          </Text>
-          <Text as="p" className="mt-2 leading-4" tone="muted-foreground" variant="support">
-            {t.rewards.autoPaid}
-          </Text>
-        </Card>
+        <GenesisClaimCard className="py-4">
+          <GenesisClaimCard.Header
+            label={t.rewards.referralRewards}
+            meta={t.rewards.autoPaidLabel}
+            metaTone="primary"
+          />
+          <GenesisClaimCard.Value className="mt-2">{vm.referralValue}</GenesisClaimCard.Value>
+          <GenesisClaimCard.Note>{t.rewards.autoPaid}</GenesisClaimCard.Note>
+        </GenesisClaimCard>
 
-        {/* 等级奖励卡：右侧显示累计已领金额 */}
-        <Card surface="outlined" className="rounded-2xl px-5 py-3.5">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-              {t.rewards.teamRewards}
-            </Text>
-            <Text as="p" className="leading-4 text-foreground/70" variant="support">
-              {vm.teamMeta}
-            </Text>
-          </div>
-          <Text as="p" className="mt-1.5 font-semibold" variant="headline">
-            {vm.teamClaimable}
-          </Text>
+        <GenesisClaimCard className="py-3.5">
+          <GenesisClaimCard.Header label={t.rewards.teamRewards} meta={vm.teamMeta} />
+          <GenesisClaimCard.Value className="mt-1.5">{vm.teamClaimable}</GenesisClaimCard.Value>
           {vm.walletReady ? (
-            <DappActionButton
-              className="mt-2.5"
-              density="inverse"
+            <GenesisClaimCard.Action
               disabled={
                 !vm.sessionReady ||
                 vm.teamClaimableValue <= 0 ||
@@ -143,29 +122,19 @@ export function RewardsGenesisClaimWidget() {
               onClick={vm.onClaimTeamReward}
             >
               {vm.g.claimToWallet}
-            </DappActionButton>
+            </GenesisClaimCard.Action>
           ) : null}
-        </Card>
+        </GenesisClaimCard>
 
-        {/* 发展基金卡：仅超级社区可领取，其余显示锁定金额 */}
-        <Card surface="outlined" className="rounded-2xl px-5 py-3.5">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-              {t.rewards.communityFund}
-            </Text>
-            <Text as="p" className="leading-4 text-foreground/70" variant="support">
-              {vm.communityLockedMeta}
-            </Text>
-          </div>
-          <Text as="p" className="mt-1.5 font-semibold" variant="headline">
+        <GenesisClaimCard className="py-3.5">
+          <GenesisClaimCard.Header label={t.rewards.communityFund} meta={vm.communityLockedMeta} />
+          <GenesisClaimCard.Value className="mt-1.5">
             {vm.isSuperCommunity || !vm.sessionReady
               ? vm.communityClaimable
               : formatApiDecimalAmount(null)}
-          </Text>
+          </GenesisClaimCard.Value>
           {vm.walletReady ? (
-            <DappActionButton
-              className="mt-2.5"
-              density="inverse"
+            <GenesisClaimCard.Action
               disabled={
                 !vm.sessionReady ||
                 !vm.isSuperCommunity ||
@@ -178,9 +147,9 @@ export function RewardsGenesisClaimWidget() {
               onClick={vm.onClaimCommunityFund}
             >
               {vm.g.claimToWallet}
-            </DappActionButton>
+            </GenesisClaimCard.Action>
           ) : null}
-        </Card>
+        </GenesisClaimCard>
 
         {!vm.walletReady ? <DappWidgetConnectPromo /> : null}
       </DappWidgetStack>

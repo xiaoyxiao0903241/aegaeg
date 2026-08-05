@@ -4,14 +4,13 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import type { BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
-import { Card } from '~/shared/components/card'
+import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
-import { Icon } from '~/shared/components/icon'
-import { List } from '~/shared/components/list'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { BondPeriodList } from '~/views/dapp/staking/bond/bond-period-list'
@@ -93,17 +92,12 @@ export function BondWidget({ kind }: { kind: BondKind }) {
             value: bond.amountDisplay,
           }}
           endAdornment={
-            <span className="flex items-center gap-2.5">
-              <span className="flex items-center gap-1.5">
-                <Icon alt="" shape="circle" size="rail" src={dappAssets.tokenUsd1} />
-                <Text as="span" className="font-semibold" variant="detail">
-                  USD1
-                </Text>
-              </span>
+            <AmountTokenEnd>
+              <AmountTokenEnd.Token iconSrc={dappAssets.tokenUsd1} symbol="USD1" />
               <AmountMaxChip disabled={!walletReady || bond.isSubmitting} onClick={bond.fillMax}>
                 {t.staking.max}
               </AmountMaxChip>
-            </span>
+            </AmountTokenEnd>
           }
           headerOutside
           label={amountLabel}
@@ -111,8 +105,8 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           startAdornment={null}
         />
 
-        <Card as="div" surface="outlined">
-          <List
+        <MetaListCard>
+          <MetaListCard.Rows
             items={[
               {
                 label: copy.meta.discount.replace(
@@ -177,7 +171,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
               },
             ]}
           />
-        </Card>
+        </MetaListCard>
 
         <Text as="p" className="m-0 text-foreground/40" variant="support">
           {copy.footnote}

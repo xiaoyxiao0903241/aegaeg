@@ -4,12 +4,11 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
-import { Card } from '~/shared/components/card'
+import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
-import { Icon } from '~/shared/components/icon'
-import { List } from '~/shared/components/list'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -68,17 +67,12 @@ export function StakeWidget() {
             value: stake.amountDisplay,
           }}
           endAdornment={
-            <span className="flex items-center gap-2.5">
-              <span className="flex items-center gap-1.5">
-                <Icon alt="" shape="circle" size="rail" src={dappAssets.tokenAgx} />
-                <Text as="span" className="font-semibold" variant="detail">
-                  AGX
-                </Text>
-              </span>
+            <AmountTokenEnd>
+              <AmountTokenEnd.Token iconSrc={dappAssets.tokenAgx} symbol="AGX" />
               <AmountMaxChip disabled={!walletReady || stake.isSubmitting} onClick={stake.fillMax}>
                 {t.staking.max}
               </AmountMaxChip>
-            </span>
+            </AmountTokenEnd>
           }
           headerOutside
           label={amountLabel}
@@ -86,8 +80,8 @@ export function StakeWidget() {
           startAdornment={null}
         />
 
-        <Card as="div" surface="outlined">
-          <List
+        <MetaListCard>
+          <MetaListCard.Rows
             items={[
               { label: t.staking.stake.meta.baseDaily, value: yieldMeta.baseDaily },
               {
@@ -108,7 +102,7 @@ export function StakeWidget() {
               },
             ]}
           />
-        </Card>
+        </MetaListCard>
 
         {walletReady ? (
           <DappActionRow>
