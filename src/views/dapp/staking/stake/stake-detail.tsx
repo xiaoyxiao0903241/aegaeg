@@ -4,34 +4,19 @@
  * 展示协议概览、我的持仓、释放记录、机制说明、趋势图与 FAQ。
  * 未连接钱包时仓位与记录为空态。
  */
-import { type ReactNode } from 'react'
-
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
-import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
-import { cn } from '~/shared/lib/utils'
 import { useStakeDetailAsideView } from '~/views/dapp/staking/stake/use-stake-detail-aside-view'
 import { StakingMechanismCard } from '~/views/dapp/staking/staking-mechanism-card'
+import { StakingMetricValue } from '~/views/dapp/staking/staking-metric-value'
 import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
-
-function MetricValue({ value }: { value: ReactNode }) {
-  return (
-    <Text
-      as="strong"
-      className="block min-w-0 text-base/5 font-semibold tracking-normal"
-      variant="headline"
-    >
-      {typeof value === 'string' ? <CountValue text={value} /> : value}
-    </Text>
-  )
-}
 
 export function StakeDetail() {
   const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetailAsideView()
@@ -46,7 +31,7 @@ export function StakeDetail() {
           {overviewItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
               <Tile.Label>{item.label}</Tile.Label>
-              <MetricValue value={item.value} />
+              <StakingMetricValue value={item.value} />
             </Tile>
           ))}
         </Grid>
@@ -70,11 +55,13 @@ export function StakeDetail() {
         <Grid columns={6}>
           {positionItems.map((item, index) => (
             <Tile
-              className={cn('min-w-0', index < 3 ? 'col-span-2 max-dapp:col-span-3' : 'col-span-3')}
+              className={
+                index < 3 ? 'col-span-2 min-w-0 max-dapp:col-span-3' : 'col-span-3 min-w-0'
+              }
               key={item.label}
             >
               <Tile.Label>{item.label}</Tile.Label>
-              <MetricValue value={item.value} />
+              <StakingMetricValue value={item.value} />
             </Tile>
           ))}
         </Grid>

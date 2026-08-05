@@ -3,12 +3,9 @@
  *
  * 展示协议概览、我的仓位、释放记录、机制说明、趋势图与 FAQ。
  */
-import { type ReactNode } from 'react'
-
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
-import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
@@ -17,20 +14,9 @@ import { Text } from '~/shared/components/text'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondDetailAsideView } from '~/views/dapp/staking/bond/use-bond-detail-aside-view'
 import { StakingMechanismCard } from '~/views/dapp/staking/staking-mechanism-card'
+import { StakingMetricValue } from '~/views/dapp/staking/staking-metric-value'
 import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
-
-function MetricValue({ value }: { value: ReactNode }) {
-  return (
-    <Text
-      as="strong"
-      className="block min-w-0 text-base/5 font-semibold tracking-normal"
-      variant="headline"
-    >
-      {typeof value === 'string' ? <CountValue text={value} /> : value}
-    </Text>
-  )
-}
 
 export function BondDetail({ kind }: { kind: BondKind }) {
   const { copy, overviewItems, positionItems, recordRows, recordsLoading } =
@@ -55,7 +41,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
           {overviewItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
               <Tile.Label>{item.label}</Tile.Label>
-              <MetricValue value={item.value} />
+              <StakingMetricValue value={item.value} />
             </Tile>
           ))}
         </Grid>
@@ -80,7 +66,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
           {positionItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
               <Tile.Label>{item.label}</Tile.Label>
-              <MetricValue value={item.value} />
+              <StakingMetricValue value={item.value} />
             </Tile>
           ))}
         </Grid>
