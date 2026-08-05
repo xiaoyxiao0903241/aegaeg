@@ -1,4 +1,4 @@
-import { dappAssets } from '~/app/assets'
+import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -7,12 +7,15 @@ export function TokenChip({
   icon,
   label,
   onClick,
+  open = false,
   picker = false,
 }: {
   icon?: string
   label: string
   /** Figma trade sell/buy token pill with chevron. */
   picker?: boolean
+  /** 下拉开合；picker 时驱动 CollapseChevron */
+  open?: boolean
   onClick?: () => void
 }) {
   const body = (
@@ -21,7 +24,7 @@ export function TokenChip({
       <Text as="span" variant="detail" className="leading-[1.2] font-semibold">
         {label}
       </Text>
-      {picker ? <Icon alt="" className="size-2.5 shrink-0" src={dappAssets.chevronDown} /> : null}
+      {picker ? <CollapseChevron open={open} size="sm" /> : null}
     </>
   )
 

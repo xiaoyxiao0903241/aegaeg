@@ -1,12 +1,11 @@
 import { type ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappSection } from '~/app/shell/dapp-section'
 import { communityInviteColWidths } from '~/app/shell/table-columns'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { Detail } from '~/shared/components/detail'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import {
@@ -15,7 +14,10 @@ import {
 } from '~/views/dapp/community/community-content-primitives'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
-import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
+import {
+  CommunityInviteSection,
+  CommunityProgramsSection,
+} from '~/views/dapp/community/community-flow-section'
 import { useCommunityContentView } from '~/views/dapp/community/use-community-content-view'
 
 type CommunityStat = {
@@ -62,10 +64,11 @@ export function CommunityContent() {
   // Disconnected: browse flow + FAQ only (no invented empty-member state).
   if (!walletReady) {
     return (
-      <DappDetailPage>
-        <CommunityFlowSection isMobileViewport={isMobileViewport} />
+      <Detail>
+        <CommunityInviteSection />
+        <CommunityProgramsSection />
         <CommunityFaqSection />
-      </DappDetailPage>
+      </Detail>
     )
   }
 
@@ -122,27 +125,28 @@ export function CommunityContent() {
   const emptyTitle = `${t.community.invitesEmpty.title}，${t.community.invitesEmpty.body}`
 
   return (
-    <DappDetailPage>
-      <DappContentHeading id="community-title" reveal>
-        {t.community.myCommunity}
-      </DappContentHeading>
+    <Detail>
+      <Section reveal>
+        <Section.Title id="community-title">{t.community.myCommunity}</Section.Title>
+        <CommunityStatGrid>
+          {stats.map((stat, index) => (
+            <CommunityStatCard
+              dark={stat.dark}
+              image={stat.image}
+              key={index}
+              label={stat.label}
+              value={stat.value}
+              volume={stat.volume}
+            />
+          ))}
+        </CommunityStatGrid>
+      </Section>
 
-      <CommunityStatGrid>
-        {stats.map((stat, index) => (
-          <CommunityStatCard
-            dark={stat.dark}
-            image={stat.image}
-            key={index}
-            label={stat.label}
-            value={stat.value}
-            volume={stat.volume}
-          />
-        ))}
-      </CommunityStatGrid>
+      <CommunityInviteSection />
+      <CommunityProgramsSection />
 
-      <CommunityFlowSection isMobileViewport={isMobileViewport} />
-
-      <DappSection title={inviteSectionTitle}>
+      <Section reveal>
+        <Section.Title>{inviteSectionTitle}</Section.Title>
         <Table>
           {invitesTable.requiresAuth ? (
             <Table.Auth
@@ -176,9 +180,9 @@ export function CommunityContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappSection>
+      </Section>
 
       <CommunityFaqSection />
-    </DappDetailPage>
+    </Detail>
   )
 }

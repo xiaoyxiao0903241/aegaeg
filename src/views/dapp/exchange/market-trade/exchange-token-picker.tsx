@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -21,12 +22,11 @@ export type ExchangeTokenPickerOption = {
 
 /**
  * Sell/Buy token pill + open list — panel/item chrome 走 DropdownMenu；
- * 行内 icon / symbol / balance 由本 leaf 组.
+ * 行内 icon / symbol / balance 由本 leaf 组；开合箭头 ≡ CollapseChevron。
  */
 export function ExchangeTokenPicker({
   ariaLabel,
   checkIcon,
-  chevronIcon,
   disabled = false,
   onSelect,
   options,
@@ -34,8 +34,6 @@ export function ExchangeTokenPicker({
 }: {
   ariaLabel: string
   checkIcon?: string
-  /** Figma 下箭头稿面叶；由 call site 传入. */
-  chevronIcon: string
   disabled?: boolean
   onSelect: (key: string) => void
   options: ExchangeTokenPickerOption[]
@@ -64,7 +62,7 @@ export function ExchangeTokenPicker({
         <Text as="span" className="leading-none font-semibold" variant="copy">
           {selected.symbol}
         </Text>
-        <Icon alt="" className="size-3 shrink-0" src={chevronIcon} />
+        <CollapseChevron open={open} size="md" />
       </DropdownMenuTrigger>
 
       <DropdownMenuPanel className="min-w-52">

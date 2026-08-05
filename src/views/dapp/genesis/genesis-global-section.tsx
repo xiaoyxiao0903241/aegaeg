@@ -1,5 +1,5 @@
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { useI18n } from '~/i18n/use-i18n'
+import { Section } from '~/shared/components/section'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { GenesisGlobalCard } from '~/views/dapp/genesis/genesis-global-card'
@@ -13,7 +13,7 @@ export function GenesisGlobalSection({ genesis }: { genesis: GenesisWidgetState 
   const { messages: t } = useI18n()
 
   return (
-    <DappDetailBlock>
+    <Section>
       <GenesisGlobalCard
         body={t.genesis.globalBody}
         contractLabel={t.genesis.viewContract}
@@ -21,6 +21,6 @@ export function GenesisGlobalSection({ genesis }: { genesis: GenesisWidgetState 
         onViewContract={openPreSaleContract}
         value={`$${genesis.globalPurchasedLabel}`}
       />
-    </DappDetailBlock>
+    </Section>
   )
 }

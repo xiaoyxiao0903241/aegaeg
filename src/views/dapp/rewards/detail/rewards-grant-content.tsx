@@ -1,10 +1,9 @@
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -33,10 +32,10 @@ export function RewardsGrantContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{grant.dataTitle}</DappContentHeading>
-        <OverviewGrid className="mt-4" columns={2}>
+    <Detail>
+      <Section>
+        <Section.Title>{grant.dataTitle}</Section.Title>
+        <OverviewGrid columns={2}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
               <Tile.Label>{item.label}</Tile.Label>
@@ -50,12 +49,12 @@ export function RewardsGrantContent() {
             </Tile>
           ))}
         </OverviewGrid>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{grant.recordsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{grant.recordsTitle}</Section.Title>
         {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
-        <Table className="mt-4">
+        <Table>
           <Table.Header>
             {rewardsRecordsPillTabsHeader({
               ariaLabel: grant.recordsTabsAria,
@@ -87,12 +86,12 @@ export function RewardsGrantContent() {
           ) : null}
         </Table>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{grant.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{grant.faq.title}</Section.Title>
         <FaqList items={grant.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

@@ -17,7 +17,7 @@ alwaysApply: false
 ## MUST
 
 - 可复用视觉 → 组件内 **`tv()`**（与 `Button` / `Card` / `Text` 同文件或 tab 复合组件旁）
-- 语义组合 → **复合组件 + variant prop**（如 `<Card surface="elevated">`、`<DappDetailBlock />`）
+- 语义组合 → **复合组件 + variant prop**（如 `<Card surface="elevated">`、`<Section />`）
 - 单用处间距 / 微调 → **JSX `className` inline**
 - 多处相同结构 → **抽组件**，不要抽 class 字符串
 
@@ -43,8 +43,9 @@ export function SwapMetricCard({ label, value }: Props) {
   )
 }
 
-// ✅ 多处块间距 → 组件
-export function DappDetailBlock({ children, className }: …) {
-  return <section className={cn('mt-8.5 max-dapp:mt-6', className)}>{children}</section>
-}
+// ✅ 多处块间距 → 组件（见 `shared/components/section.tsx`）
+<Section>
+  <Section.Title>{title}</Section.Title>
+  {children}
+</Section>
 ```

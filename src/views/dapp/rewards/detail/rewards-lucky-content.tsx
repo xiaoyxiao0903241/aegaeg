@@ -1,13 +1,12 @@
 import { dappAssets } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -78,11 +77,11 @@ export function RewardsLuckyContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{lucky.dataTitle}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{lucky.dataTitle}</Section.Title>
         {/* Figma 4395:223 tiles：label copy13 medium body70 · value headline16 */}
-        <OverviewGrid className="mt-4" columns={3}>
+        <OverviewGrid columns={3}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
               <Tile.Label>{item.label}</Tile.Label>
@@ -108,9 +107,9 @@ export function RewardsLuckyContent() {
             </Tile>
           ))}
         </OverviewGrid>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
+      <Section>
         {/* Figma 4395:236：#1c2234 → token dark-panel（≠ Card inverse 的 dark #111625） */}
         <Card
           surface="inverse"
@@ -144,13 +143,11 @@ export function RewardsLuckyContent() {
             {lucky.vrfBody}
           </Text>
         </Card>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <DappContentHeading>{lucky.resultsTitle}</DappContentHeading>
-        </div>
-        <Table className="mt-4">
+      <Section>
+        <Section.Title>{lucky.resultsTitle}</Section.Title>
+        <Table>
           {showResultsChrome ? (
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
@@ -182,11 +179,11 @@ export function RewardsLuckyContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{lucky.historyTitle}</DappContentHeading>
-        <Table className="mt-4">
+      <Section>
+        <Section.Title>{lucky.historyTitle}</Section.Title>
+        <Table>
           <Table.Body
             colWidths={['9.375rem', '9.25rem', '14.6875rem', '1fr']}
             emphasisColumns={[1]}
@@ -205,12 +202,12 @@ export function RewardsLuckyContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{lucky.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{lucky.faq.title}</Section.Title>
         <FaqList items={lucky.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

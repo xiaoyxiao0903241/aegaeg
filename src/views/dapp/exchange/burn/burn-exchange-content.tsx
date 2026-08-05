@@ -1,6 +1,3 @@
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -11,7 +8,9 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exchange-history-section'
@@ -89,9 +88,9 @@ export function BurnExchangeContent({
   })()
 
   return (
-    <DappDetailPage>
-      <section>
-        <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title id="exchange-title">{t.exchange.overview}</Section.Title>
         <OverviewGrid columns={2}>
           {(
             [
@@ -135,28 +134,23 @@ export function BurnExchangeContent({
             </Tile>
           ))}
         </OverviewGrid>
-      </section>
+      </Section>
 
-      <DappDetailBlock>
-        {/* 关于标题用 headline leading token */}
-        <DappContentHeading className="mb-0 pb-4 text-xl leading-(--type-headline-leading) tracking-tight">
-          {t.exchange.burn.aboutTitle}
-        </DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.burn.aboutTitle}</Section.Title>
         <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'agx']} />
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
+      <Section>
         {/* 销毁记录标题；测试贡献控件不渲染 */}
-        <DappContentHeading className="mb-0 pb-4">
-          {t.exchange.burn.history.title}
-        </DappContentHeading>
+        <Section.Title>{t.exchange.burn.history.title}</Section.Title>
         <BurnExchangeHistorySection />
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.faq.title}</Section.Title>
         <FaqList defaultOpenFirst={false} items={faqItems} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

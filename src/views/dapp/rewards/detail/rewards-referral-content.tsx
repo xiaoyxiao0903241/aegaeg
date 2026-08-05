@@ -1,10 +1,9 @@
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -46,12 +45,12 @@ export function RewardsReferralContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{referral.dataTitle}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{referral.dataTitle}</Section.Title>
         {/* Figma 4404:223 · elevated tiles · 3+2 */}
         {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
-        <OverviewGrid className="mt-4" columns={3}>
+        <OverviewGrid columns={3}>
           {topTiles.map((item) => (
             <Tile key={item.key}>
               <Tile.Label>{item.label}</Tile.Label>
@@ -91,12 +90,12 @@ export function RewardsReferralContent() {
           ))}
         </OverviewGrid>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{referral.recordsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{referral.recordsTitle}</Section.Title>
         {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
-        <Table className="mt-4">
+        <Table>
           <Table.Body
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
@@ -116,12 +115,12 @@ export function RewardsReferralContent() {
           ) : null}
         </Table>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{referral.referralsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{referral.referralsTitle}</Section.Title>
         {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
-        <Table className="mt-4">
+        <Table>
           <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             emphasisColumns={[2]}
@@ -141,12 +140,12 @@ export function RewardsReferralContent() {
           ) : null}
         </Table>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{referral.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{referral.faq.title}</Section.Title>
         <FaqList items={referral.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

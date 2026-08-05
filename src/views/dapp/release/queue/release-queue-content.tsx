@@ -1,9 +1,6 @@
 import { useState } from 'react'
 
 import { tokenCarouselIcons } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -13,8 +10,10 @@ import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-displa
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -103,11 +102,9 @@ export function ReleaseQueueContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading id="release-queue-title">
-          {t.release.queue.statsTitle}
-        </DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title id="release-queue-title">{t.release.queue.statsTitle}</Section.Title>
         <div className="grid gap-4 dapp:grid-cols-3">
           {stats.map((stat) => (
             <Card
@@ -137,10 +134,10 @@ export function ReleaseQueueContent() {
             </Card>
           ))}
         </div>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.release.queue.recordsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.release.queue.recordsTitle}</Section.Title>
         <Table>
           <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
@@ -159,12 +156,12 @@ export function ReleaseQueueContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.release.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.release.faq.title}</Section.Title>
         <FaqList defaultOpenFirst={false} items={t.release.faq.queue} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

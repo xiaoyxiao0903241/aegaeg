@@ -182,11 +182,46 @@
 - 平行 `DappProcessSteps`
 - call site 自写编号步骤 chrome（点轴时间线 ≠ Steps，见资产 Rebase）
 
+## 右栏详情壳（`Detail`）
+
+> **模型**：右栏内容区外壳。`shared/components/detail.tsx`。  
+> PC `px-7 pt-10` + shadow-bleed 底距；H5 `p-0`（边距归 shell window）。节距由 Detail `gap-8.5` / `max-dapp:gap-6` 承担（PC 34 / H5 24）；子级直接列 Section（禁 bag Fragment 藏节）。
+
+### MUST NOT（详情壳）
+
+- 平行 `DappDetailPage`
+- 右栏内容页自写同等 padding / 节距（禁 `Section` `mt-*` 或页级平行 gap）
+
+## 右栏内容节（`Section`）
+
+> **模型**：组合式右栏节。`shared/components/section.tsx`。  
+> `Section` · `Title` · `Description`。节间距归 Detail；节内 Title / Description / body 一律 `gap-4`。
+
+| 零件 / 轴             | 职责                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `Section`             | 节壳：`flex flex-col gap-4`；可选 `collapsible` · `defaultOpen` · `reveal`；折叠箭头 ≡ `CollapseChevron` `lg` |
+| `Section.Title`       | `Text` `section` · `m-0`；仅 `children` + 可选 `id`；折叠时进标题行 button（`as="span"`）                     |
+| `Section.Description` | `Text` `copy` · `m-0 text-foreground/40`；仅 `children`；与 Title/body 间距由 Section `gap-4` 承担            |
+
+`collapsible` **隐含**：进场 `reveal`；展开 settle 后内层 `overflow-visible`（展开中保持 clip，放表卡阴影）。call site 只写 `collapsible`，勿再叠 `reveal` / `bodyClassName`。
+
+### MUST NOT（节）
+
+- 平行 `DappDetailBlock` / `DappContentHeading` / `DappSection` / `DappCollapsibleSection`
+- call site 给 `Title` / `Description` 挂 `className` 改字阶或间距（禁 `text-xl` / `pb-*` / `mb-*` 等 fork）
+- 折叠节再传 `reveal` / `bodyClassName="overflow-visible"`（已是 `collapsible` 默认）
+- 平行折叠箭头（须用 `CollapseChevron`；禁稿面 img / 自写 rotate+色）
+
+### 结构例外（允许）
+
+- 标题行伴生（CTA、chips）：用外层 flex 组合包住 Title + 伴生控件，**不**改 Title `className`；折叠箭头由 `collapsible`→`CollapseChevron` 自带，禁装饰假折叠
+- 非折叠节单独 `reveal`（社区 / Genesis 等进场动画）
+
 ## DApp 表（`Table`）
 
 > **模型**：组合式 elevated 表壳。`shared/components/table.tsx`。  
 > `Table.Header`（卡内顶槽）· `Table.Body`（网格+空态）· `Table.Cell` · `Table.Footer` · `Table.Pagination`。  
-> 区块标题仍在卡外 `DappContentHeading`。Header ≠ 列名 thead。
+> 区块标题仍在卡外 `Section.Title`。Header ≠ 列名 thead。
 
 | 零件                             | 职责                                                                      |
 | -------------------------------- | ------------------------------------------------------------------------- |

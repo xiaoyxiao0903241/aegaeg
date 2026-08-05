@@ -1,9 +1,9 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import { ChevronDown } from 'lucide-react'
 import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { Card } from '~/shared/components/card'
+import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
@@ -52,11 +52,6 @@ const faqList = tv({
     variant: 'home',
   },
 })
-
-/** FAQ chevron — Lucide；开合染色靠 currentColor / group. */
-function FaqChevron() {
-  return <ChevronDown aria-hidden className="faq-chevron size-4.5 shrink-0" strokeWidth={1.5} />
-}
 
 export function FaqList({
   className,
@@ -157,7 +152,7 @@ export function FaqList({
                     >
                       {item.q}
                     </Text>
-                    <FaqChevron />
+                    <CollapseChevron open={isOpen} />
                   </Accordion.Trigger>
                 </Accordion.Header>
                 <Accordion.Content

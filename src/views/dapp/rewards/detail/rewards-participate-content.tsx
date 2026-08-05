@@ -1,10 +1,9 @@
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -39,11 +38,11 @@ export function RewardsParticipateContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{participate.dataTitle}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{participate.dataTitle}</Section.Title>
         {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
-        <OverviewGrid className="mt-4" columns={2}>
+        <OverviewGrid columns={2}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
               <Tile.Label>{item.label}</Tile.Label>
@@ -69,12 +68,12 @@ export function RewardsParticipateContent() {
           ))}
         </OverviewGrid>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{participate.recordsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{participate.recordsTitle}</Section.Title>
         {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
-        <Table className="mt-4">
+        <Table>
           <Table.Body
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
@@ -94,12 +93,12 @@ export function RewardsParticipateContent() {
           ) : null}
         </Table>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{participate.inviterTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{participate.inviterTitle}</Section.Title>
         {/* 邀请人 API 单条 · 无分页 */}
-        <Table className="mt-4">
+        <Table>
           <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             emphasisColumns={[2, 3]}
@@ -109,12 +108,12 @@ export function RewardsParticipateContent() {
             rows={inviterRows}
           />
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{participate.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{participate.faq.title}</Section.Title>
         <FaqList items={participate.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

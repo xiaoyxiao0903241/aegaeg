@@ -1,9 +1,8 @@
 import { dappAssets } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { darkBanner } from '~/shared/components/dark-banner'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -16,9 +15,9 @@ export function RewardsGenesisContent() {
   const banner = darkBanner()
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{t.rewards.heroTitle}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{t.rewards.heroTitle}</Section.Title>
         <div
           className={banner.root({
             className: 'mt-4 overflow-visible p-6 max-dapp:p-4.5',
@@ -65,12 +64,12 @@ export function RewardsGenesisContent() {
             width="103"
           />
         </div>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.rewards.allTiers}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.rewards.allTiers}</Section.Title>
         {/* 静态荣誉档位表 · 非动态列表 · 不分页 */}
-        <Table className="mt-4">
+        <Table>
           <Table.Body
             colWidths={['14.375rem', '11.875rem', '11.875rem', '7.875rem']}
             headers={[...vm.g.tierColumns]}
@@ -78,11 +77,11 @@ export function RewardsGenesisContent() {
             rows={vm.tierRows}
           />
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.rewards.history}</DappContentHeading>
-        <Table className="mt-4">
+      <Section>
+        <Section.Title>{t.rewards.history}</Section.Title>
+        <Table>
           <Table.Header>
             {rewardsRecordsPillTabsHeader({
               ariaLabel: vm.g.recordsTabsAria,
@@ -109,12 +108,12 @@ export function RewardsGenesisContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{vm.g.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{vm.g.faq.title}</Section.Title>
         <FaqList items={vm.g.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

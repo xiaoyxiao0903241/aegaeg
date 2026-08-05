@@ -1,12 +1,11 @@
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { periodEndDays } from '~/core/staking/build-calc-estimate'
 import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield-display'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
+import { Detail } from '~/shared/components/detail'
+import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { StakingCurveChart } from '~/views/dapp/staking/staking-curve-chart'
@@ -81,10 +80,10 @@ export function CalcContent() {
   })
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <DappContentHeading className="m-0">{aside.result}</DappContentHeading>
+    <Detail>
+      <Section>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Section.Title>{aside.result}</Section.Title>
           {result ? (
             <div className="flex flex-wrap gap-2">
               {/* Figma `bd` 4463:224 — coral-soft / coral-emphasis pill */}
@@ -201,13 +200,13 @@ export function CalcContent() {
             {aside.resultHint}
           </Text>
         )}
-      </DappDetailBlock>
-      <DappDetailBlock>
-        <DappContentHeading>{aside.curve}</DappContentHeading>
+      </Section>
+      <Section>
+        <Section.Title>{aside.curve}</Section.Title>
         <StakingCurveChart />
-      </DappDetailBlock>
-      <DappDetailBlock>
-        <DappContentHeading>{aside.nodes}</DappContentHeading>
+      </Section>
+      <Section>
+        <Section.Title>{aside.nodes}</Section.Title>
         <div className="grid gap-4 sm:grid-cols-3">
           {aside.nodeCards.map((card, index) => {
             let value = PLACEHOLDER
@@ -253,9 +252,9 @@ export function CalcContent() {
             )
           })}
         </div>
-      </DappDetailBlock>
-      <DappDetailBlock>
-        <DappContentHeading>{aside.notes}</DappContentHeading>
+      </Section>
+      <Section>
+        <Section.Title>{aside.notes}</Section.Title>
         {/* Figma `ncard` 4463:303 — elevated */}
         <Card className="grid gap-1.5" surface="elevated">
           <ul className="m-0 grid list-none gap-1.5 p-0">
@@ -269,7 +268,7 @@ export function CalcContent() {
             ))}
           </ul>
         </Card>
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

@@ -1,7 +1,4 @@
 import { tokenCarouselIcons } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -10,8 +7,10 @@ import { useI18n } from '~/i18n/use-i18n'
 import { mapTurbineLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
@@ -59,11 +58,9 @@ export function TurbineExchangeContent({
   ] as const
 
   return (
-    <DappDetailPage>
-      <section className="flex flex-col gap-4">
-        <DappContentHeading className="pb-0" id="exchange-title">
-          {t.exchange.turbine.dataTitle}
-        </DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title id="exchange-title">{t.exchange.turbine.dataTitle}</Section.Title>
         {/* Figma H5：三卡竖排 */}
         <OverviewGrid columns={3} stackOnDapp>
           {overviewMetrics.map((metric) => (
@@ -76,7 +73,7 @@ export function TurbineExchangeContent({
                   size="rail"
                   src={tokenCarouselIcons.gagxIcon}
                 />
-                <Text as="strong" className="m-0 text-base leading-5 font-semibold" variant="copy">
+                <Text as="strong" className="m-0 text-base/5 font-semibold" variant="copy">
                   <CountValue text={`${metric.amount} gAGX`} />
                 </Text>
               </div>
@@ -86,19 +83,16 @@ export function TurbineExchangeContent({
             </Tile>
           ))}
         </OverviewGrid>
-      </section>
+      </Section>
 
-      <DappDetailBlock>
-        {/* 关于标题用 headline leading token */}
-        <DappContentHeading className="mb-0 pb-4 text-xl leading-(--type-headline-leading) tracking-tight">
-          {t.exchange.turbine.aboutTitle}
-        </DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.turbine.aboutTitle}</Section.Title>
         {/* Figma 4435:220 about-carousel: gAGX · USD1 · X · gAGX质押 */}
         <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'gagxStake']} />
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.exchange.turbine.recordsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.turbine.recordsTitle}</Section.Title>
         <Table>
           <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
@@ -108,41 +102,33 @@ export function TurbineExchangeContent({
             rows={turbineLogRows}
           />
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <DappContentHeading className="pb-0">
-              {t.exchange.turbine.mechanismTitle}
-            </DappContentHeading>
-            <Text as="p" variant="copy" className="m-0 text-foreground/40">
-              {t.exchange.turbine.mechanismIntro}
-            </Text>
-          </div>
-          <div className="grid grid-cols-2 gap-4 max-dapp:grid-cols-1 max-dapp:gap-3">
-            {t.exchange.turbine.mechanism.map((item) => (
-              <Card
-                key={item.title}
-                surface="elevated"
-                className="flex flex-col gap-2 rounded-2xl border-0 p-4 shadow-card"
-              >
-                <Text as="p" variant="detail" className="m-0 font-semibold">
-                  {item.title}
-                </Text>
-                <Text as="p" variant="copy" className="m-0 text-foreground/70">
-                  {item.body}
-                </Text>
-              </Card>
-            ))}
-          </div>
+      <Section>
+        <Section.Title>{t.exchange.turbine.mechanismTitle}</Section.Title>
+        <Section.Description>{t.exchange.turbine.mechanismIntro}</Section.Description>
+        <div className="grid grid-cols-2 gap-4 max-dapp:grid-cols-1 max-dapp:gap-3">
+          {t.exchange.turbine.mechanism.map((item) => (
+            <Card
+              key={item.title}
+              surface="elevated"
+              className="flex flex-col gap-2 rounded-2xl border-0 p-4 shadow-card"
+            >
+              <Text as="p" variant="detail" className="m-0 font-semibold">
+                {item.title}
+              </Text>
+              <Text as="p" variant="copy" className="m-0 text-foreground/70">
+                {item.body}
+              </Text>
+            </Card>
+          ))}
         </div>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.faq.title}</Section.Title>
         <FaqList defaultOpenFirst={false} items={t.exchange.turbine.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

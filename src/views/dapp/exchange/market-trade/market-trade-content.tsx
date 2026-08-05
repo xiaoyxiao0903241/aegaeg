@@ -1,13 +1,12 @@
 import { type ExchangeTokenKey, exchangeTokenKeys } from '~/app/data'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
@@ -26,9 +25,10 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
   ]
 
   return (
-    <DappDetailPage>
-      <section>
-        <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title id="exchange-title">{t.exchange.overview}</Section.Title>
+        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
         <OverviewGrid columns={2}>
           {tiles.map((tile) => (
             <Tile key={tile.key}>
@@ -43,22 +43,20 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
             </Tile>
           ))}
         </OverviewGrid>
-      </section>
+        {/* jscpd:ignore-end */}
+      </Section>
 
-      <DappDetailBlock>
-        {/* Figma about 标题 20 / leading 1.2（`4489:222`）；text-xl + headline leading token（禁 leading-[1.2]） */}
-        <DappContentHeading className="mb-0 pb-4 text-xl leading-(--type-headline-leading) tracking-tight">
-          {t.exchange.trade.aboutTitle}
-        </DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.trade.aboutTitle}</Section.Title>
         <TokenAboutCarousel cardKeys={TRADE_ABOUT_CARD_KEYS} />
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.exchange.faq.tabsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.faq.tabsTitle}</Section.Title>
         <MarketTradeFaqTabs activeToken={vm.faqToken} onSelect={vm.setFaqToken} />
         <FaqList defaultOpenFirst={false} items={vm.faqItems} key={vm.faqToken} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }
 
@@ -80,7 +78,7 @@ function MarketTradeFaqTabs({
   return (
     <DappPillTabs
       ariaLabel={t.exchange.faq.tabsTitle}
-      className="mb-3 flex flex-wrap gap-2"
+      className="flex flex-wrap gap-2"
       items={exchangeTokenKeys.map((key) => ({
         active: key === activeToken,
         label: labels[key],

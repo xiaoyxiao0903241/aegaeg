@@ -1,11 +1,10 @@
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
@@ -60,11 +59,11 @@ export function RewardsCobuildContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{cobuild.dataTitle}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{cobuild.dataTitle}</Section.Title>
         {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
-        <OverviewGrid className="mt-4" columns={3}>
+        <OverviewGrid columns={3}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
               <Tile.Label>{item.label}</Tile.Label>
@@ -90,15 +89,12 @@ export function RewardsCobuildContent() {
           ))}
         </OverviewGrid>
         {/* jscpd:ignore-end */}
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{cobuild.tierTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{cobuild.tierTitle}</Section.Title>
         {/* Figma 4408:631 — flex+gap-4.5(18) 标题区↔req；req 横 gap-3(12)；req 内 gap-1.5(6) */}
-        <Card
-          surface="elevated"
-          className="mt-4 flex flex-col gap-4.5 overflow-visible rounded-2xl p-5"
-        >
+        <Card surface="elevated" className="flex flex-col gap-4.5 overflow-visible rounded-2xl p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="grid gap-1">
               <Text as="p" className="leading-none text-foreground/40" variant="copy">
@@ -186,11 +182,11 @@ export function RewardsCobuildContent() {
             ))}
           </div>
         </Card>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{cobuild.recordsTitle}</DappContentHeading>
-        <Table className="mt-4">
+      <Section>
+        <Section.Title>{cobuild.recordsTitle}</Section.Title>
+        <Table>
           <Table.Header>
             {rewardsRecordsPillTabsHeader({
               ariaLabel: cobuild.recordsTabsAria,
@@ -218,11 +214,11 @@ export function RewardsCobuildContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{cobuild.directsTitle}</DappContentHeading>
-        <Table className="mt-4">
+      <Section>
+        <Section.Title>{cobuild.directsTitle}</Section.Title>
+        <Table>
           <Table.Body
             colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
             emphasisColumns={[2]}
@@ -241,12 +237,12 @@ export function RewardsCobuildContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{cobuild.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{cobuild.faq.title}</Section.Title>
         <FaqList items={cobuild.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

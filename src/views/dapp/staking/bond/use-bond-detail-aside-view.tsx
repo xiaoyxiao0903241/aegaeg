@@ -29,7 +29,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
 
 /**
- * Bond 右栏 — chrome 跟 Stake（`StakingDetailAside`）；仓位与资产仓位同源链读。
+ * Bond 右栏 — chrome 跟 Stake（`staking-detail-sections`）；仓位与资产仓位同源链读。
  * 协议 TVL / 溢价率：无 OpenAPI/手册读 → 诚实 0（gaps §3.3）。
  */
 export function useBondDetailAsideView(kind: BondKind) {

@@ -1,6 +1,6 @@
-import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
 import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { genesisFaqTemplateValues } from '~/views/dapp/genesis/genesis-faq'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
@@ -20,8 +20,9 @@ export function GenesisFaqSection({ genesis }: { genesis: GenesisWidgetState }) 
   }))
 
   return (
-    <DappCollapsibleSection bodyClassName="overflow-visible" title={t.genesis.faq.title}>
+    <Section collapsible>
+      <Section.Title>{t.genesis.faq.title}</Section.Title>
       <FaqList items={genesisFaqItems} variant="dapp" />
-    </DappCollapsibleSection>
+    </Section>
   )
 }

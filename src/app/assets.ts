@@ -85,10 +85,6 @@ export const dappAssets = {
   copyWhite: '/assets/figma/dapp/ic-copy-white.svg',
   docs: '/assets/figma/dapp/ic-docs.svg',
   check: '/assets/figma/dapp/ic-check.svg',
-  chevron: '/assets/figma/dapp/ic-chevron.svg',
-  chevronUp: '/assets/figma/dapp/ic-chevron-up.svg',
-  /** Figma `4518:7176` — 排序等 pill trigger 下箭头 10. */
-  chevronDown: '/assets/figma/dapp/ic-chevron-down.svg',
   community: '/assets/figma/dapp/ic-community.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',
   globe: '/assets/figma/dapp/ic-globe.svg',

@@ -1,8 +1,8 @@
-import { DappSection } from '~/app/shell/dapp-section'
 import { genesisContributionsColWidths } from '~/app/shell/table-columns'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import {
   GenesisContributionsProgressHeader,
@@ -17,7 +17,8 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
   const vm = useGenesisContributionsView(genesis)
 
   return (
-    <DappSection title={t.genesis.myContributions}>
+    <Section reveal>
+      <Section.Title>{t.genesis.myContributions}</Section.Title>
       <GenesisContributionsReveal>
         {vm.showSalesSyncHint ? (
           <GenesisContributionsSyncHint>
@@ -67,6 +68,6 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
           ) : null}
         </Table>
       </GenesisContributionsReveal>
-    </DappSection>
+    </Section>
   )
 }

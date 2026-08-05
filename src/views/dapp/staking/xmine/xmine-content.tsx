@@ -1,6 +1,14 @@
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useI18n } from '~/i18n/use-i18n'
-import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
+import { Detail } from '~/shared/components/detail'
+import {
+  StakingChartSection,
+  StakingFaqSection,
+  StakingMechanismSection,
+  StakingOverviewSection,
+  StakingPositionsSection,
+  StakingRecordsSection,
+  StakingXValueSection,
+} from '~/views/dapp/staking/staking-detail-sections'
 import { useXmineDetailAsideView } from '~/views/dapp/staking/xmine/use-xmine-detail-aside-view'
 
 export function XmineContent() {
@@ -8,23 +16,23 @@ export function XmineContent() {
   const { overviewItems, positionItems, recordRows, recordsLoading } = useXmineDetailAsideView()
 
   return (
-    <DappDetailPage>
-      <StakingDetailAside
-        chartTitle={t.staking.aside.chartTitles.xmine}
-        faq={t.staking.xmine.faq}
-        mechanismSteps={t.staking.xmine.mechanismSteps}
-        mechanismTitle={t.staking.xmine.mechanismTitle}
-        overviewItems={overviewItems}
-        overviewLayout="pair-plus"
-        positionItems={positionItems}
-        positionLayout="triple-plus"
+    <Detail>
+      <StakingOverviewSection overviewItems={overviewItems} overviewLayout="pair-plus" />
+      <StakingXValueSection />
+      <StakingPositionsSection positionItems={positionItems} positionLayout="triple-plus" />
+      <StakingRecordsSection
         recordColWidths={['10.9375rem', '6.25rem', '8.75rem', '1fr']}
         recordColumns={t.staking.aside.xmineRecordColumns}
         recordRows={recordRows}
         recordsEmptyTitle={recordsLoading ? '…' : t.staking.aside.recordsEmpty.xmine}
         recordsTitle={t.staking.aside.recordsTitles.xmine}
-        showXValueCard
       />
-    </DappDetailPage>
+      <StakingMechanismSection
+        mechanismSteps={t.staking.xmine.mechanismSteps}
+        mechanismTitle={t.staking.xmine.mechanismTitle}
+      />
+      <StakingChartSection chartTitle={t.staking.aside.chartTitles.xmine} />
+      <StakingFaqSection faq={t.staking.xmine.faq} />
+    </Detail>
   )
 }

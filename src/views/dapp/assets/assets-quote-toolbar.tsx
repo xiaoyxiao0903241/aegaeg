@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
+import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -53,12 +54,7 @@ export function AssetsQuoteToolbar({
           )}
         >
           {sortLabel}
-          {/* Figma `4518:7176`：ic-chevron-down 10 · 黑 40%（禁珊瑚上箭头） */}
-          <Icon
-            alt=""
-            className={cn('size-2.5 transition-transform duration-200', open && 'rotate-180')}
-            src={dappAssets.chevronDown}
-          />
+          <CollapseChevron open={open} size="sm" />
         </DropdownMenuTrigger>
         <DropdownMenuPanel>
           {sortOptions.map((option) => {

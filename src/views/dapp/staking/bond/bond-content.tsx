@@ -1,8 +1,15 @@
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useI18n } from '~/i18n/use-i18n'
+import { Detail } from '~/shared/components/detail'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondDetailAsideView } from '~/views/dapp/staking/bond/use-bond-detail-aside-view'
-import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
+import {
+  StakingChartSection,
+  StakingFaqSection,
+  StakingMechanismSection,
+  StakingOverviewSection,
+  StakingPositionsSection,
+  StakingRecordsSection,
+} from '~/views/dapp/staking/staking-detail-sections'
 
 export function BondContent({ kind }: { kind: BondKind }) {
   const { messages: t } = useI18n()
@@ -14,16 +21,10 @@ export function BondContent({ kind }: { kind: BondKind }) {
     kind === 'lp' ? t.staking.aside.chartTitles.lpbond : t.staking.aside.chartTitles.burnbond
 
   return (
-    <DappDetailPage>
-      <StakingDetailAside
-        chartTitle={chartTitle}
-        faq={copy.faq}
-        mechanismSteps={copy.mechanismSteps}
-        mechanismTitle={copy.mechanismTitle}
-        overviewItems={overviewItems}
-        overviewLayout="cards-2"
-        positionItems={positionItems}
-        positionLayout="cards-2"
+    <Detail>
+      <StakingOverviewSection overviewItems={overviewItems} overviewLayout="cards-2" />
+      <StakingPositionsSection positionItems={positionItems} positionLayout="cards-2" />
+      <StakingRecordsSection
         recordColWidths={['8.75rem', '4.375rem', '5.625rem', '4.375rem', '6.875rem', '1fr']}
         recordColumns={t.staking.aside.bondRecordColumns}
         recordRows={recordRows}
@@ -36,6 +37,12 @@ export function BondContent({ kind }: { kind: BondKind }) {
         }
         recordsTitle={recordsTitle}
       />
-    </DappDetailPage>
+      <StakingMechanismSection
+        mechanismSteps={copy.mechanismSteps}
+        mechanismTitle={copy.mechanismTitle}
+      />
+      <StakingChartSection chartTitle={chartTitle} />
+      <StakingFaqSection faq={copy.faq} />
+    </Detail>
   )
 }

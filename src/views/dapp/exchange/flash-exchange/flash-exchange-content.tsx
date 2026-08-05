@@ -1,13 +1,10 @@
-import { dappAssets } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
-import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
@@ -24,16 +21,17 @@ export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel:
   ]
 
   return (
-    <DappDetailPage>
-      <section>
-        <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title id="exchange-title">{t.exchange.overview}</Section.Title>
+        {/* jscpd:ignore-start — 右栏 Tile 页内组合（禁 *OverviewTiles） */}
         <OverviewGrid columns={2}>
           {tiles.map((tile) => (
             <Tile key={tile.key}>
               <Tile.Label>{tile.label}</Tile.Label>
               <Text
                 as="strong"
-                className="text-base leading-5 font-semibold tracking-normal"
+                className="text-base/5 font-semibold tracking-normal"
                 variant="headline"
               >
                 <CountValue text={tile.value} />
@@ -41,24 +39,18 @@ export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel:
             </Tile>
           ))}
         </OverviewGrid>
-      </section>
+        {/* jscpd:ignore-end */}
+      </Section>
 
-      <DappDetailBlock>
-        <div className="mb-4 flex items-center justify-between gap-3">
-          {/* Figma `4477:411` 关于 = 20 / leading 1.2；用 text-xl + headline leading token（禁 leading-[1.2]） */}
-          <DappContentHeading className="mb-0 pb-0 text-xl leading-(--type-headline-leading) tracking-tight">
-            {t.exchange.flash.aboutTitle}
-          </DappContentHeading>
-          {/* Figma `4477:412` chevron chrome; no collapse IA → decorative only (R5a). */}
-          <Icon alt="" aria-hidden className="opacity-40" size="base" src={dappAssets.chevron} />
-        </div>
+      <Section collapsible>
+        <Section.Title>{t.exchange.flash.aboutTitle}</Section.Title>
         <TokenAboutCarousel cardKeys={FLASH_ABOUT_CARD_KEYS} />
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.exchange.faq.title}</Section.Title>
         <FaqList items={t.exchange.flash.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

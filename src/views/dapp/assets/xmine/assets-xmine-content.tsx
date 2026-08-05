@@ -1,6 +1,10 @@
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useI18n } from '~/i18n/use-i18n'
-import { AssetsProductDetailSections } from '~/views/dapp/assets/assets-product-detail-sections'
+import { Detail } from '~/shared/components/detail'
+import {
+  AssetsFaqSection,
+  AssetsOpsSection,
+  AssetsStatsSection,
+} from '~/views/dapp/assets/assets-detail-sections'
 import { useAssetsXmineOpsRows } from '~/views/dapp/assets/xmine/use-assets-xmine-ops-rows'
 import { useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-assets-xmine-stats'
 
@@ -11,20 +15,21 @@ export function AssetsXmineContent() {
   const ops = useAssetsXmineOpsRows()
 
   return (
-    <DappDetailPage>
-      <AssetsProductDetailSections
-        faqItems={copy.faq.items}
-        faqTitle={copy.faq.title}
+    <Detail>
+      <AssetsStatsSection
         metrics={copy.stats.metrics}
         metricsLayout={2}
+        statsTitle={copy.stats.title}
+        values={values}
+      />
+      <AssetsOpsSection
         opsColumns={t.assets.opsColumns}
         opsEmpty={copy.ops.empty}
         opsLoading={ops.isLoading}
         opsRows={ops.rows}
         opsTitle={copy.ops.title}
-        statsTitle={copy.stats.title}
-        values={values}
       />
-    </DappDetailPage>
+      <AssetsFaqSection faqItems={copy.faq.items} faqTitle={copy.faq.title} />
+    </Detail>
   )
 }

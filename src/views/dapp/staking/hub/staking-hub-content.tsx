@@ -1,13 +1,12 @@
 import { dappAssets } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Segment } from '~/shared/components/segment'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -93,9 +92,9 @@ export function StakingHubContent() {
   }
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{overview.title}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{overview.title}</Section.Title>
         {/* PC 三列；H5 每行两卡；同行等高靠 OverviewGrid stretch */}
         <OverviewGrid columns={3}>
           {overview.metrics.map((metric) => {
@@ -126,10 +125,10 @@ export function StakingHubContent() {
             )
           })}
         </OverviewGrid>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{table.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{table.title}</Section.Title>
         {/* Figma htab `4371:233` → 通用 DappPillTabs（≠ Segment） */}
         <DappPillTabs
           activeTone="coral"
@@ -157,10 +156,10 @@ export function StakingHubContent() {
               })}
           />
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{chart.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{chart.title}</Section.Title>
         {/* Figma metric-tabs `4585:44` 轨高 32 — `h-8` 标准刻度；size sm 对齐 pad/thumb */}
         <Segment
           aria-label={chart.metricAria}
@@ -185,12 +184,12 @@ export function StakingHubContent() {
           surface="elevated"
           valueLabel={chartValueLabel}
         />
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.staking.hub.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.staking.hub.faq.title}</Section.Title>
         <FaqList items={t.staking.hub.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   Children,
   type CSSProperties,
@@ -20,6 +20,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { StatusBadge } from '~/shared/components/badge'
 import { Card, cardVariants } from '~/shared/components/card'
+import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import { Empty } from '~/shared/components/empty'
 import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'
@@ -31,7 +32,7 @@ import { cn } from '~/shared/lib/utils'
  * DApp 表 — 组合式：
  * `Table` · `Header`（卡内顶槽）· `Body` · `Cell` · `Footer` · `Pagination`
  * · `Empty` / `Auth` / `Shell`。
- * Header ≠ 列名 thead；区块标题仍在卡外 `DappContentHeading`。
+ * Header ≠ 列名 thead；区块标题仍在卡外 `Section.Title`。
  * @see docs/foundation/component-usage.md
  */
 
@@ -694,19 +695,7 @@ function Pagination({
                 <Text as="span" variant="support" className="leading-none font-semibold text-coral">
                   {safePage} / {totalPages}
                 </Text>
-                {menuOpen ? (
-                  <ChevronUp
-                    aria-hidden
-                    className="size-(--app-icon-xs) shrink-0 transition-transform duration-220 ease-[cubic-bezier(.2,.8,.2,1)]"
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <ChevronDown
-                    aria-hidden
-                    className="size-(--app-icon-xs) shrink-0 transition-transform duration-220 ease-[cubic-bezier(.2,.8,.2,1)]"
-                    strokeWidth={2}
-                  />
-                )}
+                <CollapseChevron open={menuOpen} size="md" />
               </button>
 
               {menuOpen

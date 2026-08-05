@@ -1,9 +1,6 @@
 import { useState } from 'react'
 
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -13,8 +10,10 @@ import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-displa
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -131,15 +130,13 @@ export function ReleaseBufferContent() {
   const steps = t.release.buffer.mechanismSteps
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading id="release-buffer-title">
-          {t.release.buffer.statsTitle}
-        </DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title id="release-buffer-title">{t.release.buffer.statsTitle}</Section.Title>
         {/* Figma `4791:3688`：px20 py16 gap8 · 黑圆 24 + 字 16 · 三列 w160 */}
         <Card
           as="div"
-          className="mb-3 grid content-center gap-2 rounded-2xl px-5 py-3"
+          className="grid content-center gap-2 rounded-2xl px-5 py-3"
           data-slot-id="release-buffer-stat-agx"
           surface="elevated"
         >
@@ -179,10 +176,10 @@ export function ReleaseBufferContent() {
           </div>
           <BufferStatCells stats={gagxStats} />
         </Card>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.release.buffer.recordsTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.release.buffer.recordsTitle}</Section.Title>
         <Table>
           <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
@@ -201,13 +198,11 @@ export function ReleaseBufferContent() {
             </Table.Footer>
           ) : null}
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.release.buffer.mechanismTitle}</DappContentHeading>
-        <Text as="p" className="mb-4 text-foreground/40" variant="copy">
-          {t.release.buffer.mechanismSubtitle}
-        </Text>
+      <Section>
+        <Section.Title>{t.release.buffer.mechanismTitle}</Section.Title>
+        <Section.Description>{t.release.buffer.mechanismSubtitle}</Section.Description>
         {/* Figma `4470:331`：四灰底 step 卡 140 + 箭头 + strip（非 ProcessSteps / 非 Lucide） */}
         <Card
           as="div"
@@ -269,12 +264,12 @@ export function ReleaseBufferContent() {
             ))}
           </ul>
         </Card>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.release.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.release.faq.title}</Section.Title>
         <FaqList defaultOpenFirst={false} items={t.release.faq.buffer} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

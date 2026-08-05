@@ -1,6 +1,10 @@
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useI18n } from '~/i18n/use-i18n'
-import { AssetsProductDetailSections } from '~/views/dapp/assets/assets-product-detail-sections'
+import { Detail } from '~/shared/components/detail'
+import {
+  AssetsFaqSection,
+  AssetsOpsSection,
+  AssetsStatsSection,
+} from '~/views/dapp/assets/assets-detail-sections'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
 import { useAssetsPositionOpsRows } from '~/views/dapp/assets/position/use-assets-position-ops-rows'
 import { useAssetsPositionStats } from '~/views/dapp/assets/position/use-assets-position-stats'
@@ -13,10 +17,8 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
   const ops = useAssetsPositionOpsRows(product)
 
   return (
-    <DappDetailPage>
-      <AssetsProductDetailSections
-        faqItems={copy.faq.items}
-        faqTitle={copy.faq.title}
+    <Detail>
+      <AssetsStatsSection
         metrics={stats.metrics}
         metricsLayout={
           product === 'stake'
@@ -24,6 +26,10 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
             : // LP/Burn：上 3 下 2（Figma 250 / 384）；gap 对齐 OverviewGrid
               'upper3-lower2'
         }
+        statsTitle={stats.title}
+        values={values}
+      />
+      <AssetsOpsSection
         opsColumns={t.assets.opsColumns}
         opsEmpty={copy.ops.empty}
         opsLoading={ops.isLoading}
@@ -34,9 +40,8 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
         }}
         opsRows={ops.rows}
         opsTitle={copy.ops.title}
-        statsTitle={stats.title}
-        values={values}
       />
-    </DappDetailPage>
+      <AssetsFaqSection faqItems={copy.faq.items} faqTitle={copy.faq.title} />
+    </Detail>
   )
 }

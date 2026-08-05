@@ -1,12 +1,11 @@
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
 import { Carousel } from '~/shared/components/carousel'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
+import { Section } from '~/shared/components/section'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -22,10 +21,10 @@ export function ReleaseHubContent() {
   const steps = t.release.hub.mechanismSteps
 
   return (
-    <DappDetailPage>
-      {/* Figma right-col 4371:262：section gap 34 → DappDetailBlock mt-8.5 */}
-      <DappDetailBlock>
-        <DappContentHeading id="release-hub-title">{t.release.hub.aboutTitle}</DappContentHeading>
+    <Detail>
+      {/* Figma right-col 4371:262：节距 ≡ Detail gap-8.5 */}
+      <Section>
+        <Section.Title id="release-hub-title">{t.release.hub.aboutTitle}</Section.Title>
         <Carousel opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}>
           <Carousel.Content>
             {slides.map((slide) => (
@@ -33,7 +32,7 @@ export function ReleaseHubContent() {
                 <DappAboutCard
                   // 4299:213：p16 · radius/lg · deco 91×91 右上；高随文案
                   body={slide.body}
-                  className="min-h-0 gap-2 px-4 py-4"
+                  className="min-h-0 gap-2 p-4"
                   decoClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
                   decoSrc={dappAssets.aboutCarouselReleaseDeco}
                   title={slide.title}
@@ -47,17 +46,11 @@ export function ReleaseHubContent() {
             prevLabel={t.common.paginationPrev}
           />
         </Carousel>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <div className="mb-4 grid gap-1.5">
-          <Text as="h3" className="m-0 font-semibold" variant="section">
-            {t.release.hub.mechanismTitle}
-          </Text>
-          <Text as="p" className="m-0 text-foreground/40" variant="caption">
-            {t.release.hub.mechanismSubtitle}
-          </Text>
-        </div>
+      <Section>
+        <Section.Title>{t.release.hub.mechanismTitle}</Section.Title>
+        <Section.Description>{t.release.hub.mechanismSubtitle}</Section.Description>
         {/* Figma `4359:531` — Steps center + activeIndex=2（进入释放池） */}
         <div data-slot-id="release-mechanism-steps">
           <Card className="rounded-2xl p-6" surface="elevated">
@@ -73,7 +66,7 @@ export function ReleaseHubContent() {
         <Card
           as="div"
           surface="elevated"
-          className="mt-4 flex flex-col gap-6 rounded-2xl p-6"
+          className="flex flex-col gap-6 rounded-2xl p-6"
           data-slot-id="release-mechanism-meta"
         >
           <div className="grid gap-6 dapp:grid-cols-2">
@@ -136,15 +129,13 @@ export function ReleaseHubContent() {
             </div>
           </div>
         </Card>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <Text as="h3" className="mb-4 font-semibold" variant="section">
-          {t.release.faq.title}
-        </Text>
+      <Section>
+        <Section.Title>{t.release.faq.title}</Section.Title>
         {/* 稿空态 FAQ 全关；禁 dapp 默认展开首项撑破节奏 */}
         <FaqList defaultOpenFirst={false} items={t.release.faq.hub} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

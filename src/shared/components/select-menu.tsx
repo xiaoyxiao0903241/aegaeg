@@ -1,6 +1,6 @@
-import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
+import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -68,22 +68,7 @@ export function SelectMenu({
         >
           {selected.label}
         </Text>
-        {variant === 'pill' ? (
-          <ChevronDown
-            aria-hidden
-            className="size-2.5 shrink-0 text-muted-foreground"
-            strokeWidth={2.5}
-          />
-        ) : (
-          <ChevronRight
-            aria-hidden
-            className={cn(
-              'size-2.5 shrink-0 text-muted-foreground transition-transform duration-200',
-              open ? 'rotate-[270deg]' : 'rotate-90',
-            )}
-            strokeWidth={2}
-          />
-        )}
+        <CollapseChevron open={open} size="sm" />
       </DropdownMenuTrigger>
 
       <DropdownMenuPanel

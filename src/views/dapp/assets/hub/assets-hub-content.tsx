@@ -1,11 +1,10 @@
 import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/app/assets'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { Card } from '~/shared/components/card'
+import { Detail } from '~/shared/components/detail'
 import { Empty } from '~/shared/components/empty'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import {
@@ -27,9 +26,9 @@ export function AssetsHubContent() {
   } = vm
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
-        <DappContentHeading>{overview.title}</DappContentHeading>
+    <Detail>
+      <Section>
+        <Section.Title>{overview.title}</Section.Title>
         {/* Figma PC `4284:213` 右侧几何底纹；H5 `4645:650` 底纹在屏外 = 可见无底纹 → max-dapp 隐藏 */}
         <Card
           surface="inverse"
@@ -156,10 +155,10 @@ export function AssetsHubContent() {
             </div>
           </Card>
         </div>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.assets.hub.distribution.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.assets.hub.distribution.title}</Section.Title>
         {/*
           Figma 持仓分布/empty：扁平 dashed 空壳（非 elevated）。
           与持仓/缓冲 elevated 刻意不同；勿升为 shadow-card。
@@ -168,14 +167,12 @@ export function AssetsHubContent() {
         <div className="overflow-hidden rounded-2xl border border-dashed border-border bg-card">
           <Empty title={t.assets.hub.distribution.empty} />
         </div>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        {/* Figma Rebase 标题 18 → DappContentHeading（禁 headline 16） */}
-        <DappContentHeading>{rebase.title}</DappContentHeading>
-        <Text as="p" className="mb-4 text-foreground/40" variant="copy">
-          {rebase.subtitle}
-        </Text>
+      <Section>
+        {/* Figma Rebase 标题 18 → Section.Title（禁 headline 16） */}
+        <Section.Title>{rebase.title}</Section.Title>
+        <Section.Description>{rebase.subtitle}</Section.Description>
         {/*
           Rebase/card：PC `4285:214` 横轴四列；H5 `4645:728` 竖向时间轴 + tags 无灰底条
         */}
@@ -258,12 +255,12 @@ export function AssetsHubContent() {
             {rebase.footer}
           </Text>
         </Card>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.assets.hub.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.assets.hub.faq.title}</Section.Title>
         <FaqList defaultOpenFirst={false} items={t.assets.hub.faq.items} variant="dapp" />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }

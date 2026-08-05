@@ -2,16 +2,15 @@ import type { ReactNode } from 'react'
 
 import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
 import { Carousel } from '~/shared/components/carousel'
 import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
@@ -103,8 +102,8 @@ export function RewardsHubContent() {
   ]
 
   return (
-    <DappDetailPage>
-      <DappDetailBlock>
+    <Detail>
+      <Section>
         {/* PC 三列；H5 一行两卡 — OverviewGrid gap SSOT */}
         <OverviewGrid className="mb-6" columns={3}>
           {tiles.map((tile) => (
@@ -177,10 +176,10 @@ export function RewardsHubContent() {
             </Card>
           ))}
         </OverviewGrid>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.rewards.hub.aboutTitle}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.rewards.hub.aboutTitle}</Section.Title>
         <Carousel opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}>
           <Carousel.Content>
             {ABOUT_VIEWS.map((view) => {
@@ -205,13 +204,11 @@ export function RewardsHubContent() {
             prevLabel={t.common.paginationPrev}
           />
         </Carousel>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.rewards.hub.mechanismTitle}</DappContentHeading>
-        <Text as="p" className="mb-3 text-foreground/40" variant="detail">
-          {t.rewards.hub.mechanismBody}
-        </Text>
+      <Section>
+        <Section.Title>{t.rewards.hub.mechanismTitle}</Section.Title>
+        <Section.Description>{t.rewards.hub.mechanismBody}</Section.Description>
         <Table>
           {/* 无数据稿 A4「当前」徽章；有 making_rank 时跟真档，否则跟稿演示 A4 */}
           <Table.Body
@@ -261,17 +258,17 @@ export function RewardsHubContent() {
             </Text>
           </Table.Footer>
         </Table>
-      </DappDetailBlock>
+      </Section>
 
-      <DappDetailBlock>
-        <DappContentHeading>{t.rewards.faq.title}</DappContentHeading>
+      <Section>
+        <Section.Title>{t.rewards.faq.title}</Section.Title>
         {/* Figma FAQ 收起 50：py-4 覆盖 dapp 默认 py-4.5（禁任意 px） */}
         <FaqList
           className="[&_[data-faq-item]>div]:py-4"
           items={t.rewards.faq.items}
           variant="dapp"
         />
-      </DappDetailBlock>
-    </DappDetailPage>
+      </Section>
+    </Detail>
   )
 }
