@@ -11,8 +11,11 @@ import {
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
-import { claimableAmountValue, formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
-import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
+import {
+  claimableAmountValue,
+  formatApiDecimalAmount,
+  toastClaimResult,
+} from '~/views/dapp/rewards/shared'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 
@@ -24,7 +27,7 @@ import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-r
  *
  * @see docs/backend-api/api.md #team-reward/total
  */
-export function useGenesis() {
+export function useGenesisDock() {
   const { messages: t } = useI18n()
   const g = t.rewards.genesisDetail
   const { walletReady, sessionReady } = useAppShell()

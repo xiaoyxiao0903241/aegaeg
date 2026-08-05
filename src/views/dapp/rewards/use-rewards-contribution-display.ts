@@ -4,10 +4,7 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import {
-  formatApiStatLabel,
-  formatContributionPlaceholder,
-} from '~/views/dapp/rewards/rewards-display'
+import { formatApiStatLabel, formatContributionPlaceholder } from '~/views/dapp/rewards/shared'
 import { readContributionSnapshot } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 

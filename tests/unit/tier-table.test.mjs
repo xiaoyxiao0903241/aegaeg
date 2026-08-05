@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('rewardTierRows aligns with tier-progress thresholds', async () => {
@@ -64,9 +65,7 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
 })
 
 test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () => {
-  const { mapSalesLogToDesktopRow } = await loadModule(
-    '/src/views/dapp/genesis/sales-log-display.ts',
-  )
+  const { mapSalesLogToDesktopRow } = await loadModule('/src/views/dapp/genesis/shared.ts')
 
   const row = mapSalesLogToDesktopRow(
     {

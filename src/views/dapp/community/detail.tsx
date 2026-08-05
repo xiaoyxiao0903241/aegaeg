@@ -19,10 +19,10 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { CommunityStatCard } from '~/views/dapp/community/primitives'
 import { CommunityProgramCard } from '~/views/dapp/community/primitives'
 import { CommunityInviteCard } from '~/views/dapp/community/primitives'
+import { mapTeamReferralToCompactRow } from '~/views/dapp/community/shared'
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
 
 const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const

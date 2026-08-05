@@ -14,7 +14,7 @@ import { referralSharePath } from '~/shared/config/referral'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
+import { formatReferralLinkDisplay } from '~/views/dapp/community/shared'
 import { useReferral } from '~/views/dapp/community/use-referral'
 import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -25,7 +25,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
  * 汇总推荐关系、推荐链接与复制/绑定操作；
  * 链上错误统一通过全局提示展示，复制结果用 toast 反馈。
  */
-export function useCommunityConnectedView() {
+export function useCommunityDock() {
   const { locale, messages: t } = useI18n()
   const account = useActiveAccount()
   const referral = useReferral()

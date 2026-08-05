@@ -3,11 +3,19 @@ import test from 'node:test'
 
 import { loadModule } from './load-module.mjs'
 
-test('formatPresaleRank maps API rank to shareholder label', async () => {
-  const { formatPresaleRank } = await loadModule('/src/shared/api/format-display.ts')
+test('parseApiAmount fail-closed; formatApiDecimalAmount zeros empty', async () => {
+  const { formatApiDecimalAmount, parseApiAmount } = await loadModule(
+    '/src/shared/api/format-display.ts',
+  )
 
-  assert.equal(formatPresaleRank(0), 'S0')
-  assert.equal(formatPresaleRank(3), 'S3')
+  assert.equal(parseApiAmount(undefined), null)
+  assert.equal(parseApiAmount(''), null)
+  assert.equal(parseApiAmount('  '), null)
+  assert.equal(parseApiAmount('abc'), null)
+  assert.equal(parseApiAmount('12.5'), 12.5)
+  assert.equal(formatApiDecimalAmount(null), '0.00')
+  assert.equal(formatApiDecimalAmount('1000'), '1,000.00')
+  assert.equal(formatApiDecimalAmount('bad', { prefix: '$' }), '$0.00')
 })
 
 test('getPresaleRankHighlightedRows maps rank to tier table row index', async () => {
@@ -124,9 +132,7 @@ test('formatTableGenesisRank hides S0 in community member table', async () => {
 })
 
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
-  const { mapTeamReferralToCompactRow } = await loadModule(
-    '/src/views/dapp/community/community-display.ts',
-  )
+  const { mapTeamReferralToCompactRow } = await loadModule('/src/views/dapp/community/shared.ts')
 
   assert.deepEqual(
     mapTeamReferralToCompactRow({
@@ -142,7 +148,7 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
 })
 
 test('mapRewardLogToRow uses i18n labels for status', async () => {
-  const { mapRewardLogToRow } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { mapRewardLogToRow } = await loadModule('/src/views/dapp/rewards/shared.ts')
   const labels = {
     pending: '待处理',
     processing: '处理中',
@@ -175,9 +181,7 @@ test('mapRewardLogToRow uses i18n labels for status', async () => {
 })
 
 test('mapTeamRewardClaimLogToRow renders presale team claim history', async () => {
-  const { mapTeamRewardClaimLogToRow } = await loadModule(
-    '/src/views/dapp/rewards/rewards-display.ts',
-  )
+  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/views/dapp/rewards/shared.ts')
   const labels = {
     pending: '待领取',
     processing: '处理中',
@@ -205,9 +209,7 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
 })
 
 test('mapCommunityFundLogToRow renders development fund history without genesis rank', async () => {
-  const { mapCommunityFundLogToRow } = await loadModule(
-    '/src/views/dapp/rewards/rewards-display.ts',
-  )
+  const { mapCommunityFundLogToRow } = await loadModule('/src/views/dapp/rewards/shared.ts')
   const labels = {
     pending: '待处理',
     processing: '处理中',
@@ -233,7 +235,7 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
 })
 
 test('claimableAmountValue subtracts claimed from total', async () => {
-  const { claimableAmountValue } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { claimableAmountValue } = await loadModule('/src/views/dapp/rewards/shared.ts')
   const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(

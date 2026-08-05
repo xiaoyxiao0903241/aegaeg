@@ -12,15 +12,17 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
-import { useStakeDetailAsideView } from '~/views/dapp/staking/stake/use-stake'
-import { StakingMechanismCard } from '~/views/dapp/staking/staking-mechanism-card'
-import { StakingMetricValue } from '~/views/dapp/staking/staking-metric-value'
-import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
-import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
+import {
+  StakingMechanismCard,
+  StakingMetricValue,
+  StakingTvlChart,
+} from '~/views/dapp/staking/primitives'
+import { useStakeDetail } from '~/views/dapp/staking/stake/use-stake'
+import { useStakingDetail } from '~/views/dapp/staking/use-detail'
 
 export function StakeDetail() {
-  const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetailAsideView()
-  const { t, selectTab, chartRange, setChartRange } = useStakingDetailAsideView()
+  const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetail()
+  const { t, selectTab, chartRange, setChartRange } = useStakingDetail()
 
   return (
     <Detail>

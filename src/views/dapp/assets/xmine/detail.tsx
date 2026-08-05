@@ -13,7 +13,7 @@ import { Faq } from '~/shared/components/faq'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
-import { AssetsOpsTable } from '~/views/dapp/assets/assets-ops-table'
+import { AssetsOpsTable } from '~/views/dapp/assets/primitives'
 import { useAssetsXmineOpsRows, useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-xmine'
 
 export function XmineDetail() {

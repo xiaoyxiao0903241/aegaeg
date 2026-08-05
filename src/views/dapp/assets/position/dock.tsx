@@ -4,8 +4,6 @@ import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
-import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
-import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import {
   AssetsListPager,
@@ -13,10 +11,8 @@ import {
   AssetsPositionListSkeleton,
   AssetsPositionStakeRow,
 } from '~/views/dapp/assets/position/primitives'
-import {
-  type AssetsProduct,
-  useAssetsPositionWidget,
-} from '~/views/dapp/assets/position/use-position'
+import { type AssetsProduct, usePositionDock } from '~/views/dapp/assets/position/use-position'
+import { AssetsPositionEmptyCard, AssetsQuoteToolbar } from '~/views/dapp/assets/primitives'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 
 export type { AssetsProduct }
@@ -25,7 +21,7 @@ export type { AssetsProduct }
 export function PositionDock({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
-  const w = useAssetsPositionWidget(product)
+  const w = usePositionDock(product)
 
   return (
     <>

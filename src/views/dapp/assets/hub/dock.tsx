@@ -16,7 +16,7 @@ import { WidgetHeader } from '~/shared/components/widget-header'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { openAssetsView } from '~/shared/config/dapp-open-views'
 import { AssetsHubFilterMenu } from '~/views/dapp/assets/hub/primitives'
-import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-hub'
+import { useHub } from '~/views/dapp/assets/hub/use-hub'
 
 /** 资产 Hub：质押 / LP 债券 / 燃烧债券 / XMine 仓位概览 */
 const ASSET_MODES = [
@@ -37,7 +37,7 @@ const ASSET_MODE_ICONS = {
 export function HubDock() {
   const { messages: t } = useI18n()
   const { walletReady } = useAppShell()
-  const overview = useAssetsHubOverviewStats()
+  const overview = useHub()
   const [hideZero, setHideZero] = useState(false)
 
   const modes = ASSET_MODES.filter((key) => {

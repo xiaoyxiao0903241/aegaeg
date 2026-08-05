@@ -20,7 +20,7 @@ import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-ho
  * 管理份额草稿、输入框焦点与提交/错误呈现；
  * 钱包切换时由父级以 key={address} 重建以清空草稿。
  */
-export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
+export function useGenesisDock(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
   const { walletReady } = useAppShell()
   const setShares = genesis.setShares

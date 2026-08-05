@@ -16,7 +16,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
@@ -27,7 +27,7 @@ import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { openRewardsView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
-import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
+import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -87,10 +87,7 @@ export function HubDock() {
 
   const grantAmount = (() => {
     if (!sessionReady) return null
-    const raw = grantSummary.data?.unlocked_claimable
-    if (raw == null || raw.trim() === '') return null
-    const n = Number(raw)
-    return Number.isFinite(n) ? n : null
+    return parseApiAmount(grantSummary.data?.unlocked_claimable)
   })()
 
   const luckyAmount = (() => {

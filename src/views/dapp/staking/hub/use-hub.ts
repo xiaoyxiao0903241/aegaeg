@@ -72,7 +72,7 @@ export type HubPeriodTableRow = {
  *
  * @returns 右栏所需的全部展示字段与状态（概览 / 周期表 / 图表 / 文案）
  */
-export function useStakingDetail() {
+export function useHubDetail() {
   const { messages: t } = useI18n()
   const { sessionReady } = useAuth()
   const [tableSeg, setTableSeg] = useState('stake')

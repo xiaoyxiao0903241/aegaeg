@@ -22,15 +22,14 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingViewStore } from '~/stores/staking-view-store'
-import { RebaseCountdownValue } from '~/views/dapp/staking/rebase-countdown-value'
-import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
-import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
+import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,
   formatAsideRebasePct,
-} from '~/views/dapp/staking/staking-aside-format'
-import { StakingTokenMetricValue } from '~/views/dapp/staking/staking-token-metric-value'
+} from '~/views/dapp/staking/shared'
+import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
+import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
 import { readStakePositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
@@ -56,7 +55,7 @@ function formatBonusPct(bps: number): string {
  *
  * @returns 质押表单状态与交互回调
  */
-export function useStakeView() {
+export function useStakeDock() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useAppShell()
@@ -141,7 +140,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  * @returns 右栏概览、仓位、记录表的展示数据
  * @see docs/backend-api/api.md #stake-flow/positions
  */
-export function useStakeDetailAsideView() {
+export function useStakeDetail() {
   const { messages: t } = useI18n()
   const { sessionReady } = useAppShell()
   const account = useActiveAccount()

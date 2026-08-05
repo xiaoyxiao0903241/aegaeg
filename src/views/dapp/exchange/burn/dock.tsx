@@ -12,11 +12,13 @@ import { TabHeader } from '~/app/shell/tab-header'
 import { WidgetStack } from '~/app/shell/widget-frame'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useBurn } from '~/views/dapp/exchange/burn/use-burn'
-import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
-import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
-import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { ExchangeWidgetSessionFooter } from '~/views/dapp/exchange/exchange-widget-session-footer'
+import {
+  ExchangeAmountFlow,
+  ExchangeOneWayFlowIndicator,
+  exchangeProviderMetaRow,
+  ExchangeWidgetSessionFooter,
+} from '~/views/dapp/exchange/primitives'
 
 export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const vm = useBurn(burn)

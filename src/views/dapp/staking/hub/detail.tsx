@@ -9,8 +9,8 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { HubMetricValueRow } from '~/views/dapp/staking/hub/primitives'
-import { useStakingDetail } from '~/views/dapp/staking/hub/use-hub'
-import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
+import { useHubDetail } from '~/views/dapp/staking/hub/use-hub'
+import { StakingTvlChart } from '~/views/dapp/staking/primitives'
 
 type MetricTone = 'default' | 'accent'
 type MetricIcon = 'agx' | 'usd1' | null
@@ -58,7 +58,7 @@ export function HubDetail() {
     overview,
     table,
     chart,
-  } = useStakingDetail()
+  } = useHubDetail()
 
   const tableSegOptions = [
     { label: table.segs.stake, value: 'stake' },

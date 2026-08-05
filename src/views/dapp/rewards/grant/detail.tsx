@@ -14,7 +14,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useGrant } from '~/views/dapp/rewards/grant/use-grant'
-import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/records-pill-tabs'
+import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/primitives'
 
 export function GrantDetail() {
   const {

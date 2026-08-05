@@ -16,7 +16,7 @@ import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
-import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/records-pill-tabs'
+import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/primitives'
 
 export function CobuildDetail() {
   const {

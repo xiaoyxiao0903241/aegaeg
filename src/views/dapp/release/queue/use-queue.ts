@@ -14,7 +14,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
-import { formatReleasePct } from '~/views/dapp/release/release-display'
+import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 import {

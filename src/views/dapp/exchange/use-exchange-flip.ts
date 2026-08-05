@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { exchangeFlipCard } from '~/views/dapp/exchange/exchange-flow-button'
+import { exchangeFlipCard } from '~/views/dapp/exchange/primitives'
 
 // 时长需与 theme.css 中 `exchange-card-flip` / `--motion-dapp-emphasis` 保持一致
 const EXCHANGE_FLIP_APPLY_MS = 160

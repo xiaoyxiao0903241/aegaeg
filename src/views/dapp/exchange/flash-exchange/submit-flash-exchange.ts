@@ -2,7 +2,7 @@ import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import type { FlashPairId } from '~/core/exchange/flash-pair'
 import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
-import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
+import type { QuotedSubmitCore } from '~/views/dapp/exchange/shared'
 import { FLASH_USD1_BLOCKED } from '~/web3/contract-error-message'
 import { readFlashPairBalances, readUsd1SwapConfig } from '~/web3/exchange/flash-exchange-read'
 import {

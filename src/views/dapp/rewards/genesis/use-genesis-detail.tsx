@@ -21,7 +21,7 @@ import {
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
   NON_NUMERIC_EMPTY,
-} from '~/views/dapp/rewards/rewards-display'
+} from '~/views/dapp/rewards/shared'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 
 type GenesisHistoryTab = 'referral' | 'team' | 'communityFund'

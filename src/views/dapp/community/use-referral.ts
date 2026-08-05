@@ -13,7 +13,7 @@ import {
   parseReferrerAddress,
   parseReferrerFromSearch,
 } from '~/shared/config/referral'
-import { readAndClearBindSuccess } from '~/views/dapp/community/referral-bind-success'
+import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'

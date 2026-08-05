@@ -12,16 +12,18 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
-import { StakingMechanismCard } from '~/views/dapp/staking/staking-mechanism-card'
-import { StakingMetricValue } from '~/views/dapp/staking/staking-metric-value'
-import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
-import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
+import {
+  StakingMechanismCard,
+  StakingMetricValue,
+  StakingTvlChart,
+} from '~/views/dapp/staking/primitives'
+import { useStakingDetail } from '~/views/dapp/staking/use-detail'
 import { StakingXValueCard } from '~/views/dapp/staking/xmine/primitives'
-import { useXmineDetailAsideView } from '~/views/dapp/staking/xmine/use-xmine'
+import { useXmineDetail } from '~/views/dapp/staking/xmine/use-xmine'
 
 export function XmineDetail() {
-  const { overviewItems, positionItems, recordRows, recordsLoading } = useXmineDetailAsideView()
-  const { t, selectTab, chartRange, setChartRange } = useStakingDetailAsideView()
+  const { overviewItems, positionItems, recordRows, recordsLoading } = useXmineDetail()
+  const { t, selectTab, chartRange, setChartRange } = useStakingDetail()
   const xValue = t.staking.aside.xValue
 
   return (

@@ -8,8 +8,8 @@ import { tokenCarouselIcons } from '~/app/assets'
 import { TabHeader } from '~/app/shell/tab-header'
 import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
 import { WidgetStack } from '~/app/shell/widget-frame'
+import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 import { useQueue } from '~/views/dapp/release/queue/use-queue'
-import { ReleasePlanCard } from '~/views/dapp/release/release-plan-card'
 
 export function QueueDock() {
   const vm = useQueue()

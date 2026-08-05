@@ -11,6 +11,7 @@ import { dappAssets } from '~/app/assets'
 import { ActionRow } from '~/app/shell/action-row'
 import { CtaButton } from '~/app/shell/cta-button'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { MetaListCard } from '~/app/shell/meta-list-card'
 import { ProgressMeter } from '~/app/shell/progress-meter'
 import { Skeleton } from '~/app/shell/skeleton'
 import { genesisContributionsColWidths } from '~/app/shell/table-columns'
@@ -20,14 +21,12 @@ import type { SeasonOption } from '~/core/presale/genesis-promo-types'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Button } from '~/shared/components/button'
-import { Card } from '~/shared/components/card'
 import { Carousel } from '~/shared/components/carousel'
 import { FieldActionChip } from '~/shared/components/chip'
 import { CountValue } from '~/shared/components/count-value'
 import { darkBanner } from '~/shared/components/dark-banner'
 import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
-import { List } from '~/shared/components/list'
 import { RadioGroup, RadioIndicator } from '~/shared/components/radio'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -35,8 +34,8 @@ import { Tooltip } from '~/shared/components/tooltip'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import type { useGenesisContributionsView } from '~/views/dapp/genesis/use-genesis-contributions-view'
-import { useGenesisPurchaseView } from '~/views/dapp/genesis/use-genesis-purchase-view'
+import type { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
+import { useGenesisDock } from '~/views/dapp/genesis/use-genesis-dock'
 
 // --- from genesis-purchase-shares-field.tsx ---
 export function GenesisPurchaseSharesField({
@@ -279,7 +278,7 @@ export function SeasonOptionSkeleton() {
  * 无需用副作用去镜像 genesis.shares。
  */
 export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }) {
-  const vm = useGenesisPurchaseView(genesis)
+  const vm = useGenesisDock(genesis)
   const { t } = vm
 
   return (
@@ -316,8 +315,8 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
         value={vm.sharesTextDisplay}
       />
 
-      <Card as="div" surface="outlined">
-        <List
+      <MetaListCard>
+        <MetaListCard.Rows
           items={[
             { label: t.genesis.quota, value: genesis.quotaLabel },
             { label: t.genesis.pay, value: genesis.payUsd1Label },
@@ -335,7 +334,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
             },
           ]}
         />
-      </Card>
+      </MetaListCard>
 
       {vm.walletReady ? (
         <ActionRow className="grid-cols-1">
@@ -428,7 +427,7 @@ export function GenesisContributionsProgressHeader({
 }
 
 // --- from genesis-contributions-table.tsx ---
-type GenesisContributionsView = ReturnType<typeof useGenesisContributionsView>
+type GenesisContributionsView = ReturnType<typeof useGenesisDetail>
 
 export function GenesisContributionsTable({
   cumulativeLabel,

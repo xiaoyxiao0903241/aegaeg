@@ -15,7 +15,7 @@ import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
-import type { AssetsSortKey } from '~/views/dapp/assets/assets-quote-toolbar'
+import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import {
   submitXmineActivateWarmup,
   submitXmineClaim,
@@ -31,7 +31,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
  * 管理报价币与排序、挖矿仓位查询、领取 / 激活 / 退出写交易
  * 及退出确认弹窗状态。
  */
-export function useAssetsXmineView() {
+export function useXmineDock() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
   const { walletReady } = useAppShell()

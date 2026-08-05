@@ -10,7 +10,7 @@ import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text } from '~/shared/components/text'
 import { CalcDaySlider, CalcHtabRow } from '~/views/dapp/staking/calc/primitives'
-import { useCalcView } from '~/views/dapp/staking/calc/use-calc'
+import { useCalcDock } from '~/views/dapp/staking/calc/use-calc'
 
 const priceBox = amountBox()
 
@@ -21,7 +21,7 @@ const priceBox = amountBox()
  * 产品 / 周期 / 金额 / 价格 / 天数变化时实时联动右侧结果。
  */
 export function CalcDock() {
-  const vm = useCalcView()
+  const vm = useCalcDock()
   const { t } = vm
   const tokenSrc =
     vm.tokenSrc === 'gagx'

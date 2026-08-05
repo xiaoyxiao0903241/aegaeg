@@ -12,16 +12,17 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { useBondDetailAsideView } from '~/views/dapp/staking/bond/use-bond'
-import { StakingMechanismCard } from '~/views/dapp/staking/staking-mechanism-card'
-import { StakingMetricValue } from '~/views/dapp/staking/staking-metric-value'
-import { StakingTvlChart } from '~/views/dapp/staking/staking-tvl-chart'
-import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
+import { useBondDetail } from '~/views/dapp/staking/bond/use-bond'
+import {
+  StakingMechanismCard,
+  StakingMetricValue,
+  StakingTvlChart,
+} from '~/views/dapp/staking/primitives'
+import { useStakingDetail } from '~/views/dapp/staking/use-detail'
 
 export function BondDetail({ kind }: { kind: BondKind }) {
-  const { copy, overviewItems, positionItems, recordRows, recordsLoading } =
-    useBondDetailAsideView(kind)
-  const { t, selectTab, chartRange, setChartRange } = useStakingDetailAsideView()
+  const { copy, overviewItems, positionItems, recordRows, recordsLoading } = useBondDetail(kind)
+  const { t, selectTab, chartRange, setChartRange } = useStakingDetail()
   const recordsTitle =
     kind === 'lp' ? t.staking.aside.recordsTitles.lpbond : t.staking.aside.recordsTitles.burnbond
   const chartTitle =

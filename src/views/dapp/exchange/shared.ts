@@ -1,7 +1,150 @@
+import { toast } from 'sonner'
+
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { FLASH_PAIR_DEFAULT, type FlashPairId, isFlashPairId } from '~/core/exchange/flash-pair'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { tradePath, type TradeTokenAddresses, type TradeTokenKey } from '~/core/exchange/trade-path'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
+
+// —— quoted-submit-core ——
+
+export type QuotedSubmitExecute = (helpers: {
+  session: WriteSession
+  assertStillSubmittable: (live?: {
+    sellBalance: bigint
+  }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
+}) => Promise<void>
+
+/** 闪电兑换 / 市价交易 / 销毁共用的报价提交流程接口。 */
+export type QuotedSubmitCore = {
+  debouncedAmountIn: bigint
+  runQuotedSubmit: (
+    run: QuotedSubmitExecute,
+  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
+}
+
+// —— submit-exchange-success ——
+
+/** 执行兑换提交，成功后弹出成功提示。 */
+export async function submitExchangeWithSuccessToast(
+  submit: () => Promise<{ ok: boolean }>,
+  successMessage: string,
+): Promise<void> {
+  const result = await submit()
+  if (result.ok) toast.success(successMessage)
+}
+
+// —— exchange-views-needing-provider ——
+
+export type ExchangeSubview = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
+
+/** 纯挂载矩阵：离开子视图即卸载其会话提供者，丢弃本地报价与提交状态。 */
+export function viewsNeedingProvider(
+  view: ExchangeSubview,
+  motion: boolean,
+  outgoingView: ExchangeSubview | null,
+  incomingView: ExchangeSubview | null,
+): { flash: boolean; trade: boolean; burn: boolean; turbine: boolean } {
+  const active = new Set<ExchangeSubview>()
+  if (motion) {
+    if (outgoingView) active.add(outgoingView)
+    if (incomingView) active.add(incomingView)
+  } else {
+    active.add(view)
+  }
+  return {
+    flash: active.has('flash'),
+    trade: active.has('trade'),
+    burn: active.has('burn'),
+    turbine: active.has('turbine'),
+  }
+}
+
+// —— exchange-format-rate ——
+
+function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn: number): bigint {
+  const oneUnitIn = 10n ** BigInt(decimalsIn)
+  return (amountOut * oneUnitIn) / amountIn
+}
+
+/**
+ * 空行情占位
+ *
+ * 报价为 0 时返回 `'0'` 而非空串，避免空态与真实 0 值之间闪跳。
+ *
+ * @param quotedOut 链上报价
+ */
+export function emptySpotRateDash(quotedOut: bigint): '0' | null {
+  return quotedOut === 0n ? '0' : null
+}
+
+function formatRateRatioFixed(
+  normalizedOut: bigint,
+  decimalsOut: number,
+  fractionDigits = 4,
+): string {
+  return formatTokenAmount(normalizedOut, decimalsOut, {
+    digits: fractionDigits,
+    trimZeros: false,
+  })
+}
+
+/** 去掉小数尾零：兑换率显示 `1 : 1` 而非 `1 : 1.0000`。 */
+function trimTrailingZeros(value: string): string {
+  if (!value.includes('.')) return value
+  return value.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
+}
+
+/** 兑换率标签：`1 : 1` 冒号形式，最多 4 位小数。 */
+export function formatExchangeRateColon({
+  amountIn,
+  amountOut,
+  decimalsIn,
+  decimalsOut,
+}: {
+  amountIn: bigint
+  amountOut: bigint
+  decimalsIn: number
+  decimalsOut: number
+}): string {
+  if (amountIn === 0n || amountOut === 0n) {
+    return '0'
+  }
+
+  const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
+
+  return `1 : ${trimTrailingZeros(formatRateRatioFixed(normalizedOut, decimalsOut))}`
+}
+
+/** 市价交易行情标签：`1 USD1 = 0.015385 AGX` 等号形式，最多 6 位小数。 */
+export function formatExchangeRateApprox({
+  amountIn,
+  amountOut,
+  decimalsIn,
+  decimalsOut,
+  symbolIn,
+  symbolOut,
+  fractionDigits = 3,
+}: {
+  amountIn: bigint
+  amountOut: bigint
+  decimalsIn: number
+  decimalsOut: number
+  symbolIn: string
+  symbolOut: string
+  fractionDigits?: number
+}): string {
+  if (amountIn === 0n || amountOut === 0n) {
+    return '0'
+  }
+
+  const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
+
+  return `1 ${symbolIn} = ${formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)} ${symbolOut}`
+}
+
+// —— exchange-pair ——
 
 export type { FlashPairId } from '~/core/exchange/flash-pair'
 export { FLASH_PAIR_DEFAULT, isFlashPairId }

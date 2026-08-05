@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('pancakeSwapDeepLink builds from token addresses', async () => {
@@ -21,9 +22,7 @@ test('pancakeSwapDeepLink builds from token addresses', async () => {
 })
 
 test('formatExchangeRateApprox displays connected swap meta rate', async () => {
-  const { formatExchangeRateApprox } = await loadModule(
-    '/src/views/dapp/exchange/exchange-format-rate.ts',
-  )
+  const { formatExchangeRateApprox } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.equal(
     formatExchangeRateApprox({
@@ -39,9 +38,7 @@ test('formatExchangeRateApprox displays connected swap meta rate', async () => {
 })
 
 test('formatExchangeRateApprox empty amounts is zero placeholder', async () => {
-  const { formatExchangeRateApprox } = await loadModule(
-    '/src/views/dapp/exchange/exchange-format-rate.ts',
-  )
+  const { formatExchangeRateApprox } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.equal(
     formatExchangeRateApprox({

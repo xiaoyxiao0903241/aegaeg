@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('needsTokenApproval is true when allowance is below amountIn', async () => {
@@ -11,9 +12,7 @@ test('needsTokenApproval is true when allowance is below amountIn', async () => 
 })
 
 test('formatExchangeRateColon displays colon exchange rate and trims trailing zeros', async () => {
-  const { formatExchangeRateColon } = await loadModule(
-    '/src/views/dapp/exchange/exchange-format-rate.ts',
-  )
+  const { formatExchangeRateColon } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.equal(
     formatExchangeRateColon({

@@ -21,10 +21,10 @@ import {
   AssetsOverviewMetric,
   AssetsRebaseCard,
 } from '~/views/dapp/assets/hub/primitives'
-import { useAssetsDetail } from '~/views/dapp/assets/hub/use-hub'
+import { useHubDetail } from '~/views/dapp/assets/hub/use-hub'
 
 export function HubDetail() {
-  const vm = useAssetsDetail()
+  const vm = useHubDetail()
   const { t, overview, rebase, values, setBufferAsset } = vm
   const {
     bufferTotal,

@@ -10,7 +10,7 @@ import {
 } from '~/shared/api/map-flow-log-rows'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/shared'
 import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
 
 /** 组装销毁面板渲染所需：会话状态 + 文案 + 错误提示编排。 */

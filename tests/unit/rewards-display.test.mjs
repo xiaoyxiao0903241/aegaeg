@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('formatContributionPlaceholder: disconnected / loading / value', async () => {
   const { formatContributionPlaceholder, formatApiDecimalAmount } = await loadModule(
-    '/src/views/dapp/rewards/rewards-display.ts',
+    '/src/views/dapp/rewards/shared.ts',
   )
   const zero = formatApiDecimalAmount(null)
 
@@ -56,7 +57,7 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
 
 test('lucky non-numeric empties stay dashes; counts stay integers', async () => {
   const { NON_NUMERIC_EMPTY, formatApiCountLabel, formatApiDecimalAmount } = await loadModule(
-    '/src/views/dapp/rewards/rewards-display.ts',
+    '/src/views/dapp/rewards/shared.ts',
   )
 
   assert.equal(NON_NUMERIC_EMPTY, '\u2014')
@@ -72,7 +73,7 @@ test('lucky non-numeric empties stay dashes; counts stay integers', async () => 
 
 test('planLabel and splitAmountByPct', async () => {
   const { planLabel } = await loadModule('/src/core/assets/claim-plans.ts')
-  const { splitAmountByPct } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { splitAmountByPct } = await loadModule('/src/views/dapp/rewards/shared.ts')
 
   assert.equal(splitAmountByPct(1000n, 40), 400n)
 

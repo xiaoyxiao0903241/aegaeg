@@ -1,6 +1,6 @@
 # DApp 页袋：Dock + Detail（域 Facade + 按需 mode 袋）
 
-> **状态：合同已修订** — 2026-08-05 再拍；**先收口门禁/右栏，再按本文执行搬目录**。  
+> **状态：合同已修订** — 2026-08-06；目录搬迁已落地；补 hook 左/右命名与左栏同骨架可抽壳。  
 > 取代原稿「每域固定四文件」表述。
 
 ## 不变量（硬）
@@ -31,23 +31,27 @@ staking/
 ├── dock.tsx                 # ★ StakingDock — 只做 subview switch + 组装
 ├── detail.tsx               # ★ StakingDetail
 ├── shared.ts                # 可选：跨 mode 纯函数 / format（非 UI）
+├── primitives.tsx           # 可选：跨 mode UI 零件（图表/指标等；禁数千行 mega）
+├── use-detail.ts            # 可选：跨 mode 右栏共享 chrome hook（如 useStakingDetail）
 ├── hub/
 │   ├── dock.tsx             # HubDock
 │   ├── detail.tsx           # HubDetail
-│   ├── use-hub.ts
+│   ├── use-hub.ts           # useHub / useHubDetail
 │   └── primitives.tsx
 ├── stake/
 │   ├── dock.tsx             # StakeDock
 │   ├── detail.tsx           # StakeDetail
-│   ├── use-stake.ts
+│   ├── use-stake.ts         # useStakeDock / useStakeDetail
 │   └── primitives.tsx
 ├── bond/                    # LP / 燃烧共用，kind 区分
 │   ├── dock.tsx
 │   ├── detail.tsx
 │   ├── use-bond.ts
 │   └── primitives.tsx
-└── …                        # xmine / calc 同构
+└── …                        # xmine / calc 同构；submit-* / session-host / claim-modal 可留域根旁路
 ```
+
+**Rewards 旁路（合同允许）**：跨 mode 领取壳 `claim-shells.tsx` / `claim-primitives.tsx` 与 IO hooks（`use-simple-claim` / `use-mixed-claim`）留在域根，**不**并入 mode `primitives`，也**不**进 registry。
 
 ### 扁平小域（例：community）
 
@@ -55,22 +59,34 @@ staking/
 community/
 ├── dock.tsx                 # ★ CommunityDock
 ├── detail.tsx               # ★ CommunityDetail
-├── use-community.ts
-└── primitives.tsx
+├── use-community.ts         # useCommunityDock / useCommunityDetail
+├── use-referral.ts          # 第二 hook 开口（写链过长）
+├── primitives.tsx
+└── shared.ts                # 可选纯函数（display / bind-success）
 ```
 
 ### mode / 小域四文件（默认不多不少）
 
-| 文件             | 导出（例）    | 职责                                                |
-| ---------------- | ------------- | --------------------------------------------------- |
-| `dock.tsx`       | `StakeDock`   | 左栏组装；不进 registry                             |
-| `detail.tsx`     | `StakeDetail` | 右栏组装；不进 registry                             |
-| `use-{mode}.ts`  | `useStake`    | 数据与交互；写链过长可再拆第二 hook                 |
-| `primitives.tsx` | 具名零件      | **该袋全部 UI 零件**（多 export）；禁一卡一文件瀑布 |
+| 文件             | 导出（例）        | 职责                                                |
+| ---------------- | ----------------- | --------------------------------------------------- |
+| `dock.tsx`       | `StakeDock`       | 左栏组装；不进 registry                             |
+| `detail.tsx`     | `StakeDetail`     | 右栏组装；不进 registry                             |
+| `use-{mode}.ts`  | 见下「Hook 命名」 | 数据与交互；写链过长可再拆第二 hook                 |
+| `primitives.tsx` | 具名零件          | **该袋全部 UI 零件**（多 export）；禁一卡一文件瀑布 |
 
-域根**通常只有** `dock.tsx` + `detail.tsx`（+ 可选 `shared.ts`），不放域级 mega-`primitives` / 域级总 hook。
+域根**通常**为 `dock.tsx` + `detail.tsx`；跨 mode 需要时再加 `shared.ts`（纯函数）与/或 `primitives.tsx`（UI）。**禁止**域根一卡一文件瀑布，也**禁止**数千行 mega-`primitives`。写链 `submit-*`、session-host、claim-modal / claim-shells 等 IO/弹层可留域根旁路，不进四件套、不进 registry。
 
 **hub = 普通 mode 袋**（`hub/dock` + `hub/detail` + …），不把总览 UI 塞进域根 `dock.tsx`。
+
+### Hook 命名（左 / 右）
+
+| 情况               | 导出                                        | 说明                                |
+| ------------------ | ------------------------------------------- | ----------------------------------- |
+| 左/右各有独立 VM   | `useStakeDock` / `useStakeDetail`           | 与 UI 面一一对应；可同文件多 export |
+| 一份会话同时喂左右 | `useFlashExchange`（中性名）或 session host | **禁止**假拆成 Dock/Detail 两份     |
+| 纯读、两边共用     | `useHub` / `useQueue` 等中性名              | dock/detail 各自取用                |
+
+旧名 `*View` / `*Aside` / `*Widget`（页袋 VM）迁到上表；写链 / IO helper 不强制改名。
 
 ## 体量与再拆
 
@@ -87,12 +103,13 @@ community/
 
 ## 命名对照（执行波次）
 
-| 旧                               | 新                                  |
-| -------------------------------- | ----------------------------------- |
-| 域/mode `*Widget` 页袋入口       | `*Dock`（文件 `dock.tsx`）          |
-| 已有 `*Detail`                   | 保持；归入 mode 或域根 `detail.tsx` |
-| `hub` 总览 widget                | `hub/dock.tsx` 等四件套             |
-| 散落 `*-primitives` / 一卡一文件 | 收进该袋 `primitives.tsx`           |
+| 旧                                            | 新                                     |
+| --------------------------------------------- | -------------------------------------- |
+| 域/mode `*Widget` 页袋入口                    | `*Dock`（文件 `dock.tsx`）             |
+| 已有 `*Detail`                                | 保持；归入 mode 或域根 `detail.tsx`    |
+| `hub` 总览 widget                             | `hub/dock.tsx` 等四件套                |
+| 散落 `*-primitives` / 一卡一文件              | 收进该袋 `primitives.tsx`              |
+| 页袋 `*View` / `*Aside` / 左栏 `*Widget` hook | 左右分离时 → `use*Dock` / `use*Detail` |
 
 ## 执行顺序
 

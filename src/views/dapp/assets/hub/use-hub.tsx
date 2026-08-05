@@ -12,7 +12,12 @@ import {
 } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import {
+  formatApiDecimalAmount,
+  formatApproxUsd,
+  formatGroupedNumber,
+  parseApiAmount,
+} from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
@@ -88,24 +93,15 @@ const EMPTY_XMINE: AssetsHubModeStats = {
 }
 
 function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string {
-  if (raw == null || raw.trim() === '') return `${formatGroupedNumber(0, { digits })} ${unit}`
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return `${formatGroupedNumber(0, { digits })} ${unit}`
-  return `${formatGroupedNumber(n, { digits })} ${unit}`
+  return `${formatApiDecimalAmount(raw, { digits })} ${unit}`
 }
 
 function formatApiUsdLabel(raw: string | undefined): string {
-  if (raw == null || raw.trim() === '') return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  return formatGroupedNumber(n, { digits: 2, prefix: '$' })
+  return formatApiDecimalAmount(raw, { digits: 2, prefix: '$' })
 }
 
 function formatApiApproxUsd(raw: string | undefined, priceUsd: number | null): string {
-  if (raw == null || raw.trim() === '') return formatApproxUsd(0, null)
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return formatApproxUsd(0, null)
-  return formatApproxUsd(n, priceUsd)
+  return formatApproxUsd(parseApiAmount(raw) ?? 0, priceUsd)
 }
 
 function modeFromApiAmount(
@@ -113,8 +109,7 @@ function modeFromApiAmount(
   unit: 'AGX' | 'gAGX',
   priceUsd: number | null,
 ): AssetsHubModeStats {
-  const n = amountRaw != null ? Number(amountRaw) : Number.NaN
-  const amount = Number.isFinite(n) ? n : 0
+  const amount = parseApiAmount(amountRaw) ?? 0
   return {
     aprLabel: APR_EMPTY,
     positionValue: formatApiTokenLabel(amountRaw, unit),
@@ -134,7 +129,7 @@ function modeFromApiAmount(
  * 已登录会话时优先用后端 API 数据展示；API 缺失时退回链上读取。
  * 未连接、加载中或出错时统一返回 0 值格式化指标。
  */
-export function useAssetsHubOverviewStats(): AssetsHubOverview {
+export function useHub(): AssetsHubOverview {
   const { walletReady, sessionReady } = useAppShell()
   const account = useActiveAccount()
   const address = account?.address
@@ -390,10 +385,7 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
 }
 
 function formatApiDecimalOrZero(raw: string | undefined): string {
-  if (raw == null || raw.trim() === '') return formatGroupedNumber(0, { digits: 2 })
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return formatGroupedNumber(0, { digits: 2 })
-  return formatGroupedNumber(n, { digits: 2 })
+  return formatApiDecimalAmount(raw, { digits: 2 })
 }
 
 const ZERO_APPROX = formatApproxUsd(0, null)
@@ -402,10 +394,10 @@ const ZERO_APPROX = formatApproxUsd(0, null)
  * 资产 Hub 详情页状态：汇总总览文案与指标数据，
  * 并管理缓冲币种（AGX / gAGX）切换。
  */
-export function useAssetsDetail() {
+export function useHubDetail() {
   const { messages: t } = useI18n()
   const overview = t.assets.hub.overview
-  const values = useAssetsHubOverviewStats()
+  const values = useHub()
   const [bufferAsset, setBufferAsset] = useState<'agx' | 'gagx'>('agx')
 
   return {

@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('flash pair helpers: redeem forward, wrap reverse, usdt forward-only', async () => {
   const { getFlashExchangePairTokens, flashPairAllowsFlip, FLASH_PAIR_DEFAULT } = await loadModule(
-    '/src/views/dapp/exchange/exchange-pair.ts',
+    '/src/views/dapp/exchange/shared.ts',
   )
 
   assert.equal(FLASH_PAIR_DEFAULT, 'gagx')

@@ -8,13 +8,13 @@ import {
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
   mapReferralAwardDirectToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
-} from '~/views/dapp/rewards/rewards-display'
-import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/table-cells'
+} from '~/views/dapp/rewards/shared'
 
 /**
  * 推荐奖详情视图模型

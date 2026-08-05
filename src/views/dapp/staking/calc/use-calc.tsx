@@ -17,7 +17,7 @@ import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
  *
  * @returns 表单状态与各变更回调
  */
-export function useCalcView() {
+export function useCalcDock() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const setResult = useCalcEstimateStore((state) => state.setResult)

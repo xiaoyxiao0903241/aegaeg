@@ -15,7 +15,7 @@ import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { useBondView } from '~/views/dapp/staking/bond/use-bond'
+import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
 
 const BOND_PERIODS: BondPeriod[] = ['180', '360', '540']
 
@@ -49,7 +49,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
     ctaLabel,
     onSubmit,
     periodLabels,
-  } = useBondView(kind)
+  } = useBondDock(kind)
   const spotUsd = useAgxPriceUsd()
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [

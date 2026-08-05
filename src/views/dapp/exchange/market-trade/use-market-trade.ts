@@ -6,9 +6,12 @@ import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error
 import { useI18n } from '~/i18n/use-i18n'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
-import { isTradeTokenKey, type TradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
+import {
+  isTradeTokenKey,
+  submitExchangeWithSuccessToast,
+  type TradeTokenKey,
+} from '~/views/dapp/exchange/shared'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 
@@ -26,7 +29,7 @@ function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTrad
 }
 
 /** 组装市价交易面板渲染所需：会话状态 + 文案 + 翻转 / 错误提示编排。 */
-export function useMarketTrade(trade: MarketTradeState) {
+export function useMarketTradeDock(trade: MarketTradeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useAppShell()

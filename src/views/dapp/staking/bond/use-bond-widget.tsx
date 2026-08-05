@@ -12,10 +12,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 import { type BondKind, submitBondZap } from '~/views/dapp/staking/bond/submit-bond-zap'
-import {
-  bindUnlockedAmountEditors,
-  evaluateStakingAmountWrite,
-} from '~/views/dapp/staking/staking-amount-write-ui'
+import { bindUnlockedAmountEditors, evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import {
   burnBondDepositoryAddress,

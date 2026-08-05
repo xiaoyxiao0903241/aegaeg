@@ -12,7 +12,7 @@ import { AmountMaxChip } from '~/shared/components/chip'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { useStakeView } from '~/views/dapp/staking/stake/use-stake'
+import { useStakeDock } from '~/views/dapp/staking/stake/use-stake'
 
 /**
  * 质押表单（左栏）
@@ -33,7 +33,7 @@ export function StakeDock() {
     ctaLabel,
     yieldMeta,
     onSubmit,
-  } = useStakeView()
+  } = useStakeDock()
 
   return (
     <>

@@ -17,13 +17,12 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { BOND_ZAP_BLOCKED, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
-import { RebaseCountdownValue } from '~/views/dapp/staking/rebase-countdown-value'
+import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,
   formatAsideRebasePct,
-} from '~/views/dapp/staking/staking-aside-format'
-import { StakingTokenMetricValue } from '~/views/dapp/staking/staking-token-metric-value'
+} from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
@@ -39,7 +38,7 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
  * @param kind 债券类型：lp / burn
  * @returns 债券表单状态与交互回调
  */
-export function useBondView(kind: BondKind) {
+export function useBondDock(kind: BondKind) {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useAppShell()
@@ -104,7 +103,7 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
  * @param kind 债券类型：lp / burn
  * @returns 右栏概览、仓位、记录表的展示数据
  */
-export function useBondDetailAsideView(kind: BondKind) {
+export function useBondDetail(kind: BondKind) {
   const { messages: t } = useI18n()
   const { sessionReady } = useAppShell()
   const account = useActiveAccount()

@@ -7,11 +7,8 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
+import { bindUnlockedAmountEditors, evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
 import { submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
-import {
-  bindUnlockedAmountEditors,
-  evaluateStakingAmountWrite,
-} from '~/views/dapp/staking/staking-amount-write-ui'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'

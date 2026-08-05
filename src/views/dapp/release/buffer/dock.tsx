@@ -10,7 +10,7 @@ import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
 import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
-import { ReleasePlanCard } from '~/views/dapp/release/release-plan-card'
+import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 
 export function BufferDock() {
   const vm = useBuffer()

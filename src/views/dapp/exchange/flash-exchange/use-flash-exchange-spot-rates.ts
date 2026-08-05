@@ -6,9 +6,10 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   emptySpotRateDash,
+  type ExchangePairTokens,
+  type FlashPairId,
   formatExchangeRateColon,
-} from '~/views/dapp/exchange/exchange-format-rate'
-import type { ExchangePairTokens, FlashPairId } from '~/views/dapp/exchange/exchange-pair'
+} from '~/views/dapp/exchange/shared'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
 
 /** 闪电兑换行情：固定 1 单位卖出币的链上报价，供面板与概览汇率标签使用。 */

@@ -9,15 +9,15 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
+import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-spot-rates'
 import {
   FLASH_PAIR_DEFAULT,
   flashPairAllowsFlip,
   type FlashPairId,
   getFlashExchangePairTokens,
   isFlashPairId,
-} from '~/views/dapp/exchange/exchange-pair'
-import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
-import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-spot-rates'
+} from '~/views/dapp/exchange/shared'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import {
   readFlashPairBalances,

@@ -13,7 +13,7 @@ import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -22,7 +22,7 @@ import { Table } from '~/shared/components/table'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { BufferAssetCard, BufferMechanismCard } from '~/views/dapp/release/buffer/primitives'
-import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/format-release-api-or-chain-label'
+import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/shared'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -44,9 +44,9 @@ export function BufferDetail() {
   const api = apiSummaryQuery.data
 
   function amountNum(apiRaw: string | undefined, chain: bigint): number {
-    if (sessionReady && apiRaw != null && apiRaw.trim() !== '') {
-      const n = Number(apiRaw)
-      if (Number.isFinite(n)) return n
+    if (sessionReady) {
+      const n = parseApiAmount(apiRaw)
+      if (n != null) return n
     }
     return walletReady ? formatTokenAmountToNumber(chain, AGX_DECIMALS) : 0
   }

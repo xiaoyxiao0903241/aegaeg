@@ -23,7 +23,7 @@ import {
   mapLuckyMyRoundToRow,
   mapLuckyWinnerToRow,
   NON_NUMERIC_EMPTY,
-} from '~/views/dapp/rewards/rewards-display'
+} from '~/views/dapp/rewards/shared'
 import { readLuckyRoundDisplaySnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 

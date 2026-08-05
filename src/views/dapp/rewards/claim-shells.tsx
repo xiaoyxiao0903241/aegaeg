@@ -4,9 +4,6 @@
  * 供 referral / participate / grant / lucky / cobuild 等 mode dock 组装；
  * 禁止再扩成域级 mega primitives。
  */
-import { ChevronDown } from 'lucide-react'
-
-import { dappAssets } from '~/app/assets'
 import { CtaButton } from '~/app/shell/cta-button'
 import { TabHeader } from '~/app/shell/tab-header'
 import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
@@ -20,23 +17,22 @@ import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { Segment } from '~/shared/components/segment'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
-import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
-import { RewardsGagxAmount } from '~/views/dapp/rewards/claim-gagx-amount'
-import { RewardsClaimTokenRow } from '~/views/dapp/rewards/claim-token-row'
-import { RewardsDestinationCard } from '~/views/dapp/rewards/rewards-destination-card'
-import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
+import {
+  ClaimStackDivider,
+  ContributionShortBanner,
+  GrantPendingCard,
+  MixedClaimSummaryCard,
+  RewardsDestinationCard,
+  SimpleClaimableCard,
+} from '~/views/dapp/rewards/claim-primitives'
+import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/shared'
 import { useMixedClaim } from '~/views/dapp/rewards/use-mixed-claim'
 import { type SimpleClaimView, useSimpleClaim } from '~/views/dapp/rewards/use-simple-claim'
 
 /**
  * 简单领取左栏面板（发展津贴 / 参与奖 / 推荐奖）
- *
- * 发展津贴先展示待审批金额，再展示可领取额；
- * 参与奖与推荐奖直接按签名将奖励领取至钱包。
- *
- * @param view 子视图类型
  */
 export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
@@ -55,85 +51,26 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
       <WidgetStack>
         {view === 'grant' ? (
           <>
-            {/* 待审批卡：金额 + 客服链接与说明 */}
-            <Card surface="outlined">
-              <div className="flex items-start justify-between gap-3">
-                <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-                  {vm.grant.pendingLabel}
-                </Text>
-                <Text
-                  as="p"
-                  className="max-w-40 text-right leading-4 text-foreground/40"
-                  variant="copy"
-                >
-                  {vm.grant.pendingHint}
-                </Text>
-              </div>
-              <div className="mt-1.5 flex items-center justify-between gap-3">
-                <RewardsGagxAmount textVariant="copy">{vm.tokenGagx}</RewardsGagxAmount>
-                <Text as="p" className="text-2xl leading-none font-semibold" variant="headline">
-                  {vm.pendingAmount}
-                </Text>
-              </div>
-              <div className="mt-1.5 grid gap-1">
-                {/* 客服外链：用 ↗ 箭头（非折叠 chevron） */}
-                <a
-                  className="inline-flex w-fit items-center gap-1 font-medium text-coral-emphasis underline"
-                  href={COMMUNITY_SOCIAL_LINKS.telegram}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <Text as="span" className="font-medium text-coral-emphasis" variant="copy">
-                    {vm.grant.contactSupport}
-                  </Text>
-                  <img
-                    alt=""
-                    aria-hidden
-                    className="size-2.5 shrink-0"
-                    src={dappAssets.arrowUpRight}
-                  />
-                </a>
-                <Text as="p" className="leading-none text-foreground/40" variant="copy">
-                  {vm.grant.pendingBody}
-                </Text>
-              </div>
-            </Card>
-
-            <div className="flex items-center justify-center">
-              <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
-                {/* 静态分隔箭头（仅示意，无开合交互） */}
-                <ChevronDown
-                  aria-hidden
-                  className="size-2.5 text-foreground/40"
-                  strokeWidth={1.5}
-                />
-              </span>
-            </div>
+            <GrantPendingCard
+              contactSupport={vm.grant.contactSupport}
+              pendingAmount={vm.pendingAmount}
+              pendingBody={vm.grant.pendingBody}
+              pendingHint={vm.grant.pendingHint}
+              pendingLabel={vm.grant.pendingLabel}
+              tokenGagx={vm.tokenGagx}
+            />
+            <ClaimStackDivider />
           </>
         ) : null}
 
-        {/* 可领取卡：三种类型共用，领取至钱包 */}
-        <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-5 text-foreground" variant="copy">
-              {t.rewards.detail.claimable}
-            </Text>
-            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
-              {vm.claimIntoWallet}
-            </Text>
-          </div>
-          {vm.showTokenChip ? (
-            <RewardsClaimTokenRow amountText={vm.claimableText} tokenLabel={vm.tokenGagx} />
-          ) : (
-            <div className="flex items-center justify-between gap-2">
-              <Text as="span" className="font-semibold" variant="detail">
-                {t.rewards.detail.usdLabel}
-              </Text>
-              <Text as="span" className="text-2xl font-semibold" variant="headline">
-                {vm.claimableText}
-              </Text>
-            </div>
-          )}
+        <SimpleClaimableCard
+          amountText={vm.claimableText}
+          claimIntoWallet={vm.claimIntoWallet}
+          claimableLabel={t.rewards.detail.claimable}
+          showTokenChip={vm.showTokenChip}
+          tokenGagx={vm.tokenGagx}
+          usdLabel={t.rewards.detail.usdLabel}
+        >
           {view === 'participate' ? (
             <Text as="p" className="leading-4 text-foreground/40" variant="copy">
               {vm.participate.simpleHint}
@@ -149,7 +86,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
               {t.rewards.detail.emptyClaimable}
             </Text>
           ) : null}
-        </div>
+        </SimpleClaimableCard>
 
         {walletReady ? (
           <CtaButton
@@ -171,11 +108,6 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
 
 /**
  * 混合领取左栏面板（幸运奖 / 共建奖）
- *
- * 顶部展示可领金额与所需贡献，贡献不足时给出提醒并引导去销毁；
- * 下方为领取 / 复投比例滑块、释放与复投计划卡，最后是双行提交按钮。
- *
- * @param view 子视图类型（lucky / cobuild）
  */
 export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
@@ -199,28 +131,16 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
             value={vm.cobuildRewardType}
           />
         ) : null}
-        <Card surface="outlined">
-          <div className="flex items-start justify-between gap-3">
-            <div className="grid gap-1">
-              <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-                {t.rewards.detail.claimable}
-              </Text>
-              <RewardsGagxAmount textVariant="headline">
-                {vm.amountKnown ? `${vm.amountText} ${vm.mixed.tokenGagx}` : vm.amountText}
-              </RewardsGagxAmount>
-            </div>
-            <div className="grid gap-1.5 text-right">
-              <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-                {vm.mixed.requiredContributionLabel}
-              </Text>
-              <Text as="p" className="leading-5 font-semibold" variant="headline">
-                {view === 'lucky' && vm.amount > 0n
-                  ? vm.requiredText
-                  : formatApiDecimalAmount(null)}
-              </Text>
-            </div>
-          </div>
-        </Card>
+        <MixedClaimSummaryCard
+          amountKnown={vm.amountKnown}
+          amountText={vm.amountText}
+          claimableLabel={t.rewards.detail.claimable}
+          requiredContributionLabel={vm.mixed.requiredContributionLabel}
+          requiredText={
+            view === 'lucky' && vm.amount > 0n ? vm.requiredText : formatApiDecimalAmount(null)
+          }
+          tokenGagx={vm.mixed.tokenGagx}
+        />
 
         {vm.luckyPaused ? (
           <Text as="p" className="text-destructive" variant="copy">
@@ -234,7 +154,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
         ) : null}
 
         {vm.showContributionShort ? (
-          <div className="rounded-2xl bg-primary-soft px-4 py-3">
+          <ContributionShortBanner>
             <Text as="p" className="leading-5" variant="copy">
               <span className="text-foreground">
                 {vm.mixed.insufficientContributionDetail
@@ -252,7 +172,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
               </Button>
               <span className="text-foreground">{vm.mixed.getContributionSuffix}</span>
             </Text>
-          </div>
+          </ContributionShortBanner>
         ) : null}
 
         <Card surface="outlined">
@@ -322,7 +242,6 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
             loading={vm.submitting}
             onClick={vm.onConfirm}
           >
-            {/* 提交按钮：双行文案（释放 + 复投） */}
             <span className="flex flex-col items-start gap-0.5 text-left font-normal! text-white">
               <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
                 {vm.mixed.ctaReleaseLine.replace(

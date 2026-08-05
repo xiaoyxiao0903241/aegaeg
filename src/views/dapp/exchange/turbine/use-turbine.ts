@@ -2,7 +2,7 @@ import { useAppShell } from '~/app/use-app-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/shared'
 
 /** 组装 Turbine 面板渲染所需：会话状态 + 文案 + 解锁 / 领取提示编排。 */
 export function useTurbine(turbine: TurbineExchangeState) {

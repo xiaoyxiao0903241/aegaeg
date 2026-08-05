@@ -5,9 +5,9 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   emptySpotRateDash,
+  type ExchangePairTokens,
   formatExchangeRateApprox,
-} from '~/views/dapp/exchange/exchange-format-rate'
-import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
+} from '~/views/dapp/exchange/shared'
 import { type ExchangePoolReadContext, fetchExchangeQuote } from '~/web3/exchange/exchange-read'
 
 type UseMarketTradeSpotRatesArgs = {

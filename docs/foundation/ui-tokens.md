@@ -147,7 +147,7 @@
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`（**通用内容卡**字阶合同；≠ Hub 入口）
 
-**Hub 可点壳**：`InteractiveCard`（`Card outlined` + 交互）— 无文案子件；内容用 `Text`；见 [`component-usage.md`](./component-usage.md)「B+D」。
+**Hub 可点壳**：`InteractiveCard`（`Card outlined` + 交互）— 无文案子件；内容用 `Text`。同骨架「图标+标题+说明」入口用组合式 `DockModeCard`（exchange / staking）；见 [`component-usage.md`](./component-usage.md)「Hub 左栏」。
 
 **用法**：同 chrome 入口卡 / hub tile 的 props 合同与「可点才 button」见 [`component-usage.md`](./component-usage.md)。
 

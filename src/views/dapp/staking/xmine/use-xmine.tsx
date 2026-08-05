@@ -28,13 +28,13 @@ import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingViewStore } from '~/stores/staking-view-store'
+import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,
   formatAsideXLabel,
-  parseApiAmount,
-} from '~/views/dapp/staking/staking-aside-format'
-import { StakingTokenMetricValue } from '~/views/dapp/staking/staking-token-metric-value'
+  parseApiAmountOrZero,
+} from '~/views/dapp/staking/shared'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { useXmineOverviewQuery, useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
@@ -172,7 +172,7 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
  *
  * @returns Xmine 表单状态与交互回调
  */
-export function useXmineView() {
+export function useXmineDock() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useAppShell()
@@ -219,7 +219,7 @@ const NEXT_EMISSION_EMPTY = '—'
  * @returns 右栏概览、仓位、记录表的展示数据
  * @see docs/backend-api/api.md #x0-mining/logs
  */
-export function useXmineDetailAsideView() {
+export function useXmineDetail() {
   const { messages: t } = useI18n()
   const { sessionReady, walletReady } = useAppShell()
   const priceUsd = useAgxPriceUsd()
@@ -293,7 +293,7 @@ export function useXmineDetailAsideView() {
     },
   ]
 
-  const apiHeld = parseApiAmount(
+  const apiHeld = parseApiAmountOrZero(
     distQuery.data?.stake_x_pool ?? positionsQuery.data?.total_stake_amount,
   )
   const chainHeld =

@@ -14,7 +14,7 @@ import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/to
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -46,49 +46,35 @@ export function QueueDetail() {
   const api = apiSummaryQuery.data
 
   function parseApiOrChain(apiRaw: string | undefined, chain: bigint): number {
-    if (sessionReady && apiRaw != null && apiRaw.trim() !== '') {
-      const n = Number(apiRaw)
-      if (Number.isFinite(n)) return n
+    if (sessionReady) {
+      const n = parseApiAmount(apiRaw)
+      if (n != null) return n
     }
     return formatTokenAmountToNumber(chain, AGX_DECIMALS)
   }
 
   function formatReleasingLabel(): string {
-    if (sessionReady && api?.releasing_amount != null && api.releasing_amount.trim() !== '') {
-      const n = Number(api.releasing_amount)
-      if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
-    }
+    const n = sessionReady ? parseApiAmount(api?.releasing_amount) : null
+    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     return `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}`
   }
 
   function formatReleasedLabel(): string {
-    if (sessionReady && api?.released_amount != null && api.released_amount.trim() !== '') {
-      const n = Number(api.released_amount)
-      if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
-    }
+    const n = sessionReady ? parseApiAmount(api?.released_amount) : null
+    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     return `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}`
   }
 
   function formatLifetimeClaimed(): string {
-    if (
-      sessionReady &&
-      api?.total_claimed_amount != null &&
-      api.total_claimed_amount.trim() !== ''
-    ) {
-      const n = Number(api.total_claimed_amount)
-      if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
-    }
+    const n = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
+    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     /** 累计领取无链上数据源：空态显示 0 */
     return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
   }
 
   const releasingNum = parseApiOrChain(api?.releasing_amount, releasing)
   const releasedNum = parseApiOrChain(api?.released_amount, claimable)
-  const lifetimeNum =
-    sessionReady && api?.total_claimed_amount != null && api.total_claimed_amount.trim() !== ''
-      ? Number(api.total_claimed_amount)
-      : 0
-  const lifetimeApproxNum = Number.isFinite(lifetimeNum) ? lifetimeNum : 0
+  const lifetimeApproxNum = (sessionReady ? parseApiAmount(api?.total_claimed_amount) : null) ?? 0
 
   const stats = [
     {

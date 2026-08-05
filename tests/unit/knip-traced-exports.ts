@@ -49,7 +49,7 @@ export {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
-} from '../../src/views/dapp/rewards/rewards-display'
+} from '../../src/views/dapp/rewards/shared'
 export { useShareholderRankLabels } from '../../src/views/dapp/rewards/use-shareholder-rank-labels'
 export { readWalletSession } from '../../src/web3/auth/login-with-wallet'
 export { createMemoryAuthSessionStorage } from '../../src/web3/auth/session'

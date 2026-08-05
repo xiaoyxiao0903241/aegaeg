@@ -3,22 +3,15 @@ import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/format-release-api-or-chain-label'
-import { formatReleasePct } from '~/views/dapp/release/release-display'
+import { formatReleaseApiOrChainLabel, formatReleasePct } from '~/views/dapp/release/shared'
 import {
   useReleaseBufferSnapshot,
   useReleaseQueueSnapshot,
 } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-
-function parseApiAmount(raw: string | undefined): number | null {
-  if (raw == null || raw.trim() === '') return null
-  const n = Number(raw)
-  return Number.isFinite(n) ? n : null
-}
 
 /**
  * 释放总览交互面板状态

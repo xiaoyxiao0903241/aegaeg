@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { access } from 'node:fs/promises'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 async function assertMissing(path) {
@@ -62,9 +63,7 @@ test('audit #18: transient login errors allow retry; permanent errors block', as
 })
 
 test('audit #12: formatExchangeRateColon uses bigint ratio without Number()', async () => {
-  const { formatExchangeRateColon } = await loadModule(
-    '/src/views/dapp/exchange/exchange-format-rate.ts',
-  )
+  const { formatExchangeRateColon } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.equal(
     formatExchangeRateColon({

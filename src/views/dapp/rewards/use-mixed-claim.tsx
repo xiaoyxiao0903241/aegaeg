@@ -25,7 +25,7 @@ import {
   formatApiDecimalAmount,
   type MixedClaimView,
   splitAmountByPct,
-} from '~/views/dapp/rewards/rewards-display'
+} from '~/views/dapp/rewards/shared'
 import {
   REWARDS_BLOCKED,
   submitDaoMixedClaim,

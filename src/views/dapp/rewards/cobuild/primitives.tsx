@@ -7,7 +7,7 @@
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 import type { CobuildTierReq } from '~/views/dapp/rewards/cobuild/use-cobuild'
-import { NON_NUMERIC_EMPTY } from '~/views/dapp/rewards/rewards-display'
+import { NON_NUMERIC_EMPTY } from '~/views/dapp/rewards/shared'
 
 export function CobuildTierCard({
   achievedLabel,

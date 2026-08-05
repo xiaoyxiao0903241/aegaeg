@@ -21,7 +21,7 @@ import {
   formatPct,
   formatUsd,
 } from '~/views/dapp/staking/calc/primitives'
-import { StakingCurveChart } from '~/views/dapp/staking/staking-curve-chart'
+import { StakingCurveChart } from '~/views/dapp/staking/primitives'
 
 const PLACEHOLDER = '0.00'
 

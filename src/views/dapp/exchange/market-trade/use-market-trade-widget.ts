@@ -11,6 +11,9 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
+import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-market-trade'
+import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
+import { useMarketTradeSpotRates } from '~/views/dapp/exchange/market-trade/use-market-trade-spot-rates'
 import {
   formatTradeRouteLabel,
   getTradePairTokens,
@@ -19,10 +22,7 @@ import {
   isTradeTokenLive,
   tradeBuyOptions,
   type TradeTokenKey,
-} from '~/views/dapp/exchange/exchange-pair'
-import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-market-trade'
-import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
-import { useMarketTradeSpotRates } from '~/views/dapp/exchange/market-trade/use-market-trade-spot-rates'
+} from '~/views/dapp/exchange/shared'
 import { useExchangePoolReads } from '~/views/dapp/exchange/use-exchange-pool-reads'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import { fetchExchangeQuote } from '~/web3/exchange/exchange-read'

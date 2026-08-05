@@ -14,7 +14,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import type { AssetsSortKey } from '~/views/dapp/assets/assets-quote-toolbar'
+import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 import { submitBondRedeem, submitStakeRedeem } from '~/views/dapp/assets/submit-assets'
 import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
@@ -131,7 +131,7 @@ function compareBySort(
  * 管理计价币种与排序、持仓分页、领奖与赎回弹窗状态，
  * 并组装链上写交易（赎回、warmup 激活）与成功后失效缓存。
  */
-export function useAssetsPositionWidget(product: AssetsProduct) {
+export function usePositionDock(product: AssetsProduct) {
   const { messages: t } = useI18n()
   const { walletReady } = useAppShell()
   const account = useActiveAccount()

@@ -1,11 +1,15 @@
+import { toast } from 'sonner'
+
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import {
   formatApiDateTime,
+  formatApiDecimalAmount,
   formatBlockTime,
   formatGroupedNumber,
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
+  parseApiAmount,
   TABLE_EMPTY,
 } from '~/shared/api/format-display'
 import type {
@@ -35,34 +39,8 @@ export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild'>
 
-/**
- * 后端金额字符串 → 分组展示（含千分位与前后缀）
- *
- * 空值 / 非数字统一兜底为 0，保证数值列不出现异常字符。
- *
- * @param raw 后端金额字符串
- * @param options.digits 小数位（默认 2）
- * @param options.prefix 前缀（如 `$`）
- * @param options.suffix 后缀（如 `gAGX`）
- */
-export function formatApiDecimalAmount(
-  raw: string | null | undefined,
-  options: { digits?: number; prefix?: string; suffix?: string } = {},
-): string {
-  const digits = options.digits ?? 2
-  if (raw == null || raw.trim() === '') {
-    return formatGroupedNumber(0, { digits, prefix: options.prefix, suffix: options.suffix })
-  }
-  const n = Number(raw)
-  if (!Number.isFinite(n)) {
-    return formatGroupedNumber(0, { digits, prefix: options.prefix, suffix: options.suffix })
-  }
-  return formatGroupedNumber(n, {
-    digits,
-    prefix: options.prefix,
-    suffix: options.suffix,
-  })
-}
+/** 金额字符串展示 SSOT 在 `~/shared/api/format-display`；此处再导出供页袋旧 import。 */
+export { formatApiDecimalAmount }
 
 /**
  * 指标统计标签：会话未就绪或冷启动加载中 → 显示 0
@@ -246,18 +224,20 @@ function formatRewardStatus(status: number, labels: RewardLogStatusLabels): stri
 }
 
 export function claimableAmountValue(total: string, claimed: string): number {
-  const pending = Math.max(0, Number(total) - Number(claimed))
-  return Number.isFinite(pending) ? pending : 0
+  const totalN = parseApiAmount(total) ?? 0
+  const claimedN = parseApiAmount(claimed) ?? 0
+  return Math.max(0, totalN - claimedN)
 }
 
 export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLabels): string[] {
-  const signedAmount = Number(item.amount)
-  const amountLabel = Number.isFinite(signedAmount)
-    ? formatGroupedNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
-    : TABLE_EMPTY
-  const orderAmount = Number(item.order_amount)
+  const signedAmount = parseApiAmount(item.amount)
+  const amountLabel =
+    signedAmount != null
+      ? formatGroupedNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
+      : TABLE_EMPTY
+  const orderAmount = parseApiAmount(item.order_amount)
   const orderLabel =
-    Number.isFinite(orderAmount) && orderAmount > 0
+    orderAmount != null && orderAmount > 0
       ? formatGroupedNumber(orderAmount, { digits: 0, prefix: '$' })
       : TABLE_EMPTY
 
@@ -274,10 +254,11 @@ export function mapTeamRewardClaimLogToRow(
   item: TeamRewardClaimLogItem,
   labels: RewardLogStatusLabels,
 ): string[] {
-  const amountNum = Number(item.amount)
-  const amountLabel = Number.isFinite(amountNum)
-    ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
-    : TABLE_EMPTY
+  const amountNum = parseApiAmount(item.amount)
+  const amountLabel =
+    amountNum != null
+      ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
+      : TABLE_EMPTY
   const statusKey = teamRewardClaimStatusKey(item.status)
 
   return [
@@ -292,10 +273,11 @@ export function mapCommunityFundLogToRow(
   item: CommunityFundLogItem,
   labels: RewardLogStatusLabels,
 ): string[] {
-  const amountNum = Number(item.amount)
-  const amountLabel = Number.isFinite(amountNum)
-    ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
-    : TABLE_EMPTY
+  const amountNum = parseApiAmount(item.amount)
+  const amountLabel =
+    amountNum != null
+      ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
+      : TABLE_EMPTY
   const statusKey = communityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
@@ -410,4 +392,26 @@ export function mapLuckyMyRoundToRow(item: LuckyRewardMyRoundItem): string[] {
     result,
     item.draw_tx_hash ? formatShortAddress(item.draw_tx_hash) : TABLE_EMPTY,
   ]
+}
+
+/**
+ * 领取结果统一提示
+ *
+ * confirm_failed 表示链上已成功但确认同步失败，用警告提示；
+ * 其余情况提示成功。
+ *
+ * @param result 领取结果（null 时不提示）
+ * @param copy.claimSuccess 成功文案
+ * @param copy.confirmSyncFailed 确认同步失败文案（缺省沿用成功文案）
+ */
+export function toastClaimResult(
+  result: { status: 'success' | 'confirm_failed' } | null | undefined,
+  copy: { claimSuccess: string; confirmSyncFailed?: string },
+): void {
+  if (!result) return
+  if (result.status === 'confirm_failed') {
+    toast.warning(copy.confirmSyncFailed ?? copy.claimSuccess)
+    return
+  }
+  toast.success(copy.claimSuccess)
 }

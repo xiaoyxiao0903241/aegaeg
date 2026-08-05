@@ -1,6 +1,6 @@
 import { evaluateBurnContributionSwap } from '~/core/exchange/burn-contribution-swap'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
-import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
+import type { QuotedSubmitCore } from '~/views/dapp/exchange/shared'
 import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
 import {
   readBurnContributionSwapConfig,

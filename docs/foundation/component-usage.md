@@ -19,9 +19,9 @@
 | 6   | 小 API                          | 没有第二 call site 不要提前升 shell                                                                                             |
 | 7   | **优先组合式**                  | 壳 + 具名子件（`Tile.Label` / `Table.Header`）；槽用子树表达，禁袋装 `header=`/`tooltip=` 冒充结构。无第二 call site 不硬抽子件 |
 
-## Hub 左栏（B+D · `InteractiveCard`）
+## Hub 左栏（B+D · `InteractiveCard` / `DockModeCard`）
 
-> **模型**：薄壳（B）+ 仅当有**同一业务名**且骨架 ≥2 才抽（D）。壳管行为；字阶走 `Text`。
+> **模型**：薄壳（B）+ 同骨架 ≥2 call site 抽组合壳（D）。壳管 chrome；字阶走 `Text` 或壳内钉死的子件。
 
 ### 壳 — `InteractiveCard`
 
@@ -32,11 +32,17 @@
 | 非职责 | 无 Title / Description 等文案子件；不挂文案角色 prop                |
 | 布局   | call site `className`（gap / grid / min-h）                         |
 
-### 内容 — `Text`（页袋按业务组合）
+### 同骨架入口 — `DockModeCard`（`app/shell/dock-mode-card.tsx`）
+
+> **何时用**：左栏 Hub「图标 + 标题 + 一行说明」且 ≥2 域同骨架（现：exchange / staking）。  
+> **组合式**：`DockModeCard` · `Icon` · `Copy`（文案列容器）· `Title` · `Body`；页袋只传文案 / 图标 URL / `onClick`。  
+> **不要用**：Assets Hub（仓位/收益双列）、已有业务卡（`ReleaseEntryCard` / `RewardsTypeCard`）——骨架不同，保持分立。
+
+### 内容 — `Text`（页袋按业务组合；或 `DockModeCard.*` 已钉字阶）
 
 | Hub 角色（稿）                 | 写法                                                                                                                                |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 标题（14 SB）                  | `variant="detail"` + `font-semibold`                                                                                                |
+| 标题（14 SB）                  | `variant="detail"` + `font-semibold`（或 `DockModeCard.Title`）                                                                     |
 | 说明 / 列旁注 / ≈（copy @40%） | `variant="copy"` + `text-foreground/40`（资产仓位/收益列标、释放 releasing 等；**勿** `Card.Description` / `muted-foreground`≈70%） |
 | 贴主额的字段标签（copy @70%）  | `variant="copy"` + `text-foreground/70`（如奖励「余额」）                                                                           |
 | 中额（14 SB）                  | `as="strong"` `variant="detail"` + `font-semibold`                                                                                  |
@@ -44,16 +50,16 @@
 
 ### 命名与抽取
 
-- **数据 / 常量用业务名**：`EXCHANGE_MODES`（闪兑/交易/…）、`STAKING_MODES`、`REWARD_CARDS`、释放队列/缓冲池——跟产品说话。
-- **禁止**为「图标+标题+说明」这种纯 chrome 骨架发明共享名：`HubNavRow` / `HubModeEntry` / `ModeEntry` / `*Row`（布局词）一律不要。
-- **何时抽组件**：有稳定**业务**身份（如「LP 债券仓位」）且 ≥2 处复用；chrome 雷同但业务不同 → **各页袋内联**，不抽假共享。
+- **数据 / 常量用业务名**：`EXCHANGE_MODES`、`STAKING_MODES`、`REWARD_CARDS`、释放队列/缓冲池——跟产品说话。
+- **同 chrome 骨架** → 抽 shell 组合件（如 `DockModeCard`）；**不同骨架** → 页袋内联或域内具名业务卡，禁万能 `variant` 吞多种布局。
+- **何时抽业务零件**：有稳定业务身份（如「LP 债券仓位」）且 ≥2 处复用。
 
 ### MUST NOT（Hub）
 
 - 硬套 `Card.Title` / `Card.Description` 再拧字阶
-- 平行文案子件 API（`HubEntry.*` / `InteractiveCard.Title`）
+- 用 `DockModeCard` 硬塞 Assets / 释放 / 奖励等不同骨架
 - 万能卡 / `switch (index)` 吞多种骨架
-- 布局词冒充**左栏入口**业务名（`Row` / `Nav` / 泛 `Entry`）；右栏数据卡壳 `Tile` 见下节
+- 右栏数据卡壳误用本壳（右栏走 `Tile`）
 
 ## 右栏数据卡（B+D · `Tile`）
 

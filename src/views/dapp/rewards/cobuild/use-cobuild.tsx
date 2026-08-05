@@ -9,14 +9,14 @@ import {
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
   formatMakingRankLabel,
   mapRankRewardTeamMemberToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
-} from '~/views/dapp/rewards/rewards-display'
-import { mapRankRewardLogToCells } from '~/views/dapp/rewards/table-cells'
+} from '~/views/dapp/rewards/shared'
 
 type CobuildRecordsTab = 'cobuild' | 'equalize'
 

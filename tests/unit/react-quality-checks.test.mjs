@@ -290,7 +290,7 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
 })
 
 test('emptySpotRateDash gates empty vs format', async () => {
-  const { emptySpotRateDash } = await loadModule('/src/views/dapp/exchange/exchange-format-rate.ts')
+  const { emptySpotRateDash } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.equal(emptySpotRateDash(0n), '0')
   assert.equal(emptySpotRateDash(1n), null)
@@ -320,9 +320,7 @@ test('parseLeadingMetricNumber: rebase countdown suffix still has digits (no Dig
 })
 
 test('viewsNeedingProvider mounts only active swap subviews', async () => {
-  const { viewsNeedingProvider } = await loadModule(
-    '/src/views/dapp/exchange/exchange-views-needing-provider.ts',
-  )
+  const { viewsNeedingProvider } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.deepEqual(viewsNeedingProvider('hub', false, null, null), {
     flash: false,

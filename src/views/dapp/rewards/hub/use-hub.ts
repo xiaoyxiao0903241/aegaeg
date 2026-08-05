@@ -2,8 +2,8 @@ import { useAppShell } from '~/app/use-app-shell'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMakingOverview } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
-import { formatApiDecimalAmount, formatApiStatLabel } from '~/views/dapp/rewards/rewards-display'
+import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatApiDecimalAmount, formatApiStatLabel } from '~/views/dapp/rewards/shared'
 import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
 
 export type HubStats = {
@@ -22,10 +22,10 @@ export type HubStats = {
 }
 
 function formatUsdFromAgx(raw: string | null | undefined, priceUsd: number | null): string {
-  if (raw == null || raw.trim() === '') return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  if (priceUsd == null || priceUsd <= 0) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+  const n = parseApiAmount(raw)
+  if (n == null || priceUsd == null || priceUsd <= 0) {
+    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+  }
   return formatGroupedNumber(n * priceUsd, { digits: 2, prefix: '$' })
 }
 
@@ -65,8 +65,7 @@ export function useHub(): HubStats {
   const pending = overviewQuery.isLoading
 
   const totalRaw = sessionReady ? overview?.total_reward : null
-  const totalN = totalRaw != null && totalRaw.trim() !== '' ? Number(totalRaw) : 0
-  const totalFinite = Number.isFinite(totalN) ? totalN : 0
+  const totalFinite = parseApiAmount(totalRaw) ?? 0
   const rank = sessionReady ? overview?.making_rank : null
 
   return {

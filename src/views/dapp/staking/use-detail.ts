@@ -9,7 +9,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
  * 提供 i18n 文案、资产页 Tab 跳转、图表时间范围等，
  * 供概览 / 仓位 / 记录 / 机制 / 图表 / FAQ 区块复用。
  */
-export function useStakingDetailAsideView() {
+export function useStakingDetail() {
   const { messages: t } = useI18n()
   const selectTab = useDappShellStore((state) => state.selectTab)
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')

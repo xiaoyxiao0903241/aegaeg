@@ -15,15 +15,15 @@ import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
+import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { useFlashExchange } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange'
 import {
+  ExchangeAmountFlow,
   ExchangeFlowButton,
   ExchangeOneWayFlowIndicator,
-} from '~/views/dapp/exchange/exchange-flow-button'
-import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
-import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { ExchangeWidgetSessionFooter } from '~/views/dapp/exchange/exchange-widget-session-footer'
-import { useFlashExchange } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange'
+  exchangeProviderMetaRow,
+  ExchangeWidgetSessionFooter,
+} from '~/views/dapp/exchange/primitives'
 
 export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
   const vm = useFlashExchange(flash)

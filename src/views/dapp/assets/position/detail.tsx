@@ -13,12 +13,12 @@ import { Faq } from '~/shared/components/faq'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
-import { AssetsOpsTable } from '~/views/dapp/assets/assets-ops-table'
 import {
   type AssetsProduct,
   useAssetsPositionOpsRows,
   useAssetsPositionStats,
 } from '~/views/dapp/assets/position/use-position'
+import { AssetsOpsTable } from '~/views/dapp/assets/primitives'
 
 export function PositionDetail({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()

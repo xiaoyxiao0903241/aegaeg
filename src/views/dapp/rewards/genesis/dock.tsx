@@ -13,13 +13,13 @@ import { darkBanner } from '~/shared/components/dark-banner'
 import { Text } from '~/shared/components/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { GenesisClaimCard } from '~/views/dapp/rewards/genesis/primitives'
-import { useGenesis } from '~/views/dapp/rewards/genesis/use-genesis'
-import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
+import { useGenesisDock } from '~/views/dapp/rewards/genesis/use-genesis'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/shared'
 
 export function GenesisDock() {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
-  const vm = useGenesis()
+  const vm = useGenesisDock()
   const banner = darkBanner()
 
   return (

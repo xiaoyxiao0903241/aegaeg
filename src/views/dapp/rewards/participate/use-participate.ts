@@ -8,13 +8,13 @@ import {
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { mapParticipationAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   formatApiStatLabel,
   mapParticipationAwardInviterToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
-} from '~/views/dapp/rewards/rewards-display'
-import { mapParticipationAwardLogToCells } from '~/views/dapp/rewards/table-cells'
+} from '~/views/dapp/rewards/shared'
 
 /**
  * 参与奖详情视图模型

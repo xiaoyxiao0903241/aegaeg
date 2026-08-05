@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { PillTabs } from '~/app/shell/pill-tabs'
+import { formatApiDecimalAmount, parseApiAmount } from '~/shared/api/format-display'
 import type {
   DaoGrantStatus,
   MarketAllowanceClaimLogItem,
@@ -13,7 +15,6 @@ import { StatusBadge } from '~/shared/components/badge'
 import { Text } from '~/shared/components/text'
 import {
   daoGrantStatusTone,
-  formatApiDecimalAmount,
   formatDaoGrantStatus,
   mapMarketAllowanceClaimLogToRow,
   mapMarketAllowancePaidLogToRow,
@@ -22,7 +23,41 @@ import {
   mapReferralAwardLogToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
-} from '~/views/dapp/rewards/rewards-display'
+} from '~/views/dapp/rewards/shared'
+
+type PillOption = { label: string; value: string }
+
+/**
+ * 奖励记录表的 pill Tab 表头
+ *
+ * @param args.ariaLabel Tab 组无障碍标签
+ * @param args.options Tab 选项
+ * @param args.value 当前选中值
+ * @param args.onChange 切换回调
+ */
+export function rewardsRecordsPillTabsHeader(args: {
+  ariaLabel: string
+  options: readonly PillOption[]
+  value: string
+  onChange: (value: string) => void
+}) {
+  const { ariaLabel, options, value, onChange } = args
+  return (
+    <PillTabs
+      activeTone="coral"
+      ariaLabel={ariaLabel}
+      className="justify-start"
+      items={options.map((option) => ({
+        active: option.value === value,
+        label: option.label,
+      }))}
+      onSelect={(index) => {
+        const next = options[index]
+        if (next) onChange(next.value)
+      }}
+    />
+  )
+}
 
 function statusBadge(status: DaoGrantStatus, labels: RewardLogStatusLabels): ReactNode {
   return (
@@ -61,8 +96,8 @@ function formatSignedAllowance(raw: string): {
   positive: boolean
   negative: boolean
 } {
-  const n = Number(raw)
-  if (!Number.isFinite(n) || n === 0) {
+  const n = parseApiAmount(raw)
+  if (n == null || n === 0) {
     return {
       text: formatApiDecimalAmount(raw, { digits: 4, suffix: ' gAGX' }),
       positive: false,

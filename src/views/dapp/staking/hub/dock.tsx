@@ -1,10 +1,8 @@
 import { stakingHubAssets } from '~/app/assets'
+import { DockModeCard } from '~/app/shell/dock-mode-card'
 import { PanelToggle } from '~/app/shell/panel-toggle'
 import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
-import { Icon } from '~/shared/components/icon'
-import { InteractiveCard } from '~/shared/components/interactive-card'
-import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { openStakingView } from '~/shared/config/dapp-open-views'
@@ -47,22 +45,17 @@ export function HubDock() {
         {STAKING_MODES.map((mode) => {
           const { title, body } = copy[mode.view]
           return (
-            <InteractiveCard
-              className="flex items-center gap-3"
+            <DockModeCard
               key={mode.view}
               onClick={() => openStakingView(mode.view)}
               tourId={mode.tourId}
             >
-              <Icon alt="" size="xl" src={mode.icon} />
-              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                <Text as="span" className="font-semibold" variant="detail">
-                  {title}
-                </Text>
-                <Text as="p" className="m-0 text-foreground/40" variant="copy">
-                  {body}
-                </Text>
-              </div>
-            </InteractiveCard>
+              <DockModeCard.Icon src={mode.icon} />
+              <DockModeCard.Copy>
+                <DockModeCard.Title>{title}</DockModeCard.Title>
+                <DockModeCard.Body>{body}</DockModeCard.Body>
+              </DockModeCard.Copy>
+            </DockModeCard>
           )
         })}
       </WidgetStack>

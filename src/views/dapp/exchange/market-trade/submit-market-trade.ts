@@ -1,6 +1,5 @@
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
-import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
-import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
+import type { ExchangePairTokens, QuotedSubmitCore } from '~/views/dapp/exchange/shared'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { approveTokenIfNeeded, exchangeTokens } from '~/web3/exchange/exchange-write'
 

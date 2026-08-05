@@ -11,10 +11,10 @@ import { Section } from '~/shared/components/section'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
-import { genesisFaqTemplateValues } from '~/views/dapp/genesis/genesis-faq'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisContributionsTable, GenesisGlobalCard } from '~/views/dapp/genesis/primitives'
-import { useGenesisContributionsView } from '~/views/dapp/genesis/use-genesis-contributions-view'
+import { genesisFaqTemplateValues } from '~/views/dapp/genesis/shared'
+import { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
 
 function openPreSaleContract() {
   window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')
@@ -22,7 +22,7 @@ function openPreSaleContract() {
 
 export function GenesisDetail({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
-  const contributions = useGenesisContributionsView(genesis)
+  const contributions = useGenesisDetail(genesis)
 
   const genesisFaqValues = genesisFaqTemplateValues(
     genesis.phases,

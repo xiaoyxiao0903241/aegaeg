@@ -15,7 +15,7 @@ import {
   CommunityReferrerBindCard,
   CommunityReferrerBoundPanel,
 } from '~/views/dapp/community/primitives'
-import { useCommunityConnectedView } from '~/views/dapp/community/use-community'
+import { useCommunityDock } from '~/views/dapp/community/use-community'
 
 export function CommunityDock() {
   const { walletReady } = useAppShell()
@@ -32,7 +32,7 @@ function CommunityConnectedDock() {
     onCopyReferralLink,
     onCopyReferrerAddress,
     onBind,
-  } = useCommunityConnectedView()
+  } = useCommunityDock()
 
   return (
     <WidgetFrame subtitle={t.community.intro} title={t.community.title}>

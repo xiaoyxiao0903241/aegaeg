@@ -4,19 +4,18 @@ import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
-import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import {
   AssetsListPager,
   AssetsPositionListSkeleton,
 } from '~/views/dapp/assets/position/primitives'
+import { AssetsPositionEmptyCard, AssetsQuoteToolbar } from '~/views/dapp/assets/primitives'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/primitives'
-import { useAssetsXmineView } from '~/views/dapp/assets/xmine/use-xmine'
+import { useXmineDock } from '~/views/dapp/assets/xmine/use-xmine'
 
 /** X 挖矿侧栏：报价 / 排序工具条 + 挖矿持仓卡（含空态、加载态）与赎回确认弹窗 */
 export function XmineDock() {
-  const vm = useAssetsXmineView()
+  const vm = useXmineDock()
   const { t, copy, position } = vm
 
   return (

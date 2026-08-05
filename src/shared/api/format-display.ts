@@ -80,6 +80,35 @@ export function formatApproxUsd(amount: number, priceUsd: number | null): string
   return formatGroupedNumber(amount * priceUsd, { digits: 2, prefix: '≈ $' })
 }
 
+/**
+ * 后端金额小数字符串 → number。
+ * 空 / 空白 / 非有限数 → `null`（fail-closed；需要 0 兜底时写 `parseApiAmount(raw) ?? 0`）。
+ */
+export function parseApiAmount(raw: string | null | undefined): number | null {
+  if (raw == null) return null
+  const trimmed = String(raw).trim()
+  if (trimmed === '') return null
+  const n = Number(trimmed)
+  return Number.isFinite(n) ? n : null
+}
+
+/**
+ * 后端金额字符串 → 分组展示（含千分位与前后缀）。
+ * 空值 / 非数字统一兜底为 0，保证数值列不出现异常字符。
+ */
+export function formatApiDecimalAmount(
+  raw: string | null | undefined,
+  options: { digits?: number; prefix?: string; suffix?: string } = {},
+): string {
+  const digits = options.digits ?? 2
+  const n = parseApiAmount(raw) ?? 0
+  return formatGroupedNumber(n, {
+    digits,
+    prefix: options.prefix,
+    suffix: options.suffix,
+  })
+}
+
 export type FormatCompactNumberOptions = {
   /** K/M 缩放后的最大小数位（默认 2，且去掉尾随零）。 */
   digits?: number

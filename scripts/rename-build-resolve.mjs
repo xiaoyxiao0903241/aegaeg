@@ -158,7 +158,7 @@ const RENAMES = [
 /** Path / basename segments (kebab). Longer first. Avoid bare "gate" / "gates" alone. */
 const PATH_RENAMES = [
   ['fetch-live-genesis-post-approve-gate', 'fetch-live-genesis-post-approve'],
-  ['build-genesis-widget-model', 'genesis-purchase-summary'],
+  ['build-genesis-widget-model', 'shared'],
   ['build-login-message', 'login-message'],
   ['resolve-migration-user-gate', 'migration-user'],
   ['migration-user-gate', 'migration-user'],
@@ -194,10 +194,7 @@ const PATH_RENAMES = [
 ]
 
 const FILE_MOVES = [
-  [
-    'src/views/dapp/genesis/build-genesis-widget-model.ts',
-    'src/views/dapp/genesis/genesis-purchase-summary.ts',
-  ],
+  ['src/views/dapp/genesis/build-genesis-widget-model.ts', 'src/views/dapp/genesis/shared.ts'],
   [
     'src/views/dapp/genesis/fetch-live-genesis-post-approve-gate.ts',
     'src/views/dapp/genesis/fetch-live-genesis-post-approve.ts',

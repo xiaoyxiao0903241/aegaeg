@@ -12,7 +12,7 @@ import { Text } from '~/shared/components/text'
 import { bscscanTx } from '~/shared/config/explorer'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
+import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/shared'
 
 /**
  * 我的贡献区块数据组装
@@ -20,7 +20,7 @@ import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
  * 汇总销售记录分页、本季与累计贡献进度、同步提示与空态判断；
  * 未登录时由表格状态驱动展示登录引导。
  */
-export function useGenesisContributionsView(genesis: GenesisWidgetState) {
+export function useGenesisDetail(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
   const { sessionReady } = useAppShell()
   const { isLoggingIn } = useAuth()

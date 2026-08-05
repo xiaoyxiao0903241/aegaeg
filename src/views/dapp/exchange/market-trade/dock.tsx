@@ -17,18 +17,20 @@ import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
-import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
-import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
-import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import {
   ExchangeSlippageModal,
   ExchangeTokenPicker,
 } from '~/views/dapp/exchange/market-trade/primitives'
-import { useMarketTrade } from '~/views/dapp/exchange/market-trade/use-market-trade'
+import { useMarketTradeDock } from '~/views/dapp/exchange/market-trade/use-market-trade'
+import {
+  ExchangeAmountFlow,
+  ExchangeFlowButton,
+  exchangeProviderMetaRow,
+} from '~/views/dapp/exchange/primitives'
 
 export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
-  const vm = useMarketTrade(trade)
+  const vm = useMarketTradeDock(trade)
   const { t, pair } = vm
 
   return (

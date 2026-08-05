@@ -11,7 +11,7 @@ import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine'
+import { useXmineDock } from '~/views/dapp/staking/xmine/use-xmine'
 
 /**
  * Xmine 质押表单（左栏）
@@ -21,7 +21,7 @@ import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine'
  */
 export function XmineDock() {
   const { t, xmine, sessionReady, walletReady, setView, amountLabel, dailyYieldLabel, onSubmit } =
-    useXmineView()
+    useXmineDock()
 
   const quotaBalance = (
     <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
