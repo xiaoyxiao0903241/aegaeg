@@ -13,7 +13,7 @@ import '~/shared/styles/app.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { DappShell } from '~/app/dapp-shell'
+import { AppShell } from '~/app/app-shell'
 import { WebRootProviders } from '~/app/startup/web-root-providers'
 import { I18nProvider } from '~/i18n/i18n-provider'
 import { AppToaster } from '~/shared/components/app-toaster'
@@ -24,7 +24,7 @@ createRoot(document.getElementById('root')!).render(
     <I18nProvider>
       <WebRootProviders>
         <LocalizedErrorBoundary name="dapp">
-          <DappShell />
+          <AppShell />
         </LocalizedErrorBoundary>
         <AppToaster />
       </WebRootProviders>

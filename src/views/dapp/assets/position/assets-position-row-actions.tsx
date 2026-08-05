@@ -1,4 +1,4 @@
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import { cn } from '~/shared/lib/utils'
 
 /** 仓位卡的领取 + 赎回 / 解锁操作按钮组，质押与债券卡共用 */
@@ -25,15 +25,15 @@ export function AssetsPositionRowActions({
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <DappActionButton
+      <CtaButton
         className="h-7 min-h-7 text-xs"
         density="inverse"
         disabled={!canClaim || locked || busy}
         onClick={onClaim}
       >
         {claimLabel}
-      </DappActionButton>
-      <DappActionButton
+      </CtaButton>
+      <CtaButton
         className={cn(
           'h-7 min-h-7',
           redeemEnabled ? 'text-sm' : 'text-xs disabled:bg-muted disabled:text-foreground/40',
@@ -44,7 +44,7 @@ export function AssetsPositionRowActions({
         variant="secondary"
       >
         {redeemLabel}
-      </DappActionButton>
+      </CtaButton>
     </div>
   )
 }

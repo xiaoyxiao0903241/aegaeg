@@ -6,12 +6,12 @@
  * 高价格影响时给出告警。
  */
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { MetaListCard } from '~/app/shell/meta-list-card'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
@@ -31,13 +31,13 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.exchange.backToHub}
         onBack={vm.onBack}
         subtitle={t.exchange.trade.intro}
         title={t.exchange.trade.title}
       />
-      <DappWidgetStack className="gap-0">
+      <WidgetStack className="gap-0">
         <ExchangeAmountFlow
           amountBoxClassName={vm.flipCardClass}
           buy={pair.buy}
@@ -177,8 +177,8 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
         ) : null}
 
         {vm.sessionReady && trade.walletReady ? (
-          <DappActionRow className="mt-3.5 max-dapp:mt-3">
-            <DappActionButton
+          <ActionRow className="mt-3.5 max-dapp:mt-3">
+            <CtaButton
               className="col-span-full"
               density="external"
               disabled={!trade.canSubmit}
@@ -186,12 +186,12 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               onClick={() => void vm.onSubmit()}
             >
               {t.exchange.trade.action}
-            </DappActionButton>
-          </DappActionRow>
+            </CtaButton>
+          </ActionRow>
         ) : (
-          <DappWidgetConnectPromo className="mt-3.5" />
+          <WidgetConnectPromo className="mt-3.5" />
         )}
-      </DappWidgetStack>
+      </WidgetStack>
 
       <ExchangeSlippageModal
         onConfirm={trade.setSlippage}

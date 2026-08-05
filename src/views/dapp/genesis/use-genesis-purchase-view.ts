@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -22,7 +22,7 @@ import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-ho
  */
 export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const setShares = genesis.setShares
 
   const [sharesText, setSharesText] = useState('')

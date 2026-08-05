@@ -5,7 +5,7 @@ import { tv } from 'tailwind-variants'
 
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
@@ -39,7 +39,7 @@ type NavMotion = 'enter' | 'exit'
  * 从左侧滑出，带半透明遮罩与毛玻璃面板；列出全部 Tab 并高亮当前项。
  * 关闭时先播放退场动画再卸载，期间锁定页面滚动。
  */
-export function DappMobileNav({
+export function MobileNav({
   activeTab,
   onClose,
   onSelectTab,
@@ -51,7 +51,7 @@ export function DappMobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
   const releaseClaimable = useReleaseRailDot(walletReady)
   const [mounted, setMounted] = useState(open)

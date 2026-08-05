@@ -12,16 +12,17 @@
 
 ## 门禁
 
-| 命令                                 | 用途                                                                                    |
-| ------------------------------------ | --------------------------------------------------------------------------------------- |
-| **`pnpm check`**                     | 收工最小门禁：tokens + tsc + lint(src/arch/hex/css/deadcode/duplicates) + format + unit |
-| `pnpm lint:duplicates`               | jscpd（threshold 0）。右栏指标瓦页内同构 map 用 `/* jscpd:ignore-start/end */` 跳过     |
-| `pnpm build:tokens` / `check:tokens` | 从 `tokens.json` 生成并防手改漂移                                                       |
-| `pnpm probe:bundle`                  | Home sync 污染 / 体积上限（build 后）                                                   |
-| `pnpm audit:prod`                    | prod 依赖 high+（CI 可 soft-fail）                                                      |
-| `pnpm test:unit`                     | Node test runner                                                                        |
-| `pnpm test:e2e`                      | Playwright（可选，不进 check）                                                          |
-| `pnpm measure:leaf`                  | UI leaf A5 实测（需自备 inventory；见 `scripts/ui-leaf-a5-measure/`）                   |
+| 命令                                 | 用途                                                                                                                                |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **`pnpm check`**                     | 收工最小门禁：tokens + tsc + lint(src/arch/hex/css/deadcode/duplicates) + format + unit                                             |
+| `pnpm lint:duplicates`               | jscpd（threshold 0）。页袋 Foundation 拼装重复 → `jscpd:ignore`（须中文理由含「页内拼装」）；**禁止**抽 Section/Detail 薄包装过门禁 |
+| `pnpm lint:architecture`             | depcruise 层门；含 `Section` 仅 `*-detail.tsx` 可 import                                                                            |
+| `pnpm build:tokens` / `check:tokens` | 从 `tokens.json` 生成并防手改漂移                                                                                                   |
+| `pnpm probe:bundle`                  | Home sync 污染 / 体积上限（build 后）                                                                                               |
+| `pnpm audit:prod`                    | prod 依赖 high+（CI 可 soft-fail）                                                                                                  |
+| `pnpm test:unit`                     | Node test runner                                                                                                                    |
+| `pnpm test:e2e`                      | Playwright（可选，不进 check）                                                                                                      |
+| `pnpm measure:leaf`                  | UI leaf A5 实测（需自备 inventory；见 `scripts/ui-leaf-a5-measure/`）                                                               |
 
 ## 关键路径
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
@@ -141,25 +141,25 @@ export function AssetsXminePositionCard({
       <AssetsPositionVoucherLink address={voucherAddress} label={voucherCaption} />
       <div className="grid grid-cols-2 gap-3">
         {warmupReady ? (
-          <DappActionButton
+          <CtaButton
             className="col-span-2 h-7 min-h-7 text-xs"
             density="inverse"
             disabled={locked || busy}
             onClick={onActivateWarmup}
           >
             {activateWarmupLabel}
-          </DappActionButton>
+          </CtaButton>
         ) : (
           <>
-            <DappActionButton
+            <CtaButton
               className="h-7 min-h-7 text-xs"
               density="inverse"
               disabled={pending <= 0n || inWarmup || locked || busy}
               onClick={onClaim}
             >
               {claimLabel}
-            </DappActionButton>
-            <DappActionButton
+            </CtaButton>
+            <CtaButton
               className="h-7 min-h-7 text-xs"
               density="inverse"
               disabled={gons <= 0n || inWarmup || locked || busy}
@@ -167,7 +167,7 @@ export function AssetsXminePositionCard({
               variant="secondary"
             >
               {redeemLabel}
-            </DappActionButton>
+            </CtaButton>
           </>
         )}
       </div>

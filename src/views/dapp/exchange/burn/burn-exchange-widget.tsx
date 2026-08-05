@@ -5,11 +5,11 @@
  * 去向与提供方合约链接。未连接钱包时展示连接引导。
  */
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { MetaListCard } from '~/app/shell/meta-list-card'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useBurnExchangeView } from '~/views/dapp/exchange/burn/use-burn-exchange-view'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
@@ -24,13 +24,13 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.exchange.backToHub}
         onBack={vm.onBack}
         subtitle={t.exchange.burn.subtitle}
         title={t.exchange.burn.title}
       />
-      <DappWidgetStack className="gap-0">
+      <WidgetStack className="gap-0">
         <ExchangeAmountFlow
           buy={{ symbol: t.exchange.burn.pointsToken }}
           buyAmount={burn.buyAmount}
@@ -80,8 +80,8 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
         </MetaListCard>
 
         {vm.sessionReady && burn.walletReady ? (
-          <DappActionRow className="mt-3.5 max-dapp:mt-3">
-            <DappActionButton
+          <ActionRow className="mt-3.5 max-dapp:mt-3">
+            <CtaButton
               className="col-span-full"
               density="external"
               disabled={!burn.canSubmit}
@@ -89,12 +89,12 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
               onClick={() => void vm.onSubmit()}
             >
               {t.exchange.burn.action}
-            </DappActionButton>
-          </DappActionRow>
+            </CtaButton>
+          </ActionRow>
         ) : null}
 
         <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

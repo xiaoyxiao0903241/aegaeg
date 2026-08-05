@@ -8,13 +8,13 @@
 import type { ReactNode } from 'react'
 
 import { dappAssets, turbineExchangeAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { MetaListCard } from '~/app/shell/meta-list-card'
+import { TabHeader } from '~/app/shell/tab-header'
 import { TokenChip } from '~/app/shell/token-chip'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -70,13 +70,13 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.exchange.backToHub}
         onBack={vm.onBack}
         subtitle={t.exchange.hub.modes.turbine.body}
         title={t.exchange.turbine.title}
       />
-      <DappWidgetStack className="gap-0">
+      <WidgetStack className="gap-0">
         <Segment
           aria-label={t.exchange.turbine.segmentAriaLabel}
           className="mb-3.5"
@@ -203,8 +203,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             </MetaListCard>
 
             {vm.sessionReady && turbine.walletReady ? (
-              <DappActionRow className="mt-3.5 max-dapp:mt-3">
-                <DappActionButton
+              <ActionRow className="mt-3.5 max-dapp:mt-3">
+                <CtaButton
                   className="col-span-full"
                   density="external"
                   disabled={!turbine.canUnlock}
@@ -212,8 +212,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   onClick={() => void vm.handleUnlock()}
                 >
                   {t.exchange.turbine.unlockAction}
-                </DappActionButton>
-              </DappActionRow>
+                </CtaButton>
+              </ActionRow>
             ) : null}
           </>
         ) : (
@@ -250,7 +250,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                           )}
                     </Text>
                   </div>
-                  <DappActionButton
+                  <CtaButton
                     density="external"
                     disabled={
                       !vm.sessionReady ||
@@ -262,15 +262,15 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                     onClick={() => void vm.handleClaim(row.index)}
                   >
                     {t.exchange.turbine.claimAction}
-                  </DappActionButton>
+                  </CtaButton>
                 </div>
               ))
             )}
           </div>
         )}
 
-        {!vm.sessionReady || !turbine.walletReady ? <DappWidgetConnectPromo /> : null}
-      </DappWidgetStack>
+        {!vm.sessionReady || !turbine.walletReady ? <WidgetConnectPromo /> : null}
+      </WidgetStack>
     </>
   )
 }

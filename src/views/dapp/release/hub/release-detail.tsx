@@ -5,7 +5,7 @@
  * 底部为常见问题。
  */
 import { dappAssets } from '~/app/assets'
-import { DappAboutCard } from '~/app/shell/dapp-about-card'
+import { AboutCard } from '~/app/shell/about-card'
 import { useI18n } from '~/i18n/use-i18n'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
@@ -29,7 +29,7 @@ export function ReleaseDetail() {
           <Carousel.Content>
             {slides.map((slide) => (
               <Carousel.Item key={slide.title}>
-                <DappAboutCard
+                <AboutCard
                   // 介绍卡：右上角装饰图，高度随文案
                   body={slide.body}
                   className="min-h-0 gap-2 p-4"

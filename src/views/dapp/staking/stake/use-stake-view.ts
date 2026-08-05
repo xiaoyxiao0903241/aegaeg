@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
@@ -40,7 +40,7 @@ function formatBonusPct(bps: number): string {
 export function useStakeView() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const overviewQuery = useStakingHubOverviewQuery()
 
   const stake = useStakeWidget(sessionReady, {

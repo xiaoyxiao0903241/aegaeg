@@ -211,10 +211,11 @@
 - call site 给 `Title` / `Description` 挂 `className` 改字阶或间距（禁 `text-xl` / `pb-*` / `mb-*` 等 fork）
 - 折叠节再传 `reveal` / `bodyClassName="overflow-visible"`（已是 `collapsible` 默认）
 - 平行折叠箭头（须用 `CollapseChevron`；禁稿面 img / 自写 rotate+色）
+- 抽仅含 `Section` / `Section.Title` + 透传 children 的 helper（如 `*ChartFaq` / `*Heading`）；跨页雷同留在 `*-detail.tsx` 内联，用 `jscpd:ignore`（理由含「页内拼装」），勿为过重复检测升独立壳
 
 ### 结构例外（允许）
 
-- 标题行伴生（CTA、chips）：用外层 flex 组合包住 Title + 伴生控件，**不**改 Title `className`；折叠箭头由 `collapsible`→`CollapseChevron` 自带，禁装饰假折叠
+- 标题行伴生（CTA、chips）：在 **detail 页内** 用外层 flex 组合包住 Title + 伴生控件，**不**改 Title `className`，**不**升独立壳；折叠箭头由 `collapsible`→`CollapseChevron` 自带，禁装饰假折叠
 - 非折叠节单独 `reveal`（社区 / Genesis 等进场动画）
 
 ## DApp 表（`Table`）

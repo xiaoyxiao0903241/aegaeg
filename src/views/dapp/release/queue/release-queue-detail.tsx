@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { tokenCarouselIcons } from '~/app/assets'
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
@@ -31,7 +31,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function ReleaseQueueDetail() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const priceUsd = useAgxPriceUsd()
   const [recordsPage, setRecordsPage] = useState(1)
   const queueQuery = useReleaseQueueSnapshot(walletReady)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -28,7 +28,7 @@ function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTrad
 export function useMarketTradeView(trade: MarketTradeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const [slippageOpen, setSlippageOpen] = useState(false)
   const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 

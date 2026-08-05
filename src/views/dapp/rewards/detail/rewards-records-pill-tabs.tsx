@@ -1,4 +1,4 @@
-import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
+import { PillTabs } from '~/app/shell/pill-tabs'
 
 type PillOption = { label: string; value: string }
 
@@ -18,7 +18,7 @@ export function rewardsRecordsPillTabsHeader(args: {
 }) {
   const { ariaLabel, options, value, onChange } = args
   return (
-    <DappPillTabs
+    <PillTabs
       activeTone="coral"
       ariaLabel={ariaLabel}
       className="justify-start"

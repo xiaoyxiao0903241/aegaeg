@@ -4,13 +4,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Button } from '~/shared/components/button'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * DApp 主操作按钮。
- *
- * 高度按 density 档位适配，供各页面主 CTA 使用；
- * 输入框旁的小操作、顶部栏连接按钮不适用本密度表，请用对应轻量组件。
- */
-type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type CtaButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
   /**
    * card = 白卡 CTA · external = 操作区大按钮 · inverse = 深色促销 ·
@@ -22,12 +16,14 @@ type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 /**
- * 主操作按钮，按 density 档位固定高度。
+ * 主 CTA 按钮。
  *
- * @param density 高度档位，见 {@link DappActionButtonProps}
- * @param loading 为 true 时禁用按钮并显示加载圈
+ * 按 density 档位固定高度，可带加载态；输入框旁小操作、顶栏连接请用对应轻量组件。
+ *
+ * @param density 高度档位，见 {@link CtaButtonProps}
+ * @param loading 为 true 时禁用并显示加载圈
  */
-export function DappActionButton({
+export function CtaButton({
   children,
   className,
   density = 'card',
@@ -36,7 +32,7 @@ export function DappActionButton({
   type = 'button',
   variant = 'primary',
   ...props
-}: DappActionButtonProps) {
+}: CtaButtonProps) {
   const size = density === 'hero' || density === 'external' ? 'lg' : 'sm'
 
   return (

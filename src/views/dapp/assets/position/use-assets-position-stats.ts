@@ -1,4 +1,4 @@
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatApproxUsd } from '~/shared/api/format-display'
@@ -48,7 +48,7 @@ function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPosit
 
 /** 仓位右侧统计：汇总链上持仓数据，读失败展示占位横线，不伪造数字 */
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const account = useActiveAccount()
   const address = account?.address
   const priceUsd = useAgxPriceUsd()

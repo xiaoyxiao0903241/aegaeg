@@ -37,7 +37,7 @@ const swapMetricCard = tv({
 })
 
 export function SwapMetricCard({ label, value }: Props) {
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   return (
     <MetricCard className={swapMetricCard({ sessionReady })} label={label} value={value} />
   )

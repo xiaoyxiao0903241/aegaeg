@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import { useBurnExchangeWidget } from '~/views/dapp/exchange/burn/use-burn-exchange-widget'
@@ -92,7 +92,7 @@ export function ExchangeSessionHosts({
     turbine: TurbineExchangeState | null
   }) => ReactNode
 }) {
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const { view, motion, outgoingView, incomingView } = useExchangeViewMotion()
   const exchangeTabActive = activeTab === 'exchange'
   const needed = viewsNeedingProvider(view, motion, outgoingView, incomingView)

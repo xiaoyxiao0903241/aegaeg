@@ -6,7 +6,7 @@
  * 未登录时摘要卡显示空态占位。
  */
 import { dappAssets } from '~/app/assets'
-import { DappAboutCard } from '~/app/shell/dapp-about-card'
+import { AboutCard } from '~/app/shell/about-card'
 import { Grid } from '~/app/shell/grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { Carousel } from '~/shared/components/carousel'
@@ -119,7 +119,7 @@ export function RewardsDetail() {
               const slide = t.rewards.hub.aboutSlides[view]
               return (
                 <Carousel.Item key={view}>
-                  <DappAboutCard
+                  <AboutCard
                     body={slide.body}
                     decoSrc={dappAssets.aboutCarouselRewardsMascot}
                     title={slide.title}

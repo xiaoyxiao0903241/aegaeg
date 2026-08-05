@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -16,7 +16,7 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
  */
 export function useCommunityDetail() {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)

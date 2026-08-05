@@ -13,5 +13,5 @@
   "mode": "strict",
   "gitignore": true,
   "reporters": ["console"],
-  "threshold": 1
+  "threshold": 0
 }

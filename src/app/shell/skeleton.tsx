@@ -28,7 +28,7 @@ const dappSkeleton = tv({
  *
  * @param tone surface=普通背景 · dark=深色背景上的占位
  */
-export function DappSkeleton({
+export function Skeleton({
   className,
   tone = 'surface',
 }: {

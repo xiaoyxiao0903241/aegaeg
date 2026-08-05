@@ -1,7 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import { useI18n } from '~/i18n/use-i18n'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { Text } from '~/shared/components/text'
@@ -79,7 +79,7 @@ export function AssetsRedeemConfirm({
       </div>
 
       {/* 白底 CTA：勿走 primary 的 coral hover；用 secondary 缩放 + 轻微压暗 */}
-      <DappActionButton
+      <CtaButton
         className="mt-5 w-full border-transparent bg-background text-foreground hover:border-transparent hover:bg-background/85 hover:shadow-none focus-visible:border-transparent focus-visible:shadow-none"
         density="modal"
         loading={busy}
@@ -87,7 +87,7 @@ export function AssetsRedeemConfirm({
         variant="secondary"
       >
         {t.assets.redeem.confirmCta.replace('{amount}', amountLabel || '—')}
-      </DappActionButton>
+      </CtaButton>
     </ResponsiveDialog>
   )
 }

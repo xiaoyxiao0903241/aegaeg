@@ -5,8 +5,8 @@
  * 以及按代币分组的 FAQ 标签页。
  */
 import { type ExchangeTokenKey, exchangeTokenKeys } from '~/app/data'
-import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { Grid } from '~/app/shell/grid'
+import { PillTabs } from '~/app/shell/pill-tabs'
 import { Tile } from '~/app/shell/tile'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
@@ -82,7 +82,7 @@ function MarketTradeFaqTabs({
   }
 
   return (
-    <DappPillTabs
+    <PillTabs
       ariaLabel={t.exchange.faq.tabsTitle}
       className="flex flex-wrap gap-2"
       items={exchangeTokenKeys.map((key) => ({

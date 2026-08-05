@@ -4,10 +4,10 @@
  * 深色等级卡展示当前等级与个人 / 团队进度，
  * 下方为直推奖励、等级奖励、发展基金三张领取卡；未连接钱包时显示引导。
  */
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { ProgressMeter } from '~/app/shell/progress-meter'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { darkBanner } from '~/shared/components/dark-banner'
 import { Text } from '~/shared/components/text'
@@ -24,13 +24,13 @@ export function RewardsGenesisClaimWidget() {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.rewards.backToHub}
         onBack={() => setView('hub')}
         subtitle={vm.g.pageSubtitle}
         title={vm.g.pageTitle}
       />
-      <DappWidgetStack className="gap-4">
+      <WidgetStack className="gap-4">
         <div className={banner.root({ className: 'flex flex-col gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
             <Text as="p" className="font-medium" tone="primary-bright" variant="caption">
@@ -151,8 +151,8 @@ export function RewardsGenesisClaimWidget() {
           ) : null}
         </GenesisClaimCard>
 
-        {!vm.walletReady ? <DappWidgetConnectPromo /> : null}
-      </DappWidgetStack>
+        {!vm.walletReady ? <WidgetConnectPromo /> : null}
+      </WidgetStack>
     </>
   )
 }

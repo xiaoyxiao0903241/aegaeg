@@ -1,17 +1,17 @@
 import type { ReactNode } from 'react'
 
-import { DappSubviewDisplayViewContext } from '~/app/shell/dapp-subview-display-context'
-import { DappSubviewTransitionLayers } from '~/app/shell/dapp-subview-transition-layers'
+import { SubviewDisplayViewContext } from '~/app/shell/subview-display-context'
+import { SubviewTransitionLayers } from '~/app/shell/subview-transition-layers'
 import { cn } from '~/shared/lib/utils'
 import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
 
-export { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-display-context'
+export { useSubviewDisplayView } from '~/app/shell/subview-display-context'
 
 /** 中心页与子视图切换共用的交叉淡入网格（每个 DApp Tab 面板都使用）。 */
 export const DAPP_SUBVIEW_TRANSITION_STACK =
   'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0'
 
-type DappSubviewShellProps = {
+type SubviewShellProps = {
   subview: DappSubviewMotion
   className?: string
   /** 过渡期使用的网格样式，默认 {@link DAPP_SUBVIEW_TRANSITION_STACK}。 */
@@ -27,13 +27,13 @@ type DappSubviewShellProps = {
  * 静止时直接提供当前视图；过渡期间拆成退场 / 入场两层，
  * 子组件通过 display context 读取各自应展示的视图。
  */
-export function DappSubviewShell({
+export function SubviewShell({
   subview,
   className,
   transitionClassName = DAPP_SUBVIEW_TRANSITION_STACK,
   panel,
   children,
-}: DappSubviewShellProps) {
+}: SubviewShellProps) {
   const { view, motion, direction, outgoingView, incomingView } = subview
   const isTransitioning = Boolean(motion && outgoingView && incomingView)
 
@@ -45,17 +45,17 @@ export function DappSubviewShell({
       data-dapp-widget-panel={panel === 'widget' ? '' : undefined}
     >
       {isTransitioning && outgoingView && incomingView ? (
-        <DappSubviewTransitionLayers
+        <SubviewTransitionLayers
           direction={direction}
           incoming={incomingView}
           outgoing={outgoingView}
         >
           {children}
-        </DappSubviewTransitionLayers>
+        </SubviewTransitionLayers>
       ) : (
-        <DappSubviewDisplayViewContext.Provider value={view}>
+        <SubviewDisplayViewContext.Provider value={view}>
           {children}
-        </DappSubviewDisplayViewContext.Provider>
+        </SubviewDisplayViewContext.Provider>
       )}
     </div>
   )

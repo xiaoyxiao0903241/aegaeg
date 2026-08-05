@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 
 import { dappAssets } from '~/app/assets'
-import { DappRail } from '~/app/dapp-rail'
-import { DappTopbar } from '~/app/dapp-topbar'
 import { GenesisPromoSync } from '~/app/genesis-promo-sync'
-import { useDappTabContentFade } from '~/app/shell/dapp-content-fade'
-import { DappMobileNav } from '~/app/shell/dapp-mobile-nav'
-import { DappRevealObserver } from '~/app/shell/dapp-reveal-observer'
-import { DappScrollFadeHost } from '~/app/shell/dapp-scroll-fade-host'
+import { Rail } from '~/app/rail'
+import { useTabContentFade } from '~/app/shell/content-fade'
+import { MobileNav } from '~/app/shell/mobile-nav'
 import { OnboardingGuide, useOnboardingAutoStart } from '~/app/shell/onboarding-guide'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { RevealObserver } from '~/app/shell/reveal-observer'
+import { ScrollFadeHost } from '~/app/shell/scroll-fade-host'
+import { Topbar } from '~/app/topbar'
+import { useAppShell } from '~/app/use-app-shell'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
@@ -19,9 +19,9 @@ import { InlineAlert } from '~/shared/components/inline-alert'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
-import { DappTabContent, DappTabWidget } from '~/views/dapp/dapp-tabs'
 import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
+import { TabContent, TabWidget } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { useConnectWarmPrefetch } from '~/web3/wallet/use-connect-warm-prefetch'
 
@@ -37,7 +37,7 @@ function replaceTabHash(tab: string) {
  * 当前 Tab 存于 dapp-shell-store，URL hash 变化与点击导航都会驱动它；
  * 切换 Tab 时先播放内容淡出，再替换面板，保持会话组件在透明层下重挂载。
  */
-export function DappShell() {
+export function AppShell() {
   const { messages } = useI18n()
   const activeTab = useDappShellStore((state) => state.activeTab)
   const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
@@ -46,9 +46,9 @@ export function DappShell() {
   const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
   const resetForeignSubviewStores = useDappShellStore((state) => state.resetForeignSubviewStores)
-  const shellState = useDappShell()
+  const shellState = useAppShell()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
-  const { displayTab, phase } = useDappTabContentFade(activeTab)
+  const { displayTab, phase } = useTabContentFade(activeTab)
   const onboarding = useOnboardingAutoStart()
   useConnectWarmPrefetch()
 
@@ -116,7 +116,7 @@ export function DappShell() {
         )}
       />
       <HeroRaysBackground variant="shell" />
-      <DappTopbar onStartOnboarding={onboarding.startTour} onboardingDone={onboarding.done} />
+      <Topbar onStartOnboarding={onboarding.startTour} onboardingDone={onboarding.done} />
       <OnboardingGuide onOpenChange={onboarding.setOpen} open={onboarding.open} />
 
       {import.meta.env.DEV && !isThirdwebConfigured ? (
@@ -169,9 +169,9 @@ export function DappShell() {
                     data-tab={displayTab}
                     data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
                   >
-                    <DappRail activeTab={activeTab} onSelectTab={selectTab} />
+                    <Rail activeTab={activeTab} onSelectTab={selectTab} />
 
-                    <DappScrollFadeHost>
+                    <ScrollFadeHost>
                       <aside
                         className={cn(
                           'dapp-content-fade overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
@@ -195,13 +195,13 @@ export function DappShell() {
                             <Icon alt="" size="lg" src={dappAssets.menu} />
                           </button>
                         </div>
-                        <DappMobileNav
+                        <MobileNav
                           activeTab={activeTab}
                           onClose={() => setMobileNavOpen(false)}
                           onSelectTab={selectMobileTab}
                           open={mobileNavOpen}
                         />
-                        <DappTabWidget
+                        <TabWidget
                           activeTab={displayTab}
                           burn={burn}
                           flash={flash}
@@ -211,9 +211,9 @@ export function DappShell() {
                           turbine={turbine}
                         />
                       </aside>
-                    </DappScrollFadeHost>
+                    </ScrollFadeHost>
 
-                    <DappScrollFadeHost
+                    <ScrollFadeHost
                       className={effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined}
                     >
                       <section
@@ -232,7 +232,7 @@ export function DappShell() {
                         data-dapp-detail
                         data-phase={effectiveDetailCollapsed ? 'idle' : phase}
                       >
-                        <DappTabContent
+                        <TabContent
                           activeTab={displayTab}
                           burn={burn}
                           flash={flash}
@@ -241,7 +241,7 @@ export function DappShell() {
                           turbine={turbine}
                         />
                       </section>
-                    </DappScrollFadeHost>
+                    </ScrollFadeHost>
                   </div>
                 )}
               </ExchangeSessionHosts>
@@ -250,7 +250,7 @@ export function DappShell() {
         </div>
       </section>
 
-      <DappRevealObserver container={windowNode} />
+      <RevealObserver container={windowNode} />
     </main>
   )
 }

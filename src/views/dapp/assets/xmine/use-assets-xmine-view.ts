@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
@@ -26,7 +26,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 export function useAssetsXmineView() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [sort, setSort] = useState<AssetsSortKey>('startNear')

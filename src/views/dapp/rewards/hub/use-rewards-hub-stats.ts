@@ -1,4 +1,4 @@
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMakingOverview } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
@@ -56,7 +56,7 @@ function makingRankToRowIndex(rank: number | null | undefined): number {
  */
 export function useRewardsHubStats(): RewardsHubStats {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useMakingOverview(sessionReady)
   const { contributionValue } = useRewardsContributionDisplay(walletReady)

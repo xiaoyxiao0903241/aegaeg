@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useI18n } from '~/i18n/use-i18n'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -21,7 +21,7 @@ import { readErrorText } from '~/web3/errors/error-text'
 export function useBondView(kind: BondKind) {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
 
   const bond = useBondWidget(kind, sessionReady, {

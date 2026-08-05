@@ -6,11 +6,11 @@
  * 未连接钱包时展示连接引导。
  */
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { MetaListCard } from '~/app/shell/meta-list-card'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
@@ -31,13 +31,13 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.exchange.backToHub}
         onBack={vm.onBack}
         subtitle={t.exchange.flash.intros[flash.introKey]}
         title={t.exchange.flash.title}
       />
-      <DappWidgetStack className="gap-0">
+      <WidgetStack className="gap-0">
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
           className="mb-3"
@@ -121,8 +121,8 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
         </MetaListCard>
 
         {vm.sessionReady && flash.walletReady ? (
-          <DappActionRow className="mt-3.5 max-dapp:mt-3">
-            <DappActionButton
+          <ActionRow className="mt-3.5 max-dapp:mt-3">
+            <CtaButton
               className="col-span-full"
               density="external"
               disabled={!flash.canSubmit}
@@ -130,12 +130,12 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
               onClick={() => void vm.onSubmit()}
             >
               {t.exchange.flash.action}
-            </DappActionButton>
-          </DappActionRow>
+            </CtaButton>
+          </ActionRow>
         ) : null}
 
         <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

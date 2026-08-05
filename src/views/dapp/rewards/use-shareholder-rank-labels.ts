@@ -1,4 +1,4 @@
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import { formatPresaleRank } from '~/shared/api/format-display'
 
@@ -16,7 +16,7 @@ export function useShareholderRankLabels(t: {
     shareholderTitleForRank: string
   }
 }) {
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const rankState = useShareholderRank(sessionReady)
 
   const effectiveDisplayRank = rankState.sessionReady ? rankState.displayRank : 0

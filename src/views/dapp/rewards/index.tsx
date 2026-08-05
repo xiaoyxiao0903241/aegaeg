@@ -5,8 +5,8 @@
  * 按子视图分别渲染总览详情或幸运 / 推荐 / 参与 / 共建 / 发展 / 创世详情页。
  * 未连接钱包时各领取控件显示引导卡。
  */
-import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
+import { useSubviewDisplayView } from '~/app/shell/subview-panel'
+import { TabDetailShell, TabWidgetShell } from '~/app/shell/tab-panel-shell'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import { RewardsCobuildDetail } from '~/views/dapp/rewards/detail/rewards-cobuild-detail'
@@ -22,7 +22,7 @@ import { RewardsDetail } from '~/views/dapp/rewards/hub/rewards-detail'
 import { RewardsHubWidget } from '~/views/dapp/rewards/hub/rewards-hub-widget'
 
 function RewardsWidgetBody() {
-  const view = useDappSubviewDisplayView<RewardsView>()
+  const view = useSubviewDisplayView<RewardsView>()
   if (view === 'lucky') return <RewardsMixedClaimWidget view="lucky" />
   if (view === 'referral') return <RewardsSimpleClaimWidget view="referral" />
   if (view === 'participate') return <RewardsSimpleClaimWidget view="participate" />
@@ -33,7 +33,7 @@ function RewardsWidgetBody() {
 }
 
 function RewardsContentBody() {
-  const view = useDappSubviewDisplayView<RewardsView>()
+  const view = useSubviewDisplayView<RewardsView>()
   if (view === 'hub') return <RewardsDetail />
   if (view === 'lucky') return <RewardsLuckyDetail />
   if (view === 'referral') return <RewardsReferralDetail />
@@ -47,9 +47,9 @@ function RewardsContentBody() {
 export function RewardsWidget() {
   const subview = useRewardsViewMotion()
   return (
-    <DappTabWidgetShell subview={subview}>
+    <TabWidgetShell subview={subview}>
       <RewardsWidgetBody />
-    </DappTabWidgetShell>
+    </TabWidgetShell>
   )
 }
 
@@ -57,8 +57,8 @@ export function RewardsWidget() {
 export function RewardsContent() {
   const subview = useRewardsViewMotion()
   return (
-    <DappTabDetailShell subview={subview}>
+    <TabDetailShell subview={subview}>
       <RewardsContentBody />
-    </DappTabDetailShell>
+    </TabDetailShell>
   )
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   useRankRewardLogs,
   useRankRewardPeerSurpassLogs,
@@ -57,7 +57,7 @@ function progressPct(current: number | null, targetRaw: string): TierReqBadge {
 export function useRewardsCobuildDetail() {
   const { messages: t } = useI18n()
   const cobuild = t.rewards.cobuild
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const [recordsTab, setRecordsTab] = useState<CobuildRecordsTab>('cobuild')
   const [recordsPage, setRecordsPage] = useState(1)
   const [directsPage, setDirectsPage] = useState(1)

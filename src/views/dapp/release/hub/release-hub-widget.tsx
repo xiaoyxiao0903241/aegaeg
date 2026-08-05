@@ -5,10 +5,10 @@
  * 点击进入对应子视图；未连接钱包时展示连接引导。
  */
 import { dappAssets } from '~/app/assets'
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { PanelToggle } from '~/app/shell/panel-toggle'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
@@ -37,7 +37,7 @@ function parseApiAmount(raw: string | undefined): number | null {
 
 export function ReleaseHubWidget() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
@@ -109,12 +109,12 @@ export function ReleaseHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<DappPanelToggle />}
+        action={<PanelToggle />}
         className="[&_h1]:text-xl/none! [&_h1]:tracking-normal"
         subtitle={t.release.intro}
         title={t.release.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <ReleaseEntryCard
           className="gap-1.5"
           data-slot-id="release-pool-card"
@@ -191,8 +191,8 @@ export function ReleaseHubWidget() {
           </div>
         </ReleaseEntryCard>
 
-        {!walletReady ? <DappWidgetConnectPromo /> : null}
-      </DappWidgetStack>
+        {!walletReady ? <WidgetConnectPromo /> : null}
+      </WidgetStack>
     </>
   )
 }

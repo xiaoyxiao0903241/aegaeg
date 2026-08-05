@@ -9,7 +9,7 @@ import { cn } from '~/shared/lib/utils'
  * @param items 各 Tab 项，active 标记当前选中
  * @param onSelect 点击某个 Tab 时回调其下标
  */
-export function DappPillTabs({
+export function PillTabs({
   activeTone = 'primary',
   ariaLabel,
   className,

@@ -1,7 +1,7 @@
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { QuickLinks } from '~/app/shell/quick-links'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetFrame } from '~/app/shell/widget-frame'
+import { useAppShell } from '~/app/use-app-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { communityQuickLinkItems } from '~/shared/config/community-links'
 import {
@@ -18,7 +18,7 @@ import { useCommunityConnectedView } from '~/views/dapp/community/use-community-
  * 成员表格与业绩数据仍留在正文中按登录会话态展示。
  */
 export function CommunityWidget() {
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   return walletReady ? <CommunityConnectedWidget /> : <CommunityDisconnectedWidget />
 }
 
@@ -35,7 +35,7 @@ function CommunityConnectedWidget() {
   } = useCommunityConnectedView()
 
   return (
-    <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>
+    <WidgetFrame subtitle={t.community.intro} title={t.community.title}>
       {referral.isBound ? (
         <CommunityReferralLinkCard
           copyLabel={t.community.shareReferral}
@@ -71,7 +71,7 @@ function CommunityConnectedWidget() {
       )}
 
       <QuickLinks items={quickLinkItems} />
-    </DappWidgetFrame>
+    </WidgetFrame>
   )
 }
 
@@ -89,9 +89,9 @@ function CommunityDisconnectedWidget() {
   )
 
   return (
-    <DappWidgetFrame subtitle={t.community.disconnectedIntro} title={t.community.title}>
+    <WidgetFrame subtitle={t.community.disconnectedIntro} title={t.community.title}>
       <QuickLinks items={quickLinkItems} />
-      <DappWidgetConnectPromo />
-    </DappWidgetFrame>
+      <WidgetConnectPromo />
+    </WidgetFrame>
   )
 }

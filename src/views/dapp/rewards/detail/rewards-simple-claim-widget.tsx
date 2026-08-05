@@ -1,11 +1,11 @@
 import { ChevronDown } from 'lucide-react'
 
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { CtaButton } from '~/app/shell/cta-button'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
+import { useAppShell } from '~/app/use-app-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
@@ -29,18 +29,18 @@ import {
 export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const vm = useRewardsSimpleClaimView(view, sessionReady)
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.rewards.backToHub}
         onBack={() => setView('hub')}
         subtitle={vm.card.body}
         title={vm.card.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         {view === 'grant' ? (
           <>
             {/* 待审批卡：金额 + 客服链接与说明 */}
@@ -140,7 +140,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         </div>
 
         {walletReady ? (
-          <DappActionButton
+          <CtaButton
             className="min-h-13 py-2 text-sm/4"
             density="external"
             disabled={!vm.canSubmit}
@@ -148,11 +148,11 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
             onClick={vm.onClaim}
           >
             {vm.ctaLabel}
-          </DappActionButton>
+          </CtaButton>
         ) : (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         )}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

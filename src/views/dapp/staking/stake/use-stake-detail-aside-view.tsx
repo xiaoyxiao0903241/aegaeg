@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeFlowPositions } from '~/hooks/use-api-data'
@@ -38,7 +38,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  */
 export function useStakeDetailAsideView() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const account = useActiveAccount()
   const walletReady = hasWalletAccount(account)
   const priceUsd = useAgxPriceUsd()

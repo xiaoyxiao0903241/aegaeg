@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
@@ -49,7 +49,7 @@ const NEXT_EMISSION_EMPTY = '—'
  */
 export function useXmineDetailAsideView() {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const priceUsd = useAgxPriceUsd()
   const positionsQuery = useX0MiningPositions({}, sessionReady)
   const logsQuery = useX0MiningLogs({}, sessionReady)

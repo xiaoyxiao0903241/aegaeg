@@ -1,10 +1,10 @@
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { MetaListCard } from '~/app/shell/meta-list-card'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import type { BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
@@ -65,13 +65,13 @@ export function BondWidget({ kind }: { kind: BondKind }) {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.staking.backToHub}
         onBack={() => setView('hub')}
         subtitle={copy.intro}
         title={copy.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <BondPeriodList
           ariaLabel={copy.periodAria}
           copy={copy.card}
@@ -178,20 +178,20 @@ export function BondWidget({ kind }: { kind: BondKind }) {
         </Text>
 
         {!walletReady ? (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         ) : (
-          <DappActionRow>
-            <DappActionButton
+          <ActionRow>
+            <CtaButton
               density="external"
               disabled={!bond.canSubmit && bond.blockReason !== 'notBound'}
               loading={bond.isSubmitting}
               onClick={() => void onSubmit()}
             >
               {ctaLabel}
-            </DappActionButton>
-          </DappActionRow>
+            </CtaButton>
+          </ActionRow>
         )}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

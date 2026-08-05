@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
@@ -22,7 +22,7 @@ import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
  */
 export function useGenesisContributionsView(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const { isLoggingIn } = useAuth()
   const [contributionsPage, setContributionsPage] = useState(1)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(

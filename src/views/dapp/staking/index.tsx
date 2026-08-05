@@ -4,8 +4,8 @@
  * 子视图为质押 / LP 债券 / 燃烧债券 / XMine / 计算器，
  * 左侧表单与右侧详情随子视图联动，默认展示质押 Hub。
  */
-import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
+import { useSubviewDisplayView } from '~/app/shell/subview-panel'
+import { TabDetailShell, TabWidgetShell } from '~/app/shell/tab-panel-shell'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
 import { BondDetail } from '~/views/dapp/staking/bond/bond-detail'
@@ -20,7 +20,7 @@ import { StakingXmineDetail } from '~/views/dapp/staking/xmine/staking-xmine-det
 import { XmineWidget } from '~/views/dapp/staking/xmine/xmine-widget'
 
 function StakingWidgetBody() {
-  const view = useDappSubviewDisplayView<StakingView>()
+  const view = useSubviewDisplayView<StakingView>()
   if (view === 'stake') return <StakeWidget />
   if (view === 'lpbond') return <BondWidget kind="lp" />
   if (view === 'burnbond') return <BondWidget kind="burn" />
@@ -30,7 +30,7 @@ function StakingWidgetBody() {
 }
 
 function StakingContentBody() {
-  const view = useDappSubviewDisplayView<StakingView>()
+  const view = useSubviewDisplayView<StakingView>()
   if (view === 'stake') return <StakeDetail />
   if (view === 'lpbond') return <BondDetail kind="lp" />
   if (view === 'burnbond') return <BondDetail kind="burn" />
@@ -42,17 +42,17 @@ function StakingContentBody() {
 export function StakingWidget() {
   const subview = useStakingViewMotion()
   return (
-    <DappTabWidgetShell subview={subview}>
+    <TabWidgetShell subview={subview}>
       <StakingWidgetBody />
-    </DappTabWidgetShell>
+    </TabWidgetShell>
   )
 }
 
 export function StakingContent() {
   const subview = useStakingViewMotion()
   return (
-    <DappTabDetailShell subview={subview}>
+    <TabDetailShell subview={subview}>
       <StakingContentBody />
-    </DappTabDetailShell>
+    </TabDetailShell>
   )
 }

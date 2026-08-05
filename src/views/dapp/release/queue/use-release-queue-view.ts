@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
@@ -52,7 +52,7 @@ export type ReleaseQueueRowView = {
 export function useReleaseQueueView() {
   const { messages: t } = useI18n()
   const setView = useReleaseViewStore((state) => state.setView)
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const { writeReady } = useWriteReadiness()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()

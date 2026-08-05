@@ -6,7 +6,7 @@ import { cn } from '~/shared/lib/utils'
  * PC 左右内容面板的外层容器：子元素负责滚动，
  * 上下边缘各放一个固定淡出遮罩，滚动时内容渐隐渐显。
  */
-export function DappScrollFadeHost({
+export function ScrollFadeHost({
   children,
   className,
 }: {

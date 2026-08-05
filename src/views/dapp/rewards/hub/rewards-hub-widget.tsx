@@ -7,10 +7,10 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
 import { dappAssets } from '~/app/assets'
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { PanelToggle } from '~/app/shell/panel-toggle'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
@@ -69,7 +69,7 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
 
 export function RewardsHubWidget() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
@@ -112,12 +112,8 @@ export function RewardsHubWidget() {
 
   return (
     <>
-      <WidgetHeader
-        action={<DappPanelToggle />}
-        subtitle={t.rewards.intro}
-        title={t.rewards.title}
-      />
-      <DappWidgetStack>
+      <WidgetHeader action={<PanelToggle />} subtitle={t.rewards.intro} title={t.rewards.title} />
+      <WidgetStack>
         {REWARD_CARDS.map((view) => {
           const card = t.rewards.cards[view]
           const value = amountValue(view)
@@ -177,13 +173,13 @@ export function RewardsHubWidget() {
         })}
 
         {!walletReady ? (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         ) : !sessionReady ? (
           <Text as="p" tone="muted-foreground" variant="copy">
             {t.rewards.hub.sessionHint}
           </Text>
         ) : null}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

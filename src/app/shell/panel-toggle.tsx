@@ -11,7 +11,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
  *
  * 展开时图标竖排，折叠后横排；状态读写 dapp-shell-store。
  */
-export function DappPanelToggle({ className }: { className?: string }) {
+export function PanelToggle({ className }: { className?: string }) {
   const { messages: t } = useI18n()
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const toggle = useDappShellStore((state) => state.toggleDetailCollapsed)

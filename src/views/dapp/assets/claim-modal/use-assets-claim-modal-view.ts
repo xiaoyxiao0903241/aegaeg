@@ -2,7 +2,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   claimSplitFromReleasePct,
   matchClaimPlanIndices,
@@ -39,7 +39,7 @@ export function useAssetsClaimModalView(args: {
 }) {
   const { open, onOpenChange, owner, target } = args
   const { messages: t } = useI18n()
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const account = useActiveAccount()
   const [releasePct, setReleasePctState] = useState(50)
   // RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60

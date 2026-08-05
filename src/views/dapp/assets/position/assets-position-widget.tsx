@@ -1,6 +1,6 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
@@ -27,13 +27,13 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.assets.backToHub}
         onBack={() => setView('hub')}
         subtitle={w.copy.intro}
         title={w.copy.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <AssetsQuoteToolbar
           onQuoteChange={w.setQuote}
           onSortChange={w.setSort}
@@ -45,7 +45,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
         />
 
         {!w.walletReady ? (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         ) : w.isLoading ? (
           <AssetsPositionListSkeleton />
         ) : w.isEmpty ? (
@@ -96,7 +96,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             total={w.totalRows}
           />
         ) : null}
-      </DappWidgetStack>
+      </WidgetStack>
 
       <AssetsClaimModal
         amountLabel={w.claim.open ? w.claim.amountLabel : ''}

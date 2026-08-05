@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react'
  *
  * @param container 监听范围，为 null 时不工作
  */
-export function DappRevealObserver({ container }: { container: HTMLElement | null }) {
+export function RevealObserver({ container }: { container: HTMLElement | null }) {
   const observerRef = useRef<IntersectionObserver | null>(null)
   const observedRef = useRef(new WeakSet<Element>())
 

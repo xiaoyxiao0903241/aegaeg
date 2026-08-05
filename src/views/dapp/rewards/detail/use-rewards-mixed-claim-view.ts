@@ -2,7 +2,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   claimSplitFromReleasePct,
   matchClaimPlanIndices,
@@ -47,7 +47,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  */
 export function useRewardsMixedClaimView(view: MixedClaimView) {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const { token, invalidateSession } = useAuth()
   const account = useActiveAccount()
   const card = t.rewards.cards[view]

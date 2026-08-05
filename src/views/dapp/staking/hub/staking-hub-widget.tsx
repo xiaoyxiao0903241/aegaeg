@@ -1,6 +1,6 @@
 import { stakingHubAssets } from '~/app/assets'
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { PanelToggle } from '~/app/shell/panel-toggle'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
@@ -38,12 +38,12 @@ export function StakingHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<DappPanelToggle />}
+        action={<PanelToggle />}
         className="mb-4 gap-4 [&_h1]:text-xl/none! [&_h1]:tracking-normal"
         subtitle={t.staking.intro}
         title={t.staking.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         {STAKING_MODES.map((mode) => {
           const { title, body } = copy[mode.view]
           return (
@@ -65,7 +65,7 @@ export function StakingHubWidget() {
             </InteractiveCard>
           )
         })}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   useReferralAwardDirectReferrals,
   useReferralAwardLogs,
@@ -26,7 +26,7 @@ import {
 export function useRewardsReferralDetail() {
   const { messages: t } = useI18n()
   const referral = t.rewards.referral
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const [recordsPage, setRecordsPage] = useState(1)
   const [referralsPage, setReferralsPage] = useState(1)

@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants'
 
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
@@ -67,7 +67,7 @@ function useRailTooltips() {
  * 兑换与释放页有可领奖状态时右上角显示珊瑚色小点；
  * 悬停 / 聚焦非当前项时预取该页查询。`mobile` 模式用于抽屉内横向布局。
  */
-export function DappRail({
+export function Rail({
   activeTab,
   mobile = false,
   onSelectTab,
@@ -77,7 +77,7 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const tooltips = useRailTooltips()
   const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
   const releaseClaimable = useReleaseRailDot(walletReady)

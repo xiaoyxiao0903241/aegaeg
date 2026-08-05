@@ -95,6 +95,17 @@ module.exports = {
       from: { path: '^src/app/' },
       to: { path: '^src/views/' },
     },
+    {
+      name: 'section-only-in-detail',
+      comment:
+        'Section 仅允许 *-detail.tsx import。禁为消 jscpd 抽 Section/Title 薄壳；页内同构用 jscpd:ignore。',
+      severity: 'error',
+      from: {
+        path: '^src/views/',
+        pathNot: '-detail\\.tsx$',
+      },
+      to: { path: 'shared/components/section(\\.tsx)?$' },
+    },
   ],
   options: {
     tsPreCompilationDeps: true,

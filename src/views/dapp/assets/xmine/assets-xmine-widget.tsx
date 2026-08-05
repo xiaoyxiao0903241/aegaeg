@@ -1,6 +1,6 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -19,13 +19,13 @@ export function AssetsXmineWidget() {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.assets.backToHub}
         onBack={() => vm.setView('hub')}
         subtitle={copy.intro}
         title={copy.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <AssetsQuoteToolbar
           onQuoteChange={vm.setQuote}
           onSortChange={vm.setSort}
@@ -37,7 +37,7 @@ export function AssetsXmineWidget() {
         />
 
         {!vm.walletReady ? (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         ) : vm.isLoading ? (
           <AssetsPositionListSkeleton count={1} />
         ) : vm.isEmpty || !position ? (
@@ -83,7 +83,7 @@ export function AssetsXmineWidget() {
             total={vm.totalRows}
           />
         ) : null}
-      </DappWidgetStack>
+      </WidgetStack>
 
       <AssetsRedeemConfirm
         amountLabel={

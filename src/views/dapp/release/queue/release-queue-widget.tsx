@@ -5,9 +5,9 @@
  * 可刷新单档快照并领取已释放部分。
  */
 import { tokenCarouselIcons } from '~/app/assets'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { useReleaseQueueView } from '~/views/dapp/release/queue/use-release-queue-view'
 import { ReleasePlanCard } from '~/views/dapp/release/release-plan-card'
 
@@ -17,13 +17,13 @@ export function ReleaseQueueWidget() {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.release.backToHub}
         onBack={vm.onBack}
         subtitle={t.release.queue.intro}
         title={t.release.queue.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <div
           aria-label={t.release.queue.title}
           className="grid gap-3"
@@ -66,8 +66,8 @@ export function ReleaseQueueWidget() {
           ))}
         </div>
 
-        {vm.walletReady ? null : <DappWidgetConnectPromo />}
-      </DappWidgetStack>
+        {vm.walletReady ? null : <WidgetConnectPromo />}
+      </WidgetStack>
     </>
   )
 }

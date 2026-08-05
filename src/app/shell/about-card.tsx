@@ -32,7 +32,7 @@ const aboutCard = tv({
   },
 })
 
-export function DappAboutCard({
+export function AboutCard({
   action,
   body,
   className,

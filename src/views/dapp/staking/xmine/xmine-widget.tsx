@@ -1,10 +1,10 @@
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { MetaListCard } from '~/app/shell/meta-list-card'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
@@ -31,13 +31,13 @@ export function XmineWidget() {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.staking.backToHub}
         onBack={() => setView('hub')}
         subtitle={t.staking.xmine.intro}
         title={t.staking.xmine.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <AmountBox
           amountProps={{
             'aria-label': t.staking.xmine.amountAria,
@@ -91,20 +91,20 @@ export function XmineWidget() {
         </MetaListCard>
 
         {walletReady ? (
-          <DappActionRow>
-            <DappActionButton
+          <ActionRow>
+            <CtaButton
               density="external"
               disabled={!xmine.canSubmit}
               loading={xmine.isSubmitting}
               onClick={() => void onSubmit()}
             >
               {t.staking.xmine.submit}
-            </DappActionButton>
-          </DappActionRow>
+            </CtaButton>
+          </ActionRow>
         ) : (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         )}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

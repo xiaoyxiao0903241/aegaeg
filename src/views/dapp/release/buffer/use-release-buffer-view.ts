@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -27,7 +27,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 export function useReleaseBufferView() {
   const { messages: t } = useI18n()
   const setView = useReleaseViewStore((state) => state.setView)
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const { writeReady } = useWriteReadiness()
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)

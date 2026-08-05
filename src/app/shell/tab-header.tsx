@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { PanelToggle } from '~/app/shell/panel-toggle'
 import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetSubpageHeader } from '~/shared/components/widget-header'
@@ -9,7 +9,7 @@ import { WidgetSubpageHeader } from '~/shared/components/widget-header'
 /**
  * 子页面顶部标题栏：返回按钮 + 标题 + 折叠开关。
  */
-export function DappTabHeader({
+export function TabHeader({
   backText,
   className,
   onBack,
@@ -24,7 +24,7 @@ export function DappTabHeader({
 }) {
   return (
     <WidgetSubpageHeader
-      action={<DappPanelToggle />}
+      action={<PanelToggle />}
       backLabel={
         <>
           <ArrowLeft aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={1.5} />

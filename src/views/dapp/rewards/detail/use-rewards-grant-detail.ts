@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   useMarketAllowanceClaimLogs,
   useMarketAllowancePaidLogs,
@@ -26,7 +26,7 @@ type GrantRecordsTab = 'issue' | 'claim'
 export function useRewardsGrantDetail() {
   const { messages: t } = useI18n()
   const grant = t.rewards.grant
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const [recordsTab, setRecordsTab] = useState<GrantRecordsTab>('issue')
   const [recordsPage, setRecordsPage] = useState(1)
   const tierEmpty = t.rewards.hub.stats.tierEmpty

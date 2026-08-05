@@ -5,8 +5,8 @@
  * Hub / 闪电兑换 / 市价交易 / 销毁 / Turbine 五个页面；
  * 各模式的会话状态由外部注入，金额草稿保留在交互面板侧。
  */
-import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
+import { useSubviewDisplayView } from '~/app/shell/subview-panel'
+import { TabDetailShell, TabWidgetShell } from '~/app/shell/tab-panel-shell'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import { BurnExchangeDetail } from '~/views/dapp/exchange/burn/burn-exchange-detail'
@@ -62,7 +62,7 @@ function requireTurbine(turbine: TurbineExchangeState | null): TurbineExchangeSt
 }
 
 function ExchangeWidgetBody({ trade, flash, burn, turbine }: ExchangeSessions) {
-  const view = useDappSubviewDisplayView<ExchangeView>()
+  const view = useSubviewDisplayView<ExchangeView>()
   if (view === 'flash') return <FlashExchangeWidget flash={requireFlash(flash)} />
   if (view === 'trade') return <MarketTradeWidget trade={requireTrade(trade)} />
   if (view === 'burn') return <BurnExchangeWidget burn={requireBurn(burn)} />
@@ -72,7 +72,7 @@ function ExchangeWidgetBody({ trade, flash, burn, turbine }: ExchangeSessions) {
 
 // 详情面板只接收展示用标量，金额草稿留在交互面板，避免输入抖动刷新 FAQ / 代币介绍
 function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) {
-  const view = useDappSubviewDisplayView<ExchangeView>()
+  const view = useSubviewDisplayView<ExchangeView>()
   if (view === 'flash') {
     const session = requireFlash(flash)
     return <FlashExchangeDetail overviewRateLabel={session.overviewRateLabel} />
@@ -112,17 +112,17 @@ function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) 
 export function ExchangeWidget(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <DappTabWidgetShell subview={subview}>
+    <TabWidgetShell subview={subview}>
       <ExchangeWidgetBody {...sessions} />
-    </DappTabWidgetShell>
+    </TabWidgetShell>
   )
 }
 
 export function ExchangeContent(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <DappTabDetailShell subview={subview}>
+    <TabDetailShell subview={subview}>
       <ExchangeContentBody {...sessions} />
-    </DappTabDetailShell>
+    </TabDetailShell>
   )
 }

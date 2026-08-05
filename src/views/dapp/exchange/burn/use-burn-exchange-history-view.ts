@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useAgxContributionBurnLogs, useAgxContributionConsumeLogs } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import {
@@ -21,7 +21,7 @@ export type BurnHistoryTab = 'burn' | 'consume'
  */
 export function useBurnExchangeHistoryView() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const [tab, setTab] = useState<BurnHistoryTab>('burn')
   const burnLogs = useAgxContributionBurnLogs({}, sessionReady && tab === 'burn')
   const consumeLogs = useAgxContributionConsumeLogs({}, sessionReady && tab === 'consume')

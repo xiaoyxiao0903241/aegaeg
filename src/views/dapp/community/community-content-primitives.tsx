@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
+import { communityStatCardMobileShell } from '~/app/shell/skeleton'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 import { revealClass } from '~/shared/lib/reveal'

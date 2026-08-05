@@ -9,7 +9,7 @@ import { cn } from '~/shared/lib/utils'
  *
  * 白底描边、无阴影，内部纵向堆叠；滚动进入视口时带进场动画。
  */
-export function DappSideCard({ children, className }: { children: ReactNode; className?: string }) {
+export function SideCard({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <Card
       as="section"

@@ -1,4 +1,4 @@
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -20,7 +20,7 @@ export type AssetsXmineStatCell = {
 
 /** X 挖矿右侧统计：仅读取链上仓位；累计产出暂无数据来源 */
 export function useAssetsXmineStats(): AssetsXmineStatCell[] {
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const account = useActiveAccount()
   const address = account?.address
   const priceUsd = useAgxPriceUsd()

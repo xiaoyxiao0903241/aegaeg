@@ -1,4 +1,4 @@
-import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
+import { WidgetFrame } from '~/app/shell/widget-frame'
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { useI18n } from '~/i18n/use-i18n'
@@ -33,8 +33,8 @@ export function GenesisWidget({ genesis }: { genesis: GenesisWidgetState }) {
       )
 
   return (
-    <DappWidgetFrame subtitle={seasonIntro} title={t.genesis.title}>
+    <WidgetFrame subtitle={seasonIntro} title={t.genesis.title}>
       <GenesisPurchaseForm key={formKey} genesis={genesis} />
-    </DappWidgetFrame>
+    </WidgetFrame>
   )
 }

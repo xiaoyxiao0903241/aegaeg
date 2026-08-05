@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
 import { WalletDetailsModal } from '~/app/shell/wallet-details-modal'
 import { useAuth } from '~/hooks/use-auth'
@@ -212,7 +212,7 @@ function WalletConnectButton({
   return (
     <div className={styles.shell()}>
       {variant === 'primary' ? (
-        <DappActionButton
+        <CtaButton
           aria-busy={isLoggingIn || undefined}
           className={styles.action({ class: className })}
           density={density}
@@ -221,7 +221,7 @@ function WalletConnectButton({
           type="button"
         >
           {labelNode}
-        </DappActionButton>
+        </CtaButton>
       ) : (
         <Button
           aria-busy={isLoggingIn || undefined}

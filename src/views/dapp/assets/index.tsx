@@ -4,8 +4,8 @@
  * 根据当前子视图切换 Hub 总览、质押、LP 债券、燃烧债券、XMine 五种模式，
  * 详情区与侧栏组件分别渲染对应模式的内容。
  */
-import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
+import { useSubviewDisplayView } from '~/app/shell/subview-panel'
+import { TabDetailShell, TabWidgetShell } from '~/app/shell/tab-panel-shell'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import { AssetsDetail } from '~/views/dapp/assets/hub/assets-detail'
@@ -16,7 +16,7 @@ import { AssetsXmineDetail } from '~/views/dapp/assets/xmine/assets-xmine-detail
 import { AssetsXmineWidget } from '~/views/dapp/assets/xmine/assets-xmine-widget'
 
 function AssetsWidgetBody() {
-  const view = useDappSubviewDisplayView<AssetsView>()
+  const view = useSubviewDisplayView<AssetsView>()
   if (view === 'stake') return <AssetsPositionWidget product="stake" />
   if (view === 'lpbond') return <AssetsPositionWidget product="lpbond" />
   if (view === 'burnbond') return <AssetsPositionWidget product="burnbond" />
@@ -25,7 +25,7 @@ function AssetsWidgetBody() {
 }
 
 function AssetsContentBody() {
-  const view = useDappSubviewDisplayView<AssetsView>()
+  const view = useSubviewDisplayView<AssetsView>()
   if (view === 'stake') return <AssetsPositionDetail product="stake" />
   if (view === 'lpbond') return <AssetsPositionDetail product="lpbond" />
   if (view === 'burnbond') return <AssetsPositionDetail product="burnbond" />
@@ -36,17 +36,17 @@ function AssetsContentBody() {
 export function AssetsWidget() {
   const subview = useAssetsViewMotion()
   return (
-    <DappTabWidgetShell subview={subview}>
+    <TabWidgetShell subview={subview}>
       <AssetsWidgetBody />
-    </DappTabWidgetShell>
+    </TabWidgetShell>
   )
 }
 
 export function AssetsContent() {
   const subview = useAssetsViewMotion()
   return (
-    <DappTabDetailShell subview={subview}>
+    <TabDetailShell subview={subview}>
       <AssetsContentBody />
-    </DappTabDetailShell>
+    </TabDetailShell>
   )
 }

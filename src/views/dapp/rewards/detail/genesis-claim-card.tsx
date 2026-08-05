@@ -5,7 +5,7 @@
  */
 import { type ReactNode } from 'react'
 
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -57,6 +57,8 @@ function Note({ children }: { children: ReactNode }) {
   )
 }
 
+/* jscpd:ignore-start — 组合卡按钮槽，density 与释放计划卡不同，禁抽共享 Action */
+/* jscpd:ignore-start — 组合卡按钮槽，density 与释放计划卡不同，禁抽共享 Action */
 function Action({
   children,
   disabled,
@@ -69,7 +71,7 @@ function Action({
   onClick?: () => void
 }) {
   return (
-    <DappActionButton
+    <CtaButton
       className="mt-2.5"
       density="inverse"
       disabled={disabled}
@@ -77,9 +79,11 @@ function Action({
       onClick={onClick}
     >
       {children}
-    </DappActionButton>
+    </CtaButton>
   )
 }
+/* jscpd:ignore-end */
+/* jscpd:ignore-end */
 
 export const GenesisClaimCard = Object.assign(Root, {
   Header,

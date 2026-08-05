@@ -8,7 +8,7 @@
 import { useState } from 'react'
 
 import { tokenCarouselIcons } from '~/app/assets'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
@@ -30,7 +30,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function ReleaseBufferDetail() {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const priceUsd = useAgxPriceUsd()
   const [recordsPage, setRecordsPage] = useState(1)
   const bufferQuery = useReleaseBufferSnapshot(walletReady)

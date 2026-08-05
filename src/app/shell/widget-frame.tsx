@@ -1,17 +1,11 @@
 import type { ReactNode } from 'react'
 
-import { DappPanelHeader } from '~/app/shell/dapp-panel-header'
+import { PanelHeader } from '~/app/shell/panel-header'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 /** 操作区纵向堆叠容器：PC 撑满剩余列高，H5 按内容定高。 */
-export function DappWidgetStack({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
+export function WidgetStack({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
       className={cn(
@@ -33,7 +27,7 @@ export function DappWidgetStack({
  *
  * 标题区带折叠右侧详情面板的开关，状态读写 dapp-shell-store。
  */
-export function DappWidgetFrame({
+export function WidgetFrame({
   bodyClassName,
   children,
   className,
@@ -53,7 +47,7 @@ export function DappWidgetFrame({
 
   return (
     <div className={cn('flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0', className)}>
-      <DappPanelHeader
+      <PanelHeader
         className="mb-3.5 max-dapp:mb-7.5"
         detailCollapsed={collapsed}
         onTogglePanel={onToggle}
@@ -61,7 +55,7 @@ export function DappWidgetFrame({
         subtitle={subtitle}
         title={title}
       />
-      <DappWidgetStack className={bodyClassName}>{children}</DappWidgetStack>
+      <WidgetStack className={bodyClassName}>{children}</WidgetStack>
     </div>
   )
 }

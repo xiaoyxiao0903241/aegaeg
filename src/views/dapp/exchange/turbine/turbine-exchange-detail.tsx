@@ -7,7 +7,7 @@
 import { tokenCarouselIcons } from '~/app/assets'
 import { Grid } from '~/app/shell/grid'
 import { Tile } from '~/app/shell/tile'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useTurbineLogs } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { mapTurbineLogToOpsRow } from '~/shared/api/map-flow-log-rows'
@@ -40,7 +40,7 @@ export function TurbineExchangeDetail({
   totalWithdrawnUsdHint,
 }: TurbineExchangeDetailProps) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const turbineLogsQuery = useTurbineLogs({}, sessionReady)
   const turbineLogRows = turbineLogsQuery.data?.items.map(mapTurbineLogToOpsRow) ?? []
   const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading

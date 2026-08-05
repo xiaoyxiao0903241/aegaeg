@@ -1,7 +1,7 @@
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { CtaButton } from '~/app/shell/cta-button'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
@@ -31,13 +31,13 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.rewards.backToHub}
         onBack={() => setView('hub')}
         subtitle={vm.card.body}
         title={vm.card.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         {vm.showCobuildRewardType ? (
           <Segment
             aria-label={t.rewards.cobuild.recordsTabsAria}
@@ -162,7 +162,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         </RewardsDestinationCard>
 
         {vm.walletReady ? (
-          <DappActionButton
+          <CtaButton
             className="min-h-13 py-2! font-normal!"
             density="external"
             disabled={!vm.canConfirm}
@@ -184,11 +184,11 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
                 )}
               </Text>
             </span>
-          </DappActionButton>
+          </CtaButton>
         ) : (
-          <DappWidgetConnectPromo />
+          <WidgetConnectPromo />
         )}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

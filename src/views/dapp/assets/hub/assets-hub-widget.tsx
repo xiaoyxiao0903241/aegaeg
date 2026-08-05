@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 import { assetsHubAssets } from '~/app/assets'
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { PanelToggle } from '~/app/shell/panel-toggle'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
+import { useAppShell } from '~/app/use-app-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
@@ -36,7 +36,7 @@ const ASSET_MODE_ICONS = {
 /** 资产 Hub 侧栏：四个仓位模式的入口卡，勾选隐藏零余额时过滤；未连接钱包时展示引导 */
 export function AssetsHubWidget() {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const overview = useAssetsHubOverviewStats()
   const [hideZero, setHideZero] = useState(false)
 
@@ -57,7 +57,7 @@ export function AssetsHubWidget() {
               hideZeroLabel={t.assets.hub.hideZero}
               onHideZeroChange={setHideZero}
             />
-            <DappPanelToggle />
+            <PanelToggle />
           </div>
         }
         subtitle={t.assets.intro}
@@ -76,7 +76,7 @@ export function AssetsHubWidget() {
         }
         titleClassName="flex w-full items-center justify-between gap-3"
       />
-      <DappWidgetStack>
+      <WidgetStack>
         {modes.map((key) => {
           const stats = overview.modes[key]
           const modeCopy = t.assets.hub.modes[key]
@@ -143,8 +143,8 @@ export function AssetsHubWidget() {
           <Table.Empty embedded title={t.assets.hub.hideZeroEmpty} />
         ) : null}
 
-        {!walletReady ? <DappWidgetConnectPromo /> : null}
-      </DappWidgetStack>
+        {!walletReady ? <WidgetConnectPromo /> : null}
+      </WidgetStack>
     </>
   )
 }

@@ -85,6 +85,7 @@ export function RewardsLuckyDetail() {
     <Detail>
       <Section>
         <Section.Title>{lucky.dataTitle}</Section.Title>
+        {/* jscpd:ignore-start — Tile 指标区页内拼装，禁再抽统一包装 */}
         <Grid columns={3}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
@@ -111,6 +112,7 @@ export function RewardsLuckyDetail() {
             </Tile>
           ))}
         </Grid>
+        {/* jscpd:ignore-end */}
       </Section>
 
       <Section>

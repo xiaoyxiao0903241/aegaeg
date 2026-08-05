@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
 import { mapBondFlowLogToOpsRow, mapStakeFlowLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
@@ -8,7 +8,7 @@ import type { AssetsProduct } from '~/views/dapp/assets/position/use-assets-posi
 
 /** 仓位产品的操作记录：按产品类型拉取对应日志并映射为表格行 */
 export function useAssetsPositionOpsRows(product: AssetsProduct) {
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const [page, setPage] = useState(1)
   const params = tablePageQuery(page)
 

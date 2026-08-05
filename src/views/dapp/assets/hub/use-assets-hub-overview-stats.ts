@@ -1,4 +1,4 @@
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -131,7 +131,7 @@ function modeFromApiAmount(
  * 未连接、加载中或出错时统一返回 0 值格式化指标。
  */
 export function useAssetsHubOverviewStats(): AssetsHubOverview {
-  const { walletReady, sessionReady } = useDappShell()
+  const { walletReady, sessionReady } = useAppShell()
   const account = useActiveAccount()
   const address = account?.address
   const enabled = walletReady && Boolean(address)

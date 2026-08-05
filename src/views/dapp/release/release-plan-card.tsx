@@ -7,7 +7,7 @@
 import { RefreshCw } from 'lucide-react'
 import { type ReactNode } from 'react'
 
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
@@ -146,15 +146,9 @@ function Action({
   onClick?: () => void
 }) {
   return (
-    <DappActionButton
-      density="card"
-      disabled={disabled}
-      loading={loading}
-      onClick={onClick}
-      type="button"
-    >
+    <CtaButton density="card" disabled={disabled} loading={loading} onClick={onClick} type="button">
       {children}
-    </DappActionButton>
+    </CtaButton>
   )
 }
 

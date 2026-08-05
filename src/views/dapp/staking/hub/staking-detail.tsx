@@ -1,6 +1,6 @@
 import { dappAssets } from '~/app/assets'
-import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { Grid } from '~/app/shell/grid'
+import { PillTabs } from '~/app/shell/pill-tabs'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -133,8 +133,8 @@ export function StakingDetail() {
 
       <Section>
         <Section.Title>{table.title}</Section.Title>
-        {/* 周期筛选：复用通用 DappPillTabs，不用 Segment */}
-        <DappPillTabs
+        {/* 周期筛选：复用通用 PillTabs，不用 Segment */}
+        <PillTabs
           activeTone="coral"
           ariaLabel={table.segmentAria}
           className="mb-3"

@@ -6,7 +6,7 @@ import type { DappTab } from '~/shared/config/dapp-tabs'
 export const DAPP_CONTENT_FADE_OUT_MS = 160
 export const DAPP_CONTENT_FADE_IN_MS = 220
 
-export type DappContentFadePhase = 'idle' | 'out' | 'in'
+export type ContentFadePhase = 'idle' | 'out' | 'in'
 
 /**
  * 延迟 Tab 内容切换，直到淡出动画播完。
@@ -18,12 +18,12 @@ export type DappContentFadePhase = 'idle' | 'out' | 'in'
  * @param activeTab 当前选中的 Tab
  * @returns displayTab 当前实际展示的 Tab；phase 淡出 / 淡入 / 静止三态
  */
-export function useDappTabContentFade(activeTab: DappTab): {
+export function useTabContentFade(activeTab: DappTab): {
   displayTab: DappTab
-  phase: DappContentFadePhase
+  phase: ContentFadePhase
 } {
   const [displayTab, setDisplayTab] = useState(activeTab)
-  const [phase, setPhase] = useState<DappContentFadePhase>('idle')
+  const [phase, setPhase] = useState<ContentFadePhase>('idle')
 
   useEffect(() => {
     if (activeTab === displayTab) return

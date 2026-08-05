@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
@@ -39,7 +39,7 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
  */
 export function useBondDetailAsideView(kind: BondKind) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const account = useActiveAccount()
   const walletReady = hasWalletAccount(account)
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond

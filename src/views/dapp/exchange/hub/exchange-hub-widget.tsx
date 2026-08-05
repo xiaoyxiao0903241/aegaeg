@@ -5,8 +5,8 @@
  * 顶部为面板标题与收起按钮。
  */
 import { exchangeHubAssets } from '~/app/assets'
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { PanelToggle } from '~/app/shell/panel-toggle'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
@@ -34,13 +34,13 @@ export function ExchangeHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<DappPanelToggle />}
+        action={<PanelToggle />}
         className="mb-4"
         subtitle={t.exchange.intro}
         title={t.exchange.title}
         titleClassName="text-xl leading-(--type-headline-leading) tracking-normal"
       />
-      <DappWidgetStack>
+      <WidgetStack>
         {EXCHANGE_MODES.map((mode) => {
           const text = copy[mode.view]
           return (
@@ -62,7 +62,7 @@ export function ExchangeHubWidget() {
             </InteractiveCard>
           )
         })}
-      </DappWidgetStack>
+      </WidgetStack>
     </>
   )
 }

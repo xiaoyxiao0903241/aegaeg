@@ -6,7 +6,7 @@
 
 | 业务术语         | 代码名                 | 含义                                 | Owner                              |
 | ---------------- | ---------------------- | ------------------------------------ | ---------------------------------- |
-| **业务已登录**   | `sessionReady`         | 钱包已连接且当前地址 JWT 有效        | `useAuth` / `useDappShell`         |
+| **业务已登录**   | `sessionReady`         | 钱包已连接且当前地址 JWT 有效        | `useAuth` / `useAppShell`          |
 | **需要签名登录** | `needsSignIn`          | 钱包已连但尚无有效会话               | `useAuth`                          |
 | **钱包签名登录** | SIWE / `login`         | 签名换 JWT（含 simple fallback）     | `login-with-wallet`                |
 | **会话令牌**     | `token` / JWT          | 业务 API Bearer；按地址缓存          | `auth-store` + `AuthProvider`      |

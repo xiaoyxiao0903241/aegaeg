@@ -2,8 +2,8 @@ import { Loader2, Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
 
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappSideCard } from '~/app/shell/dapp-card'
+import { CtaButton } from '~/app/shell/cta-button'
+import { SideCard } from '~/app/shell/side-card'
 import { FieldActionChip } from '~/shared/components/chip'
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
@@ -41,7 +41,7 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <DappSideCard className="gap-2 rounded-2xl px-4 py-3.5">
+    <SideCard className="gap-2 rounded-2xl px-4 py-3.5">
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {linkLabel}
       </Text>
@@ -53,10 +53,10 @@ export function CommunityReferralLinkCard({
       >
         {referralLink}
       </Text>
-      <DappActionButton density="inverse" disabled={disabled} onClick={onCopy}>
+      <CtaButton density="inverse" disabled={disabled} onClick={onCopy}>
         {copyLabel}
-      </DappActionButton>
-    </DappSideCard>
+      </CtaButton>
+    </SideCard>
   )
 }
 
@@ -85,7 +85,7 @@ export function CommunityReferrerBindCard({
   value: string
 }) {
   return (
-    <DappSideCard className="gap-2">
+    <SideCard className="gap-2">
       <Text as="p" className="m-0 text-foreground/40" variant="support">
         {referrerLabel}
       </Text>
@@ -111,7 +111,7 @@ export function CommunityReferrerBindCard({
       <Text as="small" className="block text-foreground/40" variant="support">
         {hint}
       </Text>
-    </DappSideCard>
+    </SideCard>
   )
 }
 
@@ -132,7 +132,7 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    <DappSideCard className="gap-2 rounded-2xl px-4 py-3.5">
+    <SideCard className="gap-2 rounded-2xl px-4 py-3.5">
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {addressLabel}
       </Text>
@@ -163,6 +163,6 @@ export function CommunityReferrerBoundPanel({
       <Text as="p" className="m-0 leading-4 text-foreground/40" variant="support">
         {note}
       </Text>
-    </DappSideCard>
+    </SideCard>
   )
 }

@@ -1,8 +1,8 @@
 import { dappAssets } from '~/app/assets'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'
@@ -69,13 +69,13 @@ export function CalcWidget() {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.staking.backToHub}
         onBack={() => vm.setView('hub')}
         subtitle={t.staking.calc.intro}
         title={t.staking.calc.title}
       />
-      <DappWidgetStack className="gap-4">
+      <WidgetStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
           onChange={vm.onProductChange}
@@ -161,16 +161,16 @@ export function CalcWidget() {
           />
         </div>
 
-        <DappActionRow className="mt-6">
-          <DappActionButton
+        <ActionRow className="mt-6">
+          <CtaButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base leading-5 text-white"
             density="external"
             type="button"
           >
             {t.staking.calc.submit}
-          </DappActionButton>
-        </DappActionRow>
-      </DappWidgetStack>
+          </CtaButton>
+        </ActionRow>
+      </WidgetStack>
     </>
   )
 }

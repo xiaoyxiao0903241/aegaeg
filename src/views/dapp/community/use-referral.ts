@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -87,7 +87,7 @@ export function useReferral() {
     },
     // 链上绑定态：仅需钱包（不要求 SIWE）。
   })
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const performanceQuery = usePerformance(sessionReady && Boolean(address))
 
   const bindMutation = useChainMutation({

@@ -2,7 +2,7 @@ import type { DappTab } from '~/shared/config/dapp-tabs'
 import { getDappTabEntry } from '~/views/dapp/dapp-tab-registry'
 import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
 
-export function DappTabWidget({
+export function TabWidget({
   activeTab,
   onSelectTab,
   trade,
@@ -27,7 +27,7 @@ export function DappTabWidget({
   )
 }
 
-export function DappTabContent({
+export function TabContent({
   activeTab,
   trade,
   flash,

@@ -5,9 +5,9 @@
  * 右上角刷新按钮重读 AGX 链上快照，gAGX 无数据源时显示 0。
  */
 import { tokenCarouselIcons } from '~/app/assets'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { TabHeader } from '~/app/shell/tab-header'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
+import { WidgetStack } from '~/app/shell/widget-frame'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
 import { ReleasePlanCard } from '~/views/dapp/release/release-plan-card'
@@ -19,13 +19,13 @@ export function ReleaseBufferWidget() {
 
   return (
     <>
-      <DappTabHeader
+      <TabHeader
         backText={t.release.backToHub}
         onBack={vm.onBack}
         subtitle={t.release.buffer.intro}
         title={t.release.buffer.title}
       />
-      <DappWidgetStack>
+      <WidgetStack>
         <ReleasePlanCard data-slot-id="release-buffer-card-agx">
           <ReleasePlanCard.Header>
             <ReleasePlanCard.Token iconSrc={tokenCarouselIcons.agxIcon} label="AGX" />
@@ -77,8 +77,8 @@ export function ReleaseBufferWidget() {
           <ReleasePlanCard.Action disabled>{t.release.buffer.claim}</ReleasePlanCard.Action>
         </ReleasePlanCard>
 
-        {vm.walletReady ? null : <DappWidgetConnectPromo />}
-      </DappWidgetStack>
+        {vm.walletReady ? null : <WidgetConnectPromo />}
+      </WidgetStack>
     </>
   )
 }

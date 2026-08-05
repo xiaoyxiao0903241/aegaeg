@@ -1,7 +1,7 @@
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { ActionRow } from '~/app/shell/action-row'
+import { CtaButton } from '~/app/shell/cta-button'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { WidgetConnectPromo } from '~/app/shell/widget-connect-promo'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { List } from '~/shared/components/list'
@@ -81,17 +81,17 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
       </Card>
 
       {vm.walletReady ? (
-        <DappActionRow className="grid-cols-1">
+        <ActionRow className="grid-cols-1">
           {vm.programEnded ? (
-            <DappActionButton density="card" disabled variant="secondary">
+            <CtaButton density="card" disabled variant="secondary">
               {t.genesis.joinEnded}
-            </DappActionButton>
+            </CtaButton>
           ) : genesis.needsReferralBind ? (
-            <DappActionButton density="card" onClick={() => goBindReferral()} variant="primary">
+            <CtaButton density="card" onClick={() => goBindReferral()} variant="primary">
               {t.genesis.goBindReferrer}
-            </DappActionButton>
+            </CtaButton>
           ) : (
-            <DappActionButton
+            <CtaButton
               className="min-h-11"
               density="card"
               disabled={!genesis.canPurchase || genesis.isSubmitting}
@@ -100,11 +100,11 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
               variant="primary"
             >
               {vm.purchaseCtaLabel}
-            </DappActionButton>
+            </CtaButton>
           )}
-        </DappActionRow>
+        </ActionRow>
       ) : (
-        <DappWidgetConnectPromo />
+        <WidgetConnectPromo />
       )}
     </>
   )

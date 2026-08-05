@@ -36,7 +36,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
     <Detail>
       <Section>
         <Section.Title>{t.staking.aside.overview}</Section.Title>
-        {/* jscpd:ignore-start — 右栏指标瓦页内同构 map */}
+        {/* jscpd:ignore-start — Tile 指标区页内拼装，禁再抽统一包装 */}
         <Grid columns={2}>
           {overviewItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
@@ -49,6 +49,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
       </Section>
 
       <Section>
+        {/* jscpd:ignore-start — 仓位标题行页内拼装，禁再抽 Section 薄包装 */}
         <div className="flex items-center gap-2.5">
           <Section.Title>{t.staking.aside.positions}</Section.Title>
           <button
@@ -61,7 +62,6 @@ export function BondDetail({ kind }: { kind: BondKind }) {
             </Text>
           </button>
         </div>
-        {/* jscpd:ignore-start — 右栏指标瓦页内同构 map */}
         <Grid columns={2}>
           {positionItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
@@ -90,6 +90,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <StakingMechanismCard steps={copy.mechanismSteps} />
       </Section>
 
+      {/* jscpd:ignore-start — 趋势图与 FAQ 节页内拼装，禁再抽 Section 薄包装 */}
       <Section>
         <Section.Title>{chartTitle}</Section.Title>
         <StakingTvlChart
@@ -108,6 +109,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <Section.Title>{t.staking.aside.faq}</Section.Title>
         <Faq defaultOpenFirst={false} items={copy.faq} variant="dapp" />
       </Section>
+      {/* jscpd:ignore-end */}
     </Detail>
   )
 }

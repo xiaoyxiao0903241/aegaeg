@@ -2,7 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useRef } from 'react'
 
-import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { CtaButton } from '~/app/shell/cta-button'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { Button } from '~/shared/components/button'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
@@ -194,7 +194,7 @@ function AssetsClaimModalOpen({
           </Text>
         ) : null}
 
-        <DappActionButton
+        <CtaButton
           className={cn(
             'min-h-13 w-full border-0 bg-transparent py-2 text-primary-foreground shadow-none',
             'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
@@ -213,7 +213,7 @@ function AssetsClaimModalOpen({
               {vm.releaseAmountText} & {vm.restakeAmountText}
             </span>
           </span>
-        </DappActionButton>
+        </CtaButton>
       </div>
     </ResponsiveDialog>
   )

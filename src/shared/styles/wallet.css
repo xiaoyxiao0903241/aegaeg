@@ -1,5 +1,5 @@
 /* Wallet chrome — connected chip + ConnectEmbed / modal shell.
- * Connect CTA chrome → Button / DappActionButton (wallet-connect-chip.tsx). */
+ * Connect CTA chrome → Button / CtaButton (wallet-connect-chip.tsx). */
 
 /* Connected wallet chip — address only, opens custom wallet details modal */
 .aegis-connected-wallet-chip {

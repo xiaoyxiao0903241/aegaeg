@@ -4,7 +4,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useActiveAccount, useIsAutoConnecting } from '~/web3/thirdweb-react'
 import { hasWalletAccount, isWalletRestorePending } from '~/web3/wallet/wallet-connection-state'
 
-export interface DappShellState {
+export interface AppShellState {
   tab: DappTab
   /** SIWE 会话已就绪——决定接口数据与登录态界面。 */
   sessionReady: boolean
@@ -24,9 +24,9 @@ export interface DappShellState {
  * 同时读取钱包 SDK 的实时账户、登录状态仓库与外壳状态仓库，
  * 把「钱包已连接 / 会话就绪 / 需要登录」等布尔值一次集齐。
  *
- * @returns 连接与会话状态，各字段语义见 {@link DappShellState}
+ * @returns 连接与会话状态，各字段语义见 {@link AppShellState}
  */
-export function useDappShell(): DappShellState {
+export function useAppShell(): AppShellState {
   const account = useActiveAccount()
   const isAutoConnecting = useIsAutoConnecting()
   const { sessionReady, needsSignIn } = useAuth()

@@ -11,7 +11,7 @@ import { WidgetPromoCard } from '~/shared/components/widget-promo-card'
  *
  * 展示品牌标语与返回首页的链接，下方是深色外观的「连接钱包」按钮。
  */
-export function DappConnectPromoCard({ className }: { className?: string }) {
+export function ConnectPromoCard({ className }: { className?: string }) {
   const { locale, messages: t } = useI18n()
   const homeHref = withLocalePrefix(locale, '/')
 

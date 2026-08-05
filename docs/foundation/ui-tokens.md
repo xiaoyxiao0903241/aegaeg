@@ -80,7 +80,7 @@
 - `sm` = **36**（`min-h-9` · `px-4.5`）· 默认 pill / topbar Connect / Enter App · `text-sm` · leading-none — Figma `4040:220`
 - `md` = **44**（`min-h-11`）· 卡外 / widget 栈主 CTA · `text-sm` · leading-snug · `px-5`
 - `lg` = **48**（`min-h-12`）· Home hero · Community「参与共建」· `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
-  **`DappActionButton` density 高度**（叠在 size 上，**不是**第 4 个 size）：
+  **`CtaButton` density 高度**（叠在 size 上，**不是**第 4 个 size）：
 - `inverse` = **38**（`min-h-9.5`）· 暗色 promo CTA
 - `card` = **42**（`min-h-10.5`）· 白卡 / outlined·elevated 卡内 CTA — Figma claim `4040:4904`
 - `external` = **44**（→ `size=md`）· 卡外主 CTA（Swap / Genesis 认购等）
@@ -120,9 +120,9 @@
 
 **`outlined` + `default`**：未选 htab / 分立 pill — `bg-card` + `border-border` + **`text-foreground/40`**（Figma `text/muted` 40%；**勿**用 `muted-foreground` 70%）。
 
-**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。选中 htab 字色由 `DappPillTabs` 叠 `text-coral-emphasis`（样本 Grant `4719:2447`）。
+**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。选中 htab 字色由 `PillTabs` 叠 `text-coral-emphasis`（样本 Grant `4719:2447`）。
 
-**Field-adjacent action**：Genesis MAX · Community Bind → `FieldActionChip`（`Chip soft` + `coral` · `h-11` / `rounded-control`）；**不是** `DappActionButton` / Button secondary。
+**Field-adjacent action**：Genesis MAX · Community Bind → `FieldActionChip`（`Chip soft` + `coral` · `h-11` / `rounded-control`）；**不是** `CtaButton` / Button secondary。
 
 **禁止**：在 Chip 内 hand-roll typography
 **依赖**：Text（§2）
@@ -138,12 +138,12 @@
 | `surface` | `outlined` · `elevated` · `soft` · `inverse`                  |
 | `as`      | `article` · `button` · `div` · `section` · `details` · `span` |
 
-| surface  | Elevation            | radius               | padding                       | 用途                                                                                                             |
-| -------- | -------------------- | -------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta / `DappSideCard`；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`） |
-| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）                |
-| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）                    |
-| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                                 |
+| surface  | Elevation            | radius               | padding                       | 用途                                                                                                         |
+| -------- | -------------------- | -------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta / `SideCard`；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`） |
+| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）            |
+| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）                |
+| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                             |
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`（**通用内容卡**字阶合同；≠ Hub 入口）
 

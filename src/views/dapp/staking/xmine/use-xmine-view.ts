@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatAmountBalanceLabel } from '~/core/wallet/write-cta'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
@@ -19,7 +19,7 @@ const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
 export function useXmineView() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useDappShell()
+  const { sessionReady, walletReady } = useAppShell()
   const overviewQuery = useXmineOverviewQuery()
   const xmine = useXmineWidget(sessionReady, {
     onSuccess: () => {

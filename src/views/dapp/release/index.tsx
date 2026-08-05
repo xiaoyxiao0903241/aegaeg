@@ -1,5 +1,5 @@
-import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
+import { useSubviewDisplayView } from '~/app/shell/subview-panel'
+import { TabDetailShell, TabWidgetShell } from '~/app/shell/tab-panel-shell'
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
 import { useReleaseViewMotion } from '~/stores/release-view-store'
 import { ReleaseBufferDetail } from '~/views/dapp/release/buffer/release-buffer-detail'
@@ -10,14 +10,14 @@ import { ReleaseQueueDetail } from '~/views/dapp/release/queue/release-queue-det
 import { ReleaseQueueWidget } from '~/views/dapp/release/queue/release-queue-widget'
 
 function ReleaseWidgetBody() {
-  const view = useDappSubviewDisplayView<ReleaseView>()
+  const view = useSubviewDisplayView<ReleaseView>()
   if (view === 'queue') return <ReleaseQueueWidget />
   if (view === 'buffer') return <ReleaseBufferWidget />
   return <ReleaseHubWidget />
 }
 
 function ReleaseContentBody() {
-  const view = useDappSubviewDisplayView<ReleaseView>()
+  const view = useSubviewDisplayView<ReleaseView>()
   if (view === 'queue') return <ReleaseQueueDetail />
   if (view === 'buffer') return <ReleaseBufferDetail />
   return <ReleaseDetail />
@@ -27,9 +27,9 @@ function ReleaseContentBody() {
 export function ReleaseWidget() {
   const subview = useReleaseViewMotion()
   return (
-    <DappTabWidgetShell subview={subview}>
+    <TabWidgetShell subview={subview}>
       <ReleaseWidgetBody />
-    </DappTabWidgetShell>
+    </TabWidgetShell>
   )
 }
 
@@ -37,8 +37,8 @@ export function ReleaseWidget() {
 export function ReleaseContent() {
   const subview = useReleaseViewMotion()
   return (
-    <DappTabDetailShell subview={subview}>
+    <TabDetailShell subview={subview}>
       <ReleaseContentBody />
-    </DappTabDetailShell>
+    </TabDetailShell>
   )
 }

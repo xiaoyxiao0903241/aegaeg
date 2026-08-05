@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import {
   useParticipationAwardInviter,
   useParticipationAwardLogs,
@@ -26,7 +26,7 @@ import {
 export function useRewardsParticipateDetail() {
   const { messages: t } = useI18n()
   const participate = t.rewards.participate
-  const { sessionReady } = useDappShell()
+  const { sessionReady } = useAppShell()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const [recordsPage, setRecordsPage] = useState(1)
 

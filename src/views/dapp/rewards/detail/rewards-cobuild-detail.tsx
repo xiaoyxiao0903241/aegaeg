@@ -66,7 +66,7 @@ export function RewardsCobuildDetail() {
     <Detail>
       <Section>
         <Section.Title>{cobuild.dataTitle}</Section.Title>
-        {/* 统计数字：页内用 Tile 拼装，勿再抽统一包装 */}
+        {/* jscpd:ignore-start — Tile 指标区页内拼装，禁再抽统一包装 */}
         <Grid columns={3}>
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
@@ -92,6 +92,7 @@ export function RewardsCobuildDetail() {
             </Tile>
           ))}
         </Grid>
+        {/* jscpd:ignore-end */}
       </Section>
 
       <Section>

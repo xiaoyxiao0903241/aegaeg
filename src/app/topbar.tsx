@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants'
 
 import { dappAssets, homeAssets } from '~/app/assets'
 import { OnboardingTourChip } from '~/app/shell/onboarding-tour-chip'
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
@@ -53,7 +53,7 @@ const topbar = tv({
  * 左侧品牌标识（连接后隐藏品牌文字），右侧依次为新手教程入口、
  * 钱包连接区与语言切换；H5 下吸顶并带半透明毛玻璃底色。
  */
-export function DappTopbar({
+export function Topbar({
   onboardingDone,
   onStartOnboarding,
 }: {
@@ -61,7 +61,7 @@ export function DappTopbar({
   onStartOnboarding?: () => void
 }) {
   const { locale, messages: t, setLocale } = useI18n()
-  const { sessionReady, tab } = useDappShell()
+  const { sessionReady, tab } = useAppShell()
   const styles = topbar({ hideBrandLabel: sessionReady })
 
   const languageOptions = languageMenuOptions(locale, setLocale)

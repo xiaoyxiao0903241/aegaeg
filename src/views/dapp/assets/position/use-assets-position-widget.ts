@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useDappShell } from '~/app/use-dapp-shell'
+import { useAppShell } from '~/app/use-app-shell'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -90,7 +90,7 @@ function compareBySort(
  */
 export function useAssetsPositionWidget(product: AssetsProduct) {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappShell()
+  const { walletReady } = useAppShell()
   const account = useActiveAccount()
   const address = account?.address
 
