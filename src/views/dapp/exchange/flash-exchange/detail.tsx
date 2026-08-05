@@ -22,7 +22,7 @@ export function FlashExchangeDetail({ overviewRateLabel }: { overviewRateLabel: 
   const { messages: t } = useI18n()
 
   const tiles = [
-    { key: 'rate', label: t.exchange.exchangeRate, value: overviewRateLabel || '0' },
+    { key: 'rate', label: t.exchange.exchangeRate, value: overviewRateLabel },
     { key: 'settlement', label: t.exchange.settlement, value: t.exchange.flash.settlementValue },
   ]
 

@@ -95,7 +95,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                   footer={usd1Balance}
                   icon={turbine.pair.pay.icon}
                   label={t.exchange.turbine.payUsd1Label}
-                  value={turbine.payUsd1Label || '0'}
+                  value={turbine.payUsd1Label}
                 />
                 <Icon
                   alt=""
@@ -107,7 +107,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                   footer={t.exchange.turbine.buyToBoundWallet}
                   icon={turbine.pair.buy.icon}
                   label={t.exchange.turbine.buyAgxLabel}
-                  value={turbine.buyAgxLabel || '0'}
+                  value={turbine.buyAgxLabel}
                 />
               </div>
             </div>

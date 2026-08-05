@@ -26,7 +26,7 @@ export function MarketTradeDetail({ exchangePriceLabel }: { exchangePriceLabel: 
   const { t } = vm
 
   const tiles = [
-    { key: 'rate', label: t.exchange.exchangeRate, value: vm.poolRateLabel || '0' },
+    { key: 'rate', label: t.exchange.exchangeRate, value: vm.poolRateLabel },
     { key: 'settlement', label: t.exchange.settlement, value: t.exchange.settlementValue },
   ]
 

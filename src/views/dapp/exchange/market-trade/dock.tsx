@@ -105,7 +105,7 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
                   label: t.exchange.exchangePrice,
                   value: (
                     <>
-                      <CountValue text={vm.exchangePriceDisplayLabel || '0'} />
+                      <CountValue text={vm.exchangePriceDisplayLabel} />
                       <Tooltip content={t.exchange.flip}>
                         <button
                           aria-label={t.exchange.flip}

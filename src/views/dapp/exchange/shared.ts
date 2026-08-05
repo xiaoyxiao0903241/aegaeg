@@ -68,17 +68,6 @@ function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn
   return (amountOut * oneUnitIn) / amountIn
 }
 
-/**
- * 空行情占位
- *
- * 报价为 0 时返回 `'0'` 而非空串，避免空态与真实 0 值之间闪跳。
- *
- * @param quotedOut 链上报价
- */
-export function emptySpotRateDash(quotedOut: bigint): '0' | null {
-  return quotedOut === 0n ? '0' : null
-}
-
 function formatRateRatioFixed(
   normalizedOut: bigint,
   decimalsOut: number,
@@ -96,7 +85,7 @@ function trimTrailingZeros(value: string): string {
   return value.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
 }
 
-/** 兑换率标签：`1 : 1` 冒号形式，最多 4 位小数。 */
+/** 兑换率标签：`1 : 1` 冒号形式，最多 4 位小数。未知/零报价 → `1 : 0`。 */
 export function formatExchangeRateColon({
   amountIn,
   amountOut,
@@ -109,7 +98,7 @@ export function formatExchangeRateColon({
   decimalsOut: number
 }): string {
   if (amountIn === 0n || amountOut === 0n) {
-    return '0'
+    return '1 : 0'
   }
 
   const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
@@ -117,7 +106,7 @@ export function formatExchangeRateColon({
   return `1 : ${trimTrailingZeros(formatRateRatioFixed(normalizedOut, decimalsOut))}`
 }
 
-/** 市价交易行情标签：`1 USD1 = 0.015385 AGX` 等号形式，最多 6 位小数。 */
+/** 市价交易行情标签：`1 USD1 = 0.015385 AGX`；未知/零报价保留 chrome。 */
 export function formatExchangeRateApprox({
   amountIn,
   amountOut,
@@ -136,7 +125,7 @@ export function formatExchangeRateApprox({
   fractionDigits?: number
 }): string {
   if (amountIn === 0n || amountOut === 0n) {
-    return '0'
+    return `1 ${symbolIn} = ${formatRateRatioFixed(0n, decimalsOut, fractionDigits)} ${symbolOut}`
   }
 
   const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)

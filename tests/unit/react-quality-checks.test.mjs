@@ -289,11 +289,32 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
   assert.throws(() => calcAmountOutMin(10_000n, 10_000))
 })
 
-test('emptySpotRateDash gates empty vs format', async () => {
-  const { emptySpotRateDash } = await loadModule('/src/views/dapp/exchange/shared.ts')
+test('emptySpotRateDash removed; formatExchangeRate* keep chrome on zero', async () => {
+  const { formatExchangeRateApprox, formatExchangeRateColon } = await loadModule(
+    '/src/views/dapp/exchange/shared.ts',
+  )
 
-  assert.equal(emptySpotRateDash(0n), '0')
-  assert.equal(emptySpotRateDash(1n), null)
+  assert.equal(
+    formatExchangeRateColon({
+      amountIn: 10n ** 18n,
+      amountOut: 0n,
+      decimalsIn: 18,
+      decimalsOut: 18,
+    }),
+    '1 : 0',
+  )
+  assert.equal(
+    formatExchangeRateApprox({
+      amountIn: 10n ** 18n,
+      amountOut: 0n,
+      decimalsIn: 18,
+      decimalsOut: 18,
+      symbolIn: 'USD1',
+      symbolOut: 'AGX',
+      fractionDigits: 6,
+    }),
+    '1 USD1 = 0.000000 AGX',
+  )
 })
 
 test('metricDisplayText keeps prior on empty flash', async () => {

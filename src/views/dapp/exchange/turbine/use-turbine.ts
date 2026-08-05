@@ -1,5 +1,6 @@
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/shared'
@@ -20,16 +21,14 @@ export function useTurbine(turbine: TurbineExchangeState) {
   const unlockableAmountLabel = exchangePreview
     ? '0.00 gAGX'
     : !turbine.walletReady
-      ? '0 gAGX'
-      : turbine.quotaLabel === ''
-        ? ''
-        : `${turbine.quotaLabel} gAGX`
+      ? '0.00 gAGX'
+      : `${turbine.quotaLabel || formatGroupedNumber(0, { digits: 2 })} gAGX`
 
   const usd1AmountLabel = exchangePreview
-    ? '0.00'
+    ? formatGroupedNumber(0, { digits: 2 })
     : !turbine.walletReady
-      ? '0'
-      : turbine.usd1BalanceLabel
+      ? formatGroupedNumber(0, { digits: 2 })
+      : turbine.usd1BalanceLabel || formatGroupedNumber(0, { digits: 2 })
 
   const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '—'
 

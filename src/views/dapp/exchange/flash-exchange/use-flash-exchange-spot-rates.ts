@@ -5,7 +5,6 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
-  emptySpotRateDash,
   type ExchangePairTokens,
   type FlashPairId,
   formatExchangeRateColon,
@@ -43,17 +42,13 @@ export function useFlashExchangeSpotRates({
       ? false
       : (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
 
-  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut)
-  // 面板与概览统一用冒号形式（`1 : 1`），不用 `1 TOKEN = …` 形式
-  const rateLabel =
-    exchangePriceEmpty !== null
-      ? exchangePriceEmpty
-      : formatExchangeRateColon({
-          amountIn: spotQuoteAmount,
-          amountOut: spotQuotedOut,
-          decimalsIn: pair.sell.decimals,
-          decimalsOut: pair.buy.decimals,
-        })
+  // 面板与概览统一用冒号形式（`1 : 1`），零报价保留 `1 : 0` chrome
+  const rateLabel = formatExchangeRateColon({
+    amountIn: spotQuoteAmount,
+    amountOut: spotQuotedOut,
+    decimalsIn: pair.sell.decimals,
+    decimalsOut: pair.buy.decimals,
+  })
 
   return {
     exchangePriceLabel: rateLabel,

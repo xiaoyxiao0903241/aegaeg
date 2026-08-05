@@ -105,15 +105,12 @@ export function useBurnExchangeWidget(
   const rateBps = configQuery.data?.rateBps ?? 0n
 
   const pointsLabel = t.exchange.burn.pointsToken
-  const exchangePriceLabel =
-    configQuery.data === undefined
-      ? ''
-      : formatBurnContributionRateLabel({
-          rateBps,
-          decimals,
-          agxSymbol: EXCHANGE_CONFIG.tokens.agx.symbol,
-          pointsLabel,
-        })
+  const exchangePriceLabel = formatBurnContributionRateLabel({
+    rateBps,
+    decimals,
+    agxSymbol: EXCHANGE_CONFIG.tokens.agx.symbol,
+    pointsLabel,
+  })
   const overviewRateLabel = exchangePriceLabel
 
   const blockReason = evaluateBurnContributionSwap({

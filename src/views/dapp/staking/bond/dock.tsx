@@ -132,7 +132,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
               },
               {
                 label: copy.meta.slippage,
-                value: bond.isSlippageLoading ? '' : bond.slippageLabel || '0',
+                value: bond.isSlippageLoading ? '0%' : bond.slippageLabel || '0%',
               },
               {
                 label: copy.meta.pay,
@@ -141,7 +141,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
               {
                 label: copy.meta.receive,
                 value: bond.isPayoutQuoting
-                  ? ''
+                  ? '0 AGX'
                   : bond.receiveLabel === '0' || bond.receiveLabel === ''
                     ? '0 AGX'
                     : `${bond.receiveLabel} AGX`,
@@ -149,7 +149,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
               {
                 label: copy.meta.cap,
                 value: bond.isMarketLoading
-                  ? ''
+                  ? '0 USD1'
                   : bond.capLabel === '0' || bond.capLabel === ''
                     ? '0 USD1'
                     : `${bond.capLabel} USD1`,

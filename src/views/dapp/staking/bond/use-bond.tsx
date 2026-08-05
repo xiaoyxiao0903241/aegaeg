@@ -60,7 +60,8 @@ export function useBondDock(kind: BondKind) {
   })
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
-    balance: !sessionReady || !walletReady ? '0.00' : bond.balanceLabel,
+    balance: sessionReady && walletReady ? bond.balanceLabel : '',
+    digits: 4,
   })
 
   async function onSubmit() {

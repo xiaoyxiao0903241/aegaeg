@@ -185,8 +185,8 @@ export function useMarketTradeWidget(
       ? formatTokenAmount(balanceByKey[buyKey], pair.buy.decimals, 4)
       : '',
     balanceLabelFor: (key: TradeTokenKey) => {
-      if (!balanceKnownByKey[key]) return ''
       const token = getTradeToken(key)
+      if (!balanceKnownByKey[key]) return formatGroupedNumber(0, { digits: 4 })
       return formatTokenAmount(balanceByKey[key], token.decimals, 4)
     },
     buyAmount: core.buyAmount,

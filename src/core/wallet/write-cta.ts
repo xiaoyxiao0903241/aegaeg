@@ -1,4 +1,5 @@
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 
 /** 释放 / 领取路径：钱包 + writeReady + 交易忙碌 + 可领额度。 */
 export function canClaimWhen(args: {
@@ -45,14 +46,19 @@ export function writeCtaLabel(
 }
 
 /**
- * 用 `{balance}` 替换模板中的占位；余额为空时返回空串，避免覆盖外层
- * CountValue 的占位显示。
+ * 用 `{balance}` 替换模板；余额未知时用零占位，保留整句 chrome
+ *（如「数量（钱包余额 0.0000 AGX）」），禁止回空串导致 CountValue 裸 `0`。
  *
  * @param template 含 `{balance}` 的模板文案
- * @param args.balance 余额文案
- * @returns 替换后的文案；余额为空返回空串
+ * @param args.balance 余额文案；空串 = 未加载 / 未连接
+ * @param args.digits 未知时零占位小数位（默认 2）
  */
-export function formatAmountBalanceLabel(template: string, args: { balance: string }): string {
-  if (args.balance.trim() === '') return ''
-  return template.replace('{balance}', args.balance)
+export function formatAmountBalanceLabel(
+  template: string,
+  args: { balance: string; digits?: number },
+): string {
+  const digits = Math.max(0, Math.floor(args.digits ?? 2))
+  const balance =
+    args.balance.trim() === '' ? formatGroupedNumber(0, { digits }) : args.balance.trim()
+  return template.replace('{balance}', balance)
 }

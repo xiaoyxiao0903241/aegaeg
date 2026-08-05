@@ -3,11 +3,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import {
-  emptySpotRateDash,
-  type ExchangePairTokens,
-  formatExchangeRateApprox,
-} from '~/views/dapp/exchange/shared'
+import { type ExchangePairTokens, formatExchangeRateApprox } from '~/views/dapp/exchange/shared'
 import { type ExchangePoolReadContext, fetchExchangeQuote } from '~/web3/exchange/exchange-read'
 
 type UseMarketTradeSpotRatesArgs = {
@@ -91,33 +87,25 @@ export function useMarketTradeSpotRates({
     (invertedSpotQuoteQuery.isPending || invertedSpotQuoteQuery.isPlaceholderData) &&
     invertedQuotedOut === 0n
 
-  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut)
-  const exchangePriceLabel =
-    exchangePriceEmpty !== null
-      ? exchangePriceEmpty
-      : formatExchangeRateApprox({
-          amountIn: spotQuoteAmount,
-          amountOut: spotQuotedOut,
-          decimalsIn: pair.sell.decimals,
-          decimalsOut: pair.buy.decimals,
-          symbolIn: pair.sell.symbol,
-          symbolOut: pair.buy.symbol,
-          fractionDigits: 6,
-        })
+  const exchangePriceLabel = formatExchangeRateApprox({
+    amountIn: spotQuoteAmount,
+    amountOut: spotQuotedOut,
+    decimalsIn: pair.sell.decimals,
+    decimalsOut: pair.buy.decimals,
+    symbolIn: pair.sell.symbol,
+    symbolOut: pair.buy.symbol,
+    fractionDigits: 6,
+  })
 
-  const invertedEmpty = emptySpotRateDash(invertedQuotedOut)
-  const exchangePriceLabelInverted =
-    invertedEmpty !== null
-      ? invertedEmpty
-      : formatExchangeRateApprox({
-          amountIn: invertedSpotAmount,
-          amountOut: invertedQuotedOut,
-          decimalsIn: pair.buy.decimals,
-          decimalsOut: pair.sell.decimals,
-          symbolIn: pair.buy.symbol,
-          symbolOut: pair.sell.symbol,
-          fractionDigits: 6,
-        })
+  const exchangePriceLabelInverted = formatExchangeRateApprox({
+    amountIn: invertedSpotAmount,
+    amountOut: invertedQuotedOut,
+    decimalsIn: pair.buy.decimals,
+    decimalsOut: pair.sell.decimals,
+    symbolIn: pair.buy.symbol,
+    symbolOut: pair.sell.symbol,
+    fractionDigits: 6,
+  })
 
   return {
     isSpotQuoting,

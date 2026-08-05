@@ -58,7 +58,7 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
             items={[
               {
                 label: t.exchange.burn.burnRate,
-                value: burn.exchangePriceLabel || '0',
+                value: burn.exchangePriceLabel,
               },
               {
                 label: t.exchange.burn.destination,

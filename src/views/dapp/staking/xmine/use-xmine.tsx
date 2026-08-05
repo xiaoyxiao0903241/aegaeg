@@ -154,7 +154,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     quotaLabel:
       preflightQuery.data !== undefined
         ? formatTokenAmount(preflightQuery.data.miningQuota, GAGX_DECIMALS, 4)
-        : '',
+        : formatGroupedNumber(0, { digits: 4 }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
@@ -184,7 +184,8 @@ export function useXmineDock() {
   })
 
   const amountLabel = formatAmountBalanceLabel(t.staking.xmine.amountBalance, {
-    balance: !sessionReady || !walletReady ? '0.00' : xmine.balanceLabel,
+    balance: sessionReady && walletReady ? xmine.balanceLabel : '',
+    digits: 4,
   })
 
   const dailyYieldLabel =

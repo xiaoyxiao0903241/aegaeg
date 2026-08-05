@@ -88,7 +88,7 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
             items={[
               {
                 label: t.exchange.exchangePrice,
-                value: flash.exchangePriceLabel || '0',
+                value: flash.exchangePriceLabel,
               },
               {
                 label: t.exchange.route,

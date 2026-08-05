@@ -103,7 +103,7 @@ export function BurnExchangeDetail({
         <Grid columns={2}>
           {(
             [
-              { key: 'rate', label: t.exchange.burn.burnRate, value: overviewRateLabel || '0' },
+              { key: 'rate', label: t.exchange.burn.burnRate, value: overviewRateLabel },
               {
                 key: 'burned',
                 label: t.exchange.burn.metrics.totalBurnedAgx,
