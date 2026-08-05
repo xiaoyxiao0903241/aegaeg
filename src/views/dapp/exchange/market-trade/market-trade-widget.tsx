@@ -1,5 +1,3 @@
-import { Settings } from 'lucide-react'
-
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -135,11 +133,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                       onClick={() => vm.setSlippageOpen(true)}
                       type="button"
                     >
-                      <Settings
-                        aria-hidden
-                        className="size-(--app-icon-xs) text-primary"
-                        strokeWidth={1.5}
-                      />
+                      <Icon alt="" size="xs" src={dappAssets.settingPrimary} />
                     </button>
                   </>
                 ),

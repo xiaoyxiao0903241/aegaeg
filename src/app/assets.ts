@@ -99,6 +99,8 @@ export const dappAssets = {
   menu: '/assets/figma/dapp/ic-menu.svg',
   rewards: '/assets/figma/dapp/ic-rewards.svg',
   setting: '/assets/figma/dapp/ic-setting.svg',
+  /** 滑点等 CTA 齿轮 · 同叶 primary 描边（`ic-setting` 为黑，供 Hub 筛选） */
+  settingPrimary: '/assets/figma/dapp/ic-setting-primary.svg',
   infoHint: '/assets/figma/dapp/ic-info-hint.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
   /** Figma `4742:248` 外链 ↗ 9×9（申请解锁等） */

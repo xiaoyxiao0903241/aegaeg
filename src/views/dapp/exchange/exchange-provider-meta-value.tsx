@@ -21,7 +21,7 @@ export function ExchangeProviderMetaValue({
         onClick={onOpen}
         type="button"
       >
-        <Icon alt="" size="xs" src={iconSrc} />
+        <Icon alt="" className="size-2.5" src={iconSrc} />
       </button>
     </>
   )
