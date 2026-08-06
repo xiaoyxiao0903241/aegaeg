@@ -41,7 +41,7 @@ const home = defineMessages({
     languageLabel: 'ภาษา',
   },
   hero: {
-    guardianLabel: 'AEGIS X Guardian',
+    guardianLabel: 'AEGIS X ผู้พิทักษ์',
     eyebrow: 'AI x DeFi x USD1 · โปรโตคอล DeFi 4.0',
     title: 'ปกป้องเครือข่ายมูลค่าแห่งอนาคต',
     body: 'โปรโตคอลระบบนิเวศ USD1 ที่ขับเคลื่อนด้วย AI Think Tank แห่งแรกของโลก โดยใช้ USD1 เป็นสินทรัพย์ชำระราคาหลัก เชื่อมโยง AI การชำระเงิน และเครือข่ายสภาพคล่องทั่วโลก',
@@ -55,7 +55,7 @@ const home = defineMessages({
       subtitle: 'AI x DeFi x USD1 - ขับเคลื่อนกระแสมูลค่า',
       cards: [
         {
-          title: 'AI Think Tank',
+          title: 'คลังสมอง AI',
           body: 'ควบคุมความเสี่ยงอัตโนมัติ สร้างตลาดอัจฉริยะ และจัดการสภาพคล่อง — ทั้งหมดดำเนินการบนเชน',
           index: '01',
         },

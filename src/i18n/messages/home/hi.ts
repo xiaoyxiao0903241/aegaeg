@@ -33,7 +33,7 @@ const home = defineMessages({
       },
       {
         href: '#faq',
-        label: 'FAQs',
+        label: 'अक्सर पूछे जाने वाले प्रश्न',
       },
     ],
     whitepaper: 'व्हाइटपेपर',

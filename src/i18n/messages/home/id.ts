@@ -33,10 +33,10 @@ const home = defineMessages({
       },
       {
         href: '#faq',
-        label: 'FAQs',
+        label: 'Pertanyaan Umum',
       },
     ],
-    whitepaper: 'Whitepaper',
+    whitepaper: 'Makalah Putih',
     enterApp: 'Masuk App',
     languageLabel: 'Bahasa',
   },
@@ -261,7 +261,7 @@ const home = defineMessages({
           },
           {
             linkId: 'whitepaper',
-            label: 'Whitepaper',
+            label: 'Makalah Putih',
           },
           {
             linkId: 'docs',
