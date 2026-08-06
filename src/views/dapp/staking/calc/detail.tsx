@@ -5,7 +5,7 @@
  * 未填写表单或结果缺失时展示占位提示。
  */
 import { periodEndDays } from '~/core/staking/build-calc-estimate'
-import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield-display'
+import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield'
 import { useI18n } from '~/i18n/use-i18n'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
@@ -13,7 +13,7 @@ import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { CalcNotesCard, CalcResultCard } from '~/views/dapp/staking/calc/primitives'
 import { StakingCurveChart } from '~/views/dapp/staking/primitives'

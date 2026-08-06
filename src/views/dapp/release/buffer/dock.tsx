@@ -5,7 +5,7 @@
  * 右上角刷新按钮重读 AGX 链上快照，gAGX 无数据源时显示 0。
  */
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
 import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'

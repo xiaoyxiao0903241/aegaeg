@@ -1,4 +1,6 @@
-export const DAPP_TABLE_PAGE_SIZE = 5
+import { DAPP_TABLE_PAGE_SIZE } from '~/shared/lib/constants'
+
+export { DAPP_TABLE_PAGE_SIZE }
 
 export function shouldShowTablePagination(
   total: number,

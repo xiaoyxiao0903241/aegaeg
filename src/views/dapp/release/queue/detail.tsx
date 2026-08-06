@@ -23,7 +23,7 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { mapReleasePoolLogToRow } from '~/shared/presenters/map-flow-log-rows'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 

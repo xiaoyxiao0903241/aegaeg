@@ -16,7 +16,7 @@ import type { SelectMenuOption } from '~/shared/components/select-menu'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatShortAddress } from '~/shared/presenters/format-display'
+import { formatShortAddress } from '~/shared/presenters/format'
 import {
   formatApiCountLabel,
   formatApiStatLabel,

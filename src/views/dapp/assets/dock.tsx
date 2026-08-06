@@ -6,11 +6,11 @@ import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import { AssetsHubDock } from '~/views/dapp/assets/hub/dock'
 import { PositionDock } from '~/views/dapp/assets/position/dock'
 import { XmineDock } from '~/views/dapp/assets/xmine/dock'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function AssetsDockBody() {
-  const view = useSubviewDisplayView<AssetsView>()
+  const view = useSubviewView<AssetsView>()
   if (view === 'stake') return <PositionDock product="stake" />
   if (view === 'lpbond') return <PositionDock product="lpbond" />
   if (view === 'burnbond') return <PositionDock product="burnbond" />

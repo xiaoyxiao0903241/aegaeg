@@ -1,7 +1,7 @@
 import { parseAbi } from 'viem'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import { X_STAKING_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'

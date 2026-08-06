@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from '~/core/address'
+import { ZERO_ADDRESS } from '~/core/constants'
 
 /**
  * 账户迁移的用户侧校验（纯函数）。

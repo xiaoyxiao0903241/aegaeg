@@ -1,7 +1,7 @@
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
 import { useI18n } from '~/i18n/use-i18n'
-import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
+import { walletRemountKey } from '~/shared/lib/utils'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisPurchaseForm } from '~/views/dapp/genesis/primitives'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'

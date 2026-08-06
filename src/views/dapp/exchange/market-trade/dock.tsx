@@ -14,7 +14,7 @@ import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import {
   ExchangeSlippageModal,

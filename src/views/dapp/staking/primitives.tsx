@@ -12,7 +12,7 @@ import {
   buildCalcYieldCurvePoints,
   CALC_MAX_DAYS,
   calcLocalInterest,
-} from '~/core/staking/staking-yield-display'
+} from '~/core/staking/staking-yield'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
@@ -22,7 +22,7 @@ import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
 /** 链读与墙钟偏差超过此值才重锚定（避免 refetch 抖动）。 */

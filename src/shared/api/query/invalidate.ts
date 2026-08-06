@@ -4,7 +4,7 @@ import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 import type { Paginated, SalesLogItem } from '~/shared/api/types'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import { sleep } from '~/shared/lib/sleep'
+import { sleep } from '~/shared/lib/utils'
 
 type SalesLogFingerprint = { total: number; firstId: number | null }
 

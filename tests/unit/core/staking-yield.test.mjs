@@ -12,7 +12,7 @@ import {
   lockedBonusInterest,
   periodYieldPct,
   stakePeriodDays,
-} from '../../../src/core/staking/staking-yield-display.ts'
+} from '../../../src/core/staking/staking-yield.ts'
 
 test('lockedBonusBps matches RewardManager handbook defaults', () => {
   assert.equal(lockedBonusBps('liquid'), 0)

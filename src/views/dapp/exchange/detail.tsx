@@ -15,11 +15,11 @@ import { FlashExchangeDetail } from '~/views/dapp/exchange/flash-exchange/detail
 import { ExchangeHubDetail } from '~/views/dapp/exchange/hub/detail'
 import { MarketTradeDetail } from '~/views/dapp/exchange/market-trade/detail'
 import { TurbineExchangeDetail } from '~/views/dapp/exchange/turbine/detail'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function ExchangeDetailBody({ trade, flash, burn, turbine }: ExchangeSessions) {
-  const view = useSubviewDisplayView<ExchangeView>()
+  const view = useSubviewView<ExchangeView>()
   if (view === 'flash') {
     const session = requireFlash(flash)
     return <FlashExchangeDetail overviewRateLabel={session.overviewRateLabel} />

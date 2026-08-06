@@ -1,4 +1,4 @@
-import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
+import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'

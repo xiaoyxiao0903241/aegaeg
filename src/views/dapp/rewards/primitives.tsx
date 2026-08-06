@@ -12,7 +12,7 @@ import type {
 import { StatusBadge } from '~/shared/components/badge'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Text } from '~/shared/components/text'
-import { formatApiAmount, parseApiAmount } from '~/shared/presenters/format-display'
+import { formatApiAmount, parseApiAmount } from '~/shared/presenters/format'
 import {
   daoGrantStatusTone,
   formatDaoGrantStatus,

@@ -2,9 +2,9 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMakingOverview } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { formatApiAmount, formatApiStatLabel } from '~/views/dapp/rewards/shared'
-import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
+import { useRewardsContribution } from '~/views/dapp/rewards/use-rewards-contribution'
 
 export type HubStats = {
   totalRewardGagx: string
@@ -59,7 +59,7 @@ export function useRewardsHub(): HubStats {
   const { walletReady, sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useMakingOverview(sessionReady)
-  const { contributionValue } = useRewardsContributionDisplay(walletReady)
+  const { contributionValue } = useRewardsContribution(walletReady)
   const tierEmpty = t.rewards.hub.stats.tierEmpty
   const overview = overviewQuery.data
   const pending = overviewQuery.isLoading

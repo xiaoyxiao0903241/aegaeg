@@ -19,7 +19,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * @param walletReady 钱包是否就绪
  * @see docs/backend-api/api.md #agx-contribution/summary
  */
-export function useRewardsContributionDisplay(walletReady: boolean) {
+export function useRewardsContribution(walletReady: boolean) {
   const { sessionReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address

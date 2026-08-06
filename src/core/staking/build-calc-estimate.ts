@@ -1,4 +1,4 @@
-import { CALC_MAX_DAYS, calcLocalInterest } from '~/core/staking/staking-yield-display'
+import { CALC_MAX_DAYS, calcLocalInterest } from '~/core/staking/staking-yield'
 import type { CalcEstimateResult, CalcProduct } from '~/stores/calc-estimate-store'
 
 /**

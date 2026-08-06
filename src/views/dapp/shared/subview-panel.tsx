@@ -3,10 +3,10 @@ import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState }
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { cn } from '~/shared/lib/utils'
 import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
-import { SubviewDisplayViewContext } from '~/views/dapp/shared/subview-display-context'
+import { SubviewViewContext } from '~/views/dapp/shared/subview-context'
 import { SubviewTransitionLayers } from '~/views/dapp/shared/subview-transition-layers'
 
-export { useSubviewDisplayView } from '~/views/dapp/shared/subview-display-context'
+export { useSubviewView } from '~/views/dapp/shared/subview-context'
 
 /** 中心页与子视图切换共用的叠层网格（每个 DApp Tab 面板都使用）。 */
 export const DAPP_SUBVIEW_TRANSITION_STACK =
@@ -82,9 +82,7 @@ export function SubviewHost({
           {children}
         </SubviewTransitionLayers>
       ) : (
-        <SubviewDisplayViewContext.Provider value={view}>
-          {children}
-        </SubviewDisplayViewContext.Provider>
+        <SubviewViewContext.Provider value={view}>{children}</SubviewViewContext.Provider>
       )}
     </div>
   )

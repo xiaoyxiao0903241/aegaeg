@@ -9,7 +9,7 @@ import { assertWeb3EnvConfigured, thirdwebClient } from '~/web3/thirdweb'
 import { AutoConnect, ThirdwebProvider } from '~/web3/thirdweb-react'
 
 /**
- * DApp 专用 Provider 栈（`app.html` / `src/boot/main.tsx`）。
+ * DApp 专用 Provider 栈（`app.html` / `src/boot/dapp-main.tsx`）。
  * 首页使用 `HomeProviders`（`query-providers.tsx`，无 thirdweb）。
  *
  * QueryProvider 必须放在 ThirdwebProvider 内部：thirdweb 的 Provider

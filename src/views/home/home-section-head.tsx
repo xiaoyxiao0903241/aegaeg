@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { Text } from '~/shared/components/text'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 /**
  * 首页区块标题

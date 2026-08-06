@@ -6,11 +6,11 @@ import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import { AssetsHubDetail } from '~/views/dapp/assets/hub/detail'
 import { PositionDetail } from '~/views/dapp/assets/position/detail'
 import { XmineDetail } from '~/views/dapp/assets/xmine/detail'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function AssetsDetailBody() {
-  const view = useSubviewDisplayView<AssetsView>()
+  const view = useSubviewView<AssetsView>()
   if (view === 'stake') return <PositionDetail product="stake" />
   if (view === 'lpbond') return <PositionDetail product="lpbond" />
   if (view === 'burnbond') return <PositionDetail product="burnbond" />

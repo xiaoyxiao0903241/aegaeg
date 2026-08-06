@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-export const SubviewDisplayViewContext = createContext<string | null>(null)
+export const SubviewViewContext = createContext<string | null>(null)
 
 /**
  * 读取当前渲染层应展示的子视图名。
@@ -11,10 +11,10 @@ export const SubviewDisplayViewContext = createContext<string | null>(null)
  * @returns 当前子视图名
  * @throws 未挂载在 SubviewHost 下时抛出
  */
-export function useSubviewDisplayView<TView extends string = string>(): TView {
-  const view = useContext(SubviewDisplayViewContext)
+export function useSubviewView<TView extends string = string>(): TView {
+  const view = useContext(SubviewViewContext)
   if (view == null) {
-    throw new Error('useSubviewDisplayView must be used under SubviewHost')
+    throw new Error('useSubviewView must be used under SubviewHost')
   }
   return view as TView
 }

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import { buildCalcEstimate } from '~/core/staking/build-calc-estimate'
-import { CALC_MAX_DAYS, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield-display'
+import { CALC_MAX_DAYS, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import {

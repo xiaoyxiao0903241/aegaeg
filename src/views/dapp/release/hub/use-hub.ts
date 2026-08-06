@@ -5,7 +5,7 @@ import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-dat
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { formatReleaseApiOrChainLabel, formatReleasePct } from '~/views/dapp/release/shared'
 import {
   useReleaseBufferSnapshot,

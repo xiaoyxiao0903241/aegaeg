@@ -33,8 +33,7 @@ import {
   getExchangeTokenContractAddress,
   openTokenContractOnBscScan,
 } from '~/shared/config/token-contracts'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 import { ExchangePromoCard, ExchangePromoPillAction } from '~/views/dapp/exchange/primitives'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const

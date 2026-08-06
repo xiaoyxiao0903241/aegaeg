@@ -5,7 +5,7 @@ import {
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 
 /**
  * 把团队邀请项映射为表格行

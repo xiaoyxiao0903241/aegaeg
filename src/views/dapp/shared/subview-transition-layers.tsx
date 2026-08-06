@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { DappViewDirection } from '~/stores/create-dapp-subview-store'
-import { SubviewDisplayViewContext } from '~/views/dapp/shared/subview-display-context'
+import { SubviewViewContext } from '~/views/dapp/shared/subview-context'
 
 /**
  * 子视图切换时的退场 / 入场两层。
@@ -24,16 +24,12 @@ export function SubviewTransitionLayers({
     <>
       <div className="dapp-subview-layer dapp-subview-layer-exit" data-dapp-direction={direction}>
         <div className="dapp-subview-layer-motion">
-          <SubviewDisplayViewContext.Provider value={outgoing}>
-            {children}
-          </SubviewDisplayViewContext.Provider>
+          <SubviewViewContext.Provider value={outgoing}>{children}</SubviewViewContext.Provider>
         </div>
       </div>
       <div className="dapp-subview-layer dapp-subview-layer-enter" data-dapp-direction={direction}>
         <div className="dapp-subview-layer-motion">
-          <SubviewDisplayViewContext.Provider value={incoming}>
-            {children}
-          </SubviewDisplayViewContext.Provider>
+          <SubviewViewContext.Provider value={incoming}>{children}</SubviewViewContext.Provider>
         </div>
       </div>
     </>

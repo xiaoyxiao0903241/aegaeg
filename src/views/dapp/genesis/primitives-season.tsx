@@ -11,8 +11,7 @@ import { Carousel } from '~/shared/components/carousel'
 import { RadioGroup, RadioIndicator } from '~/shared/components/radio'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 /**
  * 创世季卡样式

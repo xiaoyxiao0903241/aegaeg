@@ -14,7 +14,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
-import { formatShortAddress } from '~/shared/presenters/format-display'
+import { formatShortAddress } from '~/shared/presenters/format'
 import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals

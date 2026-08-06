@@ -16,7 +16,7 @@ import {
   formatPresaleRank,
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 import {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,

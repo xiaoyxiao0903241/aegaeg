@@ -9,8 +9,8 @@ import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
-import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { fillTemplate } from '~/shared/lib/utils'
+import { formatNumber } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
 
@@ -42,7 +42,7 @@ export function useGenesisDock(genesis: GenesisSessionState) {
     sharesInputRef.current?.focus()
   }, [isMobileViewport])
 
-  const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
+  const xTokenAirdropHint = fillTemplate(t.genesis.xTokenAirdropHint, {
     threshold: formatNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
   })
 

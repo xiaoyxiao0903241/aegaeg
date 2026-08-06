@@ -8,7 +8,7 @@ import {
   lockedBonusBps,
   periodYieldPct,
   stakePeriodDays,
-} from '~/core/staking/staking-yield-display'
+} from '~/core/staking/staking-yield'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeFlowPositions } from '~/hooks/use-api-data'
@@ -18,7 +18,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapStakePositionToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'

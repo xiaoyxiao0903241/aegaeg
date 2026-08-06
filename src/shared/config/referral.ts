@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from '~/shared/config/contracts'
+import { ZERO_ADDRESS } from '~/core/constants'
 
 export const REFERRAL_CONFIG = {
   refQueryKey: 'ref',

@@ -14,8 +14,7 @@ import {
 
 import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import { Text } from '~/shared/components/text'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 /**
  * 右栏内容节

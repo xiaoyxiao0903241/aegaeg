@@ -10,11 +10,11 @@ import { RewardsHubDetail } from '~/views/dapp/rewards/hub/detail'
 import { LuckyDetail } from '~/views/dapp/rewards/lucky/detail'
 import { ParticipateDetail } from '~/views/dapp/rewards/participate/detail'
 import { ReferralDetail } from '~/views/dapp/rewards/referral/detail'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function RewardsDetailBody() {
-  const view = useSubviewDisplayView<RewardsView>()
+  const view = useSubviewView<RewardsView>()
   if (view === 'hub') return <RewardsHubDetail />
   if (view === 'lucky') return <LuckyDetail />
   if (view === 'referral') return <ReferralDetail />

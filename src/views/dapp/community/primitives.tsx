@@ -13,8 +13,7 @@ import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn, navigableHref } from '~/shared/lib/utils'
+import { cn, navigableHref, revealClass } from '~/shared/lib/utils'
 
 /** 社区数据卡在 H5 下共用的容器样式。 */
 export const communityStatCardMobileFrame = tv({

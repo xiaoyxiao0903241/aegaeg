@@ -27,7 +27,7 @@ import {
   formatTableGenesisRank,
   parseApiAmount,
   TABLE_EMPTY,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 
 /**
  * 非数值空态占位（日期、哈希、标签用「—」）。
@@ -37,7 +37,7 @@ export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral'>
 
-/** 金额字符串展示 SSOT 在 `~/shared/presenters/format-display`；此处再导出供页袋旧 import。 */
+/** 金额字符串展示 SSOT 在 `~/shared/presenters/format`；此处再导出供页袋旧 import。 */
 export { formatApiAmount }
 
 /**

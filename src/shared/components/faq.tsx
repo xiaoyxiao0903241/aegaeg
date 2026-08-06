@@ -5,8 +5,7 @@ import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/components/card'
 import { CollapseChevron } from '~/shared/components/collapse-chevron'
 import { Text } from '~/shared/components/text'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 export type FaqItem = {
   a: ReactNode

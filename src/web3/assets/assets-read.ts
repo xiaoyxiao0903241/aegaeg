@@ -1,9 +1,10 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import type { DurationPlan } from '~/core/assets/claim-plans'
+import { ZERO_ADDRESS } from '~/core/constants'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { BOND_PERIODS, type StakePeriod } from '~/core/staking/staking-period'
-import { type Address, BSC_CONTRACTS, ZERO_ADDRESS } from '~/shared/config/contracts'
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
   BOND_DEPOSITORY_ASSETS_METHODS,

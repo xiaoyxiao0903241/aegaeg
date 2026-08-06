@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { baseDailyPctFromEpoch, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield-display'
+import { baseDailyPctFromEpoch, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useAssetsHoldingsDistribution,
@@ -22,7 +22,7 @@ import {
   formatNumber,
   formatUsdApprox,
   parseApiAmount,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 import {
   readBurnBondPositions,
   readContributionSnapshot,

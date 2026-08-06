@@ -4,9 +4,7 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 test('parseApiAmount fail-closed; formatApiAmount zeros empty', async () => {
-  const { formatApiAmount, parseApiAmount } = await loadModule(
-    '/src/shared/presenters/format-display.ts',
-  )
+  const { formatApiAmount, parseApiAmount } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(parseApiAmount(undefined), null)
   assert.equal(parseApiAmount(''), null)
@@ -19,9 +17,7 @@ test('parseApiAmount fail-closed; formatApiAmount zeros empty', async () => {
 })
 
 test('getPresaleRankHighlightedRows maps rank to tier table row index', async () => {
-  const { getPresaleRankHighlightedRows } = await loadModule(
-    '/src/shared/presenters/format-display.ts',
-  )
+  const { getPresaleRankHighlightedRows } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.deepEqual(getPresaleRankHighlightedRows(0, 6), [])
   assert.deepEqual(getPresaleRankHighlightedRows(3, 6), [2])
@@ -30,9 +26,7 @@ test('getPresaleRankHighlightedRows maps rank to tier table row index', async ()
 })
 
 test('formatShareholderHintForRank renders tier-specific hint', async () => {
-  const { formatShareholderHintForRank } = await loadModule(
-    '/src/shared/presenters/format-display.ts',
-  )
+  const { formatShareholderHintForRank } = await loadModule('/src/shared/presenters/format.ts')
   const tiers = [
     ['S1', '$500', '$5,000', '1%'],
     ['S2', '$1,000', '$10,000', '2%'],
@@ -44,7 +38,7 @@ test('formatShareholderHintForRank renders tier-specific hint', async () => {
 })
 
 test('formatNumber supports $ prefix and USD suffix', async () => {
-  const { formatNumber } = await loadModule('/src/shared/presenters/format-display.ts')
+  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(formatNumber(5000, { suffix: ' USD' }), '5,000 USD')
   assert.equal(formatNumber('invalid', { suffix: ' USD' }), '0 USD')
@@ -53,7 +47,7 @@ test('formatNumber supports $ prefix and USD suffix', async () => {
 })
 
 test('formatUsdApprox: missing / no price / NaN → ≈ $0.00', async () => {
-  const { formatUsdApprox } = await loadModule('/src/shared/presenters/format-display.ts')
+  const { formatUsdApprox } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(formatUsdApprox(0, null), '≈ $0.00')
   assert.equal(formatUsdApprox(0, 65), '≈ $0.00')
@@ -65,7 +59,7 @@ test('formatUsdApprox: missing / no price / NaN → ≈ $0.00', async () => {
 
 test('formatCompact / formatUsd / formatPercentChange match hub Figma shapes', async () => {
   const { formatCompact, formatUsd, formatPercentChange, formatUsdApprox } = await loadModule(
-    '/src/shared/presenters/format-display.ts',
+    '/src/shared/presenters/format.ts',
   )
 
   assert.equal(formatCompact(129_000, { suffix: ' AGX' }), '129K AGX')
@@ -129,7 +123,7 @@ test('agxUsd1SpotPriceWeiFromReserves is USD1 wei per 1 AGX', async () => {
 })
 
 test('formatTableGenesisRank hides S0 in community member table', async () => {
-  const { formatTableGenesisRank } = await loadModule('/src/shared/presenters/format-display.ts')
+  const { formatTableGenesisRank } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(formatTableGenesisRank(0), '-')
   assert.equal(formatTableGenesisRank(-1), '-')
@@ -241,7 +235,7 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
 
 test('claimableAmountValue subtracts claimed from total', async () => {
   const { claimableAmountValue } = await loadModule('/src/views/dapp/rewards/shared.ts')
-  const { formatNumber } = await loadModule('/src/shared/presenters/format-display.ts')
+  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(
     formatNumber(claimableAmountValue('1000', '657.82'), { digits: 2, prefix: '$' }),

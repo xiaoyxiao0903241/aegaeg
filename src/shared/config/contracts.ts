@@ -1,13 +1,6 @@
-import { ZERO_ADDRESS as CORE_ZERO_ADDRESS } from '~/core/address'
 import { requireEnvAddress } from '~/shared/config/env'
 
 export type Address = `0x${string}`
-
-/**
- * EIP 零地址——协议哨兵值（未绑定推荐人 / 禁用槽位标记）。
- * 不是部署地址，也不作为环境变量兜底。定义唯一来源：`core/address`。
- */
-export const ZERO_ADDRESS = CORE_ZERO_ADDRESS satisfies Address
 
 export interface BscContracts {
   chainId: 56

@@ -11,7 +11,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { formatPercentChange, formatUsd } from '~/shared/presenters/format-display'
+import { formatPercentChange, formatUsd } from '~/shared/presenters/format'
 import {
   StakingMechanismCard,
   StakingMetricValue,

@@ -10,7 +10,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { Text } from '~/shared/components/text'
 import { bscscanTx } from '~/shared/config/explorer'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/shared'
 

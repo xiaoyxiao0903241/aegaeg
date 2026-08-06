@@ -10,7 +10,7 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
+import { fillTemplate } from '~/shared/lib/utils'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisContributionsTable, GenesisGlobalCard } from '~/views/dapp/genesis/primitives'
 import { genesisFaqTemplateValues } from '~/views/dapp/genesis/shared'
@@ -32,7 +32,7 @@ export function GenesisDetail({ genesis }: { genesis: GenesisSessionState }) {
 
   const genesisFaqItems = t.genesis.faq.items.map((item) => ({
     q: item.q,
-    a: applyMessageTemplate(item.a, genesisFaqValues),
+    a: fillTemplate(item.a, genesisFaqValues),
   }))
 
   return (

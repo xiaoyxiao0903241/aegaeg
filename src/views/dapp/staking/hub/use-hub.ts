@@ -7,7 +7,7 @@ import {
   lockedBonusBps,
   periodYieldPct,
   stakePeriodDays,
-} from '~/core/staking/staking-yield-display'
+} from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
@@ -20,7 +20,7 @@ import {
   formatPercentChange,
   formatUsd,
   formatUsdApprox,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`

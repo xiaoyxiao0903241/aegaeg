@@ -15,9 +15,9 @@ import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
-import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { formatNumber, formatPresaleRank } from '~/shared/presenters/format-display'
+import { fillTemplate } from '~/shared/lib/utils'
+import { formatNumber, formatPresaleRank } from '~/shared/presenters/format'
 import {
   CommunityInviteCard,
   CommunityProgramCard,
@@ -63,7 +63,7 @@ export function CommunityDetail() {
     if (index !== 0) return program
     return {
       ...program,
-      label: applyMessageTemplate(program.label, {
+      label: fillTemplate(program.label, {
         season: String(genesis.activeSeasonNumber),
       }),
     }

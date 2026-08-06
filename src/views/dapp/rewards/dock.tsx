@@ -10,11 +10,11 @@ import { RewardsHubDock } from '~/views/dapp/rewards/hub/dock'
 import { LuckyDock } from '~/views/dapp/rewards/lucky/dock'
 import { ParticipateDock } from '~/views/dapp/rewards/participate/dock'
 import { ReferralDock } from '~/views/dapp/rewards/referral/dock'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function RewardsDockBody() {
-  const view = useSubviewDisplayView<RewardsView>()
+  const view = useSubviewView<RewardsView>()
   if (view === 'lucky') return <LuckyDock />
   if (view === 'referral') return <ReferralDock />
   if (view === 'participate') return <ParticipateDock />

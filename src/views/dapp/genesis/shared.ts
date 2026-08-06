@@ -17,7 +17,7 @@ import {
   formatNumber,
   formatShortAddress,
   TABLE_EMPTY,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 
 export interface GenesisFaqTemplateValues extends Record<string, string> {

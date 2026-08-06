@@ -6,8 +6,7 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 // —— exchange-promo-card ——
 

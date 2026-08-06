@@ -12,7 +12,7 @@ import {
   parseReferrerAddress,
   parseReferrerFromSearch,
 } from '~/shared/config/referral'
-import { formatNumber, formatShortAddress } from '~/shared/presenters/format-display'
+import { formatNumber, formatShortAddress } from '~/shared/presenters/format'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'

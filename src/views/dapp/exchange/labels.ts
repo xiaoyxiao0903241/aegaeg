@@ -1,4 +1,4 @@
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 
 /**
  * 拼接 `标签: 值` 余额文案（供 AmountBox / CountValue 使用）

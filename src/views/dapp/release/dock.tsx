@@ -6,11 +6,11 @@ import { useReleaseViewMotion } from '~/stores/release-view-store'
 import { BufferDock } from '~/views/dapp/release/buffer/dock'
 import { ReleaseHubDock } from '~/views/dapp/release/hub/dock'
 import { QueueDock } from '~/views/dapp/release/queue/dock'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function ReleaseDockBody() {
-  const view = useSubviewDisplayView<ReleaseView>()
+  const view = useSubviewView<ReleaseView>()
   if (view === 'queue') return <QueueDock />
   if (view === 'buffer') return <BufferDock />
   return <ReleaseHubDock />

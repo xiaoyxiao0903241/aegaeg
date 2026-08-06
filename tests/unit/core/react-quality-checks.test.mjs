@@ -210,7 +210,7 @@ test('assertQuotedExchangeStillSubmittable throws EXCHANGE_SUBMIT_BLOCKED when b
 })
 
 test('walletRemountKey clears draft identity on address change', async () => {
-  const { walletRemountKey } = await loadModule('/src/shared/lib/wallet-remount-key.ts')
+  const { walletRemountKey } = await loadModule('/src/shared/lib/utils.ts')
 
   assert.equal(walletRemountKey(undefined), 'disconnected')
   assert.equal(walletRemountKey(null), 'disconnected')

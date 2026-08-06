@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
+import { walletRemountKey } from '~/shared/lib/utils'
 import { AssetsDetail } from '~/views/dapp/assets/detail'
 import { AssetsDock } from '~/views/dapp/assets/dock'
 import { CommunityDetail } from '~/views/dapp/community/detail'

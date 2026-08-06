@@ -1,5 +1,5 @@
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 
 /** 仓位卡金额：AGX 单位文案，或 Quote=USD 时用缓存价换算 `$1,300.00`。 */
 export function formatAssetsPositionAmount(

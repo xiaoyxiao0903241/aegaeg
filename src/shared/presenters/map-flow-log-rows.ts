@@ -15,7 +15,7 @@ import {
   formatNumber,
   formatShortAddress,
   TABLE_EMPTY,
-} from '~/shared/presenters/format-display'
+} from '~/shared/presenters/format'
 
 /**
  * 各类流水/持仓记录 → 表格行映射

@@ -1,7 +1,6 @@
 import { tv } from 'tailwind-variants'
 
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 /** 深色横幅布局与表面配色；文案排版由调用方用 `<Text>` 配合这些槽位完成 */
 export const darkBanner = tv({

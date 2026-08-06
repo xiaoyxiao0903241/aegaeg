@@ -1,6 +1,6 @@
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
-import { formatPresaleRank } from '~/shared/presenters/format-display'
+import { formatPresaleRank } from '~/shared/presenters/format'
 
 /**
  * 股东等级标题文案

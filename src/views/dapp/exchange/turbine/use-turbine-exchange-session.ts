@@ -10,7 +10,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 import {
   submitTurbineClaim,
   submitTurbineUnlock,

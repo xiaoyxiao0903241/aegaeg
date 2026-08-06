@@ -1,14 +1,11 @@
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
-import {
-  formatNumber,
-  parseApiAmount as parseApiAmountNullable,
-} from '~/shared/presenters/format-display'
+import { formatNumber, parseApiAmount as parseApiAmountNullable } from '~/shared/presenters/format'
 
 type StakingMoneyBlock = Parameters<typeof evaluateWriteButtonPhase>[0]['moneyBlock']
 
-/** 旁注金额：API 非法时兜底 0（解析 SSOT 仍是 format-display `parseApiAmount`）。 */
+/** 旁注金额：API 非法时兜底 0（解析 SSOT 仍是 format `parseApiAmount`）。 */
 export function parseApiAmountOrZero(raw: string | undefined): number {
   return parseApiAmountNullable(raw) ?? 0
 }

@@ -5,7 +5,7 @@ import {
   epochRebasePctFrom1e18,
   periodYieldPct,
   stakePeriodDays,
-} from '~/core/staking/staking-yield-display'
+} from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -17,7 +17,7 @@ import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { formatNumber, formatShortAddress } from '~/shared/presenters/format-display'
+import { formatNumber, formatShortAddress } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'

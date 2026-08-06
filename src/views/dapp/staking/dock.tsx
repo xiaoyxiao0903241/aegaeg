@@ -3,7 +3,7 @@
  */
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
 import { BondDock } from '~/views/dapp/staking/bond/dock'
 import { CalcDock } from '~/views/dapp/staking/calc/dock'
@@ -12,7 +12,7 @@ import { StakeDock } from '~/views/dapp/staking/stake/dock'
 import { XmineDock } from '~/views/dapp/staking/xmine/dock'
 
 function StakingDockBody() {
-  const view = useSubviewDisplayView<StakingView>()
+  const view = useSubviewView<StakingView>()
   if (view === 'stake') return <StakeDock />
   if (view === 'lpbond') return <BondDock kind="lp" />
   if (view === 'burnbond') return <BondDock kind="burn" />

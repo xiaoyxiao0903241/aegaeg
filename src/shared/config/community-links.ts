@@ -1,11 +1,12 @@
 import type { Locale } from '~/i18n'
+import { appEnv } from '~/shared/config/env'
 import { notionLink } from '~/shared/config/notion-links'
 
 export const COMMUNITY_SOCIAL_LINKS = {
-  youtube: 'https://www.youtube.com/@AegisxDAO',
-  medium: 'https://medium.com/@AegisX__',
-  twitter: 'https://x.com/AegisX__',
-  telegram: 'https://t.me/xdao_officialchannel',
+  youtube: appEnv.communityYoutubeUrl,
+  medium: appEnv.communityMediumUrl,
+  twitter: appEnv.communityTwitterUrl,
+  telegram: appEnv.communityTelegramUrl,
 } as const
 
 export type CommunitySocialLinkId = keyof typeof COMMUNITY_SOCIAL_LINKS

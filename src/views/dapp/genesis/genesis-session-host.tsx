@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
+import { walletRemountKey } from '~/shared/lib/utils'
 import { useGenesisSession } from '~/views/dapp/genesis/use-genesis-session'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 

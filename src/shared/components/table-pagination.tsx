@@ -21,7 +21,7 @@ import { Text } from '~/shared/components/text'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 
 const PAGE_MENU_VISIBLE_ITEMS = 5
 const PAGINATION_BTN_RADIUS = 'rounded-tight'

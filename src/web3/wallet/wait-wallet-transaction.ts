@@ -7,7 +7,7 @@ import {
 } from 'viem'
 import { bsc } from 'viem/chains'
 
-import { sleep } from '~/shared/lib/sleep'
+import { sleep } from '~/shared/lib/utils'
 
 const RECEIPT_POLL_MS = 2_000
 /** 广播交易等待出块的最长时间。 */

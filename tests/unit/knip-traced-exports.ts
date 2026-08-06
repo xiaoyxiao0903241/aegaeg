@@ -44,7 +44,7 @@ export {
   formatApiDateTime,
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
-} from '../../src/shared/presenters/format-display'
+} from '../../src/shared/presenters/format'
 export {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,

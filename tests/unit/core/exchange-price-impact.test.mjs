@@ -38,7 +38,7 @@ test('calcV2PriceImpactBps measures mid vs execution', async () => {
 })
 
 test('gas estimate empty and tilde grouping use formatNumber', async () => {
-  const { formatNumber } = await loadModule('/src/shared/presenters/format-display.ts')
+  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(formatNumber(0, { digits: 0, trimZeros: true, prefix: '~' }), '~0')
   assert.equal(formatNumber(90_000n, { digits: 0, trimZeros: true, prefix: '~' }), '~90,000')

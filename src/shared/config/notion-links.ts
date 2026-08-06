@@ -1,16 +1,16 @@
 import type { Locale } from '~/i18n'
+import { appEnv } from '~/shared/config/env'
 
 const zhNotionLinks = {
-  whitepaper: 'https://xdaoaegis.notion.site/37fdd8755b98809183dcdfb90e2c82ce',
-  docs: 'https://xdaoaegis.notion.site',
-  economicModel: 'https://xdaoaegis.notion.site/37fdd8755b9880df8e5bc705e3438665',
+  whitepaper: appEnv.notionZhWhitepaperUrl,
+  docs: appEnv.notionZhDocsUrl,
+  economicModel: appEnv.notionZhEconomicModelUrl,
 } as const
 
 const enNotionLinks = {
-  whitepaper: 'https://xdaoaegis.notion.site/Read-Whitepaper-V1-0-37fdd8755b988085a906cd5cb6ad5ee0',
-  docs: 'https://xdaoaegis.notion.site/en',
-  economicModel:
-    'https://xdaoaegis.notion.site/Read-Economic-Model-Analysis-37fdd8755b98807282ede05961292be2',
+  whitepaper: appEnv.notionEnWhitepaperUrl,
+  docs: appEnv.notionEnDocsUrl,
+  economicModel: appEnv.notionEnEconomicModelUrl,
 } as const
 
 export type NotionLinkKey = keyof typeof zhNotionLinks

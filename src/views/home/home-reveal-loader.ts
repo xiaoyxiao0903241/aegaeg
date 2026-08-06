@@ -1,4 +1,4 @@
-import { formatNumber } from '~/shared/presenters/format-display'
+import { formatNumber } from '~/shared/presenters/format'
 
 let booted = false
 

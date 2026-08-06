@@ -15,7 +15,7 @@ import { Card } from '~/shared/components/card'
 import { Empty } from '~/shared/components/empty'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber, formatUsd } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsd } from '~/shared/presenters/format'
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
 /**

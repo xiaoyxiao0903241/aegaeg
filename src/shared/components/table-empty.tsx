@@ -7,8 +7,7 @@ import type { ReactNode } from 'react'
 import { Empty } from '~/shared/components/empty'
 import { Frame } from '~/shared/components/table-frame'
 import { Text } from '~/shared/components/text'
-import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
+import { cn, revealClass } from '~/shared/lib/utils'
 
 function TableEmpty({
   body,

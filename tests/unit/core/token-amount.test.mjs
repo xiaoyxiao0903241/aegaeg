@@ -96,7 +96,7 @@ test('formatTokenAmount fixed digits pads trailing zeros', async () => {
 })
 
 test('formatNumber is the human-number display core', async () => {
-  const { formatNumber } = await loadModule('/src/shared/presenters/format-display.ts')
+  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(formatNumber(1234.5, { digits: 2, trimZeros: false, prefix: '$' }), '$1,234.50')
   assert.equal(formatNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')

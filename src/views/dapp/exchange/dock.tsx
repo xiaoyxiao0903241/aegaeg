@@ -15,11 +15,11 @@ import { FlashExchangeDock } from '~/views/dapp/exchange/flash-exchange/dock'
 import { ExchangeHubDock } from '~/views/dapp/exchange/hub/dock'
 import { MarketTradeDock } from '~/views/dapp/exchange/market-trade/dock'
 import { TurbineDock } from '~/views/dapp/exchange/turbine/dock'
-import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
+import { useSubviewView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
 
 function ExchangeDockBody({ trade, flash, burn, turbine }: ExchangeSessions) {
-  const view = useSubviewDisplayView<ExchangeView>()
+  const view = useSubviewView<ExchangeView>()
   if (view === 'flash') return <FlashExchangeDock flash={requireFlash(flash)} />
   if (view === 'trade') return <MarketTradeDock trade={requireTrade(trade)} />
   if (view === 'burn') return <BurnDock burn={requireBurn(burn)} />

@@ -13,6 +13,16 @@ interface ImportMetaEnv {
   readonly VITE_SWAP_DEFAULT_SLIPPAGE_BPS?: string
   readonly VITE_SWAP_DEADLINE_SECONDS?: string
   readonly VITE_PANCAKE_SWAP_BASE_URL?: string
+  readonly VITE_COMMUNITY_YOUTUBE_URL?: string
+  readonly VITE_COMMUNITY_MEDIUM_URL?: string
+  readonly VITE_COMMUNITY_TWITTER_URL?: string
+  readonly VITE_COMMUNITY_TELEGRAM_URL?: string
+  readonly VITE_NOTION_ZH_WHITEPAPER_URL?: string
+  readonly VITE_NOTION_ZH_DOCS_URL?: string
+  readonly VITE_NOTION_ZH_ECONOMIC_MODEL_URL?: string
+  readonly VITE_NOTION_EN_WHITEPAPER_URL?: string
+  readonly VITE_NOTION_EN_DOCS_URL?: string
+  readonly VITE_NOTION_EN_ECONOMIC_MODEL_URL?: string
   readonly VITE_BSC_WBNB?: string
   readonly VITE_BSC_USD1?: string
   readonly VITE_BSC_USDT?: string
