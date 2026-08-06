@@ -120,8 +120,8 @@ export function OnboardingSpotlight({
     return () => window.clearTimeout(timer)
   }, [target, layout, motionReady])
 
-  const targetRect = layout?.target ?? null
-  const placement = layout?.placement ?? null
+  const targetRect = target && layout ? layout.target : null
+  const placement = target && layout ? layout.placement : null
   const motionClass = motionReady
     ? 'duration-dapp-emphasis transition-[transform,width,height] ease-dapp'
     : undefined
