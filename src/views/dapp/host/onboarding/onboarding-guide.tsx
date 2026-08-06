@@ -19,7 +19,7 @@ import {
  * DApp 新手引导（不包含创世页）。
  *
  * 自研 spotlight：紧贴目标 primary 描边、气泡视口躲避；
- * 首次访问自动启动一次，之后可通过顶部栏入口重播。
+ * 首次访问（storage 未完成）自动启动一次；PC 顶栏可重播，H5 隐藏重播入口。
  * 完成/跳过：关 H5 抽屉并回到兑换中心（DApp 首页）。
  */
 export function OnboardingGuide({
@@ -110,7 +110,8 @@ export function OnboardingGuide({
 }
 
 /**
- * 首次访问 DApp 时自动打开引导（持久化标记未完成时）。
+ * 首次访问 DApp 时自动打开引导（持久化标记未完成时；PC / H5 均适用）。
+ * H5 仅隐藏顶栏重播按钮，不阻止首次自动弹出。
  *
  * @returns open 是否打开 · setOpen 手动开关 · startTour 重播入口 ·
  *          done 本版本是否已完成过

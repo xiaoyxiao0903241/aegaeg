@@ -26,6 +26,7 @@ export function CobuildDetail() {
     contributionValue,
     referralCount,
     totalRewards,
+    totalRewardsApprox,
     totalPerformance,
     myPosition,
     nextPayout,
@@ -49,7 +50,12 @@ export function CobuildDetail() {
   } = useCobuild()
 
   const overviewTiles = [
-    { key: 'totalRewards', label: cobuild.totalRewards, value: totalRewards },
+    {
+      key: 'totalRewards',
+      label: cobuild.totalRewards,
+      value: totalRewards,
+      note: totalRewardsApprox,
+    },
     { key: 'totalPerformance', label: cobuild.totalPerformance, value: totalPerformance },
     { key: 'myPosition', label: cobuild.myPosition, value: myPosition },
     { key: 'directCount', label: cobuild.directCount, value: referralCount },
@@ -89,6 +95,7 @@ export function CobuildDetail() {
                   </Text>
                 ) : null}
               </span>
+              {'note' in item && item.note != null ? <Tile.Note>{item.note}</Tile.Note> : null}
             </Tile>
           ))}
         </Grid>

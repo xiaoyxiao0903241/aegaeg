@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import type {
   CommunityFundLogItem,
@@ -16,6 +18,8 @@ import type {
   RewardLogItem,
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
+import { StatusBadge } from '~/shared/components/badge'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import {
   formatApiAmount,
@@ -23,8 +27,8 @@ import {
   formatBlockTime,
   formatNumber,
   formatRegisterDate,
-  formatShortAddress,
   formatTableGenesisRank,
+  formatUsdApprox,
   parseApiAmount,
   TABLE_EMPTY,
 } from '~/shared/presenters/format'
@@ -88,6 +92,41 @@ export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean
     ) => formatApiStatLabel(sessionReady, isPending, raw, options),
     count: (raw: number | null | undefined) => formatApiCountLabel(sessionReady, isPending, raw),
   }
+}
+
+/**
+ * AGX 数量 × 现价 → `$…`（仓位 / 业绩主值；稿面用 `$` 前缀，无 ≈）。
+ * 无会话 / 冷启动 / 无价 → `$0.00`。
+ */
+export function formatApiAgxUsdLabel(
+  sessionReady: boolean,
+  isPending: boolean,
+  raw: string | null | undefined,
+  priceUsd: number | null,
+): string {
+  if (!sessionReady || (isPending && raw == null)) {
+    return formatNumber(0, { digits: 2, prefix: '$' })
+  }
+  const n = parseApiAmount(raw)
+  if (n == null || priceUsd == null || priceUsd <= 0) {
+    return formatNumber(0, { digits: 2, prefix: '$' })
+  }
+  return formatNumber(n * priceUsd, { digits: 2, prefix: '$' })
+}
+
+/**
+ * gAGX 奖励主值旁注：`≈ $…`（稿有 ≈ 才挂 Tile.Note）。
+ */
+export function formatApiGagxApproxUsd(
+  sessionReady: boolean,
+  isPending: boolean,
+  raw: string | null | undefined,
+  priceUsd: number | null,
+): string {
+  if (!sessionReady || (isPending && raw == null)) {
+    return formatUsdApprox(0, null)
+  }
+  return formatUsdApprox(parseApiAmount(raw) ?? 0, priceUsd)
 }
 
 /**
@@ -225,7 +264,7 @@ export function claimableAmountValue(total: string, claimed: string): number {
   return Math.max(0, totalN - claimedN)
 }
 
-export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLabels): string[] {
+export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLabels): ReactNode[] {
   const signedAmount = parseApiAmount(item.amount)
   const amountLabel =
     signedAmount != null
@@ -240,7 +279,7 @@ export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLa
   return [
     formatBlockTime(item.block_time),
     amountLabel,
-    formatShortAddress(item.from_address),
+    <ExplorerLink key={item.from_address} value={item.from_address} />,
     orderLabel,
     formatRewardStatus(item.status, labels),
   ]
@@ -299,10 +338,10 @@ export function mapParticipationAwardLogToRow(
   return mapDaoGrantAwardLogToRow(item, labels)
 }
 
-export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): string[] {
+export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    formatShortAddress(item.address),
+    <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.active_stake_balance),
     formatApiAmount(item.total_brought_reward),
   ]
@@ -321,10 +360,10 @@ export function mapRankRewardLogToRow(
   ]
 }
 
-export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): string[] {
+export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    formatShortAddress(item.address),
+    <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.making_market),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
@@ -337,51 +376,82 @@ export function mapReferralAwardLogToRow(
   return mapDaoGrantAwardLogToRow(item, labels)
 }
 
-export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): string[] {
+export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    formatShortAddress(item.address),
+    <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.active_stake_balance),
     formatApiAmount(item.contributed_reward_total),
   ]
 }
 
-export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem): string[] {
+export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem): ReactNode[] {
   return [
     formatBlockTime(item.paid_time),
     formatApiAmount(item.agx_amount),
     item.operation_type || TABLE_EMPTY,
-    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
+    item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
     item.subsidy_rate || TABLE_EMPTY,
     formatApiAmount(item.allowance_amount),
   ]
 }
 
-export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): string[] {
+export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): ReactNode[] {
   return [
     formatBlockTime(item.claim_time),
     formatApiAmount(item.allowance_amount),
-    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
+    item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
   ]
 }
 
-export function mapLuckyWinnerToRow(item: LuckyRewardWinnerItem): string[] {
+export function mapLuckyWinnerToRow(
+  item: LuckyRewardWinnerItem,
+  opts?: { selfAddress?: string | null; meLabel?: string },
+): ReactNode[] {
+  const isSelf =
+    opts?.selfAddress != null &&
+    opts.selfAddress.length > 0 &&
+    item.address.toLowerCase() === opts.selfAddress.toLowerCase()
+  const addressCell =
+    isSelf && opts?.meLabel ? (
+      <span className="inline-flex items-center gap-2">
+        <ExplorerLink value={item.address} />
+        <StatusBadge size="compact" tone="pending">
+          {opts.meLabel}
+        </StatusBadge>
+      </span>
+    ) : (
+      <ExplorerLink value={item.address} />
+    )
+
   return [
-    String(item.rank),
-    formatShortAddress(item.address),
-    formatApiAmount(item.participation_amount),
-    formatApiAmount(item.reward_amount),
+    String(item.rank).padStart(2, '0'),
+    addressCell,
+    formatApiAmount(item.participation_amount, { digits: 2, prefix: '$' }),
+    formatApiAmount(item.reward_amount, { digits: 4, suffix: ' gAGX' }),
   ]
 }
 
-export function mapLuckyMyRoundToRow(item: LuckyRewardMyRoundItem): string[] {
+export function mapLuckyMyRoundToRow(
+  item: LuckyRewardMyRoundItem,
+  labels: { won: string; lost: string },
+): ReactNode[] {
+  const wonAmount = formatApiAmount(item.reward_amount, { digits: 4, suffix: ' gAGX' })
   const result =
-    item.winner_status?.trim() ||
-    (item.is_winner === true ? '1' : item.is_winner === false ? TABLE_EMPTY : TABLE_EMPTY)
+    item.is_winner === true ? (
+      <StatusBadge size="compact" tone="pending">
+        {labels.won.replace('{amount}', wonAmount)}
+      </StatusBadge>
+    ) : (
+      <StatusBadge size="compact" tone="muted">
+        {labels.lost}
+      </StatusBadge>
+    )
+
   return [
     formatRegisterDate(item.date),
-    formatApiAmount(item.participation_amount),
+    formatApiAmount(item.participation_amount, { digits: 2, prefix: '$' }),
     result,
-    item.draw_tx_hash ? formatShortAddress(item.draw_tx_hash) : TABLE_EMPTY,
+    item.draw_tx_hash ? <ExplorerLink kind="tx" showIcon value={item.draw_tx_hash} /> : TABLE_EMPTY,
   ]
 }

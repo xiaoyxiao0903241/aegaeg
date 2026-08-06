@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useMarketAllowanceClaimLogs,
   useMarketAllowancePaidLogs,
@@ -12,7 +13,11 @@ import {
   mapMarketAllowanceClaimLogToCells,
   mapMarketAllowancePaidLogToCells,
 } from '~/views/dapp/rewards/primitives'
-import { formatApiStatLabel, formatMakingRankLabel } from '~/views/dapp/rewards/shared'
+import {
+  formatApiGagxApproxUsd,
+  formatApiStatLabel,
+  formatMakingRankLabel,
+} from '~/views/dapp/rewards/shared'
 
 type GrantRecordsTab = 'issue' | 'claim'
 
@@ -36,6 +41,7 @@ export function useGrant() {
   }, [recordsTab])
 
   const summaryQuery = useMarketAllowanceSummary(sessionReady)
+  const priceUsd = useAgxPriceUsd()
   const pageParams = tablePageQuery(recordsPage)
   const issueLogsQuery = useMarketAllowancePaidLogs(
     pageParams,
@@ -47,15 +53,20 @@ export function useGrant() {
   )
 
   const summary = summaryQuery.data
+  const pending = summaryQuery.isLoading
   const tier = !sessionReady
     ? tierEmpty
-    : summaryQuery.isLoading && summary == null
+    : pending && summary == null
       ? '0.00'
       : formatMakingRankLabel(summary?.making_rank, tierEmpty)
-  const totalClaimed = formatApiStatLabel(
+  const totalClaimed = formatApiStatLabel(sessionReady, pending, summary?.total_claimed_allowance, {
+    suffix: ' gAGX',
+  })
+  const totalClaimedApprox = formatApiGagxApproxUsd(
     sessionReady,
-    summaryQuery.isLoading,
+    pending,
     summary?.total_claimed_allowance,
+    priceUsd,
   )
 
   const isIssue = recordsTab === 'issue'
@@ -76,6 +87,7 @@ export function useGrant() {
     isIssue,
     tier,
     totalClaimed,
+    totalClaimedApprox,
     recordRows,
     recordsLoading,
     recordsPage,

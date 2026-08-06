@@ -135,10 +135,11 @@ export function useRewardsGenesisDetail() {
     historyTab === 'referral'
       ? (rewardLogs?.items.map((item) => {
           const mapped = mapRewardLogToRow(item, historyStatusLabels)
+          const amountLabel = mapped[1]
           return [
             mapped[0] ?? NON_NUMERIC_EMPTY,
             typeReferral,
-            withSignedUsdPrefix(mapped[1] ?? NON_NUMERIC_EMPTY),
+            withSignedUsdPrefix(typeof amountLabel === 'string' ? amountLabel : NON_NUMERIC_EMPTY),
             <Text as="span" className="font-semibold text-foreground/40" key="st" variant="support">
               {mapped[4] ?? NON_NUMERIC_EMPTY}
             </Text>,

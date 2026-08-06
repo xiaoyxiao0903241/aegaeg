@@ -40,7 +40,7 @@ const samplePhases = [
 ]
 
 test('genesisFaqTemplateValues formats on-chain presale fields', async () => {
-  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.ts')
+  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.tsx')
 
   const values = genesisFaqTemplateValues(samplePhases, 5000)
 
@@ -55,7 +55,7 @@ test('genesisFaqTemplateValues formats on-chain presale fields', async () => {
 })
 
 test('genesisFaqTemplateValues returns zeros while loading', async () => {
-  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.ts')
+  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.tsx')
 
   const values = genesisFaqTemplateValues([], 5000, true)
 
@@ -65,7 +65,7 @@ test('genesisFaqTemplateValues returns zeros while loading', async () => {
 })
 
 test('genesisFaqTemplateValues supports dynamic phase count and varying durations', async () => {
-  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.ts')
+  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.tsx')
 
   const sixPhases = [
     ...samplePhases,

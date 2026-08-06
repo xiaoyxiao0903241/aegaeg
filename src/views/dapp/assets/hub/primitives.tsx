@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useState } from 'react'
 
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
@@ -7,6 +8,7 @@ import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
+import type { HoldingsDistributionView } from '~/shared/presenters/build-holdings-distribution'
 
 function renderMetric(node: ReactNode) {
   return typeof node === 'string' ? <CountValue text={node} /> : node
@@ -273,3 +275,208 @@ export function AssetsRebaseCard({
     </Card>
   )
 }
+
+/**
+ * 持仓分布：左环右列（对齐原型）。
+ * Hover 扇区外扩 + popover；右侧图例行同步高亮。
+ */
+export function AssetsHoldingsDistributionCard({
+  totalLabel,
+  totalCaption,
+  view,
+}: {
+  totalCaption: string
+  totalLabel: string
+  view: HoldingsDistributionView
+}) {
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
+  const tipSeg = hoverIdx != null ? view.segs[hoverIdx] : null
+
+  const paintOrder = view.segs
+    .map((_, di) => di)
+    .sort((a, b) => {
+      if (a === hoverIdx) return 1
+      if (b === hoverIdx) return -1
+      return a - b
+    })
+
+  return (
+    <div
+      className="flex items-center gap-11 rounded-2xl border border-border bg-card px-7.5 py-6.5 max-dapp:flex-col max-dapp:gap-6 max-dapp:px-4 max-dapp:py-5"
+      onMouseLeave={() => setHoverIdx(null)}
+    >
+      <div className="relative size-[264px] shrink-0 max-dapp:size-50">
+        <svg aria-hidden className="size-full overflow-visible" viewBox="0 0 160 160">
+          {paintOrder.map((di) => {
+            const seg = view.segs[di]
+            if (seg == null) return null
+            const active = hoverIdx === di
+            const dimmed = hoverIdx != null && !active
+            const ux = (seg.labelX - 80) / PIE_R
+            const uy = (seg.labelY - 80) / PIE_R
+            const pop = active ? PIE_HOVER_POP : 0
+            const scale = active ? PIE_HOVER_SCALE : 1
+            return (
+              <g
+                key={seg.key}
+                style={{
+                  transformOrigin: '80px 80px',
+                  transform: `translate(${ux * pop}px, ${uy * pop}px) scale(${scale})`,
+                  transition: 'transform var(--duration-dapp-base) var(--ease-dapp)',
+                }}
+              >
+                <circle
+                  className="cursor-pointer"
+                  cx="80"
+                  cy="80"
+                  fill="none"
+                  onMouseEnter={() => setHoverIdx(di)}
+                  r={PIE_R}
+                  stroke={seg.color}
+                  strokeDasharray={seg.dash}
+                  strokeDashoffset={seg.offset}
+                  strokeLinecap="butt"
+                  style={{
+                    opacity: dimmed ? 0.55 : 1,
+                    strokeWidth: active ? PIE_HOVER_SW : PIE_SW,
+                    transition:
+                      'stroke-width var(--duration-dapp-base) var(--ease-dapp), opacity var(--duration-dapp-fast) var(--ease-dapp)',
+                  }}
+                  transform="rotate(-90 80 80)"
+                />
+              </g>
+            )
+          })}
+          {view.segs.map((seg) =>
+            seg.showLabel ? (
+              <text
+                key={`${seg.key}-label`}
+                style={{ pointerEvents: 'none' }}
+                textAnchor="middle"
+                x={seg.labelX}
+                y={seg.labelY}
+              >
+                <tspan
+                  dy="-2"
+                  fill={seg.textColor}
+                  style={{ fontSize: '8.5px', fontWeight: 700 }}
+                  x={seg.labelX}
+                >
+                  {seg.label}
+                </tspan>
+                <tspan
+                  dy="9.5"
+                  fill={seg.textColor}
+                  style={{
+                    fontSize: '8.5px',
+                    fontWeight: 600,
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                  x={seg.labelX}
+                >
+                  {seg.pctLabel}
+                </tspan>
+              </text>
+            ) : null,
+          )}
+        </svg>
+        <span className="pointer-events-none absolute inset-0 grid place-content-center gap-0.5 text-center">
+          <Text
+            as="span"
+            className="text-[11px] leading-none tracking-tight"
+            tone="muted-foreground"
+          >
+            {totalCaption}
+          </Text>
+          <Text as="strong" className="text-base leading-none font-semibold tracking-tight">
+            <CountValue text={totalLabel} />
+          </Text>
+        </span>
+        {tipSeg ? (
+          <div
+            className="dapp-panel-enter pointer-events-none absolute z-2 grid gap-px rounded-md border border-border bg-card px-3 py-2 whitespace-nowrap shadow-[0_4px_16px_rgba(28,34,52,0.22)]"
+            style={{
+              left: `${((tipSeg.labelX / 160) * 100).toFixed(1)}%`,
+              top: `${((tipSeg.labelY / 160) * 100).toFixed(1)}%`,
+              transform: 'translate(-20%, -110%)',
+            }}
+          >
+            <Text as="strong" className="text-[13px] leading-none font-bold tracking-tight">
+              {tipSeg.label}
+              <span className="font-normal">：{tipSeg.pctLabel}</span>
+            </Text>
+            <Text as="span" className="text-xs text-foreground/60 tabular-nums" variant="copy">
+              {tipSeg.amountLabel}
+            </Text>
+            <Text as="span" className="text-xs text-foreground/45 tabular-nums" variant="copy">
+              {tipSeg.usdLabel}
+            </Text>
+          </div>
+        ) : null}
+      </div>
+
+      <ul className="m-0 flex min-w-0 flex-1 list-none flex-col justify-center self-stretch p-0">
+        {view.segs.map((seg, di) => {
+          const active = hoverIdx === di
+          const dimmed = hoverIdx != null && !active
+          return (
+            <li
+              className={cn(
+                'duration-dapp-fast flex cursor-pointer items-center justify-between gap-3 py-3.5 transition-opacity ease-dapp',
+                di < view.segs.length - 1 && 'border-b border-border',
+                dimmed && 'opacity-55',
+              )}
+              key={seg.key}
+              onMouseEnter={() => setHoverIdx(di)}
+            >
+              <span className="grid min-w-0 gap-1">
+                <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                  <i
+                    aria-hidden
+                    className="duration-dapp-base inline-block size-2 shrink-0 rounded-full transition-transform ease-dapp"
+                    style={{
+                      background: seg.color,
+                      transform: active ? 'scale(1.35)' : undefined,
+                    }}
+                  />
+                  <Text as="span" className="leading-none text-foreground/70" variant="copy">
+                    {seg.label}
+                  </Text>
+                </span>
+                <Text
+                  as="strong"
+                  className="pl-4 text-sm leading-none font-semibold tabular-nums"
+                  variant="detail"
+                >
+                  {seg.pctLabel}
+                </Text>
+              </span>
+              <span className="grid shrink-0 justify-items-end gap-1">
+                <Text
+                  as="span"
+                  className="text-[13px] leading-none font-medium whitespace-nowrap tabular-nums"
+                >
+                  <CountValue text={seg.amountLabel} />
+                </Text>
+                <Text
+                  as="span"
+                  className="text-xs leading-none whitespace-nowrap text-foreground/40 tabular-nums"
+                  variant="copy"
+                >
+                  {seg.usdLabel}
+                </Text>
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
+const PIE_R = 54
+const PIE_SW = 42
+/** Hover：径向略放大 + 加粗描边 + 沿中线外推 */
+const PIE_HOVER_SW = 50
+const PIE_HOVER_SCALE = 1.06
+const PIE_HOVER_POP = 3.5

@@ -4,7 +4,7 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 test('readAndClearBindSuccess reports envelope onSuccess once', async () => {
-  const { readAndClearBindSuccess } = await loadModule('/src/views/dapp/community/shared.ts')
+  const { readAndClearBindSuccess } = await loadModule('/src/views/dapp/community/shared.tsx')
 
   const flag = { current: false }
   assert.equal(readAndClearBindSuccess(flag), false)

@@ -14,6 +14,7 @@ import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import {
+  AssetsHoldingsDistributionCard,
   AssetsHubMetricPlain,
   AssetsHubMetricWithIcon,
   AssetsMetricGroupCard,
@@ -25,7 +26,7 @@ import { useAssetsHubDetail } from '~/views/dapp/assets/hub/use-hub'
 
 export function AssetsHubDetail() {
   const vm = useAssetsHubDetail()
-  const { t, overview, rebase, values, setBufferAsset } = vm
+  const { t, overview, rebase, values, setBufferAsset, distribution } = vm
   const {
     bufferTotal,
     bufferTotalApprox,
@@ -152,13 +153,17 @@ export function AssetsHubDetail() {
 
       <Section>
         <Section.Title>{t.assets.hub.distribution.title}</Section.Title>
-        {/*
-          持仓分布空态：扁平虚线边框，与上方阴影卡刻意区分；
-          内容用全局空态组件。
-        */}
-        <div className="overflow-hidden rounded-2xl border border-dashed border-border bg-card">
-          <Empty title={t.assets.hub.distribution.empty} />
-        </div>
+        {distribution ? (
+          <AssetsHoldingsDistributionCard
+            totalCaption={overview.holdingsTotal}
+            totalLabel={distribution.totalLabel}
+            view={distribution}
+          />
+        ) : (
+          <div className="overflow-hidden rounded-2xl border border-dashed border-border bg-card">
+            <Empty title={t.assets.hub.distribution.empty} />
+          </div>
+        )}
       </Section>
 
       <Section>

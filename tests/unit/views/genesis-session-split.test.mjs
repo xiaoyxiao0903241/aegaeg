@@ -32,7 +32,7 @@ test('useGenesisSession assembles reads, countdown leaf, display model, and purc
 
 test('genesisPurchaseSummary owns display and purchase gates without clock', async () => {
   const source = await readFile(
-    new URL('../../../src/views/dapp/genesis/shared.ts', import.meta.url),
+    new URL('../../../src/views/dapp/genesis/shared.tsx', import.meta.url),
     'utf8',
   )
 

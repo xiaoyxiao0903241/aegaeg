@@ -17,11 +17,17 @@ export type SelectMenuOption = {
 
 export type SelectMenuVariant = 'pill' | 'field'
 
+/** 面板最多露出档数；超出可滚（释放/复投随链变长时用）。行高与 Item `h-9` 对齐。 */
+const SELECT_MENU_MAX_VISIBLE = 5
+const SELECT_MENU_ITEM_HEIGHT_CLASS = 'h-9 py-0'
+const SELECT_MENU_PANEL_MAX_H = `max-h-[calc(2.25rem*${SELECT_MENU_MAX_VISIBLE})]`
+
 /**
  * 选项选择菜单
  *
  * 面板走 DropdownMenu；选项 / 文案由调用方传入。
  * `pill`：奖励周期等紧凑触发；`field`：领取弹窗全宽描边触发。
+ * 档位随链增长时面板最多露出 5 行，其余滚动。
  */
 export function SelectMenu({
   align = 'end',
@@ -74,13 +80,17 @@ export function SelectMenu({
 
       <DropdownMenuPanel
         align={align}
-        className={variant === 'field' ? 'w-full min-w-0' : undefined}
+        className={cn(
+          SELECT_MENU_PANEL_MAX_H,
+          'overflow-y-auto',
+          variant === 'field' && 'w-full min-w-0',
+        )}
       >
         {options.map((option) => {
           const active = option.value === value
           return (
             <DropdownMenuItem
-              className="h-9 py-0"
+              className={SELECT_MENU_ITEM_HEIGHT_CLASS}
               key={option.value}
               onSelect={() => onSelect(option.value)}
               selected={active}

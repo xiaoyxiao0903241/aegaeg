@@ -19,6 +19,7 @@ export function ReferralDetail() {
   const {
     referral,
     totalRewards,
+    totalRewardsApprox,
     myPosition,
     referralCount,
     contributionValue,
@@ -36,7 +37,12 @@ export function ReferralDetail() {
   } = useRewardsReferral()
 
   const topTiles = [
-    { key: 'totalRewards', label: referral.totalRewards, value: totalRewards },
+    {
+      key: 'totalRewards',
+      label: referral.totalRewards,
+      value: totalRewards,
+      note: totalRewardsApprox,
+    },
     { key: 'myPosition', label: referral.myPosition, value: myPosition },
     { key: 'directCount', label: referral.directCount, value: referralCount },
   ]
@@ -67,6 +73,7 @@ export function ReferralDetail() {
               >
                 <CountValue text={item.value} />
               </Text>
+              {'note' in item && item.note != null ? <Tile.Note>{item.note}</Tile.Note> : null}
             </Tile>
           ))}
         </Grid>

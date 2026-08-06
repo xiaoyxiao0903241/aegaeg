@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useParticipationAwardInviter,
   useParticipationAwardLogs,
@@ -10,6 +11,8 @@ import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapParticipationAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
+  formatApiAgxUsdLabel,
+  formatApiGagxApproxUsd,
   formatApiStatLabel,
   mapParticipationAwardInviterToRow,
   NON_NUMERIC_EMPTY,
@@ -27,6 +30,7 @@ export function useParticipate() {
   const { messages: t } = useI18n()
   const participate = t.rewards.participate
   const { sessionReady } = useDappHost()
+  const priceUsd = useAgxPriceUsd()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const [recordsPage, setRecordsPage] = useState(1)
 
@@ -35,19 +39,28 @@ export function useParticipate() {
   const inviterQuery = useParticipationAwardInviter(sessionReady)
 
   const summary = summaryQuery.data
+  const pending = summaryQuery.isLoading
   const totalRewards = formatApiStatLabel(
     sessionReady,
-    summaryQuery.isLoading,
+    pending,
     summary?.total_participation_reward,
+    { suffix: ' gAGX' },
   )
-  const myPosition = formatApiStatLabel(
+  const totalRewardsApprox = formatApiGagxApproxUsd(
     sessionReady,
-    summaryQuery.isLoading,
+    pending,
+    summary?.total_participation_reward,
+    priceUsd,
+  )
+  const myPosition = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
     summary?.active_stake_balance,
+    priceUsd,
   )
   const contributionValue = formatApiStatLabel(
     sessionReady,
-    summaryQuery.isLoading,
+    pending,
     summary?.available_contribution,
   )
 
@@ -59,6 +72,7 @@ export function useParticipate() {
   return {
     participate,
     totalRewards,
+    totalRewardsApprox,
     myPosition,
     contributionValue,
     nextPayout: NON_NUMERIC_EMPTY,

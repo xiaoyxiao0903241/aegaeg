@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   canPurchaseGenesis,
@@ -11,11 +13,11 @@ import {
   USD1_DECIMALS,
 } from '~/core/presale/presale-math'
 import type { SalesLogItem } from '~/shared/api/types'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import {
   formatBlockTime,
   formatDiscountBps,
   formatNumber,
-  formatShortAddress,
   TABLE_EMPTY,
 } from '~/shared/presenters/format'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
@@ -235,13 +237,13 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
 export function mapSalesLogToDesktopRow(
   item: SalesLogItem,
   options: SalesLogRowFormatOptions = {},
-): string[] {
+): ReactNode[] {
   return [
     formatBlockTime(item.block_time),
     formatNumber(Number(item.amount), { digits: 0, prefix: '$' }),
     formatDiscountBps(phaseDiscountBps(item.phase_id, options.phases)),
     formatSalesLogAgx(item, options),
-    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
+    item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
   ]
 }
 

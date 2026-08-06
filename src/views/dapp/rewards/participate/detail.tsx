@@ -19,6 +19,7 @@ export function ParticipateDetail() {
   const {
     participate,
     totalRewards,
+    totalRewardsApprox,
     myPosition,
     contributionValue,
     nextPayout,
@@ -32,7 +33,12 @@ export function ParticipateDetail() {
   } = useParticipate()
 
   const overviewTiles = [
-    { key: 'totalRewards', label: participate.totalRewards, value: totalRewards },
+    {
+      key: 'totalRewards',
+      label: participate.totalRewards,
+      value: totalRewards,
+      note: totalRewardsApprox,
+    },
     { key: 'myPosition', label: participate.myPosition, value: myPosition },
     {
       key: 'contribution',
@@ -70,6 +76,7 @@ export function ParticipateDetail() {
                   </Text>
                 ) : null}
               </span>
+              {'note' in item && item.note != null ? <Tile.Note>{item.note}</Tile.Note> : null}
             </Tile>
           ))}
         </Grid>

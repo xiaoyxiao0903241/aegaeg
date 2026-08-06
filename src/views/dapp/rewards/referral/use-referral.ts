@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useReferralAwardDirectReferrals,
   useReferralAwardLogs,
@@ -11,6 +12,8 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
+  formatApiAgxUsdLabel,
+  formatApiGagxApproxUsd,
   mapReferralAwardDirectToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
@@ -27,6 +30,7 @@ export function useRewardsReferral() {
   const { messages: t } = useI18n()
   const referral = t.rewards.referral
   const { sessionReady } = useDappHost()
+  const priceUsd = useAgxPriceUsd()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const [recordsPage, setRecordsPage] = useState(1)
   const [referralsPage, setReferralsPage] = useState(1)
@@ -36,9 +40,21 @@ export function useRewardsReferral() {
   const directsQuery = useReferralAwardDirectReferrals(tablePageQuery(referralsPage), sessionReady)
 
   const summary = summaryQuery.data
-  const label = bindApiLabelFormatters(sessionReady, summaryQuery.isLoading)
-  const totalRewards = label.stat(summary?.total_referral_reward)
-  const myPosition = label.stat(summary?.active_stake_balance)
+  const pending = summaryQuery.isLoading
+  const label = bindApiLabelFormatters(sessionReady, pending)
+  const totalRewards = label.stat(summary?.total_referral_reward, { suffix: ' gAGX' })
+  const totalRewardsApprox = formatApiGagxApproxUsd(
+    sessionReady,
+    pending,
+    summary?.total_referral_reward,
+    priceUsd,
+  )
+  const myPosition = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
+    summary?.active_stake_balance,
+    priceUsd,
+  )
   const referralCount = label.count(summary?.direct_referral_count)
   const contributionValue = label.stat(summary?.available_contribution)
 
@@ -50,6 +66,7 @@ export function useRewardsReferral() {
   return {
     referral,
     totalRewards,
+    totalRewardsApprox,
     myPosition,
     referralCount,
     contributionValue,

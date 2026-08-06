@@ -27,6 +27,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
+import { sumX0MiningRewardAmount } from '~/shared/presenters/xmine-lifetime-reward'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { parseApiAmountOrZero } from '~/views/dapp/staking/shared'
@@ -210,7 +211,7 @@ const NEXT_EMISSION_EMPTY = '—'
  *
  * 仓位链读 `readXminePosition`，记录走 `/x0-mining/logs`；
  * 协议概览走 `readXmineOverview`（activeGons / xPerAgx / yieldRateBP）。
- * 累计产出暂无数据源，显示 0。
+ * 「累计产出」无协议合计 view → 与资产侧同口径：用户 REWARD 流水累加。
  *
  * @returns 右栏概览、仓位、记录表的展示数据
  * @see docs/backend-api/api.md #x0-mining/logs
@@ -221,6 +222,11 @@ export function useXmineDetail() {
   const priceUsd = useAgxPriceUsd()
   const positionsQuery = useX0MiningPositions({}, sessionReady)
   const logsQuery = useX0MiningLogs({}, sessionReady)
+  // 累加用户历史 REWARD；page_size 取大以覆盖常见记录量（无协议累计 view）
+  const rewardLogs = useX0MiningLogs(
+    { operation: ['REWARD'], page: 1, page_size: 100 },
+    sessionReady,
+  )
   const distQuery = useAssetsHoldingsDistribution(sessionReady)
   const overviewQuery = useXmineOverviewQuery()
   const chainPosition = useChainQuery({
@@ -244,6 +250,7 @@ export function useXmineDetail() {
     overviewQuery.data != null
       ? formatXmineDailyYieldLabel(overviewQuery.data.yieldRateBP)
       : ZERO_PCT
+  const lifetimeX = sumX0MiningRewardAmount(rewardLogs.data?.items ?? [])
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
     {
@@ -267,10 +274,12 @@ export function useXmineDetail() {
       ),
     },
     {
-      // 累计产出：无协议累计 X view / 历史 API → 显示 0（gaps §3.4）
       label: t.staking.xmine.overviewMetrics[2]?.label ?? '',
       value: (
-        <StakingTokenMetricValue icon="x" value={formatNumber(0, { digits: 2, suffix: ' X' })} />
+        <StakingTokenMetricValue
+          icon="x"
+          value={formatNumber(lifetimeX, { digits: 2, suffix: ' X' })}
+        />
       ),
     },
     {

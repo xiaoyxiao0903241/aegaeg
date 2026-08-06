@@ -3,15 +3,19 @@ import { useMakingOverview } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
-import { formatApiAmount, formatApiStatLabel } from '~/views/dapp/rewards/shared'
+import {
+  formatApiAmount,
+  formatApiStatLabel,
+  formatMakingRankLabel,
+} from '~/views/dapp/rewards/shared'
 import { useRewardsContribution } from '~/views/dapp/rewards/use-rewards-contribution'
 
 export type HubStats = {
   totalRewardGagx: string
   totalRewardApprox: string
   tierLabel: string
-  /** 机制表高亮行：有 making_rank 跟真实档位；无数据时演示为 A4（index 3） */
-  tierRowIndex: number
+  /** 机制表高亮行：有 making_rank 才高亮；无档 / 未就绪 → null（不高亮） */
+  tierRowIndex: number | null
   personalUsd: string
   personalAgx: string
   makingMarketUsd: string
@@ -33,14 +37,9 @@ function formatAgxSecondary(raw: string | null | undefined): string {
   return `${formatApiAmount(raw)} AGX`
 }
 
-function formatMakingTierLabel(rank: number | null | undefined, emptyLabel: string): string {
-  if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
-  return `A${Math.trunc(rank)}`
-}
-
-/** 档位序号映射：A1→0 … A13→12；无档位演示为 A4（3）；>13 → 终身成就行（13） */
-function makingRankToRowIndex(rank: number | null | undefined): number {
-  if (rank == null || !Number.isFinite(rank) || rank <= 0) return 3
+/** 档位序号：A1→0 … A13→12；>13 → 终身成就行（13）；无档 → null（不高亮） */
+function makingRankToRowIndex(rank: number | null | undefined): number | null {
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return null
   const n = Math.trunc(rank)
   if (n >= 1 && n <= 13) return n - 1
   return 13
@@ -75,7 +74,7 @@ export function useRewardsHub(): HubStats {
       ? tierEmpty
       : pending && overview == null
         ? tierEmpty
-        : formatMakingTierLabel(rank, tierEmpty),
+        : formatMakingRankLabel(rank, tierEmpty),
     tierRowIndex: makingRankToRowIndex(rank),
     personalUsd: formatUsdFromAgx(sessionReady ? overview?.personal_position : null, priceUsd),
     personalAgx: formatAgxSecondary(sessionReady ? overview?.personal_position : null),

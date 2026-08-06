@@ -8,6 +8,7 @@ import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { FieldActionChip } from '~/shared/components/chip'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
@@ -340,14 +341,12 @@ export function CommunityReferrerBoundPanel({
   note,
   onCopy,
   referrer,
-  referrerLabel,
 }: {
   addressLabel: string
   copyLabel: string
   note: string
   onCopy: () => void
   referrer: string | null
-  referrerLabel: string | null
 }) {
   return (
     <Card
@@ -363,14 +362,9 @@ export function CommunityReferrerBoundPanel({
         <span aria-hidden className={communityReferrerAvatar()}>
           <Wallet className={iconVariants({ size: 'xs' })} strokeWidth={1.75} />
         </span>
-        <Text
-          as="strong"
-          className="ml-2.5 truncate text-sm/tight font-semibold"
-          tone="foreground"
-          variant="copy"
-        >
-          {referrerLabel ?? '—'}
-        </Text>
+        <span className="ml-2.5 min-w-0 truncate text-sm/tight font-semibold">
+          {referrer ? <ExplorerLink value={referrer} /> : '—'}
+        </span>
         {referrer ? (
           <button
             aria-label={copyLabel}

@@ -12,8 +12,9 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
+import { sumX0MiningRewardAmount } from '~/shared/presenters/xmine-lifetime-reward'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import {
@@ -175,10 +176,7 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { miningStake, pending, warmupGons } = positionQuery.data
   // 无份额转金额的接口，可赎回估算为 warmup 结束后的全部质押，否则为 0
   const released = warmupGons > 0n ? 0n : miningStake
-  const lifetimeX = (rewardLogs.data?.items ?? []).reduce((sum, item) => {
-    if (item.operation !== 'REWARD') return sum
-    return sum + (parseApiAmount(item.amount) ?? 0)
-  }, 0)
+  const lifetimeX = sumX0MiningRewardAmount(rewardLogs.data?.items ?? [])
 
   return [
     ...(

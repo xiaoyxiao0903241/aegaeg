@@ -2,13 +2,12 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
-import { bscscanAddress } from '~/shared/config/explorer'
-import { formatShortAddress } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -92,17 +91,14 @@ export function StakeDock() {
               { label: t.staking.stake.meta.lock, value: lockLabel },
               {
                 label: t.staking.stake.meta.contract,
-                value: (
-                  <a href={bscscanAddress(stake.pool)} rel="noreferrer" target="_blank">
-                    {formatShortAddress(stake.pool)}
-                  </a>
-                ),
+                value: <ExplorerLink value={stake.pool} />,
                 valueClassName: 'text-coral-emphasis',
               },
             ]}
           />
         </FormInfoCard>
 
+        {/* jscpd:ignore-start — Dock CTA / 连钱包页内拼装，禁再抽薄壳 */}
         {walletReady ? (
           <FormActions>
             <MainButton
@@ -117,6 +113,7 @@ export function StakeDock() {
         ) : (
           <DockConnectPromo />
         )}
+        {/* jscpd:ignore-end */}
       </DockStack>
     </TabHeader>
   )

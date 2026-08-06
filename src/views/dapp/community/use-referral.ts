@@ -12,7 +12,7 @@ import {
   parseReferrerAddress,
   parseReferrerFromSearch,
 } from '~/shared/config/referral'
-import { formatNumber, formatShortAddress } from '~/shared/presenters/format'
+import { formatNumber } from '~/shared/presenters/format'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
@@ -162,7 +162,6 @@ export function useCommunityReferral() {
   return {
     isBound,
     referrer: effectiveReferrer,
-    referrerLabel: effectiveReferrer ? formatShortAddress(effectiveReferrer) : null,
     directCount: formatNumber(directCount, { digits: 0, trimZeros: true }),
     referrerInput,
     setReferrerInput,

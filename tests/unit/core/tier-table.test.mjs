@@ -65,7 +65,7 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
 })
 
 test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () => {
-  const { mapSalesLogToDesktopRow } = await loadModule('/src/views/dapp/genesis/shared.ts')
+  const { mapSalesLogToDesktopRow } = await loadModule('/src/views/dapp/genesis/shared.tsx')
 
   const row = mapSalesLogToDesktopRow(
     {

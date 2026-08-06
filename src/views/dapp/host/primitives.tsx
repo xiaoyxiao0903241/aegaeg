@@ -173,6 +173,7 @@ export function RevealObserver({ container }: { container: HTMLElement | null })
 
 /**
  * 顶部栏「新手教程」入口，点击重播引导；未完成时右上角带提示点。
+ * H5（max-dapp）隐藏重播入口；首次自动引导仍由 storage 未完成时触发。
  */
 export function OnboardingTourChip({
   done,
@@ -190,6 +191,7 @@ export function OnboardingTourChip({
         'border border-border bg-card px-3.5 text-xs leading-none font-semibold text-foreground',
         'duration-dapp-fast transition-[border-color,transform,background-color] ease-out',
         'hover:-translate-y-px hover:border-coral-hover-border hover:bg-coral-wash',
+        'max-dapp:hidden',
       )}
       data-onboarding-chip
       onClick={onClick}

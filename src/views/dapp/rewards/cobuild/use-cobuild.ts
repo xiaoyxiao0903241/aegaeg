@@ -13,6 +13,8 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
+  formatApiAgxUsdLabel,
+  formatApiGagxApproxUsd,
   formatMakingRankLabel,
   mapRankRewardTeamMemberToRow,
   NON_NUMERIC_EMPTY,
@@ -83,9 +85,26 @@ export function useCobuild() {
 
   const summary = summaryQuery.data
   const label = bindApiLabelFormatters(sessionReady, summaryQuery.isLoading)
-  const totalRewards = label.stat(summary?.total_rank_reward)
-  const totalPerformance = label.stat(summary?.making_market)
-  const myPosition = label.stat(summary?.active_stake_balance)
+  const pending = summaryQuery.isLoading
+  const totalRewards = label.stat(summary?.total_rank_reward, { suffix: ' gAGX' })
+  const totalRewardsApprox = formatApiGagxApproxUsd(
+    sessionReady,
+    pending,
+    summary?.total_rank_reward,
+    agxPriceUsd,
+  )
+  const totalPerformance = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
+    summary?.making_market,
+    agxPriceUsd,
+  )
+  const myPosition = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
+    summary?.active_stake_balance,
+    agxPriceUsd,
+  )
   const referralCount = label.count(summary?.direct_referral_count)
   const contributionValue = label.stat(summary?.available_contribution)
 
@@ -180,6 +199,7 @@ export function useCobuild() {
     contributionValue,
     referralCount,
     totalRewards,
+    totalRewardsApprox,
     totalPerformance,
     myPosition,
     nextPayout: NON_NUMERIC_EMPTY,

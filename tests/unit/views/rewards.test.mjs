@@ -5,7 +5,7 @@ import { loadModule } from '../load-module.mjs'
 
 test('formatContributionPlaceholder: disconnected / loading / value', async () => {
   const { formatContributionPlaceholder, formatApiAmount } = await loadModule(
-    '/src/views/dapp/rewards/shared.ts',
+    '/src/views/dapp/rewards/shared.tsx',
   )
   const zero = formatApiAmount(null)
 
@@ -57,7 +57,7 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
 
 test('lucky non-numeric empties stay dashes; counts stay integers', async () => {
   const { NON_NUMERIC_EMPTY, formatApiCountLabel, formatApiAmount } = await loadModule(
-    '/src/views/dapp/rewards/shared.ts',
+    '/src/views/dapp/rewards/shared.tsx',
   )
 
   assert.equal(NON_NUMERIC_EMPTY, '\u2014')
@@ -65,15 +65,11 @@ test('lucky non-numeric empties stay dashes; counts stay integers', async () => 
   assert.equal(formatApiCountLabel(false, false, null), '0')
   assert.equal(formatApiCountLabel(true, true, null), '0')
   assert.equal(formatApiCountLabel(true, false, 3), '3')
-
-  const verifyHash = 'verify: {hash}'.replace('{hash}', NON_NUMERIC_EMPTY)
-  assert.equal(verifyHash, 'verify: \u2014')
-  assert.equal(verifyHash.includes('0.00'), false)
 })
 
 test('planLabel and splitAmountByPct', async () => {
   const { planLabel } = await loadModule('/src/core/assets/claim-plans.ts')
-  const { splitAmountByPct } = await loadModule('/src/views/dapp/rewards/shared.ts')
+  const { splitAmountByPct } = await loadModule('/src/views/dapp/rewards/shared.tsx')
 
   assert.equal(splitAmountByPct(1000n, 40), 400n)
 

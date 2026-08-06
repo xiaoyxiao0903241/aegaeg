@@ -7,8 +7,6 @@ import { useSalesLogs } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { Text } from '~/shared/components/text'
-import { bscscanTx } from '~/shared/config/explorer'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
@@ -41,30 +39,12 @@ export function useGenesisDetail(genesis: GenesisSessionState) {
 
   const desktopRows = genesis.isPhasesLoading
     ? []
-    : (salesLogs?.items.map((item) => {
-        const row = mapSalesLogToDesktopRow(item, {
+    : (salesLogs?.items.map((item) =>
+        mapSalesLogToDesktopRow(item, {
           agxPriceUsd: genesis.agxPriceUsd,
           phases: genesis.phases,
-        })
-        const txLabel = row[4]
-        if (!item.tx_hash || txLabel === '-') return row
-
-        return [
-          ...row.slice(0, 4),
-          <Text
-            as="a"
-            className="underline"
-            href={bscscanTx(item.tx_hash)}
-            key={item.tx_hash}
-            rel="noopener noreferrer"
-            target="_blank"
-            tone="primary"
-            variant="copy"
-          >
-            {txLabel}
-          </Text>,
-        ]
-      }) ?? [])
+        }),
+      ) ?? [])
 
   const tableHeaders = [
     t.tables.time,

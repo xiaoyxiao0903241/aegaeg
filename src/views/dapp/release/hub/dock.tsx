@@ -85,7 +85,7 @@ export function ReleaseHubDock() {
               {t.release.labels.released}
             </Text>
             <Text as="span" tone="primary" variant="copy">
-              <CountValue text={vm.bufferClaimedAgx} />
+              <CountValue text={vm.bufferClaimableAgx} />
             </Text>
           </div>
           <div className="flex flex-wrap items-center gap-1.5">

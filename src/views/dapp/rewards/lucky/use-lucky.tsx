@@ -1,5 +1,5 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { formatUnits } from 'viem'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -12,11 +12,12 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import type { SelectMenuOption } from '~/shared/components/select-menu'
+import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatShortAddress } from '~/shared/presenters/format'
 import {
   formatApiCountLabel,
   formatApiStatLabel,
@@ -147,6 +148,7 @@ export function useLucky() {
     sessionReady,
     summaryQuery.isLoading,
     summary?.today_total_prize,
+    { digits: 2, prefix: '$' },
   )
   const countdown =
     walletReady && roundQuery.data != null
@@ -174,28 +176,48 @@ export function useLucky() {
       ? undefined
       : lucky.maxStakeHint?.replace('{amount}', formatUsd1Label(roundQuery.data?.roundPurchaseUsd1))
 
-  const cumulativeWins = formatApiCountLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.win_count,
-  )
+  const winCount = formatApiCountLabel(sessionReady, summaryQuery.isLoading, summary?.win_count)
+  const cumulativeWins = lucky.winsCount.replace('{count}', winCount)
 
+  const selfAddress = account?.address ?? null
   const winners = winnersQuery.data?.items ?? []
   const winnersTotal = winners.length
   const winnersPageStart = (winnersPage - 1) * DAPP_TABLE_PAGE_SIZE
   const pagedWinners = winners.slice(winnersPageStart, winnersPageStart + DAPP_TABLE_PAGE_SIZE)
-  const winnerRows = pagedWinners.map((item) => mapLuckyWinnerToRow(item))
+  const winnerRows = pagedWinners.map((item) =>
+    mapLuckyWinnerToRow(item, { selfAddress, meLabel: lucky.meBadge }),
+  )
+  const highlightedWinnerRows = pagedWinners.flatMap((item, index) =>
+    selfAddress != null &&
+    selfAddress.length > 0 &&
+    item.address.toLowerCase() === selfAddress.toLowerCase()
+      ? [index]
+      : [],
+  )
   const winnersLoading = sessionReady && Boolean(drawDate) && winnersQuery.isLoading
   /** 无中奖行时不展示表顶的日期 / 摘要 / 哈希控件 */
   const showResultsChrome = !winnersLoading && winnersTotal > 0
   const drawHash = winnersQuery.data?.draw_tx_hash
   const resultsSummary = lucky.resultsSummary.replace('{count}', String(winnersTotal))
-  const verifyHash = lucky.verifyHash.replace(
-    '{hash}',
-    drawHash ? formatShortAddress(drawHash) : NON_NUMERIC_EMPTY,
+  const verifyChrome: ReactNode = (
+    <span className="inline-flex items-center gap-1">
+      <Text as="span" className="text-primary" variant="copy">
+        {lucky.verifyHash}
+      </Text>
+      {drawHash ? (
+        <ExplorerLink className="text-primary underline" kind="tx" showIcon value={drawHash} />
+      ) : (
+        <Text as="span" className="text-primary" variant="copy">
+          {NON_NUMERIC_EMPTY}
+        </Text>
+      )}
+    </span>
   )
 
-  const historyRows = historyQuery.data?.items.map((item) => mapLuckyMyRoundToRow(item)) ?? []
+  const historyRows =
+    historyQuery.data?.items.map((item) =>
+      mapLuckyMyRoundToRow(item, { won: lucky.resultWon, lost: lucky.resultLost }),
+    ) ?? []
 
   return {
     lucky,
@@ -209,8 +231,9 @@ export function useLucky() {
     onDrawDateChange: setSelectedDate,
     showResultsChrome,
     resultsSummary,
-    verifyHash,
+    verifyChrome,
     winnerRows,
+    highlightedWinnerRows,
     winnersLoading,
     winnersPage,
     setWinnersPage,

@@ -1,4 +1,7 @@
+import type { ReactNode } from 'react'
+
 import type { TeamReferralItem } from '~/shared/api/types'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
   formatNumber,
@@ -13,13 +16,13 @@ import {
  * 按列序输出注册时间、地址、业绩、等级与直邀数；
  * 数字空结果显示 0（不用「—」）。
  */
-export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
+export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[] {
   const volume = Number(item.presale_volume)
   const teamMarket = Number(item.sales_team_market)
 
   return [
     formatRegisterDate(item.register_time),
-    formatShortAddress(item.address, { head: 4, tail: 4 }),
+    <ExplorerLink key={item.address} shortOptions={{ head: 4, tail: 4 }} value={item.address} />,
     Number.isFinite(volume)
       ? formatNumber(volume, { prefix: '$' })
       : formatNumber(0, { prefix: '$' }),

@@ -31,8 +31,9 @@ export function LuckyDetail() {
     onDrawDateChange,
     showResultsChrome,
     resultsSummary,
-    verifyHash,
+    verifyChrome,
     winnerRows,
+    highlightedWinnerRows,
     winnersLoading,
     winnersPage,
     setWinnersPage,
@@ -134,9 +135,7 @@ export function LuckyDetail() {
                   {resultsSummary}
                 </Text>
               </div>
-              <Text as="span" className="text-primary underline" variant="copy">
-                {verifyHash}
-              </Text>
+              {verifyChrome}
             </div>
           ) : null}
           <Table.Body
@@ -144,6 +143,7 @@ export function LuckyDetail() {
             emphasisColumns={[2, 3]}
             empty={lucky.emptyResults}
             headers={[...lucky.resultsColumns]}
+            highlightedRows={highlightedWinnerRows}
             isLoading={winnersLoading}
             rows={winnerRows}
           />

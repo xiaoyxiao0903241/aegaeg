@@ -25,6 +25,7 @@ export function GrantDetail() {
     isIssue,
     tier,
     totalClaimed,
+    totalClaimedApprox,
     recordRows,
     recordsLoading,
     recordsPage,
@@ -34,7 +35,12 @@ export function GrantDetail() {
 
   const overviewTiles = [
     { key: 'tier', label: grant.tier, value: tier },
-    { key: 'totalClaimed', label: grant.totalClaimed, value: totalClaimed },
+    {
+      key: 'totalClaimed',
+      label: grant.totalClaimed,
+      value: totalClaimed,
+      note: totalClaimedApprox,
+    },
   ]
 
   return (
@@ -52,6 +58,7 @@ export function GrantDetail() {
               >
                 <CountValue text={item.value} />
               </Text>
+              {'note' in item && item.note != null ? <Tile.Note>{item.note}</Tile.Note> : null}
             </Tile>
           ))}
         </Grid>

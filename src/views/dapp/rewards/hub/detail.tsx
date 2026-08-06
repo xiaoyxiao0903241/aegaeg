@@ -142,13 +142,15 @@ export function RewardsHubDetail() {
         <Section.Title>{t.rewards.hub.mechanismTitle}</Section.Title>
         <Section.Description>{t.rewards.hub.mechanismBody}</Section.Description>
         <Table>
-          {/* 当前等级徽章：有 making_rank 跟真实档位，无数据时演示为 A4 */}
+          {/* 当前等级：有 making_rank 才高亮该行并标「当前」；无档不高亮 */}
           <Table.Body
+            className="[&_tbody_tr:last-child>td]:align-top"
             colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
             headers={[...tier.columns]}
-            highlightedRows={[statsView.tierRowIndex]}
+            highlightedRows={statsView.tierRowIndex != null ? [statsView.tierRowIndex] : []}
             rows={tier.rows.map((row, rowIndex) => {
-              const isCurrent = rowIndex === statsView.tierRowIndex
+              const isCurrent =
+                statsView.tierRowIndex != null && rowIndex === statsView.tierRowIndex
               // 当前档：仅「当前」标签高亮，等级名本身不着色
               const levelCell = isCurrent ? (
                 <span className="inline-flex items-center gap-2">

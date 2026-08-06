@@ -53,7 +53,6 @@ function CommunityConnectedDock() {
           note={t.community.referralBondPermanent}
           onCopy={() => void onCopyReferrerAddress()}
           referrer={referral.referrer}
-          referrerLabel={referral.referrerLabel}
         />
       ) : (
         <CommunityReferrerBindCard

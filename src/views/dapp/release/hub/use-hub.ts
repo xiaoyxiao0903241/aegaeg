@@ -33,7 +33,6 @@ export function useReleaseHub() {
   const queueClaimable = queueQuery.data?.totalClaimable ?? 0n
   const queueReleasing = queueQuery.data?.totalReleasing ?? 0n
   const bufferClaimable = bufferQuery.data?.totalClaimable ?? 0n
-  const bufferClaimed = bufferQuery.data?.totalClaimed ?? 0n
   const bufferReleasing = bufferQuery.data?.totalReleasing ?? 0n
   const chainReady = walletReady && queueQuery.data != null
   const bufferChainReady = walletReady && bufferQuery.data != null
@@ -77,11 +76,12 @@ export function useReleaseHub() {
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
-  const bufferClaimedAgx = formatReleaseApiOrChainLabel({
+  // 稿「可领取」= 手册 claimableAmount；API 仅有 released(=已提取)，无 PRV 可领分项 → 只信链
+  const bufferClaimableAgx = formatReleaseApiOrChainLabel({
     sessionReady,
-    apiRaw: bufferApi.data?.released_amount,
+    apiRaw: undefined,
     chainReady: bufferChainReady,
-    chainValue: bufferClaimed,
+    chainValue: bufferClaimable,
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
@@ -121,7 +121,7 @@ export function useReleaseHub() {
     queueReleasingLabel,
     queueClaimableLabel,
     bufferTotalAgx,
-    bufferClaimedAgx,
+    bufferClaimableAgx,
     gagxZeroLabel,
     queueReleasingApprox: formatUsdApprox(queueReleasingNum, priceUsd),
     queueClaimableApprox: formatUsdApprox(queueClaimableNum, priceUsd),

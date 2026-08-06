@@ -194,7 +194,7 @@ const PATH_RENAMES = [
 ]
 
 const FILE_MOVES = [
-  ['src/views/dapp/genesis/build-genesis-widget-model.ts', 'src/views/dapp/genesis/shared.ts'],
+  ['src/views/dapp/genesis/build-genesis-widget-model.ts', 'src/views/dapp/genesis/shared.tsx'],
   [
     'src/views/dapp/genesis/fetch-live-genesis-post-approve-gate.ts',
     'src/views/dapp/genesis/fetch-live-genesis-post-approve.ts',

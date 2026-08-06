@@ -6,15 +6,14 @@ import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { bscscanAddress } from '~/shared/config/explorer'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
-import { formatShortAddress } from '~/shared/presenters/format'
 import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -259,16 +258,7 @@ export function AssetsPositionVoucherLink({ address, label }: { address: string;
       <Text as="span" className="text-xs text-foreground/40" variant="detail">
         {label}
       </Text>
-      <Text
-        as="a"
-        className="text-xs font-medium text-foreground tabular-nums hover:underline"
-        href={bscscanAddress(address)}
-        rel="noreferrer"
-        target="_blank"
-        variant="detail"
-      >
-        {formatShortAddress(address)}
-      </Text>
+      <ExplorerLink className="text-xs font-medium text-foreground" value={address} />
     </div>
   )
 }

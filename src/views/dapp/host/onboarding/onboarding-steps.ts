@@ -1,3 +1,4 @@
+import { MOBILE_MAX_WIDTH_QUERY } from '~/shared/config/breakpoints'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { sleep } from '~/shared/lib/utils'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
@@ -34,9 +35,9 @@ const STEP_GO: Record<OnboardingStepId, StepGo> = {
   'nav-community': { tab: 'community' },
 }
 
-/** 与 `--breakpoint-dapp` / `@custom-variant max-dapp`（820px）保持一致。 */
+/** 与 `--breakpoint-dapp` / `@custom-variant max-dapp` 保持一致。 */
 function isMaxDappViewport(): boolean {
-  return window.matchMedia('(max-width: 820px)').matches
+  return window.matchMedia(MOBILE_MAX_WIDTH_QUERY).matches
 }
 
 /**
