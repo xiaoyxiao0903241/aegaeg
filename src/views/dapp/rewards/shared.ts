@@ -35,7 +35,7 @@ import {
  */
 export const NON_NUMERIC_EMPTY = '—'
 
-export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral'>
+export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
 
 /** 金额字符串展示 SSOT 在 `~/shared/presenters/format`；此处再导出供页袋旧 import。 */
 export { formatApiAmount }

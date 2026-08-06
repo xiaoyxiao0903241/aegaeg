@@ -1,8 +1,9 @@
 /**
- * 参与奖左栏 Dock：简单领取壳（participate）。
+ * 参与奖左栏 Dock：Dao Mixed（PARTICIPATION_REWARD）；贴稿 / 原型。
+ * @see docs/reviews/2026-08-06/ui-dynamic-content-pending-product.md
  */
-import { SimpleClaimDock } from '~/views/dapp/rewards/claim-panels'
+import { MixedClaimDock } from '~/views/dapp/rewards/claim-panels'
 
 export function ParticipateDock() {
-  return <SimpleClaimDock view="participate" />
+  return <MixedClaimDock view="participate" />
 }

@@ -130,7 +130,7 @@ const app = defineMessages({
       },
       {
         title: 'Rewards',
-        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build) spend contribution 1:1; participation and stipends use signed claims to wallet.',
+        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build/referral/participation) spend contribution 1:1; stipends use signed claims to wallet.',
       },
       {
         title: 'Community',
@@ -763,7 +763,7 @@ const app = defineMessages({
         },
         participate: {
           title: 'Participate',
-          body: 'Rewards from your referrer via IncentivePool signed claims.',
+          body: 'Rewards from your referrer via DaoPool Mixed (contribution 1:1).',
         },
         cobuild: {
           title: 'Co-build',
@@ -867,7 +867,7 @@ const app = defineMessages({
         title: 'Participation',
         body: 'Rewards from your referrer',
         aside:
-          'Participation rewards from your referral bond; claim via IncentivePool signature to wallet.',
+          'Participation rewards from your referral bond; claim via DaoPool Mixed (contribution 1:1).',
       },
       cobuild: {
         title: 'Co-build',
@@ -1177,18 +1177,6 @@ const app = defineMessages({
           },
         ],
       },
-    },
-    participateClaim: {
-      claimIntoWallet: 'To wallet',
-      ctaToWallet: 'Claim {amount} to wallet',
-      simpleHint:
-        'Participation uses IncentivePool signed claim; no contribution burn — gAGX goes to your wallet.',
-    },
-    referralClaim: {
-      claimIntoWallet: 'To wallet',
-      ctaToWallet: 'Claim {amount} to wallet',
-      simpleHint:
-        'Referral uses DaoPool Mixed claim (contribution 1:1); claimable amount follows the signed payload.',
     },
 
     genesisDetail: {

@@ -73,7 +73,7 @@ export function releaseHashForView(view: ReleaseView): string {
 export const REWARDS_CARD_CONTRACT = {
   lucky: 'LuckyPool',
   referral: 'CommunityFund',
-  participate: 'IncentivePool',
+  participate: 'DaoPool',
   cobuild: 'DaoPool',
   grant: 'MarketFund',
   genesis: 'RewardClaimer',

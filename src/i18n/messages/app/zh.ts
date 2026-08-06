@@ -127,7 +127,7 @@ const app = defineMessages({
       },
       {
         title: '奖励',
-        body: '「奖励」含推荐奖、参与奖、共建奖等；Lucky/共建/推荐等 Mixed 领取按 1:1 消耗贡献点数，参与奖与发展津贴等为签名直达钱包。',
+        body: '「奖励」含推荐奖、参与奖、共建奖等；Lucky/共建/推荐/参与等 Mixed 领取按 1:1 消耗贡献点数，发展津贴等为签名直达钱包。',
       },
       {
         title: '社区',
@@ -747,7 +747,7 @@ const app = defineMessages({
         },
         participate: {
           title: '参与奖',
-          body: '来自推荐人的参与奖励；通过 IncentivePool 签名领取，直达钱包。',
+          body: '来自推荐人的参与奖励；通过 DaoPool Mixed 领取（1:1 消耗贡献点）。',
         },
         cobuild: {
           title: '共建奖',
@@ -802,7 +802,7 @@ const app = defineMessages({
       participate: {
         title: '参与奖',
         body: '来自推荐人的奖励',
-        aside: '来自推荐关系的参与奖励；通过 IncentivePool 签名领取，直达钱包。',
+        aside: '来自推荐关系的参与奖励；通过 DaoPool Mixed 领取（1:1 消耗贡献点）。',
       },
       cobuild: {
         title: '共建奖',
@@ -994,7 +994,7 @@ const app = defineMessages({
           },
           {
             q: '参与奖如何领取？',
-            a: '在左侧领取面板通过 IncentivePool 签名领取，不消耗贡献点数，gAGX 直达钱包。',
+            a: '在左侧领取面板中选择领取与复投的比例：领取部分进入释放池按所选周期线性释放，复投部分直接进入单币质押复利。领取和复投均按 1:1 消耗贡献点数。',
           },
           {
             q: '邀请人可以更换吗？',
@@ -1109,16 +1109,6 @@ const app = defineMessages({
           },
         ],
       },
-    },
-    participateClaim: {
-      claimIntoWallet: '至钱包',
-      ctaToWallet: '领取 {amount} 至钱包',
-      simpleHint: '参与奖通过 IncentivePool 签名领取，不消耗贡献点数，gAGX 直达钱包。',
-    },
-    referralClaim: {
-      claimIntoWallet: '至钱包',
-      ctaToWallet: '领取 {amount} 至钱包',
-      simpleHint: '推荐奖通过 DaoPool Mixed 领取（1:1 消耗贡献点）；可领额以签名包为准。',
     },
     genesisDetail: {
       pageTitle: '共建奖励',

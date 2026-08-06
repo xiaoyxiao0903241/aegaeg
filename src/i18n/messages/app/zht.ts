@@ -127,7 +127,7 @@ const app = defineMessages({
       },
       {
         title: '獎勵',
-        body: '「獎勵」含推薦獎、參與獎、共建獎等；Lucky/共建等 Mixed 領取按 1:1 消耗貢獻點數，參與獎與發展津貼等為簽名直達錢包。',
+        body: '「獎勵」含推薦獎、參與獎、共建獎等；Lucky/共建/推薦/參與等 Mixed 領取按 1:1 消耗貢獻點數，發展津貼等為簽名直達錢包。',
       },
       {
         title: '社區',
@@ -731,7 +731,7 @@ const app = defineMessages({
         },
         participate: {
           title: 'Participate',
-          body: '來自推薦人的參與獎勵；透過 IncentivePool 簽名領取，直達錢包。',
+          body: '來自推薦人的參與獎勵；透過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
         },
         cobuild: {
           title: 'Co-build',
@@ -850,7 +850,7 @@ const app = defineMessages({
       participate: {
         title: '參與獎',
         body: '來自推薦人的獎勵',
-        aside: '來自推薦關係的參與獎勵；透過 IncentivePool 簽名領取，直達錢包。',
+        aside: '來自推薦關係的參與獎勵；透過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
       },
       cobuild: {
         title: '共建獎',
@@ -1159,16 +1159,6 @@ const app = defineMessages({
           },
         ],
       },
-    },
-    participateClaim: {
-      claimIntoWallet: '至錢包',
-      ctaToWallet: '領取 {amount} 至錢包',
-      simpleHint: '參與獎透過 IncentivePool 簽名領取，不消耗貢獻點數，gAGX 直達錢包。',
-    },
-    referralClaim: {
-      claimIntoWallet: '至錢包',
-      ctaToWallet: '領取 {amount} 至錢包',
-      simpleHint: '推薦獎透過 DaoPool Mixed 領取（1:1 消耗貢獻點）；可領額以簽名包為準。',
     },
 
     genesisDetail: {

@@ -13,7 +13,12 @@ import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
-import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
+import {
+  RailClaimableDot,
+  railIconMask,
+  railNavLabelKeys,
+  railTourIds,
+} from '~/views/dapp/host/primitives'
 
 const drawerItem = tv({
   base: cn(
@@ -167,18 +172,10 @@ export function MobileNav({
                 style={railIconMask(item.icon)}
               />
               {item.id === 'exchange' && exchangeClaimable ? (
-                <span
-                  aria-hidden
-                  className="absolute top-3 right-3 size-1.5 rounded-full bg-coral"
-                  data-exchange-claimable-dot
-                />
+                <RailClaimableDot kind="exchange" />
               ) : null}
               {item.id === 'release' && releaseClaimable ? (
-                <span
-                  aria-hidden
-                  className="absolute top-3 right-3 size-1.5 rounded-full bg-coral"
-                  data-release-claimable-dot
-                />
+                <RailClaimableDot kind="release" />
               ) : null}
               <Text
                 as="span"

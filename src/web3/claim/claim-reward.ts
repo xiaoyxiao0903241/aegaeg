@@ -3,7 +3,6 @@ import type { Wallet } from 'thirdweb/wallets'
 import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
-  requestIncentiveClaim,
   requestMarketFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
@@ -14,7 +13,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { sleep } from '~/shared/lib/utils'
 import { REWARD_CLAIMER_ERRORS, REWARD_CLAIMER_METHODS } from '~/web3/abis'
 import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/contract-error-message'
-import { writeIncentiveClaim, writeMarketFundClaim } from '~/web3/rewards/rewards-write'
+import { writeMarketFundClaim } from '~/web3/rewards/rewards-write'
 import {
   type ConfirmedWalletWrite,
   parseWriteAbi,
@@ -250,9 +249,6 @@ export const claimCommunityFund = createSignedClaim(
   requestCommunityFundClaim,
   claimOnVault(BSC_CONTRACTS.communityFundVault),
 )
-
-/** 参与奖 — IncentivePool 简单签（旧路径；不走 Dao Mixed）。 */
-export const claimIncentiveReward = createSignedClaim(requestIncentiveClaim, writeIncentiveClaim)
 
 /** 做市津贴 — OpenAPI 禁 confirm，扫描器核销。 */
 export const claimMarketFundReward = createSignedClaim(

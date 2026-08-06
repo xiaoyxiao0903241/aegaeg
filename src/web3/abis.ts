@@ -553,15 +553,6 @@ export const REWARD_CLAIMER_METHODS = {
 } as const
 
 /**
- * IncentivePool — 参与奖签名领取。
- * @see 手册 §9.5 签名奖励
- */
-export const INCENTIVE_POOL_METHODS = {
-  claimRewards:
-    'function claimRewards(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
-} as const
-
-/**
  * MarketFund — 简单签名领取。
  * @see 手册 §9.5 签名奖励
  */

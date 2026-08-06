@@ -31,7 +31,7 @@ import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /**
- * 简单领取左栏面板（发展津贴 / 参与奖）
+ * 简单领取左栏面板（发展津贴）
  */
 export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
@@ -68,18 +68,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
           showTokenChip={vm.showTokenChip}
           tokenGagx={vm.tokenGagx}
           usdLabel={t.rewards.detail.usdLabel}
-        >
-          {view === 'participate' ? (
-            <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-              {vm.participate.simpleHint}
-            </Text>
-          ) : null}
-          {vm.showEmptyParticipate ? (
-            <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-              {t.rewards.detail.emptyClaimable}
-            </Text>
-          ) : null}
-        </SimpleClaimableCard>
+        />
 
         {walletReady ? (
           <MainButton
@@ -100,7 +89,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
 }
 
 /**
- * 混合领取左栏面板（幸运奖 / 共建奖）
+ * 混合领取左栏面板（幸运奖 / 共建奖 / 推荐奖 / 参与奖）
  */
 export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
@@ -133,6 +122,11 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           }
           tokenGagx={vm.mixed.tokenGagx}
         />
+        {vm.showSignedAmountHint ? (
+          <Text as="p" className="leading-4 text-foreground/40" variant="copy">
+            {t.rewards.detail.signedAmountHint}
+          </Text>
+        ) : null}
 
         {vm.luckyPaused ? (
           <Text as="p" className="text-destructive" variant="copy">

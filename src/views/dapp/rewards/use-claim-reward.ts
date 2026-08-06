@@ -10,7 +10,6 @@ import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import {
   claimCommunityFund,
-  claimIncentiveReward,
   claimMarketFundReward,
   claimTeamReward,
 } from '~/web3/claim/claim-reward'
@@ -98,15 +97,6 @@ export function useTeamRewardClaim() {
 export function useMarketFundClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimMarketFundReward>[0]) => claimMarketFundReward(args),
-    [],
-  )
-  return useClaimReward(execute)
-}
-
-/** 参与奖激励领取 */
-export function useIncentiveClaim() {
-  const execute = useCallback(
-    (args: Parameters<typeof claimIncentiveReward>[0]) => claimIncentiveReward(args),
     [],
   )
   return useClaimReward(execute)

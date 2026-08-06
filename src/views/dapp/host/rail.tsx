@@ -13,7 +13,12 @@ import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
-import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
+import {
+  RailClaimableDot,
+  railIconMask,
+  railNavLabelKeys,
+  railTourIds,
+} from '~/views/dapp/host/primitives'
 
 type RailIndicator = {
   height: number
@@ -174,18 +179,10 @@ export function Rail({
                 aria-hidden="true"
               />
               {item.id === 'exchange' && exchangeClaimable ? (
-                <span
-                  aria-hidden
-                  className="absolute top-2 right-2 size-1.5 rounded-full bg-coral"
-                  data-exchange-claimable-dot
-                />
+                <RailClaimableDot kind="exchange" />
               ) : null}
               {item.id === 'release' && releaseClaimable ? (
-                <span
-                  aria-hidden
-                  className="absolute top-2 right-2 size-1.5 rounded-full bg-coral"
-                  data-release-claimable-dot
-                />
+                <RailClaimableDot kind="release" />
               ) : null}
               <Text
                 as="span"

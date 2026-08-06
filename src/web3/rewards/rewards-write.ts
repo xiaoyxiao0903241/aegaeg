@@ -3,7 +3,6 @@ import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   DAO_POOL_METHODS,
-  INCENTIVE_POOL_METHODS,
   LUCKY_POOL_ERRORS,
   LUCKY_POOL_METHODS,
   MARKET_FUND_METHODS,
@@ -15,7 +14,6 @@ import {
   writeContractViaWallet,
 } from '~/web3/wallet/wallet-contract-write'
 
-const incentiveWriteAbi = parseWriteAbi(INCENTIVE_POOL_METHODS.claimRewards, REWARD_CLAIMER_ERRORS)
 const marketWriteAbi = parseWriteAbi(MARKET_FUND_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 const daoMixedWriteAbi = parseWriteAbi(DAO_POOL_METHODS.claimRewardsMixed, REWARD_CLAIMER_ERRORS)
 const luckyMixedWriteAbi = parseWriteAbi(LUCKY_POOL_METHODS.claimRewardMixed, LUCKY_POOL_ERRORS)
@@ -28,23 +26,6 @@ export type SignedClaimArgs = {
   expireTime: bigint
   salt: `0x${string}`
   signature: `0x${string}`
-}
-
-/**
- * 参与奖签名领取（IncentivePool.claimRewards，旧路径）。
- *
- * @param args 签名领取参数
- * @returns 已确认的写交易结果
- * @see 手册 §9.5 签名奖励
- */
-export async function writeIncentiveClaim(args: SignedClaimArgs): Promise<ConfirmedWalletWrite> {
-  return writeContractViaWallet({
-    wallet: args.wallet,
-    address: BSC_CONTRACTS.incentivePool,
-    abi: incentiveWriteAbi,
-    functionName: 'claimRewards',
-    args: [args.signType, args.amount, args.expireTime, args.salt, args.signature],
-  })
 }
 
 /**

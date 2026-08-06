@@ -33,7 +33,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 /**
- * 混合领取（幸运 / 共建）视图模型
+ * 混合领取（幸运 / 共建 / 推荐 / 参与）视图模型
  *
  * 管理释放 / 复投比例与时长、共建奖类型选择，
  * 汇总链上领取快照、释放计划与贡献校验，决定提交按钮可用性。
@@ -95,9 +95,15 @@ export function useMixedClaim(view: MixedClaimView) {
   const luckyContributionOk =
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
-  const isDaoMixed = view === 'cobuild' || view === 'referral'
+  const isDaoMixed = view === 'cobuild' || view === 'referral' || view === 'participate'
   const daoRewardType: DaoRewardType =
-    view === 'referral' ? 'REFERRAL_REWARD' : view === 'cobuild' ? cobuildRewardType : 'RANK_REWARD'
+    view === 'referral'
+      ? 'REFERRAL_REWARD'
+      : view === 'participate'
+        ? 'PARTICIPATION_REWARD'
+        : view === 'cobuild'
+          ? cobuildRewardType
+          : 'RANK_REWARD'
   const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
   const plansOk = releaseIndex != null && restakeIndex != null
   const luckyOk =
@@ -172,27 +178,21 @@ export function useMixedClaim(view: MixedClaimView) {
   }))
 
   const amountKnown = view === 'lucky' && luckyQuery.data != null
-  // Dao Mixed：可领额以签名包为准，签名前不冒充 0.00（W12）
+  // Dao Mixed：签名前链上无预览额（amount 固定 0n）——数字槽显示 0，说明另挂 caption
   const awaitingDaoSignature = isDaoMixed && sessionReady
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
-    : awaitingDaoSignature
-      ? t.rewards.detail.signedAmountHint
-      : sessionReady
-        ? formatApiAmount(null)
-        : t.rewards.hub.signInForBalance
+    : sessionReady
+      ? formatApiAmount(null)
+      : t.rewards.hub.signInForBalance
   const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
   const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
   const releaseAmountText = amountKnown
     ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-    : awaitingDaoSignature
-      ? t.rewards.detail.signedAmountHint
-      : formatApiAmount(null)
+    : formatApiAmount(null)
   const restakeAmountText = amountKnown
     ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-    : awaitingDaoSignature
-      ? t.rewards.detail.signedAmountHint
-      : formatApiAmount(null)
+    : formatApiAmount(null)
   const requiredText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
     : formatApiAmount(null)
@@ -216,6 +216,7 @@ export function useMixedClaim(view: MixedClaimView) {
     amount,
     amountKnown,
     amountText,
+    showSignedAmountHint: awaitingDaoSignature,
     releasePct,
     setReleasePct,
     restakePct,
