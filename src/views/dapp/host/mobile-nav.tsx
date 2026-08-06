@@ -33,7 +33,7 @@ const drawerItem = tv({
   },
 })
 
-/** 与 theme.css 中 `--motion-dapp-emphasis` 保持一致。 */
+/** 与 theme.css 中 `--motion-dapp-emphasis` / onboarding `MOBILE_NAV_ENTER_MS` 保持一致。 */
 const NAV_MOTION_MS = 300
 
 type NavMotion = 'enter' | 'exit'

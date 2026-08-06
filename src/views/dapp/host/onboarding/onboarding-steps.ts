@@ -1,4 +1,5 @@
 import type { DappTab } from '~/shared/config/dapp-tabs'
+import { sleep } from '~/shared/lib/utils'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -38,6 +39,12 @@ function isMaxDappViewport(): boolean {
   return window.matchMedia('(max-width: 820px)').matches
 }
 
+/**
+ * H5 抽屉入场时长；须与 `mobile-nav.tsx` 的 `NAV_MOTION_MS` /
+ * `dapp-mobile-nav-in`（`--motion-dapp-emphasis`）一致，否则高亮会量到侧拉中的坐标。
+ */
+export const MOBILE_NAV_ENTER_MS = 300
+
 /** 回到指定中心页，保证模式卡片挂载。 */
 function ensureHub(hub: StepGo['hub']) {
   if (hub === 'exchange') useExchangeViewStore.getState().backToHub()
@@ -51,7 +58,7 @@ function ensureHub(hub: StepGo['hub']) {
  * 把宿主导航到该步骤锚点所在的页面，并等待锚点可见后返回。
  *
  * 每个步骤先切换到对应 Tab（必要时回到中心页、H5 下打开抽屉），
- * 让锚点元素得以挂载；随后轮询等待其出现在视口。
+ * 让锚点元素得以挂载；H5 导航步须等抽屉 translate 入场结束再量坐标。
  *
  * @param stepIndex 步骤下标
  * @param signal 中止信号
@@ -72,6 +79,8 @@ export async function prepareOnboardingStep(
 
   if (isOnboardingNavStep(id) && isMaxDappViewport()) {
     host.setMobileNavOpen(true)
+    await sleep(MOBILE_NAV_ENTER_MS)
+    if (signal?.aborted) return null
   } else {
     host.setMobileNavOpen(false)
   }
@@ -81,17 +90,27 @@ export async function prepareOnboardingStep(
 
 export function visibleTourTarget(id: OnboardingStepId): Element | null {
   const nodes = document.querySelectorAll(tourSelector(id))
+  let best: Element | null = null
+  let bestArea = 0
   for (const node of nodes) {
-    if (node.getClientRects().length > 0) return node
+    const rects = node.getClientRects()
+    if (rects.length === 0) continue
+    const r = rects[0]
+    if (!r) continue
+    const area = r.width * r.height
+    if (area > bestArea) {
+      bestArea = area
+      best = node
+    }
   }
-  return nodes.item(0)
+  return best
 }
 
 function waitForVisibleTourTarget(
   id: OnboardingStepId,
   signal?: AbortSignal,
-  tries = 8,
-  delayMs = 80,
+  tries = 24,
+  delayMs = 100,
 ): Promise<Element | null> {
   return new Promise((resolve) => {
     const attempt = (left: number) => {
@@ -110,6 +129,7 @@ function waitForVisibleTourTarget(
       }
       window.setTimeout(() => attempt(left - 1), delayMs)
     }
-    attempt(tries)
+    // H5 抽屉入场约 300ms，先短等一帧再开始轮询
+    window.requestAnimationFrame(() => attempt(tries))
   })
 }

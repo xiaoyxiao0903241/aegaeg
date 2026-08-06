@@ -14,11 +14,13 @@ function EntryRoot({
   children,
   className,
   onClick,
+  tourId,
   'data-slot-id': dataSlotId,
 }: {
   children: ReactNode
   className?: string
   onClick: () => void
+  tourId?: string
   'data-slot-id'?: string
 }) {
   return (
@@ -26,13 +28,14 @@ function EntryRoot({
       className={cn('flex flex-col', className)}
       data-slot-id={dataSlotId}
       onClick={onClick}
+      tourId={tourId}
     >
       {children}
     </InteractiveCard>
   )
 }
 
-function EntryTitleRow({ children }: { children: ReactNode }) {
+function EntryTitleGroup({ children }: { children: ReactNode }) {
   return <div className="flex items-center gap-2.5">{children}</div>
 }
 
@@ -54,7 +57,7 @@ function EntryPercent({ value }: { value: string }) {
 
 /** 释放入口卡（组合式）：释放队列 / 缓冲池总览入口 */
 export const ReleaseEntryCard = Object.assign(EntryRoot, {
-  TitleRow: EntryTitleRow,
+  TitleGroup: EntryTitleGroup,
   Title: EntryTitle,
   Percent: EntryPercent,
 })

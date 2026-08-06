@@ -1,5 +1,4 @@
-import type { PopoverContentProps } from '@reactour/tour'
-
+import { carouselIndicatorDotClass } from '~/shared/components/carousel'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { ONBOARDING_STEP_COUNT } from '~/views/dapp/host/onboarding/shared'
@@ -19,21 +18,23 @@ export type OnboardingChromeCopy = {
 
 /**
  * 引导提示气泡：标题 / 跳过 / 正文 / 上一步 · 进度点 · 下一步或完成。
- *
- * 替代 Reactour 默认的导航外观（在调用处关掉导航、徽标与关闭按钮）。
  */
 export function OnboardingTourTooltip({
   copy,
   currentStep,
-  setCurrentStep,
-  setIsOpen,
+  onPrev,
+  onNext,
   onSkip,
   onComplete,
   disabledActions = false,
-}: PopoverContentProps & {
+}: {
   copy: OnboardingChromeCopy
+  currentStep: number
+  onPrev: () => void
+  onNext: () => void
   onSkip: () => void
   onComplete: () => void
+  disabledActions?: boolean
 }) {
   const step = copy.steps[currentStep]
   const isFirst = currentStep <= 0
@@ -55,14 +56,16 @@ export function OnboardingTourTooltip({
           <Text as="p" className="m-0 font-normal" tone="foreground" variant="copy">
             {step.title}
           </Text>
-          <button
-            className="cursor-pointer border-0 bg-transparent p-0 text-xs leading-none text-muted-foreground"
-            disabled={navLocked}
-            onClick={onSkip}
-            type="button"
-          >
-            {copy.skip}
-          </button>
+          {isLast ? null : (
+            <button
+              className="cursor-pointer border-0 bg-transparent p-0 text-xs leading-none text-muted-foreground"
+              disabled={navLocked}
+              onClick={onSkip}
+              type="button"
+            >
+              {copy.skip}
+            </button>
+          )}
         </div>
         <Text as="p" className="m-0 leading-normal" tone="muted-foreground" variant="caption">
           {step.body}
@@ -78,7 +81,7 @@ export function OnboardingTourTooltip({
               : 'cursor-pointer bg-border text-foreground hover:bg-muted',
           )}
           disabled={isFirst || navLocked}
-          onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+          onClick={onPrev}
           type="button"
         >
           {copy.prev}
@@ -86,13 +89,7 @@ export function OnboardingTourTooltip({
 
         <div aria-hidden className="flex h-1.5 items-center gap-1.5" data-onboarding-dots>
           {copy.steps.map((_, index) => (
-            <span
-              className={cn(
-                'rounded-full transition-[width,background-color] duration-200',
-                index === currentStep ? 'h-1.5 w-5.5 bg-primary' : 'size-1.5 bg-border',
-              )}
-              key={index}
-            />
+            <span className={carouselIndicatorDotClass(index === currentStep)} key={index} />
           ))}
         </div>
 
@@ -105,10 +102,9 @@ export function OnboardingTourTooltip({
           onClick={() => {
             if (isLast) {
               onComplete()
-              setIsOpen(false)
               return
             }
-            setCurrentStep((s) => Math.min(ONBOARDING_STEP_COUNT - 1, s + 1))
+            onNext()
           }}
           type="button"
         >

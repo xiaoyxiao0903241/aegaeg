@@ -1,41 +1,26 @@
-import type { StepType, TourProps } from '@reactour/tour'
-import { type ComponentType, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
+import { useDappHostStore } from '~/stores/dapp-host-store'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { OnboardingSpotlight } from '~/views/dapp/host/onboarding/onboarding-spotlight'
 import { prepareOnboardingStep } from '~/views/dapp/host/onboarding/onboarding-steps'
 import {
   type OnboardingChromeCopy,
   OnboardingTourTooltip,
 } from '~/views/dapp/host/onboarding/onboarding-tooltip'
 import {
-  ONBOARDING_STEP_IDS,
+  ONBOARDING_STEP_COUNT,
   readOnboardingPersistence,
-  tourSelector,
   writeOnboardingDone,
 } from '~/views/dapp/host/onboarding/shared'
-
-type TourComponent = ComponentType<TourProps>
-
-const LazyTour = lazy(async () => {
-  const mod = await import('@reactour/tour')
-  await import('@reactour/tour/dist/index.css')
-  return { default: mod.Tour as TourComponent }
-})
-
-function onboardingSteps(): StepType[] {
-  return ONBOARDING_STEP_IDS.map((id) => ({
-    selector: tourSelector(id),
-    content: '',
-    mutationObservables: [tourSelector(id)],
-    resizeObservables: [tourSelector(id)],
-  }))
-}
 
 /**
  * DApp 新手引导（不包含创世页）。
  *
- * 首次访问自动启动一次，之后可通过顶部栏入口重播；
- * `@reactour/tour` 仅在引导打开时才加载，避免拖慢首屏。
+ * 自研 spotlight：紧贴目标 primary 描边、气泡视口躲避；
+ * 首次访问自动启动一次，之后可通过顶部栏入口重播。
+ * 完成/跳过：关 H5 抽屉并回到兑换中心（DApp 首页）。
  */
 export function OnboardingGuide({
   open,
@@ -47,7 +32,18 @@ export function OnboardingGuide({
   const { messages: t } = useI18n()
   const [currentStep, setCurrentStep] = useState(0)
   const [disabledActions, setDisabledActions] = useState(false)
-  const steps = useMemo(() => onboardingSteps(), [])
+  const [target, setTarget] = useState<Element | null>(null)
+  const [prevOpen, setPrevOpen] = useState(open)
+
+  // 打开瞬间重置步骤（React「依据 props 调整 state」）
+  if (open !== prevOpen) {
+    setPrevOpen(open)
+    if (open) {
+      setCurrentStep(0)
+      setTarget(null)
+      setDisabledActions(true)
+    }
+  }
 
   const copy: OnboardingChromeCopy = {
     skip: t.onboarding.skip,
@@ -57,19 +53,20 @@ export function OnboardingGuide({
     steps: t.onboarding.steps,
   }
 
-  const wasOpen = useRef(false)
-  useEffect(() => {
-    if (open && !wasOpen.current) setCurrentStep(0)
-    wasOpen.current = open
-  }, [open])
-
   useEffect(() => {
     if (!open) return
     const controller = new AbortController()
-    setDisabledActions(true)
-    void prepareOnboardingStep(currentStep, controller.signal).finally(() => {
-      if (!controller.signal.aborted) setDisabledActions(false)
-    })
+    void prepareOnboardingStep(currentStep, controller.signal)
+      .then((el) => {
+        if (controller.signal.aborted) return
+        setTarget(el)
+        setDisabledActions(false)
+      })
+      .catch(() => {
+        if (controller.signal.aborted) return
+        setTarget(null)
+        setDisabledActions(false)
+      })
     return () => {
       controller.abort()
     }
@@ -79,56 +76,31 @@ export function OnboardingGuide({
 
   const finish = (done: boolean) => {
     writeOnboardingDone(done)
+    const host = useDappHostStore.getState()
+    host.setMobileNavOpen(false)
+    host.selectTab('exchange')
+    useExchangeViewStore.getState().backToHub()
     onOpenChange(false)
   }
 
   return (
-    <Suspense fallback={null}>
-      <LazyTour
-        ContentComponent={(props) => (
-          <OnboardingTourTooltip
-            {...props}
-            copy={copy}
-            disabledActions={disabledActions}
-            onComplete={() => finish(true)}
-            onSkip={() => finish(true)}
-          />
-        )}
-        className="bg-transparent! p-0! shadow-none!"
+    <OnboardingSpotlight target={target}>
+      <OnboardingTourTooltip
+        copy={copy}
         currentStep={currentStep}
-        disableInteraction
-        disableWhenSelectorFalsy
         disabledActions={disabledActions}
-        isOpen={open}
-        maskClassName="opacity-40"
-        onClickClose={() => finish(true)}
-        onClickMask={() => undefined}
-        padding={{ mask: 8, popover: 12 }}
-        scrollSmooth
-        setCurrentStep={setCurrentStep}
-        setDisabledActions={setDisabledActions}
-        setIsOpen={(value) => {
-          const next = typeof value === 'function' ? value(open) : value
-          if (!next) finish(true)
-          else onOpenChange(true)
+        onComplete={() => finish(true)}
+        onNext={() => {
+          setDisabledActions(true)
+          setCurrentStep((s) => Math.min(ONBOARDING_STEP_COUNT - 1, s + 1))
         }}
-        showBadge={false}
-        showCloseButton={false}
-        showDots={false}
-        showNavigation={false}
-        steps={steps}
-        styles={{
-          popover: (base) => ({
-            ...base,
-            backgroundColor: 'transparent',
-            padding: 0,
-            boxShadow: 'none',
-            borderRadius: 0,
-          }),
-          maskArea: (base) => ({ ...base, rx: 16 }),
+        onPrev={() => {
+          setDisabledActions(true)
+          setCurrentStep((s) => Math.max(0, s - 1))
         }}
+        onSkip={() => finish(true)}
       />
-    </Suspense>
+    </OnboardingSpotlight>
   )
 }
 

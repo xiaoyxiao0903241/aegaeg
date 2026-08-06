@@ -44,7 +44,7 @@ function Main({ children }: { children: ReactNode }) {
   return <div className="grid min-w-0 flex-1 gap-2">{children}</div>
 }
 
-function TitleRow({
+function TitleGroup({
   selected,
   periodLabel,
   yieldLabel,
@@ -121,7 +121,7 @@ function Side({
 
 export const BondPeriodCard = Object.assign(Root, {
   Main,
-  TitleRow,
+  TitleGroup,
   Line,
   Side,
 })
@@ -183,7 +183,7 @@ export function BondPeriodList({
           return (
             <BondPeriodCard key={period} onSelect={() => onChange(period)} selected={selected}>
               <BondPeriodCard.Main>
-                <BondPeriodCard.TitleRow
+                <BondPeriodCard.TitleGroup
                   periodLabel={periodLabels[period]}
                   selected={selected}
                   yieldLabel={yieldLabels[period] ?? `${copy.yield} 0.00%`}

@@ -24,7 +24,7 @@ function TypeHead({ children }: { children: ReactNode }) {
   return <div className="grid gap-1.5">{children}</div>
 }
 
-function TypeTitleRow({ children }: { children: ReactNode }) {
+function TypeTitleGroup({ children }: { children: ReactNode }) {
   return <div className="flex flex-wrap items-center gap-1.5">{children}</div>
 }
 
@@ -77,7 +77,7 @@ function TypeBalance({
 
 export const RewardsTypeCard = Object.assign(TypeRoot, {
   Head: TypeHead,
-  TitleRow: TypeTitleRow,
+  TitleGroup: TypeTitleGroup,
   Body: TypeBody,
   Badge: TypeBadge,
   Balance: TypeBalance,

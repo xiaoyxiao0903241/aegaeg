@@ -25,14 +25,14 @@ export function ReleaseHubDock() {
     >
       <ReleaseEntryCard
         className="gap-1.5"
-        data-slot-id="release-pool-card"
         onClick={() => openReleaseView('queue')}
+        tourId="release-pool-card"
       >
-        <ReleaseEntryCard.TitleRow>
+        <ReleaseEntryCard.TitleGroup>
           <img alt="" className="size-(--app-icon-caption)" src={dappAssets.releasePool} />
           <ReleaseEntryCard.Title>{t.release.queue.title}</ReleaseEntryCard.Title>
           <ReleaseEntryCard.Percent value={vm.queuePct} />
-        </ReleaseEntryCard.TitleRow>
+        </ReleaseEntryCard.TitleGroup>
         <div className="grid grid-cols-2 gap-2">
           <Text as="p" className="m-0 text-foreground/40" variant="copy">
             {t.release.labels.releasing}
@@ -57,14 +57,14 @@ export function ReleaseHubDock() {
 
       <ReleaseEntryCard
         className="gap-2"
-        data-slot-id="buffer-pool-card"
         onClick={() => openReleaseView('buffer')}
+        tourId="buffer-pool-card"
       >
-        <ReleaseEntryCard.TitleRow>
+        <ReleaseEntryCard.TitleGroup>
           <img alt="" className="size-(--app-icon-caption)" src={dappAssets.bufferPool} />
           <ReleaseEntryCard.Title>{t.release.buffer.title}</ReleaseEntryCard.Title>
           <ReleaseEntryCard.Percent value={vm.bufferPct} />
-        </ReleaseEntryCard.TitleRow>
+        </ReleaseEntryCard.TitleGroup>
         <div className="grid grid-cols-2 gap-2">
           <Text as="strong" variant="headline">
             <CountValue text={vm.bufferTotalAgx} />

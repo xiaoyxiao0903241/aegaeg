@@ -165,7 +165,7 @@ export function RewardsHubDock() {
             onClick={() => openRewardsView(view)}
           >
             <RewardsTypeCard.Head>
-              <RewardsTypeCard.TitleRow>
+              <RewardsTypeCard.TitleGroup>
                 <Icon alt="" size={icon.size} src={icon.src} />
                 <Text as="span" className="font-semibold wrap-break-word" variant="detail">
                   {card.title}
@@ -173,7 +173,7 @@ export function RewardsHubDock() {
                 {isGenesis ? (
                   <RewardsTypeCard.Badge>{t.rewards.cards.genesis.badge}</RewardsTypeCard.Badge>
                 ) : null}
-              </RewardsTypeCard.TitleRow>
+              </RewardsTypeCard.TitleGroup>
               <RewardsTypeCard.Body>{card.body}</RewardsTypeCard.Body>
             </RewardsTypeCard.Head>
             <RewardsTypeCard.Balance

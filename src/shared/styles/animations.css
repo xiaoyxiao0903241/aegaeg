@@ -302,3 +302,27 @@
     animation: aegis-modal-content-out 180ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   }
 }
+
+/* 新手引导高亮：落到新目标时外圈扩散一次后消失（仅 opacity + scale） */
+@keyframes onboarding-highlight-hit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+.onboarding-highlight-hit {
+  animation: onboarding-highlight-hit 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-highlight-hit {
+    animation: none;
+    opacity: 0;
+  }
+}

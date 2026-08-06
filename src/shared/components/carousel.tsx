@@ -462,3 +462,11 @@ export const Carousel = Object.assign(CarouselRoot, {
   Item,
   Indicators,
 })
+
+/** 轮播 / 引导进度点共用（宽高 morph + duration-250）。 */
+export function carouselIndicatorDotClass(
+  active: boolean,
+  layout: 'desktop' | 'mobile' = 'desktop',
+): string {
+  return carouselChrome({ layout, dotActive: active }).dot()
+}
