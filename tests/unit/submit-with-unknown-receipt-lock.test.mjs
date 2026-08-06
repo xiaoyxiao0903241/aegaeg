@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
+
+const ADDR = '0x1111111111111111111111111111111111111111'
 
 test('submitWithUnknownReceiptLock rejects when path already latched', async () => {
   const { submitWithUnknownReceiptLock } = await loadModule(
@@ -11,11 +14,12 @@ test('submitWithUnknownReceiptLock rejects when path already latched', async () 
   )
 
   resetUnknownReceiptLocksForTests()
-  lockUnknownReceipt(WRITE_PATH.RELEASE_CLAIM, Symbol('prior'))
+  lockUnknownReceipt(WRITE_PATH.RELEASE_CLAIM, Symbol('prior'), ADDR)
 
   let ran = false
   const result = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => {
@@ -42,6 +46,7 @@ test('submitWithUnknownReceiptLock rejects sibling while in flight', async () =>
   let releaseFirst
   const first = submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: () =>
@@ -54,6 +59,7 @@ test('submitWithUnknownReceiptLock rejects sibling while in flight', async () =>
 
   const second = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => 'sibling',
@@ -62,7 +68,7 @@ test('submitWithUnknownReceiptLock rejects sibling while in flight', async () =>
 
   releaseFirst('done')
   assert.deepEqual(await first, { ok: true, value: 'done' })
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM), false)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), false)
   resetUnknownReceiptLocksForTests()
 })
 
@@ -79,26 +85,28 @@ test('latched path rejects begin; explicit clearLock allows a later begin', asyn
   } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
 
   resetUnknownReceiptLocksForTests()
-  lockUnknownReceipt(WRITE_PATH.EXCHANGE, Symbol('stale-unknown'))
+  lockUnknownReceipt(WRITE_PATH.EXCHANGE, Symbol('stale-unknown'), ADDR)
 
   const blocked = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.EXCHANGE,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => 1,
   })
   assert.deepEqual(blocked, { ok: false, error: 'LOCKED' })
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE), true)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR), true)
 
-  clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
+  clearUnknownReceiptLock(WRITE_PATH.EXCHANGE, ADDR)
   const ok = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.EXCHANGE,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => 2,
   })
   assert.deepEqual(ok, { ok: true, value: 2 })
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE), false)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR), false)
   resetUnknownReceiptLocksForTests()
 })
 
@@ -113,11 +121,11 @@ test('owner-scoped clear leaves another owner latch intact', async () => {
 
   resetUnknownReceiptLocksForTests()
   const ownerA = Symbol('a')
-  lockUnknownReceipt(WRITE_PATH.RELEASE_CLAIM, ownerA)
-  clearUnknownReceiptLock(WRITE_PATH.RELEASE_CLAIM, Symbol('b'))
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM), true)
-  clearUnknownReceiptLock(WRITE_PATH.RELEASE_CLAIM, ownerA)
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM), false)
+  lockUnknownReceipt(WRITE_PATH.RELEASE_CLAIM, ownerA, ADDR)
+  clearUnknownReceiptLock(WRITE_PATH.RELEASE_CLAIM, ADDR, Symbol('b'))
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), true)
+  clearUnknownReceiptLock(WRITE_PATH.RELEASE_CLAIM, ADDR, ownerA)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), false)
 })
 
 test('submitWithUnknownReceiptLock success path leaves path unlocked', async () => {
@@ -131,13 +139,14 @@ test('submitWithUnknownReceiptLock success path leaves path unlocked', async () 
   resetUnknownReceiptLocksForTests()
   const result = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => 42,
   })
 
   assert.deepEqual(result, { ok: true, value: 42 })
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM), false)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), false)
 })
 
 test('submitWithUnknownReceiptLock locks on unknown submit outcome only', async () => {
@@ -154,6 +163,7 @@ test('submitWithUnknownReceiptLock locks on unknown submit outcome only', async 
   resetUnknownReceiptLocksForTests()
   const soft = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => {
@@ -161,10 +171,11 @@ test('submitWithUnknownReceiptLock locks on unknown submit outcome only', async 
     },
   })
   assert.deepEqual(soft, { ok: false, error: 'SOFT_GATE' })
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM), false)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), false)
 
   const unknown = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
+    address: ADDR,
     whenLocked: 'LOCKED',
     whenInFlight: 'IN_FLIGHT',
     run: async () => {
@@ -172,6 +183,6 @@ test('submitWithUnknownReceiptLock locks on unknown submit outcome only', async 
     },
   })
   assert.equal(unknown.ok, false)
-  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM), true)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), true)
   resetUnknownReceiptLocksForTests()
 })

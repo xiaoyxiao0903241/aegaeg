@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
 import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import {
@@ -51,7 +51,6 @@ export type UseChainMutationArgs<TVars, TValue> = {
  *
  * 通过未知回执互斥保护同一写入路径：回执状态未知期间再次写入会抛锁定错误，
  * 由本 hook 静默处理；路径上已有请求在途时提示用户等待。
- * 其余错误统一走 onError 后再弹默认 toast，除非 onError 返回 `'handled'`。
  * `isLocked` 表示「锁定或在途」；`isLatched` 仅表示处于未知回执锁定。
  */
 export function useChainMutation<TVars = void, TValue = void>(
@@ -60,7 +59,8 @@ export function useChainMutation<TVars = void, TValue = void>(
   const { messages: t } = useI18n()
   const path = args.path
   const wallet = useActiveWallet()
-  // mutationFn 异步执行会跨渲染，这里用 layout effect 同步最新钱包，禁止在渲染期写 ref
+  const account = useActiveAccount()
+  const address = account?.address
   const walletRef = useRef(wallet)
   useLayoutEffect(() => {
     walletRef.current = wallet
@@ -68,13 +68,13 @@ export function useChainMutation<TVars = void, TValue = void>(
 
   const isLocked = useSyncExternalStore(
     subscribeWritePathBusy,
-    () => isWritePathBusy(path),
-    () => isWritePathBusy(path),
+    () => isWritePathBusy(path, address),
+    () => isWritePathBusy(path, address),
   )
   const isLatched = useSyncExternalStore(
     subscribeWritePathBusy,
-    () => isUnknownReceiptLocked(path),
-    () => isUnknownReceiptLocked(path),
+    () => isUnknownReceiptLocked(path, address),
+    () => isUnknownReceiptLocked(path, address),
   )
 
   const mutation = useMutation({
@@ -83,6 +83,7 @@ export function useChainMutation<TVars = void, TValue = void>(
       const session = makeWriteSession(walletRef.current)
       const guarded = await submitWithUnknownReceiptLock({
         path,
+        address: session.address,
         whenLocked: new ChainMutationLockedError(),
         whenInFlight: new ChainMutationInFlightError(),
         run: () => args.mutation(vars, session),
@@ -91,7 +92,6 @@ export function useChainMutation<TVars = void, TValue = void>(
       return guarded.value as TValue
     },
     onSuccess: (value, vars) => {
-      // onSuccess 失败不得让 mutateAsync 变成写失败。
       try {
         const result = args.onSuccess?.(value, vars)
         if (result != null && typeof (result as PromiseLike<void>).then === 'function') {
@@ -111,24 +111,17 @@ export function useChainMutation<TVars = void, TValue = void>(
   })
 
   return {
-    /**
-     * 执行链上写。成功返回 mutation 的返回值；失败（含被静默处理的锁定）返回 undefined。
-     * 注意 void 写入成功时也可能返回 undefined，勿把 undefined 当成失败。
-     */
     mutate: async (vars?: TVars): Promise<TValue | undefined> => {
       try {
         return await mutation.mutateAsync(vars as TVars)
       } catch {
-        // 错误已在 onError 处理（锁定场景为静默）
         return undefined
       }
     },
     isPending: mutation.isPending,
-    /** 写入路径忙（锁定或在途）；按钮/可领取判断必须据此阻断。 */
     isLocked,
-    /** 是否处于未知回执锁定（在途结束后仍可能为 true）。 */
     isLatched,
-    clearLock: () => clearUnknownReceiptLock(path),
+    clearLock: () => clearUnknownReceiptLock(path, address),
     reset: mutation.reset,
   }
 }
