@@ -4,9 +4,75 @@ import { Text } from '~/shared/components/text'
 
 const HTML_CONTENT_RE = /<[a-z][\s\S]*>/i
 const URL_RE = /(https?:\/\/[^\s<>"']+)/g
+const FORBIDDEN_TAGS = new Set([
+  'script',
+  'iframe',
+  'object',
+  'embed',
+  'link',
+  'meta',
+  'base',
+  'form',
+])
+const ALLOWED_HREF_SRC_RE = /^(https?:|mailto:)/i
+
+/** 去掉控制字符后再做 scheme 判断，避免 `java\0script:` 绕过。 */
+function normalizeUrlAttr(value: string): string {
+  let out = ''
+  for (const ch of value) {
+    const code = ch.codePointAt(0) ?? 0
+    if (code < 32 || code === 127) continue
+    out += ch
+  }
+  return out.trim()
+}
+
+function isAllowedHrefOrSrc(value: string): boolean {
+  return ALLOWED_HREF_SRC_RE.test(normalizeUrlAttr(value))
+}
+
+/** 无 DOMParser 时转义为纯文本，绝不回传原始 HTML。 */
+function escapeAsPlainText(html: string): string {
+  return html
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
 
 export function isPopupNoticeHtmlContent(content: string): boolean {
   return HTML_CONTENT_RE.test(content)
+}
+
+/** 公告 HTML 消毒：去脚本/嵌入/事件处理器；href/src 仅允许 http/https/mailto。 */
+export function sanitizePopupNoticeHtml(html: string): string {
+  if (typeof DOMParser === 'undefined') {
+    return escapeAsPlainText(html)
+  }
+
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  for (const el of [...doc.body.querySelectorAll('*')]) {
+    if (FORBIDDEN_TAGS.has(el.tagName.toLowerCase())) {
+      el.remove()
+      continue
+    }
+    for (const attr of [...el.attributes]) {
+      const name = attr.name.toLowerCase()
+      if (name.startsWith('on') || name === 'srcdoc') {
+        el.removeAttribute(attr.name)
+        continue
+      }
+      if (name === 'href' || name === 'src' || name === 'xlink:href') {
+        if (!isAllowedHrefOrSrc(attr.value)) {
+          el.removeAttribute(attr.name)
+        } else {
+          el.setAttribute(attr.name, normalizeUrlAttr(attr.value))
+        }
+      }
+    }
+  }
+  return doc.body.innerHTML
 }
 
 function linkifyPlainText(text: string) {
@@ -37,8 +103,7 @@ function linkifyPlainText(text: string) {
 /**
  * 公告正文渲染
  *
- * 含 HTML 标记时按原文渲染（含脚本/样式），内容由后台或 CMS 提供，
- * 不做过滤；纯文本则分段，并自动把其中的链接渲染为可点击样式。
+ * HTML 经消毒后渲染；纯文本分段并自动链接化。
  *
  * @param content 公告正文
  */
@@ -46,10 +111,11 @@ export function PopupNoticeContent({ content }: { content: string }) {
   if (!content.trim()) return null
 
   if (isPopupNoticeHtmlContent(content)) {
+    const safeHtml = sanitizePopupNoticeHtml(content)
     return (
       <div
         className="home-popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:underline-offset-2 [&_li]:ms-4 [&_li]:list-disc [&_ol]:list-decimal [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:space-y-1.5"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
     )
   }
