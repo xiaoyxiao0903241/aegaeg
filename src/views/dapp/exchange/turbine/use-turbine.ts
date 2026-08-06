@@ -3,7 +3,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber } from '~/shared/api/format-display'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/shared'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-with-success-toast'
 
 /** 组装 Turbine 面板渲染所需：会话状态 + 文案 + 解锁 / 领取提示编排。 */
 export function useTurbine(turbine: TurbineExchangeState) {

@@ -5,7 +5,8 @@ import {
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber } from '~/shared/api/format-display'
-import { formatApiAmount, toastClaimResult } from '~/views/dapp/rewards/shared'
+import { formatApiAmount } from '~/views/dapp/rewards/shared'
+import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import {
   useCommunityFundClaim,
   useIncentiveClaim,

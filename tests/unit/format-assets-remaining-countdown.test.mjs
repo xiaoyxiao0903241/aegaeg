@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { formatAssetsRemainingCountdown } from './format-assets-remaining-countdown.ts'
+import { formatAssetsRemainingCountdown } from '../../src/core/assets/format-assets-remaining-countdown.ts'
 
 test('formatAssetsRemainingCountdown: days + hms', () => {
   const now = 1_700_000_000

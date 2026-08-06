@@ -11,11 +11,8 @@ import {
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber, formatPresaleRank } from '~/shared/api/format-display'
-import {
-  claimableAmountValue,
-  formatApiAmount,
-  toastClaimResult,
-} from '~/views/dapp/rewards/shared'
+import { claimableAmountValue, formatApiAmount } from '~/views/dapp/rewards/shared'
+import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 

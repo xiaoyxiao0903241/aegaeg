@@ -72,12 +72,6 @@ module.exports = {
       to: { path: '(^src/web3/|^thirdweb|^viem)' },
     },
     {
-      name: 'ui-is-dumb',
-      severity: 'warn',
-      from: { path: '^src/shared/ui/' },
-      to: { path: '^src/(views|core|boot)/' },
-    },
-    {
       name: 'views-no-cross-tab',
       comment:
         'DApp tab page-bags must not import sibling tabs. Cross-tab chrome: views/dapp/shared + views/dapp/host (not tabs). Primitives: shared/components. Helpers: hooks / core.',

@@ -7,11 +7,8 @@ import type { ExchangeTokenKey } from '~/shared/config/data'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import {
-  isTradeTokenKey,
-  submitExchangeWithSuccessToast,
-  type TradeTokenKey,
-} from '~/views/dapp/exchange/shared'
+import { isTradeTokenKey, type TradeTokenKey } from '~/views/dapp/exchange/shared'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-with-success-toast'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 

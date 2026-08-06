@@ -1,5 +1,3 @@
-import { toast } from 'sonner'
-
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { FLASH_PAIR_DEFAULT, type FlashPairId, isFlashPairId } from '~/core/exchange/flash-pair'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -22,17 +20,6 @@ export type QuotedSubmitCore = {
   runQuotedSubmit: (
     run: QuotedSubmitExecute,
   ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
-}
-
-// —— submit-exchange-success ——
-
-/** 执行兑换提交，成功后弹出成功提示。 */
-export async function submitExchangeWithSuccessToast(
-  submit: () => Promise<{ ok: boolean }>,
-  successMessage: string,
-): Promise<void> {
-  const result = await submit()
-  if (result.ok) toast.success(successMessage)
 }
 
 // —— exchange-views-needing-provider ——

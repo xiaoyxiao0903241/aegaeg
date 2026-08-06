@@ -65,7 +65,7 @@ const viewportContent = 'width=device-width, initial-scale=1.0, maximum-scale=1.
  * 首页文档模板
  *
  * 纯客户端 SPA 外壳，不做 SSR 也不预渲染内容；只内联关键引导脚本与
- * 本地化的 <title>/<meta>，页面主体由 /src/views/home/main.tsx 在客户端挂载。
+ * 本地化的 <title>/<meta>，页面主体由 /src/boot/home-main.tsx 在客户端挂载。
  *
  * @param locale 目标语言
  */
@@ -97,7 +97,7 @@ ${faviconHead}
     ${serializeHomeMessagesBootstrap(locale)}
     <div id="root"></div>
     ${legacyCoreJsScript}
-    <script type="module" src="/src/views/home/main.tsx"></script>
+    <script type="module" src="/src/boot/home-main.tsx"></script>
   </body>
 </html>
 `

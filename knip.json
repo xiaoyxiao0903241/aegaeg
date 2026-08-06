@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
     "src/boot/main.tsx",
-    "src/views/home/main.tsx",
+    "src/boot/home-main.tsx",
     "src/shared/lib/legacy-core-js.ts",
     "src/views/home/home-renderer.ts",
     "src/i18n/messages/home/index.ts",
