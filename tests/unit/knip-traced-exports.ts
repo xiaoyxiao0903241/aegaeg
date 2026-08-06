@@ -54,7 +54,10 @@ export { useShareholderRankLabels } from '../../src/views/dapp/rewards/use-share
 export { readWalletSession } from '../../src/web3/auth/login-with-wallet'
 export { createMemoryAuthSessionStorage } from '../../src/web3/auth/session'
 export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'
-export { resetUnknownReceiptLocksForTests } from '../../src/web3/wallet/unknown-receipt-lock'
+export {
+  rehydrateUnknownReceiptLocksForTests,
+  resetUnknownReceiptLocksForTests,
+} from '../../src/web3/wallet/unknown-receipt-lock'
 /** CommunityFund signed claim — genesis 发展基金 only; referral uses Dao Mixed REFERRAL_REWARD. */
 export {
   useAgxContributionBurnLogs,

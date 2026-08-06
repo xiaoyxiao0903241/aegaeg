@@ -90,9 +90,7 @@ test('writeCtaLabel maps migrated and need_referral phases', async () => {
 })
 
 test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', async () => {
-  const { evaluateStakingAmountWrite } = await loadModule(
-    '/src/views/dapp/staking/staking-amount-write-ui.ts',
-  )
+  const { evaluateStakingAmountWrite } = await loadModule('/src/views/dapp/staking/shared.ts')
 
   const ready = {
     unknownReceiptLocked: false,

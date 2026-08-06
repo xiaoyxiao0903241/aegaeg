@@ -131,11 +131,17 @@ export function useReferral() {
       return false
     }
 
+    if (address && target.toLowerCase() === address.toLowerCase()) {
+      setError(REFERRAL_BIND_ERROR.SELF_REFERRAL)
+      return false
+    }
+
     setError(null)
     bindSucceededRef.current = false
     await bindMutation.mutate(target)
     return readAndClearBindSuccess(bindSucceededRef)
   }, [
+    address,
     bindMutation,
     isBindCooldown,
     isLocked,

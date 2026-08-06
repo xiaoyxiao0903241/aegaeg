@@ -30,6 +30,7 @@ export function useHub() {
   const queueClaimable = queueQuery.data?.totalClaimable ?? 0n
   const queueReleasing = queueQuery.data?.totalReleasing ?? 0n
   const bufferClaimable = bufferQuery.data?.totalClaimable ?? 0n
+  const bufferClaimed = bufferQuery.data?.totalClaimed ?? 0n
   const bufferReleasing = bufferQuery.data?.totalReleasing ?? 0n
   const chainReady = walletReady && queueQuery.data != null
   const bufferChainReady = walletReady && bufferQuery.data != null
@@ -68,21 +69,21 @@ export function useHub() {
     sessionReady,
     apiRaw: bufferApi.data?.released_amount,
     chainReady: bufferChainReady,
-    chainValue: bufferClaimable,
+    chainValue: bufferClaimed,
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
   const gagxZeroLabel = `${formatGroupedNumber(0, { digits: 4 })} ${t.release.units.queue}`
 
-  const queueReleasingNum =
-    parseApiAmount(releaseApi.data?.releasing_amount) ??
-    (chainReady ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS) : 0)
-  const queueClaimableNum =
-    parseApiAmount(releaseApi.data?.released_amount) ??
-    (chainReady ? formatTokenAmountToNumber(queueClaimable, AGX_DECIMALS) : 0)
-  const bufferTotalNum =
-    parseApiAmount(bufferApi.data?.cumulative_amount) ??
-    (bufferChainReady ? formatTokenAmountToNumber(bufferTotalChain, AGX_DECIMALS) : 0)
+  const queueReleasingNum = chainReady
+    ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS)
+    : (parseApiAmount(releaseApi.data?.releasing_amount) ?? 0)
+  const queueClaimableNum = chainReady
+    ? formatTokenAmountToNumber(queueClaimable, AGX_DECIMALS)
+    : (parseApiAmount(releaseApi.data?.released_amount) ?? 0)
+  const bufferTotalNum = bufferChainReady
+    ? formatTokenAmountToNumber(bufferTotalChain, AGX_DECIMALS)
+    : (parseApiAmount(bufferApi.data?.cumulative_amount) ?? 0)
 
   return {
     t,

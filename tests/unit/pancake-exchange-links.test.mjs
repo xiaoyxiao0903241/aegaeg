@@ -37,7 +37,7 @@ test('formatExchangeRateApprox displays connected swap meta rate', async () => {
   )
 })
 
-test('formatExchangeRateApprox empty amounts is zero placeholder', async () => {
+test('formatExchangeRateApprox empty amounts keeps rate chrome with zero', async () => {
   const { formatExchangeRateApprox } = await loadModule('/src/views/dapp/exchange/shared.ts')
 
   assert.equal(
@@ -49,6 +49,6 @@ test('formatExchangeRateApprox empty amounts is zero placeholder', async () => {
       symbolIn: 'USD1',
       symbolOut: 'AGX',
     }),
-    '0',
+    '1 USD1 = 0.000 AGX',
   )
 })

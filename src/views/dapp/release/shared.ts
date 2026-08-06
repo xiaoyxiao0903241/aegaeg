@@ -2,7 +2,7 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { releaseProgressBps } from '~/core/release/release-block-reasons'
 import { formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
 
-/** 依次取 API 小数字符串、链上数值，最后回退到格式化后的零 */
+/** 有链快照时优先链上数值，否则 API 小数字符串，最后回退到格式化后的零 */
 export function formatReleaseApiOrChainLabel(args: {
   sessionReady: boolean
   apiRaw: string | undefined
@@ -12,12 +12,12 @@ export function formatReleaseApiOrChainLabel(args: {
   unit: string
 }): string {
   const { sessionReady, apiRaw, chainReady, chainValue, decimals, unit } = args
+  // 有链快照时优先链（与进度条同源）；避免 API「累计已释放」与链「当前可领」同标签互换
+  if (chainReady) return `${formatTokenAmount(chainValue, decimals, 4)} ${unit}`
   if (sessionReady) {
     const n = parseApiAmount(apiRaw)
     if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
   }
-  if (chainReady) return `${formatTokenAmount(chainValue, decimals, 4)} ${unit}`
-  // 冷启动 / 未连接时不能留空；keepPreviousData 场景下 apiRaw 仍可用，走上方分支
   return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
 }
 

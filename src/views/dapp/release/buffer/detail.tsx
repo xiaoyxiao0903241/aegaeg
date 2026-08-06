@@ -42,13 +42,15 @@ export function BufferDetail() {
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const api = apiSummaryQuery.data
+  const chainReady = walletReady && bufferQuery.data != null
 
   function amountNum(apiRaw: string | undefined, chain: bigint): number {
+    if (chainReady) return formatTokenAmountToNumber(chain, AGX_DECIMALS)
     if (sessionReady) {
       const n = parseApiAmount(apiRaw)
       if (n != null) return n
     }
-    return walletReady ? formatTokenAmountToNumber(chain, AGX_DECIMALS) : 0
+    return 0
   }
 
   const agxStats = [
@@ -57,7 +59,7 @@ export function BufferDetail() {
       value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiRaw: api?.cumulative_amount,
-        chainReady: walletReady,
+        chainReady,
         chainValue: amount,
         decimals: AGX_DECIMALS,
         unit: 'AGX',
@@ -69,7 +71,7 @@ export function BufferDetail() {
       value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiRaw: api?.released_amount,
-        chainReady: walletReady,
+        chainReady,
         chainValue: claimed,
         decimals: AGX_DECIMALS,
         unit: 'AGX',
@@ -81,7 +83,7 @@ export function BufferDetail() {
       value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiRaw: api?.releasing_amount,
-        chainReady: walletReady,
+        chainReady,
         chainValue: releasing,
         decimals: AGX_DECIMALS,
         unit: 'AGX',

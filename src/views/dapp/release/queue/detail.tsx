@@ -44,13 +44,15 @@ export function QueueDetail() {
   const claimable = queueQuery.data?.totalClaimable ?? 0n
   const unit = t.release.units.queue
   const api = apiSummaryQuery.data
+  const chainReady = walletReady && queueQuery.data != null
 
   function parseApiOrChain(apiRaw: string | undefined, chain: bigint): number {
+    if (chainReady) return formatTokenAmountToNumber(chain, AGX_DECIMALS)
     if (sessionReady) {
       const n = parseApiAmount(apiRaw)
       if (n != null) return n
     }
-    return formatTokenAmountToNumber(chain, AGX_DECIMALS)
+    return 0
   }
 
   function formatReleasingLabel(): string {
@@ -60,9 +62,10 @@ export function QueueDetail() {
   }
 
   function formatReleasedLabel(): string {
+    if (chainReady) return `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}`
     const n = sessionReady ? parseApiAmount(api?.released_amount) : null
     if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
-    return `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}`
+    return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
   }
 
   function formatLifetimeClaimed(): string {

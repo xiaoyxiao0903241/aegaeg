@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import { selectLockedClaimLegs } from '~/core/assets/select-locked-claim-legs'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
@@ -253,13 +254,19 @@ export function usePositionDock(product: AssetsProduct) {
     const target: MixedClaimTarget =
       row.kind === 'liquid'
         ? { source: 'liquid', amount: reward }
-        : {
-            source: 'locked',
-            pool: row.pool,
-            stakeIndex: row.stakeIndex!,
-            amount: row.blockReward > 0n ? row.blockReward : row.extraInterest,
-            extra: row.blockReward <= 0n && row.extraInterest > 0n,
-          }
+        : (() => {
+            const legs = selectLockedClaimLegs({
+              blockReward: row.blockReward,
+              extraInterest: row.extraInterest,
+            })
+            return {
+              source: 'locked' as const,
+              pool: row.pool,
+              stakeIndex: row.stakeIndex!,
+              amount: legs.reduce((sum, leg) => sum + leg.amount, 0n),
+              legs,
+            }
+          })()
     setClaim({
       open: true,
       owner: address,

@@ -1,5 +1,9 @@
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+
+/** 零占位（不经 shared，保持 core 纯度）。 */
+function zeroGroupedPlaceholder(digits: number): string {
+  return digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
+}
 
 /** 释放 / 领取路径：钱包 + writeReady + 交易忙碌 + 可领额度。 */
 export function canClaimWhen(args: {
@@ -58,7 +62,6 @@ export function formatAmountBalanceLabel(
   args: { balance: string; digits?: number },
 ): string {
   const digits = Math.max(0, Math.floor(args.digits ?? 2))
-  const balance =
-    args.balance.trim() === '' ? formatGroupedNumber(0, { digits }) : args.balance.trim()
+  const balance = args.balance.trim() === '' ? zeroGroupedPlaceholder(digits) : args.balance.trim()
   return template.replace('{balance}', balance)
 }

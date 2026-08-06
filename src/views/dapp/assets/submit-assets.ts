@@ -12,6 +12,7 @@ import {
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
 import { dualCheckMixedClaim } from '~/core/assets/dual-check-mixed-claim'
+import type { LockedClaimLeg } from '~/core/assets/select-locked-claim-legs'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import type { Address } from '~/shared/config/contracts'
 import {
@@ -57,6 +58,24 @@ export type MixedClaimTarget =
       pool: Address
       stakeIndex: number
       amount: bigint
+      /** 普通奖励与额外利息可并存；按顺序各写一笔。 */
+      legs: ReadonlyArray<LockedClaimLeg>
+    }
+  | {
+      source: 'bond'
+      depository: Address
+      bondIndex: number
+      amount: bigint
+    }
+
+/** 单腿读快照目标（定期需带 extra 以区分普通/额外可领余额）。 */
+type MixedClaimReadTarget =
+  | { source: 'liquid'; amount: bigint }
+  | {
+      source: 'locked'
+      pool: Address
+      stakeIndex: number
+      amount: bigint
       extra?: boolean
     }
   | {
@@ -67,7 +86,7 @@ export type MixedClaimTarget =
     }
 
 async function readMixedClaimSnapshot(
-  target: MixedClaimTarget,
+  target: MixedClaimReadTarget,
   user: Address,
   amount: bigint,
   releaseDays: ReleaseDurationDays,
@@ -99,6 +118,7 @@ async function readMixedClaimSnapshot(
  * 写前连续读取两次链上状态做双重校验，通过后按来源路由到对应合约的
  * 领取方法（活期 / 定期 / 债券），最后失效相关缓存。
  * 打开弹窗时捕获的 owner 须与会话钱包一致，否则拒绝提交。
+ * 定期若普通奖励与额外利息并存，按腿顺序各写一笔。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  */
@@ -114,9 +134,56 @@ export async function submitMixedClaim(args: {
   const { wallet, address: user, readClient } = session
   assertSessionOwnsAction(user, owner)
 
-  const amount = target.amount
   const restakeBps = restakeBpsFromPct(restakePct)
 
+  if (target.source === 'locked') {
+    // 定期普通/额外为独立入口；双奖励时顺序各写一笔，禁止静默丢弃 extraInterest。
+    if (target.legs.length === 0) throw ASSETS_BLOCKED.unavailable
+    for (const leg of target.legs) {
+      const legTarget: MixedClaimReadTarget = {
+        source: 'locked',
+        pool: target.pool,
+        stakeIndex: target.stakeIndex,
+        amount: leg.amount,
+        extra: leg.extra,
+      }
+      const intent = await readMixedClaimSnapshot(
+        legTarget,
+        user,
+        leg.amount,
+        releaseDays,
+        restakeDays,
+        readClient,
+      )
+      const live = await readMixedClaimSnapshot(
+        legTarget,
+        user,
+        leg.amount,
+        releaseDays,
+        restakeDays,
+        readClient,
+      )
+      const dual = dualCheckMixedClaim({ amount: leg.amount, intent, live })
+      if (!dual.ok) {
+        const mapped = gateError(dual.fail.reason)
+        throw mapped ?? ASSETS_BLOCKED.unavailable
+      }
+      await writeLockedClaimMixed({
+        wallet,
+        pool: target.pool,
+        stakeIndex: target.stakeIndex,
+        amount: leg.amount,
+        releasePlanIndex: dual.ready.releasePlanIndex,
+        restakePlanIndex: dual.ready.restakePlanIndex,
+        restakeBps,
+        extra: leg.extra,
+      })
+    }
+    invalidateAfterAssetsClaim()
+    return
+  }
+
+  const amount = target.amount
   const intent = await readMixedClaimSnapshot(
     target,
     user,
@@ -147,17 +214,6 @@ export async function submitMixedClaim(args: {
       amount,
       restakePlanIndex,
       restakeBps,
-    })
-  } else if (target.source === 'locked') {
-    await writeLockedClaimMixed({
-      wallet,
-      pool: target.pool,
-      stakeIndex: target.stakeIndex,
-      amount,
-      releasePlanIndex,
-      restakePlanIndex,
-      restakeBps,
-      extra: target.extra,
     })
   } else {
     await writeBondClaimMixed({

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('queue claim gate fails closed on zero and unknown lock', async () => {
@@ -23,11 +24,11 @@ test('submit release live-blocks; envelope path on views + hook (string lock)', 
     'utf8',
   )
   const queueView = await readFile(
-    new URL('../../src/views/dapp/release/queue/use-release-queue-view.ts', import.meta.url),
+    new URL('../../src/views/dapp/release/queue/use-queue.ts', import.meta.url),
     'utf8',
   )
   const bufferView = await readFile(
-    new URL('../../src/views/dapp/release/buffer/use-release-buffer-view.ts', import.meta.url),
+    new URL('../../src/views/dapp/release/buffer/use-buffer.ts', import.meta.url),
     'utf8',
   )
   const hook = await readFile(
