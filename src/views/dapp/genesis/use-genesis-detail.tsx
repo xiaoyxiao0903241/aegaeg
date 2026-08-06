@@ -7,11 +7,11 @@ import { useSalesLogs } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber } from '~/shared/api/format-display'
 import { Text } from '~/shared/components/text'
 import { bscscanTx } from '~/shared/config/explorer'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
+import { formatNumber } from '~/shared/presenters/format-display'
+import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/shared'
 
 /**
@@ -20,7 +20,7 @@ import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/shared'
  * 汇总销售记录分页、本季与累计贡献进度、同步提示与空态判断；
  * 未登录时由表格状态驱动展示登录引导。
  */
-export function useGenesisDetail(genesis: GenesisWidgetState) {
+export function useGenesisDetail(genesis: GenesisSessionState) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
   const { isLoggingIn } = useAuth()

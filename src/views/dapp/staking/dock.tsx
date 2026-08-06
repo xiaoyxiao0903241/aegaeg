@@ -7,7 +7,7 @@ import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
 import { BondDock } from '~/views/dapp/staking/bond/dock'
 import { CalcDock } from '~/views/dapp/staking/calc/dock'
-import { HubDock } from '~/views/dapp/staking/hub/dock'
+import { StakingHubDock } from '~/views/dapp/staking/hub/dock'
 import { StakeDock } from '~/views/dapp/staking/stake/dock'
 import { XmineDock } from '~/views/dapp/staking/xmine/dock'
 
@@ -18,7 +18,7 @@ function StakingDockBody() {
   if (view === 'burnbond') return <BondDock kind="burn" />
   if (view === 'xmine') return <XmineDock />
   if (view === 'calc') return <CalcDock />
-  return <HubDock />
+  return <StakingHubDock />
 }
 
 export function StakingDock() {

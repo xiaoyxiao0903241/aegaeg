@@ -6,6 +6,7 @@
  * 未登录时摘要卡显示空态占位。
  */
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/shared/assets/dapp'
 import { StatusBadge } from '~/shared/components/badge'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
@@ -15,23 +16,22 @@ import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
 import {
   RewardsSummaryCard,
   type RewardsSummaryCardProps,
 } from '~/views/dapp/rewards/hub/primitives'
-import { useHub } from '~/views/dapp/rewards/hub/use-hub'
+import { useRewardsHub } from '~/views/dapp/rewards/hub/use-hub'
 import { AboutCard } from '~/views/dapp/shared/about-card'
+import { openExchangeView } from '~/views/dapp/shared/navigation'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
 
 type RewardsSummaryItem = RewardsSummaryCardProps & { key: string }
 
-export function HubDetail() {
+export function RewardsHubDetail() {
   const { messages: t } = useI18n()
-  const statsView = useHub()
+  const statsView = useRewardsHub()
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
 

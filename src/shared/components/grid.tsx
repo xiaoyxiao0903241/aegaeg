@@ -9,7 +9,7 @@ import { tv } from 'tailwind-variants'
  * className 只加外边距，勿再覆盖 gap 或列数。
  */
 const grid = tv({
-  base: ['grid items-stretch gap-3', 'max-dapp:min-w-0 max-dapp:gap-2.5 max-dapp:[&>*]:min-w-0'],
+  base: ['grid items-stretch gap-3', 'max-dapp:min-w-0 max-dapp:gap-2.5 max-dapp:*:min-w-0'],
   variants: {
     columns: {
       2: 'grid-cols-2',
@@ -25,12 +25,12 @@ const grid = tv({
       'upper3-lower2': [
         'grid-cols-2',
         'dapp:grid-cols-6',
-        'dapp:[&>*]:col-span-2',
+        'dapp:*:col-span-2',
         'dapp:[&>*:nth-child(n+4)]:col-span-3',
       ],
     },
     stackOnDapp: {
-      true: 'max-dapp:!grid-cols-1',
+      true: 'max-dapp:grid-cols-1!',
       false: '',
     },
   },

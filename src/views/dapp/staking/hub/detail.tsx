@@ -9,7 +9,7 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
 import { HubMetricValueRow } from '~/views/dapp/staking/hub/primitives'
-import { useHubDetail } from '~/views/dapp/staking/hub/use-hub'
+import { useStakingHubDetail } from '~/views/dapp/staking/hub/use-hub'
 import { StakingTvlChart } from '~/views/dapp/staking/primitives'
 
 type MetricTone = 'default' | 'accent'
@@ -41,7 +41,7 @@ function isHubMetricId(id: string): id is HubMetricId {
  * 周期表与图表支持 Tab / 时间范围切换；
  * 未连接钱包或数据未就绪时部分数值以 0 或占位展示。
  */
-export function HubDetail() {
+export function StakingHubDetail() {
   const {
     t,
     tableSeg,
@@ -58,7 +58,7 @@ export function HubDetail() {
     overview,
     table,
     chart,
-  } = useHubDetail()
+  } = useStakingHubDetail()
 
   const tableSegOptions = [
     { label: table.segs.stake, value: 'stake' },

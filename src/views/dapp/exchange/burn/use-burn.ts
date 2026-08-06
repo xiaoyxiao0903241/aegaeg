@@ -4,15 +4,15 @@ import { useAgxContributionBurnLogs, useAgxContributionConsumeLogs } from '~/hoo
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
   mapAgxContributionBurnLogToRow,
   mapAgxContributionConsumeLogToRow,
-} from '~/shared/api/map-flow-log-rows'
-import { tablePageQuery } from '~/shared/lib/table-pagination'
+} from '~/shared/presenters/map-flow-log-rows'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/labels'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-with-success-toast'
-import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
 
 /** 组装销毁面板渲染所需：会话状态 + 文案 + 错误提示编排。 */
 export function useBurn(burn: BurnExchangeState) {

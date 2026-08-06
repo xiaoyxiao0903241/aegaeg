@@ -5,11 +5,11 @@
  * 顶部为面板标题与收起按钮。
  */
 import { useI18n } from '~/i18n/use-i18n'
+import { exchangeHubAssets } from '~/shared/assets/dapp'
 import { ModeCard } from '~/shared/components/mode-card'
-import { exchangeHubAssets } from '~/shared/config/assets'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { openExchangeView } from '~/views/dapp/shared/navigation'
 
 /** 兑换 Hub 模式：闪兑 / 交易 / 燃烧 / 涡轮 */
 const EXCHANGE_MODES: readonly {
@@ -23,7 +23,7 @@ const EXCHANGE_MODES: readonly {
   { view: 'turbine', icon: exchangeHubAssets.modeTurbine, tourId: 'swap-turbine' },
 ]
 
-export function HubDock() {
+export function ExchangeHubDock() {
   const { messages: t } = useI18n()
   const copy = t.exchange.hub.modes
 

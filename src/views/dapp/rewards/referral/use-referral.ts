@@ -23,7 +23,7 @@ import {
  *
  * @see docs/backend-api/api.md #referral-award/summary
  */
-export function useReferral() {
+export function useRewardsReferral() {
   const { messages: t } = useI18n()
   const referral = t.rewards.referral
   const { sessionReady } = useDappHost()

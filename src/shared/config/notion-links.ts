@@ -1,4 +1,4 @@
-import type { Locale } from '~/i18n/locales'
+import type { Locale } from '~/i18n'
 
 const zhNotionLinks = {
   whitepaper: 'https://xdaoaegis.notion.site/37fdd8755b98809183dcdfb90e2c82ce',

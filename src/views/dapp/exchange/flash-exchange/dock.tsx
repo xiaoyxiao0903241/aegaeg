@@ -5,12 +5,12 @@
  * gAGX 对可翻转方向；底部信息行列出汇率、路由与提供方合约链接。
  * 未连接钱包时展示连接引导。
  */
+import { dappAssets } from '~/shared/assets/dapp'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
-import { dappAssets } from '~/shared/config/assets'
 import { bscscanAddress } from '~/shared/config/explorer'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { useFlashExchange } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange'
@@ -20,7 +20,7 @@ import {
   ExchangeFlowButton,
   ExchangeOneWayFlowIndicator,
   exchangeProviderMetaRow,
-  ExchangeWidgetSessionFooter,
+  ExchangeSessionFooter,
 } from '~/views/dapp/exchange/primitives'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -124,7 +124,7 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
           </FormActions>
         ) : null}
 
-        <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
+        <ExchangeSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
       </DockStack>
     </TabHeader>
   )

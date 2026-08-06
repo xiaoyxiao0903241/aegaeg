@@ -13,7 +13,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
-import { useReferral } from '~/views/dapp/rewards/referral/use-referral'
+import { useRewardsReferral } from '~/views/dapp/rewards/referral/use-referral'
 
 export function ReferralDetail() {
   const {
@@ -33,7 +33,7 @@ export function ReferralDetail() {
     referralsPage,
     setReferralsPage,
     referralsTotal,
-  } = useReferral()
+  } = useRewardsReferral()
 
   const topTiles = [
     { key: 'totalRewards', label: referral.totalRewards, value: totalRewards },

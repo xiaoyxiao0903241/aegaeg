@@ -9,14 +9,14 @@ import {
 } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
+import { StatusBadge } from '~/shared/components/badge'
+import { Text } from '~/shared/components/text'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
   formatPresaleRank,
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
-} from '~/shared/api/format-display'
-import { StatusBadge } from '~/shared/components/badge'
-import { Text } from '~/shared/components/text'
-import { tablePageQuery } from '~/shared/lib/table-pagination'
+} from '~/shared/presenters/format-display'
 import {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
@@ -53,7 +53,7 @@ function withSignedUsdPrefix(amount: string): string {
  *
  * @see docs/backend-api/api.md #community-fund/total
  */
-export function useGenesisDetail() {
+export function useRewardsGenesisDetail() {
   const { messages: t } = useI18n()
   const g = t.rewards.genesisDetail
   const { sessionReady } = useDappHost()

@@ -11,11 +11,11 @@ import {
 } from 'lightweight-charts'
 import { type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from 'react'
 
-import { formatNumber, formatUsd } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Empty } from '~/shared/components/empty'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
+import { formatNumber, formatUsd } from '~/shared/presenters/format-display'
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
 /**
@@ -304,7 +304,7 @@ function Plot({
         {tip ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute z-10 min-w-[6.5rem] rounded-md bg-card px-2.5 py-1.5 shadow-menu"
+            className="pointer-events-none absolute z-10 min-w-26 rounded-md bg-card px-2.5 py-1.5 shadow-menu"
             style={{ left: tip.left, top: tip.top }}
           >
             <Text as="p" className="m-0" tone="muted-foreground" variant="support">

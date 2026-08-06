@@ -1,10 +1,10 @@
 import { useRef } from 'react'
 
-import { formatNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
+import { formatNumber } from '~/shared/presenters/format-display'
 
 function calcUsd(value: number) {
   if (!Number.isFinite(value)) return formatNumber(0, { digits: 2, prefix: '$' })

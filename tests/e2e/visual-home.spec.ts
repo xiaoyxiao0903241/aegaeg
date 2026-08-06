@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 async function settleHome(page: import('@playwright/test').Page) {
   await page.goto('/en/', { waitUntil: 'domcontentloaded', timeout: 60_000 })

@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
 import { Carousel } from '~/shared/components/carousel'
 import { Chip } from '~/shared/components/chip'
@@ -23,12 +24,11 @@ import {
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text, textVariants } from '~/shared/components/text'
-import { dappAssets, tokenCarouselIcons } from '~/shared/config/assets'
 import {
   exchangeTokenCardKeys,
   type ExchangeTokenKey,
   exchangeTokenKeys,
-} from '~/shared/config/data'
+} from '~/shared/config/exchange-token-keys'
 import {
   getExchangeTokenContractAddress,
   openTokenContractOnBscScan,

@@ -3,7 +3,7 @@
  */
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
-import { HubDock } from '~/views/dapp/assets/hub/dock'
+import { AssetsHubDock } from '~/views/dapp/assets/hub/dock'
 import { PositionDock } from '~/views/dapp/assets/position/dock'
 import { XmineDock } from '~/views/dapp/assets/xmine/dock'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
@@ -15,7 +15,7 @@ function AssetsDockBody() {
   if (view === 'lpbond') return <PositionDock product="lpbond" />
   if (view === 'burnbond') return <PositionDock product="burnbond" />
   if (view === 'xmine') return <XmineDock />
-  return <HubDock />
+  return <AssetsHubDock />
 }
 
 export function AssetsDock() {

@@ -14,7 +14,6 @@ import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import {
   ClaimStackDivider,
@@ -29,6 +28,7 @@ import { useMixedClaim } from '~/views/dapp/rewards/use-mixed-claim'
 import { type SimpleClaimView, useSimpleClaim } from '~/views/dapp/rewards/use-simple-claim'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /**

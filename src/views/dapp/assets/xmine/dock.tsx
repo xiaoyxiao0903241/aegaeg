@@ -1,5 +1,4 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { openStakingView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   AssetsListPager,
@@ -11,6 +10,7 @@ import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/primitives'
 import { useXmineDock } from '~/views/dapp/assets/xmine/use-xmine'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { openStakingView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /** X 挖矿侧栏：报价 / 排序工具条 + 挖矿持仓卡（含空态、加载态）与赎回确认弹窗 */

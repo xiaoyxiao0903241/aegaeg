@@ -4,17 +4,17 @@
  * 两张入口卡展示释放队列与缓冲池的进度与金额，
  * 点击进入对应子视图；未连接钱包时展示连接引导。
  */
+import { dappAssets } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
-import { openReleaseView } from '~/shared/config/dapp-open-views'
 import { ReleaseEntryCard } from '~/views/dapp/release/hub/primitives'
-import { useHub } from '~/views/dapp/release/hub/use-hub'
+import { useReleaseHub } from '~/views/dapp/release/hub/use-hub'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { openReleaseView } from '~/views/dapp/shared/navigation'
 
-export function HubDock() {
-  const vm = useHub()
+export function ReleaseHubDock() {
+  const vm = useReleaseHub()
   const { t } = vm
 
   return (

@@ -3,16 +3,16 @@ import type { ReactNode } from 'react'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
-import { useBurnExchangeWidget } from '~/views/dapp/exchange/burn/use-burn-exchange-widget'
-import { useFlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-widget'
-import { useMarketTradeWidget } from '~/views/dapp/exchange/market-trade/use-market-trade-widget'
+import { useBurnExchangeSession } from '~/views/dapp/exchange/burn/use-burn-exchange-session'
+import { useFlashExchangeSession } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-session'
+import { useMarketTradeSession } from '~/views/dapp/exchange/market-trade/use-market-trade-session'
 import { viewsNeedingProvider } from '~/views/dapp/exchange/shared'
-import { useTurbineExchangeWidget } from '~/views/dapp/exchange/turbine/use-turbine-exchange-widget'
+import { useTurbineExchangeSession } from '~/views/dapp/exchange/turbine/use-turbine-exchange-session'
 
-export type MarketTradeState = ReturnType<typeof useMarketTradeWidget>
-export type FlashExchangeState = ReturnType<typeof useFlashExchangeWidget>
-export type BurnExchangeState = ReturnType<typeof useBurnExchangeWidget>
-export type TurbineExchangeState = ReturnType<typeof useTurbineExchangeWidget>
+export type MarketTradeState = ReturnType<typeof useMarketTradeSession>
+export type FlashExchangeState = ReturnType<typeof useFlashExchangeSession>
+export type BurnExchangeState = ReturnType<typeof useBurnExchangeSession>
+export type TurbineExchangeState = ReturnType<typeof useTurbineExchangeSession>
 
 export type ExchangeSessions = {
   trade: MarketTradeState | null
@@ -52,7 +52,7 @@ function MarketTradeSessionMounted({
   readsEnabled: boolean
   children: (trade: MarketTradeState) => ReactNode
 }) {
-  const trade = useMarketTradeWidget(sessionReady, quotesEnabled, readsEnabled)
+  const trade = useMarketTradeSession(sessionReady, quotesEnabled, readsEnabled)
   return children(trade)
 }
 
@@ -67,7 +67,7 @@ function FlashExchangeSessionMounted({
   readsEnabled: boolean
   children: (flash: FlashExchangeState) => ReactNode
 }) {
-  const flash = useFlashExchangeWidget(sessionReady, quotesEnabled, readsEnabled)
+  const flash = useFlashExchangeSession(sessionReady, quotesEnabled, readsEnabled)
   return children(flash)
 }
 
@@ -82,7 +82,7 @@ function BurnExchangeSessionMounted({
   readsEnabled: boolean
   children: (burn: BurnExchangeState) => ReactNode
 }) {
-  const burn = useBurnExchangeWidget(sessionReady, quotesEnabled, readsEnabled)
+  const burn = useBurnExchangeSession(sessionReady, quotesEnabled, readsEnabled)
   return children(burn)
 }
 
@@ -97,7 +97,7 @@ function TurbineExchangeSessionMounted({
   readsEnabled: boolean
   children: (turbine: TurbineExchangeState) => ReactNode
 }) {
-  const turbine = useTurbineExchangeWidget(sessionReady, quotesEnabled, readsEnabled)
+  const turbine = useTurbineExchangeSession(sessionReady, quotesEnabled, readsEnabled)
   return children(turbine)
 }
 

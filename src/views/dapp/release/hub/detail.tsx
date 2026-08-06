@@ -5,15 +5,15 @@
  * 底部为常见问题。
  */
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/shared/assets/dapp'
 import { Carousel } from '~/shared/components/carousel'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
-import { dappAssets } from '~/shared/config/assets'
 import { ReleaseMechanismCard, ReleaseTaxCard } from '~/views/dapp/release/hub/primitives'
 import { AboutCard } from '~/views/dapp/shared/about-card'
 
-export function HubDetail() {
+export function ReleaseHubDetail() {
   const { messages: t } = useI18n()
   const slides = t.release.hub.aboutSlides
   const periods = t.release.hub.taxRows.periods

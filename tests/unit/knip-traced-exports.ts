@@ -22,11 +22,6 @@ export {
   parseClaimSignature,
   searchPerformance,
 } from '../../src/shared/api/endpoints'
-export {
-  formatApiDateTime,
-  formatShareholderHintForRank,
-  getPresaleRankHighlightedRows,
-} from '../../src/shared/api/format-display'
 export { ClaimSplitSlider } from '../../src/shared/components/claim-split-slider'
 export {
   isSegmentOptionEnabled,
@@ -45,6 +40,11 @@ export {
   BREAKPOINT_TABLET_MAX_PX,
   BREAKPOINT_ULTRA_WIDE_SCALE,
 } from '../../src/shared/config/breakpoints'
+export {
+  formatApiDateTime,
+  formatShareholderHintForRank,
+  getPresaleRankHighlightedRows,
+} from '../../src/shared/presenters/format-display'
 export {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,

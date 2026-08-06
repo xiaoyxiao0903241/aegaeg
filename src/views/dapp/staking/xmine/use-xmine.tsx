@@ -20,13 +20,13 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
-import { mapX0MiningLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format-display'
+import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { parseApiAmountOrZero } from '~/views/dapp/staking/shared'
@@ -60,7 +60,7 @@ export type XmineWritePresent = {
  * @param present 写入成功 / 失败的附加副作用
  * @returns 表单展示值与提交控制
  */
-export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent) {
+export function useXmineSession(sessionReady: boolean, present: XmineWritePresent) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
 
@@ -172,7 +172,7 @@ export function useXmineDock() {
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useDappHost()
   const overviewQuery = useXmineOverviewQuery()
-  const xmine = useXmineWidget(sessionReady, {
+  const xmine = useXmineSession(sessionReady, {
     onSuccess: () => {
       toast.success(t.staking.xmine.success)
     },

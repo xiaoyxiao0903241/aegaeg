@@ -1,7 +1,4 @@
-import { getHtmlLang } from '~/i18n/locale-meta'
-import type { Locale } from '~/i18n/locales'
-import { locales } from '~/i18n/locales'
-import { BOOTSTRAP_SCRIPT_ID } from '~/i18n/messages'
+import { BOOTSTRAP_SCRIPT_ID, getHtmlLang, type Locale, locales } from '~/i18n'
 import { getMessagesForRender } from '~/i18n/messages-catalog'
 import { homeAssets } from '~/shared/assets/home'
 import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/shared/lib/legacy-runtime-polyfills'

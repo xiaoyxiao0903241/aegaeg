@@ -12,7 +12,7 @@ import {
   requireTurbine,
 } from '~/views/dapp/exchange/exchange-session-hosts'
 import { FlashExchangeDetail } from '~/views/dapp/exchange/flash-exchange/detail'
-import { HubDetail } from '~/views/dapp/exchange/hub/detail'
+import { ExchangeHubDetail } from '~/views/dapp/exchange/hub/detail'
 import { MarketTradeDetail } from '~/views/dapp/exchange/market-trade/detail'
 import { TurbineExchangeDetail } from '~/views/dapp/exchange/turbine/detail'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
@@ -53,7 +53,7 @@ function ExchangeDetailBody({ trade, flash, burn, turbine }: ExchangeSessions) {
       />
     )
   }
-  return <HubDetail />
+  return <ExchangeHubDetail />
 }
 
 export function ExchangeDetail(sessions: ExchangeSessions) {

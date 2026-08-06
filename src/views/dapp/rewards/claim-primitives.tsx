@@ -4,10 +4,10 @@
 import { ChevronDown } from 'lucide-react'
 import { type ReactNode } from 'react'
 
+import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { cn } from '~/shared/lib/utils'
 

@@ -7,7 +7,7 @@ import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
 import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 import { BondDetail } from '~/views/dapp/staking/bond/detail'
 import { CalcDetail } from '~/views/dapp/staking/calc/detail'
-import { HubDetail } from '~/views/dapp/staking/hub/detail'
+import { StakingHubDetail } from '~/views/dapp/staking/hub/detail'
 import { StakeDetail } from '~/views/dapp/staking/stake/detail'
 import { XmineDetail } from '~/views/dapp/staking/xmine/detail'
 
@@ -18,7 +18,7 @@ function StakingDetailBody() {
   if (view === 'burnbond') return <BondDetail kind="burn" />
   if (view === 'xmine') return <XmineDetail />
   if (view === 'calc') return <CalcDetail />
-  return <HubDetail />
+  return <StakingHubDetail />
 }
 
 export function StakingDetail() {

@@ -1,4 +1,4 @@
-import type { Locale } from '~/i18n/locales'
+import type { Locale } from '~/i18n'
 import { notionLink } from '~/shared/config/notion-links'
 
 export const COMMUNITY_SOCIAL_LINKS = {

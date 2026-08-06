@@ -4,7 +4,6 @@ import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { formatNumber, formatShortAddress } from '~/shared/api/format-display'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -13,6 +12,7 @@ import {
   parseReferrerAddress,
   parseReferrerFromSearch,
 } from '~/shared/config/referral'
+import { formatNumber, formatShortAddress } from '~/shared/presenters/format-display'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
@@ -39,7 +39,7 @@ function readPendingReferrerFromEnvironment(): Address | null {
  *
  * @see docs/onchain-manual/contracts/referral.md
  */
-export function useReferral() {
+export function useCommunityReferral() {
   const account = useActiveAccount()
   const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
   const [referrerInput, setReferrerInput] = useState(() => pendingReferrer ?? '')

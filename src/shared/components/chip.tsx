@@ -130,7 +130,7 @@ FieldActionChip.displayName = 'FieldActionChip'
 const amountMaxChip = tv({
   extend: chipVariants,
   base: [
-    'h-6.75 min-w-0 shrink-0 gap-0 rounded-chip px-3 text-xs leading-3.75 font-semibold',
+    'h-6.75 min-w-0 shrink-0 gap-0 rounded-chip px-3 text-xs/3.75 font-semibold',
     'bg-accent text-coral-emphasis',
     'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
   ],

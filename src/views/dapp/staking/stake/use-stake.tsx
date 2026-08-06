@@ -15,17 +15,17 @@ import { useStakeFlowPositions } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
-import { mapStakePositionToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { goBindReferral } from '~/shared/config/go-bind-referral'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format-display'
+import { mapStakePositionToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
+import { goBindReferral } from '~/views/dapp/shared/navigation'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { formatRebasePct } from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
-import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
+import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
 import { readStakePositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
@@ -57,7 +57,7 @@ export function useStakeDock() {
   const { sessionReady, walletReady } = useDappHost()
   const overviewQuery = useStakingHubOverviewQuery()
 
-  const stake = useStakeWidget(sessionReady, {
+  const stake = useStakeSession(sessionReady, {
     onOpenSuccess: () => {
       toast.success(t.staking.stake.success)
     },

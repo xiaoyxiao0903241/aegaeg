@@ -22,7 +22,7 @@
 | -------------- | ----------------------------- | ----------------------------------------------- | ------------------------------- |
 | **Genesis**    | `genesis`（Tab / UI）         | 产品面：共建认购                                | `dapp-tabs` / genesis views     |
 | **预售合约域** | `presale`（core / queries）   | 链上 PreSale 读写作；**不**整目录改名为 genesis | `core/presale`、`use-presale-*` |
-| **认购**       | `purchase` / `submitPurchase` | 链上买入；CTA 可含先 approve                    | `use-genesis-widget`            |
+| **认购**       | `purchase` / `submitPurchase` | 链上买入；CTA 可含先 approve                    | `use-genesis-session`           |
 | **授权**       | `approve`                     | ERC20 allowance；可跨分钟                       | `*-write.ts`                    |
 | **额度**       | `allowance`                   | 已授权额度                                      | 链上读 + query cache            |
 

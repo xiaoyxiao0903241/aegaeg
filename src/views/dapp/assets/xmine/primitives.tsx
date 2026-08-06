@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/primitives'
 
@@ -102,7 +102,7 @@ export function AssetsXminePositionCard({
           <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {remainingCaption}
           </Text>
-          <Text as="span" className="text-sm leading-4" variant="copy">
+          <Text as="span" className="text-sm/4" variant="copy">
             {remainingLabel}
           </Text>
         </div>
@@ -112,7 +112,7 @@ export function AssetsXminePositionCard({
           <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {stakedCaption}
           </Text>
-          <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
+          <Text as="strong" className="text-sm/5 font-semibold" variant="copy">
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
           {/* 锁定徽标：与仓位卡共用锁图标 */}
@@ -127,7 +127,7 @@ export function AssetsXminePositionCard({
           <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {outputCaption}
           </Text>
-          <Text as="strong" className="text-sm leading-5 font-semibold text-primary" variant="copy">
+          <Text as="strong" className="text-sm/5 font-semibold text-primary" variant="copy">
             {formatTokenAmount(pending, X_DECIMALS, 2)} X
           </Text>
           {quote === 'usd' ? (

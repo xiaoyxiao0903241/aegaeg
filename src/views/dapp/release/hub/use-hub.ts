@@ -3,8 +3,8 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format-display'
 import { formatReleaseApiOrChainLabel, formatReleasePct } from '~/views/dapp/release/shared'
 import {
   useReleaseBufferSnapshot,
@@ -18,7 +18,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  *
  * 组合队列与缓冲池的 API / 链上标签与进度百分比。
  */
-export function useHub() {
+export function useReleaseHub() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()

@@ -8,15 +8,15 @@
 import { type ReactNode } from 'react'
 
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
-import { formatNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { dappAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
-import { dappAssets } from '~/shared/config/assets'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
+import { formatNumber, formatPresaleRank } from '~/shared/presenters/format-display'
 import {
   CommunityInviteCard,
   CommunityProgramCard,

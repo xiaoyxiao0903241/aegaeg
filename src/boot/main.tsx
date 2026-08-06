@@ -14,7 +14,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { WebRootProviders } from '~/boot/startup/web-root-providers'
-import { I18nProvider } from '~/i18n/i18n-provider'
+import { I18nProvider } from '~/i18n'
 import { AppToaster } from '~/shared/components/app-toaster'
 import { LocalizedErrorBoundary } from '~/shared/components/error-boundary'
 import { DappHost } from '~/views/dapp/host/dapp-host'

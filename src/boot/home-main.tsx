@@ -14,7 +14,7 @@ import { useLayoutEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { HomeProviders } from '~/boot/startup/query-providers'
-import { I18nProvider } from '~/i18n/i18n-provider'
+import { I18nProvider } from '~/i18n'
 import { LocalizedErrorBoundary } from '~/shared/components/error-boundary'
 import { HomePage } from '~/views/home/home-page'
 import { bootHomeReveal } from '~/views/home/home-reveal-loader'

@@ -43,7 +43,7 @@ export function MainButton({
         density === 'card' && 'min-h-10.5',
         density === 'inverse' && 'min-h-9.5 text-xs',
         density === 'modal' && 'min-h-11.5',
-        density === 'external' && 'min-h-0 py-4 text-base leading-5',
+        density === 'external' && 'min-h-0 py-4 text-base/5',
         density === 'hero' && 'w-full',
         className,
       )}

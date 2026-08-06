@@ -1,5 +1,4 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { openStakingView } from '~/shared/config/dapp-open-views'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import {
@@ -13,6 +12,7 @@ import { AssetsPositionEmptyCard, AssetsQuoteToolbar } from '~/views/dapp/assets
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { openStakingView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export type { AssetsProduct }

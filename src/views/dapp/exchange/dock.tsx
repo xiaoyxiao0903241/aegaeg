@@ -12,7 +12,7 @@ import {
   requireTurbine,
 } from '~/views/dapp/exchange/exchange-session-hosts'
 import { FlashExchangeDock } from '~/views/dapp/exchange/flash-exchange/dock'
-import { HubDock } from '~/views/dapp/exchange/hub/dock'
+import { ExchangeHubDock } from '~/views/dapp/exchange/hub/dock'
 import { MarketTradeDock } from '~/views/dapp/exchange/market-trade/dock'
 import { TurbineDock } from '~/views/dapp/exchange/turbine/dock'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
@@ -24,7 +24,7 @@ function ExchangeDockBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   if (view === 'trade') return <MarketTradeDock trade={requireTrade(trade)} />
   if (view === 'burn') return <BurnDock burn={requireBurn(burn)} />
   if (view === 'turbine') return <TurbineDock turbine={requireTurbine(turbine)} />
-  return <HubDock />
+  return <ExchangeHubDock />
 }
 
 export function ExchangeDock(sessions: ExchangeSessions) {

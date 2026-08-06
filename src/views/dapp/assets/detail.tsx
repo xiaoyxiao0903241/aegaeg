@@ -3,7 +3,7 @@
  */
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
-import { HubDetail } from '~/views/dapp/assets/hub/detail'
+import { AssetsHubDetail } from '~/views/dapp/assets/hub/detail'
 import { PositionDetail } from '~/views/dapp/assets/position/detail'
 import { XmineDetail } from '~/views/dapp/assets/xmine/detail'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
@@ -15,7 +15,7 @@ function AssetsDetailBody() {
   if (view === 'lpbond') return <PositionDetail product="lpbond" />
   if (view === 'burnbond') return <PositionDetail product="burnbond" />
   if (view === 'xmine') return <XmineDetail />
-  return <HubDetail />
+  return <AssetsHubDetail />
 }
 
 export function AssetsDetail() {

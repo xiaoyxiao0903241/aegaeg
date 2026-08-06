@@ -10,7 +10,7 @@ import {
 } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { formatNumber, formatPresaleRank } from '~/shared/presenters/format-display'
 import { claimableAmountValue, formatApiAmount } from '~/views/dapp/rewards/shared'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'

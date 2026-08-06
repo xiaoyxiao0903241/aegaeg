@@ -1,4 +1,5 @@
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
+import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'
 import { FormActions } from '~/shared/components/form-actions'
@@ -6,7 +7,6 @@ import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { CalcDaySlider, CalcHtabRow } from '~/views/dapp/staking/calc/primitives'
@@ -125,7 +125,7 @@ export function CalcDock() {
 
         <FormActions className="mt-6">
           <MainButton
-            className="min-h-0 border-0 bg-coral-emphasis py-4 text-base leading-5 text-white"
+            className="min-h-0 border-0 bg-coral-emphasis py-4 text-base/5 text-white"
             density="external"
             onClick={vm.onCalculate}
             type="button"

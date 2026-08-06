@@ -1,6 +1,6 @@
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/presenters/format-display'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-with-success-toast'

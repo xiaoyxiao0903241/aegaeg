@@ -4,7 +4,6 @@
  * 展示协议概览、我的仓位、释放记录、机制说明、趋势图与 FAQ。
  */
 import type { BondKind } from '~/core/staking/staking-period'
-import { formatPercentChange, formatUsd } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -12,6 +11,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { formatPercentChange, formatUsd } from '~/shared/presenters/format-display'
 import { useBondDetail } from '~/views/dapp/staking/bond/use-bond'
 import {
   StakingMechanismCard,

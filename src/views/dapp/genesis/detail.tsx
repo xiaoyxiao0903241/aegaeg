@@ -2,7 +2,7 @@
  * 创世详情页
  *
  * 依次为全球认购进度、我的贡献表与常见问题三个区块；
- * 全部数据由会话宿主传入的 GenesisWidgetState 提供。
+ * 全部数据由会话宿主传入的 GenesisSessionState 提供。
  */
 import { useI18n } from '~/i18n/use-i18n'
 import { Detail } from '~/shared/components/detail'
@@ -11,7 +11,7 @@ import { Section } from '~/shared/components/section'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
+import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisContributionsTable, GenesisGlobalCard } from '~/views/dapp/genesis/primitives'
 import { genesisFaqTemplateValues } from '~/views/dapp/genesis/shared'
 import { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
@@ -20,7 +20,7 @@ function openPreSaleContract() {
   window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')
 }
 
-export function GenesisDetail({ genesis }: { genesis: GenesisWidgetState }) {
+export function GenesisDetail({ genesis }: { genesis: GenesisSessionState }) {
   const { messages: t } = useI18n()
   const contributions = useGenesisDetail(genesis)
 

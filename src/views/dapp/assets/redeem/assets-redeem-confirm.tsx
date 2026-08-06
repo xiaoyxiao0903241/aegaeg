@@ -72,7 +72,7 @@ export function AssetsRedeemConfirm({
         {amountLabel || '—'}
       </Text>
 
-      <div className="mt-4 rounded-md bg-background/10 px-3 py-3">
+      <div className="mt-4 rounded-md bg-background/10 p-3">
         <Text as="p" className="m-0 text-background/80" variant="support">
           {t.assets.redeem.body}
         </Text>

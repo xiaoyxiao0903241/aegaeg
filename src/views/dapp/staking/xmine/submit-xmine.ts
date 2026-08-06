@@ -1,6 +1,6 @@
 import { evaluateXmineLive, type XmineLiveBlockReason } from '~/core/staking/staking-block-reasons'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
+import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { XMINE_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readXminePreflight } from '~/web3/staking/staking-read'
 import { approveGagxForXmineIfNeeded, stakeGagxForMining } from '~/web3/staking/staking-write'

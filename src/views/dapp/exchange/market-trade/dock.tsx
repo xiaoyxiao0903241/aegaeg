@@ -5,6 +5,7 @@
  * （可反向）、滑点设置、价格影响与预估 Gas。滑点通过弹窗修改，
  * 高价格影响时给出告警。
  */
+import { dappAssets } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
@@ -12,7 +13,6 @@ import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
 import { Tooltip } from '~/shared/components/tooltip'
-import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import {

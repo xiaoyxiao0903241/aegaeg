@@ -1,12 +1,12 @@
+import type { TeamReferralItem } from '~/shared/api/types'
+import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
   formatNumber,
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
   TABLE_EMPTY,
-} from '~/shared/api/format-display'
-import type { TeamReferralItem } from '~/shared/api/types'
-import { getRuntimeHost } from '~/shared/lib/runtime-host'
+} from '~/shared/presenters/format-display'
 
 /**
  * 把团队邀请项映射为表格行

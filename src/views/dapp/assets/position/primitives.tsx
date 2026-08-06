@@ -3,18 +3,18 @@ import { useEffect, useState } from 'react'
 
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatShortAddress } from '~/shared/api/format-display'
+import { dappAssets } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
+import { formatShortAddress } from '~/shared/presenters/format-display'
 import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -295,7 +295,7 @@ export function AssetsListPager({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-      <Text as="span" className="text-xs leading-4" tone="muted-foreground" variant="support">
+      <Text as="span" className="text-xs/4" tone="muted-foreground" variant="support">
         {t.common.paginationTotal.replace('{total}', String(total))} ·{' '}
         {t.common.paginationPerPage.replace('{size}', String(pageSize))}
       </Text>

@@ -12,11 +12,11 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { GenesisBanner } from '~/views/dapp/rewards/genesis/primitives'
-import { useGenesisDetail } from '~/views/dapp/rewards/genesis/use-genesis-detail'
+import { useRewardsGenesisDetail } from '~/views/dapp/rewards/genesis/use-genesis-detail'
 import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 
 export function GenesisDetail() {
-  const vm = useGenesisDetail()
+  const vm = useRewardsGenesisDetail()
   const t = vm.t
 
   return (

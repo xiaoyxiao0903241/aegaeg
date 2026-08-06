@@ -12,15 +12,15 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
+import type { ChartPoint } from '~/shared/components/chart'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   formatCompact,
   formatNumber,
   formatPercentChange,
   formatUsd,
   formatUsdApprox,
-} from '~/shared/api/format-display'
-import type { ChartPoint } from '~/shared/components/chart'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+} from '~/shared/presenters/format-display'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
@@ -72,7 +72,7 @@ export type HubPeriodTableRow = {
  *
  * @returns 右栏所需的全部展示字段与状态（概览 / 周期表 / 图表 / 文案）
  */
-export function useHubDetail() {
+export function useStakingHubDetail() {
   const { messages: t } = useI18n()
   const { sessionReady } = useAuth()
   const [tableSeg, setTableSeg] = useState('stake')

@@ -3,6 +3,7 @@
  * 运行: node tests/integration/swap-quote-live.mjs
  */
 import assert from 'node:assert/strict'
+
 import { loadModule } from '../unit/load-module.mjs'
 
 const { fetchExchangeQuote, readExchangePoolImmutableMetadata, readExchangePoolSpotPrice } =

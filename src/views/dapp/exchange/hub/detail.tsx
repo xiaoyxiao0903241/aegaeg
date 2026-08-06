@@ -8,15 +8,15 @@ import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribut
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { exchangeHubAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
-import { exchangeHubAssets } from '~/shared/config/assets'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { ExchangeProgramCard } from '~/views/dapp/exchange/hub/primitives'
+import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
 
 /**
@@ -49,7 +49,7 @@ const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undef
 /** 「获取贡献点数」卡片索引：比例取自链上 rateBps，非静态 1:6。 */
 const CONTRIBUTION_CARD_INDEX = 5
 
-export function HubDetail() {
+export function ExchangeHubDetail() {
   const { messages: t } = useI18n()
   const cards = t.exchange.hub.program.cards
 

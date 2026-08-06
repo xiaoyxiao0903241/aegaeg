@@ -1,9 +1,10 @@
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/shared/assets/dapp'
+import { homeAssets } from '~/shared/assets/home'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { WidgetPromoCard } from '~/shared/components/widget-promo-card'
-import { dappAssets, homeAssets } from '~/shared/config/assets'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 
 /**

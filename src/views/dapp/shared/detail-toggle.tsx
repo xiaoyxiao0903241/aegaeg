@@ -1,9 +1,9 @@
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/shared/assets/dapp'
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { IconButton } from '~/shared/components/icon-button'
 import { Tooltip } from '~/shared/components/tooltip'
-import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 

@@ -10,14 +10,14 @@ import {
   type PresalePhaseOnChain,
   USD1_DECIMALS,
 } from '~/core/presale/presale-math'
+import type { SalesLogItem } from '~/shared/api/types'
 import {
   formatBlockTime,
   formatDiscountBps,
   formatNumber,
   formatShortAddress,
   TABLE_EMPTY,
-} from '~/shared/api/format-display'
-import type { SalesLogItem } from '~/shared/api/types'
+} from '~/shared/presenters/format-display'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 
 export interface GenesisFaqTemplateValues extends Record<string, string> {

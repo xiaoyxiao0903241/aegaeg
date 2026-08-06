@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 
-import { formatApiAmount, parseApiAmount } from '~/shared/api/format-display'
 import type {
   DaoGrantStatus,
   MarketAllowanceClaimLogItem,
@@ -13,6 +12,7 @@ import type {
 import { StatusBadge } from '~/shared/components/badge'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Text } from '~/shared/components/text'
+import { formatApiAmount, parseApiAmount } from '~/shared/presenters/format-display'
 import {
   daoGrantStatusTone,
   formatDaoGrantStatus,

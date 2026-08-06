@@ -5,6 +5,7 @@ import { Loader2, Wallet } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
+import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { FieldActionChip } from '~/shared/components/chip'
 import { Icon, iconVariants } from '~/shared/components/icon'
@@ -12,7 +13,6 @@ import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn, navigableHref } from '~/shared/lib/utils'
 
@@ -190,7 +190,7 @@ export function CommunityStatCard({
       </Text>
       <Text
         as="strong"
-        className={cn(styles.value(), 'text-2xl leading-7 font-semibold tracking-tight')}
+        className={cn(styles.value(), 'text-2xl/7 font-semibold tracking-tight')}
         tone={dark ? 'inverse' : 'foreground'}
         variant="figure"
       >
@@ -199,11 +199,7 @@ export function CommunityStatCard({
       {volume ? (
         <Text
           as="b"
-          className={cn(
-            styles.volume(),
-            'text-sm leading-tight font-medium',
-            !dark && 'text-primary',
-          )}
+          className={cn(styles.volume(), 'text-sm/tight font-medium', !dark && 'text-primary')}
           tone={dark ? 'primary-bright' : undefined}
           variant="support"
         >
@@ -267,7 +263,7 @@ export function CommunityReferralLinkCard({
       </Text>
       <Text
         as="strong"
-        className="block max-w-full truncate text-sm leading-4 font-semibold tracking-tight"
+        className="block max-w-full truncate text-sm/4 font-semibold tracking-tight"
         tone="foreground"
         variant="copy"
       >
@@ -370,7 +366,7 @@ export function CommunityReferrerBoundPanel({
         </span>
         <Text
           as="strong"
-          className="ml-2.5 truncate text-sm leading-tight font-semibold"
+          className="ml-2.5 truncate text-sm/tight font-semibold"
           tone="foreground"
           variant="copy"
         >

@@ -6,7 +6,7 @@ import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import { CobuildDetail } from '~/views/dapp/rewards/cobuild/detail'
 import { GenesisDetail } from '~/views/dapp/rewards/genesis/detail'
 import { GrantDetail } from '~/views/dapp/rewards/grant/detail'
-import { HubDetail } from '~/views/dapp/rewards/hub/detail'
+import { RewardsHubDetail } from '~/views/dapp/rewards/hub/detail'
 import { LuckyDetail } from '~/views/dapp/rewards/lucky/detail'
 import { ParticipateDetail } from '~/views/dapp/rewards/participate/detail'
 import { ReferralDetail } from '~/views/dapp/rewards/referral/detail'
@@ -15,7 +15,7 @@ import { TabDetailHost } from '~/views/dapp/shared/tab-host'
 
 function RewardsDetailBody() {
   const view = useSubviewDisplayView<RewardsView>()
-  if (view === 'hub') return <HubDetail />
+  if (view === 'hub') return <RewardsHubDetail />
   if (view === 'lucky') return <LuckyDetail />
   if (view === 'referral') return <ReferralDetail />
   if (view === 'participate') return <ParticipateDetail />

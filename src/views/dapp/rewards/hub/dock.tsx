@@ -12,20 +12,20 @@ import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-d
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { dappAssets } from '~/shared/assets/dapp'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
-import { openRewardsView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format-display'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { openRewardsView } from '~/views/dapp/shared/navigation'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -65,7 +65,7 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
   }
 }
 
-export function HubDock() {
+export function RewardsHubDock() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()

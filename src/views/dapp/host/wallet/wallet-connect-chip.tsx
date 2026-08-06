@@ -11,10 +11,10 @@ import {
   LOGIN_ERROR,
 } from '~/shared/api/account-banned'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
-import { formatShortAddress } from '~/shared/api/format-display'
 import { Button } from '~/shared/components/button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
+import { formatShortAddress } from '~/shared/presenters/format-display'
 import { useAuthStore } from '~/stores/auth-store'
 import { WalletConnectModal } from '~/views/dapp/host/wallet/wallet-connect-modal'
 import { WalletDetailsModal } from '~/views/dapp/host/wallet/wallet-details-modal'
@@ -218,7 +218,7 @@ function WalletConnectButton({
             'gap-2',
             density === 'card' && 'min-h-10.5',
             density === 'inverse' && 'min-h-9.5 text-xs',
-            density === 'external' && 'min-h-0 py-4 text-base leading-5',
+            density === 'external' && 'min-h-0 py-4 text-base/5',
             styles.action({ class: className }),
           )}
           disabled={isLoggingIn}

@@ -93,7 +93,7 @@ function StartDesktop({ count, children }: { count: number; children: ReactEleme
             className={cn('flex min-w-0 flex-1 flex-col gap-3', !isLast && 'pr-4')}
             key={child.key ?? index}
           >
-            <div className={cn('flex h-[1.625rem] items-center', !isLast && '-mr-4')}>
+            <div className={cn('flex h-6.5 items-center', !isLast && '-mr-4')}>
               <StepBadge align="start" index={index} />
               {!isLast ? <span aria-hidden className="h-0.5 min-w-0 flex-1 bg-border" /> : null}
             </div>
@@ -146,7 +146,7 @@ function CenterDesktop({
             <StepText
               align="center"
               body={child.props.body}
-              className={cn('w-full max-w-[9.25rem]', child.props.className)}
+              className={cn('w-full max-w-37', child.props.className)}
               index={index}
               title={child.props.title}
             />
@@ -164,7 +164,7 @@ function StepBadge({ align, index }: { align: StepsAlign; index: number }) {
     <span
       className={cn(
         'relative z-1 flex shrink-0 items-center justify-center rounded-full',
-        align === 'start' ? 'size-[1.625rem]' : 'size-7',
+        align === 'start' ? 'size-6.5' : 'size-7',
         isActive ? 'border-0 bg-primary' : 'border-[1.5px] border-amount-muted bg-card',
       )}
     >

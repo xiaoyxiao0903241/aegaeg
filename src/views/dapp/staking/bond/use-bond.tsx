@@ -9,15 +9,15 @@ import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-ap
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
-import { mapBondPurchaseToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { goBindReferral } from '~/shared/config/go-bind-referral'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format-display'
+import { mapBondPurchaseToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
+import { goBindReferral } from '~/views/dapp/shared/navigation'
 import { BOND_ZAP_BLOCKED } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
+import { useBondSession } from '~/views/dapp/staking/bond/use-bond-session'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { formatRebasePct } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
@@ -41,7 +41,7 @@ export function useBondDock(kind: BondKind) {
   const { sessionReady, walletReady } = useDappHost()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
 
-  const bond = useBondWidget(kind, sessionReady, {
+  const bond = useBondSession(kind, sessionReady, {
     onSuccess: () => {
       toast.success(copy.success)
     },

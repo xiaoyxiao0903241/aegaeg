@@ -1,15 +1,4 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
-import {
-  formatApiAmount,
-  formatApiDateTime,
-  formatBlockTime,
-  formatNumber,
-  formatRegisterDate,
-  formatShortAddress,
-  formatTableGenesisRank,
-  parseApiAmount,
-  TABLE_EMPTY,
-} from '~/shared/api/format-display'
 import type {
   CommunityFundLogItem,
   DaoGrantStatus,
@@ -28,6 +17,17 @@ import type {
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
+import {
+  formatApiAmount,
+  formatApiDateTime,
+  formatBlockTime,
+  formatNumber,
+  formatRegisterDate,
+  formatShortAddress,
+  formatTableGenesisRank,
+  parseApiAmount,
+  TABLE_EMPTY,
+} from '~/shared/presenters/format-display'
 
 /**
  * 非数值空态占位（日期、哈希、标签用「—」）。
@@ -37,7 +37,7 @@ export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild'>
 
-/** 金额字符串展示 SSOT 在 `~/shared/api/format-display`；此处再导出供页袋旧 import。 */
+/** 金额字符串展示 SSOT 在 `~/shared/presenters/format-display`；此处再导出供页袋旧 import。 */
 export { formatApiAmount }
 
 /**

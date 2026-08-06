@@ -4,7 +4,7 @@ import {
   useParticipationAwardLogs,
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/presenters/format-display'
 import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import {

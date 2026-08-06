@@ -1,7 +1,10 @@
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
-import { formatNumber, parseApiAmount as parseApiAmountNullable } from '~/shared/api/format-display'
+import {
+  formatNumber,
+  parseApiAmount as parseApiAmountNullable,
+} from '~/shared/presenters/format-display'
 
 type StakingMoneyBlock = Parameters<typeof evaluateWriteButtonPhase>[0]['moneyBlock']
 

@@ -15,7 +15,7 @@ import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatReferralLinkDisplay } from '~/views/dapp/community/shared'
-import { useReferral } from '~/views/dapp/community/use-referral'
+import { useCommunityReferral } from '~/views/dapp/community/use-referral'
 import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -28,7 +28,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 export function useCommunityDock() {
   const { locale, messages: t } = useI18n()
   const account = useActiveAccount()
-  const referral = useReferral()
+  const referral = useCommunityReferral()
   const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
 
   usePresentUserFacingError(referral.error, {

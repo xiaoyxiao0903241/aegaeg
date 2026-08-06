@@ -4,7 +4,7 @@
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
 import { useReleaseViewMotion } from '~/stores/release-view-store'
 import { BufferDock } from '~/views/dapp/release/buffer/dock'
-import { HubDock } from '~/views/dapp/release/hub/dock'
+import { ReleaseHubDock } from '~/views/dapp/release/hub/dock'
 import { QueueDock } from '~/views/dapp/release/queue/dock'
 import { useSubviewDisplayView } from '~/views/dapp/shared/subview-panel'
 import { TabDockHost } from '~/views/dapp/shared/tab-host'
@@ -13,7 +13,7 @@ function ReleaseDockBody() {
   const view = useSubviewDisplayView<ReleaseView>()
   if (view === 'queue') return <QueueDock />
   if (view === 'buffer') return <BufferDock />
-  return <HubDock />
+  return <ReleaseHubDock />
 }
 
 export function ReleaseDock() {

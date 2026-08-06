@@ -1,9 +1,9 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { stakingHubAssets } from '~/shared/assets/dapp'
 import { ModeCard } from '~/shared/components/mode-card'
-import { stakingHubAssets } from '~/shared/config/assets'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
-import { openStakingView } from '~/shared/config/dapp-open-views'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { openStakingView } from '~/views/dapp/shared/navigation'
 
 /** 质押 Hub 模式：质押 / LP 债券 / 燃烧债券 / XMine / 计算器 */
 const STAKING_MODES: readonly {
@@ -27,7 +27,7 @@ const STAKING_MODES: readonly {
  *
  * 展示五种质押模式的入口卡片，点击跳转到对应子视图。
  */
-export function HubDock() {
+export function StakingHubDock() {
   const { messages: t } = useI18n()
   const copy = t.staking.hub.modes
 

@@ -36,9 +36,9 @@ staking/
 ├── primitives.tsx           # 可选：跨 mode UI 零件（图表/指标等；禁数千行 mega）
 ├── use-detail.ts            # 可选：跨 mode 右栏共享 chrome hook（如 useStakingDetail）
 ├── hub/
-│   ├── dock.tsx             # HubDock
-│   ├── detail.tsx           # HubDetail
-│   ├── use-hub.ts           # useHub / useHubDetail
+│   ├── dock.tsx             # StakingHubDock（跨域导出须带域前缀）
+│   ├── detail.tsx           # StakingHubDetail
+│   ├── use-hub.ts           # useStakingHubDetail（有则 useStakingHub）
 │   └── primitives.tsx
 ├── stake/
 │   ├── dock.tsx             # StakeDock
@@ -62,7 +62,7 @@ community/
 ├── dock.tsx                 # ★ CommunityDock
 ├── detail.tsx               # ★ CommunityDetail
 ├── use-community.ts         # useCommunityDock / useCommunityDetail
-├── use-referral.ts          # 第二 hook 开口（写链过长）
+├── use-referral.ts          # useCommunityReferral（第二 hook；跨域勿用短名）
 ├── primitives.tsx
 └── shared.ts                # 可选纯函数（display / bind-success）
 ```
@@ -82,11 +82,11 @@ community/
 
 ### Hook 命名（左 / 右）
 
-| 情况               | 导出                                        | 说明                                |
-| ------------------ | ------------------------------------------- | ----------------------------------- |
-| 左/右各有独立 VM   | `useStakeDock` / `useStakeDetail`           | 与 UI 面一一对应；可同文件多 export |
-| 一份会话同时喂左右 | `useFlashExchange`（中性名）或 session host | **禁止**假拆成 Dock/Detail 两份     |
-| 纯读、两边共用     | `useHub` / `useQueue` 等中性名              | dock/detail 各自取用                |
+| 情况               | 导出                                                                                 | 说明                                |
+| ------------------ | ------------------------------------------------------------------------------------ | ----------------------------------- |
+| 左/右各有独立 VM   | `useStakeDock` / `useStakeDetail`                                                    | 与 UI 面一一对应；可同文件多 export |
+| 一份会话同时喂左右 | `useFlashExchange`（中性名）或 session host                                          | **禁止**假拆成 Dock/Detail 两份     |
+| 纯读、两边共用     | 域内可中性；**跨域 export 边界**须域前缀（如 `useAssetsHub` / `useRewardsReferral`） | dock/detail 与 tab 父层取用         |
 
 旧名 `*View` / `*Aside` / `*Widget`（页袋 VM）迁到上表；写链 / IO helper 不强制改名。
 

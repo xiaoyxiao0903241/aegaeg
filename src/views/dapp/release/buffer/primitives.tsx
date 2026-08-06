@@ -1,11 +1,11 @@
 /**
  * 缓冲池 UI 零件：币种数据卡、机制步骤与机制卡。
  */
+import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
-import { dappAssets } from '~/shared/config/assets'
 
 type BufferStat = {
   label: string

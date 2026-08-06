@@ -1,6 +1,6 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { releaseProgressBps } from '~/core/release/release-block-reasons'
-import { formatNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatNumber, parseApiAmount } from '~/shared/presenters/format-display'
 
 /** 有链快照时优先链上数值，否则 API 小数字符串，最后回退到格式化后的零 */
 export function formatReleaseApiOrChainLabel(args: {

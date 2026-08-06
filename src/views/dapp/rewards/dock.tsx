@@ -6,7 +6,7 @@ import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import { CobuildDock } from '~/views/dapp/rewards/cobuild/dock'
 import { GenesisDock } from '~/views/dapp/rewards/genesis/dock'
 import { GrantDock } from '~/views/dapp/rewards/grant/dock'
-import { HubDock } from '~/views/dapp/rewards/hub/dock'
+import { RewardsHubDock } from '~/views/dapp/rewards/hub/dock'
 import { LuckyDock } from '~/views/dapp/rewards/lucky/dock'
 import { ParticipateDock } from '~/views/dapp/rewards/participate/dock'
 import { ReferralDock } from '~/views/dapp/rewards/referral/dock'
@@ -21,7 +21,7 @@ function RewardsDockBody() {
   if (view === 'cobuild') return <CobuildDock />
   if (view === 'grant') return <GrantDock />
   if (view === 'genesis') return <GenesisDock />
-  return <HubDock />
+  return <RewardsHubDock />
 }
 
 export function RewardsDock() {

@@ -2,19 +2,19 @@ import { useState } from 'react'
 
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
+import { assetsHubAssets } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
-import { assetsHubAssets } from '~/shared/config/assets'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
-import { openAssetsView } from '~/shared/config/dapp-open-views'
 import { AssetsHubFilterMenu } from '~/views/dapp/assets/hub/primitives'
-import { useHub } from '~/views/dapp/assets/hub/use-hub'
+import { useAssetsHub } from '~/views/dapp/assets/hub/use-hub'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { openAssetsView } from '~/views/dapp/shared/navigation'
 
 /** 资产 Hub：质押 / LP 债券 / 燃烧债券 / XMine 仓位概览 */
 const ASSET_MODES = [
@@ -32,10 +32,10 @@ const ASSET_MODE_ICONS = {
 } as const
 
 /** 资产 Hub 侧栏：四个仓位模式的入口卡，勾选隐藏零余额时过滤；未连接钱包时展示引导 */
-export function HubDock() {
+export function AssetsHubDock() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappHost()
-  const overview = useHub()
+  const overview = useAssetsHub()
   const [hideZero, setHideZero] = useState(false)
 
   const modes = ASSET_MODES.filter((key) => {

@@ -2,6 +2,7 @@ import { Check } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 
+import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import {
@@ -13,7 +14,6 @@ import {
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
-import { dappAssets } from '~/shared/config/assets'
 import { cn } from '~/shared/lib/utils'
 
 /**
@@ -53,7 +53,7 @@ export function AssetsHubFilterMenu({
       >
         <Icon alt="" size="lg" src={dappAssets.setting} />
       </DropdownMenuTrigger>
-      <DropdownMenuPanel align={align} className="min-w-[10.5rem]">
+      <DropdownMenuPanel align={align} className="min-w-42">
         <DropdownMenuItem
           aria-checked={hideZero}
           onClick={(event) => {
@@ -68,13 +68,13 @@ export function AssetsHubFilterMenu({
           <span
             aria-hidden
             className={cn(
-              'grid size-[0.9375rem] shrink-0 place-items-center rounded-[0.25rem] border-[1.5px] transition-colors',
+              'grid size-3.75 shrink-0 place-items-center rounded-[0.25rem] border-[1.5px] transition-colors',
               hideZero ? 'border-primary bg-primary' : 'border-black/30 bg-transparent',
             )}
           >
             <Check
               aria-hidden
-              className={cn('size-[0.5625rem] text-white', hideZero ? 'opacity-100' : 'opacity-0')}
+              className={cn('size-2.25 text-white', hideZero ? 'opacity-100' : 'opacity-0')}
               strokeWidth={3}
             />
           </span>
@@ -111,7 +111,7 @@ export function AssetsHubMetricWithIcon({
       <div className="flex items-start gap-1">
         <Icon alt="" className="mt-0.5 rounded-control" size="lg" src={icon} />
         <div className="grid gap-0.5">
-          <Text as="strong" className="text-base leading-4.5 font-semibold">
+          <Text as="strong" className="text-base/4.5 font-semibold">
             {renderMetric(value)}
           </Text>
           <Text as="span" className="leading-4 text-foreground/40" variant="copy">
@@ -138,7 +138,7 @@ export function AssetsHubMetricPlain({
       <Text as="span" className="leading-4 text-foreground/40" variant="copy">
         {label}
       </Text>
-      <Text as="strong" className="text-base leading-4.5 font-semibold">
+      <Text as="strong" className="text-base/4.5 font-semibold">
         {renderMetric(value)}
       </Text>
       <Text as="span" className="leading-4 text-foreground/40" variant="copy">
