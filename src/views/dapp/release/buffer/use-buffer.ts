@@ -12,7 +12,10 @@ import { formatUsdApprox } from '~/shared/presenters/format-display'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
-import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
+import {
+  usePrincipalReleaseDurationDays,
+  useReleaseBufferSnapshot,
+} from '~/views/dapp/release/use-release-reads'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
@@ -31,6 +34,7 @@ export function useBuffer() {
   const { writeReady } = useWriteReadiness()
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
+  const durationQuery = usePrincipalReleaseDurationDays()
   const [refreshing, setRefreshing] = useState(false)
 
   const claim = useChainMutation({
@@ -72,6 +76,7 @@ export function useBuffer() {
     t,
     onBack: () => setView('hub'),
     walletReady,
+    intro: t.release.buffer.intro.replace('{days}', String(durationQuery.data ?? 30)),
     claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`,
     releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`,
     releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),

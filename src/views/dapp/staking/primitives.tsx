@@ -132,6 +132,7 @@ export function StakingCurveChart() {
           principal: result.principal,
           days: CALC_MAX_DAYS,
           epochRebasePct: result.epochRebasePct,
+          xmineDailyPct: result.xmineDailyPct,
         })
         // 债券利息已是 USD1；质押利息为 AGX × 现价。与 buildCalcYieldCurvePoints 同口径。
         const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
@@ -146,6 +147,7 @@ export function StakingCurveChart() {
         principal: result.principal,
         price: result.price,
         epochRebasePct: result.epochRebasePct,
+        xmineDailyPct: result.xmineDailyPct,
         maxDays: CALC_MAX_DAYS,
       }).map((p) => ({
         time: p.day as UTCTimestamp,

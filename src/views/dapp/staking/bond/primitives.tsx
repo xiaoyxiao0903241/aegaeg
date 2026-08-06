@@ -156,6 +156,7 @@ export function BondPeriodList({
   discounts,
   discountPrices,
   soldLabels,
+  yieldLabels,
   copy,
 }: {
   ariaLabel: string
@@ -166,6 +167,8 @@ export function BondPeriodList({
   discounts: Record<BondPeriod, string>
   discountPrices: Record<BondPeriod, string>
   soldLabels: Record<BondPeriod, string>
+  /** 周期收益率文案（已含「收益率」前缀或完整标签）。 */
+  yieldLabels: Record<BondPeriod, string>
   copy: BondPeriodCardCopy
 }) {
   return (
@@ -183,7 +186,7 @@ export function BondPeriodList({
                 <BondPeriodCard.TitleRow
                   periodLabel={periodLabels[period]}
                   selected={selected}
-                  yieldLabel={`${copy.yield} 0.00%`}
+                  yieldLabel={yieldLabels[period] ?? `${copy.yield} 0.00%`}
                 />
                 <BondPeriodCard.Line>
                   {copy.discountRange} {BOND_DISCOUNT_RANGES[period]}

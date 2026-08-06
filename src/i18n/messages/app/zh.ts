@@ -127,7 +127,7 @@ const app = defineMessages({
       },
       {
         title: '奖励',
-        body: '「奖励」含推荐奖、参与奖、共建奖等；Lucky/共建等 Mixed 领取按 1:1 消耗贡献点数，参与奖与发展津贴等为签名直达钱包。',
+        body: '「奖励」含推荐奖、参与奖、共建奖等；Lucky/共建/推荐等 Mixed 领取按 1:1 消耗贡献点数，参与奖与发展津贴等为签名直达钱包。',
       },
       {
         title: '社区',
@@ -333,7 +333,7 @@ const app = defineMessages({
       currentContribution: '当前贡献值',
       burnRate: '销毁比率',
       destination: '销毁去向',
-      destinationValue: '黑洞地址 · 永久销毁',
+      destinationValue: '黑洞 {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: '在 BscScan 查看贡献兑换合约',
       action: '销毁',
@@ -610,7 +610,7 @@ const app = defineMessages({
     title: '共建计划',
     intro: '参与 X DAO 共建计划 · 第{season}期  ({discount} 折扣)',
     introEnded: 'X DAO 共建计划已圆满结束 · 感谢全球共建者的参与',
-    shares: '份额（1 份 = 100 USD1 · 最大 {max} 份）',
+    shares: '份额（1 份 = {min} USD1 · 最大 {max} 份）',
     quota: '本期共建额度',
     pay: '支付',
     receive: '将获得AGX',
@@ -743,7 +743,7 @@ const app = defineMessages({
         },
         referral: {
           title: '推荐奖',
-          body: '直推伙伴参与共建后计发的推荐相关奖励；通过 CommunityFund 签名领取。',
+          body: '直推伙伴参与共建后计发的推荐相关奖励；通过 DaoPool Mixed 领取（1:1 消耗贡献点）。',
         },
         participate: {
           title: '参与奖',
@@ -797,7 +797,7 @@ const app = defineMessages({
       referral: {
         title: '推荐奖',
         body: '推荐伙伴参与共建获得奖励',
-        aside: '直推 Rebase 收益相关奖励；通过 CommunityFund 签名领取，直达钱包。',
+        aside: '直推 Rebase 收益相关奖励；通过 DaoPool Mixed 领取（1:1 消耗贡献点）。',
       },
       participate: {
         title: '参与奖',
@@ -994,7 +994,7 @@ const app = defineMessages({
           },
           {
             q: '参与奖如何领取？',
-            a: '在左侧领取面板选择领取与复投比例：领取部分进入释放池按所选周期线性释放，复投部分进入单币质押。领取与复投均按 1:1 消耗贡献点数（DaoPool Mixed）。',
+            a: '在左侧领取面板通过 IncentivePool 签名领取，不消耗贡献点数，gAGX 直达钱包。',
           },
           {
             q: '邀请人可以更换吗？',
@@ -1118,8 +1118,7 @@ const app = defineMessages({
     referralClaim: {
       claimIntoWallet: '至钱包',
       ctaToWallet: '领取 {amount} 至钱包',
-      simpleHint:
-        '推荐奖通过 CommunityFund 签名领取（手册 §9.5）；可领额以解锁余额为准，直达钱包。',
+      simpleHint: '推荐奖通过 DaoPool Mixed 领取（1:1 消耗贡献点）；可领额以签名包为准。',
     },
     genesisDetail: {
       pageTitle: '共建奖励',
@@ -1459,11 +1458,11 @@ const app = defineMessages({
         contribution: '我的贡献点数',
         contributionHint: '领取收益按 1:1 消耗',
         holdingsTitle: '持仓',
-        holdingsReleased: '已释放',
+        holdingsReleased: '可赎回已释放',
         holdingsTotal: '总持仓',
         bufferTitle: '缓冲池',
-        bufferTotal: '总量',
-        bufferReleased: '已释放',
+        bufferTotal: '在池总量',
+        bufferReleased: '已提取',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
         bufferSwitchAria: '切换缓冲池资产展示',
@@ -2319,10 +2318,10 @@ const app = defineMessages({
         notes: '计算说明',
         notesBody: '本计算器仅供本地估算参考，不构成链上报价或收益承诺。',
         notesItems: [
-          '收益按当前基础日收益率 {daily}%（2 × Rebase 收益率）复利测算，长周期额外享受收益率加成：180 天 10%、360 天 15%、540 天 20%。',
-          '本金按所选周期区块线性释放，仅计入测算日已释放的部分；未到期释放的本金及其产出的收益不计入结果。',
-          '收益部分扣除 1/6 用于销毁购买贡献点数后，连同已释放本金按您设定的到期价格全部卖出计算。',
-          '测算结果未扣除收益释放时的所得税，也未考虑收益与本金释放期间价格波动的影响；结果仅供参考，实际收益随协议运行状态动态变化。',
+          '收益按当前基础日收益率 {daily}%（2 × Rebase 收益率）复利测算，长周期额外享受收益率加成：180 天 10%、360 天 15%、540 天 20%（加成不参与复利）。',
+          '测算对本金全额按所选天数计息，与 calcLocalInterest 一致，不按「仅已释放本金」截断。',
+          '本地计算器不扣 1/6 贡献销毁，也不模拟释放税与价格波动；结果仅供参考。',
+          '实际收益随协议运行状态变化，以链上结算为准。',
         ],
       },
     },
@@ -2335,7 +2334,7 @@ const app = defineMessages({
     recordColumns: ['时间', '操作', '数量', '交易哈希'],
     labels: {
       releasing: '释放中',
-      released: '已释放',
+      released: '可领取',
       releasedPct: '已释放 {pct}%',
     },
     units: {
@@ -2392,7 +2391,7 @@ const app = defineMessages({
     },
     buffer: {
       title: '缓冲池',
-      intro: '赎回资产在此进行 30 天二次线性释放，已释放部分可随时提取',
+      intro: '赎回资产在此进行 {days} 天二次线性释放，已释放部分可随时提取',
       claim: '提取',
       refresh: '刷新',
       claimSuccess: '已提取 AGX 到钱包',

@@ -7,7 +7,10 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber } from '~/shared/presenters/format-display'
 import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import {
+  useStakingHubOverviewQuery,
+  useXmineOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
 
 /**
  * 计算器表单状态
@@ -23,6 +26,7 @@ export function useCalcDock() {
   const setResult = useCalcEstimateStore((state) => state.setResult)
   const spotUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
+  const xmineOverviewQuery = useXmineOverviewQuery()
   const [product, setProduct] = useState<CalcProduct>('stake')
   const [period, setPeriod] = useState<string>('liquid')
   const [amount, setAmount] = useState('1')
@@ -31,6 +35,8 @@ export function useCalcDock() {
   const [priceSeeded, setPriceSeeded] = useState(false)
 
   const epochRebasePct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const xmineDailyPct =
+    xmineOverviewQuery.data != null ? Number(xmineOverviewQuery.data.yieldRateBP) / 100 : null
 
   // 价格字段仅在首次拿到实时行情时写入一次，之后不覆盖用户输入。
   useEffect(() => {
@@ -79,6 +85,7 @@ export function useCalcDock() {
         price,
         days,
         epochRebasePct,
+        xmineDailyPct: product === 'xmine' ? xmineDailyPct : null,
       }),
     )
   }

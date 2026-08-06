@@ -47,6 +47,7 @@ export function CalcDetail() {
           principal: result.principal,
           days: endDays,
           epochRebasePct: result.epochRebasePct,
+          xmineDailyPct: result.xmineDailyPct,
         })
         // 债券利息已是 USD1；质押利息为 AGX，须 × 现价。与 buildCalcEstimate 同口径。
         const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'

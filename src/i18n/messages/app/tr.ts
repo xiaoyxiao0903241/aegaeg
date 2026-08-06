@@ -339,7 +339,7 @@ const app = defineMessages({
       currentContribution: 'Current contribution',
       burnRate: 'Burn rate',
       destination: 'Burn destination',
-      destinationValue: 'Black hole address · permanently burned',
+      destinationValue: 'Black hole {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
@@ -620,7 +620,7 @@ const app = defineMessages({
     title: 'Ortak İnşa Planı',
     intro: 'X DAO Ortak İnşa Planına katılın · Faz {season}  ({discount} indirim)',
     introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
-    shares: 'Pay (1 pay = 100 USD1 · maks {max} pay)',
+    shares: 'Pay (1 pay = {min} USD1 · maks {max} pay)',
     quota: 'Faz ortak inşa kotası',
     pay: 'Ödeme',
     receive: 'Alınacak AGX',
@@ -760,7 +760,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via CommunityFund signed claim.',
+          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution 1:1).',
         },
         participate: {
           title: 'Participate',
@@ -862,7 +862,7 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside: 'Direct-referral related rewards; claim via CommunityFund signature to wallet.',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
       },
       participate: {
         title: 'Participation',
@@ -1189,7 +1189,7 @@ const app = defineMessages({
       claimIntoWallet: 'To wallet',
       ctaToWallet: 'Claim {amount} to wallet',
       simpleHint:
-        'Referral uses CommunityFund signed claim (handbook §9.5); claimable follows unlocked balance to wallet.',
+        'Referral uses DaoPool Mixed claim (contribution 1:1); claimable amount follows the signed payload.',
     },
 
     genesisDetail: {

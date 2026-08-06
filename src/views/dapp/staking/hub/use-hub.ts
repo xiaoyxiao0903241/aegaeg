@@ -133,7 +133,8 @@ export function useStakingHubDetail() {
 
   const periodTableRows: Record<string, HubPeriodTableRow> = Object.fromEntries(
     t.staking.hub.periodTable.rows.map((row) => {
-      if (tableSeg !== 'stake') {
+      const isBond = tableSeg === 'lpbond' || tableSeg === 'burnbond'
+      if (tableSeg !== 'stake' && !isBond) {
         return [
           row.id,
           {
@@ -144,7 +145,7 @@ export function useStakingHubDetail() {
           },
         ]
       }
-      const bps = lockedBonusBps(row.id)
+      const bps = tableSeg === 'stake' ? lockedBonusBps(row.id) : 0
       return [
         row.id,
         {

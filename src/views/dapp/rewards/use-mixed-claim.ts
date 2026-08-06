@@ -3,13 +3,10 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import {
+  claimDurationDaysLists,
   claimSplitFromReleasePct,
   matchClaimPlanIndices,
   planLabel,
-  RELEASE_DURATION_DAYS,
-  type ReleaseDurationDays,
-  RESTAKE_DURATION_DAYS,
-  type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useAuth } from '~/hooks/use-auth'
@@ -49,8 +46,8 @@ export function useMixedClaim(view: MixedClaimView) {
   const card = t.rewards.cards[view]
   const mixed = t.rewards.mixed
   const [releasePct, setReleasePct] = useState(50)
-  const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(60)
-  const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
+  const [releaseDays, setReleaseDays] = useState(60)
+  const [restakeDays, setRestakeDays] = useState(540)
   /** 共建奖每次提交只能选一个账本：等级奖励 或 超越奖励（一次订单一种类型） */
   const [cobuildRewardType, setCobuildRewardType] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
     'RANK_REWARD',
@@ -98,8 +95,9 @@ export function useMixedClaim(view: MixedClaimView) {
   const luckyContributionOk =
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
-  const isDaoMixed = view === 'cobuild'
-  const daoRewardType: DaoRewardType = view === 'cobuild' ? cobuildRewardType : 'RANK_REWARD'
+  const isDaoMixed = view === 'cobuild' || view === 'referral'
+  const daoRewardType: DaoRewardType =
+    view === 'referral' ? 'REFERRAL_REWARD' : view === 'cobuild' ? cobuildRewardType : 'RANK_REWARD'
   const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
   const plansOk = releaseIndex != null && restakeIndex != null
   const luckyOk =
@@ -148,7 +146,11 @@ export function useMixedClaim(view: MixedClaimView) {
     contributionOk &&
     (isDaoMixed || amount > 0n)
 
-  const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
+  const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(
+    plansQuery.data,
+  )
+
+  const releaseOptions = releaseDaysList.map((days) => ({
     label: planLabel(
       days,
       plansQuery.data?.releasePlans,
@@ -158,7 +160,7 @@ export function useMixedClaim(view: MixedClaimView) {
     ),
     value: String(days),
   }))
-  const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => ({
+  const restakeOptions = restakeDaysList.map((days) => ({
     label: planLabel(
       days,
       plansQuery.data?.restakePlans,
@@ -170,19 +172,27 @@ export function useMixedClaim(view: MixedClaimView) {
   }))
 
   const amountKnown = view === 'lucky' && luckyQuery.data != null
+  // Dao Mixed：可领额以签名包为准，签名前不冒充 0.00（W12）
+  const awaitingDaoSignature = isDaoMixed && sessionReady
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
-    : sessionReady
-      ? formatApiAmount(null)
-      : t.rewards.hub.signInForBalance
+    : awaitingDaoSignature
+      ? t.rewards.detail.signedAmountHint
+      : sessionReady
+        ? formatApiAmount(null)
+        : t.rewards.hub.signInForBalance
   const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
   const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
   const releaseAmountText = amountKnown
     ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-    : formatApiAmount(null)
+    : awaitingDaoSignature
+      ? t.rewards.detail.signedAmountHint
+      : formatApiAmount(null)
   const restakeAmountText = amountKnown
     ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-    : formatApiAmount(null)
+    : awaitingDaoSignature
+      ? t.rewards.detail.signedAmountHint
+      : formatApiAmount(null)
   const requiredText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
     : formatApiAmount(null)

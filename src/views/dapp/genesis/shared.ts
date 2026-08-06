@@ -192,6 +192,7 @@ export function genesisPurchaseSummary(args: {
       airdropThresholdUsd: reads.airdropThresholdUsd,
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,
+      minAmount: reads.minAmount,
       referencePriceLabel: formatNumber(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
       airdropLabel: `+${(getAirdropBpsForPhase(reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
       agxPriceUsd: reads.agxPriceUsd,

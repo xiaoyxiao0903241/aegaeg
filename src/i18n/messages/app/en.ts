@@ -132,7 +132,7 @@ const app = defineMessages({
       },
       {
         title: 'Rewards',
-        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build) spend contribution 1:1; participation and stipends use signed claims to wallet.',
+        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build/referral) spend contribution 1:1; participation and stipends use signed claims to wallet.',
       },
       {
         title: 'Community',
@@ -342,7 +342,7 @@ const app = defineMessages({
       currentContribution: 'Current contribution',
       burnRate: 'Burn rate',
       destination: 'Burn destination',
-      destinationValue: 'Black hole address · permanently burned',
+      destinationValue: 'Black hole {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
@@ -623,7 +623,7 @@ const app = defineMessages({
     title: 'Co-build Program',
     intro: 'Join the X DAO co-build program · Phase {season}  ({discount} discount)',
     introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
-    shares: 'Shares (1 share = 100 USD1 · max {max} shares)',
+    shares: 'Shares (1 share = {min} USD1 · max {max} shares)',
     quota: 'Phase co-build quota',
     pay: 'Pay',
     receive: 'You will receive AGX',
@@ -762,7 +762,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via CommunityFund signed claim.',
+          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution 1:1).',
         },
         participate: {
           title: 'Participate',
@@ -864,7 +864,8 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside: 'Direct-referral related rewards; claim via CommunityFund signature to wallet.',
+        aside:
+          'Direct-referral Rebase-related rewards; claim via DaoPool Mixed (contribution 1:1).',
       },
       participate: {
         title: 'Participation',
@@ -1065,7 +1066,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim participation rewards?',
-            a: 'Use the left panel to set claim vs restake: claimed portion enters the release pool for the selected term; restake enters single-token staking. Both spend contribution 1:1 (DaoPool Mixed).',
+            a: 'Use the left claim panel for an IncentivePool signed claim. No contribution is spent; gAGX goes straight to your wallet.',
           },
           {
             q: 'Can I change my referrer?',
@@ -1191,7 +1192,7 @@ const app = defineMessages({
       claimIntoWallet: 'To wallet',
       ctaToWallet: 'Claim {amount} to wallet',
       simpleHint:
-        'Referral uses CommunityFund signed claim (handbook §9.5); claimable follows unlocked balance to wallet.',
+        'Referral uses DaoPool Mixed claim (contribution 1:1); claimable amount follows the signed payload.',
     },
 
     genesisDetail: {
@@ -1537,11 +1538,11 @@ const app = defineMessages({
         contribution: 'Contribution points',
         contributionHint: 'Claims consume 1:1 contribution',
         holdingsTitle: 'Holdings',
-        holdingsReleased: 'Released',
+        holdingsReleased: 'Redeemable released',
         holdingsTotal: 'Total holdings',
         bufferTitle: 'Buffer pool',
-        bufferTotal: 'Total',
-        bufferReleased: 'Released',
+        bufferTotal: 'In vault',
+        bufferReleased: 'Withdrawn',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
         bufferSwitchAria: 'Switch buffer asset display',
@@ -2395,10 +2396,10 @@ const app = defineMessages({
         notes: 'Notes',
         notesBody: 'Local estimate only — not an on-chain quote or yield promise.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20% (bonus does not compound).',
+          'The calculator applies interest to the full principal for the selected days (same as calcLocalInterest); it does not truncate to unlocked principal only.',
+          'Local estimate does not deduct 1/6 burn contribution or model claim tax / price moves; illustrative only.',
+          'Actual yield follows on-chain settlement and protocol state.',
         ],
       },
     },
@@ -2412,7 +2413,7 @@ const app = defineMessages({
     recordsEmpty: 'No indexed records yet',
     labels: {
       releasing: 'Releasing',
-      released: 'Released',
+      released: 'Claimable',
       releasedPct: 'Released {pct}%',
     },
     units: {
@@ -2474,7 +2475,7 @@ const app = defineMessages({
     buffer: {
       title: 'Buffer pool',
       intro:
-        'Redeemed principal unlocks here with a second linear release. Released AGX can be withdrawn to your wallet.',
+        'Redeemed principal unlocks here over {days} days of secondary linear release. Released AGX can be withdrawn to your wallet.',
       claim: 'Withdraw',
       refresh: 'Refresh',
       claimSuccess: 'AGX withdrawn to wallet',

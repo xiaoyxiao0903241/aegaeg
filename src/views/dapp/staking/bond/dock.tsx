@@ -1,5 +1,11 @@
 import { bondSoldUsd } from '~/core/staking/bond-sold-usd'
 import { BOND_PERIODS, type BondKind, type BondPeriod } from '~/core/staking/staking-period'
+import {
+  baseDailyPctFromEpoch,
+  epochRebasePctFrom1e18,
+  periodYieldPct,
+  stakePeriodDays,
+} from '~/core/staking/staking-yield-display'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -17,6 +23,7 @@ import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
+import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 function parseDiscountPct(label: string): number | null {
   const n = Number(label.replace(/%$/, '').trim())
@@ -50,6 +57,9 @@ export function BondDock({ kind }: { kind: BondKind }) {
     periodLabels,
   } = useBondDock(kind)
   const spotUsd = useAgxPriceUsd()
+  const overviewQuery = useStakingHubOverviewQuery()
+  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const baseDaily = baseDailyPctFromEpoch(epochPct)
   const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [
@@ -65,6 +75,12 @@ export function BondDock({ kind }: { kind: BondKind }) {
         prefix: '$',
       }),
     ]),
+  ) as Record<BondPeriod, string>
+  const yieldLabels = Object.fromEntries(
+    BOND_PERIODS.map((period) => {
+      const pct = baseDaily == null ? 0 : periodYieldPct(baseDaily, stakePeriodDays(period))
+      return [period, `${copy.card.yield} ${formatNumber(pct, { digits: 2 })}%`]
+    }),
   ) as Record<BondPeriod, string>
   const discountUsd = formatBondDiscountUsd(spotUsd, bond.discountLabel)
   const spotLabel =
@@ -90,6 +106,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
           periodLabels={periodLabels}
           soldLabels={soldLabels}
           value={bond.period}
+          yieldLabels={yieldLabels}
         />
 
         <AmountBox

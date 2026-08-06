@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useRankRewardLogs,
   useRankRewardPeerSurpassLogs,
@@ -58,6 +59,7 @@ export function useCobuild() {
   const { messages: t } = useI18n()
   const cobuild = t.rewards.cobuild
   const { sessionReady } = useDappHost()
+  const agxPriceUsd = useAgxPriceUsd()
   const [recordsTab, setRecordsTab] = useState<CobuildRecordsTab>('cobuild')
   const [recordsPage, setRecordsPage] = useState(1)
   const [directsPage, setDirectsPage] = useState(1)
@@ -122,7 +124,12 @@ export function useCobuild() {
     ? 0
     : summaryQuery.isLoading && summary == null
       ? null
-      : (parseMoneyish(summary?.active_stake_balance) ?? 0)
+      : (() => {
+          // active_stake_balance 为 AGX；门槛文案为 USD —— 统一折算成 USD 再比
+          const agx = parseMoneyish(summary?.active_stake_balance) ?? 0
+          if (agxPriceUsd != null && agxPriceUsd > 0) return agx * agxPriceUsd
+          return agx
+        })()
   const accountsCurrent = !sessionReady
     ? 0
     : summaryQuery.isLoading && summary == null

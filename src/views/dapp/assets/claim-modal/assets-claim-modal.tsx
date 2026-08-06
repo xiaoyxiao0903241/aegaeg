@@ -2,7 +2,6 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useRef } from 'react'
 
-import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { Button } from '~/shared/components/button'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
@@ -155,7 +154,7 @@ function AssetsClaimModalOpen({
               align="start"
               ariaLabel={t.assets.claim.releasePeriodAria}
               className="w-full"
-              onSelect={(value) => vm.setReleaseDays(Number(value) as ReleaseDurationDays)}
+              onSelect={(value) => vm.setReleaseDays(Number(value))}
               options={vm.releaseOptions}
               value={String(vm.releaseDays)}
               variant="field"
@@ -169,7 +168,7 @@ function AssetsClaimModalOpen({
               align="start"
               ariaLabel={t.assets.claim.restakePeriodAria}
               className="w-full"
-              onSelect={(value) => vm.setRestakeDays(Number(value) as RestakeDurationDays)}
+              onSelect={(value) => vm.setRestakeDays(Number(value))}
               options={vm.restakeOptions}
               value={String(vm.restakeDays)}
               variant="field"

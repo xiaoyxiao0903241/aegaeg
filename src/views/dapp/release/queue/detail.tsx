@@ -63,8 +63,12 @@ export function QueueDetail() {
 
   function formatReleasedLabel(): string {
     if (chainReady) return `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}`
-    const n = sessionReady ? parseApiAmount(api?.released_amount) : null
-    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
+    // API 可领 ≈ released − claimed；勿直接用累计 released_amount
+    const released = sessionReady ? parseApiAmount(api?.released_amount) : null
+    const claimed = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
+    if (released != null && claimed != null) {
+      return `${formatNumber(Math.max(0, released - claimed), { digits: 4 })} ${unit}`
+    }
     return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 
@@ -76,7 +80,13 @@ export function QueueDetail() {
   }
 
   const releasingNum = parseApiOrChain(api?.releasing_amount, releasing)
-  const releasedNum = parseApiOrChain(api?.released_amount, claimable)
+  const releasedNum = (() => {
+    if (chainReady) return formatTokenAmountToNumber(claimable, AGX_DECIMALS)
+    const released = sessionReady ? parseApiAmount(api?.released_amount) : null
+    const claimed = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
+    if (released != null && claimed != null) return Math.max(0, released - claimed)
+    return 0
+  })()
   const lifetimeApproxNum = (sessionReady ? parseApiAmount(api?.total_claimed_amount) : null) ?? 0
 
   const stats = [

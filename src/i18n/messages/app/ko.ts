@@ -339,7 +339,7 @@ const app = defineMessages({
       currentContribution: 'Current contribution',
       burnRate: 'Burn rate',
       destination: 'Burn destination',
-      destinationValue: 'Black hole address · permanently burned',
+      destinationValue: 'Black hole {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
@@ -620,7 +620,7 @@ const app = defineMessages({
     title: '공동 구축 프로그램',
     intro: 'X DAO 공동 구축 프로그램 참여 · 페이즈 {season}  ({discount} 할인)',
     introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
-    shares: '지분 (1지분 = 100 USD1 · 최대 {max} 지분)',
+    shares: '지분 (1지분 = {min} USD1 · 최대 {max} 지분)',
     quota: '이번 페이즈 공동 구축 한도',
     pay: '지불',
     receive: '획득 AGX',
@@ -757,7 +757,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via CommunityFund signed claim.',
+          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution 1:1).',
         },
         participate: {
           title: 'Participate',
@@ -859,7 +859,7 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside: 'Direct-referral related rewards; claim via CommunityFund signature to wallet.',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
       },
       participate: {
         title: 'Participation',
@@ -1186,7 +1186,7 @@ const app = defineMessages({
       claimIntoWallet: 'To wallet',
       ctaToWallet: 'Claim {amount} to wallet',
       simpleHint:
-        'Referral uses CommunityFund signed claim (handbook §9.5); claimable follows unlocked balance to wallet.',
+        'Referral uses DaoPool Mixed claim (contribution 1:1); claimable amount follows the signed payload.',
     },
 
     genesisDetail: {

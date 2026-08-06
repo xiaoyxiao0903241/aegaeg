@@ -333,7 +333,7 @@ const app = defineMessages({
       currentContribution: '当前贡献值',
       burnRate: '销毁比率',
       destination: '销毁去向',
-      destinationValue: '黑洞地址 · 永久销毁',
+      destinationValue: '黑洞 {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: '在 BscScan 查看贡献兑换合约',
       action: '销毁',
@@ -610,7 +610,7 @@ const app = defineMessages({
     title: '共建計畫',
     intro: '參與 X DAO 共建計畫 · 第{season}期  ({discount} 折扣)',
     introEnded: 'X DAO 共建計畫已圓滿結束 · 感謝全球共建者的參與',
-    shares: '份額（1 份 = 100 USD1 · 最大 {max} 份）',
+    shares: '份額（1 份 = {min} USD1 · 最大 {max} 份）',
     quota: '本期共建額度',
     pay: '支付',
     receive: '將獲得 AGX',
@@ -727,7 +727,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: '直推夥伴參與共建後計發的推薦相關獎勵；透過 CommunityFund 簽名領取。',
+          body: '直推夥伴參與共建後計發的推薦相關獎勵；透過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
         },
         participate: {
           title: 'Participate',
@@ -845,7 +845,7 @@ const app = defineMessages({
       referral: {
         title: '推薦獎',
         body: '推薦夥伴參與共建獲得獎勵',
-        aside: '直推 Rebase 收益相關獎勵；透過 CommunityFund 簽名領取，直達錢包。',
+        aside: '直推 Rebase 收益相關獎勵；透過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
       },
       participate: {
         title: '參與獎',
@@ -1168,8 +1168,7 @@ const app = defineMessages({
     referralClaim: {
       claimIntoWallet: '至錢包',
       ctaToWallet: '領取 {amount} 至錢包',
-      simpleHint:
-        '推薦獎透過 CommunityFund 簽名領取（手冊 §9.5）；可領額以解鎖餘額為準，直達錢包。',
+      simpleHint: '推薦獎透過 DaoPool Mixed 領取（1:1 消耗貢獻點）；可領額以簽名包為準。',
     },
 
     genesisDetail: {

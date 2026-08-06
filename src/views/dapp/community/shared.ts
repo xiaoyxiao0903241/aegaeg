@@ -5,14 +5,13 @@ import {
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
-  TABLE_EMPTY,
 } from '~/shared/presenters/format-display'
 
 /**
  * 把团队邀请项映射为表格行
  *
  * 按列序输出注册时间、地址、业绩、等级与直邀数；
- * 业绩等数值无效时显示为空表标记。
+ * 数字空结果显示 0（不用「—」）。
  */
 export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   const volume = Number(item.presale_volume)
@@ -21,12 +20,14 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   return [
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address, { head: 4, tail: 4 }),
-    Number.isFinite(volume) && volume > 0 ? formatNumber(volume, { prefix: '$' }) : TABLE_EMPTY,
+    Number.isFinite(volume)
+      ? formatNumber(volume, { prefix: '$' })
+      : formatNumber(0, { prefix: '$' }),
     formatTableGenesisRank(item.presale_rank),
     formatNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
     Number.isFinite(teamMarket)
       ? formatNumber(teamMarket, { digits: 0, trimZeros: true })
-      : TABLE_EMPTY,
+      : formatNumber(0, { digits: 0, trimZeros: true }),
   ]
 }
 

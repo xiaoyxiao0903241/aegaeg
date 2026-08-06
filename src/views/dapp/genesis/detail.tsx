@@ -42,6 +42,7 @@ export function GenesisDetail({ genesis }: { genesis: GenesisSessionState }) {
           body={t.genesis.globalBody}
           contractLabel={t.genesis.viewContract}
           kicker={t.genesis.globalLabel}
+          loading={genesis.globalPurchasedLoading}
           onViewContract={openPreSaleContract}
           value={`$${genesis.globalPurchasedLabel}`}
         />

@@ -70,9 +70,7 @@ export function RewardsHubDetail() {
     {
       key: 'contribution',
       label: stats.contribution,
-      value: statsView.contributionValue.startsWith('$')
-        ? statsView.contributionValue
-        : `$${statsView.contributionValue}`,
+      value: statsView.contributionValue,
       approx: stats.contributionHint,
       labelAction: (
         // 去销毁按钮：用原生 button 而非 Button 组件，保证多语文案完整可见

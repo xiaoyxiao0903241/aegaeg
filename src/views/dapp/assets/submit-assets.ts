@@ -5,12 +5,7 @@ import {
   evaluateXmineClaim,
   evaluateXmineUnstake,
 } from '~/core/assets/assets-block-reasons'
-import {
-  matchClaimPlanIndices,
-  type ReleaseDurationDays,
-  restakeBpsFromPct,
-  type RestakeDurationDays,
-} from '~/core/assets/claim-plans'
+import { matchClaimPlanIndices, restakeBpsFromPct } from '~/core/assets/claim-plans'
 import { dualCheckMixedClaim } from '~/core/assets/dual-check-mixed-claim'
 import type { LockedClaimLeg } from '~/core/assets/select-locked-claim-legs'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
@@ -89,8 +84,8 @@ async function readMixedClaimSnapshot(
   target: MixedClaimReadTarget,
   user: Address,
   amount: bigint,
-  releaseDays: ReleaseDurationDays,
-  restakeDays: RestakeDurationDays,
+  releaseDays: number,
+  restakeDays: number,
   readClient: ChainReadClient,
 ) {
   const plans = await readClaimPlans(readClient)
@@ -126,8 +121,8 @@ export async function submitMixedClaim(args: {
   session: WriteSession
   owner: string
   target: MixedClaimTarget
-  releaseDays: ReleaseDurationDays
-  restakeDays: RestakeDurationDays
+  releaseDays: number
+  restakeDays: number
   restakePct: number
 }): Promise<void> {
   const { session, owner, target, releaseDays, restakeDays, restakePct } = args

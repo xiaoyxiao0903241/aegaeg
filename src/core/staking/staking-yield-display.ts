@@ -118,41 +118,79 @@ export function stakePeriodDays(period: string): number {
 }
 
 /**
+
  * 计算器用的本地代币利息。
+
  *
- * 质押/债券用实时 rebase 加手册加成；xmine 无协议年化视图，恒为 0。
+
+ * 质押/债券用实时 rebase 加手册加成；xmine 用日 BP（yieldRateBP/100 → %）。
+
  *
+
  * @param args.product 产品类型（stake / lpbond / burnbond / xmine）
+
  * @param args.period 产品周期
+
  * @param args.principal 本金（已按产品折算）
+
  * @param args.days 天数
+
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
+
+ * @param args.xmineDailyPct XMine 日收益率（百分比）；仅 xmine 使用
+
  * @returns 利息与本金合计；本金或天数为 0 时利息为 0
+
  */
+
 export function calcLocalInterest(args: {
   product: 'stake' | 'lpbond' | 'burnbond' | 'xmine'
+
   period: string
+
   principal: number
+
   days: number
+
   epochRebasePct: number | null
+
+  xmineDailyPct?: number | null
 }): { interest: number; total: number } {
-  const { product, period, principal, days, epochRebasePct } = args
+  const { product, period, principal, days, epochRebasePct, xmineDailyPct } = args
+
   if (!(principal > 0) || !(days > 0)) {
     return { interest: 0, total: Math.max(0, principal) }
   }
-  if (product === 'xmine' || epochRebasePct == null) {
+
+  if (product === 'xmine') {
+    const daily = xmineDailyPct
+
+    if (daily == null || !(daily >= 0)) return { interest: 0, total: principal }
+
+    const interest = compoundInterest(principal, daily, days)
+
+    return { interest, total: principal + interest }
+  }
+
+  if (epochRebasePct == null) {
     return { interest: 0, total: principal }
   }
+
   const baseDaily = baseDailyPctFromEpoch(epochRebasePct)
+
   if (baseDaily == null) return { interest: 0, total: principal }
 
   const compound = compoundInterest(principal, baseDaily, days)
+
   // 仅定期质押有锁定加成；债券走 rebase 复利，不享 LOCKED_*_BPS。
+
   const bonus =
     product === 'stake'
       ? lockedBonusInterest(principal, epochRebasePct, lockedBonusBps(period), days)
       : 0
+
   const interest = compound + bonus
+
   return { interest, total: principal + interest }
 }
 
@@ -175,6 +213,7 @@ export function buildCalcYieldCurvePoints(args: {
   principal: number
   price: number
   epochRebasePct: number | null
+  xmineDailyPct?: number | null
   maxDays?: number
 }): CalcYieldCurvePoint[] {
   const maxDays = args.maxDays ?? CALC_MAX_DAYS
@@ -188,6 +227,7 @@ export function buildCalcYieldCurvePoints(args: {
       principal: args.principal,
       days: day,
       epochRebasePct: args.epochRebasePct,
+      xmineDailyPct: args.xmineDailyPct,
     })
     // 债券利息已是 USD；质押利息为 AGX × 现价。
     points.push({

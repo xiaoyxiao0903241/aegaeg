@@ -239,8 +239,8 @@ const home = defineMessages({
       label: '동적 방어 메커니즘',
     },
     {
-      value: '2.1M',
-      countTarget: 2.1,
+      value: '210M',
+      countTarget: 210,
       suffix: 'M',
       label: 'X 고정 총량',
     },

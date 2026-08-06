@@ -4,7 +4,6 @@
  * 供 referral / participate / grant / lucky / cobuild 等 mode dock 组装；
  * 禁止再扩成域级 mega primitives。
  */
-import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
@@ -32,7 +31,7 @@ import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /**
- * 简单领取左栏面板（发展津贴 / 参与奖 / 推荐奖）
+ * 简单领取左栏面板（发展津贴 / 参与奖）
  */
 export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
@@ -75,12 +74,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
               {vm.participate.simpleHint}
             </Text>
           ) : null}
-          {view === 'referral' ? (
-            <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-              {vm.referral.simpleHint}
-            </Text>
-          ) : null}
-          {vm.showEmptyReferral || vm.showEmptyParticipate ? (
+          {vm.showEmptyParticipate ? (
             <Text as="p" className="leading-4 text-foreground/40" variant="copy">
               {t.rewards.detail.emptyClaimable}
             </Text>
@@ -203,7 +197,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           <RewardsDestinationCard.Period label={vm.mixed.releasePeriod}>
             <SelectMenu
               ariaLabel={vm.mixed.releaseAria}
-              onSelect={(value) => vm.setReleaseDays(Number(value) as ReleaseDurationDays)}
+              onSelect={(value) => vm.setReleaseDays(Number(value))}
               options={vm.releaseOptions}
               value={String(vm.releaseDays)}
               variant="pill"
@@ -224,7 +218,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           <RewardsDestinationCard.Period label={vm.mixed.restakePeriod}>
             <SelectMenu
               ariaLabel={vm.mixed.restakeAria}
-              onSelect={(value) => vm.setRestakeDays(Number(value) as RestakeDurationDays)}
+              onSelect={(value) => vm.setRestakeDays(Number(value))}
               options={vm.restakeOptions}
               value={String(vm.restakeDays)}
               variant="pill"

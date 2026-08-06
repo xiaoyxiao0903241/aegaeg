@@ -21,7 +21,7 @@ const luckyAbi = parseAbi([
 const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getUserRoundStat])
 
 /** 回溯闭轮上限（手册：旧轮按 ID 可查；禁只看上一轮）。 */
-const LUCKY_CLAIM_LOOKBACK = 90n
+const LUCKY_CLAIM_LOOKBACK = 10_000n
 
 /** 用户幸运奖领取快照。 */
 export type LuckyClaimSnapshot = {
@@ -36,7 +36,7 @@ export type LuckyClaimSnapshot = {
 /**
  * 读取用户可领的幸运奖快照。
  *
- * currentRoundId 为进行中轮，中奖发生在已关闭轮；从新到旧回溯（上限 90 轮），
+ * currentRoundId 为进行中轮，中奖发生在已关闭轮；从新到旧回溯（上限 10000 轮），
  * 取第一笔可领记录。每轮两读经 Multicall3（允许失败）。
  *
  * @param user 钱包地址

@@ -6,10 +6,8 @@
  */
 
 export const RELEASE_DURATION_DAYS = [5, 20, 40, 60] as const
-export type ReleaseDurationDays = (typeof RELEASE_DURATION_DAYS)[number]
 
 export const RESTAKE_DURATION_DAYS = [360, 540] as const
-export type RestakeDurationDays = (typeof RESTAKE_DURATION_DAYS)[number]
 
 export const SECONDS_PER_DAY = 86_400n
 
@@ -21,6 +19,40 @@ export type DurationPlan = {
   /** 复投计划的可选税率（RestakeConfig taxBP，仅用于展示）。 */
   taxBps?: bigint
   exists?: boolean
+}
+
+export type ClaimPlanBundle = {
+  releasePlans: readonly DurationPlan[]
+  restakePlans: readonly DurationPlan[]
+}
+
+/**
+ * 链上计划 → UI 天数列表；无可用计划时回退默认档。
+ *
+ * @param plans 链上释放 / 复投计划
+ * @param fallback 无链上档时的默认天数
+ */
+export function durationDaysFromPlans(
+  plans: readonly DurationPlan[] | undefined,
+  fallback: readonly number[],
+): number[] {
+  const fromChain =
+    plans
+      ?.filter((p) => p.exists !== false)
+      .map((p) => Number(p.durationSeconds / SECONDS_PER_DAY))
+      .filter((d) => Number.isFinite(d) && d > 0 && Number.isInteger(d)) ?? []
+  return fromChain.length > 0 ? fromChain : [...fallback]
+}
+
+/** 从计划包同时解析释放 / 复投天数选项（无链上档时回退常量）。 */
+export function claimDurationDaysLists(plans: ClaimPlanBundle | null | undefined): {
+  releaseDays: number[]
+  restakeDays: number[]
+} {
+  return {
+    releaseDays: durationDaysFromPlans(plans?.releasePlans, RELEASE_DURATION_DAYS),
+    restakeDays: durationDaysFromPlans(plans?.restakePlans, RESTAKE_DURATION_DAYS),
+  }
 }
 
 /**
@@ -44,11 +76,6 @@ export function matchPlanIndexByDurationDays(
     if (plan.durationSeconds === target) return plan.index
   }
   return null
-}
-
-export type ClaimPlanBundle = {
-  releasePlans: readonly DurationPlan[]
-  restakePlans: readonly DurationPlan[]
 }
 
 /**

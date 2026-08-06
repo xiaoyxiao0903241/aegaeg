@@ -21,6 +21,8 @@ export type CalcEstimateResult = {
   ratePct: number
   /** 该快照使用的周期 rebase 百分比（null 表示零收益）。 */
   epochRebasePct: number | null
+  /** xmine 日收益率（%）；非 xmine 为 null。 */
+  xmineDailyPct: number | null
 }
 
 interface CalcEstimateStore {

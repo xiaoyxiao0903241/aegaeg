@@ -236,8 +236,8 @@ const home = defineMessages({
       label: '动态防御机制',
     },
     {
-      value: '2.1M',
-      countTarget: 2.1,
+      value: '210M',
+      countTarget: 210,
       suffix: 'M',
       label: 'X固定总量',
     },

@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { baseDailyPctFromEpoch, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield-display'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useAssetsHoldingsDistribution,
@@ -30,6 +31,11 @@ import {
   readXminePosition,
 } from '~/web3/assets/assets-read'
 import { readReleaseBufferSnapshot } from '~/web3/release/release-read'
+import {
+  useStakingHubOverviewQuery,
+  useXmineOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
+import { formatXmineDailyYieldLabel } from '~/web3/staking/xmine-overview-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -71,8 +77,15 @@ export type AssetsHubOverview = {
   modes: Record<'stake' | 'lpbond' | 'burnbond' | 'xmine', AssetsHubModeStats>
 }
 
-/** 暂无协议 APR 数据源，无数据态展示 0.00% 而非占位横线 */
+/** 无 rebase / 挖矿利率时展示 0.00%（空数字→0） */
 const APR_EMPTY = `${formatNumber(0, { digits: 2 })}%`
+
+/** epoch rebase → 简易年化 APR（日率 ×365；日率=2×epoch） */
+function formatAprFromRebase(rate1e18: bigint | null | undefined): string {
+  const daily = baseDailyPctFromEpoch(epochRebasePctFrom1e18(rate1e18))
+  if (daily == null) return APR_EMPTY
+  return `${formatNumber(daily * 365, { digits: 2 })}%`
+}
 
 const EMPTY_MODE: AssetsHubModeStats = {
   aprLabel: APR_EMPTY,
@@ -108,17 +121,17 @@ function modeFromApiAmount(
   amountRaw: string | undefined,
   unit: 'AGX' | 'gAGX',
   priceUsd: number | null,
+  aprLabel: string,
+  yieldValue: string,
+  yieldApprox: string,
 ): AssetsHubModeStats {
   const amount = parseApiAmount(amountRaw) ?? 0
   return {
-    aprLabel: APR_EMPTY,
+    aprLabel,
     positionValue: formatApiTokenLabel(amountRaw, unit),
     positionApprox: formatUsdApprox(amount, priceUsd),
-    yieldValue:
-      unit === 'AGX'
-        ? `${formatNumber(0, { digits: 2 })} gAGX`
-        : `${formatNumber(0, { digits: 2 })} X`,
-    yieldApprox: formatUsdApprox(0, null),
+    yieldValue,
+    yieldApprox,
     hasBalance: amount > 0,
   }
 }
@@ -156,26 +169,36 @@ export function useAssetsHub(): AssetsHubOverview {
     apiPending,
     apiReady,
   })
+  // API 就绪时仍读链上仓位 / rebase，用于 APR 与未领收益（API 无对应字段）
+  const chainYieldEnabled = enabled
+
+  const overviewQuery = useStakingHubOverviewQuery()
+  const xmineOverviewQuery = useXmineOverviewQuery()
+  const stakeApr = formatAprFromRebase(overviewQuery.data?.rebaseRate1e18)
+  const xmineApr =
+    xmineOverviewQuery.data != null
+      ? formatXmineDailyYieldLabel(xmineOverviewQuery.data.yieldRateBP)
+      : APR_EMPTY
 
   const stakeQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsStakePositions,
     queryFn: (addr) => readStakePositions(addr as Address),
-    enabled: chainFallbackEnabled,
+    enabled: chainYieldEnabled,
   })
   const lpQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsBondPositions('lpbond'),
     queryFn: (addr) => readLpBondPositions(addr as Address),
-    enabled: chainFallbackEnabled,
+    enabled: chainYieldEnabled,
   })
   const burnQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsBondPositions('burnbond'),
     queryFn: (addr) => readBurnBondPositions(addr as Address),
-    enabled: chainFallbackEnabled,
+    enabled: chainYieldEnabled,
   })
   const xmineQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsXminePosition,
     queryFn: (addr) => readXminePosition(addr as Address),
-    enabled: chainFallbackEnabled,
+    enabled: chainYieldEnabled,
   })
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContribution,
@@ -187,6 +210,26 @@ export function useAssetsHub(): AssetsHubOverview {
     queryFn: (addr) => readReleaseBufferSnapshot(addr as Address),
     enabled: chainFallbackEnabled,
   })
+
+  const stakeRows = stakeQuery.data ?? []
+  const lpRows = lpQuery.data ?? []
+  const burnRows = burnQuery.data ?? []
+  const xmine = xmineQuery.data
+  const chainYieldReady =
+    stakeQuery.data !== undefined &&
+    lpQuery.data !== undefined &&
+    burnQuery.data !== undefined &&
+    xmineQuery.data !== undefined
+  const stakeYield = chainYieldReady
+    ? stakeRows.reduce((sum, row) => sum + row.blockReward + row.extraInterest, 0n)
+    : 0n
+  const lpYield = chainYieldReady ? lpRows.reduce((sum, row) => sum + row.profit, 0n) : 0n
+  const burnYield = chainYieldReady ? burnRows.reduce((sum, row) => sum + row.profit, 0n) : 0n
+  const xPending = chainYieldReady ? (xmine?.pending ?? 0n) : 0n
+  const stakeYieldNum = formatTokenAmountToNumber(stakeYield, GAGX_DECIMALS)
+  const lpYieldNum = formatTokenAmountToNumber(lpYield, GAGX_DECIMALS)
+  const burnYieldNum = formatTokenAmountToNumber(burnYield, GAGX_DECIMALS)
+  const xPendingNum = formatTokenAmountToNumber(xPending, X_DECIMALS)
 
   const emptyModes = {
     stake: EMPTY_MODE,
@@ -224,6 +267,10 @@ export function useAssetsHub(): AssetsHubOverview {
     const holdingsReleased = formatApiTokenLabel(apiHoldings.total_released_agx, 'AGX')
     const bufferTotal = formatApiTokenLabel(apiHoldings.buffer_pool_cumulative, 'AGX')
     const bufferReleased = formatApiTokenLabel(apiHoldings.buffer_pool_released, 'AGX')
+    const stakeYieldLabel = `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`
+    const lpYieldLabel = `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`
+    const burnYieldLabel = `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`
+    const xYieldLabel = `${formatTokenAmount(xPending, X_DECIMALS, 2)} X`
 
     return {
       totalValue,
@@ -243,14 +290,38 @@ export function useAssetsHub(): AssetsHubOverview {
       bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
       bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
       modes: {
-        stake: modeFromApiAmount(apiDist.stake_total_agx, 'AGX', priceUsd),
-        lpbond: modeFromApiAmount(apiDist.bond_lp, 'AGX', priceUsd),
-        burnbond: modeFromApiAmount(apiDist.bond_burn, 'AGX', priceUsd),
-        xmine: {
-          ...modeFromApiAmount(apiDist.stake_x_pool, 'gAGX', priceUsd),
-          yieldValue: `${formatNumber(0, { digits: 2 })} X`,
-          yieldApprox: formatUsdApprox(0, null),
-        },
+        stake: modeFromApiAmount(
+          apiDist.stake_total_agx,
+          'AGX',
+          priceUsd,
+          stakeApr,
+          stakeYieldLabel,
+          formatUsdApprox(stakeYieldNum, priceUsd),
+        ),
+        lpbond: modeFromApiAmount(
+          apiDist.bond_lp,
+          'AGX',
+          priceUsd,
+          stakeApr,
+          lpYieldLabel,
+          formatUsdApprox(lpYieldNum, priceUsd),
+        ),
+        burnbond: modeFromApiAmount(
+          apiDist.bond_burn,
+          'AGX',
+          priceUsd,
+          stakeApr,
+          burnYieldLabel,
+          formatUsdApprox(burnYieldNum, priceUsd),
+        ),
+        xmine: modeFromApiAmount(
+          apiDist.stake_x_pool,
+          'gAGX',
+          priceUsd,
+          xmineApr,
+          xYieldLabel,
+          formatUsdApprox(xPendingNum, null),
+        ),
       },
     }
   }
@@ -272,31 +343,17 @@ export function useAssetsHub(): AssetsHubOverview {
   }
 
   const loading =
-    stakeQuery.data === undefined ||
-    lpQuery.data === undefined ||
-    burnQuery.data === undefined ||
-    xmineQuery.data === undefined ||
-    contribQuery.data === undefined ||
-    bufferQuery.data === undefined
+    !chainYieldReady || contribQuery.data === undefined || bufferQuery.data === undefined
 
   if (loading) {
     return zeroOverview(emptyModes)
   }
 
-  const stakeRows = stakeQuery.data ?? []
-  const lpRows = lpQuery.data ?? []
-  const burnRows = burnQuery.data ?? []
-  const xmine = xmineQuery.data
-
   const stakePrincipal = stakeRows.reduce((sum, row) => sum + row.principal, 0n)
   const stakeReleased = stakeRows.reduce((sum, row) => sum + row.releasedPrincipal, 0n)
-  const stakeYield = stakeRows.reduce((sum, row) => sum + row.blockReward + row.extraInterest, 0n)
   const lpPrincipal = lpRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
-  const lpYield = lpRows.reduce((sum, row) => sum + row.profit, 0n)
   const burnPrincipal = burnRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
-  const burnYield = burnRows.reduce((sum, row) => sum + row.profit, 0n)
   const xStake = xmine?.miningStake ?? 0n
-  const xPending = xmine?.pending ?? 0n
 
   const claimableParts = [
     stakeYield > 0n ? `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX` : null,
@@ -312,34 +369,39 @@ export function useAssetsHub(): AssetsHubOverview {
   const bufferReleased = buffer?.totalClaimed ?? 0n
 
   const stakePosNum = formatTokenAmountToNumber(stakePrincipal, AGX_DECIMALS)
-  const stakeYieldNum = formatTokenAmountToNumber(stakeYield, GAGX_DECIMALS)
   const lpPosNum = formatTokenAmountToNumber(lpPrincipal, AGX_DECIMALS)
-  const lpYieldNum = formatTokenAmountToNumber(lpYield, GAGX_DECIMALS)
   const burnPosNum = formatTokenAmountToNumber(burnPrincipal, AGX_DECIMALS)
-  const burnYieldNum = formatTokenAmountToNumber(burnYield, GAGX_DECIMALS)
   const xPosNum = formatTokenAmountToNumber(xStake, GAGX_DECIMALS)
-  const holdingsTotalNum = formatTokenAmountToNumber(stakePrincipal, AGX_DECIMALS)
-  const holdingsReleasedNum = formatTokenAmountToNumber(stakeReleased, AGX_DECIMALS)
+  // 持仓合计：质押 + LP/Burn 本金 + XMine stake + 缓冲（AGX 口径）
+  const holdingsPrincipal = stakePrincipal + lpPrincipal + burnPrincipal + xStake + bufferTotal
+  const holdingsTotalNum = formatTokenAmountToNumber(holdingsPrincipal, AGX_DECIMALS)
+  const holdingsReleasedNum = formatTokenAmountToNumber(
+    stakeReleased + bufferReleased,
+    AGX_DECIMALS,
+  )
   const bufferTotalNum = formatTokenAmountToNumber(bufferTotal, AGX_DECIMALS)
   const bufferReleasedNum = formatTokenAmountToNumber(bufferReleased, AGX_DECIMALS)
   const claimableGagxNum = formatTokenAmountToNumber(
     stakeYield + lpYield + burnYield,
     GAGX_DECIMALS,
   )
+  const totalValueUsd =
+    priceUsd != null && Number.isFinite(priceUsd) ? holdingsTotalNum * priceUsd : 0
 
   return {
-    totalValue: formatNumber(0, { digits: 2, prefix: '$' }),
+    totalValue: formatNumber(totalValueUsd, { digits: 2, prefix: '$' }),
     claimable:
       claimableParts.length > 0
         ? claimableParts.join(' · ')
         : `${formatNumber(0, { digits: 2 })} gAGX`,
     claimableApprox: formatUsdApprox(claimableGagxNum, priceUsd),
+    // 链上无累计已领 view；空结果按产品规则显示 0
     claimed: formatNumber(0, { digits: 2 }),
     claimedApprox: formatUsdApprox(0, null),
     contribution: formatTokenAmount(contribution, AGX_DECIMALS, 2),
-    holdingsReleased: `${formatTokenAmount(stakeReleased, AGX_DECIMALS, 2)} AGX`,
+    holdingsReleased: `${formatTokenAmount(stakeReleased + bufferReleased, AGX_DECIMALS, 2)} AGX`,
     holdingsReleasedApprox: formatUsdApprox(holdingsReleasedNum, priceUsd),
-    holdingsTotal: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
+    holdingsTotal: `${formatTokenAmount(holdingsPrincipal, AGX_DECIMALS, 2)} AGX`,
     holdingsTotalApprox: formatUsdApprox(holdingsTotalNum, priceUsd),
     bufferTotal: `${formatTokenAmount(bufferTotal, AGX_DECIMALS, 2)} AGX`,
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
@@ -349,7 +411,7 @@ export function useAssetsHub(): AssetsHubOverview {
     bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
     modes: {
       stake: {
-        aprLabel: APR_EMPTY,
+        aprLabel: stakeApr,
         positionValue: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatUsdApprox(stakePosNum, priceUsd),
         yieldValue: `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`,
@@ -357,7 +419,7 @@ export function useAssetsHub(): AssetsHubOverview {
         hasBalance: stakePrincipal > 0n || stakeYield > 0n,
       },
       lpbond: {
-        aprLabel: APR_EMPTY,
+        aprLabel: stakeApr,
         positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatUsdApprox(lpPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`,
@@ -365,7 +427,7 @@ export function useAssetsHub(): AssetsHubOverview {
         hasBalance: lpPrincipal > 0n || lpYield > 0n,
       },
       burnbond: {
-        aprLabel: APR_EMPTY,
+        aprLabel: stakeApr,
         positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatUsdApprox(burnPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`,
@@ -373,11 +435,11 @@ export function useAssetsHub(): AssetsHubOverview {
         hasBalance: burnPrincipal > 0n || burnYield > 0n,
       },
       xmine: {
-        aprLabel: APR_EMPTY,
+        aprLabel: xmineApr,
         positionValue: `${formatTokenAmount(xStake, GAGX_DECIMALS, 2)} gAGX`,
         positionApprox: formatUsdApprox(xPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(xPending, X_DECIMALS, 2)} X`,
-        yieldApprox: formatUsdApprox(formatTokenAmountToNumber(xPending, X_DECIMALS), null),
+        yieldApprox: formatUsdApprox(xPendingNum, null),
         hasBalance: xStake > 0n || xPending > 0n,
       },
     },

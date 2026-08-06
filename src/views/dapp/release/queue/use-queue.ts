@@ -71,11 +71,24 @@ export function useQueue() {
 
   const locked = claim.isLocked
 
-  const rows: ReleaseQueueRowView[] = RELEASE_DURATION_DAYS.map((days) => {
-    const found = queueQuery.data?.plans.find((p) => p.durationDays === days)
-    const claimable = found?.claimable ?? 0n
-    const releasing = found?.releasing ?? 0n
-    const planIndex = found?.planIndex ?? -1
+  const planSource =
+    queueQuery.data?.plans.filter((p) => p.durationDays != null && p.planIndex >= 0) ?? []
+  const rowPlans =
+    planSource.length > 0
+      ? planSource
+      : RELEASE_DURATION_DAYS.map((days) => ({
+          planIndex: -1,
+          durationDays: days as number | null,
+          claimable: 0n,
+          total: 0n,
+          releasing: 0n,
+        }))
+
+  const rows: ReleaseQueueRowView[] = rowPlans.map((found) => {
+    const days = found.durationDays ?? 0
+    const claimable = found.claimable ?? 0n
+    const releasing = found.releasing ?? 0n
+    const planIndex = found.planIndex ?? -1
     const pctLabel = formatReleasePct(claimable, releasing)
 
     return {

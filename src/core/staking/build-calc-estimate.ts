@@ -39,6 +39,8 @@ export function buildCalcEstimate(args: {
   days: number
   /** 实时 epoch 收益率（展示单位百分比）；null → 按零收益计算。 */
   epochRebasePct: number | null
+  /** XMine 日收益率（%）；仅 product=xmine 时使用。 */
+  xmineDailyPct?: number | null
 }): CalcEstimateResult {
   const principal = Number.parseFloat(args.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(args.price.replace(/,/g, '')) || 0
@@ -49,6 +51,7 @@ export function buildCalcEstimate(args: {
     principal,
     days,
     epochRebasePct: args.epochRebasePct,
+    xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
   })
   const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
   // 债券本金/利息已是 USD1（USD）；质押本金/利息为 AGX，须 × 现价。禁对债券利息再乘 AGX 价。
@@ -69,5 +72,6 @@ export function buildCalcEstimate(args: {
     sellUsd,
     ratePct,
     epochRebasePct: args.epochRebasePct,
+    xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
   }
 }

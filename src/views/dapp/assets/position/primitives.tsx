@@ -345,8 +345,7 @@ export function AssetsPositionBondRow({
   row,
 }: AssetsPositionRowFrameProps<AssetsBondRow>) {
   const { messages: t } = useI18n()
-  // 测试期放开领取入口；profit=0 时弹窗仍可开，写链双重校验拦截
-  const canClaim = true
+  const canClaim = row.profit > 0n
   const canRedeem = row.pendingPayout > 0n
   const periodLabel = formatPeriodLabel(String(row.period))
   const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()

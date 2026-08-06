@@ -19,6 +19,7 @@ const vaultReadAbi = parseAbi([
   PRINCIPAL_RELEASE_VAULT_METHODS.getReleaseCount,
   PRINCIPAL_RELEASE_VAULT_METHODS.getRelease,
   PRINCIPAL_RELEASE_VAULT_METHODS.claimable,
+  PRINCIPAL_RELEASE_VAULT_METHODS.releaseDuration,
 ])
 
 export type ReleaseQueuePlanRow = {
@@ -66,10 +67,26 @@ export async function readReleaseQueuePlans(
     abi: queueReadAbi,
     functionName: 'queuePlans',
   })
-  return (plans as readonly { releaseDuration: bigint }[]).map((plan, index) => ({
+  return (plans as readonly { releaseDuration: bigint; feeRate: bigint }[]).map((plan, index) => ({
     index,
     durationSeconds: plan.releaseDuration,
+    taxBps: plan.feeRate,
   }))
+}
+
+/**
+ * 读取 PrincipalReleaseVault 当前新单释放周期（秒）。
+ *
+ * 仅影响后续新单；既有释放单时长写在各自 release.duration。
+ */
+export async function readPrincipalReleaseDuration(
+  readClient: ChainReadClient = bscReadClient,
+): Promise<bigint> {
+  return (await readClient.readContract({
+    address: BSC_CONTRACTS.principalReleaseVault,
+    abi: vaultReadAbi,
+    functionName: 'releaseDuration',
+  })) as bigint
 }
 
 /**

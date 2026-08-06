@@ -22,6 +22,11 @@ import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/stak
 import { formatRebasePct } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
+import {
+  burnBondDepositoryAddress,
+  lpBondDepositoryAddress,
+} from '~/web3/staking/staking-addresses'
+import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
@@ -95,8 +100,8 @@ const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
 /**
  * 债券详情右栏（LP / 燃烧债券共用）
  *
- * 概览与仓位数值与资产页同源链读；
- * 协议 TVL / 溢价率暂无数据源，显示 0。
+ * 概览 TVL / 折扣来自各周期 BondDepository 市场元数据；
+ * Rebase 与倒计时与质押 hub 同源。
  *
  * @param kind 债券类型：lp / burn
  * @returns 右栏概览、仓位、记录表的展示数据
@@ -109,6 +114,25 @@ export function useBondDetail(kind: BondKind) {
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
+  const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
+  const market180 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),
+    scope: 'public',
+    freshness: 'quote',
+    queryFn: () => readBondMarketMeta(depositoryAddress('180')),
+  })
+  const market360 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('360')),
+    scope: 'public',
+    freshness: 'quote',
+    queryFn: () => readBondMarketMeta(depositoryAddress('360')),
+  })
+  const market540 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('540')),
+    scope: 'public',
+    freshness: 'quote',
+    queryFn: () => readBondMarketMeta(depositoryAddress('540')),
+  })
   const bondProduct = kind === 'lp' ? 'lpbond' : 'burnbond'
   const bondQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsBondPositions(bondProduct),
@@ -121,35 +145,19 @@ export function useBondDetail(kind: BondKind) {
 
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
-  const overviewItems: Array<{ label: string; value: ReactNode }> = [
-    {
-      label: copy.overviewMetrics[0]?.label ?? '',
-      value: (
-        <StakingTokenMetricValue
-          approx={formatUsdApprox(0, priceUsd)}
-          icon="agx"
-          value={formatNumber(0, { digits: 2, suffix: ' AGX' })}
-        />
-      ),
-    },
-    {
-      label: copy.overviewMetrics[1]?.label ?? '',
-      value: ZERO_PCT,
-    },
-    {
-      label: copy.overviewMetrics[2]?.label ?? '',
-      value: (
-        <RebaseCountdownValue
-          currentBlock={overviewQuery.data?.currentBlock}
-          epochEndBlock={overviewQuery.data?.epochEndBlock}
-        />
-      ),
-    },
-    {
-      label: copy.overviewMetrics[3]?.label ?? '',
-      value: rebaseLabel,
-    },
-  ]
+  const totalDeposit = [market180.data, market360.data, market540.data].reduce(
+    (sum, m) => sum + (m?.totalDeposit ?? 0n),
+    0n,
+  )
+  const totalDepositNum = formatTokenAmountToNumber(totalDeposit, AGX_DECIMALS)
+  // 溢价/折扣：取已加载周期中折扣最深（discountRateBP 最小）的展示
+  const deepestDiscount = [market180.data, market360.data, market540.data]
+    .filter((m): m is NonNullable<typeof m> => m != null)
+    .reduce<bigint | null>((best, m) => {
+      if (best == null || m.discountRateBP < best) return m.discountRateBP
+      return best
+    }, null)
+  const premiumLabel = deepestDiscount == null ? ZERO_PCT : formatBondDiscountLabel(deepestDiscount)
 
   const rows = walletReady && bondQuery.data != null ? bondQuery.data : []
   let payoutRemaining = 0n
@@ -166,6 +174,36 @@ export function useBondDetail(kind: BondKind) {
   const released = formatTokenAmountToNumber(pendingPayout, AGX_DECIMALS)
   const pending = formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS)
   const rebaseGagx = formatTokenAmountToNumber(profit, GAGX_DECIMALS)
+
+  const overviewItems: Array<{ label: string; value: ReactNode }> = [
+    {
+      label: copy.overviewMetrics[0]?.label ?? '',
+      value: (
+        <StakingTokenMetricValue
+          approx={formatUsdApprox(totalDepositNum, priceUsd)}
+          icon="agx"
+          value={formatNumber(totalDepositNum, { digits: 2, suffix: ' AGX' })}
+        />
+      ),
+    },
+    {
+      label: copy.overviewMetrics[1]?.label ?? '',
+      value: premiumLabel,
+    },
+    {
+      label: copy.overviewMetrics[2]?.label ?? '',
+      value: (
+        <RebaseCountdownValue
+          currentBlock={overviewQuery.data?.currentBlock}
+          epochEndBlock={overviewQuery.data?.epochEndBlock}
+        />
+      ),
+    },
+    {
+      label: copy.overviewMetrics[3]?.label ?? '',
+      value: rebaseLabel,
+    },
+  ]
 
   const positionItems: Array<{ label: string; value: ReactNode }> = [
     {

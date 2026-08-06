@@ -239,8 +239,8 @@ const home = defineMessages({
       label: 'Dinamik Savunma Mekanizması',
     },
     {
-      value: '2.1M',
-      countTarget: 2.1,
+      value: '210M',
+      countTarget: 210,
       suffix: 'M',
       label: 'X Sabit Toplam',
     },

@@ -1,9 +1,4 @@
-import {
-  matchClaimPlanIndices,
-  type ReleaseDurationDays,
-  restakeBpsFromPct,
-  type RestakeDurationDays,
-} from '~/core/assets/claim-plans'
+import { matchClaimPlanIndices, restakeBpsFromPct } from '~/core/assets/claim-plans'
 import { evaluateRewardsMixedClaim } from '~/core/rewards/rewards-block-reasons'
 import { requestDaoClaim } from '~/shared/api/endpoints'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
@@ -46,8 +41,8 @@ function mapMixedReason(
  */
 export async function submitLuckyMixedClaim(args: {
   session: WriteSession
-  releaseDays: ReleaseDurationDays
-  restakeDays: RestakeDurationDays
+  releaseDays: number
+  restakeDays: number
   restakePct: number
 }): Promise<void> {
   const { session, releaseDays, restakeDays, restakePct } = args
@@ -132,8 +127,8 @@ export async function submitDaoMixedClaim(args: {
   token: string
   onUnauthorized: () => void
   rewardType: DaoRewardType
-  releaseDays: ReleaseDurationDays
-  restakeDays: RestakeDurationDays
+  releaseDays: number
+  restakeDays: number
   restakePct: number
 }): Promise<void> {
   const { session, token, onUnauthorized, rewardType, releaseDays, restakeDays, restakePct } = args

@@ -14,6 +14,7 @@ import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
+import { formatNumber } from '~/shared/presenters/format-display'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import {
   ExchangeSlippageModal,
@@ -145,11 +146,12 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
                   ? [
                       {
                         label: t.exchange.trade.priceImpact,
-                        value: trade.priceImpactLabel || '0',
+                        value:
+                          trade.priceImpactLabel || formatNumber(0, { digits: 2, suffix: '%' }),
                       },
                       {
                         label: t.exchange.trade.estimatedGas,
-                        value: trade.gasEstimateLabel || '0',
+                        value: trade.gasEstimateLabel || '—',
                       },
                     ]
                   : []),

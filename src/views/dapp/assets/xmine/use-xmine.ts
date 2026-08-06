@@ -12,7 +12,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatUsdApprox } from '~/shared/presenters/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format-display'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
@@ -142,9 +142,9 @@ export type AssetsXmineStatCell = {
   icon?: 'gagx' | 'x'
 }
 
-/** X 挖矿右侧统计：仅读取链上仓位；累计产出暂无数据来源 */
+/** X 挖矿右侧统计：链上仓位 + 用户 REWARD 流水累加「累计产出」 */
 export function useAssetsXmineStats(): AssetsXmineStatCell[] {
-  const { walletReady } = useDappHost()
+  const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
   const priceUsd = useAgxPriceUsd()
@@ -153,6 +153,11 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
     queryKey: queryKeys.chain.assetsXminePosition,
     queryFn: (addr) => readXminePosition(addr as Address),
   })
+  // 累加用户历史 REWARD；page_size 取大以覆盖常见记录量（无协议累计 view）
+  const rewardLogs = useX0MiningLogs(
+    { operation: ['REWARD'], page: 1, page_size: 100 },
+    sessionReady,
+  )
 
   if (!walletReady || !address || positionQuery.isError) {
     return Array.from({ length: 4 }, () => ({
@@ -170,6 +175,10 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { miningStake, pending, warmupGons } = positionQuery.data
   // 无份额转金额的接口，可赎回估算为 warmup 结束后的全部质押，否则为 0
   const released = warmupGons > 0n ? 0n : miningStake
+  const lifetimeX = (rewardLogs.data?.items ?? []).reduce((sum, item) => {
+    if (item.operation !== 'REWARD') return sum
+    return sum + (parseApiAmount(item.amount) ?? 0)
+  }, 0)
 
   return [
     ...(
@@ -195,7 +204,11 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
       icon,
       approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), price),
     })),
-    { value: '0.00 X', icon: 'x', approx: formatUsdApprox(0, null) },
+    {
+      value: `${formatNumber(lifetimeX, { digits: 2 })} X`,
+      icon: 'x',
+      approx: formatUsdApprox(0, null),
+    },
   ]
 }
 

@@ -1,9 +1,5 @@
-/**
- * 销毁左栏 Dock
- *
- * 卖出 AGX 换取贡献点，买入侧为只读展示；下方列出销毁率、
- * 去向与提供方合约链接。未连接钱包时展示连接引导。
- */
+import { BPS_DENOM } from '~/core/exchange/bps'
+import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
 import { dappAssets } from '~/shared/assets/dapp'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
@@ -23,6 +19,14 @@ import { TabHeader } from '~/views/dapp/shared/tab-header'
 export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const vm = useBurn(burn)
   const { t, pair } = vm
+
+  const splitBps = burn.config?.splitBps
+  const destinationValue =
+    splitBps === undefined
+      ? t.exchange.burn.destinationValue.replace('{burnPct}', '—').replace('{injectPct}', '—')
+      : t.exchange.burn.destinationValue
+          .replace('{burnPct}', formatBurnSplitPercent(splitBps))
+          .replace('{injectPct}', formatBurnSplitPercent(BPS_DENOM - splitBps))
 
   return (
     <TabHeader
@@ -62,7 +66,7 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
               },
               {
                 label: t.exchange.burn.destination,
-                value: t.exchange.burn.destinationValue,
+                value: destinationValue,
               },
               exchangeProviderMetaRow({
                 label: t.exchange.provider,

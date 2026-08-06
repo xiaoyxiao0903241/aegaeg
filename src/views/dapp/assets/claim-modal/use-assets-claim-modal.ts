@@ -3,13 +3,10 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
+  claimDurationDaysLists,
   claimSplitFromReleasePct,
   matchClaimPlanIndices,
   planLabel,
-  RELEASE_DURATION_DAYS,
-  type ReleaseDurationDays,
-  RESTAKE_DURATION_DAYS,
-  type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -43,8 +40,8 @@ export function useAssetsClaimModal(args: {
   const account = useActiveAccount()
   const [releasePct, setReleasePctState] = useState(50)
   // RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60
-  const [releaseDays, setReleaseDaysState] = useState<ReleaseDurationDays>(60)
-  const [restakeDays, setRestakeDaysState] = useState<RestakeDurationDays>(540)
+  const [releaseDays, setReleaseDaysState] = useState(60)
+  const [restakeDays, setRestakeDaysState] = useState(540)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
   useEffect(() => {
@@ -104,7 +101,11 @@ export function useAssetsClaimModal(args: {
   const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
   const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)
 
-  const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
+  const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(
+    plansQuery.data,
+  )
+
+  const releaseOptions = releaseDaysList.map((days) => ({
     label: planLabel(
       days,
       plansQuery.data?.releasePlans,
@@ -114,7 +115,7 @@ export function useAssetsClaimModal(args: {
     ),
     value: String(days),
   }))
-  const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => ({
+  const restakeOptions = restakeDaysList.map((days) => ({
     label: planLabel(
       days,
       plansQuery.data?.restakePlans,
@@ -130,12 +131,12 @@ export function useAssetsClaimModal(args: {
     setReleasePctState(value)
   }
 
-  function setReleaseDays(value: ReleaseDurationDays) {
+  function setReleaseDays(value: number) {
     claim.clearLock()
     setReleaseDaysState(value)
   }
 
-  function setRestakeDays(value: RestakeDurationDays) {
+  function setRestakeDays(value: number) {
     claim.clearLock()
     setRestakeDaysState(value)
   }

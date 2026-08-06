@@ -19,9 +19,10 @@ test('home metrics X supply value matches countTarget+suffix', async () => {
     const mod = await loadModule(`/src/i18n/messages/home/${locale}.ts`)
     const bundle = mod.default
     assert.ok(bundle?.metrics, `missing metrics in ${locale}`)
-    const xSupply = bundle.metrics.find((m) => m.suffix === 'M' && String(m.value).includes('2.1'))
-    assert.ok(xSupply, `missing 2.1M metric in ${locale}`)
-    assert.equal(xSupply.countTarget, 2.1, locale)
-    assert.equal(xSupply.value, `2.1${xSupply.suffix}`, locale)
+    // 手册 xtoken TOTAL_SUPPLY = 210_000_000 → 展示 210M
+    const xSupply = bundle.metrics.find((m) => m.suffix === 'M' && String(m.value).includes('210'))
+    assert.ok(xSupply, `missing 210M metric in ${locale}`)
+    assert.equal(xSupply.countTarget, 210, locale)
+    assert.equal(xSupply.value, `210${xSupply.suffix}`, locale)
   }
 })

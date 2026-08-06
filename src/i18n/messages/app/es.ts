@@ -341,7 +341,7 @@ const app = defineMessages({
       currentContribution: 'Current contribution',
       burnRate: 'Burn rate',
       destination: 'Burn destination',
-      destinationValue: 'Black hole address · permanently burned',
+      destinationValue: 'Black hole {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
@@ -623,7 +623,7 @@ const app = defineMessages({
     intro:
       'Participa en el plan de co-construcción X DAO · Fase {season}  ({discount} de descuento)',
     introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
-    shares: 'Participaciones (1 participación = 100 USD1 · máx. {max} participaciones)',
+    shares: 'Participaciones (1 participación = {min} USD1 · máx. {max} participaciones)',
     quota: 'Cuota de co-construcción de esta fase',
     pay: 'Pagar',
     receive: 'Recibirás AGX',
@@ -764,7 +764,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via CommunityFund signed claim.',
+          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution 1:1).',
         },
         participate: {
           title: 'Participate',
@@ -866,7 +866,7 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside: 'Direct-referral related rewards; claim via CommunityFund signature to wallet.',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
       },
       participate: {
         title: 'Participation',
@@ -1193,7 +1193,7 @@ const app = defineMessages({
       claimIntoWallet: 'To wallet',
       ctaToWallet: 'Claim {amount} to wallet',
       simpleHint:
-        'Referral uses CommunityFund signed claim (handbook §9.5); claimable follows unlocked balance to wallet.',
+        'Referral uses DaoPool Mixed claim (contribution 1:1); claimable amount follows the signed payload.',
     },
 
     genesisDetail: {

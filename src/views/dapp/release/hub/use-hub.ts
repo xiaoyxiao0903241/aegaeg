@@ -1,3 +1,4 @@
+import { SECONDS_PER_DAY } from '~/core/assets/claim-plans'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
@@ -8,6 +9,7 @@ import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presente
 import { formatReleaseApiOrChainLabel, formatReleasePct } from '~/views/dapp/release/shared'
 import {
   useReleaseBufferSnapshot,
+  useReleaseQueuePlans,
   useReleaseQueueSnapshot,
 } from '~/views/dapp/release/use-release-reads'
 
@@ -16,7 +18,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 /**
  * 释放总览交互面板状态
  *
- * 组合队列与缓冲池的 API / 链上标签与进度百分比。
+ * 组合队列与缓冲池的 API / 链上标签与进度百分比；税率表优先读 queuePlans。
  */
 export function useReleaseHub() {
   const { messages: t } = useI18n()
@@ -24,6 +26,7 @@ export function useReleaseHub() {
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
+  const plansQuery = useReleaseQueuePlans()
   const releaseApi = useReleasePoolSummary(sessionReady)
   const bufferApi = useBufferPoolSummary(sessionReady)
 
@@ -38,6 +41,14 @@ export function useReleaseHub() {
   const queuePct = formatReleasePct(queueClaimable, queueReleasing)
   const bufferPct = formatReleasePct(bufferClaimable, bufferReleasing)
 
+  // API 可领 ≈ released − claimed；勿把累计 released_amount 直接塞进「可领取」
+  const apiQueueClaimableRaw = (() => {
+    const released = parseApiAmount(releaseApi.data?.released_amount)
+    const claimed = parseApiAmount(releaseApi.data?.total_claimed_amount)
+    if (released == null || claimed == null) return undefined
+    return String(Math.max(0, released - claimed))
+  })()
+
   const queueUnit = t.release.units.queue
   const queueReleasingLabel = formatReleaseApiOrChainLabel({
     sessionReady,
@@ -49,7 +60,7 @@ export function useReleaseHub() {
   })
   const queueClaimableLabel = formatReleaseApiOrChainLabel({
     sessionReady,
-    apiRaw: releaseApi.data?.released_amount,
+    apiRaw: apiQueueClaimableRaw,
     chainReady,
     chainValue: queueClaimable,
     decimals: AGX_DECIMALS,
@@ -57,9 +68,10 @@ export function useReleaseHub() {
   })
 
   const bufferTotalChain = bufferClaimable + bufferReleasing
+  // 缓冲 Total=池内剩余：API 用 releasing_amount（cumulative−released），勿用累计入池
   const bufferTotalAgx = formatReleaseApiOrChainLabel({
     sessionReady,
-    apiRaw: bufferApi.data?.cumulative_amount,
+    apiRaw: bufferApi.data?.releasing_amount,
     chainReady: bufferChainReady,
     chainValue: bufferTotalChain,
     decimals: AGX_DECIMALS,
@@ -80,10 +92,26 @@ export function useReleaseHub() {
     : (parseApiAmount(releaseApi.data?.releasing_amount) ?? 0)
   const queueClaimableNum = chainReady
     ? formatTokenAmountToNumber(queueClaimable, AGX_DECIMALS)
-    : (parseApiAmount(releaseApi.data?.released_amount) ?? 0)
+    : (parseApiAmount(apiQueueClaimableRaw) ?? 0)
   const bufferTotalNum = bufferChainReady
     ? formatTokenAmountToNumber(bufferTotalChain, AGX_DECIMALS)
-    : (parseApiAmount(bufferApi.data?.cumulative_amount) ?? 0)
+    : (parseApiAmount(bufferApi.data?.releasing_amount) ?? 0)
+
+  const fallbackPeriods = t.release.hub.taxRows.periods
+  const fallbackRates = t.release.hub.taxRows.rates
+  const taxPeriods =
+    plansQuery.data != null && plansQuery.data.length > 0
+      ? plansQuery.data.map((plan) => {
+          const days = Number(plan.durationSeconds / SECONDS_PER_DAY)
+          return `${days}d`
+        })
+      : fallbackPeriods
+  const taxRates =
+    plansQuery.data != null && plansQuery.data.length > 0
+      ? plansQuery.data.map(
+          (plan) => `${formatNumber(Number(plan.taxBps) / 100, { digits: 0, trimZeros: true })}%`,
+        )
+      : fallbackRates
 
   return {
     t,
@@ -99,5 +127,7 @@ export function useReleaseHub() {
     queueClaimableApprox: formatUsdApprox(queueClaimableNum, priceUsd),
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
     bufferGagxApprox: formatUsdApprox(0, null),
+    taxPeriods,
+    taxRates,
   }
 }

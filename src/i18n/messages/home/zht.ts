@@ -238,8 +238,8 @@ const home = defineMessages({
       label: '動態防禦機制',
     },
     {
-      value: '2.1M',
-      countTarget: 2.1,
+      value: '210M',
+      countTarget: 210,
       suffix: 'M',
       label: 'X 固定總量',
     },

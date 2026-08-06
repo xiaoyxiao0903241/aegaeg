@@ -13,6 +13,7 @@ import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
@@ -49,7 +50,9 @@ export function CommunityDetail() {
     invitesPage,
     setInvitesPage,
     overview,
+    overviewLoading,
     displayRank,
+    isRankLoading,
     referrals,
     referralsLoading,
   } = useCommunityDetail()
@@ -108,6 +111,7 @@ export function CommunityDetail() {
       })
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
+  const statsLoading = sessionReady && (overviewLoading || isRankLoading) && overview == null
 
   // 未连接钱包：只展示浏览流程与 FAQ，不造空成员态。
   if (!walletReady) {
@@ -146,17 +150,25 @@ export function CommunityDetail() {
   const stats: CommunityStat[] = [
     {
       label: t.community.directReferrals,
-      value: directCount,
-      volume: `${t.community.volumePrefix} ${directVolume}`,
+      value: statsLoading ? <Skeleton className="h-7 w-16" /> : directCount,
+      volume: statsLoading ? (
+        <Skeleton className="h-4 w-24" />
+      ) : (
+        `${t.community.volumePrefix} ${directVolume}`
+      ),
     },
     {
       label: t.community.myTeam,
-      value: teamCount,
-      volume: `${t.community.volumePrefix} ${teamVolume}`,
+      value: statsLoading ? <Skeleton className="h-7 w-16" /> : teamCount,
+      volume: statsLoading ? (
+        <Skeleton className="h-4 w-24" />
+      ) : (
+        `${t.community.volumePrefix} ${teamVolume}`
+      ),
     },
     {
       label: t.community.genesisTitle,
-      value: genesisRankValue,
+      value: statsLoading ? <Skeleton className="h-7 w-20" /> : genesisRankValue,
       volume: t.community.cobuildLevel,
       dark: !isMobileViewport,
       image: isMobileViewport ? undefined : dappAssets.communityRankDeco,

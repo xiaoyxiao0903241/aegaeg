@@ -1,8 +1,8 @@
 /**
- * 推荐奖左栏 Dock：简单领取壳（referral）。
+ * 推荐奖左栏 Dock：Dao Mixed 领取（REFERRAL_REWARD）。
  */
-import { SimpleClaimDock } from '~/views/dapp/rewards/claim-panels'
+import { MixedClaimDock } from '~/views/dapp/rewards/claim-panels'
 
 export function ReferralDock() {
-  return <SimpleClaimDock view="referral" />
+  return <MixedClaimDock view="referral" />
 }

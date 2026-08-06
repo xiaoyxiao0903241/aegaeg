@@ -148,7 +148,7 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
         : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, 4),
     quotaLabel:
       preflightQuery.data !== undefined
-        ? formatTokenAmount(preflightQuery.data.miningQuota, GAGX_DECIMALS, 4)
+        ? formatTokenAmount(spendable, GAGX_DECIMALS, 4)
         : formatNumber(0, { digits: 4 }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,

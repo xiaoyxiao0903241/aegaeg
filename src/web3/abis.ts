@@ -513,6 +513,7 @@ export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   getRelease:
     'function getRelease(address user, uint256 index) view returns ((uint256 amount, uint256 claimed, uint256 startTime, uint256 duration) release, uint256 claimableAmount, uint256 remainingAmount, uint256 endTime, bool fullyClaimed)',
   claimable: 'function claimable(address user, uint256 index) view returns (uint256)',
+  releaseDuration: 'function releaseDuration() view returns (uint256)',
   claim: 'function claim(uint256 index)',
   claimMany: 'function claimMany(uint256 start, uint256 limit)',
 } as const

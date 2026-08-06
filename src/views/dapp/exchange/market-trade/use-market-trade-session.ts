@@ -128,9 +128,13 @@ export function useMarketTradeSession(
   const priceImpactLabel =
     !sessionReady || core.amountIn === 0n ? '' : `${(priceImpactBps / 100).toFixed(2)}%`
   const gasEstimateLabel =
-    gasEstimate === 0n
-      ? '0'
-      : formatNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
+    !sessionReady || core.amountIn === 0n
+      ? ''
+      : amountQuote == null || core.amountQuoteQuery.isFetching
+        ? '…'
+        : gasEstimate === 0n
+          ? '—'
+          : formatNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
   const isHighPriceImpact =
     sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 

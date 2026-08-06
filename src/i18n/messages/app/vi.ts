@@ -337,7 +337,7 @@ const app = defineMessages({
       currentContribution: 'Current contribution',
       burnRate: 'Burn rate',
       destination: 'Burn destination',
-      destinationValue: 'Black hole address · permanently burned',
+      destinationValue: 'Black hole {burnPct}% · LP {injectPct}%',
       providerName: 'AEGIS X',
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
@@ -618,7 +618,7 @@ const app = defineMessages({
     title: 'Kế hoạch cùng xây dựng',
     intro: 'Tham gia kế hoạch cùng xây dựng X DAO · Giai đoạn {season}  (giảm giá {discount})',
     introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
-    shares: 'Phần (1 phần = 100 USD1 · tối đa {max} phần)',
+    shares: 'Phần (1 phần = {min} USD1 · tối đa {max} phần)',
     quota: 'Hạn mức cùng xây dựng giai đoạn này',
     pay: 'Thanh toán',
     receive: 'Sẽ nhận AGX',
@@ -757,7 +757,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via CommunityFund signed claim.',
+          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution 1:1).',
         },
         participate: {
           title: 'Participate',
@@ -859,7 +859,7 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside: 'Direct-referral related rewards; claim via CommunityFund signature to wallet.',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
       },
       participate: {
         title: 'Participation',
@@ -1186,7 +1186,7 @@ const app = defineMessages({
       claimIntoWallet: 'To wallet',
       ctaToWallet: 'Claim {amount} to wallet',
       simpleHint:
-        'Referral uses CommunityFund signed claim (handbook §9.5); claimable follows unlocked balance to wallet.',
+        'Referral uses DaoPool Mixed claim (contribution 1:1); claimable amount follows the signed payload.',
     },
 
     genesisDetail: {

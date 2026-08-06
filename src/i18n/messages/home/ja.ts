@@ -240,8 +240,8 @@ const home = defineMessages({
       label: '動的防御メカニズム',
     },
     {
-      value: '2.1M',
-      countTarget: 2.1,
+      value: '210M',
+      countTarget: 210,
       suffix: 'M',
       label: 'X固定総量',
     },

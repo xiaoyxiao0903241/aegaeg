@@ -21,7 +21,7 @@ export function BufferDock() {
     <TabHeader
       backText={t.release.backToHub}
       onBack={vm.onBack}
-      subtitle={t.release.buffer.intro}
+      subtitle={vm.intro}
       title={t.release.buffer.title}
     >
       <DockStack>

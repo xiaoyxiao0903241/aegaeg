@@ -10,6 +10,7 @@ import { Button } from '~/shared/components/button'
 import { CountValue } from '~/shared/components/count-value'
 import { darkBanner } from '~/shared/components/dark-banner'
 import { Icon } from '~/shared/components/icon'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -40,12 +41,14 @@ export function GenesisGlobalCard({
   kicker,
   onViewContract,
   value,
+  loading = false,
 }: {
   body: string
   contractLabel: string
   kicker: string
   onViewContract: () => void
   value: ReactNode
+  loading?: boolean
 }) {
   const styles = genesisGlobalCard()
 
@@ -56,7 +59,13 @@ export function GenesisGlobalCard({
           {kicker}
         </Text>
         <Text as="strong" tone="inverse" variant="panel" className="block">
-          {typeof value === 'string' ? <CountValue text={value} /> : value}
+          {loading ? (
+            <Skeleton className="h-8 w-36 max-dapp:h-7 max-dapp:w-28" tone="dark" />
+          ) : typeof value === 'string' ? (
+            <CountValue text={value} />
+          ) : (
+            value
+          )}
         </Text>
         <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
           {body}
