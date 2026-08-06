@@ -1,5 +1,5 @@
 /**
- * AGX 卖出税相关辅助函数（sellRatio / extraSellBP / 价格熔断）。
+ * AGX 卖出税相关辅助函数（sellRatio / extraSellBP / 价格熔断 / 单区块额度）。
  *
  * @see docs/onchain-manual/contracts/agx.md
  */
@@ -28,6 +28,50 @@ export function agxSellTaxBps(args: {
     throw new Error(`AGX_SELL_TAX_BPS_OUT_OF_RANGE:${raw}`)
   }
   return Number(raw)
+}
+
+function assertAgxSellTaxBps(raw: bigint): number {
+  if (raw < 0n || raw >= BPS_DENOM) {
+    throw new Error(`AGX_SELL_TAX_BPS_OUT_OF_RANGE:${raw}`)
+  }
+  return Number(raw)
+}
+
+/**
+ * 有效卖出税（BPS）。
+ *
+ * - 额度观测块 ≠ 当前块 → fail-closed 用 extraSellBP（陈旧额度不可信）
+ * - 同块且 `nextGross > blockSellLimit`，或 `blockSellLimit === 0 && amountIn > 0` → extraSellBP
+ * - 否则按熔断选 fuse/sellRatio
+ *
+ * @see docs/onchain-manual/contracts/agx.md § 单区块额度
+ */
+export function effectiveAgxSellTaxBps(args: {
+  crashFuseActive: boolean
+  sellRatio: bigint
+  extraSellBP: bigint
+  amountIn: bigint
+  blockSellLimit: bigint
+  grossSoldInBlock: bigint
+  blockSellQuotaBlock: bigint
+  currentBlock: bigint
+}): number {
+  if (args.blockSellQuotaBlock !== args.currentBlock) {
+    return assertAgxSellTaxBps(args.extraSellBP)
+  }
+
+  const nextGross = args.grossSoldInBlock + args.amountIn
+  const overBlockLimit =
+    nextGross > args.blockSellLimit || (args.blockSellLimit === 0n && args.amountIn > 0n)
+  if (overBlockLimit) {
+    return assertAgxSellTaxBps(args.extraSellBP)
+  }
+
+  return agxSellTaxBps({
+    crashFuseActive: args.crashFuseActive,
+    sellRatio: args.sellRatio,
+    extraSellBP: args.extraSellBP,
+  })
 }
 
 /**

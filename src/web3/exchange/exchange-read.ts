@@ -3,6 +3,7 @@ import { parseAbi } from 'viem'
 import {
   agxSellTaxBps,
   applyAgxSellTaxToAmountIn,
+  effectiveAgxSellTaxBps,
   isAgxSellPath,
 } from '~/core/exchange/agx-sell-tax'
 import { calcV2PriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
@@ -40,24 +41,31 @@ const agxSellTaxAbi = parseAbi([
   AGX_SELL_TAX_METHODS.sellRatio,
   AGX_SELL_TAX_METHODS.extraSellBP,
   AGX_SELL_TAX_METHODS.crashFuseActive,
+  AGX_SELL_TAX_METHODS.blockSellQuotaBlock,
+  AGX_SELL_TAX_METHODS.blockSellLimit,
+  AGX_SELL_TAX_METHODS.grossSoldInBlock,
 ])
 
 /**
- * 读取 AGX 卖税基点
+ * 读取 AGX 卖税基点（含单区块额度越限 / 陈旧额度 → 防御税）。
  *
- * 对非白名单卖币路径，卖出要扣卖税；crash 熔断开启时税率提高。
- * 卖税用于把用户输入折成路由器实际收到的净额。
- *
- * @param client 链上读取客户端，默认公共 RPC
- * @param agx AGX 合约地址
- * @returns 当前卖税基点（含熔断加成）
+ * @param amountIn 本笔毛卖出量；>0 时走 effective（卖出路径必传）
  * @see docs/onchain-manual/contracts/agx.md
  */
 export async function readAgxSellTaxBps(
   client: ChainReadClient = bscReadClient,
   agx: `0x${string}` = BSC_CONTRACTS.agx,
+  amountIn: bigint = 0n,
 ): Promise<number> {
-  const [sellRatio, extraSellBP, crashFuseActive] = await Promise.all([
+  const [
+    sellRatio,
+    extraSellBP,
+    crashFuseActive,
+    blockSellQuotaBlock,
+    blockSellLimit,
+    grossSoldInBlock,
+    currentBlock,
+  ] = await Promise.all([
     client.readContract({
       address: agx,
       abi: agxSellTaxAbi,
@@ -73,7 +81,36 @@ export async function readAgxSellTaxBps(
       abi: agxSellTaxAbi,
       functionName: 'crashFuseActive',
     }),
+    client.readContract({
+      address: agx,
+      abi: agxSellTaxAbi,
+      functionName: 'blockSellQuotaBlock',
+    }),
+    client.readContract({
+      address: agx,
+      abi: agxSellTaxAbi,
+      functionName: 'blockSellLimit',
+    }),
+    client.readContract({
+      address: agx,
+      abi: agxSellTaxAbi,
+      functionName: 'grossSoldInBlock',
+    }),
+    client.getBlockNumber(),
   ])
+
+  if (amountIn > 0n) {
+    return effectiveAgxSellTaxBps({
+      crashFuseActive,
+      sellRatio,
+      extraSellBP,
+      amountIn,
+      blockSellLimit,
+      grossSoldInBlock,
+      blockSellQuotaBlock,
+      currentBlock,
+    })
+  }
 
   return agxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
 }
@@ -150,7 +187,7 @@ export async function fetchExchangeQuote({
     poolContext
       ? Promise.resolve(poolContext.spot)
       : readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool, client),
-    sellingAgx ? readAgxSellTaxBps(client) : Promise.resolve(0),
+    sellingAgx ? readAgxSellTaxBps(client, BSC_CONTRACTS.agx, amountIn) : Promise.resolve(0),
   ])
 
   // 交易对收到的是扣税后的 AGX，Router.getAmountsOut 必须用净额报价

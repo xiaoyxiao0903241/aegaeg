@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('agxSellTaxBps uses sellRatio when fuse off', async () => {
@@ -26,4 +27,59 @@ test('isAgxSellPath is case-insensitive', async () => {
   assert.equal(isAgxSellPath(agx, agx), true)
   assert.equal(isAgxSellPath(agx.toLowerCase(), agx), true)
   assert.equal(isAgxSellPath('0x32Bb0be09F62bbE69764906d80e9A5782C7F7633', agx), false)
+})
+
+test('effectiveAgxSellTaxBps uses extraSellBP when block sell limit exceeded', async () => {
+  const { effectiveAgxSellTaxBps } = await loadModule('/src/core/exchange/agx-sell-tax.ts')
+  const base = {
+    crashFuseActive: false,
+    sellRatio: 350n,
+    extraSellBP: 3000n,
+    blockSellQuotaBlock: 100n,
+    currentBlock: 100n,
+  }
+  assert.equal(
+    effectiveAgxSellTaxBps({
+      ...base,
+      amountIn: 100n,
+      blockSellLimit: 150n,
+      grossSoldInBlock: 60n,
+    }),
+    3000,
+  )
+  assert.equal(
+    effectiveAgxSellTaxBps({
+      ...base,
+      amountIn: 100n,
+      blockSellLimit: 150n,
+      grossSoldInBlock: 40n,
+    }),
+    350,
+  )
+  assert.equal(
+    effectiveAgxSellTaxBps({
+      ...base,
+      amountIn: 100n,
+      blockSellLimit: 0n,
+      grossSoldInBlock: 0n,
+    }),
+    3000,
+  )
+})
+
+test('effectiveAgxSellTaxBps uses extraSellBP when quota block is stale', async () => {
+  const { effectiveAgxSellTaxBps } = await loadModule('/src/core/exchange/agx-sell-tax.ts')
+  assert.equal(
+    effectiveAgxSellTaxBps({
+      crashFuseActive: false,
+      sellRatio: 350n,
+      extraSellBP: 3000n,
+      amountIn: 100n,
+      blockSellLimit: 10_000n,
+      grossSoldInBlock: 0n,
+      blockSellQuotaBlock: 99n,
+      currentBlock: 100n,
+    }),
+    3000,
+  )
 })

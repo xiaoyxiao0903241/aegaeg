@@ -32,6 +32,9 @@ export const AGX_SELL_TAX_METHODS = {
   sellRatio: 'function sellRatio() view returns (uint256)',
   extraSellBP: 'function extraSellBP() view returns (uint256)',
   crashFuseActive: 'function crashFuseActive() view returns (bool)',
+  blockSellQuotaBlock: 'function blockSellQuotaBlock() view returns (uint256)',
+  blockSellLimit: 'function blockSellLimit() view returns (uint256)',
+  grossSoldInBlock: 'function grossSoldInBlock() view returns (uint256)',
 } as const
 
 /**
