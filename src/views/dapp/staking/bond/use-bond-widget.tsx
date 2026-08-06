@@ -191,6 +191,14 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
       return [p, '']
     }),
   ) as Record<BondPeriod, string>
+  /** 各周期已发行债务（AGX）；未就绪为 null，供「已售」USD 展示。 */
+  const periodTotalDeposits = Object.fromEntries(
+    BOND_PERIODS.map((p, index) => {
+      const q = periodMarketQueries[index]!
+      if (q.data !== undefined) return [p, q.data.totalDeposit]
+      return [p, null]
+    }),
+  ) as Record<BondPeriod, bigint | null>
   const debtRemaining =
     market === undefined
       ? null
@@ -253,6 +261,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     isSlippageLoading: slippageQuery.isFetching && !slippageLabel && !slippageQuery.isError,
     discountLabel: discountLabel || '0',
     periodDiscounts,
+    periodTotalDeposits,
     capUnlimited,
     capLabel: capLabel || '0',
     receiveLabel: receiveLabel || '0',

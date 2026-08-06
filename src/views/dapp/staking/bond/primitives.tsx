@@ -155,6 +155,7 @@ export function BondPeriodList({
   periodLabels,
   discounts,
   discountPrices,
+  soldLabels,
   copy,
 }: {
   ariaLabel: string
@@ -164,6 +165,7 @@ export function BondPeriodList({
   periodLabels: Record<BondPeriod, string>
   discounts: Record<BondPeriod, string>
   discountPrices: Record<BondPeriod, string>
+  soldLabels: Record<BondPeriod, string>
   copy: BondPeriodCardCopy
 }) {
   return (
@@ -186,7 +188,9 @@ export function BondPeriodList({
                 <BondPeriodCard.Line>
                   {copy.discountRange} {BOND_DISCOUNT_RANGES[period]}
                 </BondPeriodCard.Line>
-                <BondPeriodCard.Line>{copy.sold} $0.00</BondPeriodCard.Line>
+                <BondPeriodCard.Line>
+                  {copy.sold} {soldLabels[period]}
+                </BondPeriodCard.Line>
               </BondPeriodCard.Main>
               <BondPeriodCard.Side
                 discount={discount}

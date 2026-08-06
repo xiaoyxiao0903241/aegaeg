@@ -8,6 +8,7 @@ import {
   mapAgxContributionBurnLogToRow,
   mapAgxContributionConsumeLogToRow,
 } from '~/shared/api/map-flow-log-rows'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/shared'
@@ -66,20 +67,29 @@ export type BurnHistoryTab = 'burn' | 'consume'
 export function useBurnHistory() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
-  const [tab, setTab] = useState<BurnHistoryTab>('burn')
-  const burnLogs = useAgxContributionBurnLogs({}, sessionReady && tab === 'burn')
-  const consumeLogs = useAgxContributionConsumeLogs({}, sessionReady && tab === 'consume')
+  const [tab, setTabState] = useState<BurnHistoryTab>('burn')
+  const [page, setPage] = useState(1)
+  const pageQuery = tablePageQuery(page)
+  const burnLogs = useAgxContributionBurnLogs(pageQuery, sessionReady && tab === 'burn')
+  const consumeLogs = useAgxContributionConsumeLogs(pageQuery, sessionReady && tab === 'consume')
 
   const tabOptions: Array<{ label: string; value: BurnHistoryTab }> = [
     { label: t.exchange.burn.history.tabs.burn, value: 'burn' },
     { label: t.exchange.burn.history.tabs.consume, value: 'consume' },
   ]
 
+  function setTab(next: BurnHistoryTab) {
+    if (next === tab) return
+    setTabState(next)
+    setPage(1)
+  }
+
+  const activeQuery = tab === 'burn' ? burnLogs : consumeLogs
   const rows =
     tab === 'burn'
       ? (burnLogs.data?.items.map(mapAgxContributionBurnLogToRow) ?? [])
       : (consumeLogs.data?.items.map(mapAgxContributionConsumeLogToRow) ?? [])
-  const isLoading = sessionReady && (tab === 'burn' ? burnLogs.isLoading : consumeLogs.isLoading)
+  const isLoading = sessionReady && activeQuery.isLoading
   const emptyTitle =
     tab === 'burn' ? t.exchange.burn.history.emptyBurn : t.exchange.burn.history.emptyConsume
 
@@ -91,6 +101,9 @@ export function useBurnHistory() {
     rows,
     isLoading,
     emptyTitle,
+    page,
+    setPage,
+    total: activeQuery.data?.total ?? 0,
     colWidths:
       tab === 'burn'
         ? (['12.5rem', '9.375rem', '11.25rem', '1fr'] as const)

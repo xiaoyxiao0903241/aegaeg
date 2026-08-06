@@ -18,7 +18,7 @@ const priceBox = amountBox()
  * 收益率计算器（左栏表单）
  *
  * 纯本地计算，不发起任何链上写操作；
- * 产品 / 周期 / 金额 / 价格 / 天数变化时实时联动右侧结果。
+ * 点「计算」后写入右侧结果。
  */
 export function CalcDock() {
   const vm = useCalcDock()
@@ -127,6 +127,7 @@ export function CalcDock() {
           <MainButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base leading-5 text-white"
             density="external"
+            onClick={vm.onCalculate}
             type="button"
           >
             {t.staking.calc.submit}

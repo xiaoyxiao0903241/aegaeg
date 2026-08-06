@@ -1,3 +1,4 @@
+import { bondSoldUsdAmount } from '~/core/staking/format-bond-sold-usd'
 import { BOND_PERIODS, type BondKind, type BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
@@ -9,6 +10,7 @@ import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { dappAssets } from '~/shared/config/assets'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
@@ -48,10 +50,23 @@ export function BondDock({ kind }: { kind: BondKind }) {
     periodLabels,
   } = useBondDock(kind)
   const spotUsd = useAgxPriceUsd()
+  const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [
       period,
       formatBondDiscountUsd(spotUsd, bond.periodDiscounts[period] || '0'),
+    ]),
+  ) as Record<BondPeriod, string>
+  const soldLabels = Object.fromEntries(
+    BOND_PERIODS.map((period) => [
+      period,
+      formatGroupedNumber(
+        bondSoldUsdAmount(bond.periodTotalDeposits[period], spotUsd, agxDecimals) ?? 0,
+        {
+          digits: 2,
+          prefix: '$',
+        },
+      ),
     ]),
   ) as Record<BondPeriod, string>
   const discountUsd = formatBondDiscountUsd(spotUsd, bond.discountLabel)
@@ -76,6 +91,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
           onChange={bond.setPeriod}
           periodLabel={copy.periodLabel}
           periodLabels={periodLabels}
+          soldLabels={soldLabels}
           value={bond.period}
         />
 

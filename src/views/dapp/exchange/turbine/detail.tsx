@@ -4,6 +4,8 @@
  * 概览区展示待解锁、冷却中与累计提现三张统计卡，下方为代币
  * 介绍轮播、解锁记录、机制说明与 FAQ。
  */
+import { useState } from 'react'
+
 import { useTurbineLogs } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
@@ -18,6 +20,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { tokenCarouselIcons } from '~/shared/config/assets'
+import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import { TurbineMechanismCard } from '~/views/dapp/exchange/turbine/primitives'
 
@@ -41,8 +44,10 @@ export function TurbineExchangeDetail({
 }: TurbineExchangeDetailProps) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
-  const turbineLogsQuery = useTurbineLogs({}, sessionReady)
+  const [logsPage, setLogsPage] = useState(1)
+  const turbineLogsQuery = useTurbineLogs(tablePageQuery(logsPage), sessionReady)
   const turbineLogRows = turbineLogsQuery.data?.items.map(mapTurbineLogToOpsRow) ?? []
+  const turbineLogsTotal = turbineLogsQuery.data?.total ?? 0
   const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading
   // 三张概览卡：空态显示 0.00 / ≈ $0.00（不显示 —）
   const overviewMetrics = [
@@ -107,6 +112,15 @@ export function TurbineExchangeDetail({
             isLoading={turbineLogsLoading}
             rows={turbineLogRows}
           />
+          {shouldShowTablePagination(turbineLogsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setLogsPage}
+                page={logsPage}
+                total={turbineLogsTotal}
+              />
+            </Table.Footer>
+          ) : null}
         </Table>
       </Section>
 

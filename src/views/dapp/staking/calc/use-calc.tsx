@@ -12,8 +12,8 @@ import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 /**
  * 计算器表单状态
  *
- * 维护产品 / 周期 / 金额 / 价格 / 天数，
- * 任一变化即重新计算并写入结果仓库。
+ * 维护产品 / 周期 / 金额 / 价格 / 天数；
+ * 点「计算」才写入右侧结果仓库（对齐稿面显式触发）。
  *
  * @returns 表单状态与各变更回调
  */
@@ -38,20 +38,6 @@ export function useCalcDock() {
     setPrice(formatGroupedNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
     setPriceSeeded(true)
   }, [priceSeeded, spotUsd])
-
-  // 实时联动：左侧任一输入变化即重算右侧结果。
-  useEffect(() => {
-    setResult(
-      buildCalcEstimate({
-        product,
-        period,
-        amount,
-        price,
-        days,
-        epochRebasePct,
-      }),
-    )
-  }, [product, period, amount, price, days, epochRebasePct, setResult])
 
   const periodOptions =
     product === 'stake'
@@ -84,6 +70,19 @@ export function useCalcDock() {
     setDays(Math.min(CALC_MAX_DAYS, Math.max(1, next)))
   }
 
+  function onCalculate() {
+    setResult(
+      buildCalcEstimate({
+        product,
+        period,
+        amount,
+        price,
+        days,
+        epochRebasePct,
+      }),
+    )
+  }
+
   const tokenSrc = product === 'xmine' ? 'gagx' : product === 'stake' ? 'agx' : 'usd1'
 
   return {
@@ -109,5 +108,6 @@ export function useCalcDock() {
     onAmountChange: setAmount,
     onPriceChange: setPrice,
     onDaysChange,
+    onCalculate,
   }
 }
