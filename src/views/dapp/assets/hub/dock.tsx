@@ -10,10 +10,10 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
-import { AssetsHubFilterMenu } from '~/views/dapp/assets/hub/primitives'
 import { useAssetsHub } from '~/views/dapp/assets/hub/use-hub'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
 import { openAssetsView } from '~/views/dapp/shared/navigation'
 
 /** 资产 Hub：质押 / LP 债券 / 燃烧债券 / XMine 仓位概览 */
@@ -46,7 +46,7 @@ export function AssetsHubDock() {
   return (
     <DockFrame
       endAction={
-        <AssetsHubFilterMenu
+        <HubFilterMenu
           align="end"
           ariaLabel={t.assets.hub.filterAria}
           hideZero={hideZero}

@@ -1,91 +1,12 @@
-import { Check } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { useState } from 'react'
 
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuPanel,
-  DropdownMenuTrigger,
-} from '~/shared/components/dropdown-menu'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
-
-/**
- * 资产 Hub 筛选菜单：齿轮按钮弹出「隐藏零余额」选项
- *
- * 勾选框尺寸与配色按设计稿还原；勾选图标用 Lucide 需自绘白描边，
- * 不用设计稿里的珊瑚色图片资源。
- */
-export function AssetsHubFilterMenu({
-  align = 'end',
-  ariaLabel,
-  className,
-  hideZero,
-  hideZeroLabel,
-  onHideZeroChange,
-}: {
-  align?: 'start' | 'end'
-  ariaLabel: string
-  className?: string
-  hideZero: boolean
-  hideZeroLabel: string
-  onHideZeroChange: (next: boolean) => void
-}) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <DropdownMenu onOpenChange={setOpen} open={open}>
-      <DropdownMenuTrigger
-        aria-label={ariaLabel}
-        className={cn(
-          'grid size-9 min-h-9 shrink-0 place-items-center rounded-control border bg-card p-0',
-          'cursor-pointer text-foreground transition-colors',
-          open ? 'border-primary/50' : 'border-border hover:border-primary/50',
-          className,
-        )}
-        type="button"
-      >
-        <Icon alt="" size="lg" src={dappAssets.setting} />
-      </DropdownMenuTrigger>
-      <DropdownMenuPanel align={align} className="min-w-42">
-        <DropdownMenuItem
-          aria-checked={hideZero}
-          onClick={(event) => {
-            // 勾选不关菜单（与 listbox 点选关盘不同）
-            event.preventDefault()
-            onHideZeroChange(!hideZero)
-          }}
-          role="menuitemcheckbox"
-          selected={hideZero}
-        >
-          {/* 勾选框：勾选时主色底 + 白勾 */}
-          <span
-            aria-hidden
-            className={cn(
-              'grid size-3.75 shrink-0 place-items-center rounded-[0.25rem] border-[1.5px] transition-colors',
-              hideZero ? 'border-primary bg-primary' : 'border-black/30 bg-transparent',
-            )}
-          >
-            <Check
-              aria-hidden
-              className={cn('size-2.25 text-white', hideZero ? 'opacity-100' : 'opacity-0')}
-              strokeWidth={3}
-            />
-          </span>
-          <Text as="span" className="tracking-[-0.02em]" variant="copy">
-            {hideZeroLabel}
-          </Text>
-        </DropdownMenuItem>
-      </DropdownMenuPanel>
-    </DropdownMenu>
-  )
-}
 
 function renderMetric(node: ReactNode) {
   return typeof node === 'string' ? <CountValue text={node} /> : node

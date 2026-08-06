@@ -178,7 +178,7 @@ export function CommunityDetail() {
     <Detail>
       <Section reveal>
         <Section.Title id="community-title">{t.community.myCommunity}</Section.Title>
-        <Grid columns={4} stackOnDapp>
+        <Grid columns={3} stackOnDapp>
           {stats.map((stat, index) => (
             <CommunityStatCard
               dark={stat.dark}

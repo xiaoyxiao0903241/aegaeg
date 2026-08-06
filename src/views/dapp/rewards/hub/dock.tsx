@@ -3,8 +3,10 @@
  *
  * 六张奖励类型卡片，点击进入对应详情；
  * 各卡片金额来自不同数据源（链上快照 / 汇总接口），未登录显示空态占位。
+ * 齿轮「隐藏 0」只过滤已知可领额为 0 的卡；Hub 无预览金额的入口卡始终保留。
  */
 import { keepPreviousData } from '@tanstack/react-query'
+import { useState } from 'react'
 
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -15,6 +17,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Icon } from '~/shared/components/icon'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
@@ -25,6 +28,7 @@ import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
 import { openRewardsView } from '~/views/dapp/shared/navigation'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -52,7 +56,7 @@ const REWARD_CARD_ICONS = {
 } as const
 
 function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
-  // 未就绪/无数据：显示 0.0000gAGX / ≈ $0.00；登录提示放在 Widget 底栏
+  // 未就绪/无数据：显示 0.0000gAGX / ≈ $0.00；登录提示放在底栏
   if (!ready || value == null) {
     return {
       amount: `${formatNumber(0, { digits: 4 })}gAGX`,
@@ -65,11 +69,22 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
   }
 }
 
+/**
+ * 是否保留卡片：会话未就绪或 Hub 无预览金额 → 保留入口；
+ * 已知可领额 ≤ 0 → 可被「隐藏 0」滤掉。
+ */
+function rewardCardHasBalance(value: number | null, amountReady: boolean): boolean {
+  if (!amountReady) return true
+  if (value == null) return true
+  return value > 0
+}
+
 export function RewardsHubDock() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
+  const [hideZero, setHideZero] = useState(false)
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
   const grantSummary = useMarketAllowanceSummary(sessionReady)
   const luckyQuery = useChainQuery({
@@ -105,9 +120,29 @@ export function RewardsHubDock() {
     return null
   }
 
+  const amountReady = (view: (typeof REWARD_CARDS)[number]) =>
+    view === 'lucky' ? walletReady : sessionReady
+
+  const visibleCards = REWARD_CARDS.filter((view) => {
+    if (!hideZero) return true
+    return rewardCardHasBalance(amountValue(view), amountReady(view))
+  })
+
   return (
-    <DockFrame subtitle={t.rewards.intro} title={t.rewards.title}>
-      {REWARD_CARDS.map((view) => {
+    <DockFrame
+      endAction={
+        <HubFilterMenu
+          align="end"
+          ariaLabel={t.rewards.hub.filterAria}
+          hideZero={hideZero}
+          hideZeroLabel={t.rewards.hub.hideZero}
+          onHideZeroChange={setHideZero}
+        />
+      }
+      subtitle={t.rewards.intro}
+      title={t.rewards.title}
+    >
+      {visibleCards.map((view) => {
         const card = t.rewards.cards[view]
         const value = amountValue(view)
         const isGenesis = view === 'genesis'
@@ -120,7 +155,7 @@ export function RewardsHubDock() {
                   : formatNumber(0, { digits: 2, prefix: '$' }),
               approx: undefined as string | undefined,
             }
-          : formatGagxBalance(value, view === 'lucky' ? walletReady : sessionReady, priceUsd)
+          : formatGagxBalance(value, amountReady(view), priceUsd)
         const balanceLabel =
           isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
@@ -164,6 +199,10 @@ export function RewardsHubDock() {
           </RewardsTypeCard>
         )
       })}
+
+      {walletReady && hideZero && visibleCards.length === 0 ? (
+        <Table.Empty embedded title={t.rewards.hub.hideZeroEmpty} />
+      ) : null}
 
       {!walletReady ? (
         <DockConnectPromo />
