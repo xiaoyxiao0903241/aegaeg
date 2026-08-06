@@ -3,11 +3,12 @@ import type { BondPeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
+import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
-import { readBondZapPreflight } from '~/web3/staking/staking-read'
+import { readBondMarketMeta, readBondZapPreflight } from '~/web3/staking/staking-read'
 import {
   approveUsd1ForBondHelperIfNeeded,
   zapIntoBurnBond,
@@ -47,15 +48,30 @@ export async function submitBondZap(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async () => {
-      const preflight = await readBondZapPreflight({
-        depository,
-        user: address,
-        client: readClient,
-      })
-      const migration = await readMigrationStatus(address, readClient)
-      return { preflight, isOldAccount: migration.isOldAccount }
+      const [preflight, migration, market, payout] = await Promise.all([
+        readBondZapPreflight({
+          depository,
+          user: address,
+          client: readClient,
+        }),
+        readMigrationStatus(address, readClient),
+        readBondMarketMeta(depository, readClient),
+        readBondZapAgxPreview({
+          kind,
+          depository,
+          depositUsd1: amount,
+          client: readClient,
+        }),
+      ])
+      return {
+        preflight,
+        isOldAccount: migration.isOldAccount,
+        maxDebt: market.maxDebt,
+        totalDeposit: market.totalDeposit,
+        netPayout: payout.netPayout,
+      }
     },
-    evaluate: ({ preflight, isOldAccount }) =>
+    evaluate: ({ preflight, isOldAccount, maxDebt, totalDeposit, netPayout }) =>
       evaluateBondZapLive({
         amount,
         isBound: preflight.isBound,
@@ -63,6 +79,9 @@ export async function submitBondZap(args: {
         allowance: preflight.allowance,
         depositoryAuthorized: preflight.depositoryAuthorized,
         isOldAccount,
+        maxDebt,
+        totalDeposit,
+        netPayout,
       }),
     mapBlockError: (reason: NonNullable<ReturnType<typeof evaluateBondZapLive>>) =>
       BOND_ZAP_BLOCKED[reason],

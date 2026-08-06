@@ -53,11 +53,10 @@ export function CalcDetail() {
           days: endDays,
           epochRebasePct: result.epochRebasePct,
         })
-        const interestUsd = est.interest * result.price
-        const investedUsd =
-          result.product === 'lpbond' || result.product === 'burnbond'
-            ? result.principal
-            : result.principal * result.price
+        // 债券利息已是 USD1；质押利息为 AGX，须 × 现价。与 buildCalcEstimate 同口径。
+        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
+        const interestUsd = isBondUsd1 ? est.interest : est.interest * result.price
+        const investedUsd = isBondUsd1 ? result.principal : result.principal * result.price
         return {
           interestUsd,
           ratePct: investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0,

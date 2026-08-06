@@ -117,6 +117,48 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
   )
 
   assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 100n,
+      totalDeposit: 90n,
+      netPayout: 20n,
+    }),
+    'insufficientDebtCapacity',
+  )
+
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 90n,
+      netPayout: 20n,
+    }),
+    null,
+  )
+
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: null,
+      totalDeposit: 0n,
+      netPayout: 0n,
+    }),
+    'unavailable',
+  )
+
+  assert.equal(
     evaluateXmineLive({
       amount: 5n,
       balance: 10n,

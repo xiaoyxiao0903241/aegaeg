@@ -1718,6 +1718,7 @@ const app = defineMessages({
     amount: '数量',
     balance: '余额',
     max: '最大',
+    capUnlimited: '不限',
     viewContract: '查看合约',
     blocked: {
       notBound: '请先绑定推荐关系',
@@ -1729,6 +1730,7 @@ const app = defineMessages({
       insufficientQuota: '额度不足',
       poolPaused: '该质押池暂未开放',
       depositoryNotAuth: '债券合约未授权',
+      insufficientDebtCapacity: '债券剩余容量不足',
       zeroAmount: '请输入有效数量',
       unavailable: '交易暂时不可用，请稍后重试',
     },

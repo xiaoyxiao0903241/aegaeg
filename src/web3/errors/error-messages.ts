@@ -48,6 +48,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [XMINE_BLOCKED.insufficientQuota]: (t) => t.staking.blocked.insufficientQuota,
   [STAKING_BLOCKED.poolPaused]: (t) => t.staking.blocked.poolPaused,
   [BOND_ZAP_BLOCKED.depositoryNotAuth]: (t) => t.staking.blocked.depositoryNotAuth,
+  [BOND_ZAP_BLOCKED.insufficientDebtCapacity]: (t) => t.staking.blocked.insufficientDebtCapacity,
   [STAKING_BLOCKED.zeroAmount]: (t) => t.staking.blocked.zeroAmount,
   [BOND_ZAP_BLOCKED.zeroAmount]: (t) => t.staking.blocked.zeroAmount,
   [XMINE_BLOCKED.zeroAmount]: (t) => t.staking.blocked.zeroAmount,
@@ -123,6 +124,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   // —— 推荐阻断 ——
   [REFERRAL_BIND_ERROR.INVALID_PARENT]: (t) => t.community.bindErrors.invalidParent,
   [REFERRAL_BIND_ERROR.PARENT_NOT_BOUND]: (t) => t.community.bindErrors.parentNotBound,
+  [REFERRAL_BIND_ERROR.SELF_REFERRAL]: (t) => t.community.bindErrors.selfReferral,
 }
 
 type MatchRule = {

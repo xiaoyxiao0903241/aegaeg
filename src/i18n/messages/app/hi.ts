@@ -1797,6 +1797,7 @@ const app = defineMessages({
     amount: 'Amount',
     balance: 'Balance',
     max: 'Max',
+    capUnlimited: 'असीमित',
     viewContract: 'View contract',
     blocked: {
       notBound: 'Bind a referral first',
@@ -1808,6 +1809,7 @@ const app = defineMessages({
       insufficientQuota: 'Insufficient quota',
       poolPaused: 'This staking pool is paused',
       depositoryNotAuth: 'Bond depository is not authorized',
+      insufficientDebtCapacity: 'Bond debt capacity insufficient',
       zeroAmount: 'Enter a valid amount',
       unavailable: 'Transaction temporarily unavailable — try again later',
     },

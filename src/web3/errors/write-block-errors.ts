@@ -32,6 +32,7 @@ export const BOND_ZAP_BLOCKED = {
   insufficientBalance: 'BOND_ZAP_INSUFFICIENT_BALANCE',
   insufficientAllowance: 'BOND_ZAP_INSUFFICIENT_ALLOWANCE',
   depositoryNotAuth: 'BOND_ZAP_DEPOSITORY_NOT_AUTH',
+  insufficientDebtCapacity: 'BOND_ZAP_INSUFFICIENT_DEBT_CAPACITY',
   zeroAmount: 'BOND_ZAP_ZERO_AMOUNT',
   unavailable: 'BOND_ZAP_UNAVAILABLE',
 } as const

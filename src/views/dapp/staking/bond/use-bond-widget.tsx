@@ -3,6 +3,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
+import { formatBondDebtRemainingDisplay } from '~/core/staking/format-bond-debt-remaining'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondPeriod } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -122,6 +123,9 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     enabled: sessionReady,
   })
 
+  const market = marketQuery.data
+  const marketLoaded = market !== undefined
+  const payoutLoaded = amountInput.amountIn === 0n || payoutQuery.data !== undefined
   const blockReason = evaluateBondZapLive({
     amount: amountInput.amountIn,
     isBound: balancesLoaded ? (preflightQuery.data?.isBound ?? false) : false,
@@ -131,6 +135,14 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
       ? (preflightQuery.data?.depositoryAuthorized ?? false)
       : false,
     isOldAccount: migration.isOldAccount,
+    maxDebt: marketLoaded ? market.maxDebt : null,
+    totalDeposit: marketLoaded ? market.totalDeposit : null,
+    netPayout:
+      amountInput.amountIn === 0n
+        ? 0n
+        : payoutLoaded
+          ? (payoutQuery.data?.netPayout ?? null)
+          : null,
   })
 
   const needReferral = evaluateNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
@@ -165,7 +177,6 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     accountMigrated: migration.isOldAccount === true,
   })
 
-  const market = marketQuery.data
   const discountLabel =
     market === undefined
       ? marketQuery.isError
@@ -180,18 +191,19 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
       return [p, '']
     }),
   ) as Record<BondPeriod, string>
+  const debtRemaining =
+    market === undefined
+      ? null
+      : formatBondDebtRemainingDisplay(market.maxDebt, market.totalDeposit, AGX_DECIMALS, 2)
+  const capUnlimited = debtRemaining?.kind === 'unlimited'
   const capLabel =
     market === undefined
       ? marketQuery.isError
         ? '0'
         : ''
-      : market.maxDebt === 0n
-        ? '0'
-        : formatTokenAmount(
-            market.maxDebt > market.totalDeposit ? market.maxDebt - market.totalDeposit : 0n,
-            AGX_DECIMALS,
-            2,
-          )
+      : debtRemaining?.kind === 'amount'
+        ? debtRemaining.label
+        : ''
 
   const receiveLabel =
     amountInput.amountIn === 0n
@@ -241,6 +253,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     isSlippageLoading: slippageQuery.isFetching && !slippageLabel && !slippageQuery.isError,
     discountLabel: discountLabel || '0',
     periodDiscounts,
+    capUnlimited,
     capLabel: capLabel || '0',
     receiveLabel: receiveLabel || '0',
     slippageLabel: slippageLabel || '0',

@@ -19,6 +19,7 @@ export type BondZapLiveBlockReason =
   | 'insufficientBalance'
   | 'insufficientAllowance'
   | 'depositoryNotAuth'
+  | 'insufficientDebtCapacity'
   | 'zeroAmount'
   | 'unavailable'
 
@@ -75,9 +76,10 @@ export function evaluateStakeLive(args: {
  * @param args.balance 钱包 USD1 余额
  * @param args.allowance 对 BondHelper 的授权
  * @param args.depositoryAuthorized 目标债券是否已授权（authContracts）
- * @param args.isOldAccount 迁移状态：true 阻断；false 正常；null 未知按阻断处理；undefined 本次不检查
- * @returns 首个阻断原因
- * @see 手册 §10 债券 Bond / BurnBond
+ * @param args.isOldAccount 迁移旧地址；null = 未知 fail-closed；true = 已迁移阻断
+ * @param args.maxDebt 债券债务上限；0 = 不限；null = 未知 fail-closed
+ * @param args.totalDeposit 当前已占用债务
+ * @param args.netPayout 本笔预估净发放（AGX）
  */
 export function evaluateBondZapLive(args: {
   amount: bigint
@@ -86,6 +88,9 @@ export function evaluateBondZapLive(args: {
   allowance: bigint
   depositoryAuthorized: boolean
   isOldAccount?: boolean | null
+  maxDebt?: bigint | null
+  totalDeposit?: bigint | null
+  netPayout?: bigint | null
 }): BondZapLiveBlockReason | null {
   if (args.isOldAccount === null) return 'unavailable'
   if (args.isOldAccount === true) return 'accountMigrated'
@@ -94,6 +99,18 @@ export function evaluateBondZapLive(args: {
   if (!args.depositoryAuthorized) return 'depositoryNotAuth'
   if (args.balance < args.amount) return 'insufficientBalance'
   if (args.allowance < args.amount) return 'insufficientAllowance'
+  if (args.maxDebt === null || args.totalDeposit === null || args.netPayout === null) {
+    return 'unavailable'
+  }
+  if (
+    args.maxDebt !== undefined &&
+    args.totalDeposit !== undefined &&
+    args.netPayout !== undefined &&
+    args.maxDebt > 0n &&
+    args.totalDeposit + args.netPayout > args.maxDebt
+  ) {
+    return 'insufficientDebtCapacity'
+  }
   return null
 }
 
