@@ -1,8 +1,7 @@
 /**
- * Community Hub (`#community` · PC `4300:212`) A5 profile — 优先子 leaf 切片。
+ * Community Hub 的 A5 测量配置，优先按子项切片。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- *
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
  */
 
 import { readFileSync } from 'node:fs'
@@ -12,7 +11,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为本地绝对路径，供读取清单与输出文件。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -47,8 +50,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按清单节点 id 把页面快照数据映射为测量结果。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */

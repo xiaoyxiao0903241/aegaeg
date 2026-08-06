@@ -7,12 +7,12 @@ import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 
-/** 稿 btn/menu：36×36、圆角 sm、描边。 */
+/** 左栏主操作按钮样式：36×36、圆角、描边。 */
 const MENU_BTN =
   'grid size-9 min-h-9 shrink-0 place-items-center rounded-sm border border-border bg-card p-0 text-foreground'
 
 /**
- * 左栏主图标（稿 btn/menu）
+ * 左栏主操作按钮
  *
  * PC：折叠右侧详情；H5：打开导航菜单。
  * 注意：共享 `IconButton` 默认 `max-dapp:hidden`，H5 须自绘按钮，否则菜单会消失。

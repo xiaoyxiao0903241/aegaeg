@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 /**
- * Generate theme.css and tokens.ts from tokens.json.
+ * 从 tokens.json 生成 theme.css 与 tokens.ts。
  *
- * SSOT: src/shared/styles/tokens/tokens.json
- * Outputs:
- *   - src/shared/styles/tokens/theme.css
- *   - src/shared/styles/tokens/tokens.ts
+ * 设计 token 唯一来源是 `src/shared/styles/tokens/tokens.json`；
+ * 生成结果写入 `src/shared/styles/tokens/theme.css` 和 `tokens.ts`。
  *
- * Usage:
+ * 用法：
  *   node scripts/generate-tokens.mjs
  *   node scripts/generate-tokens.mjs --watch
  */
@@ -52,7 +50,8 @@ const tsOutPath = resolve(root, 'src/shared/styles/tokens/tokens.ts')
  */
 
 /**
- * Load tokens from JSON.
+ * 读取并解析 tokens.json。
+ *
  * @returns {TokenSet}
  */
 function loadTokens() {
@@ -61,7 +60,8 @@ function loadTokens() {
 }
 
 /**
- * Build the :root color block.
+ * 生成 :root 颜色变量块。
+ *
  * @param {Record<string, ColorToken>} colors
  * @returns {string}
  */
@@ -81,7 +81,8 @@ function buildColorVars(colors) {
 }
 
 /**
- * Build the :root typography block.
+ * 生成 :root 排版变量块。
+ *
  * @param {Record<string, TypeToken>} type
  * @returns {string}
  */
@@ -100,7 +101,8 @@ function buildTypeVars(type) {
 }
 
 /**
- * Build the H5 typography media query.
+ * 生成 H5 排版媒体查询。
+ *
  * @param {Record<string, TypeToken>} type
  * @returns {string}
  */
@@ -121,7 +123,8 @@ function buildH5TypeMedia(type) {
 }
 
 /**
- * Build radius variables.
+ * 生成圆角变量。
+ *
  * @param {Record<string, string>} radius
  * @returns {string}
  */
@@ -131,7 +134,8 @@ function buildRadiusVars(radius) {
 }
 
 /**
- * Build elevation variables from shadows.
+ * 根据阴影 token 生成投影变量。
+ *
  * @param {Record<string, ShadowToken>} shadows
  * @returns {string}
  */
@@ -146,7 +150,8 @@ function buildElevationVars(shadows) {
 }
 
 /**
- * Build @theme block.
+ * 生成 @theme 块。
+ *
  * @param {Record<string, ShadowToken>} shadows
  * @param {Record<string, string>} radius
  * @returns {string}
@@ -161,7 +166,8 @@ function buildThemeBlock(shadows, radius) {
 }
 
 /**
- * Build @theme inline block.
+ * 生成 @theme inline 颜色映射块。
+ *
  * @param {Record<string, ColorToken>} colors
  * @returns {string}
  */
@@ -171,7 +177,8 @@ function buildThemeInline(colors) {
 }
 
 /**
- * Resolve hex for a color key (follows `ref`).
+ * 解析颜色 key 的十六进制值，遇到 `ref` 时继续查引用。
+ *
  * @param {Record<string, ColorToken>} colors
  * @param {string} key
  * @returns {string | undefined}
@@ -185,7 +192,8 @@ function resolveColorHex(colors, key) {
 }
 
 /**
- * Build kebab→hex map for JS runtime (theme-color meta, thirdweb, etc.).
+ * 构建 kebab 名到 hex 的映射，供 JS 运行时使用。
+ *
  * @param {Record<string, ColorToken>} colors
  * @returns {Record<string, string>}
  */
@@ -200,7 +208,8 @@ function buildColorHexMap(colors) {
 }
 
 /**
- * Build tokens.ts content.
+ * 生成 tokens.ts 文件内容。
+ *
  * @param {TokenSet} tokens
  * @returns {string}
  */
@@ -238,9 +247,11 @@ export type ShadowToken = (typeof shadows)[number]
 }
 
 /**
- * Static engineering variables that are not design tokens.
- * These are layout, app chrome, home namespace and scrollbar concerns.
- * They remain hand-written and are appended after generated tokens.
+ * 生成非设计 token 的工程变量。
+ *
+ * 布局、应用外观、Home 命名空间与滚动条相关变量仍手工维护，
+ * 追加在自动生成 token 之后。
+ *
  * @returns {string}
  */
 function staticEngineeringVars() {
@@ -477,8 +488,8 @@ html.site-fluid {
 }
 
 /**
- * Extra @theme entries that are not derived from tokens.json but are still used by source.
- * Keep during P0–P7; reconsider in P8 cleanup.
+ * 生成未从 tokens.json 派生但仍被源码使用的 @theme 条目。
+ *
  * @returns {string}
  */
 function staticExtraTheme() {
@@ -509,7 +520,8 @@ function staticExtraTheme() {
 }
 
 /**
- * Build full theme.css content.
+ * 组装完整 theme.css 内容。
+ *
  * @param {TokenSet} tokens
  * @returns {string}
  */
@@ -596,7 +608,7 @@ ${staticEngineeringVars()}
 }
 
 /**
- * Run the generator.
+ * 执行一次 token 生成。
  */
 function generate() {
   const tokens = loadTokens()

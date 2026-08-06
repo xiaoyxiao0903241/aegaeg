@@ -1,8 +1,8 @@
 /**
- * Hub 左栏同骨架模式入口卡（组合式）
+ * Hub 左栏同骨架模式入口卡（组合组件）
  *
  * 用于 exchange / staking 等「图标 + 标题 + 一行说明」入口；
- * Assets（双列指标）与业务具名卡勿硬套本壳。
+ * Assets（双列指标）与业务具名卡勿硬套本组件。
  */
 import { type ComponentProps, type ReactNode } from 'react'
 

@@ -40,6 +40,7 @@ function resetCountValue(element: HTMLElement) {
   }
 }
 
+/** 从 0 按缓动曲线滚动到 data-count-target 指定的指标值 */
 function animateCount(element: HTMLElement) {
   const target = Number(element.dataset.countTarget)
   if (!Number.isFinite(target)) {
@@ -65,6 +66,7 @@ function animateCount(element: HTMLElement) {
   requestAnimationFrame(tick)
 }
 
+/** 计算元素在视口内可见面积占比，用于计数面板触发判断 */
 function getViewportVisibleRatio(element: HTMLElement) {
   const rect = element.getBoundingClientRect()
   const viewportHeight = window.innerHeight || document.documentElement.clientHeight
@@ -79,6 +81,7 @@ function getViewportVisibleRatio(element: HTMLElement) {
   return (visibleWidth * visibleHeight) / (rect.width * rect.height)
 }
 
+/** 计数面板首次进入视口后启动：先显示面板，再延迟播放数字滚动 */
 function startCountPanel(panel: HTMLElement) {
   if (panel.dataset.countStarted === 'true') {
     return

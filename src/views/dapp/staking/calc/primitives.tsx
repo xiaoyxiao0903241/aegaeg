@@ -1,3 +1,8 @@
+/**
+ * 质押测算页展示组件
+ *
+ * 提供产品 / 周期 Tab、天数滑杆、结果卡等测算相关展示组件。
+ */
 import { useRef } from 'react'
 
 import { Card } from '~/shared/components/card'
@@ -56,8 +61,8 @@ export function CalcHtabRow({
 /**
  * 测算天数滑杆
  *
- * 自定义轨道与胶囊手柄（非原生 range 控件），
- * 轨道填充 coral 色，手柄显示当前天数。
+ * 自定义滑杆底条与胶囊手柄（非原生 range 控件），
+ * 底条填充 coral 色，手柄显示当前天数。
  *
  * @param ariaLabel 滑杆无障碍标签
  * @param max 最大天数，默认 720

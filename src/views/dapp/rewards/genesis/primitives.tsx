@@ -41,7 +41,7 @@ export function GenesisBanner({ children }: { children: ReactNode }) {
 }
 
 /**
- * 创世单项领取卡（组合式）
+ * 创世单项领取卡（组合组件）
  *
  * 顶栏标签 + 可选旁注、主额、说明或领取按钮。
  */

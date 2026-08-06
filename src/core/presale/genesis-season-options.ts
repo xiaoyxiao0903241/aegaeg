@@ -20,7 +20,7 @@ function formatPhaseDateRange(startTime: bigint, endTime: bigint): string {
  * 由链上预售阶段生成季节选项（文案格式化）。
  *
  * 折扣、空投比例与价格均按阶段参数格式化；价格以 AGX 参考价折算，
- * 参考价非正时显示占位符；阶段状态按当前时间判定。
+ * 参考价非正时显示 `—`；阶段状态按当前时间判定。
  *
  * @param phases 链上预售阶段
  * @param agxPriceUsd AGX 参考价（美元）

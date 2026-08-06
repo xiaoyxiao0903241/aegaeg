@@ -131,6 +131,7 @@ export function mergePersistedState(
   return { signaturesByAddress, sessionsByAddress }
 }
 
+/** 认证状态仓库：按地址保存 JWT / SIWE 签名，并负责持久化与水合。 */
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({

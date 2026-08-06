@@ -22,13 +22,14 @@ export interface WalletTransactionErrorMessages {
 /**
  * 仅处理「实例型」钱包结果
  *
- * 覆盖未知收据 / 提交超时 / 写阻断 sentinel；
+ * 覆盖未知收据 / 提交超时 / 写阻断哨兵；
  * gas 与余额不足等字符串规则在 `error-messages.ts` 的 revert 表，
  * 不在本函数重复。
  *
  * @param error 待判断的错误
  * @param messages 钱包交易文案包
  * @returns 对应文案；无法归为实例型结果时返回 null
+ * @see 手册 §19 常见错误与前端提示
  */
 export function walletTransactionError(
   error: unknown,
@@ -57,6 +58,16 @@ export function walletTransactionError(
   return null
 }
 
+/**
+ * 判断钱包错误是否表示用户主动拒绝交易。
+ *
+ * 部分钱包会把发送失败错误码也设为 4001，因此出现失败文案时优先按失败处理，
+ * 只有明确拒绝文案才算用户拒绝。
+ *
+ * @param error 待判断的错误
+ * @returns 用户拒绝时为 true
+ * @see 手册 §19 常见错误与前端提示
+ */
 export function isUserRejectedWalletError(error: unknown): boolean {
   if (!error) return false
 

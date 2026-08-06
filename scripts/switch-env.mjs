@@ -1,14 +1,10 @@
 #!/usr/bin/env node
 /**
- * Staging / Prod 切换（Vite 加载顺序：.env → .env.local，后者覆盖前者）
+ * Staging / Prod 环境切换
  *
- * - .env        = prod（完整配置，含 thirdweb / RPC / prod 合约）
- * - .env.local  = staging 覆盖（存在时生效；删除后回退 .env prod）
- *
- * Usage:
- *   pnpm env:staging
- *   pnpm env:prod
- *   pnpm env:status
+ * Vite 按 `.env` → `.env.local` 顺序加载，后者覆盖前者：
+ * `.env` 始终是 prod 完整配置，`.env.local` 存在时切换为 staging。
+ * 命令入口由 `pnpm env:*` 调用，不能直接修改运行中的 dev server。
  */
 
 import { copyFileSync, existsSync, unlinkSync } from 'node:fs'

@@ -43,6 +43,7 @@ function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
   )
 }
 
+/** 单张特性卡：图标、标题、正文，并按序号生成分隔边框 */
 function HomeIconCard({
   card,
   index,

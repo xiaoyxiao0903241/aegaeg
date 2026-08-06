@@ -7,17 +7,7 @@ import { Input } from '~/shared/components/input'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * 数量输入卡片
- *
- * 由标签 / 余额行、数量输入框、前后缀（代币选择等）组成。
- * `headerOutside` 决定标签与余额放在带边框输入框上方还是卡片内。
- *
- * @param amountProps 传给输入框的原生属性，需含 `aria-label`
- * @param label 标签文案（字符串会走数字滚动）
- * @param balance 余额展示（字符串会走数字滚动）
- * @param headerOutside 标签/余额移到输入框上方；默认在卡片内
- */
+/** 数量输入卡片的样式槽位 */
 export const amountBox = tv({
   slots: {
     // 标签在卡片内：聚焦珊瑚描边
@@ -58,6 +48,17 @@ function renderMetricText(node: ReactNode) {
   return typeof node === 'string' ? <CountValue text={node} /> : node
 }
 
+/**
+ * 数量输入卡片
+ *
+ * 由标签/余额行、数量输入框、前后缀组成；
+ * `headerOutside` 为 true 时把标签与余额移到带边框输入框上方。
+ *
+ * @param amountProps 传给输入框的原生属性，需含 `aria-label`
+ * @param label 标签文案（字符串会走数字滚动）
+ * @param balance 余额展示（字符串会走数字滚动）
+ * @param headerOutside 为 true 时标签/余额移到输入框上方；默认在卡片内
+ */
 export function AmountBox({
   amountProps,
   balance,

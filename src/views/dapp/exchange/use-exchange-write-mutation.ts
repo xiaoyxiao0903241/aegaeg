@@ -7,7 +7,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 export type ExchangeSubmitOutcome = { ok: true } | { ok: false; error: unknown | null }
 
 /**
- * 兑换写链的统一外壳
+ * 兑换写链的统一提交封装
  *
  * 包装 useChainMutation，统一提交中标志、提交结果引用与
  * 未知结果锁定，供各兑换模式复用。

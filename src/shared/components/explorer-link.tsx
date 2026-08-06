@@ -19,7 +19,7 @@ export function ExplorerLink({
 }: {
   value: string
   kind?: ExplorerLinkKind
-  /** 稿面「验证」列旁外链小标 */
+  /** 为 true 时在链接文本后显示外链图标 */
   showIcon?: boolean
   className?: string
   shortOptions?: { head?: number; tail?: number }

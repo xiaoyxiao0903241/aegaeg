@@ -4,7 +4,7 @@ import { genesisPromoChromeEqual } from '~/core/presale/genesis-promo-equality'
 import type { GenesisPromoSnapshot, SeasonOption } from '~/core/presale/genesis-promo-types'
 
 export type GenesisPromoState = {
-  /** 外壳时钟（GenesisPromoSync 每 15 秒推进一次）；与 setPromo 分离更新，避免被推广位等值判断短路。 */
+  /** 展示时钟（GenesisPromoSync 每 15 秒推进一次）；与 setPromo 分离更新，避免被推广位等值判断短路。 */
   nowSeconds: number
   activeSeasonNumber: number
   discountLabel: string

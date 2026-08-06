@@ -1,3 +1,8 @@
+/**
+ * 兑换买卖两侧的余额标签 hook
+ *
+ * 按会话与钱包就绪状态统一生成余额和「未就绪预览」提示。
+ */
 import { useI18n } from '~/i18n/use-i18n'
 import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/labels'
 

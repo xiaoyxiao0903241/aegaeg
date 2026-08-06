@@ -1,5 +1,5 @@
 /**
- * 奖励领取壳 UI 零件（域附属，非 mode mega-primitives）。
+ * 奖励领取界面 UI 零件（域附属，非 mode mega-primitives）。
  */
 import { ChevronDown } from 'lucide-react'
 import { type ReactNode } from 'react'
@@ -77,7 +77,7 @@ export function RewardsClaimTokenRow({
 }
 
 /**
- * 奖励去向计划卡（组合式）
+ * 奖励去向计划卡（组合组件）
  *
  * 领取（入释放池）与复投（入单币质押）同构：标题行、代币金额、周期下拉。
  */

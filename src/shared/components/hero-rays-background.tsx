@@ -7,6 +7,7 @@ const RAY_COUNT = 360 / RAY_SPACING_DEG
 const CENTER = 50
 const RADIUS = 50
 
+/** 把极坐标角度换算成 SVG 坐标点 */
 function polarPoint(cx: number, cy: number, radius: number, angleDeg: number) {
   const angleRad = (angleDeg * Math.PI) / 180
   return {
@@ -15,6 +16,7 @@ function polarPoint(cx: number, cy: number, radius: number, angleDeg: number) {
   }
 }
 
+/** 生成单个射线扇形的 SVG path；多个扇形拼接成完整背景 */
 function rayWedgePath(index: number) {
   const startDeg = index * RAY_SPACING_DEG
   const endDeg = startDeg + RAY_WIDTH_DEG
@@ -40,7 +42,7 @@ const heroRays = tv({
 })
 
 /**
- * 首页 / 应用外壳的背景射线
+ * 首页与应用页共用的背景射线
  *
  * 用 SVG 生成向外辐射的光线，作为页面装饰背景；
  * 仅供装饰，对辅助功能隐藏。

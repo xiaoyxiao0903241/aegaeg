@@ -1,5 +1,5 @@
 /**
- * DApp 表壳 — Root / Header / Footer / Frame
+ * DApp 表容器 — Root / Header / Footer / Frame
  * @see docs/foundation/component-usage.md
  */
 
@@ -36,6 +36,7 @@ function isSlot(child: ReactNode, slot: unknown): child is ReactElement {
   return isValidElement(child) && child.type === slot
 }
 
+/** 表容器：识别 Header / Footer 子件，其余内容放入可横向滚动的表区 */
 function TableRoot({ children, className, contentClassName }: TableRootProps) {
   const styles = tableFrame()
   const list = Children.toArray(children)

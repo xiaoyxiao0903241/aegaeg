@@ -128,7 +128,7 @@
     })
   const byExactIn = (root, t) => leafTextsIn(root).find((e) => (e.textContent || '').trim() === t)
 
-  // —— header（WidgetHeader + DappPanelToggle；锚 widget panel，禁 x<700 / 引导浮层「释放」）——
+  // —— 标题区（WidgetHeader + DappPanelToggle；锚定 widget panel，避免 x<700 或引导浮层里的「释放」）——
   const widgetPanel = document.querySelector('[data-dapp-widget-panel]')
   const title =
     [...(widgetPanel?.querySelectorAll('h1') || [])].find(
@@ -152,7 +152,7 @@
     null
   const menuIcon = menuBtn?.querySelector('img') || menuBtn?.querySelector('svg') || null
 
-  // —— queue / buffer cards ——
+  // —— 释放池 / 缓冲池卡片 ——
   const queueCard = document.querySelector('[data-slot-id="release-pool-card"]')
   const bufferCard = document.querySelector('[data-slot-id="buffer-pool-card"]')
 
@@ -162,7 +162,7 @@
     const header = kids[0]
     const grid1 = kids[1]
     const grid2 = kids[2]
-    // 量 img 本身（size-5≈20）；禁 climb 到 header 行
+    // 量 img 本身（size-5≈20）；不要向上爬到 header 行
     const icon = header?.querySelector('img') || null
     const titleEl = byExactIn(header, titleText)
     const pctHost =
@@ -182,7 +182,7 @@
   const queue = packPoolCard(queueCard, '释放池')
   const buffer = packPoolCard(bufferCard, '缓冲池')
 
-  // queue grid: labels ×2, amounts ×2, approx ×2
+  // 释放池网格：标签 ×2、金额 ×2、近似值 ×2
   const qReleasingLab = byExactIn(queue.grid1, '释放中')
   const qReleasedLab = byExactIn(queue.grid1, '已释放')
   const qAmountL = queue.gridPs?.[2] || null
@@ -190,7 +190,7 @@
   const qApproxL = queue.gridPs?.[4] || null
   const qApproxR = queue.gridPs?.[5] || null
 
-  // buffer grid1: total AGX, gagx, approx×2；grid2: 已释放 pairs
+  // 缓冲池网格 1：AGX 总量、gAGX、近似值 ×2；网格 2：已释放对
   const bTotalAgx = buffer.gridPs?.[0] || null
   const bGagx = buffer.gridPs?.[1] || null
   const bApproxL = buffer.gridPs?.[2] || null
@@ -287,7 +287,7 @@
     const titleEl = byExactIn(mechCard, lab) || first(textsExact(lab, rightish))
     const bodyEl = byExactIn(mechCard, stepBodies[i]) || first(textsExact(stepBodies[i], rightish))
     const li = titleEl ? climb(titleEl, (n) => n.tagName === 'LI') : null
-    // 结构：li > div.flex > span.size-7（badge）[+ connector]；禁 climb 到 flex 行（≈2×）
+    // 结构：li > div.flex > span.size-7（badge）[+ connector]；不要向上爬到 flex 行（约 2 倍高）
     const badgeRow = li?.querySelector(':scope > div')
     const badge =
       [...(badgeRow?.children || [])].find((n) => {
@@ -350,7 +350,7 @@
   const taxHighlight20 = document.querySelector('[data-slot-id="tax-highlight-20"]')
   const taxHighlight60 = document.querySelector('[data-slot-id="tax-highlight-60"]')
 
-  // —— FAQ（row chrome 一律用关态 Card；开态首项勿量 answer 展开高）——
+  // —— FAQ（外观统一取关闭态卡片；首项展开时不要量 answer 高度）——
   const faqHeading = first(textsExact('FAQs', rightish)) || first(textsExact('FAQ', rightish))
   const faqList =
     faqHeading?.parentElement?.querySelector('[data-faq-item]')?.parentElement ||

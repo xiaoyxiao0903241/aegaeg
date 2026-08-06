@@ -79,7 +79,7 @@ export function genesisPromoSnapshot(
 /**
  * 拼接首页季节引导文案（模板替换）。
  *
- * 加载中折扣以省略号占位，避免文案闪烁。
+ * 加载中折扣显示省略号，避免文案闪烁。
  *
  * @param template 文案模板，含 {season} / {discount} 占位
  * @param season 季节序号

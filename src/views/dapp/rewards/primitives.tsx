@@ -1,3 +1,8 @@
+/**
+ * 奖励详情表展示组件
+ *
+ * 提供记录表的 Tab 头、状态徽标与各奖励域的表格单元格映射。
+ */
 import type { ReactNode } from 'react'
 
 import type {

@@ -242,7 +242,7 @@ export function useAssetsHub(): AssetsHubOverview {
   const burnYieldNum = formatTokenAmountToNumber(burnYield, GAGX_DECIMALS)
   const xPendingNum = formatTokenAmountToNumber(xPending, X_DECIMALS)
 
-  /** 稿「可赎回已释放」= 仓位层可领本金（Locked getReleasedPrincipal / Bond pendingPayout） */
+  /** 产品口径「可赎回已释放」= 仓位层可领本金（Locked getReleasedPrincipal / Bond pendingPayout） */
   const redeemableReleasedWei = chainYieldReady
     ? stakeRows.reduce((sum, row) => sum + row.releasedPrincipal, 0n) +
       lpRows.reduce((sum, row) => sum + row.pendingPayout, 0n) +
@@ -290,7 +290,7 @@ export function useAssetsHub(): AssetsHubOverview {
     const claimed = formatApiDecimalOrZero(apiReward.total_reward_claimed)
     const contribution = formatApiDecimalOrZero(apiReward.available_contribution)
     const holdingsTotal = formatApiTokenLabel(apiHoldings.total_holdings_agx, 'AGX')
-    // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与稿「可赎回已释放」不符
+    // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「可赎回已释放」不符
     const holdingsReleased = redeemableReleasedLabel
     // 在池总量 = 池内剩余（API releasing）；已提取 = PRINCIPAL_CLAIMED（buffer_pool_released）
     const bufferTotal = formatApiTokenLabel(apiHoldings.buffer_pool_releasing, 'AGX')

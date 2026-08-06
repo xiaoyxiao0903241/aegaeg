@@ -16,6 +16,7 @@ export function pancakeSwapDeepLink(sellAddress: `0x${string}`, buyAddress: `0x$
   return pancakeSwapUrl(sellAddress, buyAddress)
 }
 
+/** 在新窗口打开 PancakeSwap 深链接。 */
 export function openPancakeSwapDeepLink(url: string): void {
   window.open(url, '_blank', 'noopener,noreferrer')
 }

@@ -31,7 +31,7 @@ export interface ExchangeQuoteResult {
   quotedOut: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  /** V2 has no quoter gas estimate; UI shows "—" when zero. */
+  /** V2 路由器没有 gas 估算；为 0 时 UI 显示「—」。 */
   gasEstimate: bigint
   priceImpactBps: number
 }

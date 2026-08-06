@@ -61,7 +61,7 @@ export async function readLuckyClaimSnapshot(
     functionName: 'currentRoundId',
   })) as bigint
 
-  // currentRoundId 为 Open；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
+  // currentRoundId 为进行中轮；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
   const latestClosed = openRoundId > 0n ? openRoundId - 1n : 0n
   const oldest =
     latestClosed === 0n

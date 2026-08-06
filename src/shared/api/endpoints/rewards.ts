@@ -29,6 +29,8 @@ import type {
   TeamRewardSignature,
 } from '~/shared/api/types'
 
+/** 奖励页端点跨度较大：汇总、流水、领取签名与确认都走统一信封。 */
+
 export async function getLuckyRewardSummary(token: string): Promise<LuckyRewardSummary> {
   return apiRequest<LuckyRewardSummary>('/lucky-reward/summary', {
     method: 'POST',
@@ -205,6 +207,7 @@ export async function getReferralAwardDirectReferrals(
   )
 }
 
+/** 请求团队奖励领取签名。 */
 export async function requestTeamRewardSignature(token: string): Promise<TeamRewardSignature> {
   return apiRequest<TeamRewardSignature>('/claim/team-reward', {
     method: 'POST',
@@ -213,6 +216,7 @@ export async function requestTeamRewardSignature(token: string): Promise<TeamRew
   })
 }
 
+/** 请求社区基金领取签名。 */
 export async function requestCommunityFundClaim(token: string): Promise<TeamRewardSignature> {
   return apiRequest<TeamRewardSignature>('/claim/community-fund', {
     method: 'POST',
@@ -221,6 +225,7 @@ export async function requestCommunityFundClaim(token: string): Promise<TeamRewa
   })
 }
 
+/** 请求 DAO 奖励领取签名。 */
 export async function requestDaoClaim(
   token: string,
   rewardType: DaoRewardType,
@@ -232,6 +237,7 @@ export async function requestDaoClaim(
   })
 }
 
+/** 请求市场基金领取签名。 */
 export async function requestMarketFundClaim(token: string): Promise<TeamRewardSignature> {
   return apiRequest<TeamRewardSignature>('/claim/market-fund', {
     method: 'POST',
@@ -240,6 +246,7 @@ export async function requestMarketFundClaim(token: string): Promise<TeamRewardS
   })
 }
 
+/** 解析并校验后端返回的领取签名参数。 */
 export async function parseClaimSignature(
   token: string,
   request: ClaimParseSignatureRequest,
@@ -251,6 +258,7 @@ export async function parseClaimSignature(
   })
 }
 
+/** 向后端确认团队奖励领取结果。 */
 export async function confirmTeamRewardClaim(
   token: string,
   request: ClaimConfirmRequest,

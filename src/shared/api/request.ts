@@ -36,6 +36,14 @@ export interface ApiRequestOptions {
   searchParams?: Record<string, string | number | undefined>
 }
 
+/**
+ * 拼接 API 基础地址与业务路径，并附加查询参数。
+ *
+ * @param path 业务路径
+ * @param searchParams 查询参数；值为 undefined 的键跳过
+ * @returns 完整 URL
+ * @see docs/backend-api/api.md
+ */
 export function apiUrl(
   path: string,
   searchParams?: Record<string, string | number | undefined>,
@@ -58,6 +66,17 @@ function rethrowAfterIntercept(error: unknown): never {
   throw error
 }
 
+/**
+ * 发起后端业务请求（默认 POST）。
+ *
+ * 统一处理认证头、超时、非 JSON 网关响应与业务信封；
+ * 401/403 会触发认证与封禁钩子。
+ *
+ * @param path 业务路径
+ * @param options 请求配置（方法、请求体、Bearer token、查询参数）
+ * @returns 已解包的业务数据
+ * @see docs/backend-api/api.md
+ */
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = {
     Accept: 'application/json',

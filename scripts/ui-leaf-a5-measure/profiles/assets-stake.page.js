@@ -57,12 +57,12 @@
   const leftish = (e, r) => r.x < 920
   const rightish = (e, r) => r.x >= 700
 
-  // collapse FAQ
+  // 先收合 FAQ，避免展开状态影响测量
   ;[...document.querySelectorAll('[data-faq-trigger][data-state="open"]')].forEach((el) =>
     el.click(),
   )
 
-  // —— shell ——
+  // —— 页面容器 ——
   const rail =
     document.querySelector('[data-dapp-rail], nav[aria-label], aside') ||
     [...document.querySelectorAll('nav,aside')].find((el) => {
@@ -102,7 +102,7 @@
     )
   })
 
-  // —— left header ——
+  // —— 左栏标题 ——
   const backLabel = first(textsExact('返回资产', leftish))
   const backBtn = backLabel
     ? climb(backLabel, (n) => n.tagName === 'BUTTON' || n.getAttribute?.('role') === 'button')
@@ -169,7 +169,7 @@
       })
     : null
 
-  // —— position cards ——
+  // —— 仓位卡片 ——
   const cardEls = [...document.querySelectorAll('article,div')]
     .filter((el) => {
       const r = el.getBoundingClientRect()
@@ -220,7 +220,7 @@
     const chips = [...card.querySelectorAll('span')].filter((el) => {
       const r = el.getBoundingClientRect()
       const cs = getComputedStyle(el)
-      // 含 opacity-0 的 boost 占位
+      // 含 opacity-0 的 boost 隐藏元素也要计为 chip
       return (
         near(r.height, 21, 8) &&
         r.width > 40 &&
@@ -317,7 +317,7 @@
     }
   }
 
-  // —— list pager ——
+  // —— 列表分页 ——
   const pagerTotal = [...document.querySelectorAll('span,p')].find((e) => {
     const t = (e.textContent || '').trim()
     const r = e.getBoundingClientRect()
@@ -333,7 +333,7 @@
     return leftish(e, r) && /^\d+\s*\/\s*\d+$/.test(t) && r.y > 200
   })
 
-  // —— right stats ——
+  // —— 右栏统计 ——
   const statsTitle = first(textsExact('仓位数据', rightish))
   const metricLabs = [
     '我的持仓',
@@ -377,7 +377,7 @@
     }
   })
 
-  // —— ops ——
+  // —— 操作记录 ——
   const opsTitle = first(textsExact('操作记录', rightish))
   const colLabs = ['时间', '操作', '数量', '交易哈希']
   const cols = colLabs.map((lab) =>
@@ -438,7 +438,7 @@
         )
       : null
 
-  // ops pagination (DappTablePagination)
+  // 操作记录分页（DappTablePagination）
   const opsTotal = [...document.querySelectorAll('span,p')].find((e) => {
     const t = (e.textContent || '').trim()
     const r = e.getBoundingClientRect()
@@ -474,7 +474,7 @@
         return n.tagName === 'BUTTON' || (near(r.height, 24, 10) && r.width > 40 && r.width < 100)
       })
     : null
-  // 展开 chevron = Lucide / masked chrome，非业务 img
+  // 展开箭头是 Lucide 图标或遮罩外观，不是业务图片
   const chevronOf = (btn) =>
     btn?.querySelector?.('span[aria-hidden]') || btn?.querySelector?.('svg,img') || null
   const opsDropdown = chevronOf(opsIndicator)

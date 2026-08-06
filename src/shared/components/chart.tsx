@@ -112,7 +112,7 @@ type ChartRootProps = HTMLAttributes<HTMLDivElement> & {
   children?: ReactNode
 }
 
-/** 图表卡片外壳：elevated 默认；outlined 仅特例 */
+/** 图表卡片容器：elevated 默认；outlined 仅特例 */
 function ChartRoot({ surface = 'elevated', className, children, ...props }: ChartRootProps) {
   return (
     <Card

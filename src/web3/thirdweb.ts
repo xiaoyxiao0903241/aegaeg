@@ -100,7 +100,7 @@ export const walletListOptions = {
 
 export const supportedChains = [defaultChain] as const
 
-/** 连接弹窗共用配置（外壳自定义 + ConnectEmbed 内嵌） */
+/** 连接弹窗共用配置（自定义外观 + ConnectEmbed 内嵌） */
 export const connectModalOptions = {
   hiddenWallets: [...walletListOptions.hiddenWallets],
   recommendedWallets: [
@@ -117,7 +117,7 @@ export const connectModalOptions = {
   walletConnect: walletListOptions.walletConnect,
 }
 
-/** ConnectEmbed props — 由 WalletConnectModal 外壳承载，不另开 thirdweb modal */
+/** ConnectEmbed props — 供 WalletConnectModal 内嵌使用，不另开 thirdweb 弹窗 */
 export const connectEmbedProps = {
   chain: defaultChain,
   chains: [...supportedChains],

@@ -2,7 +2,7 @@
 @import 'tailwindcss/utilities';
 @import './wallet.css';
 
-/* DApp — 锁视口高度；H5 底色与 host 固定渐变一致，避免安全区/刘海外露黑底 */
+/* DApp 锁视口高度；移动端底色与宿主固定渐变一致，避免安全区/刘海外露黑底 */
 html.dapp-app,
 html.dapp-app body,
 html.dapp-app #root {
@@ -27,7 +27,7 @@ html.dapp-app #root {
   }
 }
 
-/* DApp PC host — 设计基准 80rem（1280px @ 16px）；超宽屏随根字号同比放大 */
+/* DApp 桌面宿主窗口 — 设计基准 80rem（1280px @ 16px）；超宽屏随根字号同比放大 */
 @media (min-width: 821px) {
   [data-dapp-window] {
     --host-detail-col: minmax(0, 1fr);
@@ -141,8 +141,8 @@ html.dapp-app #root {
   animation: dapp-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
-/* Tab switch — fade out on stable tree, then rise+fade in after displayTab swap
- * (session hosts may remount; enter uses animation so mount still plays). */
+/* Tab 切换：先在稳定节点上淡出，displayTab 交换后再上浮淡入
+ * （会话宿主可能重挂载，入口用动画保证挂载时仍会播放）。 */
 @keyframes dapp-content-fade-out {
   from {
     opacity: 1;
@@ -186,7 +186,7 @@ html.dapp-app #root {
   min-width: 0;
   flex-direction: column;
   background-color: var(--card);
-  /* H5：跟内容定高，勿 height:100% / will-change:transform（会破坏 sticky、造成裁切溢出） */
+  /* 移动端：跟内容定高，勿 height:100% / will-change:transform（会破坏 sticky、造成裁切溢出） */
   min-height: 0;
   height: auto;
   overflow: visible;
@@ -265,7 +265,7 @@ html.dapp-app #root {
 }
 
 /*
- * H5 左栏过渡：退场层绝对定位，避免双层取 max 高在过渡结束时跳动。
+ * 移动端左栏过渡：退场层绝对定位，避免双层取 max 高在过渡结束时跳动。
  * 顶栏在 sticky 槽内固定高交叉显隐（不做槽内横滑）。
  */
 @media (max-width: 820px) {
@@ -321,7 +321,7 @@ html.dapp-app #root {
   background: linear-gradient(to top, var(--card) 0%, var(--card) 50%, transparent 100%);
 }
 
-/* H5：不显示滚动渐隐（整窗滚 + sticky 头；避免压字） */
+/* 移动端：不显示滚动渐隐（整窗滚 + sticky 头；避免压字） */
 @media (max-width: 820px) {
   .dapp-scroll-fade-edge {
     display: none;
@@ -366,12 +366,12 @@ html.dapp-app #root {
   overflow: hidden;
 }
 
-/* Must beat base overflow:hidden — Tailwind overflow-visible alone loses to this rule. */
+/* 覆盖基础 overflow:hidden：单靠 Tailwind overflow-visible 会被此规则压掉 */
 .dapp-collapsible-body[data-open='true'] .dapp-collapsible-inner.overflow-visible {
   overflow: visible;
 }
 
-/* Content fade only while opening — height is owned by grid-template-rows on the body. */
+/* 仅展开时淡入内容；高度仍由外层的 grid-template-rows 控制 */
 .dapp-collapsible-body[data-open='true'] .dapp-collapsible-inner {
   animation: dapp-collapsible-content-in var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
@@ -481,7 +481,7 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
   --size: 1rem;
 }
 
-/* Sonner ≤600px forces full-width — keep content-fit on H5 (#678) */
+/* Sonner 在 600px 以下会强制整行宽度，这里让移动端保持内容自适应 */
 @media (max-width: 600px) {
   html.dapp-app [data-sonner-toaster].app-toaster {
     width: max-content !important;

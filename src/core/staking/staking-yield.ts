@@ -182,7 +182,7 @@ export function calcLocalInterest(args: {
 
   const compound = compoundInterest(principal, baseDaily, days)
 
-  // 仅定期质押有锁定加成；债券走 rebase 复利，不享 LOCKED_*_BPS。
+  // 仅定期质押有锁定加成；债券走 rebase 复利，不再叠加锁定加成。
 
   const bonus =
     product === 'stake'

@@ -42,6 +42,7 @@ export function parseLeadingMetricNumber(text: string): ParsedAmount | null {
   return { prefix, raw, suffix }
 }
 
+/** 单个数字位：挂载后启用上滚动画，数字变化时翻到目标值 */
 function DigitReel({ digit }: { digit: number }) {
   const safe = Number.isFinite(digit) ? Math.min(9, Math.max(0, Math.trunc(digit))) : 0
   /** 首次挂载不滚动（0→数字），只在数字变化时动画 */

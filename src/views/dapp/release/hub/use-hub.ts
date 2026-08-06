@@ -76,7 +76,7 @@ export function useReleaseHub() {
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
-  // 稿「可领取」= 手册 claimableAmount；API 仅有 released(=已提取)，无 PRV 可领分项 → 只信链
+  // 产品口径「可领取」= 手册 claimableAmount；API 仅有 released(=已提取)，无 PRV 可领分项 → 只信链
   const bufferClaimableAgx = formatReleaseApiOrChainLabel({
     sessionReady,
     apiRaw: undefined,

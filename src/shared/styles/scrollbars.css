@@ -1,7 +1,7 @@
 /**
  * 全局滚动条 —— 覆盖系统默认样式
  *
- * - 细轨、透明 track，拇指圆角 pill
+ * - 轨道细且透明，滑块带圆角
  * - 默认极淡，hover / active 渐显；active 带品牌珊瑚色
  * - Firefox：scrollbar-width + scrollbar-color
  * - WebKit：::-webkit-scrollbar 系列

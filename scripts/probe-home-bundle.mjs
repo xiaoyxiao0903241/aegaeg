@@ -1,28 +1,39 @@
 #!/usr/bin/env node
 /**
- * Home / DApp entry JS size probe (post `pnpm build`).
- * Usage: node scripts/probe-home-bundle.mjs [distDir]
+ * 构建后探测 Home / DApp 入口的同步 JS 体积与污染。
  *
- * Exits 1 when Home sync graph looks polluted (web3 markers / size / copy leak).
+ * 用法：`node scripts/probe-home-bundle.mjs [distDir]`。
+ * Home 首屏同步图中出现 web3 标记、体积超标或跨语言文案泄漏时，
+ * 写入 `bundle-probe.json` 并以非零码退出，用于拦截 bundle 回归。
  */
-import { readFileSync, statSync, existsSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+
 import {
-  HOME_WEB3_POLLUTION_MARKERS,
   collectHomeBundleFailures,
+  HOME_WEB3_POLLUTION_MARKERS,
   matchBundleMarkers,
 } from './lib/home-bundle-assertions.mjs'
 
 const distDir = resolve(process.argv[2] ?? 'dist')
 const reportPath = resolve(distDir, 'bundle-probe.json')
 
-/** @param {string} htmlPath */
+/**
+ * 从 HTML 中提取同步加载的 `/assets/*.js` 路径。
+ *
+ * @param {string} htmlPath HTML 文件路径
+ */
 function scriptSrcs(htmlPath) {
   const html = readFileSync(htmlPath, 'utf8')
   return [...html.matchAll(/src="(\/assets\/[^"]+\.js)"/g)].map((m) => m[1])
 }
 
-/** @param {string[]} scripts */
+/**
+ * 汇总脚本体积并按从大到小排序。
+ *
+ * @param {string[]} scripts 脚本 URL 列表
+ * @returns 总字节数、条目数及按字节数降序的脚本明细
+ */
 function summarize(scripts) {
   /** @type {{ path: string, bytes: number }[]} */
   const rows = []
@@ -38,7 +49,12 @@ function summarize(scripts) {
   return { totalBytes: total, scripts: rows, count: rows.length }
 }
 
-/** @param {string[]} scripts */
+/**
+ * 读取可访问脚本的文本内容，跳过缺失或不可读文件。
+ *
+ * @param {string[]} scripts 脚本 URL 列表
+ * @returns 已读取的脚本文本
+ */
 function readSyncScriptTexts(scripts) {
   /** @type {string[]} */
   const texts = []
@@ -48,13 +64,18 @@ function readSyncScriptTexts(scripts) {
     try {
       texts.push(readFileSync(file, 'utf8'))
     } catch {
-      // ignore unreadable assets
+      // 不可读的构建产物不影响主探测
     }
   }
   return texts
 }
 
-/** @param {string} label @param {string} htmlRel */
+/**
+ * 探测单个入口的同步 JS 体积、内联文案注入和 web3 污染标记。
+ *
+ * @param {string} label 报告里展示的入口名称
+ * @param {string} htmlRel dist 目录下的 HTML 相对路径
+ */
 function probeEntry(label, htmlRel) {
   const htmlPath = resolve(distDir, htmlRel)
   if (!existsSync(htmlPath)) {
@@ -86,11 +107,11 @@ function probeEntry(label, htmlRel) {
       path: r.path,
       kb: Math.round(r.bytes / 1024),
     })),
-    /** Home should not embed other-locale copy in sync graph */
+    /** 同步 JS 不应把其他语言的文案带入 Home 首屏 */
     syncContainsJapaneseCopy: hasJa,
-    /** Home should ideally avoid DApp-only copy; DApp may contain it */
+    /** DApp 专属文案不应混入 Home 首屏 */
     syncContainsSlippage: hasSlippage,
-    /** Legacy single-string probe — insufficient alone (often minified away). */
+    /** 单字符串探测仅作辅助，压缩后可能被改写，不能单独作为结论 */
     syncContainsThirdwebReact: hasThirdwebReact,
     matchedPollutionMarkers,
   }
@@ -110,6 +131,11 @@ const report = {
 
 writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`)
 
+/**
+ * 打印单个入口的探测结果。
+ *
+ * @param {object} entry probeEntry 返回的入口数据
+ */
 function print(entry) {
   console.log(`\n== ${entry.label} (${entry.html})`)
   console.log(
@@ -122,9 +148,7 @@ function print(entry) {
   )
   console.log(
     `  pollution markers: ${
-      entry.matchedPollutionMarkers.length > 0
-        ? entry.matchedPollutionMarkers.join(', ')
-        : '(none)'
+      entry.matchedPollutionMarkers.length > 0 ? entry.matchedPollutionMarkers.join(', ') : '(none)'
     }`,
   )
   for (const row of entry.top) {

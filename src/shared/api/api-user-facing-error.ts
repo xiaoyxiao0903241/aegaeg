@@ -17,6 +17,7 @@ export interface ApiUserFacingErrorMessages {
   fallback: string
 }
 
+/** 判断错误是否为请求超时或被主动中止（AbortController / AbortSignal.timeout）。 */
 export function isTimeoutError(error: unknown): boolean {
   if (typeof DOMException !== 'undefined' && error instanceof DOMException) {
     return error.name === 'TimeoutError' || error.name === 'AbortError'
@@ -43,6 +44,15 @@ export function toTransportApiError(error: unknown): ApiError {
   })
 }
 
+/**
+ * 把 HTTP 状态与响应解析失败映射为稳定的传输错误码。
+ *
+ * 5xx 或 unavailable 归为不可用；其余按坏响应处理，避免把原始响应体上屏。
+ *
+ * @param status HTTP 状态码
+ * @param kind 响应解析失败类型，默认 invalid_json
+ * @returns 稳定的 ApiError
+ */
 export function apiErrorFromHttpStatus(
   status: number,
   kind: 'invalid_json' | 'unavailable' = 'invalid_json',

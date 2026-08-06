@@ -1,6 +1,8 @@
 /**
- * Home + DApp dynamic rays — SVG sunburst + CSS spin (Safari-safe).
- * Animations: animations.css (`hero-rays-drift`, `dapp-rays-spin`).
+ * 首页与 DApp 的动态放射光
+ *
+ * 用 SVG 光束配合 CSS 旋转动画，兼容 Safari；
+ * 动画定义见 animations.css（`hero-rays-drift`、`dapp-rays-spin`）。
  */
 
 .hero-rays {

@@ -141,7 +141,7 @@
   const chevronOf = (btn) =>
     btn?.querySelector?.('span[aria-hidden]') || btn?.querySelector?.('svg,img') || null
 
-  // —— header（DappTabHeader = WidgetSubpageHeader 整块）——
+  // —— 标题区（DappTabHeader 即 WidgetSubpageHeader 整块）——
   const widgetPanel = document.querySelector('[data-dapp-widget-panel]')
   const title =
     [...(widgetPanel?.querySelectorAll('h1') || [])].find(
@@ -157,7 +157,7 @@
       })
     : null
 
-  // —— left buf cards（AGX / gAGX）——
+  // —— 左栏缓冲卡（AGX / gAGX）——
   const packBuf = (token) => {
     const pillText =
       [...(widgetPanel?.querySelectorAll('span') || [])].find((e) => {
@@ -209,7 +209,7 @@
         })
       : null
 
-    // 原型/产品刷新（替稿 radio）
+    // 原型/产品刷新（替代设计参考里的 radio）
     const refresh =
       card.querySelector(`[data-slot-id="release-buffer-refresh-${token.toLowerCase()}"]`) ||
       [...card.querySelectorAll('button')].find((b) => {
@@ -317,7 +317,7 @@
     gAGX: packBuf('gAGX'),
   }
 
-  // —— stats wide cards ——
+  // —— 宽数据卡 ——
   const statsHeading =
     first(textsExact('缓冲池数据', rightish)) || document.querySelector('#release-buffer-title')
   const packWide = (token) => {
@@ -344,7 +344,7 @@
             return n.classList?.contains?.('grid') || (r.height >= 40 && r.height <= 80)
           })
         : null
-      // CountValue 拆 digit reel → 用 cell 整串 / strong 包层定位，勿依赖稿演示数
+      // CountValue 拆成数字滚轮；用 cell 整串或 strong 包层定位，不要依赖设计参考演示数
       const value =
         (cell &&
           [...cell.querySelectorAll('strong,span')].find((e) => {
@@ -431,7 +431,7 @@
     return [null, null, null, null]
   })
 
-  // pager（空会话 / 现码未挂 DappTablePagination → locate_fail OK）
+  // 分页（空会话或现码未挂 DappTablePagination 时允许定位失败）
   const opsTotal = [...document.querySelectorAll('span,p')].find((e) => {
     const t = (e.textContent || '').trim()
     const r = e.getBoundingClientRect()
@@ -475,7 +475,7 @@
     first(textsExact('质押与债券本金采用双阶段释放模型，增强市场稳定性', rightish))
   const stepTitles = ['质押/', '区块级', '提取后', '二次线性']
   const stepBodies = ['债券本金', '线性释放', '30 天缓冲', '释放']
-  // 稿拆行（line1/line2）= title/body
+  // 设计参考拆行（line1/line2）= title/body
   const figmaLine1 = stepTitles
   const figmaLine2 = stepBodies
   const stages =
@@ -569,7 +569,7 @@
     return { check: styleOf(check), text: styleOf(text) }
   })
 
-  // —— FAQ（§8.2a reuse · 整块 list）——
+  // —— FAQ（复用 §8.2a，量整块列表）——
   const faqItem0 = document.querySelector('[data-faq-item]')
   const faqList = faqItem0
     ? climb(faqItem0, (n) => {

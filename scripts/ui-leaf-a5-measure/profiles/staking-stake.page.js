@@ -79,7 +79,7 @@
     const r = e.getBoundingClientRect()
     return leftish(e, r) && /Rebase 复利增长/.test(t) && r.y < 260
   })
-  // collapse FAQ so row height matches closed 56
+  // 先收合 FAQ，让行高回到关闭态 56px，避免把展开内容计入
   ;[...document.querySelectorAll('[data-faq-trigger][data-state="open"]')].forEach((el) =>
     el.click(),
   )
@@ -268,7 +268,7 @@
   // —— records ——
   const recordsTitle = first(textsExact('我的质押记录', rightish))
   const colLabs = ['时间', '周期', '数量', '已释放', '交易哈希']
-  // Prefer table header cells
+  // 优先用表头单元格定位表格
   const table = (() => {
     const th = first(textsExact('交易哈希', rightish))
     if (!th) return null
@@ -295,13 +295,13 @@
         })
       : null
   const cols = colLabs.map((lab) => {
-    // header row near records
+    // 记录区附近的表头行
     const el = [...document.querySelectorAll('th,span,div,p')].find((e) => {
       const t = (e.textContent || '').trim()
       const r = e.getBoundingClientRect()
       if (t !== lab || !rightish(e, r)) return false
       if (lab === '已释放') {
-        // avoid position metric
+        // 避开标题下方可能出现的同文案位置指标
         return r.y > (recordsTitle?.getBoundingClientRect().y || 600)
       }
       return true
@@ -319,7 +319,7 @@
       const t = (e.textContent || '').trim()
       return t && ![...e.children].some((k) => (k.textContent || '').trim() === t)
     })
-    // Prefer td children
+    // 优先取 td 的直接子节点作为单元格样式
     const tds = [...tr.querySelectorAll('td')]
     if (tds.length >= 5) {
       return tds.slice(0, 5).map((td) => styleOf(td.querySelector('span,a,p') || td))
@@ -381,7 +381,7 @@
     }
   })
   const mechTitleEl = first(textsExact('质押 AGX', rightish))
-  // 爬到带 pad 的 Card（article），勿停在内层 flex/ol 内容壳
+  // 向上找带内边距的 Card（article），不要停在内层 flex/ol 内容容器
   const mechCard = mechTitleEl
     ? climb(mechTitleEl, (n) => {
         const r = n.getBoundingClientRect()

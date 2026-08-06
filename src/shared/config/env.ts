@@ -69,14 +69,14 @@ export function requireEnvBoolean(key: keyof ImportMetaEnv): boolean {
 }
 
 /**
- * Fail-closed 的应用配置。缺失 / 非法的值在模块加载时即抛错——
+ * 应用配置在缺失 / 非法时于模块加载阶段即抛错——
  * 绝不静默地带入硬编码的基础设施或产品配置。
  */
 export const appEnv = {
   thirdwebClientId: requireEnvString('VITE_THIRDWEB_CLIENT_ID'),
   walletConnectProjectId: requireEnvString('VITE_WALLETCONNECT_PROJECT_ID'),
   bscRpcUrl: requireEnvString('VITE_BSC_RPC_URL'),
-  /** 可选；逗号分隔。缺省时读客户端仍挂公共 BSC 种子作 failover。 */
+  /** 可选；逗号分隔。缺省时读客户端仍挂公共 BSC 种子作故障转移。 */
   bscRpcFallbackUrls: parseOptionalCsvUrls(readRaw('VITE_BSC_RPC_FALLBACK_URLS')),
   apiBaseUrl: requireEnvString('VITE_API_BASE_URL'),
   /** 仅主机名（不含协议），用于运行时 `location` 不可读时的兜底。 */

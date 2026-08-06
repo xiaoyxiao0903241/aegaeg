@@ -48,7 +48,7 @@ function useDismissOnOutside(
 /**
  * DApp 列表菜单（兑换 TokenPicker / 资产排序 / SelectMenu 共用）
  *
- * 面板按视口剩余空间上下翻转；只提供外壳与交互，
+ * 面板按视口剩余空间上下翻转；只提供容器与交互，
  * 选项 / 文案 / 图标由调用方组装进 Item。
  */
 

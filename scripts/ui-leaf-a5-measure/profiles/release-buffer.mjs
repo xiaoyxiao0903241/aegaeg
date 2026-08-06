@@ -1,11 +1,10 @@
 /**
- * Release Buffer (`#release/buffer` · PC `4469:220`) A5 profile.
+ * Release Buffer 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- * Order = `223-release-buffer-min-leaves.md` 全表。
- * Left: ReleaseBufferWidget · Right: ReleaseBufferContent
- *
- * 机制否决 DappProcessSteps → 全叶（icon/line/conn/strip）
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
+ * 顺序按 `223-release-buffer-min-leaves.md` 全表。
+ * 左栏为 ReleaseBufferWidget，右栏为 ReleaseBufferContent。
+ * 机制区不使用 DappProcessSteps，改为逐项测量图标、行、连接线、条带。
  */
 
 import { readFileSync } from 'node:fs'
@@ -15,7 +14,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为本地绝对路径，供读写缓冲池测量文件。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -69,8 +72,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按缓冲池清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
@@ -94,14 +100,14 @@ export function mapLeaves(gdc, page) {
   const conns = /** @type {any[]} */ (M.conns ?? [])
   const benefits = /** @type {any[]} */ (M.benefits ?? [])
 
-  // 0–1 chrome dividers
+  // 0–1 页面分隔外观
   add(gdc[0], S.dividerL, 'shell.dividerL')
   add(gdc[1], S.dividerR, 'shell.dividerR')
 
   // 2 DappTabHeader
   add(gdc[2], H.tabHeader, 'header.tabHeader')
 
-  // 3–30 buf×2（AGX / gAGX · 各 14 leaf：card→claimText；radio 稿有现码可无→null）
+  // 3–30 两个缓冲卡（AGX / gAGX，各 14 项：从卡片到领取按钮文案；设计参考中无对应现码时可为 null）
   const tokens = ['AGX', 'gAGX']
   let gi = 3
   for (const tok of tokens) {
@@ -122,7 +128,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], b.claimText, `bufs[${tok}].claimText`)
   }
 
-  // 31–55 stats（heading + wide×2 × 12）
+  // 31–55 数据区（标题 + 2 个宽卡 × 12 项）
   add(gdc[gi++], St.heading, 'stats.heading')
   for (const tok of tokens) {
     const w = wide[tok] ?? {}
@@ -138,7 +144,7 @@ export function mapLeaves(gdc, page) {
     }
   }
 
-  // 56–81 records
+  // 56–81 记录区
   add(gdc[gi++], R.heading, 'records.heading')
   add(gdc[gi++], R.tableCard, 'records.tableCard')
   for (let i = 0; i < 4; i++) add(gdc[gi++], headers[i], `records.header[${i}]`)
@@ -147,7 +153,7 @@ export function mapLeaves(gdc, page) {
     for (let ci = 0; ci < 4; ci++) add(gdc[gi++], cells[ci], `records.row[${ri}].c[${ci}]`)
   }
 
-  // 82–90 pager
+  // 82–90 分页
   add(gdc[gi++], P.total, 'pager.total')
   add(gdc[gi++], P.perPage, 'pager.perPage')
   add(gdc[gi++], P.prevBtn, 'pager.prevBtn')
@@ -158,7 +164,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[gi++], P.nextBtn, 'pager.nextBtn')
   add(gdc[gi++], P.nextIcon, 'pager.nextIcon')
 
-  // 91–117 mechanism（title/subtitle/fcard + steps×4{icon,line1,line2}+conns×3 + strip + benefits×4）
+  // 91–117 机制区（标题、副标题、首卡 + 4 步图标/两行 + 3 连接线 + 条带 + 4 条收益）
   add(gdc[gi++], M.title, 'mech.title')
   add(gdc[gi++], M.subtitle, 'mech.subtitle')
   add(gdc[gi++], M.fcard, 'mech.fcard')
@@ -176,7 +182,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], b.text, `mech.benefits[${i}].text`)
   }
 
-  // 118 Faq
+  // 118 FAQ
   add(gdc[gi++], F.list, 'faq.list')
 
   if (mapped.length !== gdc.length) {

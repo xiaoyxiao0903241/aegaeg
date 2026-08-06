@@ -7,6 +7,7 @@ export interface ApiEnvelope<T> {
   message?: string
 }
 
+/** 后端信封或传输层失败的标准错误，供提示与分类逻辑使用。 */
 export class ApiError extends Error {
   readonly code: number
   readonly error: string

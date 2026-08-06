@@ -5,7 +5,7 @@ import { formatNumber, parseApiAmount as parseApiAmountNullable } from '~/shared
 
 type StakingMoneyBlock = Parameters<typeof evaluateWriteButtonPhase>[0]['moneyBlock']
 
-/** 旁注金额：API 非法时兜底 0（解析 SSOT 仍是 format `parseApiAmount`）。 */
+/** 旁注金额：API 非法时兜底 0（解析的唯一来源仍是 format `parseApiAmount`）。 */
 export function parseApiAmountOrZero(raw: string | undefined): number {
   return parseApiAmountNullable(raw) ?? 0
 }

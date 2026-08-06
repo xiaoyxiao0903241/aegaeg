@@ -1,6 +1,7 @@
 /**
- * Community Hub page snapshot for A5 measure (WebBridge evaluate).
- * Returns measured rects keyed for mapLeaves.
+ * Community Hub 页面快照，供 A5 测量通过 WebBridge 求值。
+ *
+ * 返回按 mapLeaves 使用的 key 组织的测量矩形。
  */
 ;(() => {
   const rect = (el) => {

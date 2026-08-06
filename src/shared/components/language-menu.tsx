@@ -189,6 +189,7 @@ const nativeLanguageMenuScript = `
 })()
 `
 
+/** 原生 `<details>` 版语言菜单：适合静态页面，由浏览器开合 */
 function NativeLanguageMenu({
   label,
   options,
@@ -230,6 +231,7 @@ function NativeLanguageMenu({
   )
 }
 
+/** React 受控版语言菜单：点击外部或 Escape 时关闭 */
 function ReactLanguageMenu({
   label,
   options,

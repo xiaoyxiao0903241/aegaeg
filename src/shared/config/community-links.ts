@@ -11,6 +11,7 @@ export const COMMUNITY_SOCIAL_LINKS = {
 
 export type CommunitySocialLinkId = keyof typeof COMMUNITY_SOCIAL_LINKS
 
+/** 按 id 返回社区社交链接（来自环境配置）。 */
 export function communitySocialLink(id: CommunitySocialLinkId) {
   return COMMUNITY_SOCIAL_LINKS[id]
 }
@@ -23,7 +24,7 @@ export interface CommunityQuickLinkLabels {
   telegram: string
 }
 
-/** 社区快捷链接项的形状（由外壳页面的 QuickLink 消费）。 */
+/** 社区快捷链接项的形状（由宿主页面的 QuickLink 消费）。 */
 export interface CommunityQuickLinkItem {
   href: string
   icon: string
@@ -39,6 +40,7 @@ const COMMUNITY_LINK_ICONS = {
   telegram: '/assets/figma/dapp/ic-telegram.svg',
 } as const
 
+/** 组装社区快捷链接条目：文档链接加四个社交平台。 */
 export function communityQuickLinkItems(
   labels: CommunityQuickLinkLabels,
   locale: Locale,

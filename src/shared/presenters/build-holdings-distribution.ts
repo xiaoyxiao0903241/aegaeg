@@ -1,7 +1,7 @@
 /**
  * 资产 Hub「持仓分布」环形图几何与文案（纯函数）。
  *
- * 百分比按各桶 USD 估值占比；几何对齐原型 SVG（r=54、周长 dash/offset）。
+ * 百分比按各桶 USD 估值占比；几何对齐设计稿 SVG（r=54、周长 dash/offset）。
  * 分桶金额可由 API / 链读组装后传入；本模块只做展示几何。
  */
 
@@ -9,7 +9,7 @@ import { formatNumber, formatUsd } from '~/shared/presenters/format'
 
 export type HoldingsDistributionModeKey = 'stake' | 'lpbond' | 'burnbond' | 'xmine'
 
-/** 原型色板（稿面四桶；浅段用深字保证对比） */
+/** 设计稿色板（四桶；浅色段用深字保证对比） */
 const HOLDINGS_DISTRIBUTION_COLORS: Record<
   HoldingsDistributionModeKey,
   { color: string; text: string }

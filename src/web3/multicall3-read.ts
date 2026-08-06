@@ -38,8 +38,15 @@ export async function readAggregate3(
 }
 
 /**
- * 解码 aggregate3 单槽；`success === false` 时按 label fail-closed 抛错。
- * functionName 由 call site 与 ABI 对齐。
+ * 解码 aggregate3 单槽；`success === false` 时按 label 抛出错误，失败结果不放行。
+ * functionName 必须与 ABI 中该方法的函数签名一致。
+ *
+ * @param results aggregate3 返回结果槽
+ * @param index 要解码的结果下标
+ * @param abi 对应方法的 ABI
+ * @param functionName ABI 中的方法名
+ * @param label 解码失败或调用失败时使用的错误标识
+ * @returns 按调用方泛型解析出的返回值
  */
 export function decodeAggregate3Result<T>(
   results: readonly Aggregate3Result[],

@@ -1,6 +1,6 @@
 import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/errors/sentinels'
 
-/** 各业务写操作的软阻断 sentinel；不含文案，统一在 `getErrorMessage` 映射。 */
+/** 各业务写操作的软阻断哨兵；不含文案，统一在 `getErrorMessage` 映射。 */
 
 export const ASSETS_BLOCKED = {
   zeroAmount: 'ASSETS_ZERO_AMOUNT',

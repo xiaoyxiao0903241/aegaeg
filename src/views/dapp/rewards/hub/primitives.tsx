@@ -11,7 +11,7 @@ import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
-/** 奖励类型入口卡（组合式）：壳管可点行为；标题 / 说明 / 余额由调用方用子件组装。 */
+/** 奖励类型入口卡（组合组件）：外层卡片处理可点行为；标题 / 说明 / 余额由调用方用子组件组装。 */
 function TypeRoot({ children, onClick }: { children: ReactNode; onClick: () => void }) {
   return (
     <InteractiveCard className="grid gap-3" onClick={onClick}>

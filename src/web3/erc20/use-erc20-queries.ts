@@ -9,7 +9,7 @@ import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-r
  * 原子 ERC20 余额查询（钱包作用域）
  *
  * 查询键含 token 与地址（`queryKeys.chain.erc20Balance`）。
- * 展示可用 `keepPreviousData`；判断用数据须排除占位数据
+ * 展示可用 `keepPreviousData`；判断用数据须排除上一次数据
  * （见 `decision-freshness` 约定）。
  *
  * @param token 代币地址，未提供时查询禁用
@@ -34,7 +34,7 @@ export function useErc20BalanceQuery(
  * 原子 ERC20 授权额度查询
  *
  * spender 进查询键；非连接预热路径。
- * 展示可用 `keepPreviousData`；判断用数据须排除占位数据。
+ * 展示可用 `keepPreviousData`；判断用数据须排除上一次数据。
  *
  * @param token 代币地址
  * @param owner 持有人地址

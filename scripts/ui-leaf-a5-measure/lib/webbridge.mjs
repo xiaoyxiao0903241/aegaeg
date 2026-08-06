@@ -1,18 +1,26 @@
-/** Kimi WebBridge HTTP client — POST http://127.0.0.1:10086/command */
+/**
+ * Kimi WebBridge HTTP 客户端，通过 POST http://127.0.0.1:10086/command 控制浏览器。
+ */
 
 const DEFAULT_BASE = 'http://127.0.0.1:10086'
 
 /**
+ * 创建一次浏览器会话的 WebBridge 客户端。
+ *
  * @param {string} session
  * @param {{ baseUrl?: string }} [opts]
+ * @returns 封装了 navigate / evaluate / cdp 的客户端对象
  */
 export function createWebBridge(session, opts = {}) {
   const baseUrl = opts.baseUrl ?? DEFAULT_BASE
 
   /**
+   * 向 WebBridge 发送单个命令。
+   *
    * @param {string} action
    * @param {Record<string, unknown>} [args]
    * @param {number} [timeoutMs]
+   * @returns WebBridge 返回的数据
    */
   async function command(action, args, timeoutMs = 120_000) {
     const payload = { action, session }

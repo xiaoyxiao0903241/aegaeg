@@ -37,7 +37,7 @@ export function fillTemplate(template: string, values: Record<string, string>): 
   )
 }
 
-/** Scroll-reveal：默认可见，boot 后仅对未进入视口的块淡出；见 home-motion.css */
+/** 滚动进场类名：默认可见，boot 后仅对未进入视口的块淡出；见 home-motion.css */
 export function revealClass(opts?: { delay?: boolean; className?: string }) {
   return cn(
     'transition-opacity duration-700 ease-[cubic-bezier(0.2,0.7,0.2,1)]',

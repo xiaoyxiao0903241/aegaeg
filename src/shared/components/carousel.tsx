@@ -59,7 +59,7 @@ const carouselChrome = tv({
     viewport: '',
     track: '-ml-8 flex items-stretch',
     slide: 'flex w-full max-w-full min-w-0 shrink-0 grow-0 basis-full flex-col pl-8',
-    /** peek（季卡）外罩 */
+    /** peek（季卡）外围容器 */
     peekBleed: 'relative -mx-5 w-[calc(100%+2.5rem)] min-w-0 overflow-visible px-5',
     peekViewport: 'w-full min-w-0 overflow-x-hidden overflow-y-visible',
     peekTrack: '-ml-2.5 flex items-stretch',
@@ -141,6 +141,7 @@ type CarouselRootProps = HTMLAttributes<HTMLDivElement> & {
   children?: ReactNode
 }
 
+/** 轮播根组件：管理 Embla 实例、自动播放、索引同步与键盘翻页 */
 function CarouselRoot({
   opts,
   autoplayMs,

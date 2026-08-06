@@ -29,7 +29,12 @@ export type LpBondDepositoryKey = 'bondDepository180d' | 'bondDepository360d' | 
 export type BurnBondDepositoryKey =
   'burnBondDepository180d' | 'burnBondDepository360d' | 'burnBondDepository540d'
 
-/** 周期 → BSC_CONTRACTS 字段 key，用于 AGX 质押路径。 */
+/**
+ * 质押周期 → BSC_CONTRACTS 字段 key，用于 AGX 质押路径。
+ *
+ * @param period 质押周期；非活期档落入 540 天
+ * @returns 合约地址映射 key
+ */
 export function stakePoolKey(period: StakePeriod): StakePoolContractKey {
   if (period === 'liquid') return 'liquidStaking'
   if (period === '180') return 'lockedStaking180d'
@@ -37,14 +42,24 @@ export function stakePoolKey(period: StakePeriod): StakePoolContractKey {
   return 'lockedStaking540d'
 }
 
-/** 周期 → LP 债券合约 key，供 BondHelper zap 使用。 */
+/**
+ * 周期 → LP 债券合约 key，供 BondHelper zap 使用。
+ *
+ * @param period 债券周期
+ * @returns 合约地址映射 key
+ */
 export function lpBondDepositoryKey(period: BondPeriod): LpBondDepositoryKey {
   if (period === '180') return 'bondDepository180d'
   if (period === '360') return 'bondDepository360d'
   return 'bondDepository540d'
 }
 
-/** 周期 → 燃烧债券合约 key，供 BondHelper zap 使用。 */
+/**
+ * 周期 → 燃烧债券合约 key，供 BondHelper zap 使用。
+ *
+ * @param period 债券周期
+ * @returns 合约地址映射 key
+ */
 export function burnBondDepositoryKey(period: BondPeriod): BurnBondDepositoryKey {
   if (period === '180') return 'burnBondDepository180d'
   if (period === '360') return 'burnBondDepository360d'

@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 /**
- * Mechanical rename: drop lead build/resolve verbs and gate metaphors from product symbols.
- * Run from repo root. Does not touch ABI/backend JSON field names or CoBuild product paths.
+ * 批量重命名：去掉产品符号里的 build/resolve 动词和 gate 隐喻。
+ *
+ * 在仓库根目录运行；不改 ABI、后端 JSON 字段名或 CoBuild 产品路径。
  */
 import fs from 'node:fs'
 import path from 'node:path'
 
 const ROOT = process.cwd()
 
-/** Longer names first to avoid partial collisions. */
+/** 长名称在前，避免被短名称部分替换。 */
 const RENAMES = [
-  // ── gate → block (longest first) ──────────────────────────────────────────
+  // ── gate 改为 block（长名称优先）──────────────────────────────────────────
   ['evaluateXmineActivateWarmupGate', 'evaluateXmineActivateWarmup'],
   ['evaluateRewardsSimpleClaimGate', 'evaluateRewardsSimpleClaim'],
   ['evaluateRewardsMixedClaimGate', 'evaluateRewardsMixedClaim'],
@@ -56,7 +57,7 @@ const RENAMES = [
   ['preGate', 'preBlock'],
   ['liveGate', 'liveBlock'],
 
-  // ── auth / login ──────────────────────────────────────────────────────────
+  // ── 登录相关 ──────────────────────────────────────────────────────────────
   ['buildSiweLoginMessage', 'siweLoginMessage'],
   ['buildSimpleLoginMessage', 'simpleLoginMessage'],
   ['buildLoginMessage', 'loginMessage'],
@@ -68,7 +69,7 @@ const RENAMES = [
   ['resolveLoginToastMessage', 'loginToastMessage'],
   ['resolveSessionRenewAtMs', 'sessionRenewAtMs'],
 
-  // ── genesis / presale ─────────────────────────────────────────────────────
+  // ── 预售 / Genesis ────────────────────────────────────────────────────────
   ['buildGenesisFaqTemplateValues', 'genesisFaqTemplateValues'],
   ['buildGenesisWidgetModel', 'genesisPurchaseSummary'],
   ['buildGenesisPromoSnapshot', 'genesisPromoSnapshot'],
@@ -92,7 +93,7 @@ const RENAMES = [
   ['resolveSeasonCarouselScrollIndex', 'seasonCarouselScrollIndex'],
   ['resolveMinUsd', 'minUsd'],
 
-  // ── exchange ──────────────────────────────────────────────────────────────
+  // ── 兑换 ──────────────────────────────────────────────────────────────────
   ['resolveNeedReferral', 'evaluateNeedReferral'],
   ['resolveWriteButtonPhase', 'evaluateWriteButtonPhase'],
   ['resolveClaimRewardOutcome', 'claimRewardOutcome'],
@@ -108,7 +109,7 @@ const RENAMES = [
   ['buildPancakeSwapUrl', 'pancakeSwapUrl'],
   ['buildWriteCallParams', 'writeCallParams'],
 
-  // ── staking addresses / keys ──────────────────────────────────────────────
+  // ── 质押地址 / key ────────────────────────────────────────────────────────
   ['resolveBurnBondDepositoryKey', 'burnBondDepositoryKey'],
   ['resolveLpBondDepositoryKey', 'lpBondDepositoryKey'],
   ['resolveStakePoolKey', 'stakePoolKey'],
@@ -117,7 +118,7 @@ const RENAMES = [
   ['resolveStakePoolAddress', 'stakePoolAddress'],
   ['resolveDepository', 'depositoryAddress'],
 
-  // ── wallet / chain ────────────────────────────────────────────────────────
+  // ── 钱包 / 链 ─────────────────────────────────────────────────────────────
   ['resolveWalletEip1193Provider', 'walletEip1193Provider'],
   ['resolveLegacyInjectedProvider', 'legacyInjectedProvider'],
   ['resolveWalletTransactionError', 'walletTransactionError'],
@@ -125,7 +126,7 @@ const RENAMES = [
   ['resolveChainReadClient', 'chainReadClient'],
   ['resolveChainQueryEnabled', 'chainQueryEnabled'],
 
-  // ── navigation / links / config / display ─────────────────────────────────
+  // ── 导航 / 链接 / 配置 / 展示 ─────────────────────────────────────────────
   ['resolveDappLocationFromHash', 'dappLocationFromHash'],
   ['resolveTabFromHash', 'tabFromHash'],
   ['resolvePancakeSwapDeepLink', 'pancakeSwapDeepLink'],
@@ -146,7 +147,7 @@ const RENAMES = [
   ['buildRayWedgePath', 'rayWedgePath'],
   ['buildSteps', 'onboardingSteps'],
 
-  // ── api infra ─────────────────────────────────────────────────────────────
+  // ── API 基础设施 ──────────────────────────────────────────────────────────
   ['resolveApiUserFacingError', 'apiUserFacingError'],
   ['resolveApiBaseUrl', 'apiBaseUrl'],
   ['buildApiClientUrl', 'apiClientUrl'],
@@ -155,7 +156,7 @@ const RENAMES = [
   ['resolveContractErrorMessage', 'contractErrorMessage'],
 ]
 
-/** Path / basename segments (kebab). Longer first. Avoid bare "gate" / "gates" alone. */
+/** 路径与目录名（kebab-case），长名称优先；避免只替换裸 gate / gates。 */
 const PATH_RENAMES = [
   ['fetch-live-genesis-post-approve-gate', 'fetch-live-genesis-post-approve'],
   ['build-genesis-widget-model', 'shared'],
@@ -267,12 +268,19 @@ const FILE_MOVES = [
   ['tests/unit/react-quality-gates.test.mjs', 'tests/unit/react-quality-checks.test.mjs'],
 ]
 
-/** i18n nested keys: messages.*.gates → messages.*.blocked */
+/** i18n 嵌套键：messages.*.gates 改为 messages.*.blocked */
 const I18N_KEY_RENAMES = [
   ['.gates.', '.blocked.'],
   ['gates:', 'blocked:'],
 ]
 
+/**
+ * 递归收集可重写的源码 / 文档文件。
+ *
+ * @param {string} dir 起始目录
+ * @param {string[]} out 已收集的文件路径
+ * @returns {string[]} 文件路径列表
+ */
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -290,6 +298,12 @@ function walk(dir, out = []) {
   return out
 }
 
+/**
+ * 对文本依次应用符号重命名表。
+ *
+ * @param {string} text 原始文本
+ * @returns {string} 替换后的文本
+ */
 function renameInText(text) {
   let next = text
   for (const [from, to] of RENAMES) {
@@ -303,7 +317,7 @@ const files = dirs.flatMap((d) => walk(d))
 
 let contentTouches = 0
 for (const file of files) {
-  // Do not rewrite this script's own RENAMES table mid-flight via PATH on itself twice
+  // 跳过本脚本自身，避免运行中重写自己的 RENAMES 表
   if (file.endsWith('rename-build-resolve.mjs')) continue
   const raw = fs.readFileSync(file, 'utf8')
   let next = renameInText(raw)
@@ -318,7 +332,7 @@ for (const file of files) {
       next = next.replaceAll(from, to)
     }
   }
-  // error-messages and views that reference t.*.gates
+  // error-messages 与引用 t.*.gates 的视图单独补一轮替换
   if (
     next.includes('.gates.') ||
     next.includes('t.staking.gates') ||

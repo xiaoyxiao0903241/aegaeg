@@ -24,10 +24,23 @@ import type {
   ReferralAwardDirectReferralsParams,
 } from '~/shared/api/types'
 
+/** 奖励域查询较多，这里集中暴露各汇总、流水与领取状态 hooks。 */
+
+/**
+ * 查询今日幸运奖汇总。
+ *
+ * @param enabled false 时暂停请求
+ */
 export function useLuckyRewardSummary(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.luckyRewardSummary, getLuckyRewardSummary, enabled)
 }
 
+/**
+ * 分页查询当前用户参与过的幸运奖轮次，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useLuckyRewardMyRounds(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -40,6 +53,12 @@ export function useLuckyRewardMyRounds(params: PaginationParams = {}, enabled = 
   )
 }
 
+/**
+ * 按日期查询幸运奖中奖名单；日期为空时不发起请求。
+ *
+ * @param date 中奖日期（yyyy-MM-dd）
+ * @param enabled false 时暂停请求
+ */
 export function useLuckyRewardWinners(date: string | null | undefined, enabled = true) {
   const day = date?.trim() ?? ''
 
@@ -50,6 +69,11 @@ export function useLuckyRewardWinners(date: string | null | undefined, enabled =
   )
 }
 
+/**
+ * 查询市场基金可领汇总。
+ *
+ * @param enabled false 时暂停请求
+ */
 export function useMarketAllowanceSummary(enabled = true) {
   return useAuthenticatedQuery(
     queryKeys.api.marketAllowanceSummary,
@@ -58,6 +82,12 @@ export function useMarketAllowanceSummary(enabled = true) {
   )
 }
 
+/**
+ * 分页查询市场基金领取记录，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useMarketAllowanceClaimLogs(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -70,6 +100,12 @@ export function useMarketAllowanceClaimLogs(params: PaginationParams = {}, enabl
   )
 }
 
+/**
+ * 分页查询市场基金已付记录，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useMarketAllowancePaidLogs(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -82,6 +118,11 @@ export function useMarketAllowancePaidLogs(params: PaginationParams = {}, enable
   )
 }
 
+/**
+ * 查询参与奖汇总。
+ *
+ * @param enabled false 时暂停请求
+ */
 export function useParticipationAwardSummary(enabled = true) {
   return useAuthenticatedQuery(
     queryKeys.api.participationAwardSummary,
@@ -90,6 +131,12 @@ export function useParticipationAwardSummary(enabled = true) {
   )
 }
 
+/**
+ * 分页查询参与奖发放记录，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useParticipationAwardLogs(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -102,6 +149,11 @@ export function useParticipationAwardLogs(params: PaginationParams = {}, enabled
   )
 }
 
+/**
+ * 查询当前用户的邀请人信息。
+ *
+ * @param enabled false 时暂停请求
+ */
 export function useParticipationAwardInviter(enabled = true) {
   return useAuthenticatedQuery(
     queryKeys.api.participationAwardInviter,
@@ -110,10 +162,21 @@ export function useParticipationAwardInviter(enabled = true) {
   )
 }
 
+/**
+ * 查询等级共建奖汇总。
+ *
+ * @param enabled false 时暂停请求
+ */
 export function useRankRewardSummary(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.rankRewardSummary, getRankRewardSummary, enabled)
 }
 
+/**
+ * 分页查询等级共建奖发放记录，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useRankRewardLogs(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -126,6 +189,12 @@ export function useRankRewardLogs(params: PaginationParams = {}, enabled = true)
   )
 }
 
+/**
+ * 分页查询同级超越记录，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useRankRewardPeerSurpassLogs(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -138,6 +207,12 @@ export function useRankRewardPeerSurpassLogs(params: PaginationParams = {}, enab
   )
 }
 
+/**
+ * 分页查询等级共建团队成员，翻页时保留上一页数据。
+ *
+ * @param params 分页与过滤参数
+ * @param enabled false 时暂停请求
+ */
 export function useRankRewardTeamMembers(params: RankRewardTeamMembersParams = {}, enabled = true) {
   return useAuthenticatedQuery(
     queryKeys.api.rankRewardTeamMembers(params),
@@ -147,10 +222,21 @@ export function useRankRewardTeamMembers(params: RankRewardTeamMembersParams = {
   )
 }
 
+/**
+ * 查询推荐奖汇总。
+ *
+ * @param enabled false 时暂停请求
+ */
 export function useReferralAwardSummary(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.referralAwardSummary, getReferralAwardSummary, enabled)
 }
 
+/**
+ * 分页查询推荐奖发放记录，翻页时保留上一页数据。
+ *
+ * @param params 分页参数
+ * @param enabled false 时暂停请求
+ */
 export function useReferralAwardLogs(params: PaginationParams = {}, enabled = true) {
   const page = params.page
   const pageSize = params.page_size
@@ -163,6 +249,12 @@ export function useReferralAwardLogs(params: PaginationParams = {}, enabled = tr
   )
 }
 
+/**
+ * 分页查询直接推荐用户，翻页时保留上一页数据。
+ *
+ * @param params 分页与过滤参数
+ * @param enabled false 时暂停请求
+ */
 export function useReferralAwardDirectReferrals(
   params: ReferralAwardDirectReferralsParams = {},
   enabled = true,

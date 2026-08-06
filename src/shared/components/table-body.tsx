@@ -158,7 +158,16 @@ type BodyProps = {
   statusColumns?: number[]
 }
 
-/** 网格 + 可选空态。 */
+/**
+ * 表格网格
+ *
+ * 渲染列头与行，支持加载骨架、列语义样式与空态。
+ *
+ * @param headers 列头文案
+ * @param rows 单元格二维数组
+ * @param isLoading 为 true 时显示骨架行
+ * @param empty 空态标题；缺省且 rows 空时不渲染空态
+ */
 function Body({
   className = '',
   colWidths,

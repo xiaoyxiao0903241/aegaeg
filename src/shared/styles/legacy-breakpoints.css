@@ -1,9 +1,9 @@
 /**
- * Tailwind v4 默认 max-* 变体 → `@media not all and (min-width:…)`；
- * Chromium <104 / 部分国产 WebView 整段忽略。
- * 用经典 min-/max-width 覆盖项目断点变体（须在 utilities 生成前导入）。
+ * Tailwind v4 默认 max-* 变体会生成 `@media not all and (min-width:…)`，
+ * 旧版 Chromium（<104）与部分国内 WebView 会整段忽略。
+ * 这里用经典 min-/max-width 覆盖项目断点变体，须在 utilities 生成前导入。
  *
- * 重叠 max-width 变体：下方声明顺序 = 生成顺序 = 同属性时后者优先（max-dapp 最后）。
+ * 重叠 max-width 变体：下方声明顺序与生成顺序一致，同属性时后者优先（max-dapp 最后）。
  * 字面量与 `lib/breakpoints.ts` 同步。
  */
 @custom-variant dapp (@media (min-width: 821px));

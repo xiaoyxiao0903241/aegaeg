@@ -16,6 +16,8 @@ import type {
   UserPerformance,
 } from '~/shared/api/types'
 
+/** 社区与业绩端点统一走业务信封；搜索做市业绩不要求登录。 */
+
 export async function getPerformance(token: string): Promise<UserPerformance> {
   return apiRequest<UserPerformance>('/performance', {
     method: 'POST',
@@ -24,6 +26,15 @@ export async function getPerformance(token: string): Promise<UserPerformance> {
   })
 }
 
+/**
+ * 按地址搜索做市业绩，公开查询不要求登录。
+ *
+ * 请求体里的地址由调用方先规范化；未找到用户时后端按空业绩返回。
+ *
+ * @param address 待搜索的钱包地址
+ * @returns 搜索到的用户业绩
+ * @see docs/backend-api/api.md #一期接口/search-performance
+ */
 export async function searchPerformance(address: string): Promise<UserPerformance> {
   return apiRequest<UserPerformance>('/search/performance', {
     method: 'POST',

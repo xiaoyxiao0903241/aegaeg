@@ -83,6 +83,7 @@ function StepsRoot({
   )
 }
 
+/** 桌面左对齐步骤条：编号在上，连线横穿列间 */
 function StartDesktop({ count, children }: { count: number; children: ReactElement<ItemProps>[] }) {
   return (
     <div className="flex w-full items-start">
@@ -111,6 +112,7 @@ function StartDesktop({ count, children }: { count: number; children: ReactEleme
   )
 }
 
+/** 桌面居中步骤条：编号居中，连线位于两侧留白之间 */
 function CenterDesktop({
   count,
   children,
@@ -157,6 +159,7 @@ function CenterDesktop({
   )
 }
 
+/** 步骤编号圆点：activeIndex 缺省时全部高亮 */
 function StepBadge({ align, index }: { align: StepsAlign; index: number }) {
   const { activeIndex } = useSteps()
   const isActive = activeIndex == null ? true : index === activeIndex
@@ -183,6 +186,7 @@ function StepBadge({ align, index }: { align: StepsAlign; index: number }) {
   )
 }
 
+/** 步骤标题与正文；居中模式当前项额外高亮 */
 function StepText({
   align,
   index,
@@ -229,6 +233,7 @@ function StepText({
   )
 }
 
+/** 移动端步骤项：纵排编号与连线，正文放在右侧 */
 function Item({ index = 0, title, body, className }: ItemProps) {
   const { align, count } = useSteps()
   const isLast = index >= count - 1

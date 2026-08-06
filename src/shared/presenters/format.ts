@@ -143,7 +143,7 @@ export function formatUsdApprox(
 
 /**
  * 后端金额小数字符串 → number。
- * 空 / 空白 / 非有限数 → `null`（fail-closed；需要 0 兜底时写 `parseApiAmount(raw) ?? 0`）。
+ * 空 / 空白 / 非有限数 → `null`；需要 0 兜底时写 `parseApiAmount(raw) ?? 0`。
  */
 export function parseApiAmount(raw: string | null | undefined): number | null {
   if (raw == null) return null
@@ -179,6 +179,7 @@ export function formatPercentChange(value: number | null | undefined, digits = 1
   return `${sign}${formatNumber(value, { digits, trimZeros: true })}%`
 }
 
+/** 把链上区块时间（unix 秒）格式化为 `MM-DD HH:mm`；0 返回 `—`。 */
 export function formatBlockTime(timestamp: number): string {
   if (!timestamp) return '—'
 
@@ -186,6 +187,7 @@ export function formatBlockTime(timestamp: number): string {
   return formatDateTimeParts(date)
 }
 
+/** 把后端 ISO 时间格式化为 `MM-DD HH:mm`；空值或非法日期返回 `—`。 */
 export function formatApiDateTime(iso: string | null): string {
   if (!iso) return '—'
 
@@ -204,6 +206,7 @@ function formatDateTimeParts(date: Date): string {
   return `${month}-${day} ${hours}:${minutes}`
 }
 
+/** 把 ISO 时间格式化为 `YYYY-MM-DD`；空值或非法日期返回 `-`。 */
 export function formatRegisterDate(iso: string | null): string {
   if (!iso) return TABLE_EMPTY
   const date = new Date(iso)
@@ -223,6 +226,7 @@ export function formatShortAddress(
   return `${address.slice(0, head)}…${address.slice(-tail)}`
 }
 
+/** 折扣 BPS → 百分比文本（如 `-1.5%`）；非法或非正返回 `0%`。 */
 export function formatDiscountBps(discountBps: number): string {
   if (!Number.isFinite(discountBps) || discountBps <= 0) return '0%'
   return `-${discountBps / 100}%`

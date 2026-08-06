@@ -1,3 +1,8 @@
+/**
+ * 兑换域共享类型与纯函数
+ *
+ * 覆盖报价提交流程接口、子视图挂载矩阵、行情标签与路由文案。
+ */
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { FLASH_PAIR_DEFAULT, type FlashPairId, isFlashPairId } from '~/core/exchange/flash-pair'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -93,7 +98,7 @@ export function formatExchangeRateColon({
   return `1 : ${trimTrailingZeros(formatRateRatioFixed(normalizedOut, decimalsOut))}`
 }
 
-/** 市价交易行情标签：`1 USD1 = 0.015385 AGX`；未知/零报价保留 chrome。 */
+/** 市价交易行情标签：`1 USD1 = 0.015385 AGX`；未知/零报价保留固定显示形态。 */
 export function formatExchangeRateApprox({
   amountIn,
   amountOut,

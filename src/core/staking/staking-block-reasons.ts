@@ -76,8 +76,8 @@ export function evaluateStakeLive(args: {
  * @param args.balance 钱包 USD1 余额
  * @param args.allowance 对 BondHelper 的授权
  * @param args.depositoryAuthorized 目标债券是否已授权（authContracts）
- * @param args.isOldAccount 迁移旧地址；null = 未知 fail-closed；true = 已迁移阻断
- * @param args.maxDebt 债券债务上限；0 = 不限；null = 未知 fail-closed
+ * @param args.isOldAccount 迁移旧地址；null = 未知按阻断处理；true = 已迁移阻断
+ * @param args.maxDebt 债券债务上限；0 = 不限；null = 未知按阻断处理
  * @param args.totalDeposit 当前已占用债务
  * @param args.netPayout 本笔预估净发放（AGX）
  */

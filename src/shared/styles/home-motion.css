@@ -1,6 +1,6 @@
-/* Staggered home section motion — driven by data-reveal / data-visible (home-reveal-loader). */
+/* 首页各区块的错峰进场动画：由 data-reveal / data-visible 驱动 */
 
-/* Hero — 首屏独立入场，与 scroll-reveal 分离 */
+/* 首屏：独立入场，不跟随滚动进场 */
 @keyframes hero-line-enter {
   from {
     opacity: 0;
@@ -43,7 +43,7 @@
   animation: hero-art-enter 880ms cubic-bezier(0.2, 0.7, 0.2, 1) 140ms both;
 }
 
-/* Protocol — 三列纵向上浮，内容自上而下依次显现 */
+/* 协议区块：三列纵向上浮，内容自上而下依次显现 */
 @keyframes protocol-card-enter {
   from {
     opacity: 0;
@@ -95,7 +95,7 @@
   animation-delay: calc(var(--card-index, 0) * 110ms + 250ms);
 }
 
-/* Engine — 四格对向滑入 + 去模糊，内容轻微弹出 */
+/* 引擎区块：四格对向滑入 + 去模糊，内容轻微弹出 */
 @keyframes engine-card-enter-left {
   from {
     opacity: 0;
@@ -216,7 +216,7 @@ html:not([data-home-motion-ready])
   transition: none !important;
 }
 
-/* boot 完成后：仅对尚未 reveal 的块隐藏（首屏已 instant 标记的保持可见） */
+/* boot 完成后：仅隐藏尚未进场的块（首屏已标记 instant 的保持可见） */
 html[data-home-motion-ready]
   [data-reveal]:not(
     [data-visible='true'],

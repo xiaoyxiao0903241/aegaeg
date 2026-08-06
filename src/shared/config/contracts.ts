@@ -22,7 +22,7 @@ export interface BscContracts {
   communityFundVault: Address
   /** DaoPool——DAO Mixed 签名领取（手册 §9.5 签名奖励） */
   daoPool: Address
-  /** IncentivePool——签名领取（手册仍有；参与奖 UI 已贴稿走 Dao Mixed） */
+  /** IncentivePool——签名领取（手册仍有；参与奖 UI 走 DaoPool Mixed） */
   incentivePool: Address
   /** MarketFund——发展津贴签名领取 */
   marketFund: Address

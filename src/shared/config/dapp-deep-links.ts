@@ -1,5 +1,12 @@
 import { type DappTab, tabOrder } from '~/shared/config/dapp-tabs'
 
+/**
+ * DApp Tab 与子视图的深链接解析。
+ *
+ * 统一处理 `#tab` / `#tab/view` 的解析、旧版 `#swap` 兼容，
+ * 并为每个子视图生成可写回 URL 的 hash。
+ */
+
 export type ExchangeView = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
 export type StakingView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine' | 'calc'
 export type AssetsView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine'
@@ -142,7 +149,7 @@ export function dappLocationFromHash(hash: string): DappLocation | null {
 
   if (tabPart === 'release') {
     if (!viewPart) return emptyViews('release')
-    // 拒绝旧原型名 `rewards` 作为 release 子视图
+    // 拒绝旧命名 `rewards` 作为 release 子视图
     if (viewPart === 'rewards' || !isReleaseView(viewPart)) {
       return emptyViews('release', { releaseView: 'hub' })
     }

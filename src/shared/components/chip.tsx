@@ -112,9 +112,9 @@ const fieldActionChip = tv({
   },
 })
 
-/** 输入框旁的软珊瑚操作胶囊（Genesis MAX / 社区绑定） */
 export type FieldActionChipProps = Omit<ChipProps, 'variant' | 'size' | 'shape' | 'tone'>
 
+/** 输入框旁的软珊瑚操作胶囊（Genesis MAX / 社区绑定） */
 export const FieldActionChip = forwardRef<HTMLButtonElement, FieldActionChipProps>(
   ({ className, ...props }, ref) => (
     <button type="button" className={fieldActionChip({ class: className })} ref={ref} {...props} />
@@ -122,11 +122,7 @@ export const FieldActionChip = forwardRef<HTMLButtonElement, FieldActionChipProp
 )
 FieldActionChip.displayName = 'FieldActionChip'
 
-/**
- * 金额输入框内的「最大」胶囊
- *
- * 浅珊瑚底 + 珊瑚字；比 FieldActionChip 矮，不另设任意尺寸。
- */
+/** 「最大」胶囊的样式槽位 */
 const amountMaxChip = tv({
   extend: chipVariants,
   base: [
@@ -144,6 +140,11 @@ const amountMaxChip = tv({
 
 export type AmountMaxChipProps = Omit<ChipProps, 'variant' | 'size' | 'shape' | 'tone'>
 
+/**
+ * 金额输入框内的「最大」胶囊
+ *
+ * 浅珊瑚底 + 珊瑚字；比 FieldActionChip 矮，不另设任意尺寸。
+ */
 export const AmountMaxChip = forwardRef<HTMLButtonElement, AmountMaxChipProps>(
   ({ className, ...props }, ref) => (
     <button type="button" className={amountMaxChip({ class: className })} ref={ref} {...props} />

@@ -543,6 +543,13 @@ export const RESTAKE_CONFIG_METHODS = {
   agxPrice: 'function agxPrice() view returns (uint256)',
 } as const
 
+/**
+ * RewardClaimer 签名领取方法。
+ *
+ * claimReward 签名已按链上实现验证，签名方法对应旧手册 §4.1。
+ *
+ * @see docs/onchain-manual-legacy.md §4.1 用户操作：签名领奖
+ */
 export const REWARD_CLAIMER_METHODS = {
   // 已在链上验证（实现 0x0265…fb7b，selector 0xf2ee58d4），
   // 签名方法与 docs/onchain-manual-legacy.md §4.1 一致：

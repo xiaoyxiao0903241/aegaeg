@@ -1,9 +1,9 @@
-/** DApp / Home 布局分界——须与 theme.css 的 `--breakpoint-dapp` 保持一致。 */
+/** DApp 与首页布局分界——须与 theme.css 的 `--breakpoint-dapp` 保持一致。 */
 export const BREAKPOINT_DAPP_PX = 821
 
 /**
  * 响应式断点基准——CSS @media 字面量须与以下保持同步：
- * - `tokens/theme.css`——site-fluid 与 H5 排版
+ * - `tokens/theme.css`——site-fluid 与移动端排版
  * - `legacy-breakpoints.css`——@custom-variant
  */
 export const BREAKPOINT_DESIGN_BASE_PX = 1920

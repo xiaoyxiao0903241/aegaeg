@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify docs/onchain-manual Markdown+ABI match the ingested HTML SSOT."""
+"""校验 docs/onchain-manual 的 Markdown 与 ABI 是否和 HTML 原文一致。"""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ MANUAL = ROOT / "docs" / "onchain-manual"
 HTML_PATH = MANUAL / "AEGIS_X_FRONTEND_MANUAL.html"
 EXPECTED_SHA256 = "d8fcab922773c7c44944e0896e17657c368a432746ad47a569d81f774fd370be"
 
-# HTML chrome / path metadata — not business prose.
+# HTML 页面骨架与路径元信息，不属于正文。
 IGNORE_HTML_LINES = {
     "前端接入主指南",
     "docs/FRONTEND_INTEGRATION_GUIDE.md",
@@ -83,7 +83,7 @@ def main() -> None:
 
     html = HTML_PATH.read_text(encoding="utf-8")
 
-    # --- addresses ---
+    # --- 地址清单 ---
     rows = re.findall(r"<tr data-address-row[^>]*>(.*?)</tr>", html, flags=re.S)
     html_map: dict[str, str] = {}
     for body in rows:
@@ -103,7 +103,7 @@ def main() -> None:
     if html_map != md_map:
         die(f"address catalog mismatch: html={len(html_map)} md={len(md_map)}")
 
-    # --- ABIs ---
+    # --- ABI 集合 ---
     html_abis: set[str] = set()
     for body in re.findall(r"<pre[^>]*>(.*?)</pre>", html, flags=re.I | re.S):
         text = unescape(re.sub(r"<[^>]+>", "", body)).strip()
@@ -128,7 +128,7 @@ def main() -> None:
     if html_abis != md_abis:
         die(f"ABI set mismatch: html={len(html_abis)} md={len(md_abis)}")
 
-    # --- prose lines HTML ⊆ MD ---
+    # --- 正文：HTML 出现的行都应在对应 Markdown 中 ---
     articles = re.findall(r"<article([^>]*)>(.*?)</article>", html, flags=re.I | re.S)
     title_to_md = {
         path.read_text(encoding="utf-8").splitlines()[0].lstrip("# ").strip(): path

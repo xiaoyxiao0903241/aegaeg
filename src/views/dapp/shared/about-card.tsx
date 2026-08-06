@@ -1,3 +1,8 @@
+/**
+ * DApp 关于轮播卡
+ *
+ * 奖励活动与兑换入口共用卡片，支持渐变底与可选人物 / 插画装饰。
+ */
 import type { ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 

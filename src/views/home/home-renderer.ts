@@ -11,6 +11,7 @@ const supportedLocalesJson = JSON.stringify(locales)
 const bootScript = PAGE_SCROLL_RESTORATION_BOOT_SCRIPT + LEGACY_DOM_POLYFILLS_BOOT_SCRIPT
 const legacyCoreJsScript = '<script type="module" src="/src/shared/lib/legacy-core-js.ts"></script>'
 
+/** HTML 属性值转义，防止动态 meta 文案闭合标签 */
 function escapeAttr(value: string) {
   return value
     .replace(/&/g, '&amp;')
@@ -61,7 +62,7 @@ const viewportContent = 'width=device-width, initial-scale=1.0, maximum-scale=1.
 /**
  * 首页文档模板
  *
- * 纯客户端 SPA 外壳，不做 SSR 也不预渲染内容；只内联关键引导脚本与
+ * 纯客户端 SPA 页面容器，不做 SSR 也不预渲染内容；只内联关键引导脚本与
  * 本地化的 <title>/<meta>，页面主体由 /src/boot/home-main.tsx 在客户端挂载。
  *
  * @param locale 目标语言

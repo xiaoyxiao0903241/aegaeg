@@ -22,7 +22,7 @@ export type BurnContributionSwapConfig = {
  * 将 splitBps（0–10000）格式化为整数/小数百分比字符串，供 FAQ 展示。
  *
  * @param splitBps 销毁占比（BPS）
- * @returns 百分比字符串
+ * @returns 百分比字符串；越界时抛错
  */
 export function formatBurnSplitPercent(splitBps: bigint): string {
   if (splitBps < 0n || splitBps > BPS_DENOM) {
@@ -77,7 +77,7 @@ export function burnContributionSwapBlocksSubmit(
 /**
  * 由链上 rateBps 生成「1 AGX = N 贡献点」文案。
  *
- * 贡献点 = AGX × rateBps / 10000；费率未配置（0）时显示占位。
+ * 贡献点 = AGX × rateBps / 10000；费率未配置（0）时显示 `—`。
  *
  * @param rateBps 兑换费率（BPS）
  * @param decimals AGX 精度

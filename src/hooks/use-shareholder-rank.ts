@@ -11,7 +11,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
  * 同时读取链上预售累计金额与后端做市业绩，取两者较大值作为个人交易额，
  * 避免数据源异步差异造成等级波动。
  *
- * @param sessionReady 会话是否就绪，由外壳页面传入（本 hook 不依赖 app 层）
+ * @param sessionReady 会话是否就绪，由宿主页面传入（本 hook 不依赖 app 层）
  * @returns 展示用等级、个人交易额、加载状态与登录错误等
  * @see 手册 §6 PreSale
  * @see docs/backend-api/api.md #performance

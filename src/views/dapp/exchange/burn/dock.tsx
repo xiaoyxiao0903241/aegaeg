@@ -16,6 +16,12 @@ import {
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
+/**
+ * 销毁左栏 Dock
+ *
+ * 输入销毁数量并预览燃烧 / 注入分配，提交写链；
+ * 未连接钱包或会话未就绪时展示对应引导。
+ */
 export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const vm = useBurn(burn)
   const { t, pair } = vm

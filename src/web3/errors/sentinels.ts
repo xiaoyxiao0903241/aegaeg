@@ -1,4 +1,4 @@
-/** 钱包阻断 sentinel（兑换 / 领取 / 推荐 / Genesis）。字面量冻结。 */
+/** 钱包阻断哨兵（兑换 / 领取 / 推荐 / Genesis）。字面量冻结。 */
 export const WALLET_BLOCKED = {
   NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
   /** 交易结果未知：显式重置前禁重提。 */

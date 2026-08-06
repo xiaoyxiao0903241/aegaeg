@@ -55,7 +55,7 @@ function EntryPercent({ value }: { value: string }) {
   )
 }
 
-/** 释放入口卡（组合式）：释放队列 / 缓冲池总览入口 */
+/** 释放入口卡（组合组件）：释放队列 / 缓冲池总览入口 */
 export const ReleaseEntryCard = Object.assign(EntryRoot, {
   TitleGroup: EntryTitleGroup,
   Title: EntryTitle,

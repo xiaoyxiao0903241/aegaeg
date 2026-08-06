@@ -1,3 +1,9 @@
+/**
+ * 奖励域共享的格式化与表格行映射
+ *
+ * 集中处理金额、日期、状态标签，以及各类奖励记录到表格行 / 单元格的转换，
+ * 供各奖励详情页复用。
+ */
 import type { ReactNode } from 'react'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -41,7 +47,7 @@ export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
 
-/** 金额字符串展示 SSOT 在 `~/shared/presenters/format`；此处再导出供页袋旧 import。 */
+/** 金额字符串展示的唯一来源是 `~/shared/presenters/format`；此处再导出供页袋旧 import。 */
 export { formatApiAmount }
 
 /**
@@ -95,7 +101,7 @@ export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean
 }
 
 /**
- * AGX 数量 × 现价 → `$…`（仓位 / 业绩主值；稿面用 `$` 前缀，无 ≈）。
+ * AGX 数量 × 现价 → `$…`（仓位 / 业绩主值；设计稿用 `$` 前缀，无 ≈）。
  * 无会话 / 冷启动 / 无价 → `$0.00`。
  */
 export function formatApiAgxUsdLabel(
@@ -115,7 +121,7 @@ export function formatApiAgxUsdLabel(
 }
 
 /**
- * gAGX 奖励主值旁注：`≈ $…`（稿有 ≈ 才挂 Tile.Note）。
+ * gAGX 奖励主值旁注：`≈ $…`（设计稿有 ≈ 才挂 Tile.Note）。
  */
 export function formatApiGagxApproxUsd(
   sessionReady: boolean,
@@ -168,11 +174,24 @@ export function daoGrantStatusTone(status: DaoGrantStatus): 'pending' | 'muted' 
   }
 }
 
+/**
+ * 做市等级 → `A1` 这类展示文本；无效等级使用空态文案。
+ *
+ * @param rank 后端等级数字
+ * @param emptyLabel 无等级时显示的占位文本
+ */
 export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
   return `A${Math.trunc(rank)}`
 }
 
+/**
+ * 按百分比切分 bigint 金额，供拆分展示使用。
+ *
+ * @param amount 待切分金额
+ * @param pct 0–100 的百分比
+ * @returns 切分后的金额
+ */
 export function splitAmountByPct(amount: bigint, pct: number): bigint {
   return (amount * BigInt(pct)) / 100n
 }
@@ -258,12 +277,26 @@ function formatRewardStatus(status: number, labels: RewardLogStatusLabels): stri
   return labels[rewardLogStatusKey(status)]
 }
 
+/**
+ * 计算可领取金额：总额减已领取，下限为 0。
+ *
+ * @param total 后端总额字符串
+ * @param claimed 后端已领取字符串
+ * @returns 可领取金额
+ */
 export function claimableAmountValue(total: string, claimed: string): number {
   const totalN = parseApiAmount(total) ?? 0
   const claimedN = parseApiAmount(claimed) ?? 0
   return Math.max(0, totalN - claimedN)
 }
 
+/**
+ * 销售奖励记录 → 表格行。
+ *
+ * @param item 后端销售奖励记录
+ * @param labels 各状态对应的多语文案
+ * @returns 时间、金额、来源地址、订单金额与状态的单元格数组
+ */
 export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLabels): ReactNode[] {
   const signedAmount = parseApiAmount(item.amount)
   const amountLabel =
@@ -285,6 +318,13 @@ export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLa
   ]
 }
 
+/**
+ * 团队奖励领取单 → 表格行。
+ *
+ * @param item 后端领取单记录
+ * @param labels 各状态对应的多语文案
+ * @returns 领取时间、金额、预售等级与状态的单元格数组
+ */
 export function mapTeamRewardClaimLogToRow(
   item: TeamRewardClaimLogItem,
   labels: RewardLogStatusLabels,
@@ -302,6 +342,13 @@ export function mapTeamRewardClaimLogToRow(
   ]
 }
 
+/**
+ * 社区基金流水 → 表格行。
+ *
+ * @param item 后端社区基金记录
+ * @param labels 各状态对应的多语文案
+ * @returns 区块时间、金额与状态的单元格数组
+ */
 export function mapCommunityFundLogToRow(
   item: CommunityFundLogItem,
   labels: RewardLogStatusLabels,
@@ -331,6 +378,13 @@ function mapDaoGrantAwardLogToRow(
   ]
 }
 
+/**
+ * 参与奖发放记录 → 表格行，复用 DAO 发放展示格式。
+ *
+ * @param item 后端参与奖记录
+ * @param labels 各状态对应的多语文案
+ * @returns 发放时间、金额、状态与领取时间的单元格数组
+ */
 export function mapParticipationAwardLogToRow(
   item: ParticipationAwardLogItem,
   labels: RewardLogStatusLabels,
@@ -338,6 +392,12 @@ export function mapParticipationAwardLogToRow(
   return mapDaoGrantAwardLogToRow(item, labels)
 }
 
+/**
+ * 参与奖邀请人信息 → 表格行。
+ *
+ * @param item 后端邀请人记录
+ * @returns 绑定时间、地址、个人持仓与贡献奖励的单元格数组
+ */
 export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
@@ -347,6 +407,13 @@ export function mapParticipationAwardInviterToRow(item: ParticipationAwardInvite
   ]
 }
 
+/**
+ * 等级共建奖发放记录 → 表格行。
+ *
+ * @param item 后端等级共建奖记录
+ * @param labels 各状态对应的多语文案
+ * @returns 时间、等级、金额、状态与领取时间的单元格数组
+ */
 export function mapRankRewardLogToRow(
   item: RankRewardLogItem | RankRewardPeerSurpassLogItem,
   labels: RewardLogStatusLabels,
@@ -360,6 +427,12 @@ export function mapRankRewardLogToRow(
   ]
 }
 
+/**
+ * 等级共建团队成员 → 表格行。
+ *
+ * @param item 后端团队成员记录
+ * @returns 绑定时间、地址、做市业绩与等级的单元格数组
+ */
 export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
@@ -369,6 +442,13 @@ export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): Re
   ]
 }
 
+/**
+ * 推荐奖发放记录 → 表格行，复用 DAO 发放展示格式。
+ *
+ * @param item 后端推荐奖记录
+ * @param labels 各状态对应的多语文案
+ * @returns 发放时间、金额、状态与领取时间的单元格数组
+ */
 export function mapReferralAwardLogToRow(
   item: ReferralAwardLogItem,
   labels: RewardLogStatusLabels,
@@ -376,6 +456,12 @@ export function mapReferralAwardLogToRow(
   return mapDaoGrantAwardLogToRow(item, labels)
 }
 
+/**
+ * 直接推荐用户 → 表格行。
+ *
+ * @param item 后端直推用户记录
+ * @returns 绑定时间、地址、持仓与贡献奖励的单元格数组
+ */
 export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
@@ -385,6 +471,12 @@ export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralIte
   ]
 }
 
+/**
+ * 市场基金已付记录 → 表格行。
+ *
+ * @param item 后端已付记录
+ * @returns 付款时间、AGX 金额、操作类型、交易哈希、补贴率与额度单元格
+ */
 export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem): ReactNode[] {
   return [
     formatBlockTime(item.paid_time),
@@ -396,6 +488,12 @@ export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem)
   ]
 }
 
+/**
+ * 市场基金领取记录 → 表格行。
+ *
+ * @param item 后端领取记录
+ * @returns 领取时间、额度与交易哈希单元格
+ */
 export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): ReactNode[] {
   return [
     formatBlockTime(item.claim_time),
@@ -404,6 +502,13 @@ export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogIte
   ]
 }
 
+/**
+ * 幸运奖中奖名单 → 表格行；当前用户地址可附加「我」徽标。
+ *
+ * @param item 后端中奖记录
+ * @param opts 可选当前地址与「我」文案
+ * @returns 名次、地址、参与金额与奖励的单元格数组
+ */
 export function mapLuckyWinnerToRow(
   item: LuckyRewardWinnerItem,
   opts?: { selfAddress?: string | null; meLabel?: string },
@@ -432,6 +537,13 @@ export function mapLuckyWinnerToRow(
   ]
 }
 
+/**
+ * 当前用户幸运奖轮次 → 表格行；中奖轮次展示可领取奖励。
+ *
+ * @param item 后端轮次记录
+ * @param labels 中奖与未中奖文案
+ * @returns 日期、参与金额、结果与开奖交易哈希单元格
+ */
 export function mapLuckyMyRoundToRow(
   item: LuckyRewardMyRoundItem,
   labels: { won: string; lost: string },

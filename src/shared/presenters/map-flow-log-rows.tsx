@@ -45,6 +45,7 @@ export function mapStakeFlowLogToOpsRow(item: StakeFlowLogItem): FlowLogRow {
   ]
 }
 
+/** LP 债券流水 → 操作表格行。 */
 export function mapBondFlowLogToOpsRow(item: BondFlowLogItem): FlowLogRow {
   return [
     formatBlockTime(item.block_time),
@@ -54,6 +55,7 @@ export function mapBondFlowLogToOpsRow(item: BondFlowLogItem): FlowLogRow {
   ]
 }
 
+/** X 挖矿流水 → 操作表格行。 */
 export function mapX0MiningLogToOpsRow(item: X0MiningLogItem): FlowLogRow {
   return [
     formatBlockTime(item.block_time),
@@ -63,6 +65,7 @@ export function mapX0MiningLogToOpsRow(item: X0MiningLogItem): FlowLogRow {
   ]
 }
 
+/** 本金缓冲池日志 → 操作表格行。 */
 export function mapBufferPoolLogToRow(item: BufferPoolLogItem): FlowLogRow {
   return [
     formatBlockTime(item.block_time),
@@ -72,6 +75,7 @@ export function mapBufferPoolLogToRow(item: BufferPoolLogItem): FlowLogRow {
   ]
 }
 
+/** 释放池日志 → 操作表格行。 */
 export function mapReleasePoolLogToRow(item: ReleasePoolLogItem): FlowLogRow {
   return [
     formatBlockTime(item.event_time),
@@ -81,6 +85,7 @@ export function mapReleasePoolLogToRow(item: ReleasePoolLogItem): FlowLogRow {
   ]
 }
 
+/** Turbine 日志 → 操作表格行。 */
 export function mapTurbineLogToOpsRow(item: TurbineLogItem): FlowLogRow {
   return [
     formatBlockTime(item.block_time),
@@ -90,6 +95,7 @@ export function mapTurbineLogToOpsRow(item: TurbineLogItem): FlowLogRow {
   ]
 }
 
+/** 质押持仓 → 侧栏表格行。 */
 export function mapStakePositionToAsideRow(item: StakePositionItem): FlowLogRow {
   const amount = Number(item.amount)
   const amountLabel = Number.isFinite(amount)
@@ -110,6 +116,7 @@ export function mapStakePositionToAsideRow(item: StakePositionItem): FlowLogRow 
   ]
 }
 
+/** 债券购买 → 侧栏表格行。 */
 export function mapBondPurchaseToAsideRow(item: BondPurchaseItem): FlowLogRow {
   const discount =
     item.discount_bp == null ? TABLE_EMPTY : `${(item.discount_bp / 100).toFixed(2)}%`
@@ -123,6 +130,7 @@ export function mapBondPurchaseToAsideRow(item: BondPurchaseItem): FlowLogRow {
   ]
 }
 
+/** AGX 销毁贡献日志 → 操作表格行。 */
 export function mapAgxContributionBurnLogToRow(item: AgxContributionBurnLogItem): FlowLogRow {
   return [
     formatBlockTime(item.block_time),
@@ -132,6 +140,7 @@ export function mapAgxContributionBurnLogToRow(item: AgxContributionBurnLogItem)
   ]
 }
 
+/** 消耗贡献日志 → 操作表格行。 */
 export function mapAgxContributionConsumeLogToRow(item: AgxContributionConsumeLogItem): FlowLogRow {
   return [
     formatBlockTime(item.block_time),

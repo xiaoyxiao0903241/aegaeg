@@ -15,6 +15,8 @@ import type {
   X0MiningPositionsPage,
 } from '~/shared/api/types'
 
+/** 质押、债券与 X 挖矿端点按指标与流水分组封装。 */
+
 export async function getStakeAddressCount(token: string): Promise<StakeAddressCountStats> {
   return apiRequest<StakeAddressCountStats>('/performance/stake-address-count', {
     method: 'POST',

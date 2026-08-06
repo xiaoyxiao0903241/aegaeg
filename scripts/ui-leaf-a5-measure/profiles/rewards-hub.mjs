@@ -1,7 +1,7 @@
 /**
- * Rewards Hub (`#rewards` · PC) A5 profile.
+ * Rewards Hub 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
  */
 
 import { readFileSync } from 'node:fs'
@@ -11,7 +11,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为本地绝对路径，供读写奖励总览测量文件。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -45,8 +49,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按奖励 Hub 清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
@@ -63,7 +70,7 @@ export function mapLeaves(gdc, page) {
   const F = /** @type {any} */ (page.faq ?? {})
   const S = /** @type {any} */ (page.shell ?? {})
 
-  // 0–5 left-header（settings 本站未实装 → inventory optionalLocate）
+  // 0–5 左栏标题（设置按钮当前页面未实现，清单允许定位失败）
   add(gdc[0], H.title, 'header.title')
   add(gdc[1], H.subtitle, 'header.subtitle')
   add(gdc[2], H.settings, 'header.settings')
@@ -71,7 +78,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[4], H.menu, 'header.menu')
   add(gdc[5], H.menuIcon, 'header.menuIcon')
 
-  // 6–50：六卡（前五 7 leaf；创世 10 leaf）
+  // 6–50：六个奖励入口卡（前五张 7 项，创世卡 10 项）
   const simpleModeKeys = ['card', 'icon', 'title', 'body', 'bal', 'amount', 'approx']
   let gi = 6
   for (let mi = 0; mi < 5; mi++) {
@@ -99,7 +106,7 @@ export function mapLeaves(gdc, page) {
     }
   }
 
-  // 51–78 tiles
+  // 51–78 数据卡
   const tileOrder = [
     { id: 'total', keys: ['card', 'label', 'dot', 'value', 'approx'] },
     { id: 'tier', keys: ['card', 'label', 'value', 'deco'] },
@@ -115,7 +122,7 @@ export function mapLeaves(gdc, page) {
     }
   }
 
-  // 79–90 about
+  // 79–90 关于区
   add(gdc[gi++], A.heading, 'about.heading')
   add(gdc[gi++], A.slide, 'about.slide')
   add(gdc[gi++], A.slideTitle, 'about.slideTitle')
@@ -130,7 +137,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[gi++], dots[3], 'about.dot[3]')
   add(gdc[gi++], A.next, 'about.next')
 
-  // 91–172 mechanism
+  // 91–172 机制表
   add(gdc[gi++], M.heading, 'mechanism.heading')
   add(gdc[gi++], M.body, 'mechanism.body')
   add(gdc[gi++], M.tableCard, 'mechanism.tableCard')
@@ -138,14 +145,14 @@ export function mapLeaves(gdc, page) {
   for (let i = 0; i < 5; i++) add(gdc[gi++], ths[i], `mechanism.th[${i}]`)
 
   const rows = /** @type {any[]} */ (M.rows ?? [])
-  // A1–A3：level + 4 cells
+  // A1–A3：等级行 + 4 个单元格
   for (let ri = 0; ri < 3; ri++) {
     const row = rows[ri] ?? {}
     add(gdc[gi++], row.level, `mechanism.row[${ri}].level`)
     const cells = /** @type {any[]} */ (row.cells ?? [])
     for (let ci = 0; ci < 4; ci++) add(gdc[gi++], cells[ci], `mechanism.row[${ri}].c${ci}`)
   }
-  // A4：level + badge + badgeText + 4 cells（cells 不含 level）
+  // A4：等级 + 徽标 + 徽标文案 + 4 个单元格（cells 不含等级）
   {
     const row = rows[3] ?? {}
     const cells = /** @type {any[]} */ (row.cells ?? [])
@@ -154,14 +161,14 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], M.currentBadgeText, 'mechanism.currentBadgeText')
     for (let ci = 0; ci < 4; ci++) add(gdc[gi++], cells[ci], `mechanism.row[3].c${ci}`)
   }
-  // A5–A13：level + 4 cells（9 rows）
+  // A5–A13：等级行 + 4 个单元格（共 9 行）
   for (let ri = 4; ri < 13; ri++) {
     const row = rows[ri] ?? {}
     add(gdc[gi++], row.level, `mechanism.row[${ri}].level`)
     const cells = /** @type {any[]} */ (row.cells ?? [])
     for (let ci = 0; ci < 4; ci++) add(gdc[gi++], cells[ci], `mechanism.row[${ri}].c${ci}`)
   }
-  // 终身成就：level + 4 cells but last cell split → cells may be [holding, accounts, team, rate130, globalDiv]
+  // 终身成就：等级行 + 4 个单元格，末格拆分后可能为 [holding, accounts, team, rate130, globalDiv]
   {
     const row = rows[13] ?? {}
     const cells = /** @type {any[]} */ (row.cells ?? [])
@@ -182,7 +189,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], item.chevron, `faq[${i}].chevron`)
   }
 
-  // 189–190 chrome
+  // 189–190 页面分隔外观
   add(gdc[gi++], S.dividerL, 'shell.dividerL')
   add(gdc[gi++], S.dividerR, 'shell.dividerR')
 

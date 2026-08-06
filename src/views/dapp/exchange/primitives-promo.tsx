@@ -1,3 +1,8 @@
+/**
+ * 兑换模式推广卡展示组件
+ *
+ * 闪兑 / 市价 / 销毁 / Turbine 的入口卡片，含桌面与移动端布局和装饰元素。
+ */
 import type { ButtonHTMLAttributes, ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 

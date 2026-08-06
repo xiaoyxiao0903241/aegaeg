@@ -219,10 +219,12 @@ export function invalidateAfterGenesisPhaseTransition(address?: string) {
   void invalidateApiQueries()
 }
 
+/** 清空全部后端 API 查询缓存（登出 / 数据源重置时使用）。 */
 export function clearApiQueries() {
   return queryClient.resetQueries({ queryKey: queryKeys.api.all })
 }
 
+/** 使预售相关链上查询过期；传入地址时一并刷新该地址的用户额度与余额。 */
 export function invalidatePresaleChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presalePhases })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAgxPrice })
@@ -261,6 +263,12 @@ export function invalidateGenesisPage() {
   invalidateTabQueries('genesis')
 }
 
+/**
+ * Genesis 购买成功后的缓存更新。
+ *
+ * 先按链上确认金额乐观累加累计购买量，再刷新页面查询并轮询销售日志，
+ * 直到后端索引追上确认结果。
+ */
 export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?: bigint) {
   if (purchaseAmount && purchaseAmount > 0n) {
     queryClient.setQueryData(queryKeys.chain.presaleUserTotalOf(address), (current?: bigint) => {
@@ -278,14 +286,17 @@ export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?:
   void pollGenesisContributions(salesLogBaseline)
 }
 
+/** 团队奖励写成功后刷新 rewards Tab 的查询。 */
 export function invalidateAfterTeamClaim() {
   invalidateTabQueries('rewards')
 }
 
+/** 推荐绑定成功后刷新 community Tab 的查询。 */
 export function invalidateAfterReferralBind() {
   invalidateTabQueries('community')
 }
 
+/** 兑换写成功后刷新 exchange Tab 的查询。 */
 export function invalidateAfterExchange() {
   invalidateTabQueries('exchange')
 }

@@ -93,7 +93,7 @@ export async function readPrincipalReleaseDuration(
  * 读取用户释放队列汇总。
  *
  * 按前端四档（5/20/40/60 天）匹配链上计划写入固定槽位；链上多出的档位
- * 仅在有余额时追加（fail-open）。每档两读合并为一次 Multicall3。
+ * 仅在有余额时追加（读取失败不强行阻断）。每档两读合并为一次 Multicall3。
  *
  * @param address 钱包地址
  * @param readClient 链读取客户端，默认 BSC 主网
@@ -130,7 +130,7 @@ export async function readReleaseQueueSnapshot(
     pending.push({ planIndex: matched.index, durationDays: days, uiSlot: slot })
   }
 
-  // 链上非 5/20/40/60 档：读后非零才计入 totals（fail-open）
+  // 链上非 5/20/40/60 档：读后非零才计入 totals，不强制要求四档都存在。
   for (const plan of durationPlans) {
     const days = durationDaysFromSeconds(plan.durationSeconds)
     if (days != null && (RELEASE_DURATION_DAYS as readonly number[]).includes(days)) continue

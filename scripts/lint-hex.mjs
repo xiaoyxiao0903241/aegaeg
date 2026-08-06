@@ -1,23 +1,27 @@
 #!/usr/bin/env node
 /**
- * R2 baseline — hex literals in scoped TS modules must live in shared/styles/theme.ts.
- * Tailwind arbitrary values in TSX are out of scope until Typography/variant pass.
+ * 检查受限 TS 模块中的十六进制颜色字面量。
+ *
+ * 基线要求：`src/web3` 与 `src/shared/config` 的颜色只能来自
+ * `src/shared/styles/theme.ts`。TSX 内的 Tailwind 任意值暂不在此脚本范围内。
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { relative, resolve } from 'node:path'
 
 const projectRoot = resolve(import.meta.dirname, '..')
 const hexPattern = /#[0-9A-Fa-f]{3,8}\b/g
 
-const allowlist = new Set([
-  resolve(projectRoot, 'src/shared/styles/theme.ts'),
-])
+const allowlist = new Set([resolve(projectRoot, 'src/shared/styles/theme.ts')])
 
-const scanRoots = [
-  resolve(projectRoot, 'src/web3'),
-  resolve(projectRoot, 'src/shared/config'),
-]
+const scanRoots = [resolve(projectRoot, 'src/web3'), resolve(projectRoot, 'src/shared/config')]
 
+/**
+ * 递归收集目录下的 `.ts` 文件。
+ *
+ * @param {string} dir 起始目录
+ * @param {string[]} files 已收集的文件路径
+ * @returns {string[]} 文件路径列表
+ */
 function walk(dir, files = []) {
   for (const name of readdirSync(dir)) {
     const path = resolve(dir, name)

@@ -160,7 +160,7 @@ export function DappHost() {
                       !hostState.sessionReady && 'shadow-window-compact',
                       'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
                       'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
-                      // 顶距由 H5 chrome slot 承担
+                      // 顶距由 H5 顶部固定条带槽承担
                       'max-dapp:px-4.5 max-dapp:pt-0 max-dapp:pb-8 max-dapp:shadow-card',
                     )}
                     data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}

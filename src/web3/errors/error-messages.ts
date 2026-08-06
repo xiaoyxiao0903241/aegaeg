@@ -29,7 +29,7 @@ import {
 type MessageFn = (t: AppMessagesBundle) => string
 
 /**
- * 精确域 sentinel → i18n。
+ * 精确域哨兵 → i18n。
  * 阻断码本身无 locale；用户文案只在此表。
  */
 export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
@@ -518,6 +518,16 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   },
 ]
 
+/**
+ * 按原始错误文本匹配已定义哨兵并返回用户文案。
+ *
+ * 先查精确值，再处理 `SENTINEL detail` 这类带附加信息的抛出形式。
+ *
+ * @param raw 读取到的错误文本
+ * @param t 当前 i18n 文案包
+ * @returns 用户文案；未命中哨兵时返回 null
+ * @see 手册 §19 常见错误与前端提示
+ */
 export function matchSentinelMessage(raw: string, t: AppMessagesBundle): string | null {
   if (!raw) return null
   const exact = SENTINEL_MESSAGES[raw]
@@ -529,6 +539,17 @@ export function matchSentinelMessage(raw: string, t: AppMessagesBundle): string 
   return null
 }
 
+/**
+ * 按错误名 / selector / 模糊文本规则匹配合约 revert 并返回用户文案。
+ *
+ * 规则按更具体到更笼统排列，匹配第一条即返回。
+ *
+ * @param error 原始错误，供规则读取错误码等字段
+ * @param raw 读取到的错误文本
+ * @param t 当前 i18n 文案包
+ * @returns 用户文案；未命中任何规则时返回 null
+ * @see 手册 §19 常见错误与前端提示
+ */
 export function matchRevertMessage(
   error: unknown,
   raw: string,

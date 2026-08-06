@@ -6,7 +6,14 @@ function isLocalHostname(hostname: string): boolean {
   return host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host === '::1'
 }
 
-/** 例：app.x-123.io → x-123.io；x-123.io 本身保持不变。 */
+/**
+ * 提取主机名的根域名（保留最后两级）。
+ *
+ * 本地 / IP 主机名原样返回；例：app.x-123.io → x-123.io。
+ *
+ * @param hostname 完整主机名
+ * @returns 根域名；本地或 IP 主机名原样返回
+ */
 export function extractRootDomain(hostname: string): string {
   const host = hostname.toLowerCase().trim()
   if (!host || isLocalHostname(host) || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {

@@ -29,12 +29,12 @@ import {
 import { isUserRejectedWalletError } from '~/web3/contract-error-message'
 
 /**
- * 将 classifyLoginFailure 的结果映射为 AuthStore 可持久化的 sentinel 值。
+ * 将 classifyLoginFailure 的结果映射为 AuthStore 可持久化的哨兵值。
  *
- * 临时性失败（transient）返回 null，不落盘，避免误判。
+ * 临时性失败返回 null，不落盘，避免误判。
  *
  * @param error 登录过程中的异常
- * @returns 错误 sentinel 字符串；transient 返回 null
+ * @returns 错误哨兵字符串；临时性失败返回 null
  */
 export function toLoginErrorSentinel(error: unknown): string | null {
   switch (classifyLoginFailure(error)) {

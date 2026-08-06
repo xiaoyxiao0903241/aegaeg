@@ -1,7 +1,6 @@
-/* Wallet chrome — connected chip + ConnectEmbed / modal frame.
- * Connect primary chrome → Button (wallet-connect-chip.tsx). */
+/* 钱包界面样式：连接状态胶囊、ConnectEmbed 与独立弹窗外框。 */
 
-/* Connected wallet chip — address only, opens custom wallet details modal */
+/* 已连接钱包胶囊：只展示地址，点击后打开自定义钱包详情弹窗 */
 .aegis-connected-wallet-chip {
   display: inline-flex;
   align-items: center;
@@ -61,7 +60,7 @@
   }
 }
 
-/* ConnectEmbed 内嵌于自定义外壳 — 去除自带边框/阴影，QR 在壳内切换 */
+/* ConnectEmbed 内嵌于自定义容器 — 去除自带边框/阴影，QR 在容器内切换 */
 .aegis-connect-embed {
   inline-size: 100%;
   zoom: var(--fluid-scale, 1);
@@ -109,7 +108,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* thirdweb 独立 modal 兜底（ConnectEmbed 子屏不应再弹出，保留以防边缘 case） */
+/* thirdweb 独立弹窗的兜底样式（ConnectEmbed 子屏不应再弹出，保留以防边缘场景） */
 .tw-modal {
   border-radius: 1.5rem !important;
   box-shadow: var(--shadow-modal-panel) !important;
@@ -124,7 +123,7 @@
   }
 }
 
-/* H5：bottom sheet（`--breakpoint-dapp`，覆盖 thirdweb 默认 640px） */
+/* 移动端：底部滑入面板（`--breakpoint-dapp`，覆盖 thirdweb 默认 640px） */
 @media (max-width: 820px) {
   .tw-modal {
     position: fixed !important;
@@ -136,7 +135,7 @@
     animation: aegis-tw-sheet-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  /* Figma H5 wal — h 36, 12px SemiBold, white surface (226:202) */
+  /* 移动端：缩小连接胶囊并改用卡片底色 */
   .aegis-connected-wallet-chip {
     min-block-size: 2.25rem;
     padding-block: 0.5rem;

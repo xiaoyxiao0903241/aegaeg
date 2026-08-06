@@ -92,7 +92,7 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(
-        // PC 居中卡片（与滑点 / 连接弹窗同一套响应式外壳）
+        // PC 居中卡片（与滑点 / 连接弹窗同一套响应式容器）
         'border-0 bg-card text-center shadow-modal-panel',
         'w-full max-w-(--dapp-wallet-modal-max-width) p-6',
         'dapp:rounded-2xl',

@@ -7,9 +7,10 @@ import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
 import { DockPanel } from '~/views/dapp/shared/dock-frame'
 
 /**
- * 子页壳：贴稿 backRow leaf。
+ * 子页头部容器
  *
- * 固定行 = ← +「返回xx」| btn/menu（H5 落在固定高 chrome 带内）；title/desc 在滚动区。
+ * 固定返回行包含「返回」与右侧操作按钮；移动端该行固定在顶部条带内，
+ * 标题与描述随内容区滚动。
  */
 export function TabHeader({
   backText,

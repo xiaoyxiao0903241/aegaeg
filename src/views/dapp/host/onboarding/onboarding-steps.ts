@@ -1,3 +1,8 @@
+/**
+ * 引导步骤导航与目标可见等待
+ *
+ * 负责步骤间的 Tab / 中心页跳转，并在进入下一步前等待目标元素出现。
+ */
 import { MOBILE_MAX_WIDTH_QUERY } from '~/shared/config/breakpoints'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { sleep } from '~/shared/lib/utils'

@@ -1,15 +1,16 @@
 import type { Plugin } from 'vite'
 
 /**
- * Chrome 90–107 (project cssTarget) ignore dvh/svh/lvh/dvw/svw/lvw.
- * lightningcss does not rewrite them (parcel-bundler/lightningcss#534).
- * Inject classic vh/vw fallbacks before modern units so source can stay dvh-only.
+ * 为旧版 Chromium 注入经典视口单位回退。
+ *
+ * 目标浏览器 Chrome 90–107 不识别 dvh/svh/lvh/dvw/svw/lvw，
+ * lightningcss 也不会自动改写（parcel-bundler/lightningcss#534），
+ * 因此在现代单位前补一条 vh/vw 声明，源码仍可只写现代单位。
  */
 
 const MODERN_VIEWPORT_UNIT_RE = /\b(\d*\.?\d+)(d|s|l)v(h|w)\b/g
 
-const DECLARATION_RE =
-  /(?<=[{;])(\s*)([a-zA-Z-]+)(\s*:\s*)((?:[^;{}])*?)(\s*)(;|(?=}))/g
+const DECLARATION_RE = /(?<=[{;])(\s*)([a-zA-Z-]+)(\s*:\s*)((?:[^;{}])*?)(\s*)(;|(?=}))/g
 
 function hasModernViewportUnit(value: string) {
   MODERN_VIEWPORT_UNIT_RE.lastIndex = 0
@@ -26,7 +27,10 @@ function alreadyHasClassicFallback(
   property: string,
   classicValue: string,
 ) {
-  const before = css.slice(Math.max(0, declarationStart - property.length - classicValue.length - 32), declarationStart)
+  const before = css.slice(
+    Math.max(0, declarationStart - property.length - classicValue.length - 32),
+    declarationStart,
+  )
   const pattern = new RegExp(
     `${escapeRegExp(property)}\\s*:\\s*${escapeRegExp(classicValue)}\\s*;\\s*$`,
   )
@@ -37,7 +41,14 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-/** Inject `prop: classic;` before each `prop: …dvh|svh|lvh…` (and *vw) declaration. */
+/**
+ * 给含现代视口单位的声明前插入对应的经典 vh/vw 回退。
+ *
+ * 仅处理现代单位被实际使用时，且已存在相同经典回退时跳过，避免重复声明。
+ *
+ * @param css 原始 CSS 文本
+ * @returns 插入回退后的 CSS 文本
+ */
 export function injectViewportUnitFallbacks(css: string) {
   return css.replace(
     DECLARATION_RE,
@@ -65,7 +76,9 @@ function shouldTransform(idOrFile: string) {
   return idOrFile.endsWith('.css')
 }
 
-/** Vite: inject vh/vw fallbacks for modern viewport units in dev + production CSS. */
+/**
+ * Vite 插件：开发与构建产物中统一注入现代视口单位的 vh/vw 回退。
+ */
 export function viewportUnitFallbacksPlugin(): Plugin {
   return {
     name: 'aegis-viewport-unit-fallbacks',

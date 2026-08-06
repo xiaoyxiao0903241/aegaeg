@@ -1,3 +1,8 @@
+/**
+ * 资产仓位列表 UI 零件
+ *
+ * 支持质押 / 债券 / X 挖矿的行卡、排序工具条、骨架与空态。
+ */
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 

@@ -147,7 +147,7 @@ export function SheetHandle() {
   )
 }
 
-/** 响应式弹窗 / 抽屉外壳 — 面板样式走 `dialogChrome().panel` */
+/** 响应式弹窗 / 抽屉容器，面板样式由 `dialogChrome().panel` 提供 */
 export function ResponsiveDialog({
   children,
   className,

@@ -1,7 +1,7 @@
 /**
- * Shared base — fonts, reset, tokens, breakpoints, scrollbars, animations.
- * Imported by app.css and home.css entry bundles.
- * `@import` must precede `@source` (stylelint no-invalid-position-at-import-rule).
+ * 共享基础样式：字体、重置、tokens、断点、滚动条与动画。
+ * 由 app.css 和 home.css 入口统一引入。
+ * `@import` 必须位于 `@source` 之前（stylelint 规则限制）。
  */
 @import 'tailwindcss/theme.css';
 @import './tokens/theme.css';

@@ -221,7 +221,7 @@
     )
     return styleOf(el)
   })
-  // Segment may show "质押总量 TVL" with space
+  // Segment 可能把文案显示为带空格的「质押总量 TVL」
   if (!chartMetricTabs[0]) {
     const el = [...document.querySelectorAll('button,span')].find(
       (e) => /质押总量/.test((e.textContent || '').trim()) && /TVL/.test(e.textContent || ''),
@@ -239,7 +239,7 @@
       /数据指标/.test(document.body.innerText)
     )
   })
-  // Prefer strong near chart header
+  // 优先取图表标题附近的 strong，避免拿到其他金额
   const chartHeaderStrong = [...document.querySelectorAll('strong')].find((e) => {
     const t = (e.textContent || '').trim()
     return t === '$0.00' || t === '0.00' || /^\$/.test(t)

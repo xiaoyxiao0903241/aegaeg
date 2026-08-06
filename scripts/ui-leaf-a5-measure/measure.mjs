@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 /**
- * UI leaf A5 full measure (§2.3b) — reusable runner.
+ * UI leaf A5 全量测量运行器（§2.3b）。
  *
- * Usage:
+ * 用法：
  *   pnpm measure:leaf --profile assets-hub
  *   node scripts/ui-leaf-a5-measure/measure.mjs --profile assets-hub
  *   node scripts/ui-leaf-a5-measure/measure.mjs --list
  *
- * Requires: `pnpm dev` on :5174 + Kimi WebBridge on :10086
+ * 依赖 `pnpm dev` 监听 :5174，以及 Kimi WebBridge 监听 :10086。
  *
- * Contract:
- *   - Reads A4 inventory JSON (N rows with nodeId + spec)
- *   - Measures every row (R must equal N) — no spot-check
- *   - Writes *-measure-full.json with R_eq_N / pass / fail / fail_rows
- *   - Exit 1 if R≠N or any LOCATE_FAIL / compare FAIL (use --allow-fail to only enforce R=N)
+ * 约束：
+ *   - 读取 A4 清单 JSON（N 行，含 nodeId 与 spec）
+ *   - 逐行测量，R 必须等于 N，不做抽检
+ *   - 写入 `*-measure-full.json`，包含 R_eq_N / pass / fail / fail_rows
+ *   - R≠N 或有 LOCATE_FAIL / compare FAIL 时退出 1（--allow-fail 时只强制 R=N）
  *
- * New page: add profiles/<id>.mjs + profiles/<id>.page.js ; register in PROFILES below.
+ * 新增页面：添加 profiles/<id>.mjs 与 profiles/<id>.page.js，并在下方 PROFILES 注册。
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -38,6 +38,9 @@ const PROFILES = {
   'community-hub': './profiles/community-hub.mjs',
 }
 
+/**
+ * 打印命令行用法。
+ */
 function usage() {
   console.log(`Usage:
   pnpm measure:leaf --profile <id>
@@ -54,6 +57,12 @@ Flags:
 `)
 }
 
+/**
+ * 解析命令行参数。
+ *
+ * @param {string[]} argv 去掉 node/脚本名后的参数
+ * @returns {Record<string, string | boolean>} 参数名到值的映射
+ */
 function parseArgs(argv) {
   /** @type {Record<string, string | boolean>} */
   const out = {}
@@ -73,10 +82,22 @@ function parseArgs(argv) {
   return out
 }
 
+/**
+ * 等待指定毫秒数。
+ *
+ * @param {number} ms 等待时长
+ * @returns {Promise<void>}
+ */
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
+/**
+ * 动态加载测量 profile 模块并校验导出。
+ *
+ * @param {string} id PROFILES 中注册的 profile id
+ * @returns 包含 profile 与 mapLeaves 的模块
+ */
 async function loadProfile(id) {
   const rel = PROFILES[id]
   if (!rel) {
@@ -155,7 +176,7 @@ async function main() {
     return location.href;
   })()`)
   await sleep(800)
-  // profile optional ready check
+  // 等待 profile 自定义的就绪条件；未配置时走固定等待
   if (typeof profile.waitUntilReadyJs === 'string') {
     for (let i = 0; i < 15; i++) {
       const ready = await wb.evaluate(profile.waitUntilReadyJs)
@@ -190,7 +211,7 @@ async function main() {
       h: leaf.h ?? leaf.gdc_h ?? null,
     }
     const { ok, verdicts } = compareLeaf(measured, leafNorm, expected, {
-      // 右栏 tile 宽随 detail 内栏 + gap 伸缩；只钉 h（禁 -mx 顶满壳 padding）
+      // 右栏 tile 宽随 detail 内栏与 gap 伸缩；只钉高度，不要用 -mx 顶满容器 padding
       fluidWide: leaf.fluidWide === true || /^tile\//i.test(leaf.name ?? ''),
     })
     const row = {

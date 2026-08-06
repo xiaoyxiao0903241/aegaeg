@@ -146,7 +146,7 @@
     [...(widgetPanel?.querySelectorAll('h1') || [])].find(
       (e) => (e.textContent || '').trim() === '释放池',
     ) || null
-  // WidgetSubpageHeader root：含 back button + h1；禁停在 title/copy 行（h≈22–40）
+  // WidgetSubpageHeader 根节点：含返回按钮和 h1；不要停在标题/文案行（高约 22–40）
   const tabHeader = title
     ? climb(title, (n) => {
         const r = n.getBoundingClientRect()
@@ -378,7 +378,7 @@
     return [null, null, null, null]
   })
 
-  // pager（DappTablePagination；本页现码可能未挂 → locate_fail OK）
+  // 分页（DappTablePagination；本页现码可能未挂，允许定位失败）
   const opsTotal = [...document.querySelectorAll('span,p')].find((e) => {
     const t = (e.textContent || '').trim()
     const r = e.getBoundingClientRect()
@@ -415,7 +415,7 @@
       })
     : null
 
-  // —— FAQ（§8.2a reuse · 整块 list）——
+  // —— FAQ（复用 §8.2a，量整块列表）——
   const faqHeading = first(textsExact('FAQs', rightish)) || first(textsExact('FAQ', rightish))
   const faqItem0 = document.querySelector('[data-faq-item]')
   const faqList = faqItem0

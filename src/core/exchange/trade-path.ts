@@ -7,6 +7,7 @@
  */
 export type TradeTokenKey = 'usd1' | 'agx' | 'x'
 
+/** 全部交易对 key（含尚未放开的 X）。 */
 export const TRADE_TOKEN_KEYS = ['usd1', 'agx', 'x'] as const satisfies readonly TradeTokenKey[]
 
 /**
@@ -27,7 +28,7 @@ export function isTradeTokenLive(key: TradeTokenKey): boolean {
  * Trade 的 Pancake V2 兑换路径。
  *
  * - USD1↔AGX / AGX↔X：单跳直达
- * - USD1↔X：经 AGX 中转（原型：`X → AGX → USD1`）
+ * - USD1↔X：经 AGX 中转（旧版示意：`X → AGX → USD1`）
  * 当前界面只选 USD1↔AGX；X 路径保留给 DEFER 放开后启用。
  *
  * @param sellKey 卖出代币

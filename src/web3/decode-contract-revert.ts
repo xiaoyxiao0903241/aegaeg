@@ -128,6 +128,17 @@ export function extractRevertData(error: unknown): `0x${string}` | null {
   return found
 }
 
+/**
+ * 从错误中解码合约 revert 的错误名与参数。
+ *
+ * 优先读取 viem 已解析字段；未命中时抽取 revert 数据并按 ABI 解码，
+ * 解码失败返回 null，避免误判错误类型。
+ *
+ * @param error 待解码的错误
+ * @param abi 解码用的 ABI，默认合并全部合约错误 ABI
+ * @returns 错误名与参数；无法解码时返回 null
+ * @see 手册 §19 常见错误与前端提示
+ */
 export function decodeContractRevert(
   error: unknown,
   abi: Abi = ALL_CONTRACT_ERRORS_ABI,
@@ -154,6 +165,15 @@ export function decodeContractRevert(
   }
 }
 
+/**
+ * 判断错误是否包含合约 revert。
+ *
+ * 已归一化错误、viem revert 包装或错误树中的 revert 数据都算命中。
+ *
+ * @param error 待判断的错误
+ * @returns 包含可识别的合约 revert 时为 true
+ * @see 手册 §19 常见错误与前端提示
+ */
 export function isContractRevert(error: unknown): boolean {
   if (error instanceof ContractRevertError) return true
   if (error instanceof ContractFunctionRevertedError) return true

@@ -1,10 +1,9 @@
 /**
- * Release Queue (`#release/queue` · PC `4466:220`) A5 profile.
+ * Release Queue 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- * Order = `222-release-queue-min-leaves.md` 全表。
- * Left: ReleaseQueueWidget · Right: ReleaseQueueContent
- *
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
+ * 顺序按 `222-release-queue-min-leaves.md` 全表。
+ * 左栏为 ReleaseQueueWidget，右栏为 ReleaseQueueContent。
  */
 
 import { readFileSync } from 'node:fs'
@@ -14,7 +13,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为本地绝对路径，供读写释放队列测量文件。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -66,8 +69,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按释放队列清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
@@ -87,14 +93,14 @@ export function mapLeaves(gdc, page) {
   const rows = /** @type {any[]} */ (R.rows ?? [])
   const P = /** @type {any} */ (R.pager ?? {})
 
-  // 0–1 chrome dividers
+  // 0–1 页面分隔外观
   add(gdc[0], S.dividerL, 'shell.dividerL')
   add(gdc[1], S.dividerR, 'shell.dividerR')
 
   // 2 DappTabHeader
   add(gdc[2], H.tabHeader, 'header.tabHeader')
 
-  // 3–58 plan×4（每档 14 leaf：card→claimText）
+  // 3–58 四个释放计划卡（每档 14 项：从卡片到领取按钮文案）
   const planDays = [5, 20, 40, 60]
   let gi = 3
   for (let pi = 0; pi < 4; pi++) {
@@ -116,7 +122,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], p.claimText, `plan[${d}].claimText`)
   }
 
-  // 59–74 stats
+  // 59–74 数据卡
   add(gdc[gi++], St.heading, 'stats.heading')
   for (let i = 0; i < 3; i++) {
     const c = statCards[i] ?? {}
@@ -127,7 +133,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[gi++], c.approx, `stat[${i}].approx`)
   }
 
-  // 75–100 records
+  // 75–100 记录区
   add(gdc[gi++], R.heading, 'records.heading')
   add(gdc[gi++], R.tableCard, 'records.tableCard')
   for (let i = 0; i < 4; i++) add(gdc[gi++], headers[i], `records.header[${i}]`)
@@ -136,7 +142,7 @@ export function mapLeaves(gdc, page) {
     for (let ci = 0; ci < 4; ci++) add(gdc[gi++], cells[ci], `records.row[${ri}].c[${ci}]`)
   }
 
-  // 101–109 pager
+  // 101–109 分页
   add(gdc[gi++], P.total, 'pager.total')
   add(gdc[gi++], P.perPage, 'pager.perPage')
   add(gdc[gi++], P.prevBtn, 'pager.prevBtn')
@@ -147,7 +153,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[gi++], P.nextBtn, 'pager.nextBtn')
   add(gdc[gi++], P.nextIcon, 'pager.nextIcon')
 
-  // 110 Faq
+  // 110 FAQ
   add(gdc[gi++], F.list, 'faq.list')
 
   if (mapped.length !== gdc.length) {

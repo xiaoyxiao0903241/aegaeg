@@ -5,7 +5,7 @@ import { cn } from '~/shared/lib/utils'
 import { DetailToggle } from '~/views/dapp/shared/detail-toggle'
 
 /**
- * Hub 顶栏 leaf（稿 header）：titleblock | btns。
+ * Hub 顶栏：标题 / 描述 + 右侧操作按钮。
  *
  * title 20 / caption 13、块内 gap 6；右侧主图标 + 可选第二图标 gap 8；垂直居中。
  */

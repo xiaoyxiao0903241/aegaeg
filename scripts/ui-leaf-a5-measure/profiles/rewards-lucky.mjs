@@ -1,9 +1,9 @@
 /**
- * Rewards Lucky (`#rewards/lucky` · PC `4390:220`) A5 profile.
+ * Rewards Lucky 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- * Order = `215-lucky-min-leaves.json` leaves[]（与 `215-gdc-merged.json` 同序）.
- * Left: RewardsMixedClaimWidget · Right: RewardsLuckyContent
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
+ * 顺序按 `215-lucky-min-leaves.json` 的 leaves[]（与 `215-gdc-merged.json` 同序）。
+ * 左栏为 RewardsMixedClaimWidget，右栏为 RewardsLuckyContent。
  */
 
 import { readFileSync } from 'node:fs'
@@ -13,7 +13,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为本地绝对路径，供读写幸运奖励测量文件。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -37,8 +41,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按幸运奖励清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
@@ -61,11 +68,11 @@ export function mapLeaves(gdc, page) {
   const Hist = /** @type {any} */ (page.history ?? {})
   const F = /** @type {any} */ (page.faq ?? {})
 
-  // 0–1 chrome dividers
+  // 0–1 页面分隔外观
   add(gdc[0], S.dividerL, 'shell.dividerL')
   add(gdc[1], S.dividerR, 'shell.dividerR')
 
-  // 2–7 left-header
+  // 2–7 左栏标题
   add(gdc[2], H.backIcon, 'header.backIcon')
   add(gdc[3], H.backLabel, 'header.backLabel')
   add(gdc[4], H.menuBtn, 'header.menuBtn')
@@ -73,7 +80,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[6], H.title, 'header.title')
   add(gdc[7], H.subtitle, 'header.subtitle')
 
-  // 8–13 claimable
+  // 8–13 可领取区
   add(gdc[8], C.card, 'claim.card')
   add(gdc[9], C.label, 'claim.label')
   add(gdc[10], C.tokenIcon, 'claim.tokenIcon')
@@ -81,14 +88,14 @@ export function mapLeaves(gdc, page) {
   add(gdc[12], C.contribLabel, 'claim.contribLabel')
   add(gdc[13], C.contribValue, 'claim.contribValue')
 
-  // 14–15 warning
+  // 14–15 提示区
   add(gdc[14], W.card, 'warning.card')
   add(gdc[15], W.text, 'warning.text')
 
-  // 16 claim divider
+  // 16 领取区分隔线
   add(gdc[16], S.claimDivider, 'shell.claimDivider')
 
-  // 17–23 slider
+  // 17–23 滑杆
   add(gdc[17], Sl.card, 'slider.card')
   add(gdc[18], Sl.segL, 'slider.segL')
   add(gdc[19], Sl.segR, 'slider.segR')
@@ -97,7 +104,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[22], Sl.releaseLab, 'slider.releaseLab')
   add(gdc[23], Sl.restakeLab, 'slider.restakeLab')
 
-  // 24–34 release card
+  // 24–34 释放卡
   add(gdc[24], Rel.card, 'release.card')
   add(gdc[25], Rel.title, 'release.title')
   add(gdc[26], Rel.into, 'release.into')
@@ -110,7 +117,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[33], Rel.dropdownText, 'release.dropdownText')
   add(gdc[34], Rel.chevron, 'release.chevron')
 
-  // 35–45 restake card
+  // 35–45 复投卡
   add(gdc[35], Res.card, 'restake.card')
   add(gdc[36], Res.title, 'restake.title')
   add(gdc[37], Res.into, 'restake.into')
@@ -123,14 +130,14 @@ export function mapLeaves(gdc, page) {
   add(gdc[44], Res.dropdownText, 'restake.dropdownText')
   add(gdc[45], Res.chevron, 'restake.chevron')
 
-  // 46–50 CTA
+  // 46–50 主操作按钮
   add(gdc[46], Cta.btn, 'cta.btn')
   add(gdc[47], Cta.releaseLab, 'cta.releaseLab')
   add(gdc[48], Cta.releaseAmt, 'cta.releaseAmt')
   add(gdc[49], Cta.restakeLab, 'cta.restakeLab')
   add(gdc[50], Cta.restakeAmt, 'cta.restakeAmt')
 
-  // 51–63 tiles
+  // 51–63 数据卡
   add(gdc[51], T.dataHeading, 'tiles.dataHeading')
   add(gdc[52], T.pool?.card, 'tiles.pool.card')
   add(gdc[53], T.pool?.label, 'tiles.pool.label')
@@ -145,7 +152,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[62], T.wins?.value, 'tiles.wins.value')
   add(gdc[63], T.wins?.hint, 'tiles.wins.hint')
 
-  // 64–69 chainlink
+  // 64–69 Chainlink 验证卡
   add(gdc[64], Cl.card, 'chainlink.card')
   add(gdc[65], Cl.icon, 'chainlink.icon')
   add(gdc[66], Cl.title, 'chainlink.title')
@@ -153,7 +160,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[68], Cl.verifyText, 'chainlink.verifyText')
   add(gdc[69], Cl.body, 'chainlink.body')
 
-  // 70–134 results
+  // 70–134 开奖结果
   add(gdc[70], R.heading, 'results.heading')
   add(gdc[71], R.table, 'results.table')
   add(gdc[72], R.dateBtn, 'results.dateBtn')
@@ -181,7 +188,7 @@ export function mapLeaves(gdc, page) {
     if (ri < 9) add(gdc[gi++], row.sep, `results.row[${ri}].sep`)
   }
 
-  // 135–175 history
+  // 135–175 历史记录
   add(gdc[135], Hist.heading, 'history.heading')
   add(gdc[136], Hist.table, 'history.table')
   const hThs = /** @type {any[]} */ (Hist.ths ?? [])
@@ -203,7 +210,7 @@ export function mapLeaves(gdc, page) {
   // 176–195 FAQ
   add(gdc[176], F.heading, 'faq.heading')
   const faqItems = /** @type {any[]} */ (F.items ?? [])
-  // faq/1: row, q, chev, answer
+  // 第 1 项 FAQ：行、问题、箭头、答案
   {
     const item = faqItems[0] ?? {}
     add(gdc[177], item.row, 'faq[0].row')
@@ -211,7 +218,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[179], item.chevron, 'faq[0].chevron')
     add(gdc[180], item.answer, 'faq[0].answer')
   }
-  // faq/2–6: row, q, chev
+  // 第 2–6 项 FAQ：行、问题、箭头
   for (let i = 1; i < 6; i++) {
     const item = faqItems[i] ?? {}
     add(gdc[181 + (i - 1) * 3], item.row, `faq[${i}].row`)

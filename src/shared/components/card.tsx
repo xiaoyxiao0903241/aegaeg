@@ -22,7 +22,7 @@ export const cardVariants = tv({
       outlined: 'rounded-md border border-border p-4',
       /** 右栏指标瓦；禁止调用方再改内边距 / 圆角 / 阴影 */
       elevated: 'rounded-md bg-card p-4 shadow-card',
-      /** FAQ / 手风琴外壳；内边距由内容自己负责 */
+      /** FAQ / 手风琴容器；内边距由内容自己负责 */
       soft: 'overflow-hidden rounded-2xl bg-card shadow-faq',
       inverse: 'rounded-md bg-dark p-4 text-white shadow-subtle',
     },

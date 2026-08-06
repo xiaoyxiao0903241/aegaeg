@@ -109,6 +109,15 @@ export const WRITE_PATH = {
 
 export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]
 
+/**
+ * 判断指定地址与写路径是否持有未知结果锁。
+ *
+ * 锁跨刷新仍存在，未显式清除前禁止重提同路径交易。
+ *
+ * @param path 写路径键
+ * @param address 钱包地址，可为 undefined
+ * @returns 已锁定返回 true
+ */
 export function isUnknownReceiptLocked(path: WritePath, address: string | undefined): boolean {
   if (!address) return false
   return latchedOwners.has(latchKey(address, path))
@@ -124,6 +133,12 @@ export function isWritePathBusy(path: WritePath, address: string | undefined): b
   return isUnknownReceiptLocked(path, address) || isWritePathInFlight(path, address)
 }
 
+/**
+ * 订阅写路径 busy 状态变化。
+ *
+ * @param onStoreChange 状态变化回调
+ * @returns 取消订阅函数
+ */
 export function subscribeWritePathBusy(onStoreChange: () => void): () => void {
   listeners.add(onStoreChange)
   return () => {
@@ -149,11 +164,26 @@ export function tryBeginWritePath(
   return { ok: true, owner }
 }
 
+/**
+ * 结束在飞占用。
+ *
+ * @param path 写路径键
+ * @param address 钱包地址
+ */
 export function endWritePath(path: WritePath, address: string): void {
   if (!inFlightPaths.delete(latchKey(address, path))) return
   notifyWritePathBusy()
 }
 
+/**
+ * 将未知结果转为持久锁。
+ *
+ * 只有成功发起本次提交拿到的 owner 才能配对清除。
+ *
+ * @param path 写路径键
+ * @param owner 本次提交占用时返回的 owner
+ * @param address 钱包地址
+ */
 export function lockUnknownReceipt(path: WritePath, owner: symbol, address: string): void {
   latchedOwners.set(latchKey(address, path), owner)
   persistLatches()

@@ -459,7 +459,7 @@ export async function readXminePreflight(args: {
   balance: bigint
   allowance: bigint
   miningQuota: bigint
-  /** active + warmup；Max / 门闸用 quota − staked。 */
+  /** active + warmup；可用额度用 quota − staked 计算。 */
   miningStaked: bigint
 }> {
   const client = args.client ?? bscReadClient

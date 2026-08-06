@@ -10,7 +10,7 @@ const statusBadge = tv({
   base: 'inline-flex items-center rounded-full leading-none font-medium not-italic',
   variants: {
     tone: {
-      /** 待领取 / 处理中：浅珊瑚底 + 珊瑚字（稿无差，合并原 processing） */
+      /** 待领取 / 处理中：浅珊瑚底 + 珊瑚字（与 processing 样式一致，已并入） */
       pending: 'bg-accent text-primary',
       /** 已领取：灰底 + 次要文字色 */
       muted: 'bg-muted text-foreground/40',

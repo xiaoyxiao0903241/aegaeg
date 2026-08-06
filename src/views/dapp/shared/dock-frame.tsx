@@ -46,7 +46,7 @@ export function DockH5ChromeSlot() {
 }
 
 /**
- * 左栏面板壳（贴稿 leaf：header / backRow 与内容分离）。
+ * 左栏面板容器：头部 / 返回行与内容分离。
  *
  * - PC：头在栏内，整层横滑，高度随内容
  * - H5：头 portal 到 window sticky 槽；固定高；过渡期退场隐身（不做槽内横滑）
@@ -132,7 +132,7 @@ export function DockPanel({
 }
 
 /**
- * Hub 面板：稿 header leaf（titleblock | btn/menu[+可选第二图标]）+ 内容。
+ * Hub 面板容器：标题区 + 操作按钮（可选第二图标）+ 内容区。
  */
 export function DockFrame({
   bodyClassName,

@@ -9,6 +9,7 @@ import { Frame } from '~/shared/components/table-frame'
 import { Text } from '~/shared/components/text'
 import { cn, revealClass } from '~/shared/lib/utils'
 
+/** 表格空态：嵌在表内或独立 Frame 展示 */
 function TableEmpty({
   body,
   className,
@@ -35,6 +36,7 @@ function TableEmpty({
   )
 }
 
+/** 表格空态容器：可选骨架行，供纯空态与 Auth 共用 */
 function EmptyState({
   className,
   embedded = false,

@@ -1,6 +1,10 @@
-/** Parse A4 GDC `spec` strings and compare to WebBridge measured styles. */
+/**
+ * 解析 A4 GDC 的 `spec` 字符串，并与 WebBridge 测得的样式比较。
+ */
 
 /**
+ * 从 spec 颜色片段解析出颜色归类。
+ *
  * @param {string | null | undefined} raw
  * @returns {'muted40' | 'body70' | 'white' | 'ink' | 'coral' | null}
  */
@@ -16,6 +20,8 @@ export function parseColorHint(raw) {
 }
 
 /**
+ * 解析 spec 中的字号、字重与颜色期望值。
+ *
  * @param {string | null | undefined} spec
  */
 export function parseSpec(spec) {
@@ -34,6 +40,11 @@ export function parseSpec(spec) {
 }
 
 /**
+ * 比较实测样式与清单期望值，并生成逐项判定。
+ *
+ * 数据依赖项在缺会话或缺行时允许按 OPTIONAL_MISS 通过；
+ * 外观与装饰类元素宽度随内容伸缩，默认只校验高度。
+ *
  * @param {object | null} measured
  * @param {{ w?: number | null, h?: number | null, kind: string, name?: string }} leaf
  * @param {{ fs: number | null, fw: number | null, colorHint: string | null }} expected
@@ -55,7 +66,7 @@ export function compareLeaf(measured, leaf, expected, opts = {}) {
 
   const ew = leaf.w ?? null
   const eh = leaf.h ?? null
-  // chrome / deco 宽随内容列伸缩；只钉 h（若有）
+  // 外观 / 装饰元素宽度随内容列伸缩；有期望高度时只校验高度
   const skipWidth =
     leaf.skipSize === true ||
     leaf.kind === 'chrome' ||

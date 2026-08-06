@@ -30,7 +30,7 @@
   }
 }
 
-/* FAQs accordion — animate inner panel; Radix zeros transition on Accordion.Content */
+/* 常见问题手风琴：动画作用于内层面板，Radix 会先清掉 Accordion.Content 的过渡 */
 .faq-answer-panel {
   display: grid;
   overflow: hidden;
@@ -50,7 +50,7 @@
   transition: grid-template-rows 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* DApp 开合箭头 SSOT — CollapseChevron；仅 size 分叉，色/向/时序一律。 */
+/* DApp 开合箭头：与 CollapseChevron 保持同一旋转、颜色与过渡配置 */
 .collapse-chevron {
   transform: rotate(0deg);
   color: color-mix(in oklab, var(--foreground) 40%, transparent);
@@ -183,7 +183,7 @@
   }
 }
 
-/* Radix Dialog — shared modal enter/exit (opacity + scale) */
+/* Radix Dialog：统一弹窗进入 / 退出的透明度与缩放动画 */
 @keyframes aegis-modal-overlay-in {
   from {
     opacity: 0;
@@ -240,7 +240,7 @@
   animation: aegis-modal-content-out 180ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
-/* Responsive dialog — PC centered modal, H5 bottom sheet */
+/* 响应式弹窗：桌面居中显示，移动端从底部滑入 */
 @keyframes aegis-sheet-content-in {
   from {
     opacity: 0;

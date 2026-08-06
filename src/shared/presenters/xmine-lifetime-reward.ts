@@ -8,7 +8,7 @@ export type X0MiningRewardLogLike = {
 
 /**
  * 用户侧 X 挖矿「累计产出」：对 REWARD 流水 amount 求和。
- * 非法 amount 跳过（fail-closed，不计 0 以外的假数）。
+ * 非法 amount 跳过，不计入非 0 的异常值。
  *
  * @see docs/backend-api/api.md #x0-mining/logs
  */

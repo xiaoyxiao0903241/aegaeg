@@ -37,7 +37,7 @@ type HomeSectionProps = ComponentPropsWithoutRef<'section'> &
   }
 
 /**
- * 首页区块外壳
+ * 首页区块容器
  *
  * 统一区块的纵向间距与内容容器宽度：spacing 控制上下留白，
  * container 决定是否包裹 .container 及是否收窄最大宽度。

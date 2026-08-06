@@ -41,6 +41,7 @@ function pageMenuMaxHeightPx(): number {
 
 type MenuPlacement = 'above' | 'below'
 
+/** 按触发按钮与视口剩余空间决定页码菜单向上或向下展开 */
 function placementForMenu(triggerRect: DOMRect, menuHeight: number): MenuPlacement {
   const viewportPadding = pageMenuViewportPaddingPx()
   const gap = pageMenuGapPx()
@@ -53,6 +54,7 @@ function placementForMenu(triggerRect: DOMRect, menuHeight: number): MenuPlaceme
   return spaceBelow >= spaceAbove ? 'below' : 'above'
 }
 
+/** 生成固定定位的页码菜单样式，并约束在视口内 */
 function styleForMenu(
   triggerRect: DOMRect,
   placement: MenuPlacement,
@@ -83,6 +85,17 @@ type PaginationProps = {
   total: number
 }
 
+/**
+ * 表格分页条
+ *
+ * 展示总数、每页条数与页码菜单；页码超出范围时自动回调到有效页。
+ *
+ * @param page 当前页（1 起）
+ * @param pageSize 每页条数
+ * @param total 数据总数
+ * @param onPageChange 页码变化时回调
+ * @param summary 可选附加说明
+ */
 function Pagination({
   className,
   summary,

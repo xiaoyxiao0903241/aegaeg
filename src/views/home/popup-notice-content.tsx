@@ -27,6 +27,7 @@ function normalizeUrlAttr(value: string): string {
   return out.trim()
 }
 
+/** 校验 href/src 是否仅允许 http/https/mailto */
 function isAllowedHrefOrSrc(value: string): boolean {
   return ALLOWED_HREF_SRC_RE.test(normalizeUrlAttr(value))
 }
@@ -41,11 +42,20 @@ function escapeAsPlainText(html: string): string {
     .replace(/'/g, '&#39;')
 }
 
+/** 粗判内容是否含 HTML 标签，用于决定消毒或纯文本渲染 */
 export function isPopupNoticeHtmlContent(content: string): boolean {
   return HTML_CONTENT_RE.test(content)
 }
 
-/** 公告 HTML 消毒：去脚本/嵌入/事件处理器；href/src 仅允许 http/https/mailto。 */
+/**
+ * 公告 HTML 消毒
+ *
+ * 移除脚本、嵌入、表单等危险标签与事件属性，链接仅保留 http/https/mailto；
+ * 无 DOMParser 时降级为纯文本转义。
+ *
+ * @param html 待消毒的公告 HTML
+ * @returns 可安全用于 innerHTML 的 HTML；无 DOMParser 时返回纯文本
+ */
 export function sanitizePopupNoticeHtml(html: string): string {
   if (typeof DOMParser === 'undefined') {
     return escapeAsPlainText(html)
@@ -75,6 +85,7 @@ export function sanitizePopupNoticeHtml(html: string): string {
   return doc.body.innerHTML
 }
 
+/** 纯文本中的 http(s) 链接转成可点击链接 */
 function linkifyPlainText(text: string) {
   const parts = text.split(URL_RE)
   return parts.map((part, index) => {

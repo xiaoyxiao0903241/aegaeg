@@ -42,7 +42,7 @@ export function useFlashExchangeSpotRates({
       ? false
       : (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
 
-  // 面板与概览统一用冒号形式（`1 : 1`），零报价保留 `1 : 0` chrome
+  // 面板与概览统一用冒号形式（`1 : 1`），零报价保留 `1 : 0` 固定显示形态
   const rateLabel = formatExchangeRateColon({
     amountIn: spotQuoteAmount,
     amountOut: spotQuotedOut,

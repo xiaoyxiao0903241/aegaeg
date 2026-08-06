@@ -5,6 +5,8 @@ import type {
   AssetsRewardSummary,
 } from '~/shared/api/types'
 
+/** 集中封装资产 Hub 的持仓分布、持仓汇总与奖励概览端点。 */
+
 export async function getAssetsHoldingsDistribution(
   token: string,
 ): Promise<AssetsHoldingsDistribution> {

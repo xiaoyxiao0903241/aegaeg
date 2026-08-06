@@ -1,8 +1,8 @@
 /**
- * Assets Stake (`#assets/stake` · PC `4518:5594`) A5 profile.
+ * Assets Stake 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- * Order = min-leaves / leaf 表序。
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源），
+ * 测量顺序按最小清单 / leaf 表顺序。
  */
 
 import { readFileSync } from 'node:fs'
@@ -12,7 +12,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为绝对路径，供读取资产质押清单与输出。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -36,8 +40,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按资产质押清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
@@ -58,11 +65,11 @@ export function mapLeaves(gdc, page) {
   const stats = /** @type {any[]} */ (R.stats ?? [])
   const s0 = stats[0] ?? {}
 
-  // 0-1 shell
+  // 0-1 页面容器
   add(gdc[0], S.rail, 'shell.rail')
   add(gdc[1], S.header, 'shell.header')
 
-  // 2-13 left chrome / toolbar
+  // 2-13 左栏界面外观与工具栏
   add(gdc[2], L.backIcon, 'left.backIcon')
   add(gdc[3], L.backLabel, 'left.backLabel')
   add(gdc[4], L.menuBtn, 'left.menuBtn')
@@ -77,7 +84,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[13], L.quoteAgx, 'left.quoteAgx')
   add(gdc[14], L.quoteUsd, 'left.quoteUsd')
 
-  // 15-33 card0 liquid + boost hidden
+  // 15-33 第 0 张卡：活期 + 隐藏的 boost
   add(gdc[15], c0.card, 'card[0].card')
   add(gdc[16], c0.periodPill, 'card[0].periodPill')
   add(gdc[17], c0.periodText, 'card[0].periodText')
@@ -98,7 +105,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[32], c0.redeemBtn, 'card[0].redeemBtn')
   add(gdc[33], c0.redeemText, 'card[0].redeemText')
 
-  // 34-49 card1 anytime（无 boost）
+  // 34-49 第 1 张卡：随时（无 boost）
   add(gdc[34], c1.card, 'card[1].card')
   add(gdc[35], c1.periodPill, 'card[1].periodPill')
   add(gdc[36], c1.periodText, 'card[1].periodText')
@@ -116,7 +123,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[48], c1.redeemBtn, 'card[1].redeemBtn')
   add(gdc[49], c1.redeemText, 'card[1].redeemText')
 
-  // 50-70 card2 locked + voucher + boost
+  // 50-70 第 2 张卡：锁仓 + 凭证 + boost
   add(gdc[50], c2.card, 'card[2].card')
   add(gdc[51], c2.periodPill, 'card[2].periodPill')
   add(gdc[52], c2.periodText, 'card[2].periodText')
@@ -139,11 +146,11 @@ export function mapLeaves(gdc, page) {
   add(gdc[69], c2.redeemBtn, 'card[2].redeemBtn')
   add(gdc[70], c2.redeemText, 'card[2].redeemText')
 
-  // 71-72 reuse card surfaces
+  // 71-72 复用的卡面
   add(gdc[71], c3.card, 'card[3].card')
   add(gdc[72], c4.card, 'card[4].card')
 
-  // 73-78 list pager
+  // 73-78 列表分页
   const P = L.pager ?? {}
   add(gdc[73], P.totalText, 'pager.totalText')
   add(gdc[74], P.prevBtn, 'pager.prevBtn')
@@ -152,7 +159,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[77], P.nextBtn, 'pager.nextBtn')
   add(gdc[78], P.nextText, 'pager.nextText')
 
-  // 79-89 stats（首卡展开 + 5 reuse surfaces）
+  // 79-89 统计区（首卡展开 + 5 个复用卡面）
   add(gdc[79], R.statsTitle, 'right.statsTitle')
   add(gdc[80], s0.card, 'stat[0].card')
   add(gdc[81], s0.label, 'stat[0].label')
@@ -163,7 +170,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[84 + i], stats[i]?.card, `stat[${i}].card`)
   }
 
-  // 90-109 ops + pagination
+  // 90-109 操作记录与分页
   add(gdc[90], R.opsTitle, 'right.opsTitle')
   add(gdc[91], R.tableCard, 'right.tableCard')
   const cols = R.cols ?? []
@@ -182,7 +189,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[108], Op.nextBtn, 'opsPag.nextBtn')
   add(gdc[109], Op.nextIcon, 'opsPag.nextIcon')
 
-  // 110-113 faq + dividers
+  // 110-113 FAQ 与分隔线
   add(gdc[110], R.faqTitle, 'right.faqTitle')
   add(gdc[111], R.faqList, 'right.faqList')
   add(gdc[112], S.dividerNav, 'shell.dividerNav')

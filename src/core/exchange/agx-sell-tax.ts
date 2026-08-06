@@ -40,7 +40,7 @@ function assertAgxSellTaxBps(raw: bigint): number {
 /**
  * 有效卖出税（BPS）。
  *
- * - 额度观测块 ≠ 当前块 → fail-closed 用 extraSellBP（陈旧额度不可信）
+ * - 额度观测块 ≠ 当前块 → 按防御税率 extraSellBP 处理（陈旧额度不可信）
  * - 同块且 `nextGross > blockSellLimit`，或 `blockSellLimit === 0 && amountIn > 0` → extraSellBP
  * - 否则按熔断选 fuse/sellRatio
  *

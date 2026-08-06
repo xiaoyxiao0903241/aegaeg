@@ -7,7 +7,7 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * 债券周期选项卡（组合式）
+ * 债券周期选项卡（组合组件）
  *
  * 左：单选点 + 周期名 + 收益率徽标 + 折扣区间 / 已售；
  * 右：当前折扣与折扣价。

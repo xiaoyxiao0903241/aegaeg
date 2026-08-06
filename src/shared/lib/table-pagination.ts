@@ -2,6 +2,7 @@ import { DAPP_TABLE_PAGE_SIZE } from '~/shared/lib/constants'
 
 export { DAPP_TABLE_PAGE_SIZE }
 
+/** 结果行数超过每页行数时显示分页。 */
 export function shouldShowTablePagination(
   total: number,
   pageSize: number = DAPP_TABLE_PAGE_SIZE,
@@ -9,6 +10,7 @@ export function shouldShowTablePagination(
   return total > pageSize
 }
 
+/** 生成表格分页查询参数（默认每页 5 条）。 */
 export function tablePageQuery(page: number) {
   return { page, page_size: DAPP_TABLE_PAGE_SIZE }
 }

@@ -1,9 +1,9 @@
 /**
- * Release Hub (`#release` · PC `4298:212`) A5 profile.
+ * Release Hub 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- * Order = `221-release-hub-min-leaves.md` 全表.
- * Left: ReleaseHubWidget · Right: ReleaseHubContent
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
+ * 顺序按 `221-release-hub-min-leaves.md` 全表。
+ * 左栏为 ReleaseHubWidget，右栏为 ReleaseHubContent。
  */
 
 import { readFileSync } from 'node:fs'
@@ -13,7 +13,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为本地绝对路径，供读写释放总览测量文件。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -69,8 +73,11 @@ export const profile = {
 }
 
 /**
- * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按释放总览清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */
@@ -91,13 +98,13 @@ export function mapLeaves(gdc, page) {
   const rates = /** @type {any[]} */ (M.rates ?? [])
   const faqItems = /** @type {any[]} */ (F.items ?? [])
 
-  // 0–3 left-header
+  // 0–3 左栏标题
   add(gdc[0], H.title, 'header.title')
   add(gdc[1], H.subtitle, 'header.subtitle')
   add(gdc[2], H.menu, 'header.menu')
   add(gdc[3], H.menuIcon, 'header.menuIcon')
 
-  // 4–13 queue card
+  // 4–13 释放池卡
   add(gdc[4], Q.card, 'queue.card')
   add(gdc[5], Q.icon, 'queue.icon')
   add(gdc[6], Q.title, 'queue.title')
@@ -109,7 +116,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[12], Q.approxL, 'queue.approxL')
   add(gdc[13], Q.approxR, 'queue.approxR')
 
-  // 14–25 buffer card
+  // 14–25 缓冲池卡
   add(gdc[14], B.card, 'buffer.card')
   add(gdc[15], B.icon, 'buffer.icon')
   add(gdc[16], B.title, 'buffer.title')
@@ -123,14 +130,14 @@ export function mapLeaves(gdc, page) {
   add(gdc[24], B.releasedLabR, 'buffer.releasedLabR')
   add(gdc[25], B.releasedAmtR, 'buffer.releasedAmtR')
 
-  // 26–30 about（DappAboutCard chrome；deco 本页无 decoSrc → 可 locate_fail）
+  // 26–30 关于区（DappAboutCard 外观；本页无装饰图 src 时允许定位失败）
   add(gdc[26], A.heading, 'about.heading')
   add(gdc[27], A.slide, 'about.slide')
   add(gdc[28], A.slideTitle, 'about.slideTitle')
   add(gdc[29], A.slideBody, 'about.slideBody')
   add(gdc[30], A.deco, 'about.deco')
 
-  // 31–66 mechanism
+  // 31–66 机制区
   add(gdc[31], M.heading, 'mechanism.heading')
   add(gdc[32], M.body, 'mechanism.body')
   add(gdc[33], M.card, 'mechanism.card')
@@ -168,7 +175,7 @@ export function mapLeaves(gdc, page) {
   add(gdc[65], rates[2], 'mechanism.rate[2]')
   add(gdc[66], rates[3], 'mechanism.rate[3]')
 
-  // 67–82 FAQ（Faq 展开 5× row/q/chevron）
+  // 67–82 FAQ（展开 5 组：行、问题、箭头）
   add(gdc[67], F.heading, 'faq.heading')
   for (let i = 0; i < 5; i++) {
     const item = faqItems[i] ?? {}
@@ -177,7 +184,7 @@ export function mapLeaves(gdc, page) {
     add(gdc[70 + i * 3], item.chevron, `faq[${i}].chevron`)
   }
 
-  // 83–84 chrome（shell border；无独立 rect → locate_fail OK）
+  // 83–84 页面分隔外观（容器边框无独立矩形，允许定位失败）
   add(gdc[83], S.dividerL, 'shell.dividerL')
   add(gdc[84], S.dividerR, 'shell.dividerR')
 

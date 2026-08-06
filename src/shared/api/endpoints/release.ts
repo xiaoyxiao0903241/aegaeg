@@ -10,6 +10,8 @@ import type {
   ReleasePoolSummary,
 } from '~/shared/api/types'
 
+/** 本金释放页的汇总与日志端点，日志通过 `postFilteredPage` 过滤事件类型。 */
+
 export async function getBufferPoolSummary(token: string): Promise<BufferPoolSummary> {
   return apiRequest<BufferPoolSummary>('/buffer-pool/summary', {
     method: 'POST',

@@ -123,7 +123,7 @@
       return true
     })
 
-  // collapse all FAQ then open first (稿 faq/1 含 answer)
+  // 先收合所有 FAQ，再打开第一项（设计参考第 1 项含答案）
   ;[...document.querySelectorAll('[data-faq-item][data-state="open"]')].forEach((item) => {
     const trigger = item.querySelector('[data-faq-trigger],button')
     trigger?.click?.()
@@ -136,14 +136,14 @@
     firstFaqTrigger.querySelector('[data-faq-trigger],button')?.click?.()
   }
 
-  // —— shell dividers ——
+  // —— 页面分隔线 ——
   const rail =
     document.querySelector('[data-dapp-rail],aside,nav') ||
     [...document.querySelectorAll('aside,nav,div')].find((el) => {
       const r = el.getBoundingClientRect()
       return r.x < 120 && r.width > 60 && r.width < 140 && r.height > 400
     }) ||
-    // shell 左边框作 divider L 兜底
+    // 容器左边框作为左侧分隔线的兜底
     [...document.querySelectorAll('div')].find((el) => {
       const r = el.getBoundingClientRect()
       const cs = getComputedStyle(el)
@@ -419,7 +419,7 @@
       const t = (e.textContent || '').trim()
       return /gAGX/.test(t) && /领取/.test(ctaReleaseLab?.textContent || e.textContent || '')
     }) || (ctaReleaseLab && /gAGX/.test(ctaReleaseLab.textContent || '') ? ctaReleaseLab : null)
-  // CTA lines are often "领取 1.6000 gAGX" as one span — split by measuring same span twice is ok for locate
+  // 按钮行常把「领取 1.6000 gAGX」放在一个 span 中；同一节点按两个位置测量即可
   const ctaLine0 = ctaSpans[0] || null
   const ctaLine1 = ctaSpans[1] || null
 
@@ -543,7 +543,7 @@
           return near(r.height, 17, 6) && r.width > 16 && r.width < 48
         })
       : null
-    // row bottom border as sep proxy
+    // 用行底边框作为分隔线的代理
     const sepEl = tr
     return {
       rank: styleOf(cells[0]),
@@ -560,7 +560,7 @@
       ),
     }
   })
-  // fix sep: use tr border-bottom measurement
+  // 修正分隔线：改用 tr 的 border-bottom 实测
   for (let i = 0; i < resultRows.length; i++) {
     const tr = resultBodyRows[i]
     if (!tr) continue

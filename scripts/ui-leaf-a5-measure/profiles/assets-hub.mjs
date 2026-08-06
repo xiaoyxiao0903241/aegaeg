@@ -1,9 +1,9 @@
 /**
- * Assets Hub (`#assets` · PC `4281:212`) A5 profile.
+ * Assets Hub 的 A5 测量配置。
  *
- * Inventory/out: `tmp/ui-leaf-measure/`（自备 JSON；禁 `.scratch` SSOT）
- * Page snapshot JS returns structural packs; `mapLeaves` zips A4 order → measured nodes.
- * Adding a new page = copy this profile + write a new `*.page.js` + mapLeaves.
+ * 输入清单与输出文件放在 `tmp/ui-leaf-measure/`（本地自备 JSON，不把 `.scratch` 当唯一来源）。
+ * 页面快照 JS 返回结构化数据包，`mapLeaves` 按清单顺序与测量节点对齐。
+ * 新增页面时复制本配置，再写 `*.page.js` 与 `mapLeaves`。
  */
 
 import { readFileSync } from 'node:fs'
@@ -13,7 +13,11 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = join(here, '../../..')
 
-/** @param {string} rel */
+/**
+ * 把仓库根目录下的相对路径解析为绝对路径，供读取资产总览清单与输出。
+ *
+ * @param {string} rel 仓库根目录下的相对路径
+ */
 function abs(rel) {
   return join(repoRoot, rel)
 }
@@ -41,9 +45,13 @@ export const profile = {
 }
 
 /**
- * Zip A4 inventory (ordered) to page snapshot paths. Length MUST equal inventory.length.
- * @param {Array<{ nodeId: string, kind: string, name: string, w?: number, h?: number, gdc_w?: number, gdc_h?: number, spec?: string }>} gdc
- * @param {Record<string, unknown>} page
+ * 按资产 Hub 清单顺序取页面快照节点，产出等长测量映射。
+ *
+ * 映射数量必须等于清单长度，否则说明页面结构或清单发生了变化。
+ *
+ * @param {Array<{ nodeId: string, kind: string, name: string, w?: number, h?: number, gdc_w?: number, gdc_h?: number, spec?: string }>} gdc 设计清单条目
+ * @param {Record<string, unknown>} page 页面快照数据包
+ * @returns 与清单等长的测量映射数组
  */
 export function mapLeaves(gdc, page) {
   /** @type {Array<{ leaf: (typeof gdc)[0], measured: object | null, locator: string }>} */

@@ -16,8 +16,14 @@ export function readShowOnceFromDisplayMode(displayMode: unknown): boolean {
   return mode === 1
 }
 
+/**
+ * 公告关闭标识
+ *
+ * 同一公告 id 换 version 视为新公告；队列内多条公告互不干扰。
+ *
+ * @param notice 公告或其 id/version
+ */
 export function noticeDismissKey(notice: Pick<HomePopupNotice, 'id' | 'version'>): string {
-  /** 同一公告 id 换 version 视为新公告；队列内多条公告互不干扰 */
   return `${notice.id}:${notice.version}`
 }
 

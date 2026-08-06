@@ -17,6 +17,7 @@ type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
   symbol: string
 }
 
+/** 单张代币卡片：飞轮装饰、代币图标、符号与说明，悬停时高亮 */
 function HomeTokenCard({ token }: { token: TokenCard }) {
   return (
     <Card

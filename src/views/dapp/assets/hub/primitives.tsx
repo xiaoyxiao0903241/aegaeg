@@ -1,3 +1,8 @@
+/**
+ * 资产总览卡展示组件
+ *
+ * 提供指标、统计组、持仓分布、Rebase 等展示卡；数据由资产 Hub 状态组装后传入。
+ */
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 

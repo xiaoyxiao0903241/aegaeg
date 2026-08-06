@@ -11,6 +11,8 @@ import type {
   TurbineSummary,
 } from '~/shared/api/types'
 
+/** AGX 贡献销毁与 Turbine 端点：汇总走业务信封，日志可带过滤参数。 */
+
 export async function getAgxContributionSummary(token: string): Promise<AgxContributionSummary> {
   return apiRequest<AgxContributionSummary>('/agx-contribution/summary', {
     method: 'POST',

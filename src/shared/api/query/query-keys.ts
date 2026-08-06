@@ -11,6 +11,8 @@ import type {
   X0MiningLogsParams,
 } from '~/shared/api/types'
 
+/** React Query 缓存键的唯一构造点：API 查询、链上读取与失效共用。 */
+
 /** 分页查询键尾段：page / page_size 默认 1 / 20。 */
 function paginated<const P extends readonly unknown[]>(
   prefix: P,

@@ -18,7 +18,14 @@ export function liveQuotedOut(
   return quotedOut ?? 0n
 }
 
-/** Trade / Flash 在实时报价解析后的提交门闸。 */
+/**
+ * Trade / Flash 在实时报价解析后的提交门闸。
+ *
+ * 钱包、余额、报价、滑点下限、报价时效与提交中/锁定任一条件不满足即拒绝；
+ * 各字段语义见对象内联注释，调用方须先经 `liveQuotedOut` 把占位报价归零。
+ *
+ * @returns 可提交返回 true
+ */
 export function canSubmitQuotedExchange({
   walletReady,
   amountIn,

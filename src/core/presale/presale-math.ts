@@ -473,7 +473,7 @@ export function getAirdropBpsForPhase(phase?: PresalePhaseOnChain): number {
  * 估算本次购买对贡献值的贡献（USD）。
  *
  * 公式等价于 `amountUsd1 / (1 - discount)`；仍要求 `agxPriceUsd > 0`
- * 作为报价门闸（与 `estimateAgxFromUsd1` 同向 fail-closed）。
+ * 作为报价门闸，参考价缺失或非正时按 0 处理，避免展示无效贡献值。
  *
  * @param amountUsd1 投入金额（USD1）
  * @param discountBps 折扣（万分之一）

@@ -91,8 +91,8 @@ export type TextProps = HTMLAttributes<HTMLElement> & {
  * 响应式前缀（如 `max-dapp:text-lg`）会连同基础字号一起剥掉，
  * 否则媒体查询未生效时，面板 / 区块的数字字阶会塌回继承的 16px。
  *
- * 耦合点（B3）：声明式 `size` prop 会更好，但本仓 call site 大量靠 className
- * 覆盖字号；半迁移成本高，暂保持正则剥壳，勿在未全仓迁移时改公共 API。
+ * 耦合点：声明式 `size` 会更清晰，但现有调用方大量靠 className
+ * 覆盖字号；迁移成本高，暂用正则去掉变体字号，勿在未全仓迁移时改公共 API。
  */
 /** 命名尺寸 + 类尺寸的任意值 / CSS 变量简写；不含 `text-[#hex]` 颜色 */
 const FONT_SIZE_UTILITY_RE =
