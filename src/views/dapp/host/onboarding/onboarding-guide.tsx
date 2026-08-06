@@ -31,6 +31,8 @@ export function OnboardingGuide({
 }) {
   const { messages: t } = useI18n()
   const [currentStep, setCurrentStep] = useState(0)
+  /** 文案/点阵与高亮对齐：仅在 prepare 完成后推进 */
+  const [displayStep, setDisplayStep] = useState(0)
   const [disabledActions, setDisabledActions] = useState(false)
   const [target, setTarget] = useState<Element | null>(null)
   const [prevOpen, setPrevOpen] = useState(open)
@@ -40,6 +42,7 @@ export function OnboardingGuide({
     setPrevOpen(open)
     if (open) {
       setCurrentStep(0)
+      setDisplayStep(0)
       setTarget(null)
       setDisabledActions(true)
     }
@@ -60,11 +63,13 @@ export function OnboardingGuide({
       .then((el) => {
         if (controller.signal.aborted) return
         setTarget(el)
+        setDisplayStep(currentStep)
         setDisabledActions(false)
       })
       .catch(() => {
         if (controller.signal.aborted) return
         setTarget(null)
+        setDisplayStep(currentStep)
         setDisabledActions(false)
       })
     return () => {
@@ -87,7 +92,7 @@ export function OnboardingGuide({
     <OnboardingSpotlight target={target}>
       <OnboardingTourTooltip
         copy={copy}
-        currentStep={currentStep}
+        currentStep={displayStep}
         disabledActions={disabledActions}
         onComplete={() => finish(true)}
         onNext={() => {
