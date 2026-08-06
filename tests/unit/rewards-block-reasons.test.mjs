@@ -1,29 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import {
   evaluateRewardsMixedClaim,
-  evaluateRewardsSimpleClaim,
   isLuckyClaimable,
 } from '../../src/core/rewards/rewards-block-reasons.ts'
-
-test('simple claim separates session gate from zero amount', () => {
-  assert.equal(
-    evaluateRewardsSimpleClaim({ sessionReady: false, amount: 0n, unknownLocked: false }),
-    'notSessionReady',
-  )
-  assert.equal(
-    evaluateRewardsSimpleClaim({ sessionReady: true, amount: 0n, unknownLocked: false }),
-    'zeroAmount',
-  )
-  assert.equal(
-    evaluateRewardsSimpleClaim({ sessionReady: true, amount: 1n, unknownLocked: true }),
-    'lockedUnknown',
-  )
-  assert.equal(
-    evaluateRewardsSimpleClaim({ sessionReady: true, amount: 1n, unknownLocked: false }),
-    null,
-  )
-})
 
 test('mixed claim fails closed on paused lucky and insufficient contribution', () => {
   assert.equal(

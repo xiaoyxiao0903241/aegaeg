@@ -1,4 +1,4 @@
-import { parseAbi } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import {
   agxSellTaxBps,
@@ -20,6 +20,7 @@ import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
+import { readAggregate3 } from '~/web3/multicall3-read'
 
 export type ExchangePoolReadContext = {
   pool: ExchangePoolImmutableMetadata
@@ -57,47 +58,53 @@ export async function readAgxSellTaxBps(
   agx: `0x${string}` = BSC_CONTRACTS.agx,
   amountIn: bigint = 0n,
 ): Promise<number> {
-  const [
-    sellRatio,
-    extraSellBP,
-    crashFuseActive,
-    blockSellQuotaBlock,
-    blockSellLimit,
-    grossSoldInBlock,
-    currentBlock,
-  ] = await Promise.all([
-    client.readContract({
-      address: agx,
+  const taxCalls = (
+    [
+      'sellRatio',
+      'extraSellBP',
+      'crashFuseActive',
+      'blockSellQuotaBlock',
+      'blockSellLimit',
+      'grossSoldInBlock',
+    ] as const
+  ).map((functionName) => ({
+    target: agx,
+    callData: encodeFunctionData({
       abi: agxSellTaxAbi,
-      functionName: 'sellRatio',
+      functionName,
     }),
-    client.readContract({
-      address: agx,
-      abi: agxSellTaxAbi,
-      functionName: 'extraSellBP',
-    }),
-    client.readContract({
-      address: agx,
-      abi: agxSellTaxAbi,
-      functionName: 'crashFuseActive',
-    }),
-    client.readContract({
-      address: agx,
-      abi: agxSellTaxAbi,
-      functionName: 'blockSellQuotaBlock',
-    }),
-    client.readContract({
-      address: agx,
-      abi: agxSellTaxAbi,
-      functionName: 'blockSellLimit',
-    }),
-    client.readContract({
-      address: agx,
-      abi: agxSellTaxAbi,
-      functionName: 'grossSoldInBlock',
-    }),
+  }))
+
+  const [taxResults, currentBlock] = await Promise.all([
+    readAggregate3(client, taxCalls),
     client.getBlockNumber(),
   ])
+
+  const decodeTax = <T>(
+    index: number,
+    functionName:
+      | 'sellRatio'
+      | 'extraSellBP'
+      | 'crashFuseActive'
+      | 'blockSellQuotaBlock'
+      | 'blockSellLimit'
+      | 'grossSoldInBlock',
+  ): T => {
+    const slot = taxResults[index]
+    if (!slot?.success) throw new Error(`AGX_SELL_TAX_MULTICALL_FAILED:${functionName}`)
+    return decodeFunctionResult({
+      abi: agxSellTaxAbi,
+      functionName,
+      data: slot.returnData,
+    }) as T
+  }
+
+  const sellRatio = decodeTax<bigint>(0, 'sellRatio')
+  const extraSellBP = decodeTax<bigint>(1, 'extraSellBP')
+  const crashFuseActive = decodeTax<boolean>(2, 'crashFuseActive')
+  const blockSellQuotaBlock = decodeTax<bigint>(3, 'blockSellQuotaBlock')
+  const blockSellLimit = decodeTax<bigint>(4, 'blockSellLimit')
+  const grossSoldInBlock = decodeTax<bigint>(5, 'grossSoldInBlock')
 
   if (amountIn > 0n) {
     return effectiveAgxSellTaxBps({

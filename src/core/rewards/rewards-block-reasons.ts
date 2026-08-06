@@ -1,11 +1,8 @@
 /**
- * 奖励页签名领取与 Mixed 领取的写前阻断（纯函数）。
+ * 奖励页 Mixed 领取的写前阻断（纯函数）。
  *
- * 简单签名奖励（RewardManager 等）与 Mixed（Lucky / DaoPool）走不同的合约方法，
- * 阻断原因分开返回，页面据此给出对应提示。
+ * Mixed（Lucky / DaoPool）走合约方法；阻断原因分开返回，页面据此给出对应提示。
  */
-
-export type RewardsSimpleClaimBlockReason = 'notSessionReady' | 'zeroAmount' | 'lockedUnknown'
 
 export type RewardsMixedBlockReason =
   | 'zeroAmount'
@@ -15,27 +12,6 @@ export type RewardsMixedBlockReason =
   | 'restakePlanUnresolved'
   | 'luckyPaused'
   | 'notClaimable'
-
-/**
- * 简单签名领取是否可发起
- *
- * 会话未就绪、解锁状态未知、金额为零时分别阻断；
- * 未知锁定单独拦一层，避免把「仍在确认」当成「余额不足」误导提示。
- *
- * @param sessionReady 会话是否就绪
- * @param amount 请求领取的数量
- * @param unknownLocked 合约解锁状态是否仍未知
- */
-export function evaluateRewardsSimpleClaim(args: {
-  sessionReady: boolean
-  amount: bigint
-  unknownLocked: boolean
-}): RewardsSimpleClaimBlockReason | null {
-  if (!args.sessionReady) return 'notSessionReady'
-  if (args.unknownLocked) return 'lockedUnknown'
-  if (args.amount <= 0n) return 'zeroAmount'
-  return null
-}
 
 /**
  * Mixed 领取（Lucky / DaoPool）的写前阻断

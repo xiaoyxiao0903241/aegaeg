@@ -5,14 +5,15 @@ import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { formatBondDebtRemainingDisplay } from '~/core/staking/format-bond-debt-remaining'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
-import type { BondPeriod } from '~/core/staking/staking-period'
+import type { BondKind } from '~/core/staking/staking-period'
+import { BOND_PERIODS, type BondPeriod } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
-import { type BondKind, submitBondZap } from '~/views/dapp/staking/bond/submit-bond-zap'
+import { submitBondZap } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { bindUnlockedAmountEditors, evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import {
@@ -32,7 +33,6 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-const BOND_PERIODS: BondPeriod[] = ['180', '360', '540']
 
 export type BondWritePresent = {
   onSuccess: () => void | Promise<void>

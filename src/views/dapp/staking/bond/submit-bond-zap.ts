@@ -1,5 +1,5 @@
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
-import type { BondPeriod } from '~/core/staking/staking-period'
+import type { BondKind, BondPeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
@@ -16,8 +16,6 @@ import {
 } from '~/web3/staking/staking-write'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
-
-export type BondKind = 'lp' | 'burn'
 
 export { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 
@@ -48,7 +46,7 @@ export async function submitBondZap(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async () => {
-      const [preflight, migration, market, payout] = await Promise.all([
+      const [preflight, migration, market] = await Promise.all([
         readBondZapPreflight({
           depository,
           user: address,
@@ -56,13 +54,14 @@ export async function submitBondZap(args: {
         }),
         readMigrationStatus(address, readClient),
         readBondMarketMeta(depository, readClient),
-        readBondZapAgxPreview({
-          kind,
-          depository,
-          depositUsd1: amount,
-          client: readClient,
-        }),
       ])
+      const payout = await readBondZapAgxPreview({
+        kind,
+        depository,
+        depositUsd1: amount,
+        client: readClient,
+        market,
+      })
       return {
         preflight,
         isOldAccount: migration.isOldAccount,

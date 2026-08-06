@@ -12,6 +12,15 @@ export type StakePeriod = 'liquid' | '180' | '360' | '540'
  */
 export type BondPeriod = '180' | '360' | '540'
 
+/** 债券产品：LP 债 / 燃烧债。 */
+export type BondKind = 'lp' | 'burn'
+
+/** 定期档列表（债券周期；locked 质押同值复用）。 */
+export const BOND_PERIODS = ['180', '360', '540'] as const satisfies readonly BondPeriod[]
+
+/** 质押开放周期列表（含活期）。 */
+export const STAKE_PERIODS = ['liquid', ...BOND_PERIODS] as const satisfies readonly StakePeriod[]
+
 export type StakePoolContractKey =
   'liquidStaking' | 'lockedStaking180d' | 'lockedStaking360d' | 'lockedStaking540d'
 

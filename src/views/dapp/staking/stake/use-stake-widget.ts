@@ -2,7 +2,7 @@ import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchang
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
-import type { StakePeriod } from '~/core/staking/staking-period'
+import { STAKE_PERIODS } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -18,7 +18,6 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-const STAKE_PERIODS: readonly StakePeriod[] = ['liquid', '180', '360', '540']
 
 export type StakeWritePresent = {
   onOpenSuccess: () => void | Promise<void>

@@ -1,4 +1,4 @@
-import type { BondPeriod } from '~/core/staking/staking-period'
+import { BOND_PERIODS, type BondKind, type BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
@@ -14,10 +14,7 @@ import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
-import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
-
-const BOND_PERIODS: BondPeriod[] = ['180', '360', '540']
 
 function parseDiscountPct(label: string): number | null {
   const n = Number(label.replace(/%$/, '').trim())

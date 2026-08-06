@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import type { BondPeriod } from '~/core/staking/staking-period'
+import { BOND_PERIODS, type BondPeriod } from '~/core/staking/staking-period'
 import { Card } from '~/shared/components/card'
 import { chipVariants } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
@@ -126,8 +126,6 @@ export const BondPeriodCard = Object.assign(Root, {
   Side,
 })
 
-const PERIODS: BondPeriod[] = ['180', '360', '540']
-
 /** 折扣区间为产品固定档位，非市场演示数字。 */
 export const BOND_DISCOUNT_RANGES: Record<BondPeriod, string> = {
   '180': '85% – 100%',
@@ -174,7 +172,7 @@ export function BondPeriodList({
         {periodLabel}
       </Text>
       <div className="grid gap-2.5">
-        {PERIODS.map((period) => {
+        {BOND_PERIODS.map((period) => {
           const selected = period === value
           const discount = discounts[period] || '0%'
           return (

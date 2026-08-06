@@ -1,20 +1,21 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
+  ACCOUNT_MIGRATION_METHODS,
   BOND_DEPOSITORY_MARKET_METHODS,
   BOND_HELPER_METHODS,
+  ERC20_METHODS,
   LIQUID_STAKING_METHODS,
   LOCKED_STAKING_METHODS,
+  REFERRAL_METHODS,
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
-import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
-import { readMigratedFrom } from '~/web3/migration/migration-read'
-import { readIsBindReferral } from '~/web3/referral/referral-read'
+import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const liquidAbi = parseAbi([
   LIQUID_STAKING_METHODS.remainingStakeAmount,
@@ -36,6 +37,9 @@ const xStakingAbi = parseAbi([
   X_STAKING_POOL_METHODS.miningQuotaOf,
   X_STAKING_POOL_METHODS.miningStakeAmountOf,
 ])
+const erc20Abi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
+const referralAbi = parseAbi([REFERRAL_METHODS.isBindReferral])
+const migrationAbi = parseAbi([ACCOUNT_MIGRATION_METHODS.migratedFrom])
 
 export type StakeOpenPreflight = {
   isBound: boolean
@@ -44,6 +48,13 @@ export type StakeOpenPreflight = {
   remainingQuota: bigint
   poolOpen: boolean
   isWarmupExpired: boolean
+}
+
+export type BondMarketMeta = {
+  discountRateBP: bigint
+  feeBps: bigint
+  maxDebt: bigint
+  totalDeposit: bigint
 }
 
 /**
@@ -68,55 +79,186 @@ export async function readStakeOpenPreflight(args: {
   client?: ChainReadClient
 }): Promise<StakeOpenPreflight> {
   const client = args.client ?? bscReadClient
-  const [isBound, balance, allowance, remainingQuota] = await Promise.all([
-    readIsBindReferral(args.user, client),
-    readErc20Balance(BSC_CONTRACTS.agx, args.user, client),
-    readErc20Allowance(BSC_CONTRACTS.agx, args.user, args.pool, client),
-    client.readContract({
-      address: args.pool,
-      abi: liquidAbi,
-      functionName: 'remainingStakeAmount',
-    }),
-  ])
+  const user = args.user as `0x${string}`
+  const remainingAbi = args.isLiquid ? liquidAbi : lockedAbi
+
+  const round1: Aggregate3Call[] = [
+    {
+      target: BSC_CONTRACTS.referral,
+      callData: encodeFunctionData({
+        abi: referralAbi,
+        functionName: 'isBindReferral',
+        args: [user],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.agx,
+      callData: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [user],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.agx,
+      callData: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'allowance',
+        args: [user, args.pool],
+      }),
+    },
+    {
+      target: args.pool,
+      callData: encodeFunctionData({
+        abi: remainingAbi,
+        functionName: 'remainingStakeAmount',
+      }),
+    },
+  ]
 
   if (args.isLiquid) {
-    const isWarmupExpired = await client.readContract({
-      address: args.pool,
-      abi: liquidAbi,
-      functionName: 'isWarmupExpired',
-      args: [args.user as `0x${string}`],
+    round1.push({
+      target: args.pool,
+      callData: encodeFunctionData({
+        abi: liquidAbi,
+        functionName: 'isWarmupExpired',
+        args: [user],
+      }),
     })
+    const results = await readAggregate3(client, round1)
     return {
-      isBound,
-      balance,
-      allowance,
-      remainingQuota,
+      isBound: decodeAggregate3Result<boolean>(
+        results,
+        0,
+        referralAbi,
+        'isBindReferral',
+        'STAKE_PREFLIGHT_MULTICALL_FAILED:isBound',
+      ),
+      balance: decodeAggregate3Result<bigint>(
+        results,
+        1,
+        erc20Abi,
+        'balanceOf',
+        'STAKE_PREFLIGHT_MULTICALL_FAILED:balance',
+      ),
+      allowance: decodeAggregate3Result<bigint>(
+        results,
+        2,
+        erc20Abi,
+        'allowance',
+        'STAKE_PREFLIGHT_MULTICALL_FAILED:allowance',
+      ),
+      remainingQuota: decodeAggregate3Result<bigint>(
+        results,
+        3,
+        liquidAbi,
+        'remainingStakeAmount',
+        'STAKE_PREFLIGHT_MULTICALL_FAILED:remaining',
+      ),
       poolOpen: true,
-      isWarmupExpired,
+      isWarmupExpired: decodeAggregate3Result<boolean>(
+        results,
+        4,
+        liquidAbi,
+        'isWarmupExpired',
+        'STAKE_PREFLIGHT_MULTICALL_FAILED:warmup',
+      ),
     }
   }
 
+  round1.push({
+    target: BSC_CONTRACTS.accountMigrationManager,
+    callData: encodeFunctionData({
+      abi: migrationAbi,
+      functionName: 'migratedFrom',
+      args: [user],
+    }),
+  })
+  const round1Results = await readAggregate3(client, round1)
+  const isBound = decodeAggregate3Result<boolean>(
+    round1Results,
+    0,
+    referralAbi,
+    'isBindReferral',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:isBound',
+  )
+  const balance = decodeAggregate3Result<bigint>(
+    round1Results,
+    1,
+    erc20Abi,
+    'balanceOf',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:balance',
+  )
+  const allowance = decodeAggregate3Result<bigint>(
+    round1Results,
+    2,
+    erc20Abi,
+    'allowance',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:allowance',
+  )
+  const remainingQuota = decodeAggregate3Result<bigint>(
+    round1Results,
+    3,
+    lockedAbi,
+    'remainingStakeAmount',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:remaining',
+  )
+  const migratedFrom = decodeAggregate3Result<Address>(
+    round1Results,
+    4,
+    migrationAbi,
+    'migratedFrom',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:migratedFrom',
+  )
+
   // `userStakingAmounts` 按首次 root 累计，非别名感知。
-  const migratedFrom = await readMigratedFrom(args.user, client)
   const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
-  const [poolOpen, singleLimit, userStaked] = await Promise.all([
-    client.readContract({
-      address: args.pool,
-      abi: lockedAbi,
-      functionName: 'status',
-    }),
-    client.readContract({
-      address: args.pool,
-      abi: lockedAbi,
-      functionName: 'singleAddressLimit',
-    }),
-    client.readContract({
-      address: args.pool,
-      abi: lockedAbi,
-      functionName: 'userStakingAmounts',
-      args: [stakeRoot],
-    }),
+  const round2 = await readAggregate3(client, [
+    {
+      target: args.pool,
+      callData: encodeFunctionData({
+        abi: lockedAbi,
+        functionName: 'status',
+      }),
+    },
+    {
+      target: args.pool,
+      callData: encodeFunctionData({
+        abi: lockedAbi,
+        functionName: 'singleAddressLimit',
+      }),
+    },
+    {
+      target: args.pool,
+      callData: encodeFunctionData({
+        abi: lockedAbi,
+        functionName: 'userStakingAmounts',
+        args: [stakeRoot],
+      }),
+    },
   ])
+
+  const poolOpen = decodeAggregate3Result<boolean>(
+    round2,
+    0,
+    lockedAbi,
+    'status',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:status',
+  )
+  const singleLimit = decodeAggregate3Result<bigint>(
+    round2,
+    1,
+    lockedAbi,
+    'singleAddressLimit',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:singleLimit',
+  )
+  const userStaked = decodeAggregate3Result<bigint>(
+    round2,
+    2,
+    lockedAbi,
+    'userStakingAmounts',
+    'STAKE_PREFLIGHT_MULTICALL_FAILED:userStaked',
+  )
 
   const rootRemaining =
     singleLimit === 0n ? remainingQuota : singleLimit > userStaked ? singleLimit - userStaked : 0n
@@ -156,18 +298,72 @@ export async function readBondZapPreflight(args: {
   depositoryAuthorized: boolean
 }> {
   const client = args.client ?? bscReadClient
-  const [isBound, balance, allowance, depositoryAuthorized] = await Promise.all([
-    readIsBindReferral(args.user, client),
-    readErc20Balance(BSC_CONTRACTS.usd1, args.user, client),
-    readErc20Allowance(BSC_CONTRACTS.usd1, args.user, BSC_CONTRACTS.bondHelper, client),
-    client.readContract({
-      address: BSC_CONTRACTS.bondHelper,
-      abi: bondHelperAbi,
-      functionName: 'authContracts',
-      args: [args.depository],
-    }),
+  const user = args.user as `0x${string}`
+  const results = await readAggregate3(client, [
+    {
+      target: BSC_CONTRACTS.referral,
+      callData: encodeFunctionData({
+        abi: referralAbi,
+        functionName: 'isBindReferral',
+        args: [user],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [user],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'allowance',
+        args: [user, BSC_CONTRACTS.bondHelper],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.bondHelper,
+      callData: encodeFunctionData({
+        abi: bondHelperAbi,
+        functionName: 'authContracts',
+        args: [args.depository],
+      }),
+    },
   ])
-  return { isBound, balance, allowance, depositoryAuthorized }
+
+  return {
+    isBound: decodeAggregate3Result<boolean>(
+      results,
+      0,
+      referralAbi,
+      'isBindReferral',
+      'BOND_PREFLIGHT_MULTICALL_FAILED:isBound',
+    ),
+    balance: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      erc20Abi,
+      'balanceOf',
+      'BOND_PREFLIGHT_MULTICALL_FAILED:balance',
+    ),
+    allowance: decodeAggregate3Result<bigint>(
+      results,
+      2,
+      erc20Abi,
+      'allowance',
+      'BOND_PREFLIGHT_MULTICALL_FAILED:allowance',
+    ),
+    depositoryAuthorized: decodeAggregate3Result<boolean>(
+      results,
+      3,
+      bondHelperAbi,
+      'authContracts',
+      'BOND_PREFLIGHT_MULTICALL_FAILED:auth',
+    ),
+  }
 }
 
 /**
@@ -185,33 +381,41 @@ export async function readBondZapPreflight(args: {
 export async function readBondMarketMeta(
   depository: Address,
   client: ChainReadClient = bscReadClient,
-): Promise<{
-  discountRateBP: bigint
-  feeBps: bigint
-  maxDebt: bigint
-  totalDeposit: bigint
-}> {
-  const [discountRateBP, terms] = await Promise.all([
-    client.readContract({
-      address: depository,
-      abi: bondMarketAbi,
-      functionName: 'discountRateBP',
-    }),
-    client.readContract({
-      address: depository,
-      abi: bondMarketAbi,
-      functionName: 'terms',
-    }),
+): Promise<BondMarketMeta> {
+  const results = await readAggregate3(client, [
+    {
+      target: depository,
+      callData: encodeFunctionData({
+        abi: bondMarketAbi,
+        functionName: 'discountRateBP',
+      }),
+    },
+    {
+      target: depository,
+      callData: encodeFunctionData({
+        abi: bondMarketAbi,
+        functionName: 'terms',
+      }),
+    },
   ])
-  const [, , feeBps, maxDebt, totalDeposit] = terms as readonly [
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-  ]
+
+  const discountRateBP = decodeAggregate3Result<bigint>(
+    results,
+    0,
+    bondMarketAbi,
+    'discountRateBP',
+    'BOND_MARKET_MULTICALL_FAILED:discount',
+  )
+  const terms = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint, bigint]>(
+    results,
+    1,
+    bondMarketAbi,
+    'terms',
+    'BOND_MARKET_MULTICALL_FAILED:terms',
+  )
+  const [, , feeBps, maxDebt, totalDeposit] = terms
   return {
-    discountRateBP: discountRateBP as bigint,
+    discountRateBP,
     feeBps,
     maxDebt,
     totalDeposit,
@@ -260,21 +464,69 @@ export async function readXminePreflight(args: {
 }> {
   const client = args.client ?? bscReadClient
   const user = args.user as `0x${string}`
-  const [balance, allowance, miningQuota, miningStaked] = await Promise.all([
-    readErc20Balance(BSC_CONTRACTS.gagx, args.user, client),
-    readErc20Allowance(BSC_CONTRACTS.gagx, args.user, BSC_CONTRACTS.xStakingPool, client),
-    client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: xStakingAbi,
-      functionName: 'miningQuotaOf',
-      args: [user],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: xStakingAbi,
-      functionName: 'miningStakeAmountOf',
-      args: [user],
-    }),
+  const results = await readAggregate3(client, [
+    {
+      target: BSC_CONTRACTS.gagx,
+      callData: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [user],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.gagx,
+      callData: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'allowance',
+        args: [user, BSC_CONTRACTS.xStakingPool],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.xStakingPool,
+      callData: encodeFunctionData({
+        abi: xStakingAbi,
+        functionName: 'miningQuotaOf',
+        args: [user],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.xStakingPool,
+      callData: encodeFunctionData({
+        abi: xStakingAbi,
+        functionName: 'miningStakeAmountOf',
+        args: [user],
+      }),
+    },
   ])
-  return { balance, allowance, miningQuota, miningStaked }
+
+  return {
+    balance: decodeAggregate3Result<bigint>(
+      results,
+      0,
+      erc20Abi,
+      'balanceOf',
+      'XMINE_PREFLIGHT_MULTICALL_FAILED:balance',
+    ),
+    allowance: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      erc20Abi,
+      'allowance',
+      'XMINE_PREFLIGHT_MULTICALL_FAILED:allowance',
+    ),
+    miningQuota: decodeAggregate3Result<bigint>(
+      results,
+      2,
+      xStakingAbi,
+      'miningQuotaOf',
+      'XMINE_PREFLIGHT_MULTICALL_FAILED:quota',
+    ),
+    miningStaked: decodeAggregate3Result<bigint>(
+      results,
+      3,
+      xStakingAbi,
+      'miningStakeAmountOf',
+      'XMINE_PREFLIGHT_MULTICALL_FAILED:staked',
+    ),
+  }
 }

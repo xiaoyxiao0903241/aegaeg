@@ -1,46 +1,85 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+import { decodeFunctionData, encodeFunctionResult, parseAbi } from 'viem'
+
 import { loadModule } from './load-module.mjs'
 
 const CURRENT = '0x1111111111111111111111111111111111111111'
-const ROOT = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+const ROOT = '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa'
 const ZERO = '0x0000000000000000000000000000000000000000'
+
+const migrationAwareAbi = parseAbi([
+  'function migratedFrom(address account) view returns (address)',
+  'function stakes(address user) view returns (uint256,uint256,uint256,uint256,bool)',
+  'function warmupStakes(address user) view returns (uint256,uint256,uint256,uint256,bool)',
+  'function getStakeRewards(address user) view returns (uint256,uint256)',
+  'function isWarmupExpired(address user) view returns (bool)',
+  'function userTotalAmount(address user) view returns (uint256)',
+  'function userStakingAmounts(address user) view returns (uint256)',
+  'function isBindReferral(address user) view returns (bool)',
+  'function balanceOf(address owner) view returns (uint256)',
+  'function allowance(address owner, address spender) view returns (uint256)',
+  'function remainingStakeAmount() view returns (uint256)',
+  'function status() view returns (bool)',
+  'function singleAddressLimit() view returns (uint256)',
+  'function getStakesCount(address user) view returns (uint256)',
+])
+
+function resolveMigrationAware(fn, arg0, opts) {
+  if (fn === 'migratedFrom') return opts.migratedFrom
+  if (fn === 'stakes') {
+    opts.onStakes?.(String(arg0))
+    return [100n, 0n, 0n, 0n, true]
+  }
+  if (fn === 'warmupStakes') {
+    return [0n, 0n, 0n, 0n, false]
+  }
+  if (fn === 'getStakeRewards') {
+    opts.onRewards?.(String(arg0))
+    return [0n, 1n]
+  }
+  if (fn === 'isWarmupExpired') return true
+  if (fn === 'userTotalAmount') {
+    opts.onUserTotal?.(String(arg0))
+    return 42n
+  }
+  if (fn === 'userStakingAmounts') {
+    opts.onUserStakingAmounts?.(String(arg0))
+    return 10n
+  }
+  if (fn === 'isBindReferral') return true
+  if (fn === 'balanceOf') return 1000n
+  if (fn === 'allowance') return 1000n
+  if (fn === 'remainingStakeAmount') return 1000n
+  if (fn === 'status') return true
+  if (fn === 'singleAddressLimit') return 0n
+  if (fn === 'getStakesCount') return 0n
+  throw new Error(`unexpected ${fn}`)
+}
 
 function createMigrationAwareClient(opts) {
   return {
     async readContract(request) {
       const fn = request.functionName
-      const arg0 = request.args?.[0]
-      if (fn === 'migratedFrom') return opts.migratedFrom
-      if (fn === 'stakes') {
-        opts.onStakes?.(String(arg0))
-        return [100n, 0n, 0n, 0n, true]
+      if (fn === 'aggregate3') {
+        return request.args[0].map((call) => {
+          const decoded = decodeFunctionData({
+            abi: migrationAwareAbi,
+            data: call.callData,
+          })
+          const value = resolveMigrationAware(decoded.functionName, decoded.args?.[0], opts)
+          return {
+            success: true,
+            returnData: encodeFunctionResult({
+              abi: migrationAwareAbi,
+              functionName: decoded.functionName,
+              result: value,
+            }),
+          }
+        })
       }
-      if (fn === 'warmupStakes') {
-        return [0n, 0n, 0n, 0n, false]
-      }
-      if (fn === 'getStakeRewards') {
-        opts.onRewards?.(String(arg0))
-        return [0n, 1n]
-      }
-      if (fn === 'isWarmupExpired') return true
-      if (fn === 'userTotalAmount') {
-        opts.onUserTotal?.(String(arg0))
-        return 42n
-      }
-      if (fn === 'userStakingAmounts') {
-        opts.onUserStakingAmounts?.(String(arg0))
-        return 10n
-      }
-      if (fn === 'isBindReferral') return true
-      if (fn === 'balanceOf') return 1000n
-      if (fn === 'allowance') return 1000n
-      if (fn === 'remainingStakeAmount') return 1000n
-      if (fn === 'status') return true
-      if (fn === 'singleAddressLimit') return 0n
-      if (fn === 'getStakesCount') return 0n
-      throw new Error(`unexpected ${fn}`)
+      return resolveMigrationAware(fn, request.args?.[0], opts)
     },
   }
 }

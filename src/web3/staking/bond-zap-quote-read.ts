@@ -1,4 +1,4 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import {
   applyPercentSlippage,
@@ -6,6 +6,7 @@ import {
   computeNetBondPayout,
   quoteV2LpMintAmount,
 } from '~/core/staking/bond-payout'
+import type { BondKind } from '~/core/staking/staking-period'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_MARKET_METHODS,
@@ -21,20 +22,21 @@ import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
-import { readBondMarketMeta } from '~/web3/staking/staking-read'
+import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
+import type { BondMarketMeta } from '~/web3/staking/staking-read'
 
 const depositoryAbi = parseAbi([
   BOND_DEPOSITORY_MARKET_METHODS.treasury,
   BOND_DEPOSITORY_MARKET_METHODS.principle,
   BOND_DEPOSITORY_MARKET_METHODS.liquidityPool,
   BOND_DEPOSITORY_MARKET_METHODS.restakeConfig,
+  BOND_DEPOSITORY_MARKET_METHODS.discountRateBP,
+  BOND_DEPOSITORY_MARKET_METHODS.terms,
 ])
 const treasuryAbi = parseAbi([TREASURY_METHODS.valueOf])
 const restakeAbi = parseAbi([RESTAKE_CONFIG_METHODS.agxPrice])
 const helperAbi = parseAbi([BOND_HELPER_METHODS.slippage])
 const pairSupplyAbi = parseAbi([PANCAKE_PAIR_V2_METHODS.totalSupply])
-
-export type BondZapKind = 'lp' | 'burn'
 
 export type BondZapAgxPreview = {
   netPayout: bigint
@@ -71,38 +73,114 @@ export async function readBondHelperSlippage(
  * @param args.depository 债券市场合约地址
  * @param args.depositUsd1 投入的 USD1 数量（wei，18 位小数）
  * @param args.client 链上读取客户端，默认公共 RPC
+ * @param args.market 已读市场元数据时传入，避免与 submit 快照重复 eth_call
  * @returns 净 / 毛 AGX 预期数量；depositUsd1 为 0 时两者皆 0
  * @see 手册 §10 债券 Bond / BurnBond
  * @see docs/onchain-manual/contracts/bondhelper.md
  */
 export async function readBondZapAgxPreview(args: {
-  kind: BondZapKind
+  kind: BondKind
   depository: Address
   depositUsd1: bigint
   client?: ChainReadClient
+  market?: BondMarketMeta
 }): Promise<BondZapAgxPreview> {
   const client = args.client ?? bscReadClient
   if (args.depositUsd1 === 0n) return { netPayout: 0n, grossPayout: 0n }
 
-  const [market, treasury, principle, slippagePercent, restakeConfig] = await Promise.all([
-    readBondMarketMeta(args.depository, client),
-    client.readContract({
-      address: args.depository,
-      abi: depositoryAbi,
-      functionName: 'treasury',
-    }) as Promise<Address>,
-    client.readContract({
-      address: args.depository,
-      abi: depositoryAbi,
-      functionName: 'principle',
-    }) as Promise<Address>,
-    readBondHelperSlippage(client),
-    client.readContract({
-      address: args.depository,
-      abi: depositoryAbi,
-      functionName: 'restakeConfig',
-    }) as Promise<Address>,
-  ])
+  const calls: Aggregate3Call[] = []
+  const push = (target: Address, functionName: string, abi = depositoryAbi) => {
+    const index = calls.length
+    calls.push({
+      target,
+      callData: encodeFunctionData({
+        abi,
+        functionName: functionName as never,
+      }),
+    })
+    return index
+  }
+
+  let discountIdx = -1
+  let termsIdx = -1
+  if (!args.market) {
+    discountIdx = push(args.depository, 'discountRateBP')
+    termsIdx = push(args.depository, 'terms')
+  }
+  const treasuryIdx = push(args.depository, 'treasury')
+  const principleIdx = push(args.depository, 'principle')
+  const slippageIdx = calls.length
+  calls.push({
+    target: BSC_CONTRACTS.bondHelper,
+    callData: encodeFunctionData({
+      abi: helperAbi,
+      functionName: 'slippage',
+    }),
+  })
+  const restakeIdx = push(args.depository, 'restakeConfig')
+  const liquidityIdx = args.kind === 'lp' ? push(args.depository, 'liquidityPool') : -1
+
+  const batch = await readAggregate3(client, calls)
+
+  const market: BondMarketMeta =
+    args.market ??
+    (() => {
+      const discountRateBP = decodeAggregate3Result<bigint>(
+        batch,
+        discountIdx,
+        depositoryAbi,
+        'discountRateBP',
+        'BOND_PREVIEW_MULTICALL_FAILED:discount',
+      )
+      const terms = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint, bigint]>(
+        batch,
+        termsIdx,
+        depositoryAbi,
+        'terms',
+        'BOND_PREVIEW_MULTICALL_FAILED:terms',
+      )
+      const [, , feeBps, maxDebt, totalDeposit] = terms
+      return { discountRateBP, feeBps, maxDebt, totalDeposit }
+    })()
+
+  const treasury = decodeAggregate3Result<Address>(
+    batch,
+    treasuryIdx,
+    depositoryAbi,
+    'treasury',
+    'BOND_PREVIEW_MULTICALL_FAILED:treasury',
+  )
+  const principle = decodeAggregate3Result<Address>(
+    batch,
+    principleIdx,
+    depositoryAbi,
+    'principle',
+    'BOND_PREVIEW_MULTICALL_FAILED:principle',
+  )
+  const slippagePercent = decodeAggregate3Result<bigint>(
+    batch,
+    slippageIdx,
+    helperAbi,
+    'slippage',
+    'BOND_PREVIEW_MULTICALL_FAILED:slippage',
+  )
+  const restakeConfig = decodeAggregate3Result<Address>(
+    batch,
+    restakeIdx,
+    depositoryAbi,
+    'restakeConfig',
+    'BOND_PREVIEW_MULTICALL_FAILED:restake',
+  )
+  const liquidityPool =
+    liquidityIdx >= 0
+      ? decodeAggregate3Result<Address>(
+          batch,
+          liquidityIdx,
+          depositoryAbi,
+          'liquidityPool',
+          'BOND_PREVIEW_MULTICALL_FAILED:liquidityPool',
+        )
+      : null
 
   const agxPrice = (await client.readContract({
     address: restakeConfig,
@@ -117,6 +195,7 @@ export async function readBondZapAgxPreview(args: {
     principle,
     slippagePercent,
     client,
+    liquidityPool,
   })
 
   const value = (await client.readContract({
@@ -149,12 +228,13 @@ export async function readBondZapAgxPreview(args: {
  * @returns 打折后的 principle 数量（wei）
  */
 async function zapPrincipleAmount(args: {
-  kind: BondZapKind
+  kind: BondKind
   depository: Address
   depositUsd1: bigint
   principle: Address
   slippagePercent: bigint
   client: ChainReadClient
+  liquidityPool: Address | null
 }): Promise<bigint> {
   const path = [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx] as const
 
@@ -171,18 +251,21 @@ async function zapPrincipleAmount(args: {
   const halfUsd = args.depositUsd1 / 2n
   if (halfUsd === 0n) return 0n
 
-  const [quotedAgx, liquidityPool] = await Promise.all([
+  const liquidityPool =
+    args.liquidityPool ??
+    ((await args.client.readContract({
+      address: args.depository,
+      abi: depositoryAbi,
+      functionName: 'liquidityPool',
+    })) as Address)
+
+  const [quotedAgx, meta, spot, totalSupply] = await Promise.all([
     quoteV2AmountsOut({
       router: BSC_CONTRACTS.pancakeRouter,
       amountIn: halfUsd,
       path,
       client: args.client,
     }),
-    clientReadLiquidityPool(args.depository, args.client),
-  ])
-  const agxHalf = applyPercentSlippage(quotedAgx, args.slippagePercent)
-
-  const [meta, spot, totalSupply] = await Promise.all([
     readExchangePoolImmutableMetadata(liquidityPool, args.client),
     readExchangePoolSpotPrice(liquidityPool, args.client),
     args.client.readContract({
@@ -191,6 +274,7 @@ async function zapPrincipleAmount(args: {
       functionName: 'totalSupply',
     }),
   ])
+  const agxHalf = applyPercentSlippage(quotedAgx, args.slippagePercent)
 
   const usd1Lower = BSC_CONTRACTS.usd1.toLowerCase()
   const amount0 = meta.token0.toLowerCase() === usd1Lower ? halfUsd : agxHalf
@@ -205,15 +289,4 @@ async function zapPrincipleAmount(args: {
   })
   // 保守处理：LP 铸出量同样按 helper 滑点打折
   return applyPercentSlippage(lpMinted, args.slippagePercent)
-}
-
-async function clientReadLiquidityPool(
-  depository: Address,
-  client: ChainReadClient,
-): Promise<Address> {
-  return client.readContract({
-    address: depository,
-    abi: depositoryAbi,
-    functionName: 'liquidityPool',
-  }) as Promise<Address>
 }

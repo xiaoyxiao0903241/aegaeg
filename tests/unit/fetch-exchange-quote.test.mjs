@@ -1,12 +1,23 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+import { decodeFunctionData, encodeFunctionResult, parseAbi } from 'viem'
+
 import { loadModule } from './load-module.mjs'
 
 const PAIR = '0xaC645E2137eB011f612b01942D21De6Be959E266'
 const ROUTER = '0x10ED43C718714eb63d5aA57B78B54704E256024E'
 const TOKEN_IN = '0x32Bb0be09F62bbE69764906d80e9A5782C7F7633'
 const TOKEN_OUT = '0x8d0771495272bB97Cd1cD44795222c8fB1b53247'
+
+const agxSellTaxAbi = parseAbi([
+  'function sellRatio() view returns (uint256)',
+  'function extraSellBP() view returns (uint256)',
+  'function crashFuseActive() view returns (bool)',
+  'function blockSellQuotaBlock() view returns (uint256)',
+  'function blockSellLimit() view returns (uint256)',
+  'function grossSoldInBlock() view returns (uint256)',
+])
 
 function createMockClient({ reserve0 = 10n ** 24n, reserve1 = 10n ** 15n, quotedOut } = {}) {
   const calls = []
@@ -21,6 +32,46 @@ function createMockClient({ reserve0 = 10n ** 24n, reserve1 = 10n ** 15n, quoted
         const amountIn = request.args[0]
         const out = quotedOut ?? amountIn / 2n
         return [amountIn, out]
+      }
+      throw new Error(`unexpected readContract ${request.functionName}`)
+    },
+  }
+}
+
+function encodeTaxResult(functionName, value) {
+  return encodeFunctionResult({
+    abi: agxSellTaxAbi,
+    functionName,
+    result: value,
+  })
+}
+
+function createAgxSellClient(taxValues) {
+  return {
+    calls: [],
+    getAmountsOutArg: null,
+    async getBlockNumber() {
+      return 100n
+    },
+    async readContract(request) {
+      this.calls.push(['read', request.functionName, request.address])
+      if (request.functionName === 'token0') return TOKEN_IN
+      if (request.functionName === 'token1') return TOKEN_OUT
+      if (request.functionName === 'getReserves') return [10n ** 24n, 10n ** 15n, 0]
+      if (request.functionName === 'aggregate3') {
+        return request.args[0].map((call) => {
+          const { functionName } = decodeFunctionData({
+            abi: agxSellTaxAbi,
+            data: call.callData,
+          })
+          const value = taxValues[functionName]
+          if (value === undefined) throw new Error(`unexpected aggregate3 ${functionName}`)
+          return { success: true, returnData: encodeTaxResult(functionName, value) }
+        })
+      }
+      if (request.functionName === 'getAmountsOut') {
+        this.getAmountsOutArg = request.args[0]
+        return [this.getAmountsOutArg, this.getAmountsOutArg / 2n]
       }
       throw new Error(`unexpected readContract ${request.functionName}`)
     },
@@ -71,31 +122,15 @@ test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', 
   const amountIn = 10n ** 9n
   const taxBps = 3000n
   const netIn = (amountIn * (10_000n - taxBps)) / 10_000n
-  let getAmountsOutArg = null
 
-  const client = {
-    calls: [],
-    async getBlockNumber() {
-      return 100n
-    },
-    async readContract(request) {
-      client.calls.push(['read', request.functionName, request.address])
-      if (request.functionName === 'token0') return TOKEN_IN
-      if (request.functionName === 'token1') return TOKEN_OUT
-      if (request.functionName === 'getReserves') return [10n ** 24n, 10n ** 15n, 0]
-      if (request.functionName === 'sellRatio') return 350n
-      if (request.functionName === 'extraSellBP') return taxBps
-      if (request.functionName === 'crashFuseActive') return true
-      if (request.functionName === 'blockSellQuotaBlock') return 100n
-      if (request.functionName === 'blockSellLimit') return 10n ** 18n
-      if (request.functionName === 'grossSoldInBlock') return 0n
-      if (request.functionName === 'getAmountsOut') {
-        getAmountsOutArg = request.args[0]
-        return [getAmountsOutArg, getAmountsOutArg / 2n]
-      }
-      throw new Error(`unexpected readContract ${request.functionName}`)
-    },
-  }
+  const client = createAgxSellClient({
+    sellRatio: 350n,
+    extraSellBP: taxBps,
+    crashFuseActive: true,
+    blockSellQuotaBlock: 100n,
+    blockSellLimit: 10n ** 18n,
+    grossSoldInBlock: 0n,
+  })
 
   const result = await fetchExchangeQuote({
     amountIn,
@@ -104,9 +139,9 @@ test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', 
     client,
   })
 
-  assert.equal(getAmountsOutArg, netIn)
+  assert.equal(client.getAmountsOutArg, netIn)
   assert.equal(result.quotedOut, netIn / 2n)
-  assert.ok(client.calls.some((c) => c[1] === 'crashFuseActive'))
+  assert.ok(client.calls.some((c) => c[1] === 'aggregate3'))
 })
 
 test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceeded', async () => {
@@ -119,29 +154,15 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
   const amountIn = 10n ** 9n
   const taxBps = 3000n
   const netIn = (amountIn * (10_000n - taxBps)) / 10_000n
-  let getAmountsOutArg = null
 
-  const client = {
-    async getBlockNumber() {
-      return 100n
-    },
-    async readContract(request) {
-      if (request.functionName === 'token0') return TOKEN_IN
-      if (request.functionName === 'token1') return TOKEN_OUT
-      if (request.functionName === 'getReserves') return [10n ** 24n, 10n ** 15n, 0]
-      if (request.functionName === 'sellRatio') return 350n
-      if (request.functionName === 'extraSellBP') return taxBps
-      if (request.functionName === 'crashFuseActive') return false
-      if (request.functionName === 'blockSellQuotaBlock') return 100n
-      if (request.functionName === 'blockSellLimit') return amountIn
-      if (request.functionName === 'grossSoldInBlock') return 1n
-      if (request.functionName === 'getAmountsOut') {
-        getAmountsOutArg = request.args[0]
-        return [getAmountsOutArg, getAmountsOutArg / 2n]
-      }
-      throw new Error(`unexpected readContract ${request.functionName}`)
-    },
-  }
+  const client = createAgxSellClient({
+    sellRatio: 350n,
+    extraSellBP: taxBps,
+    crashFuseActive: false,
+    blockSellQuotaBlock: 100n,
+    blockSellLimit: amountIn,
+    grossSoldInBlock: 1n,
+  })
 
   await fetchExchangeQuote({
     amountIn,
@@ -150,7 +171,7 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
     client,
   })
 
-  assert.equal(getAmountsOutArg, netIn)
+  assert.equal(client.getAmountsOutArg, netIn)
 })
 
 test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () => {

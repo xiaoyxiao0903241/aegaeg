@@ -2,7 +2,7 @@ import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
-import type { StakePeriod } from '~/core/staking/staking-period'
+import { BOND_PERIODS, type StakePeriod } from '~/core/staking/staking-period'
 import { type Address, BSC_CONTRACTS, ZERO_ADDRESS } from '~/shared/config/contracts'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
@@ -207,11 +207,6 @@ export async function readContributionSnapshot(
   }
 }
 
-const LOCKED_PERIODS = ['180', '360', '540'] as const satisfies readonly Exclude<
-  StakePeriod,
-  'liquid'
->[]
-
 /**
  * 读取用户全部质押仓位（活期 + 180/360/540 定期）。
  *
@@ -311,7 +306,7 @@ export async function readStakePositions(
   }
 
   const lockedPoolCounts = await Promise.all(
-    LOCKED_PERIODS.map(async (period) => {
+    BOND_PERIODS.map(async (period) => {
       const pool = stakePoolAddress(period)
       const count = Number(
         await client.readContract({
@@ -400,7 +395,7 @@ async function readBondPositionsFor(
 ): Promise<AssetsBondRow[]> {
   const rows: AssetsBondRow[] = []
   const poolCounts = await Promise.all(
-    LOCKED_PERIODS.map(async (period) => {
+    BOND_PERIODS.map(async (period) => {
       const depository =
         kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
       const count = Number(

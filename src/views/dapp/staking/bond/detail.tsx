@@ -3,6 +3,7 @@
  *
  * 展示协议概览、我的仓位、释放记录、机制说明、趋势图与 FAQ。
  */
+import type { BondKind } from '~/core/staking/staking-period'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -11,7 +12,6 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondDetail } from '~/views/dapp/staking/bond/use-bond'
 import {
   StakingMechanismCard,
