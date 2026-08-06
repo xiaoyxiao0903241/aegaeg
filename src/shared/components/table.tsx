@@ -17,7 +17,7 @@ import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { StatusBadge } from '~/shared/components/badge'
 import { Card, cardVariants } from '~/shared/components/card'
 import { CollapseChevron } from '~/shared/components/collapse-chevron'
@@ -634,7 +634,7 @@ function Pagination({
         >
           {t.common.paginationTotal.replace(
             '{total}',
-            formatGroupedNumber(total, { digits: 0, trimZeros: true }),
+            formatNumber(total, { digits: 0, trimZeros: true }),
           )}
         </Text>
         {summary ? (
@@ -659,7 +659,7 @@ function Pagination({
           >
             {t.common.paginationPerPage.replace(
               '{size}',
-              formatGroupedNumber(pageSize, { digits: 0, trimZeros: true }),
+              formatNumber(pageSize, { digits: 0, trimZeros: true }),
             )}
           </Text>
 

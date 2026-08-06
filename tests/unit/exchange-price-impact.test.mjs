@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('calcV2PriceImpactBps measures mid vs execution', async () => {
@@ -36,9 +37,9 @@ test('calcV2PriceImpactBps measures mid vs execution', async () => {
   )
 })
 
-test('gas estimate empty and tilde grouping use formatGroupedNumber', async () => {
-  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
+test('gas estimate empty and tilde grouping use formatNumber', async () => {
+  const { formatNumber } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(formatGroupedNumber(0, { digits: 0, trimZeros: true, prefix: '~' }), '~0')
-  assert.equal(formatGroupedNumber(90_000n, { digits: 0, trimZeros: true, prefix: '~' }), '~90,000')
+  assert.equal(formatNumber(0, { digits: 0, trimZeros: true, prefix: '~' }), '~0')
+  assert.equal(formatNumber(90_000n, { digits: 0, trimZeros: true, prefix: '~' }), '~90,000')
 })

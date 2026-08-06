@@ -4,7 +4,7 @@
  * 展示协议概览、我的持仓、释放记录、机制说明、趋势图与 FAQ。
  * 未连接钱包时仓位与记录为空态。
  */
-import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
+import { formatPercentChange, formatUsd } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -92,13 +92,13 @@ export function StakeDetail() {
         <Section.Title>{t.staking.aside.chartTitles.stake}</Section.Title>
         <StakingTvlChart
           chartRange={chartRange}
-          deltaLabel={formatSignedPercent(null)}
+          deltaLabel={formatPercentChange(null)}
           emptyLabel={t.staking.aside.chartEmpty}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
-          valueLabel={formatCompactUsd(null)}
+          valueLabel={formatUsd(null)}
         />
       </Section>
 

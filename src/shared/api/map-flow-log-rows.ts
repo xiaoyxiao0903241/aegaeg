@@ -1,6 +1,6 @@
 import {
   formatBlockTime,
-  formatGroupedNumber,
+  formatNumber,
   formatShortAddress,
   TABLE_EMPTY,
 } from '~/shared/api/format-display'
@@ -21,13 +21,13 @@ import type {
  * 各类流水/持仓记录 → 表格行映射
  *
  * 统一把 API 原始记录格式化为展示用字符串数组，列序固定，
- * 数值使用 formatGroupedNumber，缺失值以 TABLE_EMPTY 占位。
+ * 数值使用 formatNumber，缺失值以 TABLE_EMPTY 占位。
  */
 
 function formatAmount(raw: string): string {
   const n = Number(raw)
   if (!Number.isFinite(n)) return TABLE_EMPTY
-  return formatGroupedNumber(n, { digits: 4 })
+  return formatNumber(n, { digits: 4 })
 }
 
 function formatTx(tx: string | null | undefined): string {
@@ -92,16 +92,14 @@ export function mapTurbineLogToOpsRow(item: TurbineLogItem): string[] {
 export function mapStakePositionToAsideRow(item: StakePositionItem): string[] {
   const amount = Number(item.amount)
   const amountLabel = Number.isFinite(amount)
-    ? formatGroupedNumber(amount, { digits: 2, suffix: ' AGX' })
+    ? formatNumber(amount, { digits: 2, suffix: ' AGX' })
     : TABLE_EMPTY
   const pctRaw = Number(item.released_pct)
-  const pctLabel = Number.isFinite(pctRaw)
-    ? `${formatGroupedNumber(pctRaw, { digits: 1 })}%`
-    : TABLE_EMPTY
+  const pctLabel = Number.isFinite(pctRaw) ? `${formatNumber(pctRaw, { digits: 1 })}%` : TABLE_EMPTY
   const termLabel =
     item.term_days <= 0
       ? '活期'
-      : `${formatGroupedNumber(item.term_days, { digits: 0, trimZeros: true })} 天`
+      : `${formatNumber(item.term_days, { digits: 0, trimZeros: true })} 天`
   return [
     formatBlockTime(item.block_time),
     termLabel,

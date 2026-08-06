@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('parseTokenAmount converts decimal input to wei', async () => {
@@ -94,16 +95,13 @@ test('formatTokenAmount fixed digits pads trailing zeros', async () => {
   )
 })
 
-test('formatGroupedNumber is the human-number display core', async () => {
-  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
+test('formatNumber is the human-number display core', async () => {
+  const { formatNumber } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(
-    formatGroupedNumber(1234.5, { digits: 2, trimZeros: false, prefix: '$' }),
-    '$1,234.50',
-  )
-  assert.equal(formatGroupedNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
-  assert.equal(formatGroupedNumber(1000, { digits: 0, trimZeros: true }), '1,000')
-  assert.equal(formatGroupedNumber(42, { digits: 0, trimZeros: true }), '42')
+  assert.equal(formatNumber(1234.5, { digits: 2, trimZeros: false, prefix: '$' }), '$1,234.50')
+  assert.equal(formatNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
+  assert.equal(formatNumber(1000, { digits: 0, trimZeros: true }), '1,000')
+  assert.equal(formatNumber(42, { digits: 0, trimZeros: true }), '42')
 })
 
 test('slippagePercentToBps converts UI percent to basis points', async () => {

@@ -7,7 +7,7 @@
 import { periodEndDays } from '~/core/staking/build-calc-estimate'
 import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield-display'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
 import { Grid } from '~/shared/components/grid'
@@ -15,12 +15,7 @@ import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
-import {
-  CalcNotesCard,
-  CalcResultCard,
-  formatPct,
-  formatUsd,
-} from '~/views/dapp/staking/calc/primitives'
+import { CalcNotesCard, CalcResultCard } from '~/views/dapp/staking/calc/primitives'
 import { StakingCurveChart } from '~/views/dapp/staking/primitives'
 
 const PLACEHOLDER = '0.00'
@@ -75,9 +70,7 @@ export function CalcDetail() {
   const notesItems = aside.notesItems.map((item, index) => {
     if (index !== 0) return item
     const daily =
-      baseDaily != null
-        ? formatGroupedNumber(baseDaily, { digits: 2 })
-        : formatGroupedNumber(0, { digits: 2 })
+      baseDaily != null ? formatNumber(baseDaily, { digits: 2 }) : formatNumber(0, { digits: 2 })
     return item.replaceAll('{daily}', daily)
   })
 
@@ -147,8 +140,8 @@ export function CalcDetail() {
                 String(periodEndDays(result.period, result.days)),
               )
             } else if (result && endEstimate && index === 2) {
-              value = formatUsd(endEstimate.interestUsd)
-              hint = formatPct(endEstimate.ratePct)
+              value = formatNumber(endEstimate.interestUsd, { digits: 2, prefix: '$' })
+              hint = `${endEstimate.ratePct >= 0 ? '+' : ''}${formatNumber(endEstimate.ratePct, { digits: 2 })}%`
             }
             return (
               <Tile key={card.label}>

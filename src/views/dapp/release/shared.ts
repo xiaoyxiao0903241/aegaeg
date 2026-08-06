@@ -1,6 +1,6 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { releaseProgressBps } from '~/core/release/release-block-reasons'
-import { formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatNumber, parseApiAmount } from '~/shared/api/format-display'
 
 /** 有链快照时优先链上数值，否则 API 小数字符串，最后回退到格式化后的零 */
 export function formatReleaseApiOrChainLabel(args: {
@@ -16,9 +16,9 @@ export function formatReleaseApiOrChainLabel(args: {
   if (chainReady) return `${formatTokenAmount(chainValue, decimals, 4)} ${unit}`
   if (sessionReady) {
     const n = parseApiAmount(apiRaw)
-    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
+    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
   }
-  return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
+  return `${formatNumber(0, { digits: 4 })} ${unit}`
 }
 
 /** 释放进度百分比文案：按基点换算，能整除时省略小数位 */

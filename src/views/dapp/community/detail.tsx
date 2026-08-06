@@ -8,7 +8,7 @@
 import { type ReactNode } from 'react'
 
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
-import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { formatNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -101,8 +101,8 @@ export function CommunityDetail() {
     rowCount: compactRows.length,
   })
   const inviteCount = !sessionReady
-    ? formatGroupedNumber(0, { digits: 0, trimZeros: true })
-    : formatGroupedNumber(overview?.direct_referral_count ?? referrals?.total ?? 0, {
+    ? formatNumber(0, { digits: 0, trimZeros: true })
+    : formatNumber(overview?.direct_referral_count ?? referrals?.total ?? 0, {
         digits: 0,
         trimZeros: true,
       })
@@ -123,16 +123,16 @@ export function CommunityDetail() {
   }
 
   // 不能用 isLoading ? 0：加载中 2000 会闪成 0 再变回 3000，用 ?? 0 兜底缺失字段
-  const directCount = formatGroupedNumber(overview?.direct_referral_count ?? 0, {
+  const directCount = formatNumber(overview?.direct_referral_count ?? 0, {
     digits: 0,
     trimZeros: true,
   })
-  const directVolume = formatGroupedNumber(overview?.direct_presale_volume ?? 0, { prefix: '$' })
-  const teamCount = formatGroupedNumber(overview?.descendant_count ?? 0, {
+  const directVolume = formatNumber(overview?.direct_presale_volume ?? 0, { prefix: '$' })
+  const teamCount = formatNumber(overview?.descendant_count ?? 0, {
     digits: 0,
     trimZeros: true,
   })
-  const teamVolume = formatGroupedNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
+  const teamVolume = formatNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
 
   // 统计卡只有标签 / 数值 / 业绩|共建等级三行，无「今日」行。
   // 等级只取创世（预售）共建等级，绝不用做市等级 making_rank（A0–A13）。

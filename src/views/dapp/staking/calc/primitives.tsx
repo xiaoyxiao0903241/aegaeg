@@ -1,10 +1,21 @@
 import { useRef } from 'react'
 
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
+
+function calcUsd(value: number) {
+  if (!Number.isFinite(value)) return formatNumber(0, { digits: 2, prefix: '$' })
+  return formatNumber(value, { digits: 2, prefix: '$' })
+}
+
+function calcPct(value: number) {
+  if (!Number.isFinite(value)) return '0.00'
+  const sign = value >= 0 ? '+' : ''
+  return `${sign}${formatNumber(value, { digits: 2 })}%`
+}
 
 /** 产品 / 周期 Tab 行：用 Chip 拼装，不用 Segment 滑动条 */
 export function CalcHtabRow({
@@ -158,19 +169,6 @@ export function CalcNotesCard({ items }: { items: ReadonlyArray<string> }) {
  * 展示总收益、收益率徽章、卖出/投入进度条与图例。
  */
 
-const PLACEHOLDER = '0.00'
-
-export function formatUsd(value: number) {
-  if (!Number.isFinite(value)) return PLACEHOLDER
-  return formatGroupedNumber(value, { digits: 2, prefix: '$' })
-}
-
-export function formatPct(value: number) {
-  if (!Number.isFinite(value)) return PLACEHOLDER
-  const sign = value >= 0 ? '+' : ''
-  return `${sign}${value.toFixed(2)}%`
-}
-
 type CalcResultCardProps = {
   interestUsd: number
   ratePct: number
@@ -210,7 +208,7 @@ export function CalcResultCard({
             {labels.total}
           </Text>
           <Text as="strong" className="text-success" variant="stat">
-            {formatUsd(interestUsd)}
+            {calcUsd(interestUsd)}
           </Text>
         </div>
         <span className="flex items-center gap-2 rounded-full bg-success-soft px-3 py-1.5">
@@ -218,7 +216,7 @@ export function CalcResultCard({
             {labels.rate}
           </Text>
           <Text as="span" className="font-semibold text-success" variant="copy">
-            {formatPct(ratePct)}
+            {calcPct(ratePct)}
           </Text>
         </span>
       </div>
@@ -229,7 +227,7 @@ export function CalcResultCard({
             {labels.sellTotal}
           </Text>
           <Text as="strong" className="font-semibold" variant="detail">
-            {formatUsd(sellUsd)}
+            {calcUsd(sellUsd)}
           </Text>
         </div>
         <div className="flex overflow-hidden rounded-full">
@@ -244,7 +242,7 @@ export function CalcResultCard({
             {labels.invested}
           </Text>
           <Text as="strong" className="font-semibold" variant="detail">
-            {formatUsd(investedUsd)}
+            {calcUsd(investedUsd)}
           </Text>
         </div>
         <div className="flex overflow-hidden rounded-full">
@@ -254,7 +252,7 @@ export function CalcResultCard({
             style={{ flex: `${Math.max(investShare, 18)} 0 0` }}
           >
             <Text as="span" className="font-medium text-primary-foreground" variant="caption">
-              {labels.yieldBar.replace('{amount}', formatUsd(interestUsd))}
+              {labels.yieldBar.replace('{amount}', calcUsd(interestUsd))}
             </Text>
           </span>
         </div>
@@ -275,7 +273,7 @@ export function CalcResultCard({
               {labels.legend[key]}
             </Text>
             <Text as="strong" className="font-semibold" variant="support">
-              {formatUsd(value)}
+              {calcUsd(value)}
             </Text>
           </div>
         ))}

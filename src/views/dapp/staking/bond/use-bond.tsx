@@ -9,7 +9,7 @@ import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-ap
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
 import { mapBondPurchaseToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -19,11 +19,7 @@ import { useStakingViewStore } from '~/stores/staking-view-store'
 import { BOND_ZAP_BLOCKED } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import {
-  formatAsideAgxLabel,
-  formatAsideGagxLabel,
-  formatAsideRebasePct,
-} from '~/views/dapp/staking/shared'
+import { formatRebasePct } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
@@ -94,7 +90,7 @@ export function useBondDock(kind: BondKind) {
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
+const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
 
 /**
  * 债券详情右栏（LP / 燃烧债券共用）
@@ -123,16 +119,16 @@ export function useBondDetail(kind: BondKind) {
   const burnPurchases = useBondFlowBurnPurchases({}, sessionReady && kind === 'burn')
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
 
-  const rebaseLabel = formatAsideRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
     {
       label: copy.overviewMetrics[0]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(0, priceUsd)}
+          approx={formatUsdApprox(0, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(0)}
+          value={formatNumber(0, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -176,9 +172,9 @@ export function useBondDetail(kind: BondKind) {
       label: copy.positionMetrics[0]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(held, priceUsd)}
+          approx={formatUsdApprox(held, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(held)}
+          value={formatNumber(held, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -186,9 +182,9 @@ export function useBondDetail(kind: BondKind) {
       label: copy.positionMetrics[1]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(released, priceUsd)}
+          approx={formatUsdApprox(released, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(released)}
+          value={formatNumber(released, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -196,9 +192,9 @@ export function useBondDetail(kind: BondKind) {
       label: copy.positionMetrics[2]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(pending, priceUsd)}
+          approx={formatUsdApprox(pending, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(pending)}
+          value={formatNumber(pending, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -206,9 +202,9 @@ export function useBondDetail(kind: BondKind) {
       label: copy.positionMetrics[3]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(rebaseGagx, priceUsd)}
+          approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(rebaseGagx)}
+          value={formatNumber(rebaseGagx, { digits: 2, suffix: ' gAGX' })}
         />
       ),
     },

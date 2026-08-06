@@ -6,7 +6,7 @@ import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
  *
  * @see 手册 BondDepository `terms.totalDeposit`
  */
-export function bondSoldUsdAmount(
+export function bondSoldUsd(
   totalDeposit: bigint | null | undefined,
   priceUsd: number | null | undefined,
   decimals: number,

@@ -15,7 +15,7 @@ import { useStakeFlowPositions } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
 import { mapStakePositionToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -23,11 +23,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { goBindReferral } from '~/shared/config/go-bind-referral'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import {
-  formatAsideAgxLabel,
-  formatAsideGagxLabel,
-  formatAsideRebasePct,
-} from '~/views/dapp/staking/shared'
+import { formatRebasePct } from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
 import { readStakePositions } from '~/web3/assets/assets-read'
@@ -36,15 +32,15 @@ import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
-const YIELD_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
+const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 
 function formatYieldPct(pct: number | null): string {
   if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatGroupedNumber(pct, { digits: 2 })}%`
+  return `${formatNumber(pct, { digits: 2 })}%`
 }
 
 function formatBonusPct(bps: number): string {
-  return `${formatGroupedNumber(bps / 100, { digits: 0, trimZeros: true })}%`
+  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
 }
 
 /**
@@ -159,16 +155,16 @@ export function useStakeDetail() {
       ? formatTokenAmountToNumber(overviewQuery.data.poolAgxBalance, AGX_DECIMALS)
       : 0
   const epochNumber = overviewQuery.data?.epochNumber ?? 0n
-  const rebaseLabel = formatAsideRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
     {
       label: t.staking.stake.overviewMetrics[0]?.label ?? '总质押量',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(poolAgx, priceUsd)}
+          approx={formatUsdApprox(poolAgx, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(poolAgx)}
+          value={formatNumber(poolAgx, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -217,9 +213,9 @@ export function useStakeDetail() {
       label: metrics[0]?.label ?? '我的持仓',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(stakeHeld, priceUsd)}
+          approx={formatUsdApprox(stakeHeld, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(stakeHeld)}
+          value={formatNumber(stakeHeld, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -227,9 +223,9 @@ export function useStakeDetail() {
       label: metrics[1]?.label ?? '已释放',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(stakeReleased, priceUsd)}
+          approx={formatUsdApprox(stakeReleased, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(stakeReleased)}
+          value={formatNumber(stakeReleased, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -237,9 +233,9 @@ export function useStakeDetail() {
       label: metrics[2]?.label ?? '待释放',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(stakePending, priceUsd)}
+          approx={formatUsdApprox(stakePending, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(stakePending)}
+          value={formatNumber(stakePending, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
@@ -247,9 +243,9 @@ export function useStakeDetail() {
       label: metrics[3]?.label ?? '当前Rebase 收益',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(rebaseGagx, priceUsd)}
+          approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(rebaseGagx)}
+          value={formatNumber(rebaseGagx, { digits: 2, suffix: ' gAGX' })}
         />
       ),
     },
@@ -257,9 +253,9 @@ export function useStakeDetail() {
       label: metrics[4]?.label ?? '当前Rebase 加成',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(bonusGagx, priceUsd)}
+          approx={formatUsdApprox(bonusGagx, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(bonusGagx)}
+          value={formatNumber(bonusGagx, { digits: 2, suffix: ' gAGX' })}
         />
       ),
     },

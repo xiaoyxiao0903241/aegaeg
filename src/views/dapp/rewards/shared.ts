@@ -2,10 +2,10 @@ import { toast } from 'sonner'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import {
+  formatApiAmount,
   formatApiDateTime,
-  formatApiDecimalAmount,
   formatBlockTime,
-  formatGroupedNumber,
+  formatNumber,
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
@@ -33,14 +33,14 @@ import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
 /**
  * 非数值空态占位（日期、哈希、标签用「—」）。
- * 数值字段不能走 `formatApiDecimalAmount(null)`，否则会显示「0.00」。
+ * 数值字段不能走 `formatApiAmount(null)`，否则会显示「0.00」。
  */
 export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild'>
 
 /** 金额字符串展示 SSOT 在 `~/shared/api/format-display`；此处再导出供页袋旧 import。 */
-export { formatApiDecimalAmount }
+export { formatApiAmount }
 
 /**
  * 指标统计标签：会话未就绪或冷启动加载中 → 显示 0
@@ -59,8 +59,8 @@ export function formatApiStatLabel(
   options?: { digits?: number; prefix?: string; suffix?: string },
 ): string {
   // 仅冷启动 pending+null 出零（refetch 时 keepPreviousData 仍带 raw）。
-  if (!sessionReady || (isPending && raw == null)) return formatApiDecimalAmount(null, options)
-  return formatApiDecimalAmount(raw, options)
+  if (!sessionReady || (isPending && raw == null)) return formatApiAmount(null, options)
+  return formatApiAmount(raw, options)
 }
 
 /**
@@ -159,11 +159,11 @@ export function formatContributionPlaceholder(input: {
   fractionDigits?: number
 }): string {
   if (!input.walletReady || !input.hasAddress || input.contribution === undefined) {
-    return formatApiDecimalAmount(null, { digits: input.fractionDigits ?? 2 })
+    return formatApiAmount(null, { digits: input.fractionDigits ?? 2 })
   }
   return (
     formatTokenAmount(input.contribution, input.decimals, input.fractionDigits ?? 2) ||
-    formatApiDecimalAmount(null, { digits: input.fractionDigits ?? 2 })
+    formatApiAmount(null, { digits: input.fractionDigits ?? 2 })
   )
 }
 
@@ -231,12 +231,12 @@ export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLa
   const signedAmount = parseApiAmount(item.amount)
   const amountLabel =
     signedAmount != null
-      ? formatGroupedNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
+      ? formatNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
       : TABLE_EMPTY
   const orderAmount = parseApiAmount(item.order_amount)
   const orderLabel =
     orderAmount != null && orderAmount > 0
-      ? formatGroupedNumber(orderAmount, { digits: 0, prefix: '$' })
+      ? formatNumber(orderAmount, { digits: 0, prefix: '$' })
       : TABLE_EMPTY
 
   return [
@@ -254,9 +254,7 @@ export function mapTeamRewardClaimLogToRow(
 ): string[] {
   const amountNum = parseApiAmount(item.amount)
   const amountLabel =
-    amountNum != null
-      ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
-      : TABLE_EMPTY
+    amountNum != null ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' }) : TABLE_EMPTY
   const statusKey = teamRewardClaimStatusKey(item.status)
 
   return [
@@ -273,9 +271,7 @@ export function mapCommunityFundLogToRow(
 ): string[] {
   const amountNum = parseApiAmount(item.amount)
   const amountLabel =
-    amountNum != null
-      ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
-      : TABLE_EMPTY
+    amountNum != null ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' }) : TABLE_EMPTY
   const statusKey = communityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
@@ -292,7 +288,7 @@ function mapDaoGrantAwardLogToRow(
 ): string[] {
   return [
     formatApiDateTime(item.created_at),
-    formatApiDecimalAmount(item.awarded_gross),
+    formatApiAmount(item.awarded_gross),
     formatDaoGrantStatus(item.status, labels),
     formatApiDateTime(item.fully_claimed_at),
   ]
@@ -309,8 +305,8 @@ export function mapParticipationAwardInviterToRow(item: ParticipationAwardInvite
   return [
     formatApiDateTime(item.bound_at),
     formatShortAddress(item.address),
-    formatApiDecimalAmount(item.active_stake_balance),
-    formatApiDecimalAmount(item.total_brought_reward),
+    formatApiAmount(item.active_stake_balance),
+    formatApiAmount(item.total_brought_reward),
   ]
 }
 
@@ -321,7 +317,7 @@ export function mapRankRewardLogToRow(
   return [
     formatApiDateTime(item.created_at),
     formatMakingRankLabel(item.benefit_level, TABLE_EMPTY),
-    formatApiDecimalAmount(item.awarded_gross, { digits: 4, suffix: ' gAGX' }),
+    formatApiAmount(item.awarded_gross, { digits: 4, suffix: ' gAGX' }),
     formatDaoGrantStatus(item.status, labels),
     formatApiDateTime(item.fully_claimed_at),
   ]
@@ -331,7 +327,7 @@ export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): st
   return [
     formatApiDateTime(item.bound_at),
     formatShortAddress(item.address),
-    formatApiDecimalAmount(item.making_market),
+    formatApiAmount(item.making_market),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
 }
@@ -347,26 +343,26 @@ export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralIte
   return [
     formatApiDateTime(item.bound_at),
     formatShortAddress(item.address),
-    formatApiDecimalAmount(item.active_stake_balance),
-    formatApiDecimalAmount(item.contributed_reward_total),
+    formatApiAmount(item.active_stake_balance),
+    formatApiAmount(item.contributed_reward_total),
   ]
 }
 
 export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem): string[] {
   return [
     formatBlockTime(item.paid_time),
-    formatApiDecimalAmount(item.agx_amount),
+    formatApiAmount(item.agx_amount),
     item.operation_type || TABLE_EMPTY,
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
     item.subsidy_rate || TABLE_EMPTY,
-    formatApiDecimalAmount(item.allowance_amount),
+    formatApiAmount(item.allowance_amount),
   ]
 }
 
 export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): string[] {
   return [
     formatBlockTime(item.claim_time),
-    formatApiDecimalAmount(item.allowance_amount),
+    formatApiAmount(item.allowance_amount),
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
   ]
 }
@@ -375,8 +371,8 @@ export function mapLuckyWinnerToRow(item: LuckyRewardWinnerItem): string[] {
   return [
     String(item.rank),
     formatShortAddress(item.address),
-    formatApiDecimalAmount(item.participation_amount),
-    formatApiDecimalAmount(item.reward_amount),
+    formatApiAmount(item.participation_amount),
+    formatApiAmount(item.reward_amount),
   ]
 }
 
@@ -386,7 +382,7 @@ export function mapLuckyMyRoundToRow(item: LuckyRewardMyRoundItem): string[] {
     (item.is_winner === true ? '1' : item.is_winner === false ? TABLE_EMPTY : TABLE_EMPTY)
   return [
     formatRegisterDate(item.date),
-    formatApiDecimalAmount(item.participation_amount),
+    formatApiAmount(item.participation_amount),
     result,
     item.draw_tx_hash ? formatShortAddress(item.draw_tx_hash) : TABLE_EMPTY,
   ]

@@ -4,7 +4,7 @@
  * 展示协议概览、我的仓位、释放记录、机制说明、趋势图与 FAQ。
  */
 import type { BondKind } from '~/core/staking/staking-period'
-import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
+import { formatPercentChange, formatUsd } from '~/shared/api/format-display'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -96,13 +96,13 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <Section.Title>{chartTitle}</Section.Title>
         <StakingTvlChart
           chartRange={chartRange}
-          deltaLabel={formatSignedPercent(null)}
+          deltaLabel={formatPercentChange(null)}
           emptyLabel={t.staking.aside.chartEmpty}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
-          valueLabel={formatCompactUsd(null)}
+          valueLabel={formatUsd(null)}
         />
       </Section>
 

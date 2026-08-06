@@ -11,7 +11,7 @@ import {
 } from 'lightweight-charts'
 import { type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from 'react'
 
-import { formatCompactUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber, formatUsd } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Empty } from '~/shared/components/empty'
 import { Text } from '~/shared/components/text'
@@ -90,9 +90,9 @@ function pickChartAxisLabels(points: readonly ChartPoint[], maxLabels = 6): read
 }
 
 function tipValueLabel(value: number): string {
-  if (!Number.isFinite(value)) return formatCompactUsd(null)
-  if (Math.abs(value) >= 1000) return formatCompactUsd(value)
-  return formatGroupedNumber(value, { digits: 2, prefix: '$' })
+  if (!Number.isFinite(value)) return formatUsd(null)
+  if (Math.abs(value) >= 1000) return formatUsd(value)
+  return formatNumber(value, { digits: 2, prefix: '$' })
 }
 
 function tipDateFromTime(time: Time | undefined): string | null {

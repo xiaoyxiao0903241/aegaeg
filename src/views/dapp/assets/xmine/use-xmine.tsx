@@ -8,7 +8,7 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd } from '~/shared/api/format-display'
+import { formatUsdApprox } from '~/shared/api/format-display'
 import { mapX0MiningLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -157,13 +157,13 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   if (!walletReady || !address || positionQuery.isError) {
     return Array.from({ length: 4 }, () => ({
       value: '0.00 gAGX',
-      approx: formatApproxUsd(0, null),
+      approx: formatUsdApprox(0, null),
     }))
   }
   if (positionQuery.data === undefined) {
     return Array.from({ length: 4 }, () => ({
       value: '0.00 gAGX',
-      approx: formatApproxUsd(0, null),
+      approx: formatUsdApprox(0, null),
     }))
   }
 
@@ -193,9 +193,9 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
     ).map(({ amount, decimals, unit, icon, price }) => ({
       value: `${formatTokenAmount(amount, decimals, 2)} ${unit}`,
       icon,
-      approx: formatApproxUsd(formatTokenAmountToNumber(amount, decimals), price),
+      approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), price),
     })),
-    { value: '0.00 X', icon: 'x', approx: formatApproxUsd(0, null) },
+    { value: '0.00 X', icon: 'x', approx: formatUsdApprox(0, null) },
   ]
 }
 

@@ -4,7 +4,7 @@ import { buildCalcEstimate } from '~/core/staking/build-calc-estimate'
 import { CALC_MAX_DAYS, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield-display'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
@@ -35,7 +35,7 @@ export function useCalcDock() {
   // 价格字段仅在首次拿到实时行情时写入一次，之后不覆盖用户输入。
   useEffect(() => {
     if (priceSeeded || spotUsd == null) return
-    setPrice(formatGroupedNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
+    setPrice(formatNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
     setPriceSeeded(true)
   }, [priceSeeded, spotUsd])
 
@@ -57,8 +57,8 @@ export function useCalcDock() {
 
   const spotLabel =
     spotUsd != null
-      ? formatGroupedNumber(spotUsd, { digits: 2, prefix: '$' })
-      : formatGroupedNumber(0, { digits: 2, prefix: '$' })
+      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
 
   function onProductChange(next: string) {
     if (next !== 'stake' && next !== 'lpbond' && next !== 'burnbond' && next !== 'xmine') return

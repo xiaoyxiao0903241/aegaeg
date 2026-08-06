@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { formatApiDecimalAmount, parseApiAmount } from '~/shared/api/format-display'
+import { formatApiAmount, parseApiAmount } from '~/shared/api/format-display'
 import type {
   DaoGrantStatus,
   MarketAllowanceClaimLogItem,
@@ -99,12 +99,12 @@ function formatSignedAllowance(raw: string): {
   const n = parseApiAmount(raw)
   if (n == null || n === 0) {
     return {
-      text: formatApiDecimalAmount(raw, { digits: 4, suffix: ' gAGX' }),
+      text: formatApiAmount(raw, { digits: 4, suffix: ' gAGX' }),
       positive: false,
       negative: false,
     }
   }
-  const abs = formatApiDecimalAmount(String(Math.abs(n)), { digits: 4, suffix: ' gAGX' })
+  const abs = formatApiAmount(String(Math.abs(n)), { digits: 4, suffix: ' gAGX' })
   if (n > 0) return { text: `+${abs}`, positive: true, negative: false }
   return { text: `−${abs}`, positive: false, negative: true }
 }

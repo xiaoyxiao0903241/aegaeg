@@ -7,7 +7,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd } from '~/shared/api/format-display'
+import { formatUsdApprox } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
@@ -75,7 +75,7 @@ export function useBuffer() {
     claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`,
     releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`,
     releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
-    valueHint: formatApproxUsd(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
+    valueHint: formatUsdApprox(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
     progressWidth: pctLabel,
     canClaim,
     pending: claim.isPending,

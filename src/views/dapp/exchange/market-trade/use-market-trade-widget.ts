@@ -6,7 +6,7 @@ import {
   formatTokenAmount,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -130,7 +130,7 @@ export function useMarketTradeWidget(
   const gasEstimateLabel =
     gasEstimate === 0n
       ? '0'
-      : formatGroupedNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
+      : formatNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
   const isHighPriceImpact =
     sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
@@ -186,7 +186,7 @@ export function useMarketTradeWidget(
       : '',
     balanceLabelFor: (key: TradeTokenKey) => {
       const token = getTradeToken(key)
-      if (!balanceKnownByKey[key]) return formatGroupedNumber(0, { digits: 4 })
+      if (!balanceKnownByKey[key]) return formatNumber(0, { digits: 4 })
       return formatTokenAmount(balanceByKey[key], token.decimals, 4)
     },
     buyAmount: core.buyAmount,

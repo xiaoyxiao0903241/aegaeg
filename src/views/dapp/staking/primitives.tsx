@@ -14,7 +14,7 @@ import {
   calcLocalInterest,
 } from '~/core/staking/staking-yield-display'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/components/card'
 import { Chart, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
@@ -99,7 +99,7 @@ const CURVE_PLACEHOLDER = '0.00'
 
 function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return CURVE_PLACEHOLDER
-  return formatGroupedNumber(value, { digits: 2, prefix: '$' })
+  return formatNumber(value, { digits: 2, prefix: '$' })
 }
 
 function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): readonly string[] {

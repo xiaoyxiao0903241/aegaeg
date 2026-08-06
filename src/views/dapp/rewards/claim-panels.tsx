@@ -24,7 +24,7 @@ import {
   RewardsDestinationCard,
   SimpleClaimableCard,
 } from '~/views/dapp/rewards/claim-primitives'
-import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/shared'
+import { formatApiAmount, type MixedClaimView } from '~/views/dapp/rewards/shared'
 import { useMixedClaim } from '~/views/dapp/rewards/use-mixed-claim'
 import { type SimpleClaimView, useSimpleClaim } from '~/views/dapp/rewards/use-simple-claim'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
@@ -135,7 +135,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           claimableLabel={t.rewards.detail.claimable}
           requiredContributionLabel={vm.mixed.requiredContributionLabel}
           requiredText={
-            view === 'lucky' && vm.amount > 0n ? vm.requiredText : formatApiDecimalAmount(null)
+            view === 'lucky' && vm.amount > 0n ? vm.requiredText : formatApiAmount(null)
           }
           tokenGagx={vm.mixed.tokenGagx}
         />

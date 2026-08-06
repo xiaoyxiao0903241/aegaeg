@@ -8,7 +8,7 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
 import { goBindReferral } from '~/shared/config/go-bind-referral'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
@@ -43,7 +43,7 @@ export function useGenesisDock(genesis: GenesisWidgetState) {
   }, [isMobileViewport])
 
   const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
-    threshold: formatGroupedNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
+    threshold: formatNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
   })
 
   function handleSharesChange(value: string) {

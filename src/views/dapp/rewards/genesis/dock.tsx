@@ -11,7 +11,7 @@ import { Text } from '~/shared/components/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { GenesisClaimCard } from '~/views/dapp/rewards/genesis/primitives'
 import { useGenesisDock } from '~/views/dapp/rewards/genesis/use-genesis'
-import { formatApiDecimalAmount } from '~/views/dapp/rewards/shared'
+import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -130,7 +130,7 @@ export function GenesisDock() {
           <GenesisClaimCard.Value className="mt-1.5">
             {vm.isSuperCommunity || !vm.sessionReady
               ? vm.communityClaimable
-              : formatApiDecimalAmount(null)}
+              : formatApiAmount(null)}
           </GenesisClaimCard.Value>
           {vm.walletReady ? (
             <GenesisClaimCard.Action

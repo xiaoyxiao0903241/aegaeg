@@ -10,10 +10,10 @@ import {
 } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { formatNumber, formatPresaleRank } from '~/shared/api/format-display'
 import {
   claimableAmountValue,
-  formatApiDecimalAmount,
+  formatApiAmount,
   toastClaimResult,
 } from '~/views/dapp/rewards/shared'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
@@ -62,13 +62,13 @@ export function useGenesisDock() {
     ? t.rewards.progressMaxPersonal
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
   const personalProgressValue = sessionReady
-    ? `${formatGroupedNumber(tierProgress.personalCurrentUsd, { prefix: '$' })} / ${formatGroupedNumber(tierProgress.personalTargetUsd, { prefix: '$' })}`
-    : formatApiDecimalAmount(null)
+    ? `${formatNumber(tierProgress.personalCurrentUsd, { prefix: '$' })} / ${formatNumber(tierProgress.personalTargetUsd, { prefix: '$' })}`
+    : formatApiAmount(null)
 
   const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
   const showQualifiedPartitions = displayRank >= 3 && displayRank <= 9
   const teamProgressValue = !sessionReady
-    ? formatApiDecimalAmount(null)
+    ? formatApiAmount(null)
     : showQualifiedPartitions
       ? t.rewards.teamQualifiedPartitionsLabel
           .replace('{rank}', formatPresaleRank(displayRank))
@@ -76,11 +76,11 @@ export function useGenesisDock() {
       : tierProgress.isMaxRank
         ? t.rewards.progressMaxTeam
         : tierProgress.teamLegRank != null
-          ? `${formatGroupedNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} · ${t.rewards.teamLegRequirement.replace(
+          ? `${formatNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} · ${t.rewards.teamLegRequirement.replace(
               '{rank}',
               formatPresaleRank(tierProgress.teamLegRank),
             )}`
-          : `${formatGroupedNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} / ${formatGroupedNumber(tierProgress.teamTargetUsd ?? 0, { prefix: '$' })}`
+          : `${formatNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} / ${formatNumber(tierProgress.teamTargetUsd ?? 0, { prefix: '$' })}`
 
   const personalProgressPercent = sessionReady ? tierProgress.personalProgressPercent : 0
   const teamProgressPercent = !sessionReady
@@ -99,10 +99,10 @@ export function useGenesisDock() {
       (partitionsLoading && qualifiedPartitions == null))
 
   const referralValue = !sessionReady
-    ? formatApiDecimalAmount(null)
+    ? formatApiAmount(null)
     : referralLoading && referralTotal == null
       ? '0.00'
-      : formatGroupedNumber(referralTotal?.claimed ?? referralTotal?.total ?? 0, {
+      : formatNumber(referralTotal?.claimed ?? referralTotal?.total ?? 0, {
           digits: 2,
           prefix: '$',
         })
@@ -112,33 +112,30 @@ export function useGenesisDock() {
     teamTotal?.claimed ?? '0',
   )
   const teamClaimable = !sessionReady
-    ? formatApiDecimalAmount(null)
+    ? formatApiAmount(null)
     : teamLoading && teamTotal == null
       ? '0.00'
-      : formatGroupedNumber(teamClaimableValue, { digits: 2, prefix: '$' })
+      : formatNumber(teamClaimableValue, { digits: 2, prefix: '$' })
   const teamMeta = !sessionReady
-    ? formatApiDecimalAmount(null)
+    ? formatApiAmount(null)
     : teamTotal?.claimed == null
-      ? formatApiDecimalAmount(null)
-      : formatGroupedNumber(teamTotal.claimed, { digits: 2, prefix: '$' })
+      ? formatApiAmount(null)
+      : formatNumber(teamTotal.claimed, { digits: 2, prefix: '$' })
 
   const communityClaimableValue = Number(communityFundTotal?.unlocked_claimable ?? 0)
   const communityClaimable = !sessionReady
-    ? formatApiDecimalAmount(null)
+    ? formatApiAmount(null)
     : communityFundLoading && communityFundTotal == null
       ? '0.00'
-      : formatGroupedNumber(
-          Number.isFinite(communityClaimableValue) ? communityClaimableValue : 0,
-          {
-            digits: 2,
-            prefix: '$',
-          },
-        )
+      : formatNumber(Number.isFinite(communityClaimableValue) ? communityClaimableValue : 0, {
+          digits: 2,
+          prefix: '$',
+        })
   const communityLockedMeta = !sessionReady
-    ? t.rewards.communityFundLocked.replace('{amount}', formatApiDecimalAmount(null))
+    ? t.rewards.communityFundLocked.replace('{amount}', formatApiAmount(null))
     : t.rewards.communityFundLocked.replace(
         '{amount}',
-        formatGroupedNumber(
+        formatNumber(
           Math.max(
             0,
             Number(communityFundTotal?.total ?? '0') -

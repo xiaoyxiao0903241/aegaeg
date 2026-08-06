@@ -3,19 +3,17 @@ import test from 'node:test'
 
 import { loadModule } from './load-module.mjs'
 
-test('parseApiAmount fail-closed; formatApiDecimalAmount zeros empty', async () => {
-  const { formatApiDecimalAmount, parseApiAmount } = await loadModule(
-    '/src/shared/api/format-display.ts',
-  )
+test('parseApiAmount fail-closed; formatApiAmount zeros empty', async () => {
+  const { formatApiAmount, parseApiAmount } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(parseApiAmount(undefined), null)
   assert.equal(parseApiAmount(''), null)
   assert.equal(parseApiAmount('  '), null)
   assert.equal(parseApiAmount('abc'), null)
   assert.equal(parseApiAmount('12.5'), 12.5)
-  assert.equal(formatApiDecimalAmount(null), '0.00')
-  assert.equal(formatApiDecimalAmount('1000'), '1,000.00')
-  assert.equal(formatApiDecimalAmount('bad', { prefix: '$' }), '$0.00')
+  assert.equal(formatApiAmount(null), '0.00')
+  assert.equal(formatApiAmount('1000'), '1,000.00')
+  assert.equal(formatApiAmount('bad', { prefix: '$' }), '$0.00')
 })
 
 test('getPresaleRankHighlightedRows maps rank to tier table row index', async () => {
@@ -39,42 +37,43 @@ test('formatShareholderHintForRank renders tier-specific hint', async () => {
   assert.equal(formatShareholderHintForRank(0, '{bonus}', 'fallback', tiers), 'fallback')
 })
 
-test('formatGroupedNumber supports $ prefix and USD suffix', async () => {
-  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
+test('formatNumber supports $ prefix and USD suffix', async () => {
+  const { formatNumber } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(formatGroupedNumber(5000, { suffix: ' USD' }), '5,000 USD')
-  assert.equal(formatGroupedNumber('invalid', { suffix: ' USD' }), '0 USD')
-  assert.equal(formatGroupedNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
-  assert.equal(formatGroupedNumber(1000, { digits: 0, trimZeros: true }), '1,000')
+  assert.equal(formatNumber(5000, { suffix: ' USD' }), '5,000 USD')
+  assert.equal(formatNumber('invalid', { suffix: ' USD' }), '0 USD')
+  assert.equal(formatNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
+  assert.equal(formatNumber(1000, { digits: 0, trimZeros: true }), '1,000')
 })
 
-test('formatApproxUsd: missing / no price / NaN → ≈ $0.00', async () => {
-  const { formatApproxUsd } = await loadModule('/src/shared/api/format-display.ts')
+test('formatUsdApprox: missing / no price / NaN → ≈ $0.00', async () => {
+  const { formatUsdApprox } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(formatApproxUsd(0, null), '≈ $0.00')
-  assert.equal(formatApproxUsd(0, 65), '≈ $0.00')
-  assert.equal(formatApproxUsd(1, null), '≈ $0.00')
-  assert.equal(formatApproxUsd(1, 0), '≈ $0.00')
-  assert.equal(formatApproxUsd(2, 10), '≈ $20.00')
-  assert.equal(formatApproxUsd(Number.NaN, 10), '≈ $0.00')
+  assert.equal(formatUsdApprox(0, null), '≈ $0.00')
+  assert.equal(formatUsdApprox(0, 65), '≈ $0.00')
+  assert.equal(formatUsdApprox(1, null), '≈ $0.00')
+  assert.equal(formatUsdApprox(1, 0), '≈ $0.00')
+  assert.equal(formatUsdApprox(2, 10), '≈ $20.00')
+  assert.equal(formatUsdApprox(Number.NaN, 10), '≈ $0.00')
 })
 
-test('formatCompactNumber / formatCompactUsd / formatSignedPercent match hub Figma shapes', async () => {
-  const { formatApproxCompactUsd, formatCompactNumber, formatCompactUsd, formatSignedPercent } =
-    await loadModule('/src/shared/api/format-display.ts')
+test('formatCompact / formatUsd / formatPercentChange match hub Figma shapes', async () => {
+  const { formatCompact, formatUsd, formatPercentChange, formatUsdApprox } = await loadModule(
+    '/src/shared/api/format-display.ts',
+  )
 
-  assert.equal(formatCompactNumber(129_000, { suffix: ' AGX' }), '129K AGX')
-  assert.equal(formatCompactNumber(8_410_000, { prefix: '$' }), '$8.41M')
-  assert.equal(formatCompactNumber(0, { digits: 2, suffix: ' AGX' }), '0.00 AGX')
-  assert.equal(formatCompactNumber(65, { digits: 2 }), '65.00')
-  assert.equal(formatCompactUsd(18_600_000), '$18.6M')
-  assert.equal(formatCompactUsd(65), '$65.00')
-  assert.equal(formatCompactUsd(null), '$0.00')
-  assert.equal(formatApproxCompactUsd(129_000, 65), '≈ $8.39M')
-  assert.equal(formatApproxCompactUsd(0, null), '≈ $0.00')
-  assert.equal(formatSignedPercent(412.4), '+412.4%')
-  assert.equal(formatSignedPercent(null), '+0.0%')
-  assert.equal(formatSignedPercent(-1.2), '-1.2%')
+  assert.equal(formatCompact(129_000, { suffix: ' AGX' }), '129K AGX')
+  assert.equal(formatCompact(8_410_000, { prefix: '$' }), '$8.41M')
+  assert.equal(formatCompact(0, { digits: 2, suffix: ' AGX' }), '0.00 AGX')
+  assert.equal(formatCompact(65, { digits: 2 }), '65.00')
+  assert.equal(formatUsd(18_600_000), '$18.6M')
+  assert.equal(formatUsd(65), '$65.00')
+  assert.equal(formatUsd(null), '$0.00')
+  assert.equal(formatUsdApprox(129_000, 65, { compact: true }), '≈ $8.39M')
+  assert.equal(formatUsdApprox(0, null, { compact: true }), '≈ $0.00')
+  assert.equal(formatPercentChange(412.4), '+412.4%')
+  assert.equal(formatPercentChange(null), '+0.0%')
+  assert.equal(formatPercentChange(-1.2), '-1.2%')
 })
 
 test('agxUsd1SpotPriceWeiFromReserves is USD1 wei per 1 AGX', async () => {
@@ -236,15 +235,15 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
 
 test('claimableAmountValue subtracts claimed from total', async () => {
   const { claimableAmountValue } = await loadModule('/src/views/dapp/rewards/shared.ts')
-  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
+  const { formatNumber } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(
-    formatGroupedNumber(claimableAmountValue('1000', '657.82'), { digits: 2, prefix: '$' }),
+    formatNumber(claimableAmountValue('1000', '657.82'), { digits: 2, prefix: '$' }),
     '$342.18',
   )
   assert.ok(claimableAmountValue('0.004', '0') > 0)
   assert.equal(
-    formatGroupedNumber(claimableAmountValue('0.004', '0'), { digits: 2, prefix: '$' }),
+    formatNumber(claimableAmountValue('0.004', '0'), { digits: 2, prefix: '$' }),
     '$0.00',
   )
 })

@@ -37,7 +37,7 @@ export function formatShareholderHintForRank(
   return template.replace('{bonus}', bonus)
 }
 
-export type FormatGroupedNumberOptions = {
+export type FormatNumberOptions = {
   digits?: number
   /** 默认 `false`（补足位数）。`true` 允许少于 `digits` 个尾随零。 */
   trimZeros?: boolean
@@ -45,10 +45,13 @@ export type FormatGroupedNumberOptions = {
   suffix?: string
 }
 
-/** 带千分位分组的人类可读数字——法币/计数展示的唯一核心。 */
-export function formatGroupedNumber(
+/**
+ * 人读数字（千分位 + 精度 + 前后缀）——展示唯一核心。
+ * 非法值按 digits 回落 `0` / `0.00`。
+ */
+export function formatNumber(
   value: string | number | bigint,
-  options: FormatGroupedNumberOptions = {},
+  options: FormatNumberOptions = {},
 ): string {
   const digits = Math.max(0, Math.floor(options.digits ?? 0))
   const trimZeros = options.trimZeros === true
@@ -69,15 +72,73 @@ export function formatGroupedNumber(
   return `${prefix}${formatted}${suffix}`
 }
 
+export type FormatCompactOptions = {
+  /** K/M 缩放后的最大小数位（默认 2，且去掉尾随零）。 */
+  digits?: number
+  prefix?: string
+  suffix?: string
+}
+
 /**
- * Token 数量 × USD 单价 → `≈ $x.xx`。
- * 缺失 / NaN / 无价格 → `≈ $0.00`（空态统一占位，不用破折号）。
+ * 紧凑数字：`129K` / `$8.41M`。
+ * <1000 补足 digits；≥1e3 → K；≥1e6 → M。
  */
-export function formatApproxUsd(amount: number, priceUsd: number | null): string {
-  if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
-    return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
+export function formatCompact(
+  value: string | number | bigint,
+  options: FormatCompactOptions = {},
+): string {
+  const digits = Math.max(0, Math.floor(options.digits ?? 2))
+  const prefix = options.prefix ?? ''
+  const suffix = options.suffix ?? ''
+  const num = typeof value === 'bigint' ? Number(value) : Number(value)
+
+  if (!Number.isFinite(num)) {
+    const zero = digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
+    return `${prefix}${zero}${suffix}`
   }
-  return formatGroupedNumber(amount * priceUsd, { digits: 2, prefix: '≈ $' })
+
+  const abs = Math.abs(num)
+  if (abs >= 1_000_000) {
+    return `${prefix}${formatNumber(num / 1_000_000, { digits, trimZeros: true })}M${suffix}`
+  }
+  if (abs >= 1_000) {
+    return `${prefix}${formatNumber(num / 1_000, { digits, trimZeros: true })}K${suffix}`
+  }
+  return `${prefix}${formatNumber(num, { digits, trimZeros: false })}${suffix}`
+}
+
+/**
+ * 已是 USD 的金额 → `$…`；≥1000 时自动 K/M。
+ * 空 / NaN → `$0.00`。
+ */
+export function formatUsd(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value)) {
+    return formatNumber(0, { digits: 2, prefix: '$' })
+  }
+  if (Math.abs(value) < 1_000) {
+    return formatNumber(value, { digits: 2, prefix: '$' })
+  }
+  return formatCompact(value, { digits: 2, prefix: '$' })
+}
+
+/**
+ * 代币数量 × USD 单价 → `≈ $…`。
+ * `compact: true` 时 ≥1000 用 K/M。
+ * 缺失 / NaN / 无价格 → `≈ $0.00`。
+ */
+export function formatUsdApprox(
+  amount: number,
+  priceUsd: number | null,
+  options: { compact?: boolean } = {},
+): string {
+  if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
+    return formatNumber(0, { digits: 2, prefix: '≈ $' })
+  }
+  const usd = amount * priceUsd
+  if (options.compact && Math.abs(usd) >= 1_000) {
+    return formatCompact(usd, { digits: 2, prefix: '≈ $' })
+  }
+  return formatNumber(usd, { digits: 2, prefix: '≈ $' })
 }
 
 /**
@@ -93,89 +154,29 @@ export function parseApiAmount(raw: string | null | undefined): number | null {
 }
 
 /**
- * 后端金额字符串 → 分组展示（含千分位与前后缀）。
- * 空值 / 非数字统一兜底为 0，保证数值列不出现异常字符。
+ * 后端金额字符串 → 人读数字（千分位 + 前后缀）。
+ * 空 / 非数字兜底 0。
  */
-export function formatApiDecimalAmount(
+export function formatApiAmount(
   raw: string | null | undefined,
   options: { digits?: number; prefix?: string; suffix?: string } = {},
 ): string {
   const digits = options.digits ?? 2
   const n = parseApiAmount(raw) ?? 0
-  return formatGroupedNumber(n, {
+  return formatNumber(n, {
     digits,
     prefix: options.prefix,
     suffix: options.suffix,
   })
 }
 
-export type FormatCompactNumberOptions = {
-  /** K/M 缩放后的最大小数位（默认 2，且去掉尾随零）。 */
-  digits?: number
-  prefix?: string
-  suffix?: string
-}
-
-/**
- * 概览卡片 / 图表的紧凑数值展示——`129K` / `$8.41M`。
- * 小于 1000 保持分组且补足 `digits` 位（空态 `0.00`）；≥1e3 用 K；≥1e6 用 M。
- * 空值 / NaN → `0` / `0.00`（按 digits 附带前缀/后缀）。
- */
-export function formatCompactNumber(
-  value: string | number | bigint,
-  options: FormatCompactNumberOptions = {},
-): string {
-  const digits = Math.max(0, Math.floor(options.digits ?? 2))
-  const prefix = options.prefix ?? ''
-  const suffix = options.suffix ?? ''
-  const num = typeof value === 'bigint' ? Number(value) : Number(value)
-
-  if (!Number.isFinite(num)) {
-    const zero = digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
-    return `${prefix}${zero}${suffix}`
-  }
-
-  const abs = Math.abs(num)
-  if (abs >= 1_000_000) {
-    return `${prefix}${formatGroupedNumber(num / 1_000_000, { digits, trimZeros: true })}M${suffix}`
-  }
-  if (abs >= 1_000) {
-    return `${prefix}${formatGroupedNumber(num / 1_000, { digits, trimZeros: true })}K${suffix}`
-  }
-  // <1k：补足 digits（空态 `0.00 AGX` / `$65.00`）；K/M 档仍 trim。
-  return `${prefix}${formatGroupedNumber(num, { digits, trimZeros: false })}${suffix}`
-}
-
-/** 图表/卡片 USD 紧凑展示（M/K）——空态 → `$0.00`（补足位数，不带单位）。 */
-export function formatCompactUsd(value: number | null | undefined): string {
+/** 涨跌百分比——`+412.4%`；空态 → `+0.0%`。 */
+export function formatPercentChange(value: number | null | undefined, digits = 1): string {
   if (value == null || !Number.isFinite(value)) {
-    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  }
-  if (Math.abs(value) < 1_000) {
-    return formatGroupedNumber(value, { digits: 2, prefix: '$' })
-  }
-  return formatCompactNumber(value, { digits: 2, prefix: '$' })
-}
-
-/** `≈ $…` 的紧凑版 {@link formatApproxUsd}，用于 hub TVL / treasury 子项。 */
-export function formatApproxCompactUsd(amount: number, priceUsd: number | null): string {
-  if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
-    return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
-  }
-  const usd = amount * priceUsd
-  if (Math.abs(usd) < 1_000) {
-    return formatGroupedNumber(usd, { digits: 2, prefix: '≈ $' })
-  }
-  return formatCompactNumber(usd, { digits: 2, prefix: '≈ $' })
-}
-
-/** 图表涨跌的有符号百分比——`+412.4%`；空态 → `+0.0%`。 */
-export function formatSignedPercent(value: number | null | undefined, digits = 1): string {
-  if (value == null || !Number.isFinite(value)) {
-    return `+${formatGroupedNumber(0, { digits })}%`
+    return `+${formatNumber(0, { digits })}%`
   }
   const sign = value > 0 ? '+' : value < 0 ? '' : '+'
-  return `${sign}${formatGroupedNumber(value, { digits, trimZeros: true })}%`
+  return `${sign}${formatNumber(value, { digits, trimZeros: true })}%`
 }
 
 export function formatBlockTime(timestamp: number): string {

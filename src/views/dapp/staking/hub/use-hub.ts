@@ -13,48 +13,48 @@ import { useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import {
-  formatApproxCompactUsd,
-  formatCompactNumber,
-  formatCompactUsd,
-  formatGroupedNumber,
-  formatSignedPercent,
+  formatCompact,
+  formatNumber,
+  formatPercentChange,
+  formatUsd,
+  formatUsdApprox,
 } from '~/shared/api/format-display'
 import type { ChartPoint } from '~/shared/components/chart'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
-const YIELD_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
-const BONUS_EMPTY = `${formatGroupedNumber(0, { digits: 0, trimZeros: true })}%`
+const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
+const BONUS_EMPTY = `${formatNumber(0, { digits: 0, trimZeros: true })}%`
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 function formatAgxCompact(wei: bigint | undefined): string {
-  if (wei == null) return formatCompactNumber(0, { digits: 2, suffix: ' AGX' })
+  if (wei == null) return formatCompact(0, { digits: 2, suffix: ' AGX' })
   const n = formatTokenAmountToNumber(wei, AGX_DECIMALS)
-  return formatCompactNumber(n, { digits: 2, suffix: ' AGX' })
+  return formatCompact(n, { digits: 2, suffix: ' AGX' })
 }
 
 /** 流通量：大数千分位、固定 2 位（空态 `0.00 AGX`）。 */
 function formatAgxGrouped(wei: bigint | undefined): string {
-  if (wei == null) return formatGroupedNumber(0, { digits: 2, suffix: ' AGX' })
+  if (wei == null) return formatNumber(0, { digits: 2, suffix: ' AGX' })
   const n = formatTokenAmountToNumber(wei, AGX_DECIMALS)
-  return formatGroupedNumber(n, { digits: 2, suffix: ' AGX' })
+  return formatNumber(n, { digits: 2, suffix: ' AGX' })
 }
 
 function formatRebasePct(rate1e18: bigint | null | undefined): string {
   if (rate1e18 == null) return YIELD_EMPTY
   const pct = formatTokenAmountToNumber(rate1e18, 18)
   if (!Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatGroupedNumber(pct, { digits: 2 })}%`
+  return `${formatNumber(pct, { digits: 2 })}%`
 }
 
 function formatYieldPct(pct: number | null): string {
   if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatGroupedNumber(pct, { digits: 2 })}%`
+  return `${formatNumber(pct, { digits: 2 })}%`
 }
 
 function formatBonusPct(bps: number): string {
-  return `${formatGroupedNumber(bps / 100, { digits: 0, trimZeros: true })}%`
+  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
 }
 
 export type HubPeriodTableRow = {
@@ -84,8 +84,8 @@ export function useHubDetail() {
 
   const agxPriceLabel =
     agxPriceUsd != null
-      ? formatGroupedNumber(agxPriceUsd, { digits: 2, prefix: '$' })
-      : formatGroupedNumber(0, { digits: 2, prefix: '$' })
+      ? formatNumber(agxPriceUsd, { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
 
   const poolAgx =
     overviewQuery.data != null
@@ -101,32 +101,32 @@ export function useHubDetail() {
       : null
 
   const tvlLabel = formatAgxCompact(overviewQuery.data?.poolAgxBalance)
-  const tvlUsdSub = formatApproxCompactUsd(poolAgx ?? 0, agxPriceUsd)
+  const tvlUsdSub = formatUsdApprox(poolAgx ?? 0, agxPriceUsd, { compact: true })
   const circulatingLabel = formatAgxGrouped(overviewQuery.data?.circulatingSupply)
   const mcapLabel =
     circulating != null && agxPriceUsd != null
-      ? formatCompactUsd(circulating * agxPriceUsd)
-      : formatCompactUsd(null)
+      ? formatUsd(circulating * agxPriceUsd)
+      : formatUsd(null)
   const treasuryLabel = formatAgxCompact(overviewQuery.data?.totalReserves)
-  const treasuryUsdSub = formatApproxCompactUsd(treasury ?? 0, agxPriceUsd)
+  const treasuryUsdSub = formatUsdApprox(treasury ?? 0, agxPriceUsd, { compact: true })
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
   const stakersLabel = !sessionReady
-    ? formatGroupedNumber(0, { digits: 0, trimZeros: true })
+    ? formatNumber(0, { digits: 0, trimZeros: true })
     : stakersQuery.isLoading && stakersQuery.data == null
-      ? formatGroupedNumber(0, { digits: 0, trimZeros: true })
+      ? formatNumber(0, { digits: 0, trimZeros: true })
       : stakersQuery.data != null
-        ? formatGroupedNumber(stakersQuery.data.stake_address_count, {
+        ? formatNumber(stakersQuery.data.stake_address_count, {
             digits: 0,
             trimZeros: true,
           })
-        : formatGroupedNumber(0, { digits: 0, trimZeros: true })
+        : formatNumber(0, { digits: 0, trimZeros: true })
 
   // 暂无历史数据源，序列为空；头部仍按 `$0.00` / `+0.0%` 格式展示。
   const chartPoints: readonly ChartPoint[] = []
-  const chartValueLabel = formatCompactUsd(null)
-  const chartDeltaLabel = formatSignedPercent(null)
+  const chartValueLabel = formatUsd(null)
+  const chartDeltaLabel = formatPercentChange(null)
 
   const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const baseDaily = baseDailyPctFromEpoch(epochPct)

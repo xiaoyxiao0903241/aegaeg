@@ -1,10 +1,7 @@
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
-import {
-  formatGroupedNumber,
-  parseApiAmount as parseApiAmountNullable,
-} from '~/shared/api/format-display'
+import { formatNumber, parseApiAmount as parseApiAmountNullable } from '~/shared/api/format-display'
 
 type StakingMoneyBlock = Parameters<typeof evaluateWriteButtonPhase>[0]['moneyBlock']
 
@@ -13,24 +10,13 @@ export function parseApiAmountOrZero(raw: string | undefined): number {
   return parseApiAmountNullable(raw) ?? 0
 }
 
-export function formatAsideAgxLabel(amount: number): string {
-  return formatGroupedNumber(amount, { digits: 2, suffix: ' AGX' })
-}
-
-export function formatAsideGagxLabel(amount: number): string {
-  return formatGroupedNumber(amount, { digits: 2, suffix: ' gAGX' })
-}
-
-export function formatAsideXLabel(amount: number): string {
-  return formatGroupedNumber(amount, { digits: 2, suffix: ' X' })
-}
-
-export function formatAsideRebasePct(rate1e18: bigint | null | undefined): string {
-  const zero = `${formatGroupedNumber(0, { digits: 2 })}%`
+/** rebaseRate1e18 → `x.xx%`；缺失回落 `0.00%`。 */
+export function formatRebasePct(rate1e18: bigint | null | undefined): string {
+  const zero = `${formatNumber(0, { digits: 2 })}%`
   if (rate1e18 == null) return zero
   const pct = formatTokenAmountToNumber(rate1e18, 18)
   if (!Number.isFinite(pct)) return zero
-  return `${formatGroupedNumber(pct, { digits: 2 })}%`
+  return `${formatNumber(pct, { digits: 2 })}%`
 }
 
 /**

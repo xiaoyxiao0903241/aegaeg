@@ -1,5 +1,5 @@
 import {
-  formatGroupedNumber,
+  formatNumber,
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
@@ -21,13 +21,11 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   return [
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address, { head: 4, tail: 4 }),
-    Number.isFinite(volume) && volume > 0
-      ? formatGroupedNumber(volume, { prefix: '$' })
-      : TABLE_EMPTY,
+    Number.isFinite(volume) && volume > 0 ? formatNumber(volume, { prefix: '$' }) : TABLE_EMPTY,
     formatTableGenesisRank(item.presale_rank),
-    formatGroupedNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
+    formatNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
     Number.isFinite(teamMarket)
-      ? formatGroupedNumber(teamMarket, { digits: 0, trimZeros: true })
+      ? formatNumber(teamMarket, { digits: 0, trimZeros: true })
       : TABLE_EMPTY,
   ]
 }

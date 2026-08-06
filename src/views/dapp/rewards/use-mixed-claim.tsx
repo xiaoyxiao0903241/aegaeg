@@ -21,11 +21,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { DaoRewardType } from '~/shared/api/types'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import {
-  formatApiDecimalAmount,
-  type MixedClaimView,
-  splitAmountByPct,
-} from '~/views/dapp/rewards/shared'
+import { formatApiAmount, type MixedClaimView, splitAmountByPct } from '~/views/dapp/rewards/shared'
 import {
   REWARDS_BLOCKED,
   submitDaoMixedClaim,
@@ -177,22 +173,22 @@ export function useMixedClaim(view: MixedClaimView) {
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
     : sessionReady
-      ? formatApiDecimalAmount(null)
+      ? formatApiAmount(null)
       : t.rewards.hub.signInForBalance
   const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
   const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
   const releaseAmountText = amountKnown
     ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-    : formatApiDecimalAmount(null)
+    : formatApiAmount(null)
   const restakeAmountText = amountKnown
     ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-    : formatApiDecimalAmount(null)
+    : formatApiAmount(null)
   const requiredText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
-    : formatApiDecimalAmount(null)
+    : formatApiAmount(null)
   const haveText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS)
-    : formatApiDecimalAmount(null)
+    : formatApiAmount(null)
   const showContributionShort =
     !contributionOk &&
     (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)

@@ -4,8 +4,8 @@ import {
   useParticipationAwardLogs,
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
-import { formatApiDecimalAmount, toastClaimResult } from '~/views/dapp/rewards/shared'
+import { formatNumber } from '~/shared/api/format-display'
+import { formatApiAmount, toastClaimResult } from '~/views/dapp/rewards/shared'
 import {
   useCommunityFundClaim,
   useIncentiveClaim,
@@ -72,15 +72,13 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
     return Number.isFinite(n) ? sum + n : sum
   }, 0)
   const participateAmountText =
-    participateReadyGross > 0
-      ? formatApiDecimalAmount(String(participateReadyGross), { digits: 4 })
-      : null
+    participateReadyGross > 0 ? formatApiAmount(String(participateReadyGross), { digits: 4 }) : null
 
-  const pendingAmount = formatApiDecimalAmount(
+  const pendingAmount = formatApiAmount(
     view === 'grant' && grantAmountReady ? summary?.unlockable_allowance : null,
     { digits: 4 },
   )
-  const grantClaimableText = formatApiDecimalAmount(
+  const grantClaimableText = formatApiAmount(
     view === 'grant' && grantAmountReady ? summary?.unlocked_claimable : null,
     { digits: 4 },
   )
@@ -93,10 +91,10 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
       ? grantClaimableText
       : view === 'referral'
         ? !sessionReady
-          ? formatGroupedNumber(0, { digits: 2, prefix: '$' })
+          ? formatNumber(0, { digits: 2, prefix: '$' })
           : communityLoading && referralAmountRaw == null
-            ? formatGroupedNumber(0, { digits: 2, prefix: '$' })
-            : formatGroupedNumber(Number.isFinite(referralAmount) ? referralAmount : 0, {
+            ? formatNumber(0, { digits: 2, prefix: '$' })
+            : formatNumber(Number.isFinite(referralAmount) ? referralAmount : 0, {
                 digits: 2,
                 prefix: '$',
               })
@@ -107,10 +105,10 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
       ? `${grantClaimableText} ${TOKEN_GAGX}`
       : view === 'referral'
         ? !sessionReady
-          ? formatGroupedNumber(0, { digits: 2, prefix: '$' })
+          ? formatNumber(0, { digits: 2, prefix: '$' })
           : communityLoading && referralAmountRaw == null
-            ? formatGroupedNumber(0, { digits: 2, prefix: '$' })
-            : formatGroupedNumber(Number.isFinite(referralAmount) ? referralAmount : 0, {
+            ? formatNumber(0, { digits: 2, prefix: '$' })
+            : formatNumber(Number.isFinite(referralAmount) ? referralAmount : 0, {
                 digits: 2,
                 prefix: '$',
               })

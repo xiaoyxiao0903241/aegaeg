@@ -11,7 +11,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/api/format-display'
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -57,22 +57,22 @@ export function QueueDetail() {
 
   function formatReleasingLabel(): string {
     const n = sessionReady ? parseApiAmount(api?.releasing_amount) : null
-    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
+    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
     return `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}`
   }
 
   function formatReleasedLabel(): string {
     if (chainReady) return `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}`
     const n = sessionReady ? parseApiAmount(api?.released_amount) : null
-    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
-    return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
+    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
+    return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 
   function formatLifetimeClaimed(): string {
     const n = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
-    if (n != null) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
+    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
     /** 累计领取无链上数据源：空态显示 0 */
-    return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
+    return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 
   const releasingNum = parseApiOrChain(api?.releasing_amount, releasing)
@@ -83,17 +83,17 @@ export function QueueDetail() {
     {
       label: t.release.labels.releasing,
       value: formatReleasingLabel(),
-      approx: formatApproxUsd(releasingNum, priceUsd),
+      approx: formatUsdApprox(releasingNum, priceUsd),
     },
     {
       label: t.release.labels.released,
       value: formatReleasedLabel(),
-      approx: formatApproxUsd(releasedNum, priceUsd),
+      approx: formatUsdApprox(releasedNum, priceUsd),
     },
     {
       label: t.release.queue.lifetimeClaimed,
       value: formatLifetimeClaimed(),
-      approx: formatApproxUsd(lifetimeApproxNum, priceUsd),
+      approx: formatUsdApprox(lifetimeApproxNum, priceUsd),
     },
   ]
 

@@ -4,7 +4,7 @@ import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
+import { formatNumber, formatShortAddress } from '~/shared/api/format-display'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -163,7 +163,7 @@ export function useReferral() {
     isBound,
     referrer: effectiveReferrer,
     referrerLabel: effectiveReferrer ? formatShortAddress(effectiveReferrer) : null,
-    directCount: formatGroupedNumber(directCount, { digits: 0, trimZeros: true }),
+    directCount: formatNumber(directCount, { digits: 0, trimZeros: true }),
     referrerInput,
     setReferrerInput,
     isLoading: referralQuery.isLoading,

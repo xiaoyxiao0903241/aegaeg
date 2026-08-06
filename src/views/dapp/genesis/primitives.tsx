@@ -9,7 +9,7 @@ import { tv } from 'tailwind-variants'
 
 import type { SeasonOption } from '~/core/presale/genesis-promo-types'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { Button } from '~/shared/components/button'
 import { Carousel } from '~/shared/components/carousel'
 import { FieldActionChip } from '~/shared/components/chip'
@@ -303,7 +303,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
         inputRef={vm.sharesInputRef}
         label={t.genesis.shares.replace(
           '{max}',
-          formatGroupedNumber(genesis.maxShares, { digits: 0, trimZeros: true }),
+          formatNumber(genesis.maxShares, { digits: 0, trimZeros: true }),
         )}
         max={Math.max(genesis.maxShares, 1)}
         maxLabel={t.common.max}
@@ -481,7 +481,7 @@ export function GenesisContributionsTable({
             <Table.Pagination
               onPageChange={vm.setContributionsPage}
               page={vm.contributionsPage}
-              summary={`${cumulativeLabel}${formatGroupedNumber(vm.cumulativeContributedUsd, { prefix: '$' })}`}
+              summary={`${cumulativeLabel}${formatNumber(vm.cumulativeContributedUsd, { prefix: '$' })}`}
               total={vm.contributionsTotal}
             />
           </Table.Footer>

@@ -9,7 +9,7 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
 import { mapBondFlowLogToOpsRow, mapStakeFlowLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -39,7 +39,7 @@ export function formatAssetsPositionAmount(
 ): string {
   if (quote === 'usd') {
     if (priceUsd == null || priceUsd <= 0) return '$0.00'
-    return formatGroupedNumber(formatTokenAmountToNumber(amount, decimals) * priceUsd, {
+    return formatNumber(formatTokenAmountToNumber(amount, decimals) * priceUsd, {
       digits: 2,
       prefix: '$',
     })
@@ -366,7 +366,7 @@ function mapPricedStats(
   return rows.map(({ amount, decimals, unit, icon }) => ({
     value: `${formatTokenAmount(amount, decimals, 2)} ${unit}`,
     icon,
-    approx: formatApproxUsd(formatTokenAmountToNumber(amount, decimals), priceUsd),
+    approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), priceUsd),
   }))
 }
 
@@ -378,7 +378,7 @@ function errorStatCells(count: number): AssetsPositionStatCell[] {
 function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPositionStatCell[] {
   return Array.from({ length: count }, () => ({
     value: `0.00 ${unit}`,
-    approx: formatApproxUsd(0, null),
+    approx: formatUsdApprox(0, null),
   }))
 }
 

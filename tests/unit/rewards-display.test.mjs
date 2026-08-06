@@ -4,10 +4,10 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('formatContributionPlaceholder: disconnected / loading / value', async () => {
-  const { formatContributionPlaceholder, formatApiDecimalAmount } = await loadModule(
+  const { formatContributionPlaceholder, formatApiAmount } = await loadModule(
     '/src/views/dapp/rewards/shared.ts',
   )
-  const zero = formatApiDecimalAmount(null)
+  const zero = formatApiAmount(null)
 
   assert.equal(
     formatContributionPlaceholder({
@@ -56,12 +56,12 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
 })
 
 test('lucky non-numeric empties stay dashes; counts stay integers', async () => {
-  const { NON_NUMERIC_EMPTY, formatApiCountLabel, formatApiDecimalAmount } = await loadModule(
+  const { NON_NUMERIC_EMPTY, formatApiCountLabel, formatApiAmount } = await loadModule(
     '/src/views/dapp/rewards/shared.ts',
   )
 
   assert.equal(NON_NUMERIC_EMPTY, '\u2014')
-  assert.notEqual(formatApiDecimalAmount(null), NON_NUMERIC_EMPTY)
+  assert.notEqual(formatApiAmount(null), NON_NUMERIC_EMPTY)
   assert.equal(formatApiCountLabel(false, false, null), '0')
   assert.equal(formatApiCountLabel(true, true, null), '0')
   assert.equal(formatApiCountLabel(true, false, 3), '3')

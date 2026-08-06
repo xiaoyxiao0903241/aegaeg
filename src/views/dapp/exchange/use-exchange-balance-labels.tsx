@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 
 /**
  * 拼接 `标签: 值` 余额文案（供 AmountBox / CountValue 使用）
@@ -21,7 +21,7 @@ export function formatExchangeBalanceLabel({
 }): string {
   const safeDigits = Math.max(0, Math.floor(digits))
   if (!sessionReady || !walletReady || value.trim() === '') {
-    return `${label}: ${formatGroupedNumber(0, { digits: safeDigits })}`
+    return `${label}: ${formatNumber(0, { digits: safeDigits })}`
   }
   return `${label}: ${value}`
 }

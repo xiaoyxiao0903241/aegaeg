@@ -3,7 +3,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatReleaseApiOrChainLabel, formatReleasePct } from '~/views/dapp/release/shared'
 import {
@@ -73,7 +73,7 @@ export function useHub() {
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
-  const gagxZeroLabel = `${formatGroupedNumber(0, { digits: 4 })} ${t.release.units.queue}`
+  const gagxZeroLabel = `${formatNumber(0, { digits: 4 })} ${t.release.units.queue}`
 
   const queueReleasingNum = chainReady
     ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS)
@@ -95,9 +95,9 @@ export function useHub() {
     bufferTotalAgx,
     bufferClaimedAgx,
     gagxZeroLabel,
-    queueReleasingApprox: formatApproxUsd(queueReleasingNum, priceUsd),
-    queueClaimableApprox: formatApproxUsd(queueClaimableNum, priceUsd),
-    bufferTotalApprox: formatApproxUsd(bufferTotalNum, priceUsd),
-    bufferGagxApprox: formatApproxUsd(0, null),
+    queueReleasingApprox: formatUsdApprox(queueReleasingNum, priceUsd),
+    queueClaimableApprox: formatUsdApprox(queueClaimableNum, priceUsd),
+    bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
+    bufferGagxApprox: formatUsdApprox(0, null),
   }
 }

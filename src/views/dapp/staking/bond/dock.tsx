@@ -1,7 +1,7 @@
-import { bondSoldUsdAmount } from '~/core/staking/format-bond-sold-usd'
+import { bondSoldUsd } from '~/core/staking/bond-sold-usd'
 import { BOND_PERIODS, type BondKind, type BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
+import { formatNumber, formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
 import { AmountMaxChip } from '~/shared/components/chip'
@@ -26,8 +26,8 @@ function parseDiscountPct(label: string): number | null {
 /** 现价 × (折扣% / 100) 得折扣后单价；缺失 → `$0.00`。 */
 function formatBondDiscountUsd(spot: number | null, discountLabel: string): string {
   const pct = parseDiscountPct(discountLabel)
-  if (spot == null || pct == null) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  return formatGroupedNumber(spot * (pct / 100), { digits: 2, prefix: '$' })
+  if (spot == null || pct == null) return formatNumber(0, { digits: 2, prefix: '$' })
+  return formatNumber(spot * (pct / 100), { digits: 2, prefix: '$' })
 }
 
 /**
@@ -60,20 +60,17 @@ export function BondDock({ kind }: { kind: BondKind }) {
   const soldLabels = Object.fromEntries(
     BOND_PERIODS.map((period) => [
       period,
-      formatGroupedNumber(
-        bondSoldUsdAmount(bond.periodTotalDeposits[period], spotUsd, agxDecimals) ?? 0,
-        {
-          digits: 2,
-          prefix: '$',
-        },
-      ),
+      formatNumber(bondSoldUsd(bond.periodTotalDeposits[period], spotUsd, agxDecimals) ?? 0, {
+        digits: 2,
+        prefix: '$',
+      }),
     ]),
   ) as Record<BondPeriod, string>
   const discountUsd = formatBondDiscountUsd(spotUsd, bond.discountLabel)
   const spotLabel =
     spotUsd != null
-      ? formatGroupedNumber(spotUsd, { digits: 2, prefix: '$' })
-      : formatGroupedNumber(0, { digits: 2, prefix: '$' })
+      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
 
   return (
     <TabHeader

@@ -6,7 +6,7 @@ import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets, tokenCarouselIcons } from '~/shared/config/assets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -41,19 +41,19 @@ const ONE_AGX = 10n ** BigInt(AGX_DECIMALS)
  */
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
   if (unitUsdPerAgx === undefined || unitUsdPerAgx === 0n || amountAgx === 0n) {
-    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+    return formatNumber(0, { digits: 2, prefix: '$' })
   }
   const usdNumber = formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS)
   if (!Number.isFinite(usdNumber) || usdNumber <= 0) {
-    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+    return formatNumber(0, { digits: 2, prefix: '$' })
   }
-  return formatGroupedNumber(usdNumber, { digits: 2, prefix: '$' })
+  return formatNumber(usdNumber, { digits: 2, prefix: '$' })
 }
 
 /** OpenAPI 的 turbine summary/logs 金额为小数字符串（勿当作 wei）。 */
 function formatTurbineSummaryAmount(raw: string | null | undefined): string {
   const n = raw == null || raw.trim() === '' ? Number.NaN : Number(raw)
-  return formatGroupedNumber(Number.isFinite(n) ? n : 0, { digits: 2 })
+  return formatNumber(Number.isFinite(n) ? n : 0, { digits: 2 })
 }
 
 /**
@@ -178,15 +178,15 @@ export function useTurbineExchangeWidget(
   const buyAgxLabel =
     unlockAmountIn > 0n
       ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4)
-      : formatGroupedNumber(0, { digits: 4 })
+      : formatNumber(0, { digits: 4 })
   // 所需 USD1 = 合约 quoteUsdInForAgxOut(agxAmount)，不伪造 1:1 或中间价
   const payUsd1Label =
     unlockAmountIn <= 0n
-      ? formatGroupedNumber(0, { digits: 4 })
+      ? formatNumber(0, { digits: 4 })
       : quoteQuery.isError
-        ? formatGroupedNumber(0, { digits: 4 })
+        ? formatNumber(0, { digits: 4 })
         : quoteQuery.data === undefined
-          ? formatGroupedNumber(0, { digits: 4 })
+          ? formatNumber(0, { digits: 4 })
           : formatTokenAmount(quoteQuery.data, USD1_DECIMALS, 4)
 
   const unitUsd = unitPriceQuery.data
@@ -195,7 +195,7 @@ export function useTurbineExchangeWidget(
   const agxPriceLabel =
     unitPriceQuery.isError || unitUsd === undefined || unitUsdNumber <= 0
       ? ''
-      : formatGroupedNumber(unitUsdNumber, { digits: 2, prefix: '$' })
+      : formatNumber(unitUsdNumber, { digits: 2, prefix: '$' })
 
   // BPS 转百分数：300 → 3%；30 → 0.3%（按位数精确转换，不硬编码示例值）
   const slippageLabel = (() => {
@@ -229,9 +229,9 @@ export function useTurbineExchangeWidget(
   const claimedAsNumber = claimedRaw != null ? Number(claimedRaw) : Number.NaN
   const totalWithdrawnUsdHint = (() => {
     if (!Number.isFinite(claimedAsNumber)) return ''
-    if (claimedAsNumber === 0) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+    if (claimedAsNumber === 0) return formatNumber(0, { digits: 2, prefix: '$' })
     if (!unitUsdReady) return ''
-    return formatGroupedNumber(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '$' })
+    return formatNumber(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '$' })
   })()
 
   const canUnlock =
@@ -290,11 +290,11 @@ export function useTurbineExchangeWidget(
     buyAgxLabel,
     quotaLabel:
       quotaQuery.data === undefined
-        ? formatGroupedNumber(0, { digits: 2 })
+        ? formatNumber(0, { digits: 2 })
         : formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
     usd1BalanceLabel:
       balancesQuery.data === undefined
-        ? formatGroupedNumber(0, { digits: 2 })
+        ? formatNumber(0, { digits: 2 })
         : formatTokenAmount(usd1Balance, USD1_DECIMALS, {
             digits: 2,
             trimZeros: false,
@@ -310,22 +310,22 @@ export function useTurbineExchangeWidget(
     overview: {
       pendingUnlockLabel:
         quotaQuery.data === undefined
-          ? formatGroupedNumber(0, { digits: 2 })
+          ? formatNumber(0, { digits: 2 })
           : formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
       pendingUnlockUsdHint:
         quotaQuery.data === undefined || !unitUsdReady
-          ? formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
+          ? formatNumber(0, { digits: 2, prefix: '≈ $' })
           : formatAgxQuotaUsd(quota, unitUsd),
       coolingLabel:
         silencesQuery.data === undefined
-          ? formatGroupedNumber(0, { digits: 2 })
+          ? formatNumber(0, { digits: 2 })
           : formatTokenAmount(coolingBalance, AGX_DECIMALS, {
               digits: 2,
               trimZeros: false,
             }),
       coolingUsdHint:
         silencesQuery.data === undefined || !unitUsdReady
-          ? formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
+          ? formatNumber(0, { digits: 2, prefix: '≈ $' })
           : formatAgxQuotaUsd(coolingBalance, unitUsd),
       totalWithdrawnLabel,
       totalWithdrawnUsdHint,

@@ -4,7 +4,7 @@
  * AGX / gAGX 双卡展示已释放、释放中与进度条；
  * 右上角刷新按钮重读 AGX 链上快照，gAGX 无数据源时显示 0。
  */
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
 import { tokenCarouselIcons } from '~/shared/config/assets'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
 import { ReleasePlanCard } from '~/views/dapp/release/primitives'
@@ -15,7 +15,7 @@ import { TabHeader } from '~/views/dapp/shared/tab-header'
 export function BufferDock() {
   const vm = useBuffer()
   const { t } = vm
-  const gagxZero = `${formatGroupedNumber(0, { digits: 4 })} gAGX`
+  const gagxZero = `${formatNumber(0, { digits: 4 })} gAGX`
 
   return (
     <TabHeader
@@ -71,7 +71,7 @@ export function BufferDock() {
           <ReleasePlanCard.Bar data-slot-id="release-buffer-bar-gagx" width="0%" />
           <ReleasePlanCard.Captions
             left={t.release.labels.releasedPct.replace('{pct}', '0')}
-            right={formatApproxUsd(0, null)}
+            right={formatUsdApprox(0, null)}
           />
           <ReleasePlanCard.Action disabled>{t.release.buffer.claim}</ReleasePlanCard.Action>
         </ReleasePlanCard>

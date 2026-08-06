@@ -12,7 +12,7 @@ import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-d
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
@@ -55,13 +55,13 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
   // 未就绪/无数据：显示 0.0000gAGX / ≈ $0.00；登录提示放在 Widget 底栏
   if (!ready || value == null) {
     return {
-      amount: `${formatGroupedNumber(0, { digits: 4 })}gAGX`,
-      approx: formatApproxUsd(0, null),
+      amount: `${formatNumber(0, { digits: 4 })}gAGX`,
+      approx: formatUsdApprox(0, null),
     }
   }
   return {
     amount: `${value.toFixed(4)}gAGX`,
-    approx: formatApproxUsd(value, priceUsd),
+    approx: formatUsdApprox(value, priceUsd),
   }
 }
 
@@ -116,8 +116,8 @@ export function HubDock() {
           ? {
               amount:
                 sessionReady && value != null
-                  ? formatGroupedNumber(value, { digits: 2, prefix: '$' })
-                  : formatGroupedNumber(0, { digits: 2, prefix: '$' }),
+                  ? formatNumber(value, { digits: 2, prefix: '$' })
+                  : formatNumber(0, { digits: 2, prefix: '$' }),
               approx: undefined as string | undefined,
             }
           : formatGagxBalance(value, view === 'lucky' ? walletReady : sessionReady, priceUsd)

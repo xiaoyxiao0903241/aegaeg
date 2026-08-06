@@ -7,7 +7,7 @@ import { useSalesLogs } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { Text } from '~/shared/components/text'
 import { bscscanTx } from '~/shared/config/explorer'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
@@ -37,7 +37,7 @@ export function useGenesisDetail(genesis: GenesisWidgetState) {
     String(seasonContributedUsd),
     seasonMaxContributionUsd,
   )
-  const contributedLabel = `${formatGroupedNumber(seasonContributedUsd, { prefix: '$' })} / ${formatGroupedNumber(seasonMaxContributionUsd, { prefix: '$' })}`
+  const contributedLabel = `${formatNumber(seasonContributedUsd, { prefix: '$' })} / ${formatNumber(seasonMaxContributionUsd, { prefix: '$' })}`
 
   const desktopRows = genesis.isPhasesLoading
     ? []

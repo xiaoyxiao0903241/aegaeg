@@ -12,9 +12,9 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import {
-  formatApiDecimalAmount,
-  formatApproxUsd,
-  formatGroupedNumber,
+  formatApiAmount,
+  formatNumber,
+  formatUsdApprox,
   parseApiAmount,
 } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -72,36 +72,36 @@ export type AssetsHubOverview = {
 }
 
 /** 暂无协议 APR 数据源，无数据态展示 0.00% 而非占位横线 */
-const APR_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
+const APR_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 
 const EMPTY_MODE: AssetsHubModeStats = {
   aprLabel: APR_EMPTY,
-  positionValue: `${formatGroupedNumber(0, { digits: 2 })} AGX`,
-  positionApprox: formatApproxUsd(0, null),
-  yieldValue: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-  yieldApprox: formatApproxUsd(0, null),
+  positionValue: `${formatNumber(0, { digits: 2 })} AGX`,
+  positionApprox: formatUsdApprox(0, null),
+  yieldValue: `${formatNumber(0, { digits: 2 })} gAGX`,
+  yieldApprox: formatUsdApprox(0, null),
   hasBalance: false,
 }
 
 const EMPTY_XMINE: AssetsHubModeStats = {
   aprLabel: APR_EMPTY,
-  positionValue: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-  positionApprox: formatApproxUsd(0, null),
-  yieldValue: `${formatGroupedNumber(0, { digits: 2 })} X`,
-  yieldApprox: formatApproxUsd(0, null),
+  positionValue: `${formatNumber(0, { digits: 2 })} gAGX`,
+  positionApprox: formatUsdApprox(0, null),
+  yieldValue: `${formatNumber(0, { digits: 2 })} X`,
+  yieldApprox: formatUsdApprox(0, null),
   hasBalance: false,
 }
 
 function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string {
-  return `${formatApiDecimalAmount(raw, { digits })} ${unit}`
+  return `${formatApiAmount(raw, { digits })} ${unit}`
 }
 
 function formatApiUsdLabel(raw: string | undefined): string {
-  return formatApiDecimalAmount(raw, { digits: 2, prefix: '$' })
+  return formatApiAmount(raw, { digits: 2, prefix: '$' })
 }
 
 function formatApiApproxUsd(raw: string | undefined, priceUsd: number | null): string {
-  return formatApproxUsd(parseApiAmount(raw) ?? 0, priceUsd)
+  return formatUsdApprox(parseApiAmount(raw) ?? 0, priceUsd)
 }
 
 function modeFromApiAmount(
@@ -113,12 +113,12 @@ function modeFromApiAmount(
   return {
     aprLabel: APR_EMPTY,
     positionValue: formatApiTokenLabel(amountRaw, unit),
-    positionApprox: formatApproxUsd(amount, priceUsd),
+    positionApprox: formatUsdApprox(amount, priceUsd),
     yieldValue:
       unit === 'AGX'
-        ? `${formatGroupedNumber(0, { digits: 2 })} gAGX`
-        : `${formatGroupedNumber(0, { digits: 2 })} X`,
-    yieldApprox: formatApproxUsd(0, null),
+        ? `${formatNumber(0, { digits: 2 })} gAGX`
+        : `${formatNumber(0, { digits: 2 })} X`,
+    yieldApprox: formatUsdApprox(0, null),
     hasBalance: amount > 0,
   }
 }
@@ -196,22 +196,22 @@ export function useHub(): AssetsHubOverview {
   } as const satisfies Record<Exclude<AssetsView, 'hub'>, AssetsHubModeStats>
 
   const zeroOverview = (modes: AssetsHubOverview['modes']): AssetsHubOverview => ({
-    totalValue: formatGroupedNumber(0, { digits: 2, prefix: '$' }),
-    claimable: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-    claimableApprox: formatApproxUsd(0, null),
-    claimed: formatGroupedNumber(0, { digits: 2 }),
-    claimedApprox: formatApproxUsd(0, null),
-    contribution: formatGroupedNumber(0, { digits: 2 }),
-    holdingsReleased: `${formatGroupedNumber(0, { digits: 2 })} AGX`,
-    holdingsReleasedApprox: formatApproxUsd(0, null),
-    holdingsTotal: `${formatGroupedNumber(0, { digits: 2 })} AGX`,
-    holdingsTotalApprox: formatApproxUsd(0, null),
-    bufferTotal: `${formatGroupedNumber(0, { digits: 2 })} AGX`,
-    bufferTotalApprox: formatApproxUsd(0, null),
-    bufferReleased: `${formatGroupedNumber(0, { digits: 2 })} AGX`,
-    bufferReleasedApprox: formatApproxUsd(0, null),
-    bufferGagxTotal: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-    bufferGagxReleased: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
+    totalValue: formatNumber(0, { digits: 2, prefix: '$' }),
+    claimable: `${formatNumber(0, { digits: 2 })} gAGX`,
+    claimableApprox: formatUsdApprox(0, null),
+    claimed: formatNumber(0, { digits: 2 }),
+    claimedApprox: formatUsdApprox(0, null),
+    contribution: formatNumber(0, { digits: 2 }),
+    holdingsReleased: `${formatNumber(0, { digits: 2 })} AGX`,
+    holdingsReleasedApprox: formatUsdApprox(0, null),
+    holdingsTotal: `${formatNumber(0, { digits: 2 })} AGX`,
+    holdingsTotalApprox: formatUsdApprox(0, null),
+    bufferTotal: `${formatNumber(0, { digits: 2 })} AGX`,
+    bufferTotalApprox: formatUsdApprox(0, null),
+    bufferReleased: `${formatNumber(0, { digits: 2 })} AGX`,
+    bufferReleasedApprox: formatUsdApprox(0, null),
+    bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
+    bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
     modes,
   })
 
@@ -240,16 +240,16 @@ export function useHub(): AssetsHubOverview {
       bufferTotalApprox: formatApiApproxUsd(apiHoldings.buffer_pool_cumulative, priceUsd),
       bufferReleased,
       bufferReleasedApprox: formatApiApproxUsd(apiHoldings.buffer_pool_released, priceUsd),
-      bufferGagxTotal: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-      bufferGagxReleased: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
+      bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
+      bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
       modes: {
         stake: modeFromApiAmount(apiDist.stake_total_agx, 'AGX', priceUsd),
         lpbond: modeFromApiAmount(apiDist.bond_lp, 'AGX', priceUsd),
         burnbond: modeFromApiAmount(apiDist.bond_burn, 'AGX', priceUsd),
         xmine: {
           ...modeFromApiAmount(apiDist.stake_x_pool, 'gAGX', priceUsd),
-          yieldValue: `${formatGroupedNumber(0, { digits: 2 })} X`,
-          yieldApprox: formatApproxUsd(0, null),
+          yieldValue: `${formatNumber(0, { digits: 2 })} X`,
+          yieldApprox: formatUsdApprox(0, null),
         },
       },
     }
@@ -328,56 +328,56 @@ export function useHub(): AssetsHubOverview {
   )
 
   return {
-    totalValue: formatGroupedNumber(0, { digits: 2, prefix: '$' }),
+    totalValue: formatNumber(0, { digits: 2, prefix: '$' }),
     claimable:
       claimableParts.length > 0
         ? claimableParts.join(' · ')
-        : `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-    claimableApprox: formatApproxUsd(claimableGagxNum, priceUsd),
-    claimed: formatGroupedNumber(0, { digits: 2 }),
-    claimedApprox: formatApproxUsd(0, null),
+        : `${formatNumber(0, { digits: 2 })} gAGX`,
+    claimableApprox: formatUsdApprox(claimableGagxNum, priceUsd),
+    claimed: formatNumber(0, { digits: 2 }),
+    claimedApprox: formatUsdApprox(0, null),
     contribution: formatTokenAmount(contribution, AGX_DECIMALS, 2),
     holdingsReleased: `${formatTokenAmount(stakeReleased, AGX_DECIMALS, 2)} AGX`,
-    holdingsReleasedApprox: formatApproxUsd(holdingsReleasedNum, priceUsd),
+    holdingsReleasedApprox: formatUsdApprox(holdingsReleasedNum, priceUsd),
     holdingsTotal: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
-    holdingsTotalApprox: formatApproxUsd(holdingsTotalNum, priceUsd),
+    holdingsTotalApprox: formatUsdApprox(holdingsTotalNum, priceUsd),
     bufferTotal: `${formatTokenAmount(bufferTotal, AGX_DECIMALS, 2)} AGX`,
-    bufferTotalApprox: formatApproxUsd(bufferTotalNum, priceUsd),
+    bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
     bufferReleased: `${formatTokenAmount(bufferReleased, AGX_DECIMALS, 2)} AGX`,
-    bufferReleasedApprox: formatApproxUsd(bufferReleasedNum, priceUsd),
-    bufferGagxTotal: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
-    bufferGagxReleased: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
+    bufferReleasedApprox: formatUsdApprox(bufferReleasedNum, priceUsd),
+    bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
+    bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
     modes: {
       stake: {
         aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
-        positionApprox: formatApproxUsd(stakePosNum, priceUsd),
+        positionApprox: formatUsdApprox(stakePosNum, priceUsd),
         yieldValue: `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`,
-        yieldApprox: formatApproxUsd(stakeYieldNum, priceUsd),
+        yieldApprox: formatUsdApprox(stakeYieldNum, priceUsd),
         hasBalance: stakePrincipal > 0n || stakeYield > 0n,
       },
       lpbond: {
         aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, 2)} AGX`,
-        positionApprox: formatApproxUsd(lpPosNum, priceUsd),
+        positionApprox: formatUsdApprox(lpPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`,
-        yieldApprox: formatApproxUsd(lpYieldNum, priceUsd),
+        yieldApprox: formatUsdApprox(lpYieldNum, priceUsd),
         hasBalance: lpPrincipal > 0n || lpYield > 0n,
       },
       burnbond: {
         aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, 2)} AGX`,
-        positionApprox: formatApproxUsd(burnPosNum, priceUsd),
+        positionApprox: formatUsdApprox(burnPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`,
-        yieldApprox: formatApproxUsd(burnYieldNum, priceUsd),
+        yieldApprox: formatUsdApprox(burnYieldNum, priceUsd),
         hasBalance: burnPrincipal > 0n || burnYield > 0n,
       },
       xmine: {
         aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(xStake, GAGX_DECIMALS, 2)} gAGX`,
-        positionApprox: formatApproxUsd(xPosNum, priceUsd),
+        positionApprox: formatUsdApprox(xPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(xPending, X_DECIMALS, 2)} X`,
-        yieldApprox: formatApproxUsd(formatTokenAmountToNumber(xPending, X_DECIMALS), null),
+        yieldApprox: formatUsdApprox(formatTokenAmountToNumber(xPending, X_DECIMALS), null),
         hasBalance: xStake > 0n || xPending > 0n,
       },
     },
@@ -385,10 +385,10 @@ export function useHub(): AssetsHubOverview {
 }
 
 function formatApiDecimalOrZero(raw: string | undefined): string {
-  return formatApiDecimalAmount(raw, { digits: 2 })
+  return formatApiAmount(raw, { digits: 2 })
 }
 
-const ZERO_APPROX = formatApproxUsd(0, null)
+const ZERO_APPROX = formatUsdApprox(0, null)
 
 /**
  * 资产 Hub 详情页状态：汇总总览文案与指标数据，

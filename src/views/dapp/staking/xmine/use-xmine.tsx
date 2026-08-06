@@ -20,7 +20,7 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox } from '~/shared/api/format-display'
 import { mapX0MiningLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Text } from '~/shared/components/text'
@@ -29,12 +29,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import {
-  formatAsideAgxLabel,
-  formatAsideGagxLabel,
-  formatAsideXLabel,
-  parseApiAmountOrZero,
-} from '~/views/dapp/staking/shared'
+import { parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { useXmineOverviewQuery, useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
@@ -154,7 +149,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     quotaLabel:
       preflightQuery.data !== undefined
         ? formatTokenAmount(preflightQuery.data.miningQuota, GAGX_DECIMALS, 4)
-        : formatGroupedNumber(0, { digits: 4 }),
+        : formatNumber(0, { digits: 4 }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
@@ -165,7 +160,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
   }
 }
 
-const ZERO_PCT = `${formatGroupedNumber(0, { digits: 2 })}%`
+const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
 
 /**
  * Xmine 视图：组合表单状态、余额文案与提交入口
@@ -255,9 +250,9 @@ export function useXmineDetail() {
       label: t.staking.xmine.overviewMetrics[0]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(tvlGagx, priceUsd)}
+          approx={formatUsdApprox(tvlGagx, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(tvlGagx)}
+          value={formatNumber(tvlGagx, { digits: 2, suffix: ' gAGX' })}
         />
       ),
     },
@@ -265,16 +260,18 @@ export function useXmineDetail() {
       label: t.staking.xmine.overviewMetrics[1]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(agxPerX, priceUsd)}
+          approx={formatUsdApprox(agxPerX, priceUsd)}
           icon="agx"
-          value={formatAsideAgxLabel(agxPerX)}
+          value={formatNumber(agxPerX, { digits: 2, suffix: ' AGX' })}
         />
       ),
     },
     {
       // 累计产出：无协议累计 X view / 历史 API → 显示 0（gaps §3.4）
       label: t.staking.xmine.overviewMetrics[2]?.label ?? '',
-      value: <StakingTokenMetricValue icon="x" value={formatAsideXLabel(0)} />,
+      value: (
+        <StakingTokenMetricValue icon="x" value={formatNumber(0, { digits: 2, suffix: ' X' })} />
+      ),
     },
     {
       label: t.staking.xmine.overviewMetrics[3]?.label ?? '',
@@ -317,9 +314,9 @@ export function useXmineDetail() {
       label: t.staking.xmine.positionMetrics[0]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(held, priceUsd)}
+          approx={formatUsdApprox(held, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(held)}
+          value={formatNumber(held, { digits: 2, suffix: ' gAGX' })}
         />
       ),
     },
@@ -328,9 +325,9 @@ export function useXmineDetail() {
       // 已释放：本页无 PRV 已释字段 → 显示 0（资产页启发式另记 gaps）
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(0, priceUsd)}
+          approx={formatUsdApprox(0, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(0)}
+          value={formatNumber(0, { digits: 2, suffix: ' gAGX' })}
         />
       ),
     },
@@ -338,9 +335,9 @@ export function useXmineDetail() {
       label: t.staking.xmine.positionMetrics[2]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(pendingValueGagx, priceUsd)}
+          approx={formatUsdApprox(pendingValueGagx, priceUsd)}
           icon="x"
-          value={formatAsideXLabel(pendingX)}
+          value={formatNumber(pendingX, { digits: 2, suffix: ' X' })}
         />
       ),
     },

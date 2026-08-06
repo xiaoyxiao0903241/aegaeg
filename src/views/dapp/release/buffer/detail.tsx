@@ -12,7 +12,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber, parseApiAmount } from '~/shared/api/format-display'
+import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -64,7 +64,7 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatApproxUsd(amountNum(api?.cumulative_amount, amount), priceUsd),
+      approx: formatUsdApprox(amountNum(api?.cumulative_amount, amount), priceUsd),
     },
     {
       label: t.release.buffer.extracted,
@@ -76,7 +76,7 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatApproxUsd(amountNum(api?.released_amount, claimed), priceUsd),
+      approx: formatUsdApprox(amountNum(api?.released_amount, claimed), priceUsd),
     },
     {
       label: t.release.labels.releasing,
@@ -88,12 +88,12 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatApproxUsd(amountNum(api?.releasing_amount, releasing), priceUsd),
+      approx: formatUsdApprox(amountNum(api?.releasing_amount, releasing), priceUsd),
     },
   ]
 
-  const gagxZero = `${formatGroupedNumber(0, { digits: 4 })} gAGX`
-  const gagxZeroApprox = formatApproxUsd(0, null)
+  const gagxZero = `${formatNumber(0, { digits: 4 })} gAGX`
+  const gagxZeroApprox = formatUsdApprox(0, null)
   const gagxStats = [
     { label: t.release.buffer.entered, value: gagxZero, approx: gagxZeroApprox },
     { label: t.release.buffer.extracted, value: gagxZero, approx: gagxZeroApprox },

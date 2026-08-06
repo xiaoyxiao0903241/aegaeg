@@ -13,7 +13,7 @@ import {
 import {
   formatBlockTime,
   formatDiscountBps,
-  formatGroupedNumber,
+  formatNumber,
   formatShortAddress,
   TABLE_EMPTY,
 } from '~/shared/api/format-display'
@@ -113,12 +113,12 @@ export function genesisFaqTemplateValues(
     phaseCount: String(phases.length),
     phaseDurationDays: formatPhaseDurationDays(phases),
     discounts: formatDiscountList(phases),
-    minUsd: formatGroupedNumber(minUsdNumber, { prefix: '$' }),
+    minUsd: formatNumber(minUsdNumber, { prefix: '$' }),
     shareIncrement: shareIncrement(phases),
     phaseQuotas: phases
       .map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount))
       .join(' / '),
-    threshold: formatGroupedNumber(Math.max(0, airdropThresholdUsd), { prefix: '$' }),
+    threshold: formatNumber(Math.max(0, airdropThresholdUsd), { prefix: '$' }),
     airdropRatios: formatAirdropRatioList(phases),
   }
 }
@@ -185,14 +185,14 @@ export function genesisPurchaseSummary(args: {
       usd1BalanceLabel: reads.usd1BalanceKnown
         ? formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, 2)
         : '',
-      estimatedAgxLabel: formatGroupedNumber(estimatedAgx, { digits: 2 }),
-      payUsd1Label: `${formatGroupedNumber(payUsd1, { digits: 0 })} USD1`,
-      contributionValueLabel: formatGroupedNumber(contributionValueUsd, { prefix: '$' }),
-      xTokenAirdropLabel: formatGroupedNumber(xTokenAirdropUsd, { prefix: '$' }),
+      estimatedAgxLabel: formatNumber(estimatedAgx, { digits: 2 }),
+      payUsd1Label: `${formatNumber(payUsd1, { digits: 0 })} USD1`,
+      contributionValueLabel: formatNumber(contributionValueUsd, { prefix: '$' }),
+      xTokenAirdropLabel: formatNumber(xTokenAirdropUsd, { prefix: '$' }),
       airdropThresholdUsd: reads.airdropThresholdUsd,
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,
-      referencePriceLabel: formatGroupedNumber(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
+      referencePriceLabel: formatNumber(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
       airdropLabel: `+${(getAirdropBpsForPhase(reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
       agxPriceUsd: reads.agxPriceUsd,
       activeSeasonNumber: reads.activeSeasonNumber,
@@ -211,7 +211,7 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
   const agxPriceUsd = options.agxPriceUsd ?? 0
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
-    return formatGroupedNumber(tokens, { digits: 2 })
+    return formatNumber(tokens, { digits: 2 })
   }
 
   const amountUsd1 = Number(item.amount)
@@ -222,7 +222,7 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
     phaseDiscountBps(item.phase_id, options.phases),
     agxPriceUsd,
   )
-  return estimated > 0 ? formatGroupedNumber(estimated, { digits: 2 }) : TABLE_EMPTY
+  return estimated > 0 ? formatNumber(estimated, { digits: 2 }) : TABLE_EMPTY
 }
 
 /**
@@ -237,7 +237,7 @@ export function mapSalesLogToDesktopRow(
 ): string[] {
   return [
     formatBlockTime(item.block_time),
-    formatGroupedNumber(Number(item.amount), { digits: 0, prefix: '$' }),
+    formatNumber(Number(item.amount), { digits: 0, prefix: '$' }),
     formatDiscountBps(phaseDiscountBps(item.phase_id, options.phases)),
     formatSalesLogAgx(item, options),
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,

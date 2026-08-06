@@ -10,7 +10,7 @@ import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/to
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd } from '~/shared/api/format-display'
+import { formatUsdApprox } from '~/shared/api/format-display'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -68,7 +68,7 @@ export function BurnExchangeDetail({
 
   const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
   // 空态统一：无价格时显示 ≈ $0.00（不显示 ≈ —）
-  const burnedUsdApprox = formatApproxUsd(
+  const burnedUsdApprox = formatUsdApprox(
     formatTokenAmountToNumber(totalBurnedAgx, decimals),
     agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,
   )

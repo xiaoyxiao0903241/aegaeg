@@ -1,4 +1,4 @@
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 
 let booted = false
 
@@ -30,7 +30,7 @@ function isRevealCandidateInView(element: HTMLElement) {
 function setCountValue(element: HTMLElement, value: number) {
   const suffix = element.dataset.countSuffix ?? ''
   const digits = Number.isInteger(value) ? 0 : 1
-  element.textContent = `${formatGroupedNumber(value, { digits, trimZeros: true })}${suffix}`
+  element.textContent = `${formatNumber(value, { digits, trimZeros: true })}${suffix}`
 }
 
 function resetCountValue(element: HTMLElement) {

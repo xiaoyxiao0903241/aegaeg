@@ -1,6 +1,6 @@
 import { parseAbi } from 'viem'
 
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatNumber } from '~/shared/api/format-display'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { X_STAKING_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
@@ -63,9 +63,9 @@ export async function readXmineOverview(
 export function formatXmineDailyYieldLabel(yieldRateBP: bigint): string {
   const pct = Number(yieldRateBP) / 100
   if (!Number.isFinite(pct)) {
-    return `${formatGroupedNumber(0, { digits: 2 })}%`
+    return `${formatNumber(0, { digits: 2 })}%`
   }
-  return `${formatGroupedNumber(pct, { digits: 2 })}%`
+  return `${formatNumber(pct, { digits: 2 })}%`
 }
 
 /**
