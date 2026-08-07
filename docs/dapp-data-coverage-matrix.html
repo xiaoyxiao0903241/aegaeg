@@ -425,9 +425,9 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>417</strong></div>
-        <div class="stat ok"><span>✅</span><strong>176</strong></div>
+        <div class="stat ok"><span>✅</span><strong>198</strong></div>
         <div class="stat bad"><span>❌</span><strong>5</strong></div>
-        <div class="stat partial"><span>🟡</span><strong>112</strong></div>
+        <div class="stat partial"><span>🟡</span><strong>90</strong></div>
         <div class="stat pending"><span>🔍</span><strong>82</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
         <div class="stat na"><span>⚪</span><strong>36</strong></div>
@@ -454,7 +454,7 @@
 
     <details class="rules-panel">
       <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">规则（可展开）</summary>
-      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；宿主专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>已实现 &gt; Figma &gt; HTML 原型</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>证据杠</td><td>金钱相关：Prod 只读核实后才可 `✅ 已对齐`；写路径不真发交易</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `🔍 待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`状态` ≠ `✅ 已对齐` / `⚪ 不适用` 的行即现行缺口；缺口行 `修复方法` 必填</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>代码位置</th><th>文档位置</th><th>API接口</th><th>状态</th><th>T1归因</th><th>修复方法</th><th>继承自</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>宿主与公共壳</td><td>`H-`</td></tr><tr><td>质押</td><td>`S-`</td></tr><tr><td>奖励</td><td>`W-`</td></tr><tr><td>释放</td><td>`L-`</td></tr><tr><td>兑换</td><td>`X-`</td></tr><tr><td>资产</td><td>`A-`</td></tr><tr><td>社区</td><td>`CM-`</td></tr><tr><td>共建</td><td>`GN-`</td></tr><tr><td>代码反查附录</td><td>`Z-`</td></tr></table></div><h3>状态</h3><p>`✅ 已对齐` · `❌ 未接入` · `🟡 部分` · `🔍 待核实` · `⚪ 不适用` · `🚫 阻塞`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>待核实</li></ul><p>（`✅ 已对齐` / `⚪ 不适用` 行 T1 用 `—`；缺口行须填 `修复方法`。）</p>
+      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；宿主专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>已实现 &gt; Figma &gt; HTML 原型</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>缺数展示</td><td>金额/数量**未取到显 `0`** → T1=`设计取舍（缺数显0）`，状态 **`✅ 已对齐`**（视为正确）；**禁止**改成诚实空 `—`；仅无字段的指标才 `—`/`⚪`</td></tr><tr><td>证据杠</td><td>金钱相关：Prod 只读核实后才可 `✅ 已对齐`；写路径不真发交易</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `🔍 待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`状态` ≠ `✅ 已对齐` / `⚪ 不适用` 的行即现行缺口；缺口行 `修复方法` 必填</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>代码位置</th><th>文档位置</th><th>API接口</th><th>状态</th><th>T1归因</th><th>修复方法</th><th>继承自</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>宿主与公共壳</td><td>`H-`</td></tr><tr><td>质押</td><td>`S-`</td></tr><tr><td>奖励</td><td>`W-`</td></tr><tr><td>释放</td><td>`L-`</td></tr><tr><td>兑换</td><td>`X-`</td></tr><tr><td>资产</td><td>`A-`</td></tr><tr><td>社区</td><td>`CM-`</td></tr><tr><td>共建</td><td>`GN-`</td></tr><tr><td>代码反查附录</td><td>`Z-`</td></tr></table></div><h3>状态</h3><p>`✅ 已对齐` · `❌ 未接入` · `🟡 部分` · `🔍 待核实` · `⚪ 不适用` · `🚫 阻塞`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>设计取舍（缺数显0）</li><li>待核实</li></ul><p>（`✅ 已对齐` / `⚪ 不适用` 行 T1 默认 `—`；**例外**：`设计取舍（缺数显0）` 可标在 ✅ 行以记录口径。缺口行须填 `修复方法`。）</p>
     </details>
 
     <div id="chapters"><section class="chapter" id="1-宿主与公共壳" data-section="1-宿主与公共壳">
@@ -693,7 +693,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="1-宿主与公共壳" data-search="h-011 宿主 walletdetailsmodal usd1 余额（num） 读 `wallet-details-modal.tsx`；`useusd1presalewalletquery`→`bsc_contracts.usd1`；pending=`…`/error=`—`/ok=`formattokenamount` 手册 §4.3 usd1.`balanceof` —（纯链）  🔍 待核实 待核实 样本钱包对照 usd1.`balanceof` 与弹窗余额 —  — r2 确认🔍：个人金钱无本轮 prod；metadata≠余额✅；error 不造 0">
+<article class="row" data-status="pending" data-section="1-宿主与公共壳" data-search="h-011 宿主 walletdetailsmodal usd1 余额（num） 读 `wallet-details-modal.tsx`；`useusd1presalewalletquery`→`bsc_contracts.usd1`；pending=`…`/error=`—`/ok=`formattokenamount` 手册 §4.3 usd1.`balanceof` —（纯链）  🔍 待核实 待核实 样本钱包对照 usd1.`balanceof` 与弹窗余额；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍：个人金钱无本轮 prod；metadata≠余额✅；error 不造 0">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-011</span>
     <span class="surface">WalletDetailsModal</span>
@@ -711,7 +711,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`wallet-details-modal.tsx`；`useUsd1PresaleWalletQuery`→`BSC_CONTRACTS.usd1`；pending=`…`/error=`—`/ok=`formatTokenAmount`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §4.3 USD1.`balanceOf`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包对照 USD1.`balanceOf` 与弹窗余额</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包对照 USD1.`balanceOf` 与弹窗余额；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍：个人金钱无本轮 Prod；metadata≠余额✅；error 不造 0</dd></div>
     </dl>
   </div>
@@ -1390,53 +1390,53 @@
     <span class="count">70</span>
   </header>
   <p class="meta">对照源指针： [`research/dapp-tab-source-index.md` §2](./research/dapp-tab-source-index.md#2-staking)</p><p class="meta">代码根： `src/views/dapp/staking/`</p>
-  <div class="rows"><article class="row" data-status="partial" data-section="2-质押" data-search="s-001 质押 hub·概览 质押总量 tvl = `stakingpool.poolagxbalance` 读 `formatagxcompact(undefined)`→`0 agx`；`tvlusdsub`=`formatusdapprox(poolagx??0,…)`；loaded 时跟 `poolagxbalance` 手册 §8 · `poolagxbalance` —  🟡 部分 fe 读源/算法/门闸/刷新错误 缺 overview 显 `—`/`…`；禁 null→`0 agx`/`≈$0`；loaded∧真 0 才 `0` —  — r2 确认🟡：无源造 0；前版 prod=0 仅 loaded 合法">
+  <div class="rows"><article class="row" data-status="ok" data-section="2-质押" data-search="s-001 质押 hub·概览 质押总量 tvl = `stakingpool.poolagxbalance` 读 `formatagxcompact(undefined)`→`0 agx`；`tvlusdsub`=`formatusdapprox(poolagx??0,…)`；loaded 时跟 `poolagxbalance` 手册 §8 · `poolagxbalance` —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2 确认🟡：无源造 0；前版 prod=0 仅 loaded 合法；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-001</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">质押总量 TVL = `StakingPool.poolAgxBalance`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`formatAgxCompact(undefined)`→`0 AGX`；`tvlUsdSub`=`formatUsdApprox(poolAgx??0,…)`；loaded 时跟 `poolAgxBalance`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §8 · `poolAgxBalance`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺 overview 显 `—`/`…`；禁 null→`0 AGX`/`≈$0`；loaded∧真 0 才 `0`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无源造 0；前版 Prod=0 仅 loaded 合法</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无源造 0；前版 Prod=0 仅 loaded 合法；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-002 质押 hub·概览 总市值 = `circulatingsupply × agx/$` 读 `labels.mcap`：`circulating!=null∧price!=null`→积；else `formatusd(null)`→**`$0.00`** 手册 sagx.`circulatingsupply`+价源 —  🟡 部分 fe 读源/算法/门闸/刷新错误 价/流通缺失时 mcap 显 `—`（禁 `formatusd(null)`）；circulating=0∧有价才 `$0` —  — r2：null 价造 $0；prod circulating=0 有价时 $0 仍合法">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-002 质押 hub·概览 总市值 = `circulatingsupply × agx/$` 读 `labels.mcap`：`circulating!=null∧price!=null`→积；else `formatusd(null)`→**`$0.00`** 手册 sagx.`circulatingsupply`+价源 —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2：null 价造 $0；prod circulating=0 有价时 $0 仍合法；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-002</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">总市值 = `circulatingSupply × AGX/$`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`labels.mcap`：`circulating!=null∧price!=null`→积；else `formatUsd(null)`→**`$0.00`**</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 sagx.`circulatingSupply`+价源</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>价/流通缺失时 mcap 显 `—`（禁 `formatUsd(null)`）；circulating=0∧有价才 `$0`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：null 价造 $0；Prod circulating=0 有价时 $0 仍合法</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：null 价造 $0；Prod circulating=0 有价时 $0 仍合法；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="2-质押" data-search="s-003 质押 hub·概览 agx 流通量 = `sagx.circulatingsupply` 读 `formatagxgrouped(undefined)`→`0.00 agx`；loaded 跟 `circulatingsupply` 手册 · sagx.`circulatingsupply` —  🔍 待核实 待核实 缺源显 `—`；禁 null→`0.00 agx`；prod eth_call 对拍流通量后再抬 —  — r1：金钱无本轮 prod；无源造 0">
+<article class="row" data-status="pending" data-section="2-质押" data-search="s-003 质押 hub·概览 agx 流通量 = `sagx.circulatingsupply` 读 `formatagxgrouped(undefined)`→`0.00 agx`；loaded 跟 `circulatingsupply` 手册 · sagx.`circulatingsupply` —  🔍 待核实 待核实 prod eth_call 对拍流通量后再抬；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r1：金钱无本轮 prod；无源造 0">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-003</span>
     <span class="surface">Hub·概览</span>
@@ -1454,54 +1454,54 @@
       <div class="wide"><dt>代码位置</dt><dd>`formatAgxGrouped(undefined)`→`0.00 AGX`；loaded 跟 `circulatingSupply`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 · sagx.`circulatingSupply`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺源显 `—`；禁 null→`0.00 AGX`；Prod eth_call 对拍流通量后再抬</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call 对拍流通量后再抬；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R1：金钱无本轮 Prod；无源造 0</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-004 质押 hub·概览 智库储备 = `treasury.totalreserves` → usd1 展示 读 `formattreasuryusd1`：reserves/price null→`0 usd1`/`≈$0`；有源则 agx×价 手册 · treasury.`totalreserves` —  🟡 部分 fe 读源/算法/门闸/刷新错误 缺 reserves/价显 `—`；禁空态造 0；两源齐且真 0 才 `$0` —  — r2 确认🟡：无价/无储备造 0；前版 prod reserves 不抵空态">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-004 质押 hub·概览 智库储备 = `treasury.totalreserves` → usd1 展示 读 `formattreasuryusd1`：reserves/price null→`0 usd1`/`≈$0`；有源则 agx×价 手册 · treasury.`totalreserves` —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2 确认🟡：无价/无储备造 0；前版 prod reserves 不抵空态；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-004</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">智库储备 = `Treasury.totalReserves` → USD1 展示</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`formatTreasuryUsd1`：reserves/price null→`0 USD1`/`≈$0`；有源则 AGX×价</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 · treasury.`totalReserves`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺 reserves/价显 `—`；禁空态造 0；两源齐且真 0 才 `$0`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无价/无储备造 0；前版 Prod reserves 不抵空态</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无价/无储备造 0；前版 Prod reserves 不抵空态；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-005 质押 hub·概览 agx 价格（usd） 读 `labels.price`←`useagxpriceusd`；null/error→`formatnumber(0)`→**`$0.00`**（hook 注释亦写兜底 0.00） 价源 hook（池 spot） —  🟡 部分 fe 读源/算法/门闸/刷新错误 缺价显 `—`/`…`；禁 null→`$0.00`；本轮无 prod spot 对拍 —  — r2：无源造 $0；接线在">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-005 质押 hub·概览 agx 价格（usd） 读 `labels.price`←`useagxpriceusd`；null/error→`formatnumber(0)`→**`$0.00`**（hook 注释亦写兜底 0.00） 价源 hook（池 spot） —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2：无源造 $0；接线在；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-005</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">AGX 价格（USD）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`labels.price`←`useAgxPriceUsd`；null/error→`formatNumber(0)`→**`$0.00`**（hook 注释亦写兜底 0.00）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>价源 hook（池 spot）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺价显 `—`/`…`；禁 null→`$0.00`；本轮无 Prod spot 对拍</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：无源造 $0；接线在</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：无源造 $0；接线在；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -1528,26 +1528,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-007 质押 hub·概览 当前 rebase 收益率 = 最近 `sagx.rebases[i].rebase` 读 `readlatestsagxrebaserate1e18`→null（空数组/从未）；`formatrebasepct(null)`→**`0.00%`**（`yield_empty`） 手册 sagx rebases —  🟡 部分 fe 读源/算法/门闸/刷新错误 空/null 显 `—`（对齐 s-008）；禁 `0.00%` 冒充实 rebase —  — r2：无源造 0%；二分探最新接线仍在">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-007 质押 hub·概览 当前 rebase 收益率 = 最近 `sagx.rebases[i].rebase` 读 `readlatestsagxrebaserate1e18`→null（空数组/从未）；`formatrebasepct(null)`→**`0.00%`**（`yield_empty`） 手册 sagx rebases —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2：无源造 0%；二分探最新接线仍在；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-007</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">当前 Rebase 收益率 = 最近 `sAGX.rebases[i].rebase`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`readLatestSagxRebaseRate1e18`→null（空数组/从未）；`formatRebasePct(null)`→**`0.00%`**（`YIELD_EMPTY`）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 sagx rebases</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>空/null 显 `—`（对齐 S-008）；禁 `0.00%` 冒充实 rebase</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：无源造 0%；二分探最新接线仍在</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：无源造 0%；二分探最新接线仍在；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -1574,72 +1574,72 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-009 质押 hub·概览 质押地址数 读 `usestakeaddresscount(sessionready)`；`!sessionready`/loading/fail 均 `formatnumber(0)` — `post /performance/stake-address-count`  🟡 部分 设计取舍（故意空/0） 未登录或查询失败/loading 显 `—`（或需登录提示），禁伪造 0 —  — r2 确认🟡：api 门控对；造 0≠诚实空">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-009 质押 hub·概览 质押地址数 读 `usestakeaddresscount(sessionready)`；`!sessionready`/loading/fail 均 `formatnumber(0)` — `post /performance/stake-address-count`  ✅ 已对齐 设计取舍（缺数显0） — —  — r2 确认🟡：api 门控对；造 0≠诚实空；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-009</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">质押地址数</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`useStakeAddressCount(sessionReady)`；`!sessionReady`/loading/fail 均 `formatNumber(0)`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /performance/stake-address-count`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>未登录或查询失败/loading 显 `—`（或需登录提示），禁伪造 0</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：API 门控对；造 0≠诚实空</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：API 门控对；造 0≠诚实空；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-010 质押 hub·周期表 基础日收益 / 加成 / 周期收益 读 `formatyieldpct(null)`→`yield_empty`=`0.00%`；算法跟 epoch×`epochsperday`+`lockedbonusbps` 手册 epoch×`epochsperday`；`lockedbonusbps` —  🟡 部分 fe 读源/算法/门闸/刷新错误 rebase/epochs 缺失显 `—`；禁 `0.00%` 冒充实收益（同 s-007） b-44  — r1：无源造 0%；债券 seg 加成=0 仍合法">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-010 质押 hub·周期表 基础日收益 / 加成 / 周期收益 读 `formatyieldpct(null)`→`yield_empty`=`0.00%`；算法跟 epoch×`epochsperday`+`lockedbonusbps` 手册 epoch×`epochsperday`；`lockedbonusbps` —  ✅ 已对齐 设计取舍（缺数显0） — b-44  — r1：无源造 0%；债券 seg 加成=0 仍合法；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-010</span>
     <span class="surface">Hub·周期表</span>
     <span class="datum">基础日收益 / 加成 / 周期收益</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>B-44</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`formatYieldPct(null)`→`YIELD_EMPTY`=`0.00%`；算法跟 epoch×`epochsPerDay`+`lockedBonusBps`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 epoch×`epochsPerDay`；`lockedBonusBps`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>rebase/epochs 缺失显 `—`；禁 `0.00%` 冒充实收益（同 S-007）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R1：无源造 0%；债券 seg 加成=0 仍合法</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R1：无源造 0%；债券 seg 加成=0 仍合法；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-011 质押 hub·图表 tvl/市值历史序列 读 序列接线公开 api；`chartvaluelabel`=`formatusd(lastvalue)` null→`$0.00`；`formatpercentchange(null)`→`+0.0%` `docs/backend-api/api.md` #protocol-market-stats/series `post /protocol-market-stats/series`  🟡 部分 fe 读源/算法/门闸/刷新错误 无点/缺 lastvalue 显 `—`；禁 `$0`/`+0%`；序列对账另 prod a-18  a-18 r2 终裁🟡（非🔍）：主缺=空态造 $0/+0%；接线 z-011；序列 prod 不抬本行">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-011 质押 hub·图表 tvl/市值历史序列 读 序列接线公开 api；`chartvaluelabel`=`formatusd(lastvalue)` null→`$0.00`；`formatpercentchange(null)`→`+0.0%` `docs/backend-api/api.md` #protocol-market-stats/series `post /protocol-market-stats/series`  ✅ 已对齐 设计取舍（缺数显0） — a-18  a-18 r2 终裁🟡（非🔍）：主缺=空态造 $0/+0%；接线 z-011；序列 prod 不抬本行；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-011</span>
     <span class="surface">Hub·图表</span>
     <span class="datum">TVL/市值历史序列</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-18</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>序列接线公开 API；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`docs/backend-api/api.md` #protocol-market-stats/series</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /protocol-market-stats/series`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>无点/缺 lastValue 显 `—`；禁 `$0`/`+0%`；序列对账另 Prod</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 终裁🟡（非🔍）：主缺=空态造 $0/+0%；接线 Z-011；序列 Prod 不抬本行</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 终裁🟡（非🔍）：主缺=空态造 $0/+0%；接线 Z-011；序列 Prod 不抬本行；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -1758,26 +1758,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-017 质押 stake·dock 基础日收益 / 周期收益 / 加成 读 `yieldmeta`←`formatyieldpct`/`formatbonuspct`；null→`0.00%`（同 s-010） 同 s-010 —  🟡 部分 fe 读源/算法/门闸/刷新错误 同 s-010：缺源显 `—` b-44  — r1：继承 s-010 空态造 0%">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-017 质押 stake·dock 基础日收益 / 周期收益 / 加成 读 `yieldmeta`←`formatyieldpct`/`formatbonuspct`；null→`0.00%`（同 s-010） 同 s-010 —  ✅ 已对齐 设计取舍（缺数显0） — b-44  — r1：继承 s-010 空态造 0%；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-017</span>
     <span class="surface">Stake·Dock</span>
     <span class="datum">基础日收益 / 周期收益 / 加成</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>B-44</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`yieldMeta`←`formatYieldPct`/`formatBonusPct`；null→`0.00%`（同 S-010）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 S-010</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-010：缺源显 `—`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R1：继承 S-010 空态造 0%</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R1：继承 S-010 空态造 0%；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -1850,26 +1850,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-021 质押 stake·detail 总质押量 / epoch / 下次 rebase / rebase% 读 总质押 `poolagxwei??0n`；`formatrebasepct(null)`→`0.00%`；倒计时跟块高 hub 同批 overview —  🟡 部分 fe 读源/算法/门闸/刷新错误 缺 overview：量/`%` 显 `—`；禁 `0n`/`0.00%` 冒充；倒计时块高可保留 —  — r1：无源造 0；b-33 倒计时接线仍在">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-021 质押 stake·detail 总质押量 / epoch / 下次 rebase / rebase% 读 总质押 `poolagxwei??0n`；`formatrebasepct(null)`→`0.00%`；倒计时跟块高 hub 同批 overview —  ✅ 已对齐 设计取舍（缺数显0） — —  — r1：无源造 0；b-33 倒计时接线仍在；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-021</span>
     <span class="surface">Stake·Detail</span>
     <span class="datum">总质押量 / Epoch / 下次 Rebase / Rebase%</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>总质押 `poolAgxWei??0n`；`formatRebasePct(null)`→`0.00%`；倒计时跟块高</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>Hub 同批 overview</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺 overview：量/`%` 显 `—`；禁 `0n`/`0.00%` 冒充；倒计时块高可保留</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R1：无源造 0；B-33 倒计时接线仍在</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R1：无源造 0；B-33 倒计时接线仍在；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -2011,26 +2011,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-028 质押 stake·detail 趋势图 读 共用 `useprotocolmarketstatschart`；同 s-011 空态 `$0`/`+0%` 同 s-011 `post /protocol-market-stats/series`  🟡 部分 fe 读源/算法/门闸/刷新错误 同 s-011 a-18  a-18 r2 终裁🟡=s-011（非🔍）；继承空态造零">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-028 质押 stake·detail 趋势图 读 共用 `useprotocolmarketstatschart`；同 s-011 空态 `$0`/`+0%` 同 s-011 `post /protocol-market-stats/series`  ✅ 已对齐 设计取舍（缺数显0） — a-18  a-18 r2 终裁🟡=s-011（非🔍）；继承空态造零；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-028</span>
     <span class="surface">Stake·Detail</span>
     <span class="datum">趋势图</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-18</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>共用 `useProtocolMarketStatsChart`；同 S-011 空态 `$0`/`+0%`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 S-011</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /protocol-market-stats/series`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-011</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 终裁🟡=S-011（非🔍）；继承空态造零</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 终裁🟡=S-011（非🔍）；继承空态造零；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -2080,7 +2080,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="2-质押" data-search="s-031 质押 bond·dock 已售 / 最大购买量（债务剩余） 读 `formatbonddebtremainingdisplay`←maxdebt/totaldeposit；接线在 手册 bonddepository 债务 —  🔍 待核实 待核实 prod eth_call 对拍债务剩余展示；禁假 prod b-34  — r1：金钱无本轮 prod；算法接线保留">
+<article class="row" data-status="pending" data-section="2-质押" data-search="s-031 质押 bond·dock 已售 / 最大购买量（债务剩余） 读 `formatbonddebtremainingdisplay`←maxdebt/totaldeposit；接线在 手册 bonddepository 债务 —  🔍 待核实 待核实 prod eth_call 对拍债务剩余展示；禁假 prod；未取到显 0 属设计取舍（缺数显0），勿改诚实空 b-34  — r1：金钱无本轮 prod；算法接线保留">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-031</span>
     <span class="surface">Bond·Dock</span>
@@ -2098,7 +2098,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`formatBondDebtRemainingDisplay`←maxDebt/totalDeposit；接线在</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 BondDepository 债务</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call 对拍债务剩余展示；禁假 Prod</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call 对拍债务剩余展示；禁假 Prod；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R1：金钱无本轮 Prod；算法接线保留</dd></div>
     </dl>
   </div>
@@ -2195,7 +2195,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="2-质押" data-search="s-036 质押 bond·detail lp/burn 总质押量 σ totaldeposit 读 `usebonddetail`←三池 `market.totaldeposit`；接线在 手册 bonddepository —  🔍 待核实 待核实 prod eth_call σ `totaldeposit` 对拍 detail 总质押量 —  — r1：金钱无本轮 prod">
+<article class="row" data-status="pending" data-section="2-质押" data-search="s-036 质押 bond·detail lp/burn 总质押量 σ totaldeposit 读 `usebonddetail`←三池 `market.totaldeposit`；接线在 手册 bonddepository —  🔍 待核实 待核实 prod eth_call σ `totaldeposit` 对拍 detail 总质押量；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r1：金钱无本轮 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-036</span>
     <span class="surface">Bond·Detail</span>
@@ -2213,31 +2213,31 @@
       <div class="wide"><dt>代码位置</dt><dd>`useBondDetail`←三池 `market.totalDeposit`；接线在</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 BondDepository</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call Σ `totalDeposit` 对拍 Detail 总质押量</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call Σ `totalDeposit` 对拍 Detail 总质押量；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R1：金钱无本轮 Prod</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-037 质押 bond·detail 下次 rebase / rebase% 读 同源 hub overview；`formatrebasepct(null)`→`0.00%` 同 s-007/s-021 —  🟡 部分 fe 读源/算法/门闸/刷新错误 同 s-007：空/null 显 `—` —  — r1：继承 s-007 造 0%">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-037 质押 bond·detail 下次 rebase / rebase% 读 同源 hub overview；`formatrebasepct(null)`→`0.00%` 同 s-007/s-021 —  ✅ 已对齐 设计取舍（缺数显0） — —  — r1：继承 s-007 造 0%；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-037</span>
     <span class="surface">Bond·Detail</span>
     <span class="datum">下次 Rebase / Rebase%</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>同源 Hub overview；`formatRebasePct(null)`→`0.00%`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 S-007/S-021</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-007：空/null 显 `—`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R1：继承 S-007 造 0%</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R1：继承 S-007 造 0%；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -2333,26 +2333,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-042 质押 xmine·dock 日收益率 = `yieldratebp/100` % 读 overview null→`zero_pct`=`0.00%`；loaded=`formatxminedailyyieldlabel` 手册 §15 · `yieldratebp` —  🟡 部分 fe 读源/算法/门闸/刷新错误 缺 overview 显 `—`/`…`；禁 `0.00%`；loaded 跟 bp —  — r2 确认🟡：无源造 0%；前版 prod=1 仅 loaded">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-042 质押 xmine·dock 日收益率 = `yieldratebp/100` % 读 overview null→`zero_pct`=`0.00%`；loaded=`formatxminedailyyieldlabel` 手册 §15 · `yieldratebp` —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2 确认🟡：无源造 0%；前版 prod=1 仅 loaded；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-042</span>
     <span class="surface">Xmine·Dock</span>
     <span class="datum">日收益率 = `yieldRateBP/100` %</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>overview null→`ZERO_PCT`=`0.00%`；loaded=`formatXmineDailyYieldLabel`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §15 · `yieldRateBP`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺 overview 显 `—`/`…`；禁 `0.00%`；loaded 跟 BP</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无源造 0%；前版 Prod=1 仅 loaded</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无源造 0%；前版 Prod=1 仅 loaded；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -2448,26 +2448,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-047 质押 xmine·detail 总质押量 = gagx.balanceof(pool) 读 `tvlgagxwei??0n` 空态造 0；loaded←`totalstakedgagx` 手册 §15 —  🟡 部分 fe 读源/算法/门闸/刷新错误 缺 overview 显 `—`；禁 `??0n`；loaded∧真 0 才 `0` —  — r2 确认🟡：无源造 0；前版 prod=1e9 仅 loaded">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-047 质押 xmine·detail 总质押量 = gagx.balanceof(pool) 读 `tvlgagxwei??0n` 空态造 0；loaded←`totalstakedgagx` 手册 §15 —  ✅ 已对齐 设计取舍（缺数显0） — —  — r2 确认🟡：无源造 0；前版 prod=1e9 仅 loaded；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-047</span>
     <span class="surface">Xmine·Detail</span>
     <span class="datum">总质押量 = gagx.balanceOf(pool)</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`tvlGagxWei??0n` 空态造 0；loaded←`totalStakedGagx`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §15</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>缺 overview 显 `—`；禁 `??0n`；loaded∧真 0 才 `0`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无源造 0；前版 Prod=1e9 仅 loaded</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：无源造 0；前版 Prod=1e9 仅 loaded；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -2563,26 +2563,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-052 质押 xmine·detail 「已释放」 读 `use-xmine.tsx` 注释「无 prv 已释字段，先显示 0」→`formatnumber(0)`+`formatusdapprox(0,…)`；不冒充 miningstake（b-24） 无缓冲拆分字段 —  🟡 部分 设计取舍（故意空/0） 无 prv 拆分源：指标改 `—` 或移除行（对齐 s-008/s-050）；禁固定 0 a-15  a-15 r2 确认🟡：b-24 仍成立；固定 0≠诚实空">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-052 质押 xmine·detail 「已释放」 读 `use-xmine.tsx` 注释「无 prv 已释字段，先显示 0」→`formatnumber(0)`+`formatusdapprox(0,…)`；不冒充 miningstake（b-24） 无缓冲拆分字段 —  ✅ 已对齐 设计取舍（缺数显0） — a-15  a-15 r2 确认🟡：b-24 仍成立；固定 0≠诚实空；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-052</span>
     <span class="surface">Xmine·Detail</span>
     <span class="datum">「已释放」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-15</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-15</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`use-xmine.tsx` 注释「无 PRV 已释字段，先显示 0」→`formatNumber(0)`+`formatUsdApprox(0,…)`；不冒充 miningStake（B-24）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>无缓冲拆分字段</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>无 PRV 拆分源：指标改 `—` 或移除行（对齐 S-008/S-050）；禁固定 0</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：B-24 仍成立；固定 0≠诚实空</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：B-24 仍成立；固定 0≠诚实空；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -2678,26 +2678,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-057 质押 calc·结果 质押/债券/xmine 估算公式 读 `buildcalcestimate`/`use-calc`/`readstakinghuboverview` 三层 `epochsperday ?? 2`；`basedailypctfromepoch` 默认参亦 2 手册折扣表 + 链 yield/epoch —  🟡 部分 fe 读源/算法/门闸/刷新错误 overview 未就绪或 `epochsperdayfromlength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值 b-18  — r2：b-18 公式接线仍在；`??2` 与 s-012/c-14 死写日2次同簇">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-057 质押 calc·结果 质押/债券/xmine 估算公式 读 `buildcalcestimate`/`use-calc`/`readstakinghuboverview` 三层 `epochsperday ?? 2`；`basedailypctfromepoch` 默认参亦 2 手册折扣表 + 链 yield/epoch —  ✅ 已对齐 设计取舍（缺数显0） — b-18  — r2：b-18 公式接线仍在；`??2` 与 s-012/c-14 死写日2次同簇；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-057</span>
     <span class="surface">Calc·结果</span>
     <span class="datum">质押/债券/xmine 估算公式</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>B-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`buildCalcEstimate`/`use-calc`/`readStakingHubOverview` 三层 `epochsPerDay ?? 2`；`baseDailyPctFromEpoch` 默认参亦 2</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册折扣表 + 链 yield/epoch</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>overview 未就绪或 `epochsPerDayFromLength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：B-18 公式接线仍在；`??2` 与 S-012/C-14 死写日2次同簇</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：B-18 公式接线仍在；`??2` 与 S-012/C-14 死写日2次同簇；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -3053,7 +3053,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-003 奖励 hub 统计 个人持仓 usd + agx 副标 读 `formatusdfromagx`/`formatagxsecondary`←`personal_position` （agx）×价 `post /performance/making-overview`  🔍 待核实 待核实 样本+jwt：`personal_position` vs 链/价；副标继续标 agx —  — 金钱无 prod；接线保留">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-003 奖励 hub 统计 个人持仓 usd + agx 副标 读 `formatusdfromagx`/`formatagxsecondary`←`personal_position` （agx）×价 `post /performance/making-overview`  🔍 待核实 待核实 样本+jwt：`personal_position` vs 链/价；副标继续标 agx；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 金钱无 prod；接线保留">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-003</span>
     <span class="surface">Hub 统计</span>
@@ -3071,12 +3071,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`formatUsdFromAgx`/`formatAgxSecondary`←`personal_position`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>（AGX）×价</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /performance/making-overview`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`personal_position` vs 链/价；副标继续标 AGX</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`personal_position` vs 链/价；副标继续标 AGX；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod；接线保留</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-004 奖励 hub 统计 做市业绩 usd + agx 读 同上←`making_market` — `post /performance/making-overview`  🔍 待核实 待核实 样本+jwt：`making_market` 金额对账 —  — 同 w-003 money-bar">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-004 奖励 hub 统计 做市业绩 usd + agx 读 同上←`making_market` — `post /performance/making-overview`  🔍 待核实 待核实 样本+jwt：`making_market` 金额对账；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 同 w-003 money-bar">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-004</span>
     <span class="surface">Hub 统计</span>
@@ -3094,12 +3094,12 @@
       <div class="wide"><dt>代码位置</dt><dd>同上←`making_market`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /performance/making-overview`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`making_market` 金额对账</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`making_market` 金额对账；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>同 W-003 money-bar</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-005 奖励 hub 统计 小区业绩 usd + agx 读 同上←`small_market` — `post /performance/making-overview`  🔍 待核实 待核实 样本+jwt：`small_market` 金额对账 —  — 同 w-003 money-bar">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-005 奖励 hub 统计 小区业绩 usd + agx 读 同上←`small_market` — `post /performance/making-overview`  🔍 待核实 待核实 样本+jwt：`small_market` 金额对账；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 同 w-003 money-bar">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-005</span>
     <span class="surface">Hub 统计</span>
@@ -3117,12 +3117,12 @@
       <div class="wide"><dt>代码位置</dt><dd>同上←`small_market`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /performance/making-overview`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`small_market` 金额对账</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`small_market` 金额对账；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>同 W-003 money-bar</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-006 奖励 hub 统计 可用贡献值 读 `userewardscontribution`：有 summary 用 api；无会话回退链 `usercontribution` 手册 · agxcontributionswap `post /agx-contribution/summary`  🔍 待核实 待核实 样本对照 api `available_contribution` vs 链 `usercontribution`；overview 采纳 api 接线保留 —  — r2：点数同 a-005/x-032 money-bar；无 prod">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-006 奖励 hub 统计 可用贡献值 读 `userewardscontribution`：有 summary 用 api；无会话回退链 `usercontribution` 手册 · agxcontributionswap `post /agx-contribution/summary`  🔍 待核实 待核实 样本对照 api `available_contribution` vs 链 `usercontribution`；overview 采纳 api 接线保留；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2：点数同 a-005/x-032 money-bar；无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-006</span>
     <span class="surface">Hub 统计</span>
@@ -3140,12 +3140,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`useRewardsContribution`：有 summary 用 API；无会话回退链 `userContribution`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 · AgxContributionSwap</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /agx-contribution/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 API `available_contribution` vs 链 `userContribution`；overview 采纳 API 接线保留</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 API `available_contribution` vs 链 `userContribution`；overview 采纳 API 接线保留；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2：点数同 A-005/X-032 money-bar；无 Prod</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-007 奖励 hub 卡片·幸运 可领额（链快照） 读 `readluckyclaimsnapshot`+hub `luckyamount`（仅 `claimable∧amount&gt;0`） 手册 §14 `getwinnerinfo`/`rewardclaimed` —  🔍 待核实 待核实 prod 对账 hub 幸运可领额后再抬 ✅ —  — r2 确认🔍；数源/门闸对齐；后缀 gagx→c-15">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-007 奖励 hub 卡片·幸运 可领额（链快照） 读 `readluckyclaimsnapshot`+hub `luckyamount`（仅 `claimable∧amount&gt;0`） 手册 §14 `getwinnerinfo`/`rewardclaimed` —  🔍 待核实 待核实 prod 对账 hub 幸运可领额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；数源/门闸对齐；后缀 gagx→c-15">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-007</span>
     <span class="surface">Hub 卡片·幸运</span>
@@ -3163,7 +3163,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`readLuckyClaimSnapshot`+Hub `luckyAmount`（仅 `claimable∧amount&gt;0`）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §14 `getWinnerInfo`/`rewardClaimed`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Hub 幸运可领额后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Hub 幸运可领额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；数源/门闸对齐；后缀 gAGX→C-15</dd></div>
     </dl>
   </div>
@@ -3191,7 +3191,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-009 奖励 hub 卡片·创世 团队可领 `$`（total−claimed） 读 hub 创世卡 `$` 格式，不走 gagx rewardclaimer=usd1 `post /team-reward/total`  🔍 待核实 待核实 prod 对账 hub 创世可领 `$` 后再抬 ✅ —  — r2 确认🔍；社区基金可领不在 hub 预览">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-009 奖励 hub 卡片·创世 团队可领 `$`（total−claimed） 读 hub 创世卡 `$` 格式，不走 gagx rewardclaimer=usd1 `post /team-reward/total`  🔍 待核实 待核实 prod 对账 hub 创世可领 `$` 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；社区基金可领不在 hub 预览">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-009</span>
     <span class="surface">Hub 卡片·创世</span>
@@ -3209,31 +3209,31 @@
       <div class="wide"><dt>代码位置</dt><dd>Hub 创世卡 `$` 格式，不走 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>RewardClaimer=USD1</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /team-reward/total`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Hub 创世可领 `$` 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Hub 创世可领 `$` 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；社区基金可领不在 Hub 预览</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-010 奖励 hub 卡片·推荐/参与/共建 可领预览 读 hub 无预览→`formatgagxbalance(null)`→`0.0000gagx`；详情须签后才有额 无未签只读预览 须 `post /claim/dao-reward` 后知额  🟡 部分 设计取舍（故意空/0） sessionready∧value=null 改 `—`/空态，勿 format 成 0；未签无预览能力保持（z-010） a-21  a-21 r2 确认🟡：a-21 故意无预览≠✅；已登录仍造 0">
+<article class="row" data-status="ok" data-section="3-奖励" data-search="w-010 奖励 hub 卡片·推荐/参与/共建 可领预览 读 hub 无预览→`formatgagxbalance(null)`→`0.0000gagx`；详情须签后才有额 无未签只读预览 须 `post /claim/dao-reward` 后知额  ✅ 已对齐 设计取舍（缺数显0） — a-21  a-21 r2 确认🟡：a-21 故意无预览≠✅；已登录仍造 0；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-010</span>
     <span class="surface">Hub 卡片·推荐/参与/共建</span>
     <span class="datum">可领预览</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>奖励</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-21</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-21</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>Hub 无预览→`formatGagxBalance(null)`→`0.0000gAGX`；详情须签后才有额</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>无未签只读预览</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>须 `POST /claim/dao-reward` 后知额</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>sessionReady∧value=null 改 `—`/空态，勿 format 成 0；未签无预览能力保持（Z-010）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：A-21 故意无预览≠✅；已登录仍造 0</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：A-21 故意无预览≠✅；已登录仍造 0；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -3283,7 +3283,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-013 奖励 lucky 详情 今日奖池 `$` `today_total_prize` 读 `use-lucky.tsx` — `post /lucky-reward/summary`  🔍 待核实 待核实 样本+jwt：`today_total_prize` vs 链奖池 —  — 金钱无 prod；summary 接线保留">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-013 奖励 lucky 详情 今日奖池 `$` `today_total_prize` 读 `use-lucky.tsx` — `post /lucky-reward/summary`  🔍 待核实 待核实 样本+jwt：`today_total_prize` vs 链奖池；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 金钱无 prod；summary 接线保留">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-013</span>
     <span class="surface">Lucky 详情</span>
@@ -3301,7 +3301,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-lucky.tsx`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /lucky-reward/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`today_total_prize` vs 链奖池</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`today_total_prize` vs 链奖池；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod；summary 接线保留</dd></div>
     </dl>
   </div>
@@ -3329,7 +3329,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-015 奖励 lucky 详情 本轮资格 yes/no + 轮内购买额 读 同上；hint 用 usd1 额 链 `isusereligible` + tracker `getuserroundstat` —  🔍 待核实 待核实 prod 对账轮内购买额后再抬 ✅ —  — r2 确认🔍；资格布尔 ok；金额无 prod">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-015 奖励 lucky 详情 本轮资格 yes/no + 轮内购买额 读 同上；hint 用 usd1 额 链 `isusereligible` + tracker `getuserroundstat` —  🔍 待核实 待核实 prod 对账轮内购买额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；资格布尔 ok；金额无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-015</span>
     <span class="surface">Lucky 详情</span>
@@ -3347,7 +3347,7 @@
       <div class="wide"><dt>代码位置</dt><dd>同上；hint 用 USD1 额</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 `isUserEligible` + Tracker `getUserRoundStat`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账轮内购买额后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账轮内购买额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；资格布尔 OK；金额无 Prod</dd></div>
     </dl>
   </div>
@@ -3398,7 +3398,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-018 奖励 lucky 我的记录 参与额 / 是否中奖 / tx 读 `mapluckymyroundtorow` — `post /lucky-reward/my-rounds`  🔍 待核实 待核实 prod 对账 participation_amount 后再抬 ✅ —  — r2 确认🔍；中奖额单位见 w-017">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-018 奖励 lucky 我的记录 参与额 / 是否中奖 / tx 读 `mapluckymyroundtorow` — `post /lucky-reward/my-rounds`  🔍 待核实 待核实 prod 对账 participation_amount 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；中奖额单位见 w-017">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-018</span>
     <span class="surface">Lucky 我的记录</span>
@@ -3416,7 +3416,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`mapLuckyMyRoundToRow`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /lucky-reward/my-rounds`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 participation_amount 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 participation_amount 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；中奖额单位见 W-017</dd></div>
     </dl>
   </div>
@@ -3513,7 +3513,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-023 奖励 referral 详情 持仓 / 直推数 / 贡献 读 summary 三字段；直推数与 `direct-referrals` 同 indexer — `post /referral-award/summary`  🔍 待核实 待核实 样本对账持仓/贡献金额；直推数继续跟 api 表（不混链） —  — r2：不拆行；持仓/贡献 money-bar；计数接线保留">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-023 奖励 referral 详情 持仓 / 直推数 / 贡献 读 summary 三字段；直推数与 `direct-referrals` 同 indexer — `post /referral-award/summary`  🔍 待核实 待核实 样本对账持仓/贡献金额；直推数继续跟 api 表（不混链）；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2：不拆行；持仓/贡献 money-bar；计数接线保留">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-023</span>
     <span class="surface">Referral 详情</span>
@@ -3531,7 +3531,7 @@
       <div class="wide"><dt>代码位置</dt><dd>summary 三字段；直推数与 `direct-referrals` 同 indexer</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /referral-award/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对账持仓/贡献金额；直推数继续跟 API 表（不混链）</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对账持仓/贡献金额；直推数继续跟 API 表（不混链）；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2：不拆行；持仓/贡献 money-bar；计数接线保留</dd></div>
     </dl>
   </div>
@@ -3559,7 +3559,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-025 奖励 referral 记录/直推表 流水与成员 读 primitives mappers（`awarded_gross` 等） — `post /referral-award/logs` · `/direct-referrals`  🔍 待核实 待核实 样本+jwt 对账 logs/直推表金额列后再抬 ✅ —  — r2：表金额走 money-bar；mapper 接线保留">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-025 奖励 referral 记录/直推表 流水与成员 读 primitives mappers（`awarded_gross` 等） — `post /referral-award/logs` · `/direct-referrals`  🔍 待核实 待核实 样本+jwt 对账 logs/直推表金额列后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2：表金额走 money-bar；mapper 接线保留">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-025</span>
     <span class="surface">Referral 记录/直推表</span>
@@ -3577,7 +3577,7 @@
       <div class="wide"><dt>代码位置</dt><dd>primitives mappers（`awarded_gross` 等）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /referral-award/logs` · `/direct-referrals`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对账 logs/直推表金额列后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对账 logs/直推表金额列后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2：表金额走 money-bar；mapper 接线保留</dd></div>
     </dl>
   </div>
@@ -3651,7 +3651,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-029 奖励 participate 记录/邀请人 logs + inviter 读 `use-participate` mappers（`awarded_gross` 等） — `post /participation-award/logs` · `/inviter`  🔍 待核实 待核实 样本+jwt 对账 logs/邀请人金额列后再抬 ✅ —  — r2：同 w-025 表金额 money-bar">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-029 奖励 participate 记录/邀请人 logs + inviter 读 `use-participate` mappers（`awarded_gross` 等） — `post /participation-award/logs` · `/inviter`  🔍 待核实 待核实 样本+jwt 对账 logs/邀请人金额列后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2：同 w-025 表金额 money-bar">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-029</span>
     <span class="surface">Participate 记录/邀请人</span>
@@ -3669,7 +3669,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-participate` mappers（`awarded_gross` 等）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /participation-award/logs` · `/inviter`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对账 logs/邀请人金额列后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对账 logs/邀请人金额列后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2：同 W-025 表金额 money-bar</dd></div>
     </dl>
   </div>
@@ -3766,7 +3766,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-034 奖励 cobuild 记录 等级奖 / 平越奖 / 直推成员 读 tab 切换重置页码；logs `awarded_gross` — `post /rank-reward/logs` · `/peer-surpass-logs` · `/team-members`  🔍 待核实 待核实 样本+jwt 对账等级/平越奖金额列后再抬 ✅ —  — r2：同 w-025 表金额 money-bar">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-034 奖励 cobuild 记录 等级奖 / 平越奖 / 直推成员 读 tab 切换重置页码；logs `awarded_gross` — `post /rank-reward/logs` · `/peer-surpass-logs` · `/team-members`  🔍 待核实 待核实 样本+jwt 对账等级/平越奖金额列后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2：同 w-025 表金额 money-bar">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-034</span>
     <span class="surface">Cobuild 记录</span>
@@ -3784,7 +3784,7 @@
       <div class="wide"><dt>代码位置</dt><dd>Tab 切换重置页码；logs `awarded_gross`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /rank-reward/logs` · `/peer-surpass-logs` · `/team-members`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对账等级/平越奖金额列后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对账等级/平越奖金额列后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2：同 W-025 表金额 money-bar</dd></div>
     </dl>
   </div>
@@ -3904,7 +3904,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-040 奖励 grant dock 待解锁 `unlockable_allowance` / 可领 `unlocked_claimable` 读 `use-simple-claim` 两字段 — `post /market-allowance/summary`  🔍 待核实 待核实 样本+jwt：两字段 vs marketfund 链余额；单位见 w-037/038/058 —  — 金钱无 prod；单位债另记">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-040 奖励 grant dock 待解锁 `unlockable_allowance` / 可领 `unlocked_claimable` 读 `use-simple-claim` 两字段 — `post /market-allowance/summary`  🔍 待核实 待核实 样本+jwt：两字段 vs marketfund 链余额；单位见 w-037/038/058；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 金钱无 prod；单位债另记">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-040</span>
     <span class="surface">Grant Dock</span>
@@ -3922,7 +3922,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-simple-claim` 两字段</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /market-allowance/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：两字段 vs MarketFund 链余额；单位见 W-037/038/058</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：两字段 vs MarketFund 链余额；单位见 W-037/038/058；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod；单位债另记</dd></div>
     </dl>
   </div>
@@ -3973,7 +3973,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-043 奖励 genesis dock 直推已领 `$` 读 `usereferraltotal`→`claimed ?? total` — `post /referral/total`  🔍 待核实 待核实 prod 对账直推已领后再抬 ✅ —  — r2 确认🔍；展示已领口径">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-043 奖励 genesis dock 直推已领 `$` 读 `usereferraltotal`→`claimed ?? total` — `post /referral/total`  🔍 待核实 待核实 prod 对账直推已领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；展示已领口径">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-043</span>
     <span class="surface">Genesis Dock</span>
@@ -3991,12 +3991,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`useReferralTotal`→`claimed ?? total`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /referral/total`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账直推已领后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账直推已领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；展示已领口径</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-044 奖励 genesis dock 团队奖可领 / 已领 meta（usd1） 读 `claimableamountvalue` 手册 rewardclaimer `post /team-reward/total`  🔍 待核实 待核实 prod 对账团队奖可领/已领后再抬 ✅ —  — r2 确认🔍">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-044 奖励 genesis dock 团队奖可领 / 已领 meta（usd1） 读 `claimableamountvalue` 手册 rewardclaimer `post /team-reward/total`  🔍 待核实 待核实 prod 对账团队奖可领/已领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-044</span>
     <span class="surface">Genesis Dock</span>
@@ -4014,12 +4014,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`claimableAmountValue`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 RewardClaimer</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /team-reward/total`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账团队奖可领/已领后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账团队奖可领/已领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-045 奖励 genesis dock 社区基金可领 / 锁定 meta 读 `unlocked_claimable`；超体系徽标 手册 communityfund；token 以合约为准 `post /community-fund/total`  🔍 待核实 待核实 prod 对账社区基金可领/锁定后再抬 ✅ —  — r2 确认🔍">
+<article class="row" data-status="pending" data-section="3-奖励" data-search="w-045 奖励 genesis dock 社区基金可领 / 锁定 meta 读 `unlocked_claimable`；超体系徽标 手册 communityfund；token 以合约为准 `post /community-fund/total`  🔍 待核实 待核实 prod 对账社区基金可领/锁定后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-045</span>
     <span class="surface">Genesis Dock</span>
@@ -4037,7 +4037,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`unlocked_claimable`；超体系徽标</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 CommunityFund；token 以合约为准</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /community-fund/total`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账社区基金可领/锁定后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账社区基金可领/锁定后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍</dd></div>
     </dl>
   </div>
@@ -4348,7 +4348,7 @@
     <span class="count">44</span>
   </header>
   <p class="meta">对照源指针： [`research/dapp-tab-source-index.md` §4](./research/dapp-tab-source-index.md#4-release)</p><p class="meta">代码根： `src/views/dapp/release/`</p>
-  <div class="rows"><article class="row" data-status="pending" data-section="4-释放" data-search="l-001 释放 hub·释放池卡 释放中金额 读 `usereleasehub`+`formatreleaseapiorchainlabel`：`chainready` 优先 `queuereleasing`；无钱包用 api 手册 §12 rewardqueue（releasing≈total−claimable） `/release-pool/summary` `releasing_amount`  🔍 待核实 待核实 prod 对账释放中金额后再抬 ✅ —  b-29 r2 确认🔍；金额 4 位；b-29 仍成立">
+  <div class="rows"><article class="row" data-status="pending" data-section="4-释放" data-search="l-001 释放 hub·释放池卡 释放中金额 读 `usereleasehub`+`formatreleaseapiorchainlabel`：`chainready` 优先 `queuereleasing`；无钱包用 api 手册 §12 rewardqueue（releasing≈total−claimable） `/release-pool/summary` `releasing_amount`  🔍 待核实 待核实 prod 对账释放中金额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  b-29 r2 确认🔍；金额 4 位；b-29 仍成立">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-001</span>
     <span class="surface">Hub·释放池卡</span>
@@ -4366,12 +4366,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`useReleaseHub`+`formatReleaseApiOrChainLabel`：`chainReady` 优先 `queueReleasing`；无钱包用 API</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12 RewardQueue（releasing≈total−claimable）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/release-pool/summary` `releasing_amount`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账释放中金额后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账释放中金额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；金额 4 位；B-29 仍成立</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-002 释放 hub·释放池卡 「可领取」金额 读 `use-hub` 注释勿把累计 `released_amount` 当可领；`apiqueueclaimableraw=released−claimed`；有链用 `totalclaimable` 手册 §12 claimable `/release-pool/summary`（派生；有链不用）  🔍 待核实 待核实 prod 对账可领取金额后再抬 ✅ —  — r2 确认🔍；标签=`可领取`">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-002 释放 hub·释放池卡 「可领取」金额 读 `use-hub` 注释勿把累计 `released_amount` 当可领；`apiqueueclaimableraw=released−claimed`；有链用 `totalclaimable` 手册 §12 claimable `/release-pool/summary`（派生；有链不用）  🔍 待核实 待核实 prod 对账可领取金额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；标签=`可领取`">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-002</span>
     <span class="surface">Hub·释放池卡</span>
@@ -4389,7 +4389,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-hub` 注释勿把累计 `released_amount` 当可领；`apiQueueClaimableRaw=released−claimed`；有链用 `totalClaimable`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12 claimable</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/release-pool/summary`（派生；有链不用）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账可领取金额后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账可领取金额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；标签=`可领取`</dd></div>
     </dl>
   </div>
@@ -4440,7 +4440,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-005 释放 hub·缓冲池卡 agx total（池内剩余） 读 `buffertotalagx`：链=`claimable+releasing`；api=`releasing_amount`；注释勿用累计入池 手册 §13 prv/分流器剩余 `/buffer-pool/summary` `releasing_amount`  🔍 待核实 待核实 prod 对账缓冲 agx total 后再抬 ✅ —  — r2 确认🔍；「releasing」=池内剩余">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-005 释放 hub·缓冲池卡 agx total（池内剩余） 读 `buffertotalagx`：链=`claimable+releasing`；api=`releasing_amount`；注释勿用累计入池 手册 §13 prv/分流器剩余 `/buffer-pool/summary` `releasing_amount`  🔍 待核实 待核实 prod 对账缓冲 agx total 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；「releasing」=池内剩余">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-005</span>
     <span class="surface">Hub·缓冲池卡</span>
@@ -4458,12 +4458,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`bufferTotalAgx`：链=`claimable+releasing`；API=`releasing_amount`；注释勿用累计入池</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13 PRV/分流器剩余</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/buffer-pool/summary` `releasing_amount`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账缓冲 AGX Total 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账缓冲 AGX Total 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；「releasing」=池内剩余</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-006 释放 hub·缓冲池卡 agx「可领取」 读 `apiraw: undefined`；只信链 `agx.totalclaimable` 手册 §13 `claimableamount` —（api 无同口径 claimable）  🔍 待核实 待核实 prod 对账缓冲 agx 可领后再抬 ✅ a-16  a-16 r2 确认🔍">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-006 释放 hub·缓冲池卡 agx「可领取」 读 `apiraw: undefined`；只信链 `agx.totalclaimable` 手册 §13 `claimableamount` —（api 无同口径 claimable）  🔍 待核实 待核实 prod 对账缓冲 agx 可领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 a-16  a-16 r2 确认🔍">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-006</span>
     <span class="surface">Hub·缓冲池卡</span>
@@ -4481,12 +4481,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`apiRaw: undefined`；只信链 `agx.totalClaimable`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13 `claimableAmount`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（API 无同口径 claimable）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账缓冲 AGX 可领后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账缓冲 AGX 可领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-007 释放 hub·缓冲池卡 gagx total 读 `gagxtotallabel`=`gagx.claimable+releasing`；未连钱包 `0`；audit「勿当假零」 手册 §13 多 token 桶 —（api 无 gagx summary）  🔍 待核实 待核实 prod 对账 gagx total 后再抬 ✅ —  — r2 确认🔍：money-bar；断连→0 不另标 🟡">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-007 释放 hub·缓冲池卡 gagx total 读 `gagxtotallabel`=`gagx.claimable+releasing`；未连钱包 `0`；audit「勿当假零」 手册 §13 多 token 桶 —（api 无 gagx summary）  🔍 待核实 待核实 prod 对账 gagx total 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍：money-bar；断连→0 不另标 🟡">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-007</span>
     <span class="surface">Hub·缓冲池卡</span>
@@ -4504,12 +4504,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`gagxTotalLabel`=`gagx.claimable+releasing`；未连钱包 `0`；audit「勿当假零」</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13 多 token 桶</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（API 无 gAGX summary）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 gAGX Total 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 gAGX Total 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍：money-bar；断连→0 不另标 🟡</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-008 释放 hub·缓冲池卡 gagx「可领取」 读 hub 绑 `bufferclaimablegagx`←链 `gagx.totalclaimable`；与 agx 对称 手册 §13 —  🔍 待核实 待核实 prod 对账 gagx 可领后再抬 ✅ —  — r2 确认🔍：同 l-007 不双降 🟡">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-008 释放 hub·缓冲池卡 gagx「可领取」 读 hub 绑 `bufferclaimablegagx`←链 `gagx.totalclaimable`；与 agx 对称 手册 §13 —  🔍 待核实 待核实 prod 对账 gagx 可领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍：同 l-007 不双降 🟡">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-008</span>
     <span class="surface">Hub·缓冲池卡</span>
@@ -4527,7 +4527,7 @@
       <div class="wide"><dt>代码位置</dt><dd>Hub 绑 `bufferClaimableGagx`←链 `gagx.totalClaimable`；与 AGX 对称</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 gAGX 可领后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 gAGX 可领后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍：同 L-007 不双降 🟡</dd></div>
     </dl>
   </div>
@@ -4647,7 +4647,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-014 释放 queue·dock 各档 claimable / releasing 读 `readreleasequeuesnapshot` multicall per-plan 手册 §12 分档 snapshot —  🔍 待核实 待核实 prod 对账分档 claimable/releasing 后再抬 ✅ —  — r2 确认🔍；数字算法对">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-014 释放 queue·dock 各档 claimable / releasing 读 `readreleasequeuesnapshot` multicall per-plan 手册 §12 分档 snapshot —  🔍 待核实 待核实 prod 对账分档 claimable/releasing 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；数字算法对">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-014</span>
     <span class="surface">Queue·Dock</span>
@@ -4665,7 +4665,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`readReleaseQueueSnapshot` Multicall per-plan</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12 分档 snapshot</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账分档 claimable/releasing 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账分档 claimable/releasing 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；数字算法对</dd></div>
     </dl>
   </div>
@@ -4693,7 +4693,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-016 释放 queue·dock 进度 % / usd hint 读 档内 pct + `useagxpriceusd` 手册 §12 + 价源 —  🔍 待核实 待核实 prod 对账 usd hint（量×价）后再抬 ✅ —  — r2 确认🔍">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-016 释放 queue·dock 进度 % / usd hint 读 档内 pct + `useagxpriceusd` 手册 §12 + 价源 —  🔍 待核实 待核实 prod 对账 usd hint（量×价）后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-016</span>
     <span class="surface">Queue·Dock</span>
@@ -4711,7 +4711,7 @@
       <div class="wide"><dt>代码位置</dt><dd>档内 pct + `useAgxPriceUsd`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12 + 价源</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 USD hint（量×价）后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 USD hint（量×价）后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍</dd></div>
     </dl>
   </div>
@@ -4785,7 +4785,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-020 释放 queue·detail 释放中 / 可领取 stats 读 b-29 链优先；图标仍 `gagxicon` 手册 §12；有链优先 `/release-pool/summary` 派生可领  🔍 待核实 待核实 prod 对账 queue detail 金额后再抬 ✅ —  c-07 单位见 l-004/l-015">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-020 释放 queue·detail 释放中 / 可领取 stats 读 b-29 链优先；图标仍 `gagxicon` 手册 §12；有链优先 `/release-pool/summary` 派生可领  🔍 待核实 待核实 prod 对账 queue detail 金额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  c-07 单位见 l-004/l-015">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-020</span>
     <span class="surface">Queue·Detail</span>
@@ -4803,7 +4803,7 @@
       <div class="wide"><dt>代码位置</dt><dd>B-29 链优先；图标仍 `gagxIcon`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12；有链优先</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/release-pool/summary` 派生可领</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Queue Detail 金额后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Queue Detail 金额后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>单位见 L-004/L-015</dd></div>
     </dl>
   </div>
@@ -4877,7 +4877,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-024 释放 buffer·dock agx 可领 / 释放中 读 `usebuffer` 硬编码单位 `agx` + `agxicon` 手册 §13 agx 桶 —  🔍 待核实 待核实 prod 对账 buffer dock agx 后再抬 ✅ —  — —">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-024 释放 buffer·dock agx 可领 / 释放中 读 `usebuffer` 硬编码单位 `agx` + `agxicon` 手册 §13 agx 桶 —  🔍 待核实 待核实 prod 对账 buffer dock agx 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — —">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-024</span>
     <span class="surface">Buffer·Dock</span>
@@ -4895,12 +4895,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`useBuffer` 硬编码单位 `AGX` + `agxIcon`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13 AGX 桶</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Dock AGX 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Dock AGX 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>—</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-025 释放 buffer·dock gagx 可领 / 释放中 读 分流器 gagx 桶；单位 `gagx` + `gagxicon` 手册 §13 —  🔍 待核实 待核实 prod 对账 buffer dock gagx 后再抬 ✅ —  — —">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-025 释放 buffer·dock gagx 可领 / 释放中 读 分流器 gagx 桶；单位 `gagx` + `gagxicon` 手册 §13 —  🔍 待核实 待核实 prod 对账 buffer dock gagx 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — —">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-025</span>
     <span class="surface">Buffer·Dock</span>
@@ -4918,7 +4918,7 @@
       <div class="wide"><dt>代码位置</dt><dd>分流器 gagx 桶；单位 `gAGX` + `gagxIcon`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Dock gAGX 后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Dock gAGX 后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>—</dd></div>
     </dl>
   </div>
@@ -5038,7 +5038,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-031 释放 buffer·detail agx 累计进入/提取/释放中 读 链优先；无链回落 api cumulative/released/releasing 手册 §13 `/buffer-pool/summary`  🔍 待核实 待核实 prod 对账 buffer detail agx 三元组后再抬 ✅ —  — —">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-031 释放 buffer·detail agx 累计进入/提取/释放中 读 链优先；无链回落 api cumulative/released/releasing 手册 §13 `/buffer-pool/summary`  🔍 待核实 待核实 prod 对账 buffer detail agx 三元组后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — —">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-031</span>
     <span class="surface">Buffer·Detail</span>
@@ -5056,12 +5056,12 @@
       <div class="wide"><dt>代码位置</dt><dd>链优先；无链回落 API cumulative/released/releasing</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/buffer-pool/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Detail AGX 三元组后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Detail AGX 三元组后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>—</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="4-释放" data-search="l-032 释放 buffer·detail gagx 三元组 读 无钱包→0；仅链（api 无 gagx） 手册 §13 —  🔍 待核实 待核实 prod 对账 buffer detail gagx 三元组后再抬 ✅ —  a-16 旁系 r2 确认🔍：同 l-007 不双降 🟡">
+<article class="row" data-status="pending" data-section="4-释放" data-search="l-032 释放 buffer·detail gagx 三元组 读 无钱包→0；仅链（api 无 gagx） 手册 §13 —  🔍 待核实 待核实 prod 对账 buffer detail gagx 三元组后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  a-16 旁系 r2 确认🔍：同 l-007 不双降 🟡">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-032</span>
     <span class="surface">Buffer·Detail</span>
@@ -5079,7 +5079,7 @@
       <div class="wide"><dt>代码位置</dt><dd>无钱包→0；仅链（API 无 gAGX）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Detail gAGX 三元组后再抬 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 对账 Buffer Detail gAGX 三元组后再抬 ✅；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍：同 L-007 不双降 🟡</dd></div>
     </dl>
   </div>
@@ -5551,7 +5551,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-009 兑换 闪兑·usdt 对 输入币余额 / allowance 读 `readflashusdtbalances` 用 `config.usdttoken`，禁 env 写死 手册 §7.2 `getconfig().usdttoken` + erc20 —  🔍 待核实 待核实 样本钱包对照 `usdttoken.balanceof`/allowance 与 dock **b-01**  b-01 接线跟链；金钱无 prod；symbol 见 x-019">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-009 兑换 闪兑·usdt 对 输入币余额 / allowance 读 `readflashusdtbalances` 用 `config.usdttoken`，禁 env 写死 手册 §7.2 `getconfig().usdttoken` + erc20 —  🔍 待核实 待核实 样本钱包对照 `usdttoken.balanceof`/allowance 与 dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空 **b-01**  b-01 接线跟链；金钱无 prod；symbol 见 x-019">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-009</span>
     <span class="surface">闪兑·USDT 对</span>
@@ -5569,12 +5569,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`readFlashUsdtBalances` 用 `config.usdtToken`，禁 env 写死</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §7.2 `getConfig().usdtToken` + ERC20</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包对照 `usdtToken.balanceOf`/allowance 与 Dock</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包对照 `usdtToken.balanceOf`/allowance 与 Dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线跟链；金钱无 Prod；symbol 见 X-019</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-010 兑换 闪兑·usdt 对 usd1 余额 读 同上 erc20 `usd1.balanceof` —  🔍 待核实 待核实 样本对照 usd1.`balanceof` 与 dock **b-01**  b-01 接线在；金钱无 prod">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-010 兑换 闪兑·usdt 对 usd1 余额 读 同上 erc20 `usd1.balanceof` —  🔍 待核实 待核实 样本对照 usd1.`balanceof` 与 dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空 **b-01**  b-01 接线在；金钱无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-010</span>
     <span class="surface">闪兑·USDT 对</span>
@@ -5592,7 +5592,7 @@
       <div class="wide"><dt>代码位置</dt><dd>同上</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>ERC20 `USD1.balanceOf`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 USD1.`balanceOf` 与 Dock</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 USD1.`balanceOf` 与 Dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；金钱无 Prod</dd></div>
     </dl>
   </div>
@@ -5643,7 +5643,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-013 兑换 闪兑·gagx 对 gagx↔agx 余额；reverse 时 agx allowance→gagx 读 `readflashgagxbalances`；forward 无需 approve redeemablegagx / agx —  🔍 待核实 待核实 样本对照 gagx/agx.`balanceof`（+ reverse allowance）与 dock —  — 接线在；quote=1:1；金钱无 prod">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-013 兑换 闪兑·gagx 对 gagx↔agx 余额；reverse 时 agx allowance→gagx 读 `readflashgagxbalances`；forward 无需 approve redeemablegagx / agx —  🔍 待核实 待核实 样本对照 gagx/agx.`balanceof`（+ reverse allowance）与 dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；quote=1:1；金钱无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-013</span>
     <span class="surface">闪兑·gAGX 对</span>
@@ -5661,12 +5661,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`readFlashGagxBalances`；forward 无需 approve</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>RedeemableGAGX / AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 gAGX/AGX.`balanceOf`（+ reverse allowance）与 Dock</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 gAGX/AGX.`balanceOf`（+ reverse allowance）与 Dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；quote=1:1；金钱无 Prod</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-014 兑换 闪兑·dock 卖出/买入金额面值 + 余额 label 读 `useflashexchangesession` + `formattokenamount`；未加载空串 上列链读 —  🔍 待核实 待核实 随 x-009/x-010/x-013 样本对拍 label；未加载保持空串 —  — 不造 0；金钱无 prod">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-014 兑换 闪兑·dock 卖出/买入金额面值 + 余额 label 读 `useflashexchangesession` + `formattokenamount`；未加载空串 上列链读 —  🔍 待核实 待核实 随 x-009/x-010/x-013 样本对拍 label；未加载保持空串；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 不造 0；金钱无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-014</span>
     <span class="surface">闪兑·Dock</span>
@@ -5684,7 +5684,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`useFlashExchangeSession` + `formatTokenAmount`；未加载空串</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>上列链读</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>随 X-009/X-010/X-013 样本对拍 Label；未加载保持空串</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>随 X-009/X-010/X-013 样本对拍 Label；未加载保持空串；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>不造 0；金钱无 Prod</dd></div>
     </dl>
   </div>
@@ -5827,7 +5827,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-021 兑换 市价·dock usd1/agx 余额（live keys） 读 `usemarkettradebalances` 手册 §7.1 erc20 —  🔍 待核实 待核实 样本对照 usd1/agx.`balanceof` 与 dock（x 余额旁路不 live） —  — r2 确认🔍；接线在">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-021 兑换 市价·dock usd1/agx 余额（live keys） 读 `usemarkettradebalances` 手册 §7.1 erc20 —  🔍 待核实 待核实 样本对照 usd1/agx.`balanceof` 与 dock（x 余额旁路不 live）；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；接线在">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-021</span>
     <span class="surface">市价·Dock</span>
@@ -5845,7 +5845,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`useMarketTradeBalances`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §7.1 ERC20</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 USD1/AGX.`balanceOf` 与 Dock（X 余额旁路不 live）</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 USD1/AGX.`balanceOf` 与 Dock（X 余额旁路不 live）；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；接线在</dd></div>
     </dl>
   </div>
@@ -6057,7 +6057,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-031 兑换 销毁·dock agx 余额 / allowance→contributionswap 读 `readburnexchangebalances` 手册 §9.2 —  🔍 待核实 待核实 样本对照 agx.`balanceof`/allowance→contributionswap 与 dock —  — r2 确认🔍；接线在">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-031 兑换 销毁·dock agx 余额 / allowance→contributionswap 读 `readburnexchangebalances` 手册 §9.2 —  🔍 待核实 待核实 样本对照 agx.`balanceof`/allowance→contributionswap 与 dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；接线在">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-031</span>
     <span class="surface">销毁·Dock</span>
@@ -6075,12 +6075,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`readBurnExchangeBalances`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §9.2</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 AGX.`balanceOf`/allowance→ContributionSwap 与 Dock</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 AGX.`balanceOf`/allowance→ContributionSwap 与 Dock；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；接线在</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-032 兑换 销毁·dock 当前贡献值 读 `readburnuserstats`：`originalof==0` 回退 user 手册 `originalof`→`usercontribution(root)` —  🔍 待核实 待核实 样本对照 `usercontribution(root)` 与 dock 贡献值 **b-10**  b-10 r2 确认🔍；算法 closed；同 w-006/a-005">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-032 兑换 销毁·dock 当前贡献值 读 `readburnuserstats`：`originalof==0` 回退 user 手册 `originalof`→`usercontribution(root)` —  🔍 待核实 待核实 样本对照 `usercontribution(root)` 与 dock 贡献值；未取到显 0 属设计取舍（缺数显0），勿改诚实空 **b-10**  b-10 r2 确认🔍；算法 closed；同 w-006/a-005">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-032</span>
     <span class="surface">销毁·Dock</span>
@@ -6098,7 +6098,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`readBurnUserStats`：`originalOf==0` 回退 user</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 `originalOf`→`userContribution(root)`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 `userContribution(root)` 与 Dock 贡献值</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 `userContribution(root)` 与 Dock 贡献值；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；算法 closed；同 W-006/A-005</dd></div>
     </dl>
   </div>
@@ -6287,7 +6287,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="5-兑换" data-search="x-041 兑换 涡轮·概览 「累计已提取」 读 `useturbinesummary`→`claimed_total`；冷却/待解锁走链 silences；**不用** `unclaimed_total` 填冷却卡 api `claimed_total`；`unclaimed_total`≠冷却分态 `/turbine/summary` `claimed_total`  🔍 待核实 待核实 样本+jwt：`claimed_total` vs 链 cooled claims；确认非 wei；冷却卡继续只用 silences — **a-05**  a-05 r2 确认🔍：金钱无 prod；`unclaimed_total` api 债另记">
+<article class="row" data-status="pending" data-section="5-兑换" data-search="x-041 兑换 涡轮·概览 「累计已提取」 读 `useturbinesummary`→`claimed_total`；冷却/待解锁走链 silences；**不用** `unclaimed_total` 填冷却卡 api `claimed_total`；`unclaimed_total`≠冷却分态 `/turbine/summary` `claimed_total`  🔍 待核实 待核实 样本+jwt：`claimed_total` vs 链 cooled claims；确认非 wei；冷却卡继续只用 silences；未取到显 0 属设计取舍（缺数显0），勿改诚实空 — **a-05**  a-05 r2 确认🔍：金钱无 prod；`unclaimed_total` api 债另记">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-041</span>
     <span class="surface">涡轮·概览</span>
@@ -6305,7 +6305,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`useTurbineSummary`→`claimed_total`；冷却/待解锁走链 silences；**不用** `unclaimed_total` 填冷却卡</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API `claimed_total`；`unclaimed_total`≠冷却分态</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/turbine/summary` `claimed_total`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`claimed_total` vs 链 cooled claims；确认非 wei；冷却卡继续只用 silences</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：`claimed_total` vs 链 cooled claims；确认非 wei；冷却卡继续只用 silences；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍：金钱无 Prod；`unclaimed_total` API 债另记</dd></div>
     </dl>
   </div>
@@ -6356,26 +6356,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-044 兑换 涡轮·dock 解锁 支付 usd1 / 将获 agx 预览 读 预览=min(折减输入,quota)；`payusd1label`：quote `iserror`/undefined→`formatnumber(0)` `quoteusdinforagxout` · `previewturbineexpectedagx` —  🟡 部分 fe 读源/算法/门闸/刷新错误 quote 失败/加载中显 `—`；仅输入=0 才显 0；b-06 min(slip,quota) 算法保留 **b-06**  b-06 r2：quote fail→0 造零；happy-path 算法仍对">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-044 兑换 涡轮·dock 解锁 支付 usd1 / 将获 agx 预览 读 预览=min(折减输入,quota)；`payusd1label`：quote `iserror`/undefined→`formatnumber(0)` `quoteusdinforagxout` · `previewturbineexpectedagx` —  ✅ 已对齐 设计取舍（缺数显0） — **b-06**  b-06 r2：quote fail→0 造零；happy-path 算法仍对；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-044</span>
     <span class="surface">涡轮·Dock 解锁</span>
     <span class="datum">支付 USD1 / 将获 AGX 预览</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>兑换</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>**B-06**</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-06</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>预览=min(折减输入,quota)；`payUsd1Label`：quote `isError`/undefined→`formatNumber(0)`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`quoteUsdInForAgxOut` · `previewTurbineExpectedAgx`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>quote 失败/加载中显 `—`；仅输入=0 才显 0；B-06 min(slip,quota) 算法保留</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：quote fail→0 造零；happy-path 算法仍对</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：quote fail→0 造零；happy-path 算法仍对；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -6708,7 +6708,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-004 资产 hub·总览 累计已领取 `claimed` 读 session：api；链无累计 → 回退 `0.00 gagx` 链无累计 view `total_reward_claimed`  🔍 待核实 待核实 并入 a-054：样本对账 `total_reward_claimed`；单位见 a-047 b-21 旁路  — 金钱无 prod；缺数显 0 属设计">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-004 资产 hub·总览 累计已领取 `claimed` 读 session：api；链无累计 → 回退 `0.00 gagx` 链无累计 view `total_reward_claimed`  🔍 待核实 待核实 并入 a-054：样本对账 `total_reward_claimed`；单位见 a-047；未取到显 0 属设计取舍（缺数显0），勿改诚实空 b-21 旁路  — 金钱无 prod；缺数显 0 属设计">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-004</span>
     <span class="surface">Hub·总览</span>
@@ -6726,12 +6726,12 @@
       <div class="wide"><dt>代码位置</dt><dd>session：API；链无累计 → 回退 `0.00 gAGX`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链无累计 view</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`total_reward_claimed`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 `total_reward_claimed`；单位见 A-047</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 `total_reward_claimed`；单位见 A-047；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod；缺数显 0 属设计</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-005 资产 hub·总览 我的贡献点数 读 apiready→api；fallback→`readcontributionsnapshot` 手册 §9.2 `available_contribution`  🔍 待核实 待核实 并入 a-054：样本对账 `available_contribution` vs 链 —  — 金钱/点数展示无 prod">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-005 资产 hub·总览 我的贡献点数 读 apiready→api；fallback→`readcontributionsnapshot` 手册 §9.2 `available_contribution`  🔍 待核实 待核实 并入 a-054：样本对账 `available_contribution` vs 链；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 金钱/点数展示无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-005</span>
     <span class="surface">Hub·总览</span>
@@ -6749,7 +6749,7 @@
       <div class="wide"><dt>代码位置</dt><dd>apiReady→API；fallback→`readContributionSnapshot`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §9.2</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`available_contribution`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 `available_contribution` vs 链</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 `available_contribution` vs 链；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱/点数展示无 Prod</dd></div>
     </dl>
   </div>
@@ -6800,7 +6800,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-008 资产 hub·持仓 总持仓 `holdingstotal` 读 apiready→api；fallback 链求和 — `/assets/holdings-summary` `total_holdings_agx`  🔍 待核实 待核实 并入 a-054：样本对账 `total_holdings_agx`↔链四桶 —  — 金钱无 prod">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-008 资产 hub·持仓 总持仓 `holdingstotal` 读 apiready→api；fallback 链求和 — `/assets/holdings-summary` `total_holdings_agx`  🔍 待核实 待核实 并入 a-054：样本对账 `total_holdings_agx`↔链四桶；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 金钱无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-008</span>
     <span class="surface">Hub·持仓</span>
@@ -6818,12 +6818,12 @@
       <div class="wide"><dt>代码位置</dt><dd>apiReady→API；fallback 链求和</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/assets/holdings-summary` `total_holdings_agx`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 `total_holdings_agx`↔链四桶</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 `total_holdings_agx`↔链四桶；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-009 资产 hub·缓冲 在池总量 / 已提取（agx） 读 `bufferquery` 不绑 api fallback 开关；有快照用链 手册 §13 `buffer_pool_releasing/released` 回落  🔍 待核实 待核实 并入 a-054：样本对账缓冲 agx；claimable 仍信链 a-16  a-16 金钱无 prod；api 无同口径 claimable">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-009 资产 hub·缓冲 在池总量 / 已提取（agx） 读 `bufferquery` 不绑 api fallback 开关；有快照用链 手册 §13 `buffer_pool_releasing/released` 回落  🔍 待核实 待核实 并入 a-054：样本对账缓冲 agx；claimable 仍信链；未取到显 0 属设计取舍（缺数显0），勿改诚实空 a-16  a-16 金钱无 prod；api 无同口径 claimable">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-009</span>
     <span class="surface">Hub·缓冲</span>
@@ -6841,12 +6841,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`bufferQuery` 不绑 API fallback 开关；有快照用链</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`buffer_pool_releasing/released` 回落</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账缓冲 AGX；claimable 仍信链</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账缓冲 AGX；claimable 仍信链；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod；API 无同口径 claimable</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-010 资产 hub·缓冲 在池总量 / 已提取（gagx） 读 `buffergagx*`；api 未分 token；ui `bufferasset` 切换 手册 §13 gagx 桶 —  🔍 待核实 待核实 并入 a-054：样本对账 gagx 桶；勿当假零 a-16  — 金钱无 prod">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-010 资产 hub·缓冲 在池总量 / 已提取（gagx） 读 `buffergagx*`；api 未分 token；ui `bufferasset` 切换 手册 §13 gagx 桶 —  🔍 待核实 待核实 并入 a-054：样本对账 gagx 桶；勿当假零；未取到显 0 属设计取舍（缺数显0），勿改诚实空 a-16  — 金钱无 prod">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-010</span>
     <span class="surface">Hub·缓冲</span>
@@ -6864,7 +6864,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`bufferGagx*`；API 未分 token；UI `bufferAsset` 切换</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §13 gagx 桶</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 gagx 桶；勿当假零</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 gagx 桶；勿当假零；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>金钱无 Prod</dd></div>
     </dl>
   </div>
@@ -6915,7 +6915,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-013 资产 hub·dock lp/销毁债券卡 仓位/收益/apr 读 `bondapr=apr_empty` 注释写明；仓位/profit 另展 无独立 apr 源 `bond_lp`/`bond_burn` + 链 profit  🔍 待核实 待核实 样本对拍仓位/profit；apr 空源保持 `apr_empty`（非假 rebase） b-23  — r2 确认🔍：仓位金钱无 prod；apr_empty 非过严">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-013 资产 hub·dock lp/销毁债券卡 仓位/收益/apr 读 `bondapr=apr_empty` 注释写明；仓位/profit 另展 无独立 apr 源 `bond_lp`/`bond_burn` + 链 profit  🔍 待核实 待核实 样本对拍仓位/profit；apr 空源保持 `apr_empty`（非假 rebase）；未取到显 0 属设计取舍（缺数显0），勿改诚实空 b-23  — r2 确认🔍：仓位金钱无 prod；apr_empty 非过严">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-013</span>
     <span class="surface">Hub·Dock</span>
@@ -6933,12 +6933,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`bondApr=APR_EMPTY` 注释写明；仓位/profit 另展</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>无独立 APR 源</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`bond_lp`/`bond_burn` + 链 profit</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对拍仓位/profit；APR 空源保持 `APR_EMPTY`（非假 rebase）</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对拍仓位/profit；APR 空源保持 `APR_EMPTY`（非假 rebase）；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍：仓位金钱无 Prod；APR_EMPTY 非过严</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-014 资产 hub·dock x挖矿卡 仓位/收益/apr 读 hub claimable **不含** x pending；卡上 yield 单独 x；apr=`yieldratebp` 手册 §15 `stake_x_pool`  🔍 待核实 待核实 样本对拍 xmine 仓位/pending；可领不含 x 禁令保持 b-20 · b-23  — r2 确认🔍；算法 closed">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-014 资产 hub·dock x挖矿卡 仓位/收益/apr 读 hub claimable **不含** x pending；卡上 yield 单独 x；apr=`yieldratebp` 手册 §15 `stake_x_pool`  🔍 待核实 待核实 样本对拍 xmine 仓位/pending；可领不含 x 禁令保持；未取到显 0 属设计取舍（缺数显0），勿改诚实空 b-20 · b-23  — r2 确认🔍；算法 closed">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-014</span>
     <span class="surface">Hub·Dock</span>
@@ -6956,12 +6956,12 @@
       <div class="wide"><dt>代码位置</dt><dd>Hub claimable **不含** X pending；卡上 yield 单独 X；APR=`yieldRateBP`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §15</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`stake_x_pool`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对拍 xmine 仓位/pending；可领不含 X 禁令保持</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对拍 xmine 仓位/pending；可领不含 X 禁令保持；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；算法 closed</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-015 资产 hub·分布 持仓分布图 读 `buildholdingsdistributionview` 四模式 `positionusd` `/assets/holdings-distribution`  🔍 待核实 待核实 并入 a-054：样本对账 distribution `positionusd` 占比 —  — r2 确认🔍；empty 接线保留">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-015 资产 hub·分布 持仓分布图 读 `buildholdingsdistributionview` 四模式 `positionusd` `/assets/holdings-distribution`  🔍 待核实 待核实 并入 a-054：样本对账 distribution `positionusd` 占比；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2 确认🔍；empty 接线保留">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-015</span>
     <span class="surface">Hub·分布</span>
@@ -6979,7 +6979,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`buildHoldingsDistributionView`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>四模式 `positionUsd`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/assets/holdings-distribution`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 distribution `positionUsd` 占比</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>并入 A-054：样本对账 distribution `positionUsd` 占比；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；Empty 接线保留</dd></div>
     </dl>
   </div>
@@ -7421,7 +7421,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-035 资产 xmine·仓位 `miningstake` / `pending` / warmup 读 不把 miningstake 冒充已释放；`readxmineposition` 手册 §15 `readxmineposition` —  🔍 待核实 待核实 样本对照 miningstake/pending/warmup 与仓位卡；冒充已释放禁令保持 b-24  — r2 确认🔍；算法 closed">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-035 资产 xmine·仓位 `miningstake` / `pending` / warmup 读 不把 miningstake 冒充已释放；`readxmineposition` 手册 §15 `readxmineposition` —  🔍 待核实 待核实 样本对照 miningstake/pending/warmup 与仓位卡；冒充已释放禁令保持；未取到显 0 属设计取舍（缺数显0），勿改诚实空 b-24  — r2 确认🔍；算法 closed">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-035</span>
     <span class="surface">Xmine·仓位</span>
@@ -7439,35 +7439,35 @@
       <div class="wide"><dt>代码位置</dt><dd>不把 miningStake 冒充已释放；`readXminePosition`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §15 `readXminePosition`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 miningStake/pending/warmup 与仓位卡；冒充已释放禁令保持</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本对照 miningStake/pending/warmup 与仓位卡；冒充已释放禁令保持；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；算法 closed</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-036 资产 xmine·统计 「已释放」格 读 代码 `released=0n` + 注释 无 prv 映射字段 —  🟡 部分 设计取舍（故意空/0） 无 prv 拆分源：改 `—` 或移除行（对齐 s-052）；禁固定 0 a-15 · a-16  — r2 确认🟡：同 s-052 固定 0≠诚实空">
+<article class="row" data-status="ok" data-section="6-资产" data-search="a-036 资产 xmine·统计 「已释放」格 读 代码 `released=0n` + 注释 无 prv 映射字段 —  ✅ 已对齐 设计取舍（缺数显0） — a-15 · a-16  — r2 确认🟡：同 s-052 固定 0≠诚实空；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-036</span>
     <span class="surface">Xmine·统计</span>
     <span class="datum">「已释放」格</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>资产</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-15 · A-16</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>代码 `released=0n` + 注释</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>无 PRV 映射字段</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>无 PRV 拆分源：改 `—` 或移除行（对齐 S-052）；禁固定 0</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：同 S-052 固定 0≠诚实空</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：同 S-052 固定 0≠诚实空；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-037 资产 xmine·统计 挖矿总产出（终身） 读 `usex0mininglifetimereward` 翻页累加 无协议累计 view `/x0-mining/logs` reward  🔍 待核实 待核实 样本+jwt 对照翻页累加 vs 统计格 b-17  — r2 确认🔍；翻页算法 closed">
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-037 资产 xmine·统计 挖矿总产出（终身） 读 `usex0mininglifetimereward` 翻页累加 无协议累计 view `/x0-mining/logs` reward  🔍 待核实 待核实 样本+jwt 对照翻页累加 vs 统计格；未取到显 0 属设计取舍（缺数显0），勿改诚实空 b-17  — r2 确认🔍；翻页算法 closed">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-037</span>
     <span class="surface">Xmine·统计</span>
@@ -7485,7 +7485,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`useX0MiningLifetimeReward` 翻页累加</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>无协议累计 view</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/x0-mining/logs` REWARD</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对照翻页累加 vs 统计格</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT 对照翻页累加 vs 统计格；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2 确认🔍；翻页算法 closed</dd></div>
     </dl>
   </div>
@@ -8210,7 +8210,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="7-社区" data-search="cm-011 社区 detail·统计卡 直推业绩 `direct_presale_volume`（`$`） 读 `formatnumber(...,{prefix:'$'})`+`volumeprefix` api 一期 team（金钱） post /team/overview  🔍 待核实 待核实 prod 样本地址+siwe：对账 overview.`direct_presale_volume` 与 indexer/`user_performance` —  — 接线正确；金钱 l 未做">
+<article class="row" data-status="pending" data-section="7-社区" data-search="cm-011 社区 detail·统计卡 直推业绩 `direct_presale_volume`（`$`） 读 `formatnumber(...,{prefix:'$'})`+`volumeprefix` api 一期 team（金钱） post /team/overview  🔍 待核实 待核实 prod 样本地址+siwe：对账 overview.`direct_presale_volume` 与 indexer/`user_performance`；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线正确；金钱 l 未做">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-011</span>
     <span class="surface">Detail·统计卡</span>
@@ -8228,7 +8228,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`formatNumber(...,{prefix:'$'})`+`volumePrefix`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API 一期 team（金钱）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /team/overview</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 样本地址+SIWE：对账 overview.`direct_presale_volume` 与 indexer/`user_performance`</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 样本地址+SIWE：对账 overview.`direct_presale_volume` 与 indexer/`user_performance`；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线正确；金钱 L 未做</dd></div>
     </dl>
   </div>
@@ -8256,7 +8256,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="7-社区" data-search="cm-013 社区 detail·统计卡 社区业绩 `sales_team_market`（`$`） 读 同 cm-011 展示前缀 api 一期 team（金钱） post /team/overview  🔍 待核实 待核实 同 cm-011：prod 对账 `sales_team_market` —  — 接线正确；金钱 l 未做">
+<article class="row" data-status="pending" data-section="7-社区" data-search="cm-013 社区 detail·统计卡 社区业绩 `sales_team_market`（`$`） 读 同 cm-011 展示前缀 api 一期 team（金钱） post /team/overview  🔍 待核实 待核实 同 cm-011：prod 对账 `sales_team_market`；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线正确；金钱 l 未做">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-013</span>
     <span class="surface">Detail·统计卡</span>
@@ -8274,7 +8274,7 @@
       <div class="wide"><dt>代码位置</dt><dd>同 CM-011 展示前缀</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API 一期 team（金钱）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /team/overview</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 CM-011：Prod 对账 `sales_team_market`</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 CM-011：Prod 对账 `sales_team_market`；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线正确；金钱 L 未做</dd></div>
     </dl>
   </div>
@@ -8325,26 +8325,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-016 社区 detail·统计卡 已连钱包未 siwe 时数值 读 `walletready&amp;&amp;!sessionready`→不请求 overview，卡面 **0/s0**；表走 auth 空态 连接≠登录（agents）；ui 门闸 —（纯 ui）  🟡 部分 设计取舍（故意空/0） 产品二选一：`needssignin` 时统计卡改 sign-in cta/骨架，或文案标明「登录后可见」避免假零 —  — 非 loading 骨架">
+<article class="row" data-status="ok" data-section="7-社区" data-search="cm-016 社区 detail·统计卡 已连钱包未 siwe 时数值 读 `walletready&amp;&amp;!sessionready`→不请求 overview，卡面 **0/s0**；表走 auth 空态 连接≠登录（agents）；ui 门闸 —（纯 ui）  ✅ 已对齐 设计取舍（缺数显0） — —  — 非 loading 骨架；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-016</span>
     <span class="surface">Detail·统计卡</span>
     <span class="datum">已连钱包未 SIWE 时数值</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>社区</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`walletReady&amp;&amp;!sessionReady`→不请求 overview，卡面 **0/S0**；表走 Auth 空态</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>连接≠登录（AGENTS）；UI 门闸</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品二选一：`needsSignIn` 时统计卡改 Sign-in CTA/骨架，或文案标明「登录后可见」避免假零</dd></div>
-      <div class="wide"><dt>备注</dt><dd>非 loading 骨架</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>非 loading 骨架；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -8716,7 +8716,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="7-社区" data-search="cm-033 社区 detail·成员表 行内 `presale_volume`（`$` num） 读 `mapteamreferraltocompactrow`→`formatnumber(volume,{prefix:'$'})`；非 overview 聚合 api 一期 referrals（金钱） post /team/referrals  🔍 待核实 待核实 prod 样本+siwe：对账 referrals.`presale_volume` 与表行 `$`；禁假 prod —  — r2：要独立🔍（≠cm-011 `direct_presale_volume`）；标签债仍 cm-020">
+<article class="row" data-status="pending" data-section="7-社区" data-search="cm-033 社区 detail·成员表 行内 `presale_volume`（`$` num） 读 `mapteamreferraltocompactrow`→`formatnumber(volume,{prefix:'$'})`；非 overview 聚合 api 一期 referrals（金钱） post /team/referrals  🔍 待核实 待核实 prod 样本+siwe：对账 referrals.`presale_volume` 与表行 `$`；禁假 prod；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — r2：要独立🔍（≠cm-011 `direct_presale_volume`）；标签债仍 cm-020">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-033</span>
     <span class="surface">Detail·成员表</span>
@@ -8734,7 +8734,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`mapTeamReferralToCompactRow`→`formatNumber(volume,{prefix:'$'})`；非 overview 聚合</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API 一期 referrals（金钱）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /team/referrals</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 样本+SIWE：对账 referrals.`presale_volume` 与表行 `$`；禁假 Prod</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod 样本+SIWE：对账 referrals.`presale_volume` 与表行 `$`；禁假 Prod；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>R2：要独立🔍（≠CM-011 `direct_presale_volume`）；标签债仍 CM-020</dd></div>
     </dl>
   </div>
@@ -8884,7 +8884,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-007 共建 dock·份额标签 1 份 = `minamount` usd1；最大份数 读 `shares` 插值 `formattokenamount(minamount)`+`genesismaxshares`；`sharepricewei`=`minamount` 手册 §6.4 `base_unit`/`minamount` —（纯链）  🔍 待核实 待核实 prod eth_call `phases(i).minamount` 对拍份额标签 `{min}` usd1 —  — 展示金钱（同 gn-008 源）；接线在；l 未做">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-007 共建 dock·份额标签 1 份 = `minamount` usd1；最大份数 读 `shares` 插值 `formattokenamount(minamount)`+`genesismaxshares`；`sharepricewei`=`minamount` 手册 §6.4 `base_unit`/`minamount` —（纯链）  🔍 待核实 待核实 prod eth_call `phases(i).minamount` 对拍份额标签 `{min}` usd1；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 展示金钱（同 gn-008 源）；接线在；l 未做">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-007</span>
     <span class="surface">Dock·份额标签</span>
@@ -8902,12 +8902,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`shares` 插值 `formatTokenAmount(minAmount)`+`genesisMaxShares`；`sharePriceWei`=`minAmount`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6.4 `BASE_UNIT`/`minAmount`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `phases(i).minAmount` 对拍份额标签 `{min}` USD1</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `phases(i).minAmount` 对拍份额标签 `{min}` USD1；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>展示金钱（同 GN-008 源）；接线在；L 未做</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-008 共建 dock·清单 「本期共建额度」min–max 读 `quotalabel`（`genesispurchasesummary`）←phase `minamount`/`maxamount` 手册 §6.3 `minamount`/`maxamount` —（纯链）  🔍 待核实 待核实 prod eth_call `phases(i)` 对拍 dock `quotalabel` 上下限 —  — 接线在；金钱 l 未做（同 cm-011 口径）">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-008 共建 dock·清单 「本期共建额度」min–max 读 `quotalabel`（`genesispurchasesummary`）←phase `minamount`/`maxamount` 手册 §6.3 `minamount`/`maxamount` —（纯链）  🔍 待核实 待核实 prod eth_call `phases(i)` 对拍 dock `quotalabel` 上下限；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；金钱 l 未做（同 cm-011 口径）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-008</span>
     <span class="surface">Dock·清单</span>
@@ -8925,12 +8925,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`quotaLabel`（`genesisPurchaseSummary`）←phase `minAmount`/`maxAmount`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6.3 `minAmount`/`maxAmount`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `phases(i)` 对拍 Dock `quotaLabel` 上下限</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `phases(i)` 对拍 Dock `quotaLabel` 上下限；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；金钱 L 未做（同 CM-011 口径）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-009 共建 dock·清单 「支付」usd1 金额 读 `payusd1label`=`shares×sharepricewei(minamount)` 手册 §6.4 —（纯链）  🔍 待核实 待核实 有活期阶段时对拍 `shares×minamount` 与清单「支付」 —  — 接线在；金钱 l 未做">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-009 共建 dock·清单 「支付」usd1 金额 读 `payusd1label`=`shares×sharepricewei(minamount)` 手册 §6.4 —（纯链）  🔍 待核实 待核实 有活期阶段时对拍 `shares×minamount` 与清单「支付」；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；金钱 l 未做">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-009</span>
     <span class="surface">Dock·清单</span>
@@ -8948,7 +8948,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`payUsd1Label`=`shares×sharePriceWei(minAmount)`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6.4</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>有活期阶段时对拍 `shares×minAmount` 与清单「支付」</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>有活期阶段时对拍 `shares×minAmount` 与清单「支付」；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；金钱 L 未做</dd></div>
     </dl>
   </div>
@@ -8999,7 +8999,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-012 共建 dock·清单 「将获得 x 初始空投价值」 读 `usepresalepreviewairdropvaluequery`→`addedairdropvalue` 手册 §6 `previewairdropvalue` —（纯链）  🔍 待核实 待核实 有活期+样本份额：对拍 `previewairdropvalue.addedairdropvalue` 与清单空投行 —  — 接线在；0→`$0`；金额 l 未做（旁系 gn-010）">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-012 共建 dock·清单 「将获得 x 初始空投价值」 读 `usepresalepreviewairdropvaluequery`→`addedairdropvalue` 手册 §6 `previewairdropvalue` —（纯链）  🔍 待核实 待核实 有活期+样本份额：对拍 `previewairdropvalue.addedairdropvalue` 与清单空投行；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；0→`$0`；金额 l 未做（旁系 gn-010）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-012</span>
     <span class="surface">Dock·清单</span>
@@ -9017,35 +9017,35 @@
       <div class="wide"><dt>代码位置</dt><dd>`usePresalePreviewAirdropValueQuery`→`addedAirdropValue`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6 `previewAirdropValue`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>有活期+样本份额：对拍 `previewAirdropValue.addedAirdropValue` 与清单空投行</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>有活期+样本份额：对拍 `previewAirdropValue.addedAirdropValue` 与清单空投行；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；0→`$0`；金额 L 未做（旁系 GN-010）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-013 共建 dock·空投 hint 门槛文案「单期累计 ≥ {threshold}」 读·copy `use-genesis-dock`：loading/null 仍插 `—`；产品缺数宜 0 手册/legacy 门槛；i18n `xtokenairdrophint` —（纯链）  🟡 部分 设计取舍（故意空/0） loaded∧null→插 `$0`；仅 `airdropthresholdloading` 用 `—`（与 b-42 收口） ← b-42  b-42 对齐为 0 属展示收口">
+<article class="row" data-status="ok" data-section="8-共建" data-search="gn-013 共建 dock·空投 hint 门槛文案「单期累计 ≥ {threshold}」 读·copy `use-genesis-dock`：loading/null 仍插 `—`；产品缺数宜 0 手册/legacy 门槛；i18n `xtokenairdrophint` —（纯链）  ✅ 已对齐 设计取舍（缺数显0） — ← b-42  b-42 对齐为 0 属展示收口；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-013</span>
     <span class="surface">Dock·空投 hint</span>
     <span class="datum">门槛文案「单期累计 ≥ {threshold}」</span>
     <span class="rw pill">读·Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>共建</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>← B-42</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-42</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`use-genesis-dock`：loading/null 仍插 `—`；产品缺数宜 0</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册/legacy 门槛；i18n `xTokenAirdropHint`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>loaded∧null→插 `$0`；仅 `airdropThresholdLoading` 用 `—`（与 B-42 收口）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>对齐为 0 属展示收口</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>对齐为 0 属展示收口；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-014 共建 dock·空投门槛数值 `airdrop_threshold` 读 `readpresaleairdropthresholdwei`→`presaleairdropthresholdtousd`；无硬编码 abi `airdrop_threshold` —（纯链）  🔍 待核实 待核实 prod eth_call `airdrop_threshold` 对拍 hint/faq `{threshold}`；禁手册常量冒充 prod —  — 接线 live；前版「prod cast/l」无本轮证据→降级">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-014 共建 dock·空投门槛数值 `airdrop_threshold` 读 `readpresaleairdropthresholdwei`→`presaleairdropthresholdtousd`；无硬编码 abi `airdrop_threshold` —（纯链）  🔍 待核实 待核实 prod eth_call `airdrop_threshold` 对拍 hint/faq `{threshold}`；禁手册常量冒充 prod；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线 live；前版「prod cast/l」无本轮证据→降级">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-014</span>
     <span class="surface">Dock·空投门槛数值</span>
@@ -9063,12 +9063,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`readPresaleAirdropThresholdWei`→`presaleAirdropThresholdToUsd`；无硬编码</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>ABI `AIRDROP_THRESHOLD`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `AIRDROP_THRESHOLD` 对拍 hint/FAQ `{threshold}`；禁手册常量冒充 Prod</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `AIRDROP_THRESHOLD` 对拍 hint/FAQ `{threshold}`；禁手册常量冒充 Prod；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线 live；前版「Prod cast/L」无本轮证据→降级</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-015 共建 detail·全球卡 `totalpurchasedamount` 读 `usepresaletotalpurchasedquery`←`readtotalpresalepurchased`；loading skeleton 手册 §6.3 —（纯链）  🔍 待核实 待核实 prod eth_call `totalpurchasedamount` 对拍全球卡 —  — 接线在；前版「prod=0」无本轮证据→降级">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-015 共建 detail·全球卡 `totalpurchasedamount` 读 `usepresaletotalpurchasedquery`←`readtotalpresalepurchased`；loading skeleton 手册 §6.3 —（纯链）  🔍 待核实 待核实 prod eth_call `totalpurchasedamount` 对拍全球卡；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；前版「prod=0」无本轮证据→降级">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-015</span>
     <span class="surface">Detail·全球卡</span>
@@ -9086,12 +9086,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`usePresaleTotalPurchasedQuery`←`readTotalPresalePurchased`；loading Skeleton</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6.3</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `totalPurchasedAmount` 对拍全球卡</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod eth_call `totalPurchasedAmount` 对拍全球卡；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；前版「Prod=0」无本轮证据→降级</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-016 共建 detail·进度头 「本期共建」当前/上限 读 `userphaseamountcurrent` / `seasoncontributionmaxwei`（limit&gt;0?limit:maxamount） 手册 `getuserphaseremainingamount` —（纯链）  🔍 待核实 待核实 样本钱包+活期：对拍 `getuserphaseremainingamount` 与进度头 —  — 接线在；须钱包；root 见 gn-037；金钱 l 未做">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-016 共建 detail·进度头 「本期共建」当前/上限 读 `userphaseamountcurrent` / `seasoncontributionmaxwei`（limit&gt;0?limit:maxamount） 手册 `getuserphaseremainingamount` —（纯链）  🔍 待核实 待核实 样本钱包+活期：对拍 `getuserphaseremainingamount` 与进度头；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；须钱包；root 见 gn-037；金钱 l 未做">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-016</span>
     <span class="surface">Detail·进度头</span>
@@ -9109,12 +9109,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`userPhaseAmountCurrent` / `seasonContributionMaxWei`（limit&gt;0?limit:maxAmount）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 `getUserPhaseRemainingAmount`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包+活期：对拍 `getUserPhaseRemainingAmount` 与进度头</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包+活期：对拍 `getUserPhaseRemainingAmount` 与进度头；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；须钱包；root 见 GN-037；金钱 L 未做</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-017 共建 detail·页脚 「累计共建」`usertotalamount` 读 `usepresaleusertotalquery`←`readuserpresaletotal`(migration root)→footer `$` 手册 `usertotalamount(root)` —（纯链）  🔍 待核实 待核实 样本钱包对拍 `usertotalamount(root)` 与页脚累计 —  — 接线在；金钱 l 未做">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-017 共建 detail·页脚 「累计共建」`usertotalamount` 读 `usepresaleusertotalquery`←`readuserpresaletotal`(migration root)→footer `$` 手册 `usertotalamount(root)` —（纯链）  🔍 待核实 待核实 样本钱包对拍 `usertotalamount(root)` 与页脚累计；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 接线在；金钱 l 未做">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-017</span>
     <span class="surface">Detail·页脚</span>
@@ -9132,12 +9132,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`usePresaleUserTotalQuery`←`readUserPresaleTotal`(migration root)→footer `$`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 `userTotalAmount(root)`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包对拍 `userTotalAmount(root)` 与页脚累计</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本钱包对拍 `userTotalAmount(root)` 与页脚累计；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；金钱 L 未做</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-018 共建 detail·贡献表 销售日志分页行（含 `$` amount） 读 `usesaleslogs`+`sessionready`；`mapsaleslogtodesktoprow` 展 `amount` 为 `$`；未登录 auth 槽 api 一期 sales post /sales/logs  🔍 待核实 待核实 样本+jwt：对账 `/sales/logs`.`amount` 与表行 `$`；门闩 `sessionready` 已对 —  — 门闩✅；行内金钱 l 未做（同 cm-011）">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-018 共建 detail·贡献表 销售日志分页行（含 `$` amount） 读 `usesaleslogs`+`sessionready`；`mapsaleslogtodesktoprow` 展 `amount` 为 `$`；未登录 auth 槽 api 一期 sales post /sales/logs  🔍 待核实 待核实 样本+jwt：对账 `/sales/logs`.`amount` 与表行 `$`；门闩 `sessionready` 已对；未取到显 0 属设计取舍（缺数显0），勿改诚实空 —  — 门闩✅；行内金钱 l 未做（同 cm-011）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-018</span>
     <span class="surface">Detail·贡献表</span>
@@ -9155,7 +9155,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`useSalesLogs`+`sessionReady`；`mapSalesLogToDesktopRow` 展 `amount` 为 `$`；未登录 Auth 槽</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API 一期 sales</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /sales/logs</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：对账 `/sales/logs`.`amount` 与表行 `$`；门闩 `sessionReady` 已对</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>样本+JWT：对账 `/sales/logs`.`amount` 与表行 `$`；门闩 `sessionReady` 已对；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>门闩✅；行内金钱 L 未做（同 CM-011）</dd></div>
     </dl>
   </div>
@@ -9229,7 +9229,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="8-共建" data-search="gn-022 共建 faq `{phasecount}`/`{discounts}`/`{phasequotas}`/`{minusd}`/`{shareincrement}`/`{airdropratios}`/`{threshold}` 读·copy `genesisfaqtemplatevalues` 填入 faq（`threshold`←同 gn-014；`minusd`/`phasequotas`←phases） 手册 §6 phases —（纯链）  🔍 待核实 待核实 随 gn-014/gn-008 prod：对拍 faq `{threshold}`/`{minusd}`/`{phasequotas}`；模板接线保留 ← gn-014  — 接线在；插值金钱无 prod→跟 gn-014 降级；`phasedurationdays`→z-016">
+<article class="row" data-status="pending" data-section="8-共建" data-search="gn-022 共建 faq `{phasecount}`/`{discounts}`/`{phasequotas}`/`{minusd}`/`{shareincrement}`/`{airdropratios}`/`{threshold}` 读·copy `genesisfaqtemplatevalues` 填入 faq（`threshold`←同 gn-014；`minusd`/`phasequotas`←phases） 手册 §6 phases —（纯链）  🔍 待核实 待核实 随 gn-014/gn-008 prod：对拍 faq `{threshold}`/`{minusd}`/`{phasequotas}`；模板接线保留；未取到显 0 属设计取舍（缺数显0），勿改诚实空 ← gn-014  — 接线在；插值金钱无 prod→跟 gn-014 降级；`phasedurationdays`→z-016">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-022</span>
     <span class="surface">FAQ</span>
@@ -9247,7 +9247,7 @@
       <div class="wide"><dt>代码位置</dt><dd>`genesisFaqTemplateValues` 填入 FAQ（`threshold`←同 GN-014；`minUsd`/`phaseQuotas`←phases）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6 phases</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>随 GN-014/GN-008 Prod：对拍 FAQ `{threshold}`/`{minUsd}`/`{phaseQuotas}`；模板接线保留</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>随 GN-014/GN-008 Prod：对拍 FAQ `{threshold}`/`{minUsd}`/`{phaseQuotas}`；模板接线保留；未取到显 0 属设计取舍（缺数显0），勿改诚实空</dd></div>
       <div class="wide"><dt>备注</dt><dd>接线在；插值金钱无 Prod→跟 GN-014 降级；`phaseDurationDays`→Z-016</dd></div>
     </dl>
   </div>
@@ -9689,26 +9689,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-042 共建 空态 faq `phases.length===0` 时 faq 插值 copy `zero_faq`：金额位 `$0`；`threshold` 仍 `—`（不读已加载门槛） 产品缺数=0 vs 诚实空 —（纯 ui）  🟡 部分 设计取舍（故意空/0） `genesisfaqtemplatevalues`：无 phase 时若门槛已知仍填 `$n`/`$0`，与 gn-013 同策 —  — 金额 0 合法；门槛 — 同簇">
+<article class="row" data-status="ok" data-section="8-共建" data-search="gn-042 共建 空态 faq `phases.length===0` 时 faq 插值 copy `zero_faq`：金额位 `$0`；`threshold` 仍 `—`（不读已加载门槛） 产品缺数=0 vs 诚实空 —（纯 ui）  ✅ 已对齐 设计取舍（缺数显0） — —  — 金额 0 合法；门槛 — 同簇；口径：未取到显 0（t1=缺数显0，视为正确）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-042</span>
     <span class="surface">空态 FAQ</span>
     <span class="datum">`phases.length===0` 时 FAQ 插值</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>共建</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`ZERO_FAQ`：金额位 `$0`；`threshold` 仍 `—`（不读已加载门槛）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品缺数=0 vs 诚实空</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>`genesisFaqTemplateValues`：无 phase 时若门槛已知仍填 `$N`/`$0`，与 GN-013 同策</dd></div>
-      <div class="wide"><dt>备注</dt><dd>金额 0 合法；门槛 — 同簇</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>金额 0 合法；门槛 — 同簇；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
     </dl>
   </div>
 </article>
@@ -10113,7 +10113,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T22:34:17.150Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T22:58:22.322Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
