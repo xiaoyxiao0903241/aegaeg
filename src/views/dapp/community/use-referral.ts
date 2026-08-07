@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { isReferralParentAllowed } from '~/core/referral/referral-parent-allowed'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -15,7 +16,12 @@ import {
 import { formatNumber } from '~/shared/presenters/format'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
-import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
+import {
+  readIsBindReferral,
+  readReferralCount,
+  readReferrer,
+  readRootAddress,
+} from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
@@ -34,7 +40,7 @@ function readPendingReferrerFromEnvironment(): Address | null {
 /**
  * 推荐关系状态与绑定操作
  *
- * 链上读取是否已绑定、推荐人与直邀数；绑定前校验目标推荐人已绑定，
+ * 链上读取是否已绑定、推荐人与直邀数；绑定前校验父节点已绑定或为 root，
  * 成功后失效相关查询缓存。绑定有 5 秒冷却，防止重复提交。
  *
  * @see docs/onchain-manual/contracts/referral.md
@@ -93,8 +99,13 @@ export function useCommunityReferral() {
   const bindMutation = useChainMutation({
     path: WRITE_PATH.REFERRAL_BIND,
     mutation: async (target: Address, session) => {
-      const parentBound = await readIsBindReferral(target, session.readClient)
-      if (!parentBound) throw REFERRAL_BIND_ERROR.PARENT_NOT_BOUND
+      const [parentBound, root] = await Promise.all([
+        readIsBindReferral(target, session.readClient),
+        readRootAddress(session.readClient),
+      ])
+      if (!isReferralParentAllowed({ parent: target, parentBound, root })) {
+        throw REFERRAL_BIND_ERROR.PARENT_NOT_BOUND
+      }
       await bindReferrer({ wallet: session.wallet, referrer: target })
     },
     onSuccess: () => {

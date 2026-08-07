@@ -269,7 +269,7 @@ export const queryKeys = {
     xminePreflight: ['chain', 'staking', 'xmine'] as const,
     xminePreflightOf: (address: string) =>
       chainWalletQueryKey(['chain', 'staking', 'xmine'], address),
-    /** 公开键——xPerAgx / yieldRateBP / activeGons 概览数据。 */
+    /** 公开键——xPerAgx / yieldRateBP / totalStakedGagx 概览数据。 */
     xmineOverview: ['chain', 'staking', 'xmine', 'overview'] as const,
     assetsRoot: ['chain', 'assets'] as const,
     assetsStakePositions: ['chain', 'assets', 'stake'] as const,

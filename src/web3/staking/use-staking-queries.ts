@@ -131,7 +131,7 @@ export function useXminePreflightQuery(options?: ChainQueryOptions) {
   })
 }
 
-/** Xmine 概览查询（公开）：xPerAgx · yieldRateBP · activeGons。 */
+/** Xmine 概览查询（公开）：xPerAgx · yieldRateBP · totalStakedGagx。 */
 export function useXmineOverviewQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.xmineOverview,

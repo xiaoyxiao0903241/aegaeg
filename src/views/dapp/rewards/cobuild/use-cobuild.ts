@@ -158,7 +158,12 @@ export function useCobuild() {
     ? 0
     : summaryQuery.isLoading && summary == null
       ? null
-      : (parseMoneyish(summary?.making_market) ?? 0)
+      : (() => {
+          // making_market 为 AGX；门槛文案为 USD —— 与持仓进度同口径折算
+          const agx = parseMoneyish(summary?.making_market) ?? 0
+          if (agxPriceUsd != null && agxPriceUsd > 0) return agx * agxPriceUsd
+          return agx
+        })()
 
   const tierReqs: CobuildTierReq[] = [
     {

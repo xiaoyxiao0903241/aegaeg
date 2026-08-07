@@ -9,6 +9,7 @@ const referralAbi = parseAbi([
   REFERRAL_METHODS.isBindReferral,
   REFERRAL_METHODS.getReferral,
   REFERRAL_METHODS.getReferralCount,
+  REFERRAL_METHODS.getRootAddress,
 ])
 
 /**
@@ -75,5 +76,23 @@ export async function readReferralCount(
     abi: referralAbi,
     functionName: 'getReferralCount',
     args: [address as `0x${string}`],
+  })
+}
+
+/**
+ * 读取推荐树根地址。
+ *
+ * 绑定推荐人时，父节点可为 root（即使 `isBindReferral(root)` 为 false）。
+ *
+ * @param client 链上读取客户端，默认公共 RPC
+ * @returns 根节点地址
+ * @see 手册 §5.3 展示字段 `getRootAddress`
+ * @see docs/onchain-manual/contracts/referral.md
+ */
+export async function readRootAddress(client: ChainReadClient = bscReadClient): Promise<string> {
+  return client.readContract({
+    address: BSC_CONTRACTS.referral,
+    abi: referralAbi,
+    functionName: 'getRootAddress',
   })
 }

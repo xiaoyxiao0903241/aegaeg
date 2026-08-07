@@ -2,15 +2,12 @@ import { parseAbi } from 'viem'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { formatNumber } from '~/shared/presenters/format'
-import { X_STAKING_POOL_METHODS } from '~/web3/abis'
+import { ERC20_METHODS, X_STAKING_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 
-const overviewAbi = parseAbi([
-  X_STAKING_POOL_METHODS.xPerAgx,
-  X_STAKING_POOL_METHODS.yieldRateBP,
-  X_STAKING_POOL_METHODS.activeGons,
-])
+const overviewAbi = parseAbi([X_STAKING_POOL_METHODS.xPerAgx, X_STAKING_POOL_METHODS.yieldRateBP])
+const gagxBalanceAbi = parseAbi([ERC20_METHODS.balanceOf])
 
 /** `xPerAgx` 存储标度：1e18 → 人类可读「X per AGX」。 */
 const X_PER_AGX_SCALE = 10n ** 18n
@@ -20,22 +17,26 @@ const AGX_DECIMALS_FACTOR = 10n ** 9n
 export type XmineOverview = {
   xPerAgx: bigint
   yieldRateBP: bigint
-  activeGons: bigint
+  /**
+   * 协议内 X 挖矿总质押（gAGX）：`RewardGAGX.balanceOf(XStakingPool)`。
+   * 含 active + warmup 锁在池内的 gAGX；勿用 `activeGons` 冒充金额。
+   */
+  totalStakedGagx: bigint
 }
 
 /**
  * 读取 Xmine 概览（公开，无钱包依赖）
  *
- * 并行读取 xPerAgx、日收益率基点与 activeGons，供 X 挖矿页展示。
+ * 并行读取 xPerAgx、日收益率基点与池内 gAGX 余额，供 X 挖矿页展示。
  *
  * @param client 链上读取客户端，默认公共 RPC
- * @returns xPerAgx / yieldRateBP / activeGons
+ * @returns xPerAgx / yieldRateBP / totalStakedGagx
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
 export async function readXmineOverview(
   client: ChainReadClient = bscReadClient,
 ): Promise<XmineOverview> {
-  const [xPerAgx, yieldRateBP, activeGons] = await Promise.all([
+  const [xPerAgx, yieldRateBP, totalStakedGagx] = await Promise.all([
     client.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: overviewAbi,
@@ -47,15 +48,16 @@ export async function readXmineOverview(
       functionName: 'yieldRateBP',
     }),
     client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: overviewAbi,
-      functionName: 'activeGons',
+      address: BSC_CONTRACTS.gagx,
+      abi: gagxBalanceAbi,
+      functionName: 'balanceOf',
+      args: [BSC_CONTRACTS.xStakingPool],
     }),
   ])
   return {
     xPerAgx: xPerAgx as bigint,
     yieldRateBP: yieldRateBP as bigint,
-    activeGons: activeGons as bigint,
+    totalStakedGagx: totalStakedGagx as bigint,
   }
 }
 

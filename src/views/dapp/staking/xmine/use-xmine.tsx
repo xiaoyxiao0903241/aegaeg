@@ -210,7 +210,7 @@ const NEXT_EMISSION_EMPTY = '—'
  * Xmine 详情右栏
  *
  * 仓位链读 `readXminePosition`，记录走 `/x0-mining/logs`；
- * 协议概览走 `readXmineOverview`（activeGons / xPerAgx / yieldRateBP）。
+ * 协议概览走 `readXmineOverview`（totalStakedGagx / xPerAgx / yieldRateBP）。
  * 「累计产出」无协议合计 view → 与资产侧同口径：用户 REWARD 流水累加。
  *
  * @returns 右栏概览、仓位、记录表的展示数据
@@ -237,7 +237,7 @@ export function useXmineDetail() {
 
   const tvlGagx =
     overviewQuery.data != null
-      ? formatTokenAmountToNumber(overviewQuery.data.activeGons, GAGX_DECIMALS)
+      ? formatTokenAmountToNumber(overviewQuery.data.totalStakedGagx, GAGX_DECIMALS)
       : 0
   const agxPerX =
     overviewQuery.data != null

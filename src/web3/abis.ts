@@ -83,6 +83,8 @@ export const REFERRAL_METHODS = {
   isBindReferral: 'function isBindReferral(address user) view returns (bool)',
   getReferral: 'function getReferral(address user) view returns (address)',
   getReferralCount: 'function getReferralCount(address user) view returns (uint256)',
+  /** 推荐树根地址；绑定父节点可为 root（即使 root 未 isBindReferral）。 */
+  getRootAddress: 'function getRootAddress() view returns (address)',
   getChildren: 'function getChildren(address user) view returns (address[])',
   bindReferral: 'function bindReferral(address referrer)',
 } as const
@@ -326,7 +328,7 @@ export const X_STAKING_POOL_METHODS = {
   xPerAgx: 'function xPerAgx() view returns (uint256)',
   /** 按天计息 BP；日收益率% = BP / 100 */
   yieldRateBP: 'function yieldRateBP() view returns (uint256)',
-  /** 活跃质押 gons（与 gAGX 9 位同刻度展示） */
+  /** 活跃质押 gons（内部记账单位，≠ gAGX 金额） */
   activeGons: 'function activeGons() view returns (uint256)',
   stakes:
     'function stakes(address user) view returns (uint256 gons, uint256 warmupGons, uint256 warmupStartTime, uint256 warmupEndTime, uint256 rewardStartTime)',
