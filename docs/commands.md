@@ -4,11 +4,11 @@
 
 ## 日常
 
-| 命令                                           | 用途                                               |
-| ---------------------------------------------- | -------------------------------------------------- |
-| `pnpm dev`                                     | tokens + render-home + Vite `:5174`                |
-| `pnpm build`                                   | tokens + `tsc -b` + render-home + production build |
-| `pnpm env:staging` / `env:prod` / `env:status` | 切换 `.env.local`                                  |
+| 命令                                           | 用途                                                                              |
+| ---------------------------------------------- | --------------------------------------------------------------------------------- |
+| `pnpm dev`                                     | tokens + render-home + Vite `:5174`（`/api` → `VITE_API_BASE_URL` 代理，避 CORS） |
+| `pnpm build`                                   | tokens + `tsc -b` + render-home + production build                                |
+| `pnpm env:staging` / `env:prod` / `env:status` | 切换 `.env.local`                                                                 |
 
 ## 门禁
 
@@ -26,12 +26,15 @@
 
 ## 关键路径
 
-| 主题                    | 路径                                                                 |
-| ----------------------- | -------------------------------------------------------------------- |
-| 链 / thirdweb           | `src/web3/thirdweb.ts`                                               |
-| 写链                    | `src/web3/wallet/wallet-contract-write.ts`                           |
-| 合约地址（fail-closed） | `src/shared/config/contracts.ts` ← `VITE_BSC_*`                      |
-| 地址目录                | [`onchain-manual/00-addresses.md`](./onchain-manual/00-addresses.md) |
-| 新手册 / ABI            | [`onchain-manual/`](./onchain-manual/)                               |
-| 旧手册                  | [`onchain-manual-legacy.md`](./onchain-manual-legacy.md)             |
-| 后端 API                | [`backend-api/`](./backend-api/)（机器真源 `openapi.json`）          |
+| 主题                    | 路径                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| 链 / thirdweb           | `src/web3/thirdweb.ts`                                                               |
+| 写链                    | `src/web3/wallet/wallet-contract-write.ts`                                           |
+| 合约地址（fail-closed） | `src/shared/config/contracts.ts` ← `VITE_BSC_*`                                      |
+| 地址目录                | [`onchain-manual/00-addresses.md`](./onchain-manual/00-addresses.md)                 |
+| 新手册 / ABI            | [`onchain-manual/`](./onchain-manual/)                                               |
+| 旧手册                  | [`onchain-manual-legacy.md`](./onchain-manual-legacy.md)                             |
+| 后端 API                | [`backend-api/`](./backend-api/)（机器真源 `openapi.json`）                          |
+| 数据对齐矩阵（SSOT）    | [`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md)                     |
+| 各章对照源              | [`research/dapp-tab-source-index.md`](./research/dapp-tab-source-index.md)           |
+| 页袋 Dock/Detail 合同   | [`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md) |

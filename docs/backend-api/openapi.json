@@ -77,6 +77,10 @@
       "description": "X0 挖矿流水与持仓\n\n一级路由：`POST /api/x0-mining/…`\n\n本组接口：\n- `POST /x0-mining/logs`\n- `POST /x0-mining/positions`"
     },
     {
+      "name": "protocol-market-stats（协议市值统计）",
+      "description": "协议总市值 / 总质押历史序列\n\n一级路由：`POST /api/protocol-market-stats/…`\n\n本组接口：\n- `POST /protocol-market-stats/series`"
+    },
+    {
       "name": "一期接口",
       "description": "一期已上线接口（历史）。位于文档最下方「历史接口（一期）」分组，默认折叠。/ Phase-1 legacy APIs."
     }
@@ -1523,6 +1527,53 @@
           },
           "data": {
             "$ref": "#/components/schemas/StakeAddressCountStats"
+          }
+        }
+      },
+      "ProtocolMarketStatsSeriesRequest": {
+        "type": "object",
+        "required": ["range", "metric"],
+        "properties": {
+          "range": {
+            "type": "string",
+            "enum": ["week", "month", "year", "all"],
+            "description": "**说明：** 周期"
+          },
+          "metric": {
+            "type": "string",
+            "enum": ["market", "stake"],
+            "description": "**说明：** market=总市值，stake=总质押"
+          }
+        }
+      },
+      "ProtocolMarketStatsSeriesPoint": {
+        "type": "object",
+        "required": ["date", "amount"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "**说明：** 日期（如 yyyy-MM-dd）"
+          },
+          "amount": {
+            "type": "string",
+            "description": "**说明：** 数值（十进制字符串）"
+          }
+        }
+      },
+      "ApiResponseProtocolMarketStatsSeries": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 0,
+            "description": "**说明：** 业务码，0=成功",
+            "title": "code"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProtocolMarketStatsSeriesPoint"
+            }
           }
         }
       },
@@ -6619,6 +6670,36 @@
           }
         }
       }
+    },
+    "/protocol-market-stats/series": {
+      "post": {
+        "tags": ["protocol-market-stats（协议市值统计）"],
+        "summary": "协议总市值 / 总质押历史序列 / Protocol market & stake series",
+        "description": "按周期与指标返回历史点列。`range`：week / month / year / all；`metric`：market=总市值，stake=总质押。\ndata 为 `[{ date, amount }, …]`。无需登录。\n",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProtocolMarketStatsSeriesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseProtocolMarketStatsSeries"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "x-tagGroups": [
@@ -6639,7 +6720,8 @@
         "stake-flow（质押流水）",
         "bond-flow（债券流水）",
         "turbine（涡轮）",
-        "x0-mining（X0 挖矿）"
+        "x0-mining（X0 挖矿）",
+        "protocol-market-stats（协议市值统计）"
       ]
     },
     {

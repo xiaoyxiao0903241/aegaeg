@@ -7,8 +7,9 @@
 | ------- | -------------------------------- |
 | 标题    | AEGIS API                        |
 | OpenAPI | 3.0.3                            |
-| paths   | 58                               |
-| tags    | 16                               |
+| paths   | 59                               |
+| tags    | 17                               |
 | 源      | 本目录（以 `openapi.json` 为准） |
 
-接入约定：有字段 → 尽量接线；手册与 API 皆无 → 诚实空，禁止假数。
+接入约定：有字段 → 尽量接线；手册与 API 皆无 → 诚实空，禁止假数。  
+FE 现行对齐结论：[`../dapp-data-coverage-matrix.md`](../dapp-data-coverage-matrix.md)（本目录 json / api.md **勿手改**；更新从上游重新生成）。

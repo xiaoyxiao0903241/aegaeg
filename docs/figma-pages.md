@@ -97,5 +97,6 @@
 ## 备注
 
 - 静态 UI SSOT = 上表 **PC 产品页**；同名变体 / 非验收对照帧勿作验收源。
+- 动态数据 / 写路径对齐 → [`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md)（不以本表代替）。
 - 稿内几乎全部为 connected 外观；无 title 级「未连接」页帧。
 - Segment 样本（活期/180/360/540）：`4448:601` ⊂ 质押/质押 `4448:220`。

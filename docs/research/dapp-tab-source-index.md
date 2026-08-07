@@ -1,9 +1,8 @@
-# Dapp 各章源索引（手册 · API · Figma · 原型 · 代码根）
+# Dapp 各章对照源索引
 
-> 只读索引 · 2026-08-07  
-> Ticket：[Research: per-tab manual API Figma and prototype index](https://github.com/xiaoyxiao0903241/aegaeg/issues/6) · Map [#3](https://github.com/xiaoyxiao0903241/aegaeg/issues/3)  
-> 锁定：[`docs/decisions/dapp-data-coverage-matrix-wayfinder.md`](../decisions/dapp-data-coverage-matrix-wayfinder.md)（Host Fold=`host`+`views/dapp/shared`；不含 home；本票**不**填矩阵正文）  
-> UI 基线序：**已实现 > Figma > HTML 原型**
+> 现行目录：各章对应的手册 / API / Figma / 原型 / 代码根。  
+> 对齐结论以 [`docs/dapp-data-coverage-matrix.md`](../dapp-data-coverage-matrix.md) 为准。  
+> 规则：[`docs/decisions/dapp-data-coverage-matrix-wayfinder.md`](../decisions/dapp-data-coverage-matrix-wayfinder.md)
 
 ## 全局真源（各章共用）
 
@@ -22,7 +21,7 @@
 
 ## 1. host + shared
 
-> Map：Host 专章 Fold `views/dapp/host` + `views/dapp/shared`（非 tab；壳 / 窗口宿主）。
+> Host 专章含 `views/dapp/host` + `views/dapp/shared`（非 tab；壳 / 窗口宿主）。
 
 ### Onchain manual
 
@@ -87,6 +86,7 @@ Legacy：无质押专章（一般不需）。
 | `stake-flow（质押流水）` | `/stake-flow/logs` · `/stake-flow/positions`                           |
 | `bond-flow（债券流水）`  | `/bond-flow/lp-logs` · `burn-logs` · `lp-purchases` · `burn-purchases` |
 | `x0-mining（X0 挖矿）`   | `/x0-mining/logs` · `/x0-mining/positions`                             |
+| `protocol-market-stats`  | `/protocol-market-stats/series`（Hub/Detail 趋势图；无需登录）         |
 | 旁路                     | `performance`（做市/质押地址统计，概览向）                             |
 
 ### Figma
@@ -374,8 +374,8 @@ Legacy：**强烈需要** — [`onchain-manual-legacy.md`](../onchain-manual-leg
 | community   | §5 + legacy §2        | 一期 team/referral + referral-award 旁路                 | 仅空态            | 同上                                 | `community/`        | **weak**   |
 | genesis     | §6 + legacy §3–4      | 一期 sales/team-reward；无二期 tag                       | 仅空态            | 同上                                 | `genesis/`          | **weak**   |
 
-## 非本索引
+## 本索引边界
 
-- 不填 [`dapp-data-coverage-matrix`](../decisions/dapp-data-coverage-matrix-wayfinder.md) 矩阵正文。
-- 不改 `onchain-manual/` 正文、不改业务代码、不改 map #3 Decisions。
-- home 明确排除；治理/管理台/账户迁移专页若不在现行 tab 注册表，仅作交叉引用。
+- 对齐结论 → [`dapp-data-coverage-matrix.md`](../dapp-data-coverage-matrix.md)；规则 → [`dapp-data-coverage-matrix-wayfinder.md`](../decisions/dapp-data-coverage-matrix-wayfinder.md)
+- 不改写 `onchain-manual/` / `backend-api/` 入仓正文
+- 不含 home；治理 / 管理台 / 账户迁移若不在现行 tab 注册表，仅交叉引用

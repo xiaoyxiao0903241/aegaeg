@@ -131,21 +131,24 @@
 ## DApp 图（`Chart`）
 
 > **模型**：组合式面积图壳。`shared/components/chart.tsx`。  
-> `Chart` · `Header` · `Plot` · `Empty`。点数 / tip 格式由业务件传入。
+> `Chart` · `Header` · `Plot` · `Empty` · `Skeleton`。点数 / tip 格式由业务件传入。
 
-| 零件           | 职责                                          |
-| -------------- | --------------------------------------------- |
-| `Chart`        | elevated 卡壳（Figma chart-card / ccard）     |
-| `Chart.Header` | 顶栏行（value+delta+range 或 hint+value）     |
-| `Chart.Plot`   | Lightweight Charts area + 点阵底 + tip + 轴标 |
-| `Chart.Empty`  | 全局 `Empty`                                  |
+| 零件             | 职责                                          |
+| ---------------- | --------------------------------------------- |
+| `Chart`          | elevated 卡壳（Figma chart-card / ccard）     |
+| `Chart.Header`   | 顶栏行（value+delta+range 或 hint+value）     |
+| `Chart.Plot`     | Lightweight Charts area + 点阵底 + tip + 轴标 |
+| `Chart.Empty`    | 全局 `Empty`                                  |
+| `Chart.Skeleton` | **曲线图**加载骨架（绘图区 + 轴标位）         |
 
-业务：`StakingTvlChart`（hub/aside）· `StakingCurveChart`（calc，自管本地曲线）。
+业务：`StakingTvlChart`（hub/aside，`loading`→`Chart.Skeleton`）· `StakingCurveChart`（calc，本地曲线无 IO）。  
+持仓分布环形图**不用** `Chart.Skeleton`：用 `AssetsHoldingsDistributionSkeleton`（左环右列）。
 
 ### MUST NOT（图）
 
 - 页袋直触 `lightweight-charts` / 平行 `TvAreaChart` / `StakingChartCard`
 - shared 内嵌 locale 或拉历史索引
+- 用曲线骨架冒充持仓分布（或反过来）
 
 ## DApp 键值列表（`List`）
 

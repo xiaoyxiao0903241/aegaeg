@@ -62,6 +62,10 @@
 | **社区**           | `community`                                                             | 邀请与推荐关系                                                        | DApp rail                 |
 | **共建**           | `genesis`                                                               | 创世/共建认购与记录                                                   | DApp rail / genesis views |
 | **DApp 页签**      | `DappTab`                                                               | exchange · assets · staking · rewards · release · community · genesis | `dapp-tabs`               |
+| **窗口宿主**       | `host`                                                                  | rail / topbar / mobile-nav / onboarding / wallet                      | `views/dapp/host/`        |
+| **跨 tab 产品壳**  | `views/dapp/shared`                                                     | DockFrame / TabHeader 等（读 store · 绑钱包 · i18n）；≠ Foundation    | `views/dapp/shared/`      |
+| **页袋左栏**       | `*Dock`                                                                 | 域左栏组装；文件 `dock.tsx`                                           | 各 tab 域根 / mode        |
+| **页袋右栏**       | `*Detail`                                                               | 域右栏组装；文件 `detail.tsx`                                         | 各 tab 域根 / mode        |
 | **Genesis 季**     | phase / season                                                          | 预售季；链上 phases + active                                          | presale queries           |
 | **季/折扣 chrome** | promo                                                                   | 派生写入 store                                                        | `GenesisPromoSync`        |
 

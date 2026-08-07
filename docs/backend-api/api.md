@@ -30,6 +30,7 @@ EVM 签名登录与销售记录接口 / EVM login and sales APIs
 - [bond-flow（债券流水）](#bond-flow-债券流水)（4）
 - [turbine（涡轮）](#turbine-涡轮)（2）
 - [x0-mining（X0 挖矿）](#x0-mining-x0-挖矿)（2）
+- [protocol-market-stats（协议市值统计）](#protocol-market-stats-协议市值统计)（1）
 - [一期接口](#一期接口)（18）
 
 ## lucky-reward（幸运奖）
@@ -997,6 +998,33 @@ total_stake_amount = SUM(STAKE_X) − SUM(UNSTAKE_X)（gAGX 净质押，与投�
 | ------ | --------------------- | --------------------------------------------------------------------------------- |
 | 200    | 成功 / Success        | `ApiResponseX0MiningPositions` {`code`:integer, `data`:object}                    |
 | 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+
+## protocol-market-stats（协议市值统计）
+
+协议总市值 / 总质押历史序列
+
+一级路由：`POST /api/protocol-market-stats/…`
+
+本组接口：
+
+- `POST /protocol-market-stats/series`
+
+### `POST` `/protocol-market-stats/series`
+
+**协议总市值 / 总质押历史序列 / Protocol market & stake series**
+
+- auth: none
+
+按周期与指标返回历史点列。`range`：week / month / year / all；`metric`：market=总市值，stake=总质押。
+data 为 `[{ date, amount }, …]`。无需登录。
+
+**Request body**
+
+- `application/json`: `ProtocolMarketStatsSeriesRequest` {`range`:string, `metric`:string}
+
+| status | description    | schema                                                                                |
+| ------ | -------------- | ------------------------------------------------------------------------------------- |
+| 200    | 成功 / Success | `ApiResponseProtocolMarketStatsSeries` {`code`:integer, `data`:array<{date, amount}>} |
 
 ## 一期接口
 

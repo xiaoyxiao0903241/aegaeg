@@ -1,7 +1,7 @@
 # DApp 页袋：Dock + Detail（域 Facade + 按需 mode 袋）
 
-> **状态：合同已修订** — 2026-08-06；Dock/Detail + `views/dapp/shared` 已落地；组合根 `src/boot/`；窗口宿主 `views/dapp/host/`（页袋同构：primitives + use-* + 具名大件；shell→host）。  
-> 取代原稿「每域固定四文件」表述。
+> **状态：现行**  
+> 目录落点：域 `dock.tsx` / `detail.tsx`；跨 tab 产品壳 `views/dapp/shared/`；窗口宿主 `views/dapp/host/`（primitives + use-* + 具名大件）；组合根 `src/boot/`。
 
 ## 不变量（硬）
 
@@ -88,7 +88,7 @@ community/
 | 一份会话同时喂左右 | `useFlashExchange`（中性名）或 session host                                          | **禁止**假拆成 Dock/Detail 两份     |
 | 纯读、两边共用     | 域内可中性；**跨域 export 边界**须域前缀（如 `useAssetsHub` / `useRewardsReferral`） | dock/detail 与 tab 父层取用         |
 
-旧名 `*View` / `*Aside` / `*Widget`（页袋 VM）迁到上表；写链 / IO helper 不强制改名。
+页袋 VM 禁止残留 `*View` / `*Aside` / `*Widget` 作入口名；写链 / IO helper 不强制改名。
 
 ## 体量与再拆
 
@@ -105,28 +105,19 @@ community/
 - 跨 tab **产品壳**（`DockFrame` / Subview / ConnectPromo 等）→ `views/dapp/shared/`（准入：≥2 无关 tab；禁域常量/单域卡）；业务零件留在域/mode `primitives.tsx`。
 - 门禁：`views-no-cross-tab` 禁 tab↔tab，允许 tab→`views/dapp/shared` / host / hooks；`host` 与 `shared` 均非 tab；`dapp-shared-no-tabs` 禁 `views/dapp/shared`→tab（允许 shared→host 如 WalletConnectChip）；`host-views-composition` 记录 host→tab（warn）。
 
-## 命名对照（执行波次）
+## 命名（现行）
 
-| 旧                                            | 新                                                                                                        |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 域/mode `*Widget` 页袋入口                    | `*Dock`（文件 `dock.tsx`）                                                                                |
-| 已有 `*Detail`                                | 保持；归入 mode 或域根 `detail.tsx`                                                                       |
-| `hub` 总览 widget                             | `hub/dock.tsx` 等四件套                                                                                   |
-| 散落 `*-primitives` / 一卡一文件              | 收进该袋 `primitives.tsx`                                                                                 |
-| 页袋 `*View` / `*Aside` / 左栏 `*Widget` hook | 左右分离时 → `use*Dock` / `use*Detail`；弹层 VM 用中性名（如 `useAssetsClaimModal`，禁残留 `*View` 后缀） |
-| 域内 `SideCard` / `QuickLinks` 一类薄包装     | 删；`Card` / call site 列表；单列链接栈**不**硬套右栏 `Grid`                                              |
-| 提议 `views/dapp/shared` → `components`       | **不做**：与 `src/shared/components` 抢词；目录含 context/host，仍叫跨 tab 产品壳 `shared`                |
-
-## 执行顺序
-
-1. 右栏 Foundation + jscpd/Section 门禁收口（进行中）。
-2. **修订本合同**（本文件）——已完成。
-3. 以 **community** 做扁平样板：四短文件 + 注册表改 import。
-4. 大域按 mode 滚动（先 exchange 或 staking 择一）；清旧 `*Widget` 入口名。
+| 项                  | 约定                                                                             |
+| ------------------- | -------------------------------------------------------------------------------- |
+| 页袋左 / 右入口     | `*Dock` / `*Detail`（文件 `dock.tsx` / `detail.tsx`）                            |
+| Hub 总览            | `hub/` mode 袋四件套，不塞域根 `dock.tsx`                                        |
+| UI 零件             | 收进该袋 `primitives.tsx`；禁一卡一文件瀑布                                      |
+| Hook                | 左右分离 → `use*Dock` / `use*Detail`；弹层 VM 中性名（如 `useAssetsClaimModal`） |
+| 薄包装              | 禁域内 `SideCard` / `QuickLinks`；单列链接栈不硬套右栏 `Grid`                    |
+| `views/dapp/shared` | **不**改名为 `components`（与 `src/shared/components` 抢词）                     |
 
 ## 非目标
 
-- 立刻全仓搬目录。
-- 把 Faq / Tile / Grid 收进域 primitives。
-- 改链上 / API / 文案语义。
-- mode 级 Dock 进 Tab 注册表。
+- 把 Faq / Tile / Grid 收进域 primitives
+- 改链上 / API / 文案语义
+- mode 级 Dock 进 Tab 注册表
