@@ -137,11 +137,18 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     isOldAccount: migration.isOldAccount,
     maxDebt: marketLoaded ? market.maxDebt : null,
     totalDeposit: marketLoaded ? market.totalDeposit : null,
+    maxPayout: marketLoaded ? market.maxPayoutAmount : null,
     netPayout:
       amountInput.amountIn === 0n
         ? 0n
         : payoutLoaded
           ? (payoutQuery.data?.netPayout ?? null)
+          : null,
+    grossPayout:
+      amountInput.amountIn === 0n
+        ? 0n
+        : payoutLoaded
+          ? (payoutQuery.data?.grossPayout ?? null)
           : null,
   })
 

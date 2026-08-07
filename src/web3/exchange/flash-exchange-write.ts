@@ -1,5 +1,6 @@
 import type { Wallet } from 'thirdweb/wallets'
 
+import { ZERO_ADDRESS } from '~/core/constants'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   REDEEMABLE_GAGX_ERRORS,
@@ -17,17 +18,30 @@ const redeemableGagxRedeemAbi = parseWriteAbi(
 )
 const redeemableGagxWrapAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.wrap, REDEEMABLE_GAGX_ERRORS)
 
-/** USDT → Usd1Swap 授权：USDT 兑换 USD1 前按需补 approve。 */
+/**
+ * 输入币 → Usd1Swap 授权：兑换前按需补 approve。
+ *
+ * token 必须来自 getConfig().usdtToken；零地址 fail-closed，禁回退 env USDT。
+ *
+ * @param wallet 当前钱包
+ * @param amountIn 拟兑换数量
+ * @param usdtToken Usd1Swap.getConfig().usdtToken
+ */
 export async function approveUsdtForFlashExchangeIfNeeded({
   wallet,
   amountIn,
+  usdtToken,
 }: {
   wallet: Wallet
   amountIn: bigint
+  usdtToken: `0x${string}`
 }) {
+  if (!usdtToken || usdtToken.toLowerCase() === ZERO_ADDRESS) {
+    throw new Error('ErrorZeroAddress')
+  }
   return approveErc20IfNeeded({
     wallet,
-    token: BSC_CONTRACTS.usdt,
+    token: usdtToken,
     spender: BSC_CONTRACTS.usd1Swap,
     amountIn,
   })

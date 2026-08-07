@@ -84,7 +84,7 @@ export function useGenesisChainReads() {
   const airdropThresholdUsd =
     airdropThresholdQuery.data !== undefined
       ? presaleAirdropThresholdToUsd(airdropThresholdQuery.data)
-      : presaleAirdropThresholdToUsd(0n)
+      : null
 
   const isLoading =
     phasesQuery.isLoading ||

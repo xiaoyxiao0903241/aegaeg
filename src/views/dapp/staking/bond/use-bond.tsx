@@ -196,6 +196,7 @@ export function useBondDetail(kind: BondKind) {
         <RebaseCountdownValue
           currentBlock={overviewQuery.data?.currentBlock}
           epochEndBlock={overviewQuery.data?.epochEndBlock}
+          secondsPerBlock={overviewQuery.data?.secondsPerBlock}
         />
       ),
     },

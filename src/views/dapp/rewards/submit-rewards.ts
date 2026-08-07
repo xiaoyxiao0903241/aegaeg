@@ -2,7 +2,7 @@ import { matchClaimPlanIndices, restakeBpsFromPct } from '~/core/assets/claim-pl
 import { evaluateRewardsMixedClaim } from '~/core/rewards/rewards-block-reasons'
 import { requestDaoClaim } from '~/shared/api/endpoints'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
-import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
+import { invalidateAfterRewardsMixedClaim } from '~/shared/api/query/invalidate'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
@@ -104,7 +104,7 @@ export async function submitLuckyMixedClaim(args: {
     restakePlanIndex: liveRestake,
     restakeBps,
   })
-  invalidateAfterTeamClaim()
+  invalidateAfterRewardsMixedClaim()
 }
 
 /**
@@ -209,5 +209,5 @@ export async function submitDaoMixedClaim(args: {
     restakePlanIndex: liveRestake,
     restakeBps,
   })
-  invalidateAfterTeamClaim()
+  invalidateAfterRewardsMixedClaim()
 }

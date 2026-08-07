@@ -17,6 +17,7 @@ import type {
   StakeFlowLogsParams,
   X0MiningLogsParams,
 } from '~/shared/api/types'
+import { sumX0MiningRewardAmountAcrossPages } from '~/shared/presenters/xmine-lifetime-reward'
 
 /** 质押、债券与 X 挖矿的指标与流水 hooks 都要求登录态。 */
 
@@ -140,6 +141,24 @@ export function useX0MiningLogs(params: X0MiningLogsParams = {}, enabled = true)
     (token) => getX0MiningLogs(token, params),
     enabled,
     { keepPreviousData: true },
+  )
+}
+
+/**
+ * 用户 X 挖矿终身 REWARD 产出：翻页累加至覆盖 `total` 或末页。
+ *
+ * @param enabled false 时暂停请求
+ */
+export function useX0MiningLifetimeReward(enabled = true) {
+  return useAuthenticatedQuery(
+    queryKeys.api.x0MiningLifetimeReward,
+    (token) =>
+      sumX0MiningRewardAmountAcrossPages({
+        pageSize: 100,
+        fetchPage: (page, pageSize) =>
+          getX0MiningLogs(token, { operation: ['REWARD'], page, page_size: pageSize }),
+      }),
+    enabled,
   )
 }
 

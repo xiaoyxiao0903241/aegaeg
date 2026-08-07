@@ -1,25 +1,21 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { prefetchConnectWarm } from '~/shared/api/query/prefetch'
-import { chainReadClient } from '~/web3/chain-read-client'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
-/** 优先用已连接钱包的 RPC；未连接时回退到应用读 RPC。 */
-function useChainReadClient() {
-  const wallet = useActiveWallet()
-  return useMemo(() => chainReadClient(wallet), [wallet])
-}
-
-/** 钱包就绪后：把推荐绑定与 AGX/USD1/gAGX/USDT/X 余额预热进 React Query。 */
+/**
+ * 钱包就绪后：用 BSC 公共读客户端暖热推荐绑定与余额缓存。
+ * 不用钱包 RPC，避免非 BSC chainId 污染 query cache。
+ */
 export function useConnectWarmPrefetch() {
   const account = useActiveAccount()
-  const readClient = useChainReadClient()
   const address = account?.address
   const walletReady = hasWalletAccount(account)
 
   useEffect(() => {
     if (!walletReady || !address) return
-    prefetchConnectWarm(address, readClient)
-  }, [walletReady, address, readClient])
+    prefetchConnectWarm(address, bscReadClient)
+  }, [walletReady, address])
 }

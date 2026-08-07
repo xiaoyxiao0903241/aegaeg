@@ -12,9 +12,14 @@ test('remainingSecFromBlocks zeros when missing or past', () => {
   assert.equal(remainingSecFromBlocks(5n, 10n), 0)
 })
 
-test('remainingSecFromBlocks uses 3s/block (manual FAQ)', () => {
+test('remainingSecFromBlocks defaults to 3s/block', () => {
   assert.equal(remainingSecFromBlocks(1200n, 0n), 3600)
   assert.equal(remainingSecFromBlocks(101n, 100n), 3)
+})
+
+test('remainingSecFromBlocks accepts secondsPerBlock', () => {
+  assert.equal(remainingSecFromBlocks(1200n, 0n, 2), 2400)
+  assert.equal(remainingSecFromBlocks(101n, 100n, 2.5), 2)
 })
 
 test('formatRebaseCountdownParts pads HH/MM/SS for DigitReel', () => {

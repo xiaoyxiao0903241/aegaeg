@@ -28,8 +28,23 @@ export async function submitFlashExchange(args: {
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
     const { wallet, address } = session
 
+    let liveConfig: Awaited<ReturnType<typeof readUsd1SwapConfig>> | undefined
     if (pairId === 'usdt') {
-      await approveUsdtForFlashExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
+      liveConfig = await readUsd1SwapConfig()
+      const configBlock = evaluateFlashUsd1Swap({
+        amountIn: core.debouncedAmountIn,
+        quotedOut: 0n,
+        config: liveConfig,
+      })
+      // 授权前只拦零地址；上下限 / 储备等仍等 live quote 后再判
+      if (configBlock === 'zeroUsdtToken') {
+        throw new Error(FLASH_USD1_BLOCKED.zeroUsdtToken)
+      }
+      await approveUsdtForFlashExchangeIfNeeded({
+        wallet,
+        amountIn: core.debouncedAmountIn,
+        usdtToken: liveConfig.usdtToken,
+      })
     } else if (direction === 'reverse') {
       await approveAgxForWrapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
     }
@@ -53,11 +68,11 @@ export async function submitFlashExchange(args: {
         })
       }
     } else {
-      const liveConfig = await readUsd1SwapConfig()
+      const config = liveConfig ?? (await readUsd1SwapConfig())
       const blockReason = evaluateFlashUsd1Swap({
         amountIn: core.debouncedAmountIn,
         quotedOut,
-        config: liveConfig,
+        config,
       })
       if (blockReason) {
         throw new Error(FLASH_USD1_BLOCKED[blockReason])

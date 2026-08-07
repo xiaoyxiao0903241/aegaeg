@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useX0MiningLogs } from '~/hooks/use-api-data'
+import { useX0MiningLifetimeReward, useX0MiningLogs } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -14,7 +14,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
-import { sumX0MiningRewardAmount } from '~/shared/presenters/xmine-lifetime-reward'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import {
@@ -154,11 +153,8 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
     queryKey: queryKeys.chain.assetsXminePosition,
     queryFn: (addr) => readXminePosition(addr as Address),
   })
-  // 累加用户历史 REWARD；page_size 取大以覆盖常见记录量（无协议累计 view）
-  const rewardLogs = useX0MiningLogs(
-    { operation: ['REWARD'], page: 1, page_size: 100 },
-    sessionReady,
-  )
+  // 累加用户历史 REWARD；翻页至覆盖 total（无协议累计 view）
+  const rewardLifetime = useX0MiningLifetimeReward(sessionReady)
 
   if (!walletReady || !address || positionQuery.isError) {
     return Array.from({ length: 4 }, () => ({
@@ -173,10 +169,10 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
     }))
   }
 
-  const { miningStake, pending, warmupGons } = positionQuery.data
-  // 无份额转金额的接口，可赎回估算为 warmup 结束后的全部质押，否则为 0
-  const released = warmupGons > 0n ? 0n : miningStake
-  const lifetimeX = sumX0MiningRewardAmount(rewardLogs.data?.items ?? [])
+  const { miningStake, pending } = positionQuery.data
+  // 无 PRV「已释放」映射 → 不把 miningStake 冒充已释放
+  const released = 0n
+  const lifetimeX = rewardLifetime.data ?? 0
 
   return [
     ...(

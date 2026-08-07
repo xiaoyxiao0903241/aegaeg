@@ -51,4 +51,5 @@ export const FLASH_USD1_BLOCKED = {
   aboveMax: 'FLASH_USD1_ABOVE_MAX',
   insufficientReserve: 'FLASH_USD1_INSUFFICIENT_RESERVE',
   zeroRate: 'FLASH_USD1_ZERO_RATE',
+  zeroUsdtToken: 'FLASH_USD1_ZERO_USDT_TOKEN',
 } as const

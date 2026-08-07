@@ -31,7 +31,12 @@ export function useFlashExchange(flash: FlashExchangeState) {
     walletReady: flash.walletReady,
   })
 
-  const blockHint = flash.usd1Block != null ? t.exchange.flash.blocked[flash.usd1Block] : null
+  const blockHint =
+    flash.usd1Block == null
+      ? null
+      : flash.usd1Block === 'zeroUsdtToken'
+        ? t.exchange.flash.blocked.zeroAddress
+        : t.exchange.flash.blocked[flash.usd1Block]
 
   usePresentUserFacingError(flash.validationError, {
     id: 'flash-exchange-quote-error',

@@ -43,7 +43,10 @@ export function useGenesisDock(genesis: GenesisSessionState) {
   }, [isMobileViewport])
 
   const xTokenAirdropHint = fillTemplate(t.genesis.xTokenAirdropHint, {
-    threshold: formatNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
+    threshold:
+      genesis.airdropThresholdLoading || genesis.airdropThresholdUsd == null
+        ? '—'
+        : formatNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
   })
 
   function handleSharesChange(value: string) {

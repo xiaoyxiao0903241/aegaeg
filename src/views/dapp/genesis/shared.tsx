@@ -95,14 +95,15 @@ const ZERO_FAQ: GenesisFaqTemplateValues = {
   minUsd: '$0',
   shareIncrement: '0',
   phaseQuotas: '$0–$0',
-  threshold: '$0',
+  // 空投门槛未就绪时不用 $0 冒充已加载
+  threshold: '—',
   airdropRatios: '0%',
 }
 
-/** FAQ 文案插值：未加载时全部回退为 0；调用方不得对 FAQ 数字做动画 */
+/** FAQ 文案插值：未加载时多数回退为 0；空投门槛未就绪用 —；调用方不得对 FAQ 数字做动画 */
 export function genesisFaqTemplateValues(
   phases: PresalePhaseOnChain[],
-  airdropThresholdUsd: number,
+  airdropThresholdUsd: number | null,
   isLoading = false,
 ): GenesisFaqTemplateValues {
   if (isLoading || phases.length === 0) {
@@ -120,7 +121,10 @@ export function genesisFaqTemplateValues(
     phaseQuotas: phases
       .map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount))
       .join(' / '),
-    threshold: formatNumber(Math.max(0, airdropThresholdUsd), { prefix: '$' }),
+    threshold:
+      airdropThresholdUsd == null
+        ? '—'
+        : formatNumber(Math.max(0, airdropThresholdUsd), { prefix: '$' }),
     airdropRatios: formatAirdropRatioList(phases),
   }
 }

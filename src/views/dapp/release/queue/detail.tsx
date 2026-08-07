@@ -56,9 +56,10 @@ export function QueueDetail() {
   }
 
   function formatReleasingLabel(): string {
+    if (chainReady) return `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}`
     const n = sessionReady ? parseApiAmount(api?.releasing_amount) : null
     if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
-    return `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}`
+    return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 
   function formatReleasedLabel(): string {

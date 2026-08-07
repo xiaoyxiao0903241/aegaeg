@@ -36,7 +36,6 @@ import {
   useStakingHubOverviewQuery,
   useXmineOverviewQuery,
 } from '~/web3/staking/use-staking-queries'
-import { formatXmineDailyYieldLabel } from '~/web3/staking/xmine-overview-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -83,11 +82,20 @@ export type AssetsHubOverview = {
 /** 无 rebase / 挖矿利率时展示 0.00%（空数字→0） */
 const APR_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 
-/** epoch rebase → 简易年化 APR（日率 ×365；日率=2×epoch） */
-function formatAprFromRebase(rate1e18: bigint | null | undefined): string {
-  const daily = baseDailyPctFromEpoch(epochRebasePctFrom1e18(rate1e18))
+/** epoch rebase → 简易年化 APR（日率 ×365；日率=epochsPerDay×epoch） */
+function formatAprFromRebase(
+  rate1e18: bigint | null | undefined,
+  epochsPerDay: number | null | undefined,
+): string {
+  const daily = baseDailyPctFromEpoch(epochRebasePctFrom1e18(rate1e18), epochsPerDay ?? 2)
   if (daily == null) return APR_EMPTY
-  return `${formatNumber(daily * 365, { digits: 2 })}%`
+  return formatAprFromDailyPct(daily)
+}
+
+/** 日收益率（%）→ 年化 APR 展示 */
+function formatAprFromDailyPct(dailyPct: number): string {
+  if (!Number.isFinite(dailyPct) || dailyPct < 0) return APR_EMPTY
+  return `${formatNumber(dailyPct * 365, { digits: 2 })}%`
 }
 
 function positionUsdOf(amount: number, priceUsd: number | null): number {
@@ -185,10 +193,16 @@ export function useAssetsHub(): AssetsHubOverview {
 
   const overviewQuery = useStakingHubOverviewQuery()
   const xmineOverviewQuery = useXmineOverviewQuery()
-  const stakeApr = formatAprFromRebase(overviewQuery.data?.rebaseRate1e18)
+  const stakeApr = formatAprFromRebase(
+    overviewQuery.data?.rebaseRate1e18,
+    overviewQuery.data?.epochsPerDay,
+  )
+  // LP/Burn 无独立 APR 源 → 诚实空，禁套用 stake rebase APR
+  const bondApr = APR_EMPTY
+  // Xmine：yieldRateBP 为日 BP → 日% ×365 进 APR 槽（禁直接塞日利率）
   const xmineApr =
     xmineOverviewQuery.data != null
-      ? formatXmineDailyYieldLabel(xmineOverviewQuery.data.yieldRateBP)
+      ? formatAprFromDailyPct(Number(xmineOverviewQuery.data.yieldRateBP) / 100)
       : APR_EMPTY
 
   const stakeQuery = useChainQuery({
@@ -286,7 +300,10 @@ export function useAssetsHub(): AssetsHubOverview {
 
   if (apiReady) {
     const totalValue = formatApiUsdLabel(apiReward.stake_invest_usd_value)
-    const claimableGagx = formatApiTokenLabel(apiReward.claimable_gagx, 'gAGX')
+    // 可领取 = Mixed 弹窗子集（stake + lp/burn gAGX）；禁直出 API claimable_gagx（含本页领不了的）
+    const claimableGagxWei = stakeYield + lpYield + burnYield
+    const claimableGagx = `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`
+    const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)
     const claimed = formatApiDecimalOrZero(apiReward.total_reward_claimed)
     const contribution = formatApiDecimalOrZero(apiReward.available_contribution)
     const holdingsTotal = formatApiTokenLabel(apiHoldings.total_holdings_agx, 'AGX')
@@ -303,7 +320,7 @@ export function useAssetsHub(): AssetsHubOverview {
     return {
       totalValue,
       claimable: claimableGagx,
-      claimableApprox: formatApiApproxUsd(apiReward.claimable_gagx, priceUsd),
+      claimableApprox: formatUsdApprox(claimableGagxNum, priceUsd),
       claimed,
       claimedApprox: formatApiApproxUsd(apiReward.total_reward_claimed, priceUsd),
       contribution,
@@ -330,7 +347,7 @@ export function useAssetsHub(): AssetsHubOverview {
           apiDist.bond_lp,
           'AGX',
           priceUsd,
-          stakeApr,
+          bondApr,
           lpYieldLabel,
           formatUsdApprox(lpYieldNum, priceUsd),
         ),
@@ -338,7 +355,7 @@ export function useAssetsHub(): AssetsHubOverview {
           apiDist.bond_burn,
           'AGX',
           priceUsd,
-          stakeApr,
+          bondApr,
           burnYieldLabel,
           formatUsdApprox(burnYieldNum, priceUsd),
         ),
@@ -387,7 +404,6 @@ export function useAssetsHub(): AssetsHubOverview {
     lpYield + burnYield > 0n
       ? `${formatTokenAmount(lpYield + burnYield, GAGX_DECIMALS, 2)} gAGX`
       : null,
-    xPending > 0n ? `${formatTokenAmount(xPending, X_DECIMALS, 2)} X` : null,
   ].filter(Boolean)
 
   const contribution = contribQuery.data?.contribution ?? 0n
@@ -444,7 +460,7 @@ export function useAssetsHub(): AssetsHubOverview {
         hasBalance: stakePrincipal > 0n || stakeYield > 0n,
       },
       lpbond: {
-        aprLabel: stakeApr,
+        aprLabel: bondApr,
         positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatUsdApprox(lpPosNum, priceUsd),
         positionUsd: positionUsdOf(lpPosNum, priceUsd),
@@ -453,7 +469,7 @@ export function useAssetsHub(): AssetsHubOverview {
         hasBalance: lpPrincipal > 0n || lpYield > 0n,
       },
       burnbond: {
-        aprLabel: stakeApr,
+        aprLabel: bondApr,
         positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatUsdApprox(burnPosNum, priceUsd),
         positionUsd: positionUsdOf(burnPosNum, priceUsd),

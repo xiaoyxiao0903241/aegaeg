@@ -1,5 +1,7 @@
 import { parseAbi } from 'viem'
 
+import { BSC_BLOCK_SECONDS } from '~/core/staking/format-rebase-countdown'
+import { epochsPerDayFromLength } from '~/core/staking/staking-yield'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
@@ -18,6 +20,9 @@ const burnSwapAbi = parseAbi([AGX_CONTRIBUTION_SWAP_METHODS.getConfig])
 
 /** 指数探测上限：避免异常链上状态打爆 RPC。 */
 const REBASES_PROBE_CAP = 1_048_576n
+
+/** 用最近 N 块时间戳差估出块秒数；样本不足或非法时回落 FAQ 兜底。 */
+const BLOCK_TIME_SAMPLE = 8
 
 export type StakingHubOverview = {
   /** StakingPool.poolAgxBalance — AGX 9 decimals */
@@ -38,6 +43,35 @@ export type StakingHubOverview = {
   epochEndBlock: bigint
   /** 读取时的链头高度（同一 RPC 批次窗口）。 */
   currentBlock: bigint
+  /** 近窗实测出块秒数；失败回落 BSC_BLOCK_SECONDS。 */
+  secondsPerBlock: number
+  /** 由 epoch.length × secondsPerBlock 推算；失败回落 FAQ 默认 2。 */
+  epochsPerDay: number
+}
+
+/**
+ * 近窗块时间戳 → 秒/块。
+ *
+ * @param client 链上读取客户端
+ * @param latest 链头高度
+ * @param sampleBlocks 采样跨度（块数）
+ * @returns 平均秒/块；样本不足或非法回落 BSC_BLOCK_SECONDS
+ */
+async function measureSecondsPerBlock(
+  client: ChainReadClient,
+  latest: bigint,
+  sampleBlocks: number = BLOCK_TIME_SAMPLE,
+): Promise<number> {
+  if (sampleBlocks <= 0 || latest < BigInt(sampleBlocks)) return BSC_BLOCK_SECONDS
+  const older = latest - BigInt(sampleBlocks)
+  const [oldBlock, newBlock] = await Promise.all([
+    client.getBlock({ blockNumber: older }),
+    client.getBlock({ blockNumber: latest }),
+  ])
+  const dt = Number(newBlock.timestamp - oldBlock.timestamp)
+  if (!(dt > 0) || !Number.isFinite(dt)) return BSC_BLOCK_SECONDS
+  const perBlock = dt / sampleBlocks
+  return Number.isFinite(perBlock) && perBlock > 0 ? perBlock : BSC_BLOCK_SECONDS
 }
 
 /**
@@ -156,10 +190,15 @@ export async function readStakingHubOverview(
     ])
 
   // ABI: (length, number, endBlock, distribute) — 勿把 length 当 number。
+  const epochLength = epoch[0]
   const epochNumber = epoch[1]
   const epochEndBlock = epoch[2]
   const totalBurned = burnConfig[6]
-  const rebaseRate1e18 = await readLatestSagxRebaseRate1e18(client)
+  const [rebaseRate1e18, secondsPerBlock] = await Promise.all([
+    readLatestSagxRebaseRate1e18(client),
+    measureSecondsPerBlock(client, currentBlock),
+  ])
+  const epochsPerDay = epochsPerDayFromLength(epochLength, secondsPerBlock) ?? 2
 
   return {
     poolAgxBalance,
@@ -170,5 +209,7 @@ export async function readStakingHubOverview(
     epochNumber,
     epochEndBlock,
     currentBlock,
+    secondsPerBlock,
+    epochsPerDay,
   }
 }

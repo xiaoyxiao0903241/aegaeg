@@ -5,7 +5,11 @@
  * 未填写表单或结果缺失时展示占位提示。
  */
 import { periodEndDays } from '~/core/staking/build-calc-estimate'
-import { baseDailyPctFromEpoch, calcLocalInterest } from '~/core/staking/staking-yield'
+import {
+  baseDailyPctFromEpoch,
+  calcLocalInterest,
+  handbookBondDiscountRateBP,
+} from '~/core/staking/staking-yield'
 import { useI18n } from '~/i18n/use-i18n'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
@@ -41,6 +45,7 @@ export function CalcDetail() {
   const endDays = result ? periodEndDays(result.period, result.days) : 0
   const endEstimate = result
     ? (() => {
+        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
         const est = calcLocalInterest({
           product: result.product,
           period: result.period,
@@ -48,9 +53,11 @@ export function CalcDetail() {
           days: endDays,
           epochRebasePct: result.epochRebasePct,
           xmineDailyPct: result.xmineDailyPct,
+          agxPriceUsd: isBondUsd1 ? result.price : null,
+          discountRateBP: isBondUsd1 ? handbookBondDiscountRateBP(result.period) : null,
+          epochsPerDay: result.epochsPerDay,
         })
-        // 债券利息已是 USD1；质押利息为 AGX，须 × 现价。与 buildCalcEstimate 同口径。
-        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
+        // 债券利息已是 USD；质押/xmine 利息为代币量 × 现价。与 buildCalcEstimate 同口径。
         const interestUsd = isBondUsd1 ? est.interest : est.interest * result.price
         const investedUsd = isBondUsd1 ? result.principal : result.principal * result.price
         return {
@@ -67,7 +74,9 @@ export function CalcDetail() {
       ? Math.min(100, (result.interestUsd / (result.interestUsd + result.investedUsd)) * 100)
       : 50
 
-  const baseDaily = result ? baseDailyPctFromEpoch(result.epochRebasePct) : null
+  const baseDaily = result
+    ? baseDailyPctFromEpoch(result.epochRebasePct, result.epochsPerDay)
+    : null
   const notesItems = aside.notesItems.map((item, index) => {
     if (index !== 0) return item
     const daily =

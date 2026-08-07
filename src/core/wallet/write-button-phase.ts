@@ -47,6 +47,8 @@ export function evaluateWriteButtonPhase(args: {
     | 'poolPaused'
     | 'depositoryNotAuth'
     | 'insufficientDebtCapacity'
+    | 'bondTooSmall'
+    | 'bondTooLarge'
     | 'zeroAmount'
     | 'unavailable'
     | null
@@ -66,6 +68,8 @@ export function evaluateWriteButtonPhase(args: {
     args.moneyBlock === 'poolPaused' ||
     args.moneyBlock === 'depositoryNotAuth' ||
     args.moneyBlock === 'insufficientDebtCapacity' ||
+    args.moneyBlock === 'bondTooSmall' ||
+    args.moneyBlock === 'bondTooLarge' ||
     args.moneyBlock === 'zeroAmount' ||
     args.moneyBlock === 'unavailable'
   ) {

@@ -291,6 +291,16 @@ export function invalidateAfterTeamClaim() {
   invalidateTabQueries('rewards')
 }
 
+/**
+ * 奖励侧 Mixed（Lucky / Dao）写成功：
+ * 进释放队列 / 可能复投 → 刷 rewards + release + staking。
+ */
+export function invalidateAfterRewardsMixedClaim() {
+  invalidateTabQueries('rewards')
+  invalidateTabQueries('release')
+  invalidateTabQueries('staking')
+}
+
 /** 推荐绑定成功后刷新 community Tab 的查询。 */
 export function invalidateAfterReferralBind() {
   invalidateTabQueries('community')
@@ -330,10 +340,11 @@ export function invalidateAfterStaking() {
   void pollStakingIndexer(baselines)
 }
 
-/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划与贡献值相关查询。 */
+/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划、贡献值与释放相关查询。 */
 export function invalidateAfterAssetsClaim() {
   invalidateTabQueries('assets')
   invalidateTabQueries('staking')
+  invalidateTabQueries('release')
 }
 
 /**

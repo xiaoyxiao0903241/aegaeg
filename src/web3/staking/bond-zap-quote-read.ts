@@ -32,6 +32,7 @@ const depositoryAbi = parseAbi([
   BOND_DEPOSITORY_MARKET_METHODS.restakeConfig,
   BOND_DEPOSITORY_MARKET_METHODS.discountRateBP,
   BOND_DEPOSITORY_MARKET_METHODS.terms,
+  BOND_DEPOSITORY_MARKET_METHODS.maxPayout,
 ])
 const treasuryAbi = parseAbi([TREASURY_METHODS.valueOf])
 const restakeAbi = parseAbi([RESTAKE_CONFIG_METHODS.agxPrice])
@@ -103,9 +104,11 @@ export async function readBondZapAgxPreview(args: {
 
   let discountIdx = -1
   let termsIdx = -1
+  let maxPayoutIdx = -1
   if (!args.market) {
     discountIdx = push(args.depository, 'discountRateBP')
     termsIdx = push(args.depository, 'terms')
+    maxPayoutIdx = push(args.depository, 'maxPayout')
   }
   const treasuryIdx = push(args.depository, 'treasury')
   const principleIdx = push(args.depository, 'principle')
@@ -139,8 +142,15 @@ export async function readBondZapAgxPreview(args: {
         'terms',
         'BOND_PREVIEW_MULTICALL_FAILED:terms',
       )
+      const maxPayoutAmount = decodeAggregate3Result<bigint>(
+        batch,
+        maxPayoutIdx,
+        depositoryAbi,
+        'maxPayout',
+        'BOND_PREVIEW_MULTICALL_FAILED:maxPayout',
+      )
       const [, , feeBps, maxDebt, totalDeposit] = terms
-      return { discountRateBP, feeBps, maxDebt, totalDeposit }
+      return { discountRateBP, feeBps, maxDebt, totalDeposit, maxPayoutAmount }
     })()
 
   const treasury = decodeAggregate3Result<Address>(

@@ -26,7 +26,9 @@ type TurbineSubmitCore = {
 }
 
 /**
- * Turbine 解锁：授权后实时重读报价 / 余额 / 授权 / 配额，再买入 AGX 并进入冷却
+ * Turbine 解锁：先读 liveUsd，按该金额授权并买入，再经 evaluateTurbineUnlockLive 闸门
+ *
+ * 禁止 approve(preUsd) 后 send(liveUsd)：价上行会导致授权不足 revert。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -50,11 +52,17 @@ export async function submitTurbineUnlock(args: {
 
     await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: preUsd })
 
-    const [liveBalances, liveQuota, liveUsd] = await Promise.all([
-      readTurbineUsd1Balances(address),
+    let liveBalances = await readTurbineUsd1Balances(address)
+    const [liveQuota, liveUsd] = await Promise.all([
       readTurbineQuota(address),
       readTurbineUsdQuote(unlockAmountAgx),
     ])
+
+    // approve 后 live 重报价：价上行则补授权，再与 send 同额对齐
+    if (liveUsd > liveBalances.approved) {
+      await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: liveUsd })
+      liveBalances = await readTurbineUsd1Balances(address)
+    }
 
     const blocked = evaluateTurbineUnlockLive({
       unlockAmountAgx,

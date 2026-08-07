@@ -23,7 +23,7 @@ export function parseReferrerAddress(value: unknown): `0x${string}` | null {
   return trimmed as `0x${string}`
 }
 
-/** 已绑定用户：优先取 /performance 返回的 invite_address，缺失时回退到链上推荐人。 */
+/** 已绑定用户：优先取链上推荐人，缺失时回退到 /performance 的 invite_address。 */
 export function displayReferrer(params: {
   isBound: boolean
   inviteAddress?: string | null
@@ -31,10 +31,10 @@ export function displayReferrer(params: {
 }): `0x${string}` | null {
   if (!params.isBound) return null
 
-  const fromApi = parseReferrerAddress(params.inviteAddress)
-  if (fromApi) return fromApi
+  const fromChain = parseReferrerAddress(params.chainReferrer)
+  if (fromChain) return fromChain
 
-  return parseReferrerAddress(params.chainReferrer)
+  return parseReferrerAddress(params.inviteAddress)
 }
 
 /**

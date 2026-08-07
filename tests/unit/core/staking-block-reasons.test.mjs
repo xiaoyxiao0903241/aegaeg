@@ -123,9 +123,10 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       balance: 10n,
       allowance: 10n,
       depositoryAuthorized: true,
-      maxDebt: 100n,
-      totalDeposit: 90n,
-      netPayout: 20n,
+      maxDebt: 100n * 10_000_000n,
+      totalDeposit: 90n * 10_000_000n,
+      netPayout: 20n * 10_000_000n,
+      maxPayout: 1000n * 10_000_000n,
     }),
     'insufficientDebtCapacity',
   )
@@ -138,8 +139,9 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       allowance: 10n,
       depositoryAuthorized: true,
       maxDebt: 0n,
-      totalDeposit: 90n,
-      netPayout: 20n,
+      totalDeposit: 90n * 10_000_000n,
+      netPayout: 20n * 10_000_000n,
+      maxPayout: 1000n * 10_000_000n,
     }),
     null,
   )
@@ -156,6 +158,104 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       netPayout: 0n,
     }),
     'unavailable',
+  )
+
+  // 0.01 AGX = 1e7（9 decimals）；手册 ErrorBondTooSmall / ErrorBondTooLarge 用 gross
+  const minPayout = 10_000_000n
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout - 1n,
+      grossPayout: minPayout - 1n,
+      maxPayout: 1_000_000_000n,
+    }),
+    'bondTooSmall',
+  )
+
+  // fee 后 net 偏小、gross 达标 → 不以 net 误拦 TooSmall
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout - 1n,
+      grossPayout: minPayout,
+      maxPayout: 1_000_000_000n,
+    }),
+    null,
+  )
+
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout,
+      grossPayout: minPayout,
+      maxPayout: minPayout,
+    }),
+    null,
+  )
+
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout,
+      grossPayout: minPayout + 1n,
+      maxPayout: minPayout,
+    }),
+    'bondTooLarge',
+  )
+
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout,
+      grossPayout: minPayout,
+      maxPayout: null,
+    }),
+    'unavailable',
+  )
+
+  // maxPayout / grossPayout 未传入（undefined）时不因缺省阻断
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout,
+    }),
+    null,
   )
 
   assert.equal(

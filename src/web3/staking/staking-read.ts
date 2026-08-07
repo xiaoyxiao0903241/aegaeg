@@ -20,6 +20,11 @@ import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/w
 const liquidAbi = parseAbi([
   LIQUID_STAKING_METHODS.remainingStakeAmount,
   LIQUID_STAKING_METHODS.isWarmupExpired,
+  LIQUID_STAKING_METHODS.singleAddressLimit,
+  LIQUID_STAKING_METHODS.singleAddressDailyLimit,
+  LIQUID_STAKING_METHODS.timeBucket,
+  LIQUID_STAKING_METHODS.userStakingAmounts,
+  LIQUID_STAKING_METHODS.userDailyStakingAmounts,
 ])
 const lockedAbi = parseAbi([
   LOCKED_STAKING_METHODS.remainingStakeAmount,
@@ -32,6 +37,7 @@ const bondHelperAbi = parseAbi([BOND_HELPER_METHODS.authContracts])
 const bondMarketAbi = parseAbi([
   BOND_DEPOSITORY_MARKET_METHODS.discountRateBP,
   BOND_DEPOSITORY_MARKET_METHODS.terms,
+  BOND_DEPOSITORY_MARKET_METHODS.maxPayout,
 ])
 const xStakingAbi = parseAbi([
   X_STAKING_POOL_METHODS.miningQuotaOf,
@@ -55,6 +61,14 @@ export type BondMarketMeta = {
   feeBps: bigint
   maxDebt: bigint
   totalDeposit: bigint
+  /** maxPayout() 视图 — 单笔绝对 AGX 上限。 */
+  maxPayoutAmount: bigint
+}
+
+/** 多层额度取最小剩余；limit === 0 表示该层不限。 */
+function remainingAfterLimit(limit: bigint, used: bigint, fallback: bigint): bigint {
+  if (limit === 0n) return fallback
+  return limit > used ? limit - used : 0n
 }
 
 /**
@@ -117,52 +131,158 @@ export async function readStakeOpenPreflight(args: {
   ]
 
   if (args.isLiquid) {
-    round1.push({
-      target: args.pool,
-      callData: encodeFunctionData({
-        abi: liquidAbi,
-        functionName: 'isWarmupExpired',
-        args: [user],
-      }),
-    })
-    const results = await readAggregate3(client, round1)
+    round1.push(
+      {
+        target: args.pool,
+        callData: encodeFunctionData({
+          abi: liquidAbi,
+          functionName: 'isWarmupExpired',
+          args: [user],
+        }),
+      },
+      {
+        target: BSC_CONTRACTS.accountMigrationManager,
+        callData: encodeFunctionData({
+          abi: migrationAbi,
+          functionName: 'migratedFrom',
+          args: [user],
+        }),
+      },
+      {
+        target: args.pool,
+        callData: encodeFunctionData({
+          abi: liquidAbi,
+          functionName: 'timeBucket',
+        }),
+      },
+    )
+    const round1Results = await readAggregate3(client, round1)
+    const isBound = decodeAggregate3Result<boolean>(
+      round1Results,
+      0,
+      referralAbi,
+      'isBindReferral',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:isBound',
+    )
+    const balance = decodeAggregate3Result<bigint>(
+      round1Results,
+      1,
+      erc20Abi,
+      'balanceOf',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:balance',
+    )
+    const allowance = decodeAggregate3Result<bigint>(
+      round1Results,
+      2,
+      erc20Abi,
+      'allowance',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:allowance',
+    )
+    const remainingQuota = decodeAggregate3Result<bigint>(
+      round1Results,
+      3,
+      liquidAbi,
+      'remainingStakeAmount',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:remaining',
+    )
+    const isWarmupExpired = decodeAggregate3Result<boolean>(
+      round1Results,
+      4,
+      liquidAbi,
+      'isWarmupExpired',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:warmup',
+    )
+    const migratedFrom = decodeAggregate3Result<Address>(
+      round1Results,
+      5,
+      migrationAbi,
+      'migratedFrom',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:migratedFrom',
+    )
+    const timeBucket = decodeAggregate3Result<bigint>(
+      round1Results,
+      6,
+      liquidAbi,
+      'timeBucket',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:timeBucket',
+    )
+
+    // 单地址本金 / 日额度按首次 root。
+    const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
+    const round2 = await readAggregate3(client, [
+      {
+        target: args.pool,
+        callData: encodeFunctionData({
+          abi: liquidAbi,
+          functionName: 'singleAddressLimit',
+        }),
+      },
+      {
+        target: args.pool,
+        callData: encodeFunctionData({
+          abi: liquidAbi,
+          functionName: 'singleAddressDailyLimit',
+        }),
+      },
+      {
+        target: args.pool,
+        callData: encodeFunctionData({
+          abi: liquidAbi,
+          functionName: 'userStakingAmounts',
+          args: [stakeRoot],
+        }),
+      },
+      {
+        target: args.pool,
+        callData: encodeFunctionData({
+          abi: liquidAbi,
+          functionName: 'userDailyStakingAmounts',
+          args: [timeBucket, stakeRoot],
+        }),
+      },
+    ])
+
+    const singleLimit = decodeAggregate3Result<bigint>(
+      round2,
+      0,
+      liquidAbi,
+      'singleAddressLimit',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:singleLimit',
+    )
+    const dailyLimit = decodeAggregate3Result<bigint>(
+      round2,
+      1,
+      liquidAbi,
+      'singleAddressDailyLimit',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:dailyLimit',
+    )
+    const userStaked = decodeAggregate3Result<bigint>(
+      round2,
+      2,
+      liquidAbi,
+      'userStakingAmounts',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:userStaked',
+    )
+    const dailyUsed = decodeAggregate3Result<bigint>(
+      round2,
+      3,
+      liquidAbi,
+      'userDailyStakingAmounts',
+      'STAKE_PREFLIGHT_MULTICALL_FAILED:dailyUsed',
+    )
+
+    const principalRemaining = remainingAfterLimit(singleLimit, userStaked, remainingQuota)
+    const dailyRemaining = remainingAfterLimit(dailyLimit, dailyUsed, remainingQuota)
+    let effectiveQuota = remainingQuota < principalRemaining ? remainingQuota : principalRemaining
+    effectiveQuota = effectiveQuota < dailyRemaining ? effectiveQuota : dailyRemaining
+
     return {
-      isBound: decodeAggregate3Result<boolean>(
-        results,
-        0,
-        referralAbi,
-        'isBindReferral',
-        'STAKE_PREFLIGHT_MULTICALL_FAILED:isBound',
-      ),
-      balance: decodeAggregate3Result<bigint>(
-        results,
-        1,
-        erc20Abi,
-        'balanceOf',
-        'STAKE_PREFLIGHT_MULTICALL_FAILED:balance',
-      ),
-      allowance: decodeAggregate3Result<bigint>(
-        results,
-        2,
-        erc20Abi,
-        'allowance',
-        'STAKE_PREFLIGHT_MULTICALL_FAILED:allowance',
-      ),
-      remainingQuota: decodeAggregate3Result<bigint>(
-        results,
-        3,
-        liquidAbi,
-        'remainingStakeAmount',
-        'STAKE_PREFLIGHT_MULTICALL_FAILED:remaining',
-      ),
+      isBound,
+      balance,
+      allowance,
+      remainingQuota: effectiveQuota,
       poolOpen: true,
-      isWarmupExpired: decodeAggregate3Result<boolean>(
-        results,
-        4,
-        liquidAbi,
-        'isWarmupExpired',
-        'STAKE_PREFLIGHT_MULTICALL_FAILED:warmup',
-      ),
+      isWarmupExpired,
     }
   }
 
@@ -397,6 +517,13 @@ export async function readBondMarketMeta(
         functionName: 'terms',
       }),
     },
+    {
+      target: depository,
+      callData: encodeFunctionData({
+        abi: bondMarketAbi,
+        functionName: 'maxPayout',
+      }),
+    },
   ])
 
   const discountRateBP = decodeAggregate3Result<bigint>(
@@ -413,12 +540,20 @@ export async function readBondMarketMeta(
     'terms',
     'BOND_MARKET_MULTICALL_FAILED:terms',
   )
+  const maxPayoutAmount = decodeAggregate3Result<bigint>(
+    results,
+    2,
+    bondMarketAbi,
+    'maxPayout',
+    'BOND_MARKET_MULTICALL_FAILED:maxPayout',
+  )
   const [, , feeBps, maxDebt, totalDeposit] = terms
   return {
     discountRateBP,
     feeBps,
     maxDebt,
     totalDeposit,
+    maxPayoutAmount,
   }
 }
 

@@ -59,7 +59,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
   const spotUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
-  const baseDaily = baseDailyPctFromEpoch(epochPct)
+  const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
   const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [

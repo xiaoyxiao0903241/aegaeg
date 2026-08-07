@@ -12,6 +12,7 @@ import {
   buildCalcYieldCurvePoints,
   CALC_MAX_DAYS,
   calcLocalInterest,
+  handbookBondDiscountRateBP,
 } from '~/core/staking/staking-yield'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -39,17 +40,20 @@ function anchorEndAtMs(chainRemainingSec: number, now = Date.now()): number {
  *
  * @param epochEndBlock 周期结束区块高度
  * @param currentBlock 当前区块高度
+ * @param secondsPerBlock 实测或兜底出块秒数
  */
 export function RebaseCountdownValue({
   epochEndBlock,
   currentBlock,
+  secondsPerBlock,
 }: {
   epochEndBlock: bigint | undefined
   currentBlock: bigint | undefined
+  secondsPerBlock?: number
 }) {
   const { messages: t } = useI18n()
   const units = t.staking.aside.countdownUnits
-  const chainRemainingSec = remainingSecFromBlocks(epochEndBlock, currentBlock)
+  const chainRemainingSec = remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock)
 
   const [endAtMs, setEndAtMs] = useState(() => anchorEndAtMs(chainRemainingSec))
   const [nowMs, setNowMs] = useState(() => Date.now())
@@ -126,6 +130,7 @@ export function StakingCurveChart() {
 
   const curveEndEstimate = result
     ? (() => {
+        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
         const est = calcLocalInterest({
           product: result.product,
           period: result.period,
@@ -133,9 +138,11 @@ export function StakingCurveChart() {
           days: CALC_MAX_DAYS,
           epochRebasePct: result.epochRebasePct,
           xmineDailyPct: result.xmineDailyPct,
+          agxPriceUsd: isBondUsd1 ? result.price : null,
+          discountRateBP: isBondUsd1 ? handbookBondDiscountRateBP(result.period) : null,
+          epochsPerDay: result.epochsPerDay,
         })
-        // 债券利息已是 USD1；质押利息为 AGX × 现价。与 buildCalcYieldCurvePoints 同口径。
-        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
+        // 债券利息已是 USD；质押/xmine 利息为代币量 × 现价。与 buildCalcYieldCurvePoints 同口径。
         return isBondUsd1 ? est.interest : est.interest * result.price
       })()
     : null
@@ -148,6 +155,11 @@ export function StakingCurveChart() {
         price: result.price,
         epochRebasePct: result.epochRebasePct,
         xmineDailyPct: result.xmineDailyPct,
+        epochsPerDay: result.epochsPerDay,
+        discountRateBP:
+          result.product === 'lpbond' || result.product === 'burnbond'
+            ? handbookBondDiscountRateBP(result.period)
+            : null,
         maxDays: CALC_MAX_DAYS,
       }).map((p) => ({
         time: p.day as UTCTimestamp,

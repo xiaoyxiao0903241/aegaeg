@@ -67,10 +67,20 @@ export async function submitBondZap(args: {
         isOldAccount: migration.isOldAccount,
         maxDebt: market.maxDebt,
         totalDeposit: market.totalDeposit,
+        maxPayout: market.maxPayoutAmount,
         netPayout: payout.netPayout,
+        grossPayout: payout.grossPayout,
       }
     },
-    evaluate: ({ preflight, isOldAccount, maxDebt, totalDeposit, netPayout }) =>
+    evaluate: ({
+      preflight,
+      isOldAccount,
+      maxDebt,
+      totalDeposit,
+      maxPayout,
+      netPayout,
+      grossPayout,
+    }) =>
       evaluateBondZapLive({
         amount,
         isBound: preflight.isBound,
@@ -80,7 +90,9 @@ export async function submitBondZap(args: {
         isOldAccount,
         maxDebt,
         totalDeposit,
+        maxPayout,
         netPayout,
+        grossPayout,
       }),
     mapBlockError: (reason: NonNullable<ReturnType<typeof evaluateBondZapLive>>) =>
       BOND_ZAP_BLOCKED[reason],

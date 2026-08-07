@@ -1,4 +1,4 @@
-/** BSC 出块约 3 秒/块（FAQ 口径），用于质押周期倒计时展示。 */
+/** BSC 出块约 3 秒/块（FAQ 口径兜底），调用方有实测值时应传入 secondsPerBlock。 */
 export const BSC_BLOCK_SECONDS = 3
 
 export type RebaseCountdownParts = {
@@ -20,16 +20,19 @@ function pad2(n: number): string {
  *
  * @param epochEndBlock 当前 epoch 结束区块号；未知时 undefined
  * @param currentBlock 当前区块号；未知时 undefined
+ * @param secondsPerBlock 每块秒数；缺省用 BSC_BLOCK_SECONDS
  * @returns 剩余墙钟秒数；任一块未知或已过期返回 0
  */
 export function remainingSecFromBlocks(
   epochEndBlock: bigint | undefined,
   currentBlock: bigint | undefined,
+  secondsPerBlock: number = BSC_BLOCK_SECONDS,
 ): number {
   if (epochEndBlock == null || currentBlock == null) return 0
+  if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return 0
   const remainingBlocks = epochEndBlock > currentBlock ? Number(epochEndBlock - currentBlock) : 0
   if (!Number.isFinite(remainingBlocks) || remainingBlocks <= 0) return 0
-  return Math.floor(remainingBlocks * BSC_BLOCK_SECONDS)
+  return Math.floor(remainingBlocks * secondsPerBlock)
 }
 
 /**

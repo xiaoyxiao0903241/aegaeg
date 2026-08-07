@@ -54,13 +54,13 @@ test('genesisFaqTemplateValues formats on-chain presale fields', async () => {
   assert.equal(values.airdropRatios, '5% / 2% / 1%')
 })
 
-test('genesisFaqTemplateValues returns zeros while loading', async () => {
+test('genesisFaqTemplateValues returns zeros while loading; threshold stays —', async () => {
   const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/shared.tsx')
 
   const values = genesisFaqTemplateValues([], 5000, true)
 
   assert.equal(values.phaseCount, '0')
-  assert.equal(values.threshold, '$0')
+  assert.equal(values.threshold, '—')
   assert.equal(values.discounts, '0%')
 })
 

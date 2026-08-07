@@ -26,8 +26,8 @@ React + Vite + TypeScript · AEGIS X DApp（BSC）。
 | 代码注释                              | [`foundation/comment-conventions.md`](./foundation/comment-conventions.md)           |
 | Matt 决策 / 票 / handoff              | [`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/) |
 | 页袋 Dock/Detail 合同（deferred）     | [`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md) |
-| 手册/API 缺口与错误审计（UI 对照）    | [`ui-manual-api-alignment-audit.md`](./ui-manual-api-alignment-audit.md)             |
-| 对齐审计提示词（手册/API + 前端必出） | [`ui-manual-api-alignment-prompt.md`](./ui-manual-api-alignment-prompt.md)           |
+| 手册/API/前端/文案对齐审计（A+B+C📝） | [`ui-manual-api-alignment-audit.md`](./ui-manual-api-alignment-audit.md)             |
+| 对齐审计提示词（A+B+C📝 必出）        | [`ui-manual-api-alignment-prompt.md`](./ui-manual-api-alignment-prompt.md)           |
 
 ## 手册优先级
 

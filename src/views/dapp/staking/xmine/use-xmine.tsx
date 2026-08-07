@@ -12,6 +12,7 @@ import { formatAmountBalanceLabel, writeCtaDisabled } from '~/core/wallet/write-
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useAssetsHoldingsDistribution,
+  useX0MiningLifetimeReward,
   useX0MiningLogs,
   useX0MiningPositions,
 } from '~/hooks/use-api-data'
@@ -27,7 +28,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
-import { sumX0MiningRewardAmount } from '~/shared/presenters/xmine-lifetime-reward'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { parseApiAmountOrZero } from '~/views/dapp/staking/shared'
@@ -149,7 +149,7 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
         : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, 4),
     quotaLabel:
       preflightQuery.data !== undefined
-        ? formatTokenAmount(spendable, GAGX_DECIMALS, 4)
+        ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, 4)
         : formatNumber(0, { digits: 4 }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
@@ -222,11 +222,8 @@ export function useXmineDetail() {
   const priceUsd = useAgxPriceUsd()
   const positionsQuery = useX0MiningPositions({}, sessionReady)
   const logsQuery = useX0MiningLogs({}, sessionReady)
-  // 累加用户历史 REWARD；page_size 取大以覆盖常见记录量（无协议累计 view）
-  const rewardLogs = useX0MiningLogs(
-    { operation: ['REWARD'], page: 1, page_size: 100 },
-    sessionReady,
-  )
+  // 累加用户历史 REWARD；翻页至覆盖 total（无协议累计 view）
+  const rewardLifetime = useX0MiningLifetimeReward(sessionReady)
   const distQuery = useAssetsHoldingsDistribution(sessionReady)
   const overviewQuery = useXmineOverviewQuery()
   const chainPosition = useChainQuery({
@@ -250,7 +247,7 @@ export function useXmineDetail() {
     overviewQuery.data != null
       ? formatXmineDailyYieldLabel(overviewQuery.data.yieldRateBP)
       : ZERO_PCT
-  const lifetimeX = sumX0MiningRewardAmount(rewardLogs.data?.items ?? [])
+  const lifetimeX = rewardLifetime.data ?? 0
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
     {

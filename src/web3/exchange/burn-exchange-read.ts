@@ -1,5 +1,6 @@
 import { parseAbi } from 'viem'
 
+import { ZERO_ADDRESS } from '~/core/constants'
 import type { BurnContributionSwapConfig } from '~/core/exchange/burn-contribution-swap'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { AGX_CONTRIBUTION_SWAP_METHODS, ERC20_METHODS } from '~/web3/abis'
@@ -111,13 +112,16 @@ export async function readBurnUserStats(
     functionName: 'originalOf',
     args: [userAddress],
   })
+  // originalOf==0 与资产页 readContributionSnapshot 一致：回退当前用户
+  const contributionRoot =
+    root.toLowerCase() === ZERO_ADDRESS ? userAddress : (root as `0x${string}`)
 
   const [contributionBalance, agxBurned, contributionConsumed] = await Promise.all([
     client.readContract({
       address: BSC_CONTRACTS.agxContributionSwap,
       abi: burnSwapReadAbi,
       functionName: 'userContribution',
-      args: [root],
+      args: [contributionRoot],
     }),
     client.readContract({
       address: BSC_CONTRACTS.agxContributionSwap,

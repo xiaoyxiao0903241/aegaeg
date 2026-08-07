@@ -1,5 +1,6 @@
 import { parseAbi } from 'viem'
 
+import { ZERO_ADDRESS } from '~/core/constants'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import type { FlashPairId } from '~/core/exchange/flash-pair'
 import type { FlashUsd1SwapConfig } from '~/core/exchange/flash-usd1-swap'
@@ -14,11 +15,11 @@ const erc20ReadAbi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance]
 /**
  * 读取闪电兑换全局配置
  *
- * 调用 Usd1Swap.getConfig，返回当前汇率、暂停、上下限与储备，
- * 供报价与写前预检使用。
+ * 调用 Usd1Swap.getConfig，返回输入币地址、汇率、暂停、上下限与储备，
+ * 供报价、余额 / 授权与写前预检使用；usdtToken 为零地址时仍返回，由 evaluate 阻断。
  *
  * @param client 链上读取客户端，默认公共 RPC
- * @returns 闪电兑换配置
+ * @returns 闪电兑换配置（含 usdtToken）
  * @see docs/onchain-manual/contracts/usd1swap.md
  */
 export async function readUsd1SwapConfig(
@@ -29,8 +30,9 @@ export async function readUsd1SwapConfig(
     abi: usd1ExchangeReadAbi,
     functionName: 'getConfig',
   })
-  const [, , , currentRateBps, usdtDec, usd1Dec, isPaused, minIn, maxIn, reserve] = result
+  const [usdtToken, , , currentRateBps, usdtDec, usd1Dec, isPaused, minIn, maxIn, reserve] = result
   return {
+    usdtToken,
     rateBps: currentRateBps,
     usdtDec: Number(usdtDec),
     usd1Dec: Number(usd1Dec),
@@ -87,16 +89,23 @@ export async function readFlashPairQuote(
 /**
  * 读取 USDT↔USD1 路径的卖出 / 买入余额与授权
  *
- * sell 为 USDT 余额，buy 为 USD1 余额，approved 为 USDT 对 Usd1Swap 的授权。
+ * sell / approved 使用 getConfig().usdtToken（非 env 写死地址）；
+ * usdtToken 为零地址时抛错，避免读错币或授错权。
  *
  * @param owner 钱包地址
  * @param client 链上读取客户端，默认公共 RPC
  */
 async function readFlashUsdtBalances(owner: string, client: ChainReadClient = bscReadClient) {
   const ownerAddress = owner as `0x${string}`
+  const config = await readUsd1SwapConfig(client)
+  if (!config.usdtToken || config.usdtToken.toLowerCase() === ZERO_ADDRESS) {
+    throw new Error('ErrorZeroAddress')
+  }
+  const usdtToken = config.usdtToken
+
   const [sell, buy, approved] = await Promise.all([
     client.readContract({
-      address: BSC_CONTRACTS.usdt,
+      address: usdtToken,
       abi: erc20ReadAbi,
       functionName: 'balanceOf',
       args: [ownerAddress],
@@ -108,7 +117,7 @@ async function readFlashUsdtBalances(owner: string, client: ChainReadClient = bs
       args: [ownerAddress],
     }),
     client.readContract({
-      address: BSC_CONTRACTS.usdt,
+      address: usdtToken,
       abi: erc20ReadAbi,
       functionName: 'allowance',
       args: [ownerAddress, BSC_CONTRACTS.usd1Swap],

@@ -193,3 +193,32 @@ test('invalidateAfterStaking source covers staking+assets+lucky (no live poll in
   assert.match(body, /luckyRewardSummary/)
   assert.match(body, /pollStakingIndexer/)
 })
+
+test('invalidateAfterAssetsClaim source covers assets+staking+release', async () => {
+  const fs = await import('node:fs/promises')
+  const src = await fs.readFile(
+    new URL('../../../src/shared/api/query/invalidate.ts', import.meta.url),
+    'utf8',
+  )
+  const start = src.indexOf('export function invalidateAfterAssetsClaim')
+  const end = src.indexOf('export function invalidateAfterReleaseClaim')
+  const body = src.slice(start, end === -1 ? undefined : end)
+  assert.match(body, /invalidateTabQueries\('assets'\)/)
+  assert.match(body, /invalidateTabQueries\('staking'\)/)
+  assert.match(body, /invalidateTabQueries\('release'\)/)
+})
+
+test('invalidateAfterRewardsMixedClaim source covers rewards+release+staking', async () => {
+  const fs = await import('node:fs/promises')
+  const src = await fs.readFile(
+    new URL('../../../src/shared/api/query/invalidate.ts', import.meta.url),
+    'utf8',
+  )
+  const start = src.indexOf('export function invalidateAfterRewardsMixedClaim')
+  assert.ok(start >= 0, 'invalidateAfterRewardsMixedClaim missing')
+  const end = src.indexOf('export function', start + 1)
+  const body = src.slice(start, end === -1 ? undefined : end)
+  assert.match(body, /invalidateTabQueries\('rewards'\)/)
+  assert.match(body, /invalidateTabQueries\('release'\)/)
+  assert.match(body, /invalidateTabQueries\('staking'\)/)
+})

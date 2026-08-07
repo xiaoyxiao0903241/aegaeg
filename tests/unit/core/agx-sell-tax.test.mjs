@@ -67,8 +67,9 @@ test('effectiveAgxSellTaxBps uses extraSellBP when block sell limit exceeded', a
   )
 })
 
-test('effectiveAgxSellTaxBps uses extraSellBP when quota block is stale', async () => {
+test('effectiveAgxSellTaxBps treats stale quota block as new-block first sell (gross reset)', async () => {
   const { effectiveAgxSellTaxBps } = await loadModule('/src/core/exchange/agx-sell-tax.ts')
+  // 观测块 ≠ 当前块 → 视同新块首笔，gross 归零；未超额度时走 sellRatio/fuse，不因陈旧块强制 extra
   assert.equal(
     effectiveAgxSellTaxBps({
       crashFuseActive: false,
@@ -76,7 +77,33 @@ test('effectiveAgxSellTaxBps uses extraSellBP when quota block is stale', async 
       extraSellBP: 3000n,
       amountIn: 100n,
       blockSellLimit: 10_000n,
+      grossSoldInBlock: 9_950n,
+      blockSellQuotaBlock: 99n,
+      currentBlock: 100n,
+    }),
+    350,
+  )
+  assert.equal(
+    effectiveAgxSellTaxBps({
+      crashFuseActive: true,
+      sellRatio: 350n,
+      extraSellBP: 3000n,
+      amountIn: 100n,
+      blockSellLimit: 10_000n,
       grossSoldInBlock: 0n,
+      blockSellQuotaBlock: 99n,
+      currentBlock: 100n,
+    }),
+    3000,
+  )
+  assert.equal(
+    effectiveAgxSellTaxBps({
+      crashFuseActive: false,
+      sellRatio: 350n,
+      extraSellBP: 3000n,
+      amountIn: 100n,
+      blockSellLimit: 50n,
+      grossSoldInBlock: 9_950n,
       blockSellQuotaBlock: 99n,
       currentBlock: 100n,
     }),

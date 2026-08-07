@@ -230,6 +230,12 @@ export const LIQUID_STAKING_METHODS = {
   claim: 'function claim()',
   remainingStakeAmount: 'function remainingStakeAmount() view returns (uint256)',
   isWarmupExpired: 'function isWarmupExpired(address user) view returns (bool)',
+  singleAddressLimit: 'function singleAddressLimit() view returns (uint256)',
+  singleAddressDailyLimit: 'function singleAddressDailyLimit() view returns (uint256)',
+  timeBucket: 'function timeBucket() view returns (uint256)',
+  userStakingAmounts: 'function userStakingAmounts(address account) view returns (uint256)',
+  userDailyStakingAmounts:
+    'function userDailyStakingAmounts(uint256 day, address account) view returns (uint256)',
 } as const
 
 /**
@@ -401,6 +407,7 @@ export const BOND_DEPOSITORY_MARKET_METHODS = {
   discountRateBP: 'function discountRateBP() view returns (uint256)',
   terms:
     'function terms() view returns (uint256 vestingTerm, uint256 maxPayout, uint256 fee, uint256 maxDebt, uint256 totalDeposit)',
+  maxPayout: 'function maxPayout() view returns (uint256)',
   treasury: 'function treasury() view returns (address)',
   principle: 'function principle() view returns (address)',
   liquidityPool: 'function liquidityPool() view returns (address)',

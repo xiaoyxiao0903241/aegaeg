@@ -146,6 +146,8 @@ export const queryKeys = {
     x0MiningLogsRoot: ['api', 'x0Mining', 'logs'] as const,
     x0MiningLogs: (params: X0MiningLogsParams = {}) =>
       paginated(['api', 'x0Mining', 'logs'] as const, params, params.operation ?? null),
+    /** 用户 REWARD 流水翻页累加（终身产出）；与单页 logs 键分离 */
+    x0MiningLifetimeReward: ['api', 'x0Mining', 'lifetimeReward'] as const,
     x0MiningPositionsRoot: ['api', 'x0Mining', 'positions'] as const,
     x0MiningPositions: (params: PaginationParams = {}) =>
       paginated(['api', 'x0Mining', 'positions'] as const, params),

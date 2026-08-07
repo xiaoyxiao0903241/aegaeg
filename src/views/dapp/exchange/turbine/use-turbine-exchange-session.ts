@@ -2,6 +2,8 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { previewTurbineExpectedAgx } from '~/core/exchange/turbine-expected-agx'
+import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-buckets'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -175,9 +177,18 @@ export function useTurbineExchangeSession(
   const turbineSummaryQuery = useTurbineSummary(sessionReady)
 
   const usdNeeded = quoteQuery.data ?? 0n
+  // 预览实得 = min(输入按 swapSlippageBP 折减, 配额)；滑点未加载时不夸大展示
   const buyAgxLabel =
-    unlockAmountIn > 0n
-      ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4)
+    unlockAmountIn > 0n && slippageQuery.data !== undefined
+      ? formatTokenAmount(
+          previewTurbineExpectedAgx({
+            unlockAmountIn,
+            swapSlippageBP: slippageQuery.data,
+            quota: decisionQuota,
+          }),
+          AGX_DECIMALS,
+          4,
+        )
       : formatNumber(0, { digits: 4 })
   // 所需 USD1 = 合约 quoteUsdInForAgxOut(agxAmount)，不伪造 1:1 或中间价
   const payUsd1Label =
@@ -211,11 +222,10 @@ export function useTurbineExchangeSession(
   const cooldownSeconds = Number(cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? 0n)
   const cooldownHours = cooldownSeconds > 0 ? Math.round(cooldownSeconds / 3600) : null
 
-  const coolingBalance =
-    silencesQuery.data?.rows.reduce(
-      (sum, row) => (row.vested ? sum : sum + row.silenceBalance),
-      0n,
-    ) ?? 0n
+  // 链上分态：!isVested → 冷却中；isVested → 可领取（勿并入冷却卡，也勿丢进「累计已提取」）
+  const silenceBuckets = sumTurbineSilenceBuckets(silencesQuery.data?.rows ?? [])
+  const coolingBalance = silenceBuckets.cooling
+  const claimableBalance = silenceBuckets.claimable
 
   const unitUsdReady = unitUsd !== undefined && unitUsd > 0n && !unitPriceQuery.isError
 
@@ -333,7 +343,7 @@ export function useTurbineExchangeSession(
         walletReady &&
         (quotaQuery.isLoading || silencesQuery.isLoading || turbineSummaryQuery.isLoading),
     },
-    hasClaimable: (silencesQuery.data?.claimableCount ?? 0) > 0,
+    hasClaimable: claimableBalance > 0n,
     walletReady,
     canUnlock,
     isQuoting: quoteQuery.isFetching,

@@ -23,6 +23,8 @@ export type CalcEstimateResult = {
   epochRebasePct: number | null
   /** xmine 日收益率（%）；非 xmine 为 null。 */
   xmineDailyPct: number | null
+  /** 每日 epoch 数（链上推算；缺省 FAQ 2）。 */
+  epochsPerDay: number
 }
 
 interface CalcEstimateStore {

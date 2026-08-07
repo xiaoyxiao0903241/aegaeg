@@ -40,7 +40,7 @@ function assertAgxSellTaxBps(raw: bigint): number {
 /**
  * 有效卖出税（BPS）。
  *
- * - 额度观测块 ≠ 当前块 → 按防御税率 extraSellBP 处理（陈旧额度不可信）
+ * - 额度观测块 ≠ 当前块 → 视同新块首笔（gross 归零），再按额度 / 熔断选税
  * - 同块且 `nextGross > blockSellLimit`，或 `blockSellLimit === 0 && amountIn > 0` → extraSellBP
  * - 否则按熔断选 fuse/sellRatio
  *
@@ -56,11 +56,11 @@ export function effectiveAgxSellTaxBps(args: {
   blockSellQuotaBlock: bigint
   currentBlock: bigint
 }): number {
-  if (args.blockSellQuotaBlock !== args.currentBlock) {
-    return assertAgxSellTaxBps(args.extraSellBP)
-  }
+  // 观测块陈旧 → 合约会在新块重置 gross；勿因陈旧块单独强制 extra
+  const grossSoldInBlock =
+    args.blockSellQuotaBlock === args.currentBlock ? args.grossSoldInBlock : 0n
 
-  const nextGross = args.grossSoldInBlock + args.amountIn
+  const nextGross = grossSoldInBlock + args.amountIn
   const overBlockLimit =
     nextGross > args.blockSellLimit || (args.blockSellLimit === 0n && args.amountIn > 0n)
   if (overBlockLimit) {

@@ -20,8 +20,13 @@ export type BondZapLiveBlockReason =
   | 'insufficientAllowance'
   | 'depositoryNotAuth'
   | 'insufficientDebtCapacity'
+  | 'bondTooSmall'
+  | 'bondTooLarge'
   | 'zeroAmount'
   | 'unavailable'
+
+/** 手册 ErrorBondTooSmall：净发放 < 0.01 AGX（9 decimals）。 */
+export const BOND_MIN_PAYOUT_AGX = 10_000_000n
 
 export type XmineLiveBlockReason =
   'insufficientBalance' | 'insufficientAllowance' | 'insufficientQuota' | 'zeroAmount'
@@ -80,6 +85,17 @@ export function evaluateStakeLive(args: {
  * @param args.maxDebt 债券债务上限；0 = 不限；null = 未知按阻断处理
  * @param args.totalDeposit 当前已占用债务
  * @param args.netPayout 本笔预估净发放（AGX）
+ * @param args.maxPayout 单笔最大 payout（`maxPayout()` 绝对量）；null = 未知按阻断
+ */
+/**
+ * 债券 zap 写前实时门闸。
+ *
+ * size 门（TooSmall / TooLarge）跟链上用 **gross** payout；
+ * 债务容量跟链上用 **net** payout。
+ *
+ * @param args.maxPayout maxPayout() 绝对上限
+ * @param args.grossPayout 折扣后毛 payout（fee 前）
+ * @param args.netPayout 扣 fee 后净 payout（记债 / 入库）
  */
 export function evaluateBondZapLive(args: {
   amount: bigint
@@ -91,6 +107,8 @@ export function evaluateBondZapLive(args: {
   maxDebt?: bigint | null
   totalDeposit?: bigint | null
   netPayout?: bigint | null
+  grossPayout?: bigint | null
+  maxPayout?: bigint | null
 }): BondZapLiveBlockReason | null {
   if (args.isOldAccount === null) return 'unavailable'
   if (args.isOldAccount === true) return 'accountMigrated'
@@ -99,8 +117,24 @@ export function evaluateBondZapLive(args: {
   if (!args.depositoryAuthorized) return 'depositoryNotAuth'
   if (args.balance < args.amount) return 'insufficientBalance'
   if (args.allowance < args.amount) return 'insufficientAllowance'
-  if (args.maxDebt === null || args.totalDeposit === null || args.netPayout === null) {
+  if (
+    args.maxDebt === null ||
+    args.totalDeposit === null ||
+    args.netPayout === null ||
+    args.grossPayout === null ||
+    args.maxPayout === null
+  ) {
     return 'unavailable'
+  }
+  if (args.grossPayout !== undefined && args.grossPayout < BOND_MIN_PAYOUT_AGX) {
+    return 'bondTooSmall'
+  }
+  if (
+    args.maxPayout !== undefined &&
+    args.grossPayout !== undefined &&
+    args.grossPayout > args.maxPayout
+  ) {
+    return 'bondTooLarge'
   }
   if (
     args.maxDebt !== undefined &&

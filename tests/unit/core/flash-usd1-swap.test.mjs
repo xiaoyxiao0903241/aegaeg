@@ -7,6 +7,7 @@ test('flash Usd1Swap gates: paused / min / max / reserve / zero rate', async () 
   const { evaluateFlashUsd1Swap } = await loadModule('/src/core/exchange/flash-usd1-swap.ts')
 
   const base = {
+    usdtToken: '0x2222222222222222222222222222222222222222',
     rateBps: 10_000n,
     usdtDec: 18,
     usd1Dec: 18,
@@ -53,4 +54,12 @@ test('flash Usd1Swap gates: paused / min / max / reserve / zero rate', async () 
     'zeroRate',
   )
   assert.equal(evaluateFlashUsd1Swap({ amountIn: 1n, quotedOut: 1n, config: base }), null)
+  assert.equal(
+    evaluateFlashUsd1Swap({
+      amountIn: 1n,
+      quotedOut: 1n,
+      config: { ...base, usdtToken: '0x0000000000000000000000000000000000000000' },
+    }),
+    'zeroUsdtToken',
+  )
 })

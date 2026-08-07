@@ -86,6 +86,7 @@ export function useCalcDock() {
         days,
         epochRebasePct,
         xmineDailyPct: product === 'xmine' ? xmineDailyPct : null,
+        epochsPerDay: overviewQuery.data?.epochsPerDay ?? 2,
       }),
     )
   }

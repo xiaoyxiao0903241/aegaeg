@@ -182,6 +182,8 @@ export function useCommunityReferral() {
     walletReady,
     canBind:
       walletReady &&
+      !referralQuery.isLoading &&
+      referralQuery.isFetched &&
       !isBound &&
       !isSubmitting &&
       !isLocked &&

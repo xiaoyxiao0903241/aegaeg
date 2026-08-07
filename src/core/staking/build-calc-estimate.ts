@@ -1,4 +1,8 @@
-import { CALC_MAX_DAYS, calcLocalInterest } from '~/core/staking/staking-yield'
+import {
+  CALC_MAX_DAYS,
+  calcLocalInterest,
+  handbookBondDiscountRateBP,
+} from '~/core/staking/staking-yield'
 import type { CalcEstimateResult, CalcProduct } from '~/stores/calc-estimate-store'
 
 /**
@@ -21,12 +25,12 @@ export function periodEndDays(period: string, sliderDays: number): number {
 /**
  * 生成本地收益估算快照，供计算器左右两侧同步，零链上读取。
  *
- * 债券本金/利息已是 USD1，质押本金/利息为 AGX，需乘现价折算 USD。
+ * 债券：投入为 USD1；利息经折扣→AGX→rebase 后再折回 USD。质押本金/利息为 AGX，需乘现价折算 USD。
  *
  * @param args.product 产品类型（stake / lpbond / burnbond / xmine）
  * @param args.period 产品周期
  * @param args.amount 投入数量（允许含千分位逗号）
- * @param args.price 当前价格（质押 AGX 折算 USD 用）
+ * @param args.price 当前价格（质押 AGX 折算 USD / 债券折 AGX 用）
  * @param args.days 预计持仓天数
  * @param args.epochRebasePct 实时 epoch 收益率（展示单位百分比）；null 表示按零收益计算
  * @returns 本地收益估算结果
@@ -41,10 +45,14 @@ export function buildCalcEstimate(args: {
   epochRebasePct: number | null
   /** XMine 日收益率（%）；仅 product=xmine 时使用。 */
   xmineDailyPct?: number | null
+  /** 每日 epoch 数（链上推算）；缺省 FAQ 默认 2。 */
+  epochsPerDay?: number | null
 }): CalcEstimateResult {
   const principal = Number.parseFloat(args.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(args.price.replace(/,/g, '')) || 0
   const days = Math.min(Math.max(1, Math.round(args.days)), CALC_MAX_DAYS)
+  const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
+  const epochsPerDay = args.epochsPerDay ?? 2
   const estimate = calcLocalInterest({
     product: args.product,
     period: args.period,
@@ -52,9 +60,12 @@ export function buildCalcEstimate(args: {
     days,
     epochRebasePct: args.epochRebasePct,
     xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
+    agxPriceUsd: isBondUsd1 ? priceN : null,
+    discountRateBP: isBondUsd1 ? handbookBondDiscountRateBP(args.period) : null,
+    epochsPerDay,
   })
-  const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
-  // 债券本金/利息已是 USD1（USD）；质押本金/利息为 AGX，须 × 现价。禁对债券利息再乘 AGX 价。
+  // 债券：投入为 USD1；利息已在 calcLocalInterest 内折 AGX 后再 × 现价成 USD。
+  // 质押/xmine：本金/利息为代币量，须 × 现价。
   const investedUsd = isBondUsd1 ? principal : principal * priceN
   const interestUsd = isBondUsd1 ? estimate.interest : estimate.interest * priceN
   const sellUsd = investedUsd + interestUsd
@@ -73,5 +84,6 @@ export function buildCalcEstimate(args: {
     ratePct,
     epochRebasePct: args.epochRebasePct,
     xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
+    epochsPerDay,
   }
 }
