@@ -71,10 +71,13 @@ const app = defineMessages({
     rewardsTooltip: 'Xem phần thưởng giới thiệu và phần thưởng nhóm.',
     communityTooltip:
       'Mời đối tác cùng xây dựng, chia sẻ giá trị tăng trưởng hệ sinh thái và phần thưởng Genesis.',
-    bscTooltip: 'Chỉ BSC · AEGIS X chạy trên BNB Smart Chain, chưa hỗ trợ chuyển mạng.',
+    bscTooltip: 'Chỉ BSC · AEGIS X chạy trên BNB Smart Chain.',
   },
   topbar: {
     currentNetwork: 'Mạng hiện tại',
+    switchToBsc: 'Hãy chuyển sang BSC',
+    switchNetworkFailed: 'Không chuyển được mạng. Hãy chuyển sang BSC trong ví rồi thử lại.',
+    wrongNetworkTooltip: 'Sai mạng. Nhấn để chuyển sang BNB Smart Chain (BSC).',
     openMenu: 'Mở điều hướng',
     closeMenu: 'Đóng điều hướng',
     hideDetails: 'Thu gọn bảng chi tiết',

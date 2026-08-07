@@ -73,11 +73,14 @@ const app = defineMessages({
     rewardsTooltip: 'Consulta las recompensas por referidos y de equipo.',
     communityTooltip:
       'Invita a socios a co-construir y comparte el valor de crecimiento del ecosistema y las recompensas Génesis.',
-    bscTooltip:
-      'Solo BSC · AEGIS X funciona en BNB Smart Chain. El cambio de red aún no está disponible.',
+    bscTooltip: 'Solo BSC · AEGIS X funciona en BNB Smart Chain.',
   },
   topbar: {
     currentNetwork: 'Red actual',
+    switchToBsc: 'Cambiar a BSC',
+    switchNetworkFailed:
+      'No se pudo cambiar de red. Cambia a BSC en tu billetera e inténtalo de nuevo.',
+    wrongNetworkTooltip: 'Red incorrecta. Haz clic para cambiar a BNB Smart Chain (BSC).',
     openMenu: 'Abrir navegación',
     closeMenu: 'Cerrar navegación',
     hideDetails: 'Ocultar panel de detalles',

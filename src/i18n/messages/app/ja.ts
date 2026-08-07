@@ -75,10 +75,14 @@ const app = defineMessages({
     rewardsTooltip: '紹介リワードとチームリワードを確認。',
     communityTooltip:
       'パートナーを招待して共創に参加し、エコシステム成長価値と創世リワードを共有。',
-    bscTooltip: 'BSCのみ · AEGIS XはBNB Smart Chainで稼働しており、ネットワーク切替は未対応。',
+    bscTooltip: 'BSCのみ · AEGIS XはBNB Smart Chainで稼働しています。',
   },
   topbar: {
     currentNetwork: '現在のネットワーク',
+    switchToBsc: 'BSCに切り替えてください',
+    switchNetworkFailed:
+      'ネットワーク切替に失敗しました。ウォレットでBSCに切り替えて再試行してください。',
+    wrongNetworkTooltip: 'ネットワーク不一致。クリックしてBNB Smart Chain（BSC）に切り替えます。',
     openMenu: 'ナビゲーションを開く',
     closeMenu: 'ナビゲーションを閉じる',
     hideDetails: '詳細パネルを折りたたむ',

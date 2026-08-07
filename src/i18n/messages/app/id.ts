@@ -73,11 +73,13 @@ const app = defineMessages({
     rewardsTooltip: 'Lihat hadiah referral dan tim.',
     communityTooltip:
       'Undang mitra untuk ikut pembangunan bersama, bagikan nilai pertumbuhan ekosistem dan hadiah Genesis.',
-    bscTooltip:
-      'Hanya BSC · AEGIS X berjalan di BNB Smart Chain. Pengalihan jaringan belum didukung.',
+    bscTooltip: 'Hanya BSC · AEGIS X berjalan di BNB Smart Chain.',
   },
   topbar: {
     currentNetwork: 'Jaringan saat ini',
+    switchToBsc: 'Beralih ke BSC',
+    switchNetworkFailed: 'Gagal beralih jaringan. Alihkan ke BSC di dompet lalu coba lagi.',
+    wrongNetworkTooltip: 'Jaringan salah. Klik untuk beralih ke BNB Smart Chain (BSC).',
     openMenu: 'Buka navigasi',
     closeMenu: 'Tutup navigasi',
     hideDetails: 'Sembunyikan panel detail',

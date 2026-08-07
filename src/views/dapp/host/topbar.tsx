@@ -1,3 +1,6 @@
+import { CircleAlert, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 
 import { useAuth } from '~/hooks/use-auth'
@@ -11,7 +14,9 @@ import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { OnboardingTourChip } from '~/views/dapp/host/primitives'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+import { defaultChain } from '~/web3/thirdweb'
+import { useActiveAccount, useSwitchActiveWalletChain } from '~/web3/thirdweb-react'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const topbar = tv({
@@ -52,11 +57,27 @@ const topbar = tv({
 
 const networkPill = tv({
   base: [
-    // 网络胶囊：PC 与 H5 通用，白色底圆角，高度 36；字号走 Text / 本处 text-xs，禁 max-dapp:text-*
-    'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-card px-3.5',
-    'text-xs leading-[1.2] font-semibold shadow-none',
+    // 网络胶囊：PC 与 H5 通用，圆角高度 36；字号走 Text / 本处 text-xs，禁 max-dapp:text-*
+    'inline-flex h-9 min-h-9 max-w-full items-center justify-center gap-2 rounded-full border px-3.5',
+    'text-xs leading-[1.2] font-semibold',
     'max-dapp:px-3',
   ],
+  variants: {
+    tone: {
+      ok: 'cursor-default border-border bg-card text-foreground shadow-none',
+      wrong: [
+        'cursor-pointer border-destructive/30 bg-destructive/10 text-destructive',
+        'transition-transform duration-150',
+        'hover:bg-destructive/14 active:scale-[0.98]',
+        'focus-visible:ring-2 focus-visible:ring-destructive/40 focus-visible:outline-none',
+        'disabled:pointer-events-none disabled:active:scale-100',
+        'network-pill-wrong-breathe',
+      ],
+    },
+  },
+  defaultVariants: {
+    tone: 'ok',
+  },
 })
 
 /** 顶部栏钱包区：会话就绪时网络胶囊 + 已连接入口，否则连接 / 登录。 */
@@ -64,17 +85,62 @@ function WalletTopbarActions() {
   const account = useActiveAccount()
   const { sessionReady, needsSignIn, isLoggingIn } = useAuth()
   const { messages: t } = useI18n()
+  const { writeReady } = useWriteReadiness()
+  const switchChain = useSwitchActiveWalletChain()
+  const [switching, setSwitching] = useState(false)
   const walletReady = hasWalletAccount(account)
   const fullyConnected = walletReady && sessionReady
 
   if (fullyConnected) {
+    const onExpectedChain = writeReady
+
+    async function handleSwitchToBsc() {
+      if (onExpectedChain || switching) return
+      setSwitching(true)
+      try {
+        await switchChain(defaultChain)
+      } catch {
+        toast.error(t.topbar.switchNetworkFailed)
+      } finally {
+        setSwitching(false)
+      }
+    }
+
+    const pill = onExpectedChain ? (
+      <div className={networkPill({ tone: 'ok' })} aria-label={t.topbar.currentNetwork}>
+        <Icon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
+        <Text as="span" variant="caption" className="truncate font-semibold">
+          {t.common.bsc}
+        </Text>
+      </div>
+    ) : (
+      <button
+        type="button"
+        className={networkPill({ tone: 'wrong' })}
+        aria-label={t.topbar.switchToBsc}
+        disabled={switching}
+        onClick={() => {
+          void handleSwitchToBsc()
+        }}
+      >
+        {switching ? (
+          <Loader2 aria-hidden className="size-4 shrink-0 animate-spin" strokeWidth={2} />
+        ) : (
+          <CircleAlert aria-hidden className="size-4 shrink-0" strokeWidth={2} />
+        )}
+        <Text as="span" variant="caption" className="truncate font-semibold text-destructive">
+          {t.topbar.switchToBsc}
+        </Text>
+      </button>
+    )
+
     return (
       <>
-        <Tooltip content={t.nav.bscTooltip} position="bottom">
-          <div className={networkPill()} aria-label={t.topbar.currentNetwork}>
-            <Icon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
-            {t.common.bsc}
-          </div>
+        <Tooltip
+          content={onExpectedChain ? t.nav.bscTooltip : t.topbar.wrongNetworkTooltip}
+          position="bottom"
+        >
+          {pill}
         </Tooltip>
         <WalletConnectChip variant="connected" />
       </>

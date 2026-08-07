@@ -73,11 +73,13 @@ const app = defineMessages({
     rewardsTooltip: 'View referral rewards and team rewards.',
     communityTooltip:
       'Invite partners to co-build and share ecosystem growth value and Genesis rewards.',
-    bscTooltip:
-      'BSC only · AEGIS X runs on BNB Smart Chain. Network switching is not supported yet.',
+    bscTooltip: 'BSC only · AEGIS X runs on BNB Smart Chain.',
   },
   topbar: {
     currentNetwork: 'Current network',
+    switchToBsc: 'Switch to BSC',
+    switchNetworkFailed: 'Could not switch network. Switch to BSC in your wallet and try again.',
+    wrongNetworkTooltip: 'Wrong network. Click to switch to BNB Smart Chain (BSC).',
     openMenu: 'Open navigation',
     closeMenu: 'Close navigation',
     hideDetails: 'Hide details panel',

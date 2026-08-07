@@ -9,6 +9,7 @@
 | `pnpm dev`                                     | tokens + render-home + Vite `:5174`（`/api` → `VITE_API_BASE_URL` 代理，避 CORS） |
 | `pnpm build`                                   | tokens + `tsc -b` + render-home + production build                                |
 | `pnpm env:staging` / `env:prod` / `env:status` | 切换 `.env.local`                                                                 |
+| `pnpm docs:matrix`                             | 从 `docs/dapp-data-coverage-matrix.md` 生成可读 HTML                              |
 
 ## 门禁
 

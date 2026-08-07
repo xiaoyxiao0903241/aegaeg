@@ -70,10 +70,13 @@ const app = defineMessages({
     rewardsTooltip: 'ดูรางวัลแนะนำและรางวัลทีม',
     communityTooltip:
       'เชิญพาร์ทเนอร์ร่วมสร้าง และแบ่งปันมูลค่าการเติบโตของระบบนิเวศกับรางวัล Genesis',
-    bscTooltip: 'BSC เท่านั้น · AEGIS X ทำงานบน BNB Smart Chain ยังไม่รองรับการสลับเครือข่าย',
+    bscTooltip: 'BSC เท่านั้น · AEGIS X ทำงานบน BNB Smart Chain',
   },
   topbar: {
     currentNetwork: 'เครือข่ายปัจจุบัน',
+    switchToBsc: 'โปรดสลับเป็น BSC',
+    switchNetworkFailed: 'สลับเครือข่ายไม่สำเร็จ โปรดสลับเป็น BSC ในกระเป๋าแล้วลองอีกครั้ง',
+    wrongNetworkTooltip: 'เครือข่ายไม่ถูกต้อง คลิกเพื่อสลับไปยัง BNB Smart Chain (BSC)',
     openMenu: 'เปิดเมนูนำทาง',
     closeMenu: 'ปิดเมนูนำทาง',
     hideDetails: 'ซ่อนแผงรายละเอียด',

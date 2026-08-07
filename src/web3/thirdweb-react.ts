@@ -9,4 +9,5 @@ export {
   useActiveWalletChain,
   useDisconnect,
   useIsAutoConnecting,
+  useSwitchActiveWalletChain,
 } from 'thirdweb/react'

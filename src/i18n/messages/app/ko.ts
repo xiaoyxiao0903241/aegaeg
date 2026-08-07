@@ -73,11 +73,14 @@ const app = defineMessages({
     rewardsTooltip: '추천 리워드와 팀 리워드를 확인하세요.',
     communityTooltip:
       '파트너를 초대하여 공동 구축에 참여하고, 생태계 성장 가치와 창세 리워드를 함께 누리세요.',
-    bscTooltip:
-      'BSC 전용 · AEGIS X는 BNB Smart Chain에서 운영되며, 현재 네트워크 전환은 지원하지 않습니다.',
+    bscTooltip: 'BSC 전용 · AEGIS X는 BNB Smart Chain에서 실행됩니다.',
   },
   topbar: {
     currentNetwork: '현재 네트워크',
+    switchToBsc: 'BSC로 전환하세요',
+    switchNetworkFailed: '네트워크 전환에 실패했습니다. 지갑에서 BSC로 전환한 뒤 다시 시도하세요.',
+    wrongNetworkTooltip:
+      '네트워크가 일치하지 않습니다. 클릭하여 BNB Smart Chain(BSC)으로 전환하세요.',
     openMenu: '내비게이션 열기',
     closeMenu: '내비게이션 닫기',
     hideDetails: '상세 패널 접기',

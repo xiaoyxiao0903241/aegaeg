@@ -320,9 +320,34 @@
   animation: onboarding-highlight-hit 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* Topbar 异网胶囊：红色阴影轻呼吸，提醒用户切到 BSC（仅 box-shadow） */
+@keyframes network-pill-wrong-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklch, var(--destructive) 0%, transparent),
+      0 0 0 0 color-mix(in oklch, var(--destructive) 0%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 3px color-mix(in oklch, var(--destructive) 28%, transparent),
+      0 0 14px 1px color-mix(in oklch, var(--destructive) 38%, transparent);
+  }
+}
+
+.network-pill-wrong-breathe {
+  animation: network-pill-wrong-breathe 2.2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .onboarding-highlight-hit {
     animation: none;
     opacity: 0;
+  }
+
+  .network-pill-wrong-breathe {
+    animation: none;
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--destructive) 32%, transparent);
   }
 }

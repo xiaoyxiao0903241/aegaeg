@@ -74,11 +74,13 @@ const app = defineMessages({
     rewardsTooltip: 'रेफ़रल और टीम पुरस्कार देखें।',
     communityTooltip:
       'साझेदारों को सह-निर्माण के लिए आमंत्रित करें, इकोसिस्टम वृद्धि मूल्य और Genesis पुरस्कार साझा करें।',
-    bscTooltip:
-      'केवल BSC · AEGIS X BNB Smart Chain पर चलता है। नेटवर्क स्विचिंग अभी समर्थित नहीं है।',
+    bscTooltip: 'केवल BSC · AEGIS X BNB Smart Chain पर चलता है।',
   },
   topbar: {
     currentNetwork: 'वर्तमान नेटवर्क',
+    switchToBsc: 'BSC पर स्विच करें',
+    switchNetworkFailed: 'नेटवर्क स्विच नहीं हो सका। वॉलेट में BSC पर स्विच कर फिर कोशिश करें।',
+    wrongNetworkTooltip: 'गलत नेटवर्क। BNB Smart Chain (BSC) पर स्विच करने के लिए क्लिक करें।',
     openMenu: 'नेविगेशन खोलें',
     closeMenu: 'नेविगेशन बंद करें',
     hideDetails: 'विवरण पैनल छिपाएँ',

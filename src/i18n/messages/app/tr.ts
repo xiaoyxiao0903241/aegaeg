@@ -70,11 +70,13 @@ const app = defineMessages({
     rewardsTooltip: 'Öneri ödülleri ve takım ödüllerini görüntüleyin.',
     communityTooltip:
       'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın',
-    bscTooltip:
-      'Yalnızca BSC · AEGIS X, BNB Smart Chain üzerinde çalışır; şimdilik ağ değiştirme desteklenmiyor.',
+    bscTooltip: 'Yalnızca BSC · AEGIS X BNB Smart Chain üzerinde çalışır.',
   },
   topbar: {
     currentNetwork: 'Mevcut Ağ',
+    switchToBsc: 'BSC’ye geçin',
+    switchNetworkFailed: 'Ağ değiştirilemedi. Cüzdanınızda BSC’ye geçip tekrar deneyin.',
+    wrongNetworkTooltip: 'Yanlış ağ. BNB Smart Chain (BSC) ağına geçmek için tıklayın.',
     openMenu: 'Navigasyonu aç',
     closeMenu: 'Navigasyonu kapat',
     hideDetails: 'Detay panelini gizle',

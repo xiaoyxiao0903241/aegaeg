@@ -72,11 +72,13 @@ const app = defineMessages({
     rewardsTooltip: 'Просматривайте реферальные и командные награды.',
     communityTooltip:
       'Приглашайте партнёров к со-строительству, делитесь ростом экосистемы и наградами Genesis.',
-    bscTooltip:
-      'Только BSC · AEGIS X работает в BNB Smart Chain. Переключение сети пока не поддерживается.',
+    bscTooltip: 'Только BSC · AEGIS X работает в BNB Smart Chain.',
   },
   topbar: {
     currentNetwork: 'Текущая сеть',
+    switchToBsc: 'Переключитесь на BSC',
+    switchNetworkFailed: 'Не удалось сменить сеть. Переключите кошелёк на BSC и повторите.',
+    wrongNetworkTooltip: 'Неверная сеть. Нажмите, чтобы переключиться на BNB Smart Chain (BSC).',
     openMenu: 'Открыть навигацию',
     closeMenu: 'Закрыть навигацию',
     hideDetails: 'Скрыть панель деталей',
