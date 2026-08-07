@@ -14,14 +14,14 @@ import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
-import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
+import { useExchangeFlashPairStore } from '~/stores/exchange-flash-pair-store'
 import { ExchangeProgramCard } from '~/views/dapp/exchange/hub/primitives'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
 
 /**
  * 程序卡片点击目标：0 Trade gAGX → 闪兑 · 1 Turbine → 涡轮
- * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 市价交易
+ * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 暂不可点（B-03）
  * 5 Points → 销毁
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
@@ -29,12 +29,13 @@ const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'turbine',
   'flash',
   'trade',
-  'trade',
+  null,
   'burn',
 ]
 
-/** 「出售 X」卡片索引：进入市价交易；X 暂未上架，代币预选延后到手册收录。 */
-const SELL_X_CARD_INDEX = 4
+/** 「交易 gAGX」→ 闪兑默认对；「获取 USD1」→ 预选 usdt 对（B-02）。 */
+const TRADE_GAGX_CARD_INDEX = 0
+const GET_USD1_CARD_INDEX = 2
 
 /** 与 i18n 卡片一一对应；undefined 表示纯文字卡片。 */
 const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undefined> = [
@@ -85,9 +86,10 @@ export function ExchangeHubDetail() {
                 onClick={
                   target
                     ? () => {
-                        // 出售 X：按默认币对打开市价交易；X 暂未上架不做预选
-                        if (index === SELL_X_CARD_INDEX) {
-                          useExchangeTradePairStore.getState().setSellKey('usd1')
+                        if (index === GET_USD1_CARD_INDEX) {
+                          useExchangeFlashPairStore.getState().setPairId('usdt')
+                        } else if (index === TRADE_GAGX_CARD_INDEX) {
+                          useExchangeFlashPairStore.getState().setPairId('gagx')
                         }
                         openExchangeView(target)
                       }

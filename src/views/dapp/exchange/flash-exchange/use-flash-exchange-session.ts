@@ -9,12 +9,11 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useExchangeFlashPairStore } from '~/stores/exchange-flash-pair-store'
 import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
 import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-spot-rates'
 import {
-  FLASH_PAIR_DEFAULT,
   flashPairAllowsFlip,
-  type FlashPairId,
   getFlashExchangePairTokens,
   isFlashPairId,
 } from '~/views/dapp/exchange/shared'
@@ -51,7 +50,8 @@ export function useFlashExchangeSession(
 ) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
-  const [pairId, setPairIdState] = useState<FlashPairId>(FLASH_PAIR_DEFAULT)
+  const pairId = useExchangeFlashPairStore((s) => s.pairId)
+  const setPairIdStore = useExchangeFlashPairStore((s) => s.setPairId)
   const [direction, setDirection] = useState<ExchangeDirection>('forward')
   const pair = getFlashExchangePairTokens(pairId, direction)
   const isRedeemPair = pairId === 'gagx'
@@ -163,7 +163,7 @@ export function useFlashExchangeSession(
     if (!isFlashPairId(next) || next === pairId) return
     core.clearAmount()
     setDirection('forward')
-    setPairIdState(next)
+    setPairIdStore(next)
   }
 
   function flipDirection() {
