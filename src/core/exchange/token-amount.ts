@@ -87,24 +87,46 @@ export type FormatTokenAmountOptions = {
    * `false`：按 `digits` 补零（`12.30`）。
    */
   trimZeros?: boolean
+  /**
+   * `true`（默认）：正数但低于展示位时输出 `<0.01` / `<0.0001` 等。
+   * 输入草稿 / 须可 parse 的路径传 `false`。
+   */
+  dust?: boolean
 }
 
 function tokenAmountOptions(
   maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
 ): Required<FormatTokenAmountOptions> {
   if (typeof maxFractionDigitsOrOptions === 'number') {
-    return { digits: maxFractionDigitsOrOptions, trimZeros: true }
+    return { digits: maxFractionDigitsOrOptions, trimZeros: true, dust: true }
   }
   return {
     digits: maxFractionDigitsOrOptions.digits ?? 4,
     trimZeros: maxFractionDigitsOrOptions.trimZeros !== false,
+    dust: maxFractionDigitsOrOptions.dust !== false,
   }
+}
+
+/** 展示位对应的最小可见 wei：`10^(decimals - digits)`；digits≥decimals 时为 1。 */
+export function tokenDisplayFloorWei(decimals: number, digits: number): bigint {
+  const d = Math.max(0, Math.floor(decimals))
+  const frac = Math.max(0, Math.floor(digits))
+  if (frac <= 0) return 10n ** BigInt(d)
+  if (frac >= d) return 1n
+  return 10n ** BigInt(d - frac)
+}
+
+/** `digits=2` → `0.01`；`digits=4` → `0.0001`。 */
+function tokenDustFloorLabel(digits: number): string {
+  const d = Math.max(1, Math.floor(digits))
+  return d === 1 ? '0.1' : `0.${'0'.repeat(d - 1)}1`
 }
 
 /**
  * 链上最小单位数量 → 千分位分组的人类可读字符串。
  *
- * 第三个参数为最大小数位（去尾零）或 `{ digits, trimZeros }`。
+ * 第三个参数为最大小数位（去尾零）或 `{ digits, trimZeros, dust }`。
+ * 默认：正数低于展示位时返回 `<0.01`（随 digits）；真 0 仍为 `0` / `0.00`。
  *
  * @param amount 最小单位数量
  * @param decimals 代币精度
@@ -116,12 +138,16 @@ export function formatTokenAmount(
   decimals: number,
   maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
 ): string {
-  const { digits: rawDigits, trimZeros } = tokenAmountOptions(maxFractionDigitsOrOptions)
+  const { digits: rawDigits, trimZeros, dust } = tokenAmountOptions(maxFractionDigitsOrOptions)
   const digits = Math.max(0, Math.floor(rawDigits))
   const divisor = 10n ** BigInt(decimals)
   const whole = amount / divisor
   const fraction = amount % divisor
   const groupedWhole = formatIntegerGrouping(whole.toString())
+
+  if (dust && amount > 0n && digits >= 1 && amount < tokenDisplayFloorWei(decimals, digits)) {
+    return `<${tokenDustFloorLabel(digits)}`
+  }
 
   if (!trimZeros) {
     if (digits === 0) return groupedWhole
@@ -145,6 +171,7 @@ export function formatTokenAmount(
  * 金额输入草稿（wei → 字符串）：不分组、去掉尾部零。
  *
  * 小数位取 `min(decimals, maxFractionDigits)`（调用方传想要的上限）。
+ * 永不输出 `<…`（须可 parse）。
  *
  * @param amount 最小单位数量
  * @param decimals 代币精度
@@ -158,7 +185,7 @@ export function formatTokenAmountDraft(
 ): string {
   const digits = Math.min(decimals, Math.max(0, Math.floor(maxFractionDigits)))
   return stripTrailingAmountZeros(
-    stripTokenAmountGrouping(formatTokenAmount(amount, decimals, digits)),
+    stripTokenAmountGrouping(formatTokenAmount(amount, decimals, { digits, dust: false })),
   )
 }
 

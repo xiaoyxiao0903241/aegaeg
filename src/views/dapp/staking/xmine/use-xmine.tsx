@@ -232,17 +232,11 @@ export function useXmineDetail() {
     enabled: walletReady,
   })
 
-  const tvlGagx =
-    overviewQuery.data != null
-      ? formatTokenAmountToNumber(overviewQuery.data.totalStakedGagx, GAGX_DECIMALS)
-      : 0
-  const agxPerX =
-    overviewQuery.data != null
-      ? formatTokenAmountToNumber(
-          agxAmountPerXFromXPerAgx(overviewQuery.data.xPerAgx),
-          AGX_DECIMALS,
-        )
-      : 0
+  const tvlGagxWei = overviewQuery.data?.totalStakedGagx
+  const tvlGagx = tvlGagxWei != null ? formatTokenAmountToNumber(tvlGagxWei, GAGX_DECIMALS) : 0
+  const agxPerXWei =
+    overviewQuery.data != null ? agxAmountPerXFromXPerAgx(overviewQuery.data.xPerAgx) : null
+  const agxPerX = agxPerXWei != null ? formatTokenAmountToNumber(agxPerXWei, AGX_DECIMALS) : 0
   const dailyYield =
     overviewQuery.data != null
       ? formatXmineDailyYieldLabel(overviewQuery.data.yieldRateBP)
@@ -256,7 +250,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(tvlGagx, priceUsd)}
           icon="gagx"
-          value={formatNumber(tvlGagx, { digits: 2, suffix: ' gAGX' })}
+          value={`${formatTokenAmount(tvlGagxWei ?? 0n, GAGX_DECIMALS, 2)} gAGX`}
         />
       ),
     },
@@ -266,7 +260,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(agxPerX, priceUsd)}
           icon="agx"
-          value={formatNumber(agxPerX, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(agxPerXWei ?? 0n, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -315,6 +309,15 @@ export function useXmineDetail() {
       ? formatTokenAmountToNumber(chainPosition.data.pendingValue, GAGX_DECIMALS)
       : 0
 
+  const heldLabel =
+    chainPosition.data != null
+      ? `${formatTokenAmount(chainPosition.data.miningStake, GAGX_DECIMALS, 2)} gAGX`
+      : formatNumber(held, { digits: 2, suffix: ' gAGX' })
+  const pendingLabel =
+    chainPosition.data != null
+      ? `${formatTokenAmount(chainPosition.data.pending, X_DECIMALS, 2)} X`
+      : formatNumber(pendingX, { digits: 2, suffix: ' X' })
+
   const positionItems: Array<{ label: string; value: ReactNode }> = [
     {
       label: t.staking.xmine.positionMetrics[0]?.label ?? '',
@@ -322,7 +325,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(held, priceUsd)}
           icon="gagx"
-          value={formatNumber(held, { digits: 2, suffix: ' gAGX' })}
+          value={heldLabel}
         />
       ),
     },
@@ -343,7 +346,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(pendingValueGagx, priceUsd)}
           icon="x"
-          value={formatNumber(pendingX, { digits: 2, suffix: ' X' })}
+          value={pendingLabel}
         />
       ),
     },

@@ -1,7 +1,7 @@
 import type { UTCTimestamp } from 'lightweight-charts'
 import { useState } from 'react'
 
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
@@ -35,11 +35,10 @@ function formatAgxCompact(wei: bigint | undefined): string {
   return formatCompact(n, { digits: 2, suffix: ' AGX' })
 }
 
-/** 流通量：大数千分位、固定 2 位（空态 `0.00 AGX`）。 */
+/** 流通量：大数千分位、固定 2 位（空态 `0.00 AGX`；粉尘 `<0.01`）。 */
 function formatAgxGrouped(wei: bigint | undefined): string {
   if (wei == null) return formatNumber(0, { digits: 2, suffix: ' AGX' })
-  const n = formatTokenAmountToNumber(wei, AGX_DECIMALS)
-  return formatNumber(n, { digits: 2, suffix: ' AGX' })
+  return `${formatTokenAmount(wei, AGX_DECIMALS, { digits: 2, trimZeros: false })} AGX`
 }
 
 /**

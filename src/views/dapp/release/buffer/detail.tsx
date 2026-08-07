@@ -7,7 +7,7 @@
  */
 import { useState } from 'react'
 
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -100,9 +100,7 @@ export function BufferDetail() {
   const gagxStats = [
     {
       label: t.release.buffer.entered,
-      value: chainReady
-        ? `${formatNumber(formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS), { digits: 4 })} gAGX`
-        : gagxEmpty,
+      value: chainReady ? `${formatTokenAmount(gagxAmount, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
       approx: formatUsdApprox(
         chainReady ? formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS) : 0,
         priceUsd,
@@ -110,9 +108,7 @@ export function BufferDetail() {
     },
     {
       label: t.release.buffer.extracted,
-      value: chainReady
-        ? `${formatNumber(formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS), { digits: 4 })} gAGX`
-        : gagxEmpty,
+      value: chainReady ? `${formatTokenAmount(gagxClaimed, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
       approx: formatUsdApprox(
         chainReady ? formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS) : 0,
         priceUsd,
@@ -120,9 +116,7 @@ export function BufferDetail() {
     },
     {
       label: t.release.labels.releasing,
-      value: chainReady
-        ? `${formatNumber(formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS), { digits: 4 })} gAGX`
-        : gagxEmpty,
+      value: chainReady ? `${formatTokenAmount(gagxReleasing, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
       approx: formatUsdApprox(
         chainReady ? formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS) : 0,
         priceUsd,

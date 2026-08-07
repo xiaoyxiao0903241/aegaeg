@@ -16,6 +16,7 @@ export function formatReleaseApiOrChainLabel(args: {
   if (chainReady) return `${formatTokenAmount(chainValue, decimals, 4)} ${unit}`
   if (sessionReady) {
     const n = parseApiAmount(apiRaw)
+    // API 为十进制字符串、无 wei；粉尘规则不在此层（见 formatTokenAmount / formatApiAmount）
     if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
   }
   return `${formatNumber(0, { digits: 4 })} ${unit}`

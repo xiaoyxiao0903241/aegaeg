@@ -95,6 +95,32 @@ test('formatTokenAmount fixed digits pads trailing zeros', async () => {
   )
 })
 
+test('formatTokenAmount dust: positive below display floor → <0.01 / <0.0001', async () => {
+  const { formatTokenAmount, formatTokenAmountDraft, parseTokenAmount, tokenDisplayFloorWei } =
+    await loadModule('/src/core/exchange/token-amount.ts')
+
+  // AGX 9 decimals, digits 2 → floor 0.01 AGX = 1e7 wei
+  assert.equal(tokenDisplayFloorWei(9, 2), 10n ** 7n)
+  assert.equal(formatTokenAmount(1n, 9, 2), '<0.01')
+  assert.equal(formatTokenAmount(10n ** 7n - 1n, 9, 2), '<0.01')
+  assert.equal(formatTokenAmount(10n ** 7n, 9, 2), '0.01')
+  assert.equal(formatTokenAmount(0n, 9, 2), '0')
+  assert.equal(formatTokenAmount(0n, 9, { digits: 2, trimZeros: false }), '0.00')
+
+  // digits 4 → <0.0001
+  assert.equal(formatTokenAmount(1n, 9, 4), '<0.0001')
+  assert.equal(formatTokenAmount(10n ** 5n, 9, 4), '0.0001')
+
+  // opt-out + draft stay parseable
+  assert.equal(formatTokenAmount(1n, 9, { digits: 2, dust: false }), '0')
+  const draft = formatTokenAmountDraft(123n, 9, 9)
+  assert.equal(draft, '0.000000123')
+  assert.equal(parseTokenAmount(draft, 9), 123n)
+
+  // digits 0: no "<0.…" dust label
+  assert.equal(formatTokenAmount(1n, 9, 0), '0')
+})
+
 test('formatNumber is the human-number display core', async () => {
   const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
 

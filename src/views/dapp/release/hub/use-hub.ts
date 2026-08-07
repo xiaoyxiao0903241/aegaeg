@@ -1,5 +1,5 @@
 import { SECONDS_PER_DAY } from '~/core/assets/claim-plans'
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -91,11 +91,11 @@ export function useReleaseHub() {
   const gagxEmptyLabel = `${formatNumber(0, { digits: 4 })} gAGX`
   const gagxTotal = bufferGagxClaimable + bufferGagxReleasing
   const gagxTotalLabel = bufferChainReady
-    ? `${formatNumber(formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS), { digits: 4 })} gAGX`
+    ? `${formatTokenAmount(gagxTotal, GAGX_DECIMALS, 4)} gAGX`
     : gagxEmptyLabel
   // 与 AGX 对称：可领只信链上 gagx.totalClaimable（API 无同口径分项）
   const bufferClaimableGagx = bufferChainReady
-    ? `${formatNumber(formatTokenAmountToNumber(bufferGagxClaimable, GAGX_DECIMALS), { digits: 4 })} gAGX`
+    ? `${formatTokenAmount(bufferGagxClaimable, GAGX_DECIMALS, 4)} gAGX`
     : gagxEmptyLabel
 
   const queueReleasingNum = chainReady

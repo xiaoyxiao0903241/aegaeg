@@ -8,7 +8,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -57,6 +57,7 @@ const REWARD_CARD_ICONS = {
 
 function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
   // 未就绪/无数据：显示 0.0000gAGX / ≈ $0.00；登录提示放在底栏
+  // API 十进制金额无 wei；链上幸运额另走 formatTokenAmount
   if (!ready || value == null) {
     return {
       amount: `${formatNumber(0, { digits: 4 })}gAGX`,
@@ -64,7 +65,7 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
     }
   }
   return {
-    amount: `${value.toFixed(4)}gAGX`,
+    amount: `${formatNumber(value, { digits: 4 })}gAGX`,
     approx: formatUsdApprox(value, priceUsd),
   }
 }
@@ -103,13 +104,14 @@ export function RewardsHubDock() {
     return parseApiAmount(grantSummary.data?.unlocked_claimable)
   })()
 
-  const luckyAmount = (() => {
+  const luckyWei = (() => {
     if (!walletReady) return null
     const snap = luckyQuery.data
     if (snap == null) return null
-    if (!snap.claimable || snap.rewardAmount <= 0n) return 0
-    return formatTokenAmountToNumber(snap.rewardAmount, AGX_DECIMALS)
+    if (!snap.claimable || snap.rewardAmount <= 0n) return 0n
+    return snap.rewardAmount
   })()
+  const luckyAmount = luckyWei == null ? null : formatTokenAmountToNumber(luckyWei, AGX_DECIMALS)
 
   const amountValue = (view: (typeof REWARD_CARDS)[number]) => {
     if (!sessionReady && view !== 'lucky') return null
@@ -122,6 +124,17 @@ export function RewardsHubDock() {
 
   const amountReady = (view: (typeof REWARD_CARDS)[number]) =>
     view === 'lucky' ? walletReady : sessionReady
+
+  const luckyBalance =
+    !amountReady('lucky') || luckyWei == null
+      ? {
+          amount: `${formatNumber(0, { digits: 4 })}gAGX`,
+          approx: formatUsdApprox(0, null),
+        }
+      : {
+          amount: `${formatTokenAmount(luckyWei, AGX_DECIMALS, 4)}gAGX`,
+          approx: formatUsdApprox(formatTokenAmountToNumber(luckyWei, AGX_DECIMALS), priceUsd),
+        }
 
   const visibleCards = REWARD_CARDS.filter((view) => {
     if (!hideZero) return true
@@ -155,7 +168,9 @@ export function RewardsHubDock() {
                   : formatNumber(0, { digits: 2, prefix: '$' }),
               approx: undefined as string | undefined,
             }
-          : formatGagxBalance(value, amountReady(view), priceUsd)
+          : view === 'lucky'
+            ? luckyBalance
+            : formatGagxBalance(value, amountReady(view), priceUsd)
         const balanceLabel =
           isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 

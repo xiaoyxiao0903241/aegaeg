@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import type { BondKind } from '~/core/staking/staking-period'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -182,7 +182,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(totalDepositNum, priceUsd)}
           icon="agx"
-          value={formatNumber(totalDepositNum, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(totalDeposit, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -213,7 +213,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(held, priceUsd)}
           icon="agx"
-          value={formatNumber(held, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(payoutRemaining, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -223,7 +223,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(released, priceUsd)}
           icon="agx"
-          value={formatNumber(released, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(pendingPayout, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -233,7 +233,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(pending, priceUsd)}
           icon="agx"
-          value={formatNumber(pending, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -243,7 +243,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={formatNumber(rebaseGagx, { digits: 2, suffix: ' gAGX' })}
+          value={`${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`}
         />
       ),
     },

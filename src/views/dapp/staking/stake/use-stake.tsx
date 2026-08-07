@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
@@ -151,10 +151,8 @@ export function useStakeDetail() {
     queryFn: (addr) => readStakePositions(addr as Address),
   })
 
-  const poolAgx =
-    overviewQuery.data != null
-      ? formatTokenAmountToNumber(overviewQuery.data.poolAgxBalance, AGX_DECIMALS)
-      : 0
+  const poolAgxWei = overviewQuery.data?.poolAgxBalance
+  const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : 0
   const epochNumber = overviewQuery.data?.epochNumber ?? 0n
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
@@ -165,7 +163,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(poolAgx, priceUsd)}
           icon="agx"
-          value={formatNumber(poolAgx, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(poolAgxWei ?? 0n, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -217,7 +215,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeHeld, priceUsd)}
           icon="agx"
-          value={formatNumber(stakeHeld, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(principal, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -227,7 +225,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeReleased, priceUsd)}
           icon="agx"
-          value={formatNumber(stakeReleased, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -237,7 +235,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakePending, priceUsd)}
           icon="agx"
-          value={formatNumber(stakePending, { digits: 2, suffix: ' AGX' })}
+          value={`${formatTokenAmount(pending, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -247,7 +245,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={formatNumber(rebaseGagx, { digits: 2, suffix: ' gAGX' })}
+          value={`${formatTokenAmount(blockReward, GAGX_DECIMALS, 2)} gAGX`}
         />
       ),
     },
@@ -257,7 +255,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(bonusGagx, priceUsd)}
           icon="gagx"
-          value={formatNumber(bonusGagx, { digits: 2, suffix: ' gAGX' })}
+          value={`${formatTokenAmount(extraInterest, GAGX_DECIMALS, 2)} gAGX`}
         />
       ),
     },
