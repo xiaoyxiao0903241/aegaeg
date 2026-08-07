@@ -12,6 +12,22 @@ export interface StakeAddressCountStats {
   stake_address_count: number
 }
 
+/** POST /protocol-market-stats/series · `range` */
+export type ProtocolMarketStatsRange = 'week' | 'month' | 'year' | 'all'
+
+/** POST /protocol-market-stats/series · `metric`：market=总市值，stake=总质押 */
+export type ProtocolMarketStatsMetric = 'market' | 'stake'
+
+export interface ProtocolMarketStatsSeriesParams {
+  range: ProtocolMarketStatsRange
+  metric: ProtocolMarketStatsMetric
+}
+
+export interface ProtocolMarketStatsSeriesPoint {
+  date: string
+  amount: string
+}
+
 export interface BondFlowLogItem {
   user_address: string
   operation: BondFlowOperation

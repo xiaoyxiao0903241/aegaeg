@@ -11,7 +11,6 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { formatPercentChange, formatUsd } from '~/shared/presenters/format'
 import { useBondDetail } from '~/views/dapp/staking/bond/use-bond'
 import {
   StakingMechanismCard,
@@ -22,7 +21,16 @@ import { useStakingDetail } from '~/views/dapp/staking/use-detail'
 
 export function BondDetail({ kind }: { kind: BondKind }) {
   const { copy, overviewItems, positionItems, recordRows, recordsLoading } = useBondDetail(kind)
-  const { t, selectTab, chartRange, setChartRange } = useStakingDetail()
+  const {
+    t,
+    selectTab,
+    chartRange,
+    setChartRange,
+    chartLoading,
+    chartPoints,
+    chartValueLabel,
+    chartDeltaLabel,
+  } = useStakingDetail()
   const recordsTitle =
     kind === 'lp' ? t.staking.aside.recordsTitles.lpbond : t.staking.aside.recordsTitles.burnbond
   const chartTitle =
@@ -96,13 +104,15 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <Section.Title>{chartTitle}</Section.Title>
         <StakingTvlChart
           chartRange={chartRange}
-          deltaLabel={formatPercentChange(null)}
+          deltaLabel={chartDeltaLabel}
           emptyLabel={t.staking.aside.chartEmpty}
+          loading={chartLoading}
+          points={chartPoints}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
-          valueLabel={formatUsd(null)}
+          valueLabel={chartValueLabel}
         />
       </Section>
 

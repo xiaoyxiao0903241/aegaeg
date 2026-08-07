@@ -11,7 +11,6 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { formatPercentChange, formatUsd } from '~/shared/presenters/format'
 import {
   StakingMechanismCard,
   StakingMetricValue,
@@ -23,7 +22,16 @@ import { useXmineDetail } from '~/views/dapp/staking/xmine/use-xmine'
 
 export function XmineDetail() {
   const { overviewItems, positionItems, recordRows, recordsLoading } = useXmineDetail()
-  const { t, selectTab, chartRange, setChartRange } = useStakingDetail()
+  const {
+    t,
+    selectTab,
+    chartRange,
+    setChartRange,
+    chartLoading,
+    chartPoints,
+    chartValueLabel,
+    chartDeltaLabel,
+  } = useStakingDetail()
   const xValue = t.staking.aside.xValue
 
   return (
@@ -109,13 +117,15 @@ export function XmineDetail() {
         <Section.Title>{t.staking.aside.chartTitles.xmine}</Section.Title>
         <StakingTvlChart
           chartRange={chartRange}
-          deltaLabel={formatPercentChange(null)}
+          deltaLabel={chartDeltaLabel}
           emptyLabel={t.staking.aside.chartEmpty}
+          loading={chartLoading}
+          points={chartPoints}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
-          valueLabel={formatUsd(null)}
+          valueLabel={chartValueLabel}
         />
       </Section>
 

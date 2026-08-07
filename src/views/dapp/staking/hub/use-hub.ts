@@ -1,3 +1,4 @@
+import type { UTCTimestamp } from 'lightweight-charts'
 import { useState } from 'react'
 
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -9,7 +10,7 @@ import {
   stakePeriodDays,
 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useStakeAddressCount } from '~/hooks/use-api-data'
+import { useProtocolMarketStatsChart, useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import type { ChartPoint } from '~/shared/components/chart'
@@ -142,10 +143,18 @@ export function useStakingHubDetail() {
           })
         : formatNumber(0, { digits: 0, trimZeros: true })
 
-  // 暂无历史数据源，序列为空；头部仍按 `$0.00` / `+0.0%` 格式展示。
-  const chartPoints: readonly ChartPoint[] = []
-  const chartValueLabel = formatUsd(null)
-  const chartDeltaLabel = formatPercentChange(null)
+  const seriesChart = useProtocolMarketStatsChart(
+    chartRange,
+    t.staking.aside.chartRanges,
+    chartMetric,
+  )
+  const chartLoading = seriesChart.isLoading && seriesChart.data == null
+  const chartPoints: readonly ChartPoint[] = seriesChart.points.map((p) => ({
+    time: p.time as UTCTimestamp,
+    value: p.value,
+  }))
+  const chartValueLabel = formatUsd(seriesChart.lastValue)
+  const chartDeltaLabel = formatPercentChange(seriesChart.percentChange)
 
   const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
@@ -202,6 +211,7 @@ export function useStakingHubDetail() {
       stakers: stakersLabel,
     },
     periodTableRows,
+    chartLoading,
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,

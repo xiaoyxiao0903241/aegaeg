@@ -22,6 +22,7 @@ import { Chart, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { formatNumber } from '~/shared/presenters/format'
@@ -288,12 +289,13 @@ export function StakingTokenMetricValue({
  * 质押 TVL / 市值历史图
  *
  * 范围切换与空态文案在本组件内；
- * 序列数据由调用方传入（数据源未接通时为空数组，展示空态）。
+ * `loading` 时展示曲线骨架；序列由调用方传入。
  */
 export function StakingTvlChart({
   chartRange,
   deltaLabel,
   emptyLabel,
+  loading = false,
   points,
   rangeAriaLabel,
   rangeLabels,
@@ -304,6 +306,7 @@ export function StakingTvlChart({
   chartRange: string
   deltaLabel: string
   emptyLabel: string
+  loading?: boolean
   points?: readonly ChartPoint[]
   rangeAriaLabel: string
   rangeLabels: readonly string[]
@@ -317,12 +320,21 @@ export function StakingTvlChart({
     <Chart surface={surface}>
       <Chart.Header>
         <div className="flex items-center gap-2">
-          <Text as="strong" className="text-xl/none font-semibold" variant="copy">
-            {valueLabel}
-          </Text>
-          <Text as="span" className="text-success" variant="copy">
-            {deltaLabel}
-          </Text>
+          {loading ? (
+            <>
+              <Skeleton className="h-6 w-20" />
+              <Skeleton className="h-4 w-12" />
+            </>
+          ) : (
+            <>
+              <Text as="strong" className="text-xl/none font-semibold" variant="copy">
+                {valueLabel}
+              </Text>
+              <Text as="span" className="text-success" variant="copy">
+                {deltaLabel}
+              </Text>
+            </>
+          )}
         </div>
         <Segment
           aria-label={rangeAriaLabel}
@@ -333,7 +345,13 @@ export function StakingTvlChart({
           value={chartRange}
         />
       </Chart.Header>
-      {hasSeries ? <Chart.Plot points={points} /> : <Chart.Empty title={emptyLabel} />}
+      {loading ? (
+        <Chart.Skeleton />
+      ) : hasSeries ? (
+        <Chart.Plot points={points} />
+      ) : (
+        <Chart.Empty title={emptyLabel} />
+      )}
     </Chart>
   )
 }

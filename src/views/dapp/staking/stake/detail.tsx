@@ -11,7 +11,6 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { formatPercentChange, formatUsd } from '~/shared/presenters/format'
 import {
   StakingMechanismCard,
   StakingMetricValue,
@@ -22,7 +21,16 @@ import { useStakingDetail } from '~/views/dapp/staking/use-detail'
 
 export function StakeDetail() {
   const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetail()
-  const { t, selectTab, chartRange, setChartRange } = useStakingDetail()
+  const {
+    t,
+    selectTab,
+    chartRange,
+    setChartRange,
+    chartLoading,
+    chartPoints,
+    chartValueLabel,
+    chartDeltaLabel,
+  } = useStakingDetail()
 
   return (
     <Detail>
@@ -92,13 +100,15 @@ export function StakeDetail() {
         <Section.Title>{t.staking.aside.chartTitles.stake}</Section.Title>
         <StakingTvlChart
           chartRange={chartRange}
-          deltaLabel={formatPercentChange(null)}
+          deltaLabel={chartDeltaLabel}
           emptyLabel={t.staking.aside.chartEmpty}
+          loading={chartLoading}
+          points={chartPoints}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
           surface="elevated"
-          valueLabel={formatUsd(null)}
+          valueLabel={chartValueLabel}
         />
       </Section>
 

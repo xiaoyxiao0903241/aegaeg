@@ -1,22 +1,34 @@
 /**
- * 质押、债券与 X 挖矿的指标与流水 hooks 都要求登录态。
+ * 质押域 API hooks：流水类需登录；协议市值序列为公开接口。
  */
-import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
+import { useQuery } from '@tanstack/react-query'
+
+import {
+  buildProtocolMarketStatsChart,
+  resolveProtocolMarketStatsMetric,
+  resolveProtocolMarketStatsRange,
+} from '~/core/staking/protocol-market-stats-series'
+import { toApiQueryView, useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   getBondFlowBurnLogs,
   getBondFlowBurnPurchases,
   getBondFlowLpLogs,
   getBondFlowLpPurchases,
+  getProtocolMarketStatsSeries,
   getStakeAddressCount,
   getStakeFlowLogs,
   getStakeFlowPositions,
   getX0MiningLogs,
   getX0MiningPositions,
 } from '~/shared/api/endpoints'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type {
   BondFlowLogsParams,
   PaginationParams,
+  ProtocolMarketStatsMetric,
+  ProtocolMarketStatsRange,
   StakeFlowLogsParams,
   X0MiningLogsParams,
 } from '~/shared/api/types'
@@ -29,6 +41,56 @@ import { sumX0MiningRewardAmountAcrossPages } from '~/shared/presenters/xmine-li
  */
 export function useStakeAddressCount(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.stakeAddressCount, getStakeAddressCount, enabled)
+}
+
+/**
+ * 协议总市值 / 总质押历史序列（公开接口，无需登录）。
+ *
+ * @param range API `range`
+ * @param metric API `metric`
+ * @param enabled false 时暂停请求
+ * @returns 协议序列查询视图
+ */
+function useProtocolMarketStatsSeries(
+  range: ProtocolMarketStatsRange,
+  metric: ProtocolMarketStatsMetric,
+  enabled = true,
+) {
+  const { messages: t } = useI18n()
+  const query = useQuery({
+    queryKey: queryKeys.api.protocolMarketStatsSeries(range, metric),
+    queryFn: () => getProtocolMarketStatsSeries({ range, metric }),
+    enabled,
+    staleTime: QUERY_STALE_TIME.api,
+  })
+  return toApiQueryView(query, t.errors.api)
+}
+
+/**
+ * 从 UI Segment 文案解析 range/metric 并拉取序列，构建图表点。
+ *
+ * @param chartRange 当前选中的时间范围文案（与 `rangeLabels` 对齐）
+ * @param rangeLabels i18n `chartRanges`
+ * @param uiMetric Hub：`tvl`/`mcap`；子页趋势图固定 `tvl`
+ * @param enabled false 时暂停请求
+ * @returns API 查询视图，并附图表点、最新值与涨跌幅
+ */
+export function useProtocolMarketStatsChart(
+  chartRange: string,
+  rangeLabels: readonly string[],
+  uiMetric: string,
+  enabled = true,
+) {
+  const range = resolveProtocolMarketStatsRange(chartRange, rangeLabels)
+  const metric = resolveProtocolMarketStatsMetric(uiMetric)
+  const seriesQuery = useProtocolMarketStatsSeries(range, metric, enabled)
+  const chart = buildProtocolMarketStatsChart(seriesQuery.data ?? [])
+  return {
+    ...seriesQuery,
+    points: chart.points,
+    lastValue: chart.lastValue,
+    percentChange: chart.percentChange,
+  }
 }
 
 /**

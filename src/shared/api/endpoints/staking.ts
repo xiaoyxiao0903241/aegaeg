@@ -6,6 +6,8 @@ import type {
   BondPurchasesPage,
   Paginated,
   PaginationParams,
+  ProtocolMarketStatsSeriesParams,
+  ProtocolMarketStatsSeriesPoint,
   StakeAddressCountStats,
   StakeFlowLogItem,
   StakeFlowLogsParams,
@@ -22,6 +24,23 @@ export async function getStakeAddressCount(token: string): Promise<StakeAddressC
     method: 'POST',
     token,
     body: {},
+  })
+}
+
+/**
+ * 协议总市值 / 总质押历史序列（无需登录）。
+ *
+ * @see docs/backend-api/api.md #protocol-market-stats/series
+ */
+export async function getProtocolMarketStatsSeries(
+  params: ProtocolMarketStatsSeriesParams,
+): Promise<ProtocolMarketStatsSeriesPoint[]> {
+  return apiRequest<ProtocolMarketStatsSeriesPoint[]>('/protocol-market-stats/series', {
+    method: 'POST',
+    body: {
+      range: params.range,
+      metric: params.metric,
+    },
   })
 }
 

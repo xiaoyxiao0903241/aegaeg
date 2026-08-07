@@ -52,6 +52,7 @@ export function StakingHubDetail() {
     setChartRange,
     labels,
     periodTableRows,
+    chartLoading,
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,
@@ -161,6 +162,7 @@ export function StakingHubDetail() {
           chartRange={chartRange}
           deltaLabel={chartDeltaLabel}
           emptyLabel={t.staking.aside.chartEmpty}
+          loading={chartLoading}
           points={chartPoints}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}

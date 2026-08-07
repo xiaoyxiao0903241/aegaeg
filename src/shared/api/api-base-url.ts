@@ -1,6 +1,9 @@
 import { appEnv } from '~/shared/config/env'
 import { getRuntimeHostname } from '~/shared/lib/runtime-host'
 
+/** 本地 / 开发态浏览器同源前缀（由 Vite `server.proxy` 转到上游）。 */
+const LOCAL_API_BASE_PATH = '/api'
+
 function isLocalHostname(hostname: string): boolean {
   const host = hostname.toLowerCase()
   return host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host === '::1'
@@ -28,8 +31,8 @@ export function extractRootDomain(hostname: string): string {
 /**
  * 计算后端 API 基础地址
  *
- * 开发环境或本地主机名直接用环境变量配置；生产环境按域名派生
- * `https://api.<根域名>/api`，除非显式关闭派生或配置了环境地址。
+ * 开发环境或本地主机名走同源 `/api`（Vite/preview 代理到 `VITE_API_BASE_URL`），
+ * 避免浏览器直连跨域被 CORS 拦截。生产非本机按域名派生 `https://api.<根域名>/api`。
  *
  * @param options.hostname 覆盖运行时主机名（测试注入）
  * @param options.isDev 覆盖开发态判断
@@ -51,7 +54,9 @@ export function apiBaseUrl(
   const deriveFromDomain = options.deriveFromDomain ?? appEnv.apiDeriveFromDomain
 
   if (isDev || isLocalHostname(hostname)) {
-    return (envBaseUrl || appEnv.apiBaseUrl).replace(/\/$/, '')
+    const base = (envBaseUrl || '').replace(/\/$/, '')
+    if (base.startsWith('/')) return base || LOCAL_API_BASE_PATH
+    return LOCAL_API_BASE_PATH
   }
 
   if (!deriveFromDomain && envBaseUrl) {
@@ -60,7 +65,7 @@ export function apiBaseUrl(
 
   const root = extractRootDomain(hostname)
   if (!root || isLocalHostname(root)) {
-    return (envBaseUrl || appEnv.apiBaseUrl).replace(/\/$/, '')
+    return LOCAL_API_BASE_PATH
   }
 
   return `https://api.${root}/api`

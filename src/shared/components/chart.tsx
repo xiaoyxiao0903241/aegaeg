@@ -13,6 +13,7 @@ import { type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from
 
 import { Card } from '~/shared/components/card'
 import { Empty } from '~/shared/components/empty'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { formatNumber, formatUsd } from '~/shared/presenters/format'
@@ -21,7 +22,7 @@ import { colorHex } from '~/shared/styles/tokens/tokens'
 /**
  * DApp 面积图
  *
- * 组合组件：`Chart` · `Header` · `Plot` · `Empty`。
+ * 组合组件：`Chart` · `Header` · `Plot` · `Empty` · `Skeleton`。
  * 绘图区用 Lightweight Charts 实现；数据点与文案由调用方提供。
  * @see docs/foundation/component-usage.md
  */
@@ -335,8 +336,25 @@ function Plot({
   )
 }
 
+/**
+ * 曲线 / 面积图加载骨架：绘图区与底部轴标占位，高度对齐 `Plot` 的 170px。
+ */
+function ChartSkeleton({ className }: { className?: string }) {
+  return (
+    <div aria-busy="true" className={cn('grid w-full gap-2', className)}>
+      <Skeleton className="h-[170px] w-full rounded-md" />
+      <div className="flex w-full items-center justify-between gap-1">
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton className="h-3 w-10 shrink" key={i} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export const Chart = Object.assign(ChartRoot, {
   Header,
   Plot,
   Empty,
+  Skeleton: ChartSkeleton,
 })

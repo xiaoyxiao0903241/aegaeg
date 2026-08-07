@@ -13,7 +13,7 @@ test('extractRootDomain keeps apex and strips subdomain', async () => {
   assert.equal(extractRootDomain('127.0.0.1'), '127.0.0.1')
 })
 
-test('apiBaseUrl uses env base in dev', async () => {
+test('apiBaseUrl uses same-origin /api in dev (Vite proxy; avoid CORS)', async () => {
   const { apiBaseUrl } = await loadModule('/src/shared/api/api-base-url.ts')
 
   assert.equal(
@@ -22,11 +22,11 @@ test('apiBaseUrl uses env base in dev', async () => {
       isDev: true,
       envBaseUrl: 'https://api.test.local/api',
     }),
-    'https://api.test.local/api',
+    '/api',
   )
 })
 
-test('apiBaseUrl uses env base on localhost in production build', async () => {
+test('apiBaseUrl uses same-origin /api on localhost (even production build)', async () => {
   const { apiBaseUrl } = await loadModule('/src/shared/api/api-base-url.ts')
 
   assert.equal(
@@ -35,7 +35,20 @@ test('apiBaseUrl uses env base on localhost in production build', async () => {
       isDev: false,
       envBaseUrl: 'https://api.test.local/api',
     }),
-    'https://api.test.local/api',
+    '/api',
+  )
+})
+
+test('apiBaseUrl keeps explicit relative env base in local/dev', async () => {
+  const { apiBaseUrl } = await loadModule('/src/shared/api/api-base-url.ts')
+
+  assert.equal(
+    apiBaseUrl({
+      hostname: 'localhost',
+      isDev: true,
+      envBaseUrl: '/api/v2',
+    }),
+    '/api/v2',
   )
 })
 

@@ -39,6 +39,9 @@ export const queryKeys = {
       ['api', 'search', 'performance', address.toLowerCase()] as const,
     makingOverview: ['api', 'performance', 'makingOverview'] as const,
     stakeAddressCount: ['api', 'performance', 'stakeAddressCount'] as const,
+    protocolMarketStatsSeriesRoot: ['api', 'protocolMarketStats', 'series'] as const,
+    protocolMarketStatsSeries: (range: string, metric: string) =>
+      ['api', 'protocolMarketStats', 'series', range, metric] as const,
     salesLogsRoot: ['api', 'salesLogs'] as const,
     salesLogs: (params: PaginationParams = {}) => paginated(['api', 'salesLogs'] as const, params),
     rewardLogsRoot: ['api', 'rewardLogs'] as const,

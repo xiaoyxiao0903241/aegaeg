@@ -37,28 +37,53 @@ export interface ApiRequestOptions {
 }
 
 /**
+ * 把已拼接的 API 路径（绝对或同源相对）附上查询串。
+ *
+ * 本地 Vite 代理使用相对 `/api/...`；`new URL('/api')` 无 base 会抛 Invalid URL，
+ * 故相对路径走字符串拼查询，供 `fetch` 同源请求。
+ *
+ * @param href 已拼接的 API 路径
+ * @param searchParams 查询参数；值为 undefined 的键跳过
+ * @returns 带查询串的绝对或同源相对 URL
+ */
+export function resolveApiRequestUrl(
+  href: string,
+  searchParams?: Record<string, string | number | undefined>,
+): string {
+  const isAbsolute = /^https?:\/\//i.test(href)
+  if (isAbsolute) {
+    const url = new URL(href)
+    if (searchParams) {
+      for (const [key, value] of Object.entries(searchParams)) {
+        if (value !== undefined) url.searchParams.set(key, String(value))
+      }
+    }
+    return url.toString()
+  }
+
+  if (!searchParams) return href
+  const qs = new URLSearchParams()
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (value !== undefined) qs.set(key, String(value))
+  }
+  const query = qs.toString()
+  if (!query) return href
+  return href.includes('?') ? `${href}&${query}` : `${href}?${query}`
+}
+
+/**
  * 拼接 API 基础地址与业务路径，并附加查询参数。
  *
  * @param path 业务路径
  * @param searchParams 查询参数；值为 undefined 的键跳过
- * @returns 完整 URL
+ * @returns 可供 fetch 的绝对或同源相对 URL
  * @see docs/backend-api/api.md
  */
 export function apiUrl(
   path: string,
   searchParams?: Record<string, string | number | undefined>,
 ): string {
-  const url = new URL(apiClientUrl(path))
-
-  if (searchParams) {
-    for (const [key, value] of Object.entries(searchParams)) {
-      if (value !== undefined) {
-        url.searchParams.set(key, String(value))
-      }
-    }
-  }
-
-  return url.toString()
+  return resolveApiRequestUrl(apiClientUrl(path), searchParams)
 }
 
 function rethrowAfterIntercept(error: unknown): never {

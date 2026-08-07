@@ -75,6 +75,8 @@ export type AssetsHubOverview = {
   bufferGagxTotal: string
   bufferGagxReleased: string
   modes: Record<'stake' | 'lpbond' | 'burnbond' | 'xmine', AssetsHubModeStats>
+  /** 总览 / 持仓分布仍在拉数（骨架用）；未连接钱包为 false */
+  overviewLoading: boolean
 }
 
 /** 无 rebase / 挖矿利率时展示 0.00%（空数字→0） */
@@ -277,7 +279,10 @@ export function useAssetsHub(): AssetsHubOverview {
     xmine: EMPTY_XMINE,
   } as const satisfies Record<Exclude<AssetsView, 'hub'>, AssetsHubModeStats>
 
-  const zeroOverview = (modes: AssetsHubOverview['modes']): AssetsHubOverview => ({
+  const zeroOverview = (
+    modes: AssetsHubOverview['modes'],
+    overviewLoading = false,
+  ): AssetsHubOverview => ({
     totalValue: formatNumber(0, { digits: 2, prefix: '$' }),
     claimable: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimableApprox: formatUsdApprox(0, null),
@@ -295,6 +300,7 @@ export function useAssetsHub(): AssetsHubOverview {
     bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
     bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
     modes,
+    overviewLoading,
   })
 
   if (apiReady) {
@@ -386,11 +392,12 @@ export function useAssetsHub(): AssetsHubOverview {
           formatUsdApprox(xPendingNum, null),
         ),
       },
+      overviewLoading: false,
     }
   }
 
   if (apiPending || !enabled) {
-    return zeroOverview(emptyModes)
+    return zeroOverview(emptyModes, Boolean(enabled && apiPending))
   }
 
   const errored =
@@ -402,14 +409,14 @@ export function useAssetsHub(): AssetsHubOverview {
     bufferQuery.isError
 
   if (errored) {
-    return zeroOverview(emptyModes)
+    return zeroOverview(emptyModes, false)
   }
 
   const loading =
     !chainYieldReady || contribQuery.data === undefined || bufferQuery.data === undefined
 
   if (loading) {
-    return zeroOverview(emptyModes)
+    return zeroOverview(emptyModes, true)
   }
 
   const stakePrincipal = stakeRows.reduce((sum, row) => sum + row.principal, 0n)
@@ -496,6 +503,7 @@ export function useAssetsHub(): AssetsHubOverview {
         hasBalance: xStake > 0n || xPending > 0n,
       },
     },
+    overviewLoading: false,
   }
 }
 
@@ -549,6 +557,7 @@ export function useAssetsHubDetail() {
     rebase: t.assets.hub.rebase,
     values,
     distribution,
+    distributionLoading: values.overviewLoading,
     bufferAsset,
     setBufferAsset,
     bufferTotal: bufferAsset === 'agx' ? values.bufferTotal : values.bufferGagxTotal,

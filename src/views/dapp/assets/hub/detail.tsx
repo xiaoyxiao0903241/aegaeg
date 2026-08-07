@@ -15,6 +15,7 @@ import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import {
   AssetsHoldingsDistributionCard,
+  AssetsHoldingsDistributionSkeleton,
   AssetsHubMetricPlain,
   AssetsHubMetricWithIcon,
   AssetsMetricGroupCard,
@@ -26,7 +27,7 @@ import { useAssetsHubDetail } from '~/views/dapp/assets/hub/use-hub'
 
 export function AssetsHubDetail() {
   const vm = useAssetsHubDetail()
-  const { t, overview, rebase, values, setBufferAsset, distribution } = vm
+  const { t, overview, rebase, values, setBufferAsset, distribution, distributionLoading } = vm
   const {
     bufferTotal,
     bufferTotalApprox,
@@ -153,7 +154,9 @@ export function AssetsHubDetail() {
 
       <Section>
         <Section.Title>{t.assets.hub.distribution.title}</Section.Title>
-        {distribution ? (
+        {distributionLoading ? (
+          <AssetsHoldingsDistributionSkeleton />
+        ) : distribution ? (
           <AssetsHoldingsDistributionCard
             totalCaption={overview.holdingsTotal}
             totalLabel={distribution.totalLabel}

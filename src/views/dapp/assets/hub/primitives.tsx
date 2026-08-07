@@ -10,6 +10,7 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
@@ -474,6 +475,43 @@ export function AssetsHoldingsDistributionCard({
             </li>
           )
         })}
+      </ul>
+    </div>
+  )
+}
+
+/**
+ * 持仓分布环形图加载骨架：左环右列（对齐 `AssetsHoldingsDistributionCard` 布局）。
+ */
+export function AssetsHoldingsDistributionSkeleton() {
+  return (
+    <div
+      aria-busy="true"
+      className="flex items-center gap-11 rounded-2xl border border-border bg-card px-7.5 py-6.5 max-dapp:flex-col max-dapp:gap-6 max-dapp:px-4 max-dapp:py-5"
+    >
+      <Skeleton className="size-[264px] shrink-0 rounded-full max-dapp:size-50" />
+      <ul className="m-0 flex min-w-0 flex-1 list-none flex-col justify-center self-stretch p-0">
+        {Array.from({ length: 4 }, (_, i) => (
+          <li
+            className={cn(
+              'flex items-center justify-between gap-3 py-3.5',
+              i < 3 && 'border-b border-border',
+            )}
+            key={i}
+          >
+            <span className="grid min-w-0 gap-2">
+              <span className="inline-flex items-center gap-2">
+                <Skeleton className="size-2 shrink-0 rounded-full" />
+                <Skeleton className="h-3.5 w-16" />
+              </span>
+              <Skeleton className="ml-4 h-4 w-12" />
+            </span>
+            <span className="grid shrink-0 justify-items-end gap-2">
+              <Skeleton className="h-3.5 w-20" />
+              <Skeleton className="h-3 w-14" />
+            </span>
+          </li>
+        ))}
       </ul>
     </div>
   )
