@@ -37,6 +37,7 @@ import { isUserRejectedWalletError } from '~/web3/contract-error-message'
  * @returns 错误哨兵字符串；临时性失败返回 null
  */
 export function toLoginErrorSentinel(error: unknown): string | null {
+  if (error === LOGIN_ERROR.WRONG_NETWORK) return LOGIN_ERROR.WRONG_NETWORK
   switch (classifyLoginFailure(error)) {
     case 'banned':
       return ACCOUNT_BANNED_SENTINEL
@@ -53,7 +54,10 @@ export function toLoginErrorSentinel(error: unknown): string | null {
 
 export interface WalletLoginParams {
   account: Account
+  /** SIWE 消息声明的期望链（BSC）；不得写入 live 异网 id。 */
   chainId: number
+  /** 钱包 live chain；未知或 ≠ chainId 时拒绝换票（含缓存签名路径）。 */
+  liveChainId: number | null | undefined
   domain?: string
   signMessage?: (message: string) => Promise<string>
   storage?: AuthSessionStorage
@@ -215,7 +219,8 @@ async function signAndExchangeLogin({
  * 签名 → 换 token 流程。token 存入会话存储。
  *
  * @param params.account 钱包账户
- * @param params.chainId 当前链 ID
+ * @param params.chainId SIWE 消息声明的期望链（BSC）
+ * @param params.liveChainId 钱包 live chain；未知或 ≠ chainId 时拒绝（含缓存换票）
  * @param params.domain 站点域名
  * @param params.signMessage 签名回调，默认用 account.signMessage
  * @param params.storage 会话存储，默认 localStorage
@@ -225,11 +230,19 @@ async function signAndExchangeLogin({
 export async function loginWithWallet({
   account,
   chainId,
+  liveChainId,
   domain,
   signMessage = (message) => account.signMessage({ message }),
   storage = createLocalAuthSessionStorage(localStorage),
   signatureStorage = createLocalLoginSignatureStorage(localStorage),
 }: WalletLoginParams): Promise<WalletLoginResult> {
+  if (liveChainId == null) {
+    throw LOGIN_ERROR.WALLET_NOT_CONNECTED
+  }
+  if (liveChainId !== chainId) {
+    throw LOGIN_ERROR.WRONG_NETWORK
+  }
+
   const cached = readUsableLoginSignature(account.address, signatureStorage)
   if (cached) {
     try {

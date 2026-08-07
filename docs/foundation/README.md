@@ -13,13 +13,13 @@
 
 ## 定稿规则
 
-| 项                | 规则                                                                                                                                                                                                      |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 颜色              | **`src/shared/styles/tokens/tokens.json`** → `theme.css`（色值真源）；轴说明见 `ui-tokens.md`；禁新遗留色 / 平行语义 class                                                                                |
-| 文本              | 用户可见文案必须 `<Text>`                                                                                                                                                                                 |
-| 样式复用          | 禁导出 `*Class`；单用处 inline；多处 → 组件 / `tv()`                                                                                                                                                      |
-| shared/components | 无业务数据的布局/控件 primitive；业务档位 / locale / 产品壳（store/钱包）不进；跨 tab 产品壳 → `views/dapp/shared/`；窗口级 host（rail/topbar/onboarding/wallet）→ `views/dapp/host/`；入口 → `src/boot/` |
-| H5                | PC 文案 SSOT；H5 只做响应式                                                                                                                                                                               |
+| 项                | 规则                                                                                                                                                                                                       |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 颜色              | **`src/shared/styles/tokens/tokens.json`** → `theme.css`（色值真源）；轴说明见 `ui-tokens.md`；禁新遗留色 / 平行语义 class                                                                                 |
+| 文本              | 用户可见文案必须 `<Text>`                                                                                                                                                                                  |
+| 样式复用          | 禁导出 `*Class`；单用处 inline；多处 → 组件 / `tv()`                                                                                                                                                       |
+| shared/components | 无业务数据的布局/控件 primitive；业务档位 / locale / 产品壳（store/钱包）不进；跨 tab 产品壳 → `views/dapp/shared/`；窗口级 host（rail/app-bar/onboarding/wallet）→ `views/dapp/host/`；入口 → `src/boot/` |
+| H5                | PC 文案 SSOT；H5 只做响应式                                                                                                                                                                                |
 
 ## 易混色
 

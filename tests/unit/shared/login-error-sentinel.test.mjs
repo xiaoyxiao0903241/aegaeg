@@ -20,4 +20,5 @@ test('toLoginErrorSentinel maps classify kinds', async () => {
     LOGIN_ERROR.SIGNATURE_REJECTED,
   )
   assert.equal(toLoginErrorSentinel(new Error('network')), null)
+  assert.equal(toLoginErrorSentinel(LOGIN_ERROR.WRONG_NETWORK), LOGIN_ERROR.WRONG_NETWORK)
 })

@@ -49,7 +49,7 @@ Legacy：无专章；绑定细节可补 [`onchain-manual-legacy.md`](../onchain-
 | 用途                                        | 条目                                                                                   |
 | ------------------------------------------- | -------------------------------------------------------------------------------------- |
 | 新手教程（宿主 onboarding 主对照）          | PC 教程 1/12–12/12 · `4305:212`…`4317:212`（跨兑换/质押/资产/释放/涡轮/奖励/社区导航） |
-| 独立「Host / Topbar / Rail / 未连接」产品帧 | **无**（备注：稿几乎全为 connected；无 title 级未连接页）                              |
+| 独立「Host / AppBar / Rail / 未连接」产品帧 | **无**（备注：稿几乎全为 connected；无 title 级未连接页）                              |
 
 ### HTML 原型
 
@@ -57,11 +57,11 @@ Legacy：无专章；绑定细节可补 [`onchain-manual-legacy.md`](../onchain-
 
 ### 代码根
 
-| 根                           | 内容                                                                                                            |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `src/views/dapp/host/`       | `dapp-host.tsx` · `rail.tsx` · `topbar.tsx` · `mobile-nav.tsx` · `onboarding/` · `wallet/` · `primitives.tsx` … |
-| `src/views/dapp/shared/`     | `dock-frame.tsx` · `tab-header.tsx` · `tab-host.tsx` · `subview-*` · connect promo · `about-card.tsx` …         |
-| 组合根（非 Fold 正文，对照） | `src/boot/`（map 外；窗口组合）                                                                                 |
+| 根                           | 内容                                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `src/views/dapp/host/`       | `dapp-host.tsx` · `rail.tsx` · `app-bar.tsx` · `mobile-nav.tsx` · `onboarding/` · `wallet/` · `primitives.tsx` … |
+| `src/views/dapp/shared/`     | `dock-frame.tsx` · `tab-header.tsx` · `tab-host.tsx` · `subview-*` · connect promo · `about-card.tsx` …          |
+| 组合根（非 Fold 正文，对照） | `src/boot/`（map 外；窗口组合）                                                                                  |
 
 **Coverage quality: weak** — 代码根清晰；手册/API/Figma 无独立 Host 页，教程与 §4/§5 仅侧面覆盖。
 

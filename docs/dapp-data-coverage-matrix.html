@@ -419,11 +419,11 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>415</strong></div>
-        <div class="stat ok"><span>✅</span><strong>251</strong></div>
+        <div class="stat ok"><span>✅</span><strong>258</strong></div>
         <div class="stat bad"><span>❌</span><strong>35</strong></div>
-        <div class="stat partial"><span>部分</span><strong>78</strong></div>
+        <div class="stat partial"><span>部分</span><strong>72</strong></div>
         <div class="stat pending"><span>待核实</span><strong>20</strong></div>
-        <div class="stat na"><span>不适用</span><strong>30</strong></div>
+        <div class="stat na"><span>不适用</span><strong>29</strong></div>
       </div>
     </header>
 
@@ -446,7 +446,7 @@
 
     <details class="rules-panel">
       <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">规则（可展开）</summary>
-      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；Host 专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>已实现 &gt; Figma &gt; HTML 原型</td></tr><tr><td>证据杠</td><td>金钱相关：Prod 只读核实后才可 `✅`；写路径不真发交易</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`是否正确接入` ≠ `✅` 的行即现行缺口；`A/B/C链` 列为稳定交叉编号（可选）</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>权威来源</th><th>是否正确接入</th><th>T1归因</th><th>继承自</th><th>证据</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>host + shared</td><td>`H-###`</td></tr><tr><td>staking</td><td>`S-###`</td></tr><tr><td>rewards</td><td>`W-###`</td></tr><tr><td>release</td><td>`L-###`</td></tr><tr><td>exchange</td><td>`X-###`</td></tr><tr><td>assets</td><td>`A-###`</td></tr><tr><td>community</td><td>`CM-###`</td></tr><tr><td>genesis</td><td>`GN-###`</td></tr><tr><td>code 反查附录</td><td>`Z-###`</td></tr></table></div><h3>是否正确接入</h3><p>`✅` · `❌` · `部分` · `待核实` · `不适用`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>待核实</li></ul><p>（`✅` / `不适用` 行 T1 用 `—`。）</p>
+      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；Host 专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>已实现 &gt; Figma &gt; HTML 原型</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API（不与链混源）；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>证据杠</td><td>金钱相关：Prod 只读核实后才可 `✅`；写路径不真发交易</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`是否正确接入` ≠ `✅` 的行即现行缺口；`A/B/C链` 列为稳定交叉编号（可选）</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>权威来源</th><th>是否正确接入</th><th>T1归因</th><th>继承自</th><th>证据</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>host + shared</td><td>`H-###`</td></tr><tr><td>staking</td><td>`S-###`</td></tr><tr><td>rewards</td><td>`W-###`</td></tr><tr><td>release</td><td>`L-###`</td></tr><tr><td>exchange</td><td>`X-###`</td></tr><tr><td>assets</td><td>`A-###`</td></tr><tr><td>community</td><td>`CM-###`</td></tr><tr><td>genesis</td><td>`GN-###`</td></tr><tr><td>code 反查附录</td><td>`Z-###`</td></tr></table></div><h3>是否正确接入</h3><p>`✅` · `❌` · `部分` · `待核实` · `不适用`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>待核实</li></ul><p>（`✅` / `不适用` 行 T1 用 `—`。）</p>
     </details>
 
     <div id="chapters"><section class="chapter" id="1-host-shared" data-section="1-host-shared">
@@ -476,10 +476,10 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-002 host+shared topbar / 全壳 connect ≠ login（`walletready` vs `sessionready` / `needssignin`） 读 agents「连接 ≠ 业务登录」；api login；手册 §1.3 ✅ — — `usedapphost`+`useauth`；chip 仅 `walletready&amp;&amp;sessionready` 才出地址胶囊；否则 connect / sign-in — 核心不变量">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-002 host+shared appbar / 全壳 connect ≠ login（`walletready` vs `sessionready` / `needssignin`） 读 agents「连接 ≠ 业务登录」；api login；手册 §1.3 ✅ — — `usedapphost`+`useauth`；chip 仅 `walletready&amp;&amp;sessionready` 才出地址胶囊；否则 connect / sign-in — 核心不变量">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-002</span>
-    <span class="surface">Topbar / 全壳</span>
+    <span class="surface">AppBar / 全壳</span>
     <span class="datum">connect ≠ login（`walletReady` vs `sessionReady` / `needsSignIn`）</span>
     <span class="rw pill">读</span>
     <span class="status badge ok">✅</span>
@@ -497,10 +497,10 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-003 host+shared topbar `wallettopbaractions` `needssignin` 文案门闸（sign in vs connect） 读 api `/auth/login`；`authprovider.needssignin` ✅ — — `topbar.tsx`：`needssignin ? signinrequired : connectwallet`；登录中 `connecting` — —">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-003 host+shared appbar `appbarwalletactions` `needssignin` 文案门闸（sign in vs connect） 读 api `/auth/login`；`authprovider.needssignin` ✅ — — `app-bar.tsx`：`needssignin ? signinrequired : connectwallet`；登录中 `connecting` — —">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-003</span>
-    <span class="surface">Topbar `WalletTopbarActions`</span>
+    <span class="surface">AppBar `AppBarWalletActions`</span>
     <span class="datum">`needsSignIn` 文案门闸（Sign in vs Connect）</span>
     <span class="rw pill">读</span>
     <span class="status badge ok">✅</span>
@@ -513,29 +513,29 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`topbar.tsx`：`needsSignIn ? signInRequired : connectWallet`；登录中 `connecting`</dd></div>
+      <div class="wide"><dt>证据</dt><dd>`app-bar.tsx`：`needsSignIn ? signInRequired : connectWallet`；登录中 `connecting`</dd></div>
       <div class="wide"><dt>备注</dt><dd>—</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="1-host-shared" data-search="h-004 host+shared walletconnectchip / topbar siwe 签名 + `post /auth/login` 换 jwt 写 api `/auth/login`；`loginwithwallet` 部分 fe 读源/算法/门闸/刷新错误 — `loginwithwallet({ chainid: defaultchain.id })` **写死期望链**，未 assert 钱包 live `chainid`；异链仍可签「bsc」消息 b-45 旁注 成功路径与地址绑定 jwt 正确；缺 live chain 预检">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-004 host+shared walletconnectchip / appbar siwe 签名 + `post /auth/login` 换 jwt 写 api `/auth/login`；`loginwithwallet` ✅ — — `loginchainready`：未知/异网 → 调度 idle；手动异网 throw toast 不落 `loginerror`；`loginwithwallet` 同谓词；消息声明 `defaultchain.id`；异网切网 cta 不绑 `sessionready` b-45 切回 bsc 后自动再调度登录/续期">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-004</span>
-    <span class="surface">WalletConnectChip / Topbar</span>
+    <span class="surface">WalletConnectChip / AppBar</span>
     <span class="datum">SIWE 签名 + `POST /auth/login` 换 JWT</span>
     <span class="rw pill">写</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>host+shared</dd></div>
       <div><dt>权威来源</dt><dd>API `/auth/login`；`loginWithWallet`</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
-      <div><dt>A/B/C 链</dt><dd>B-45 旁注</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`loginWithWallet({ chainId: defaultChain.id })` **写死期望链**，未 assert 钱包 live `chainId`；异链仍可签「BSC」消息</dd></div>
-      <div class="wide"><dt>备注</dt><dd>成功路径与地址绑定 JWT 正确；缺 live chain 预检</dd></div>
+      <div><dt>A/B/C 链</dt><dd>B-45</dd></div>
+      <div class="wide"><dt>证据</dt><dd>`loginChainReady`：未知/异网 → 调度 idle；手动异网 throw toast 不落 `loginError`；`loginWithWallet` 同谓词；消息声明 `defaultChain.id`；异网切网 CTA 不绑 `sessionReady`</dd></div>
+      <div class="wide"><dt>备注</dt><dd>切回 BSC 后自动再调度登录/续期</dd></div>
     </dl>
   </div>
 </article>
@@ -707,10 +707,10 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-013 host+shared topbar 网络胶囊 当前网络名「bsc」（copy） 读 手册 §1.3 `chainid`；§1.4 `wrong_network`；§4.4 网络错误 ✅ — — `usewritereadiness`：同网 bsc 图标+文案；异网 `circlealert`+`switchtobsc`（切换中仅换 `loader2` spin，文案不变） **b-45** 读 live chain；异网见 h-014">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-013 host+shared appbar 网络胶囊 当前网络名「bsc」（copy） 读 手册 §1.3 `chainid`；§1.4 `wrong_network`；§4.4 网络错误 ✅ — — `usewritereadiness`：同网 bsc 图标+文案；异网 `circlealert`+`switchtobsc`（切换中仅换 `loader2` spin，文案不变） **b-45** 读 live chain；异网见 h-014">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-013</span>
-    <span class="surface">Topbar 网络胶囊</span>
+    <span class="surface">AppBar 网络胶囊</span>
     <span class="datum">当前网络名「BSC」（Copy）</span>
     <span class="rw pill">读</span>
     <span class="status badge ok">✅</span>
@@ -728,7 +728,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-014 host+shared host 壳层 `wrong_network` 可见门闸 / 切换引导 写 手册 §1.4 / §4.4 ✅ — — topbar 异网按钮：`useswitchactivewalletchain(defaultchain)` + 呼吸红阴影；`switching` 时 disabled+`loader2`；失败 toast **b-45** 用户可点切 bsc；无「切换中…」文案">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-014 host+shared host 壳层 `wrong_network` 可见门闸 / 切换引导 写 手册 §1.4 / §4.4 ✅ — — appbar 异网按钮：`useswitchactivewalletchain(defaultchain)` + 呼吸红阴影；`switching` 时 disabled+`loader2`；失败 toast **b-45** 用户可点切 bsc；无「切换中…」文案">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-014</span>
     <span class="surface">Host 壳层</span>
@@ -744,7 +744,7 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>**B-45**</dd></div>
-      <div class="wide"><dt>证据</dt><dd>Topbar 异网按钮：`useSwitchActiveWalletChain(defaultChain)` + 呼吸红阴影；`switching` 时 disabled+`Loader2`；失败 toast</dd></div>
+      <div class="wide"><dt>证据</dt><dd>AppBar 异网按钮：`useSwitchActiveWalletChain(defaultChain)` + 呼吸红阴影；`switching` 时 disabled+`Loader2`；失败 toast</dd></div>
       <div class="wide"><dt>备注</dt><dd>用户可点切 BSC；无「切换中…」文案</dd></div>
     </dl>
   </div>
@@ -1001,10 +1001,10 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-027 host+shared topbar onboardingtourchip 未完成红点 + 重播 读 ui 基线 ✅ — — `done===false` 显示 coral dot；h5 `max-dapp:hidden` — 首次仍 auto-start（h-028）">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-027 host+shared appbar onboardingtourchip 未完成红点 + 重播 读 ui 基线 ✅ — — `done===false` 显示 coral dot；h5 `max-dapp:hidden` — 首次仍 auto-start（h-028）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-027</span>
-    <span class="surface">Topbar OnboardingTourChip</span>
+    <span class="surface">AppBar OnboardingTourChip</span>
     <span class="datum">未完成红点 + 重播</span>
     <span class="rw pill">读</span>
     <span class="status badge ok">✅</span>
@@ -1127,10 +1127,10 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="na" data-section="1-host-shared" data-search="h-033 host+shared topbar languagemenu 语言切换 写 i18n 不适用 — — 非链/api 动态位 — —">
+<article class="row" data-status="na" data-section="1-host-shared" data-search="h-033 host+shared appbar languagemenu 语言切换 写 i18n 不适用 — — 非链/api 动态位 — —">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-033</span>
-    <span class="surface">Topbar LanguageMenu</span>
+    <span class="surface">AppBar LanguageMenu</span>
     <span class="datum">语言切换</span>
     <span class="rw pill">写</span>
     <span class="status badge na">不适用</span>
@@ -1232,24 +1232,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="1-host-shared" data-search="h-038 host+shared siwe 消息 chainid 字段 登录消息内 chain 声明 写 api message 验签；手册 chainid 部分 fe 读源/算法/门闸/刷新错误 — 同 h-004：消息用 `defaultchain.id` 非 live b-45 与顶栏假 bsc 同簇">
+<article class="row" data-status="ok" data-section="1-host-shared" data-search="h-038 host+shared siwe 消息 chainid 字段 登录消息内 chain 声明 写 api message 验签；手册 chainid ✅ — — 仅 live=bsc 才签发；消息 `chain_id` 固定期望链（与后端验签一致），**不**写入异网 live id b-45 与 h-004 同门闸">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-038</span>
     <span class="surface">SIWE 消息 chainId 字段</span>
     <span class="datum">登录消息内 chain 声明</span>
     <span class="rw pill">写</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>host+shared</dd></div>
       <div><dt>权威来源</dt><dd>API message 验签；手册 chainId</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-45</dd></div>
-      <div class="wide"><dt>证据</dt><dd>同 H-004：消息用 `defaultChain.id` 非 live</dd></div>
-      <div class="wide"><dt>备注</dt><dd>与顶栏假 BSC 同簇</dd></div>
+      <div class="wide"><dt>证据</dt><dd>仅 live=BSC 才签发；消息 `chain_id` 固定期望链（与后端验签一致），**不**写入异网 live id</dd></div>
+      <div class="wide"><dt>备注</dt><dd>与 H-004 同门闸</dd></div>
     </dl>
   </div>
 </article>
@@ -1764,7 +1764,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="bad" data-section="2-staking" data-search="s-023 staking stake·detail 已释放 / 待释放 读 liquid `releasedprincipal` 写死 0n；locked=`getreleasedprincipal` ❌ fe 读源/算法/门闸/刷新错误 b-12 · a-08 `assets-read.ts` liquid 行 `releasedprincipal: 0n`（~l284/l301）；`use-stake.tsx` pending=`principal−released` → 活期整笔进「待释放」；活期无线性 `getreleasedprincipal`（a-08） b-12 · a-08 跟可退本金/warmup 或诚实空态">
+<article class="row" data-status="bad" data-section="2-staking" data-search="s-023 staking stake·detail 已释放 / 待释放 读 liquid `releasedprincipal` 写死 0n；locked=`getreleasedprincipal` ❌ fe 读源/算法/门闸/刷新错误 b-12 · a-08 `assets-read.ts` liquid 行 `releasedprincipal: 0n`（~l284/l301）；`use-stake.tsx` pending=`principal−released` → 活期整笔进「待释放」；活期无线性 `getreleasedprincipal`（a-08） b-12 · a-08 活期 released=0 属无线性释放的故意 0；错在 pending 套 locked 公式。修：聚合排除 liquid 或改口径（须产品）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-023</span>
     <span class="surface">Stake·Detail</span>
@@ -1781,7 +1781,7 @@
       <div><dt>继承自</dt><dd>B-12 · A-08</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-12 · A-08</dd></div>
       <div class="wide"><dt>证据</dt><dd>`assets-read.ts` liquid 行 `releasedPrincipal: 0n`（~L284/L301）；`use-stake.tsx` pending=`principal−released` → 活期整笔进「待释放」；活期无线性 `getReleasedPrincipal`（A-08）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>跟可退本金/warmup 或诚实空态</dd></div>
+      <div class="wide"><dt>备注</dt><dd>活期 released=0 属无线性释放的故意 0；错在 pending 套 locked 公式。修：聚合排除 liquid 或改口径（须产品）</dd></div>
     </dl>
   </div>
 </article>
@@ -2373,24 +2373,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-staking" data-search="s-052 staking xmine·detail 「已释放」 读 无缓冲拆分字段 部分 链/手册/api 未提供 a-15 **固定 0**；不冒充 miningstake（b-24 closed） a-15 诚实空；缺权威拆分">
+<article class="row" data-status="ok" data-section="2-staking" data-search="s-052 staking xmine·detail 「已释放」 读 无缓冲拆分字段 ✅ 设计取舍（故意空/0） a-15 **固定 0**；不冒充 miningstake（b-24 closed） a-15 无拆分源时金额显示 0，属设计非 bug">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-052</span>
     <span class="surface">Xmine·Detail</span>
     <span class="datum">「已释放」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>staking</dd></div>
       <div><dt>权威来源</dt><dd>无缓冲拆分字段</dd></div>
-      <div><dt>T1 归因</dt><dd>链/手册/API 未提供</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>A-15</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-15</dd></div>
       <div class="wide"><dt>证据</dt><dd>**固定 0**；不冒充 miningStake（B-24 closed）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>诚实空；缺权威拆分</dd></div>
+      <div class="wide"><dt>备注</dt><dd>无拆分源时金额显示 0，属设计非 bug</dd></div>
     </dl>
   </div>
 </article>
@@ -2779,7 +2779,7 @@
     <span class="count">58</span>
   </header>
   <p class="meta">对照源指针： [`research/dapp-tab-source-index.md` §3](./research/dapp-tab-source-index.md#3-rewards)</p><p class="meta">代码根： `src/views/dapp/rewards/`</p>
-  <div class="rows"><article class="row" data-status="partial" data-section="3-rewards" data-search="w-001 rewards hub 统计 总奖励 `total_reward` 展示为 gagx 读 api `making-overview` + 链 dao/mixed 实付 agx 部分 文案/单位与链不匹配（稿如此） — c-15 `use-hub.ts` 拼 `gagx`；api 字段标 gagx；`daopool.token()`=agx a-07→c-15 展示跟 api/稿；链结算 agx">
+  <div class="rows"><article class="row" data-status="partial" data-section="3-rewards" data-search="w-001 rewards hub 统计 总奖励 `total_reward` 展示为 gagx 读 api `making-overview` 部分 文案/单位与链不匹配（稿如此） — c-15 `use-hub.ts` 拼 `gagx`；api 字段标 gagx；链 dao 结算 agx a-07→c-15 overview 字段采纳 api；单位标签见 c-15">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-001</span>
     <span class="surface">Hub 统计</span>
@@ -2791,12 +2791,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>rewards</dd></div>
-      <div><dt>权威来源</dt><dd>API `making-overview` + 链 Dao/Mixed 实付 AGX</dd></div>
+      <div><dt>权威来源</dt><dd>API `making-overview`</dd></div>
       <div><dt>T1 归因</dt><dd>文案/单位与链不匹配（稿如此）</dd></div>
       <div><dt>继承自</dt><dd>— C-15</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-07→C-15</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`use-hub.ts` 拼 `gAGX`；API 字段标 gAGX；`DaoPool.token()`=AGX</dd></div>
-      <div class="wide"><dt>备注</dt><dd>展示跟 API/稿；链结算 AGX</dd></div>
+      <div class="wide"><dt>证据</dt><dd>`use-hub.ts` 拼 `gAGX`；API 字段标 gAGX；链 Dao 结算 AGX</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview 字段采纳 API；单位标签见 C-15</dd></div>
     </dl>
   </div>
 </article>
@@ -2884,7 +2884,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-rewards" data-search="w-006 rewards hub 统计 可用贡献值 读 api `agx-contribution/summary` 优先；否则链 `usercontribution(root)` ✅ — — `use-rewards-contribution.ts` — 会话就绪走 api；未登录走链占位">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-006 rewards hub 统计 可用贡献值 读 api `agx-contribution/summary`；无会话回退链 `usercontribution` ✅ — — `use-rewards-contribution.ts`：有 summary 用 api — overview/summary 字段采纳 api；无会话链占位">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-006</span>
     <span class="surface">Hub 统计</span>
@@ -2896,12 +2896,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>rewards</dd></div>
-      <div><dt>权威来源</dt><dd>API `agx-contribution/summary` 优先；否则链 `userContribution(root)`</dd></div>
+      <div><dt>权威来源</dt><dd>API `agx-contribution/summary`；无会话回退链 `userContribution`</dd></div>
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`use-rewards-contribution.ts`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>会话就绪走 API；未登录走链占位</dd></div>
+      <div class="wide"><dt>证据</dt><dd>`use-rewards-contribution.ts`：有 summary 用 API</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview/summary 字段采纳 API；无会话链占位</dd></div>
     </dl>
   </div>
 </article>
@@ -2968,24 +2968,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="na" data-section="3-rewards" data-search="w-010 rewards hub 卡片·推荐/参与/共建 可领预览 读 无未签只读；须 `/claim/dao-reward` 不适用 链/手册/api 未提供 — a-21 hub `amountvalue`→`null`；详情 `signedamounthint` a-21 故意无预览；空态合法">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-010 rewards hub 卡片·推荐/参与/共建 可领预览 读 无未签只读；须 `/claim/dao-reward` ✅ 设计取舍（故意空/0） — a-21 hub 无预览 → 金额位走 0 占位；详情须签后才有额 a-21 故意无未签只读；缺数显示 0 属设计">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-010</span>
     <span class="surface">Hub 卡片·推荐/参与/共建</span>
     <span class="datum">可领预览</span>
     <span class="rw pill">读</span>
-    <span class="status badge na">不适用</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>rewards</dd></div>
       <div><dt>权威来源</dt><dd>无未签只读；须 `/claim/dao-reward`</dd></div>
-      <div><dt>T1 归因</dt><dd>链/手册/API 未提供</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>— A-21</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-21</dd></div>
-      <div class="wide"><dt>证据</dt><dd>Hub `amountValue`→`null`；详情 `signedAmountHint`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>故意无预览；空态合法</dd></div>
+      <div class="wide"><dt>证据</dt><dd>Hub 无预览 → 金额位走 0 占位；详情须签后才有额</dd></div>
+      <div class="wide"><dt>备注</dt><dd>故意无未签只读；缺数显示 0 属设计</dd></div>
     </dl>
   </div>
 </article>
@@ -3031,7 +3031,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-rewards" data-search="w-013 rewards lucky 详情 今日奖池 `$` `today_total_prize` 读 api `lucky-reward/summary` ✅ — — `use-lucky.tsx` — —">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-013 rewards lucky 详情 今日奖池 `$` `today_total_prize` 读 api `lucky-reward/summary` ✅ — — `use-lucky.tsx` — summary 字段采纳 api">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-013</span>
     <span class="surface">Lucky 详情</span>
@@ -3048,7 +3048,7 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>`use-lucky.tsx`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>summary 字段采纳 API</dd></div>
     </dl>
   </div>
 </article>
@@ -3094,7 +3094,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-rewards" data-search="w-016 rewards lucky 详情 累计中奖次数 `win_count` 读 api summary ✅ — — `formatapicountlabel` — —">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-016 rewards lucky 详情 累计中奖次数 `win_count` 读 api summary ✅ — — `formatapicountlabel` — summary 字段采纳 api">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-016</span>
     <span class="surface">Lucky 详情</span>
@@ -3111,7 +3111,7 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>`formatApiCountLabel`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>summary 字段采纳 API</dd></div>
     </dl>
   </div>
 </article>
@@ -3241,7 +3241,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-rewards" data-search="w-023 rewards referral 详情 持仓 / 直推数 / 贡献 读 api summary ✅ — — `active_stake_balance` 以 agx usd 展示 — —">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-023 rewards referral 详情 持仓 / 直推数 / 贡献 读 api `referral-award/summary` ✅ — — summary 三字段；直推数与 `direct-referrals` 表同 indexer — overview/summary + 表聚合采纳 api；不混链计数">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-023</span>
     <span class="surface">Referral 详情</span>
@@ -3253,12 +3253,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>rewards</dd></div>
-      <div><dt>权威来源</dt><dd>API summary</dd></div>
+      <div><dt>权威来源</dt><dd>API `referral-award/summary`</dd></div>
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`active_stake_balance` 以 AGX USD 展示</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>证据</dt><dd>summary 三字段；直推数与 `direct-referrals` 表同 indexer</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview/summary + 表聚合采纳 API；不混链计数</dd></div>
     </dl>
   </div>
 </article>
@@ -3346,7 +3346,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-rewards" data-search="w-028 rewards participate 详情 总奖励 gagx / 持仓 / 贡献 / 下次发放空 读 api + a-20 部分 文案/单位与链不匹配（稿如此） — c-15/a-20 `use-participate.ts` c-15·a-20 nextpayout 空同 w-024">
+<article class="row" data-status="partial" data-section="3-rewards" data-search="w-028 rewards participate 详情 总奖励 gagx / 持仓 / 贡献 / 下次发放空 读 api participation-award summary + a-20 部分 文案/单位与链不匹配（稿如此） — c-15/a-20 summary 字段走 api；nextpayout 空同 w-024 c-15·a-20 数跟 summary；单位 gagx 见 c-15">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-028</span>
     <span class="surface">Participate 详情</span>
@@ -3358,12 +3358,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>rewards</dd></div>
-      <div><dt>权威来源</dt><dd>API + A-20</dd></div>
+      <div><dt>权威来源</dt><dd>API participation-award summary + A-20</dd></div>
       <div><dt>T1 归因</dt><dd>文案/单位与链不匹配（稿如此）</dd></div>
       <div><dt>继承自</dt><dd>— C-15/A-20</dd></div>
       <div><dt>A/B/C 链</dt><dd>C-15·A-20</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`use-participate.ts`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>nextPayout 空同 W-024</dd></div>
+      <div class="wide"><dt>证据</dt><dd>summary 字段走 API；nextPayout 空同 W-024</dd></div>
+      <div class="wide"><dt>备注</dt><dd>数跟 summary；单位 gAGX 见 C-15</dd></div>
     </dl>
   </div>
 </article>
@@ -3451,7 +3451,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-rewards" data-search="w-033 rewards cobuild 详情 档位当前/下一 + 三门槛进度 读 api summary ∩ 静态 tier 表 ✅ — — 持仓/做市 agx×价 vs usd 门槛 — 价缺失时用 agx 裸比（可能偏）→见备注">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-033 rewards cobuild 详情 档位当前/下一 + 三门槛进度 读 api `rank-reward/summary` ∩ 静态 tier 表 ✅ — — summary 持仓/做市/直推门槛；队员表同模块 api — summary 字段采纳 api；价缺失时 agx 裸比可能偏">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-033</span>
     <span class="surface">Cobuild 详情</span>
@@ -3463,12 +3463,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>rewards</dd></div>
-      <div><dt>权威来源</dt><dd>API summary ∩ 静态 tier 表</dd></div>
+      <div><dt>权威来源</dt><dd>API `rank-reward/summary` ∩ 静态 tier 表</dd></div>
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>持仓/做市 AGX×价 vs USD 门槛</dd></div>
-      <div class="wide"><dt>备注</dt><dd>价缺失时用 AGX 裸比（可能偏）→见备注</dd></div>
+      <div class="wide"><dt>证据</dt><dd>summary 持仓/做市/直推门槛；队员表同模块 API</dd></div>
+      <div class="wide"><dt>备注</dt><dd>summary 字段采纳 API；价缺失时 AGX 裸比可能偏</dd></div>
     </dl>
   </div>
 </article>
@@ -3598,7 +3598,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-rewards" data-search="w-040 rewards grant dock 待解锁 `unlockable_allowance` / 可领 `unlocked_claimable` 读 api market-allowance summary ✅ — — `use-simple-claim` 两字段 — 数字接线正确；单位见 w-041">
+<article class="row" data-status="ok" data-section="3-rewards" data-search="w-040 rewards grant dock 待解锁 `unlockable_allowance` / 可领 `unlocked_claimable` 读 api market-allowance summary ✅ — — `use-simple-claim` 两字段 — summary 字段采纳 api；单位见 w-041">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-040</span>
     <span class="surface">Grant Dock</span>
@@ -3615,7 +3615,7 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>`use-simple-claim` 两字段</dd></div>
-      <div class="wide"><dt>备注</dt><dd>数字接线正确；单位见 W-041</dd></div>
+      <div class="wide"><dt>备注</dt><dd>summary 字段采纳 API；单位见 W-041</dd></div>
     </dl>
   </div>
 </article>
@@ -6160,28 +6160,28 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-assets" data-search="a-004 assets hub·总览 累计已领取 `claimed` 读 api `total_reward_claimed`；链无累计 部分 fe 读源/算法/门闸/刷新错误 b-21 旁路 session：api；链回退恒 `0.00 gagx` — 未登录/仅链时低估；session 路径形状正确">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-004 assets hub·总览 累计已领取 `claimed` 读 api `total_reward_claimed`；链无累计 ✅ 设计取舍（故意空/0） b-21 旁路 session：api；链无累计视图 → 回退 `0.00 gagx` — 缺数显示 0 属设计；非 fe bug">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-004</span>
     <span class="surface">Hub·总览</span>
     <span class="datum">累计已领取 `claimed`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>assets</dd></div>
       <div><dt>权威来源</dt><dd>API `total_reward_claimed`；链无累计</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>B-21 旁路</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>session：API；链回退恒 `0.00 gAGX`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>未登录/仅链时低估；session 路径形状正确</dd></div>
+      <div class="wide"><dt>证据</dt><dd>session：API；链无累计视图 → 回退 `0.00 gAGX`</dd></div>
+      <div class="wide"><dt>备注</dt><dd>缺数显示 0 属设计；非 FE bug</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="6-assets" data-search="a-005 assets hub·总览 我的贡献点数 读 api `available_contribution` / 链 `usercontribution(root)` ✅ — — apiready→api；fallback→`readcontributionsnapshot` — 金额 l 待核实">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-005 assets hub·总览 我的贡献点数 读 api reward-summary `available_contribution`；无 apiready 回退链 ✅ — — apiready→api；fallback→`readcontributionsnapshot` — summary 字段采纳 api；金额 l 待核实">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-005</span>
     <span class="surface">Hub·总览</span>
@@ -6193,12 +6193,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>assets</dd></div>
-      <div><dt>权威来源</dt><dd>API `available_contribution` / 链 `userContribution(root)`</dd></div>
+      <div><dt>权威来源</dt><dd>API reward-summary `available_contribution`；无 apiReady 回退链</dd></div>
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>apiReady→API；fallback→`readContributionSnapshot`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>金额 L 待核实</dd></div>
+      <div class="wide"><dt>备注</dt><dd>summary 字段采纳 API；金额 L 待核实</dd></div>
     </dl>
   </div>
 </article>
@@ -6244,7 +6244,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="6-assets" data-search="a-008 assets hub·持仓 总持仓 `holdingstotal` 读 api `total_holdings_agx`；链=各仓本金+缓冲 ✅ — — apiready→api dist/summary；fallback 链求和 — 与 distribution 四桶对齐依赖 api">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-008 assets hub·持仓 总持仓 `holdingstotal` 读 api dist/summary `total_holdings_agx`；无 apiready 链求和 ✅ — — apiready→api；fallback 链求和 — overview/summary/dist 采纳 api；与四桶分布同源">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-008</span>
     <span class="surface">Hub·持仓</span>
@@ -6256,12 +6256,12 @@
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>assets</dd></div>
-      <div><dt>权威来源</dt><dd>API `total_holdings_agx`；链=各仓本金+缓冲</dd></div>
+      <div><dt>权威来源</dt><dd>API dist/summary `total_holdings_agx`；无 apiReady 链求和</dd></div>
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>apiReady→API dist/summary；fallback 链求和</dd></div>
-      <div class="wide"><dt>备注</dt><dd>与 distribution 四桶对齐依赖 API</dd></div>
+      <div class="wide"><dt>证据</dt><dd>apiReady→API；fallback 链求和</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview/summary/dist 采纳 API；与四桶分布同源</dd></div>
     </dl>
   </div>
 </article>
@@ -6727,7 +6727,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="6-assets" data-search="a-031 assets position·lp·统计 「lp债券总收益」累计 读 无累计 api/链视图 ✅ 设计取舍（故意空/0） — 末格 `'—'`，不硬编 0 — —">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-031 assets position·lp·统计 「lp债券总收益」累计 读 无累计 api/链视图 ✅ 设计取舍（故意空/0） — 末格现行 `'—'`（`use-position`）；无累计源不硬编金额 — 产品「缺数=0」未改此格；非 fe 读源缺口">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-031</span>
     <span class="surface">Position·LP·统计</span>
@@ -6743,8 +6743,8 @@
       <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>末格 `'—'`，不硬编 0</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>证据</dt><dd>末格现行 `'—'`（`use-position`）；无累计源不硬编金额</dd></div>
+      <div class="wide"><dt>备注</dt><dd>产品「缺数=0」未改此格；非 FE 读源缺口</dd></div>
     </dl>
   </div>
 </article>
@@ -6832,24 +6832,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-assets" data-search="a-036 assets xmine·统计 「已释放」格 读 无 prv 映射字段 部分 链/手册/api 未提供 a-15 · a-16 代码 `released = 0n` + 注释 — 诚实 0；能力仍缺">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-036 assets xmine·统计 「已释放」格 读 无 prv 映射字段 ✅ 设计取舍（故意空/0） a-15 · a-16 代码 `released = 0n` + 注释 — 无拆分源时金额显示 0，属设计；能力仍缺不另开 fe bug">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-036</span>
     <span class="surface">Xmine·统计</span>
     <span class="datum">「已释放」格</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>assets</dd></div>
       <div><dt>权威来源</dt><dd>无 PRV 映射字段</dd></div>
-      <div><dt>T1 归因</dt><dd>链/手册/API 未提供</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>A-15 · A-16</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>代码 `released = 0n` + 注释</dd></div>
-      <div class="wide"><dt>备注</dt><dd>诚实 0；能力仍缺</dd></div>
+      <div class="wide"><dt>备注</dt><dd>无拆分源时金额显示 0，属设计；能力仍缺不另开 FE bug</dd></div>
     </dl>
   </div>
 </article>
@@ -7042,7 +7042,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="6-assets" data-search="a-046 assets hub / api 登录优先 api，缺则链回退 读 `assetshubneedschainfallback` ✅ — b-21 session+apiready 不用全表链；yield/apr/可赎仍链 closed→✅ claimable 不直出 api">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-046 assets hub / api 登录优先 api，缺则链回退 读 `assetshubneedschainfallback` ✅ — b-21 session+apiready：overview/summary/dist 走 api；yield/apr/可赎等无同口径 api 仍链 closed→✅ 符合读源优先：summary 跟 api；链仅补无 api 字段">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-046</span>
     <span class="surface">Hub / API</span>
@@ -7058,8 +7058,8 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>B-21</dd></div>
       <div><dt>A/B/C 链</dt><dd>closed→✅</dd></div>
-      <div class="wide"><dt>证据</dt><dd>session+apiReady 不用全表链；yield/APR/可赎仍链</dd></div>
-      <div class="wide"><dt>备注</dt><dd>claimable 不直出 API</dd></div>
+      <div class="wide"><dt>证据</dt><dd>session+apiReady：overview/summary/dist 走 API；yield/APR/可赎等无同口径 API 仍链</dd></div>
+      <div class="wide"><dt>备注</dt><dd>符合读源优先：summary 跟 API；链仅补无 API 字段</dd></div>
     </dl>
   </div>
 </article>
@@ -7147,7 +7147,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="6-assets" data-search="a-051 assets hub·总览 未连接 / api pending 零值占位 读 产品空态 ✅ 设计取舍（故意空/0） — `zerooverview`；dockconnectpromo — 诚实空">
+<article class="row" data-status="ok" data-section="6-assets" data-search="a-051 assets hub·总览 未连接 / api pending 零值占位 读 产品空态 ✅ 设计取舍（故意空/0） — `zerooverview`；dockconnectpromo — 缺数/未连接时金额显示 0，属设计">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-051</span>
     <span class="surface">Hub·总览</span>
@@ -7164,7 +7164,7 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>`zeroOverview`；DockConnectPromo</dd></div>
-      <div class="wide"><dt>备注</dt><dd>诚实空</dd></div>
+      <div class="wide"><dt>备注</dt><dd>缺数/未连接时金额显示 0，属设计</dd></div>
     </dl>
   </div>
 </article>
@@ -7511,28 +7511,28 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-community" data-search="cm-010 community detail·统计卡 直推人数 `direct_referral_count` 读 api `/team/overview` 部分 fe 读源/算法/门闸/刷新错误 — ui 用 overview；链 `getreferralcount` 在 hook 取了但**未展示** — 手册 §5.3 面板可用链计数；社区树口径跟 api">
+<article class="row" data-status="ok" data-section="7-community" data-search="cm-010 community detail·统计卡 直推人数 `direct_referral_count` 读 api `/team/overview` ✅ — — ui 绑 overview；与 `/team/referrals` 同 indexer（`user_performance` active） — overview 字段采纳 api；链 `getreferralcount` 未展≠缺口">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-010</span>
     <span class="surface">Detail·统计卡</span>
     <span class="datum">直推人数 `direct_referral_count`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>community</dd></div>
       <div><dt>权威来源</dt><dd>API `/team/overview`</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>UI 用 overview；链 `getReferralCount` 在 hook 取了但**未展示**</dd></div>
-      <div class="wide"><dt>备注</dt><dd>手册 §5.3 面板可用链计数；社区树口径跟 API</dd></div>
+      <div class="wide"><dt>证据</dt><dd>UI 绑 overview；与 `/team/referrals` 同 indexer（`user_performance` ACTIVE）</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview 字段采纳 API；链 `getReferralCount` 未展≠缺口</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="7-community" data-search="cm-011 community detail·统计卡 直推业绩 `direct_presale_volume`（`$`） 读 api `/team/overview` 待核实 待核实 — 展示 `volumeprefix`+`$`；api.md 叙源 `sales_direct_team_market` 命名纠结 — 金钱 l：未做 prod 只读对账">
+<article class="row" data-status="pending" data-section="7-community" data-search="cm-011 community detail·统计卡 直推业绩 `direct_presale_volume`（`$`） 读 api `/team/overview` 待核实 待核实 — 展示 `volumeprefix`+`$`；api.md 叙源 `sales_direct_team_market` 命名纠结 — overview 字段；金钱 l：未做 prod 只读对账">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-011</span>
     <span class="surface">Detail·统计卡</span>
@@ -7549,11 +7549,11 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>展示 `volumePrefix`+`$`；api.md 叙源 `sales_direct_team_market` 命名纠结</dd></div>
-      <div class="wide"><dt>备注</dt><dd>金钱 L：未做 Prod 只读对账</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview 字段；金钱 L：未做 Prod 只读对账</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="7-community" data-search="cm-012 community detail·统计卡 社区人数 `descendant_count` 读 api `/team/overview` ✅ — — `referral_ancestors` 全下级；链无廉价等价 — —">
+<article class="row" data-status="ok" data-section="7-community" data-search="cm-012 community detail·统计卡 社区人数 `descendant_count` 读 api `/team/overview` ✅ — — overview；`referral_ancestors` 全下级；链无廉价等价 — overview 字段采纳 api">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-012</span>
     <span class="surface">Detail·统计卡</span>
@@ -7569,12 +7569,12 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`referral_ancestors` 全下级；链无廉价等价</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>证据</dt><dd>overview；`referral_ancestors` 全下级；链无廉价等价</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview 字段采纳 API</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="7-community" data-search="cm-013 community detail·统计卡 社区业绩 `sales_team_market`（`$`） 读 api `/team/overview` 待核实 待核实 — 同 cm-011 — —">
+<article class="row" data-status="pending" data-section="7-community" data-search="cm-013 community detail·统计卡 社区业绩 `sales_team_market`（`$`） 读 api `/team/overview` 待核实 待核实 — overview 同源 cm-011 — overview 字段；金钱 l 待对账">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-013</span>
     <span class="surface">Detail·统计卡</span>
@@ -7590,8 +7590,8 @@
       <div><dt>T1 归因</dt><dd>待核实</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>同 CM-011</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>证据</dt><dd>overview 同源 CM-011</dd></div>
+      <div class="wide"><dt>备注</dt><dd>overview 字段；金钱 L 待对账</dd></div>
     </dl>
   </div>
 </article>
@@ -7658,7 +7658,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="7-community" data-search="cm-017 community detail·成员标题 `我的社区成员（{count}）` 读 api overview 或 referrals.total ✅ — — `direct_referral_count ?? referrals.total`；未登录固定 0 — —">
+<article class="row" data-status="ok" data-section="7-community" data-search="cm-017 community detail·成员标题 `我的社区成员（{count}）` 读 api overview 或 referrals.total ✅ — — `direct_referral_count ?? referrals.total`；未登录固定 0 — 与 overview/成员表同源；采纳 api">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-017</span>
     <span class="surface">Detail·成员标题</span>
@@ -7675,7 +7675,7 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>证据</dt><dd>`direct_referral_count ?? referrals.total`；未登录固定 0</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>与 overview/成员表同源；采纳 API</dd></div>
     </dl>
   </div>
 </article>
@@ -8253,24 +8253,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="8-genesis" data-search="gn-013 genesis dock·空投 hint 门槛文案「单期累计 ≥ {threshold}」 读·copy `airdrop_threshold` + i18n ✅ — ← b-42 `airdropthresholdloading`/`null` → hint 用 `—`；faq 同 b-42 b-42 closed：loading 不再冒充 `$0`">
+<article class="row" data-status="partial" data-section="8-genesis" data-search="gn-013 genesis dock·空投 hint 门槛文案「单期累计 ≥ {threshold}」 读·copy `airdrop_threshold` + i18n 部分 设计取舍（故意空/0） ← b-42 产品：金额缺数显示 0；现行 loading/null 仍插 `—`（`use-genesis-dock`） b-42 对齐为 0 属展示收口，非诚实空债">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-013</span>
     <span class="surface">Dock·空投 hint</span>
     <span class="datum">门槛文案「单期累计 ≥ {threshold}」</span>
     <span class="rw pill">读·Copy</span>
-    <span class="status badge ok">✅</span>
+    <span class="status badge partial">部分</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>genesis</dd></div>
       <div><dt>权威来源</dt><dd>`AIRDROP_THRESHOLD` + i18n</dd></div>
-      <div><dt>T1 归因</dt><dd>—</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>← B-42</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-42</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`airdropThresholdLoading`/`null` → hint 用 `—`；FAQ 同</dd></div>
-      <div class="wide"><dt>备注</dt><dd>B-42 closed：loading 不再冒充 `$0`</dd></div>
+      <div class="wide"><dt>证据</dt><dd>产品：金额缺数显示 0；现行 loading/null 仍插 `—`（`use-genesis-dock`）</dd></div>
+      <div class="wide"><dt>备注</dt><dd>对齐为 0 属展示收口，非诚实空债</dd></div>
     </dl>
   </div>
 </article>
@@ -8862,13 +8862,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-genesis" data-search="gn-042 genesis 空态 faq `phases.length===0` 时 faq 插值 copy — 部分 设计取舍（故意空/0） — `zero_faq`：`phasecount=0`、`minusd=$0` 等；门槛为 `—` — prod 当前即无阶段；易被读成「最低 $0」">
+<article class="row" data-status="ok" data-section="8-genesis" data-search="gn-042 genesis 空态 faq `phases.length===0` 时 faq 插值 copy — ✅ 设计取舍（故意空/0） — `zero_faq`：`phasecount=0`、金额位 `$0`；门槛位仍 `—` — 金额 0 属设计；门槛 `—` 与 gn-013 同簇待对齐">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-042</span>
     <span class="surface">空态 FAQ</span>
     <span class="datum">`phases.length===0` 时 FAQ 插值</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">部分</span>
+    <span class="status badge ok">✅</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8878,8 +8878,8 @@
       <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`ZERO_FAQ`：`phaseCount=0`、`minUsd=$0` 等；门槛为 `—`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>Prod 当前即无阶段；易被读成「最低 $0」</dd></div>
+      <div class="wide"><dt>证据</dt><dd>`ZERO_FAQ`：`phaseCount=0`、金额位 `$0`；门槛位仍 `—`</dd></div>
+      <div class="wide"><dt>备注</dt><dd>金额 0 属设计；门槛 `—` 与 GN-013 同簇待对齐</dd></div>
     </dl>
   </div>
 </article>
@@ -9229,7 +9229,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T19:22:24.793Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T21:22:16.531Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {

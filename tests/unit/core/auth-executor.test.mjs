@@ -21,6 +21,8 @@ test('isPermanentLoginErrorMessage covers all LOGIN_ERROR sentinels', async () =
   assert.equal(isPermanentLoginErrorMessage(LOGIN_ERROR.USER_REJECTED), true)
   assert.equal(isPermanentLoginErrorMessage(LOGIN_ERROR.SIGNATURE_REJECTED), true)
   assert.equal(isPermanentLoginErrorMessage(LOGIN_ERROR.FAILED), true)
+  // 异网是环境谓词，不进 permanent；由 loginChainReady 调度 idle
+  assert.equal(isPermanentLoginErrorMessage(LOGIN_ERROR.WRONG_NETWORK), false)
   assert.equal(isPermanentLoginErrorMessage(LOGIN_ERROR.WALLET_NOT_CONNECTED), false)
   assert.equal(isPermanentLoginErrorMessage(null), false)
   assert.equal(isPermanentLoginErrorMessage('Network request failed'), false)
@@ -31,6 +33,7 @@ test('shouldClearLoginAttemptAfterFailure mirrors permanent latch', async () => 
   const { LOGIN_ERROR } = await loadModule('/src/shared/api/account-banned.ts')
 
   assert.equal(shouldClearLoginAttemptAfterFailure(LOGIN_ERROR.USER_REJECTED), false)
+  assert.equal(shouldClearLoginAttemptAfterFailure(LOGIN_ERROR.WRONG_NETWORK), true)
   assert.equal(shouldClearLoginAttemptAfterFailure(LOGIN_ERROR.WALLET_NOT_CONNECTED), true)
   assert.equal(shouldClearLoginAttemptAfterFailure(null), true)
   assert.equal(shouldClearLoginAttemptAfterFailure('timeout'), true)
@@ -51,6 +54,7 @@ test('401-style attempt key stays latched when session purged but signature kept
       lastAttemptKey: null,
       attemptKey: after401Key,
       renewThresholdMs: 60_000,
+      loginChainReady: true,
     }),
     { type: 'login' },
   )
@@ -64,6 +68,7 @@ test('401-style attempt key stays latched when session purged but signature kept
       lastAttemptKey: after401Key,
       attemptKey: after401Key,
       renewThresholdMs: 60_000,
+      loginChainReady: true,
     }),
     { type: 'idle' },
   )
@@ -91,6 +96,7 @@ test('renewAt schedules before expiry threshold', async () => {
       lastAttemptKey: null,
       attemptKey: 'k',
       renewThresholdMs,
+      loginChainReady: true,
     }),
     { type: 'renewAt', at: expiresAt - renewThresholdMs },
   )

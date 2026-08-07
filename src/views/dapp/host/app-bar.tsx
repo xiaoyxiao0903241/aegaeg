@@ -15,11 +15,10 @@ import { Tooltip } from '~/shared/components/tooltip'
 import { OnboardingTourChip } from '~/views/dapp/host/primitives'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 import { defaultChain } from '~/web3/thirdweb'
-import { useActiveAccount, useSwitchActiveWalletChain } from '~/web3/thirdweb-react'
+import { useSwitchActiveWalletChain } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
-const topbar = tv({
+const appBar = tv({
   slots: {
     root: [
       'relative flex w-full shrink-0 items-center justify-between gap-6 bg-transparent px-6 py-4',
@@ -80,40 +79,30 @@ const networkPill = tv({
   },
 })
 
-/** 顶部栏钱包区：会话就绪时网络胶囊 + 已连接入口，否则连接 / 登录。 */
-function WalletTopbarActions() {
-  const account = useActiveAccount()
+/** AppBar 钱包区：已知异网时始终露出切网胶囊；会话就绪另挂已连接入口。 */
+function AppBarWalletActions() {
   const { sessionReady, needsSignIn, isLoggingIn } = useAuth()
   const { messages: t } = useI18n()
-  const { writeReady } = useWriteReadiness()
+  const { writeReady, walletReady, chainId, expectedChainId } = useWriteReadiness()
   const switchChain = useSwitchActiveWalletChain()
   const [switching, setSwitching] = useState(false)
-  const walletReady = hasWalletAccount(account)
   const fullyConnected = walletReady && sessionReady
+  const knownWrongNetwork = walletReady && chainId != null && chainId !== expectedChainId
 
-  if (fullyConnected) {
-    const onExpectedChain = writeReady
-
-    async function handleSwitchToBsc() {
-      if (onExpectedChain || switching) return
-      setSwitching(true)
-      try {
-        await switchChain(defaultChain)
-      } catch {
-        toast.error(t.topbar.switchNetworkFailed)
-      } finally {
-        setSwitching(false)
-      }
+  async function handleSwitchToBsc() {
+    if (writeReady || switching) return
+    setSwitching(true)
+    try {
+      await switchChain(defaultChain)
+    } catch {
+      toast.error(t.topbar.switchNetworkFailed)
+    } finally {
+      setSwitching(false)
     }
+  }
 
-    const pill = onExpectedChain ? (
-      <div className={networkPill({ tone: 'ok' })} aria-label={t.topbar.currentNetwork}>
-        <Icon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
-        <Text as="span" variant="caption" className="truncate font-semibold">
-          {t.common.bsc}
-        </Text>
-      </div>
-    ) : (
+  const networkPillNode = knownWrongNetwork ? (
+    <Tooltip content={t.topbar.wrongNetworkTooltip} position="bottom">
       <button
         type="button"
         className={networkPill({ tone: 'wrong' })}
@@ -132,37 +121,49 @@ function WalletTopbarActions() {
           {t.topbar.switchToBsc}
         </Text>
       </button>
-    )
+    </Tooltip>
+  ) : fullyConnected && writeReady ? (
+    <Tooltip content={t.nav.bscTooltip} position="bottom">
+      <div className={networkPill({ tone: 'ok' })} aria-label={t.topbar.currentNetwork}>
+        <Icon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
+        <Text as="span" variant="caption" className="truncate font-semibold">
+          {t.common.bsc}
+        </Text>
+      </div>
+    </Tooltip>
+  ) : null
 
-    return (
-      <>
-        <Tooltip
-          content={onExpectedChain ? t.nav.bscTooltip : t.topbar.wrongNetworkTooltip}
-          position="bottom"
-        >
-          {pill}
-        </Tooltip>
-        <WalletConnectChip variant="connected" />
-      </>
-    )
-  }
+  const walletChip = fullyConnected ? (
+    <WalletConnectChip variant="connected" />
+  ) : (
+    <WalletConnectChip
+      className="min-h-9"
+      label={
+        needsSignIn
+          ? isLoggingIn
+            ? t.wallet.connecting
+            : t.wallet.signInRequired
+          : t.common.connectWallet
+      }
+      variant="primary"
+    />
+  )
 
-  const label = needsSignIn
-    ? isLoggingIn
-      ? t.wallet.connecting
-      : t.wallet.signInRequired
-    : t.common.connectWallet
-
-  return <WalletConnectChip className="min-h-9" label={label} variant="primary" />
+  return (
+    <>
+      {networkPillNode}
+      {walletChip}
+    </>
+  )
 }
 
 /**
- * DApp 顶部栏
+ * DApp AppBar
  *
  * 左侧品牌标识（连接后隐藏品牌文字），右侧依次为新手教程入口、
  * 钱包连接区与语言切换；H5 下吸顶并带半透明毛玻璃底色。
  */
-export function Topbar({
+export function AppBar({
   onboardingDone,
   onStartOnboarding,
 }: {
@@ -171,7 +172,7 @@ export function Topbar({
 }) {
   const { locale, messages: t, setLocale } = useI18n()
   const { sessionReady, tab } = useDappHost()
-  const styles = topbar({ hideBrandLabel: sessionReady })
+  const styles = appBar({ hideBrandLabel: sessionReady })
 
   const languageOptions = languageMenuOptions(locale, setLocale)
 
@@ -196,7 +197,7 @@ export function Topbar({
             onClick={onStartOnboarding}
           />
         ) : null}
-        <WalletTopbarActions />
+        <AppBarWalletActions />
         <LanguageMenu
           checkIcon={dappAssets.check}
           globeIcon={dappAssets.globe}

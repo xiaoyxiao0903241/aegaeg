@@ -77,12 +77,14 @@ test('authLoginErrorMessage maps sentinels and never returns raw copy', async ()
     walletNotConnected: 'Connect wallet',
     loginFailed: 'Login failed',
     loginSignatureRejected: 'Bad signature',
+    loginWrongNetwork: 'Switch to BSC',
   }
 
   assert.equal(authLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, messages), 'Account suspended')
   assert.equal(authLoginErrorMessage(LOGIN_ERROR.WALLET_NOT_CONNECTED, messages), 'Connect wallet')
   assert.equal(authLoginErrorMessage(LOGIN_ERROR.USER_REJECTED, messages), null)
   assert.equal(authLoginErrorMessage(LOGIN_ERROR.SIGNATURE_REJECTED, messages), 'Bad signature')
+  assert.equal(authLoginErrorMessage(LOGIN_ERROR.WRONG_NETWORK, messages), 'Switch to BSC')
   assert.equal(authLoginErrorMessage('raw english leak', messages), 'Login failed')
   assert.equal(authLoginErrorMessage(null, messages), null)
 })

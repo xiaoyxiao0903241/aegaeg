@@ -3,6 +3,7 @@ import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   deriveAuthAction,
   deriveAuthState,
+  isLoginChainReady,
   loginAttemptKey,
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
@@ -19,7 +20,7 @@ import { useAuthStore } from '~/stores/auth-store'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 import { loginWithWallet, toLoginErrorSentinel } from '~/web3/auth/login-with-wallet'
 import { defaultChain } from '~/web3/thirdweb'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+import { useActiveAccount, useActiveWalletChain } from '~/web3/thirdweb-react'
 
 type AuthStoreGetter = Pick<
   ReturnType<typeof useAuthStore.getState>,
@@ -67,9 +68,12 @@ const RENEW_THRESHOLD_MS = 60_000
  *
  * 订阅钱包地址与按地址存储的 JWT / 签名，派生会话状态；
  * 根据状态机输出在后台静默登录、续期或等待用户操作。
+ * 链未就绪时调度 idle；SIWE 消息始终声明期望链，不把异网写入 loginError。
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
+  const walletChain = useActiveWalletChain()
+  const liveChainId = walletChain?.id
   const walletAddress = account?.address
   const activeTab = useDappHostStore((state) => state.activeTab)
   const sessionsByAddress = useAuthStore((state) => state.sessionsByAddress)
@@ -90,12 +94,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const session = authState.kind === 'sessionReady' ? authState.session : null
   const sessionReady = authState.kind === 'sessionReady'
   const token = session?.token ?? null
+  const loginChainReady = isLoginChainReady(liveChainId, defaultChain.id)
 
   const runLogin = useCallback(async () => {
     if (loginInProgressRef.current) return
     if (!account) {
       useAuthStore.getState().setLoginError(LOGIN_ERROR.WALLET_NOT_CONNECTED)
       return
+    }
+    // 未知链：等 hydrate，不写错、不烧 attempt。
+    if (liveChainId == null) return
+    // 异网：仅抛哨兵供手动登录 toast；不写 loginError（避免 chip reconnect）。
+    if (liveChainId !== defaultChain.id) {
+      throw LOGIN_ERROR.WRONG_NETWORK
     }
 
     loginInProgressRef.current = true
@@ -112,11 +123,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await loginWithWallet({
         account,
         chainId: defaultChain.id,
+        liveChainId,
         storage: sessionStorage,
         signatureStorage,
       })
     } catch (error) {
-      useAuthStore.getState().setLoginError(toLoginErrorSentinel(error))
+      const sentinel = toLoginErrorSentinel(error)
+      // 异网不落盘——环境由 loginChainReady 调度，toast 吃 throw
+      if (sentinel && sentinel !== LOGIN_ERROR.WRONG_NETWORK) {
+        useAuthStore.getState().setLoginError(sentinel)
+      }
       throw error
     } finally {
       loginInProgressRef.current = false
@@ -124,7 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         useAuthStore.getState().setIsLoggingIn(false)
       }
     }
-  }, [account])
+  }, [account, liveChainId])
 
   /** 执行机：按派生 action 发起静默登录，或在到期前安排续期。 */
   useEffect(() => {
@@ -140,6 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       lastAttemptKey: lastAttemptRef.current,
       attemptKey,
       renewThresholdMs: RENEW_THRESHOLD_MS,
+      loginChainReady,
     })
 
     if (action.type === 'login') {
@@ -169,6 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signaturesByAddress,
     isLoggingIn,
     loginError,
+    loginChainReady,
     runLogin,
   ])
 

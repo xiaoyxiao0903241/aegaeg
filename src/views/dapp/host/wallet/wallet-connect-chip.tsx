@@ -75,6 +75,7 @@ function loginToastMessage(
     walletNotConnected: string
     loginFailed: string
     loginSignatureRejected: string
+    loginWrongNetwork: string
     api: {
       network: string
       timeout: string
@@ -89,6 +90,10 @@ function loginToastMessage(
   }
   if (isUserRejectedWalletError(error) || loginError === LOGIN_ERROR.USER_REJECTED) {
     return null
+  }
+  // 异网不落 loginError；手动登录 throw 哨兵时仍要 toast
+  if (error === LOGIN_ERROR.WRONG_NETWORK) {
+    return messages.loginWrongNetwork
   }
 
   const fromLogin = authLoginErrorMessage(loginError, messages)
@@ -106,6 +111,7 @@ function loginToastCopy(t: ReturnType<typeof useI18n>['messages']) {
     walletNotConnected: t.errors.walletNotConnected,
     loginFailed: t.errors.loginFailed,
     loginSignatureRejected: t.errors.loginSignatureRejected,
+    loginWrongNetwork: t.topbar.switchToBsc,
     api: t.errors.api,
   }
 }

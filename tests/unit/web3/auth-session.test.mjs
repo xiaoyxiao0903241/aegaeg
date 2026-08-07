@@ -157,6 +157,7 @@ test('loginWithWallet reuses cached signature without re-signing', async () => {
     const result = await loginWithWallet({
       account,
       chainId: 56,
+      liveChainId: 56,
       storage,
       signatureStorage,
     })
@@ -241,6 +242,7 @@ test('loginWithWallet signs message and stores jwt', async () => {
     const result = await loginWithWallet({
       account,
       chainId: 56,
+      liveChainId: 56,
       storage,
       signatureStorage,
       signMessage: (message) => account.signMessage({ message }),

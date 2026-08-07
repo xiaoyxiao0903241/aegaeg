@@ -95,7 +95,7 @@
 - `external` = **44**（→ `size=md`）· 卡外主 CTA（Swap / Genesis 认购等）
 - `modal` = **46**（`min-h-11.5`）· Dialog / wallet modal 主按钮 — Figma `62:70` / `74:129`
 - `hero` = **48**（→ `size=lg`）· Community 左栏「参与共建」— Figma `4040:7307`；与 Home hero `Button size="lg"` 同高
-  **Topbar Connect** 保持 **36**（`Button sm`），不走 `density="card"`。
+  **AppBar Connect** 保持 **36**（`Button sm`），不走 `density="card"`。
   **Modal 内 raw `Button`**：须 `className="min-h-11.5"`（与 `density="modal"` 同高），勿只写 `size="md"`。
   **Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
   **Hover / press SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
@@ -248,7 +248,7 @@
 
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
-- `views/dapp/host/dapp-host.tsx` · `views/dapp/host/rail.tsx` · `views/dapp/host/topbar.tsx` · `views/dapp/host/mobile-nav.tsx`
+- `views/dapp/host/dapp-host.tsx` · `views/dapp/host/rail.tsx` · `views/dapp/host/app-bar.tsx` · `views/dapp/host/mobile-nav.tsx`
 - `views/dapp/shared/dock-frame.tsx` · `views/dapp/shared/tab-host.tsx` · `views/dapp/shared/subview-panel.tsx` · `views/dapp/shared/dock-connect-promo.tsx`
 - `shared/components/detail.tsx` · `shared/components/section.tsx` · `shared/components/table.tsx`
 - `shared/components/steps.tsx` · `shared/components/carousel.tsx`

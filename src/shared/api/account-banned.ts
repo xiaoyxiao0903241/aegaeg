@@ -10,6 +10,8 @@ export const LOGIN_ERROR = {
   USER_REJECTED: 'LOGIN_USER_REJECTED',
   SIGNATURE_REJECTED: 'LOGIN_SIGNATURE_REJECTED',
   FAILED: 'LOGIN_FAILED',
+  /** 钱包 live chain ≠ 期望链（BSC）；须切网后再登。 */
+  WRONG_NETWORK: 'LOGIN_WRONG_NETWORK',
 } as const
 
 const ACCOUNT_BANNED_TOAST_ID = 'account-banned'
@@ -91,6 +93,7 @@ export function authLoginErrorMessage(
     walletNotConnected: string
     loginFailed: string
     loginSignatureRejected: string
+    loginWrongNetwork: string
   },
 ): string | null {
   if (!error) return null
@@ -100,6 +103,7 @@ export function authLoginErrorMessage(
   if (error === LOGIN_ERROR.WALLET_NOT_CONNECTED) return messages.walletNotConnected
   if (error === LOGIN_ERROR.USER_REJECTED) return null
   if (error === LOGIN_ERROR.SIGNATURE_REJECTED) return messages.loginSignatureRejected
+  if (error === LOGIN_ERROR.WRONG_NETWORK) return messages.loginWrongNetwork
   if (error === LOGIN_ERROR.FAILED) return messages.loginFailed
   // 旧原始字符串不得上屏——一律按通用登录失败处理
   return messages.loginFailed

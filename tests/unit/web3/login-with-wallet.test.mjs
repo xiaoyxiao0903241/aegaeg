@@ -39,6 +39,7 @@ test('loginWithWallet falls back to simple message when siwe signing fails', asy
     const result = await loginWithWallet({
       account: { address, signMessage },
       chainId: 56,
+      liveChainId: 56,
       storage: createMemoryAuthSessionStorage(),
       signatureStorage: createMemoryLoginSignatureStorage(),
       signMessage,
@@ -51,4 +52,43 @@ test('loginWithWallet falls back to simple message when siwe signing fails', asy
   } finally {
     globalThis.fetch = originalFetch
   }
+})
+
+test('loginWithWallet rejects unknown or wrong live chain before exchange', async () => {
+  const { loginWithWallet, createMemoryLoginSignatureStorage } = await loadModule(
+    '/src/web3/auth/login-with-wallet.ts',
+  )
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
+  const { LOGIN_ERROR } = await loadModule('/src/shared/api/account-banned.ts')
+
+  const account = {
+    address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    signMessage: async () => 'sig',
+  }
+  const storage = createMemoryAuthSessionStorage()
+  const signatureStorage = createMemoryLoginSignatureStorage()
+
+  await assert.rejects(
+    () =>
+      loginWithWallet({
+        account,
+        chainId: 56,
+        liveChainId: undefined,
+        storage,
+        signatureStorage,
+      }),
+    (error) => error === LOGIN_ERROR.WALLET_NOT_CONNECTED,
+  )
+
+  await assert.rejects(
+    () =>
+      loginWithWallet({
+        account,
+        chainId: 56,
+        liveChainId: 1,
+        storage,
+        signatureStorage,
+      }),
+    (error) => error === LOGIN_ERROR.WRONG_NETWORK,
+  )
 })

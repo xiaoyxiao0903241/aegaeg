@@ -68,6 +68,19 @@ export function loginAttemptKey(
 
 export type AuthAction = { type: 'idle' } | { type: 'login' } | { type: 'renewAt'; at: number }
 
+/**
+ * 登录链是否就绪：仅当 live 已知且等于期望链（BSC）才允许 SIWE / 续期调度。
+ *
+ * `null`/`undefined` 视为未知（等 hydrate），与异网同为「未就绪」——调度层 idle，
+ * 不写 permanent loginError。
+ */
+export function isLoginChainReady(
+  liveChainId: number | null | undefined,
+  expectedChainId: number,
+): boolean {
+  return liveChainId != null && liveChainId === expectedChainId
+}
+
 function sessionRenewAtMs(session: StoredAuthSession, renewThresholdMs: number): number {
   const expiresAt =
     typeof session.expiresAt === 'number'
@@ -76,7 +89,7 @@ function sessionRenewAtMs(session: StoredAuthSession, renewThresholdMs: number):
   return expiresAt - renewThresholdMs
 }
 
-/** 瞬时失败可重试；用户拒绝 / 封禁 / 签名无效等永久失败不可重试。 */
+/** 瞬时失败可重试；用户拒绝 / 封禁 / 签名无效等永久失败不可重试。异网是环境谓词，不在此列。 */
 export function isPermanentLoginErrorMessage(loginError: string | null): boolean {
   if (!loginError) return false
   if (loginError === 'ACCOUNT_BANNED') return true
@@ -95,6 +108,7 @@ export function isPermanentLoginErrorMessage(loginError: string | null): boolean
  *
  * 自动登录按尝试指纹只触发一次：有可用的缓存 SIWE 签名时完全静默，
  * 没有时只弹一次钱包；循环守卫（尝试指纹）与失败锁定防止重复弹窗。
+ * 链未就绪（未知或异网）一律 idle——异网是环境，不是 permanent loginError。
  *
  * @param state 推导出的认证状态
  * @param isLoggingIn 是否正在登录
@@ -102,6 +116,7 @@ export function isPermanentLoginErrorMessage(loginError: string | null): boolean
  * @param lastAttemptKey 上一次触发的指纹
  * @param attemptKey 当前指纹
  * @param renewThresholdMs 会话到期前的续期提前量
+ * @param loginChainReady live 已知且等于期望链
  * @returns 应执行的认证动作
  */
 export function deriveAuthAction({
@@ -111,6 +126,7 @@ export function deriveAuthAction({
   lastAttemptKey,
   attemptKey,
   renewThresholdMs,
+  loginChainReady,
 }: {
   state: AuthState
   isLoggingIn: boolean
@@ -118,8 +134,10 @@ export function deriveAuthAction({
   lastAttemptKey: string | null
   attemptKey: string
   renewThresholdMs: number
+  loginChainReady: boolean
 }): AuthAction {
   if (state.kind === 'disconnected') return { type: 'idle' }
+  if (!loginChainReady) return { type: 'idle' }
 
   if (state.kind === 'needsLogin') {
     if (isLoggingIn || lastAttemptKey === attemptKey) {

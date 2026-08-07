@@ -10,6 +10,7 @@ import { useDappHostStore } from '~/stores/dapp-host-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
+import { AppBar } from '~/views/dapp/host/app-bar'
 import { GenesisPromoSync } from '~/views/dapp/host/genesis-promo-sync'
 import { MobileNav } from '~/views/dapp/host/mobile-nav'
 import {
@@ -18,7 +19,6 @@ import {
 } from '~/views/dapp/host/onboarding/onboarding-guide'
 import { RevealObserver, scrollDappPanelsToTop, ScrollFadeHost } from '~/views/dapp/host/primitives'
 import { Rail } from '~/views/dapp/host/rail'
-import { Topbar } from '~/views/dapp/host/topbar'
 import { useTabContentFade } from '~/views/dapp/host/use-content-fade'
 import { DockH5ChromeSlot } from '~/views/dapp/shared/dock-frame'
 import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
@@ -115,7 +115,7 @@ export function DappHost() {
         )}
       />
       <HeroRaysBackground variant="host" />
-      <Topbar onStartOnboarding={onboarding.startTour} onboardingDone={onboarding.done} />
+      <AppBar onStartOnboarding={onboarding.startTour} onboardingDone={onboarding.done} />
       <OnboardingGuide onOpenChange={onboarding.setOpen} open={onboarding.open} />
 
       {import.meta.env.DEV && !isThirdwebConfigured ? (
