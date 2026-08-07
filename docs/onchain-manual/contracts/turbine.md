@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/AegisTurbineVestingHub.json
-SHA-256 a1869081b949…
-74
-42
-11
+SHA-256 b092070c39b2…
+77
+44
+12
 21
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/turbine.json`](../abis/turbine.json)（74 entries）。
+完整 ABI 已导出为 [`abis/turbine.json`](../abis/turbine.json)（77 entries）。
 
 </details>
 
@@ -23,7 +23,7 @@ SHA-256 a1869081b949…
 
 ### 概述
 
-`AegisTurbineVestingHub` 是 AEGIS X 的奖励出售中枢。用户从 RewardQueue 领取的 AGX 先进入 Turbine 的余额（`turbineBalances`），然后通过"静默期"（cooldown）机制兑换为 gAGX。静默期长度根据国库健康度自适应调整（24-96 小时）。
+`AegisTurbineVestingHub` 是 AEGIS X 的奖励出售中枢。用户从 RewardQueue 领取的 AGX 先进入 Turbine 的余额（`turbineBalances`），然后通过"静默期"（cooldown）机制兑换为 gAGX。静默期长度根据国库健康度自适应调整（24-96 小时）。**冷却到期后 gAGX 经 `AegisSplitterManager` 路由到头部分流器做 30 天线性释放**（用户不直接收到 gAGX；在分流器链尾 `claim` 后才到钱包）。
 
 **部署 key**: `Turbine`
 
@@ -42,7 +42,7 @@ RewardQueue → registerSellQuota() → turbineBalances[user]
                                          ↓
 用户用 USD1 购买 AGX → buyAgxAndStartCooldown() → silences[user][]
                                                     ↓ (等待 cooldown)
-                                           claimCooledGagx() → gAGX
+                                    claimCooledGagx() → AegisSplitterManager → 头部分流器 → 30天线性释放 → 用户钱包
 ```
 
 #### 2. 自适应冷却
@@ -177,7 +177,13 @@ async function buyAndCooldown(turbine, usdContract, signer) {
 
 ##### claimCooledGagx(uint256 index)
 
-静默期结束后领取 gAGX。
+静默期结束后领取 gAGX。**已接入分流器**：若 `splitterManager` 已配置（`setSplitterManager`），gAGX 不再直接 mint 给用户，而是：
+
+1. mintWithAgx(address(this), silenceBalance) — 先 mint gAGX 到 Turbine 自身
+2. safeIncreaseAllowance(splitterManager, silenceBalance) — 授权分流管理器
+3. AegisSplitterManager.createRelease(msg.sender, silenceBalance) — 经管理器按用户注册时间路由到头部分流器，做 30 天（或新用户周期）线性释放
+
+用户在分流器链尾 `claim` 后才收到 gAGX 到钱包。若 `splitterManager` 未配置（`address(0)`），保留旧行为（直接 mint 给用户）。
 
 js
 
@@ -191,9 +197,13 @@ async function claimGagx(turbine, index, signer) {
 
   const tx = await turbine.connect(signer).claimCooledGagx(index)
   await tx.wait()
-  console.log('gAGX claimed!')
+  console.log('gAGX routed to splitter for linear release')
 }
 ```
+
+##### setSplitterManager(address _manager) — onlyOwner
+
+设置分流器管理合约地址。`address(0)` 关闭分流（回退为直接 mint gAGX 给用户）。触发 `SplitterManagerUpdated`。
 
 ##### setCooldownDuration(uint256 _duration) — onlyOwner
 

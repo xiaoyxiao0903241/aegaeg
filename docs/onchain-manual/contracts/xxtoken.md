@@ -1,11 +1,11 @@
-# XXToken 合约文档
+# XXToken（USDT）合约文档
 
 > 来源：`doc-contracts-xxtoken`
 > ABI：[`abis/xxtoken.json`](../abis/xxtoken.json)
 
 ## 完整 ABI
 
-abi/XXToken.json
+abi/USDT.json
 SHA-256 24bd20d2e540…
 25
 13
@@ -19,17 +19,17 @@ SHA-256 24bd20d2e540…
 
 </details>
 
-## XXToken 合约文档
+## XXToken（USDT）合约文档
 
 ### 概述
 
-`XXToken` (XX) 是 AEGIS X 生态系统中的 USDT 代币，用于 Usd1Swap 和其他需要稳定币交易的场景。继承自 OpenZeppelin 的 ERC20 实现，支持标准的代币操作。
+`XXToken` 的合约名为 `USDT`（源码 `src/XXToken.sol`），是 AEGIS X 生态系统中的 USDT 代币，用于 Usd1Swap 和其他需要稳定币交易的场景。继承自 OpenZeppelin 的 ERC20 实现，支持标准的代币操作。
 
-合约构造为 `XXToken("XX","XX")`，在项目内充当 USDT 使用；构造函数 `constructor(uint256 initialSupply)`（源码 `src/XXToken.sol:8`）需要传入 `initialSupply` 参数，部署时一次性铸造给 `msg.sender`。
+合约构造为 `USDT("USDT","USDT")`，在项目内充当 USDT 使用；构造函数 `constructor(uint256 initialSupply)`（源码 `src/XXToken.sol:8`）需要传入 `initialSupply` 参数，部署时一次性铸造给 `msg.sender`。
 
 **部署 key**: `XXToken`
 
-**ABI 路径**: `abi/XXToken.json`
+**ABI 路径**: `abi/USDT.json`
 
 ---
 
@@ -41,7 +41,7 @@ XXToken 代表 USDT（Tether），在协议中用作稳定币交易媒介。
 
 #### 2. 与 Usd1Swap 集成
 
-XXToken 是本地 e2e 和测试环境中 Usd1Swap 的输入 token，用户可以使用 XXToken 按固定汇率兑换 USD1。
+XXToken（USDT）是 Usd1Swap 的输入 token，用户可以使用 XXToken 按固定汇率兑换 USD1。本地 e2e 与本轮主网均部署 XXToken 作为 Usd1Swap 的 USDT 输入。
 
 ---
 

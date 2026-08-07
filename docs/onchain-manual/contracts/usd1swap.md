@@ -102,7 +102,7 @@ async function swapUsdtForUsd1(usd1Swap, usdtContract, usdtAmount, signer) {
 }
 ```
 
-输入 token 的 decimals 不是固定 18；本地 XXToken 为 18 位，但生产前端必须读取 `getConfig()` 返回的 `usdtDec` / `usd1Dec`（或对应 ERC20 `decimals()`）。
+输入 token 的 decimals 不是固定 18；XXToken（USDT）为 18 位，但生产前端必须读取 `getConfig()` 返回的 `usdtDec` / `usd1Dec`（或对应 ERC20 `decimals()`）。本轮主网 Usd1Swap 全新部署，USDT 输入为本轮部署的 XXToken（USDT），USD1 输出为本轮部署的 Faucet/USD1。
 
 ##### depositUsd1(uint256 amount)
 

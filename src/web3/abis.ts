@@ -514,8 +514,9 @@ export const REWARD_QUEUE_ERRORS = [
 ] as const
 
 /**
- * PrincipalReleaseVault — 本金线性释放到钱包 AGX。
- * @see 手册 §13 PrincipalReleaseVault 本金释放
+ * 归档 PrincipalReleaseVault — 历史本金释放单领取。
+ * 新本金退出走 AegisSplitter（手册 §13）；FE 接线 deferred。
+ * @see 手册 §13 分流器本金释放（原 PrincipalReleaseVault）
  */
 export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   getReleaseCount: 'function getReleaseCount(address user) view returns (uint256)',
@@ -528,8 +529,8 @@ export const PRINCIPAL_RELEASE_VAULT_METHODS = {
 } as const
 
 /**
- * PrincipalReleaseVault 自定义错误。
- * @see docs/onchain-manual/contracts/principalreleasevault.md
+ * 归档 PrincipalReleaseVault 自定义错误。
+ * @see docs/onchain-manual/contracts/aegissplitter.md（现行释放）；历史 PRV ABI 已归档
  */
 export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
   'error ErrorZeroAddress()',

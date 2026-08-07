@@ -27,7 +27,7 @@ SHA-256 20293ab2477e…
 
 **部署 key**: `AccountMigrationManager`
 
-**BNB Chain 主网**：本轮重新部署，地址以最终完整 manifest 为准。由于六个复用合约禁止管理写入，新 Manager 本轮保持 `migrationEnabled=false`，不能把历史 Manager 地址当作当前发布地址。
+**BNB Chain 主网 proxy**：`0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778`（release `bb680398-e7c0-46fa-ad87-139446fb4120`）。21 个迁移目标（含全新部署的 Referral/PreSale，slot 0/1）已绑定并锁定，独立启用回执证明 `migrationEnabled=true`、`targetsLocked=true`。
 
 **ABI 路径**: `abi/AccountMigrationManager.json`
 
@@ -65,10 +65,10 @@ text
 - Referral、PreSale、EarlyStaking、XStakingPool
 - BondDepository 180/360/540 天、BurnBondDepository 180/360/540 天
 - LockedStaking 180/360/540 天、RewardQueue、Turbine
-- LiquidStaking、PrincipalReleaseVault、Governance
+- LiquidStaking、Governance
 - LuckyPool、DailyPurchaseTracker、AgxContributionSwap
 
-当前标准清单合计 21 个唯一合约地址。owner 只能在迁移暂停时修改清单；调用 `setTargets`、`addMigrationTarget` 或 `removeMigrationTarget` 后会自动解除 `targetsLocked`，必须重新调用 `lockTargets()` 完整校验后才能再次开启迁移。Referral 必须始终是数组第一个元素，首次配置后不能替换且禁止单独移除。每个 target 的 `migrationManager` 首次设置后也不可替换，只允许幂等写入同一个 Manager 代理地址，避免 target owner 绕过统一原子迁移制造状态分叉。
+当前标准清单合计 21 个唯一合约地址（2026-08-03 移除 PrincipalReleaseVault、新增 AegisSplitterHead_0）。owner 只能在迁移暂停时修改清单；调用 `setTargets`、`addMigrationTarget` 或 `removeMigrationTarget` 后会自动解除 `targetsLocked`，必须重新调用 `lockTargets()` 完整校验后才能再次开启迁移。Referral 必须始终是数组第一个元素，首次配置后不能替换且禁止单独移除。每个 target 的 `migrationManager` 首次设置后也不可替换，只允许幂等写入同一个 Manager 代理地址，避免 target owner 绕过统一原子迁移制造状态分叉。
 
 目标清单允许在已经发生迁移后继续维护，因为后续迁移仍统一由 Manager 循环调用当前清单。不过，新增目标不会自动重放过去的 A→B，移除目标也不会清理其历史数据。因此新增项必须是新部署或已经完成历史 alias 回填的实例；移除项必须已经退役且不再需要参与账户迁移。这是部署治理前提，不是合约能够自动证明的状态。
 
@@ -654,7 +654,6 @@ async function adminMigrationPanel(migrationManager) {
 | LuckyPool                 | 迁移彩票记录 |
 | AegisDailyPurchaseTracker | 迁移购买追踪 |
 | AgxContributionSwap       | 迁移贡献点   |
-| PrincipalReleaseVault     | 迁移释放记录 |
 | Turbine                   | 迁移售卖配额 |
 
 ### 配置参数

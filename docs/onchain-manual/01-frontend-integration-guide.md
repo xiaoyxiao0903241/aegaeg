@@ -19,7 +19,7 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 3. 用户绑定推荐关系后，才能进入多数质押、债券、治理相关流程。
 4. 用户通过活期质押、定期质押、债券、早期锁仓等产生本金、奖励和抽奖资格。
 5. 用户领取奖励时，部分流程走 Mixed 领奖：先检查/补足贡献值，再选择释放和复投比例。
-6. 释放类奖励进入 RewardQueue，本金退出进入 PrincipalReleaseVault。
+6. 释放类奖励进入 RewardQueue；本金退出经 AegisSplitterManager 按用户注册时间路由到 AegisSplitterHead_* 等头部分流器线性释放（原 PrincipalReleaseVault 30 天缓冲池已由分流器取代，历史释放单凭归档 ABI 领取）。
 7. LuckyPool 抽奖资格由业务合约自动记录；开奖后中奖用户主动领取奖励。
 8. XStakingPool 使用 gAGX 挖 X，用户先把 AGX 包装成 gAGX，再进入 24 小时 warmup。
 9. Turbine 使用 RewardQueue/Turbine 配额，用户支付 USD1 后冷却领取 gAGX。
@@ -73,7 +73,7 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 ### 2. ABI、地址和模块映射
 
-前端直接使用仓库根目录 `abi/*.json` 的规范导出。历史地址源 `deployments/20260723112059412.bsc.xstaking-liquidity.addresses.json` 及其 schema v1 回执早于当前“RBS 持有 AGX/USD1 LP 且精确储备”的门禁，只能作为审计历史。生产构建必须等待操作者手工完成 `11,000,000 USD1 + 200,000 AGX` 主池，并由 schema v2 终验生成 passed 回执后，固定该回执绑定的不可变 manifest。
+前端直接使用仓库根目录 `abi/*.json` 的规范导出。当前 BNB Chain 主网批准发布是 release `bb680398-e7c0-46fa-ad87-139446fb4120`：权威地址源为 [`deployments/20260807112833274.bsc.xstaking-liquidity.addresses.json`](../deployments/20260807112833274.bsc.xstaking-liquidity.addresses.json)，schema v2 配置回执为 [`bb680398-e7c0-46fa-ad87-139446fb4120.mainnet-configuration.json`](../deployments/verifications/bb680398-e7c0-46fa-ad87-139446fb4120.mainnet-configuration.json)，两者由 SHA-256 `1dcaff5ac4c0a9ead6a2a17d06a33c049ed4b94ea22cff74d7756d673d181c54` 绑定且回执状态为 `passed`。账户迁移启用是 base verify 之后的独立步骤，对应 [`bb680398-e7c0-46fa-ad87-139446fb4120.account-migration-enablement.json`](../deployments/verifications/bb680398-e7c0-46fa-ad87-139446fb4120.account-migration-enablement.json)，状态同为 `passed`。生产构建必须固定这组不可变证据，不得运行时扫描 `deployments/` 目录或合并历史 JSON。历史 release 只作审计留档；官方 `PancakeFactory` 是需同步核对的外部依赖。
 
 地址项统一取 `proxy ?? address`。前端交互永远连接 proxy/普通合约地址，不连接 `implementation` 或 `admin`。该快照证明地址已写入部署记录，但不替代链上配置、owner、角色、资金、VRF Subscription 和业务验收回读；发布前仍须将 manifest 与 chainId=56、EIP-1967 implementation 和对应 ABI/源码提交一起锁定。
 
@@ -83,8 +83,8 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 | --------------------- | --------------------------- | ------------------------------- | ------------------------------------------------------------------------------ |
 | AGX                   | `AegisXToken`               | `AGX.sol`                       | `AGX`                                                                          |
 | X                     | `XToken`                    | `X.sol`                         | `XToken`                                                                       |
-| USD1 / Faucet         | `AegisMintableToken`        | `Faucet.sol`                    | 本地/测试快照使用 `Faucet`；本轮主网累计快照使用 `USD1`，两者实现相同          |
-| XXToken / USDT 替代币 | 当前部署 ABI                | `XXToken.sol`                   | `XXToken`                                                                      |
+| USD1 / Faucet         | `USD1`                      | `Faucet.sol`                    | 本地/测试快照使用 `Faucet`；主网累计快照使用 `USD1`，两者实现相同              |
+| XXToken / USDT 替代币 | `USDT`                      | `XXToken.sol`                   | `XXToken`                                                                      |
 | Referral              | `AegisReferral`             | `Referral.sol`                  | `Referral`                                                                     |
 | PreSale               | `AegisPreSale`              | `PreSale.sol`                   | `PreSale`                                                                      |
 | 预售奖励领取          | `AegisPresaleRewardClaimer` | `Reward.sol`                    | `RewardClaimer`                                                                |
@@ -100,11 +100,11 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 | BondHelper            | `AegisBondZapHelper`        | `BondHelper.sol`                | `BondHelper`                                                                   |
 | Governance            | `Governance`                | `Governance.sol`                | `Governance`                                                                   |
 | DaoPool               | `DaoPool`                   | `Dao.sol`                       | `DaoPool`                                                                      |
-| IncentivePool         | `IncentivePool`             | `IncentivePool.sol`             | `IncentivePool`                                                                |
 | CommunityFund         | `AegisCommunityFund`        | `CommunityFund.sol`             | `CommunityFund`                                                                |
 | MarketFund            | `AegisMarketFund`           | `MarketFund.sol`                | `MarketFund`                                                                   |
 | RewardQueue           | `AegisRewardVestingQueue`   | `RewardQueue.sol`               | `RewardQueue`                                                                  |
-| 本金释放              | `PrincipalReleaseVault`     | `PrincipalReleaseVault.sol`     | `PrincipalReleaseVault`                                                        |
+| 本金释放（分流器）    | `AegisSplitterManager`      | `AegisSplitterManager.sol`      | `AegisSplitterManager`                                                         |
+| 分流器（头/普通）     | `AegisSplitter`             | `AegisSplitter.sol`             | `AegisSplitterHead_0` 等                                                       |
 | LuckyPool             | `AegisLuckyPool`            | `AegisLuckyPool.sol`            | `LuckyPool`                                                                    |
 | PurchaseTracker       | `AegisDailyPurchaseTracker` | `AegisDailyPurchaseTracker.sol` | `DailyPurchaseTracker`                                                         |
 | gAGX                  | `AegisRedeemableGAGX`       | `RedeemableGAGX.sol`            | `RewardGAGX`                                                                   |
@@ -121,79 +121,81 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 #### 2.2 当前 BNB Chain 主网地址
 
-以下 47 个部署 key 是历史 release 的完整地址表，仅用于迁移核对和审计，不是当前策略下已批准的生产前端地址源。新的生产构建必须改用 schema v2 passed 回执所绑定的最终 manifest。
+以下 47 个部署 key 是本轮 release（`MAINNET_REUSE_ALLOWLIST=none`，全部全新部署）的完整地址表，供前端集成参考；权威地址源是 schema v2 passed 回执所绑定的最终 manifest。若后续发生代理升级，只更新 implementation 记录；proxy 地址未迁移时前端交互地址保持不变。
 
-| 部署 key                                | 主网交互地址                                 | 类型 / 来源           |
-| --------------------------------------- | -------------------------------------------- | --------------------- |
-| `USD1`（Faucet / `AegisMintableToken`） | `0x32Bb0be09F62bbE69764906d80e9A5782C7F7633` | 普通地址，复用        |
-| `Referral`                              | `0xe0F3AE113dD3997982AE9ad7d5510ffA4E3Cce71` | Proxy，复用           |
-| `PreSale`                               | `0xDE381f0F124d46Ab7E43629421Ac862b103fe008` | Proxy，复用           |
-| `RewardClaimer`                         | `0x697B55FCFBC4Cd5401f605EE4D9905816c127f07` | Proxy，复用           |
-| `CommunityFund`                         | `0x083441EC373E547611295e037D759084b1483a95` | Proxy，复用           |
-| `Usd1Swap`                              | `0x95EA21C11dd40A7C2b7Ec2f5FBa7b124f3Dec1c0` | Proxy，复用           |
-| `AGX`                                   | `0x8d0771495272bB97Cd1cD44795222c8fB1b53247` | 普通地址              |
-| `XToken`                                | `0xb6Bc530437e47Be2E5FD47f472C0e291af56BE0A` | 普通地址              |
-| `sAGX`                                  | `0xCdBe033B060bD86d0fF15C852721b27Dc6E9388b` | 普通地址              |
-| `PancakeFactory`                        | `0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73` | 外部普通地址          |
-| `PancakePair`                           | `0xaC645E2137eB011f612b01942D21De6Be959E266` | AGX/USD1 Pair         |
-| `BondingCalculator`                     | `0x1D536ee6FCC9dF31cF92F63a73d129e572EA9fDd` | 普通地址              |
-| `Treasury`                              | `0x30f0279131Ec9eD15279e53EF448cc5D8BD85771` | Proxy                 |
-| `StakingPool`                           | `0xb47d21F89d3574faA66680fc75DF4C6D054CfbD8` | Proxy                 |
-| `RewardManager`                         | `0x9883AA969d72f950EcB190b987e6661eFcB12F0b` | Proxy                 |
-| `RewardGAGX`                            | `0xf9D9BC796fC71B119179Bbaf8fcf28fA2393EC51` | Proxy                 |
-| `LockedStaking180d`                     | `0x0F2d6c38Dd74D6bBd3aFc6DA90Af39e15CAb2858` | Proxy                 |
-| `LockedStaking360d`                     | `0xfeb7e7b9E9e667B27372EDc4025d7694871FF68D` | Proxy                 |
-| `LockedStaking540d`                     | `0xbd36c24b24ef9a22ed39C70777B145cc98A92cd8` | Proxy                 |
-| `LiquidStaking`                         | `0x0C5173c87aB8684eEc028a2bF56061a37415d224` | Proxy                 |
-| `EarlyStaking`                          | `0x742791FbBf0FC1aCCBF0c016F9aBa0a75Ee50EC5` | Proxy                 |
-| `XStakingPool`                          | `0xE7a560E91fE86bc90EDd10ac600329bff37EcDEa` | Proxy                 |
-| `BondDepository180d`                    | `0xEF6054BC618E6eeA42E7219298b61C9D387a23bd` | Proxy                 |
-| `BondDepository360d`                    | `0xaA2169141c2fBdD5327020087d6E25f4a114a37C` | Proxy                 |
-| `BondDepository540d`                    | `0xD539E1Ff4abC0E5Dc0E7a2Eb33Faad5D5549E154` | Proxy                 |
-| `BurnBondDepository180d`                | `0x6344CCfaA3F1318477d7C675a0C8F6bA582399DA` | Proxy                 |
-| `BurnBondDepository360d`                | `0x918D3c4FAd7B60ba6cFAd27A33fFb3E633F4eAfc` | Proxy                 |
-| `BurnBondDepository540d`                | `0x315BFA3C8005f7b246C7704c56195391b46b3239` | Proxy                 |
-| `BondHelper`                            | `0x6292A4c3d1D9Dd4cc505Ae87D2A2df2d826928e8` | Proxy                 |
-| `DaoPool`                               | `0x40AAb88E72baA024B750A657D2A09Acbf17C13e9` | Proxy                 |
-| `Governance`                            | `0xc9fF2B745D4D7319298d1504a0dD45eD663a241A` | Proxy                 |
-| `FeeBot`                                | `0x64476F430012d732aa50B4aDC75a5a75A160c831` | Proxy                 |
-| `Turbine`                               | `0xd0cA3fD139Fa26Bc76e5Db29b392AD330b7A6dD7` | Proxy                 |
-| `RewardQueue`                           | `0x3C7137C3B6D7565B5a0fd7C1f96dce03005B06b0` | Proxy                 |
-| `RiskControl`                           | `0x1419Fd6E7A2d9E4F564CeE66B22d06eD7590c5bB` | Proxy                 |
-| `RBS`                                   | `0x67C0F1dFbAFd062d54b16acBdc2C140FcD22Bd08` | Proxy                 |
-| `PrincipalReleaseVault`                 | `0xb40dd16Ea03Ea04DaF63b3b272F31832B666C4Ee` | Proxy                 |
-| `RestakeConfig`                         | `0xb1B46B91Ff06F005d687aFD38a5B61F8b96511A6` | Proxy                 |
-| `IncentivePool`                         | `0x8846C60030622767aa495429b98c5018e570bE42` | Proxy                 |
-| `TokenFeeBot`                           | `0xC88aC7F76f5e70bE43A8a689Fc4612442b74Db8C` | Proxy                 |
-| `MarketFund`                            | `0x2b28D4f5192441Bcbc8d31562CA73F5354Ca4C1b` | Proxy                 |
-| `AccountMigrationManager`               | `0xb3b8e61c79D585eD07772087F1b18dCe53CF6264` | Proxy，当前未启用迁移 |
-| `XXToken`                               | `0x68049A1DFD1dd2F203C44203b8dBc464073aBc7D` | 普通地址              |
-| `AgxContributionSwap`                   | `0xbD664660010de636e3de05B79b16E9963c074541` | Proxy                 |
-| `LuckyPool`                             | `0xE2e221ecC01bEe42e267D1f6F6C34f7836993e68` | Proxy，当前暂停       |
-| `DailyPurchaseTracker`                  | `0xaa0eAB4d091e521Aa1d804d03F39B6579351EC1d` | Proxy，当前暂停       |
-| `XStakingRewardPair`                    | `0x023A7b7fC8C88d1ef44a3D2457Cc73109B58D6EA` | AGX/X Pair            |
+| 部署 key                       | 主网交互地址                                 | 类型 / 来源            |
+| ------------------------------ | -------------------------------------------- | ---------------------- |
+| `USD1`（Faucet / `USD1` 合约） | `0xd94Be47992B17534d7eDB6293D0433F5C7A166aC` | 普通地址，本轮全新部署 |
+| `Referral`                     | `0xEb4339c0898B72d8aC0B8Ba65902558b7529DA9B` | Proxy，本轮全新部署    |
+| `PreSale`                      | `0x469aBAd653b0cc4C467B4dF0010e82F4aaf0a0c1` | Proxy，本轮全新部署    |
+| `RewardClaimer`                | `0xF2bE1A3A20ed1c1AD9d152DDa89f0f9C428CE365` | Proxy，本轮全新部署    |
+| `CommunityFund`                | `0xb3304bb6b3a9b1243eBaDE48d6e4b322f92fcF1E` | Proxy，本轮全新部署    |
+| `Usd1Swap`                     | `0x8F3a258045130626D677cD17e724d0CcdE888845` | Proxy，本轮全新部署    |
+| `AGX`                          | `0x8D097BBA218393eCD9daE2aca82d718FA0EB02aB` | 普通地址               |
+| `XToken`                       | `0x11D7F915158aAEf7932179943ae93FC31451B689` | 普通地址               |
+| `sAGX`                         | `0xB59F227A2c4aa91dDD482e983b1767D8ee0cEc96` | 普通地址               |
+| `PancakeFactory`               | `0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73` | 外部普通地址           |
+| `PancakePair`                  | `0x9302FcEA9eBCfdbDB335197b2a1e57d67a87B302` | AGX/USD1 Pair          |
+| `BondingCalculator`            | `0x1B6aD49A45874aFADD03055FE364bB78f04921B3` | 普通地址               |
+| `Treasury`                     | `0x32ceB69086E40E1dBea15d75444C64FdDc08230f` | Proxy                  |
+| `StakingPool`                  | `0xb50cc1493696B3304FaAC686C16989b47903d01E` | Proxy                  |
+| `RewardManager`                | `0x7ccaA7890A44d6Ef2a507F73509A209cc98A9941` | Proxy                  |
+| `RewardGAGX`                   | `0xE5d59073D4BDAd269D2f67bE35988337F6F333Aa` | Proxy                  |
+| `LockedStaking180d`            | `0xb64C7718F372eB7792EdE434f93F0b556e444406` | Proxy                  |
+| `LockedStaking360d`            | `0xCA6bf54Dd4f7D05CA1b0C34Da4AC8fBC97dD8CeD` | Proxy                  |
+| `LockedStaking540d`            | `0x5aa7e8996FE0661B3D487f660E6a043BCe000487` | Proxy                  |
+| `LiquidStaking`                | `0x73aFfdA5B6399db1666bA203aB9623CA5F48E2fb` | Proxy                  |
+| `EarlyStaking`                 | `0x3B525564aF73ae22d36e7615E6330db698F80592` | Proxy                  |
+| `XStakingPool`                 | `0x38af581462e25aABE1A25Ae128aE5a63aE015e1c` | Proxy                  |
+| `BondDepository180d`           | `0xaFe1cdDd0b6d20483ebC5087b98337370eaE249c` | Proxy                  |
+| `BondDepository360d`           | `0xAA334F43999751B3cb0F3313bEda94BAF47980d7` | Proxy                  |
+| `BondDepository540d`           | `0x236C5a112Dfa345D51d724362201c0650FaD2E0F` | Proxy                  |
+| `BurnBondDepository180d`       | `0x7E45475E5729578eb4F08af7d2115491591295d6` | Proxy                  |
+| `BurnBondDepository360d`       | `0x63b399D2fe5a13c58d92E6a74771867516471deF` | Proxy                  |
+| `BurnBondDepository540d`       | `0xFb833116349280880E722203B1D80B69682F738E` | Proxy                  |
+| `BondHelper`                   | `0xDcE5f1DB9E477fe30dbe6D81cBDE41065A25A641` | Proxy                  |
+| `DaoPool`                      | `0x40AD76f0B22C1b4a4996F42540FC0a556A851775` | Proxy                  |
+| `Governance`                   | `0x3bABE9D3a51b4092B4ff3Ef33468d76DdEA2D424` | Proxy                  |
+| `FeeBot`                       | `0x7E31365dcEdDD37CD9eAB383531fD32907568ab9` | Proxy                  |
+| `Turbine`                      | `0x8AA41EeE218bF444532f80021D71249d70783cE6` | Proxy                  |
+| `RewardQueue`                  | `0x320feF8885283CbD1271aD1F39c5Fe694d56583C` | Proxy                  |
+| `RiskControl`                  | `0x1AAC78d2FE0ef171075df997bD9287394839696B` | Proxy                  |
+| `RBS`                          | `0xde591E8C3DD60be77481Ea335d7A038e09357034` | Proxy                  |
+| `RestakeConfig`                | `0xcc7ec781A0d08Dafec7c34779A0c306b3198e2e1` | Proxy                  |
+| `TokenFeeBot`                  | `0x379B3BFD7e5D1A7C07C7bb132870044b3E156Fe2` | Proxy                  |
+| `MarketFund`                   | `0x316B3Eeb21C43A138510cdF7728Ddb88d33f112f` | Proxy                  |
+| `AccountMigrationManager`      | `0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778` | Proxy，已启用迁移      |
+| `XXToken`                      | `0x5CeDC73b36624caa24581D8567b02a07d3cCeF2A` | 普通地址               |
+| `AgxContributionSwap`          | `0xe3Df8686556A30c633bDD5Ca8293E33E57b81FEb` | Proxy                  |
+| `LuckyPool`                    | `0xe91148Fe7248b528398442e8eA4e8a7d107c994A` | Proxy，当前暂停        |
+| `DailyPurchaseTracker`         | `0xf4328953616607aCc04F1e7Ba90bc379987c1945` | Proxy，当前暂停        |
+| `AegisSplitterManager`         | `0x951d22EDBbFeC93ecD40B9fE7faC979A0EA7471F` | Proxy                  |
+| `AegisSplitterHead_0`          | `0x193eBD30a5f0827e91880fF404600f5b699df510` | Proxy，头部分流器      |
+| `XStakingRewardPair`           | `0xC3587c1E9862b74a5e3dE8C6a48fD85Ae44550B8` | AGX/X Pair             |
+
+`PrincipalReleaseVault` 不属于上述 47 个当前部署 key。其历史主网代理 `0xb40dd16Ea03Ea04DaF63b3b272F31832B666C4Ee` 仅供旧释放单领取，ABI 见 `archive/PrincipalReleaseVault/`；新本金不再进入该合约。
 
 #### 2.3 页面到合约映射
 
-| 页面        | 主要合约                                                  | 辅助合约                                                               |
-| ----------- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
-| 钱包资产    | ERC20                                                     | AccountMigrationManager                                                |
-| 推荐关系    | Referral                                                  | AccountMigrationManager                                                |
-| 预售        | PreSale                                                   | USD1 ERC20, RewardClaimer                                              |
-| Swap        | PancakeRouter, Usd1Swap                                   | AGX ERC20, USD1/XXToken ERC20                                          |
-| 活期质押    | LiquidStaking                                             | AGX ERC20, Referral, RewardQueue, PrincipalReleaseVault                |
-| 定期质押    | LockedStaking180d/360d/540d                               | AGX ERC20, Referral, RewardQueue, RestakeConfig, PrincipalReleaseVault |
-| EarlyStake  | EarlyStaking                                              | RewardQueue, PrincipalReleaseVault                                     |
-| Mixed 领奖  | 各奖励来源合约                                            | AgxContributionSwap, RestakeConfig, RewardQueue                        |
-| 债券        | BondHelper, BondDepository, BurnBondDepository            | USD1 ERC20, Referral, PrincipalReleaseVault                            |
-| 治理        | Governance                                                | AGX ERC20, Referral                                                    |
-| RewardQueue | RewardQueue                                               | Turbine                                                                |
-| 本金释放    | PrincipalReleaseVault                                     | AGX ERC20                                                              |
-| 抽奖        | LuckyPool                                                 | DailyPurchaseTracker                                                   |
-| X 挖矿      | RewardGAGX, XStakingPool                                  | AGX ERC20, X ERC20, PrincipalReleaseVault                              |
-| Turbine     | Turbine                                                   | USD1 ERC20, RewardGAGX                                                 |
-| 账户迁移    | AccountMigrationManager                                   | Referral 和支持迁移的业务合约                                          |
-| 管理台      | Treasury/RBS/RiskControl/RewardManager/FeeBot/TokenFeeBot | AGX/USD1/Router                                                        |
+| 页面               | 主要合约                                                  | 辅助合约                                                              |
+| ------------------ | --------------------------------------------------------- | --------------------------------------------------------------------- |
+| 钱包资产           | ERC20                                                     | AccountMigrationManager                                               |
+| 推荐关系           | Referral                                                  | AccountMigrationManager                                               |
+| 预售               | PreSale                                                   | USD1 ERC20, RewardClaimer                                             |
+| Swap               | PancakeRouter, Usd1Swap                                   | AGX ERC20, USD1/XXToken ERC20                                         |
+| 活期质押           | LiquidStaking                                             | AGX ERC20, Referral, RewardQueue, AegisSplitterManager                |
+| 定期质押           | LockedStaking180d/360d/540d                               | AGX ERC20, Referral, RewardQueue, RestakeConfig, AegisSplitterManager |
+| EarlyStake         | EarlyStaking                                              | RewardQueue, AegisSplitterManager                                     |
+| Mixed 领奖         | 各奖励来源合约                                            | AgxContributionSwap, RestakeConfig, RewardQueue                       |
+| 债券               | BondHelper, BondDepository, BurnBondDepository            | USD1 ERC20, Referral, AegisSplitterManager                            |
+| 治理               | Governance                                                | AGX ERC20, Referral                                                   |
+| RewardQueue        | RewardQueue                                               | Turbine                                                               |
+| 本金释放（分流器） | AegisSplitterManager / AegisSplitter                      | AGX ERC20                                                             |
+| 抽奖               | LuckyPool                                                 | DailyPurchaseTracker                                                  |
+| X 挖矿             | RewardGAGX, XStakingPool                                  | AGX ERC20, X ERC20, AegisSplitterManager                              |
+| Turbine            | Turbine                                                   | USD1 ERC20, RewardGAGX                                                |
+| 账户迁移           | AccountMigrationManager                                   | Referral 和支持迁移的业务合约                                         |
+| 管理台             | Treasury/RBS/RiskControl/RewardManager/FeeBot/TokenFeeBot | AGX/USD1/Router                                                       |
 
 ### 3. 用户端完整流程
 
@@ -216,29 +218,29 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 #### 3.2 e2e 覆盖顺序
 
-| e2e stage                                                                      | 前端页面            | 合约动作                                                                      |
-| ------------------------------------------------------------------------------ | ------------------- | ----------------------------------------------------------------------------- |
-| `preflight`, `setup`                                                           | 管理台              | 检查地址、权限、库存、pair、奖励资金                                          |
-| `fund-users`                                                                   | 钱包资产            | 读 ERC20 余额                                                                 |
-| `referral-binding`                                                             | 推荐关系            | `Referral.bindReferral`                                                       |
-| `presale-purchase`                                                             | 预售                | `PreSale.purchase`                                                            |
-| `swap-buy-agx`                                                                 | Swap                | Router `swapExactTokensForTokens`                                             |
-| `liquid-staking`                                                               | 活期质押            | `LiquidStaking.liquidStake`                                                   |
-| `locked-staking-subpools`                                                      | 定期质押            | 180/360/540 天三个 `LockedStaking.lockedStake` 实例                           |
-| `lp-bond`, `burn-bond`                                                         | 债券                | `BondHelper.zapIntoLiquidityBond`, `zapIntoBurnBond`                          |
-| `governance-vote`, `governance-withdrawal`                                     | 治理                | `vote`, `withdrawal`                                                          |
-| `early-staking`                                                                | 管理台 / EarlyStake | `EarlyStaking.earlyStake`                                                     |
-| `x-staking-stake`, `x-staking-claim-unstake`                                   | X 挖矿              | `wrap`, `stakeGagxForMining`, `activateWarmup`, `claimReward`, `startUnstake` |
-| `staking-reward-claim`                                                         | 质押奖励            | `claimRewardMixed`                                                            |
-| `dao-claim`, `incentive-claim`, `community-fund-claim`, `presale-reward-claim` | 签名奖励            | 各签名领取方法                                                                |
-| `reward-queue-claim`, `reward-queue`                                           | RewardQueue         | 查询并领取释放奖励                                                            |
-| `principal-release-*`                                                          | 本金释放            | `claim`, `claimMany`                                                          |
-| `usd1-swap`                                                                    | USD1Swap            | `quoteUsd1Out`, `swap`                                                        |
-| `lucky-pool`                                                                   | 抽奖                | 查询资格、VRF 开奖、手动领取                                                  |
-| `turbine`                                                                      | Turbine             | `buyAgxAndStartCooldown`, `claimCooledGagx`                                   |
-| `restake`                                                                      | 复投                | Mixed 领奖时 `restakeBps = 10000`                                             |
-| `fee-bot`, `token-fee-bot`, `risk-control`, `rbs`                              | 管理台              | 后台操作                                                                      |
-| `account-migration`                                                            | 账户迁移            | `requestMigration`, `approveMigration`, `activateMigration`                   |
+| e2e stage                                                   | 前端页面            | 合约动作                                                                      |
+| ----------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------- |
+| `preflight`, `setup`                                        | 管理台              | 检查地址、权限、库存、pair、奖励资金                                          |
+| `fund-users`                                                | 钱包资产            | 读 ERC20 余额                                                                 |
+| `referral-binding`                                          | 推荐关系            | `Referral.bindReferral`                                                       |
+| `presale-purchase`                                          | 预售                | `PreSale.purchase`                                                            |
+| `swap-buy-agx`                                              | Swap                | Router `swapExactTokensForTokens`                                             |
+| `liquid-staking`                                            | 活期质押            | `LiquidStaking.liquidStake`                                                   |
+| `locked-staking-subpools`                                   | 定期质押            | 180/360/540 天三个 `LockedStaking.lockedStake` 实例                           |
+| `lp-bond`, `burn-bond`                                      | 债券                | `BondHelper.zapIntoLiquidityBond`, `zapIntoBurnBond`                          |
+| `governance-vote`, `governance-withdrawal`                  | 治理                | `vote`, `withdrawal`                                                          |
+| `early-staking`                                             | 管理台 / EarlyStake | `EarlyStaking.earlyStake`                                                     |
+| `x-staking-stake`, `x-staking-claim-unstake`                | X 挖矿              | `wrap`, `stakeGagxForMining`, `activateWarmup`, `claimReward`, `startUnstake` |
+| `staking-reward-claim`                                      | 质押奖励            | `claimRewardMixed`                                                            |
+| `dao-claim`, `community-fund-claim`, `presale-reward-claim` | 签名奖励            | 各签名领取方法                                                                |
+| `reward-queue-claim`, `reward-queue`                        | RewardQueue         | 查询并领取释放奖励                                                            |
+| `principal-release-*`                                       | 本金释放（分流器）  | Manager/头部分流器 `claim`, `claimMany`（历史 PRV 释放单用归档 ABI）          |
+| `usd1-swap`                                                 | USD1Swap            | `quoteUsd1Out`, `swap`                                                        |
+| `lucky-pool`                                                | 抽奖                | 查询资格、VRF 开奖、手动领取                                                  |
+| `turbine`                                                   | Turbine             | `buyAgxAndStartCooldown`, `claimCooledGagx`                                   |
+| `restake`                                                   | 复投                | Mixed 领奖时 `restakeBps = 10000`                                             |
+| `fee-bot`, `token-fee-bot`, `risk-control`, `rbs`           | 管理台              | 后台操作                                                                      |
+| `account-migration`                                         | 账户迁移            | `requestMigration`, `approveMigration`, `activateMigration`                   |
 
 ### 4. 钱包资产页
 
@@ -248,26 +250,26 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 #### 4.2 需要实例化的 ABI
 
-| ABI                     | 地址 key                    | 用途                                                           |
-| ----------------------- | --------------------------- | -------------------------------------------------------------- |
-| ERC20                   | `AGX`                       | AGX 余额和授权                                                 |
-| ERC20                   | `RewardGAGX`                | gAGX 余额和授权                                                |
-| ERC20                   | `XToken`                    | X 余额                                                         |
-| AegisMintableToken      | 本地 `Faucet` / 主网 `USD1` | 两个 key 当前都使用同一 Faucet ABI；主网地址取本轮固定累计快照 |
-| ERC20                   | `XXToken`                   | USDT/XXToken 余额                                              |
-| AccountMigrationManager | `AccountMigrationManager`   | 迁移状态                                                       |
+| ABI                     | 地址 key                    | 用途                                                            |
+| ----------------------- | --------------------------- | --------------------------------------------------------------- |
+| ERC20                   | `AGX`                       | AGX 余额和授权                                                  |
+| ERC20                   | `RewardGAGX`                | gAGX 余额和授权                                                 |
+| ERC20                   | `XToken`                    | X 余额                                                          |
+| USD1                    | 本地 `Faucet` / 主网 `USD1` | 两个 key 当前都使用同一 Faucet/USD1 ABI；主网地址取本轮累计快照 |
+| ERC20                   | `XXToken`                   | USDT/XXToken 余额                                               |
+| AccountMigrationManager | `AccountMigrationManager`   | 迁移状态                                                        |
 
 #### 4.3 展示字段
 
-| 字段                      | 方法                                                            | 说明                                                              |
-| ------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
-| AGX 余额                  | `AGX.balanceOf(user)`                                           | 9 decimals                                                        |
-| gAGX 余额                 | `RewardGAGX.balanceOf(user)`                                    | 9 decimals                                                        |
-| X 余额                    | `XToken.balanceOf(user)`                                        | 18 decimals                                                       |
-| USD1 余额                 | 主网 `USD1.balanceOf(user)`；本地按 `Faucet.balanceOf(user)`    | 使用链上 `decimals()` 格式化；本轮主网实现是 `AegisMintableToken` |
-| XXToken / 输入 token 余额 | `XXToken.balanceOf(user)` 或生产输入 token 的 `balanceOf(user)` | 本地 XXToken 为 18 位；生产运行时读取 `decimals()`                |
-| 当前地址是否旧地址        | `AccountMigrationManager.isOldAccount(user)`                    | 已迁移旧地址应提示不要继续操作                                    |
-| canonical 地址            | `AccountMigrationManager.canonicalAccount(user)`                | 页面可展示最终权益地址                                            |
+| 字段                      | 方法                                                            | 说明                                                                |
+| ------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| AGX 余额                  | `AGX.balanceOf(user)`                                           | 9 decimals                                                          |
+| gAGX 余额                 | `RewardGAGX.balanceOf(user)`                                    | 9 decimals                                                          |
+| X 余额                    | `XToken.balanceOf(user)`                                        | 18 decimals                                                         |
+| USD1 余额                 | 主网 `USD1.balanceOf(user)`；本地按 `Faucet.balanceOf(user)`    | 使用链上 `decimals()` 格式化；本轮主网实现是 `USD1`（`Faucet.sol`） |
+| XXToken / 输入 token 余额 | `XXToken.balanceOf(user)` 或生产输入 token 的 `balanceOf(user)` | 本地 XXToken 为 18 位；生产运行时读取 `decimals()`                  |
+| 当前地址是否旧地址        | `AccountMigrationManager.isOldAccount(user)`                    | 已迁移旧地址应提示不要继续操作                                      |
+| canonical 地址            | `AccountMigrationManager.canonicalAccount(user)`                | 页面可展示最终权益地址                                              |
 
 #### 4.4 交互要求
 
@@ -329,7 +331,7 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 | ABI                         | 地址 key                    | 用途                           |
 | --------------------------- | --------------------------- | ------------------------------ |
 | `AegisPreSale`              | `PreSale`                   | 查询阶段和购买                 |
-| `AegisMintableToken`        | 本地 `Faucet` / 主网 `USD1` | USD1 余额和授权                |
+| `USD1`                      | 本地 `Faucet` / 主网 `USD1` | USD1 余额和授权                |
 | `AegisPresaleRewardClaimer` | `RewardClaimer`             | 预售奖励签名领取，不是预售购买 |
 
 #### 6.3 展示字段
@@ -413,7 +415,7 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 | 字段          | 方法                                           | 说明                                                            |
 | ------------- | ---------------------------------------------- | --------------------------------------------------------------- |
-| 输入 token    | `getConfig()` 返回 usdt/usd1/rate/limit 等配置 | 本地 e2e 用 XXToken                                             |
+| 输入 token    | `getConfig()` 返回 usdt/usd1/rate/limit 等配置 | 本轮部署的 XXToken（USDT，本地与主网一致）                      |
 | 当前报价      | `quoteUsd1Out(usdtAmount)`                     | `usdtAmount` 使用输入 token 自身 decimals，输出按 USD1 decimals |
 | USD1 库存     | `usd1Reserve()`                                | 库存不足时 swap 会失败                                          |
 | 最小/最大输入 | `getConfig()`                                  | 前端用于输入限制                                                |
@@ -458,22 +460,22 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 #### 8.2 活期 LiquidStaking
 
-| 项       | 内容                                                                                              |
-| -------- | ------------------------------------------------------------------------------------------------- |
-| ABI      | `LiquidStaking`, ERC20, `Referral`, `PrincipalReleaseVault`, `AgxContributionSwap`, `RewardQueue` |
-| 地址 key | `LiquidStaking`, `AGX`, `Referral`, `PrincipalReleaseVault`, `AgxContributionSwap`, `RewardQueue` |
+| 项       | 内容                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| ABI      | `LiquidStaking`, ERC20, `Referral`, `AegisSplitterManager`, `AgxContributionSwap`, `RewardQueue` |
+| 地址 key | `LiquidStaking`, `AGX`, `Referral`, `AegisSplitterManager`, `AgxContributionSwap`, `RewardQueue` |
 
 展示字段：
 
-| 字段            | 方法                                               | 说明                                                                                                         |
-| --------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| warmup stake    | `warmupStakes(root)`                               | public mapping 不自动解析迁移别名；`root` 取 `AccountMigrationManager.migratedFrom(user)`，零地址时使用 user |
-| active stake    | `stakes(root)`                                     | 同上；迁移后直接用当前钱包读取可能错误显示为 0                                                               |
-| warmup 奖励     | `getStakeRewards(user)` 第 1 个返回值              | 未激活部分的奖励                                                                                             |
-| active 奖励     | `getStakeRewards(user)` 第 2 个返回值              | 可进入 Mixed 领奖                                                                                            |
-| 今日剩余额度    | `remainingStakeAmount()`                           | 全局每日剩余额度                                                                                             |
-| warmup 是否到期 | `isWarmupExpired(user)`                            | 到期后允许 `claim()`                                                                                         |
-| 本金释放单      | `PrincipalReleaseVault.getReleaseCount/getRelease` | `claimPrincipal` 后创建                                                                                      |
+| 字段            | 方法                                                                                                                                                                                                   | 说明                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| warmup stake    | `warmupStakes(root)`                                                                                                                                                                                   | public mapping 不自动解析迁移别名；`root` 取 `AccountMigrationManager.migratedFrom(user)`，零地址时使用 user |
+| active stake    | `stakes(root)`                                                                                                                                                                                         | 同上；迁移后直接用当前钱包读取可能错误显示为 0                                                               |
+| warmup 奖励     | `getStakeRewards(user)` 第 1 个返回值                                                                                                                                                                  | 未激活部分的奖励                                                                                             |
+| active 奖励     | `getStakeRewards(user)` 第 2 个返回值                                                                                                                                                                  | 可进入 Mixed 领奖                                                                                            |
+| 今日剩余额度    | `remainingStakeAmount()`                                                                                                                                                                               | 全局每日剩余额度                                                                                             |
+| warmup 是否到期 | `isWarmupExpired(user)`                                                                                                                                                                                | 到期后允许 `claim()`                                                                                         |
+| 本金释放单      | `AegisSplitterManager.getHeadSplitterForUser(user)` 解析头部分流器后，用 `AegisSplitter.getReleases(user,start,limit)` 分页读取；仅接入其他尚未升级的 Splitter 实例时回退 `getReleaseCount/getRelease` | `claimPrincipal` 后创建                                                                                      |
 
 用户写方法：
 
@@ -489,15 +491,15 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 - 活期有 warmup，warmup 未结束时本金和收益都不能按 active 流程领取或退出。
 - claim() 不是普通领奖按钮，它主要用于 warmup 到期激活。
-- claimPrincipal(amount) 会进入 PrincipalReleaseVault，不是立即把全部 AGX 发回钱包。
+- claimPrincipal(amount) 会经 AegisSplitterManager 路由进入分流器，不是立即把全部 AGX 发回钱包。
 - liquidStake 会触发购买记录集成，单笔金额达标时可能进入 LuckyPool 资格。
 
 #### 8.3 定期 LockedStaking
 
-| 项       | 内容                                                                                                               |
-| -------- | ------------------------------------------------------------------------------------------------------------------ |
-| ABI      | `LockedStaking`, ERC20, `Referral`, `AgxContributionSwap`, `RewardQueue`, `RestakeConfig`, `PrincipalReleaseVault` |
-| 地址 key | 固定三池：`LockedStaking180d`, `LockedStaking360d`, `LockedStaking540d`                                            |
+| 项       | 内容                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------- |
+| ABI      | `LockedStaking`, ERC20, `Referral`, `AgxContributionSwap`, `RewardQueue`, `RestakeConfig`, `AegisSplitterManager` |
+| 地址 key | 固定三池：`LockedStaking180d`, `LockedStaking360d`, `LockedStaking540d`                                           |
 
 展示字段：
 
@@ -520,7 +522,7 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 | 授权 AGX           | `AGX.approve(LockedStaking, amount)`                                                        | 金额                   | AGX 余额足够                                                                            | allowance                                                     |
 | 定期质押           | `lockedStake(amount)`                                                                       | AGX 金额               | 推荐已绑定；合约开启；授权足够；两项已启用额度均足够                                    | stake 列表、余额、额度、抽奖资格                              |
 | 给他人创建定期仓位 | `lockedStake(amount, recipient)`                                                            | AGX 金额、受益人       | recipient 已绑定推荐；双方均非迁移旧地址；调用者授权足够；额度按 recipient 的 root 累计 | recipient 的 stake 列表、调用者余额、额度、recipient 抽奖资格 |
-| 领取本金           | `claimPrincipal(index)`                                                                     | stake index            | `claimableBalance > 0`；PRV 已配置                                                      | stake 列表、PRV 释放单；钱包 AGX 不会立即增加                 |
+| 领取本金           | `claimPrincipal(index)`                                                                     | stake index            | `claimableBalance > 0`；分流器 Manager 已配置                                           | stake 列表、分流器释放单；钱包 AGX 不会立即增加               |
 | 领取普通奖励 Mixed | `claimRewardMixed(stakeIndex, amount, releasePlanIndex, restakePlanIndex, restakeBps)`      | stake index 和分流参数 | `blockReward` 足够；贡献值足够                                                          | stake、RewardQueue、Restake                                   |
 | 领取额外奖励 Mixed | `claimExtraRewardMixed(stakeIndex, amount, releasePlanIndex, restakePlanIndex, restakeBps)` | stake index 和分流参数 | `extraInterest` 足够；贡献值足够                                                        | stake、RewardQueue、Restake                                   |
 
@@ -535,10 +537,10 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 #### 8.4 EarlyStaking
 
-| 项       | 内容                                                                                 |
-| -------- | ------------------------------------------------------------------------------------ |
-| ABI      | `EarlyStaking`, ERC20, `AgxContributionSwap`, `RewardQueue`, `PrincipalReleaseVault` |
-| 地址 key | `EarlyStaking`, `AGX`, `AgxContributionSwap`, `RewardQueue`, `PrincipalReleaseVault` |
+| 项       | 内容                                                                                |
+| -------- | ----------------------------------------------------------------------------------- |
+| ABI      | `EarlyStaking`, ERC20, `AgxContributionSwap`, `RewardQueue`, `AegisSplitterManager` |
+| 地址 key | `EarlyStaking`, `AGX`, `AgxContributionSwap`, `RewardQueue`, `AegisSplitterManager` |
 
 展示字段：
 
@@ -549,10 +551,10 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 用户写方法：
 
-| 按钮           | 方法                                                                       | 前置检查                 | 成功后刷新                               |
-| -------------- | -------------------------------------------------------------------------- | ------------------------ | ---------------------------------------- |
-| 领取本金       | `claimPrincipal()`                                                         | 有可释放本金；PRV 已配置 | stake、PRV 释放单；钱包 AGX 不会立即增加 |
-| 领取奖励 Mixed | `claimRewardMixed(amount, releasePlanIndex, restakePlanIndex, restakeBps)` | 奖励足够；贡献值足够     | stake、RewardQueue、Restake              |
+| 按钮           | 方法                                                                       | 前置检查                            | 成功后刷新                                 |
+| -------------- | -------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------ |
+| 领取本金       | `claimPrincipal()`                                                         | 有可释放本金；分流器 Manager 已配置 | stake、分流器释放单；钱包 AGX 不会立即增加 |
+| 领取奖励 Mixed | `claimRewardMixed(amount, releasePlanIndex, restakePlanIndex, restakeBps)` | 奖励足够；贡献值足够                | stake、RewardQueue、Restake                |
 
 管理写方法：
 
@@ -639,7 +641,6 @@ Mixed 领奖不是单纯 claim。用户领取奖励前，前端要先判断贡�
 | 合约                      | 地址 key        | 方法                                                         | signType                 | 返回资产                  |
 | ------------------------- | --------------- | ------------------------------------------------------------ | ------------------------ | ------------------------- |
 | DaoPool                   | `DaoPool`       | `claimRewardsMixed(...)`                                     | e2e 使用 `4`             | AGX Mixed                 |
-| IncentivePool             | `IncentivePool` | `claimRewards(signType, amount, expireTime, salt, sign)`     | 后端指定                 | AGX                       |
 | CommunityFund             | `CommunityFund` | `claimReward(signType, amount, expireTime, salt, sign)`      | 后端指定                 | USD/AGX 以合约 token 为准 |
 | MarketFund                | `MarketFund`    | `claimReward(signType, amount, expireTime, salt, sign)`      | 后端指定（E2E 使用 `3`） | AGX（9 位精度）           |
 | AegisPresaleRewardClaimer | `RewardClaimer` | `claimReward(signType, amount, expireTime, salt, signature)` | e2e 使用 `1`             | USD1                      |
@@ -676,14 +677,14 @@ Mixed 领奖不是单纯 claim。用户领取奖励前，前端要先判断贡�
 
 #### 10.2 ABI 与地址
 
-| ABI                     | 地址 key                    | 用途                                                  |
-| ----------------------- | --------------------------- | ----------------------------------------------------- |
-| `AegisBondZapHelper`    | `BondHelper`                | 推荐用户入口                                          |
-| `BondDepository`        | `BondDepository`            | LP Bond 查询、赎回、收益                              |
-| `BurnBondDepository`    | `BurnBondDepository`        | Burn Bond 查询、赎回、收益                            |
-| `AegisMintableToken`    | 本地 `Faucet` / 主网 `USD1` | USD1 余额和授权                                       |
-| `Referral`              | `Referral`                  | 前置推荐关系                                          |
-| `PrincipalReleaseVault` | `PrincipalReleaseVault`     | `redeem(..., false)` 后查询按配置周期锁定的本金释放单 |
+| ABI                    | 地址 key                    | 用途                                                                            |
+| ---------------------- | --------------------------- | ------------------------------------------------------------------------------- |
+| `AegisBondZapHelper`   | `BondHelper`                | 推荐用户入口                                                                    |
+| `BondDepository`       | `BondDepository`            | LP Bond 查询、赎回、收益                                                        |
+| `BurnBondDepository`   | `BurnBondDepository`        | Burn Bond 查询、赎回、收益                                                      |
+| `USD1`                 | 本地 `Faucet` / 主网 `USD1` | USD1 余额和授权                                                                 |
+| `Referral`             | `Referral`                  | 前置推荐关系                                                                    |
+| `AegisSplitterManager` | `AegisSplitterManager`      | `redeem(..., false)` 后经 Manager 路由查询分流器释放单（历史 PRV 单凭归档 ABI） |
 
 #### 10.3 展示字段
 
@@ -698,18 +699,18 @@ Mixed 领奖不是单纯 claim。用户领取奖励前，前端要先判断贡�
 
 #### 10.4 用户写方法
 
-| 按钮           | 方法                                                                                             | 参数                                                    | 前置检查                                                                                | 成功后刷新                       |
-| -------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------- |
-| 授权 USD1      | ERC20 `approve(BondHelper, amount)`                                                              | 金额                                                    | USD1 余额足够                                                                           | allowance                        |
-| 买 LP Bond     | `zapIntoLiquidityBond(bondDepository, token, amount)`                                            | bond 地址、USD1 地址、金额                              | 推荐已绑定；授权足够；`authContracts(bondDepository)=true`；Pair 存在；债券容量足够     | bond 列表、余额、抽奖资格        |
-| 买 Burn Bond   | `zapIntoBurnBond(burnBondDepository, token, amount)`                                             | burn bond 地址、USD1 地址、金额                         | 推荐已绑定；授权足够；`authContracts(burnBondDepository)=true`；Pair 存在；债券容量足够 | bond 列表、余额、抽奖资格        |
-| 赎回 bond      | `redeem(recipient, bondIndex, shouldStake)`                                                      | recipient 必须等于 msg.sender                           | bond 存在；有可赎回 payout；`false` 时 PRV 已配置                                       | bond 列表、质押仓位或 PRV 释放单 |
-| 领取收益 Mixed | `claimStakeProfitMixed(user, amount, releasePlanIndex, bondIndex, restakePlanIndex, restakeBps)` | Mixed 参数；注意 `releasePlanIndex` 在 `bondIndex` 之前 | 收益足够；贡献值足够                                                                    | 收益、RewardQueue、Restake       |
+| 按钮           | 方法                                                                                             | 参数                                                    | 前置检查                                                                                | 成功后刷新                        |
+| -------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------- |
+| 授权 USD1      | ERC20 `approve(BondHelper, amount)`                                                              | 金额                                                    | USD1 余额足够                                                                           | allowance                         |
+| 买 LP Bond     | `zapIntoLiquidityBond(bondDepository, token, amount)`                                            | bond 地址、USD1 地址、金额                              | 推荐已绑定；授权足够；`authContracts(bondDepository)=true`；Pair 存在；债券容量足够     | bond 列表、余额、抽奖资格         |
+| 买 Burn Bond   | `zapIntoBurnBond(burnBondDepository, token, amount)`                                             | burn bond 地址、USD1 地址、金额                         | 推荐已绑定；授权足够；`authContracts(burnBondDepository)=true`；Pair 存在；债券容量足够 | bond 列表、余额、抽奖资格         |
+| 赎回 bond      | `redeem(recipient, bondIndex, shouldStake)`                                                      | recipient 必须等于 msg.sender                           | bond 存在；有可赎回 payout；`false` 时分流器 Manager 已配置                             | bond 列表、质押仓位或分流器释放单 |
+| 领取收益 Mixed | `claimStakeProfitMixed(user, amount, releasePlanIndex, bondIndex, restakePlanIndex, restakeBps)` | Mixed 参数；注意 `releasePlanIndex` 在 `bondIndex` 之前 | 收益足够；贡献值足够                                                                    | 收益、RewardQueue、Restake        |
 
 #### 10.5 注意事项
 
 - 推荐优先走 BondHelper，避免用户手动组 LP。
-- redeem(..., true) 表示把本金重新质押； redeem(..., false) 表示创建 PrincipalReleaseVault 释放单，不是本金立即到账。每笔释放单的周期以 getRelease(...).release.duration 为准；前端在 false 成功后应刷新 getReleaseCount/getRelease 。
+- redeem(..., true) 表示把本金重新质押； redeem(..., false) 表示经 AegisSplitterManager 路由到 AegisSplitterHead_* 创建线性释放单，不是本金立即到账。每笔释放单的周期以 getRelease(...).release.duration 为准；前端在 false 成功后先 AegisSplitterManager.getHeadSplitterForUser(user) 解析头部分流器，再刷新 getReleaseCount/getRelease 。
 - 收益领取使用 claimStakeProfitMixed ，不要使用旧 claimStakeProfit 。
 - claimStakeProfitMixed 的 recipient 必须等于调用者；传入其他地址会以 ErrorUserNotAuthorized 原子回滚。
 - Helper 报 ErrorNotApproved 表示目标 bond 未授权， ErrorPairNotExist 表示对应交易对不存在；这两类错误不是用户 allowance 问题。
@@ -800,41 +801,47 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 - 领取 RewardQueue 后，可能通过 Turbine 形成出售配额；前端应刷新 Turbine 页面状态。
 - queuePlanInfo(index) 只返回 feeRate/feeRecipient，完整 plan 列表用 queuePlans() 。
 
-### 13. PrincipalReleaseVault 本金释放
+### 13. 分流器本金释放（原 PrincipalReleaseVault）
 
 #### 13.1 页面用途
 
-本金释放页统一展示 LiquidStaking、三个 LockedStaking、EarlyStaking、Bond/BurnBond 的 `redeem(..., false)` 以及 XStakingPool 退出所产生的线性释放单。这些入口不会把本金立即转入钱包；新部署默认 30 天，但每笔单据以创建时锁定的周期为准。
+本金释放页统一展示 LiquidStaking、三个 LockedStaking、EarlyStaking、Bond/BurnBond 的 `redeem(..., false)`、XStakingPool 退出以及 Turbine 冷却 gAGX 所产生的线性释放单。各入口把资金送入 `AegisSplitterManager`（ABI 兼容原 PRV 的 `createRelease(address,uint256)`），Manager 按用户 Referral 绑定时间路由到 `AegisSplitterHead_*` 等头部分流器，再按 `next` 链式串联释放。这些入口不会把本金立即转入钱包；默认 30 天线性释放，新用户可按 Manager 配置独立周期，每笔单据以创建时锁定的周期为准（释放记录带 `token` 字段，AGX 或 gAGX）。
+
+原 `PrincipalReleaseVault` 已于 2026-08-03 从代码库删除，ABI 归档 `archive/PrincipalReleaseVault/`；链上历史释放单仍在该合约上运行，用户凭归档 ABI 在旧地址领取，不再有新的释放单进入。
 
 #### 13.2 ABI 与地址
 
-| ABI                     | 地址 key                |
-| ----------------------- | ----------------------- |
-| `PrincipalReleaseVault` | `PrincipalReleaseVault` |
-| ERC20                   | `AGX`                   |
+| ABI                    | 地址 key                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `AegisSplitterManager` | `AegisSplitterManager`                                                               |
+| `AegisSplitter`        | `AegisSplitterHead_0` 等（以 `Manager.headSplitters`/`getHeadSplitterForUser` 解析） |
+| ERC20                  | `AGX`（释放单另有 gAGX 情形）                                                        |
 
 #### 13.3 展示字段
 
-| 字段         | 方法                              | 说明                                                                                                        |
-| ------------ | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 释放单数量   | `getReleaseCount(user)`           | 列表长度                                                                                                    |
-| 释放单详情   | `getRelease(user, index)`         | `release.duration` 是本单锁定周期；同时返回 `claimableAmount`, `remainingAmount`, `endTime`, `fullyClaimed` |
-| 单项可领取   | `claimable(user, index)`          | 单独按钮判断                                                                                                |
-| 当前新单周期 | `releaseDuration()`               | owner 可配置；只影响后续新单                                                                                |
-| 单据锁定周期 | `getReleaseDuration(user, index)` | 等同于 `getRelease(...).release.duration`                                                                   |
+| 字段           | 方法                                                                                        | 说明                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 用户头部分流器 | `AegisSplitterManager.getHeadSplitterForUser(user)`                                         | 按用户注册时间解析释放单所在分流器                                                                                             |
+| 新老用户判定   | `AegisSplitterManager.isNewUser(user)` / `effectiveDuration(user)` / `newUserReleasePeriod` | 展示当前释放周期口径                                                                                                           |
+| 释放单数量     | `AegisSplitter.getReleaseCount(user)`                                                       | 列表长度                                                                                                                       |
+| 释放单详情     | `AegisSplitter.getRelease(user, index)`                                                     | `release.duration` 是本单锁定周期；同时返回 `token`、`claimableAmount`, `remainingAmount`, `endTime`, `fullyClaimed`           |
+| 分页释放单详情 | `AegisSplitter.getReleases(user, start, limit)`                                             | 返回 `(items, totalCount)`；`limit` 必须为 1–50，尾页自动截断，`start >= totalCount` 返回空页；`items[i]` 对应索引 `start + i` |
+| 单项可领取     | `AegisSplitter.claimable(user, index)`                                                      | 单独按钮判断                                                                                                                   |
+| 单据锁定周期   | `AegisSplitter.getReleaseDuration(user, index)`                                             | 等同于 `getRelease(...).release.duration`                                                                                      |
 
 #### 13.4 用户写方法
 
-| 按钮         | 方法                      | 前置检查              | 成功后刷新           |
-| ------------ | ------------------------- | --------------------- | -------------------- |
-| 领取单项本金 | `claim(index)`            | `claimableAmount > 0` | 释放单、AGX 余额     |
-| 批量领取     | `claimMany(start, limit)` | 范围内存在 claimable  | 释放单列表、AGX 余额 |
+| 按钮         | 方法                                    | 前置检查              | 成功后刷新           |
+| ------------ | --------------------------------------- | --------------------- | -------------------- |
+| 领取单项本金 | `AegisSplitter.claim(index)`            | `claimableAmount > 0` | 释放单、AGX 余额     |
+| 批量领取     | `AegisSplitter.claimMany(start, limit)` | 范围内存在 claimable  | 释放单列表、AGX 余额 |
 
 #### 13.5 注意事项
 
-- claim 只有一个参数 index ，没有 claim(user,index) 。
-- claimMany 如果范围内没有可领取金额会 revert ErrorNothingToClaim 。
-- 释放单来源通常是 claimPrincipal 或 startUnstake ，用户不直接创建。
+- claim 只有一个参数 index ，没有 claim(user,index) ； claimMany 如果范围内没有可领取金额会 revert ErrorNothingToClaim 。
+- 释放单列表使用 getReleases(user,start,limit) ，建议页面大小 50； limit == 0 或 limit > 50 会 revert ErrorInvalidPagination 。主网 AegisSplitterHead_0 已升级到实现 0x5b9D6B8c88973d8c028C1C83956fF5474CE38B7d ，链上 MAX_RELEASE_PAGE_SIZE() == 50 ；接入其他实例前仍须先确认其实现版本。
+- 非链尾分流器的领取动作会把可领取金额推入 next 分流器再开启新一轮释放，只有链尾（ next == 0 ）才直接到用户钱包；前端须以 AegisSplitter.getRelease/getReleaseCount 回读为准。
+- 释放单来源通常是 claimPrincipal 、 redeem(..., false) 、 startUnstake 或 Turbine claimCooledGagx ，用户不直接创建；Manager 的 createRelease 只接受 authorizedCallers 白名单调用。
 
 ### 14. LuckyPool 去中心化抽奖
 
@@ -930,13 +937,13 @@ XStakingPool 页面用于 AGX -> gAGX 包装、gAGX 质押、warmup 激活、X �
 
 #### 15.2 ABI 与地址
 
-| ABI                     | 地址 key                | 用途                |
-| ----------------------- | ----------------------- | ------------------- |
-| `AegisRedeemableGAGX`   | `RewardGAGX`            | AGX/gAGX 包装和赎回 |
-| `AegisXMiningPool`      | `XStakingPool`          | 挖矿状态和操作      |
-| ERC20                   | `AGX`                   | wrap 前资产         |
-| ERC20                   | `XToken`                | 奖励余额            |
-| `PrincipalReleaseVault` | `PrincipalReleaseVault` | 退出本金释放        |
+| ABI                    | 地址 key               | 用途                |
+| ---------------------- | ---------------------- | ------------------- |
+| `AegisRedeemableGAGX`  | `RewardGAGX`           | AGX/gAGX 包装和赎回 |
+| `AegisXMiningPool`     | `XStakingPool`         | 挖矿状态和操作      |
+| ERC20                  | `AGX`                  | wrap 前资产         |
+| ERC20                  | `XToken`               | 奖励余额            |
+| `AegisSplitterManager` | `AegisSplitterManager` | 退出本金释放路由    |
 
 #### 15.3 展示字段
 
@@ -955,16 +962,16 @@ XStakingPool 页面用于 AGX -> gAGX 包装、gAGX 质押、warmup 激活、X �
 
 #### 15.4 用户写方法
 
-| 步骤 | 按钮                  | 方法                                       | 前置检查                                                  | 成功后刷新         |
-| ---- | --------------------- | ------------------------------------------ | --------------------------------------------------------- | ------------------ |
-| 1    | 授权 AGX 给 gAGX      | `AGX.approve(RewardGAGX, amount)`          | AGX 余额足够                                              | allowance          |
-| 2    | 包装 gAGX             | `RewardGAGX.wrap(amount)`                  | 授权足够                                                  | AGX/gAGX 余额      |
-| 3    | 授权 gAGX 给 XStaking | `RewardGAGX.approve(XStakingPool, amount)` | gAGX 余额足够                                             | allowance          |
-| 4    | 质押 gAGX             | `stakeGagxForMining(amount)`               | mining quota 足够；授权足够                               | stake、warmup 时间 |
-| 5    | 激活 warmup           | `activateWarmup()`                         | warmupGons > 0；当前时间 >= warmupEndTime                 | active stake       |
-| 6    | 领取 X                | `claimReward()`                            | pendingReward > 0；管理员已结算或有可预览奖励             | X 余额、pending    |
-| 7    | 退出                  | `startUnstake()`                           | 无 warmup；active stake > 0；principalReleaseVault 已配置 | stake、本金释放单  |
-| 可选 | 赎回未质押 gAGX       | `RewardGAGX.redeem(amount)`                | gAGX 余额足够                                             | AGX/gAGX 余额      |
+| 步骤 | 按钮                  | 方法                                       | 前置检查                                                                                | 成功后刷新          |
+| ---- | --------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------- |
+| 1    | 授权 AGX 给 gAGX      | `AGX.approve(RewardGAGX, amount)`          | AGX 余额足够                                                                            | allowance           |
+| 2    | 包装 gAGX             | `RewardGAGX.wrap(amount)`                  | 授权足够                                                                                | AGX/gAGX 余额       |
+| 3    | 授权 gAGX 给 XStaking | `RewardGAGX.approve(XStakingPool, amount)` | gAGX 余额足够                                                                           | allowance           |
+| 4    | 质押 gAGX             | `stakeGagxForMining(amount)`               | mining quota 足够；授权足够                                                             | stake、warmup 时间  |
+| 5    | 激活 warmup           | `activateWarmup()`                         | warmupGons > 0；当前时间 >= warmupEndTime                                               | active stake        |
+| 6    | 领取 X                | `claimReward()`                            | pendingReward > 0；管理员已结算或有可预览奖励                                           | X 余额、pending     |
+| 7    | 退出                  | `startUnstake()`                           | 无 warmup；active stake > 0；`principalReleaseVault`（指向 AegisSplitterManager）已配置 | stake、分流器释放单 |
+| 可选 | 赎回未质押 gAGX       | `RewardGAGX.redeem(amount)`                | gAGX 余额足够                                                                           | AGX/gAGX 余额       |
 
 #### 15.5 管理写方法
 
@@ -980,7 +987,7 @@ XStakingPool 页面用于 AGX -> gAGX 包装、gAGX 质押、warmup 激活、X �
 - warmup 未结束时不能领取 X，也不能 startUnstake 。
 - cancelWarmup() 当前会 revert ErrorWarmupExitDisabled ，不要做取消按钮。
 - X 奖励按秒产生 AGX 价值，但 X 数量由 settleRewards() 在合约内按 pair 实时价格结算，前端不传价格。
-- startUnstake() 会把 gAGX redeem 成 AGX，并创建 PrincipalReleaseVault 释放单，不是立即到账。
+- startUnstake() 会把 gAGX redeem 成 AGX，并经 AegisSplitterManager 路由创建分流器释放单，不是立即到账。
 - mining quota 由 Early、三个 Locked、三个 Bond、三个 BurnBond 的 alias-aware 锁定本金决定；A→B→C 后新地址 C 继续使用 root A 的本金配额，前端直接查询 miningQuotaOf(canonicalAccount) ，不要自行复制或相加 A/B/C。quota 不足会 revert ErrorMiningQuotaExceeded 。
 
 ### 16. Turbine
@@ -994,7 +1001,7 @@ Turbine 页面展示用户出售配额、需要支付的 USD1、冷却列表和�
 | ABI                   | 地址 key                    |
 | --------------------- | --------------------------- |
 | `Turbine`             | `Turbine`                   |
-| `AegisMintableToken`  | 本地 `Faucet` / 主网 `USD1` |
+| `USD1`                | 本地 `Faucet` / 主网 `USD1` |
 | `AegisRedeemableGAGX` | `RewardGAGX`                |
 
 #### 16.3 展示字段
@@ -1010,15 +1017,15 @@ Turbine 页面展示用户出售配额、需要支付的 USD1、冷却列表和�
 
 #### 16.4 用户写方法
 
-| 按钮           | 方法                                | 前置检查                                                                     | 成功后刷新               |
-| -------------- | ----------------------------------- | ---------------------------------------------------------------------------- | ------------------------ |
-| 授权 USD1      | `USD1.approve(Turbine, amount)`     | USD1 余额足够                                                                | allowance                |
-| 购买并开始冷却 | `buyAgxAndStartCooldown(usdAmount)` | `usdAmount > 0`；turbineBalances > 0；USD1 授权足够；usdAmount <= 全配额报价 | 配额、冷却列表、AGX 余额 |
-| 领取冷却 gAGX  | `claimCooledGagx(index)`            | `isVested(user,index)=true`                                                  | 冷却列表、gAGX 余额      |
+| 按钮           | 方法                                | 前置检查                                                                     | 成功后刷新                        |
+| -------------- | ----------------------------------- | ---------------------------------------------------------------------------- | --------------------------------- |
+| 授权 USD1      | `USD1.approve(Turbine, amount)`     | USD1 余额足够                                                                | allowance                         |
+| 购买并开始冷却 | `buyAgxAndStartCooldown(usdAmount)` | `usdAmount > 0`；turbineBalances > 0；USD1 授权足够；usdAmount <= 全配额报价 | 配额、冷却列表、AGX 余额          |
+| 领取冷却 gAGX  | `claimCooledGagx(index)`            | `isVested(user,index)=true`                                                  | 冷却列表、分流器释放单、gAGX 余额 |
 
 #### 16.5 注意事项
 
-- buyAgxAndStartCooldown 会将实际买到的 AGX 发送给用户，同时创建冷却记录；冷却后通过 gAGX mint 领取。
+- buyAgxAndStartCooldown 会将实际买到的 AGX 发送给用户，同时创建冷却记录；冷却到期的 gAGX 不再直接 mint 到用户钱包，而是经 AegisSplitterManager 路由进入分流器线性释放（默认 30 天，新用户按 Manager 配置周期）。
 - 实际消耗的配额是 swap 实得 AGX 与当前 quota 的较小值；部分 USD1 输入不保证一次用完全部 quota。
 - claimCooledGagx(index) 成功后会移除该 index，列表顺序可能变化，前端需重新拉取。
 - RewardQueue 领取后可能增加 Turbine 配额，领取 RewardQueue 后要刷新 Turbine。
@@ -1029,7 +1036,7 @@ Turbine 页面展示用户出售配额、需要支付的 USD1、冷却列表和�
 
 账户迁移页面用于把旧地址权益迁移到新地址。流程是旧地址申请、operator 审批、新地址激活。
 
-本轮全新主网发布只部署新的 AccountMigrationManager，但不会向六个复用合约写入 manager，因此最终验收要求 `migrationEnabled() == false`。当前前端必须把账户迁移入口显示为“暂未开放”并禁止发送申请、激活或 operator 交易；以下流程仅用于未来独立迁移发布完成后的接入。
+本轮全新主网发布部署新的 AccountMigrationManager 并启用迁移：21 个迁移目标（含全新部署的 Referral/PreSale，slot 0/1）owner 均为部署者，base verify 通过后由 `configure-account-migration-manager` 一脚本完成绑定 + `lockTargets` + `setOperator` + `setMigrationEnabled(true)`。最终验收 `migrationEnabled() == true`、`targetsLocked() == true`、21 target 全部 `migrationManager()` 指向新 Manager。前端可开放账户迁移入口（旧地址申请 → operator 审批 → 新地址激活）。
 
 #### 17.2 ABI 与地址
 
@@ -1132,36 +1139,36 @@ setMigrationEnabled(false)
 - 后台执行类方法应保留操作日志，至少记录 tx hash、调用人、参数、事件。
 - FeeBot/TokenFeeBot 执行前先读 isExecSwap() ，如果 shouldExecute=false 不要让用户发交易。
 - AGX 默认跌幅阈值为 5%，单区块低税毛卖出额度按阈值的一半计算，即第一笔受管控卖出前 AGX 储备的 2.5%。同块后续卖出会按当前储备单调收紧额度但不会扩大；累计量严格大于 blockSellLimit 时，越界交易整笔改用防御税并进入 RBS，但 crashFuseActive 不会因此自动变为 true。
-- AGX 持续熔断需要两个相邻区块各出现一次符合跌幅条件的卖出观察。监听 BlockSellQuotaInitialized 、 BlockSellQuotaReduced 、 BlockSellDefenseTaxApplied 、 CrashThresholdUpdateScheduled 、 CrashThresholdUpdated 、 ExtraSellTaxActivated 和 ExtraSellTaxDeactivated 更新管理台状态。
+- AGX 持续熔断需要在两个不同区块各出现一次符合跌幅条件的卖出观察，区块无需相邻；同一区块只计一次，激活前观察到价格恢复至阈值线或以上会清空确认。治理调用 snapshotDefensePrice() 刷新快照时也会清空旧快照下的确认，旧确认不会跨快照累计。 consecutiveDropBlocks() 为兼容保留的历史命名，实际表示当前低价区间内的不同区块确认数。监听 BlockSellQuotaInitialized 、 BlockSellQuotaReduced 、 BlockSellDefenseTaxApplied 、 CrashThresholdUpdateScheduled 、 CrashThresholdUpdated 、 DropConfirmed 、 ExtraSellTaxActivated 和 ExtraSellTaxDeactivated 更新管理台状态。
 
 ### 19. 常见错误与前端提示
 
-| 错误 / revert                                                                 | 常见原因                                    | 前端提示                                                              |
-| ----------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------- |
-| `Not approved`, `ErrorNotApproved`, `ErrorStakeNotApproved`                   | 未绑定推荐人                                | 先绑定推荐人                                                          |
-| `ErrorZeroAmount`, `ErrorAmountZero`                                          | 输入金额为 0                                | 输入大于 0                                                            |
-| `ErrorInsufficientBalance`, `ErrorExceedsBalance`                             | 钱包余额或合约库存不足                      | 检查余额或等待补库存                                                  |
-| `ErrorStakeAmountLimit`                                                       | 超过质押额度                                | 降低金额或等待额度恢复                                                |
-| `ErrorStakeWarmupNotEnded`, `ErrorStillLocked`, `ErrorWarmupPending`          | warmup 或锁定期未结束                       | 展示剩余时间                                                          |
-| `ErrorRewardAlreadyClaimed`                                                   | LuckyPool 奖励已领取                        | 不要重复领取                                                          |
-| `ErrorInsufficientContribution`                                               | 中奖者贡献值不足                            | 引导用户 `AgxContributionSwap.convert` 补充贡献值后重试               |
-| `ErrorRestakeConfigNotSet` / `ErrorRewardQueueNotSet`                         | owner 未接线复投/释放配置                   | 运营调用 `setRestakeConfig` / `setRewardQueue`                        |
-| `ErrorNotWinner`                                                              | 当前用户未中奖                              | 展示未中奖                                                            |
-| `ErrorAlreadyUsed`                                                            | 签名或 salt 已使用                          | 重新请求签名                                                          |
-| `ErrorInvalidSigner`                                                          | 签名者不匹配                                | 检查后端 signer 配置                                                  |
-| `ErrorSignatureExpired`                                                       | 签名过期                                    | 重新请求签名                                                          |
-| `ErrorDebtCapacityReached`                                                    | 债券容量不足                                | 等待管理员调参                                                        |
-| `ErrorNotPurchaseSource`                                                      | 前端或非授权合约调用 tracker                | 不要直接调用 `recordPurchase`                                         |
-| `ErrorMiningQuotaExceeded`                                                    | XStaking 超过 mining quota                  | 减少 gAGX 质押或增加锁定本金                                          |
-| `ErrorPrincipalReleaseVaultNotSet`                                            | 释放金库未配置                              | 联系管理员                                                            |
-| `ErrorIndexOutOfBounds`, `ErrorNothingToClaim`                                | RewardQueue/本金释放索引无效或当前无可领    | 重新拉取列表和可领取额                                                |
-| `ErrorSilentTime`, `ErrorNoSilenceBalance`, `ErrorInvalidAmount`              | Turbine 尚未冷却、记录不存在或输入无效      | 刷新冷却记录并检查输入                                                |
-| `AM__NotPending`, `AM__RequestMismatch`, `AM__NewAccountNotClean`             | 迁移状态变化、账户不匹配或新地址不干净      | 重新拉取迁移状态或更换全新地址                                        |
-| `AM__MigrationMustBeDisabled`                                                 | 迁移启用中尝试修改目标或跳数                | owner 先暂停迁移                                                      |
-| `AM__InvalidTargetCount`, `AM__ReferralTargetMismatch`, `AM__DuplicateTarget` | 动态目标数组数量、Referral 索引或唯一性错误 | 按 `getMigrationTargets()` 当前值修正数组                             |
-| `AM__InvalidTarget`, `AM__InvalidTargetManager`                               | target 无代码或未反向绑定当前 Manager       | 停止启用迁移，先修复 target 配置                                      |
-| `AM__ReferralTargetImmutable`, `AM__ReferralTargetRemovalForbidden`           | 尝试替换或移除首次 Referral                 | 保留 Referral 为索引 0；如地址必须更换，只能部署新 Manager 并重新治理 |
-| `AM__TargetNotFound`, `AM__TargetsLocked`                                     | 移除不存在的目标或重复锁定                  | 重新回读数组/锁定状态后再操作                                         |
+| 错误 / revert                                                                 | 常见原因                                                                                | 前端提示                                                              |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `Not approved`, `ErrorNotApproved`, `ErrorStakeNotApproved`                   | 未绑定推荐人                                                                            | 先绑定推荐人                                                          |
+| `ErrorZeroAmount`, `ErrorAmountZero`                                          | 输入金额为 0                                                                            | 输入大于 0                                                            |
+| `ErrorInsufficientBalance`, `ErrorExceedsBalance`                             | 钱包余额或合约库存不足                                                                  | 检查余额或等待补库存                                                  |
+| `ErrorStakeAmountLimit`                                                       | 超过质押额度                                                                            | 降低金额或等待额度恢复                                                |
+| `ErrorStakeWarmupNotEnded`, `ErrorStillLocked`, `ErrorWarmupPending`          | warmup 或锁定期未结束                                                                   | 展示剩余时间                                                          |
+| `ErrorRewardAlreadyClaimed`                                                   | LuckyPool 奖励已领取                                                                    | 不要重复领取                                                          |
+| `ErrorInsufficientContribution`                                               | 中奖者贡献值不足                                                                        | 引导用户 `AgxContributionSwap.convert` 补充贡献值后重试               |
+| `ErrorRestakeConfigNotSet` / `ErrorRewardQueueNotSet`                         | owner 未接线复投/释放配置                                                               | 运营调用 `setRestakeConfig` / `setRewardQueue`                        |
+| `ErrorNotWinner`                                                              | 当前用户未中奖                                                                          | 展示未中奖                                                            |
+| `ErrorAlreadyUsed`                                                            | 签名或 salt 已使用                                                                      | 重新请求签名                                                          |
+| `ErrorInvalidSigner`                                                          | 签名者不匹配                                                                            | 检查后端 signer 配置                                                  |
+| `ErrorSignatureExpired`                                                       | 签名过期                                                                                | 重新请求签名                                                          |
+| `ErrorDebtCapacityReached`                                                    | 债券容量不足                                                                            | 等待管理员调参                                                        |
+| `ErrorNotPurchaseSource`                                                      | 前端或非授权合约调用 tracker                                                            | 不要直接调用 `recordPurchase`                                         |
+| `ErrorMiningQuotaExceeded`                                                    | XStaking 超过 mining quota                                                              | 减少 gAGX 质押或增加锁定本金                                          |
+| `ErrorPrincipalReleaseVaultNotSet`                                            | 分流器 Manager 未配置（本金合约 `principalReleaseVault` 未指向 `AegisSplitterManager`） | 联系管理员                                                            |
+| `ErrorIndexOutOfBounds`, `ErrorNothingToClaim`                                | RewardQueue/本金释放索引无效或当前无可领                                                | 重新拉取列表和可领取额                                                |
+| `ErrorSilentTime`, `ErrorNoSilenceBalance`, `ErrorInvalidAmount`              | Turbine 尚未冷却、记录不存在或输入无效                                                  | 刷新冷却记录并检查输入                                                |
+| `AM__NotPending`, `AM__RequestMismatch`, `AM__NewAccountNotClean`             | 迁移状态变化、账户不匹配或新地址不干净                                                  | 重新拉取迁移状态或更换全新地址                                        |
+| `AM__MigrationMustBeDisabled`                                                 | 迁移启用中尝试修改目标或跳数                                                            | owner 先暂停迁移                                                      |
+| `AM__InvalidTargetCount`, `AM__ReferralTargetMismatch`, `AM__DuplicateTarget` | 动态目标数组数量、Referral 索引或唯一性错误                                             | 按 `getMigrationTargets()` 当前值修正数组                             |
+| `AM__InvalidTarget`, `AM__InvalidTargetManager`                               | target 无代码或未反向绑定当前 Manager                                                   | 停止启用迁移，先修复 target 配置                                      |
+| `AM__ReferralTargetImmutable`, `AM__ReferralTargetRemovalForbidden`           | 尝试替换或移除首次 Referral                                                             | 保留 Referral 为索引 0；如地址必须更换，只能部署新 Manager 并重新治理 |
+| `AM__TargetNotFound`, `AM__TargetsLocked`                                     | 移除不存在的目标或重复锁定                                                              | 重新回读数组/锁定状态后再操作                                         |
 
 ### 20. 事件索引建议
 
@@ -1179,7 +1186,7 @@ setMigrationEnabled(false)
 | Governance              | `ProposalCreated`, `VoteCast`, `Withdraw`, `ProposalCanceled`, `ProposalExecuted`, `ProposalDefeated`                                                                                                                                                                       | 治理记录                                               |
 | DaoPool                 | `RewardsClaimedMixed`, `RestakeClaimed`                                                                                                                                                                                                                                     | DAO Mixed 领奖                                         |
 | RewardQueue             | `EnteredQueue`, `RewardReleased`, `RewardClaimedFromQueue`                                                                                                                                                                                                                  | 释放队列                                               |
-| PrincipalReleaseVault   | `ReleaseCreated`, `PrincipalClaimed`                                                                                                                                                                                                                                        | 本金释放                                               |
+| 分流器（本金释放）      | `AegisSplitter` 的 `Deposited`, `Claimed`；历史 PRV 单沿用 `ReleaseCreated`, `PrincipalClaimed`（归档 ABI）                                                                                                                                                                 | 本金释放                                               |
 | LuckyPool               | `RoundCreated`, `RoundSkipped`, `EligibleUserAdded`, `RandomnessRequested`, `RandomnessFulfilled`, `WinnerSelected`, `LuckyRewardClaimedMixed`, `RewardPaid`, `RewardClaimed`                                                                                               | 抽奖全过程；`RoundSkipped` 表示零资格轮以 0 人中奖完成 |
 | XStakingPool            | `Staked`, `WarmupActivated`, `RewardSettlement`, `RewardClaimed`, `Unstaked`                                                                                                                                                                                                | X 挖矿                                                 |
 | Turbine                 | `Received`, `Silenced`, `CooledGagxClaimed`, `CooldownUpdated`                                                                                                                                                                                                              | 配额、冷却和配置变化                                   |
@@ -1187,22 +1194,22 @@ setMigrationEnabled(false)
 
 ### 21. 前端交付检查清单
 
-| 检查项                | 要求                                                                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| ABI                   | 每个页面使用本文对应 ABI，部署 key 正确                                                                                                    |
-| decimals              | AGX/gAGX/sAGX 9 位，X/USD1 18 位；Usd1Swap 输入 token 必须运行时读取 decimals                                                              |
-| 地址                  | BNB Chain 主网固定本轮部署、配置和只读终验共同批准的完整 manifest；禁止使用六地址基线、运行时扫描目录或合并历史部署 JSON                   |
-| 授权                  | 每个写方法前检查正确 spender 的 allowance                                                                                                  |
-| 推荐关系              | 质押、债券、治理前检查 Referral                                                                                                            |
-| 贡献值                | Mixed 领奖前检查 `quoteRequiredContribution` 和 `userContribution`                                                                         |
-| 释放计划              | RewardQueue plan 从链上读取，不写死                                                                                                        |
-| 复投计划              | 用 `getPlanCount + getPlan(i)` 保留原始 index，不把过滤列表下标当 planIndex                                                                |
-| LuckyPool             | 不提供 `enterRound`，不直接调用 `recordPurchase`                                                                                           |
-| Lucky keeper          | 只调用 `checkUpkeep("0x") -> performUpkeep(performData)`；无 owner 权限，不在链下排除零资格轮，keeper BNB 与 VRF Subscription 余额分开监控 |
-| XStaking              | 不传价格；等待管理员 `settleRewards` 后用户领取 X                                                                                          |
-| PrincipalReleaseVault | `claim(index)` 只有一个参数                                                                                                                |
-| 账户迁移              | 本轮 `migrationEnabled=false` 时隐藏/禁用写入口；未来独立迁移发布完成后才启用旧地址提示和 21-target 后台维护                               |
-| 错误提示              | 自定义错误名映射为用户可理解文案                                                                                                           |
+| 检查项       | 要求                                                                                                                                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ABI          | 每个页面使用本文对应 ABI，部署 key 正确                                                                                                                                                                       |
+| decimals     | AGX/gAGX/sAGX 9 位，X/USD1 18 位；Usd1Swap 输入 token 必须运行时读取 decimals                                                                                                                                 |
+| 地址         | BNB Chain 主网固定本轮部署、配置和只读终验共同批准的完整 manifest；禁止使用六地址基线、运行时扫描目录或合并历史部署 JSON                                                                                      |
+| 授权         | 每个写方法前检查正确 spender 的 allowance                                                                                                                                                                     |
+| 推荐关系     | 质押、债券、治理前检查 Referral                                                                                                                                                                               |
+| 贡献值       | Mixed 领奖前检查 `quoteRequiredContribution` 和 `userContribution`                                                                                                                                            |
+| 释放计划     | RewardQueue plan 从链上读取，不写死                                                                                                                                                                           |
+| 复投计划     | 用 `getPlanCount + getPlan(i)` 保留原始 index，不把过滤列表下标当 planIndex                                                                                                                                   |
+| LuckyPool    | 不提供 `enterRound`，不直接调用 `recordPurchase`                                                                                                                                                              |
+| Lucky keeper | 只调用 `checkUpkeep("0x") -> performUpkeep(performData)`；无 owner 权限，不在链下排除零资格轮，keeper BNB 与 VRF Subscription 余额分开监控                                                                    |
+| XStaking     | 不传价格；等待管理员 `settleRewards` 后用户领取 X                                                                                                                                                             |
+| 分流器 ABI   | 使用 `AegisSplitterManager`/`AegisSplitter` 规范 ABI（`abi/AegisSplitterManager.json`、`abi/AegisSplitter.json`）；历史 PRV 释放单用归档 ABI（`archive/PrincipalReleaseVault/`）；`claim(index)` 只有一个参数 |
+| 账户迁移     | 当前独立启用回执已通过：`migrationEnabled=true`、`targetsLocked=true`、21 个 target；前端启用迁移入口前仍须回读链上状态，若后续被暂停或目标解锁则立即禁用写操作                                               |
+| 错误提示     | 自定义错误名映射为用户可理解文案                                                                                                                                                                              |
 
 ### 22. 本地验证
 

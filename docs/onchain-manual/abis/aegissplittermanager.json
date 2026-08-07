@@ -1,12 +1,7 @@
 [
   {
     "inputs": [],
-    "name": "ErrorAlreadyMigrated",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ErrorCallerNotAuthorized",
+    "name": "ErrorCallerTokenNotSet",
     "type": "error"
   },
   {
@@ -16,17 +11,22 @@
   },
   {
     "inputs": [],
-    "name": "ErrorInvalidReleaseDuration",
+    "name": "ErrorInvalidReleasePeriod",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorInvalidTimeRange",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorNoSplitterForUser",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "ErrorNotAuthorized",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ErrorNothingToClaim",
     "type": "error"
   },
   {
@@ -42,17 +42,6 @@
   {
     "inputs": [],
     "name": "InvalidInitialization",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "currentManager",
-        "type": "address"
-      }
-    ],
-    "name": "MigrationManagerImmutable",
     "type": "error"
   },
   {
@@ -104,26 +93,13 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "oldAccount",
+        "name": "caller",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "newAccount",
-        "type": "address"
-      }
-    ],
-    "name": "AccountMigrated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "caller",
+        "name": "token",
         "type": "address"
       },
       {
@@ -146,6 +122,81 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "startTime",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "endTime",
+        "type": "uint128"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "splitter",
+        "type": "address"
+      }
+    ],
+    "name": "HeadSplitterAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "HeadSplitterRemoved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "startTime",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "endTime",
+        "type": "uint128"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "splitter",
+        "type": "address"
+      }
+    ],
+    "name": "HeadSplitterUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "uint64",
         "name": "version",
@@ -159,19 +210,75 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "oldManager",
-        "type": "address"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldPeriod",
+        "type": "uint256"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newManager",
-        "type": "address"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newPeriod",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
       }
     ],
-    "name": "MigrationManagerUpdated",
+    "name": "NewUserReleasePeriodUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "oldEnabled",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "newEnabled",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewUserSwitchUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldThreshold",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newThreshold",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewUserThresholdUpdated",
     "type": "event"
   },
   {
@@ -204,46 +311,21 @@
       },
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "PrincipalClaimed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
         "internalType": "address",
         "name": "caller",
         "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "headSplitter",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -254,48 +336,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "duration",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "timestamp",
         "type": "uint256"
       }
     ],
-    "name": "ReleaseCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldDuration",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newDuration",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "ReleaseDurationUpdated",
+    "name": "Routed",
     "type": "event"
   },
   {
@@ -312,16 +357,26 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "agx",
-    "outputs": [
+    "inputs": [
+      {
+        "internalType": "uint128",
+        "name": "_startTime",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint128",
+        "name": "_endTime",
+        "type": "uint128"
+      },
       {
         "internalType": "address",
-        "name": "",
+        "name": "_splitter",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
+    "name": "addHeadSplitter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -346,65 +401,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_index",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "claim",
+    "name": "callerToken",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_limit",
-        "type": "uint256"
-      }
-    ],
-    "name": "claimMany",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "totalClaimed",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_index",
-        "type": "uint256"
-      }
-    ],
-    "name": "claimable",
-    "outputs": [
-      {
-        "internalType": "uint256",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -427,7 +434,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "index",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -440,82 +447,9 @@
         "internalType": "address",
         "name": "_user",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_index",
-        "type": "uint256"
       }
     ],
-    "name": "getRelease",
-    "outputs": [
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "claimed",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "startTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "duration",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct PrincipalReleaseVault.ReleaseInfo",
-            "name": "release",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint256",
-            "name": "claimableAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "remainingAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bool",
-            "name": "fullyClaimed",
-            "type": "bool"
-          }
-        ],
-        "internalType": "struct PrincipalReleaseVault.ReleaseView",
-        "name": "viewData",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "getReleaseCount",
+    "name": "effectiveDuration",
     "outputs": [
       {
         "internalType": "uint256",
@@ -532,14 +466,9 @@
         "internalType": "address",
         "name": "_user",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_index",
-        "type": "uint256"
       }
     ],
-    "name": "getReleaseDuration",
+    "name": "getBindTimestampOf",
     "outputs": [
       {
         "internalType": "uint256",
@@ -554,42 +483,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_agx",
+        "name": "_user",
         "type": "address"
       }
     ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "oldAccount",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newAccount",
-        "type": "address"
-      }
-    ],
-    "name": "migrateAccount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "migratedTo",
+    "name": "getHeadSplitterForUser",
     "outputs": [
       {
         "internalType": "address",
@@ -602,12 +500,112 @@
   },
   {
     "inputs": [],
-    "name": "migrationManager",
+    "name": "headSplitterCount",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint256",
         "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "headSplitters",
+    "outputs": [
+      {
+        "internalType": "uint128",
+        "name": "startTime",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint128",
+        "name": "endTime",
+        "type": "uint128"
+      },
+      {
+        "internalType": "address",
+        "name": "splitter",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_referral",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "isNewUser",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "newUserReleasePeriod",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "newUserSwitchEnabled",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "newUserThreshold",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -628,12 +626,12 @@
   },
   {
     "inputs": [],
-    "name": "releaseDuration",
+    "name": "referral",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -642,40 +640,14 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "",
+        "name": "_index",
         "type": "uint256"
       }
     ],
-    "name": "releases",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "claimed",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "duration",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "removeHeadSplitter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -693,6 +665,11 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
         "internalType": "bool",
         "name": "_allowed",
         "type": "bool"
@@ -706,12 +683,25 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_manager",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_period",
+        "type": "uint256"
       }
     ],
-    "name": "setMigrationManager",
+    "name": "setNewUserReleasePeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "_enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "setNewUserSwitch",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -720,11 +710,24 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_duration",
+        "name": "_threshold",
         "type": "uint256"
       }
     ],
-    "name": "setReleaseDuration",
+    "name": "setNewUserThreshold",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_referral",
+        "type": "address"
+      }
+    ],
+    "name": "setReferral",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -738,6 +741,34 @@
       }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint128",
+        "name": "_startTime",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint128",
+        "name": "_endTime",
+        "type": "uint128"
+      },
+      {
+        "internalType": "address",
+        "name": "_splitter",
+        "type": "address"
+      }
+    ],
+    "name": "updateHeadSplitter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

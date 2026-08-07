@@ -1,11 +1,11 @@
-# Faucet（AegisMintableToken）前端使用指南
+# Faucet（USD1）前端使用指南
 
 > 来源：`doc-contracts-faucet`
 > ABI：[`abis/faucet.json`](../abis/faucet.json)
 
 ## 完整 ABI
 
-abi/AegisMintableToken.json
+abi/USD1.json
 SHA-256 4d7543a73238…
 22
 11
@@ -19,11 +19,11 @@ SHA-256 4d7543a73238…
 
 </details>
 
-## Faucet（AegisMintableToken）前端使用指南
+## Faucet（USD1）前端使用指南
 
 ### 定位与安全边界
 
-`AegisMintableToken` 是可配置 decimals 的可增发 ERC20。本地/测试部署通常使用 key `Faucet`；本轮 BNB Chain 主网累计快照把同一 Faucet 实现记录为 `USD1`。
+`USD1`（源码 `src/Faucet.sol`，原合约名 `AegisMintableToken`）是可配置 decimals 的可增发 ERC20。本地/测试部署通常使用 key `Faucet`；BNB Chain 主网累计快照把同一实现记录为 `USD1`。
 
 当前源码的 `mint(address,uint256)` **没有任何权限控制，任何地址都能增发**。因此：
 
@@ -33,9 +33,9 @@ SHA-256 4d7543a73238…
 
 **部署 key**：本地/历史 `Faucet`；当前主网 `USD1`
 
-**ABI**：`abi/AegisMintableToken.json`
+**ABI**：`abi/USD1.json`
 
-当前 BNB Chain 主网使用规范 key `USD1` 记录 Faucet 地址 `0x32Bb0be09F62bbE69764906d80e9A5782C7F7633`，并在本轮 [最终 manifest](../../deployments/20260723112059412.bsc.xstaking-liquidity.addresses.json) 中复用。前端使用本页 `AegisMintableToken` ABI，但普通业务页面只需标准 ERC20 读写；`mint` 的公开可调用风险必须单独披露。
+当前 BNB Chain 主网使用规范 key `USD1`，地址为 `0xd94Be47992B17534d7eDB6293D0433F5C7A166aC`（release `bb680398-e7c0-46fa-ad87-139446fb4120`，`MAINNET_REUSE_ALLOWLIST=none`）。前端使用本页 `USD1` ABI，但普通业务页面只需标准 ERC20 读写；`mint` 的公开可调用风险必须单独披露。
 
 ### 前端读取
 

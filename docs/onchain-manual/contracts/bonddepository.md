@@ -353,7 +353,7 @@ await purchaseBond(bondContract, usd1Contract, usdAmount, userAddress, signer)
 
 **参数:**
 
-- _shouldStake - true : 自动质押到 StakingPool； false : 将本金送入 PrincipalReleaseVault 创建按当前配置锁定周期的线性释放单，不会直接转入钱包
+- _shouldStake - true : 自动质押到 StakingPool； false : 将本金经 AegisSplitterManager 路由到 AegisSplitterHead_* 等头部分流器创建按当前配置锁定周期的线性释放单，不会直接转入钱包
 
 **事件:**
 
@@ -473,7 +473,7 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 
 #### PrincipalReleaseVaultUpdated(address indexed oldVault, address indexed newVault)
 
-`setPrincipalReleaseVault` 修改本金释放合约时触发。
+`setPrincipalReleaseVault` 修改本金释放入口时触发（当前指向 `AegisSplitterManager`，原 `PrincipalReleaseVault` 已于 2026-08-03 删除，ABI 归档 `archive/PrincipalReleaseVault/`）。
 
 #### DiscountRateUpdated(uint256 indexed _newRate)
 
@@ -495,34 +495,34 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 
 ### 错误码
 
-| 错误                                         | 原因                                                | 解决方案                          |
-| -------------------------------------------- | --------------------------------------------------- | --------------------------------- |
-| `ErrorNotApproved()`                         | 存款人未绑定推荐关系                                | 先绑定 Referral                   |
-| `ErrorDebtCapacityReached()`                 | 达到债务上限                                        | 等待管理员调整 maxDebt            |
-| `ErrorBondTooSmall()`                        | payout < 0.01 AGX                                   | 增加购买金额                      |
-| `ErrorBondTooLarge()`                        | 超过 maxPayout                                      | 减少购买金额                      |
-| `ErrorBondIndexOutOfBounds()`                | 债券索引无效                                        | 使用有效索引                      |
-| `ErrorBondNotExist()`                        | 债券不存在或已领取                                  | 检查债券状态                      |
-| `ErrorUserNotAuthorized()`                   | 领取人与调用者不匹配                                | 必须自己领取自己的                |
-| `ErrorStakeNotActive()`                      | 质押不存在                                          | 检查债券状态                      |
-| `ErrorProfitExceedsAmount()`                 | 提取金额超过利润                                    | 减少提取金额                      |
-| `ErrorCallerNotAllowed(address)`             | 调用者不在白名单                                    | 联系管理员                        |
-| `ErrorPrincipalReleaseVaultNotSet()`         | `redeem(..., false)` 时未配置 PrincipalReleaseVault | 先调用 `setPrincipalReleaseVault` |
-| `ErrorZeroAmount()`                          | 金额为 0 或储备为 0                                 | 传入有效金额                      |
-| `ErrorInvalidAmount()`                       | 提取金额非法（0 或大于本金）                        | 校验金额范围                      |
-| `ErrorAmountExceedsBalance()`                | 提取金额超过 sAGX 余额                              | 减少提取金额                      |
-| `ErrorZeroAddress()`                         | 传入零地址                                          | 传入有效地址                      |
-| `ErrorNotInitialized()`                      | `initializeBondTerms` 在 `initialize` 之前调用      | 先调用 `initialize`               |
-| `ErrorStakeFailure()`                        | `StakingPool.bondStake` 返回 false                  | 检查 StakingPool 状态             |
-| `ErrorProfitNotAvailable()`                  | 无可提取利润（gons=0 或 profit=0）                  | 等待利润累积                      |
-| `ErrorInvalidVesting()`                      | vesting < 10000 秒                                  | 提高解锁时长                      |
-| `ErrorInvalidPayout()`                       | maxPayout > 5000                                    | 降低 maxPayout                    |
-| `ErrorInvalidFee()`                          | fee > 10000 BPS                                     | 降低手续费                        |
-| `ErrorInvalidDiscount()`                     | discountRateBP == 0 或 > 10000                      | 校正折扣率                        |
-| `ErrorCallerNotAuthorized()`                 | 非 owner 且非 operator 调用受限函数                 | 通过 owner 或 operator 调用       |
-| `BondDepositoryMigratedAccount(address)`     | 账户已迁移或被迁移占用                              | 使用迁移后的新账户                |
-| `BondDepositoryNotMigrationManager(address)` | 非 migrationManager 调用 `migrateAccount`           | 仅由迁移管理器调用                |
-| `MigrationManagerImmutable(address)`         | `setMigrationManager` 二次修改管理器                | 一次性不可变，部署前确认          |
+| 错误                                         | 原因                                                 | 解决方案                                             |
+| -------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
+| `ErrorNotApproved()`                         | 存款人未绑定推荐关系                                 | 先绑定 Referral                                      |
+| `ErrorDebtCapacityReached()`                 | 达到债务上限                                         | 等待管理员调整 maxDebt                               |
+| `ErrorBondTooSmall()`                        | payout < 0.01 AGX                                    | 增加购买金额                                         |
+| `ErrorBondTooLarge()`                        | 超过 maxPayout                                       | 减少购买金额                                         |
+| `ErrorBondIndexOutOfBounds()`                | 债券索引无效                                         | 使用有效索引                                         |
+| `ErrorBondNotExist()`                        | 债券不存在或已领取                                   | 检查债券状态                                         |
+| `ErrorUserNotAuthorized()`                   | 领取人与调用者不匹配                                 | 必须自己领取自己的                                   |
+| `ErrorStakeNotActive()`                      | 质押不存在                                           | 检查债券状态                                         |
+| `ErrorProfitExceedsAmount()`                 | 提取金额超过利润                                     | 减少提取金额                                         |
+| `ErrorCallerNotAllowed(address)`             | 调用者不在白名单                                     | 联系管理员                                           |
+| `ErrorPrincipalReleaseVaultNotSet()`         | `redeem(..., false)` 时未配置 `AegisSplitterManager` | 先调用 `setPrincipalReleaseVault` 指向分流器 Manager |
+| `ErrorZeroAmount()`                          | 金额为 0 或储备为 0                                  | 传入有效金额                                         |
+| `ErrorInvalidAmount()`                       | 提取金额非法（0 或大于本金）                         | 校验金额范围                                         |
+| `ErrorAmountExceedsBalance()`                | 提取金额超过 sAGX 余额                               | 减少提取金额                                         |
+| `ErrorZeroAddress()`                         | 传入零地址                                           | 传入有效地址                                         |
+| `ErrorNotInitialized()`                      | `initializeBondTerms` 在 `initialize` 之前调用       | 先调用 `initialize`                                  |
+| `ErrorStakeFailure()`                        | `StakingPool.bondStake` 返回 false                   | 检查 StakingPool 状态                                |
+| `ErrorProfitNotAvailable()`                  | 无可提取利润（gons=0 或 profit=0）                   | 等待利润累积                                         |
+| `ErrorInvalidVesting()`                      | vesting < 10000 秒                                   | 提高解锁时长                                         |
+| `ErrorInvalidPayout()`                       | maxPayout > 5000                                     | 降低 maxPayout                                       |
+| `ErrorInvalidFee()`                          | fee > 10000 BPS                                      | 降低手续费                                           |
+| `ErrorInvalidDiscount()`                     | discountRateBP == 0 或 > 10000                       | 校正折扣率                                           |
+| `ErrorCallerNotAuthorized()`                 | 非 owner 且非 operator 调用受限函数                  | 通过 owner 或 operator 调用                          |
+| `BondDepositoryMigratedAccount(address)`     | 账户已迁移或被迁移占用                               | 使用迁移后的新账户                                   |
+| `BondDepositoryNotMigrationManager(address)` | 非 migrationManager 调用 `migrateAccount`            | 仅由迁移管理器调用                                   |
+| `MigrationManagerImmutable(address)`         | `setMigrationManager` 二次修改管理器                 | 一次性不可变，部署前确认                             |
 
 #### 账户迁移
 
@@ -546,19 +546,19 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 
 #### 管理函数（owner / operator）
 
-| 函数                                                                         | 权限              | 说明                                                                  |
-| ---------------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------------- |
-| `initialize(referral, token, sToken, principle, treasury)`                   | initializer       | 一次性初始化合约核心地址，置 `initialized=true`                       |
-| `initializeBondTerms(vestingTerm, maxPayout, fee, maxDebt, discountRateBP)`  | onlyOwner         | 初始化债券条款；需先 `initialize`，`discountRateBP` 必须在 (0, 10000] |
-| `setContract(stakingPool, rewardQueue, dao, isLiquidityBond, liquidityPool)` | onlyOwner         | 设置 StakingPool/RewardQueue/DAO 及是否 LP 债券与流动性池地址         |
-| `setRestakeConfig(address config)`                                           | onlyOwner         | 设置 RestakeConfig 地址（复投配置）                                   |
-| `setPurchaseTracker(address tracker)`                                        | onlyOwner         | 设置 AegisDailyPurchaseTracker；零地址回滚                            |
-| `setPrincipalReleaseVault(address vault)`                                    | onlyOwner         | 设置本金释放合约；零地址回滚，触发 `PrincipalReleaseVaultUpdated`     |
-| `setBondOperator(address operator, bool flag)`                               | onlyOwner         | 增删 operator                                                         |
-| `setAllowedCaller(address caller, bool allowed)`                             | onlyOwner         | 维护调用者白名单；零地址回滚                                          |
-| `setCallerWhitelistEnabled(bool enabled)`                                    | onlyOwner         | 开关调用者白名单（仅对有 code 的调用者生效）                          |
-| `setDiscountRate / setMaxPayout / setVestingTerm / setFee / setMaxDebt`      | owner 或 operator | 调整债券条款，各自触发对应 `*Updated` 事件（`setMaxDebt` 不触发事件） |
-| `setReferral(address referral)`                                              | onlyOwner         | 设置 Referral 合约                                                    |
+| 函数                                                                         | 权限              | 说明                                                                                             |
+| ---------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| `initialize(referral, token, sToken, principle, treasury)`                   | initializer       | 一次性初始化合约核心地址，置 `initialized=true`                                                  |
+| `initializeBondTerms(vestingTerm, maxPayout, fee, maxDebt, discountRateBP)`  | onlyOwner         | 初始化债券条款；需先 `initialize`，`discountRateBP` 必须在 (0, 10000]                            |
+| `setContract(stakingPool, rewardQueue, dao, isLiquidityBond, liquidityPool)` | onlyOwner         | 设置 StakingPool/RewardQueue/DAO 及是否 LP 债券与流动性池地址                                    |
+| `setRestakeConfig(address config)`                                           | onlyOwner         | 设置 RestakeConfig 地址（复投配置）                                                              |
+| `setPurchaseTracker(address tracker)`                                        | onlyOwner         | 设置 AegisDailyPurchaseTracker；零地址回滚                                                       |
+| `setPrincipalReleaseVault(address vault)`                                    | onlyOwner         | 设置本金释放入口（指向 `AegisSplitterManager`）；零地址回滚，触发 `PrincipalReleaseVaultUpdated` |
+| `setBondOperator(address operator, bool flag)`                               | onlyOwner         | 增删 operator                                                                                    |
+| `setAllowedCaller(address caller, bool allowed)`                             | onlyOwner         | 维护调用者白名单；零地址回滚                                                                     |
+| `setCallerWhitelistEnabled(bool enabled)`                                    | onlyOwner         | 开关调用者白名单（仅对有 code 的调用者生效）                                                     |
+| `setDiscountRate / setMaxPayout / setVestingTerm / setFee / setMaxDebt`      | owner 或 operator | 调整债券条款，各自触发对应 `*Updated` 事件（`setMaxDebt` 不触发事件）                            |
+| `setReferral(address referral)`                                              | onlyOwner         | 设置 Referral 合约                                                                               |
 
 ---
 
@@ -642,26 +642,26 @@ js
 
 ### 依赖合约
 
-| 合约                      | 用途                                                                                |
-| ------------------------- | ----------------------------------------------------------------------------------- |
-| Treasury                  | 接收 principle 存款，计算价值，铸造 AGX                                             |
-| StakingPool               | 自动质押购买的 AGX                                                                  |
-| sAGX                      | 生息代币，gons 模型                                                                 |
-| RewardQueue               | 利润线性释放                                                                        |
-| RestakeConfig             | 复投配置                                                                            |
-| Referral                  | 验证存款人推荐关系                                                                  |
-| PrincipalReleaseVault     | 必需；`redeem(..., false)` 的本金统一进入按配置周期锁定的线性释放，未配置时交易回滚 |
-| AegisDailyPurchaseTracker | 记录购买贡献                                                                        |
+| 合约                                 | 用途                                                                                               |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Treasury                             | 接收 principle 存款，计算价值，铸造 AGX                                                            |
+| StakingPool                          | 自动质押购买的 AGX                                                                                 |
+| sAGX                                 | 生息代币，gons 模型                                                                                |
+| RewardQueue                          | 利润线性释放                                                                                       |
+| RestakeConfig                        | 复投配置                                                                                           |
+| Referral                             | 验证存款人推荐关系                                                                                 |
+| AegisSplitterManager / AegisSplitter | 必需；`redeem(..., false)` 的本金统一经 Manager 路由进入按配置周期锁定的线性释放，未配置时交易回滚 |
+| AegisDailyPurchaseTracker            | 记录购买贡献                                                                                       |
 
 ### 配置参数
 
-| 参数                     | 默认值       | 说明                 | 设置者         |
-| ------------------------ | ------------ | -------------------- | -------------- |
-| `terms.vestingTerm`      | 初始化时设置 | 解锁时间（秒）       | owner/operator |
-| `terms.maxPayout`        | 初始化时设置 | 最大 payout 比例     | owner/operator |
-| `terms.fee`              | 初始化时设置 | 手续费（BPS）        | owner/operator |
-| `terms.maxDebt`          | 初始化时设置 | 债务上限             | owner/operator |
-| `discountRateBP`         | 初始化时设置 | 折扣率（BPS）        | owner/operator |
-| `callerWhitelistEnabled` | false        | 是否启用调用者白名单 | owner          |
-| `restakeConfig`          | 初始化后设置 | 复投配置地址         | owner          |
-| `principalReleaseVault`  | 初始化后设置 | 本金释放合约         | owner          |
+| 参数                     | 默认值       | 说明                                   | 设置者         |
+| ------------------------ | ------------ | -------------------------------------- | -------------- |
+| `terms.vestingTerm`      | 初始化时设置 | 解锁时间（秒）                         | owner/operator |
+| `terms.maxPayout`        | 初始化时设置 | 最大 payout 比例                       | owner/operator |
+| `terms.fee`              | 初始化时设置 | 手续费（BPS）                          | owner/operator |
+| `terms.maxDebt`          | 初始化时设置 | 债务上限                               | owner/operator |
+| `discountRateBP`         | 初始化时设置 | 折扣率（BPS）                          | owner/operator |
+| `callerWhitelistEnabled` | false        | 是否启用调用者白名单                   | owner          |
+| `restakeConfig`          | 初始化后设置 | 复投配置地址                           | owner          |
+| `principalReleaseVault`  | 初始化后设置 | 本金释放入口（`AegisSplitterManager`） | owner          |

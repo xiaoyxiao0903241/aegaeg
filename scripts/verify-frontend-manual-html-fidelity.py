@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANUAL = ROOT / "docs" / "onchain-manual"
 HTML_PATH = MANUAL / "AEGIS_X_FRONTEND_MANUAL.html"
-EXPECTED_SHA256 = "d8fcab922773c7c44944e0896e17657c368a432746ad47a569d81f774fd370be"
+EXPECTED_SHA256 = "004aefedf1f8c5f3ef8568b7ff13c7a9575c68da76c5a2cfe7487a1a7f8b45f0"
 
 # HTML 页面骨架与路径元信息，不属于正文。
 IGNORE_HTML_LINES = {
@@ -97,7 +97,7 @@ def main() -> None:
     md_map = {
         k: v
         for k, v in re.findall(
-            r"`([A-Za-z0-9]+)`\s*\|\s*\[`(0x[a-fA-F0-9]{40})`\]", md_addr
+            r"`([A-Za-z0-9_]+)`\s*\|\s*\[`(0x[a-fA-F0-9]{40})`\]", md_addr
         )
     }
     if html_map != md_map:

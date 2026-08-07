@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/AegisReferral.json
-SHA-256 22daae6d201e…
-38
-19
-5
-14
+SHA-256 5cf5105b482c…
+43
+21
+6
+16
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/referral.json`](../abis/referral.json)（38 entries）。
+完整 ABI 已导出为 [`abis/referral.json`](../abis/referral.json)（43 entries）。
 
 </details>
 
@@ -27,7 +27,7 @@ SHA-256 22daae6d201e…
 
 **部署 key**: `Referral`
 
-**BNB Chain 主网 proxy**: `0xe0F3AE113dD3997982AE9ad7d5510ffA4E3Cce71`
+**BNB Chain 主网 proxy**: `0xEb4339c0898B72d8aC0B8Ba65902558b7529DA9B`（release `bb680398-e7c0-46fa-ad87-139446fb4120`）
 
 **ABI 路径**: `abi/AegisReferral.json`
 

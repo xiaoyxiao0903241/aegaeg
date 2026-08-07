@@ -27,7 +27,7 @@ SHA-256 ab12c100ab95…
 
 **部署 key**: `XStakingPool`
 
-**BNB Chain 主网 proxy**：本轮重新部署，以最终完整 manifest 为准。
+**BNB Chain 主网 proxy**：`0x38af581462e25aABE1A25Ae128aE5a63aE015e1c`（release `bb680398-e7c0-46fa-ad87-139446fb4120`）。
 
 **ABI 路径**: `abi/AegisXMiningPool.json`
 
@@ -357,33 +357,33 @@ async function startMiningUnstake(xPool, signer) {
 
 #### PrincipalReleaseVaultUpdated(address indexed vault, uint256 timestamp)
 
-`setPrincipalReleaseVault` 切换释放金库时触发（源码 :196）。
+`setPrincipalReleaseVault` 切换本金释放入口（当前指向 `AegisSplitterManager`）时触发（源码 :196）。
 
 ---
 
 ### 错误码
 
-| 错误                                                | 原因                                                           | 解决方案                  |
-| --------------------------------------------------- | -------------------------------------------------------------- | ------------------------- |
-| `ErrorAmountZero()`                                 | 金额为 0                                                       | 增加金额                  |
-| `ErrorStakeNotExist()`                              | 无活跃质押                                                     | 先质押                    |
-| `ErrorStillLocked()`                                | 预热未到期                                                     | 等待预热结束              |
-| `ErrorNoWarmup()`                                   | 无预热中 gons                                                  | 检查质押状态              |
-| `ErrorWarmupPending()`                              | 有预热中的 gons                                                | 先激活或等待              |
-| `ErrorMiningQuotaExceeded(user, requested, quota)`  | 超过挖矿配额                                                   | 增加锁定本金              |
-| `ErrorRewardPricePairNotSet()`                      | LP 未设置                                                      | 联系管理员                |
-| `ErrorSettlementPriceNotSet()`                      | 价格未结算                                                     | 等待管理员 settle         |
-| `ErrorPrincipalReleaseVaultNotSet()`                | 释放库未设置                                                   | 联系管理员                |
-| `ErrorWarmupExitDisabled()`                         | 取消预热已禁用                                                 | 无法取消                  |
-| `ErrorZeroAddress()`                                | 传入 address(0)                                                | 传入有效地址              |
-| `ErrorInvalidRewardPair()`                          | `setRewardPricePair` 校验失败（非 PancakePair / token 不匹配） | 使用正确的 AGX/X LP       |
-| `ErrorEmptyRewardPair()`                            | 价格对储备为 0                                                 | 等池子有流动性后再设置    |
-| `ErrorInvalidRatio()`                               | `setMaxStakeRatioBP` 超过 `MAX_STAKE_RATIO_BP(20000)`          | 使用 ≤ 20000 的 BP 值     |
-| `ErrorYieldRateTooHigh()`                           | `setYieldRate` 的 `_bp > BASE_100(10000)`                      | 使用 ≤ 10000 的 BP 值     |
-| `ErrorCallerNotAuthorized()`                        | 非 owner/operator 调用受限 setter（如 `setYieldRate`）         | 由 owner 或 operator 调用 |
-| `XMiningPoolMigratedAccount(address account)`       | `migrateAccount` 涉及已迁移/有历史状态的地址                   | 使用 canonical 地址       |
-| `XMiningPoolNotMigrationManager(address caller)`    | 非 migrationManager 调用 `migrateAccount`                      | 仅由迁移管理器调用        |
-| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                                | 保留相同地址              |
+| 错误                                                | 原因                                                           | 解决方案                              |
+| --------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------- |
+| `ErrorAmountZero()`                                 | 金额为 0                                                       | 增加金额                              |
+| `ErrorStakeNotExist()`                              | 无活跃质押                                                     | 先质押                                |
+| `ErrorStillLocked()`                                | 预热未到期                                                     | 等待预热结束                          |
+| `ErrorNoWarmup()`                                   | 无预热中 gons                                                  | 检查质押状态                          |
+| `ErrorWarmupPending()`                              | 有预热中的 gons                                                | 先激活或等待                          |
+| `ErrorMiningQuotaExceeded(user, requested, quota)`  | 超过挖矿配额                                                   | 增加锁定本金                          |
+| `ErrorRewardPricePairNotSet()`                      | LP 未设置                                                      | 联系管理员                            |
+| `ErrorSettlementPriceNotSet()`                      | 价格未结算                                                     | 等待管理员 settle                     |
+| `ErrorPrincipalReleaseVaultNotSet()`                | 分流器 Manager 未设置                                          | 联系管理员配置 `AegisSplitterManager` |
+| `ErrorWarmupExitDisabled()`                         | 取消预热已禁用                                                 | 无法取消                              |
+| `ErrorZeroAddress()`                                | 传入 address(0)                                                | 传入有效地址                          |
+| `ErrorInvalidRewardPair()`                          | `setRewardPricePair` 校验失败（非 PancakePair / token 不匹配） | 使用正确的 AGX/X LP                   |
+| `ErrorEmptyRewardPair()`                            | 价格对储备为 0                                                 | 等池子有流动性后再设置                |
+| `ErrorInvalidRatio()`                               | `setMaxStakeRatioBP` 超过 `MAX_STAKE_RATIO_BP(20000)`          | 使用 ≤ 20000 的 BP 值                 |
+| `ErrorYieldRateTooHigh()`                           | `setYieldRate` 的 `_bp > BASE_100(10000)`                      | 使用 ≤ 10000 的 BP 值                 |
+| `ErrorCallerNotAuthorized()`                        | 非 owner/operator 调用受限 setter（如 `setYieldRate`）         | 由 owner 或 operator 调用             |
+| `XMiningPoolMigratedAccount(address account)`       | `migrateAccount` 涉及已迁移/有历史状态的地址                   | 使用 canonical 地址                   |
+| `XMiningPoolNotMigrationManager(address caller)`    | 非 migrationManager 调用 `migrateAccount`                      | 仅由迁移管理器调用                    |
+| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                                | 保留相同地址                          |
 
 ---
 
@@ -434,7 +434,7 @@ async function miningDashboard(xPool, userAddress) {
 | gAGX (RedeemableGAGXPrincipal)                                           | 质押代币                             |
 | X                                                                        | 挖矿奖励代币                         |
 | RewardPricePair (LP)                                                     | AGX/X 价格                           |
-| PrincipalReleaseVault                                                    | 本金线性释放                         |
+| AegisSplitterManager / AegisSplitter                                     | 本金退出经 Manager 路由的线性释放    |
 | StakingPool                                                              | epoch 查询                           |
 | EarlyStaking / LockedStaking×3 / BondDepository×3 / BurnBondDepository×3 | alias-aware 挖矿配额来源（共 10 个） |
 
@@ -447,16 +447,16 @@ async function miningDashboard(xPool, userAddress) {
 | `maxStakeRatioBP`       | 10000 (100%) | 质押配额比例，上限 `MAX_STAKE_RATIO_BP = 20000`（200%）；由 `setMaxStakeRatioBP` 设置，超过上限 revert `ErrorInvalidRatio` | owner          |
 | `principalSources`      | 初始化后设置 | 挖矿配额来源                                                                                                               | owner          |
 | `rewardPricePair`       | 初始化时设置 | AGX/X LP 地址                                                                                                              | owner          |
-| `principalReleaseVault` | 初始化后设置 | 释放库                                                                                                                     | owner          |
+| `principalReleaseVault` | 初始化后设置 | 本金释放入口（指向 `AegisSplitterManager`）                                                                                | owner          |
 | `operators`             | 初始化后设置 | 操作员列表（`setBondOperator`），`setYieldRate`/`settleRewards`/`injectRewards` 允许 owner 或 operator                     | owner          |
 
 ### Setter 汇总
 
-| Setter                                     | 权限             | 说明                                                  |
-| ------------------------------------------ | ---------------- | ----------------------------------------------------- |
-| `setMaxStakeRatioBP(uint256)`              | owner            | 设置 `maxStakeRatioBP`，≤ `MAX_STAKE_RATIO_BP(20000)` |
-| `setMiningQuotaSource(address[] calldata)` | owner            | 重置 `principalSources` 挖矿配额来源列表              |
-| `setRewardPricePair(address)`              | owner            | 设置 AGX/X LP，校验通过才生效                         |
-| `setPrincipalReleaseVault(address)`        | owner            | 设置释放金库，`address(0)` revert                     |
-| `setYieldRate(uint256)`                    | owner / operator | 设置 `yieldRateBP`，≤ `BASE_100(10000)`               |
-| `setBondOperator(address, bool)`           | owner            | 增删 operator                                         |
+| Setter                                     | 权限             | 说明                                                            |
+| ------------------------------------------ | ---------------- | --------------------------------------------------------------- |
+| `setMaxStakeRatioBP(uint256)`              | owner            | 设置 `maxStakeRatioBP`，≤ `MAX_STAKE_RATIO_BP(20000)`           |
+| `setMiningQuotaSource(address[] calldata)` | owner            | 重置 `principalSources` 挖矿配额来源列表                        |
+| `setRewardPricePair(address)`              | owner            | 设置 AGX/X LP，校验通过才生效                                   |
+| `setPrincipalReleaseVault(address)`        | owner            | 设置本金释放入口（`AegisSplitterManager`），`address(0)` revert |
+| `setYieldRate(uint256)`                    | owner / operator | 设置 `yieldRateBP`，≤ `BASE_100(10000)`                         |
+| `setBondOperator(address, bool)`           | owner            | 增删 operator                                                   |

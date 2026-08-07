@@ -27,7 +27,7 @@ SHA-256 e9eaf48c8f41…
 
 **部署 key**: `DailyPurchaseTracker`
 
-**BNB Chain 主网 proxy**：本轮重新部署，以最终完整 manifest 为准。
+**BNB Chain 主网 proxy**：`0xf4328953616607aCc04F1e7Ba90bc379987c1945`（release `bb680398-e7c0-46fa-ad87-139446fb4120`，当前暂停）。
 
 **ABI 路径**: `abi/AegisDailyPurchaseTracker.json`
 
@@ -190,6 +190,7 @@ owner 设置迁移管理器。`_manager=address(0)` revert `ErrorZeroAddress`；
 
 #### fail-soft 事件
 
+- LuckyPoolUpkeepAttempted(observedRoundId, checkSucceeded, upkeepNeeded, performSucceeded) ：每次 recordPurchase 前对 LuckyPool 执行的 best-effort upkeep 结果。 checkSucceeded=false 表示 checkUpkeep 读取失败； upkeepNeeded=true 且 performSucceeded=false 表示尝试推进轮次但失败。两种情况都不回滚主购买/质押/债券交易，监控端应进行告警并以链上轮次状态为准。
 - PurchaseDeferred ：Pool 完全不可读，购买等待轮次归属。
 - QualificationSkipped ：该笔购买不属于当前可接受的轮次/窗口，因此只记统计、不授予该轮资格。
 - QualificationDeferred ：资格已记录但尚未写入 Pool。

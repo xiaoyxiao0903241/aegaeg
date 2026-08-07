@@ -139,7 +139,7 @@ async function purchaseBurnBond(bondContract, principleContract, amount, signer)
 
 ##### redeem(...) / claimStakeProfitMixed(...)
 
-与 BondDepository 的处理一致：`redeem(..., true)` 将已解锁本金重新质押到 StakingPool；`redeem(..., false)` 必须通过 PrincipalReleaseVault 创建按当前配置锁定周期的线性释放单，不会直接转入钱包。PrincipalReleaseVault 未配置时赎回交易回滚。收益仍通过 `claimStakeProfitMixed(...)` 按 RewardQueue、复投与税费规则拆分。
+与 BondDepository 的处理一致：`redeem(..., true)` 将已解锁本金重新质押到 StakingPool；`redeem(..., false)` 必须经 `AegisSplitterManager` 路由到 `AegisSplitterHead_*` 等头部分流器创建按当前配置锁定周期的线性释放单，不会直接转入钱包。Manager 未配置时赎回交易回滚。收益仍通过 `claimStakeProfitMixed(...)` 按 RewardQueue、复投与税费规则拆分。
 
 ---
 
@@ -259,15 +259,15 @@ BurnBondDepository 与 BondDepository 的配置**并不完全相同**，关键�
 - `restakeConfig` ：BurnBond 同样存在，用于利润复投与 USD1 价值定价。
 - 其余条款（ vestingTerm / maxPayout / fee / maxDebt / discountRateBP ）语义与 BondDepository 一致。
 
-| 参数                                  | 默认值             | 说明                     | 设置者                                    |
-| ------------------------------------- | ------------------ | ------------------------ | ----------------------------------------- |
-| `terms.vestingTerm`                   | 初始化时设置       | 解锁时间（秒）           | owner/operator (`setVestingTerm`, ≥10000) |
-| `terms.maxPayout`                     | 初始化时设置       | 最大 payout 比例         | owner/operator (`setMaxPayout`, ≤5000)    |
-| `terms.fee`                           | 初始化时设置       | 手续费（BPS）            | owner/operator (`setFee`, ≤10000)         |
-| `terms.maxDebt`                       | 初始化时设置       | 债务上限                 | owner/operator (`setMaxDebt`)             |
-| `discountRateBP`                      | 初始化时设置       | 折扣率（BPS，(0,10000]） | owner/operator (`setDiscountRate`)        |
-| `callerWhitelistEnabled`              | false              | 是否启用调用者白名单     | owner (`setCallerWhitelistEnabled`)       |
-| `restakeConfig`                       | 初始化后设置       | 复投配置地址             | owner (`setRestakeConfig`)                |
-| `principalReleaseVault`               | 初始化后设置       | 本金释放合约             | owner (`setPrincipalReleaseVault`)        |
-| `stakingPool` / `rewardQueue` / `DAO` | `setContract` 设置 | 核心依赖地址             | owner (`setContract`, 3 参数)             |
-| `purchaseTracker`                     | 可选               | 购买贡献追踪             | owner (`setPurchaseTracker`)              |
+| 参数                                  | 默认值             | 说明                                   | 设置者                                    |
+| ------------------------------------- | ------------------ | -------------------------------------- | ----------------------------------------- |
+| `terms.vestingTerm`                   | 初始化时设置       | 解锁时间（秒）                         | owner/operator (`setVestingTerm`, ≥10000) |
+| `terms.maxPayout`                     | 初始化时设置       | 最大 payout 比例                       | owner/operator (`setMaxPayout`, ≤5000)    |
+| `terms.fee`                           | 初始化时设置       | 手续费（BPS）                          | owner/operator (`setFee`, ≤10000)         |
+| `terms.maxDebt`                       | 初始化时设置       | 债务上限                               | owner/operator (`setMaxDebt`)             |
+| `discountRateBP`                      | 初始化时设置       | 折扣率（BPS，(0,10000]）               | owner/operator (`setDiscountRate`)        |
+| `callerWhitelistEnabled`              | false              | 是否启用调用者白名单                   | owner (`setCallerWhitelistEnabled`)       |
+| `restakeConfig`                       | 初始化后设置       | 复投配置地址                           | owner (`setRestakeConfig`)                |
+| `principalReleaseVault`               | 初始化后设置       | 本金释放入口（`AegisSplitterManager`） | owner (`setPrincipalReleaseVault`)        |
+| `stakingPool` / `rewardQueue` / `DAO` | `setContract` 设置 | 核心依赖地址                           | owner (`setContract`, 3 参数)             |
+| `purchaseTracker`                     | 可选               | 购买贡献追踪                           | owner (`setPurchaseTracker`)              |

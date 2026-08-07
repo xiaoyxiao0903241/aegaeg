@@ -27,7 +27,7 @@ SHA-256 bfbf6643a6a4…
 
 **部署 key**: `LockedStaking180d` / `LockedStaking360d` / `LockedStaking540d`
 
-**BNB Chain 主网地址**: 本轮 180/360/540 天三个实例均重新部署；只能从本轮部署、配置和只读终验全部通过后的最终完整 manifest 读取。上一轮代理地址仅属历史记录，不得用于本轮前端或运维配置。
+**BNB Chain 主网地址**（release `bb680398-e7c0-46fa-ad87-139446fb4120`）：180d `0xb64C7718F372eB7792EdE434f93F0b556e444406`、360d `0xCA6bf54Dd4f7D05CA1b0C34Da4AC8fBC97dD8CeD`、540d `0x5aa7e8996FE0661B3D487f660E6a043BCe000487`。
 
 **ABI 路径**: `abi/LockedStaking.json`
 
@@ -41,8 +41,8 @@ SHA-256 bfbf6643a6a4…
 - 本金按时间线性释放： releaseRate = elapsed * 10000 / vesting
 - claimPrincipal() 提取已释放的本金
 - 未释放部分仍继续释放
-- 已释放本金不会直接转入钱包，而是强制进入 PrincipalReleaseVault ，按创建时配置锁定的周期线性释放（新部署默认 30 天）
-- PrincipalReleaseVault 未配置时 claimPrincipal() 整笔交易回滚，禁止绕过释放规则
+- 已释放本金不会直接转入钱包，而是经 AegisSplitterManager 路由到 AegisSplitterHead_* 等头部分流器，按创建时配置锁定的周期线性释放（新部署默认 30 天，新用户按 Manager 配置周期）
+- 分流器 Manager 未配置时 claimPrincipal() 整笔交易回滚，禁止绕过释放规则
 
 #### 2. 双利息系统
 
@@ -231,7 +231,7 @@ async function lockedStake(lockedContract, agxContract, amount, signer) {
 
 ##### claimPrincipal(uint256 _index)
 
-领取指定仓位按 Locked 周期已释放的本金，并在 PrincipalReleaseVault 创建按当前配置锁定周期的线性释放单；本次调用不会让钱包 AGX 立即增加。
+领取指定仓位按 Locked 周期已释放的本金，并经 `AegisSplitterManager` 路由到 `AegisSplitterHead_*` 创建按当前配置锁定周期的线性释放单；本次调用不会让钱包 AGX 立即增加。
 
 js
 
@@ -247,7 +247,11 @@ async function claimPrincipal(lockedContract, stakeIndex, signer) {
   // 2. 领取
   const tx = await lockedContract.connect(signer).claimPrincipal(stakeIndex)
   await tx.wait()
-  console.log('Principal release created in PRV:', ethers.formatUnits(claimable, 9), 'AGX')
+  console.log(
+    'Principal release created via splitter (AegisSplitterManager):',
+    ethers.formatUnits(claimable, 9),
+    'AGX',
+  )
 }
 ```
 
@@ -292,7 +296,7 @@ ADMIN_ROLE 设置 RewardManager（源码 `setRewardManager`，:756）。`address
 
 ##### setPrincipalReleaseVault(address _vault)
 
-ADMIN_ROLE 设置本金释放金库（源码 `setPrincipalReleaseVault`，:749）。`address(0)` revert `ErrorZeroAddress`。触发 `PrincipalReleaseVaultUpdated(old, new)`。未设置时 `claimPrincipal` 整笔回滚 `ErrorPrincipalReleaseVaultNotSet`。
+ADMIN_ROLE 设置本金释放入口（源码 `setPrincipalReleaseVault`，:749），当前指向 `AegisSplitterManager`（原 `PrincipalReleaseVault` 已于 2026-08-03 删除，ABI 归档 `archive/PrincipalReleaseVault/`）。`address(0)` revert `ErrorZeroAddress`。触发 `PrincipalReleaseVaultUpdated(old, new)`。未设置时 `claimPrincipal` 整笔回滚 `ErrorPrincipalReleaseVaultNotSet`。
 
 ##### applyEpochExtraReward(uint256 _epochNumber, uint256 _extraIndex, uint256 _rewardAmount)
 
@@ -340,7 +344,7 @@ ADMIN_ROLE 设置迁移管理器（源码 :814，一旦设非零 manager 后只�
 
 #### PrincipalReleaseVaultUpdated(address indexed oldVault, address indexed newVault)
 
-`setPrincipalReleaseVault` 切换本金释放金库时触发（源码 :151）。
+`setPrincipalReleaseVault` 切换本金释放入口（当前指向 `AegisSplitterManager`）时触发（源码 :151）。
 
 #### RewardManagerUpdated(address indexed oldRewardManager, address indexed newRewardManager)
 
@@ -354,27 +358,27 @@ RewardManager 调用 `applyEpochExtraReward` 原子写入 epoch 额外利息时�
 
 ### 错误码
 
-| 错误                                                | 原因                                                                                          | 解决方案                       |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------ |
-| `ErrorAmountZero()`                                 | 质押金额为 0                                                                                  | 增加金额                       |
-| `ErrorStakeNotApproved()`                           | 未绑定推荐关系                                                                                | 先绑定 Referral                |
-| `ErrorStakeAmountLimit()`                           | 超过质押限制                                                                                  | 减少金额或等待第二天           |
-| `ErrorIndexOutOfBounds()`                           | 仓位索引无效                                                                                  | 使用有效索引                   |
-| `ErrorStakeNotExist()`                              | 仓位不存在                                                                                    | 检查索引                       |
-| `ErrorStakeWarmupPeriod()`                          | 预热期未过                                                                                    | 等待预热结束                   |
-| `ErrorNotPrincipal()`                               | 无本金可领取                                                                                  | 等待释放                       |
-| `ErrorExceedsBalance()`                             | 合约余额不足                                                                                  | 联系管理员                     |
-| `ErrorExtraAmount()`                                | 额外利息不足                                                                                  | 减少提取量                     |
-| `ErrorEpoch()`                                      | epoch 参数无效                                                                                | 联系管理员                     |
-| `ErrorZeroAddress()`                                | 传入 address(0)                                                                               | 传入有效地址                   |
-| `ErrorPrincipalReleaseVaultNotSet()`                | 未配置 PrincipalReleaseVault 时调用 `claimPrincipal`                                          | 先 `setPrincipalReleaseVault`  |
-| `ErrorUnauthorizedRewardManager()`                  | 非 RewardManager 调用 `applyEpochExtraReward`                                                 | 仅由配置的 RewardManager 调用  |
-| `ErrorRewardAmountMismatch()`                       | `applyEpochExtraReward` 的 `_rewardAmount` 与 `totalLockedPrincipal * _extraIndex / 1e9` 不等 | RewardManager 须按公式精确铸币 |
-| `ErrorDeprecated()`                                 | 调用已废弃的 `updateGlobalIndex`                                                              | 改用 `applyEpochExtraReward`   |
-| `ErrorStakeFailure()`                               | 底层 StakingPool `stake` 返回 false                                                           | 检查 StakingPool 状态          |
-| `LockedStakingMigratedAccount(address account)`     | `migrateAccount` 的目标/源地址非法（自迁移/已迁移/有历史仓位）                                | 使用未参与过的 canonical 地址  |
-| `LockedStakingNotMigrationManager(address caller)`  | 非 migrationManager 调用 `migrateAccount`                                                     | 仅由迁移管理器调用             |
-| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                                                               | 保留相同地址                   |
+| 错误                                                | 原因                                                                                          | 解决方案                                         |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `ErrorAmountZero()`                                 | 质押金额为 0                                                                                  | 增加金额                                         |
+| `ErrorStakeNotApproved()`                           | 未绑定推荐关系                                                                                | 先绑定 Referral                                  |
+| `ErrorStakeAmountLimit()`                           | 超过质押限制                                                                                  | 减少金额或等待第二天                             |
+| `ErrorIndexOutOfBounds()`                           | 仓位索引无效                                                                                  | 使用有效索引                                     |
+| `ErrorStakeNotExist()`                              | 仓位不存在                                                                                    | 检查索引                                         |
+| `ErrorStakeWarmupPeriod()`                          | 预热期未过                                                                                    | 等待预热结束                                     |
+| `ErrorNotPrincipal()`                               | 无本金可领取                                                                                  | 等待释放                                         |
+| `ErrorExceedsBalance()`                             | 合约余额不足                                                                                  | 联系管理员                                       |
+| `ErrorExtraAmount()`                                | 额外利息不足                                                                                  | 减少提取量                                       |
+| `ErrorEpoch()`                                      | epoch 参数无效                                                                                | 联系管理员                                       |
+| `ErrorZeroAddress()`                                | 传入 address(0)                                                                               | 传入有效地址                                     |
+| `ErrorPrincipalReleaseVaultNotSet()`                | 未配置 `AegisSplitterManager` 时调用 `claimPrincipal`                                         | 先 `setPrincipalReleaseVault` 指向分流器 Manager |
+| `ErrorUnauthorizedRewardManager()`                  | 非 RewardManager 调用 `applyEpochExtraReward`                                                 | 仅由配置的 RewardManager 调用                    |
+| `ErrorRewardAmountMismatch()`                       | `applyEpochExtraReward` 的 `_rewardAmount` 与 `totalLockedPrincipal * _extraIndex / 1e9` 不等 | RewardManager 须按公式精确铸币                   |
+| `ErrorDeprecated()`                                 | 调用已废弃的 `updateGlobalIndex`                                                              | 改用 `applyEpochExtraReward`                     |
+| `ErrorStakeFailure()`                               | 底层 StakingPool `stake` 返回 false                                                           | 检查 StakingPool 状态                            |
+| `LockedStakingMigratedAccount(address account)`     | `migrateAccount` 的目标/源地址非法（自迁移/已迁移/有历史仓位）                                | 使用未参与过的 canonical 地址                    |
+| `LockedStakingNotMigrationManager(address caller)`  | 非 migrationManager 调用 `migrateAccount`                                                     | 仅由迁移管理器调用                               |
+| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                                                               | 保留相同地址                                     |
 
 ---
 
@@ -420,15 +424,15 @@ async function getUserStakes(lockedContract, userAddress) {
 
 ### 依赖合约
 
-| 合约                      | 用途                                         |
-| ------------------------- | -------------------------------------------- |
-| StakingPool               | 底层质押                                     |
-| sAGX                      | 生息代币                                     |
-| Referral                  | 推荐关系验证                                 |
-| RewardQueue               | 利息释放                                     |
-| RestakeConfig             | 复投配置                                     |
-| PrincipalReleaseVault     | 必需；定期本金提取后按配置周期锁定的线性释放 |
-| AegisDailyPurchaseTracker | 购买贡献追踪                                 |
+| 合约                                 | 用途                                                        |
+| ------------------------------------ | ----------------------------------------------------------- |
+| StakingPool                          | 底层质押                                                    |
+| sAGX                                 | 生息代币                                                    |
+| Referral                             | 推荐关系验证                                                |
+| RewardQueue                          | 利息释放                                                    |
+| RestakeConfig                        | 复投配置                                                    |
+| AegisSplitterManager / AegisSplitter | 必需；定期本金提取后经 Manager 路由按配置周期锁定的线性释放 |
+| AegisDailyPurchaseTracker            | 购买贡献追踪                                                |
 
 ### 配置参数
 

@@ -174,7 +174,7 @@ console.log('预热奖励已合并到主仓位')
 
 ##### claimPrincipal(amount)
 
-提取指定数量的本金，进入 PrincipalReleaseVault 按当前配置锁定周期的线性释放。
+提取指定数量的本金，经 `AegisSplitterManager` 路由到 `AegisSplitterHead_*` 等头部分流器按当前配置锁定周期的线性释放。
 
 javascript
 
@@ -189,7 +189,7 @@ console.log('本金提取成功，进入释放队列')
 
 - 存在主仓位 ( stakes[user].exists == true )
 - 提取金额 > 0 且 <= 主仓位本金
-- PrincipalReleaseVault 已设置
+- AegisSplitterManager 已设置
 
 **触发事件**: `Claimed(user, amount, 0, timestamp, 0, gonsDelta)`
 
@@ -299,18 +299,18 @@ event RewardClaimedMixed(
 
 ### 错误码
 
-| 错误                                 | 原因                 | 解决方案                         |
-| ------------------------------------ | -------------------- | -------------------------------- |
-| `ErrorStakeAmount()`                 | 质押金额为 0         | 确保金额 > 0                     |
-| `ErrorStakeNotApproved()`            | 未绑定推荐人         | 先调用 `Referral.bindReferral()` |
-| `ErrorStakeAmountLimit()`            | 超过质押上限         | 检查 `remainingStakeAmount()`    |
-| `ErrorStakeNotExists()`              | 不存在质押仓位       | 先进行质押                       |
-| `ErrorStakeWarmupNotEnded()`         | 预热期未结束         | 等待足够 epoch                   |
-| `ErrorStakeAmountExceedsBalance()`   | 提取金额超过余额     | 减少提取金额                     |
-| `ErrorStakeAmountExceedsInterest()`  | 提取金额超过可用利息 | 减少提取金额                     |
-| `ErrorStakeInterestAmountZero()`     | 利息为 0             | 等待 rebase 积累利息             |
-| `ErrorAlreadyMigrated()`             | 账户已迁移           | 使用迁移后的新地址               |
-| `ErrorPrincipalReleaseVaultNotSet()` | 本金释放保险库未设置 | 联系管理员配置                   |
+| 错误                                 | 原因                  | 解决方案                              |
+| ------------------------------------ | --------------------- | ------------------------------------- |
+| `ErrorStakeAmount()`                 | 质押金额为 0          | 确保金额 > 0                          |
+| `ErrorStakeNotApproved()`            | 未绑定推荐人          | 先调用 `Referral.bindReferral()`      |
+| `ErrorStakeAmountLimit()`            | 超过质押上限          | 检查 `remainingStakeAmount()`         |
+| `ErrorStakeNotExists()`              | 不存在质押仓位        | 先进行质押                            |
+| `ErrorStakeWarmupNotEnded()`         | 预热期未结束          | 等待足够 epoch                        |
+| `ErrorStakeAmountExceedsBalance()`   | 提取金额超过余额      | 减少提取金额                          |
+| `ErrorStakeAmountExceedsInterest()`  | 提取金额超过可用利息  | 减少提取金额                          |
+| `ErrorStakeInterestAmountZero()`     | 利息为 0              | 等待 rebase 积累利息                  |
+| `ErrorAlreadyMigrated()`             | 账户已迁移            | 使用迁移后的新地址                    |
+| `ErrorPrincipalReleaseVaultNotSet()` | 分流器 Manager 未设置 | 联系管理员配置 `AegisSplitterManager` |
 
 ---
 
@@ -412,17 +412,17 @@ async function claimMixedReward() {
 
 ### 依赖合约
 
-| 合约                    | 用途           |
-| ----------------------- | -------------- |
-| `StakingPool`           | 实际质押池     |
-| `sAGX`                  | 生息代币       |
-| `AGX`                   | 质押代币       |
-| `Referral`              | 推荐系统验证   |
-| `RewardQueue`           | 奖励线性释放   |
-| `LockedStaking`         | 复投目标       |
-| `PrincipalReleaseVault` | 本金释放保险库 |
-| `RestakeConfig`         | Restake 配置   |
-| `DailyPurchaseTracker`  | 购买记录追踪   |
+| 合约                                     | 用途                   |
+| ---------------------------------------- | ---------------------- |
+| `StakingPool`                            | 实际质押池             |
+| `sAGX`                                   | 生息代币               |
+| `AGX`                                    | 质押代币               |
+| `Referral`                               | 推荐系统验证           |
+| `RewardQueue`                            | 奖励线性释放           |
+| `LockedStaking`                          | 复投目标               |
+| `AegisSplitterManager` / `AegisSplitter` | 本金释放路由与线性释放 |
+| `RestakeConfig`                          | Restake 配置           |
+| `DailyPurchaseTracker`                   | 购买记录追踪           |
 
 ---
 

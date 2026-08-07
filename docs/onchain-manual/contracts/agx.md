@@ -35,13 +35,16 @@ SHA-256 40062dea6126…
 
 #### 1. Crash Fuse 防御机制
 
-- 监控 LP 价格连续下跌（2 个相邻确认区块）
+- 监控 LP 价格下跌（需要 2 个不同区块的有效低价观察，区块无需相邻）
 - 触发条件：当前价格低于快照价格的 crashThresholdBP
+- 同一区块只记录第一次有效观察；后续任意不同区块再次观察到低于阈值即激活
+- 若在激活前观察到价格恢复至阈值线或以上，则清空已有确认
 - 激活后：卖出税从 sellRatio 提高到 extraSellBP
 - 持续时间： crashFuseDurationSeconds （默认 24 小时）
 - 结束后：重新快照价格
 - Governance 可通过 setDefenseMode(true/false) 手动开启或关闭持续熔断
-- 手动关闭会清空连续确认并刷新价格快照，但不会重新开放当前区块已消耗的低税额度
+- 手动关闭会清空低价确认并刷新价格快照，但不会重新开放当前区块已消耗的低税额度
+- 治理调用 snapshotDefensePrice() 刷新快照时也会清空旧快照下的低价确认，旧确认不会跨快照累计
 
 #### 2. 单区块毛卖出额度
 
@@ -167,7 +170,7 @@ console.log('Gross sold in observed block:', ethers.formatUnits(config[11], 9))
 | 函数                                           | 权限                                                               | 说明                                                              |
 | ---------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | `mint(address _to, uint256 _amount)`           | 仅 `treasury`（`msg.sender != treasury` 时 revert `Unauthorized`） | 由 Treasury 调用的铸币入口，非 owner 后门。源码 `src/AGX.sol:593` |
-| `snapshotDefensePrice()`                       | `onlyGovernance`                                                   | 立即刷新防御价格快照。源码 `:433`                                 |
+| `snapshotDefensePrice()`                       | `onlyGovernance`                                                   | 立即刷新防御价格快照，并清空旧快照下的低价确认。源码 `:429`       |
 | `setDefenseSellTax(uint256 _bp)`               | `onlyGovernance`                                                   | 设置防御模式卖出税。源码 `:440`                                   |
 | `setDefenseDropThreshold(uint256 _bp)`         | `onlyGovernance`                                                   | 设置熔断跌幅阈值（下一区块首次受管控卖出起生效）。源码 `:448`     |
 | `setDefenseMode(bool _active)`                 | `onlyGovernance`                                                   | 手动开启/关闭持续熔断。源码 `:457`                                |
@@ -188,9 +191,9 @@ console.log('Gross sold in observed block:', ethers.formatUnits(config[11], 9))
 
 除 `BlockSellQuotaInitialized` / `BlockSellQuotaReduced` / `BlockSellDefenseTaxApplied` / `ExtraSellTaxActivated` / `ExtraSellTaxDeactivated` / `CrashThresholdUpdateScheduled` / `CrashThresholdUpdated` 外，补充两个防御关键事件：
 
-| 事件                                                                                                           | 说明                                                |
-| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| `PriceSnapshotted(uint256 indexed price, uint256 indexed timestamp)`                                           | 价格快照刷新（源码 `:185`）                         |
-| `DropConfirmed(uint256 indexed consecutiveBlocks, uint256 curPrice, uint256 snapshotPrice, uint256 timestamp)` | 连续下跌确认，触发熔断逻辑的关键事件（源码 `:199`） |
+| 事件                                                                                                           | 说明                                                                                                        |
+| -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `PriceSnapshotted(uint256 indexed price, uint256 indexed timestamp)`                                           | 价格快照刷新（源码 `:185`）                                                                                 |
+| `DropConfirmed(uint256 indexed consecutiveBlocks, uint256 curPrice, uint256 snapshotPrice, uint256 timestamp)` | 低价观察确认；`consecutiveBlocks` 为兼容保留的字段名，实际表示当前低价区间内不同区块的确认数（源码 `:199`） |
 
 其他管理类事件：`TreasuryAddressUpdated` / `GovernanceAddressUpdated` / `FeeReceiverAddressUpdated` / `RbsAddressUpdated` / `SellRateChanged` / `BalanceTargetRateChanged` / `BalancePoolAddressUpdated` / `TokenTransferStateUpdated` / `WhitelistAdded` / `WhitelistRemoved` / `BalancePoolBurned` / `DefenseSellTaxUpdated` / `DefenseDurationUpdated`。

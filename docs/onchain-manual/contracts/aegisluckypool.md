@@ -29,7 +29,7 @@ SHA-256 4faee3bcf161…
 
 **合约地址 key**: `LuckyPool`（生产固定使用本轮主网累计快照或其已审批不可变副本，不运行时扫描目录）
 
-**BNB Chain 主网 proxy**：本轮重新部署，以最终完整 manifest 为准。
+**BNB Chain 主网 proxy**：`0xe91148Fe7248b528398442e8eA4e8a7d107c994A`（release `bb680398-e7c0-46fa-ad87-139446fb4120`，当前暂停）。
 
 **ABI 路径**: `abi/AegisLuckyPool.json`
 

@@ -22,8 +22,6 @@ export interface BscContracts {
   communityFundVault: Address
   /** DaoPool——DAO Mixed 签名领取（手册 §9.5 签名奖励） */
   daoPool: Address
-  /** IncentivePool——签名领取（手册仍有；参与奖 UI 走 DaoPool Mixed） */
-  incentivePool: Address
   /** MarketFund——发展津贴签名领取 */
   marketFund: Address
   /** LuckyPool——幸运 Mixed 领取（手册 §14 LuckyPool 去中心化抽奖；可能暂停） */
@@ -68,7 +66,10 @@ export interface BscContracts {
   rewardQueue: Address
   /** RestakeConfig——Mixed 复投计划索引（手册 §9 贡献值与 Mixed 领奖） */
   restakeConfig: Address
-  /** PrincipalReleaseVault——本金释放缓冲池（手册 §13 PrincipalReleaseVault 本金释放） */
+  /**
+   * 归档 PrincipalReleaseVault——仅历史释放单（手册 §13）。
+   * 新本金退出走 AegisSplitterManager → AegisSplitterHead_*；FE 接线 deferred。
+   */
   principalReleaseVault: Address
   /** AccountMigrationManager——手册 §17 账户迁移；本轮 migrationEnabled=false */
   accountMigrationManager: Address
@@ -99,7 +100,6 @@ export const BSC_CONTRACTS = {
   rewardClaimer: requireEnvAddress('VITE_BSC_REWARD_CLAIMER'),
   communityFundVault: requireEnvAddress('VITE_BSC_COMMUNITY_FUND_VAULT'),
   daoPool: requireEnvAddress('VITE_BSC_DAO_POOL'),
-  incentivePool: requireEnvAddress('VITE_BSC_INCENTIVE_POOL'),
   marketFund: requireEnvAddress('VITE_BSC_MARKET_FUND'),
   luckyPool: requireEnvAddress('VITE_BSC_LUCKY_POOL'),
   usd1Swap: requireEnvAddress('VITE_BSC_USD1_SWAP'),
