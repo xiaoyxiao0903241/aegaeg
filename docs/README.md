@@ -29,6 +29,7 @@ React + Vite + TypeScript · AEGIS X DApp（BSC）。
 | 手册/API/前端对齐 · **仍开放缺口**（A+B+冲突） | [`ui-manual-api-alignment-audit.md`](./ui-manual-api-alignment-audit.md)                                                                                                 |
 | 对齐审计提示词（A+B+C📝 必出）                 | [`ui-manual-api-alignment-prompt.md`](./ui-manual-api-alignment-prompt.md)                                                                                               |
 | Dapp 数据覆盖矩阵（wayfinder 锁定）            | [`decisions/dapp-data-coverage-matrix-wayfinder.md`](./decisions/dapp-data-coverage-matrix-wayfinder.md) · [map #3](https://github.com/xiaoyxiao0903241/aegaeg/issues/3) |
+| Dapp 数据覆盖矩阵（正文）                      | [`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md)                                                                                                         |
 
 ## 手册优先级
 

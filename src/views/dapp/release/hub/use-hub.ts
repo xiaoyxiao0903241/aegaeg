@@ -90,8 +90,12 @@ export function useReleaseHub() {
   })
   const gagxEmptyLabel = `${formatNumber(0, { digits: 4 })} gAGX`
   const gagxTotal = bufferGagxClaimable + bufferGagxReleasing
-  const gagxLabel = bufferChainReady
+  const gagxTotalLabel = bufferChainReady
     ? `${formatNumber(formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS), { digits: 4 })} gAGX`
+    : gagxEmptyLabel
+  // 与 AGX 对称：可领只信链上 gagx.totalClaimable（API 无同口径分项）
+  const bufferClaimableGagx = bufferChainReady
+    ? `${formatNumber(formatTokenAmountToNumber(bufferGagxClaimable, GAGX_DECIMALS), { digits: 4 })} gAGX`
     : gagxEmptyLabel
 
   const queueReleasingNum = chainReady
@@ -130,7 +134,8 @@ export function useReleaseHub() {
     queueClaimableLabel,
     bufferTotalAgx,
     bufferClaimableAgx,
-    gagxZeroLabel: gagxLabel,
+    gagxTotalLabel,
+    bufferClaimableGagx,
     queueReleasingApprox: formatUsdApprox(queueReleasingNum, priceUsd),
     queueClaimableApprox: formatUsdApprox(queueClaimableNum, priceUsd),
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),

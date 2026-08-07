@@ -82,9 +82,10 @@ export function Rail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappHost()
+  const { walletReady } = useDappHost()
   const tooltips = useRailTooltips()
-  const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
+  // 两边都是按地址的纯链读；统一 walletReady（不要求 JWT）
+  const exchangeClaimable = useTurbineExchangeRailDot(walletReady)
   const releaseClaimable = useReleaseRailDot(walletReady)
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())

@@ -56,8 +56,8 @@ export function MobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappHost()
-  const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
+  const { walletReady } = useDappHost()
+  const exchangeClaimable = useTurbineExchangeRailDot(walletReady)
   const releaseClaimable = useReleaseRailDot(walletReady)
   const [mounted, setMounted] = useState(open)
   const [motion, setMotion] = useState<NavMotion | null>(open ? 'enter' : null)

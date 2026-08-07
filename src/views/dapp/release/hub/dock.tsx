@@ -70,7 +70,7 @@ export function ReleaseHubDock() {
             <CountValue text={vm.bufferTotalAgx} />
           </Text>
           <Text as="strong" variant="headline">
-            {vm.gagxZeroLabel}
+            {vm.gagxTotalLabel}
           </Text>
           <Text as="p" className="m-0 text-foreground/40" variant="copy">
             {vm.bufferTotalApprox}
@@ -93,7 +93,7 @@ export function ReleaseHubDock() {
               {t.release.labels.released}
             </Text>
             <Text as="span" tone="primary" variant="copy">
-              {vm.gagxZeroLabel}
+              {vm.bufferClaimableGagx}
             </Text>
           </div>
         </div>
