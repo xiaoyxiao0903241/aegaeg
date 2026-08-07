@@ -1,4 +1,5 @@
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
+import { interpolate } from '~/i18n/interpolate'
 
 /** 余额未知时显示零值；核心层不依赖 shared 展示工具。 */
 function zeroGroupedPlaceholder(digits: number): string {
@@ -72,5 +73,5 @@ export function formatAmountBalanceLabel(
 ): string {
   const digits = Math.max(0, Math.floor(args.digits ?? 2))
   const balance = args.balance.trim() === '' ? zeroGroupedPlaceholder(digits) : args.balance.trim()
-  return template.replace('{balance}', balance)
+  return interpolate(template, { balance })
 }

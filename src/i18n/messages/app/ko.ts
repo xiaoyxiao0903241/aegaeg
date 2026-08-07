@@ -1493,7 +1493,7 @@ const app = defineMessages({
       badge: '상환',
       releasedLabel: '릴리스됨',
       title: '상환 확인',
-      body: '상환 후 자산은 버퍼로 들어가 30일 2차 선형 릴리스를 진행하며, 버퍼 자산은 더 이상 수익을 내지 않습니다',
+      body: '상환 후 원금은 스플리터에서 선형 릴리스됩니다(약 {days}일). 수익 없음; 즉시 입금되지 않습니다.',
       confirm: '버퍼 진입 확인',
       confirmCta: '상환 {amount}',
       cancel: '취소',
@@ -1598,7 +1598,7 @@ const app = defineMessages({
           },
           {
             q: '버퍼 풀이란?',
-            a: '원금 언스테이크 후 PrincipalReleaseVault에서 2차 선형 릴리스됩니다. 온체인에서는 AGX만 정산됩니다. UI에서 gAGX 라벨로 전환할 수 있으며 수치는 — 로 정직하게 표시됩니다.',
+            a: '언스테이크 후 원금은 스플리터에서 주기적으로 선형 릴리스됩니다(AGX 또는 gAGX).',
           },
         ],
       },
@@ -2553,7 +2553,7 @@ const app = defineMessages({
       buffer: [
         {
           q: '버퍼 풀이란?',
-          a: '원금 종료 후 2차 선형 릴리스 금고(PrincipalReleaseVault).',
+          a: '원금 종료 후 스플리터에서 주기적으로 선형 릴리스됩니다.',
         },
         {
           q: '버퍼 풀 자산에도 수익이 있나요?',

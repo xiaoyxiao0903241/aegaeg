@@ -1,3 +1,5 @@
+import { interpolate } from '~/i18n/interpolate'
+
 /** 表格空单元格 / 未知值的占位符（ASCII 连字符，不用破折号）。 */
 export const TABLE_EMPTY = '-'
 
@@ -34,7 +36,7 @@ export function formatShareholderHintForRank(
   const row = tierRows[rank - 1]
   const bonus = row?.[3]
   if (!bonus || !template) return fallback
-  return template.replace('{bonus}', bonus)
+  return interpolate(template, { bonus })
 }
 
 export type FormatNumberOptions = {

@@ -9,6 +9,7 @@ import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { CountValue } from '~/shared/components/count-value'
@@ -91,7 +92,7 @@ export function BurnExchangeDetail({
       index === FAQ_DESTINATION_INDEX
         ? {
             ...item,
-            a: item.a.replace('{burnPct}', burnPct).replace('{injectPct}', injectPct),
+            a: interpolate(item.a, { burnPct, injectPct }),
           }
         : item,
     )

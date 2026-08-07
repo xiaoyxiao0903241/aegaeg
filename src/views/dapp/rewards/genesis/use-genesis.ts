@@ -9,6 +9,7 @@ import {
   useTeamRewardTotal,
 } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber, formatPresaleRank } from '~/shared/presenters/format'
 import { claimableAmountValue, formatApiAmount } from '~/views/dapp/rewards/shared'
@@ -52,12 +53,12 @@ export function useGenesisDock() {
   const tierProgress = nextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
   const teamRewardRate = getTeamBonusRateLabel(displayRank)
-  const teamRewardRatePrefix = t.rewards.teamRewardRate.replace('{rate}', '').trimEnd()
-  const teamRewardRateLabel = t.rewards.teamRewardRate.replace('{rate}', teamRewardRate)
+  const teamRewardRatePrefix = interpolate(t.rewards.teamRewardRate, { rate: '' }).trimEnd()
+  const teamRewardRateLabel = interpolate(t.rewards.teamRewardRate, { rate: teamRewardRate })
 
   const personalProgressLabel = tierProgress.isMaxRank
     ? t.rewards.progressMaxPersonal
-    : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
+    : interpolate(t.rewards.progressPersonalTo, { rank: nextRankLabel })
   const personalProgressValue = sessionReady
     ? `${formatNumber(tierProgress.personalCurrentUsd, { prefix: '$' })} / ${formatNumber(tierProgress.personalTargetUsd, { prefix: '$' })}`
     : formatApiAmount(null)
@@ -67,15 +68,16 @@ export function useGenesisDock() {
   const teamProgressValue = !sessionReady
     ? formatApiAmount(null)
     : showQualifiedPartitions
-      ? t.rewards.teamQualifiedPartitionsLabel
-          .replace('{rank}', formatPresaleRank(displayRank))
-          .replace('{count}', String(qualifiedPartitionCount))
+      ? interpolate(t.rewards.teamQualifiedPartitionsLabel, {
+          rank: formatPresaleRank(displayRank),
+          count: qualifiedPartitionCount,
+        })
       : tierProgress.isMaxRank
         ? t.rewards.progressMaxTeam
         : tierProgress.teamLegRank != null
-          ? `${formatNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} · ${t.rewards.teamLegRequirement.replace(
-              '{rank}',
-              formatPresaleRank(tierProgress.teamLegRank),
+          ? `${formatNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} · ${interpolate(
+              t.rewards.teamLegRequirement,
+              { rank: formatPresaleRank(tierProgress.teamLegRank) },
             )}`
           : `${formatNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} / ${formatNumber(tierProgress.teamTargetUsd ?? 0, { prefix: '$' })}`
 
@@ -129,10 +131,9 @@ export function useGenesisDock() {
           prefix: '$',
         })
   const communityLockedMeta = !sessionReady
-    ? t.rewards.communityFundLocked.replace('{amount}', formatApiAmount(null))
-    : t.rewards.communityFundLocked.replace(
-        '{amount}',
-        formatNumber(
+    ? interpolate(t.rewards.communityFundLocked, { amount: formatApiAmount(null) })
+    : interpolate(t.rewards.communityFundLocked, {
+        amount: formatNumber(
           Math.max(
             0,
             Number(communityFundTotal?.total ?? '0') -
@@ -141,7 +142,7 @@ export function useGenesisDock() {
           ),
           { digits: 2, prefix: '$' },
         ),
-      )
+      })
 
   function onClaimTeamReward() {
     void teamClaim.claim().then((result) => {

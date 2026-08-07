@@ -7,6 +7,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
@@ -291,8 +292,8 @@ export function AssetsListPager({
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
       <Text as="span" className="text-xs/4" tone="muted-foreground" variant="support">
-        {t.common.paginationTotal.replace('{total}', String(total))} ·{' '}
-        {t.common.paginationPerPage.replace('{size}', String(pageSize))}
+        {interpolate(t.common.paginationTotal, { total })} ·{' '}
+        {interpolate(t.common.paginationPerPage, { size: pageSize })}
       </Text>
       <div className="flex items-center gap-2">
         <Button
@@ -343,7 +344,7 @@ export function AssetsPositionBondRow({
   const canClaim = row.profit > 0n
   const canRedeem = row.pendingPayout > 0n
   const periodLabel = formatPeriodLabel(String(row.period))
-  const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()
+  const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
 
   return (
     <Card surface="outlined" className="grid gap-2">
@@ -427,12 +428,12 @@ export function AssetsPositionStakeRow(
     ? warmupExpired
       ? t.assets.position.activateWarmup
       : remainingEpochs != null && remainingEpochs > 0
-        ? t.assets.position.warmupRemainingEpochs.replace('{n}', String(remainingEpochs))
+        ? interpolate(t.assets.position.warmupRemainingEpochs, { n: remainingEpochs })
         : t.assets.blocked.warmupActive
     : row.kind === 'liquid'
       ? t.assets.position.redeemAnytime
       : undefined
-  const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()
+  const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
   const secondaryLabel = inWarmup
     ? t.assets.position.activateWarmup
     : row.kind === 'liquid'

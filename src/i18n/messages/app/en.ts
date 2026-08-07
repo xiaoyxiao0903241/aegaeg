@@ -37,7 +37,8 @@ const app = defineMessages({
         pairNotExist: 'Trading pair does not exist. Check token configuration.',
         notWinner: 'You are not a winner for this round.',
         rewardAlreadyClaimed: 'Reward already claimed. Do not claim again.',
-        configNotReady: 'Protocol config is not ready. Please try again later.',
+        configNotReady:
+          'Splitter manager / release queue config is not ready. Please try again later.',
         exceedsMax: 'Amount exceeds the maximum. Please lower it.',
         bondTooSmall: 'Bond payout is too small. Increase the purchase amount.',
         bondTooLarge: 'Bond exceeds max payout. Lower the purchase amount.',
@@ -124,7 +125,7 @@ const app = defineMessages({
       },
       {
         title: 'Buffer pool',
-        body: 'Redeemed principal unlocks linearly over ~30 days of blocks; released amounts can be withdrawn anytime.',
+        body: 'Redeemed principal unlocks linearly in the splitter; released amounts can be withdrawn anytime.',
       },
       {
         title: 'Turbine',
@@ -422,7 +423,7 @@ const app = defineMessages({
       unlockAction: 'Unlock',
       unlockSuccess: 'Unlocked — cooldown started',
       claimAction: 'Claim',
-      claimSuccess: 'Claimed successfully',
+      claimSuccess: 'Claim submitted — gAGX entered splitter release',
       claimEmpty: 'No unlock records yet',
       claimReady: 'Ready to claim',
       claimCoolingUntil: 'Cooling · {time}',
@@ -1484,7 +1485,7 @@ const app = defineMessages({
       badge: 'Redeem',
       releasedLabel: 'Released',
       title: 'Confirm redeem',
-      body: 'After redeem, assets enter the buffer for a 30-day secondary linear release. Buffer assets earn no yield.',
+      body: 'After redeem, principal enters the splitter for linear release (~{days} days). No yield; not paid instantly.',
       confirm: 'Enter buffer',
       confirmCta: 'Redeem {amount}',
       cancel: 'Cancel',
@@ -1589,7 +1590,7 @@ const app = defineMessages({
           },
           {
             q: 'What is the buffer pool?',
-            a: 'Redeemed principal enters PrincipalReleaseVault for secondary linear release (AGX on-chain). gAGX chrome stays; values show —.',
+            a: 'After unstaking, principal enters the splitter for linear release (AGX or gAGX).',
           },
         ],
       },
@@ -2470,7 +2471,7 @@ const app = defineMessages({
         'Redeemed principal unlocks here over {days} days of secondary linear release. Released AGX can be withdrawn to your wallet.',
       claim: 'Withdraw',
       refresh: 'Refresh',
-      claimSuccess: 'AGX withdrawn to wallet',
+      claimSuccess: 'Claim submitted — entered splitter release',
       statsTitle: 'Buffer pool data',
       entered: 'Total entered',
       extracted: 'Total withdrawn',
@@ -2540,7 +2541,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'What is the buffer pool?',
-          a: 'PrincipalReleaseVault — second-stage linear release after redeem/unstake.',
+          a: 'After redeem/unstake, principal unlocks linearly in the splitter.',
         },
         {
           q: 'Do buffer assets still earn yield?',

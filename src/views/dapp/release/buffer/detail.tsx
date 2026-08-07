@@ -3,7 +3,7 @@
  *
  * 顶部双卡展示 AGX 与 gAGX 的入池、已提取、释放中三组数据；
  * 中部为缓冲记录表，底部为机制步骤与收益说明。
- * gAGX 无链上数据源，数值显示为 0。
+ * gAGX 来自链上分流器快照（与 Dock 同源）。
  */
 import { useState } from 'react'
 
@@ -26,6 +26,7 @@ import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/shared'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 export function BufferDetail() {
   const { messages: t } = useI18n()
@@ -38,14 +39,17 @@ export function BufferDetail() {
   const bufferLogRows = bufferLogsQuery.data?.items.map(mapBufferPoolLogToRow) ?? []
   const bufferLogsTotal = bufferLogsQuery.data?.total ?? 0
   const bufferLogsLoading = sessionReady && bufferLogsQuery.isLoading
-  const amount = bufferQuery.data?.totalAmount ?? 0n
-  const claimed = bufferQuery.data?.totalClaimed ?? 0n
-  const releasing = bufferQuery.data?.totalReleasing ?? 0n
+  const amount = bufferQuery.data?.agx.totalAmount ?? 0n
+  const claimed = bufferQuery.data?.agx.totalClaimed ?? 0n
+  const releasing = bufferQuery.data?.agx.totalReleasing ?? 0n
+  const gagxAmount = bufferQuery.data?.gagx.totalAmount ?? 0n
+  const gagxClaimed = bufferQuery.data?.gagx.totalClaimed ?? 0n
+  const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? 0n
   const api = apiSummaryQuery.data
   const chainReady = walletReady && bufferQuery.data != null
 
-  function amountNum(apiRaw: string | undefined, chain: bigint): number {
-    if (chainReady) return formatTokenAmountToNumber(chain, AGX_DECIMALS)
+  function amountNum(apiRaw: string | undefined, chain: bigint, decimals: number): number {
+    if (chainReady) return formatTokenAmountToNumber(chain, decimals)
     if (sessionReady) {
       const n = parseApiAmount(apiRaw)
       if (n != null) return n
@@ -64,7 +68,7 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(amountNum(api?.cumulative_amount, amount), priceUsd),
+      approx: formatUsdApprox(amountNum(api?.cumulative_amount, amount, AGX_DECIMALS), priceUsd),
     },
     {
       label: t.release.buffer.extracted,
@@ -76,7 +80,7 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(amountNum(api?.released_amount, claimed), priceUsd),
+      approx: formatUsdApprox(amountNum(api?.released_amount, claimed, AGX_DECIMALS), priceUsd),
     },
     {
       label: t.release.labels.releasing,
@@ -88,16 +92,42 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(amountNum(api?.releasing_amount, releasing), priceUsd),
+      approx: formatUsdApprox(amountNum(api?.releasing_amount, releasing, AGX_DECIMALS), priceUsd),
     },
   ]
 
-  const gagxZero = `${formatNumber(0, { digits: 4 })} gAGX`
-  const gagxZeroApprox = formatUsdApprox(0, null)
+  const gagxEmpty = `${formatNumber(0, { digits: 4 })} gAGX`
   const gagxStats = [
-    { label: t.release.buffer.entered, value: gagxZero, approx: gagxZeroApprox },
-    { label: t.release.buffer.extracted, value: gagxZero, approx: gagxZeroApprox },
-    { label: t.release.labels.releasing, value: gagxZero, approx: gagxZeroApprox },
+    {
+      label: t.release.buffer.entered,
+      value: chainReady
+        ? `${formatNumber(formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS), { digits: 4 })} gAGX`
+        : gagxEmpty,
+      approx: formatUsdApprox(
+        chainReady ? formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS) : 0,
+        priceUsd,
+      ),
+    },
+    {
+      label: t.release.buffer.extracted,
+      value: chainReady
+        ? `${formatNumber(formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS), { digits: 4 })} gAGX`
+        : gagxEmpty,
+      approx: formatUsdApprox(
+        chainReady ? formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS) : 0,
+        priceUsd,
+      ),
+    },
+    {
+      label: t.release.labels.releasing,
+      value: chainReady
+        ? `${formatNumber(formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS), { digits: 4 })} gAGX`
+        : gagxEmpty,
+      approx: formatUsdApprox(
+        chainReady ? formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS) : 0,
+        priceUsd,
+      ),
+    },
   ]
 
   const steps = t.release.buffer.mechanismSteps

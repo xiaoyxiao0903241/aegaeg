@@ -6,6 +6,7 @@ import type { RefObject } from 'react'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
+import { interpolate } from '~/i18n/interpolate'
 import { FieldActionChip } from '~/shared/components/chip'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
@@ -112,9 +113,10 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
       <GenesisPurchaseSharesField
         disabled={!vm.walletReady || genesis.maxShares <= 0}
         inputRef={vm.sharesInputRef}
-        label={t.genesis.shares
-          .replace('{min}', formatTokenAmount(genesis.minAmount, USD1_DECIMALS, 0))
-          .replace('{max}', formatNumber(genesis.maxShares, { digits: 0, trimZeros: true }))}
+        label={interpolate(t.genesis.shares, {
+          min: formatTokenAmount(genesis.minAmount, USD1_DECIMALS, 0),
+          max: formatNumber(genesis.maxShares, { digits: 0, trimZeros: true }),
+        })}
         max={Math.max(genesis.maxShares, 1)}
         maxLabel={t.common.max}
         min={1}

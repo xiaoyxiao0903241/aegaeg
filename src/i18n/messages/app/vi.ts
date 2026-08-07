@@ -1525,7 +1525,7 @@ const app = defineMessages({
       badge: 'Chuộc',
       releasedLabel: 'Đã giải phóng',
       title: 'Xác nhận chuộc',
-      body: 'Sau chuộc, tài sản vào bộ đệm giải phóng tuyến tính lần hai 30 ngày; tài sản trong bộ đệm không còn sinh lợi nhuận',
+      body: 'Sau chuộc, gốc vào splitter giải phóng tuyến tính (~{days} ngày). Không lợi nhuận; không vào ví ngay.',
       confirm: 'Xác nhận vào bộ đệm',
       confirmCta: 'Chuộc {amount}',
       cancel: 'Hủy',
@@ -1636,7 +1636,7 @@ const app = defineMessages({
           },
           {
             q: 'Hồ đệm là gì?',
-            a: 'Gốc gỡ stake vào PrincipalReleaseVault giải phóng tuyến tính lần hai; on-chain chỉ tất toán AGX. Giao diện có thể đổi nhãn gAGX, số liệu trung thực hiện —.',
+            a: 'Sau khi unstake, gốc vào splitter giải phóng tuyến tính theo kỳ (AGX hoặc gAGX).',
           },
         ],
       },
@@ -2607,7 +2607,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'Hồ đệm là gì?',
-          a: 'Kho giải phóng tuyến tính lần hai sau thoát gốc (PrincipalReleaseVault).',
+          a: 'Sau redeem/unstake, gốc giải phóng tuyến tính trong splitter.',
         },
         {
           q: 'Tài sản trong hồ đệm còn lợi nhuận không?',

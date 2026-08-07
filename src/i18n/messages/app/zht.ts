@@ -1409,7 +1409,7 @@ const app = defineMessages({
       badge: '贖回',
       releasedLabel: '已釋放',
       title: '確認贖回',
-      body: '贖回後資產將進入緩衝區，進行 30 天二次線性釋放，緩衝區資產不再產生任何收益',
+      body: '贖回後本金經分流器線性釋放（約 {days} 天），釋放中資產不再產生收益，不是即時到賬',
       confirm: '確認進入緩衝',
       confirmCta: '贖回 {amount}',
       cancel: '取消',
@@ -1512,7 +1512,7 @@ const app = defineMessages({
           },
           {
             q: '緩衝池是什麼？',
-            a: '本金解除質押後進入 PrincipalReleaseVault 二次線性釋放；鏈上僅結算 AGX。稿面可切換 gAGX 標籤，數值誠實為 —。',
+            a: '本金解除質押後進入分流器按週期線性釋放；單據可為 AGX 或 gAGX。',
           },
         ],
       },
@@ -2454,7 +2454,7 @@ const app = defineMessages({
       buffer: [
         {
           q: '緩衝池是什麼？',
-          a: '本金退出後的二次線性釋放庫（PrincipalReleaseVault）。',
+          a: '本金退出後進入分流器按週期線性釋放。',
         },
         {
           q: '緩衝池裡的資產還有收益嗎？',

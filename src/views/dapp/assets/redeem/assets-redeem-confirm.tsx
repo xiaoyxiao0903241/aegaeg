@@ -1,6 +1,8 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { MainButton } from '~/shared/components/main-button'
@@ -10,10 +12,10 @@ import { cn } from '~/shared/lib/utils'
 /**
  * 赎回确认弹窗
  *
- * 提示本金将进入 PrincipalReleaseVault，默认按 30 天线性释放，不会即时到账；
- * 确认后发起赎回写交易。整体使用暗色卡片样式。
+ * 提示本金经 AegisSplitterManager 进入分流器线性释放，不会即时到账；
+ * 周期天数来自 Manager.effectiveDuration（未连钱包时 DEFAULT）；确认后发起赎回写交易。
  *
- * @see docs/onchain-manual/contracts/principalreleasevault.md
+ * @see 手册 §13 分流器本金释放
  */
 export function AssetsRedeemConfirm({
   amountLabel,
@@ -29,6 +31,8 @@ export function AssetsRedeemConfirm({
   onConfirm: () => void
 }) {
   const { messages: t } = useI18n()
+  const durationQuery = usePrincipalReleaseDurationDays()
+  const body = interpolate(t.assets.redeem.body, { days: durationQuery.data ?? 30 })
 
   return (
     <ResponsiveDialog
@@ -74,7 +78,7 @@ export function AssetsRedeemConfirm({
 
       <div className="mt-4 rounded-md bg-background/10 p-3">
         <Text as="p" className="m-0 text-background/80" variant="support">
-          {t.assets.redeem.body}
+          {body}
         </Text>
       </div>
 
@@ -86,7 +90,7 @@ export function AssetsRedeemConfirm({
         onClick={onConfirm}
         variant="secondary"
       >
-        {t.assets.redeem.confirmCta.replace('{amount}', amountLabel || '—')}
+        {interpolate(t.assets.redeem.confirmCta, { amount: amountLabel || '—' })}
       </MainButton>
     </ResponsiveDialog>
   )

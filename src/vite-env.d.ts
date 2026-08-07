@@ -53,7 +53,7 @@ interface ImportMetaEnv {
   readonly VITE_BSC_X_STAKING_POOL?: string
   readonly VITE_BSC_REWARD_QUEUE?: string
   readonly VITE_BSC_RESTAKE_CONFIG?: string
-  /** 归档 PrincipalReleaseVault；新本金走 Splitter（接线 deferred） */
+  /** 归档 PrincipalReleaseVault；新本金走 Splitter Manager */
   readonly VITE_BSC_PRINCIPAL_RELEASE_VAULT?: string
   readonly VITE_BSC_AEGIS_SPLITTER_MANAGER?: string
   readonly VITE_BSC_AEGIS_SPLITTER_HEAD_0?: string

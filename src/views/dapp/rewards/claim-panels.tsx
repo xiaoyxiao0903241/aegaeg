@@ -5,6 +5,7 @@
  * 禁止再扩成域级 mega primitives。
  */
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
@@ -143,9 +144,10 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           <ContributionShortBanner>
             <Text as="p" className="leading-5" variant="copy">
               <span className="text-foreground">
-                {vm.mixed.insufficientContributionDetail
-                  .replace('{need}', vm.requiredText)
-                  .replace('{have}', vm.haveText)}
+                {interpolate(vm.mixed.insufficientContributionDetail, {
+                  need: vm.requiredText,
+                  have: vm.haveText,
+                })}
               </span>{' '}
               <Button
                 className="inline text-coral-emphasis underline"
@@ -170,10 +172,10 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           />
           <div className="mt-1 flex justify-between gap-2">
             <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
-              {vm.mixed.releasePct.replace('{pct}', String(vm.releasePct))}
+              {interpolate(vm.mixed.releasePct, { pct: vm.releasePct })}
             </Text>
             <Text as="span" className="leading-4 font-semibold text-claim-restake" variant="detail">
-              {vm.mixed.restakePct.replace('{pct}', String(vm.restakePct))}
+              {interpolate(vm.mixed.restakePct, { pct: vm.restakePct })}
             </Text>
           </div>
         </Card>

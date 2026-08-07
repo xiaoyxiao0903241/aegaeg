@@ -1,11 +1,9 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
-import { SECONDS_PER_DAY } from '~/core/assets/claim-plans'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import {
-  readPrincipalReleaseDuration,
   readReleaseBufferSnapshot,
   readReleaseQueuePlans,
   readReleaseQueueSnapshot,
@@ -38,20 +36,6 @@ export function useReleaseBufferSnapshot(enabled: boolean) {
     queryFn: (addr) => readReleaseBufferSnapshot(addr as Address),
     enabled,
     placeholderData: keepPreviousData,
-  })
-}
-
-/** PRV 当前新单释放周期（天）；缺省回落 30。 */
-export function usePrincipalReleaseDurationDays() {
-  return useChainQuery({
-    queryKey: queryKeys.chain.releaseDuration,
-    scope: 'public',
-    freshness: 'api',
-    queryFn: async () => {
-      const seconds = await readPrincipalReleaseDuration()
-      const days = Number(seconds / SECONDS_PER_DAY)
-      return Number.isFinite(days) && days > 0 ? days : 30
-    },
   })
 }
 

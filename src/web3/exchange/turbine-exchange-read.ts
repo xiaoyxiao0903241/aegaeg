@@ -16,6 +16,7 @@ const turbineReadAbi = parseAbi([
   TURBINE_METHODS.currentCooldownDuration,
   TURBINE_METHODS.quoteUsdInForAgxOut,
   TURBINE_METHODS.swapSlippageBP,
+  TURBINE_METHODS.splitterManager,
 ])
 const erc20ReadAbi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
 
@@ -247,6 +248,23 @@ export async function readTurbineIsVested(
     abi: turbineReadAbi,
     functionName: 'isVested',
     args: [user as `0x${string}`, BigInt(index)],
+  })
+}
+
+/**
+ * 读取 Turbine 是否已接入分流器 Manager。
+ *
+ * 非零：claimCooledGagx 经 Manager 进分流器；零：旧行为直 mint gAGX 到钱包。
+ *
+ * @see 手册 §16.4–16.5 / turbine.md
+ */
+export async function readTurbineSplitterManager(
+  client: ChainReadClient = bscReadClient,
+): Promise<`0x${string}`> {
+  return client.readContract({
+    address: BSC_CONTRACTS.turbine,
+    abi: turbineReadAbi,
+    functionName: 'splitterManager',
   })
 }
 

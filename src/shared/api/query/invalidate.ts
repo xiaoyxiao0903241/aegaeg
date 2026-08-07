@@ -329,6 +329,8 @@ export function invalidateAfterStaking() {
 
   invalidateTabQueries('staking')
   invalidateTabQueries('assets')
+  // claimPrincipal / redeem(..., false) / startUnstake 经 Manager 进分流器
+  invalidateTabQueries('release')
   void queryClient.invalidateQueries({
     queryKey: queryKeys.api.luckyRewardSummary,
     refetchType: 'active',

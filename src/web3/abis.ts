@@ -184,6 +184,8 @@ export const TURBINE_METHODS = {
   swapSlippageBP: 'function swapSlippageBP() view returns (uint256)',
   buyAgxAndStartCooldown: 'function buyAgxAndStartCooldown(uint256 usdAmount)',
   claimCooledGagx: 'function claimCooledGagx(uint256 index)',
+  /** 非零时 claimCooledGagx 经 Manager 进分流器（手册 §16.5） */
+  splitterManager: 'function splitterManager() view returns (address)',
 } as const
 
 /**
@@ -514,24 +516,52 @@ export const REWARD_QUEUE_ERRORS = [
 ] as const
 
 /**
- * 归档 PrincipalReleaseVault — 历史本金释放单领取。
- * 新本金退出走 AegisSplitter（手册 §13）；FE 接线 deferred。
+ * AegisSplitterManager — 路由头部分流器 / 默认周期。
  * @see 手册 §13 分流器本金释放（原 PrincipalReleaseVault）
+ * @see docs/onchain-manual/contracts/aegissplittermanager.md
+ */
+export const AEGIS_SPLITTER_MANAGER_METHODS = {
+  getHeadSplitterForUser: 'function getHeadSplitterForUser(address user) view returns (address)',
+  effectiveDuration: 'function effectiveDuration(address user) view returns (uint256)',
+  DEFAULT_RELEASE_DURATION: 'function DEFAULT_RELEASE_DURATION() view returns (uint256)',
+} as const
+
+/**
+ * AegisSplitter — 现行本金线性释放（含 token 字段；分页 getReleases）。
+ * @see 手册 §13 分流器本金释放
+ * @see docs/onchain-manual/contracts/aegissplitter.md
+ */
+export const AEGIS_SPLITTER_METHODS = {
+  getReleases:
+    'function getReleases(address user, uint256 start, uint256 limit) view returns (((address token, uint256 amount, uint256 claimed, uint256 startTime, uint256 duration) release, uint256 claimableAmount, uint256 remainingAmount, uint256 endTime, bool fullyClaimed)[] items, uint256 totalCount)',
+  claimMany: 'function claimMany(uint256 start, uint256 limit) returns (uint256)',
+  /** 下游分流器；0 = 链尾（领取到钱包） */
+  next: 'function next() view returns (address)',
+} as const
+
+export const AEGIS_SPLITTER_ERRORS = [
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorIndexOutOfBounds()',
+  'error ErrorNothingToClaim()',
+  'error ErrorInvalidPagination()',
+  'error ErrorAlreadyMigrated()',
+  'error ErrorCallerNotAuthorized()',
+  'error ErrorNotPre()',
+] as const
+
+/**
+ * 归档 PrincipalReleaseVault — 历史本金释放单领取（无 token 字段）。
+ * @see 手册 §13（归档 ABI；新单不再进入）
  */
 export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   getReleaseCount: 'function getReleaseCount(address user) view returns (uint256)',
   getRelease:
     'function getRelease(address user, uint256 index) view returns ((uint256 amount, uint256 claimed, uint256 startTime, uint256 duration) release, uint256 claimableAmount, uint256 remainingAmount, uint256 endTime, bool fullyClaimed)',
   claimable: 'function claimable(address user, uint256 index) view returns (uint256)',
-  releaseDuration: 'function releaseDuration() view returns (uint256)',
-  claim: 'function claim(uint256 index)',
   claimMany: 'function claimMany(uint256 start, uint256 limit)',
 } as const
 
-/**
- * 归档 PrincipalReleaseVault 自定义错误。
- * @see docs/onchain-manual/contracts/aegissplitter.md（现行释放）；历史 PRV ABI 已归档
- */
 export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
   'error ErrorZeroAddress()',
   'error ErrorZeroAmount()',

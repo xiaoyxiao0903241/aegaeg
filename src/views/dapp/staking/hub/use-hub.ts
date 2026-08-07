@@ -41,6 +41,31 @@ function formatAgxGrouped(wei: bigint | undefined): string {
   return formatNumber(n, { digits: 2, suffix: ' AGX' })
 }
 
+/**
+ * 智库储备按 USD1 口径展示（1 USD1 ≈ 1 USD），同时显示 ≈$ 副标。
+ * 链上 `totalReserves` 为 AGX 口径价值（9 decimals）→ × AGX/$ 得 USD1 展示量（USD1≈$1）。
+ */
+function formatTreasuryUsd1(
+  reservesAgxWei: bigint | undefined,
+  agxPriceUsd: number | null,
+): { label: string; usdSub: string } {
+  const empty = {
+    label: formatCompact(0, { digits: 2, suffix: ' USD1' }),
+    usdSub: formatNumber(0, { digits: 2, prefix: '≈ $' }),
+  }
+  if (reservesAgxWei == null || agxPriceUsd == null || !(agxPriceUsd > 0)) return empty
+  const agx = formatTokenAmountToNumber(reservesAgxWei, AGX_DECIMALS)
+  if (!Number.isFinite(agx)) return empty
+  const usd1 = agx * agxPriceUsd
+  return {
+    label: formatCompact(usd1, { digits: 2, suffix: ' USD1' }),
+    usdSub:
+      Math.abs(usd1) >= 1_000
+        ? formatCompact(usd1, { digits: 2, prefix: '≈ $' })
+        : formatNumber(usd1, { digits: 2, prefix: '≈ $' }),
+  }
+}
+
 function formatRebasePct(rate1e18: bigint | null | undefined): string {
   if (rate1e18 == null) return YIELD_EMPTY
   const pct = formatTokenAmountToNumber(rate1e18, 18)
@@ -95,11 +120,6 @@ export function useStakingHubDetail() {
     overviewQuery.data != null
       ? formatTokenAmountToNumber(overviewQuery.data.circulatingSupply, AGX_DECIMALS)
       : null
-  const treasury =
-    overviewQuery.data != null
-      ? formatTokenAmountToNumber(overviewQuery.data.totalReserves, AGX_DECIMALS)
-      : null
-
   const tvlLabel = formatAgxCompact(overviewQuery.data?.poolAgxBalance)
   const tvlUsdSub = formatUsdApprox(poolAgx ?? 0, agxPriceUsd, { compact: true })
   const circulatingLabel = formatAgxGrouped(overviewQuery.data?.circulatingSupply)
@@ -107,8 +127,7 @@ export function useStakingHubDetail() {
     circulating != null && agxPriceUsd != null
       ? formatUsd(circulating * agxPriceUsd)
       : formatUsd(null)
-  const treasuryLabel = formatAgxCompact(overviewQuery.data?.totalReserves)
-  const treasuryUsdSub = formatUsdApprox(treasury ?? 0, agxPriceUsd, { compact: true })
+  const treasuryDisplay = formatTreasuryUsd1(overviewQuery.data?.totalReserves, agxPriceUsd)
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
@@ -173,8 +192,8 @@ export function useStakingHubDetail() {
       tvlUsdSub,
       mcap: mcapLabel,
       circulating: circulatingLabel,
-      treasury: treasuryLabel,
-      treasuryUsdSub,
+      treasury: treasuryDisplay.label,
+      treasuryUsdSub: treasuryDisplay.usdSub,
       price: agxPriceLabel,
       burned: burnedLabel,
       rebase: rebaseLabel,

@@ -8,6 +8,7 @@ import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hook
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -192,7 +193,7 @@ export function usePositionDock(product: AssetsProduct) {
 
   function formatPeriodLabel(period: string): string {
     if (period === 'liquid') return t.assets.position.liquid
-    return t.assets.claim.releaseDays.replace('{days}', String(period))
+    return interpolate(t.assets.claim.releaseDays, { days: period })
   }
 
   const stakeRows = useMemo(() => {

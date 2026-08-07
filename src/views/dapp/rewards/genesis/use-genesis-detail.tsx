@@ -8,6 +8,7 @@ import {
   useTeamRewardClaimLogs,
 } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { StatusBadge } from '~/shared/components/badge'
 import { Text } from '~/shared/components/text'
@@ -35,7 +36,7 @@ function formatGenesisTierTeamCell(
   const rank = Number.parseInt(rankLabel.replace(/^S/i, ''), 10)
   const legRank = getTeamRequirementLegRank(rank)
   if (legRank == null) return totalVolumeValue
-  return tierDualLegRequirement.replace('{rank}', formatPresaleRank(legRank))
+  return interpolate(tierDualLegRequirement, { rank: formatPresaleRank(legRank) })
 }
 
 /** 历史记录金额统一加 +$ 前缀，突出发放 */

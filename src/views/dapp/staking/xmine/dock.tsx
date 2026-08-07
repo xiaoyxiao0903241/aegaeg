@@ -1,3 +1,4 @@
+import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
@@ -24,7 +25,7 @@ export function XmineDock() {
 
   const quotaBalance = (
     <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-      {t.staking.xmine.quotaInline.replace('{quota}', xmine.quotaLabel)}
+      {interpolate(t.staking.xmine.quotaInline, { quota: xmine.quotaLabel })}
     </Text>
   )
 

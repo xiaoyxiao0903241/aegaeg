@@ -232,7 +232,8 @@ export async function submitMixedClaim(args: {
  * 定期本金领取，成功后失效相关缓存。
  * warmup 中的仓位禁止赎回。
  *
- * @see docs/onchain-manual/contracts/principalreleasevault.md
+ * @see docs/onchain-manual/contracts/liquidstaking.md
+ * @see docs/onchain-manual/contracts/lockedstaking.md
  */
 export async function submitStakeRedeem(args: {
   session: WriteSession
@@ -268,7 +269,7 @@ export async function submitStakeRedeem(args: {
  * 写前重新读取链上可赎回金额并校验，通过后写入债券赎回，
  * 成功后失效相关缓存。
  *
- * @see docs/onchain-manual/contracts/principalreleasevault.md
+ * @see docs/onchain-manual/contracts/bonddepository.md
  */
 export async function submitBondRedeem(args: {
   session: WriteSession

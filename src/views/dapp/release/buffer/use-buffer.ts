@@ -6,26 +6,25 @@ import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatUsdApprox } from '~/shared/presenters/format'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
-import {
-  usePrincipalReleaseDurationDays,
-  useReleaseBufferSnapshot,
-} from '~/views/dapp/release/use-release-reads'
+import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 /**
  * 缓冲池交互面板状态
  *
- * 读取链上缓冲快照，组合「可提取」门闸与进度文案；
- * 提取成功后提示并重读快照，刷新仅重拉 AGX 卡。
+ * 读取分流器 + 归档 PRV 快照；AGX / gAGX 分卡；领取写两边有可领的源。
  */
 export function useBuffer() {
   const { messages: t } = useI18n()
@@ -46,15 +45,19 @@ export function useBuffer() {
     },
   })
 
+  const agxClaimable = bufferQuery.data?.agx.totalClaimable ?? 0n
+  const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? 0n
+  const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? 0n
+  const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? 0n
   const claimable = bufferQuery.data?.totalClaimable ?? 0n
-  const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const canClaim = canClaimWhen({
     walletReady,
     writeReady,
     unknownReceiptLocked: claim.isLocked,
     claimable,
   })
-  const pctLabel = formatReleasePct(claimable, releasing)
+  const agxPctLabel = formatReleasePct(agxClaimable, agxReleasing)
+  const gagxPctLabel = formatReleasePct(gagxClaimable, gagxReleasing)
 
   async function onClaim() {
     if (!canClaim) return
@@ -65,7 +68,6 @@ export function useBuffer() {
     if (refreshing) return
     setRefreshing(true)
     try {
-      // 只重读 AGX 卡链上快照；右侧 API 与 gAGX（无源）不动
       await bufferQuery.refetch()
     } finally {
       setRefreshing(false)
@@ -76,12 +78,24 @@ export function useBuffer() {
     t,
     onBack: () => setView('hub'),
     walletReady,
-    intro: t.release.buffer.intro.replace('{days}', String(durationQuery.data ?? 30)),
-    claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`,
-    releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`,
-    releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
-    valueHint: formatUsdApprox(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
-    progressWidth: pctLabel,
+    intro: interpolate(t.release.buffer.intro, { days: durationQuery.data ?? 30 }),
+    claimableLabel: `${formatTokenAmount(agxClaimable, AGX_DECIMALS, 4)} AGX`,
+    releasingLabel: `${formatTokenAmount(agxReleasing, AGX_DECIMALS, 4)} AGX`,
+    releasedPctLabel: interpolate(t.release.labels.releasedPct, {
+      pct: agxPctLabel.replace('%', ''),
+    }),
+    valueHint: formatUsdApprox(formatTokenAmountToNumber(agxClaimable, AGX_DECIMALS), priceUsd),
+    progressWidth: agxPctLabel,
+    gagxClaimableLabel: `${formatTokenAmount(gagxClaimable, GAGX_DECIMALS, 4)} gAGX`,
+    gagxReleasingLabel: `${formatTokenAmount(gagxReleasing, GAGX_DECIMALS, 4)} gAGX`,
+    gagxReleasedPctLabel: interpolate(t.release.labels.releasedPct, {
+      pct: gagxPctLabel.replace('%', ''),
+    }),
+    gagxValueHint: formatUsdApprox(
+      formatTokenAmountToNumber(gagxClaimable, GAGX_DECIMALS),
+      priceUsd,
+    ),
+    gagxProgressWidth: gagxPctLabel,
     canClaim,
     pending: claim.isPending,
     onClaim,

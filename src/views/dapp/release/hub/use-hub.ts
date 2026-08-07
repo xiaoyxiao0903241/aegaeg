@@ -14,6 +14,7 @@ import {
 } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 /**
  * 释放总览交互面板状态
@@ -32,8 +33,10 @@ export function useReleaseHub() {
 
   const queueClaimable = queueQuery.data?.totalClaimable ?? 0n
   const queueReleasing = queueQuery.data?.totalReleasing ?? 0n
-  const bufferClaimable = bufferQuery.data?.totalClaimable ?? 0n
-  const bufferReleasing = bufferQuery.data?.totalReleasing ?? 0n
+  const bufferClaimable = bufferQuery.data?.agx.totalClaimable ?? 0n
+  const bufferReleasing = bufferQuery.data?.agx.totalReleasing ?? 0n
+  const bufferGagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? 0n
+  const bufferGagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? 0n
   const chainReady = walletReady && queueQuery.data != null
   const bufferChainReady = walletReady && bufferQuery.data != null
 
@@ -85,7 +88,11 @@ export function useReleaseHub() {
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
-  const gagxZeroLabel = `${formatNumber(0, { digits: 4 })} ${t.release.units.queue}`
+  const gagxEmptyLabel = `${formatNumber(0, { digits: 4 })} gAGX`
+  const gagxTotal = bufferGagxClaimable + bufferGagxReleasing
+  const gagxLabel = bufferChainReady
+    ? `${formatNumber(formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS), { digits: 4 })} gAGX`
+    : gagxEmptyLabel
 
   const queueReleasingNum = chainReady
     ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS)
@@ -96,6 +103,7 @@ export function useReleaseHub() {
   const bufferTotalNum = bufferChainReady
     ? formatTokenAmountToNumber(bufferTotalChain, AGX_DECIMALS)
     : (parseApiAmount(bufferApi.data?.releasing_amount) ?? 0)
+  const bufferGagxNum = bufferChainReady ? formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS) : 0
 
   const fallbackPeriods = t.release.hub.taxRows.periods
   const fallbackRates = t.release.hub.taxRows.rates
@@ -122,11 +130,11 @@ export function useReleaseHub() {
     queueClaimableLabel,
     bufferTotalAgx,
     bufferClaimableAgx,
-    gagxZeroLabel,
+    gagxZeroLabel: gagxLabel,
     queueReleasingApprox: formatUsdApprox(queueReleasingNum, priceUsd),
     queueClaimableApprox: formatUsdApprox(queueClaimableNum, priceUsd),
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
-    bufferGagxApprox: formatUsdApprox(0, null),
+    bufferGagxApprox: formatUsdApprox(bufferGagxNum, priceUsd),
     taxPeriods,
     taxRates,
   }

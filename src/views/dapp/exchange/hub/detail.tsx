@@ -6,6 +6,7 @@
  */
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { exchangeHubAssets } from '~/shared/assets/dapp'
@@ -75,7 +76,7 @@ export function ExchangeHubDetail() {
             const target = PROGRAM_TARGETS[index] ?? null
             const body =
               index === CONTRIBUTION_CARD_INDEX
-                ? card.body.replace('{ratio}', contributionRatio)
+                ? interpolate(card.body, { ratio: contributionRatio })
                 : card.body
 
             return (

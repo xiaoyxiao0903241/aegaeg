@@ -67,8 +67,13 @@ export interface BscContracts {
   /** RestakeConfig——Mixed 复投计划索引（手册 §9 贡献值与 Mixed 领奖） */
   restakeConfig: Address
   /**
+   * AegisSplitterManager——按用户路由头部分流器（手册 §13）。
+   * 新本金释放读/写经 Manager → AegisSplitterHead_*。
+   */
+  aegisSplitterManager: Address
+  /**
    * 归档 PrincipalReleaseVault——仅历史释放单（手册 §13）。
-   * 新本金退出走 AegisSplitterManager → AegisSplitterHead_*；FE 接线 deferred。
+   * 新本金不再进入；旧单仍用此地址 + 归档 ABI 领取。
    */
   principalReleaseVault: Address
   /** AccountMigrationManager——手册 §17 账户迁移；本轮 migrationEnabled=false */
@@ -122,6 +127,7 @@ export const BSC_CONTRACTS = {
   xStakingPool: requireEnvAddress('VITE_BSC_X_STAKING_POOL'),
   rewardQueue: requireEnvAddress('VITE_BSC_REWARD_QUEUE'),
   restakeConfig: requireEnvAddress('VITE_BSC_RESTAKE_CONFIG'),
+  aegisSplitterManager: requireEnvAddress('VITE_BSC_AEGIS_SPLITTER_MANAGER'),
   principalReleaseVault: requireEnvAddress('VITE_BSC_PRINCIPAL_RELEASE_VAULT'),
   accountMigrationManager: requireEnvAddress('VITE_BSC_ACCOUNT_MIGRATION_MANAGER'),
   sagx: requireEnvAddress('VITE_BSC_SAGX'),

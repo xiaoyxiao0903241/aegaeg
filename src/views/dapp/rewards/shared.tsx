@@ -7,6 +7,7 @@
 import type { ReactNode } from 'react'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { interpolate } from '~/i18n/interpolate'
 import type {
   CommunityFundLogItem,
   DaoGrantStatus,
@@ -552,7 +553,7 @@ export function mapLuckyMyRoundToRow(
   const result =
     item.is_winner === true ? (
       <StatusBadge size="compact" tone="pending">
-        {labels.won.replace('{amount}', wonAmount)}
+        {interpolate(labels.won, { amount: wonAmount })}
       </StatusBadge>
     ) : (
       <StatusBadge size="compact" tone="muted">

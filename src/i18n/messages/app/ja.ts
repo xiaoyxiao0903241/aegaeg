@@ -1490,7 +1490,7 @@ const app = defineMessages({
       badge: '償還',
       releasedLabel: 'リリース済み',
       title: '償還を確認',
-      body: '償還後、資産はバッファに入り 30 日の二次線形リリースを行います。バッファ内資産は収益を生みません',
+      body: '償還後、元本は分流器で線形リリースされます（約 {days} 日）。収益はなく、即時着金ではありません。',
       confirm: 'バッファへ入ることを確認',
       confirmCta: '償還 {amount}',
       cancel: 'キャンセル',
@@ -1594,7 +1594,7 @@ const app = defineMessages({
           },
           {
             q: 'バッファプールとは？',
-            a: '元本のアンステーク後、PrincipalReleaseVault で二次線形リリース。オンチェーンは AGX のみ決済。画面では gAGX ラベルに切替可能で、数値は正直に — を表示。',
+            a: 'アンステーク後、元本は分流器で周期に従い線形リリースされます（AGX または gAGX）。',
           },
         ],
       },
@@ -2560,7 +2560,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'バッファプールとは？',
-          a: '元本退出後の二次線形リリース庫（PrincipalReleaseVault）。',
+          a: '元本退出後、分流器で周期に従い線形リリースされます。',
         },
         {
           q: 'バッファプール内の資産にまだ収益はありますか？',

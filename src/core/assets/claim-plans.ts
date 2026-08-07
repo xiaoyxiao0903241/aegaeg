@@ -5,6 +5,8 @@
  * 复投计划进 RestakeConfig；天数档位与开放质押的活期 / 180 天等无对应关系。
  */
 
+import { interpolate } from '~/i18n/interpolate'
+
 export const RELEASE_DURATION_DAYS = [5, 20, 40, 60] as const
 
 export const RESTAKE_DURATION_DAYS = [360, 540] as const
@@ -136,10 +138,10 @@ export function planLabel(
   const target = BigInt(days) * SECONDS_PER_DAY
   const plan = plans?.find((p) => p.exists !== false && p.durationSeconds === target)
   if (plan?.taxBps != null) {
-    const tax = taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
-    return daysTax.replace('{days}', String(days)).replace('{tax}', tax)
+    const tax = interpolate(taxRate, { rate: Number(plan.taxBps) / 100 })
+    return interpolate(daysTax, { days, tax })
   }
-  return daysOnly.replace('{days}', String(days))
+  return interpolate(daysOnly, { days })
 }
 
 /**

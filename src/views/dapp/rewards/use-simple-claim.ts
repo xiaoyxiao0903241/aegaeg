@@ -1,4 +1,5 @@
 import { useMarketAllowanceSummary } from '~/hooks/use-api-data'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
@@ -39,7 +40,7 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
 
   const claimableText = grantClaimableText
   const ctaAmount = `${grantClaimableText} ${TOKEN_GAGX}`
-  const ctaLabel = copy.ctaToWallet.replace('{amount}', ctaAmount)
+  const ctaLabel = interpolate(copy.ctaToWallet, { amount: ctaAmount })
   const canSubmit = sessionReady && !claim.isClaiming && claim.canClaim && hasGrantClaimable
 
   function onClaim() {

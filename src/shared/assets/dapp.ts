@@ -112,7 +112,7 @@ export const dappAssets = {
   assetsPositionBoost: '/assets/figma/dapp/assets-hub/ic-position-boost-12.svg',
   tokenAgx: tokenCarouselIcons.agxIcon,
   tokenGagx: tokenCarouselIcons.gagxIcon,
-  /** 与 `tokenGagx` 同一张图（轮播 128²），旧涡轮使用处保留。 */
+  /** 与 `tokenGagx` 同一张图，保留给旧涡轮调用处。 */
   tokenGagxMark: tokenCarouselIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,
   tokenX: tokenFlywheelIcons.xIcon,

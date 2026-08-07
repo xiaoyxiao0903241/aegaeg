@@ -2,8 +2,14 @@ import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plans'
+import { ZERO_ADDRESS } from '~/core/constants'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
-import { PRINCIPAL_RELEASE_VAULT_METHODS, REWARD_QUEUE_METHODS } from '~/web3/abis'
+import {
+  AEGIS_SPLITTER_MANAGER_METHODS,
+  AEGIS_SPLITTER_METHODS,
+  PRINCIPAL_RELEASE_VAULT_METHODS,
+  REWARD_QUEUE_METHODS,
+} from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readAggregate3 } from '~/web3/multicall3-read'
@@ -15,12 +21,24 @@ const queueReadAbi = parseAbi([
   REWARD_QUEUE_METHODS.getRewardsWithPlanIndex,
 ])
 
-const vaultReadAbi = parseAbi([
+const managerReadAbi = parseAbi([
+  AEGIS_SPLITTER_MANAGER_METHODS.getHeadSplitterForUser,
+  AEGIS_SPLITTER_MANAGER_METHODS.DEFAULT_RELEASE_DURATION,
+  AEGIS_SPLITTER_MANAGER_METHODS.effectiveDuration,
+])
+
+const splitterReadAbi = parseAbi([AEGIS_SPLITTER_METHODS.getReleases, AEGIS_SPLITTER_METHODS.next])
+
+const archiveVaultReadAbi = parseAbi([
   PRINCIPAL_RELEASE_VAULT_METHODS.getReleaseCount,
   PRINCIPAL_RELEASE_VAULT_METHODS.getRelease,
   PRINCIPAL_RELEASE_VAULT_METHODS.claimable,
-  PRINCIPAL_RELEASE_VAULT_METHODS.releaseDuration,
 ])
+
+/** 手册 §13：getReleases / claimMany 单页上限 50 */
+export const SPLITTER_RELEASE_PAGE = 50
+/** 链式瀑布深度上限（防环）；与迁移 hops 同量级 */
+const SPLITTER_CHAIN_MAX = 8
 
 export type ReleaseQueuePlanRow = {
   planIndex: number
@@ -37,8 +55,7 @@ export type ReleaseQueueSnapshot = {
   totalReleasing: bigint
 }
 
-export type ReleaseBufferSnapshot = {
-  count: number
+export type ReleaseBufferTokenTotals = {
   totalAmount: bigint
   totalClaimed: bigint
   totalClaimable: bigint
@@ -46,10 +63,103 @@ export type ReleaseBufferSnapshot = {
   totalReleasing: bigint
 }
 
+/** claimMany 窗口：仅覆盖「窗内至少一笔可领」的 [start, start+limit) */
+export type ReleaseClaimWindow = {
+  start: number
+  limit: number
+}
+
+/** 分流器链上单跳（Head → … → 链尾） */
+export type ReleaseBufferChainHop = {
+  address: Address
+  next: Address
+  /** next == 0：领取到钱包；否则转发下游再释放 */
+  isTail: boolean
+  count: number
+  claimable: bigint
+  /** 可领窗；空窗不调 claimMany（否则 ErrorNothingToClaim） */
+  claimWindows: ReleaseClaimWindow[]
+}
+
+export type ReleaseBufferSnapshot = {
+  /** 用户头部分流器；未解析时为零地址 */
+  splitter: Address
+  /** Head→next 链；领取须对每跳分别 claimMany */
+  chain: ReleaseBufferChainHop[]
+  splitterCount: number
+  archiveCount: number
+  /** 释放单条数（分流器链 + 归档） */
+  count: number
+  /**
+   * AGX + gAGX 可领之和，仅作「有无可领」门闸；
+   * 展示金额一律用 agx / gagx 桶，禁止用本字段格式化。
+   */
+  totalClaimable: bigint
+  agx: ReleaseBufferTokenTotals
+  gagx: ReleaseBufferTokenTotals
+  splitterClaimable: bigint
+  archiveClaimable: bigint
+  /** 归档可领窗；空窗不调 claimMany */
+  archiveClaimWindows: ReleaseClaimWindow[]
+}
+
+const emptyTotals = (): ReleaseBufferTokenTotals => ({
+  totalAmount: 0n,
+  totalClaimed: 0n,
+  totalClaimable: 0n,
+  totalRemaining: 0n,
+  totalReleasing: 0n,
+})
+
 function durationDaysFromSeconds(seconds: bigint): number | null {
   const days = Number(seconds / SECONDS_PER_DAY)
   if (!Number.isFinite(days) || days <= 0) return null
   return days
+}
+
+function addTotals(
+  target: ReleaseBufferTokenTotals,
+  amount: bigint,
+  claimed: bigint,
+  claimable: bigint,
+  remaining: bigint,
+): void {
+  target.totalAmount += amount
+  target.totalClaimed += claimed
+  target.totalClaimable += claimable
+  target.totalRemaining += remaining
+  target.totalReleasing =
+    target.totalRemaining > target.totalClaimable
+      ? target.totalRemaining - target.totalClaimable
+      : 0n
+}
+
+function isSameAddress(a: string, b: string): boolean {
+  return a.toLowerCase() === b.toLowerCase()
+}
+
+/**
+ * 从逐笔 claimable 生成 claimMany 窗口（跳过全空窗）。
+ * 合约：窗内无可领 → ErrorNothingToClaim。
+ */
+export function claimWindowsFromAmounts(
+  amounts: readonly bigint[],
+  pageSize: number = SPLITTER_RELEASE_PAGE,
+): ReleaseClaimWindow[] {
+  if (pageSize <= 0) throw new Error('RELEASE_CLAIM_PAGE_INVALID')
+  const windows: ReleaseClaimWindow[] = []
+  for (let start = 0; start < amounts.length; start += pageSize) {
+    const limit = Math.min(pageSize, amounts.length - start)
+    let hasClaimable = false
+    for (let i = 0; i < limit; i++) {
+      if ((amounts[start + i] ?? 0n) > 0n) {
+        hasClaimable = true
+        break
+      }
+    }
+    if (hasClaimable) windows.push({ start, limit })
+  }
+  return windows
 }
 
 /**
@@ -75,17 +185,36 @@ export async function readReleaseQueuePlans(
 }
 
 /**
- * 读取 PrincipalReleaseVault 当前新单释放周期（秒）。
+ * 读取分流器默认新单释放周期（秒）。
  *
- * 仅影响后续新单；既有释放单时长写在各自 release.duration。
+ * 未连钱包时的公共展示用 Manager.DEFAULT_RELEASE_DURATION。
+ *
+ * @see 手册 §13 分流器本金释放
  */
 export async function readPrincipalReleaseDuration(
   readClient: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
   return (await readClient.readContract({
-    address: BSC_CONTRACTS.principalReleaseVault,
-    abi: vaultReadAbi,
-    functionName: 'releaseDuration',
+    address: BSC_CONTRACTS.aegisSplitterManager,
+    abi: managerReadAbi,
+    functionName: 'DEFAULT_RELEASE_DURATION',
+  })) as bigint
+}
+
+/**
+ * 读取用户生效释放周期（秒）：Manager.effectiveDuration(user)。
+ *
+ * @see 手册 §13.3
+ */
+export async function readEffectiveReleaseDuration(
+  address: Address,
+  readClient: ChainReadClient = bscReadClient,
+): Promise<bigint> {
+  return (await readClient.readContract({
+    address: BSC_CONTRACTS.aegisSplitterManager,
+    abi: managerReadAbi,
+    functionName: 'effectiveDuration',
+    args: [address],
   })) as bigint
 }
 
@@ -315,62 +444,151 @@ export async function readReleaseQueueClaimable(
   }) as Promise<bigint>
 }
 
-/**
- * 读取用户本金释放（PrincipalReleaseVault）汇总。
- *
- * 逐仓 getRelease 经一次 Multicall3 读取，累加总量 / 已领 / 可领 / 剩余。
- *
- * @param address 钱包地址
- * @param readClient 链读取客户端，默认 BSC 主网
- * @returns 本金释放汇总；无仓位时全零
- * @see 手册 §13 PrincipalReleaseVault 本金释放
- */
-export async function readReleaseBufferSnapshot(
-  address: Address,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<ReleaseBufferSnapshot> {
-  const vault = BSC_CONTRACTS.principalReleaseVault
-  const countRaw = (await readClient.readContract({
-    address: vault,
-    abi: vaultReadAbi,
-    functionName: 'getReleaseCount',
-    args: [address],
-  })) as bigint
-  const count = Number(countRaw)
-  if (!Number.isFinite(count) || count <= 0) {
-    return {
-      count: 0,
-      totalAmount: 0n,
-      totalClaimed: 0n,
-      totalClaimable: 0n,
-      totalRemaining: 0n,
-      totalReleasing: 0n,
-    }
+type SplitterReleaseView = {
+  release: {
+    token: Address
+    amount: bigint
+    claimed: bigint
+    startTime: bigint
+    duration: bigint
+  }
+  claimableAmount: bigint
+  remainingAmount: bigint
+  endTime: bigint
+  fullyClaimed: boolean
+}
+
+async function readSplitterPages(
+  splitter: Address,
+  user: Address,
+  readClient: ChainReadClient,
+): Promise<{ count: number; items: SplitterReleaseView[] }> {
+  const first = (await readClient.readContract({
+    address: splitter,
+    abi: splitterReadAbi,
+    functionName: 'getReleases',
+    args: [user, 0n, BigInt(SPLITTER_RELEASE_PAGE)],
+  })) as readonly [readonly SplitterReleaseView[], bigint]
+
+  const totalCount = Number(first[1])
+  if (!Number.isFinite(totalCount) || totalCount <= 0) {
+    return { count: 0, items: [] }
   }
 
+  const items = [...first[0]]
+  let start = items.length
+  while (start < totalCount) {
+    const page = (await readClient.readContract({
+      address: splitter,
+      abi: splitterReadAbi,
+      functionName: 'getReleases',
+      args: [user, BigInt(start), BigInt(SPLITTER_RELEASE_PAGE)],
+    })) as readonly [readonly SplitterReleaseView[], bigint]
+    if (page[0].length === 0) {
+      throw new Error(`RELEASE_SPLITTER_PAGE_EMPTY:${splitter}:${start}`)
+    }
+    items.push(...page[0])
+    start += page[0].length
+  }
+  if (items.length !== totalCount) {
+    throw new Error(`RELEASE_SPLITTER_PAGE_INCOMPLETE:${splitter}:${items.length}/${totalCount}`)
+  }
+  return { count: totalCount, items }
+}
+
+function isZeroAddress(addr: string): boolean {
+  return addr.toLowerCase() === ZERO_ADDRESS.toLowerCase()
+}
+
+/**
+ * 从 Head 沿 next 走链（环检测 + 深度上限）。
+ *
+ * next / 深度异常一律抛错，不能静默当成链尾。
+ *
+ * @see 手册 §13.5 / aegissplitter.md 链式瀑布
+ */
+async function resolveSplitterChain(
+  head: Address,
+  readClient: ChainReadClient,
+): Promise<Array<{ address: Address; next: Address; isTail: boolean }>> {
+  const hops: Array<{ address: Address; next: Address; isTail: boolean }> = []
+  const seen = new Set<string>()
+  let current = head
+  for (let depth = 0; depth < SPLITTER_CHAIN_MAX; depth++) {
+    const key = current.toLowerCase()
+    if (seen.has(key) || isZeroAddress(key)) break
+    seen.add(key)
+    const nextRaw = (await readClient.readContract({
+      address: current,
+      abi: splitterReadAbi,
+      functionName: 'next',
+    })) as Address
+    const next = nextRaw && !isZeroAddress(nextRaw) ? nextRaw : (ZERO_ADDRESS as Address)
+    const isTail = isZeroAddress(next)
+    hops.push({ address: current, next, isTail })
+    if (isTail) return hops
+    current = next
+  }
+  throw new Error(`RELEASE_SPLITTER_CHAIN_TRUNCATED:${head}`)
+}
+
+async function readArchiveVaultTotals(
+  user: Address,
+  readClient: ChainReadClient,
+): Promise<{
+  count: number
+  totals: ReleaseBufferTokenTotals
+  claimable: bigint
+  claimWindows: ReleaseClaimWindow[]
+}> {
+  const empty = {
+    count: 0,
+    totals: emptyTotals(),
+    claimable: 0n,
+    claimWindows: [] as ReleaseClaimWindow[],
+  }
+  const vault = BSC_CONTRACTS.principalReleaseVault
+
+  // 只有 getReleaseCount 读取失败才降级为空（归档合约未部署/不可达时不阻塞分流器）
+  let countRaw: bigint
+  try {
+    countRaw = (await readClient.readContract({
+      address: vault,
+      abi: archiveVaultReadAbi,
+      functionName: 'getReleaseCount',
+      args: [user],
+    })) as bigint
+  } catch {
+    return empty
+  }
+
+  const count = Number(countRaw)
+  const totals = emptyTotals()
+  if (!Number.isFinite(count) || count <= 0) {
+    return empty
+  }
+
+  // count 已拿到后，分页 / 解码失败直接抛错，不能静默保留半截归档
   const results = await readAggregate3(
     readClient,
     Array.from({ length: count }, (_, i) => ({
       target: vault,
       callData: encodeFunctionData({
-        abi: vaultReadAbi,
+        abi: archiveVaultReadAbi,
         functionName: 'getRelease',
-        args: [address, BigInt(i)],
+        args: [user, BigInt(i)],
       }),
     })),
   )
 
-  let totalAmount = 0n
-  let totalClaimed = 0n
-  let totalClaimable = 0n
-  let totalRemaining = 0n
+  const claimables: bigint[] = []
   for (let i = 0; i < count; i++) {
     const result = results[i]
     if (!result?.success) {
-      throw new Error(`RELEASE_BUFFER_MULTICALL_FAILED:${i}`)
+      throw new Error(`RELEASE_ARCHIVE_MULTICALL_FAILED:${i}`)
     }
     const raw = decodeFunctionResult({
-      abi: vaultReadAbi,
+      abi: archiveVaultReadAbi,
       functionName: 'getRelease',
       data: result.returnData,
     }) as readonly [
@@ -380,27 +598,109 @@ export async function readReleaseBufferSnapshot(
       bigint,
       boolean,
     ]
-    const release = raw[0]
-    const claimableAmount = raw[1]
-    const remainingAmount = raw[2]
-    totalAmount += release.amount
-    totalClaimed += release.claimed
-    totalClaimable += claimableAmount
-    totalRemaining += remainingAmount
+    claimables.push(raw[1])
+    addTotals(totals, raw[0].amount, raw[0].claimed, raw[1], raw[2])
   }
-  const totalReleasing = totalRemaining > totalClaimable ? totalRemaining - totalClaimable : 0n
-
   return {
     count,
-    totalAmount,
-    totalClaimed,
-    totalClaimable,
-    totalRemaining,
-    totalReleasing,
+    totals,
+    claimable: totals.totalClaimable,
+    claimWindows: claimWindowsFromAmounts(claimables),
   }
 }
 
-/** Release 页红点：queue 用汇总 view；buffer 用 `claimable` 短电路（不扫全表 getRelease）。 */
+/**
+ * 读取用户本金释放汇总（现行分流器链 + 归档 PRV）。
+ *
+ * 分流器链 Head / next 读失败直接抛错；归档只有 getReleaseCount 失败才降级为空。
+ *
+ * @see 手册 §13 分流器本金释放
+ */
+export async function readReleaseBufferSnapshot(
+  address: Address,
+  readClient: ChainReadClient = bscReadClient,
+): Promise<ReleaseBufferSnapshot> {
+  const agx = emptyTotals()
+  const gagx = emptyTotals()
+  const agxToken = BSC_CONTRACTS.agx
+  const gagxToken = BSC_CONTRACTS.gagx
+  const chain: ReleaseBufferChainHop[] = []
+
+  const splitterRaw = (await readClient.readContract({
+    address: BSC_CONTRACTS.aegisSplitterManager,
+    abi: managerReadAbi,
+    functionName: 'getHeadSplitterForUser',
+    args: [address],
+  })) as Address
+  const splitter =
+    splitterRaw && !isZeroAddress(splitterRaw) ? splitterRaw : (ZERO_ADDRESS as Address)
+
+  let splitterCount = 0
+  let splitterClaimable = 0n
+  if (splitter !== ZERO_ADDRESS) {
+    const hops = await resolveSplitterChain(splitter, readClient)
+    for (const hop of hops) {
+      const page = await readSplitterPages(hop.address, address, readClient)
+      let hopClaimable = 0n
+      const claimAmounts: bigint[] = []
+      for (const item of page.items) {
+        const token = item.release.token
+        const bucket = isSameAddress(token, gagxToken)
+          ? gagx
+          : isSameAddress(token, agxToken)
+            ? agx
+            : null
+        if (!bucket) {
+          throw new Error(`RELEASE_UNKNOWN_TOKEN:${token}`)
+        }
+        addTotals(
+          bucket,
+          item.release.amount,
+          item.release.claimed,
+          item.claimableAmount,
+          item.remainingAmount,
+        )
+        hopClaimable += item.claimableAmount
+        claimAmounts.push(item.claimableAmount)
+      }
+      chain.push({
+        address: hop.address,
+        next: hop.next,
+        isTail: hop.isTail,
+        count: page.count,
+        claimable: hopClaimable,
+        claimWindows: claimWindowsFromAmounts(claimAmounts),
+      })
+      splitterCount += page.count
+      splitterClaimable += hopClaimable
+    }
+  }
+
+  const archive = await readArchiveVaultTotals(address, readClient)
+  addTotals(
+    agx,
+    archive.totals.totalAmount,
+    archive.totals.totalClaimed,
+    archive.totals.totalClaimable,
+    archive.totals.totalRemaining,
+  )
+
+  return {
+    splitter,
+    chain,
+    splitterCount,
+    archiveCount: archive.count,
+    count: splitterCount + archive.count,
+    totalClaimable: agx.totalClaimable + gagx.totalClaimable,
+    agx,
+    gagx,
+    splitterClaimable,
+    archiveClaimable: archive.claimable,
+    archiveClaimWindows: archive.claimWindows,
+  }
+}
+
+/** Release 页红点：queue + 分流器链/归档；每跳用 getReleases 短电路。 */
 export async function readReleaseHasClaimable(
   address: Address,
   readClient: ChainReadClient = bscReadClient,
@@ -408,23 +708,40 @@ export async function readReleaseHasClaimable(
   const queueClaimable = await readReleaseQueueClaimable(address, readClient)
   if (queueClaimable > 0n) return true
 
-  const countRaw = (await readClient.readContract({
-    address: BSC_CONTRACTS.principalReleaseVault,
-    abi: vaultReadAbi,
-    functionName: 'getReleaseCount',
+  const splitterRaw = (await readClient.readContract({
+    address: BSC_CONTRACTS.aegisSplitterManager,
+    abi: managerReadAbi,
+    functionName: 'getHeadSplitterForUser',
     args: [address],
-  })) as bigint
-  const count = Number(countRaw)
-  if (!Number.isFinite(count) || count <= 0) return false
+  })) as Address
+  if (splitterRaw && !isZeroAddress(splitterRaw)) {
+    const hops = await resolveSplitterChain(splitterRaw, readClient)
+    for (const hop of hops) {
+      const page = await readSplitterPages(hop.address, address, readClient)
+      if (page.items.some((item) => item.claimableAmount > 0n)) return true
+    }
+  }
 
-  for (let i = 0; i < count; i++) {
-    const amount = (await readClient.readContract({
+  try {
+    const archiveCountRaw = (await readClient.readContract({
       address: BSC_CONTRACTS.principalReleaseVault,
-      abi: vaultReadAbi,
-      functionName: 'claimable',
-      args: [address, BigInt(i)],
+      abi: archiveVaultReadAbi,
+      functionName: 'getReleaseCount',
+      args: [address],
     })) as bigint
-    if (amount > 0n) return true
+    const archiveCount = Number(archiveCountRaw)
+    if (!Number.isFinite(archiveCount) || archiveCount <= 0) return false
+    for (let i = 0; i < archiveCount; i++) {
+      const amount = (await readClient.readContract({
+        address: BSC_CONTRACTS.principalReleaseVault,
+        abi: archiveVaultReadAbi,
+        functionName: 'claimable',
+        args: [address, BigInt(i)],
+      })) as bigint
+      if (amount > 0n) return true
+    }
+  } catch {
+    // 归档探测失败不影响「无分流器可领」结论
   }
   return false
 }

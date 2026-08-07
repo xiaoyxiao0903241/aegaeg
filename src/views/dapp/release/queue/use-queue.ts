@@ -7,6 +7,7 @@ import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryClient } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -47,7 +48,7 @@ export type ReleaseQueueRowView = {
  * 逐档位读取链上快照，组合领取门闸与进度文案；
  * 领取成功后提示并重读快照，刷新只重读被点档位并回填缓存。
  *
- * @see docs/onchain-manual/contracts/principalreleasevault.md
+ * @see docs/onchain-manual/contracts/rewardqueue.md
  */
 export function useQueue() {
   const { messages: t } = useI18n()
@@ -94,7 +95,7 @@ export function useQueue() {
     return {
       days,
       planIndex,
-      planLabel: t.release.queue.planDays.replace('{days}', String(days)),
+      planLabel: interpolate(t.release.queue.planDays, { days }),
       canClaim: canClaimWhen({
         walletReady,
         writeReady,
@@ -105,7 +106,9 @@ export function useQueue() {
       pending: pendingPlan === planIndex,
       claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
-      releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
+      releasedPctLabel: interpolate(t.release.labels.releasedPct, {
+        pct: pctLabel.replace('%', ''),
+      }),
       valueHint: formatUsdApprox(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
       progressWidth: pctLabel,
     }

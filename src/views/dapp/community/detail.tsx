@@ -8,6 +8,7 @@
 import { type ReactNode } from 'react'
 
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
+import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -109,7 +110,7 @@ export function CommunityDetail() {
         digits: 0,
         trimZeros: true,
       })
-  const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
+  const inviteSectionTitle = interpolate(t.community.myInvites, { count: inviteCount })
   const authPending = sessionReady && isLoggingIn
   const statsLoading = sessionReady && (overviewLoading || isRankLoading) && overview == null
 

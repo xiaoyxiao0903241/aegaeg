@@ -1,14 +1,16 @@
 import type { QueryObserverResult } from '@tanstack/react-query'
 
+import { ZERO_ADDRESS } from '~/core/constants'
 import {
   evaluateTurbineClaimLive,
   evaluateTurbineUnlockLive,
 } from '~/core/exchange/turbine-unlock-live'
-import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
+import { invalidateAfterExchange, invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import {
   readTurbineIsVested,
   readTurbineQuota,
+  readTurbineSplitterManager,
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
 } from '~/web3/exchange/turbine-exchange-read'
@@ -96,8 +98,20 @@ export async function submitTurbineClaim(args: {
     const blocked = evaluateTurbineClaimLive(vested)
     if (blocked) throw new Error(blocked)
 
+    // 写前读分流器地址，决定成功后是否刷新释放缓存；读失败仍按进分流器处理
+    let viaSplitter = true
+    try {
+      const splitterManager = await readTurbineSplitterManager(readClient)
+      viaSplitter = Boolean(
+        splitterManager && splitterManager.toLowerCase() !== ZERO_ADDRESS.toLowerCase(),
+      )
+    } catch {
+      /* 保持默认按分流器处理 */
+    }
+
     await claimCooledGagx({ wallet, index })
     invalidateAfterExchange()
+    if (viaSplitter) invalidateAfterReleaseClaim()
     await refetchSilences()
   })
 }

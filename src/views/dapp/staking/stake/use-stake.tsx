@@ -14,6 +14,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeFlowPositions } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -76,7 +77,7 @@ export function useStakeDock() {
   const lockLabel =
     stake.period === 'liquid'
       ? t.staking.stake.meta.lockLiquid
-      : t.staking.stake.meta.lockDays.replace('{days}', stake.period)
+      : interpolate(t.staking.stake.meta.lockDays, { days: stake.period })
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
     balance: sessionReady && walletReady ? stake.balanceLabel : '',

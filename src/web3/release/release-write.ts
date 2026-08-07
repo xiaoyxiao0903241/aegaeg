@@ -1,7 +1,10 @@
 import type { Wallet } from 'thirdweb/wallets'
+import type { Address } from 'viem'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
+  AEGIS_SPLITTER_ERRORS,
+  AEGIS_SPLITTER_METHODS,
   PRINCIPAL_RELEASE_VAULT_ERRORS,
   PRINCIPAL_RELEASE_VAULT_METHODS,
   REWARD_QUEUE_ERRORS,
@@ -10,7 +13,8 @@ import {
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const claimAllAbi = parseWriteAbi(REWARD_QUEUE_METHODS.claimAllVestedRewards, REWARD_QUEUE_ERRORS)
-const claimManyAbi = parseWriteAbi(
+const splitterClaimManyAbi = parseWriteAbi(AEGIS_SPLITTER_METHODS.claimMany, AEGIS_SPLITTER_ERRORS)
+const archiveClaimManyAbi = parseWriteAbi(
   PRINCIPAL_RELEASE_VAULT_METHODS.claimMany,
   PRINCIPAL_RELEASE_VAULT_ERRORS,
 )
@@ -34,15 +38,35 @@ export async function writeClaimAllVestedRewards(args: { wallet: Wallet; planInd
 }
 
 /**
- * 批量领取本金释放（PrincipalReleaseVault.claimMany）。
+ * 批量领取本金释放（现行分流器 AegisSplitter.claimMany）。
  *
  * @param args.wallet 钱包
+ * @param args.splitter 用户头部分流器地址
  * @param args.start 起始仓位 index
  * @param args.limit 领取数量上限
- * @returns 已确认的写交易结果
- * @see 手册 §13 PrincipalReleaseVault 本金释放
+ * @see 手册 §13 分流器本金释放
  */
 export async function writeClaimManyReleases(args: {
+  wallet: Wallet
+  splitter: Address
+  start: number
+  limit: number
+}) {
+  return writeContractViaWallet({
+    wallet: args.wallet,
+    address: args.splitter,
+    abi: splitterClaimManyAbi,
+    functionName: 'claimMany',
+    args: [BigInt(args.start), BigInt(args.limit)],
+  })
+}
+
+/**
+ * 批量领取归档 PrincipalReleaseVault 历史释放单。
+ *
+ * @see 手册 §13（归档 ABI）
+ */
+export async function writeClaimManyArchiveReleases(args: {
   wallet: Wallet
   start: number
   limit: number
@@ -50,7 +74,7 @@ export async function writeClaimManyReleases(args: {
   return writeContractViaWallet({
     wallet: args.wallet,
     address: BSC_CONTRACTS.principalReleaseVault,
-    abi: claimManyAbi,
+    abi: archiveClaimManyAbi,
     functionName: 'claimMany',
     args: [BigInt(args.start), BigInt(args.limit)],
   })

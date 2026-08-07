@@ -35,7 +35,7 @@ const app = defineMessages({
         pairNotExist: '交易对不存在，请检查代币配置。',
         notWinner: '当前未中奖，无法领取。',
         rewardAlreadyClaimed: '奖励已领取，请勿重复操作。',
-        configNotReady: '协议配置未就绪，请稍后再试。',
+        configNotReady: '分流器 Manager / 释放队列等协议配置未就绪，请稍后再试。',
         exceedsMax: '金额超过上限，请降低金额。',
         bondTooSmall: '债券兑付过小，请增加购买金额。',
         bondTooLarge: '超过单笔债券上限，请降低购买金额。',
@@ -119,7 +119,7 @@ const app = defineMessages({
       },
       {
         title: '缓冲池',
-        body: '赎回的本金在此按 30 天区块线性释放，已释放部分可随时提取至钱包。',
+        body: '赎回的本金经分流器按周期线性释放，已释放部分可提取；非链尾领取会进入下游再释放。',
       },
       {
         title: '涡轮',
@@ -411,7 +411,7 @@ const app = defineMessages({
       unlockAction: '解锁',
       unlockSuccess: '解锁成功，已进入冷却',
       claimAction: '提取',
-      claimSuccess: '提取成功',
+      claimSuccess: '已提交领取，gAGX 进入分流器释放',
       claimEmpty: '暂无解锁记录',
       claimReady: '已到期，可提取',
       claimCoolingUntil: '冷却中 · {time}',
@@ -427,7 +427,7 @@ const app = defineMessages({
         },
         {
           title: '动态冷却机制',
-          body: '每次解锁后进入 24–96 小时的冷却期，时长由系统根据市场状态自动调节。冷却结束后即可将解锁的 gAGX 提取至钱包。',
+          body: '每次解锁后进入 24–96 小时的冷却期，时长由系统根据市场状态自动调节。冷却结束后领取的 gAGX 进入分流器线性释放，不是即时到钱包。',
         },
       ],
       metrics: {
@@ -1407,7 +1407,7 @@ const app = defineMessages({
       badge: '赎回',
       releasedLabel: '已释放',
       title: '确认赎回',
-      body: '赎回后资产将进入缓冲区，进行 30 天二次线性释放，缓冲区资产不再产生任何收益',
+      body: '赎回后本金经分流器线性释放（约 {days} 天），释放中资产不再产生收益，不是即时到账',
       confirm: '确认进入缓冲',
       confirmCta: '赎回 {amount}',
       cancel: '取消',
@@ -1510,7 +1510,7 @@ const app = defineMessages({
           },
           {
             q: '缓冲池是什么？',
-            a: '本金解除质押后进入 PrincipalReleaseVault 二次线性释放；链上仅结算 AGX。稿面可切换 gAGX 标签，数值诚实为 —。',
+            a: '本金解除质押后进入分流器按周期线性释放；单据可为 AGX 或 gAGX。',
           },
         ],
       },
@@ -2388,7 +2388,7 @@ const app = defineMessages({
       intro: '赎回资产在此进行 {days} 天二次线性释放，已释放部分可随时提取',
       claim: '提取',
       refresh: '刷新',
-      claimSuccess: '已提取 AGX 到钱包',
+      claimSuccess: '已提交领取，进入分流器释放',
       statsTitle: '缓冲池数据',
       entered: '累计进入',
       extracted: '累计提取',
@@ -2452,7 +2452,7 @@ const app = defineMessages({
       buffer: [
         {
           q: '缓冲池是什么？',
-          a: '本金退出后的二次线性释放库（PrincipalReleaseVault）。',
+          a: '本金退出后进入分流器按周期线性释放。',
         },
         {
           q: '缓冲池里的资产还有收益吗？',
@@ -2464,7 +2464,7 @@ const app = defineMessages({
         },
         {
           q: '为什么缓冲池里有 AGX 和 gAGX 两种资产？',
-          a: '稿面保留双卡；链上缓冲池仅结算 AGX，gAGX 退出已折算。',
+          a: '分流器释放单可为 AGX 或 gAGX，分卡展示。',
         },
         {
           q: '为什么我不能一次提取全部已释放的资产？',

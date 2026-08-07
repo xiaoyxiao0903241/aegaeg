@@ -10,6 +10,7 @@ import {
 } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { ExplorerLink } from '~/shared/components/explorer-link'
@@ -156,9 +157,13 @@ export function useLucky() {
       : null
   const todayPoolHint =
     countdown != null
-      ? lucky.countdownHint?.replace('{time}', countdown)
+      ? lucky.countdownHint != null
+        ? interpolate(lucky.countdownHint, { time: countdown })
+        : undefined
       : walletReady
-        ? lucky.countdownHint?.replace('{time}', NON_NUMERIC_EMPTY)
+        ? lucky.countdownHint != null
+          ? interpolate(lucky.countdownHint, { time: NON_NUMERIC_EMPTY })
+          : undefined
         : undefined
 
   const eligibilityPending = walletReady && roundQuery.isLoading && roundQuery.data == null
@@ -174,10 +179,14 @@ export function useLucky() {
   const eligibilityHint =
     !walletReady || eligibilityPending || eligibilityFailed
       ? undefined
-      : lucky.maxStakeHint?.replace('{amount}', formatUsd1Label(roundQuery.data?.roundPurchaseUsd1))
+      : lucky.maxStakeHint != null
+        ? interpolate(lucky.maxStakeHint, {
+            amount: formatUsd1Label(roundQuery.data?.roundPurchaseUsd1),
+          })
+        : undefined
 
   const winCount = formatApiCountLabel(sessionReady, summaryQuery.isLoading, summary?.win_count)
-  const cumulativeWins = lucky.winsCount.replace('{count}', winCount)
+  const cumulativeWins = interpolate(lucky.winsCount, { count: winCount })
 
   const selfAddress = account?.address ?? null
   const winners = winnersQuery.data?.items ?? []
@@ -198,7 +207,7 @@ export function useLucky() {
   /** 无中奖行时不展示表顶的日期 / 摘要 / 哈希控件 */
   const showResultsChrome = !winnersLoading && winnersTotal > 0
   const drawHash = winnersQuery.data?.draw_tx_hash
-  const resultsSummary = lucky.resultsSummary.replace('{count}', String(winnersTotal))
+  const resultsSummary = interpolate(lucky.resultsSummary, { count: winnersTotal })
   const verifyChrome: ReactNode = (
     <span className="inline-flex items-center gap-1">
       <Text as="span" className="text-primary" variant="copy">

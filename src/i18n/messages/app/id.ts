@@ -1536,7 +1536,7 @@ const app = defineMessages({
       badge: 'Tebus',
       releasedLabel: 'Dirilis',
       title: 'Konfirmasi tebus',
-      body: 'Setelah tebus, aset masuk buffer untuk rilis linear sekunder 30 hari. Aset di buffer tidak menghasilkan.',
+      body: 'Setelah tebus, pokok masuk splitter untuk rilis linear (~{days} hari). Tanpa yield; tidak langsung ke wallet.',
       confirm: 'Konfirmasi masuk buffer',
       confirmCta: 'Tebus {amount}',
       cancel: 'Batal',
@@ -1648,7 +1648,7 @@ const app = defineMessages({
           },
           {
             q: 'Apa itu pool buffer?',
-            a: 'Pokok setelah unstake masuk PrincipalReleaseVault untuk rilis linear sekunder; on-chain hanya menyelesaikan AGX. UI dapat mengganti label gAGX; nilai jujur —.',
+            a: 'Setelah unstake, pokok masuk splitter untuk rilis linear berkala (AGX atau gAGX).',
           },
         ],
       },
@@ -2621,7 +2621,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'Apa itu pool buffer?',
-          a: 'Vault rilis linear tahap kedua setelah tebus/unstake (PrincipalReleaseVault).',
+          a: 'Setelah tebus/unstake, pokok dirilis linear di splitter.',
         },
         {
           q: 'Apakah aset di buffer masih menghasilkan?',

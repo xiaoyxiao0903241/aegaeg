@@ -10,6 +10,7 @@ import {
   calcLocalInterest,
   handbookBondDiscountRateBP,
 } from '~/core/staking/staking-yield'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
@@ -95,7 +96,7 @@ export function CalcDetail() {
                 [
                   productLabel,
                   periodLabel,
-                  aside.tags.day.replace('{day}', String(result.days)),
+                  interpolate(aside.tags.day, { day: result.days }),
                 ] as const
               ).map((label) =>
                 label ? (
@@ -143,12 +144,11 @@ export function CalcDetail() {
             let value = PLACEHOLDER
             let hint = card.hint
             if (result && index === 0) {
-              value = aside.tags.day.replace('{day}', '1')
+              value = interpolate(aside.tags.day, { day: 1 })
             } else if (result && index === 1) {
-              value = aside.tags.day.replace(
-                '{day}',
-                String(periodEndDays(result.period, result.days)),
-              )
+              value = interpolate(aside.tags.day, {
+                day: periodEndDays(result.period, result.days),
+              })
             } else if (result && endEstimate && index === 2) {
               value = formatNumber(endEstimate.interestUsd, { digits: 2, prefix: '$' })
               hint = `${endEstimate.ratePct >= 0 ? '+' : ''}${formatNumber(endEstimate.ratePct, { digits: 2 })}%`
@@ -156,7 +156,7 @@ export function CalcDetail() {
             return (
               <Tile key={card.label}>
                 <Tile.Label>
-                  {index === 2 ? aside.nodeEndLabel.replace('{day}', String(endDays)) : card.label}
+                  {index === 2 ? interpolate(aside.nodeEndLabel, { day: endDays }) : card.label}
                 </Tile.Label>
                 <div className="flex flex-wrap items-center gap-1.5">
                   <Text

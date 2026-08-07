@@ -1531,7 +1531,7 @@ const app = defineMessages({
       badge: 'Geri al',
       releasedLabel: 'Serbest bırakıldı',
       title: 'Geri almayı onayla',
-      body: 'Geri alma sonrası varlıklar 30 günlük ikincil doğrusal serbest bırakma için tampona girer. Tampondaki varlıklar getiri üretmez.',
+      body: 'Geri alma sonrası anapara splitter’da doğrusal serbest bırakılır (~{days} gün). Getiri yok; anında cüzdana geçmez.',
       confirm: 'Tampona girmeyi onayla',
       confirmCta: 'Geri al {amount}',
       cancel: 'İptal',
@@ -1642,7 +1642,7 @@ const app = defineMessages({
           },
           {
             q: 'Tampon havuzu nedir?',
-            a: 'Anapara stake’ten çıkınca PrincipalReleaseVault’ta ikincil doğrusal serbest bırakmaya girer; zincir üstünde yalnızca AGX uzlaşır. Arayüzde gAGX etiketi kalabilir, değerler — gösterir.',
+            a: 'Stake’ten çıkınca anapara splitter’da dönemsel doğrusal serbest bırakmaya girer (AGX veya gAGX).',
           },
         ],
       },
@@ -2623,7 +2623,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'Tampon havuzu nedir?',
-          a: 'Geri alma/stake’ten çıkarma sonrası ikincil doğrusal serbest bırakma kasası (PrincipalReleaseVault).',
+          a: 'Geri alma/stake’ten çıkarma sonrası anapara splitter’da doğrusal serbest bırakılır.',
         },
         {
           q: 'Tampon havuzundaki varlıklar hâlâ getiri üretir mi?',

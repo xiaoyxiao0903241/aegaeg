@@ -46,7 +46,7 @@ test('home localized copy covers meta, hero, and footer text', async () => {
 
   assert.equal(zh.meta.title, 'AEGIS X - 守护未来价值网络')
   assert.equal(en.meta.title, 'AEGIS X - Guarding the Future Value Network')
-  assert.equal(zht.meta.title, 'AEGIS X - 守護未來價值網路')
+  assert.equal(zht.meta.title, 'AEGIS X - 守護未來價值網絡')
   assert.equal(zh.hero.title, '守护未来价值网络')
   assert.equal(en.hero.title, 'Guarding the Future Value Network')
   assert.equal(zh.hero.enterProtocol, '进入协议')

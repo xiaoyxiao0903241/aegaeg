@@ -29,7 +29,7 @@ export type StakingHubOverview = {
   poolAgxBalance: bigint
   /** sAGX.circulatingSupply — 9 decimals */
   circulatingSupply: bigint
-  /** Treasury.totalReserves — AGX 价值，9 位小数。 */
+  /** Treasury.totalReserves — AGX 口径储备价值（9 decimals）；Hub 展示折为 USD1。 */
   totalReserves: bigint
   /** AgxContributionSwap.getConfig().totalBurned — AGX 9 decimals */
   totalBurned: bigint

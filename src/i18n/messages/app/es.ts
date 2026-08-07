@@ -1538,7 +1538,7 @@ const app = defineMessages({
       badge: 'Canjear',
       releasedLabel: 'Liberado',
       title: 'Confirmar canje',
-      body: 'Tras el canje, los activos entran al búfer para una liberación lineal secundaria de 30 días. Los activos en búfer no generan rendimiento.',
+      body: 'Tras el canje, el principal entra al splitter para liberación lineal (~{days} días). Sin rendimiento; no se paga al instante.',
       confirm: 'Confirmar entrada al búfer',
       confirmCta: 'Canjear {amount}',
       cancel: 'Cancelar',
@@ -1650,7 +1650,7 @@ const app = defineMessages({
           },
           {
             q: '¿Qué es el pool búfer?',
-            a: 'Tras retirar el staking, el principal entra a PrincipalReleaseVault para liberación lineal secundaria; en cadena solo se liquida AGX. La UI puede mostrar la etiqueta gAGX; el valor honesto es —.',
+            a: 'Tras retirar el staking, el principal entra al splitter para liberación lineal (AGX o gAGX).',
           },
         ],
       },
@@ -2641,7 +2641,7 @@ const app = defineMessages({
       buffer: [
         {
           q: '¿Qué es el pool búfer?',
-          a: 'PrincipalReleaseVault — liberación lineal de segunda etapa tras canjear/retirar staking.',
+          a: 'Tras canjear/retirar staking, el principal se libera linealmente en el splitter.',
         },
         {
           q: '¿Los activos en el pool búfer siguen generando rendimiento?',

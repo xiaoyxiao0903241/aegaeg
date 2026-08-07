@@ -1,5 +1,6 @@
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
+import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
@@ -29,10 +30,11 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const splitBps = burn.config?.splitBps
   const destinationValue =
     splitBps === undefined
-      ? t.exchange.burn.destinationValue.replace('{burnPct}', '—').replace('{injectPct}', '—')
-      : t.exchange.burn.destinationValue
-          .replace('{burnPct}', formatBurnSplitPercent(splitBps))
-          .replace('{injectPct}', formatBurnSplitPercent(BPS_DENOM - splitBps))
+      ? interpolate(t.exchange.burn.destinationValue, { burnPct: '—', injectPct: '—' })
+      : interpolate(t.exchange.burn.destinationValue, {
+          burnPct: formatBurnSplitPercent(splitBps),
+          injectPct: formatBurnSplitPercent(BPS_DENOM - splitBps),
+        })
 
   return (
     <TabHeader

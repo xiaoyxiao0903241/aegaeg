@@ -70,9 +70,7 @@ export type AssetsHubOverview = {
   bufferReleased: string
   bufferReleasedApprox: string
   /**
-   * gAGX 缓冲列：PRV 合约仅按 AGX 口径记录，暂无数据来源时保持 0
-   *
-   * @see docs/onchain-manual/contracts/principalreleasevault.md
+   * gAGX 缓冲列：分流器快照 gagx 桶（手册 §13）；API 尚未分 token。
    */
   bufferGagxTotal: string
   bufferGagxReleased: string
@@ -230,10 +228,11 @@ export function useAssetsHub(): AssetsHubOverview {
     queryFn: (addr) => readContributionSnapshot(addr as Address, 0n),
     enabled: chainFallbackEnabled,
   })
+  // gAGX 缓冲以链上分流器快照为准；不能绑 API 回退开关，否则 API 就绪时会恒为 0
   const bufferQuery = useChainQuery({
     queryKey: queryKeys.chain.releaseBuffer,
     queryFn: (addr) => readReleaseBufferSnapshot(addr as Address),
-    enabled: chainFallbackEnabled,
+    enabled,
   })
 
   const stakeRows = stakeQuery.data ?? []
@@ -282,7 +281,7 @@ export function useAssetsHub(): AssetsHubOverview {
     totalValue: formatNumber(0, { digits: 2, prefix: '$' }),
     claimable: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimableApprox: formatUsdApprox(0, null),
-    claimed: formatNumber(0, { digits: 2 }),
+    claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimedApprox: formatUsdApprox(0, null),
     contribution: formatNumber(0, { digits: 2 }),
     holdingsReleased: `${formatNumber(0, { digits: 2 })} AGX`,
@@ -299,19 +298,33 @@ export function useAssetsHub(): AssetsHubOverview {
   })
 
   if (apiReady) {
+    const buffer = bufferQuery.data
     const totalValue = formatApiUsdLabel(apiReward.stake_invest_usd_value)
-    // 可领取 = Mixed 弹窗子集（stake + lp/burn gAGX）；不能直接显示 API claimable_gagx，里面含本页领不了的部分
+    // 单行展示「x.xx gAGX」+ ≈$；金额只取本页 Mixed 可领子集，不能直接显示 API claimable_gagx
     const claimableGagxWei = stakeYield + lpYield + burnYield
     const claimableGagx = `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`
     const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)
-    const claimed = formatApiDecimalOrZero(apiReward.total_reward_claimed)
+    const claimed = `${formatApiDecimalOrZero(apiReward.total_reward_claimed)} gAGX`
     const contribution = formatApiDecimalOrZero(apiReward.available_contribution)
     const holdingsTotal = formatApiTokenLabel(apiHoldings.total_holdings_agx, 'AGX')
     // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「可赎回已释放」不符
     const holdingsReleased = redeemableReleasedLabel
-    // 在池总量 = 池内剩余（API releasing）；已提取 = PRINCIPAL_CLAIMED（buffer_pool_released）
-    const bufferTotal = formatApiTokenLabel(apiHoldings.buffer_pool_releasing, 'AGX')
-    const bufferReleased = formatApiTokenLabel(apiHoldings.buffer_pool_released, 'AGX')
+    // 钱包就绪且有分流器快照时 AGX/gAGX 缓冲同源链上；否则 AGX 回落 API
+    const bufferTotal = buffer
+      ? `${formatTokenAmount(buffer.agx.totalRemaining, AGX_DECIMALS, 2)} AGX`
+      : formatApiTokenLabel(apiHoldings.buffer_pool_releasing, 'AGX')
+    const bufferReleased = buffer
+      ? `${formatTokenAmount(buffer.agx.totalClaimed, AGX_DECIMALS, 2)} AGX`
+      : formatApiTokenLabel(apiHoldings.buffer_pool_released, 'AGX')
+    const bufferTotalApprox = buffer
+      ? formatUsdApprox(
+          formatTokenAmountToNumber(buffer.agx.totalRemaining, AGX_DECIMALS),
+          priceUsd,
+        )
+      : formatApiApproxUsd(apiHoldings.buffer_pool_releasing, priceUsd)
+    const bufferReleasedApprox = buffer
+      ? formatUsdApprox(formatTokenAmountToNumber(buffer.agx.totalClaimed, AGX_DECIMALS), priceUsd)
+      : formatApiApproxUsd(apiHoldings.buffer_pool_released, priceUsd)
     const stakeYieldLabel = `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`
     const lpYieldLabel = `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`
     const burnYieldLabel = `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`
@@ -329,11 +342,16 @@ export function useAssetsHub(): AssetsHubOverview {
       holdingsTotal,
       holdingsTotalApprox: formatApiApproxUsd(apiHoldings.total_holdings_agx, priceUsd),
       bufferTotal,
-      bufferTotalApprox: formatApiApproxUsd(apiHoldings.buffer_pool_releasing, priceUsd),
+      bufferTotalApprox,
       bufferReleased,
-      bufferReleasedApprox: formatApiApproxUsd(apiHoldings.buffer_pool_released, priceUsd),
-      bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
-      bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
+      bufferReleasedApprox,
+      // API 尚未分 token；gAGX 桶以链上分流器快照为准（手册 §13）
+      bufferGagxTotal: bufferQuery.isError
+        ? '—'
+        : `${formatTokenAmount(buffer?.gagx.totalRemaining ?? 0n, GAGX_DECIMALS, 2)} gAGX`,
+      bufferGagxReleased: bufferQuery.isError
+        ? '—'
+        : `${formatTokenAmount(buffer?.gagx.totalClaimed ?? 0n, GAGX_DECIMALS, 2)} gAGX`,
       modes: {
         stake: modeFromApiAmount(
           apiDist.stake_total_agx,
@@ -399,44 +417,35 @@ export function useAssetsHub(): AssetsHubOverview {
   const burnPrincipal = burnRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
   const xStake = xmine?.miningStake ?? 0n
 
-  const claimableParts = [
-    stakeYield > 0n ? `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX` : null,
-    lpYield + burnYield > 0n
-      ? `${formatTokenAmount(lpYield + burnYield, GAGX_DECIMALS, 2)} gAGX`
-      : null,
-  ].filter(Boolean)
-
   const contribution = contribQuery.data?.contribution ?? 0n
   const buffer = bufferQuery.data
-  // 在池总量 = remaining（可领+释放中）；已提取 = claimed
-  const bufferTotal = buffer?.totalRemaining ?? 0n
-  const bufferReleased = buffer?.totalClaimed ?? 0n
+  // 在池总量 = remaining（可领+释放中）；已提取 = claimed（AGX 口径）
+  const bufferTotal = buffer?.agx.totalRemaining ?? 0n
+  const bufferReleased = buffer?.agx.totalClaimed ?? 0n
+  const bufferGagxTotal = buffer?.gagx.totalRemaining ?? 0n
+  const bufferGagxReleased = buffer?.gagx.totalClaimed ?? 0n
 
   const stakePosNum = formatTokenAmountToNumber(stakePrincipal, AGX_DECIMALS)
   const lpPosNum = formatTokenAmountToNumber(lpPrincipal, AGX_DECIMALS)
   const burnPosNum = formatTokenAmountToNumber(burnPrincipal, AGX_DECIMALS)
   const xPosNum = formatTokenAmountToNumber(xStake, GAGX_DECIMALS)
-  // 持仓合计：质押 + LP/Burn 本金 + XMine stake + 缓冲（AGX 口径）
+  // 持仓合计：质押 + LP/Burn 本金 + XMine stake + 缓冲 AGX
   const holdingsPrincipal = stakePrincipal + lpPrincipal + burnPrincipal + xStake + bufferTotal
   const holdingsTotalNum = formatTokenAmountToNumber(holdingsPrincipal, AGX_DECIMALS)
   const bufferTotalNum = formatTokenAmountToNumber(bufferTotal, AGX_DECIMALS)
   const bufferReleasedNum = formatTokenAmountToNumber(bufferReleased, AGX_DECIMALS)
-  const claimableGagxNum = formatTokenAmountToNumber(
-    stakeYield + lpYield + burnYield,
-    GAGX_DECIMALS,
-  )
+
+  const claimableGagxWei = stakeYield + lpYield + burnYield
+  const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)
   const totalValueUsd =
     priceUsd != null && Number.isFinite(priceUsd) ? holdingsTotalNum * priceUsd : 0
 
   return {
     totalValue: formatNumber(totalValueUsd, { digits: 2, prefix: '$' }),
-    claimable:
-      claimableParts.length > 0
-        ? claimableParts.join(' · ')
-        : `${formatNumber(0, { digits: 2 })} gAGX`,
+    claimable: `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`,
     claimableApprox: formatUsdApprox(claimableGagxNum, priceUsd),
-    // 链上无累计已领 view；空结果按产品规则显示 0
-    claimed: formatNumber(0, { digits: 2 }),
+    // 链上无累计已领视图；未加载空结果显示 0.00 gAGX
+    claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimedApprox: formatUsdApprox(0, null),
     contribution: formatTokenAmount(contribution, AGX_DECIMALS, 2),
     holdingsReleased: redeemableReleasedLabel,
@@ -447,8 +456,8 @@ export function useAssetsHub(): AssetsHubOverview {
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
     bufferReleased: `${formatTokenAmount(bufferReleased, AGX_DECIMALS, 2)} AGX`,
     bufferReleasedApprox: formatUsdApprox(bufferReleasedNum, priceUsd),
-    bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
-    bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
+    bufferGagxTotal: `${formatTokenAmount(bufferGagxTotal, GAGX_DECIMALS, 2)} gAGX`,
+    bufferGagxReleased: `${formatTokenAmount(bufferGagxReleased, GAGX_DECIMALS, 2)} gAGX`,
     modes: {
       stake: {
         aprLabel: stakeApr,

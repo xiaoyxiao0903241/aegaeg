@@ -2,6 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useRef } from 'react'
 
+import { interpolate } from '~/i18n/interpolate'
 import { Button } from '~/shared/components/button'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
@@ -114,7 +115,9 @@ function AssetsClaimModalOpen({
           </Text>
           {vm.requiredContributionLabel ? (
             <Text as="span" tone="muted-foreground" variant="detail">
-              {t.assets.claim.contribNeed.replace('{amount}', vm.requiredContributionLabel)}
+              {interpolate(t.assets.claim.contribNeed, {
+                amount: vm.requiredContributionLabel,
+              })}
             </Text>
           ) : null}
           {positionLabel ? (
@@ -136,12 +139,13 @@ function AssetsClaimModalOpen({
         />
         <div className="flex justify-between gap-2">
           <Text as="span" className="font-semibold text-primary" variant="detail">
-            {t.assets.claim.releaseShare
-              .replace('{pct}', String(vm.releasePct))
-              .replace('{amount}', amountLabel)}
+            {interpolate(t.assets.claim.releaseShare, {
+              pct: vm.releasePct,
+              amount: amountLabel,
+            })}
           </Text>
           <Text as="span" className="font-semibold text-(--app-claim-restake)" variant="detail">
-            {t.assets.claim.restakeShare.replace('{pct}', String(vm.restakePct))}
+            {interpolate(t.assets.claim.restakeShare, { pct: vm.restakePct })}
           </Text>
         </div>
 

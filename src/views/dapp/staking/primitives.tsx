@@ -14,6 +14,7 @@ import {
   calcLocalInterest,
   handbookBondDiscountRateBP,
 } from '~/core/staking/staking-yield'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
@@ -108,11 +109,11 @@ function formatUsdOrDash(value: number) {
 
 function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): readonly string[] {
   if (maxDays <= 0) return []
-  if (count <= 1) return [dayTemplate.replace('{day}', '1')]
+  if (count <= 1) return [interpolate(dayTemplate, { day: 1 })]
   const labels: string[] = []
   for (let i = 0; i < count; i += 1) {
     const day = Math.round(1 + (i / (count - 1)) * (maxDays - 1))
-    labels.push(dayTemplate.replace('{day}', String(day)))
+    labels.push(interpolate(dayTemplate, { day }))
   }
   return labels
 }
@@ -186,7 +187,7 @@ export function StakingCurveChart() {
           axisLabels={axisLabels}
           formatTipDate={(time: Time) => {
             if (typeof time !== 'number') return null
-            return aside.tags.day.replace('{day}', String(time))
+            return interpolate(aside.tags.day, { day: time })
           }}
           points={curvePoints}
         />

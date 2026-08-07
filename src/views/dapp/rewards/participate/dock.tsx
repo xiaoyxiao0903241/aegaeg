@@ -1,6 +1,5 @@
 /**
- * 参与奖左栏 Dock：Dao Mixed（PARTICIPATION_REWARD）；按设计稿 / 原型。
- * @see docs/reviews/2026-08-06/ui-dynamic-content-pending-product.md
+ * 参与奖左栏 Dock：Dao Mixed（PARTICIPATION_REWARD）。
  */
 import { MixedClaimDock } from '~/views/dapp/rewards/claim-panels'
 

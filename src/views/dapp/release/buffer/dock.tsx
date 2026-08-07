@@ -1,11 +1,10 @@
 /**
  * 缓冲池左栏 Dock
  *
- * AGX / gAGX 双卡展示已释放、释放中与进度条；
- * 右上角刷新按钮重读 AGX 链上快照，gAGX 无数据源时显示 0。
+ * AGX / gAGX 双卡展示已释放、释放中与进度条（手册 §13 分流器多 token）；
+ * 刷新重读链上快照；领取对两边有可领的源一并 claimMany。
  */
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
 import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
@@ -15,7 +14,6 @@ import { TabHeader } from '~/views/dapp/shared/tab-header'
 export function BufferDock() {
   const vm = useBuffer()
   const { t } = vm
-  const gagxZero = `${formatNumber(0, { digits: 4 })} gAGX`
 
   return (
     <TabHeader
@@ -57,23 +55,31 @@ export function BufferDock() {
           <ReleasePlanCard.Header>
             <ReleasePlanCard.Token iconSrc={tokenCarouselIcons.gagxIcon} label="gAGX" />
             <ReleasePlanCard.Refresh
+              busy={vm.refreshing}
               data-slot-id="release-buffer-refresh-gagx"
-              disabled
+              disabled={vm.refreshing}
               label={t.release.buffer.refresh}
+              onClick={() => void vm.onRefresh()}
             />
           </ReleasePlanCard.Header>
           <ReleasePlanCard.Metrics
             releasedLabel={t.release.labels.released}
-            releasedValue={gagxZero}
+            releasedValue={vm.gagxClaimableLabel}
             releasingLabel={t.release.labels.releasing}
-            releasingValue={gagxZero}
+            releasingValue={vm.gagxReleasingLabel}
           />
-          <ReleasePlanCard.Bar data-slot-id="release-buffer-bar-gagx" width="0%" />
-          <ReleasePlanCard.Captions
-            left={t.release.labels.releasedPct.replace('{pct}', '0')}
-            right={formatUsdApprox(0, null)}
+          <ReleasePlanCard.Bar
+            data-slot-id="release-buffer-bar-gagx"
+            width={vm.gagxProgressWidth}
           />
-          <ReleasePlanCard.Action disabled>{t.release.buffer.claim}</ReleasePlanCard.Action>
+          <ReleasePlanCard.Captions left={vm.gagxReleasedPctLabel} right={vm.gagxValueHint} />
+          <ReleasePlanCard.Action
+            disabled={!vm.canClaim || vm.pending}
+            loading={vm.pending}
+            onClick={() => void vm.onClaim()}
+          >
+            {t.release.buffer.claim}
+          </ReleasePlanCard.Action>
         </ReleasePlanCard>
 
         {vm.walletReady ? null : <DockConnectPromo />}

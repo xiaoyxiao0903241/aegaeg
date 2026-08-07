@@ -5,6 +5,7 @@
  */
 import { useRef } from 'react'
 
+import { interpolate } from '~/i18n/interpolate'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
@@ -257,7 +258,7 @@ export function CalcResultCard({
             style={{ flex: `${Math.max(investShare, 18)} 0 0` }}
           >
             <Text as="span" className="font-medium text-primary-foreground" variant="caption">
-              {labels.yieldBar.replace('{amount}', calcUsd(interestUsd))}
+              {interpolate(labels.yieldBar, { amount: calcUsd(interestUsd) })}
             </Text>
           </span>
         </div>

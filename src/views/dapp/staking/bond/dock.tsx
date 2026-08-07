@@ -7,6 +7,7 @@ import {
   stakePeriodDays,
 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
+import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
@@ -185,7 +186,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
               },
               {
                 label: copy.meta.release,
-                value: copy.meta.releaseLinear.replace('{days}', bond.period),
+                value: interpolate(copy.meta.releaseLinear, { days: bond.period }),
               },
               {
                 label: copy.meta.contract,

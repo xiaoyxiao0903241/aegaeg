@@ -1,4 +1,5 @@
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
+import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'
@@ -85,7 +86,7 @@ export function CalcDock() {
               {t.staking.calc.price}
             </Text>
             <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-              {t.staking.calc.priceCurrent.replace('{price}', vm.spotLabel)}
+              {interpolate(t.staking.calc.priceCurrent, { price: vm.spotLabel })}
             </Text>
           </div>
           {/* 复用 AmountBox 外部标签样式，价格输入仍用 Input */}
@@ -112,7 +113,7 @@ export function CalcDock() {
               {t.staking.calc.days}
             </Text>
             <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-              {t.staking.calc.dayBubble.replace('{day}', String(vm.days))}
+              {interpolate(t.staking.calc.dayBubble, { day: vm.days })}
             </Text>
           </div>
           <CalcDaySlider
