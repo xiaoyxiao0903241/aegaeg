@@ -425,12 +425,12 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>417</strong></div>
-        <div class="stat ok"><span>✅</span><strong>198</strong></div>
-        <div class="stat bad"><span>❌</span><strong>5</strong></div>
-        <div class="stat partial"><span>🟡</span><strong>90</strong></div>
+        <div class="stat ok"><span>✅</span><strong>197</strong></div>
+        <div class="stat bad"><span>❌</span><strong>1</strong></div>
+        <div class="stat partial"><span>🟡</span><strong>91</strong></div>
         <div class="stat pending"><span>🔍</span><strong>82</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
-        <div class="stat na"><span>⚪</span><strong>36</strong></div>
+        <div class="stat na"><span>⚪</span><strong>40</strong></div>
       </div>
     </header>
 
@@ -454,7 +454,7 @@
 
     <details class="rules-panel">
       <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">规则（可展开）</summary>
-      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；宿主专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>已实现 &gt; Figma &gt; HTML 原型</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>缺数展示</td><td>金额/数量**未取到显 `0`** → T1=`设计取舍（缺数显0）`，状态 **`✅ 已对齐`**（视为正确）；**禁止**改成诚实空 `—`；仅无字段的指标才 `—`/`⚪`</td></tr><tr><td>证据杠</td><td>金钱相关：Prod 只读核实后才可 `✅ 已对齐`；写路径不真发交易</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `🔍 待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`状态` ≠ `✅ 已对齐` / `⚪ 不适用` 的行即现行缺口；缺口行 `修复方法` 必填</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>代码位置</th><th>文档位置</th><th>API接口</th><th>状态</th><th>T1归因</th><th>修复方法</th><th>继承自</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>宿主与公共壳</td><td>`H-`</td></tr><tr><td>质押</td><td>`S-`</td></tr><tr><td>奖励</td><td>`W-`</td></tr><tr><td>释放</td><td>`L-`</td></tr><tr><td>兑换</td><td>`X-`</td></tr><tr><td>资产</td><td>`A-`</td></tr><tr><td>社区</td><td>`CM-`</td></tr><tr><td>共建</td><td>`GN-`</td></tr><tr><td>代码反查附录</td><td>`Z-`</td></tr></table></div><h3>状态</h3><p>`✅ 已对齐` · `❌ 未接入` · `🟡 部分` · `🔍 待核实` · `⚪ 不适用` · `🚫 阻塞`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>设计取舍（缺数显0）</li><li>待核实</li></ul><p>（`✅ 已对齐` / `⚪ 不适用` 行 T1 默认 `—`；**例外**：`设计取舍（缺数显0）` 可标在 ✅ 行以记录口径。缺口行须填 `修复方法`。）</p>
+      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；宿主专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>**控件布局与可见文案** = Figma PC 验收帧（[`figma-pages.md`](./figma-pages.md)）；已实现优先仅作落地次序，**不以离稿实现覆盖稿**；无稿才 HTML 原型</td></tr><tr><td>数/写 SSOT</td><td>金额算法、门闸、刷新 = 链上手册 / API；与 UI 文案分层</td></tr><tr><td>稿链冲突</td><td>可见文案/单位标签**先保留稿面**；T1=`文案/单位与链不匹配（稿如此）`；修复默认 **改稿（Figma+i18n）对齐链，或产品确认保留稿面**；**禁止** FE 默认离稿改 i18n</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>缺数展示</td><td>金额/数量**未取到显 `0`** → T1=`设计取舍（缺数显0）`，状态 **`✅ 已对齐`**（视为正确）；**禁止**改成诚实空 `—`；仅无字段的指标才 `—`/`⚪`</td></tr><tr><td>证据杠</td><td>金钱相关：Prod 只读核实后才可 `✅ 已对齐`；写路径不真发交易</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `🔍 待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`状态` ≠ `✅ 已对齐` / `⚪ 不适用` 的行即现行缺口；缺口行 `修复方法` 必填</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>代码位置</th><th>文档位置</th><th>API接口</th><th>状态</th><th>T1归因</th><th>修复方法</th><th>继承自</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>宿主与公共壳</td><td>`H-`</td></tr><tr><td>质押</td><td>`S-`</td></tr><tr><td>奖励</td><td>`W-`</td></tr><tr><td>释放</td><td>`L-`</td></tr><tr><td>兑换</td><td>`X-`</td></tr><tr><td>资产</td><td>`A-`</td></tr><tr><td>社区</td><td>`CM-`</td></tr><tr><td>共建</td><td>`GN-`</td></tr><tr><td>代码反查附录</td><td>`Z-`</td></tr></table></div><h3>状态</h3><p>`✅ 已对齐` · `❌ 未接入` · `🟡 部分` · `🔍 待核实` · `⚪ 不适用` · `🚫 阻塞`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>设计取舍（缺数显0）</li><li>待核实</li></ul><p>（`✅ 已对齐` / `⚪ 不适用` 行 T1 默认 `—`；**例外**：`设计取舍（缺数显0）` 可标在 ✅ 行以记录口径。缺口行须填 `修复方法`。）</p>
     </details>
 
     <div id="chapters"><section class="chapter" id="1-宿主与公共壳" data-section="1-宿主与公共壳">
@@ -992,7 +992,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="1-宿主与公共壳" data-search="h-024 宿主 connectpromocard `needssignin` 时标题仍为 connect 促销文案 读 `src/views/dapp/shared/connect-promo-card.tsx`：`t.dapp.connect.promotitle` 固定；按钮经 `walletconnectchip` 可切 `signinrequired` agents「连接 ≠ 业务登录」；i18n `dapp.connect` —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 产品确认后：`needssignin` 时分支 `promotitle`（i18n）或关 c-21 标故意保留 —  c-21 标题/按钮语义分裂">
+<article class="row" data-status="partial" data-section="1-宿主与公共壳" data-search="h-024 宿主 connectpromocard `needssignin` 时标题仍为 connect 促销文案 读 `src/views/dapp/shared/connect-promo-card.tsx`：`t.dapp.connect.promotitle` 固定；按钮经 `walletconnectchip` 可切 `signinrequired` agents「连接 ≠ 业务登录」；i18n `dapp.connect` —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  c-21 标题/按钮语义分裂；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-024</span>
     <span class="surface">ConnectPromoCard</span>
@@ -1010,8 +1010,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`src/views/dapp/shared/connect-promo-card.tsx`：`t.dapp.connect.promoTitle` 固定；按钮经 `WalletConnectChip` 可切 `signInRequired`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>AGENTS「连接 ≠ 业务登录」；i18n `dapp.connect`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品确认后：`needsSignIn` 时分支 `promoTitle`（i18n）或关 C-21 标故意保留</dd></div>
-      <div class="wide"><dt>备注</dt><dd>标题/按钮语义分裂</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>标题/按钮语义分裂；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -1505,7 +1505,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-006 质押 hub·概览 总销毁量 = `agxcontributionswap.getconfig().totalburned` 读 `src/views/dapp/staking/hub/use-hub.ts`：`labels.burned`←overview.`totalburned`；prod=`1.5e9` 手册 · `contracts/agxcontributionswap.md` `getconfig` —  🟡 部分 文案/单位与链不匹配（稿如此） 改 `zh.ts` `hub.overview.metrics.burned.hint`：去掉「销毁债券」或改为「贡献销毁 totalburned」 c-09  c-09 r2 终裁：不拆行；数✅/hint 债同 s-014；prod 量仅 loaded 旁证">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-006 质押 hub·概览 总销毁量 = `agxcontributionswap.getconfig().totalburned` 读 `src/views/dapp/staking/hub/use-hub.ts`：`labels.burned`←overview.`totalburned`；prod=`1.5e9` 手册 · `contracts/agxcontributionswap.md` `getconfig` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-09  c-09 r2 终裁：不拆行；数✅/hint 债同 s-014；prod 量仅 loaded 旁证；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-006</span>
     <span class="surface">Hub·概览</span>
@@ -1523,8 +1523,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`src/views/dapp/staking/hub/use-hub.ts`：`labels.burned`←overview.`totalBurned`；Prod=`1.5e9`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 · `contracts/agxcontributionswap.md` `getConfig`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 `zh.ts` `hub.overview.metrics.burned.hint`：去掉「销毁债券」或改为「贡献销毁 totalBurned」</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 终裁：不拆行；数✅/hint 债同 S-014；Prod 量仅 loaded 旁证</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 终裁：不拆行；数✅/hint 债同 S-014；Prod 量仅 loaded 旁证；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -1643,7 +1643,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-012 质押 hub·faq 「约 14,400 块 / epoch≈12h / 日 2 次」 读(copy) `zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length` 手册 epoch / `epochsperday` —  🟡 部分 文案/单位与链不匹配（稿如此） 改 faq：插值 `epoch.length`/`epochsperday`，删死写 14400/12h/日2次 c-14  c-14 r2 确认 r1 ❌→🟡（接线在、文案错≠未接入）">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-012 质押 hub·faq 「约 14,400 块 / epoch≈12h / 日 2 次」 读(copy) `zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length` 手册 epoch / `epochsperday` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡（接线在、文案错≠未接入）；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-012</span>
     <span class="surface">Hub·FAQ</span>
@@ -1661,12 +1661,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 epoch / `epochsPerDay`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 FAQ：插值 `epoch.length`/`epochsPerDay`，删死写 14400/12h/日2次</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡（接线在、文案错≠未接入）</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡（接线在、文案错≠未接入）；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-013 质押 hub·faq 「收益以 gagx 结算 / 可直接挖 x」 读(copy) `zh.ts` hub/stake faq 已渲染 gagx 结算叙事 手册 §8/§9 结算 agx；§15 挖矿须 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改 faq：结算单位改 agx；挖 x 写清先 wrap gagx c-08 · a-07  c-08 · a-07 r2 确认 r1 ❌→🟡（文案已接、口径错）">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-013 质押 hub·faq 「收益以 gagx 结算 / 可直接挖 x」 读(copy) `zh.ts` hub/stake faq 已渲染 gagx 结算叙事 手册 §8/§9 结算 agx；§15 挖矿须 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-08 · a-07  c-08 · a-07 r2 确认 r1 ❌→🟡（文案已接、口径错）；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-013</span>
     <span class="surface">Hub·FAQ</span>
@@ -1684,12 +1684,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`zh.ts` hub/stake FAQ 已渲染 gAGX 结算叙事</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §8/§9 结算 AGX；§15 挖矿须 gAGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 FAQ：结算单位改 AGX；挖 X 写清先 wrap gAGX</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡（文案已接、口径错）</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡（文案已接、口径错）；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-014 质押 hub·faq/hint 总销毁量 hint 含销毁债券 读(copy) `overview.metrics.burned.hint` 同 s-006 —  🟡 部分 文案/单位与链不匹配（稿如此） 同 s-006 改 hint c-09  c-09 —">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-014 质押 hub·faq/hint 总销毁量 hint 含销毁债券 读(copy) `overview.metrics.burned.hint` 同 s-006 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-09  c-09 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-014</span>
     <span class="surface">Hub·FAQ/hint</span>
@@ -1707,12 +1707,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`overview.metrics.burned.hint`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 S-006</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-006 改 hint</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-015 质押 hub·faq rebase hint「每个 epoch（约 12 小时）」 读(copy) `metrics.rebase.hint` 已渲染死写 12h 同 s-012 —  🟡 部分 文案/单位与链不匹配（稿如此） 同 s-012：hint 跟 `epochsperday`/块长 c-14  c-14 r2 确认 r1 ❌→🟡">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-015 质押 hub·faq rebase hint「每个 epoch（约 12 小时）」 读(copy) `metrics.rebase.hint` 已渲染死写 12h 同 s-012 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-015</span>
     <span class="surface">Hub·FAQ</span>
@@ -1730,8 +1730,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`metrics.rebase.hint` 已渲染死写 12h</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 S-012</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-012：hint 跟 `epochsPerDay`/块长</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -1919,7 +1919,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-024 质押 stake·detail 当前 rebase 收益 / 加成 读 数跟链 `blockreward`/`extrainterest`；展示用 `gagx_decimals` 标 **gagx** 手册 getstakerewards；链付 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改单位标签 agx（或产品确认 gagx 叙事）；样本钱包核数值 c-02 · a-07  c-02 · a-07 单位错已定；数值待核实">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-024 质押 stake·detail 当前 rebase 收益 / 加成 读 数跟链 `blockreward`/`extrainterest`；展示用 `gagx_decimals` 标 **gagx** 手册 getstakerewards；链付 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  c-02 · a-07 单位错已定；数值待核实；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-024</span>
     <span class="surface">Stake·Detail</span>
@@ -1937,8 +1937,8 @@
       <div class="wide"><dt>代码位置</dt><dd>数跟链 `blockReward`/`extraInterest`；展示用 `GAGX_DECIMALS` 标 **gAGX**</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 getStakeRewards；链付 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改单位标签 AGX（或产品确认 gAGX 叙事）；样本钱包核数值</dd></div>
-      <div class="wide"><dt>备注</dt><dd>单位错已定；数值待核实</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>单位错已定；数值待核实；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -1965,7 +1965,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-026 质押 stake·faq 「每日 2 次 rebase / 约 12h」等 读(copy) `stake.faq` / intro 已渲染死写 `epoch.length` —  🟡 部分 文案/单位与链不匹配（稿如此） 同 s-012 改 stake.faq/intro c-14  c-14 r2 确认 r1 ❌→🟡">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-026 质押 stake·faq 「每日 2 次 rebase / 约 12h」等 读(copy) `stake.faq` / intro 已渲染死写 `epoch.length` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-026</span>
     <span class="surface">Stake·FAQ</span>
@@ -1983,12 +1983,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`stake.faq` / intro 已渲染死写</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`epoch.length`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-012 改 stake.faq/intro</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-027 质押 stake·faq/机制 「收益以 gagx」 读(copy) mechanismsteps / faq 已渲染 链 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 同 s-013/s-024 改 copy 单位 c-02 · c-08  c-02 · c-08 r2 确认 r1 ❌→🟡">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-027 质押 stake·faq/机制 「收益以 gagx」 读(copy) mechanismsteps / faq 已渲染 链 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · c-08  c-02 · c-08 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-027</span>
     <span class="surface">Stake·FAQ/机制</span>
@@ -2006,8 +2006,8 @@
       <div class="wide"><dt>代码位置</dt><dd>mechanismSteps / faq 已渲染</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-013/S-024 改 Copy 单位</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2057,7 +2057,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-030 质押 bond·dock/detail 「债券溢价率」标签 vs 展示值 读(copy+num) 标签「溢价率」/faq「收益空间」；值=`discountratebp` 价率（85%）非 15% 空间 手册 discountratebp=成交价率 —  🟡 部分 文案/单位与链不匹配（稿如此） 改标签/faq 为「折扣价率」或展示 `10000−bp` 空间% c-16  c-16 曾 b-13→c；数对见 s-029">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-030 质押 bond·dock/detail 「债券溢价率」标签 vs 展示值 读(copy+num) 标签「溢价率」/faq「收益空间」；值=`discountratebp` 价率（85%）非 15% 空间 手册 discountratebp=成交价率 —  🟡 部分 文案/单位与链不匹配（稿如此） 产品确认保留「溢价率」稿面；数值是否=手册溢价语义另核实（禁改成折扣文案） c-16  c-16 曾 b-13→c；数对见 s-029；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-030</span>
     <span class="surface">Bond·Dock/Detail</span>
@@ -2075,8 +2075,8 @@
       <div class="wide"><dt>代码位置</dt><dd>标签「溢价率」/FAQ「收益空间」；值=`discountRateBP` 价率（85%）非 15% 空间</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 discountRateBP=成交价率</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改标签/FAQ 为「折扣价率」或展示 `10000−BP` 空间%</dd></div>
-      <div class="wide"><dt>备注</dt><dd>曾 B-13→C；数对见 S-029</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品确认保留「溢价率」稿面；数值是否=手册溢价语义另核实（禁改成折扣文案）</dd></div>
+      <div class="wide"><dt>备注</dt><dd>曾 B-13→C；数对见 S-029；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2264,7 +2264,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-039 质押 bond·detail 当前 rebase 收益 读 `usebonddetail`←`row.profit`（`getstakeprofit`）；展示标 gagx 手册 bonddepository.`getstakeprofit`；链付 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改单位 agx；样本核数值 c-02 · a-07  c-02 · a-07 —">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-039 质押 bond·detail 当前 rebase 收益 读 `usebonddetail`←`row.profit`（`getstakeprofit`）；展示标 gagx 手册 bonddepository.`getstakeprofit`；链付 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  c-02 · a-07 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-039</span>
     <span class="surface">Bond·Detail</span>
@@ -2282,8 +2282,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`useBondDetail`←`row.profit`（`getStakeProfit`）；展示标 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 BondDepository.`getStakeProfit`；链付 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改单位 AGX；样本核数值</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2310,7 +2310,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-041 质押 bond·faq 溢价率解释 / 折扣区间文案 读(copy) lpbond/burnbond.faq 已渲染「溢价」叙事；值语义见 s-030 discountratebp 语义 —  🟡 部分 文案/单位与链不匹配（稿如此） 同 s-030 改 faq 语义 c-16  c-16 r2 确认 r1 ❌→🟡；c-13 复投漏 180 属 shared faq">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-041 质押 bond·faq 溢价率解释 / 折扣区间文案 读(copy) lpbond/burnbond.faq 已渲染「溢价」叙事；值语义见 s-030 discountratebp 语义 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-16  c-16 r2 确认 r1 ❌→🟡；c-13 复投漏 180 属 shared faq；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-041</span>
     <span class="surface">Bond·FAQ</span>
@@ -2328,8 +2328,8 @@
       <div class="wide"><dt>代码位置</dt><dd>lpbond/burnbond.faq 已渲染「溢价」叙事；值语义见 S-030</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>discountRateBP 语义</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-030 改 FAQ 语义</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；C-13 复投漏 180 属 shared FAQ</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；C-13 复投漏 180 属 shared FAQ；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2402,7 +2402,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-045 质押 xmine·dock 「锁定天数 / 24 小时后释放」 读(copy) `meta.lockvalue`=`24 小时后释放` 已渲染；非自动释放 手册 §15.4 `activatewarmup` —  🟡 部分 文案/单位与链不匹配（稿如此） 改 copy：写清须资产页 `activatewarmup`，非到期自动 c-03  c-03 r2 确认 r1 ❌→🟡；动作存在见 s-064">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-045 质押 xmine·dock 「锁定天数 / 24 小时后释放」 读(copy) `meta.lockvalue`=`24 小时后释放` 已渲染；非自动释放 手册 §15.4 `activatewarmup` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  c-03 r2 确认 r1 ❌→🟡；动作存在见 s-064；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-045</span>
     <span class="surface">Xmine·Dock</span>
@@ -2420,8 +2420,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`meta.lockValue`=`24 小时后释放` 已渲染；非自动释放</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §15.4 `activateWarmup`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 Copy：写清须资产页 `activateWarmup`，非到期自动</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；动作存在见 S-064</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；动作存在见 S-064；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2471,7 +2471,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-048 质押 xmine·detail 「x 价格」= agx per x（自 xperagx） 读 `usexminedetail`：`agxamountperxfromxperagx`→`n agx`；prod xperagx=`1e19`→`10 agx`；非 usd 手册 `xperagx` —  🟡 部分 文案/单位与链不匹配（稿如此） 产品改名「agx/x」或加单位说明；数已正确 c-17  c-17 r2 确认🟡：标签易误解；值对；非金钱假零">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-048 质押 xmine·detail 「x 价格」= agx per x（自 xperagx） 读 `usexminedetail`：`agxamountperxfromxperagx`→`n agx`；prod xperagx=`1e19`→`10 agx`；非 usd 手册 `xperagx` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-17  c-17 r2 确认🟡：标签易误解；值对；非金钱假零；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-048</span>
     <span class="surface">Xmine·Detail</span>
@@ -2489,8 +2489,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`useXmineDetail`：`agxAmountPerXFromXPerAgx`→`N AGX`；Prod xPerAgx=`1e19`→`10 AGX`；非 USD</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 `xPerAgx`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品改名「AGX/X」或加单位说明；数已正确</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：标签易误解；值对；非金钱假零</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：标签易误解；值对；非金钱假零；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2632,7 +2632,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-055 质押 xmine·faq/机制 「24h 锁定后即可…」暗示自动 读(copy) faq + mechanismsteps 已渲染 同 s-045 —  🟡 部分 文案/单位与链不匹配（稿如此） 同 s-045 改 faq/机制文案 c-03  c-03 r2 确认 r1 ❌→🟡">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-055 质押 xmine·faq/机制 「24h 锁定后即可…」暗示自动 读(copy) faq + mechanismsteps 已渲染 同 s-045 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  c-03 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-055</span>
     <span class="surface">Xmine·FAQ/机制</span>
@@ -2650,8 +2650,8 @@
       <div class="wide"><dt>代码位置</dt><dd>faq + mechanismSteps 已渲染</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 S-045</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 S-045 改 FAQ/机制文案</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认 R1 ❌→🟡；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -2678,26 +2678,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="2-质押" data-search="s-057 质押 calc·结果 质押/债券/xmine 估算公式 读 `buildcalcestimate`/`use-calc`/`readstakinghuboverview` 三层 `epochsperday ?? 2`；`basedailypctfromepoch` 默认参亦 2 手册折扣表 + 链 yield/epoch —  ✅ 已对齐 设计取舍（缺数显0） — b-18  — r2：b-18 公式接线仍在；`??2` 与 s-012/c-14 死写日2次同簇；口径：未取到显 0（t1=缺数显0，视为正确）">
+<article class="row" data-status="partial" data-section="2-质押" data-search="s-057 质押 calc·结果 质押/债券/xmine 估算公式 读 `buildcalcestimate`/`use-calc`/`readstakinghuboverview` 三层 `epochsperday ?? 2`；`basedailypctfromepoch` 默认参亦 2 手册折扣表 + 链 yield/epoch —  🟡 部分 fe 读源/算法/门闸/刷新错误 overview 未就绪或 `epochsperdayfromlength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值 b-18  — r2：b-18 公式接线仍在；`??2` 与 s-012/c-14 死写日2次同簇（≠缺数显0）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-057</span>
     <span class="surface">Calc·结果</span>
     <span class="datum">质押/债券/xmine 估算公式</span>
     <span class="rw pill">读</span>
-    <span class="status badge ok">✅ 已对齐</span>
+    <span class="status badge partial">🟡 部分</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
+      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
       <div><dt>继承自</dt><dd>B-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`buildCalcEstimate`/`use-calc`/`readStakingHubOverview` 三层 `epochsPerDay ?? 2`；`baseDailyPctFromEpoch` 默认参亦 2</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册折扣表 + 链 yield/epoch</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：B-18 公式接线仍在；`??2` 与 S-012/C-14 死写日2次同簇；口径：未取到显 0（T1=缺数显0，视为正确）</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>overview 未就绪或 `epochsPerDayFromLength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：B-18 公式接线仍在；`??2` 与 S-012/C-14 死写日2次同簇（≠缺数显0）</dd></div>
     </dl>
   </div>
 </article>
@@ -3007,7 +3007,7 @@
     <span class="count">58</span>
   </header>
   <p class="meta">对照源指针： [`research/dapp-tab-source-index.md` §3](./research/dapp-tab-source-index.md#3-rewards)</p><p class="meta">代码根： `src/views/dapp/rewards/`</p>
-  <div class="rows"><article class="row" data-status="partial" data-section="3-奖励" data-search="w-001 奖励 hub 统计 总奖励 `total_reward` 展示为 gagx 读 `userewardshub` 拼 `gagx`；api 字段标 gagx；链 dao 结算 agx `docs/backend-api/api.md` #performance/making-overview（total_reward=gagx） `post /performance/making-overview`  🟡 部分 文案/单位与链不匹配（稿如此） 改单位标签为 agx，或产品确认 gagx 叙事；overview 字段继续跟 api a-07→c-15  c-15 采纳 api 字段；单位见 c-15">
+  <div class="rows"><article class="row" data-status="partial" data-section="3-奖励" data-search="w-001 奖励 hub 统计 总奖励 `total_reward` 展示为 gagx 读 `userewardshub` 拼 `gagx`；api 字段标 gagx；链 dao 结算 agx `docs/backend-api/api.md` #performance/making-overview（total_reward=gagx） `post /performance/making-overview`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-07→c-15  c-15 采纳 api 字段；单位见 c-15；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-001</span>
     <span class="surface">Hub 统计</span>
@@ -3025,8 +3025,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`useRewardsHub` 拼 `gAGX`；API 字段标 gAGX；链 Dao 结算 AGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`docs/backend-api/api.md` #performance/making-overview（total_reward=gAGX）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /performance/making-overview`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改单位标签为 AGX，或产品确认 gAGX 叙事；overview 字段继续跟 API</dd></div>
-      <div class="wide"><dt>备注</dt><dd>采纳 API 字段；单位见 C-15</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>采纳 API 字段；单位见 C-15；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3168,7 +3168,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-008 奖励 hub 卡片·发展 `unlocked_claimable` 标 gagx 读 `usemarketallowancesummary`；`formatgagxbalance` 手册 · `marketfund.agx()`；api 字段文 unlocked=agx `post /market-allowance/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 统一 ui/日志后缀为 agx（跟 api 文与链） a-09→c-05  c-05 api 文 agx；ui 写 gagx">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-008 奖励 hub 卡片·发展 `unlocked_claimable` 标 gagx 读 `usemarketallowancesummary`；`formatgagxbalance` 手册 · `marketfund.agx()`；api 字段文 unlocked=agx `post /market-allowance/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-09→c-05  c-05 api 文 agx；ui 写 gagx；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-008</span>
     <span class="surface">Hub 卡片·发展</span>
@@ -3186,8 +3186,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`useMarketAllowanceSummary`；`formatGagxBalance`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 · `MarketFund.agx()`；API 字段文 unlocked=AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /market-allowance/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>统一 UI/日志后缀为 AGX（跟 API 文与链）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>API 文 AGX；UI 写 gAGX</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>API 文 AGX；UI 写 gAGX；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3237,7 +3237,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-011 奖励 hub faq 「agx / gagx 口径」copy 读 `zh.ts` `rewards.faq`（hub 条无「1:1」；1:1 在 cards/hint/子 faq） 链结算 agx；api 多标 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改 hub faq：单位口径改 agx（或产品确认 gagx 叙事） c-15  c-15 1:1 贡献错文案见 w-026/052/054">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-011 奖励 hub faq 「agx / gagx 口径」copy 读 `zh.ts` `rewards.faq`（hub 条无「1:1」；1:1 在 cards/hint/子 faq） 链结算 agx；api 多标 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 1:1 贡献错文案见 w-026/052/054；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-011</span>
     <span class="surface">Hub FAQ</span>
@@ -3255,8 +3255,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`zh.ts` `rewards.faq`（Hub 条无「1:1」；1:1 在 cards/hint/子 FAQ）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链结算 AGX；API 多标 gAGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 Hub FAQ：单位口径改 AGX（或产品确认 gAGX 叙事）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>1:1 贡献错文案见 W-026/052/054</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>1:1 贡献错文案见 W-026/052/054；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3375,7 +3375,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-017 奖励 lucky 中奖榜 `reward_amount` 后缀 gagx 读 `mapluckywinnertorow` api winners 标 gagx；链付 agx `post /lucky-reward/winners`  🟡 部分 文案/单位与链不匹配（稿如此） 改行后缀 agx（或产品确认 gagx） c-15  c-15 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-017 奖励 lucky 中奖榜 `reward_amount` 后缀 gagx 读 `mapluckywinnertorow` api winners 标 gagx；链付 agx `post /lucky-reward/winners`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-017</span>
     <span class="surface">Lucky 中奖榜</span>
@@ -3393,8 +3393,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`mapLuckyWinnerToRow`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API winners 标 gAGX；链付 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /lucky-reward/winners`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改行后缀 AGX（或产品确认 gAGX）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3444,7 +3444,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-020 奖励 lucky faq 「折算 gagx」「1:1 贡献」 读 `lucky.faq` 链 agx + divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改 lucky.faq：单位 agx；贡献跟链 quote（约 1:6） c-06·c-15  c-06·c-15 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-020 奖励 lucky faq 「折算 gagx」「1:1 贡献」 读 `lucky.faq` 链 agx + divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06·c-15  c-06·c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-020</span>
     <span class="surface">Lucky FAQ</span>
@@ -3462,8 +3462,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`lucky.faq`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 AGX + divisor=6</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 lucky.faq：单位 AGX；贡献跟链 quote（约 1:6）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3490,7 +3490,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-022 奖励 referral 详情 `total_referral_reward` + gagx 读 `use-referral.ts` api 标 gagx；dao 付 agx `post /referral-award/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改后缀 agx c-15  c-15 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-022 奖励 referral 详情 `total_referral_reward` + gagx 读 `use-referral.ts` api 标 gagx；dao 付 agx `post /referral-award/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-022</span>
     <span class="surface">Referral 详情</span>
@@ -3508,8 +3508,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-referral.ts`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API 标 gAGX；Dao 付 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /referral-award/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改后缀 AGX</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3582,7 +3582,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-026 奖励 referral faq mixed「1:1 消耗」 读 `referral.faq` + card body 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改 copy 跟链 quote（约 1:6） c-06←a-11  c-06 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-026 奖励 referral faq mixed「1:1 消耗」 读 `referral.faq` + card body 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06←a-11  c-06 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-026</span>
     <span class="surface">Referral FAQ</span>
@@ -3600,8 +3600,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`referral.faq` + card body</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 divisor=6</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 Copy 跟链 quote（约 1:6）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3628,7 +3628,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-028 奖励 participate 详情 总奖励 gagx / 持仓 / 贡献 / 下次发放空 读 summary 走 api；nextpayout 空同 w-024 — `post /participation-award/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改总奖励单位 agx；next 空保持 c-15·a-20  c-15·a-20 数跟 summary">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-028 奖励 participate 详情 总奖励 gagx / 持仓 / 贡献 / 下次发放空 读 summary 走 api；nextpayout 空同 w-024 — `post /participation-award/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15·a-20  c-15·a-20 数跟 summary；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-028</span>
     <span class="surface">Participate 详情</span>
@@ -3646,8 +3646,8 @@
       <div class="wide"><dt>代码位置</dt><dd>summary 走 API；nextPayout 空同 W-024</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /participation-award/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改总奖励单位 AGX；next 空保持</dd></div>
-      <div class="wide"><dt>备注</dt><dd>数跟 summary</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>数跟 summary；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3674,7 +3674,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-030 奖励 participate faq 1:1 贡献 copy 读 `participate.faq` 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 同 w-026 改 faq c-06  c-06 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-030 奖励 participate faq 1:1 贡献 copy 读 `participate.faq` 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-030</span>
     <span class="surface">Participate FAQ</span>
@@ -3692,8 +3692,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`participate.faq`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 divisor=6</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 W-026 改 FAQ</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3720,7 +3720,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-032 奖励 cobuild 详情 `total_rank_reward` gagx + 折算 读 `use-cobuild.ts` api 含 rank+surpass `post /rank-reward/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改后缀 agx c-15  c-15 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-032 奖励 cobuild 详情 `total_rank_reward` gagx + 折算 读 `use-cobuild.ts` api 含 rank+surpass `post /rank-reward/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-032</span>
     <span class="surface">Cobuild 详情</span>
@@ -3738,8 +3738,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-cobuild.ts`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API 含 RANK+SURPASS</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /rank-reward/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改后缀 AGX</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3789,7 +3789,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-035 奖励 cobuild faq 1:1 + gagx 叙事 读 `cobuild.faq` 链 —  🟡 部分 文案/单位与链不匹配（稿如此） 改 cobuild.faq：单位 agx；贡献跟链 quote（约 1:6） c-06·c-15  c-06·c-15 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-035 奖励 cobuild faq 1:1 + gagx 叙事 读 `cobuild.faq` 链 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06·c-15  c-06·c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-035</span>
     <span class="surface">Cobuild FAQ</span>
@@ -3807,8 +3807,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`cobuild.faq`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 cobuild.faq：单位 AGX；贡献跟链 quote（约 1:6）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -3835,7 +3835,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-037 奖励 grant 详情 档位 / `total_claimed_allowance` gagx 读 `use-grant.ts`（suffix `gagx`） api：claimed 标 gagx、`unlocked_claimable` 标 agx（自打架）；链付 agx `post /market-allowance/summary`  🟡 部分 手册或api与链不符 统一 api/ui 后缀为 agx（跟链 marketfund） a-09→c-05  c-05 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-037 奖励 grant 详情 档位 / `total_claimed_allowance` gagx 读 `use-grant.ts`（suffix `gagx`） api：claimed 标 gagx、`unlocked_claimable` 标 agx（自打架）；链付 agx `post /market-allowance/summary`  🟡 部分 手册或api与链不符 后端统一 api 字段/文档为 agx（跟链）；ui 后缀跟稿保留 gagx，或改稿对齐；禁 fe 默认离稿改 i18n a-09→c-05  c-05 api 自打架+链；ui 跟稿">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-037</span>
     <span class="surface">Grant 详情</span>
@@ -3853,12 +3853,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`use-grant.ts`（suffix `gAGX`）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API：claimed 标 gAGX、`unlocked_claimable` 标 AGX（自打架）；链付 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /market-allowance/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>统一 API/UI 后缀为 AGX（跟链 MarketFund）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>后端统一 API 字段/文档为 AGX（跟链）；UI 后缀跟稿保留 gAGX，或改稿对齐；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>API 自打架+链；UI 跟稿</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-038 奖励 grant 详情 发放/领取流水表 读 allowance 列标 gagx — `post /market-allowance/paid-logs` · `/claim-logs`  🟡 部分 文案/单位与链不匹配（稿如此） 改列后缀 agx c-05  c-05 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-038 奖励 grant 详情 发放/领取流水表 读 allowance 列标 gagx — `post /market-allowance/paid-logs` · `/claim-logs`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-05  c-05 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-038</span>
     <span class="surface">Grant 详情</span>
@@ -3876,12 +3876,12 @@
       <div class="wide"><dt>代码位置</dt><dd>allowance 列标 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>—</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /market-allowance/paid-logs` · `/claim-logs`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改列后缀 AGX</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-039 奖励 grant faq 「不耗贡献、gagx 直达钱包」 读 `grant.faq` 链 agx 直达；不耗贡献/不经 queue ✅ —  🟡 部分 文案/单位与链不匹配（稿如此） 改「gagx」→「agx」；流程句保留 c-05  c-05 —">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-039 奖励 grant faq 「不耗贡献、gagx 直达钱包」 读 `grant.faq` 链 agx 直达；不耗贡献/不经 queue ✅ —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-05  c-05 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-039</span>
     <span class="surface">Grant FAQ</span>
@@ -3899,8 +3899,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`grant.faq`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 AGX 直达；不耗贡献/不经 Queue ✅</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改「gAGX」→「AGX」；流程句保留</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -4226,7 +4226,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-054 奖励 hub intro copy 「mixed 按 1:1 消耗」 读 onboarding/教程轨 `zh.ts` 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改教程/intro 跟链 quote c-06  c-06 visible copy">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-054 奖励 hub intro copy 「mixed 按 1:1 消耗」 读 onboarding/教程轨 `zh.ts` 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 visible copy；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-054</span>
     <span class="surface">Hub intro Copy</span>
@@ -4244,8 +4244,8 @@
       <div class="wide"><dt>代码位置</dt><dd>onboarding/教程轨 `zh.ts`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 divisor=6</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改教程/intro 跟链 quote</dd></div>
-      <div class="wide"><dt>备注</dt><dd>Visible Copy</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Visible Copy；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -4318,7 +4318,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-058 奖励 mixed token 芯片 面板标 `tokengagx` 读 `claim-panels` / `mixed.tokengagx` 链 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改芯片/i18n 为 agx c-15  c-15 lucky/dao 共用">
+<article class="row" data-status="partial" data-section="3-奖励" data-search="w-058 奖励 mixed token 芯片 面板标 `tokengagx` 读 `claim-panels` / `mixed.tokengagx` 链 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 lucky/dao 共用；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-058</span>
     <span class="surface">Mixed token 芯片</span>
@@ -4336,8 +4336,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`claim-panels` / `mixed.tokenGagx`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改芯片/i18n 为 AGX</dd></div>
-      <div class="wide"><dt>备注</dt><dd>Lucky/Dao 共用</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Lucky/Dao 共用；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article></div>
@@ -4417,7 +4417,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-004 释放 hub·释放池卡 单位文案 读(copy) `t.release.units.queue='gagx'`；`formatreleaseapiorchainlabel` unit 同源 手册 §12 `token()`=agx；稿/i18n 写 gagx api.md 标 gagx  🟡 部分 文案/单位与链不匹配（稿如此） 改 i18n `units.queue`→`agx`（全 locale）；队列 num 后缀跟改；产品确认后同步稿 c-07 · a-12  c-07 数已接线；错在单位标签">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-004 释放 hub·释放池卡 单位文案 读(copy) `t.release.units.queue='gagx'`；`formatreleaseapiorchainlabel` unit 同源 手册 §12 `token()`=agx；稿/i18n 写 gagx api.md 标 gagx  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07 · a-12  c-07 数已接线；错在单位标签；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-004</span>
     <span class="surface">Hub·释放池卡</span>
@@ -4435,8 +4435,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`t.release.units.queue='gAGX'`；`formatReleaseApiOrChainLabel` unit 同源</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12 `token()`=AGX；稿/i18n 写 gAGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>api.md 标 gAGX</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 i18n `units.queue`→`AGX`（全 locale）；队列 Num 后缀跟改；产品确认后同步稿</dd></div>
-      <div class="wide"><dt>备注</dt><dd>数已接线；错在单位标签</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>数已接线；错在单位标签；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -4601,7 +4601,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-012 释放 hub·detail mechanismsteps「6:1」 读(copy) `zh.ts` hub.mechanismsteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 x 底池」 fe 信链 `quoterequiredcontribution`（≈amount/6→6:1）；body 实为 burn `splitbps` 叙事 —  🟡 部分 文案/单位与链不匹配（稿如此） 改该步 body：写清 mixed 消耗贡献≈领奖额/6（跟链 quote）；删/迁 50% 销毁·注入（属 exchange burn） c-06  c-06 r2 确认🟡：title 对；body 串台">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-012 释放 hub·detail mechanismsteps「6:1」 读(copy) `zh.ts` hub.mechanismsteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 x 底池」 fe 信链 `quoterequiredcontribution`（≈amount/6→6:1）；body 实为 burn `splitbps` 叙事 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 r2 确认🟡：title 对；body 串台；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-012</span>
     <span class="surface">Hub·Detail</span>
@@ -4619,12 +4619,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`zh.ts` hub.mechanismSteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 X 底池」</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>FE 信链 `quoteRequiredContribution`（≈amount/6→6:1）；body 实为 burn `splitBps` 叙事</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改该步 body：写清 Mixed 消耗贡献≈领奖额/6（跟链 quote）；删/迁 50% 销毁·注入（属 exchange burn）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：title 对；body 串台</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：title 对；body 串台；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-013 释放 hub·faq 「领取的 gagx 去向」题干 读(copy) 题干写 gagx；答案已澄清 agx→turbine 手册 §12→§16 —  🟡 部分 文案/单位与链不匹配（稿如此） faq 题干改 agx（跟 l-004）；答案已对齐可保留 c-07  c-07 visible+faq">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-013 释放 hub·faq 「领取的 gagx 去向」题干 读(copy) 题干写 gagx；答案已澄清 agx→turbine 手册 §12→§16 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 visible+faq；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-013</span>
     <span class="surface">Hub·FAQ</span>
@@ -4642,8 +4642,8 @@
       <div class="wide"><dt>代码位置</dt><dd>题干写 gAGX；答案已澄清 AGX→Turbine</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12→§16</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>FAQ 题干改 AGX（跟 L-004）；答案已对齐可保留</dd></div>
-      <div class="wide"><dt>备注</dt><dd>Visible+FAQ</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Visible+FAQ；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -4670,7 +4670,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-015 释放 queue·dock 单位 + token 图标 读(copy) `units.queue` + `gagxicon`（`queue/dock.tsx`）；金额用 `agx_decimals` 链 token=agx —  🟡 部分 文案/单位与链不匹配（稿如此） 同 l-004 改单位；图标改 `agxicon`；b-28 重审仍属 c c-07  c-07 数算法对；错在标签/图标">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-015 释放 queue·dock 单位 + token 图标 读(copy) `units.queue` + `gagxicon`（`queue/dock.tsx`）；金额用 `agx_decimals` 链 token=agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 数算法对；错在标签/图标；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-015</span>
     <span class="surface">Queue·Dock</span>
@@ -4688,8 +4688,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`units.queue` + `gagxIcon`（`queue/dock.tsx`）；金额用 `AGX_DECIMALS`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 token=AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 L-004 改单位；图标改 `agxIcon`；B-28 重审仍属 C</dd></div>
-      <div class="wide"><dt>备注</dt><dd>数算法对；错在标签/图标</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>数算法对；错在标签/图标；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -4808,7 +4808,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-021 释放 queue·detail 累计从释放池领取 读 无链 lifetime view；session 用 api `total_claimed_amount`；无 session→诚实 0 链无累计 view；api 有字段但标 gagx `/release-pool/summary` `total_claimed_amount`（标 gagx）  🟡 部分 文案/单位与链不匹配（稿如此） 继续用 api 累计；后缀跟 c-07 改 agx；无 session 保持 0 a-12  a-12 非「api 未提供」——缺的是链 lifetime + 单位">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-021 释放 queue·detail 累计从释放池领取 读 无链 lifetime view；session 用 api `total_claimed_amount`；无 session→诚实 0 链无累计 view；api 有字段但标 gagx `/release-pool/summary` `total_claimed_amount`（标 gagx）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-12  a-12 非「api 未提供」——缺的是链 lifetime + 单位；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-021</span>
     <span class="surface">Queue·Detail</span>
@@ -4826,8 +4826,8 @@
       <div class="wide"><dt>代码位置</dt><dd>无链 lifetime view；session 用 API `total_claimed_amount`；无 session→诚实 0</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链无累计 view；API 有字段但标 gAGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/release-pool/summary` `total_claimed_amount`（标 gAGX）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>继续用 API 累计；后缀跟 C-07 改 AGX；无 session 保持 0</dd></div>
-      <div class="wide"><dt>备注</dt><dd>非「API 未提供」——缺的是链 lifetime + 单位</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>非「API 未提供」——缺的是链 lifetime + 单位；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -4854,7 +4854,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-023 释放 queue·faq gagx 去向 读(copy) 题干 gagx；答案「涡轮配额」未点名 agx 手册 §12→turbine agx —  🟡 部分 文案/单位与链不匹配（稿如此） 题干改 agx；答案补「agx 进涡轮配额」 c-07  c-07 —">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-023 释放 queue·faq gagx 去向 读(copy) 题干 gagx；答案「涡轮配额」未点名 agx 手册 §12→turbine agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-023</span>
     <span class="surface">Queue·FAQ</span>
@@ -4872,8 +4872,8 @@
       <div class="wide"><dt>代码位置</dt><dd>题干 gAGX；答案「涡轮配额」未点名 AGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12→Turbine AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>题干改 AGX；答案补「AGX 进涡轮配额」</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -5015,7 +5015,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-030 释放 buffer·dock claimsuccess 文案 读(copy) zh：「已提交领取，进入分流器释放」偏中继叙事 手册：链尾→钱包；中继→next —  🟡 部分 文案/单位与链不匹配（稿如此） toast 按 hop 区分链尾/中继；或统一「已提交领取」去向说明链上为准 —  — 优于旧「仅 agx 进钱包」">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-030 释放 buffer·dock claimsuccess 文案 读(copy) zh：「已提交领取，进入分流器释放」偏中继叙事 手册：链尾→钱包；中继→next —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 优于旧「仅 agx 进钱包」；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-030</span>
     <span class="surface">Buffer·Dock</span>
@@ -5033,8 +5033,8 @@
       <div class="wide"><dt>代码位置</dt><dd>zh：「已提交领取，进入分流器释放」偏中继叙事</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册：链尾→钱包；中继→next</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>toast 按 hop 区分链尾/中继；或统一「已提交领取」去向说明链上为准</dd></div>
-      <div class="wide"><dt>备注</dt><dd>优于旧「仅 AGX 进钱包」</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>优于旧「仅 AGX 进钱包」；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -5107,7 +5107,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-034 释放 buffer·detail mechanismsteps「30 天缓冲」 读(copy) intro 已动态天数；步骤仍写死 30 `effectiveduration` 可≠30 —  🟡 部分 文案/单位与链不匹配（稿如此） mechanismsteps 插值 `{days}` 同源 `useprincipalreleasedurationdays` —  — —">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-034 释放 buffer·detail mechanismsteps「30 天缓冲」 读(copy) intro 已动态天数；步骤仍写死 30 `effectiveduration` 可≠30 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-034</span>
     <span class="surface">Buffer·Detail</span>
@@ -5125,12 +5125,12 @@
       <div class="wide"><dt>代码位置</dt><dd>intro 已动态天数；步骤仍写死 30</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`effectiveDuration` 可≠30</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>mechanismSteps 插值 `{days}` 同源 `usePrincipalReleaseDurationDays`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-035 释放 buffer·faq 「agx 直接进入钱包」 读(copy) zh：「点击提取，agx 直接进入钱包」；忽略 next 瀑布与 gagx 手册：仅链尾 `next==0`；可有 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） faq 改为：链尾进钱包 / 中继进下游释放；并点名可含 gagx（对齐 l-030/l-036） —  建议新 c 与 l-030 成功文案不一致">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-035 释放 buffer·faq 「agx 直接进入钱包」 读(copy) zh：「点击提取，agx 直接进入钱包」；忽略 next 瀑布与 gagx 手册：仅链尾 `next==0`；可有 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c 与 l-030 成功文案不一致；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-035</span>
     <span class="surface">Buffer·FAQ</span>
@@ -5148,8 +5148,8 @@
       <div class="wide"><dt>代码位置</dt><dd>zh：「点击提取，AGX 直接进入钱包」；忽略 next 瀑布与 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册：仅链尾 `next==0`；可有 gAGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>FAQ 改为：链尾进钱包 / 中继进下游释放；并点名可含 gAGX（对齐 L-030/L-036）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>与 L-030 成功文案不一致</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>与 L-030 成功文案不一致；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -5222,7 +5222,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-039 释放 api 权威 release-pool summary 币种 读 有链时 num 跟链；ui 标签仍 `units.queue`=gagx api.md「amount 均为 gagx」vs 链 agx `/release-pool/summary`  🟡 部分 手册或api与链不符 后端改文档/字段标 agx；fe 标签跟 c-07；禁止再把 api 单位当链单位 a-12  a-12 数源优先已对；错在权威单位文案">
+<article class="row" data-status="partial" data-section="4-释放" data-search="l-039 释放 api 权威 release-pool summary 币种 读 有链时 num 跟链；ui 标签仍 `units.queue`=gagx api.md「amount 均为 gagx」vs 链 agx `/release-pool/summary`  🟡 部分 手册或api与链不符 后端改文档/字段标 agx；fe 可见标签跟稿保留 gagx（c-07 改稿队列）；禁止再把 api 单位当链结算单位 a-12  a-12 数源优先已对；权威单位文案归后端；ui 跟稿">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-039</span>
     <span class="surface">API 权威</span>
@@ -5240,8 +5240,8 @@
       <div class="wide"><dt>代码位置</dt><dd>有链时 Num 跟链；UI 标签仍 `units.queue`=gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>api.md「amount 均为 gAGX」vs 链 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`/release-pool/summary`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>后端改文档/字段标 AGX；FE 标签跟 C-07；禁止再把 API 单位当链单位</dd></div>
-      <div class="wide"><dt>备注</dt><dd>数源优先已对；错在权威单位文案</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>后端改文档/字段标 AGX；FE 可见标签跟稿保留 gAGX（C-07 改稿队列）；禁止再把 API 单位当链结算单位</dd></div>
+      <div class="wide"><dt>备注</dt><dd>数源优先已对；权威单位文案归后端；UI 跟稿</dd></div>
     </dl>
   </div>
 </article>
@@ -5781,7 +5781,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-019 兑换 闪兑·币对 ui segment/路由 symbol「usdt」 读 `exchange_config.tokens.usdt.symbol='usdt'`；余额地址跟链 链 token 实为 xx —  🟡 部分 文案/单位与链不匹配（稿如此） config/ui symbol 跟 `usdttoken` 实币或 erc20.symbol — **a-01**  a-01 标签≠合约名">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-019 兑换 闪兑·币对 ui segment/路由 symbol「usdt」 读 `exchange_config.tokens.usdt.symbol='usdt'`；余额地址跟链 链 token 实为 xx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **a-01**  a-01 标签≠合约名；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-019</span>
     <span class="surface">闪兑·币对 UI</span>
@@ -5799,8 +5799,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`EXCHANGE_CONFIG.tokens.usdt.symbol='USDT'`；余额地址跟链</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 token 实为 XX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>config/UI symbol 跟 `usdtToken` 实币或 ERC20.symbol</dd></div>
-      <div class="wide"><dt>备注</dt><dd>标签≠合约名</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>标签≠合约名；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6241,7 +6241,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-039 兑换 涡轮·概览 「待解锁 gagx」数额 读 `readturbinequota`=`migratedfrom`+root；ui 拼 `gagx` 手册 §16 `turbinebalances`（agx wei） —  🟡 部分 文案/单位与链不匹配（稿如此） 概览/dock 标签改 agx；数源保持 quota — **a-04**/**c-01**；**b-04→c-01**  a-04,c-01,a-06 r2 确认🟡：单位主责；不双降🔍">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-039 兑换 涡轮·概览 「待解锁 gagx」数额 读 `readturbinequota`=`migratedfrom`+root；ui 拼 `gagx` 手册 §16 `turbinebalances`（agx wei） —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **a-04**/**c-01**；**b-04→c-01**  a-04,c-01,a-06 r2 确认🟡：单位主责；不双降🔍；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-039</span>
     <span class="surface">涡轮·概览</span>
@@ -6259,12 +6259,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`readTurbineQuota`=`migratedFrom`+root；UI 拼 `gAGX`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §16 `turbineBalances`（AGX wei）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>概览/Dock 标签改 AGX；数源保持 quota</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：单位主责；不双降🔍</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：单位主责；不双降🔍；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-040 兑换 涡轮·概览 「冷却中 gagx」 读 `sumturbinesilencebuckets` 仅 cooling；不并入 vested 手册 silences ∧ `!isvested` —  🟡 部分 文案/单位与链不匹配（稿如此） 同 c-01 改单位；分态保持 — **c-01**；**b-05**  c-01,b-05 r2 确认🟡：同 x-039 不双降🔍">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-040 兑换 涡轮·概览 「冷却中 gagx」 读 `sumturbinesilencebuckets` 仅 cooling；不并入 vested 手册 silences ∧ `!isvested` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**；**b-05**  c-01,b-05 r2 确认🟡：同 x-039 不双降🔍；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-040</span>
     <span class="surface">涡轮·概览</span>
@@ -6282,8 +6282,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`sumTurbineSilenceBuckets` 仅 cooling；不并入 vested</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 silences ∧ `!isVested`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 C-01 改单位；分态保持</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：同 X-039 不双降🔍</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：同 X-039 不双降🔍；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6333,7 +6333,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-043 兑换 涡轮·dock 解锁 可解锁额度 label（gagx） 读 `useturbine` `unlockableamountlabel` 硬拼 gagx 同配额 agx —  🟡 部分 文案/单位与链不匹配（稿如此） label 改 agx（c-01） — **c-01**  c-01 —">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-043 兑换 涡轮·dock 解锁 可解锁额度 label（gagx） 读 `useturbine` `unlockableamountlabel` 硬拼 gagx 同配额 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**  c-01 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-043</span>
     <span class="surface">涡轮·Dock 解锁</span>
@@ -6351,8 +6351,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`useTurbine` `unlockableAmountLabel` 硬拼 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同配额 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Label 改 AGX（C-01）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6402,7 +6402,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-046 兑换 涡轮·dock 提取 silence 列表金额+状态+cta 读 dock map rows；vested 可点；可领在列表不进「冷却中」卡 `silences`+`isvested` —  🟡 部分 文案/单位与链不匹配（稿如此） 列表金额单位改 agx；分态保持（b-05） — **c-01**；**b-05**  c-01,b-05 —">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-046 兑换 涡轮·dock 提取 silence 列表金额+状态+cta 读 dock map rows；vested 可点；可领在列表不进「冷却中」卡 `silences`+`isvested` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**；**b-05**  c-01,b-05 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-046</span>
     <span class="surface">涡轮·Dock 提取</span>
@@ -6420,8 +6420,8 @@
       <div class="wide"><dt>代码位置</dt><dd>dock map rows；vested 可点；可领在列表不进「冷却中」卡</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`silences`+`isVested`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>列表金额单位改 AGX；分态保持（B-05）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6494,7 +6494,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-050 兑换 涡轮·机制/faq 「gagx 进涡轮」「提取到钱包」等 copy 读(copy) mechanism 冷却步已写分流器；faq「到钱包」/配额 gagx；toast `claimsuccess` 已写分流器 配额 agx wei；claim→分流器 —  🟡 部分 文案/单位与链不匹配（稿如此） faq「到钱包」改「经分流器」；配额/单位改 agx（c-01）；toast 已对齐勿重做 — **c-01**/**a-04**  c-01,a-04 mechanism≠faq">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-050 兑换 涡轮·机制/faq 「gagx 进涡轮」「提取到钱包」等 copy 读(copy) mechanism 冷却步已写分流器；faq「到钱包」/配额 gagx；toast `claimsuccess` 已写分流器 配额 agx wei；claim→分流器 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**/**a-04**  c-01,a-04 mechanism≠faq；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-050</span>
     <span class="surface">涡轮·机制/FAQ</span>
@@ -6512,8 +6512,8 @@
       <div class="wide"><dt>代码位置</dt><dd>mechanism 冷却步已写分流器；FAQ「到钱包」/配额 gAGX；toast `claimSuccess` 已写分流器</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>配额 AGX wei；claim→分流器</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>FAQ「到钱包」改「经分流器」；配额/单位改 AGX（C-01）；toast 已对齐勿重做</dd></div>
-      <div class="wide"><dt>备注</dt><dd>mechanism≠FAQ</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>mechanism≠FAQ；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6609,7 +6609,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-055 兑换 共享 faq c-08 旁路 flash「以 gagx 发放/收到 gagx」叙事 读(copy) `exchange.flash.faq`：「均以 gagx 形式发放」「收到相应数量的 gagx」；hub.faq 无此发放句 链结算 agx；主责 shared c-08 —  🟡 部分 文案/单位与链不匹配（稿如此） 改 flash faq 发放句→agx（或产品确认 gagx 叙事）；1:1/挖 x 句仍归 x-018 — **c-08**  c-08 r2 确认🟡分责；与 x-018 ✅ 分拆保持">
+<article class="row" data-status="partial" data-section="5-兑换" data-search="x-055 兑换 共享 faq c-08 旁路 flash「以 gagx 发放/收到 gagx」叙事 读(copy) `exchange.flash.faq`：「均以 gagx 形式发放」「收到相应数量的 gagx」；hub.faq 无此发放句 链结算 agx；主责 shared c-08 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-08**  c-08 r2 确认🟡分责；与 x-018 ✅ 分拆保持；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-055</span>
     <span class="surface">共享 FAQ C-08 旁路</span>
@@ -6627,8 +6627,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`exchange.flash.faq`：「均以 gAGX 形式发放」「收到相应数量的 gAGX」；hub.faq 无此发放句</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链结算 AGX；主责 shared C-08</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 flash FAQ 发放句→AGX（或产品确认 gAGX 叙事）；1:1/挖 X 句仍归 X-018</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡分责；与 X-018 ✅ 分拆保持</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡分责；与 X-018 ✅ 分拆保持；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article></div>
@@ -6662,7 +6662,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-002 资产 hub·总览 可领取收益（展示） 读 hub **禁用** api `claimable_gagx`（见 a-003）；链 `blockreward+extrainterest+profit`；标 gagx；**不含** x/market/dao/释放/涡轮 产品：仓位 mixed 未领子集 api 宽口径故意不用  🟡 部分 文案/单位与链不匹配（稿如此） 标签跟 c-02；展示范围产品钉（非 api 打架——故意缩口） a-13  open 单位/范围文案债">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-002 资产 hub·总览 可领取收益（展示） 读 hub **禁用** api `claimable_gagx`（见 a-003）；链 `blockreward+extrainterest+profit`；标 gagx；**不含** x/market/dao/释放/涡轮 产品：仓位 mixed 未领子集 api 宽口径故意不用  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-13  open 单位/范围文案债；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-002</span>
     <span class="surface">Hub·总览</span>
@@ -6680,8 +6680,8 @@
       <div class="wide"><dt>代码位置</dt><dd>Hub **禁用** API `claimable_gagx`（见 A-003）；链 `blockReward+extraInterest+profit`；标 gAGX；**不含** X/market/DAO/释放/涡轮</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品：仓位 Mixed 未领子集</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>API 宽口径故意不用</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>标签跟 C-02；展示范围产品钉（非 API 打架——故意缩口）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>单位/范围文案债</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>单位/范围文案债；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6754,7 +6754,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-006 资产 hub·总览 / faq 贡献消耗文案「1:1」 读(copy) `contributionhint`/faq「按 1:1」；写路径信链 quote 链 `quoterequiredcontribution` / divisor；手册 §9 —  🟡 部分 文案/单位与链不匹配（稿如此） copy 改跟链 `/6`（c-06）；写闸不动 c-06 · a-11  open —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-006 资产 hub·总览 / faq 贡献消耗文案「1:1」 读(copy) `contributionhint`/faq「按 1:1」；写路径信链 quote 链 `quoterequiredcontribution` / divisor；手册 §9 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06 · a-11  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-006</span>
     <span class="surface">Hub·总览 / FAQ</span>
@@ -6772,12 +6772,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`contributionHint`/FAQ「按 1:1」；写路径信链 quote</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 `quoteRequiredContribution` / divisor；手册 §9</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Copy 改跟链 `/6`（C-06）；写闸不动</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-007 资产 hub·持仓 可赎回已释放 `holdingsreleased` 读 禁用 api 流水语义；链 `redeemablereleasedwei`；活期 `releasedprincipal=0n` 不计入 产品：locked `getreleasedprincipal` + bond `pendingpayout` `total_released_agx`（同名不同义，不用）  🟡 部分 文案/单位与链不匹配（稿如此） 标签与 api 解耦命名；活期可赎本金是否计入须产品拍板（c-04/b-12） a-14 · c-04 · b-22  — —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-007 资产 hub·持仓 可赎回已释放 `holdingsreleased` 读 禁用 api 流水语义；链 `redeemablereleasedwei`；活期 `releasedprincipal=0n` 不计入 产品：locked `getreleasedprincipal` + bond `pendingpayout` `total_released_agx`（同名不同义，不用）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-14 · c-04 · b-22  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-007</span>
     <span class="surface">Hub·持仓</span>
@@ -6795,8 +6795,8 @@
       <div class="wide"><dt>代码位置</dt><dd>禁用 API 流水语义；链 `redeemableReleasedWei`；活期 `releasedPrincipal=0n` 不计入</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品：Locked `getReleasedPrincipal` + Bond `pendingPayout`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`total_released_agx`（同名不同义，不用）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>标签与 API 解耦命名；活期可赎本金是否计入须产品拍板（C-04/B-12）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -6984,7 +6984,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-016 资产 hub·rebase 卡 epoch/每日次数 copy 读(copy) `hub.rebase.steps` 静态「约 12h / 每日 2 次」 链 `epoch().length`（prod≠14400） —  🟡 部分 文案/单位与链不匹配（稿如此） 跟质押 c-14：文案改跟 `epoch.length` 或删死数 c-14  open —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-016 资产 hub·rebase 卡 epoch/每日次数 copy 读(copy) `hub.rebase.steps` 静态「约 12h / 每日 2 次」 链 `epoch().length`（prod≠14400） —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-016</span>
     <span class="surface">Hub·Rebase 卡</span>
@@ -7002,8 +7002,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`hub.rebase.steps` 静态「约 12h / 每日 2 次」</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 `epoch().length`（Prod≠14400）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>跟质押 C-14：文案改跟 `epoch.length` 或删死数</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -7030,7 +7030,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-018 资产 hub·faq 收益形式 gagx / x 读(copy) hub faq：「rebase 以 gagx 计量；x 挖矿为 x」；未写「可直接挖 x」 链 mixed→队列（多为 agx）；xmine→x —  🟡 部分 文案/单位与链不匹配（稿如此） 「计量」单位跟 c-02/a-047 改 agx；保留 x 区分 c-02 · c-08 旁  c-02 r2 确认🟡：x 区分对；gagx 计量仍假">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-018 资产 hub·faq 收益形式 gagx / x 读(copy) hub faq：「rebase 以 gagx 计量；x 挖矿为 x」；未写「可直接挖 x」 链 mixed→队列（多为 agx）；xmine→x —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · c-08 旁  c-02 r2 确认🟡：x 区分对；gagx 计量仍假；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-018</span>
     <span class="surface">Hub·FAQ</span>
@@ -7048,8 +7048,8 @@
       <div class="wide"><dt>代码位置</dt><dd>Hub FAQ：「Rebase 以 gAGX 计量；X 挖矿为 X」；未写「可直接挖 X」</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 Mixed→队列（多为 AGX）；Xmine→X</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>「计量」单位跟 C-02/A-047 改 AGX；保留 X 区分</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：X 区分对；gAGX 计量仍假</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：X 区分对；gAGX 计量仍假；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -7283,7 +7283,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-029 资产 position·lp债券 仓位卡本金/待赎/收益 读 `readlpbondpositions`；profit 展示后缀 gagx 手册 §10；链 profit 入队多为 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 标签改 agx（c-02/a-047）；数源保持 c-02  c-02 r2 确认🟡：单位冲突；金额 prod 另见仓位读源">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-029 资产 position·lp债券 仓位卡本金/待赎/收益 读 `readlpbondpositions`；profit 展示后缀 gagx 手册 §10；链 profit 入队多为 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  c-02 r2 确认🟡：单位冲突；金额 prod 另见仓位读源；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-029</span>
     <span class="surface">Position·LP债券</span>
@@ -7301,8 +7301,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`readLpBondPositions`；profit 展示后缀 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §10；链 profit 入队多为 AGX</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>标签改 AGX（C-02/A-047）；数源保持</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：单位冲突；金额 Prod 另见仓位读源</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：单位冲突；金额 Prod 另见仓位读源；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -7352,7 +7352,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-032 资产 position·lp·faq 复投周期「360/540」、缓冲「30 天」 读(copy) faq 写死；ui 计划来自 `readclaimplans`；赎回天数 hook 链 链 plans / manager.duration —  🟡 部分 文案/单位与链不匹配（稿如此） faq 插值链上计划/天数；写路径已动态 c-13  — —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-032 资产 position·lp·faq 复投周期「360/540」、缓冲「30 天」 读(copy) faq 写死；ui 计划来自 `readclaimplans`；赎回天数 hook 链 链 plans / manager.duration —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-13  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-032</span>
     <span class="surface">Position·LP·FAQ</span>
@@ -7370,12 +7370,12 @@
       <div class="wide"><dt>代码位置</dt><dd>FAQ 写死；UI 计划来自 `readClaimPlans`；赎回天数 hook 链</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 plans / Manager.duration</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>FAQ 插值链上计划/天数；写路径已动态</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-033 资产 position·销毁债券 仓位读 + mixed/赎回写 + 流水 读/写 与 lp 对称 `readburnbondpositions`；profit 后缀 gagx 同 lp · burnbond bond-flow burn  🟡 部分 文案/单位与链不匹配（稿如此） 读侧单位跟 c-02；写路径 dual-check 已齐勿重做 c-02  c-02 r2 确认🟡不拆行：写齐、读单位同 a-029">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-033 资产 position·销毁债券 仓位读 + mixed/赎回写 + 流水 读/写 与 lp 对称 `readburnbondpositions`；profit 后缀 gagx 同 lp · burnbond bond-flow burn  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  c-02 r2 确认🟡不拆行：写齐、读单位同 a-029；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-033</span>
     <span class="surface">Position·销毁债券</span>
@@ -7393,8 +7393,8 @@
       <div class="wide"><dt>代码位置</dt><dd>与 LP 对称 `readBurnBondPositions`；profit 后缀 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 LP · BurnBond</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>bond-flow burn</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>读侧单位跟 C-02；写路径 dual-check 已齐勿重做</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡不拆行：写齐、读单位同 A-029</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡不拆行：写齐、读单位同 A-029；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -7513,7 +7513,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-039 资产 xmine·faq 「24 小时锁定」 读(copy) faq 断言 24h；ui 有激活预热 链 warmupendtime；须 `activatewarmup` —  🟡 部分 文案/单位与链不匹配（稿如此） faq 改「预热结束后须激活」；跟 c-03 c-03  open —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-039 资产 xmine·faq 「24 小时锁定」 读(copy) faq 断言 24h；ui 有激活预热 链 warmupendtime；须 `activatewarmup` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-039</span>
     <span class="surface">Xmine·FAQ</span>
@@ -7531,12 +7531,12 @@
       <div class="wide"><dt>代码位置</dt><dd>FAQ 断言 24h；UI 有激活预热</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 warmupEndTime；须 `activateWarmup`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>FAQ 改「预热结束后须激活」；跟 C-03</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-040 资产 xmine·faq 「每日 utc 0 点结算」 读(copy) faq visible 链连续计息 / settle —  🟡 部分 文案/单位与链不匹配（稿如此） 对照手册结算语义改 faq 或删死时点 c-13  open —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-040 资产 xmine·faq 「每日 utc 0 点结算」 读(copy) faq visible 链连续计息 / settle —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-13  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-040</span>
     <span class="surface">Xmine·FAQ</span>
@@ -7554,8 +7554,8 @@
       <div class="wide"><dt>代码位置</dt><dd>FAQ Visible</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链连续计息 / settle</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>对照手册结算语义改 FAQ 或删死时点</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -7697,7 +7697,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-047 资产 全表面 收益/利润单位标 gagx 读(copy) 仓位/hub/弹窗金额单位 gagx 链多为 agx 入队 部分 api 亦标 gagx  🟡 部分 文案/单位与链不匹配（稿如此） 全局标签改 agx（c-02/a-07）；冲突表可列不修数 c-02 · a-07  open —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-047 资产 全表面 收益/利润单位标 gagx 读(copy) 仓位/hub/弹窗金额单位 gagx 链多为 agx 入队 部分 api 亦标 gagx  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-047</span>
     <span class="surface">全表面</span>
@@ -7715,8 +7715,8 @@
       <div class="wide"><dt>代码位置</dt><dd>仓位/Hub/弹窗金额单位 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链多为 AGX 入队</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>部分 API 亦标 gAGX</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>全局标签改 AGX（C-02/A-07）；冲突表可列不修数</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -7904,7 +7904,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-056 资产 claim 展示额 弹窗金额单位 gagx 读 `amountlabel` 后缀 gagx 链 reward/profit wei —  🟡 部分 文案/单位与链不匹配（稿如此） 弹窗单位改 agx（c-02） c-02  — —">
+<article class="row" data-status="partial" data-section="6-资产" data-search="a-056 资产 claim 展示额 弹窗金额单位 gagx 读 `amountlabel` 后缀 gagx 链 reward/profit wei —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-056</span>
     <span class="surface">Claim 展示额</span>
@@ -7922,8 +7922,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`amountLabel` 后缀 gAGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>链 reward/profit wei</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>弹窗单位改 AGX（C-02）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -8026,7 +8026,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-003 社区 dock·邀请链接（展示） 链接文案 `{host}/r/{short}` 读 `shared.tsx` `formatreferrallinkdisplay`；仓内无 `/r/` 路由 产品展示形态（≠绑定入口） —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 统一展示与复制：改 `formatreferrallinkdisplay` 为 `origin+pathname+?ref=`，或产品明确「展示串不可照抄」并改文案 c-19  c-19 用户照抄展示串无法建立推荐；真路径见 cm-004">
+<article class="row" data-status="partial" data-section="7-社区" data-search="cm-003 社区 dock·邀请链接（展示） 链接文案 `{host}/r/{short}` 读 `shared.tsx` `formatreferrallinkdisplay`；仓内无 `/r/` 路由 产品展示形态（≠绑定入口） —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-19  c-19 用户照抄展示串无法建立推荐；真路径见 cm-004；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-003</span>
     <span class="surface">Dock·邀请链接（展示）</span>
@@ -8044,8 +8044,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`shared.tsx` `formatReferralLinkDisplay`；仓内无 `/r/` 路由</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品展示形态（≠绑定入口）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>统一展示与复制：改 `formatReferralLinkDisplay` 为 `origin+pathname+?ref=`，或产品明确「展示串不可照抄」并改文案</dd></div>
-      <div class="wide"><dt>备注</dt><dd>用户照抄展示串无法建立推荐；真路径见 CM-004</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>用户照抄展示串无法建立推荐；真路径见 CM-004；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -8417,7 +8417,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-020 社区 detail·成员表 列「参与共建」← `presale_volume` `$`（标签） 读 表头 i18n `shareholder`=「参与共建」对个人认购额（有 `$`）；`mapteamreferraltocompactrow` 文案 ssot i18n；api referrals post /team/referrals  🟡 部分 文案/单位与链不匹配（稿如此） 改 `zh.ts` `community.shareholder`（及各 locale）为「个人业绩/认购额」，或产品确认「参与共建」即认购额 —  — r2：只记标签语义；金额 prod→cm-033">
+<article class="row" data-status="partial" data-section="7-社区" data-search="cm-020 社区 detail·成员表 列「参与共建」← `presale_volume` `$`（标签） 读 表头 i18n `shareholder`=「参与共建」对个人认购额（有 `$`）；`mapteamreferraltocompactrow` 文案 ssot i18n；api referrals post /team/referrals  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — r2：只记标签语义；金额 prod→cm-033；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-020</span>
     <span class="surface">Detail·成员表</span>
@@ -8435,8 +8435,8 @@
       <div class="wide"><dt>代码位置</dt><dd>表头 i18n `shareholder`=「参与共建」对个人认购额（有 `$`）；`mapTeamReferralToCompactRow`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>文案 SSOT i18n；API referrals</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /team/referrals</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 `zh.ts` `community.shareholder`（及各 locale）为「个人业绩/认购额」，或产品确认「参与共建」即认购额</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：只记标签语义；金额 Prod→CM-033</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2：只记标签语义；金额 Prod→CM-033；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -8486,7 +8486,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-023 社区 detail·成员表 列「社区业绩」← `sales_team_market` 读 `mapteamreferraltocompactrow`：**无 `$`**（概览卡有 `$`） 文案/展示一致性；api referrals post /team/referrals  🟡 部分 文案/单位与链不匹配（稿如此） `shared.tsx` 对 `sales_team_market` 加 `prefix:'$'`，与统计卡对齐 —  — 同字段展示不一致">
+<article class="row" data-status="partial" data-section="7-社区" data-search="cm-023 社区 detail·成员表 列「社区业绩」← `sales_team_market` 读 `mapteamreferraltocompactrow`：**无 `$`**（概览卡有 `$`） 文案/展示一致性；api referrals post /team/referrals  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 同字段展示不一致；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-023</span>
     <span class="surface">Detail·成员表</span>
@@ -8504,8 +8504,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`mapTeamReferralToCompactRow`：**无 `$`**（概览卡有 `$`）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>文案/展示一致性；API referrals</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /team/referrals</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>`shared.tsx` 对 `sales_team_market` 加 `prefix:'$'`，与统计卡对齐</dd></div>
-      <div class="wide"><dt>备注</dt><dd>同字段展示不一致</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>同字段展示不一致；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -8555,7 +8555,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-026 社区 detail·邀请引导 三步文案（分享/共建/奖励） 读 `inviteflow`「链接注册后即可」；真路径=连钱包+显式绑定 i18n copy；手册 §5 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改 `community.inviteflow`：写明须连接钱包并在社区页绑定推荐人 —  — visible copy">
+<article class="row" data-status="partial" data-section="7-社区" data-search="cm-026 社区 detail·邀请引导 三步文案（分享/共建/奖励） 读 `inviteflow`「链接注册后即可」；真路径=连钱包+显式绑定 i18n copy；手册 §5 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — visible copy；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-026</span>
     <span class="surface">Detail·邀请引导</span>
@@ -8573,8 +8573,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`inviteFlow`「链接注册后即可」；真路径=连钱包+显式绑定</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>i18n Copy；手册 §5</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 `community.inviteFlow`：写明须连接钱包并在社区页绑定推荐人</dd></div>
-      <div class="wide"><dt>备注</dt><dd>Visible Copy</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>Visible Copy；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -8624,7 +8624,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-029 社区 detail·faq 「邀请关系…自动建立且永久」 读 faq；链须 `bindreferral`，链接仅预填 i18n faq vs 手册 §5 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改 faq：绑定须用户确认上链；「永久」仅指绑定成功后 —  建议新 c 永久一经绑定则真">
+<article class="row" data-status="partial" data-section="7-社区" data-search="cm-029 社区 detail·faq 「邀请关系…自动建立且永久」 读 faq；链须 `bindreferral`，链接仅预填 i18n faq vs 手册 §5 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c 永久一经绑定则真；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-029</span>
     <span class="surface">Detail·FAQ</span>
@@ -8642,8 +8642,8 @@
       <div class="wide"><dt>代码位置</dt><dd>FAQ；链须 `bindReferral`，链接仅预填</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>i18n FAQ vs 手册 §5</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 FAQ：绑定须用户确认上链；「永久」仅指绑定成功后</dd></div>
-      <div class="wide"><dt>备注</dt><dd>永久一经绑定则真</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>永久一经绑定则真；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -8838,26 +8838,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="bad" data-section="8-共建" data-search="gn-005 共建 dock·季卡 折后参考价 `≈ $x`（`agxprice×(1−discount)`） 读 `seasonoptions.price` 已算；`primitives-season.tsx` `seasoncard` **不渲染** `price` 手册 §6.3 展示字段 —（纯链）  ❌ 未接入 fe 缺接线 在 `seasoncard` 渲染 `season.price`，或删除未用 `price` 字段（yagni） —  — code 有、ui 无">
+<article class="row" data-status="na" data-section="8-共建" data-search="gn-005 共建 dock·季卡 折后参考价 `≈ $x`（`agxprice×(1−discount)`） 读 `seasonoptions.price` 已算；`primitives-season.tsx` `seasoncard` **不渲染** `price` 手册 §6.3 展示字段 —（纯链）  ⚪ 不适用 — — —  — 稿无季卡折后价控件（pc `4303:212`）；`season.price` 未渲染属 yagni；等改稿再接或删字段；code 有、ui 无">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-005</span>
     <span class="surface">Dock·季卡</span>
     <span class="datum">折后参考价 `≈ $x`（`agxPrice×(1−discount)`）</span>
     <span class="rw pill">读</span>
-    <span class="status badge bad">❌ 未接入</span>
+    <span class="status badge na">⚪ 不适用</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>共建</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 缺接线</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`seasonOptions.price` 已算；`primitives-season.tsx` `SeasonCard` **不渲染** `price`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6.3 展示字段</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>在 `SeasonCard` 渲染 `season.price`，或删除未用 `price` 字段（YAGNI）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>Code 有、UI 无</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>稿无季卡折后价控件（PC `4303:212`）；`season.price` 未渲染属 YAGNI；等改稿再接或删字段；Code 有、UI 无</dd></div>
     </dl>
   </div>
 </article>
@@ -8976,7 +8976,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-011 共建 dock·清单 「认购价值」usd 读 `estimatecontributionvalueusd`=`amount/(1−discount)`，非链 getter 产品公式（无同名链字段） —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改标签/说明为「折前等值 usd」，或产品确认「认购价值」即该公式 —  — 数已展；标签≠链 agx">
+<article class="row" data-status="partial" data-section="8-共建" data-search="gn-011 共建 dock·清单 「认购价值」usd 读 `estimatecontributionvalueusd`=`amount/(1−discount)`，非链 getter 产品公式（无同名链字段） —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 数已展；标签≠链 agx；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-011</span>
     <span class="surface">Dock·清单</span>
@@ -8994,8 +8994,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`estimateContributionValueUsd`=`amount/(1−discount)`，非链 getter</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品公式（无同名链字段）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改标签/说明为「折前等值 USD」，或产品确认「认购价值」即该公式</dd></div>
-      <div class="wide"><dt>备注</dt><dd>数已展；标签≠链 AGX</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>数已展；标签≠链 AGX；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -9160,7 +9160,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-019 共建 detail·贡献表 行内「预计 agx」 读 `formatsaleslogagx`：优先 `item.tokens`，否则 `estimateagxfromusd1`（无「预估」后缀） api tokens 或 fe 回退估算 post /sales/logs（`tokens`）  🟡 部分 文案/单位与链不匹配（稿如此） `tokens` 缺失时行内加「预估」后缀；有 tokens 则直接展示 —  — 回退未标注；非缺接线">
+<article class="row" data-status="partial" data-section="8-共建" data-search="gn-019 共建 detail·贡献表 行内「预计 agx」 读 `formatsaleslogagx`：优先 `item.tokens`，否则 `estimateagxfromusd1`（无「预估」后缀） api tokens 或 fe 回退估算 post /sales/logs（`tokens`）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 回退未标注；非缺接线；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-019</span>
     <span class="surface">Detail·贡献表</span>
@@ -9178,8 +9178,8 @@
       <div class="wide"><dt>代码位置</dt><dd>`formatSalesLogAgx`：优先 `item.tokens`，否则 `estimateAgxFromUsd1`（无「预估」后缀）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>API tokens 或 FE 回退估算</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>POST /sales/logs（`tokens`）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>`tokens` 缺失时行内加「预估」后缀；有 tokens 则直接展示</dd></div>
-      <div class="wide"><dt>备注</dt><dd>回退未标注；非缺接线</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>回退未标注；非缺接线；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -9252,7 +9252,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-023 共建 faq 空投资格「单账户累计」vs 链/hint「单期累计」 copy zh faq「单账户累计」；hint「单期累计」；链 per-phase 手册：单档/单期累计超门槛 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改 `zh.ts` genesis faq 空投条为「单期累计」，与 `xtokenairdrophint`/链一致 c-10  c-10 r2 确认🟡：wired-wrong（同 s-012）；≠❌">
+<article class="row" data-status="partial" data-section="8-共建" data-search="gn-023 共建 faq 空投资格「单账户累计」vs 链/hint「单期累计」 copy zh faq「单账户累计」；hint「单期累计」；链 per-phase 手册：单档/单期累计超门槛 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-10  c-10 r2 确认🟡：wired-wrong（同 s-012）；≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-023</span>
     <span class="surface">FAQ</span>
@@ -9270,12 +9270,12 @@
       <div class="wide"><dt>代码位置</dt><dd>zh FAQ「单账户累计」；hint「单期累计」；链 per-phase</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册：单档/单期累计超门槛</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 `zh.ts` genesis FAQ 空投条为「单期累计」，与 `xTokenAirdropHint`/链一致</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：wired-wrong（同 S-012）；≠❌</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：wired-wrong（同 S-012）；≠❌；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-024 共建 faq 「x 空投 12 月线性释放 / 合约自动」 copy faq 承诺释放；fe 无 `claimairdrop` 入口（gn-041 正确未接） 产品：空投仅价值统计 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 删/改 faq 释放承诺；改为「空投价值累计、无站内领取入口」（对齐 gn-041） c-11  c-11 r2 确认🟡：copy 错≠能力未接；能力 gn-041 ✅">
+<article class="row" data-status="partial" data-section="8-共建" data-search="gn-024 共建 faq 「x 空投 12 月线性释放 / 合约自动」 copy faq 承诺释放；fe 无 `claimairdrop` 入口（gn-041 正确未接） 产品：空投仅价值统计 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-11  c-11 r2 确认🟡：copy 错≠能力未接；能力 gn-041 ✅；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-024</span>
     <span class="surface">FAQ</span>
@@ -9293,12 +9293,12 @@
       <div class="wide"><dt>代码位置</dt><dd>FAQ 承诺释放；FE 无 `claimAirdrop` 入口（GN-041 正确未接）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品：空投仅价值统计</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>删/改 FAQ 释放承诺；改为「空投价值累计、无站内领取入口」（对齐 GN-041）</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：Copy 错≠能力未接；能力 GN-041 ✅</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：Copy 错≠能力未接；能力 GN-041 ✅；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-025 共建 faq / errors 「100 usd」倍数文案 copy `errors.invalidamount`「100 usd」；份额标签已写 usd1 `base_unit=100e18` **usd1** —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 全 locale 将 `invalidamount` 改为「100 usd1」 c-12  c-12 r2 确认🟡：错误已展；wired-wrong≠❌">
+<article class="row" data-status="partial" data-section="8-共建" data-search="gn-025 共建 faq / errors 「100 usd」倍数文案 copy `errors.invalidamount`「100 usd」；份额标签已写 usd1 `base_unit=100e18` **usd1** —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-12  c-12 r2 确认🟡：错误已展；wired-wrong≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-025</span>
     <span class="surface">FAQ / errors</span>
@@ -9316,12 +9316,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`errors.invalidAmount`「100 USD」；份额标签已写 USD1</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`BASE_UNIT=100e18` **USD1**</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>全 locale 将 `invalidAmount` 改为「100 USD1」</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：错误已展；wired-wrong≠❌</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：错误已展；wired-wrong≠❌；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-026 共建 faq 「agx 540 天释放周期」 copy 无 genesis 侧释放/领取接线；purchase 不转入钱包 agx 购后记账≠本页可领 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改 faq：购后为链上累计记账，非本页即时到账/可领；到账路径见释放/资产章 —  建议新 c r2 确认🟡：文案已接线；勿暗示本页可领">
+<article class="row" data-status="partial" data-section="8-共建" data-search="gn-026 共建 faq 「agx 540 天释放周期」 copy 无 genesis 侧释放/领取接线；purchase 不转入钱包 agx 购后记账≠本页可领 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c r2 确认🟡：文案已接线；勿暗示本页可领；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-026</span>
     <span class="surface">FAQ</span>
@@ -9339,77 +9339,77 @@
       <div class="wide"><dt>代码位置</dt><dd>无 Genesis 侧释放/领取接线；purchase 不转入钱包 AGX</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>购后记账≠本页可领</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改 FAQ：购后为链上累计记账，非本页即时到账/可领；到账路径见释放/资产章</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：文案已接线；勿暗示本页可领</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：文案已接线；勿暗示本页可领；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="bad" data-section="8-共建" data-search="gn-027 共建 dock 阶段倒计时 num（starts/ends） 读 `usegenesiscountdownclock` 写入 session；`genesispurchaseform` **无消费**；i18n 有 `startsin`/`endsin` 手册 `starttime`/`endtime` —（纯链）  ❌ 未接入 fe 缺接线 在 dock/`forminfocard` 渲染 `countdown`+`countdownmode`，或删死文案与组装 —  — 现仅驱动 `invalidateaftergenesisphasetransition`">
+<article class="row" data-status="na" data-section="8-共建" data-search="gn-027 共建 dock 阶段倒计时 num（starts/ends） 读 `usegenesiscountdownclock` 写入 session；`genesispurchaseform` **无消费**；i18n 有 `startsin`/`endsin` 手册 `starttime`/`endtime` —（纯链）  ⚪ 不适用 — — —  — 稿无倒计时控件（pc `4303:212`）；clock 仅服务 phase invalidate 可保留；等改稿再展示；现仅驱动 `invalidateaftergenesisphasetransition`">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-027</span>
     <span class="surface">Dock</span>
     <span class="datum">阶段倒计时 Num（starts/ends）</span>
     <span class="rw pill">读</span>
-    <span class="status badge bad">❌ 未接入</span>
+    <span class="status badge na">⚪ 不适用</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>共建</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 缺接线</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`useGenesisCountdownClock` 写入 session；`GenesisPurchaseForm` **无消费**；i18n 有 `startsIn`/`endsIn`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 `startTime`/`endTime`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>在 Dock/`FormInfoCard` 渲染 `countdown`+`countdownMode`，或删死文案与组装</dd></div>
-      <div class="wide"><dt>备注</dt><dd>现仅驱动 `invalidateAfterGenesisPhaseTransition`</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>稿无倒计时控件（PC `4303:212`）；clock 仅服务 phase invalidate 可保留；等改稿再展示；现仅驱动 `invalidateAfterGenesisPhaseTransition`</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="bad" data-section="8-共建" data-search="gn-028 共建 dock agx 开盘参考价展示 读 `referencepricelabel` 已组装（`agxpriceusd`；缺价→`$0.00`）；i18n `referenceprice`；dock/`forminfocard` **未渲染** 手册 `agxprice()` —（纯链）  ❌ 未接入 fe 缺接线 清单加 `referenceprice` 行，或删未用 label/i18n；季卡见 gn-005 —  — r2 确认❌：同 gn-005 code有ui无；未渲染≠🟡；接上后须禁缺价`$0`；禁假 prod/$55">
+<article class="row" data-status="na" data-section="8-共建" data-search="gn-028 共建 dock agx 开盘参考价展示 读 `referencepricelabel` 已组装（`agxpriceusd`；缺价→`$0.00`）；i18n `referenceprice`；dock/`forminfocard` **未渲染** 手册 `agxprice()` —（纯链）  ⚪ 不适用 — — —  — 稿无开盘参考价行（pc `4303:212`）；`referencepricelabel` 未挂属 yagni；等改稿再接或删 i18n；r2 确认❌：同 gn-005 code有ui无；未渲染≠🟡；接上后须禁缺价`$0`；禁假 prod/$55">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-028</span>
     <span class="surface">Dock</span>
     <span class="datum">AGX 开盘参考价展示</span>
     <span class="rw pill">读</span>
-    <span class="status badge bad">❌ 未接入</span>
+    <span class="status badge na">⚪ 不适用</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>共建</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 缺接线</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`referencePriceLabel` 已组装（`agxPriceUsd`；缺价→`$0.00`）；i18n `referencePrice`；Dock/`FormInfoCard` **未渲染**</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 `agxPrice()`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>清单加 `referencePrice` 行，或删未用 label/i18n；季卡见 GN-005</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认❌：同 GN-005 Code有UI无；未渲染≠🟡；接上后须禁缺价`$0`；禁假 Prod/$55</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>稿无开盘参考价行（PC `4303:212`）；`referencePriceLabel` 未挂属 YAGNI；等改稿再接或删 i18n；R2 确认❌：同 GN-005 Code有UI无；未渲染≠🟡；接上后须禁缺价`$0`；禁假 Prod/$55</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="bad" data-section="8-共建" data-search="gn-029 共建 dock usd1 余额展示 读 `usd1balance` 参与 maxshares/门闸；`usd1balancelabel` 无 ui erc20 `balanceof`；手册 §4/§6 —（纯链）  ❌ 未接入 fe 缺接线 份额旁或清单展示 `usd1balancelabel`，或接受仅门闸用并删死 label —  — —">
+<article class="row" data-status="na" data-section="8-共建" data-search="gn-029 共建 dock usd1 余额展示 读 `usd1balance` 参与 maxshares/门闸；`usd1balancelabel` 无 ui erc20 `balanceof`；手册 §4/§6 —（纯链）  ⚪ 不适用 — — —  — 稿无 usd1 余额展示行（pc `4303:212`）；余额仅门闸用合法；等改稿再展示或删 label">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-029</span>
     <span class="surface">Dock</span>
     <span class="datum">USD1 余额展示</span>
     <span class="rw pill">读</span>
-    <span class="status badge bad">❌ 未接入</span>
+    <span class="status badge na">⚪ 不适用</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>共建</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 缺接线</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`usd1Balance` 参与 maxShares/门闸；`usd1BalanceLabel` 无 UI</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>ERC20 `balanceOf`；手册 §4/§6</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>份额旁或清单展示 `usd1BalanceLabel`，或接受仅门闸用并删死 label</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>稿无 USD1 余额展示行（PC `4303:212`）；余额仅门闸用合法；等改稿再展示或删 label</dd></div>
     </dl>
   </div>
 </article>
@@ -9903,7 +9903,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="9-代码反查附录" data-search="z-008 反查 invite link canonical 真实 `?ref=` vs 展示 `/r/` 读/写 `formatreferrallinkdisplay` vs `referralsharepath`（cm-003/004） 产品展示 vs fe 约定 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 同 cm-003：统一展示串或改文案 cm-003  c-19 冲突表">
+<article class="row" data-status="partial" data-section="9-代码反查附录" data-search="z-008 反查 invite link canonical 真实 `?ref=` vs 展示 `/r/` 读/写 `formatreferrallinkdisplay` vs `referralsharepath`（cm-003/004） 产品展示 vs fe 约定 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n cm-003  c-19 冲突表；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">Z-008</span>
     <span class="surface">invite link canonical</span>
@@ -9921,12 +9921,12 @@
       <div class="wide"><dt>代码位置</dt><dd>`formatReferralLinkDisplay` vs `referralSharePath`（CM-003/004）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>产品展示 vs FE 约定</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 CM-003：统一展示串或改文案</dd></div>
-      <div class="wide"><dt>备注</dt><dd>冲突表</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>冲突表；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="9-代码反查附录" data-search="z-009 反查 faq 空投线性释放 无合约入口断言 copy genesis faq（gn-024）；手册无用户 `claimairdrop` 新手册沉默领取 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 同 gn-024 改 i18n gn-024  c-11 r2 确认🟡：随 gn-024 wired-wrong；≠❌">
+<article class="row" data-status="partial" data-section="9-代码反查附录" data-search="z-009 反查 faq 空投线性释放 无合约入口断言 copy genesis faq（gn-024）；手册无用户 `claimairdrop` 新手册沉默领取 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n gn-024  c-11 r2 确认🟡：随 gn-024 wired-wrong；≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">Z-009</span>
     <span class="surface">FAQ 空投线性释放</span>
@@ -9944,8 +9944,8 @@
       <div class="wide"><dt>代码位置</dt><dd>genesis FAQ（GN-024）；手册无用户 `claimAirdrop`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>新手册沉默领取</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 GN-024 改 i18n</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：随 GN-024 wired-wrong；≠❌</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n</dd></div>
+      <div class="wide"><dt>备注</dt><dd>R2 确认🟡：随 GN-024 wired-wrong；≠❌；Figma 对照：可见文案跟稿；张力进改稿队列</dd></div>
     </dl>
   </div>
 </article>
@@ -10113,7 +10113,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T22:58:22.322Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T23:19:05.094Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
