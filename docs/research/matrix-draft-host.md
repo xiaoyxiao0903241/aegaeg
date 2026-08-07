@@ -103,6 +103,6 @@
 
 1. **❌ H-013/H-014** — 顶栏假 BSC + 壳层无 `wrong_network`（手册全局态缺口）。
 2. **部分 H-004/H-038** — SIWE chainId 写死期望链，缺 live assert。
-3. **部分 H-017** — Exchange 红点 enable 绑 `sessionReady`，与 Release/`walletReady` 不对称。
+3. **✅ H-017** — Exchange 红点已与 Release 统一 `walletReady`（原 sessionReady 不对称，已修）。
 4. **部分 H-024** — Connect promo 文案在 needsSignIn 下仍偏「连接」。
 5. **✅ H-002/H-001** — `sessionReady` / connect≠login 壳层不变量正确；**✅ H-011** USD1 弹窗读源 Prod 地址/decimals 核实通过。
