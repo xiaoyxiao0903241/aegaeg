@@ -19,7 +19,7 @@ export function previewTurbineExpectedAgx(args: {
 }): bigint {
   const { unlockAmountIn, swapSlippageBP, quota } = args
   if (unlockAmountIn <= 0n) return 0n
-  // 非法滑点不在 render 抛错；预览置 0（fail-closed）
+  // 非法滑点不抛错，预览按 0 处理，避免给出虚高结果
   if (swapSlippageBP < 0n || swapSlippageBP >= BPS_DENOM) return 0n
   const afterSlippage = (unlockAmountIn * (BPS_DENOM - swapSlippageBP)) / BPS_DENOM
   return afterSlippage < quota ? afterSlippage : quota

@@ -25,7 +25,7 @@ export type BondZapLiveBlockReason =
   | 'zeroAmount'
   | 'unavailable'
 
-/** 手册 ErrorBondTooSmall：净发放 < 0.01 AGX（9 decimals）。 */
+/** 手册 ErrorBondTooSmall：毛发放量 < 0.01 AGX（9 decimals）。 */
 export const BOND_MIN_PAYOUT_AGX = 10_000_000n
 
 export type XmineLiveBlockReason =
@@ -76,6 +76,8 @@ export function evaluateStakeLive(args: {
  * 迁移旧地址不得再写、推荐必须已绑定、depository 已授权，且余额与
  * 授权足够覆盖拟认购额，任一项不满足即阻断，避免链上交易必然失败。
  *
+ * 大小限制跟链上用毛发放量；债务容量跟链上用净发放量。
+ *
  * @param args.amount 拟认购的 USD1 数量
  * @param args.isBound 推荐是否已绑定
  * @param args.balance 钱包 USD1 余额
@@ -84,18 +86,11 @@ export function evaluateStakeLive(args: {
  * @param args.isOldAccount 迁移旧地址；null = 未知按阻断处理；true = 已迁移阻断
  * @param args.maxDebt 债券债务上限；0 = 不限；null = 未知按阻断处理
  * @param args.totalDeposit 当前已占用债务
- * @param args.netPayout 本笔预估净发放（AGX）
- * @param args.maxPayout 单笔最大 payout（`maxPayout()` 绝对量）；null = 未知按阻断
- */
-/**
- * 债券 zap 写前实时门闸。
- *
- * size 门（TooSmall / TooLarge）跟链上用 **gross** payout；
- * 债务容量跟链上用 **net** payout。
- *
- * @param args.maxPayout maxPayout() 绝对上限
- * @param args.grossPayout 折扣后毛 payout（fee 前）
- * @param args.netPayout 扣 fee 后净 payout（记债 / 入库）
+ * @param args.netPayout 扣 fee 后净发放量（记债 / 入库）
+ * @param args.grossPayout 折扣后毛发放量（fee 前）
+ * @param args.maxPayout maxPayout() 单笔绝对上限
+ * @returns 首个阻断原因
+ * @see docs/onchain-manual/contracts/bonddepository.md
  */
 export function evaluateBondZapLive(args: {
   amount: bigint

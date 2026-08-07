@@ -33,6 +33,8 @@ export function periodEndDays(period: string, sliderDays: number): number {
  * @param args.price 当前价格（质押 AGX 折算 USD / 债券折 AGX 用）
  * @param args.days 预计持仓天数
  * @param args.epochRebasePct 实时 epoch 收益率（展示单位百分比）；null 表示按零收益计算
+ * @param args.xmineDailyPct XMine 日收益率（%）；仅 product=xmine 时使用
+ * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺省 FAQ 默认 2
  * @returns 本地收益估算结果
  */
 export function buildCalcEstimate(args: {

@@ -7,7 +7,7 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * 钱包就绪后：用 BSC 公共读客户端暖热推荐绑定与余额缓存。
- * 不用钱包 RPC，避免非 BSC chainId 污染 query cache。
+ * 不用钱包 RPC，避免非 BSC chainId 污染查询缓存。
  */
 export function useConnectWarmPrefetch() {
   const account = useActiveAccount()

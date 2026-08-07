@@ -76,7 +76,7 @@ export function QueueDetail() {
   function formatLifetimeClaimed(): string {
     const n = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
     if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
-    /** 累计领取无链上数据源：空态显示 0 */
+    // 累计领取没有链上数据源，未加载时显示 0
     return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 

@@ -197,9 +197,9 @@ export function useAssetsHub(): AssetsHubOverview {
     overviewQuery.data?.rebaseRate1e18,
     overviewQuery.data?.epochsPerDay,
   )
-  // LP/Burn 无独立 APR 源 → 诚实空，禁套用 stake rebase APR
+  // LP/Burn 没有独立 APR 来源，显示 0.00%，不用质押 rebase 顶替
   const bondApr = APR_EMPTY
-  // Xmine：yieldRateBP 为日 BP → 日% ×365 进 APR 槽（禁直接塞日利率）
+  // Xmine：yieldRateBP 是日 BP，先转日%再 ×365 显示年化，不能把日利率当 APR
   const xmineApr =
     xmineOverviewQuery.data != null
       ? formatAprFromDailyPct(Number(xmineOverviewQuery.data.yieldRateBP) / 100)
@@ -300,7 +300,7 @@ export function useAssetsHub(): AssetsHubOverview {
 
   if (apiReady) {
     const totalValue = formatApiUsdLabel(apiReward.stake_invest_usd_value)
-    // 可领取 = Mixed 弹窗子集（stake + lp/burn gAGX）；禁直出 API claimable_gagx（含本页领不了的）
+    // 可领取 = Mixed 弹窗子集（stake + lp/burn gAGX）；不能直接显示 API claimable_gagx，里面含本页领不了的部分
     const claimableGagxWei = stakeYield + lpYield + burnYield
     const claimableGagx = `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`
     const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)

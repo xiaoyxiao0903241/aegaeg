@@ -287,7 +287,7 @@ export function useTurbineExchangeSession(
     setSegment,
     pair: {
       // turbineBalances 以 AGX 小数位计量，界面解锁标签显示为 gAGX
-      // 图标与兑换 Hub「交易 gAGX」同套：carousel/hub 128²（勿用 home mark.webp）
+      // 解锁侧图标与兑换中心 gAGX 入口保持一致
       unlock: { icon: tokenCarouselIcons.gagxIcon, symbol: 'gAGX', decimals: AGX_DECIMALS },
       pay: { icon: dappAssets.tokenUsd1, symbol: 'USD1', decimals: USD1_DECIMALS },
       buy: { icon: tokenCarouselIcons.agxIcon, symbol: 'AGX', decimals: AGX_DECIMALS },

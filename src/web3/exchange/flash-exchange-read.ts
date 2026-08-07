@@ -87,13 +87,14 @@ export async function readFlashPairQuote(
 }
 
 /**
- * 读取 USDT↔USD1 路径的卖出 / 买入余额与授权
+ * 读取输入币↔USD1 路径的卖出 / 买入余额与授权
  *
- * sell / approved 使用 getConfig().usdtToken（非 env 写死地址）；
+ * sell / approved 使用 getConfig().usdtToken，不能用环境变量写死地址；
  * usdtToken 为零地址时抛错，避免读错币或授错权。
  *
  * @param owner 钱包地址
  * @param client 链上读取客户端，默认公共 RPC
+ * @returns sell 输入币余额、buy USD1 余额、approved 对 Usd1Swap 的授权
  */
 async function readFlashUsdtBalances(owner: string, client: ChainReadClient = bscReadClient) {
   const ownerAddress = owner as `0x${string}`

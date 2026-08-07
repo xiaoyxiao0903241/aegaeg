@@ -1,3 +1,6 @@
+/**
+ * 质押、债券与 X 挖矿的指标与流水 hooks 都要求登录态。
+ */
 import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getBondFlowBurnLogs,
@@ -18,8 +21,6 @@ import type {
   X0MiningLogsParams,
 } from '~/shared/api/types'
 import { sumX0MiningRewardAmountAcrossPages } from '~/shared/presenters/xmine-lifetime-reward'
-
-/** 质押、债券与 X 挖矿的指标与流水 hooks 都要求登录态。 */
 
 /**
  * 查询活跃质押地址数。

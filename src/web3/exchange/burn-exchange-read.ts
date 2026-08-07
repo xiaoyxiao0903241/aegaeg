@@ -112,7 +112,7 @@ export async function readBurnUserStats(
     functionName: 'originalOf',
     args: [userAddress],
   })
-  // originalOf==0 与资产页 readContributionSnapshot 一致：回退当前用户
+  // originalOf 返回零地址时与资产页 readContributionSnapshot 同口径：回退当前用户
   const contributionRoot =
     root.toLowerCase() === ZERO_ADDRESS ? userAddress : (root as `0x${string}`)
 

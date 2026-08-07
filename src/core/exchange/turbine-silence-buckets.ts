@@ -1,5 +1,5 @@
 /**
- * 按链上 isVested 把 silence 余额拆成冷却中 / 可领取两桶。
+ * 按链上 isVested 把 silence 余额拆成冷却中 / 可领取两组。
  *
  * 冷却中：`!vested`；可领取：`vested`（可 claimCooledGagx）。
  * 两桶互斥，合计应等于仍在 silences 中的总额。

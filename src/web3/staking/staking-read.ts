@@ -207,7 +207,7 @@ export async function readStakeOpenPreflight(args: {
       'STAKE_PREFLIGHT_MULTICALL_FAILED:timeBucket',
     )
 
-    // 单地址本金 / 日额度按首次 root。
+    // 单地址本金与日额度都按迁移链上的首次 root 地址累计
     const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
     const round2 = await readAggregate3(client, [
       {

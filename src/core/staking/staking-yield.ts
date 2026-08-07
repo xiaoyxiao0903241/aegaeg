@@ -152,8 +152,10 @@ export function stakePeriodDays(period: string): number {
 /**
  * BondDepository / BurnBondDepository 手册默认 `discountRateBP`（成交价率）。
  *
- * 180→8500、360→8000、540→7500；未知周期返回 null（fail-closed）。
+ * 180→8500、360→8000、540→7500；未知周期返回 null，避免用错误折扣率估算。
  *
+ * @param period 产品周期（'180' | '360' | '540' 或其他）
+ * @returns 手册成交价率（BPS）；未知周期返回 null
  * @see docs/onchain-manual/contracts/bonddepository.md
  */
 export function handbookBondDiscountRateBP(period: string): number | null {
@@ -164,8 +166,13 @@ export function handbookBondDiscountRateBP(period: string): number | null {
 }
 
 /**
- * 按日线性利息（非复利）：principal × (dailyPct/100) × days。
- * 对齐 XStakingPool：principal × yieldRateBP × days / 10000（dailyPct = yieldRateBP/100）。
+ * 按日线性利息（非复利）：本金 ×（日收益率 / 100）× 天数。
+ * 对齐 XStakingPool：本金 × yieldRateBP × 天数 / 10000（日收益率% = yieldRateBP/100）。
+ *
+ * @param principal 本金
+ * @param dailyPct 日收益率（百分比，如 0.82 表示 0.82%/日）
+ * @param days 天数
+ * @returns 线性利息；任一入参非法返回 0
  */
 export function linearInterest(principal: number, dailyPct: number, days: number): number {
   if (!(principal > 0) || !(dailyPct >= 0) || !(days > 0)) return 0
@@ -230,7 +237,7 @@ export function calcLocalInterest(args: {
       args.discountRateBP !== undefined && args.discountRateBP !== null
         ? args.discountRateBP
         : handbookBondDiscountRateBP(period)
-    // 缺价或折扣非法 → 零利息（禁把 USD1 当 AGX 直接复利）
+    // 缺价或折扣非法 → 零利息，避免把 USD1 当 AGX 直接复利
     if (price == null || !(price > 0) || discountBP == null || !(discountBP > 0)) {
       return { interest: 0, total: principal }
     }
@@ -261,9 +268,12 @@ export function calcLocalInterest(args: {
  *
  * @param args.product 产品类型
  * @param args.period 产品周期
- * @param args.principal 本金
+ * @param args.principal 本金（stake/xmine 为代币量；债券为 USD1）
  * @param args.price 现价（质押折算 USD / 债券折 AGX 用）
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
+ * @param args.xmineDailyPct XMine 日收益率（%）；仅 xmine 使用
+ * @param args.discountRateBP 债券成交价率 BPS；缺省用手册档位
+ * @param args.epochsPerDay 每日 epoch 数；缺省 2（FAQ）
  * @param args.maxDays 曲线最大天数；缺省为 CALC_MAX_DAYS
  * @returns 逐日累计利息（USD）点数组
  */

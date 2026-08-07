@@ -21,7 +21,7 @@ const redeemableGagxWrapAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.wrap, REDEEM
 /**
  * 输入币 → Usd1Swap 授权：兑换前按需补 approve。
  *
- * token 必须来自 getConfig().usdtToken；零地址 fail-closed，禁回退 env USDT。
+ * token 必须来自 getConfig().usdtToken；零地址直接阻断，禁回退环境变量里的 USDT。
  *
  * @param wallet 当前钱包
  * @param amountIn 拟兑换数量
@@ -63,7 +63,7 @@ export async function approveAgxForWrapIfNeeded({
   })
 }
 
-/** 闪电兑换：调用 Usd1Swap.swap，用 USDT 按最低输出换 USD1。 */
+/** 闪电兑换：调用 Usd1Swap.swap，用输入币（getConfig().usdtToken）按最低输出换 USD1。 */
 export async function flashExchange({
   wallet,
   usdtAmount,

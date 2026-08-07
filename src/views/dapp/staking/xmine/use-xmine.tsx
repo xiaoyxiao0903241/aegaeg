@@ -203,7 +203,7 @@ export function useXmineDock() {
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-/** 下次产出倒计时：无结算时刻 → 显示占位符（gaps §3.4） */
+/** 下次产出倒计时：没有结算时刻时显示 —，不伪造倒计时。 */
 const NEXT_EMISSION_EMPTY = '—'
 
 /**
@@ -328,7 +328,7 @@ export function useXmineDetail() {
     },
     {
       label: t.staking.xmine.positionMetrics[1]?.label ?? '',
-      // 已释放：本页无 PRV 已释字段 → 显示 0（资产页启发式另记 gaps）
+      // 已释放：本页没有 PRV 已释字段，先显示 0；资产页另有链上口径
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(0, priceUsd)}

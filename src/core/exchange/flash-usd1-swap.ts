@@ -4,7 +4,7 @@
  * @see docs/onchain-manual/contracts/usd1swap.md
  */
 export type FlashUsd1SwapConfig = {
-  /** Usd1Swap.getConfig().usdtToken — 余额 / 授权 / approve 必须用此地址，禁写死 env USDT。 */
+  /** Usd1Swap.getConfig().usdtToken — 余额 / 授权 / approve 必须用此地址，不能写死环境变量里的 USDT。 */
   usdtToken: `0x${string}`
   rateBps: bigint
   usdtDec: number

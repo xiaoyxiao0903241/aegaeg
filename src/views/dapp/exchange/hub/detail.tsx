@@ -21,7 +21,7 @@ import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-re
 
 /**
  * 程序卡片点击目标：0 Trade gAGX → 闪兑 · 1 Turbine → 涡轮
- * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 暂不可点（B-03）
+ * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 暂不可点
  * 5 Points → 销毁
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
@@ -33,7 +33,7 @@ const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'burn',
 ]
 
-/** 「交易 gAGX」→ 闪兑默认对；「获取 USD1」→ 预选 usdt 对（B-02）。 */
+/** 「交易 gAGX」用默认 gAGX 对；「获取 USD1」打开闪兑时预选 USDT 对。 */
 const TRADE_GAGX_CARD_INDEX = 0
 const GET_USD1_CARD_INDEX = 2
 
