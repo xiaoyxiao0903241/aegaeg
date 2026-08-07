@@ -23,7 +23,7 @@
     "lint:duplicates": "jscpd",
     "lint:deadcode:duplicates": "knip --include duplicates",
     "lint:all": "pnpm lint && pnpm lint:css && pnpm lint:hex && pnpm lint:architecture && pnpm lint:deadcode && pnpm lint:duplicates",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"*.{js,cjs,mjs,json,md}\" \"docs/commands.md\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"*.{js,cjs,mjs,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
     "format:classnames": "prettier --write \"src/**/*.{ts,tsx}\"",
     "test:unit": "node --test --test-concurrency=1 tests/unit/**/*.test.mjs",
@@ -46,7 +46,7 @@
       "eslint --quiet --fix",
       "prettier --write"
     ],
-    "*.{css,json,md}": [
+    "*.{css,json}": [
       "prettier --write"
     ]
   },

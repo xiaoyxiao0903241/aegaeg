@@ -12,13 +12,13 @@
 
 ### 0.1 五柱
 
-| 柱                 | 标准                                                                                                                                                                                                                                                                               |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **代码极简**       | 最少代码解决问题；无第二 call site 不抽层；禁未要求的功能/配置/「灵活性」；200 行能变 50 → 重写                                                                                                                                                                                    |
-| **逻辑清晰可测试** | 决策与 IO 分离；门闸/报价用纯函数+单测；先定可验证成功标准再动手                                                                                                                                                                                                                   |
-| **算法精妙**       | 先定不变量再分支；重复回收唯一 owner；禁特例瀑布；**不是**炫技                                                                                                                                                                                                                     |
-| **性能优异**       | 热路径便宜；禁无故 N+1 RPC；禁 placeholder 驱动写 CTA；先消多余 IO 再微优化                                                                                                                                                                                                        |
-| **遵循最佳实践**   | **代码 / 框架 / 行业**通行实践（语言惯用法、安全、可访问性、Web3 fail-closed、测试与可观测性等）**与**本仓栈约定（手册∩API、Foundation/`<Text>`、目录落点）一并遵守；禁自创平行惯例。与本仓 SSOT 冲突时先暴露，再按决策序与层表裁决（不以「行业流行」静默覆盖 fail-closed / 手册） |
+|柱|标准|
+|---|---|
+|**代码极简**|最少代码解决问题；无第二 call site 不抽层；禁未要求的功能/配置/「灵活性」；200 行能变 50 → 重写|
+|**逻辑清晰可测试**|决策与 IO 分离；门闸/报价用纯函数+单测；先定可验证成功标准再动手|
+|**算法精妙**|先定不变量再分支；重复回收唯一 owner；禁特例瀑布；**不是**炫技|
+|**性能优异**|热路径便宜；禁无故 N+1 RPC；禁 placeholder 驱动写 CTA；先消多余 IO 再微优化|
+|**遵循最佳实践**|**代码 / 框架 / 行业**通行实践（语言惯用法、安全、可访问性、Web3 fail-closed、测试与可观测性等）**与**本仓栈约定（手册∩API、Foundation/`<Text>`、目录落点）一并遵守；禁自创平行惯例。与本仓 SSOT 冲突时先暴露，再按决策序与层表裁决（不以「行业流行」静默覆盖 fail-closed / 手册）|
 
 **决策序：** 正确性（含 fail-closed 金钱）> 可验证性 > 极简清晰 > 算法与性能 > 复用 > 速度。
 
@@ -64,16 +64,16 @@
 
 全局 Contract「Matt 路由」指向本表。`/ask-matt` 为完整地图；此处为本仓落地。
 
-| 意图              | 走                                                  | 产物落盘（本仓）                                                                         |
-| ----------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 有代码 + 磨清想法 | `grill-with-docs`                                   | 结论 → [`docs/decisions/`](docs/decisions/)；**禁** `.scratch` 过程坟、禁根 `CONTEXT.md` |
-| 多会话大建        | `to-spec` → `to-tickets` → `implement`              | Spec/票 → [`docs/tickets/`](docs/tickets/)；blocker 写在票内                             |
-| 单切片可闭环      | `implement`（内含 tdd + code-review）               | 代码 + 必要 docs；**commit 须用户明示**                                                  |
-| 外来杂单          | `triage` → `implement`                              | 票 → `docs/tickets/`                                                                     |
-| 难 bug            | `diagnosing-bugs`                                   | 先红反馈环；根因记入决策或票                                                             |
-| 雾大不知从何建    | `wayfinder` → 再 `to-spec`                          | 决策票 → `docs/decisions/`；**勿**跳过 to-spec 直 implement                              |
-| 架构变深          | `improve-codebase-architecture` / `codebase-design` | 想法回 grill 或决策                                                                      |
-| 跨会话            | `handoff`；同会话阶段切 `compact`（勿中途 compact） | handoff 文件可暂放 `docs/handoffs/`，用后可删                                            |
+|意图|走|产物落盘（本仓）|
+|---|---|---|
+|有代码 + 磨清想法|`grill-with-docs`|结论 → [`docs/decisions/`](docs/decisions/)；**禁** `.scratch` 过程坟、禁根 `CONTEXT.md`|
+|多会话大建|`to-spec` → `to-tickets` → `implement`|Spec/票 → [`docs/tickets/`](docs/tickets/)；blocker 写在票内|
+|单切片可闭环|`implement`（内含 tdd + code-review）|代码 + 必要 docs；**commit 须用户明示**|
+|外来杂单|`triage` → `implement`|票 → `docs/tickets/`|
+|难 bug|`diagnosing-bugs`|先红反馈环；根因记入决策或票|
+|雾大不知从何建|`wayfinder` → 再 `to-spec`|决策票 → `docs/decisions/`；**勿**跳过 to-spec 直 implement|
+|架构变深|`improve-codebase-architecture` / `codebase-design`|想法回 grill 或决策|
+|跨会话|`handoff`；同会话阶段切 `compact`（勿中途 compact）|handoff 文件可暂放 `docs/handoffs/`，用后可删|
 
 **禁止**复活 Matt 默认的 `.scratch/<feature>/` 过程目录作 SSOT。词表：[`docs/ubiquitous-language.md`](docs/ubiquitous-language.md)。
 
@@ -83,17 +83,17 @@
 
 按「管什么」读。产品语言 ≠ 实现归属。
 
-| 问题            | SSOT                                                                                                  |
-| --------------- | ----------------------------------------------------------------------------------------------------- |
-| 用户可见行为    | 产品 Answer / Spec                                                                                    |
-| UI token / 用法 | [`docs/foundation/`](docs/foundation/)                                                                |
-| 代码注释        | [`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)（严格层 / 逻辑层） |
-| 文案            | `src/i18n/messages/` · PC 为文案 SSOT                                                                 |
-| 静态 UI         | Figma `uiKwzwIoD06phS0husdqjB` · [`docs/figma-pages.md`](docs/figma-pages.md)                         |
-| 链上默认        | [`docs/onchain-manual/`](docs/onchain-manual/)（入仓原文；**禁止**改写正文）                          |
-| 链上旧切片补全  | [`docs/onchain-manual-legacy.md`](docs/onchain-manual-legacy.md)（同上）                              |
-| 后端读          | [`docs/backend-api/`](docs/backend-api/)                                                              |
-| 词表 / 命令     | [`docs/ubiquitous-language.md`](docs/ubiquitous-language.md) · [`docs/commands.md`](docs/commands.md) |
+|问题|SSOT|
+|---|---|
+|用户可见行为|产品 Answer / Spec|
+|UI token / 用法|[`docs/foundation/`](docs/foundation/)|
+|代码注释|[`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)（严格层 / 逻辑层）|
+|文案|`src/i18n/messages/` · PC 为文案 SSOT|
+|静态 UI|Figma `uiKwzwIoD06phS0husdqjB` · [`docs/figma-pages.md`](docs/figma-pages.md)|
+|链上默认|[`docs/onchain-manual/`](docs/onchain-manual/)（入仓原文；**禁止**改写正文）|
+|链上旧切片补全|[`docs/onchain-manual-legacy.md`](docs/onchain-manual-legacy.md)（同上）|
+|后端读|[`docs/backend-api/`](docs/backend-api/)|
+|词表 / 命令|[`docs/ubiquitous-language.md`](docs/ubiquitous-language.md) · [`docs/commands.md`](docs/commands.md)|
 
 - **手册入仓只读：** `onchain-manual/` 与 legacy 正文来自外部手册拷贝；**禁止**为贴本仓路径 / 去考古句 / 审文档而改写。正文若写合约仓 `abi/`、`src/*.sol`、`deployments/` 等，以方法表语义为准；本仓运行时仍走 `abis.ts` + `VITE_BSC_*` / `contracts.ts`。换手册 → 从源重新拷贝，勿手改。
 - **`shared/components`**：只扩**无业务数据**的布局/控件 primitive（`Tile`/`Grid`/`MainButton`…）；业务档位 / locale / 地址不进。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认，如 `DockFrame`）进 `views/dapp/shared/`（非 tab）；**窗口级宿主**（`primitives` + `use-*` + rail/app-bar/…；onboarding/wallet 子袋）进 `views/dapp/host/`；**组合根**（`main` + startup）进 `src/boot/`。不确定宁放页袋。详见 [`docs/decisions/dapp-page-bag-dock-detail.md`](docs/decisions/dapp-page-bag-dock-detail.md)。

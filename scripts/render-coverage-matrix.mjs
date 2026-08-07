@@ -16,20 +16,41 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const srcPath = resolve(root, 'docs/dapp-data-coverage-matrix.md')
 const outPath = resolve(root, 'docs/dapp-data-coverage-matrix.html')
 
-const COLS = [
-  'id',
-  'chapter',
-  'surface',
-  'datum',
-  'rw',
-  'authority',
-  'status',
-  't1',
-  'inherits',
-  'evidence',
-  'abc',
-  'note',
-]
+const HEADER_TO_KEY = {
+  行号: 'id',
+  行號: 'id',
+  章节: 'chapter',
+  章節: 'chapter',
+  '页面/表面': 'surface',
+  '頁面/表面': 'surface',
+  数据或动作: 'datum',
+  數據或動作: 'datum',
+  '读/写': 'rw',
+  '讀/寫': 'rw',
+  代码位置: 'code',
+  代碼位置: 'code',
+  文档位置: 'docs',
+  文檔位置: 'docs',
+  API接口: 'api',
+  权威来源: 'authority',
+  權威來源: 'authority',
+  是否正确接入: 'status',
+  是否正確接入: 'status',
+  状态: 'status',
+  狀態: 'status',
+  T1归因: 't1',
+  T1歸因: 't1',
+  修复方法: 'fix',
+  修復方法: 'fix',
+  继承自: 'inherits',
+  繼承自: 'inherits',
+  证据: 'evidence',
+  證據: 'evidence',
+  'A/B/C链': 'abc',
+  'A/B/C鏈': 'abc',
+  备注: 'note',
+  備註: 'note',
+}
 
 /** @param {string} s */
 function escapeHtml(s) {
@@ -45,7 +66,6 @@ function splitRow(line) {
   const raw = line.trim()
   if (!raw.startsWith('|')) return null
   const parts = raw.split('|')
-  // leading/trailing empties from edge pipes
   const cells = parts.slice(1, parts[parts.length - 1] === '' ? -1 : undefined).map((c) => c.trim())
   return cells
 }
@@ -68,7 +88,7 @@ function parseMatrix(md) {
   /** @type {'none' | 'table'} */
   let mode = 'none'
   /** @type {string[] | null} */
-  let header = null
+  let headerKeys = null
   const ruleLines = []
   let inRules = false
 
@@ -79,7 +99,7 @@ function parseMatrix(md) {
       if (title === '规则' || title.startsWith('全局对照源')) {
         inRules = title === '规则'
         mode = 'none'
-        header = null
+        headerKeys = null
         current = null
         if (inRules) ruleLines.push(`<h2>${escapeHtml(title)}</h2>`)
         continue
@@ -94,7 +114,7 @@ function parseMatrix(md) {
       current = { title, slug: slug || `s-${sections.length}`, meta: [], rows: [] }
       sections.push(current)
       mode = 'none'
-      header = null
+      headerKeys = null
       continue
     }
 
@@ -129,22 +149,46 @@ function parseMatrix(md) {
       if (!cells) continue
       if (isSeparator(cells)) continue
       if (cells[0] === '行号' || cells[0] === '行號') {
-        header = cells
+        headerKeys = cells.map((h) => HEADER_TO_KEY[h] ?? null)
         mode = 'table'
         continue
       }
-      if (mode === 'table' && header && cells.length >= 7) {
-        const row = {}
-        for (let i = 0; i < COLS.length; i++) {
-          row[COLS[i]] = cells[i] ?? ''
+      if (mode === 'table' && headerKeys) {
+        /** @type {Record<string, string>} */
+        const row = {
+          id: '',
+          chapter: '',
+          surface: '',
+          datum: '',
+          rw: '',
+          code: '',
+          docs: '',
+          api: '',
+          authority: '',
+          status: '',
+          t1: '',
+          fix: '',
+          inherits: '',
+          evidence: '',
+          abc: '',
+          note: '',
         }
-        // Only keep real matrix ids
+        for (let i = 0; i < headerKeys.length; i++) {
+          const key = headerKeys[i]
+          if (key) row[key] = cells[i] ?? ''
+        }
+        // legacy: evidence → code if code empty; authority kept for display fallback
+        if (!row.code && row.evidence) row.code = row.evidence
+        if (!row.docs && row.authority) row.docs = row.authority
+        if (!row.fix) {
+          const sc = statusClass(row.status)
+          row.fix = sc === 'ok' || sc === 'na' ? '—' : '待核验后补'
+        }
         if (/^[A-Z]+-\d+/.test(row.id)) current.rows.push(row)
       }
     }
   }
 
-  // wrap consecutive li
   let rulesHtml = ''
   let inList = false
   for (const chunk of ruleLines) {
@@ -159,18 +203,10 @@ function parseMatrix(md) {
         rulesHtml += '</ul>'
         inList = false
       }
-      if (chunk.startsWith('<tr>')) {
-        if (!rulesHtml.endsWith('</table>') && !rulesHtml.includes('<table class="rules">')) {
-          // open table lazily — simplify: wrap all tr later
-        }
-        rulesHtml += chunk
-      } else {
-        rulesHtml += chunk
-      }
+      rulesHtml += chunk
     }
   }
   if (inList) rulesHtml += '</ul>'
-  // wrap bare tr sequences into tables
   rulesHtml = rulesHtml.replace(/(?:<tr>.*?<\/tr>\s*)+/gs, (block) => {
     if (!block.includes('<tr>')) return block
     return `<div class="table-wrap"><table class="rules">${block}</table></div>`
@@ -183,9 +219,10 @@ function parseMatrix(md) {
 function statusClass(status) {
   if (status.includes('✅')) return 'ok'
   if (status.includes('❌')) return 'bad'
-  if (status.includes('部分')) return 'partial'
-  if (status.includes('待核实')) return 'pending'
-  if (status.includes('不适用')) return 'na'
+  if (status.includes('🟡') || status.includes('部分')) return 'partial'
+  if (status.includes('🔍') || status.includes('待核实')) return 'pending'
+  if (status.includes('🚫') || status.includes('阻塞')) return 'blocked'
+  if (status.includes('⚪') || status.includes('不适用')) return 'na'
   return 'unknown'
 }
 
@@ -201,6 +238,7 @@ function renderHtml(data, generatedAt) {
     bad: allRows.filter((r) => statusClass(r.status) === 'bad').length,
     partial: allRows.filter((r) => statusClass(r.status) === 'partial').length,
     pending: allRows.filter((r) => statusClass(r.status) === 'pending').length,
+    blocked: allRows.filter((r) => statusClass(r.status) === 'blocked').length,
     na: allRows.filter((r) => statusClass(r.status) === 'na').length,
   }
 
@@ -216,15 +254,21 @@ function renderHtml(data, generatedAt) {
       const rows = s.rows
         .map((r) => {
           const sc = statusClass(r.status)
+          const fix = r.fix || '—'
+          const fixHot = fix !== '—' && fix !== ''
           const search = [
             r.id,
             r.chapter,
             r.surface,
             r.datum,
             r.rw,
+            r.code,
+            r.docs,
+            r.api,
             r.authority,
             r.status,
             r.t1,
+            fix,
             r.inherits,
             r.evidence,
             r.abc,
@@ -244,11 +288,13 @@ function renderHtml(data, generatedAt) {
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>${escapeHtml(r.chapter)}</dd></div>
-      <div><dt>权威来源</dt><dd>${escapeHtml(r.authority)}</dd></div>
       <div><dt>T1 归因</dt><dd>${escapeHtml(r.t1)}</dd></div>
       <div><dt>继承自</dt><dd>${escapeHtml(r.inherits)}</dd></div>
       <div><dt>A/B/C 链</dt><dd>${escapeHtml(r.abc)}</dd></div>
-      <div class="wide"><dt>证据</dt><dd>${escapeHtml(r.evidence)}</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>${escapeHtml(r.code || r.evidence || '—')}</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>${escapeHtml(r.docs || r.authority || '—')}</dd></div>
+      <div class="wide"><dt>API 接口</dt><dd>${escapeHtml(r.api || '—')}</dd></div>
+      <div class="wide${fixHot ? ' fix-hot' : ''}"><dt>修复方法</dt><dd>${escapeHtml(fix)}</dd></div>
       <div class="wide"><dt>备注</dt><dd>${escapeHtml(r.note)}</dd></div>
     </dl>
   </div>
@@ -294,6 +340,8 @@ function renderHtml(data, generatedAt) {
     --partial-bg: rgba(224, 168, 76, 0.14);
     --pending: #6b9fff;
     --pending-bg: rgba(107, 159, 255, 0.12);
+    --blocked: #c77dff;
+    --blocked-bg: rgba(199, 125, 255, 0.14);
     --na: #7a8296;
     --na-bg: rgba(122, 130, 150, 0.12);
     --radius: 12px;
@@ -372,6 +420,7 @@ function renderHtml(data, generatedAt) {
   .stat.bad strong { color: var(--bad); }
   .stat.partial strong { color: var(--partial); }
   .stat.pending strong { color: var(--pending); }
+  .stat.blocked strong { color: var(--blocked); }
   .stat.na strong { color: var(--na); }
 
   .toolbar {
@@ -456,6 +505,7 @@ function renderHtml(data, generatedAt) {
   .filters button[data-filter="bad"][aria-pressed="true"] { background: var(--bad-bg); color: var(--bad); }
   .filters button[data-filter="partial"][aria-pressed="true"] { background: var(--partial-bg); color: var(--partial); }
   .filters button[data-filter="pending"][aria-pressed="true"] { background: var(--pending-bg); color: var(--pending); }
+  .filters button[data-filter="blocked"][aria-pressed="true"] { background: var(--blocked-bg); color: var(--blocked); }
   .filters button[data-filter="na"][aria-pressed="true"] { background: var(--na-bg); color: var(--na); }
 
   .match-count {
@@ -602,7 +652,9 @@ function renderHtml(data, generatedAt) {
   .badge.bad { background: var(--bad-bg); color: var(--bad); }
   .badge.partial { background: var(--partial-bg); color: var(--partial); }
   .badge.pending { background: var(--pending-bg); color: var(--pending); }
+  .badge.blocked { background: var(--blocked-bg); color: var(--blocked); }
   .badge.na { background: var(--na-bg); color: var(--na); }
+  .fix-hot dd { color: #ffb4a2; }
 
   .chev {
     width: 8px;
@@ -682,7 +734,7 @@ function renderHtml(data, generatedAt) {
     <header class="hero">
       <div>
         <h1>Dapp 数据覆盖矩阵</h1>
-        <p class="lede">动态数据与写路径对齐的现行结论。点开一行查看证据与备注；用搜索与状态筛缺口。</p>
+        <p class="lede">动态数据与写路径对齐的现行结论。点开一行查看代码 / 文档 / API / 修复方法；用搜索与状态筛缺口。</p>
         <p class="ssot">SSOT：<a href="./dapp-data-coverage-matrix.md">dapp-data-coverage-matrix.md</a>
           · 规则：<a href="./decisions/dapp-data-coverage-matrix-wayfinder.md">wayfinder</a>
           · 重生：<code>pnpm docs:matrix</code></p>
@@ -691,22 +743,24 @@ function renderHtml(data, generatedAt) {
         <div class="stat"><span>合计</span><strong>${counts.total}</strong></div>
         <div class="stat ok"><span>✅</span><strong>${counts.ok}</strong></div>
         <div class="stat bad"><span>❌</span><strong>${counts.bad}</strong></div>
-        <div class="stat partial"><span>部分</span><strong>${counts.partial}</strong></div>
-        <div class="stat pending"><span>待核实</span><strong>${counts.pending}</strong></div>
-        <div class="stat na"><span>不适用</span><strong>${counts.na}</strong></div>
+        <div class="stat partial"><span>🟡</span><strong>${counts.partial}</strong></div>
+        <div class="stat pending"><span>🔍</span><strong>${counts.pending}</strong></div>
+        <div class="stat blocked"><span>🚫</span><strong>${counts.blocked}</strong></div>
+        <div class="stat na"><span>⚪</span><strong>${counts.na}</strong></div>
       </div>
     </header>
 
     <div class="toolbar">
       <div class="toolbar-row">
-        <label class="search"><input id="q" type="search" placeholder="搜索行号、表面、数据、证据…" autocomplete="off" /></label>
+        <label class="search"><input id="q" type="search" placeholder="搜索行号、表面、代码、API、修复…" autocomplete="off" /></label>
         <div class="filters" role="group" aria-label="按接入状态筛选">
           <button type="button" data-filter="all" aria-pressed="true">全部</button>
           <button type="button" data-filter="ok" aria-pressed="false">✅</button>
           <button type="button" data-filter="bad" aria-pressed="false">❌</button>
-          <button type="button" data-filter="partial" aria-pressed="false">部分</button>
-          <button type="button" data-filter="pending" aria-pressed="false">待核实</button>
-          <button type="button" data-filter="na" aria-pressed="false">不适用</button>
+          <button type="button" data-filter="partial" aria-pressed="false">🟡</button>
+          <button type="button" data-filter="pending" aria-pressed="false">🔍</button>
+          <button type="button" data-filter="blocked" aria-pressed="false">🚫</button>
+          <button type="button" data-filter="na" aria-pressed="false">⚪</button>
           <button type="button" data-filter="gap" aria-pressed="false">仅缺口</button>
         </div>
         <div class="match-count" id="matchCount"></div>

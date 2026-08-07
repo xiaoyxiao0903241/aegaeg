@@ -62,10 +62,10 @@ draw_tx_hash 为开奖交易 hash。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseLuckyRewardMyRounds` {`code`:integer, `data`:object}                  |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseLuckyRewardMyRounds` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/lucky-reward/summary`
 
@@ -82,10 +82,10 @@ win_count：累计中奖次数（lucky_winners）。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseLuckyRewardSummary` {`code`:integer, `data`:object}                   |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseLuckyRewardSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/lucky-reward/winners`
 
@@ -104,11 +104,11 @@ participation_amount 为质押金额(USDT)，取自 user_performance_daily.sum_i
 
 - `application/json`: `LuckyRewardWinnersRequest` {`date`*:string}
 
-| status | description                                  | schema                                                                            |
-| ------ | -------------------------------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success                               | `ApiResponseLuckyRewardWinners` {`code`:integer, `data`:object}                   |
-| 400    | 缺少或非法日期参数 / Missing or invalid date | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
-| 401    | 未授权 / Unauthorized                        | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseLuckyRewardWinners` {`code`:integer, `data`:object}|
+|400|缺少或非法日期参数 / Missing or invalid date|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## referral-award（推荐奖）
 
@@ -137,10 +137,10 @@ hide_zero_position=true 时仅返回 active_stake_balance &gt; 0 的直推。
 
 - `application/json`: `ReferralAwardDirectReferralsRequest` {`page`:integer, `page_size`:integer, `hide_zero_position`:boolean}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseReferralAwardDirectReferrals` {`code`:integer, `data`:object}         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseReferralAwardDirectReferrals` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/referral-award/logs`
 
@@ -155,10 +155,10 @@ hide_zero_position=true 时仅返回 active_stake_balance &gt; 0 的直推。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseReferralAwardLogs` {`code`:integer, `data`:object}                    |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseReferralAwardLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/referral-award/summary`
 
@@ -176,10 +176,10 @@ available_contribution = agx_contribution_totals.available_contribution_raw（�
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseReferralAwardSummary` {`code`:integer, `data`:object}                 |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseReferralAwardSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## participation-award（参与奖）
 
@@ -207,9 +207,9 @@ total_brought_reward = SUM(dao_reward_ledger.gross_amount) WHERE reward_type=PAR
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description    | schema                                                                 |
-| ------ | -------------- | ---------------------------------------------------------------------- |
-| 200    | 成功 / Success | `ApiResponseParticipationAwardInviter` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseParticipationAwardInviter` {`code`:integer, `data`:object}|
 
 ### `POST` `/participation-award/logs`
 
@@ -224,9 +224,9 @@ total_brought_reward = SUM(dao_reward_ledger.gross_amount) WHERE reward_type=PAR
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description    | schema                                                              |
-| ------ | -------------- | ------------------------------------------------------------------- |
-| 200    | 成功 / Success | `ApiResponseParticipationAwardLogs` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseParticipationAwardLogs` {`code`:integer, `data`:object}|
 
 ### `POST` `/participation-award/summary`
 
@@ -241,9 +241,9 @@ active_stake_balance、available_contribution 与推荐奖 summary 同源。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description    | schema                                                                 |
-| ------ | -------------- | ---------------------------------------------------------------------- |
-| 200    | 成功 / Success | `ApiResponseParticipationAwardSummary` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseParticipationAwardSummary` {`code`:integer, `data`:object}|
 
 ## rank-reward（等级共建奖）
 
@@ -271,9 +271,9 @@ active_stake_balance、available_contribution 与推荐奖 summary 同源。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description | schema                                                      |
-| ------ | ----------- | ----------------------------------------------------------- |
-| 200    | 成功        | `ApiResponseRankRewardLogs` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功|`ApiResponseRankRewardLogs` {`code`:integer, `data`:object}|
 
 ### `POST` `/rank-reward/peer-surpass-logs`
 
@@ -288,9 +288,9 @@ active_stake_balance、available_contribution 与推荐奖 summary 同源。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description | schema                                                                 |
-| ------ | ----------- | ---------------------------------------------------------------------- |
-| 200    | 成功        | `ApiResponseRankRewardPeerSurpassLogs` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功|`ApiResponseRankRewardPeerSurpassLogs` {`code`:integer, `data`:object}|
 
 ### `POST` `/rank-reward/summary`
 
@@ -306,9 +306,9 @@ active_stake_balance、available_contribution 与推荐奖同源。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description | schema                                                         |
-| ------ | ----------- | -------------------------------------------------------------- |
-| 200    | 成功        | `ApiResponseRankRewardSummary` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功|`ApiResponseRankRewardSummary` {`code`:integer, `data`:object}|
 
 ### `POST` `/rank-reward/team-members`
 
@@ -324,9 +324,9 @@ hide_zero_market=true 时仅 making_market&gt;0。
 
 - `application/json`: `RankRewardTeamMembersRequest` {`page`:integer, `page_size`:integer, `sort_time`:string, `hide_zero_market`:boolean}
 
-| status | description | schema                                                             |
-| ------ | ----------- | ------------------------------------------------------------------ |
-| 200    | 成功        | `ApiResponseRankRewardTeamMembers` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功|`ApiResponseRankRewardTeamMembers` {`code`:integer, `data`:object}|
 
 ## claim（DAO领取签名）
 
@@ -356,12 +356,12 @@ ledger 回滚 ISSUED→READY 后重新签名并写 3 张表。signType 按奖励
 
 - `application/json`: `DaoRewardClaimRequest` {`rewardType`*:string}
 
-| status | description                                                     | schema                                                          |
-| ------ | --------------------------------------------------------------- | --------------------------------------------------------------- |
-| 200    | 返回 signature / signature returned                             | `ApiResponseDaoRewardSignature` {`code`:integer, `data`:object} |
-| 400    | 无可领取 DAO 奖励、rewardType 无效、claim gate 关闭或贡献点不足 |                                                                 |
-| 401    | 未授权                                                          |                                                                 |
-| 502    | 签名服务不可用                                                  |                                                                 |
+|status|description|schema|
+|---|---|---|
+|200|返回 signature / signature returned|`ApiResponseDaoRewardSignature` {`code`:integer, `data`:object}|
+|400|无可领取 DAO 奖励、rewardType 无效、claim gate 关闭或贡献点不足||
+|401|未授权||
+|502|签名服务不可用||
 
 ### `POST` `/claim/market-fund`
 
@@ -380,12 +380,12 @@ signType 固定为 51，order_type=5，合约地址为 MARKET_FUND_VAULT_ADDRESS
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description                         | schema                                                           |
-| ------ | ----------------------------------- | ---------------------------------------------------------------- |
-| 200    | 返回 signature / signature returned | `ApiResponseMarketFundSignature` {`code`:integer, `data`:object} |
-| 400    | 无可领取做市社区津贴                |                                                                  |
-| 401    | 未授权                              |                                                                  |
-| 502    | 签名服务不可用                      |                                                                  |
+|status|description|schema|
+|---|---|---|
+|200|返回 signature / signature returned|`ApiResponseMarketFundSignature` {`code`:integer, `data`:object}|
+|400|无可领取做市社区津贴||
+|401|未授权||
+|502|签名服务不可用||
 
 ## market-allowance（发展津贴）
 
@@ -411,10 +411,10 @@ signType 固定为 51，order_type=5，合约地址为 MARKET_FUND_VAULT_ADDRESS
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseMarketAllowanceClaimLogs` {`code`:integer, `data`:object}             |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseMarketAllowanceClaimLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/market-allowance/paid-logs`
 
@@ -430,10 +430,10 @@ subsidy_rate=|amount|/|operator_amount| 百分比；allowance_amount=amount（gA
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseMarketAllowancePaidLogs` {`code`:integer, `data`:object}              |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseMarketAllowancePaidLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/market-allowance/summary`
 
@@ -449,10 +449,10 @@ total_claimed_allowance = market_fund_reward_totals.claimed（gAGX）。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseMarketAllowanceSummary` {`code`:integer, `data`:object}               |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseMarketAllowanceSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## release-pool（释放池）
 
@@ -480,10 +480,10 @@ event_type 枚举：entered_queue=进入队列，claimed=领取，released=已�
 
 - `application/json`: `ReleasePoolLogsRequest` {`page`:integer, `page_size`:integer, `event_type`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseReleasePoolLogs` {`code`:integer, `data`:object}                      |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseReleasePoolLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/release-pool/summary`
 
@@ -500,10 +500,10 @@ total_claimed_amount = SUM(claimed.amount)。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseReleasePoolSummary` {`code`:integer, `data`:object}                   |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseReleasePoolSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## buffer-pool（缓冲池）
 
@@ -531,10 +531,10 @@ contract_address 原值返回（币种由前端按合约枚举映射）。
 
 - `application/json`: `BufferPoolLogsRequest` {`page`:integer, `page_size`:integer, `event_type`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseBufferPoolLogs` {`code`:integer, `data`:object}                       |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseBufferPoolLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/buffer-pool/summary`
 
@@ -550,10 +550,10 @@ releasing_amount = cumulative − released（不小于 0）。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseBufferPoolSummary` {`code`:integer, `data`:object}                    |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseBufferPoolSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## agx-contribution（销毁与贡献点）
 
@@ -579,10 +579,10 @@ agx_contribution_logs，event_type = CONVERTED（销毁换贡献点）。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseAgxContributionBurnLogs` {`code`:integer, `data`:object}              |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseAgxContributionBurnLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/agx-contribution/consume-logs`
 
@@ -596,10 +596,10 @@ agx_contribution_logs，event_type = CONSUMED（消耗贡献点领取奖励）�
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseAgxContributionConsumeLogs` {`code`:integer, `data`:object}           |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseAgxContributionConsumeLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/agx-contribution/summary`
 
@@ -614,10 +614,10 @@ agx_contribution_logs，event_type = CONSUMED（消耗贡献点领取奖励）�
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseAgxContributionSummary` {`code`:integer, `data`:object}               |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseAgxContributionSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## assets（资产页）
 
@@ -645,10 +645,10 @@ bond_lp、bond_burn 为 AGX；stake_x_pool 为 gAGX。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseAssetsHoldingsDistribution` {`code`:integer, `data`:object}           |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseAssetsHoldingsDistribution` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/assets/holdings-summary`
 
@@ -665,10 +665,10 @@ total_released_agx = buffer_pool_released + stake_redeemed_agx。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseAssetsHoldingsSummary` {`code`:integer, `data`:object}                |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseAssetsHoldingsSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/assets/reward-summary`
 
@@ -687,10 +687,10 @@ market_fund_claimable_agx = 做市津贴 unlocked_claimable（AGX，单独字段
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseAssetsRewardSummary` {`code`:integer, `data`:object}                  |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseAssetsRewardSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## performance（做市概览）
 
@@ -721,10 +721,10 @@ available_contribution = agx_contribution_totals.available_contribution_raw（÷
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseMakingOverview` {`code`:integer, `data`:object}                       |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseMakingOverview` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/performance/stake-address-count`
 
@@ -738,10 +738,10 @@ available_contribution = agx_contribution_totals.available_contribution_raw（÷
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseStakeAddressCount` {`code`:integer, `data`:StakeAddressCountStats}    |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseStakeAddressCount` {`code`:integer, `data`:StakeAddressCountStats}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## stake-flow（质押流水）
 
@@ -772,10 +772,10 @@ operation=RESTAKE 时：amount 取 restake_amount，term_days 取 restake_term_d
 
 - `application/json`: `StakeFlowLogsRequest` {`page`:integer, `page_size`:integer, `operation`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseStakeFlowLogs` {`code`:integer, `data`:object}                        |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseStakeFlowLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/stake-flow/positions`
 
@@ -794,10 +794,10 @@ total_stake_amount 为当前用户全部 STAKE 流水 amount 合计（AGX）。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseStakePositions` {`code`:integer, `data`:object}                       |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseStakePositions` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## bond-flow（债券流水）
 
@@ -830,10 +830,10 @@ operation=RESTAKE 时：payout 取 restake_amount，term_days 取 restake_term_d
 
 - `application/json`: `BondFlowLpLogsRequest` {`page`:integer, `page_size`:integer, `operation`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseBondFlowLogs` {`code`:integer, `data`:object}                         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseBondFlowLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/bond-flow/burn-purchases`
 
@@ -850,10 +850,10 @@ payout（获取 AGX）、tx_hash；以及 total_purchase_amount（全部 PURCHAS
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseBondPurchases` {`code`:integer, `data`:object}                        |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseBondPurchases` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/bond-flow/lp-logs`
 
@@ -873,10 +873,10 @@ operation=RESTAKE 时：payout 取 restake_amount，term_days 取 restake_term_d
 
 - `application/json`: `BondFlowLpLogsRequest` {`page`:integer, `page_size`:integer, `operation`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseBondFlowLogs` {`code`:integer, `data`:object}                         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseBondFlowLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/bond-flow/lp-purchases`
 
@@ -893,10 +893,10 @@ payout（获取 AGX）、tx_hash；以及 total_purchase_amount（全部 PURCHAS
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseBondPurchases` {`code`:integer, `data`:object}                        |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseBondPurchases` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## turbine（涡轮）
 
@@ -923,10 +923,10 @@ turbine_type 枚举：received=进入，silenced=解锁，cooled_claimed=提取�
 
 - `application/json`: `TurbineLogsRequest` {`page`:integer, `page_size`:integer, `turbine_type`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseTurbineLogs` {`code`:integer, `data`:object}                          |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseTurbineLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/turbine/summary`
 
@@ -943,10 +943,10 @@ claimed_total（累计已提取）= SUM(cooled_claimed.amount)。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseTurbineSummary` {`code`:integer, `data`:object}                       |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseTurbineSummary` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## x0-mining（X0 挖矿）
 
@@ -976,10 +976,10 @@ amount：仅 operation=REWARD 时币种为 X，其他情况为 gAGX。
 
 - `application/json`: `X0MiningLogsRequest` {`page`:integer, `page_size`:integer, `operation`:array<string>}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseX0MiningLogs` {`code`:integer, `data`:object}                         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseX0MiningLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/x0-mining/positions`
 
@@ -994,10 +994,10 @@ total_stake_amount = SUM(STAKE_X) − SUM(UNSTAKE_X)（gAGX 净质押，与投�
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseX0MiningPositions` {`code`:integer, `data`:object}                    |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseX0MiningPositions` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## protocol-market-stats（协议市值统计）
 
@@ -1022,9 +1022,9 @@ data 为 `[{ date, amount }, …]`。无需登录。
 
 - `application/json`: `ProtocolMarketStatsSeriesRequest` {`range`:string, `metric`:string}
 
-| status | description    | schema                                                                                |
-| ------ | -------------- | ------------------------------------------------------------------------------------- |
-| 200    | 成功 / Success | `ApiResponseProtocolMarketStatsSeries` {`code`:integer, `data`:array<{date, amount}>} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseProtocolMarketStatsSeries` {`code`:integer, `data`:array<{date, amount}>}|
 
 ## 一期接口
 
@@ -1042,12 +1042,12 @@ data 为 `[{ date, amount }, …]`。无需登录。
 
 - `application/json`: `LoginRequest` {`address`_:string, `message`_:string, `signature`*:string}
 
-| status | description             | schema                                                                            |
-| ------ | ----------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success          | `ApiResponseLogin` {`code`:integer, `data`:object}                                |
-| 400    | 参数错误 / Bad Request  | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
-| 401    | 验签失败 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
-| 403    | 账号被封禁 / Forbidden  | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseLogin` {`code`:integer, `data`:object}|
+|400|参数错误 / Bad Request|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
+|401|验签失败 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
+|403|账号被封禁 / Forbidden|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/claim/community-fund`
 
@@ -1066,12 +1066,12 @@ signType 固定为 1，合约地址为 COMMUNITY_FUND_VAULT_ADDRESS；
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description                         | schema                                                              |
-| ------ | ----------------------------------- | ------------------------------------------------------------------- |
-| 200    | 返回 signature / signature returned | `ApiResponseCommunityFundSignature` {`code`:integer, `data`:object} |
-| 400    | 无可领取社区发展基金                |                                                                     |
-| 401    | 未授权                              |                                                                     |
-| 502    | 签名服务不可用                      |                                                                     |
+|status|description|schema|
+|---|---|---|
+|200|返回 signature / signature returned|`ApiResponseCommunityFundSignature` {`code`:integer, `data`:object}|
+|400|无可领取社区发展基金||
+|401|未授权||
+|502|签名服务不可用||
 
 ### `POST` `/claim/confirm`
 
@@ -1090,9 +1090,9 @@ order_type=2（DAO 奖励）与 order_type=5（做市津贴）不支持本接口
 
 - `application/json`: `ClaimConfirmRequest` {`salt`_:string, `txHash`_:string}
 
-| status | description | schema                                                                |
-| ------ | ----------- | --------------------------------------------------------------------- |
-| 200    | 确认成功    | `ApiResponseClaimConfirm` {`code`:integer, `data`:ClaimConfirmResult} |
+|status|description|schema|
+|---|---|---|
+|200|确认成功|`ApiResponseClaimConfirm` {`code`:integer, `data`:ClaimConfirmResult}|
 
 ### `POST` `/claim/parse-signature`
 
@@ -1107,11 +1107,11 @@ order_type=2（DAO 奖励）与 order_type=5（做市津贴）不支持本接口
 
 - `application/json`: `ClaimParseSignatureRequest` {`signature`_:string, `contract`_:string, `salt`_:string, `account`_:string, `amount`_:string, `expireTime`_:integer, `signType`*:integer}
 
-| status | description                   | schema                                                                              |
-| ------ | ----------------------------- | ----------------------------------------------------------------------------------- |
-| 200    | 解析成功                      | `ApiResponseClaimParseSignature` {`code`:integer, `data`:ClaimParseSignatureResult} |
-| 400    | 参数无效或 signature 格式错误 |                                                                                     |
-| 404    | 无法解析签名                  |                                                                                     |
+|status|description|schema|
+|---|---|---|
+|200|解析成功|`ApiResponseClaimParseSignature` {`code`:integer, `data`:ClaimParseSignatureResult}|
+|400|参数无效或 signature 格式错误||
+|404|无法解析签名||
 
 ### `POST` `/claim/team-reward`
 
@@ -1129,12 +1129,12 @@ order_type=2（DAO 奖励）与 order_type=5（做市津贴）不支持本接口
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description                         | schema                                                           |
-| ------ | ----------------------------------- | ---------------------------------------------------------------- |
-| 200    | 返回 signature / signature returned | `ApiResponseTeamRewardSignature` {`code`:integer, `data`:object} |
-| 400    | 无可领取团队奖                      |                                                                  |
-| 401    | 未授权                              |                                                                  |
-| 502    | 签名服务不可用                      |                                                                  |
+|status|description|schema|
+|---|---|---|
+|200|返回 signature / signature returned|`ApiResponseTeamRewardSignature` {`code`:integer, `data`:object}|
+|400|无可领取团队奖||
+|401|未授权||
+|502|签名服务不可用||
 
 ### `POST` `/community-fund/logs`
 
@@ -1149,10 +1149,10 @@ order_type=2（DAO 奖励）与 order_type=5（做市津贴）不支持本接口
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseCommunityFundRewardPaidLogs` {`code`:integer, `data`:object}          |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseCommunityFundRewardPaidLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/community-fund/total`
 
@@ -1167,10 +1167,10 @@ order_type=2（DAO 奖励）与 order_type=5（做市津贴）不支持本接口
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseCommunityFundPresaleTotals` {`code`:integer, `data`:object}           |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseCommunityFundPresaleTotals` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/home/popup-notices`
 
@@ -1187,9 +1187,9 @@ order_type=2（DAO 奖励）与 order_type=5（做市津贴）不支持本接口
 
 - `application/json`: {`locale`:string}
 
-| status | description    | schema                                                        |
-| ------ | -------------- | ------------------------------------------------------------- |
-| 200    | 成功 / Success | `ApiResponseHomePopupNotices` {`code`:integer, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseHomePopupNotices` {`code`:integer, `data`:object}|
 
 ### `POST` `/performance`
 
@@ -1207,10 +1207,10 @@ invite_address（users.invite_address）。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseUserPerformance` {`code`:integer, `data`:UserPerformanceItem}         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseUserPerformance` {`code`:integer, `data`:UserPerformanceItem}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/performance/qualified-partitions`
 
@@ -1230,10 +1230,10 @@ invite_address（users.invite_address）。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description | schema                                                                            |
-| ------ | ----------- | --------------------------------------------------------------------------------- |
-| 200    | 成功        | `ApiResponseQualifiedPartitions` {`code`:integer, `data`:QualifiedPartitionStats} |
-| 401    | 未授权      |                                                                                   |
+|status|description|schema|
+|---|---|---|
+|200|成功|`ApiResponseQualifiedPartitions` {`code`:integer, `data`:QualifiedPartitionStats}|
+|401|未授权||
 
 ### `POST` `/referral/total`
 
@@ -1247,10 +1247,10 @@ invite_address（users.invite_address）。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseRewardTotals` {`code`:integer, `data`:object}                         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseRewardTotals` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/rewards/logs`
 
@@ -1266,10 +1266,10 @@ order_amount 关联 sales_logs（buyer=from_address 且 tx_hash 相同）的 amo
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseRewardLogs` {`code`:integer, `data`:object}                           |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseRewardLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/sales/logs`
 
@@ -1281,10 +1281,10 @@ order_amount 关联 sales_logs（buyer=from_address 且 tx_hash 相同）的 amo
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseSalesLogs` {`code`:integer, `data`:object}                            |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseSalesLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/search/performance`
 
@@ -1299,10 +1299,10 @@ order_amount 关联 sales_logs（buyer=from_address 且 tx_hash 相同）的 amo
 
 - `application/json`: `SearchPerformanceRequest` {`address`*:string}
 
-| status | description                    | schema                                                                            |
-| ------ | ------------------------------ | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success                 | `ApiResponseUserPerformance` {`code`:integer, `data`:UserPerformanceItem}         |
-| 400    | 缺少 address / Missing address | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseUserPerformance` {`code`:integer, `data`:UserPerformanceItem}|
+|400|缺少 address / Missing address|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/team-reward/logs`
 
@@ -1316,10 +1316,10 @@ order_amount 关联 sales_logs（buyer=from_address 且 tx_hash 相同）的 amo
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseTeamRewardClaimLogs` {`code`:integer, `data`:object}                  |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseTeamRewardClaimLogs` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/team-reward/total`
 
@@ -1334,10 +1334,10 @@ total/claimed 为各来源合计；items 为 MARKET/PRESALE 明细。
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseRewardTotals` {`code`:integer, `data`:object}                         |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseRewardTotals` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/team/overview`
 
@@ -1359,10 +1359,10 @@ today_addition_sales_team_market（团队业绩减今日 daily.sales_team_market
 
 - `application/json`: `EmptyRequest` {}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseTeamOverview` {`code`:integer, `data`:TeamCommunityOverview}          |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseTeamOverview` {`code`:integer, `data`:TeamCommunityOverview}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ### `POST` `/team/referrals`
 
@@ -1378,7 +1378,7 @@ user_performance.presale_rank 与 sales_team_market（ACTIVE）。
 
 - `application/json`: `PaginationRequest` {`page`:integer, `page_size`:integer}
 
-| status | description           | schema                                                                            |
-| ------ | --------------------- | --------------------------------------------------------------------------------- |
-| 200    | 成功 / Success        | `ApiResponseTeamReferrals` {`code`:integer, `data`:object}                        |
-| 401    | 未授权 / Unauthorized | `ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object} |
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseTeamReferrals` {`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|

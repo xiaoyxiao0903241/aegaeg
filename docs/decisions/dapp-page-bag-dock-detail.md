@@ -69,12 +69,12 @@ community/
 
 ### mode / 小域四文件（默认不多不少）
 
-| 文件             | 导出（例）        | 职责                                                |
-| ---------------- | ----------------- | --------------------------------------------------- |
-| `dock.tsx`       | `StakeDock`       | 左栏组装；不进 registry                             |
-| `detail.tsx`     | `StakeDetail`     | 右栏组装；不进 registry                             |
-| `use-{mode}.ts`  | 见下「Hook 命名」 | 数据与交互；写链过长可再拆第二 hook                 |
-| `primitives.tsx` | 具名零件          | **该袋全部 UI 零件**（多 export）；禁一卡一文件瀑布 |
+|文件|导出（例）|职责|
+|---|---|---|
+|`dock.tsx`|`StakeDock`|左栏组装；不进 registry|
+|`detail.tsx`|`StakeDetail`|右栏组装；不进 registry|
+|`use-{mode}.ts`|见下「Hook 命名」|数据与交互；写链过长可再拆第二 hook|
+|`primitives.tsx`|具名零件|**该袋全部 UI 零件**（多 export）；禁一卡一文件瀑布|
 
 域根**通常**为 `dock.tsx` + `detail.tsx`；跨 mode 需要时再加 `shared.ts`（纯函数）与/或 `primitives.tsx`（UI）。**禁止**域根一卡一文件瀑布，也**禁止**数千行 mega-`primitives`。写链 `submit-*`、session-host、claim-modal / claim-panels 等 IO/弹层可留域根旁路，不进四件套、不进 registry。
 
@@ -82,11 +82,11 @@ community/
 
 ### Hook 命名（左 / 右）
 
-| 情况               | 导出                                                                                 | 说明                                |
-| ------------------ | ------------------------------------------------------------------------------------ | ----------------------------------- |
-| 左/右各有独立 VM   | `useStakeDock` / `useStakeDetail`                                                    | 与 UI 面一一对应；可同文件多 export |
-| 一份会话同时喂左右 | `useFlashExchange`（中性名）或 session host                                          | **禁止**假拆成 Dock/Detail 两份     |
-| 纯读、两边共用     | 域内可中性；**跨域 export 边界**须域前缀（如 `useAssetsHub` / `useRewardsReferral`） | dock/detail 与 tab 父层取用         |
+|情况|导出|说明|
+|---|---|---|
+|左/右各有独立 VM|`useStakeDock` / `useStakeDetail`|与 UI 面一一对应；可同文件多 export|
+|一份会话同时喂左右|`useFlashExchange`（中性名）或 session host|**禁止**假拆成 Dock/Detail 两份|
+|纯读、两边共用|域内可中性；**跨域 export 边界**须域前缀（如 `useAssetsHub` / `useRewardsReferral`）|dock/detail 与 tab 父层取用|
 
 页袋 VM 禁止残留 `*View` / `*Aside` / `*Widget` 作入口名；写链 / IO helper 不强制改名。
 
@@ -107,14 +107,14 @@ community/
 
 ## 命名（现行）
 
-| 项                  | 约定                                                                             |
-| ------------------- | -------------------------------------------------------------------------------- |
-| 页袋左 / 右入口     | `*Dock` / `*Detail`（文件 `dock.tsx` / `detail.tsx`）                            |
-| Hub 总览            | `hub/` mode 袋四件套，不塞域根 `dock.tsx`                                        |
-| UI 零件             | 收进该袋 `primitives.tsx`；禁一卡一文件瀑布                                      |
-| Hook                | 左右分离 → `use*Dock` / `use*Detail`；弹层 VM 中性名（如 `useAssetsClaimModal`） |
-| 薄包装              | 禁域内 `SideCard` / `QuickLinks`；单列链接栈不硬套右栏 `Grid`                    |
-| `views/dapp/shared` | **不**改名为 `components`（与 `src/shared/components` 抢词）                     |
+|项|约定|
+|---|---|
+|页袋左 / 右入口|`*Dock` / `*Detail`（文件 `dock.tsx` / `detail.tsx`）|
+|Hub 总览|`hub/` mode 袋四件套，不塞域根 `dock.tsx`|
+|UI 零件|收进该袋 `primitives.tsx`；禁一卡一文件瀑布|
+|Hook|左右分离 → `use*Dock` / `use*Detail`；弹层 VM 中性名（如 `useAssetsClaimModal`）|
+|薄包装|禁域内 `SideCard` / `QuickLinks`；单列链接栈不硬套右栏 `Grid`|
+|`views/dapp/shared`|**不**改名为 `components`（与 `src/shared/components` 抢词）|
 
 ## 非目标
 

@@ -14,12 +14,12 @@
 
 **消费原则**：浅洗底色 SSOT 为 shadcn 槽 **`accent`**（原 `primary-soft`，同 hex `#fceae2`，纯改名无视觉差）。灰底业务面写 **`muted`**；shadcn 槽 **`secondary`**（≡`muted`）保留勿删。间距用 Tailwind spacing（`p-*` / `gap-*`），**不**维护未接入 `@theme` 的 `--space-*` 轴。
 
-| 维度   | 集合                                                                                                                                                                                                                                                                                                                                           | 键数                           |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| color  | `background` · `foreground` · `card` · `secondary` · `muted` · `muted-foreground` · `primary` · `accent` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `skeleton` · `modal-overlay*` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*` | 公开语义；工程色见 tokens.json |
-| type   | `caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`                                                                                                                                                                                                            | 12                             |
-| radius | `tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`                                                                                                                                                                                                                                        | 9                              |
-| shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `window(E4)` · `modal-panel(E5)` · `tooltip(E6)` · `menu(E7)` · `dropdown(E8)`                                                                                                                                                                                                                         | 8                              |
+|维度|集合|键数|
+|---|---|---|
+|color|`background` · `foreground` · `card` · `secondary` · `muted` · `muted-foreground` · `primary` · `accent` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `skeleton` · `modal-overlay*` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*`|公开语义；工程色见 tokens.json|
+|type|`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`|12|
+|radius|`tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`|9|
+|shadow|`faq(E1)` · `card(E2)` · `subtle(E3)` · `window(E4)` · `modal-panel(E5)` · `tooltip(E6)` · `menu(E7)` · `dropdown(E8)`|8|
 
 **Radius 名实（接受现状，勿整仓重命名 TW）**：
 
@@ -35,30 +35,30 @@
 
 ## §2 Text
 
-| 公开轴    | 值                                                                                                                                             |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `variant` | **12 键**：`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat` |
-| `tone`    | `foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted`                                     |
-| 可选      | `as`                                                                                                                                           |
+|公开轴|值|
+|---|---|
+|`variant`|**12 键**：`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`|
+|`tone`|`foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted`|
+|可选|`as`|
 
 **数字**：比例字（Montserrat 默认字形）。**禁止** `tabular` prop / `tabular-nums`。列对齐若需要，用布局/表格，不靠等宽数字。
 
 ### 12 variant（仅此）
 
-| variant  | PC  | H5  | weight   | 用途                                                              |
-| -------- | --- | --- | -------- | ----------------------------------------------------------------- |
-| caption  | 10  | 11  | normal   | meta / rail label；badge 等 Medium 在 call site `font-medium`     |
-| eyebrow  | 11  | 12  | semibold | uppercase kicker                                                  |
-| support  | 12  | 13  | normal   | 次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome  |
-| copy     | 13  | 14  | normal   | **默认**正文：表头/单元格、pill、主说明、控件旁文案               |
-| detail   | 14  | 15  | normal   | FAQ 答案、长说明                                                  |
-| question | 14  | 15  | semibold | FAQ 问题                                                          |
-| headline | 16  | 17  | semibold | 卡小标题                                                          |
-| brand    | 17  | 18  | semibold | topbar brand / rank                                               |
-| section  | 18  | 19  | semibold | section heading (dl)；tracking **-0.04em**                        |
-| panel    | 21  | 22  | semibold | widget / page header；tracking **-0.04em**                        |
-| figure   | 24  | 25  | semibold | 金额、数量输入（amtBox 字盒；leading 见 `--type-figure-leading`） |
-| stat     | 32  | 32  | bold     | 结果区大额（rcard 收益总额等）                                    |
+|variant|PC|H5|weight|用途|
+|---|---|---|---|---|
+|caption|10|11|normal|meta / rail label；badge 等 Medium 在 call site `font-medium`|
+|eyebrow|11|12|semibold|uppercase kicker|
+|support|12|13|normal|次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome|
+|copy|13|14|normal|**默认**正文：表头/单元格、pill、主说明、控件旁文案|
+|detail|14|15|normal|FAQ 答案、长说明|
+|question|14|15|semibold|FAQ 问题|
+|headline|16|17|semibold|卡小标题|
+|brand|17|18|semibold|topbar brand / rank|
+|section|18|19|semibold|section heading (dl)；tracking **-0.04em**|
+|panel|21|22|semibold|widget / page header；tracking **-0.04em**|
+|figure|24|25|semibold|金额、数量输入（amtBox 字盒；leading 见 `--type-figure-leading`）|
+|stat|32|32|bold|结果区大额（rcard 收益总额等）|
 
 **H5 字号策略（≡ `dev` `mobile-type-scale` / `dapp-scale`）**：语义 `--type-*` 与 Tailwind `--text-*` 在 `max-width: 820px` 上均为 **PC +1px**；不以 Figma H5 偏小稿为准。
 
@@ -78,11 +78,11 @@
 
 ## §3 Button
 
-| 公开轴    | 值                                         |
-| --------- | ------------------------------------------ |
-| `variant` | `primary` · `secondary` · `ghost` · `link` |
-| `size`    | `sm` · `md` · `lg`                         |
-| `shape`   | `pill` · `rounded`                         |
+|公开轴|值|
+|---|---|
+|`variant`|`primary` · `secondary` · `ghost` · `link`|
+|`size`|`sm` · `md` · `lg`|
+|`shape`|`pill` · `rounded`|
 
 **Size 高度 SSOT**（按钮显示阶，**不是** Text `copy` token）：
 
@@ -117,13 +117,13 @@
 
 ## §4 Chip
 
-| 公开轴    | 值                                          |
-| --------- | ------------------------------------------- |
-| `variant` | `solid` · `soft` · `outlined`               |
-| `size`    | `sm` · `md` · `lg`                          |
-| `shape`   | `pill` · `rounded`                          |
-| `tone`    | `default` · `primary` · `coral` · `success` |
-| 可选      | `onRemove`                                  |
+|公开轴|值|
+|---|---|
+|`variant`|`solid` · `soft` · `outlined`|
+|`size`|`sm` · `md` · `lg`|
+|`shape`|`pill` · `rounded`|
+|`tone`|`default` · `primary` · `coral` · `success`|
+|可选|`onRemove`|
 
 覆盖：percent buttons、badges、tabs、tags。
 
@@ -142,17 +142,17 @@
 
 ## §5 Card
 
-| 公开轴    | 值                                                            |
-| --------- | ------------------------------------------------------------- |
-| `surface` | `outlined` · `elevated` · `soft` · `inverse`                  |
-| `as`      | `article` · `button` · `div` · `section` · `details` · `span` |
+|公开轴|值|
+|---|---|
+|`surface`|`outlined` · `elevated` · `soft` · `inverse`|
+|`as`|`article` · `button` · `div` · `section` · `details` · `span`|
 
-| surface  | Elevation            | radius               | padding                       | 用途                                                                                              |
-| -------- | -------------------- | -------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`）   |
-| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
-| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）     |
-| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                  |
+|surface|Elevation|radius|padding|用途|
+|---|---|---|---|---|
+|outlined|—|`rounded-md` (16px)|`p-4` (16px)|标准边框卡（`InteractiveCard` hub 左卡 / meta；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`）|
+|elevated|E2 (`shadow-card`)|`rounded-md` (16px)|`p-4` (16px)|右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）|
+|soft|E1 (`shadow-faq`)|`rounded-2xl` (16px)|无（body 自管 `px-6 py-4.5`）|FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）|
+|inverse|E3 (`shadow-subtle`)|`rounded-md` (16px)|`p-4` (16px)|深色 CTA 卡（`WidgetPromoCard`）|
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`（**通用内容卡**字阶合同；≠ Hub 入口）
 
@@ -175,10 +175,10 @@
 
 ## §6 Input
 
-| 公开轴    | 值                                          |
-| --------- | ------------------------------------------- |
-| `variant` | `default` · `numeric` · `amount`            |
-| 可选      | `startAdornment` · `endAdornment` · `error` |
+|公开轴|值|
+|---|---|
+|`variant`|`default` · `numeric` · `amount`|
+|可选|`startAdornment` · `endAdornment` · `error`|
 
 覆盖：普通表单输入、swap amount、genesis shares（numeric）、community referrer（default）。
 
@@ -199,26 +199,26 @@
 
 按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-| Composite          | Figma 层                           | 核心 props                                                                        | 提升理由                                                                                                                    |
-| ------------------ | ---------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                                     | 全局 host                                                                                                                   |
-| `NavRail`          | rail / rit                         | `items`, `activeTab`, `onSelect`                                                  | 4 页共用                                                                                                                    |
-| `DockHeader`       | wh                                 | `title`, `subtitle`, `action`                                                     | 4 页共用                                                                                                                    |
-| `AmountBox`        | box / tk / rr / mx                 | `token`, `value`, `balance`, `sessionReady`                                       | 金额输入卡                                                                                                                  |
-| `Segment`          | seg / pcts / htab                  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg                   | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                                                                      |
-| `ClaimSplitSlider` | slider `4812:221`                  | `value` (release%), `onChange`, `aria-label`                                      | 双色轨 + `%` thumb；Radix；文案由 call site 传入                                                                            |
-| `Card` elevated    | —                                  | children                                                                          | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`shared/components/tile.tsx`）                                               |
-| `Tile`             | `Label` / `Note`                   | 主值 children；旁注用 `Tooltip.Info`                                              | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard                                                             |
-| `Carousel`         | Content/Item/Indicators            | `opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain | 组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`                                                                   |
-| `Empty`            | —                                  | `title` · `body?`                                                                 | 纯文案空态；偏大 pad；`Table.Empty` / `Chart.Empty` 复用                                                                    |
-| `Chart`            | Header/Plot/Empty                  | `surface`；Plot 吃 `points`                                                       | 组合式面积图；业务见 StakingTvlChart / StakingCurveChart                                                                    |
-| `List`             | Label / Value                      | `items` · 行距 `gap-2.5` · value 原样（禁隐式 CountValue）                        | 键值 infoBox 行轨（无 Card）；替代 DappMeta*                                                                                |
-| `Steps`            | Item                               | `align` start\|center · `activeIndex?`                                            | 组合式步骤条（无 Card）；PC 横 / H5 竖                                                                                      |
-| `Detail`           | —                                  | children                                                                          | 右栏详情壳（pad + 节距 gap-8.5 / max-dapp:gap-6）；原 DappDetailPage                                                        |
-| `Section`          | Title / Description                | `collapsible?` · `defaultOpen?` · `reveal?`                                       | 右栏内容节；无节间 mt；节内 `gap-4`；Title/Description 无 className；`collapsible` 隐含 reveal + settle 后 overflow-visible |
-| `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                                     | 组合式 DApp 表（`shared/components/table.tsx`）                                                                             |
-| `Accordion`        | qa / qhd                           | `items`, `variant`                                                                | 折叠行为 + a11y；实现文件为 `faq.tsx`（导出 `Faq`）                                                                         |
-| `WidgetPromoCard`  | promo / pcard                      | children                                                                          | 深色 CTA 卡（`Card inverse`）                                                                                               |
+|Composite|Figma 层|核心 props|提升理由|
+|---|---|---|---|
+|`TopBar`|topbar / tb / tr|`wallet`, `network`, `locale`|全局 host|
+|`NavRail`|rail / rit|`items`, `activeTab`, `onSelect`|4 页共用|
+|`DockHeader`|wh|`title`, `subtitle`, `action`|4 页共用|
+|`AmountBox`|box / tk / rr / mx|`token`, `value`, `balance`, `sessionReady`|金额输入卡|
+|`Segment`|seg / pcts / htab|`options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg|滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n|
+|`ClaimSplitSlider`|slider `4812:221`|`value` (release%), `onChange`, `aria-label`|双色轨 + `%` thumb；Radix；文案由 call site 传入|
+|`Card` elevated|—|children|elevated chrome SSOT；右栏数据卡优先走 `Tile`（`shared/components/tile.tsx`）|
+|`Tile`|`Label` / `Note`|主值 children；旁注用 `Tooltip.Info`|组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard|
+|`Carousel`|Content/Item/Indicators|`opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain|组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`|
+|`Empty`|—|`title` · `body?`|纯文案空态；偏大 pad；`Table.Empty` / `Chart.Empty` 复用|
+|`Chart`|Header/Plot/Empty|`surface`；Plot 吃 `points`|组合式面积图；业务见 StakingTvlChart / StakingCurveChart|
+|`List`|Label / Value|`items` · 行距 `gap-2.5` · value 原样（禁隐式 CountValue）|键值 infoBox 行轨（无 Card）；替代 DappMeta*|
+|`Steps`|Item|`align` start\|center · `activeIndex?`|组合式步骤条（无 Card）；PC 横 / H5 竖|
+|`Detail`|—|children|右栏详情壳（pad + 节距 gap-8.5 / max-dapp:gap-6）；原 DappDetailPage|
+|`Section`|Title / Description|`collapsible?` · `defaultOpen?` · `reveal?`|右栏内容节；无节间 mt；节内 `gap-4`；Title/Description 无 className；`collapsible` 隐含 reveal + settle 后 overflow-visible|
+|`Table`|Header/Body/Cell/Footer/Pagination|`headers`, `rows`, `empty`, …|组合式 DApp 表（`shared/components/table.tsx`）|
+|`Accordion`|qa / qhd|`items`, `variant`|折叠行为 + a11y；实现文件为 `faq.tsx`（导出 `Faq`）|
+|`WidgetPromoCard`|promo / pcard|children|深色 CTA 卡（`Card inverse`）|
 
 **内部约定**：
 
@@ -265,14 +265,14 @@
 
 ## §9 组件地图
 
-| 层        | 文件 / 入口                                                                                                          | Gate                                                    |
-| --------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                                            | §1                                                      |
-| Text      | `shared/components/text.tsx`                                                                                         | 12 variant · 7 tone                                     |
-| Button    | `shared/components/button.tsx`                                                                                       | 4×3×2                                                   |
-| Chip      | `shared/components/chip.tsx`                                                                                         | 3×3×2×4                                                 |
-| Card      | `shared/components/card.tsx`                                                                                         | 4 surface                                               |
-| Input     | `shared/components/input.tsx`                                                                                        | default / numeric / amount                              |
-| Composite | Faq · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · List · Steps · Carousel · Chart · Empty · Table · … | 见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text |
+|层|文件 / 入口|Gate|
+|---|---|---|
+|Token|`tokens.json` → `theme.css` / `tokens.ts`|§1|
+|Text|`shared/components/text.tsx`|12 variant · 7 tone|
+|Button|`shared/components/button.tsx`|4×3×2|
+|Chip|`shared/components/chip.tsx`|3×3×2×4|
+|Card|`shared/components/card.tsx`|4 surface|
+|Input|`shared/components/input.tsx`|default / numeric / amount|
+|Composite|Faq · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · List · Steps · Carousel · Chart · Empty · Table · …|见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text|
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。

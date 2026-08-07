@@ -13,22 +13,22 @@ React + Vite + TypeScript · AEGIS X DApp（BSC）。
 
 ## 文档表
 
-| 任务                           | 读                                                                                                                                                                   |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 契约 / 五柱 / Matt 路由        | [`../AGENTS.md`](../AGENTS.md)                                                                                                                                       |
-| 命令                           | [`commands.md`](./commands.md)                                                                                                                                       |
-| 词表                           | [`ubiquitous-language.md`](./ubiquitous-language.md)                                                                                                                 |
-| 链上手册（新）                 | [`onchain-manual/`](./onchain-manual/)                                                                                                                               |
-| 链上手册（旧·仅缺口）          | [`onchain-manual-legacy.md`](./onchain-manual-legacy.md)                                                                                                             |
-| 后端 API                       | [`backend-api/`](./backend-api/)                                                                                                                                     |
-| Figma 页 nodeId                | [`figma-pages.md`](./figma-pages.md)                                                                                                                                 |
-| UI token / 组件                | [`foundation/`](./foundation/)                                                                                                                                       |
-| 代码注释                       | [`foundation/comment-conventions.md`](./foundation/comment-conventions.md)                                                                                           |
-| Matt 决策 / 票 / handoff       | [`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/)                                                                                 |
-| 页袋 Dock/Detail 合同          | [`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md)                                                                                 |
-| Dapp 数据对齐（覆盖矩阵 SSOT） | [`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md) · 可读页 [`dapp-data-coverage-matrix.html`](./dapp-data-coverage-matrix.html)（`pnpm docs:matrix`） |
-| 覆盖矩阵规则                   | [`decisions/dapp-data-coverage-matrix-wayfinder.md`](./decisions/dapp-data-coverage-matrix-wayfinder.md)                                                             |
-| 各章对照源目录                 | [`research/dapp-tab-source-index.md`](./research/dapp-tab-source-index.md)                                                                                           |
+|任务|读|
+|---|---|
+|契约 / 五柱 / Matt 路由|[`../AGENTS.md`](../AGENTS.md)|
+|命令|[`commands.md`](./commands.md)|
+|词表|[`ubiquitous-language.md`](./ubiquitous-language.md)|
+|链上手册（新）|[`onchain-manual/`](./onchain-manual/)|
+|链上手册（旧·仅缺口）|[`onchain-manual-legacy.md`](./onchain-manual-legacy.md)|
+|后端 API|[`backend-api/`](./backend-api/)|
+|Figma 页 nodeId|[`figma-pages.md`](./figma-pages.md)|
+|UI token / 组件|[`foundation/`](./foundation/)|
+|代码注释|[`foundation/comment-conventions.md`](./foundation/comment-conventions.md)|
+|Matt 决策 / 票 / handoff|[`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/)|
+|页袋 Dock/Detail 合同|[`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md)|
+|Dapp 数据对齐（覆盖矩阵 SSOT）|[`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md) · 可读页 [`dapp-data-coverage-matrix.html`](./dapp-data-coverage-matrix.html)（`pnpm docs:matrix`）|
+|覆盖矩阵规则|[`decisions/dapp-data-coverage-matrix-wayfinder.md`](./decisions/dapp-data-coverage-matrix-wayfinder.md)|
+|各章对照源目录|[`research/dapp-tab-source-index.md`](./research/dapp-tab-source-index.md)|
 
 ## 手册优先级
 
