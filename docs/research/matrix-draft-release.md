@@ -101,11 +101,11 @@
 
 ## 建议新增 A/B/C（勿直接改审计表；供主表合并）
 
-| 建议 ID                  | 类  | Gist                                                                           |
-| ------------------------ | --- | ------------------------------------------------------------------------------ |
-| B-new-hub-gagx-claimable | B   | Hub 缓冲卡 gAGX「可领取」绑总量（`gagxZeroLabel`），应绑 `gagx.totalClaimable` |
-| C-new-buffer-faq-wallet  | C   | Buffer FAQ「AGX 直接进钱包」忽略 next 链与 gAGX                                |
-| A-new-rq-address-drift   | A   | 手册 `00-addresses` RewardQueue 与 `VITE_BSC_REWARD_QUEUE` 不一致（均 AGX）    |
+| 建议 ID                  | 类  | Gist                                                                                    |
+| ------------------------ | --- | --------------------------------------------------------------------------------------- |
+| B-new-hub-gagx-claimable | B   | Hub 缓冲卡 gAGX「可领取」~~绑总量~~ → 已绑 `gagx.totalClaimable`（2026-08-08 **已修**） |
+| C-new-buffer-faq-wallet  | C   | Buffer FAQ「AGX 直接进钱包」忽略 next 链与 gAGX                                         |
+| A-new-rq-address-drift   | A   | 手册 `00-addresses` RewardQueue 与 `VITE_BSC_REWARD_QUEUE` 不一致（均 AGX）             |
 
 ---
 
