@@ -16,7 +16,7 @@ import {
  * 计算器表单状态
  *
  * 维护产品 / 周期 / 金额 / 价格 / 天数；
- * 点「计算」才写入右侧结果仓库（对齐设计稿的显式触发）。
+ * 输入变更即写入右侧结果（实时估算）。「计算」按钮暂隐藏，逻辑保留。
  *
  * @returns 表单状态与各变更回调
  */
@@ -37,6 +37,7 @@ export function useCalcDock() {
   const epochRebasePct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const xmineDailyPct =
     xmineOverviewQuery.data != null ? Number(xmineOverviewQuery.data.yieldRateBP) / 100 : null
+  const epochsPerDay = overviewQuery.data?.epochsPerDay ?? 2
 
   // 价格字段仅在首次拿到实时行情时写入一次，之后不覆盖用户输入。
   useEffect(() => {
@@ -44,6 +45,22 @@ export function useCalcDock() {
     setPrice(formatNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
     setPriceSeeded(true)
   }, [priceSeeded, spotUsd])
+
+  // 输入 / 链上利率就绪后实时刷新右侧结果。
+  useEffect(() => {
+    setResult(
+      buildCalcEstimate({
+        product,
+        period,
+        amount,
+        price,
+        days,
+        epochRebasePct,
+        xmineDailyPct: product === 'xmine' ? xmineDailyPct : null,
+        epochsPerDay,
+      }),
+    )
+  }, [product, period, amount, price, days, epochRebasePct, xmineDailyPct, epochsPerDay, setResult])
 
   const periodOptions =
     product === 'stake'
@@ -76,6 +93,7 @@ export function useCalcDock() {
     setDays(Math.min(CALC_MAX_DAYS, Math.max(1, next)))
   }
 
+  /** 显式「计算」入口保留；UI 暂隐藏，与实时 effect 同逻辑。 */
   function onCalculate() {
     setResult(
       buildCalcEstimate({
@@ -86,7 +104,7 @@ export function useCalcDock() {
         days,
         epochRebasePct,
         xmineDailyPct: product === 'xmine' ? xmineDailyPct : null,
-        epochsPerDay: overviewQuery.data?.epochsPerDay ?? 2,
+        epochsPerDay,
       }),
     )
   }

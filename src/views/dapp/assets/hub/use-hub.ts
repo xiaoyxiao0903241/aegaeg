@@ -21,6 +21,7 @@ import { buildHoldingsDistributionView } from '~/shared/presenters/build-holding
 import {
   formatApiAmount,
   formatNumber,
+  formatUsd,
   formatUsdApprox,
   parseApiAmount,
 } from '~/shared/presenters/format'
@@ -128,7 +129,8 @@ function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2):
 }
 
 function formatApiUsdLabel(raw: string | undefined): string {
-  return formatApiAmount(raw, { digits: 2, prefix: '$' })
+  // 总览四列窄栏：≥$1K 走 formatUsd 的 K/M，避免叠字
+  return formatUsd(parseApiAmount(raw) ?? 0)
 }
 
 function formatApiApproxUsd(raw: string | undefined, priceUsd: number | null): string {
@@ -283,7 +285,7 @@ export function useAssetsHub(): AssetsHubOverview {
     modes: AssetsHubOverview['modes'],
     overviewLoading = false,
   ): AssetsHubOverview => ({
-    totalValue: formatNumber(0, { digits: 2, prefix: '$' }),
+    totalValue: formatUsd(0),
     claimable: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimableApprox: formatUsdApprox(0, null),
     claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
@@ -448,7 +450,7 @@ export function useAssetsHub(): AssetsHubOverview {
     priceUsd != null && Number.isFinite(priceUsd) ? holdingsTotalNum * priceUsd : 0
 
   return {
-    totalValue: formatNumber(totalValueUsd, { digits: 2, prefix: '$' }),
+    totalValue: formatUsd(totalValueUsd),
     claimable: `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`,
     claimableApprox: formatUsdApprox(claimableGagxNum, priceUsd),
     // 链上无累计已领视图；未加载空结果显示 0.00 gAGX

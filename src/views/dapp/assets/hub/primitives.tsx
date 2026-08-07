@@ -158,7 +158,7 @@ export function AssetsOverviewMetric({
   value: string
 }) {
   return (
-    <div className={cn('grid gap-0.5', featured && 'col-span-2 gap-1 dapp:col-span-1')}>
+    <div className={cn('grid min-w-0 gap-0.5', featured && 'col-span-2 gap-1 dapp:col-span-1')}>
       <div className={cn(featured && 'flex items-center gap-1')}>
         <Text as="span" className="leading-4" tone="inverse" variant="copy">
           {label}
@@ -169,7 +169,7 @@ export function AssetsOverviewMetric({
       </div>
       <Text
         as="strong"
-        className={cn('font-semibold', featured ? 'leading-none' : 'text-base/5')}
+        className={cn('min-w-0 truncate font-semibold', featured ? 'leading-none' : 'text-base/5')}
         tone="inverse"
         variant={featured ? 'stat' : undefined}
       >

@@ -419,8 +419,8 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>415</strong></div>
-        <div class="stat ok"><span>✅</span><strong>253</strong></div>
-        <div class="stat bad"><span>❌</span><strong>33</strong></div>
+        <div class="stat ok"><span>✅</span><strong>251</strong></div>
+        <div class="stat bad"><span>❌</span><strong>35</strong></div>
         <div class="stat partial"><span>部分</span><strong>78</strong></div>
         <div class="stat pending"><span>待核实</span><strong>20</strong></div>
         <div class="stat na"><span>不适用</span><strong>30</strong></div>
@@ -1953,24 +1953,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="2-staking" data-search="s-032 staking bond·dock 获得 agx 预览（净/毛） 读 bondhelper 报价 + fee ✅ — b-34 `readbondzapagxpreview`；live 含 maxpayout — —">
+<article class="row" data-status="bad" data-section="2-staking" data-search="s-032 staking bond·dock 获得 agx 预览（净/毛） 读 bondhelper 报价 + fee；`valueof×1e9/agxprice` ❌ 手册或api与链不符 b-34 prod：`restakeconfig.agxprice`=`55e18`（18 位 usd）；`treasury.valueof` 为 9 位本位；公式 `×1e9/price` 整除后毛兑付≈尘埃（1000 usd1 lp 预估 gross=`2` ≪ `0.01` agx） — 门闸文案 `bondtoosmall`；加金额无法在合理区间越过">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-032</span>
     <span class="surface">Bond·Dock</span>
     <span class="datum">获得 AGX 预览（净/毛）</span>
     <span class="rw pill">读</span>
-    <span class="status badge ok">✅</span>
+    <span class="status badge bad">❌</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>staking</dd></div>
-      <div><dt>权威来源</dt><dd>BondHelper 报价 + fee</dd></div>
-      <div><dt>T1 归因</dt><dd>—</dd></div>
+      <div><dt>权威来源</dt><dd>BondHelper 报价 + fee；`valueOf×1e9/agxPrice`</dd></div>
+      <div><dt>T1 归因</dt><dd>手册或API与链不符</dd></div>
       <div><dt>继承自</dt><dd>B-34</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`readBondZapAgxPreview`；live 含 maxPayout</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>证据</dt><dd>Prod：`RestakeConfig.agxPrice`=`55e18`（18 位 USD）；`Treasury.valueOf` 为 9 位本位；公式 `×1e9/price` 整除后毛兑付≈尘埃（1000 USD1 LP 预估 gross=`2` ≪ `0.01` AGX）</dd></div>
+      <div class="wide"><dt>备注</dt><dd>门闸文案 `bondTooSmall`；加金额无法在合理区间越过</dd></div>
     </dl>
   </div>
 </article>
@@ -2016,24 +2016,24 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="2-staking" data-search="s-035 staking bond·写 **购买** `zapintoliquiditybond` / `zapintoburnbond` 写 手册 §10.4 ✅ — b-34 `submitbondzap`：绑定/授权/authcontracts/债务/maxpayout；成功 `invalidateafterstaking` — lp/burn 共用 session">
+<article class="row" data-status="bad" data-section="2-staking" data-search="s-035 staking bond·写 **购买** `zapintoliquiditybond` / `zapintoburnbond` 写 手册 §10.4；`errorbondtoosmall` ❌ 手册或api与链不符 b-34 写路径接线完整（`submitbondzap`+live 门闸）；prod 只读同 s-032：任意合理 usd1 → `grosspayout &lt; 1e7` → 恒 `bondtoosmall`；burn 同根因 — 属链上价位量纲 vs `valueof`/公式；非 fe 私自换价可修">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-035</span>
     <span class="surface">Bond·写</span>
     <span class="datum">**购买** `zapIntoLiquidityBond` / `zapIntoBurnBond`</span>
     <span class="rw pill">写</span>
-    <span class="status badge ok">✅</span>
+    <span class="status badge bad">❌</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>staking</dd></div>
-      <div><dt>权威来源</dt><dd>手册 §10.4</dd></div>
-      <div><dt>T1 归因</dt><dd>—</dd></div>
+      <div><dt>权威来源</dt><dd>手册 §10.4；`ErrorBondTooSmall`</dd></div>
+      <div><dt>T1 归因</dt><dd>手册或API与链不符</dd></div>
       <div><dt>继承自</dt><dd>B-34</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>证据</dt><dd>`submitBondZap`：绑定/授权/authContracts/债务/maxPayout；成功 `invalidateAfterStaking`</dd></div>
-      <div class="wide"><dt>备注</dt><dd>LP/Burn 共用 session</dd></div>
+      <div class="wide"><dt>证据</dt><dd>写路径接线完整（`submitBondZap`+live 门闸）；Prod 只读同 S-032：任意合理 USD1 → `grossPayout &lt; 1e7` → 恒 `bondTooSmall`；Burn 同根因</dd></div>
+      <div class="wide"><dt>备注</dt><dd>属链上价位量纲 vs `valueOf`/公式；非 FE 私自换价可修</dd></div>
     </dl>
   </div>
 </article>
@@ -9229,7 +9229,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T19:02:07.887Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T19:22:24.793Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {

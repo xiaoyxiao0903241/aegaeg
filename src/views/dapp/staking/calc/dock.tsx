@@ -19,7 +19,7 @@ const priceBox = amountBox()
  * 收益率计算器（左栏表单）
  *
  * 纯本地计算，不发起任何链上写操作；
- * 点「计算」后写入右侧结果。
+ * 输入变更即刷新右侧结果。「计算」按钮暂隐藏、不删除。
  */
 export function CalcDock() {
   const vm = useCalcDock()
@@ -124,7 +124,8 @@ export function CalcDock() {
           />
         </div>
 
-        <FormActions className="mt-6">
+        {/* 暂隐藏显式计算 CTA；实时估算见 useCalcDock effect。恢复时去掉 hidden。 */}
+        <FormActions className="mt-6 hidden">
           <MainButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base/5 text-white"
             density="external"
