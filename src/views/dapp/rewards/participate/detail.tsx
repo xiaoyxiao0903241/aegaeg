@@ -14,6 +14,11 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useParticipate } from '~/views/dapp/rewards/participate/use-participate'
+import {
+  mapFaqWithContributionRatio,
+  withContributionRatio,
+} from '~/views/dapp/shared/contribution-claim-ratio'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function ParticipateDetail() {
   const {
@@ -31,6 +36,9 @@ export function ParticipateDetail() {
     inviterRows,
     inviterLoading,
   } = useParticipate()
+  const claimRatio = useContributionClaimRatioLabel()
+  const contributionHint = withContributionRatio(participate.contributionHint, claimRatio)
+  const faqItems = mapFaqWithContributionRatio(participate.faq.items, claimRatio)
 
   const overviewTiles = [
     {
@@ -44,7 +52,7 @@ export function ParticipateDetail() {
       key: 'contribution',
       label: participate.contribution,
       value: contributionValue,
-      valueHint: participate.contributionHint,
+      valueHint: contributionHint,
     },
     { key: 'nextPayout', label: participate.nextPayout, value: nextPayout },
   ]
@@ -125,7 +133,7 @@ export function ParticipateDetail() {
 
       <Section>
         <Section.Title>{participate.faq.title}</Section.Title>
-        <Faq items={participate.faq.items} variant="dapp" />
+        <Faq items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

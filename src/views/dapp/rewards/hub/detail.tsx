@@ -22,7 +22,12 @@ import {
 } from '~/views/dapp/rewards/hub/primitives'
 import { useRewardsHub } from '~/views/dapp/rewards/hub/use-hub'
 import { AboutCard } from '~/views/dapp/shared/about-card'
+import {
+  mapFaqWithContributionRatio,
+  withContributionRatio,
+} from '~/views/dapp/shared/contribution-claim-ratio'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
@@ -32,8 +37,11 @@ type RewardsSummaryItem = RewardsSummaryCardProps & { key: string }
 export function RewardsHubDetail() {
   const { messages: t } = useI18n()
   const statsView = useRewardsHub()
+  const claimRatio = useContributionClaimRatioLabel()
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
+  const contributionHint = withContributionRatio(stats.contributionHint, claimRatio)
+  const faqItems = mapFaqWithContributionRatio(t.rewards.faq.items, claimRatio)
 
   const tiles: RewardsSummaryItem[] = [
     {
@@ -71,7 +79,7 @@ export function RewardsHubDetail() {
       key: 'contribution',
       label: stats.contribution,
       value: statsView.contributionValue,
-      approx: stats.contributionHint,
+      approx: contributionHint,
       labelAction: (
         // 去销毁按钮：用原生 button 而非 Button 组件，保证多语文案完整可见
         <button
@@ -119,7 +127,7 @@ export function RewardsHubDetail() {
               return (
                 <Carousel.Item key={view}>
                   <AboutCard
-                    body={slide.body}
+                    body={withContributionRatio(slide.body, claimRatio)}
                     decoSrc={dappAssets.aboutCarouselRewardsMascot}
                     title={slide.title}
                     wash="lavender"
@@ -195,7 +203,7 @@ export function RewardsHubDetail() {
       <Section>
         <Section.Title>{t.rewards.faq.title}</Section.Title>
         {/* FAQ 收起项间距覆盖 dapp 默认值 */}
-        <Faq className="[&_[data-faq-item]>div]:py-4" items={t.rewards.faq.items} variant="dapp" />
+        <Faq className="[&_[data-faq-item]>div]:py-4" items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

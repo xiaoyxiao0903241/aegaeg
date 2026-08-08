@@ -5,10 +5,8 @@
  * 点击跳转到对应模式；下部为常见问题折叠列表。
  */
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { exchangeHubAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -18,7 +16,7 @@ import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { useExchangeFlashPairStore } from '~/stores/exchange-flash-pair-store'
 import { ExchangeProgramCard } from '~/views/dapp/exchange/hub/primitives'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
-import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
+import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
 
 /**
  * 程序卡片点击目标：0 Trade gAGX → 闪兑 · 1 Turbine → 涡轮
@@ -55,12 +53,7 @@ export function ExchangeHubDetail() {
   const { messages: t } = useI18n()
   const cards = t.exchange.hub.program.cards
 
-  const configQuery = useChainQuery({
-    queryKey: queryKeys.chain.burnSwapConfig,
-    queryFn: () => readBurnContributionSwapConfig(),
-    scope: 'public',
-    freshness: 'quote',
-  })
+  const configQuery = useBurnSwapConfigQuery({ enabled: true })
 
   const contributionRatio =
     configQuery.data === undefined

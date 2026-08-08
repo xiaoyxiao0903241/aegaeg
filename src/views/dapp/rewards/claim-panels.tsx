@@ -27,10 +27,12 @@ import {
 import { formatApiAmount, type MixedClaimView } from '~/views/dapp/rewards/shared'
 import { useMixedClaim } from '~/views/dapp/rewards/use-mixed-claim'
 import { type SimpleClaimView, useSimpleClaim } from '~/views/dapp/rewards/use-simple-claim'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 /**
  * 简单领取左栏面板（发展津贴）
@@ -97,12 +99,13 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
   const vm = useMixedClaim(view)
   const t = vm.t
+  const claimRatio = useContributionClaimRatioLabel()
 
   return (
     <TabHeader
       backText={t.rewards.backToHub}
       onBack={() => setView('hub')}
-      subtitle={vm.card.body}
+      subtitle={withContributionRatio(vm.card.body, claimRatio)}
       title={vm.card.title}
     >
       <DockStack>

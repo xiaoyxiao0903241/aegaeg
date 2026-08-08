@@ -133,7 +133,7 @@ const app = defineMessages({
       },
       {
         title: 'Phần thưởng',
-        body: '「Phần thưởng」gồm thưởng giới thiệu, tham gia, Cùng xây dựng…; Mixed (Lucky/Cùng xây dựng/giới thiệu/tham gia) nhận tiêu điểm đóng góp 1:1; trợ cấp phát triển nhận bằng chữ ký về ví.',
+        body: '「Phần thưởng」gồm thưởng giới thiệu, tham gia, Cùng xây dựng…; Mixed (Lucky/Cùng xây dựng/giới thiệu/tham gia) nhận tiêu điểm đóng góp {ratio}; trợ cấp phát triển nhận bằng chữ ký về ví.',
       },
       {
         title: 'Cộng đồng',
@@ -748,7 +748,7 @@ const app = defineMessages({
         totalPerformance: 'Tổng hiệu suất',
         smallAreaPerformance: 'Hiệu suất khu nhỏ',
         contribution: 'Điểm đóng góp của tôi',
-        contributionHint: 'Nhận thưởng tiêu điểm đóng góp 1:1.',
+        contributionHint: 'Nhận thưởng tiêu điểm đóng góp {ratio}.',
         goBurn: 'Đi đốt',
       },
       mechanismTitle: 'Cơ chế thưởng Cùng xây dựng',
@@ -762,11 +762,11 @@ const app = defineMessages({
         },
         referral: {
           title: 'Thưởng giới thiệu',
-          body: 'Thưởng liên quan giới thiệu sau khi đối tác trực tiếp tham gia Cùng xây dựng; nhận qua DaoPool Mixed (tiêu điểm đóng góp 1:1).',
+          body: 'Thưởng liên quan giới thiệu sau khi đối tác trực tiếp tham gia Cùng xây dựng; nhận qua DaoPool Mixed (tiêu điểm đóng góp {ratio}).',
         },
         participate: {
           title: 'Thưởng tham gia',
-          body: 'Thưởng tham gia từ người giới thiệu; nhận qua DaoPool Mixed (tiêu điểm đóng góp 1:1).',
+          body: 'Thưởng tham gia từ người giới thiệu; nhận qua DaoPool Mixed (tiêu điểm đóng góp {ratio}).',
         },
         cobuild: {
           title: 'Cùng xây dựng',
@@ -894,13 +894,13 @@ const app = defineMessages({
       referral: {
         title: 'Thưởng giới thiệu',
         body: 'Thưởng khi mời đối tác tham gia Cùng xây dựng',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: 'Thưởng tham gia',
         body: 'Thưởng từ người giới thiệu',
         aside:
-          'Thưởng tham gia từ quan hệ giới thiệu; nhận qua DaoPool Mixed (tiêu điểm đóng góp 1:1).',
+          'Thưởng tham gia từ quan hệ giới thiệu; nhận qua DaoPool Mixed (tiêu điểm đóng góp {ratio}).',
       },
       cobuild: {
         title: 'Cùng xây dựng',
@@ -1004,7 +1004,7 @@ const app = defineMessages({
           },
           {
             q: 'Trúng rồi tiền thưởng phát thế nào?',
-            a: 'Tiền thưởng quy ra gAGX theo giá trị lúc mở thưởng, tự tích trên thẻ thưởng may mắn; nhận theo quy tắc thưởng may mắn (tiêu điểm đóng góp 1:1, qua hồ giải phóng tuyến tính hoặc tái stake).',
+            a: 'Tiền thưởng quy ra gAGX theo giá trị lúc mở thưởng, tự tích trên thẻ thưởng may mắn; nhận theo quy tắc thưởng may mắn (tiêu điểm đóng góp {ratio}, qua hồ giải phóng tuyến tính hoặc tái stake).',
           },
           {
             q: 'Vì sao stake $5,000 mà không có tư cách?',
@@ -1023,7 +1023,7 @@ const app = defineMessages({
       myPosition: 'Vị thế của tôi',
       directCount: 'Chi tiết giới thiệu trực tiếp',
       contribution: 'Điểm đóng góp của tôi',
-      contributionHint: 'Nhận thưởng tiêu 1:1',
+      contributionHint: 'Nhận thưởng tiêu {ratio}',
       nextPayout: 'Lần phát thưởng tiếp theo',
       recordsTitle: 'Bản ghi thưởng giới thiệu',
       recordsColumns: ['Thời gian', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
@@ -1058,7 +1058,7 @@ const app = defineMessages({
           },
           {
             q: 'Thưởng giới thiệu nhận thế nào?',
-            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ đã chọn; phần tái stake vào staking đơn token. Cả hai tiêu điểm đóng góp 1:1 (DaoPool Mixed).',
+            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ đã chọn; phần tái stake vào staking đơn token. Cả hai tiêu điểm đóng góp {ratio} (DaoPool Mixed).',
           },
           {
             q: 'Số địa chỉ giới thiệu trực tiếp là gì?',
@@ -1076,7 +1076,7 @@ const app = defineMessages({
       totalRewards: 'Tổng phần thưởng',
       myPosition: 'Vị thế của tôi',
       contribution: 'Điểm đóng góp của tôi',
-      contributionHint: 'Nhận thưởng tiêu 1:1',
+      contributionHint: 'Nhận thưởng tiêu {ratio}',
       nextPayout: 'Lần phát thưởng tiếp theo',
       recordsTitle: 'Bản ghi thưởng tham gia',
       recordsColumns: ['Thời gian', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
@@ -1106,7 +1106,7 @@ const app = defineMessages({
           },
           {
             q: 'Thưởng tham gia nhận thế nào?',
-            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ đã chọn; phần tái stake vào staking đơn token. Cả hai tiêu điểm đóng góp 1:1 (DaoPool Mixed).',
+            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ đã chọn; phần tái stake vào staking đơn token. Cả hai tiêu điểm đóng góp {ratio} (DaoPool Mixed).',
           },
           {
             q: 'Có đổi người mời được không?',
@@ -1122,7 +1122,7 @@ const app = defineMessages({
       myPosition: 'Vị thế của tôi',
       directCount: 'Chi tiết giới thiệu trực tiếp',
       contribution: 'Điểm đóng góp của tôi',
-      contributionHint: 'Nhận thưởng tiêu 1:1',
+      contributionHint: 'Nhận thưởng tiêu {ratio}',
       nextPayout: 'Lần phát thưởng tiếp theo',
       tierTitle: 'Hạng Cùng xây dựng',
       tierCurrent: 'Hạng hiện tại',
@@ -1170,7 +1170,7 @@ const app = defineMessages({
           },
           {
             q: 'Thưởng Cùng xây dựng và san bằng nhận thế nào?',
-            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ; phần tái stake vào staking đơn token lãi kép. Cả hai tiêu điểm đóng góp 1:1. Bản ghi san bằng xem tab 「Bản ghi phần thưởng」bên phải.',
+            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ; phần tái stake vào staking đơn token lãi kép. Cả hai tiêu điểm đóng góp {ratio}. Bản ghi san bằng xem tab 「Bản ghi phần thưởng」bên phải.',
           },
           {
             q: 'Đổi hạng thì tỷ lệ thưởng có hiệu lực khi nào?',
@@ -1578,7 +1578,7 @@ const app = defineMessages({
         claimable: 'Lợi nhuận chờ nhận',
         claimed: 'Tổng đã nhận',
         contribution: 'Điểm đóng góp của tôi',
-        contributionHint: 'Nhận lợi nhuận tiêu đóng góp 1:1',
+        contributionHint: 'Nhận lợi nhuận tiêu đóng góp {ratio}',
         holdingsTitle: 'Nắm giữ',
         holdingsReleased: 'Đã giải phóng',
         holdingsTotal: 'Tổng nắm giữ',
@@ -1628,7 +1628,7 @@ const app = defineMessages({
           },
           {
             q: 'Làm sao nhận đóng góp?',
-            a: 'Mua và đốt AGX để nhận đóng góp; nhận lợi nhuận tiêu 1:1.',
+            a: 'Mua và đốt AGX để nhận đóng góp; nhận lợi nhuận tiêu {ratio}.',
           },
           {
             q: 'Vì sao nhận lợi nhuận phải chọn chu kỳ giải phóng?',

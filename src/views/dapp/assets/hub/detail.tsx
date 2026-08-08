@@ -24,10 +24,18 @@ import {
   AssetsRebaseCard,
 } from '~/views/dapp/assets/hub/primitives'
 import { useAssetsHubDetail } from '~/views/dapp/assets/hub/use-hub'
+import {
+  mapFaqWithContributionRatio,
+  withContributionRatio,
+} from '~/views/dapp/shared/contribution-claim-ratio'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function AssetsHubDetail() {
   const vm = useAssetsHubDetail()
   const { t, overview, rebase, values, setBufferAsset, distribution, distributionLoading } = vm
+  const claimRatio = useContributionClaimRatioLabel()
+  const contributionHint = withContributionRatio(overview.contributionHint, claimRatio)
+  const faqItems = mapFaqWithContributionRatio(t.assets.hub.faq.items, claimRatio)
   const {
     bufferTotal,
     bufferTotalApprox,
@@ -61,7 +69,7 @@ export function AssetsHubDetail() {
       key: 'contribution',
       label: overview.contribution,
       value: values.contribution,
-      note: overview.contributionHint,
+      note: contributionHint,
     },
   ] as const
 
@@ -177,7 +185,7 @@ export function AssetsHubDetail() {
 
       <Section>
         <Section.Title>{t.assets.hub.faq.title}</Section.Title>
-        <Faq defaultOpenFirst={false} items={t.assets.hub.faq.items} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

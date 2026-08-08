@@ -17,6 +17,11 @@ import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
 import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
+import {
+  mapFaqWithContributionRatio,
+  withContributionRatio,
+} from '~/views/dapp/shared/contribution-claim-ratio'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function CobuildDetail() {
   const {
@@ -48,6 +53,9 @@ export function CobuildDetail() {
     directsTotal,
     recordsTabOptions,
   } = useCobuild()
+  const claimRatio = useContributionClaimRatioLabel()
+  const contributionHint = withContributionRatio(cobuild.contributionHint, claimRatio)
+  const faqItems = mapFaqWithContributionRatio(cobuild.faq.items, claimRatio)
 
   const overviewTiles = [
     {
@@ -63,7 +71,7 @@ export function CobuildDetail() {
       key: 'contribution',
       label: cobuild.contribution,
       value: contributionValue,
-      valueHint: cobuild.contributionHint,
+      valueHint: contributionHint,
     },
     { key: 'nextPayout', label: cobuild.nextPayout, value: nextPayout },
   ]
@@ -173,7 +181,7 @@ export function CobuildDetail() {
 
       <Section>
         <Section.Title>{cobuild.faq.title}</Section.Title>
-        <Faq items={cobuild.faq.items} variant="dapp" />
+        <Faq items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

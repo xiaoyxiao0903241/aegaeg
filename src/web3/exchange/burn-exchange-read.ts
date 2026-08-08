@@ -1,4 +1,4 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import { ZERO_ADDRESS } from '~/core/constants'
 import type { BurnContributionSwapConfig } from '~/core/exchange/burn-contribution-swap'
@@ -6,10 +6,12 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { AGX_CONTRIBUTION_SWAP_METHODS, ERC20_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const burnSwapReadAbi = parseAbi([
   AGX_CONTRIBUTION_SWAP_METHODS.getConfig,
   AGX_CONTRIBUTION_SWAP_METHODS.getSplitConfig,
+  AGX_CONTRIBUTION_SWAP_METHODS.contributionDivisor,
   AGX_CONTRIBUTION_SWAP_METHODS.quoteContributionOut,
   AGX_CONTRIBUTION_SWAP_METHODS.originalOf,
   AGX_CONTRIBUTION_SWAP_METHODS.userContribution,
@@ -29,8 +31,8 @@ export type BurnUserStats = {
 /**
  * 读取销毁换贡献值的全局配置
  *
- * 调用 AgxContributionSwap.getConfig / getSplitConfig，
- * 返回汇率、暂停、上下限、累计销毁与分配比例等展示与预检所需字段。
+ * Multicall3 同批：`getConfig` / `getSplitConfig` / `contributionDivisor`。
+ * 返回汇率、暂停、上下限、累计销毁、分配比例与领取消耗除数。
  *
  * @param client 链上读取客户端，默认公共 RPC
  * @returns 销毁配置（含 agxToken 地址）
@@ -39,22 +41,45 @@ export type BurnUserStats = {
 export async function readBurnContributionSwapConfig(
   client: ChainReadClient = bscReadClient,
 ): Promise<BurnContributionSwapConfig & { agxToken: `0x${string}` }> {
-  const [result, split] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: burnSwapReadAbi,
-      functionName: 'getConfig',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: burnSwapReadAbi,
-      functionName: 'getSplitConfig',
-    }),
+  const target = BSC_CONTRACTS.agxContributionSwap
+  const results = await readAggregate3(client, [
+    {
+      target,
+      callData: encodeFunctionData({ abi: burnSwapReadAbi, functionName: 'getConfig' }),
+    },
+    {
+      target,
+      callData: encodeFunctionData({ abi: burnSwapReadAbi, functionName: 'getSplitConfig' }),
+    },
+    {
+      target,
+      callData: encodeFunctionData({
+        abi: burnSwapReadAbi,
+        functionName: 'contributionDivisor',
+      }),
+    },
   ])
+  const result = decodeAggregate3Result<
+    readonly [string, number, bigint, boolean, bigint, bigint, bigint, bigint]
+  >(results, 0, burnSwapReadAbi, 'getConfig', 'BURN_SWAP_GET_CONFIG_FAILED')
+  const split = decodeAggregate3Result<readonly [string, bigint, bigint, bigint, bigint]>(
+    results,
+    1,
+    burnSwapReadAbi,
+    'getSplitConfig',
+    'BURN_SWAP_GET_SPLIT_FAILED',
+  )
+  const contributionDivisor = decodeAggregate3Result<bigint>(
+    results,
+    2,
+    burnSwapReadAbi,
+    'contributionDivisor',
+    'BURN_SWAP_CONTRIBUTION_DIVISOR_FAILED',
+  )
   const [, decimals_, rateBps_, isPaused, minIn, maxIn, totalBurned, totalContribution] = result
   const [, splitBps] = split
   return {
-    agxToken: result[0],
+    agxToken: result[0] as `0x${string}`,
     decimals: Number(decimals_),
     rateBps: rateBps_,
     isPaused,
@@ -63,6 +88,7 @@ export async function readBurnContributionSwapConfig(
     totalBurned,
     totalContribution,
     splitBps,
+    contributionDivisor,
   }
 }
 

@@ -132,7 +132,7 @@ const app = defineMessages({
       },
       {
         title: '獎勵',
-        body: '「獎勵」含推薦獎、參與獎、共建獎等；Lucky/共建/推薦/參與等 Mixed 領取按 1:1 消耗貢獻點數，發展津貼等為簽名直達錢包。',
+        body: '「獎勵」含推薦獎、參與獎、共建獎等；Lucky/共建/推薦/參與等 Mixed 領取按 {ratio} 消耗貢獻點數，發展津貼等為簽名直達錢包。',
       },
       {
         title: '社區',
@@ -734,7 +734,7 @@ const app = defineMessages({
         totalPerformance: '總業績',
         smallAreaPerformance: '小區業績',
         contribution: '貢獻點數',
-        contributionHint: '領取獎勵按 1:1 消耗',
+        contributionHint: '領取獎勵按 {ratio} 消耗',
         goBurn: '去銷燬',
       },
       mechanismTitle: '共建獎機制',
@@ -748,11 +748,11 @@ const app = defineMessages({
         },
         referral: {
           title: '推薦獎',
-          body: '直推夥伴參與共建後計發的推薦相關獎勵；通過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
+          body: '直推夥伴參與共建後計發的推薦相關獎勵；通過 DaoPool Mixed 領取（按 {ratio} 消耗貢獻點）。',
         },
         participate: {
           title: '參與獎',
-          body: '來自推薦人的參與獎勵；通過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
+          body: '來自推薦人的參與獎勵；通過 DaoPool Mixed 領取（按 {ratio} 消耗貢獻點）。',
         },
         cobuild: {
           title: '共建獎',
@@ -802,12 +802,12 @@ const app = defineMessages({
       referral: {
         title: '推薦獎',
         body: '推薦夥伴參與共建獲得獎勵',
-        aside: '直推 Rebase 收益相關獎勵；通過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
+        aside: '直推 Rebase 收益相關獎勵；通過 DaoPool Mixed 領取（按 {ratio} 消耗貢獻點）。',
       },
       participate: {
         title: '參與獎',
         body: '來自推薦人的獎勵',
-        aside: '來自推薦關係的參與獎勵；通過 DaoPool Mixed 領取（1:1 消耗貢獻點）。',
+        aside: '來自推薦關係的參與獎勵；通過 DaoPool Mixed 領取（按 {ratio} 消耗貢獻點）。',
       },
       cobuild: {
         title: '共建獎',
@@ -908,7 +908,7 @@ const app = defineMessages({
           },
           {
             q: '中獎後獎金如何發放？',
-            a: '中獎獎金按開獎時市值折算為 gAGX，自動累積到幸運獎卡片中，按幸運獎領取規則領取（按 1:1 消耗貢獻點數，經釋放池線性釋放或復投）。',
+            a: '中獎獎金按開獎時市值折算為 gAGX，自動累積到幸運獎卡片中，按幸運獎領取規則領取（按 {ratio} 消耗貢獻點數，經釋放池線性釋放或復投）。',
           },
           {
             q: '為什麼我質押了 $5,000 卻沒有資格？',
@@ -927,7 +927,7 @@ const app = defineMessages({
       myPosition: '我的倉位',
       directCount: '直接推薦地址數',
       contribution: '當前貢獻點數',
-      contributionHint: '領取獎勵按 1:1 消耗',
+      contributionHint: '領取獎勵按 {ratio} 消耗',
       nextPayout: '下一次獎勵發放',
       recordsTitle: '推薦獎記錄',
       recordsColumns: ['時間', '數量', '狀態', '領取時間'],
@@ -956,7 +956,7 @@ const app = defineMessages({
           },
           {
             q: '推薦獎如何領取？',
-            a: '在左側領取面板選擇領取與復投比例：領取部分進入釋放池按所選週期線性釋放，復投部分進入單幣質押。領取與復投均按 1:1 消耗貢獻點數（DaoPool Mixed）。',
+            a: '在左側領取面板選擇領取與復投比例：領取部分進入釋放池按所選週期線性釋放，復投部分進入單幣質押。領取與復投均按 {ratio} 消耗貢獻點數（DaoPool Mixed）。',
           },
           {
             q: '直接推薦地址數是什麼？',
@@ -974,7 +974,7 @@ const app = defineMessages({
       totalRewards: '總獎勵',
       myPosition: '我的倉位',
       contribution: '當前貢獻點數',
-      contributionHint: '領取獎勵按 1:1 消耗',
+      contributionHint: '領取獎勵按 {ratio} 消耗',
       nextPayout: '下一次獎勵發放',
       recordsTitle: '參與獎記錄',
       recordsColumns: ['時間', '數量', '狀態', '領取時間'],
@@ -1003,7 +1003,7 @@ const app = defineMessages({
           },
           {
             q: '參與獎如何領取？',
-            a: '在左側領取面板中選擇領取與復投的比例：領取部分進入釋放池按所選週期線性釋放，復投部分直接進入單幣質押複利。領取和復投均按 1:1 消耗貢獻點數。',
+            a: '在左側領取面板中選擇領取與復投的比例：領取部分進入釋放池按所選週期線性釋放，復投部分直接進入單幣質押複利。領取和復投均按 {ratio} 消耗貢獻點數。',
           },
           {
             q: '邀請人可以更換嗎？',
@@ -1019,7 +1019,7 @@ const app = defineMessages({
       myPosition: '我的倉位',
       directCount: '直接推薦地址數',
       contribution: '當前貢獻點數',
-      contributionHint: '領取獎勵按 1:1 消耗',
+      contributionHint: '領取獎勵按 {ratio} 消耗',
       nextPayout: '下一次獎勵發放',
       tierTitle: '共建級別',
       tierCurrent: '當前級別',
@@ -1066,7 +1066,7 @@ const app = defineMessages({
           },
           {
             q: '共建獎和平越獎如何領取？',
-            a: '在左側領取面板選擇領取與復投的比例：領取部分進入釋放池按所選週期線性釋放，復投部分直接進入單幣質押複利。領取和復投均按 1:1 消耗貢獻點數。平越獎記錄見右側「獎勵記錄」切換。',
+            a: '在左側領取面板選擇領取與復投的比例：領取部分進入釋放池按所選週期線性釋放，復投部分直接進入單幣質押複利。領取和復投均按 {ratio} 消耗貢獻點數。平越獎記錄見右側「獎勵記錄」切換。',
           },
           {
             q: '等級變化後獎金比例何時生效？',
@@ -1460,7 +1460,7 @@ const app = defineMessages({
         claimable: '可領取收益',
         claimed: '累計已領取',
         contribution: '我的貢獻點數',
-        contributionHint: '領取收益按 1:1 消耗',
+        contributionHint: '領取收益按 {ratio} 消耗',
         holdingsTitle: '持倉',
         holdingsReleased: '可贖回已釋放',
         holdingsTotal: '總持倉',
@@ -1504,7 +1504,7 @@ const app = defineMessages({
           },
           {
             q: '如何獲得貢獻值？',
-            a: '購買 AGX 並銷燬可獲得貢獻值；領取收益時按 1:1 消耗。',
+            a: '購買 AGX 並銷燬可獲得貢獻值；領取收益時按 {ratio} 消耗。',
           },
           {
             q: '領取收益時為什麼要選擇釋放週期？',

@@ -15,6 +15,7 @@
 |UI 基线|**控件布局与可见文案**以 Figma PC 验收帧为准（见 [`figma-pages.md`](./figma-pages.md)）。已实现代码只决定落地先后，**不能用离稿实现盖过稿面**；没有稿才用 HTML 原型|
 |数/写 唯一权威来源|金额怎么算、前置检查怎么拦、刷新怎么做 = 链上手册 / 接口；与界面文案分层|
 |稿链冲突|可见文案 / 单位标签**先保留稿面**；状态记 **`📘 稿链文案`**，T1=`文案/单位与链不匹配（稿如此）`；修复默认 **改稿（Figma + 文案表）对齐链，或产品确认保留稿面**；**禁止**前端默认离稿改文案表|
+|gAGX/AGX 取数|**不改 UI 标签**。有独立链上/同口径 gAGX 源（分流器 gagx 桶 / RewardGAGX / 闪兑）→ 读 gAGX（A）；否则用 AGX（或同口径 API）数量填同一 UI（B）。链上真读优先于手册单位叙事。B 已接线且产品确认稿面 → 可标 **`✅ 已对齐`**（备注写清 A/B）|
 |读源优先|同页有 **overview / summary** 或 **接口表聚合 / 标题** → 跟接口；只有字段没有同口径接口、且属于链余额 / 仓位时才链优先；接口仅作无钱包时的回退|
 |缺数展示|金额 / 数量**没取到也显示 `0`** → T1=`设计取舍（缺数显0）`，状态 **`✅ 已对齐`**（视为正确）；**禁止**改成诚实空 `—`；只有根本没有字段的指标才用 `—` / `⚪`|
 |证据杠|**前端接入证**：代码已按手册 / 接口（以及稿的控件 / 可见文案）接好线、前置检查、格式化与空态（含缺数显 0）→ 可标 `✅ 已对齐`；**不要求**生产环境样本对账。写路径不真发交易。链上 / 后端数值业务对错、生产 QA **不归**本矩阵前端判断标准|
@@ -136,7 +137,7 @@
 |S-010|质押|总览·周期表|基础日收益、锁定加成、各周期收益|读取展示|`formatYieldPct(null)`→`YIELD_EMPTY`=`0.00%`；算法跟 epoch×`epochsPerDay`+`lockedBonusBps`|手册 epoch×`epochsPerDay`；`lockedBonusBps`|—|✅ 已对齐|设计取舍（缺数显0）|—|B-44|—|债券段加成为 0 仍合法；空态造 0%|
 |S-011|质押|总览·图表|质押总量 / 市值历史曲线|读取展示|序列接线公开 API；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`|`docs/backend-api/api.md` #protocol-market-stats/series|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|主问题是空态造零；接线见附录；本行不靠线上序列抬档|
 |S-012|质押|总览·常见问题|写着「约 14,400 块 / 一轮约 12 小时 / 每天 2 次」|读取展示|`zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length`|手册 epoch / `epochsPerDay`|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|C-14|文案已接上，但是写死的；跟稿张力进改稿队列|
-|S-013|质押|总览·常见问题|写着「收益以 gAGX 结算 / 可直接挖 X」|读取展示|`zh.ts` hub/stake FAQ 已渲染 gAGX 结算叙事|手册 §8/§9 结算 AGX；§15 挖矿须 gAGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-08 · A-07|C-08 · A-07|文案已接，口径和手册不一致；进改稿队列|
+|S-013|质押|总览·常见问题|写着「收益以 gAGX 结算 / 可直接挖 X」|读取展示|`zh.ts` hub/stake FAQ 已渲染 gAGX 结算叙事|手册 §8/§9 结算 AGX；§15 挖矿须 gAGX|—|✅ 已对齐|—|—|C-08 · A-07|C-08 · A-07|产品确认保留稿面（B 口径）；非接线错|
 |S-014|质押|总览·提示文案|「总销毁量」旁的说明（含销毁债券说法）|读取展示|`overview.metrics.burned.hint`|同 S-006|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-09|C-09|跟稿张力进改稿队列|
 |S-015|质押|总览·提示文案|复利增发提示写「每个复利周期（约 12 小时）」|读取展示|`metrics.rebase.hint` 已渲染死写 12h|同 S-012|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|C-14|跟稿张力进改稿队列|
 |S-016|质押|活期/定期·操作区|钱包里还有多少 AGX（可质押余额）|读取展示|`useStakeSession`←`readStakeOpenPreflight`/`balanceOf`；无样本对账|手册 §8 ERC20.`balanceOf`|—|✅ 已对齐|—|—|—|—|前端已接；本表不要求线上对账|
@@ -147,10 +148,10 @@
 |S-021|质押|活期/定期·详情|总质押、当前周期、下次复利增发、收益率|读取展示|总质押 `poolAgxWei??0n`；`formatRebasePct(null)`→`0.00%`；倒计时跟块高|Hub 同批 overview|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|倒计时接线在；空态造 0|
 |S-022|质押|活期/定期·详情|我的持仓本金合计|读取展示|`useStakeDetail`←`readStakePositions` 聚合；无样本钱包|手册 §8 仓位读|—|✅ 已对齐|—|—|—|—|前端已接；本表不要求线上对账|
 |S-023|质押|活期/定期·详情|已释放 / 待释放本金|读取展示|`aggregateStakeRelease`：liquid 对已释放/待释放贡献 0；locked=`released` / `principal−released`；`use-stake` 聚合|手册 §8.2 liquid / §8.3 locked `getReleasedPrincipal`（A-08）|—|✅ 已对齐|—|—|B-12 · A-08|B-12 · A-08|活期已释放=0 是故意的；不要拿分流器冒充；有单测钉死|
-|S-024|质押|活期/定期·详情|当前复利增发收益 / 加成|读取展示|数跟链 `blockReward`/`extraInterest`；展示用 `GAGX_DECIMALS` 标 **gAGX**|手册 getStakeRewards；链付 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02 · A-07|C-02 · A-07|单位标错已定；具体数值另核；进改稿队列|
+|S-024|质押|活期/定期·详情|当前复利增发收益 / 加成|读取展示|数跟链 `blockReward`/`extraInterest`；展示用 `GAGX_DECIMALS` 标 **gAGX**|手册 getStakeRewards；链付 AGX|—|✅ 已对齐|—|—|C-02 · A-07|C-02 · A-07|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |S-025|质押|活期/定期·详情|质押流水记录表|读取展示|`useStakeFlowPositions`|`docs/backend-api` #stake-flow/positions|`POST /stake-flow/positions`|✅ 已对齐|—|—|—|—|需要已登录|
 |S-026|质押|活期/定期·常见问题|「每天 2 次复利增发 / 约 12 小时」等|读取展示|`stake.faq` / intro 已渲染死写|`epoch.length`|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|C-14|跟稿张力进改稿队列|
-|S-027|质押|活期/定期·机制说明|「收益以 gAGX」|读取展示|mechanismSteps / faq 已渲染|链 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02 · C-08|C-02 · C-08|跟稿张力进改稿队列|
+|S-027|质押|活期/定期·机制说明|「收益以 gAGX」|读取展示|mechanismSteps / faq 已渲染|链 AGX|—|✅ 已对齐|—|—|C-02 · C-08|C-02 · C-08|产品确认保留稿面（B 口径）；非接线错|
 |S-028|质押|活期/定期·详情|趋势图|读取展示|共用 `useProtocolMarketStatsChart`；同 S-011 空态 `$0`/`+0%`|同 S-011|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|结论同 S-011；继承空态造零|
 |S-029|质押|债券·操作区|各周期折扣价率（如显示「85%」）|读取展示|`formatBondDiscountLabel`；Prod 180=8500→「85%」|手册 · BondDepository.`discountRateBP`|—|✅ 已对齐|—|—|—|—|这是协议配置价率，不是个人钱包金额；标签叫法问题见 S-030|
 |S-030|质押|债券·操作区/详情|标签写「溢价率」，数字却是价率（如 85%）|读取展示|标签「溢价率」/FAQ「收益空间」；值=`discountRateBP` 价率（85%）非 15% 空间|手册 discountRateBP=成交价率|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|产品确认保留「溢价率」稿面；数字是否等于手册「溢价」语义另核（不要擅自改成「折扣」文案）|C-16|C-16|数字对见 S-029；进改稿队列|
@@ -162,7 +163,7 @@
 |S-036|质押|债券·详情|流动性债 / 销毁债的总存入量|读取展示|`useBondDetail`←三池 `market.totalDeposit`；接线在|手册 BondDepository|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|前端已接；本表不要求线上对账|
 |S-037|质押|债券·详情|下次复利增发 / 收益率|读取展示|同源 Hub overview；`formatRebasePct(null)`→`0.00%`|同 S-007/S-021|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|继承 S-007 空态造 0%|
 |S-038|质押|债券·详情|持仓 / 已释放 / 待释放|读取展示|`pendingRelease=payoutRemaining−pendingPayout`；接线在；无样本|手册 getBondInfo 聚合|—|✅ 已对齐|—|—|—|—|「已释放」约等于当前可领；前端已接|
-|S-039|质押|债券·详情|当前复利增发收益|读取展示|`useBondDetail`←`row.profit`（`getStakeProfit`）；展示标 gAGX|手册 BondDepository.`getStakeProfit`；链付 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02 · A-07|C-02 · A-07|进改稿队列|
+|S-039|质押|债券·详情|当前复利增发收益|读取展示|`useBondDetail`←`row.profit`（`getStakeProfit`）；展示标 gAGX|手册 BondDepository.`getStakeProfit`；链付 AGX|—|✅ 已对齐|—|—|C-02 · A-07|C-02 · A-07|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |S-040|质押|债券·详情|购买记录|读取展示|session 门控 `useBondFlow*Purchases`|`docs/backend-api` #bond-flow|`POST /bond-flow/lp-purchases` · `/burn-purchases`|✅ 已对齐|—|—|—|—|—|
 |S-041|质押|债券·常见问题|溢价率解释 / 折扣区间说法|读取展示|lpbond/burnbond.faq 已渲染「溢价」叙事；值语义见 S-030|discountRateBP 语义|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-16|C-16|共享 FAQ 另有复投漏 180 天档问题；进改稿队列|
 |S-042|质押|X 挖矿·操作区|日收益率|读取展示|overview null→`ZERO_PCT`=`0.00%`；loaded=`formatXmineDailyYieldLabel`|手册 §15 · `yieldRateBP`|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|空态造 0%；有数据时跟链|
@@ -206,45 +207,45 @@
 
 |行号|章节|页面/表面|数据或动作|读/写|代码位置|文档位置|API接口|状态|T1归因|修复方法|继承自|A/B/C链|备注|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-|W-001|奖励|Hub 统计|总奖励数字：界面标成 gAGX|读取展示|`useRewardsHub` 拼 `gAGX`；API 字段标 gAGX；链 Dao 结算 AGX|`docs/backend-api/api.md` #performance/making-overview（total_reward=gAGX）|`POST /performance/making-overview`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|A-07→C-15|C-15|采用接口字段；单位争议见 C-15；可见文案跟稿，张力进改稿队列|
+|W-001|奖励|Hub 统计|总奖励数字：界面标成 gAGX|读取展示|`useRewardsHub` 拼 `gAGX`；API 字段标 gAGX；链 Dao 结算 AGX|`docs/backend-api/api.md` #performance/making-overview（total_reward=gAGX）|`POST /performance/making-overview`|✅ 已对齐|—|—|A-07→C-15|C-15|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-002|奖励|Hub 统计|做市档位：显示成 A{n}，没有则空|读取展示|`formatMakingRankLabel`+`makingRankToRowIndex`|—|`POST /performance/making-overview`（`making_rank`）|✅ 已对齐|—|—|—|—|与机制表行高亮同源|
 |W-003|奖励|Hub 统计|个人持仓：主标美元，副标 AGX|读取展示|`formatUsdFromAgx`/`formatAgxSecondary`←`personal_position`|（AGX）×价|`POST /performance/making-overview`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|个人金钱本轮未做线上样本对账；接线保留；前端已按口径接入|
 |W-004|奖励|Hub 统计|做市业绩：美元主标 + AGX 副标|读取展示|同上←`making_market`|—|`POST /performance/making-overview`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|同 W-003 金钱条口径；前端已接入；线上对账非本表判断标准|
 |W-005|奖励|Hub 统计|小区业绩：美元主标 + AGX 副标|读取展示|同上←`small_market`|—|`POST /performance/making-overview`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|同 W-003 金钱条口径；前端已接入；线上对账非本表判断标准|
 |W-006|奖励|Hub 统计|可用贡献值|读取展示|`useRewardsContribution`：有 summary 用 API；无会话回退链 `userContribution`|手册 · AgxContributionSwap|`POST /agx-contribution/summary`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|点数同资产/兑换侧金钱条口径；无线上样本对账；前端已接入|
 |W-007|奖励|Hub 卡片·幸运|幸运卡可领额（链上快照）|读取展示|`readLuckyClaimSnapshot`+Hub `luckyAmount`（仅 `claimable∧amount>0`）|手册 §14 `getWinnerInfo`/`rewardClaimed`|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|数源与前置检查已对齐；后缀 gAGX 见 C-15；前端已接入；线上对账非本表判断标准|
-|W-008|奖励|Hub 卡片·发展|可领额度界面标 gAGX（字段 `unlocked_claimable`）|读取展示|`useMarketAllowanceSummary`；`formatGagxBalance`|手册 · `MarketFund.agx()`；API 字段文 unlocked=AGX|`POST /market-allowance/summary`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|A-09→C-05|C-05|接口文档写 AGX，界面写 gAGX；可见文案跟稿，张力进改稿队列|
+|W-008|奖励|Hub 卡片·发展|可领额度界面标 gAGX（字段 `unlocked_claimable`）|读取展示|`useMarketAllowanceSummary`；`formatGagxBalance`|手册 · `MarketFund.agx()`；API 字段文 unlocked=AGX|`POST /market-allowance/summary`|✅ 已对齐|—|—|A-09→C-05|C-05|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-009|奖励|Hub 卡片·创世|团队可领金额，按美元展示（总额−已领）|读取展示|Hub 创世卡 `$` 格式，不走 gAGX|RewardClaimer=USD1|`POST /team-reward/total`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|社区基金可领不在 Hub 预览；前端已接入；线上对账非本表判断标准|
 |W-010|奖励|Hub 卡片·推荐/参与/共建|可领预览额|读取展示|Hub 无预览→`formatGagxBalance(null)`→`0.0000gAGX`；详情须签后才有额|无未签只读预览|须 `POST /claim/dao-reward` 后知额|✅ 已对齐|设计取舍（缺数显0）|—|A-21|A-21|故意无预览≠漏做；已登录仍可能造 0；口径：未取到显 0（视为正确）|
-|W-011|奖励|Hub FAQ|「AGX / gAGX 口径」说明文案|读取展示|`zh.ts` `rewards.faq`（Hub 条无「1:1」；1:1 在 cards/hint/子 FAQ）|链结算 AGX；API 多标 gAGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-15|C-15|「1:1」贡献错文案见 W-026/052/054；可见文案跟稿，张力进改稿队列|
+|W-011|奖励|Hub FAQ|「AGX / gAGX 口径」说明文案|读取展示|`zh.ts` `rewards.faq`（Hub 条无「1:1」；1:1 在 cards/hint/子 FAQ）|链结算 AGX；API 多标 gAGX|—|✅ 已对齐|—|—|C-15|C-15|产品确认保留稿面（B 口径）；非接线错|
 |W-012|奖励|Hub 机制表|当前档位对应行高亮|读取展示|`tierRowIndex`∩静态 i18n 表|—|`making_rank`|✅ 已对齐|—|—|—|—|表内说明是静态文案|
 |W-013|奖励|Lucky 详情|今日奖池金额（美元，`today_total_prize`）|读取展示|`use-lucky.tsx`|—|`POST /lucky-reward/summary`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|个人金钱本轮未做线上样本对账；摘要接线保留；前端已接入|
 |W-014|奖励|Lucky 详情|开奖倒计时|读取展示|`readLuckyRoundDisplaySnapshot` 15s 刷新|链 `getRound(open).endTime`|—|✅ 已对齐|—|—|—|—|没连钱包就没有倒计时|
 |W-015|奖励|Lucky 详情|本轮是否有资格（Yes/No）+ 本轮购买额|读取展示|同上；hint 用 USD1 额|链 `isUserEligible` + Tracker `getUserRoundStat`|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|资格布尔 OK；金额无线上样本对账；前端已接入|
 |W-016|奖励|Lucky 详情|累计中奖次数 `win_count`|读取展示|`formatApiCountLabel`|—|`POST /lucky-reward/summary`|✅ 已对齐|—|—|—|—|—|
-|W-017|奖励|Lucky 中奖榜|中奖额后缀写 gAGX（`reward_amount`）|读取展示|`mapLuckyWinnerToRow`|API winners 标 gAGX；链付 AGX|`POST /lucky-reward/winners`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-15|C-15|可见文案跟稿，张力进改稿队列|
+|W-017|奖励|Lucky 中奖榜|中奖额后缀写 gAGX（`reward_amount`）|读取展示|`mapLuckyWinnerToRow`|API winners 标 gAGX；链付 AGX|`POST /lucky-reward/winners`|✅ 已对齐|—|—|C-15|C-15|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-018|奖励|Lucky 我的记录|参与额 / 是否中奖 / 交易哈希|读取展示|`mapLuckyMyRoundToRow`|—|`POST /lucky-reward/my-rounds`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|中奖额单位见 W-017；前端已接入；线上对账非本表判断标准|
 |W-019|奖励|Lucky 日期筛|只提供近 5 个 UTC 日可选|读取展示|`DRAW_DATE_OPTION_COUNT=5`|设计取舍|—|✅ 已对齐|设计取舍（故意空/0）|—|C-18←B-31|C-18|产品已确认：日期筛近 5 个 UTC 日通过|
-|W-020|奖励|Lucky FAQ|文案写「折算 gAGX」「1:1 贡献」|读取展示|`lucky.faq`|链 AGX + divisor=6|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06·C-15|C-06·C-15|可见文案跟稿，张力进改稿队列|
+|W-020|奖励|Lucky FAQ|文案写「折算 gAGX」「1:1 贡献」|读取展示|`lucky.faq`|链 AGX + divisor=6|—|✅ 已对齐|—|—|C-06·C-15|C-06·C-15|文案 {ratio}=contributionDivisor:1（链 burnSwapConfig multicall）；产品确认跟链|
 |W-021|奖励|Lucky·写|混合领取：前置条件检查 + 提交前再核对 + 刷新页面数据|提交·前置检查|`submitLuckyMixedClaim`→`evaluateRewardsMixedClaim`；`invalidateAfterRewardsMixedClaim`（rewards+release+staking）|手册 §14 `claimRewardMixed` + §9.3|—|✅ 已对齐|—|—|B-27|B-27 closed|贡献不足会引导去销毁（burn）；暂停或不可领会阻断|
-|W-022|奖励|Referral 详情|推荐总奖励 + 界面标 gAGX|读取展示|`use-referral.ts`|API 标 gAGX；Dao 付 AGX|`POST /referral-award/summary`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-15|C-15|可见文案跟稿，张力进改稿队列|
+|W-022|奖励|Referral 详情|推荐总奖励 + 界面标 gAGX|读取展示|`use-referral.ts`|API 标 gAGX；Dao 付 AGX|`POST /referral-award/summary`|✅ 已对齐|—|—|C-15|C-15|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-023|奖励|Referral 详情|持仓 / 直推人数 / 贡献|读取展示|summary 三字段；直推数与 `direct-referrals` 同 indexer|—|`POST /referral-award/summary`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|不拆行；持仓/贡献走金钱条；计数接线保留；前端已接入|
 |W-024|奖励|Referral 详情|「下次发放」时间|读取展示|硬编码 `NON_NUMERIC_EMPTY`|无 `next_payout`|—|⚪ 不适用|—|—|A-20|A-20|诚实空；同附录 Z-013|
 |W-025|奖励|Referral 记录/直推表|奖励流水与直推成员表|读取展示|primitives mappers（`awarded_gross` 等）|—|`POST /referral-award/logs` · `/direct-referrals`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|表金额走金钱条；映射接线保留；前端已接入|
-|W-026|奖励|Referral FAQ|混合领取「1:1 消耗」说明|读取展示|`referral.faq` + card body|链 divisor=6|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06←A-11|C-06|可见文案跟稿，张力进改稿队列|
+|W-026|奖励|Referral FAQ|混合领取「1:1 消耗」说明|读取展示|`referral.faq` + card body|链 divisor=6|—|✅ 已对齐|—|—|C-06←A-11|C-06|文案 {ratio}=contributionDivisor:1（链 burnSwapConfig multicall）；产品确认跟链|
 |W-027|奖励|Referral·写|DAO 混合领取（推荐类型 REFERRAL=42）|提交·前置检查|`submitDaoMixedClaim`：校验 `DAO_REWARD_SIGN_TYPE`；`writeDaoMixedClaim`；双读贡献/池余额；`invalidateAfterRewardsMixedClaim`|手册 DaoPool 仍写须=4（入仓过时）；Prod 链不强制=4|`POST /claim/dao-reward`（signType 41–45）|✅ 已对齐|—|—|A-10|A-10|前端/接口 signType 41–45 与线上行为对齐；手册债另队（禁手改入仓正文）。完整签领未真发≠本表判断标准|
-|W-028|奖励|Participate 详情|总奖励标 gAGX / 持仓 / 贡献 /「下次发放」为空|读取展示|summary 走 API；nextPayout 空同 W-024|—|`POST /participation-award/summary`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-15·A-20|C-15·A-20|数字跟摘要；可见文案跟稿，张力进改稿队列|
+|W-028|奖励|Participate 详情|总奖励标 gAGX / 持仓 / 贡献 /「下次发放」为空|读取展示|summary 走 API；nextPayout 空同 W-024|—|`POST /participation-award/summary`|✅ 已对齐|—|—|C-15·A-20|C-15·A-20|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-029|奖励|Participate 记录/邀请人|流水记录 + 邀请人信息|读取展示|`use-participate` mappers（`awarded_gross` 等）|—|`POST /participation-award/logs` · `/inviter`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|同 W-025 表金额金钱条；前端已接入|
-|W-030|奖励|Participate FAQ|「1:1 贡献」说明文案|读取展示|`participate.faq`|链 divisor=6|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06|C-06|可见文案跟稿，张力进改稿队列|
+|W-030|奖励|Participate FAQ|「1:1 贡献」说明文案|读取展示|`participate.faq`|链 divisor=6|—|✅ 已对齐|—|—|C-06|C-06|文案 {ratio}=contributionDivisor:1（链 burnSwapConfig multicall）；产品确认跟链|
 |W-031|奖励|Participate·写|DAO 混合领取（参与类型 PARTICIPATION=43）|提交·前置检查|`submitDaoMixedClaim`|同 W-027|`POST /claim/dao-reward`|✅ 已对齐|—|—|A-10|A-10|同 W-027：前端跟链；手册「须=4」过时另记|
-|W-032|奖励|Cobuild 详情|等级总奖励标 gAGX，并做折算展示|读取展示|`use-cobuild.ts`|API 含 RANK+SURPASS|`POST /rank-reward/summary`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-15|C-15|可见文案跟稿，张力进改稿队列|
+|W-032|奖励|Cobuild 详情|等级总奖励标 gAGX，并做折算展示|读取展示|`use-cobuild.ts`|API 含 RANK+SURPASS|`POST /rank-reward/summary`|✅ 已对齐|—|—|C-15|C-15|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-033|奖励|Cobuild 详情|当前/下一档位 + 三门槛进度|读取展示|summary 持仓/做市/直推门槛；队员表同模块 API|∩ 静态 tier 表|`POST /rank-reward/summary`|✅ 已对齐|—|—|—|—|接线已对齐；无价时 AGX 直比美元失真见 W-055|
 |W-034|奖励|Cobuild 记录|等级奖 / 平越奖 / 直推成员|读取展示|Tab 切换重置页码；logs `awarded_gross`|—|`POST /rank-reward/logs` · `/peer-surpass-logs` · `/team-members`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|同 W-025 表金额金钱条；前端已接入|
-|W-035|奖励|Cobuild FAQ|「1:1」+ gAGX 叙事文案|读取展示|`cobuild.faq`|链|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06·C-15|C-06·C-15|可见文案跟稿，张力进改稿队列|
+|W-035|奖励|Cobuild FAQ|「1:1」+ gAGX 叙事文案|读取展示|`cobuild.faq`|链|—|✅ 已对齐|—|—|C-06·C-15|C-06·C-15|文案 {ratio}=contributionDivisor:1（链 burnSwapConfig multicall）；产品确认跟链|
 |W-036|奖励|Cobuild·写|DAO 混合领取：等级奖(41) / 平越奖(44)|提交·前置检查|Segment 选类型；金额仅签名后可知；无 LIFETIME(45) UI|同 W-027|`POST /claim/dao-reward`|✅ 已对齐|—|—|A-10·A-21|A-10·A-21|同 W-027；终身奖(45)未接属产品范围另议，不是这条写路径写错|
-|W-037|奖励|Grant 详情|档位 / 累计已领额度，界面标 gAGX|读取展示|`use-grant.ts`（suffix `gAGX`）|API：claimed 标 gAGX、`unlocked_claimable` 标 AGX（自打架）；链付 AGX|`POST /market-allowance/summary`|🟡 部分|手册或接口与链不符|后端把接口字段/文档统一成 AGX（跟链）；界面后缀跟稿可保留 gAGX，或改稿对齐；不要前端擅自改|A-09→C-05|C-05|接口自相矛盾+与链不一致；界面跟稿|
-|W-038|奖励|Grant 详情|发放/领取流水表|读取展示|allowance 列标 gAGX|—|`POST /market-allowance/paid-logs` · `/claim-logs`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-05|C-05|可见文案跟稿，张力进改稿队列|
-|W-039|奖励|Grant FAQ|「不耗贡献、gAGX 直达钱包」|读取展示|`grant.faq`|链 AGX 直达；不耗贡献/不经 Queue ✅|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-05|C-05|可见文案跟稿，张力进改稿队列|
+|W-037|奖励|Grant 详情|档位 / 累计已领额度，界面标 gAGX|读取展示|`use-grant.ts`（suffix `gAGX`）|API：claimed 标 gAGX、`unlocked_claimable` 标 AGX（自打架）；链付 AGX|`POST /market-allowance/summary`|✅ 已对齐|—|—|A-09→C-05|C-05|FE 按 B 接 API 数+gAGX 标签；claimed/unlocked 文档自打架属后端债，产品确认 FE 忽略|
+|W-038|奖励|Grant 详情|发放/领取流水表|读取展示|allowance 列标 gAGX|—|`POST /market-allowance/paid-logs` · `/claim-logs`|✅ 已对齐|—|—|C-05|C-05|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
+|W-039|奖励|Grant FAQ|「不耗贡献、gAGX 直达钱包」|读取展示|`grant.faq`|链 AGX 直达；不耗贡献/不经 Queue ✅|—|✅ 已对齐|—|—|C-05|C-05|产品确认保留稿面（B 口径）；非接线错|
 |W-040|奖励|Grant Dock|待解锁额度 / 已解锁可领额度|读取展示|`use-simple-claim` 两字段|—|`POST /market-allowance/summary`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|个人金钱本轮未做线上样本对账；单位债另记；前端已接入|
 |W-041|奖励|Grant·写|市场基金签名领取|提交·前置检查|`useMarketFundClaim`/`claimMarketFundReward` skipConfirm；UI `hasGrantClaimable`+session+writeReady；`invalidateAfterTeamClaim`（skipConfirm→仍 shouldInvalidate）|手册 §9.5 · MarketFund|`POST /claim/market-fund`（signType=51）|✅ 已对齐|—|—|B-25|C-05·B-25|写路径不负责展示金额；不真发；按钮/日志后缀见 W-037/038/058|
 |W-042|奖励|Genesis Dock|股东档位 / 个人·团队进度|读取展示|`use-genesis.ts`+`useShareholderRankLabels`|—|`POST /performance` · teamOverview · partitions|✅ 已对齐|—|—|—|—|R3–R9 用合格分区|
@@ -255,15 +256,15 @@
 |W-047|奖励|Genesis·写|社区基金签名领取 + 二次确认|提交·前置检查|`useCommunityFundClaim`；同 outcome 不变量|—|`POST /claim/community-fund` + confirm|✅ 已对齐|—|—|—|—|—|
 |W-048|奖励|Genesis 详情/FAQ|历史 Tab + FAQ 文案|读取展示|referral/team/communityFund 历史|FAQ 指向 RewardClaimer/CommunityFund|各 `/…/logs`|✅ 已对齐|—|—|—|—|—|
 |W-049|奖励|混合领取面板共用|释放/复投比例与计划档位|读取展示|`readClaimPlans`+原始 index 匹配|链 `queuePlans` / `RestakeConfig.getPlan`|—|✅ 已对齐|—|—|—|—|勿用过滤后下标|
-|W-050|奖励|混合领取面板共用|所需/已有贡献（幸运可预览）|读取展示|Lucky `amount>0` 时展示；Dao 签前 required 槽为空|链 `quoteRequiredContribution`|—|✅ 已对齐|—|—|C-06·B-26|C-06·B-26|**链侧正确**；文案仍写 1:1|
+|W-050|奖励|混合领取面板共用|所需/已有贡献（幸运可预览）|读取展示|Lucky `amount>0` 时展示；Dao 签前 required 槽为空|链 `quoteRequiredContribution`|—|✅ 已对齐|—|—|C-06·B-26|C-06·B-26|链侧 quote 正确；Copy 比见 W-020 等（{ratio}=divisor:1）|
 |W-051|奖励|混合领取面板共用|贡献不足时打开兑换页的销毁（burn）|提交|`openExchangeView('burn')`|手册 §9.2 convert|—|✅ 已对齐|—|—|—|—|兑换本体在兑换 Tab|
-|W-052|奖励|接口/文案|混合领取贡献「1:1」vs 链上「金额/6」|读取展示|API 文案 1:1；链 `quoteRequiredContribution=amount/6`（FE 写闸信链）；Copy 仍写 1:1|手册 §9 · 链 quote|`POST /claim/dao-reward` 文：贡献点与领取金额 1:1|🟡 部分|手册↔接口打架|后端提交前检查改跟链「/6」（或文档改口径）；前端 Copy 跟链（卡片/提示/子 FAQ）|A-11→C-06|C-06|前端提交检查已跟链；缺口在接口检查 + 文案|
+|W-052|奖励|接口/文案|混合领取贡献「1:1」vs 链上「金额/6」|读取展示|FE 写闸信链 quote；Copy `{ratio}`←`contributionDivisor`|手册 §9 · 链 quote|`POST /claim/dao-reward` 文仍写 1:1（后端文档债，FE 忽略）|✅ 已对齐|—|—|A-11→C-06|C-06|FE 已跟链；产品确认只负责前端，接口文档偏差不挡关|
 |W-053|奖励|Lucky 提交检查|幸运池是否暂停（按链上实时状态）|读取并提交|`readLuckyClaimSnapshot`→`paused`；`evaluateRewardsMixedClaim`/`submitLuckyMixedClaim` pre+live 入 `luckyPaused`|以链 live 为准（不跟死文）|—|✅ 已对齐|—|—|—|—|布尔提交检查跟链上实时状态；不是展示金额问题|
-|W-054|奖励|Hub intro Copy|文案写「混合领取按 1:1 消耗」|读取展示|onboarding/教程轨 `zh.ts`|链 divisor=6|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06|C-06|用户可见文案；跟稿张力进改稿队列|
+|W-054|奖励|Hub intro Copy|文案写「混合领取按 1:1 消耗」|读取展示|onboarding/教程轨 `zh.ts`|链 divisor=6|—|✅ 已对齐|—|—|C-06|C-06|文案 {ratio}=contributionDivisor:1（链 burnSwapConfig multicall）；产品确认跟链|
 |W-055|奖励|Cobuild 门槛|持仓/做市进度：AGX 换成美元|读取展示|`agxAmountToUsdProgressCurrent`：有价 AGX×$；无价→null→徽章 empty（`cobuild-tier-progress`）|API AGX × `useAgxPriceUsd`|`POST /rank-reward/summary`|✅ 已对齐|—|—|—|—|已修：禁无价 AGX↔$ 直比；单测钉住 empty|
 |W-056|奖励|DAO 混合领取·写后|领取成功后刷新释放/质押页面数据|提交|`invalidateAfterRewardsMixedClaim`|手册 §9.3/§9.5|—|✅ 已对齐|—|—|B-27|B-27|—|
 |W-057|奖励|简单领取·写后|市场/团队/社区领取成功后刷新|提交|`invalidateAfterTeamClaim`→rewards 桶（allowance/team/community/erc20）|手册成功后刷新|—|✅ 已对齐|—|—|—|—|市场基金跳过二次确认时仍会刷新|
-|W-058|奖励|混合领取代币芯片|面板代币名标成 gAGX|读取展示|`claim-panels` / `mixed.tokenGagx`|链 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-15|C-15|幸运/DAO 共用；可见文案跟稿，张力进改稿队列|
+|W-058|奖励|混合领取代币芯片|面板代币名标成 gAGX|读取展示|`claim-panels` / `mixed.tokenGagx`|链 AGX|—|✅ 已对齐|—|—|C-15|C-15|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 
 ## 4. 释放（L-）
 
@@ -277,7 +278,7 @@
 |L-001|释放|Hub·释放池卡|释放中金额|读取展示|`useReleaseHub`+`formatReleaseApiOrChainLabel`：`chainReady` 优先 `queueReleasing`；无钱包用 API|手册 §12 RewardQueue（releasing≈total−claimable）|`/release-pool/summary` `releasing_amount`|✅ 已对齐|设计取舍（缺数显0）|—|—|B-29|金额按 4 位展示；有链优先已定；前端已接入；线上对账非本表判断标准|
 |L-002|释放|Hub·释放池卡|「可领取」金额|读取展示|`use-hub` 注释勿把累计 `released_amount` 当可领；`apiQueueClaimableRaw=released−claimed`；有链用 `totalClaimable`|手册 §12 claimable|`/release-pool/summary`（派生；有链不用）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|标签就是「可领取」；前端已接入；线上对账非本表判断标准|
 |L-003|释放|Hub·释放池卡|进度百分比|读取展示|`formatReleasePct`←`releaseProgressBps(claimable,releasing)`|手册 §12 进度语义|—|✅ 已对齐|—|—|—|—|—|
-|L-004|释放|Hub·释放池卡|单位文案|读取展示|`t.release.units.queue='gAGX'`；`formatReleaseApiOrChainLabel` unit 同源|手册 §12 `token()`=AGX；稿/i18n 写 gAGX|api.md 标 gAGX|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-07 · A-12|C-07|数字已接线；错在单位标签；可见文案跟稿，张力进改稿队列|
+|L-004|释放|Hub·释放池卡|单位文案|读取展示|`t.release.units.queue='gAGX'`；`formatReleaseApiOrChainLabel` unit 同源|手册 §12 `token()`=AGX；稿/i18n 写 gAGX|api.md 标 gAGX|✅ 已对齐|—|—|C-07 · A-12|C-07|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |L-005|释放|Hub·缓冲池卡|AGX 池内剩余（Total）|读取展示|`bufferTotalAgx`：链=`claimable+releasing`；API=`releasing_amount`；注释勿用累计入池|手册 §13 PRV/分流器剩余|`/buffer-pool/summary` `releasing_amount`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|这里的「释放中」=池内剩余；前端已接入；线上对账非本表判断标准|
 |L-006|释放|Hub·缓冲池卡|AGX「可领取」|读取展示|`apiRaw: undefined`；只信链 `agx.totalClaimable`|手册 §13 `claimableAmount`|—（API 无同口径 claimable）|✅ 已对齐|设计取舍（缺数显0）|—|A-16|A-16|前端已接入；线上对账非本表判断标准|
 |L-007|释放|Hub·缓冲池卡|gAGX Total|读取展示|`gagxTotalLabel`=`gagx.claimable+releasing`；未连钱包 `0`；audit「勿当假零」|手册 §13 多 token 桶|—（API 无 gAGX summary）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|断连显示 0 不另标部分对齐；前端已接入；线上对账非本表判断标准|
@@ -286,17 +287,17 @@
 |L-010|释放|Hub·详情|税率表周期/税率|读取展示|`taxBps/100`；`useReleaseQueuePlans`；空则 i18n fallback|手册 §12 `queuePlans` feeRate|—|✅ 已对齐|—|—|—|—|算法跟链上计划；本轮未做线上具体费率对拍|
 |L-011|释放|Hub·详情|关于/用途说明幻灯|读取展示|Visible 文案；无动态数|产品叙事|—|✅ 已对齐|—|—|—|—|—|
 |L-012|释放|Hub·详情|机制步骤「6:1」|读取展示|`zh.ts` hub.mechanismSteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 X 底池」|FE 信链 `quoteRequiredContribution`（≈amount/6→6:1）；body 实为 burn `splitBps` 叙事|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06|C-06|标题对；正文串台；可见文案跟稿，张力进改稿队列|
-|L-013|释放|Hub·常见问题|「领取的 gAGX 去向」题干|读取展示|题干写 gAGX；答案已澄清 AGX→Turbine|手册 §12→§16|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-07|C-07|可见文案跟稿，张力进改稿队列|
+|L-013|释放|Hub·常见问题|「领取的 gAGX 去向」题干|读取展示|题干写 gAGX；答案已澄清 AGX→Turbine|手册 §12→§16|—|✅ 已对齐|—|—|C-07|C-07|产品确认保留稿面（B 口径）；非接线错|
 |L-014|释放|队列·操作区|各档可领 / 释放中|读取展示|`readReleaseQueueSnapshot` Multicall per-plan|手册 §12 分档 snapshot|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|数字算法对；前端已接入；线上对账非本表判断标准|
-|L-015|释放|队列·操作区|单位 + 代币图标|读取展示|`units.queue` + `gagxIcon`（`queue/dock.tsx`）；金额用 `AGX_DECIMALS`|链 token=AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-07|C-07|数字算法对；错在标签/图标；可见文案跟稿，张力进改稿队列|
+|L-015|释放|队列·操作区|单位 + 代币图标|读取展示|`units.queue` + `gagxIcon`（`queue/dock.tsx`）；金额用 `AGX_DECIMALS`|链 token=AGX|—|✅ 已对齐|—|—|C-07|C-07|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |L-016|释放|队列·操作区|进度百分比 / 美元提示|读取展示|档内 pct + `useAgxPriceUsd`|手册 §12 + 价源|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|前端已接入；线上对账非本表判断标准|
 |L-017|释放|队列·操作区|领取按钮前置检查|提交·前置检查|`canClaimWhen` + `releaseClaimBlockReason`：claimable>0 · writeReady · planIndex≥0 · unknown lock|手册 §12 领取前置|—|✅ 已对齐|—|—|—|—|—|
 |L-018|释放|队列·操作区|领取（解锁）|提交|`submitReleaseQueueClaim`：pre→live 双读闸 → `claimAllVestedRewards(planIndex)` → `invalidateAfterReleaseClaim`|手册 §12 `claimAllVestedRewards`|—|✅ 已对齐|—|—|—|—|本表不真发交易；成功提示写「涡轮配额」|
 |L-019|释放|队列·操作区|单档刷新|提交|`readReleaseQueuePlanByDays` patch cache；不整表重拉|手册分档读|—|✅ 已对齐|—|—|—|—|—|
 |L-020|释放|队列·详情|释放中 / 可领取统计|读取展示|B-29 链优先；图标仍 `gagxIcon`|手册 §12；有链优先|`/release-pool/summary` 派生可领|✅ 已对齐|设计取舍（缺数显0）|—|—|C-07|单位问题见 L-004 / L-015；前端已接入；线上对账非本表判断标准|
-|L-021|释放|队列·详情|累计从释放池领取|读取展示|无链 lifetime view；session 用 API `total_claimed_amount`；无 session→诚实 0|链无累计 view；API 有字段但标 gAGX|`/release-pool/summary` `total_claimed_amount`（标 gAGX）|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|A-12|A-12|不是「接口没字段」——缺的是链上终身累计 + 单位；可见文案跟稿，张力进改稿队列|
+|L-021|释放|队列·详情|累计从释放池领取|读取展示|无链 lifetime view；session 用 API `total_claimed_amount`；无 session→诚实 0|链无累计 view；API 有字段但标 gAGX|`/release-pool/summary` `total_claimed_amount`（标 gAGX）|✅ 已对齐|—|—|A-12|A-12|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |L-022|释放|队列·详情|释放池记录表|读取展示|`mapReleasePoolLogToRow`；金额无单位后缀|手册流水|`/release-pool/logs`|✅ 已对齐|—|—|—|A-12|索引器空态诚实展示|
-|L-023|释放|队列·常见问题|gAGX 去向|读取展示|题干 gAGX；答案「涡轮配额」未点名 AGX|手册 §12→Turbine AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-07|C-07|可见文案跟稿，张力进改稿队列|
+|L-023|释放|队列·常见问题|gAGX 去向|读取展示|题干 gAGX；答案「涡轮配额」未点名 AGX|手册 §12→Turbine AGX|—|✅ 已对齐|—|—|C-07|C-07|产品确认保留稿面（B 口径）；非接线错|
 |L-024|释放|缓冲·操作区|AGX 可领 / 释放中|读取展示|`useBuffer` 硬编码单位 `AGX` + `agxIcon`|手册 §13 AGX 桶|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|前端已接入；线上对账非本表判断标准|
 |L-025|释放|缓冲·操作区|gAGX 可领 / 释放中|读取展示|分流器 gagx 桶；单位 `gAGX` + `gagxIcon`|手册 §13|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|前端已接入；线上对账非本表判断标准|
 |L-026|释放|缓冲·操作区|介绍文案里的天数|读取展示|`usePrincipalReleaseDurationDays` 插值 intro|手册 `effectiveDuration` / `DEFAULT_RELEASE_DURATION`|—|✅ 已对齐|—|—|—|—|—|
@@ -308,11 +309,11 @@
 |L-032|释放|缓冲·详情|gAGX 三元组（进入/提取/释放中）|读取展示|无钱包→0；仅链（API 无 gAGX）|手册 §13|—|✅ 已对齐|设计取舍（缺数显0）|—|—|A-16 旁系|同 L-007，不双降为部分对齐；前端已接入；线上对账非本表判断标准|
 |L-033|释放|缓冲·详情|缓冲记录表|读取展示|`contract_address` 原值；金额无币种后缀|—|`/buffer-pool/logs`|✅ 已对齐|—|—|—|—|—|
 |L-034|释放|缓冲·详情|机制步骤「30 天缓冲」|读取展示|intro 已动态天数；步骤仍写死 30|`effectiveDuration` 可≠30|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|—|—|可见文案跟稿，张力进改稿队列|
-|L-035|释放|缓冲·常见问题|「AGX 直接进入钱包」|读取展示|zh：「点击提取，AGX 直接进入钱包」；忽略 next 瀑布与 gAGX|手册：仅链尾 `next==0`；可有 gAGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|—|建议新 C|与 L-030 成功文案不一致；可见文案跟稿，张力进改稿队列|
+|L-035|释放|缓冲·常见问题|「AGX 直接进入钱包」|读取展示|zh：「点击提取，AGX 直接进入钱包」；忽略 next 瀑布与 gAGX|手册：仅链尾 `next==0`；可有 gAGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|—|建议新 C|超出单位口径：忽略 next 瀑布与 gAGX 桶；与 L-030 张力；保留📘|
 |L-036|释放|缓冲·常见问题|AGX / gAGX 双资产|读取展示|zh 已写「分流器释放单可为 AGX 或 gAGX」|手册 splitter 多 token|—|✅ 已对齐|—|—|—|—|审计刻意不把断连显 0 记成假零缺口|
 |L-037|释放|侧栏红点|是否有可领|读取展示|`readReleaseHasClaimable` / host `use-release-rail-dot`：queue+splitter+archive|手册 §12–13|—|✅ 已对齐|—|—|—|—|表面在宿主，能力属释放|
 |L-038|释放|写后刷新|领取成功后刷新|提交|`invalidateTabQueries('release')`；`TAB_QUERY_KEYS.release` 含 `releaseRoot`+`turbineRoot`+erc20+API|手册成功后刷配额/余额|release/buffer-pool API keys|✅ 已对齐|—|—|—|—|队列领取后涡轮配额可见性会更新|
-|L-039|释放|接口权威|释放池摘要币种|读取展示|有链时 Num 跟链；UI 标签仍 `units.queue`=gAGX|api.md「amount 均为 gAGX」vs 链 AGX|`/release-pool/summary`|🟡 部分|手册或接口与链不符|后端改文档/字段标成 AGX；界面可见标签跟稿可保留 gAGX（进 C-07 改稿队列）；禁止再把接口单位当链结算单位|A-12|A-12|数源优先已对；权威单位文案归后端；界面跟稿|
+|L-039|释放|接口权威|释放池摘要币种|读取展示|有链时 Num 跟链；UI 标签仍 `units.queue`=gAGX|api.md「amount 均为 gAGX」vs 链 AGX|`/release-pool/summary`|✅ 已对齐|—|—|A-12|A-12|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |L-040|释放|接口权威|缓冲池摘要无「可领」|读取展示|FE 信链正确（`apiRaw: undefined`）|链有 claimableAmount；API 无|`/buffer-pool/summary`|🟡 部分|链/手册/接口未提供|后端补同口径可领，或文档写明「已提取≠可领」；前端继续信链|A-16|A-16|审计刻意不记成前端缺口|
 |L-041|释放|合约地址|释放队列代理合约|读取展示|`contracts.ts`←`VITE_BSC_REWARD_QUEUE`=`0x320feF8885283CbD1271aD1F39c5Fe694d56583C`（fail-closed）|`env/manual.bsc.addresses.env` 同址|—|✅ 已对齐|—|—|—|—|与入仓地址一致；换源时重新拷贝环境文件即可|
 |L-042|释放|代码能力|单条领取已释放|提交|产品用按档 `claimAll`；单条无 UI|手册有单条；FE 仅 `claimAll`|—|⚪ 不适用|—|—|—|Z?|反查附录候选|
@@ -368,23 +369,23 @@
 |X-036|兑换|销毁·历史|销毁流水 / 消耗流水表|读取展示|`useBurnHistory`；需 `sessionReady`|—|`/agx-contribution/burn-logs` · `consume-logs`|✅ 已对齐|—|—|—|—|—|
 |X-037|兑换|销毁·常见问题|比率 / 去向 / 不可转让等|读取展示|destination FAQ 注入 `burnPct/injectPct`|FAQ + 链 split|—|✅ 已对齐|—|—|—|—|—|
 |X-038|兑换|销毁·提交|授权 AGX → 提交前重读配置/余额 → 兑换 → 刷新|提交|`submitBurnExchange` + `evaluateBurnContributionSwap`|手册 §9.2|—|✅ 已对齐|—|—|—|—|成功后刷新兑换（含销毁流水）|
-|X-039|兑换|涡轮·概览|「待解锁 gAGX」数额|读取展示|`readTurbineQuota`=`migratedFrom`+root；UI 拼 `gAGX`|手册 §16 `turbineBalances`（AGX wei）|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **A-04**/**C-01**；**B-04→C-01**|A-04,C-01,A-06|复审确认：单位是主责；不另降待核实；可见文案跟稿，张力进改稿队列|
-|X-040|兑换|涡轮·概览|「冷却中 gAGX」|读取展示|`sumTurbineSilenceBuckets` 仅 cooling；不并入 vested|手册 silences ∧ `!isVested`|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-01**；**B-05**|C-01,B-05|复审确认：同 X-039 不另降待核实；可见文案跟稿，张力进改稿队列|
+|X-039|兑换|涡轮·概览|「待解锁 gAGX」数额|读取展示|`readTurbineQuota`=`migratedFrom`+root；UI 拼 `gAGX`|手册 §16 `turbineBalances`（AGX wei）|—|✅ 已对齐|—|—|— **A-04**/**C-01**；**B-04→C-01**|A-04,C-01,A-06|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
+|X-040|兑换|涡轮·概览|「冷却中 gAGX」|读取展示|`sumTurbineSilenceBuckets` 仅 cooling；不并入 vested|手册 silences ∧ `!isVested`|—|✅ 已对齐|—|—|— **C-01**；**B-05**|C-01,B-05|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |X-041|兑换|涡轮·概览|「累计已提取」|读取展示|`useTurbineSummary`→`claimed_total`；冷却/待解锁走链 silences；**不用** `unclaimed_total` 填冷却卡|API `claimed_total`；`unclaimed_total`≠冷却分态|`/turbine/summary` `claimed_total`|✅ 已对齐|设计取舍（缺数显0）|—|— **A-05**|A-05|复审确认：金额未做线上对账；未领总额接口债另记；前端已接；线上对账非本表判断标准|
 |X-042|兑换|涡轮·概览|三张卡的美元约数|读取展示|`formatAgxQuotaUsd`；无报价 → `$0.00`；claimed 用 API 小数×单价|`quoteUsdInForAgxOut(1 AGX)` × 量|claimed←`claimed_total`|✅ 已对齐|设计取舍（缺数显0）|—|— **A-05**|A-05|缺价显 $0.00（空态统一）；已提取美元跟 X-041 接入|
-|X-043|兑换|涡轮·操作区·解锁|可解锁额度标签（写 gAGX）|读取展示|`useTurbine` `unlockableAmountLabel` 硬拼 gAGX|同配额 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-01**|C-01|可见文案跟稿，张力进改稿队列|
+|X-043|兑换|涡轮·操作区·解锁|可解锁额度标签（写 gAGX）|读取展示|`useTurbine` `unlockableAmountLabel` 硬拼 gAGX|同配额 AGX|—|✅ 已对齐|—|—|— **C-01**|C-01|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |X-044|兑换|涡轮·操作区·解锁|支付 USD1 / 将获 AGX 预览|读取展示|预览=min(折减输入,quota)；`payUsd1Label`：quote `isError`/undefined→`formatNumber(0)`|`quoteUsdInForAgxOut` · `previewTurbineExpectedAgx`|—|✅ 已对齐|设计取舍（缺数显0）|—|**B-06**|B-06|复审：报价失败造 0；正常路径算法仍对；口径：未取到显 0（视为正确）|
 |X-045|兑换|涡轮·操作区·解锁|冷却周期小时 / AGX 价 / 合约滑点%|读取展示|session queries|`currentCooldownDuration` · quote · `swapSlippageBP`|—|✅ 已对齐|—|—|—|—|—|
-|X-046|兑换|涡轮·操作区·提取|冷却列表：金额 + 状态 + 操作按钮|读取展示|dock map rows；vested 可点；可领在列表不进「冷却中」卡|`silences`+`isVested`|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-01**；**B-05**|C-01,B-05|可见文案跟稿，张力进改稿队列|
+|X-046|兑换|涡轮·操作区·提取|冷却列表：金额 + 状态 + 操作按钮|读取展示|dock map rows；vested 可点；可领在列表不进「冷却中」卡|`silences`+`isVested`|—|✅ 已对齐|—|—|— **C-01**；**B-05**|C-01,B-05|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |X-047|兑换|涡轮·提交·解锁|授权 USD1 → 提交前重报价并补授权 → 买入并开始冷却 → 刷新|提交|`submitTurbineUnlock` 禁 approve(pre) send(live) 漂移；`evaluateTurbineUnlockLive`|手册 §16.4|—|✅ 已对齐|—|—|**B-07**|B-07|—|
 |X-048|兑换|涡轮·提交·提取|确认已到期 → 领取该条冷却 → 刷新兑换（及分流器/释放）并重拉列表|提交|`submitTurbineClaim`；`splitterManager!=0` 则 `invalidateAfterReleaseClaim`|手册 §16.4–16.5|—|✅ 已对齐|—|—|—|—|列表项删除后整表重拉|
 |X-049|兑换|涡轮·记录表|涡轮流水|读取展示|`useTurbineLogs` + presenter|—|`/turbine/logs`|✅ 已对齐|—|—|—|—|—|
-|X-050|兑换|涡轮·机制/常见问题|「gAGX 进涡轮」「提取到钱包」等文案|读取展示|mechanism 冷却步已写分流器；FAQ「到钱包」/配额 gAGX；toast `claimSuccess` 已写分流器|配额 AGX wei；claim→分流器|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-01**/**A-04**|C-01,A-04|机制说明与 FAQ 不一致；可见文案跟稿，张力进改稿队列|
+|X-050|兑换|涡轮·机制/常见问题|「gAGX 进涡轮」「提取到钱包」等文案|读取展示|mechanism 冷却步已写分流器；FAQ「到钱包」/配额 gAGX；toast `claimSuccess` 已写分流器|配额 AGX wei；claim→分流器|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-01**/**A-04**|C-01,A-04|机制已写分流器 vs FAQ「到钱包」事实张力；非纯单位 B；保留📘|
 |X-051|兑换|涡轮·配额账户|读配额用迁移根账户；写/冷却列表用当前钱包|读取展示|`readTurbineQuota` 走 migration root；silences(user)|链：quota@root（手册自相矛盾，FE 跟链）|—|✅ 已对齐|—|—|— **A-06**；**B-08**|A-06,B-08|前端跟链；手册债不挡已对齐|
 |X-052|兑换|涡轮·侧栏红点|有可领的冷却项|读取展示|`readTurbineHasClaimable` / `use-turbine-exchange-rail-dot`|`isVested` 探测|—|✅ 已对齐|—|—|**B-05**|B-05|—|
 |X-053|兑换|写后刷新（共用）|兑换成功后刷新覆盖哪些数据|提交·刷新|tab keys：swap/erc20/flash/burn/turbine + turbine API + contribution logs|手册成功后刷新|turbine/agx-contribution API|✅ 已对齐|—|—|—|—|涡轮提取另刷释放|
 |X-054|兑换|闪兑/市价/销毁|按钮上的「需要授权」提示|读取展示|`useExchangeQuote.needsApproval`；写内仍 `approve*IfNeeded`|allowance vs amountIn|—|✅ 已对齐|—|—|—|—|界面可提示，发起链上交易内再检查|
-|X-055|兑换|共用 FAQ（旁路）|闪兑 FAQ「以 gAGX 发放 / 收到 gAGX」叙事|读取展示|`exchange.flash.faq`：「均以 gAGX 形式发放」「收到相应数量的 gAGX」；hub.faq 无此发放句|链结算 AGX；主责 shared C-08|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-08**|C-08|复审确认与 X-018 分拆保持；可见文案跟稿，张力进改稿队列|
+|X-055|兑换|共用 FAQ（旁路）|闪兑 FAQ「以 gAGX 发放 / 收到 gAGX」叙事|读取展示|`exchange.flash.faq`：「均以 gAGX 形式发放」「收到相应数量的 gAGX」；hub.faq 无此发放句|链结算 AGX；主责 shared C-08|—|✅ 已对齐|—|—|— **C-08**|C-08|产品确认保留稿面（B 口径）；非接线错|
 
 ---
 
@@ -398,11 +399,11 @@
 |行号|章节|页面/表面|数据或动作|读/写|代码位置|文档位置|API接口|状态|T1归因|修复方法|继承自|A/B/C链|备注|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 |A-001|资产|Hub·总览|总资产价值（美元）|读取展示|`use-hub`→`stake_invest_usd_value`；Visible hint/FAQ 称「含未提取收益」；API 仅注 ACTIVE 投影|产品总估值 vs `user_performance.stake_invest_usd_value`|`/assets/reward-summary` `stake_invest_usd_value`|🟡 部分|手册或接口与链不符|后端文档钉清该字段是否含未提取收益；或改提示/FAQ；若链回退路径也要「含未提取」，须把可领估值并入总美元|—|—|提示/FAQ 写「含本金+未提取」；接口就绪时直绑该字段（文档未钉是否含收益）；无接口时用持仓本金×价（不含可领 gAGX）。三方口径未钉|
-|A-002|资产|Hub·总览|可领取收益（展示）|读取展示|Hub **禁用** API `claimable_gagx`（见 A-003）；链 `blockReward+extraInterest+profit`；标 gAGX；**不含** X/market/DAO/释放/涡轮|产品：仓位 Mixed 未领子集|API 宽口径故意不用|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|A-13|open|单位/范围是文案债；可见文案跟稿，张力进改稿队列|
+|A-002|资产|Hub·总览|可领取收益（展示）|读取展示|Hub **禁用** API `claimable_gagx`（见 A-003）；链 `blockReward+extraInterest+profit`；标 gAGX；**不含** X/market/DAO/释放/涡轮|产品：仓位 Mixed 未领子集|API 宽口径故意不用|✅ 已对齐|—|—|A-13|open|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |A-003|资产|Hub·总览|接口字段「可领 gAGX」（宽口径）|读取展示|类型有字段；`use-hub` 注释明确不直出|API reward-summary 宽口径|`/assets/reward-summary`|⚪ 不适用|—|—|A-13|open|故意不接线（设计取舍）；不是死代码|
 |A-004|资产|Hub·总览|累计已领取|读取展示|session：API；链无累计 → 回退 `0.00 gAGX`|链无累计 view|`total_reward_claimed`|✅ 已对齐|设计取舍（缺数显0）|—|B-21 旁路|—|个人金钱本轮未做线上样本对账；缺数显 0 属设计；前端已接入；线上对账非本表判断标准|
 |A-005|资产|Hub·总览|我的贡献点数|读取展示|apiReady→API；fallback→`readContributionSnapshot`|手册 §9.2|`available_contribution`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|金钱/点数展示无线上样本对账；前端已接入；线上对账非本表判断标准|
-|A-006|资产|Hub·总览 / FAQ|贡献消耗文案写「1:1」|读取展示|`contributionHint`/FAQ「按 1:1」；写路径信链 quote|链 `quoteRequiredContribution` / divisor；手册 §9|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06 · A-11|open|可见文案跟稿，张力进改稿队列|
+|A-006|资产|Hub·总览 / FAQ|贡献消耗文案写「1:1」|读取展示|`contributionHint`/FAQ 用 `{ratio}`；写路径信链 quote|链 `quoteRequiredContribution` / divisor；手册 §9|—|✅ 已对齐|—|—|C-06 · A-11|C-06|文案 {ratio}=contributionDivisor:1（链 burnSwapConfig multicall）；产品确认跟链|
 |A-007|资产|Hub·持仓|可赎回已释放|读取展示|禁用 API 流水语义；链 `redeemableReleasedWei`；活期 `releasedPrincipal=0n` 不计入|产品：Locked `getReleasedPrincipal` + Bond `pendingPayout`|`total_released_agx`（同名不同义，不用）|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|A-14 · C-04 · B-22|—|可见文案跟稿，张力进改稿队列|
 |A-008|资产|Hub·持仓|总持仓|读取展示|apiReady→API；fallback 链求和|—|`/assets/holdings-summary` `total_holdings_agx`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|个人金钱无线上样本对账；前端已接入；线上对账非本表判断标准|
 |A-009|资产|Hub·缓冲|在池总量 / 已提取（AGX）|读取展示|`bufferQuery` 不绑 API fallback 开关；有快照用链|手册 §13|`buffer_pool_releasing/released` 回落|✅ 已对齐|设计取舍（缺数显0）|—|A-16|A-16|个人金钱无线上样本对账；接口无同口径可领；前端已接入；线上对账非本表判断标准|
@@ -414,7 +415,7 @@
 |A-015|资产|Hub·分布|持仓分布图|读取展示|`buildHoldingsDistributionView`|四模式 `positionUsd`|`/assets/holdings-distribution`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|空态接线保留；前端已接入；线上对账非本表判断标准|
 |A-016|资产|Hub·复利增发卡|复利周期 / 每日次数文案|读取展示|`hub.rebase.steps` 静态「约 12h / 每日 2 次」|链 `epoch().length`（Prod≠14400）|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|open|可见文案跟稿，张力进改稿队列|
 |A-017|资产|Hub·FAQ|「钱包闲置余额不计入」|读取展示|FAQ Visible；Hub=`stake_invest_usd_value` 仓位估值，不计钱包 `balanceOf`|产品 FAQ；余额见 host 弹窗/非本 tab|—|✅ 已对齐|—|—|A-048|—|闲置余额断言独立于 A-001「含未提取收益」；金额口径由 A-001/A-054 自担|
-|A-018|资产|Hub·FAQ|收益形式：gAGX / X|读取展示|Hub FAQ：「Rebase 以 gAGX 计量；X 挖矿为 X」；未写「可直接挖 X」|链 Mixed→队列（多为 AGX）；Xmine→X|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02 · C-08 旁|C-02|X 区分对；gAGX 计量仍与链不符；可见文案跟稿，张力进改稿队列|
+|A-018|资产|Hub·FAQ|收益形式：gAGX / X|读取展示|Hub FAQ：「Rebase 以 gAGX 计量；X 挖矿为 X」；未写「可直接挖 X」|链 Mixed→队列（多为 AGX）；Xmine→X|—|✅ 已对齐|—|—|C-02 · C-08 旁|C-02|产品确认保留稿面（B 口径）；非接线错|
 |A-019|资产|Hub·FAQ|领取后进奖励队列 / 释放池|读取展示|FAQ 文案|手册 Mixed / RewardQueue|—|✅ 已对齐|—|—|—|—|—|
 |A-020|资产|Hub·FAQ|缓冲池 AGX / gAGX|读取展示|FAQ + UI 切换|手册 §13|—|✅ 已对齐|—|—|—|—|—|
 |A-021|资产|Position·质押|仓位列表字段（本金 / 已释放角标 / 收益 / 加成）|读取展示|活期 `releasedPrincipal` 恒 `0n`（链无线性 released，非读错）；定期 `getReleasedPrincipal`；warmup 行独立|Locked `getReleasedPrincipal`；liquid 无对等|—|✅ 已对齐|—|—|B-12 · A-08|**open**|活期已释放恒 0；角标仅在已释放>0 时显示 → 活期永不显；统计已排除活期。口径钉「活期无已释放角标」|
@@ -425,11 +426,11 @@
 |A-026|资产|Position·质押|操作记录|读取展示|`useAssetsPositionOpsRows` + sessionReady|—|`/stake-flow/logs`|✅ 已对齐|—|—|—|—|—|
 |A-027|资产|Position·质押·FAQ|领取 vs 赎回 / 已释放含义|读取展示|`products.stake.faq`|手册|—|✅ 已对齐|—|—|—|—|—|
 |A-028|资产|Position·质押|EarlyStaking 仓位|读取展示|`readStakePositions` 仅 liquid+180/360/540；无 Early；FE 无 Early ABI|手册 §8.4 EarlyStaking|—|🚫 阻塞|前端缺接线|解阻 B-19 后：补 Early 合约接口+读仓位+领本金/混合领取界面|B-19|blocker|同质押/附录 Early 三连阻塞；禁止伪造线上样本|
-|A-029|资产|Position·LP债券|仓位卡：本金 / 待赎 / 收益|读取展示|`readLpBondPositions`；profit 展示后缀 gAGX|手册 §10；链 profit 入队多为 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02|C-02|单位冲突；金额线上对账另见读取仓位源；可见文案跟稿，张力进改稿队列|
+|A-029|资产|Position·LP债券|仓位卡：本金 / 待赎 / 收益|读取展示|`readLpBondPositions`；profit 展示后缀 gAGX|手册 §10；链 profit 入队多为 AGX|—|✅ 已对齐|—|—|C-02|C-02|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |A-030|资产|Position·LP债券|混合领取 / 本金赎回|提交·前置检查|dual-check + `pendingPayoutFor` live|手册 §10|—|✅ 已对齐|—|—|—|—|—|
 |A-031|资产|Position·LP·统计|「LP 债券总收益」累计|读取展示|末格现行 `'—'`；无累计源不硬编|—|无累计 API/链视图|✅ 已对齐|—|—|—|—|无源显示「—」（不是金额假零）；不是前端读源缺口|
 |A-032|资产|Position·LP·FAQ|复投周期「360/540」、缓冲「30 天」|读取展示|FAQ 写死；UI 计划来自 `readClaimPlans`；赎回天数 hook 链|链 plans / Manager.duration|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-13|—|可见文案跟稿，张力进改稿队列|
-|A-033|资产|Position·销毁债券|读取仓位 + 混合领取/赎回提交 + 流水|读取展示/提交|与 LP 对称 `readBurnBondPositions`；profit 后缀 gAGX|同 LP · BurnBond|bond-flow burn|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02|C-02|不拆行：写路径齐、读单位同 A-029；可见文案跟稿，张力进改稿队列|
+|A-033|资产|Position·销毁债券|读取仓位 + 混合领取/赎回提交 + 流水|读取展示/提交|与 LP 对称 `readBurnBondPositions`；profit 后缀 gAGX|同 LP · BurnBond|bond-flow burn|✅ 已对齐|—|—|C-02|C-02|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |A-034|资产|Position·销毁·FAQ|同 LP 结构 + 销毁叙事|读取展示|FAQ Visible|手册 BurnBond|—|✅ 已对齐|—|—|—|—|—|
 |A-035|资产|Xmine·仓位|挖矿仓位 / 待领 / 预热|读取展示|不把 miningStake 冒充已释放；`readXminePosition`|手册 §15 `readXminePosition`|—|✅ 已对齐|设计取舍（缺数显0）|—|B-24|—|算法已收口；前端已接入；线上对账非本表判断标准|
 |A-036|资产|Xmine·统计|「已释放」格|读取展示|代码 `released=0n` + 注释|无 PRV 映射字段|—|✅ 已对齐|设计取舍（缺数显0）|—|A-15 · A-16|—|固定 0 ≠ 诚实空；口径：未取到显 0（视为正确）|
@@ -443,7 +444,7 @@
 |A-044|资产|Redeem confirm|释放天数文案|读取展示|`usePrincipalReleaseDurationDays`；默认 30|Manager `effectiveDuration`|—|✅ 已对齐|—|—|—|—|—|
 |A-045|资产|Redeem confirm|确认赎回写|提交|live 重读可赎金额 `evaluateRedeem`|手册 claimPrincipal / bond redeem|—|✅ 已对齐|—|—|—|—|—|
 |A-046|资产|Hub / 接口|登录优先接口，缺则链回退|读取展示|session+apiReady：overview/summary/dist 走 API；yield/APR/可赎等无同口径仍链|`assetsHubNeedsChainFallback`|assets summary/dist|✅ 已对齐|—|—|B-21|closed→✅|符合读源优先|
-|A-047|资产|全表面|收益/利润单位标 gAGX|读取展示|仓位/Hub/弹窗金额单位 gAGX|链多为 AGX 入队|部分 API 亦标 gAGX|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02 · A-07|open|可见文案跟稿，张力进改稿队列|
+|A-047|资产|全表面|收益/利润单位标 gAGX|读取展示|仓位/Hub/弹窗金额单位 gAGX|链多为 AGX 入队|部分 API 亦标 gAGX|✅ 已对齐|—|—|C-02 · A-07|open|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |A-048|资产|（对照手册资产章）|AGX/gAGX/X/USD1/XX 钱包余额展示|读取展示|现行 assets=仓位 Hub；FAQ 声明不计闲置；钱包弹窗仅 USD1|手册 §4.3|—|⚪ 不适用|—|—|—|—|产品形态≠手册「钱包资产页」（设计取舍）|
 |A-049|资产|（对照手册资产章）|资产页全量授权|提交|无全量 approve；业务按钮各自检查|手册 §4.4 不建议|—|⚪ 不适用|—|—|—|—|符合手册交互（设计取舍）|
 |A-050|资产|（对照手册资产章）|迁移：是否旧账户 / 规范账户|读取展示|assets 袋无迁移提示；迁移 UI 超出 Figma|AccountMigrationManager；staking 侧有闸|—|🚫 阻塞|前端缺接线|等迁移页产品/稿解阻；或宿主级轻提示|—|—|可挂宿主/迁移债；不是「漏接可立刻修」|
@@ -452,7 +453,7 @@
 |A-053|资产|Position·活期|「已释放」角标|读取展示|`badgeVisible={releasedPrincipal>0}` → 活期永不显示|链无线性 released|—|✅ 已对齐|设计取舍（故意空/0）|—|B-12|open|同 A-021：活期不显「已释放」角标=镜像链；与「随时可赎」并存属产品叙事，不是读错|
 |A-054|资产|Hub 金钱字段|线上链/接口金额对账|读取展示|无样本地址对账|L 杠（金钱须 Prod 只读）|相关 Hub 字段|✅ 已对齐|—|—|—|—|金钱伞行；字段行已各自处理；前端已接入；线上对账非本表判断标准|
 |A-055|资产|接口持仓摘要|「总已释放 AGX」字段|读取展示|FE 故意不用；用链可赎|API=缓冲已提+CLAIM_PRINCIPAL|`total_released_agx`|⚪ 不适用|—|—|A-14|—|正确规避同名不同义（设计取舍）|
-|A-056|资产|Claim 展示额|弹窗金额单位 gAGX|读取展示|`amountLabel` 后缀 gAGX|链 reward/profit wei|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02|—|可见文案跟稿，张力进改稿队列|
+|A-056|资产|Claim 展示额|弹窗金额单位 gAGX|读取展示|`amountLabel` 后缀 gAGX|链 reward/profit wei|—|✅ 已对齐|—|—|C-02|—|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |A-057|资产|Xmine FAQ / 上限|可质押上限叙事|读取展示|FAQ 有文案；assets 袋无上限 Num（在 staking xmine）|手册 X 挖矿上限|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐挖矿配额公式，或产品确认保留简化叙事；不要前端擅自改|—|—|质押侧数字走挖矿配额（正确）。线上最大质押比率=100%。手册=Early+三定期+三 LP+三销毁锁定本金×比率；FAQ 写「≥180 天债券+AGX 质押总量」过简（活期不计入）。上限数字在质押 X 挖矿|
 |A-058|资产|Hub 年化收益率提示|年化收益率提示文案（未提取收益）|读取展示|Dock Tooltip；与卡上 yield 对齐|产品|—|✅ 已对齐|—|—|—|—|—|
 |A-059|资产|Position·质押·领取流程|「领取产出」中间层（收益 / 加成分入口）再进 Mixed|读取展示/提交|仓位「领取」→`AssetsClaimOutputModal`（0 禁用对应 CTA）→单腿 `AssetsClaimModal`；卡上收益=`blockReward`、加成=`extraInterest`|Figma Copy `4848:264`；主仓验收 `4781:3137`；手册 Locked Mixed 两腿|—|✅ 已对齐|—|—|—|closed|复投在第二步 Mixed。赎回浅色贴稿见 A-044/A-045（`AssetsRedeemConfirm` + `InlineAlert` notice）|

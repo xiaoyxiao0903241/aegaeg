@@ -17,10 +17,10 @@ import { submitBurnExchange } from '~/views/dapp/exchange/burn/submit-burn-excha
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import {
   readBurnContributionQuote,
-  readBurnContributionSwapConfig,
   readBurnExchangeBalances,
   readBurnUserStats,
 } from '~/web3/exchange/burn-exchange-read'
+import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
@@ -51,14 +51,7 @@ export function useBurnExchangeSession(
   const { writeReady } = useWriteReadiness()
   const walletReady = hasWalletAccount(account)
 
-  const configQuery = useChainQuery({
-    queryKey: queryKeys.chain.burnSwapConfig,
-    queryFn: () => readBurnContributionSwapConfig(),
-    scope: 'public',
-    freshness: 'quote',
-    enabled: readsEnabled,
-    placeholderData: keepPreviousData,
-  })
+  const configQuery = useBurnSwapConfigQuery({ enabled: readsEnabled })
 
   const decimals = configQuery.data?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
   const buyDecimals = decimals

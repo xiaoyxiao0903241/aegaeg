@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappHostStore } from '~/stores/dapp-host-store'
@@ -14,6 +14,8 @@ import {
   readOnboardingPersistence,
   writeOnboardingDone,
 } from '~/views/dapp/host/onboarding/shared'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 /**
  * DApp 新手引导（不包含创世页）。
@@ -30,6 +32,15 @@ export function OnboardingGuide({
   onOpenChange: (open: boolean) => void
 }) {
   const { messages: t } = useI18n()
+  const claimRatio = useContributionClaimRatioLabel()
+  const onboardingSteps = useMemo(
+    () =>
+      t.onboarding.steps.map((step) => ({
+        ...step,
+        body: withContributionRatio(step.body, claimRatio),
+      })),
+    [t.onboarding.steps, claimRatio],
+  )
   const [currentStep, setCurrentStep] = useState(0)
   /** 文案/点阵与高亮对齐：仅在 prepare 完成后推进 */
   const [displayStep, setDisplayStep] = useState(0)
@@ -53,7 +64,7 @@ export function OnboardingGuide({
     prev: t.onboarding.prev,
     next: t.onboarding.next,
     done: t.onboarding.done,
-    steps: t.onboarding.steps,
+    steps: onboardingSteps,
   }
 
   useEffect(() => {

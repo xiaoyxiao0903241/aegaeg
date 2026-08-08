@@ -135,7 +135,7 @@ const app = defineMessages({
       },
       {
         title: 'Hadiah',
-        body: '「Hadiah」 mencakup referral, partisipasi, co-build, dan lainnya. Klaim Mixed (Lucky/co-build/referral/partisipasi) mengonsumsi poin kontribusi 1:1; tunjangan memakai klaim bertanda tangan ke wallet.',
+        body: '「Hadiah」 mencakup referral, partisipasi, co-build, dan lainnya. Klaim Mixed (Lucky/co-build/referral/partisipasi) mengonsumsi poin kontribusi {ratio}; tunjangan memakai klaim bertanda tangan ke wallet.',
       },
       {
         title: 'Komunitas',
@@ -756,7 +756,7 @@ const app = defineMessages({
         totalPerformance: 'Total kinerja',
         smallAreaPerformance: 'Kinerja area kecil',
         contribution: 'Poin kontribusi saya',
-        contributionHint: 'Klaim hadiah mengonsumsi 1:1',
+        contributionHint: 'Klaim hadiah mengonsumsi {ratio}',
         goBurn: 'Pergi bakar',
       },
       mechanismTitle: 'Mekanisme hadiah Bangun Bersama',
@@ -771,11 +771,11 @@ const app = defineMessages({
         },
         referral: {
           title: 'Hadiah referral',
-          body: 'Hadiah terkait referral setelah mitra langsung ikut Bangun Bersama; klaim via DaoPool Mixed (konsumsi poin kontribusi 1:1).',
+          body: 'Hadiah terkait referral setelah mitra langsung ikut Bangun Bersama; klaim via DaoPool Mixed (konsumsi poin kontribusi {ratio}).',
         },
         participate: {
           title: 'Hadiah partisipasi',
-          body: 'Hadiah partisipasi dari pereferensi Anda; klaim via DaoPool Mixed (konsumsi poin kontribusi 1:1).',
+          body: 'Hadiah partisipasi dari pereferensi Anda; klaim via DaoPool Mixed (konsumsi poin kontribusi {ratio}).',
         },
         cobuild: {
           title: 'Bangun Bersama',
@@ -903,13 +903,13 @@ const app = defineMessages({
       referral: {
         title: 'Hadiah referral',
         body: 'Dapatkan hadiah dengan mengundang mitra ke Bangun Bersama',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: 'Hadiah partisipasi',
         body: 'Hadiah dari pereferensi Anda',
         aside:
-          'Hadiah partisipasi dari Bond referral Anda; klaim via DaoPool Mixed (kontribusi 1:1).',
+          'Hadiah partisipasi dari Bond referral Anda; klaim via DaoPool Mixed (kontribusi {ratio}).',
       },
       cobuild: {
         title: 'Bangun Bersama',
@@ -1015,7 +1015,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana hadiah dibayar?',
-            a: 'Hadiah dikonversi ke gAGX pada nilai saat undian dan terakumulasi di kartu Lucky. Klaim via aturan Mixed (kontribusi 1:1, antrean rilis atau restake).',
+            a: 'Hadiah dikonversi ke gAGX pada nilai saat undian dan terakumulasi di kartu Lucky. Klaim via aturan Mixed (kontribusi {ratio}, antrean rilis atau restake).',
           },
           {
             q: 'Mengapa saya tidak eligible setelah staking $5,000?',
@@ -1034,7 +1034,7 @@ const app = defineMessages({
       myPosition: 'Posisi saya',
       directCount: 'Detail referral langsung',
       contribution: 'Poin kontribusi saya',
-      contributionHint: 'Klaim hadiah mengonsumsi 1:1',
+      contributionHint: 'Klaim hadiah mengonsumsi {ratio}',
       nextPayout: 'Pembayaran hadiah berikutnya',
       recordsTitle: 'Catatan hadiah referral',
       recordsColumns: ['Waktu', 'Jumlah', 'Status', 'Diklaim pada'],
@@ -1065,7 +1065,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana cara mengklaim hadiah referral?',
-            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi 1:1 (DaoPool Mixed).',
+            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi {ratio} (DaoPool Mixed).',
           },
           {
             q: 'Apa itu jumlah referral langsung?',
@@ -1083,7 +1083,7 @@ const app = defineMessages({
       totalRewards: 'Total hadiah',
       myPosition: 'Posisi saya',
       contribution: 'Poin kontribusi saya',
-      contributionHint: 'Klaim hadiah mengonsumsi 1:1',
+      contributionHint: 'Klaim hadiah mengonsumsi {ratio}',
       nextPayout: 'Pembayaran hadiah berikutnya',
       recordsTitle: 'Catatan hadiah partisipasi',
       recordsColumns: ['Waktu', 'Jumlah', 'Status', 'Diklaim pada'],
@@ -1114,7 +1114,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana cara mengklaim hadiah partisipasi?',
-            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi 1:1 (DaoPool Mixed).',
+            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi {ratio} (DaoPool Mixed).',
           },
           {
             q: 'Bisakah pereferensi diganti?',
@@ -1130,7 +1130,7 @@ const app = defineMessages({
       myPosition: 'Posisi saya',
       directCount: 'Detail referral langsung',
       contribution: 'Poin kontribusi saya',
-      contributionHint: 'Klaim hadiah mengonsumsi 1:1',
+      contributionHint: 'Klaim hadiah mengonsumsi {ratio}',
       nextPayout: 'Pembayaran hadiah berikutnya',
       tierTitle: 'Level Bangun Bersama',
       tierCurrent: 'Level saat ini',
@@ -1179,7 +1179,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana mengklaim hadiah co-build dan equalize?',
-            a: 'Gunakan panel kiri untuk membagi klaim vs restake: klaim masuk antrean rilis; restake masuk staking aset tunggal. Keduanya mengonsumsi poin kontribusi 1:1. Riwayat equalize ada di tab Catatan hadiah di kanan.',
+            a: 'Gunakan panel kiri untuk membagi klaim vs restake: klaim masuk antrean rilis; restake masuk staking aset tunggal. Keduanya mengonsumsi poin kontribusi {ratio}. Riwayat equalize ada di tab Catatan hadiah di kanan.',
           },
           {
             q: 'Kapan rasio bonus level baru berlaku?',
@@ -1588,7 +1588,7 @@ const app = defineMessages({
         claimable: 'Hasil yang dapat diklaim',
         claimed: 'Total sudah diklaim',
         contribution: 'Poin kontribusi saya',
-        contributionHint: 'Klaim hasil mengonsumsi 1:1',
+        contributionHint: 'Klaim hasil mengonsumsi {ratio}',
         holdingsTitle: 'Kepemilikan',
         holdingsReleased: 'Dirilis',
         holdingsTotal: 'Total kepemilikan',
@@ -1639,7 +1639,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana mendapatkan poin kontribusi?',
-            a: 'Beli dan bakar AGX; klaim mengonsumsi kontribusi 1:1.',
+            a: 'Beli dan bakar AGX; klaim mengonsumsi kontribusi {ratio}.',
           },
           {
             q: 'Mengapa harus memilih periode rilis saat mengklaim?',

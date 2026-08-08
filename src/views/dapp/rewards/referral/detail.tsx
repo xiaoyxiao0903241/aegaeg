@@ -14,6 +14,11 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useRewardsReferral } from '~/views/dapp/rewards/referral/use-referral'
+import {
+  mapFaqWithContributionRatio,
+  withContributionRatio,
+} from '~/views/dapp/shared/contribution-claim-ratio'
+import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function ReferralDetail() {
   const {
@@ -35,6 +40,9 @@ export function ReferralDetail() {
     setReferralsPage,
     referralsTotal,
   } = useRewardsReferral()
+  const claimRatio = useContributionClaimRatioLabel()
+  const contributionHint = withContributionRatio(referral.contributionHint, claimRatio)
+  const faqItems = mapFaqWithContributionRatio(referral.faq.items, claimRatio)
 
   const topTiles = [
     {
@@ -51,7 +59,7 @@ export function ReferralDetail() {
       key: 'contribution',
       label: referral.contribution,
       value: contributionValue,
-      valueHint: referral.contributionHint,
+      valueHint: contributionHint,
     },
     { key: 'nextPayout', label: referral.nextPayout, value: nextPayout },
   ]
@@ -157,7 +165,7 @@ export function ReferralDetail() {
 
       <Section>
         <Section.Title>{referral.faq.title}</Section.Title>
-        <Faq items={referral.faq.items} variant="dapp" />
+        <Faq items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

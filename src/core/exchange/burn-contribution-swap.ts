@@ -16,6 +16,26 @@ export type BurnContributionSwapConfig = {
   totalContribution: bigint
   /** convert 中销毁占比（getSplitConfig.splitBps）；余下部分注入 LP。 */
   splitBps: bigint
+  /**
+   * Mixed/领取所需贡献除数（contributionDivisor）。
+   * 所需贡献 = 领取金额 / divisor → 展示比 divisor:1。
+   */
+  contributionDivisor: bigint
+}
+
+/** 手册默认除数；链配置未就绪或非法时仅作文案占位，数据到达后以链为准。 */
+export const MANUAL_CONTRIBUTION_DIVISOR_FALLBACK = 6n
+
+/**
+ * 将 contributionDivisor 格式化为领取消耗比「x:1」。
+ *
+ * @param divisor 链上除数；null/undefined/≤0 时回落手册默认 6
+ * @returns 如 `6:1`
+ * @see docs/onchain-manual/contracts/agxcontributionswap.md
+ */
+export function formatContributionClaimRatioLabel(divisor: bigint | null | undefined): string {
+  const d = divisor != null && divisor > 0n ? divisor : MANUAL_CONTRIBUTION_DIVISOR_FALLBACK
+  return `${d.toString()}:1`
 }
 
 /**

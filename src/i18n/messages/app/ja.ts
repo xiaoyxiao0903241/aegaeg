@@ -138,7 +138,7 @@ const app = defineMessages({
       },
       {
         title: 'リワード',
-        body: '「リワード」には紹介賞・参加賞・共創賞などがあります。Lucky/共創/紹介/参加などの Mixed 受取は貢献ポイントを 1:1 で消費し、発展手当などは署名でウォレットへ直送されます。',
+        body: '「リワード」には紹介賞・参加賞・共創賞などがあります。Lucky/共創/紹介/参加などの Mixed 受取は貢献ポイントを {ratio} で消費し、発展手当などは署名でウォレットへ直送されます。',
       },
       {
         title: 'コミュニティ',
@@ -755,7 +755,7 @@ const app = defineMessages({
         totalPerformance: '総業績',
         smallAreaPerformance: '小区業績',
         contribution: '貢献ポイント',
-        contributionHint: '受取は貢献ポイントを 1:1 で消費',
+        contributionHint: '受取は貢献ポイントを {ratio} で消費',
         goBurn: 'バーンへ',
       },
       mechanismTitle: '共創賞の仕組み',
@@ -769,11 +769,11 @@ const app = defineMessages({
         },
         referral: {
           title: '紹介賞',
-          body: '直紹介パートナーの共創参加に基づく紹介関連リワード。DaoPool Mixed で受取（貢献ポイント 1:1 消費）。',
+          body: '直紹介パートナーの共創参加に基づく紹介関連リワード。DaoPool Mixed で受取（貢献ポイント {ratio} 消費）。',
         },
         participate: {
           title: '参加賞',
-          body: '紹介人からの参加リワード。DaoPool Mixed で受取（貢献ポイント 1:1 消費）。',
+          body: '紹介人からの参加リワード。DaoPool Mixed で受取（貢献ポイント {ratio} 消費）。',
         },
         cobuild: {
           title: '共創賞',
@@ -871,12 +871,12 @@ const app = defineMessages({
       referral: {
         title: '紹介賞',
         body: 'パートナーを共創に招待して得るリワード',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: '参加賞',
         body: '紹介人からのリワード',
-        aside: '紹介関係からの参加リワード。DaoPool Mixed で受取（貢献ポイント 1:1 消費）。',
+        aside: '紹介関係からの参加リワード。DaoPool Mixed で受取（貢献ポイント {ratio} 消費）。',
       },
       cobuild: {
         title: '共創賞',
@@ -982,7 +982,7 @@ const app = defineMessages({
           },
           {
             q: '当選後の賞金はどう支給されますか？',
-            a: '当選賞金は抽選時の時価で gAGX に換算され、ラッキー賞カードに自動蓄積されます。ラッキー賞の受取ルールに従い受取します（貢献ポイント 1:1 消費、リリースプール線形リリースまたは再投資）。',
+            a: '当選賞金は抽選時の時価で gAGX に換算され、ラッキー賞カードに自動蓄積されます。ラッキー賞の受取ルールに従い受取します（貢献ポイント {ratio} 消費、リリースプール線形リリースまたは再投資）。',
           },
           {
             q: '$5,000 をステーキングしたのに資格がない理由は？',
@@ -1001,7 +1001,7 @@ const app = defineMessages({
       myPosition: 'マイポジション',
       directCount: '直紹介明細',
       contribution: '貢献ポイント',
-      contributionHint: '受取は 1:1 で消費',
+      contributionHint: '受取は {ratio} で消費',
       nextPayout: '次回リワード配布',
       recordsTitle: '紹介賞記録',
       recordsColumns: ['時間', '試算数量', 'ステータス', '受取日時'],
@@ -1031,7 +1031,7 @@ const app = defineMessages({
           },
           {
             q: '紹介賞はどう受取りますか？',
-            a: '左側の受取パネルで受取と再投資の比率を選びます。受取分はリリースプールで選択期間どおり線形リリース、再投資分は単一資産ステーキングへ入ります。どちらも貢献ポイントを 1:1 で消費します（DaoPool Mixed）。',
+            a: '左側の受取パネルで受取と再投資の比率を選びます。受取分はリリースプールで選択期間どおり線形リリース、再投資分は単一資産ステーキングへ入ります。どちらも貢献ポイントを {ratio} で消費します（DaoPool Mixed）。',
           },
           {
             q: '直接紹介アドレス数とは？',
@@ -1049,7 +1049,7 @@ const app = defineMessages({
       totalRewards: '総リワード',
       myPosition: 'マイポジション',
       contribution: '貢献ポイント',
-      contributionHint: '受取は 1:1 で消費',
+      contributionHint: '受取は {ratio} で消費',
       nextPayout: '次回リワード配布',
       recordsTitle: '参加賞記録',
       recordsColumns: ['時間', '試算数量', 'ステータス', '受取日時'],
@@ -1079,7 +1079,7 @@ const app = defineMessages({
           },
           {
             q: '参加賞はどう受取りますか？',
-            a: '左側の受取パネルで受取と再投資の比率を選びます。受取分はリリースプールで選択期間どおり線形リリース、再投資分は単一資産ステーキングへ入ります。どちらも貢献ポイントを 1:1 で消費します（DaoPool Mixed）。',
+            a: '左側の受取パネルで受取と再投資の比率を選びます。受取分はリリースプールで選択期間どおり線形リリース、再投資分は単一資産ステーキングへ入ります。どちらも貢献ポイントを {ratio} で消費します（DaoPool Mixed）。',
           },
           {
             q: '紹介人は変更できますか？',
@@ -1095,7 +1095,7 @@ const app = defineMessages({
       myPosition: 'マイポジション',
       directCount: '直紹介明細',
       contribution: '貢献ポイント',
-      contributionHint: '受取は 1:1 で消費',
+      contributionHint: '受取は {ratio} で消費',
       nextPayout: '次回リワード配布',
       tierTitle: '共創ランク',
       tierCurrent: '現在のランク',
@@ -1143,7 +1143,7 @@ const app = defineMessages({
           },
           {
             q: '共創賞とイコライズ賞はどう受取りますか？',
-            a: '左側の受取パネルで受取と再投資の比率を選びます。受取分はリリースプールで選択期間どおり線形リリース、再投資分は単一資産ステーキングへ直接入り複利します。どちらも貢献ポイントを 1:1 で消費。イコライズ賞記録は右側「リワード記録」の切替で確認。',
+            a: '左側の受取パネルで受取と再投資の比率を選びます。受取分はリリースプールで選択期間どおり線形リリース、再投資分は単一資産ステーキングへ直接入り複利します。どちらも貢献ポイントを {ratio} で消費。イコライズ賞記録は右側「リワード記録」の切替で確認。',
           },
           {
             q: 'ランク変更後、ボーナス比率はいつ反映されますか？',
@@ -1543,7 +1543,7 @@ const app = defineMessages({
         claimable: '受取可能収益',
         claimed: '累計受取済み',
         contribution: '貢献ポイント',
-        contributionHint: '収益受取は 1:1 で消費',
+        contributionHint: '収益受取は {ratio} で消費',
         holdingsTitle: '保有',
         holdingsReleased: 'リリース済み',
         holdingsTotal: '総保有',
@@ -1587,7 +1587,7 @@ const app = defineMessages({
           },
           {
             q: '貢献値はどう得ますか？',
-            a: 'AGX を購入してバーンすると貢献値を得られます。収益受取時は 1:1 で消費します。',
+            a: 'AGX を購入してバーンすると貢献値を得られます。収益受取時は {ratio} で消費します。',
           },
           {
             q: '収益受取時にリリース期間を選ぶ理由は？',

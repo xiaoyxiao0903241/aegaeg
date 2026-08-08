@@ -135,7 +135,7 @@ const app = defineMessages({
       },
       {
         title: 'Rewards',
-        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build/referral/participation) spend contribution 1:1; stipends use signed claims to wallet.',
+        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build/referral/participation) spend contribution {ratio}; stipends use signed claims to wallet.',
       },
       {
         title: 'Community',
@@ -751,7 +751,7 @@ const app = defineMessages({
         totalPerformance: 'Total performance',
         smallAreaPerformance: 'Small-area performance',
         contribution: 'Contribution points',
-        contributionHint: 'Claims consume contribution 1:1.',
+        contributionHint: 'Claims consume contribution {ratio}.',
         goBurn: 'Go burn',
       },
       mechanismTitle: 'Co-build reward mechanism',
@@ -765,11 +765,11 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution 1:1).',
+          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution {ratio}).',
         },
         participate: {
           title: 'Participate',
-          body: 'Rewards from your referrer via DaoPool Mixed (contribution 1:1).',
+          body: 'Rewards from your referrer via DaoPool Mixed (contribution {ratio}).',
         },
         cobuild: {
           title: 'Co-build',
@@ -868,13 +868,13 @@ const app = defineMessages({
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
         aside:
-          'Direct-referral Rebase-related rewards; claim via DaoPool Mixed (contribution 1:1).',
+          'Direct-referral Rebase-related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: 'Participation',
         body: 'Rewards from your referrer',
         aside:
-          'Participation rewards from your referral bond; claim via DaoPool Mixed (contribution 1:1).',
+          'Participation rewards from your referral bond; claim via DaoPool Mixed (contribution {ratio}).',
       },
       cobuild: {
         title: 'Co-build',
@@ -978,7 +978,7 @@ const app = defineMessages({
           },
           {
             q: 'How are prizes paid?',
-            a: 'Prizes convert to gAGX at draw-time value and accumulate on the Lucky card. Claim via Mixed rules (1:1 contribution, release queue or restake).',
+            a: 'Prizes convert to gAGX at draw-time value and accumulate on the Lucky card. Claim via Mixed rules ({ratio} contribution, release queue or restake).',
           },
           {
             q: 'Why am I not eligible after staking $5,000?',
@@ -997,7 +997,7 @@ const app = defineMessages({
       myPosition: 'My position',
       directCount: 'Direct referrals',
       contribution: 'Contribution points',
-      contributionHint: 'Claims spend 1:1',
+      contributionHint: 'Claims spend {ratio}',
       nextPayout: 'Next reward payout',
       recordsTitle: 'Referral reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
@@ -1026,7 +1026,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim referral rewards?',
-            a: 'Use the left panel to set claim vs restake: claimed portion enters the release pool for the selected term; restake enters single-token staking. Both spend contribution 1:1 (DaoPool Mixed).',
+            a: 'Use the left panel to set claim vs restake: claimed portion enters the release pool for the selected term; restake enters single-token staking. Both spend contribution {ratio} (DaoPool Mixed).',
           },
           {
             q: 'What is direct referral count?',
@@ -1044,7 +1044,7 @@ const app = defineMessages({
       totalRewards: 'Total rewards',
       myPosition: 'My position',
       contribution: 'Contribution points',
-      contributionHint: 'Claims spend 1:1',
+      contributionHint: 'Claims spend {ratio}',
       nextPayout: 'Next reward payout',
       recordsTitle: 'Participation reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
@@ -1073,7 +1073,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim participation rewards?',
-            a: 'On the left claim panel, choose the claim vs restake split: the claim share enters the release queue for linear vesting; the restake share goes into single-asset staking. Both spend contribution 1:1.',
+            a: 'On the left claim panel, choose the claim vs restake split: the claim share enters the release queue for linear vesting; the restake share goes into single-asset staking. Both spend contribution {ratio}.',
           },
           {
             q: 'Can I change my referrer?',
@@ -1089,7 +1089,7 @@ const app = defineMessages({
       myPosition: 'My position',
       directCount: 'Direct referrals',
       contribution: 'Contribution points',
-      contributionHint: 'Claims spend 1:1',
+      contributionHint: 'Claims spend {ratio}',
       nextPayout: 'Next reward payout',
       tierTitle: 'Co-build tier',
       tierCurrent: 'Current tier',
@@ -1136,7 +1136,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim co-build and equalize rewards?',
-            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution 1:1. Equalize history is under Reward records tabs on the right.',
+            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution {ratio}. Equalize history is under Reward records tabs on the right.',
           },
           {
             q: 'When does a new tier rate apply?',
@@ -1536,7 +1536,7 @@ const app = defineMessages({
         claimable: 'Claimable yield',
         claimed: 'Claimed total',
         contribution: 'Contribution points',
-        contributionHint: 'Claims consume 1:1 contribution',
+        contributionHint: 'Claims consume {ratio} contribution',
         holdingsTitle: 'Holdings',
         holdingsReleased: 'Redeemable released',
         holdingsTotal: 'Total holdings',
@@ -1581,7 +1581,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I earn contribution points?',
-            a: 'Buy and burn AGX; claims consume contribution 1:1.',
+            a: 'Buy and burn AGX; claims consume contribution {ratio}.',
           },
           {
             q: 'Why choose a release period when claiming?',

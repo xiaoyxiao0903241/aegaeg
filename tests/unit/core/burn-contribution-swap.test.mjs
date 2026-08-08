@@ -17,6 +17,7 @@ test('burn contribution swap gates: paused / min / max / zero rate', async () =>
     totalBurned: 0n,
     totalContribution: 0n,
     splitBps: 5_000n,
+    contributionDivisor: 6n,
   }
 
   assert.equal(
@@ -84,6 +85,18 @@ test('formatBurnContributionRatioColon from rateBps', async () => {
   assert.equal(formatBurnContributionRatioColon(60_000n), '1:6')
   assert.equal(formatBurnContributionRatioColon(0n), '0')
   assert.equal(formatBurnContributionRatioColon(15_000n), '1:1.5')
+})
+
+test('formatContributionClaimRatioLabel from contributionDivisor', async () => {
+  const { formatContributionClaimRatioLabel } = await loadModule(
+    '/src/core/exchange/burn-contribution-swap.ts',
+  )
+
+  assert.equal(formatContributionClaimRatioLabel(6n), '6:1')
+  assert.equal(formatContributionClaimRatioLabel(8n), '8:1')
+  assert.equal(formatContributionClaimRatioLabel(0n), '6:1')
+  assert.equal(formatContributionClaimRatioLabel(null), '6:1')
+  assert.equal(formatContributionClaimRatioLabel(undefined), '6:1')
 })
 
 test('formatBurnSplitPercent from splitBps', async () => {

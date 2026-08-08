@@ -132,7 +132,7 @@ const app = defineMessages({
       },
       {
         title: 'Ödüller',
-        body: 'Ödüller referans, katılım, ortak inşa vb. içerir; Lucky/ortak inşa/referans/katılım Mixed talepleri katkı puanını 1:1 harcar; gelişim ödenekleri imzayla doğrudan cüzdana gider.',
+        body: 'Ödüller referans, katılım, ortak inşa vb. içerir; Lucky/ortak inşa/referans/katılım Mixed talepleri katkı puanını {ratio} harcar; gelişim ödenekleri imzayla doğrudan cüzdana gider.',
       },
       {
         title: 'Topluluk',
@@ -749,7 +749,7 @@ const app = defineMessages({
         totalPerformance: 'Toplam performans',
         smallAreaPerformance: 'Küçük alan performansı',
         contribution: 'Katkı puanlarım',
-        contributionHint: 'Talepler katkı puanını 1:1 harcar',
+        contributionHint: 'Talepler katkı puanını {ratio} harcar',
         goBurn: 'Yakıma git',
       },
       mechanismTitle: 'Ortak inşa ödül mekanizması',
@@ -764,11 +764,11 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referans ödülü',
-          body: 'Doğrudan referanslardan ödüller; DaoPool Mixed ile talep (katkı 1:1).',
+          body: 'Doğrudan referanslardan ödüller; DaoPool Mixed ile talep (katkı {ratio}).',
         },
         participate: {
           title: 'Katılım ödülü',
-          body: 'Referansınızdan katılım ödülleri; DaoPool Mixed ile talep (katkı 1:1).',
+          body: 'Referansınızdan katılım ödülleri; DaoPool Mixed ile talep (katkı {ratio}).',
         },
         cobuild: {
           title: 'Ortak İnşa',
@@ -902,12 +902,12 @@ const app = defineMessages({
       referral: {
         title: 'Referans ödülü',
         body: 'Ortak inşaya ortak davet ederek ödül kazanın',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: 'Katılım ödülü',
         body: 'Referansınızdan ödüller',
-        aside: 'Referans bağından katılım ödülleri; DaoPool Mixed ile talep (katkı 1:1).',
+        aside: 'Referans bağından katılım ödülleri; DaoPool Mixed ile talep (katkı {ratio}).',
       },
       cobuild: {
         title: 'Ortak İnşa',
@@ -1012,7 +1012,7 @@ const app = defineMessages({
           },
           {
             q: 'Ödüller nasıl ödenir?',
-            a: 'Ödüller çekiliş anı değerinde gAGX’e çevrilir ve Şans kartında birikir. Mixed kurallarıyla talep (1:1 katkı, serbest bırakma havuzu veya yeniden stake).',
+            a: 'Ödüller çekiliş anı değerinde gAGX’e çevrilir ve Şans kartında birikir. Mixed kurallarıyla talep ({ratio} katkı, serbest bırakma havuzu veya yeniden stake).',
           },
           {
             q: 'Neden $5,000 stake etmeme rağmen hakkım yok?',
@@ -1031,7 +1031,7 @@ const app = defineMessages({
       myPosition: 'Pozisyonum',
       directCount: 'Doğrudan referanslar',
       contribution: 'Katkı puanlarım',
-      contributionHint: 'Talepler 1:1 harcar',
+      contributionHint: 'Talepler {ratio} harcar',
       nextPayout: 'Sonraki ödül dağıtımı',
       recordsTitle: 'Referans ödülü kayıtları',
       recordsColumns: ['Zaman', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
@@ -1061,7 +1061,7 @@ const app = defineMessages({
           },
           {
             q: 'Referans ödülü nasıl talep edilir?',
-            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı 1:1 harcar (DaoPool Mixed).',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı {ratio} harcar (DaoPool Mixed).',
           },
           {
             q: 'Doğrudan referans sayısı nedir?',
@@ -1079,7 +1079,7 @@ const app = defineMessages({
       totalRewards: 'Toplam ödül',
       myPosition: 'Pozisyonum',
       contribution: 'Katkı puanlarım',
-      contributionHint: 'Talepler 1:1 harcar',
+      contributionHint: 'Talepler {ratio} harcar',
       nextPayout: 'Sonraki ödül dağıtımı',
       recordsTitle: 'Katılım ödülü kayıtları',
       recordsColumns: ['Zaman', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
@@ -1109,7 +1109,7 @@ const app = defineMessages({
           },
           {
             q: 'Katılım ödülü nasıl talep edilir?',
-            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı 1:1 harcar (DaoPool Mixed).',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı {ratio} harcar (DaoPool Mixed).',
           },
           {
             q: 'Davet eden değiştirilebilir mi?',
@@ -1125,7 +1125,7 @@ const app = defineMessages({
       myPosition: 'Pozisyonum',
       directCount: 'Doğrudan referanslar',
       contribution: 'Katkı puanlarım',
-      contributionHint: 'Talepler 1:1 harcar',
+      contributionHint: 'Talepler {ratio} harcar',
       nextPayout: 'Sonraki ödül dağıtımı',
       tierTitle: 'Ortak inşa seviyesi',
       tierCurrent: 'Mevcut seviye',
@@ -1173,7 +1173,7 @@ const app = defineMessages({
           },
           {
             q: 'Ortak inşa ve eşitleme ödülü nasıl talep edilir?',
-            a: 'Sol panelde talep/yeniden stake oranını seçin: talep serbest bırakma havuzuna, yeniden stake tek varlık stake’ine gider. İkisi katkı 1:1 harcar. Eşitleme geçmişi sağda Ödül kayıtları sekmelerindedir.',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep serbest bırakma havuzuna, yeniden stake tek varlık stake’ine gider. İkisi katkı {ratio} harcar. Eşitleme geçmişi sağda Ödül kayıtları sekmelerindedir.',
           },
           {
             q: 'Yeni seviye oranı ne zaman geçerli olur?',
@@ -1583,7 +1583,7 @@ const app = defineMessages({
         claimable: 'Talep edilebilir getiri',
         claimed: 'Toplam talep edilen',
         contribution: 'Katkı puanlarım',
-        contributionHint: 'Getiri talepleri 1:1 katkı harcar',
+        contributionHint: 'Getiri talepleri {ratio} katkı harcar',
         holdingsTitle: 'Pozisyonlar',
         holdingsReleased: 'Serbest bırakıldı',
         holdingsTotal: 'Toplam pozisyon',
@@ -1633,7 +1633,7 @@ const app = defineMessages({
           },
           {
             q: 'Katkı değeri nasıl kazanılır?',
-            a: 'AGX alıp yakın; talepler katkıyı 1:1 harcar.',
+            a: 'AGX alıp yakın; talepler katkıyı {ratio} harcar.',
           },
           {
             q: 'Talepte neden serbest bırakma süresi seçilir?',

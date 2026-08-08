@@ -136,7 +136,7 @@ const app = defineMessages({
       },
       {
         title: '리워드',
-        body: '「리워드」에는 추천·참여·공동 구축 등이 포함됩니다. Lucky/공동 구축/추천/참여 등 Mixed 수령은 기여 포인트를 1:1로 소모하며, 발전 수당 등은 서명으로 지갑에 바로 입금됩니다.',
+        body: '「리워드」에는 추천·참여·공동 구축 등이 포함됩니다. Lucky/공동 구축/추천/참여 등 Mixed 수령은 기여 포인트를 {ratio}로 소모하며, 발전 수당 등은 서명으로 지갑에 바로 입금됩니다.',
       },
       {
         title: '커뮤니티',
@@ -751,7 +751,7 @@ const app = defineMessages({
         totalPerformance: '총 실적',
         smallAreaPerformance: '소구역 실적',
         contribution: '내 기여 포인트',
-        contributionHint: '리워드 수령 시 기여를 1:1로 소모합니다.',
+        contributionHint: '리워드 수령 시 기여를 {ratio}로 소모합니다.',
         goBurn: '소각으로 이동',
       },
       mechanismTitle: '공동 구축 리워드 메커니즘',
@@ -765,11 +765,11 @@ const app = defineMessages({
         },
         referral: {
           title: '추천',
-          body: '직추천 파트너의 공동 구축 참여로 산정되는 추천 관련 리워드; DaoPool Mixed로 수령(기여 포인트 1:1 소모).',
+          body: '직추천 파트너의 공동 구축 참여로 산정되는 추천 관련 리워드; DaoPool Mixed로 수령(기여 포인트 {ratio} 소모).',
         },
         participate: {
           title: '참여',
-          body: '추천인으로부터의 참여 리워드; DaoPool Mixed로 수령(기여 포인트 1:1 소모).',
+          body: '추천인으로부터의 참여 리워드; DaoPool Mixed로 수령(기여 포인트 {ratio} 소모).',
         },
         cobuild: {
           title: '공동 구축',
@@ -873,12 +873,12 @@ const app = defineMessages({
       referral: {
         title: '추천',
         body: '파트너를 공동 구축에 초대해 리워드 획득',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: '참여',
         body: '추천인으로부터의 리워드',
-        aside: '추천 관계에서 오는 참여 리워드; DaoPool Mixed로 수령(기여 포인트 1:1 소모).',
+        aside: '추천 관계에서 오는 참여 리워드; DaoPool Mixed로 수령(기여 포인트 {ratio} 소모).',
       },
       cobuild: {
         title: '공동 구축',
@@ -983,7 +983,7 @@ const app = defineMessages({
           },
           {
             q: '당첨 후 상금은 어떻게 지급되나요?',
-            a: '상금은 추첨 시점 시가로 gAGX로 환산되어 럭키 카드에 자동 누적되며, 럭키 수령 규칙으로 수령합니다(기여 포인트 1:1 소모, 릴리스 풀 선형 릴리스 또는 재예치).',
+            a: '상금은 추첨 시점 시가로 gAGX로 환산되어 럭키 카드에 자동 누적되며, 럭키 수령 규칙으로 수령합니다(기여 포인트 {ratio} 소모, 릴리스 풀 선형 릴리스 또는 재예치).',
           },
           {
             q: '왜 $5,000을 스테이킹했는데 자격이 없나요?',
@@ -1002,7 +1002,7 @@ const app = defineMessages({
       myPosition: '내 포지션',
       directCount: '직추천 내역',
       contribution: '내 기여 포인트',
-      contributionHint: '수령 시 1:1 소모',
+      contributionHint: '수령 시 {ratio} 소모',
       nextPayout: '다음 리워드 지급',
       recordsTitle: '추천 리워드 기록',
       recordsColumns: ['시간', '산출 수량', '상태', '수령 시간'],
@@ -1032,7 +1032,7 @@ const app = defineMessages({
           },
           {
             q: '추천 리워드는 어떻게 수령하나요?',
-            a: '왼쪽 수령 패널에서 수령과 재예치 비율을 선택하세요. 수령분은 선택한 주기로 릴리스 풀에서 선형 릴리스되고, 재예치분은 단일 토큰 스테이킹으로 들어갑니다. 둘 다 기여 포인트를 1:1로 소모합니다(DaoPool Mixed).',
+            a: '왼쪽 수령 패널에서 수령과 재예치 비율을 선택하세요. 수령분은 선택한 주기로 릴리스 풀에서 선형 릴리스되고, 재예치분은 단일 토큰 스테이킹으로 들어갑니다. 둘 다 기여 포인트를 {ratio}로 소모합니다(DaoPool Mixed).',
           },
           {
             q: '직접 추천 주소 수란?',
@@ -1050,7 +1050,7 @@ const app = defineMessages({
       totalRewards: '총 리워드',
       myPosition: '내 포지션',
       contribution: '내 기여 포인트',
-      contributionHint: '수령 시 1:1 소모',
+      contributionHint: '수령 시 {ratio} 소모',
       nextPayout: '다음 리워드 지급',
       recordsTitle: '참여 리워드 기록',
       recordsColumns: ['시간', '산출 수량', '상태', '수령 시간'],
@@ -1079,7 +1079,7 @@ const app = defineMessages({
           },
           {
             q: '참여 리워드는 어떻게 수령하나요?',
-            a: '왼쪽 수령 패널에서 수령과 재예치 비율을 선택하세요. 수령분은 선택한 주기로 릴리스 풀에서 선형 릴리스되고, 재예치분은 단일 토큰 스테이킹으로 들어갑니다. 둘 다 기여 포인트를 1:1로 소모합니다(DaoPool Mixed).',
+            a: '왼쪽 수령 패널에서 수령과 재예치 비율을 선택하세요. 수령분은 선택한 주기로 릴리스 풀에서 선형 릴리스되고, 재예치분은 단일 토큰 스테이킹으로 들어갑니다. 둘 다 기여 포인트를 {ratio}로 소모합니다(DaoPool Mixed).',
           },
           {
             q: '초대인을 변경할 수 있나요?',
@@ -1095,7 +1095,7 @@ const app = defineMessages({
       myPosition: '내 포지션',
       directCount: '직추천 내역',
       contribution: '내 기여 포인트',
-      contributionHint: '수령 시 1:1 소모',
+      contributionHint: '수령 시 {ratio} 소모',
       nextPayout: '다음 리워드 지급',
       tierTitle: '공동 구축 등급',
       tierCurrent: '현재 등급',
@@ -1144,7 +1144,7 @@ const app = defineMessages({
           },
           {
             q: '공동 구축상과 평월상은 어떻게 수령하나요?',
-            a: '왼쪽 수령 패널에서 수령과 재예치 비율을 선택하세요. 수령분은 릴리스 풀에서 선택한 주기로 선형 릴리스되고, 재예치분은 단일 자산 스테이킹 복리로 들어갑니다. 둘 다 기여 포인트를 1:1로 소모합니다. 평월상 기록은 오른쪽 「리워드 기록」 탭에서 확인하세요.',
+            a: '왼쪽 수령 패널에서 수령과 재예치 비율을 선택하세요. 수령분은 릴리스 풀에서 선택한 주기로 선형 릴리스되고, 재예치분은 단일 자산 스테이킹 복리로 들어갑니다. 둘 다 기여 포인트를 {ratio}로 소모합니다. 평월상 기록은 오른쪽 「리워드 기록」 탭에서 확인하세요.',
           },
           {
             q: '등급 변경 후 보너스 비율은 언제 적용되나요?',
@@ -1546,7 +1546,7 @@ const app = defineMessages({
         claimable: '수령 가능 수익',
         claimed: '누적 수령액',
         contribution: '내 기여 포인트',
-        contributionHint: '수익 수령 시 기여를 1:1로 소모',
+        contributionHint: '수익 수령 시 기여를 {ratio}로 소모',
         holdingsTitle: '보유',
         holdingsReleased: '릴리스됨',
         holdingsTotal: '총 보유',
@@ -1590,7 +1590,7 @@ const app = defineMessages({
           },
           {
             q: '기여값은 어떻게 얻나요?',
-            a: 'AGX를 구매·소각하면 기여값을 얻으며, 수익 수령 시 1:1로 소모됩니다.',
+            a: 'AGX를 구매·소각하면 기여값을 얻으며, 수익 수령 시 {ratio}로 소모됩니다.',
           },
           {
             q: '수익 수령 시 릴리스 주기를 고르는 이유는?',

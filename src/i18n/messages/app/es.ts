@@ -136,7 +136,7 @@ const app = defineMessages({
       },
       {
         title: 'Recompensas',
-        body: 'Recompensas incluye referidos, participación, co-construcción y más. Reclamar vía Mixed (Lucky/co-construcción/referidos/participación) consume contribución 1:1; los subsidios van a la billetera con firma.',
+        body: 'Recompensas incluye referidos, participación, co-construcción y más. Reclamar vía Mixed (Lucky/co-construcción/referidos/participación) consume contribución {ratio}; los subsidios van a la billetera con firma.',
       },
       {
         title: 'Comunidad',
@@ -765,7 +765,7 @@ const app = defineMessages({
         totalPerformance: 'Rendimiento total',
         smallAreaPerformance: 'Rendimiento del área menor',
         contribution: 'Mis puntos de contribución',
-        contributionHint: 'Reclamar consume contribución 1:1',
+        contributionHint: 'Reclamar consume contribución {ratio}',
         goBurn: 'Ir a quemar',
       },
       mechanismTitle: 'Mecanismo de recompensa de co-construcción',
@@ -780,11 +780,11 @@ const app = defineMessages({
         },
         referral: {
           title: 'Recompensa por referidos',
-          body: 'Recompensas por referidos directos en co-construcción; reclama vía DaoPool Mixed (consume contribución 1:1).',
+          body: 'Recompensas por referidos directos en co-construcción; reclama vía DaoPool Mixed (consume contribución {ratio}).',
         },
         participate: {
           title: 'Recompensa por participación',
-          body: 'Recompensas de tu referente vía DaoPool Mixed (consume contribución 1:1).',
+          body: 'Recompensas de tu referente vía DaoPool Mixed (consume contribución {ratio}).',
         },
         cobuild: {
           title: 'Co-construcción',
@@ -894,13 +894,13 @@ const app = defineMessages({
       referral: {
         title: 'Recompensa por referidos',
         body: 'Recompensas por invitar socios a la co-construcción',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution 1:1).',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
       },
       participate: {
         title: 'Recompensa por participación',
         body: 'Recompensas de tu referente',
         aside:
-          'Recompensas de participación por el vínculo de referido; reclama vía DaoPool Mixed (consume contribución 1:1).',
+          'Recompensas de participación por el vínculo de referido; reclama vía DaoPool Mixed (consume contribución {ratio}).',
       },
       cobuild: {
         title: 'Co-construcción',
@@ -1007,7 +1007,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo se pagan los premios?',
-            a: 'Los premios se convierten a gAGX al valor del sorteo y se acumulan en la tarjeta Lucky. Reclama con reglas Mixed (contribución 1:1, cola de liberación o reinversión).',
+            a: 'Los premios se convierten a gAGX al valor del sorteo y se acumulan en la tarjeta Lucky. Reclama con reglas Mixed (contribución {ratio}, cola de liberación o reinversión).',
           },
           {
             q: '¿Por qué no tengo elegibilidad tras hacer staking de $5,000?',
@@ -1026,7 +1026,7 @@ const app = defineMessages({
       myPosition: 'Mi posición',
       directCount: 'Detalle de referidos directos',
       contribution: 'Mis puntos de contribución',
-      contributionHint: 'Reclamar consume 1:1',
+      contributionHint: 'Reclamar consume {ratio}',
       nextPayout: 'Próximo pago de recompensas',
       recordsTitle: 'Registros de recompensa por referidos',
       recordsColumns: ['Hora', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
@@ -1061,7 +1061,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo las recompensas por referidos?',
-            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución 1:1 (DaoPool Mixed).',
+            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución {ratio} (DaoPool Mixed).',
           },
           {
             q: '¿Qué es el número de direcciones de referidos directos?',
@@ -1079,7 +1079,7 @@ const app = defineMessages({
       totalRewards: 'Recompensas totales',
       myPosition: 'Mi posición',
       contribution: 'Mis puntos de contribución',
-      contributionHint: 'Reclamar consume 1:1',
+      contributionHint: 'Reclamar consume {ratio}',
       nextPayout: 'Próximo pago de recompensas',
       recordsTitle: 'Registros de recompensa por participación',
       recordsColumns: ['Hora', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
@@ -1114,7 +1114,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo las recompensas por participación?',
-            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución 1:1 (DaoPool Mixed).',
+            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución {ratio} (DaoPool Mixed).',
           },
           {
             q: '¿Puedo cambiar de referente?',
@@ -1130,7 +1130,7 @@ const app = defineMessages({
       myPosition: 'Mi posición',
       directCount: 'Detalle de referidos directos',
       contribution: 'Mis puntos de contribución',
-      contributionHint: 'Reclamar consume 1:1',
+      contributionHint: 'Reclamar consume {ratio}',
       nextPayout: 'Próximo pago de recompensas',
       tierTitle: 'Nivel de co-construcción',
       tierCurrent: 'Nivel actual',
@@ -1178,7 +1178,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo co-construcción y nivelación?',
-            a: 'En el panel izquierdo reparte reclamar / reinvertir: reclamar va a la cola de liberación; reinvertir a staking de un solo activo. Ambos consumen contribución 1:1. El historial de nivelación está en las pestañas de registros de recompensa a la derecha.',
+            a: 'En el panel izquierdo reparte reclamar / reinvertir: reclamar va a la cola de liberación; reinvertir a staking de un solo activo. Ambos consumen contribución {ratio}. El historial de nivelación está en las pestañas de registros de recompensa a la derecha.',
           },
           {
             q: '¿Cuándo aplica la nueva tasa de nivel?',
@@ -1591,7 +1591,7 @@ const app = defineMessages({
         claimable: 'Rendimiento reclamable',
         claimed: 'Reclamado acumulado',
         contribution: 'Mis puntos de contribución',
-        contributionHint: 'Reclamar rendimiento consume 1:1 de contribución',
+        contributionHint: 'Reclamar rendimiento consume {ratio} de contribución',
         holdingsTitle: 'Posiciones',
         holdingsReleased: 'Liberado',
         holdingsTotal: 'Posiciones totales',
@@ -1642,7 +1642,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo obtengo contribución?',
-            a: 'Compra y quema AGX para obtener contribución; al reclamar se consume 1:1.',
+            a: 'Compra y quema AGX para obtener contribución; al reclamar se consume {ratio}.',
           },
           {
             q: '¿Por qué elegir un periodo de liberación al reclamar?',
