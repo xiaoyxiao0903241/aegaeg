@@ -136,10 +136,10 @@
 |S-009|质押|总览首页|有多少个地址参与了质押|读取展示|`useStakeAddressCount(sessionReady)`；`!sessionReady`/loading/fail 均 `formatNumber(0)`|—|`POST /performance/stake-address-count`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|门控对；空/失败造 0，不是「—」|
 |S-010|质押|总览·周期表|基础日收益、锁定加成、各周期收益|读取展示|`formatYieldPct(null)`→`YIELD_EMPTY`=`0.00%`；算法跟 epoch×`epochsPerDay`+`lockedBonusBps`|手册 epoch×`epochsPerDay`；`lockedBonusBps`|—|✅ 已对齐|设计取舍（缺数显0）|—|B-44|—|债券段加成为 0 仍合法；空态造 0%|
 |S-011|质押|总览·图表|质押总量 / 市值历史曲线|读取展示|序列接线公开 API；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`|`docs/backend-api/api.md` #protocol-market-stats/series|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|主问题是空态造零；接线见附录；本行不靠线上序列抬档|
-|S-012|质押|总览·常见问题|写着「约 14,400 块 / 一轮约 12 小时 / 每天 2 次」|读取展示|`zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length`|手册 epoch / `epochsPerDay`|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|C-14|文案已接上，但是写死的；跟稿张力进改稿队列|
+|S-012|质押|总览·常见问题|写着「约 14,400 块 / 一轮约 12 小时 / 每天 2 次」|读取展示|hub FAQ `{blocks}/{hours}/{timesPerDay}`；本金缓冲 FAQ `{days}`←effectiveDuration|手册 epoch / Manager.duration|—|✅ 已对齐|—|—|C-14|C-14|Epoch+缓冲天数跟链；12 locale 占位齐全；产品确认跟链|
 |S-013|质押|总览·常见问题|写着「收益以 gAGX 结算 / 可直接挖 X」|读取展示|`zh.ts` hub/stake FAQ 已渲染 gAGX 结算叙事|手册 §8/§9 结算 AGX；§15 挖矿须 gAGX|—|✅ 已对齐|—|—|C-08 · A-07|C-08 · A-07|产品确认保留稿面（B 口径）；非接线错|
 |S-014|质押|总览·提示文案|「总销毁量」旁的说明（含销毁债券说法）|读取展示|`overview.metrics.burned.hint`|同 S-006|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-09|C-09|跟稿张力进改稿队列|
-|S-015|质押|总览·提示文案|复利增发提示写「每个复利周期（约 12 小时）」|读取展示|`metrics.rebase.hint` 已渲染死写 12h|同 S-012|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|C-14|跟稿张力进改稿队列|
+|S-015|质押|总览·提示文案|复利增发提示写「每个复利周期（约 12 小时）」|读取展示|`metrics.rebase.hint` 已渲染死写 12h|同 S-012|—|✅ 已对齐|—|—|C-14|C-14|文案 {blocks}/{hours}/{timesPerDay}←stakingHubOverview.epochLength（共享既有 query）；产品确认跟链|
 |S-016|质押|活期/定期·操作区|钱包里还有多少 AGX（可质押余额）|读取展示|`useStakeSession`←`readStakeOpenPreflight`/`balanceOf`；无样本对账|手册 §8 ERC20.`balanceOf`|—|✅ 已对齐|—|—|—|—|前端已接；本表不要求线上对账|
 |S-017|质押|活期/定期·操作区|基础日收益 / 周期收益 / 加成|读取展示|`yieldMeta`←`formatYieldPct`/`formatBonusPct`；null→`0.00%`（同 S-010）|同 S-010|—|✅ 已对齐|设计取舍（缺数显0）|—|B-44|—|继承 S-010 的空态造 0%|
 |S-018|质押|活期/定期·操作区|锁定多久的说明文案|读取展示|liquid / `{days} 天线性释放`|手册周期|—|✅ 已对齐|—|—|—|—|—|
@@ -150,7 +150,7 @@
 |S-023|质押|活期/定期·详情|已释放 / 待释放本金|读取展示|`aggregateStakeRelease`：liquid 对已释放/待释放贡献 0；locked=`released` / `principal−released`；`use-stake` 聚合|手册 §8.2 liquid / §8.3 locked `getReleasedPrincipal`（A-08）|—|✅ 已对齐|—|—|B-12 · A-08|B-12 · A-08|活期已释放=0 是故意的；不要拿分流器冒充；有单测钉死|
 |S-024|质押|活期/定期·详情|当前复利增发收益 / 加成|读取展示|数跟链 `blockReward`/`extraInterest`；展示用 `GAGX_DECIMALS` 标 **gAGX**|手册 getStakeRewards；链付 AGX|—|✅ 已对齐|—|—|C-02 · A-07|C-02 · A-07|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |S-025|质押|活期/定期·详情|质押流水记录表|读取展示|`useStakeFlowPositions`|`docs/backend-api` #stake-flow/positions|`POST /stake-flow/positions`|✅ 已对齐|—|—|—|—|需要已登录|
-|S-026|质押|活期/定期·常见问题|「每天 2 次复利增发 / 约 12 小时」等|读取展示|`stake.faq` / intro 已渲染死写|`epoch.length`|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|C-14|跟稿张力进改稿队列|
+|S-026|质押|活期/定期·常见问题|「每天 2 次复利增发 / 约 12 小时」等|读取展示|`stake.faq`/`intro`：`{blocks}/{hours}/{timesPerDay}`；本金 FAQ `{days}`←effectiveDuration|`epoch.length` · Manager.duration|—|✅ 已对齐|—|—|C-14|C-14|Epoch+缓冲天数跟链；12 locale 占位齐全；产品确认跟链|
 |S-027|质押|活期/定期·机制说明|「收益以 gAGX」|读取展示|mechanismSteps / faq 已渲染|链 AGX|—|✅ 已对齐|—|—|C-02 · C-08|C-02 · C-08|产品确认保留稿面（B 口径）；非接线错|
 |S-028|质押|活期/定期·详情|趋势图|读取展示|共用 `useProtocolMarketStatsChart`；同 S-011 空态 `$0`/`+0%`|同 S-011|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|结论同 S-011；继承空态造零|
 |S-029|质押|债券·操作区|各周期折扣价率（如显示「85%」）|读取展示|`formatBondDiscountLabel`；Prod 180=8500→「85%」|手册 · BondDepository.`discountRateBP`|—|✅ 已对齐|—|—|—|—|这是协议配置价率，不是个人钱包金额；标签叫法问题见 S-030|
@@ -286,7 +286,7 @@
 |L-009|释放|Hub·缓冲池卡|进度百分比|读取展示|`bufferPct=formatReleasePct(agxClaimable,agxReleasing)`；**不含** gagx|产品入场卡单一进度|—|✅ 已对齐|设计取舍（故意空/0）|—|—|—|Hub 入场卡只看 AGX；gAGX 进度在缓冲子页双卡。产品口径可接受|
 |L-010|释放|Hub·详情|税率表周期/税率|读取展示|`taxBps/100`；`useReleaseQueuePlans`；空则 i18n fallback|手册 §12 `queuePlans` feeRate|—|✅ 已对齐|—|—|—|—|算法跟链上计划；本轮未做线上具体费率对拍|
 |L-011|释放|Hub·详情|关于/用途说明幻灯|读取展示|Visible 文案；无动态数|产品叙事|—|✅ 已对齐|—|—|—|—|—|
-|L-012|释放|Hub·详情|机制步骤「6:1」|读取展示|`zh.ts` hub.mechanismSteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 X 底池」|FE 信链 `quoteRequiredContribution`（≈amount/6→6:1）；body 实为 burn `splitBps` 叙事|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-06|C-06|标题对；正文串台；可见文案跟稿，张力进改稿队列|
+|L-012|释放|Hub·详情|机制步骤「6:1」|读取展示|title `{divisor}`←`contributionDivisor`（共享 burnSwapConfig）；body「50%·50%」仍稿面写死|FE 信链 quote（≈amount/6→6:1）；body 为 burn split 叙事串台|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿消串台（贡献步不应讲销毁分流）；或产品确认保留。50% 不接 splitBps|C-06|C-06|标题数字已跟链；正文 50% 故意不接（串台）；张力进改稿队列|
 |L-013|释放|Hub·常见问题|「领取的 gAGX 去向」题干|读取展示|题干写 gAGX；答案已澄清 AGX→Turbine|手册 §12→§16|—|✅ 已对齐|—|—|C-07|C-07|产品确认保留稿面（B 口径）；非接线错|
 |L-014|释放|队列·操作区|各档可领 / 释放中|读取展示|`readReleaseQueueSnapshot` Multicall per-plan|手册 §12 分档 snapshot|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|数字算法对；前端已接入；线上对账非本表判断标准|
 |L-015|释放|队列·操作区|单位 + 代币图标|读取展示|`units.queue` + `gagxIcon`（`queue/dock.tsx`）；金额用 `AGX_DECIMALS`|链 token=AGX|—|✅ 已对齐|—|—|C-07|C-07|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
@@ -308,7 +308,7 @@
 |L-031|释放|缓冲·详情|AGX 累计进入 / 提取 / 释放中|读取展示|链优先；无链回落 API cumulative/released/releasing|手册 §13|`/buffer-pool/summary`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|前端已接入；线上对账非本表判断标准|
 |L-032|释放|缓冲·详情|gAGX 三元组（进入/提取/释放中）|读取展示|无钱包→0；仅链（API 无 gAGX）|手册 §13|—|✅ 已对齐|设计取舍（缺数显0）|—|—|A-16 旁系|同 L-007，不双降为部分对齐；前端已接入；线上对账非本表判断标准|
 |L-033|释放|缓冲·详情|缓冲记录表|读取展示|`contract_address` 原值；金额无币种后缀|—|`/buffer-pool/logs`|✅ 已对齐|—|—|—|—|—|
-|L-034|释放|缓冲·详情|机制步骤「30 天缓冲」|读取展示|intro 已动态天数；步骤仍写死 30|`effectiveDuration` 可≠30|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|—|—|可见文案跟稿，张力进改稿队列|
+|L-034|释放|缓冲·详情|机制步骤「30 天缓冲」|读取展示|`mechanismSteps` `{days}`←`usePrincipalReleaseDurationDays`（与 intro 同源）|`effectiveDuration` / DEFAULT|—|✅ 已对齐|—|—|—|—|文案 {days}←effectiveDuration（共享既有 query）；产品确认跟链；措辞未改|
 |L-035|释放|缓冲·常见问题|「AGX 直接进入钱包」|读取展示|zh：「点击提取，AGX 直接进入钱包」；忽略 next 瀑布与 gAGX|手册：仅链尾 `next==0`；可有 gAGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|—|建议新 C|超出单位口径：忽略 next 瀑布与 gAGX 桶；与 L-030 张力；保留📘|
 |L-036|释放|缓冲·常见问题|AGX / gAGX 双资产|读取展示|zh 已写「分流器释放单可为 AGX 或 gAGX」|手册 splitter 多 token|—|✅ 已对齐|—|—|—|—|审计刻意不把断连显 0 记成假零缺口|
 |L-037|释放|侧栏红点|是否有可领|读取展示|`readReleaseHasClaimable` / host `use-release-rail-dot`：queue+splitter+archive|手册 §12–13|—|✅ 已对齐|—|—|—|—|表面在宿主，能力属释放|
@@ -413,7 +413,7 @@
 |A-013|资产|Hub·Dock|LP/销毁债券卡：仓位 / 收益 / 年化收益率|读取展示|`bondApr=APR_EMPTY` 注释写明；仓位/profit 另展|无独立 APR 源|`bond_lp`/`bond_burn` + 链 profit|✅ 已对齐|设计取舍（缺数显0）|—|B-23|—|仓位金钱无线上样本对账；年化收益率空值不是过严；前端已接入；线上对账非本表判断标准|
 |A-014|资产|Hub·Dock|X 挖矿卡：仓位 / 收益 / 年化收益率|读取展示|Hub claimable **不含** X pending；卡上 yield 单独 X；APR=`yieldRateBP`|手册 §15|`stake_x_pool`|✅ 已对齐|设计取舍（缺数显0）|—|B-20 · B-23|—|算法已收口；前端已接入；线上对账非本表判断标准|
 |A-015|资产|Hub·分布|持仓分布图|读取展示|`buildHoldingsDistributionView`|四模式 `positionUsd`|`/assets/holdings-distribution`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|空态接线保留；前端已接入；线上对账非本表判断标准|
-|A-016|资产|Hub·复利增发卡|复利周期 / 每日次数文案|读取展示|`hub.rebase.steps` 静态「约 12h / 每日 2 次」|链 `epoch().length`（Prod≠14400）|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-14|open|可见文案跟稿，张力进改稿队列|
+|A-016|资产|Hub·复利增发卡|复利周期 / 每日次数文案|读取展示|`hub.rebase.steps` 用 `{blocks}/{hours}/{timesPerDay}`|链 `epoch().length`（共享 stakingHubOverview）|—|✅ 已对齐|—|—|C-14|C-14|文案 {blocks}/{hours}/{timesPerDay}←stakingHubOverview.epochLength（共享既有 query）；产品确认跟链|
 |A-017|资产|Hub·FAQ|「钱包闲置余额不计入」|读取展示|FAQ Visible；Hub=`stake_invest_usd_value` 仓位估值，不计钱包 `balanceOf`|产品 FAQ；余额见 host 弹窗/非本 tab|—|✅ 已对齐|—|—|A-048|—|闲置余额断言独立于 A-001「含未提取收益」；金额口径由 A-001/A-054 自担|
 |A-018|资产|Hub·FAQ|收益形式：gAGX / X|读取展示|Hub FAQ：「Rebase 以 gAGX 计量；X 挖矿为 X」；未写「可直接挖 X」|链 Mixed→队列（多为 AGX）；Xmine→X|—|✅ 已对齐|—|—|C-02 · C-08 旁|C-02|产品确认保留稿面（B 口径）；非接线错|
 |A-019|资产|Hub·FAQ|领取后进奖励队列 / 释放池|读取展示|FAQ 文案|手册 Mixed / RewardQueue|—|✅ 已对齐|—|—|—|—|—|
@@ -429,9 +429,9 @@
 |A-029|资产|Position·LP债券|仓位卡：本金 / 待赎 / 收益|读取展示|`readLpBondPositions`；profit 展示后缀 gAGX|手册 §10；链 profit 入队多为 AGX|—|✅ 已对齐|—|—|C-02|C-02|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |A-030|资产|Position·LP债券|混合领取 / 本金赎回|提交·前置检查|dual-check + `pendingPayoutFor` live|手册 §10|—|✅ 已对齐|—|—|—|—|—|
 |A-031|资产|Position·LP·统计|「LP 债券总收益」累计|读取展示|末格现行 `'—'`；无累计源不硬编|—|无累计 API/链视图|✅ 已对齐|—|—|—|—|无源显示「—」（不是金额假零）；不是前端读源缺口|
-|A-032|资产|Position·LP·FAQ|复投周期「360/540」、缓冲「30 天」|读取展示|FAQ 写死；UI 计划来自 `readClaimPlans`；赎回天数 hook 链|链 plans / Manager.duration|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-13|—|可见文案跟稿，张力进改稿队列|
+|A-032|资产|Position·LP·FAQ|复投周期「360/540」、缓冲「30 天」|读取展示|FAQ `{restakeDays}`←`readClaimPlans`；`{days}`←`usePrincipalReleaseDurationDays`（与领取/赎回 UI 同源）|链 plans / Manager.duration|—|✅ 已对齐|—|—|C-13|C-13|文案数值跟链；本金周期 180/360/540 句未改；产品确认跟链|
 |A-033|资产|Position·销毁债券|读取仓位 + 混合领取/赎回提交 + 流水|读取展示/提交|与 LP 对称 `readBurnBondPositions`；profit 后缀 gAGX|同 LP · BurnBond|bond-flow burn|✅ 已对齐|—|—|C-02|C-02|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
-|A-034|资产|Position·销毁·FAQ|同 LP 结构 + 销毁叙事|读取展示|FAQ Visible|手册 BurnBond|—|✅ 已对齐|—|—|—|—|—|
+|A-034|资产|Position·销毁·FAQ|同 LP 结构 + 销毁叙事|读取展示|与 A-032 同：`{restakeDays}`←claimPlans；`{days}`←effectiveDuration|手册 BurnBond · plans/duration|—|✅ 已对齐|—|—|C-13|C-13|数值跟链；本金 180/360/540 句未改|
 |A-035|资产|Xmine·仓位|挖矿仓位 / 待领 / 预热|读取展示|不把 miningStake 冒充已释放；`readXminePosition`|手册 §15 `readXminePosition`|—|✅ 已对齐|设计取舍（缺数显0）|—|B-24|—|算法已收口；前端已接入；线上对账非本表判断标准|
 |A-036|资产|Xmine·统计|「已释放」格|读取展示|代码 `released=0n` + 注释|无 PRV 映射字段|—|✅ 已对齐|设计取舍（缺数显0）|—|A-15 · A-16|—|固定 0 ≠ 诚实空；口径：未取到显 0（视为正确）|
 |A-037|资产|Xmine·统计|挖矿总产出（终身）|读取展示|`useX0MiningLifetimeReward` 翻页累加|无协议累计 view|`/x0-mining/logs` REWARD|✅ 已对齐|设计取舍（缺数显0）|—|B-17|—|翻页算法已收口；前端已接入；线上对账非本表判断标准|

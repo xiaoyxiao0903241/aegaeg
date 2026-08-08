@@ -7,8 +7,10 @@ import {
   CALC_MAX_DAYS,
   calcLocalInterest,
   compoundInterest,
+  EPOCH_SCHEDULE_EMPTY,
   epochRebasePctFrom1e18,
   epochsPerDayFromLength,
+  formatEpochScheduleLabels,
   handbookBondDiscountRateBP,
   lockedBonusBps,
   lockedBonusInterest,
@@ -44,6 +46,33 @@ test('epochsPerDayFromLength = daySec / (length × secPerBlock)', () => {
   assert.equal(epochsPerDayFromLength(7200, 3), 4)
   assert.equal(epochsPerDayFromLength(0n, 3), null)
   assert.equal(epochsPerDayFromLength(14_400n, 0), null)
+})
+
+test('formatEpochScheduleLabels from epoch length; no FAQ defaults', () => {
+  assert.deepEqual(formatEpochScheduleLabels(14_400n, 3), {
+    blocks: '14,400',
+    hours: '12',
+    timesPerDay: '2',
+  })
+  assert.deepEqual(formatEpochScheduleLabels(7_200n, 3), {
+    blocks: '7,200',
+    hours: '6',
+    timesPerDay: '4',
+  })
+  assert.deepEqual(formatEpochScheduleLabels(10_000n, 3), {
+    blocks: '10,000',
+    hours: '8.3',
+    timesPerDay: '2.9',
+  })
+  const empty = {
+    blocks: EPOCH_SCHEDULE_EMPTY,
+    hours: EPOCH_SCHEDULE_EMPTY,
+    timesPerDay: EPOCH_SCHEDULE_EMPTY,
+  }
+  assert.deepEqual(formatEpochScheduleLabels(null, 3), empty)
+  assert.deepEqual(formatEpochScheduleLabels(14_400n, null), empty)
+  assert.deepEqual(formatEpochScheduleLabels(0n, 3), empty)
+  assert.deepEqual(formatEpochScheduleLabels(14_400n, 0), empty)
 })
 
 test('compoundInterest daily compounding', () => {

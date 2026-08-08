@@ -66,6 +66,66 @@ export function epochsPerDayFromLength(
   return Number.isFinite(perDay) && perDay > 0 ? perDay : null
 }
 
+/** 链未就绪时 Epoch 文案占位；禁回退死写 14400 / 12 / 2。 */
+export const EPOCH_SCHEDULE_EMPTY = '—'
+
+export type EpochScheduleLabels = {
+  /** 单 epoch 区块数（千分位，如 `14,400`） */
+  blocks: string
+  /** 约小时数（整数优先，否则一位小数） */
+  hours: string
+  /** 每日 epoch 次数（整数优先，否则一位小数） */
+  timesPerDay: string
+}
+
+const EMPTY_EPOCH_SCHEDULE: EpochScheduleLabels = {
+  blocks: EPOCH_SCHEDULE_EMPTY,
+  hours: EPOCH_SCHEDULE_EMPTY,
+  timesPerDay: EPOCH_SCHEDULE_EMPTY,
+}
+
+/** 展示用约数：贴近整数则取整，否则一位小数。 */
+function formatApproxCount(n: number): string {
+  if (!Number.isFinite(n) || !(n > 0)) return EPOCH_SCHEDULE_EMPTY
+  const rounded = Math.round(n)
+  if (Math.abs(n - rounded) < 1e-6) return String(rounded)
+  const one = Math.round(n * 10) / 10
+  return one.toFixed(1)
+}
+
+/** 区块数千分位（en-US 逗号，跨 locale 数字段一致）。 */
+function formatBlockCount(blocks: number): string {
+  const whole = Math.round(blocks)
+  if (!(whole > 0) || !Number.isFinite(whole)) return EPOCH_SCHEDULE_EMPTY
+  return String(whole).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+/**
+ * 由链上 epoch.length × 秒/块 生成文案插值标签。
+ *
+ * 非法入参一律返回 `—`，禁止 FAQ 默认 2 / 12 / 14400。
+ *
+ * @param epochLengthBlocks StakingPool.epoch().length
+ * @param secondsPerBlock 实测或兜底出块秒数
+ */
+export function formatEpochScheduleLabels(
+  epochLengthBlocks: bigint | number | null | undefined,
+  secondsPerBlock: number | null | undefined,
+): EpochScheduleLabels {
+  if (epochLengthBlocks == null || secondsPerBlock == null) return EMPTY_EPOCH_SCHEDULE
+  const blocks = Number(epochLengthBlocks)
+  if (!(blocks > 0) || !Number.isFinite(blocks)) return EMPTY_EPOCH_SCHEDULE
+  if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return EMPTY_EPOCH_SCHEDULE
+  const epochsPerDay = epochsPerDayFromLength(epochLengthBlocks, secondsPerBlock)
+  if (epochsPerDay == null) return EMPTY_EPOCH_SCHEDULE
+  const hours = (blocks * secondsPerBlock) / 3_600
+  return {
+    blocks: formatBlockCount(blocks),
+    hours: formatApproxCount(hours),
+    timesPerDay: formatApproxCount(epochsPerDay),
+  }
+}
+
 /**
  * 单 epoch 收益率 → 基础日收益率。
  *

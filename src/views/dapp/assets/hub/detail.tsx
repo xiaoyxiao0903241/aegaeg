@@ -28,14 +28,18 @@ import {
   mapFaqWithContributionRatio,
   withContributionRatio,
 } from '~/views/dapp/shared/contribution-claim-ratio'
+import { mapStepsWithEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 export function AssetsHubDetail() {
   const vm = useAssetsHubDetail()
   const { t, overview, rebase, values, setBufferAsset, distribution, distributionLoading } = vm
   const claimRatio = useContributionClaimRatioLabel()
+  const epochSchedule = useEpochScheduleLabels()
   const contributionHint = withContributionRatio(overview.contributionHint, claimRatio)
   const faqItems = mapFaqWithContributionRatio(t.assets.hub.faq.items, claimRatio)
+  const rebaseSteps = mapStepsWithEpochSchedule(rebase.steps, epochSchedule)
   const {
     bufferTotal,
     bufferTotalApprox,
@@ -180,7 +184,7 @@ export function AssetsHubDetail() {
       <Section>
         <Section.Title>{rebase.title}</Section.Title>
         <Section.Description>{rebase.subtitle}</Section.Description>
-        <AssetsRebaseCard footer={rebase.footer} steps={rebase.steps} tags={rebase.tags} />
+        <AssetsRebaseCard footer={rebase.footer} steps={rebaseSteps} tags={rebase.tags} />
       </Section>
 
       <Section>

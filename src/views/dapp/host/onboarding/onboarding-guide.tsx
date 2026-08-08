@@ -15,7 +15,9 @@ import {
   writeOnboardingDone,
 } from '~/views/dapp/host/onboarding/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
+import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 /**
  * DApp 新手引导（不包含创世页）。
@@ -33,13 +35,14 @@ export function OnboardingGuide({
 }) {
   const { messages: t } = useI18n()
   const claimRatio = useContributionClaimRatioLabel()
+  const epochSchedule = useEpochScheduleLabels()
   const onboardingSteps = useMemo(
     () =>
       t.onboarding.steps.map((step) => ({
         ...step,
-        body: withContributionRatio(step.body, claimRatio),
+        body: withEpochSchedule(withContributionRatio(step.body, claimRatio), epochSchedule),
       })),
-    [t.onboarding.steps, claimRatio],
+    [t.onboarding.steps, claimRatio, epochSchedule],
   )
   const [currentStep, setCurrentStep] = useState(0)
   /** 文案/点阵与高亮对齐：仅在 prepare 完成后推进 */

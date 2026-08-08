@@ -104,7 +104,7 @@ const app = defineMessages({
       },
       {
         title: 'Tek varlık stake',
-        body: 'Stake kartında AGX stake edin. Günde 2 Rebase bileşik büyür; süre uzadıkça getiri bonusu artar.',
+        body: 'Stake kartında AGX stake edin. Günde {timesPerDay} Rebase bileşik büyür; süre uzadıkça getiri bonusu artar.',
       },
       {
         title: 'Varlıklar',
@@ -1604,9 +1604,9 @@ const app = defineMessages({
           'Aşamalı uzlaşma ve sürekli serbest bırakma oynaklığı azaltır, uzun vadeli büyümeyi destekler',
         steps: [
           { title: 'Block', body: 'Blok çalışma\\nTemel birim' },
-          { title: 'Epoch', body: '~14,400 blok\\n~12 saat' },
+          { title: 'Epoch', body: '~{blocks} blok\\n~{hours} saat' },
           { title: 'Rebase', body: 'Epoch sonu\\nOtomatik uzlaşma' },
-          { title: 'Rebase', body: 'Getiri dağıtımı\\nGünde 2 kez' },
+          { title: 'Rebase', body: 'Getiri dağıtımı\\nGünde {timesPerDay} kez' },
         ],
         tags: [
           'Blok güdümlü çalışma',
@@ -1722,7 +1722,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Talep ile geri alma farkı nedir?',
-              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX 30 günlük tampona girer, sonra cüzdana gelir.',
+              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX {days} günlük tampona girer, sonra cüzdana gelir.',
             },
             {
               q: '«Tahvil anaparası» nereden gelir?',
@@ -1734,7 +1734,7 @@ const app = defineMessages({
             },
             {
               q: 'Tahvil getirisi yeniden stake edilebilir mi?',
-              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake 360/540 tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
+              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake {restakeDays} tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
             },
             {
               q: 'Geri sayım bitince ne olur?',
@@ -1771,7 +1771,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Talep ile geri alma farkı nedir?',
-              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX 30 günlük tampona girer, sonra cüzdana gelir.',
+              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX {days} günlük tampona girer, sonra cüzdana gelir.',
             },
             {
               q: '«Tahvil anaparası» nereden gelir?',
@@ -1783,7 +1783,7 @@ const app = defineMessages({
             },
             {
               q: 'Tahvil getirisi yeniden stake edilebilir mi?',
-              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake 360/540 tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
+              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake {restakeDays} tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
             },
             {
               q: 'Geri sayım bitince ne olur?',
@@ -1823,7 +1823,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Çıktı talebi ile stake geri alma farkı nedir?',
-              a: 'Talep madencilik çıktısını alır: X serbest bırakma süresi olmadan cüzdana gider. Geri alma anaparayı hedefler: gAGX 30 günlük tampona girer ve getiri üretmez.',
+              a: 'Talep madencilik çıktısını alır: X serbest bırakma süresi olmadan cüzdana gider. Geri alma anaparayı hedefler: gAGX {days} günlük tampona girer ve getiri üretmez.',
             },
             {
               q: 'Bazı pozisyonlar neden «Kilitli» gösterir?',
@@ -1896,7 +1896,7 @@ const app = defineMessages({
       modes: {
         stake: {
           title: 'Yatır',
-          body: 'AGX stake edin — günde 2 Rebase bileşik getiri',
+          body: 'AGX stake edin — günde {timesPerDay} Rebase bileşik getiri',
         },
         lpbond: {
           title: 'LP Tahvil',
@@ -1951,7 +1951,7 @@ const app = defineMessages({
           {
             id: 'rebase',
             label: 'Güncel Rebase getiri oranı',
-            hint: 'Her Epoch’ta (~12 sa) bir kez uzlaşır; protokol durumuna göre ayarlanır',
+            hint: 'Her Epoch’ta (~{hours} sa) bir kez uzlaşır; protokol durumuna göre ayarlanır',
           },
           {
             id: 'runway',
@@ -2000,11 +2000,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Rebase nasıl uzlaşır?',
-            a: 'Protokol bloklarla çalışır: ~14,400 blok = 1 Epoch (~12 saat). Rebase her Epoch sonunda uzlaşır — günde 2 kez.',
+            a: 'Protokol bloklarla çalışır: ~{blocks} blok = 1 Epoch (~{hours} saat). Rebase her Epoch sonunda uzlaşır — günde {timesPerDay} kez.',
           },
           {
             q: 'Anapara nasıl serbest bırakılır?',
-            a: 'Stake ve tahvil anaparası blok düzeyinde doğrusal serbest bırakılır (~3 sn/blok). Çekim sonrası serbest bırakılan anapara 30 günlük tampona girer.',
+            a: 'Stake ve tahvil anaparası blok düzeyinde doğrusal serbest bırakılır (~3 sn/blok). Çekim sonrası serbest bırakılan anapara {days} günlük tampona girer.',
           },
           {
             q: 'Stake, LP Tahvil ve Yakım Tahvili farkı nedir?',
@@ -2108,7 +2108,7 @@ const app = defineMessages({
 
     stake: {
       title: 'Yatır',
-      intro: 'AGX stake · günde 2 Rebase bileşik getiri',
+      intro: 'AGX stake · günde {timesPerDay} Rebase bileşik getiri',
       periodLabel: 'Stake süresini seçin',
       periodAria: 'Stake süresini seçin',
       amountAria: 'Stake tutarı',
@@ -2148,7 +2148,7 @@ const app = defineMessages({
         },
         {
           title: 'Günlük Rebase getirisi',
-          body: 'Her Epoch (~12 sa) uzlaşır; getiri gAGX olarak birikir.',
+          body: 'Her Epoch (~{hours} sa) uzlaşır; getiri gAGX olarak birikir.',
         },
         {
           title: 'Vade serbest bırakma ve talep',
@@ -2158,11 +2158,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'Stake getirisi nasıl hesaplanır?',
-          a: 'Günde 2 Rebase; günlük getiri yaklaşık %0,5–%1. Daha uzun kilit daha yüksek bonus: 180g ≥%10, 360g ≥%15, 540g ≥%20; Rebase katsayısıyla ayarlanır.',
+          a: 'Günde {timesPerDay} Rebase; günlük getiri yaklaşık %0,5–%1. Daha uzun kilit daha yüksek bonus: 180g ≥%10, 360g ≥%15, 540g ≥%20; Rebase katsayısıyla ayarlanır.',
         },
         {
           q: 'Anapara ne zaman çekilebilir?',
-          a: 'Anapara blok doğrusal serbest bırakılır (~3 sn). Serbest bırakılan kısım istenince alınır; çekimler 30 günlük tampona girer.',
+          a: 'Anapara blok doğrusal serbest bırakılır (~3 sn). Serbest bırakılan kısım istenince alınır; çekimler {days} günlük tampona girer.',
         },
         {
           q: 'Referans APY sabit midir?',
@@ -2544,7 +2544,7 @@ const app = defineMessages({
         'Serbest bırakma, getirinin üretilmesi ile Türbin arasında zorunlu adımdır — zamanla vergiyi, ritimle istikrarı takas edin',
       mechanismSteps: [
         { title: 'Rebase / DAO ödüllerini talep et', body: 'Getiri üretilir' },
-        { title: '6 : 1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
+        { title: '{divisor} : 1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
         {
           title: 'Serbest bırakma havuzuna gir · doğrusal serbest bırakma',
           body: '5 / 20 / 40 / 60 gün seçin',
@@ -2589,7 +2589,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Stake/', body: 'tahvil anaparası' },
         { title: 'Blok düzeyinde', body: 'serbest bırakma' },
-        { title: 'Çekim sonrası', body: '30 günlük tampon' },
+        { title: 'Çekim sonrası', body: '{days} günlük tampon' },
         { title: 'İkincil doğrusal', body: 'serbest bırakma' },
       ],
       mechanismBenefits: [

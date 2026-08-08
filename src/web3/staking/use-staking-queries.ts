@@ -1,6 +1,8 @@
 import { keepPreviousData } from '@tanstack/react-query'
+import { useMemo } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
+import { type EpochScheduleLabels, formatEpochScheduleLabels } from '~/core/staking/staking-yield'
 import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -23,6 +25,21 @@ export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
     queryFn: () => readStakingHubOverview(),
     placeholderData: keepPreviousData,
   })
+}
+
+/**
+ * Epoch 文案标签（块数 / 小时 / 每日次数），复用 `stakingHubOverview` 缓存。
+ */
+export function useEpochScheduleLabels(options?: ChainQueryOptions): EpochScheduleLabels {
+  const overviewQuery = useStakingHubOverviewQuery(options)
+  return useMemo(
+    () =>
+      formatEpochScheduleLabels(
+        overviewQuery.data?.epochLengthBlocks,
+        overviewQuery.data?.secondsPerBlock,
+      ),
+    [overviewQuery.data?.epochLengthBlocks, overviewQuery.data?.secondsPerBlock],
+  )
 }
 
 /**

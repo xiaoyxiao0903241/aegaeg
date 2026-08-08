@@ -107,7 +107,7 @@ const app = defineMessages({
       },
       {
         title: 'Single-asset stake',
-        body: 'Stake AGX in the Stake card. Rebase twice daily compounds; longer lockups earn higher yield boosts.',
+        body: 'Stake AGX in the Stake card. Rebase {timesPerDay} times daily compounds; longer lockups earn higher yield boosts.',
       },
       {
         title: 'Assets',
@@ -1557,9 +1557,9 @@ const app = defineMessages({
           'Phased settlement and continuous release reduce volatility and support long-term growth',
         steps: [
           { title: 'Block', body: 'Block runtime\nBase unit' },
-          { title: 'Epoch', body: '~14,400 blocks\n~12 hours' },
+          { title: 'Epoch', body: '~{blocks} blocks\n~{hours} hours' },
           { title: 'Rebase', body: 'Epoch end\nAuto settle' },
-          { title: 'Rebase', body: 'Yield distribution\nTwice daily' },
+          { title: 'Rebase', body: 'Yield distribution\n{timesPerDay} times daily' },
         ],
         tags: ['Block-driven', 'Epoch settlement', 'Rebase distribution', 'Smooth release'],
         footer: 'Blocks drive cycles; Epochs settle; Rebase distributes yield',
@@ -1670,7 +1670,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim vs redeem?',
-              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a 30-day buffer before wallet credit.',
+              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a {days}-day buffer before wallet credit.',
             },
             {
               q: 'Where does bond principal come from?',
@@ -1682,7 +1682,7 @@ const app = defineMessages({
             },
             {
               q: 'Can bond yield be restaked?',
-              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking (360/540) with better tax than period claim.',
+              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking ({restakeDays}) with better tax than period claim.',
             },
             {
               q: 'What happens when the countdown ends?',
@@ -1719,7 +1719,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim vs redeem?',
-              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a 30-day buffer before wallet credit.',
+              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a {days}-day buffer before wallet credit.',
             },
             {
               q: 'Where does bond principal come from?',
@@ -1731,7 +1731,7 @@ const app = defineMessages({
             },
             {
               q: 'Can bond yield be restaked?',
-              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking (360/540) with better tax than period claim.',
+              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking ({restakeDays}) with better tax than period claim.',
             },
             {
               q: 'What happens when the countdown ends?',
@@ -1769,7 +1769,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim output vs redeem stake?',
-              a: 'Claim takes mining output: X goes to your wallet with no release period. Redeem targets principal: gAGX enters the buffer for a 30-day linear release and stops earning.',
+              a: 'Claim takes mining output: X goes to your wallet with no release period. Redeem targets principal: gAGX enters the buffer for a {days}-day linear release and stops earning.',
             },
             {
               q: 'Why do some positions show Locked?',
@@ -1840,7 +1840,7 @@ const app = defineMessages({
       modes: {
         stake: {
           title: 'Stake',
-          body: 'Stake AGX — rebase twice daily with compounding',
+          body: 'Stake AGX — rebase {timesPerDay} times daily with compounding',
         },
         lpbond: {
           title: 'LP Bond',
@@ -1895,7 +1895,7 @@ const app = defineMessages({
           {
             id: 'rebase',
             label: 'Current Rebase yield',
-            hint: 'Settled once per Epoch (~12h); adjusts with protocol state',
+            hint: 'Settled once per Epoch (~{hours}h); adjusts with protocol state',
           },
           {
             id: 'runway',
@@ -1939,11 +1939,11 @@ const app = defineMessages({
         items: [
           {
             q: 'How is Rebase settled?',
-            a: 'The protocol runs on blocks: ~14,400 blocks = 1 Epoch (~12 hours). Rebase settles at each Epoch end — twice daily.',
+            a: 'The protocol runs on blocks: ~{blocks} blocks = 1 Epoch (~{hours} hours). Rebase settles at each Epoch end — {timesPerDay} times daily.',
           },
           {
             q: 'How is principal released?',
-            a: 'Stake and bond principal use block-level linear release (~3s per block). After withdrawal, released principal enters a 30-day buffer release for smoother outflow.',
+            a: 'Stake and bond principal use block-level linear release (~3s per block). After withdrawal, released principal enters a {days}-day buffer release for smoother outflow.',
           },
           {
             q: 'How do Stake, LP Bond, and Burn Bond differ?',
@@ -2034,7 +2034,7 @@ const app = defineMessages({
 
     stake: {
       title: 'Stake',
-      intro: 'Stake AGX · rebase twice daily with compounding',
+      intro: 'Stake AGX · rebase {timesPerDay} times daily with compounding',
       periodLabel: 'Choose staking period',
       periodAria: 'Choose staking period',
       amountAria: 'Stake amount',
@@ -2074,7 +2074,7 @@ const app = defineMessages({
         },
         {
           title: 'Daily rebase',
-          body: 'Each epoch (~12h) settles; yield accrues as gAGX.',
+          body: 'Each epoch (~{hours}h) settles; yield accrues as gAGX.',
         },
         {
           title: 'Release & claim',
@@ -2084,11 +2084,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'How is staking yield calculated?',
-          a: 'Rebase twice daily; daily yield is about 0.5%–1%. Longer locks earn higher bonuses: 180d ≥10%, 360d ≥15%, 540d ≥20%, adjusted with the rebase factor.',
+          a: 'Rebase {timesPerDay} times daily; daily yield is about 0.5%–1%. Longer locks earn higher bonuses: 180d ≥10%, 360d ≥15%, 540d ≥20%, adjusted with the rebase factor.',
         },
         {
           q: 'When can principal be withdrawn?',
-          a: 'Principal unlocks linearly by block (~3s). Released amounts can be claimed anytime; claims enter a 30-day buffer release.',
+          a: 'Principal unlocks linearly by block (~3s). Released amounts can be claimed anytime; claims enter a {days}-day buffer release.',
         },
         {
           q: 'Is the reference APY fixed?',
@@ -2463,7 +2463,7 @@ const app = defineMessages({
         'Release sits between yield creation and Turbine — trade time for a lower tax rate and steadier exits.',
       mechanismSteps: [
         { title: 'Claim Rebase / DAO rewards', body: 'Yield is created' },
-        { title: '6 : 1 contribution', body: '50% burn · 50% into X pool' },
+        { title: '{divisor} : 1 contribution', body: '50% burn · 50% into X pool' },
         { title: 'Enter release pool', body: 'Choose 5 / 20 / 40 / 60 days' },
         { title: 'Claim into Turbine', body: '1:1 buy to unlock sell quota' },
       ],
@@ -2505,7 +2505,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Stake /', body: 'bond principal' },
         { title: 'Block-level', body: 'linear release' },
-        { title: 'After redeem', body: '30-day buffer' },
+        { title: 'After redeem', body: '{days}-day buffer' },
         { title: 'Secondary', body: 'linear release' },
       ],
       mechanismBenefits: [

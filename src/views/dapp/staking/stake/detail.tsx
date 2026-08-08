@@ -4,6 +4,8 @@
  * 展示协议概览、我的持仓、释放记录、机制说明、趋势图与 FAQ。
  * 未连接钱包时仓位与记录为空态。
  */
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -12,12 +14,17 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import {
+  mapFaqWithEpochSchedule,
+  mapStepsWithEpochSchedule,
+} from '~/views/dapp/shared/epoch-schedule'
+import {
   StakingMechanismCard,
   StakingMetricValue,
   StakingTvlChart,
 } from '~/views/dapp/staking/primitives'
 import { useStakeDetail } from '~/views/dapp/staking/stake/use-stake'
 import { useStakingDetail } from '~/views/dapp/staking/use-detail'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 export function StakeDetail() {
   const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetail()
@@ -31,6 +38,13 @@ export function StakeDetail() {
     chartValueLabel,
     chartDeltaLabel,
   } = useStakingDetail()
+  const epochSchedule = useEpochScheduleLabels()
+  const bufferDays = usePrincipalReleaseDurationDays().data ?? 30
+  const mechanismSteps = mapStepsWithEpochSchedule(t.staking.stake.mechanismSteps, epochSchedule)
+  const faqItems = mapFaqWithEpochSchedule(t.staking.stake.faq, epochSchedule).map((item) => ({
+    ...item,
+    a: interpolate(item.a, { days: bufferDays }),
+  }))
 
   return (
     <Detail>
@@ -92,7 +106,7 @@ export function StakeDetail() {
 
       <Section>
         <Section.Title>{t.staking.stake.mechanismTitle}</Section.Title>
-        <StakingMechanismCard steps={t.staking.stake.mechanismSteps} />
+        <StakingMechanismCard steps={mechanismSteps} />
       </Section>
 
       {/* jscpd:ignore-start — 趋势图与 FAQ 节页内拼装，禁再抽 Section 薄包装 */}
@@ -114,7 +128,7 @@ export function StakeDetail() {
 
       <Section>
         <Section.Title>{t.staking.aside.faq}</Section.Title>
-        <Faq defaultOpenFirst={false} items={t.staking.stake.faq} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
       </Section>
       {/* jscpd:ignore-end */}
     </Detail>

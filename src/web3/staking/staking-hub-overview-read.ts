@@ -44,6 +44,8 @@ export type StakingHubOverview = {
   epochNumber: bigint
   /** StakingPool.epoch().endBlock — 下次 rebase 倒计时用。 */
   epochEndBlock: bigint
+  /** StakingPool.epoch().length — 单 epoch 区块数（文案 / 日频推算同源）。 */
+  epochLengthBlocks: bigint
   /** 读取时的链头高度（同一 RPC 批次窗口）。 */
   currentBlock: bigint
   /** 近窗实测出块秒数；失败回落 BSC_BLOCK_SECONDS。 */
@@ -223,6 +225,7 @@ export async function readStakingHubOverview(
     rebaseRate1e18,
     epochNumber,
     epochEndBlock,
+    epochLengthBlocks: epochLength,
     currentBlock,
     secondsPerBlock,
     epochsPerDay,

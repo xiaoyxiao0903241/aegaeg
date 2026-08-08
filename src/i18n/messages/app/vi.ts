@@ -105,7 +105,7 @@ const app = defineMessages({
       },
       {
         title: 'Staking đơn token',
-        body: 'Trong thẻ 「Staking」hãy stake AGX; Rebase 2 lần/ngày lãi kép; chu kỳ càng dài cộng tỷ suất càng cao.',
+        body: 'Trong thẻ 「Staking」hãy stake AGX; Rebase {timesPerDay} lần/ngày lãi kép; chu kỳ càng dài cộng tỷ suất càng cao.',
       },
       {
         title: 'Tài sản',
@@ -1599,9 +1599,9 @@ const app = defineMessages({
           'Qua tất toán theo giai đoạn và giải phóng liên tục, giảm biến động thị trường, tăng ổn định tăng trưởng dài hạn',
         steps: [
           { title: 'Block', body: 'Khối chạy\\nĐơn vị cơ sở' },
-          { title: 'Epoch', body: 'Khoảng 14,400 khối\\nKhoảng 12 giờ' },
+          { title: 'Epoch', body: 'Khoảng {blocks} khối\\nKhoảng {hours} giờ' },
           { title: 'Rebase', body: 'Hết Epoch\\nTự tất toán' },
-          { title: 'Rebase', body: 'Phân phối lợi nhuận\\n2 lần/ngày' },
+          { title: 'Rebase', body: 'Phân phối lợi nhuận\\n{timesPerDay} lần/ngày' },
         ],
         tags: [
           'Chạy theo khối',
@@ -1717,7 +1717,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận và chuộc khác nhau thế nào?',
-              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm 30 ngày giải phóng tuyến tính lần hai rồi về ví.',
+              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm {days} ngày giải phóng tuyến tính lần hai rồi về ví.',
             },
             {
               q: '「Gốc trái phiếu」đến từ đâu?',
@@ -1729,7 +1729,7 @@ const app = defineMessages({
             },
             {
               q: 'Lợi nhuận trái phiếu tái stake được không?',
-              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn (360/540 ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
+              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn ({restakeDays} ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
             },
             {
               q: 'Hết đếm ngược thì sao?',
@@ -1766,7 +1766,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận và chuộc khác nhau thế nào?',
-              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm 30 ngày giải phóng tuyến tính lần hai rồi về ví.',
+              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm {days} ngày giải phóng tuyến tính lần hai rồi về ví.',
             },
             {
               q: '「Gốc trái phiếu」đến từ đâu?',
@@ -1778,7 +1778,7 @@ const app = defineMessages({
             },
             {
               q: 'Lợi nhuận trái phiếu tái stake được không?',
-              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn (360/540 ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
+              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn ({restakeDays} ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
             },
             {
               q: 'Hết đếm ngược thì sao?',
@@ -1816,7 +1816,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận sản lượng và chuộc stake khác nhau thế nào?',
-              a: 'Nhận cho sản lượng đào: thưởng X nhận bất cứ lúc nào, không chu kỳ giải phóng, về thẳng ví. Chuộc cho gốc stake: gAGX chuộc vào bộ đệm giải phóng tuyến tính lần hai 30 ngày; tài sản trong bộ đệm không còn sinh lợi nhuận.',
+              a: 'Nhận cho sản lượng đào: thưởng X nhận bất cứ lúc nào, không chu kỳ giải phóng, về thẳng ví. Chuộc cho gốc stake: gAGX chuộc vào bộ đệm giải phóng tuyến tính lần hai {days} ngày; tài sản trong bộ đệm không còn sinh lợi nhuận.',
             },
             {
               q: 'Vì sao một số vị thế hiện 「Khóa」?',
@@ -1886,7 +1886,7 @@ const app = defineMessages({
       modes: {
         stake: {
           title: 'Đặt cọc',
-          body: 'Stake AGX, Rebase 2 lần/ngày với lãi kép',
+          body: 'Stake AGX, Rebase {timesPerDay} lần/ngày với lãi kép',
         },
         lpbond: {
           title: 'Trái phiếu LP',
@@ -1941,7 +1941,7 @@ const app = defineMessages({
           {
             id: 'rebase',
             label: 'Tỷ suất Rebase hiện tại',
-            hint: 'Tất toán mỗi Epoch (~12 giờ); điều chỉnh theo trạng thái chạy giao thức',
+            hint: 'Tất toán mỗi Epoch (~{hours} giờ); điều chỉnh theo trạng thái chạy giao thức',
           },
           {
             id: 'runway',
@@ -1985,11 +1985,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Rebase tất toán thế nào?',
-            a: 'Giao thức chạy theo khối: ~14,400 khối = 1 Epoch (~12 giờ). Mỗi hết Epoch thực hiện một tất toán Rebase; hệ thống phân phối lợi nhuận 2 lần/ngày.',
+            a: 'Giao thức chạy theo khối: ~{blocks} khối = 1 Epoch (~{hours} giờ). Mỗi hết Epoch thực hiện một tất toán Rebase; hệ thống phân phối lợi nhuận {timesPerDay} lần/ngày.',
           },
           {
             q: 'Gốc giải phóng thế nào?',
-            a: 'Gốc staking và trái phiếu giải phóng tuyến tính theo khối (~3 giây/khối). Gốc đã giải phóng sau rút vào chu kỳ đệm 30 ngày; hai lớp tuyến tính cân bằng liên tục giải phóng và ổn định thị trường.',
+            a: 'Gốc staking và trái phiếu giải phóng tuyến tính theo khối (~3 giây/khối). Gốc đã giải phóng sau rút vào chu kỳ đệm {days} ngày; hai lớp tuyến tính cân bằng liên tục giải phóng và ổn định thị trường.',
           },
           {
             q: 'Staking, trái phiếu LP và trái phiếu đốt khác nhau thế nào?',
@@ -2092,7 +2092,7 @@ const app = defineMessages({
 
     stake: {
       title: 'Đặt cọc',
-      intro: 'Stake AGX · Rebase 2 lần/ngày với lãi kép',
+      intro: 'Stake AGX · Rebase {timesPerDay} lần/ngày với lãi kép',
       periodLabel: 'Chọn chu kỳ staking',
       periodAria: 'Chọn chu kỳ staking',
       amountAria: 'Số lượng stake',
@@ -2132,7 +2132,7 @@ const app = defineMessages({
         },
         {
           title: 'Lợi nhuận Rebase ngày',
-          body: 'Mỗi Epoch (~12 giờ) tự tất toán một lần; lợi nhuận tích lãi kép bằng gAGX.',
+          body: 'Mỗi Epoch (~{hours} giờ) tự tất toán một lần; lợi nhuận tích lãi kép bằng gAGX.',
         },
         {
           title: 'Giải phóng đáo hạn và nhận',
@@ -2142,11 +2142,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'Lợi nhuận staking tính thế nào?',
-          a: 'Rebase 2 lần/ngày; lợi nhuận ngày khoảng 0.5%–1%. Chu kỳ càng dài cộng càng cao: 180 ngày ≥10%, 360 ngày ≥15%, 540 ngày ≥20%, điều chỉnh theo hệ số Rebase.',
+          a: 'Rebase {timesPerDay} lần/ngày; lợi nhuận ngày khoảng 0.5%–1%. Chu kỳ càng dài cộng càng cao: 180 ngày ≥10%, 360 ngày ≥15%, 540 ngày ≥20%, điều chỉnh theo hệ số Rebase.',
         },
         {
           q: 'Gốc staking khi nào rút được?',
-          a: 'Gốc giải phóng tuyến tính theo khối (~3 giây/khối); phần đã giải phóng rút bất cứ lúc nào; sau rút vào chu kỳ đệm 30 ngày.',
+          a: 'Gốc giải phóng tuyến tính theo khối (~3 giây/khối); phần đã giải phóng rút bất cứ lúc nào; sau rút vào chu kỳ đệm {days} ngày.',
         },
         {
           q: 'APY tham chiếu có cố định không?',
@@ -2526,7 +2526,7 @@ const app = defineMessages({
         'Giải phóng là bước bắt buộc từ lúc lợi nhuận sinh ra đến khi vào Turbine — đổi thời gian lấy thuế thấp, đổi nhịp lấy ổn định',
       mechanismSteps: [
         { title: 'Nhận thưởng Rebase / DAO', body: 'Lợi nhuận sinh ra' },
-        { title: 'Cơ chế đóng góp 6 : 1', body: '50% đốt · 50% bơm hồ nền X' },
+        { title: 'Cơ chế đóng góp {divisor} : 1', body: '50% đốt · 50% bơm hồ nền X' },
         {
           title: 'Vào hồ giải phóng · giải phóng tuyến tính',
           body: 'Chọn chu kỳ 5 / 20 / 40 / 60 ngày',
@@ -2571,7 +2571,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Staking/', body: 'gốc trái phiếu' },
         { title: 'Cấp khối', body: 'giải phóng' },
-        { title: 'Sau rút', body: 'Đệm 30 ngày' },
+        { title: 'Sau rút', body: 'Đệm {days} ngày' },
         { title: 'Tuyến tính lần hai', body: 'giải phóng' },
       ],
       mechanismBenefits: [

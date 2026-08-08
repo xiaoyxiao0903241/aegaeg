@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -10,9 +12,11 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
+import { mapFaqWithEpochSchedule, withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { HubMetricValueRow } from '~/views/dapp/staking/hub/primitives'
 import { useStakingHubDetail } from '~/views/dapp/staking/hub/use-hub'
 import { StakingTvlChart } from '~/views/dapp/staking/primitives'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 type MetricTone = 'default' | 'accent'
 type MetricIcon = 'agx' | 'usd1' | null
@@ -62,6 +66,15 @@ export function StakingHubDetail() {
     table,
     chart,
   } = useStakingHubDetail()
+  const epochSchedule = useEpochScheduleLabels()
+  const bufferDays = usePrincipalReleaseDurationDays().data ?? 30
+  const faqItems = mapFaqWithEpochSchedule(t.staking.hub.faq.items, epochSchedule).map((item) => ({
+    ...item,
+    a: interpolate(item.a, { days: bufferDays }),
+  }))
+  const overviewMetrics = overview.metrics.map((metric) =>
+    metric.hint ? { ...metric, hint: withEpochSchedule(metric.hint, epochSchedule) } : metric,
+  )
 
   const tableSegOptions = [
     { label: table.segs.stake, value: 'stake' },
@@ -92,7 +105,7 @@ export function StakingHubDetail() {
       <Section>
         <Section.Title>{overview.title}</Section.Title>
         <Grid columns={3}>
-          {overview.metrics.map((metric) => {
+          {overviewMetrics.map((metric) => {
             if (!isHubMetricId(metric.id)) return null
             const chrome = METRIC_CHROME[metric.id]
             const value = metricValue(metric.id)
@@ -174,7 +187,7 @@ export function StakingHubDetail() {
 
       <Section>
         <Section.Title>{t.staking.hub.faq.title}</Section.Title>
-        <Faq items={t.staking.hub.faq.items} variant="dapp" />
+        <Faq items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

@@ -108,7 +108,7 @@ const app = defineMessages({
       },
       {
         title: 'Staking de un solo activo',
-        body: 'Haz staking de AGX en la tarjeta Staking. Rebase 2 veces al día capitaliza; a mayor periodo, mayor bonificación de rendimiento.',
+        body: 'Haz staking de AGX en la tarjeta Staking. Rebase {timesPerDay} veces al día capitaliza; a mayor periodo, mayor bonificación de rendimiento.',
       },
       {
         title: 'Activos',
@@ -1612,9 +1612,9 @@ const app = defineMessages({
           'La liquidación por fases y la liberación continua reducen la volatilidad y sostienen el crecimiento a largo plazo',
         steps: [
           { title: 'Block', body: 'Ejecución por bloques\\nUnidad base' },
-          { title: 'Epoch', body: '~14,400 bloques\\n~12 horas' },
+          { title: 'Epoch', body: '~{blocks} bloques\\n~{hours} horas' },
           { title: 'Rebase', body: 'Fin de Epoch\\nLiquidación automática' },
-          { title: 'Rebase', body: 'Distribución de rendimiento\\n2 veces al día' },
+          { title: 'Rebase', body: 'Distribución de rendimiento\\n{timesPerDay} veces al día' },
         ],
         tags: [
           'Impulsado por bloques',
@@ -1733,7 +1733,7 @@ const app = defineMessages({
           items: [
             {
               q: '¿Cuál es la diferencia entre reclamar y canjear?',
-              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de 30 días de liberación lineal secundaria y luego a la billetera.',
+              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de {days} días de liberación lineal secundaria y luego a la billetera.',
             },
             {
               q: '¿De dónde viene el «principal del bono»?',
@@ -1745,7 +1745,7 @@ const app = defineMessages({
             },
             {
               q: '¿Se puede reinvertir el rendimiento del bono?',
-              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo (360/540) con mejor impuesto que reclamar por periodo.',
+              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo ({restakeDays}) con mejor impuesto que reclamar por periodo.',
             },
             {
               q: '¿Qué ocurre cuando termina la cuenta regresiva?',
@@ -1784,7 +1784,7 @@ const app = defineMessages({
           items: [
             {
               q: '¿Cuál es la diferencia entre reclamar y canjear?',
-              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de 30 días de liberación lineal secundaria y luego a la billetera.',
+              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de {days} días de liberación lineal secundaria y luego a la billetera.',
             },
             {
               q: '¿De dónde viene el «principal del bono»?',
@@ -1796,7 +1796,7 @@ const app = defineMessages({
             },
             {
               q: '¿Se puede reinvertir el rendimiento del bono?',
-              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo (360/540) con mejor impuesto que reclamar por periodo.',
+              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo ({restakeDays}) con mejor impuesto que reclamar por periodo.',
             },
             {
               q: '¿Qué ocurre cuando termina la cuenta regresiva?',
@@ -1911,7 +1911,7 @@ const app = defineMessages({
       modes: {
         stake: {
           title: 'Participación',
-          body: 'Haz staking de AGX: Rebase 2 veces al día con capitalización',
+          body: 'Haz staking de AGX: Rebase {timesPerDay} veces al día con capitalización',
         },
         lpbond: {
           title: 'Bono LP',
@@ -1966,7 +1966,7 @@ const app = defineMessages({
           {
             id: 'rebase',
             label: 'Rendimiento Rebase actual',
-            hint: 'Se liquida una vez por Epoch (~12 h); se ajusta con el estado del protocolo',
+            hint: 'Se liquida una vez por Epoch (~{hours} h); se ajusta con el estado del protocolo',
           },
           {
             id: 'runway',
@@ -2015,11 +2015,11 @@ const app = defineMessages({
         items: [
           {
             q: '¿Cómo se liquida el Rebase?',
-            a: 'El protocolo corre por bloques: ~14,400 bloques = 1 Epoch (~12 horas). El Rebase se liquida al final de cada Epoch — 2 veces al día.',
+            a: 'El protocolo corre por bloques: ~{blocks} bloques = 1 Epoch (~{hours} horas). El Rebase se liquida al final de cada Epoch — {timesPerDay} veces al día.',
           },
           {
             q: '¿Cómo se libera el principal?',
-            a: 'El principal de staking y bonos usa liberación lineal por bloques (~3 s por bloque). Tras retirarlo, entra a un búfer de 30 días para suavizar la salida.',
+            a: 'El principal de staking y bonos usa liberación lineal por bloques (~3 s por bloque). Tras retirarlo, entra a un búfer de {days} días para suavizar la salida.',
           },
           {
             q: '¿En qué se diferencian Staking, bono LP y bono de quema?',
@@ -2119,7 +2119,7 @@ const app = defineMessages({
 
     stake: {
       title: 'Participación',
-      intro: 'Staking de AGX · Rebase 2 veces al día con capitalización',
+      intro: 'Staking de AGX · Rebase {timesPerDay} veces al día con capitalización',
       periodLabel: 'Elige el periodo de staking',
       periodAria: 'Elige el periodo de staking',
       amountAria: 'Cantidad de staking',
@@ -2159,7 +2159,7 @@ const app = defineMessages({
         },
         {
           title: 'Rendimiento Rebase diario',
-          body: 'Cada Epoch (~12 h) liquida; el rendimiento se acumula como gAGX.',
+          body: 'Cada Epoch (~{hours} h) liquida; el rendimiento se acumula como gAGX.',
         },
         {
           title: 'Liberación y reclamación al vencimiento',
@@ -2169,11 +2169,11 @@ const app = defineMessages({
       faq: [
         {
           q: '¿Cómo se calcula el rendimiento del staking?',
-          a: 'Rebase 2 veces al día; rendimiento diario ~0.5%–1%. A mayor plazo, mayor bonificación: 180 d ≥10%, 360 d ≥15%, 540 d ≥20%, ajustado con el factor Rebase.',
+          a: 'Rebase {timesPerDay} veces al día; rendimiento diario ~0.5%–1%. A mayor plazo, mayor bonificación: 180 d ≥10%, 360 d ≥15%, 540 d ≥20%, ajustado con el factor Rebase.',
         },
         {
           q: '¿Cuándo se puede retirar el principal?',
-          a: 'El principal se libera linealmente por bloques (~3 s). Lo liberado se puede retirar cuando quieras; tras retirarlo entra a un búfer de 30 días.',
+          a: 'El principal se libera linealmente por bloques (~3 s). Lo liberado se puede retirar cuando quieras; tras retirarlo entra a un búfer de {days} días.',
         },
         {
           q: '¿El APY de referencia es fijo?',
@@ -2564,7 +2564,10 @@ const app = defineMessages({
         'La liberación está entre la creación de rendimiento y Turbina — cambia tiempo por menor impuesto y salidas más estables',
       mechanismSteps: [
         { title: 'Reclamar recompensas Rebase / DAO', body: 'Se genera el rendimiento' },
-        { title: 'Mecanismo de contribución 6 : 1', body: '50% quema · 50% al pool base de X' },
+        {
+          title: 'Mecanismo de contribución {divisor} : 1',
+          body: '50% quema · 50% al pool base de X',
+        },
         {
           title: 'Entrar al pool de liberación · liberación lineal',
           body: 'Elige periodo de 5 / 20 / 40 / 60 días',
@@ -2609,7 +2612,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Staking/', body: 'principal del bono' },
         { title: 'A nivel de bloque', body: 'liberación lineal' },
-        { title: 'Tras retirar', body: 'búfer de 30 días' },
+        { title: 'Tras retirar', body: 'búfer de {days} días' },
         { title: 'lineal secundaria', body: 'liberación lineal' },
       ],
       mechanismBenefits: [

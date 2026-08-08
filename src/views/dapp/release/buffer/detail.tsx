@@ -12,6 +12,8 @@ import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/to
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
@@ -125,7 +127,13 @@ export function BufferDetail() {
     },
   ]
 
-  const steps = t.release.buffer.mechanismSteps
+  const durationQuery = usePrincipalReleaseDurationDays()
+  const bufferDays = durationQuery.data ?? 30
+  const steps = t.release.buffer.mechanismSteps.map((step) => ({
+    ...step,
+    title: interpolate(step.title, { days: bufferDays }),
+    body: interpolate(step.body, { days: bufferDays }),
+  }))
 
   return (
     <Detail>

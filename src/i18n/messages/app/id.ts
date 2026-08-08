@@ -107,7 +107,7 @@ const app = defineMessages({
       },
       {
         title: 'Staking aset tunggal',
-        body: 'Stake AGX di kartu 「Staking」. Rebase dua kali sehari berbunga majemuk; kunci lebih lama mendapat boost yield lebih tinggi.',
+        body: 'Stake AGX di kartu 「Staking」. Rebase {timesPerDay} kali sehari berbunga majemuk; kunci lebih lama mendapat boost yield lebih tinggi.',
       },
       {
         title: 'Aset',
@@ -1610,9 +1610,9 @@ const app = defineMessages({
           'Settlement bertahap dan rilis berkelanjutan mengurangi volatilitas serta mendukung pertumbuhan jangka panjang',
         steps: [
           { title: 'Block', body: 'Runtime blok\\nUnit dasar' },
-          { title: 'Epoch', body: '~14.400 blok\\n~12 jam' },
+          { title: 'Epoch', body: '~{blocks} blok\\n~{hours} jam' },
           { title: 'Rebase', body: 'Akhir Epoch\\nSettle otomatis' },
-          { title: 'Rebase', body: 'Distribusi yield\\nDua kali sehari' },
+          { title: 'Rebase', body: 'Distribusi yield\\n{timesPerDay} kali sehari' },
         ],
         tags: [
           'Dijalankan oleh blok',
@@ -1729,7 +1729,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim dan tebus?',
-              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer 30 hari lalu ke wallet.',
+              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer {days} hari lalu ke wallet.',
             },
             {
               q: 'Dari mana pokok bond berasal?',
@@ -1741,7 +1741,7 @@ const app = defineMessages({
             },
             {
               q: 'Bisakah yield bond di-restake?',
-              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal (360/540) dengan pajak lebih baik daripada klaim periode.',
+              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal ({restakeDays}) dengan pajak lebih baik daripada klaim periode.',
             },
             {
               q: 'Apa yang terjadi saat countdown berakhir?',
@@ -1780,7 +1780,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim dan tebus?',
-              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer 30 hari lalu ke wallet.',
+              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer {days} hari lalu ke wallet.',
             },
             {
               q: 'Dari mana pokok bond berasal?',
@@ -1792,7 +1792,7 @@ const app = defineMessages({
             },
             {
               q: 'Bisakah yield bond di-restake?',
-              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal (360/540) dengan pajak lebih baik daripada klaim periode.',
+              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal ({restakeDays}) dengan pajak lebih baik daripada klaim periode.',
             },
             {
               q: 'Apa yang terjadi saat countdown berakhir?',
@@ -1832,7 +1832,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim output dan tebus staking?',
-              a: 'Klaim untuk output mining: reward X dapat diklaim kapan saja tanpa periode rilis, langsung ke wallet. Tebus untuk pokok staking: gAGX masuk buffer dan dirilis linear 30 hari; aset di buffer tidak lagi menghasilkan.',
+              a: 'Klaim untuk output mining: reward X dapat diklaim kapan saja tanpa periode rilis, langsung ke wallet. Tebus untuk pokok staking: gAGX masuk buffer dan dirilis linear {days} hari; aset di buffer tidak lagi menghasilkan.',
             },
             {
               q: 'Mengapa beberapa posisi menampilkan Terkunci?',
@@ -1904,7 +1904,7 @@ const app = defineMessages({
       modes: {
         stake: {
           title: 'Stake',
-          body: 'Staking AGX — Rebase 2× sehari dengan bunga majemuk',
+          body: 'Staking AGX — Rebase {timesPerDay} kali sehari dengan bunga majemuk',
         },
         lpbond: {
           title: 'Bond LP',
@@ -1959,7 +1959,7 @@ const app = defineMessages({
           {
             id: 'rebase',
             label: 'Yield Rebase saat ini',
-            hint: 'Settle sekali per Epoch (~12 jam); menyesuaikan status protokol',
+            hint: 'Settle sekali per Epoch (~{hours} jam); menyesuaikan status protokol',
           },
           {
             id: 'runway',
@@ -2003,11 +2003,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Bagaimana Rebase di-settle?',
-            a: 'Protokol berjalan berbasis blok: ~14.400 blok = 1 Epoch (~12 jam). Rebase settle di akhir setiap Epoch — dua kali sehari.',
+            a: 'Protokol berjalan berbasis blok: ~{blocks} blok = 1 Epoch (~{hours} jam). Rebase settle di akhir setiap Epoch — {timesPerDay} kali sehari.',
           },
           {
             q: 'Bagaimana pokok dirilis?',
-            a: 'Pokok staking dan bond memakai rilis linear tingkat blok (~3 dtk per blok). Setelah penarikan, pokok yang dirilis masuk buffer 30 hari agar aliran lebih mulus.',
+            a: 'Pokok staking dan bond memakai rilis linear tingkat blok (~3 dtk per blok). Setelah penarikan, pokok yang dirilis masuk buffer {days} hari agar aliran lebih mulus.',
           },
           {
             q: 'Apa beda Staking, Bond LP, dan Bond Burn?',
@@ -2107,7 +2107,7 @@ const app = defineMessages({
 
     stake: {
       title: 'Stake',
-      intro: 'Staking AGX · Rebase 2× sehari dengan bunga majemuk',
+      intro: 'Staking AGX · Rebase {timesPerDay} kali sehari dengan bunga majemuk',
       periodLabel: 'Pilih periode staking',
       periodAria: 'Pilih periode staking',
       amountAria: 'Jumlah staking',
@@ -2147,7 +2147,7 @@ const app = defineMessages({
         },
         {
           title: 'Yield Rebase harian',
-          body: 'Setiap Epoch (~12 jam) settle otomatis; yield terakumulasi sebagai gAGX.',
+          body: 'Setiap Epoch (~{hours} jam) settle otomatis; yield terakumulasi sebagai gAGX.',
         },
         {
           title: 'Rilis & klaim jatuh tempo',
@@ -2157,11 +2157,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'Bagaimana yield staking dihitung?',
-          a: 'Rebase dua kali sehari; yield harian sekitar 0,5%–1%. Kunci lebih lama: 180h ≥10%, 360h ≥15%, 540h ≥20%, menyesuaikan faktor Rebase.',
+          a: 'Rebase {timesPerDay} kali sehari; yield harian sekitar 0,5%–1%. Kunci lebih lama: 180h ≥10%, 360h ≥15%, 540h ≥20%, menyesuaikan faktor Rebase.',
         },
         {
           q: 'Kapan pokok staking dapat diambil?',
-          a: 'Pokok dirilis linear per blok (~3 dtk); bagian yang selesai dapat diambil kapan saja; setelah diambil masuk buffer rilis 30 hari.',
+          a: 'Pokok dirilis linear per blok (~3 dtk); bagian yang selesai dapat diambil kapan saja; setelah diambil masuk buffer rilis {days} hari.',
         },
         {
           q: 'Apakah APY referensi tetap?',
@@ -2544,7 +2544,7 @@ const app = defineMessages({
         'Rilis adalah langkah wajib dari terciptanya yield hingga Turbine — tukar waktu untuk pajak lebih rendah dan keluar yang lebih stabil',
       mechanismSteps: [
         { title: 'Klaim hadiah Rebase / DAO', body: 'Yield tercipta' },
-        { title: 'Mekanisme kontribusi 6 : 1', body: '50% bakar · 50% ke pool X' },
+        { title: 'Mekanisme kontribusi {divisor} : 1', body: '50% bakar · 50% ke pool X' },
         { title: 'Masuk kolam rilis · rilis linear', body: 'Pilih periode 5 / 20 / 40 / 60 hari' },
         { title: 'Klaim masuk Turbine', body: 'Beli 1:1 untuk membuka kuota jual' },
       ],
@@ -2586,7 +2586,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Staking/', body: 'pokok bond' },
         { title: 'Tingkat blok', body: 'rilis' },
-        { title: 'Setelah penarikan', body: 'Buffer 30 hari' },
+        { title: 'Setelah penarikan', body: 'Buffer {days} hari' },
         { title: 'Linear sekunder', body: 'rilis' },
       ],
       mechanismBenefits: [

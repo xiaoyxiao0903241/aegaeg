@@ -3,7 +3,9 @@ import { stakingHubAssets } from '~/shared/assets/dapp'
 import { ModeCard } from '~/shared/components/mode-card'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
+import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { openStakingView } from '~/views/dapp/shared/navigation'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 /** 质押 Hub 模式：质押 / LP 债券 / 燃烧债券 / XMine / 计算器 */
 const STAKING_MODES: readonly {
@@ -30,6 +32,7 @@ const STAKING_MODES: readonly {
 export function StakingHubDock() {
   const { messages: t } = useI18n()
   const copy = t.staking.hub.modes
+  const epochSchedule = useEpochScheduleLabels()
 
   return (
     <DockFrame
@@ -44,7 +47,7 @@ export function StakingHubDock() {
             <ModeCard.Icon src={mode.icon} />
             <ModeCard.Copy>
               <ModeCard.Title>{title}</ModeCard.Title>
-              <ModeCard.Body>{body}</ModeCard.Body>
+              <ModeCard.Body>{withEpochSchedule(body, epochSchedule)}</ModeCard.Body>
             </ModeCard.Copy>
           </ModeCard>
         )

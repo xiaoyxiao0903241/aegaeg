@@ -10,9 +10,11 @@ import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { useStakeDock } from '~/views/dapp/staking/stake/use-stake'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 /**
  * 质押表单（左栏）
@@ -35,12 +37,13 @@ export function StakeDock() {
     yieldMeta,
     onSubmit,
   } = useStakeDock()
+  const epochSchedule = useEpochScheduleLabels()
 
   return (
     <TabHeader
       backText={t.staking.backToHub}
       onBack={() => setView('hub')}
-      subtitle={t.staking.stake.intro}
+      subtitle={withEpochSchedule(t.staking.stake.intro, epochSchedule)}
       title={t.staking.stake.title}
     >
       <DockStack>
