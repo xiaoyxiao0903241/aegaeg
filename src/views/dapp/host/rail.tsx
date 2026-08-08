@@ -2,7 +2,6 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
@@ -20,6 +19,8 @@ import {
   railNavLabelKeys,
   railTourIds,
 } from '~/views/dapp/host/primitives'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 type RailIndicator = {
   height: number
@@ -83,7 +84,7 @@ export function Rail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappHost()
+  const walletReady = hasWalletAccount(useActiveAccount())
   const tooltips = useRailTooltips()
   // 两边都是按地址的纯链读；统一 walletReady（不要求 JWT）
   const exchangeClaimable = useTurbineExchangeRailDot(walletReady)

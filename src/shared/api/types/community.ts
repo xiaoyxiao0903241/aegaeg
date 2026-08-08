@@ -60,7 +60,7 @@ export interface UserPerformance {
   presale_rank: number
   presale_referral_reward: string
   direct_presale_volume: string
-  /** 后端返回的推荐人地址；存在时优先于链上推荐人。 */
+  /** 后端返回的推荐人地址；仅当链上推荐人缺失时作展示回退。 */
   invite_address?: string | null
 }
 

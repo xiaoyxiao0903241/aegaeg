@@ -41,6 +41,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [STAKING_BLOCKED.insufficientBalance]: (t) => t.staking.blocked.insufficientBalance,
   [BOND_ZAP_BLOCKED.insufficientBalance]: (t) => t.staking.blocked.insufficientBalance,
   [XMINE_BLOCKED.insufficientBalance]: (t) => t.staking.blocked.insufficientGagx,
+  [XMINE_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
   [STAKING_BLOCKED.insufficientAllowance]: (t) => t.staking.blocked.insufficientAllowance,
   [BOND_ZAP_BLOCKED.insufficientAllowance]: (t) => t.staking.blocked.insufficientAllowance,
   [XMINE_BLOCKED.insufficientAllowance]: (t) => t.staking.blocked.insufficientAllowance,
@@ -72,6 +73,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
 
   // —— 释放 ——
   [RELEASE_BLOCKED.zeroAmount]: (t) => t.assets.blocked.zeroAmount,
+  [RELEASE_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
   [RELEASE_BLOCKED.planUnresolved]: (t) => t.assets.blocked.planUnresolved,
   [RELEASE_BLOCKED.lockedUnknown]: (t) => t.assets.blocked.unavailable,
   [RELEASE_BLOCKED.unavailable]: (t) => t.assets.blocked.unavailable,

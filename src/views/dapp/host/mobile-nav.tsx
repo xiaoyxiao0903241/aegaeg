@@ -3,7 +3,6 @@ import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
@@ -19,6 +18,8 @@ import {
   railNavLabelKeys,
   railTourIds,
 } from '~/views/dapp/host/primitives'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const drawerItem = tv({
   base: cn(
@@ -56,7 +57,7 @@ export function MobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappHost()
+  const walletReady = hasWalletAccount(useActiveAccount())
   const exchangeClaimable = useTurbineExchangeRailDot(walletReady)
   const releaseClaimable = useReleaseRailDot(walletReady)
   const [mounted, setMounted] = useState(open)

@@ -55,7 +55,8 @@ test('submit rewards mixed must not self-certify rewardAvailable === amount', as
     'utf8',
   )
   assert.match(src, /readDaoPoolRewardAvailable/)
-  assert.match(src, /readLuckyClaimSnapshot/)
+  assert.match(src, /readLuckyClaimRound/)
+  assert.doesNotMatch(src, /readLuckyClaimSnapshot/)
   assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
 })
 

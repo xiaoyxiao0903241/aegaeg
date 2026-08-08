@@ -163,6 +163,8 @@ export const queryKeys = {
     burnSwapRoot: ['chain', 'burnSwap'] as const,
     presaleUserPhaseRemainingRoot: ['chain', 'presale', 'userPhaseRemaining'] as const,
     presalePhases: ['chain', 'presale', 'phases'] as const,
+    /** 最新块 timestamp（秒）；创世阶段门闸用，展示倒计时仍可用墙钟。 */
+    latestBlockTimestamp: ['chain', 'block', 'latestTimestamp'] as const,
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,

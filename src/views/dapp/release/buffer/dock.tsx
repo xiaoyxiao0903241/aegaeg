@@ -43,7 +43,7 @@ export function BufferDock() {
           <ReleasePlanCard.Bar data-slot-id="release-buffer-bar-agx" width={vm.progressWidth} />
           <ReleasePlanCard.Captions left={vm.releasedPctLabel} right={vm.valueHint} />
           <ReleasePlanCard.Action
-            disabled={!vm.canClaim || vm.pending}
+            disabled={!vm.canClaimAgx || vm.pending}
             loading={vm.pending}
             onClick={() => void vm.onClaim()}
           >
@@ -74,7 +74,7 @@ export function BufferDock() {
           />
           <ReleasePlanCard.Captions left={vm.gagxReleasedPctLabel} right={vm.gagxValueHint} />
           <ReleasePlanCard.Action
-            disabled={!vm.canClaim || vm.pending}
+            disabled={!vm.canClaimGagx || vm.pending}
             loading={vm.pending}
             onClick={() => void vm.onClaim()}
           >

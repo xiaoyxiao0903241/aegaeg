@@ -104,6 +104,21 @@ export function isPermanentLoginErrorMessage(loginError: string | null): boolean
 }
 
 /**
+ * 续期是否因用户明确拒签 / 封禁而停摆。
+ *
+ * 比 {@link isPermanentLoginErrorMessage} 更窄：不含 LOGIN_FAILED 与宽泛
+ * nonce/expired 匹配，避免瞬时文案把 sessionReady 续期永久掐死。
+ */
+export function isSessionRenewHaltError(loginError: string | null): boolean {
+  if (!loginError) return false
+  if (loginError === 'ACCOUNT_BANNED') return true
+  if (loginError === 'LOGIN_USER_REJECTED') return true
+  if (loginError === 'LOGIN_SIGNATURE_REJECTED') return true
+  if (/rejected|denied|cancel/i.test(loginError)) return true
+  return false
+}
+
+/**
  * 根据推导出的状态与运行时守卫，决定 Provider 应执行的唯一副作用。
  *
  * 自动登录按尝试指纹只触发一次：有可用的缓存 SIWE 签名时完全静默，
@@ -149,6 +164,10 @@ export function deriveAuthAction({
     return { type: 'login' }
   }
 
+  // sessionReady：仅拒签/封禁停续期，勿用宽泛 permanent 分类掐死瞬时失败
+  if (isSessionRenewHaltError(loginError)) {
+    return { type: 'idle' }
+  }
   return { type: 'renewAt', at: sessionRenewAtMs(state.session, renewThresholdMs) }
 }
 

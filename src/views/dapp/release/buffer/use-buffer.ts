@@ -16,6 +16,8 @@ import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
+import { useMigrationUser } from '~/web3/migration/use-migration-queries'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
@@ -32,6 +34,9 @@ export function useBuffer() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
+  const account = useActiveAccount()
+  const migration = useMigrationUser(account?.address, { enabled: walletReady })
+  const migrationOk = migration.isOldAccount === false
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const durationQuery = usePrincipalReleaseDurationDays()
@@ -50,18 +55,28 @@ export function useBuffer() {
   const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
   const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
   const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
-  const claimable = bufferQuery.data?.totalClaimable ?? ZERO_BI
-  const canClaim = canClaimWhen({
-    walletReady,
-    writeReady,
-    unknownReceiptLocked: claim.isLocked,
-    claimable,
-  })
+  const canClaimAgx =
+    migrationOk &&
+    canClaimWhen({
+      walletReady,
+      writeReady,
+      unknownReceiptLocked: claim.isLocked,
+      claimable: agxClaimable,
+    })
+  const canClaimGagx =
+    migrationOk &&
+    canClaimWhen({
+      walletReady,
+      writeReady,
+      unknownReceiptLocked: claim.isLocked,
+      claimable: gagxClaimable,
+    })
   const agxPctLabel = formatReleasePct(agxClaimable, agxReleasing)
   const gagxPctLabel = formatReleasePct(gagxClaimable, gagxReleasing)
 
   async function onClaim() {
-    if (!canClaim) return
+    // 任一侧有可领即可提交；submit 会 claimMany 两边有余额的源。零可领卡在 Dock 侧 disabled。
+    if (!canClaimAgx && !canClaimGagx) return
     await claim.mutate()
   }
 
@@ -99,7 +114,8 @@ export function useBuffer() {
       priceUsd,
     ),
     gagxProgressWidth: gagxPctLabel,
-    canClaim,
+    canClaimAgx,
+    canClaimGagx,
     pending: claim.isPending,
     onClaim,
     onRefresh,

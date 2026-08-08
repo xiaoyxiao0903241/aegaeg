@@ -32,6 +32,7 @@ function baseArgs(overrides = {}) {
     fetchIsBound: async () => true,
     fetchPaused: async () => false,
     fetchPhaseRemaining: async () => enoughRemaining,
+    fetchNowSeconds: async () => 1_000_000,
     ...overrides,
   }
 }
@@ -88,6 +89,13 @@ test('fetchLiveGenesisPostApprove re-reads bind/pause/remaining (not render snap
     }),
   )
   assert.deepEqual(remainingDrift, { ok: false, reason: 'unavailable' })
+
+  const phaseEnded = await fetchLiveGenesisPostApprove(
+    baseArgs({
+      fetchNowSeconds: async () => Number(activePhase.endTime) + 1,
+    }),
+  )
+  assert.deepEqual(phaseEnded, { ok: false, reason: 'unavailable' })
 
   const readFailed = await fetchLiveGenesisPostApprove(
     baseArgs({

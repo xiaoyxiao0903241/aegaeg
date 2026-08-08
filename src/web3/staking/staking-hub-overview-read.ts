@@ -21,6 +21,9 @@ const burnSwapAbi = parseAbi([AGX_CONTRIBUTION_SWAP_METHODS.getConfig])
 /** 指数探测上限：避免异常链上状态打爆 RPC。 */
 const REBASES_PROBE_CAP = 1_048_576n
 
+/** 按 client 缓存上次有效 rebase 下标，避免 Hub 每次从 0 倍增探测。 */
+const latestRebaseIndexByClient = new WeakMap<object, bigint>()
+
 /** 用最近 N 块时间戳差估出块秒数；样本不足或非法时回落 FAQ 兜底。 */
 const BLOCK_TIME_SAMPLE = 8
 
@@ -118,8 +121,18 @@ export async function readLatestSagxRebaseRate1e18(
   const zero = await readRebaseAt(client, 0n)
   if (zero == null) return null
 
+  const cached = latestRebaseIndexByClient.get(client)
   let lo = 0n
   let hi = 1n
+
+  if (cached != null) {
+    const atCached = await readRebaseAt(client, cached)
+    if (atCached != null) {
+      lo = cached
+      hi = cached + 1n
+    }
+  }
+
   while (hi <= REBASES_PROBE_CAP) {
     const row = await readRebaseAt(client, hi)
     if (row == null) break
@@ -129,6 +142,7 @@ export async function readLatestSagxRebaseRate1e18(
 
   if (hi > REBASES_PROBE_CAP && (await readRebaseAt(client, hi)) != null) {
     const row = await readRebaseAt(client, lo)
+    latestRebaseIndexByClient.set(client, lo)
     return row?.[1] ?? null
   }
 
@@ -138,6 +152,7 @@ export async function readLatestSagxRebaseRate1e18(
     else hi = mid
   }
 
+  latestRebaseIndexByClient.set(client, lo)
   const latest = await readRebaseAt(client, lo)
   return latest?.[1] ?? null
 }

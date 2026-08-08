@@ -68,7 +68,8 @@ export async function submitFlashExchange(args: {
         })
       }
     } else {
-      const config = liveConfig ?? (await readUsd1SwapConfig())
+      // 授权后必须重读配置：批准窗口内 pause / 限额 / 汇率可能已变
+      const config = await readUsd1SwapConfig()
       const blockReason = evaluateFlashUsd1Swap({
         amountIn: core.debouncedAmountIn,
         quotedOut,

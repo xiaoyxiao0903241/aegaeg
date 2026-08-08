@@ -40,6 +40,7 @@ export const BOND_ZAP_BLOCKED = {
 } as const
 
 export const XMINE_BLOCKED = {
+  accountMigrated: 'XMINE_ACCOUNT_MIGRATED',
   insufficientBalance: 'XMINE_INSUFFICIENT_BALANCE',
   insufficientAllowance: 'XMINE_INSUFFICIENT_ALLOWANCE',
   insufficientQuota: 'XMINE_INSUFFICIENT_QUOTA',
@@ -68,6 +69,7 @@ export const REWARDS_BLOCKED = {
 } as const
 
 export const RELEASE_BLOCKED = {
+  accountMigrated: 'RELEASE_ACCOUNT_MIGRATED',
   zeroAmount: 'RELEASE_ZERO_AMOUNT',
   lockedUnknown: 'RELEASE_LOCKED_UNKNOWN',
   planUnresolved: 'RELEASE_PLAN_UNRESOLVED',

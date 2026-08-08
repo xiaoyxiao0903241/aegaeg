@@ -131,6 +131,33 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'idle' },
   )
 
+  // sessionReady after user reject → idle（勿再排续期弹钱包）
+  assert.deepEqual(
+    deriveAuthAction({
+      ...base,
+      loginError: 'LOGIN_USER_REJECTED',
+      state: {
+        kind: 'sessionReady',
+        session: { token: 't', address: '0x1', savedAt: 0, expiresAt: now + 10 * 60_000 },
+      },
+    }),
+    { type: 'idle' },
+  )
+
+  // sessionReady + LOGIN_FAILED（瞬时）仍应续期，勿被宽泛 permanent 掐死
+  const failedExpiresAt = now + 10 * 60_000
+  assert.deepEqual(
+    deriveAuthAction({
+      ...base,
+      loginError: 'LOGIN_FAILED',
+      state: {
+        kind: 'sessionReady',
+        session: { token: 't', address: '0x1', savedAt: 0, expiresAt: failedExpiresAt },
+      },
+    }),
+    { type: 'renewAt', at: failedExpiresAt - renewThresholdMs },
+  )
+
   // sessionReady with exp → renewAt = expiresAt - threshold
   const expiresAt = now + 10 * 60_000
   assert.deepEqual(

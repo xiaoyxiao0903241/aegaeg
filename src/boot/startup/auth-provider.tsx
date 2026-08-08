@@ -1,12 +1,15 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   deriveAuthAction,
   deriveAuthState,
+  FALLBACK_SESSION_TTL_MS,
   isLoginChainReady,
+  isSessionRenewHaltError,
   loginAttemptKey,
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
+import { getJwtExpiresAtMs } from '~/core/auth/jwt'
 import type { AuthSessionStorage, LoginSignatureStorage } from '~/core/auth/storage'
 import type { StoredAuthSession } from '~/core/auth/types'
 import { AuthContext, type AuthContextValue } from '~/hooks/use-auth'
@@ -85,16 +88,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginInProgressRef = useRef(false)
   /** 最近一次静默登录的尝试指纹，防止同一指纹反复重试。 */
   const lastAttemptRef = useRef<string | null>(null)
+  /** 续期瞬时失败的退避定时器，须在 effect cleanup 里清掉。 */
+  const renewBackoffRef = useRef<number | null>(null)
+  /** 驱动墙钟：JWT 到期或续期失败退避时推进，好让 sessionReady 立刻翻转。 */
+  const [authNow, setAuthNow] = useState(() => Date.now())
 
   /** 会话状态由「当前钱包 + 按地址 JWT 表」派生，无独立 session 对象可同步。 */
   const authState = useMemo(
-    () => deriveAuthState({ walletAddress, sessionsByAddress }),
-    [walletAddress, sessionsByAddress],
+    () => deriveAuthState({ walletAddress, sessionsByAddress, now: authNow }),
+    [walletAddress, sessionsByAddress, authNow],
   )
   const session = authState.kind === 'sessionReady' ? authState.session : null
   const sessionReady = authState.kind === 'sessionReady'
   const token = session?.token ?? null
   const loginChainReady = isLoginChainReady(liveChainId, defaultChain.id)
+
+  useEffect(() => {
+    if (authState.kind !== 'sessionReady') return
+    const expiresAt =
+      authState.session.expiresAt ??
+      getJwtExpiresAtMs(authState.session.token) ??
+      authState.session.savedAt + FALLBACK_SESSION_TTL_MS
+    const delay = Math.max(0, expiresAt - Date.now() + 1)
+    const timerId = window.setTimeout(() => setAuthNow(Date.now()), delay)
+    return () => window.clearTimeout(timerId)
+  }, [authState])
+
+  // 后台标签页可能节流 setTimeout；回前台时立刻按墙钟重算 sessionReady
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') setAuthNow(Date.now())
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [])
 
   const runLogin = useCallback(async () => {
     if (loginInProgressRef.current) return
@@ -179,9 +206,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const delay = Math.max(0, action.at - Date.now())
       const timerId = window.setTimeout(() => {
         lastAttemptRef.current = null
-        void runLogin().catch(() => undefined)
+        void runLogin().catch(() => {
+          const nextError = useAuthStore.getState().loginError
+          if (isSessionRenewHaltError(nextError)) return
+          if (renewBackoffRef.current != null) window.clearTimeout(renewBackoffRef.current)
+          renewBackoffRef.current = window.setTimeout(() => setAuthNow(Date.now()), 5_000)
+        })
       }, delay)
-      return () => window.clearTimeout(timerId)
+      return () => {
+        window.clearTimeout(timerId)
+        if (renewBackoffRef.current != null) {
+          window.clearTimeout(renewBackoffRef.current)
+          renewBackoffRef.current = null
+        }
+      }
     }
   }, [
     hasHydrated,

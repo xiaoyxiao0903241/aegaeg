@@ -29,7 +29,12 @@ export type BondZapLiveBlockReason =
 export const BOND_MIN_PAYOUT_AGX = 10_000_000n
 
 export type XmineLiveBlockReason =
-  'insufficientBalance' | 'insufficientAllowance' | 'insufficientQuota' | 'zeroAmount'
+  | 'accountMigrated'
+  | 'insufficientBalance'
+  | 'insufficientAllowance'
+  | 'insufficientQuota'
+  | 'zeroAmount'
+  | 'unavailable'
 
 /**
  * 质押入金前的实时门闸检查。
@@ -142,11 +147,13 @@ export function evaluateBondZapLive(args: {
  *
  * 拟质押量须为正，余额与授权足够覆盖，且未超过挖矿额度。
  * 先检查挖矿额度，再检查授权不足，避免用户先补授权后才发现额度不够。
+ * 已迁移旧地址不得再写；迁移状态未知按不可用处理。
  *
  * @param args.amount 拟质押的 gAGX 数量
  * @param args.balance 钱包 gAGX 余额
  * @param args.allowance 对 XStakingPool 的授权
  * @param args.miningQuota 挖矿额度剩余
+ * @param args.isOldAccount 迁移状态：true 阻断；false 正常；null 未知按阻断（写路径必传）
  * @returns 首个阻断原因
  * @see 手册 §15 XStakingPool X 挖矿
  */
@@ -155,7 +162,10 @@ export function evaluateXmineLive(args: {
   balance: bigint
   allowance: bigint
   miningQuota: bigint
+  isOldAccount: boolean | null
 }): XmineLiveBlockReason | null {
+  if (args.isOldAccount == null) return 'unavailable'
+  if (args.isOldAccount === true) return 'accountMigrated'
   if (args.amount <= 0n) return 'zeroAmount'
   if (args.balance < args.amount) return 'insufficientBalance'
   if (args.miningQuota < args.amount) return 'insufficientQuota'

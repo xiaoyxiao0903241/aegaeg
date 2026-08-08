@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useState } from 'react'
 
-import { useDappHost } from '~/hooks/use-dapp-host'
+import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
 import { HeroRaysBackground } from '~/shared/components/hero-rays-background'
@@ -23,11 +23,9 @@ import { useTabContentFade } from '~/views/dapp/host/use-content-fade'
 import { DockH5ChromeSlot } from '~/views/dapp/shared/dock-frame'
 import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useConnectWarmPrefetch } from '~/web3/wallet/use-connect-warm-prefetch'
-
-function replaceTabHash(tab: string) {
-  window.history.replaceState(null, '', `#${tab}`)
-}
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * DApp 宿主窗口
@@ -36,30 +34,24 @@ function replaceTabHash(tab: string) {
  * 并托管移动端抽屉、新手指引、创世促销数据同步等全局行为。
  * 当前 Tab 存于 dapp-host-store，URL hash 变化与点击导航都会驱动它；
  * 切换 Tab 时先播放内容淡出，再替换面板，保持会话组件在透明层下重挂载。
+ * hash 只由 store 的 writeTabHash 写入，避免再剥 `#tab/view` 深链。
  */
 export function DappHost() {
   const { messages } = useI18n()
   const activeTab = useDappHostStore((state) => state.activeTab)
   const mobileNavOpen = useDappHostStore((state) => state.mobileNavOpen)
-  const selectTabInStore = useDappHostStore((state) => state.selectTab)
-  const selectMobileTabInStore = useDappHostStore((state) => state.selectMobileTab)
+  const selectTab = useDappHostStore((state) => state.selectTab)
+  const selectMobileTab = useDappHostStore((state) => state.selectMobileTab)
   const setMobileNavOpen = useDappHostStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappHostStore((state) => state.syncTabFromHash)
   const resetForeignSubviewStores = useDappHostStore((state) => state.resetForeignSubviewStores)
-  const hostState = useDappHost()
+  const detailCollapsed = useDappHostStore((state) => state.detailCollapsed)
+  const { sessionReady } = useAuth()
+  const walletReady = hasWalletAccount(useActiveAccount())
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
   const { displayTab, phase } = useTabContentFade(activeTab)
   const onboarding = useOnboardingAutoStart()
   useConnectWarmPrefetch()
-
-  const selectTab = (tab: typeof activeTab) => {
-    selectTabInStore(tab)
-    replaceTabHash(tab)
-  }
-  const selectMobileTab = (tab: typeof activeTab) => {
-    selectMobileTabInStore(tab)
-    replaceTabHash(tab)
-  }
 
   const onHashChange = useEffectEvent(() => {
     syncTabFromHash()
@@ -99,8 +91,6 @@ export function DappHost() {
       prevMotion = state.motion
     })
   }, [])
-
-  const effectiveDetailCollapsed = hostState.detailCollapsed
 
   return (
     <main
@@ -161,17 +151,17 @@ export function DappHost() {
                     className={cn(
                       'group/host relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
                       'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
-                      !hostState.sessionReady && 'shadow-window-compact',
+                      !sessionReady && 'shadow-window-compact',
                       'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
                       'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
                       // 顶距由 H5 顶部固定条带槽承担
                       'max-dapp:px-4.5 max-dapp:pt-0 max-dapp:pb-8 max-dapp:shadow-card',
                     )}
-                    data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
-                    data-session-ready={hostState.sessionReady ? 'true' : 'false'}
+                    data-collapsed={detailCollapsed ? 'true' : 'false'}
+                    data-session-ready={sessionReady ? 'true' : 'false'}
                     data-dapp-window
                     data-tab={displayTab}
-                    data-wallet-ready={hostState.walletReady ? 'true' : 'false'}
+                    data-wallet-ready={walletReady ? 'true' : 'false'}
                   >
                     <Rail activeTab={activeTab} onSelectTab={selectTab} />
 
@@ -206,22 +196,22 @@ export function DappHost() {
                     <ScrollFadeHost
                       className={cn(
                         'max-dapp:contents',
-                        effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined,
+                        detailCollapsed ? 'dapp:pointer-events-none' : undefined,
                       )}
                     >
                       <section
                         className={cn(
                           'dapp-content-fade min-w-0 overflow-x-hidden bg-card',
                           'dapp:max-h-full dapp:min-h-0',
-                          effectiveDetailCollapsed
+                          detailCollapsed
                             ? 'pointer-events-none overflow-y-hidden opacity-0'
                             : 'dapp:overflow-y-auto',
                           'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible',
                         )}
-                        aria-hidden={effectiveDetailCollapsed}
+                        aria-hidden={detailCollapsed}
                         aria-labelledby={`${displayTab}-title`}
                         data-dapp-detail
-                        data-phase={effectiveDetailCollapsed ? 'idle' : phase}
+                        data-phase={detailCollapsed ? 'idle' : phase}
                       >
                         <TabDetail
                           activeTab={displayTab}

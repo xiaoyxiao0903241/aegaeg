@@ -92,7 +92,11 @@ export const WRITE_PATH = {
   /** 锁键历史值 `'swap'`，禁改。 */
   EXCHANGE: 'swap',
   GENESIS: 'genesis',
+  /** @deprecated 旧锁键 `'reward-claim'`；新代码用下方分族。busy 检查仍认此键以防升级后 orphan latch。 */
   REWARD_CLAIM: 'reward-claim',
+  REWARD_LUCKY_MIXED: 'reward-lucky-mixed',
+  REWARD_DAO_MIXED: 'reward-dao-mixed',
+  REWARD_SIGNED_CLAIM: 'reward-signed-claim',
   /** AGX 活期 / 锁仓质押开仓。 */
   STAKING: 'staking',
   /** BondHelper LP / Burn zap。 */
@@ -109,10 +113,22 @@ export const WRITE_PATH = {
 
 export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]
 
+const REWARD_WRITE_PATHS: ReadonlySet<WritePath> = new Set([
+  WRITE_PATH.REWARD_LUCKY_MIXED,
+  WRITE_PATH.REWARD_DAO_MIXED,
+  WRITE_PATH.REWARD_SIGNED_CLAIM,
+  WRITE_PATH.REWARD_CLAIM,
+])
+
+function hasLegacyRewardClaimLatch(address: string): boolean {
+  return latchedOwners.has(latchKey(address, WRITE_PATH.REWARD_CLAIM))
+}
+
 /**
  * 判断指定地址与写路径是否持有未知结果锁。
  *
  * 锁跨刷新仍存在，未显式清除前禁止重提同路径交易。
+ * 新领奖分族仍认旧键 `reward-claim`，避免升级后 orphan latch 被绕过。
  *
  * @param path 写路径键
  * @param address 钱包地址，可为 undefined
@@ -120,7 +136,11 @@ export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]
  */
 export function isUnknownReceiptLocked(path: WritePath, address: string | undefined): boolean {
   if (!address) return false
-  return latchedOwners.has(latchKey(address, path))
+  if (latchedOwners.has(latchKey(address, path))) return true
+  if (REWARD_WRITE_PATHS.has(path) && path !== WRITE_PATH.REWARD_CLAIM) {
+    return hasLegacyRewardClaimLatch(address)
+  }
+  return false
 }
 
 function isWritePathInFlight(path: WritePath, address: string | undefined): boolean {
@@ -157,6 +177,9 @@ export function tryBeginWritePath(
 ): { ok: true; owner: symbol } | { ok: false; reason: 'locked' | 'in_flight' } {
   const key = latchKey(address, path)
   if (latchedOwners.has(key)) return { ok: false, reason: 'locked' }
+  if (REWARD_WRITE_PATHS.has(path) && hasLegacyRewardClaimLatch(address)) {
+    return { ok: false, reason: 'locked' }
+  }
   if (inFlightPaths.has(key)) return { ok: false, reason: 'in_flight' }
   const owner = Symbol(key)
   inFlightPaths.add(key)

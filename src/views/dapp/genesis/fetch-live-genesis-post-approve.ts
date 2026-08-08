@@ -2,6 +2,7 @@ import {
   evaluateGenesisPostApprove,
   evaluateGenesisPurchaseAmountLive,
   type GenesisPostApprove,
+  isPhaseActive,
   type PresalePhaseOnChain,
   type PresalePhaseRemaining,
   remainingPhaseAmount,
@@ -12,7 +13,7 @@ import {
  * 写操作后重读实时门闸状态
  *
  * 授权（或任意等待）之后重新读取绑定 / 暂停 / 阶段剩余额度，
- * 避免沿用闭包中的渲染快照；任一读取失败一律按不可用处理。
+ * 并用最新块时间确认阶段仍开放，避免沿用闭包中的渲染快照。
  *
  * @param args.address 钱包地址，缺失时直接判定未绑定
  * @param args.purchaseAmount 本次计划购买的金额
@@ -20,6 +21,7 @@ import {
  * @param args.fetchIsBound 读取推荐绑定状态的函数
  * @param args.fetchPaused 读取暂停状态的函数
  * @param args.fetchPhaseRemaining 读取阶段剩余额度的函数
+ * @param args.fetchNowSeconds 读取最新块时间（unix 秒）
  * @see docs/onchain-manual/contracts/presale.md
  */
 export async function fetchLiveGenesisPostApprove(args: {
@@ -29,17 +31,22 @@ export async function fetchLiveGenesisPostApprove(args: {
   fetchIsBound: (address: string) => Promise<boolean>
   fetchPaused: () => Promise<boolean>
   fetchPhaseRemaining: (address: string, phaseIndex: number) => Promise<PresalePhaseRemaining>
+  fetchNowSeconds: () => Promise<number>
 }): Promise<GenesisPostApprove> {
   if (!args.address) {
     return { ok: false, reason: 'not_bound' }
   }
 
   try {
-    const [isBound, isPaused, phaseRemaining] = await Promise.all([
+    const [isBound, isPaused, phaseRemaining, nowSeconds] = await Promise.all([
       args.fetchIsBound(args.address),
       args.fetchPaused(),
       args.fetchPhaseRemaining(args.address, args.activePhase.index),
+      args.fetchNowSeconds(),
     ])
+    if (!isPhaseActive(args.activePhase, nowSeconds)) {
+      return { ok: false, reason: 'unavailable' }
+    }
     const post = evaluateGenesisPostApprove({
       isBound,
       isPaused,

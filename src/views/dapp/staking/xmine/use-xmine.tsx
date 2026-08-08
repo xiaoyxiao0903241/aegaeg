@@ -34,6 +34,7 @@ import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 import { readXminePosition } from '~/web3/assets/assets-read'
+import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { useXmineOverviewQuery, useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
 import {
   agxAmountPerXFromXPerAgx,
@@ -67,6 +68,8 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
   const { writeReady } = useWriteReadiness()
 
   const walletReady = hasWalletAccount(account)
+  const address = account?.address
+  const migration = useMigrationUser(address, { enabled: walletReady })
 
   const preflightQuery = useXminePreflightQuery({
     enabled: sessionReady,
@@ -98,6 +101,7 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     balance,
     allowance,
     miningQuota: remainingQuota,
+    isOldAccount: migration.isOldAccount,
   })
 
   const stake = useChainMutation({
@@ -121,7 +125,7 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     walletReady,
   })
 
-  // 手册：授权不足仍可提交，内联 approve → live → stake。
+  // 仅授权不足可点（内联补授权）；其它硬门禁用，文案不变
   const moneyOk = blockReason == null || blockReason === 'insufficientAllowance'
   const canSubmit =
     !locked && amountInput.amountIn > ZERO_BI && moneyOk && preflightQuery.data !== undefined

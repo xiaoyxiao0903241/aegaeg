@@ -296,6 +296,7 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       balance: 10n,
       allowance: 1n,
       miningQuota: 2n,
+      isOldAccount: false,
     }),
     'insufficientQuota',
   )
@@ -306,8 +307,31 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       balance: 10n,
       allowance: 10n,
       miningQuota: 2n,
+      isOldAccount: false,
     }),
     'insufficientQuota',
+  )
+
+  assert.equal(
+    evaluateXmineLive({
+      amount: 5n,
+      balance: 10n,
+      allowance: 10n,
+      miningQuota: 10n,
+      isOldAccount: true,
+    }),
+    'accountMigrated',
+  )
+
+  assert.equal(
+    evaluateXmineLive({
+      amount: 5n,
+      balance: 10n,
+      allowance: 10n,
+      miningQuota: 10n,
+      isOldAccount: null,
+    }),
+    'unavailable',
   )
 })
 

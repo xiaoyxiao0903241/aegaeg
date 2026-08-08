@@ -144,11 +144,16 @@ export function useMixedClaim(view: MixedClaimView) {
       !luckyQuery.data!.paused)
 
   const claim = useChainMutation({
-    path: WRITE_PATH.REWARD_CLAIM,
+    path: view === 'lucky' ? WRITE_PATH.REWARD_LUCKY_MIXED : WRITE_PATH.REWARD_DAO_MIXED,
     mutation: async (_vars, session) => {
       if (view === 'lucky') {
+        const roundId = luckyQuery.data?.roundId
+        if (roundId == null || !luckyQuery.data?.claimable) {
+          throw REWARDS_BLOCKED.luckyNotClaimable
+        }
         await submitLuckyMixedClaim({
           session,
+          roundId,
           releaseDays,
           restakeDays,
           restakePct,

@@ -1,5 +1,6 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi, zeroAddress } from 'viem'
 
+import { isLuckyClaimable } from '~/core/rewards/rewards-block-reasons'
 import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
@@ -148,6 +149,61 @@ export async function readLuckyClaimSnapshot(
     rewardAmount: selected.rewardAmount,
     rewardClaimed: selected.rewardClaimed,
     claimable: selected.claimable,
+  }
+}
+
+/**
+ * 读取指定轮的幸运奖状态（提交 live 重闸用）。
+ *
+ * 展示层已选出可领轮后，提交不得再全量回溯换轮；只重读该轮 winner / claimed / paused，
+ * 贡献门槛按该轮金额计算，避免意图与上链轮次错配。
+ *
+ * @param user 钱包地址
+ * @param roundId 意图轮次
+ * @param client 链读取客户端
+ * @returns 该轮暂停 / 中奖 / 金额 / 是否已领 / 是否可领
+ * @see 手册 §14 LuckyPool 去中心化抽奖
+ */
+export async function readLuckyClaimRound(
+  user: Address,
+  roundId: bigint,
+  client: ChainReadClient = bscReadClient,
+): Promise<LuckyClaimSnapshot> {
+  const [paused, info, rewardClaimed] = await Promise.all([
+    client.readContract({
+      address: BSC_CONTRACTS.luckyPool,
+      abi: luckyAbi,
+      functionName: 'paused',
+    }),
+    client.readContract({
+      address: BSC_CONTRACTS.luckyPool,
+      abi: luckyAbi,
+      functionName: 'getWinnerInfo',
+      args: [roundId, user],
+    }),
+    client.readContract({
+      address: BSC_CONTRACTS.luckyPool,
+      abi: luckyAbi,
+      functionName: 'rewardClaimed',
+      args: [roundId, user],
+    }),
+  ])
+  const won = Boolean((info as readonly [boolean, bigint])[0])
+  const rewardAmount = (info as readonly [boolean, bigint])[1] ?? 0n
+  const claimed = Boolean(rewardClaimed)
+  const claimable = isLuckyClaimable({
+    paused: Boolean(paused),
+    won,
+    rewardClaimed: claimed,
+    rewardAmount,
+  })
+  return {
+    paused: Boolean(paused),
+    roundId,
+    won,
+    rewardAmount,
+    rewardClaimed: claimed,
+    claimable,
   }
 }
 

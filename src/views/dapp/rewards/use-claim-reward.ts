@@ -49,7 +49,7 @@ export function useClaimReward(execute: RewardClaimExecutor) {
   const { token, sessionReady, invalidateSession } = useAuth()
 
   const claimMutation = useChainMutation({
-    path: WRITE_PATH.REWARD_CLAIM,
+    path: WRITE_PATH.REWARD_SIGNED_CLAIM,
     mutation: async (_vars, session): Promise<ClaimRewardUiResult> => {
       if (!token || !sessionReady || !writeReady) {
         throw WALLET_BLOCKED.NOT_CONNECTED

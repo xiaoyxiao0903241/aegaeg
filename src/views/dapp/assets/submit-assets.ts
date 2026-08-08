@@ -187,19 +187,23 @@ export async function submitMixedClaim(args: {
   if (target.source === 'locked') {
     if (target.entries.length === 0) throw ASSETS_BLOCKED.unavailable
     for (const entry of target.entries) {
-      await writeOne(
-        {
-          source: 'locked',
-          pool: target.pool,
-          stakeIndex: target.stakeIndex,
-          amount: entry.amount,
-          extra: entry.extra,
-        },
-        entry.amount,
-        entry.extra,
-      )
+      try {
+        await writeOne(
+          {
+            source: 'locked',
+            pool: target.pool,
+            stakeIndex: target.stakeIndex,
+            amount: entry.amount,
+            extra: entry.extra,
+          },
+          entry.amount,
+          entry.extra,
+        )
+      } finally {
+        // 半成功也刷新：已上链那笔的可领额立刻从界面消失，重试只针对未完成笔
+        invalidateAfterAssetsClaim()
+      }
     }
-    invalidateAfterAssetsClaim()
     return
   }
 

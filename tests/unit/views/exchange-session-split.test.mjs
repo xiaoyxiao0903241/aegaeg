@@ -62,3 +62,17 @@ test('useFlashExchangeSession assembles quote core and spot rates', async () => 
   assert.match(source, /submitFlashExchange/)
   assert.doesNotMatch(source, /formatExchangeRateColon/)
 })
+
+test('submitFlashExchange re-reads USDT config after approve', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../src/views/dapp/exchange/flash-exchange/submit-flash-exchange.ts',
+      import.meta.url,
+    ),
+    'utf8',
+  )
+
+  assert.match(source, /approveUsdtForFlashExchangeIfNeeded/)
+  assert.match(source, /const config = await readUsd1SwapConfig\(\)/)
+  assert.doesNotMatch(source, /liveConfig \?\? \(await readUsd1SwapConfig/)
+})

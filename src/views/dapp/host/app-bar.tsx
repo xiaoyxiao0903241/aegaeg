@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 
 import { useAuth } from '~/hooks/use-auth'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { languageMenuOptions, useI18n, withLocalePrefix } from '~/i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { homeAssets } from '~/shared/assets/home'
@@ -12,6 +11,7 @@ import { Icon, iconVariants } from '~/shared/components/icon'
 import { LanguageMenu } from '~/shared/components/language-menu'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
+import { useDappHostStore } from '~/stores/dapp-host-store'
 import { OnboardingTourChip } from '~/views/dapp/host/primitives'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 import { defaultChain } from '~/web3/thirdweb'
@@ -170,7 +170,8 @@ export function AppBar({
   onStartOnboarding?: () => void
 }) {
   const { locale, messages: t, setLocale } = useI18n()
-  const { sessionReady, tab } = useDappHost()
+  const { sessionReady } = useAuth()
+  const tab = useDappHostStore((state) => state.activeTab)
   const styles = appBar({ hideBrandLabel: sessionReady })
 
   const languageOptions = languageMenuOptions(locale, setLocale)

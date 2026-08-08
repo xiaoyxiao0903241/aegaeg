@@ -8,7 +8,7 @@ import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { REWARDS_BLOCKED } from '~/web3/errors/write-block-errors'
-import { readDaoPoolRewardAvailable, readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
+import { readDaoPoolRewardAvailable, readLuckyClaimRound } from '~/web3/rewards/rewards-read'
 import { writeDaoMixedClaim, writeLuckyMixedClaim } from '~/web3/rewards/rewards-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
@@ -31,77 +31,57 @@ function mapMixedReason(
 /**
  * 幸运奖混合领取提交（仅领域写入）
  *
- * 先读链上快照确定领取意图，再二次读取链上数据做实时校验，
- * 任一软性拦截条件成立即抛出对应错误码（错误提示由 useChainMutation 统一包装）。
+ * 意图轮由调用方钉死（展示层已选出的可领轮）；提交只对该轮做 pre / live 两读，
+ * 不再全量回溯。贡献门槛用该轮链上金额。
  *
  * @param args.session 写会话（钱包 + 地址 + 读客户端）
+ * @param args.roundId 意图轮次
  * @param args.releaseDays 释放时长档位
  * @param args.restakeDays 复投时长档位
  * @param args.restakePct 复投占比
  */
 export async function submitLuckyMixedClaim(args: {
   session: WriteSession
+  roundId: bigint
   releaseDays: number
   restakeDays: number
   restakePct: number
 }): Promise<void> {
-  const { session, releaseDays, restakeDays, restakePct } = args
+  const { session, roundId, releaseDays, restakeDays, restakePct } = args
   const { wallet, address: user, readClient } = session
   const restakeBps = restakeBpsFromPct(restakePct)
 
-  const snapshot = await readLuckyClaimSnapshot(user, readClient)
-  // 首次读取确定领取意图；实时校验必须二次读链，不能只凭第一次读到的数据自证
-  const amount = snapshot.rewardAmount
-  const plans = await readClaimPlans(readClient)
-  const { releaseIndex: releasePlanIndex, restakeIndex: restakePlanIndex } = matchClaimPlanIndices(
-    plans,
-    releaseDays,
-    restakeDays,
-  )
-  const contrib = await readContributionSnapshot(user, amount, readClient)
-
-  const preBlock = evaluateRewardsMixedClaim({
-    amount,
-    rewardAvailable: snapshot.rewardAmount,
-    contribution: contrib.contribution,
-    requiredContribution: contrib.requiredContribution,
-    releasePlanIndex,
-    restakePlanIndex,
-    luckyPaused: snapshot.paused,
-    luckyClaimable: snapshot.claimable,
-  })
-  const preErr = gateError(mapMixedReason(preBlock))
-  if (preErr) throw preErr
-
-  const live = await readLuckyClaimSnapshot(user, readClient)
-  const livePlans = await readClaimPlans(readClient)
-  const { releaseIndex: liveRelease, restakeIndex: liveRestake } = matchClaimPlanIndices(
-    livePlans,
-    releaseDays,
-    restakeDays,
-  )
-  const liveContrib = await readContributionSnapshot(user, amount, readClient)
-  const liveBlock = evaluateRewardsMixedClaim({
-    amount,
-    rewardAvailable: live.rewardAmount,
-    contribution: liveContrib.contribution,
-    requiredContribution: liveContrib.requiredContribution,
-    releasePlanIndex: liveRelease,
-    restakePlanIndex: liveRestake,
-    luckyPaused: live.paused,
-    luckyClaimable: live.claimable,
-  })
-  const liveErr = gateError(mapMixedReason(liveBlock))
-  if (liveErr) throw liveErr
-  if (liveRelease == null || liveRestake == null) {
-    throw REWARDS_BLOCKED.releasePlanUnresolved
+  async function gatePinnedRound() {
+    const snap = await readLuckyClaimRound(user, roundId, readClient)
+    const plans = await readClaimPlans(readClient)
+    const { releaseIndex, restakeIndex } = matchClaimPlanIndices(plans, releaseDays, restakeDays)
+    const contrib = await readContributionSnapshot(user, snap.rewardAmount, readClient)
+    const block = evaluateRewardsMixedClaim({
+      amount: snap.rewardAmount,
+      rewardAvailable: snap.rewardAmount,
+      contribution: contrib.contribution,
+      requiredContribution: contrib.requiredContribution,
+      releasePlanIndex: releaseIndex,
+      restakePlanIndex: restakeIndex,
+      luckyPaused: snap.paused,
+      luckyClaimable: snap.claimable,
+    })
+    const err = gateError(mapMixedReason(block))
+    if (err) throw err
+    if (releaseIndex == null || restakeIndex == null) {
+      throw REWARDS_BLOCKED.releasePlanUnresolved
+    }
+    return { releaseIndex, restakeIndex }
   }
+
+  await gatePinnedRound()
+  const live = await gatePinnedRound()
 
   await writeLuckyMixedClaim({
     wallet,
-    roundId: live.roundId,
-    releasePlanIndex: liveRelease,
-    restakePlanIndex: liveRestake,
+    roundId,
+    releasePlanIndex: live.releaseIndex,
+    restakePlanIndex: live.restakeIndex,
     restakeBps,
   })
   invalidateAfterRewardsMixedClaim()

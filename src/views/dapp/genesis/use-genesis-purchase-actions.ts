@@ -12,6 +12,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { fetchLiveGenesisPostApprove } from '~/views/dapp/genesis/fetch-live-genesis-post-approve'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
+import { bscReadClient } from '~/web3/bsc-read-client'
 import { GENESIS_PURCHASE_ERROR } from '~/web3/contract-error-message'
 import { readErrorText } from '~/web3/errors/error-text'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
@@ -115,6 +116,10 @@ export function useGenesisPurchaseActions({
             queryFn: () => readUserPhaseRemainingAmount(addr, phaseIndex),
             staleTime: 0,
           }),
+        fetchNowSeconds: async () => {
+          const block = await bscReadClient.getBlock({ blockTag: 'latest' })
+          return Number(block.timestamp)
+        },
       })
       if (!blockReason.ok) {
         throw blockReason.reason === 'not_bound'

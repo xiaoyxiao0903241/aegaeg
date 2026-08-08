@@ -1,6 +1,7 @@
 import { releaseClaimBlockReason } from '~/core/release/release-block-reasons'
 import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { RELEASE_BLOCKED } from '~/web3/errors/write-block-errors'
+import { readMigrationStatus } from '~/web3/migration/migration-read'
 import {
   readReleaseBufferSnapshot,
   readReleaseQueueSnapshot,
@@ -18,6 +19,11 @@ function gateError(
 ): (typeof RELEASE_BLOCKED)[keyof typeof RELEASE_BLOCKED] | null {
   if (!reason) return null
   return RELEASE_BLOCKED[reason]
+}
+
+async function assertReleaseWritesAllowed(address: string, readClient: WriteSession['readClient']) {
+  const migration = await readMigrationStatus(address, readClient)
+  if (migration.isOldAccount) throw RELEASE_BLOCKED.accountMigrated
 }
 
 /**
@@ -59,6 +65,7 @@ export async function submitReleaseQueueClaim(args: {
   )
   if (liveErr) throw liveErr
 
+  await assertReleaseWritesAllowed(address, readClient)
   await writeClaimAllVestedRewards({ wallet, planIndex })
   invalidateAfterReleaseClaim()
 }
@@ -103,6 +110,8 @@ export async function submitReleaseBufferClaim(args: { session: WriteSession }):
   )
   if (liveErr) throw liveErr
   if (live.totalClaimable <= 0n) throw RELEASE_BLOCKED.zeroAmount
+
+  await assertReleaseWritesAllowed(address, readClient)
 
   for (const hop of live.chain) {
     if (hop.claimWindows.length === 0) continue

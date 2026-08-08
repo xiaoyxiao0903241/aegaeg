@@ -6,6 +6,7 @@ import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { bscReadClient } from '~/web3/bsc-read-client'
 import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 import {
   readAllPresalePhases,
@@ -40,21 +41,34 @@ type PresaleActivePhaseQueryResult = Pick<
 /**
  * 查询当前处于生效期的预售档位。
  *
- * 依赖档位列表查询，列表未加载完成时保持 undefined。
+ * 阶段是否开放以最新块时间为准（手册）；列表或块时未就绪时保持 undefined。
  */
 export function usePresaleActivePhaseQuery(): PresaleActivePhaseQueryResult {
   const phasesQuery = usePresalePhasesQuery()
+  const blockTimeQuery = useChainQuery({
+    queryKey: queryKeys.chain.latestBlockTimestamp,
+    scope: 'public',
+    freshness: 'presale',
+    queryFn: async () => {
+      const block = await bscReadClient.getBlock({ blockTag: 'latest' })
+      return Number(block.timestamp)
+    },
+    refetchInterval: QUERY_STALE_TIME.presale,
+  })
 
-  const data = phasesQuery.data === undefined ? undefined : findActivePresalePhase(phasesQuery.data)
+  const data =
+    phasesQuery.data === undefined || blockTimeQuery.data === undefined
+      ? undefined
+      : findActivePresalePhase(phasesQuery.data, blockTimeQuery.data)
 
   return {
     data,
-    error: phasesQuery.error,
-    isLoading: phasesQuery.isLoading,
-    isSuccess: phasesQuery.isSuccess,
-    isError: phasesQuery.isError,
-    isFetching: phasesQuery.isFetching,
-    status: phasesQuery.status,
+    error: phasesQuery.error ?? blockTimeQuery.error,
+    isLoading: phasesQuery.isLoading || blockTimeQuery.isLoading,
+    isSuccess: phasesQuery.isSuccess && blockTimeQuery.isSuccess,
+    isError: phasesQuery.isError || blockTimeQuery.isError,
+    isFetching: phasesQuery.isFetching || blockTimeQuery.isFetching,
+    status: phasesQuery.isError || blockTimeQuery.isError ? 'error' : phasesQuery.status,
   }
 }
 

@@ -19,6 +19,7 @@ import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
+import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import {
   patchReleaseQueuePlan,
   readReleaseQueuePlanByDays,
@@ -57,6 +58,8 @@ export function useQueue() {
   const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
   const account = useActiveAccount()
+  const migration = useMigrationUser(account?.address, { enabled: walletReady })
+  const migrationOk = migration.isOldAccount === false
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
@@ -97,13 +100,15 @@ export function useQueue() {
       days,
       planIndex,
       planLabel: interpolate(t.release.queue.planDays, { days }),
-      canClaim: canClaimWhen({
-        walletReady,
-        writeReady,
-        unknownReceiptLocked: locked,
-        claimable,
-        planIndexOk: planIndex >= 0,
-      }),
+      canClaim:
+        migrationOk &&
+        canClaimWhen({
+          walletReady,
+          writeReady,
+          unknownReceiptLocked: locked,
+          claimable,
+          planIndexOk: planIndex >= 0,
+        }),
       pending: pendingPlan === planIndex,
       claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
