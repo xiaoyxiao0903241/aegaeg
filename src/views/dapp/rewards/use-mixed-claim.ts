@@ -10,6 +10,7 @@ import {
 } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { isDecisionFresh } from '~/core/query/decision-freshness'
 import {
   evaluateRewardsMixedClaimConfirmGate,
   evaluateRewardsMixedClaimWritePhase,
@@ -120,8 +121,8 @@ export function useMixedClaim(view: MixedClaimView) {
     restakeDays,
   )
   const luckyContributionOk =
-    contribQuery.data != null &&
-    contribQuery.data.contribution >= contribQuery.data.requiredContribution
+    isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data) &&
+    contribQuery.data!.contribution >= contribQuery.data!.requiredContribution
   const isDaoMixed = view === 'cobuild' || view === 'referral' || view === 'participate'
   const daoRewardType: DaoRewardType =
     view === 'referral'
@@ -132,10 +133,15 @@ export function useMixedClaim(view: MixedClaimView) {
           ? cobuildRewardType
           : 'RANK_REWARD'
   const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
-  const plansOk = releaseIndex != null && restakeIndex != null
+  const plansOk =
+    isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
+    releaseIndex != null &&
+    restakeIndex != null
   const luckyOk =
     view !== 'lucky' ||
-    (luckyQuery.data != null && luckyQuery.data.claimable && !luckyQuery.data.paused)
+    (isDecisionFresh(luckyQuery.isPlaceholderData, luckyQuery.data) &&
+      luckyQuery.data!.claimable &&
+      !luckyQuery.data!.paused)
 
   const claim = useChainMutation({
     path: WRITE_PATH.REWARD_CLAIM,

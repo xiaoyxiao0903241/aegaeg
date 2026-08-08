@@ -37,6 +37,7 @@ export type XmineLiveBlockReason =
  * 迁移旧地址不得再写、推荐必须已绑定、池未暂停、余额 / 授权 / 额度
  * 足够覆盖拟质押量，任一项不满足即阻断；迁移状态未知按阻断处理，
  * 避免合约拒绝或写错账户。
+ * 先检查剩余额度，再检查授权不足，避免用户先补授权后才发现额度不够。
  *
  * @param args.amount 拟质押数量
  * @param args.isBound 推荐是否已绑定
@@ -65,8 +66,8 @@ export function evaluateStakeLive(args: {
   if (!args.isBound) return 'notBound'
   if (args.poolOpen === false) return 'poolPaused'
   if (args.balance < args.amount) return 'insufficientBalance'
-  if (args.allowance < args.amount) return 'insufficientAllowance'
   if (args.remainingQuota < args.amount) return 'insufficientQuota'
+  if (args.allowance < args.amount) return 'insufficientAllowance'
   return null
 }
 
@@ -77,6 +78,9 @@ export function evaluateStakeLive(args: {
  * 授权足够覆盖拟认购额，任一项不满足即阻断，避免链上交易必然失败。
  *
  * 大小限制跟链上用毛发放量；债务容量跟链上用净发放量。
+ * 先检查兑付过小/过大与债务容量，再检查授权不足：
+ * 否则用户可能先点「去授权」，授权后才发现这笔买不了。
+ * 兑付或债务相关字段缺失（null / undefined）时返回 `unavailable`。
  *
  * @param args.amount 拟认购的 USD1 数量
  * @param args.isBound 推荐是否已绑定
@@ -111,35 +115,25 @@ export function evaluateBondZapLive(args: {
   if (!args.isBound) return 'notBound'
   if (!args.depositoryAuthorized) return 'depositoryNotAuth'
   if (args.balance < args.amount) return 'insufficientBalance'
-  if (args.allowance < args.amount) return 'insufficientAllowance'
   if (
-    args.maxDebt === null ||
-    args.totalDeposit === null ||
-    args.netPayout === null ||
-    args.grossPayout === null ||
-    args.maxPayout === null
+    args.maxDebt == null ||
+    args.totalDeposit == null ||
+    args.netPayout == null ||
+    args.grossPayout == null ||
+    args.maxPayout == null
   ) {
     return 'unavailable'
   }
-  if (args.grossPayout !== undefined && args.grossPayout < BOND_MIN_PAYOUT_AGX) {
+  if (args.grossPayout < BOND_MIN_PAYOUT_AGX) {
     return 'bondTooSmall'
   }
-  if (
-    args.maxPayout !== undefined &&
-    args.grossPayout !== undefined &&
-    args.grossPayout > args.maxPayout
-  ) {
+  if (args.grossPayout > args.maxPayout) {
     return 'bondTooLarge'
   }
-  if (
-    args.maxDebt !== undefined &&
-    args.totalDeposit !== undefined &&
-    args.netPayout !== undefined &&
-    args.maxDebt > 0n &&
-    args.totalDeposit + args.netPayout > args.maxDebt
-  ) {
+  if (args.maxDebt > 0n && args.totalDeposit + args.netPayout > args.maxDebt) {
     return 'insufficientDebtCapacity'
   }
+  if (args.allowance < args.amount) return 'insufficientAllowance'
   return null
 }
 
@@ -147,6 +141,7 @@ export function evaluateBondZapLive(args: {
  * X 挖矿质押前的实时门闸检查。
  *
  * 拟质押量须为正，余额与授权足够覆盖，且未超过挖矿额度。
+ * 先检查挖矿额度，再检查授权不足，避免用户先补授权后才发现额度不够。
  *
  * @param args.amount 拟质押的 gAGX 数量
  * @param args.balance 钱包 gAGX 余额
@@ -163,8 +158,8 @@ export function evaluateXmineLive(args: {
 }): XmineLiveBlockReason | null {
   if (args.amount <= 0n) return 'zeroAmount'
   if (args.balance < args.amount) return 'insufficientBalance'
-  if (args.allowance < args.amount) return 'insufficientAllowance'
   if (args.miningQuota < args.amount) return 'insufficientQuota'
+  if (args.allowance < args.amount) return 'insufficientAllowance'
   return null
 }
 

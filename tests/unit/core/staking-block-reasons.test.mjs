@@ -126,6 +126,7 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       maxDebt: 100n * 10_000_000n,
       totalDeposit: 90n * 10_000_000n,
       netPayout: 20n * 10_000_000n,
+      grossPayout: 20n * 10_000_000n,
       maxPayout: 1000n * 10_000_000n,
     }),
     'insufficientDebtCapacity',
@@ -141,6 +142,7 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       maxDebt: 0n,
       totalDeposit: 90n * 10_000_000n,
       netPayout: 20n * 10_000_000n,
+      grossPayout: 20n * 10_000_000n,
       maxPayout: 1000n * 10_000_000n,
     }),
     null,
@@ -243,7 +245,7 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
     'unavailable',
   )
 
-  // maxPayout / grossPayout 未传入（undefined）时不因缺省阻断
+  // maxPayout / grossPayout 没传时按不可用处理
   assert.equal(
     evaluateBondZapLive({
       amount: 1n,
@@ -255,7 +257,47 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       totalDeposit: 0n,
       netPayout: minPayout,
     }),
-    null,
+    'unavailable',
+  )
+
+  // 授权不足时仍应先报「兑付过小」，不要让用户先去授权
+  assert.equal(
+    evaluateBondZapLive({
+      amount: 100n,
+      isBound: true,
+      balance: 100n,
+      allowance: 1n,
+      depositoryAuthorized: true,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      netPayout: minPayout - 1n,
+      grossPayout: minPayout - 1n,
+      maxPayout: 1_000_000_000n,
+    }),
+    'bondTooSmall',
+  )
+
+  // 授权不足时仍应先报「额度不够」
+  assert.equal(
+    evaluateStakeLive({
+      amount: 5n,
+      isBound: true,
+      balance: 10n,
+      allowance: 1n,
+      remainingQuota: 2n,
+      poolOpen: true,
+    }),
+    'insufficientQuota',
+  )
+
+  assert.equal(
+    evaluateXmineLive({
+      amount: 5n,
+      balance: 10n,
+      allowance: 1n,
+      miningQuota: 2n,
+    }),
+    'insufficientQuota',
   )
 
   assert.equal(

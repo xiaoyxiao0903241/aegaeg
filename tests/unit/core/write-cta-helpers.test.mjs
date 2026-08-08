@@ -113,6 +113,14 @@ test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', asy
     false,
   )
   assert.equal(evaluateStakingAmountWrite({ ...ready, blockReason: 'notBound' }).canSubmit, false)
+  assert.equal(
+    evaluateStakingAmountWrite({ ...ready, blockReason: null, isQuoting: true }).canSubmit,
+    false,
+  )
+  assert.equal(
+    evaluateStakingAmountWrite({ ...ready, blockReason: null, isQuoting: true }).writePhase,
+    'estimating',
+  )
 })
 
 test('formatAmountBalanceLabel keeps chrome with zero placeholder when balance pending', async () => {

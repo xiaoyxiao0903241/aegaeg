@@ -15,6 +15,7 @@ import {
 } from '~/core/assets/claim-plans'
 import { HUNDRED_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
@@ -97,9 +98,12 @@ export function useAssetsClaimModal(args: {
     restakeDays,
   )
   const contributionOk =
-    contribQuery.data != null &&
-    contribQuery.data.contribution >= contribQuery.data.requiredContribution
-  const plansOk = releaseIndex != null && restakeIndex != null
+    isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data) &&
+    contribQuery.data!.contribution >= contribQuery.data!.requiredContribution
+  const plansOk =
+    isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
+    releaseIndex != null &&
+    restakeIndex != null
   const canConfirm = evaluateAssetsClaimConfirmGate({
     walletReady,
     writeReady,

@@ -125,8 +125,12 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   })
 
   const market = marketQuery.data
-  const marketLoaded = market !== undefined
-  const payoutLoaded = amountInput.amountIn === ZERO_BI || payoutQuery.data !== undefined
+  const marketLoaded = isDecisionFresh(marketQuery.isPlaceholderData, market)
+  const payoutFresh = isDecisionFresh(payoutQuery.isPlaceholderData, payoutQuery.data)
+  const payoutLoaded = amountInput.amountIn === ZERO_BI || payoutFresh
+  const isPayoutQuoting =
+    amountInput.amountIn > ZERO_BI &&
+    (payoutQuery.isFetching || payoutQuery.isPlaceholderData || !payoutFresh)
   const blockReason = evaluateBondZapLive({
     amount: amountInput.amountIn,
     isBound: balancesLoaded ? (preflightQuery.data?.isBound ?? false) : false,
@@ -136,9 +140,9 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
       ? (preflightQuery.data?.depositoryAuthorized ?? false)
       : false,
     isOldAccount: migration.isOldAccount,
-    maxDebt: marketLoaded ? market.maxDebt : null,
-    totalDeposit: marketLoaded ? market.totalDeposit : null,
-    maxPayout: marketLoaded ? market.maxPayoutAmount : null,
+    maxDebt: marketLoaded ? market!.maxDebt : null,
+    totalDeposit: marketLoaded ? market!.totalDeposit : null,
+    maxPayout: marketLoaded ? market!.maxPayoutAmount : null,
     netPayout:
       amountInput.amountIn === ZERO_BI
         ? ZERO_BI
@@ -183,6 +187,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     preflightReady: preflightQuery.data !== undefined,
     needReferral,
     accountMigrated: migration.isOldAccount === true,
+    isQuoting: isPayoutQuoting,
   })
 
   const discountLabel =
@@ -226,10 +231,10 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
       ? '0'
       : payoutQuery.isError
         ? '0'
-        : payoutQuery.data === undefined
+        : !payoutFresh
           ? ''
-          : payoutQuery.data.netPayout > ZERO_BI
-            ? formatTokenAmount(payoutQuery.data.netPayout, AGX_DECIMALS, 4)
+          : payoutQuery.data!.netPayout > ZERO_BI
+            ? formatTokenAmount(payoutQuery.data!.netPayout, AGX_DECIMALS, 4)
             : '0'
 
   const slippageLabel = slippageQuery.isError
@@ -265,7 +270,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
         : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, 4),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
-    isPayoutQuoting: payoutQuery.isFetching && !receiveLabel && amountInput.amountIn > ZERO_BI,
+    isPayoutQuoting,
     isSlippageLoading: slippageQuery.isFetching && !slippageLabel && !slippageQuery.isError,
     discountLabel: discountLabel || '0',
     periodDiscounts,

@@ -20,9 +20,10 @@ export function formatRebasePct(rate1e18: bigint | null | undefined): string {
 }
 
 /**
- * 质押 / 债券写入按钮状态判定（共享）
+ * 质押 / 债券写入按钮是否可点、处于哪一阶段
  *
- * 授权不足不算阻塞：CTA 可点，由 approveThenLiveWrite 内联授权。
+ * 授权不足时按钮仍可点，点下去会先补授权再提交。
+ * 正在估算到账金额、或还在用上一笔金额的旧结果时，按钮不可点。
  *
  * @param args 写入状态、金额、阻塞原因等输入
  * @returns locked / canSubmit / writePhase 三态
@@ -37,6 +38,8 @@ export function evaluateStakingAmountWrite(args: {
   preflightReady: boolean
   needReferral: boolean
   accountMigrated: boolean
+  /** 到账金额还在算，或仍是上一笔金额的旧结果。 */
+  isQuoting?: boolean
 }) {
   const locked = writeCtaDisabled({
     unknownReceiptLocked: args.unknownReceiptLocked,
@@ -45,9 +48,9 @@ export function evaluateStakingAmountWrite(args: {
     walletReady: args.walletReady,
   })
 
-  // 手册：先 approve 再 stake/zap；授权不足须可点 CTA，由 approveThenLiveWrite 内联授权。
   const moneyOk = args.blockReason == null || args.blockReason === 'insufficientAllowance'
-  const canSubmit = !locked && args.amountIn > 0n && moneyOk && args.preflightReady
+  const canSubmit =
+    !locked && args.amountIn > 0n && moneyOk && args.preflightReady && !args.isQuoting
 
   const writePhase = evaluateWriteButtonPhase({
     walletReady: args.walletReady,
@@ -55,6 +58,7 @@ export function evaluateStakingAmountWrite(args: {
     needReferral: args.needReferral,
     accountMigrated: args.accountMigrated,
     moneyBlock: args.blockReason,
+    isQuoting: args.isQuoting,
     isSubmitting: args.isSubmitting,
   })
 
