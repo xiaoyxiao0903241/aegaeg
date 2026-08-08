@@ -1,6 +1,7 @@
 import { keepPreviousData, type QueryKey } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import {
   assertQuotedExchangeStillSubmittable,
@@ -96,29 +97,29 @@ export function useExchangeQuote<TQuote>({
     useExchangeWriteMutation(clearAmount)
 
   const debouncedAmountIn = useDebouncedValue(amountIn, debounceMs)
-  const isAmountDebouncing = amountIn > 0n && amountIn !== debouncedAmountIn
+  const isAmountDebouncing = amountIn > ZERO_BI && amountIn !== debouncedAmountIn
 
   const amountQuoteQuery = useChainQuery({
     queryKey: getQuoteQueryKey(debouncedAmountIn),
     queryFn: () => fetchQuote(debouncedAmountIn),
     scope: 'public',
     freshness: 'quote',
-    enabled: quotesEnabled && sessionReady && debouncedAmountIn > 0n,
+    enabled: quotesEnabled && sessionReady && debouncedAmountIn > ZERO_BI,
     refetchInterval: quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
 
-  const rawQuotedOut = selectQuotedOut(amountQuoteQuery.data) ?? 0n
+  const rawQuotedOut = selectQuotedOut(amountQuoteQuery.data) ?? ZERO_BI
   // 提交门禁专用：占位旧值不得影响 canSubmit / amountOutMin
   const quotedOut = liveQuotedOut(amountQuoteQuery.isPlaceholderData, rawQuotedOut)
 
   const isQuoting =
     sessionReady &&
-    amountIn > 0n &&
+    amountIn > ZERO_BI &&
     (isAmountDebouncing ||
       amountQuoteQuery.isPending ||
       amountQuoteQuery.isPlaceholderData ||
-      (amountQuoteQuery.isFetching && quotedOut === 0n))
+      (amountQuoteQuery.isFetching && quotedOut === ZERO_BI))
 
   const validationError = amountQuoteQuery.error ? EXCHANGE_QUOTE_FAILED : null
 
@@ -130,22 +131,23 @@ export function useExchangeQuote<TQuote>({
   const [retainedBuyAmount, setRetainedBuyAmount] = useState('')
   // 展示面用原始报价（含防抖期间的旧值）；门禁始终用 liveQuotedOut
   const faceBuyAmount =
-    sessionReady && amountIn > 0n && !isAmountDebouncing && rawQuotedOut > 0n
+    sessionReady && amountIn > ZERO_BI && !isAmountDebouncing && rawQuotedOut > ZERO_BI
       ? formatTokenAmountInputDisplay(formatTokenAmountDraft(rawQuotedOut, buyDecimals, 6))
       : null
 
-  if (amountIn === 0n || !sessionReady) {
+  if (amountIn === ZERO_BI || !sessionReady) {
     if (retainedBuyAmount !== '') setRetainedBuyAmount('')
   } else if (faceBuyAmount != null && faceBuyAmount !== retainedBuyAmount) {
     setRetainedBuyAmount(faceBuyAmount)
   }
 
   // 防抖或空报价期间保留上一帧买入面值；稳定为空时保持 `''`
-  const buyAmount = amountIn === 0n || !sessionReady ? '' : (faceBuyAmount ?? retainedBuyAmount)
+  const buyAmount =
+    amountIn === ZERO_BI || !sessionReady ? '' : (faceBuyAmount ?? retainedBuyAmount)
 
-  const amountOutMin = quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n
+  const amountOutMin = quotedOut > ZERO_BI ? calcAmountOutMin(quotedOut, slippageBps) : ZERO_BI
 
-  const needsApproval = walletReady && amountIn > 0n && needsTokenApproval(allowance, amountIn)
+  const needsApproval = walletReady && amountIn > ZERO_BI && needsTokenApproval(allowance, amountIn)
 
   const canSubmit =
     !isAmountDebouncing &&
@@ -188,8 +190,6 @@ export function useExchangeQuote<TQuote>({
       return { ok: false, error: null }
     }
 
-    submitOutcomeRef.current = { ok: false, error: null }
-
     // 提交前实时复检：授权后强制刷新报价（可能已超过报价有效期），
     // 再从查询缓存读取，而非用发起提交时的渲染快照。
     // 调用方必须传入刷新后的 sellBalance，闭包里的余额已过期。
@@ -209,7 +209,7 @@ export function useExchangeQuote<TQuote>({
       const data = queryClient.getQueryData<TQuote>(queryKey)
       const quotedOutLive = liveQuotedOut(false, selectQuotedOut(data))
       const liveAmountOutMin =
-        quotedOutLive > 0n ? calcAmountOutMin(quotedOutLive, slippageBps) : 0n
+        quotedOutLive > ZERO_BI ? calcAmountOutMin(quotedOutLive, slippageBps) : ZERO_BI
       assertQuotedExchangeStillSubmittable({
         walletReady: writeReady,
         amountIn: debouncedAmountIn,

@@ -1,4 +1,5 @@
 import { SECONDS_PER_DAY } from '~/core/assets/claim-plans'
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
@@ -31,12 +32,12 @@ export function useReleaseHub() {
   const releaseApi = useReleasePoolSummary(sessionReady)
   const bufferApi = useBufferPoolSummary(sessionReady)
 
-  const queueClaimable = queueQuery.data?.totalClaimable ?? 0n
-  const queueReleasing = queueQuery.data?.totalReleasing ?? 0n
-  const bufferClaimable = bufferQuery.data?.agx.totalClaimable ?? 0n
-  const bufferReleasing = bufferQuery.data?.agx.totalReleasing ?? 0n
-  const bufferGagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? 0n
-  const bufferGagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? 0n
+  const queueClaimable = queueQuery.data?.totalClaimable ?? ZERO_BI
+  const queueReleasing = queueQuery.data?.totalReleasing ?? ZERO_BI
+  const bufferClaimable = bufferQuery.data?.agx.totalClaimable ?? ZERO_BI
+  const bufferReleasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
+  const bufferGagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
+  const bufferGagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
   const chainReady = walletReady && queueQuery.data != null
   const bufferChainReady = walletReady && bufferQuery.data != null
 

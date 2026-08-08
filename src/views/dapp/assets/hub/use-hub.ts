@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { baseDailyPctFromEpoch, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -229,7 +230,7 @@ export function useAssetsHub(): AssetsHubOverview {
   })
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContribution,
-    queryFn: (addr) => readContributionSnapshot(addr as Address, 0n),
+    queryFn: (addr) => readContributionSnapshot(addr as Address, ZERO_BI),
     enabled: chainFallbackEnabled,
   })
   // gAGX 缓冲以链上分流器快照为准；不能绑 API 回退开关，否则 API 就绪时会恒为 0
@@ -249,11 +250,13 @@ export function useAssetsHub(): AssetsHubOverview {
     burnQuery.data !== undefined &&
     xmineQuery.data !== undefined
   const stakeYield = chainYieldReady
-    ? stakeRows.reduce((sum, row) => sum + row.blockReward + row.extraInterest, 0n)
-    : 0n
-  const lpYield = chainYieldReady ? lpRows.reduce((sum, row) => sum + row.profit, 0n) : 0n
-  const burnYield = chainYieldReady ? burnRows.reduce((sum, row) => sum + row.profit, 0n) : 0n
-  const xPending = chainYieldReady ? (xmine?.pending ?? 0n) : 0n
+    ? stakeRows.reduce((sum, row) => sum + row.blockReward + row.extraInterest, ZERO_BI)
+    : ZERO_BI
+  const lpYield = chainYieldReady ? lpRows.reduce((sum, row) => sum + row.profit, ZERO_BI) : ZERO_BI
+  const burnYield = chainYieldReady
+    ? burnRows.reduce((sum, row) => sum + row.profit, ZERO_BI)
+    : ZERO_BI
+  const xPending = chainYieldReady ? (xmine?.pending ?? ZERO_BI) : ZERO_BI
   const stakeYieldNum = formatTokenAmountToNumber(stakeYield, GAGX_DECIMALS)
   const lpYieldNum = formatTokenAmountToNumber(lpYield, GAGX_DECIMALS)
   const burnYieldNum = formatTokenAmountToNumber(burnYield, GAGX_DECIMALS)
@@ -261,9 +264,9 @@ export function useAssetsHub(): AssetsHubOverview {
 
   /** 产品口径「可赎回已释放」= 仓位层可领本金（Locked getReleasedPrincipal / Bond pendingPayout） */
   const redeemableReleasedWei = chainYieldReady
-    ? stakeRows.reduce((sum, row) => sum + row.releasedPrincipal, 0n) +
-      lpRows.reduce((sum, row) => sum + row.pendingPayout, 0n) +
-      burnRows.reduce((sum, row) => sum + row.pendingPayout, 0n)
+    ? stakeRows.reduce((sum, row) => sum + row.releasedPrincipal, ZERO_BI) +
+      lpRows.reduce((sum, row) => sum + row.pendingPayout, ZERO_BI) +
+      burnRows.reduce((sum, row) => sum + row.pendingPayout, ZERO_BI)
     : null
   const redeemableReleasedNum =
     redeemableReleasedWei != null
@@ -356,10 +359,10 @@ export function useAssetsHub(): AssetsHubOverview {
       // API 尚未分 token；gAGX 桶以链上分流器快照为准（手册 §13）
       bufferGagxTotal: bufferQuery.isError
         ? '—'
-        : `${formatTokenAmount(buffer?.gagx.totalRemaining ?? 0n, GAGX_DECIMALS, 2)} gAGX`,
+        : `${formatTokenAmount(buffer?.gagx.totalRemaining ?? ZERO_BI, GAGX_DECIMALS, 2)} gAGX`,
       bufferGagxReleased: bufferQuery.isError
         ? '—'
-        : `${formatTokenAmount(buffer?.gagx.totalClaimed ?? 0n, GAGX_DECIMALS, 2)} gAGX`,
+        : `${formatTokenAmount(buffer?.gagx.totalClaimed ?? ZERO_BI, GAGX_DECIMALS, 2)} gAGX`,
       modes: {
         stake: modeFromApiAmount(
           apiDist.stake_total_agx,
@@ -421,18 +424,18 @@ export function useAssetsHub(): AssetsHubOverview {
     return zeroOverview(emptyModes, true)
   }
 
-  const stakePrincipal = stakeRows.reduce((sum, row) => sum + row.principal, 0n)
-  const lpPrincipal = lpRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
-  const burnPrincipal = burnRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
-  const xStake = xmine?.miningStake ?? 0n
+  const stakePrincipal = stakeRows.reduce((sum, row) => sum + row.principal, ZERO_BI)
+  const lpPrincipal = lpRows.reduce((sum, row) => sum + row.payoutRemaining, ZERO_BI)
+  const burnPrincipal = burnRows.reduce((sum, row) => sum + row.payoutRemaining, ZERO_BI)
+  const xStake = xmine?.miningStake ?? ZERO_BI
 
-  const contribution = contribQuery.data?.contribution ?? 0n
+  const contribution = contribQuery.data?.contribution ?? ZERO_BI
   const buffer = bufferQuery.data
   // 在池总量 = remaining（可领+释放中）；已提取 = claimed（AGX 口径）
-  const bufferTotal = buffer?.agx.totalRemaining ?? 0n
-  const bufferReleased = buffer?.agx.totalClaimed ?? 0n
-  const bufferGagxTotal = buffer?.gagx.totalRemaining ?? 0n
-  const bufferGagxReleased = buffer?.gagx.totalClaimed ?? 0n
+  const bufferTotal = buffer?.agx.totalRemaining ?? ZERO_BI
+  const bufferReleased = buffer?.agx.totalClaimed ?? ZERO_BI
+  const bufferGagxTotal = buffer?.gagx.totalRemaining ?? ZERO_BI
+  const bufferGagxReleased = buffer?.gagx.totalClaimed ?? ZERO_BI
 
   const stakePosNum = formatTokenAmountToNumber(stakePrincipal, AGX_DECIMALS)
   const lpPosNum = formatTokenAmountToNumber(lpPrincipal, AGX_DECIMALS)
@@ -475,7 +478,7 @@ export function useAssetsHub(): AssetsHubOverview {
         positionUsd: positionUsdOf(stakePosNum, priceUsd),
         yieldValue: `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`,
         yieldApprox: formatUsdApprox(stakeYieldNum, priceUsd),
-        hasBalance: stakePrincipal > 0n || stakeYield > 0n,
+        hasBalance: stakePrincipal > ZERO_BI || stakeYield > ZERO_BI,
       },
       lpbond: {
         aprLabel: bondApr,
@@ -484,7 +487,7 @@ export function useAssetsHub(): AssetsHubOverview {
         positionUsd: positionUsdOf(lpPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`,
         yieldApprox: formatUsdApprox(lpYieldNum, priceUsd),
-        hasBalance: lpPrincipal > 0n || lpYield > 0n,
+        hasBalance: lpPrincipal > ZERO_BI || lpYield > ZERO_BI,
       },
       burnbond: {
         aprLabel: bondApr,
@@ -493,7 +496,7 @@ export function useAssetsHub(): AssetsHubOverview {
         positionUsd: positionUsdOf(burnPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`,
         yieldApprox: formatUsdApprox(burnYieldNum, priceUsd),
-        hasBalance: burnPrincipal > 0n || burnYield > 0n,
+        hasBalance: burnPrincipal > ZERO_BI || burnYield > ZERO_BI,
       },
       xmine: {
         aprLabel: xmineApr,
@@ -502,7 +505,7 @@ export function useAssetsHub(): AssetsHubOverview {
         positionUsd: positionUsdOf(xPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(xPending, X_DECIMALS, 2)} X`,
         yieldApprox: formatUsdApprox(xPendingNum, null),
-        hasBalance: xStake > 0n || xPending > 0n,
+        hasBalance: xStake > ZERO_BI || xPending > ZERO_BI,
       },
     },
     overviewLoading: false,

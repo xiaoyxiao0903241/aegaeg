@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { isGenesisProgramEnded } from '~/core/presale/is-genesis-program-ended'
@@ -59,7 +60,7 @@ export function useGenesisDetail(genesis: GenesisSessionState) {
     !salesLoading &&
     !genesis.isPhasesLoading &&
     desktopRows.length === 0 &&
-    genesis.userTotal > 0n
+    genesis.userTotal > ZERO_BI
   const contributionsTable = dappTableViewState({
     sessionReady,
     isLoading: isLoggingIn || salesLoading || genesis.isPhasesLoading,

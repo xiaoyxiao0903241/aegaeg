@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import type { BondKind } from '~/core/staking/staking-period'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
@@ -146,8 +147,8 @@ export function useBondDetail(kind: BondKind) {
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
   const totalDeposit = [market180.data, market360.data, market540.data].reduce(
-    (sum, m) => sum + (m?.totalDeposit ?? 0n),
-    0n,
+    (sum, m) => sum + (m?.totalDeposit ?? ZERO_BI),
+    ZERO_BI,
   )
   const totalDepositNum = formatTokenAmountToNumber(totalDeposit, AGX_DECIMALS)
   // 溢价/折扣：取已加载周期中折扣最深（discountRateBP 最小）的展示
@@ -160,15 +161,15 @@ export function useBondDetail(kind: BondKind) {
   const premiumLabel = deepestDiscount == null ? ZERO_PCT : formatBondDiscountLabel(deepestDiscount)
 
   const rows = walletReady && bondQuery.data != null ? bondQuery.data : []
-  let payoutRemaining = 0n
-  let pendingPayout = 0n
-  let profit = 0n
+  let payoutRemaining = ZERO_BI
+  let pendingPayout = ZERO_BI
+  let profit = ZERO_BI
   for (const row of rows) {
     payoutRemaining += row.payoutRemaining
     pendingPayout += row.pendingPayout
     profit += row.profit
   }
-  const pendingRelease = payoutRemaining > pendingPayout ? payoutRemaining - pendingPayout : 0n
+  const pendingRelease = payoutRemaining > pendingPayout ? payoutRemaining - pendingPayout : ZERO_BI
 
   const held = formatTokenAmountToNumber(payoutRemaining, AGX_DECIMALS)
   const released = formatTokenAmountToNumber(pendingPayout, AGX_DECIMALS)

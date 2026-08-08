@@ -1,3 +1,4 @@
+import { ZERO_BI } from '~/core/constants'
 import { useAgxContributionSummary } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -27,7 +28,7 @@ export function useRewardsContribution(walletReady: boolean) {
 
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContribution,
-    queryFn: (addr) => readContributionSnapshot(addr as Address, 0n),
+    queryFn: (addr) => readContributionSnapshot(addr as Address, ZERO_BI),
   })
 
   const contributionValue =

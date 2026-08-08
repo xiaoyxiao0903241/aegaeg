@@ -1,6 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -105,9 +106,9 @@ export function useFlashExchangeSession(
         : gagxReverseBalances
 
   const sellBalance =
-    decisionBigint(balancesQuery.data?.sell, balancesQuery.isPlaceholderData) ?? 0n
+    decisionBigint(balancesQuery.data?.sell, balancesQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
-    decisionBigint(balancesQuery.data?.approved, balancesQuery.isPlaceholderData) ?? 0n
+    decisionBigint(balancesQuery.data?.approved, balancesQuery.isPlaceholderData) ?? ZERO_BI
   const balancesLoaded =
     isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data) && usd1ConfigReady
   const isBalancesLoading =
@@ -132,7 +133,7 @@ export function useFlashExchangeSession(
     getQuoteQueryKey: (amountIn) =>
       queryKeys.chain.flashSwapQuote(pairId, direction, amountIn.toString()),
     fetchQuote: (amountIn) => readFlashPairQuote(pairId, amountIn),
-    selectQuotedOut: (quote) => quote ?? 0n,
+    selectQuotedOut: (quote) => quote ?? ZERO_BI,
   })
 
   const spot = useFlashExchangeSpotRates({

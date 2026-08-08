@@ -1,5 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
+import { TEN_BI, ZERO_BI } from '~/core/constants'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -25,8 +26,8 @@ export function useMarketTradeSpotRates({
   poolContext,
   amountIn,
 }: UseMarketTradeSpotRatesArgs) {
-  const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
-  const invertedSpotAmount = 10n ** BigInt(pair.buy.decimals)
+  const spotQuoteAmount = TEN_BI ** BigInt(pair.sell.decimals)
+  const invertedSpotAmount = TEN_BI ** BigInt(pair.buy.decimals)
   const invertedPath = [...path].reverse() as `0x${string}`[]
   const invertedPathKey = invertedPath.join('-').toLowerCase()
 
@@ -75,17 +76,17 @@ export function useMarketTradeSpotRates({
   })
 
   // 展示面保留上一次报价，不用 liveQuotedOut 置零（那是提交门禁专用）
-  const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
-  const invertedQuotedOut = invertedSpotQuoteQuery.data?.quotedOut ?? 0n
+  const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? ZERO_BI
+  const invertedQuotedOut = invertedSpotQuoteQuery.data?.quotedOut ?? ZERO_BI
   const isSpotQuoting =
-    amountIn === 0n &&
+    amountIn === ZERO_BI &&
     (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&
-    spotQuotedOut === 0n
+    spotQuotedOut === ZERO_BI
   const isExchangePriceQuoting =
-    (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
+    (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === ZERO_BI
   const isExchangePriceInvertedQuoting =
     (invertedSpotQuoteQuery.isPending || invertedSpotQuoteQuery.isPlaceholderData) &&
-    invertedQuotedOut === 0n
+    invertedQuotedOut === ZERO_BI
 
   const exchangePriceLabel = formatExchangeRateApprox({
     amountIn: spotQuoteAmount,

@@ -1,3 +1,4 @@
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
@@ -64,9 +65,9 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
   const migration = useMigrationUser(address, { enabled: walletReady })
 
   const balance =
-    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
-    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
   const amountInput = useCappedTokenAmountInput({
@@ -84,7 +85,7 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     isBound,
     balance,
     allowance,
-    remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? 0n) : 0n,
+    remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? ZERO_BI) : ZERO_BI,
     poolOpen: balancesLoaded ? preflightQuery.data?.poolOpen : undefined,
     isOldAccount: migration.isOldAccount,
   })

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { selectLockedClaimLegs } from '~/core/assets/select-locked-claim-legs'
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -87,13 +88,13 @@ type RedeemVars = {
 }
 
 function stakeSortKey(row: AssetsStakeRow): { start: number; end: number } {
-  const end = row.expiry > 0n ? Number(row.expiry) : Number.MAX_SAFE_INTEGER
+  const end = row.expiry > ZERO_BI ? Number(row.expiry) : Number.MAX_SAFE_INTEGER
   const start = row.stakeIndex == null ? Number.MAX_SAFE_INTEGER : row.stakeIndex
   return { start, end }
 }
 
 function bondSortKey(row: AssetsBondRow): { start: number; end: number } {
-  const end = row.vestingEndTime > 0n ? Number(row.vestingEndTime) : Number.MAX_SAFE_INTEGER
+  const end = row.vestingEndTime > ZERO_BI ? Number(row.vestingEndTime) : Number.MAX_SAFE_INTEGER
   return { start: row.bondIndex, end }
 }
 
@@ -251,7 +252,7 @@ export function usePositionDock(product: AssetsProduct) {
               source: 'locked' as const,
               pool: row.pool,
               stakeIndex: row.stakeIndex!,
-              amount: legs.reduce((sum, leg) => sum + leg.amount, 0n),
+              amount: legs.reduce((sum, leg) => sum + leg.amount, ZERO_BI),
               legs,
             }
           })()
@@ -388,10 +389,10 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     if (stakeQuery.isError) return errorStatCells(stakeCount)
     if (stakeQuery.data === undefined) return zeroStatCells(stakeCount)
     const rows = stakeQuery.data
-    const total = rows.reduce((sum, row) => sum + row.principal, 0n)
+    const total = rows.reduce((sum, row) => sum + row.principal, ZERO_BI)
     const { released, pending: pendingRelease } = aggregateStakeRelease(rows)
-    const rebaseReward = rows.reduce((sum, row) => sum + row.blockReward, 0n)
-    const rebaseBonus = rows.reduce((sum, row) => sum + row.extraInterest, 0n)
+    const rebaseReward = rows.reduce((sum, row) => sum + row.blockReward, ZERO_BI)
+    const rebaseBonus = rows.reduce((sum, row) => sum + row.extraInterest, ZERO_BI)
     // 质押总收益 = 未领 Rebase 收益 + 加成（gAGX）；不含 claimableBalance（AGX 本金）
     const totalYield = rebaseReward + rebaseBonus
     return mapPricedStats(
@@ -412,14 +413,14 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   if (bondQuery.data === undefined) return zeroStatCells(bondCount)
 
   const rows = bondQuery.data
-  const total = rows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
-  const released = rows.reduce((sum, row) => sum + row.pendingPayout, 0n)
+  const total = rows.reduce((sum, row) => sum + row.payoutRemaining, ZERO_BI)
+  const released = rows.reduce((sum, row) => sum + row.pendingPayout, ZERO_BI)
   const pendingRelease = rows.reduce((sum, row) => {
     const left =
-      row.payoutRemaining > row.pendingPayout ? row.payoutRemaining - row.pendingPayout : 0n
+      row.payoutRemaining > row.pendingPayout ? row.payoutRemaining - row.pendingPayout : ZERO_BI
     return sum + left
-  }, 0n)
-  const profit = rows.reduce((sum, row) => sum + row.profit, 0n)
+  }, ZERO_BI)
+  const profit = rows.reduce((sum, row) => sum + row.profit, ZERO_BI)
 
   return [
     ...mapPricedStats(

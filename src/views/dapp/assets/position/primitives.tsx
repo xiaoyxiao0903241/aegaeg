@@ -7,6 +7,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 
 import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
+import { ZERO_BI } from '~/core/constants'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -54,7 +55,7 @@ export function AssetsPositionRowHeader({
   /** 倒计时「天」单位的本地化文案 */
   dayUnit: string
 }) {
-  const needsClock = remainingValue == null && remainingAt > 0n
+  const needsClock = remainingValue == null && remainingAt > ZERO_BI
   const [nowSec, setNowSec] = useState(() => Math.floor(Date.now() / 1000))
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export function AssetsPositionRowHeader({
 
   const display =
     remainingValue ??
-    (remainingAt > 0n ? formatAssetsRemainingCountdown(remainingAt, nowSec, dayUnit) : '—')
+    (remainingAt > ZERO_BI ? formatAssetsRemainingCountdown(remainingAt, nowSec, dayUnit) : '—')
 
   return (
     <div className="flex items-center gap-2">
@@ -337,8 +338,8 @@ export function AssetsPositionBondRow({
   row,
 }: AssetsPositionRowFrameProps<AssetsBondRow>) {
   const { messages: t } = useI18n()
-  const canClaim = row.profit > 0n
-  const canRedeem = row.pendingPayout > 0n
+  const canClaim = row.profit > ZERO_BI
+  const canRedeem = row.pendingPayout > ZERO_BI
   const periodLabel = formatPeriodLabel(String(row.period))
   const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
 
@@ -354,7 +355,7 @@ export function AssetsPositionBondRow({
         <AssetsPositionPrincipalColumn
           amountText={formatAmount(row.payoutRemaining, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
           badgeText={formatAmount(row.pendingPayout, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
-          badgeVisible={row.pendingPayout > 0n}
+          badgeVisible={row.pendingPayout > ZERO_BI}
           label={t.assets.position.bondPrincipal}
         />
         <AssetsPositionYieldColumn
@@ -363,7 +364,7 @@ export function AssetsPositionBondRow({
             // Bond 无独立加成字段；占位保持与质押卡双列数字对齐
             <AssetsPositionBoostBadge
               className="pointer-events-none opacity-0"
-              text={formatAmount(0n, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
+              text={formatAmount(ZERO_BI, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
             />
           }
           yieldLabel={t.assets.position.yield}
@@ -405,12 +406,12 @@ export function AssetsPositionStakeRow(
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
   // 与手册一致：无利息不开放领取（bond 卡同口径 profit>0）
-  const canClaim = !inWarmup && reward > 0n
+  const canClaim = !inWarmup && reward > ZERO_BI
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
     : row.kind === 'liquid'
-      ? row.principal > 0n
-      : row.claimableBalance > 0n
+      ? row.principal > ZERO_BI
+      : row.claimableBalance > ZERO_BI
   const periodLabel = formatPeriodLabel(row.period)
   const voucherAddress = row.kind === 'locked' && row.pool ? row.pool : null
 
@@ -441,7 +442,7 @@ export function AssetsPositionStakeRow(
       <AssetsPositionRowHeader
         dayUnit={dayUnit}
         periodLabel={periodLabel}
-        remainingAt={inWarmup ? 0n : row.expiry}
+        remainingAt={inWarmup ? ZERO_BI : row.expiry}
         remainingLabel={t.assets.position.remaining}
         remainingValue={remainingValue}
       />
@@ -449,7 +450,7 @@ export function AssetsPositionStakeRow(
         <AssetsPositionPrincipalColumn
           amountText={formatAmount(row.principal, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
           badgeText={formatAmount(row.releasedPrincipal, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
-          badgeVisible={row.releasedPrincipal > 0n}
+          badgeVisible={row.releasedPrincipal > ZERO_BI}
           label={t.assets.position.staked}
         />
         <AssetsPositionYieldColumn
@@ -457,7 +458,7 @@ export function AssetsPositionStakeRow(
           badge={
             // 收益与加成双属性；无加成时仍占位，与左侧本金数字对齐
             <AssetsPositionBoostBadge
-              className={boost > 0n ? undefined : 'pointer-events-none opacity-0'}
+              className={boost > ZERO_BI ? undefined : 'pointer-events-none opacity-0'}
               text={formatAmount(boost, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
             />
           }

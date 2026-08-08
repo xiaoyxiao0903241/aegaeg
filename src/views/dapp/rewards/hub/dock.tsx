@@ -8,6 +8,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
@@ -108,7 +109,7 @@ export function RewardsHubDock() {
     if (!walletReady) return null
     const snap = luckyQuery.data
     if (snap == null) return null
-    if (!snap.claimable || snap.rewardAmount <= 0n) return 0n
+    if (!snap.claimable || snap.rewardAmount <= ZERO_BI) return ZERO_BI
     return snap.rewardAmount
   })()
   const luckyAmount = luckyWei == null ? null : formatTokenAmountToNumber(luckyWei, AGX_DECIMALS)

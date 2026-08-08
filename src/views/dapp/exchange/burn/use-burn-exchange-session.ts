@@ -1,5 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
+import { ZERO_BI } from '~/core/constants'
 import {
   burnContributionSwapBlocksSubmit,
   evaluateBurnContributionSwap,
@@ -77,9 +78,9 @@ export function useBurnExchangeSession(
   })
 
   const sellBalance =
-    decisionBigint(balancesQuery.data?.sell, balancesQuery.isPlaceholderData) ?? 0n
+    decisionBigint(balancesQuery.data?.sell, balancesQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
-    decisionBigint(balancesQuery.data?.approved, balancesQuery.isPlaceholderData) ?? 0n
+    decisionBigint(balancesQuery.data?.approved, balancesQuery.isPlaceholderData) ?? ZERO_BI
   const balancesLoaded = isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data)
   const isBalancesLoading = walletReady && (!balancesLoaded || balancesQuery.isLoading)
 
@@ -98,11 +99,11 @@ export function useBurnExchangeSession(
     quoteRefreshIntervalMs: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) => queryKeys.chain.burnSwapQuote(amountIn.toString()),
     fetchQuote: (amountIn) => readBurnContributionQuote(amountIn),
-    selectQuotedOut: (quote) => quote ?? 0n,
+    selectQuotedOut: (quote) => quote ?? ZERO_BI,
   })
 
-  const contributionBalance = userStatsQuery.data?.contributionBalance ?? 0n
-  const rateBps = configQuery.data?.rateBps ?? 0n
+  const contributionBalance = userStatsQuery.data?.contributionBalance ?? ZERO_BI
+  const rateBps = configQuery.data?.rateBps ?? ZERO_BI
 
   const pointsLabel = t.exchange.burn.pointsToken
   const exchangePriceLabel = formatBurnContributionRateLabel({

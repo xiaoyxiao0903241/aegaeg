@@ -4,6 +4,7 @@
  * 供 referral / participate / grant / lucky / cobuild 等 mode dock 组装；
  * 禁止再扩成域级 mega primitives。
  */
+import { ZERO_BI } from '~/core/constants'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -119,7 +120,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           claimableLabel={t.rewards.detail.claimable}
           requiredContributionLabel={vm.mixed.requiredContributionLabel}
           requiredText={
-            view === 'lucky' && vm.amount > 0n ? vm.requiredText : formatApiAmount(null)
+            view === 'lucky' && vm.amount > ZERO_BI ? vm.requiredText : formatApiAmount(null)
           }
           tokenGagx={vm.mixed.tokenGagx}
         />

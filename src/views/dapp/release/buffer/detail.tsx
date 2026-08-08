@@ -7,6 +7,7 @@
  */
 import { useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
@@ -39,12 +40,12 @@ export function BufferDetail() {
   const bufferLogRows = bufferLogsQuery.data?.items.map(mapBufferPoolLogToRow) ?? []
   const bufferLogsTotal = bufferLogsQuery.data?.total ?? 0
   const bufferLogsLoading = sessionReady && bufferLogsQuery.isLoading
-  const amount = bufferQuery.data?.agx.totalAmount ?? 0n
-  const claimed = bufferQuery.data?.agx.totalClaimed ?? 0n
-  const releasing = bufferQuery.data?.agx.totalReleasing ?? 0n
-  const gagxAmount = bufferQuery.data?.gagx.totalAmount ?? 0n
-  const gagxClaimed = bufferQuery.data?.gagx.totalClaimed ?? 0n
-  const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? 0n
+  const amount = bufferQuery.data?.agx.totalAmount ?? ZERO_BI
+  const claimed = bufferQuery.data?.agx.totalClaimed ?? ZERO_BI
+  const releasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
+  const gagxAmount = bufferQuery.data?.gagx.totalAmount ?? ZERO_BI
+  const gagxClaimed = bufferQuery.data?.gagx.totalClaimed ?? ZERO_BI
+  const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
   const api = apiSummaryQuery.data
   const chainReady = walletReady && bufferQuery.data != null
 

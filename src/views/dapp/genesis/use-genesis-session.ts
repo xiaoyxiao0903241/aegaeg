@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { zeroAddress } from 'viem'
 
+import { ZERO_BI } from '~/core/constants'
 import { clampGenesisShares } from '~/core/presale/presale-math'
 import { useI18n } from '~/i18n/use-i18n'
 import { genesisPurchaseSummary } from '~/views/dapp/genesis/shared'
@@ -21,7 +22,8 @@ export function useGenesisSession() {
   const [sharesDraft, setSharesDraft] = useState(0)
 
   const shares = clampGenesisShares(sharesDraft, reads.maxShares)
-  const purchaseAmount = reads.sharePriceWei > 0n ? reads.sharePriceWei * BigInt(shares) : 0n
+  const purchaseAmount =
+    reads.sharePriceWei > ZERO_BI ? reads.sharePriceWei * BigInt(shares) : ZERO_BI
   const previewUser = reads.address ?? zeroAddress
   const previewQuery = usePresalePreviewAirdropValueQuery(
     previewUser,

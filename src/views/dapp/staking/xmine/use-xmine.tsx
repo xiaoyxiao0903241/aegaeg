@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
+import { ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
   formatTokenAmountInputDisplay,
@@ -72,18 +73,18 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
   })
 
   const balance =
-    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
-    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const miningQuota =
-    decisionBigint(preflightQuery.data?.miningQuota, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.miningQuota, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const miningStaked =
-    decisionBigint(preflightQuery.data?.miningStaked, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.miningStaked, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
   // 上限：钱包 gAGX 与剩余挖矿额度取较小值
   const spendable = xmineSpendableCap(balance, miningQuota, miningStaked)
-  const remainingQuota = miningQuota > miningStaked ? miningQuota - miningStaked : 0n
+  const remainingQuota = miningQuota > miningStaked ? miningQuota - miningStaked : ZERO_BI
 
   const amountInput = useCappedTokenAmountInput({
     decimals: GAGX_DECIMALS,
@@ -123,7 +124,7 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
   // 手册：授权不足仍可提交，内联 approve → live → stake。
   const moneyOk = blockReason == null || blockReason === 'insufficientAllowance'
   const canSubmit =
-    !locked && amountInput.amountIn > 0n && moneyOk && preflightQuery.data !== undefined
+    !locked && amountInput.amountIn > ZERO_BI && moneyOk && preflightQuery.data !== undefined
 
   function unlock() {
     stake.clearLock()
@@ -250,7 +251,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(tvlGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(tvlGagxWei ?? 0n, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(tvlGagxWei ?? ZERO_BI, GAGX_DECIMALS, 2)} gAGX`}
         />
       ),
     },
@@ -260,7 +261,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(agxPerX, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(agxPerXWei ?? 0n, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(agxPerXWei ?? ZERO_BI, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },

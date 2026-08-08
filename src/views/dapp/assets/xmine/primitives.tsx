@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
@@ -71,7 +72,7 @@ export function AssetsXminePositionCard({
   onActivateWarmup,
   onRequestUnstake,
 }: AssetsXminePositionCardProps) {
-  const inWarmup = warmupGons > 0n
+  const inWarmup = warmupGons > ZERO_BI
   const [nowSec, setNowSec] = useState(0)
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export function AssetsXminePositionCard({
 
   const inWarmupLocked = inWarmup && (nowSec === 0 || nowSec < Number(warmupEndTime))
   const warmupReady = inWarmup && nowSec > 0 && nowSec >= Number(warmupEndTime)
-  const redeemableStake = inWarmup ? 0n : miningStake
+  const redeemableStake = inWarmup ? ZERO_BI : miningStake
   const remainingLabel = inWarmupLocked
     ? nowSec === 0
       ? lockedPrefix
@@ -155,7 +156,7 @@ export function AssetsXminePositionCard({
             <MainButton
               className="h-7 min-h-7 text-xs"
               density="inverse"
-              disabled={pending <= 0n || inWarmup || locked || busy}
+              disabled={pending <= ZERO_BI || inWarmup || locked || busy}
               onClick={onClaim}
             >
               {claimLabel}
@@ -163,7 +164,7 @@ export function AssetsXminePositionCard({
             <MainButton
               className="h-7 min-h-7 text-xs"
               density="inverse"
-              disabled={gons <= 0n || inWarmup || locked || busy}
+              disabled={gons <= ZERO_BI || inWarmup || locked || busy}
               onClick={onRequestUnstake}
               variant="secondary"
             >

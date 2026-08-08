@@ -1,5 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
@@ -107,9 +108,9 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const slippageQuery = useBondHelperSlippageQuery()
 
   const balance =
-    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
-    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
   const amountInput = useCappedTokenAmountInput({
@@ -125,7 +126,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
 
   const market = marketQuery.data
   const marketLoaded = market !== undefined
-  const payoutLoaded = amountInput.amountIn === 0n || payoutQuery.data !== undefined
+  const payoutLoaded = amountInput.amountIn === ZERO_BI || payoutQuery.data !== undefined
   const blockReason = evaluateBondZapLive({
     amount: amountInput.amountIn,
     isBound: balancesLoaded ? (preflightQuery.data?.isBound ?? false) : false,
@@ -139,14 +140,14 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     totalDeposit: marketLoaded ? market.totalDeposit : null,
     maxPayout: marketLoaded ? market.maxPayoutAmount : null,
     netPayout:
-      amountInput.amountIn === 0n
-        ? 0n
+      amountInput.amountIn === ZERO_BI
+        ? ZERO_BI
         : payoutLoaded
           ? (payoutQuery.data?.netPayout ?? null)
           : null,
     grossPayout:
-      amountInput.amountIn === 0n
-        ? 0n
+      amountInput.amountIn === ZERO_BI
+        ? ZERO_BI
         : payoutLoaded
           ? (payoutQuery.data?.grossPayout ?? null)
           : null,
@@ -221,13 +222,13 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
         : ''
 
   const receiveLabel =
-    amountInput.amountIn === 0n
+    amountInput.amountIn === ZERO_BI
       ? '0'
       : payoutQuery.isError
         ? '0'
         : payoutQuery.data === undefined
           ? ''
-          : payoutQuery.data.netPayout > 0n
+          : payoutQuery.data.netPayout > ZERO_BI
             ? formatTokenAmount(payoutQuery.data.netPayout, AGX_DECIMALS, 4)
             : '0'
 
@@ -264,7 +265,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
         : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, 4),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
-    isPayoutQuoting: payoutQuery.isFetching && !receiveLabel && amountInput.amountIn > 0n,
+    isPayoutQuoting: payoutQuery.isFetching && !receiveLabel && amountInput.amountIn > ZERO_BI,
     isSlippageLoading: slippageQuery.isFetching && !slippageLabel && !slippageQuery.isError,
     discountLabel: discountLabel || '0',
     periodDiscounts,

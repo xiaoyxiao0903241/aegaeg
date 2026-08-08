@@ -1,5 +1,6 @@
 import type { UseQueryResult } from '@tanstack/react-query'
 
+import { ZERO_BI } from '~/core/constants'
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
@@ -163,7 +164,7 @@ export function usePresalePreviewAirdropValueQuery(
   purchaseAmount: bigint,
   options?: ChainQueryOptions,
 ) {
-  const enabled = (options?.enabled ?? true) && purchaseAmount > 0n
+  const enabled = (options?.enabled ?? true) && purchaseAmount > ZERO_BI
   return useChainQuery({
     queryKey: queryKeys.chain.presalePreviewAirdropValue(
       user,
@@ -199,9 +200,9 @@ export function useUsd1PresaleWalletQuery(address?: string, options?: ChainQuery
   return {
     balanceQuery,
     allowanceQuery,
-    usd1Balance: balanceQuery.data ?? 0n,
+    usd1Balance: balanceQuery.data ?? ZERO_BI,
     usd1BalanceKnown: balanceQuery.data !== undefined,
-    allowance: allowanceQuery.data ?? 0n,
+    allowance: allowanceQuery.data ?? ZERO_BI,
     isWalletLoading: queryEnabled && (balanceQuery.isLoading || allowanceQuery.isLoading),
   }
 }

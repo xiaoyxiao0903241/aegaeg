@@ -8,6 +8,7 @@ import {
   matchClaimPlanIndices,
   planLabel,
 } from '~/core/assets/claim-plans'
+import { HUNDRED_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -96,7 +97,7 @@ export function useAssetsClaimModal(args: {
   // 链上校验仍在写交易内兜底；CTA 需贡献值充足且释放 / 复投计划就绪
   const canConfirm = walletReady && !claim.isLocked && !claim.isPending && contributionOk && plansOk
 
-  const releaseAmount = (target.amount * BigInt(releasePct)) / 100n
+  const releaseAmount = (target.amount * BigInt(releasePct)) / HUNDRED_BI
   const restakeAmount = target.amount - releaseAmount
   const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
   const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)

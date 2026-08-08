@@ -1,6 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
+import { TEN_BI, ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { previewTurbineExpectedAgx } from '~/core/exchange/turbine-expected-agx'
 import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-buckets'
@@ -36,13 +37,13 @@ export type TurbineSegment = 'unlock' | 'claim'
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 /** 1 个完整 AGX 的最小单位；单位行情通过合约 quoteUsdInForAgxOut 获取。 */
-const ONE_AGX = 10n ** BigInt(AGX_DECIMALS)
+const ONE_AGX = TEN_BI ** BigInt(AGX_DECIMALS)
 
 /**
  * 概览 USD 提示：缺少单位报价时显示 `$0.00`（空态统一值）
  */
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
-  if (unitUsdPerAgx === undefined || unitUsdPerAgx === 0n || amountAgx === 0n) {
+  if (unitUsdPerAgx === undefined || unitUsdPerAgx === ZERO_BI || amountAgx === ZERO_BI) {
     return formatNumber(0, { digits: 2, prefix: '$' })
   }
   const usdNumber = formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS)
@@ -107,14 +108,14 @@ export function useTurbineExchangeSession(
     placeholderData: keepPreviousData,
   })
 
-  const quota = quotaQuery.data ?? 0n
-  const usd1Balance = balancesQuery.data?.usd1 ?? 0n
+  const quota = quotaQuery.data ?? ZERO_BI
+  const usd1Balance = balancesQuery.data?.usd1 ?? ZERO_BI
   // 判断用余额：钱包切换时的旧值（keepPreviousData）不算已加载
   const balancesLoaded =
     isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data) &&
     isDecisionFresh(quotaQuery.isPlaceholderData, quotaQuery.data)
-  const decisionQuota = balancesLoaded ? quota : 0n
-  const decisionUsd1 = balancesLoaded ? usd1Balance : 0n
+  const decisionQuota = balancesLoaded ? quota : ZERO_BI
+  const decisionUsd1 = balancesLoaded ? usd1Balance : ZERO_BI
   const isBalancesLoading =
     walletReady && (!balancesLoaded || balancesQuery.isLoading || quotaQuery.isLoading)
 
@@ -153,7 +154,7 @@ export function useTurbineExchangeSession(
     queryFn: () => readTurbineUsdQuote(unlockAmountIn),
     scope: 'public',
     freshness: 'quote',
-    enabled: quotesEnabled && sessionReady && unlockAmountIn > 0n,
+    enabled: quotesEnabled && sessionReady && unlockAmountIn > ZERO_BI,
   })
 
   // 概览「AGX 价格」用 1 AGX 的单位报价；读取失败时显示 —
@@ -176,10 +177,10 @@ export function useTurbineExchangeSession(
 
   const turbineSummaryQuery = useTurbineSummary(sessionReady)
 
-  const usdNeeded = quoteQuery.data ?? 0n
+  const usdNeeded = quoteQuery.data ?? ZERO_BI
   // 预览实得 = min(输入按 swapSlippageBP 折减, 配额)；滑点未加载时不夸大展示
   const buyAgxLabel =
-    unlockAmountIn > 0n && slippageQuery.data !== undefined
+    unlockAmountIn > ZERO_BI && slippageQuery.data !== undefined
       ? formatTokenAmount(
           previewTurbineExpectedAgx({
             unlockAmountIn,
@@ -192,7 +193,7 @@ export function useTurbineExchangeSession(
       : formatNumber(0, { digits: 4 })
   // 所需 USD1 = 合约 quoteUsdInForAgxOut(agxAmount)，不伪造 1:1 或中间价
   const payUsd1Label =
-    unlockAmountIn <= 0n
+    unlockAmountIn <= ZERO_BI
       ? formatNumber(0, { digits: 4 })
       : quoteQuery.isError
         ? formatNumber(0, { digits: 4 })
@@ -219,7 +220,9 @@ export function useTurbineExchangeSession(
     return `${text}%`
   })()
 
-  const cooldownSeconds = Number(cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? 0n)
+  const cooldownSeconds = Number(
+    cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? ZERO_BI,
+  )
   const cooldownHours = cooldownSeconds > 0 ? Math.round(cooldownSeconds / 3600) : null
 
   // 链上分态：!isVested → 冷却中；isVested → 可领取（勿并入冷却卡，也勿丢进「累计已提取」）
@@ -227,7 +230,7 @@ export function useTurbineExchangeSession(
   const coolingBalance = silenceBuckets.cooling
   const claimableBalance = silenceBuckets.claimable
 
-  const unitUsdReady = unitUsd !== undefined && unitUsd > 0n && !unitPriceQuery.isError
+  const unitUsdReady = unitUsd !== undefined && unitUsd > ZERO_BI && !unitPriceQuery.isError
 
   // OpenAPI `/turbine/summary` 的 claimed_total 为已领取金额（小数字符串，勿当 wei）
   const claimedRaw = turbineSummaryQuery.data?.claimed_total
@@ -251,14 +254,13 @@ export function useTurbineExchangeSession(
     balancesLoaded &&
     !isSubmitting &&
     !blockResubmit &&
-    unlockAmountIn > 0n &&
+    unlockAmountIn > ZERO_BI &&
     unlockAmountIn <= decisionQuota &&
-    usdNeeded > 0n &&
+    usdNeeded > ZERO_BI &&
     usdNeeded <= decisionUsd1 &&
     !quoteQuery.isFetching
 
   async function runSubmit(run: (session: WriteSession) => Promise<void>) {
-    submitOutcomeRef.current = { ok: false, error: null }
     await chainWrite.mutate(async (session) => {
       await run(session)
     })
@@ -343,7 +345,7 @@ export function useTurbineExchangeSession(
         walletReady &&
         (quotaQuery.isLoading || silencesQuery.isLoading || turbineSummaryQuery.isLoading),
     },
-    hasClaimable: claimableBalance > 0n,
+    hasClaimable: claimableBalance > ZERO_BI,
     walletReady,
     canUnlock,
     isQuoting: quoteQuery.isFetching,

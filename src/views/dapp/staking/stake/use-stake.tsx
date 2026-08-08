@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import {
@@ -154,7 +155,7 @@ export function useStakeDetail() {
 
   const poolAgxWei = overviewQuery.data?.poolAgxBalance
   const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : 0
-  const epochNumber = overviewQuery.data?.epochNumber ?? 0n
+  const epochNumber = overviewQuery.data?.epochNumber ?? ZERO_BI
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode }> = [
@@ -164,7 +165,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(poolAgx, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(poolAgxWei ?? 0n, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(poolAgxWei ?? ZERO_BI, AGX_DECIMALS, 2)} AGX`}
         />
       ),
     },
@@ -189,9 +190,9 @@ export function useStakeDetail() {
   ]
 
   const stakeRows = walletReady && stakeQuery.data != null ? stakeQuery.data : []
-  let principal = 0n
-  let blockReward = 0n
-  let extraInterest = 0n
+  let principal = ZERO_BI
+  let blockReward = ZERO_BI
+  let extraInterest = ZERO_BI
   for (const row of stakeRows) {
     principal += row.principal
     blockReward += row.blockReward

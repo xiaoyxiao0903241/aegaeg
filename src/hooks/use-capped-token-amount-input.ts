@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { HUNDRED_BI, ZERO_BI } from '~/core/constants'
 import {
   cappedTokenAmountRaw,
   capTokenAmountInput,
@@ -71,9 +72,9 @@ export function useCappedTokenAmountInput({
   }
 
   function fillPercent(percent: number) {
-    if (balance === 0n) return
+    if (balance === ZERO_BI) return
     onBeforeCap?.()
-    const value = percent >= 100 ? balance : (balance * BigInt(percent)) / 100n
+    const value = percent >= 100 ? balance : (balance * BigInt(percent)) / HUNDRED_BI
     setAmountDraft(formatTokenAmountDraft(value, decimals, fractionLimit))
   }
 

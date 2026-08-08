@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -80,15 +81,15 @@ export function useQueue() {
       : RELEASE_DURATION_DAYS.map((days) => ({
           planIndex: -1,
           durationDays: days as number | null,
-          claimable: 0n,
-          total: 0n,
-          releasing: 0n,
+          claimable: ZERO_BI,
+          total: ZERO_BI,
+          releasing: ZERO_BI,
         }))
 
   const rows: ReleaseQueueRowView[] = rowPlans.map((found) => {
     const days = found.durationDays ?? 0
-    const claimable = found.claimable ?? 0n
-    const releasing = found.releasing ?? 0n
+    const claimable = found.claimable ?? ZERO_BI
+    const releasing = found.releasing ?? ZERO_BI
     const planIndex = found.planIndex ?? -1
     const pctLabel = formatReleasePct(claimable, releasing)
 
@@ -144,9 +145,9 @@ export function useQueue() {
                 : {
                     planIndex: -1,
                     durationDays: d,
-                    claimable: 0n,
-                    total: 0n,
-                    releasing: 0n,
+                    claimable: ZERO_BI,
+                    total: ZERO_BI,
+                    releasing: ZERO_BI,
                   },
             ),
             totalClaimable: row.claimable,

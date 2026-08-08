@@ -1,5 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
+import { ZERO_BI } from '~/core/constants'
 import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -109,7 +110,7 @@ export function useBondZapAgxPreviewQuery(
     queryKey: queryKeys.chain.bondZapAgxPreview(kind, depository, depositUsd1.toString()),
     scope: 'public',
     freshness: 'quote',
-    enabled: (options?.enabled ?? true) && depositUsd1 > 0n,
+    enabled: (options?.enabled ?? true) && depositUsd1 > ZERO_BI,
     queryFn: () =>
       readBondZapAgxPreview({
         kind,

@@ -1,3 +1,4 @@
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   genesisMaxShares,
@@ -78,9 +79,9 @@ export function useGenesisChainReads() {
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
   const priceWei = sharePriceWei(activePhase)
-  const userTotal = userTotalQuery.data ?? 0n
+  const userTotal = userTotalQuery.data ?? ZERO_BI
   const phaseRemaining = phaseRemainingQuery.data ?? null
-  const agxPriceWei = agxPriceQuery.data ?? 0n
+  const agxPriceWei = agxPriceQuery.data ?? ZERO_BI
   const airdropThresholdUsd =
     airdropThresholdQuery.data !== undefined
       ? presaleAirdropThresholdToUsd(airdropThresholdQuery.data)
@@ -98,8 +99,8 @@ export function useGenesisChainReads() {
   const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)
   const agxPriceUsd = fromChain > 0 ? fromChain : 0
   const discountBps = Number(activePhase?.discountBps ?? 0)
-  const minAmount = activePhase?.minAmount ?? 0n
-  const maxAmount = activePhase?.maxAmount ?? 0n
+  const minAmount = activePhase?.minAmount ?? ZERO_BI
+  const maxAmount = activePhase?.maxAmount ?? ZERO_BI
   const phaseLeft = remainingPhaseAmount(phaseRemaining, activePhase)
   const userLeft = remainingUserAmount(phaseRemaining, activePhase, maxAmount)
   const maxShares = genesisMaxShares({
@@ -151,11 +152,11 @@ export function useGenesisChainReads() {
     maxPurchasableWei,
     activeSeasonNumber,
     seasonOptions,
-    totalPurchased: totalPurchasedQuery.data ?? 0n,
+    totalPurchased: totalPurchasedQuery.data ?? ZERO_BI,
     globalPurchasedLoading: totalPurchasedQuery.isLoading,
-    userPhaseAmountCurrent: phaseRemaining?.userPhaseAmountCurrent ?? 0n,
+    userPhaseAmountCurrent: phaseRemaining?.userPhaseAmountCurrent ?? ZERO_BI,
     seasonContributionMaxWei:
-      phaseRemaining && phaseRemaining.userPurchaseLimit > 0n
+      phaseRemaining && phaseRemaining.userPurchaseLimit > ZERO_BI
         ? phaseRemaining.userPurchaseLimit
         : maxAmount,
     error: queryError,

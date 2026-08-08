@@ -1,3 +1,4 @@
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
@@ -91,7 +92,7 @@ export function XmineDock() {
         amountLabel={
           vm.position
             ? `${formatTokenAmount(
-                vm.position.warmupGons > 0n ? 0n : vm.position.miningStake,
+                vm.position.warmupGons > ZERO_BI ? ZERO_BI : vm.position.miningStake,
                 EXCHANGE_CONFIG.tokens.gagx.decimals,
                 2,
               )} gAGX`

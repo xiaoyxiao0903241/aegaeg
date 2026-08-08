@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useX0MiningLifetimeReward, useX0MiningLogs } from '~/hooks/use-api-data'
@@ -83,7 +84,7 @@ export function useXmineDock() {
   })
 
   const position = positionQuery.data
-  const isEmpty = !position || (position.miningStake <= 0n && position.pending <= 0n)
+  const isEmpty = !position || (position.miningStake <= ZERO_BI && position.pending <= ZERO_BI)
   const voucherAddress = BSC_CONTRACTS.xStakingPool
   const totalRows = isEmpty ? 0 : 1
 
@@ -171,7 +172,7 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
 
   const { miningStake, pending } = positionQuery.data
   // 无 PRV「已释放」映射 → 不把 miningStake 冒充已释放
-  const released = 0n
+  const released = ZERO_BI
   const lifetimeX = rewardLifetime.data ?? 0
 
   return [

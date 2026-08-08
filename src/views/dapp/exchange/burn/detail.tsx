@@ -4,6 +4,7 @@
  * 概览三格始终个人：累计销毁 AGX、获得贡献、已消耗贡献。
  * 未连接或 userStats 缺 → 显 0（不绑 getConfig().total*）。
  */
+import { ZERO_BI } from '~/core/constants'
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -53,9 +54,9 @@ export function BurnExchangeDetail({
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
 
   // 概览三格始终个人；缺 userStats → 0（缺数显 0）。不绑 getConfig().total*。
-  const totalBurnedAgx = userStats?.agxBurned ?? 0n
-  const totalEarnedContribution = userStats?.contributionEarned ?? 0n
-  const totalConsumedContribution = userStats?.contributionConsumed ?? 0n
+  const totalBurnedAgx = userStats?.agxBurned ?? ZERO_BI
+  const totalEarnedContribution = userStats?.contributionEarned ?? ZERO_BI
+  const totalConsumedContribution = userStats?.contributionConsumed ?? ZERO_BI
 
   const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
   // 空态统一：无价格时显示 ≈ $0.00（不显示 ≈ —）

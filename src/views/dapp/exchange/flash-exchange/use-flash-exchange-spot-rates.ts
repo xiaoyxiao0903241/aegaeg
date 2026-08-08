@@ -1,5 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
+import { TEN_BI, ZERO_BI } from '~/core/constants'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -23,7 +24,7 @@ export function useFlashExchangeSpotRates({
   pair: ExchangePairTokens
   quotesEnabled: boolean
 }) {
-  const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
+  const spotQuoteAmount = TEN_BI ** BigInt(pair.sell.decimals)
 
   const spotQuoteQuery = useChainQuery({
     queryKey: queryKeys.chain.flashSwapQuote(pairId, direction, spotQuoteAmount.toString()),
@@ -36,11 +37,11 @@ export function useFlashExchangeSpotRates({
     placeholderData: keepPreviousData,
   })
 
-  const spotQuotedOut = spotQuoteQuery.data ?? 0n
+  const spotQuotedOut = spotQuoteQuery.data ?? ZERO_BI
   const isExchangePriceQuoting =
     pairId === 'gagx'
       ? false
-      : (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
+      : (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === ZERO_BI
 
   // 面板与概览统一用冒号形式（`1 : 1`），零报价保留 `1 : 0` 固定显示形态
   const rateLabel = formatExchangeRateColon({

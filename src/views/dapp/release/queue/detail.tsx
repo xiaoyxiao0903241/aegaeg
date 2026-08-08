@@ -6,6 +6,7 @@
  */
 import { useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
@@ -40,8 +41,8 @@ export function QueueDetail() {
   const queueLogRows = queueLogsQuery.data?.items.map(mapReleasePoolLogToRow) ?? []
   const queueLogsTotal = queueLogsQuery.data?.total ?? 0
   const queueLogsLoading = sessionReady && queueLogsQuery.isLoading
-  const releasing = queueQuery.data?.totalReleasing ?? 0n
-  const claimable = queueQuery.data?.totalClaimable ?? 0n
+  const releasing = queueQuery.data?.totalReleasing ?? ZERO_BI
+  const claimable = queueQuery.data?.totalClaimable ?? ZERO_BI
   const unit = t.release.units.queue
   const api = apiSummaryQuery.data
   const chainReady = walletReady && queueQuery.data != null

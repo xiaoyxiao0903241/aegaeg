@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { genesisPromoSnapshot } from '~/core/presale/genesis-promo'
 import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
@@ -37,7 +38,7 @@ export function GenesisPromoSync() {
   const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
   const activePhase = activePhaseQuery.data ?? null
   const phaseIndex = activePhase?.index ?? 0
-  const agxPriceWei = agxPriceQuery.data ?? 0n
+  const agxPriceWei = agxPriceQuery.data ?? ZERO_BI
   const agxPriceUsd = useMemo(() => {
     const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)
     return fromChain > 0 ? fromChain : 0

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { ZERO_BI } from '~/core/constants'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
 import {
   clampSlippagePercent,
@@ -107,7 +108,7 @@ export function useMarketTradeSession(
         path,
         poolContext,
       }),
-    selectQuotedOut: (quote) => quote?.quotedOut ?? 0n,
+    selectQuotedOut: (quote) => quote?.quotedOut ?? ZERO_BI,
   })
 
   const spot = useMarketTradeSpotRates({
@@ -121,22 +122,22 @@ export function useMarketTradeSession(
 
   const amountQuote = core.amountQuoteQuery.data
   const priceImpactBps = amountQuote?.priceImpactBps ?? 0
-  const gasEstimate = amountQuote?.gasEstimate ?? 0n
+  const gasEstimate = amountQuote?.gasEstimate ?? ZERO_BI
 
   const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
   const pancakeSwapUrl = pancakeSwapDeepLink(pair.sell.address, pair.buy.address)
   const priceImpactLabel =
-    !sessionReady || core.amountIn === 0n ? '' : `${(priceImpactBps / 100).toFixed(2)}%`
+    !sessionReady || core.amountIn === ZERO_BI ? '' : `${(priceImpactBps / 100).toFixed(2)}%`
   const gasEstimateLabel =
-    !sessionReady || core.amountIn === 0n
+    !sessionReady || core.amountIn === ZERO_BI
       ? ''
       : amountQuote == null || core.amountQuoteQuery.isFetching
         ? '…'
-        : gasEstimate === 0n
+        : gasEstimate === ZERO_BI
           ? '—'
           : formatNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
   const isHighPriceImpact =
-    sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
+    sessionReady && core.amountIn > ZERO_BI && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
   function flipDirection() {
     core.clearLock()

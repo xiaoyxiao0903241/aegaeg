@@ -20,6 +20,8 @@ export function useExchangeWriteMutation(onClearAmount: () => void) {
   const chainWrite = useChainMutation({
     path: WRITE_PATH.EXCHANGE,
     mutation: async (run: (session: WriteSession) => Promise<void>, session) => {
+      // 重置放在 owner hook 内，避免调用方改写返回的 ref（React Compiler）
+      submitOutcomeRef.current = { ok: false, error: null }
       await run(session)
     },
     onSuccess: () => {

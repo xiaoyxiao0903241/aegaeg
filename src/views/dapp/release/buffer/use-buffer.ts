@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -45,11 +46,11 @@ export function useBuffer() {
     },
   })
 
-  const agxClaimable = bufferQuery.data?.agx.totalClaimable ?? 0n
-  const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? 0n
-  const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? 0n
-  const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? 0n
-  const claimable = bufferQuery.data?.totalClaimable ?? 0n
+  const agxClaimable = bufferQuery.data?.agx.totalClaimable ?? ZERO_BI
+  const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
+  const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
+  const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
+  const claimable = bufferQuery.data?.totalClaimable ?? ZERO_BI
   const canClaim = canClaimWhen({
     walletReady,
     writeReady,

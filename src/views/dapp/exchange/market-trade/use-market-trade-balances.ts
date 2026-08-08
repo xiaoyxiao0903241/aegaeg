@@ -1,3 +1,4 @@
+import { ZERO_BI } from '~/core/constants'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -56,22 +57,22 @@ export function useMarketTradeBalances({
 
   return {
     /** 判断用余额：数据不新鲜时置 0，须配合 balancesLoaded 使用。 */
-    sellBalance: decisionBigint(byKey[sellKey], placeholderByKey[sellKey]) ?? 0n,
-    buyBalance: decisionBigint(byKey[buyKey], placeholderByKey[buyKey]) ?? 0n,
+    sellBalance: decisionBigint(byKey[sellKey], placeholderByKey[sellKey]) ?? ZERO_BI,
+    buyBalance: decisionBigint(byKey[buyKey], placeholderByKey[buyKey]) ?? ZERO_BI,
     /** 展示用余额：允许旧值（勿与判断用的零值混画）。 */
     sellBalanceKnown: byKey[sellKey] !== undefined,
     buyBalanceKnown: byKey[buyKey] !== undefined,
     balanceByKey: {
-      usd1: byKey.usd1 ?? 0n,
-      agx: byKey.agx ?? 0n,
-      x: byKey.x ?? 0n,
+      usd1: byKey.usd1 ?? ZERO_BI,
+      agx: byKey.agx ?? ZERO_BI,
+      x: byKey.x ?? ZERO_BI,
     } satisfies Record<TradeTokenKey, bigint>,
     balanceKnownByKey: {
       usd1: byKey.usd1 !== undefined,
       agx: byKey.agx !== undefined,
       x: byKey.x !== undefined,
     } satisfies Record<TradeTokenKey, boolean>,
-    allowance: decisionBigint(allowanceQuery.data, allowanceQuery.isPlaceholderData) ?? 0n,
+    allowance: decisionBigint(allowanceQuery.data, allowanceQuery.isPlaceholderData) ?? ZERO_BI,
     balancesLoaded,
     isBalancesLoading:
       walletReady &&

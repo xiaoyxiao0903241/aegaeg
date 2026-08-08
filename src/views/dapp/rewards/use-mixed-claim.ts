@@ -8,6 +8,7 @@ import {
   matchClaimPlanIndices,
   planLabel,
 } from '~/core/assets/claim-plans'
+import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -65,8 +66,8 @@ export function useMixedClaim(view: MixedClaimView) {
 
   const amount =
     view === 'lucky'
-      ? (luckyQuery.data?.rewardAmount ?? 0n)
-      : 0n /* 共建奖：金额在提交签名时才可知 */
+      ? (luckyQuery.data?.rewardAmount ?? ZERO_BI)
+      : ZERO_BI /* 共建奖：金额在提交签名时才可知 */
 
   const plansQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -78,12 +79,12 @@ export function useMixedClaim(view: MixedClaimView) {
 
   const contribQuery = useChainQuery({
     queryKey:
-      amount > 0n
+      amount > ZERO_BI
         ? queryKeys.chain.assetsContributionForAmount(amount.toString())
         : queryKeys.chain.assetsContribution,
     queryFn: (address) => readContributionSnapshot(address as Address, amount),
     freshness: 'balances',
-    enabled: Boolean(account?.address) && (view !== 'lucky' || amount > 0n),
+    enabled: Boolean(account?.address) && (view !== 'lucky' || amount > ZERO_BI),
     placeholderData: keepPreviousData,
   })
 
@@ -150,7 +151,7 @@ export function useMixedClaim(view: MixedClaimView) {
     plansOk &&
     luckyOk &&
     contributionOk &&
-    (isDaoMixed || amount > 0n)
+    (isDaoMixed || amount > ZERO_BI)
 
   const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(
     plansQuery.data,
@@ -178,15 +179,15 @@ export function useMixedClaim(view: MixedClaimView) {
   }))
 
   const amountKnown = view === 'lucky' && luckyQuery.data != null
-  // Dao Mixed：签名前链上无预览额（amount 固定 0n）——数字槽显示 0，说明另挂 caption
+  // Dao Mixed：签名前链上无预览额（amount 固定 ZERO_BI）——数字槽显示 0，说明另挂 caption
   const awaitingDaoSignature = isDaoMixed && sessionReady
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
     : sessionReady
       ? formatApiAmount(null)
       : t.rewards.hub.signInForBalance
-  const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
-  const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
+  const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : ZERO_BI
+  const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : ZERO_BI
   const releaseAmountText = amountKnown
     ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
     : formatApiAmount(null)
@@ -201,7 +202,7 @@ export function useMixedClaim(view: MixedClaimView) {
     : formatApiAmount(null)
   const showContributionShort =
     !contributionOk &&
-    (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
+    (view === 'lucky' ? amount > ZERO_BI && contribQuery.data != null : daoContributionBlocked)
 
   function onConfirm() {
     setDaoContributionBlocked(false)
