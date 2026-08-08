@@ -73,11 +73,15 @@ export type PercentButtonRowProps = {
  *
  * 纯页面控件，非分段选择器；点击回调传入对应百分比。
  */
+function defaultFormatPercentLabel(percent: number) {
+  return `${percent}%`
+}
+
 export function PercentButtonRow({
   'aria-label': ariaLabel,
   className,
   disabled = false,
-  formatLabel = (percent) => `${percent}%`,
+  formatLabel = defaultFormatPercentLabel,
   onSelect,
   values = [25, 50, 75, 100],
 }: PercentButtonRowProps) {

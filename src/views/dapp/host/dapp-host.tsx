@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
@@ -61,11 +61,15 @@ export function DappHost() {
     replaceTabHash(tab)
   }
 
-  useEffect(() => {
+  const onHashChange = useEffectEvent(() => {
     syncTabFromHash()
-    window.addEventListener('hashchange', syncTabFromHash)
-    return () => window.removeEventListener('hashchange', syncTabFromHash)
-  }, [syncTabFromHash])
+  })
+
+  useEffect(() => {
+    onHashChange()
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
   useEffect(() => {
     document.title = messages.home.meta.title

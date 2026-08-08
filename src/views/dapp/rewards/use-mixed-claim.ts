@@ -38,6 +38,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  *
  * 管理释放 / 复投比例与时长、共建奖类型选择，
  * 汇总链上领取快照、释放计划与贡献校验，决定提交按钮可用性。
+ * 计划与 `daoContributionBlocked` 用本地 `useState`（随 dock remount 复位，不跨奖种共享）。
  */
 export function useMixedClaim(view: MixedClaimView) {
   const { messages: t } = useI18n()
@@ -46,16 +47,35 @@ export function useMixedClaim(view: MixedClaimView) {
   const account = useActiveAccount()
   const card = t.rewards.cards[view]
   const mixed = t.rewards.mixed
-  const [releasePct, setReleasePct] = useState(50)
-  const [releaseDays, setReleaseDays] = useState(60)
-  const [restakeDays, setRestakeDays] = useState(540)
-  /** 共建奖每次提交只能选一个账本：等级奖励 或 超越奖励（一次订单一种类型） */
-  const [cobuildRewardType, setCobuildRewardType] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
+  const [releasePct, setReleasePctState] = useState(50)
+  const [releaseDays, setReleaseDaysState] = useState(60)
+  const [restakeDays, setRestakeDaysState] = useState(540)
+  const [cobuildRewardType, setCobuildRewardTypeState] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
     'RANK_REWARD',
   )
   /** 共建奖金额需领取签名后才可知；实时校验发现贡献不足时置位 */
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
+
+  function setReleasePct(value: number) {
+    setDaoContributionBlocked(false)
+    setReleasePctState(value)
+  }
+
+  function setReleaseDays(value: number) {
+    setDaoContributionBlocked(false)
+    setReleaseDaysState(value)
+  }
+
+  function setRestakeDays(value: number) {
+    setDaoContributionBlocked(false)
+    setRestakeDaysState(value)
+  }
+
+  function setCobuildRewardType(value: 'RANK_REWARD' | 'SURPASS_REWARD') {
+    setDaoContributionBlocked(false)
+    setCobuildRewardTypeState(value)
+  }
 
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
@@ -242,10 +262,7 @@ export function useMixedClaim(view: MixedClaimView) {
       !luckyQuery.data?.paused,
     showCobuildRewardType: view === 'cobuild',
     cobuildRewardType,
-    setCobuildRewardType: (value: 'RANK_REWARD' | 'SURPASS_REWARD') => {
-      setDaoContributionBlocked(false)
-      setCobuildRewardType(value)
-    },
+    setCobuildRewardType,
     cobuildRewardTypeOptions: [
       { label: t.rewards.cobuild.recordsTabCobuild, value: 'RANK_REWARD' },
       { label: t.rewards.cobuild.recordsTabEqualize, value: 'SURPASS_REWARD' },

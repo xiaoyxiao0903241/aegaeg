@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
@@ -93,16 +93,18 @@ export function MobileNav({
     }
   }, [mounted])
 
+  const close = useEffectEvent(onClose)
+
   useEffect(() => {
     if (!mounted) return
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') close()
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [mounted, onClose])
+  }, [mounted])
 
   if (!mounted || !motion) return null
 

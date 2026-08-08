@@ -12,6 +12,7 @@ import { railItems } from '~/shared/assets/dapp'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import type { DappTab } from '~/shared/config/dapp-tabs'
+import { subscribeResize } from '~/shared/lib/subscribe-resize'
 import { cn } from '~/shared/lib/utils'
 import {
   RailClaimableDot,
@@ -117,12 +118,7 @@ export function Rail({
   useLayoutEffect(() => {
     const nav = navRef.current
     if (!nav) return
-
-    const observer = new ResizeObserver(updateIndicator)
-    observer.observe(nav)
-    itemRefs.current.forEach((button) => observer.observe(button))
-
-    return () => observer.disconnect()
+    return subscribeResize([nav, ...itemRefs.current.values()], updateIndicator)
   }, [updateIndicator])
 
   return (

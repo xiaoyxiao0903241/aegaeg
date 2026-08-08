@@ -119,6 +119,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setLoginError(null)
 
+    const finishLoginAttempt = () => {
+      loginInProgressRef.current = false
+      if (!isSilentRenew) {
+        useAuthStore.getState().setIsLoggingIn(false)
+      }
+    }
+
     try {
       await loginWithWallet({
         account,
@@ -127,18 +134,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         storage: sessionStorage,
         signatureStorage,
       })
+      finishLoginAttempt()
     } catch (error) {
       const sentinel = toLoginErrorSentinel(error)
       // 异网不落盘——环境由 loginChainReady 调度，toast 吃 throw
       if (sentinel && sentinel !== LOGIN_ERROR.WRONG_NETWORK) {
         useAuthStore.getState().setLoginError(sentinel)
       }
+      finishLoginAttempt()
       throw error
-    } finally {
-      loginInProgressRef.current = false
-      if (!isSilentRenew) {
-        useAuthStore.getState().setIsLoggingIn(false)
-      }
     }
   }, [account, liveChainId])
 

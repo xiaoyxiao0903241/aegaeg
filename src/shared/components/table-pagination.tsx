@@ -8,6 +8,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useEffectEvent,
   useId,
   useLayoutEffect,
   useRef,
@@ -126,6 +127,11 @@ function Pagination({
     setMenuStyle(styleForMenu(rect, placement, menuHeight))
   }, [menuHeight])
 
+  // 滚动/resize 只调最新定位逻辑，不因 callback 身份重订阅。
+  const onMenuReposition = useEffectEvent(() => {
+    updateMenuPosition()
+  })
+
   useEffect(() => {
     if (total <= 0) return
     if (page > totalPages) onPageChange(totalPages)
@@ -133,8 +139,8 @@ function Pagination({
 
   useLayoutEffect(() => {
     if (!menuOpen) return
-    updateMenuPosition()
-  }, [menuOpen, menuHeight, totalPages, updateMenuPosition])
+    onMenuReposition()
+  }, [menuOpen, menuHeight, totalPages])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -145,7 +151,7 @@ function Pagination({
       setMenuOpen(false)
     }
 
-    const handleScrollOrResize = () => updateMenuPosition()
+    const handleScrollOrResize = () => onMenuReposition()
     const timer = window.setTimeout(() => {
       document.addEventListener('click', handleClick)
     }, 0)
@@ -158,7 +164,7 @@ function Pagination({
       window.removeEventListener('scroll', handleScrollOrResize, true)
       window.removeEventListener('resize', handleScrollOrResize)
     }
-  }, [menuOpen, updateMenuPosition])
+  }, [menuOpen])
 
   const showPagination = shouldShowTablePagination(total, pageSize)
   if (!showPagination && summary == null) return null

@@ -3,6 +3,20 @@ import { interpolate } from '~/i18n/interpolate'
 /** 表格空单元格 / 未知值的占位符（ASCII 连字符，不用破折号）。 */
 export const TABLE_EMPTY = '-'
 
+const numberFormatters = new Map<string, Intl.NumberFormat>()
+
+function numberFormatter(digits: number, trimZeros: boolean): Intl.NumberFormat {
+  const key = `${digits}:${trimZeros ? '1' : '0'}`
+  const cached = numberFormatters.get(key)
+  if (cached) return cached
+  const formatter = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: digits,
+    minimumFractionDigits: trimZeros ? 0 : digits,
+  })
+  numberFormatters.set(key, formatter)
+  return formatter
+}
+
 /** 把预售等级数字格式化为 `S<等级>`；非法或非正数返回 S0。 */
 export function formatPresaleRank(rank: number): string {
   if (!Number.isFinite(rank) || rank <= 0) return 'S0'
@@ -66,10 +80,7 @@ export function formatNumber(
     return `${prefix}${zero}${suffix}`
   }
 
-  const formatted = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: digits,
-    minimumFractionDigits: trimZeros ? 0 : digits,
-  }).format(num)
+  const formatted = numberFormatter(digits, trimZeros).format(num)
 
   return `${prefix}${formatted}${suffix}`
 }

@@ -193,6 +193,13 @@ function CarouselRoot({
     setSnapCount(instance.scrollSnapList().length)
   }, [])
 
+  // api 就绪时在 render 期同步一次导航态，避免 effect 里同步 setState。
+  const [prevApi, setPrevApi] = useState(api)
+  if (api !== prevApi) {
+    setPrevApi(api)
+    if (api) onSelect(api)
+  }
+
   const scrollPrev = useCallback(() => {
     api?.scrollPrev()
   }, [api])
@@ -221,7 +228,6 @@ function CarouselRoot({
 
   useEffect(() => {
     if (!api) return
-    onSelect(api)
     api.on('init', onSelect)
     api.on('reInit', onSelect)
     api.on('select', onSelect)

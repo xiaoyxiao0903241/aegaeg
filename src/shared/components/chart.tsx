@@ -9,7 +9,14 @@ import {
   type Time,
   type UTCTimestamp,
 } from 'lightweight-charts'
-import { type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from 'react'
+import {
+  type HTMLAttributes,
+  type ReactNode,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+} from 'react'
 
 import { Card } from '~/shared/components/card'
 import { Empty } from '~/shared/components/empty'
@@ -161,9 +168,17 @@ function Plot({
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const [tip, setTip] = useState<ChartTip | null>(null)
+  // points 换批时在 render 期清 tip，避免 effect 里 setState 造成一帧陈旧十字线。
+  const [tipPoints, setTipPoints] = useState(points)
+  if (points !== tipPoints) {
+    setTipPoints(points)
+    setTip(null)
+  }
   const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points)
-  const formatTipDateRef = useRef(formatTipDate)
-  formatTipDateRef.current = formatTipDate
+  // 十字线回调在 chart 订阅里；用 Effect Event 读最新 formatTipDate，避免 render 写 ref / 把 formatter 塞进 effect deps。
+  const resolveTipDate = useEffectEvent((time: Time) => {
+    return formatTipDate?.(time) ?? tipDateFromTime(time)
+  })
 
   useEffect(() => {
     const host = hostRef.current
@@ -243,7 +258,7 @@ function Plot({
         setTip(null)
         return
       }
-      const dateLabel = formatTipDateRef.current?.(param.time) ?? tipDateFromTime(param.time)
+      const dateLabel = resolveTipDate(param.time)
       if (dateLabel == null) {
         setTip(null)
         return
@@ -287,7 +302,6 @@ function Plot({
     if (!series || !chart) return
     series.setData(points.map((p) => ({ time: p.time as Time, value: p.value })))
     chart.timeScale().fitContent()
-    setTip(null)
   }, [points])
 
   return (

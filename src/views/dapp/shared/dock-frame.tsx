@@ -1,4 +1,4 @@
-import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -63,14 +63,15 @@ export function DockPanel({
   className?: string
 }) {
   const isMobile = useMobileViewport()
-  const rootRef = useRef<HTMLDivElement>(null)
   const [slot, setSlot] = useState<Element | null>(null)
   const [exitLayer, setExitLayer] = useState(false)
 
-  useLayoutEffect(() => {
+  // 挂载时读 sticky 槽与退场祖先；用 callback ref，避免 layout effect 同步 setState。
+  const rootRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
     const nextSlot = document.querySelector('[data-dapp-dock-chrome-slot]')
     setSlot((prev) => (prev === nextSlot ? prev : nextSlot))
-    const exiting = Boolean(rootRef.current?.closest('.dapp-subview-layer-exit'))
+    const exiting = Boolean(node.closest('.dapp-subview-layer-exit'))
     setExitLayer((prev) => (prev === exiting ? prev : exiting))
   }, [])
 

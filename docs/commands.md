@@ -10,6 +10,7 @@
 |`pnpm build`|tokens + `tsc -b` + render-home + production build|
 |`pnpm env:staging` / `env:prod` / `env:status`|切换 `.env.local`|
 |`pnpm docs:matrix`|从 `docs/dapp-data-coverage-matrix.md` 生成可读 HTML|
+|`pnpm react-doctor`|React Doctor 本地扫描（`pnpm dlx`；勿用 `pnpm doctor`，那是 pnpm 自检）。配置：根目录 `doctor.config.jsonc`；不进 `pnpm check`|
 
 ## 门禁
 

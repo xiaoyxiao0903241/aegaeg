@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { type ReactNode, useLayoutEffect, useRef } from 'react'
 
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { cn } from '~/shared/lib/utils'
@@ -42,27 +42,29 @@ export function SubviewHost({
   const isMobile = useMobileViewport()
   const rootRef = useRef<HTMLDivElement>(null)
   const idleHeightRef = useRef(0)
-  const [lockedHeight, setLockedHeight] = useState<number | null>(null)
 
+  // 过渡期直接写 DOM 高度（paint 前）；避免 render 读 ref / layout effect setState。
   useLayoutEffect(() => {
     const node = rootRef.current
     if (!node || panel !== 'widget' || !isMobile) {
-      setLockedHeight((prev) => (prev == null ? prev : null))
+      if (node) {
+        node.style.height = ''
+        node.style.overflow = ''
+      }
       return
     }
     if (!isTransitioning) {
       idleHeightRef.current = node.offsetHeight
-      setLockedHeight((prev) => (prev == null ? prev : null))
+      node.style.height = ''
+      node.style.overflow = ''
       return
     }
     const next = idleHeightRef.current
     if (next > 0) {
-      setLockedHeight((prev) => (prev === next ? prev : next))
+      node.style.height = `${next}px`
+      node.style.overflow = 'hidden'
     }
-  }, [isMobile, isTransitioning, panel])
-
-  const lockStyle: CSSProperties | undefined =
-    lockedHeight != null ? { height: lockedHeight, overflow: 'hidden' } : undefined
+  }, [isMobile, isTransitioning, panel, liveView])
 
   return (
     <div
@@ -71,7 +73,6 @@ export function SubviewHost({
       data-dapp-detail-panel={panel === 'detail' ? '' : undefined}
       data-dapp-transitioning={isTransitioning ? 'true' : undefined}
       data-dapp-widget-panel={panel === 'widget' ? '' : undefined}
-      style={lockStyle}
     >
       {isTransitioning && outgoingView ? (
         <div className="dapp-subview-layer dapp-subview-layer-exit" data-dapp-direction={direction}>

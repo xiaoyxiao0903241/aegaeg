@@ -185,6 +185,11 @@ function Body({
   statusColumns = [],
 }: BodyProps) {
   const showEmpty = !isLoading && rows.length === 0
+  const highlightedRowSet = new Set(highlightedRows)
+  const emphasisColumnSet = new Set(emphasisColumns)
+  const linkColumnSet = new Set(linkColumns)
+  const positiveColumnSet = new Set(positiveColumns)
+  const statusColumnSet = new Set(statusColumns)
 
   if (showEmpty) {
     return empty != null ? <TableEmpty embedded body={emptyBody} title={empty} /> : null
@@ -223,18 +228,18 @@ function Body({
               ))
             : rows.map((row, rowIndex) => (
                 <tr
-                  className={highlightedRows.includes(rowIndex) ? highlightedRow : ''}
+                  className={highlightedRowSet.has(rowIndex) ? highlightedRow : ''}
                   key={`${row[0]}-${rowIndex}`}
                 >
                   {row.map((cell, index) => (
                     <Cell
-                      accent={highlightedRows.includes(rowIndex) && index === 0}
-                      emphasis={emphasisColumns.includes(index)}
+                      accent={highlightedRowSet.has(rowIndex) && index === 0}
+                      emphasis={emphasisColumnSet.has(index)}
                       key={`${rowIndex}-${index}`}
                       last={rowIndex === rows.length - 1}
-                      link={linkColumns.includes(index)}
-                      positive={positiveColumns.includes(index)}
-                      status={statusColumns.includes(index)}
+                      link={linkColumnSet.has(index)}
+                      positive={positiveColumnSet.has(index)}
+                      status={statusColumnSet.has(index)}
                     >
                       {cell}
                     </Cell>

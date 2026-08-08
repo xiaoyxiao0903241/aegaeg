@@ -60,14 +60,22 @@ export function RebaseCountdownValue({
   const [endAtMs, setEndAtMs] = useState(() => anchorEndAtMs(chainRemainingSec))
   const [nowMs, setNowMs] = useState(() => Date.now())
 
+  // 链上块高变化后重锚定；setState 放进 microtask，避开 set-state-in-effect 同步写。
   useEffect(() => {
-    const now = Date.now()
-    setEndAtMs((prev) => {
-      const wallRemaining = Math.max(0, Math.ceil((prev - now) / 1000))
-      if (Math.abs(wallRemaining - chainRemainingSec) <= RESYNC_DRIFT_SEC) return prev
-      return anchorEndAtMs(chainRemainingSec, now)
+    let cancelled = false
+    queueMicrotask(() => {
+      if (cancelled) return
+      const now = Date.now()
+      setEndAtMs((prev) => {
+        const wallRemaining = Math.max(0, Math.ceil((prev - now) / 1000))
+        if (Math.abs(wallRemaining - chainRemainingSec) <= RESYNC_DRIFT_SEC) return prev
+        return anchorEndAtMs(chainRemainingSec, now)
+      })
+      setNowMs(now)
     })
-    setNowMs(now)
+    return () => {
+      cancelled = true
+    }
   }, [chainRemainingSec, epochEndBlock, currentBlock])
 
   useEffect(() => {

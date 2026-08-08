@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode } from 'react'
 
 import { getTeamRequirementLegRank, rewardTierRows } from '~/core/presale/tier-table'
 import {
@@ -19,14 +19,16 @@ import {
   getPresaleRankHighlightedRows,
 } from '~/shared/presenters/format'
 import {
+  type GenesisHistoryTab,
+  useGenesisHistorySessionStore,
+} from '~/stores/rewards-session-store'
+import {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
   NON_NUMERIC_EMPTY,
 } from '~/views/dapp/rewards/shared'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
-
-type GenesisHistoryTab = 'referral' | 'team' | 'communityFund'
 
 function formatGenesisTierTeamCell(
   rankLabel: string,
@@ -51,6 +53,7 @@ function withSignedUsdPrefix(amount: string): string {
  *
  * 聚合股东等级、社区基金节点状态与三类历史记录
  * （推荐 / 团队 / 社区基金），生成荣誉档位表与分页历史。
+ * Tab / 分页在 `useGenesisHistorySessionStore`（切 Tab 时 action 内归页）。
  *
  * @see docs/backend-api/api.md #community-fund/total
  */
@@ -62,12 +65,7 @@ export function useRewardsGenesisDetail() {
   const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
   const hasRank = displayRank > 0
-  const [historyTab, setHistoryTab] = useState<GenesisHistoryTab>('referral')
-  const [historyPage, setHistoryPage] = useState(1)
-
-  useEffect(() => {
-    setHistoryPage(1)
-  }, [historyTab])
+  const { historyTab, setHistoryTab, historyPage, setHistoryPage } = useGenesisHistorySessionStore()
 
   const pageParams = tablePageQuery(historyPage)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
@@ -94,6 +92,7 @@ export function useRewardsGenesisDetail() {
 
   const rewardTiers = rewardTierRows()
   const highlightedRows = getPresaleRankHighlightedRows(displayRank, rewardTiers.length)
+  const highlightedRowSet = new Set(highlightedRows)
   /** 当前档：显示「当前」标签（与 Hub 机制表一致） */
   const tierRows: ReactNode[][] = rewardTiers.map((row, rowIndex) => {
     const rankLabel = row[0] ?? ''
@@ -104,7 +103,7 @@ export function useRewardsGenesisDetail() {
       t.rewards.tierDualLegRequirement,
     )
     const rate = row[3] ?? ''
-    const isCurrent = highlightedRows.includes(rowIndex)
+    const isCurrent = highlightedRowSet.has(rowIndex)
     const levelCell = isCurrent ? (
       <span className="inline-flex items-center gap-2">
         <Text as="span" className="font-semibold" variant="copy">

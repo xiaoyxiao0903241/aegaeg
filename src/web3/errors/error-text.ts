@@ -25,7 +25,12 @@ export function toErrorText(raw: string): ErrorText {
  * @see 手册 §19 常见错误与前端提示
  */
 export function hasSelector(lower: string, ...selectors: string[]): boolean {
-  return selectors.some((selector) => lower.includes(selector))
+  if (selectors.length === 0) return false
+  // 多 needle 子串匹配：一次 RegExp 测试（selector 为字面片段，需转义）。
+  const pattern = selectors
+    .map((selector) => selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|')
+  return new RegExp(pattern).test(lower)
 }
 
 /**

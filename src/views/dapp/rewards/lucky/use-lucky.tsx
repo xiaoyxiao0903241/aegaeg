@@ -19,6 +19,7 @@ import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
+import { useLuckySessionStore } from '~/stores/rewards-session-store'
 import {
   formatApiCountLabel,
   formatApiStatLabel,
@@ -94,6 +95,7 @@ function formatUsd1Label(raw: bigint | null | undefined): string {
  *
  * 聚合今日奖池汇总、开奖名单与我的参与记录，
  * 另从链上读取本轮开奖快照计算参与资格与倒计时。
+ * 日期 / 分页在 `useLuckySessionStore`；`selectedDate === null` 时用 summary 默认日。
  *
  * @see docs/backend-api/api.md #lucky-reward/summary
  */
@@ -107,24 +109,22 @@ export function useLucky() {
   const summary = summaryQuery.data
   const summaryDate = summary?.date?.trim() || ''
 
-  const [selectedDate, setSelectedDate] = useState('')
-  const [winnersPage, setWinnersPage] = useState(1)
-  const [historyPage, setHistoryPage] = useState(1)
-  useEffect(() => {
-    if (!summaryDate) return
-    setSelectedDate((prev) => prev || summaryDate)
-  }, [summaryDate])
-
-  useEffect(() => {
-    setWinnersPage(1)
-  }, [selectedDate])
+  const {
+    selectedDate,
+    setSelectedDate,
+    winnersPage,
+    setWinnersPage,
+    historyPage,
+    setHistoryPage,
+  } = useLuckySessionStore()
 
   const dateOptions = buildRecentDrawDateOptions(
     summaryDate || selectedDate || formatIsoDateUtc(utcToday()),
   )
+  const drawDateCandidate = selectedDate ?? summaryDate
   const drawDate =
-    selectedDate && dateOptions.some((option) => option.value === selectedDate)
-      ? selectedDate
+    drawDateCandidate && dateOptions.some((option) => option.value === drawDateCandidate)
+      ? drawDateCandidate
       : (dateOptions[0]?.value ?? '')
 
   const winnersQuery = useLuckyRewardWinners(drawDate, sessionReady && drawDate.length > 0)

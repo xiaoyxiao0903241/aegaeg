@@ -96,9 +96,8 @@ function AppBarWalletActions() {
       await switchChain(defaultChain)
     } catch {
       toast.error(t.topbar.switchNetworkFailed)
-    } finally {
-      setSwitching(false)
     }
+    setSwitching(false)
   }
 
   const networkPillNode = knownWrongNetwork ? (

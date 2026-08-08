@@ -68,15 +68,12 @@ function formatPhaseDurationDays(phases: PresalePhaseOnChain[]): string {
 }
 
 function minUsd(phases: PresalePhaseOnChain[]): number {
-  const minAmounts = phases
-    .map((phase) => Number(phase.minAmount) / 10 ** USD1_DECIMALS)
-    .filter((amount) => amount > 0)
-
-  if (minAmounts.length === 0) {
-    return 0
+  let min = Number.POSITIVE_INFINITY
+  for (const phase of phases) {
+    const amount = Number(phase.minAmount) / 10 ** USD1_DECIMALS
+    if (amount > 0 && amount < min) min = amount
   }
-
-  return Math.min(...minAmounts)
+  return Number.isFinite(min) ? min : 0
 }
 
 function shareIncrement(phases: PresalePhaseOnChain[]): string {

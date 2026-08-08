@@ -38,11 +38,14 @@ export function durationDaysFromPlans(
   plans: readonly DurationPlan[] | undefined,
   fallback: readonly number[],
 ): number[] {
-  const fromChain =
-    plans
-      ?.filter((p) => p.exists !== false)
-      .map((p) => Number(p.durationSeconds / SECONDS_PER_DAY))
-      .filter((d) => Number.isFinite(d) && d > 0 && Number.isInteger(d)) ?? []
+  const fromChain: number[] = []
+  for (const p of plans ?? []) {
+    if (p.exists === false) continue
+    const d = Number(p.durationSeconds / SECONDS_PER_DAY)
+    if (Number.isFinite(d) && d > 0 && Number.isInteger(d)) {
+      fromChain.push(d)
+    }
+  }
   return fromChain.length > 0 ? fromChain : [...fallback]
 }
 

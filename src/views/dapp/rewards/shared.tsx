@@ -565,6 +565,10 @@ export function mapLuckyMyRoundToRow(
     formatRegisterDate(item.date),
     formatApiAmount(item.participation_amount, { digits: 2, prefix: '$' }),
     result,
-    item.draw_tx_hash ? <ExplorerLink kind="tx" showIcon value={item.draw_tx_hash} /> : TABLE_EMPTY,
+    item.draw_tx_hash ? (
+      <ExplorerLink key={item.draw_tx_hash} kind="tx" showIcon value={item.draw_tx_hash} />
+    ) : (
+      TABLE_EMPTY
+    ),
   ]
 }

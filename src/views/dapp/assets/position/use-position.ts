@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { selectLockedClaimLegs } from '~/core/assets/select-locked-claim-legs'
@@ -21,6 +21,7 @@ import {
   mapBondFlowLogToOpsRow,
   mapStakeFlowLogToOpsRow,
 } from '~/shared/presenters/map-flow-log-rows'
+import { type AssetsProduct, usePositionSessionStore } from '~/stores/assets-session-store'
 import { formatAssetsPositionAmount } from '~/views/dapp/assets/position/format-assets-position-amount'
 import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
@@ -36,7 +37,7 @@ import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
-export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
+export type { AssetsProduct }
 
 /** 质押 / 债券仓位链上读取，供持仓列表与右侧统计共用 */
 export function useAssetsPositionQueries(product: AssetsProduct) {
@@ -120,6 +121,8 @@ function compareBySort(
  *
  * 管理计价币种与排序、持仓分页、领奖与赎回弹窗状态，
  * 并组装链上写交易（赎回、warmup 激活）与成功后失效缓存。
+ * 报价 / 排序 / 分页在 `usePositionSessionStore`；领奖 / 赎回弹层用本地 `useState`
+ *（`AssetsDockBody` 以 product+wallet key remount，随换产品 / 钱包复位）。
  */
 export function usePositionDock(product: AssetsProduct) {
   const { messages: t } = useI18n()
@@ -127,16 +130,11 @@ export function usePositionDock(product: AssetsProduct) {
   const account = useActiveAccount()
   const address = account?.address
 
-  const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
-  const [sort, setSort] = useState<AssetsSortKey>('startNear')
+  const s = usePositionSessionStore()
+  s.syncProduct(product)
+  const { quote, setQuote, sort, setSort, page, setPage } = s
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
-  const [page, setPage] = useState(0)
-
-  useEffect(() => {
-    setClaim({ open: false })
-    setRedeem({ open: false })
-  }, [address])
 
   const copy = t.assets.products[product]
   const stakingTarget: 'stake' | 'lpbond' | 'burnbond' =
@@ -439,12 +437,11 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
 /** 仓位产品的操作记录：按产品类型拉取对应日志并映射为表格行 */
 export function useAssetsPositionOpsRows(product: AssetsProduct) {
   const { sessionReady } = useDappHost()
-  const [page, setPage] = useState(1)
+  const s = usePositionSessionStore()
+  s.syncProduct(product)
+  const page = s.opsPage
+  const setPage = s.setOpsPage
   const params = tablePageQuery(page)
-
-  useEffect(() => {
-    setPage(1)
-  }, [product])
 
   const stakeLogs = useStakeFlowLogs(params, sessionReady && product === 'stake')
   const lpLogs = useBondFlowLpLogs(params, sessionReady && product === 'lpbond')

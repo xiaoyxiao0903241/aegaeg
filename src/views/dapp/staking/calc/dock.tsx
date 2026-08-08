@@ -1,5 +1,7 @@
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
+import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox, amountBox } from '~/shared/components/amount-box'
 import { Card } from '~/shared/components/card'
@@ -8,10 +10,13 @@ import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { formatNumber } from '~/shared/presenters/format'
+import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { useStakingViewStore } from '~/stores/staking-view-store'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { CalcDaySlider, CalcHtabRow } from '~/views/dapp/staking/calc/primitives'
-import { useCalcDock } from '~/views/dapp/staking/calc/use-calc'
+import { useCalcEstimateLive } from '~/views/dapp/staking/calc/use-calc'
 
 const priceBox = amountBox()
 
@@ -19,31 +24,67 @@ const priceBox = amountBox()
  * 收益率计算器（左栏表单）
  *
  * 纯本地计算，不发起任何链上写操作；
- * 输入变更即刷新右侧结果。「计算」按钮暂隐藏、不删除。
+ * 表单直订 `useCalcEstimateStore`，输入变更即刷新右侧结果。
+ * 「计算」按钮暂隐藏、不删除（实时估算见 `useCalcEstimateLive`）。
  */
 export function CalcDock() {
-  const vm = useCalcDock()
-  const { t } = vm
+  const { messages: t } = useI18n()
+  const setView = useStakingViewStore((s) => s.setView)
+  const spotUsd = useAgxPriceUsd()
+  const s = useCalcEstimateStore()
+  useCalcEstimateLive()
+
+  const productOptions = [
+    { label: t.staking.calc.products.stake, value: 'stake' },
+    { label: t.staking.calc.products.lpbond, value: 'lpbond' },
+    { label: t.staking.calc.products.burnbond, value: 'burnbond' },
+    { label: t.staking.calc.products.xmine, value: 'xmine' },
+  ]
+  const periodOptions =
+    s.product === 'stake'
+      ? [
+          { label: t.staking.stake.periods.liquid, value: 'liquid' },
+          { label: t.staking.stake.periods.d180, value: '180' },
+          { label: t.staking.stake.periods.d360, value: '360' },
+          { label: t.staking.stake.periods.d540, value: '540' },
+        ]
+      : s.product === 'xmine'
+        ? [{ label: t.staking.stake.periods.liquid, value: 'liquid' }]
+        : [
+            { label: t.staking.stake.periods.d180, value: '180' },
+            { label: t.staking.stake.periods.d360, value: '360' },
+            { label: t.staking.stake.periods.d540, value: '540' },
+          ]
+  const tokenLabel = s.product === 'xmine' ? 'gAGX' : s.product === 'stake' ? 'AGX' : 'USD1'
   const tokenSrc =
-    vm.tokenSrc === 'gagx'
+    s.product === 'xmine'
       ? dappAssets.tokenGagx
-      : vm.tokenSrc === 'usd1'
-        ? dappAssets.tokenUsd1
-        : dappAssets.tokenAgx
+      : s.product === 'stake'
+        ? dappAssets.tokenAgx
+        : dappAssets.tokenUsd1
+  const spotLabel =
+    spotUsd != null
+      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
+
+  function onProductChange(next: string) {
+    if (next !== 'stake' && next !== 'lpbond' && next !== 'burnbond' && next !== 'xmine') return
+    s.setProduct(next as CalcProduct)
+  }
 
   return (
     <TabHeader
       backText={t.staking.backToHub}
-      onBack={() => vm.setView('hub')}
+      onBack={() => setView('hub')}
       subtitle={t.staking.calc.intro}
       title={t.staking.calc.title}
     >
       <DockStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
-          onChange={vm.onProductChange}
-          options={vm.productOptions}
-          value={vm.product}
+          onChange={onProductChange}
+          options={productOptions}
+          value={s.product}
         />
 
         <div className="grid gap-2">
@@ -52,9 +93,9 @@ export function CalcDock() {
           </Text>
           <CalcHtabRow
             ariaLabel={t.staking.calc.periodAria}
-            onChange={vm.onPeriodChange}
-            options={vm.periodOptions}
-            value={vm.period}
+            onChange={s.setPeriod}
+            options={periodOptions}
+            value={s.period}
           />
         </div>
 
@@ -62,15 +103,15 @@ export function CalcDock() {
           amountProps={{
             'aria-label': t.staking.calc.amountAria,
             inputMode: 'decimal',
-            onChange: (event) => vm.onAmountChange(event.target.value),
+            onChange: (event) => s.setAmount(event.target.value),
             placeholder: '0',
-            value: vm.amount,
+            value: s.amount,
           }}
           endAdornment={
             <span className="flex items-center gap-1.5">
               <Icon alt="" shape="circle" size="rail" src={tokenSrc} />
               <Text as="span" className="font-semibold" variant="detail">
-                {vm.tokenLabel}
+                {tokenLabel}
               </Text>
             </span>
           }
@@ -86,7 +127,7 @@ export function CalcDock() {
               {t.staking.calc.price}
             </Text>
             <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-              {interpolate(t.staking.calc.priceCurrent, { price: vm.spotLabel })}
+              {interpolate(t.staking.calc.priceCurrent, { price: spotLabel })}
             </Text>
           </div>
           {/* 复用 AmountBox 外部标签样式，价格输入仍用 Input */}
@@ -96,8 +137,8 @@ export function CalcDock() {
                 aria-label={t.staking.calc.priceAria}
                 className={priceBox.inputOutside()}
                 inputMode="decimal"
-                onChange={(event) => vm.onPriceChange(event.target.value)}
-                value={vm.price}
+                onChange={(event) => s.setPrice(event.target.value)}
+                value={s.price}
                 variant="amount"
               />
               <Text as="span" className="text-foreground/40" variant="headline">
@@ -113,23 +154,22 @@ export function CalcDock() {
               {t.staking.calc.days}
             </Text>
             <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-              {interpolate(t.staking.calc.dayBubble, { day: vm.days })}
+              {interpolate(t.staking.calc.dayBubble, { day: s.days })}
             </Text>
           </div>
           <CalcDaySlider
             ariaLabel={t.staking.calc.daysAria}
             max={CALC_MAX_DAYS}
-            onChange={vm.onDaysChange}
-            value={vm.days}
+            onChange={s.setDays}
+            value={s.days}
           />
         </div>
 
-        {/* 暂隐藏显式计算 CTA；实时估算见 useCalcDock effect。恢复时去掉 hidden。 */}
+        {/* 暂隐藏显式计算 CTA；实时估算见 useCalcEstimateLive。 */}
         <FormActions className="mt-6 hidden">
           <MainButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base/5 text-white"
             density="external"
-            onClick={vm.onCalculate}
             type="button"
           >
             {t.staking.calc.submit}

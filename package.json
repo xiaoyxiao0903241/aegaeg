@@ -6,6 +6,7 @@
   "scripts": {
     "render:home": "node scripts/render-home.mjs",
     "docs:matrix": "node scripts/render-coverage-matrix.mjs",
+    "react-doctor": "pnpm dlx react-doctor@latest -y",
     "build:tokens": "node scripts/generate-tokens.mjs",
     "check:tokens": "pnpm build:tokens && git diff --exit-code -- src/shared/styles/tokens/theme.css src/shared/styles/tokens/tokens.ts",
     "env:staging": "node scripts/switch-env.mjs staging",

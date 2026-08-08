@@ -15,8 +15,8 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
+import { useXmineSessionStore } from '~/stores/assets-session-store'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
-import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import {
   submitXmineActivateWarmup,
   submitXmineClaim,
@@ -30,15 +30,15 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
  * X 挖矿侧栏的状态编排
  *
  * 管理报价币与排序、挖矿仓位查询、领取 / 激活 / 退出写交易
- * 及退出确认弹窗状态。
+ * 及退出确认弹窗状态。报价 / 排序在 `useXmineSessionStore`；
+ * 退出确认用本地 `useState`（`AssetsDockBody` 以 address 为 key remount 复位）。
  */
 export function useXmineDock() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
   const { walletReady } = useDappHost()
+  const { quote, setQuote, sort, setSort } = useXmineSessionStore()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
-  const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
-  const [sort, setSort] = useState<AssetsSortKey>('startNear')
 
   const copy = t.assets.products.xmine
   const pageSize = t.assets.position.pageSize

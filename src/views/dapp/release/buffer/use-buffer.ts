@@ -70,9 +70,11 @@ export function useBuffer() {
     setRefreshing(true)
     try {
       await bufferQuery.refetch()
-    } finally {
+    } catch (error) {
       setRefreshing(false)
+      throw error
     }
+    setRefreshing(false)
   }
 
   return {

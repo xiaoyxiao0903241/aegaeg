@@ -24,18 +24,23 @@ export function useTabContentFade(activeTab: DappTab): {
 } {
   const [displayTab, setDisplayTab] = useState(activeTab)
   const [phase, setPhase] = useState<ContentFadePhase>('idle')
+  const [pendingTab, setPendingTab] = useState(activeTab)
+
+  // Tab 变化时在 render 期进入淡出；若在淡出中又切回当前展示 Tab，取消淡出。
+  if (activeTab !== pendingTab) {
+    setPendingTab(activeTab)
+    if (activeTab !== displayTab) setPhase('out')
+    else setPhase('idle')
+  }
 
   useEffect(() => {
-    if (activeTab === displayTab) return
-
-    setPhase('out')
+    if (phase !== 'out') return
     const outTimer = window.setTimeout(() => {
-      setDisplayTab(activeTab)
+      setDisplayTab(pendingTab)
       setPhase('in')
     }, DAPP_CONTENT_FADE_OUT_MS)
-
     return () => window.clearTimeout(outTimer)
-  }, [activeTab, displayTab])
+  }, [phase, pendingTab])
 
   useEffect(() => {
     if (phase !== 'in') return

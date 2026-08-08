@@ -251,10 +251,14 @@ export async function readReleaseQueueSnapshot(
     releasing: 0n,
   }))
   const pending: PendingRow[] = []
+  const planByDurationSeconds = new Map(
+    durationPlans.map((plan) => [plan.durationSeconds, plan] as const),
+  )
+  const knownDurationDays = new Set<number>(RELEASE_DURATION_DAYS)
 
   for (let slot = 0; slot < RELEASE_DURATION_DAYS.length; slot++) {
     const days = RELEASE_DURATION_DAYS[slot]!
-    const matched = durationPlans.find((p) => p.durationSeconds === BigInt(days) * SECONDS_PER_DAY)
+    const matched = planByDurationSeconds.get(BigInt(days) * SECONDS_PER_DAY)
     if (!matched) continue
     pending.push({ planIndex: matched.index, durationDays: days, uiSlot: slot })
   }
@@ -262,7 +266,7 @@ export async function readReleaseQueueSnapshot(
   // 链上非 5/20/40/60 档：读后非零才计入 totals，不强制要求四档都存在。
   for (const plan of durationPlans) {
     const days = durationDaysFromSeconds(plan.durationSeconds)
-    if (days != null && (RELEASE_DURATION_DAYS as readonly number[]).includes(days)) continue
+    if (days != null && knownDurationDays.has(days)) continue
     pending.push({ planIndex: plan.index, durationDays: days, uiSlot: null })
   }
 

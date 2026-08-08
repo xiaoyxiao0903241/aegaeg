@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -67,6 +69,14 @@ export function StakingHubDetail() {
     { label: table.segs.burnbond, value: 'burnbond' },
   ] as const
 
+  const periodRows: ReactNode[][] = []
+  for (const row of table.rows) {
+    if (tableSeg !== 'stake' && row.id === 'liquid') continue
+    const cells = periodTableRows[row.id]
+    if (!cells) continue
+    periodRows.push([row.period, cells.baseDaily, cells.bonus, cells.periodYield])
+  }
+
   function metricValue(id: HubMetricId): string {
     return labels[id]
   }
@@ -129,17 +139,7 @@ export function StakingHubDetail() {
           }}
         />
         <Table>
-          <Table.Body
-            headers={[...table.columns]}
-            positiveColumns={[3]}
-            rows={table.rows
-              .filter((row) => tableSeg === 'stake' || row.id !== 'liquid')
-              .flatMap((row) => {
-                const cells = periodTableRows[row.id]
-                if (!cells) return []
-                return [[row.period, cells.baseDaily, cells.bonus, cells.periodYield]]
-              })}
-          />
+          <Table.Body headers={[...table.columns]} positiveColumns={[3]} rows={periodRows} />
         </Table>
       </Section>
 

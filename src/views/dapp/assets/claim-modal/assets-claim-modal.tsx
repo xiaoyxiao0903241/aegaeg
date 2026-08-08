@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { useRef } from 'react'
+import { useState } from 'react'
 
 import { interpolate } from '~/i18n/interpolate'
 import { Button } from '~/shared/components/button'
@@ -39,23 +39,38 @@ export function AssetsClaimModal({
   positionLabel: string
   amountLabel: string
 }) {
-  // 关闭时调用方会清空 target/owner；这里缓存上一帧，避免弹窗被立刻卸载导致关闭动画中断
-  const heldRef = useRef<{
+  // 关闭时调用方会清空 target/owner；缓存上一帧，避免弹窗被立刻卸载导致关闭动画中断。
+  // 用 render 期 setState 对齐 props（不用 render 写 ref），语义与原先 heldRef 相同。
+  const [held, setHeld] = useState<{
     owner: string
     target: MixedClaimTarget
     positionLabel: string
     amountLabel: string
   } | null>(null)
   if (open && target && owner) {
-    heldRef.current = { owner, target, positionLabel, amountLabel }
+    const next = { owner, target, positionLabel, amountLabel }
+    if (
+      held?.owner !== next.owner ||
+      held?.target !== next.target ||
+      held?.positionLabel !== next.positionLabel ||
+      held?.amountLabel !== next.amountLabel
+    ) {
+      setHeld(next)
+    }
   }
-  const held = heldRef.current
   if (!held) return null
+
+  const targetKey =
+    held.target.source === 'liquid'
+      ? `liquid:${held.target.amount}`
+      : held.target.source === 'locked'
+        ? `locked:${held.target.pool}:${held.target.stakeIndex}:${held.target.amount}`
+        : `bond:${held.target.depository}:${held.target.bondIndex}:${held.target.amount}`
 
   return (
     <AssetsClaimModalOpen
       amountLabel={held.amountLabel}
-      key={`${held.owner}-${held.target.source}-${held.amountLabel}`}
+      key={`${held.owner}-${targetKey}`}
       onOpenChange={onOpenChange}
       open={open}
       owner={held.owner}

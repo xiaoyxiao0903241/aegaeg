@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import {
   agxAmountToUsdProgressCurrent,
   parseMoneyish,
@@ -16,6 +14,7 @@ import {
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { useCobuildSessionStore } from '~/stores/rewards-session-store'
 import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
@@ -26,8 +25,6 @@ import {
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/shared'
-
-type CobuildRecordsTab = 'cobuild' | 'equalize'
 
 export type CobuildTierReq = {
   label: string
@@ -42,6 +39,7 @@ export type CobuildTierReq = {
  *
  * 聚合等级奖励接口（rank-reward）的汇总、等级记录与直推成员数据，
  * 计算当前 / 下一级档位与需求进度徽章，供详情页渲染。
+ * Tab / 分页在 `useCobuildSessionStore`（切 Tab 时 action 内归页）。
  *
  * @see docs/backend-api/api.md #rank-reward/summary
  */
@@ -50,17 +48,12 @@ export function useCobuild() {
   const cobuild = t.rewards.cobuild
   const { sessionReady } = useDappHost()
   const agxPriceUsd = useAgxPriceUsd()
-  const [recordsTab, setRecordsTab] = useState<CobuildRecordsTab>('cobuild')
-  const [recordsPage, setRecordsPage] = useState(1)
-  const [directsPage, setDirectsPage] = useState(1)
+  const { recordsTab, setRecordsTab, recordsPage, setRecordsPage, directsPage, setDirectsPage } =
+    useCobuildSessionStore()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const tierEmpty = t.rewards.hub.stats.tierEmpty
   const tierRows = t.rewards.hub.tierTable.rows
   const achievedLabel = cobuild.reqAchieved
-
-  useEffect(() => {
-    setRecordsPage(1)
-  }, [recordsTab])
 
   const summaryQuery = useRankRewardSummary(sessionReady)
   const pageParams = tablePageQuery(recordsPage)

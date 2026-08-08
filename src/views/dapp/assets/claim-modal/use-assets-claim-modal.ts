@@ -28,6 +28,8 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 /**
  * 领奖弹窗的状态编排：释放比例、释放 / 复投周期选择、
  * 贡献值与计划可用性校验，以及提交成功后的关闭处理。
+ * 计划选择用本地 `useState`（随 modal remount / key 复位）。
+ * RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60。
  */
 export function useAssetsClaimModal(args: {
   open: boolean
@@ -40,7 +42,6 @@ export function useAssetsClaimModal(args: {
   const { walletReady } = useDappHost()
   const account = useActiveAccount()
   const [releasePct, setReleasePctState] = useState(50)
-  // RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60
   const [releaseDays, setReleaseDaysState] = useState(60)
   const [restakeDays, setRestakeDaysState] = useState(540)
   const { restakePct } = claimSplitFromReleasePct(releasePct)

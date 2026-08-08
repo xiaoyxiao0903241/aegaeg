@@ -120,9 +120,11 @@ export function useQueue() {
     setPendingPlan(planIndex)
     try {
       await claim.mutate(planIndex)
-    } finally {
+    } catch (error) {
       setPendingPlan(null)
+      throw error
     }
+    setPendingPlan(null)
   }
 
   async function onRefresh(days: number) {
@@ -156,9 +158,11 @@ export function useQueue() {
           }
         },
       )
-    } finally {
+    } catch (error) {
       setRefreshingDays(null)
+      throw error
     }
+    setRefreshingDays(null)
   }
 
   return {

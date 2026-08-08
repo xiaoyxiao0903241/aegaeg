@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useReferralAwardDirectReferrals,
@@ -9,6 +7,7 @@ import {
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { useReferralSessionStore } from '~/stores/rewards-session-store'
 import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
@@ -23,6 +22,7 @@ import {
  * 推荐奖详情视图模型
  *
  * 聚合推荐奖汇总、奖励记录与直推成员列表。
+ * 分页在 `useReferralSessionStore`。
  *
  * @see docs/backend-api/api.md #referral-award/summary
  */
@@ -32,8 +32,7 @@ export function useRewardsReferral() {
   const { sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
-  const [recordsPage, setRecordsPage] = useState(1)
-  const [referralsPage, setReferralsPage] = useState(1)
+  const { recordsPage, setRecordsPage, referralsPage, setReferralsPage } = useReferralSessionStore()
 
   const summaryQuery = useReferralAwardSummary(sessionReady)
   const logsQuery = useReferralAwardLogs(tablePageQuery(recordsPage), sessionReady)

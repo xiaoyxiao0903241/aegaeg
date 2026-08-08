@@ -1,139 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
-import { buildCalcEstimate } from '~/core/staking/build-calc-estimate'
-import { CALC_MAX_DAYS, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
+import { epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber } from '~/shared/presenters/format'
-import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
-import { useStakingViewStore } from '~/stores/staking-view-store'
+import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import {
   useStakingHubOverviewQuery,
   useXmineOverviewQuery,
 } from '~/web3/staking/use-staking-queries'
 
 /**
- * 计算器表单状态
+ * 计算器实时估算胶水
  *
- * 维护产品 / 周期 / 金额 / 价格 / 天数；
- * 输入变更即写入右侧结果（实时估算）。「计算」按钮暂隐藏，逻辑保留。
- *
- * @returns 表单状态与各变更回调
+ * 表单字段由 UI 直订 `useCalcEstimateStore`；本 hook 只把链上利率 / 行情
+ * 灌进 store（含首次价格 seed）。「计算」按钮暂隐藏，逻辑由 liveSync 保留。
  */
-export function useCalcDock() {
-  const { messages: t } = useI18n()
-  const setView = useStakingViewStore((state) => state.setView)
-  const setResult = useCalcEstimateStore((state) => state.setResult)
+export function useCalcEstimateLive() {
   const spotUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const xmineOverviewQuery = useXmineOverviewQuery()
-  const [product, setProduct] = useState<CalcProduct>('stake')
-  const [period, setPeriod] = useState<string>('liquid')
-  const [amount, setAmount] = useState('1')
-  const [price, setPrice] = useState('0')
-  const [days, setDays] = useState(100)
-  const [priceSeeded, setPriceSeeded] = useState(false)
+  const product = useCalcEstimateStore((s) => s.product)
+  const period = useCalcEstimateStore((s) => s.period)
+  const amount = useCalcEstimateStore((s) => s.amount)
+  const price = useCalcEstimateStore((s) => s.price)
+  const days = useCalcEstimateStore((s) => s.days)
+  const liveSync = useCalcEstimateStore((s) => s.liveSync)
 
   const epochRebasePct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const xmineDailyPct =
     xmineOverviewQuery.data != null ? Number(xmineOverviewQuery.data.yieldRateBP) / 100 : null
   const epochsPerDay = overviewQuery.data?.epochsPerDay ?? null
 
-  // 价格字段仅在首次拿到实时行情时写入一次，之后不覆盖用户输入。
   useEffect(() => {
-    if (priceSeeded || spotUsd == null) return
-    setPrice(formatNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
-    setPriceSeeded(true)
-  }, [priceSeeded, spotUsd])
-
-  // 输入 / 链上利率就绪后实时刷新右侧结果。
-  useEffect(() => {
-    setResult(
-      buildCalcEstimate({
-        product,
-        period,
-        amount,
-        price,
-        days,
-        epochRebasePct,
-        xmineDailyPct: product === 'xmine' ? xmineDailyPct : null,
-        epochsPerDay,
-      }),
-    )
-  }, [product, period, amount, price, days, epochRebasePct, xmineDailyPct, epochsPerDay, setResult])
-
-  const periodOptions =
-    product === 'stake'
-      ? [
-          { label: t.staking.stake.periods.liquid, value: 'liquid' },
-          { label: t.staking.stake.periods.d180, value: '180' },
-          { label: t.staking.stake.periods.d360, value: '360' },
-          { label: t.staking.stake.periods.d540, value: '540' },
-        ]
-      : product === 'xmine'
-        ? [{ label: t.staking.stake.periods.liquid, value: 'liquid' }]
-        : [
-            { label: t.staking.stake.periods.d180, value: '180' },
-            { label: t.staking.stake.periods.d360, value: '360' },
-            { label: t.staking.stake.periods.d540, value: '540' },
-          ]
-
-  const spotLabel =
-    spotUsd != null
-      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
-
-  function onProductChange(next: string) {
-    if (next !== 'stake' && next !== 'lpbond' && next !== 'burnbond' && next !== 'xmine') return
-    setProduct(next)
-    setPeriod(next === 'stake' || next === 'xmine' ? 'liquid' : '180')
-  }
-
-  function onDaysChange(next: number) {
-    setDays(Math.min(CALC_MAX_DAYS, Math.max(1, next)))
-  }
-
-  /** 显式「计算」入口保留；UI 暂隐藏，与实时 effect 同逻辑。 */
-  function onCalculate() {
-    setResult(
-      buildCalcEstimate({
-        product,
-        period,
-        amount,
-        price,
-        days,
-        epochRebasePct,
-        xmineDailyPct: product === 'xmine' ? xmineDailyPct : null,
-        epochsPerDay,
-      }),
-    )
-  }
-
-  const tokenSrc = product === 'xmine' ? 'gagx' : product === 'stake' ? 'agx' : 'usd1'
-
-  return {
-    t,
-    setView,
+    liveSync({ spotUsd, epochRebasePct, xmineDailyPct, epochsPerDay })
+  }, [
+    liveSync,
+    spotUsd,
+    epochRebasePct,
+    xmineDailyPct,
+    epochsPerDay,
     product,
     period,
     amount,
     price,
     days,
-    spotLabel,
-    periodOptions,
-    productOptions: [
-      { label: t.staking.calc.products.stake, value: 'stake' },
-      { label: t.staking.calc.products.lpbond, value: 'lpbond' },
-      { label: t.staking.calc.products.burnbond, value: 'burnbond' },
-      { label: t.staking.calc.products.xmine, value: 'xmine' },
-    ],
-    tokenLabel: product === 'xmine' ? 'gAGX' : product === 'stake' ? 'AGX' : 'USD1',
-    tokenSrc,
-    onProductChange,
-    onPeriodChange: setPeriod,
-    onAmountChange: setAmount,
-    onPriceChange: setPrice,
-    onDaysChange,
-    onCalculate,
-  }
+  ])
 }
