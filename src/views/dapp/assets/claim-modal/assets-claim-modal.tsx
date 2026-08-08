@@ -8,7 +8,9 @@ import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
+import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
+import { Reveal } from '~/shared/components/reveal'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -196,22 +198,25 @@ function AssetsClaimModalOpen({
           </div>
         </div>
 
-        {!vm.contributionOk && vm.contribQuery.data ? (
-          <div className="grid gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3">
-            <Text as="p" className="text-destructive" variant="copy">
-              {t.assets.claim.contribShort}
-            </Text>
-            <Button onClick={vm.goBurn} type="button" variant="secondary">
-              {t.assets.claim.goBurn}
-            </Button>
-          </div>
-        ) : null}
+        <InlineAlert open={!vm.contributionOk && Boolean(vm.contribQuery.data)} role="status">
+          {t.assets.claim.contribShort}{' '}
+          <Button
+            className="inline w-auto! align-baseline font-normal text-inherit underline"
+            onClick={vm.goBurn}
+            shape="rounded"
+            size="sm"
+            type="button"
+            variant="link"
+          >
+            {t.assets.claim.goBurn}
+          </Button>
+        </InlineAlert>
 
-        {!vm.plansOk && vm.plansQuery.isSuccess ? (
+        <Reveal open={!vm.plansOk && vm.plansQuery.isSuccess}>
           <Text as="p" className="text-destructive" variant="copy">
             {t.assets.blocked.planUnresolved}
           </Text>
-        ) : null}
+        </Reveal>
 
         <MainButton
           className={cn(

@@ -72,11 +72,9 @@ export function ExchangeSessionFooter({
   return (
     <>
       {!sessionReady ? <DockConnectPromo className="mt-3.5" /> : null}
-      {blockHint ? (
-        <InlineAlert className="mt-3" role="status">
-          {blockHint}
-        </InlineAlert>
-      ) : null}
+      <InlineAlert className="mt-3" open={Boolean(blockHint)} role="status">
+        {blockHint}
+      </InlineAlert>
     </>
   )
 }

@@ -170,9 +170,9 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
             />
           </FormInfoCard>
 
-          {vm.sessionReady && trade.isHighPriceImpact ? (
-            <InlineAlert className="mt-3">{t.exchange.trade.highPriceImpactWarning}</InlineAlert>
-          ) : null}
+          <InlineAlert className="mt-3" open={vm.sessionReady && trade.isHighPriceImpact}>
+            {t.exchange.trade.highPriceImpactWarning}
+          </InlineAlert>
 
           {vm.sessionReady && trade.walletReady ? (
             <FormActions className="mt-3.5 max-dapp:mt-3">

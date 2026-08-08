@@ -364,6 +364,8 @@ html.dapp-app #root {
 .dapp-collapsible-inner {
   min-height: 0;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--motion-dapp-base) var(--motion-dapp-ease);
 }
 
 /* 覆盖基础 overflow:hidden：单靠 Tailwind overflow-visible 会被此规则压掉 */
@@ -371,18 +373,14 @@ html.dapp-app #root {
   overflow: visible;
 }
 
-/* 仅展开时淡入内容；高度仍由外层的 grid-template-rows 控制 */
 .dapp-collapsible-body[data-open='true'] .dapp-collapsible-inner {
-  animation: dapp-collapsible-content-in var(--motion-dapp-base) var(--motion-dapp-ease) both;
+  opacity: 1;
 }
 
-@keyframes dapp-collapsible-content-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  .dapp-collapsible-body,
+  .dapp-collapsible-inner {
+    transition: none;
   }
 }
 

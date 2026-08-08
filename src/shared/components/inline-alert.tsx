@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
+import { Reveal } from '~/shared/components/reveal'
 import { Text, type TextProps } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -29,6 +30,8 @@ export type InlineAlertDensity = NonNullable<VariantProps<typeof inlineAlert>['d
 export type InlineAlertProps = Omit<TextProps, 'tone' | 'variant'> & {
   children: ReactNode
   density?: InlineAlertDensity
+  /** 传入时走高度/透明度缓动；省略则始终渲染（无动画） */
+  open?: boolean
 }
 
 /**
@@ -37,15 +40,17 @@ export type InlineAlertProps = Omit<TextProps, 'tone' | 'variant'> & {
  * 红色描边底色，用于表单错误等场景。
  *
  * @param density compact（组件内）/ comfortable（页面级）
+ * @param open 可选；传入后显隐带缓动
  */
 export function InlineAlert({
   as = 'p',
   children,
   className,
   density = 'compact',
+  open,
   ...props
 }: InlineAlertProps) {
-  return (
+  const alert = (
     <Text
       as={as}
       variant="copy"
@@ -56,4 +61,7 @@ export function InlineAlert({
       {children}
     </Text>
   )
+
+  if (open === undefined) return alert
+  return <Reveal open={open}>{alert}</Reveal>
 }
