@@ -9,7 +9,7 @@
 
 |Spec|状态|文件|
 |---|---|---|
-|Spec-A 写链编排统一（全仓）|已拆票 01–09|[`spec-a-approve-then-live-write.md`](./spec-a-approve-then-live-write.md) · [`spec-a-approve-then-live-write/`](./spec-a-approve-then-live-write/)|
+|Spec-A 写链编排统一（全仓）|**closed**（实现已落地）|[`spec-a-approve-then-live-write.md`](./spec-a-approve-then-live-write.md) · [`spec-a-approve-then-live-write/`](./spec-a-approve-then-live-write/)|
 
 ## 进行中的 wayfinder 子票
 
