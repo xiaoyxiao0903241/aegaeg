@@ -429,8 +429,8 @@
           · 重生：<code>pnpm docs:matrix</code></p>
       </div>
       <div class="stats" aria-label="状态汇总">
-        <div class="stat"><span>合计</span><strong>417</strong></div>
-        <div class="stat ok"><span>✅</span><strong>290</strong></div>
+        <div class="stat"><span>合计</span><strong>418</strong></div>
+        <div class="stat ok"><span>✅</span><strong>291</strong></div>
         <div class="stat bad"><span>❌</span><strong>1</strong></div>
         <div class="stat partial"><span>🟡</span><strong>8</strong></div>
         <div class="stat copy"><span>📘</span><strong>72</strong></div>
@@ -456,7 +456,7 @@
         </div>
         <div class="match-count" id="matchCount"></div>
       </div>
-      <nav class="toc" aria-label="章节"><a href="#1-宿主与公共壳" data-section-nav="1-宿主与公共壳">1. 宿主与公共壳（H-） <span>40</span></a><a href="#2-质押" data-section-nav="2-质押">2. 质押（S-） <span>70</span></a><a href="#3-奖励" data-section-nav="3-奖励">3. 奖励（W-） <span>58</span></a><a href="#4-释放" data-section-nav="4-释放">4. 释放（L-） <span>44</span></a><a href="#5-兑换" data-section-nav="5-兑换">5. 兑换（X-） <span>55</span></a><a href="#6-资产" data-section-nav="6-资产">6. 资产（A-） <span>58</span></a><a href="#7-社区" data-section-nav="7-社区">7. 社区（CM-） <span>33</span></a><a href="#8-共建" data-section-nav="8-共建">8. 共建（GN-） <span>43</span></a><a href="#9-代码反查附录" data-section-nav="9-代码反查附录">9. 代码反查附录（Z-） <span>16</span></a></nav>
+      <nav class="toc" aria-label="章节"><a href="#1-宿主与公共壳" data-section-nav="1-宿主与公共壳">1. 宿主与公共壳（H-） <span>40</span></a><a href="#2-质押" data-section-nav="2-质押">2. 质押（S-） <span>70</span></a><a href="#3-奖励" data-section-nav="3-奖励">3. 奖励（W-） <span>58</span></a><a href="#4-释放" data-section-nav="4-释放">4. 释放（L-） <span>44</span></a><a href="#5-兑换" data-section-nav="5-兑换">5. 兑换（X-） <span>55</span></a><a href="#6-资产" data-section-nav="6-资产">6. 资产（A-） <span>58</span></a><a href="#7-社区" data-section-nav="7-社区">7. 社区（CM-） <span>33</span></a><a href="#8-共建" data-section-nav="8-共建">8. 共建（GN-） <span>43</span></a><a href="#9-代码反查附录" data-section-nav="9-代码反查附录">9. 代码反查附录（Z-） <span>17</span></a></nav>
     </div>
 
     <details class="rules-panel">
@@ -9746,7 +9746,7 @@
 <section class="chapter" id="9-代码反查附录" data-section="9-代码反查附录">
   <header class="chapter-head">
     <h2>9. 代码反查附录（Z-）</h2>
-    <span class="count">16</span>
+    <span class="count">17</span>
   </header>
   <p class="meta">用途： 手册/ABI/API 有能力但主章未落点、或跨章冲突的反查队列（非独立产品 tab）。</p><p class="meta">对照： 各主章行 + A/B/C 链；改主章后同步本附录。</p>
   <div class="rows"><article class="row" data-status="blocked" data-section="9-代码反查附录" data-search="z-001 反查 earlystaking claimprincipal / claimrewardmixed / 仓位 ui 读/写 `abis.ts`/`contracts.ts`/`src/**` 均无 early 符号（rg 空；codegraph 无节点） 手册 §8.4（b-19） —（纯链）  🚫 阻塞 fe 缺接线 解阻 b-19 后：先补 early abi+地址，再接 assets/staking 仓位与领本金/mixed s-067·a-028  blocker（b-19） r2 确认🚫 trio：s-067·a-028·z-001；src 无 early；禁假 prod">
@@ -10116,11 +10116,34 @@
       <div class="wide"><dt>备注</dt><dd>要展示则加 FAQ 句；否则可删字段（deletion-first）</dd></div>
     </dl>
   </div>
+</article>
+<article class="row" data-status="ok" data-section="9-代码反查附录" data-search="z-017 反查 金额展示 `formattokenamount` 数字第三参补零 读 数字参默认 `trimzeros:false`（与 `formatnumber` 一致）；对象缺省仍 trim（草稿） 展示 ssot `token-amount.ts` —（纯 ui）  ✅ 已对齐 — — —  — 修空态 `0.00`→加载后 `0`；单测钉 `0n,digits:2→0.00`">
+  <button type="button" class="row-main" aria-expanded="false">
+    <span class="id mono">Z-017</span>
+    <span class="surface">金额展示</span>
+    <span class="datum">`formatTokenAmount` 数字第三参补零</span>
+    <span class="rw pill">读</span>
+    <span class="status badge ok">✅ 已对齐</span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="row-detail" hidden>
+    <dl>
+      <div><dt>章节</dt><dd>反查</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
+      <div><dt>继承自</dt><dd>—</dd></div>
+      <div><dt>A/B/C 链</dt><dd>—</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>数字参默认 `trimZeros:false`（与 `formatNumber` 一致）；对象缺省仍 trim（草稿）</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>展示 SSOT `token-amount.ts`</dd></div>
+      <div class="wide"><dt>API 接口</dt><dd>—（纯 UI）</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>修空态 `0.00`→加载后 `0`；单测钉 `0n,digits:2→0.00`</dd></div>
+    </dl>
+  </div>
 </article></div>
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T01:22:24.982Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T01:23:33.171Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
@@ -10149,7 +10172,7 @@
       const any = [...ch.querySelectorAll('.row')].some((r) => !r.hidden);
       ch.classList.toggle('is-empty', !any);
     }
-    matchCount.textContent = '显示 ' + visible + ' / 417';
+    matchCount.textContent = '显示 ' + visible + ' / 418';
     empty.classList.toggle('show', visible === 0);
   }
 
