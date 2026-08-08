@@ -12,10 +12,9 @@ import { ConnectEmbed, useActiveAccount } from '~/web3/thirdweb-react'
 
 const walletConnectPanel = tv({
   base: [
-    'border-0 bg-card',
-    'max-dapp:rounded-t-lg max-dapp:px-5 max-dapp:pt-3 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))]',
-    'dapp:w-full dapp:max-w-md dapp:rounded-lg dapp:p-6',
-    'dapp:shadow-modal-panel',
+    // 相对 ResponsiveDialog 默认浅色壳：略宽 padding + PC 均匀 p-6
+    'max-dapp:px-5 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))]',
+    'dapp:p-6',
   ],
 })
 

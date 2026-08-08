@@ -151,7 +151,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
               })}
             </span>{' '}
             <Button
-              className="inline w-auto! align-baseline font-normal text-coral-emphasis underline"
+              className="inline h-auto w-auto! p-0 align-baseline text-[length:inherit] leading-[inherit] font-semibold text-primary underline"
               onClick={() => openExchangeView('burn')}
               shape="rounded"
               size="sm"

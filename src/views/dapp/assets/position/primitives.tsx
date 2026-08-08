@@ -400,12 +400,14 @@ export function AssetsPositionStakeRow(
   const { formatPeriodLabel, formatAmount, locked, busy, onClaim, onRedeem, onActivate, row } =
     props
   const { messages: t } = useI18n()
-  const reward = row.blockReward + row.extraInterest
+  // 收益 / 加成分列展示（贴稿）；可领门槛仍看两腿合计
+  const reward = row.blockReward
   const boost = row.extraInterest
+  const claimableYield = reward + boost
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
   // 与手册一致：无利息不开放领取（bond 卡同口径 profit>0）
-  const canClaim = !inWarmup && reward > ZERO_BI
+  const canClaim = !inWarmup && claimableYield > ZERO_BI
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
     : row.kind === 'liquid'

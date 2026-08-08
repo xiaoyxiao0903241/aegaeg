@@ -429,12 +429,12 @@
           · 重生：<code>pnpm docs:matrix</code></p>
       </div>
       <div class="stats" aria-label="状态汇总">
-        <div class="stat"><span>合计</span><strong>418</strong></div>
+        <div class="stat"><span>合计</span><strong>419</strong></div>
         <div class="stat ok"><span>✅</span><strong>291</strong></div>
         <div class="stat bad"><span>❌</span><strong>1</strong></div>
         <div class="stat partial"><span>🟡</span><strong>8</strong></div>
         <div class="stat copy"><span>📘</span><strong>72</strong></div>
-        <div class="stat pending"><span>🔍</span><strong>0</strong></div>
+        <div class="stat pending"><span>🔍</span><strong>1</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
         <div class="stat na"><span>⚪</span><strong>40</strong></div>
       </div>
@@ -456,7 +456,7 @@
         </div>
         <div class="match-count" id="matchCount"></div>
       </div>
-      <nav class="toc" aria-label="章节"><a href="#1-宿主与公共壳" data-section-nav="1-宿主与公共壳">1. 宿主与公共壳（H-） <span>40</span></a><a href="#2-质押" data-section-nav="2-质押">2. 质押（S-） <span>70</span></a><a href="#3-奖励" data-section-nav="3-奖励">3. 奖励（W-） <span>58</span></a><a href="#4-释放" data-section-nav="4-释放">4. 释放（L-） <span>44</span></a><a href="#5-兑换" data-section-nav="5-兑换">5. 兑换（X-） <span>55</span></a><a href="#6-资产" data-section-nav="6-资产">6. 资产（A-） <span>58</span></a><a href="#7-社区" data-section-nav="7-社区">7. 社区（CM-） <span>33</span></a><a href="#8-共建" data-section-nav="8-共建">8. 共建（GN-） <span>43</span></a><a href="#9-代码反查附录" data-section-nav="9-代码反查附录">9. 代码反查附录（Z-） <span>17</span></a></nav>
+      <nav class="toc" aria-label="章节"><a href="#1-宿主与公共壳" data-section-nav="1-宿主与公共壳">1. 宿主与公共壳（H-） <span>40</span></a><a href="#2-质押" data-section-nav="2-质押">2. 质押（S-） <span>70</span></a><a href="#3-奖励" data-section-nav="3-奖励">3. 奖励（W-） <span>58</span></a><a href="#4-释放" data-section-nav="4-释放">4. 释放（L-） <span>44</span></a><a href="#5-兑换" data-section-nav="5-兑换">5. 兑换（X-） <span>55</span></a><a href="#6-资产" data-section-nav="6-资产">6. 资产（A-） <span>59</span></a><a href="#7-社区" data-section-nav="7-社区">7. 社区（CM-） <span>33</span></a><a href="#8-共建" data-section-nav="8-共建">8. 共建（GN-） <span>43</span></a><a href="#9-代码反查附录" data-section-nav="9-代码反查附录">9. 代码反查附录（Z-） <span>17</span></a></nav>
     </div>
 
     <details class="rules-panel">
@@ -6643,7 +6643,7 @@
 <section class="chapter" id="6-资产" data-section="6-资产">
   <header class="chapter-head">
     <h2>6. 资产（A-）</h2>
-    <span class="count">58</span>
+    <span class="count">59</span>
   </header>
   <p class="meta">对照源指针： [`research/dapp-tab-source-index.md` §6](./research/dapp-tab-source-index.md#6-assets)</p><p class="meta">代码根： `src/views/dapp/assets/`</p>
   <div class="rows"><article class="row" data-status="partial" data-section="6-资产" data-search="a-001 资产 hub·总览 总资产价值（美元） 读取展示 `use-hub`→`stake_invest_usd_value`；visible hint/faq 称「含未提取收益」；api 仅注 active 投影 产品总估值 vs `user_performance.stake_invest_usd_value` `/assets/reward-summary` `stake_invest_usd_value`  🟡 部分 手册或接口与链不符 后端文档钉清该字段是否含未提取收益；或改提示/faq；若链回退路径也要「含未提取」，须把可领估值并入总美元 —  — 提示/faq 写「含本金+未提取」；接口就绪时直绑该字段（文档未钉是否含收益）；无接口时用持仓本金×价（不含可领 gagx）。三方口径未钉">
@@ -7977,6 +7977,29 @@
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
       <div class="wide"><dt>备注</dt><dd>—</dd></div>
+    </dl>
+  </div>
+</article>
+<article class="row" data-status="pending" data-section="6-资产" data-search="a-059 资产 position·质押·领取流程 「领取产出」中间层（收益 / 加成分入口）再进 mixed 读取展示/提交 现网：仓位「领取」→直进 `assetsclaimmodal`（腿在提交时拆）；稿 copy `4848:264`+整页 `4781:3137` 叠「领取产出」 figma copy `4848:264`；主仓验收 `4781:3137`；手册 locked mixed 两腿 —  🔍 待核实 待核实 产品确认：有收益+加成并存时是否必须先出「领取产出」选腿，再进领取数量（mixed）；确认前**不实现**中间层。链写仍是 `claimrewardmixed`/`claimextrarewardmixed`（与 a-041–a-043 同）。旁系：赎回确认浅色换皮（copy `4848:250` vs 现 `assetsredeemconfirm`）低优先、同待设计钉死 —  open 卡上短文案「领取/赎回」与现网一致；差的是领取路径是否多一层选腿。复投在第二步 mixed，不因中间层取消">
+  <button type="button" class="row-main" aria-expanded="false">
+    <span class="id mono">A-059</span>
+    <span class="surface">Position·质押·领取流程</span>
+    <span class="datum">「领取产出」中间层（收益 / 加成分入口）再进 Mixed</span>
+    <span class="rw pill">读取展示/提交</span>
+    <span class="status badge pending">🔍 待核实</span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="row-detail" hidden>
+    <dl>
+      <div><dt>章节</dt><dd>资产</dd></div>
+      <div><dt>T1 归因</dt><dd>待核实</dd></div>
+      <div><dt>继承自</dt><dd>—</dd></div>
+      <div><dt>A/B/C 链</dt><dd>open</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>现网：仓位「领取」→直进 `AssetsClaimModal`（腿在提交时拆）；稿 Copy `4848:264`+整页 `4781:3137` 叠「领取产出」</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>Figma Copy `4848:264`；主仓验收 `4781:3137`；手册 Locked Mixed 两腿</dd></div>
+      <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
+      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品确认：有收益+加成并存时是否必须先出「领取产出」选腿，再进领取数量（Mixed）；确认前**不实现**中间层。链写仍是 `claimRewardMixed`/`claimExtraRewardMixed`（与 A-041–A-043 同）。旁系：赎回确认浅色换皮（Copy `4848:250` vs 现 `AssetsRedeemConfirm`）低优先、同待设计钉死</dd></div>
+      <div class="wide"><dt>备注</dt><dd>卡上短文案「领取/赎回」与现网一致；差的是领取路径是否多一层选腿。复投在第二步 Mixed，不因中间层取消</dd></div>
     </dl>
   </div>
 </article></div>
@@ -10143,7 +10166,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T02:30:58.099Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T05:49:17.398Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
@@ -10172,7 +10195,7 @@
       const any = [...ch.querySelectorAll('.row')].some((r) => !r.hidden);
       ch.classList.toggle('is-empty', !any);
     }
-    matchCount.textContent = '显示 ' + visible + ' / 418';
+    matchCount.textContent = '显示 ' + visible + ' / 419';
     empty.classList.toggle('show', visible === 0);
   }
 

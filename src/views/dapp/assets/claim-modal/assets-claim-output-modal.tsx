@@ -1,0 +1,202 @@
+import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { keepPreviousData } from '@tanstack/react-query'
+import { X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+import { ZERO_BI } from '~/core/constants'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { interpolate } from '~/i18n/interpolate'
+import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { CountValue } from '~/shared/components/count-value'
+import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
+import { iconVariants } from '~/shared/components/icon'
+import { MainButton } from '~/shared/components/main-button'
+import { Text } from '~/shared/components/text'
+import type { Address } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { cn } from '~/shared/lib/utils'
+import type { AssetsStakeRow } from '~/web3/assets/assets-read'
+import { readContributionSnapshot } from '~/web3/assets/assets-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+
+const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+
+export type ClaimOutputLeg = 'reward' | 'boost'
+
+/**
+ * 领取产出中间层
+ *
+ * 左：收益 blockReward → claimRewardMixed；右：加成 extraInterest → claimExtraRewardMixed。
+ * 金额为 0 时对应 CTA 禁用；点可用腿后进入 Mixed「领取数量」。
+ */
+export function AssetsClaimOutputModal({
+  onOpenChange,
+  onSelectLeg,
+  open,
+  owner,
+  row,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  owner: string | null
+  row: AssetsStakeRow | null
+  onSelectLeg: (leg: ClaimOutputLeg) => void
+}) {
+  const [held, setHeld] = useState<{ owner: string; row: AssetsStakeRow } | null>(null)
+  if (open && owner && row) {
+    const next = { owner, row }
+    if (held?.owner !== next.owner || held?.row.id !== next.row.id) {
+      setHeld(next)
+    }
+  }
+  if (!held) return null
+
+  return (
+    <AssetsClaimOutputModalOpen
+      key={`${held.owner}-${held.row.id}`}
+      onOpenChange={onOpenChange}
+      onSelectLeg={onSelectLeg}
+      open={open}
+      owner={held.owner}
+      row={held.row}
+    />
+  )
+}
+
+function AssetsClaimOutputModalOpen({
+  onOpenChange,
+  onSelectLeg,
+  open,
+  owner,
+  row,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  owner: string
+  row: AssetsStakeRow
+  onSelectLeg: (leg: ClaimOutputLeg) => void
+}) {
+  const { messages: t } = useI18n()
+  const account = useActiveAccount()
+
+  useEffect(() => {
+    const current = account?.address
+    if (!current || current.toLowerCase() !== owner.toLowerCase()) {
+      onOpenChange(false)
+    }
+  }, [account?.address, owner, onOpenChange])
+
+  const reward = row.blockReward
+  const boost = row.extraInterest
+  const canReward = reward > ZERO_BI
+  const canBoost = boost > ZERO_BI
+
+  const rewardContrib = useChainQuery({
+    queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-reward:${String(reward)}`),
+    queryFn: (address) => readContributionSnapshot(address as Address, reward),
+    enabled: open && canReward && Boolean(account?.address),
+    placeholderData: keepPreviousData,
+  })
+  const boostContrib = useChainQuery({
+    queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-boost:${String(boost)}`),
+    queryFn: (address) => readContributionSnapshot(address as Address, boost),
+    enabled: open && canBoost && Boolean(account?.address),
+    placeholderData: keepPreviousData,
+  })
+
+  const rewardAmountLabel = `${formatTokenAmount(reward, GAGX_DECIMALS, 2)} gAGX`
+  const boostAmountLabel = `${formatTokenAmount(boost, GAGX_DECIMALS, 2)} gAGX`
+  const rewardContribLabel = rewardContrib.data
+    ? formatTokenAmount(rewardContrib.data.requiredContribution, GAGX_DECIMALS, 2)
+    : '—'
+  const boostContribLabel = boostContrib.data
+    ? formatTokenAmount(boostContrib.data.requiredContribution, GAGX_DECIMALS, 2)
+    : '—'
+
+  return (
+    <ResponsiveDialog
+      onOpenChange={onOpenChange}
+      open={open}
+      overlayClassName="bg-modal-overlay-dim"
+    >
+      <SheetHandle />
+      <div className="flex h-10 items-center justify-between gap-3">
+        <DialogPrimitive.Title asChild>
+          <Text as="h2" className="m-0 font-semibold" variant="copy">
+            {t.assets.claimOutput.title}
+          </Text>
+        </DialogPrimitive.Title>
+        <DialogClose aria-label={t.common.close}>
+          <X aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={2} />
+        </DialogClose>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 py-1">
+        <div className="grid min-w-0 gap-1">
+          <Text as="span" tone="muted-foreground" variant="detail">
+            {t.assets.claimOutput.rewardLabel}
+          </Text>
+          <Text as="strong" className="text-lg font-semibold" variant="copy">
+            <CountValue text={rewardAmountLabel} />
+          </Text>
+        </div>
+        <div className="grid min-w-0 justify-items-end gap-1 text-right">
+          <Text as="span" tone="muted-foreground" variant="detail">
+            {t.assets.claimOutput.boostLabel}
+          </Text>
+          <Text as="strong" className="text-lg font-semibold" variant="copy">
+            <CountValue text={boostAmountLabel} />
+          </Text>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="grid min-w-0 content-start gap-2">
+          <MainButton
+            className="w-full"
+            density="modal"
+            disabled={!canReward}
+            onClick={() => onSelectLeg('reward')}
+            variant="primary"
+          >
+            {t.assets.claimOutput.claimReward}
+          </MainButton>
+          {/* 禁用时 invisible 占位，保证两列按钮底边对齐 */}
+          <Text
+            aria-hidden={!canReward}
+            as="span"
+            className={cn('text-center text-foreground/40', !canReward && 'invisible')}
+            variant="detail"
+          >
+            {canReward
+              ? interpolate(t.assets.claimOutput.contribDeduct, { amount: rewardContribLabel })
+              : '\u00a0'}
+          </Text>
+        </div>
+        <div className="grid min-w-0 content-start gap-2">
+          <MainButton
+            className="w-full"
+            density="modal"
+            disabled={!canBoost}
+            onClick={() => onSelectLeg('boost')}
+            variant="primary"
+          >
+            {t.assets.claimOutput.claimBoost}
+          </MainButton>
+          <Text
+            aria-hidden={!canBoost}
+            as="span"
+            className={cn('text-center text-foreground/40', !canBoost && 'invisible')}
+            variant="detail"
+          >
+            {canBoost
+              ? interpolate(t.assets.claimOutput.contribDeduct, { amount: boostContribLabel })
+              : '\u00a0'}
+          </Text>
+        </div>
+      </div>
+    </ResponsiveDialog>
+  )
+}

@@ -92,15 +92,12 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(
-        // PC 居中卡片（与滑点 / 连接弹窗同一套响应式容器）
-        'border-0 bg-card text-center shadow-modal-panel',
-        'w-full max-w-(--dapp-wallet-modal-max-width) p-6',
+        // 钱包详情：token 宽、更大圆角、居中；H5 顶边描边（覆盖默认浅色壳）
+        'max-w-(--dapp-wallet-modal-max-width) p-6 text-center',
         'dapp:rounded-2xl',
-        // H5 底部抽屉：通栏，仅顶部圆角
-        'max-dapp:w-full max-dapp:max-w-none',
-        'max-dapp:rounded-t-2xl max-dapp:rounded-b-none',
+        'max-dapp:max-w-none max-dapp:rounded-t-2xl max-dapp:rounded-b-none',
         'max-dapp:border-x-0 max-dapp:border-t max-dapp:border-b-0 max-dapp:border-border',
-        'max-dapp:px-6 max-dapp:pt-3 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))]',
+        'max-dapp:px-6 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))]',
       )}
     >
       <SheetHandle />

@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { selectLockedClaimLegs } from '~/core/assets/select-locked-claim-legs'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
@@ -76,6 +75,15 @@ type ClaimState =
       amountLabel: string
     }
 
+type ClaimOutputState =
+  | { open: false }
+  | {
+      open: true
+      owner: string
+      row: AssetsStakeRow
+      label: string
+    }
+
 type RedeemState =
   | { open: false }
   | {
@@ -138,6 +146,7 @@ export function usePositionDock(product: AssetsProduct) {
   s.syncProduct(product)
   const { quote, setQuote, sort, setSort, page, setPage } = s
   const [claim, setClaim] = useState<ClaimState>({ open: false })
+  const [claimOutput, setClaimOutput] = useState<ClaimOutputState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
 
   const copy = t.assets.products[product]
@@ -235,55 +244,78 @@ export function usePositionDock(product: AssetsProduct) {
     setRedeem({ open: true, owner: address, kind, row, amountLabel })
   }
 
+  function openMixedClaim(args: { owner: string; target: MixedClaimTarget; label: string }) {
+    setClaimOutput({ open: false })
+    setClaim({
+      open: true,
+      owner: args.owner,
+      target: args.target,
+      label: args.label,
+      amountLabel: `${formatTokenAmount(args.target.amount, GAGX_DECIMALS, 4)} gAGX`,
+    })
+  }
+
   function openStakeClaim(row: AssetsStakeRow) {
     if (!address) return
     if (row.inWarmup) return
-    const reward = row.blockReward + row.extraInterest
     const periodLabel = formatPeriodLabel(row.period)
-    const target: MixedClaimTarget =
-      row.kind === 'liquid'
-        ? { source: 'liquid', amount: reward }
-        : (() => {
-            const legs = selectLockedClaimLegs({
-              blockReward: row.blockReward,
-              extraInterest: row.extraInterest,
-            })
-            return {
-              source: 'locked' as const,
-              pool: row.pool,
-              stakeIndex: row.stakeIndex!,
-              amount: legs.reduce((sum, leg) => sum + leg.amount, ZERO_BI),
-              legs,
-            }
-          })()
-    setClaim({
-      open: true,
-      owner: address,
-      target,
-      label: periodLabel,
-      amountLabel: `${formatTokenAmount(target.amount, GAGX_DECIMALS, 4)} gAGX`,
+    // 活期 / 定期均先出「领取产出」；金额为 0 的腿在弹层内禁用
+    setClaim({ open: false })
+    setClaimOutput({ open: true, owner: address, row, label: periodLabel })
+  }
+
+  function selectClaimOutputLeg(leg: 'reward' | 'boost') {
+    if (!claimOutput.open) return
+    const { owner, row, label } = claimOutput
+    const amount = leg === 'boost' ? row.extraInterest : row.blockReward
+    if (amount <= ZERO_BI) return
+
+    if (row.kind === 'liquid') {
+      // 活期无加成腿；boost 按钮应已禁用
+      if (leg === 'boost') return
+      openMixedClaim({
+        owner,
+        label,
+        target: { source: 'liquid', amount },
+      })
+      return
+    }
+
+    if (row.stakeIndex == null) return
+    openMixedClaim({
+      owner,
+      label,
+      target: {
+        source: 'locked',
+        pool: row.pool,
+        stakeIndex: row.stakeIndex,
+        amount,
+        legs: [{ amount, extra: leg === 'boost' }],
+      },
     })
   }
 
   function openBondClaim(row: AssetsBondRow) {
     if (!address) return
     const periodLabel = formatPeriodLabel(String(row.period))
-    setClaim({
-      open: true,
+    openMixedClaim({
       owner: address,
+      label: periodLabel,
       target: {
         source: 'bond',
         depository: row.depository,
         bondIndex: row.bondIndex,
         amount: row.profit,
       },
-      label: periodLabel,
-      amountLabel: `${formatTokenAmount(row.profit, GAGX_DECIMALS, 4)} gAGX`,
     })
   }
 
   function closeClaim() {
     setClaim({ open: false })
+  }
+
+  function closeClaimOutput() {
+    setClaimOutput({ open: false })
   }
 
   function closeRedeem() {
@@ -310,6 +342,7 @@ export function usePositionDock(product: AssetsProduct) {
     setSort,
     sortOptions,
     claim,
+    claimOutput,
     redeem,
     copy,
     stakingTarget,
@@ -327,9 +360,11 @@ export function usePositionDock(product: AssetsProduct) {
     pagedBondRows,
     openStakeClaim,
     openBondClaim,
+    selectClaimOutputLeg,
     requestRedeem,
     activateWarmup,
     closeClaim,
+    closeClaimOutput,
     closeRedeem,
     confirmRedeem,
   }

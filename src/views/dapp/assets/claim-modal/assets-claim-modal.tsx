@@ -112,19 +112,12 @@ function AssetsClaimModalOpen({
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-dim"
-      className={cn(
-        'border-0 bg-card',
-        'w-full max-w-md max-dapp:w-full',
-        'max-dapp:rounded-t-lg max-dapp:px-4 max-dapp:pt-3 max-dapp:pb-[max(1.25rem,env(safe-area-inset-bottom))]',
-        'dapp:rounded-lg dapp:p-6',
-        'dapp:shadow-modal-panel',
-      )}
     >
       <SheetHandle />
       <div className="flex items-start justify-between gap-3 pb-4">
         <div className="grid min-w-0 gap-1">
           <DialogPrimitive.Title asChild>
-            <Text as="h2" variant="support" className="m-0 text-foreground/60">
+            <Text as="h2" className="m-0 font-semibold" variant="copy">
               {t.assets.claim.amount}
             </Text>
           </DialogPrimitive.Title>
@@ -201,7 +194,7 @@ function AssetsClaimModalOpen({
         <InlineAlert open={!vm.contributionOk && Boolean(vm.contribQuery.data)} role="status">
           {t.assets.claim.contribShort}{' '}
           <Button
-            className="inline w-auto! align-baseline font-normal text-inherit underline"
+            className="inline h-auto w-auto! p-0 align-baseline text-[length:inherit] leading-[inherit] font-semibold text-primary underline"
             onClick={vm.goBurn}
             shape="rounded"
             size="sm"

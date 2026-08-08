@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { type ReactNode, useLayoutEffect, useState } from 'react'
 
 import { cn } from '~/shared/lib/utils'
 
@@ -7,6 +7,10 @@ import { cn } from '~/shared/lib/utils'
  *
  * 复用 `dapp-collapsible-*`（grid 0fr→1fr）；关闭结束后卸载，避免 flex `gap` 残留空档。
  *
+ * 兼容旧浏览器：进入动画用「先挂载收起 → 双 rAF 再展开」，不依赖 `@starting-style`。
+ * `open` 变化在 render 期按 prev 比较调整（React / react-doctor 推荐；禁 effect 镜像 props、禁 render 写 ref）。
+ *
+ * @see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
  * @param open 是否展开
  * @param children 内容（关闭过渡期内仍挂载）
  */
@@ -19,28 +23,31 @@ export function Reveal({
   children: ReactNode
   className?: string
 }) {
-  const [mounted, setMounted] = useState(open)
-  const [expanded, setExpanded] = useState(open)
-  const openRef = useRef(open)
-  openRef.current = open
+  // 故意不 seed `useState(open)`：doctor `no-derived-useState`；首帧靠下方 prev 比较同步。
+  const [prevOpen, setPrevOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
-  useEffect(() => {
-    if (open) {
-      setMounted(true)
-      return
-    }
+  if (open !== prevOpen) {
+    setPrevOpen(open)
     setExpanded(false)
-  }, [open])
+    if (open) setMounted(true)
+  }
 
-  useEffect(() => {
-    if (!mounted || !open) return
-    const id = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (openRef.current) setExpanded(true)
+  // 进入动画：挂载为 0fr 后再打开，让 CSS transition 有起点（非 props→state 镜像）
+  useLayoutEffect(() => {
+    if (!open || !mounted || expanded) return
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => {
+        setExpanded(true)
       })
     })
-    return () => cancelAnimationFrame(id)
-  }, [mounted, open])
+    return () => {
+      cancelAnimationFrame(outer)
+      cancelAnimationFrame(inner)
+    }
+  }, [open, mounted, expanded])
 
   if (!mounted) return null
 
@@ -52,7 +59,7 @@ export function Reveal({
       onTransitionEnd={(event) => {
         if (event.target !== event.currentTarget) return
         if (event.propertyName !== 'grid-template-rows') return
-        if (!openRef.current) setMounted(false)
+        if (!open) setMounted(false)
       }}
     >
       <div className="dapp-collapsible-inner">{children}</div>

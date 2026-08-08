@@ -1,6 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
+import { AssetsClaimOutputModal } from '~/views/dapp/assets/claim-modal/assets-claim-output-modal'
 import {
   AssetsListPager,
   AssetsPositionBondRow,
@@ -96,6 +97,16 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
           ) : null}
         </DockStack>
       </TabHeader>
+
+      <AssetsClaimOutputModal
+        onOpenChange={(open) => {
+          if (!open) w.closeClaimOutput()
+        }}
+        onSelectLeg={w.selectClaimOutputLeg}
+        open={w.claimOutput.open}
+        owner={w.claimOutput.open ? w.claimOutput.owner : null}
+        row={w.claimOutput.open ? w.claimOutput.row : null}
+      />
 
       <AssetsClaimModal
         amountLabel={w.claim.open ? w.claim.amountLabel : ''}

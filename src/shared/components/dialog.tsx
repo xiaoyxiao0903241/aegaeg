@@ -7,12 +7,24 @@ import { Text } from '~/shared/components/text'
 
 const DialogPortal = DialogPrimitive.Portal
 
-/** 弹窗各部位样式槽位 */
+/**
+ * 弹窗各部位样式槽位
+ *
+ * `panel`（ResponsiveDialog）：定位/动画（`.aegis-responsive-panel`）+ 默认浅色卡片壳。
+ * 钱包等异形壳用 `className` 覆盖宽高、圆角、padding；勿在业务袋再抽平行 chrome 常量。
+ */
 export const dialogChrome = tv({
   slots: {
     overlay: 'aegis-modal-overlay fixed inset-0 z-50 backdrop-blur-sm',
     content: 'aegis-modal-content fixed top-1/2 left-1/2 z-50 focus:outline-none',
-    panel: 'aegis-responsive-panel focus:outline-none',
+    panel: [
+      'aegis-responsive-panel focus:outline-none',
+      'border-0 bg-card text-foreground',
+      'w-full max-w-md max-dapp:w-full',
+      'max-dapp:rounded-t-lg max-dapp:px-4 max-dapp:pt-3 max-dapp:pb-[max(1.25rem,env(safe-area-inset-bottom))]',
+      'dapp:rounded-lg dapp:px-4 dapp:py-5',
+      'dapp:shadow-modal-panel',
+    ],
     header: 'flex flex-col space-y-1.5 text-center sm:text-left',
     footer: 'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
   },
@@ -117,17 +129,20 @@ export {
   DialogTitle,
 }
 
-/** 通用关闭按钮：圆形描边样式 — 钱包弹窗、滑点、移动端抽屉等共用 */
+/**
+ * 通用关闭按钮：浅灰圆底 X。
+ * 钱包弹窗、资产领取/赎回、滑点等共用；深色壳 call site 可 className 覆盖。
+ */
 export const dialogClose = tv({
   base: [
-    // 圆形关闭按钮：描边 + 卡片底
     'grid size-(--dapp-wallet-modal-close-size) shrink-0 cursor-pointer place-items-center rounded-full',
-    'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
-    'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
+    'border-0 bg-muted text-foreground/55 transition-[background-color,color,transform] duration-180 ease-out',
+    'hover:-translate-y-px hover:bg-muted hover:text-foreground',
+    'focus-visible:ring-0 focus-visible:outline-none',
   ],
 })
 
-/** 弹窗关闭按钮：圆形描边样式 */
+/** 弹窗关闭按钮：浅灰圆底 + X */
 export function DialogClose({
   className,
   ...props
@@ -147,7 +162,12 @@ export function SheetHandle() {
   )
 }
 
-/** 响应式弹窗 / 抽屉容器，面板样式由 `dialogChrome().panel` 提供 */
+/**
+ * 响应式弹窗 / 抽屉：默认浅色卡片壳（领取、赎回、滑点等）。
+ *
+ * @param className 覆盖宽高/圆角/padding（钱包连接、详情等异形壳）
+ * @param overlayClassName 遮罩强度（dim / strong / blur）
+ */
 export function ResponsiveDialog({
   children,
   className,

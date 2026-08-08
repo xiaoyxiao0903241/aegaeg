@@ -455,6 +455,7 @@
 |A-056|资产|Claim 展示额|弹窗金额单位 gAGX|读取展示|`amountLabel` 后缀 gAGX|链 reward/profit wei|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-02|—|可见文案跟稿，张力进改稿队列|
 |A-057|资产|Xmine FAQ / 上限|可质押上限叙事|读取展示|FAQ 有文案；assets 袋无上限 Num（在 staking xmine）|手册 X 挖矿上限|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐挖矿配额公式，或产品确认保留简化叙事；不要前端擅自改|—|—|质押侧数字走挖矿配额（正确）。线上最大质押比率=100%。手册=Early+三定期+三 LP+三销毁锁定本金×比率；FAQ 写「≥180 天债券+AGX 质押总量」过简（活期不计入）。上限数字在质押 X 挖矿|
 |A-058|资产|Hub 年化收益率提示|年化收益率提示文案（未提取收益）|读取展示|Dock Tooltip；与卡上 yield 对齐|产品|—|✅ 已对齐|—|—|—|—|—|
+|A-059|资产|Position·质押·领取流程|「领取产出」中间层（收益 / 加成分入口）再进 Mixed|读取展示/提交|仓位「领取」→`AssetsClaimOutputModal`（0 禁用对应 CTA）→单腿 `AssetsClaimModal`；卡上收益=`blockReward`、加成=`extraInterest`|Figma Copy `4848:264`；主仓验收 `4781:3137`；手册 Locked Mixed 两腿|—|✅ 已对齐|—|—|—|closed|复投在第二步 Mixed。赎回浅色贴稿见 A-044/A-045（`AssetsRedeemConfirm` + `InlineAlert` notice）|
 
 ---
 
