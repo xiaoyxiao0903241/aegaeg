@@ -1,3 +1,8 @@
+import type { StakePeriod } from '~/core/staking/staking-period'
+
+/** 计算器产品：质押 / LP 债 / 燃烧债 / X 挖矿。 */
+export type CalcProduct = 'stake' | 'lpbond' | 'burnbond' | 'xmine'
+
 /** 计算器滑块与预估曲线的最大天数范围（仅计算器用，非产品锁定期限）。 */
 export const CALC_MAX_DAYS = 720
 
@@ -12,11 +17,11 @@ export type CalcYieldCurvePoint = {
  * 数值来自手册 RewardManager 的 LOCKED_*_BONUS_BPS 常量；
  * 活期无锁定加成，返回 0。
  *
- * @param period 产品周期（'180' | '360' | '540' 或其他）
+ * @param period 产品周期
  * @returns 锁定加成 BPS；非定期返回 0
  * @see docs/onchain-manual/contracts/rewardmanager.md
  */
-export function lockedBonusBps(period: string): number {
+export function lockedBonusBps(period: StakePeriod): number {
   if (period === '180') return 1000
   if (period === '360') return 1500
   if (period === '540') return 2000
@@ -142,7 +147,7 @@ export function periodYieldPct(baseDailyPct: number, periodDays: number): number
  * @param period 产品周期（'180' | '360' | '540' 或其他）
  * @returns 期限天数；非定期返回 1
  */
-export function stakePeriodDays(period: string): number {
+export function stakePeriodDays(period: StakePeriod): number {
   if (period === '180') return 180
   if (period === '360') return 360
   if (period === '540') return 540
@@ -152,13 +157,13 @@ export function stakePeriodDays(period: string): number {
 /**
  * BondDepository / BurnBondDepository 手册默认 `discountRateBP`（成交价率）。
  *
- * 180→8500、360→8000、540→7500；未知周期返回 null，避免用错误折扣率估算。
+ * 180→8500、360→8000、540→7500；非定期（如活期）返回 null，避免用错误折扣率估算。
  *
- * @param period 产品周期（'180' | '360' | '540' 或其他）
- * @returns 手册成交价率（BPS）；未知周期返回 null
+ * @param period 产品周期
+ * @returns 手册成交价率（BPS）；非定期返回 null
  * @see docs/onchain-manual/contracts/bonddepository.md
  */
-export function handbookBondDiscountRateBP(period: string): number | null {
+export function handbookBondDiscountRateBP(period: StakePeriod): number | null {
   if (period === '180') return 8500
   if (period === '360') return 8000
   if (period === '540') return 7500
@@ -198,8 +203,8 @@ export function linearInterest(principal: number, dailyPct: number, days: number
  * @returns 利息与本金合计；本金或天数为 0 时利息为 0
  */
 export function calcLocalInterest(args: {
-  product: 'stake' | 'lpbond' | 'burnbond' | 'xmine'
-  period: string
+  product: CalcProduct
+  period: StakePeriod
   principal: number
   days: number
   epochRebasePct: number | null
@@ -277,8 +282,8 @@ export function calcLocalInterest(args: {
  * @returns 逐日累计利息（USD）点数组
  */
 export function buildCalcYieldCurvePoints(args: {
-  product: 'stake' | 'lpbond' | 'burnbond' | 'xmine'
-  period: string
+  product: CalcProduct
+  period: StakePeriod
   principal: number
   price: number
   epochRebasePct: number | null

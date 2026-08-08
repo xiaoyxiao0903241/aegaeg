@@ -21,6 +21,13 @@ export const BOND_PERIODS = ['180', '360', '540'] as const satisfies readonly Bo
 /** 质押开放周期列表（含活期）。 */
 export const STAKE_PERIODS = ['liquid', ...BOND_PERIODS] as const satisfies readonly StakePeriod[]
 
+export function isStakePeriod(value: string): value is StakePeriod {
+  return (STAKE_PERIODS as readonly string[]).includes(value)
+}
+
+export function isBondPeriod(value: string): value is BondPeriod {
+  return (BOND_PERIODS as readonly string[]).includes(value)
+}
 export type StakePoolContractKey =
   'liquidStaking' | 'lockedStaking180d' | 'lockedStaking360d' | 'lockedStaking540d'
 

@@ -21,9 +21,13 @@ import {
   mapBondFlowLogToOpsRow,
   mapStakeFlowLogToOpsRow,
 } from '~/shared/presenters/map-flow-log-rows'
-import { type AssetsProduct, usePositionSessionStore } from '~/stores/assets-session-store'
+import {
+  ASSETS_SORT_KEYS,
+  type AssetsProduct,
+  type AssetsSortKey,
+  usePositionSessionStore,
+} from '~/stores/assets-session-store'
 import { formatAssetsPositionAmount } from '~/views/dapp/assets/position/format-assets-position-amount'
-import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 import { submitBondRedeem, submitStakeRedeem } from '~/views/dapp/assets/submit-assets'
 import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
@@ -144,9 +148,7 @@ export function usePositionDock(product: AssetsProduct) {
 
   const sortOptions = useMemo(
     () =>
-      (
-        ['startNear', 'startFar', 'endNear', 'endFar'] as const satisfies readonly AssetsSortKey[]
-      ).map((value) => ({
+      ASSETS_SORT_KEYS.map((value) => ({
         value,
         label: t.assets.position.sortOptions[value],
       })),

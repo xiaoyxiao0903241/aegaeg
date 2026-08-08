@@ -79,9 +79,11 @@ export function AssetsPositionEmptyCard({
   )
 }
 
-export type AssetsQuoteCurrency = 'agx' | 'usd'
+import type { AssetsSortKey } from '~/stores/assets-session-store'
 
-export type AssetsSortKey = 'startNear' | 'startFar' | 'endNear' | 'endFar'
+export type { AssetsSortKey } from '~/stores/assets-session-store'
+
+export type AssetsQuoteCurrency = 'agx' | 'usd'
 
 export type AssetsSortOption = {
   value: AssetsSortKey

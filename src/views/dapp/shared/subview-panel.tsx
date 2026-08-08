@@ -97,7 +97,7 @@ export function SubviewHost({
             isTransitioning
               ? 'dapp-subview-layer-motion'
               : // idle 清掉 enter 的 animation fill（both），避免残留 transform
-                'flex min-h-0 min-w-0 flex-1 [transform:none] flex-col [opacity:1] dapp:h-full'
+                'flex min-h-0 min-w-0 flex-1 transform-none flex-col opacity-[1] dapp:h-full'
           }
         >
           <SubviewViewContext.Provider value={liveView}>{children}</SubviewViewContext.Provider>

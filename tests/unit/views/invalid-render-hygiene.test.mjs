@@ -65,7 +65,7 @@ test('rail and community subscribe via useGenesisPromoChrome only', async () => 
   assert.doesNotMatch(hook, /state\.promoSnapshot/)
 })
 
-test('xmine parent view has no 1Hz interval; position card owns warmup clock', async () => {
+test('xmine parent view has no 1Hz interval; position card uses shared wall clock', async () => {
   const { readFile } = await import('node:fs/promises')
   const parent = await readFile(
     new URL('../../../src/views/dapp/assets/xmine/use-xmine.ts', import.meta.url),
@@ -75,8 +75,14 @@ test('xmine parent view has no 1Hz interval; position card owns warmup clock', a
     new URL('../../../src/views/dapp/assets/xmine/primitives.tsx', import.meta.url),
     'utf8',
   )
+  const wallClock = await readFile(
+    new URL('../../../src/stores/wall-clock-store.ts', import.meta.url),
+    'utf8',
+  )
   assert.doesNotMatch(parent, /setInterval/)
-  assert.match(card, /setInterval\(tick,\s*1000\)/)
+  assert.doesNotMatch(card, /setInterval/)
+  assert.match(card, /useWallClockSec\(/)
+  assert.match(wallClock, /setInterval\(tick,\s*1000\)/)
 })
 
 test('genesis countdown clock owns nowSeconds; chain-reads does not', async () => {

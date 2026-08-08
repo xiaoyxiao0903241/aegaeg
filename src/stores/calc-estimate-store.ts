@@ -1,35 +1,15 @@
 import { create } from 'zustand'
 
-import { buildCalcEstimate } from '~/core/staking/build-calc-estimate'
+import {
+  buildCalcEstimate,
+  type CalcEstimateResult,
+  type CalcProduct,
+} from '~/core/staking/build-calc-estimate'
+import type { StakePeriod } from '~/core/staking/staking-period'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { formatNumber } from '~/shared/presenters/format'
 
-export type CalcProduct = 'stake' | 'lpbond' | 'burnbond' | 'xmine'
-
-export type CalcEstimateResult = {
-  product: CalcProduct
-  period: string
-  days: number
-  /** 估算使用的本金金额。 */
-  principal: number
-  /** 假设的 USD 单价。 */
-  price: number
-  interestTokens: number
-  totalTokens: number
-  /** 净收益价值（收益总额）。 */
-  interestUsd: number
-  /** 本金 × 单价（总投入 / 液态已释放本金价值）。 */
-  investedUsd: number
-  /** 投入 + 收益（卖出总值）。 */
-  sellUsd: number
-  ratePct: number
-  /** 该快照使用的周期 rebase 百分比（null 表示零收益）。 */
-  epochRebasePct: number | null
-  /** xmine 日收益率（%）；非 xmine 为 null。 */
-  xmineDailyPct: number | null
-  /** 每日 epoch 数（链上推算；缺为 null，禁 FAQ 默认）。 */
-  epochsPerDay: number | null
-}
+export type { CalcEstimateResult, CalcProduct } from '~/core/staking/build-calc-estimate'
 
 type LiveRates = {
   spotUsd: number | null
@@ -40,7 +20,7 @@ type LiveRates = {
 
 type CalcEstimateStore = {
   product: CalcProduct
-  period: string
+  period: StakePeriod
   amount: string
   price: string
   days: number
@@ -48,7 +28,7 @@ type CalcEstimateStore = {
   priceSeeded: boolean
   result: CalcEstimateResult | null
   setProduct: (product: CalcProduct) => void
-  setPeriod: (period: string) => void
+  setPeriod: (period: StakePeriod) => void
   setAmount: (amount: string) => void
   setPrice: (price: string) => void
   setDays: (days: number) => void
@@ -59,7 +39,7 @@ type CalcEstimateStore = {
   liveSync: (rates: LiveRates) => void
 }
 
-function defaultPeriodFor(product: CalcProduct): string {
+function defaultPeriodFor(product: CalcProduct): StakePeriod {
   return product === 'stake' || product === 'xmine' ? 'liquid' : '180'
 }
 

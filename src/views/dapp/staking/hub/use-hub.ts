@@ -2,6 +2,7 @@ import type { UTCTimestamp } from 'lightweight-charts'
 import { useState } from 'react'
 
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { isStakePeriod } from '~/core/staking/staking-period'
 import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
@@ -172,7 +173,8 @@ export function useStakingHubDetail() {
           },
         ]
       }
-      const bps = tableSeg === 'stake' ? lockedBonusBps(row.id) : 0
+      const period = isStakePeriod(row.id) ? row.id : null
+      const bps = tableSeg === 'stake' && period != null ? lockedBonusBps(period) : 0
       return [
         row.id,
         {
@@ -180,7 +182,9 @@ export function useStakingHubDetail() {
           baseDaily: formatYieldPct(baseDaily),
           bonus: formatBonusPct(bps),
           periodYield: formatYieldPct(
-            baseDaily == null ? null : periodYieldPct(baseDaily, stakePeriodDays(row.id)),
+            baseDaily == null || period == null
+              ? null
+              : periodYieldPct(baseDaily, stakePeriodDays(period)),
           ),
         },
       ]

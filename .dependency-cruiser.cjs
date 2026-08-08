@@ -6,7 +6,7 @@ module.exports = {
       severity: 'error',
       from: { path: '^src/core/' },
       to: {
-        path: '^(react|react-dom|thirdweb|viem|@tanstack|zustand|src/views|src/shared|src/boot)',
+        path: '^(react|react-dom|thirdweb|viem|@tanstack|zustand|src/views|src/shared|src/boot|src/stores)',
         pathNot: '^src/core/',
       },
     },

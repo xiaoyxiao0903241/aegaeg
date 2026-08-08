@@ -7,7 +7,7 @@ import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { formatBondDebtRemainingDisplay } from '~/core/staking/format-bond-debt-remaining'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondKind } from '~/core/staking/staking-period'
-import { BOND_PERIODS, type BondPeriod } from '~/core/staking/staking-period'
+import { BOND_PERIODS, type BondPeriod, isBondPeriod } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -246,7 +246,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
 
   function changePeriod(next: string) {
     if (next === period) return
-    if (next !== '180' && next !== '360' && next !== '540') return
+    if (!isBondPeriod(next)) return
     unlock()
     amountInput.clearAmount()
     setBondPeriod(kind, next)

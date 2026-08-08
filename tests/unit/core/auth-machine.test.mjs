@@ -82,10 +82,17 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     lastAttemptKey: null,
     attemptKey: 'k1',
     renewThresholdMs,
+    loginChainReady: true,
   }
 
   // disconnected → idle
   assert.deepEqual(deriveAuthAction({ ...base, state: { kind: 'disconnected' } }), { type: 'idle' })
+
+  // 链未就绪（未知 / 异网）→ idle，不触发登录风暴
+  assert.deepEqual(
+    deriveAuthAction({ ...base, loginChainReady: false, state: { kind: 'needsLogin' } }),
+    { type: 'idle' },
+  )
 
   // needsLogin + clean guards → auto-login. Silent when a cached signature
   // exists; prompts the wallet once when it does not (loop guard dedupes).

@@ -1,21 +1,49 @@
+import { type StakePeriod } from '~/core/staking/staking-period'
 import {
   CALC_MAX_DAYS,
   calcLocalInterest,
+  type CalcProduct,
   handbookBondDiscountRateBP,
 } from '~/core/staking/staking-yield'
-import type { CalcEstimateResult, CalcProduct } from '~/stores/calc-estimate-store'
+
+export type { CalcProduct } from '~/core/staking/staking-yield'
+
+export type CalcEstimateResult = {
+  product: CalcProduct
+  period: StakePeriod
+  days: number
+  /** 估算使用的本金金额。 */
+  principal: number
+  /** 假设的 USD 单价。 */
+  price: number
+  interestTokens: number
+  totalTokens: number
+  /** 净收益价值（收益总额）。 */
+  interestUsd: number
+  /** 本金 × 单价（总投入 / 液态已释放本金价值）。 */
+  investedUsd: number
+  /** 投入 + 收益（卖出总值）。 */
+  sellUsd: number
+  ratePct: number
+  /** 该快照使用的周期 rebase 百分比（null 表示零收益）。 */
+  epochRebasePct: number | null
+  /** xmine 日收益率（%）；非 xmine 为 null。 */
+  xmineDailyPct: number | null
+  /** 每日 epoch 数（链上推算；缺为 null，禁 FAQ 默认）。 */
+  epochsPerDay: number | null
+}
 
 /**
  * 计算收益预估的持仓天数。
  *
- * 定期（180/360/540 天）使用固定期限；活期或未知周期使用滑块天数，
+ * 定期（180/360/540 天）使用固定期限；活期使用滑块天数，
  * 并收敛到 1..CALC_MAX_DAYS 区间。
  *
- * @param period 产品周期（'180' | '360' | '540' 或其他）
+ * @param period 产品周期
  * @param sliderDays 滑块选择的天数
  * @returns 用于估算的持仓天数
  */
-export function periodEndDays(period: string, sliderDays: number): number {
+export function periodEndDays(period: StakePeriod, sliderDays: number): number {
   if (period === '180') return 180
   if (period === '360') return 360
   if (period === '540') return 540
@@ -39,7 +67,7 @@ export function periodEndDays(period: string, sliderDays: number): number {
  */
 export function buildCalcEstimate(args: {
   product: CalcProduct
-  period: string
+  period: StakePeriod
   amount: string
   price: string
   days: number

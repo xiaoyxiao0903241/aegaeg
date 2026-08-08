@@ -40,7 +40,7 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
       decimals: 18,
       fractionDigits: 2,
     }),
-    '1.5',
+    '1.50',
   )
 
   assert.equal(

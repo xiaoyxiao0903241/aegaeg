@@ -1,3 +1,5 @@
+import { type CalcProduct } from '~/core/staking/build-calc-estimate'
+import { type StakePeriod } from '~/core/staking/staking-period'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
@@ -11,7 +13,7 @@ import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { formatNumber } from '~/shared/presenters/format'
-import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -34,13 +36,13 @@ export function CalcDock() {
   const s = useCalcEstimateStore()
   useCalcEstimateLive()
 
-  const productOptions = [
+  const productOptions: ReadonlyArray<{ label: string; value: CalcProduct }> = [
     { label: t.staking.calc.products.stake, value: 'stake' },
     { label: t.staking.calc.products.lpbond, value: 'lpbond' },
     { label: t.staking.calc.products.burnbond, value: 'burnbond' },
     { label: t.staking.calc.products.xmine, value: 'xmine' },
   ]
-  const periodOptions =
+  const periodOptions: ReadonlyArray<{ label: string; value: StakePeriod }> =
     s.product === 'stake'
       ? [
           { label: t.staking.stake.periods.liquid, value: 'liquid' },
@@ -67,11 +69,6 @@ export function CalcDock() {
       ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
       : formatNumber(0, { digits: 2, prefix: '$' })
 
-  function onProductChange(next: string) {
-    if (next !== 'stake' && next !== 'lpbond' && next !== 'burnbond' && next !== 'xmine') return
-    s.setProduct(next as CalcProduct)
-  }
-
   return (
     <TabHeader
       backText={t.staking.backToHub}
@@ -82,7 +79,7 @@ export function CalcDock() {
       <DockStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
-          onChange={onProductChange}
+          onChange={s.setProduct}
           options={productOptions}
           value={s.product}
         />

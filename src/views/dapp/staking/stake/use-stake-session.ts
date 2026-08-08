@@ -3,7 +3,7 @@ import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchang
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
-import { STAKE_PERIODS } from '~/core/staking/staking-period'
+import { isStakePeriod, STAKE_PERIODS } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -128,7 +128,7 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
 
   function changePeriod(next: string) {
     if (next === period) return
-    if (next !== 'liquid' && next !== '180' && next !== '360' && next !== '540') return
+    if (!isStakePeriod(next)) return
     unlock()
     amountInput.clearAmount()
     setStakePeriod(next)

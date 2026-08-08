@@ -63,7 +63,7 @@ test('formatBurnContributionRateLabel from rateBps', async () => {
       agxSymbol: 'AGX',
       pointsLabel: '贡献点数',
     }),
-    '1 AGX = 6 贡献点数',
+    '1 AGX = 6.00 贡献点数',
   )
   assert.equal(
     formatBurnContributionRateLabel({

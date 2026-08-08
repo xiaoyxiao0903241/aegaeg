@@ -5,11 +5,6 @@ import { decodeFunctionData, encodeFunctionResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
 
-const PAIR = '0xaC645E2137eB011f612b01942D21De6Be959E266'
-const ROUTER = '0x10ED43C718714eb63d5aA57B78B54704E256024E'
-const TOKEN_IN = '0x32Bb0be09F62bbE69764906d80e9A5782C7F7633'
-const TOKEN_OUT = '0x8d0771495272bB97Cd1cD44795222c8fB1b53247'
-
 const agxSellTaxAbi = parseAbi([
   'function sellRatio() view returns (uint256)',
   'function extraSellBP() view returns (uint256)',
@@ -19,14 +14,31 @@ const agxSellTaxAbi = parseAbi([
   'function grossSoldInBlock() view returns (uint256)',
 ])
 
-function createMockClient({ reserve0 = 10n ** 24n, reserve1 = 10n ** 15n, quotedOut } = {}) {
+async function loadExchangeAddresses() {
+  const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
+  const { EXCHANGE_CONFIG } = await loadModule('/src/shared/config/exchange.ts')
+  return {
+    agx: BSC_CONTRACTS.agx,
+    usd1: BSC_CONTRACTS.usd1,
+    pool: EXCHANGE_CONFIG.pool,
+    router: EXCHANGE_CONFIG.router,
+  }
+}
+
+function createMockClient({
+  tokenIn,
+  tokenOut,
+  reserve0 = 10n ** 24n,
+  reserve1 = 10n ** 15n,
+  quotedOut,
+}) {
   const calls = []
   return {
     calls,
     async readContract(request) {
       calls.push(['read', request.functionName, request.address])
-      if (request.functionName === 'token0') return TOKEN_IN
-      if (request.functionName === 'token1') return TOKEN_OUT
+      if (request.functionName === 'token0') return tokenIn
+      if (request.functionName === 'token1') return tokenOut
       if (request.functionName === 'getReserves') return [reserve0, reserve1, 0]
       if (request.functionName === 'getAmountsOut') {
         const amountIn = request.args[0]
@@ -46,7 +58,7 @@ function encodeTaxResult(functionName, value) {
   })
 }
 
-function createAgxSellClient(taxValues) {
+function createAgxSellClient({ tokenIn, tokenOut, taxValues }) {
   return {
     calls: [],
     getAmountsOutArg: null,
@@ -55,8 +67,8 @@ function createAgxSellClient(taxValues) {
     },
     async readContract(request) {
       this.calls.push(['read', request.functionName, request.address])
-      if (request.functionName === 'token0') return TOKEN_IN
-      if (request.functionName === 'token1') return TOKEN_OUT
+      if (request.functionName === 'token0') return tokenIn
+      if (request.functionName === 'token1') return tokenOut
       if (request.functionName === 'getReserves') return [10n ** 24n, 10n ** 15n, 0]
       if (request.functionName === 'aggregate3') {
         return request.args[0].map((call) => {
@@ -83,11 +95,14 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
   const { clearExchangePoolImmutableCache } = await loadModule(
     '/src/web3/exchange/read-exchange-pool.ts',
   )
+  const { agx, usd1, pool, router } = await loadExchangeAddresses()
   clearExchangePoolImmutableCache()
 
   const amountIn = 10n ** 18n
   const quotedOut = 5n * 10n ** 8n
   const client = createMockClient({
+    tokenIn: usd1,
+    tokenOut: agx,
     reserve0: 10n ** 24n,
     reserve1: 10n ** 15n,
     quotedOut,
@@ -95,20 +110,20 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
 
   const result = await fetchExchangeQuote({
     amountIn,
-    tokenIn: TOKEN_IN,
-    tokenOut: TOKEN_OUT,
+    tokenIn: usd1,
+    tokenOut: agx,
     client,
   })
 
   assert.equal(result.quotedOut, quotedOut)
-  assert.equal(result.tokenIn, TOKEN_IN)
-  assert.equal(result.tokenOut, TOKEN_OUT)
+  assert.equal(result.tokenIn, usd1)
+  assert.equal(result.tokenOut, agx)
   assert.equal(result.gasEstimate, 0n)
   assert.ok(result.priceImpactBps > 0)
   assert.ok(client.calls.some((c) => c[0] === 'read' && c[1] === 'getAmountsOut'))
-  assert.ok(client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === PAIR.toLowerCase()))
+  assert.ok(client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === pool.toLowerCase()))
   assert.ok(
-    client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === ROUTER.toLowerCase()),
+    client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === router.toLowerCase()),
   )
 })
 
@@ -117,6 +132,7 @@ test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', 
   const { clearExchangePoolImmutableCache } = await loadModule(
     '/src/web3/exchange/read-exchange-pool.ts',
   )
+  const { agx, usd1 } = await loadExchangeAddresses()
   clearExchangePoolImmutableCache()
 
   const amountIn = 10n ** 9n
@@ -124,18 +140,22 @@ test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', 
   const netIn = (amountIn * (10_000n - taxBps)) / 10_000n
 
   const client = createAgxSellClient({
-    sellRatio: 350n,
-    extraSellBP: taxBps,
-    crashFuseActive: true,
-    blockSellQuotaBlock: 100n,
-    blockSellLimit: 10n ** 18n,
-    grossSoldInBlock: 0n,
+    tokenIn: agx,
+    tokenOut: usd1,
+    taxValues: {
+      sellRatio: 350n,
+      extraSellBP: taxBps,
+      crashFuseActive: true,
+      blockSellQuotaBlock: 100n,
+      blockSellLimit: 10n ** 18n,
+      grossSoldInBlock: 0n,
+    },
   })
 
   const result = await fetchExchangeQuote({
     amountIn,
-    tokenIn: TOKEN_OUT,
-    tokenOut: TOKEN_IN,
+    tokenIn: agx,
+    tokenOut: usd1,
     client,
   })
 
@@ -149,6 +169,7 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
   const { clearExchangePoolImmutableCache } = await loadModule(
     '/src/web3/exchange/read-exchange-pool.ts',
   )
+  const { agx, usd1 } = await loadExchangeAddresses()
   clearExchangePoolImmutableCache()
 
   const amountIn = 10n ** 9n
@@ -156,18 +177,22 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
   const netIn = (amountIn * (10_000n - taxBps)) / 10_000n
 
   const client = createAgxSellClient({
-    sellRatio: 350n,
-    extraSellBP: taxBps,
-    crashFuseActive: false,
-    blockSellQuotaBlock: 100n,
-    blockSellLimit: amountIn,
-    grossSoldInBlock: 1n,
+    tokenIn: agx,
+    tokenOut: usd1,
+    taxValues: {
+      sellRatio: 350n,
+      extraSellBP: taxBps,
+      crashFuseActive: false,
+      blockSellQuotaBlock: 100n,
+      blockSellLimit: amountIn,
+      grossSoldInBlock: 1n,
+    },
   })
 
   await fetchExchangeQuote({
     amountIn,
-    tokenIn: TOKEN_OUT,
-    tokenOut: TOKEN_IN,
+    tokenIn: agx,
+    tokenOut: usd1,
     client,
   })
 
@@ -176,12 +201,13 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
 
 test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () => {
   const { quoteV2AmountsOut } = await loadModule('/src/web3/exchange/quote-v2-amounts-out.ts')
-  const client = createMockClient()
+  const { agx, usd1, router } = await loadExchangeAddresses()
+  const client = createMockClient({ tokenIn: usd1, tokenOut: agx })
 
   const result = await quoteV2AmountsOut({
-    router: ROUTER,
+    router,
     amountIn: 0n,
-    path: [TOKEN_IN, TOKEN_OUT],
+    path: [usd1, agx],
     client,
   })
 

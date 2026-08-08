@@ -1,8 +1,16 @@
 import { create } from 'zustand'
 
-import type { AssetsSortKey } from '~/views/dapp/assets/primitives'
-
 export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
+
+/** 仓位 / X 挖矿列表排序键（store 持有；UI 只消费）。 */
+export type AssetsSortKey = 'startNear' | 'startFar' | 'endNear' | 'endFar'
+
+export const ASSETS_SORT_KEYS = [
+  'startNear',
+  'startFar',
+  'endNear',
+  'endFar',
+] as const satisfies readonly AssetsSortKey[]
 
 /**
  * 仓位产品侧栏会话（报价 / 排序 / 分页）。

@@ -24,16 +24,16 @@ function calcPct(value: number) {
 }
 
 /** 产品 / 周期 Tab 行：用 Chip 拼装，不用 Segment 滑动条 */
-export function CalcHtabRow({
+export function CalcHtabRow<T extends string>({
   ariaLabel,
   options,
   value,
   onChange,
 }: {
   ariaLabel: string
-  options: ReadonlyArray<{ label: string; value: string }>
-  value: string
-  onChange: (next: string) => void
+  options: ReadonlyArray<{ label: string; value: T }>
+  value: T
+  onChange: (next: T) => void
 }) {
   return (
     <div aria-label={ariaLabel} className="flex w-full gap-2" role="tablist">

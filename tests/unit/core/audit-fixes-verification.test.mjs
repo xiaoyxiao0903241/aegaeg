@@ -31,6 +31,7 @@ test('audit #11: JWT without exp schedules renewAt from savedAt + fallback TTL',
     lastAttemptKey: null,
     attemptKey: 'k1',
     renewThresholdMs,
+    loginChainReady: true,
   })
 
   assert.deepEqual(action, {
@@ -48,6 +49,7 @@ test('audit #18: transient login errors allow retry; permanent errors block', as
     lastAttemptKey: null,
     attemptKey: 'k1',
     renewThresholdMs: 60_000,
+    loginChainReady: true,
     state: { kind: 'needsLogin' },
   }
 

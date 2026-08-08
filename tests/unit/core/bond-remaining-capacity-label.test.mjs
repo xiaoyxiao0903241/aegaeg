@@ -17,7 +17,7 @@ test('formatBondDebtRemainingDisplay: remaining is AGX debt units', async () => 
   const one = 10n ** 18n
   const out = formatBondDebtRemainingDisplay(5n * one, 2n * one, 18, 2)
   assert.equal(out.kind, 'amount')
-  assert.equal(out.label, '3')
+  assert.equal(out.label, '3.00')
 })
 
 test('formatBondDebtRemainingDisplay: sold out shows zero', async () => {
@@ -26,5 +26,5 @@ test('formatBondDebtRemainingDisplay: sold out shows zero', async () => {
   )
   const one = 10n ** 18n
   const out = formatBondDebtRemainingDisplay(2n * one, 5n * one, 18, 2)
-  assert.deepEqual(out, { kind: 'amount', label: '0' })
+  assert.deepEqual(out, { kind: 'amount', label: '0.00' })
 })
