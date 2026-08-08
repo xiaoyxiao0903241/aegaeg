@@ -1,13 +1,13 @@
 import { actionOwnerMatches } from '~/core/assets/action-owner'
 import {
+  evaluateMixedClaim,
   evaluateRedeem,
   evaluateXmineActivateWarmup,
   evaluateXmineClaim,
   evaluateXmineUnstake,
 } from '~/core/assets/assets-block-reasons'
 import { matchClaimPlanIndices, restakeBpsFromPct } from '~/core/assets/claim-plans'
-import { dualCheckMixedClaim } from '~/core/assets/dual-check-mixed-claim'
-import type { LockedClaimLeg } from '~/core/assets/select-locked-claim-legs'
+import type { LockedClaimEntry } from '~/core/assets/locked-claim-entry'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import type { Address } from '~/shared/config/contracts'
 import {
@@ -33,14 +33,8 @@ import {
 } from '~/web3/assets/assets-write'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { ASSETS_BLOCKED } from '~/web3/errors/write-block-errors'
+import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
-
-function gateError(
-  reason: keyof typeof ASSETS_BLOCKED | null,
-): (typeof ASSETS_BLOCKED)[keyof typeof ASSETS_BLOCKED] | null {
-  if (!reason) return null
-  return ASSETS_BLOCKED[reason]
-}
 
 function assertSessionOwnsAction(sessionAddress: string, owner: string): void {
   if (!actionOwnerMatches(sessionAddress, owner)) throw ASSETS_BLOCKED.unavailable
@@ -53,8 +47,8 @@ export type MixedClaimTarget =
       pool: Address
       stakeIndex: number
       amount: bigint
-      /** 普通奖励与额外利息可并存；按顺序各写一笔。 */
-      legs: ReadonlyArray<LockedClaimLeg>
+      /** 普通奖励与额外利息为独立写入口；通常只含用户所选的一项。 */
+      entries: ReadonlyArray<LockedClaimEntry>
     }
   | {
       source: 'bond'
@@ -63,7 +57,7 @@ export type MixedClaimTarget =
       amount: bigint
     }
 
-/** 单腿读快照目标（定期需带 extra 以区分普通/额外可领余额）。 */
+/** 单次读快照目标（定期需带 extra 以区分普通 / 额外可领余额）。 */
 type MixedClaimReadTarget =
   | { source: 'liquid'; amount: bigint }
   | {
@@ -107,15 +101,17 @@ async function readMixedClaimSnapshot(
   }
 }
 
+type MixedClaimSnapshot = Awaited<ReturnType<typeof readMixedClaimSnapshot>>
+
 /**
  * Mixed 领奖写交易
  *
- * 写前连续读取两次链上状态做双重校验，通过后按来源路由到对应合约的
- * 领取方法（活期 / 定期 / 债券），最后失效相关缓存。
+ * 按 `approveThenLiveWrite`：预检读 → 实时重读复核 → 再写。
  * 打开弹窗时捕获的 owner 须与会话钱包一致，否则拒绝提交。
- * 定期若普通奖励与额外利息并存，按腿顺序各写一笔。
+ * 定期普通 / 额外为独立入口；若传入多项则按序各写一笔。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
+ * @see 手册 §9.3 Mixed 领奖前端流程
  */
 export async function submitMixedClaim(args: {
   session: WriteSession
@@ -131,106 +127,90 @@ export async function submitMixedClaim(args: {
 
   const restakeBps = restakeBpsFromPct(restakePct)
 
+  async function writeOne(readTarget: MixedClaimReadTarget, amount: bigint, extra?: boolean) {
+    await approveThenLiveWrite({
+      readSnapshot: () =>
+        readMixedClaimSnapshot(readTarget, user, amount, releaseDays, restakeDays, readClient),
+      evaluate: (snap: MixedClaimSnapshot) =>
+        evaluateMixedClaim({
+          amount,
+          rewardAvailable: snap.rewardAvailable,
+          contribution: snap.contribution,
+          requiredContribution: snap.requiredContribution,
+          releasePlanIndex: snap.releasePlanIndex,
+          restakePlanIndex: snap.restakePlanIndex,
+        }),
+      mapBlockError: (reason) => ASSETS_BLOCKED[reason],
+      write: async (live) => {
+        const releasePlanIndex = live.releasePlanIndex
+        const restakePlanIndex = live.restakePlanIndex
+        if (releasePlanIndex == null || restakePlanIndex == null) {
+          throw ASSETS_BLOCKED.unavailable
+        }
+        if (readTarget.source === 'locked') {
+          await writeLockedClaimMixed({
+            wallet,
+            pool: readTarget.pool,
+            stakeIndex: readTarget.stakeIndex,
+            amount,
+            releasePlanIndex,
+            restakePlanIndex,
+            restakeBps,
+            extra: extra ?? false,
+          })
+          return
+        }
+        if (readTarget.source === 'liquid') {
+          await writeLiquidClaimMixed({
+            wallet,
+            releasePlanIndex,
+            amount,
+            restakePlanIndex,
+            restakeBps,
+          })
+          return
+        }
+        await writeBondClaimMixed({
+          wallet,
+          depository: readTarget.depository,
+          recipient: user,
+          amount,
+          releasePlanIndex,
+          bondIndex: readTarget.bondIndex,
+          restakePlanIndex,
+          restakeBps,
+        })
+      },
+    })
+  }
+
   if (target.source === 'locked') {
-    // 定期普通/额外为独立入口；双奖励时顺序各写一笔，禁止静默丢弃 extraInterest。
-    if (target.legs.length === 0) throw ASSETS_BLOCKED.unavailable
-    for (const leg of target.legs) {
-      const legTarget: MixedClaimReadTarget = {
-        source: 'locked',
-        pool: target.pool,
-        stakeIndex: target.stakeIndex,
-        amount: leg.amount,
-        extra: leg.extra,
-      }
-      const intent = await readMixedClaimSnapshot(
-        legTarget,
-        user,
-        leg.amount,
-        releaseDays,
-        restakeDays,
-        readClient,
+    if (target.entries.length === 0) throw ASSETS_BLOCKED.unavailable
+    for (const entry of target.entries) {
+      await writeOne(
+        {
+          source: 'locked',
+          pool: target.pool,
+          stakeIndex: target.stakeIndex,
+          amount: entry.amount,
+          extra: entry.extra,
+        },
+        entry.amount,
+        entry.extra,
       )
-      const live = await readMixedClaimSnapshot(
-        legTarget,
-        user,
-        leg.amount,
-        releaseDays,
-        restakeDays,
-        readClient,
-      )
-      const dual = dualCheckMixedClaim({ amount: leg.amount, intent, live })
-      if (!dual.ok) {
-        const mapped = gateError(dual.fail.reason)
-        throw mapped ?? ASSETS_BLOCKED.unavailable
-      }
-      await writeLockedClaimMixed({
-        wallet,
-        pool: target.pool,
-        stakeIndex: target.stakeIndex,
-        amount: leg.amount,
-        releasePlanIndex: dual.ready.releasePlanIndex,
-        restakePlanIndex: dual.ready.restakePlanIndex,
-        restakeBps,
-        extra: leg.extra,
-      })
     }
     invalidateAfterAssetsClaim()
     return
   }
 
-  const amount = target.amount
-  const intent = await readMixedClaimSnapshot(
-    target,
-    user,
-    amount,
-    releaseDays,
-    restakeDays,
-    readClient,
-  )
-  const live = await readMixedClaimSnapshot(
-    target,
-    user,
-    amount,
-    releaseDays,
-    restakeDays,
-    readClient,
-  )
-  const dual = dualCheckMixedClaim({ amount, intent, live })
-  if (!dual.ok) {
-    const mapped = gateError(dual.fail.reason)
-    throw mapped ?? ASSETS_BLOCKED.unavailable
-  }
-
-  const { releasePlanIndex, restakePlanIndex } = dual.ready
-  if (target.source === 'liquid') {
-    await writeLiquidClaimMixed({
-      wallet,
-      releasePlanIndex,
-      amount,
-      restakePlanIndex,
-      restakeBps,
-    })
-  } else {
-    await writeBondClaimMixed({
-      wallet,
-      depository: target.depository,
-      recipient: user,
-      amount,
-      releasePlanIndex,
-      bondIndex: target.bondIndex,
-      restakePlanIndex,
-      restakeBps,
-    })
-  }
+  await writeOne(target, target.amount)
   invalidateAfterAssetsClaim()
 }
 
 /**
  * 质押本金赎回写交易
  *
- * 写前重新读取链上可赎回金额并校验；活期走本金领取，定期走
- * 定期本金领取，成功后失效相关缓存。
- * warmup 中的仓位禁止赎回。
+ * 预检读 → 实时重读 → 写入；warmup 中禁止赎回。
  *
  * @see docs/onchain-manual/contracts/liquidstaking.md
  * @see docs/onchain-manual/contracts/lockedstaking.md
@@ -246,28 +226,30 @@ export async function submitStakeRedeem(args: {
 
   if (row.inWarmup) throw ASSETS_BLOCKED.warmupActive
 
-  const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
-  const blockReason = evaluateRedeem({ amount: liveAmount })
-  if (blockReason) throw ASSETS_BLOCKED[blockReason]
-
-  if (row.kind === 'liquid') {
-    await writeLiquidClaimPrincipal({ wallet, amount: liveAmount })
-  } else {
-    if (row.stakeIndex == null) throw ASSETS_BLOCKED.nothingToRedeem
-    await writeLockedClaimPrincipal({
-      wallet,
-      pool: row.pool,
-      stakeIndex: row.stakeIndex,
-    })
-  }
+  await approveThenLiveWrite({
+    readSnapshot: async () => ({ amount: await readStakeRedeemableAmount(row, user, readClient) }),
+    evaluate: (snap) => evaluateRedeem(snap),
+    mapBlockError: (reason) => ASSETS_BLOCKED[reason],
+    write: async (live) => {
+      if (row.kind === 'liquid') {
+        await writeLiquidClaimPrincipal({ wallet, amount: live.amount })
+        return
+      }
+      if (row.stakeIndex == null) throw ASSETS_BLOCKED.nothingToRedeem
+      await writeLockedClaimPrincipal({
+        wallet,
+        pool: row.pool,
+        stakeIndex: row.stakeIndex,
+      })
+    },
+  })
   invalidateAfterAssetsClaim()
 }
 
 /**
  * 债券本金赎回写交易
  *
- * 写前重新读取链上可赎回金额并校验，通过后写入债券赎回，
- * 成功后失效相关缓存。
+ * 预检读 → 实时重读 → 写入债券赎回。
  *
  * @see docs/onchain-manual/contracts/bonddepository.md
  */
@@ -280,26 +262,26 @@ export async function submitBondRedeem(args: {
   const { wallet, address: user, readClient } = session
   assertSessionOwnsAction(user, owner)
 
-  const liveAmount = await readBondRedeemableAmount(row, user, readClient)
-  const blockReason = evaluateRedeem({ amount: liveAmount })
-  if (blockReason) throw ASSETS_BLOCKED[blockReason]
-
-  await writeBondRedeem({
-    wallet,
-    depository: row.depository,
-    recipient: user,
-    bondIndex: row.bondIndex,
+  await approveThenLiveWrite({
+    readSnapshot: async () => ({ amount: await readBondRedeemableAmount(row, user, readClient) }),
+    evaluate: (snap) => evaluateRedeem(snap),
+    mapBlockError: (reason) => ASSETS_BLOCKED[reason],
+    write: async () => {
+      await writeBondRedeem({
+        wallet,
+        depository: row.depository,
+        recipient: user,
+        bondIndex: row.bondIndex,
+      })
+    },
   })
   invalidateAfterAssetsClaim()
 }
 
 /**
- * X 挖矿写交易通用流程
- *
- * 写前连续读取两次仓位状态并按规则校验，均通过后执行写操作并失效缓存；
- * 任一校验不通过即抛对应错误码。
+ * X 挖矿写交易：预检读仓位 → 实时重读 → 写入。
  */
-async function submitXmineDualCheck(args: {
+async function submitXmineLiveWrite(args: {
   session: WriteSession
   evaluate: (
     position: Awaited<ReturnType<typeof readXminePosition>>,
@@ -308,25 +290,24 @@ async function submitXmineDualCheck(args: {
 }): Promise<void> {
   const { wallet, address, readClient } = args.session
 
-  const pre = await readXminePosition(address, readClient)
-  const preBlock = args.evaluate(pre)
-  if (preBlock) throw ASSETS_BLOCKED[preBlock]
-
-  const live = await readXminePosition(address, readClient)
-  const liveBlock = args.evaluate(live)
-  if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
-
-  await args.write(wallet)
+  await approveThenLiveWrite({
+    readSnapshot: () => readXminePosition(address, readClient),
+    evaluate: args.evaluate,
+    mapBlockError: (reason) => ASSETS_BLOCKED[reason],
+    write: async () => {
+      await args.write(wallet)
+    },
+  })
   invalidateAfterAssetsClaim()
 }
 
 /**
- * X 挖矿奖励领取写交易：校验待领奖励与 warmup 状态后领取，成功后失效缓存
+ * X 挖矿奖励领取写交易：校验待领奖励与 warmup 状态后领取。
  *
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
 export async function submitXmineClaim(args: { session: WriteSession }): Promise<void> {
-  await submitXmineDualCheck({
+  await submitXmineLiveWrite({
     session: args.session,
     evaluate: (position) =>
       evaluateXmineClaim({
@@ -340,12 +321,12 @@ export async function submitXmineClaim(args: { session: WriteSession }): Promise
 }
 
 /**
- * X 挖矿退出写交易：校验生效中与 warmup 的份额后发起退出，成功后失效缓存
+ * X 挖矿退出写交易：校验生效中与 warmup 的份额后发起退出。
  *
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
 export async function submitXmineUnstake(args: { session: WriteSession }): Promise<void> {
-  await submitXmineDualCheck({
+  await submitXmineLiveWrite({
     session: args.session,
     evaluate: (position) =>
       evaluateXmineUnstake({
@@ -359,12 +340,12 @@ export async function submitXmineUnstake(args: { session: WriteSession }): Promi
 }
 
 /**
- * X 挖矿 warmup 激活写交易：校验 warmup 状态结束后激活，成功后失效缓存
+ * X 挖矿 warmup 激活写交易：校验 warmup 结束后激活。
  *
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
 export async function submitXmineActivateWarmup(args: { session: WriteSession }): Promise<void> {
-  await submitXmineDualCheck({
+  await submitXmineLiveWrite({
     session: args.session,
     evaluate: (position) =>
       evaluateXmineActivateWarmup({

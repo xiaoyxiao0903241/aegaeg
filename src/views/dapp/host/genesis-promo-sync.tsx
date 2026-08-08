@@ -6,6 +6,7 @@ import { genesisPromoSnapshot } from '~/core/presale/genesis-promo'
 import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
+import { useWallClockSec } from '~/stores/wall-clock-store'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
@@ -17,23 +18,16 @@ import {
  *
  * 挂在 DApp 宿主下、只挂载一次：读取预售各阶段、当前阶段与 AGX 价格等轻量查询，
  * 汇总成导航与促销位需要的快照，写入 genesis-promo-store。
+ * 时钟取全局墙钟，不另开 interval。
  * 不要放进 GenesisSessionHost，避免重复挂载导致重复查询。
  */
 export function GenesisPromoSync() {
   const setPromo = useGenesisPromoStore((state) => state.setPromo)
-  const setNowSeconds = useGenesisPromoStore((state) => state.setNowSeconds)
-  const nowSeconds = useGenesisPromoStore((state) => state.nowSeconds)
+  const nowSeconds = useWallClockSec(true)
 
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()
   const agxPriceQuery = usePresaleAgxPriceQuery()
-
-  useEffect(() => {
-    const tick = () => setNowSeconds(Math.floor(Date.now() / 1000))
-    tick()
-    const timer = window.setInterval(tick, 15_000)
-    return () => window.clearInterval(timer)
-  }, [setNowSeconds])
 
   const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
   const activePhase = activePhaseQuery.data ?? null

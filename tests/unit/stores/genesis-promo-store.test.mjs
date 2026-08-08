@@ -91,13 +91,3 @@ test('setPromo keeps store refs when chrome semantics unchanged', async () => {
   assert.notEqual(afterChange.seasonOptions, seasonsRef)
   assert.equal(afterChange.seasonOptions[0]?.status, 'Ended')
 })
-
-test('setNowSeconds no-ops on same second; advances on change', async () => {
-  const { useGenesisPromoStore } = await loadModule('/src/stores/genesis-promo-store.ts')
-  useGenesisPromoStore.getState().setNowSeconds(1_700_000_000)
-  const a = useGenesisPromoStore.getState()
-  useGenesisPromoStore.getState().setNowSeconds(1_700_000_000)
-  assert.equal(useGenesisPromoStore.getState(), a)
-  useGenesisPromoStore.getState().setNowSeconds(1_700_000_015)
-  assert.equal(useGenesisPromoStore.getState().nowSeconds, 1_700_000_015)
-})

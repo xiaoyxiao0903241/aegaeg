@@ -19,7 +19,6 @@ import { Text } from '~/shared/components/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import {
   ClaimStackDivider,
-  ContributionShortBanner,
   GrantPendingCard,
   MixedClaimSummaryCard,
   RewardsDestinationCard,
@@ -142,27 +141,29 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           </Text>
         </Reveal>
 
-        <ContributionShortBanner open={vm.showContributionShort}>
-          <Text as="p" className="leading-5" variant="copy">
-            <span className="text-foreground">
-              {interpolate(vm.mixed.insufficientContributionDetail, {
-                need: vm.requiredText,
-                have: vm.haveText,
-              })}
-            </span>{' '}
-            <Button
-              className="inline h-auto w-auto! p-0 align-baseline text-[length:inherit] leading-[inherit] font-semibold text-primary underline"
-              onClick={() => openExchangeView('burn')}
-              shape="rounded"
-              size="sm"
-              type="button"
-              variant="link"
-            >
-              {vm.mixed.goBurnInline}
-            </Button>
-            <span className="text-foreground">{vm.mixed.getContributionSuffix}</span>
-          </Text>
-        </ContributionShortBanner>
+        <Reveal open={vm.showContributionShort}>
+          <div className="rounded-2xl bg-accent px-4 py-3">
+            <Text as="p" className="leading-5" variant="copy">
+              <span className="text-foreground">
+                {interpolate(vm.mixed.insufficientContributionDetail, {
+                  need: vm.requiredText,
+                  have: vm.haveText,
+                })}
+              </span>{' '}
+              <Button
+                className="inline h-auto w-auto! p-0 align-baseline text-[length:inherit] leading-[inherit] font-semibold text-primary underline"
+                onClick={() => openExchangeView('burn')}
+                shape="rounded"
+                size="sm"
+                type="button"
+                variant="link"
+              >
+                {vm.mixed.goBurnInline}
+              </Button>
+              <span className="text-foreground">{vm.mixed.getContributionSuffix}</span>
+            </Text>
+          </div>
+        </Reveal>
 
         <Card surface="outlined">
           <ClaimSplitSlider

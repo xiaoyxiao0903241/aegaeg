@@ -400,7 +400,7 @@ export function AssetsPositionStakeRow(
   const { formatPeriodLabel, formatAmount, locked, busy, onClaim, onRedeem, onActivate, row } =
     props
   const { messages: t } = useI18n()
-  // 收益 / 加成分列展示（贴稿）；可领门槛仍看两腿合计
+  // 收益 / 加成分列展示；可领门槛看普通奖励与加成合计
   const reward = row.blockReward
   const boost = row.extraInterest
   const claimableYield = reward + boost

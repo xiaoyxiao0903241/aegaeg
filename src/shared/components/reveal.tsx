@@ -5,10 +5,9 @@ import { cn } from '~/shared/lib/utils'
 /**
  * 高度 + 透明度缓动显隐。
  *
- * 复用 `dapp-collapsible-*`（grid 0fr→1fr）；关闭结束后卸载，避免 flex `gap` 残留空档。
- *
- * 兼容旧浏览器：进入动画用「先挂载收起 → 双 rAF 再展开」，不依赖 `@starting-style`。
- * `open` 变化在 render 期按 prev 比较调整（React / react-doctor 推荐；禁 effect 镜像 props、禁 render 写 ref）。
+ * 复用折叠网格动画；关闭结束后卸载，避免 flex `gap` 残留空档。
+ * 进入时先挂载为收起再展开，让过渡有起点。
+ * `open` 变化在 render 期按上一值比较调整（避免 effect 镜像 props）。
  *
  * @see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
  * @param open 是否展开

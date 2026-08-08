@@ -10,13 +10,15 @@
 |`pnpm build`|tokens + `tsc -b` + render-home + production build|
 |`pnpm env:staging` / `env:prod` / `env:status`|切换 `.env.local`|
 |`pnpm docs:matrix`|从 `docs/dapp-data-coverage-matrix.md` 生成可读 HTML|
-|`pnpm react-doctor`|React Doctor 本地扫描（devDependency；勿用 `pnpm doctor`，那是 pnpm 自检）。配置：根目录 `doctor.config.jsonc`；不进 `pnpm check`。Cursor skill：`.agents/skills/react-doctor`（兼 `.cursor/skills/react-doctor`）|
+|`pnpm react-doctor`|React Doctor 本地扫描（devDependency；勿用 `pnpm doctor`，那是 pnpm 自检）。配置：根目录 `doctor.config.jsonc`；Cursor skill：`.agents/skills/react-doctor`（兼 `.cursor/skills/react-doctor`）|
+|`pnpm react-doctor:staged`|提交钩子：仅 staged，`--blocking error`|
+|`pnpm react-doctor:changed`|相对 base 的 changed 扫描（进 `pnpm check`）|
 
 ## 门禁
 
 |命令|用途|
 |---|---|
-|**`pnpm check`**|收工最小门禁：tokens + tsc + lint(src/arch/hex/css/deadcode/duplicates) + format + unit|
+|**`pnpm check`**|收工最小门禁：tokens + tsc + lint(src/arch/hex/css/deadcode/duplicates) + format + unit + `react-doctor:changed`|
 |`pnpm lint:duplicates`|jscpd（threshold 0）。页袋 Foundation 拼装重复 → `jscpd:ignore`（须中文理由含「页内拼装」）；**禁止**抽 Section/Detail 薄包装过门禁|
 |`pnpm lint:architecture`|depcruise 层门；含 `Section` 仅 `*-detail.tsx` 可 import|
 |`pnpm build:tokens` / `check:tokens`|从 `tokens.json` 生成并防手改漂移|

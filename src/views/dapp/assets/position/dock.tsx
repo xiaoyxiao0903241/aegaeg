@@ -102,7 +102,7 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
         onOpenChange={(open) => {
           if (!open) w.closeClaimOutput()
         }}
-        onSelectLeg={w.selectClaimOutputLeg}
+        onSelectOutput={w.selectClaimOutput}
         open={w.claimOutput.open}
         owner={w.claimOutput.open ? w.claimOutput.owner : null}
         row={w.claimOutput.open ? w.claimOutput.row : null}

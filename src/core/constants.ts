@@ -7,7 +7,7 @@
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const
 
 /**
- * BigInt 字面量 SSOT（`0n` / `10n` / `100n`）。
+ * 常用 BigInt 字面量（`0n` / `10n` / `100n`）的一处定义。
  * React Compiler 尚不降低组件/hook 内的 BigIntLiteral；组件内请引用这些常量。
  * @see https://www.react.doctor/docs/rules/react-hooks-js/todo
  */

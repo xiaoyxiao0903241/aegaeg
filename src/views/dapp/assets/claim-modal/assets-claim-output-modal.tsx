@@ -3,7 +3,11 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { ZERO_BI } from '~/core/constants'
+import {
+  canSelectClaimOutput,
+  claimContribRequiredOrZero,
+  type ClaimOutputKind,
+} from '~/core/assets/claim-output'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
@@ -23,17 +27,15 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
-export type ClaimOutputLeg = 'reward' | 'boost'
-
 /**
- * 领取产出中间层
+ * 领取产出中间层（定期仓）
  *
- * 左：收益 blockReward → claimRewardMixed；右：加成 extraInterest → claimExtraRewardMixed。
- * 金额为 0 时对应 CTA 禁用；点可用腿后进入 Mixed「领取数量」。
+ * 左：收益 → claimRewardMixed；右：加成 → claimExtraRewardMixed。
+ * 金额为 0 时对应按钮禁用；点可用项后进入 Mixed「领取数量」。
  */
 export function AssetsClaimOutputModal({
   onOpenChange,
-  onSelectLeg,
+  onSelectOutput,
   open,
   owner,
   row,
@@ -42,7 +44,7 @@ export function AssetsClaimOutputModal({
   onOpenChange: (open: boolean) => void
   owner: string | null
   row: AssetsStakeRow | null
-  onSelectLeg: (leg: ClaimOutputLeg) => void
+  onSelectOutput: (kind: ClaimOutputKind) => void
 }) {
   const [held, setHeld] = useState<{ owner: string; row: AssetsStakeRow } | null>(null)
   if (open && owner && row) {
@@ -57,7 +59,7 @@ export function AssetsClaimOutputModal({
     <AssetsClaimOutputModalOpen
       key={`${held.owner}-${held.row.id}`}
       onOpenChange={onOpenChange}
-      onSelectLeg={onSelectLeg}
+      onSelectOutput={onSelectOutput}
       open={open}
       owner={held.owner}
       row={held.row}
@@ -67,7 +69,7 @@ export function AssetsClaimOutputModal({
 
 function AssetsClaimOutputModalOpen({
   onOpenChange,
-  onSelectLeg,
+  onSelectOutput,
   open,
   owner,
   row,
@@ -76,7 +78,7 @@ function AssetsClaimOutputModalOpen({
   onOpenChange: (open: boolean) => void
   owner: string
   row: AssetsStakeRow
-  onSelectLeg: (leg: ClaimOutputLeg) => void
+  onSelectOutput: (kind: ClaimOutputKind) => void
 }) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
@@ -90,8 +92,8 @@ function AssetsClaimOutputModalOpen({
 
   const reward = row.blockReward
   const boost = row.extraInterest
-  const canReward = reward > ZERO_BI
-  const canBoost = boost > ZERO_BI
+  const canReward = canSelectClaimOutput(reward)
+  const canBoost = canSelectClaimOutput(boost)
 
   const rewardContrib = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-reward:${String(reward)}`),
@@ -108,12 +110,17 @@ function AssetsClaimOutputModalOpen({
 
   const rewardAmountLabel = `${formatTokenAmount(reward, GAGX_DECIMALS, 2)} gAGX`
   const boostAmountLabel = `${formatTokenAmount(boost, GAGX_DECIMALS, 2)} gAGX`
-  const rewardContribLabel = rewardContrib.data
-    ? formatTokenAmount(rewardContrib.data.requiredContribution, GAGX_DECIMALS, 2)
-    : '—'
-  const boostContribLabel = boostContrib.data
-    ? formatTokenAmount(boostContrib.data.requiredContribution, GAGX_DECIMALS, 2)
-    : '—'
+  // 缺数显 0（覆盖矩阵）
+  const rewardContribLabel = formatTokenAmount(
+    claimContribRequiredOrZero(rewardContrib.data?.requiredContribution),
+    GAGX_DECIMALS,
+    2,
+  )
+  const boostContribLabel = formatTokenAmount(
+    claimContribRequiredOrZero(boostContrib.data?.requiredContribution),
+    GAGX_DECIMALS,
+    2,
+  )
 
   return (
     <ResponsiveDialog
@@ -158,7 +165,7 @@ function AssetsClaimOutputModalOpen({
             className="w-full"
             density="modal"
             disabled={!canReward}
-            onClick={() => onSelectLeg('reward')}
+            onClick={() => onSelectOutput('reward')}
             variant="primary"
           >
             {t.assets.claimOutput.claimReward}
@@ -180,7 +187,7 @@ function AssetsClaimOutputModalOpen({
             className="w-full"
             density="modal"
             disabled={!canBoost}
-            onClick={() => onSelectLeg('boost')}
+            onClick={() => onSelectOutput('boost')}
             variant="primary"
           >
             {t.assets.claimOutput.claimBoost}

@@ -10,6 +10,10 @@ import {
 } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import {
+  evaluateRewardsMixedClaimConfirmGate,
+  evaluateRewardsMixedClaimWritePhase,
+} from '~/core/rewards/mixed-claim-gate'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -30,6 +34,7 @@ import { readErrorText } from '~/web3/errors/error-text'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -42,7 +47,8 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  */
 export function useMixedClaim(view: MixedClaimView) {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappHost()
+  const { sessionReady } = useDappHost()
+  const { walletReady, writeReady } = useWriteReadiness()
   const { token, invalidateSession } = useAuth()
   const account = useActiveAccount()
   const card = t.rewards.cards[view]
@@ -163,15 +169,29 @@ export function useMixedClaim(view: MixedClaimView) {
     },
   })
 
-  const canConfirm =
-    walletReady &&
-    sessionReady &&
-    !claim.isLocked &&
-    !claim.isPending &&
-    plansOk &&
-    luckyOk &&
-    contributionOk &&
-    (isDaoMixed || amount > ZERO_BI)
+  const writePhase = evaluateRewardsMixedClaimWritePhase({
+    walletReady,
+    writeReady,
+    sessionReady,
+    isSubmitting: claim.isPending,
+    contributionOk,
+    plansOk,
+    luckyOk,
+    claimable: amount,
+    allowUnknownAmount: isDaoMixed,
+  })
+  const canConfirm = evaluateRewardsMixedClaimConfirmGate({
+    walletReady,
+    writeReady,
+    sessionReady,
+    isLocked: claim.isLocked,
+    isPending: claim.isPending,
+    contributionOk,
+    plansOk,
+    luckyOk,
+    claimable: amount,
+    allowUnknownAmount: isDaoMixed,
+  })
 
   const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(
     plansQuery.data,
@@ -225,6 +245,7 @@ export function useMixedClaim(view: MixedClaimView) {
     (view === 'lucky' ? amount > ZERO_BI && contribQuery.data != null : daoContributionBlocked)
 
   function onConfirm() {
+    if (!canConfirm) return
     setDaoContributionBlocked(false)
     void claim.mutate()
   }
@@ -253,6 +274,7 @@ export function useMixedClaim(view: MixedClaimView) {
     haveText,
     showContributionShort,
     canConfirm,
+    writePhase,
     submitting: claim.isPending,
     luckyPaused: view === 'lucky' && Boolean(luckyQuery.data?.paused),
     luckyNotClaimable:

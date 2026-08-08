@@ -3,6 +3,11 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
+  claimContribRequiredOrZero,
+  evaluateAssetsClaimConfirmGate,
+  evaluateAssetsClaimWritePhase,
+} from '~/core/assets/claim-output'
+import {
   claimDurationDaysLists,
   claimSplitFromReleasePct,
   matchClaimPlanIndices,
@@ -12,7 +17,6 @@ import { HUNDRED_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -22,6 +26,7 @@ import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
@@ -39,7 +44,7 @@ export function useAssetsClaimModal(args: {
 }) {
   const { open, onOpenChange, owner, target } = args
   const { messages: t } = useI18n()
-  const { walletReady } = useDappHost()
+  const { walletReady, writeReady } = useWriteReadiness()
   const account = useActiveAccount()
   const [releasePct, setReleasePctState] = useState(50)
   const [releaseDays, setReleaseDaysState] = useState(60)
@@ -95,8 +100,23 @@ export function useAssetsClaimModal(args: {
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
   const plansOk = releaseIndex != null && restakeIndex != null
-  // 链上校验仍在写交易内兜底；CTA 需贡献值充足且释放 / 复投计划就绪
-  const canConfirm = walletReady && !claim.isLocked && !claim.isPending && contributionOk && plansOk
+  const canConfirm = evaluateAssetsClaimConfirmGate({
+    walletReady,
+    writeReady,
+    isLocked: claim.isLocked,
+    isPending: claim.isPending,
+    contributionOk,
+    plansOk,
+    claimable: target.amount,
+  })
+  const writePhase = evaluateAssetsClaimWritePhase({
+    walletReady,
+    writeReady,
+    isSubmitting: claim.isPending,
+    contributionOk,
+    plansOk,
+    claimable: target.amount,
+  })
 
   const releaseAmount = (target.amount * BigInt(releasePct)) / HUNDRED_BI
   const restakeAmount = target.amount - releaseAmount
@@ -144,7 +164,7 @@ export function useAssetsClaimModal(args: {
   }
 
   function handleConfirm() {
-    if (!walletReady || claim.isLocked || claim.isPending || !contributionOk || !plansOk) return
+    if (!canConfirm) return
     void claim.mutate()
   }
 
@@ -160,9 +180,11 @@ export function useAssetsClaimModal(args: {
         ? t.assets.claim.ctaRestake
         : t.assets.claim.ctaMixed
 
-  const requiredContributionLabel = contribQuery.data
-    ? formatTokenAmount(contribQuery.data.requiredContribution, GAGX_DECIMALS, 4)
-    : null
+  const requiredContributionLabel = formatTokenAmount(
+    claimContribRequiredOrZero(contribQuery.data?.requiredContribution),
+    GAGX_DECIMALS,
+    4,
+  )
 
   return {
     t,
@@ -182,6 +204,7 @@ export function useAssetsClaimModal(args: {
     plansOk,
     plansQuery,
     canConfirm,
+    writePhase,
     releaseAmountText,
     restakeAmountText,
     ctaLabel,

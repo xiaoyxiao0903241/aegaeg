@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import { buildStakeMixedClaimTarget, type ClaimOutputKind } from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
@@ -259,39 +260,42 @@ export function usePositionDock(product: AssetsProduct) {
     if (!address) return
     if (row.inWarmup) return
     const periodLabel = formatPeriodLabel(row.period)
-    // 活期 / 定期均先出「领取产出」；金额为 0 的腿在弹层内禁用
     setClaim({ open: false })
-    setClaimOutput({ open: true, owner: address, row, label: periodLabel })
-  }
 
-  function selectClaimOutputLeg(leg: 'reward' | 'boost') {
-    if (!claimOutput.open) return
-    const { owner, row, label } = claimOutput
-    const amount = leg === 'boost' ? row.extraInterest : row.blockReward
-    if (amount <= ZERO_BI) return
-
+    // 活期仅普通奖励入口（手册 claimRewardMixed）；不经产出选择弹层
     if (row.kind === 'liquid') {
-      // 活期无加成腿；boost 按钮应已禁用
-      if (leg === 'boost') return
-      openMixedClaim({
-        owner,
-        label,
-        target: { source: 'liquid', amount },
+      const target = buildStakeMixedClaimTarget({
+        stakeKind: 'liquid',
+        outputKind: 'reward',
+        blockReward: row.blockReward,
+        extraInterest: row.extraInterest,
+        pool: row.pool,
+        stakeIndex: row.stakeIndex,
       })
+      if (!target) return
+      openMixedClaim({ owner: address, label: periodLabel, target })
       return
     }
 
-    if (row.stakeIndex == null) return
+    setClaimOutput({ open: true, owner: address, row, label: periodLabel })
+  }
+
+  function selectClaimOutput(kind: ClaimOutputKind) {
+    if (!claimOutput.open) return
+    const { owner, row, label } = claimOutput
+    const built = buildStakeMixedClaimTarget({
+      stakeKind: row.kind === 'liquid' ? 'liquid' : 'locked',
+      outputKind: kind,
+      blockReward: row.blockReward,
+      extraInterest: row.extraInterest,
+      pool: row.pool,
+      stakeIndex: row.stakeIndex,
+    })
+    if (!built) return
     openMixedClaim({
       owner,
       label,
-      target: {
-        source: 'locked',
-        pool: row.pool,
-        stakeIndex: row.stakeIndex,
-        amount,
-        legs: [{ amount, extra: leg === 'boost' }],
-      },
+      target: built,
     })
   }
 
@@ -360,7 +364,7 @@ export function usePositionDock(product: AssetsProduct) {
     pagedBondRows,
     openStakeClaim,
     openBondClaim,
-    selectClaimOutputLeg,
+    selectClaimOutput,
     requestRedeem,
     activateWarmup,
     closeClaim,

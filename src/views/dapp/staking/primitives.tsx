@@ -24,12 +24,12 @@ import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
-import { useWallClockSec } from '~/stores/wall-clock-store'
+import { useWallClockSec, useWallClockStore } from '~/stores/wall-clock-store'
 
 /** 链读与墙钟偏差超过此值才重锚定（避免 refetch 抖动）。 */
 const RESYNC_DRIFT_SEC = 3
 
-function anchorEndAtSec(chainRemainingSec: number, nowSec = Math.floor(Date.now() / 1000)): number {
+function anchorEndAtSec(chainRemainingSec: number, nowSec: number): number {
   return nowSec + chainRemainingSec
 }
 
@@ -54,16 +54,16 @@ export function RebaseCountdownValue({
   const { messages: t } = useI18n()
   const units = t.staking.aside.countdownUnits
   const chainRemainingSec = remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock)
-
-  const [endAtSec, setEndAtSec] = useState(() => anchorEndAtSec(chainRemainingSec))
   const nowSec = useWallClockSec(true)
+
+  const [endAtSec, setEndAtSec] = useState(() => anchorEndAtSec(chainRemainingSec, nowSec))
 
   // 链上块高变化后重锚定；setState 放进 microtask，避开 set-state-in-effect 同步写。
   useEffect(() => {
     let cancelled = false
     queueMicrotask(() => {
       if (cancelled) return
-      const now = Math.floor(Date.now() / 1000)
+      const now = useWallClockStore.getState().nowSec
       setEndAtSec((prev) => {
         const wallRemaining = Math.max(0, prev - now)
         if (Math.abs(wallRemaining - chainRemainingSec) <= RESYNC_DRIFT_SEC) return prev

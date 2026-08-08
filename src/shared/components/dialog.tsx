@@ -10,8 +10,8 @@ const DialogPortal = DialogPrimitive.Portal
 /**
  * 弹窗各部位样式槽位
  *
- * `panel`（ResponsiveDialog）：定位/动画（`.aegis-responsive-panel`）+ 默认浅色卡片壳。
- * 钱包等异形壳用 `className` 覆盖宽高、圆角、padding；勿在业务袋再抽平行 chrome 常量。
+ * `panel`（ResponsiveDialog）：定位/动画（`.aegis-responsive-panel`）+ 默认浅色卡片外壳。
+ * 钱包等异形外壳用 `className` 覆盖宽高、圆角、padding；勿在业务袋再抽平行外观常量。
  */
 export const dialogChrome = tv({
   slots: {
@@ -131,7 +131,7 @@ export {
 
 /**
  * 通用关闭按钮：浅灰圆底 X。
- * 钱包弹窗、资产领取/赎回、滑点等共用；深色壳 call site 可 className 覆盖。
+ * 钱包弹窗、资产领取/赎回、滑点等共用；深色外壳可在调用处用 className 覆盖。
  */
 export const dialogClose = tv({
   base: [

@@ -136,12 +136,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       finishLoginAttempt()
     } catch (error) {
+      // 先收尾再写 loginError：避免 setLoginError 抛错时 isLoggingIn 卡住；且不用 finally（Compiler 未支持）
+      finishLoginAttempt()
       const sentinel = toLoginErrorSentinel(error)
       // 异网不落盘——环境由 loginChainReady 调度，toast 吃 throw
       if (sentinel && sentinel !== LOGIN_ERROR.WRONG_NETWORK) {
         useAuthStore.getState().setLoginError(sentinel)
       }
-      finishLoginAttempt()
       throw error
     }
   }, [account, liveChainId])

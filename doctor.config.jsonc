@@ -1,7 +1,7 @@
 {
   "$schema": "https://react.doctor/schema/config.json",
-  // Advisory — not part of `pnpm check`. Prefer isomorphic code fixes; only turn rules
-  // off when a “fix” would change product/money/Compiler policy behavior.
+  // Commit / `pnpm check` override via CLI `--blocking error` (`react-doctor:staged` / `react-doctor:changed`).
+  // Keep config default advisory so bare `pnpm react-doctor` stays exploratory.
   "blocking": "none",
   "ignore": {
     "files": [

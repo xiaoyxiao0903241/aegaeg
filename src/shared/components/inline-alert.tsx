@@ -9,7 +9,7 @@ import { cn } from '~/shared/lib/utils'
  * 行内提示外观
  *
  * 两种 tone 均无描边，正文统一 `muted-foreground`；仅底色区分语义。
- * - `destructive`：错误 / 阻断（浅红 wash）
+ * - `destructive`：错误 / 阻断（浅红底）
  * - `notice`：机制说明（珊瑚 soft）
  *
  * 文案排版交给 Text；外间距由调用方控制。
@@ -24,7 +24,7 @@ export const inlineAlert = tv({
     density: {
       /** 组件内紧凑提示（交易 / 闪电兑换） */
       compact: 'px-3.5 py-2.5',
-      /** 页面级 / 弹窗说明（贴稿 p-3） */
+      /** 页面级 / 弹窗说明（舒适内边距 p-3） */
       comfortable: 'p-3',
     },
   },

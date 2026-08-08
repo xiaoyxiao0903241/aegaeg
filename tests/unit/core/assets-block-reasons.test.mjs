@@ -58,7 +58,8 @@ test('submitMixedClaim source must call readMixedRewardAvailable; envelope in ho
     'utf8',
   )
   assert.match(submitSrc, /readMixedRewardAvailable/)
-  assert.match(submitSrc, /dualCheckMixedClaim/)
+  assert.match(submitSrc, /approveThenLiveWrite/)
+  assert.match(submitSrc, /evaluateMixedClaim/)
   assert.doesNotMatch(submitSrc, /submitWithUnknownReceiptLock/)
   assert.doesNotMatch(submitSrc, /rewardAvailable:\s*amount/)
   assert.match(hookSrc, /submitWithUnknownReceiptLock/)

@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
-# Block commit on ESLint errors (staged) + TypeScript + dead code + duplicates.
+# Block commit on ESLint errors (staged) + TypeScript + dead code + duplicates + React Doctor (staged).
 # ESLint warnings (Tailwind / set-state-in-effect) do not fail — matches repo lint policy.
 # Do NOT run Playwright / pnpm test:e2e here (or in pnpm check) — e2e is manual/optional.
 # knip + jscpd：用户锁定 2026-08-02 — commit 门禁须含重复/死代码检测（与 pnpm check 同构）。
+# react-doctor：用户锁定 2026-08-08 — commit 门禁须含 staged Doctor（error 阻断；与 pnpm check 的 changed 扫描同向）。
 pnpm exec lint-staged
 pnpm exec tsc -b
 pnpm lint:deadcode
 pnpm lint:duplicates
+pnpm react-doctor:staged

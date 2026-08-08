@@ -85,7 +85,7 @@ test('xmine parent view has no 1Hz interval; position card uses shared wall cloc
   assert.match(wallClock, /setInterval\(tick,\s*1000\)/)
 })
 
-test('genesis countdown clock owns nowSeconds; chain-reads does not', async () => {
+test('genesis countdown clock uses wall clock; chain-reads does not tick time', async () => {
   const { readFile } = await import('node:fs/promises')
   const reads = await readFile(
     new URL('../../../src/views/dapp/genesis/use-genesis-chain-reads.ts', import.meta.url),
@@ -95,8 +95,8 @@ test('genesis countdown clock owns nowSeconds; chain-reads does not', async () =
     new URL('../../../src/views/dapp/genesis/use-genesis-countdown-clock.ts', import.meta.url),
     'utf8',
   )
-  assert.doesNotMatch(reads, /nowSeconds/)
-  assert.match(clock, /state\.nowSeconds/)
+  assert.doesNotMatch(reads, /useWallClockSec/)
+  assert.match(clock, /useWallClockSec/)
   assert.match(clock, /invalidateAfterGenesisPhaseTransition/)
 })
 
