@@ -11,7 +11,7 @@ import { cn } from '~/shared/lib/utils'
  * 文案排版交给 Text；外间距由调用方控制。
  */
 export const inlineAlert = tv({
-  base: 'rounded-xl border border-destructive/30 bg-destructive/10 text-destructive',
+  base: 'rounded-md border border-destructive/30 bg-destructive/10 text-destructive',
   variants: {
     density: {
       /** 组件内紧凑提示（交易 / 闪电兑换） */
