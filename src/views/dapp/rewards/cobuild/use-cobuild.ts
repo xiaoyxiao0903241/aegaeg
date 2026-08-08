@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 
+import {
+  agxAmountToUsdProgressCurrent,
+  parseMoneyish,
+  progressPct,
+  type TierReqBadge,
+} from '~/core/rewards/cobuild-tier-progress'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useRankRewardLogs,
@@ -23,30 +29,12 @@ import {
 
 type CobuildRecordsTab = 'cobuild' | 'equalize'
 
-type TierReqBadge = { kind: 'achieved' } | { kind: 'pct'; value: string } | { kind: 'empty' }
-
 export type CobuildTierReq = {
   label: string
   hint: string
   value: string
   target: string
   badge: TierReqBadge
-}
-
-function parseMoneyish(raw: string | null | undefined): number | null {
-  if (raw == null) return null
-  const n = Number(String(raw).replace(/[$,%\s,]/g, ''))
-  return Number.isFinite(n) ? n : null
-}
-
-/** 需求进度徽章：已达成 | n%（含 0%）| 无数字门槛则不画 */
-function progressPct(current: number | null, targetRaw: string): TierReqBadge {
-  const target = parseMoneyish(targetRaw)
-  if (current == null) return { kind: 'empty' }
-  if (target == null || target <= 0) return { kind: 'empty' }
-  if (current >= target) return { kind: 'achieved' }
-  const pct = Math.max(0, Math.min(99, Math.floor((current / target) * 100)))
-  return { kind: 'pct', value: `${pct}%` }
 }
 
 /**
@@ -137,18 +125,17 @@ export function useCobuild() {
   const teamMoney = reqRow?.team?.match(/\$[\d,]+/)?.[0] ?? ''
   /**
    * 进度徽章读数：未连接按 0（与展示的 0.00 对齐，显示「0%」）；
-   * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0。
+   * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0 AGX。
+   * 持仓/做市门槛为 USD：无 AGX/$ 单价时不折、不画（禁 AGX↔$ 直比）。
    */
   const holdingCurrent = !sessionReady
     ? 0
     : summaryQuery.isLoading && summary == null
       ? null
-      : (() => {
-          // active_stake_balance 为 AGX；门槛文案为 USD —— 统一折算成 USD 再比
-          const agx = parseMoneyish(summary?.active_stake_balance) ?? 0
-          if (agxPriceUsd != null && agxPriceUsd > 0) return agx * agxPriceUsd
-          return agx
-        })()
+      : agxAmountToUsdProgressCurrent(
+          parseMoneyish(summary?.active_stake_balance) ?? 0,
+          agxPriceUsd,
+        )
   const accountsCurrent = !sessionReady
     ? 0
     : summaryQuery.isLoading && summary == null
@@ -158,12 +145,7 @@ export function useCobuild() {
     ? 0
     : summaryQuery.isLoading && summary == null
       ? null
-      : (() => {
-          // making_market 为 AGX；门槛文案为 USD —— 与持仓进度同口径折算
-          const agx = parseMoneyish(summary?.making_market) ?? 0
-          if (agxPriceUsd != null && agxPriceUsd > 0) return agx * agxPriceUsd
-          return agx
-        })()
+      : agxAmountToUsdProgressCurrent(parseMoneyish(summary?.making_market) ?? 0, agxPriceUsd)
 
   const tierReqs: CobuildTierReq[] = [
     {

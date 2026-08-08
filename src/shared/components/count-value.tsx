@@ -42,16 +42,26 @@ export function parseLeadingMetricNumber(text: string): ParsedAmount | null {
   return { prefix, raw, suffix }
 }
 
-/** 单个数字位：挂载后启用上滚动画，数字变化时翻到目标值 */
+/** 单个数字位：挂载从 0 滚到目标；之后随 digit 变化继续滚 */
 function DigitReel({ digit }: { digit: number }) {
   const safe = Number.isFinite(digit) ? Math.min(9, Math.max(0, Math.trunc(digit))) : 0
-  /** 首次挂载不滚动（0→数字），只在数字变化时动画 */
-  const [canAnimate, setCanAnimate] = useState(false)
+  const [shown, setShown] = useState(0)
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setCanAnimate(true))
-    return () => cancelAnimationFrame(id)
-  }, [])
+    let cancelled = false
+    let raf2 = 0
+    // 双 rAF：先画出起点，再开 transition，避免首帧被合成到终态
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        if (!cancelled) setShown(safe)
+      })
+    })
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(raf1)
+      cancelAnimationFrame(raf2)
+    }
+  }, [safe])
 
   return (
     <span
@@ -61,9 +71,9 @@ function DigitReel({ digit }: { digit: number }) {
       <span
         className="flex flex-col will-change-transform"
         style={{
-          transform: `translateY(-${safe * 10}%)`,
+          transform: `translateY(-${shown * 10}%)`,
           transitionProperty: 'transform',
-          transitionDuration: canAnimate ? `${COUNT_DIGIT_MS}ms` : '0ms',
+          transitionDuration: `${COUNT_DIGIT_MS}ms`,
           transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
@@ -80,7 +90,7 @@ function DigitReel({ digit }: { digit: number }) {
 /**
  * 指标数字滚动
  *
- * 逐位同时滚动；未变化的数字列保持不动，仅变化的列翻转。
+ * 逐位同时滚动；挂载从 0 滚到目标（子视图 live 槽保证只挂一次），之后仅变化位翻转。
  * 静态文案（FAQ 等）传 `animate={false}`。
  *
  * @param text 要展示的指标文案（如 `'12,345.67'`）

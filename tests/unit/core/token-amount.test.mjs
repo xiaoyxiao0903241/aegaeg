@@ -65,14 +65,19 @@ test('formatTokenAmount renders human readable balance', async () => {
     '/src/core/exchange/token-amount.ts',
   )
 
-  assert.equal(formatTokenAmount(10n ** 18n, 18), '1')
+  // 数字第三参 = 展示位：与 formatNumber 一致，默认补足小数（禁 0.00→0）
+  assert.equal(formatTokenAmount(10n ** 18n, 18), '1.0000')
   assert.equal(formatTokenAmount(1234567890000000000n, 18, 4), '1.2345')
+  assert.equal(formatTokenAmount(0n, 18, 2), '0.00')
 
   // 100% fill path: full decimals must round-trip to exact balance (no dust).
   const dusty = 1234567890123456789n
   const full = formatTokenAmount(dusty, 18, 18)
   assert.equal(parseTokenAmount(full, 18), dusty)
   assert.notEqual(parseTokenAmount(formatTokenAmount(dusty, 18, 6), 18), dusty)
+
+  // 显式 trimZeros 仍去尾零（输入草稿 / 紧凑展示）
+  assert.equal(formatTokenAmount(10n ** 18n, 18, { digits: 4, trimZeros: true }), '1')
 })
 
 test('formatTokenAmount fixed digits pads trailing zeros', async () => {
@@ -104,14 +109,14 @@ test('formatTokenAmount dust: positive below display floor → <0.01 / <0.0001',
   assert.equal(formatTokenAmount(1n, 9, 2), '<0.01')
   assert.equal(formatTokenAmount(10n ** 7n - 1n, 9, 2), '<0.01')
   assert.equal(formatTokenAmount(10n ** 7n, 9, 2), '0.01')
-  assert.equal(formatTokenAmount(0n, 9, 2), '0')
+  assert.equal(formatTokenAmount(0n, 9, 2), '0.00')
   assert.equal(formatTokenAmount(0n, 9, { digits: 2, trimZeros: false }), '0.00')
 
   // digits 4 → <0.0001
   assert.equal(formatTokenAmount(1n, 9, 4), '<0.0001')
   assert.equal(formatTokenAmount(10n ** 5n, 9, 4), '0.0001')
 
-  // opt-out + draft stay parseable
+  // opt-out + draft stay parseable（对象默认仍 trim，便于草稿）
   assert.equal(formatTokenAmount(1n, 9, { digits: 2, dust: false }), '0')
   const draft = formatTokenAmountDraft(123n, 9, 9)
   assert.equal(draft, '0.000000123')

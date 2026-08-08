@@ -40,4 +40,13 @@ test('isGenesisProgramEnded: loading / active / upcoming / ended', async () => {
     }),
     true,
   )
+  // Prod getPhaseCount=0 → 空 seasons：无 Upcoming、无 active → 已结束（勿永驻骨架）
+  assert.equal(
+    isGenesisProgramEnded({
+      isLoading: false,
+      activePhase: null,
+      seasonOptions: [],
+    }),
+    true,
+  )
 })

@@ -223,7 +223,7 @@
 |W-016|奖励|Lucky 详情|累计中奖次数 `win_count`|读|`formatApiCountLabel`|—|`POST /lucky-reward/summary`|✅ 已对齐|—|—|—|—|—|
 |W-017|奖励|Lucky 中奖榜|`reward_amount` 后缀 gAGX|读|`mapLuckyWinnerToRow`|API winners 标 gAGX；链付 AGX|`POST /lucky-reward/winners`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-15|C-15|Figma 对照：可见文案跟稿；张力进改稿队列|
 |W-018|奖励|Lucky 我的记录|参与额 / 是否中奖 / tx|读|`mapLuckyMyRoundToRow`|—|`POST /lucky-reward/my-rounds`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|R2 确认🔍；中奖额单位见 W-017；FE 接入证；Prod 对账非本矩阵门闩|
-|W-019|奖励|Lucky 日期筛|近 5 个 UTC 日|读|`DRAW_DATE_OPTION_COUNT=5`|设计取舍|—|🟡 部分|设计取舍（故意空/0）|产品确认是否扩窗；扩则改常量+筛选项|C-18←B-31|C-18|更早开奖日不可选|
+|W-019|奖励|Lucky 日期筛|近 5 个 UTC 日|读|`DRAW_DATE_OPTION_COUNT=5`|设计取舍|—|✅ 已对齐|设计取舍（故意空/0）|—|C-18←B-31|C-18|产品确认：日期筛近 5 个 UTC 日通过（DRAW_DATE_OPTION_COUNT=5）|
 |W-020|奖励|Lucky FAQ|「折算 gAGX」「1:1 贡献」|读|`lucky.faq`|链 AGX + divisor=6|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-06·C-15|C-06·C-15|Figma 对照：可见文案跟稿；张力进改稿队列|
 |W-021|奖励|Lucky·写|Mixed 领取：门闸 + 双读 + invalidate|写|`submitLuckyMixedClaim`→`evaluateRewardsMixedClaim`；`invalidateAfterRewardsMixedClaim`（rewards+release+staking）|手册 §14 `claimRewardMixed` + §9.3|—|✅ 已对齐|—|—|B-27|B-27 closed|贡献不足导 burn；暂停/不可领阻断|
 |W-022|奖励|Referral 详情|`total_referral_reward` + gAGX|读|`use-referral.ts`|API 标 gAGX；Dao 付 AGX|`POST /referral-award/summary`|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-15|C-15|Figma 对照：可见文案跟稿；张力进改稿队列|
@@ -259,7 +259,7 @@
 |W-052|奖励|API/文案|Mixed 贡献「1:1」vs 链 `/6`|读|API 文案 1:1；链 `quoteRequiredContribution=amount/6`（FE 写闸信链）；Copy 仍写 1:1|手册 §9 · 链 quote|`POST /claim/dao-reward` 文：贡献点与领取金额 1:1|🟡 部分|手册↔API打架|后端签前闸改跟链 `/6`（或文档改口径）；FE Copy 跟链（cards/hint/子 FAQ）|A-11→C-06|C-06|FE 写闸已跟链；缺口在 API 闸+Copy|
 |W-053|奖励|Lucky 写闸|LuckyPool live `paused`|读|`readLuckyClaimSnapshot`→`paused`；`evaluateRewardsMixedClaim`/`submitLuckyMixedClaim` pre+live 入 `luckyPaused`|以链 live 为准（不跟死文）|—|✅ 已对齐|—|—|—|—|bool 写闸跟 live；非展示金额；paused 样本非 money-bar|
 |W-054|奖励|Hub intro Copy|「Mixed 按 1:1 消耗」|读|onboarding/教程轨 `zh.ts`|链 divisor=6|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-06|C-06|Visible Copy；Figma 对照：可见文案跟稿；张力进改稿队列|
-|W-055|奖励|Cobuild 门槛|持仓/做市 AGX→USD 进度|读|无价时退回 AGX 与 `$` 门槛直比|API AGX × `useAgxPriceUsd`|`POST /rank-reward/summary`|🔍 待核实|待核实|价源异常/缺价时人工核对进度徽章；必要时无价禁 `$` 比|—|—|R2 确认🔍伞；W-033 接线保持 ✅|
+|W-055|奖励|Cobuild 门槛|持仓/做市 AGX→USD 进度|读|`agxAmountToUsdProgressCurrent`：有价 AGX×$；无价→null→徽章 empty（`cobuild-tier-progress`）|API AGX × `useAgxPriceUsd`|`POST /rank-reward/summary`|✅ 已对齐|—|—|—|—|修：禁无价 AGX↔$ 直比；单测钉 empty|
 |W-056|奖励|Dao Mixed·写后|invalidate 覆盖 release/staking|写|`invalidateAfterRewardsMixedClaim`|手册 §9.3/§9.5|—|✅ 已对齐|—|—|B-27|B-27|—|
 |W-057|奖励|简单领取·写后|Market/Team/Community invalidate|写|`invalidateAfterTeamClaim`→rewards 桶（allowance/team/community/erc20）|手册成功后刷新|—|✅ 已对齐|—|—|—|—|Market skipConfirm 仍 `shouldInvalidate=true`|
 |W-058|奖励|Mixed token 芯片|面板标 `tokenGagx`|读|`claim-panels` / `mixed.tokenGagx`|链 AGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-15|C-15|Lucky/Dao 共用；Figma 对照：可见文案跟稿；张力进改稿队列|
@@ -279,7 +279,7 @@
 |L-006|释放|Hub·缓冲池卡|AGX「可领取」|读|`apiRaw: undefined`；只信链 `agx.totalClaimable`|手册 §13 `claimableAmount`|—（API 无同口径 claimable）|✅ 已对齐|设计取舍（缺数显0）|—|A-16|A-16|R2 确认🔍；FE 接入证；Prod 对账非本矩阵门闩|
 |L-007|释放|Hub·缓冲池卡|gAGX Total|读|`gagxTotalLabel`=`gagx.claimable+releasing`；未连钱包 `0`；audit「勿当假零」|手册 §13 多 token 桶|—（API 无 gAGX summary）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|R2 确认🔍：money-bar；断连→0 不另标 🟡；FE 接入证；Prod 对账非本矩阵门闩|
 |L-008|释放|Hub·缓冲池卡|gAGX「可领取」|读|Hub 绑 `bufferClaimableGagx`←链 `gagx.totalClaimable`；与 AGX 对称|手册 §13|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|R2 确认🔍：同 L-007 不双降 🟡；FE 接入证；Prod 对账非本矩阵门闩|
-|L-009|释放|Hub·缓冲池卡|进度 %|读|`bufferPct=formatReleasePct(agxClaimable,agxReleasing)`；**不含** gagx|产品入场卡单一进度|—|🟡 部分|设计取舍（故意空/0）|产品确认仅 AGX 进度可接受则关缺口；否则合入 gagx 或进度下钻子页|—|—|gAGX 细节在 Buffer 子页|
+|L-009|释放|Hub·缓冲池卡|进度 %|读|`bufferPct=formatReleasePct(agxClaimable,agxReleasing)`；**不含** gagx|产品入场卡单一进度|—|✅ 已对齐|设计取舍（故意空/0）|—|—|—|核实：Hub 入场卡单一进度仅 AGX（claimable/releasing）；gAGX 进度在 Buffer 子页双卡。产品入场卡单进度口径可接受|
 |L-010|释放|Hub·Detail|税率表周期/税率|读|`taxBps/100`；`useReleaseQueuePlans`；空则 i18n fallback|手册 §12 `queuePlans` feeRate|—|✅ 已对齐|—|—|—|—|算法跟链 plans；本轮未 Prod 对拍具体 bps|
 |L-011|释放|Hub·Detail|aboutSlides / purpose|读(Copy)|Visible 文案；无动态数|产品叙事|—|✅ 已对齐|—|—|—|—|—|
 |L-012|释放|Hub·Detail|mechanismSteps「6:1」|读(Copy)|`zh.ts` hub.mechanismSteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 X 底池」|FE 信链 `quoteRequiredContribution`（≈amount/6→6:1）；body 实为 burn `splitBps` 叙事|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-06|C-06|R2 确认🟡：title 对；body 串台；Figma 对照：可见文案跟稿；张力进改稿队列|
@@ -397,7 +397,7 @@
 
 |行号|章节|页面/表面|数据或动作|读/写|代码位置|文档位置|API接口|状态|T1归因|修复方法|继承自|A/B/C链|备注|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-|A-001|资产|Hub·总览|总资产价值 `totalValue`|读|`use-hub`→`stake_invest_usd_value`；Visible hint/FAQ 称「含未提取收益」；API 仅注 ACTIVE 投影|产品总估值 vs `user_performance.stake_invest_usd_value`|`/assets/reward-summary` `stake_invest_usd_value`|🔍 待核实|待核实|A-054 对账字段是否含未提取收益；不符则改 hint/FAQ 或扩口径|—|—|金钱；勿先标 ✅/🟡|
+|A-001|资产|Hub·总览|总资产价值 `totalValue`|读|`use-hub`→`stake_invest_usd_value`；Visible hint/FAQ 称「含未提取收益」；API 仅注 ACTIVE 投影|产品总估值 vs `user_performance.stake_invest_usd_value`|`/assets/reward-summary` `stake_invest_usd_value`|🟡 部分|手册或API与链不符|后端文档钉清 stake_invest_usd_value 是否含未提取；或改 hint/FAQ；链回退路径若要「含未提取」须把 claimable 估值并入 totalValueUsd|—|—|核实：hint/FAQ 写「含本金+未提取」；apiReady 直绑 stake_invest_usd_value（OpenAPI 未定义是否含收益）；无 API 时 holdingsPrincipal×价（不含 claimableGagx）。三方口径未钉|
 |A-002|资产|Hub·总览|可领取收益（展示）|读|Hub **禁用** API `claimable_gagx`（见 A-003）；链 `blockReward+extraInterest+profit`；标 gAGX；**不含** X/market/DAO/释放/涡轮|产品：仓位 Mixed 未领子集|API 宽口径故意不用|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|A-13|open|单位/范围文案债；Figma 对照：可见文案跟稿；张力进改稿队列|
 |A-003|资产|Hub·总览|API 字段 `claimable_gagx`|读|类型有字段；`use-hub` 注释明确不直出|API reward-summary 宽口径|`/assets/reward-summary`|⚪ 不适用|—|—|A-13|open|故意不接线（设计取舍）；非死代码|
 
@@ -421,9 +421,9 @@
 |A-018|资产|Hub·FAQ|收益形式 gAGX / X|读(Copy)|Hub FAQ：「Rebase 以 gAGX 计量；X 挖矿为 X」；未写「可直接挖 X」|链 Mixed→队列（多为 AGX）；Xmine→X|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-02 · C-08 旁|C-02|R2 确认🟡：X 区分对；gAGX 计量仍假；Figma 对照：可见文案跟稿；张力进改稿队列|
 |A-019|资产|Hub·FAQ|领取后进 RewardQueue/释放池|读(Copy)|FAQ 文案|手册 Mixed / RewardQueue|—|✅ 已对齐|—|—|—|—|—|
 |A-020|资产|Hub·FAQ|缓冲池 AGX/gAGX|读(Copy)|FAQ + UI 切换|手册 §13|—|✅ 已对齐|—|—|—|—|—|
-|A-021|资产|Position·质押|仓位列表字段（本金/已释放角标/收益/加成）|读|活期 `releasedPrincipal` 恒 `0n`（链无线性 released，非读错）；定期 `getReleasedPrincipal`；warmup 行独立|Locked `getReleasedPrincipal`；liquid 无对等|—|🟡 部分|设计取舍（故意空/0）|同 B-12：统计/角标是否排除 liquid 或改「待释放」口径|B-12 · A-08|**open**|FE 镜像链；产品口径未钉|
+|A-021|资产|Position·质押|仓位列表字段（本金/已释放角标/收益/加成）|读|活期 `releasedPrincipal` 恒 `0n`（链无线性 released，非读错）；定期 `getReleasedPrincipal`；warmup 行独立|Locked `getReleasedPrincipal`；liquid 无对等|—|✅ 已对齐|—|—|B-12 · A-08|**open**|核实：liquid releasedPrincipal 恒 0n（链无线性 released）；角标 badgeVisible=released>0 → 活期永不显；统计已用 aggregateStakeRelease 排除 liquid。口径钉「活期无已释放角标」|
 |A-022|资产|Position·质押·统计|我的持仓/已释放/待释放/Rebase/加成/总收益|读|`aggregateStakeRelease`+`useAssetsPositionStats`：liquid 不进已释放/待释放；locked 保持公式；持仓仍含 liquid 本金|同上|—|✅ 已对齐|—|—|B-12|open→closed|与 S-023 同 helper；单测钉口径|
-|A-023|资产|Position·质押|Mixed 领取（弹窗+写）|写|`submitMixedClaim` dual-check + legs；`invalidateAfterAssetsClaim`→assets/staking/**release**|手册 §9 Mixed|—|✅ 已对齐|—|—|—|B-37|金额=0 仍可开弹窗（测试期）；链闸兜底|
+|A-023|资产|Position·质押|Mixed 领取（弹窗+写）|写|`submitMixedClaim` dual-check + legs；`canClaim=!warmup&&reward>0`（已关测试期放开）；`invalidateAfterAssetsClaim`→assets/staking/**release**|手册 §9 Mixed|—|✅ 已对齐|—|—|—|B-37|无利息禁用领取；弹窗金额同源 `blockReward+extraInterest`|
 |A-024|资产|Position·质押|本金赎回（活期全额 / 定期 claimable）|写|`submitStakeRedeem` warmup 禁；确认弹窗天数=`effectiveDuration`|手册 §8 / §13；live `readStakeRedeemableAmount`|—|✅ 已对齐|—|—|—|—|—|
 |A-025|资产|Position·质押|激活活期 warmup|写|`submitLiquidWarmupClaim`；成功 refetch stake|手册 LiquidStaking `claim()`|—|✅ 已对齐|—|—|—|—|—|
 |A-026|资产|Position·质押|操作记录|读|`useAssetsPositionOpsRows` + sessionReady|—|`/stake-flow/logs`|✅ 已对齐|—|—|—|—|—|
@@ -454,12 +454,12 @@
 |A-050|资产|（对照手册 §4）|迁移 `isOldAccount` / canonical|读|assets 袋无迁移提示；迁移 UI 超出 Figma|AccountMigrationManager；staking 侧有闸|—|🚫 阻塞|FE 缺接线|等迁移页产品/稿 unblock；或 host 级轻提示|—|—|可链 host/迁移债；非「漏接可立刻修」|
 |A-051|资产|Hub·总览|未连接 / API pending 零值占位|读|`zeroOverview`；DockConnectPromo|产品空态|—|✅ 已对齐|—|—|—|—|缺数/未连接显示 0（设计）|
 |A-052|资产|Hub·可领|未登录可领是否含 X|读|`claimableGagxWei` 不含 `xPending`|产品|—|✅ 已对齐|—|—|B-20|closed→✅|—|
-|A-053|资产|Position·活期|「已释放」角标|读|`badgeVisible={releasedPrincipal>0}` → 活期永不显示|链无线性 released|—|🟡 部分|设计取舍（故意空/0）|与 B-12 同修；角标/统计口径产品确认|B-12|open|与「随时可赎」并存易误解；非读源错误|
+|A-053|资产|Position·活期|「已释放」角标|读|`badgeVisible={releasedPrincipal>0}` → 活期永不显示|链无线性 released|—|✅ 已对齐|设计取舍（故意空/0）|—|B-12|open|核实同 A-021：活期不显「已释放」角标=镜像链；与「随时可赎」并存属产品叙事，非读错|
 |A-054|资产|Hub 金钱字段|Prod 链/API 金额对账|读|无样本地址对账|L 杠（金钱须 Prod 只读）|相关 Hub 字段|✅ 已对齐|—|—|—|—|money-bar 伞行；字段行已各自 🔍；FE 接入证；Prod 对账非本矩阵门闩|
 |A-055|资产|API holdings-summary|`total_released_agx` 字段|读|FE 故意不用；用链可赎|API=缓冲已提+CLAIM_PRINCIPAL|`total_released_agx`|⚪ 不适用|—|—|A-14|—|正确规避同名不同义（设计取舍）|
 
 |A-056|资产|Claim 展示额|弹窗金额单位 gAGX|读|`amountLabel` 后缀 gAGX|链 reward/profit wei|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-02|—|Figma 对照：可见文案跟稿；张力进改稿队列|
-|A-057|资产|Xmine FAQ / 上限|可质押上限叙事|读(Copy)|FAQ 有文案；assets 袋无上限 Num（在 staking xmine）|手册 X 挖矿上限|—|🔍 待核实|待核实|对照手册公式核 FAQ；上限 Num 主责 staking|—|—|—|
+|A-057|资产|Xmine FAQ / 上限|可质押上限叙事|读(Copy)|FAQ 有文案；assets 袋无上限 Num（在 staking xmine）|手册 X 挖矿上限|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐 miningQuotaOf 公式，或产品确认保留简化叙事；禁 FE 默认离稿改 i18n|—|—|核实：staking Num 走 miningQuotaOf（正确）。Prod maxStakeRatioBP=10000（100%）。手册=Early+3Locked+3Bond+3BurnBond 锁定本金×比率；FAQ 写「≥180 天债券+AGX 质押总量」过简（活期不计入）。上限 Num 在 staking xmine|
 |A-058|资产|Hub APR 提示|aprHint Copy（未提取收益）|读(Copy)|Dock Tooltip；与卡上 yield 对齐|产品|—|✅ 已对齐|—|—|—|—|—|
 
 ---
@@ -497,7 +497,7 @@
 |CM-024|社区|Detail·成员表|分页 `total` / page|读|`Table.Pagination`；`keepPreviousData`|API Paginated|POST /team/referrals|✅ 已对齐|—|—|—|—|—|
 |CM-025|社区|Detail·成员表|未登录 Auth 空态|读|`dappTableViewState`+`WalletConnectChip`|连接≠登录；UI 基线|—（纯 UI）|✅ 已对齐|—|—|—|—|—|
 |CM-026|社区|Detail·邀请引导|三步文案（分享/共建/奖励）|读|`inviteFlow`「链接注册后即可」；真路径=连钱包+显式绑定|i18n Copy；手册 §5|—（纯 UI）|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|—|—|Visible Copy；Figma 对照：可见文案跟稿；张力进改稿队列|
-|CM-027|社区|Detail·生态支持|创世期数 `{season}`|读|`useGenesisPromoChrome().activeSeasonNumber` 填 program label；无活期时 store/`GenesisPromoSync` **回退 1**（同 H-019）|手册 §6 / Genesis promo（H-019 同源）|—（纯链）|🟡 部分|设计取舍（故意空/0）|同 H-019：无活期/加载中 season 显 `—`（禁回退 1）|← H-019|—|R2 确认🟡：不塌并；可见 call site；修点仍 H-019|
+|CM-027|社区|Detail·生态支持|创世期数 `{season}`|读|`useGenesisPromoChrome().activeSeasonNumber` 填 program label；无活期时 store/`GenesisPromoSync` **回退 1**（同 H-019）|手册 §6 / Genesis promo（H-019 同源）|—（纯链）|✅ 已对齐|设计取舍（故意空/0）|—|← H-019|—|跟 H-019：无活期回退季号 1 产品确认通过；同源 chrome|
 |CM-028|社区|Detail·生态支持|Notion 外链 CTA|读|`program.href`；无链上数|静态配置 / i18n|—（纯 UI）|⚪ 不适用|—|—|—|—|—|
 |CM-029|社区|Detail·FAQ|「邀请关系…自动建立且永久」|读|FAQ；链须 `bindReferral`，链接仅预填|i18n FAQ vs 手册 §5|—（纯 UI）|📘 稿链文案|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|—|建议新 C|永久一经绑定则真；Figma 对照：可见文案跟稿；张力进改稿队列|
 |CM-030|社区|Detail·FAQ|「创世推荐奖励 3%…压缩」|读|i18n FAQ；本页无金额 Num；`RewardLogItem.order_amount` 注 `floor(amount/0.03)`|i18n；`src/shared/api/types/community.ts`（非 api.md）|—（纯 UI）|✅ 已对齐|—|—|—|—|静态比率 Copy≠展示金钱；领取归 rewards|
@@ -514,12 +514,12 @@
 
 |行号|章节|页面/表面|数据或动作|读/写|代码位置|文档位置|API接口|状态|T1归因|修复方法|继承自|A/B/C链|备注|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-|GN-001|共建|Dock·季卡轮播|全部 `phases()`（名/状态 LIVE·Ended·Upcoming）|读|`readAllPresalePhases`→`seasonOptionsFromPhases`→`GenesisSeasonCarousel`|手册 §6.3 `getPhaseCount`+`phases`|—（纯链）|✅ 已对齐|—|—|—|—|无 phase→骨架；接线正确；本轮未重跑 Prod|
+|GN-001|共建|Dock·季卡轮播|全部 `phases()`（名/状态 LIVE·Ended·Upcoming）|读|`readAllPresalePhases`→`seasonOptionsFromPhases`→`GenesisSeasonCarousel`；骨架仅 `isLoading&&length===0`|手册 §6.3 `getPhaseCount`+`phases`|—（纯链）|🟡 稿链不符|稿有 Ended 季卡；Prod `getPhaseCount=0`（2026-08-08 eth_call）无季可展|FE：空且非 loading 不永驻骨架（已修）；季卡复现须链有 phase 或改稿说明清档|—|—|稿 `4303:213` 已结束仍画 Phase 卡；链清空≠稿面；状态逻辑 `isGenesisProgramEnded([])=true` 正确|
 |GN-002|共建|Dock·季卡|阶段折扣 `%`（`discount` bps）|读|`SeasonCard` meta + dock intro via promo store|手册 §6.3 `phases.discount`|—（纯链）|✅ 已对齐|—|—|—|—|—|
 |GN-003|共建|Dock·季卡|阶段空投比例 `airdropValueRatio`|读|`desktopMeta.airdrop` `+N%`/`—`|手册 §6.3|—（纯链）|✅ 已对齐|—|—|—|—|—|
 |GN-004|共建|Dock·季卡|阶段起止日期|读|`formatPhaseDateRange`→季卡 `date`|手册 §6.3 `startTime`/`endTime`|—（纯链）|✅ 已对齐|—|—|—|—|—|
 |GN-005|共建|Dock·季卡|折后参考价 `≈ $x`（`agxPrice×(1−discount)`）|读|`seasonOptions.price` 已算；`primitives-season.tsx` `SeasonCard` **不渲染** `price`|手册 §6.3 展示字段|—（纯链）|⚪ 不适用|—|—|—|—|稿无季卡折后价控件（PC `4303:212`）；`season.price` 未渲染属 YAGNI；等改稿再接或删字段；Code 有、UI 无|
-|GN-006|共建|Dock 字幕|进行中期号 + 折扣 intro|读|`formatGenesisSeasonIntro`←`activeSeasonNumber`+`discountLabel`；折扣无活期→`—`；**季号无活期回退 1**（`GenesisPromoSync`）|手册 §6 活动阶段|—（纯链）|🟡 部分|设计取舍（故意空/0）|同 H-019：无源 season 显 `—`；折扣空态已诚实|← H-019|—|R2 确认🟡：不塌并；折扣✅；季号同源伪造|
+|GN-006|共建|Dock 字幕|进行中期号 + 折扣 intro|读|`formatGenesisSeasonIntro`←`activeSeasonNumber`+`discountLabel`；折扣无活期→`—`；**季号无活期回退 1**（`GenesisPromoSync`）|手册 §6 活动阶段|—（纯链）|✅ 已对齐|设计取舍（故意空/0）|—|← H-019|—|跟 H-019：季号回退 1 通过；折扣空态仍诚实（H-020）|
 |GN-007|共建|Dock·份额标签|1 份 = `minAmount` USD1；最大份数|读|`shares` 插值 `formatTokenAmount(minAmount)`+`genesisMaxShares`；`sharePriceWei`=`minAmount`|手册 §6.4 `BASE_UNIT`/`minAmount`|—（纯链）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|展示金钱（同 GN-008 源）；接线在；L 未做；FE 接入证；Prod 对账非本矩阵门闩|
 |GN-008|共建|Dock·清单|「本期共建额度」min–max|读|`quotaLabel`（`genesisPurchaseSummary`）←phase `minAmount`/`maxAmount`|手册 §6.3 `minAmount`/`maxAmount`|—（纯链）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|接线在；金钱 L 未做（同 CM-011 口径）；FE 接入证；Prod 对账非本矩阵门闩|
 |GN-009|共建|Dock·清单|「支付」USD1 金额|读|`payUsd1Label`=`shares×sharePriceWei(minAmount)`|手册 §6.4|—（纯链）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|接线在；金钱 L 未做；FE 接入证；Prod 对账非本矩阵门闩|
@@ -545,7 +545,7 @@
 |GN-029|共建|Dock|USD1 余额展示|读|`usd1Balance` 参与 maxShares/门闸；`usd1BalanceLabel` 无 UI|ERC20 `balanceOf`；手册 §4/§6|—（纯链）|⚪ 不适用|—|—|—|—|稿无 USD1 余额展示行（PC `4303:212`）；余额仅门闸用合法；等改稿再展示或删 label|
 |GN-030|共建|Dock|`paused()` 门闸|读|`isPaused`/`isPausedUnknown`→`canPurchase` false；购前 live 重读|手册 §6.4|—（纯链）|✅ 已对齐|—|—|—|—|跟 live `paused`；本轮未重跑 Prod|
 |GN-031|共建|Dock CTA|推荐未绑定 → 去绑定|读·写门闸|`needsReferralBind` 换 CTA；mutation 亦拦；`goBindReferral`|手册 `PreSaleUserNotBound` / §5|—（纯链）|✅ 已对齐|—|—|—|—|绑定 UI 在 community|
-|GN-032|共建|Dock CTA|程序结束 / 即将开始|读|`isGenesisProgramEnded`；`seasonUpcoming` label|手册 phases 生命周期|—（纯链）|✅ 已对齐|—|—|—|—|—|
+|GN-032|共建|Dock CTA|程序结束 / 即将开始|读|`isGenesisProgramEnded`；结束 CTA=`MainButton primary disabled`（稿即 primary 禁用）；`seasonUpcoming` label|手册 phases 生命周期；Figma `4303:406`|—（纯链）|✅ 已对齐|—|—|—|—|曾误用 secondary；已改 primary+disabled；Prod phaseCount=0 → programEnded|
 |GN-033|共建|写·授权|`approve(USD1→PreSale)`|写|`approveUsd1ForPresaleIfNeeded` 合入购买 mutation|手册 §6.4|—（纯链）|✅ 已对齐|—|—|—|—|无独立 Approve 按钮|
 |GN-034|共建|写·购买|`purchase(phaseIndex,amount)`|写|`purchasePresale`；`WRITE_PATH.GENESIS`；前置 bound/paused/active/额度|手册 §6.4|—（纯链）|✅ 已对齐|—|—|—|—|未真发交易；写路径接线完整|
 |GN-035|共建|写·approve 后重闸|live：bound/paused/phase+user remaining|写门闸|`fetchLiveGenesisPostApprove`+balance/allowance 重读|AGENTS 写链；手册 §6.4|—（纯链）|✅ 已对齐|—|—|—|—|—|
@@ -556,7 +556,7 @@
 |GN-040|共建|边界|团队奖签名领取|写|UI 在 `rewards/genesis`；`invalidateAfterTeamClaim`|手册 RewardClaimer；legacy §4|POST /claim/team-reward 等（W- 章）|⚪ 不适用|—|—|—|—|归 **W-**；勿双计|
 |GN-041|共建|边界|`claimAirdrop` 用户领取|读/写|FE 未实现；`PRESALE_METHODS` 无 claim 写方法|产品：空投仅价值统计（无站内领取）|—（纯链）|✅ 已对齐|—|—|—|—|ABI 无入口；与 GN-024 FAQ Copy 冲突（C-11）|
 |GN-042|共建|空态 FAQ|`phases.length===0` 时 FAQ 插值|Copy|`ZERO_FAQ`：金额位 `$0`；`threshold` 仍 `—`（不读已加载门槛）|产品缺数=0 vs 诚实空|—（纯 UI）|✅ 已对齐|设计取舍（缺数显0）|—|—|—|金额 0 合法；门槛 — 同簇；口径：未取到显 0（T1=缺数显0，视为正确）|
-|GN-043|共建|Host 角标（交叉）|rail/community 季号折扣 chrome|读|`useGenesisPromoChrome`；季号同源 **回退 1**（H-019）；折扣空→`—`（H-020）|同 phases/`agxPrice`|—（纯链）|🟡 部分|设计取舍（故意空/0）|同 H-019 修季号回退；折扣保持诚实空|← H-019|—|R2 确认🟡：不塌并；交叉证明同源；不占新 H-|
+|GN-043|共建|Host 角标（交叉）|rail/community 季号折扣 chrome|读|`useGenesisPromoChrome`；季号同源 **回退 1**（H-019）；折扣空→`—`（H-020）|同 phases/`agxPrice`|—（纯链）|✅ 已对齐|设计取舍（故意空/0）|—|← H-019|—|跟 H-019：交叉证明同源 chrome；季号口径通过|
 
 ---
 
@@ -583,3 +583,4 @@
 |Z-014|反查|Xmine 下次产出|字段|读|固定 `—`（S-050）|无链/API 字段|—（未提供）|⚪ 不适用|链/手册/API 未提供|—|S-050|A-17|继承 A|
 |Z-015|反查|缓冲 API claimable|与链同口径字段|读|FE 信链分流器（A-009）；API 无同口径 claimable|手册 §13；A-16|—（API 无同口径）|⚪ 不适用|链/手册/API 未提供|—|A-009|A-16|正确避开口径坑|
 |Z-016|反查|Genesis FAQ|`phaseDurationDays` 已算未插值|读·Copy|`genesisFaqTemplateValues` 产出；zh FAQ 无 `{phaseDurationDays}`|手册 phases 时长|—（纯 UI）|⚪ 不适用|设计取舍（故意空/0）|—|GN-022|—|要展示则加 FAQ 句；否则可删字段（deletion-first）|
+|Z-017|反查|金额展示|`formatTokenAmount` 数字第三参补零|读|数字参默认 `trimZeros:false`（与 `formatNumber` 一致）；对象缺省仍 trim（草稿）|展示 SSOT `token-amount.ts`|—（纯 UI）|✅ 已对齐|—|—|—|—|修空态 `0.00`→加载后 `0`；单测钉 `0n,digits:2→0.00`|

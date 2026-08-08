@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
+import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
@@ -73,7 +74,7 @@ export function AssetsRedeemConfirm({
         className="mt-1 block text-2xl font-semibold text-background"
         variant="copy"
       >
-        {amountLabel || '—'}
+        <CountValue text={amountLabel || '—'} />
       </Text>
 
       <div className="mt-4 rounded-md bg-background/10 p-3">

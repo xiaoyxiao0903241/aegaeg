@@ -4,7 +4,6 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { cn } from '~/shared/lib/utils'
 import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
 import { SubviewViewContext } from '~/views/dapp/shared/subview-context'
-import { SubviewTransitionLayers } from '~/views/dapp/shared/subview-transition-layers'
 
 export { useSubviewView } from '~/views/dapp/shared/subview-context'
 
@@ -23,10 +22,10 @@ type SubviewHostProps = {
 }
 
 /**
- * 子视图展示外壳：接收动画状态，把视图内容作为子节点渲染。
+ * 子视图展示外壳。
  *
- * 静止时直接提供当前视图；过渡期间拆成退场 / 入场两层，
- * 子组件通过 display context 读取各自应展示的视图。
+ * 入场 / 静止共用同一棵 live 树（只改 context 与 CSS class）；
+ * 过渡结束只卸退场层，避免入场树重挂导致 CountValue 再滚一遍。
  *
  * H5 左栏：过渡期锁退场高度，避免双层叠放 / 入场变矮时整窗跳动。
  */
@@ -39,6 +38,7 @@ export function SubviewHost({
 }: SubviewHostProps) {
   const { view, motion, direction, outgoingView, incomingView } = subview
   const isTransitioning = Boolean(motion && outgoingView && incomingView)
+  const liveView = isTransitioning && incomingView ? incomingView : view
   const isMobile = useMobileViewport()
   const rootRef = useRef<HTMLDivElement>(null)
   const idleHeightRef = useRef(0)
@@ -73,17 +73,35 @@ export function SubviewHost({
       data-dapp-widget-panel={panel === 'widget' ? '' : undefined}
       style={lockStyle}
     >
-      {isTransitioning && outgoingView && incomingView ? (
-        <SubviewTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
+      {isTransitioning && outgoingView ? (
+        <div className="dapp-subview-layer dapp-subview-layer-exit" data-dapp-direction={direction}>
+          <div className="dapp-subview-layer-motion">
+            <SubviewViewContext.Provider value={outgoingView}>
+              {children}
+            </SubviewViewContext.Provider>
+          </div>
+        </div>
+      ) : null}
+
+      <div
+        className={
+          isTransitioning
+            ? 'dapp-subview-layer dapp-subview-layer-enter'
+            : 'flex min-h-0 min-w-0 flex-1 flex-col dapp:h-full'
+        }
+        data-dapp-direction={isTransitioning ? direction : undefined}
+      >
+        <div
+          className={
+            isTransitioning
+              ? 'dapp-subview-layer-motion'
+              : // idle 清掉 enter 的 animation fill（both），避免残留 transform
+                'flex min-h-0 min-w-0 flex-1 [transform:none] flex-col [opacity:1] dapp:h-full'
+          }
         >
-          {children}
-        </SubviewTransitionLayers>
-      ) : (
-        <SubviewViewContext.Provider value={view}>{children}</SubviewViewContext.Provider>
-      )}
+          <SubviewViewContext.Provider value={liveView}>{children}</SubviewViewContext.Provider>
+        </div>
+      </div>
     </div>
   )
 }

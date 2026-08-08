@@ -7,7 +7,7 @@ export type LockedClaimLeg = {
  * 定期仓 Mixed 领取腿：普通奖励与额外利息为独立写入口。
  *
  * 并存时按顺序返回两腿，禁止静默丢弃 extraInterest。
- * 皆为 0 时保留单腿 0，供弹窗打开后由链上校验拦截。
+ * 皆为 0 时保留单腿 0（防御）；UI 须在 `reward > 0` 时才开放领取入口。
  */
 export function selectLockedClaimLegs(args: {
   blockReward: bigint

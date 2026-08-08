@@ -29,7 +29,8 @@ export const buttonVariants = tv({
       secondary: [
         'gap-2 border border-border bg-card text-foreground',
         'hover:shadow-card focus-visible:shadow-card',
-        'disabled:border-border disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100',
+        // 禁用态与 primary 同口径（muted 底 + muted 字），避免成对 CTA 一实一空
+        'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
         'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       ],
       ghost: [

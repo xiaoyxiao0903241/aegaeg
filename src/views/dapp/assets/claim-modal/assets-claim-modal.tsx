@@ -5,6 +5,7 @@ import { useRef } from 'react'
 import { interpolate } from '~/i18n/interpolate'
 import { Button } from '~/shared/components/button'
 import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
+import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
@@ -111,7 +112,7 @@ function AssetsClaimModalOpen({
             </Text>
           </DialogPrimitive.Title>
           <Text as="strong" className="text-xl font-semibold" variant="copy">
-            {amountLabel}
+            <CountValue text={amountLabel} />
           </Text>
           {vm.requiredContributionLabel ? (
             <Text as="span" tone="muted-foreground" variant="detail">
@@ -212,8 +213,10 @@ function AssetsClaimModalOpen({
         >
           <span className="flex flex-col items-center gap-0.5 leading-tight">
             <span>{vm.ctaLabel}</span>
-            <span className="text-xs font-medium tabular-nums opacity-90">
-              {vm.releaseAmountText} & {vm.restakeAmountText}
+            <span className="inline-flex items-baseline gap-1 text-xs font-medium tabular-nums opacity-90">
+              <CountValue text={vm.releaseAmountText} />
+              <span>&</span>
+              <CountValue text={vm.restakeAmountText} />
             </span>
           </span>
         </MainButton>

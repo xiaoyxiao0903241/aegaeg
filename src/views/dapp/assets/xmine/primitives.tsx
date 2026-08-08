@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
+import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
@@ -113,13 +114,13 @@ export function AssetsXminePositionCard({
             {stakedCaption}
           </Text>
           <Text as="strong" className="text-sm/5 font-semibold" variant="copy">
-            {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
+            <CountValue text={`${formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX`} />
           </Text>
           {/* 锁定徽标：与仓位卡共用锁图标 */}
           <span className="inline-flex w-fit items-center gap-1 rounded-control bg-accent px-2">
             <Icon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
             <Text as="span" className="leading-none text-primary" variant="support">
-              {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX
+              <CountValue text={`${formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX`} />
             </Text>
           </span>
         </div>
@@ -128,7 +129,7 @@ export function AssetsXminePositionCard({
             {outputCaption}
           </Text>
           <Text as="strong" className="text-sm/5 font-semibold text-primary" variant="copy">
-            {formatTokenAmount(pending, X_DECIMALS, 2)} X
+            <CountValue text={`${formatTokenAmount(pending, X_DECIMALS, 2)} X`} />
           </Text>
           {quote === 'usd' ? (
             <Text as="span" className="leading-4" tone="muted-foreground" variant="support">

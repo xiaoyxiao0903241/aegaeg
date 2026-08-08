@@ -12,6 +12,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
+import { CountValue } from '~/shared/components/count-value'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
@@ -105,7 +106,7 @@ export function AssetsPositionPrincipalColumn({
         {label}
       </Text>
       <Text as="strong" className="text-base/5 font-semibold" variant="copy">
-        {amountText}
+        <CountValue text={amountText} />
       </Text>
       <span
         aria-hidden={!badgeVisible}
@@ -116,7 +117,7 @@ export function AssetsPositionPrincipalColumn({
       >
         <Icon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
         <Text as="span" className="leading-none text-primary" variant="support">
-          {badgeText}
+          <CountValue text={badgeText} />
         </Text>
       </span>
     </div>
@@ -140,7 +141,7 @@ export function AssetsPositionBoostBadge({
     >
       <Icon alt="" className="size-3" src={dappAssets.assetsPositionBoost} />
       <Text as="span" className="leading-none text-primary" variant="support">
-        {text}
+        <CountValue text={text} />
       </Text>
     </span>
   )
@@ -161,7 +162,7 @@ export function AssetsPositionYieldColumn({
         {yieldLabel}
       </Text>
       <Text as="strong" className="text-base/5 font-semibold text-primary" variant="copy">
-        {amountText}
+        <CountValue text={amountText} />
       </Text>
       {badge}
     </div>
@@ -188,8 +189,6 @@ export function AssetsPositionRowActions({
   onClaim: () => void
   onRedeem: () => void
 }) {
-  const redeemEnabled = canRedeem && !locked && !busy
-
   return (
     <div className="grid grid-cols-2 gap-3">
       <MainButton
@@ -201,12 +200,9 @@ export function AssetsPositionRowActions({
         {claimLabel}
       </MainButton>
       <MainButton
-        className={cn(
-          'h-7 min-h-7',
-          redeemEnabled ? 'text-sm' : 'text-xs disabled:bg-muted disabled:text-foreground/40',
-        )}
+        className="h-7 min-h-7 text-xs"
         density="inverse"
-        disabled={!redeemEnabled}
+        disabled={!canRedeem || locked || busy}
         onClick={onRedeem}
         variant="secondary"
       >
@@ -408,8 +404,8 @@ export function AssetsPositionStakeRow(
   const boost = row.extraInterest
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
-  // 测试期放开领取入口：warmup 外可点开弹窗；金额=0 / 贡献不足由写链校验拦截
-  const canClaim = !inWarmup
+  // 与手册一致：无利息不开放领取（bond 卡同口径 profit>0）
+  const canClaim = !inWarmup && reward > 0n
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
     : row.kind === 'liquid'

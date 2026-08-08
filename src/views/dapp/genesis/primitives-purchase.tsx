@@ -95,7 +95,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
 
   return (
     <>
-      {genesis.seasonOptions.length === 0 ? (
+      {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
         <div aria-busy="true" className={cn(revealClass(), 'mb-1.5 overflow-hidden')} data-reveal>
           <div className="flex gap-2.5">
             <SeasonOptionSkeleton />
@@ -103,12 +103,12 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
             <SeasonOptionSkeleton />
           </div>
         </div>
-      ) : (
+      ) : genesis.seasonOptions.length > 0 ? (
         <GenesisSeasonCarousel
           activePhaseIndex={genesis.phaseIndex}
           seasons={genesis.seasonOptions}
         />
-      )}
+      ) : null}
 
       <GenesisPurchaseSharesField
         disabled={!vm.walletReady || genesis.maxShares <= 0}
@@ -151,7 +151,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
       {vm.walletReady ? (
         <FormActions className="grid-cols-1">
           {vm.programEnded ? (
-            <MainButton density="card" disabled variant="secondary">
+            <MainButton className="min-h-11" density="card" disabled variant="primary">
               {t.genesis.joinEnded}
             </MainButton>
           ) : genesis.needsReferralBind ? (
