@@ -10,9 +10,10 @@ import {
   approveAgxForBurnExchangeIfNeeded,
   burnExchangeConvert,
 } from '~/web3/exchange/burn-exchange-write'
+import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 
 /**
- * 销毁 AGX 换贡献点：授权 + 转换 + 成功后失效相关缓存
+ * 销毁 AGX 换贡献点：经统一核授权后实时复核余额与配置，再转换
  *
  * @see docs/onchain-manual/contracts/agxcontributionswap.md
  */
@@ -23,26 +24,41 @@ export async function submitBurnExchange(args: {
 
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
     const { wallet, address } = session
+    const amountIn = core.debouncedAmountIn
 
-    await approveAgxForBurnExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
-
-    // 直接读链上余额与配置，而非依赖展示查询的刷新结果
-    const liveBalances = await readBurnExchangeBalances(address)
-    await assertStillSubmittable({ sellBalance: liveBalances.sell })
-
-    const liveConfig = await readBurnContributionSwapConfig()
-    const blockReason = evaluateBurnContributionSwap({
-      amountIn: core.debouncedAmountIn,
-      config: liveConfig,
-    })
-    if (blockReason) {
-      throw new Error(BURN_BLOCKED[blockReason])
+    type Snap = {
+      sellBalance: bigint
+      config: Awaited<ReturnType<typeof readBurnContributionSwapConfig>>
     }
 
-    await burnExchangeConvert({
-      wallet,
-      agxAmount: core.debouncedAmountIn,
+    await approveThenLiveWrite({
+      readSnapshot: async (): Promise<Snap> => {
+        const [liveBalances, liveConfig] = await Promise.all([
+          readBurnExchangeBalances(address),
+          readBurnContributionSwapConfig(),
+        ])
+        return { sellBalance: liveBalances.sell, config: liveConfig }
+      },
+      evaluate: (snap) => {
+        if (snap.sellBalance < amountIn) return 'insufficientBalance' as const
+        return evaluateBurnContributionSwap({ amountIn, config: snap.config })
+      },
+      mapBlockError: (reason) => {
+        if (reason === 'insufficientBalance') return new Error(reason)
+        return new Error(BURN_BLOCKED[reason])
+      },
+      softPreBlocks: [],
+      approve: async () => {
+        await approveAgxForBurnExchangeIfNeeded({ wallet, amountIn })
+      },
+      write: async (live) => {
+        await assertStillSubmittable({ sellBalance: live.sellBalance })
+        await burnExchangeConvert({
+          wallet,
+          agxAmount: amountIn,
+        })
+        invalidateAfterExchange()
+      },
     })
-    invalidateAfterExchange()
   })
 }

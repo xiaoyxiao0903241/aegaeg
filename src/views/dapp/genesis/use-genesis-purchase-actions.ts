@@ -20,6 +20,7 @@ import { readPresalePaused, readUserPhaseRemainingAmount } from '~/web3/presale/
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 type UseGenesisPurchaseActionsArgs = {
@@ -36,14 +37,15 @@ type UseGenesisPurchaseActionsArgs = {
   }
   purchase: {
     canPurchase: boolean
-    isApproved: boolean
-    needsApproval: boolean
     purchaseAmount: bigint
   }
 }
 
+type GenesisPurchaseBlock =
+  'not_bound' | 'unavailable' | 'insufficient_allowance' | 'insufficient_usd1'
+
 /**
- * 创世购买编排：授权 → 重读门闸 → 购买
+ * 创世购买编排：经统一核做预检 → 按需授权 → 实时复核 → 购买
  *
  * 前置条件不满足时抛错中断，不进入写操作；
  * 推荐未绑定错误用带操作按钮的提示呈现。
@@ -53,7 +55,7 @@ type UseGenesisPurchaseActionsArgs = {
 export function useGenesisPurchaseActions({
   wallet: { address },
   phase: { activePhase, isPaused, isPausedUnknown, isBoundQueryData },
-  purchase: { canPurchase, isApproved, needsApproval, purchaseAmount },
+  purchase: { canPurchase, purchaseAmount },
 }: UseGenesisPurchaseActionsArgs) {
   const queryClient = useQueryClient()
   const { messages: t } = useI18n()
@@ -66,9 +68,6 @@ export function useGenesisPurchaseActions({
     path: WRITE_PATH.GENESIS,
     mutation: async (_vars, session): Promise<true> => {
       const { wallet, account, address: sessionAddress } = session
-      // 合约要求购买前已绑定推荐人；提前拦截并给出友好提示，
-      // 避免交易在链上回滚（PreSaleUserNotBound）。
-      // 绑定态仍在加载（undefined）时按未绑定处理。
       if (isBoundQueryData !== true) {
         throw GENESIS_PURCHASE_ERROR.NOT_BOUND
       }
@@ -79,88 +78,111 @@ export function useGenesisPurchaseActions({
         throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
       }
 
-      if (needsApproval && !isApproved) {
-        await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
-        if (sessionAddress) {
-          queryClient.setQueryData(
-            queryKeys.chain.erc20Allowance(
-              BSC_CONTRACTS.usd1,
-              sessionAddress,
-              BSC_CONTRACTS.preSale,
-            ),
-            purchaseAmount,
-          )
-        }
+      const phase = activePhase
+
+      type Snap = {
+        postOk: boolean
+        postReason: 'not_bound' | 'unavailable' | null
+        allowance: bigint
+        balance: bigint
       }
 
-      // 实时重读：绑定/暂停 + 阶段与用户剩余，避免沿用闭包快照
-      const blockReason = await fetchLiveGenesisPostApprove({
-        address: sessionAddress,
-        purchaseAmount,
-        activePhase,
-        fetchIsBound: (addr) =>
-          queryClient.fetchQuery({
-            queryKey: queryKeys.chain.referralIsBoundOf(addr),
-            queryFn: () => readIsBindReferral(addr),
-            staleTime: 0,
-          }),
-        fetchPaused: () =>
-          queryClient.fetchQuery({
-            queryKey: queryKeys.chain.presalePaused,
-            queryFn: () => readPresalePaused(),
-            staleTime: 0,
-          }),
-        fetchPhaseRemaining: (addr, phaseIndex) =>
-          queryClient.fetchQuery({
-            queryKey: queryKeys.chain.presaleUserPhaseRemaining(addr, phaseIndex),
-            queryFn: () => readUserPhaseRemainingAmount(addr, phaseIndex),
-            staleTime: 0,
-          }),
-        fetchNowSeconds: async () => {
-          const block = await bscReadClient.getBlock({ blockTag: 'latest' })
-          return Number(block.timestamp)
+      await approveThenLiveWrite({
+        readSnapshot: async (): Promise<Snap> => {
+          const post = await fetchLiveGenesisPostApprove({
+            address: sessionAddress,
+            purchaseAmount,
+            activePhase: phase,
+            fetchIsBound: (addr) =>
+              queryClient.fetchQuery({
+                queryKey: queryKeys.chain.referralIsBoundOf(addr),
+                queryFn: () => readIsBindReferral(addr),
+                staleTime: 0,
+              }),
+            fetchPaused: () =>
+              queryClient.fetchQuery({
+                queryKey: queryKeys.chain.presalePaused,
+                queryFn: () => readPresalePaused(),
+                staleTime: 0,
+              }),
+            fetchPhaseRemaining: (addr, phaseIndex) =>
+              queryClient.fetchQuery({
+                queryKey: queryKeys.chain.presaleUserPhaseRemaining(addr, phaseIndex),
+                queryFn: () => readUserPhaseRemainingAmount(addr, phaseIndex),
+                staleTime: 0,
+              }),
+            fetchNowSeconds: async () => {
+              const block = await bscReadClient.getBlock({ blockTag: 'latest' })
+              return Number(block.timestamp)
+            },
+          })
+          const [balance, allowance] = await Promise.all([
+            readErc20Balance(BSC_CONTRACTS.usd1, account.address),
+            readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
+          ])
+          if (sessionAddress) {
+            queryClient.setQueryData(
+              queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, sessionAddress),
+              balance,
+            )
+            queryClient.setQueryData(
+              queryKeys.chain.erc20Allowance(
+                BSC_CONTRACTS.usd1,
+                sessionAddress,
+                BSC_CONTRACTS.preSale,
+              ),
+              allowance,
+            )
+          }
+          return {
+            postOk: post.ok,
+            postReason: post.ok ? null : post.reason,
+            allowance,
+            balance,
+          }
+        },
+        evaluate: (snap): GenesisPurchaseBlock | null => {
+          if (!snap.postOk) {
+            return snap.postReason === 'not_bound' ? 'not_bound' : 'unavailable'
+          }
+          if (snap.allowance < purchaseAmount) return 'insufficient_allowance'
+          if (snap.balance < purchaseAmount) return 'insufficient_usd1'
+          return null
+        },
+        mapBlockError: (reason) => {
+          if (reason === 'not_bound') return GENESIS_PURCHASE_ERROR.NOT_BOUND
+          if (reason === 'insufficient_allowance') {
+            return GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE
+          }
+          if (reason === 'insufficient_usd1') return GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1
+          return GENESIS_PURCHASE_ERROR.UNAVAILABLE
+        },
+        softPreBlocks: ['insufficient_allowance'],
+        approve: async () => {
+          await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
+          if (sessionAddress) {
+            queryClient.setQueryData(
+              queryKeys.chain.erc20Allowance(
+                BSC_CONTRACTS.usd1,
+                sessionAddress,
+                BSC_CONTRACTS.preSale,
+              ),
+              purchaseAmount,
+            )
+          }
+        },
+        write: async () => {
+          await purchasePresale({
+            wallet,
+            phase: phase.index,
+            amount: purchaseAmount,
+          })
+          invalidateAfterGenesisPurchase(account.address, purchaseAmount)
         },
       })
-      if (!blockReason.ok) {
-        throw blockReason.reason === 'not_bound'
-          ? GENESIS_PURCHASE_ERROR.NOT_BOUND
-          : GENESIS_PURCHASE_ERROR.UNAVAILABLE
-      }
-
-      const [balance, approved] = await Promise.all([
-        readErc20Balance(BSC_CONTRACTS.usd1, account.address),
-        readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
-      ])
-
-      if (sessionAddress) {
-        queryClient.setQueryData(
-          queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, sessionAddress),
-          balance,
-        )
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, sessionAddress, BSC_CONTRACTS.preSale),
-          approved,
-        )
-      }
-
-      if (approved < purchaseAmount) {
-        throw GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE
-      }
-
-      if (balance < purchaseAmount) {
-        throw GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1
-      }
-
-      await purchasePresale({
-        wallet,
-        phase: activePhase.index,
-        amount: purchaseAmount,
-      })
-      invalidateAfterGenesisPurchase(account.address, purchaseAmount)
       return true
     },
     onError: (error) => {
-      // 推荐未绑定错误用带操作按钮的提示替代默认提示，避免双重 toast
       if (readErrorText(error) !== GENESIS_PURCHASE_ERROR.NOT_BOUND) return
       toast.error(t.genesis.errors.notBound, {
         id: 'genesis-not-bound',

@@ -16,6 +16,7 @@ test('approveThenLiveWrite runs pre → approve → live → write in order', as
     },
     evaluate: () => null,
     mapBlockError: (reason) => reason,
+    softPreBlocks: [],
     approve: async () => {
       steps.push('approve')
     },
@@ -37,6 +38,7 @@ test('approveThenLiveWrite throws mapped pre gate and skips approve', async () =
         readSnapshot: async () => ({ n: 1 }),
         evaluate: () => 'blocked',
         mapBlockError: (reason) => `ERR_${reason}`,
+        softPreBlocks: [],
         approve: async () => {
           approved = true
         },
@@ -61,6 +63,7 @@ test('approveThenLiveWrite soft-fails on live gate after approve', async () => {
         },
         evaluate: (snap) => (snap.reads === 2 ? 'liveFail' : null),
         mapBlockError: (reason) => reason,
+        softPreBlocks: [],
         approve: async () => {},
         write: async () => {
           wrote = true
@@ -97,7 +100,7 @@ test('approveThenLiveWrite soft-pre allowance runs approve then live', async () 
   assert.deepEqual(steps, ['read1', 'approve', 'read2', 'write'])
 })
 
-test('approveThenLiveWrite hard pre block still skips approve without softPreBlocks', async () => {
+test('approveThenLiveWrite hard pre block skips approve when reason not soft', async () => {
   const { approveThenLiveWrite } = await loadModule('/src/web3/wallet/approve-then-live-write.ts')
 
   let approved = false
@@ -107,6 +110,7 @@ test('approveThenLiveWrite hard pre block still skips approve without softPreBlo
         readSnapshot: async () => ({ allowance: 0n }),
         evaluate: () => 'insufficientAllowance',
         mapBlockError: (reason) => `ERR_${reason}`,
+        softPreBlocks: [],
         approve: async () => {
           approved = true
         },

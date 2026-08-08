@@ -12,9 +12,10 @@ import {
   redeemGagxFlashExchange,
   wrapAgxFlashExchange,
 } from '~/web3/exchange/flash-exchange-write'
+import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 
 /**
- * 闪电兑换提交：gAGX 赎回 / 包装或 USDT 兑换，成功后失效相关缓存
+ * 闪电兑换提交：经统一核授权后实时复核，再兑换；成功后失效相关缓存
  *
  * @see docs/onchain-manual/contracts/usd1swap.md
  */
@@ -24,67 +25,99 @@ export async function submitFlashExchange(args: {
   core: QuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { pairId, direction, core } = args
+  const amountIn = core.debouncedAmountIn
 
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
     const { wallet, address } = session
 
-    let liveConfig: Awaited<ReturnType<typeof readUsd1SwapConfig>> | undefined
-    if (pairId === 'usdt') {
-      liveConfig = await readUsd1SwapConfig()
-      const configBlock = evaluateFlashUsd1Swap({
-        amountIn: core.debouncedAmountIn,
-        quotedOut: 0n,
-        config: liveConfig,
-      })
-      // 授权前只拦零地址；上下限 / 储备等仍等 live quote 后再判
-      if (configBlock === 'zeroUsdtToken') {
-        throw new Error(FLASH_USD1_BLOCKED.zeroUsdtToken)
-      }
-      await approveUsdtForFlashExchangeIfNeeded({
-        wallet,
-        amountIn: core.debouncedAmountIn,
-        usdtToken: liveConfig.usdtToken,
-      })
-    } else if (direction === 'reverse') {
-      await approveAgxForWrapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
-    }
-
-    // 直接读链上余额，而非依赖展示查询的刷新结果
-    const liveBalances = await readFlashPairBalances(pairId, direction, address)
-    const { amountOutMin: minOut, quotedOut } = await assertStillSubmittable({
-      sellBalance: liveBalances.sell,
-    })
-
     if (pairId === 'gagx') {
+      type GagxSnap = { sellBalance: bigint }
+      const readGagx = async (): Promise<GagxSnap> => {
+        const liveBalances = await readFlashPairBalances(pairId, direction, address)
+        return { sellBalance: liveBalances.sell }
+      }
+      const evaluateGagx = (snap: GagxSnap) =>
+        snap.sellBalance < amountIn ? ('insufficientBalance' as const) : null
+      const writeGagx = async (live: GagxSnap) => {
+        await assertStillSubmittable({ sellBalance: live.sellBalance })
+        if (direction === 'reverse') {
+          await wrapAgxFlashExchange({ wallet, agxAmount: amountIn })
+        } else {
+          await redeemGagxFlashExchange({ wallet, gagxAmount: amountIn })
+        }
+        invalidateAfterExchange()
+      }
+
       if (direction === 'reverse') {
-        await wrapAgxFlashExchange({
-          wallet,
-          agxAmount: core.debouncedAmountIn,
+        await approveThenLiveWrite({
+          readSnapshot: readGagx,
+          evaluate: evaluateGagx,
+          mapBlockError: (reason) => new Error(reason),
+          softPreBlocks: [],
+          approve: async () => {
+            await approveAgxForWrapIfNeeded({ wallet, amountIn })
+          },
+          write: writeGagx,
         })
       } else {
-        await redeemGagxFlashExchange({
-          wallet,
-          gagxAmount: core.debouncedAmountIn,
+        await approveThenLiveWrite({
+          readSnapshot: readGagx,
+          evaluate: evaluateGagx,
+          mapBlockError: (reason) => new Error(reason),
+          write: writeGagx,
         })
       }
-    } else {
-      // 授权后必须重读配置：批准窗口内 pause / 限额 / 汇率可能已变
-      const config = await readUsd1SwapConfig()
-      const blockReason = evaluateFlashUsd1Swap({
-        amountIn: core.debouncedAmountIn,
-        quotedOut,
-        config,
-      })
-      if (blockReason) {
-        throw new Error(FLASH_USD1_BLOCKED[blockReason])
-      }
-
-      await flashExchange({
-        wallet,
-        usdtAmount: core.debouncedAmountIn,
-        minUsd1Out: minOut,
-      })
+      return
     }
-    invalidateAfterExchange()
+
+    type UsdtSnap = {
+      sellBalance: bigint
+      config: Awaited<ReturnType<typeof readUsd1SwapConfig>>
+      quotedOut: bigint
+      minOut: bigint
+    }
+
+    await approveThenLiveWrite({
+      readSnapshot: async (): Promise<UsdtSnap> => {
+        const config = await readUsd1SwapConfig()
+        const liveBalances = await readFlashPairBalances(pairId, direction, address)
+        const still = await assertStillSubmittable({ sellBalance: liveBalances.sell })
+        return {
+          sellBalance: liveBalances.sell,
+          config,
+          quotedOut: still.quotedOut,
+          minOut: still.amountOutMin,
+        }
+      },
+      evaluate: (snap) => {
+        if (snap.sellBalance < amountIn) return 'insufficientBalance' as const
+        return evaluateFlashUsd1Swap({
+          amountIn,
+          quotedOut: snap.quotedOut,
+          config: snap.config,
+        })
+      },
+      mapBlockError: (reason) => {
+        if (reason === 'insufficientBalance') return new Error(reason)
+        return new Error(FLASH_USD1_BLOCKED[reason])
+      },
+      softPreBlocks: [],
+      approve: async () => {
+        const config = await readUsd1SwapConfig()
+        await approveUsdtForFlashExchangeIfNeeded({
+          wallet,
+          amountIn,
+          usdtToken: config.usdtToken,
+        })
+      },
+      write: async (live) => {
+        await flashExchange({
+          wallet,
+          usdtAmount: amountIn,
+          minUsd1Out: live.minOut,
+        })
+        invalidateAfterExchange()
+      },
+    })
   })
 }

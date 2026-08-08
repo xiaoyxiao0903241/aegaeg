@@ -59,8 +59,6 @@ export function useGenesisSession() {
     },
     purchase: {
       canPurchase: canPurchaseBase,
-      isApproved: model.isApproved,
-      needsApproval: model.needsApproval,
       purchaseAmount: model.purchaseAmount,
     },
   })
