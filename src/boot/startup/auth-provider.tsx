@@ -88,9 +88,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginInProgressRef = useRef(false)
   /** 最近一次静默登录的尝试指纹，防止同一指纹反复重试。 */
   const lastAttemptRef = useRef<string | null>(null)
-  /** 续期瞬时失败的退避定时器，须在 effect cleanup 里清掉。 */
-  const renewBackoffRef = useRef<number | null>(null)
-  /** 驱动墙钟：JWT 到期或续期失败退避时推进，好让 sessionReady 立刻翻转。 */
+  /** 续期瞬时失败后，下一次续期不得早于此时刻（防 delay=0 风暴）。 */
+  const renewNotBeforeMsRef = useRef(0)
+  /** 驱动墙钟：JWT 到期或可见性变化时推进，好让 sessionReady 立刻翻转。 */
   const [authNow, setAuthNow] = useState(() => Date.now())
 
   /** 会话状态由「当前钱包 + 按地址 JWT 表」派生，无独立 session 对象可同步。 */
@@ -203,23 +203,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (action.type === 'renewAt') {
-      const delay = Math.max(0, action.at - Date.now())
+      const targetAt = Math.max(action.at, renewNotBeforeMsRef.current)
+      const delay = Math.max(0, targetAt - Date.now())
       const timerId = window.setTimeout(() => {
         lastAttemptRef.current = null
-        void runLogin().catch(() => {
-          const nextError = useAuthStore.getState().loginError
-          if (isSessionRenewHaltError(nextError)) return
-          if (renewBackoffRef.current != null) window.clearTimeout(renewBackoffRef.current)
-          renewBackoffRef.current = window.setTimeout(() => setAuthNow(Date.now()), 5_000)
-        })
+        void runLogin()
+          .then(() => {
+            renewNotBeforeMsRef.current = 0
+          })
+          .catch(() => {
+            const nextError = useAuthStore.getState().loginError
+            if (isSessionRenewHaltError(nextError)) return
+            // 瞬时失败：清空错误以免 effect 空转，并强制至少间隔 5s 再续
+            useAuthStore.getState().setLoginError(null)
+            renewNotBeforeMsRef.current = Date.now() + 5_000
+            setAuthNow(Date.now())
+          })
       }, delay)
-      return () => {
-        window.clearTimeout(timerId)
-        if (renewBackoffRef.current != null) {
-          window.clearTimeout(renewBackoffRef.current)
-          renewBackoffRef.current = null
-        }
-      }
+      return () => window.clearTimeout(timerId)
     }
   }, [
     hasHydrated,
@@ -261,6 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /** 用户点击登录：清除防重试锁定，允许再次弹出签名。 */
   const login = useCallback(async () => {
     lastAttemptRef.current = null
+    renewNotBeforeMsRef.current = 0
     useAuthStore.getState().setLoginError(null)
     await runLogin()
   }, [runLogin])

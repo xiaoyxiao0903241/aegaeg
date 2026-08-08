@@ -28,6 +28,34 @@ test('unknown receipt lock blocks path until cleared for address', async () => {
   assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR_A), false)
 })
 
+test('legacy reward-claim latch blocks new reward paths until force-cleared', async () => {
+  const {
+    WRITE_PATH,
+    clearUnknownReceiptLock,
+    isUnknownReceiptLocked,
+    lockUnknownReceipt,
+    resetUnknownReceiptLocksForTests,
+    tryBeginWritePath,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  lockUnknownReceipt(WRITE_PATH.REWARD_CLAIM, Symbol('legacy'), ADDR_A)
+
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REWARD_LUCKY_MIXED, ADDR_A), true)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REWARD_DAO_MIXED, ADDR_A), true)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REWARD_SIGNED_CLAIM, ADDR_A), true)
+  assert.deepEqual(tryBeginWritePath(WRITE_PATH.REWARD_LUCKY_MIXED, ADDR_A), {
+    ok: false,
+    reason: 'locked',
+  })
+
+  clearUnknownReceiptLock(WRITE_PATH.REWARD_LUCKY_MIXED, ADDR_A)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM, ADDR_A), false)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REWARD_LUCKY_MIXED, ADDR_A), false)
+  assert.equal(tryBeginWritePath(WRITE_PATH.REWARD_LUCKY_MIXED, ADDR_A).ok, true)
+  resetUnknownReceiptLocksForTests()
+})
+
 test('owner-scoped clear does not drop another call’s latch', async () => {
   const {
     WRITE_PATH,

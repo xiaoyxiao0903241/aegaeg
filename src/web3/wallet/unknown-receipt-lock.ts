@@ -92,7 +92,7 @@ export const WRITE_PATH = {
   /** 锁键历史值 `'swap'`，禁改。 */
   EXCHANGE: 'swap',
   GENESIS: 'genesis',
-  /** @deprecated 旧锁键 `'reward-claim'`；新代码用下方分族。busy 检查仍认此键以防升级后 orphan latch。 */
+  /** 旧锁键 `'reward-claim'`；新代码用下方拆分键。busy / 清锁仍认此键。 */
   REWARD_CLAIM: 'reward-claim',
   REWARD_LUCKY_MIXED: 'reward-lucky-mixed',
   REWARD_DAO_MIXED: 'reward-dao-mixed',
@@ -128,7 +128,7 @@ function hasLegacyRewardClaimLatch(address: string): boolean {
  * 判断指定地址与写路径是否持有未知结果锁。
  *
  * 锁跨刷新仍存在，未显式清除前禁止重提同路径交易。
- * 新领奖分族仍认旧键 `reward-claim`，避免升级后 orphan latch 被绕过。
+ * 新领奖路径仍认旧键 `reward-claim`，避免升级后残留锁被绕过。
  *
  * @param path 写路径键
  * @param address 钱包地址，可为 undefined
@@ -217,6 +217,7 @@ export function lockUnknownReceipt(path: WritePath, owner: symbol, address: stri
  * 清除 unknown 结果锁
  *
  * 带 `owner`：仅设置者可清；不带：显式 clearLock 强制清除（现行产品契约）。
+ * 清任何领奖路径时一并清掉旧键 `reward-claim`，避免残留锁挡死新路径却清不掉。
  */
 export function clearUnknownReceiptLock(
   path: WritePath,
@@ -228,7 +229,11 @@ export function clearUnknownReceiptLock(
   if (owner !== undefined) {
     if (latchedOwners.get(key) !== owner) return
   }
-  if (!latchedOwners.delete(key)) return
+  let changed = latchedOwners.delete(key)
+  if (REWARD_WRITE_PATHS.has(path) && path !== WRITE_PATH.REWARD_CLAIM) {
+    if (latchedOwners.delete(latchKey(address, WRITE_PATH.REWARD_CLAIM))) changed = true
+  }
+  if (!changed) return
   persistLatches()
   notifyWritePathBusy()
 }
