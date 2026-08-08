@@ -31,7 +31,7 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
   const splitBps = burn.config?.splitBps
   const destinationValue =
     splitBps === undefined
-      ? interpolate(t.exchange.burn.destinationValue, { burnPct: '—', injectPct: '—' })
+      ? interpolate(t.exchange.burn.destinationValue, { burnPct: '0', injectPct: '0' })
       : interpolate(t.exchange.burn.destinationValue, {
           burnPct: formatBurnSplitPercent(splitBps),
           injectPct: formatBurnSplitPercent(BPS_DENOM - splitBps),

@@ -10,6 +10,7 @@ import { iconVariants } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { formatNumber } from '~/shared/presenters/format'
 /**
  * 赎回确认弹窗
  *
@@ -34,7 +35,10 @@ export function AssetsRedeemConfirm({
   const { messages: t } = useI18n()
   const durationQuery = usePrincipalReleaseDurationDays()
   const body = interpolate(t.assets.redeem.body, { days: durationQuery.data ?? 30 })
+  // 无金额文案时展示 0，但不放开确认（空串 / 旧诚实空「—」）
   const hasAmount = Boolean(amountLabel && amountLabel !== '—')
+  const displayAmount =
+    amountLabel && amountLabel !== '—' ? amountLabel : formatNumber(0, { digits: 2 })
 
   return (
     <ResponsiveDialog
@@ -59,7 +63,7 @@ export function AssetsRedeemConfirm({
           {t.assets.redeem.releasedLabel}
         </Text>
         <Text as="strong" className="text-xl font-semibold" variant="copy">
-          <CountValue text={amountLabel || '—'} />
+          <CountValue text={displayAmount} />
         </Text>
       </div>
 

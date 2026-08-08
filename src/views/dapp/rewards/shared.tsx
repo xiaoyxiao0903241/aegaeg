@@ -41,8 +41,8 @@ import {
 } from '~/shared/presenters/format'
 
 /**
- * 非数值空态占位（日期、哈希、标签用「—」）。
- * 数值字段不能走 `formatApiAmount(null)`，否则会显示「0.00」。
+ * 非数值空态占位（日期、哈希、标签、无字段指标用「—」）。
+ * 金额 / 数量缺数走 `formatApiAmount` / `formatNumber(0…)`，显 0。
  */
 export const NON_NUMERIC_EMPTY = '—'
 
@@ -303,12 +303,12 @@ export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLa
   const amountLabel =
     signedAmount != null
       ? formatNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
-      : TABLE_EMPTY
+      : formatNumber(0, { digits: 2, prefix: '$' })
   const orderAmount = parseApiAmount(item.order_amount)
   const orderLabel =
     orderAmount != null && orderAmount > 0
       ? formatNumber(orderAmount, { digits: 0, prefix: '$' })
-      : TABLE_EMPTY
+      : formatNumber(0, { digits: 0, prefix: '$' })
 
   return [
     formatBlockTime(item.block_time),
@@ -332,7 +332,9 @@ export function mapTeamRewardClaimLogToRow(
 ): string[] {
   const amountNum = parseApiAmount(item.amount)
   const amountLabel =
-    amountNum != null ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' }) : TABLE_EMPTY
+    amountNum != null
+      ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
   const statusKey = teamRewardClaimStatusKey(item.status)
 
   return [
@@ -356,7 +358,9 @@ export function mapCommunityFundLogToRow(
 ): string[] {
   const amountNum = parseApiAmount(item.amount)
   const amountLabel =
-    amountNum != null ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' }) : TABLE_EMPTY
+    amountNum != null
+      ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
   const statusKey = communityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]

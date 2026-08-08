@@ -30,7 +30,7 @@ export function useTurbine(turbine: TurbineExchangeState) {
       ? formatNumber(0, { digits: 2 })
       : turbine.usd1BalanceLabel || formatNumber(0, { digits: 2 })
 
-  const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '—'
+  const willReceiveLabel = turbine.buyAgxLabel
 
   async function handleUnlock() {
     // 错误由写链统一 toast（getErrorMessage），这里避免重复提示

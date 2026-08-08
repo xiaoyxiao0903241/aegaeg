@@ -236,7 +236,8 @@ export function CalcResultCard({
             {calcUsd(sellUsd)}
           </Text>
         </div>
-        <div className="flex overflow-hidden rounded-full">
+        {/* 轨高对齐 Figma rcard bar 14px；空段无字时也必须有高，否则塌成 0 */}
+        <div className="flex h-3.5 overflow-hidden rounded-full">
           <span className="bg-accent" style={{ flex: `${100 - sellShare} 0 0` }} />
           <span className="bg-coral-emphasis" style={{ flex: `${sellShare} 0 0` }} />
         </div>
@@ -251,7 +252,7 @@ export function CalcResultCard({
             {calcUsd(investedUsd)}
           </Text>
         </div>
-        <div className="flex overflow-hidden rounded-full">
+        <div className="flex h-3.5 overflow-hidden rounded-full">
           <span className="bg-border" style={{ flex: `${100 - investShare} 0 0` }} />
           <span
             className="flex items-center justify-center bg-success"

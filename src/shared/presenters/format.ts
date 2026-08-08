@@ -1,6 +1,6 @@
 import { interpolate } from '~/i18n/interpolate'
 
-/** 表格空单元格 / 未知值的占位符（ASCII 连字符，不用破折号）。 */
+/** 表格非金额空单元格占位（ASCII 连字符）；金额缺数请用 formatNumber(0…) / formatApiAmount。 */
 export const TABLE_EMPTY = '-'
 
 const numberFormatters = new Map<string, Intl.NumberFormat>()

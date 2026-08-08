@@ -219,21 +219,21 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
   }
 
   const amountUsd1 = Number(item.amount)
-  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return TABLE_EMPTY
+  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return formatNumber(0, { digits: 2 })
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
     phaseDiscountBps(item.phase_id, options.phases),
     agxPriceUsd,
   )
-  return estimated > 0 ? formatNumber(estimated, { digits: 2 }) : TABLE_EMPTY
+  return estimated > 0 ? formatNumber(estimated, { digits: 2 }) : formatNumber(0, { digits: 2 })
 }
 
 /**
  * 把销售记录映射为桌面表格行
  *
  * 列序为时间、金额、折扣、AGX 估算与交易哈希；
- * 交易哈希缺失或 AGX 无法估算时显示为空表标记。
+ * AGX 无法估算时显 0；交易哈希缺失仍为空表标记。
  */
 export function mapSalesLogToDesktopRow(
   item: SalesLogItem,

@@ -19,7 +19,7 @@ import { formatBlockTime, formatNumber, TABLE_EMPTY } from '~/shared/presenters/
  * 各类流水/持仓记录 → 表格行映射
  *
  * 统一把 API 原始记录格式化为展示用单元格数组，列序固定，
- * 数值使用 formatNumber，缺失值以 TABLE_EMPTY 占位；
+ * 金额缺数显 0；交易哈希等非金额空仍用 TABLE_EMPTY。
  * 交易哈希走 ExplorerLink（BscScan `/tx/...`）。
  */
 
@@ -27,7 +27,7 @@ export type FlowLogRow = Array<string | ReactNode>
 
 function formatAmount(raw: string): string {
   const n = Number(raw)
-  if (!Number.isFinite(n)) return TABLE_EMPTY
+  if (!Number.isFinite(n)) return formatNumber(0, { digits: 4 })
   return formatNumber(n, { digits: 4 })
 }
 
@@ -100,7 +100,7 @@ export function mapStakePositionToAsideRow(item: StakePositionItem): FlowLogRow 
   const amount = Number(item.amount)
   const amountLabel = Number.isFinite(amount)
     ? formatNumber(amount, { digits: 2, suffix: ' AGX' })
-    : TABLE_EMPTY
+    : formatNumber(0, { digits: 2, suffix: ' AGX' })
   const pctRaw = Number(item.released_pct)
   const pctLabel = Number.isFinite(pctRaw) ? `${formatNumber(pctRaw, { digits: 1 })}%` : TABLE_EMPTY
   const termLabel =
