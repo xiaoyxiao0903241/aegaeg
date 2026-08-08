@@ -2,7 +2,6 @@ import type { InputHTMLAttributes, ReactNode } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/components/amount-box'
-import { cn } from '~/shared/lib/utils'
 import { PercentButtonRow, TokenChip } from '~/views/dapp/exchange/primitives-controls'
 
 // —— exchange-amount-flow ——
@@ -72,7 +71,7 @@ export function ExchangeAmountFlow({
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-1.5">
       <AmountBox
         amountProps={sellAmountProps}
         balance={sellBalance}
@@ -84,7 +83,6 @@ export function ExchangeAmountFlow({
 
       <PercentButtonRow
         aria-label={`${sell.symbol} sell percent`}
-        className="pt-1.5 max-dapp:mt-3 max-dapp:py-0"
         disabled={(!exchangePreview && !walletReady) || amountLocked}
         onSelect={onFillPercent}
       />
@@ -102,11 +100,11 @@ export function ExchangeAmountFlow({
           value: exchangePreview ? buyAmount || '0.00' : buyAmount || '0.00',
         }}
         balance={buyBalance}
-        className={cn('mt-0', amountBoxClassName)}
+        className={amountBoxClassName}
         label={buyLabel ?? t.exchange.buy}
         sessionReady={sessionReady}
         startAdornment={buyTokenAdornment ?? <TokenChip icon={buy.icon} label={buy.symbol} />}
       />
-    </>
+    </div>
   )
 }

@@ -11,6 +11,7 @@ import { Text } from '~/shared/components/text'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { useXmineDock } from '~/views/dapp/staking/xmine/use-xmine'
 
 /**
@@ -20,8 +21,17 @@ import { useXmineDock } from '~/views/dapp/staking/xmine/use-xmine'
  * 未连接钱包时展示连接引导。
  */
 export function XmineDock() {
-  const { t, xmine, sessionReady, walletReady, setView, amountLabel, dailyYieldLabel, onSubmit } =
-    useXmineDock()
+  const {
+    t,
+    xmine,
+    sessionReady,
+    walletReady,
+    setView,
+    amountLabel,
+    dailyYieldLabel,
+    blockHint,
+    onSubmit,
+  } = useXmineDock()
 
   const quotaBalance = (
     <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
@@ -87,16 +97,19 @@ export function XmineDock() {
 
         {/* jscpd:ignore-start — Dock CTA / 连钱包页内拼装，禁再抽薄壳 */}
         {walletReady ? (
-          <FormActions>
-            <MainButton
-              density="external"
-              disabled={!xmine.canSubmit}
-              loading={xmine.isSubmitting}
-              onClick={() => void onSubmit()}
-            >
-              {t.staking.xmine.submit}
-            </MainButton>
-          </FormActions>
+          <>
+            <WriteBlockAlert hint={blockHint} />
+            <FormActions>
+              <MainButton
+                density="external"
+                disabled={!xmine.canSubmit}
+                loading={xmine.isSubmitting}
+                onClick={() => void onSubmit()}
+              >
+                {t.staking.xmine.submit}
+              </MainButton>
+            </FormActions>
+          </>
         ) : (
           <DockConnectPromo />
         )}

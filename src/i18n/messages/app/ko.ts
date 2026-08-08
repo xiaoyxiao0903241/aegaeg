@@ -1820,13 +1820,31 @@ const app = defineMessages({
       notBound: '먼저 추천 관계를 바인딩해 주세요',
       accountMigrated: '해당 주소는 이전되었습니다 — 새 주소로 조작해 주세요',
       migrationNotOpen: '계정 이전이 아직 열려 있지 않습니다',
-      insufficientBalance: '잔액 부족',
-      insufficientGagx: 'gAGX 잔액이 부족합니다. 먼저 플래시로 래핑해 주세요',
+      insufficientBalance:
+        '지갑 잔액이 부족합니다. 수량을 줄이거나 먼저 입금한 뒤 다시 시도해 주세요',
+      insufficientGagx:
+        'gAGX 잔액이 부족합니다: 먼저 플래시에서 AGX를 gAGX로 래핑한 뒤 다시 시도해 주세요',
       insufficientAllowance: '승인 부족',
-      insufficientQuota: '한도 부족',
-      poolPaused: '해당 스테이킹 풀이 아직 열려 있지 않습니다',
-      depositoryNotAuth: '채권 컨트랙트가 승인되지 않았습니다',
-      insufficientDebtCapacity: '채권 잔여 용량 부족',
+      insufficientQuota: '스테이킹 가능 한도를 초과했습니다. 수량을 줄인 뒤 다시 시도해 주세요',
+      insufficientQuotaWithAmount:
+        '스테이킹 가능 한도를 초과했습니다: 현재 최대 {quota} AGX까지 더 스테이킹할 수 있습니다. 수량을 줄인 뒤 다시 시도해 주세요.',
+      insufficientQuotaPersonalWithAmount:
+        '본인 스테이킹 가능 한도를 초과했습니다: 개인 누적 한도가 {quota} AGX 남았습니다. 수량을 줄인 뒤 다시 시도해 주세요.',
+      insufficientQuotaPersonalDailyWithAmount:
+        '오늘 스테이킹 가능 한도를 초과했습니다: 오늘 개인 한도가 {quota} AGX 남았습니다. 수량을 줄이거나 한도가 갱신될 때까지 기다려 주세요.',
+      insufficientQuotaPoolWithAmount:
+        '온체인 스테이킹 풀 한도가 부족합니다: 풀에 현재 {quota} AGX가 남아 있습니다. 수량을 줄이거나 나중에 다시 시도해 주세요.',
+      insufficientXmineQuotaWithAmount:
+        '채굴 한도를 초과했습니다: 채굴 한도는 잠긴 원금으로 정해지며, 현재 최대 {quota} gAGX까지 더 스테이킹할 수 있습니다. 수량을 줄이거나 먼저 잠금 포지션을 늘린 뒤 다시 시도해 주세요.',
+      poolPaused: '해당 스테이킹 풀이 일시적으로 닫혀 있습니다. 나중에 다시 시도해 주세요',
+      depositoryNotAuth:
+        '해당 채권 시장이 아직 구매 개방되지 않았습니다. 다른 주기를 선택하거나 나중에 다시 시도해 주세요',
+      insufficientDebtCapacity:
+        '해당 채권 시장의 잔여 판매 한도가 부족합니다. 구매 금액을 줄이거나 나중에 다시 시도해 주세요',
+      bondTooSmall:
+        '구매 금액이 너무 작습니다: 할인 후 상환액이 최소 요건에 미달합니다. 구매 금액을 늘린 뒤 다시 시도해 주세요',
+      bondTooLarge:
+        '구매 금액이 너무 큽니다: 해당 채권의 1회 상환 한도를 초과합니다. 구매 금액을 줄인 뒤 다시 시도해 주세요',
       zeroAmount: '유효한 수량을 입력해 주세요',
       unavailable: '거래를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요',
     },

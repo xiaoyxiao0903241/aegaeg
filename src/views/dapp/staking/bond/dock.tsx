@@ -22,6 +22,7 @@ import { formatNumber } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
@@ -54,6 +55,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
     setView,
     amountLabel,
     ctaLabel,
+    blockHint,
     onSubmit,
     periodLabels,
   } = useBondDock(kind)
@@ -204,16 +206,19 @@ export function BondDock({ kind }: { kind: BondKind }) {
         {!walletReady ? (
           <DockConnectPromo />
         ) : (
-          <FormActions>
-            <MainButton
-              density="external"
-              disabled={!bond.canSubmit && bond.blockReason !== 'notBound'}
-              loading={bond.isSubmitting}
-              onClick={() => void onSubmit()}
-            >
-              {ctaLabel}
-            </MainButton>
-          </FormActions>
+          <>
+            <WriteBlockAlert hint={blockHint} />
+            <FormActions>
+              <MainButton
+                density="external"
+                disabled={!bond.canSubmit && bond.blockReason !== 'notBound'}
+                loading={bond.isSubmitting}
+                onClick={() => void onSubmit()}
+              >
+                {ctaLabel}
+              </MainButton>
+            </FormActions>
+          </>
         )}
       </DockStack>
     </TabHeader>

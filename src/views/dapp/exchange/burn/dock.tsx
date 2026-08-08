@@ -16,6 +16,7 @@ import {
 } from '~/views/dapp/exchange/primitives'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 
 /**
  * 销毁左栏 Dock
@@ -43,7 +44,7 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
       subtitle={t.exchange.burn.subtitle}
       title={t.exchange.burn.title}
     >
-      <DockStack className="gap-0">
+      <DockStack>
         <ExchangeAmountFlow
           buy={{ symbol: t.exchange.burn.pointsToken }}
           buyAmount={burn.buyAmount}
@@ -65,7 +66,7 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
           amountLocked={burn.isSubmitting}
         />
 
-        <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+        <FormInfoCard>
           <FormInfoCard.Rows
             items={[
               {
@@ -93,20 +94,23 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
         </FormInfoCard>
 
         {vm.sessionReady && burn.walletReady ? (
-          <FormActions className="mt-3.5 max-dapp:mt-3">
-            <MainButton
-              className="col-span-full"
-              density="external"
-              disabled={!burn.canSubmit}
-              loading={burn.isSubmitting}
-              onClick={() => void vm.onSubmit()}
-            >
-              {t.exchange.burn.action}
-            </MainButton>
-          </FormActions>
+          <>
+            <WriteBlockAlert hint={vm.blockHint} />
+            <FormActions>
+              <MainButton
+                className="col-span-full"
+                density="external"
+                disabled={!burn.canSubmit}
+                loading={burn.isSubmitting}
+                onClick={() => void vm.onSubmit()}
+              >
+                {t.exchange.burn.action}
+              </MainButton>
+            </FormActions>
+          </>
         ) : null}
 
-        <ExchangeSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
+        <ExchangeSessionFooter sessionReady={vm.sessionReady} />
       </DockStack>
     </TabHeader>
   )

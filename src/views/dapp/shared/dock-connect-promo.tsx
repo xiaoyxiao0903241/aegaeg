@@ -7,7 +7,8 @@ import { ConnectPromoCard } from '~/views/dapp/shared/connect-promo-card'
 const dappDockConnectFooter = tv({
   slots: {
     spacer: 'min-h-3.5 shrink-0 grow basis-3.5 max-dapp:hidden',
-    bottom: 'mt-3.5 w-full shrink-0 dapp:mt-auto max-dapp:mt-3',
+    /** 间距交给 DockStack gap；PC 贴底靠 spacer + mt-auto。 */
+    bottom: 'w-full shrink-0 dapp:mt-auto',
   },
 })
 

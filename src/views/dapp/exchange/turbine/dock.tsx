@@ -43,10 +43,9 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
       subtitle={t.exchange.hub.modes.turbine.body}
       title={t.exchange.turbine.title}
     >
-      <DockStack className="gap-0">
+      <DockStack>
         <Segment
           aria-label={t.exchange.turbine.segmentAriaLabel}
-          className="mb-3.5"
           disabled={turbine.isSubmitting}
           onChange={(value) => turbine.setSegment(value as 'unlock' | 'claim')}
           options={vm.segmentOptions}
@@ -57,29 +56,30 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
 
         {turbine.segment === 'unlock' ? (
           <>
-            <AmountBox
-              amountProps={{
-                'aria-label': `${unlock.symbol} unlock amount`,
-                disabled: vm.sellDisabled,
-                inputMode: 'decimal',
-                onChange: (event) => turbine.setUnlockAmount(event.currentTarget.value),
-                placeholder: '0.00',
-                value: turbine.unlockAmountDisplay,
-              }}
-              balance={unlockableBalance}
-              className="p-4"
-              label={t.exchange.turbine.unlockLabel}
-              sessionReady={vm.sessionReady}
-              startAdornment={<TokenChip icon={unlock.icon} label={unlock.symbol} />}
-            />
+            <div className="flex flex-col gap-1.5">
+              <AmountBox
+                amountProps={{
+                  'aria-label': `${unlock.symbol} unlock amount`,
+                  disabled: vm.sellDisabled,
+                  inputMode: 'decimal',
+                  onChange: (event) => turbine.setUnlockAmount(event.currentTarget.value),
+                  placeholder: '0.00',
+                  value: turbine.unlockAmountDisplay,
+                }}
+                balance={unlockableBalance}
+                className="p-4"
+                label={t.exchange.turbine.unlockLabel}
+                sessionReady={vm.sessionReady}
+                startAdornment={<TokenChip icon={unlock.icon} label={unlock.symbol} />}
+              />
 
-            <PercentButtonRow
-              aria-label={`${unlock.symbol} unlock percent`}
-              className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
-              disabled={(!vm.exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
-              formatLabel={(percent) => (percent === 100 ? 'Max' : `${percent}%`)}
-              onSelect={(percent) => turbine.fillPercent(percent)}
-            />
+              <PercentButtonRow
+                aria-label={`${unlock.symbol} unlock percent`}
+                disabled={(!vm.exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
+                formatLabel={(percent) => (percent === 100 ? 'Max' : `${percent}%`)}
+                onSelect={(percent) => turbine.fillPercent(percent)}
+              />
+            </div>
 
             <div className="flex items-center justify-center py-1.5">
               <ExchangeOneWayFlowIndicator />
@@ -112,7 +112,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
               </div>
             </div>
 
-            <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+            <FormInfoCard>
               <FormInfoCard.Rows
                 items={[
                   {
@@ -170,7 +170,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
             </FormInfoCard>
 
             {vm.sessionReady && turbine.walletReady ? (
-              <FormActions className="mt-3.5 max-dapp:mt-3">
+              <FormActions>
                 <MainButton
                   className="col-span-full"
                   density="external"

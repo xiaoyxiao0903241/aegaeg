@@ -11,7 +11,7 @@ import {
   periodYieldPct,
   stakePeriodDays,
 } from '~/core/staking/staking-yield'
-import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
+import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeFlowPositions } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -87,10 +87,20 @@ export function useStakeDock() {
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {
-    accountMigrated: t.staking.blocked.accountMigrated,
     bindReferral: t.staking.stake.bindCta,
     submit: t.staking.stake.submit,
   })
+  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, 4)
+  const quotaCopy =
+    stake.quotaKind === 'personalDaily'
+      ? t.staking.blocked.insufficientQuotaPersonalDailyWithAmount
+      : stake.quotaKind === 'personal'
+        ? t.staking.blocked.insufficientQuotaPersonalWithAmount
+        : t.staking.blocked.insufficientQuotaPoolWithAmount
+  const blockHint =
+    stake.blockReason === 'insufficientQuota'
+      ? interpolate(quotaCopy, { quota: quotaLabel })
+      : writeBlockHint(stake.blockReason, t.staking.blocked)
 
   const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
@@ -122,6 +132,7 @@ export function useStakeDock() {
     lockLabel,
     amountLabel,
     ctaLabel,
+    blockHint,
     yieldMeta,
     onSubmit,
   }

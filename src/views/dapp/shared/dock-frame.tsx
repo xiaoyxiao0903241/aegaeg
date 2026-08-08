@@ -11,20 +11,9 @@ import { DockHeader } from '~/views/dapp/shared/dock-header'
  */
 export const DOCK_H5_CHROME_BODY_CLASS = 'flex h-14 min-h-14 items-center'
 
-/** 操作区纵向堆叠容器。 */
+/** 操作区纵向堆叠容器：子项间距只走 gap，勿再给子项加外边距。 */
 export function DockStack({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col gap-2',
-        '[&>*:first-child]:mt-0! max-dapp:[&>*:first-child]:mt-0!',
-        'min-h-0 flex-none',
-        className,
-      )}
-    >
-      {children}
-    </div>
-  )
+  return <div className={cn('flex min-h-0 flex-none flex-col gap-3.5', className)}>{children}</div>
 }
 
 /**

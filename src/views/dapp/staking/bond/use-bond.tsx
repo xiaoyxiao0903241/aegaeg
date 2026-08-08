@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import type { BondKind } from '~/core/staking/staking-period'
-import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
+import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -57,10 +57,10 @@ export function useBondDock(kind: BondKind) {
   })
 
   const ctaLabel = writeCtaLabel(bond.writePhase, {
-    accountMigrated: t.staking.blocked.accountMigrated,
     bindReferral: t.staking.stake.bindCta,
     submit: copy.submit,
   })
+  const blockHint = writeBlockHint(bond.blockReason, t.staking.blocked)
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
     balance: sessionReady && walletReady ? bond.balanceLabel : '',
@@ -85,6 +85,7 @@ export function useBondDock(kind: BondKind) {
     setView,
     amountLabel,
     ctaLabel,
+    blockHint,
     onSubmit,
     periodLabels: {
       '180': t.staking.stake.periods.d180,

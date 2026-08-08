@@ -77,8 +77,10 @@ export type ReleaseBufferChainHop = {
   isTail: boolean
   count: number
   claimable: bigint
-  /** 可领窗；空窗不调 claimMany（否则 ErrorNothingToClaim） */
-  claimWindows: ReleaseClaimWindow[]
+  /** 本跳可领 AGX 的释放单 index（逐笔 claimMany(i,1)，禁混币窗） */
+  agxClaimIndexes: number[]
+  /** 本跳可领 gAGX 的释放单 index */
+  gagxClaimIndexes: number[]
 }
 
 export type ReleaseBufferSnapshot = {
@@ -160,6 +162,26 @@ export function claimWindowsFromAmounts(
     if (hasClaimable) windows.push({ start, limit })
   }
   return windows
+}
+
+/**
+ * 某币种可领释放单的 index 列表（用于按卡独立领取，避免 claimMany 混领）。
+ *
+ * @param items 分流器分页条目（顺序即链上 index）
+ * @param token 目标代币地址
+ */
+export function claimIndexesForToken(
+  items: readonly { release: { token: Address }; claimableAmount: bigint }[],
+  token: Address,
+): number[] {
+  const indexes: number[] = []
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]!
+    if (item.claimableAmount <= 0n) continue
+    if (!isSameAddress(item.release.token, token)) continue
+    indexes.push(i)
+  }
+  return indexes
 }
 
 /**
@@ -646,7 +668,6 @@ export async function readReleaseBufferSnapshot(
     for (const hop of hops) {
       const page = await readSplitterPages(hop.address, address, readClient)
       let hopClaimable = 0n
-      const claimAmounts: bigint[] = []
       for (const item of page.items) {
         const token = item.release.token
         const bucket = isSameAddress(token, gagxToken)
@@ -665,7 +686,6 @@ export async function readReleaseBufferSnapshot(
           item.remainingAmount,
         )
         hopClaimable += item.claimableAmount
-        claimAmounts.push(item.claimableAmount)
       }
       chain.push({
         address: hop.address,
@@ -673,7 +693,8 @@ export async function readReleaseBufferSnapshot(
         isTail: hop.isTail,
         count: page.count,
         claimable: hopClaimable,
-        claimWindows: claimWindowsFromAmounts(claimAmounts),
+        agxClaimIndexes: claimIndexesForToken(page.items, agxToken),
+        gagxClaimIndexes: claimIndexesForToken(page.items, gagxToken),
       })
       splitterCount += page.count
       splitterClaimable += hopClaimable

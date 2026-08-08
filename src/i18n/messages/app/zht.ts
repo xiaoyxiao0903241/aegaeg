@@ -1730,13 +1730,25 @@ const app = defineMessages({
       notBound: '請先綁定推薦關係',
       accountMigrated: '該地址已遷移，請使用新地址操作',
       migrationNotOpen: '賬戶遷移暫未開放',
-      insufficientBalance: '餘額不足',
-      insufficientGagx: 'gAGX 餘額不足，請先閃兌包裝',
+      insufficientBalance: '錢包餘額不夠，請減少數量或先充入後再試',
+      insufficientGagx: 'gAGX 餘額不夠：請先去閃兌把 AGX 包裝成 gAGX 後再試',
       insufficientAllowance: '授權不足',
-      insufficientQuota: '額度不足',
-      poolPaused: '該質押池暫未開放',
-      depositoryNotAuth: '債券合約未授權',
-      insufficientDebtCapacity: '債券剩餘容量不足',
+      insufficientQuota: '超出可質押額度了，請把數量改小後再試',
+      insufficientQuotaWithAmount:
+        '超出可質押額度了：目前最多還能質押 {quota} AGX。請把數量改小後再試。',
+      insufficientQuotaPersonalWithAmount:
+        '超出你自己的可質押額度了：你的個人累計上限還剩 {quota} AGX，請把數量改小後再試。',
+      insufficientQuotaPersonalDailyWithAmount:
+        '超出你今天的可質押額度了：你今日個人額度還剩 {quota} AGX，請把數量改小，或等額度刷新後再試。',
+      insufficientQuotaPoolWithAmount:
+        '鏈上質押池額度不夠了：池子目前還剩 {quota} AGX，請把數量改小，或稍後再試。',
+      insufficientXmineQuotaWithAmount:
+        '超出你的挖礦額度了：挖礦額度由你的鎖定本金決定，目前最多還能質押 {quota} gAGX。請把數量改小，或先增加鎖定倉位後再試。',
+      poolPaused: '該質押池暫時關閉，請稍後再試',
+      depositoryNotAuth: '該債券市場暫未開放購買，請換一個週期或稍後再試',
+      insufficientDebtCapacity: '該債券市場剩餘可售額度不夠了，請減少購買金額或稍後再試',
+      bondTooSmall: '購買金額太小：按折扣算下來兌付不足最低要求，請加大購買金額後再試',
+      bondTooLarge: '購買金額太大：超過該債券單筆兌付上限，請減少購買金額後再試',
       zeroAmount: '請輸入有效數量',
       unavailable: '交易暫時不可用，請稍後重試',
     },

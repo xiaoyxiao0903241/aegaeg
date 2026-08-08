@@ -1873,13 +1873,30 @@ const app = defineMessages({
       notBound: 'Ikat referral dulu',
       accountMigrated: 'Alamat ini sudah dimigrasi — gunakan alamat baru',
       migrationNotOpen: 'Migrasi akun belum dibuka',
-      insufficientBalance: 'Saldo tidak cukup',
-      insufficientGagx: 'gAGX tidak cukup — bungkus via Flash dulu',
+      insufficientBalance: 'Saldo dompet tidak cukup, kurangi jumlah atau isi dulu lalu coba lagi',
+      insufficientGagx:
+        'Saldo gAGX tidak cukup: bungkus AGX menjadi gAGX lewat Flash dulu, lalu coba lagi',
       insufficientAllowance: 'Allowance tidak cukup',
-      insufficientQuota: 'Kuota tidak cukup',
-      poolPaused: 'Pool staking ini dijeda',
-      depositoryNotAuth: 'Depository Bond tidak diotorisasi',
-      insufficientDebtCapacity: 'Sisa kapasitas Bond tidak cukup',
+      insufficientQuota: 'Melebihi kuota staking, kurangi jumlah lalu coba lagi',
+      insufficientQuotaWithAmount:
+        'Melebihi kuota staking: saat ini paling banyak masih bisa stake {quota} AGX. Kurangi jumlah lalu coba lagi.',
+      insufficientQuotaPersonalWithAmount:
+        'Melebihi kuota staking pribadi Anda: sisa batas kumulatif pribadi Anda {quota} AGX, kurangi jumlah lalu coba lagi.',
+      insufficientQuotaPersonalDailyWithAmount:
+        'Melebihi kuota staking harian Anda: sisa kuota pribadi hari ini {quota} AGX, kurangi jumlah, atau tunggu kuota di-reset lalu coba lagi.',
+      insufficientQuotaPoolWithAmount:
+        'Kuota pool staking on-chain tidak cukup: pool saat ini masih tersisa {quota} AGX, kurangi jumlah, atau coba lagi nanti.',
+      insufficientXmineQuotaWithAmount:
+        'Melebihi kuota mining Anda: kuota mining ditentukan oleh pokok terkunci Anda, saat ini paling banyak masih bisa stake {quota} gAGX. Kurangi jumlah, atau tambah posisi terkunci dulu lalu coba lagi.',
+      poolPaused: 'Pool staking ini sementara ditutup, coba lagi nanti',
+      depositoryNotAuth:
+        'Pasar Bond ini belum dibuka untuk pembelian, ganti periode atau coba lagi nanti',
+      insufficientDebtCapacity:
+        'Sisa kuota jual pasar Bond ini tidak cukup, kurangi jumlah pembelian atau coba lagi nanti',
+      bondTooSmall:
+        'Jumlah pembelian terlalu kecil: setelah diskon, payout di bawah minimum. Tingkatkan jumlah pembelian lalu coba lagi',
+      bondTooLarge:
+        'Jumlah pembelian terlalu besar: melebihi batas payout per transaksi Bond ini. Kurangi jumlah pembelian lalu coba lagi',
       zeroAmount: 'Masukkan jumlah yang valid',
       unavailable: 'Transaksi sementara tidak tersedia — coba lagi nanti',
     },

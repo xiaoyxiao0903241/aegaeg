@@ -77,16 +77,42 @@ test('writeCtaDisabled blocks when latched, submitting, or not ready', async () 
   )
 })
 
-test('writeCtaLabel maps migrated and need_referral phases', async () => {
+test('writeCtaLabel only rewrites bind-referral duty on the button', async () => {
   const { writeCtaLabel } = await loadModule('/src/core/wallet/write-cta.ts')
+  const copy = { bindReferral: 'bind', submit: 'submit' }
+  assert.equal(writeCtaLabel('need_referral', copy), 'bind')
+  assert.equal(writeCtaLabel('account_migrated', copy), 'submit')
+  assert.equal(writeCtaLabel('ready', copy), 'submit')
+})
+
+test('writeBlockHint only surfaces hard write blocks', async () => {
+  const { writeBlockHint, isHardWriteBlockReason } = await loadModule(
+    '/src/core/wallet/write-cta.ts',
+  )
   const copy = {
     accountMigrated: 'migrated',
-    bindReferral: 'bind',
-    submit: 'submit',
+    notBound: 'bind',
+    insufficientQuota: 'quota',
+    insufficientAllowance: 'allow',
+    zeroAmount: 'zero',
   }
-  assert.equal(writeCtaLabel('account_migrated', copy), 'migrated')
-  assert.equal(writeCtaLabel('need_referral', copy), 'bind')
-  assert.equal(writeCtaLabel('ready', copy), 'submit')
+  assert.equal(isHardWriteBlockReason('accountMigrated'), true)
+  assert.equal(isHardWriteBlockReason('notBound'), false)
+  assert.equal(isHardWriteBlockReason('unavailable'), false)
+  assert.equal(isHardWriteBlockReason('insufficientAllowance'), false)
+  assert.equal(isHardWriteBlockReason('zeroAmount'), false)
+  assert.equal(isHardWriteBlockReason(null), false)
+  assert.equal(writeBlockHint('accountMigrated', copy), 'migrated')
+  assert.equal(writeBlockHint('notBound', copy), null)
+  assert.equal(writeBlockHint('unavailable', copy), null)
+  assert.equal(writeBlockHint('insufficientQuota', copy), 'quota')
+  assert.equal(writeBlockHint('insufficientAllowance', copy), null)
+  assert.equal(writeBlockHint('zeroAmount', copy), null)
+  assert.equal(writeBlockHint(null, copy), null)
+  assert.equal(isHardWriteBlockReason('bondTooSmall'), true)
+  assert.equal(isHardWriteBlockReason('bondTooLarge'), true)
+  assert.equal(writeBlockHint('bondTooSmall', {}), null)
+  assert.equal(writeBlockHint('bondTooSmall', { bondTooSmall: 'too small' }), 'too small')
 })
 
 test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', async () => {

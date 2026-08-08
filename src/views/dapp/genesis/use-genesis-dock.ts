@@ -12,7 +12,6 @@ import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
 import { fillTemplate } from '~/shared/lib/utils'
 import { formatNumber } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
-import { goBindReferral } from '~/views/dapp/shared/navigation'
 
 /**
  * 创世购买表单状态
@@ -89,10 +88,6 @@ export function useGenesisDock(genesis: GenesisSessionState) {
     setSharesText(String(genesis.maxShares))
   }
 
-  function goBindReferrer() {
-    goBindReferral()
-  }
-
   async function handlePurchase() {
     const ok = await genesis.submitPurchase()
     if (ok !== true) return
@@ -126,7 +121,6 @@ export function useGenesisDock(genesis: GenesisSessionState) {
     handleSharesBlur,
     handleSharesMax,
     handlePurchase,
-    goBindReferrer,
     programEnded,
     purchaseCtaLabel,
   }

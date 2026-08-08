@@ -1,5 +1,4 @@
 import { Icon } from '~/shared/components/icon'
-import { InlineAlert } from '~/shared/components/inline-alert'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 
 // —— exchange-provider-meta-value ——
@@ -61,20 +60,8 @@ export function exchangeProviderMetaRow({
 
 // —— exchange-session-footer ——
 
-/** 兑换提交按钮下方的通用提示区：未连接时引导连接，有阻断原因时展示告警。 */
-export function ExchangeSessionFooter({
-  sessionReady,
-  blockHint,
-}: {
-  sessionReady: boolean
-  blockHint?: string | null
-}) {
-  return (
-    <>
-      {!sessionReady ? <DockConnectPromo className="mt-3.5" /> : null}
-      <InlineAlert className="mt-3" open={Boolean(blockHint)} role="status">
-        {blockHint}
-      </InlineAlert>
-    </>
-  )
+/** 兑换未连接时的引导；硬门告警由调用方放在主按钮上方。 */
+export function ExchangeSessionFooter({ sessionReady }: { sessionReady: boolean }) {
+  if (sessionReady) return null
+  return <DockConnectPromo />
 }

@@ -1878,13 +1878,32 @@ const app = defineMessages({
       notBound: 'Vincula primero una relación de referido',
       accountMigrated: 'Esta dirección migró; usa la nueva dirección',
       migrationNotOpen: 'La migración de cuenta aún no está abierta',
-      insufficientBalance: 'Saldo insuficiente',
-      insufficientGagx: 'gAGX insuficiente; envuélvelo primero vía Flash',
+      insufficientBalance:
+        'El saldo de la billetera no alcanza; reduce la cantidad o deposita primero e inténtalo de nuevo',
+      insufficientGagx:
+        'Saldo de gAGX insuficiente: primero envuelve AGX a gAGX en Flash e inténtalo de nuevo',
       insufficientAllowance: 'Autorización insuficiente',
-      insufficientQuota: 'Cupo insuficiente',
-      poolPaused: 'Este pool de staking está pausado',
-      depositoryNotAuth: 'El depósito de bonos no está autorizado',
-      insufficientDebtCapacity: 'Capacidad restante del bono insuficiente',
+      insufficientQuota:
+        'Superaste el cupo de staking disponible; reduce la cantidad e inténtalo de nuevo',
+      insufficientQuotaWithAmount:
+        'Superaste el cupo de staking disponible: aún puedes stakear como máximo {quota} AGX. Reduce la cantidad e inténtalo de nuevo.',
+      insufficientQuotaPersonalWithAmount:
+        'Superaste tu cupo personal de staking: te quedan {quota} AGX del tope acumulado personal. Reduce la cantidad e inténtalo de nuevo.',
+      insufficientQuotaPersonalDailyWithAmount:
+        'Superaste tu cupo de staking de hoy: te quedan {quota} AGX del cupo personal diario. Reduce la cantidad, o espera a que se renueve el cupo.',
+      insufficientQuotaPoolWithAmount:
+        'El cupo del pool de staking on-chain no alcanza: al pool le quedan {quota} AGX. Reduce la cantidad, o inténtalo más tarde.',
+      insufficientXmineQuotaWithAmount:
+        'Superaste tu cupo de minería: el cupo de minería lo determina tu principal bloqueado; aún puedes stakear como máximo {quota} gAGX. Reduce la cantidad, o primero aumenta posiciones bloqueadas e inténtalo de nuevo.',
+      poolPaused: 'Este pool de staking está temporalmente cerrado; inténtalo más tarde',
+      depositoryNotAuth:
+        'Este mercado de bonos aún no está abierto a la compra; elige otro plazo o inténtalo más tarde',
+      insufficientDebtCapacity:
+        'El cupo restante a la venta de este mercado de bonos no alcanza; reduce el monto de compra o inténtalo más tarde',
+      bondTooSmall:
+        'El monto de compra es demasiado pequeño: el pago con descuento no llega al mínimo. Aumenta el monto e inténtalo de nuevo',
+      bondTooLarge:
+        'El monto de compra es demasiado grande: supera el tope de pago por operación de este bono. Reduce el monto e inténtalo de nuevo',
       zeroAmount: 'Ingresa un monto válido',
       unavailable: 'Transacción temporalmente no disponible; inténtalo más tarde',
     },

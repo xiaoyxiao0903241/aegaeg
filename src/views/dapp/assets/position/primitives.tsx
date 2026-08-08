@@ -39,7 +39,7 @@ export type AssetsPositionRowFrameProps<TRow> = {
   onRedeem: (row: TRow) => void
 }
 
-/** 仓位卡头部：周期胶囊 + 剩余时间，债券与质押卡共用 */
+/** 仓位卡头部：周期胶囊 + 剩余时间，债券 / 质押 / X 挖矿卡共用 */
 export function AssetsPositionRowHeader({
   periodLabel,
   remainingLabel,
@@ -50,8 +50,8 @@ export function AssetsPositionRowHeader({
   periodLabel: string
   remainingLabel: string
   remainingAt: bigint
-  /** 活期可随时赎回 / warmup 文案；缺省且 remainingAt>0 → 倒计时 */
-  remainingValue?: string
+  /** 活期可随时赎回 / warmup 文案 / 自定义倒计时；缺省且 remainingAt>0 → 倒计时 */
+  remainingValue?: ReactNode
   /** 倒计时「天」单位的本地化文案 */
   dayUnit: string
 }) {

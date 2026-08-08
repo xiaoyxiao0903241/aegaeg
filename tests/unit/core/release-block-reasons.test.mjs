@@ -54,8 +54,27 @@ test('submit release live-blocks; envelope path on views + hook (string lock)', 
   assert.match(submit, /const live = await readReleaseQueueSnapshot/)
   assert.match(submit, /const live = await readReleaseBufferSnapshot/)
   assert.match(submit, /releaseClaimBlockReason/)
-  assert.match(submit, /hop\.claimWindows/)
+  assert.match(submit, /agxClaimIndexes/)
+  assert.match(submit, /gagxClaimIndexes/)
   assert.match(submit, /archiveClaimWindows/)
+  assert.match(submit, /ReleaseBufferClaimToken/)
+  // 按币隔离：token 选 index；gAGX 不碰归档；逐笔写后立刻 invalidate（部分成功也刷新）
+  assert.match(submit, /token === 'agx' \? hop\.agxClaimIndexes : hop\.gagxClaimIndexes/)
+  assert.match(submit, /token === 'agx' && live\.archiveClaimWindows/)
+  assert.match(
+    submit,
+    /async function claimIndexes[\s\S]*?await args\.write\(index, 1\)\s*invalidateAfterReleaseClaim\(\)/,
+  )
+  assert.match(
+    submit,
+    /async function claimWindows[\s\S]*?await args\.write\(window\.start, window\.limit\)\s*invalidateAfterReleaseClaim\(\)/,
+  )
+  assert.match(bufferView, /claimAgx[\s\S]*submitReleaseBufferClaim\(\{[\s\S]*token: 'agx'/)
+  assert.match(bufferView, /claimGagx[\s\S]*submitReleaseBufferClaim\(\{[\s\S]*token: 'gagx'/)
+  assert.match(bufferView, /pathBusy/)
+  assert.match(bufferView, /unknownReceiptLocked:\s*pathBusy/)
+  // 负向：链跳不得再走混币 claimWindows 写窗
+  assert.doesNotMatch(submit, /hop\.claimWindows/)
   assert.doesNotMatch(submit, /evaluateReleaseBufferClaimGate/)
   assert.doesNotMatch(submit, /claimManyPaged/)
   assert.match(invalidate, /invalidateAfterReleaseClaim/)

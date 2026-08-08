@@ -10,6 +10,7 @@ import { useQueue } from '~/views/dapp/release/queue/use-queue'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 
 export function QueueDock() {
   const vm = useQueue()
@@ -23,6 +24,7 @@ export function QueueDock() {
       title={t.release.queue.title}
     >
       <DockStack>
+        <WriteBlockAlert hint={vm.blockHint} />
         <div
           aria-label={t.release.queue.title}
           className="grid gap-3"

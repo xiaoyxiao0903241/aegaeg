@@ -1857,13 +1857,28 @@ const app = defineMessages({
       notBound: 'Hãy gắn quan hệ giới thiệu trước',
       accountMigrated: 'Địa chỉ này đã di chuyển, hãy dùng địa chỉ mới',
       migrationNotOpen: 'Di chuyển tài khoản chưa mở',
-      insufficientBalance: 'Số dư không đủ',
-      insufficientGagx: 'Số dư gAGX không đủ, hãy bọc qua Flash trước',
+      insufficientBalance: 'Số dư ví không đủ, hãy giảm số lượng hoặc nạp thêm rồi thử lại',
+      insufficientGagx: 'Số dư gAGX không đủ: hãy vào Flash bọc AGX thành gAGX rồi thử lại',
       insufficientAllowance: 'Ủy quyền không đủ',
-      insufficientQuota: 'Hạn mức không đủ',
-      poolPaused: 'Hồ staking này tạm chưa mở',
-      depositoryNotAuth: 'Hợp đồng trái phiếu chưa được ủy quyền',
-      insufficientDebtCapacity: 'Dung lượng trái phiếu còn lại không đủ',
+      insufficientQuota: 'Đã vượt hạn mức stake, hãy giảm số lượng rồi thử lại',
+      insufficientQuotaWithAmount:
+        'Đã vượt hạn mức stake: hiện còn có thể stake tối đa {quota} AGX. Hãy giảm số lượng rồi thử lại.',
+      insufficientQuotaPersonalWithAmount:
+        'Đã vượt hạn mức stake cá nhân của bạn: hạn mức tích lũy cá nhân còn {quota} AGX, hãy giảm số lượng rồi thử lại.',
+      insufficientQuotaPersonalDailyWithAmount:
+        'Đã vượt hạn mức stake hôm nay của bạn: hạn mức cá nhân hôm nay còn {quota} AGX, hãy giảm số lượng, hoặc đợi hạn mức làm mới rồi thử lại.',
+      insufficientQuotaPoolWithAmount:
+        'Hạn mức hồ stake trên chuỗi không đủ: hồ hiện còn {quota} AGX, hãy giảm số lượng, hoặc thử lại sau.',
+      insufficientXmineQuotaWithAmount:
+        'Đã vượt hạn mức mining của bạn: hạn mức mining do vốn gốc khóa quyết định, hiện còn có thể stake tối đa {quota} gAGX. Hãy giảm số lượng, hoặc tăng vị thế khóa trước rồi thử lại.',
+      poolPaused: 'Hồ staking này tạm đóng, vui lòng thử lại sau',
+      depositoryNotAuth: 'Thị trường trái phiếu này chưa mở mua, hãy đổi kỳ hạn hoặc thử lại sau',
+      insufficientDebtCapacity:
+        'Hạn mức bán còn lại của thị trường trái phiếu này không đủ, hãy giảm số mua hoặc thử lại sau',
+      bondTooSmall:
+        'Số mua quá nhỏ: sau chiết khấu, số nhận không đạt mức tối thiểu. Hãy tăng số mua rồi thử lại',
+      bondTooLarge:
+        'Số mua quá lớn: vượt giới hạn nhận mỗi lần của trái phiếu này. Hãy giảm số mua rồi thử lại',
       zeroAmount: 'Nhập số lượng hợp lệ',
       unavailable: 'Giao dịch tạm không khả dụng, thử lại sau',
     },

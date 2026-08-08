@@ -1810,13 +1810,29 @@ const app = defineMessages({
       notBound: 'Bind a referral first',
       accountMigrated: 'This address has migrated — use the new address',
       migrationNotOpen: 'Account migration is not open yet',
-      insufficientBalance: 'Insufficient balance',
-      insufficientGagx: 'Insufficient gAGX — wrap via Flash first',
+      insufficientBalance: 'Wallet balance is too low — enter less, or add funds first',
+      insufficientGagx: 'Not enough gAGX — wrap AGX via Flash first, then try again',
       insufficientAllowance: 'Insufficient allowance',
-      insufficientQuota: 'Insufficient quota',
-      poolPaused: 'This staking pool is paused',
-      depositoryNotAuth: 'Bond depository is not authorized',
-      insufficientDebtCapacity: 'Bond debt capacity insufficient',
+      insufficientQuota: 'This amount is over your stake limit — enter a smaller amount',
+      insufficientQuotaWithAmount:
+        'This amount is over the stake limit. You can stake at most {quota} AGX right now. Enter a smaller amount and try again.',
+      insufficientQuotaPersonalWithAmount:
+        'This amount is over your personal stake limit. You have {quota} AGX left on your address cap. Enter a smaller amount and try again.',
+      insufficientQuotaPersonalDailyWithAmount:
+        'This amount is over your daily personal stake limit. You have {quota} AGX left for today. Enter a smaller amount, or wait for the daily reset.',
+      insufficientQuotaPoolWithAmount:
+        'The on-chain stake pool does not have enough capacity. Only {quota} AGX is left in the pool. Enter a smaller amount, or try again later.',
+      insufficientXmineQuotaWithAmount:
+        'This amount is over your mining quota. Mining quota comes from your locked principal — you can stake at most {quota} gAGX now. Enter a smaller amount, or add locked positions first.',
+      poolPaused: 'This staking pool is temporarily closed — try again later',
+      depositoryNotAuth:
+        'This bond market is not open for purchase — try another term or come back later',
+      insufficientDebtCapacity:
+        'This bond market does not have enough remaining capacity — buy less, or try again later',
+      bondTooSmall:
+        'Purchase too small: discounted payout is below the minimum. Increase the amount and try again',
+      bondTooLarge:
+        'Purchase too large: it exceeds this bond’s per-trade payout cap. Lower the amount and try again',
       zeroAmount: 'Enter a valid amount',
       unavailable: 'Transaction temporarily unavailable — try again later',
     },

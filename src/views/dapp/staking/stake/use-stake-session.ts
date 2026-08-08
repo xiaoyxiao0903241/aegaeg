@@ -151,6 +151,8 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     isSubmitting,
     blockReason,
     writePhase,
+    remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? ZERO_BI) : ZERO_BI,
+    quotaKind: balancesLoaded ? (preflightQuery.data?.quotaKind ?? 'pool') : 'pool',
     submit: () => open.mutate(),
     pool,
   }

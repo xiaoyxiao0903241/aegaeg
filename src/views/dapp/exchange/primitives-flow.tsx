@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { burnExchangeAssets, flashExchangeAssets } from '~/shared/assets/dapp'
+import { flashExchangeAssets } from '~/shared/assets/dapp'
 import { Icon } from '~/shared/components/icon'
 import { cn } from '~/shared/lib/utils'
+
+export { OneWayFlowIndicator as ExchangeOneWayFlowIndicator } from '~/views/dapp/shared/one-way-flow-indicator'
 
 // —— exchange-flow-button ——
 
@@ -95,21 +97,5 @@ export function ExchangeFlipGlyph({ rotation }: { rotation: number }) {
         </span>
       </span>
     </span>
-  )
-}
-
-/**
- * 单向流程指示（销毁、闪兑 USDT 等不可翻转场景）
- *
- * 完整箭头图片自带外观，直接渲染，勿再包方向切换按钮。
- */
-export function ExchangeOneWayFlowIndicator({ className }: { className?: string }) {
-  return (
-    <img
-      alt=""
-      aria-hidden
-      className={cn('size-8.5 shrink-0', className)}
-      src={burnExchangeAssets.flowDown}
-    />
   )
 }

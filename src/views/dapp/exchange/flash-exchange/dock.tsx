@@ -24,6 +24,7 @@ import {
 } from '~/views/dapp/exchange/primitives'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 
 export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
   const vm = useFlashExchange(flash)
@@ -36,10 +37,9 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
       subtitle={t.exchange.flash.intros[flash.introKey]}
       title={t.exchange.flash.title}
     >
-      <DockStack className="gap-0">
+      <DockStack>
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
-          className="mb-3"
           disabled={flash.isSubmitting || vm.isFlipping}
           onChange={flash.setPairId}
           options={vm.pairOptions}
@@ -83,7 +83,7 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
           amountLocked={flash.isSubmitting || vm.isFlipping}
         />
 
-        <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+        <FormInfoCard>
           <FormInfoCard.Rows
             items={[
               {
@@ -111,20 +111,23 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
         </FormInfoCard>
 
         {vm.sessionReady && flash.walletReady ? (
-          <FormActions className="mt-3.5 max-dapp:mt-3">
-            <MainButton
-              className="col-span-full"
-              density="external"
-              disabled={!flash.canSubmit}
-              loading={flash.isSubmitting}
-              onClick={() => void vm.onSubmit()}
-            >
-              {t.exchange.flash.action}
-            </MainButton>
-          </FormActions>
+          <>
+            <WriteBlockAlert hint={vm.blockHint} />
+            <FormActions>
+              <MainButton
+                className="col-span-full"
+                density="external"
+                disabled={!flash.canSubmit}
+                loading={flash.isSubmitting}
+                onClick={() => void vm.onSubmit()}
+              >
+                {t.exchange.flash.action}
+              </MainButton>
+            </FormActions>
+          </>
         ) : null}
 
-        <ExchangeSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
+        <ExchangeSessionFooter sessionReady={vm.sessionReady} />
       </DockStack>
     </TabHeader>
   )

@@ -43,7 +43,7 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
         subtitle={t.exchange.trade.intro}
         title={t.exchange.trade.title}
       >
-        <DockStack className="gap-0">
+        <DockStack>
           <ExchangeAmountFlow
             amountBoxClassName={vm.flipCardClass}
             buy={pair.buy}
@@ -99,7 +99,7 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
             amountLocked={trade.isSubmitting || vm.isFlipping}
           />
 
-          <FormInfoCard className="mt-3.5 max-dapp:mt-3">
+          <FormInfoCard>
             <FormInfoCard.Rows
               items={[
                 {
@@ -170,12 +170,12 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
             />
           </FormInfoCard>
 
-          <InlineAlert className="mt-3" open={vm.sessionReady && trade.isHighPriceImpact}>
+          <InlineAlert open={vm.sessionReady && trade.isHighPriceImpact} tone="notice">
             {t.exchange.trade.highPriceImpactWarning}
           </InlineAlert>
 
           {vm.sessionReady && trade.walletReady ? (
-            <FormActions className="mt-3.5 max-dapp:mt-3">
+            <FormActions>
               <MainButton
                 className="col-span-full"
                 density="external"
@@ -187,7 +187,7 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
               </MainButton>
             </FormActions>
           ) : (
-            <DockConnectPromo className="mt-3.5" />
+            <DockConnectPromo />
           )}
         </DockStack>
       </TabHeader>

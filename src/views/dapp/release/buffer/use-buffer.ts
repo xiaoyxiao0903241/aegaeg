@@ -27,7 +27,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 /**
  * 缓冲池交互面板状态
  *
- * 读取分流器 + 归档 PRV 快照；AGX / gAGX 分卡；领取写两边有可领的源。
+ * 读取分流器 + 归档 PRV 快照；AGX / gAGX 分卡、分 mutation 领取（同写路径互斥）。
  */
 export function useBuffer() {
   const { messages: t } = useI18n()
@@ -42,9 +42,17 @@ export function useBuffer() {
   const durationQuery = usePrincipalReleaseDurationDays()
   const [refreshing, setRefreshing] = useState(false)
 
-  const claim = useChainMutation({
+  const claimAgx = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
-    mutation: (_vars, session) => submitReleaseBufferClaim({ session }),
+    mutation: (_vars, session) => submitReleaseBufferClaim({ session, token: 'agx' }),
+    onSuccess: async () => {
+      toast.success(t.release.buffer.claimSuccess)
+      await bufferQuery.refetch()
+    },
+  })
+  const claimGagx = useChainMutation({
+    path: WRITE_PATH.RELEASE_CLAIM,
+    mutation: (_vars, session) => submitReleaseBufferClaim({ session, token: 'gagx' }),
     onSuccess: async () => {
       toast.success(t.release.buffer.claimSuccess)
       await bufferQuery.refetch()
@@ -55,12 +63,14 @@ export function useBuffer() {
   const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
   const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
   const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
+  // 同 WRITE_PATH：任一在途/锁定时两侧都不可再点
+  const pathBusy = claimAgx.isLocked || claimGagx.isLocked
   const canClaimAgx =
     migrationOk &&
     canClaimWhen({
       walletReady,
       writeReady,
-      unknownReceiptLocked: claim.isLocked,
+      unknownReceiptLocked: pathBusy,
       claimable: agxClaimable,
     })
   const canClaimGagx =
@@ -68,16 +78,20 @@ export function useBuffer() {
     canClaimWhen({
       walletReady,
       writeReady,
-      unknownReceiptLocked: claim.isLocked,
+      unknownReceiptLocked: pathBusy,
       claimable: gagxClaimable,
     })
   const agxPctLabel = formatReleasePct(agxClaimable, agxReleasing)
   const gagxPctLabel = formatReleasePct(gagxClaimable, gagxReleasing)
 
-  async function onClaim() {
-    // 任一侧有可领即可提交；submit 会 claimMany 两边有余额的源。零可领卡在 Dock 侧 disabled。
-    if (!canClaimAgx && !canClaimGagx) return
-    await claim.mutate()
+  async function onClaimAgx() {
+    if (!canClaimAgx) return
+    await claimAgx.mutate()
+  }
+
+  async function onClaimGagx() {
+    if (!canClaimGagx) return
+    await claimGagx.mutate()
   }
 
   async function onRefresh() {
@@ -92,10 +106,19 @@ export function useBuffer() {
     setRefreshing(false)
   }
 
+  const blockHint = !walletReady
+    ? null
+    : migration.isOldAccount === true
+      ? t.staking.blocked.accountMigrated
+      : migration.statusKnown && !writeReady
+        ? t.topbar.wrongNetworkTooltip
+        : null
+
   return {
     t,
     onBack: () => setView('hub'),
     walletReady,
+    blockHint,
     intro: interpolate(t.release.buffer.intro, { days: durationQuery.data ?? 30 }),
     claimableLabel: `${formatTokenAmount(agxClaimable, AGX_DECIMALS, 4)} AGX`,
     releasingLabel: `${formatTokenAmount(agxReleasing, AGX_DECIMALS, 4)} AGX`,
@@ -116,8 +139,10 @@ export function useBuffer() {
     gagxProgressWidth: gagxPctLabel,
     canClaimAgx,
     canClaimGagx,
-    pending: claim.isPending,
-    onClaim,
+    claimingAgx: claimAgx.isPending,
+    claimingGagx: claimGagx.isPending,
+    onClaimAgx,
+    onClaimGagx,
     onRefresh,
     refreshing,
   }

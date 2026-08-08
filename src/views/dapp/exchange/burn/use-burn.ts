@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { isHardWriteBlockReason } from '~/core/wallet/write-cta'
 import { useAgxContributionBurnLogs, useAgxContributionConsumeLogs } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
@@ -34,7 +35,10 @@ export function useBurn(burn: BurnExchangeState) {
     walletReady: burn.walletReady,
   })
 
-  const blockHint = burn.blockReason != null ? t.exchange.burn.blocked[burn.blockReason] : null
+  const blockHint =
+    burn.blockReason != null && isHardWriteBlockReason(burn.blockReason)
+      ? t.exchange.burn.blocked[burn.blockReason]
+      : null
 
   usePresentUserFacingError(burn.validationError, {
     id: 'burn-exchange-quote-error',

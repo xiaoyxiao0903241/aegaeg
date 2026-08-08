@@ -18,6 +18,7 @@
 |5|可点才用 `button`|禁止用原生 `disabled` 冒充「不可点但样式不变」|
 |6|小 API|没有第二 call site 不要提前抽到 shared/components 或 views/dapp/shared|
 |7|**优先组合式**|壳 + 具名子件（`Tile.Label` / `Table.Header`）；槽用子树表达，禁袋装 `header=`/`tooltip=` 冒充结构。无第二 call site 不硬抽子件|
+|8|单向流下箭头|金额卡叠中间的「只向下」指示统一用 `views/dapp/shared/one-way-flow-indicator`（`OneWayFlowIndicator` / 兑换别名 `ExchangeOneWayFlowIndicator`）；禁 Lucide Chevron + 自画边框盒冒充|
 
 ## Hub 左栏（B+D · `InteractiveCard` / `ModeCard`）
 

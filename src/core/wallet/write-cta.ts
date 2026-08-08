@@ -6,6 +6,53 @@ function zeroGroupedPlaceholder(digits: number): string {
   return digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
 }
 
+/** 不弹 InlineAlert：内联授权、未输入、去绑定职责，或仍在加载/未知（勿当最终硬门吓人）。 */
+const WRITE_BLOCK_NO_ALERT = new Set([
+  'insufficientAllowance',
+  'zeroAmount',
+  'notBound',
+  'unavailable',
+])
+
+/**
+ * 硬门才需要 InlineAlert（额度 / 已确认迁移 / 池未开等）。
+ * 「去绑定」改写按钮；`unavailable` 多为迁移/预检未就绪，只灰钮不告警。
+ *
+ * @param reason 写门闸原因；null = 无阻断
+ */
+export function isHardWriteBlockReason(reason: string | null | undefined): boolean {
+  if (reason == null) return false
+  return !WRITE_BLOCK_NO_ALERT.has(reason)
+}
+
+/**
+ * 把硬门原因映射成提示文案；软门 / 绑推荐 / 未知键返回 null。
+ *
+ * @param reason 写门闸原因
+ * @param copy 原因 → 文案表（通常来自 i18n blocked）
+ */
+export function writeBlockHint<R extends string>(
+  reason: R | null | undefined,
+  copy: Partial<Record<R, string>>,
+): string | null {
+  if (!isHardWriteBlockReason(reason)) return null
+  return copy[reason as R] ?? null
+}
+
+/**
+ * 按钮职责文案：仅「去绑定推荐」改写主 CTA；迁移等长说明走 InlineAlert。
+ *
+ * @param phase 写按钮相位
+ * @param copy 绑定 / 默认提交文案
+ */
+export function writeCtaLabel(
+  phase: WriteButtonPhase,
+  copy: { bindReferral: string; submit: string },
+): string {
+  if (phase === 'need_referral') return copy.bindReferral
+  return copy.submit
+}
+
 /**
  * 释放 / 领取路径是否可发起写交易。
  *
@@ -40,23 +87,6 @@ export function writeCtaDisabled(args: {
   walletReady: boolean
 }): boolean {
   return args.unknownReceiptLocked || args.isSubmitting || !args.writeReady || !args.walletReady
-}
-
-/**
- * 手册 §1.4 phase → CTA 文案（迁移 / 绑推荐 / 默认提交）。
- *
- * @param phase 写按钮状态
- * @param copy 三态文案
- * @returns 对应状态的 CTA 文案
- * @see 手册 §1.4 通用交易状态
- */
-export function writeCtaLabel(
-  phase: WriteButtonPhase,
-  copy: { accountMigrated: string; bindReferral: string; submit: string },
-): string {
-  if (phase === 'account_migrated') return copy.accountMigrated
-  if (phase === 'need_referral') return copy.bindReferral
-  return copy.submit
 }
 
 /**

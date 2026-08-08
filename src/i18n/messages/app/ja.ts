@@ -1821,13 +1821,31 @@ const app = defineMessages({
       notBound: '先に紹介関係を紐付けてください',
       accountMigrated: 'このアドレスは移行済みです — 新しいアドレスで操作してください',
       migrationNotOpen: 'アカウント移行はまだ開放されていません',
-      insufficientBalance: '残高不足',
-      insufficientGagx: 'gAGX 残高不足 — 先にフラッシュでラップしてください',
+      insufficientBalance:
+        'ウォレット残高が足りません。数量を減らすか、先に入金してから再度お試しください',
+      insufficientGagx:
+        'gAGX 残高が足りません：先にフラッシュで AGX を gAGX にラップしてから再度お試しください',
       insufficientAllowance: '承認不足',
-      insufficientQuota: '枠不足',
-      poolPaused: 'このステーキングプールは未開放です',
-      depositoryNotAuth: '債券契約が未認可です',
-      insufficientDebtCapacity: '債券の残容量が不足しています',
+      insufficientQuota: 'ステーキング可能な枠を超えています。数量を減らしてから再度お試しください',
+      insufficientQuotaWithAmount:
+        'ステーキング可能な枠を超えています：現在あと最大 {quota} AGX までステーキングできます。数量を減らしてから再度お試しください。',
+      insufficientQuotaPersonalWithAmount:
+        'ご自身のステーキング可能枠を超えています：個人累計上限の残りは {quota} AGX です。数量を減らしてから再度お試しください。',
+      insufficientQuotaPersonalDailyWithAmount:
+        '本日のステーキング可能枠を超えています：今日の個人枠の残りは {quota} AGX です。数量を減らすか、枠が更新されるまでお待ちください。',
+      insufficientQuotaPoolWithAmount:
+        'オンチェーンのステーキングプール枠が足りません：プールの残りは現在 {quota} AGX です。数量を減らすか、しばらくしてから再度お試しください。',
+      insufficientXmineQuotaWithAmount:
+        'マイニング枠を超えています：マイニング枠はロック元本で決まり、現在あと最大 {quota} gAGX までステーキングできます。数量を減らすか、先にロックポジションを増やしてから再度お試しください。',
+      poolPaused: 'このステーキングプールは一時停止中です。しばらくしてから再度お試しください',
+      depositoryNotAuth:
+        'この債券市場はまだ購入できません。別の期間を選ぶか、しばらくしてから再度お試しください',
+      insufficientDebtCapacity:
+        'この債券市場の残販売枠が足りません。購入金額を減らすか、しばらくしてから再度お試しください',
+      bondTooSmall:
+        '購入金額が小さすぎます：割引後の償還額が最低要件を下回ります。購入金額を増やしてから再度お試しください',
+      bondTooLarge:
+        '購入金額が大きすぎます：この債券の1回あたりの償還上限を超えています。購入金額を減らしてから再度お試しください',
       zeroAmount: '有効な数量を入力してください',
       unavailable: '取引は一時利用不可です — しばらくしてから再試行してください',
     },

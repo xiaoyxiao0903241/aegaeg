@@ -174,6 +174,13 @@ export function useQueue() {
     t,
     onBack: () => setView('hub'),
     walletReady,
+    blockHint: !walletReady
+      ? null
+      : migration.isOldAccount === true
+        ? t.staking.blocked.accountMigrated
+        : migration.statusKnown && !writeReady
+          ? t.topbar.wrongNetworkTooltip
+          : null,
     rows,
     onClaim,
     onRefresh,

@@ -1,7 +1,6 @@
 /**
  * 奖励领取界面 UI 零件（域附属，非 mode mega-primitives）。
  */
-import { ChevronDown } from 'lucide-react'
 import { type ReactNode } from 'react'
 
 import { dappAssets } from '~/shared/assets/dapp'
@@ -10,6 +9,7 @@ import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { cn } from '~/shared/lib/utils'
+import { OneWayFlowIndicator } from '~/views/dapp/shared/one-way-flow-indicator'
 
 /**
  * gAGX 图标 + 数值 / 标签行（领取控件共用）
@@ -191,13 +191,11 @@ export function GrantPendingCard({
   )
 }
 
-/** 待审批卡与可领卡之间的静态分隔 */
+/** 待审批卡与可领卡之间的静态分隔（与兑换单向流箭头同规范） */
 export function ClaimStackDivider() {
   return (
     <div className="flex items-center justify-center">
-      <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
-        <ChevronDown aria-hidden className="size-2.5 text-foreground/40" strokeWidth={1.5} />
-      </span>
+      <OneWayFlowIndicator />
     </div>
   )
 }

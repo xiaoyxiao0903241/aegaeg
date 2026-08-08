@@ -155,7 +155,9 @@ test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ ar
   assert.equal(snap.chain.length, 1)
   assert.equal(snap.chain[0].isTail, true)
   assert.equal(snap.chain[0].claimable, 3n)
-  assert.deepEqual(snap.chain[0].claimWindows, [{ start: 0, limit: 2 }])
+  assert.ok(!('claimWindows' in snap.chain[0]))
+  assert.deepEqual(snap.chain[0].agxClaimIndexes, [0])
+  assert.deepEqual(snap.chain[0].gagxClaimIndexes, [1])
   assert.equal(snap.archiveCount, 1)
   assert.deepEqual(snap.archiveClaimWindows, [{ start: 0, limit: 1 }])
   assert.equal(snap.agx.totalClaimable, 3n) // 2 splitter + 1 archive
@@ -221,8 +223,8 @@ test('readReleaseBufferSnapshot walks next chain and merges hop claimables', asy
   assert.equal(snap.chain[1].address, MID)
   assert.equal(snap.chain[1].isTail, true)
   assert.equal(snap.chain[1].claimable, 5n)
-  assert.deepEqual(snap.chain[0].claimWindows, [{ start: 0, limit: 1 }])
-  assert.deepEqual(snap.chain[1].claimWindows, [{ start: 0, limit: 1 }])
+  assert.ok(!('claimWindows' in snap.chain[0]))
+  assert.ok(!('claimWindows' in snap.chain[1]))
   assert.equal(snap.splitterClaimable, 9n)
   assert.equal(snap.agx.totalClaimable, 9n)
   assert.deepEqual(snap.archiveClaimWindows, [])
@@ -238,6 +240,20 @@ test('claimWindowsFromAmounts skips empty pages', async () => {
     { start: 4, limit: 1 },
   ])
   assert.deepEqual(claimWindowsFromAmounts([0n, 0n, 0n], 50), [])
+})
+
+test('claimIndexesForToken only keeps matching claimable indexes', async () => {
+  const { claimIndexesForToken } = await loadModule('/src/web3/release/release-read.ts')
+  const agx = '0x1111111111111111111111111111111111111111'
+  const gagx = '0x2222222222222222222222222222222222222222'
+  const items = [
+    { release: { token: agx }, claimableAmount: 1n },
+    { release: { token: gagx }, claimableAmount: 2n },
+    { release: { token: agx }, claimableAmount: 0n },
+    { release: { token: agx }, claimableAmount: 3n },
+  ]
+  assert.deepEqual(claimIndexesForToken(items, agx), [0, 3])
+  assert.deepEqual(claimIndexesForToken(items, gagx), [1])
 })
 
 test('readReleaseBufferSnapshot archive: count fail soft; page fail closed', async () => {

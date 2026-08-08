@@ -163,7 +163,7 @@ export function CalcDock() {
         </div>
 
         {/* 暂隐藏显式计算 CTA；实时估算见 useCalcEstimateLive。 */}
-        <FormActions className="mt-6 hidden">
+        <FormActions className="hidden">
           <MainButton
             className="min-h-0 border-0 bg-coral-emphasis py-4 text-base/5 text-white"
             density="external"

@@ -11,6 +11,7 @@ import { Text } from '~/shared/components/text'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { useStakeDock } from '~/views/dapp/staking/stake/use-stake'
 
 /**
@@ -30,6 +31,7 @@ export function StakeDock() {
     lockLabel,
     amountLabel,
     ctaLabel,
+    blockHint,
     yieldMeta,
     onSubmit,
   } = useStakeDock()
@@ -100,16 +102,19 @@ export function StakeDock() {
 
         {/* jscpd:ignore-start — Dock CTA / 连钱包页内拼装，禁再抽薄壳 */}
         {walletReady ? (
-          <FormActions>
-            <MainButton
-              density="external"
-              disabled={!stake.canSubmit && stake.blockReason !== 'notBound'}
-              loading={stake.isSubmitting}
-              onClick={() => void onSubmit()}
-            >
-              {ctaLabel}
-            </MainButton>
-          </FormActions>
+          <>
+            <WriteBlockAlert hint={blockHint} />
+            <FormActions>
+              <MainButton
+                density="external"
+                disabled={!stake.canSubmit && stake.blockReason !== 'notBound'}
+                loading={stake.isSubmitting}
+                onClick={() => void onSubmit()}
+              >
+                {ctaLabel}
+              </MainButton>
+            </FormActions>
+          </>
         ) : (
           <DockConnectPromo />
         )}

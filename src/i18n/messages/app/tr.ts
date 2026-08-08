@@ -1864,13 +1864,31 @@ const app = defineMessages({
       notBound: 'Önce referans bağlayın',
       accountMigrated: 'Bu adres taşındı — yeni adresi kullanın',
       migrationNotOpen: 'Hesap taşıma henüz açık değil',
-      insufficientBalance: 'Yetersiz bakiye',
-      insufficientGagx: 'gAGX yetersiz — önce Flash ile sarın',
+      insufficientBalance:
+        'Cüzdan bakiyesi yetersiz, tutarı azaltın veya önce yükleyip tekrar deneyin',
+      insufficientGagx:
+        'gAGX bakiyesi yetersiz: önce Flash ile AGX’i gAGX’e sarın, sonra tekrar deneyin',
       insufficientAllowance: 'Yetersiz onay',
-      insufficientQuota: 'Yetersiz kota',
-      poolPaused: 'Bu staking havuzu henüz açık değil',
-      depositoryNotAuth: 'Tahvil sözleşmesi yetkilendirilmedi',
-      insufficientDebtCapacity: 'Kalan tahvil kapasitesi yetersiz',
+      insufficientQuota: 'Stake kotası aşıldı, tutarı küçültüp tekrar deneyin',
+      insufficientQuotaWithAmount:
+        'Stake kotası aşıldı: şu an en fazla {quota} AGX daha stake edilebilir. Tutarı küçültüp tekrar deneyin.',
+      insufficientQuotaPersonalWithAmount:
+        'Kişisel stake kotanız aşıldı: kişisel kümülatif üst sınırınızda {quota} AGX kaldı, tutarı küçültüp tekrar deneyin.',
+      insufficientQuotaPersonalDailyWithAmount:
+        'Bugünkü stake kotanız aşıldı: bugünkü kişisel kotanızda {quota} AGX kaldı, tutarı küçültün veya kota yenilenene kadar bekleyip tekrar deneyin.',
+      insufficientQuotaPoolWithAmount:
+        'Zincir üstü stake havuzu kotası yetersiz: havuzda şu an {quota} AGX kaldı, tutarı küçültün veya daha sonra tekrar deneyin.',
+      insufficientXmineQuotaWithAmount:
+        'Mining kotanız aşıldı: mining kotası kilitli anaparanıza bağlıdır, şu an en fazla {quota} gAGX daha stake edilebilir. Tutarı küçültün veya önce kilitli pozisyon ekleyip tekrar deneyin.',
+      poolPaused: 'Bu staking havuzu geçici olarak kapalı, lütfen daha sonra tekrar deneyin',
+      depositoryNotAuth:
+        'Bu tahvil piyasası henüz alıma açılmadı, dönem değiştirin veya daha sonra tekrar deneyin',
+      insufficientDebtCapacity:
+        'Bu tahvil piyasasının kalan satış kotası yetersiz, satın alma tutarını azaltın veya daha sonra tekrar deneyin',
+      bondTooSmall:
+        'Satın alma tutarı çok küçük: iskonto sonrası ödeme asgari tutarın altında. Satın alma tutarını artırıp tekrar deneyin',
+      bondTooLarge:
+        'Satın alma tutarı çok büyük: bu tahvilin işlem başına ödeme üst sınırını aşıyor. Satın alma tutarını azaltıp tekrar deneyin',
       zeroAmount: 'Geçerli bir tutar girin',
       unavailable: 'İşlem geçici olarak kullanılamıyor — daha sonra deneyin',
     },

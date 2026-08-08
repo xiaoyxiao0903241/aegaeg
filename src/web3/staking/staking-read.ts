@@ -2,6 +2,11 @@ import { encodeFunctionData, parseAbi } from 'viem'
 
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
+import {
+  pickStakeEffectiveQuota,
+  remainingAfterFiniteLimit,
+  type StakeQuotaKind,
+} from '~/core/staking/stake-quota'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   ACCOUNT_MIGRATION_METHODS,
@@ -52,6 +57,8 @@ export type StakeOpenPreflight = {
   balance: bigint
   allowance: bigint
   remainingQuota: bigint
+  /** 收紧 remainingQuota 的那一层：个人 / 今日个人 / 池全局。 */
+  quotaKind: StakeQuotaKind
   poolOpen: boolean
   isWarmupExpired: boolean
 }
@@ -63,12 +70,6 @@ export type BondMarketMeta = {
   totalDeposit: bigint
   /** maxPayout() 视图 — 单笔绝对 AGX 上限。 */
   maxPayoutAmount: bigint
-}
-
-/** 多层额度取最小剩余；limit === 0 表示该层不限。 */
-function remainingAfterLimit(limit: bigint, used: bigint, fallback: bigint): bigint {
-  if (limit === 0n) return fallback
-  return limit > used ? limit - used : 0n
 }
 
 /**
@@ -271,16 +272,20 @@ export async function readStakeOpenPreflight(args: {
       'STAKE_PREFLIGHT_MULTICALL_FAILED:dailyUsed',
     )
 
-    const principalRemaining = remainingAfterLimit(singleLimit, userStaked, remainingQuota)
-    const dailyRemaining = remainingAfterLimit(dailyLimit, dailyUsed, remainingQuota)
-    let effectiveQuota = remainingQuota < principalRemaining ? remainingQuota : principalRemaining
-    effectiveQuota = effectiveQuota < dailyRemaining ? effectiveQuota : dailyRemaining
+    const personalRemaining = remainingAfterFiniteLimit(singleLimit, userStaked)
+    const personalDailyRemaining = remainingAfterFiniteLimit(dailyLimit, dailyUsed)
+    const { remaining: effectiveQuota, kind: quotaKind } = pickStakeEffectiveQuota({
+      poolRemaining: remainingQuota,
+      personalRemaining,
+      personalDailyRemaining,
+    })
 
     return {
       isBound,
       balance,
       allowance,
       remainingQuota: effectiveQuota,
+      quotaKind,
       poolOpen: true,
       isWarmupExpired,
     }
@@ -380,15 +385,18 @@ export async function readStakeOpenPreflight(args: {
     'STAKE_PREFLIGHT_MULTICALL_FAILED:userStaked',
   )
 
-  const rootRemaining =
-    singleLimit === 0n ? remainingQuota : singleLimit > userStaked ? singleLimit - userStaked : 0n
-  const effectiveQuota = remainingQuota < rootRemaining ? remainingQuota : rootRemaining
+  const personalRemaining = remainingAfterFiniteLimit(singleLimit, userStaked)
+  const { remaining: effectiveQuota, kind: quotaKind } = pickStakeEffectiveQuota({
+    poolRemaining: remainingQuota,
+    personalRemaining,
+  })
 
   return {
     isBound,
     balance,
     allowance,
     remainingQuota: effectiveQuota,
+    quotaKind,
     poolOpen,
     isWarmupExpired: false,
   }

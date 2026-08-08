@@ -1,3 +1,4 @@
+import { isHardWriteBlockReason } from '~/core/wallet/write-cta'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
@@ -36,7 +37,9 @@ export function useFlashExchange(flash: FlashExchangeState) {
       ? null
       : flash.usd1Block === 'zeroUsdtToken'
         ? t.exchange.flash.blocked.zeroAddress
-        : t.exchange.flash.blocked[flash.usd1Block]
+        : isHardWriteBlockReason(flash.usd1Block)
+          ? t.exchange.flash.blocked[flash.usd1Block]
+          : null
 
   usePresentUserFacingError(flash.validationError, {
     id: 'flash-exchange-quote-error',

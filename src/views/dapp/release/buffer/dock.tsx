@@ -2,7 +2,7 @@
  * 缓冲池左栏 Dock
  *
  * AGX / gAGX 双卡展示已释放、释放中与进度条（手册 §13 分流器多 token）；
- * 刷新重读链上快照；领取对两边有可领的源一并 claimMany。
+ * 刷新重读链上快照；两卡各走独立领取 mutation（只领对应币种）。
  */
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
@@ -10,6 +10,7 @@ import { ReleasePlanCard } from '~/views/dapp/release/primitives'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 
 export function BufferDock() {
   const vm = useBuffer()
@@ -23,6 +24,7 @@ export function BufferDock() {
       title={t.release.buffer.title}
     >
       <DockStack>
+        <WriteBlockAlert hint={vm.blockHint} />
         <ReleasePlanCard data-slot-id="release-buffer-card-agx">
           <ReleasePlanCard.Header>
             <ReleasePlanCard.Token iconSrc={tokenCarouselIcons.agxIcon} label="AGX" />
@@ -43,9 +45,9 @@ export function BufferDock() {
           <ReleasePlanCard.Bar data-slot-id="release-buffer-bar-agx" width={vm.progressWidth} />
           <ReleasePlanCard.Captions left={vm.releasedPctLabel} right={vm.valueHint} />
           <ReleasePlanCard.Action
-            disabled={!vm.canClaimAgx || vm.pending}
-            loading={vm.pending}
-            onClick={() => void vm.onClaim()}
+            disabled={!vm.canClaimAgx}
+            loading={vm.claimingAgx}
+            onClick={() => void vm.onClaimAgx()}
           >
             {t.release.buffer.claim}
           </ReleasePlanCard.Action>
@@ -74,9 +76,9 @@ export function BufferDock() {
           />
           <ReleasePlanCard.Captions left={vm.gagxReleasedPctLabel} right={vm.gagxValueHint} />
           <ReleasePlanCard.Action
-            disabled={!vm.canClaimGagx || vm.pending}
-            loading={vm.pending}
-            onClick={() => void vm.onClaim()}
+            disabled={!vm.canClaimGagx}
+            loading={vm.claimingGagx}
+            onClick={() => void vm.onClaimGagx()}
           >
             {t.release.buffer.claim}
           </ReleasePlanCard.Action>

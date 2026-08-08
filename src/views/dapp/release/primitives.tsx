@@ -43,7 +43,7 @@ function Token({ iconSrc, label }: { iconSrc: string; label: string }) {
       <Icon alt="" className="size-(--app-icon-xl) shrink-0 rounded-md" size="xl" src={iconSrc} />
       <Text
         as="span"
-        className="inline-flex items-center rounded-full bg-muted px-3 py-1.5 leading-none font-semibold text-foreground/70"
+        className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs leading-none font-semibold text-foreground/70"
         variant="support"
       >
         {label}

@@ -9,7 +9,7 @@ import {
 } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateXmineLive, xmineSpendableCap } from '~/core/staking/staking-block-reasons'
-import { formatAmountBalanceLabel, writeCtaDisabled } from '~/core/wallet/write-cta'
+import { formatAmountBalanceLabel, writeBlockHint, writeCtaDisabled } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useAssetsHoldingsDistribution,
@@ -21,6 +21,7 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Text } from '~/shared/components/text'
@@ -189,6 +190,13 @@ export function useXmineDock() {
     digits: 4,
   })
 
+  const blockHint =
+    xmine.blockReason === 'insufficientQuota'
+      ? interpolate(t.staking.blocked.insufficientXmineQuotaWithAmount, {
+          quota: xmine.quotaLabel || formatNumber(0, { digits: 4 }),
+        })
+      : writeBlockHint(xmine.blockReason, t.staking.blocked)
+
   const dailyYieldLabel =
     overviewQuery.data != null
       ? formatXmineDailyYieldLabel(overviewQuery.data.yieldRateBP)
@@ -202,7 +210,11 @@ export function useXmineDock() {
     setView,
     amountLabel,
     dailyYieldLabel,
-    onSubmit: () => xmine.submit(),
+    blockHint,
+    onSubmit: () => {
+      if (xmine.blockReason === 'accountMigrated') return
+      xmine.submit()
+    },
   }
 }
 
