@@ -1,5 +1,5 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode } from 'react'
 import { formatUnits } from 'viem'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -20,6 +20,7 @@ import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useLuckySessionStore } from '~/stores/rewards-session-store'
+import { useWallClockSec } from '~/stores/wall-clock-store'
 import {
   formatApiCountLabel,
   formatApiStatLabel,
@@ -139,11 +140,8 @@ export function useLucky() {
     refetchInterval: 15_000,
   })
 
-  const [nowSec, setNowSec] = useState(() => Math.floor(Date.now() / 1000))
-  useEffect(() => {
-    const id = window.setInterval(() => setNowSec(Math.floor(Date.now() / 1000)), 1000)
-    return () => window.clearInterval(id)
-  }, [])
+  const needsCountdown = Boolean(account?.address) && walletReady
+  const nowSec = useWallClockSec(needsCountdown)
 
   const todayPool = formatApiStatLabel(
     sessionReady,

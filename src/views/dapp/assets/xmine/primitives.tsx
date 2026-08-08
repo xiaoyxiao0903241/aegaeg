@@ -1,26 +1,18 @@
-import { useEffect, useState } from 'react'
-
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { CountdownValue } from '~/shared/components/countdown-value'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useWallClockSec } from '~/stores/wall-clock-store'
 import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/primitives'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-
-function formatWarmupCountdown(endTime: bigint, nowSec: number): string {
-  const left = Math.max(0, Number(endTime) - nowSec)
-  const h = Math.floor(left / 3600)
-  const m = Math.floor((left % 3600) / 60)
-  const s = left % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-}
 
 export type AssetsXminePositionCardProps = {
   periodPill: string
@@ -73,26 +65,11 @@ export function AssetsXminePositionCard({
   onRequestUnstake,
 }: AssetsXminePositionCardProps) {
   const inWarmup = warmupGons > ZERO_BI
-  const [nowSec, setNowSec] = useState(0)
-
-  useEffect(() => {
-    if (!inWarmup) return
-    const tick = () => setNowSec(Math.floor(Date.now() / 1000))
-    tick()
-    const id = window.setInterval(tick, 1000)
-    return () => window.clearInterval(id)
-  }, [inWarmup, warmupEndTime])
-
-  const inWarmupLocked = inWarmup && (nowSec === 0 || nowSec < Number(warmupEndTime))
-  const warmupReady = inWarmup && nowSec > 0 && nowSec >= Number(warmupEndTime)
+  const nowSec = useWallClockSec(inWarmup)
+  const inWarmupLocked = inWarmup && nowSec < Number(warmupEndTime)
+  const warmupReady = inWarmup && nowSec >= Number(warmupEndTime)
   const redeemableStake = inWarmup ? ZERO_BI : miningStake
-  const remainingLabel = inWarmupLocked
-    ? nowSec === 0
-      ? lockedPrefix
-      : `${lockedPrefix} ${formatWarmupCountdown(warmupEndTime, nowSec)}`
-    : warmupReady
-      ? activateWarmupLabel
-      : redeemAnytimeLabel
+  const remainingSec = inWarmupLocked ? Math.max(0, Number(warmupEndTime) - nowSec) : 0
 
   return (
     <Card surface="outlined" className="grid gap-2">
@@ -105,7 +82,20 @@ export function AssetsXminePositionCard({
             {remainingCaption}
           </Text>
           <Text as="span" className="text-sm/4" variant="copy">
-            {remainingLabel}
+            {inWarmupLocked ? (
+              <>
+                {lockedPrefix}{' '}
+                <CountdownValue
+                  separators={[':', ':']}
+                  totalSec={remainingSec}
+                  units={['hours', 'minutes', 'seconds']}
+                />
+              </>
+            ) : warmupReady ? (
+              activateWarmupLabel
+            ) : (
+              redeemAnytimeLabel
+            )}
           </Text>
         </div>
       </div>

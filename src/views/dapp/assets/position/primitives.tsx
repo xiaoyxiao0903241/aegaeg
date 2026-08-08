@@ -4,9 +4,7 @@
  * 支持质押 / 债券 / X 挖矿的行卡、排序工具条、骨架与空态。
  */
 import type { ReactNode } from 'react'
-import { useEffect, useState } from 'react'
 
-import { formatAssetsRemainingCountdown } from '~/core/assets/format-assets-remaining-countdown'
 import { ZERO_BI } from '~/core/constants'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -14,6 +12,7 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
+import { CountdownValue } from '~/shared/components/countdown-value'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
@@ -22,6 +21,7 @@ import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
+import { useWallClockSec } from '~/stores/wall-clock-store'
 import type { AssetsBondRow, AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -56,19 +56,8 @@ export function AssetsPositionRowHeader({
   dayUnit: string
 }) {
   const needsClock = remainingValue == null && remainingAt > ZERO_BI
-  const [nowSec, setNowSec] = useState(() => Math.floor(Date.now() / 1000))
-
-  useEffect(() => {
-    if (!needsClock) return
-    const tick = () => setNowSec(Math.floor(Date.now() / 1000))
-    tick()
-    const id = window.setInterval(tick, 1000)
-    return () => window.clearInterval(id)
-  }, [needsClock, remainingAt])
-
-  const display =
-    remainingValue ??
-    (remainingAt > ZERO_BI ? formatAssetsRemainingCountdown(remainingAt, nowSec, dayUnit) : '—')
+  const nowSec = useWallClockSec(needsClock)
+  const remainingSec = needsClock ? Math.max(0, Number(remainingAt) - nowSec) : 0
 
   return (
     <div className="flex items-center gap-2">
@@ -81,7 +70,17 @@ export function AssetsPositionRowHeader({
           {remainingLabel}
         </Text>
         <Text as="span" className="text-sm/4" variant="copy">
-          {display}
+          {remainingValue != null ? (
+            remainingValue
+          ) : remainingAt > ZERO_BI ? (
+            <CountdownValue
+              separators={[`${dayUnit} `, ':', ':']}
+              totalSec={remainingSec}
+              units={['days', 'hours', 'minutes', 'seconds']}
+            />
+          ) : (
+            '—'
+          )}
         </Text>
       </div>
     </div>

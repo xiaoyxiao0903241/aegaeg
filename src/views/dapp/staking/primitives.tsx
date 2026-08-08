@@ -5,10 +5,6 @@ import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode, useEffect, useState } from 'react'
 
 import {
-  formatRebaseCountdownParts,
-  remainingSecFromBlocks,
-} from '~/core/staking/format-rebase-countdown'
-import {
   buildCalcYieldCurvePoints,
   CALC_MAX_DAYS,
   calcLocalInterest,
@@ -20,6 +16,7 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Chart, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
+import { CountdownValue, remainingSecFromBlocks } from '~/shared/components/countdown-value'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Skeleton } from '~/shared/components/skeleton'
@@ -27,12 +24,13 @@ import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { useWallClockSec } from '~/stores/wall-clock-store'
 
 /** 链读与墙钟偏差超过此值才重锚定（避免 refetch 抖动）。 */
 const RESYNC_DRIFT_SEC = 3
 
-function anchorEndAtMs(chainRemainingSec: number, now = Date.now()): number {
-  return now + chainRemainingSec * 1000
+function anchorEndAtSec(chainRemainingSec: number, nowSec = Math.floor(Date.now() / 1000)): number {
+  return nowSec + chainRemainingSec
 }
 
 /**
@@ -57,55 +55,52 @@ export function RebaseCountdownValue({
   const units = t.staking.aside.countdownUnits
   const chainRemainingSec = remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock)
 
-  const [endAtMs, setEndAtMs] = useState(() => anchorEndAtMs(chainRemainingSec))
-  const [nowMs, setNowMs] = useState(() => Date.now())
+  const [endAtSec, setEndAtSec] = useState(() => anchorEndAtSec(chainRemainingSec))
+  const nowSec = useWallClockSec(true)
 
   // 链上块高变化后重锚定；setState 放进 microtask，避开 set-state-in-effect 同步写。
   useEffect(() => {
     let cancelled = false
     queueMicrotask(() => {
       if (cancelled) return
-      const now = Date.now()
-      setEndAtMs((prev) => {
-        const wallRemaining = Math.max(0, Math.ceil((prev - now) / 1000))
+      const now = Math.floor(Date.now() / 1000)
+      setEndAtSec((prev) => {
+        const wallRemaining = Math.max(0, prev - now)
         if (Math.abs(wallRemaining - chainRemainingSec) <= RESYNC_DRIFT_SEC) return prev
-        return anchorEndAtMs(chainRemainingSec, now)
+        return anchorEndAtSec(chainRemainingSec, now)
       })
-      setNowMs(now)
     })
     return () => {
       cancelled = true
     }
   }, [chainRemainingSec, epochEndBlock, currentBlock])
 
-  useEffect(() => {
-    if (endAtMs <= Date.now()) return
-    const id = window.setInterval(() => {
-      const now = Date.now()
-      setNowMs(now)
-      if (now >= endAtMs) window.clearInterval(id)
-    }, 1000)
-    return () => window.clearInterval(id)
-  }, [endAtMs])
-
-  const remainingSec = Math.max(0, Math.ceil((endAtMs - nowMs) / 1000))
-  const parts = formatRebaseCountdownParts(remainingSec)
+  const remainingSec = Math.max(0, endAtSec - nowSec)
 
   return (
-    <span className="inline-flex flex-wrap items-baseline gap-x-1 tabular-nums">
-      <CountValue text={parts.hours} />
-      <Text as="span" variant="detail">
-        {units.hours}
-      </Text>
-      <CountValue text={parts.minutes} />
-      <Text as="span" variant="detail">
-        {units.minutes}
-      </Text>
-      <CountValue text={parts.seconds} />
-      <Text as="span" variant="detail">
-        {units.seconds}
-      </Text>
-    </span>
+    <CountdownValue
+      className="gap-x-1"
+      labels={{
+        hours: (
+          <Text as="span" variant="detail">
+            {units.hours}
+          </Text>
+        ),
+        minutes: (
+          <Text as="span" variant="detail">
+            {units.minutes}
+          </Text>
+        ),
+        seconds: (
+          <Text as="span" variant="detail">
+            {units.seconds}
+          </Text>
+        ),
+      }}
+      totalSec={remainingSec}
+      trim={false}
+      units={['hours', 'minutes', 'seconds']}
+    />
   )
 }
 

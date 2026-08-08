@@ -1,8 +1,8 @@
 import { parseAbi } from 'viem'
 
-import { BSC_BLOCK_SECONDS } from '~/core/staking/format-rebase-countdown'
 import { epochsPerDayFromLength } from '~/core/staking/staking-yield'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { BSC_BLOCK_SECONDS } from '~/shared/lib/constants'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
   SAGX_METHODS,

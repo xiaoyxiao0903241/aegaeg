@@ -17,6 +17,7 @@ export default tseslint.config(
       '.codegraph/**',
       'tmp/**',
       'docs/figma-export/**',
+      '.scratch/**',
     ],
   },
   js.configs.recommended,
