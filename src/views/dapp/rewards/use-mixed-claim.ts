@@ -64,26 +64,6 @@ export function useMixedClaim(view: MixedClaimView) {
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
-  function setReleasePct(value: number) {
-    setDaoContributionBlocked(false)
-    setReleasePctState(value)
-  }
-
-  function setReleaseDays(value: number) {
-    setDaoContributionBlocked(false)
-    setReleaseDaysState(value)
-  }
-
-  function setRestakeDays(value: number) {
-    setDaoContributionBlocked(false)
-    setRestakeDaysState(value)
-  }
-
-  function setCobuildRewardType(value: 'RANK_REWARD' | 'SURPASS_REWARD') {
-    setDaoContributionBlocked(false)
-    setCobuildRewardTypeState(value)
-  }
-
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
     queryFn: (address) => readLuckyClaimSnapshot(address as Address),
@@ -179,6 +159,31 @@ export function useMixedClaim(view: MixedClaimView) {
       }
     },
   })
+
+  // 改比例、天数或奖种等于换了一笔领取，先解除上次未知结果锁定
+  function setReleasePct(value: number) {
+    claim.clearLock()
+    setDaoContributionBlocked(false)
+    setReleasePctState(value)
+  }
+
+  function setReleaseDays(value: number) {
+    claim.clearLock()
+    setDaoContributionBlocked(false)
+    setReleaseDaysState(value)
+  }
+
+  function setRestakeDays(value: number) {
+    claim.clearLock()
+    setDaoContributionBlocked(false)
+    setRestakeDaysState(value)
+  }
+
+  function setCobuildRewardType(value: 'RANK_REWARD' | 'SURPASS_REWARD') {
+    claim.clearLock()
+    setDaoContributionBlocked(false)
+    setCobuildRewardTypeState(value)
+  }
 
   const writePhase = evaluateRewardsMixedClaimWritePhase({
     walletReady,

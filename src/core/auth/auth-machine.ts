@@ -175,3 +175,34 @@ export function deriveAuthAction({
 export function shouldClearLoginAttemptAfterFailure(loginError: string | null): boolean {
   return !isPermanentLoginErrorMessage(loginError)
 }
+
+/** 续期失败后至少再等这么久，避免马上反复弹签名。 */
+export const SESSION_RENEW_TRANSIENT_BACKOFF_MS = 5_000
+
+/**
+ * 计算实际开始续期的时刻
+ *
+ * 取「原计划时刻」与「失败后最早可再试时刻」中较晚的一个，
+ * 避免计划时间已过却立刻连着重试。
+ *
+ * @param actionAtMs 状态机给出的计划续期时刻
+ * @param notBeforeMs 失败后最早可再试时刻；无限制时为 0
+ * @returns 安排定时器的目标时刻
+ */
+export function clampRenewAtMs(actionAtMs: number, notBeforeMs: number): number {
+  return Math.max(actionAtMs, notBeforeMs)
+}
+
+/**
+ * 瞬时续期失败后，下一次允许再试的最早时刻
+ *
+ * @param nowMs 当前时间（毫秒）
+ * @param backoffMs 最短间隔；默认见 {@link SESSION_RENEW_TRANSIENT_BACKOFF_MS}
+ * @returns 最早可再安排续期的时刻
+ */
+export function renewNotBeforeAfterTransientFailureMs(
+  nowMs: number,
+  backoffMs: number = SESSION_RENEW_TRANSIENT_BACKOFF_MS,
+): number {
+  return nowMs + backoffMs
+}

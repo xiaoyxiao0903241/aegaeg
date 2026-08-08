@@ -1,7 +1,9 @@
 /**
- * 模块级 unknown 结果锁 + 按 (address, WRITE_PATH) 的在飞互斥（禁双提交）。
- * 锁跨 React 卸载仍有效；仅 owner 配对成功清除，或显式 clearLock。
- * latch 按地址写入 sessionStorage，刷新后仍阻断同地址同路径重提。
+ * 交易结果未知时的路径锁，以及同地址同路径「提交进行中」互斥（禁止连点两次）。
+ *
+ * 锁在页面卸载后仍保留；清除方式二选一：
+ * 带上本次提交令牌配对清除，或不带令牌强制清除（例如用户改了表单）。
+ * 锁按地址写入 sessionStorage，刷新后仍禁止同地址同路径再提交。
  */
 
 const STORAGE_KEY = 'aegis:unknown-receipt-lock:v2'
@@ -92,7 +94,7 @@ export const WRITE_PATH = {
   /** 锁键历史值 `'swap'`，禁改。 */
   EXCHANGE: 'swap',
   GENESIS: 'genesis',
-  /** 旧锁键 `'reward-claim'`；新代码用下方拆分键。busy / 清锁仍认此键。 */
+  /** 旧锁键 `'reward-claim'`；新领奖路径在判断占用与清锁时仍认此键。 */
   REWARD_CLAIM: 'reward-claim',
   REWARD_LUCKY_MIXED: 'reward-lucky-mixed',
   REWARD_DAO_MIXED: 'reward-dao-mixed',
@@ -125,10 +127,10 @@ function hasLegacyRewardClaimLatch(address: string): boolean {
 }
 
 /**
- * 判断指定地址与写路径是否持有未知结果锁。
+ * 判断指定地址与写路径是否持有未知交易结果锁。
  *
- * 锁跨刷新仍存在，未显式清除前禁止重提同路径交易。
- * 新领奖路径仍认旧键 `reward-claim`，避免升级后残留锁被绕过。
+ * 锁在刷新后仍保留；未清除前禁止再提同路径交易。
+ * 新领奖路径仍认旧键 `reward-claim`，避免升级后留下的旧锁被绕过。
  *
  * @param path 写路径键
  * @param address 钱包地址，可为 undefined
@@ -148,13 +150,13 @@ function isWritePathInFlight(path: WritePath, address: string | undefined): bool
   return inFlightPaths.has(latchKey(address, path))
 }
 
-/** 已上锁或在飞：同地址同路径的其他提交按钮须视为 busy。 */
+/** 已锁定或提交未完成时，同地址同路径视为占用中。 */
 export function isWritePathBusy(path: WritePath, address: string | undefined): boolean {
   return isUnknownReceiptLocked(path, address) || isWritePathInFlight(path, address)
 }
 
 /**
- * 订阅写路径 busy 状态变化。
+ * 订阅写路径占用状态变化。
  *
  * @param onStoreChange 状态变化回调
  * @returns 取消订阅函数
@@ -167,9 +169,9 @@ export function subscribeWritePathBusy(onStoreChange: () => void): () => void {
 }
 
 /**
- * 原子占用路径的在飞槽
+ * 占用写路径：标记「提交进行中」
  *
- * 成功返回 owner；已上锁或已在飞则返回 `{ ok: false, reason }`。
+ * 成功时返回本次提交令牌；已锁定或已有提交在进行则失败。
  */
 export function tryBeginWritePath(
   path: WritePath,
@@ -188,7 +190,7 @@ export function tryBeginWritePath(
 }
 
 /**
- * 结束在飞占用。
+ * 结束「提交进行中」占用。
  *
  * @param path 写路径键
  * @param address 钱包地址
@@ -199,12 +201,12 @@ export function endWritePath(path: WritePath, address: string): void {
 }
 
 /**
- * 将未知结果转为持久锁。
+ * 交易结果未知时加上持久锁
  *
- * 只有成功发起本次提交拿到的 owner 才能配对清除。
+ * 锁上会记下本次提交令牌；之后只有同一令牌才能配对清除，避免误清别次提交的锁。
  *
  * @param path 写路径键
- * @param owner 本次提交占用时返回的 owner
+ * @param owner 本次提交令牌（由 tryBeginWritePath 返回）
  * @param address 钱包地址
  */
 export function lockUnknownReceipt(path: WritePath, owner: symbol, address: string): void {
@@ -214,10 +216,11 @@ export function lockUnknownReceipt(path: WritePath, owner: symbol, address: stri
 }
 
 /**
- * 清除 unknown 结果锁
+ * 清除未知交易结果锁
  *
- * 带 `owner`：仅设置者可清；不带：显式 clearLock 强制清除（现行产品契约）。
- * 清任何领奖路径时一并清掉旧键 `reward-claim`，避免残留锁挡死新路径却清不掉。
+ * 传入本次提交令牌时：仅令牌一致才清除。
+ * 不传令牌时：强制清除（例如用户改了领取比例或天数）。
+ * 清任一新的领奖路径时，同时清掉旧键 `reward-claim`，否则旧锁仍会挡住新路径。
  */
 export function clearUnknownReceiptLock(
   path: WritePath,
@@ -246,7 +249,7 @@ export function resetUnknownReceiptLocksForTests(): void {
   notifyWritePathBusy()
 }
 
-/** 单测：清空内存后从 sessionStorage 再水合（仿真刷新）。 */
+/** 单测：清空内存后从 sessionStorage 再读入（模拟刷新页面）。 */
 export function rehydrateUnknownReceiptLocksForTests(): void {
   latchedOwners.clear()
   inFlightPaths.clear()

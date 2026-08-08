@@ -184,3 +184,16 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'renewAt', at: savedAt + 60 * 60_000 - renewThresholdMs },
   )
 })
+
+test('session renew backoff clamps schedule and floors transient retries', async () => {
+  const {
+    SESSION_RENEW_TRANSIENT_BACKOFF_MS,
+    clampRenewAtMs,
+    renewNotBeforeAfterTransientFailureMs,
+  } = await loadModule('/src/core/auth/auth-machine.ts')
+
+  assert.equal(SESSION_RENEW_TRANSIENT_BACKOFF_MS, 5_000)
+  assert.equal(clampRenewAtMs(1_000, 0), 1_000)
+  assert.equal(clampRenewAtMs(1_000, 9_000), 9_000)
+  assert.equal(renewNotBeforeAfterTransientFailureMs(10_000), 15_000)
+})

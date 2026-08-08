@@ -1,12 +1,14 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
+  clampRenewAtMs,
   deriveAuthAction,
   deriveAuthState,
   FALLBACK_SESSION_TTL_MS,
   isLoginChainReady,
   isSessionRenewHaltError,
   loginAttemptKey,
+  renewNotBeforeAfterTransientFailureMs,
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
 import { getJwtExpiresAtMs } from '~/core/auth/jwt'
@@ -88,9 +90,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginInProgressRef = useRef(false)
   /** 最近一次静默登录的尝试指纹，防止同一指纹反复重试。 */
   const lastAttemptRef = useRef<string | null>(null)
-  /** 续期瞬时失败后，下一次续期不得早于此时刻（防 delay=0 风暴）。 */
+  /** 续期失败后，最早允许再试的时刻；为 0 表示不限制。 */
   const renewNotBeforeMsRef = useRef(0)
-  /** 驱动墙钟：JWT 到期或可见性变化时推进，好让 sessionReady 立刻翻转。 */
+  /** 当前时间：JWT 到期或页签回到前台时更新，用来立刻重算是否仍已登录。 */
   const [authNow, setAuthNow] = useState(() => Date.now())
 
   /** 会话状态由「当前钱包 + 按地址 JWT 表」派生，无独立 session 对象可同步。 */
@@ -114,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timerId)
   }, [authState])
 
-  // 后台标签页可能节流 setTimeout；回前台时立刻按墙钟重算 sessionReady
+  // 后台标签页可能推迟定时器；回到前台时立刻按当前时间重算是否仍已登录
   useEffect(() => {
     const onVisible = () => {
       if (document.visibilityState === 'visible') setAuthNow(Date.now())
@@ -203,7 +205,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (action.type === 'renewAt') {
-      const targetAt = Math.max(action.at, renewNotBeforeMsRef.current)
+      const targetAt = clampRenewAtMs(action.at, renewNotBeforeMsRef.current)
       const delay = Math.max(0, targetAt - Date.now())
       const timerId = window.setTimeout(() => {
         lastAttemptRef.current = null
@@ -214,9 +216,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .catch(() => {
             const nextError = useAuthStore.getState().loginError
             if (isSessionRenewHaltError(nextError)) return
-            // 瞬时失败：清空错误以免 effect 空转，并强制至少间隔 5s 再续
+            // 瞬时失败：清掉错误并推迟再试，避免立刻连着重试
             useAuthStore.getState().setLoginError(null)
-            renewNotBeforeMsRef.current = Date.now() + 5_000
+            renewNotBeforeMsRef.current = renewNotBeforeAfterTransientFailureMs(Date.now())
             setAuthNow(Date.now())
           })
       }, delay)
