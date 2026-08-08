@@ -14,3 +14,8 @@ allowBuilds:
 
 # Non-interactive installs (CI / agent) may purge node_modules without a TTY.
 confirmModulesPurge: false
+
+minimumReleaseAgeExclude:
+  - deslop-js@0.9.7
+  - oxlint-plugin-react-doctor@0.9.7
+  - react-doctor@0.9.7

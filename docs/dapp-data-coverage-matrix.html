@@ -430,11 +430,11 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>419</strong></div>
-        <div class="stat ok"><span>✅</span><strong>291</strong></div>
+        <div class="stat ok"><span>✅</span><strong>292</strong></div>
         <div class="stat bad"><span>❌</span><strong>1</strong></div>
         <div class="stat partial"><span>🟡</span><strong>8</strong></div>
         <div class="stat copy"><span>📘</span><strong>72</strong></div>
-        <div class="stat pending"><span>🔍</span><strong>1</strong></div>
+        <div class="stat pending"><span>🔍</span><strong>0</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
         <div class="stat na"><span>⚪</span><strong>40</strong></div>
       </div>
@@ -7980,26 +7980,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="6-资产" data-search="a-059 资产 position·质押·领取流程 「领取产出」中间层（收益 / 加成分入口）再进 mixed 读取展示/提交 现网：仓位「领取」→直进 `assetsclaimmodal`（腿在提交时拆）；稿 copy `4848:264`+整页 `4781:3137` 叠「领取产出」 figma copy `4848:264`；主仓验收 `4781:3137`；手册 locked mixed 两腿 —  🔍 待核实 待核实 产品确认：有收益+加成并存时是否必须先出「领取产出」选腿，再进领取数量（mixed）；确认前**不实现**中间层。链写仍是 `claimrewardmixed`/`claimextrarewardmixed`（与 a-041–a-043 同）。旁系：赎回确认浅色换皮（copy `4848:250` vs 现 `assetsredeemconfirm`）低优先、同待设计钉死 —  open 卡上短文案「领取/赎回」与现网一致；差的是领取路径是否多一层选腿。复投在第二步 mixed，不因中间层取消">
+<article class="row" data-status="ok" data-section="6-资产" data-search="a-059 资产 position·质押·领取流程 「领取产出」中间层（收益 / 加成分入口）再进 mixed 读取展示/提交 仓位「领取」→`assetsclaimoutputmodal`（0 禁用对应 cta）→单腿 `assetsclaimmodal`；卡上收益=`blockreward`、加成=`extrainterest` figma copy `4848:264`；主仓验收 `4781:3137`；手册 locked mixed 两腿 —  ✅ 已对齐 — — —  closed 复投在第二步 mixed。赎回浅色贴稿见 a-044/a-045（`assetsredeemconfirm` + `inlinealert` notice）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-059</span>
     <span class="surface">Position·质押·领取流程</span>
     <span class="datum">「领取产出」中间层（收益 / 加成分入口）再进 Mixed</span>
     <span class="rw pill">读取展示/提交</span>
-    <span class="status badge pending">🔍 待核实</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>资产</dd></div>
-      <div><dt>T1 归因</dt><dd>待核实</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
-      <div><dt>A/B/C 链</dt><dd>open</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>现网：仓位「领取」→直进 `AssetsClaimModal`（腿在提交时拆）；稿 Copy `4848:264`+整页 `4781:3137` 叠「领取产出」</dd></div>
+      <div><dt>A/B/C 链</dt><dd>closed</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>仓位「领取」→`AssetsClaimOutputModal`（0 禁用对应 CTA）→单腿 `AssetsClaimModal`；卡上收益=`blockReward`、加成=`extraInterest`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>Figma Copy `4848:264`；主仓验收 `4781:3137`；手册 Locked Mixed 两腿</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品确认：有收益+加成并存时是否必须先出「领取产出」选腿，再进领取数量（Mixed）；确认前**不实现**中间层。链写仍是 `claimRewardMixed`/`claimExtraRewardMixed`（与 A-041–A-043 同）。旁系：赎回确认浅色换皮（Copy `4848:250` vs 现 `AssetsRedeemConfirm`）低优先、同待设计钉死</dd></div>
-      <div class="wide"><dt>备注</dt><dd>卡上短文案「领取/赎回」与现网一致；差的是领取路径是否多一层选腿。复投在第二步 Mixed，不因中间层取消</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>复投在第二步 Mixed。赎回浅色贴稿见 A-044/A-045（`AssetsRedeemConfirm` + `InlineAlert` notice）</dd></div>
     </dl>
   </div>
 </article></div>
@@ -10166,7 +10166,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T05:49:17.398Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T06:46:27.088Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {

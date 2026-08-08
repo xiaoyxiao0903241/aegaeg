@@ -6,7 +6,7 @@
   "scripts": {
     "render:home": "node scripts/render-home.mjs",
     "docs:matrix": "node scripts/render-coverage-matrix.mjs",
-    "react-doctor": "pnpm dlx react-doctor@latest -y",
+    "react-doctor": "react-doctor",
     "build:tokens": "node scripts/generate-tokens.mjs",
     "check:tokens": "pnpm build:tokens && git diff --exit-code -- src/shared/styles/tokens/theme.css src/shared/styles/tokens/tokens.ts",
     "env:staging": "node scripts/switch-env.mjs staging",
@@ -106,6 +106,7 @@
     "lint-staged": "^17.0.8",
     "prettier": "^3.9.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "react-doctor": "^0.9.7",
     "stylelint": "^17.14.0",
     "stylelint-config-standard": "^40.0.0",
     "terser": "^5.48.0",
