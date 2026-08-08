@@ -55,6 +55,7 @@ function mapStatus(status) {
   const s = status.trim()
   if (s.includes('✅')) return '✅ 已对齐'
   if (s.includes('❌')) return '❌ 未接入'
+  if (s.includes('📘') || s.includes('稿链文案')) return '📘 稿链文案'
   if (s.includes('部分')) return '🟡 部分'
   if (s.includes('待核实')) return '🔍 待核实'
   if (s.includes('不适用')) return '⚪ 不适用'
@@ -199,7 +200,9 @@ const rulesBlock = `# Dapp 数据覆盖矩阵
 
 ### 状态
 
-\`✅ 已对齐\` · \`❌ 未接入\` · \`🟡 部分\` · \`🔍 待核实\` · \`⚪ 不适用\` · \`🚫 阻塞\`
+\`✅ 已对齐\` · \`❌ 未接入\` · \`🟡 部分\` · \`📘 稿链文案\` · \`🔍 待核实\` · \`⚪ 不适用\` · \`🚫 阻塞\`
+
+\`📘 稿链文案\`：稿可见文案/单位与手册·API 不符（FE 跟稿）；非 FE 接线错。仍计缺口。
 
 ### T1 归因
 

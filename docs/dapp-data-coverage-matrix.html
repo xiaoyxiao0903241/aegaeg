@@ -22,6 +22,8 @@
     --bad-bg: rgba(232, 93, 93, 0.12);
     --partial: #e0a84c;
     --partial-bg: rgba(224, 168, 76, 0.14);
+    --copy: #5ec8c0;
+    --copy-bg: rgba(94, 200, 192, 0.14);
     --pending: #6b9fff;
     --pending-bg: rgba(107, 159, 255, 0.12);
     --blocked: #c77dff;
@@ -103,6 +105,7 @@
   .stat.ok strong { color: var(--ok); }
   .stat.bad strong { color: var(--bad); }
   .stat.partial strong { color: var(--partial); }
+  .stat.copy strong { color: var(--copy); }
   .stat.pending strong { color: var(--pending); }
   .stat.blocked strong { color: var(--blocked); }
   .stat.na strong { color: var(--na); }
@@ -188,6 +191,7 @@
   .filters button[data-filter="ok"][aria-pressed="true"] { background: var(--ok-bg); color: var(--ok); }
   .filters button[data-filter="bad"][aria-pressed="true"] { background: var(--bad-bg); color: var(--bad); }
   .filters button[data-filter="partial"][aria-pressed="true"] { background: var(--partial-bg); color: var(--partial); }
+  .filters button[data-filter="copy"][aria-pressed="true"] { background: var(--copy-bg); color: var(--copy); }
   .filters button[data-filter="pending"][aria-pressed="true"] { background: var(--pending-bg); color: var(--pending); }
   .filters button[data-filter="blocked"][aria-pressed="true"] { background: var(--blocked-bg); color: var(--blocked); }
   .filters button[data-filter="na"][aria-pressed="true"] { background: var(--na-bg); color: var(--na); }
@@ -335,6 +339,7 @@
   .badge.ok { background: var(--ok-bg); color: var(--ok); }
   .badge.bad { background: var(--bad-bg); color: var(--bad); }
   .badge.partial { background: var(--partial-bg); color: var(--partial); }
+  .badge.copy { background: var(--copy-bg); color: var(--copy); }
   .badge.pending { background: var(--pending-bg); color: var(--pending); }
   .badge.blocked { background: var(--blocked-bg); color: var(--blocked); }
   .badge.na { background: var(--na-bg); color: var(--na); }
@@ -425,10 +430,11 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>417</strong></div>
-        <div class="stat ok"><span>✅</span><strong>280</strong></div>
+        <div class="stat ok"><span>✅</span><strong>283</strong></div>
         <div class="stat bad"><span>❌</span><strong>1</strong></div>
-        <div class="stat partial"><span>🟡</span><strong>84</strong></div>
-        <div class="stat pending"><span>🔍</span><strong>6</strong></div>
+        <div class="stat partial"><span>🟡</span><strong>13</strong></div>
+        <div class="stat copy"><span>📘</span><strong>71</strong></div>
+        <div class="stat pending"><span>🔍</span><strong>3</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
         <div class="stat na"><span>⚪</span><strong>40</strong></div>
       </div>
@@ -442,6 +448,7 @@
           <button type="button" data-filter="ok" aria-pressed="false">✅</button>
           <button type="button" data-filter="bad" aria-pressed="false">❌</button>
           <button type="button" data-filter="partial" aria-pressed="false">🟡</button>
+          <button type="button" data-filter="copy" aria-pressed="false">📘</button>
           <button type="button" data-filter="pending" aria-pressed="false">🔍</button>
           <button type="button" data-filter="blocked" aria-pressed="false">🚫</button>
           <button type="button" data-filter="na" aria-pressed="false">⚪</button>
@@ -454,7 +461,7 @@
 
     <details class="rules-panel">
       <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">规则（可展开）</summary>
-      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；宿主专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>**控件布局与可见文案** = Figma PC 验收帧（[`figma-pages.md`](./figma-pages.md)）；已实现优先仅作落地次序，**不以离稿实现覆盖稿**；无稿才 HTML 原型</td></tr><tr><td>数/写 SSOT</td><td>金额算法、门闸、刷新 = 链上手册 / API；与 UI 文案分层</td></tr><tr><td>稿链冲突</td><td>可见文案/单位标签**先保留稿面**；T1=`文案/单位与链不匹配（稿如此）`；修复默认 **改稿（Figma+i18n）对齐链，或产品确认保留稿面**；**禁止** FE 默认离稿改 i18n</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>缺数展示</td><td>金额/数量**未取到显 `0`** → T1=`设计取舍（缺数显0）`，状态 **`✅ 已对齐`**（视为正确）；**禁止**改成诚实空 `—`；仅无字段的指标才 `—`/`⚪`</td></tr><tr><td>证据杠</td><td>**前端接入证**：代码已按手册/API（及稿的控件/可见文案）接线、门闸、格式化与空态（含缺数显 0）正确 → 可 `✅ 已对齐`；**不要求** Prod 样本对账。写路径不真发交易。链上/后端数值业务对错、Prod QA **不归**本矩阵 FE 门闩</td></tr><tr><td>非本矩阵</td><td>Prod QA、链上业务审计、后端 indexer 正确性</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `🔍 待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`状态` ≠ `✅ 已对齐` / `⚪ 不适用` 的行即现行缺口；缺口行 `修复方法` 必填</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>代码位置</th><th>文档位置</th><th>API接口</th><th>状态</th><th>T1归因</th><th>修复方法</th><th>继承自</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>宿主与公共壳</td><td>`H-`</td></tr><tr><td>质押</td><td>`S-`</td></tr><tr><td>奖励</td><td>`W-`</td></tr><tr><td>释放</td><td>`L-`</td></tr><tr><td>兑换</td><td>`X-`</td></tr><tr><td>资产</td><td>`A-`</td></tr><tr><td>社区</td><td>`CM-`</td></tr><tr><td>共建</td><td>`GN-`</td></tr><tr><td>代码反查附录</td><td>`Z-`</td></tr></table></div><h3>状态</h3><p>`✅ 已对齐` · `❌ 未接入` · `🟡 部分` · `🔍 待核实` · `⚪ 不适用` · `🚫 阻塞`</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>设计取舍（缺数显0）</li><li>待核实</li></ul><p>（`✅ 已对齐` / `⚪ 不适用` 行 T1 默认 `—`；**例外**：`设计取舍（缺数显0）` 可标在 ✅ 行以记录口径。缺口行须填 `修复方法`。）</p>
+      <h2>规则</h2><div class="table-wrap"><table class="rules"><tr><th>项</th><th>值</th></tr><tr><td>范围</td><td>dapp 全功能；不含 home；宿主专章 = `host` + `views/dapp/shared`</td></tr><tr><td>盘点</td><td>UI+Code 双扫；动态位 = Num+Copy（Visible+FAQ）</td></tr><tr><td>粒度</td><td>读 = 字段级；写 = 动作级（门闸 / 预检 / 成功后刷新）</td></tr><tr><td>UI 基线</td><td>**控件布局与可见文案** = Figma PC 验收帧（[`figma-pages.md`](./figma-pages.md)）；已实现优先仅作落地次序，**不以离稿实现覆盖稿**；无稿才 HTML 原型</td></tr><tr><td>数/写 SSOT</td><td>金额算法、门闸、刷新 = 链上手册 / API；与 UI 文案分层</td></tr><tr><td>稿链冲突</td><td>可见文案/单位标签**先保留稿面**；状态 **`📘 稿链文案`** + T1=`文案/单位与链不匹配（稿如此）`；修复默认 **改稿（Figma+i18n）对齐链，或产品确认保留稿面**；**禁止** FE 默认离稿改 i18n</td></tr><tr><td>读源优先</td><td>**overview / summary** 与同页 **API 表聚合/标题** → 采纳 API；仅当字段无同口径 API、属链余额/仓位时才链优先；API 仅作无钱包回退</td></tr><tr><td>缺数展示</td><td>金额/数量**未取到显 `0`** → T1=`设计取舍（缺数显0）`，状态 **`✅ 已对齐`**（视为正确）；**禁止**改成诚实空 `—`；仅无字段的指标才 `—`/`⚪`</td></tr><tr><td>证据杠</td><td>**前端接入证**：代码已按手册/API（及稿的控件/可见文案）接线、门闸、格式化与空态（含缺数显 0）正确 → 可 `✅ 已对齐`；**不要求** Prod 样本对账。写路径不真发交易。链上/后端数值业务对错、Prod QA **不归**本矩阵 FE 门闩</td></tr><tr><td>非本矩阵</td><td>Prod QA、链上业务审计、后端 indexer 正确性</td></tr><tr><td>完成门闩</td><td>Complete-known（允许 `🔍 待核实`，须写原因与下一步）</td></tr><tr><td>缺口</td><td>`状态` ≠ `✅ 已对齐` / `⚪ 不适用` 的行即现行缺口；缺口行 `修复方法` 必填</td></tr></table></div><h3>列</h3><div class="table-wrap"><table class="rules"><tr><th>行号</th><th>章节</th><th>页面/表面</th><th>数据或动作</th><th>读/写</th><th>代码位置</th><th>文档位置</th><th>API接口</th><th>状态</th><th>T1归因</th><th>修复方法</th><th>继承自</th><th>A/B/C链</th><th>备注</th></tr></table></div><h3>行号前缀</h3><div class="table-wrap"><table class="rules"><tr><th>章</th><th>前缀</th></tr><tr><td>宿主与公共壳</td><td>`H-`</td></tr><tr><td>质押</td><td>`S-`</td></tr><tr><td>奖励</td><td>`W-`</td></tr><tr><td>释放</td><td>`L-`</td></tr><tr><td>兑换</td><td>`X-`</td></tr><tr><td>资产</td><td>`A-`</td></tr><tr><td>社区</td><td>`CM-`</td></tr><tr><td>共建</td><td>`GN-`</td></tr><tr><td>代码反查附录</td><td>`Z-`</td></tr></table></div><h3>状态</h3><p>`✅ 已对齐` · `❌ 未接入` · `🟡 部分` · `📘 稿链文案` · `🔍 待核实` · `⚪ 不适用` · `🚫 阻塞`</p><p>`📘 稿链文案`：稿可见文案/单位与手册·API 不符（FE 跟稿）；**非** FE 接线错。修复默认改稿或产品确认保留稿面。仍计缺口。</p><h3>T1 归因</h3><ul><li>链/手册/API 未提供</li><li>手册或API与链不符</li><li>手册↔API打架</li><li>FE 读源/算法/门闸/刷新错误</li><li>FE 缺接线</li><li>文案/单位与链不匹配（稿如此）</li><li>设计取舍（故意空/0）</li><li>设计取舍（缺数显0）</li><li>待核实</li></ul><p>（`✅ 已对齐` / `⚪ 不适用` 行 T1 默认 `—`；**例外**：`设计取舍（缺数显0）` 可标在 ✅ 行以记录口径。缺口行须填 `修复方法`。）</p>
     </details>
 
     <div id="chapters"><section class="chapter" id="1-宿主与公共壳" data-section="1-宿主与公共壳">
@@ -992,13 +999,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="1-宿主与公共壳" data-search="h-024 宿主 connectpromocard `needssignin` 时标题仍为 connect 促销文案 读 `src/views/dapp/shared/connect-promo-card.tsx`：`t.dapp.connect.promotitle` 固定；按钮经 `walletconnectchip` 可切 `signinrequired` agents「连接 ≠ 业务登录」；i18n `dapp.connect` —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  c-21 标题/按钮语义分裂；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="1-宿主与公共壳" data-search="h-024 宿主 connectpromocard `needssignin` 时标题仍为 connect 促销文案 读 `src/views/dapp/shared/connect-promo-card.tsx`：`t.dapp.connect.promotitle` 固定；按钮经 `walletconnectchip` 可切 `signinrequired` agents「连接 ≠ 业务登录」；i18n `dapp.connect` —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  c-21 标题/按钮语义分裂；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-024</span>
     <span class="surface">ConnectPromoCard</span>
     <span class="datum">`needsSignIn` 时标题仍为 connect 促销文案</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1505,13 +1512,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-006 质押 hub·概览 总销毁量 = `agxcontributionswap.getconfig().totalburned` 读 `src/views/dapp/staking/hub/use-hub.ts`：`labels.burned`←overview.`totalburned`；prod=`1.5e9` 手册 · `contracts/agxcontributionswap.md` `getconfig` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-09  c-09 r2 终裁：不拆行；数✅/hint 债同 s-014；prod 量仅 loaded 旁证；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-006 质押 hub·概览 总销毁量 = `agxcontributionswap.getconfig().totalburned` 读 `src/views/dapp/staking/hub/use-hub.ts`：`labels.burned`←overview.`totalburned`；prod=`1.5e9` 手册 · `contracts/agxcontributionswap.md` `getconfig` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-09  c-09 r2 终裁：不拆行；数✅/hint 债同 s-014；prod 量仅 loaded 旁证；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-006</span>
     <span class="surface">Hub·概览</span>
     <span class="datum">总销毁量 = `AgxContributionSwap.getConfig().totalBurned`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1643,13 +1650,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-012 质押 hub·faq 「约 14,400 块 / epoch≈12h / 日 2 次」 读(copy) `zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length` 手册 epoch / `epochsperday` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡（接线在、文案错≠未接入）；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-012 质押 hub·faq 「约 14,400 块 / epoch≈12h / 日 2 次」 读(copy) `zh.ts` assets rebase steps「约 14,400 区块 / 约 12 小时 / 每日 2 次」已渲染；≠链 `epoch.length` 手册 epoch / `epochsperday` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡（接线在、文案错≠未接入）；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-012</span>
     <span class="surface">Hub·FAQ</span>
     <span class="datum">「约 14,400 块 / Epoch≈12h / 日 2 次」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1666,13 +1673,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-013 质押 hub·faq 「收益以 gagx 结算 / 可直接挖 x」 读(copy) `zh.ts` hub/stake faq 已渲染 gagx 结算叙事 手册 §8/§9 结算 agx；§15 挖矿须 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-08 · a-07  c-08 · a-07 r2 确认 r1 ❌→🟡（文案已接、口径错）；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-013 质押 hub·faq 「收益以 gagx 结算 / 可直接挖 x」 读(copy) `zh.ts` hub/stake faq 已渲染 gagx 结算叙事 手册 §8/§9 结算 agx；§15 挖矿须 gagx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-08 · a-07  c-08 · a-07 r2 确认 r1 ❌→🟡（文案已接、口径错）；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-013</span>
     <span class="surface">Hub·FAQ</span>
     <span class="datum">「收益以 gAGX 结算 / 可直接挖 X」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1689,13 +1696,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-014 质押 hub·faq/hint 总销毁量 hint 含销毁债券 读(copy) `overview.metrics.burned.hint` 同 s-006 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-09  c-09 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-014 质押 hub·faq/hint 总销毁量 hint 含销毁债券 读(copy) `overview.metrics.burned.hint` 同 s-006 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-09  c-09 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-014</span>
     <span class="surface">Hub·FAQ/hint</span>
     <span class="datum">总销毁量 hint 含销毁债券</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1712,13 +1719,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-015 质押 hub·faq rebase hint「每个 epoch（约 12 小时）」 读(copy) `metrics.rebase.hint` 已渲染死写 12h 同 s-012 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-015 质押 hub·faq rebase hint「每个 epoch（约 12 小时）」 读(copy) `metrics.rebase.hint` 已渲染死写 12h 同 s-012 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-015</span>
     <span class="surface">Hub·FAQ</span>
     <span class="datum">Rebase hint「每个 Epoch（约 12 小时）」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1919,13 +1926,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-024 质押 stake·detail 当前 rebase 收益 / 加成 读 数跟链 `blockreward`/`extrainterest`；展示用 `gagx_decimals` 标 **gagx** 手册 getstakerewards；链付 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  c-02 · a-07 单位错已定；数值待核实；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-024 质押 stake·detail 当前 rebase 收益 / 加成 读 数跟链 `blockreward`/`extrainterest`；展示用 `gagx_decimals` 标 **gagx** 手册 getstakerewards；链付 agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  c-02 · a-07 单位错已定；数值待核实；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-024</span>
     <span class="surface">Stake·Detail</span>
     <span class="datum">当前 Rebase 收益 / 加成</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1965,13 +1972,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-026 质押 stake·faq 「每日 2 次 rebase / 约 12h」等 读(copy) `stake.faq` / intro 已渲染死写 `epoch.length` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-026 质押 stake·faq 「每日 2 次 rebase / 约 12h」等 读(copy) `stake.faq` / intro 已渲染死写 `epoch.length` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  c-14 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-026</span>
     <span class="surface">Stake·FAQ</span>
     <span class="datum">「每日 2 次 Rebase / 约 12h」等</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -1988,13 +1995,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-027 质押 stake·faq/机制 「收益以 gagx」 读(copy) mechanismsteps / faq 已渲染 链 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · c-08  c-02 · c-08 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-027 质押 stake·faq/机制 「收益以 gagx」 读(copy) mechanismsteps / faq 已渲染 链 agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · c-08  c-02 · c-08 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-027</span>
     <span class="surface">Stake·FAQ/机制</span>
     <span class="datum">「收益以 gAGX」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -2057,13 +2064,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-030 质押 bond·dock/detail 「债券溢价率」标签 vs 展示值 读(copy+num) 标签「溢价率」/faq「收益空间」；值=`discountratebp` 价率（85%）非 15% 空间 手册 discountratebp=成交价率 —  🟡 部分 文案/单位与链不匹配（稿如此） 产品确认保留「溢价率」稿面；数值是否=手册溢价语义另核实（禁改成折扣文案） c-16  c-16 曾 b-13→c；数对见 s-029；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-030 质押 bond·dock/detail 「债券溢价率」标签 vs 展示值 读(copy+num) 标签「溢价率」/faq「收益空间」；值=`discountratebp` 价率（85%）非 15% 空间 手册 discountratebp=成交价率 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 产品确认保留「溢价率」稿面；数值是否=手册溢价语义另核实（禁改成折扣文案） c-16  c-16 曾 b-13→c；数对见 s-029；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-030</span>
     <span class="surface">Bond·Dock/Detail</span>
     <span class="datum">「债券溢价率」标签 vs 展示值</span>
     <span class="rw pill">读(Copy+Num)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -2264,13 +2271,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-039 质押 bond·detail 当前 rebase 收益 读 `usebonddetail`←`row.profit`（`getstakeprofit`）；展示标 gagx 手册 bonddepository.`getstakeprofit`；链付 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  c-02 · a-07 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-039 质押 bond·detail 当前 rebase 收益 读 `usebonddetail`←`row.profit`（`getstakeprofit`）；展示标 gagx 手册 bonddepository.`getstakeprofit`；链付 agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  c-02 · a-07 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-039</span>
     <span class="surface">Bond·Detail</span>
     <span class="datum">当前 Rebase 收益</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -2310,13 +2317,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-041 质押 bond·faq 溢价率解释 / 折扣区间文案 读(copy) lpbond/burnbond.faq 已渲染「溢价」叙事；值语义见 s-030 discountratebp 语义 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-16  c-16 r2 确认 r1 ❌→🟡；c-13 复投漏 180 属 shared faq；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-041 质押 bond·faq 溢价率解释 / 折扣区间文案 读(copy) lpbond/burnbond.faq 已渲染「溢价」叙事；值语义见 s-030 discountratebp 语义 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-16  c-16 r2 确认 r1 ❌→🟡；c-13 复投漏 180 属 shared faq；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-041</span>
     <span class="surface">Bond·FAQ</span>
     <span class="datum">溢价率解释 / 折扣区间文案</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -2402,13 +2409,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-045 质押 xmine·dock 「锁定天数 / 24 小时后释放」 读(copy) `meta.lockvalue`=`24 小时后释放` 已渲染；非自动释放 手册 §15.4 `activatewarmup` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  c-03 r2 确认 r1 ❌→🟡；动作存在见 s-064；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-045 质押 xmine·dock 「锁定天数 / 24 小时后释放」 读(copy) `meta.lockvalue`=`24 小时后释放` 已渲染；非自动释放 手册 §15.4 `activatewarmup` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  c-03 r2 确认 r1 ❌→🟡；动作存在见 s-064；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-045</span>
     <span class="surface">Xmine·Dock</span>
     <span class="datum">「锁定天数 / 24 小时后释放」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -2471,13 +2478,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-048 质押 xmine·detail 「x 价格」= agx per x（自 xperagx） 读 `usexminedetail`：`agxamountperxfromxperagx`→`n agx`；prod xperagx=`1e19`→`10 agx`；非 usd 手册 `xperagx` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-17  c-17 r2 确认🟡：标签易误解；值对；非金钱假零；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-048 质押 xmine·detail 「x 价格」= agx per x（自 xperagx） 读 `usexminedetail`：`agxamountperxfromxperagx`→`n agx`；prod xperagx=`1e19`→`10 agx`；非 usd 手册 `xperagx` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-17  c-17 r2 确认🟡：标签易误解；值对；非金钱假零；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-048</span>
     <span class="surface">Xmine·Detail</span>
     <span class="datum">「X 价格」= AGX per X（自 xPerAgx）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -2632,13 +2639,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-055 质押 xmine·faq/机制 「24h 锁定后即可…」暗示自动 读(copy) faq + mechanismsteps 已渲染 同 s-045 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  c-03 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="2-质押" data-search="s-055 质押 xmine·faq/机制 「24h 锁定后即可…」暗示自动 读(copy) faq + mechanismsteps 已渲染 同 s-045 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  c-03 r2 确认 r1 ❌→🟡；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-055</span>
     <span class="surface">Xmine·FAQ/机制</span>
     <span class="datum">「24h 锁定后即可…」暗示自动</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3007,13 +3014,13 @@
     <span class="count">58</span>
   </header>
   <p class="meta">对照源指针： [`research/dapp-tab-source-index.md` §3](./research/dapp-tab-source-index.md#3-rewards)</p><p class="meta">代码根： `src/views/dapp/rewards/`</p>
-  <div class="rows"><article class="row" data-status="partial" data-section="3-奖励" data-search="w-001 奖励 hub 统计 总奖励 `total_reward` 展示为 gagx 读 `userewardshub` 拼 `gagx`；api 字段标 gagx；链 dao 结算 agx `docs/backend-api/api.md` #performance/making-overview（total_reward=gagx） `post /performance/making-overview`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-07→c-15  c-15 采纳 api 字段；单位见 c-15；figma 对照：可见文案跟稿；张力进改稿队列">
+  <div class="rows"><article class="row" data-status="copy" data-section="3-奖励" data-search="w-001 奖励 hub 统计 总奖励 `total_reward` 展示为 gagx 读 `userewardshub` 拼 `gagx`；api 字段标 gagx；链 dao 结算 agx `docs/backend-api/api.md` #performance/making-overview（total_reward=gagx） `post /performance/making-overview`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-07→c-15  c-15 采纳 api 字段；单位见 c-15；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-001</span>
     <span class="surface">Hub 统计</span>
     <span class="datum">总奖励 `total_reward` 展示为 gAGX</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3168,13 +3175,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-008 奖励 hub 卡片·发展 `unlocked_claimable` 标 gagx 读 `usemarketallowancesummary`；`formatgagxbalance` 手册 · `marketfund.agx()`；api 字段文 unlocked=agx `post /market-allowance/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-09→c-05  c-05 api 文 agx；ui 写 gagx；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-008 奖励 hub 卡片·发展 `unlocked_claimable` 标 gagx 读 `usemarketallowancesummary`；`formatgagxbalance` 手册 · `marketfund.agx()`；api 字段文 unlocked=agx `post /market-allowance/summary`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-09→c-05  c-05 api 文 agx；ui 写 gagx；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-008</span>
     <span class="surface">Hub 卡片·发展</span>
     <span class="datum">`unlocked_claimable` 标 gAGX</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3237,13 +3244,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-011 奖励 hub faq 「agx / gagx 口径」copy 读 `zh.ts` `rewards.faq`（hub 条无「1:1」；1:1 在 cards/hint/子 faq） 链结算 agx；api 多标 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 1:1 贡献错文案见 w-026/052/054；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-011 奖励 hub faq 「agx / gagx 口径」copy 读 `zh.ts` `rewards.faq`（hub 条无「1:1」；1:1 在 cards/hint/子 faq） 链结算 agx；api 多标 gagx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 1:1 贡献错文案见 w-026/052/054；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-011</span>
     <span class="surface">Hub FAQ</span>
     <span class="datum">「AGX / gAGX 口径」Copy</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3375,13 +3382,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-017 奖励 lucky 中奖榜 `reward_amount` 后缀 gagx 读 `mapluckywinnertorow` api winners 标 gagx；链付 agx `post /lucky-reward/winners`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-017 奖励 lucky 中奖榜 `reward_amount` 后缀 gagx 读 `mapluckywinnertorow` api winners 标 gagx；链付 agx `post /lucky-reward/winners`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-017</span>
     <span class="surface">Lucky 中奖榜</span>
     <span class="datum">`reward_amount` 后缀 gAGX</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3444,13 +3451,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-020 奖励 lucky faq 「折算 gagx」「1:1 贡献」 读 `lucky.faq` 链 agx + divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06·c-15  c-06·c-15 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-020 奖励 lucky faq 「折算 gagx」「1:1 贡献」 读 `lucky.faq` 链 agx + divisor=6 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06·c-15  c-06·c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-020</span>
     <span class="surface">Lucky FAQ</span>
     <span class="datum">「折算 gAGX」「1:1 贡献」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3490,13 +3497,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-022 奖励 referral 详情 `total_referral_reward` + gagx 读 `use-referral.ts` api 标 gagx；dao 付 agx `post /referral-award/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-022 奖励 referral 详情 `total_referral_reward` + gagx 读 `use-referral.ts` api 标 gagx；dao 付 agx `post /referral-award/summary`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-022</span>
     <span class="surface">Referral 详情</span>
     <span class="datum">`total_referral_reward` + gAGX</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3582,13 +3589,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-026 奖励 referral faq mixed「1:1 消耗」 读 `referral.faq` + card body 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06←a-11  c-06 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-026 奖励 referral faq mixed「1:1 消耗」 读 `referral.faq` + card body 链 divisor=6 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06←a-11  c-06 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-026</span>
     <span class="surface">Referral FAQ</span>
     <span class="datum">Mixed「1:1 消耗」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3605,36 +3612,36 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-027 奖励 referral·写 dao mixed 领取（referral=42） 写 `submitdaomixedclaim`：校验 `dao_reward_sign_type`；`writedaomixedclaim`；双读贡献/池余额；`invalidateafterrewardsmixedclaim` 手册 daopool：`signtype` 须=4；与 openapi/fe 41–45 冲突 `post /claim/dao-reward`（signtype 41–45）  🔍 待核实 手册↔api打架 prod cast/`eth_call` 证实合约接受 41–45 抑或仅 4；再定 fe/签服 a-10  a-10 **高风险** 写路径未真发">
+<article class="row" data-status="ok" data-section="3-奖励" data-search="w-027 奖励 referral·写 dao mixed 领取（referral=42） 写 `submitdaomixedclaim`：校验 `dao_reward_sign_type`；`writedaomixedclaim`；双读贡献/池余额；`invalidateafterrewardsmixedclaim` 手册 daopool 仍写须=4（入仓过时）；prod 链不强制=4 `post /claim/dao-reward`（signtype 41–45）  ✅ 已对齐 — — a-10  a-10 fe/api signtype 41–45 与 prod 行为对齐（impl 无 errorinvalidsigntype；eth_call 0/4/41/42 均进 ecdsa）。手册债另队（禁手改入仓正文）。完整签领未真发≠矩阵门闩">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-027</span>
     <span class="surface">Referral·写</span>
     <span class="datum">Dao Mixed 领取（REFERRAL=42）</span>
     <span class="rw pill">写</span>
-    <span class="status badge pending">🔍 待核实</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>奖励</dd></div>
-      <div><dt>T1 归因</dt><dd>手册↔API打架</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>A-10</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-10</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`submitDaoMixedClaim`：校验 `DAO_REWARD_SIGN_TYPE`；`writeDaoMixedClaim`；双读贡献/池余额；`invalidateAfterRewardsMixedClaim`</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>手册 DaoPool：`signType` 须=4；与 OpenAPI/FE 41–45 冲突</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>手册 DaoPool 仍写须=4（入仓过时）；Prod 链不强制=4</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /claim/dao-reward`（signType 41–45）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>Prod cast/`eth_call` 证实合约接受 41–45 抑或仅 4；再定 FE/签服</dd></div>
-      <div class="wide"><dt>备注</dt><dd>**高风险** 写路径未真发</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>FE/API signType 41–45 与 Prod 行为对齐（impl 无 ErrorInvalidSignType；eth_call 0/4/41/42 均进 ECDSA）。手册债另队（禁手改入仓正文）。完整签领未真发≠矩阵门闩</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-028 奖励 participate 详情 总奖励 gagx / 持仓 / 贡献 / 下次发放空 读 summary 走 api；nextpayout 空同 w-024 — `post /participation-award/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15·a-20  c-15·a-20 数跟 summary；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-028 奖励 participate 详情 总奖励 gagx / 持仓 / 贡献 / 下次发放空 读 summary 走 api；nextpayout 空同 w-024 — `post /participation-award/summary`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15·a-20  c-15·a-20 数跟 summary；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-028</span>
     <span class="surface">Participate 详情</span>
     <span class="datum">总奖励 gAGX / 持仓 / 贡献 / 下次发放空</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3674,13 +3681,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-030 奖励 participate faq 1:1 贡献 copy 读 `participate.faq` 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-030 奖励 participate faq 1:1 贡献 copy 读 `participate.faq` 链 divisor=6 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-030</span>
     <span class="surface">Participate FAQ</span>
     <span class="datum">1:1 贡献 Copy</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3697,36 +3704,36 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-031 奖励 participate·写 dao mixed（participation=43） 写 `submitdaomixedclaim` 同 w-027 `post /claim/dao-reward`  🔍 待核实 手册↔api打架 同 w-027 prod 证实 signtype a-10  a-10 同签类型风险">
+<article class="row" data-status="ok" data-section="3-奖励" data-search="w-031 奖励 participate·写 dao mixed（participation=43） 写 `submitdaomixedclaim` 同 w-027 `post /claim/dao-reward`  ✅ 已对齐 — — a-10  a-10 同 w-027：fe 跟链；手册须=4 过时另记">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-031</span>
     <span class="surface">Participate·写</span>
     <span class="datum">Dao Mixed（PARTICIPATION=43）</span>
     <span class="rw pill">写</span>
-    <span class="status badge pending">🔍 待核实</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>奖励</dd></div>
-      <div><dt>T1 归因</dt><dd>手册↔API打架</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>A-10</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-10</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`submitDaoMixedClaim`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 W-027</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /claim/dao-reward`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 W-027 Prod 证实 signType</dd></div>
-      <div class="wide"><dt>备注</dt><dd>同签类型风险</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>同 W-027：FE 跟链；手册须=4 过时另记</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-032 奖励 cobuild 详情 `total_rank_reward` gagx + 折算 读 `use-cobuild.ts` api 含 rank+surpass `post /rank-reward/summary`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-032 奖励 cobuild 详情 `total_rank_reward` gagx + 折算 读 `use-cobuild.ts` api 含 rank+surpass `post /rank-reward/summary`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-032</span>
     <span class="surface">Cobuild 详情</span>
     <span class="datum">`total_rank_reward` gAGX + 折算</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3789,13 +3796,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-035 奖励 cobuild faq 1:1 + gagx 叙事 读 `cobuild.faq` 链 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06·c-15  c-06·c-15 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-035 奖励 cobuild faq 1:1 + gagx 叙事 读 `cobuild.faq` 链 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06·c-15  c-06·c-15 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-035</span>
     <span class="surface">Cobuild FAQ</span>
     <span class="datum">1:1 + gAGX 叙事</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3812,26 +3819,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="pending" data-section="3-奖励" data-search="w-036 奖励 cobuild·写 dao mixed rank(41)/surpass(44) 写 segment 选类型；金额仅签名后可知；无 lifetime(45) ui 同 w-027 `post /claim/dao-reward`  🔍 待核实 手册↔api打架 同 w-027；另确认是否要接 lifetime(45) a-10·a-21  a-10·a-21 —">
+<article class="row" data-status="ok" data-section="3-奖励" data-search="w-036 奖励 cobuild·写 dao mixed rank(41)/surpass(44) 写 segment 选类型；金额仅签名后可知；无 lifetime(45) ui 同 w-027 `post /claim/dao-reward`  ✅ 已对齐 — — a-10·a-21  a-10·a-21 同 w-027；lifetime(45) ui 未接属产品范围另议，非本写路径错">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-036</span>
     <span class="surface">Cobuild·写</span>
     <span class="datum">Dao Mixed RANK(41)/SURPASS(44)</span>
     <span class="rw pill">写</span>
-    <span class="status badge pending">🔍 待核实</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>奖励</dd></div>
-      <div><dt>T1 归因</dt><dd>手册↔API打架</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>A-10·A-21</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-10·A-21</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>Segment 选类型；金额仅签名后可知；无 LIFETIME(45) UI</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同 W-027</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /claim/dao-reward`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>同 W-027；另确认是否要接 LIFETIME(45)</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>同 W-027；LIFETIME(45) UI 未接属产品范围另议，非本写路径错</dd></div>
     </dl>
   </div>
 </article>
@@ -3858,13 +3865,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-038 奖励 grant 详情 发放/领取流水表 读 allowance 列标 gagx — `post /market-allowance/paid-logs` · `/claim-logs`  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-05  c-05 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-038 奖励 grant 详情 发放/领取流水表 读 allowance 列标 gagx — `post /market-allowance/paid-logs` · `/claim-logs`  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-05  c-05 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-038</span>
     <span class="surface">Grant 详情</span>
     <span class="datum">发放/领取流水表</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -3881,13 +3888,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-039 奖励 grant faq 「不耗贡献、gagx 直达钱包」 读 `grant.faq` 链 agx 直达；不耗贡献/不经 queue ✅ —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-05  c-05 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-039 奖励 grant faq 「不耗贡献、gagx 直达钱包」 读 `grant.faq` 链 agx 直达；不耗贡献/不经 queue ✅ —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-05  c-05 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-039</span>
     <span class="surface">Grant FAQ</span>
     <span class="datum">「不耗贡献、gAGX 直达钱包」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4226,13 +4233,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-054 奖励 hub intro copy 「mixed 按 1:1 消耗」 读 onboarding/教程轨 `zh.ts` 链 divisor=6 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 visible copy；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-054 奖励 hub intro copy 「mixed 按 1:1 消耗」 读 onboarding/教程轨 `zh.ts` 链 divisor=6 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 visible copy；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-054</span>
     <span class="surface">Hub intro Copy</span>
     <span class="datum">「Mixed 按 1:1 消耗」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4318,13 +4325,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="3-奖励" data-search="w-058 奖励 mixed token 芯片 面板标 `tokengagx` 读 `claim-panels` / `mixed.tokengagx` 链 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 lucky/dao 共用；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="3-奖励" data-search="w-058 奖励 mixed token 芯片 面板标 `tokengagx` 读 `claim-panels` / `mixed.tokengagx` 链 agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-15  c-15 lucky/dao 共用；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-058</span>
     <span class="surface">Mixed token 芯片</span>
     <span class="datum">面板标 `tokenGagx`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4417,13 +4424,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-004 释放 hub·释放池卡 单位文案 读(copy) `t.release.units.queue='gagx'`；`formatreleaseapiorchainlabel` unit 同源 手册 §12 `token()`=agx；稿/i18n 写 gagx api.md 标 gagx  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07 · a-12  c-07 数已接线；错在单位标签；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-004 释放 hub·释放池卡 单位文案 读(copy) `t.release.units.queue='gagx'`；`formatreleaseapiorchainlabel` unit 同源 手册 §12 `token()`=agx；稿/i18n 写 gagx api.md 标 gagx  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07 · a-12  c-07 数已接线；错在单位标签；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-004</span>
     <span class="surface">Hub·释放池卡</span>
     <span class="datum">单位文案</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4601,13 +4608,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-012 释放 hub·detail mechanismsteps「6:1」 读(copy) `zh.ts` hub.mechanismsteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 x 底池」 fe 信链 `quoterequiredcontribution`（≈amount/6→6:1）；body 实为 burn `splitbps` 叙事 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 r2 确认🟡：title 对；body 串台；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-012 释放 hub·detail mechanismsteps「6:1」 读(copy) `zh.ts` hub.mechanismsteps：title「6 : 1 贡献机制」；body「50% 销毁 · 50% 注入 x 底池」 fe 信链 `quoterequiredcontribution`（≈amount/6→6:1）；body 实为 burn `splitbps` 叙事 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06  c-06 r2 确认🟡：title 对；body 串台；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-012</span>
     <span class="surface">Hub·Detail</span>
     <span class="datum">mechanismSteps「6:1」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4624,13 +4631,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-013 释放 hub·faq 「领取的 gagx 去向」题干 读(copy) 题干写 gagx；答案已澄清 agx→turbine 手册 §12→§16 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 visible+faq；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-013 释放 hub·faq 「领取的 gagx 去向」题干 读(copy) 题干写 gagx；答案已澄清 agx→turbine 手册 §12→§16 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 visible+faq；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-013</span>
     <span class="surface">Hub·FAQ</span>
     <span class="datum">「领取的 gAGX 去向」题干</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4670,13 +4677,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-015 释放 queue·dock 单位 + token 图标 读(copy) `units.queue` + `gagxicon`（`queue/dock.tsx`）；金额用 `agx_decimals` 链 token=agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 数算法对；错在标签/图标；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-015 释放 queue·dock 单位 + token 图标 读(copy) `units.queue` + `gagxicon`（`queue/dock.tsx`）；金额用 `agx_decimals` 链 token=agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 数算法对；错在标签/图标；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-015</span>
     <span class="surface">Queue·Dock</span>
     <span class="datum">单位 + token 图标</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4808,13 +4815,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-021 释放 queue·detail 累计从释放池领取 读 无链 lifetime view；session 用 api `total_claimed_amount`；无 session→诚实 0 链无累计 view；api 有字段但标 gagx `/release-pool/summary` `total_claimed_amount`（标 gagx）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-12  a-12 非「api 未提供」——缺的是链 lifetime + 单位；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-021 释放 queue·detail 累计从释放池领取 读 无链 lifetime view；session 用 api `total_claimed_amount`；无 session→诚实 0 链无累计 view；api 有字段但标 gagx `/release-pool/summary` `total_claimed_amount`（标 gagx）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-12  a-12 非「api 未提供」——缺的是链 lifetime + 单位；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-021</span>
     <span class="surface">Queue·Detail</span>
     <span class="datum">累计从释放池领取</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -4854,13 +4861,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-023 释放 queue·faq gagx 去向 读(copy) 题干 gagx；答案「涡轮配额」未点名 agx 手册 §12→turbine agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-023 释放 queue·faq gagx 去向 读(copy) 题干 gagx；答案「涡轮配额」未点名 agx 手册 §12→turbine agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-07  c-07 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-023</span>
     <span class="surface">Queue·FAQ</span>
     <span class="datum">gAGX 去向</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -5015,13 +5022,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-030 释放 buffer·dock claimsuccess 文案 读(copy) zh：「已提交领取，进入分流器释放」偏中继叙事 手册：链尾→钱包；中继→next —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 优于旧「仅 agx 进钱包」；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-030 释放 buffer·dock claimsuccess 文案 读(copy) zh：「已提交领取，进入分流器释放」偏中继叙事 手册：链尾→钱包；中继→next —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 优于旧「仅 agx 进钱包」；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-030</span>
     <span class="surface">Buffer·Dock</span>
     <span class="datum">claimSuccess 文案</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -5107,13 +5114,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-034 释放 buffer·detail mechanismsteps「30 天缓冲」 读(copy) intro 已动态天数；步骤仍写死 30 `effectiveduration` 可≠30 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-034 释放 buffer·detail mechanismsteps「30 天缓冲」 读(copy) intro 已动态天数；步骤仍写死 30 `effectiveduration` 可≠30 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-034</span>
     <span class="surface">Buffer·Detail</span>
     <span class="datum">mechanismSteps「30 天缓冲」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -5130,13 +5137,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="4-释放" data-search="l-035 释放 buffer·faq 「agx 直接进入钱包」 读(copy) zh：「点击提取，agx 直接进入钱包」；忽略 next 瀑布与 gagx 手册：仅链尾 `next==0`；可有 gagx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c 与 l-030 成功文案不一致；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="4-释放" data-search="l-035 释放 buffer·faq 「agx 直接进入钱包」 读(copy) zh：「点击提取，agx 直接进入钱包」；忽略 next 瀑布与 gagx 手册：仅链尾 `next==0`；可有 gagx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c 与 l-030 成功文案不一致；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-035</span>
     <span class="surface">Buffer·FAQ</span>
     <span class="datum">「AGX 直接进入钱包」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -5781,13 +5788,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-019 兑换 闪兑·币对 ui segment/路由 symbol「usdt」 读 `exchange_config.tokens.usdt.symbol='usdt'`；余额地址跟链 链 token 实为 xx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **a-01**  a-01 标签≠合约名；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-019 兑换 闪兑·币对 ui segment/路由 symbol「usdt」 读 `exchange_config.tokens.usdt.symbol='usdt'`；余额地址跟链 链 token 实为 xx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **a-01**  a-01 标签≠合约名；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-019</span>
     <span class="surface">闪兑·币对 UI</span>
     <span class="datum">Segment/路由 symbol「USDT」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6241,13 +6248,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-039 兑换 涡轮·概览 「待解锁 gagx」数额 读 `readturbinequota`=`migratedfrom`+root；ui 拼 `gagx` 手册 §16 `turbinebalances`（agx wei） —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **a-04**/**c-01**；**b-04→c-01**  a-04,c-01,a-06 r2 确认🟡：单位主责；不双降🔍；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-039 兑换 涡轮·概览 「待解锁 gagx」数额 读 `readturbinequota`=`migratedfrom`+root；ui 拼 `gagx` 手册 §16 `turbinebalances`（agx wei） —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **a-04**/**c-01**；**b-04→c-01**  a-04,c-01,a-06 r2 确认🟡：单位主责；不双降🔍；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-039</span>
     <span class="surface">涡轮·概览</span>
     <span class="datum">「待解锁 gAGX」数额</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6264,13 +6271,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-040 兑换 涡轮·概览 「冷却中 gagx」 读 `sumturbinesilencebuckets` 仅 cooling；不并入 vested 手册 silences ∧ `!isvested` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**；**b-05**  c-01,b-05 r2 确认🟡：同 x-039 不双降🔍；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-040 兑换 涡轮·概览 「冷却中 gagx」 读 `sumturbinesilencebuckets` 仅 cooling；不并入 vested 手册 silences ∧ `!isvested` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**；**b-05**  c-01,b-05 r2 确认🟡：同 x-039 不双降🔍；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-040</span>
     <span class="surface">涡轮·概览</span>
     <span class="datum">「冷却中 gAGX」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6333,13 +6340,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-043 兑换 涡轮·dock 解锁 可解锁额度 label（gagx） 读 `useturbine` `unlockableamountlabel` 硬拼 gagx 同配额 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**  c-01 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-043 兑换 涡轮·dock 解锁 可解锁额度 label（gagx） 读 `useturbine` `unlockableamountlabel` 硬拼 gagx 同配额 agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**  c-01 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-043</span>
     <span class="surface">涡轮·Dock 解锁</span>
     <span class="datum">可解锁额度 Label（gAGX）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6402,13 +6409,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-046 兑换 涡轮·dock 提取 silence 列表金额+状态+cta 读 dock map rows；vested 可点；可领在列表不进「冷却中」卡 `silences`+`isvested` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**；**b-05**  c-01,b-05 figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-046 兑换 涡轮·dock 提取 silence 列表金额+状态+cta 读 dock map rows；vested 可点；可领在列表不进「冷却中」卡 `silences`+`isvested` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**；**b-05**  c-01,b-05 figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-046</span>
     <span class="surface">涡轮·Dock 提取</span>
     <span class="datum">silence 列表金额+状态+CTA</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6494,13 +6501,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-050 兑换 涡轮·机制/faq 「gagx 进涡轮」「提取到钱包」等 copy 读(copy) mechanism 冷却步已写分流器；faq「到钱包」/配额 gagx；toast `claimsuccess` 已写分流器 配额 agx wei；claim→分流器 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**/**a-04**  c-01,a-04 mechanism≠faq；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-050 兑换 涡轮·机制/faq 「gagx 进涡轮」「提取到钱包」等 copy 读(copy) mechanism 冷却步已写分流器；faq「到钱包」/配额 gagx；toast `claimsuccess` 已写分流器 配额 agx wei；claim→分流器 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-01**/**a-04**  c-01,a-04 mechanism≠faq；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-050</span>
     <span class="surface">涡轮·机制/FAQ</span>
     <span class="datum">「gAGX 进涡轮」「提取到钱包」等 Copy</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6609,13 +6616,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-055 兑换 共享 faq c-08 旁路 flash「以 gagx 发放/收到 gagx」叙事 读(copy) `exchange.flash.faq`：「均以 gagx 形式发放」「收到相应数量的 gagx」；hub.faq 无此发放句 链结算 agx；主责 shared c-08 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-08**  c-08 r2 确认🟡分责；与 x-018 ✅ 分拆保持；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="5-兑换" data-search="x-055 兑换 共享 faq c-08 旁路 flash「以 gagx 发放/收到 gagx」叙事 读(copy) `exchange.flash.faq`：「均以 gagx 形式发放」「收到相应数量的 gagx」；hub.faq 无此发放句 链结算 agx；主责 shared c-08 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n — **c-08**  c-08 r2 确认🟡分责；与 x-018 ✅ 分拆保持；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-055</span>
     <span class="surface">共享 FAQ C-08 旁路</span>
     <span class="datum">Flash「以 gAGX 发放/收到 gAGX」叙事</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6662,13 +6669,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-002 资产 hub·总览 可领取收益（展示） 读 hub **禁用** api `claimable_gagx`（见 a-003）；链 `blockreward+extrainterest+profit`；标 gagx；**不含** x/market/dao/释放/涡轮 产品：仓位 mixed 未领子集 api 宽口径故意不用  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-13  open 单位/范围文案债；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-002 资产 hub·总览 可领取收益（展示） 读 hub **禁用** api `claimable_gagx`（见 a-003）；链 `blockreward+extrainterest+profit`；标 gagx；**不含** x/market/dao/释放/涡轮 产品：仓位 mixed 未领子集 api 宽口径故意不用  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-13  open 单位/范围文案债；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-002</span>
     <span class="surface">Hub·总览</span>
     <span class="datum">可领取收益（展示）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6754,13 +6761,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-006 资产 hub·总览 / faq 贡献消耗文案「1:1」 读(copy) `contributionhint`/faq「按 1:1」；写路径信链 quote 链 `quoterequiredcontribution` / divisor；手册 §9 —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06 · a-11  open figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-006 资产 hub·总览 / faq 贡献消耗文案「1:1」 读(copy) `contributionhint`/faq「按 1:1」；写路径信链 quote 链 `quoterequiredcontribution` / divisor；手册 §9 —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-06 · a-11  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-006</span>
     <span class="surface">Hub·总览 / FAQ</span>
     <span class="datum">贡献消耗文案「1:1」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6777,13 +6784,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-007 资产 hub·持仓 可赎回已释放 `holdingsreleased` 读 禁用 api 流水语义；链 `redeemablereleasedwei`；活期 `releasedprincipal=0n` 不计入 产品：locked `getreleasedprincipal` + bond `pendingpayout` `total_released_agx`（同名不同义，不用）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-14 · c-04 · b-22  — figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-007 资产 hub·持仓 可赎回已释放 `holdingsreleased` 读 禁用 api 流水语义；链 `redeemablereleasedwei`；活期 `releasedprincipal=0n` 不计入 产品：locked `getreleasedprincipal` + bond `pendingpayout` `total_released_agx`（同名不同义，不用）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n a-14 · c-04 · b-22  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-007</span>
     <span class="surface">Hub·持仓</span>
     <span class="datum">可赎回已释放 `holdingsReleased`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -6984,13 +6991,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-016 资产 hub·rebase 卡 epoch/每日次数 copy 读(copy) `hub.rebase.steps` 静态「约 12h / 每日 2 次」 链 `epoch().length`（prod≠14400） —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  open figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-016 资产 hub·rebase 卡 epoch/每日次数 copy 读(copy) `hub.rebase.steps` 静态「约 12h / 每日 2 次」 链 `epoch().length`（prod≠14400） —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-14  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-016</span>
     <span class="surface">Hub·Rebase 卡</span>
     <span class="datum">Epoch/每日次数 Copy</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7030,13 +7037,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-018 资产 hub·faq 收益形式 gagx / x 读(copy) hub faq：「rebase 以 gagx 计量；x 挖矿为 x」；未写「可直接挖 x」 链 mixed→队列（多为 agx）；xmine→x —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · c-08 旁  c-02 r2 确认🟡：x 区分对；gagx 计量仍假；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-018 资产 hub·faq 收益形式 gagx / x 读(copy) hub faq：「rebase 以 gagx 计量；x 挖矿为 x」；未写「可直接挖 x」 链 mixed→队列（多为 agx）；xmine→x —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · c-08 旁  c-02 r2 确认🟡：x 区分对；gagx 计量仍假；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-018</span>
     <span class="surface">Hub·FAQ</span>
     <span class="datum">收益形式 gAGX / X</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7283,13 +7290,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-029 资产 position·lp债券 仓位卡本金/待赎/收益 读 `readlpbondpositions`；profit 展示后缀 gagx 手册 §10；链 profit 入队多为 agx —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  c-02 r2 确认🟡：单位冲突；金额 prod 另见仓位读源；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-029 资产 position·lp债券 仓位卡本金/待赎/收益 读 `readlpbondpositions`；profit 展示后缀 gagx 手册 §10；链 profit 入队多为 agx —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  c-02 r2 确认🟡：单位冲突；金额 prod 另见仓位读源；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-029</span>
     <span class="surface">Position·LP债券</span>
     <span class="datum">仓位卡本金/待赎/收益</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7352,13 +7359,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-032 资产 position·lp·faq 复投周期「360/540」、缓冲「30 天」 读(copy) faq 写死；ui 计划来自 `readclaimplans`；赎回天数 hook 链 链 plans / manager.duration —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-13  — figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-032 资产 position·lp·faq 复投周期「360/540」、缓冲「30 天」 读(copy) faq 写死；ui 计划来自 `readclaimplans`；赎回天数 hook 链 链 plans / manager.duration —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-13  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-032</span>
     <span class="surface">Position·LP·FAQ</span>
     <span class="datum">复投周期「360/540」、缓冲「30 天」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7375,13 +7382,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-033 资产 position·销毁债券 仓位读 + mixed/赎回写 + 流水 读/写 与 lp 对称 `readburnbondpositions`；profit 后缀 gagx 同 lp · burnbond bond-flow burn  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  c-02 r2 确认🟡不拆行：写齐、读单位同 a-029；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-033 资产 position·销毁债券 仓位读 + mixed/赎回写 + 流水 读/写 与 lp 对称 `readburnbondpositions`；profit 后缀 gagx 同 lp · burnbond bond-flow burn  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  c-02 r2 确认🟡不拆行：写齐、读单位同 a-029；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-033</span>
     <span class="surface">Position·销毁债券</span>
     <span class="datum">仓位读 + Mixed/赎回写 + 流水</span>
     <span class="rw pill">读/写</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7513,13 +7520,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-039 资产 xmine·faq 「24 小时锁定」 读(copy) faq 断言 24h；ui 有激活预热 链 warmupendtime；须 `activatewarmup` —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  open figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-039 资产 xmine·faq 「24 小时锁定」 读(copy) faq 断言 24h；ui 有激活预热 链 warmupendtime；须 `activatewarmup` —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-03  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-039</span>
     <span class="surface">Xmine·FAQ</span>
     <span class="datum">「24 小时锁定」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7536,13 +7543,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-040 资产 xmine·faq 「每日 utc 0 点结算」 读(copy) faq visible 链连续计息 / settle —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-13  open figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-040 资产 xmine·faq 「每日 utc 0 点结算」 读(copy) faq visible 链连续计息 / settle —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-13  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-040</span>
     <span class="surface">Xmine·FAQ</span>
     <span class="datum">「每日 UTC 0 点结算」</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7697,13 +7704,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-047 资产 全表面 收益/利润单位标 gagx 读(copy) 仓位/hub/弹窗金额单位 gagx 链多为 agx 入队 部分 api 亦标 gagx  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  open figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-047 资产 全表面 收益/利润单位标 gagx 读(copy) 仓位/hub/弹窗金额单位 gagx 链多为 agx 入队 部分 api 亦标 gagx  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02 · a-07  open figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-047</span>
     <span class="surface">全表面</span>
     <span class="datum">收益/利润单位标 gAGX</span>
     <span class="rw pill">读(Copy)</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -7904,13 +7911,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-056 资产 claim 展示额 弹窗金额单位 gagx 读 `amountlabel` 后缀 gagx 链 reward/profit wei —  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  — figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="6-资产" data-search="a-056 资产 claim 展示额 弹窗金额单位 gagx 读 `amountlabel` 后缀 gagx 链 reward/profit wei —  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-02  — figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-056</span>
     <span class="surface">Claim 展示额</span>
     <span class="datum">弹窗金额单位 gAGX</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8026,13 +8033,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-003 社区 dock·邀请链接（展示） 链接文案 `{host}/r/{short}` 读 `shared.tsx` `formatreferrallinkdisplay`；仓内无 `/r/` 路由 产品展示形态（≠绑定入口） —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-19  c-19 用户照抄展示串无法建立推荐；真路径见 cm-004；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="7-社区" data-search="cm-003 社区 dock·邀请链接（展示） 链接文案 `{host}/r/{short}` 读 `shared.tsx` `formatreferrallinkdisplay`；仓内无 `/r/` 路由 产品展示形态（≠绑定入口） —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-19  c-19 用户照抄展示串无法建立推荐；真路径见 cm-004；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-003</span>
     <span class="surface">Dock·邀请链接（展示）</span>
     <span class="datum">链接文案 `{host}/r/{short}`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8417,13 +8424,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-020 社区 detail·成员表 列「参与共建」← `presale_volume` `$`（标签） 读 表头 i18n `shareholder`=「参与共建」对个人认购额（有 `$`）；`mapteamreferraltocompactrow` 文案 ssot i18n；api referrals post /team/referrals  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — r2：只记标签语义；金额 prod→cm-033；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="7-社区" data-search="cm-020 社区 detail·成员表 列「参与共建」← `presale_volume` `$`（标签） 读 表头 i18n `shareholder`=「参与共建」对个人认购额（有 `$`）；`mapteamreferraltocompactrow` 文案 ssot i18n；api referrals post /team/referrals  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — r2：只记标签语义；金额 prod→cm-033；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-020</span>
     <span class="surface">Detail·成员表</span>
     <span class="datum">列「参与共建」← `presale_volume` `$`（标签）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8486,13 +8493,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-023 社区 detail·成员表 列「社区业绩」← `sales_team_market` 读 `mapteamreferraltocompactrow`：**无 `$`**（概览卡有 `$`） 文案/展示一致性；api referrals post /team/referrals  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 同字段展示不一致；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="7-社区" data-search="cm-023 社区 detail·成员表 列「社区业绩」← `sales_team_market` 读 `mapteamreferraltocompactrow`：**无 `$`**（概览卡有 `$`） 文案/展示一致性；api referrals post /team/referrals  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 同字段展示不一致；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-023</span>
     <span class="surface">Detail·成员表</span>
     <span class="datum">列「社区业绩」← `sales_team_market`</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8555,13 +8562,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-026 社区 detail·邀请引导 三步文案（分享/共建/奖励） 读 `inviteflow`「链接注册后即可」；真路径=连钱包+显式绑定 i18n copy；手册 §5 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — visible copy；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="7-社区" data-search="cm-026 社区 detail·邀请引导 三步文案（分享/共建/奖励） 读 `inviteflow`「链接注册后即可」；真路径=连钱包+显式绑定 i18n copy；手册 §5 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — visible copy；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-026</span>
     <span class="surface">Detail·邀请引导</span>
     <span class="datum">三步文案（分享/共建/奖励）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8624,13 +8631,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="7-社区" data-search="cm-029 社区 detail·faq 「邀请关系…自动建立且永久」 读 faq；链须 `bindreferral`，链接仅预填 i18n faq vs 手册 §5 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c 永久一经绑定则真；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="7-社区" data-search="cm-029 社区 detail·faq 「邀请关系…自动建立且永久」 读 faq；链须 `bindreferral`，链接仅预填 i18n faq vs 手册 §5 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c 永久一经绑定则真；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">CM-029</span>
     <span class="surface">Detail·FAQ</span>
     <span class="datum">「邀请关系…自动建立且永久」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -8976,13 +8983,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-011 共建 dock·清单 「认购价值」usd 读 `estimatecontributionvalueusd`=`amount/(1−discount)`，非链 getter 产品公式（无同名链字段） —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 数已展；标签≠链 agx；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="8-共建" data-search="gn-011 共建 dock·清单 「认购价值」usd 读 `estimatecontributionvalueusd`=`amount/(1−discount)`，非链 getter 产品公式（无同名链字段） —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 数已展；标签≠链 agx；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-011</span>
     <span class="surface">Dock·清单</span>
     <span class="datum">「认购价值」USD</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9160,13 +9167,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-019 共建 detail·贡献表 行内「预计 agx」 读 `formatsaleslogagx`：优先 `item.tokens`，否则 `estimateagxfromusd1`（无「预估」后缀） api tokens 或 fe 回退估算 post /sales/logs（`tokens`）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 回退未标注；非缺接线；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="8-共建" data-search="gn-019 共建 detail·贡献表 行内「预计 agx」 读 `formatsaleslogagx`：优先 `item.tokens`，否则 `estimateagxfromusd1`（无「预估」后缀） api tokens 或 fe 回退估算 post /sales/logs（`tokens`）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  — 回退未标注；非缺接线；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-019</span>
     <span class="surface">Detail·贡献表</span>
     <span class="datum">行内「预计 AGX」</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9252,13 +9259,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-023 共建 faq 空投资格「单账户累计」vs 链/hint「单期累计」 copy zh faq「单账户累计」；hint「单期累计」；链 per-phase 手册：单档/单期累计超门槛 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-10  c-10 r2 确认🟡：wired-wrong（同 s-012）；≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="8-共建" data-search="gn-023 共建 faq 空投资格「单账户累计」vs 链/hint「单期累计」 copy zh faq「单账户累计」；hint「单期累计」；链 per-phase 手册：单档/单期累计超门槛 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-10  c-10 r2 确认🟡：wired-wrong（同 s-012）；≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-023</span>
     <span class="surface">FAQ</span>
     <span class="datum">空投资格「单账户累计」vs 链/hint「单期累计」</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9275,13 +9282,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-024 共建 faq 「x 空投 12 月线性释放 / 合约自动」 copy faq 承诺释放；fe 无 `claimairdrop` 入口（gn-041 正确未接） 产品：空投仅价值统计 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-11  c-11 r2 确认🟡：copy 错≠能力未接；能力 gn-041 ✅；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="8-共建" data-search="gn-024 共建 faq 「x 空投 12 月线性释放 / 合约自动」 copy faq 承诺释放；fe 无 `claimairdrop` 入口（gn-041 正确未接） 产品：空投仅价值统计 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-11  c-11 r2 确认🟡：copy 错≠能力未接；能力 gn-041 ✅；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-024</span>
     <span class="surface">FAQ</span>
     <span class="datum">「X 空投 12 月线性释放 / 合约自动」</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9298,13 +9305,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-025 共建 faq / errors 「100 usd」倍数文案 copy `errors.invalidamount`「100 usd」；份额标签已写 usd1 `base_unit=100e18` **usd1** —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-12  c-12 r2 确认🟡：错误已展；wired-wrong≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="8-共建" data-search="gn-025 共建 faq / errors 「100 usd」倍数文案 copy `errors.invalidamount`「100 usd」；份额标签已写 usd1 `base_unit=100e18` **usd1** —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n c-12  c-12 r2 确认🟡：错误已展；wired-wrong≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-025</span>
     <span class="surface">FAQ / errors</span>
     <span class="datum">「100 USD」倍数文案</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9321,13 +9328,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="8-共建" data-search="gn-026 共建 faq 「agx 540 天释放周期」 copy 无 genesis 侧释放/领取接线；purchase 不转入钱包 agx 购后记账≠本页可领 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c r2 确认🟡：文案已接线；勿暗示本页可领；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="8-共建" data-search="gn-026 共建 faq 「agx 540 天释放周期」 copy 无 genesis 侧释放/领取接线；purchase 不转入钱包 agx 购后记账≠本页可领 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n —  建议新 c r2 确认🟡：文案已接线；勿暗示本页可领；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">GN-026</span>
     <span class="surface">FAQ</span>
     <span class="datum">「AGX 540 天释放周期」</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9903,13 +9910,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="9-代码反查附录" data-search="z-008 反查 invite link canonical 真实 `?ref=` vs 展示 `/r/` 读/写 `formatreferrallinkdisplay` vs `referralsharepath`（cm-003/004） 产品展示 vs fe 约定 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n cm-003  c-19 冲突表；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="9-代码反查附录" data-search="z-008 反查 invite link canonical 真实 `?ref=` vs 展示 `/r/` 读/写 `formatreferrallinkdisplay` vs `referralsharepath`（cm-003/004） 产品展示 vs fe 约定 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n cm-003  c-19 冲突表；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">Z-008</span>
     <span class="surface">invite link canonical</span>
     <span class="datum">真实 `?ref=` vs 展示 `/r/`</span>
     <span class="rw pill">读/写</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -9926,13 +9933,13 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="9-代码反查附录" data-search="z-009 反查 faq 空投线性释放 无合约入口断言 copy genesis faq（gn-024）；手册无用户 `claimairdrop` 新手册沉默领取 —（纯 ui）  🟡 部分 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n gn-024  c-11 r2 确认🟡：随 gn-024 wired-wrong；≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
+<article class="row" data-status="copy" data-section="9-代码反查附录" data-search="z-009 反查 faq 空投线性释放 无合约入口断言 copy genesis faq（gn-024）；手册无用户 `claimairdrop` 新手册沉默领取 —（纯 ui）  📘 稿链文案 文案/单位与链不匹配（稿如此） 改稿（figma+i18n）对齐链，或产品确认保留稿面；禁 fe 默认离稿改 i18n gn-024  c-11 r2 确认🟡：随 gn-024 wired-wrong；≠❌；figma 对照：可见文案跟稿；张力进改稿队列">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">Z-009</span>
     <span class="surface">FAQ 空投线性释放</span>
     <span class="datum">无合约入口断言</span>
     <span class="rw pill">Copy</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge copy">📘 稿链文案</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
@@ -10113,7 +10120,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T23:58:31.029Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T00:22:36.990Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {

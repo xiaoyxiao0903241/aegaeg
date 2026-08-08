@@ -219,6 +219,7 @@ function parseMatrix(md) {
 function statusClass(status) {
   if (status.includes('✅')) return 'ok'
   if (status.includes('❌')) return 'bad'
+  if (status.includes('📘') || status.includes('稿链文案')) return 'copy'
   if (status.includes('🟡') || status.includes('部分')) return 'partial'
   if (status.includes('🔍') || status.includes('待核实')) return 'pending'
   if (status.includes('🚫') || status.includes('阻塞')) return 'blocked'
@@ -237,6 +238,7 @@ function renderHtml(data, generatedAt) {
     ok: allRows.filter((r) => statusClass(r.status) === 'ok').length,
     bad: allRows.filter((r) => statusClass(r.status) === 'bad').length,
     partial: allRows.filter((r) => statusClass(r.status) === 'partial').length,
+    copy: allRows.filter((r) => statusClass(r.status) === 'copy').length,
     pending: allRows.filter((r) => statusClass(r.status) === 'pending').length,
     blocked: allRows.filter((r) => statusClass(r.status) === 'blocked').length,
     na: allRows.filter((r) => statusClass(r.status) === 'na').length,
@@ -338,6 +340,8 @@ function renderHtml(data, generatedAt) {
     --bad-bg: rgba(232, 93, 93, 0.12);
     --partial: #e0a84c;
     --partial-bg: rgba(224, 168, 76, 0.14);
+    --copy: #5ec8c0;
+    --copy-bg: rgba(94, 200, 192, 0.14);
     --pending: #6b9fff;
     --pending-bg: rgba(107, 159, 255, 0.12);
     --blocked: #c77dff;
@@ -419,6 +423,7 @@ function renderHtml(data, generatedAt) {
   .stat.ok strong { color: var(--ok); }
   .stat.bad strong { color: var(--bad); }
   .stat.partial strong { color: var(--partial); }
+  .stat.copy strong { color: var(--copy); }
   .stat.pending strong { color: var(--pending); }
   .stat.blocked strong { color: var(--blocked); }
   .stat.na strong { color: var(--na); }
@@ -504,6 +509,7 @@ function renderHtml(data, generatedAt) {
   .filters button[data-filter="ok"][aria-pressed="true"] { background: var(--ok-bg); color: var(--ok); }
   .filters button[data-filter="bad"][aria-pressed="true"] { background: var(--bad-bg); color: var(--bad); }
   .filters button[data-filter="partial"][aria-pressed="true"] { background: var(--partial-bg); color: var(--partial); }
+  .filters button[data-filter="copy"][aria-pressed="true"] { background: var(--copy-bg); color: var(--copy); }
   .filters button[data-filter="pending"][aria-pressed="true"] { background: var(--pending-bg); color: var(--pending); }
   .filters button[data-filter="blocked"][aria-pressed="true"] { background: var(--blocked-bg); color: var(--blocked); }
   .filters button[data-filter="na"][aria-pressed="true"] { background: var(--na-bg); color: var(--na); }
@@ -651,6 +657,7 @@ function renderHtml(data, generatedAt) {
   .badge.ok { background: var(--ok-bg); color: var(--ok); }
   .badge.bad { background: var(--bad-bg); color: var(--bad); }
   .badge.partial { background: var(--partial-bg); color: var(--partial); }
+  .badge.copy { background: var(--copy-bg); color: var(--copy); }
   .badge.pending { background: var(--pending-bg); color: var(--pending); }
   .badge.blocked { background: var(--blocked-bg); color: var(--blocked); }
   .badge.na { background: var(--na-bg); color: var(--na); }
@@ -744,6 +751,7 @@ function renderHtml(data, generatedAt) {
         <div class="stat ok"><span>✅</span><strong>${counts.ok}</strong></div>
         <div class="stat bad"><span>❌</span><strong>${counts.bad}</strong></div>
         <div class="stat partial"><span>🟡</span><strong>${counts.partial}</strong></div>
+        <div class="stat copy"><span>📘</span><strong>${counts.copy}</strong></div>
         <div class="stat pending"><span>🔍</span><strong>${counts.pending}</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>${counts.blocked}</strong></div>
         <div class="stat na"><span>⚪</span><strong>${counts.na}</strong></div>
@@ -758,6 +766,7 @@ function renderHtml(data, generatedAt) {
           <button type="button" data-filter="ok" aria-pressed="false">✅</button>
           <button type="button" data-filter="bad" aria-pressed="false">❌</button>
           <button type="button" data-filter="partial" aria-pressed="false">🟡</button>
+          <button type="button" data-filter="copy" aria-pressed="false">📘</button>
           <button type="button" data-filter="pending" aria-pressed="false">🔍</button>
           <button type="button" data-filter="blocked" aria-pressed="false">🚫</button>
           <button type="button" data-filter="na" aria-pressed="false">⚪</button>
