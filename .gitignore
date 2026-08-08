@@ -12,7 +12,8 @@ env/.active
 __pycache__/
 *.pyc
 
-references/
+# 根目录 references/（勿误伤 .agents/.cursor skills 内 references）
+/references/
 # 忽略 docs 下大型归档与无关配置；SSOT markdown 可提交
 docs/figma/
 docs/figma-captures/
