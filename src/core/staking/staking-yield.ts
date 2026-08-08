@@ -64,18 +64,18 @@ export function epochsPerDayFromLength(
 /**
  * 单 epoch 收益率 → 基础日收益率。
  *
- * 基础日收益率 = epochsPerDay × 单 epoch Rebase%；FAQ 默认每日 2 个 epoch。
+ * 基础日收益率 = epochsPerDay × 单 epoch Rebase%。日频只信链上推算；缺省不造默认。
  *
  * @param epochPct 单 epoch 收益率（百分比）；未知或负数时 null
- * @param epochsPerDay 每日 epoch 数；缺省 2（FAQ）；≤0 / 非有限 → null
+ * @param epochsPerDay 每日 epoch 数（链上推算）；缺 / ≤0 / 非有限 → null
  * @returns 基础日收益率；输入无效返回 null
  */
 export function baseDailyPctFromEpoch(
   epochPct: number | null | undefined,
-  epochsPerDay: number = 2,
+  epochsPerDay: number | null | undefined,
 ): number | null {
   if (epochPct == null || !Number.isFinite(epochPct) || epochPct < 0) return null
-  if (!(epochsPerDay > 0) || !Number.isFinite(epochsPerDay)) return null
+  if (epochsPerDay == null || !(epochsPerDay > 0) || !Number.isFinite(epochsPerDay)) return null
   return epochPct * epochsPerDay
 }
 
@@ -103,7 +103,7 @@ export function compoundInterest(principal: number, dailyPct: number, days: numb
  * @param epochPct 单 epoch 收益率（百分比）
  * @param bonusBps 锁定加成（BPS）
  * @param days 天数
- * @param epochsPerDay 每日 epoch 数；缺省 2（FAQ）
+ * @param epochsPerDay 每日 epoch 数（链上推算）；缺 / ≤0 / 非有限 → 0
  * @returns 锁定加成利息；任一入参非法返回 0
  */
 export function lockedBonusInterest(
@@ -111,10 +111,10 @@ export function lockedBonusInterest(
   epochPct: number,
   bonusBps: number,
   days: number,
-  epochsPerDay: number = 2,
+  epochsPerDay: number | null | undefined,
 ): number {
   if (!(principal > 0) || !(epochPct >= 0) || !(bonusBps > 0) || !(days > 0)) return 0
-  if (!(epochsPerDay > 0) || !Number.isFinite(epochsPerDay)) return 0
+  if (epochsPerDay == null || !(epochsPerDay > 0) || !Number.isFinite(epochsPerDay)) return 0
   const perEpoch = principal * (epochPct / 100) * (bonusBps / 10_000)
   return perEpoch * days * epochsPerDay
 }
@@ -194,7 +194,7 @@ export function linearInterest(principal: number, dailyPct: number, days: number
  * @param args.xmineDailyPct XMine 日收益率（百分比）；仅 xmine 使用
  * @param args.agxPriceUsd AGX 现价（USD）；债券必填
  * @param args.discountRateBP 债券成交价率 BPS；缺省用手册档位
- * @param args.epochsPerDay 每日 epoch 数；缺省 2（FAQ）
+ * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺 → 与无 rebase 同路零利息
  * @returns 利息与本金合计；本金或天数为 0 时利息为 0
  */
 export function calcLocalInterest(args: {
@@ -208,8 +208,7 @@ export function calcLocalInterest(args: {
   discountRateBP?: number | null
   epochsPerDay?: number | null
 }): { interest: number; total: number } {
-  const { product, period, principal, days, epochRebasePct, xmineDailyPct } = args
-  const epochsPerDay = args.epochsPerDay ?? 2
+  const { product, period, principal, days, epochRebasePct, xmineDailyPct, epochsPerDay } = args
 
   if (!(principal > 0) || !(days > 0)) {
     return { interest: 0, total: Math.max(0, principal) }
@@ -273,7 +272,7 @@ export function calcLocalInterest(args: {
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
  * @param args.xmineDailyPct XMine 日收益率（%）；仅 xmine 使用
  * @param args.discountRateBP 债券成交价率 BPS；缺省用手册档位
- * @param args.epochsPerDay 每日 epoch 数；缺省 2（FAQ）
+ * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺 → 零利息曲线
  * @param args.maxDays 曲线最大天数；缺省为 CALC_MAX_DAYS
  * @returns 逐日累计利息（USD）点数组
  */

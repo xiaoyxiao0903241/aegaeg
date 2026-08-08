@@ -45,8 +45,8 @@ export type StakingHubOverview = {
   currentBlock: bigint
   /** 近窗实测出块秒数；失败回落 BSC_BLOCK_SECONDS。 */
   secondsPerBlock: number
-  /** 由 epoch.length × secondsPerBlock 推算；失败回落 FAQ 默认 2。 */
-  epochsPerDay: number
+  /** 由 epoch.length × secondsPerBlock 推算；失败为 null（禁 FAQ 默认）。 */
+  epochsPerDay: number | null
 }
 
 /**
@@ -198,7 +198,7 @@ export async function readStakingHubOverview(
     readLatestSagxRebaseRate1e18(client),
     measureSecondsPerBlock(client, currentBlock),
   ])
-  const epochsPerDay = epochsPerDayFromLength(epochLength, secondsPerBlock) ?? 2
+  const epochsPerDay = epochsPerDayFromLength(epochLength, secondsPerBlock)
 
   return {
     poolAgxBalance,

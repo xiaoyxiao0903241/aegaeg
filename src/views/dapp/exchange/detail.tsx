@@ -33,7 +33,6 @@ function ExchangeDetailBody({ trade, flash, burn, turbine }: ExchangeSessions) {
     return (
       <BurnExchangeDetail
         overviewRateLabel={session.overviewRateLabel}
-        walletReady={session.walletReady}
         config={session.config}
         userStats={session.userStats}
       />

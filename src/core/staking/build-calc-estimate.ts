@@ -34,7 +34,7 @@ export function periodEndDays(period: string, sliderDays: number): number {
  * @param args.days 预计持仓天数
  * @param args.epochRebasePct 实时 epoch 收益率（展示单位百分比）；null 表示按零收益计算
  * @param args.xmineDailyPct XMine 日收益率（%）；仅 product=xmine 时使用
- * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺省 FAQ 默认 2
+ * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺 → 零利息
  * @returns 本地收益估算结果
  */
 export function buildCalcEstimate(args: {
@@ -47,14 +47,14 @@ export function buildCalcEstimate(args: {
   epochRebasePct: number | null
   /** XMine 日收益率（%）；仅 product=xmine 时使用。 */
   xmineDailyPct?: number | null
-  /** 每日 epoch 数（链上推算）；缺省 FAQ 默认 2。 */
+  /** 每日 epoch 数（链上推算）；缺 → 零利息。 */
   epochsPerDay?: number | null
 }): CalcEstimateResult {
   const principal = Number.parseFloat(args.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(args.price.replace(/,/g, '')) || 0
   const days = Math.min(Math.max(1, Math.round(args.days)), CALC_MAX_DAYS)
   const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
-  const epochsPerDay = args.epochsPerDay ?? 2
+  const epochsPerDay = args.epochsPerDay ?? null
   const estimate = calcLocalInterest({
     product: args.product,
     period: args.period,

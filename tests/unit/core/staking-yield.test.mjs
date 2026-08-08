@@ -30,10 +30,11 @@ test('epochRebasePctFrom1e18 + baseDailyPctFromEpoch uses epochsPerDay', () => {
   const epoch = epochRebasePctFrom1e18(rate)
   assert.ok(epoch != null)
   assert.ok(Math.abs(epoch - 0.41) < 1e-9)
-  assert.equal(baseDailyPctFromEpoch(epoch), 0.82)
+  assert.equal(baseDailyPctFromEpoch(epoch, null), null)
+  assert.equal(baseDailyPctFromEpoch(epoch, undefined), null)
   assert.equal(baseDailyPctFromEpoch(epoch, 2), 0.82)
   assert.equal(baseDailyPctFromEpoch(epoch, 3), 1.23)
-  assert.equal(baseDailyPctFromEpoch(null), null)
+  assert.equal(baseDailyPctFromEpoch(null, 2), null)
   assert.equal(baseDailyPctFromEpoch(epoch, 0), null)
   assert.equal(epochRebasePctFrom1e18(null), null)
 })
@@ -56,10 +57,11 @@ test('compoundInterest daily compounding', () => {
 
 test('lockedBonusInterest is non-compounding (epochsPerDay)', () => {
   // 100 principal, 0.5%/epoch, 10% bonus BPS, 1 day → perEpoch=0.05
-  // default 2 epochs/day → 0.1; 3 epochs/day → 0.15
-  assert.ok(Math.abs(lockedBonusInterest(100, 0.5, 1000, 1) - 0.1) < 1e-9)
+  // 2 epochs/day → 0.1; 3 epochs/day → 0.15；缺日频 → 0
+  assert.equal(lockedBonusInterest(100, 0.5, 1000, 1, null), 0)
+  assert.ok(Math.abs(lockedBonusInterest(100, 0.5, 1000, 1, 2) - 0.1) < 1e-9)
   assert.ok(Math.abs(lockedBonusInterest(100, 0.5, 1000, 1, 3) - 0.15) < 1e-9)
-  assert.equal(lockedBonusInterest(100, 0.5, 0, 10), 0)
+  assert.equal(lockedBonusInterest(100, 0.5, 0, 10, 2), 0)
 })
 
 test('calcLocalInterest uses epochsPerDay for stake daily rate', () => {
@@ -84,6 +86,18 @@ test('calcLocalInterest uses epochsPerDay for stake daily rate', () => {
   assert.ok(Math.abs(three.interest - 1.5) < 1e-9)
 })
 
+test('calcLocalInterest: missing epochsPerDay → zero stake interest', () => {
+  const missing = calcLocalInterest({
+    product: 'stake',
+    period: 'liquid',
+    principal: 100,
+    days: 1,
+    epochRebasePct: 0.5,
+  })
+  assert.equal(missing.interest, 0)
+  assert.equal(missing.total, 100)
+})
+
 test('periodYieldPct compounds base daily only', () => {
   assert.ok(Math.abs(periodYieldPct(1, 1) - 1) < 1e-9)
   assert.equal(stakePeriodDays('liquid'), 1)
@@ -97,6 +111,7 @@ test('calcLocalInterest: stake adds bonus; xmine without daily stays zero', () =
     principal: 100,
     days: 1,
     epochRebasePct: 0.5,
+    epochsPerDay: 2,
   })
   const liquid = calcLocalInterest({
     product: 'stake',
@@ -104,6 +119,7 @@ test('calcLocalInterest: stake adds bonus; xmine without daily stays zero', () =
     principal: 100,
     days: 1,
     epochRebasePct: 0.5,
+    epochsPerDay: 2,
   })
   assert.ok(stake.interest > liquid.interest)
   const xmine = calcLocalInterest({
@@ -143,6 +159,7 @@ test('calcLocalInterest: bonds discount USD1→AGX before rebase interest', () =
     epochRebasePct: 0.5,
     agxPriceUsd: 10,
     discountRateBP: 8500,
+    epochsPerDay: 2,
   })
   const agxPrincipal = (1000 / 10) * (10_000 / 8500)
   const expectedInterestUsd = compoundInterest(agxPrincipal, 1, 1) * 10
@@ -160,6 +177,7 @@ test('calcLocalInterest: bonds fail-closed when price or discount missing/invali
     days: 10,
     epochRebasePct: 0.5,
     discountRateBP: 8500,
+    epochsPerDay: 2,
   })
   assert.equal(noPrice.interest, 0)
   const badDiscount = calcLocalInterest({
@@ -170,6 +188,7 @@ test('calcLocalInterest: bonds fail-closed when price or discount missing/invali
     epochRebasePct: 0.5,
     agxPriceUsd: 10,
     discountRateBP: 0,
+    epochsPerDay: 2,
   })
   assert.equal(badDiscount.interest, 0)
 })
@@ -188,11 +207,27 @@ test('buildCalcYieldCurvePoints spans day 1..720', () => {
     principal: 1,
     price: 10,
     epochRebasePct: 0.41,
+    epochsPerDay: 2,
   })
   assert.equal(points.length, CALC_MAX_DAYS)
   assert.equal(points[0]?.day, 1)
   assert.equal(points[CALC_MAX_DAYS - 1]?.day, 720)
   assert.ok((points[CALC_MAX_DAYS - 1]?.interestUsd ?? 0) >= (points[0]?.interestUsd ?? 0))
+})
+
+test('buildCalcYieldCurvePoints: missing epochsPerDay → zero interest', () => {
+  const points = buildCalcYieldCurvePoints({
+    product: 'stake',
+    period: 'liquid',
+    principal: 100,
+    price: 10,
+    epochRebasePct: 0.41,
+    maxDays: 3,
+  })
+  assert.equal(
+    points.every((p) => p.interestUsd === 0),
+    true,
+  )
 })
 
 test('buildCalcYieldCurvePoints: bond interestUsd uses discounted AGX then × price', () => {
@@ -204,6 +239,7 @@ test('buildCalcYieldCurvePoints: bond interestUsd uses discounted AGX then × pr
     epochRebasePct: 0.41,
     maxDays: 2,
     discountRateBP: 8500,
+    epochsPerDay: 2,
   })
   const stake = buildCalcYieldCurvePoints({
     product: 'stake',
@@ -212,6 +248,7 @@ test('buildCalcYieldCurvePoints: bond interestUsd uses discounted AGX then × pr
     price: 65,
     epochRebasePct: 0.41,
     maxDays: 2,
+    epochsPerDay: 2,
   })
   assert.ok((bond[1]?.interestUsd ?? 0) > 0)
   // 同名义本金下，债券先折成更少 AGX，利息 USD 应低于直接拿 100 AGX 质押

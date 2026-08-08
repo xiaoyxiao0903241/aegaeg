@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
@@ -189,17 +190,14 @@ export function useStakeDetail() {
 
   const stakeRows = walletReady && stakeQuery.data != null ? stakeQuery.data : []
   let principal = 0n
-  let released = 0n
-  let pending = 0n
   let blockReward = 0n
   let extraInterest = 0n
   for (const row of stakeRows) {
     principal += row.principal
-    released += row.releasedPrincipal
-    pending += row.principal > row.releasedPrincipal ? row.principal - row.releasedPrincipal : 0n
     blockReward += row.blockReward
     extraInterest += row.extraInterest
   }
+  const { released, pending } = aggregateStakeRelease(stakeRows)
 
   const stakeHeld = formatTokenAmountToNumber(principal, AGX_DECIMALS)
   const stakeReleased = formatTokenAmountToNumber(released, AGX_DECIMALS)

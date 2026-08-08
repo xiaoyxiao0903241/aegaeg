@@ -88,7 +88,7 @@ function formatAprFromRebase(
   rate1e18: bigint | null | undefined,
   epochsPerDay: number | null | undefined,
 ): string {
-  const daily = baseDailyPctFromEpoch(epochRebasePctFrom1e18(rate1e18), epochsPerDay ?? 2)
+  const daily = baseDailyPctFromEpoch(epochRebasePctFrom1e18(rate1e18), epochsPerDay)
   if (daily == null) return APR_EMPTY
   return formatAprFromDailyPct(daily)
 }

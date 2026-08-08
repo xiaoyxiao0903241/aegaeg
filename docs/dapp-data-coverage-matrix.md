@@ -93,7 +93,7 @@
 |H-016|宿主|WalletDetailsModal|钱包掉线后 Reconnect|写|`src/views/dapp/host/wallet/wallet-details-modal.tsx`：`!walletReady`→`reconnectWallet` CTA + `WalletConnectModal`|手册 §4.4|—（纯 UI）|✅ 已对齐|—|—|—|—|—|
 |H-017|宿主|Rail / MobileNav|Exchange 可领红点（Turbine）|读|`src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useTurbineExchangeRailDot(walletReady)`→`src/web3/exchange/turbine-exchange-read.ts`readTurbineHasClaimable`（`silencesSize`+`isVested`）|手册 §16 Turbine|—（纯链）|✅ 已对齐|—|—|—|—|与 H-018 同 `walletReady` 门闸|
 |H-018|宿主|Rail / MobileNav|Release 可领红点（queue+splitter+archive）|读|`src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useReleaseRailDot(walletReady)`→`src/web3/release/release-read.ts`readReleaseHasClaimable`|手册 §12–13|—（纯链）|✅ 已对齐|—|—|—|—|BSC 公共读；不要求 JWT|
-|H-019|宿主|Rail genesis tooltip|创世季序号 `{season}`（Num）|读|`rail.tsx`→`formatGenesisSeasonIntro`；`GenesisPromoSync`：`activePhase`→index+1，else live，else **`return 1`**；loading 只把 discount 换成 `…`，season 仍可能 1|手册 §6；figma 教程/创世|—（纯链）|🟡 部分|FE 读源/算法/门闸/刷新错误|无活期/加载中：season 显 `—`（或省略季号），对齐 H-020 诚实空；禁回退 1|—|—|R2 终裁：T1=FE（伪造季号≠设计取舍）；Prod phase=0≠无活期回退合法|
+|H-019|宿主|Rail genesis tooltip|创世季序号 `{season}`（Num）|读|`rail.tsx`→`formatGenesisSeasonIntro`；`GenesisPromoSync`：`activePhase`→index+1，else live，else **`return 1`**；loading 只把 discount 换成 `…`，season 仍可能 1|手册 §6；figma 教程/创世|—（纯链）|✅ 已对齐|设计取舍（故意空/0）|—|—|—|产品确认：无活期回退季号 1 通过（≠缺数显0）；CM-027/GN-006/GN-043 同源 chrome|
 |H-020|宿主|Rail genesis tooltip|折扣 `{discount}`（Copy/Num）|读|`src/views/dapp/host/genesis-promo-sync.tsx`：`discountBps/100`→`-N%`；0/无活期→`—`；loading→`…`（`formatGenesisSeasonIntro`）|手册 §6 phase `discountBps`|—（纯链）|✅ 已对齐|—|—|—|—|诚实空态|
 |H-021|宿主|GenesisPromoSync（host 挂载）|phases / activePhase / agxPrice → store|读|`src/views/dapp/host/genesis-promo-sync.tsx`GenesisPromoSync`；`src/web3/presale/use-presale-queries.ts`usePresalePhasesQuery`等；`readAllPresalePhases`|手册 §6 PreSale|—（纯链）|✅ 已对齐|—|—|—|—|host 单例防双查；驱动 H-019/020|
 |H-022|宿主|DappHost|`useConnectWarmPrefetch`（绑定+多币余额暖热）|读|`src/views/dapp/host/dapp-host.tsx`；`src/web3/wallet/use-connect-warm-prefetch.ts`useConnectWarmPrefetch`→`prefetchConnectWarm(address,bscReadClient)`|手册 §1.3 / §5；B-39|—（纯链）|✅ 已对齐|—|—|B-39|B-39 closed|无壳层 UI 展示绑定→附录 Z|
@@ -145,7 +145,7 @@
 |S-020|质押|Stake·写|**质押开仓** `liquidStake` / `lockedStake`|写|`submitStakeOpen`：`approveThenLiveWrite`+推荐/额度/迁移/池开关；成功 `invalidateAfterStaking`|手册 §8.2/8.3|—|✅ 已对齐|—|—|B-36|—|soft: insufficientAllowance|
 |S-021|质押|Stake·Detail|总质押量 / Epoch / 下次 Rebase / Rebase%|读|总质押 `poolAgxWei??0n`；`formatRebasePct(null)`→`0.00%`；倒计时跟块高|Hub 同批 overview|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|R1：无源造 0；B-33 倒计时接线仍在；口径：未取到显 0（T1=缺数显0，视为正确）|
 |S-022|质押|Stake·Detail|我的持仓 Σ principal|读|`useStakeDetail`←`readStakePositions` 聚合；无样本钱包|手册 §8 仓位读|—|✅ 已对齐|—|—|—|—|接线在；金额 L 未做；FE 接入证；Prod 对账非本矩阵门闩|
-|S-023|质押|Stake·Detail|已释放 / 待释放|读|`assets-read` liquid `releasedPrincipal:0n`；`use-stake` pending=`principal−released`→活期整笔「待释放」|手册 §8.2 liquid / §8.3 locked `getReleasedPrincipal`（A-08）|—|🟡 部分|FE 读源/算法/门闸/刷新错误|改聚合：liquid 不套 locked 的 pending 公式（或产品改口径）+ 单测|B-12 · A-08|B-12 · A-08|活期 released=0 故意；错在 pending 套公式|
+|S-023|质押|Stake·Detail|已释放 / 待释放|读|`aggregateStakeRelease`：liquid 对已释放/待释放贡献 0；locked=`released` / `principal−released`；`use-stake` 聚合|手册 §8.2 liquid / §8.3 locked `getReleasedPrincipal`（A-08）|—|✅ 已对齐|—|—|B-12 · A-08|B-12 · A-08|liquid released=0 故意；禁塞 Splitter；单测钉口径|
 |S-024|质押|Stake·Detail|当前 Rebase 收益 / 加成|读|数跟链 `blockReward`/`extraInterest`；展示用 `GAGX_DECIMALS` 标 **gAGX**|手册 getStakeRewards；链付 AGX|—|🟡 部分|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-02 · A-07|C-02 · A-07|单位错已定；数值待核实；Figma 对照：可见文案跟稿；张力进改稿队列|
 |S-025|质押|Stake·Detail|质押记录表|读|`useStakeFlowPositions`|`docs/backend-api` #stake-flow/positions|`POST /stake-flow/positions`|✅ 已对齐|—|—|—|—|需 session|
 |S-026|质押|Stake·FAQ|「每日 2 次 Rebase / 约 12h」等|读(Copy)|`stake.faq` / intro 已渲染死写|`epoch.length`|—|🟡 部分|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-14|C-14|R2 确认 R1 ❌→🟡；Figma 对照：可见文案跟稿；张力进改稿队列|
@@ -179,7 +179,7 @@
 |S-054|质押|Xmine·Detail|挖矿记录|读|`useX0MiningLogs`；session 门控|`docs/backend-api` #x0-mining/logs|`POST /x0-mining/logs`|✅ 已对齐|—|—|—|—|—|
 |S-055|质押|Xmine·FAQ/机制|「24h 锁定后即可…」暗示自动|读(Copy)|faq + mechanismSteps 已渲染|同 S-045|—|🟡 部分|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|C-03|C-03|R2 确认 R1 ❌→🟡；Figma 对照：可见文案跟稿；张力进改稿队列|
 |S-056|质押|Calc·Dock|输入：产品/周期/数量/价格/天数|读(输入)|`useCalcDock`；价种子自 spot 一次|本地估算|—|✅ 已对齐|—|—|—|—|非链报价|
-|S-057|质押|Calc·结果|质押/债券/xmine 估算公式|读|`buildCalcEstimate`/`use-calc`/`readStakingHubOverview` 三层 `epochsPerDay ?? 2`；`baseDailyPctFromEpoch` 默认参亦 2|手册折扣表 + 链 yield/epoch|—|🟡 部分|FE 读源/算法/门闸/刷新错误|overview 未就绪或 `epochsPerDayFromLength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值|B-18|—|R2：B-18 公式接线仍在；`??2` 与 S-012/C-14 死写日2次同簇（≠缺数显0）|
+|S-057|质押|Calc·结果|质押/债券/xmine 估算公式|读|`buildCalcEstimate`/`calcLocalInterest`/`readStakingHubOverview`：`epochsPerDay` 可空；只信 `epochsPerDayFromLength`；缺→零利息（禁 `?? 2`）|手册折扣表 + 链 yield/epoch|—|✅ 已对齐|—|—|B-18|—|日频 SSOT=epoch.length；FAQ「每日 2 次」文案债另队列（S-012/C-14）|
 |S-058|质押|Calc·Aside|收益曲线 / 关键节点 / 说明|读|notes「仅供参考」|本地|—|✅ 已对齐|—|—|—|—|—|
 |S-059|质押|Assets·写（质押域）|**Mixed 领奖**（liquid/locked/bond）含 restake=compound|写|`submitMixedClaim` dual-check；`invalidateAfterAssetsClaim`→assets+staking+release|手册 §9|—|✅ 已对齐|—|—|B-27|—|UI 在 assets；restakeBps>0 即复投|
 |S-060|质押|Assets·写（质押域）|**本金赎回** liquid `claimPrincipal` / locked `claimPrincipal(index)`|写|`submitStakeRedeem`；warmup 禁；`invalidateAfterAssetsClaim`|手册 §8|—|✅ 已对齐|—|—|—|—|—|
@@ -362,14 +362,14 @@
 
 |X-033|兑换|销毁·Dock|销毁比率 / 预估贡献点|读|config + `readBurnContributionQuote`；slippageBps=0|`rateBps` · `quoteContributionOut`|—|✅ 已对齐|—|—|—|—|—|
 |X-034|兑换|销毁·Dock|去向「黑洞%·LP%」|读|dock destination + FAQ interpolate|`getSplitConfig().splitBps`|—|✅ 已对齐|—|—|—|—|—|
-|X-035|兑换|销毁·概览|累计销毁 AGX / 获得·消耗贡献点|读|未连接用 config 全网 `totalBurned`/`totalContribution`；已连接用 userStats；标签无全网/个人区分|链 userStats vs 全网 config|—|🟡 部分|FE 读源/算法/门闸/刷新错误|改标签区分「全网/个人」或未连接也显个人空态|— **C-20**|C-20|静默切口径；非「故意空/0」|
+|X-035|兑换|销毁·概览|累计销毁 AGX / 获得·消耗贡献点|读|`burn/detail`：三格始终 `userStats`（agxBurned / contributionEarned / contributionConsumed）；缺→0；不绑 `getConfig().total*`|链 userStats（个人）|—|✅ 已对齐|设计取舍（缺数显0）|—|— **C-20**|C-20|稿标签无全网/个人；口径钉个人；缺数显 0|
 |X-036|兑换|销毁·历史|burn-logs / consume-logs 表|读|`useBurnHistory`；需 `sessionReady`|—|`/agx-contribution/burn-logs` · `consume-logs`|✅ 已对齐|—|—|—|—|—|
 |X-037|兑换|销毁·FAQ|比率/去向/不可转让等|读(Copy)|destination FAQ 注入 `burnPct/injectPct`|FAQ + 链 split|—|✅ 已对齐|—|—|—|—|—|
 |X-038|兑换|销毁·写|approve AGX → live config/余额重闸 → `convert` → invalidate|写|`submitBurnExchange` + `evaluateBurnContributionSwap`|手册 §9.2|—|✅ 已对齐|—|—|—|—|刷 exchange（含 burn logs keys）|
 |X-039|兑换|涡轮·概览|「待解锁 gAGX」数额|读|`readTurbineQuota`=`migratedFrom`+root；UI 拼 `gAGX`|手册 §16 `turbineBalances`（AGX wei）|—|🟡 部分|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|— **A-04**/**C-01**；**B-04→C-01**|A-04,C-01,A-06|R2 确认🟡：单位主责；不双降🔍；Figma 对照：可见文案跟稿；张力进改稿队列|
 |X-040|兑换|涡轮·概览|「冷却中 gAGX」|读|`sumTurbineSilenceBuckets` 仅 cooling；不并入 vested|手册 silences ∧ `!isVested`|—|🟡 部分|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|— **C-01**；**B-05**|C-01,B-05|R2 确认🟡：同 X-039 不双降🔍；Figma 对照：可见文案跟稿；张力进改稿队列|
 |X-041|兑换|涡轮·概览|「累计已提取」|读|`useTurbineSummary`→`claimed_total`；冷却/待解锁走链 silences；**不用** `unclaimed_total` 填冷却卡|API `claimed_total`；`unclaimed_total`≠冷却分态|`/turbine/summary` `claimed_total`|✅ 已对齐|设计取舍（缺数显0）|—|— **A-05**|A-05|R2 确认🔍：金钱无 Prod；`unclaimed_total` API 债另记；FE 接入证；Prod 对账非本矩阵门闩|
-|X-042|兑换|涡轮·概览|三卡 USD hint|读|`formatAgxQuotaUsd`；无报价 → `$0.00`；claimed 用 API 小数×单价|`quoteUsdInForAgxOut(1 AGX)` × 量|claimed←`claimed_total`|🟡 部分|FE 读源/算法/门闸/刷新错误|无 `unitUsd` 时 hint 显 `—`（禁 `$0.00`）；claimed 腿随 X-041 Prod 后再抬|— **A-05**|A-05|缺价造 $0；claimed USD 绑 X-041|
+|X-042|兑换|涡轮·概览|三卡 USD hint|读|`formatAgxQuotaUsd`；无报价 → `$0.00`；claimed 用 API 小数×单价|`quoteUsdInForAgxOut(1 AGX)` × 量|claimed←`claimed_total`|✅ 已对齐|设计取舍（缺数显0）|—|— **A-05**|A-05|缺价显 $0.00（空态统一）；claimed USD 跟 X-041 接入|
 
 |X-043|兑换|涡轮·Dock 解锁|可解锁额度 Label（gAGX）|读|`useTurbine` `unlockableAmountLabel` 硬拼 gAGX|同配额 AGX|—|🟡 部分|文案/单位与链不匹配（稿如此）|改稿（Figma+i18n）对齐链，或产品确认保留稿面；禁 FE 默认离稿改 i18n|— **C-01**|C-01|Figma 对照：可见文案跟稿；张力进改稿队列|
 |X-044|兑换|涡轮·Dock 解锁|支付 USD1 / 将获 AGX 预览|读|预览=min(折减输入,quota)；`payUsd1Label`：quote `isError`/undefined→`formatNumber(0)`|`quoteUsdInForAgxOut` · `previewTurbineExpectedAgx`|—|✅ 已对齐|设计取舍（缺数显0）|—|**B-06**|B-06|R2：quote fail→0 造零；happy-path 算法仍对；口径：未取到显 0（T1=缺数显0，视为正确）|
@@ -408,7 +408,7 @@
 |A-010|资产|Hub·缓冲|在池总量 / 已提取（gAGX）|读|`bufferGagx*`；API 未分 token；UI `bufferAsset` 切换|手册 §13 gagx 桶|—|✅ 已对齐|设计取舍（缺数显0）|—|A-16|—|金钱无 Prod；FE 接入证；Prod 对账非本矩阵门闩|
 |A-011|资产|Hub·总览|`market_fund_claimable_agx`|读|类型有字段；Hub **无**展示/入口；rewards 有做市领取|做市津贴归属 rewards|`/assets/reward-summary`（未消费）|⚪ 不适用|—|—|—|A-13|同 Z-006；故意不展（设计取舍）|
 
-|A-012|资产|Hub·Dock|质押卡 仓位/收益/APR|读|`formatAprFromRebase`：`epochsPerDay ?? 2`；仓位/收益另展|手册质押 APR|dist `stake_total_agx` + 链 yield|🟡 部分|FE 读源/算法/门闸/刷新错误|`epochsPerDay` 缺失时 APR 显 `—`/`APR_EMPTY`，禁静默 `?? 2`（同 S-057）；仓位/收益金额另随 A-054|B-23|—|R2 确认🟡；APR 算法债；金钱伞 A-054|
+|A-012|资产|Hub·Dock|质押卡 仓位/收益/APR|读|`formatAprFromRebase`：缺 `epochsPerDay`→`APR_EMPTY`=`0.00%`（禁 `?? 2`）；仓位/收益另展|手册质押 APR|dist `stake_total_agx` + 链 yield|✅ 已对齐|设计取舍（缺数显0）|—|B-23|—|同 S-057；缺日频显 0.00%（非 —）|
 
 |A-013|资产|Hub·Dock|LP/销毁债券卡 仓位/收益/APR|读|`bondApr=APR_EMPTY` 注释写明；仓位/profit 另展|无独立 APR 源|`bond_lp`/`bond_burn` + 链 profit|✅ 已对齐|设计取舍（缺数显0）|—|B-23|—|R2 确认🔍：仓位金钱无 Prod；APR_EMPTY 非过严；FE 接入证；Prod 对账非本矩阵门闩|
 |A-014|资产|Hub·Dock|X挖矿卡 仓位/收益/APR|读|Hub claimable **不含** X pending；卡上 yield 单独 X；APR=`yieldRateBP`|手册 §15|`stake_x_pool`|✅ 已对齐|设计取舍（缺数显0）|—|B-20 · B-23|—|R2 确认🔍；算法 closed；FE 接入证；Prod 对账非本矩阵门闩|
@@ -420,7 +420,7 @@
 |A-019|资产|Hub·FAQ|领取后进 RewardQueue/释放池|读(Copy)|FAQ 文案|手册 Mixed / RewardQueue|—|✅ 已对齐|—|—|—|—|—|
 |A-020|资产|Hub·FAQ|缓冲池 AGX/gAGX|读(Copy)|FAQ + UI 切换|手册 §13|—|✅ 已对齐|—|—|—|—|—|
 |A-021|资产|Position·质押|仓位列表字段（本金/已释放角标/收益/加成）|读|活期 `releasedPrincipal` 恒 `0n`（链无线性 released，非读错）；定期 `getReleasedPrincipal`；warmup 行独立|Locked `getReleasedPrincipal`；liquid 无对等|—|🟡 部分|设计取舍（故意空/0）|同 B-12：统计/角标是否排除 liquid 或改「待释放」口径|B-12 · A-08|**open**|FE 镜像链；产品口径未钉|
-|A-022|资产|Position·质押·统计|我的持仓/已释放/待释放/Rebase/加成/总收益|读|`useAssetsPositionStats`：`pendingRelease=principal−released`；活期 released=0 → 待释放=全本金|同上|—|🟡 部分|FE 读源/算法/门闸/刷新错误|聚合排除 liquid 或改公式；单测钉口径|B-12|open|公式套用 locked 语义到 liquid|
+|A-022|资产|Position·质押·统计|我的持仓/已释放/待释放/Rebase/加成/总收益|读|`aggregateStakeRelease`+`useAssetsPositionStats`：liquid 不进已释放/待释放；locked 保持公式；持仓仍含 liquid 本金|同上|—|✅ 已对齐|—|—|B-12|open→closed|与 S-023 同 helper；单测钉口径|
 |A-023|资产|Position·质押|Mixed 领取（弹窗+写）|写|`submitMixedClaim` dual-check + legs；`invalidateAfterAssetsClaim`→assets/staking/**release**|手册 §9 Mixed|—|✅ 已对齐|—|—|—|B-37|金额=0 仍可开弹窗（测试期）；链闸兜底|
 |A-024|资产|Position·质押|本金赎回（活期全额 / 定期 claimable）|写|`submitStakeRedeem` warmup 禁；确认弹窗天数=`effectiveDuration`|手册 §8 / §13；live `readStakeRedeemableAmount`|—|✅ 已对齐|—|—|—|—|—|
 |A-025|资产|Position·质押|激活活期 warmup|写|`submitLiquidWarmupClaim`；成功 refetch stake|手册 LiquidStaking `claim()`|—|✅ 已对齐|—|—|—|—|—|

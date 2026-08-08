@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import { selectLockedClaimLegs } from '~/core/assets/select-locked-claim-legs'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -388,12 +389,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     if (stakeQuery.data === undefined) return zeroStatCells(stakeCount)
     const rows = stakeQuery.data
     const total = rows.reduce((sum, row) => sum + row.principal, 0n)
-    const released = rows.reduce((sum, row) => sum + row.releasedPrincipal, 0n)
-    const pendingRelease = rows.reduce((sum, row) => {
-      const left =
-        row.principal > row.releasedPrincipal ? row.principal - row.releasedPrincipal : 0n
-      return sum + left
-    }, 0n)
+    const { released, pending: pendingRelease } = aggregateStakeRelease(rows)
     const rebaseReward = rows.reduce((sum, row) => sum + row.blockReward, 0n)
     const rebaseBonus = rows.reduce((sum, row) => sum + row.extraInterest, 0n)
     // 质押总收益 = 未领 Rebase 收益 + 加成（gAGX）；不含 claimableBalance（AGX 本金）

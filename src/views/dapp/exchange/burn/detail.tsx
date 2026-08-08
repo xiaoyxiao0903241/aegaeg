@@ -1,14 +1,13 @@
 /**
  * 销毁详情页
  *
- * 概览区展示销毁率、累计销毁 AGX 与贡献点统计，下方为代币
- * 介绍轮播、销毁记录与 FAQ；未连接钱包时统计展示全局累计值。
+ * 概览三格始终个人：累计销毁 AGX、获得贡献、已消耗贡献。
+ * 未连接或 userStats 缺 → 显 0（不绑 getConfig().total*）。
  */
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { ChipTabs } from '~/shared/components/chip-tabs'
@@ -33,12 +32,9 @@ const FAQ_DESTINATION_INDEX = 3
 /** 详情页只接收概览标量，不承载金额输入。 */
 export type BurnExchangeDetailProps = {
   overviewRateLabel: string
-  walletReady: boolean
   config:
     | {
         decimals: number
-        totalBurned: bigint
-        totalContribution: bigint
         splitBps: bigint
       }
     | undefined
@@ -47,25 +43,19 @@ export type BurnExchangeDetailProps = {
 
 export function BurnExchangeDetail({
   overviewRateLabel,
-  walletReady: burnWalletReady,
   config,
   userStats,
 }: BurnExchangeDetailProps) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappHost()
   const agxPriceUsd = useAgxPriceUsd()
   const history = useBurnHistory()
 
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
-  const walletReady = sessionReady && burnWalletReady
 
-  const totalBurnedAgx = walletReady ? (userStats?.agxBurned ?? 0n) : (config?.totalBurned ?? 0n)
-
-  const totalEarnedContribution = walletReady
-    ? (userStats?.contributionEarned ?? 0n)
-    : (config?.totalContribution ?? 0n)
-
-  const totalConsumedContribution = walletReady ? (userStats?.contributionConsumed ?? 0n) : null
+  // 概览三格始终个人；缺 userStats → 0（缺数显 0）。不绑 getConfig().total*。
+  const totalBurnedAgx = userStats?.agxBurned ?? 0n
+  const totalEarnedContribution = userStats?.contributionEarned ?? 0n
+  const totalConsumedContribution = userStats?.contributionConsumed ?? 0n
 
   const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
   // 空态统一：无价格时显示 ≈ $0.00（不显示 ≈ —）
@@ -78,10 +68,10 @@ export function BurnExchangeDetail({
     digits: 2,
     trimZeros: false,
   })
-  const consumedLabel =
-    totalConsumedContribution != null
-      ? formatTokenAmount(totalConsumedContribution, decimals, { digits: 2, trimZeros: false })
-      : '0.00'
+  const consumedLabel = formatTokenAmount(totalConsumedContribution, decimals, {
+    digits: 2,
+    trimZeros: false,
+  })
 
   const faqItems = (() => {
     const items = t.exchange.burn.faq.items

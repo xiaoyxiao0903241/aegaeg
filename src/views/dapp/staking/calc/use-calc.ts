@@ -37,7 +37,7 @@ export function useCalcDock() {
   const epochRebasePct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const xmineDailyPct =
     xmineOverviewQuery.data != null ? Number(xmineOverviewQuery.data.yieldRateBP) / 100 : null
-  const epochsPerDay = overviewQuery.data?.epochsPerDay ?? 2
+  const epochsPerDay = overviewQuery.data?.epochsPerDay ?? null
 
   // 价格字段仅在首次拿到实时行情时写入一次，之后不覆盖用户输入。
   useEffect(() => {

@@ -425,9 +425,9 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>417</strong></div>
-        <div class="stat ok"><span>✅</span><strong>273</strong></div>
+        <div class="stat ok"><span>✅</span><strong>280</strong></div>
         <div class="stat bad"><span>❌</span><strong>1</strong></div>
-        <div class="stat partial"><span>🟡</span><strong>91</strong></div>
+        <div class="stat partial"><span>🟡</span><strong>84</strong></div>
         <div class="stat pending"><span>🔍</span><strong>6</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
         <div class="stat na"><span>⚪</span><strong>40</strong></div>
@@ -877,26 +877,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="1-宿主与公共壳" data-search="h-019 宿主 rail genesis tooltip 创世季序号 `{season}`（num） 读 `rail.tsx`→`formatgenesisseasonintro`；`genesispromosync`：`activephase`→index+1，else live，else **`return 1`**；loading 只把 discount 换成 `…`，season 仍可能 1 手册 §6；figma 教程/创世 —（纯链）  🟡 部分 fe 读源/算法/门闸/刷新错误 无活期/加载中：season 显 `—`（或省略季号），对齐 h-020 诚实空；禁回退 1 —  — r2 终裁：t1=fe（伪造季号≠设计取舍）；prod phase=0≠无活期回退合法">
+<article class="row" data-status="ok" data-section="1-宿主与公共壳" data-search="h-019 宿主 rail genesis tooltip 创世季序号 `{season}`（num） 读 `rail.tsx`→`formatgenesisseasonintro`；`genesispromosync`：`activephase`→index+1，else live，else **`return 1`**；loading 只把 discount 换成 `…`，season 仍可能 1 手册 §6；figma 教程/创世 —（纯链）  ✅ 已对齐 设计取舍（故意空/0） — —  — 产品确认：无活期回退季号 1 通过（≠缺数显0）；cm-027/gn-006/gn-043 同源 chrome">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-019</span>
     <span class="surface">Rail genesis tooltip</span>
     <span class="datum">创世季序号 `{season}`（Num）</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>宿主</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（故意空/0）</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`rail.tsx`→`formatGenesisSeasonIntro`；`GenesisPromoSync`：`activePhase`→index+1，else live，else **`return 1`**；loading 只把 discount 换成 `…`，season 仍可能 1</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §6；figma 教程/创世</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>无活期/加载中：season 显 `—`（或省略季号），对齐 H-020 诚实空；禁回退 1</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 终裁：T1=FE（伪造季号≠设计取舍）；Prod phase=0≠无活期回退合法</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>产品确认：无活期回退季号 1 通过（≠缺数显0）；CM-027/GN-006/GN-043 同源 chrome</dd></div>
     </dl>
   </div>
 </article>
@@ -1896,26 +1896,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-023 质押 stake·detail 已释放 / 待释放 读 `assets-read` liquid `releasedprincipal:0n`；`use-stake` pending=`principal−released`→活期整笔「待释放」 手册 §8.2 liquid / §8.3 locked `getreleasedprincipal`（a-08） —  🟡 部分 fe 读源/算法/门闸/刷新错误 改聚合：liquid 不套 locked 的 pending 公式（或产品改口径）+ 单测 b-12 · a-08  b-12 · a-08 活期 released=0 故意；错在 pending 套公式">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-023 质押 stake·detail 已释放 / 待释放 读 `aggregatestakerelease`：liquid 对已释放/待释放贡献 0；locked=`released` / `principal−released`；`use-stake` 聚合 手册 §8.2 liquid / §8.3 locked `getreleasedprincipal`（a-08） —  ✅ 已对齐 — — b-12 · a-08  b-12 · a-08 liquid released=0 故意；禁塞 splitter；单测钉口径">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-023</span>
     <span class="surface">Stake·Detail</span>
     <span class="datum">已释放 / 待释放</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>B-12 · A-08</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-12 · A-08</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`assets-read` liquid `releasedPrincipal:0n`；`use-stake` pending=`principal−released`→活期整笔「待释放」</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`aggregateStakeRelease`：liquid 对已释放/待释放贡献 0；locked=`released` / `principal−released`；`use-stake` 聚合</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §8.2 liquid / §8.3 locked `getReleasedPrincipal`（A-08）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改聚合：liquid 不套 locked 的 pending 公式（或产品改口径）+ 单测</dd></div>
-      <div class="wide"><dt>备注</dt><dd>活期 released=0 故意；错在 pending 套公式</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>liquid released=0 故意；禁塞 Splitter；单测钉口径</dd></div>
     </dl>
   </div>
 </article>
@@ -2678,26 +2678,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="2-质押" data-search="s-057 质押 calc·结果 质押/债券/xmine 估算公式 读 `buildcalcestimate`/`use-calc`/`readstakinghuboverview` 三层 `epochsperday ?? 2`；`basedailypctfromepoch` 默认参亦 2 手册折扣表 + 链 yield/epoch —  🟡 部分 fe 读源/算法/门闸/刷新错误 overview 未就绪或 `epochsperdayfromlength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值 b-18  — r2：b-18 公式接线仍在；`??2` 与 s-012/c-14 死写日2次同簇（≠缺数显0）">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-057 质押 calc·结果 质押/债券/xmine 估算公式 读 `buildcalcestimate`/`calclocalinterest`/`readstakinghuboverview`：`epochsperday` 可空；只信 `epochsperdayfromlength`；缺→零利息（禁 `?? 2`） 手册折扣表 + 链 yield/epoch —  ✅ 已对齐 — — b-18  — 日频 ssot=epoch.length；faq「每日 2 次」文案债另队列（s-012/c-14）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-057</span>
     <span class="surface">Calc·结果</span>
     <span class="datum">质押/债券/xmine 估算公式</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>质押</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>B-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`buildCalcEstimate`/`use-calc`/`readStakingHubOverview` 三层 `epochsPerDay ?? 2`；`baseDailyPctFromEpoch` 默认参亦 2</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`buildCalcEstimate`/`calcLocalInterest`/`readStakingHubOverview`：`epochsPerDay` 可空；只信 `epochsPerDayFromLength`；缺→零利息（禁 `?? 2`）</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册折扣表 + 链 yield/epoch</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>overview 未就绪或 `epochsPerDayFromLength` 失败时禁静默 2：显 `—`/推迟估算，或只信链推算值</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2：B-18 公式接线仍在；`??2` 与 S-012/C-14 死写日2次同簇（≠缺数显0）</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>日频 SSOT=epoch.length；FAQ「每日 2 次」文案债另队列（S-012/C-14）</dd></div>
     </dl>
   </div>
 </article>
@@ -6149,26 +6149,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-035 兑换 销毁·概览 累计销毁 agx / 获得·消耗贡献点 读 未连接用 config 全网 `totalburned`/`totalcontribution`；已连接用 userstats；标签无全网/个人区分 链 userstats vs 全网 config —  🟡 部分 fe 读源/算法/门闸/刷新错误 改标签区分「全网/个人」或未连接也显个人空态 — **c-20**  c-20 静默切口径；非「故意空/0」">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-035 兑换 销毁·概览 累计销毁 agx / 获得·消耗贡献点 读 `burn/detail`：三格始终 `userstats`（agxburned / contributionearned / contributionconsumed）；缺→0；不绑 `getconfig().total*` 链 userstats（个人） —  ✅ 已对齐 设计取舍（缺数显0） — — **c-20**  c-20 稿标签无全网/个人；口径钉个人；缺数显 0">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-035</span>
     <span class="surface">销毁·概览</span>
     <span class="datum">累计销毁 AGX / 获得·消耗贡献点</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>兑换</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>— **C-20**</dd></div>
       <div><dt>A/B/C 链</dt><dd>C-20</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>未连接用 config 全网 `totalBurned`/`totalContribution`；已连接用 userStats；标签无全网/个人区分</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>链 userStats vs 全网 config</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`burn/detail`：三格始终 `userStats`（agxBurned / contributionEarned / contributionConsumed）；缺→0；不绑 `getConfig().total*`</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>链 userStats（个人）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>改标签区分「全网/个人」或未连接也显个人空态</dd></div>
-      <div class="wide"><dt>备注</dt><dd>静默切口径；非「故意空/0」</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>稿标签无全网/个人；口径钉个人；缺数显 0</dd></div>
     </dl>
   </div>
 </article>
@@ -6310,26 +6310,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="5-兑换" data-search="x-042 兑换 涡轮·概览 三卡 usd hint 读 `formatagxquotausd`；无报价 → `$0.00`；claimed 用 api 小数×单价 `quoteusdinforagxout(1 agx)` × 量 claimed←`claimed_total`  🟡 部分 fe 读源/算法/门闸/刷新错误 无 `unitusd` 时 hint 显 `—`（禁 `$0.00`）；claimed 腿随 x-041 prod 后再抬 — **a-05**  a-05 缺价造 $0；claimed usd 绑 x-041">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-042 兑换 涡轮·概览 三卡 usd hint 读 `formatagxquotausd`；无报价 → `$0.00`；claimed 用 api 小数×单价 `quoteusdinforagxout(1 agx)` × 量 claimed←`claimed_total`  ✅ 已对齐 设计取舍（缺数显0） — — **a-05**  a-05 缺价显 $0.00（空态统一）；claimed usd 跟 x-041 接入">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-042</span>
     <span class="surface">涡轮·概览</span>
     <span class="datum">三卡 USD hint</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>兑换</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>— **A-05**</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-05</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>`formatAgxQuotaUsd`；无报价 → `$0.00`；claimed 用 API 小数×单价</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`quoteUsdInForAgxOut(1 AGX)` × 量</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>claimed←`claimed_total`</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>无 `unitUsd` 时 hint 显 `—`（禁 `$0.00`）；claimed 腿随 X-041 Prod 后再抬</dd></div>
-      <div class="wide"><dt>备注</dt><dd>缺价造 $0；claimed USD 绑 X-041</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>缺价显 $0.00（空态统一）；claimed USD 跟 X-041 接入</dd></div>
     </dl>
   </div>
 </article>
@@ -6892,26 +6892,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-012 资产 hub·dock 质押卡 仓位/收益/apr 读 `formataprfromrebase`：`epochsperday ?? 2`；仓位/收益另展 手册质押 apr dist `stake_total_agx` + 链 yield  🟡 部分 fe 读源/算法/门闸/刷新错误 `epochsperday` 缺失时 apr 显 `—`/`apr_empty`，禁静默 `?? 2`（同 s-057）；仓位/收益金额另随 a-054 b-23  — r2 确认🟡；apr 算法债；金钱伞 a-054">
+<article class="row" data-status="ok" data-section="6-资产" data-search="a-012 资产 hub·dock 质押卡 仓位/收益/apr 读 `formataprfromrebase`：缺 `epochsperday`→`apr_empty`=`0.00%`（禁 `?? 2`）；仓位/收益另展 手册质押 apr dist `stake_total_agx` + 链 yield  ✅ 已对齐 设计取舍（缺数显0） — b-23  — 同 s-057；缺日频显 0.00%（非 —）">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-012</span>
     <span class="surface">Hub·Dock</span>
     <span class="datum">质押卡 仓位/收益/APR</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>资产</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>B-23</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`formatAprFromRebase`：`epochsPerDay ?? 2`；仓位/收益另展</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`formatAprFromRebase`：缺 `epochsPerDay`→`APR_EMPTY`=`0.00%`（禁 `?? 2`）；仓位/收益另展</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册质押 APR</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>dist `stake_total_agx` + 链 yield</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>`epochsPerDay` 缺失时 APR 显 `—`/`APR_EMPTY`，禁静默 `?? 2`（同 S-057）；仓位/收益金额另随 A-054</dd></div>
-      <div class="wide"><dt>备注</dt><dd>R2 确认🟡；APR 算法债；金钱伞 A-054</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>同 S-057；缺日频显 0.00%（非 —）</dd></div>
     </dl>
   </div>
 </article>
@@ -7122,26 +7122,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="partial" data-section="6-资产" data-search="a-022 资产 position·质押·统计 我的持仓/已释放/待释放/rebase/加成/总收益 读 `useassetspositionstats`：`pendingrelease=principal−released`；活期 released=0 → 待释放=全本金 同上 —  🟡 部分 fe 读源/算法/门闸/刷新错误 聚合排除 liquid 或改公式；单测钉口径 b-12  open 公式套用 locked 语义到 liquid">
+<article class="row" data-status="ok" data-section="6-资产" data-search="a-022 资产 position·质押·统计 我的持仓/已释放/待释放/rebase/加成/总收益 读 `aggregatestakerelease`+`useassetspositionstats`：liquid 不进已释放/待释放；locked 保持公式；持仓仍含 liquid 本金 同上 —  ✅ 已对齐 — — b-12  open→closed 与 s-023 同 helper；单测钉口径">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">A-022</span>
     <span class="surface">Position·质押·统计</span>
     <span class="datum">我的持仓/已释放/待释放/Rebase/加成/总收益</span>
     <span class="rw pill">读</span>
-    <span class="status badge partial">🟡 部分</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>资产</dd></div>
-      <div><dt>T1 归因</dt><dd>FE 读源/算法/门闸/刷新错误</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>B-12</dd></div>
-      <div><dt>A/B/C 链</dt><dd>open</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`useAssetsPositionStats`：`pendingRelease=principal−released`；活期 released=0 → 待释放=全本金</dd></div>
+      <div><dt>A/B/C 链</dt><dd>open→closed</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`aggregateStakeRelease`+`useAssetsPositionStats`：liquid 不进已释放/待释放；locked 保持公式；持仓仍含 liquid 本金</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>同上</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>聚合排除 liquid 或改公式；单测钉口径</dd></div>
-      <div class="wide"><dt>备注</dt><dd>公式套用 locked 语义到 liquid</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>与 S-023 同 helper；单测钉口径</dd></div>
     </dl>
   </div>
 </article>
@@ -10113,7 +10113,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T23:40:57.260Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-07T23:58:31.029Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
