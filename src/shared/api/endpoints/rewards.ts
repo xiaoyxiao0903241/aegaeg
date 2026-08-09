@@ -3,8 +3,6 @@ import { apiRequest } from '~/shared/api/request'
 import type {
   ClaimConfirmRequest,
   ClaimConfirmResult,
-  ClaimParseSignatureRequest,
-  ClaimParseSignatureResult,
   DaoRewardType,
   LuckyRewardMyRoundItem,
   LuckyRewardSummary,
@@ -243,18 +241,6 @@ export async function requestMarketFundClaim(token: string): Promise<TeamRewardS
     method: 'POST',
     token,
     body: {},
-  })
-}
-
-/** 解析并校验后端返回的领取签名参数。 */
-export async function parseClaimSignature(
-  token: string,
-  request: ClaimParseSignatureRequest,
-): Promise<ClaimParseSignatureResult> {
-  return apiRequest<ClaimParseSignatureResult>('/claim/parse-signature', {
-    method: 'POST',
-    token,
-    body: request,
   })
 }
 

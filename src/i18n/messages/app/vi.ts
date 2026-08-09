@@ -153,8 +153,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'Kết nối ví',
-    connectIntroTitle: 'Kết nối ví để khám phá các tính năng AEGIS X',
-    connectIntroLink: 'Tính năng AEGIS X ↗',
     connecting: 'Đang kết nối…',
     copyAddress: 'Sao chép địa chỉ',
     copied: 'Đã sao chép',
@@ -191,7 +189,6 @@ const app = defineMessages({
     provider: 'Nhà cung cấp',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'Mở trên PancakeSwap',
-    transactionCancelled: 'Đã hủy giao dịch trong ví',
     overview: 'Tổng quan',
     exchangeRate: 'Tỷ giá đổi',
     settlement: 'Tất toán',
@@ -926,12 +923,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'Lịch sử phát và nhận',
-      columns: ['Thời gian', 'Loại', 'Số lượng ước tính', 'Hash giao dịch'],
-      empty: 'Chưa có bản ghi',
-    },
-
     mixed: {
       splitAria: 'Tỷ lệ nhận và tái stake',
       releasePct: 'Nhận {pct}%',
@@ -1287,18 +1278,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'Cấp hiện tại',
-    postLaunchRankTitle: 'Cấp sau ra mắt',
     teamRewardRate: 'Thưởng nhóm {rate}',
-    postLaunch30DayRank: 'Trong 30 ngày sau ra mắt bạn có thể đạt {rank}',
-    postLaunchMaxRank: 'Bạn đã đạt cấp cao nhất',
-    postLaunchRankTooltip:
-      'Sau ra mắt, cấp được tính theo hiệu suất thực tế dựa trên khối lượng đồng xây dựng của nhóm quy đổi sang AGX theo giá chiết khấu.\nCấp hiện tại chỉ dựa trên dữ liệu hiệu suất; sau ra mắt có thể chịu ảnh hưởng của các yếu tố khác như nắm giữ cá nhân và tài khoản giới thiệu trực tiếp hợp lệ.\nDữ liệu chỉ mang tính tham khảo; dữ liệu thực tế sau ra mắt là căn cứ cuối cùng.',
     superCommunityBadge: 'Siêu hệ thống',
     heroTierRewardBody: 'Nhận {bonus} từ khối lượng đồng xây dựng của nhóm làm phần thưởng.',
     superCommunityBenefitBody: 'Siêu hệ thống nhận quỹ phát triển chuyên dụng và quyền quản trị.',
-    shareholderHintNoRank: 'Cấp sáng lập',
     shareholderNoRankTitle: 'Bạn chưa trở thành Thống đốc Dự trữ Sáng lập',
     shareholderNoRankBody:
       'Trở thành Thống đốc Dự trữ Sáng lập để nhận 1%-10% khối lượng đồng xây dựng của đội làm phần thưởng và nâng 1 cấp trong 30 ngày sau khi AEGIS X ra mắt.',
@@ -1316,7 +1299,6 @@ const app = defineMessages({
     autoPaidLabel: 'Tự động thanh toán',
     autoPaid: 'Phần thưởng tự động thanh toán vào ví',
     teamRewards: 'Phần thưởng cấp',
-    claimed: 'Đã nhận {amount}',
     heroTitle: 'Cấp hiện tại',
     allTiers: 'Hệ thống danh dự sáng lập',
     history: 'Lịch sử phần thưởng',
@@ -1329,13 +1311,8 @@ const app = defineMessages({
       body: 'Lịch sử quyết toán và nhận phần thưởng nhóm sẽ hiển thị tại đây khi phần thưởng phát sinh.',
     },
     communityFund: 'Quỹ phát triển',
-    communityFundTooltip:
-      'Siêu hệ thống nhận 5% quỹ phát triển hệ thống, dành riêng cho vận hành tự chủ, bao gồm nhưng không giới hạn: xây dựng hệ thống, vận hành hàng ngày, họp hệ thống và giảng viên hệ thống.',
     communityFundLocked: 'Chưa mở khóa: {amount}',
-    communityFundUnlockedSuffix: 'đã mở khóa',
-    communityFundClaimed: 'Bạn đã nhận {amount}',
     communityFundHistory: 'Quỹ phát triển',
-    communityFundCumulativeClaimed: 'Tổng đã nhận {amount}',
     communityFundHistoryEmpty: {
       title: 'Chưa có lịch sử quỹ phát triển',
       body: 'Lịch sử nhận quỹ phát triển sẽ hiển thị tại đây khi phần thưởng phát sinh.',
@@ -1848,11 +1825,8 @@ const app = defineMessages({
     intro: 'Staking và trái phiếu cùng xây dựng — chia sẻ lãi kép Rebase',
     body: 'Staking và trái phiếu cùng xây dựng — chia sẻ lãi kép Rebase',
     backToHub: 'Quay lại Staking',
-    amount: 'Số lượng ước tính',
-    balance: 'Số dư',
     max: 'Tối đa',
     capUnlimited: 'Không giới hạn',
-    viewContract: 'Xem hợp đồng',
     blocked: {
       notBound: 'Hãy gắn quan hệ giới thiệu trước',
       accountMigrated: 'Địa chỉ này đã di chuyển, hãy dùng địa chỉ mới',

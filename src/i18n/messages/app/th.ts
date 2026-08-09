@@ -152,8 +152,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'เชื่อมต่อกระเป๋าเงิน',
-    connectIntroTitle: 'เชื่อมต่อกระเป๋าเงินเพื่อสำรวจฟีเจอร์ของ AEGIS X',
-    connectIntroLink: 'ฟีเจอร์ AEGIS X ↗',
     connecting: 'กำลังเชื่อมต่อ…',
     copyAddress: 'คัดลอกที่อยู่',
     copied: 'คัดลอกแล้ว',
@@ -191,7 +189,6 @@ const app = defineMessages({
     provider: 'ผู้ให้บริการ',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'เปิดใน PancakeSwap',
-    transactionCancelled: 'ยกเลิกธุรกรรมในกระเป๋าแล้ว',
     overview: 'ภาพรวม',
     exchangeRate: 'อัตราแลกเปลี่ยน',
     settlement: 'การชำระ',
@@ -899,12 +896,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'ประวัติการจ่ายและการรับ',
-      columns: ['เวลา', 'ประเภท', 'จำนวนคำนวณ', 'แฮชธุรกรรม'],
-      empty: 'ยังไม่มีบันทึก',
-    },
-
     mixed: {
       splitAria: 'สัดส่วนรับกับรีสเตก',
       releasePct: 'รับ {pct}%',
@@ -1246,18 +1237,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'ระดับปัจจุบัน',
-    postLaunchRankTitle: 'ระดับหลังเปิดตัว',
     teamRewardRate: 'รางวัลทีม {rate}',
-    postLaunch30DayRank: 'ภายใน 30 วันหลังเปิดตัว คุณสามารถถึง {rank}',
-    postLaunchMaxRank: 'คุณถึงระดับสูงสุดแล้ว',
-    postLaunchRankTooltip:
-      'หลังเปิดตัว ระดับคำนวณจากผลงานจริงตามปริมาณร่วมสร้างของทีมที่แปลงเป็น AGX ในราคาลด\nระดับปัจจุบันอ้างอิงเฉพาะข้อมูลผลงาน หลังเปิดตัวอาจมีปัจจัยอื่น เช่น การถือครองส่วนบุคคลและการแนะนำตรงที่มีคุณสมบัติ\nข้อมูลนี้ใช้เพื่ออ้างอิงเท่านั้น ข้อมูลบนเชนหลังเปิดตัวถือเป็นที่สิ้นสุด',
     superCommunityBadge: 'ซูเปอร์ซิสเต็ม',
     heroTierRewardBody: 'รับ {bonus} ของปริมาณร่วมสร้างทีมเป็นรางวัล',
     superCommunityBenefitBody: 'ซูเปอร์ซิสเต็มได้รับกองทุนพัฒนาเฉพาะและการกำกับดูแล',
-    shareholderHintNoRank: 'ระดับ Genesis',
     shareholderNoRankTitle: 'ยังไม่ใช่ Genesis Reserve Governor',
     shareholderNoRankBody:
       'เป็น Genesis Reserve Governor เพื่อรับ 1%-10% ของปริมาณร่วมสร้างทีมเป็นรางวัล และอัปเกรดหนึ่งระดับภายใน 30 วันหลัง AEGIS X เปิดตัว',
@@ -1275,7 +1258,6 @@ const app = defineMessages({
     autoPaidLabel: 'จ่ายอัตโนมัติ',
     autoPaid: 'รางวัลชำระเข้ากระเป๋าโดยอัตโนมัติ',
     teamRewards: 'รางวัลระดับ',
-    claimed: 'รับแล้ว {amount}',
     heroTitle: 'ระดับปัจจุบัน',
     allTiers: 'ระบบเกียรติยศ Genesis',
     history: 'ประวัติรางวัล',
@@ -1288,13 +1270,8 @@ const app = defineMessages({
       body: 'บันทึกการชำระและรับรางวัลระดับจะแสดงที่นี่เมื่อมีรางวัลเกิดขึ้น',
     },
     communityFund: 'กองทุนพัฒนา',
-    communityFundTooltip:
-      'ซูเปอร์ซิสเต็มได้รับ 5% ของกองทุนพัฒนาระบบ สำหรับการดำเนินงานของระบบเอง รวมถึงแต่ไม่จำกัดเพียง: การสร้างระบบ การดำเนินงานประจำวัน การประชุมระบบ และวิทยากรระบบ',
     communityFundLocked: 'ล็อก: {amount}',
-    communityFundUnlockedSuffix: 'ปลดล็อกแล้ว',
-    communityFundClaimed: 'คุณรับแล้ว {amount}',
     communityFundHistory: 'กองทุนพัฒนา',
-    communityFundCumulativeClaimed: 'รับสะสม {amount}',
     communityFundHistoryEmpty: {
       title: 'ยังไม่มีบันทึกกองทุนพัฒนา',
       body: 'บันทึกการรับกองทุนพัฒนาจะแสดงที่นี่เมื่อมีรางวัลเกิดขึ้น',
@@ -1799,11 +1776,8 @@ const app = defineMessages({
     intro: 'สเตกและพันธบัตรร่วมสร้าง แบ่งปันการทบต้น Rebase',
     body: 'สเตกและพันธบัตรร่วมสร้าง แบ่งปันการทบต้น Rebase',
     backToHub: 'กลับไป Staking',
-    amount: 'จำนวนคำนวณ',
-    balance: 'ยอดคงเหลือ',
     max: 'สูงสุด',
     capUnlimited: 'ไม่จำกัด',
-    viewContract: 'ดูสัญญา',
     blocked: {
       notBound: 'ผูกการแนะนำก่อน',
       accountMigrated: 'ที่อยู่นี้ย้ายแล้ว ใช้ที่อยู่ใหม่',

@@ -83,29 +83,3 @@ export interface ClaimConfirmResult {
     }
   }
 }
-
-export interface ClaimParseSignatureRequest {
-  signature: string
-  contract: string
-  salt: string
-  account: string
-  amount: string
-  expireTime: number
-  signType: number
-}
-
-export interface ClaimParseSignatureResult {
-  contract: string
-  account: string
-  amount: string
-  amountDecimal: string
-  salt: string
-  saltRaw: string
-  expireTime: number
-  signType: number
-  signature: string
-  innerHash: string
-  ethSignedHash: string
-  recoveredSigner: string
-  signatureServiceRequest?: ClaimSignatureServiceRequest
-}

@@ -29,10 +29,6 @@ export interface LuckyRewardWinnerItem {
   reward_amount: string
 }
 
-export interface LuckyRewardWinnersRequest {
-  date: string
-}
-
 export interface LuckyRewardWinnersResponse {
   date: string
   draw_tx_hash: string | null

@@ -154,8 +154,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'Cüzdanı Bağla',
-    connectIntroTitle: 'AEGIS X özelliklerini keşfetmek için cüzdanınızı bağlayın',
-    connectIntroLink: 'AEGIS X özellikleri ↗',
     connecting: 'Bağlanıyor…',
     copyAddress: 'Adresi kopyala',
     copied: 'Kopyalandı',
@@ -192,7 +190,6 @@ const app = defineMessages({
     provider: 'Sağlayıcı',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'PancakeSwap’ta aç',
-    transactionCancelled: 'İşlem cüzdanda iptal edildi',
     overview: 'Genel bakış',
     exchangeRate: 'Takas oranı',
     settlement: 'Uzlaşma',
@@ -934,12 +931,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'Dağıtım ve talep geçmişi',
-      columns: ['Zaman', 'Tür', 'Hesaplanan tutar', 'İşlem hash’i'],
-      empty: 'Henüz kayıt yok',
-    },
-
     mixed: {
       splitAria: 'Talep ve yeniden stake oranı',
       releasePct: 'Talep %{pct}',
@@ -1291,18 +1282,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'Mevcut seviye',
-    postLaunchRankTitle: 'Yayın sonrası seviye',
     teamRewardRate: 'Takım ödülü {rate}',
-    postLaunch30DayRank: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine ulaşabilirsiniz',
-    postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
-    postLaunchRankTooltip:
-      "Yayın sonrası seviye, takım ortak inşa tutarının indirimli fiyattan AGX'e dönüştürülmesine dayalı gerçek performansa göre hesaplanır.\nMevcut seviye yalnızca performans verilerine dayanır; yayın sonrası kişisel varlıklar ve geçerli doğrudan yönlendirmeler gibi diğer faktörler etkili olabilir.\nBu bilgiler yalnızca referans içindir; nihai veri yayın sonrası gerçek verilerdir.",
     superCommunityBadge: 'Süper Sistem',
     heroTierRewardBody: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın.',
     superCommunityBenefitBody: 'Süper Sistemler özel gelişim fonu ve yönetişim hakları alır.',
-    shareholderHintNoRank: 'Genesis seviyesi',
     shareholderNoRankTitle: 'Henüz Genesis Rezerv Valisi olmadınız',
     shareholderNoRankBody:
       'Genesis Rezerv Valisi olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
@@ -1320,7 +1303,6 @@ const app = defineMessages({
     autoPaidLabel: 'Otomatik ödeme',
     autoPaid: 'Ödüller cüzdana otomatik olarak ödenir',
     teamRewards: 'Seviye ödülleri',
-    claimed: 'Talep edildi {amount}',
     heroTitle: 'Mevcut seviye',
     allTiers: 'Genesis onur sistemi',
     history: 'Ödül kayıtları',
@@ -1333,13 +1315,8 @@ const app = defineMessages({
       body: 'Seviye ödülü uzlaşma ve talep kayıtları, ödül oluştuktan sonra burada görüntülenecektir.',
     },
     communityFund: 'Gelişim fonu',
-    communityFundTooltip:
-      "Süper sistemler, sistem gelişim fonunun %5'ini alır; sistem inşası, günlük operasyonlar, sistem toplantıları ve sistem eğitmenleri dahil olmak üzere sistem öz-işletimine ayrılır.",
     communityFundLocked: 'Kilitli: {amount}',
-    communityFundUnlockedSuffix: 'kilidi açıldı',
-    communityFundClaimed: 'Talep ettiniz {amount}',
     communityFundHistory: 'Gelişim fonu',
-    communityFundCumulativeClaimed: 'Toplam talep {amount}',
     communityFundHistoryEmpty: {
       title: 'Henüz gelişim fonu kaydı yok',
       body: 'Gelişim fonu talep kayıtları ödül oluştuktan sonra burada görünecektir.',
@@ -1855,11 +1832,8 @@ const app = defineMessages({
     intro: 'Stake ve tahvillerle ortak inşa — Rebase bileşik getiriyi paylaşın',
     body: 'Stake ve tahvillerle ortak inşa — Rebase bileşik getiriyi paylaşın',
     backToHub: 'Staking’e dön',
-    amount: 'Hesaplanan tutar',
-    balance: 'Bakiye',
     max: 'Maks',
     capUnlimited: 'Sınırsız',
-    viewContract: 'Sözleşmeyi görüntüle',
     blocked: {
       notBound: 'Önce referans bağlayın',
       accountMigrated: 'Bu adres taşındı — yeni adresi kullanın',

@@ -25,21 +25,6 @@ test('auth session storage roundtrips token for address', async () => {
   assert.equal(storage.read(), null)
 })
 
-test('readWalletSession ignores mismatched address', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
-  const { readWalletSession } = await loadModule('/src/web3/auth/login-with-wallet.ts')
-
-  const storage = createMemoryAuthSessionStorage()
-  storage.write({
-    address: '0x111',
-    token: 'jwt',
-    savedAt: Date.now(),
-  })
-
-  assert.equal(readWalletSession('0x222', storage), null)
-  assert.equal(readWalletSession('0x111', storage)?.token, 'jwt')
-})
-
 test('login signature cache respects SIWE expiration', async () => {
   const { createMemoryLoginSignatureStorage, isLoginSignatureUsable } = await loadModule(
     '/src/web3/auth/login-signature-cache.ts',

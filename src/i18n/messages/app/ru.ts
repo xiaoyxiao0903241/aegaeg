@@ -154,8 +154,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'Подключить кошелёк',
-    connectIntroTitle: 'Подключите кошелёк, чтобы изучить функции AEGIS X',
-    connectIntroLink: 'Функции AEGIS X ↗',
     connecting: 'Подключение…',
     copyAddress: 'Копировать адрес',
     copied: 'Скопировано',
@@ -193,7 +191,6 @@ const app = defineMessages({
     provider: 'Провайдер',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'Открыть на PancakeSwap',
-    transactionCancelled: 'Транзакция отменена в кошельке',
     overview: 'Обзор',
     exchangeRate: 'Курс обмена',
     settlement: 'Расчёт',
@@ -898,12 +895,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'История выдачи и получения',
-      columns: ['Время', 'Тип', 'Сумма', 'Хеш tx'],
-      empty: 'Пока нет записей',
-    },
-
     mixed: {
       splitAria: 'Разделение получение / рестейк',
       releasePct: 'Получить {pct}%',
@@ -1248,18 +1239,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'Текущий уровень',
-    postLaunchRankTitle: 'Уровень после запуска',
     teamRewardRate: 'Командная награда {rate}',
-    postLaunch30DayRank: 'В течение 30 дней после запуска вы можете достичь {rank}',
-    postLaunchMaxRank: 'Вы достигли максимального уровня',
-    postLaunchRankTooltip:
-      'После запуска уровень рассчитывается по реальным показателям на основе объёма командного со-строительства, конвертированного в AGX по скидочной цене.\nТекущий уровень основан только на данных о показателях; после запуска могут учитываться другие факторы, например личные активы и квалифицированные прямые рефералы.\nДанные приведены для справки; окончательными являются данные после запуска.',
     superCommunityBadge: 'Суперсистема',
     heroTierRewardBody: 'Получайте {bonus} от объёма командного со-строительства в виде награды.',
     superCommunityBenefitBody: 'Суперсистемы получают целевой фонд развития и права управления.',
-    shareholderHintNoRank: 'Уровень Genesis',
     shareholderNoRankTitle: 'Вы ещё не стали управляющим резервом Genesis',
     shareholderNoRankBody:
       'Став управляющим резервом Genesis, вы получаете 1%-10% от суммы командного со-строительства в виде наград и повышаете уровень на 1 в течение 30 дней после запуска AEGIS X.',
@@ -1277,7 +1260,6 @@ const app = defineMessages({
     autoPaidLabel: 'Автовыплата',
     autoPaid: 'Награды автоматически зачисляются на кошелёк',
     teamRewards: 'Награды за уровень',
-    claimed: 'Получено {amount}',
     heroTitle: 'Текущий уровень',
     allTiers: 'Система почёта Genesis',
     history: 'История наград',
@@ -1290,13 +1272,8 @@ const app = defineMessages({
       body: 'История расчёта и получения командных наград появится здесь после их начисления.',
     },
     communityFund: 'Фонд развития',
-    communityFundTooltip:
-      'Суперсистемы получают 5% фонда развития системы для самообеспечения системы, включая, но не ограничиваясь: строительство системы, ежедневные операции, системные встречи и системных лекторов.',
     communityFundLocked: 'Заблокировано: {amount}',
-    communityFundUnlockedSuffix: 'разблокировано',
-    communityFundClaimed: 'Вы получили {amount}',
     communityFundHistory: 'Фонд развития',
-    communityFundCumulativeClaimed: 'Всего получено {amount}',
     communityFundHistoryEmpty: {
       title: 'Записей фонда развития пока нет',
       body: 'История получения фонда развития появится здесь после начисления наград.',
@@ -1813,11 +1790,8 @@ const app = defineMessages({
     intro: 'Стейкинг и облигации со-строят — делите сложный процент Rebase',
     body: 'Стейкинг и облигации со-строят — делите сложный процент Rebase',
     backToHub: 'Назад к стейкингу',
-    amount: 'Сумма',
-    balance: 'Баланс',
     max: 'Макс.',
     capUnlimited: 'Без лимита',
-    viewContract: 'Смотреть контракт',
     blocked: {
       notBound: 'Сначала привяжите реферала',
       accountMigrated: 'Этот адрес мигрирован — используйте новый адрес',

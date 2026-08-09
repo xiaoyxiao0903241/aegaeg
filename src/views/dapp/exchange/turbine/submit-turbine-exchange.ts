@@ -42,7 +42,7 @@ export async function submitTurbineUnlock(args: {
   const { core, unlockAmountAgx } = args
 
   return core.runSubmit(async (session) => {
-    const { wallet, address } = session
+    const { wallet, address, readClient } = session
     if (unlockAmountAgx <= 0n) {
       throw new Error('TURBINE_ZERO_AMOUNT')
     }
@@ -57,9 +57,9 @@ export async function submitTurbineUnlock(args: {
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<Snap> => {
         const [liveBalances, liveQuota, liveUsd] = await Promise.all([
-          readTurbineUsd1Balances(address),
-          readTurbineQuota(address),
-          readTurbineUsdQuote(unlockAmountAgx),
+          readTurbineUsd1Balances(address, readClient),
+          readTurbineQuota(address, readClient),
+          readTurbineUsdQuote(unlockAmountAgx, readClient),
         ])
         return {
           liveUsd,
@@ -79,7 +79,7 @@ export async function submitTurbineUnlock(args: {
       mapBlockError: (reason) => new Error(reason),
       softPreBlocks: ['TURBINE_INSUFFICIENT_ALLOWANCE'],
       approve: async () => {
-        const usd = await readTurbineUsdQuote(unlockAmountAgx)
+        const usd = await readTurbineUsdQuote(unlockAmountAgx, readClient)
         await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: usd })
       },
       write: async (live) => {

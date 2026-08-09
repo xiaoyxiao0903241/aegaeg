@@ -14,7 +14,6 @@ import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
-export { submitLiquidWarmupClaim } from '~/web3/staking/submit-liquid-warmup-claim'
 
 /**
  * 提交质押（活期 / 定期共用）

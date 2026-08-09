@@ -156,8 +156,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: '지갑 연결',
-    connectIntroTitle: '지갑을 연결하여 AEGIS X 기능을 탐색하세요',
-    connectIntroLink: 'AEGIS X 기능 ↗',
     connecting: '연결 중…',
     copyAddress: '주소 복사',
     copied: '복사됨',
@@ -195,7 +193,6 @@ const app = defineMessages({
     provider: '제공자',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'PancakeSwap에서 열기',
-    transactionCancelled: '지갑에서 거래가 취소되었습니다',
     overview: '개요',
     exchangeRate: '교환 비율',
     settlement: '결제',
@@ -905,12 +902,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: '지급 및 수령 기록',
-      columns: ['시간', '유형', '산출 수량', '거래 해시'],
-      empty: '아직 기록이 없습니다',
-    },
-
     mixed: {
       splitAria: '수령과 재예치 비율',
       releasePct: '수령 {pct}%',
@@ -1255,18 +1246,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: '현재 등급',
-    postLaunchRankTitle: '출시 후 등급',
     teamRewardRate: '팀 보상 {rate}',
-    postLaunch30DayRank: '출시 후 30일 이내 {rank} 등급 획득 가능',
-    postLaunchMaxRank: '최고 등급에 도달했습니다',
-    postLaunchRankTooltip:
-      '출시 후 등급은 팀 공동 구축 금액을 할인가로 AGX에 환산한 실적을 기준으로 산정됩니다.\n현재 등급은 실적 데이터만을 근거로 하며, 출시 후에는 개인 보유량·유효 직추천 계정 등 다른 요인의 영향을 받을 수 있습니다.\n본 데이터는 참고용이며, 최종적으로는 출시 후 실제 데이터가 기준입니다.',
     superCommunityBadge: '슈퍼 체계',
     heroTierRewardBody: '팀 공동 구축 금액의 {bonus}를 리워드로 받습니다.',
     superCommunityBenefitBody: '슈퍼 체계는 체계 발전 전용 기금과 거버넌스 권익을 받습니다.',
-    shareholderHintNoRank: '창세 등급',
     shareholderNoRankTitle: '아직 창세 준비금 이사가 아닙니다',
     shareholderNoRankBody:
       '창세 준비금 이사가 되면 팀 공동 구축 금액의 1%-10%를 리워드로 받을 수 있으며, AEGIS X 출시 후 30일 이내 1단계 승급됩니다.',
@@ -1284,7 +1267,6 @@ const app = defineMessages({
     autoPaidLabel: '자동 지급',
     autoPaid: '리워드가 지갑으로 자동 정산됩니다',
     teamRewards: '등급 리워드',
-    claimed: '수령 완료 {amount}',
     heroTitle: '현재 등급',
     allTiers: '창세 명예 체계',
     history: '리워드 기록',
@@ -1297,13 +1279,8 @@ const app = defineMessages({
       body: '팀 리워드 정산 및 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
     },
     communityFund: '발전 기금',
-    communityFundTooltip:
-      '슈퍼 체계는 체계 발전 기금의 5%를 받으며, 시스템 구축, 일상 운영, 체계 회의, 체계 강사 등 체계 자영에 전용됩니다.',
     communityFundLocked: '잠금: {amount}',
-    communityFundUnlockedSuffix: '잠금 해제',
-    communityFundClaimed: '수령 완료 {amount}',
     communityFundHistory: '발전 기금',
-    communityFundCumulativeClaimed: '누적 수령 {amount}',
     communityFundHistoryEmpty: {
       title: '발전 기금 기록 없음',
       body: '발전 기금 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
@@ -1811,11 +1788,8 @@ const app = defineMessages({
     intro: '스테이킹과 채권으로 공동 구축 — Rebase 복리 성장 공유',
     body: '스테이킹과 채권으로 공동 구축 — Rebase 복리 성장 공유',
     backToHub: '스테이킹으로 돌아가기',
-    amount: '산출 수량',
-    balance: '잔액',
     max: '최대',
     capUnlimited: '무제한',
-    viewContract: '컨트랙트 보기',
     blocked: {
       notBound: '먼저 추천 관계를 바인딩해 주세요',
       accountMigrated: '해당 주소는 이전되었습니다 — 새 주소로 조작해 주세요',

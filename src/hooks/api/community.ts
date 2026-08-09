@@ -1,7 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
-
-import { toApiQueryView, useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
-import { useI18n } from '~/i18n/use-i18n'
+import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getCommunityFundLogs,
   getCommunityFundTotal,
@@ -15,13 +12,11 @@ import {
   getTeamReferrals,
   getTeamRewardClaimLogs,
   getTeamRewardTotal,
-  searchPerformance,
 } from '~/shared/api/endpoints'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { PaginationParams } from '~/shared/api/types'
 
-/** 社区与业绩数据主要依赖登录态；搜索做市业绩是唯一公开查询。 */
+/** 社区与业绩数据依赖登录态。 */
 
 /**
  * 查询当前用户做市业绩。
@@ -30,29 +25,6 @@ import type { PaginationParams } from '~/shared/api/types'
  */
 export function usePerformance(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.performance, getPerformance, enabled)
-}
-
-/**
- * 按地址搜索做市业绩（公开接口，不依赖登录会话）
- *
- * 地址为空时不发起查询，避免无效请求。
- *
- * @param address 待搜索的钱包地址
- * @param enabled 是否允许执行
- * @see docs/backend-api/api.md #一期接口/search-performance
- */
-
-export function useSearchPerformance(address: string | null | undefined, enabled = true) {
-  const { messages: t } = useI18n()
-  const normalized = address?.trim() ?? ''
-  const query = useQuery({
-    queryKey: queryKeys.api.searchPerformance(normalized || 'empty'),
-    queryFn: () => searchPerformance(normalized),
-    enabled: enabled && normalized.length > 0,
-    staleTime: QUERY_STALE_TIME.api,
-  })
-
-  return toApiQueryView(query, t.errors.api)
 }
 
 /**

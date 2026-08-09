@@ -17,8 +17,3 @@ export function useGenesisPromoChrome() {
     isLoading,
   }
 }
-
-/** @deprecated 改用 {@link useGenesisPromoChrome}；保留别名避免旧调用方订阅过宽。 */
-export function useGenesisPromo() {
-  return useGenesisPromoChrome()
-}

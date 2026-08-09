@@ -23,7 +23,7 @@ export async function submitBurnExchange(args: {
   const { core } = args
 
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
-    const { wallet, address } = session
+    const { wallet, address, readClient } = session
     const amountIn = core.debouncedAmountIn
 
     type Snap = {
@@ -34,8 +34,8 @@ export async function submitBurnExchange(args: {
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<Snap> => {
         const [liveBalances, liveConfig] = await Promise.all([
-          readBurnExchangeBalances(address),
-          readBurnContributionSwapConfig(),
+          readBurnExchangeBalances(address, readClient),
+          readBurnContributionSwapConfig(readClient),
         ])
         return { sellBalance: liveBalances.sell, config: liveConfig }
       },

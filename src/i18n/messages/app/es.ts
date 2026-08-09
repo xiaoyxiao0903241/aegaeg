@@ -156,8 +156,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'Conectar billetera',
-    connectIntroTitle: 'Conecta tu billetera para explorar las funciones de AEGIS X',
-    connectIntroLink: 'Funciones de AEGIS X ↗',
     connecting: 'Conectando…',
     copyAddress: 'Copiar dirección',
     copied: 'Copiado',
@@ -196,7 +194,6 @@ const app = defineMessages({
     provider: 'Proveedor',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'Abrir en PancakeSwap',
-    transactionCancelled: 'Transacción cancelada en la billetera',
     overview: 'Resumen',
     exchangeRate: 'Tipo de cambio',
     settlement: 'Liquidación',
@@ -928,12 +925,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'Historial de emisión y reclamación',
-      columns: ['Hora', 'Tipo', 'Cantidad a estimar', 'Hash de tx'],
-      empty: 'Aún no hay registros',
-    },
-
     mixed: {
       splitAria: 'Proporción reclamar / reinvertir',
       releasePct: 'Reclamar {pct}%',
@@ -1296,19 +1287,11 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'Nivel actual',
-    postLaunchRankTitle: 'Nivel tras el lanzamiento',
     teamRewardRate: 'Recompensa del equipo {rate}',
-    postLaunch30DayRank: 'Dentro de los 30 días tras el lanzamiento podrás alcanzar {rank}',
-    postLaunchMaxRank: 'Ha alcanzado el nivel máximo',
-    postLaunchRankTooltip:
-      'Tras el lanzamiento, el nivel se calculará según el rendimiento real del equipo en co-construcción convertido a AGX al precio con descuento.\nEl nivel actual se basa solo en datos de rendimiento; tras el lanzamiento pueden influir otros factores, como tenencias personales y referidos directos válidos.\nEstos datos son solo de referencia; prevalecerán los datos reales tras el lanzamiento.',
     superCommunityBadge: 'Supersistema',
     heroTierRewardBody: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa.',
     superCommunityBenefitBody:
       'Los supersistemas reciben un fondo de desarrollo dedicado y derechos de gobernanza.',
-    shareholderHintNoRank: 'Nivel Génesis',
     shareholderNoRankTitle: 'Aún no eres Gobernador de Reserva Génesis',
     shareholderNoRankBody:
       'Al convertirte en Gobernador de Reserva Génesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',
@@ -1326,7 +1309,6 @@ const app = defineMessages({
     autoPaidLabel: 'Pago automático',
     autoPaid: 'Las recompensas se liquidan automáticamente en la billetera',
     teamRewards: 'Recompensas por nivel',
-    claimed: 'Reclamado {amount}',
     heroTitle: 'Nivel actual',
     allTiers: 'Sistema de honor Génesis',
     history: 'Registros de recompensas',
@@ -1339,13 +1321,8 @@ const app = defineMessages({
       body: 'Los registros de liquidación y reclamación de recompensas de equipo aparecerán aquí cuando se generen recompensas.',
     },
     communityFund: 'Fondo de desarrollo',
-    communityFundTooltip:
-      'Los supersistemas reciben el 5% del fondo de desarrollo del sistema, dedicado a la autogestión del sistema, incluyendo pero no limitado a: construcción del sistema, operaciones diarias, reuniones del sistema y formadores del sistema.',
     communityFundLocked: 'Bloqueado: {amount}',
-    communityFundUnlockedSuffix: 'desbloqueado',
-    communityFundClaimed: 'Has reclamado {amount}',
     communityFundHistory: 'Fondo de desarrollo',
-    communityFundCumulativeClaimed: 'Total reclamado {amount}',
     communityFundHistoryEmpty: {
       title: 'Sin registros del fondo de desarrollo',
       body: 'Los registros de reclamación del fondo de desarrollo aparecerán aquí cuando se generen recompensas.',
@@ -1869,11 +1846,8 @@ const app = defineMessages({
     intro: 'Staking y bonos co-construyen — comparte la capitalización Rebase',
     body: 'Staking y bonos co-construyen — comparte la capitalización Rebase',
     backToHub: 'Volver a Staking',
-    amount: 'Cantidad a estimar',
-    balance: 'Saldo',
     max: 'Máx.',
     capUnlimited: 'Ilimitado',
-    viewContract: 'Ver contrato',
     blocked: {
       notBound: 'Vincula primero una relación de referido',
       accountMigrated: 'Esta dirección migró; usa la nueva dirección',

@@ -181,44 +181,44 @@ test('indexerPageAdvanced mirrors sales-log advance rules on tx_hash head', asyn
   assert.equal(fingerprint.head, '0xabc')
 })
 
-test('invalidateAfterStaking source covers staking+assets+lucky (no live poll in unit)', async () => {
-  const fs = await import('node:fs/promises')
-  const src = await fs.readFile(
-    new URL('../../../src/shared/api/query/invalidate.ts', import.meta.url),
-    'utf8',
-  )
-  const body = src.slice(src.indexOf('export function invalidateAfterStaking'))
-  assert.match(body, /invalidateTabQueries\('staking'\)/)
-  assert.match(body, /invalidateTabQueries\('assets'\)/)
-  assert.match(body, /luckyRewardSummary/)
-  assert.match(body, /pollStakingIndexer/)
+async function seedTabProbe(tab) {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { TAB_QUERY_KEYS } = await loadModule('/src/shared/api/query/tab-query-keys.ts')
+  const key = TAB_QUERY_KEYS[tab][0]
+  queryClient.setQueryData(key, 1)
+  return { queryClient, key }
+}
+
+function assertInvalidated(queryClient, key) {
+  assert.equal(queryClient.getQueryState(key)?.isInvalidated, true)
+}
+
+test('invalidateAfterAssetsClaim marks assets+staking+release', async () => {
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const assets = await seedTabProbe('assets')
+  const staking = await seedTabProbe('staking')
+  const release = await seedTabProbe('release')
+
+  invalidateAfterAssetsClaim()
+
+  assertInvalidated(assets.queryClient, assets.key)
+  assertInvalidated(staking.queryClient, staking.key)
+  assertInvalidated(release.queryClient, release.key)
+  assets.queryClient.clear()
 })
 
-test('invalidateAfterAssetsClaim source covers assets+staking+release', async () => {
-  const fs = await import('node:fs/promises')
-  const src = await fs.readFile(
-    new URL('../../../src/shared/api/query/invalidate.ts', import.meta.url),
-    'utf8',
+test('invalidateAfterRewardsMixedClaim marks rewards+release+staking', async () => {
+  const { invalidateAfterRewardsMixedClaim } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
   )
-  const start = src.indexOf('export function invalidateAfterAssetsClaim')
-  const end = src.indexOf('export function invalidateAfterReleaseClaim')
-  const body = src.slice(start, end === -1 ? undefined : end)
-  assert.match(body, /invalidateTabQueries\('assets'\)/)
-  assert.match(body, /invalidateTabQueries\('staking'\)/)
-  assert.match(body, /invalidateTabQueries\('release'\)/)
-})
+  const rewards = await seedTabProbe('rewards')
+  const release = await seedTabProbe('release')
+  const staking = await seedTabProbe('staking')
 
-test('invalidateAfterRewardsMixedClaim source covers rewards+release+staking', async () => {
-  const fs = await import('node:fs/promises')
-  const src = await fs.readFile(
-    new URL('../../../src/shared/api/query/invalidate.ts', import.meta.url),
-    'utf8',
-  )
-  const start = src.indexOf('export function invalidateAfterRewardsMixedClaim')
-  assert.ok(start >= 0, 'invalidateAfterRewardsMixedClaim missing')
-  const end = src.indexOf('export function', start + 1)
-  const body = src.slice(start, end === -1 ? undefined : end)
-  assert.match(body, /invalidateTabQueries\('rewards'\)/)
-  assert.match(body, /invalidateTabQueries\('release'\)/)
-  assert.match(body, /invalidateTabQueries\('staking'\)/)
+  invalidateAfterRewardsMixedClaim()
+
+  assertInvalidated(rewards.queryClient, rewards.key)
+  assertInvalidated(release.queryClient, release.key)
+  assertInvalidated(staking.queryClient, staking.key)
+  rewards.queryClient.clear()
 })

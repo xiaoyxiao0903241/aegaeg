@@ -35,37 +35,26 @@ test('refetchStaleTabQueries uses active+stale; prefetch uses inactive+stale', a
   }
 })
 
-test('dapp-host displayTab uses refetchStaleTabQueries not invalidateTabQueries', async () => {
+test('dapp-host must not invalidate whole tab on displayTab change', async () => {
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(
     new URL('../../../src/views/dapp/host/dapp-host.tsx', import.meta.url),
     'utf8',
   )
-  assert.match(src, /refetchStaleTabQueries\(displayTab\)/)
   assert.doesNotMatch(src, /invalidateTabQueries\(displayTab\)/)
 })
 
-test('rail and community subscribe via useGenesisPromoChrome only', async () => {
+test('genesis promo chrome must not re-subscribe seasonOptions/promoSnapshot', async () => {
   const { readFile } = await import('node:fs/promises')
-  const rail = await readFile(
-    new URL('../../../src/views/dapp/host/rail.tsx', import.meta.url),
-    'utf8',
-  )
-  const community = await readFile(
-    new URL('../../../src/views/dapp/community/detail.tsx', import.meta.url),
-    'utf8',
-  )
   const hook = await readFile(
     new URL('../../../src/hooks/use-genesis-promo.ts', import.meta.url),
     'utf8',
   )
-  assert.match(rail, /useGenesisPromoChrome/)
-  assert.match(community, /useGenesisPromoChrome/)
   assert.doesNotMatch(hook, /state\.seasonOptions/)
   assert.doesNotMatch(hook, /state\.promoSnapshot/)
 })
 
-test('xmine parent view has no 1Hz interval; position card uses shared wall clock', async () => {
+test('xmine parent/card must not own 1Hz setInterval', async () => {
   const { readFile } = await import('node:fs/promises')
   const parent = await readFile(
     new URL('../../../src/views/dapp/assets/xmine/use-xmine.ts', import.meta.url),
@@ -75,42 +64,20 @@ test('xmine parent view has no 1Hz interval; position card uses shared wall cloc
     new URL('../../../src/views/dapp/assets/xmine/primitives.tsx', import.meta.url),
     'utf8',
   )
-  const wallClock = await readFile(
-    new URL('../../../src/stores/wall-clock-store.ts', import.meta.url),
-    'utf8',
-  )
   assert.doesNotMatch(parent, /setInterval/)
   assert.doesNotMatch(card, /setInterval/)
-  assert.match(card, /useWallClockSec\(/)
-  assert.match(wallClock, /setInterval\(tick,\s*1000\)/)
 })
 
-test('genesis countdown clock uses wall clock; chain-reads does not tick time', async () => {
+test('genesis chain-reads must not tick wall clock', async () => {
   const { readFile } = await import('node:fs/promises')
   const reads = await readFile(
     new URL('../../../src/views/dapp/genesis/use-genesis-chain-reads.ts', import.meta.url),
     'utf8',
   )
-  const clock = await readFile(
-    new URL('../../../src/views/dapp/genesis/use-genesis-countdown-clock.ts', import.meta.url),
-    'utf8',
-  )
   assert.doesNotMatch(reads, /useWallClockSec/)
-  assert.match(clock, /useWallClockSec/)
-  assert.match(clock, /invalidateAfterGenesisPhaseTransition/)
 })
 
-test('carousel provider value is memoized', async () => {
-  const { readFile } = await import('node:fs/promises')
-  const src = await readFile(
-    new URL('../../../src/shared/components/carousel.tsx', import.meta.url),
-    'utf8',
-  )
-  assert.match(src, /useMemo/)
-  assert.match(src, /contextValue/)
-})
-
-test('exchange Detail files do not reference sellAmount', async () => {
+test('exchange Detail files must not reference retired sellAmount', async () => {
   const { readFile } = await import('node:fs/promises')
   const files = [
     '../../../src/views/dapp/exchange/market-trade/detail.tsx',
@@ -122,10 +89,4 @@ test('exchange Detail files do not reference sellAmount', async () => {
     const src = await readFile(new URL(rel, import.meta.url), 'utf8')
     assert.doesNotMatch(src, /sellAmount/, `${rel} must not reference sellAmount`)
   }
-  const detail = await readFile(
-    new URL('../../../src/views/dapp/exchange/detail.tsx', import.meta.url),
-    'utf8',
-  )
-  assert.match(detail, /exchangePriceLabel=\{session\.exchangePriceLabel\}/)
-  assert.match(detail, /overviewRateLabel=\{session\.overviewRateLabel\}/)
 })

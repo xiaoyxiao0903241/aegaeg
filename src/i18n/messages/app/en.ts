@@ -155,8 +155,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'Connect Wallet',
-    connectIntroTitle: 'Connect your wallet to explore AEGIS X features',
-    connectIntroLink: 'AEGIS X features ↗',
     connecting: 'Connecting…',
     copyAddress: 'Copy address',
     copied: 'Copied',
@@ -194,7 +192,6 @@ const app = defineMessages({
     provider: 'Provider',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'Open on PancakeSwap',
-    transactionCancelled: 'Transaction cancelled in wallet',
     overview: 'Overview',
     exchangeRate: 'Exchange rate',
     settlement: 'Settlement',
@@ -900,12 +897,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'Grant & claim history',
-      columns: ['Time', 'Type', 'Amount', 'Tx hash'],
-      empty: 'No records yet',
-    },
-
     mixed: {
       splitAria: 'Claim vs restake split',
       releasePct: 'Claim {pct}%',
@@ -1246,19 +1237,11 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'Current tier',
-    postLaunchRankTitle: 'Post-launch tier',
     teamRewardRate: 'Team reward {rate}',
-    postLaunch30DayRank: 'Within 30 days after launch you can reach {rank}',
-    postLaunchMaxRank: 'You have reached the maximum tier',
-    postLaunchRankTooltip:
-      'After launch, tiers are calculated from real performance based on team co-build volume converted to AGX at the discounted price.\nThe current tier is based on performance data only; after launch other factors may apply, such as personal holdings and qualified direct referrals.\nThis information is for reference only; post-launch on-chain data is final.',
     superCommunityBadge: 'Super System',
     heroTierRewardBody: 'Earn {bonus} of team co-build volume as reward.',
     superCommunityBenefitBody:
       'Super Systems receive a dedicated development fund and governance rights.',
-    shareholderHintNoRank: 'Genesis tier',
     shareholderNoRankTitle: 'Not yet a Genesis Reserve Governor',
     shareholderNoRankBody:
       'Become a Genesis Reserve Governor to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',
@@ -1276,7 +1259,6 @@ const app = defineMessages({
     autoPaidLabel: 'Auto-paid',
     autoPaid: 'Rewards settle automatically to your wallet',
     teamRewards: 'Tier rewards',
-    claimed: 'Claimed {amount}',
     heroTitle: 'Current tier',
     allTiers: 'Genesis honor system',
     history: 'Reward history',
@@ -1289,13 +1271,8 @@ const app = defineMessages({
       body: 'Tier reward settlement and claim records appear here once rewards are generated.',
     },
     communityFund: 'Development fund',
-    communityFundTooltip:
-      'Super systems receive 5% of the system development fund, dedicated to system self-operation, including but not limited to: system building, daily operations, system meetings, and system lecturers.',
     communityFundLocked: 'Locked: {amount}',
-    communityFundUnlockedSuffix: 'unlocked',
-    communityFundClaimed: 'You claimed {amount}',
     communityFundHistory: 'Development fund',
-    communityFundCumulativeClaimed: 'Total claimed {amount}',
     communityFundHistoryEmpty: {
       title: 'No development fund records yet',
       body: 'Development fund claim records will appear here once rewards are generated.',
@@ -1801,11 +1778,8 @@ const app = defineMessages({
     intro: 'Stake and bonds co-build — share Rebase compounding',
     body: 'Stake and bonds co-build — share Rebase compounding',
     backToHub: 'Back to Staking',
-    amount: 'Amount',
-    balance: 'Balance',
     max: 'Max',
     capUnlimited: 'Unlimited',
-    viewContract: 'View contract',
     blocked: {
       notBound: 'Bind a referral first',
       accountMigrated: 'This address has migrated — use the new address',

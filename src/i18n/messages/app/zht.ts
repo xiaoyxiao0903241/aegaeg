@@ -152,8 +152,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: '連接錢包',
-    connectIntroTitle: '連接錢包以探索 AEGIS X 功能',
-    connectIntroLink: 'AEGIS X 功能 ↗',
     connecting: '連接中…',
     copyAddress: '複製地址',
     copied: '已複製',
@@ -188,7 +186,6 @@ const app = defineMessages({
     provider: '提供方',
     providerName: 'PancakeSwap',
     openPancakeSwap: '在 PancakeSwap 打開',
-    transactionCancelled: '已在錢包中取消交易',
     overview: '概覽',
     exchangeRate: '兌換比率',
     settlement: '結算',
@@ -704,7 +701,6 @@ const app = defineMessages({
     backToHub: '返回獎勵',
     claim: '領取',
     claimSuccess: '領取成功',
-    claimed: '已領取 {amount}',
     claimErrors: {
       zeroAmount: '領取金額為 0。',
       invalidSigner: '簽名無效，請重新獲取後再領取。',
@@ -831,11 +827,6 @@ const app = defineMessages({
       emptyClaimable: '暫無可領取的獎勵。',
       signedAmountHint: '可領金額以簽名包為準',
       usdLabel: 'USD',
-    },
-    claimHistory: {
-      title: '發放與領取記錄',
-      columns: ['時間', '類型', '數量', '交易哈希'],
-      empty: '暫無記錄',
     },
     mixed: {
       splitAria: '領取與復投比例',
@@ -1173,18 +1164,10 @@ const app = defineMessages({
         },
       ],
     },
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: '當前等級',
-    postLaunchRankTitle: '上線後等級',
     teamRewardRate: '團隊獎勵 {rate}',
-    postLaunch30DayRank: '上線30天內您可獲得{rank}等級',
-    postLaunchMaxRank: '您已達到最高等級',
-    postLaunchRankTooltip:
-      '上線後，等級將根據團隊參與共建的金額，按折扣價兌換 AGX 後計算真實業績。\\n當前等級僅以業績數據作為統計依據，上線後可能還會受其他因素影響，例如個人持倉、直推有效賬戶等。\\n以上數據僅供參考，最終以上線後的真實數據為準。',
     superCommunityBadge: '超級體系',
     heroTierRewardBody: '獲得團隊共建金額的{bonus}作為獎勵。',
     superCommunityBenefitBody: '超級體系將獲得體系發展專項基金以及治理權益。',
-    shareholderHintNoRank: '創世等級',
     shareholderNoRankTitle: '您還未成為創世儲備理事',
     shareholderNoRankBody:
       '成為創世儲備理事可獲得團隊共建金額的 1%-10% 作為獎勵，並且在 AEGIS X 上線後的 30 天內提升 1 級',
@@ -1214,13 +1197,8 @@ const app = defineMessages({
       body: '等級獎勵結算與領取記錄將在獎勵產生後顯示在這裡。',
     },
     communityFund: '發展基金',
-    communityFundTooltip:
-      '超級體系獲得5%體系發展基金，專項用於體系自營，包括但不限於：系統建設，日常運營，體系會議，體系講師等。',
     communityFundLocked: '待解鎖: {amount}',
-    communityFundUnlockedSuffix: '已解鎖',
-    communityFundClaimed: '您已領取{amount}',
     communityFundHistory: '發展基金',
-    communityFundCumulativeClaimed: '累計領取 {amount}',
     communityFundHistoryEmpty: {
       title: '暫無發展基金記錄',
       body: '發展基金領取記錄將在獎勵產生後顯示在這裡。',
@@ -1721,11 +1699,8 @@ const app = defineMessages({
     intro: '質押與債券共建，共享 Rebase 複利增長',
     body: '質押與債券共建，共享 Rebase 複利增長',
     backToHub: '返回質押',
-    amount: '數量',
-    balance: '餘額',
     max: '最大',
     capUnlimited: '不限',
-    viewContract: '查看合約',
     blocked: {
       notBound: '請先綁定推薦關係',
       accountMigrated: '該地址已遷移，請使用新地址操作',

@@ -156,8 +156,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'वॉलेट कनेक्ट करें',
-    connectIntroTitle: 'AEGIS X सुविधाओं का अन्वेषण करने के लिए कनेक्ट करें',
-    connectIntroLink: 'AEGIS X सुविधाएँ ↗',
     connecting: 'कनेक्ट हो रहा है…',
     copyAddress: 'पता कॉपी करें',
     copied: 'कॉपी हो गया',
@@ -195,7 +193,6 @@ const app = defineMessages({
     provider: 'प्रदाता',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'PancakeSwap पर खोलें',
-    transactionCancelled: 'वॉलेट में लेनदेन रद्द किया गया',
     overview: 'अवलोकन',
     exchangeRate: 'एक्सचेंज दर',
     settlement: 'सेटलमेंट',
@@ -904,12 +901,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'जारी व दावा इतिहास',
-      columns: ['समय', 'प्रकार', 'राशि', 'Tx हैश'],
-      empty: 'अभी कोई रिकॉर्ड नहीं',
-    },
-
     mixed: {
       splitAria: 'दावा बनाम रिस्टेक विभाजन',
       releasePct: 'दावा {pct}%',
@@ -1253,18 +1244,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'वर्तमान स्तर',
-    postLaunchRankTitle: 'लॉन्च के बाद स्तर',
     teamRewardRate: 'टीम पुरस्कार {rate}',
-    postLaunch30DayRank: 'लॉन्च के 30 दिनों के भीतर आप {rank} तक पहुँच सकते हैं',
-    postLaunchMaxRank: 'आप अधिकतम स्तर पर पहुँच गए हैं',
-    postLaunchRankTooltip:
-      'लॉन्च के बाद, स्तर टीम सह-निर्माण राशि के AGX में छूट मूल्य पर रूपांतरण के आधार पर वास्तविक प्रदर्शन से गणना होगी।\nवर्तमान स्तर केवल प्रदर्शन डेटा पर आधारित है; लॉन्च के बाद अन्य कारक भी प्रभाव डाल सकते हैं, जैसे व्यक्तिगत होल्डिंग और योग्य प्रत्यक्ष रेफरल।\nयह जानकारी केवल संदर्भ के लिए है; लॉन्च के बाद वास्तविक डेटा अंतिम होगा।',
     superCommunityBadge: 'सुपर प्रणाली',
     heroTierRewardBody: 'टीम सह-निर्माण राशि पर {bonus} पुरस्कार प्राप्त करें।',
     superCommunityBenefitBody: 'सुपर प्रणाली को समर्पित विकास कोष और शासन अधिकार प्राप्त होते हैं।',
-    shareholderHintNoRank: 'Genesis स्तर',
     shareholderNoRankTitle: 'आप अभी Genesis रिज़र्व गवर्नर नहीं बने हैं',
     shareholderNoRankBody:
       'Genesis रिज़र्व गवर्नर बनने पर टीम सह-निर्माण राशि का 1%-10% पुरस्कार मिलता है, और AEGIS X लॉन्च के 30 दिनों में 1 स्तर अपग्रेड होता है।',
@@ -1282,7 +1265,6 @@ const app = defineMessages({
     autoPaidLabel: 'स्वचालित भुगतान',
     autoPaid: 'पुरस्कार स्वचालित रूप से वॉलेट में निपटान',
     teamRewards: 'स्तर पुरस्कार',
-    claimed: 'दावा किया {amount}',
     heroTitle: 'वर्तमान स्तर',
     allTiers: 'Genesis सम्मान प्रणाली',
     history: 'पुरस्कार रिकॉर्ड',
@@ -1295,13 +1277,8 @@ const app = defineMessages({
       body: 'टीम पुरस्कार निपटान और दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
     },
     communityFund: 'विकास कोष',
-    communityFundTooltip:
-      'सुपर प्रणालियों को 5% प्रणाली विकास कोष मिलता है, जो प्रणाली स्व-संचालन के लिए समर्पित है, जिसमें सिस्टम निर्माण, दैनिक संचालन, प्रणाली बैठकें और प्रणाली व्याख्याता शामिल हैं।',
     communityFundLocked: 'लॉक: {amount}',
-    communityFundUnlockedSuffix: 'अनलॉक',
-    communityFundClaimed: 'आपने दावा किया {amount}',
     communityFundHistory: 'विकास कोष',
-    communityFundCumulativeClaimed: 'कुल दावा {amount}',
     communityFundHistoryEmpty: {
       title: 'अभी कोई विकास कोष रिकॉर्ड नहीं',
       body: 'विकास कोष दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
@@ -1809,11 +1786,8 @@ const app = defineMessages({
     intro: 'स्टेक और बॉन्ड सह-निर्माण — Rebase चक्रवृद्धि साझा करें',
     body: 'स्टेक और बॉन्ड सह-निर्माण — Rebase चक्रवृद्धि साझा करें',
     backToHub: 'स्टेकिंग पर वापस जाएँ',
-    amount: 'राशि',
-    balance: 'बैलेंस',
     max: 'अधिकतम',
     capUnlimited: 'असीमित',
-    viewContract: 'कॉन्ट्रैक्ट देखें',
     blocked: {
       notBound: 'पहले रेफ़रल बाइंड करें',
       accountMigrated: 'यह पता माइग्रेट हो चुका है — नया पता उपयोग करें',

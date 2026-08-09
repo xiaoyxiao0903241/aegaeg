@@ -156,3 +156,52 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
     true,
   )
 })
+
+test('evaluateAssetsClaimWritePhase uses assets money blocks (not UI claimable alone)', async () => {
+  const { evaluateAssetsClaimWritePhase } = await loadModule('/src/core/assets/claim-output.ts')
+
+  assert.equal(
+    evaluateAssetsClaimWritePhase({
+      walletReady: true,
+      writeReady: true,
+      isSubmitting: false,
+      contributionOk: true,
+      plansOk: true,
+      claimable: 0n,
+    }),
+    'blocked',
+  )
+  assert.equal(
+    evaluateAssetsClaimWritePhase({
+      walletReady: true,
+      writeReady: true,
+      isSubmitting: false,
+      contributionOk: false,
+      plansOk: true,
+      claimable: 1n,
+    }),
+    'blocked',
+  )
+  assert.equal(
+    evaluateAssetsClaimWritePhase({
+      walletReady: true,
+      writeReady: true,
+      isSubmitting: false,
+      contributionOk: true,
+      plansOk: false,
+      claimable: 1n,
+    }),
+    'blocked',
+  )
+  assert.equal(
+    evaluateAssetsClaimWritePhase({
+      walletReady: true,
+      writeReady: true,
+      isSubmitting: false,
+      contributionOk: true,
+      plansOk: true,
+      claimable: 1n,
+    }),
+    'ready',
+  )
+})

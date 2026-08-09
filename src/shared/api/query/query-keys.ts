@@ -41,8 +41,6 @@ export const queryKeys = {
   api: {
     all: ['api'] as const,
     performance: ['api', 'performance'] as const,
-    searchPerformance: (address: string) =>
-      ['api', 'search', 'performance', address.toLowerCase()] as const,
     makingOverview: ['api', 'performance', 'makingOverview'] as const,
     stakeAddressCount: ['api', 'performance', 'stakeAddressCount'] as const,
     protocolMarketStatsSeriesRoot: ['api', 'protocolMarketStats', 'series'] as const,

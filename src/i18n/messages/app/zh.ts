@@ -150,8 +150,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: '连接钱包',
-    connectIntroTitle: '连接钱包以探索 AEGIS X 功能',
-    connectIntroLink: 'AEGIS X 功能 ↗',
     connecting: '连接中…',
     copyAddress: '复制地址',
     copied: '已复制',
@@ -186,7 +184,6 @@ const app = defineMessages({
     provider: '提供方',
     providerName: 'PancakeSwap',
     openPancakeSwap: '在 PancakeSwap 打开',
-    transactionCancelled: '已在钱包中取消交易',
     overview: '概览',
     exchangeRate: '兑换比率',
     settlement: '结算',
@@ -702,7 +699,6 @@ const app = defineMessages({
     backToHub: '返回奖励',
     claim: '领取',
     claimSuccess: '领取成功',
-    claimed: '已领取 {amount}',
     claimErrors: {
       zeroAmount: '领取金额为 0。',
       invalidSigner: '签名无效，请重新获取后再领取。',
@@ -829,11 +825,6 @@ const app = defineMessages({
       emptyClaimable: '暂无可领取的奖励。',
       signedAmountHint: '可领金额以签名包为准',
       usdLabel: 'USD',
-    },
-    claimHistory: {
-      title: '发放与领取记录',
-      columns: ['时间', '类型', '数量', '交易哈希'],
-      empty: '暂无记录',
     },
     mixed: {
       splitAria: '领取与复投比例',
@@ -1171,18 +1162,10 @@ const app = defineMessages({
         },
       ],
     },
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: '当前等级',
-    postLaunchRankTitle: '上线后等级',
     teamRewardRate: '团队奖励 {rate}',
-    postLaunch30DayRank: '上线30天内您可获得{rank}等级',
-    postLaunchMaxRank: '您已达到最高等级',
-    postLaunchRankTooltip:
-      '上线后，等级将根据团队参与共建的金额，按折扣价兑换 AGX 后计算真实业绩。\n当前等级仅以业绩数据作为统计依据，上线后可能还会受其他因素影响，例如个人持仓、直推有效账户等。\n以上数据仅供参考，最终以上线后的真实数据为准。',
     superCommunityBadge: '超级体系',
     heroTierRewardBody: '获得团队共建金额的{bonus}作为奖励。',
     superCommunityBenefitBody: '超级体系将获得体系发展专项基金以及治理权益。',
-    shareholderHintNoRank: '创世等级',
     shareholderNoRankTitle: '您还未成为创世储备理事',
     shareholderNoRankBody:
       '成为创世储备理事可获得团队共建金额的 1%-10% 作为奖励，并且在 AEGIS X 上线后的 30 天内提升 1 级',
@@ -1212,13 +1195,8 @@ const app = defineMessages({
       body: '等级奖励结算与领取记录将在奖励产生后显示在这里。',
     },
     communityFund: '发展基金',
-    communityFundTooltip:
-      '超级体系获得5%体系发展基金，专项用于体系自营，包括但不限于：系统建设，日常运营，体系会议，体系讲师等。',
     communityFundLocked: '待解锁: {amount}',
-    communityFundUnlockedSuffix: '已解锁',
-    communityFundClaimed: '您已领取{amount}',
     communityFundHistory: '发展基金',
-    communityFundCumulativeClaimed: '累计领取 {amount}',
     communityFundHistoryEmpty: {
       title: '暂无发展基金记录',
       body: '发展基金领取记录将在奖励产生后显示在这里。',
@@ -1719,11 +1697,8 @@ const app = defineMessages({
     intro: '质押与债券共建，共享 Rebase 复利增长',
     body: '质押与债券共建，共享 Rebase 复利增长',
     backToHub: '返回质押',
-    amount: '数量',
-    balance: '余额',
     max: '最大',
     capUnlimited: '不限',
-    viewContract: '查看合约',
     blocked: {
       notBound: '请先绑定推荐关系',
       accountMigrated: '该地址已迁移，请使用新地址操作',

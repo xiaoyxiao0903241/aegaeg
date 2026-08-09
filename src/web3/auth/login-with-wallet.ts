@@ -4,7 +4,7 @@ import {
   classifyLoginFailure,
   shouldClearCachedLoginSignature,
 } from '~/core/auth/classify-login-failure'
-import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
+import { withJwtExpiry } from '~/core/auth/jwt'
 import { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR } from '~/shared/api/account-banned'
 import { login } from '~/shared/api/endpoints'
 import {
@@ -20,12 +20,7 @@ import {
   readUsableLoginSignature,
   type StoredLoginSignature,
 } from '~/web3/auth/login-signature-cache'
-import {
-  type AuthSessionStorage,
-  createLocalAuthSessionStorage,
-  isSessionForAddress,
-  type StoredAuthSession,
-} from '~/web3/auth/session'
+import { type AuthSessionStorage, createLocalAuthSessionStorage } from '~/web3/auth/session'
 import { isUserRejectedWalletError } from '~/web3/contract-error-message'
 
 /**
@@ -275,25 +270,6 @@ export async function loginWithWallet({
     storage,
     signatureStorage,
   })
-}
-
-/**
- * 读取指定地址的有效会话。
- *
- * 会话必须属于该地址且 JWT 未过期，否则视为无会话。
- *
- * @param address 钱包地址，可为 undefined
- * @param storage 会话存储，默认 localStorage
- * @returns 有效会话；无或已过期返回 null
- */
-export function readWalletSession(
-  address: string | undefined,
-  storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
-): StoredAuthSession | null {
-  const session = storage.read()
-  if (!isSessionForAddress(session, address)) return null
-  if (isJwtExpired(session.token)) return null
-  return session
 }
 
 export { createMemoryLoginSignatureStorage }

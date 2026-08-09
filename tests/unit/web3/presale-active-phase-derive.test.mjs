@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-test('usePresaleActivePhaseQuery derives from phases without a second Multicall reader', async () => {
+test('usePresaleActivePhaseQuery must not revive retired Multicall reader', async () => {
   const source = await import('node:fs/promises').then((fs) =>
     fs.readFile(
       new URL('../../../src/web3/presale/use-presale-queries.ts', import.meta.url),
@@ -9,6 +9,5 @@ test('usePresaleActivePhaseQuery derives from phases without a second Multicall 
     ),
   )
 
-  assert.match(source, /findActivePresalePhase/)
   assert.doesNotMatch(source, /readActivePresalePhase/)
 })

@@ -158,8 +158,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'ウォレット接続',
-    connectIntroTitle: 'AEGIS Xの機能を探索するにはウォレットを接続',
-    connectIntroLink: 'AEGIS X機能 ↗',
     connecting: '接続中…',
     copyAddress: 'アドレスをコピー',
     copied: 'コピー済み',
@@ -197,7 +195,6 @@ const app = defineMessages({
     provider: 'プロバイダー',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'PancakeSwap で開く',
-    transactionCancelled: 'ウォレットで取引をキャンセルしました',
     overview: '概要',
     exchangeRate: '交換レート',
     settlement: '決済',
@@ -903,12 +900,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: '配布と受取の記録',
-      columns: ['時間', 'タイプ', '試算数量', 'トランザクションハッシュ'],
-      empty: '記録はまだありません',
-    },
-
     mixed: {
       splitAria: '受取と再投資の比率',
       releasePct: '受取 {pct}%',
@@ -1253,18 +1244,10 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: '現在のランク',
-    postLaunchRankTitle: 'ローンチ後ランク',
     teamRewardRate: 'チーム報酬 {rate}',
-    postLaunch30DayRank: 'ローンチ後30日以内に{rank}に到達可能',
-    postLaunchMaxRank: '最高ランクに達しました',
-    postLaunchRankTooltip:
-      'ローンチ後、ランクはチーム共創額を割引価格でAGXに換算した実績に基づいて算出されます。\n現在のランクは実績データのみに基づき、ローンチ後は個人保有量や有効な直紹介アカウントなど他の要因の影響を受ける場合があります。\n本データは参考用であり、最終的にはローンチ後の実データが優先されます。',
     superCommunityBadge: 'スーパー体系',
     heroTierRewardBody: 'チーム共創額の{bonus}をリワードとして獲得します。',
     superCommunityBenefitBody: 'スーパー体系は体系発展専項基金とガバナンス権益を獲得します。',
-    shareholderHintNoRank: '創世ランク',
     shareholderNoRankTitle: 'まだ創世準備理事ではありません',
     shareholderNoRankBody:
       '創世準備理事になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
@@ -1282,7 +1265,6 @@ const app = defineMessages({
     autoPaidLabel: '自動支払',
     autoPaid: 'リワードはウォレットに自動決済',
     teamRewards: 'ランクリワード',
-    claimed: '受取済み {amount}',
     heroTitle: '現在のランク',
     allTiers: '創世栄誉体系',
     history: 'リワード記録',
@@ -1295,13 +1277,8 @@ const app = defineMessages({
       body: 'チームリワードの決済・受取記録は、リワードが発生するとここに表示されます。',
     },
     communityFund: '発展基金',
-    communityFundTooltip:
-      'スーパー体系は体系発展基金の5%を受け取り、システム構築、日常運営、体系会議、体系講師など体系の自営に専用されます。',
     communityFundLocked: 'ロック中: {amount}',
-    communityFundUnlockedSuffix: 'アンロック済み',
-    communityFundClaimed: '受取済み{amount}',
     communityFundHistory: '発展基金',
-    communityFundCumulativeClaimed: '累計受取 {amount}',
     communityFundHistoryEmpty: {
       title: '発展基金の記録はまだありません',
       body: '発展基金の受取記録は、リワードが発生するとここに表示されます。',
@@ -1812,11 +1789,8 @@ const app = defineMessages({
     intro: 'ステーキングと債券で共創 — Rebase 複利成長を共有',
     body: 'ステーキングと債券で共創 — Rebase 複利成長を共有',
     backToHub: 'ステーキングに戻る',
-    amount: '試算数量',
-    balance: '残高',
     max: '最大',
     capUnlimited: '無制限',
-    viewContract: '契約を確認',
     blocked: {
       notBound: '先に紹介関係を紐付けてください',
       accountMigrated: 'このアドレスは移行済みです — 新しいアドレスで操作してください',

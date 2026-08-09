@@ -156,8 +156,6 @@ const app = defineMessages({
   },
   wallet: {
     connectTitle: 'Hubungkan dompet',
-    connectIntroTitle: 'Hubungkan dompet untuk menjelajahi fitur AEGIS X',
-    connectIntroLink: 'Fitur AEGIS X ↗',
     connecting: 'Menghubungkan…',
     copyAddress: 'Salin alamat',
     copied: 'Disalin',
@@ -195,7 +193,6 @@ const app = defineMessages({
     provider: 'Penyedia',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'Buka di PancakeSwap',
-    transactionCancelled: 'Transaksi dibatalkan di dompet',
     overview: 'Ikhtisar',
     exchangeRate: 'Kurs tukar',
     settlement: 'Penyelesaian',
@@ -936,12 +933,6 @@ const app = defineMessages({
       usdLabel: 'USD',
     },
 
-    claimHistory: {
-      title: 'Riwayat penerbitan & klaim',
-      columns: ['Waktu', 'Tipe', 'Jumlah', 'Hash tx'],
-      empty: 'Belum ada catatan',
-    },
-
     mixed: {
       splitAria: 'Rasio klaim vs restake',
       releasePct: 'Klaim {pct}%',
@@ -1296,19 +1287,11 @@ const app = defineMessages({
       ],
     },
 
-    // legacy keys retained for history helpers / gradual deletion
-    currentTitle: 'Level saat ini',
-    postLaunchRankTitle: 'Tingkat setelah peluncuran',
     teamRewardRate: 'Hadiah tim {rate}',
-    postLaunch30DayRank: 'Dalam 30 hari setelah peluncuran Anda dapat mencapai {rank}',
-    postLaunchMaxRank: 'Anda telah mencapai tingkat maksimum',
-    postLaunchRankTooltip:
-      'Setelah peluncuran, tingkat dihitung dari kinerja nyata volume pembangunan bersama tim yang dikonversi ke AGX dengan harga diskon.\nTingkat saat ini hanya berdasarkan data kinerja; setelah peluncuran faktor lain dapat berlaku, seperti kepemilikan pribadi dan referral langsung yang memenuhi syarat.\nInformasi ini hanya untuk referensi; data nyata setelah peluncuran yang berlaku.',
     superCommunityBadge: 'Super Sistem',
     heroTierRewardBody: 'Dapatkan {bonus} dari volume pembangunan bersama tim sebagai hadiah.',
     superCommunityBenefitBody:
       'Super Sistem menerima dana pengembangan khusus dan hak tata kelola.',
-    shareholderHintNoRank: 'Level Genesis',
     shareholderNoRankTitle: 'Belum menjadi Gubernur Cadangan Genesis',
     shareholderNoRankBody:
       'Menjadi Gubernur Cadangan Genesis memberi hadiah 1%-10% dari volume pembangunan bersama tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',
@@ -1326,7 +1309,6 @@ const app = defineMessages({
     autoPaidLabel: 'Dibayar otomatis',
     autoPaid: 'Hadiah diselesaikan otomatis ke dompet',
     teamRewards: 'Hadiah level',
-    claimed: 'Diklaim {amount}',
     heroTitle: 'Level saat ini',
     allTiers: 'Sistem kehormatan Genesis',
     history: 'Riwayat hadiah',
@@ -1339,13 +1321,8 @@ const app = defineMessages({
       body: 'Riwayat penyelesaian dan klaim hadiah tim akan muncul di sini setelah hadiah dihasilkan.',
     },
     communityFund: 'Dana pengembangan',
-    communityFundTooltip:
-      'Super sistem menerima 5% dana pengembangan sistem, khusus untuk operasi mandiri sistem, termasuk namun tidak terbatas pada: pembangunan sistem, operasi harian, rapat sistem, dan pengajar sistem.',
     communityFundLocked: 'Terkunci: {amount}',
-    communityFundUnlockedSuffix: 'terbuka',
-    communityFundClaimed: 'Anda telah mengklaim {amount}',
     communityFundHistory: 'Dana pengembangan',
-    communityFundCumulativeClaimed: 'Total diklaim {amount}',
     communityFundHistoryEmpty: {
       title: 'Belum ada riwayat dana pengembangan',
       body: 'Riwayat klaim dana pengembangan akan muncul di sini setelah hadiah dihasilkan.',
@@ -1864,11 +1841,8 @@ const app = defineMessages({
     intro: 'Staking dan Bond Bangun Bersama — berbagi pertumbuhan Rebase berbunga majemuk',
     body: 'Staking dan Bond Bangun Bersama — berbagi pertumbuhan Rebase berbunga majemuk',
     backToHub: 'Kembali ke Staking',
-    amount: 'Jumlah',
-    balance: 'Saldo',
     max: 'MAKS',
     capUnlimited: 'Tidak terbatas',
-    viewContract: 'Lihat kontrak',
     blocked: {
       notBound: 'Ikat referral dulu',
       accountMigrated: 'Alamat ini sudah dimigrasi — gunakan alamat baru',

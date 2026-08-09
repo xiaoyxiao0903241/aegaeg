@@ -32,6 +32,19 @@ test('mixed claim fails closed on paused lucky and insufficient contribution', (
     }),
     'insufficientContribution',
   )
+  assert.equal(
+    evaluateRewardsMixedClaim({
+      amount: 100n,
+      rewardAvailable: 100n,
+      contribution: 1_000n,
+      requiredContribution: 10n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      luckyPaused: false,
+      luckyClaimable: false,
+    }),
+    'notClaimable',
+  )
 })
 
 test('mixed claim fails when live reward is below claim amount', () => {
@@ -48,16 +61,15 @@ test('mixed claim fails when live reward is below claim amount', () => {
   )
 })
 
-test('submit rewards mixed must not self-certify rewardAvailable === amount', async () => {
+test('submit rewards mixed must not self-certify draft amount or revive gatePinnedRound', async () => {
   const { readFile } = await import('node:fs/promises')
   const src = await readFile(
     new URL('../../../src/views/dapp/rewards/submit-rewards.ts', import.meta.url),
     'utf8',
   )
-  assert.match(src, /readDaoPoolRewardAvailable/)
-  assert.match(src, /readLuckyClaimRound/)
-  assert.doesNotMatch(src, /readLuckyClaimSnapshot/)
   assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
+  assert.doesNotMatch(src, /readLuckyClaimSnapshot/)
+  assert.doesNotMatch(src, /gatePinnedRound/)
 })
 
 test('isLuckyClaimable requires won + unclaimed + amount + not paused', () => {
