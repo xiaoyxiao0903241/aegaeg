@@ -304,6 +304,15 @@ export const BOND_HELPER_METHODS = {
 } as const
 
 /**
+ * AegisLpBondingCalculator — LP 估值（Bond 预估方法二）。
+ * @see docs/onchain-manual/contracts/aegislpbondingcalculator.md
+ * @see 手册 §10.6
+ */
+export const LP_BONDING_CALCULATOR_METHODS = {
+  valuation: 'function valuation(address _pair, uint256 amount_) view returns (uint256 _value)',
+} as const
+
+/**
  * BondHelper 自定义错误。
  * @see docs/onchain-manual/contracts/bondhelper.md
  */

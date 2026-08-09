@@ -48,6 +48,11 @@ export interface BscContracts {
   lockedStaking540d: Address
   /** BondHelper——LP / Burn 债券一键入口（手册 §10 债券 Bond / BurnBond） */
   bondHelper: Address
+  /**
+   * AegisLpBondingCalculator——LP Bond 预估估值（手册 §10.6 方法二）。
+   * 部署 key：`BondingCalculator`
+   */
+  bondingCalculator: Address
   /** BondDepository 180 天 */
   bondDepository180d: Address
   /** BondDepository 360 天 */
@@ -118,6 +123,7 @@ export const BSC_CONTRACTS = {
   lockedStaking360d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_360D'),
   lockedStaking540d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_540D'),
   bondHelper: requireEnvAddress('VITE_BSC_BOND_HELPER'),
+  bondingCalculator: requireEnvAddress('VITE_BSC_BONDING_CALCULATOR'),
   bondDepository180d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_180D'),
   bondDepository360d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_360D'),
   bondDepository540d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_540D'),

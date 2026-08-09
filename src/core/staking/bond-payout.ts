@@ -1,15 +1,16 @@
 import { BPS_DENOM } from '~/core/exchange/bps'
 
 /**
- * 债券认购的毛发放数量计算。
+ * LP 债券毛发放：`value * 1e9 / agxPrice * 10000 / discountRateBP`。
  *
- * 整除从左到右对齐 Solidity：value × 1e9 × 10000 ÷ agxPrice ÷ discountRateBP。
+ * 整除从左到右对齐 Solidity `_payoutWithDiscount`。
  * 任一入参为 0 时直接返回 0，避免除零。
  *
- * @param args.value 认购的 USD1 数量
- * @param args.agxPrice AGX 单价
- * @param args.discountRateBP 债券折扣率（BPS）
- * @returns 毛发放的债券数量；任一入参为 0 时返回 0n
+ * @param args.value LP 估值（Treasury.valueOf / bondingCalculator.valuation，USD 口径）
+ * @param args.agxPrice 池子价 `reserveU / reserveAGX`
+ * @param args.discountRateBP 债券成交价率（BPS）
+ * @returns 毛发放 AGX（9 位）；任一入参为 0 时返回 0n
+ * @see docs/onchain-manual/01-frontend-integration-guide.md §10.6
  * @see docs/onchain-manual/contracts/bonddepository.md
  */
 export function computeGrossBondPayout(args: {
@@ -21,6 +22,59 @@ export function computeGrossBondPayout(args: {
   if (value === 0n || agxPrice === 0n || discountRateBP === 0n) return 0n
   // 对齐 Solidity 左结合整除：value × 1e9 ÷ agxPrice × 10000 ÷ discountRateBP
   return (((value * 1_000_000_000n) / agxPrice) * BPS_DENOM) / discountRateBP
+}
+
+/**
+ * BondDepository._getAgxPrice：池子即时价 `reserveU / reserveAGX`。
+ *
+ * @param reserveU 稳定币侧储备（USD1）
+ * @param reserveAGX AGX 侧储备
+ * @returns USD1-wei per AGX-wei；储备为 0 时返回 0n
+ * @see docs/onchain-manual/01-frontend-integration-guide.md §10.6
+ */
+export function computeBondPoolAgxPrice(reserveU: bigint, reserveAGX: bigint): bigint {
+  if (reserveU === 0n || reserveAGX === 0n) return 0n
+  return reserveU / reserveAGX
+}
+
+/**
+ * BondHelper zap 组 LP 的链下复算（手册 §10.6 方法二）。
+ *
+ * @returns 预估存入 BondDepository 的 LP 数量
+ * @see docs/onchain-manual/01-frontend-integration-guide.md §10.6
+ */
+export function quoteZapLpAmount(args: {
+  usd1Amount: bigint
+  agxOut: bigint
+  reserveU: bigint
+  reserveAGX: bigint
+  totalSupply: bigint
+}): bigint {
+  const { usd1Amount, agxOut, reserveU, reserveAGX, totalSupply } = args
+  if (
+    usd1Amount === 0n ||
+    agxOut === 0n ||
+    reserveU === 0n ||
+    reserveAGX === 0n ||
+    totalSupply === 0n
+  ) {
+    return 0n
+  }
+  const amountToSwap = usd1Amount / 2n
+  const usdForLp = usd1Amount - amountToSwap
+  const lpFromAgx = (agxOut * totalSupply) / reserveAGX
+  const lpFromUsd = (usdForLp * totalSupply) / reserveU
+  return lpFromAgx < lpFromUsd ? lpFromAgx : lpFromUsd
+}
+
+/**
+ * BurnBond 毛发放：`agxAmount * 10000 / discountRateBP`。
+ *
+ * @see docs/onchain-manual/contracts/burnbonddepository.md
+ */
+export function computeBurnBondGrossPayout(agxAmount: bigint, discountRateBP: bigint): bigint {
+  if (agxAmount === 0n || discountRateBP === 0n) return 0n
+  return (agxAmount * BPS_DENOM) / discountRateBP
 }
 
 /**
@@ -38,43 +92,4 @@ export function computeNetBondPayout(grossPayout: bigint, feeBps: bigint): bigin
   if (feeBps >= BPS_DENOM) return 0n
   const fee = (grossPayout * feeBps) / BPS_DENOM
   return grossPayout > fee ? grossPayout - fee : 0n
-}
-
-/**
- * Uniswap V2 在池已有储备时的铸币流动性数量。
- *
- * 两侧分别按储备比例估算可得的流动性，取较小者，保证不会超额铸币。
- *
- * @param args.amountA 代币 A 投入数量
- * @param args.amountB 代币 B 投入数量
- * @param args.reserveA 池中代币 A 储备
- * @param args.reserveB 池中代币 B 储备
- * @param args.totalSupply 池 LP 总供应量
- * @returns 应铸的 LP 数量；任一储备或总供应为 0 时返回 0n
- */
-export function quoteV2LpMintAmount(args: {
-  amountA: bigint
-  amountB: bigint
-  reserveA: bigint
-  reserveB: bigint
-  totalSupply: bigint
-}): bigint {
-  const { amountA, amountB, reserveA, reserveB, totalSupply } = args
-  if (totalSupply === 0n || reserveA === 0n || reserveB === 0n) return 0n
-  const liqA = (amountA * totalSupply) / reserveA
-  const liqB = (amountB * totalSupply) / reserveB
-  return liqA < liqB ? liqA : liqB
-}
-
-/**
- * 按百分比滑点缩减数量。
- *
- * @param amount 原始数量
- * @param slippagePercent 滑点百分比（0–100）
- * @returns 缩减后的数量；滑点 ≥ 100% 时返回 0n
- */
-export function applyPercentSlippage(amount: bigint, slippagePercent: bigint): bigint {
-  if (amount === 0n) return 0n
-  if (slippagePercent >= 100n) return 0n
-  return (amount * (100n - slippagePercent)) / 100n
 }
