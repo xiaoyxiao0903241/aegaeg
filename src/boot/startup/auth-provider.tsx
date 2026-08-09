@@ -307,7 +307,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       token,
       session,
       sessionReady,
-      needsSignIn: authState.kind === 'needsLogin' && !isLoggingIn,
+      needsSignIn: authState.kind === 'needsSignIn' && !isLoggingIn,
       hasHydrated,
       isLoggingIn,
       loginError,

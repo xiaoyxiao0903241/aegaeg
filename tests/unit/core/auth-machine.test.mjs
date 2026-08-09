@@ -40,19 +40,19 @@ test('deriveAuthState reduces wallet + jwt cache to a single state', async () =>
   assert.equal(authed.kind, 'sessionReady')
   assert.equal(authed.session.token, validSession.token)
 
-  // Wallet but no cached jwt → needsLogin
+  // Wallet but no cached jwt → needsSignIn
   assert.deepEqual(deriveAuthState({ walletAddress: '0xabc', sessionsByAddress: {}, now }), {
-    kind: 'needsLogin',
+    kind: 'needsSignIn',
   })
 
-  // Wallet + expired cached jwt → needsLogin
+  // Wallet + expired cached jwt → needsSignIn
   assert.deepEqual(
     deriveAuthState({
       walletAddress: '0xAbC',
       sessionsByAddress: { '0xabc': expiredSession },
       now,
     }),
-    { kind: 'needsLogin' },
+    { kind: 'needsSignIn' },
   )
 })
 
@@ -90,43 +90,43 @@ test('deriveAuthAction decides idle / login / renew', async () => {
 
   // 链未就绪（未知 / 异网）→ idle，不触发登录风暴
   assert.deepEqual(
-    deriveAuthAction({ ...base, loginChainReady: false, state: { kind: 'needsLogin' } }),
+    deriveAuthAction({ ...base, loginChainReady: false, state: { kind: 'needsSignIn' } }),
     { type: 'idle' },
   )
 
-  // needsLogin + clean guards → auto-login. Silent when a cached signature
+  // needsSignIn + clean guards → auto-login. Silent when a cached signature
   // exists; prompts the wallet once when it does not (loop guard dedupes).
-  assert.deepEqual(deriveAuthAction({ ...base, state: { kind: 'needsLogin' } }), { type: 'login' })
+  assert.deepEqual(deriveAuthAction({ ...base, state: { kind: 'needsSignIn' } }), { type: 'login' })
 
-  // needsLogin while a login is in flight → idle
+  // needsSignIn while a login is in flight → idle
   assert.deepEqual(
-    deriveAuthAction({ ...base, isLoggingIn: true, state: { kind: 'needsLogin' } }),
+    deriveAuthAction({ ...base, isLoggingIn: true, state: { kind: 'needsSignIn' } }),
     { type: 'idle' },
   )
 
-  // needsLogin after a permanent error → idle (no retry storm)
+  // needsSignIn after a permanent error → idle (no retry storm)
   assert.deepEqual(
-    deriveAuthAction({ ...base, loginError: 'User rejected', state: { kind: 'needsLogin' } }),
+    deriveAuthAction({ ...base, loginError: 'User rejected', state: { kind: 'needsSignIn' } }),
     { type: 'idle' },
   )
 
-  // needsLogin after a transient error → retry login
+  // needsSignIn after a transient error → retry login
   assert.deepEqual(
     deriveAuthAction({
       ...base,
       loginError: 'Network request failed',
-      state: { kind: 'needsLogin' },
+      state: { kind: 'needsSignIn' },
     }),
     { type: 'login' },
   )
 
-  // needsLogin but this exact input was already attempted → idle (dedupe / loop guard)
+  // needsSignIn but this exact input was already attempted → idle (dedupe / loop guard)
   assert.deepEqual(
     deriveAuthAction({
       ...base,
       lastAttemptKey: 'k1',
       attemptKey: 'k1',
-      state: { kind: 'needsLogin' },
+      state: { kind: 'needsSignIn' },
     }),
     { type: 'idle' },
   )

@@ -37,19 +37,19 @@ export function AssetsClaimOutputModal({
   onOpenChange,
   onSelectOutput,
   open,
-  owner,
+  capturedAddress,
   row,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  owner: string | null
+  capturedAddress: string | null
   row: AssetsStakeRow | null
   onSelectOutput: (kind: ClaimOutputKind) => void
 }) {
-  const [held, setHeld] = useState<{ owner: string; row: AssetsStakeRow } | null>(null)
-  if (open && owner && row) {
-    const next = { owner, row }
-    if (held?.owner !== next.owner || held?.row.id !== next.row.id) {
+  const [held, setHeld] = useState<{ capturedAddress: string; row: AssetsStakeRow } | null>(null)
+  if (open && capturedAddress && row) {
+    const next = { capturedAddress, row }
+    if (held?.capturedAddress !== next.capturedAddress || held?.row.id !== next.row.id) {
       setHeld(next)
     }
   }
@@ -57,11 +57,11 @@ export function AssetsClaimOutputModal({
 
   return (
     <AssetsClaimOutputModalOpen
-      key={`${held.owner}-${held.row.id}`}
+      key={`${held.capturedAddress}-${held.row.id}`}
       onOpenChange={onOpenChange}
       onSelectOutput={onSelectOutput}
       open={open}
-      owner={held.owner}
+      capturedAddress={held.capturedAddress}
       row={held.row}
     />
   )
@@ -71,12 +71,12 @@ function AssetsClaimOutputModalOpen({
   onOpenChange,
   onSelectOutput,
   open,
-  owner,
+  capturedAddress,
   row,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  owner: string
+  capturedAddress: string
   row: AssetsStakeRow
   onSelectOutput: (kind: ClaimOutputKind) => void
 }) {
@@ -85,10 +85,10 @@ function AssetsClaimOutputModalOpen({
 
   useEffect(() => {
     const current = account?.address
-    if (!current || current.toLowerCase() !== owner.toLowerCase()) {
+    if (!current || current.toLowerCase() !== capturedAddress.toLowerCase()) {
       onOpenChange(false)
     }
-  }, [account?.address, owner, onOpenChange])
+  }, [account?.address, capturedAddress, onOpenChange])
 
   const reward = row.blockReward
   const boost = row.extraInterest

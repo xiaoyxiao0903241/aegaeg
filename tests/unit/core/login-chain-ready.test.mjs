@@ -25,7 +25,7 @@ test('deriveAuthAction: !loginChainReady → idle (unknown and wrong share path)
 
   assert.deepEqual(
     deriveAuthAction({
-      state: { kind: 'needsLogin' },
+      state: { kind: 'needsSignIn' },
       isLoggingIn: false,
       loginError: null,
       lastAttemptKey: null,
@@ -57,7 +57,7 @@ test('deriveAuthAction: loginChainReady allows login and renewAt', async () => {
 
   assert.deepEqual(
     deriveAuthAction({
-      state: { kind: 'needsLogin' },
+      state: { kind: 'needsSignIn' },
       isLoggingIn: false,
       loginError: null,
       lastAttemptKey: null,

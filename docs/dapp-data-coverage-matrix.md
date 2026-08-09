@@ -334,7 +334,7 @@
 |X-001|兑换|总览·程序卡|点「交易 gAGX」打开闪兑，并选中 gAGX 交易对|提交|`hub/detail.tsx` `TRADE_GAGX_CARD_INDEX` + `setPairId('gagx')`|已实现 UI|—|✅ 已对齐|—|—|—|—|入口已接好|
 |X-002|兑换|总览·程序卡|点「获取 USD1」打开闪兑，并选中 USDT/USD1 交易对|提交|`GET_USD1_CARD_INDEX` → `setPairId('usdt')`|手册 §7.2 Usd1Swap|—|✅ 已对齐|—|—|**B-02**|B-02|已关闭；重审仍跟链上配置|
 |X-003|兑换|总览·程序卡|「涡轮 / 获取 AGX / 贡献点数」等程序卡跳转|提交|`PROGRAM_TARGETS` → turbine/trade/burn|已实现 UI|—|✅ 已对齐|—|—|—|—|—|
-|X-004|兑换|总览·程序卡|「出售 X」入口|提交|`PROGRAM_TARGETS[4]=null`；`TRADE_LIVE_TOKEN_KEYS` 无 `x`|链/产品 DEFER；手册 §7.1 仅 USD1↔AGX live|—|❌ 未接入|链/手册/接口未提供|产品决定：藏卡或标「即将开放」；开放时再扩可交易币列表与路径|— **A-02**|A-02|卡看得见但点不了；市价选币同|
+|X-004|兑换|总览·程序卡|「出售 X」入口|提交|`PROGRAM_TARGETS[4]='trade'`；预选卖 X（`pairAfterTokenSelect`→买 AGX）；`TRADE_TOKEN_KEYS` 含 `x`|Pancake V2 AGX/X；产品已开三币|—|✅ 已对齐|—|—|A-02|A-02|入口进市价；路径见 tradePath|
 |X-005|兑换|总览·程序卡|「获取贡献点数」正文里的兑换比例|读取展示|`readBurnContributionSwapConfig` → `formatBurnContributionRatioColon`|手册 §9.2 `rateBps`|—|✅ 已对齐|—|—|—|—|不是写死的 1:6|
 |X-006|兑换|总览·常见问题|FAQ 等文案仍写「USDT→USD1」|读取展示|`t.exchange.hub.faq` / program body「USDT」；余额跟 `getConfig().usdtToken`|手册叙事 USDT vs 链 `usdtToken`（现网常为 XX）|—|🟡 部分|手册或接口与链不符|改设计稿和文案表跟链上真实币名（或读代币 symbol）；不要写死 USDT|— **A-01**|A-01|文案仍写 USDT|
 |X-007|兑换|闪兑·概览|兑换比率卡片|读取展示|`FlashExchangeDetail` ← `overviewRateLabel`（spot）|gAGX 1:1 / `quoteUsd1Out`|—|✅ 已对齐|—|—|—|—|—|
@@ -357,9 +357,9 @@
 |X-024|兑换|市价·操作区|价格影响百分比|读取展示|quote.`priceImpactBps`；高影响警告阈值|本地 `calcPriceImpactBps`|—|✅ 已对齐|—|—|—|—|—|
 |X-025|兑换|市价·操作区|「预估 Gas」|读取展示|`gasEstimate` 恒 `0n`（`exchange-read` 注释）→ 展示 `—`|无链/API gas 字段|—|✅ 已对齐|—|—|— **A-03**|A-03|不是金额；诚实显示「—」（A-03 记缺少 Gas 来源）|
 |X-026|兑换|市价·操作区|滑点 / 最少到手量|读取展示与提交前置检查|`calcAmountOutMin`；提交 `assertStillSubmittable` 强制 refetch quote|手册 §7.1 用户滑点|—|✅ 已对齐|—|—|—|—|—|
-|X-027|兑换|市价·操作区|路径标签 / 跳转 Pancake 深链|读取展示|`formatTradeRouteLabel`；仅 USD1↔AGX live|path helper|—|✅ 已对齐|—|—|—|—|—|
+|X-027|兑换|市价·操作区|路径标签 / 跳转 Pancake 深链|读取展示|`formatTradeRouteLabel`；UI 仅邻接对|path helper|—|✅ 已对齐|—|—|—|—|—|
 |X-028|兑换|市价·提交|授权卖出币给路由 → 再读余额与报价 → 兑换 → 刷新|提交|`submitMarketTrade`；deadline 由 write 层生成|手册 §7.1|—|✅ 已对齐|—|—|—|—|—|
-|X-029|兑换|市价·选币|X 选项能看见但不可选为当前可交易|读取展示|`isTradeTokenLive`；`TRADE_LIVE_TOKEN_KEYS=['usd1','agx']`|产品 DEFER|—|✅ 已对齐|—|—|— **A-02**|A-02|与总览「出售 X」一致；开通债见 X-004|
+|X-029|兑换|市价·选币|X 可选为卖出/买入|读取展示|`TRADE_TOKEN_KEYS`；双栏全量；`pairAfterTokenSelect` 邻接纠偏|池：USD1—AGX—X|—|✅ 已对齐|—|—|A-02|A-02|合法对仅相邻；同币翻转；USD1↔X 对侧落到 AGX|
 |X-030|兑换|市价·常见问题|按代币切换的 FAQ 文案|读取展示|`MarketTradeFaqTabs` + `t.exchange.faq.tabs`|Visible+FAQ|—|✅ 已对齐|—|—|—|—|无独立金额断言|
 |X-031|兑换|销毁·操作区|AGX 余额 / 对贡献兑换合约的授权|读取展示|`readBurnExchangeBalances`|手册 §9.2|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|复审确认接线在；前端已接；线上对账非本表判断标准|
 |X-032|兑换|销毁·操作区|当前贡献值|读取展示|`readBurnUserStats`：`originalOf==0` 回退 user|手册 `originalOf`→`userContribution(root)`|—|✅ 已对齐|设计取舍（缺数显0）|—|**B-10**|B-10|复审确认算法已关；同奖励/资产贡献口径；前端已接；线上对账非本表判断标准|
@@ -575,7 +575,7 @@
 |Z-004|反查|奖励队列|单条领取已释放奖励|提交|FE 仅 `claimAllVestedRewards` 按档（L-042）|手册有单条；产品批量|—（纯链）|⚪ 不适用|设计取舍（故意空/0）|—|L-042|—|产品用批量|
 |Z-005|反查|连接后后台预热|推荐绑定 + 多币暖热|读取展示|`useConnectWarmPrefetch` / `prefetchConnectWarm`；无壳层展示|手册 §5；H-022|—（纯链）|✅ 已对齐|—|—|H-022|B-39|后台暖热不是界面|
 |Z-006|反查|做市津贴可领 AGX 字段|资产中心未展示|读取展示|类型有字段；Hub 缩可领子集（A-011/A-003）|API reward-summary|POST …/reward-summary（未消费）|⚪ 不适用|设计取舍（故意空/0）|—|A-011|A-13|做市津贴在奖励|
-|Z-007|反查|卖 X 路径|卖出 X 交易|提交|Hub 卡不可点；`TRADE_LIVE_TOKEN_KEYS` 无 `x`（X-004/X-029）|链/产品无卖 X|—（能力不存在）|⚪ 不适用|链/手册/接口未提供|—|X-004|A-02|能力不存在|
+|Z-007|反查|卖 X 路径|卖出 X 交易|提交|Hub→trade 预选 X→AGX；`TRADE_TOKEN_KEYS` 含 `x`（X-004/X-029）|Pancake path `[x,agx]` / 多跳|—|✅ 已对齐|—|—|X-004|A-02|产品已开；入仓手册 §7.1 旧 live 范围不改正文|
 |Z-008|反查|邀请链接正本|真实 `?ref=` vs 展示 `/r/`|读取/提交|`formatReferralLinkDisplay` vs `referralSharePath`（CM-003/004）|产品展示 vs FE 约定|—（纯 UI）|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留稿面；不要前端擅自离稿改文案|CM-003|C-19|冲突表；跟稿张力进改稿队列|
 |Z-009|反查|常见问题·空投线性释放|无合约入口的断言|读取展示|genesis FAQ（GN-024）；手册无用户 `claimAirdrop`|新手册沉默领取|—（纯 UI）|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留稿面；不要前端擅自离稿改文案|GN-024|C-11|已确认：随 GN-024 文案接错口径；≠ 未接入；跟稿张力进改稿队列|
 |Z-010|反查|DAO 混合未签预览|只读预览接口|读取展示|无未签只读接口；Hub 金额位故意 0（W-010）|产品设计；须签后 `/claim/dao-reward`|—（API 未提供预览）|⚪ 不适用|—|—|W-010|A-21|能力 N/A 保持不适用；已登录造 0 的缺口在 W-010|

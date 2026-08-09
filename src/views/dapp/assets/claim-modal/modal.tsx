@@ -14,7 +14,7 @@ import { Reveal } from '~/shared/components/reveal'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { useAssetsClaimModal } from '~/views/dapp/assets/claim-modal/use-assets-claim-modal'
+import { useAssetsClaimModal } from '~/views/dapp/assets/claim-modal/use-claim-modal'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 
 /**
@@ -29,30 +29,30 @@ export function AssetsClaimModal({
   amountLabel,
   onOpenChange,
   open,
-  owner,
+  capturedAddress,
   positionLabel,
   target,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   /** 打开 claim 时的钱包；写前须与 session 一致。 */
-  owner: string | null
+  capturedAddress: string | null
   target: MixedClaimTarget | null
   positionLabel: string
   amountLabel: string
 }) {
-  // 关闭时调用方会清空 target/owner；缓存上一帧，避免弹窗被立刻卸载导致关闭动画中断。
+  // 关闭时调用方会清空 target / capturedAddress；缓存上一帧，避免弹窗被立刻卸载导致关闭动画中断。
   // 用 render 期 setState 对齐 props（不用 render 写 ref），语义与原先 heldRef 相同。
   const [held, setHeld] = useState<{
-    owner: string
+    capturedAddress: string
     target: MixedClaimTarget
     positionLabel: string
     amountLabel: string
   } | null>(null)
-  if (open && target && owner) {
-    const next = { owner, target, positionLabel, amountLabel }
+  if (open && target && capturedAddress) {
+    const next = { capturedAddress, target, positionLabel, amountLabel }
     if (
-      held?.owner !== next.owner ||
+      held?.capturedAddress !== next.capturedAddress ||
       held?.target !== next.target ||
       held?.positionLabel !== next.positionLabel ||
       held?.amountLabel !== next.amountLabel
@@ -72,10 +72,10 @@ export function AssetsClaimModal({
   return (
     <AssetsClaimModalOpen
       amountLabel={held.amountLabel}
-      key={`${held.owner}-${targetKey}`}
+      key={`${held.capturedAddress}-${targetKey}`}
       onOpenChange={onOpenChange}
       open={open}
-      owner={held.owner}
+      capturedAddress={held.capturedAddress}
       positionLabel={held.positionLabel}
       target={held.target}
     />
@@ -86,18 +86,18 @@ function AssetsClaimModalOpen({
   amountLabel,
   onOpenChange,
   open,
-  owner,
+  capturedAddress,
   positionLabel,
   target,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  owner: string
+  capturedAddress: string
   target: MixedClaimTarget
   positionLabel: string
   amountLabel: string
 }) {
-  const vm = useAssetsClaimModal({ open, onOpenChange, owner, target })
+  const vm = useAssetsClaimModal({ open, onOpenChange, capturedAddress, target })
   const { t } = vm
   // 始终 backgroundImage：两端同色渐变≈纯色，避免 Image↔Color 切换闪烁
   const ctaBackgroundImage =

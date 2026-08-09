@@ -1,35 +1,28 @@
 /**
- * Trade 卖/买代币 key：USDT(USD1) / AGX / X。
+ * Trade 卖/买代币 key：USD1 / AGX / X。
  *
- * 仅手册 §7.1 的 USD1↔AGX 交易对当前可用。
- *
- * @see 手册 §7.1 PancakeRouter 买 AGX
+ * @see 手册 §7.1 PancakeRouter；产品已开三币市价
  */
 export type TradeTokenKey = 'usd1' | 'agx' | 'x'
 
-/** 全部交易对 key（含尚未放开的 X）。 */
+/** 市价可选代币。 */
 export const TRADE_TOKEN_KEYS = ['usd1', 'agx', 'x'] as const satisfies readonly TradeTokenKey[]
-
-/**
- * 当前可选择的交易对（手册 §7.1）：X 在 DEFER 放开前显示为禁用。
- *
- * @see 手册 §7.1 PancakeRouter 买 AGX
- */
-export const TRADE_LIVE_TOKEN_KEYS = ['usd1', 'agx'] as const satisfies readonly TradeTokenKey[]
 
 export type TradeTokenAddresses = Record<TradeTokenKey, `0x${string}`>
 
-/** 判断交易对是否当前可用。 */
-export function isTradeTokenLive(key: TradeTokenKey): boolean {
-  return (TRADE_LIVE_TOKEN_KEYS as readonly TradeTokenKey[]).includes(key)
+/** 池邻接序：usd1—agx—x（仅相邻可成对；USD1↔X 无直连池）。 */
+const RANK = { usd1: 0, agx: 1, x: 2 } as const
+
+/** 是否为合法市价对（相邻池）。 */
+export function isValidTradePair(a: TradeTokenKey, b: TradeTokenKey): boolean {
+  return a !== b && Math.abs(RANK[a] - RANK[b]) === 1
 }
 
 /**
  * Trade 的 Pancake V2 兑换路径。
  *
  * - USD1↔AGX / AGX↔X：单跳直达
- * - USD1↔X：经 AGX 中转（旧版示意：`X → AGX → USD1`）
- * 当前界面只选 USD1↔AGX；X 路径保留给 DEFER 放开后启用。
+ * - USD1↔X：经 AGX 中转（选币 UI 不产出此对；路径仍 fail-closed 可算）
  *
  * @param sellKey 卖出代币
  * @param buyKey 买入代币
@@ -64,29 +57,22 @@ export function isTradeTokenKey(value: string): value is TradeTokenKey {
 }
 
 /**
- * 卖出变化后确定买入代币。
+ * 选币后纠偏成合法对。
  *
- * 原买入仍合法且可用则保留；否则取另一可用代币。
- *
- * @param sellKey 新的卖出代币
- * @param previousBuyKey 原买入代币
- * @returns 应选用的买入代币
+ * - 点到对侧同币 → 翻转
+ * - 仍相邻 → 只改本侧
+ * - 非邻接（USD1↔X）→ 对侧落到默认对手（AGX；选 AGX 时默认 USD1）
  */
-export function buyKeyAfterSellChange(
+export function pairAfterTokenSelect(
+  side: 'sell' | 'buy',
+  key: TradeTokenKey,
   sellKey: TradeTokenKey,
-  previousBuyKey: TradeTokenKey,
-): TradeTokenKey {
-  if (previousBuyKey !== sellKey && isTradeTokenLive(previousBuyKey)) return previousBuyKey
-  if (!isTradeTokenLive(sellKey)) return 'agx'
-  return sellKey === 'usd1' ? 'agx' : 'usd1'
-}
-
-/**
- * 可选的买入代币（排除当前卖出代币）。
- *
- * @param sellKey 卖出代币
- * @returns 可选买入代币列表
- */
-export function tradeBuyOptions(sellKey: TradeTokenKey): TradeTokenKey[] {
-  return TRADE_TOKEN_KEYS.filter((key) => key !== sellKey)
+  buyKey: TradeTokenKey,
+): { sellKey: TradeTokenKey; buyKey: TradeTokenKey } {
+  if (key === (side === 'sell' ? buyKey : sellKey)) {
+    return { sellKey: buyKey, buyKey: sellKey }
+  }
+  const other = side === 'sell' ? buyKey : sellKey
+  const fixed = isValidTradePair(key, other) ? other : key === 'agx' ? 'usd1' : 'agx'
+  return side === 'sell' ? { sellKey: key, buyKey: fixed } : { sellKey: fixed, buyKey: key }
 }

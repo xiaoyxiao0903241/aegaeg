@@ -1,4 +1,5 @@
-import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
+import type { QueryKey } from '@tanstack/react-query'
+
 import type {
   BondFlowLogsParams,
   BufferPoolLogsParams,
@@ -12,6 +13,11 @@ import type {
 } from '~/shared/api/types'
 
 /** React Query 缓存键的唯一构造点：API 查询、链上读取与失效共用。 */
+
+/** 追加小写钱包地址——钱包作用域链上查询缓存键。 */
+export function chainWalletQueryKey(prefix: QueryKey, address: string): QueryKey {
+  return [...prefix, address.toLowerCase()]
+}
 
 /** 分页查询键尾段：page / page_size 默认 1 / 20。 */
 function paginated<const P extends readonly unknown[]>(

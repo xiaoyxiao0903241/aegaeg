@@ -20,7 +20,7 @@ function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTrad
       symbol: token.symbol,
       icon: token.icon,
       balanceLabel: trade.balanceLabelFor(key),
-      disabled: !trade.isTokenLive(key),
+      disabled: false,
     }
   })
 }
@@ -55,7 +55,7 @@ export function useMarketTradeDock(trade: MarketTradeState) {
   const buyPickerOptions = mapTradePickerOptions(trade.buyPickerKeys, trade)
 
   function handleTokenPick(side: 'sell' | 'buy', key: string) {
-    if (!isTradeTokenKey(key) || !trade.isTokenLive(key)) return
+    if (!isTradeTokenKey(key)) return
     if (side === 'sell') trade.selectSellToken(key)
     else trade.selectBuyToken(key)
   }

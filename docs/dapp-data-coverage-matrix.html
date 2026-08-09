@@ -430,13 +430,13 @@
       </div>
       <div class="stats" aria-label="状态汇总">
         <div class="stat"><span>合计</span><strong>419</strong></div>
-        <div class="stat ok"><span>✅</span><strong>337</strong></div>
-        <div class="stat bad"><span>❌</span><strong>1</strong></div>
+        <div class="stat ok"><span>✅</span><strong>339</strong></div>
+        <div class="stat bad"><span>❌</span><strong>0</strong></div>
         <div class="stat partial"><span>🟡</span><strong>5</strong></div>
         <div class="stat copy"><span>📘</span><strong>30</strong></div>
         <div class="stat pending"><span>🔍</span><strong>0</strong></div>
         <div class="stat blocked"><span>🚫</span><strong>6</strong></div>
-        <div class="stat na"><span>⚪</span><strong>40</strong></div>
+        <div class="stat na"><span>⚪</span><strong>39</strong></div>
       </div>
     </header>
 
@@ -5443,26 +5443,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="bad" data-section="5-兑换" data-search="x-004 兑换 总览·程序卡 「出售 x」入口 提交 `program_targets[4]=null`；`trade_live_token_keys` 无 `x` 链/产品 defer；手册 §7.1 仅 usd1↔agx live —  ❌ 未接入 链/手册/接口未提供 产品决定：藏卡或标「即将开放」；开放时再扩可交易币列表与路径 — **a-02**  a-02 卡看得见但点不了；市价选币同">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-004 兑换 总览·程序卡 「出售 x」入口 提交 `program_targets[4]='trade'`；预选卖 x（`pairaftertokenselect`→买 agx）；`trade_token_keys` 含 `x` pancake v2 agx/x；产品已开三币 —  ✅ 已对齐 — — a-02  a-02 入口进市价；路径见 tradepath">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-004</span>
     <span class="surface">总览·程序卡</span>
     <span class="datum">「出售 X」入口</span>
     <span class="rw pill">提交</span>
-    <span class="status badge bad">❌ 未接入</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>兑换</dd></div>
-      <div><dt>T1 归因</dt><dd>链/手册/接口未提供</dd></div>
-      <div><dt>继承自</dt><dd>— **A-02**</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
+      <div><dt>继承自</dt><dd>A-02</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-02</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`PROGRAM_TARGETS[4]=null`；`TRADE_LIVE_TOKEN_KEYS` 无 `x`</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>链/产品 DEFER；手册 §7.1 仅 USD1↔AGX live</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`PROGRAM_TARGETS[4]='trade'`；预选卖 X（`pairAfterTokenSelect`→买 AGX）；`TRADE_TOKEN_KEYS` 含 `x`</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>Pancake V2 AGX/X；产品已开三币</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
-      <div class="wide fix-hot"><dt>修复方法</dt><dd>产品决定：藏卡或标「即将开放」；开放时再扩可交易币列表与路径</dd></div>
-      <div class="wide"><dt>备注</dt><dd>卡看得见但点不了；市价选币同</dd></div>
+      <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>入口进市价；路径见 tradePath</dd></div>
     </dl>
   </div>
 </article>
@@ -5972,7 +5972,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="5-兑换" data-search="x-027 兑换 市价·操作区 路径标签 / 跳转 pancake 深链 读取展示 `formattraderoutelabel`；仅 usd1↔agx live path helper —  ✅ 已对齐 — — —  — —">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-027 兑换 市价·操作区 路径标签 / 跳转 pancake 深链 读取展示 `formattraderoutelabel`；ui 仅邻接对 path helper —  ✅ 已对齐 — — —  — —">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-027</span>
     <span class="surface">市价·操作区</span>
@@ -5987,7 +5987,7 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`formatTradeRouteLabel`；仅 USD1↔AGX live</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`formatTradeRouteLabel`；UI 仅邻接对</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>path helper</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
@@ -6018,11 +6018,11 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="5-兑换" data-search="x-029 兑换 市价·选币 x 选项能看见但不可选为当前可交易 读取展示 `istradetokenlive`；`trade_live_token_keys=['usd1','agx']` 产品 defer —  ✅ 已对齐 — — — **a-02**  a-02 与总览「出售 x」一致；开通债见 x-004">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-029 兑换 市价·选币 x 可选为卖出/买入 读取展示 `trade_token_keys`；双栏全量；`pairaftertokenselect` 邻接纠偏 池：usd1—agx—x —  ✅ 已对齐 — — a-02  a-02 合法对仅相邻；同币翻转；usd1↔x 对侧落到 agx">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-029</span>
     <span class="surface">市价·选币</span>
-    <span class="datum">X 选项能看见但不可选为当前可交易</span>
+    <span class="datum">X 可选为卖出/买入</span>
     <span class="rw pill">读取展示</span>
     <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
@@ -6031,13 +6031,13 @@
     <dl>
       <div><dt>章节</dt><dd>兑换</dd></div>
       <div><dt>T1 归因</dt><dd>—</dd></div>
-      <div><dt>继承自</dt><dd>— **A-02**</dd></div>
+      <div><dt>继承自</dt><dd>A-02</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-02</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`isTradeTokenLive`；`TRADE_LIVE_TOKEN_KEYS=['usd1','agx']`</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>产品 DEFER</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`TRADE_TOKEN_KEYS`；双栏全量；`pairAfterTokenSelect` 邻接纠偏</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>池：USD1—AGX—X</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>与总览「出售 X」一致；开通债见 X-004</dd></div>
+      <div class="wide"><dt>备注</dt><dd>合法对仅相邻；同币翻转；USD1↔X 对侧落到 AGX</dd></div>
     </dl>
   </div>
 </article>
@@ -9910,26 +9910,26 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="na" data-section="9-代码反查附录" data-search="z-007 反查 卖 x 路径 卖出 x 交易 提交 hub 卡不可点；`trade_live_token_keys` 无 `x`（x-004/x-029） 链/产品无卖 x —（能力不存在）  ⚪ 不适用 链/手册/接口未提供 — x-004  a-02 能力不存在">
+<article class="row" data-status="ok" data-section="9-代码反查附录" data-search="z-007 反查 卖 x 路径 卖出 x 交易 提交 hub→trade 预选 x→agx；`trade_token_keys` 含 `x`（x-004/x-029） pancake path `[x,agx]` / 多跳 —  ✅ 已对齐 — — x-004  a-02 产品已开；入仓手册 §7.1 旧 live 范围不改正文">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">Z-007</span>
     <span class="surface">卖 X 路径</span>
     <span class="datum">卖出 X 交易</span>
     <span class="rw pill">提交</span>
-    <span class="status badge na">⚪ 不适用</span>
+    <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
   </button>
   <div class="row-detail" hidden>
     <dl>
       <div><dt>章节</dt><dd>反查</dd></div>
-      <div><dt>T1 归因</dt><dd>链/手册/接口未提供</dd></div>
+      <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>X-004</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-02</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>Hub 卡不可点；`TRADE_LIVE_TOKEN_KEYS` 无 `x`（X-004/X-029）</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>链/产品无卖 X</dd></div>
-      <div class="wide"><dt>API 接口</dt><dd>—（能力不存在）</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>Hub→trade 预选 X→AGX；`TRADE_TOKEN_KEYS` 含 `x`（X-004/X-029）</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>Pancake path `[x,agx]` / 多跳</dd></div>
+      <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>能力不存在</dd></div>
+      <div class="wide"><dt>备注</dt><dd>产品已开；入仓手册 §7.1 旧 live 范围不改正文</dd></div>
     </dl>
   </div>
 </article>
@@ -10166,7 +10166,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-08T19:30:49.446Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-09T08:57:28.073Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {

@@ -48,7 +48,7 @@ test('401-style attempt key stays latched when session purged but signature kept
   // First silent retry after 401 purge is allowed once.
   assert.deepEqual(
     deriveAuthAction({
-      state: { kind: 'needsLogin' },
+      state: { kind: 'needsSignIn' },
       isLoggingIn: false,
       loginError: null,
       lastAttemptKey: null,
@@ -62,7 +62,7 @@ test('401-style attempt key stays latched when session purged but signature kept
   // Same fingerprint after another 401 → idle (no silent loop).
   assert.deepEqual(
     deriveAuthAction({
-      state: { kind: 'needsLogin' },
+      state: { kind: 'needsSignIn' },
       isLoggingIn: false,
       loginError: null,
       lastAttemptKey: after401Key,

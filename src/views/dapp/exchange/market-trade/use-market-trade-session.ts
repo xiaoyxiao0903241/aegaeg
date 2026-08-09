@@ -20,8 +20,7 @@ import {
   getTradePairTokens,
   getTradeSwapPath,
   getTradeToken,
-  isTradeTokenLive,
-  tradeBuyOptions,
+  TRADE_TOKEN_KEYS,
   type TradeTokenKey,
 } from '~/views/dapp/exchange/shared'
 import { useExchangePoolReads } from '~/views/dapp/exchange/use-exchange-pool-reads'
@@ -121,13 +120,17 @@ export function useMarketTradeSession(
   })
 
   const amountQuote = core.amountQuoteQuery.data
-  const priceImpactBps = amountQuote?.priceImpactBps ?? 0
+  const priceImpactBps = amountQuote?.priceImpactBps ?? null
   const gasEstimate = amountQuote?.gasEstimate ?? ZERO_BI
 
   const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
   const pancakeSwapUrl = pancakeSwapDeepLink(pair.sell.address, pair.buy.address)
   const priceImpactLabel =
-    !sessionReady || core.amountIn === ZERO_BI ? '' : `${(priceImpactBps / 100).toFixed(2)}%`
+    !sessionReady || core.amountIn === ZERO_BI
+      ? ''
+      : priceImpactBps == null
+        ? '—'
+        : `${(priceImpactBps / 100).toFixed(2)}%`
   const gasEstimateLabel =
     !sessionReady || core.amountIn === ZERO_BI
       ? ''
@@ -137,7 +140,10 @@ export function useMarketTradeSession(
           ? '—'
           : formatNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
   const isHighPriceImpact =
-    sessionReady && core.amountIn > ZERO_BI && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
+    sessionReady &&
+    core.amountIn > ZERO_BI &&
+    priceImpactBps != null &&
+    priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
   function flipDirection() {
     core.clearLock()
@@ -146,14 +152,14 @@ export function useMarketTradeSession(
   }
 
   function selectSellToken(key: TradeTokenKey) {
-    if (!isTradeTokenLive(key) || key === sellKey) return
+    if (key === sellKey) return
     core.clearLock()
     setSellKey(key)
     core.clearAmount()
   }
 
   function selectBuyToken(key: TradeTokenKey) {
-    if (!isTradeTokenLive(key) || key === buyKey || key === sellKey) return
+    if (key === buyKey) return
     core.clearLock()
     setBuyKey(key)
     core.clearAmount()
@@ -163,8 +169,8 @@ export function useMarketTradeSession(
     return submitMarketTrade({ pair, path, core })
   }
 
-  const sellPickerKeys: TradeTokenKey[] = ['usd1', 'agx', 'x']
-  const buyPickerKeys = tradeBuyOptions(sellKey)
+  const sellPickerKeys: TradeTokenKey[] = [...TRADE_TOKEN_KEYS]
+  const buyPickerKeys: TradeTokenKey[] = [...TRADE_TOKEN_KEYS]
 
   return {
     sellAmount: core.sellAmount,
@@ -182,7 +188,6 @@ export function useMarketTradeSession(
     sellPickerKeys,
     buyPickerKeys,
     getToken: getTradeToken,
-    isTokenLive: isTradeTokenLive,
     sellBalanceLabel: sellBalanceKnown
       ? formatTokenAmount(balanceByKey[sellKey], pair.sell.decimals, 4)
       : '',

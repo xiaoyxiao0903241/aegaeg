@@ -30,7 +30,7 @@ export function TabHeader({
   return (
     <DockPanel
       className={className}
-      chrome={
+      header={
         <div className="flex w-full items-center justify-between gap-2">
           <button
             className="inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left"

@@ -90,13 +90,13 @@ export type RewardsSummaryCardProps = {
   approx?: string
   iconSrc?: string
   mutedBody?: string
-  decoSrc?: string
+  decorationSrc?: string
   labelAction?: ReactNode
 }
 
 export function RewardsSummaryCard({
   approx,
-  decoSrc,
+  decorationSrc,
   iconSrc,
   label,
   labelAction,
@@ -106,7 +106,10 @@ export function RewardsSummaryCard({
   return (
     <Card
       as="div"
-      className={cn('flex flex-col gap-1.5', decoSrc != null ? 'relative overflow-hidden' : null)}
+      className={cn(
+        'flex flex-col gap-1.5',
+        decorationSrc != null ? 'relative overflow-hidden' : null,
+      )}
       surface="elevated"
     >
       {labelAction != null ? (
@@ -145,12 +148,12 @@ export function RewardsSummaryCard({
           {mutedBody}
         </Text>
       ) : null}
-      {decoSrc != null ? (
+      {decorationSrc != null ? (
         // 装饰图：水平翻转朝右，超出卡片圆角部分裁掉
         <img
           alt=""
           className="pointer-events-none absolute top-1.5 right-0 w-16 -scale-x-100 object-contain object-right max-dapp:hidden"
-          src={decoSrc}
+          src={decorationSrc}
         />
       ) : null}
     </Card>

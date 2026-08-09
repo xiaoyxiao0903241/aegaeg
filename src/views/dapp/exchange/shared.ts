@@ -131,12 +131,9 @@ export type { FlashPairId } from '~/core/exchange/flash-pair'
 export { FLASH_PAIR_DEFAULT, isFlashPairId }
 export type { TradeTokenKey } from '~/core/exchange/trade-path'
 export {
-  buyKeyAfterSellChange,
   isTradeTokenKey,
-  isTradeTokenLive,
-  TRADE_LIVE_TOKEN_KEYS,
+  pairAfterTokenSelect,
   TRADE_TOKEN_KEYS,
-  tradeBuyOptions,
   tradePath,
 } from '~/core/exchange/trade-path'
 

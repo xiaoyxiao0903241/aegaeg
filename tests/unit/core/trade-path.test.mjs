@@ -25,19 +25,29 @@ test('tradePath rejects same-token pair', async () => {
   assert.throws(() => tradePath('usd1', 'usd1', ADDR), /TRADE_PATH_SAME_TOKEN/)
 })
 
-test('buyKeyAfterSellChange defaults X sell to AGX buy', async () => {
-  const { buyKeyAfterSellChange } = await loadModule('/src/core/exchange/trade-path.ts')
-  assert.equal(buyKeyAfterSellChange('x', 'x'), 'agx')
-  assert.equal(buyKeyAfterSellChange('x', 'usd1'), 'usd1')
-  assert.equal(buyKeyAfterSellChange('usd1', 'usd1'), 'agx')
-})
-
-test('isTradeTokenLive: handbook §7.1 USD1/AGX only', async () => {
-  const { isTradeTokenLive, TRADE_LIVE_TOKEN_KEYS } = await loadModule(
+test('pairAfterTokenSelect: flip same token, fix non-adjacent', async () => {
+  const { pairAfterTokenSelect, isValidTradePair } = await loadModule(
     '/src/core/exchange/trade-path.ts',
   )
-  assert.deepEqual([...TRADE_LIVE_TOKEN_KEYS], ['usd1', 'agx'])
-  assert.equal(isTradeTokenLive('usd1'), true)
-  assert.equal(isTradeTokenLive('agx'), true)
-  assert.equal(isTradeTokenLive('x'), false)
+
+  assert.equal(isValidTradePair('x', 'agx'), true)
+  assert.equal(isValidTradePair('usd1', 'x'), false)
+
+  // 下面点到与上面同币 → 翻转
+  assert.deepEqual(pairAfterTokenSelect('buy', 'x', 'x', 'agx'), {
+    sellKey: 'agx',
+    buyKey: 'x',
+  })
+
+  // 上面 X、下面选 USD1 → 上面联动到 AGX
+  assert.deepEqual(pairAfterTokenSelect('buy', 'usd1', 'x', 'agx'), {
+    sellKey: 'agx',
+    buyKey: 'usd1',
+  })
+
+  // 相邻则只改本侧
+  assert.deepEqual(pairAfterTokenSelect('sell', 'x', 'usd1', 'agx'), {
+    sellKey: 'x',
+    buyKey: 'agx',
+  })
 })

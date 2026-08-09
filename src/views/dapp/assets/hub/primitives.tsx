@@ -119,10 +119,10 @@ export function AssetsMetricGroupCard({
 
 export function AssetsOverviewCard({
   children,
-  decoSrc,
+  decorationSrc,
 }: {
   children: ReactNode
-  decoSrc: string
+  decorationSrc: string
 }) {
   return (
     <Card
@@ -134,7 +134,7 @@ export function AssetsOverviewCard({
         alt=""
         aria-hidden
         className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-76 object-cover object-right dapp:block"
-        src={decoSrc}
+        src={decorationSrc}
       />
       <div className="relative z-1 grid w-full grid-cols-2 gap-4 dapp:grid-cols-4 dapp:gap-6">
         {children}

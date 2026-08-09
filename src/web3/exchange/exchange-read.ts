@@ -33,7 +33,8 @@ export interface ExchangeQuoteResult {
   tokenOut: `0x${string}`
   /** V2 路由器没有 gas 估算；为 0 时 UI 显示「—」。 */
   gasEstimate: bigint
-  priceImpactBps: number
+  /** 仅 USD1/AGX 直连池可算；未知时 null，UI 显示「—」。 */
+  priceImpactBps: number | null
 }
 
 const erc20Abi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
@@ -207,7 +208,7 @@ export async function fetchExchangeQuote({
     client,
   })
 
-  // 价格影响只在已知的 USD1/AGX 池直连一跳计算；否则如实返回 0（UI 显示 —）
+  // 价格影响只在已知的 USD1/AGX 池直连一跳计算；否则 null（UI 显示 —）
   const isDirectUsd1AgxPoolHop =
     path.length === 2 &&
     path[0] === tokenIn &&
@@ -232,7 +233,7 @@ export async function fetchExchangeQuote({
         reserveIn: reserves.reserveIn,
         reserveOut: reserves.reserveOut,
       })
-    : 0
+    : null
 
   return {
     quotedOut,

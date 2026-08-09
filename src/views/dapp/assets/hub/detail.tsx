@@ -138,7 +138,7 @@ export function AssetsHubDetail() {
     <Detail>
       <Section>
         <Section.Title>{overview.title}</Section.Title>
-        <AssetsOverviewCard decoSrc={dappAssets.assetsHubOverviewDeco}>
+        <AssetsOverviewCard decorationSrc={dappAssets.assetsHubOverviewDeco}>
           {overviewMetrics.map((metric) => (
             <AssetsOverviewMetric
               featured={'featured' in metric ? metric.featured : undefined}

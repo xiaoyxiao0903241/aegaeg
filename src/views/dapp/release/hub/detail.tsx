@@ -44,8 +44,8 @@ export function ReleaseHubDetail() {
                   // 介绍卡：右上角装饰图，高度随文案
                   body={slide.body}
                   className="min-h-0 gap-2 p-4"
-                  decoClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
-                  decoSrc={dappAssets.aboutCarouselReleaseDeco}
+                  decorationClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
+                  decorationSrc={dappAssets.aboutCarouselReleaseDeco}
                   title={slide.title}
                 />
               </Carousel.Item>

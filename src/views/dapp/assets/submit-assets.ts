@@ -1,4 +1,3 @@
-import { actionOwnerMatches } from '~/core/assets/action-owner'
 import {
   evaluateMixedClaim,
   evaluateRedeem,
@@ -36,8 +35,13 @@ import { ASSETS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
-function assertSessionOwnsAction(sessionAddress: string, owner: string): void {
-  if (!actionOwnerMatches(sessionAddress, owner)) throw ASSETS_BLOCKED.unavailable
+/** 弹窗打开时锁定的地址须仍是当前会话钱包，防止切钱包后按旧地址提交。 */
+function assertSessionMatchesCapturedAddress(
+  sessionAddress: string,
+  capturedAddress: string,
+): void {
+  if (sessionAddress.toLowerCase() !== capturedAddress.toLowerCase())
+    throw ASSETS_BLOCKED.unavailable
 }
 
 export type MixedClaimTarget =
@@ -107,7 +111,7 @@ type MixedClaimSnapshot = Awaited<ReturnType<typeof readMixedClaimSnapshot>>
  * Mixed 领奖写交易
  *
  * 按 `approveThenLiveWrite`：预检读 → 实时重读复核 → 再写。
- * 打开弹窗时捕获的 owner 须与会话钱包一致，否则拒绝提交。
+ * 打开弹窗时锁定的地址须与会话钱包一致，否则拒绝提交。
  * 定期普通 / 额外为独立入口；若传入多项则按序各写一笔。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
@@ -115,15 +119,15 @@ type MixedClaimSnapshot = Awaited<ReturnType<typeof readMixedClaimSnapshot>>
  */
 export async function submitMixedClaim(args: {
   session: WriteSession
-  owner: string
+  capturedAddress: string
   target: MixedClaimTarget
   releaseDays: number
   restakeDays: number
   restakePct: number
 }): Promise<void> {
-  const { session, owner, target, releaseDays, restakeDays, restakePct } = args
+  const { session, capturedAddress, target, releaseDays, restakeDays, restakePct } = args
   const { wallet, address: user, readClient } = session
-  assertSessionOwnsAction(user, owner)
+  assertSessionMatchesCapturedAddress(user, capturedAddress)
 
   const restakeBps = restakeBpsFromPct(restakePct)
 
@@ -221,12 +225,12 @@ export async function submitMixedClaim(args: {
  */
 export async function submitStakeRedeem(args: {
   session: WriteSession
-  owner: string
+  capturedAddress: string
   row: AssetsStakeRow
 }): Promise<void> {
-  const { session, owner, row } = args
+  const { session, capturedAddress, row } = args
   const { wallet, address: user, readClient } = session
-  assertSessionOwnsAction(user, owner)
+  assertSessionMatchesCapturedAddress(user, capturedAddress)
 
   if (row.inWarmup) throw ASSETS_BLOCKED.warmupActive
 
@@ -259,12 +263,12 @@ export async function submitStakeRedeem(args: {
  */
 export async function submitBondRedeem(args: {
   session: WriteSession
-  owner: string
+  capturedAddress: string
   row: AssetsBondRow
 }): Promise<void> {
-  const { session, owner, row } = args
+  const { session, capturedAddress, row } = args
   const { wallet, address: user, readClient } = session
-  assertSessionOwnsAction(user, owner)
+  assertSessionMatchesCapturedAddress(user, capturedAddress)
 
   await approveThenLiveWrite({
     readSnapshot: async () => ({ amount: await readBondRedeemableAmount(row, user, readClient) }),

@@ -1,7 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
-import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
-import { AssetsClaimOutputModal } from '~/views/dapp/assets/claim-modal/assets-claim-output-modal'
+import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/modal'
+import { AssetsClaimOutputModal } from '~/views/dapp/assets/claim-modal/output-modal'
 import {
   AssetsListPager,
   AssetsPositionBondRow,
@@ -104,7 +104,7 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
         }}
         onSelectOutput={w.selectClaimOutput}
         open={w.claimOutput.open}
-        owner={w.claimOutput.open ? w.claimOutput.owner : null}
+        capturedAddress={w.claimOutput.open ? w.claimOutput.capturedAddress : null}
         row={w.claimOutput.open ? w.claimOutput.row : null}
       />
 
@@ -114,7 +114,7 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
           if (!open) w.closeClaim()
         }}
         open={w.claim.open}
-        owner={w.claim.open ? w.claim.owner : null}
+        capturedAddress={w.claim.open ? w.claim.capturedAddress : null}
         positionLabel={w.claim.open ? w.claim.label : ''}
         target={w.claim.open ? w.claim.target : null}
       />

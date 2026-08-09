@@ -12,13 +12,13 @@ export const FALLBACK_SESSION_TTL_MS = 60 * 60 * 1000
 export type AuthState =
   | { kind: 'disconnected' }
   | { kind: 'sessionReady'; session: StoredAuthSession }
-  | { kind: 'needsLogin' }
+  | { kind: 'needsSignIn' }
 
 /**
  * 根据连接地址与会话缓存推导认证状态。
  *
  * 会话归属地址须与当前钱包一致，且 JWT 未过期才算 sessionReady；
- * 地址不一致或会话缺失时回到 needsLogin。
+ * 地址不一致或会话缺失时回到 needsSignIn。
  *
  * @param walletAddress 当前连接的钱包地址；未连接时为 undefined
  * @param sessionsByAddress 按地址（小写）索引的会话缓存
@@ -43,7 +43,7 @@ export function deriveAuthState({
   if (status.sessionReady && session) {
     return { kind: 'sessionReady', session }
   }
-  return { kind: 'needsLogin' }
+  return { kind: 'needsSignIn' }
 }
 
 /**
@@ -154,7 +154,7 @@ export function deriveAuthAction({
   if (state.kind === 'disconnected') return { type: 'idle' }
   if (!loginChainReady) return { type: 'idle' }
 
-  if (state.kind === 'needsLogin') {
+  if (state.kind === 'needsSignIn') {
     if (isLoggingIn || lastAttemptKey === attemptKey) {
       return { type: 'idle' }
     }

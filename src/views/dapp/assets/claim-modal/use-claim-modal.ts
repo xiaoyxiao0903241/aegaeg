@@ -40,10 +40,10 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 export function useAssetsClaimModal(args: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  owner: string
+  capturedAddress: string
   target: MixedClaimTarget
 }) {
-  const { open, onOpenChange, owner, target } = args
+  const { open, onOpenChange, capturedAddress, target } = args
   const { messages: t } = useI18n()
   const { walletReady, writeReady } = useWriteReadiness()
   const account = useActiveAccount()
@@ -54,17 +54,17 @@ export function useAssetsClaimModal(args: {
 
   useEffect(() => {
     const current = account?.address
-    if (!current || current.toLowerCase() !== owner.toLowerCase()) {
+    if (!current || current.toLowerCase() !== capturedAddress.toLowerCase()) {
       onOpenChange(false)
     }
-  }, [account?.address, owner, onOpenChange])
+  }, [account?.address, capturedAddress, onOpenChange])
 
   const claim = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
     mutation: (_vars, session) =>
       submitMixedClaim({
         session,
-        owner,
+        capturedAddress,
         target,
         releaseDays,
         restakeDays,

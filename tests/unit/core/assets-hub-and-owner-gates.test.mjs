@@ -35,9 +35,7 @@ test('hub overview sources assetsHubNeedsChainFallback for chain query enabled',
 })
 
 test('wallet A→B: query keys diverge; placeholder balance must not decide', async () => {
-  const { chainWalletQueryKey } = await loadModule(
-    '/src/shared/api/query/chain-wallet-query-key.ts',
-  )
+  const { chainWalletQueryKey } = await loadModule('/src/shared/api/query/query-keys.ts')
   const { decisionBigint, isDecisionFresh } = await loadModule(
     '/src/core/query/decision-freshness.ts',
   )
@@ -73,7 +71,7 @@ test('money decision call sites wire decisionBigint / isDecisionFresh / liveQuot
   }
 })
 
-test('submitMixedClaim / redeem reject owner mismatch before chain reads', async () => {
+test('submitMixedClaim / redeem reject capturedAddress mismatch before chain reads', async () => {
   const { submitMixedClaim, submitStakeRedeem } = await loadModule(
     '/src/views/dapp/assets/submit-assets.ts',
   )
@@ -95,7 +93,7 @@ test('submitMixedClaim / redeem reject owner mismatch before chain reads', async
     () =>
       submitMixedClaim({
         session,
-        owner: '0x2222222222222222222222222222222222222222',
+        capturedAddress: '0x2222222222222222222222222222222222222222',
         target: { source: 'liquid', amount: 1n },
         releaseDays: 5,
         restakeDays: 540,
@@ -109,7 +107,7 @@ test('submitMixedClaim / redeem reject owner mismatch before chain reads', async
     () =>
       submitStakeRedeem({
         session,
-        owner: '0x2222222222222222222222222222222222222222',
+        capturedAddress: '0x2222222222222222222222222222222222222222',
         row: {
           id: 'liquid',
           kind: 'liquid',
@@ -129,15 +127,42 @@ test('submitMixedClaim / redeem reject owner mismatch before chain reads', async
   assert.equal(readCalls, 0)
 })
 
-test('assets claim modal closes when wallet address drifts from captured owner', () => {
+test('submitMixedClaim treats session address match as case-insensitive', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+
+  let readCalls = 0
+  const session = {
+    wallet: {},
+    address: '0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD',
+    readClient: {
+      async readContract() {
+        readCalls += 1
+        throw new Error('gate passed')
+      },
+    },
+  }
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+        target: { source: 'liquid', amount: 1n },
+        releaseDays: 5,
+        restakeDays: 540,
+        restakePct: 50,
+      }),
+    (err) => err instanceof Error && err.message === 'gate passed',
+  )
+  assert.ok(readCalls > 0)
+})
+
+test('assets claim modal closes when wallet address drifts from capturedAddress', () => {
   const src = readFileSync(
-    new URL(
-      '../../../src/views/dapp/assets/claim-modal/use-assets-claim-modal.ts',
-      import.meta.url,
-    ),
+    new URL('../../../src/views/dapp/assets/claim-modal/use-claim-modal.ts', import.meta.url),
     'utf8',
   )
   assert.match(src, /account\?\.address/)
-  assert.match(src, /owner\.toLowerCase\(\)/)
+  assert.match(src, /capturedAddress\.toLowerCase\(\)/)
   assert.match(src, /onOpenChange\(false\)/)
 })

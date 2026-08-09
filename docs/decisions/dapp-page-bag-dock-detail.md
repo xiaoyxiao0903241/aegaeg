@@ -34,7 +34,7 @@ staking/
 ├── detail.tsx               # ★ StakingDetail
 ├── shared.ts                # 可选：跨 mode 纯函数 / format（非 UI）
 ├── primitives.tsx           # 可选：跨 mode UI 零件（图表/指标等；禁数千行 mega）
-├── use-detail.ts            # 可选：跨 mode 右栏共享 chrome hook（如 useStakingDetail）
+├── use-detail.ts            # 可选：跨 mode 右栏共享 hook（如 useStakingDetail）
 ├── hub/
 │   ├── dock.tsx             # StakingHubDock（跨域导出须带域前缀）
 │   ├── detail.tsx           # StakingHubDetail

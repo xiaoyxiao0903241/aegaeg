@@ -55,7 +55,7 @@ export function RewardsHubDetail() {
       key: 'tier',
       label: stats.tier,
       mutedBody: statsView.tierLabel,
-      decoSrc: dappAssets.rewardsHubTierDeco,
+      decorationSrc: dappAssets.rewardsHubTierDeco,
     },
     {
       key: 'personalHolding',
@@ -128,7 +128,7 @@ export function RewardsHubDetail() {
                 <Carousel.Item key={view}>
                   <AboutCard
                     body={withContributionRatio(slide.body, claimRatio)}
-                    decoSrc={dappAssets.aboutCarouselRewardsMascot}
+                    decorationSrc={dappAssets.aboutCarouselRewardsMascot}
                     title={slide.title}
                     wash="lavender"
                   />

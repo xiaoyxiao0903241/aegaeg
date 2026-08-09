@@ -50,7 +50,7 @@ test('audit #18: transient login errors allow retry; permanent errors block', as
     attemptKey: 'k1',
     renewThresholdMs: 60_000,
     loginChainReady: true,
-    state: { kind: 'needsLogin' },
+    state: { kind: 'needsSignIn' },
   }
 
   assert.equal(isPermanentLoginErrorMessage('User rejected'), true)

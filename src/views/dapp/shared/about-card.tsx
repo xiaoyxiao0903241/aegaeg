@@ -26,10 +26,11 @@ const aboutCard = tv({
       'pointer-events-none absolute -top-2 right-0 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
     body: 'relative z-1 grid min-w-0 gap-3',
     /** 装饰插画：水平翻转朝左，仅 PC 渲染，由容器 overflow-hidden 裁切。 */
-    deco: 'pointer-events-none absolute top-2 right-4 z-2 w-25 -scale-x-100 object-contain object-bottom',
+    decoration:
+      'pointer-events-none absolute top-2 right-4 z-2 w-25 -scale-x-100 object-contain object-bottom',
   },
   variants: {
-    withDeco: {
+    withDecoration: {
       true: { body: 'max-w-xl' },
       false: { body: 'max-w-none' },
     },
@@ -40,8 +41,8 @@ export function AboutCard({
   action,
   body,
   className,
-  decoClassName,
-  decoSrc,
+  decorationClassName,
+  decorationSrc,
   title,
   wash = 'none',
 }: {
@@ -49,16 +50,16 @@ export function AboutCard({
   body: string
   className?: string
   /** 覆盖装饰插画的默认尺寸与位置。 */
-  decoClassName?: string
+  decorationClassName?: string
   /** 装饰插画（移动端不渲染） */
-  decoSrc?: string
+  decorationSrc?: string
   title: string
   /** `lavender`=奖励卡紫色渐变底色；默认 none */
   wash?: AboutWash
 }) {
   const isMobile = useMobileViewport()
-  const showDeco = Boolean(decoSrc) && !isMobile
-  const styles = aboutCard({ withDeco: showDeco })
+  const showDecoration = Boolean(decorationSrc) && !isMobile
+  const styles = aboutCard({ withDecoration: showDecoration })
   return (
     <Card as="article" surface="elevated" className={cn(styles.root(), className)}>
       {wash === 'lavender' ? <div aria-hidden className={styles.washLavender()} /> : null}
@@ -79,8 +80,13 @@ export function AboutCard({
         </Text>
         {action}
       </div>
-      {showDeco ? (
-        <img alt="" aria-hidden className={cn(styles.deco(), decoClassName)} src={decoSrc} />
+      {showDecoration ? (
+        <img
+          alt=""
+          aria-hidden
+          className={cn(styles.decoration(), decorationClassName)}
+          src={decorationSrc}
+        />
       ) : null}
     </Card>
   )

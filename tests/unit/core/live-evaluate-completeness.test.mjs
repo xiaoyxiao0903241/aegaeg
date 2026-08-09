@@ -58,21 +58,3 @@ test('evaluateGenesisPurchaseAmountLive fails when remaining drifts below purcha
     false,
   )
 })
-
-test('actionOwnerMatches is case-insensitive', async () => {
-  const { actionOwnerMatches } = await loadModule('/src/core/assets/action-owner.ts')
-  assert.equal(
-    actionOwnerMatches(
-      '0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD',
-      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-    ),
-    true,
-  )
-  assert.equal(
-    actionOwnerMatches(
-      '0x1111111111111111111111111111111111111111',
-      '0x2222222222222222222222222222222222222222',
-    ),
-    false,
-  )
-})

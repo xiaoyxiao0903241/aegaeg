@@ -14,13 +14,14 @@ import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { useExchangeFlashPairStore } from '~/stores/exchange-flash-pair-store'
+import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { ExchangeProgramCard } from '~/views/dapp/exchange/hub/primitives'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
 
 /**
  * 程序卡片点击目标：0 Trade gAGX → 闪兑 · 1 Turbine → 涡轮
- * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 暂不可点
+ * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价交易 · 4 Sell X → 市价（预选 X→AGX）
  * 5 Points → 销毁
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
@@ -28,13 +29,14 @@ const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'turbine',
   'flash',
   'trade',
-  null,
+  'trade',
   'burn',
 ]
 
 /** 「交易 gAGX」用默认 gAGX 对；「获取 USD1」打开闪兑时预选 USDT 对。 */
 const TRADE_GAGX_CARD_INDEX = 0
 const GET_USD1_CARD_INDEX = 2
+const SELL_X_CARD_INDEX = 4
 
 /** 与 i18n 卡片一一对应；undefined 表示纯文字卡片。 */
 const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undefined> = [
@@ -84,6 +86,8 @@ export function ExchangeHubDetail() {
                           useExchangeFlashPairStore.getState().setPairId('usdt')
                         } else if (index === TRADE_GAGX_CARD_INDEX) {
                           useExchangeFlashPairStore.getState().setPairId('gagx')
+                        } else if (index === SELL_X_CARD_INDEX) {
+                          useExchangeTradePairStore.getState().setSellKey('x')
                         }
                         openExchangeView(target)
                       }

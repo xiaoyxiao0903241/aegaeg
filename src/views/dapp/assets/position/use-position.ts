@@ -70,7 +70,7 @@ type ClaimState =
   | { open: false }
   | {
       open: true
-      owner: string
+      capturedAddress: string
       target: MixedClaimTarget
       label: string
       amountLabel: string
@@ -80,7 +80,7 @@ type ClaimOutputState =
   | { open: false }
   | {
       open: true
-      owner: string
+      capturedAddress: string
       row: AssetsStakeRow
       label: string
     }
@@ -89,14 +89,14 @@ type RedeemState =
   | { open: false }
   | {
       open: true
-      owner: string
+      capturedAddress: string
       kind: 'stake' | 'bond'
       row: AssetsStakeRow | AssetsBondRow
       amountLabel: string
     }
 
 type RedeemVars = {
-  owner: string
+  capturedAddress: string
   kind: 'stake' | 'bond'
   row: AssetsStakeRow | AssetsBondRow
 }
@@ -171,12 +171,12 @@ export function usePositionDock(product: AssetsProduct) {
       vars.kind === 'stake'
         ? submitStakeRedeem({
             session,
-            owner: vars.owner,
+            capturedAddress: vars.capturedAddress,
             row: vars.row as AssetsStakeRow,
           })
         : submitBondRedeem({
             session,
-            owner: vars.owner,
+            capturedAddress: vars.capturedAddress,
             row: vars.row as AssetsBondRow,
           }),
     onSuccess: () => {
@@ -229,8 +229,12 @@ export function usePositionDock(product: AssetsProduct) {
   const pagedStakeRows = stakeRows.slice(pageSliceStart, pageSliceStart + pageSize)
   const pagedBondRows = bondRows.slice(pageSliceStart, pageSliceStart + pageSize)
 
-  function runRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow, owner: string) {
-    void redeemWrite.mutate({ kind, row, owner })
+  function runRedeem(
+    kind: 'stake' | 'bond',
+    row: AssetsStakeRow | AssetsBondRow,
+    capturedAddress: string,
+  ) {
+    void redeemWrite.mutate({ kind, row, capturedAddress })
   }
 
   function requestRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
@@ -242,14 +246,18 @@ export function usePositionDock(product: AssetsProduct) {
           : (row as AssetsStakeRow).claimableBalance
         : (row as AssetsBondRow).pendingPayout
     const amountLabel = `${formatTokenAmount(amount, EXCHANGE_CONFIG.tokens.agx.decimals, 2)} AGX`
-    setRedeem({ open: true, owner: address, kind, row, amountLabel })
+    setRedeem({ open: true, capturedAddress: address, kind, row, amountLabel })
   }
 
-  function openMixedClaim(args: { owner: string; target: MixedClaimTarget; label: string }) {
+  function openMixedClaim(args: {
+    capturedAddress: string
+    target: MixedClaimTarget
+    label: string
+  }) {
     setClaimOutput({ open: false })
     setClaim({
       open: true,
-      owner: args.owner,
+      capturedAddress: args.capturedAddress,
       target: args.target,
       label: args.label,
       amountLabel: `${formatTokenAmount(args.target.amount, GAGX_DECIMALS, 4)} gAGX`,
@@ -273,16 +281,16 @@ export function usePositionDock(product: AssetsProduct) {
         stakeIndex: row.stakeIndex,
       })
       if (!target) return
-      openMixedClaim({ owner: address, label: periodLabel, target })
+      openMixedClaim({ capturedAddress: address, label: periodLabel, target })
       return
     }
 
-    setClaimOutput({ open: true, owner: address, row, label: periodLabel })
+    setClaimOutput({ open: true, capturedAddress: address, row, label: periodLabel })
   }
 
   function selectClaimOutput(kind: ClaimOutputKind) {
     if (!claimOutput.open) return
-    const { owner, row, label } = claimOutput
+    const { capturedAddress, row, label } = claimOutput
     const built = buildStakeMixedClaimTarget({
       stakeKind: row.kind === 'liquid' ? 'liquid' : 'locked',
       outputKind: kind,
@@ -293,7 +301,7 @@ export function usePositionDock(product: AssetsProduct) {
     })
     if (!built) return
     openMixedClaim({
-      owner,
+      capturedAddress,
       label,
       target: built,
     })
@@ -303,7 +311,7 @@ export function usePositionDock(product: AssetsProduct) {
     if (!address) return
     const periodLabel = formatPeriodLabel(String(row.period))
     openMixedClaim({
-      owner: address,
+      capturedAddress: address,
       label: periodLabel,
       target: {
         source: 'bond',
@@ -328,7 +336,7 @@ export function usePositionDock(product: AssetsProduct) {
 
   function confirmRedeem() {
     if (!redeem.open) return
-    runRedeem(redeem.kind, redeem.row, redeem.owner)
+    runRedeem(redeem.kind, redeem.row, redeem.capturedAddress)
   }
 
   function activateWarmup() {

@@ -9,7 +9,7 @@ import { DockHeader } from '~/views/dapp/shared/dock-header'
  * H5 顶栏固定高（Hub title+desc 与子页返回行共用，切换不抖）。
  * PC 不锁高，随内容。
  */
-export const DOCK_H5_CHROME_BODY_CLASS = 'flex h-14 min-h-14 items-center'
+export const DOCK_H5_HEADER_BODY_CLASS = 'flex h-14 min-h-14 items-center'
 
 /** 操作区纵向堆叠容器：子项间距只走 gap，勿再给子项加外边距。 */
 export function DockStack({ children, className }: { children: ReactNode; className?: string }) {
@@ -21,7 +21,7 @@ export function DockStack({ children, className }: { children: ReactNode; classN
  * sticky 钉在窗口滚动口顶，不随左侧 aside 滚走。
  * PC：hidden（不占位）；勿用 `contents`（portal 目标会异常）。
  */
-export function DockH5ChromeSlot() {
+export function DockH5HeaderSlot() {
   return (
     <div
       className={cn(
@@ -29,7 +29,7 @@ export function DockH5ChromeSlot() {
         'max-dapp:sticky max-dapp:top-0 max-dapp:z-30 max-dapp:grid max-dapp:bg-card',
         'max-dapp:-mx-4.5 max-dapp:px-4.5 max-dapp:pt-4.5',
       )}
-      data-dapp-dock-chrome-slot
+      data-dapp-dock-header-slot
     />
   )
 }
@@ -43,12 +43,12 @@ export function DockH5ChromeSlot() {
 export function DockPanel({
   bodyClassName,
   children,
-  chrome,
+  header,
   className,
 }: {
   bodyClassName?: string
   children: ReactNode
-  chrome: ReactNode
+  header: ReactNode
   className?: string
 }) {
   const isMobile = useMobileViewport()
@@ -58,21 +58,21 @@ export function DockPanel({
   // 挂载时读 sticky 槽与退场祖先；用 callback ref，避免 layout effect 同步 setState。
   const rootRef = useCallback((node: HTMLDivElement | null) => {
     if (!node) return
-    const nextSlot = document.querySelector('[data-dapp-dock-chrome-slot]')
+    const nextSlot = document.querySelector('[data-dapp-dock-header-slot]')
     setSlot((prev) => (prev === nextSlot ? prev : nextSlot))
     const exiting = Boolean(node.closest('.dapp-subview-layer-exit'))
     setExitLayer((prev) => (prev === exiting ? prev : exiting))
   }, [])
 
-  const chromeBody = (
+  const headerBody = (
     <div
       className={cn(
-        DOCK_H5_CHROME_BODY_CLASS,
+        DOCK_H5_HEADER_BODY_CLASS,
         'col-start-1 row-start-1 w-full pb-2',
         exitLayer && 'pointer-events-none opacity-0',
       )}
     >
-      {chrome}
+      {header}
     </div>
   )
 
@@ -87,12 +87,12 @@ export function DockPanel({
       )}
     >
       {/* PC：栏内固定头（高度随内容） */}
-      <div className="shrink-0 bg-card px-6 pt-7.5 pb-2 max-dapp:hidden" data-dapp-dock-chrome>
-        {chrome}
+      <div className="shrink-0 bg-card px-6 pt-7.5 pb-2 max-dapp:hidden" data-dapp-dock-header>
+        {header}
       </div>
 
       {/* H5：抬到 window sticky 槽 */}
-      {isMobile && slot ? createPortal(chromeBody, slot) : null}
+      {isMobile && slot ? createPortal(headerBody, slot) : null}
 
       <div
         className={cn(
@@ -147,7 +147,7 @@ export function DockFrame({
     <DockPanel
       bodyClassName={bodyClassName}
       className={className}
-      chrome={
+      header={
         <DockHeader
           className="w-full"
           endAction={endAction}

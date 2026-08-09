@@ -23,21 +23,23 @@ type MetricIcon = 'agx' | 'usd1' | null
 type HubMetricId =
   'tvl' | 'mcap' | 'circulating' | 'treasury' | 'price' | 'burned' | 'rebase' | 'runway' | 'stakers'
 
-const METRIC_CHROME: Record<HubMetricId, { tone: MetricTone; icon: MetricIcon; hasSub: boolean }> =
-  {
-    tvl: { tone: 'default', icon: 'agx', hasSub: true },
-    mcap: { tone: 'default', icon: null, hasSub: false },
-    circulating: { tone: 'default', icon: 'agx', hasSub: false },
-    treasury: { tone: 'default', icon: 'usd1', hasSub: true },
-    price: { tone: 'default', icon: 'agx', hasSub: false },
-    burned: { tone: 'default', icon: 'agx', hasSub: false },
-    rebase: { tone: 'accent', icon: null, hasSub: false },
-    runway: { tone: 'accent', icon: null, hasSub: false },
-    stakers: { tone: 'default', icon: null, hasSub: false },
-  }
+const METRIC_APPEARANCE: Record<
+  HubMetricId,
+  { tone: MetricTone; icon: MetricIcon; hasSub: boolean }
+> = {
+  tvl: { tone: 'default', icon: 'agx', hasSub: true },
+  mcap: { tone: 'default', icon: null, hasSub: false },
+  circulating: { tone: 'default', icon: 'agx', hasSub: false },
+  treasury: { tone: 'default', icon: 'usd1', hasSub: true },
+  price: { tone: 'default', icon: 'agx', hasSub: false },
+  burned: { tone: 'default', icon: 'agx', hasSub: false },
+  rebase: { tone: 'accent', icon: null, hasSub: false },
+  runway: { tone: 'accent', icon: null, hasSub: false },
+  stakers: { tone: 'default', icon: null, hasSub: false },
+}
 
 function isHubMetricId(id: string): id is HubMetricId {
-  return id in METRIC_CHROME
+  return id in METRIC_APPEARANCE
 }
 
 /**
@@ -107,10 +109,10 @@ export function StakingHubDetail() {
         <Grid columns={3}>
           {overviewMetrics.map((metric) => {
             if (!isHubMetricId(metric.id)) return null
-            const chrome = METRIC_CHROME[metric.id]
+            const appearance = METRIC_APPEARANCE[metric.id]
             const value = metricValue(metric.id)
             const valueClassName =
-              chrome.tone === 'accent'
+              appearance.tone === 'accent'
                 ? 'text-base leading-5 font-semibold tracking-normal text-primary'
                 : 'text-base leading-5 font-semibold tracking-normal'
 
@@ -124,8 +126,8 @@ export function StakingHubDetail() {
                 </Tile.Label>
                 <Text as="strong" className={valueClassName} variant="headline">
                   <HubMetricValueRow
-                    icon={chrome.icon}
-                    sub={chrome.hasSub ? metricSub(metric.id) : undefined}
+                    icon={appearance.icon}
+                    sub={appearance.hasSub ? metricSub(metric.id) : undefined}
                     value={value}
                   />
                 </Text>

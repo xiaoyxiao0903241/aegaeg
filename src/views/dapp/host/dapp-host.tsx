@@ -19,8 +19,8 @@ import {
 } from '~/views/dapp/host/onboarding/onboarding-guide'
 import { RevealObserver, scrollDappPanelsToTop, ScrollFadeHost } from '~/views/dapp/host/primitives'
 import { Rail } from '~/views/dapp/host/rail'
-import { useTabContentFade } from '~/views/dapp/host/use-content-fade'
-import { DockH5ChromeSlot } from '~/views/dapp/shared/dock-frame'
+import { useTabContentFade } from '~/views/dapp/host/use-tab-content-fade'
+import { DockH5HeaderSlot } from '~/views/dapp/shared/dock-frame'
 import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -165,7 +165,7 @@ export function DappHost() {
                   >
                     <Rail activeTab={activeTab} onSelectTab={selectTab} />
 
-                    <DockH5ChromeSlot />
+                    <DockH5HeaderSlot />
 
                     <aside
                       className={cn(
