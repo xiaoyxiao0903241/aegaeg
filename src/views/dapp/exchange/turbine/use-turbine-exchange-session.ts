@@ -258,7 +258,8 @@ export function useTurbineExchangeSession(
     unlockAmountIn <= decisionQuota &&
     usdNeeded > ZERO_BI &&
     usdNeeded <= decisionUsd1 &&
-    !quoteQuery.isFetching
+    // 冷启动无价才 busy；后台 refetch 保留上一笔 usdNeeded，勿闪灰。
+    !quoteQuery.isPending
 
   async function runSubmit(run: (session: WriteSession) => Promise<void>) {
     await chainWrite.mutate(async (session) => {
@@ -348,7 +349,8 @@ export function useTurbineExchangeSession(
     hasClaimable: claimableBalance > ZERO_BI,
     walletReady,
     canUnlock,
-    isQuoting: quoteQuery.isFetching,
+    // quoteQuery 无 keepPreviousData；冷启动用 isPending，勿用 isFetching。
+    isQuoting: unlockAmountIn > ZERO_BI && quoteQuery.isPending,
     isBalancesLoading,
     isSubmitting,
     claimingIndex,

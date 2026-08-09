@@ -12,6 +12,7 @@ import { formatTokenAmountDraft, formatTokenAmountInputDisplay } from '~/core/ex
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { QuotedSubmitCore, QuotedSubmitExecute } from '~/views/dapp/exchange/shared'
 import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
 import { EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
@@ -113,13 +114,11 @@ export function useExchangeQuote<TQuote>({
   // 提交门禁专用：占位旧值不得影响 canSubmit / amountOutMin
   const quotedOut = liveQuotedOut(amountQuoteQuery.isPlaceholderData, rawQuotedOut)
 
+  // 后台 refetch（已有 data）勿 busy；勿用 isFetching，否则轮询闪灰。
   const isQuoting =
     sessionReady &&
     amountIn > ZERO_BI &&
-    (isAmountDebouncing ||
-      amountQuoteQuery.isPending ||
-      amountQuoteQuery.isPlaceholderData ||
-      (amountQuoteQuery.isFetching && quotedOut === ZERO_BI))
+    (isAmountDebouncing || amountQuoteQuery.isPending || amountQuoteQuery.isPlaceholderData)
 
   const validationError = amountQuoteQuery.error ? EXCHANGE_QUOTE_FAILED : null
 
@@ -164,7 +163,8 @@ export function useExchangeQuote<TQuote>({
       isSubmitting,
       blockResubmit,
       quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
-      maxQuoteAgeMs: QUERY_STALE_TIME.quote,
+      // UI 可点：宽于轮询间隔，避免 refetch 交界闪灰；成交安全靠下方 live refetch。
+      maxQuoteAgeMs: EXCHANGE_CONFIG.quoteUiMaxAgeMs,
     })
 
   function clearLock() {

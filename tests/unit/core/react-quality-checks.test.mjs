@@ -152,6 +152,44 @@ test('canSubmitQuotedExchange blocks placeholder-zero and pending quotes', async
   assert.equal(canSubmitQuotedExchange({ ...base, nowMs: nowMs + 10_001 }), false)
 })
 
+test('canSubmitQuotedExchange UI max age stays true across refresh boundary', async () => {
+  const { canSubmitQuotedExchange } = await loadModule('/src/core/exchange/live-quoted-out.ts')
+  const { EXCHANGE_CONFIG } = await loadModule('/src/shared/config/exchange.ts')
+
+  const nowMs = 1_000_000
+  const base = {
+    walletReady: true,
+    amountIn: 10n,
+    sellBalance: 100n,
+    quotedOut: 100n,
+    amountOutMin: 99n,
+    isPlaceholderData: false,
+    isQuotePending: false,
+    isBalancesLoading: false,
+    isSubmitting: false,
+    quoteUpdatedAt: nowMs,
+    maxQuoteAgeMs: EXCHANGE_CONFIG.quoteUiMaxAgeMs,
+    nowMs,
+  }
+
+  assert.ok(EXCHANGE_CONFIG.quoteUiMaxAgeMs > EXCHANGE_CONFIG.quoteRefreshIntervalMs)
+  // 刚过一轮轮询间隔：旧 10s===10s 会灰；UI max age 仍可点。
+  assert.equal(
+    canSubmitQuotedExchange({
+      ...base,
+      nowMs: nowMs + EXCHANGE_CONFIG.quoteRefreshIntervalMs + 1,
+    }),
+    true,
+  )
+  assert.equal(
+    canSubmitQuotedExchange({
+      ...base,
+      nowMs: nowMs + EXCHANGE_CONFIG.quoteUiMaxAgeMs + 1,
+    }),
+    false,
+  )
+})
+
 test('canSubmitQuotedExchange blockResubmit models unknown-tx double-submit latch', async () => {
   const { canSubmitQuotedExchange } = await loadModule('/src/core/exchange/live-quoted-out.ts')
 

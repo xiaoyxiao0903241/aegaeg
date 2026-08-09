@@ -128,9 +128,8 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const marketLoaded = isDecisionFresh(marketQuery.isPlaceholderData, market)
   const payoutFresh = isDecisionFresh(payoutQuery.isPlaceholderData, payoutQuery.data)
   const payoutLoaded = amountInput.amountIn === ZERO_BI || payoutFresh
-  const isPayoutQuoting =
-    amountInput.amountIn > ZERO_BI &&
-    (payoutQuery.isFetching || payoutQuery.isPlaceholderData || !payoutFresh)
+  // payoutFresh 已含 !placeholder；勿用 isFetching，后台 refetch 会闪灰。
+  const isPayoutQuoting = amountInput.amountIn > ZERO_BI && !payoutFresh
   const blockReason = evaluateBondZapLive({
     amount: amountInput.amountIn,
     isBound: balancesLoaded ? (preflightQuery.data?.isBound ?? false) : false,

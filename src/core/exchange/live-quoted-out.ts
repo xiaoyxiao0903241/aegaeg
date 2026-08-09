@@ -24,6 +24,9 @@ export function liveQuotedOut(
  * 钱包、余额、报价、滑点下限、报价时效与提交中/锁定任一条件不满足即拒绝；
  * 各字段语义见对象内联注释，调用方须先经 `liveQuotedOut` 把占位报价归零。
  *
+ * UI 可点应传 `maxQuoteAgeMs` ≫ 轮询间隔（见 `EXCHANGE_CONFIG.quoteUiMaxAgeMs`）；
+ * submit live 复检可继续用较短档，且通常紧跟 `fetchQuery({ staleTime: 0 })`。
+ *
  * @returns 可提交返回 true
  */
 export function canSubmitQuotedExchange({
