@@ -169,7 +169,7 @@ export function CommunityDetail() {
     },
     {
       label: t.community.genesisTitle,
-      value: statsLoading ? <Skeleton className="h-7 w-20" /> : genesisRankValue,
+      value: statsLoading ? <Skeleton className="h-7 w-20" tone="dark" /> : genesisRankValue,
       volume: t.community.cobuildLevel,
       dark: !isMobileViewport,
       image: isMobileViewport ? undefined : dappAssets.communityRankDeco,
