@@ -432,11 +432,7 @@ export function AssetsPositionStakeRow(
       ? t.assets.position.redeemAnytime
       : undefined
   const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
-  const secondaryLabel = inWarmup
-    ? t.assets.position.activateWarmup
-    : row.kind === 'liquid'
-      ? t.assets.position.unlock
-      : t.assets.position.redeem
+  const secondaryLabel = inWarmup ? t.assets.position.activateWarmup : t.assets.position.redeem
 
   return (
     <Card surface="outlined" className="grid gap-2">

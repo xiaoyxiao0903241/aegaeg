@@ -16,11 +16,11 @@ test('getErrorMessage maps ERC20 / genesis / referral / claim / quote (no raw le
 
   assert.equal(
     getErrorMessage(new Error('reverted with 0xe450d38c'), t),
-    t.genesis.insufficientUsd1,
+    t.errors.chain.reverts.walletTokenInsufficient,
   )
   assert.equal(
     getErrorMessage(new Error('reverted with 0xfb8f41b2'), t),
-    t.genesis.insufficientAllowance,
+    t.errors.chain.reverts.insufficientAllowance,
   )
 
   assert.equal(

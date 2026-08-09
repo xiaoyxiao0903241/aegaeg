@@ -7,6 +7,11 @@ import {
   toErrorText,
 } from '~/web3/errors/error-text'
 import {
+  type ErrorMessageContext,
+  messageForErc20InsufficientAllowance,
+  messageForErc20InsufficientBalance,
+} from '~/web3/errors/path-scoped-erc20'
+import {
   CLAIM_CONFIRM_SYNC_FAILED,
   EXCHANGE_QUOTE_FAILED,
   EXCHANGE_SUBMIT_BLOCKED,
@@ -25,8 +30,11 @@ import {
   STAKING_BLOCKED,
   XMINE_BLOCKED,
 } from '~/web3/errors/write-block-errors'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
-type MessageFn = (t: AppMessagesBundle) => string
+export type { ErrorMessageContext }
+
+type MessageFn = (t: AppMessagesBundle, ctx?: ErrorMessageContext, error?: unknown) => string
 
 /**
  * 精确域哨兵 → i18n。
@@ -147,16 +155,16 @@ type MatchRule = {
  * @see 手册 §19 常见错误与前端提示
  */
 export const REVERT_MATCH_RULES: MatchRule[] = [
-  // —— ERC20 ——
+  // —— ERC20（按 WritePath / 缺余额账户消歧；禁止绑死 Genesis 认购）——
   {
     id: 'erc20-insufficient-balance',
     match: ({ raw }) => raw.includes('0xe450d38c') || /ERC20InsufficientBalance/i.test(raw),
-    message: (t) => t.genesis.insufficientUsd1,
+    message: (t, ctx, error) => messageForErc20InsufficientBalance(t, ctx, error),
   },
   {
     id: 'erc20-insufficient-allowance',
     match: ({ raw }) => raw.includes('0xfb8f41b2') || /ERC20InsufficientAllowance/i.test(raw),
-    message: (t) => t.genesis.insufficientAllowance,
+    message: (t, ctx) => messageForErc20InsufficientAllowance(t, ctx),
   },
 
   // —— PreSale ——
@@ -239,8 +247,14 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   },
   {
     id: 'referral-migrated',
-    match: nameOrSelector(/Referral__MigratedAccount|MigratedAccount/i, '0xc6dbe929'),
+    match: nameOrSelector(/Referral__MigratedAccount/i, '0xc6dbe929'),
     message: (t) => t.community.bindErrors.migratedAccount,
+  },
+  {
+    // Bond / staking / xmine / turbine 等 *MigratedAccount（非 Referral__ 前缀）
+    id: 'domain-migrated-account',
+    match: ({ raw }) => /MigratedAccount/i.test(raw) && !/Referral__/i.test(raw),
+    message: (t) => t.staking.blocked.accountMigrated,
   },
   {
     id: 'referral-invalid-parent',
@@ -302,7 +316,10 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'not-approved-plain',
     match: ({ raw }) => /^Not approved$/i.test(raw.trim()),
-    message: (t) => t.staking.blocked.notBound,
+    message: (t, ctx) =>
+      ctx?.path === WRITE_PATH.BOND_ZAP
+        ? t.staking.blocked.depositoryNotAuth
+        : t.staking.blocked.notBound,
   },
   {
     id: 'bond-not-approved',
@@ -328,7 +345,11 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
       '0xbacf057c',
       '0x30adcb59',
     ),
-    message: (t) => t.staking.blocked.insufficientBalance,
+    message: (t, ctx) => {
+      if (ctx?.path === WRITE_PATH.XMINE) return t.staking.blocked.insufficientGagx
+      if (ctx?.path === WRITE_PATH.STAKING) return t.staking.blocked.insufficientBalance
+      return t.errors.chain.reverts.walletTokenInsufficient
+    },
   },
   {
     id: 'stake-amount-limit',
@@ -344,7 +365,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
       '0x0f095e78',
       '0x9111ff2c',
     ),
-    message: (t) => t.assets.blocked.warmupNotEnded,
+    message: (t) => t.errors.chain.reverts.warmupOrLockActive,
   },
   {
     id: 'no-warmup',
@@ -418,18 +439,28 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.errors.chain.reverts.yieldUnavailable,
   },
   {
+    id: 'turbine-no-silence-balance',
+    match: nameOrSelector(/ErrorNoSilenceBalance\b/i),
+    message: (t) => t.errors.chain.reverts.turbineNoSilenceBalance,
+  },
+  {
     id: 'nothing-to-claim',
     match: nameOrSelector(
-      /Error(NothingToClaim|IndexOutOfBounds|NoSilenceBalance|NotAvailable)\b/i,
+      /Error(NothingToClaim|IndexOutOfBounds|NotAvailable)\b/i,
       '0x253fa28b',
       '0x0715b4d9',
     ),
-    message: (t) => t.assets.blocked.nothingToRedeem,
+    message: (t) => t.errors.chain.reverts.nothingToClaim,
   },
   {
     id: 'turbine-cooldown',
-    match: nameOrSelector(/Error(SilentTime|InvalidAmount)\b/i, '0x60977553', '0xd27def68'),
+    match: nameOrSelector(/ErrorSilentTime\b/i, '0x60977553'),
     message: (t) => t.errors.chain.reverts.turbineCooldown,
+  },
+  {
+    id: 'invalid-amount',
+    match: nameOrSelector(/ErrorInvalidAmount\b/i, '0xd27def68'),
+    message: (t) => t.errors.chain.reverts.invalidAmount,
   },
   {
     id: 'pair-not-exist',
@@ -474,9 +505,9 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.exchange.flash.blocked.transferMismatch,
   },
   {
-    id: 'flash-zero-address',
+    id: 'shared-zero-address',
     match: nameOrSelector(/^ErrorZeroAddress\b/i),
-    message: (t) => t.exchange.flash.blocked.zeroAddress,
+    message: (t) => t.errors.chain.reverts.zeroAddress,
   },
   {
     id: 'flash-same-token',
@@ -489,14 +520,14 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.errors.chain.reverts.zeroRate,
   },
   {
-    id: 'flash-not-authorized',
+    id: 'shared-not-authorized',
     match: nameOrSelector(/^Error(CallerNotAuthorized|NotAuthorized|Unauthorized)\b/i),
-    message: (t) => t.exchange.flash.blocked.notAuthorized,
+    message: (t) => t.errors.chain.reverts.notAuthorized,
   },
   {
-    id: 'flash-invalid-limits',
+    id: 'shared-invalid-limits',
     match: nameOrSelector(/^ErrorInvalidLimits\b/i),
-    message: (t) => t.exchange.flash.blocked.invalidLimits,
+    message: (t) => t.errors.chain.reverts.invalidLimits,
   },
 
   // —— 钱包 gas / 发送 ——
@@ -552,6 +583,7 @@ export function matchSentinelMessage(raw: string, t: AppMessagesBundle): string 
  * @param error 原始错误，供规则读取错误码等字段
  * @param raw 读取到的错误文本
  * @param t 当前 i18n 文案包
+ * @param ctx 可选写路径 / 钱包，用于共享 selector 消歧
  * @returns 用户文案；未命中任何规则时返回 null
  * @see 手册 §19 常见错误与前端提示
  */
@@ -559,10 +591,11 @@ export function matchRevertMessage(
   error: unknown,
   raw: string,
   t: AppMessagesBundle,
+  ctx?: ErrorMessageContext,
 ): string | null {
   const text = toErrorText(raw)
   for (const rule of REVERT_MATCH_RULES) {
-    if (rule.match(text, error)) return rule.message(t)
+    if (rule.match(text, error)) return rule.message(t, ctx, error)
   }
   return null
 }

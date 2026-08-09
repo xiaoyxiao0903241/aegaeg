@@ -22,6 +22,7 @@ import { formatNumber } from '~/shared/presenters/format'
 export function AssetsRedeemConfirm({
   amountLabel,
   busy,
+  confirmCta,
   onConfirm,
   onOpenChange,
   open,
@@ -29,6 +30,8 @@ export function AssetsRedeemConfirm({
   open: boolean
   amountLabel: string
   busy: boolean
+  /** 默认「赎回」；X 矿解押可传解押 CTA。标题仍固定「赎回质押」。 */
+  confirmCta?: string
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
 }) {
@@ -79,7 +82,7 @@ export function AssetsRedeemConfirm({
         onClick={onConfirm}
         variant="primary"
       >
-        {t.assets.redeem.confirmCta}
+        {confirmCta ?? t.assets.redeem.confirmCta}
       </MainButton>
     </ResponsiveDialog>
   )

@@ -86,6 +86,6 @@ test('getErrorMessage maps production hex-only wallet shapes via selectors', asy
   assert.equal(getErrorMessage(hexOnly('0xaa6a22bc'), t), t.staking.blocked.notBound)
   assert.equal(getErrorMessage(hexOnly('0x5e23f093'), t), t.staking.blocked.depositoryNotAuth)
   assert.equal(getErrorMessage(hexOnly('0xc91787e4'), t), t.errors.chain.reverts.zeroAmount)
-  assert.equal(getErrorMessage(hexOnly('0xf5c34c55'), t), t.assets.blocked.warmupNotEnded)
+  assert.equal(getErrorMessage(hexOnly('0xf5c34c55'), t), t.errors.chain.reverts.warmupOrLockActive)
   assert.equal(getErrorMessage(hexOnly('0xbc2c67a6'), t), t.errors.chain.reverts.operationPaused)
 })

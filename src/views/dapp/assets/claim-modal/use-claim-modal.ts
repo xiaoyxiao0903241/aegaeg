@@ -71,7 +71,7 @@ export function useAssetsClaimModal(args: {
         restakePct,
       }),
     onSuccess: () => {
-      toast.success(t.assets.claim.success)
+      toast.success(restakePct === 100 ? t.assets.claim.restakeSuccess : t.assets.claim.success)
       onOpenChange(false)
     },
   })

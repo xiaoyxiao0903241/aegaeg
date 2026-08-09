@@ -151,7 +151,7 @@ export function useMixedClaim(view: MixedClaimView) {
       })
     },
     onSuccess: () => {
-      toast.success(t.rewards.claimSuccess)
+      toast.success(restakePct === 100 ? t.rewards.restakeSuccess : t.rewards.claimSuccess)
     },
     onError: (error) => {
       if (isDaoMixed && readErrorText(error) === REWARDS_BLOCKED.insufficientContribution) {

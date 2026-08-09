@@ -23,13 +23,13 @@ test('getErrorMessage maps flash soft blocks and Usd1Swap reverts', async () => 
     ['ErrorAboveMax', t.errors.chain.reverts.aboveMaxAmount],
     ['ErrorInsufficientOutput', t.exchange.flash.blocked.insufficientOutput],
     ['ErrorTransferAmountMismatch', t.exchange.flash.blocked.transferMismatch],
-    ['ErrorZeroAddress', t.exchange.flash.blocked.zeroAddress],
+    ['ErrorZeroAddress', t.errors.chain.reverts.zeroAddress],
     ['ErrorSameToken', t.exchange.flash.blocked.sameToken],
     ['ErrorZeroAmount', t.errors.chain.reverts.zeroAmount], // §19 shared zero-amount tip
     ['ErrorZeroRate', t.errors.chain.reverts.zeroRate],
-    ['ErrorCallerNotAuthorized', t.exchange.flash.blocked.notAuthorized],
-    ['ErrorNotAuthorized', t.exchange.flash.blocked.notAuthorized],
-    ['ErrorInvalidLimits', t.exchange.flash.blocked.invalidLimits],
+    ['ErrorCallerNotAuthorized', t.errors.chain.reverts.notAuthorized],
+    ['ErrorNotAuthorized', t.errors.chain.reverts.notAuthorized],
+    ['ErrorInvalidLimits', t.errors.chain.reverts.invalidLimits],
   ]
 
   for (const [name, expected] of cases) {

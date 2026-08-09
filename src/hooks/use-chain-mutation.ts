@@ -96,17 +96,17 @@ export function useChainMutation<TVars = void, TValue = void>(
         const result = args.onSuccess?.(value, vars)
         if (result != null && typeof (result as PromiseLike<void>).then === 'function') {
           void Promise.resolve(result).catch((error: unknown) => {
-            presentUserFacingError(error, t)
+            presentUserFacingError(error, t, { ctx: { path, walletAddress: address } })
           })
         }
       } catch (error) {
-        presentUserFacingError(error, t)
+        presentUserFacingError(error, t, { ctx: { path, walletAddress: address } })
       }
     },
     onError: (error, vars) => {
       if (isChainMutationLockedError(error)) return
       if (args.onError?.(error, vars) === 'handled') return
-      presentUserFacingError(error, t)
+      presentUserFacingError(error, t, { ctx: { path, walletAddress: address } })
     },
   })
 
