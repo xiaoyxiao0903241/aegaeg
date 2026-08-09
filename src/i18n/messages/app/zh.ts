@@ -1370,7 +1370,6 @@ const app = defineMessages({
       voucher: '凭证',
       lockedPrefix: '锁定',
       redeemAnytime: '随时可赎回',
-      unstakeAnytime: '随时可解押',
       activateWarmup: '解锁',
       activateWarmupSuccess: '解锁成功',
       warmupRemainingEpochs: '剩余 {n} 个 Epoch',
@@ -1414,8 +1413,6 @@ const app = defineMessages({
       body: '赎回后资产将进入缓冲区，进行 {days} 天一次线性释放，缓冲区资产不再产生任何收益',
       confirmCta: '赎回',
       success: '赎回已提交，本金进入释放缓冲',
-      unstakeConfirmCta: '解押',
-      unstakeSuccess: '解押已提交，本金进入释放缓冲',
     },
     hub: {
       filterAria: '筛选资产',

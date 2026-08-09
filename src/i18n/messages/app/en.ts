@@ -1446,7 +1446,6 @@ const app = defineMessages({
       liquid: 'Flexible',
       lockedPrefix: 'Locked',
       redeemAnytime: 'Redeemable anytime',
-      unstakeAnytime: 'Unstake anytime',
       activateWarmup: 'Unlock',
       activateWarmupSuccess: 'Unlocked',
       warmupRemainingEpochs: '{n} epochs remaining',
@@ -1490,8 +1489,6 @@ const app = defineMessages({
       body: 'After redeem, assets enter the buffer for a {days}-day linear release. Buffer assets earn no yield.',
       confirmCta: 'Redeem',
       success: 'Redeem submitted — principal entered the release buffer',
-      unstakeConfirmCta: 'Unstake',
-      unstakeSuccess: 'Unstake submitted — principal entered the release buffer',
     },
     hub: {
       filterAria: 'Filter assets',

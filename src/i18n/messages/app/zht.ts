@@ -1372,7 +1372,6 @@ const app = defineMessages({
       voucher: '憑證',
       lockedPrefix: '鎖定',
       redeemAnytime: '隨時可贖回',
-      unstakeAnytime: '隨時可解押',
       activateWarmup: '解鎖',
       activateWarmupSuccess: '解鎖成功',
       warmupRemainingEpochs: '剩餘 {n} 個 Epoch',
@@ -1416,8 +1415,6 @@ const app = defineMessages({
       body: '贖回後資產將進入緩衝區，進行 {days} 天一次線性釋放，緩衝區資產不再產生任何收益',
       confirmCta: '贖回',
       success: '贖回已提交，本金進入釋放緩衝',
-      unstakeConfirmCta: '解押',
-      unstakeSuccess: '解押已提交，本金進入釋放緩衝',
     },
     hub: {
       filterAria: '篩選資產',

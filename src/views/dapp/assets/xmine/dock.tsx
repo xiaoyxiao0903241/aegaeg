@@ -65,8 +65,8 @@ export function XmineDock() {
               pending={position.pending}
               periodPill={copy.periodPill}
               quote={vm.quote}
-              redeemAnytimeLabel={t.assets.position.unstakeAnytime}
-              redeemLabel={t.assets.position.unstake}
+              redeemAnytimeLabel={t.assets.position.redeemAnytime}
+              redeemLabel={t.assets.position.redeem}
               remainingCaption={t.assets.position.remaining}
               stakedCaption={t.assets.position.staked}
               voucherAddress={vm.voucherAddress}
@@ -99,7 +99,6 @@ export function XmineDock() {
             : ''
         }
         busy={vm.busy}
-        confirmCta={t.assets.redeem.unstakeConfirmCta}
         onConfirm={() => void vm.handleUnstake()}
         onOpenChange={vm.setConfirmUnstake}
         open={vm.confirmUnstake}

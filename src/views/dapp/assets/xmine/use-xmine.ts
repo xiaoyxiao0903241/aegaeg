@@ -78,7 +78,7 @@ export function useXmineDock() {
     path: WRITE_PATH.ASSETS_CLAIM,
     mutation: (_vars, session) => submitXmineUnstake({ session }),
     onSuccess: () => {
-      toast.success(t.assets.redeem.unstakeSuccess)
+      toast.success(t.assets.redeem.success)
       setConfirmUnstake(false)
     },
   })
