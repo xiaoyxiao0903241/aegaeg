@@ -32,7 +32,6 @@ SHA-256 ef877768533d…
 后端/扫描器按业务规则计算用户可领取金额并签名；用户调用：
 
 solidity
-
 ```solidity
 claimReward(signType, amount, expireTime, salt, signature)
 ```
@@ -57,18 +56,18 @@ claimReward(signType, amount, expireTime, salt, signature)
 
 ### 事件
 
-| 事件                                                                                               | 说明                    |
-| -------------------------------------------------------------------------------------------------- | ----------------------- |
-| `Claimed(address indexed user, uint256 amount, bytes32 salt, uint256 signType, uint256 timestamp)` | 用户成功领取 AGX 津贴   |
-| `SignerUpdated(address indexed oldSigner, address indexed newSigner)`                              | `setSigner` 切换签名者  |
-| `Deposited(address indexed depositor, uint256 amount, uint256 timestamp)`                          | `deposit` 补充 AGX 库存 |
+| 事件 | 说明 |
+| --- | --- |
+| `Claimed(address indexed user, uint256 amount, bytes32 salt, uint256 signType, uint256 timestamp)` | 用户成功领取 AGX 津贴 |
+| `SignerUpdated(address indexed oldSigner, address indexed newSigner)` | `setSigner` 切换签名者 |
+| `Deposited(address indexed depositor, uint256 amount, uint256 timestamp)` | `deposit` 补充 AGX 库存 |
 
 ### 错误码
 
-| 错误                      | 原因                                                    | 解决方案           |
-| ------------------------- | ------------------------------------------------------- | ------------------ |
-| `ErrorZeroAddress()`      | `initialize`/`setSigner`/`emergencyWithdraw` 传入零地址 | 传入有效地址       |
-| `ErrorZeroAmount()`       | `deposit`/`claimReward` 金额为 0                        | 传入大于 0 的金额  |
-| `ErrorInvalidSigner()`    | 签名验证失败                                            | 重新向后端申请签名 |
-| `ErrorAlreadyUsed()`      | 签名或 salt 已核销                                      | 使用新的签名/salt  |
-| `ErrorSignatureExpired()` | `expireTime <= block.timestamp`                         | 获取未过期签名     |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorZeroAddress()` | `initialize`/`setSigner`/`emergencyWithdraw` 传入零地址 | 传入有效地址 |
+| `ErrorZeroAmount()` | `deposit`/`claimReward` 金额为 0 | 传入大于 0 的金额 |
+| `ErrorInvalidSigner()` | 签名验证失败 | 重新向后端申请签名 |
+| `ErrorAlreadyUsed()` | 签名或 salt 已核销 | 使用新的签名/salt |
+| `ErrorSignatureExpired()` | `expireTime <= block.timestamp` | 获取未过期签名 |

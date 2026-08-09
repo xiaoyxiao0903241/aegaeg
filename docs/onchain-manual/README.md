@@ -1,7 +1,8 @@
 # AEGIS X 前端专用合约接入手册（Markdown）
 
-由 `AEGIS_X_FRONTEND_MANUAL.html` 自动转换。完整 ABI JSON 拆到 `abis/`，正文里只保留链接。  
-**禁止手改本树正文**；换手册整树替换。FE 对齐结论见 [`../dapp-data-coverage-matrix.md`](../dapp-data-coverage-matrix.md)。
+由 `AEGIS_X_FRONTEND_MANUAL.html` 自动转换。完整 ABI JSON 拆到 `abis/`，正文里只保留链接。
+
+再生：`python3 scripts/convert-frontend-manual-html.py`
 
 ## 目录
 
@@ -52,4 +53,4 @@
 
 - 文档章节：41
 - ABI 文件：40
-- 总大小：1,134,975 bytes
+- 总大小：3,055,126 bytes

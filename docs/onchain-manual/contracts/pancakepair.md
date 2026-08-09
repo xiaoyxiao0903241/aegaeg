@@ -29,12 +29,12 @@ SHA-256 4722e6bfe8e6…
 
 ### 前端读取
 
-| 方法                                | 说明                                                                 |
-| ----------------------------------- | -------------------------------------------------------------------- |
-| `token0()` / `token1()`             | 交易对资产顺序；永远先读取，不能假设 AGX 在 token0                   |
-| `getReserves()`                     | `reserve0, reserve1, blockTimestampLast`，按各 token decimals 格式化 |
-| `totalSupply()` / `balanceOf(user)` | LP 总量与用户 LP 余额                                                |
-| `factory()`                         | 创建该 pair 的 Factory                                               |
+| 方法 | 说明 |
+| --- | --- |
+| `token0()` / `token1()` | 交易对资产顺序；永远先读取，不能假设 AGX 在 token0 |
+| `getReserves()` | `reserve0, reserve1, blockTimestampLast`，按各 token decimals 格式化 |
+| `totalSupply()` / `balanceOf(user)` | LP 总量与用户 LP 余额 |
+| `factory()` | 创建该 pair 的 Factory |
 
 `Sync` 用于储备更新通知，`Swap` 用于成交历史，`Transfer`（含 from=0）/`Burn` 用于流动性变化（无独立 `Mint` 事件，`mint()` 仅 emit `Transfer(address(0), to, liquidity)` + `Sync`）。事件触发后仍需重新读取 reserves。
 

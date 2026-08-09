@@ -72,14 +72,13 @@ SHA-256 e9eaf48c8f41…
 获取用户在指定轮次的购买统计。
 
 js
-
 ```js
-const currentRound = await tracker.luckyPool().then((lp) => lp.currentRoundId())
-const stat = await tracker.getUserRoundStat(currentRound, userAddress)
-console.log('Total purchase:', ethers.formatUnits(stat.totalAmount, 18))
-console.log('Qualified:', stat.qualified)
+const currentRound = await tracker.luckyPool().then(lp => lp.currentRoundId());
+const stat = await tracker.getUserRoundStat(currentRound, userAddress);
+console.log('Total purchase:', ethers.formatUnits(stat.totalAmount, 18));
+console.log('Qualified:', stat.qualified);
 if (stat.qualifiedAt > 0n) {
-  console.log('Qualified at:', new Date(Number(stat.qualifiedAt) * 1000).toLocaleString())
+  console.log('Qualified at:', new Date(Number(stat.qualifiedAt) * 1000).toLocaleString());
 }
 ```
 
@@ -90,14 +89,13 @@ if (stat.qualifiedAt > 0n) {
 ##### 管理员视图
 
 js
-
 ```js
-const luckyPool = await tracker.luckyPool()
-const minAmount = await tracker.minPurchaseAmount()
-const paused = await tracker.paused()
-const safetyVersion = await tracker.trackingSafetyVersion() // 3
-const pending = await tracker.pendingQualificationCount(currentRound)
-const unresolved = await tracker.unresolvedDeferredPurchaseCount()
+const luckyPool = await tracker.luckyPool();
+const minAmount = await tracker.minPurchaseAmount();
+const paused = await tracker.paused();
+const safetyVersion = await tracker.trackingSafetyVersion(); // 3
+const pending = await tracker.pendingQualificationCount(currentRound);
+const unresolved = await tracker.unresolvedDeferredPurchaseCount();
 ```
 
 #### 状态修改函数
@@ -224,29 +222,29 @@ owner 设置迁移管理器。`_manager=address(0)` revert `ErrorZeroAddress`；
 
 ### 错误码
 
-| 错误                                                         | 原因                                                        | 解决方案                                             |
-| ------------------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------- |
-| `ErrorNotPurchaseSource()`                                   | 非授权购买源                                                | 联系管理员授权                                       |
-| `ErrorPaused()`                                              | 兼容保留错误；当前 `recordPurchase` 不因 Tracker 暂停而抛出 | 前端不要把 Tracker 暂停理解为来源交易会失败          |
-| `ErrorZeroAmount()`                                          | 金额为 0                                                    | 增加金额                                             |
-| `ErrorZeroAddress()`                                         | 传入 address(0)                                             | 传入有效地址                                         |
-| `ErrorNotMigrationManager(address caller)`                   | 非 migrationManager 调用 `migrateAccount`                   | 仅由迁移管理器调用                                   |
-| `ErrorAccountMigrated(address account)`                      | 自迁移/回迁/环/已迁移或脏目标地址                           | 使用 canonical 地址或未参与过的新地址                |
-| `MigrationManagerImmutable(address currentManager)`          | 已设非零 manager 后试图改成不同地址                         | 保留相同地址或保持不变                               |
-| `ErrorQualificationNotPending(roundId, account)`             | 重试的资格不是 Pending                                      | 先读取 `qualificationSyncState`                      |
-| `ErrorDeferredPurchaseNotPending(id)`                        | 待归属记录不存在或已处理                                    | 刷新记录状态                                         |
-| `ErrorDeferredRoundNotOpen(roundId, currentRoundId, status)` | 待归属购买的目标不是当前 Open 轮次                          | 只向当前仍为 Open 的原始轮次归属；否则人工核对后丢弃 |
-| `ErrorPurchaseOutsideRound(...)`                             | 原购买时间不属于指定轮                                      | 重新核对目标轮次，不得伪造时间                       |
-| `ErrorRoundUnavailable()`                                    | 刷新缓存或归属时无法读取轮次                                | 等待 Pool/RPC 恢复后重试                             |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorNotPurchaseSource()` | 非授权购买源 | 联系管理员授权 |
+| `ErrorPaused()` | 兼容保留错误；当前 `recordPurchase` 不因 Tracker 暂停而抛出 | 前端不要把 Tracker 暂停理解为来源交易会失败 |
+| `ErrorZeroAmount()` | 金额为 0 | 增加金额 |
+| `ErrorZeroAddress()` | 传入 address(0) | 传入有效地址 |
+| `ErrorNotMigrationManager(address caller)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
+| `ErrorAccountMigrated(address account)` | 自迁移/回迁/环/已迁移或脏目标地址 | 使用 canonical 地址或未参与过的新地址 |
+| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后试图改成不同地址 | 保留相同地址或保持不变 |
+| `ErrorQualificationNotPending(roundId, account)` | 重试的资格不是 Pending | 先读取 `qualificationSyncState` |
+| `ErrorDeferredPurchaseNotPending(id)` | 待归属记录不存在或已处理 | 刷新记录状态 |
+| `ErrorDeferredRoundNotOpen(roundId, currentRoundId, status)` | 待归属购买的目标不是当前 Open 轮次 | 只向当前仍为 Open 的原始轮次归属；否则人工核对后丢弃 |
+| `ErrorPurchaseOutsideRound(...)` | 原购买时间不属于指定轮 | 重新核对目标轮次，不得伪造时间 |
+| `ErrorRoundUnavailable()` | 刷新缓存或归属时无法读取轮次 | 等待 Pool/RPC 恢复后重试 |
 
 ### 配置参数
 
-| 参数                              | 默认值       | 说明                 | 设置者                  |
-| --------------------------------- | ------------ | -------------------- | ----------------------- |
-| `luckyPool`                       | 初始化时设置 | 奖池合约地址         | owner                   |
-| `minPurchaseAmount`               | 初始化时设置 | 参与门槛             | owner                   |
-| `purchaseSources`                 | 初始化后设置 | 购买源合约列表       | owner                   |
-| `paused`                          | false        | 是否暂停             | owner                   |
-| `trackingSafetyVersion`           | 3            | fail-soft 实现版本   | 只读常量语义            |
-| `pendingQualificationCount`       | 0            | 每轮尚未同步的资格数 | 通过重试自动减少        |
-| `unresolvedDeferredPurchaseCount` | 0            | 全局待归属购买数     | assign/discard 自动减少 |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `luckyPool` | 初始化时设置 | 奖池合约地址 | owner |
+| `minPurchaseAmount` | 初始化时设置 | 参与门槛 | owner |
+| `purchaseSources` | 初始化后设置 | 购买源合约列表 | owner |
+| `paused` | false | 是否暂停 | owner |
+| `trackingSafetyVersion` | 3 | fail-soft 实现版本 | 只读常量语义 |
+| `pendingQualificationCount` | 0 | 每轮尚未同步的资格数 | 通过重试自动减少 |
+| `unresolvedDeferredPurchaseCount` | 0 | 全局待归属购买数 | assign/discard 自动减少 |

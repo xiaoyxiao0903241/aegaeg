@@ -83,10 +83,9 @@ Lucky 购买上报采用 gas 上限保护的 best-effort。债券本金、仓位
 返回用户的债券总数（含迁移前的历史债券）。
 
 js
-
 ```js
-const count = await bondDepository.getBondCount(userAddress)
-console.log('Total bonds:', count)
+const count = await bondDepository.getBondCount(userAddress);
+console.log('Total bonds:', count);
 ```
 
 ##### getBondInfo(address, uint256) -> (...)
@@ -107,12 +106,11 @@ console.log('Total bonds:', count)
 - profit - 质押利润（AGX）
 
 js
-
 ```js
-const info = await bondDepository.getBondInfo(userAddress, bondIndex)
-console.log('Payout:', ethers.formatUnits(info.payout, 9), 'AGX')
-console.log('Vested:', Number(info.percentVested) / 100, '%')
-console.log('Profit:', ethers.formatUnits(info.profit, 9), 'AGX')
+const info = await bondDepository.getBondInfo(userAddress, bondIndex);
+console.log('Payout:', ethers.formatUnits(info.payout, 9), 'AGX');
+console.log('Vested:', Number(info.percentVested) / 100, '%');
+console.log('Profit:', ethers.formatUnits(info.profit, 9), 'AGX');
 ```
 
 ##### percentVestedFor(address, uint256) -> (uint256)
@@ -120,10 +118,9 @@ console.log('Profit:', ethers.formatUnits(info.profit, 9), 'AGX')
 返回指定债券的已解锁百分比（0-10000，即 0%-100%）。
 
 js
-
 ```js
-const percent = await bondDepository.percentVestedFor(userAddress, bondIndex)
-console.log('Vested:', Number(percent) / 100, '%')
+const percent = await bondDepository.percentVestedFor(userAddress, bondIndex);
+console.log('Vested:', Number(percent) / 100, '%');
 ```
 
 ##### pendingPayoutFor(address, uint256) -> (uint256)
@@ -131,10 +128,9 @@ console.log('Vested:', Number(percent) / 100, '%')
 返回当前可领取的 payout 数量。
 
 js
-
 ```js
-const pending = await bondDepository.pendingPayoutFor(userAddress, bondIndex)
-console.log('Pending payout:', ethers.formatUnits(pending, 9), 'AGX')
+const pending = await bondDepository.pendingPayoutFor(userAddress, bondIndex);
+console.log('Pending payout:', ethers.formatUnits(pending, 9), 'AGX');
 ```
 
 ##### getStakeProfit(address, uint256) -> (uint256)
@@ -142,10 +138,9 @@ console.log('Pending payout:', ethers.formatUnits(pending, 9), 'AGX')
 返回指定债券对应的质押利润（sAGX 增长部分）。
 
 js
-
 ```js
-const profit = await bondDepository.getStakeProfit(userAddress, bondIndex)
-console.log('Stake profit:', ethers.formatUnits(profit, 9), 'AGX')
+const profit = await bondDepository.getStakeProfit(userAddress, bondIndex);
+console.log('Stake profit:', ethers.formatUnits(profit, 9), 'AGX');
 ```
 
 ##### getUserLockedPrincipal(address) -> (uint256)
@@ -153,10 +148,9 @@ console.log('Stake profit:', ethers.formatUnits(profit, 9), 'AGX')
 返回用户的锁定本金总额。
 
 js
-
 ```js
-const locked = await bondDepository.getUserLockedPrincipal(userAddress)
-console.log('Locked principal:', ethers.formatUnits(locked, 9), 'AGX')
+const locked = await bondDepository.getUserLockedPrincipal(userAddress);
+console.log('Locked principal:', ethers.formatUnits(locked, 9), 'AGX');
 ```
 
 ##### bondInfo(address, uint256) -> (payout, vesting, lastTime, pricePaid, exists)
@@ -164,11 +158,10 @@ console.log('Locked principal:', ethers.formatUnits(locked, 9), 'AGX')
 直接访问 bondInfo mapping（索引从 0 开始）。
 
 js
-
 ```js
-const bond = await bondDepository['bondInfo(address,uint256)'](userAddress, 0)
-console.log('Bond exists:', bond.exists)
-console.log('Payout:', bond.payout.toString())
+const bond = await bondDepository['bondInfo(address,uint256)'](userAddress, 0);
+console.log('Bond exists:', bond.exists);
+console.log('Payout:', bond.payout.toString());
 ```
 
 ##### terms() -> (vestingTerm, maxPayout, fee, maxDebt, totalDeposit)
@@ -176,12 +169,11 @@ console.log('Payout:', bond.payout.toString())
 返回当前债券条款。
 
 js
-
 ```js
-const terms = await bondDepository.terms()
-console.log('Vesting term (seconds):', terms.vestingTerm)
-console.log('Fee (BPS):', terms.fee)
-console.log('Max debt:', terms.maxDebt)
+const terms = await bondDepository.terms();
+console.log('Vesting term (seconds):', terms.vestingTerm);
+console.log('Fee (BPS):', terms.fee);
+console.log('Max debt:', terms.maxDebt);
 ```
 
 ##### discountRateBP() -> (uint256)
@@ -198,6 +190,70 @@ console.log('Max debt:', terms.maxDebt)
 
 ---
 
+#### 预估 payout（输入 USD1 → 预估 AGX）
+
+购买前预估 AGX 输出必须与 `_payoutWithDiscount`（BondDepository.sol:633-638）一致：
+
+text
+```text
+payout = value * 1e9 / agxPrice * 10000 / discountRateBP
+netPayout = payout - payout * terms.fee / 10000
+```
+
+- value = Treasury.valueOf(principle, amount) 。本合约 principle 是 AGX/USD1 LP 代币，value 由 AegisLpBondingCalculator.valuation(pair, lpAmount) 给出（修复后为真实 USD 口径；旧版 2×√k 公式会低估约 7.4 倍，已于 2026-08 主网替换）。
+- agxPrice = LP 池 reserveU / reserveAGX （USDT-per-AGX），与 _getAgxPrice() 一致： token0 == AGX 时 reserveU = reserve1, reserveAGX = reserve0 ，否则相反。
+- discountRateBP = discountRateBP() ，8500 = 付市场价 85%（多拿约 17.6% AGX）。
+
+**方法一：`eth_call` 模拟（精确校验）** —— 以用户地址模拟 `zapIntoLiquidityBond` 交易，读取返回的 payout（需用户已 approve，`transferFrom` 会被模拟）：
+
+js
+```js
+const data = bondHelper.interface.encodeFunctionData('zapIntoLiquidityBond', [bondAddr, usd1Addr, usd1Amount]);
+const payout = await provider.call({ from: user, to: bondHelperAddr, data });
+```
+
+**方法二：前端计算（无需授权）** —— 按 zap 内部逻辑复算换币 + 组 LP + 估值 + 折扣：
+
+js
+```js
+// ① 一半 USD1 换 AGX（getAmountsOut 精确含手续费 + 滑点）
+const agxOut = (await router.getAmountsOut(usd1Amount / 2n, [usd1Addr, agxAddr]))[1];
+// ② 组 LP（Uniswap V2 min 公式）
+const [r0, r1] = await pair.getReserves();
+const totalSupply = await pair.totalSupply();
+const [reserveU, reserveAGX] = token0IsAgx ? [r1, r0] : [r0, r1];
+const lpFromAgx = agxOut * totalSupply / reserveAGX;
+const lpFromUsd = (usd1Amount - usd1Amount / 2n) * totalSupply / reserveU;
+const lpAmount = lpFromAgx < lpFromUsd ? lpFromAgx : lpFromUsd;
+// ③ LP 价值 + ④ 折扣
+const value = await bondingCalculator.valuation(pairAddr, lpAmount);
+const agxPrice = reserveU * 10n ** 9n / reserveAGX;
+const payout = value * 10n ** 9n / agxPrice * 10000n / await bond.discountRateBP();
+const netPayout = payout - payout * (await bond.terms()).fee / 10000n;
+```
+
+直接存 LP 代币（不经 zap）时，`value = await treasury.valueOf(await bond.principle(), lpAmount)` 后直接套 `payout` 公式即可。合约未内置预估 view，前端按上述 JS 复算。
+
+**示例**（主网 2026-08 池子：AGX≈55 USDT，discount 8500，fee=0）：1000 USD1 → ≈21.3 AGX；10000 USD1 → ≈213 AGX。实际以 `eth_call`/实时 view 为准。
+
+**边界检查**：`ErrorBondTooSmall`（payout < 0.01 AGX）、`ErrorBondTooLarge`（payout > `maxPayout()`）、`ErrorDebtCapacityReached`（`totalDeposit + netPayout > maxDebt`）。
+
+#### 购买流程
+
+用户入口（推荐走 `BondHelper` zap，USD1 输入）：
+
+1. 检查 Referral.isBindReferral(user) 、 BondHelper.authContracts(bond) 、Pair 存在、容量未满。
+2. USD1.approve(BondHelper, amount) （可一次性 approve 多笔总金额）。
+3. BondHelper.zapIntoLiquidityBond(bondDepository, USD1, amount) ：
+
+- helper 把一半 USD1 换 AGX → 剩下一半 USD1 + AGX 组 LP → 把 LP 转入本合约 deposit(LP, user) 。
+
+1. deposit 内部流程见下方"状态修改函数"小节（定价、边界、Treasury 铸币、自动质押）。
+
+**成功判定**：以 `BondPurchased` 事件 + `getBondInfo` 回读为准；payout 已自动质押成 sAGX，不用钱包 AGX 余额判断。
+
+---
+
 #### 状态修改函数
 
 ##### deposit(uint _amount, address _depositor) -> (uint payout)
@@ -209,7 +265,6 @@ console.log('Max debt:', terms.maxDebt)
 进入资金计算前，合约会同时检查 `migratedTo[msg.sender]` 与 `migratedTo[depositor]`。任一地址已经迁移都会回滚；付款人始终是 `msg.sender`，债券仓位归 `depositor`。
 
 javascript
-
 ```javascript
 // 1. 检查白名单（如果启用）
 if (callerWhitelistEnabled && msg.sender有code && !allowedCallers[msg.sender]) revert ...
@@ -266,62 +321,66 @@ DailyPurchaseTracker.recordPurchase(depositor, usdValue)
 **完整前端示例**:
 
 javascript
-
 ```javascript
 async function purchaseBond(bondContract, principleContract, amount, depositor, signer) {
   // 1. 检查推荐人绑定
-  const referralAddr = await bondContract.referral()
-  const referral = new Contract(referralAddr, REFERRAL_ABI, signer)
-  const isBound = await referral.isBindReferral(depositor)
-  if (!isBound) throw new Error('必须先绑定推荐人')
+  const referralAddr = await bondContract.referral();
+  const referral = new Contract(referralAddr, REFERRAL_ABI, signer);
+  const isBound = await referral.isBindReferral(depositor);
+  if (!isBound) throw new Error('必须先绑定推荐人');
 
   // 2. 授权principle代币（USD1等）
-  await (
-    await principleContract.connect(signer).approve(await bondContract.getAddress(), amount)
-  ).wait()
+  await (await principleContract.connect(signer).approve(await bondContract.getAddress(), amount)).wait();
 
-  // 3. 预览payout
-  const treasuryAddr = await bondContract.treasury()
-  const treasury = new Contract(treasuryAddr, TREASURY_ABI, signer)
-  const value = await treasury.valueOf(await bondContract.principle(), amount)
-  const discountBP = await bondContract.discountRateBP()
-  const payout = (value * (10000n - discountBP)) / 10000n
+  // 3. 预览 payout（与 _payoutWithDiscount 一致：value * 1e9 / agxPrice * 10000 / discountRateBP）
+  const treasuryAddr = await bondContract.treasury();
+  const treasury = new Contract(treasuryAddr, TREASURY_ABI, signer);
+  const value = await treasury.valueOf(await bondContract.principle(), amount);
+  const discountBP = await bondContract.discountRateBP();
+  const pairAddr = await bondContract.liquidityPool();
+  const pair = new Contract(pairAddr, PAIR_ABI, signer);
+  const [r0, r1] = await pair.getReserves();
+  const token0 = await pair.token0();
+  const agxAddr = await bondContract.AGX();
+  const [reserveU, reserveAGX] = token0.toLowerCase() === agxAddr.toLowerCase() ? [r1, r0] : [r0, r1];
+  const agxPrice = reserveU * 10n ** 9n / reserveAGX; // USDT-per-AGX，18 位
+  const payout = value * 10n ** 9n / agxPrice * 10000n / discountBP;
 
-  console.log(`存入: ${ethers.formatUnits(amount, 18)} USD1`)
-  console.log(`预期payout: ${ethers.formatUnits(payout, 9)} AGX`)
+  console.log(`存入: ${ethers.formatUnits(amount, 18)} USD1`);
+  console.log(`预期payout: ${ethers.formatUnits(payout, 9)} AGX`);
 
   // 4. 执行购买
   try {
-    const tx = await bondContract.connect(signer).deposit(amount, depositor)
-    const receipt = await tx.wait()
+    const tx = await bondContract.connect(signer).deposit(amount, depositor);
+    const receipt = await tx.wait();
 
     // 解析事件
-    const event = receipt.logs.find((l) => l.fragment?.name === 'BondPurchased')
+    const event = receipt.logs.find(l => l.fragment?.name === 'BondPurchased');
     if (event) {
-      const parsed = bondContract.interface.parseLog(event)
-      console.log(`债券ID: ${parsed.args.bondIndex}`)
-      console.log(`净payout: ${ethers.formatUnits(parsed.args.payout, 9)} AGX`)
-      console.log(`vesting: ${parsed.args.termSeconds}秒`)
+      const parsed = bondContract.interface.parseLog(event);
+      console.log(`债券ID: ${parsed.args.bondIndex}`);
+      console.log(`净payout: ${ethers.formatUnits(parsed.args.payout, 9)} AGX`);
+      console.log(`vesting: ${parsed.args.termSeconds}秒`);
     }
 
-    return receipt
+    return receipt;
   } catch (err) {
     if (err.message?.includes('ErrorDebtCapacityReached')) {
-      throw new Error('债务上限已满，请稍后重试')
+      throw new Error('债务上限已满，请稍后重试');
     }
     if (err.message?.includes('ErrorBondTooLarge')) {
-      throw new Error('金额超过最大payout限制')
+      throw new Error('金额超过最大payout限制');
     }
     if (err.message?.includes('ErrorBondTooSmall')) {
-      throw new Error('金额太小，最小payout为0.01 AGX')
+      throw new Error('金额太小，最小payout为0.01 AGX');
     }
-    throw err
+    throw err;
   }
 }
 
 // 使用示例
-const usdAmount = ethers.parseUnits('1000', 18) // 1000 USD1
-await purchaseBond(bondContract, usd1Contract, usdAmount, userAddress, signer)
+const usdAmount = ethers.parseUnits('1000', 18);  // 1000 USD1
+await purchaseBond(bondContract, usd1Contract, usdAmount, userAddress, signer);
 ```
 
 **关键差异说明**:
@@ -361,32 +420,31 @@ await purchaseBond(bondContract, usd1Contract, usdAmount, userAddress, signer)
 - Claimed(recipient, amount, bondIndex, ...)
 
 js
-
 ```js
 async function redeemBond(bondContract, bondIndex, shouldStake, signer) {
-  const userAddr = await signer.getAddress()
+  const userAddr = await signer.getAddress();
 
   // 1. 检查可领取金额
-  const pending = await bondContract.pendingPayoutFor(userAddr, bondIndex)
+  const pending = await bondContract.pendingPayoutFor(userAddr, bondIndex);
   if (pending === 0n) {
-    console.log('Nothing to redeem')
-    return
+    console.log('Nothing to redeem');
+    return;
   }
 
   // 2. 检查债券信息
-  const info = await bondContract.getBondInfo(userAddr, bondIndex)
-  console.log(`Bond ${bondIndex}: ${Number(info.percentVested) / 100}% vested`)
+  const info = await bondContract.getBondInfo(userAddr, bondIndex);
+  console.log(`Bond ${bondIndex}: ${Number(info.percentVested) / 100}% vested`);
 
   // 3. 执行领取
-  const tx = await bondContract.connect(signer).redeem(userAddr, bondIndex, shouldStake)
-  const receipt = await tx.wait()
+  const tx = await bondContract.connect(signer).redeem(userAddr, bondIndex, shouldStake);
+  const receipt = await tx.wait();
 
   const event = receipt.logs.find(
-    (l) => bondContract.interface.parseLog(l)?.name === 'BondRedeemed',
-  )
-  const parsed = bondContract.interface.parseLog(event)
-  console.log('Redeemed:', ethers.formatUnits(parsed.args.payout, 9), 'AGX')
-  console.log('Remaining:', ethers.formatUnits(parsed.args.remaining, 9), 'AGX')
+    l => bondContract.interface.parseLog(l)?.name === 'BondRedeemed'
+  );
+  const parsed = bondContract.interface.parseLog(event);
+  console.log('Redeemed:', ethers.formatUnits(parsed.args.payout, 9), 'AGX');
+  console.log('Remaining:', ethers.formatUnits(parsed.args.remaining, 9), 'AGX');
 }
 ```
 
@@ -404,38 +462,35 @@ async function redeemBond(bondContract, bondIndex, shouldStake, signer) {
 - _restakeBps - 复投比例（BPS）
 
 js
-
 ```js
 async function claimBondProfit(bondContract, bondIndex, amount, signer) {
-  const userAddr = await signer.getAddress()
+  const userAddr = await signer.getAddress();
 
   // 1. 检查利润
-  const profit = await bondContract.getStakeProfit(userAddr, bondIndex)
+  const profit = await bondContract.getStakeProfit(userAddr, bondIndex);
   if (profit === 0n) {
-    console.log('No profit to claim')
-    return
+    console.log('No profit to claim');
+    return;
   }
 
-  const claimAmount = amount > profit ? profit : amount
+  const claimAmount = amount > profit ? profit : amount;
 
   // 2. 配置 release/restake 比例
   // 两类 index 必须从链上配置读取；不要把示例数字或过滤后数组下标写死
-  const releasePlanIndex = selectedQueuePlanIndex
-  const restakePlanIndex = selectedRestakePlanIndex
-  const restakeBps = 5000 // 50% 复投
+  const releasePlanIndex = selectedQueuePlanIndex;
+  const restakePlanIndex = selectedRestakePlanIndex;
+  const restakeBps = 5000; // 50% 复投
 
-  const tx = await bondContract
-    .connect(signer)
-    .claimStakeProfitMixed(
-      userAddr,
-      claimAmount,
-      releasePlanIndex,
-      bondIndex,
-      restakePlanIndex,
-      restakeBps,
-    )
-  await tx.wait()
-  console.log('Profit claimed successfully')
+  const tx = await bondContract.connect(signer).claimStakeProfitMixed(
+    userAddr,
+    claimAmount,
+    releasePlanIndex,
+    bondIndex,
+    restakePlanIndex,
+    restakeBps
+  );
+  await tx.wait();
+  console.log('Profit claimed successfully');
 }
 ```
 
@@ -495,34 +550,34 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 
 ### 错误码
 
-| 错误                                         | 原因                                                 | 解决方案                                             |
-| -------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
-| `ErrorNotApproved()`                         | 存款人未绑定推荐关系                                 | 先绑定 Referral                                      |
-| `ErrorDebtCapacityReached()`                 | 达到债务上限                                         | 等待管理员调整 maxDebt                               |
-| `ErrorBondTooSmall()`                        | payout < 0.01 AGX                                    | 增加购买金额                                         |
-| `ErrorBondTooLarge()`                        | 超过 maxPayout                                       | 减少购买金额                                         |
-| `ErrorBondIndexOutOfBounds()`                | 债券索引无效                                         | 使用有效索引                                         |
-| `ErrorBondNotExist()`                        | 债券不存在或已领取                                   | 检查债券状态                                         |
-| `ErrorUserNotAuthorized()`                   | 领取人与调用者不匹配                                 | 必须自己领取自己的                                   |
-| `ErrorStakeNotActive()`                      | 质押不存在                                           | 检查债券状态                                         |
-| `ErrorProfitExceedsAmount()`                 | 提取金额超过利润                                     | 减少提取金额                                         |
-| `ErrorCallerNotAllowed(address)`             | 调用者不在白名单                                     | 联系管理员                                           |
-| `ErrorPrincipalReleaseVaultNotSet()`         | `redeem(..., false)` 时未配置 `AegisSplitterManager` | 先调用 `setPrincipalReleaseVault` 指向分流器 Manager |
-| `ErrorZeroAmount()`                          | 金额为 0 或储备为 0                                  | 传入有效金额                                         |
-| `ErrorInvalidAmount()`                       | 提取金额非法（0 或大于本金）                         | 校验金额范围                                         |
-| `ErrorAmountExceedsBalance()`                | 提取金额超过 sAGX 余额                               | 减少提取金额                                         |
-| `ErrorZeroAddress()`                         | 传入零地址                                           | 传入有效地址                                         |
-| `ErrorNotInitialized()`                      | `initializeBondTerms` 在 `initialize` 之前调用       | 先调用 `initialize`                                  |
-| `ErrorStakeFailure()`                        | `StakingPool.bondStake` 返回 false                   | 检查 StakingPool 状态                                |
-| `ErrorProfitNotAvailable()`                  | 无可提取利润（gons=0 或 profit=0）                   | 等待利润累积                                         |
-| `ErrorInvalidVesting()`                      | vesting < 10000 秒                                   | 提高解锁时长                                         |
-| `ErrorInvalidPayout()`                       | maxPayout > 5000                                     | 降低 maxPayout                                       |
-| `ErrorInvalidFee()`                          | fee > 10000 BPS                                      | 降低手续费                                           |
-| `ErrorInvalidDiscount()`                     | discountRateBP == 0 或 > 10000                       | 校正折扣率                                           |
-| `ErrorCallerNotAuthorized()`                 | 非 owner 且非 operator 调用受限函数                  | 通过 owner 或 operator 调用                          |
-| `BondDepositoryMigratedAccount(address)`     | 账户已迁移或被迁移占用                               | 使用迁移后的新账户                                   |
-| `BondDepositoryNotMigrationManager(address)` | 非 migrationManager 调用 `migrateAccount`            | 仅由迁移管理器调用                                   |
-| `MigrationManagerImmutable(address)`         | `setMigrationManager` 二次修改管理器                 | 一次性不可变，部署前确认                             |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorNotApproved()` | 存款人未绑定推荐关系 | 先绑定 Referral |
+| `ErrorDebtCapacityReached()` | 达到债务上限 | 等待管理员调整 maxDebt |
+| `ErrorBondTooSmall()` | payout < 0.01 AGX | 增加购买金额 |
+| `ErrorBondTooLarge()` | 超过 maxPayout | 减少购买金额 |
+| `ErrorBondIndexOutOfBounds()` | 债券索引无效 | 使用有效索引 |
+| `ErrorBondNotExist()` | 债券不存在或已领取 | 检查债券状态 |
+| `ErrorUserNotAuthorized()` | 领取人与调用者不匹配 | 必须自己领取自己的 |
+| `ErrorStakeNotActive()` | 质押不存在 | 检查债券状态 |
+| `ErrorProfitExceedsAmount()` | 提取金额超过利润 | 减少提取金额 |
+| `ErrorCallerNotAllowed(address)` | 调用者不在白名单 | 联系管理员 |
+| `ErrorPrincipalReleaseVaultNotSet()` | `redeem(..., false)` 时未配置 `AegisSplitterManager` | 先调用 `setPrincipalReleaseVault` 指向分流器 Manager |
+| `ErrorZeroAmount()` | 金额为 0 或储备为 0 | 传入有效金额 |
+| `ErrorInvalidAmount()` | 提取金额非法（0 或大于本金） | 校验金额范围 |
+| `ErrorAmountExceedsBalance()` | 提取金额超过 sAGX 余额 | 减少提取金额 |
+| `ErrorZeroAddress()` | 传入零地址 | 传入有效地址 |
+| `ErrorNotInitialized()` | `initializeBondTerms` 在 `initialize` 之前调用 | 先调用 `initialize` |
+| `ErrorStakeFailure()` | `StakingPool.bondStake` 返回 false | 检查 StakingPool 状态 |
+| `ErrorProfitNotAvailable()` | 无可提取利润（gons=0 或 profit=0） | 等待利润累积 |
+| `ErrorInvalidVesting()` | vesting < 10000 秒 | 提高解锁时长 |
+| `ErrorInvalidPayout()` | maxPayout > 5000 | 降低 maxPayout |
+| `ErrorInvalidFee()` | fee > 10000 BPS | 降低手续费 |
+| `ErrorInvalidDiscount()` | discountRateBP == 0 或 > 10000 | 校正折扣率 |
+| `ErrorCallerNotAuthorized()` | 非 owner 且非 operator 调用受限函数 | 通过 owner 或 operator 调用 |
+| `BondDepositoryMigratedAccount(address)` | 账户已迁移或被迁移占用 | 使用迁移后的新账户 |
+| `BondDepositoryNotMigrationManager(address)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
+| `MigrationManagerImmutable(address)` | `setMigrationManager` 二次修改管理器 | 一次性不可变，部署前确认 |
 
 #### 账户迁移
 
@@ -546,19 +601,19 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 
 #### 管理函数（owner / operator）
 
-| 函数                                                                         | 权限              | 说明                                                                                             |
-| ---------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
-| `initialize(referral, token, sToken, principle, treasury)`                   | initializer       | 一次性初始化合约核心地址，置 `initialized=true`                                                  |
-| `initializeBondTerms(vestingTerm, maxPayout, fee, maxDebt, discountRateBP)`  | onlyOwner         | 初始化债券条款；需先 `initialize`，`discountRateBP` 必须在 (0, 10000]                            |
-| `setContract(stakingPool, rewardQueue, dao, isLiquidityBond, liquidityPool)` | onlyOwner         | 设置 StakingPool/RewardQueue/DAO 及是否 LP 债券与流动性池地址                                    |
-| `setRestakeConfig(address config)`                                           | onlyOwner         | 设置 RestakeConfig 地址（复投配置）                                                              |
-| `setPurchaseTracker(address tracker)`                                        | onlyOwner         | 设置 AegisDailyPurchaseTracker；零地址回滚                                                       |
-| `setPrincipalReleaseVault(address vault)`                                    | onlyOwner         | 设置本金释放入口（指向 `AegisSplitterManager`）；零地址回滚，触发 `PrincipalReleaseVaultUpdated` |
-| `setBondOperator(address operator, bool flag)`                               | onlyOwner         | 增删 operator                                                                                    |
-| `setAllowedCaller(address caller, bool allowed)`                             | onlyOwner         | 维护调用者白名单；零地址回滚                                                                     |
-| `setCallerWhitelistEnabled(bool enabled)`                                    | onlyOwner         | 开关调用者白名单（仅对有 code 的调用者生效）                                                     |
-| `setDiscountRate / setMaxPayout / setVestingTerm / setFee / setMaxDebt`      | owner 或 operator | 调整债券条款，各自触发对应 `*Updated` 事件（`setMaxDebt` 不触发事件）                            |
-| `setReferral(address referral)`                                              | onlyOwner         | 设置 Referral 合约                                                                               |
+| 函数 | 权限 | 说明 |
+| --- | --- | --- |
+| `initialize(referral, token, sToken, principle, treasury)` | initializer | 一次性初始化合约核心地址，置 `initialized=true` |
+| `initializeBondTerms(vestingTerm, maxPayout, fee, maxDebt, discountRateBP)` | onlyOwner | 初始化债券条款；需先 `initialize`，`discountRateBP` 必须在 (0, 10000] |
+| `setContract(stakingPool, rewardQueue, dao, isLiquidityBond, liquidityPool)` | onlyOwner | 设置 StakingPool/RewardQueue/DAO 及是否 LP 债券与流动性池地址 |
+| `setRestakeConfig(address config)` | onlyOwner | 设置 RestakeConfig 地址（复投配置） |
+| `setPurchaseTracker(address tracker)` | onlyOwner | 设置 AegisDailyPurchaseTracker；零地址回滚 |
+| `setPrincipalReleaseVault(address vault)` | onlyOwner | 设置本金释放入口（指向 `AegisSplitterManager`）；零地址回滚，触发 `PrincipalReleaseVaultUpdated` |
+| `setBondOperator(address operator, bool flag)` | onlyOwner | 增删 operator |
+| `setAllowedCaller(address caller, bool allowed)` | onlyOwner | 维护调用者白名单；零地址回滚 |
+| `setCallerWhitelistEnabled(bool enabled)` | onlyOwner | 开关调用者白名单（仅对有 code 的调用者生效） |
+| `setDiscountRate / setMaxPayout / setVestingTerm / setFee / setMaxDebt` | owner 或 operator | 调整债券条款，各自触发对应 `*Updated` 事件（`setMaxDebt` 不触发事件） |
+| `setReferral(address referral)` | onlyOwner | 设置 Referral 合约 |
 
 ---
 
@@ -567,52 +622,53 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 #### 完整债券购买与领取流程
 
 js
-
 ```js
 async function fullBondLifecycle(bondContract, signer) {
-  const user = await signer.getAddress()
-  const principleAddr = await bondContract.principle()
-  const principle = new Contract(principleAddr, ERC20_ABI, signer)
+  const user = await signer.getAddress();
+  const principleAddr = await bondContract.principle();
+  const principle = new Contract(principleAddr, ERC20_ABI, signer);
 
   // --- Phase 1: Purchase ---
-  const amount = ethers.parseUnits('1000', 18) // 1000 USD
-  await (await principle.approve(await bondContract.getAddress(), amount)).wait()
+  const amount = ethers.parseUnits('1000', 18); // 1000 USD
+  await (await principle.approve(await bondContract.getAddress(), amount)).wait();
 
-  const tx1 = await bondContract.deposit(amount, user)
-  const r1 = await tx1.wait()
+  const tx1 = await bondContract.deposit(amount, user);
+  const r1 = await tx1.wait();
   const bondIndex = r1.logs.find(
-    (l) => bondContract.interface.parseLog(l)?.name === 'BondPurchased',
-  )?.args?.bondIndex
+    l => bondContract.interface.parseLog(l)?.name === 'BondPurchased'
+  )?.args?.bondIndex;
 
-  console.log('Bond purchased, index:', bondIndex)
+  console.log('Bond purchased, index:', bondIndex);
 
   // --- Phase 2: Wait for vesting ---
-  const info = await bondContract.getBondInfo(user, bondIndex)
-  console.log('Vesting ends:', new Date(Number(info.vestingEndTime) * 1000).toLocaleString())
+  const info = await bondContract.getBondInfo(user, bondIndex);
+  console.log('Vesting ends:', new Date(Number(info.vestingEndTime) * 1000).toLocaleString());
 
   // 定期检查解锁进度
   const checkVesting = async () => {
-    const pct = await bondContract.percentVestedFor(user, bondIndex)
-    return Number(pct) / 100 // percentage
-  }
+    const pct = await bondContract.percentVestedFor(user, bondIndex);
+    return Number(pct) / 100; // percentage
+  };
 
   // --- Phase 3: Redeem ---
   // 等到 100% 解锁
   while ((await checkVesting()) < 100) {
-    console.log('Still vesting:', await checkVesting(), '%')
-    await new Promise((r) => setTimeout(r, 60000)) // wait 1 min
+    console.log('Still vesting:', await checkVesting(), '%');
+    await new Promise(r => setTimeout(r, 60000)); // wait 1 min
   }
 
-  const tx2 = await bondContract.redeem(user, bondIndex, false) // don't auto-stake
-  await tx2.wait()
-  console.log('Bond fully redeemed')
+  const tx2 = await bondContract.redeem(user, bondIndex, false); // don't auto-stake
+  await tx2.wait();
+  console.log('Bond fully redeemed');
 
   // --- Phase 4: Claim profit ---
-  const profit = await bondContract.getStakeProfit(user, bondIndex)
+  const profit = await bondContract.getStakeProfit(user, bondIndex);
   if (profit > 0n) {
-    const tx3 = await bondContract.claimStakeProfitMixed(user, profit, 1, bondIndex, 0, 5000)
-    await tx3.wait()
-    console.log('Profit claimed:', ethers.formatUnits(profit, 9), 'AGX')
+    const tx3 = await bondContract.claimStakeProfitMixed(
+      user, profit, 1, bondIndex, 0, 5000
+    );
+    await tx3.wait();
+    console.log('Profit claimed:', ethers.formatUnits(profit, 9), 'AGX');
   }
 }
 ```
@@ -620,7 +676,6 @@ async function fullBondLifecycle(bondContract, signer) {
 #### 常见陷阱
 
 js
-
 ```js
 // 1. 忘记先 approve principle 代币
 // 必须先: principle.approve(bondAddress, amount)
@@ -642,26 +697,26 @@ js
 
 ### 依赖合约
 
-| 合约                                 | 用途                                                                                               |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Treasury                             | 接收 principle 存款，计算价值，铸造 AGX                                                            |
-| StakingPool                          | 自动质押购买的 AGX                                                                                 |
-| sAGX                                 | 生息代币，gons 模型                                                                                |
-| RewardQueue                          | 利润线性释放                                                                                       |
-| RestakeConfig                        | 复投配置                                                                                           |
-| Referral                             | 验证存款人推荐关系                                                                                 |
+| 合约 | 用途 |
+| --- | --- |
+| Treasury | 接收 principle 存款，计算价值，铸造 AGX |
+| StakingPool | 自动质押购买的 AGX |
+| sAGX | 生息代币，gons 模型 |
+| RewardQueue | 利润线性释放 |
+| RestakeConfig | 复投配置 |
+| Referral | 验证存款人推荐关系 |
 | AegisSplitterManager / AegisSplitter | 必需；`redeem(..., false)` 的本金统一经 Manager 路由进入按配置周期锁定的线性释放，未配置时交易回滚 |
-| AegisDailyPurchaseTracker            | 记录购买贡献                                                                                       |
+| AegisDailyPurchaseTracker | 记录购买贡献 |
 
 ### 配置参数
 
-| 参数                     | 默认值       | 说明                                   | 设置者         |
-| ------------------------ | ------------ | -------------------------------------- | -------------- |
-| `terms.vestingTerm`      | 初始化时设置 | 解锁时间（秒）                         | owner/operator |
-| `terms.maxPayout`        | 初始化时设置 | 最大 payout 比例                       | owner/operator |
-| `terms.fee`              | 初始化时设置 | 手续费（BPS）                          | owner/operator |
-| `terms.maxDebt`          | 初始化时设置 | 债务上限                               | owner/operator |
-| `discountRateBP`         | 初始化时设置 | 折扣率（BPS）                          | owner/operator |
-| `callerWhitelistEnabled` | false        | 是否启用调用者白名单                   | owner          |
-| `restakeConfig`          | 初始化后设置 | 复投配置地址                           | owner          |
-| `principalReleaseVault`  | 初始化后设置 | 本金释放入口（`AegisSplitterManager`） | owner          |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `terms.vestingTerm` | 初始化时设置 | 解锁时间（秒） | owner/operator |
+| `terms.maxPayout` | 初始化时设置 | 最大 payout 比例 | owner/operator |
+| `terms.fee` | 初始化时设置 | 手续费（BPS） | owner/operator |
+| `terms.maxDebt` | 初始化时设置 | 债务上限 | owner/operator |
+| `discountRateBP` | 初始化时设置 | 折扣率（BPS） | owner/operator |
+| `callerWhitelistEnabled` | false | 是否启用调用者白名单 | owner |
+| `restakeConfig` | 初始化后设置 | 复投配置地址 | owner |
+| `principalReleaseVault` | 初始化后设置 | 本金释放入口（`AegisSplitterManager`） | owner |

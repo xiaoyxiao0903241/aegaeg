@@ -55,20 +55,18 @@ SHA-256 6ee6f2d2f08f…
 检查 salt 是否已被使用。
 
 js
-
 ```js
-const used = await communityFund.useSalt(salt)
-console.log('Salt used:', used)
+const used = await communityFund.useSalt(salt);
+console.log('Salt used:', used);
 ```
 
 ##### 管理员视图
 
 js
-
 ```js
-const usd = await communityFund.usd()
-const signer = await communityFund.rewardSigner()
-const fundBalance = await usdContract.balanceOf(communityFundAddress)
+const usd = await communityFund.usd();
+const signer = await communityFund.rewardSigner();
+const fundBalance = await usdContract.balanceOf(communityFundAddress);
 ```
 
 #### 状态修改函数
@@ -78,13 +76,12 @@ const fundBalance = await usdContract.balanceOf(communityFundAddress)
 向社区基金注入 USD。
 
 js
-
 ```js
 async function depositToFund(communityFund, usdContract, amount, signer) {
-  await (await usdContract.approve(await communityFund.getAddress(), amount)).wait()
-  const tx = await communityFund.connect(signer).deposit(amount)
-  await tx.wait()
-  console.log('Deposited', ethers.formatUnits(amount, 18), 'USD to community fund')
+  await (await usdContract.approve(await communityFund.getAddress(), amount)).wait();
+  const tx = await communityFund.connect(signer).deposit(amount);
+  await tx.wait();
+  console.log('Deposited', ethers.formatUnits(amount, 18), 'USD to community fund');
 }
 ```
 
@@ -93,26 +90,15 @@ async function depositToFund(communityFund, usdContract, amount, signer) {
 使用签名领取奖励。
 
 js
-
 ```js
-async function claimCommunityReward(
-  communityFund,
-  signType,
-  amount,
-  expireTime,
-  salt,
-  signature,
-  signer,
-) {
+async function claimCommunityReward(communityFund, signType, amount, expireTime, salt, signature, signer) {
   // 验证签名未使用
-  const used = await communityFund.useSalt(salt)
-  if (used) throw new Error('Signature already used')
+  const used = await communityFund.useSalt(salt);
+  if (used) throw new Error('Signature already used');
 
-  const tx = await communityFund
-    .connect(signer)
-    .claimReward(signType, amount, expireTime, salt, signature)
-  await tx.wait()
-  console.log('Reward claimed:', ethers.formatUnits(amount, 18), 'USD')
+  const tx = await communityFund.connect(signer).claimReward(signType, amount, expireTime, salt, signature);
+  await tx.wait();
+  console.log('Reward claimed:', ethers.formatUnits(amount, 18), 'USD');
 }
 ```
 
@@ -146,17 +132,17 @@ async function claimCommunityReward(
 
 ### 错误码
 
-| 错误                      | 原因                                                    | 解决方案          |
-| ------------------------- | ------------------------------------------------------- | ----------------- |
-| `ErrorAlreadyUsed()`      | 签名或 salt 已使用                                      | 使用新的签名/salt |
-| `ErrorInvalidSigner()`    | 签名验证失败                                            | 检查签名数据      |
-| `ErrorSignatureExpired()` | 签名已过期                                              | 获取新的签名      |
-| `ErrorZeroAmount()`       | 金额为 0                                                | 增加金额          |
-| `ErrorZeroAddress()`      | `initialize`/`setSigner`/`emergencyWithdraw` 传入零地址 | 传入有效地址      |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorAlreadyUsed()` | 签名或 salt 已使用 | 使用新的签名/salt |
+| `ErrorInvalidSigner()` | 签名验证失败 | 检查签名数据 |
+| `ErrorSignatureExpired()` | 签名已过期 | 获取新的签名 |
+| `ErrorZeroAmount()` | 金额为 0 | 增加金额 |
+| `ErrorZeroAddress()` | `initialize`/`setSigner`/`emergencyWithdraw` 传入零地址 | 传入有效地址 |
 
 ### 配置参数
 
-| 参数           | 说明         | 设置者       |
-| -------------- | ------------ | ------------ |
-| `usd`          | USD 代币地址 | 初始化时设置 |
-| `rewardSigner` | 签名验证地址 | owner        |
+| 参数 | 说明 | 设置者 |
+| --- | --- | --- |
+| `usd` | USD 代币地址 | 初始化时设置 |
+| `rewardSigner` | 签名验证地址 | owner |

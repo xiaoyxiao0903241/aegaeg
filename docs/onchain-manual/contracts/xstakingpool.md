@@ -83,10 +83,9 @@ SHA-256 ab12c100ab95…
 返回用户的挖矿质押总量（含预热中）。
 
 js
-
 ```js
-const staked = await xPool.miningStakeAmountOf(userAddress)
-console.log('Mining stake:', ethers.formatUnits(staked, 9), 'gAGX')
+const staked = await xPool.miningStakeAmountOf(userAddress);
+console.log('Mining stake:', ethers.formatUnits(staked, 9), 'gAGX');
 ```
 
 ##### miningQuotaOf(address) -> (uint256)
@@ -94,10 +93,9 @@ console.log('Mining stake:', ethers.formatUnits(staked, 9), 'gAGX')
 返回用户的挖矿配额上限。
 
 js
-
 ```js
-const quota = await xPool.miningQuotaOf(userAddress)
-console.log('Mining quota:', ethers.formatUnits(quota, 9), 'gAGX')
+const quota = await xPool.miningQuotaOf(userAddress);
+console.log('Mining quota:', ethers.formatUnits(quota, 9), 'gAGX');
 ```
 
 ##### pendingReward(address) -> (uint256)
@@ -105,10 +103,9 @@ console.log('Mining quota:', ethers.formatUnits(quota, 9), 'gAGX')
 返回用户待领取的 X 代币数量。
 
 js
-
 ```js
-const pending = await xPool.pendingReward(userAddress)
-console.log('Pending X:', ethers.formatUnits(pending, 18))
+const pending = await xPool.pendingReward(userAddress);
+console.log('Pending X:', ethers.formatUnits(pending, 18));
 ```
 
 ##### pendingRewardValue(address) -> (uint256)
@@ -116,23 +113,21 @@ console.log('Pending X:', ethers.formatUnits(pending, 18))
 返回用户待领取奖励的 gAGX 价值。
 
 js
-
 ```js
-const value = await xPool.pendingRewardValue(userAddress)
-console.log('Reward value:', ethers.formatUnits(value, 9), 'gAGX')
+const value = await xPool.pendingRewardValue(userAddress);
+console.log('Reward value:', ethers.formatUnits(value, 9), 'gAGX');
 ```
 
 ##### 管理员视图
 
 js
-
 ```js
-const yieldRate = await xPool.yieldRateBP() // 按天计息的 BP 参数
-const maxStakeRatio = await xPool.maxStakeRatioBP() // 质押比例
-const xPerAgx = await xPool.xPerAgx() // X/AGX 价格比
-const totalGons = await xPool.totalGons() // 总 gons
-const activeGons = await xPool.activeGons() // 活跃 gons
-const lastReward = await xPool.lastRewardTime() // 上次奖励时间
+const yieldRate = await xPool.yieldRateBP(); // 按天计息的 BP 参数
+const maxStakeRatio = await xPool.maxStakeRatioBP(); // 质押比例
+const xPerAgx = await xPool.xPerAgx(); // X/AGX 价格比
+const totalGons = await xPool.totalGons(); // 总 gons
+const activeGons = await xPool.activeGons(); // 活跃 gons
+const lastReward = await xPool.lastRewardTime(); // 上次奖励时间
 ```
 
 ##### stakes(address) -> (gons, warmupGons, warmupStartTime, warmupEndTime, rewardStartTime)
@@ -140,13 +135,12 @@ const lastReward = await xPool.lastRewardTime() // 上次奖励时间
 查看用户质押详情。
 
 js
-
 ```js
-const s = await xPool.stakes(userAddress)
-console.log('Active gons:', s.gons)
-console.log('Warmup gons:', s.warmupGons)
+const s = await xPool.stakes(userAddress);
+console.log('Active gons:', s.gons);
+console.log('Warmup gons:', s.warmupGons);
 if (s.warmupEndTime > 0n) {
-  console.log('Warmup ends:', new Date(Number(s.warmupEndTime) * 1000).toLocaleString())
+  console.log('Warmup ends:', new Date(Number(s.warmupEndTime) * 1000).toLocaleString());
 }
 ```
 
@@ -173,35 +167,36 @@ if (s.warmupEndTime > 0n) {
 - Staked(user, amount, gons, warmupEndTime, timestamp)
 
 js
-
 ```js
 async function stakeForMining(xPool, gagxContract, amount, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 检查余额
-  const balance = await gagxContract.balanceOf(user)
+  const balance = await gagxContract.balanceOf(user);
   if (balance < amount) {
-    throw new Error('Insufficient gAGX balance')
+    throw new Error('Insufficient gAGX balance');
   }
 
   // 2. 检查配额
-  const quota = await xPool.miningQuotaOf(user)
-  const current = await xPool.miningStakeAmountOf(user)
+  const quota = await xPool.miningQuotaOf(user);
+  const current = await xPool.miningStakeAmountOf(user);
   if (current + amount > quota) {
-    console.log('Warning: exceeds mining quota, may be rejected')
+    console.log('Warning: exceeds mining quota, may be rejected');
   }
 
   // 3. 授权
-  await (await gagxContract.approve(await xPool.getAddress(), amount)).wait()
+  await (await gagxContract.approve(await xPool.getAddress(), amount)).wait();
 
   // 4. 质押
-  const tx = await xPool.connect(signer).stakeGagxForMining(amount)
-  const receipt = await tx.wait()
+  const tx = await xPool.connect(signer).stakeGagxForMining(amount);
+  const receipt = await tx.wait();
 
-  const event = receipt.logs.find((l) => xPool.interface.parseLog(l)?.name === 'Staked')
-  const parsed = xPool.interface.parseLog(event)
-  console.log('Staked!')
-  console.log('Warmup ends:', new Date(Number(parsed.args.warmupEndTime) * 1000).toLocaleString())
+  const event = receipt.logs.find(
+    l => xPool.interface.parseLog(l)?.name === 'Staked'
+  );
+  const parsed = xPool.interface.parseLog(event);
+  console.log('Staked!');
+  console.log('Warmup ends:', new Date(Number(parsed.args.warmupEndTime) * 1000).toLocaleString());
 }
 ```
 
@@ -215,27 +210,26 @@ async function stakeForMining(xPool, gagxContract, amount, signer) {
 - block.timestamp >= warmupEndTime
 
 js
-
 ```js
 async function activateMiningWarmup(xPool, signer) {
-  const user = await signer.getAddress()
-  const s = await xPool.stakes(user)
+  const user = await signer.getAddress();
+  const s = await xPool.stakes(user);
 
   if (s.warmupGons === 0n) {
-    console.log('No warmup pending')
-    return
+    console.log('No warmup pending');
+    return;
   }
 
-  const now = Math.floor(Date.now() / 1000)
+  const now = Math.floor(Date.now() / 1000);
   if (now < Number(s.warmupEndTime)) {
-    const hoursLeft = (Number(s.warmupEndTime) - now) / 3600
-    console.log(`Warmup still active, ${hoursLeft.toFixed(1)} hours remaining`)
-    return
+    const hoursLeft = (Number(s.warmupEndTime) - now) / 3600;
+    console.log(`Warmup still active, ${hoursLeft.toFixed(1)} hours remaining`);
+    return;
   }
 
-  const tx = await xPool.connect(signer).activateWarmup()
-  await tx.wait()
-  console.log('Warmup activated, now earning rewards!')
+  const tx = await xPool.connect(signer).activateWarmup();
+  await tx.wait();
+  console.log('Warmup activated, now earning rewards!');
 }
 ```
 
@@ -244,26 +238,27 @@ async function activateMiningWarmup(xPool, signer) {
 领取已累积的 X 代币奖励。
 
 js
-
 ```js
 async function claimXReward(xPool, signer) {
-  const user = await signer.getAddress()
-  const pending = await xPool.pendingReward(user)
+  const user = await signer.getAddress();
+  const pending = await xPool.pendingReward(user);
 
   if (pending === 0n) {
-    console.log('No X rewards to claim')
-    return
+    console.log('No X rewards to claim');
+    return;
   }
 
-  console.log('Claiming:', ethers.formatUnits(pending, 18), 'X tokens')
+  console.log('Claiming:', ethers.formatUnits(pending, 18), 'X tokens');
 
-  const tx = await xPool.connect(signer).claimReward()
-  const receipt = await tx.wait()
+  const tx = await xPool.connect(signer).claimReward();
+  const receipt = await tx.wait();
 
-  const event = receipt.logs.find((l) => xPool.interface.parseLog(l)?.name === 'RewardClaimed')
-  const parsed = xPool.interface.parseLog(event)
-  console.log('Claimed X:', ethers.formatUnits(parsed.args.XAmount, 18))
-  console.log('Reward value:', ethers.formatUnits(parsed.args.rewardValueGagx, 9), 'gAGX')
+  const event = receipt.logs.find(
+    l => xPool.interface.parseLog(l)?.name === 'RewardClaimed'
+  );
+  const parsed = xPool.interface.parseLog(event);
+  console.log('Claimed X:', ethers.formatUnits(parsed.args.XAmount, 18));
+  console.log('Reward value:', ethers.formatUnits(parsed.args.rewardValueGagx, 9), 'gAGX');
 }
 ```
 
@@ -278,25 +273,24 @@ async function claimXReward(xPool, signer) {
 - principalReleaseVault 已设置
 
 js
-
 ```js
 async function startMiningUnstake(xPool, signer) {
-  const user = await signer.getAddress()
-  const s = await xPool.stakes(user)
+  const user = await signer.getAddress();
+  const s = await xPool.stakes(user);
 
   if (s.gons === 0n) {
-    console.log('No active stake')
-    return
+    console.log('No active stake');
+    return;
   }
 
   if (s.warmupGons > 0n) {
-    console.log('Cannot unstake while warmup is pending')
-    return
+    console.log('Cannot unstake while warmup is pending');
+    return;
   }
 
-  const tx = await xPool.connect(signer).startUnstake()
-  await tx.wait()
-  console.log('Unstake started, gAGX entering release vault')
+  const tx = await xPool.connect(signer).startUnstake();
+  await tx.wait();
+  console.log('Unstake started, gAGX entering release vault');
 }
 ```
 
@@ -363,27 +357,27 @@ async function startMiningUnstake(xPool, signer) {
 
 ### 错误码
 
-| 错误                                                | 原因                                                           | 解决方案                              |
-| --------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------- |
-| `ErrorAmountZero()`                                 | 金额为 0                                                       | 增加金额                              |
-| `ErrorStakeNotExist()`                              | 无活跃质押                                                     | 先质押                                |
-| `ErrorStillLocked()`                                | 预热未到期                                                     | 等待预热结束                          |
-| `ErrorNoWarmup()`                                   | 无预热中 gons                                                  | 检查质押状态                          |
-| `ErrorWarmupPending()`                              | 有预热中的 gons                                                | 先激活或等待                          |
-| `ErrorMiningQuotaExceeded(user, requested, quota)`  | 超过挖矿配额                                                   | 增加锁定本金                          |
-| `ErrorRewardPricePairNotSet()`                      | LP 未设置                                                      | 联系管理员                            |
-| `ErrorSettlementPriceNotSet()`                      | 价格未结算                                                     | 等待管理员 settle                     |
-| `ErrorPrincipalReleaseVaultNotSet()`                | 分流器 Manager 未设置                                          | 联系管理员配置 `AegisSplitterManager` |
-| `ErrorWarmupExitDisabled()`                         | 取消预热已禁用                                                 | 无法取消                              |
-| `ErrorZeroAddress()`                                | 传入 address(0)                                                | 传入有效地址                          |
-| `ErrorInvalidRewardPair()`                          | `setRewardPricePair` 校验失败（非 PancakePair / token 不匹配） | 使用正确的 AGX/X LP                   |
-| `ErrorEmptyRewardPair()`                            | 价格对储备为 0                                                 | 等池子有流动性后再设置                |
-| `ErrorInvalidRatio()`                               | `setMaxStakeRatioBP` 超过 `MAX_STAKE_RATIO_BP(20000)`          | 使用 ≤ 20000 的 BP 值                 |
-| `ErrorYieldRateTooHigh()`                           | `setYieldRate` 的 `_bp > BASE_100(10000)`                      | 使用 ≤ 10000 的 BP 值                 |
-| `ErrorCallerNotAuthorized()`                        | 非 owner/operator 调用受限 setter（如 `setYieldRate`）         | 由 owner 或 operator 调用             |
-| `XMiningPoolMigratedAccount(address account)`       | `migrateAccount` 涉及已迁移/有历史状态的地址                   | 使用 canonical 地址                   |
-| `XMiningPoolNotMigrationManager(address caller)`    | 非 migrationManager 调用 `migrateAccount`                      | 仅由迁移管理器调用                    |
-| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                                | 保留相同地址                          |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorAmountZero()` | 金额为 0 | 增加金额 |
+| `ErrorStakeNotExist()` | 无活跃质押 | 先质押 |
+| `ErrorStillLocked()` | 预热未到期 | 等待预热结束 |
+| `ErrorNoWarmup()` | 无预热中 gons | 检查质押状态 |
+| `ErrorWarmupPending()` | 有预热中的 gons | 先激活或等待 |
+| `ErrorMiningQuotaExceeded(user, requested, quota)` | 超过挖矿配额 | 增加锁定本金 |
+| `ErrorRewardPricePairNotSet()` | LP 未设置 | 联系管理员 |
+| `ErrorSettlementPriceNotSet()` | 价格未结算 | 等待管理员 settle |
+| `ErrorPrincipalReleaseVaultNotSet()` | 分流器 Manager 未设置 | 联系管理员配置 `AegisSplitterManager` |
+| `ErrorWarmupExitDisabled()` | 取消预热已禁用 | 无法取消 |
+| `ErrorZeroAddress()` | 传入 address(0) | 传入有效地址 |
+| `ErrorInvalidRewardPair()` | `setRewardPricePair` 校验失败（非 PancakePair / token 不匹配） | 使用正确的 AGX/X LP |
+| `ErrorEmptyRewardPair()` | 价格对储备为 0 | 等池子有流动性后再设置 |
+| `ErrorInvalidRatio()` | `setMaxStakeRatioBP` 超过 `MAX_STAKE_RATIO_BP(20000)` | 使用 ≤ 20000 的 BP 值 |
+| `ErrorYieldRateTooHigh()` | `setYieldRate` 的 `_bp > BASE_100(10000)` | 使用 ≤ 10000 的 BP 值 |
+| `ErrorCallerNotAuthorized()` | 非 owner/operator 调用受限 setter（如 `setYieldRate`） | 由 owner 或 operator 调用 |
+| `XMiningPoolMigratedAccount(address account)` | `migrateAccount` 涉及已迁移/有历史状态的地址 | 使用 canonical 地址 |
+| `XMiningPoolNotMigrationManager(address caller)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
+| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址 | 保留相同地址 |
 
 ---
 
@@ -392,7 +386,6 @@ async function startMiningUnstake(xPool, signer) {
 #### 挖矿仪表盘
 
 js
-
 ```js
 async function miningDashboard(xPool, userAddress) {
   const [stakeInfo, staked, quota, pending, pendingValue, gagxBalance] = await Promise.all([
@@ -402,26 +395,26 @@ async function miningDashboard(xPool, userAddress) {
     xPool.pendingReward(userAddress),
     xPool.pendingRewardValue(userAddress),
     xPool.gAGX(),
-  ])
+  ]);
 
-  const gagx = new Contract(gagxBalance, ERC20_ABI, provider)
-  const gagxDecimals = (await gagx.decimals?.()) ?? 9
+  const gagx = new Contract(gagxBalance, ERC20_ABI, provider);
+  const gagxDecimals = await gagx.decimals?.() ?? 9;
 
-  console.log('=== X Mining Dashboard ===')
-  console.log('Staked:', ethers.formatUnits(staked, gagxDecimals), 'gAGX')
-  console.log('Quota:', ethers.formatUnits(quota, gagxDecimals), 'gAGX')
-  console.log('Utilization:', ((Number(staked) / Number(quota)) * 100).toFixed(1) + '%')
+  console.log('=== X Mining Dashboard ===');
+  console.log('Staked:', ethers.formatUnits(staked, gagxDecimals), 'gAGX');
+  console.log('Quota:', ethers.formatUnits(quota, gagxDecimals), 'gAGX');
+  console.log('Utilization:', (Number(staked) / Number(quota) * 100).toFixed(1) + '%');
 
   if (stakeInfo.warmupGons > 0n) {
-    const now = Math.floor(Date.now() / 1000)
-    const remaining = Number(stakeInfo.warmupEndTime) - now
-    console.log('Warmup:', (remaining / 3600).toFixed(1), 'hours remaining')
+    const now = Math.floor(Date.now() / 1000);
+    const remaining = Number(stakeInfo.warmupEndTime) - now;
+    console.log('Warmup:', (remaining / 3600).toFixed(1), 'hours remaining');
   } else if (stakeInfo.gons > 0n) {
-    console.log('Status: Active, earning rewards')
+    console.log('Status: Active, earning rewards');
   }
 
-  console.log('Pending X:', ethers.formatUnits(pending, 18))
-  console.log('Reward value:', ethers.formatUnits(pendingValue, gagxDecimals), 'gAGX')
+  console.log('Pending X:', ethers.formatUnits(pending, 18));
+  console.log('Reward value:', ethers.formatUnits(pendingValue, gagxDecimals), 'gAGX');
 }
 ```
 
@@ -429,34 +422,34 @@ async function miningDashboard(xPool, userAddress) {
 
 ### 依赖合约
 
-| 合约                                                                     | 用途                                 |
-| ------------------------------------------------------------------------ | ------------------------------------ |
-| gAGX (RedeemableGAGXPrincipal)                                           | 质押代币                             |
-| X                                                                        | 挖矿奖励代币                         |
-| RewardPricePair (LP)                                                     | AGX/X 价格                           |
-| AegisSplitterManager / AegisSplitter                                     | 本金退出经 Manager 路由的线性释放    |
-| StakingPool                                                              | epoch 查询                           |
+| 合约 | 用途 |
+| --- | --- |
+| gAGX (RedeemableGAGXPrincipal) | 质押代币 |
+| X | 挖矿奖励代币 |
+| RewardPricePair (LP) | AGX/X 价格 |
+| AegisSplitterManager / AegisSplitter | 本金退出经 Manager 路由的线性释放 |
+| StakingPool | epoch 查询 |
 | EarlyStaking / LockedStaking×3 / BondDepository×3 / BurnBondDepository×3 | alias-aware 挖矿配额来源（共 10 个） |
 
 ### 配置参数
 
-| 参数                    | 默认值       | 说明                                                                                                                       | 设置者         |
-| ----------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `WARMUP_PERIOD`         | 24 小时      | 预热期（常量）                                                                                                             | -              |
-| `yieldRateBP`           | 1            | 按天计息的 BP 参数，公式分母为 `10000 * 1 days`                                                                            | owner/operator |
-| `maxStakeRatioBP`       | 10000 (100%) | 质押配额比例，上限 `MAX_STAKE_RATIO_BP = 20000`（200%）；由 `setMaxStakeRatioBP` 设置，超过上限 revert `ErrorInvalidRatio` | owner          |
-| `principalSources`      | 初始化后设置 | 挖矿配额来源                                                                                                               | owner          |
-| `rewardPricePair`       | 初始化时设置 | AGX/X LP 地址                                                                                                              | owner          |
-| `principalReleaseVault` | 初始化后设置 | 本金释放入口（指向 `AegisSplitterManager`）                                                                                | owner          |
-| `operators`             | 初始化后设置 | 操作员列表（`setBondOperator`），`setYieldRate`/`settleRewards`/`injectRewards` 允许 owner 或 operator                     | owner          |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `WARMUP_PERIOD` | 24 小时 | 预热期（常量） | - |
+| `yieldRateBP` | 1 | 按天计息的 BP 参数，公式分母为 `10000 * 1 days` | owner/operator |
+| `maxStakeRatioBP` | 10000 (100%) | 质押配额比例，上限 `MAX_STAKE_RATIO_BP = 20000`（200%）；由 `setMaxStakeRatioBP` 设置，超过上限 revert `ErrorInvalidRatio` | owner |
+| `principalSources` | 初始化后设置 | 挖矿配额来源 | owner |
+| `rewardPricePair` | 初始化时设置 | AGX/X LP 地址 | owner |
+| `principalReleaseVault` | 初始化后设置 | 本金释放入口（指向 `AegisSplitterManager`） | owner |
+| `operators` | 初始化后设置 | 操作员列表（`setBondOperator`），`setYieldRate`/`settleRewards`/`injectRewards` 允许 owner 或 operator | owner |
 
 ### Setter 汇总
 
-| Setter                                     | 权限             | 说明                                                            |
-| ------------------------------------------ | ---------------- | --------------------------------------------------------------- |
-| `setMaxStakeRatioBP(uint256)`              | owner            | 设置 `maxStakeRatioBP`，≤ `MAX_STAKE_RATIO_BP(20000)`           |
-| `setMiningQuotaSource(address[] calldata)` | owner            | 重置 `principalSources` 挖矿配额来源列表                        |
-| `setRewardPricePair(address)`              | owner            | 设置 AGX/X LP，校验通过才生效                                   |
-| `setPrincipalReleaseVault(address)`        | owner            | 设置本金释放入口（`AegisSplitterManager`），`address(0)` revert |
-| `setYieldRate(uint256)`                    | owner / operator | 设置 `yieldRateBP`，≤ `BASE_100(10000)`                         |
-| `setBondOperator(address, bool)`           | owner            | 增删 operator                                                   |
+| Setter | 权限 | 说明 |
+| --- | --- | --- |
+| `setMaxStakeRatioBP(uint256)` | owner | 设置 `maxStakeRatioBP`，≤ `MAX_STAKE_RATIO_BP(20000)` |
+| `setMiningQuotaSource(address[] calldata)` | owner | 重置 `principalSources` 挖矿配额来源列表 |
+| `setRewardPricePair(address)` | owner | 设置 AGX/X LP，校验通过才生效 |
+| `setPrincipalReleaseVault(address)` | owner | 设置本金释放入口（`AegisSplitterManager`），`address(0)` revert |
+| `setYieldRate(uint256)` | owner / operator | 设置 `yieldRateBP`，≤ `BASE_100(10000)` |
+| `setBondOperator(address, bool)` | owner | 增删 operator |

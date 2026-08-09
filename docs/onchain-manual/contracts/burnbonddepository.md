@@ -39,19 +39,18 @@ Lucky 购买上报采用 gas 上限保护的 best-effort。销毁、债券仓位
 
 #### 1. 与 BondDepository 的区别
 
-| 特性           | BondDepository                                     | BurnBondDepository        |
-| -------------- | -------------------------------------------------- | ------------------------- |
-| principle 去向 | 存入 Treasury（bondReserve/bond 或 stableReserve） | 销毁（转入 dead 地址）    |
-| Treasury 调用  | `depositBondReserve` / `depositStableReserve`      | `depositBurnReserve`      |
-| LP 依赖        | 需要 liquidityPool 获取 AGX 价格                   | 无需 LP，通过价值反推价格 |
-| 用途           | 标准债券购买                                       | 通缩型债券购买            |
+| 特性 | BondDepository | BurnBondDepository |
+| --- | --- | --- |
+| principle 去向 | 存入 Treasury（bondReserve/bond 或 stableReserve） | 销毁（转入 dead 地址） |
+| Treasury 调用 | `depositBondReserve` / `depositStableReserve` | `depositBurnReserve` |
+| LP 依赖 | 需要 liquidityPool 获取 AGX 价格 | 无需 LP，通过价值反推价格 |
+| 用途 | 标准债券购买 | 通缩型债券购买 |
 
 #### 2. 价格计算差异
 
 BurnBondDepository 不依赖 LP 获取 AGX 价格，而是通过：
 
 text
-
 ```text
 agxPrice = value * 1e9 / payout * 10000 / discountRateBP
 ```
@@ -72,19 +71,62 @@ agxPrice = value * 1e9 / payout * 10000 / discountRateBP
 与 BondDepository **完全相同**：
 
 js
-
 ```js
 // 以下函数用法与 BondDepository 一致
-await burnBond.getBondCount(userAddress)
-await burnBond.getBondInfo(userAddress, bondIndex)
-await burnBond.percentVestedFor(userAddress, bondIndex)
-await burnBond.pendingPayoutFor(userAddress, bondIndex)
-await burnBond.getStakeProfit(userAddress, bondIndex)
-await burnBond.getUserLockedPrincipal(userAddress)
-await burnBond.terms()
-await burnBond.discountRateBP()
-await burnBond.maxPayout()
+await burnBond.getBondCount(userAddress);
+await burnBond.getBondInfo(userAddress, bondIndex);
+await burnBond.percentVestedFor(userAddress, bondIndex);
+await burnBond.pendingPayoutFor(userAddress, bondIndex);
+await burnBond.getStakeProfit(userAddress, bondIndex);
+await burnBond.getUserLockedPrincipal(userAddress);
+await burnBond.terms();
+await burnBond.discountRateBP();
+await burnBond.maxPayout();
 ```
+
+#### 预估 payout（输入 USD1 → 预估 AGX）
+
+BurnBond 的 principle 是 AGX，`Treasury.valueOf(AGX, amount)` 直接返回 amount，因此预估公式比 BondDepository 简单（BurnBondDepository.sol:755-757）：
+
+text
+```text
+payout = agxAmount * 10000 / discountRateBP
+netPayout = payout - payout * terms.fee / 10000
+```
+
+**方法一：`eth_call` 模拟（最精确）** —— 以用户地址模拟 `zapIntoBurnBond` 交易，读取返回的 payout（需用户已 approve）：
+
+js
+```js
+const data = bondHelper.interface.encodeFunctionData('zapIntoBurnBond', [burnBondAddr, usd1Addr, usd1Amount]);
+const payout = await provider.call({ from: user, to: bondHelperAddr, data });
+```
+
+**方法二：前端计算（无需授权）** —— 走 zap 时 helper 先把全部 USD1 换成 AGX 再存入：
+
+js
+```js
+// ① 全部 USD1 换 AGX（getAmountsOut 精确含手续费 + 滑点）
+const agxOut = (await router.getAmountsOut(usd1Amount, [usd1Addr, agxAddr]))[1];
+// ② 折扣
+const payout = agxOut * 10000n / await burnBond.discountRateBP();
+const netPayout = payout - payout * (await burnBond.terms()).fee / 10000n;
+```
+
+直接存 AGX（不经 zap）时，`payout = agxAmount * 10000n / discountRateBP` 即可，无需换币与价格。
+
+**示例**（主网 2026-08 池子：AGX≈55 USDT，discount 8500，fee=0）：1000 USD1 → ≈21.3 AGX；10000 USD1 → ≈213 AGX。实际以 `eth_call`/实时 view 为准。
+
+**边界检查**：同样对照 `ErrorBondTooSmall` / `ErrorBondTooLarge` / `ErrorDebtCapacityReached`。
+
+#### 购买流程
+
+1. 检查 Referral.isBindReferral(user) 、 BondHelper.authContracts(bond) 、Pair 存在、容量未满。
+2. USD1.approve(BondHelper, amount) 。
+3. BondHelper.zapIntoBurnBond(burnBondDepository, USD1, amount) ：helper 把全部 USD1 换 AGX → 把 AGX 转入本合约 deposit(AGX, user) 。
+4. deposit 内部：定价 payout = value*10000/discountRateBP → 边界检查 → 扣费 → Treasury.depositBurnReserve （AGX 销毁到 dead，Treasury 铸币）→ 记账 + 自动质押。
+
+**成功判定**：以 `AgxBurned` + `BondPurchased` 事件 + `getBondInfo` 回读为准。
 
 #### 状态修改函数
 
@@ -101,39 +143,38 @@ await burnBond.maxPayout()
 - AgxBurned(buyer, burnAmount, bondValue, bondIndex, timestamp, termSeconds) - 记录销毁数量
 
 js
-
 ```js
 async function purchaseBurnBond(bondContract, principleContract, amount, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 检查推荐关系
-  const referral = new Contract(await bondContract.referral(), REFERRAL_ABI, signer)
-  if (!(await referral.isBindReferral(user))) {
-    throw new Error('Must bind referral first')
+  const referral = new Contract(await bondContract.referral(), REFERRAL_ABI, signer);
+  if (!await referral.isBindReferral(user)) {
+    throw new Error('Must bind referral first');
   }
 
   // 2. 授权
-  await (await principleContract.approve(await bondContract.getAddress(), amount)).wait()
+  await (await principleContract.approve(await bondContract.getAddress(), amount)).wait();
 
   // 3. 购买
-  const tx = await bondContract.deposit(amount, user)
-  const receipt = await tx.wait()
+  const tx = await bondContract.deposit(amount, user);
+  const receipt = await tx.wait();
 
   // 4. 解析销毁事件
   const burnEvent = receipt.logs.find(
-    (l) => bondContract.interface.parseLog(l)?.name === 'AgxBurned',
-  )
+    l => bondContract.interface.parseLog(l)?.name === 'AgxBurned'
+  );
   if (burnEvent) {
-    const parsed = bondContract.interface.parseLog(burnEvent)
-    console.log('Burned:', ethers.formatUnits(parsed.args.burnAmount, 9), 'AGX')
+    const parsed = bondContract.interface.parseLog(burnEvent);
+    console.log('Burned:', ethers.formatUnits(parsed.args.burnAmount, 9), 'AGX');
   }
 
   const bondIndex = receipt.logs.find(
-    (l) => bondContract.interface.parseLog(l)?.name === 'BondPurchased',
-  )?.args?.bondIndex
+    l => bondContract.interface.parseLog(l)?.name === 'BondPurchased'
+  )?.args?.bondIndex;
 
-  console.log('Burn bond purchased, index:', bondIndex)
-  return bondIndex
+  console.log('Burn bond purchased, index:', bondIndex);
+  return bondIndex;
 }
 ```
 
@@ -150,14 +191,11 @@ async function purchaseBurnBond(bondContract, principleContract, amount, signer)
 **仅在 BurnBondDepository 中触发**。注意：参数 `burnAmount` 实际是 `principle`（USD1 等稳定币）的存入数量，**不是 AGX 数量**；`bondValue` 是 Treasury 计算出的 USD 价值。事件源码为 `emit AgxBurned(msg.sender, _amount, value, ...)`（BurnBondDepository.sol:588-595），`_amount` 即 principle 数量。前端展示销毁总量时应聚合该事件并按 principle 精度格式化（USD1 通常 18 位小数），不要按 AGX 9 位小数展示。
 
 js
-
 ```js
 burnBond.on('AgxBurned', (buyer, burnAmount, bondValue, bondIndex, timestamp) => {
   // burnAmount 是 principle 数量，按其精度格式化（USD1 = 18 位）
-  console.log(
-    `Burned ${ethers.formatUnits(burnAmount, 18)} principle tokens for bond #${bondIndex}`,
-  )
-})
+  console.log(`Burned ${ethers.formatUnits(burnAmount, 18)} principle tokens for bond #${bondIndex}`);
+});
 ```
 
 其余事件与 BondDepository 相同。
@@ -178,7 +216,6 @@ burnBond.on('AgxBurned', (buyer, burnAmount, bondValue, bondIndex, timestamp) =>
 #### Burn Bond vs Standard Bond 选择
 
 js
-
 ```js
 async function chooseBondType(userAddress) {
   const [stdTerms, burnTerms, stdDiscount, burnDiscount] = await Promise.all([
@@ -186,14 +223,14 @@ async function chooseBondType(userAddress) {
     burnBondDepository.terms(),
     bondDepository.discountRateBP(),
     burnBondDepository.discountRateBP(),
-  ])
+  ]);
 
-  console.log('Standard Bond - vesting:', stdTerms.vestingTerm, 's, discount:', stdDiscount, 'bps')
-  console.log('Burn Bond    - vesting:', burnTerms.vestingTerm, 's, discount:', burnDiscount, 'bps')
+  console.log('Standard Bond - vesting:', stdTerms.vestingTerm, 's, discount:', stdDiscount, 'bps');
+  console.log('Burn Bond    - vesting:', burnTerms.vestingTerm, 's, discount:', burnDiscount, 'bps');
 
   // 选择更优的折扣率
-  const betterDiscount = stdDiscount < burnDiscount ? 'standard' : 'burn'
-  console.log('Better discount:', betterDiscount)
+  const betterDiscount = stdDiscount < burnDiscount ? 'standard' : 'burn';
+  console.log('Better discount:', betterDiscount);
 }
 ```
 
@@ -202,28 +239,27 @@ async function chooseBondType(userAddress) {
 销毁总量应通过聚合 `AgxBurned` 事件获得。**不要**从 `getBondInfo(...).pricePaid` 累加——`pricePaid` 存的是购买时的 `discountRateBP`（折扣率 BPS），与销毁数量无关（BurnBondDepository.sol:557 附近 `pricePaid: discountRateBP`）。
 
 js
-
 ```js
 async function getBurnStats(burnBondContract, provider, fromBlock = 0) {
   // 聚合 AgxBurned 事件得到累计 principle 销毁数量与 USD 价值
-  const filter = burnBondContract.filters.AgxBurned()
-  const events = await burnBondContract.queryFilter(filter, fromBlock, 'latest')
+  const filter = burnBondContract.filters.AgxBurned();
+  const events = await burnBondContract.queryFilter(filter, fromBlock, 'latest');
 
-  let totalPrincipleBurned = 0n
-  let totalBondValue = 0n
+  let totalPrincipleBurned = 0n;
+  let totalBondValue = 0n;
   for (const log of events) {
-    const { burnAmount, bondValue } = log.args
-    totalPrincipleBurned += burnAmount // principle 数量（USD1, 18 位）
-    totalBondValue += bondValue // USD 价值
+    const { burnAmount, bondValue } = log.args;
+    totalPrincipleBurned += burnAmount; // principle 数量（USD1, 18 位）
+    totalBondValue += bondValue;        // USD 价值
   }
 
   // 全局已发行债务（AGX, 9 位）
-  const terms = await burnBondContract.terms()
-  console.log('Total deposits:', ethers.formatUnits(terms.totalDeposit, 9), 'AGX')
-  console.log('Total principle burned:', ethers.formatUnits(totalPrincipleBurned, 18))
-  console.log('Total bond value:', ethers.formatUnits(totalBondValue, 18))
+  const terms = await burnBondContract.terms();
+  console.log('Total deposits:', ethers.formatUnits(terms.totalDeposit, 9), 'AGX');
+  console.log('Total principle burned:', ethers.formatUnits(totalPrincipleBurned, 18));
+  console.log('Total bond value:', ethers.formatUnits(totalBondValue, 18));
 
-  return { totalPrincipleBurned, totalBondValue }
+  return { totalPrincipleBurned, totalBondValue };
 }
 ```
 
@@ -231,15 +267,15 @@ async function getBurnStats(burnBondContract, provider, fromBlock = 0) {
 
 ### 依赖合约
 
-| 合约          | 用途                                  |
-| ------------- | ------------------------------------- |
-| Treasury      | `depositBurnReserve` 接收销毁后的储备 |
-| StakingPool   | 自动质押 AGX                          |
-| sAGX          | 生息代币                              |
-| RewardQueue   | 利润释放                              |
-| RestakeConfig | 复投配置                              |
-| Referral      | 推荐关系验证                          |
-| 0x00...dead   | 代币销毁地址                          |
+| 合约 | 用途 |
+| --- | --- |
+| Treasury | `depositBurnReserve` 接收销毁后的储备 |
+| StakingPool | 自动质押 AGX |
+| sAGX | 生息代币 |
+| RewardQueue | 利润释放 |
+| RestakeConfig | 复投配置 |
+| Referral | 推荐关系验证 |
+| 0x00...dead | 代币销毁地址 |
 
 ### 账户迁移
 
@@ -259,15 +295,15 @@ BurnBondDepository 与 BondDepository 的配置**并不完全相同**，关键�
 - `restakeConfig` ：BurnBond 同样存在，用于利润复投与 USD1 价值定价。
 - 其余条款（ vestingTerm / maxPayout / fee / maxDebt / discountRateBP ）语义与 BondDepository 一致。
 
-| 参数                                  | 默认值             | 说明                                   | 设置者                                    |
-| ------------------------------------- | ------------------ | -------------------------------------- | ----------------------------------------- |
-| `terms.vestingTerm`                   | 初始化时设置       | 解锁时间（秒）                         | owner/operator (`setVestingTerm`, ≥10000) |
-| `terms.maxPayout`                     | 初始化时设置       | 最大 payout 比例                       | owner/operator (`setMaxPayout`, ≤5000)    |
-| `terms.fee`                           | 初始化时设置       | 手续费（BPS）                          | owner/operator (`setFee`, ≤10000)         |
-| `terms.maxDebt`                       | 初始化时设置       | 债务上限                               | owner/operator (`setMaxDebt`)             |
-| `discountRateBP`                      | 初始化时设置       | 折扣率（BPS，(0,10000]）               | owner/operator (`setDiscountRate`)        |
-| `callerWhitelistEnabled`              | false              | 是否启用调用者白名单                   | owner (`setCallerWhitelistEnabled`)       |
-| `restakeConfig`                       | 初始化后设置       | 复投配置地址                           | owner (`setRestakeConfig`)                |
-| `principalReleaseVault`               | 初始化后设置       | 本金释放入口（`AegisSplitterManager`） | owner (`setPrincipalReleaseVault`)        |
-| `stakingPool` / `rewardQueue` / `DAO` | `setContract` 设置 | 核心依赖地址                           | owner (`setContract`, 3 参数)             |
-| `purchaseTracker`                     | 可选               | 购买贡献追踪                           | owner (`setPurchaseTracker`)              |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `terms.vestingTerm` | 初始化时设置 | 解锁时间（秒） | owner/operator (`setVestingTerm`, ≥10000) |
+| `terms.maxPayout` | 初始化时设置 | 最大 payout 比例 | owner/operator (`setMaxPayout`, ≤5000) |
+| `terms.fee` | 初始化时设置 | 手续费（BPS） | owner/operator (`setFee`, ≤10000) |
+| `terms.maxDebt` | 初始化时设置 | 债务上限 | owner/operator (`setMaxDebt`) |
+| `discountRateBP` | 初始化时设置 | 折扣率（BPS，(0,10000]） | owner/operator (`setDiscountRate`) |
+| `callerWhitelistEnabled` | false | 是否启用调用者白名单 | owner (`setCallerWhitelistEnabled`) |
+| `restakeConfig` | 初始化后设置 | 复投配置地址 | owner (`setRestakeConfig`) |
+| `principalReleaseVault` | 初始化后设置 | 本金释放入口（`AegisSplitterManager`） | owner (`setPrincipalReleaseVault`) |
+| `stakingPool` / `rewardQueue` / `DAO` | `setContract` 设置 | 核心依赖地址 | owner (`setContract`, 3 参数) |
+| `purchaseTracker` | 可选 | 购买贡献追踪 | owner (`setPurchaseTracker`) |

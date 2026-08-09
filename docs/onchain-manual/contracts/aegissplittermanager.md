@@ -42,7 +42,6 @@ SHA-256 9d1fcbd00346…
 与已删除的 `PrincipalReleaseVault.createRelease` ABI 完全兼容（返回 `uint256`，无调用方使用返回值）。6 类本金合约（共 12 实例）通过 `setPrincipalReleaseVault(manager)` 零代码改动接入：
 
 text
-
 ```text
 createRelease(user, amount)
   → token = callerToken[msg.sender]          // 本金合约→AGX，Turbine→gAGX
@@ -74,30 +73,30 @@ createRelease(user, amount)
 
 ### 状态变量
 
-| 变量                   | 类型                | 说明                                         |
-| ---------------------- | ------------------- | -------------------------------------------- |
-| `referral`             | address             | AegisReferral 地址，读取绑定时间戳           |
-| `newUserThreshold`     | uint256             | 新老用户分界时间戳                           |
-| `newUserSwitchEnabled` | bool                | 新用户释放周期开关                           |
-| `newUserReleasePeriod` | uint256             | 新用户释放周期（秒）                         |
-| `headSplitters`        | HeadSplitterEntry[] | 头部分流器数组（startTime/endTime/splitter） |
-| `authorizedCallers`    | mapping             | 存款入口白名单                               |
-| `callerToken`          | mapping             | 调用方 → 存入代币                            |
+| 变量 | 类型 | 说明 |
+| --- | --- | --- |
+| `referral` | address | AegisReferral 地址，读取绑定时间戳 |
+| `newUserThreshold` | uint256 | 新老用户分界时间戳 |
+| `newUserSwitchEnabled` | bool | 新用户释放周期开关 |
+| `newUserReleasePeriod` | uint256 | 新用户释放周期（秒） |
+| `headSplitters` | HeadSplitterEntry[] | 头部分流器数组（startTime/endTime/splitter） |
+| `authorizedCallers` | mapping | 存款入口白名单 |
+| `callerToken` | mapping | 调用方 → 存入代币 |
 
 ### 常用函数
 
-| 函数                                              | 权限              | 说明                           |
-| ------------------------------------------------- | ----------------- | ------------------------------ |
-| `createRelease(user, amount)`                     | authorizedCallers | 统一存款入口，路由到头部分流器 |
-| `effectiveDuration(user)`                         | view              | 用户有效释放周期               |
-| `getHeadSplitterForUser(user)`                    | view              | 按绑定时间路由头部分流器       |
-| `isNewUser(user)`                                 | view              | 是否新用户                     |
-| `callerToken(caller)`                             | view              | 调用方存入代币                 |
-| `setAuthorizedCaller(caller, token, enabled)`     | owner             | 配置白名单与代币               |
-| `addHeadSplitter(start, end, splitter)`           | owner             | 新增头部分流器                 |
-| `updateHeadSplitter(index, start, end, splitter)` | owner             | 更新                           |
-| `removeHeadSplitter(index)`                       | owner             | 移除（swap-pop）               |
-| `setNewUserThreshold/Switch/ReleasePeriod`        | owner             | 新老配置                       |
+| 函数 | 权限 | 说明 |
+| --- | --- | --- |
+| `createRelease(user, amount)` | authorizedCallers | 统一存款入口，路由到头部分流器 |
+| `effectiveDuration(user)` | view | 用户有效释放周期 |
+| `getHeadSplitterForUser(user)` | view | 按绑定时间路由头部分流器 |
+| `isNewUser(user)` | view | 是否新用户 |
+| `callerToken(caller)` | view | 调用方存入代币 |
+| `setAuthorizedCaller(caller, token, enabled)` | owner | 配置白名单与代币 |
+| `addHeadSplitter(start, end, splitter)` | owner | 新增头部分流器 |
+| `updateHeadSplitter(index, start, end, splitter)` | owner | 更新 |
+| `removeHeadSplitter(index)` | owner | 移除（swap-pop） |
+| `setNewUserThreshold/Switch/ReleasePeriod` | owner | 新老配置 |
 
 ### 事件
 

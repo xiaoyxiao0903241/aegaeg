@@ -37,12 +37,12 @@ SHA-256 a06b4d142882…
 
 默认 4 个计划，释放时间越长，手续费越低：
 
-| Plan Index | 释放周期 | 手续费率 | 适用场景             |
-| ---------- | -------- | -------- | -------------------- |
-| 0          | 5 天     | 20%      | 快速变现             |
-| 1          | 20 天    | 10%      | 中等释放             |
-| 2          | 40 天    | 5%       | 长期释放             |
-| 3          | 60 天    | 1%       | 最长释放，最低手续费 |
+| Plan Index | 释放周期 | 手续费率 | 适用场景 |
+| --- | --- | --- | --- |
+| 0 | 5 天 | 20% | 快速变现 |
+| 1 | 20 天 | 10% | 中等释放 |
+| 2 | 40 天 | 5% | 长期释放 |
+| 3 | 60 天 | 1% | 最长释放，最低手续费 |
 
 源码没有“最多 32 条”的计划或用户记录门禁；单个用户在任一计划下的 queue 记录会按实际业务动态增长。计划模板和相关 ABI 的 `planIndex` 使用 `uint8`（编码域 0～255），且多个聚合查询用 `uint8` 自增遍历；当模板数达到 256 时遍历会溢出回滚，因此当前实现必须保持 `plans.length <= 255`。运营应通过 `queueSize()` 读取实际模板数并只创建真实需要的少量计划。迁移目标干净性检查会按实际计划数量扫描。
 
@@ -75,14 +75,11 @@ SHA-256 a06b4d142882…
 返回所有释放计划。
 
 js
-
 ```js
-const plans = await rewardQueue.queuePlans()
+const plans = await rewardQueue.queuePlans();
 plans.forEach((plan, i) => {
-  console.log(
-    `Plan ${i}: ${Number(plan.releaseDuration) / 86400} days, fee: ${Number(plan.feeRate) / 100}%`,
-  )
-})
+  console.log(`Plan ${i}: ${Number(plan.releaseDuration) / 86400} days, fee: ${Number(plan.feeRate) / 100}%`);
+});
 ```
 
 ##### queuePlanInfo(uint256 _index) -> (feeRate, feeRecipient)
@@ -90,10 +87,9 @@ plans.forEach((plan, i) => {
 查询指定计划的手续费率和收款地址。
 
 js
-
 ```js
-const [feeRate, feeRecipient] = await rewardQueue.queuePlanInfo(0)
-console.log(`Plan 0 fee: ${Number(feeRate) / 100}%, recipient: ${feeRecipient}`)
+const [feeRate, feeRecipient] = await rewardQueue.queuePlanInfo(0);
+console.log(`Plan 0 fee: ${Number(feeRate) / 100}%, recipient: ${feeRecipient}`);
 ```
 
 ##### getUserTotalClaimable(address _user) -> (uint256)
@@ -101,10 +97,9 @@ console.log(`Plan 0 fee: ${Number(feeRate) / 100}%, recipient: ${feeRecipient}`)
 返回用户所有计划中可领取的总量。
 
 js
-
 ```js
-const totalClaimable = await rewardQueue.getUserTotalClaimable(userAddress)
-console.log('Total claimable:', ethers.formatUnits(totalClaimable, 9), 'AGX')
+const totalClaimable = await rewardQueue.getUserTotalClaimable(userAddress);
+console.log('Total claimable:', ethers.formatUnits(totalClaimable, 9), 'AGX');
 ```
 
 ##### getUserClaimableList(address, uint256 start, uint256 limit) -> (items[], totalCount)
@@ -119,16 +114,13 @@ console.log('Total claimable:', ethers.formatUnits(totalClaimable, 9), 'AGX')
 - claimableAmount - 可领取数量
 
 js
-
 ```js
-const { items, totalCount } = await rewardQueue.getUserClaimableList(userAddress, 0, 20)
-console.log('Total queue items:', totalCount)
+const { items, totalCount } = await rewardQueue.getUserClaimableList(userAddress, 0, 20);
+console.log('Total queue items:', totalCount);
 
 for (const item of items) {
-  const planDays = Number(item.data.remainingDuration) / 86400
-  console.log(
-    `Plan ${item.planIndex}: ${ethers.formatUnits(item.claimableAmount, 9)} claimable, ${planDays.toFixed(1)}d remaining`,
-  )
+  const planDays = Number(item.data.remainingDuration) / 86400;
+  console.log(`Plan ${item.planIndex}: ${ethers.formatUnits(item.claimableAmount, 9)} claimable, ${planDays.toFixed(1)}d remaining`);
 }
 ```
 
@@ -137,10 +129,9 @@ for (const item of items) {
 返回指定计划下所有条目已解锁的总量（可领取部分）。
 
 js
-
 ```js
-const claimable = await rewardQueue.getReleasedRewardsWithPlanIndex(userAddress, 1)
-console.log('Plan 1 claimable:', ethers.formatUnits(claimable, 9), 'AGX')
+const claimable = await rewardQueue.getReleasedRewardsWithPlanIndex(userAddress, 1);
+console.log('Plan 1 claimable:', ethers.formatUnits(claimable, 9), 'AGX');
 ```
 
 ##### getReleasedRewardsWithOffset(address, uint8 planIndex, uint256 start, uint256 limit) -> (uint256)
@@ -148,9 +139,8 @@ console.log('Plan 1 claimable:', ethers.formatUnits(claimable, 9), 'AGX')
 分页查询指定范围内的可领取量。
 
 js
-
 ```js
-const claimable = await rewardQueue.getReleasedRewardsWithOffset(userAddress, 1, 0, 10)
+const claimable = await rewardQueue.getReleasedRewardsWithOffset(userAddress, 1, 0, 10);
 ```
 
 ##### getQueuePlanSize(address, uint8 planIndex) -> (uint256)
@@ -158,10 +148,9 @@ const claimable = await rewardQueue.getReleasedRewardsWithOffset(userAddress, 1,
 返回指定计划的队列条目数。
 
 js
-
 ```js
-const size = await rewardQueue.getQueuePlanSize(userAddress, 0)
-console.log('Plan 0 queue items:', size)
+const size = await rewardQueue.getQueuePlanSize(userAddress, 0);
+console.log('Plan 0 queue items:', size);
 ```
 
 ##### getQueueData(address, uint8 planIndex, uint256 index) -> (QueueData)
@@ -212,25 +201,20 @@ console.log('Plan 0 queue items:', size)
 - RewardClaimedFromQueue(user, planIndex, amount, index, timestamp)
 
 js
-
 ```js
 async function claimReward(rewardQueue, planIndex, index, signer) {
   // 1. 检查可领取数量
-  const claimable = await rewardQueue.getReleasedRewards(
-    await signer.getAddress(),
-    planIndex,
-    index,
-  )
+  const claimable = await rewardQueue.getReleasedRewards(await signer.getAddress(), planIndex, index);
   if (claimable === 0n) {
-    console.log('Nothing to claim')
-    return
+    console.log('Nothing to claim');
+    return;
   }
 
   // 2. 领取
-  const tx = await rewardQueue.connect(signer).claimVestedReward(planIndex, index)
-  const receipt = await tx.wait()
+  const tx = await rewardQueue.connect(signer).claimVestedReward(planIndex, index);
+  const receipt = await tx.wait();
 
-  console.log('Claimed from queue, AGX sent to Turbine')
+  console.log('Claimed from queue, AGX sent to Turbine');
 }
 ```
 
@@ -239,26 +223,24 @@ async function claimReward(rewardQueue, planIndex, index, signer) {
 领取指定计划下所有条目的已解锁部分。
 
 js
-
 ```js
 async function claimAllRewards(rewardQueue, planIndex, signer) {
   // 1. 检查总量
   const claimable = await rewardQueue.getReleasedRewardsWithPlanIndex(
-    await signer.getAddress(),
-    planIndex,
-  )
+    await signer.getAddress(), planIndex
+  );
   if (claimable === 0n) {
-    console.log('Nothing to claim for plan', planIndex)
-    return
+    console.log('Nothing to claim for plan', planIndex);
+    return;
   }
 
-  console.log('Total claimable for plan', planIndex, ':', ethers.formatUnits(claimable, 9))
+  console.log('Total claimable for plan', planIndex, ':', ethers.formatUnits(claimable, 9));
 
   // 2. 领取全部
-  const tx = await rewardQueue.connect(signer).claimAllVestedRewards(planIndex)
-  await tx.wait()
+  const tx = await rewardQueue.connect(signer).claimAllVestedRewards(planIndex);
+  await tx.wait();
 
-  console.log('All rewards claimed and sent to Turbine')
+  console.log('All rewards claimed and sent to Turbine');
 }
 ```
 
@@ -267,10 +249,9 @@ async function claimAllRewards(rewardQueue, planIndex, signer) {
 领取指定范围内条目的已解锁部分。适合大量队列条目分批领取。
 
 js
-
 ```js
 // 分批领取前 10 个条目
-await rewardQueue.connect(signer).claimVestedRewardsInRange(planIndex, 0, 10)
+await rewardQueue.connect(signer).claimVestedRewardsInRange(planIndex, 0, 10);
 ```
 
 ##### enqueueReward(address _user, uint256 _amount, uint8 _planIndex)
@@ -314,11 +295,10 @@ await rewardQueue.connect(signer).claimVestedRewardsInRange(planIndex, 0, 10)
 领取释放的奖励时触发。
 
 js
-
 ```js
 rewardQueue.on('RewardReleased', (user, planIndex, index, amount) => {
-  console.log(`Released ${ethers.formatUnits(amount, 9)} AGX from plan ${planIndex}[${index}]`)
-})
+  console.log(`Released ${ethers.formatUnits(amount, 9)} AGX from plan ${planIndex}[${index}]`);
+});
 ```
 
 #### RewardClaimedFromQueue(address indexed user, uint8 planIndex, uint256 amount, uint256 count, uint256 timestamp)
@@ -349,15 +329,15 @@ rewardQueue.on('RewardReleased', (user, planIndex, index, amount) => {
 
 ### 错误码
 
-| 错误                                                | 原因                                    | 解决方案                       |
-| --------------------------------------------------- | --------------------------------------- | ------------------------------ |
-| `ErrorZeroAmount()`                                 | 金额为 0                                | 检查参数                       |
-| `ErrorIndexOutOfBounds()`                           | 索引越界                                | 使用有效索引                   |
-| `ErrorNotAuthorized()`                              | 非授权调用者 enqueue                    | 只有 Bond/Staking 等合约可调用 |
-| `ErrorZeroAddress()`                                | 地址为空                                | 检查参数                       |
-| `RewardQueueMigratedAccount(address account)`       | 账户已迁移或目标账户已有状态            | 使用规范账户                   |
-| `RewardQueueNotMigrationManager(address caller)`    | 非 migrationManager 调用 migrateAccount | 用 migrationManager            |
-| `MigrationManagerImmutable(address currentManager)` | 重复设置不同的 migrationManager         | 保留原 manager 或一次性配置    |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorZeroAmount()` | 金额为 0 | 检查参数 |
+| `ErrorIndexOutOfBounds()` | 索引越界 | 使用有效索引 |
+| `ErrorNotAuthorized()` | 非授权调用者 enqueue | 只有 Bond/Staking 等合约可调用 |
+| `ErrorZeroAddress()` | 地址为空 | 检查参数 |
+| `RewardQueueMigratedAccount(address account)` | 账户已迁移或目标账户已有状态 | 使用规范账户 |
+| `RewardQueueNotMigrationManager(address caller)` | 非 migrationManager 调用 migrateAccount | 用 migrationManager |
+| `MigrationManagerImmutable(address currentManager)` | 重复设置不同的 migrationManager | 保留原 manager 或一次性配置 |
 
 ---
 
@@ -366,17 +346,16 @@ rewardQueue.on('RewardReleased', (user, planIndex, index, amount) => {
 #### 查看用户全部奖励状态
 
 js
-
 ```js
 async function getUserRewardDashboard(rewardQueue, userAddress) {
-  const plans = await rewardQueue.queuePlans()
-  const dashboard = []
+  const plans = await rewardQueue.queuePlans();
+  const dashboard = [];
 
   for (let i = 0; i < plans.length; i++) {
-    const plan = plans[i]
-    const size = await rewardQueue.getQueuePlanSize(userAddress, i)
-    const totalLocked = await rewardQueue.getRewardsWithPlanIndex(userAddress, i)
-    const totalClaimable = await rewardQueue.getReleasedRewardsWithPlanIndex(userAddress, i)
+    const plan = plans[i];
+    const size = await rewardQueue.getQueuePlanSize(userAddress, i);
+    const totalLocked = await rewardQueue.getRewardsWithPlanIndex(userAddress, i);
+    const totalClaimable = await rewardQueue.getReleasedRewardsWithPlanIndex(userAddress, i);
 
     dashboard.push({
       planIndex: i,
@@ -385,33 +364,31 @@ async function getUserRewardDashboard(rewardQueue, userAddress) {
       queueItems: size,
       totalLocked: ethers.formatUnits(totalLocked, 9),
       totalClaimable: ethers.formatUnits(totalClaimable, 9),
-    })
+    });
   }
 
-  const totalAllClaimable = await rewardQueue.getUserTotalClaimable(userAddress)
-  console.log('Total claimable across all plans:', ethers.formatUnits(totalAllClaimable, 9), 'AGX')
+  const totalAllClaimable = await rewardQueue.getUserTotalClaimable(userAddress);
+  console.log('Total claimable across all plans:', ethers.formatUnits(totalAllClaimable, 9), 'AGX');
 
-  return dashboard
+  return dashboard;
 }
 ```
 
 #### 批量领取所有计划
 
 js
-
 ```js
 async function claimAllPlans(rewardQueue, signer) {
-  const planCount = await rewardQueue.queueSize()
+  const planCount = await rewardQueue.queueSize();
 
   for (let i = 0; i < planCount; i++) {
     const claimable = await rewardQueue.getReleasedRewardsWithPlanIndex(
-      await signer.getAddress(),
-      i,
-    )
+      await signer.getAddress(), i
+    );
 
     if (claimable > 0n) {
-      console.log(`Plan ${i}: claiming ${ethers.formatUnits(claimable, 9)} AGX`)
-      await (await rewardQueue.connect(signer).claimAllVestedRewards(i)).wait()
+      console.log(`Plan ${i}: claiming ${ethers.formatUnits(claimable, 9)} AGX`);
+      await (await rewardQueue.connect(signer).claimAllVestedRewards(i)).wait();
     }
   }
 }
@@ -421,20 +398,20 @@ async function claimAllPlans(rewardQueue, signer) {
 
 ### 依赖合约
 
-| 合约           | 用途                      |
-| -------------- | ------------------------- |
-| Turbine        | 接收释放后的 AGX 进行售卖 |
-| BondDepository | 将奖励 enqueue            |
-| LockedStaking  | 将奖励 enqueue            |
-| EarlyStaking   | 将奖励 enqueue            |
+| 合约 | 用途 |
+| --- | --- |
+| Turbine | 接收释放后的 AGX 进行售卖 |
+| BondDepository | 将奖励 enqueue |
+| LockedStaking | 将奖励 enqueue |
+| EarlyStaking | 将奖励 enqueue |
 
 ### 配置参数
 
-| 参数                | 默认值         | 说明                | 设置者     |
-| ------------------- | -------------- | ------------------- | ---------- |
-| Plan 0              | 5 天, 20% fee  | 快速释放            | 初始化默认 |
-| Plan 1              | 20 天, 10% fee | 中等释放            | 初始化默认 |
-| Plan 2              | 40 天, 5% fee  | 长期释放            | 初始化默认 |
-| Plan 3              | 60 天, 1% fee  | 最长释放            | 初始化默认 |
-| `authorizedCallers` | 初始化后设置   | 允许 enqueue 的合约 | owner      |
-| `turbine`           | 初始化时设置   | Turbine 合约地址    | owner      |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| Plan 0 | 5 天, 20% fee | 快速释放 | 初始化默认 |
+| Plan 1 | 20 天, 10% fee | 中等释放 | 初始化默认 |
+| Plan 2 | 40 天, 5% fee | 长期释放 | 初始化默认 |
+| Plan 3 | 60 天, 1% fee | 最长释放 | 初始化默认 |
+| `authorizedCallers` | 初始化后设置 | 允许 enqueue 的合约 | owner |
+| `turbine` | 初始化时设置 | Turbine 合约地址 | owner |

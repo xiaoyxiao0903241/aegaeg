@@ -78,23 +78,21 @@ SHA-256 40062dea6126…
 #### 标准 ERC20 接口
 
 js
-
 ```js
 // 余额查询
-const balance = await agx.balanceOf(userAddress)
-console.log('AGX balance:', ethers.formatUnits(balance, 9))
+const balance = await agx.balanceOf(userAddress);
+console.log('AGX balance:', ethers.formatUnits(balance, 9));
 
 // 转账
-await (await agx.transfer(recipient, amount)).wait()
+await (await agx.transfer(recipient, amount)).wait();
 
 // 授权
-await (await agx.approve(spender, amount)).wait()
+await (await agx.approve(spender, amount)).wait();
 ```
 
 #### 防御机制视图
 
 js
-
 ```js
 const config = await Promise.all([
   agx.sellRatio(),
@@ -112,15 +110,15 @@ const config = await Promise.all([
   agx.pendingCrashThresholdBP(),
   agx.crashThresholdEffectiveBlock(),
   agx.crashThresholdUpdatePending(),
-])
+]);
 
-console.log('Sell tax (normal):', Number(config[0]) / 100, '%')
-console.log('Sell tax (defense):', Number(config[1]) / 100, '%')
-console.log('Crash threshold:', Number(config[2]) / 100, '%')
-console.log('Defense active:', config[3])
+console.log('Sell tax (normal):', Number(config[0]) / 100, '%');
+console.log('Sell tax (defense):', Number(config[1]) / 100, '%');
+console.log('Crash threshold:', Number(config[2]) / 100, '%');
+console.log('Defense active:', config[3]);
 // snapshotPrice 已按 AGX 与报价代币的实际 decimals 归一化为 18 位定点价格
-console.log('Snapshot price (quote token per AGX):', ethers.formatUnits(config[4], 18))
-console.log('Gross sold in observed block:', ethers.formatUnits(config[11], 9))
+console.log('Snapshot price (quote token per AGX):', ethers.formatUnits(config[4], 18));
+console.log('Gross sold in observed block:', ethers.formatUnits(config[11], 9));
 ```
 
 前端应监听：
@@ -133,67 +131,67 @@ console.log('Gross sold in observed block:', ethers.formatUnits(config[11], 9))
 
 ### 错误码
 
-| 错误                       | 原因                                    | 解决方案                     |
-| -------------------------- | --------------------------------------- | ---------------------------- |
-| `Disabled()`               | 转账未启用（买入被禁用）                | 等待管理员启用               |
-| `InvalidRatio()`           | 税率越界，或基础税高于防御税            | 联系管理员                   |
-| `CrashFuseAlreadyActive()` | 防御已激活                              | 等待结束                     |
-| `SnapshotNotInitialized()` | 快照未初始化                            | 等待管理员设置               |
-| `PairAlreadySet()`         | 流动性池已经完成一次性设置              | 重新部署前核对 Pair 地址     |
-| `InvalidPair()`            | Pair 未包含 AGX，或两侧配置异常         | 使用正确的 AGX/报价币 Pair   |
-| `UnsupportedDecimals()`    | 报价币精度超过合约支持范围              | 使用精度不超过 36 位的报价币 |
-| `InvalidAddress()`         | 零地址非法                              | 检查地址参数                 |
-| `Unauthorized()`           | 调用方无权限（如非 treasury 调用 mint） | 用正确的权限账户             |
-| `ErrorCooldown()`          | 操作命中冷却限制                        | 等待冷却结束                 |
-| `CrashThresholdTooHigh()`  | 熔断跌幅阈值设置过高                    | 降低阈值                     |
-| `ExtraSellTaxTooHigh()`    | 防御卖出税设置过高                      | 降低防御税率                 |
-| `PairNotSet()`             | 流动性 Pair 尚未设置                    | 先调用 setLiquidityPool      |
-| `ReserveZero()`            | 储备为 0                                | 检查 Pair 储备               |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `Disabled()` | 转账未启用（买入被禁用） | 等待管理员启用 |
+| `InvalidRatio()` | 税率越界，或基础税高于防御税 | 联系管理员 |
+| `CrashFuseAlreadyActive()` | 防御已激活 | 等待结束 |
+| `SnapshotNotInitialized()` | 快照未初始化 | 等待管理员设置 |
+| `PairAlreadySet()` | 流动性池已经完成一次性设置 | 重新部署前核对 Pair 地址 |
+| `InvalidPair()` | Pair 未包含 AGX，或两侧配置异常 | 使用正确的 AGX/报价币 Pair |
+| `UnsupportedDecimals()` | 报价币精度超过合约支持范围 | 使用精度不超过 36 位的报价币 |
+| `InvalidAddress()` | 零地址非法 | 检查地址参数 |
+| `Unauthorized()` | 调用方无权限（如非 treasury 调用 mint） | 用正确的权限账户 |
+| `ErrorCooldown()` | 操作命中冷却限制 | 等待冷却结束 |
+| `CrashThresholdTooHigh()` | 熔断跌幅阈值设置过高 | 降低阈值 |
+| `ExtraSellTaxTooHigh()` | 防御卖出税设置过高 | 降低防御税率 |
+| `PairNotSet()` | 流动性 Pair 尚未设置 | 先调用 setLiquidityPool |
+| `ReserveZero()` | 储备为 0 | 检查 Pair 储备 |
 
 ### 配置参数
 
-| 参数                       | 默认值     | 说明                                             | 设置者     |
-| -------------------------- | ---------- | ------------------------------------------------ | ---------- |
-| `sellRatio`                | 350 (3.5%) | 基础卖出税                                       | governance |
-| `extraSellBP`              | 3000 (30%) | 防御模式税                                       | governance |
-| `crashThresholdBP`         | 500 (5%)   | 当前生效的下跌阈值；对应默认 2.5% 单区块低税额度 | governance |
-| `crashFuseDurationSeconds` | 24 小时    | 防御持续时间                                     | governance |
-| `targetRatio`              | 100 (1%)   | LP 销毁比例                                      | governance |
-| `feeReceiver`              | owner      | 税收接收者                                       | governance |
-| `transferStatus`           | false      | 是否启用买入                                     | owner      |
-| `whitelist`                | -          | 免税收地址                                       | owner      |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `sellRatio` | 350 (3.5%) | 基础卖出税 | governance |
+| `extraSellBP` | 3000 (30%) | 防御模式税 | governance |
+| `crashThresholdBP` | 500 (5%) | 当前生效的下跌阈值；对应默认 2.5% 单区块低税额度 | governance |
+| `crashFuseDurationSeconds` | 24 小时 | 防御持续时间 | governance |
+| `targetRatio` | 100 (1%) | LP 销毁比例 | governance |
+| `feeReceiver` | owner | 税收接收者 | governance |
+| `transferStatus` | false | 是否启用买入 | owner |
+| `whitelist` | - | 免税收地址 | owner |
 
 ---
 
 ### 状态修改函数
 
-| 函数                                           | 权限                                                               | 说明                                                              |
-| ---------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `mint(address _to, uint256 _amount)`           | 仅 `treasury`（`msg.sender != treasury` 时 revert `Unauthorized`） | 由 Treasury 调用的铸币入口，非 owner 后门。源码 `src/AGX.sol:593` |
-| `snapshotDefensePrice()`                       | `onlyGovernance`                                                   | 立即刷新防御价格快照，并清空旧快照下的低价确认。源码 `:429`       |
-| `setDefenseSellTax(uint256 _bp)`               | `onlyGovernance`                                                   | 设置防御模式卖出税。源码 `:440`                                   |
-| `setDefenseDropThreshold(uint256 _bp)`         | `onlyGovernance`                                                   | 设置熔断跌幅阈值（下一区块首次受管控卖出起生效）。源码 `:448`     |
-| `setDefenseMode(bool _active)`                 | `onlyGovernance`                                                   | 手动开启/关闭持续熔断。源码 `:457`                                |
-| `setDefenseDurationSeconds(uint256 _duration)` | `onlyGovernance`                                                   | 设置防御持续时间。源码 `:481`                                     |
-| `setBaseSellTax(uint256 _newTaxRate)`          | `onlyGovernance`                                                   | 设置基础卖出税。源码 `:569`                                       |
-| `setSellFeeReceiver(address _newReceiver)`     | `onlyGovernance`                                                   | 设置基础税接收者。源码 `:555`                                     |
-| `setPoolBurnRatio(uint256 _newRatio)`          | `onlyGovernance`                                                   | 设置 LP 销毁比例 `targetRatio`。源码 `:534`                       |
-| `burnPoolBalance()`                            | `onlyGovernance`                                                   | 按比例销毁 LP 中的 AGX。源码 `:576`                               |
-| `setLiquidityPool(address _newPool)`           | `onlyOwner`                                                        | 一次性设置流动性 Pair。源码 `:499`                                |
-| `setPoolBuyEnabled(bool _enable)`              | `onlyOwner`                                                        | 开启/关闭买入（`transferStatus`）。源码 `:541`                    |
-| `setTreasuryVault(address _newTreasury)`       | `onlyOwner`                                                        | 设置 Treasury 地址。源码 `:527`                                   |
-| `setRbsContract(address _newRbs)`              | `onlyOwner`                                                        | 设置 RBS 合约地址。源码 `:562`                                    |
-| `setGovernance(address _newGovernance)`        | `onlyOwner`                                                        | 设置 governance 地址。源码 `:548`                                 |
-| `addSystemWhitelist(address _addr)`            | `onlyOwner`                                                        | 添加系统白名单。源码 `:487`                                       |
-| `removeSystemWhitelist(address _addr)`         | `onlyOwner`                                                        | 移除系统白名单。源码 `:493`                                       |
+| 函数 | 权限 | 说明 |
+| --- | --- | --- |
+| `mint(address _to, uint256 _amount)` | 仅 `treasury`（`msg.sender != treasury` 时 revert `Unauthorized`） | 由 Treasury 调用的铸币入口，非 owner 后门。源码 `src/AGX.sol:593` |
+| `snapshotDefensePrice()` | `onlyGovernance` | 立即刷新防御价格快照，并清空旧快照下的低价确认。源码 `:429` |
+| `setDefenseSellTax(uint256 _bp)` | `onlyGovernance` | 设置防御模式卖出税。源码 `:440` |
+| `setDefenseDropThreshold(uint256 _bp)` | `onlyGovernance` | 设置熔断跌幅阈值（下一区块首次受管控卖出起生效）。源码 `:448` |
+| `setDefenseMode(bool _active)` | `onlyGovernance` | 手动开启/关闭持续熔断。源码 `:457` |
+| `setDefenseDurationSeconds(uint256 _duration)` | `onlyGovernance` | 设置防御持续时间。源码 `:481` |
+| `setBaseSellTax(uint256 _newTaxRate)` | `onlyGovernance` | 设置基础卖出税。源码 `:569` |
+| `setSellFeeReceiver(address _newReceiver)` | `onlyGovernance` | 设置基础税接收者。源码 `:555` |
+| `setPoolBurnRatio(uint256 _newRatio)` | `onlyGovernance` | 设置 LP 销毁比例 `targetRatio`。源码 `:534` |
+| `burnPoolBalance()` | `onlyGovernance` | 按比例销毁 LP 中的 AGX。源码 `:576` |
+| `setLiquidityPool(address _newPool)` | `onlyOwner` | 一次性设置流动性 Pair。源码 `:499` |
+| `setPoolBuyEnabled(bool _enable)` | `onlyOwner` | 开启/关闭买入（`transferStatus`）。源码 `:541` |
+| `setTreasuryVault(address _newTreasury)` | `onlyOwner` | 设置 Treasury 地址。源码 `:527` |
+| `setRbsContract(address _newRbs)` | `onlyOwner` | 设置 RBS 合约地址。源码 `:562` |
+| `setGovernance(address _newGovernance)` | `onlyOwner` | 设置 governance 地址。源码 `:548` |
+| `addSystemWhitelist(address _addr)` | `onlyOwner` | 添加系统白名单。源码 `:487` |
+| `removeSystemWhitelist(address _addr)` | `onlyOwner` | 移除系统白名单。源码 `:493` |
 
 ### 事件（防御关键）
 
 除 `BlockSellQuotaInitialized` / `BlockSellQuotaReduced` / `BlockSellDefenseTaxApplied` / `ExtraSellTaxActivated` / `ExtraSellTaxDeactivated` / `CrashThresholdUpdateScheduled` / `CrashThresholdUpdated` 外，补充两个防御关键事件：
 
-| 事件                                                                                                           | 说明                                                                                                        |
-| -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `PriceSnapshotted(uint256 indexed price, uint256 indexed timestamp)`                                           | 价格快照刷新（源码 `:185`）                                                                                 |
+| 事件 | 说明 |
+| --- | --- |
+| `PriceSnapshotted(uint256 indexed price, uint256 indexed timestamp)` | 价格快照刷新（源码 `:185`） |
 | `DropConfirmed(uint256 indexed consecutiveBlocks, uint256 curPrice, uint256 snapshotPrice, uint256 timestamp)` | 低价观察确认；`consecutiveBlocks` 为兼容保留的字段名，实际表示当前低价区间内不同区块的确认数（源码 `:199`） |
 
 其他管理类事件：`TreasuryAddressUpdated` / `GovernanceAddressUpdated` / `FeeReceiverAddressUpdated` / `RbsAddressUpdated` / `SellRateChanged` / `BalanceTargetRateChanged` / `BalancePoolAddressUpdated` / `TokenTransferStateUpdated` / `WhitelistAdded` / `WhitelistRemoved` / `BalancePoolBurned` / `DefenseSellTaxUpdated` / `DefenseDurationUpdated`。

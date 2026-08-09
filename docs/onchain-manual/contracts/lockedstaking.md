@@ -73,10 +73,9 @@ LockedStaking 保留每日全局新增量和单 root 历史累计质押量两层
 返回用户的质押仓位总数。
 
 js
-
 ```js
-const count = await lockedStaking.getStakesCount(userAddress)
-console.log('Stake positions:', count)
+const count = await lockedStaking.getStakesCount(userAddress);
+console.log('Stake positions:', count);
 ```
 
 ##### getStake(address _user, uint256 _index) -> (StakeData)
@@ -92,13 +91,12 @@ console.log('Stake positions:', count)
 - expiry - 到期时间
 
 js
-
 ```js
-const stake = await lockedStaking.getStake(userAddress, 0)
-console.log('Pending principal:', ethers.formatUnits(stake.pending, 9), 'AGX')
-console.log('Block reward:', ethers.formatUnits(stake.blockReward, 9), 'AGX')
-console.log('Extra interest:', ethers.formatUnits(stake.extraInterest, 9), 'AGX')
-console.log('Claimable:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX')
+const stake = await lockedStaking.getStake(userAddress, 0);
+console.log('Pending principal:', ethers.formatUnits(stake.pending, 9), 'AGX');
+console.log('Block reward:', ethers.formatUnits(stake.blockReward, 9), 'AGX');
+console.log('Extra interest:', ethers.formatUnits(stake.extraInterest, 9), 'AGX');
+console.log('Claimable:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX');
 ```
 
 ##### getStakes(address, uint256 start, uint256 limit) -> (StakeData[])
@@ -106,14 +104,11 @@ console.log('Claimable:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX')
 分页获取用户仓位。
 
 js
-
 ```js
-const stakes = await lockedStaking.getStakes(userAddress, 0, 10)
+const stakes = await lockedStaking.getStakes(userAddress, 0, 10);
 stakes.forEach((s, i) => {
-  console.log(
-    `Stake ${i}: ${ethers.formatUnits(s.pending, 9)} pending, ${ethers.formatUnits(s.claimableBalance, 9)} claimable`,
-  )
-})
+  console.log(`Stake ${i}: ${ethers.formatUnits(s.pending, 9)} pending, ${ethers.formatUnits(s.claimableBalance, 9)} claimable`);
+});
 ```
 
 ##### getReleasedPrincipal(address, uint256 index) -> (uint256)
@@ -121,10 +116,9 @@ stakes.forEach((s, i) => {
 获取指定仓位当前可领取的本金。
 
 js
-
 ```js
-const claimable = await lockedStaking.getReleasedPrincipal(userAddress, 0)
-console.log('Claimable principal:', ethers.formatUnits(claimable, 9), 'AGX')
+const claimable = await lockedStaking.getReleasedPrincipal(userAddress, 0);
+console.log('Claimable principal:', ethers.formatUnits(claimable, 9), 'AGX');
 ```
 
 ##### getExtraReward(address, uint256 index) -> (uint256)
@@ -132,10 +126,9 @@ console.log('Claimable principal:', ethers.formatUnits(claimable, 9), 'AGX')
 获取指定仓位的额外利息。
 
 js
-
 ```js
-const extra = await lockedStaking.getExtraReward(userAddress, 0)
-console.log('Extra rewards:', ethers.formatUnits(extra, 9), 'AGX')
+const extra = await lockedStaking.getExtraReward(userAddress, 0);
+console.log('Extra rewards:', ethers.formatUnits(extra, 9), 'AGX');
 ```
 
 ##### remainingStakeAmount() -> (uint256)
@@ -143,10 +136,9 @@ console.log('Extra rewards:', ethers.formatUnits(extra, 9), 'AGX')
 返回当前 UTC 日全局剩余额度。`stakingLimit == 0` 时返回 `type(uint256).max`；已使用量达到或超过限额时返回 0，避免下溢。
 
 js
-
 ```js
-const remaining = await lockedStaking.remainingStakeAmount()
-console.log('Today remaining stake:', ethers.formatUnits(remaining, 9), 'AGX')
+const remaining = await lockedStaking.remainingStakeAmount();
+console.log('Today remaining stake:', ethers.formatUnits(remaining, 9), 'AGX');
 ```
 
 ##### getUserLockedPrincipal(address) -> (uint256)
@@ -156,12 +148,11 @@ console.log('Today remaining stake:', ethers.formatUnits(remaining, 9), 'AGX')
 ##### 管理员视图
 
 js
-
 ```js
-const periodTime = await lockedStaking.periodTime() // 锁定期（秒）
-const warmupTime = await lockedStaking.warmupTime() // 预热时间
-const status = await lockedStaking.status() // 是否开放
-const globalIndex = await lockedStaking.globalExtraIndex() // 全局额外利息索引
+const periodTime = await lockedStaking.periodTime(); // 锁定期（秒）
+const warmupTime = await lockedStaking.warmupTime(); // 预热时间
+const status = await lockedStaking.status(); // 是否开放
+const globalIndex = await lockedStaking.globalExtraIndex(); // 全局额外利息索引
 ```
 
 ---
@@ -183,35 +174,36 @@ const globalIndex = await lockedStaking.globalExtraIndex() // 全局额外利息
 - Staked(user, amount, stakeIndex, timestamp, periodTime, gonsDelta)
 
 js
-
 ```js
 async function lockedStake(lockedContract, agxContract, amount, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 检查合约状态
-  if (!(await lockedContract.status())) {
-    throw new Error('Staking is currently paused')
+  if (!await lockedContract.status()) {
+    throw new Error('Staking is currently paused');
   }
 
   // 2. 检查推荐关系
-  const referral = new Contract(await lockedContract.referral(), REFERRAL_ABI, signer)
-  if (!(await referral.isBindReferral(user))) {
-    throw new Error('Must bind referral first')
+  const referral = new Contract(await lockedContract.referral(), REFERRAL_ABI, signer);
+  if (!await referral.isBindReferral(user)) {
+    throw new Error('Must bind referral first');
   }
 
   // 3. 提交前应查询并检查所有已启用额度；额度为 0 时对应门禁关闭
-  await (await agxContract.approve(await lockedContract.getAddress(), amount)).wait()
+  await (await agxContract.approve(await lockedContract.getAddress(), amount)).wait();
 
   // 5. 质押
-  const tx = await lockedContract.connect(signer).lockedStake(amount)
-  const receipt = await tx.wait()
+  const tx = await lockedContract.connect(signer).lockedStake(amount);
+  const receipt = await tx.wait();
 
-  const event = receipt.logs.find((l) => lockedContract.interface.parseLog(l)?.name === 'Staked')
-  const parsed = lockedContract.interface.parseLog(event)
-  console.log('Staked at index:', parsed.args.stakeIndex)
-  console.log('Period:', Number(parsed.args.periodTime) / 86400, 'days')
+  const event = receipt.logs.find(
+    l => lockedContract.interface.parseLog(l)?.name === 'Staked'
+  );
+  const parsed = lockedContract.interface.parseLog(event);
+  console.log('Staked at index:', parsed.args.stakeIndex);
+  console.log('Period:', Number(parsed.args.periodTime) / 86400, 'days');
 
-  return parsed.args.stakeIndex
+  return parsed.args.stakeIndex;
 }
 ```
 
@@ -234,24 +226,19 @@ async function lockedStake(lockedContract, agxContract, amount, signer) {
 领取指定仓位按 Locked 周期已释放的本金，并经 `AegisSplitterManager` 路由到 `AegisSplitterHead_*` 创建按当前配置锁定周期的线性释放单；本次调用不会让钱包 AGX 立即增加。
 
 js
-
 ```js
 async function claimPrincipal(lockedContract, stakeIndex, signer) {
   // 1. 检查可领取本金
-  const claimable = await lockedContract.getReleasedPrincipal(await signer.getAddress(), stakeIndex)
+  const claimable = await lockedContract.getReleasedPrincipal(await signer.getAddress(), stakeIndex);
   if (claimable === 0n) {
-    console.log('No principal to claim yet')
-    return
+    console.log('No principal to claim yet');
+    return;
   }
 
   // 2. 领取
-  const tx = await lockedContract.connect(signer).claimPrincipal(stakeIndex)
-  await tx.wait()
-  console.log(
-    'Principal release created via splitter (AegisSplitterManager):',
-    ethers.formatUnits(claimable, 9),
-    'AGX',
-  )
+  const tx = await lockedContract.connect(signer).claimPrincipal(stakeIndex);
+  await tx.wait();
+  console.log('Principal release created via splitter (AegisSplitterManager):', ethers.formatUnits(claimable, 9), 'AGX');
 }
 ```
 
@@ -260,29 +247,28 @@ async function claimPrincipal(lockedContract, stakeIndex, signer) {
 领取利息，支持 release + restake 混合。
 
 js
-
 ```js
 async function claimReward(lockedContract, stakeIndex, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 查看仓位
-  const stake = await lockedContract.getStake(user, stakeIndex)
+  const stake = await lockedContract.getStake(user, stakeIndex);
   if (stake.blockReward === 0n) {
-    console.log('No reward to claim')
-    return
+    console.log('No reward to claim');
+    return;
   }
 
   // 2. 配置释放
-  const claimAmount = stake.blockReward // 领取全部利息
-  const releasePlanIndex = 1 // 20 天释放
-  const restakePlanIndex = 0 // 复投到 LockedStaking
-  const restakeBps = 5000 // 50% 复投
+  const claimAmount = stake.blockReward; // 领取全部利息
+  const releasePlanIndex = 1; // 20 天释放
+  const restakePlanIndex = 0; // 复投到 LockedStaking
+  const restakeBps = 5000; // 50% 复投
 
-  const tx = await lockedContract
-    .connect(signer)
-    .claimRewardMixed(stakeIndex, claimAmount, releasePlanIndex, restakePlanIndex, restakeBps)
-  await tx.wait()
-  console.log('Reward claimed')
+  const tx = await lockedContract.connect(signer).claimRewardMixed(
+    stakeIndex, claimAmount, releasePlanIndex, restakePlanIndex, restakeBps
+  );
+  await tx.wait();
+  console.log('Reward claimed');
 }
 ```
 
@@ -358,27 +344,27 @@ RewardManager 调用 `applyEpochExtraReward` 原子写入 epoch 额外利息时�
 
 ### 错误码
 
-| 错误                                                | 原因                                                                                          | 解决方案                                         |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `ErrorAmountZero()`                                 | 质押金额为 0                                                                                  | 增加金额                                         |
-| `ErrorStakeNotApproved()`                           | 未绑定推荐关系                                                                                | 先绑定 Referral                                  |
-| `ErrorStakeAmountLimit()`                           | 超过质押限制                                                                                  | 减少金额或等待第二天                             |
-| `ErrorIndexOutOfBounds()`                           | 仓位索引无效                                                                                  | 使用有效索引                                     |
-| `ErrorStakeNotExist()`                              | 仓位不存在                                                                                    | 检查索引                                         |
-| `ErrorStakeWarmupPeriod()`                          | 预热期未过                                                                                    | 等待预热结束                                     |
-| `ErrorNotPrincipal()`                               | 无本金可领取                                                                                  | 等待释放                                         |
-| `ErrorExceedsBalance()`                             | 合约余额不足                                                                                  | 联系管理员                                       |
-| `ErrorExtraAmount()`                                | 额外利息不足                                                                                  | 减少提取量                                       |
-| `ErrorEpoch()`                                      | epoch 参数无效                                                                                | 联系管理员                                       |
-| `ErrorZeroAddress()`                                | 传入 address(0)                                                                               | 传入有效地址                                     |
-| `ErrorPrincipalReleaseVaultNotSet()`                | 未配置 `AegisSplitterManager` 时调用 `claimPrincipal`                                         | 先 `setPrincipalReleaseVault` 指向分流器 Manager |
-| `ErrorUnauthorizedRewardManager()`                  | 非 RewardManager 调用 `applyEpochExtraReward`                                                 | 仅由配置的 RewardManager 调用                    |
-| `ErrorRewardAmountMismatch()`                       | `applyEpochExtraReward` 的 `_rewardAmount` 与 `totalLockedPrincipal * _extraIndex / 1e9` 不等 | RewardManager 须按公式精确铸币                   |
-| `ErrorDeprecated()`                                 | 调用已废弃的 `updateGlobalIndex`                                                              | 改用 `applyEpochExtraReward`                     |
-| `ErrorStakeFailure()`                               | 底层 StakingPool `stake` 返回 false                                                           | 检查 StakingPool 状态                            |
-| `LockedStakingMigratedAccount(address account)`     | `migrateAccount` 的目标/源地址非法（自迁移/已迁移/有历史仓位）                                | 使用未参与过的 canonical 地址                    |
-| `LockedStakingNotMigrationManager(address caller)`  | 非 migrationManager 调用 `migrateAccount`                                                     | 仅由迁移管理器调用                               |
-| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                                                               | 保留相同地址                                     |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorAmountZero()` | 质押金额为 0 | 增加金额 |
+| `ErrorStakeNotApproved()` | 未绑定推荐关系 | 先绑定 Referral |
+| `ErrorStakeAmountLimit()` | 超过质押限制 | 减少金额或等待第二天 |
+| `ErrorIndexOutOfBounds()` | 仓位索引无效 | 使用有效索引 |
+| `ErrorStakeNotExist()` | 仓位不存在 | 检查索引 |
+| `ErrorStakeWarmupPeriod()` | 预热期未过 | 等待预热结束 |
+| `ErrorNotPrincipal()` | 无本金可领取 | 等待释放 |
+| `ErrorExceedsBalance()` | 合约余额不足 | 联系管理员 |
+| `ErrorExtraAmount()` | 额外利息不足 | 减少提取量 |
+| `ErrorEpoch()` | epoch 参数无效 | 联系管理员 |
+| `ErrorZeroAddress()` | 传入 address(0) | 传入有效地址 |
+| `ErrorPrincipalReleaseVaultNotSet()` | 未配置 `AegisSplitterManager` 时调用 `claimPrincipal` | 先 `setPrincipalReleaseVault` 指向分流器 Manager |
+| `ErrorUnauthorizedRewardManager()` | 非 RewardManager 调用 `applyEpochExtraReward` | 仅由配置的 RewardManager 调用 |
+| `ErrorRewardAmountMismatch()` | `applyEpochExtraReward` 的 `_rewardAmount` 与 `totalLockedPrincipal * _extraIndex / 1e9` 不等 | RewardManager 须按公式精确铸币 |
+| `ErrorDeprecated()` | 调用已废弃的 `updateGlobalIndex` | 改用 `applyEpochExtraReward` |
+| `ErrorStakeFailure()` | 底层 StakingPool `stake` 返回 false | 检查 StakingPool 状态 |
+| `LockedStakingMigratedAccount(address account)` | `migrateAccount` 的目标/源地址非法（自迁移/已迁移/有历史仓位） | 使用未参与过的 canonical 地址 |
+| `LockedStakingNotMigrationManager(address caller)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
+| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址 | 保留相同地址 |
 
 ---
 
@@ -387,36 +373,31 @@ RewardManager 调用 `applyEpochExtraReward` 原子写入 epoch 额外利息时�
 #### 查看用户所有仓位
 
 js
-
 ```js
 async function getUserStakes(lockedContract, userAddress) {
-  const count = await lockedContract.getStakesCount(userAddress)
-  const stakes = await lockedContract.getStakes(userAddress, 0, count)
+  const count = await lockedContract.getStakesCount(userAddress);
+  const stakes = await lockedContract.getStakes(userAddress, 0, count);
 
-  console.log(`Total positions: ${count}`)
-  let totalPending = 0n,
-    totalReward = 0n,
-    totalClaimable = 0n
+  console.log(`Total positions: ${count}`);
+  let totalPending = 0n, totalReward = 0n, totalClaimable = 0n;
 
   for (let i = 0; i < count; i++) {
-    const s = stakes[i]
-    totalPending += s.pending
-    totalReward += s.blockReward
-    totalClaimable += s.claimableBalance
+    const s = stakes[i];
+    totalPending += s.pending;
+    totalReward += s.blockReward;
+    totalClaimable += s.claimableBalance;
 
-    const extra = await lockedContract.getExtraReward(userAddress, i)
-    totalReward += extra
+    const extra = await lockedContract.getExtraReward(userAddress, i);
+    totalReward += extra;
 
-    console.log(`Position ${i}:`)
-    console.log(`  Pending: ${ethers.formatUnits(s.pending, 9)} AGX`)
-    console.log(`  Rewards: ${ethers.formatUnits(s.blockReward + extra, 9)} AGX`)
-    console.log(`  Claimable: ${ethers.formatUnits(s.claimableBalance, 9)} AGX`)
-    console.log(`  Expires: ${new Date(Number(s.expiry) * 1000).toLocaleDateString()}`)
+    console.log(`Position ${i}:`);
+    console.log(`  Pending: ${ethers.formatUnits(s.pending, 9)} AGX`);
+    console.log(`  Rewards: ${ethers.formatUnits(s.blockReward + extra, 9)} AGX`);
+    console.log(`  Claimable: ${ethers.formatUnits(s.claimableBalance, 9)} AGX`);
+    console.log(`  Expires: ${new Date(Number(s.expiry) * 1000).toLocaleDateString()}`);
   }
 
-  console.log(
-    `\nTotal: ${ethers.formatUnits(totalPending, 9)} pending, ${ethers.formatUnits(totalReward, 9)} rewards, ${ethers.formatUnits(totalClaimable, 9)} claimable`,
-  )
+  console.log(`\nTotal: ${ethers.formatUnits(totalPending, 9)} pending, ${ethers.formatUnits(totalReward, 9)} rewards, ${ethers.formatUnits(totalClaimable, 9)} claimable`);
 }
 ```
 
@@ -424,25 +405,25 @@ async function getUserStakes(lockedContract, userAddress) {
 
 ### 依赖合约
 
-| 合约                                 | 用途                                                        |
-| ------------------------------------ | ----------------------------------------------------------- |
-| StakingPool                          | 底层质押                                                    |
-| sAGX                                 | 生息代币                                                    |
-| Referral                             | 推荐关系验证                                                |
-| RewardQueue                          | 利息释放                                                    |
-| RestakeConfig                        | 复投配置                                                    |
+| 合约 | 用途 |
+| --- | --- |
+| StakingPool | 底层质押 |
+| sAGX | 生息代币 |
+| Referral | 推荐关系验证 |
+| RewardQueue | 利息释放 |
+| RestakeConfig | 复投配置 |
 | AegisSplitterManager / AegisSplitter | 必需；定期本金提取后经 Manager 路由按配置周期锁定的线性释放 |
-| AegisDailyPurchaseTracker            | 购买贡献追踪                                                |
+| AegisDailyPurchaseTracker | 购买贡献追踪 |
 
 ### 配置参数
 
-| 参数                 | 默认值               | 说明                             | 设置者     |
-| -------------------- | -------------------- | -------------------------------- | ---------- |
-| `periodTime`         | 初始化时设置         | 锁定期（秒）                     | ADMIN_ROLE |
-| `warmupTime`         | 0                    | 当前源码固定为 0，无外部 setter  | -          |
-| `status`             | true                 | 是否开放质押                     | ADMIN_ROLE |
-| `restakeConfig`      | 初始化后设置         | 复投配置                         | ADMIN_ROLE |
-| `stakingLimit`       | 0                    | UTC 日全局新增限额；0=无限       | ADMIN_ROLE |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `periodTime` | 初始化时设置 | 锁定期（秒） | ADMIN_ROLE |
+| `warmupTime` | 0 | 当前源码固定为 0，无外部 setter | - |
+| `status` | true | 是否开放质押 | ADMIN_ROLE |
+| `restakeConfig` | 初始化后设置 | 复投配置 | ADMIN_ROLE |
+| `stakingLimit` | 0 | UTC 日全局新增限额；0=无限 | ADMIN_ROLE |
 | `singleAddressLimit` | 部署参数，脚本默认 0 | 单 root 历史累计质押限额；0=无限 | ADMIN_ROLE |
 
 `setStakingLimitAmount(dailyGlobal, singleRootCumulative)` 同时更新两项。新部署未配置时默认无限；代理升级不会自动清空旧 storage，若要关闭旧限额必须显式写 0。

@@ -29,10 +29,10 @@ SHA-256 b491d0dadb3b…
 
 ### 前端读取
 
-| 方法                     | 说明                                                                                |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| `getPair(tokenA,tokenB)` | 查询交易对；零地址表示尚未创建                                                      |
-| `allPairs(index)`        | 按索引读取已创建 pair；当前 ABI 没有 `allPairsLength()`，前端不要假设可直接得到总数 |
+| 方法 | 说明 |
+| --- | --- |
+| `getPair(tokenA,tokenB)` | 查询交易对；零地址表示尚未创建 |
+| `allPairs(index)` | 按索引读取已创建 pair；当前 ABI 没有 `allPairsLength()`，前端不要假设可直接得到总数 |
 
 `createPair(tokenA,tokenB)` 是 permissionless，但生产用户界面不应把“创建新池”混入普通兑换流程。项目发布阶段应预先创建、验证并在地址 manifest 中锁定所需 pair；前端使用 Router 报价/兑换，并核对 Router/Factory 是否属于目标网络配置。
 

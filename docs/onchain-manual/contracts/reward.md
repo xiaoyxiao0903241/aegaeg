@@ -32,7 +32,6 @@ SHA-256 6ee6f2d2f08f…
 后端返回：`signType`、`amount`、`expireTime`、`salt`、`signature`。签名消息必须是：
 
 text
-
 ```text
 keccak256(abi.encodePacked(
   address(this), salt, user, amount, expireTime, signType
@@ -42,7 +41,6 @@ keccak256(abi.encodePacked(
 用户调用：
 
 solidity
-
 ```solidity
 claimReward(signType, amount, expireTime, salt, signature)
 ```
@@ -59,18 +57,18 @@ claimReward(signType, amount, expireTime, salt, signature)
 
 ### 运营接口
 
-| 方法                           | 权限     | 用途                            |
-| ------------------------------ | -------- | ------------------------------- |
-| `deposit(amount)`              | 任意地址 | 先 approve USD1，再补充奖励库存 |
-| `setSigner(signer)`            | owner    | 更新后端签名者                  |
-| `emergencyWithdraw(to,amount)` | owner    | 应急提取                        |
+| 方法 | 权限 | 用途 |
+| --- | --- | --- |
+| `deposit(amount)` | 任意地址 | 先 approve USD1，再补充奖励库存 |
+| `setSigner(signer)` | owner | 更新后端签名者 |
+| `emergencyWithdraw(to,amount)` | owner | 应急提取 |
 
 常见错误：`ErrorAlreadyUsed`、`ErrorInvalidSigner`、`ErrorSignatureExpired`、`ErrorZeroAmount`、`ErrorZeroAddress`（`initialize`/`setSigner`/`emergencyWithdraw` 传入零地址时回滚）。前端不能在签名失败后自行改变字段重试，必须重新向后端申请完整签名包。
 
 ### 事件
 
-| 事件                                                                                               | 说明                         |
-| -------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `Claimed(address indexed user, uint256 amount, bytes32 salt, uint256 signType, uint256 timestamp)` | 用户成功领取奖励             |
-| `SignerUpdated(address indexed oldSigner, address indexed newSigner)`                              | `setSigner` 切换签名者时触发 |
-| `Deposited(address indexed depositor, uint256 amount, uint256 timestamp)`                          | `deposit` 补充奖励库存时触发 |
+| 事件 | 说明 |
+| --- | --- |
+| `Claimed(address indexed user, uint256 amount, bytes32 salt, uint256 signType, uint256 timestamp)` | 用户成功领取奖励 |
+| `SignerUpdated(address indexed oldSigner, address indexed newSigner)` | `setSigner` 切换签名者时触发 |
+| `Deposited(address indexed depositor, uint256 amount, uint256 timestamp)` | `deposit` 补充奖励库存时触发 |

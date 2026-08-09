@@ -34,7 +34,6 @@ SHA-256 8c6881438d31…
 当前购买入口：
 
 solidity
-
 ```solidity
 function purchase(uint256 _phaseIndex, uint256 _amount) external nonReentrant
 ```
@@ -53,7 +52,6 @@ function purchase(uint256 _phaseIndex, uint256 _amount) external nonReentrant
 ### AGX 额度计算
 
 text
-
 ```text
 discountPrice = agxPrice * (10000 - phase.discount) / 10000
 agxAmount = amount * AGX_BASE / discountPrice
@@ -73,12 +71,12 @@ AGX_BASE = 1e9
 
 当前源码固定分配：
 
-| 去向                  | 比例 | 调用/转账                                  |
-| --------------------- | ---- | ------------------------------------------ |
-| saleWallet            | 82%  | `usd.safeTransfer(saleWallet, saleAmount)` |
-| rewardContract        | 10%  | `forceApprove` 后 `deposit(teamReward)`    |
-| communityFundContract | 5%   | `forceApprove` 后 `deposit(systemReward)`  |
-| referralBudget        | 3%   | `_issueReferralReward` 按推荐链匹配发放    |
+| 去向 | 比例 | 调用/转账 |
+| --- | --- | --- |
+| saleWallet | 82% | `usd.safeTransfer(saleWallet, saleAmount)` |
+| rewardContract | 10% | `forceApprove` 后 `deposit(teamReward)` |
+| communityFundContract | 5% | `forceApprove` 后 `deposit(systemReward)` |
+| referralBudget | 3% | `_issueReferralReward` 按推荐链匹配发放 |
 
 未发完的推荐预算会转给 `unclaimedReceiver`。
 
@@ -100,27 +98,25 @@ PreSale 资金不进入 `Treasury`。
 ### 前端购买示例
 
 javascript
-
 ```javascript
-const phaseIndex = 0n
-const amount = ethers.parseUnits('5000', 18)
+const phaseIndex = 0n;
+const amount = ethers.parseUnits("5000", 18);
 
-const bound = await referral.isBindReferral(userAddress)
-if (!bound) throw new Error('bind referral first')
+const bound = await referral.isBindReferral(userAddress);
+if (!bound) throw new Error("bind referral first");
 
-await (await usd1.approve(PRESALE_ADDRESS, amount)).wait()
-await (await presale.purchase(phaseIndex, amount)).wait()
+await (await usd1.approve(PRESALE_ADDRESS, amount)).wait();
+await (await presale.purchase(phaseIndex, amount)).wait();
 ```
 
 ### 常用查询
 
 javascript
-
 ```javascript
-const phaseCount = await presale.getPhaseCount()
-const remaining = await presale.getPhaseRemainingAmount(0)
-const userInfo = await presale.getUserPhaseRemainingAmount(userAddress, 0)
-const preview = await presale.previewAirdropValue(userAddress, 0, amount)
+const phaseCount = await presale.getPhaseCount();
+const remaining = await presale.getPhaseRemainingAmount(0);
+const userInfo = await presale.getUserPhaseRemainingAmount(userAddress, 0);
+const preview = await presale.previewAirdropValue(userAddress, 0, amount);
 ```
 
 ### 迁移与账户状态视图
@@ -153,33 +149,33 @@ const preview = await presale.previewAirdropValue(userAddress, 0, amount)
 
 ### 错误码
 
-| 错误                                                                | 原因                                       |
-| ------------------------------------------------------------------- | ------------------------------------------ |
-| `PreSalePaused()`                                                   | 合约暂停                                   |
-| `PreSaleUserNotBound()`                                             | 未绑定 Referral                            |
-| `PreSaleInvalidAmount()`                                            | 金额为 0 或非 BASE_UNIT 倍数               |
-| `PreSalePhaseIndexOutOfBounds(uint256,uint256)`                     | phase 索引越界                             |
-| `PreSalePhaseNotActive(uint256)`                                    | 当前时间不在 phase 时间窗口内              |
-| `PreSaleBelowMin(uint256)`                                          | 金额低于 phase minAmount                   |
-| `PreSaleExceedsMax(uint256,uint256,uint256)`                        | 金额超过 phase maxAmount                   |
-| `PreSalePhaseSoldOut(uint256)`                                      | phase 已售罄                               |
-| `PreSaleInvalidDiscount(uint256)`                                   | discount ≥ 10000                           |
-| `PreSaleInvalidAirdropValueRatio(uint256)`                          | airdropValueRatio > 10000                  |
-| `PreSaleInvalidAgxPrice(uint256)`                                   | agxPrice 为 0                              |
-| `PreSaleZeroAddress()`                                              | 传入零地址                                 |
-| `PreSaleMigratedAccount(address)`                                   | 账户已迁移或被占用                         |
-| `PreSaleNotMigrationManager(address)`                               | 非 migrationManager 调用 `migrateAccount`  |
-| `MigrationManagerImmutable(address)`                                | 二次修改 migrationManager                  |
-| `ErrorCallerNotAuthorized()`                                        | 非 owner/operator 调用受限函数             |
+| 错误 | 原因 |
+| --- | --- |
+| `PreSalePaused()` | 合约暂停 |
+| `PreSaleUserNotBound()` | 未绑定 Referral |
+| `PreSaleInvalidAmount()` | 金额为 0 或非 BASE_UNIT 倍数 |
+| `PreSalePhaseIndexOutOfBounds(uint256,uint256)` | phase 索引越界 |
+| `PreSalePhaseNotActive(uint256)` | 当前时间不在 phase 时间窗口内 |
+| `PreSaleBelowMin(uint256)` | 金额低于 phase minAmount |
+| `PreSaleExceedsMax(uint256,uint256,uint256)` | 金额超过 phase maxAmount |
+| `PreSalePhaseSoldOut(uint256)` | phase 已售罄 |
+| `PreSaleInvalidDiscount(uint256)` | discount ≥ 10000 |
+| `PreSaleInvalidAirdropValueRatio(uint256)` | airdropValueRatio > 10000 |
+| `PreSaleInvalidAgxPrice(uint256)` | agxPrice 为 0 |
+| `PreSaleZeroAddress()` | 传入零地址 |
+| `PreSaleMigratedAccount(address)` | 账户已迁移或被占用 |
+| `PreSaleNotMigrationManager(address)` | 非 migrationManager 调用 `migrateAccount` |
+| `MigrationManagerImmutable(address)` | 二次修改 migrationManager |
+| `ErrorCallerNotAuthorized()` | 非 owner/operator 调用受限函数 |
 | `PreSaleUserPurchaseLimitExceeded(uint256,uint256,uint256,uint256)` | 用户在阶段累计购买超过 `userPurchaseLimit` |
 
 ### 事件
 
-| 事件                                                                                                                                                              | 说明                          |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `Purchased(address indexed buyer, uint256 indexed phaseIndex, uint256 usdAmount, uint256 agxAmount, uint256 timestamp)`                                           | 用户购买                      |
-| `ReferralRewardPaid(address indexed referrer, address indexed buyer, uint256 buyerAmount, uint256 usdAmount, uint256 reward, uint256 timestamp)`                  | 推荐奖励发放                  |
-| `UnclaimedReferralWithdrawn(address indexed to, uint256 amount, uint256 timestamp)`                                                                               | 未发完推荐预算转出            |
+| 事件 | 说明 |
+| --- | --- |
+| `Purchased(address indexed buyer, uint256 indexed phaseIndex, uint256 usdAmount, uint256 agxAmount, uint256 timestamp)` | 用户购买 |
+| `ReferralRewardPaid(address indexed referrer, address indexed buyer, uint256 buyerAmount, uint256 usdAmount, uint256 reward, uint256 timestamp)` | 推荐奖励发放 |
+| `UnclaimedReferralWithdrawn(address indexed to, uint256 amount, uint256 timestamp)` | 未发完推荐预算转出 |
 | `PhaseUpdated(uint256 indexed phaseIndex, uint256 minAmount, uint256 maxAmount, uint256 discount, uint256 airdropValueRatio, uint256 startTime, uint256 endTime)` | `addPhase`/`updatePhase` 触发 |
-| `AirdropValueAccrued(address indexed buyer, uint256 indexed phaseIndex, uint256 purchaseAmount, uint256 addedValue, uint256 totalPhaseValue, uint256 timestamp)`  | 空投价值累计                  |
-| `PhaseUserPurchaseLimitUpdated(uint256 indexed phaseIndex, uint256 userPurchaseLimit)`                                                                            | 阶段单用户限额变更            |
+| `AirdropValueAccrued(address indexed buyer, uint256 indexed phaseIndex, uint256 purchaseAmount, uint256 addedValue, uint256 totalPhaseValue, uint256 timestamp)` | 空投价值累计 |
+| `PhaseUserPurchaseLimitUpdated(uint256 indexed phaseIndex, uint256 userPurchaseLimit)` | 阶段单用户限额变更 |

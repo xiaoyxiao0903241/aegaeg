@@ -50,16 +50,15 @@ XXToken（USDT）是 Usd1Swap 的输入 token，用户可以使用 XXToken 按�
 #### 视图函数（ERC20标准）
 
 javascript
-
 ```javascript
 // 查询余额
-const balance = await xxToken.balanceOf(userAddress)
+const balance = await xxToken.balanceOf(userAddress);
 
 // 查询授权额度
-const allowance = await xxToken.allowance(ownerAddress, spenderAddress)
+const allowance = await xxToken.allowance(ownerAddress, spenderAddress);
 
 // 查询总供应量
-const totalSupply = await xxToken.totalSupply()
+const totalSupply = await xxToken.totalSupply();
 ```
 
 #### 状态修改函数
@@ -69,11 +68,10 @@ const totalSupply = await xxToken.totalSupply()
 转账 XXToken。
 
 javascript
-
 ```javascript
-const tx = await xxToken.transfer(receiverAddress, amount)
-await tx.wait()
-console.log(`转账成功: ${ethers.formatUnits(amount, 18)} XX`)
+const tx = await xxToken.transfer(receiverAddress, amount);
+await tx.wait();
+console.log(`转账成功: ${ethers.formatUnits(amount, 18)} XX`);
 ```
 
 ##### approve(spender, amount)
@@ -81,11 +79,10 @@ console.log(`转账成功: ${ethers.formatUnits(amount, 18)} XX`)
 授权其他地址使用 XXToken。
 
 javascript
-
 ```javascript
-const tx = await xxToken.approve(spenderAddress, amount)
-await tx.wait()
-console.log(`授权成功: ${ethers.formatUnits(amount, 18)} XX`)
+const tx = await xxToken.approve(spenderAddress, amount);
+await tx.wait();
+console.log(`授权成功: ${ethers.formatUnits(amount, 18)} XX`);
 ```
 
 ##### transferFrom(from, to, amount)
@@ -93,17 +90,15 @@ console.log(`授权成功: ${ethers.formatUnits(amount, 18)} XX`)
 执行授权转账。
 
 javascript
-
 ```javascript
-const tx = await xxToken.transferFrom(fromAddress, toAddress, amount)
-await tx.wait()
-console.log(`授权转账成功`)
+const tx = await xxToken.transferFrom(fromAddress, toAddress, amount);
+await tx.wait();
+console.log(`授权转账成功`);
 ```
 
 ##### mint(to, amount)
 
 solidity
-
 ```solidity
 function mint(address to, uint256 amount) external onlyOwner;
 ```
@@ -111,10 +106,9 @@ function mint(address to, uint256 amount) external onlyOwner;
 仅 owner 可调用的增发函数（源码 `src/XXToken.sol:12`）。
 
 javascript
-
 ```javascript
-const tx = await xxToken.mint(recipient, amount)
-await tx.wait()
+const tx = await xxToken.mint(recipient, amount);
+await tx.wait();
 ```
 
 ---
@@ -124,7 +118,6 @@ await tx.wait()
 #### Transfer
 
 solidity
-
 ```solidity
 event Transfer(address indexed from, address indexed to, uint256 value);
 ```
@@ -132,7 +125,6 @@ event Transfer(address indexed from, address indexed to, uint256 value);
 #### Approval
 
 solidity
-
 ```solidity
 event Approval(address indexed owner, address indexed spender, uint256 value);
 ```
@@ -141,13 +133,13 @@ event Approval(address indexed owner, address indexed spender, uint256 value);
 
 ### 错误码
 
-| 错误                       | 原因           | 解决方案       |
-| -------------------------- | -------------- | -------------- |
-| `ERC20InsufficientBalance` | 余额不足       | 确保有足够余额 |
-| `ERC20InvalidApprover`     | 授权地址无效   | 检查授权地址   |
-| `ERC20InvalidReceiver`     | 接收地址无效   | 检查接收地址   |
-| `ERC20InvalidSender`       | 发送地址无效   | 检查发送地址   |
-| `ERC20InvalidSpender`      | 花费者地址无效 | 检查花费者地址 |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ERC20InsufficientBalance` | 余额不足 | 确保有足够余额 |
+| `ERC20InvalidApprover` | 授权地址无效 | 检查授权地址 |
+| `ERC20InvalidReceiver` | 接收地址无效 | 检查接收地址 |
+| `ERC20InvalidSender` | 发送地址无效 | 检查发送地址 |
+| `ERC20InvalidSpender` | 花费者地址无效 | 检查花费者地址 |
 
 ---
 
@@ -156,35 +148,34 @@ event Approval(address indexed owner, address indexed spender, uint256 value);
 #### 完整转账流程
 
 javascript
-
 ```javascript
-import { BrowserProvider, Contract } from 'ethers'
+import { BrowserProvider, Contract } from 'ethers';
 
 async function transferXXToken() {
-  const provider = new BrowserProvider(window.ethereum)
-  const signer = await provider.getSigner()
-  const userAddress = await signer.getAddress()
+  const provider = new BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+  const userAddress = await signer.getAddress();
 
-  const xxToken = new Contract(XX_TOKEN_ADDRESS, ERC20_ABI, signer)
+  const xxToken = new Contract(XX_TOKEN_ADDRESS, ERC20_ABI, signer);
 
   // 1. 检查余额
-  const balance = await xxToken.balanceOf(userAddress)
+  const balance = await xxToken.balanceOf(userAddress);
   if (balance === 0n) {
-    console.log('没有可用的 XXToken')
-    return
+    console.log('没有可用的 XXToken');
+    return;
   }
 
   // 2. 转账
-  const receiver = '0x...' // 接收地址
-  const amount = ethers.parseUnits('100', 18) // 100 XX
+  const receiver = '0x...';  // 接收地址
+  const amount = ethers.parseUnits('100', 18);  // 100 XX
 
-  const tx = await xxToken.transfer(receiver, amount)
-  const receipt = await tx.wait()
+  const tx = await xxToken.transfer(receiver, amount);
+  const receipt = await tx.wait();
 
-  console.log(`✅ 转账成功: ${ethers.formatUnits(amount, 18)} XX`)
+  console.log(`✅ 转账成功: ${ethers.formatUnits(amount, 18)} XX`);
 }
 
-transferXXToken().catch(console.error)
+transferXXToken().catch(console.error);
 ```
 
 ---

@@ -61,21 +61,20 @@ SHA-256 9fc81f8daf55…
 #### 视图函数
 
 js
-
 ```js
 // Epoch 信息
-const epoch = await stakingPool.epoch()
-console.log('Epoch #:', epoch.number)
-console.log('Ends at block:', epoch.endBlock)
-console.log('Distribute:', ethers.formatUnits(epoch.distribute, 9), 'AGX')
+const epoch = await stakingPool.epoch();
+console.log('Epoch #:', epoch.number);
+console.log('Ends at block:', epoch.endBlock);
+console.log('Distribute:', ethers.formatUnits(epoch.distribute, 9), 'AGX');
 
 // 当前 index
-const index = await stakingPool.index()
-console.log('sAGX index:', ethers.formatUnits(index, 9))
+const index = await stakingPool.index();
+console.log('sAGX index:', ethers.formatUnits(index, 9));
 
 // 合约 AGX 余额
-const poolBal = await stakingPool.poolAgxBalance()
-console.log('Pool AGX balance:', ethers.formatUnits(poolBal, 9))
+const poolBal = await stakingPool.poolAgxBalance();
+console.log('Pool AGX balance:', ethers.formatUnits(poolBal, 9));
 ```
 
 #### 注意
@@ -90,12 +89,12 @@ Rebase 执行时触发。
 
 ### 配置参数
 
-| 参数             | 说明                                                                                          | 设置者                                 |
-| ---------------- | --------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `epoch.length`   | epoch 区块间隔                                                                                | owner/operator 通过 `resetRebaseParam` |
-| `stakeContracts` | 质押合约白名单                                                                                | owner                                  |
-| `rewardManager`  | 奖励管理者                                                                                    | owner                                  |
-| `operators`      | operator 列表（`mapping(address=>bool)`），`resetRebaseParam` 允许 owner 或任意 operator 调用 | owner 经 `setBondOperator` 设置        |
+| 参数 | 说明 | 设置者 |
+| --- | --- | --- |
+| `epoch.length` | epoch 区块间隔 | owner/operator 通过 `resetRebaseParam` |
+| `stakeContracts` | 质押合约白名单 | owner |
+| `rewardManager` | 奖励管理者 | owner |
+| `operators` | operator 列表（`mapping(address=>bool)`），`resetRebaseParam` 允许 owner 或任意 operator 调用 | owner 经 `setBondOperator` 设置 |
 
 #### Setter
 

@@ -67,7 +67,6 @@ SHA-256 5cf5105b482c…
 检查用户是否已绑定推荐人。
 
 javascript
-
 ```javascript
 const isBound = await referral.isBindReferral(userAddress)
 console.log(`用户已绑定推荐人: ${isBound}`)
@@ -80,7 +79,6 @@ console.log(`用户已绑定推荐人: ${isBound}`)
 获取用户的直接推荐人（父节点）。
 
 javascript
-
 ```javascript
 const parent = await referral.getReferral(userAddress)
 if (parent !== ethers.ZeroAddress) {
@@ -93,7 +91,6 @@ if (parent !== ethers.ZeroAddress) {
 获取用户的直接子节点数量。
 
 javascript
-
 ```javascript
 const childCount = await referral.getReferralCount(userAddress)
 console.log(`直接子节点数: ${childCount}`)
@@ -104,7 +101,6 @@ console.log(`直接子节点数: ${childCount}`)
 获取用户的所有直接子节点地址列表。
 
 javascript
-
 ```javascript
 const children = await referral.getChildren(userAddress)
 console.log(`子节点列表:`, children)
@@ -115,7 +111,6 @@ console.log(`子节点列表:`, children)
 获取推荐树的根节点地址。
 
 javascript
-
 ```javascript
 const root = await referral.getRootAddress()
 console.log(`根节点: ${root}`)
@@ -126,7 +121,6 @@ console.log(`根节点: ${root}`)
 获取用户的上溯 `_num` 层推荐链（源码 Referral.sol:230）。返回从直接父节点开始向上的地址数组，长度 ≤ `_num`。
 
 javascript
-
 ```javascript
 const chain = await referral.getReferrals(userAddress, 5)
 console.log(`上溯推荐链:`, chain)
@@ -137,7 +131,6 @@ console.log(`上溯推荐链:`, chain)
 获取用户指定下标的直接子节点（源码 Referral.sol:214）。`index` 越界回滚 `Referral__UserZero()`（无该子节点）。
 
 javascript
-
 ```javascript
 const child0 = await referral.getChildAt(userAddress, 0)
 console.log(`第 0 个子节点:`, child0)
@@ -148,7 +141,6 @@ console.log(`第 0 个子节点:`, child0)
 获取迁移前的原始地址。
 
 javascript
-
 ```javascript
 const original = await referral.originalOf(migratedAddress)
 console.log(`原始地址: ${original}`)
@@ -159,7 +151,6 @@ console.log(`原始地址: ${original}`)
 获取迁移后的规范地址（最终有效地址）。
 
 javascript
-
 ```javascript
 const canonical = await referral.canonicalOf(oldAddress)
 console.log(`规范地址: ${canonical}`)
@@ -174,10 +165,9 @@ console.log(`规范地址: ${canonical}`)
 绑定推荐人。**这是使用任何质押/债券功能的前置条件**。
 
 javascript
-
 ```javascript
 // 选择一个已绑定推荐人的地址作为父节点
-const parentAddress = '0x...' // 必须是已绑定的地址
+const parentAddress = "0x..." // 必须是已绑定的地址
 
 // 检查父节点是否有效
 const isParentBound = await referral.isBindReferral(parentAddress)
@@ -190,7 +180,7 @@ const tx = await referral.bindReferral(parentAddress)
 const receipt = await tx.wait()
 
 // 监听事件
-const event = receipt.logs.find((l) => l.fragment?.name === 'BindReferral')
+const event = receipt.logs.find(l => l.fragment?.name === 'BindReferral')
 if (event) {
   console.log(`成功绑定推荐人: ${event.args._address} -> ${event.args.parent}`)
 }
@@ -243,7 +233,6 @@ if (event) {
 用户绑定推荐人时触发。
 
 solidity
-
 ```solidity
 event BindReferral(
   address indexed _address,
@@ -255,7 +244,6 @@ event BindReferral(
 **前端监听示例**:
 
 javascript
-
 ```javascript
 referral.on('BindReferral', (user, parent, timestamp) => {
   console.log(`[${new Date(Number(timestamp) * 1000).toISOString()}] 用户 ${user} 绑定到 ${parent}`)
@@ -267,7 +255,6 @@ referral.on('BindReferral', (user, parent, timestamp) => {
 `setRootAddress` 重建根链时触发。
 
 solidity
-
 ```solidity
 event RootUpdated(
   address indexed oldRoot,
@@ -277,7 +264,6 @@ event RootUpdated(
 ```
 
 javascript
-
 ```javascript
 referral.on('RootUpdated', (oldRoot, newRoot, timestamp) => {
   console.log(`根节点从 ${oldRoot} 切换到 ${newRoot}`)
@@ -289,7 +275,6 @@ referral.on('RootUpdated', (oldRoot, newRoot, timestamp) => {
 账户迁移时触发。
 
 solidity
-
 ```solidity
 event IdentityMigrated(
   address indexed from,
@@ -301,7 +286,6 @@ event IdentityMigrated(
 **前端监听示例**:
 
 javascript
-
 ```javascript
 referral.on('IdentityMigrated', (from, to, timestamp) => {
   console.log(`账户从 ${from} 迁移到 ${to}`)
@@ -314,18 +298,18 @@ referral.on('IdentityMigrated', (from, to, timestamp) => {
 
 ### 错误码
 
-| 错误                                     | 原因                             | 解决方案                 |
-| ---------------------------------------- | -------------------------------- | ------------------------ |
-| `Referral__RootZero()`                   | 根节点为零地址                   | 联系管理员初始化根节点   |
-| `Referral__UserZero()`                   | 用户地址为零地址                 | 检查地址参数             |
-| `Referral__ParentZero()`                 | 父节点地址为零地址               | 提供有效的父节点地址     |
-| `Referral__SelfReferral()`               | 试图将自己设为父节点             | 使用不同的地址           |
-| `Referral__AlreadyBound(address)`        | 用户已绑定推荐人                 | 推荐人无法更改           |
-| `Referral__ParentNotBound(address)`      | 父节点未绑定                     | 选择已绑定的父节点       |
-| `Referral__MigratedAccount(address)`     | 账户已迁移                       | 使用迁移后的新地址       |
-| `Referral__NotMigrationManager(address)` | 调用者无迁移权限                 | 使用正确的调用者         |
-| `MigrationManagerZeroAddress()`          | `setMigrationManager` 传入零地址 | 传入有效地址             |
-| `MigrationManagerImmutable(address)`     | 二次修改 migrationManager        | 一次性不可变，部署前确认 |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `Referral__RootZero()` | 根节点为零地址 | 联系管理员初始化根节点 |
+| `Referral__UserZero()` | 用户地址为零地址 | 检查地址参数 |
+| `Referral__ParentZero()` | 父节点地址为零地址 | 提供有效的父节点地址 |
+| `Referral__SelfReferral()` | 试图将自己设为父节点 | 使用不同的地址 |
+| `Referral__AlreadyBound(address)` | 用户已绑定推荐人 | 推荐人无法更改 |
+| `Referral__ParentNotBound(address)` | 父节点未绑定 | 选择已绑定的父节点 |
+| `Referral__MigratedAccount(address)` | 账户已迁移 | 使用迁移后的新地址 |
+| `Referral__NotMigrationManager(address)` | 调用者无迁移权限 | 使用正确的调用者 |
+| `MigrationManagerZeroAddress()` | `setMigrationManager` 传入零地址 | 传入有效地址 |
+| `MigrationManagerImmutable(address)` | 二次修改 migrationManager | 一次性不可变，部署前确认 |
 
 ---
 
@@ -334,7 +318,6 @@ referral.on('IdentityMigrated', (from, to, timestamp) => {
 #### 完整绑定流程
 
 javascript
-
 ```javascript
 import { BrowserProvider } from 'ethers'
 
@@ -389,7 +372,6 @@ function getUrlParameter(name) {
 #### 显示推荐关系
 
 javascript
-
 ```javascript
 async function displayReferralTree(userAddress) {
   const referral = new Contract(REFERRAL_ADDRESS, REFERRAL_ABI, provider)
@@ -416,7 +398,6 @@ async function displayReferralTree(userAddress) {
 #### 监听推荐事件
 
 javascript
-
 ```javascript
 // 监听新的绑定事件
 referral.on('BindReferral', (user, parent, timestamp) => {
@@ -436,7 +417,6 @@ function cleanup() {
 #### 处理账户迁移
 
 javascript
-
 ```javascript
 async function requestAccountMigration(referral, migrationManager, oldSigner, newAddress) {
   const oldAddress = await oldSigner.getAddress()
@@ -459,15 +439,15 @@ async function requestAccountMigration(referral, migrationManager, oldSigner, ne
 
 Referral 合约是独立的，不依赖其他合约。但被以下合约依赖：
 
-| 合约                 | 用途                         |
-| -------------------- | ---------------------------- |
-| LiquidStaking        | 验证推荐人绑定               |
-| LockedStaking        | 验证推荐人绑定               |
-| EarlyStaking         | 验证推荐人绑定               |
-| BondDepository       | 验证推荐人绑定               |
-| BurnBondDepository   | 验证推荐人绑定               |
-| PreSale              | 验证推荐人绑定并分配推荐奖励 |
-| DailyPurchaseTracker | 追踪购买资格                 |
+| 合约 | 用途 |
+| --- | --- |
+| LiquidStaking | 验证推荐人绑定 |
+| LockedStaking | 验证推荐人绑定 |
+| EarlyStaking | 验证推荐人绑定 |
+| BondDepository | 验证推荐人绑定 |
+| BurnBondDepository | 验证推荐人绑定 |
+| PreSale | 验证推荐人绑定并分配推荐奖励 |
+| DailyPurchaseTracker | 追踪购买资格 |
 
 ---
 
@@ -476,7 +456,6 @@ Referral 合约是独立的，不依赖其他合约。但被以下合约依赖�
 #### 1. 推荐人来源
 
 javascript
-
 ```javascript
 // 推荐人可以从多个来源获取：
 // a) URL 参数: ?referrer=0x...
@@ -504,7 +483,6 @@ function isValidAddress(addr) {
 #### 2. 错误处理
 
 javascript
-
 ```javascript
 try {
   const tx = await referral.bindReferral(parent)

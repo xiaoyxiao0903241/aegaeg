@@ -40,7 +40,6 @@ Lucky 购买上报采用 gas 上限保护的 best-effort。价格读取或 Track
 sAGX 使用 gons（gons = "goes") 作为内部记账单位，用户的实际余额通过以下公式计算：
 
 text
-
 ```text
 实际余额 = balanceForGons(gons) = gons / index
 gons = gonsForBalance(实际余额) = 实际余额 * index
@@ -81,7 +80,6 @@ gons = gonsForBalance(实际余额) = 实际余额 * index
 获取用户的待生效利息和可领取利息。
 
 javascript
-
 ```javascript
 const [warmupInterest, stakeInterest] = await liquidStaking.getStakeRewards(userAddress)
 ```
@@ -96,7 +94,6 @@ const [warmupInterest, stakeInterest] = await liquidStaking.getStakeRewards(user
 获取当前时间桶内还可质押的额度。
 
 javascript
-
 ```javascript
 const remaining = await liquidStaking.remainingStakeAmount()
 ```
@@ -106,7 +103,6 @@ const remaining = await liquidStaking.remainingStakeAmount()
 获取当前时间桶编号（天）。
 
 javascript
-
 ```javascript
 const bucket = await liquidStaking.timeBucket()
 ```
@@ -116,7 +112,6 @@ const bucket = await liquidStaking.timeBucket()
 检查用户的预热期是否已结束。
 
 javascript
-
 ```javascript
 const expired = await liquidStaking.isWarmupExpired(userAddress)
 ```
@@ -130,7 +125,6 @@ const expired = await liquidStaking.isWarmupExpired(userAddress)
 质押 AGX 到 StakingPool。
 
 javascript
-
 ```javascript
 const agxAmount = ethers.parseUnits('10', 9) // 10 AGX
 
@@ -142,7 +136,7 @@ const tx = await liquidStaking.liquidStake(agxAmount)
 const receipt = await tx.wait()
 
 // 监听事件
-const event = receipt.logs.find((l) => l.fragment?.name === 'Staked')
+const event = receipt.logs.find(l => l.fragment?.name === 'Staked')
 console.log(`质押成功: ${event.args._amount}`)
 ```
 
@@ -160,7 +154,6 @@ console.log(`质押成功: ${event.args._amount}`)
 将预热期的奖励合并到主仓位。
 
 javascript
-
 ```javascript
 const tx = await liquidStaking.claim()
 await tx.wait()
@@ -177,7 +170,6 @@ console.log('预热奖励已合并到主仓位')
 提取指定数量的本金，经 `AegisSplitterManager` 路由到 `AegisSplitterHead_*` 等头部分流器按当前配置锁定周期的线性释放。
 
 javascript
-
 ```javascript
 const principalAmount = ethers.parseUnits('5', 9) // 提取 5 AGX
 const tx = await liquidStaking.claimPrincipal(principalAmount)
@@ -198,23 +190,22 @@ console.log('本金提取成功，进入释放队列')
 领取奖励，可选择部分释放、部分复投。
 
 javascript
-
 ```javascript
-const releasePlanIndex = 0 // 释放计划索引（对应 RewardQueue 中的 vesting plan）
-const rewardAmount = ethers.parseUnits('10', 9) // 领取 10 AGX 奖励
-const restakePlanIndex = 1 // 复投计划索引（对应 LockedStaking 中的锁仓计划）
-const restakeBps = 5000 // 50% 复投（BPS = basis points, 10000 = 100%）
+const releasePlanIndex = 0  // 释放计划索引（对应 RewardQueue 中的 vesting plan）
+const rewardAmount = ethers.parseUnits('10', 9)  // 领取 10 AGX 奖励
+const restakePlanIndex = 1  // 复投计划索引（对应 LockedStaking 中的锁仓计划）
+const restakeBps = 5000     // 50% 复投（BPS = basis points, 10000 = 100%）
 
 const tx = await liquidStaking.claimRewardMixed(
   releasePlanIndex,
   rewardAmount,
   restakePlanIndex,
-  restakeBps,
+  restakeBps
 )
 const receipt = await tx.wait()
 
 // 解析事件获取详细信息
-const event = receipt.logs.find((l) => l.fragment?.name === 'RewardClaimedMixed')
+const event = receipt.logs.find(l => l.fragment?.name === 'RewardClaimedMixed')
 if (event) {
   console.log(`总奖励: ${ethers.formatUnits(event.args._reward, 9)} AGX`)
   console.log(`释放金额: ${ethers.formatUnits(event.args._releaseAmount, 9)} AGX`)
@@ -244,7 +235,6 @@ if (event) {
 用户质押 AGX 时触发。
 
 solidity
-
 ```solidity
 event Staked(
   address indexed _user,
@@ -261,7 +251,6 @@ event Staked(
 用户提取本金时触发。
 
 solidity
-
 ```solidity
 event Claimed(
   address indexed _user,
@@ -278,7 +267,6 @@ event Claimed(
 用户领取混合奖励时触发。
 
 solidity
-
 ```solidity
 event RewardClaimedMixed(
   address indexed _user,
@@ -299,17 +287,17 @@ event RewardClaimedMixed(
 
 ### 错误码
 
-| 错误                                 | 原因                  | 解决方案                              |
-| ------------------------------------ | --------------------- | ------------------------------------- |
-| `ErrorStakeAmount()`                 | 质押金额为 0          | 确保金额 > 0                          |
-| `ErrorStakeNotApproved()`            | 未绑定推荐人          | 先调用 `Referral.bindReferral()`      |
-| `ErrorStakeAmountLimit()`            | 超过质押上限          | 检查 `remainingStakeAmount()`         |
-| `ErrorStakeNotExists()`              | 不存在质押仓位        | 先进行质押                            |
-| `ErrorStakeWarmupNotEnded()`         | 预热期未结束          | 等待足够 epoch                        |
-| `ErrorStakeAmountExceedsBalance()`   | 提取金额超过余额      | 减少提取金额                          |
-| `ErrorStakeAmountExceedsInterest()`  | 提取金额超过可用利息  | 减少提取金额                          |
-| `ErrorStakeInterestAmountZero()`     | 利息为 0              | 等待 rebase 积累利息                  |
-| `ErrorAlreadyMigrated()`             | 账户已迁移            | 使用迁移后的新地址                    |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorStakeAmount()` | 质押金额为 0 | 确保金额 > 0 |
+| `ErrorStakeNotApproved()` | 未绑定推荐人 | 先调用 `Referral.bindReferral()` |
+| `ErrorStakeAmountLimit()` | 超过质押上限 | 检查 `remainingStakeAmount()` |
+| `ErrorStakeNotExists()` | 不存在质押仓位 | 先进行质押 |
+| `ErrorStakeWarmupNotEnded()` | 预热期未结束 | 等待足够 epoch |
+| `ErrorStakeAmountExceedsBalance()` | 提取金额超过余额 | 减少提取金额 |
+| `ErrorStakeAmountExceedsInterest()` | 提取金额超过可用利息 | 减少提取金额 |
+| `ErrorStakeInterestAmountZero()` | 利息为 0 | 等待 rebase 积累利息 |
+| `ErrorAlreadyMigrated()` | 账户已迁移 | 使用迁移后的新地址 |
 | `ErrorPrincipalReleaseVaultNotSet()` | 分流器 Manager 未设置 | 联系管理员配置 `AegisSplitterManager` |
 
 ---
@@ -319,7 +307,6 @@ event RewardClaimedMixed(
 #### 完整质押流程
 
 javascript
-
 ```javascript
 import { ethers } from 'ethers'
 
@@ -379,7 +366,6 @@ checkWarmup()
 #### 领取混合奖励
 
 javascript
-
 ```javascript
 async function claimMixedReward() {
   const [warmupInterest, stakeInterest] = await liquidStaking.getStakeRewards(userAddress)
@@ -390,17 +376,17 @@ async function claimMixedReward() {
   }
 
   // 决定释放/复投比例
-  const releasePercent = 40 // 40% 释放
-  const restakePercent = 60 // 60% 复投
+  const releasePercent = 40  // 40% 释放
+  const restakePercent = 60  // 60% 复投
 
-  const releaseAmount = (stakeInterest * BigInt(releasePercent)) / 100n
-  const restakeBps = BigInt(restakePercent * 100) // 转换为 BPS
+  const releaseAmount = stakeInterest * BigInt(releasePercent) / 100n
+  const restakeBps = BigInt(restakePercent * 100)  // 转换为 BPS
 
   const tx = await liquidStaking.claimRewardMixed(
-    0, // releasePlanIndex (默认计划)
+    0,      // releasePlanIndex (默认计划)
     releaseAmount,
-    1, // restakePlanIndex (LockedStaking 的某个计划)
-    restakeBps,
+    1,      // restakePlanIndex (LockedStaking 的某个计划)
+    restakeBps
   )
   const receipt = await tx.wait()
 
@@ -412,28 +398,28 @@ async function claimMixedReward() {
 
 ### 依赖合约
 
-| 合约                                     | 用途                   |
-| ---------------------------------------- | ---------------------- |
-| `StakingPool`                            | 实际质押池             |
-| `sAGX`                                   | 生息代币               |
-| `AGX`                                    | 质押代币               |
-| `Referral`                               | 推荐系统验证           |
-| `RewardQueue`                            | 奖励线性释放           |
-| `LockedStaking`                          | 复投目标               |
+| 合约 | 用途 |
+| --- | --- |
+| `StakingPool` | 实际质押池 |
+| `sAGX` | 生息代币 |
+| `AGX` | 质押代币 |
+| `Referral` | 推荐系统验证 |
+| `RewardQueue` | 奖励线性释放 |
+| `LockedStaking` | 复投目标 |
 | `AegisSplitterManager` / `AegisSplitter` | 本金释放路由与线性释放 |
-| `RestakeConfig`                          | Restake 配置           |
-| `DailyPurchaseTracker`                   | 购买记录追踪           |
+| `RestakeConfig` | Restake 配置 |
+| `DailyPurchaseTracker` | 购买记录追踪 |
 
 ---
 
 ### 配置参数
 
-| 参数                      | 默认值      | 说明                                       |
-| ------------------------- | ----------- | ------------------------------------------ |
-| `warmupEpochs`            | 2           | 预热期 epoch 数                            |
-| `stakingLimit`            | 10000 * 1e9 | 每日全局新增质押上限，次日使用新时间桶     |
-| `singleAddressLimit`      | 50 * 1e9    | 单地址当前本金上限，提取本金后恢复相应额度 |
-| `singleAddressDailyLimit` | 50 * 1e9    | 单地址日质押上限                           |
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| `warmupEpochs` | 2 | 预热期 epoch 数 |
+| `stakingLimit` | 10000 * 1e9 | 每日全局新增质押上限，次日使用新时间桶 |
+| `singleAddressLimit` | 50 * 1e9 | 单地址当前本金上限，提取本金后恢复相应额度 |
+| `singleAddressDailyLimit` | 50 * 1e9 | 单地址日质押上限 |
 
 这些参数可通过管理员函数修改：
 

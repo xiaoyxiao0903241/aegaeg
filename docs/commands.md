@@ -37,6 +37,7 @@
 |合约地址（fail-closed）|`src/shared/config/contracts.ts` ← `VITE_BSC_*`|
 |地址目录|[`onchain-manual/00-addresses.md`](./onchain-manual/00-addresses.md)|
 |新手册 / ABI|[`onchain-manual/`](./onchain-manual/)|
+|手册 HTML→MD|`python3 scripts/convert-frontend-manual-html.py`（需 `lxml`）；校验 `python3 scripts/verify-frontend-manual-html-fidelity.py`|
 |旧手册|[`onchain-manual-legacy.md`](./onchain-manual-legacy.md)|
 |后端 API|[`backend-api/`](./backend-api/)（机器真源 `openapi.json`）|
 |数据对齐矩阵（SSOT）|[`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md)|

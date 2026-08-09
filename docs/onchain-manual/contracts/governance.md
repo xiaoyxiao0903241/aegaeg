@@ -36,7 +36,6 @@ SHA-256 733c1c28f76a…
 #### 1. 提案生命周期
 
 text
-
 ```text
 Pending → Active → Succeeded/Defeated → (Succeeded → Executed)
   ↓
@@ -83,10 +82,9 @@ Expired (投票结束后未执行)
 返回最新提案 ID。
 
 js
-
 ```js
-const lastId = await governance.lastProposalId()
-console.log('Latest proposal ID:', lastId)
+const lastId = await governance.lastProposalId();
+console.log('Latest proposal ID:', lastId);
 ```
 
 ##### getProposal(uint256 proposalId) -> (...)
@@ -106,21 +104,16 @@ console.log('Latest proposal ID:', lastId)
 - minQuorumSnapshot - 法定人数门槛
 
 js
-
 ```js
-const stateNames = ['Pending', 'Active', 'Succeeded', 'Defeated', 'Canceled', 'Expired', 'Executed']
+const stateNames = ['Pending', 'Active', 'Succeeded', 'Defeated', 'Canceled', 'Expired', 'Executed'];
 
 async function displayProposal(proposalId) {
-  const p = await governance.getProposal(proposalId)
-  console.log(`Proposal #${proposalId}`)
-  console.log(`State: ${stateNames[p.proposalState]}`)
-  console.log(
-    `For: ${ethers.formatUnits(p.forVotes, 9)} | Against: ${ethers.formatUnits(p.againstVotes, 9)} | Abstain: ${ethers.formatUnits(p.abstainVotes, 9)}`,
-  )
-  console.log(`Voters: ${p.totalVoters} | Quorum: ${ethers.formatUnits(p.minQuorumSnapshot, 9)}`)
-  console.log(
-    `Voting: ${new Date(Number(p.voteStart) * 1000).toLocaleString()} - ${new Date(Number(p.voteEnd) * 1000).toLocaleString()}`,
-  )
+  const p = await governance.getProposal(proposalId);
+  console.log(`Proposal #${proposalId}`);
+  console.log(`State: ${stateNames[p.proposalState]}`);
+  console.log(`For: ${ethers.formatUnits(p.forVotes, 9)} | Against: ${ethers.formatUnits(p.againstVotes, 9)} | Abstain: ${ethers.formatUnits(p.abstainVotes, 9)}`);
+  console.log(`Voters: ${p.totalVoters} | Quorum: ${ethers.formatUnits(p.minQuorumSnapshot, 9)}`);
+  console.log(`Voting: ${new Date(Number(p.voteStart) * 1000).toLocaleString()} - ${new Date(Number(p.voteEnd) * 1000).toLocaleString()}`);
 }
 ```
 
@@ -129,9 +122,8 @@ async function displayProposal(proposalId) {
 单独查询提案状态。
 
 js
-
 ```js
-const state = await governance.queryProposalState(proposalId)
+const state = await governance.queryProposalState(proposalId);
 // 0=Pending, 1=Active, 2=Succeeded, 3=Defeated, 4=Canceled, 5=Expired, 6=Executed
 ```
 
@@ -151,13 +143,12 @@ const state = await governance.queryProposalState(proposalId)
 - creditExtra - 已记账但尚未领取的额外利息（累积值）
 
 js
-
 ```js
-const receipt = await governance.getVoteReceipt(proposalId, userAddress)
-console.log('Has voted:', receipt.hasVoted)
-console.log('Support:', ['Against', 'For', 'Abstain'][receipt.support])
-console.log('Votes:', ethers.formatUnits(receipt.votes, 9))
-console.log('Principal:', ethers.formatUnits(receipt.principal, 9))
+const receipt = await governance.getVoteReceipt(proposalId, userAddress);
+console.log('Has voted:', receipt.hasVoted);
+console.log('Support:', ['Against', 'For', 'Abstain'][receipt.support]);
+console.log('Votes:', ethers.formatUnits(receipt.votes, 9));
+console.log('Principal:', ethers.formatUnits(receipt.principal, 9));
 ```
 
 ##### getVoteRewards(uint256 proposalId, address voter) -> (principal, blockReward, extraInterest)
@@ -165,27 +156,22 @@ console.log('Principal:', ethers.formatUnits(receipt.principal, 9))
 获取用户可领取的投票奖励。
 
 js
-
 ```js
-const [principal, blockReward, extraInterest] = await governance.getVoteRewards(
-  proposalId,
-  userAddress,
-)
-console.log('Principal:', ethers.formatUnits(principal, 9), 'AGX')
-console.log('Block reward (interest):', ethers.formatUnits(blockReward, 9), 'AGX')
-console.log('Extra interest:', ethers.formatUnits(extraInterest, 9), 'AGX')
-console.log('Total:', ethers.formatUnits(principal + blockReward + extraInterest, 9), 'AGX')
+const [principal, blockReward, extraInterest] = await governance.getVoteRewards(proposalId, userAddress);
+console.log('Principal:', ethers.formatUnits(principal, 9), 'AGX');
+console.log('Block reward (interest):', ethers.formatUnits(blockReward, 9), 'AGX');
+console.log('Extra interest:', ethers.formatUnits(extraInterest, 9), 'AGX');
+console.log('Total:', ethers.formatUnits(principal + blockReward + extraInterest, 9), 'AGX');
 ```
 
 ##### 管理员视图
 
 js
-
 ```js
 // 查询参数
-const votingDelay = await governance.votingDelay() // 投票延迟
-const threshold = await governance.proposalStakeThreshold() // 提案质押门槛
-const maxQuorum = await governance.maxQuorumGlobal() // 全局最大票数
+const votingDelay = await governance.votingDelay(); // 投票延迟
+const threshold = await governance.proposalStakeThreshold(); // 提案质押门槛
+const maxQuorum = await governance.maxQuorumGlobal(); // 全局最大票数
 ```
 
 ---
@@ -215,41 +201,37 @@ const maxQuorum = await governance.maxQuorumGlobal() // 全局最大票数
 - VoteCast(voter, proposalId, support, votes, times, timestamp)
 
 js
-
 ```js
 async function castVote(governance, agxContract, proposalId, support, amount, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 检查提案状态
-  const state = await governance.queryProposalState(proposalId)
-  if (state !== 1n) {
-    // 1 = Active
-    throw new Error('Voting is not active')
+  const state = await governance.queryProposalState(proposalId);
+  if (state !== 1n) { // 1 = Active
+    throw new Error('Voting is not active');
   }
 
   // 2. 检查推荐关系
-  const referral = new Contract(await governance.referral(), REFERRAL_ABI, signer)
-  if (!(await referral.isBindReferral(user))) {
-    throw new Error('Must bind referral first')
+  const referral = new Contract(await governance.referral(), REFERRAL_ABI, signer);
+  if (!await referral.isBindReferral(user)) {
+    throw new Error('Must bind referral first');
   }
 
   // 3. 检查是否已投票
-  const receipt = await governance.getVoteReceipt(proposalId, user)
+  const receipt = await governance.getVoteReceipt(proposalId, user);
   if (receipt.hasVoted && Number(receipt.support) !== support) {
-    throw new Error(
-      'Cannot change vote type. Already voted ' + ['Against', 'For', 'Abstain'][receipt.support],
-    )
+    throw new Error('Cannot change vote type. Already voted ' + ['Against', 'For', 'Abstain'][receipt.support]);
   }
 
   // 4. 授权 AGX
-  await (await agxContract.approve(await governance.getAddress(), amount)).wait()
+  await (await agxContract.approve(await governance.getAddress(), amount)).wait();
 
   // 5. 投票
-  const tx = await governance.connect(signer).vote(proposalId, support, amount)
-  const receipt2 = await tx.wait()
+  const tx = await governance.connect(signer).vote(proposalId, support, amount);
+  const receipt2 = await tx.wait();
 
-  console.log('Vote cast successfully!')
-  console.log('Amount:', ethers.formatUnits(amount, 9), 'AGX')
+  console.log('Vote cast successfully!');
+  console.log('Amount:', ethers.formatUnits(amount, 9), 'AGX');
 }
 ```
 
@@ -264,41 +246,38 @@ async function castVote(governance, agxContract, proposalId, support, amount, si
 - 用户已投票且本金 > 0
 
 js
-
 ```js
 async function withdrawVoteRewards(governance, proposalId, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 检查提取窗口
-  const p = await governance.getProposal(proposalId)
-  const now = Math.floor(Date.now() / 1000)
-  const voteEnd = Number(p.voteEnd)
-  const deadline = voteEnd + 10 * 86400 // 10 days
+  const p = await governance.getProposal(proposalId);
+  const now = Math.floor(Date.now() / 1000);
+  const voteEnd = Number(p.voteEnd);
+  const deadline = voteEnd + 10 * 86400; // 10 days
 
   if (now <= voteEnd) {
-    throw new Error('Voting still active')
+    throw new Error('Voting still active');
   }
   if (now > deadline) {
-    throw new Error('Withdrawal window expired')
+    throw new Error('Withdrawal window expired');
   }
 
   // 2. 查看可领取奖励
-  const [principal, blockReward, extraInterest] = await governance.getVoteRewards(proposalId, user)
-  console.log(
-    'Total rewards:',
-    ethers.formatUnits(principal + blockReward + extraInterest, 9),
-    'AGX',
-  )
+  const [principal, blockReward, extraInterest] = await governance.getVoteRewards(proposalId, user);
+  console.log('Total rewards:', ethers.formatUnits(principal + blockReward + extraInterest, 9), 'AGX');
 
   // 3. 提取
-  const tx = await governance.connect(signer).withdrawal(proposalId)
-  const receipt = await tx.wait()
+  const tx = await governance.connect(signer).withdrawal(proposalId);
+  const receipt = await tx.wait();
 
-  const event = receipt.logs.find((l) => governance.interface.parseLog(l)?.name === 'Withdraw')
-  const parsed = governance.interface.parseLog(event)
-  console.log('Principal:', ethers.formatUnits(parsed.args.principal, 9))
-  console.log('Rebase (interest):', ethers.formatUnits(parsed.args.rebase, 9))
-  console.log('Extra:', ethers.formatUnits(parsed.args.extra, 9))
+  const event = receipt.logs.find(
+    l => governance.interface.parseLog(l)?.name === 'Withdraw'
+  );
+  const parsed = governance.interface.parseLog(event);
+  console.log('Principal:', ethers.formatUnits(parsed.args.principal, 9));
+  console.log('Rebase (interest):', ethers.formatUnits(parsed.args.rebase, 9));
+  console.log('Extra:', ethers.formatUnits(parsed.args.extra, 9));
 }
 ```
 
@@ -388,35 +367,35 @@ async function withdrawVoteRewards(governance, proposalId, signer) {
 
 ### 错误码
 
-| 错误字符串                            | 原因                                          | 解决方案                       |
-| ------------------------------------- | --------------------------------------------- | ------------------------------ |
-| `"Not approved"`                      | 未绑定推荐关系                                | 先绑定 Referral                |
-| `"invalid support"`                   | 投票类型无效                                  | 使用 0/1/2                     |
-| `"no proposal"`                       | 提案不存在                                    | 检查提案 ID                    |
-| `"voting not active"`                 | 不在投票期                                    | 等待 Active 状态               |
-| `"threshold"`                         | 投票数量 < 1 AGX                              | 增加投票数量                   |
-| `"votes limited"`                     | 超过 maxQuorumGlobal                          | 减少投票数量                   |
-| `"support mismatch"`                  | 已投不同票                                    | 保持相同投票类型               |
-| `"Stake failure"`                     | 质押失败                                      | 检查 StakingPool 状态          |
-| `"has not voted"`                     | 未投票就提取                                  | 先投票                         |
-| `"insufficient principal"`            | 本金为 0                                      | 检查投票记录                   |
-| `"voting active"`                     | 在投票窗口内                                  | 等待结束                       |
-| `"not proposer or owner"`             | 非提案人                                      | 无权操作                       |
-| `"already finalized"`                 | 提案已被取消或执行                            | 不再可操作                     |
-| `"already active"`                    | 投票已开始，无法取消                          | 取消须在 voteStart 之前        |
-| `"invalid proposalId"`                | `initProposal` proposalId ≠ proposalCount+1   | 传入下一个连续 ID              |
-| `"invalid vote end"`                  | voteEnd ≤ 当前时间                            | 设置未来时间戳                 |
-| `"invalid min quorum"`                | minQuorum < 1_000e9                           | 提高法定人数                   |
-| `"account migrated"`                  | 调用者/旧账户已迁移                           | 使用迁移后新账户               |
-| `"not authorized"`                    | 非 migrationManager 调用 `migrateAccount`     | 仅迁移管理器调用               |
-| `"not succeeded"`                     | `executeProposal` 时状态非 Succeeded          | 等 `finalizeProposal` 固化结果 |
-| `"voting not ended"`                  | `finalizeProposal` 时投票未结束               | 等 voteEnd 之后                |
-| `"voteEnd can only be extended"`      | `setVoteEnd` 新值 ≤ 旧值                      | 只能向后延长                   |
-| `"withdrawal window open"`            | `destroyExpiredTokens` 时仍有提案提取窗口未过 | 等所有窗口过期                 |
-| `"Can not pre increment extra index"` | `addVoteRewards` _lastEpoch > 当前 epoch      | 等到该 epoch 完成              |
-| `"This epoch has extra rebased"`      | `addVoteRewards` _lastEpoch ≤ lastEpoch       | 每个 epoch 只能加一次          |
-| `MigrationManagerZeroAddress()`       | `setMigrationManager` 传入零地址              | 传入有效地址                   |
-| `MigrationManagerImmutable(address)`  | 二次修改 migrationManager                     | 一次性不可变                   |
+| 错误字符串 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `"Not approved"` | 未绑定推荐关系 | 先绑定 Referral |
+| `"invalid support"` | 投票类型无效 | 使用 0/1/2 |
+| `"no proposal"` | 提案不存在 | 检查提案 ID |
+| `"voting not active"` | 不在投票期 | 等待 Active 状态 |
+| `"threshold"` | 投票数量 < 1 AGX | 增加投票数量 |
+| `"votes limited"` | 超过 maxQuorumGlobal | 减少投票数量 |
+| `"support mismatch"` | 已投不同票 | 保持相同投票类型 |
+| `"Stake failure"` | 质押失败 | 检查 StakingPool 状态 |
+| `"has not voted"` | 未投票就提取 | 先投票 |
+| `"insufficient principal"` | 本金为 0 | 检查投票记录 |
+| `"voting active"` | 在投票窗口内 | 等待结束 |
+| `"not proposer or owner"` | 非提案人 | 无权操作 |
+| `"already finalized"` | 提案已被取消或执行 | 不再可操作 |
+| `"already active"` | 投票已开始，无法取消 | 取消须在 voteStart 之前 |
+| `"invalid proposalId"` | `initProposal` proposalId ≠ proposalCount+1 | 传入下一个连续 ID |
+| `"invalid vote end"` | voteEnd ≤ 当前时间 | 设置未来时间戳 |
+| `"invalid min quorum"` | minQuorum < 1_000e9 | 提高法定人数 |
+| `"account migrated"` | 调用者/旧账户已迁移 | 使用迁移后新账户 |
+| `"not authorized"` | 非 migrationManager 调用 `migrateAccount` | 仅迁移管理器调用 |
+| `"not succeeded"` | `executeProposal` 时状态非 Succeeded | 等 `finalizeProposal` 固化结果 |
+| `"voting not ended"` | `finalizeProposal` 时投票未结束 | 等 voteEnd 之后 |
+| `"voteEnd can only be extended"` | `setVoteEnd` 新值 ≤ 旧值 | 只能向后延长 |
+| `"withdrawal window open"` | `destroyExpiredTokens` 时仍有提案提取窗口未过 | 等所有窗口过期 |
+| `"Can not pre increment extra index"` | `addVoteRewards` _lastEpoch > 当前 epoch | 等到该 epoch 完成 |
+| `"This epoch has extra rebased"` | `addVoteRewards` _lastEpoch ≤ lastEpoch | 每个 epoch 只能加一次 |
+| `MigrationManagerZeroAddress()` | `setMigrationManager` 传入零地址 | 传入有效地址 |
+| `MigrationManagerImmutable(address)` | 二次修改 migrationManager | 一次性不可变 |
 
 #### 账户迁移
 
@@ -427,17 +406,17 @@ Governance 支持统一迁移接口（源码: Governance.sol:167-190）：
 
 #### 管理函数（owner only）
 
-| 函数                                                                               | 说明                                                                                                                                                             |
-| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `setGlobalParameters(uint64 _votingDelay, uint256 _proposalStakeThreshold)`        | 一次设置投票延迟与提案质押门槛，触发 `ParametersUpdated`                                                                                                         |
-| `setMaxQuorum(uint256 _maxQuorum)`                                                 | 设置全局最大票数 `maxQuorumGlobal`                                                                                                                               |
-| `setProposalMinQuorum(uint256 proposalId, uint256 _minQuorum)`                     | 调整特定提案的法定人数门槛                                                                                                                                       |
-| `setVoteEnd(uint256 proposalId, uint64 voteEnd)`                                   | 只能向后延长投票结束时间（`voteEnd > 旧值`，否则回滚 `"voteEnd can only be extended"`）                                                                          |
-| `setStakingPool(address _pool)`                                                    | 设置 StakingPool 地址                                                                                                                                            |
-| `setProposalContent(uint256 proposalId, string _contentURI, bytes32 _contentHash)` | 设置提案内容 URI 与哈希，触发 `ProposalContentSet`；提案不存在回滚 `"no proposal"`                                                                               |
-| `addVoteRewards(uint256 _lastEpoch, uint256 _extraIndex)`                          | 累加全局额外利息 `globalExtraIndex`；`_lastEpoch` 必须在 `(lastEpoch, epoch]`，否则回滚 `"Can not pre increment extra index"` / `"This epoch has extra rebased"` |
-| `destroyExpiredTokens()`                                                           | 销毁所有提取窗口已过期提案的剩余 sAGX/AGX；任一窗口未关回滚 `"withdrawal window open"`，触发 `ExpiredTokensDestroyed`                                            |
-| `setProposer(address _proposer, bool _flag)`                                       | 维护授权提案人列表（按 root 账户归集）                                                                                                                           |
+| 函数 | 说明 |
+| --- | --- |
+| `setGlobalParameters(uint64 _votingDelay, uint256 _proposalStakeThreshold)` | 一次设置投票延迟与提案质押门槛，触发 `ParametersUpdated` |
+| `setMaxQuorum(uint256 _maxQuorum)` | 设置全局最大票数 `maxQuorumGlobal` |
+| `setProposalMinQuorum(uint256 proposalId, uint256 _minQuorum)` | 调整特定提案的法定人数门槛 |
+| `setVoteEnd(uint256 proposalId, uint64 voteEnd)` | 只能向后延长投票结束时间（`voteEnd > 旧值`，否则回滚 `"voteEnd can only be extended"`） |
+| `setStakingPool(address _pool)` | 设置 StakingPool 地址 |
+| `setProposalContent(uint256 proposalId, string _contentURI, bytes32 _contentHash)` | 设置提案内容 URI 与哈希，触发 `ProposalContentSet`；提案不存在回滚 `"no proposal"` |
+| `addVoteRewards(uint256 _lastEpoch, uint256 _extraIndex)` | 累加全局额外利息 `globalExtraIndex`；`_lastEpoch` 必须在 `(lastEpoch, epoch]`，否则回滚 `"Can not pre increment extra index"` / `"This epoch has extra rebased"` |
+| `destroyExpiredTokens()` | 销毁所有提取窗口已过期提案的剩余 sAGX/AGX；任一窗口未关回滚 `"withdrawal window open"`，触发 `ExpiredTokensDestroyed` |
+| `setProposer(address _proposer, bool _flag)` | 维护授权提案人列表（按 root 账户归集） |
 
 ---
 
@@ -446,48 +425,41 @@ Governance 支持统一迁移接口（源码: Governance.sol:167-190）：
 #### 完整投票流程
 
 js
-
 ```js
 async function fullVoteFlow(governance, agxContract, proposalId, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 查看提案
-  const p = await governance.getProposal(proposalId)
-  console.log(
-    `Proposal #${proposalId}: ${['Pending', 'Active', 'Succeeded', 'Defeated'][p.proposalState]}`,
-  )
+  const p = await governance.getProposal(proposalId);
+  console.log(`Proposal #${proposalId}: ${['Pending', 'Active', 'Succeeded', 'Defeated'][p.proposalState]}`);
 
   if (p.proposalState !== 1n) {
-    console.log('Not active, skipping')
-    return
+    console.log('Not active, skipping');
+    return;
   }
 
   // 2. 查看当前票数
-  console.log(
-    `For: ${ethers.formatUnits(p.forVotes, 9)} | Against: ${ethers.formatUnits(p.againstVotes, 9)}`,
-  )
-  console.log(`Quorum needed: ${ethers.formatUnits(p.minQuorumSnapshot, 9)}`)
+  console.log(`For: ${ethers.formatUnits(p.forVotes, 9)} | Against: ${ethers.formatUnits(p.againstVotes, 9)}`);
+  console.log(`Quorum needed: ${ethers.formatUnits(p.minQuorumSnapshot, 9)}`);
 
   // 3. 计算当前领先方
-  const forVotes = p.forVotes
-  const againstVotes = p.againstVotes
-  const totalVotes = forVotes + againstVotes + p.abstainVotes
-  const isQuorumMet = totalVotes >= p.minQuorumSnapshot
+  const forVotes = p.forVotes;
+  const againstVotes = p.againstVotes;
+  const totalVotes = forVotes + againstVotes + p.abstainVotes;
+  const isQuorumMet = totalVotes >= p.minQuorumSnapshot;
 
   // 4. 投票（投给少数派）
-  const voteAmount = ethers.parseUnits('100', 9) // 100 AGX
-  const support = forVotes > againstVotes ? 0 : 1 // 投少数派
-  const supportName = ['Against', 'For', 'Abstain'][support]
-  console.log(`Voting ${supportName} with ${ethers.formatUnits(voteAmount, 9)} AGX`)
+  const voteAmount = ethers.parseUnits('100', 9); // 100 AGX
+  const support = forVotes > againstVotes ? 0 : 1; // 投少数派
+  const supportName = ['Against', 'For', 'Abstain'][support];
+  console.log(`Voting ${supportName} with ${ethers.formatUnits(voteAmount, 9)} AGX`);
 
-  await (await agxContract.approve(await governance.getAddress(), voteAmount)).wait()
-  await (await governance.connect(signer).vote(proposalId, support, voteAmount)).wait()
-  console.log('Vote cast!')
+  await (await agxContract.approve(await governance.getAddress(), voteAmount)).wait();
+  await (await governance.connect(signer).vote(proposalId, support, voteAmount)).wait();
+  console.log('Vote cast!');
 
   // 5. 投票结束后提取（需要等待）
-  console.log(
-    `Withdrawal window: ${new Date(Number(p.voteEnd) * 1000).toLocaleString()} - ${new Date((Number(p.voteEnd) + 10 * 86400) * 1000).toLocaleString()}`,
-  )
+  console.log(`Withdrawal window: ${new Date(Number(p.voteEnd) * 1000).toLocaleString()} - ${new Date((Number(p.voteEnd) + 10 * 86400) * 1000).toLocaleString()}`);
 }
 ```
 
@@ -495,18 +467,18 @@ async function fullVoteFlow(governance, agxContract, proposalId, signer) {
 
 ### 依赖合约
 
-| 合约        | 用途                      |
-| ----------- | ------------------------- |
+| 合约 | 用途 |
+| --- | --- |
 | StakingPool | 投票期间质押 AGX 获得利息 |
-| sAGX        | gons 模型计算利息         |
-| Referral    | 验证投票者推荐关系        |
-| Treasury    | 可能涉及提案执行          |
+| sAGX | gons 模型计算利息 |
+| Referral | 验证投票者推荐关系 |
+| Treasury | 可能涉及提案执行 |
 
 ### 配置参数
 
-| 参数                     | 默认值     | 说明                   | 设置者 |
-| ------------------------ | ---------- | ---------------------- | ------ |
-| `votingDelay`            | 1 分钟     | 创建后延迟多久开始投票 | owner  |
-| `proposalStakeThreshold` | 5,000 AGX  | 提案质押门槛           | owner  |
-| `maxQuorumGlobal`        | 20,000 AGX | 全局最大投票数         | owner  |
-| `proposers[addr]`        | -          | 授权提案人列表         | owner  |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `votingDelay` | 1 分钟 | 创建后延迟多久开始投票 | owner |
+| `proposalStakeThreshold` | 5,000 AGX | 提案质押门槛 | owner |
+| `maxQuorumGlobal` | 20,000 AGX | 全局最大投票数 | owner |
+| `proposers[addr]` | - | 授权提案人列表 | owner |

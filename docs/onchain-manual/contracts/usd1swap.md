@@ -40,12 +40,11 @@ SHA-256 d74c842d7416…
 预览兑换 USD1 数量。
 
 js
-
 ```js
-const config = await usd1Swap.getConfig()
-const usdtIn = ethers.parseUnits('1000', config.usdtDec) // 1000 输入 token
-const usd1Out = await usd1Swap.quoteUsd1Out(usdtIn)
-console.log('Will receive:', ethers.formatUnits(usd1Out, config.usd1Dec), 'USD1')
+const config = await usd1Swap.getConfig();
+const usdtIn = ethers.parseUnits('1000', config.usdtDec); // 1000 输入 token
+const usd1Out = await usd1Swap.quoteUsd1Out(usdtIn);
+console.log('Will receive:', ethers.formatUnits(usd1Out, config.usd1Dec), 'USD1');
 ```
 
 ##### usd1Reserve() -> (uint256)
@@ -53,10 +52,9 @@ console.log('Will receive:', ethers.formatUnits(usd1Out, config.usd1Dec), 'USD1'
 返回合约中的 USD1 储备。
 
 js
-
 ```js
-const reserve = await usd1Swap.usd1Reserve()
-console.log('USD1 reserve:', ethers.formatUnits(reserve, 18))
+const reserve = await usd1Swap.usd1Reserve();
+console.log('USD1 reserve:', ethers.formatUnits(reserve, 18));
 ```
 
 ##### getConfig() -> (usdtToken, usd1Token, wallet, currentRateBps, usdtDec, usd1Dec, isPaused, minIn, maxIn, reserve)
@@ -76,29 +74,22 @@ USDT 兑换 USD1。
 - minUsd1Out 滑点保护
 
 js
-
 ```js
 async function swapUsdtForUsd1(usd1Swap, usdtContract, usdtAmount, signer) {
-  const config = await usd1Swap.getConfig()
+  const config = await usd1Swap.getConfig();
   // 1. 预览
-  const usd1Out = await usd1Swap.quoteUsd1Out(usdtAmount)
-  console.log('Expected USD1:', ethers.formatUnits(usd1Out, config.usd1Dec))
+  const usd1Out = await usd1Swap.quoteUsd1Out(usdtAmount);
+  console.log('Expected USD1:', ethers.formatUnits(usd1Out, config.usd1Dec));
 
   // 2. 授权 USDT
-  await (await usdtContract.approve(await usd1Swap.getAddress(), usdtAmount)).wait()
+  await (await usdtContract.approve(await usd1Swap.getAddress(), usdtAmount)).wait();
 
   // 3. 兑换（设置 1% 滑点保护）
-  const minOut = (usd1Out * 99n) / 100n
-  const tx = await usd1Swap.connect(signer).swap(usdtAmount, minOut)
-  await tx.wait()
+  const minOut = usd1Out * 99n / 100n;
+  const tx = await usd1Swap.connect(signer).swap(usdtAmount, minOut);
+  await tx.wait();
 
-  console.log(
-    'Swapped',
-    ethers.formatUnits(usdtAmount, config.usdtDec),
-    'input token for',
-    ethers.formatUnits(usd1Out, config.usd1Dec),
-    'USD1',
-  )
+  console.log('Swapped', ethers.formatUnits(usdtAmount, config.usdtDec), 'input token for', ethers.formatUnits(usd1Out, config.usd1Dec), 'USD1');
 }
 ```
 
@@ -109,11 +100,10 @@ async function swapUsdtForUsd1(usd1Swap, usdtContract, usdtAmount, signer) {
 向合约注入 USD1 储备。
 
 js
-
 ```js
 // 向合约注入 USD1 以确保兑换流动性
-await usd1Contract.approve(await usd1Swap.getAddress(), amount)
-await usd1Swap.depositUsd1(amount)
+await usd1Contract.approve(await usd1Swap.getAddress(), amount);
+await usd1Swap.depositUsd1(amount);
 ```
 
 ##### setRateBps(uint256 newRateBps) — onlyAuthorized（owner + operators）
@@ -178,26 +168,26 @@ await usd1Swap.depositUsd1(amount)
 
 ### 错误码
 
-| 错误                                                   | 原因                    | 解决方案        |
-| ------------------------------------------------------ | ----------------------- | --------------- |
-| `ErrorPaused()`                                        | 合约已暂停              | 等待恢复        |
-| `ErrorInsufficientUsd1(available, required)`           | USD1 储备不足           | 等待注入        |
-| `ErrorBelowMin(amount, minAmount)`                     | 低于最小限额            | 增加金额        |
-| `ErrorAboveMax(amount, maxAmount)`                     | 超过最大限额            | 减少金额        |
-| `ErrorInsufficientOutput(actual, minRequired)`         | 滑点超限                | 减少 minUsd1Out |
-| `ErrorTransferAmountMismatch(token, expected, actual)` | 转账数量不匹配          | 重试            |
-| `ErrorZeroAddress()`                                   | 地址为零                | 使用非零地址    |
-| `ErrorSameToken()`                                     | USDT 与 USD1 相同       | 使用不同代币    |
-| `ErrorZeroAmount()`                                    | 金额为零                | 使用正数金额    |
-| `ErrorZeroRate()`                                      | `rateBps` 为 0          | 设置非零汇率    |
-| `ErrorCallerNotAuthorized()`                           | 调用者非 owner/operator | 检查权限        |
-| `ErrorInvalidLimits(minAmount, maxAmount)`             | 限额配置非法（max<min） | 修正限额        |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorPaused()` | 合约已暂停 | 等待恢复 |
+| `ErrorInsufficientUsd1(available, required)` | USD1 储备不足 | 等待注入 |
+| `ErrorBelowMin(amount, minAmount)` | 低于最小限额 | 增加金额 |
+| `ErrorAboveMax(amount, maxAmount)` | 超过最大限额 | 减少金额 |
+| `ErrorInsufficientOutput(actual, minRequired)` | 滑点超限 | 减少 minUsd1Out |
+| `ErrorTransferAmountMismatch(token, expected, actual)` | 转账数量不匹配 | 重试 |
+| `ErrorZeroAddress()` | 地址为零 | 使用非零地址 |
+| `ErrorSameToken()` | USDT 与 USD1 相同 | 使用不同代币 |
+| `ErrorZeroAmount()` | 金额为零 | 使用正数金额 |
+| `ErrorZeroRate()` | `rateBps` 为 0 | 设置非零汇率 |
+| `ErrorCallerNotAuthorized()` | 调用者非 owner/operator | 检查权限 |
+| `ErrorInvalidLimits(minAmount, maxAmount)` | 限额配置非法（max<min） | 修正限额 |
 
 ### 配置参数
 
-| 参数                      | 默认值       | 说明            | 设置者         |
-| ------------------------- | ------------ | --------------- | -------------- |
-| `rateBps`                 | 初始化时设置 | 兑换比例（BPS） | owner/operator |
-| `treasuryWallet`          | 初始化时设置 | USDT 接收地址   | owner          |
-| `minUsdtIn` / `maxUsdtIn` | 0（无限制）  | 兑换限额        | owner          |
-| `paused`                  | false        | 是否暂停        | owner/operator |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `rateBps` | 初始化时设置 | 兑换比例（BPS） | owner/operator |
+| `treasuryWallet` | 初始化时设置 | USDT 接收地址 | owner |
+| `minUsdtIn` / `maxUsdtIn` | 0（无限制） | 兑换限额 | owner |
+| `paused` | false | 是否暂停 | owner/operator |

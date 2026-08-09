@@ -33,12 +33,12 @@ SHA-256 3b1d72a48085…
 
 ### 只读接口
 
-| 方法                      | 说明                                              |
-| ------------------------- | ------------------------------------------------- |
-| `getKValue(pair)`         | 按 token0/token1/pair decimals 归一化后的储备乘积 |
-| `getTotalValue(pair)`     | `2 * sqrt(k)` 的池子总价值口径                    |
-| `valuation(pair, amount)` | 指定 LP 数量对应的池子价值                        |
-| `markdown(pair)`          | pair 另一侧储备相对 AGX 的 markdown 口径          |
+| 方法 | 说明 |
+| --- | --- |
+| `getKValue(pair)` | 按 token0/token1/pair decimals 归一化后的储备乘积 |
+| `getTotalValue(pair)` | `2 * sqrt(k)` 的池子总价值口径 |
+| `valuation(pair, amount)` | 指定 LP 数量对应的池子价值 |
+| `markdown(pair)` | pair 另一侧储备相对 AGX 的 markdown 口径 |
 
 前端可把这些值用于透明度展示，但购买债券前的最终报价和校验必须以 BondDepository 的 view/交易模拟为准。`markdown` 要求 pair 的 token0 或 token1 确实是部署时绑定的 AGX，否则回滚 `Invalid pair`。
 

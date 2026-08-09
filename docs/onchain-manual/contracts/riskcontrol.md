@@ -38,12 +38,12 @@ AGX 的 Crash Fuse、价格快照和额外卖出税状态属于 `AGX.sol`，不�
 
 ### 状态变量
 
-| Getter                    | 含义                            |
-| ------------------------- | ------------------------------- |
-| `agxToken()`              | 被控制的 AGX 地址；初始化时写入 |
-| `balanceControlAddress()` | 余额销毁操作的唯一授权调用者    |
-| `feeControlAddress()`     | 基础卖出税更新的唯一授权调用者  |
-| `owner()`                 | 可配置两个控制地址的管理员      |
+| Getter | 含义 |
+| --- | --- |
+| `agxToken()` | 被控制的 AGX 地址；初始化时写入 |
+| `balanceControlAddress()` | 余额销毁操作的唯一授权调用者 |
+| `feeControlAddress()` | 基础卖出税更新的唯一授权调用者 |
+| `owner()` | 可配置两个控制地址的管理员 |
 
 ### 写入函数
 
@@ -68,25 +68,24 @@ AGX 的 Crash Fuse、价格快照和额外卖出税状态属于 `AGX.sol`，不�
 仅 `feeControlAddress`。调用 AGX 的 `setBaseSellTax(newTaxRate)`；其他地址调用会以 `ErrorRiskControlUnauthorized()` 回滚。税率范围由 AGX 合约校验，RiskControl 不重复设置上限。
 
 javascript
-
 ```javascript
-const riskControl = new Contract(addresses.RiskControl.proxy, RISK_CONTROL_ABI, signer)
+const riskControl = new Contract(addresses.RiskControl.proxy, RISK_CONTROL_ABI, signer);
 
-await (await riskControl.setBalanceControlAddress(balanceOperator)).wait() // owner
-await (await riskControl.setFeeControlAddress(feeOperator)).wait() // owner
+await (await riskControl.setBalanceControlAddress(balanceOperator)).wait(); // owner
+await (await riskControl.setFeeControlAddress(feeOperator)).wait();         // owner
 
-await (await riskControl.connect(balanceSigner).executeBalance()).wait()
-await (await riskControl.connect(feeSigner).updateFeeRatio(newTaxRate)).wait()
+await (await riskControl.connect(balanceSigner).executeBalance()).wait();
+await (await riskControl.connect(feeSigner).updateFeeRatio(newTaxRate)).wait();
 ```
 
 ### 事件与错误
 
 当前合约自身没有定义业务事件；应根据对应交易 receipt 同时解析 AGX 发出的事件。
 
-| 自定义错误                         | 触发条件                         |
-| ---------------------------------- | -------------------------------- |
+| 自定义错误 | 触发条件 |
+| --- | --- |
 | `ErrorRiskControlInvalidAddress()` | owner 尝试把控制地址设置为零地址 |
-| `ErrorRiskControlUnauthorized()`   | 非对应控制地址调用受限操作       |
+| `ErrorRiskControlUnauthorized()` | 非对应控制地址调用受限操作 |
 
 ### 权限和运维要求
 

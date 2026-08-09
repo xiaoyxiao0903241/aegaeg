@@ -48,14 +48,14 @@ SHA-256 d1c386abec78…
 
 #### 3. 与 LockedStaking 的差异
 
-| 特性     | EarlyStaking   | LockedStaking                                                     |
-| -------- | -------------- | ----------------------------------------------------------------- |
-| 质押方式 | 管理员批量操作 | 用户自行质押                                                      |
-| 仓位数量 | 每用户 1 个    | 每用户多个                                                        |
-| 索引参数 | 不需要         | 需要                                                              |
-| 推荐检查 | 不需要         | 需要                                                              |
-| 质押限制 | 无             | 可选 UTC 日全局新增 + 单 root 历史累计；任一值为 0 时对应门禁关闭 |
-| 额外利息 | 无             | 有                                                                |
+| 特性 | EarlyStaking | LockedStaking |
+| --- | --- | --- |
+| 质押方式 | 管理员批量操作 | 用户自行质押 |
+| 仓位数量 | 每用户 1 个 | 每用户多个 |
+| 索引参数 | 不需要 | 需要 |
+| 推荐检查 | 不需要 | 需要 |
+| 质押限制 | 无 | 可选 UTC 日全局新增 + 单 root 历史累计；任一值为 0 时对应门禁关闭 |
+| 额外利息 | 无 | 有 |
 
 #### 4. 线性释放
 
@@ -83,13 +83,12 @@ SHA-256 d1c386abec78…
 - expiry - 到期时间
 
 js
-
 ```js
-const stake = await earlyStaking.getStake(userAddress)
-console.log('Pending:', ethers.formatUnits(stake.pending, 9), 'AGX')
-console.log('Block reward:', ethers.formatUnits(stake.blockReward, 9), 'AGX')
-console.log('Claimable:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX')
-console.log('Expires:', new Date(Number(stake.expiry) * 1000).toLocaleDateString())
+const stake = await earlyStaking.getStake(userAddress);
+console.log('Pending:', ethers.formatUnits(stake.pending, 9), 'AGX');
+console.log('Block reward:', ethers.formatUnits(stake.blockReward, 9), 'AGX');
+console.log('Claimable:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX');
+console.log('Expires:', new Date(Number(stake.expiry) * 1000).toLocaleDateString());
 ```
 
 ##### getReleasedPrincipal(address) -> (uint256)
@@ -97,10 +96,9 @@ console.log('Expires:', new Date(Number(stake.expiry) * 1000).toLocaleDateString
 获取用户可领取的本金数量。
 
 js
-
 ```js
-const claimable = await earlyStaking.getReleasedPrincipal(userAddress)
-console.log('Claimable principal:', ethers.formatUnits(claimable, 9), 'AGX')
+const claimable = await earlyStaking.getReleasedPrincipal(userAddress);
+console.log('Claimable principal:', ethers.formatUnits(claimable, 9), 'AGX');
 ```
 
 ##### getUserLockedPrincipal(address) -> (uint256)
@@ -108,21 +106,19 @@ console.log('Claimable principal:', ethers.formatUnits(claimable, 9), 'AGX')
 获取用户的锁定本金。
 
 js
-
 ```js
-const locked = await earlyStaking.getUserLockedPrincipal(userAddress)
-console.log('Locked principal:', ethers.formatUnits(locked, 9), 'AGX')
+const locked = await earlyStaking.getUserLockedPrincipal(userAddress);
+console.log('Locked principal:', ethers.formatUnits(locked, 9), 'AGX');
 ```
 
 ##### 管理员视图
 
 js
-
 ```js
-const periodTime = await earlyStaking.periodTime()
-const status = await earlyStaking.status()
-const token = await earlyStaking.token()
-const sToken = await earlyStaking.sToken()
+const periodTime = await earlyStaking.periodTime();
+const status = await earlyStaking.status();
+const token = await earlyStaking.token();
+const sToken = await earlyStaking.sToken();
 ```
 
 ---
@@ -134,27 +130,22 @@ const sToken = await earlyStaking.sToken()
 领取按 Early 锁仓周期已释放的本金，并经 `AegisSplitterManager` 路由到 `AegisSplitterHead_*` 创建按当前配置锁定周期的线性释放单；本次调用不会让钱包 AGX 立即增加。
 
 js
-
 ```js
 async function claimEarlyPrincipal(earlyContract, signer) {
-  const user = await signer.getAddress()
+  const user = await signer.getAddress();
 
   // 1. 检查可领取金额
-  const claimable = await earlyContract.getReleasedPrincipal(user)
+  const claimable = await earlyContract.getReleasedPrincipal(user);
   if (claimable === 0n) {
-    console.log('No principal to claim yet')
-    return
+    console.log('No principal to claim yet');
+    return;
   }
 
   // 2. 领取
-  const tx = await earlyContract.connect(signer).claimPrincipal()
-  const receipt = await tx.wait()
+  const tx = await earlyContract.connect(signer).claimPrincipal();
+  const receipt = await tx.wait();
 
-  console.log(
-    'Principal release created via splitter (AegisSplitterManager):',
-    ethers.formatUnits(claimable, 9),
-    'AGX',
-  )
+  console.log('Principal release created via splitter (AegisSplitterManager):', ethers.formatUnits(claimable, 9), 'AGX');
 }
 ```
 
@@ -163,25 +154,24 @@ async function claimEarlyPrincipal(earlyContract, signer) {
 领取利息。
 
 js
-
 ```js
 async function claimEarlyReward(earlyContract, signer) {
-  const user = await signer.getAddress()
-  const stake = await earlyContract.getStake(user)
+  const user = await signer.getAddress();
+  const stake = await earlyContract.getStake(user);
 
   if (stake.blockReward === 0n) {
-    console.log('No reward to claim')
-    return
+    console.log('No reward to claim');
+    return;
   }
 
   const tx = await earlyContract.connect(signer).claimRewardMixed(
-    stake.blockReward, // 全部利息
-    1, // 20 天释放
-    0, // 复投计划
-    5000, // 50% 复投
-  )
-  await tx.wait()
-  console.log('Reward claimed')
+    stake.blockReward,    // 全部利息
+    1,                    // 20 天释放
+    0,                    // 复投计划
+    5000                  // 50% 复投
+  );
+  await tx.wait();
+  console.log('Reward claimed');
 }
 ```
 
@@ -209,23 +199,23 @@ ADMIN_ROLE 批量为预售用户质押（源码 `earlyStake`，:251）。`_users
 
 ### 错误码
 
-| 错误                                                | 原因                                                  | 解决方案                                         |
-| --------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------ |
-| `ErrorStakeNotExist()`                              | 用户未质押                                            | 等待管理员批量操作                               |
-| `ErrorNoPrincipal()`                                | 无本金可领取                                          | 等待释放                                         |
-| `ErrorPrincipalExceeds()`                           | 提取超过利息                                          | 减少金额                                         |
-| `ErrorAmountExceeds()`                              | 金额超过可用余额                                      | 减少金额                                         |
-| `ErrorInsufficientBalance()`                        | 合约余额不足                                          | 联系管理员                                       |
-| `ErrorAlreadyExists()`                              | 用户已有仓位                                          | 无法重复质押                                     |
-| `ErrorNotAllowed()`                                 | 合约已关闭                                            | 等待管理员开启                                   |
-| `ErrorAmountZero()`                                 | 质押金额为 0                                          | 增加金额                                         |
-| `ErrorInvalidData()`                                | `earlyStake` 的 `_users.length != _amounts.length`    | 对齐两个数组长度                                 |
-| `ErrorStakeFailure()`                               | 底层 `presaleStake` 返回 false                        | 检查 StakingPool 状态与额度                      |
-| `ErrorZeroAddress()`                                | 传入 address(0)                                       | 传入有效地址                                     |
-| `ErrorPrincipalReleaseVaultNotSet()`                | 未配置 `AegisSplitterManager` 时调用 `claimPrincipal` | 先 `setPrincipalReleaseVault` 指向分流器 Manager |
-| `EarlyStakingMigratedAccount(address account)`      | `earlyStake`/`migrateAccount` 涉及已迁移地址          | 使用 canonical 地址或未参与过的新地址            |
-| `EarlyStakingNotMigrationManager(address caller)`   | 非 migrationManager 调用 `migrateAccount`             | 仅由迁移管理器调用                               |
-| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址                       | 保留相同地址                                     |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorStakeNotExist()` | 用户未质押 | 等待管理员批量操作 |
+| `ErrorNoPrincipal()` | 无本金可领取 | 等待释放 |
+| `ErrorPrincipalExceeds()` | 提取超过利息 | 减少金额 |
+| `ErrorAmountExceeds()` | 金额超过可用余额 | 减少金额 |
+| `ErrorInsufficientBalance()` | 合约余额不足 | 联系管理员 |
+| `ErrorAlreadyExists()` | 用户已有仓位 | 无法重复质押 |
+| `ErrorNotAllowed()` | 合约已关闭 | 等待管理员开启 |
+| `ErrorAmountZero()` | 质押金额为 0 | 增加金额 |
+| `ErrorInvalidData()` | `earlyStake` 的 `_users.length != _amounts.length` | 对齐两个数组长度 |
+| `ErrorStakeFailure()` | 底层 `presaleStake` 返回 false | 检查 StakingPool 状态与额度 |
+| `ErrorZeroAddress()` | 传入 address(0) | 传入有效地址 |
+| `ErrorPrincipalReleaseVaultNotSet()` | 未配置 `AegisSplitterManager` 时调用 `claimPrincipal` | 先 `setPrincipalReleaseVault` 指向分流器 Manager |
+| `EarlyStakingMigratedAccount(address account)` | `earlyStake`/`migrateAccount` 涉及已迁移地址 | 使用 canonical 地址或未参与过的新地址 |
+| `EarlyStakingNotMigrationManager(address caller)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
+| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址 | 保留相同地址 |
 
 ---
 
@@ -234,23 +224,22 @@ ADMIN_ROLE 批量为预售用户质押（源码 `earlyStake`，:251）。`_users
 #### 用户查看与领取
 
 js
-
 ```js
 async function checkEarlyStaking(earlyContract, userAddress) {
-  const stake = await earlyContract.getStake(userAddress)
+  const stake = await earlyContract.getStake(userAddress);
 
   if (stake.pending === 0n) {
-    console.log('No early staking found')
-    return null
+    console.log('No early staking found');
+    return null;
   }
 
-  console.log('=== Early Staking ===')
-  console.log('Pending principal:', ethers.formatUnits(stake.pending, 9), 'AGX')
-  console.log('Block reward:', ethers.formatUnits(stake.blockReward, 9), 'AGX')
-  console.log('Claimable principal:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX')
-  console.log('Expires:', new Date(Number(stake.expiry) * 1000).toLocaleDateString())
+  console.log('=== Early Staking ===');
+  console.log('Pending principal:', ethers.formatUnits(stake.pending, 9), 'AGX');
+  console.log('Block reward:', ethers.formatUnits(stake.blockReward, 9), 'AGX');
+  console.log('Claimable principal:', ethers.formatUnits(stake.claimableBalance, 9), 'AGX');
+  console.log('Expires:', new Date(Number(stake.expiry) * 1000).toLocaleDateString());
 
-  return stake
+  return stake;
 }
 ```
 
@@ -264,21 +253,21 @@ EarlyStaking 使用 root 别名读取历史仓位，不复制 `stakes` 数据。
 
 ### 依赖合约
 
-| 合约                                 | 用途                                                                              |
-| ------------------------------------ | --------------------------------------------------------------------------------- |
-| StakingPool                          | 底层质押                                                                          |
-| sAGX                                 | 生息代币                                                                          |
-| RewardQueue                          | 利息释放                                                                          |
-| RestakeConfig                        | 复投配置                                                                          |
+| 合约 | 用途 |
+| --- | --- |
+| StakingPool | 底层质押 |
+| sAGX | 生息代币 |
+| RewardQueue | 利息释放 |
+| RestakeConfig | 复投配置 |
 | AegisSplitterManager / AegisSplitter | 必需；本金提取统一经 Manager 路由创建按配置周期锁定的线性释放单，未配置时交易回滚 |
 
 ### 配置参数
 
-| 参数                    | 默认值       | 说明                                                                                                    | 设置者     |
-| ----------------------- | ------------ | ------------------------------------------------------------------------------------------------------- | ---------- |
-| `periodTime`            | 初始化时设置 | 锁定期（秒）                                                                                            | ADMIN_ROLE |
-| `status`                | true         | 是否开放                                                                                                | ADMIN_ROLE |
-| `stakingPool`           | 初始化后设置 | 质押池地址                                                                                              | ADMIN_ROLE |
-| `rewardQueue`           | 初始化后设置 | 奖励队列                                                                                                | ADMIN_ROLE |
-| `restakeConfig`         | 初始化后设置 | 复投配置（`setRestakeConfig`）                                                                          | ADMIN_ROLE |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `periodTime` | 初始化时设置 | 锁定期（秒） | ADMIN_ROLE |
+| `status` | true | 是否开放 | ADMIN_ROLE |
+| `stakingPool` | 初始化后设置 | 质押池地址 | ADMIN_ROLE |
+| `rewardQueue` | 初始化后设置 | 奖励队列 | ADMIN_ROLE |
+| `restakeConfig` | 初始化后设置 | 复投配置（`setRestakeConfig`） | ADMIN_ROLE |
 | `principalReleaseVault` | 初始化后设置 | 本金释放入口（`setPrincipalReleaseVault`，指向 `AegisSplitterManager`），未设置时 `claimPrincipal` 回滚 | ADMIN_ROLE |

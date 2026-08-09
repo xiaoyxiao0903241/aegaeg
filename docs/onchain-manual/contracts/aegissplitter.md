@@ -39,10 +39,10 @@ SHA-256 809d316e54dc…
 
 #### 1. 头部 vs 普通
 
-| 类型       | `headManager`        | `pre`                  | 释放周期                                      |
-| ---------- | -------------------- | ---------------------- | --------------------------------------------- |
+| 类型 | `headManager` | `pre` | 释放周期 |
+| --- | --- | --- | --- |
 | 头部分流器 | 非零（所属 Manager） | `AegisSplitterManager` | `manager.effectiveDuration(user)`（新老判定） |
-| 普通分流器 | 0                    | 上游分流器             | 固定 `30 days`                                |
+| 普通分流器 | 0 | 上游分流器 | 固定 `30 days` |
 
 #### 2. 记账式存款 deposit(user, amount, token)
 
@@ -73,28 +73,28 @@ SHA-256 809d316e54dc…
 
 ### 状态变量
 
-| 变量                                              | 类型             | 说明                            |
-| ------------------------------------------------- | ---------------- | ------------------------------- |
-| `pre`                                             | address          | 唯一允许调用 deposit 的上游地址 |
-| `next`                                            | address          | 下游分流器；0 = 链尾            |
-| `headManager`                                     | address          | 所属 Manager；0 = 普通分流器    |
-| `releases`                                        | mapping          | 用户 → 释放记录数组             |
-| `depositedTotal` / `claimedTotal`                 | mapping          | 每种代币背书/已领取累计         |
-| `migratedTo` / `_originalOf` / `migrationManager` | —                | 账户迁移三件套                  |
-| `MAX_RELEASE_PAGE_SIZE`                           | uint256 constant | 单页最多 50 条，不占代理存储槽  |
+| 变量 | 类型 | 说明 |
+| --- | --- | --- |
+| `pre` | address | 唯一允许调用 deposit 的上游地址 |
+| `next` | address | 下游分流器；0 = 链尾 |
+| `headManager` | address | 所属 Manager；0 = 普通分流器 |
+| `releases` | mapping | 用户 → 释放记录数组 |
+| `depositedTotal` / `claimedTotal` | mapping | 每种代币背书/已领取累计 |
+| `migratedTo` / `_originalOf` / `migrationManager` | — | 账户迁移三件套 |
+| `MAX_RELEASE_PAGE_SIZE` | uint256 constant | 单页最多 50 条，不占代理存储槽 |
 
 ### 常用函数
 
-| 函数                                                                                    | 权限             | 说明                                                   |
-| --------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------ |
-| `deposit(user, amount, token)`                                                          | pre              | 记账式存款（资金由 pre 转入）                          |
-| `claim(index)` / `claimMany(start, limit)`                                              | 用户             | 领取（转发下游或到钱包）                               |
-| `claimable(user, index)`                                                                | view             | 可领取金额                                             |
-| `getReleaseCount(user)` / `getRelease(user, index)` / `getReleaseDuration(user, index)` | view             | 释放记录查询                                           |
-| `getReleases(user, start, limit)`                                                       | view             | 分页返回完整释放单详情和 `totalCount`；`limit` 为 1–50 |
-| `setNext(addr)` / `setPre(addr)`                                                        | owner            | 链式配置（`setNext` 禁设自身）                         |
-| `sweepExcess(token, to)`                                                                | owner            | 回收超额代币                                           |
-| `migrateAccount(old, new)`                                                              | migrationManager | 账户迁移                                               |
+| 函数 | 权限 | 说明 |
+| --- | --- | --- |
+| `deposit(user, amount, token)` | pre | 记账式存款（资金由 pre 转入） |
+| `claim(index)` / `claimMany(start, limit)` | 用户 | 领取（转发下游或到钱包） |
+| `claimable(user, index)` | view | 可领取金额 |
+| `getReleaseCount(user)` / `getRelease(user, index)` / `getReleaseDuration(user, index)` | view | 释放记录查询 |
+| `getReleases(user, start, limit)` | view | 分页返回完整释放单详情和 `totalCount`；`limit` 为 1–50 |
+| `setNext(addr)` / `setPre(addr)` | owner | 链式配置（`setNext` 禁设自身） |
+| `sweepExcess(token, to)` | owner | 回收超额代币 |
+| `migrateAccount(old, new)` | migrationManager | 账户迁移 |
 
 ### 事件
 

@@ -95,24 +95,19 @@ SHA-256 4faee3bcf161…
 - status - 轮次状态
 
 js
-
 ```js
-const statusNames = ['None', 'Open', 'RandomRequested', 'Drawn', 'Cancelled']
+const statusNames = ['None', 'Open', 'RandomRequested', 'Drawn', 'Cancelled'];
 
 async function displayRound(luckyPool, roundId) {
-  const round = await luckyPool.getRound(roundId)
-  console.log(`Round #${round.roundId} (Day ${round.displayDay})`)
-  console.log(`Status: ${statusNames[round.status]}`)
-  console.log(
-    `Time: ${new Date(Number(round.startTime) * 1000).toLocaleString()} - ${new Date(Number(round.endTime) * 1000).toLocaleString()}`,
-  )
-  console.log(`Eligible: ${round.eligibleCount}`)
-  console.log(`Winners: ${round.winnerCount} / ${round.maxWinners}`)
-  const rewardDecimals = round.status === 1n ? 18 : 9
-  const rewardUnit = round.status === 1n ? 'USD1 value target' : 'AGX locked'
-  console.log(
-    `Reward per winner: ${ethers.formatUnits(round.rewardAmount, rewardDecimals)} ${rewardUnit}`,
-  )
+  const round = await luckyPool.getRound(roundId);
+  console.log(`Round #${round.roundId} (Day ${round.displayDay})`);
+  console.log(`Status: ${statusNames[round.status]}`);
+  console.log(`Time: ${new Date(Number(round.startTime) * 1000).toLocaleString()} - ${new Date(Number(round.endTime) * 1000).toLocaleString()}`);
+  console.log(`Eligible: ${round.eligibleCount}`);
+  console.log(`Winners: ${round.winnerCount} / ${round.maxWinners}`);
+  const rewardDecimals = round.status === 1n ? 18 : 9;
+  const rewardUnit = round.status === 1n ? 'USD1 value target' : 'AGX locked';
+  console.log(`Reward per winner: ${ethers.formatUnits(round.rewardAmount, rewardDecimals)} ${rewardUnit}`);
 }
 ```
 
@@ -121,10 +116,9 @@ async function displayRound(luckyPool, roundId) {
 返回总轮次数。
 
 js
-
 ```js
-const count = await luckyPool.roundCount()
-console.log('Total rounds:', count)
+const count = await luckyPool.roundCount();
+console.log('Total rounds:', count);
 ```
 
 ##### getRoundIds(uint256 offset, uint256 limit) -> (uint256[])
@@ -132,10 +126,9 @@ console.log('Total rounds:', count)
 分页获取轮次 ID 列表。
 
 js
-
 ```js
-const roundIds = await luckyPool.getRoundIds(0, 10)
-console.log('Latest 10 rounds:', roundIds)
+const roundIds = await luckyPool.getRoundIds(0, 10);
+console.log('Latest 10 rounds:', roundIds);
 ```
 
 ##### currentRoundId() -> (uint256)
@@ -143,10 +136,9 @@ console.log('Latest 10 rounds:', roundIds)
 返回当前开放轮次 ID。
 
 js
-
 ```js
-const current = await luckyPool.currentRoundId()
-console.log('Current round:', current)
+const current = await luckyPool.currentRoundId();
+console.log('Current round:', current);
 ```
 
 ##### eligibleCount(uint256 roundId) -> (uint256)
@@ -154,10 +146,9 @@ console.log('Current round:', current)
 返回指定轮次的参与人数。
 
 js
-
 ```js
-const count = await luckyPool.eligibleCount(roundId)
-console.log('Eligible users:', count)
+const count = await luckyPool.eligibleCount(roundId);
+console.log('Eligible users:', count);
 ```
 
 ##### getEligibleUsers(uint256 roundId, uint256 offset, uint256 limit) -> (address[])
@@ -165,10 +156,9 @@ console.log('Eligible users:', count)
 分页获取参与者地址列表。
 
 js
-
 ```js
-const users = await luckyPool.getEligibleUsers(roundId, 0, 20)
-console.log('First 20 eligible:', users)
+const users = await luckyPool.getEligibleUsers(roundId, 0, 20);
+console.log('First 20 eligible:', users);
 ```
 
 ##### winnerCount(uint256 roundId) -> (uint256)
@@ -180,10 +170,9 @@ console.log('First 20 eligible:', users)
 获取指定轮次的全部获奖者地址。
 
 js
-
 ```js
-const winners = await luckyPool.getWinners(roundId)
-console.log('Winners:', winners)
+const winners = await luckyPool.getWinners(roundId);
+console.log('Winners:', winners);
 ```
 
 ##### getWinnerInfo(uint256 roundId, address user) -> (bool won, uint256 rewardAmount)
@@ -191,13 +180,12 @@ console.log('Winners:', winners)
 查询用户是否获奖及奖励金额。
 
 js
-
 ```js
-const [won, reward] = await luckyPool.getWinnerInfo(roundId, userAddress)
+const [won, reward] = await luckyPool.getWinnerInfo(roundId, userAddress);
 if (won) {
-  console.log('Winner! Reward:', ethers.formatUnits(reward, 9), 'AGX')
+  console.log('Winner! Reward:', ethers.formatUnits(reward, 9), 'AGX');
 } else {
-  console.log('Not a winner')
+  console.log('Not a winner');
 }
 ```
 
@@ -206,10 +194,9 @@ if (won) {
 `isEligible` 是 public mapping getter（`mapping(uint256 => mapping(address => bool))`），只读取该地址本身的布尔位，**不解析账户迁移别名**。对已迁移账户（A→B→C 中 A/B）查询会返回 false。
 
 js
-
 ```js
-const eligible = await luckyPool.isEligible(roundId, userAddress)
-console.log('Eligible:', eligible)
+const eligible = await luckyPool.isEligible(roundId, userAddress);
+console.log('Eligible:', eligible);
 ```
 
 ##### isUserEligible(uint256 roundId, address user) -> (bool)
@@ -217,10 +204,9 @@ console.log('Eligible:', eligible)
 迁移感知视图（源码 `isUserEligible`，内部走 `_original` 链 + `MigrationAliasLib.next` 遍历 `_originalOf`/`migratedTo` 别名）。前端应优先使用本视图而非 `isEligible`：对 A→B→C 迁移链，从 C 查询会沿 root 链回溯命中 A 的资格位。受 `migrationManager.maxMigrationHops`（默认 8）约束。
 
 js
-
 ```js
-const eligible = await luckyPool.isUserEligible(roundId, userAddress)
-console.log('Eligible (migration-aware):', eligible)
+const eligible = await luckyPool.isUserEligible(roundId, userAddress);
+console.log('Eligible (migration-aware):', eligible);
 ```
 
 ##### getRandomWords(uint256 roundId) -> (uint256[])
@@ -228,10 +214,9 @@ console.log('Eligible (migration-aware):', eligible)
 获取指定轮次的 VRF 随机数（开奖后可用）。
 
 js
-
 ```js
-const words = await luckyPool.getRandomWords(roundId)
-console.log('Random words:', words)
+const words = await luckyPool.getRandomWords(roundId);
+console.log('Random words:', words);
 ```
 
 ##### rewardReserve() -> (uint256)
@@ -239,10 +224,9 @@ console.log('Random words:', words)
 返回合约中的奖励代币余额。
 
 js
-
 ```js
-const reserve = await luckyPool.rewardReserve()
-console.log('Reward reserve:', ethers.formatUnits(reserve, 9), 'AGX')
+const reserve = await luckyPool.rewardReserve();
+console.log('Reward reserve:', ethers.formatUnits(reserve, 9), 'AGX');
 ```
 
 ##### quoteRewardAgx(uint256 rewardValueUsd1) -> (uint256)
@@ -250,28 +234,26 @@ console.log('Reward reserve:', ethers.formatUnits(reserve, 9), 'AGX')
 view 函数。按当前 `restakeConfig` 提供的 `agxPrice()`，把 USD1 价值目标向上取整换算为 AGX 锁定额（`Math.mulDiv(rewardValueUsd1, 1e9, price, Ceil)`）。`rewardValueUsd1=0` revert `ErrorZeroAmount`；`restakeConfig` 未设置 revert `ErrorRestakeConfigNotSet`；`agxPrice=0` revert `ErrorInvalidAgxPrice`。前端可用它在关轮前预估每位中奖者的 AGX 奖励。
 
 js
-
 ```js
-const rewardValueUsd1 = ethers.parseUnits('10', 18)
-const agx = await luckyPool.quoteRewardAgx(rewardValueUsd1)
-console.log('Locked AGX per winner:', ethers.formatUnits(agx, 9))
+const rewardValueUsd1 = ethers.parseUnits('10', 18);
+const agx = await luckyPool.quoteRewardAgx(rewardValueUsd1);
+console.log('Locked AGX per winner:', ethers.formatUnits(agx, 9));
 ```
 
 ##### 管理员视图
 
 js
-
 ```js
 const defaults = await Promise.all([
   luckyPool.defaultRewardAmount(),
   luckyPool.defaultRoundDuration(),
   luckyPool.defaultMaxWinners(),
-])
-console.log('Reward target in USD1:', ethers.formatUnits(defaults[0], 18))
-console.log('Round duration:', Number(defaults[1]) / 3600, 'hours')
-console.log('Max winners:', defaults[2])
+]);
+console.log('Reward target in USD1:', ethers.formatUnits(defaults[0], 18));
+console.log('Round duration:', Number(defaults[1]) / 3600, 'hours');
+console.log('Max winners:', defaults[2]);
 
-const paused = await luckyPool.paused()
+const paused = await luckyPool.paused();
 ```
 
 ---
@@ -313,18 +295,17 @@ Tracker backlog 可读且 `pendingQualificationCount(currentRoundId)==0` 时，�
 - 调用者已授权奖励代币
 
 js
-
 ```js
 async function depositRewards(luckyPool, tokenContract, amount, signer) {
   // 1. 授权
-  await (await tokenContract.approve(await luckyPool.getAddress(), amount)).wait()
+  await (await tokenContract.approve(await luckyPool.getAddress(), amount)).wait();
 
   // 2. 注入
-  const tx = await luckyPool.connect(signer).depositRewards(amount)
-  await tx.wait()
+  const tx = await luckyPool.connect(signer).depositRewards(amount);
+  await tx.wait();
 
-  const reserve = await luckyPool.rewardReserve()
-  console.log('Deposited! New reserve:', ethers.formatUnits(reserve, 9), 'AGX')
+  const reserve = await luckyPool.rewardReserve();
+  console.log('Deposited! New reserve:', ethers.formatUnits(reserve, 9), 'AGX');
 }
 ```
 
@@ -351,35 +332,25 @@ async function depositRewards(luckyPool, tokenContract, amount, signer) {
 账户迁移采用 root 别名模型，统一 Manager 的 `maxMigrationHops` 默认 8 且可在暂停迁移时配置。A→B→C 后 B/C 都以 A 为 root，历史资格、中奖与 claimed 状态不复制数组；A、B 停用，仅 C 可以继续查询和领取。自迁移、回迁、环和脏目标地址会被拒绝。
 
 js
-
 ```js
 // restakeBps: 0 = 全部释放, 10000 = 全部复投
-async function claimLuckyRewardMixed(
-  luckyPool,
-  roundId,
-  signer,
-  releasePlanIndex = 0,
-  restakePlanIndex = 0,
-  restakeBps = 5000n,
-) {
-  const [won, reward] = await luckyPool.getWinnerInfo(roundId, await signer.getAddress())
+async function claimLuckyRewardMixed(luckyPool, roundId, signer, releasePlanIndex = 0, restakePlanIndex = 0, restakeBps = 5000n) {
+  const [won, reward] = await luckyPool.getWinnerInfo(roundId, await signer.getAddress());
   if (!won) {
-    console.log('Not a winner')
-    return
+    console.log('Not a winner');
+    return;
   }
   try {
-    const tx = await luckyPool
-      .connect(signer)
-      .claimRewardMixed(roundId, releasePlanIndex, restakePlanIndex, restakeBps)
-    await tx.wait()
-    console.log('Reward claimed (mixed):', ethers.formatUnits(reward, 9), 'AGX')
+    const tx = await luckyPool.connect(signer).claimRewardMixed(roundId, releasePlanIndex, restakePlanIndex, restakeBps);
+    await tx.wait();
+    console.log('Reward claimed (mixed):', ethers.formatUnits(reward, 9), 'AGX');
   } catch (err) {
     if (err.message?.includes('ErrorRewardAlreadyClaimed')) {
-      console.log('Reward already claimed')
+      console.log('Reward already claimed');
     } else if (err.message?.includes('ErrorInsufficientContribution')) {
-      console.log('Contribution insufficient — 用户需先通过 AgxContributionSwap.convert 获取贡献值')
+      console.log('Contribution insufficient — 用户需先通过 AgxContributionSwap.convert 获取贡献值');
     } else {
-      throw err
+      throw err;
     }
   }
 }
@@ -418,12 +389,11 @@ VRF 回调完成时触发。
 选出获奖者时触发。
 
 js
-
 ```js
 luckyPool.on('WinnerSelected', (roundId, winner, slot, index, reward) => {
-  console.log(`Round #${roundId}: ${winner} wins slot #${slot}!`)
-  console.log(`  Prize: ${ethers.formatUnits(reward, 9)} AGX`)
-})
+  console.log(`Round #${roundId}: ${winner} wins slot #${slot}!`);
+  console.log(`  Prize: ${ethers.formatUnits(reward, 9)} AGX`);
+});
 ```
 
 #### RewardClaimed(uint256 indexed roundId, address indexed winner, uint256 amount)
@@ -476,33 +446,33 @@ owner 调用 `setCurrentRoundRewardValueUsd1` 校正当前 Open 轮次 USD1 价�
 
 ### 错误码
 
-| 错误                                                       | 原因                                          | 解决方案                                                          |
-| ---------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------- |
-| `ErrorPaused()`                                            | 合约已暂停                                    | 等待恢复                                                          |
-| `ErrorInvalidRound(roundId)`                               | 轮次不存在                                    | 检查轮次 ID                                                       |
-| `ErrorNotCurrentRound(roundId, currentRoundId)`            | 不是当前轮次                                  | 使用 currentRoundId                                               |
-| `ErrorAlreadyEligible(roundId, user)`                      | 用户已参与                                    | 无法重复参与                                                      |
-| `ErrorInvalidRoundStatus(roundId, status)`                 | 轮次状态不匹配                                | 检查轮次状态                                                      |
-| `ErrorRoundNotEnded(roundId, endTime)`                     | 轮次未结束                                    | 等待结束                                                          |
-| `ErrorNoEligibleUsers(roundId)`                            | 无参与者                                      | 无法开奖                                                          |
-| `ErrorNotWinner(roundId, user)`                            | 用户未获奖                                    | 检查获奖信息                                                      |
-| `ErrorRewardAlreadyClaimed(roundId, user)`                 | 奖励已领取                                    | 无需重复                                                          |
-| `ErrorRestakeConfigNotSet()`                               | owner 未设置 restakeConfig                    | 调用 `setRestakeConfig`                                           |
-| `ErrorRewardQueueNotSet()`                                 | owner 未设置 rewardQueue                      | 调用 `setRewardQueue`                                             |
-| `ErrorInsufficientContribution(user, required, available)` | 中奖者贡献值不足                              | 通过 `AgxContributionSwap.convert` 补充贡献值                     |
-| `ErrorInsufficientRewardBalance(available, required)`      | 奖励余额不足                                  | 注入更多奖励                                                      |
-| `ErrorRandomnessCancellationDisabled(roundId)`             | 调用了已停用的随机请求取消入口                | 不要取消或重请求；排查并等待原 VRF 回调                           |
-| `ErrorVrfNotTimedOut(roundId, blocks, required)`           | 已废弃的 ABI 兼容错误                         | 当前实现不再产生                                                  |
-| `ErrorOnlyCoordinator(caller, coordinator)`                | 非 VRF 协调器调用                             | 仅 Chainlink 可调用                                               |
-| `ErrorOnlyRequestCoordinator(caller, requestId)`           | 回调者不是该请求发起时绑定的 Coordinator      | 使用原请求对应的 Chainlink Coordinator 回调                       |
-| `ErrorLegacyRequestBindingIncomplete(cursor, roundCount)`  | 升级前请求尚未完成分页绑定                    | 保持暂停并继续调用迁移函数，完成后再切换 Coordinator              |
-| `ErrorLegacyRequestBindingRequiresPause()`                 | 未暂停时执行旧请求绑定迁移                    | 先暂停 LuckyPool 和 Tracker                                       |
-| `ErrorInvalidAgxPrice(uint256 price)`                      | 关轮/报价时 `restakeConfig.agxPrice()` 返回 0 | 检查 RestakeConfig 的 AGX 价格喂价                                |
-| `ErrorRewardValuePricingNotEnabled()`                      | 关轮时 `rewardValuePricingEnabled` 仍为 false | 调用 `setCurrentRoundRewardValueUsd1` 启用定价                    |
-| `ErrorPurchaseOutsideRound(purchaseAt,start,end)`          | 补同步使用的原购买时间不属于该轮              | 核对 Tracker 保存的 `qualificationPurchaseAt`                     |
-| `ErrorPendingQualifications(roundId,count)`                | 当前轮仍有待同步资格                          | 批量调用 Tracker `retryQualification` 后重试关轮                  |
-| `ErrorDeferredPurchases(count)`                            | 仍有 Pool 不可读期间的购买待归属              | 调用 Tracker `assignDeferredPurchase`，无法归属时由 owner discard |
-| `ErrorTrackerBacklogUnavailable()`                         | Tracker 未配置、未达到 v3 或 backlog 读取异常 | 检查双向绑定、实现版本和 RPC，再恢复 keeper                       |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorPaused()` | 合约已暂停 | 等待恢复 |
+| `ErrorInvalidRound(roundId)` | 轮次不存在 | 检查轮次 ID |
+| `ErrorNotCurrentRound(roundId, currentRoundId)` | 不是当前轮次 | 使用 currentRoundId |
+| `ErrorAlreadyEligible(roundId, user)` | 用户已参与 | 无法重复参与 |
+| `ErrorInvalidRoundStatus(roundId, status)` | 轮次状态不匹配 | 检查轮次状态 |
+| `ErrorRoundNotEnded(roundId, endTime)` | 轮次未结束 | 等待结束 |
+| `ErrorNoEligibleUsers(roundId)` | 无参与者 | 无法开奖 |
+| `ErrorNotWinner(roundId, user)` | 用户未获奖 | 检查获奖信息 |
+| `ErrorRewardAlreadyClaimed(roundId, user)` | 奖励已领取 | 无需重复 |
+| `ErrorRestakeConfigNotSet()` | owner 未设置 restakeConfig | 调用 `setRestakeConfig` |
+| `ErrorRewardQueueNotSet()` | owner 未设置 rewardQueue | 调用 `setRewardQueue` |
+| `ErrorInsufficientContribution(user, required, available)` | 中奖者贡献值不足 | 通过 `AgxContributionSwap.convert` 补充贡献值 |
+| `ErrorInsufficientRewardBalance(available, required)` | 奖励余额不足 | 注入更多奖励 |
+| `ErrorRandomnessCancellationDisabled(roundId)` | 调用了已停用的随机请求取消入口 | 不要取消或重请求；排查并等待原 VRF 回调 |
+| `ErrorVrfNotTimedOut(roundId, blocks, required)` | 已废弃的 ABI 兼容错误 | 当前实现不再产生 |
+| `ErrorOnlyCoordinator(caller, coordinator)` | 非 VRF 协调器调用 | 仅 Chainlink 可调用 |
+| `ErrorOnlyRequestCoordinator(caller, requestId)` | 回调者不是该请求发起时绑定的 Coordinator | 使用原请求对应的 Chainlink Coordinator 回调 |
+| `ErrorLegacyRequestBindingIncomplete(cursor, roundCount)` | 升级前请求尚未完成分页绑定 | 保持暂停并继续调用迁移函数，完成后再切换 Coordinator |
+| `ErrorLegacyRequestBindingRequiresPause()` | 未暂停时执行旧请求绑定迁移 | 先暂停 LuckyPool 和 Tracker |
+| `ErrorInvalidAgxPrice(uint256 price)` | 关轮/报价时 `restakeConfig.agxPrice()` 返回 0 | 检查 RestakeConfig 的 AGX 价格喂价 |
+| `ErrorRewardValuePricingNotEnabled()` | 关轮时 `rewardValuePricingEnabled` 仍为 false | 调用 `setCurrentRoundRewardValueUsd1` 启用定价 |
+| `ErrorPurchaseOutsideRound(purchaseAt,start,end)` | 补同步使用的原购买时间不属于该轮 | 核对 Tracker 保存的 `qualificationPurchaseAt` |
+| `ErrorPendingQualifications(roundId,count)` | 当前轮仍有待同步资格 | 批量调用 Tracker `retryQualification` 后重试关轮 |
+| `ErrorDeferredPurchases(count)` | 仍有 Pool 不可读期间的购买待归属 | 调用 Tracker `assignDeferredPurchase`，无法归属时由 owner discard |
+| `ErrorTrackerBacklogUnavailable()` | Tracker 未配置、未达到 v3 或 backlog 读取异常 | 检查双向绑定、实现版本和 RPC，再恢复 keeper |
 
 ---
 
@@ -511,36 +481,33 @@ owner 调用 `setCurrentRoundRewardValueUsd1` 校正当前 Open 轮次 USD1 价�
 #### 查看最新轮次状态
 
 js
-
 ```js
 async function latestRoundStatus(luckyPool, userAddress) {
-  const currentId = await luckyPool.currentRoundId()
-  const round = await luckyPool.getRound(currentId)
+  const currentId = await luckyPool.currentRoundId();
+  const round = await luckyPool.getRound(currentId);
 
-  const statusNames = ['None', 'Open', 'RandomRequested', 'Drawn', 'Cancelled']
-  const now = Math.floor(Date.now() / 1000)
+  const statusNames = ['None', 'Open', 'RandomRequested', 'Drawn', 'Cancelled'];
+  const now = Math.floor(Date.now() / 1000);
 
-  console.log(`=== Round #${currentId} (Day ${round.displayDay}) ===`)
-  console.log(`Status: ${statusNames[round.status]}`)
-  console.log(`Eligible: ${round.eligibleCount} participants`)
+  console.log(`=== Round #${currentId} (Day ${round.displayDay}) ===`);
+  console.log(`Status: ${statusNames[round.status]}`);
+  console.log(`Eligible: ${round.eligibleCount} participants`);
 
   // 检查用户是否参与
-  const isUserEligible = await luckyPool.isEligible(currentId, userAddress)
-  console.log(`You are ${isUserEligible ? 'ELIGIBLE' : 'NOT eligible'}`)
+  const isUserEligible = await luckyPool.isEligible(currentId, userAddress);
+  console.log(`You are ${isUserEligible ? 'ELIGIBLE' : 'NOT eligible'}`);
 
-  if (round.status === 0n) {
-    // Open
-    const timeLeft = Number(round.endTime) - now
-    console.log(`Time remaining: ${(timeLeft / 3600).toFixed(1)} hours`)
+  if (round.status === 0n) { // Open
+    const timeLeft = Number(round.endTime) - now;
+    console.log(`Time remaining: ${(timeLeft / 3600).toFixed(1)} hours`);
   }
 
-  if (round.status === 3n) {
-    // Drawn
-    const [won, reward] = await luckyPool.getWinnerInfo(currentId, userAddress)
+  if (round.status === 3n) { // Drawn
+    const [won, reward] = await luckyPool.getWinnerInfo(currentId, userAddress);
     if (won) {
-      console.log('🎉 YOU WON!', ethers.formatUnits(reward, 9), 'AGX')
+      console.log('🎉 YOU WON!', ethers.formatUnits(reward, 9), 'AGX');
     } else {
-      console.log('Not a winner this round')
+      console.log('Not a winner this round');
     }
   }
 }
@@ -549,20 +516,18 @@ async function latestRoundStatus(luckyPool, userAddress) {
 #### 查看所有获奖者
 
 js
-
 ```js
 async function showAllWinners(luckyPool) {
-  const count = await luckyPool.roundCount()
-  const roundIds = await luckyPool.getRoundIds(0, Number(count))
+  const count = await luckyPool.roundCount();
+  const roundIds = await luckyPool.getRoundIds(0, Number(count));
 
   for (const roundId of roundIds) {
-    const round = await luckyPool.getRound(roundId)
-    if (round.status >= 3n && round.winnerCount > 0n) {
-      // Drawn
-      const winners = await luckyPool.getWinners(roundId)
-      console.log(`Round #${roundId}: ${winners.length} winners`)
+    const round = await luckyPool.getRound(roundId);
+    if (round.status >= 3n && round.winnerCount > 0n) { // Drawn
+      const winners = await luckyPool.getWinners(roundId);
+      console.log(`Round #${roundId}: ${winners.length} winners`);
       for (let i = 0; i < winners.length; i++) {
-        console.log(`  #${i + 1}: ${winners[i]}`)
+        console.log(`  #${i + 1}: ${winners[i]}`);
       }
     }
   }
@@ -573,21 +538,21 @@ async function showAllWinners(luckyPool) {
 
 ### 依赖合约
 
-| 合约                              | 用途                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------ |
-| Chainlink VRF Coordinator V2 Plus | 可验证随机数                                                                   |
-| 自建 keeper                       | 定时执行 `checkUpkeep -> performUpkeep`；独立 EOA、无 owner 权限、少量 BNB gas |
-| RewardToken                       | 奖励代币                                                                       |
-| AegisDailyPurchaseTracker         | 添加参与者                                                                     |
+| 合约 | 用途 |
+| --- | --- |
+| Chainlink VRF Coordinator V2 Plus | 可验证随机数 |
+| 自建 keeper | 定时执行 `checkUpkeep -> performUpkeep`；独立 EOA、无 owner 权限、少量 BNB gas |
+| RewardToken | 奖励代币 |
+| AegisDailyPurchaseTracker | 添加参与者 |
 
 ### 配置参数
 
-| 参数                   | 默认值       | 说明                                                         | 设置者 |
-| ---------------------- | ------------ | ------------------------------------------------------------ | ------ |
-| `defaultRewardAmount`  | 初始化时设置 | Open 轮次的每位中奖者 USD1 价值目标；关轮时转换为 AGX 锁定额 | owner  |
-| `defaultRoundDuration` | 初始化时设置 | 每轮持续时间（秒）                                           | owner  |
-| `defaultMaxWinners`    | 初始化时设置 | 最大获奖者数（<=10）                                         | owner  |
-| `purchaseTracker`      | 初始化后设置 | 参与者管理合约                                               | owner  |
-| `paused`               | false        | 是否暂停                                                     | owner  |
-| VRF 配置               | 初始化时设置 | Chainlink VRF 参数                                           | owner  |
-| `nextDisplayDay`       | 初始化时设置 | 下一轮展示日编号                                             | owner  |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `defaultRewardAmount` | 初始化时设置 | Open 轮次的每位中奖者 USD1 价值目标；关轮时转换为 AGX 锁定额 | owner |
+| `defaultRoundDuration` | 初始化时设置 | 每轮持续时间（秒） | owner |
+| `defaultMaxWinners` | 初始化时设置 | 最大获奖者数（<=10） | owner |
+| `purchaseTracker` | 初始化后设置 | 参与者管理合约 | owner |
+| `paused` | false | 是否暂停 | owner |
+| VRF 配置 | 初始化时设置 | Chainlink VRF 参数 | owner |
+| `nextDisplayDay` | 初始化时设置 | 下一轮展示日编号 | owner |

@@ -65,12 +65,11 @@ SHA-256 5762805667e1…
 获取指定计划详情。
 
 js
-
 ```js
-const plan = await restakeConfig.getPlan(0)
-console.log('Period:', Number(plan.period) / 86400, 'days')
-console.log('Tax:', Number(plan.taxBP) / 100, '%')
-console.log('Target:', plan.target)
+const plan = await restakeConfig.getPlan(0);
+console.log('Period:', Number(plan.period) / 86400, 'days');
+console.log('Tax:', Number(plan.taxBP) / 100, '%');
+console.log('Target:', plan.target);
 ```
 
 ##### getPlanByPeriod(uint256 period) -> (index, exists)
@@ -78,10 +77,9 @@ console.log('Target:', plan.target)
 根据锁定期查找计划索引。
 
 js
-
 ```js
-const { index, exists } = await restakeConfig.getPlanByPeriod(180 * 86400) // 当前产品的 180 天长期计划
-if (exists) console.log('Found plan at index:', index)
+const { index, exists } = await restakeConfig.getPlanByPeriod(180 * 86400); // 当前产品的 180 天长期计划
+if (exists) console.log('Found plan at index:', index);
 ```
 
 ##### getAllPlans() -> (RestakePlan[])
@@ -89,14 +87,11 @@ if (exists) console.log('Found plan at index:', index)
 获取所有有效计划，但返回值会过滤 `exists=false` 项，因此数组位置**不是可安全回传的链上 planIndex**。
 
 js
-
 ```js
-const plans = await restakeConfig.getAllPlans()
+const plans = await restakeConfig.getAllPlans();
 plans.forEach((p, i) => {
-  console.log(
-    `Active list item ${i}: ${Number(p.period) / 86400}d, tax ${Number(p.taxBP) / 100}%, target: ${p.target}`,
-  )
-})
+  console.log(`Active list item ${i}: ${Number(p.period)/86400}d, tax ${Number(p.taxBP)/100}%, target: ${p.target}`);
+});
 ```
 
 前端制作复投选择器时，必须先读 `getPlanCount()`，再遍历 `getPlan(i)`，把原始 `i` 与有效计划一起保存；不能把 `getAllPlans()` 的过滤后下标传给 `claim*Mixed`。
@@ -110,10 +105,9 @@ plans.forEach((p, i) => {
 获取当前 AGX 价格（基于 LP）。
 
 js
-
 ```js
-const price = await restakeConfig.agxPrice()
-console.log('AGX price:', ethers.formatUnits(price, 18))
+const price = await restakeConfig.agxPrice();
+console.log('AGX price:', ethers.formatUnits(price, 18));
 ```
 
 ##### agxUsdValue(uint256 agxAmountRaw) -> (uint256)
@@ -121,10 +115,9 @@ console.log('AGX price:', ethers.formatUnits(price, 18))
 计算 AGX 数量的 USD 价值。
 
 js
-
 ```js
-const value = await restakeConfig.agxUsdValue(ethers.parseUnits('100', 9))
-console.log('100 AGX = $', ethers.formatUnits(value, 18))
+const value = await restakeConfig.agxUsdValue(ethers.parseUnits('100', 9));
+console.log('100 AGX = $', ethers.formatUnits(value, 18));
 ```
 
 ##### getRestakeBpsConfig() -> (defaultBps, forceEnabled, minBps)
@@ -132,12 +125,11 @@ console.log('100 AGX = $', ethers.formatUnits(value, 18))
 获取复投比例配置。
 
 js
-
 ```js
-const config = await restakeConfig.getRestakeBpsConfig()
-console.log('Default restake:', Number(config.defaultBps) / 100, '%')
-console.log('Force restake:', config.forceEnabled)
-console.log('Min restake:', Number(config.minBps) / 100, '%')
+const config = await restakeConfig.getRestakeBpsConfig();
+console.log('Default restake:', Number(config.defaultBps) / 100, '%');
+console.log('Force restake:', config.forceEnabled);
+console.log('Min restake:', Number(config.minBps) / 100, '%');
 ```
 
 ---
@@ -148,75 +140,75 @@ console.log('Min restake:', Number(config.minBps) / 100, '%')
 
 #### 计划管理（owner 或 operator）
 
-| 函数                                                        | 权限             | 说明                                        |
-| ----------------------------------------------------------- | ---------------- | ------------------------------------------- |
-| `addPlan(uint256 _period, uint256 _taxBP, address _target)` | owner / operator | 新增复投计划。源码 `:89`                    |
-| `removePlan(uint256 _index)`                                | owner / operator | 软删除计划（`exists = false`）。源码 `:106` |
-| `setPlanTax(uint256 _index, uint256 _taxBP)`                | owner / operator | 更新计划税率。源码 `:116`                   |
-| `setPlanTarget(uint256 _index, address _target)`            | owner / operator | 更新计划复投目标。源码 `:127`               |
+| 函数 | 权限 | 说明 |
+| --- | --- | --- |
+| `addPlan(uint256 _period, uint256 _taxBP, address _target)` | owner / operator | 新增复投计划。源码 `:89` |
+| `removePlan(uint256 _index)` | owner / operator | 软删除计划（`exists = false`）。源码 `:106` |
+| `setPlanTax(uint256 _index, uint256 _taxBP)` | owner / operator | 更新计划税率。源码 `:116` |
+| `setPlanTarget(uint256 _index, address _target)` | owner / operator | 更新计划复投目标。源码 `:127` |
 
 #### 系统配置（onlyOwner）
 
-| 函数                                                                            | 说明                                    |
-| ------------------------------------------------------------------------------- | --------------------------------------- |
-| `setTaxReceiver(address _receiver)`                                             | 设置税收接收地址（非零）。源码 `:183`   |
-| `setContributionLedger(address _ledger)`                                        | 设置贡献账本地址（非零）。源码 `:190`   |
-| `setAgxToken(address _token)`                                                   | 设置 AGX 地址（非零）。源码 `:197`      |
-| `setLiquidityPool(address _pool)`                                               | 设置 LP 地址（非零）。源码 `:204`       |
-| `setDefaultRestakeBps(uint256 _bps)`                                            | 设置默认复投比例。源码 `:228`           |
-| `setForceRestakeEnabled(bool _enabled)`                                         | 开关强制复投。源码 `:240`               |
-| `setMinRestakeBps(uint256 _bps)`                                                | 设置最小复投比例。源码 `:252`           |
+| 函数 | 说明 |
+| --- | --- |
+| `setTaxReceiver(address _receiver)` | 设置税收接收地址（非零）。源码 `:183` |
+| `setContributionLedger(address _ledger)` | 设置贡献账本地址（非零）。源码 `:190` |
+| `setAgxToken(address _token)` | 设置 AGX 地址（非零）。源码 `:197` |
+| `setLiquidityPool(address _pool)` | 设置 LP 地址（非零）。源码 `:204` |
+| `setDefaultRestakeBps(uint256 _bps)` | 设置默认复投比例。源码 `:228` |
+| `setForceRestakeEnabled(bool _enabled)` | 开关强制复投。源码 `:240` |
+| `setMinRestakeBps(uint256 _bps)` | 设置最小复投比例。源码 `:252` |
 | `setRestakeBpsConfig(uint256 _defaultBps, bool _forceEnabled, uint256 _minBps)` | 一次性设置全部复投比例参数。源码 `:264` |
-| `setBondOperator(address _operator, bool _flag)`                                | 设置 operator 白名单。源码 `:295`       |
+| `setBondOperator(address _operator, bool _flag)` | 设置 operator 白名单。源码 `:295` |
 
 ### 事件
 
-| 事件                                                                      | 说明             |
-| ------------------------------------------------------------------------- | ---------------- |
-| `PlanAdded(uint256 index, uint256 period, uint256 taxBP, address target)` | 新增计划         |
-| `PlanRemoved(uint256 index)`                                              | 移除计划         |
-| `PlanTaxUpdated(uint256 index, uint256 taxBP)`                            | 计划税率更新     |
-| `PlanTargetUpdated(uint256 index, address target)`                        | 计划目标更新     |
-| `TaxReceiverUpdated(address receiver)`                                    | 税收接收地址更新 |
-| `ContributionLedgerUpdated(address ledger)`                               | 贡献账本更新     |
-| `DefaultRestakeBpsUpdated(uint256 oldValue, uint256 newValue)`            | 默认复投比例更新 |
-| `ForceRestakeUpdated(bool oldValue, bool newValue)`                       | 强制复投开关更新 |
-| `MinRestakeBpsUpdated(uint256 oldValue, uint256 newValue)`                | 最小复投比例更新 |
-| `AgxTokenUpdated(address token)`                                          | AGX 地址更新     |
-| `LiquidityPoolUpdated(address pool)`                                      | LP 地址更新      |
+| 事件 | 说明 |
+| --- | --- |
+| `PlanAdded(uint256 index, uint256 period, uint256 taxBP, address target)` | 新增计划 |
+| `PlanRemoved(uint256 index)` | 移除计划 |
+| `PlanTaxUpdated(uint256 index, uint256 taxBP)` | 计划税率更新 |
+| `PlanTargetUpdated(uint256 index, address target)` | 计划目标更新 |
+| `TaxReceiverUpdated(address receiver)` | 税收接收地址更新 |
+| `ContributionLedgerUpdated(address ledger)` | 贡献账本更新 |
+| `DefaultRestakeBpsUpdated(uint256 oldValue, uint256 newValue)` | 默认复投比例更新 |
+| `ForceRestakeUpdated(bool oldValue, bool newValue)` | 强制复投开关更新 |
+| `MinRestakeBpsUpdated(uint256 oldValue, uint256 newValue)` | 最小复投比例更新 |
+| `AgxTokenUpdated(address token)` | AGX 地址更新 |
+| `LiquidityPoolUpdated(address pool)` | LP 地址更新 |
 
 源码：`src/RestakeConfig.sol:57-75`
 
 ### 错误码
 
-| 错误                  | 原因                                 | 解决方案             |
-| --------------------- | ------------------------------------ | -------------------- |
-| `IndexOutOfBounds()`  | 计划索引越界                         | 使用有效索引         |
-| `PlanNotExists()`     | 计划不存在或已删除                   | 使用有效计划         |
-| `InvalidPeriod()`     | 周期为 0                             | 使用正数             |
-| `InvalidTax()`        | 税率超过 10000                       | 使用 0-10000         |
-| `InvalidTarget()`     | 目标地址为空                         | 提供有效地址         |
-| `BelowMinRestake()`   | 低于最小复投比例                     | 增加比例             |
-| `DefaultBelowMin()`   | 默认值低于最小值                     | 调整配置             |
-| `PriceSourceNotSet()` | LP 地址未设置                        | 联系管理员           |
-| `ZeroAgxReserve()`    | LP 中 AGX 储备为 0                   | 等待流动性恢复       |
-| `InvalidReceiver()`   | taxReceiver 为零地址                 | 提供非零地址         |
-| `NotAuthorized()`     | 非 owner/operator 调用 plan 管理函数 | 用 owner 或 operator |
-| `InvalidLedger()`     | contributionLedger 为零地址          | 提供非零地址         |
-| `InvalidToken()`      | agxToken 为零地址                    | 提供非零地址         |
-| `InvalidPool()`       | liquidityPool 为零地址               | 提供非零地址         |
-| `InvalidBps()`        | bps > 10000                          | 使用 0-10000         |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `IndexOutOfBounds()` | 计划索引越界 | 使用有效索引 |
+| `PlanNotExists()` | 计划不存在或已删除 | 使用有效计划 |
+| `InvalidPeriod()` | 周期为 0 | 使用正数 |
+| `InvalidTax()` | 税率超过 10000 | 使用 0-10000 |
+| `InvalidTarget()` | 目标地址为空 | 提供有效地址 |
+| `BelowMinRestake()` | 低于最小复投比例 | 增加比例 |
+| `DefaultBelowMin()` | 默认值低于最小值 | 调整配置 |
+| `PriceSourceNotSet()` | LP 地址未设置 | 联系管理员 |
+| `ZeroAgxReserve()` | LP 中 AGX 储备为 0 | 等待流动性恢复 |
+| `InvalidReceiver()` | taxReceiver 为零地址 | 提供非零地址 |
+| `NotAuthorized()` | 非 owner/operator 调用 plan 管理函数 | 用 owner 或 operator |
+| `InvalidLedger()` | contributionLedger 为零地址 | 提供非零地址 |
+| `InvalidToken()` | agxToken 为零地址 | 提供非零地址 |
+| `InvalidPool()` | liquidityPool 为零地址 | 提供非零地址 |
+| `InvalidBps()` | bps > 10000 | 使用 0-10000 |
 
 ### 配置参数
 
-| 参数                  | 默认值       | 说明            | 设置者                     |
-| --------------------- | ------------ | --------------- | -------------------------- |
-| `taxReceiver`         | 初始化时设置 | 税收接收地址    | owner                      |
-| `defaultRestakeBps`   | 5000 (50%)   | 默认复投比例    | owner                      |
-| `minRestakeBps`       | 5000 (50%)   | 最小复投比例    | owner                      |
-| `forceRestakeEnabled` | false        | 是否强制复投    | owner                      |
-| `agxToken`            | 初始化后设置 | AGX 地址        | owner                      |
-| `liquidityPool`       | 初始化后设置 | LP 地址         | owner                      |
-| `plans`               | 初始化后添加 | 复投计划列表    | owner/operator             |
-| `contributionLedger`  | 初始化后设置 | 贡献账本地址    | owner                      |
-| `operators`           | -            | operator 白名单 | owner（`setBondOperator`） |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `taxReceiver` | 初始化时设置 | 税收接收地址 | owner |
+| `defaultRestakeBps` | 5000 (50%) | 默认复投比例 | owner |
+| `minRestakeBps` | 5000 (50%) | 最小复投比例 | owner |
+| `forceRestakeEnabled` | false | 是否强制复投 | owner |
+| `agxToken` | 初始化后设置 | AGX 地址 | owner |
+| `liquidityPool` | 初始化后设置 | LP 地址 | owner |
+| `plans` | 初始化后添加 | 复投计划列表 | owner/operator |
+| `contributionLedger` | 初始化后设置 | 贡献账本地址 | owner |
+| `operators` | - | operator 白名单 | owner（`setBondOperator`） |

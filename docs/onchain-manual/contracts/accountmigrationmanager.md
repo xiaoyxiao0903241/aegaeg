@@ -38,7 +38,6 @@ SHA-256 20293ab2477e…
 #### 1. 迁移流程（三步式）
 
 text
-
 ```text
 用户请求 → 操作员审核 → 用户确认 → 执行迁移
 ```
@@ -75,7 +74,6 @@ text
 #### 3. 状态机
 
 text
-
 ```text
 None → Pending → Approved → Finalized
                   ↓
@@ -115,10 +113,9 @@ None → Pending → Approved → Finalized
 返回迁移请求总数。
 
 js
-
 ```js
-const count = await migrationManager.requestCount()
-console.log('Total requests:', count)
+const count = await migrationManager.requestCount();
+console.log('Total requests:', count);
 ```
 
 ##### pendingCount() -> (uint256)
@@ -126,10 +123,9 @@ console.log('Total requests:', count)
 返回待审核的迁移请求数。
 
 js
-
 ```js
-const pending = await migrationManager.pendingCount()
-console.log('Pending requests:', pending)
+const pending = await migrationManager.pendingCount();
+console.log('Pending requests:', pending);
 ```
 
 ##### getRequests(uint256 offset, uint256 limit) -> (MigrationRequestView[])
@@ -143,12 +139,11 @@ console.log('Pending requests:', pending)
 - reviewed - 是否已审核（Approved/Rejected）
 
 js
-
 ```js
-const requests = await migrationManager.getRequests(0, 20)
-requests.forEach((r) => {
-  console.log(`${r.oldAccount} -> ${r.newAccount} | reviewed: ${r.reviewed}`)
-})
+const requests = await migrationManager.getRequests(0, 20);
+requests.forEach(r => {
+  console.log(`${r.oldAccount} -> ${r.newAccount} | reviewed: ${r.reviewed}`);
+});
 ```
 
 ##### getPendingRequests(uint256 offset, uint256 limit) -> (MigrationRequestView[])
@@ -156,10 +151,9 @@ requests.forEach((r) => {
 分页获取待审核请求。
 
 js
-
 ```js
-const pending = await migrationManager.getPendingRequests(0, 20)
-console.log('Pending:', pending.length, 'requests')
+const pending = await migrationManager.getPendingRequests(0, 20);
+console.log('Pending:', pending.length, 'requests');
 ```
 
 ##### canonicalAccount(address) -> (address)
@@ -167,10 +161,9 @@ console.log('Pending:', pending.length, 'requests')
 返回迁移后的当前有效地址。
 
 js
-
 ```js
-const current = await migrationManager.canonicalAccount(oldAddress)
-console.log('Current address:', current)
+const current = await migrationManager.canonicalAccount(oldAddress);
+console.log('Current address:', current);
 ```
 
 ##### isOldAccount(address) -> (bool)
@@ -178,10 +171,9 @@ console.log('Current address:', current)
 检查地址是否为已迁移的旧地址。
 
 js
-
 ```js
-const isOld = await migrationManager.isOldAccount(oldAddress)
-console.log('Is migrated old account:', isOld)
+const isOld = await migrationManager.isOldAccount(oldAddress);
+console.log('Is migrated old account:', isOld);
 ```
 
 ##### migratedTo(address) -> (address)
@@ -205,11 +197,10 @@ console.log('Is migrated old account:', isOld)
 查询迁移请求状态（0=None, 1=Pending, 2=Approved, 3=Rejected, 4=Finalized）。
 
 js
-
 ```js
-const statusNames = ['None', 'Pending', 'Approved', 'Rejected', 'Finalized']
-const status = await migrationManager.requestStatus(oldAddress)
-console.log('Status:', statusNames[status])
+const statusNames = ['None', 'Pending', 'Approved', 'Rejected', 'Finalized'];
+const status = await migrationManager.requestStatus(oldAddress);
+console.log('Status:', statusNames[status]);
 ```
 
 ##### migrationFinalized(address) -> (bool)
@@ -217,35 +208,33 @@ console.log('Status:', statusNames[status])
 检查迁移是否已完成。
 
 js
-
 ```js
-const done = await migrationManager.migrationFinalized(oldAddress)
-console.log('Migration finalized:', done)
+const done = await migrationManager.migrationFinalized(oldAddress);
+console.log('Migration finalized:', done);
 ```
 
 ##### 管理员视图
 
 js
-
 ```js
-const referralTarget = await migrationManager.referralTarget()
-const targets = await migrationManager.getMigrationTargets()
-console.log('Referral:', referralTarget)
-console.log('Migration targets:', targets)
+const referralTarget = await migrationManager.referralTarget();
+const targets = await migrationManager.getMigrationTargets();
+console.log('Referral:', referralTarget);
+console.log('Migration targets:', targets);
 if (targets[0].toLowerCase() !== referralTarget.toLowerCase()) {
-  throw new Error('Referral must be migrationTargets[0]')
+  throw new Error('Referral must be migrationTargets[0]');
 }
 
-const enabled = await migrationManager.migrationEnabled()
-console.log('Migration enabled:', enabled)
+const enabled = await migrationManager.migrationEnabled();
+console.log('Migration enabled:', enabled);
 
-const blacklisted = await migrationManager.blacklisted(userAddress)
-console.log('Blacklisted:', blacklisted)
+const blacklisted = await migrationManager.blacklisted(userAddress);
+console.log('Blacklisted:', blacklisted);
 
-console.log('Targets locked:', await migrationManager.targetsLocked())
-console.log('Max migration hops:', await migrationManager.maxMigrationHops()) // 默认 8
-console.log('Min targets:', await migrationManager.MIN_MIGRATION_TARGET_COUNT()) // 1
-console.log('Max targets:', await migrationManager.MAX_MIGRATION_TARGET_COUNT()) // 32
+console.log('Targets locked:', await migrationManager.targetsLocked());
+console.log('Max migration hops:', await migrationManager.maxMigrationHops()); // 默认 8
+console.log('Min targets:', await migrationManager.MIN_MIGRATION_TARGET_COUNT()); // 1
+console.log('Max targets:', await migrationManager.MAX_MIGRATION_TARGET_COUNT()); // 32
 ```
 
 ---
@@ -271,41 +260,40 @@ console.log('Max targets:', await migrationManager.MAX_MIGRATION_TARGET_COUNT())
 - MigrationRequested(oldAccount, newAccount)
 
 js
-
 ```js
 async function requestMigration(migrationManager, newAccount, signer) {
-  const oldAccount = await signer.getAddress()
+  const oldAccount = await signer.getAddress();
 
   // 1. 检查当前状态
-  const isOld = await migrationManager.isOldAccount(oldAccount)
+  const isOld = await migrationManager.isOldAccount(oldAccount);
   if (isOld) {
-    throw new Error('Already migrated')
+    throw new Error('Already migrated');
   }
 
-  const finalized = await migrationManager.migrationFinalized(oldAccount)
+  const finalized = await migrationManager.migrationFinalized(oldAccount);
   if (finalized) {
-    throw new Error('Migration already finalized')
+    throw new Error('Migration already finalized');
   }
 
   // 2. 检查新地址有效性
-  const code = await migrationManager.provider.getCode(newAccount)
+  const code = await migrationManager.provider.getCode(newAccount);
   if (code !== '0x') {
-    throw new Error('New account cannot be a contract address')
+    throw new Error('New account cannot be a contract address');
   }
 
   // 3. 检查推荐关系（旧地址必须有，新地址不能有）
-  const referral = new Contract(REFERRAL_ADDRESS, REFERRAL_ABI, signer)
-  const oldReferrer = await referral.getReferral(oldAccount)
+  const referral = new Contract(REFERRAL_ADDRESS, REFERRAL_ABI, signer);
+  const oldReferrer = await referral.getReferral(oldAccount);
   if (oldReferrer === ethers.ZeroAddress) {
-    throw new Error('Old account must have a referrer')
+    throw new Error('Old account must have a referrer');
   }
 
   // 4. 提交请求
-  const tx = await migrationManager.connect(signer).requestMigration(newAccount)
-  const receipt = await tx.wait()
+  const tx = await migrationManager.connect(signer).requestMigration(newAccount);
+  const receipt = await tx.wait();
 
-  console.log('Migration requested!')
-  console.log('Status: Pending review')
+  console.log('Migration requested!');
+  console.log('Status: Pending review');
 }
 ```
 
@@ -324,34 +312,32 @@ async function requestMigration(migrationManager, newAccount, signer) {
 - MigrationCompleted(oldAccount, newAccount)
 
 js
-
 ```js
 async function activateMigration(migrationManager, oldAccount, signer) {
-  const newAccount = await signer.getAddress()
+  const newAccount = await signer.getAddress();
 
   // 1. 检查状态
-  const status = await migrationManager.requestStatus(oldAccount)
-  if (status !== 2n) {
-    // 2 = Approved
-    throw new Error('Migration not approved yet. Current status: ' + status)
+  const status = await migrationManager.requestStatus(oldAccount);
+  if (status !== 2n) { // 2 = Approved
+    throw new Error('Migration not approved yet. Current status: ' + status);
   }
 
   // 2. 确认地址匹配
-  const requested = await migrationManager.requestedNewOf(oldAccount)
+  const requested = await migrationManager.requestedNewOf(oldAccount);
   if (requested.toLowerCase() !== newAccount.toLowerCase()) {
-    throw new Error('Address mismatch. Requested: ' + requested)
+    throw new Error('Address mismatch. Requested: ' + requested);
   }
 
   // 3. 激活
-  const tx = await migrationManager.connect(signer).activateMigration(oldAccount)
-  const receipt = await tx.wait()
+  const tx = await migrationManager.connect(signer).activateMigration(oldAccount);
+  const receipt = await tx.wait();
 
-  console.log('Migration completed!')
-  console.log(`${oldAccount} -> ${newAccount}`)
+  console.log('Migration completed!');
+  console.log(`${oldAccount} -> ${newAccount}`);
 
   // 4. 验证
-  const canonical = await migrationManager.canonicalAccount(oldAccount)
-  console.log('Canonical address:', canonical)
+  const canonical = await migrationManager.canonicalAccount(oldAccount);
+  console.log('Canonical address:', canonical);
 }
 ```
 
@@ -360,10 +346,9 @@ async function activateMigration(migrationManager, oldAccount, signer) {
 操作员审核通过迁移请求。
 
 js
-
 ```js
 // 由后端服务调用
-await migrationManager.connect(operatorSigner).approveMigration(oldAccount)
+await migrationManager.connect(operatorSigner).approveMigration(oldAccount);
 ```
 
 ##### rejectMigration(address oldAccount) (仅 owner)
@@ -371,9 +356,8 @@ await migrationManager.connect(operatorSigner).approveMigration(oldAccount)
 管理员拒绝 Pending 或 Approved 请求，并释放新地址预留。
 
 js
-
 ```js
-await migrationManager.connect(ownerSigner).rejectMigration(oldAccount)
+await migrationManager.connect(ownerSigner).rejectMigration(oldAccount);
 ```
 
 ##### cancelMigrationRequest()（旧地址）
@@ -381,9 +365,8 @@ await migrationManager.connect(ownerSigner).rejectMigration(oldAccount)
 旧地址可取消自己的 Pending 或 Approved 请求；状态转为 Rejected，并释放 `requestedOldOf[newAccount]`。
 
 js
-
 ```js
-await migrationManager.connect(oldSigner).cancelMigrationRequest()
+await migrationManager.connect(oldSigner).cancelMigrationRequest();
 ```
 
 ##### operatorMigrateAccount(address oldAccount, address newAccount) (仅 operator)
@@ -421,7 +404,6 @@ await migrationManager.connect(oldSigner).cancelMigrationRequest()
 标准安全操作顺序：
 
 text
-
 ```text
 setMigrationEnabled(false)
   → setTargets / addMigrationTarget / removeMigrationTarget
@@ -469,13 +451,12 @@ setMigrationEnabled(false)
 操作员直接迁移时触发。
 
 js
-
 ```js
 migrationManager.on('MigrationCompleted', (oldAccount, newAccount) => {
-  console.log(`Account migrated: ${oldAccount} -> ${newAccount}`)
+  console.log(`Account migrated: ${oldAccount} -> ${newAccount}`);
   // 更新本地存储的用户地址
-  updateUserAddress(oldAccount, newAccount)
-})
+  updateUserAddress(oldAccount, newAccount);
+});
 ```
 
 #### BlacklistUpdated(address indexed account, bool enabled)
@@ -514,37 +495,37 @@ migrationManager.on('MigrationCompleted', (oldAccount, newAccount) => {
 
 ### 错误码
 
-| 错误                                            | 原因                             | 解决方案                                                                                           |
-| ----------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `AM__InvalidAddress()`                          | 地址为零地址                     | 检查参数                                                                                           |
-| `AM__AlreadyRequested(address)`                 | 已有待处理请求                   | 等待审核完成                                                                                       |
-| `AM__MigrationAlreadyFinalized(address)`        | 已迁移完成                       | 无需重复                                                                                           |
-| `AM__RequestMismatch(address, expected)`        | 地址不匹配                       | 使用正确的地址                                                                                     |
-| `AM__NewAccountNotClean(address)`               | 新地址已迁移过                   | 使用全新地址                                                                                       |
-| `AM__SelfMigration()`                           | 新旧地址相同                     | 使用不同地址                                                                                       |
-| `AM__TargetNotConfigured()`                     | 目标合约未配置                   | 联系管理员                                                                                         |
-| `AM__MigrationDisabled()`                       | 迁移已禁用                       | 等待启用                                                                                           |
-| `AM__ContractAddressNotAllowed()`               | 新地址是合约                     | 使用 EOA 地址                                                                                      |
-| `AM__NotOperator()`                             | 非操作员                         | 使用操作员账户                                                                                     |
-| `AM__NotPending(address)`                       | 非待审核状态                     | 检查状态                                                                                           |
-| `AM__NotApproved(address)`                      | 未审核通过                       | 等待审核                                                                                           |
-| `AM__Blacklisted(address)`                      | 账户在黑名单                     | 联系管理员                                                                                         |
-| `AM__OldAccountHasNoReferrer(address)`          | 旧地址无推荐人                   | 先绑定推荐关系                                                                                     |
-| `AM__NewAccountAlreadyHasReferrer(address)`     | 新地址已有推荐人                 | 使用无推荐人的地址                                                                                 |
-| `AM__InvalidPagination()`                       | 分页参数无效                     | limit 必须在 1-20 范围内                                                                           |
-| `AM__NewAccountReserved(address)`               | 新地址已被其他请求预留           | 更换新地址或取消原请求                                                                             |
-| `AM__TargetsLocked()`                           | 已锁定时重复调用 `lockTargets`   | 无需重复锁定；如需调整，先暂停迁移并修改清单                                                       |
-| `AM__InvalidTarget(address)`                    | 目标为零地址或无合约代码         | 修复部署地址                                                                                       |
-| `AM__InvalidTargetManager(address,address)`     | 目标未反向绑定当前 Manager       | 先执行目标的 `setMigrationManager`                                                                 |
-| `AM__DuplicateTarget(address)`                  | 目标清单存在重复地址             | 修复目标清单                                                                                       |
-| `AM__InvalidTargetCount(uint256)`               | 目标数量为 0 或超过 32           | 将目标数量调整为 1–32                                                                              |
-| `AM__ReferralTargetMismatch(address,address)`   | Referral 与目标数组第 0 项不一致 | 将首次 Referral 放在 `migrationTargets[0]`                                                         |
-| `AM__ReferralTargetImmutable(address,address)`  | 试图在首次配置后替换 Referral    | 保持初始 Referral 地址不变                                                                         |
-| `AM__TargetNotFound(address)`                   | 尝试移除未配置的目标             | 使用当前目标数组中的地址                                                                           |
-| `AM__ReferralTargetRemovalForbidden()`          | 尝试单独移除 Referral            | Referral 是永久核心目标，不能移除或替换                                                            |
-| `AM__MaxMigrationHopsExceeded(address,uint256)` | 身份已达到当前迁移次数上限       | 停止并执行链下人工审计；如决定提高，owner 先暂停迁移、调用 `setMaxMigrationHops`、完成回读后再开启 |
-| `AM__InvalidMigrationHops()`                    | `maxMigrationHops` 为 0          | 设置 ≥1 的跳数                                                                                     |
-| `AM__MigrationMustBeDisabled()`                 | 启用迁移时尝试改跳数或目标清单   | 先 `setMigrationEnabled(false)`                                                                    |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `AM__InvalidAddress()` | 地址为零地址 | 检查参数 |
+| `AM__AlreadyRequested(address)` | 已有待处理请求 | 等待审核完成 |
+| `AM__MigrationAlreadyFinalized(address)` | 已迁移完成 | 无需重复 |
+| `AM__RequestMismatch(address, expected)` | 地址不匹配 | 使用正确的地址 |
+| `AM__NewAccountNotClean(address)` | 新地址已迁移过 | 使用全新地址 |
+| `AM__SelfMigration()` | 新旧地址相同 | 使用不同地址 |
+| `AM__TargetNotConfigured()` | 目标合约未配置 | 联系管理员 |
+| `AM__MigrationDisabled()` | 迁移已禁用 | 等待启用 |
+| `AM__ContractAddressNotAllowed()` | 新地址是合约 | 使用 EOA 地址 |
+| `AM__NotOperator()` | 非操作员 | 使用操作员账户 |
+| `AM__NotPending(address)` | 非待审核状态 | 检查状态 |
+| `AM__NotApproved(address)` | 未审核通过 | 等待审核 |
+| `AM__Blacklisted(address)` | 账户在黑名单 | 联系管理员 |
+| `AM__OldAccountHasNoReferrer(address)` | 旧地址无推荐人 | 先绑定推荐关系 |
+| `AM__NewAccountAlreadyHasReferrer(address)` | 新地址已有推荐人 | 使用无推荐人的地址 |
+| `AM__InvalidPagination()` | 分页参数无效 | limit 必须在 1-20 范围内 |
+| `AM__NewAccountReserved(address)` | 新地址已被其他请求预留 | 更换新地址或取消原请求 |
+| `AM__TargetsLocked()` | 已锁定时重复调用 `lockTargets` | 无需重复锁定；如需调整，先暂停迁移并修改清单 |
+| `AM__InvalidTarget(address)` | 目标为零地址或无合约代码 | 修复部署地址 |
+| `AM__InvalidTargetManager(address,address)` | 目标未反向绑定当前 Manager | 先执行目标的 `setMigrationManager` |
+| `AM__DuplicateTarget(address)` | 目标清单存在重复地址 | 修复目标清单 |
+| `AM__InvalidTargetCount(uint256)` | 目标数量为 0 或超过 32 | 将目标数量调整为 1–32 |
+| `AM__ReferralTargetMismatch(address,address)` | Referral 与目标数组第 0 项不一致 | 将首次 Referral 放在 `migrationTargets[0]` |
+| `AM__ReferralTargetImmutable(address,address)` | 试图在首次配置后替换 Referral | 保持初始 Referral 地址不变 |
+| `AM__TargetNotFound(address)` | 尝试移除未配置的目标 | 使用当前目标数组中的地址 |
+| `AM__ReferralTargetRemovalForbidden()` | 尝试单独移除 Referral | Referral 是永久核心目标，不能移除或替换 |
+| `AM__MaxMigrationHopsExceeded(address,uint256)` | 身份已达到当前迁移次数上限 | 停止并执行链下人工审计；如决定提高，owner 先暂停迁移、调用 `setMaxMigrationHops`、完成回读后再开启 |
+| `AM__InvalidMigrationHops()` | `maxMigrationHops` 为 0 | 设置 ≥1 的跳数 |
+| `AM__MigrationMustBeDisabled()` | 启用迁移时尝试改跳数或目标清单 | 先 `setMigrationEnabled(false)` |
 
 ### 升级前置条件
 
@@ -557,50 +538,49 @@ migrationManager.on('MigrationCompleted', (oldAccount, newAccount) => {
 #### 用户完整迁移流程
 
 js
-
 ```js
 async function fullMigrationFlow(migrationManager, newAccount, signer) {
-  const oldAccount = await signer.getAddress()
+  const oldAccount = await signer.getAddress();
 
-  console.log('=== Account Migration ===')
-  console.log(`From: ${oldAccount}`)
-  console.log(`To:   ${newAccount}`)
+  console.log('=== Account Migration ===');
+  console.log(`From: ${oldAccount}`);
+  console.log(`To:   ${newAccount}`);
 
   // Step 1: 请求迁移
-  console.log('\nStep 1: Requesting migration...')
-  await (await migrationManager.connect(signer).requestMigration(newAccount)).wait()
+  console.log('\nStep 1: Requesting migration...');
+  await (await migrationManager.connect(signer).requestMigration(newAccount)).wait();
 
-  let status = await migrationManager.requestStatus(oldAccount)
-  console.log('Status:', ['None', 'Pending', 'Approved', 'Rejected', 'Finalized'][status])
+  let status = await migrationManager.requestStatus(oldAccount);
+  console.log('Status:', ['None', 'Pending', 'Approved', 'Rejected', 'Finalized'][status]);
 
   // Step 2: 等待审核（由操作员完成）
-  console.log('\nStep 2: Waiting for operator approval...')
-  console.log('Please contact support to approve your migration.')
+  console.log('\nStep 2: Waiting for operator approval...');
+  console.log('Please contact support to approve your migration.');
 
   // 轮询检查状态
   const checkStatus = async () => {
-    const s = await migrationManager.requestStatus(oldAccount)
+    const s = await migrationManager.requestStatus(oldAccount);
     if (s === 2n) {
-      console.log('\nStep 3: Migration approved!')
-      return true
+      console.log('\nStep 3: Migration approved!');
+      return true;
     }
     if (s === 3n) {
-      console.log('\nMigration rejected.')
-      return false
+      console.log('\nMigration rejected.');
+      return false;
     }
-    return null // still pending
-  }
+    return null; // still pending
+  };
 
   // Step 3: 用户确认
-  const approved = await checkStatus()
+  const approved = await checkStatus();
   if (approved) {
-    console.log('\nStep 4: Activating migration...')
+    console.log('\nStep 4: Activating migration...');
     const tx = await migrationManager
       .connect(signer) // 注意: 这里应该用新地址的 signer
-      .activateMigration(oldAccount)
-    await tx.wait()
-    console.log('Migration completed successfully!')
-    console.log('Use', newAccount, 'as your new address')
+      .activateMigration(oldAccount);
+    await tx.wait();
+    console.log('Migration completed successfully!');
+    console.log('Use', newAccount, 'as your new address');
   }
 }
 ```
@@ -608,27 +588,26 @@ async function fullMigrationFlow(migrationManager, newAccount, signer) {
 #### 管理员审核面板
 
 js
-
 ```js
 async function adminMigrationPanel(migrationManager) {
   // 获取所有待审核请求
-  const pendingCount = await migrationManager.pendingCount()
-  const pages = Math.ceil(Number(pendingCount) / 20)
+  const pendingCount = await migrationManager.pendingCount();
+  const pages = Math.ceil(Number(pendingCount) / 20);
 
-  console.log(`Pending migration requests: ${pendingCount}`)
+  console.log(`Pending migration requests: ${pendingCount}`);
 
   for (let page = 0; page < pages; page++) {
-    const requests = await migrationManager.getPendingRequests(page * 20, 20)
+    const requests = await migrationManager.getPendingRequests(page * 20, 20);
 
     for (const req of requests) {
-      console.log(`\nRequest:`)
-      console.log(`  Old: ${req.oldAccount}`)
-      console.log(`  New: ${req.newAccount}`)
+      console.log(`\nRequest:`);
+      console.log(`  Old: ${req.oldAccount}`);
+      console.log(`  New: ${req.newAccount}`);
 
       // 检查黑名单
-      const blacklisted = await migrationManager.blacklisted(req.oldAccount)
+      const blacklisted = await migrationManager.blacklisted(req.oldAccount);
       if (blacklisted) {
-        console.log('  ⚠️ Blacklisted!')
+        console.log('  ⚠️ Blacklisted!');
       }
     }
   }
@@ -639,29 +618,29 @@ async function adminMigrationPanel(migrationManager) {
 
 ### 依赖合约
 
-| 合约                      | 用途         |
-| ------------------------- | ------------ |
-| Referral                  | 迁移推荐关系 |
-| PreSale                   | 迁移购买记录 |
-| BondDepository            | 迁移债券     |
-| BurnBondDepository        | 迁移销毁债券 |
-| LockedStaking             | 迁移质押     |
-| EarlyStaking              | 迁移预售质押 |
-| XStakingPool              | 迁移挖矿     |
-| RewardQueue               | 迁移奖励队列 |
-| LiquidStaking             | 迁移活期质押 |
-| Governance                | 迁移投票记录 |
-| LuckyPool                 | 迁移彩票记录 |
+| 合约 | 用途 |
+| --- | --- |
+| Referral | 迁移推荐关系 |
+| PreSale | 迁移购买记录 |
+| BondDepository | 迁移债券 |
+| BurnBondDepository | 迁移销毁债券 |
+| LockedStaking | 迁移质押 |
+| EarlyStaking | 迁移预售质押 |
+| XStakingPool | 迁移挖矿 |
+| RewardQueue | 迁移奖励队列 |
+| LiquidStaking | 迁移活期质押 |
+| Governance | 迁移投票记录 |
+| LuckyPool | 迁移彩票记录 |
 | AegisDailyPurchaseTracker | 迁移购买追踪 |
-| AgxContributionSwap       | 迁移贡献点   |
-| Turbine                   | 迁移售卖配额 |
+| AgxContributionSwap | 迁移贡献点 |
+| Turbine | 迁移售卖配额 |
 
 ### 配置参数
 
-| 参数               | 默认值       | 说明               | 设置者         |
-| ------------------ | ------------ | ------------------ | -------------- |
-| `migrationEnabled` | false        | 是否启用迁移       | owner          |
-| `targets`          | 初始化后设置 | 目标合约列表       | owner          |
-| `operators`        | 初始化后设置 | 操作员列表         | owner          |
-| `blacklisted`      | -            | 黑名单账户         | owner/operator |
-| `MAX_PAGE_SIZE`    | 20           | 分页最大值（常量） | -              |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `migrationEnabled` | false | 是否启用迁移 | owner |
+| `targets` | 初始化后设置 | 目标合约列表 | owner |
+| `operators` | 初始化后设置 | 操作员列表 | owner |
+| `blacklisted` | - | 黑名单账户 | owner/operator |
+| `MAX_PAGE_SIZE` | 20 | 分页最大值（常量） | - |

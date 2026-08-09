@@ -36,7 +36,6 @@ SHA-256 b092070c39b2…
 #### 1. 余额与静默期流程
 
 text
-
 ```text
 RewardQueue → registerSellQuota() → turbineBalances[user]
                                          ↓
@@ -69,10 +68,9 @@ RewardQueue → registerSellQuota() → turbineBalances[user]
 用户的可出售余额。
 
 js
-
 ```js
-const balance = await turbine.turbineBalances(userAddress)
-console.log('Turbine balance:', ethers.formatUnits(balance, 9), 'AGX')
+const balance = await turbine.turbineBalances(userAddress);
+console.log('Turbine balance:', ethers.formatUnits(balance, 9), 'AGX');
 ```
 
 ##### silencesSize(address) -> (uint256)
@@ -80,10 +78,9 @@ console.log('Turbine balance:', ethers.formatUnits(balance, 9), 'AGX')
 用户的静默期记录数。
 
 js
-
 ```js
-const size = await turbine.silencesSize(userAddress)
-console.log('Silence records:', size)
+const size = await turbine.silencesSize(userAddress);
+console.log('Silence records:', size);
 ```
 
 ##### silences(address user, uint256 index)
@@ -95,10 +92,9 @@ console.log('Silence records:', size)
 检查指定静默期是否已到期。
 
 js
-
 ```js
-const isReady = await turbine.isVested(userAddress, 0)
-console.log('Cooldown finished:', isReady)
+const isReady = await turbine.isVested(userAddress, 0);
+console.log('Cooldown finished:', isReady);
 ```
 
 ##### currentCooldownDuration() -> (uint256)
@@ -106,10 +102,9 @@ console.log('Cooldown finished:', isReady)
 返回当前冷却期长度（考虑自适应）。
 
 js
-
 ```js
-const duration = await turbine.currentCooldownDuration()
-console.log('Current cooldown:', Number(duration) / 3600, 'hours')
+const duration = await turbine.currentCooldownDuration();
+console.log('Current cooldown:', Number(duration) / 3600, 'hours');
 ```
 
 ##### quoteUsdInForAgxOut(uint256 agxAmount) -> (uint256)
@@ -117,10 +112,9 @@ console.log('Current cooldown:', Number(duration) / 3600, 'hours')
 预览购买指定 AGX 需要的 USD1 数量。
 
 js
-
 ```js
-const usdNeeded = await turbine.quoteUsdInForAgxOut(agxAmount)
-console.log('Need USD1:', ethers.formatUnits(usdNeeded, 18))
+const usdNeeded = await turbine.quoteUsdInForAgxOut(agxAmount);
+console.log('Need USD1:', ethers.formatUnits(usdNeeded, 18));
 ```
 
 #### 状态修改函数
@@ -147,31 +141,30 @@ console.log('Need USD1:', ethers.formatUnits(usdNeeded, 18))
 - Silenced(user, agxAmount, usdAmount, timestamp)
 
 js
-
 ```js
 async function buyAndCooldown(turbine, usdContract, signer) {
-  const user = await signer.getAddress()
-  const balance = await turbine.turbineBalances(user)
+  const user = await signer.getAddress();
+  const balance = await turbine.turbineBalances(user);
 
   if (balance === 0n) {
-    console.log('No turbine balance')
-    return
+    console.log('No turbine balance');
+    return;
   }
 
   // 计算需要的 USD1
-  const usdNeeded = await turbine.quoteUsdInForAgxOut(balance)
-  console.log('Balance:', ethers.formatUnits(balance, 9), 'AGX')
-  console.log('Need USD1:', ethers.formatUnits(usdNeeded, 18))
+  const usdNeeded = await turbine.quoteUsdInForAgxOut(balance);
+  console.log('Balance:', ethers.formatUnits(balance, 9), 'AGX');
+  console.log('Need USD1:', ethers.formatUnits(usdNeeded, 18));
 
   // 授权 USD1
-  await (await usdContract.approve(await turbine.getAddress(), usdNeeded)).wait()
+  await (await usdContract.approve(await turbine.getAddress(), usdNeeded)).wait();
 
   // 购买并进入静默期
-  const tx = await turbine.connect(signer).buyAgxAndStartCooldown(usdNeeded)
-  const receipt = await tx.wait()
+  const tx = await turbine.connect(signer).buyAgxAndStartCooldown(usdNeeded);
+  const receipt = await tx.wait();
 
-  const cooldown = await turbine.currentCooldownDuration()
-  console.log('Silence started! Cooldown:', Number(cooldown) / 3600, 'hours')
+  const cooldown = await turbine.currentCooldownDuration();
+  console.log('Silence started! Cooldown:', Number(cooldown) / 3600, 'hours');
 }
 ```
 
@@ -186,18 +179,17 @@ async function buyAndCooldown(turbine, usdContract, signer) {
 用户在分流器链尾 `claim` 后才收到 gAGX 到钱包。若 `splitterManager` 未配置（`address(0)`），保留旧行为（直接 mint 给用户）。
 
 js
-
 ```js
 async function claimGagx(turbine, index, signer) {
-  const isReady = await turbine.isVested(await signer.getAddress(), index)
+  const isReady = await turbine.isVested(await signer.getAddress(), index);
   if (!isReady) {
-    console.log('Cooldown not finished')
-    return
+    console.log('Cooldown not finished');
+    return;
   }
 
-  const tx = await turbine.connect(signer).claimCooledGagx(index)
-  await tx.wait()
-  console.log('gAGX routed to splitter for linear release')
+  const tx = await turbine.connect(signer).claimCooledGagx(index);
+  await tx.wait();
+  console.log('gAGX routed to splitter for linear release');
 }
 ```
 
@@ -287,32 +279,32 @@ async function claimGagx(turbine, index, signer) {
 
 ### 错误码
 
-| 错误                                        | 原因                                   | 解决方案                      |
-| ------------------------------------------- | -------------------------------------- | ----------------------------- |
-| `ErrorInsufficientBalance()`                | 无 Turbine 余额                        | 等待奖励发放                  |
-| `ErrorSilentTime()`                         | 冷却期未结束                           | 等待到期                      |
-| `ErrorNoSilenceBalance()`                   | 无静默期记录                           | 检查索引                      |
-| `ErrorInvalidAmount()`                      | USD1 数量不匹配                        | 使用 quoteUsdInForAgxOut 预览 |
-| `ErrorZeroAddress()`                        | 地址为零                               | 使用非零地址                  |
-| `ErrorZeroAmount()`                         | 金额为零或到账为零                     | 使用正数金额                  |
-| `ErrorIndexOutOfBounds()`                   | 静默期索引越界                         | 使用有效索引                  |
-| `ErrorNotAvailable()`                       | 无静默期记录                           | 先买入冷却                    |
-| `ErrorNotAuthorized()`                      | 非授权 caller 调用 `registerSellQuota` | 检查授权                      |
-| `ErrorCooldownOutOfRange()`                 | 冷却期超出 24h-96h                     | 设置范围内值                  |
-| `ErrorInvalidThresholds()`                  | 储备率阈值非法                         | 保证 healthy>stressed>0       |
-| `TurbineMigratedAccount(account)`           | 账户已迁移或目标已有状态               | 使用规范地址                  |
-| `TurbineNotMigrationManager(caller)`        | 非 `migrationManager` 调用迁移         | 检查调用者                    |
-| `ErrorExceedsExcess(requested, excess)`     | `sweepExcess` 超出盈余                 | 减少 amount                   |
-| `MigrationManagerImmutable(currentManager)` | `migrationManager` 已设且试图改        | 保持原管理器                  |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorInsufficientBalance()` | 无 Turbine 余额 | 等待奖励发放 |
+| `ErrorSilentTime()` | 冷却期未结束 | 等待到期 |
+| `ErrorNoSilenceBalance()` | 无静默期记录 | 检查索引 |
+| `ErrorInvalidAmount()` | USD1 数量不匹配 | 使用 quoteUsdInForAgxOut 预览 |
+| `ErrorZeroAddress()` | 地址为零 | 使用非零地址 |
+| `ErrorZeroAmount()` | 金额为零或到账为零 | 使用正数金额 |
+| `ErrorIndexOutOfBounds()` | 静默期索引越界 | 使用有效索引 |
+| `ErrorNotAvailable()` | 无静默期记录 | 先买入冷却 |
+| `ErrorNotAuthorized()` | 非授权 caller 调用 `registerSellQuota` | 检查授权 |
+| `ErrorCooldownOutOfRange()` | 冷却期超出 24h-96h | 设置范围内值 |
+| `ErrorInvalidThresholds()` | 储备率阈值非法 | 保证 healthy>stressed>0 |
+| `TurbineMigratedAccount(account)` | 账户已迁移或目标已有状态 | 使用规范地址 |
+| `TurbineNotMigrationManager(caller)` | 非 `migrationManager` 调用迁移 | 检查调用者 |
+| `ErrorExceedsExcess(requested, excess)` | `sweepExcess` 超出盈余 | 减少 amount |
+| `MigrationManagerImmutable(currentManager)` | `migrationManager` 已设且试图改 | 保持原管理器 |
 
 ### 配置参数
 
-| 参数                      | 默认值       | 说明       | 设置者 |
-| ------------------------- | ------------ | ---------- | ------ |
-| `coolingDuration`         | 24 小时      | 基础冷却期 | owner  |
-| `adaptiveCooldownEnabled` | false        | 是否自适应 | owner  |
-| `healthyReserveRatioBP`   | 20000 (200%) | 健康储备率 | owner  |
-| `stressedReserveRatioBP`  | 15000 (150%) | 紧张储备率 | owner  |
-| `swapSlippageBP`          | 300 (3%)     | 交换滑点   | owner  |
-| `rewardGagx`              | 初始化后设置 | gAGX 地址  | owner  |
-| `treasury`                | 初始化后设置 | 国库地址   | owner  |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `coolingDuration` | 24 小时 | 基础冷却期 | owner |
+| `adaptiveCooldownEnabled` | false | 是否自适应 | owner |
+| `healthyReserveRatioBP` | 20000 (200%) | 健康储备率 | owner |
+| `stressedReserveRatioBP` | 15000 (150%) | 紧张储备率 | owner |
+| `swapSlippageBP` | 300 (3%) | 交换滑点 | owner |
+| `rewardGagx` | 初始化后设置 | gAGX 地址 | owner |
+| `treasury` | 初始化后设置 | 国库地址 | owner |

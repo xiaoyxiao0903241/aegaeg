@@ -42,7 +42,6 @@ SHA-256 4d7543a73238…
 使用标准 ERC20 方法：
 
 javascript
-
 ```javascript
 const [name, symbol, decimals, balance, allowance, totalSupply] = await Promise.all([
   token.name(),
@@ -51,28 +50,27 @@ const [name, symbol, decimals, balance, allowance, totalSupply] = await Promise.
   token.balanceOf(user),
   token.allowance(user, spender),
   token.totalSupply(),
-])
+]);
 ```
 
 不要硬编码 decimals。部署时可以把该 token 初始化为任意精度；当前本地 USD1 流程通常使用 18 位。
 
 ### 写方法
 
-| 方法                             | 权限                      | 前端用途                                         |
-| -------------------------------- | ------------------------- | ------------------------------------------------ |
-| `transfer(to, amount)`           | token 持有人              | 标准转账                                         |
-| `approve(spender, amount)`       | token 持有人              | 为 PreSale、Usd1Swap、BondHelper、Turbine 等授权 |
-| `transferFrom(from, to, amount)` | 已获 allowance 的 spender | 一般由业务合约调用                               |
-| `mint(to, amount)`               | **任何地址**              | 仅测试工具；生产用户界面不展示                   |
+| 方法 | 权限 | 前端用途 |
+| --- | --- | --- |
+| `transfer(to, amount)` | token 持有人 | 标准转账 |
+| `approve(spender, amount)` | token 持有人 | 为 PreSale、Usd1Swap、BondHelper、Turbine 等授权 |
+| `transferFrom(from, to, amount)` | 已获 allowance 的 spender | 一般由业务合约调用 |
+| `mint(to, amount)` | **任何地址** | 仅测试工具；生产用户界面不展示 |
 
 测试环境 mint：
 
 javascript
-
 ```javascript
-const decimals = await token.decimals()
-const amount = ethers.parseUnits('1000', decimals)
-await (await token.mint(user, amount)).wait()
+const decimals = await token.decimals();
+const amount = ethers.parseUnits('1000', decimals);
+await (await token.mint(user, amount)).wait();
 ```
 
 ### 事件与错误

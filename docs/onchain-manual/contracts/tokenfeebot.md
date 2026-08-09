@@ -42,9 +42,8 @@ SHA-256 4a09dd2534fd…
 检查是否满足交换条件。
 
 js
-
 ```js
-const [amount, shouldExec] = await tokenFeeBot.isExecSwap()
+const [amount, shouldExec] = await tokenFeeBot.isExecSwap();
 ```
 
 #### 状态修改函数
@@ -93,24 +92,24 @@ const [amount, shouldExec] = await tokenFeeBot.isExecSwap()
 
 ### 错误码
 
-| 错误                          | 原因                       | 解决方案                  |
-| ----------------------------- | -------------------------- | ------------------------- |
-| `ZeroAddress()`               | 接收者地址为零             | 使用非零地址              |
-| `InvalidThreshold()`          | `threshold` 设为 0         | 设置正数阈值              |
-| `IndexOutOfBounds()`          | `removeReceiver` 索引越界  | 使用有效索引              |
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ZeroAddress()` | 接收者地址为零 | 使用非零地址 |
+| `InvalidThreshold()` | `threshold` 设为 0 | 设置正数阈值 |
+| `IndexOutOfBounds()` | `removeReceiver` 索引越界 | 使用有效索引 |
 | `ErrorTooSoon(nextAllowedAt)` | 距上次成功交换未满最小间隔 | 在 `nextAllowedAt` 后重试 |
-| `ZeroReceiver()`              | 当前轮询接收者为零地址     | 修复接收者集合            |
-| `InvalidCap()`                | 单笔上限设为 0             | 设置正数上限              |
-| `InvalidSlippage()`           | 滑点超过 5000 BPS          | 设置 `0–5000`             |
+| `ZeroReceiver()` | 当前轮询接收者为零地址 | 修复接收者集合 |
+| `InvalidCap()` | 单笔上限设为 0 | 设置正数上限 |
+| `InvalidSlippage()` | 滑点超过 5000 BPS | 设置 `0–5000` |
 
 ### 配置参数
 
-| 参数              | 默认值 | 说明                | 设置者             |
-| ----------------- | ------ | ------------------- | ------------------ |
-| `threshold`       | 3e9    | 交换触发阈值        | DEFAULT_ADMIN_ROLE |
-| `maxSwapPerCall`  | 1e10   | 单笔交换上限        | DEFAULT_ADMIN_ROLE |
-| `slippageBps`     | 500    | Router 最小输出滑点 | DEFAULT_ADMIN_ROLE |
-| `minExecInterval` | 1 hour | 成功交换最小间隔    | DEFAULT_ADMIN_ROLE |
-| `receivers`       | []     | 接收者列表          | DEFAULT_ADMIN_ROLE |
-| `token`           | -      | 费用代币            | 初始化时设置       |
-| `usd`             | -      | 目标代币            | 初始化时设置       |
+| 参数 | 默认值 | 说明 | 设置者 |
+| --- | --- | --- | --- |
+| `threshold` | 3e9 | 交换触发阈值 | DEFAULT_ADMIN_ROLE |
+| `maxSwapPerCall` | 1e10 | 单笔交换上限 | DEFAULT_ADMIN_ROLE |
+| `slippageBps` | 500 | Router 最小输出滑点 | DEFAULT_ADMIN_ROLE |
+| `minExecInterval` | 1 hour | 成功交换最小间隔 | DEFAULT_ADMIN_ROLE |
+| `receivers` | [] | 接收者列表 | DEFAULT_ADMIN_ROLE |
+| `token` | - | 费用代币 | 初始化时设置 |
+| `usd` | - | 目标代币 | 初始化时设置 |
