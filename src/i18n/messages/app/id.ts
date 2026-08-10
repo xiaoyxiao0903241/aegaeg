@@ -347,6 +347,8 @@ const app = defineMessages({
       aboutTitle: 'Tentang',
       selectSellToken: 'Pilih token jual',
       selectBuyToken: 'Pilih token beli',
+      xBuyDisabledHint: 'X hanya dapat dijual',
+      flipDisabledXSellOnly: 'X hanya dapat dijual — tidak bisa dibalik ke beli',
       action: 'Perdagangan',
       success: 'Perdagangan berhasil',
       priceImpact: 'Dampak harga',

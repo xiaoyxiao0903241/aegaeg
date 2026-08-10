@@ -12,6 +12,11 @@ export async function submitMarketTrade(args: {
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { pair, path, core } = args
 
+  // X 仅可卖：写路径 fail-closed，不依赖选币 UI
+  if (pair.buy.key === 'x') {
+    return { ok: false, error: new Error('TRADE_PATH_BUY_NOT_ALLOWED:x') }
+  }
+
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
     const { wallet, address } = session
     const amountIn = core.debouncedAmountIn

@@ -16,10 +16,12 @@ import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-mar
 import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
 import { useMarketTradeSpotRates } from '~/views/dapp/exchange/market-trade/use-market-trade-spot-rates'
 import {
+  canFlipTradePair,
   formatTradeRouteLabel,
   getTradePairTokens,
   getTradeSwapPath,
   getTradeToken,
+  isSellOnlyTradeToken,
   TRADE_TOKEN_KEYS,
   type TradeTokenKey,
 } from '~/views/dapp/exchange/shared'
@@ -145,7 +147,10 @@ export function useMarketTradeSession(
     priceImpactBps != null &&
     priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
+  const canFlip = canFlipTradePair(sellKey, buyKey)
+
   function flipDirection() {
+    if (!canFlip) return
     core.clearLock()
     flipPair()
     core.clearAmount()
@@ -159,7 +164,7 @@ export function useMarketTradeSession(
   }
 
   function selectBuyToken(key: TradeTokenKey) {
-    if (key === buyKey) return
+    if (key === buyKey || isSellOnlyTradeToken(key)) return
     core.clearLock()
     setBuyKey(key)
     core.clearAmount()
@@ -181,6 +186,7 @@ export function useMarketTradeSession(
     selectSellToken,
     selectBuyToken,
     flipDirection,
+    canFlip,
     slippage,
     setSlippage,
     pair,

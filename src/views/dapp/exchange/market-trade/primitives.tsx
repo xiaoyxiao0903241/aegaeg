@@ -3,7 +3,7 @@
  */
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -24,6 +24,7 @@ import {
 import { Icon, iconVariants } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { Text, textVariants } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import {
   exchangeTokenCardKeys,
   type ExchangeTokenKey,
@@ -180,15 +181,17 @@ export type ExchangeTokenPickerOption = {
   symbol: string
   icon?: string
   balanceLabel: string
-  /** 列表中可见但不可选（手册未收录 / 延后代币）。 */
+  /** 列表中可见但不可选（如 X 仅可卖）。 */
   disabled?: boolean
+  /** 禁用项悬停 / 点按提示。 */
+  disabledHint?: string
 }
 
 /**
  * 卖出 / 买入代币选择
  *
  * 胶囊触发器展示当前选中代币，下拉列表供选择；
- * 未上架代币可见但不可选。
+ * 禁用项仍展示，并用提示说明原因。
  */
 export function ExchangeTokenPicker({
   ariaLabel,
@@ -234,10 +237,9 @@ export function ExchangeTokenPicker({
         {options.map((option) => {
           const active = option.key === value
           const optionDisabled = Boolean(option.disabled)
-          return (
+          const row = (
             <DropdownMenuItem
               disabled={optionDisabled}
-              key={option.key}
               onSelect={() => onSelect(option.key)}
               selected={active}
             >
@@ -273,6 +275,16 @@ export function ExchangeTokenPicker({
                 ) : null}
               </span>
             </DropdownMenuItem>
+          )
+
+          if (!option.disabledHint) {
+            return <Fragment key={option.key}>{row}</Fragment>
+          }
+
+          return (
+            <Tooltip content={option.disabledHint} key={option.key}>
+              <span className="block w-full">{row}</span>
+            </Tooltip>
           )
         })}
       </DropdownMenuPanel>

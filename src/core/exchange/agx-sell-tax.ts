@@ -77,6 +77,8 @@ export function effectiveAgxSellTaxBps(args: {
 /**
  * 毛卖出量 → 扣除卖出税后实际进入池子的数量。
  *
+ * AGX / X 共用同一 BPS 扣税算法。
+ *
  * @param amountIn 毛卖出量
  * @param taxBps 卖出税（BPS）
  * @returns 税后进入池子的数量；金额 ≤ 0 或税率为 0 时原样返回

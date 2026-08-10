@@ -7,20 +7,36 @@ import type { ExchangeTokenKey } from '~/shared/config/exchange-token-keys'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { isTradeTokenKey, type TradeTokenKey } from '~/views/dapp/exchange/shared'
+import {
+  isSellOnlyTradeToken,
+  isTradeTokenKey,
+  type TradeTokenKey,
+} from '~/views/dapp/exchange/shared'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-with-success-toast'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 
-function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTradeState) {
+function mapTradePickerOptions({
+  keys,
+  trade,
+  side,
+  xBuyDisabledHint,
+}: {
+  keys: readonly TradeTokenKey[]
+  trade: MarketTradeState
+  side: 'sell' | 'buy'
+  xBuyDisabledHint: string
+}) {
   return keys.map((key) => {
     const token = trade.getToken(key)
+    const buyBlocked = side === 'buy' && isSellOnlyTradeToken(key)
     return {
       key,
       symbol: token.symbol,
       icon: token.icon,
       balanceLabel: trade.balanceLabelFor(key),
-      disabled: false,
+      disabled: buyBlocked,
+      disabledHint: buyBlocked ? xBuyDisabledHint : undefined,
     }
   })
 }
@@ -34,9 +50,10 @@ export function useMarketTradeDock(trade: MarketTradeState) {
   const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 
   const { pair } = trade
+  const flipBlocked = !trade.canFlip
   const { isFlipping, rotation, flipCardClass, onFlip } = useExchangeFlip({
     flipDirection: trade.flipDirection,
-    disabled: sessionReady && !trade.walletReady,
+    disabled: flipBlocked || (sessionReady && !trade.walletReady),
   })
 
   const exchangePriceDisplayLabel = exchangePriceInverted
@@ -51,8 +68,18 @@ export function useMarketTradeDock(trade: MarketTradeState) {
   })
 
   const pickDisabled = trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping
-  const sellPickerOptions = mapTradePickerOptions(trade.sellPickerKeys, trade)
-  const buyPickerOptions = mapTradePickerOptions(trade.buyPickerKeys, trade)
+  const sellPickerOptions = mapTradePickerOptions({
+    keys: trade.sellPickerKeys,
+    trade,
+    side: 'sell',
+    xBuyDisabledHint: t.exchange.trade.xBuyDisabledHint,
+  })
+  const buyPickerOptions = mapTradePickerOptions({
+    keys: trade.buyPickerKeys,
+    trade,
+    side: 'buy',
+    xBuyDisabledHint: t.exchange.trade.xBuyDisabledHint,
+  })
 
   function handleTokenPick(side: 'sell' | 'buy', key: string) {
     if (!isTradeTokenKey(key)) return
@@ -72,8 +99,11 @@ export function useMarketTradeDock(trade: MarketTradeState) {
     pair,
     isFlipping,
     rotation,
-    flipCardClass,
+    flipCardClass: flipBlocked ? undefined : flipCardClass,
     onFlip,
+    flipDisabled:
+      flipBlocked || trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping,
+    flipTooltip: flipBlocked ? t.exchange.trade.flipDisabledXSellOnly : t.exchange.flip,
     onBack: () => setView('hub'),
     slippageOpen,
     setSlippageOpen,

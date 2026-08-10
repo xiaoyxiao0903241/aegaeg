@@ -340,6 +340,8 @@ const app = defineMessages({
       aboutTitle: 'เกี่ยวกับ',
       selectSellToken: 'เลือกโทเค็นขาย',
       selectBuyToken: 'เลือกโทเค็นซื้อ',
+      xBuyDisabledHint: 'X ขายได้อย่างเดียว',
+      flipDisabledXSellOnly: 'X ขายได้อย่างเดียว — สลับเป็นซื้อไม่ได้',
       action: 'เทรด',
       success: 'เทรดสำเร็จ',
       priceImpact: 'ผลกระทบต่อราคา',

@@ -17,8 +17,9 @@ export const PANCAKE_ROUTER_V2_METHODS = {
   swapExactTokensForTokens:
     'function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) returns (uint256[] amounts)',
   /**
-   * AGX→USD1 卖出：AGX 卖税计入交易对。
+   * AGX / X 卖出：卖税计入交易对，须 SupportingFeeOnTransfer。
    * @see docs/onchain-manual/contracts/agx.md
+   * @see docs/onchain-manual/contracts/xtoken.md
    */
   swapExactTokensForTokensSupportingFeeOnTransferTokens:
     'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)',

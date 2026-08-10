@@ -339,6 +339,8 @@ const app = defineMessages({
       aboutTitle: 'Giới thiệu',
       selectSellToken: 'Chọn token bán',
       selectBuyToken: 'Chọn token mua',
+      xBuyDisabledHint: 'X chỉ có thể bán',
+      flipDisabledXSellOnly: 'X chỉ có thể bán — không thể đảo sang mua',
       action: 'Giao dịch',
       success: 'Giao dịch thành công',
       priceImpact: 'Tác động giá',

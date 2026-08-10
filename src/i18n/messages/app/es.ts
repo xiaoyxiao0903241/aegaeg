@@ -346,6 +346,8 @@ const app = defineMessages({
       aboutTitle: 'Acerca de',
       selectSellToken: 'Selecciona el token a vender',
       selectBuyToken: 'Selecciona el token a comprar',
+      xBuyDisabledHint: 'X solo se puede vender',
+      flipDisabledXSellOnly: 'X solo se puede vender — no se puede invertir a compra',
       action: 'Operar',
       success: 'Operación exitosa',
       priceImpact: 'Impacto en el precio',

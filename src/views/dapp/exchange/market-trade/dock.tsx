@@ -1,9 +1,8 @@
 /**
  * 市价交易左栏 Dock
  *
- * 卖出 / 买入代币可下拉选择，中间可翻转方向；信息行展示汇率
- * （可反向）、滑点设置、价格影响与预估 Gas。滑点通过弹窗修改，
- * 高价格影响时给出告警。
+ * 卖出 / 买入代币可下拉选择，中间可翻转方向；X 仅可卖，买入侧展示但禁用，
+ * 卖出为 X 时禁用翻转。信息行展示汇率（可反向）、滑点设置、价格影响与预估 Gas。
  */
 import { dappAssets } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
@@ -56,16 +55,18 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
                   'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-card',
                 )}
               >
-                <Tooltip content={t.exchange.flip}>
-                  <ExchangeFlowButton
-                    aria-label={t.exchange.flip}
-                    className="max-dapp:my-2"
-                    disabled={vm.sessionReady && (!trade.walletReady || trade.isSubmitting)}
-                    interactive
-                    onClick={vm.onFlip}
-                  >
-                    <ExchangeFlipGlyph rotation={vm.rotation} />
-                  </ExchangeFlowButton>
+                <Tooltip content={vm.flipTooltip}>
+                  <span className="inline-flex">
+                    <ExchangeFlowButton
+                      aria-label={vm.flipTooltip}
+                      className="max-dapp:my-2"
+                      disabled={vm.flipDisabled}
+                      interactive
+                      onClick={vm.onFlip}
+                    >
+                      <ExchangeFlipGlyph rotation={vm.rotation} />
+                    </ExchangeFlowButton>
+                  </span>
                 </Tooltip>
               </div>
             }

@@ -342,6 +342,8 @@ const app = defineMessages({
       aboutTitle: 'परिचय',
       selectSellToken: 'बेचने वाला टोकन चुनें',
       selectBuyToken: 'खरीदने वाला टोकन चुनें',
+      xBuyDisabledHint: 'X केवल बेचा जा सकता है',
+      flipDisabledXSellOnly: 'X केवल बेचा जा सकता है — खरीद में नहीं बदला जा सकता',
       action: 'ट्रेड',
       success: 'ट्रेड सफल',
       priceImpact: 'मूल्य प्रभाव',

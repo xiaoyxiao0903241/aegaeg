@@ -343,6 +343,8 @@ const app = defineMessages({
       aboutTitle: '정보',
       selectSellToken: '매도 토큰 선택',
       selectBuyToken: '매수 토큰 선택',
+      xBuyDisabledHint: 'X는 매도만 가능합니다',
+      flipDisabledXSellOnly: 'X는 매도만 가능 — 매수로 전환할 수 없습니다',
       action: '거래',
       success: '거래 성공',
       priceImpact: '가격 영향',

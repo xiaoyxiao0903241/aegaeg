@@ -339,6 +339,8 @@ const app = defineMessages({
       aboutTitle: 'Hakkında',
       selectSellToken: 'Satılacak tokenı seçin',
       selectBuyToken: 'Alınacak tokenı seçin',
+      xBuyDisabledHint: 'X yalnızca satılabilir',
+      flipDisabledXSellOnly: 'X yalnızca satılabilir — alışa çevrilemez',
       action: 'İşlem',
       success: 'İşlem başarılı',
       priceImpact: 'Fiyat etkisi',

@@ -2,8 +2,8 @@ import { getAddress } from 'thirdweb/utils'
 import type { Wallet } from 'thirdweb/wallets'
 import { parseAbi } from 'viem'
 
-import { isAgxSellPath } from '~/core/exchange/agx-sell-tax'
 import { exchangeDeadline } from '~/core/exchange/exchange-math'
+import { requiresFeeOnTransferSwap } from '~/core/exchange/fee-on-transfer-swap'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { PANCAKE_ROUTER_V2_METHODS } from '~/web3/abis'
@@ -42,7 +42,7 @@ export async function approveTokenIfNeeded({
 /**
  * 提交市价兑换
  *
- * 走 Pancake Router；AGX 卖币路径扣卖税，须用带费率转移支持的
+ * 走 Pancake Router；AGX / X 卖币路径扣卖税，须用带费率转移支持的
  * `swapExactTokensForTokensSupportingFeeOnTransferTokens`。
  * 路径少于两跳或输入代币缺失时直接抛错，杜绝用非法路径发交易。
  *
@@ -51,6 +51,7 @@ export async function approveTokenIfNeeded({
  * @param path 兑换路径，直连两跳或经中间币三跳，须与实时报价路径一致
  * @param amountOutMin 授权后实时重算的最低输出下限，不在本函数内重算
  * @see docs/onchain-manual/contracts/agx.md
+ * @see docs/onchain-manual/contracts/xtoken.md
  */
 export async function exchangeTokens({
   wallet,
@@ -78,8 +79,11 @@ export async function exchangeTokens({
   }
 
   const deadline = BigInt(exchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
-  // AGX 卖币路径扣卖税，须走带费率转移支持的路径
-  const functionName = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
+  // AGX / X 卖币路径扣卖税，须走带费率转移支持的路径
+  const functionName = requiresFeeOnTransferSwap(tokenIn, {
+    agx: BSC_CONTRACTS.agx,
+    x: BSC_CONTRACTS.xToken,
+  })
     ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
     : 'swapExactTokensForTokens'
 

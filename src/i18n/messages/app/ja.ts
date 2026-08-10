@@ -349,6 +349,8 @@ const app = defineMessages({
       aboutTitle: 'について',
       selectSellToken: '売却トークンを選択',
       selectBuyToken: '購入トークンを選択',
+      xBuyDisabledHint: 'Xは売却のみ可能です',
+      flipDisabledXSellOnly: 'Xは売却のみ — 購入側へ切り替えられません',
       action: '取引',
       success: '取引成功',
       priceImpact: '価格影響',

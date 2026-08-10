@@ -20,6 +20,7 @@ async function loadExchangeAddresses() {
   return {
     agx: BSC_CONTRACTS.agx,
     usd1: BSC_CONTRACTS.usd1,
+    x: BSC_CONTRACTS.xToken,
     pool: EXCHANGE_CONFIG.pool,
     router: EXCHANGE_CONFIG.router,
   }
@@ -197,6 +198,43 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
   })
 
   assert.equal(client.getAmountsOutArg, netIn)
+})
+
+test('fetchExchangeQuote X to AGX uses post-tax amountIn for getAmountsOut', async () => {
+  const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
+  const { clearExchangePoolImmutableCache } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+  const { X_SELL_TAX_BP } = await loadModule('/src/core/exchange/x-sell-tax.ts')
+  const { agx, x } = await loadExchangeAddresses()
+  clearExchangePoolImmutableCache()
+
+  const amountIn = 10n ** 18n
+  const netIn = (amountIn * (10_000n - BigInt(X_SELL_TAX_BP))) / 10_000n
+  const client = createMockClient({
+    tokenIn: x,
+    tokenOut: agx,
+    quotedOut: netIn / 2n,
+  })
+  client.getAmountsOutArg = null
+  const originalRead = client.readContract.bind(client)
+  client.readContract = async (request) => {
+    if (request.functionName === 'getAmountsOut') {
+      client.getAmountsOutArg = request.args[0]
+    }
+    return originalRead(request)
+  }
+
+  const result = await fetchExchangeQuote({
+    amountIn,
+    tokenIn: x,
+    tokenOut: agx,
+    path: [x, agx],
+    client,
+  })
+
+  assert.equal(client.getAmountsOutArg, netIn)
+  assert.equal(result.quotedOut, netIn / 2n)
 })
 
 test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () => {

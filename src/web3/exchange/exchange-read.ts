@@ -7,6 +7,7 @@ import {
   isAgxSellPath,
 } from '~/core/exchange/agx-sell-tax'
 import { calcV2PriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
+import { applyXSellTaxToAmountIn, isXSellPath } from '~/core/exchange/x-sell-tax'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { AGX_SELL_TAX_METHODS, ERC20_METHODS } from '~/web3/abis'
@@ -154,8 +155,8 @@ export async function readErc20Allowance(
 /**
  * 获取市价兑换报价
  *
- * 通过 Pancake Router `getAmountsOut` 计算预期输出；AGX 卖币路径先扣卖税，
- * 再按净额报价。价格影响仅在直连 USD1/AGX 池时计算，其余路径返回 0（UI 显示 —）。
+ * 通过 Pancake Router `getAmountsOut` 计算预期输出；AGX / X 卖币路径先扣卖税，
+ * 再按净额报价。价格影响仅在直连 USD1/AGX 池时计算，其余路径返回 null（UI 显示 —）。
  * V2 路由器没有 gas 估算，gasEstimate 恒为 0。
  *
  * @param amountIn 输入代币数量
@@ -165,8 +166,8 @@ export async function readErc20Allowance(
  * @param client 链上读取客户端，默认公共 RPC
  * @param poolContext 复用 React Query 中短暂过期的池读取，避免重复拉取
  * @returns 预期输出 / 输入输出地址 / gas 估算 / 价格影响基点
- * @see docs/onchain-manual/contracts/usd1swap.md
  * @see docs/onchain-manual/contracts/agx.md
+ * @see docs/onchain-manual/contracts/xtoken.md
  */
 export async function fetchExchangeQuote({
   amountIn,
@@ -187,6 +188,7 @@ export async function fetchExchangeQuote({
 }): Promise<ExchangeQuoteResult> {
   const path = pathArg ?? ([tokenIn, tokenOut] as const)
   const sellingAgx = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
+  const sellingX = isXSellPath(tokenIn, BSC_CONTRACTS.xToken)
 
   const [pool, spot, sellTaxBps] = await Promise.all([
     poolContext
@@ -198,8 +200,12 @@ export async function fetchExchangeQuote({
     sellingAgx ? readAgxSellTaxBps(client, BSC_CONTRACTS.agx, amountIn) : Promise.resolve(0),
   ])
 
-  // 交易对收到的是扣税后的 AGX，Router.getAmountsOut 必须用净额报价
-  const amountInForQuote = sellingAgx ? applyAgxSellTaxToAmountIn(amountIn, sellTaxBps) : amountIn
+  // 交易对收到的是扣税后的数量，Router.getAmountsOut 必须用净额报价
+  const amountInForQuote = sellingAgx
+    ? applyAgxSellTaxToAmountIn(amountIn, sellTaxBps)
+    : sellingX
+      ? applyXSellTaxToAmountIn(amountIn)
+      : amountIn
 
   const quotedOut = await quoteV2AmountsOut({
     router: EXCHANGE_CONFIG.router,

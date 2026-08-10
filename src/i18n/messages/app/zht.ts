@@ -334,6 +334,8 @@ const app = defineMessages({
       aboutTitle: '關於',
       selectSellToken: '選擇賣出代幣',
       selectBuyToken: '選擇買入代幣',
+      xBuyDisabledHint: 'X 僅支援賣出',
+      flipDisabledXSellOnly: 'X 僅可賣出，無法切換為買入',
       action: '交易',
       success: '交易成功',
       priceImpact: '價格影響',

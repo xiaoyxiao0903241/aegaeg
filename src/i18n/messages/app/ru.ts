@@ -339,6 +339,8 @@ const app = defineMessages({
       aboutTitle: 'О программе',
       selectSellToken: 'Выберите токен продажи',
       selectBuyToken: 'Выберите токен покупки',
+      xBuyDisabledHint: 'X можно только продавать',
+      flipDisabledXSellOnly: 'X можно только продавать — нельзя переключить на покупку',
       action: 'Торговля',
       success: 'Сделка выполнена',
       priceImpact: 'Влияние на цену',
