@@ -22,6 +22,22 @@ import { Card } from '~/shared/components/card'
 import { Empty } from '~/shared/components/empty'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
+import {
+  type ChartDateGrain,
+  chartDateGrainFromSpan,
+  chartPointsSpanSeconds,
+  formatChartTipDate,
+  formatChartYearMonth,
+  pickChartAxisLabels,
+} from '~/shared/lib/chart-axis-date'
+import {
+  CHART_MORPH_MS,
+  CHART_MORPH_SAMPLES,
+  easeOutCubic,
+  ensureAscendingTimes,
+  morphSeriesFrame,
+  sampleSeriesNormalized,
+} from '~/shared/lib/chart-series-morph'
 import { cn } from '~/shared/lib/utils'
 import { formatNumber, formatUsd } from '~/shared/presenters/format'
 import { colorHex } from '~/shared/styles/tokens/tokens'
@@ -71,30 +87,51 @@ type ChartTip = {
   valueLabel: string
 }
 
-/** 格式化 UTC 时间为坐标轴月份 `YYYY-MM` */
-function formatChartMonthLabel(time: UTCTimestamp): string {
-  const d = new Date(Number(time) * 1000)
-  const y = d.getUTCFullYear()
-  const m = String(d.getUTCMonth() + 1).padStart(2, '0')
-  return `${y}-${m}`
+/** 换批曲线 morph 用：点数 + 首末指纹（父级每次 map 出新数组）。 */
+function pointsSignature(points: readonly ChartPoint[]): string {
+  if (points.length === 0) return '0'
+  const first = points[0]!
+  const last = points[points.length - 1]!
+  return `${points.length}:${first.time}:${first.value}:${last.time}:${last.value}`
 }
 
 /**
- * 均匀挑选坐标轴标签，保证首尾都出现（最多 6 个）。
- * 点数不超过上限时全部保留。
+ * 把首末点钉在绘图区左右边。
+ *
+ * LWC 把点画在 bar 槽中心；可见范围用 `0.5..n-1.5` 裁掉半槽。
+ *
+ * @param chart 图表实例
+ * @param pointCount 当前序列点数
  */
-function pickChartAxisLabels(points: readonly ChartPoint[], maxLabels = 6): readonly string[] {
+function fitSeriesFlush(chart: IChartApi, pointCount: number): void {
+  if (pointCount <= 0) return
+  if (pointCount === 1) {
+    chart.timeScale().setVisibleLogicalRange({ from: 0, to: 1 })
+    return
+  }
+  chart.timeScale().setVisibleLogicalRange({
+    from: 0.5,
+    to: pointCount - 1.5,
+  })
+}
+
+/**
+ * 点数过少时加密到 morph 同级采样，避免落定后半槽留白突然变大。
+ *
+ * @param points 原始或中间帧点列
+ */
+function densifyForPaint(
+  points: readonly { time: number; value: number }[],
+): { time: number; value: number }[] {
   if (points.length === 0) return []
-  if (points.length <= maxLabels) {
-    return points.map((p) => formatChartMonthLabel(p.time))
+  if (points.length === 1 || points.length >= CHART_MORPH_SAMPLES) {
+    return points.map((p) => ({ time: p.time, value: p.value }))
   }
-  const last = maxLabels - 1
-  const labels: string[] = []
-  for (let i = 0; i < maxLabels; i += 1) {
-    const idx = Math.round((i / last) * (points.length - 1))
-    labels.push(formatChartMonthLabel(points[idx]!.time))
+  const out: { time: number; value: number }[] = []
+  for (let i = 0; i < CHART_MORPH_SAMPLES; i += 1) {
+    out.push(sampleSeriesNormalized(points, i / (CHART_MORPH_SAMPLES - 1)))
   }
-  return labels
+  return ensureAscendingTimes(out)
 }
 
 function tipValueLabel(value: number): string {
@@ -103,14 +140,20 @@ function tipValueLabel(value: number): string {
   return formatNumber(value, { digits: 2, prefix: '$' })
 }
 
-function tipDateFromTime(time: Time | undefined): string | null {
+/**
+ * tip 日期：数值时间按 grain；BusinessDay / 业务日字符串走月粒度回退。
+ *
+ * @param time Lightweight Charts 时间
+ * @param grain 日期粒度
+ */
+function tipDateFromTime(time: Time | undefined, grain: ChartDateGrain): string | null {
   if (time == null) return null
-  if (typeof time === 'number') return formatChartMonthLabel(time as UTCTimestamp)
+  if (typeof time === 'number') return formatChartTipDate(time, grain)
   if (typeof time === 'string') {
     return time.length >= 7 ? time.slice(0, 7) : time
   }
   if (typeof time === 'object' && 'year' in time) {
-    return `${time.year}-${String(time.month).padStart(2, '0')}`
+    return formatChartYearMonth(Date.UTC(time.year, time.month - 1, time.day ?? 1) / 1000)
   }
   return null
 }
@@ -154,12 +197,15 @@ function Header({ className, children, ...props }: HTMLAttributes<HTMLDivElement
 function Plot({
   axisLabels: axisLabelsProp,
   className,
+  dateGrain: dateGrainProp,
   formatTipDate,
   height = 170,
   points,
 }: {
   axisLabels?: readonly string[]
   className?: string
+  /** 显式日期粒度；缺省按序列跨度回退 */
+  dateGrain?: ChartDateGrain
   formatTipDate?: (time: Time) => string | null
   height?: number
   points: readonly ChartPoint[]
@@ -167,6 +213,12 @@ function Plot({
   const hostRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  /** 当前画布上的点（含 morph 中间帧），供下一次换批接续。 */
+  const visualPointsRef = useRef<readonly ChartPoint[]>([])
+  const appliedSigRef = useRef('')
+  const morphRafRef = useRef(0)
+  /** chart 实例重建后递增，驱动重新落数。 */
+  const [plotEpoch, setPlotEpoch] = useState(0)
   const [tip, setTip] = useState<ChartTip | null>(null)
   // points 换批时在 render 期清 tip，避免 effect 里 setState 造成一帧陈旧十字线。
   const [tipPoints, setTipPoints] = useState(points)
@@ -174,10 +226,11 @@ function Plot({
     setTipPoints(points)
     setTip(null)
   }
-  const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points)
-  // 十字线回调在 chart 订阅里；用 Effect Event 读最新 formatTipDate，避免 render 写 ref / 把 formatter 塞进 effect deps。
+  const dateGrain = dateGrainProp ?? chartDateGrainFromSpan(chartPointsSpanSeconds(points))
+  const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points, 6, dateGrain)
+  // 十字线回调在 chart 订阅里；用 Effect Event 读最新 formatTipDate / grain，避免 render 写 ref / 把 formatter 塞进 effect deps。
   const resolveTipDate = useEffectEvent((time: Time) => {
-    return formatTipDate?.(time) ?? tipDateFromTime(time)
+    return formatTipDate?.(time) ?? tipDateFromTime(time, dateGrain)
   })
 
   useEffect(() => {
@@ -202,6 +255,9 @@ function Plot({
       timeScale: {
         visible: false,
         borderVisible: false,
+        rightOffset: 0,
+        // 默认 max 为半宽，点数少时无法拉满贴边
+        maxBarSpacing: 1000,
       },
       crosshair: {
         mode: CrosshairMode.Magnet,
@@ -236,6 +292,7 @@ function Plot({
 
     chartRef.current = chart
     seriesRef.current = series
+    setPlotEpoch((n) => n + 1)
 
     const onMove = (param: MouseEventParams<Time>) => {
       if (
@@ -287,11 +344,14 @@ function Plot({
     ro.observe(host)
 
     return () => {
+      cancelAnimationFrame(morphRafRef.current)
       chart.unsubscribeCrosshairMove(onMove)
       ro.disconnect()
       chart.remove()
       chartRef.current = null
       seriesRef.current = null
+      visualPointsRef.current = []
+      appliedSigRef.current = ''
       setTip(null)
     }
   }, [height])
@@ -300,9 +360,71 @@ function Plot({
     const series = seriesRef.current
     const chart = chartRef.current
     if (!series || !chart) return
-    series.setData(points.map((p) => ({ time: p.time as Time, value: p.value })))
-    chart.timeScale().fitContent()
-  }, [points])
+
+    const targetSig = pointsSignature(points)
+    if (targetSig === appliedSigRef.current) return
+
+    const to = points.map((p) => ({ time: Number(p.time), value: p.value }))
+    const from = visualPointsRef.current.map((p) => ({
+      time: Number(p.time),
+      value: p.value,
+    }))
+
+    const paint = (next: readonly { time: number; value: number }[]) => {
+      const drawn = densifyForPaint(next)
+      series.setData(drawn.map((p) => ({ time: p.time as Time, value: p.value })))
+      // setData 后布局可能异步校正；下一帧再钉边，避免被内部 range 覆盖
+      fitSeriesFlush(chart, drawn.length)
+      requestAnimationFrame(() => {
+        if (seriesRef.current !== series || chartRef.current !== chart) return
+        fitSeriesFlush(chart, drawn.length)
+      })
+      visualPointsRef.current = drawn.map((p) => ({
+        time: p.time as UTCTimestamp,
+        value: p.value,
+      }))
+    }
+
+    const commit = (next: readonly { time: number; value: number }[]) => {
+      paint(next)
+      appliedSigRef.current = pointsSignature(
+        next.map((p) => ({ time: p.time as UTCTimestamp, value: p.value })),
+      )
+    }
+
+    cancelAnimationFrame(morphRafRef.current)
+
+    const reduceMotion =
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // 首绘 / 清空 / 减动效：直接落目标，不做 morph
+    if (reduceMotion || from.length === 0 || to.length === 0) {
+      commit(to)
+      return
+    }
+
+    const startedAt = performance.now()
+    let cancelled = false
+
+    const tick = (now: number) => {
+      if (cancelled) return
+      const raw = Math.min(1, (now - startedAt) / CHART_MORPH_MS)
+      const eased = easeOutCubic(raw)
+      if (raw >= 1) {
+        commit(to)
+        return
+      }
+      paint(morphSeriesFrame(from, to, eased))
+      morphRafRef.current = requestAnimationFrame(tick)
+    }
+
+    morphRafRef.current = requestAnimationFrame(tick)
+
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(morphRafRef.current)
+    }
+  }, [points, plotEpoch])
 
   return (
     <div className={cn('grid w-full gap-2', className)}>

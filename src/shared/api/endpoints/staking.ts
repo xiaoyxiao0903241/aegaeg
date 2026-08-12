@@ -28,15 +28,19 @@ export async function getStakeAddressCount(token: string): Promise<StakeAddressC
 }
 
 /**
- * 协议总市值 / 总质押历史序列（无需登录）。
+ * 协议总市值 / 总质押历史序列。
+ *
+ * 探活：暂按需登录带 Bearer，验证服务端是否仍 401（文档仍写 auth: none）。
  *
  * @see docs/backend-api/api.md #protocol-market-stats/series
  */
 export async function getProtocolMarketStatsSeries(
+  token: string,
   params: ProtocolMarketStatsSeriesParams,
 ): Promise<ProtocolMarketStatsSeriesPoint[]> {
   return apiRequest<ProtocolMarketStatsSeriesPoint[]>('/protocol-market-stats/series', {
     method: 'POST',
+    token,
     body: {
       range: params.range,
       metric: params.metric,

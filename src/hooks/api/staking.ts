@@ -1,15 +1,12 @@
 /**
- * 质押域 API hooks：流水类需登录；协议市值序列为公开接口。
+ * 质押域 API hooks：流水与协议市值序列均需登录（后者为探活，文档仍写公开）。
  */
-import { useQuery } from '@tanstack/react-query'
-
 import {
   buildProtocolMarketStatsChart,
   resolveProtocolMarketStatsMetric,
   resolveProtocolMarketStatsRange,
 } from '~/core/staking/protocol-market-stats-series'
-import { toApiQueryView, useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
-import { useI18n } from '~/i18n/use-i18n'
+import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getBondFlowBurnLogs,
   getBondFlowBurnPurchases,
@@ -22,7 +19,6 @@ import {
   getX0MiningLogs,
   getX0MiningPositions,
 } from '~/shared/api/endpoints'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type {
   BondFlowLogsParams,
@@ -44,7 +40,7 @@ export function useStakeAddressCount(enabled = true) {
 }
 
 /**
- * 协议总市值 / 总质押历史序列（公开接口，无需登录）。
+ * 协议总市值 / 总质押历史序列（探活：按需登录；未登录不发请求）。
  *
  * @param range API `range`
  * @param metric API `metric`
@@ -56,14 +52,13 @@ function useProtocolMarketStatsSeries(
   metric: ProtocolMarketStatsMetric,
   enabled = true,
 ) {
-  const { messages: t } = useI18n()
-  const query = useQuery({
-    queryKey: queryKeys.api.protocolMarketStatsSeries(range, metric),
-    queryFn: () => getProtocolMarketStatsSeries({ range, metric }),
+  return useAuthenticatedQuery(
+    queryKeys.api.protocolMarketStatsSeries(range, metric),
+    (token) => getProtocolMarketStatsSeries(token, { range, metric }),
     enabled,
-    staleTime: QUERY_STALE_TIME.api,
-  })
-  return toApiQueryView(query, t.errors.api)
+    // 切 range/metric 时保留上一批，避免整图卸成 Skeleton 硬切
+    { keepPreviousData: true },
+  )
 }
 
 /**
