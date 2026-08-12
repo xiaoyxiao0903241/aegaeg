@@ -216,7 +216,7 @@ async function convertAgx(swapContract, agxContract, agxAmount, signer) {
 
 ##### setRateBps(uint256 newRateBps) — onlyAuthorized（owner + operators）
 
-设置贡献转化率 `contributionRateBps`（0 禁用）。触发 `RateUpdated`。
+设置贡献转化率 `contributionRateBps`（BPS，必须非零，`0` 直接 revert `ErrorZeroRate`）。触发 `RateUpdated`。
 
 ##### setBurnSplitBps(uint256 newSplitBps) — onlyAuthorized（owner + operators）
 

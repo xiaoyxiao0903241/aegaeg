@@ -36,9 +36,11 @@ SHA-256 3b1d72a48085…
 | 方法 | 说明 |
 | --- | --- |
 | `getKValue(pair)` | 按 token0/token1/pair decimals 归一化后的储备乘积 |
-| `getTotalValue(pair)` | `2 * sqrt(k)` 的池子总价值口径 |
+| `getTotalValue(pair)` | `2 × reserveQuote / 10^(quoteDecimals − agxDecimals)` 的池子总价值口径（AGX 9 位 / USD1 18 位池即 `2×reserveQuote/1e9`） |
 | `valuation(pair, amount)` | 指定 LP 数量对应的池子价值 |
 | `markdown(pair)` | pair 另一侧储备相对 AGX 的 markdown 口径 |
+
+> 2026-08-09 修复：`getTotalValue` 由旧版 `2×sqrt(k)` 口径（对 AGX/USD1 池低估约 7.4 倍）改为按 AGX 侧 `reserveQuote` 折算；主网 calculator 已替换为修复版 `0xf661D59D…`。
 
 前端可把这些值用于透明度展示，但购买债券前的最终报价和校验必须以 BondDepository 的 view/交易模拟为准。`markdown` 要求 pair 的 token0 或 token1 确实是部署时绑定的 AGX，否则回滚 `Invalid pair`。
 

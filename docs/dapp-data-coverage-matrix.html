@@ -3313,7 +3313,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-奖励" data-search="w-014 奖励 lucky 详情 开奖倒计时 读取展示 `readluckyrounddisplaysnapshot` 15s 刷新 链 `getround(open).endtime` —  ✅ 已对齐 — — —  — 没连钱包就没有倒计时">
+<article class="row" data-status="ok" data-section="3-奖励" data-search="w-014 奖励 lucky 详情 开奖倒计时 读取展示 `readluckyrounddisplaysnapshot` 15s 刷新；仅 `accepting` 时倒计时 链 `getcurrentrounduserstat` + `getround.endtime` + `isroundacceptingpurchases` —  ✅ 已对齐 — — —  — 未激活 / 未接受购买不显示倒计时；没连钱包也没有">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-014</span>
     <span class="surface">Lucky 详情</span>
@@ -3328,15 +3328,15 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`readLuckyRoundDisplaySnapshot` 15s 刷新</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>链 `getRound(open).endTime`</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`readLuckyRoundDisplaySnapshot` 15s 刷新；仅 `accepting` 时倒计时</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>链 `getCurrentRoundUserStat` + `getRound.endTime` + `isRoundAcceptingPurchases`</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>没连钱包就没有倒计时</dd></div>
+      <div class="wide"><dt>备注</dt><dd>未激活 / 未接受购买不显示倒计时；没连钱包也没有</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="3-奖励" data-search="w-015 奖励 lucky 详情 本轮是否有资格（yes/no）+ 本轮购买额 读取展示 同上；hint 用 usd1 额 链 `isusereligible` + tracker `getuserroundstat` —  ✅ 已对齐 设计取舍（缺数显0） — —  — 资格布尔 ok；金额无线上样本对账；前端已接入">
+<article class="row" data-status="ok" data-section="3-奖励" data-search="w-015 奖励 lucky 详情 本轮是否有资格（yes/no）+ 本轮购买额 读取展示 同上；hint 用 usd1 额 链 tracker `getcurrentrounduserstat`（`qualified` / `totalamount`） —  ✅ 已对齐 设计取舍（缺数显0） — —  — 资格跟单笔门槛；不以 `status=open` 代替时间窗；前端已接入">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">W-015</span>
     <span class="surface">Lucky 详情</span>
@@ -3352,10 +3352,10 @@
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
       <div class="wide"><dt>代码位置</dt><dd>同上；hint 用 USD1 额</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>链 `isUserEligible` + Tracker `getUserRoundStat`</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>链 Tracker `getCurrentRoundUserStat`（`qualified` / `totalAmount`）</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>资格布尔 OK；金额无线上样本对账；前端已接入</dd></div>
+      <div class="wide"><dt>备注</dt><dd>资格跟单笔门槛；不以 `status=Open` 代替时间窗；前端已接入</dd></div>
     </dl>
   </div>
 </article>
@@ -10166,7 +10166,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-09T08:57:28.073Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-12T16:54:24.917Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {

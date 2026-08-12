@@ -1,4 +1,4 @@
-# AegisDailyPurchaseTracker 合约文档
+# AegisDailyPurchaseTracker 前端与集成说明
 
 > 来源：`doc-contracts-aegisdailypurchasetracker`
 > ABI：[`abis/aegisdailypurchasetracker.json`](../abis/aegisdailypurchasetracker.json)
@@ -6,245 +6,186 @@
 ## 完整 ABI
 
 abi/AegisDailyPurchaseTracker.json
-SHA-256 e9eaf48c8f41…
-72
-38
-18
-16
+SHA-256 0be92f05b5b8…
+50
+24
+12
+14
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/aegisdailypurchasetracker.json`](../abis/aegisdailypurchasetracker.json)（72 entries）。
+完整 ABI 已导出为 [`abis/aegisdailypurchasetracker.json`](../abis/aegisdailypurchasetracker.json)（50 entries）。
 
 </details>
 
-## AegisDailyPurchaseTracker 合约文档
+## AegisDailyPurchaseTracker 前端与集成说明
 
-### 概述
+`AegisDailyPurchaseTracker` 是购买精确计价事件与 LuckyPool 轮次归属合约。当前全新部署版本的 `trackingSafetyVersion()` 固定返回 `5`：每笔合法来源购买都会产生权威的 `PurchaseValued`；Lucky 跟踪开启时，每轮累计和单笔达标资格仍与来源购买保持强原子。
 
-`AegisDailyPurchaseTracker` 是 AEGIS X 的日常购买追踪与资格缓冲合约。它记录用户每轮的购买金额，抽奖资格按单笔 `amount >= minPurchaseAmount` 判定。每次 `recordPurchase` 会先 best-effort 尝试 LuckyPool upkeep，再读取当前轮并归属本次购买，因此到期轮不会先吞掉新购买。Pool 暂停、窗口无效、关轮或异常都不会连带回滚主质押/债券交易。有效窗口内但暂时无法写入的资格会按原购买时间等待补同步；无法安全确定轮次的购买进入 deferred 队列。
+**BNB Chain 主网 proxy**：`0xAC1ba469F79Ac63698af66BA6824A718b964Cc81`（增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314`，部署块 `115038546`）。当前 `paused=true`，10 个购买来源已完成白名单和 `purchaseTracker` 指针切换。
 
-**部署 key**: `DailyPurchaseTracker`
+### 核心业务规则
 
-**BNB Chain 主网 proxy**：`0xf4328953616607aCc04F1e7Ba90bc379987c1945`（release `bb680398-e7c0-46fa-ad87-139446fb4120`，当前暂停）。
+- 每笔合法购买在参数校验后都先发出一个 PurchaseValued(user,source,amount) 。
+- paused == true 只表示 Lucky 跟踪关闭：再发出 PurchaseLuckySkipped 后成功返回，不访问 LuckyPool、不累计、不授予资格。
+- paused == false 时才调用 LuckyPool 的 ensureOpenRound() ；此路径继续保持强原子。
+- 若当前轮已经结束， ensureOpenRound() 只处理这一轮并创建一个从当前交易时间开始的完整新轮，复杂度为 O(1)。
+- 只有当前区块位于 [round.startTime, round.endTime) 时才累计购买额。
+- 每轮累计金额保存在 roundUserStats(roundId,user) ，前端优先使用迁移感知的 getter。
+- 资格按“单笔达到门槛”判断：只有本笔 amount >= minPurchaseAmount 才能使用户获得资格；多笔小额累计超过门槛不会获得资格。
+- 每个用户每轮最多加入一次资格列表。
+- Lucky 跟踪开启后的正式轮次路径不存在 pending、deferred、retry 或 best-effort 分支。
+- 关闭期间的购买不会在重新开启后补累计或补资格。
 
-**ABI 路径**: `abi/AegisDailyPurchaseTracker.json`
+### 提前激活与首轮开始前购买
 
----
+LuckyPool 可以在 `firstStartTime` 之前或之后调用 `activate()`；只要首轮 end 仍在未来，非零 start/end 都按配置精确保留。此时第一轮已经创建，状态为 `Open`，但在时间到达之前：
 
-### 关键概念
+- LuckyPool.isRoundAcceptingPurchases(roundId) 返回 false ；
+- 来源合约的主购买可以成功；
+- Tracker 不累计本轮金额，也不授予资格；
+- Tracker 先发出通用 PurchaseValued ，再发出 PurchaseIgnoredBeforeRoundStart(roundId,user,source,amount) 作为未进入轮次的明确审计记录。
 
-#### 1. 购买记录与奖池资格
+到达 `firstStartTime` 后不需要额外交易来“开始”轮次。区块时间自然满足窗口条件，此后的有效购买会立即被记录。
 
-- 授权购买源（如 BondDepository、LockedStaking）调用 recordPurchase()
-- 每轮累计购买金额仅用于统计展示
-- 当单笔 amount >= minPurchaseAmount 时，自动添加到当前奖轮
-- 用户只能在每轮中获得一次参与资格
+### 金额单位
 
-#### 2. fail-soft 与关轮一致性
+`recordPurchase(user,amount)` 的 `amount` 是来源合约归一化后的 USD1 价值，统一使用 18 位精度。普通 Bond 直接把 `Treasury.valueOf()` 已返回的 9 位 USD1 价值扩展为 18 位，不再二次计价；BurnBond、Liquid 与 Locked 才会把 AGX 数量交给 `RestakeConfig.agxUsdValue` 换算：
 
-- 每笔购买在轮次归属前都会尝试 checkUpkeep/performUpkeep ；若上一轮已到期且能够推进，本笔购买记录到新一轮。
-- upkeep 失败、Pool 不可读或推进后仍没有有效 Open 窗口时，本笔购买进入 DeferredPurchase ，不会写进过期轮。
-- 正常窗口内直接调用 LuckyPool.addEligibleUser 。
-- 轮次可读、购买时间有效，但 Pool/Tracker 暂停或写入异常时，资格状态保存为 Pending ，任何地址可调用 retryQualification 。
-- Pool 正常可读但购买时间确实位于轮次窗口外时发出 QualificationSkipped ，只保留购买统计，不进入 pending，也不回滚来源交易。
-- Pool 完全不可读时，购买保存为 DeferredPurchase ；核对轮次后调用 assignDeferredPurchase ，无法归属时由 owner 调用 discardDeferredPurchase 。
-- qualificationPurchaseAt 保存原始链上购买时间。LuckyPool 的 syncEligibleUser 依据原时间校验 [startTime,endTime) ，因此允许在窗口结束后补写。
-- LuckyPool 在当前轮 pending 未清零时拒绝关轮；全局 deferred 保留给运维及时 assign/discard，但不阻塞无关轮次。
-
-#### 3. 精确购买来源
-
-生产配置固定为 10 个来源：`LiquidStaking`、`LockedStaking180d/360d/540d`、`BondDepository180d/360d/540d`、`BurnBondDepository180d/360d/540d`。每个来源都必须同时满足 Tracker 白名单和来源合约 `purchaseTracker` 指针回读。
-
-#### 4. 迁移兼容
-
-支持账户迁移后的记录合并查询；前端使用公开的 `getUserRoundStat(roundId,user)`，不要依赖内部 `_mergedStat()`。
-
----
-
-### 前端 API
-
-#### 视图函数
-
-##### getUserRoundStat(uint256 roundId, address user) -> (totalAmount, qualified, qualifiedAt)
-
-获取用户在指定轮次的购买统计。
-
-js
-```js
-const currentRound = await tracker.luckyPool().then(lp => lp.currentRoundId());
-const stat = await tracker.getUserRoundStat(currentRound, userAddress);
-console.log('Total purchase:', ethers.formatUnits(stat.totalAmount, 18));
-console.log('Qualified:', stat.qualified);
-if (stat.qualifiedAt > 0n) {
-  console.log('Qualified at:', new Date(Number(stat.qualifiedAt) * 1000).toLocaleString());
-}
+text
+```text
+1 USD1 = 1_000_000_000_000_000_000
 ```
 
-##### roundUserStats(uint256 roundId, address) -> (totalAmount, qualified, qualifiedAt)
+前端展示时使用 `formatUnits(value, 18)`，不得把该值当作 AGX 的 9 位精度数量。
 
-直接访问 mapping。
+### 前端推荐读取
 
-##### 管理员视图
+#### 当前用户本轮累计与资格
 
-js
-```js
-const luckyPool = await tracker.luckyPool();
-const minAmount = await tracker.minPurchaseAmount();
-const paused = await tracker.paused();
-const safetyVersion = await tracker.trackingSafetyVersion(); // 3
-const pending = await tracker.pendingQualificationCount(currentRound);
-const unresolved = await tracker.unresolvedDeferredPurchaseCount();
+javascript
+```javascript
+const [roundId, totalAmount, qualified, qualifiedAt] =
+  await tracker.getCurrentRoundUserStat(user);
+
+const round = await luckyPool.getRound(roundId);
+const accepting = await luckyPool.isRoundAcceptingPurchases(roundId);
+
+return {
+  roundId,
+  totalUsd1: ethers.formatUnits(totalAmount, 18),
+  qualified,
+  qualifiedAt,
+  startTime: round.startTime,
+  endTime: round.endTime,
+  accepting,
+};
 ```
 
-#### 状态修改函数
+不要只根据 `round.status == Open` 判断能否计入购买。提前激活后的计划轮在开始前也是 `Open`，必须同时读取 `isRoundAcceptingPurchases(roundId)` 或比较链上时间窗。
 
-##### recordPurchase(address user, uint256 amount)
+#### 指定轮次统计
 
-记录购买（仅购买源合约调用）。
+javascript
+```javascript
+const [totalAmount, qualified, qualifiedAt] =
+  await tracker.getUserRoundStat(roundId, user);
+```
 
-**前提条件:**
+该 getter 会合并账户迁移链上的历史数据；业务页面不要直接只读某一个地址的 `roundUserStats`。
 
-- 调用者是授权的购买源
-- amount > 0
+#### 配置状态
 
-Tracker 的 `paused=true` 只暂停向 LuckyPool 的即时转发，不暂停摄取授权来源的购买；能确定有效窗口的达标购买进入 pending，不能安全确定轮次的购买进入 deferred。
+javascript
+```javascript
+const [version, pool, threshold, paused, luckyTrackingEnabled, sourceEnabled] = await Promise.all([
+  tracker.trackingSafetyVersion(),
+  tracker.luckyPool(),
+  tracker.minPurchaseAmount(),
+  tracker.paused(),
+  tracker.luckyTrackingEnabled(),
+  tracker.purchaseSources(sourceAddress),
+]);
+```
 
-**事件:**
+正式环境必须满足：
 
-- PurchaseRecorded(roundId, user, source, amount, totalAmount)
-- UserQualified(roundId, user, totalAmount, qualifiedAt) （当本次单笔金额达到阈值时）
-- Pool 不可读时改为 PurchaseDeferred ；同步暂不可用时发出 QualificationDeferred ，不会使来源交易回滚
+- version == 5 ；
+- pool 等于全新 LuckyPool 代理地址；
+- luckyTrackingEnabled == !paused ；正式参与幸运奖时必须为 true ；
+- 精确的购买来源已启用；
+- 每个来源的 purchaseTracker() 反向指向当前 Tracker。
 
-##### retryQualification(uint256 roundId, address user) -> bool
+### 写入接口
 
-无权限限制。仅可重试已经由授权来源记录为 `Pending` 的资格；成功后发出 `QualificationSynced` 并减少该轮 pending 计数。
+#### recordPurchase(address user, uint256 amount)
 
-##### assignDeferredPurchase(uint256 deferredPurchaseId, uint256 roundId) -> bool
+仅 `purchaseSources[msg.sender] == true` 的来源合约可以调用。EOA 和前端不能直接调用。
 
-无权限限制，但合约会严格验证原始 `purchaseAt` 位于目标轮窗口。用于把 Pool 不可读期间的购买归属到唯一正确轮次。
+所有成功调用的公共前缀：
 
-##### discardDeferredPurchase(uint256 deferredPurchaseId)
+1. 检查来源、用户和金额。
+2. 把迁移身份归一到原始 root，并发出唯一的 PurchaseValued 。
+3. 若 paused == true ，发出 PurchaseLuckySkipped 后返回；来源购买保持成功。
 
-仅 owner。仅用于人工核对后确认无法归属的记录；会减少全局 unresolved 计数并发出 `DeferredPurchaseDiscarded`。
+Lucky 跟踪开启后的轮内路径：
 
-##### refreshRoundCache() -> uint256 roundId
+1. 调用 LuckyPool.ensureOpenRound() 。
+2. 确认当前轮正在接受购买；计划开始前只追加忽略事件并返回。
+3. 累加用户本轮 totalAmount 并发出 PurchaseRecorded 。
+4. 若本笔达到门槛且用户尚未获资格，强制调用 LuckyPool.addEligibleUser 。
+5. 成功后写入 qualified/qualifiedAt 并发出 UserQualified 。
 
-刷新 fail-soft 使用的当前轮缓存。升级 Tracker 后脚本会调用一次；Pool 恢复后也可再次调用。
+Lucky 跟踪开启时，上述 Pool 路径任一步失败都会向上传播 revert，使来源购买和先前发出的 `PurchaseValued` 一起回滚。EVM 不能在回滚交易中保留事件。Lucky 跟踪关闭时则完全不访问 Pool，因此 Pool 未激活、暂停或故障都不会阻止购买。
 
-##### 资格状态视图
+#### 管理接口
 
-- trackingSafetyVersion() -> 3
-- isQualificationPending(roundId,user)
-- qualificationSyncState(roundId,user) ： None/Pending/Syncing/Synced/Expired
-- qualificationPurchaseAt(roundId,user)
-- pendingQualificationCount(roundId)
-- deferredPurchases(id) / unresolvedDeferredPurchaseCount()
+| 方法 | 权限 | 说明 |
+| --- | --- | --- |
+| `setPurchaseSource(source,enabled)` | owner | 启用或停用购买来源；地址必须非零 |
+| `setMinPurchaseAmount(amount)` | owner | 设置单笔资格门槛；必须大于 0 |
+| `setPaused(flag)` | owner | 仅开关 Lucky 轮次累计和资格；不关闭 `PurchaseValued`，也不阻止合法来源购买 |
+| `setMigrationManager(manager)` | owner | 一次性绑定账户迁移 Manager |
+| `migrateAccount(old,new)` | Migration Manager | 迁移用户读取身份；前端不能直接调用 |
 
-##### setPurchaseSource(address source, bool enabled)
-
-owner 增删授权购买源。`source=address(0)` revert `ErrorZeroAddress`。触发 `PurchaseSourceUpdated(source, enabled)`。
-
-##### setMinPurchaseAmount(uint256 newAmount)
-
-owner 设置单笔参与门槛。`newAmount=0` revert `ErrorZeroAmount`。触发 `MinPurchaseAmountUpdated(oldAmount, newAmount)`。
-
-##### setLuckyPool(address newPool)
-
-owner 切换奖池合约。`newPool=address(0)` revert `ErrorZeroAddress`。触发 `LuckyPoolUpdated(oldPool, newPool)`。
-
-##### setPaused(bool flag)
-
-owner 暂停/恢复即时资格同步。暂停期间仍接收授权来源的购买并保留 pending/deferred 证据。触发 `PausedUpdated(flag)`。
-
-##### setMigrationManager(address _manager)
-
-owner 设置迁移管理器。`_manager=address(0)` revert `ErrorZeroAddress`；一旦设置非零 manager，只允许设为相同地址，否则 revert `MigrationManagerImmutable(currentManager)`。触发 `MigrationManagerUpdated(manager)`。
-
-##### migrateAccount(address oldAccount, address newAccount)
-
-仅 `migrationManager` 可调用。把 `oldAccount` 别名指向 `newAccount`，root 经 `_original` 链解析。自迁移/回迁/环/已迁移/脏目标地址全部 revert `ErrorAccountMigrated`。触发 `AccountMigrated(oldAccount, newAccount)`。
-
-##### originalOf(address account) -> (address)
-
-迁移感知 view：返回账户的 root 原始地址。
-
-##### canonicalOf(address account) -> (address)
-
-迁移感知 view：返回账户当前的有效 canonical 地址。
-
----
+LuckyPool 地址在初始化时绑定，当前 fresh-deploy 版本没有更换 Pool 的管理函数。需要替换 LuckyPool 时应重新部署成对的 Pool/Tracker。
 
 ### 事件
 
-#### PurchaseRecorded(uint256 indexed roundId, address indexed user, address indexed source, uint256 amount, uint256 totalAmount)
+| 事件 | 含义 |
+| --- | --- |
+| `PurchaseValued(user,source,amount)` | 每笔成功合法来源购买的权威 18 位 USD1 原始值；与来源业务事件同交易 |
+| `PurchaseLuckySkipped(user,source,amount)` | Lucky 跟踪关闭，本次购买成功但永久不进入轮次累计或资格 |
+| `PurchaseRecorded(roundId,user,source,amount,totalAmount)` | 有效窗口内的购买已累计；`totalAmount` 是该用户本轮累计 USD1 价值 |
+| `PurchaseIgnoredBeforeRoundStart(roundId,user,source,amount)` | 提前激活后、计划开始前的购买已成功但明确不计入轮次 |
+| `UserQualified(roundId,user,totalAmount,qualifiedAt)` | 本笔购买达到门槛，用户已原子加入 LuckyPool 资格 |
+| `PurchaseSourceUpdated(source,enabled)` | 来源白名单变化 |
+| `MinPurchaseAmountUpdated(oldAmount,newAmount)` | 单笔门槛变化 |
+| `PausedUpdated(paused)` | Lucky 跟踪状态变化；`paused=true` 不代表计价事件关闭 |
+| `MigrationManagerUpdated(manager)` / `AccountMigrated(old,new)` | 迁移配置或迁移完成 |
 
-购买记录时触发。
+scanner 使用同交易 `PurchaseValued.amount` 作为 Bond、BurnBond、Liquid 和普通 Locked 购买的历史 `usd_value`，不再用扫链时最新价反推。`PurchaseRecorded` 与 `UserQualified` 只用于 Lucky 轮次投影；`PurchaseLuckySkipped` 和 `PurchaseIgnoredBeforeRoundStart` 只进入审计账，不得伪造成某一轮累计。
 
-#### UserQualified(uint256 indexed roundId, address indexed user, uint256 totalAmount, uint256 qualifiedAt)
+### 常见失败
 
-用户本次单笔购买达到参与资格时触发。事件中的 `totalAmount` 是本轮累计统计值，不是资格判定依据。
-
-#### fail-soft 事件
-
-- LuckyPoolUpkeepAttempted(observedRoundId, checkSucceeded, upkeepNeeded, performSucceeded) ：每次 recordPurchase 前对 LuckyPool 执行的 best-effort upkeep 结果。 checkSucceeded=false 表示 checkUpkeep 读取失败； upkeepNeeded=true 且 performSucceeded=false 表示尝试推进轮次但失败。两种情况都不回滚主购买/质押/债券交易，监控端应进行告警并以链上轮次状态为准。
-- PurchaseDeferred ：Pool 完全不可读，购买等待轮次归属。
-- QualificationSkipped ：该笔购买不属于当前可接受的轮次/窗口，因此只记统计、不授予该轮资格。
-- QualificationDeferred ：资格已记录但尚未写入 Pool。
-- QualificationSynced ：待同步资格已补写。
-- DeferredPurchaseAssigned / DeferredPurchaseDiscarded ：待归属记录已处理。
-- RoundCacheUpdated ：轮次缓存刷新。
-
-#### PurchaseSourceUpdated(address indexed source, bool enabled)
-
-`setPurchaseSource` 增删购买源时触发。
-
-#### MinPurchaseAmountUpdated(uint256 oldAmount, uint256 newAmount)
-
-`setMinPurchaseAmount` 调整门槛时触发。
-
-#### LuckyPoolUpdated(address indexed oldPool, address indexed newPool)
-
-`setLuckyPool` 切换奖池合约时触发。
-
-#### PausedUpdated(bool paused)
-
-`setPaused` 切换暂停状态时触发。
-
-#### MigrationManagerUpdated(address indexed manager)
-
-`setMigrationManager` 设置迁移管理器时触发。
-
-#### AccountMigrated(address indexed oldAccount, address indexed newAccount)
-
-`migrateAccount` 完成账户别名绑定时触发。
-
-### 错误码
-
-| 错误 | 原因 | 解决方案 |
+| 错误 | 原因 | 处理 |
 | --- | --- | --- |
-| `ErrorNotPurchaseSource()` | 非授权购买源 | 联系管理员授权 |
-| `ErrorPaused()` | 兼容保留错误；当前 `recordPurchase` 不因 Tracker 暂停而抛出 | 前端不要把 Tracker 暂停理解为来源交易会失败 |
-| `ErrorZeroAmount()` | 金额为 0 | 增加金额 |
-| `ErrorZeroAddress()` | 传入 address(0) | 传入有效地址 |
-| `ErrorNotMigrationManager(address caller)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
-| `ErrorAccountMigrated(address account)` | 自迁移/回迁/环/已迁移或脏目标地址 | 使用 canonical 地址或未参与过的新地址 |
-| `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后试图改成不同地址 | 保留相同地址或保持不变 |
-| `ErrorQualificationNotPending(roundId, account)` | 重试的资格不是 Pending | 先读取 `qualificationSyncState` |
-| `ErrorDeferredPurchaseNotPending(id)` | 待归属记录不存在或已处理 | 刷新记录状态 |
-| `ErrorDeferredRoundNotOpen(roundId, currentRoundId, status)` | 待归属购买的目标不是当前 Open 轮次 | 只向当前仍为 Open 的原始轮次归属；否则人工核对后丢弃 |
-| `ErrorPurchaseOutsideRound(...)` | 原购买时间不属于指定轮 | 重新核对目标轮次，不得伪造时间 |
-| `ErrorRoundUnavailable()` | 刷新缓存或归属时无法读取轮次 | 等待 Pool/RPC 恢复后重试 |
+| `ErrorNotPurchaseSource` | 调用方没有来源权限 | 检查双向配置和新代理地址 |
+| `ErrorRoundUnavailable` | Pool 没有返回有效轮次 | 检查 Pool 是否已激活及状态机是否正常 |
+| `ErrorEligibilityNotRecorded` | 达标资格未能写入 Pool | 整笔购买会回滚；修复 Pool 配置后重试购买 |
+| `ErrorNotContract(account)` | 初始化 Pool 不是合约 | 使用已部署的新 Pool 代理地址 |
 
-### 配置参数
+### 集成验收清单
 
-| 参数 | 默认值 | 说明 | 设置者 |
-| --- | --- | --- | --- |
-| `luckyPool` | 初始化时设置 | 奖池合约地址 | owner |
-| `minPurchaseAmount` | 初始化时设置 | 参与门槛 | owner |
-| `purchaseSources` | 初始化后设置 | 购买源合约列表 | owner |
-| `paused` | false | 是否暂停 | owner |
-| `trackingSafetyVersion` | 3 | fail-soft 实现版本 | 只读常量语义 |
-| `pendingQualificationCount` | 0 | 每轮尚未同步的资格数 | 通过重试自动减少 |
-| `unresolvedDeferredPurchaseCount` | 0 | 全局待归属购买数 | assign/discard 自动减少 |
+- Tracker 与 LuckyPool 均为本次全新部署代理，不复用旧 Pair。
+- trackingSafetyVersion() == 5 且 Pool 的 required version 也是 5。
+- tracker.luckyPool() 与 pool.purchaseTracker() 双向一致。
+- Liquid、3 个 Locked、3 个 Bond、3 个 BurnBond 共 10 个来源全部双向接入。
+- Lucky 跟踪关闭时购买成功，严格出现一个 PurchaseValued 和一个 PurchaseLuckySkipped ，Pool 与轮次统计保持不变。
+- 开始前购买出现 PurchaseValued 与 PurchaseIgnoredBeforeRoundStart ，统计保持 0。
+- 开始后低于门槛购买增加累计但不获资格。
+- 两笔小额累计超过门槛仍不获资格。
+- 单笔达到门槛时 PurchaseRecorded 、 EligibleUserAdded 、 UserQualified 同交易成功。
+- Lucky 跟踪开启时破坏 Pool 路径会使来源购买和所有事件整体回滚。
+- Scanner 对缺失或歧义的 PurchaseValued 失败关闭，不回退到 Redis/DB 最新价。

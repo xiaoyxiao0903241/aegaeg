@@ -73,9 +73,9 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 ### 2. ABI、地址和模块映射
 
-前端直接使用仓库根目录 `abi/*.json` 的规范导出。当前 BNB Chain 主网批准发布是 release `bb680398-e7c0-46fa-ad87-139446fb4120`：权威地址源为 [`deployments/20260807112833274.bsc.xstaking-liquidity.addresses.json`](../deployments/20260807112833274.bsc.xstaking-liquidity.addresses.json)，schema v2 配置回执为 [`bb680398-e7c0-46fa-ad87-139446fb4120.mainnet-configuration.json`](../deployments/verifications/bb680398-e7c0-46fa-ad87-139446fb4120.mainnet-configuration.json)，两者由 SHA-256 `1dcaff5ac4c0a9ead6a2a17d06a33c049ed4b94ea22cff74d7756d673d181c54` 绑定且回执状态为 `passed`。账户迁移启用是 base verify 之后的独立步骤，对应 [`bb680398-e7c0-46fa-ad87-139446fb4120.account-migration-enablement.json`](../deployments/verifications/bb680398-e7c0-46fa-ad87-139446fb4120.account-migration-enablement.json)，状态同为 `passed`。生产构建必须固定这组不可变证据，不得运行时扫描 `deployments/` 目录或合并历史 JSON。历史 release 只作审计留档；官方 `PancakeFactory` 是需同步核对的外部依赖。
+前端直接使用仓库根目录 `abi/*.json` 的规范导出。当前 BNB Chain 主网交互地址以增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 为准：不可变 manifest 是 [`deployments/staging/f25c7887-1ec0-43a2-b16c-32de9dbbb314.lucky-v5.addresses.json`](../deployments/staging/f25c7887-1ec0-43a2-b16c-32de9dbbb314.lucky-v5.addresses.json)，已同步的最新 BSC 累计副本是 [`deployments/20260810175159930.bsc.lucky-pool.addresses.json`](../deployments/20260810175159930.bsc.lucky-pool.addresses.json)，两者规范化 SHA-256 均为 `76cccaf63797b62ed844f0c4636a8e01ccd2d4e1bc8d9f79e278d50ef523a9f0`。该 manifest 是新 Pool/Tracker 部署完成时的地址与 admin 快照，`__aegisMainnetStage=deployed-unconfigured`，其中 12 个复用代理的 `implementation` 字段仍是升级前历史值，不能用于判断当前实现。schema v2 详细升级终验回执 [`f25c7887-1ec0-43a2-b16c-32de9dbbb314.mainnet-upgrade.json`](../deployments/verifications/f25c7887-1ec0-43a2-b16c-32de9dbbb314.mainnet-upgrade.json) 为 `passed`；其 `finalState.upgrades`、`purchaseSources`、`migration`、`luckyPool` 和 `dailyPurchaseTracker` 分别固化 12 个当前实现、10 个来源、按批准顺序排列的 22-target locked/enabled 拓扑及 Pool/Tracker 暂停状态，并与同一 manifest 哈希和 BSC 终验区块绑定。LuckyPool 后续首轮重排升级以 [`20260810220903012...upgrade.json`](../deployments/verifications/20260810220903012.bsc.lucky-pool-first-start-time-upgrade.json) 为最新实现与排期证据，当前 implementation 为 `0x01a861bAebB88cB17aB8b7c4d6A0D645C0774Fa3`，`firstStartTime=1786320000`。旧 Pool/Tracker 身份还必须与该 manifest 通过路径、父 release ID 和规范化 SHA-256 固定的 parent manifest 一致，不能由升级回执自证。父 release `bb680398-e7c0-46fa-ad87-139446fb4120` 的完整配置回执继续证明未受本次增量发布影响的基础配置。新 LuckyPool/Tracker 当前仍保持暂停且 Pool 未激活，前端可以接入只读状态，但启用购买轮次前仍须完成 VRF、奖励和激活验收。
 
-地址项统一取 `proxy ?? address`。前端交互永远连接 proxy/普通合约地址，不连接 `implementation` 或 `admin`。该快照证明地址已写入部署记录，但不替代链上配置、owner、角色、资金、VRF Subscription 和业务验收回读；发布前仍须将 manifest 与 chainId=56、EIP-1967 implementation 和对应 ABI/源码提交一起锁定。
+地址项统一取 `proxy ?? address`。前端交互永远连接 proxy/普通合约地址，不连接 `implementation` 或 `admin`。代理地址以 manifest 为准，当前 EIP-1967 implementation 与增量配置状态以详细升级终验回执为准；两份证据必须成对使用。它们仍不替代 owner、角色、资金和 VRF Subscription 的上线验收回读。
 
 #### 2.1 ABI 与地址 key
 
@@ -121,7 +121,7 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 
 #### 2.2 当前 BNB Chain 主网地址
 
-以下 47 个部署 key 是本轮 release（`MAINNET_REUSE_ALLOWLIST=none`，全部全新部署）的完整地址表，供前端集成参考；权威地址源是 schema v2 passed 回执所绑定的最终 manifest。若后续发生代理升级，只更新 implementation 记录；proxy 地址未迁移时前端交互地址保持不变。
+以下 47 个部署 key 是父 release 与当前 Lucky 增量 release 合并后的完整地址表，供前端集成参考；权威地址源是 schema v2 passed 升级回执所绑定的增量 manifest。除 LuckyPool/Tracker 为本次全新代理外，其余交互地址继续使用原 proxy；12 个已升级代理只改变 implementation，不改变前端交互地址。
 
 | 部署 key | 主网交互地址 | 类型 / 来源 |
 | --- | --- | --- |
@@ -164,11 +164,11 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 | `RestakeConfig` | `0xcc7ec781A0d08Dafec7c34779A0c306b3198e2e1` | Proxy |
 | `TokenFeeBot` | `0x379B3BFD7e5D1A7C07C7bb132870044b3E156Fe2` | Proxy |
 | `MarketFund` | `0x316B3Eeb21C43A138510cdF7728Ddb88d33f112f` | Proxy |
-| `AccountMigrationManager` | `0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778` | Proxy，已启用迁移 |
+| `AccountMigrationManager` | `0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778` | Proxy，22 个目标已锁定并启用迁移 |
 | `XXToken` | `0x5CeDC73b36624caa24581D8567b02a07d3cCeF2A` | 普通地址 |
 | `AgxContributionSwap` | `0xe3Df8686556A30c633bDD5Ca8293E33E57b81FEb` | Proxy |
-| `LuckyPool` | `0xe91148Fe7248b528398442e8eA4e8a7d107c994A` | Proxy，当前暂停 |
-| `DailyPurchaseTracker` | `0xf4328953616607aCc04F1e7Ba90bc379987c1945` | Proxy，当前暂停 |
+| `LuckyPool` | `0x6ACdd260F7926EA60991b566B272b338E0222C44` | 当前 canonical Proxy，implementation `0x01a861…4Fa3`；暂停且未激活，`firstStartTime=1786320000`；部署块 `115038536` |
+| `DailyPurchaseTracker` | `0xAC1ba469F79Ac63698af66BA6824A718b964Cc81` | 全新 Proxy，当前暂停；部署块 `115038546` |
 | `AegisSplitterManager` | `0x951d22EDBbFeC93ecD40B9fE7faC979A0EA7471F` | Proxy |
 | `AegisSplitterHead_0` | `0x193eBD30a5f0827e91880fF404600f5b699df510` | Proxy，头部分流器 |
 | `XStakingRewardPair` | `0xC3587c1E9862b74a5e3dE8C6a48fD85Ae44550B8` | AGX/X Pair |
@@ -733,9 +733,11 @@ Mixed 领奖不是单纯 claim。用户领取奖励前，前端要先判断贡�
 6. 扣费： netPayout = payout − payout×terms.fee/10000 （fee 转 DAO）。
 7. 转账 → Treasury：LP Bond 走 depositBondReserve （LP 销毁到 dead）；Burn Bond 走 depositBurnReserve （AGX 销毁到 dead）；稳定币债券走 depositStableReserve 。Treasury 铸出 payout AGX 给债券合约。
 8. 记账 bondInfo 、 userLockedPrincipal += netPayout ，并把 netPayout 自动质押进 StakingPool（ bondStake ）。
-9. 收尾：fee 转 DAO； emit BondPurchased ；best-effort 上报购买记录（失败只发 PurchaseTrackingFailed ，不回滚主交易）。
+9. 收尾：fee 转 DAO； emit BondPurchased ；强原子调用 Tracker 记录本轮累计并按单笔门槛加入资格。价格换算、Tracker 或 LuckyPool 失败会回滚以上全部状态。
 
 **成功判定**：以 `BondPurchased` 事件 + `getBondInfo` 回读为准；不要用钱包 AGX 余额判断（payout 已质押成 sAGX）。
+
+BurnBond 还会按 `Staked → BondPurchased → AgxBurned → PurchaseValued` 发出完整购买证据。`AgxBurned.buyer` 虽沿用旧 ABI 名称，当前值是债券受益人 `depositor`；经 Helper 购买时不得把交易或历史记录归到 `BondHelper`。当前标准部署的 `burnAmount`/`bondValue` 都是 9 位 AGX 口径，购买的权威 USD1 金额是 Tracker `PurchaseValued.amount`（18 位），不能用 `bondValue` 或最新 AGX 价格替代。
 
 #### 10.6 预估 AGX 输出（输入 USD1 → 预估 AGX）
 
@@ -792,7 +794,7 @@ const lpAmount = lpFromAgx < lpFromUsd ? lpFromAgx : lpFromUsd;
 // ③ LP 价值（AegisLpBondingCalculator.valuation，修复后为真实 USD 口径）
 const value = await bondingCalculator.valuation(pairAddr, lpAmount);
 // ④ payout（与 _payoutWithDiscount 一致）
-const agxPrice = reserveU * 10n ** 9n / reserveAGX;
+const agxPrice = reserveU / reserveAGX;
 const payout = value * 10n ** 9n / agxPrice * 10000n / discountRateBP;
 const netPayout = payout - payout * fee / 10000n;
 ```
@@ -975,21 +977,25 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 
 | 字段 | 方法 | 说明 |
 | --- | --- | --- |
-| 当前轮 ID | `currentRoundId()` | 当前 Open 轮次；关轮请求 VRF 时合约会立即创建下一个 Open 轮，旧轮需按 ID 查询 |
+| 激活状态 | `activated()`, `paused()` | `activate()` 可以提前执行，只代表系统已开启 |
+| 首轮计划 | `firstStartTime()` | 非零时是第一轮精确开始时间；0 表示激活区块时间 |
+| 当前轮 ID | `currentRoundId()` | 当前 Open 轮次；未激活时为 0 |
 | 历史轮数量 | `roundCount()` | 列表分页 |
 | 历史轮 ID | `getRoundIds(offset, limit)` | 历史列表 |
-| 轮次详情 | `getRound(roundId)` | Open 状态的 `rewardAmount` 是每位中奖者的 USD1 价值目标；关轮请求 VRF 后会被替换为按实时价格锁定的 AGX 数量，`rewardPerWinner` 在回调开奖后与其一致 |
+| 轮次详情 | `getRound(roundId)` | `startTime/endTime/status`；请求 VRF 前 `rewardAmount` 是目标 USD1，锁奖后变为每名赢家 AGX 数量 |
+| 是否接受购买 | `isRoundAcceptingPurchases(roundId)` | 购买按钮的权威时间窗判断；不能只看 `status=Open` |
 | 实时奖励报价 | `quoteRewardAgx(rewardValueUsd1)` | 按当前 AGX/USD1 池价格报价价值不少于目标 USD1 的 AGX 数量，仅用于展示/备货；实际奖额以关轮时锁定值为准 |
-| 当前资格 | `isEligible(roundId, user)` | public mapping getter |
-| 用户购买统计 | `DailyPurchaseTracker.getUserRoundStat(roundId, user)` | `totalAmount`, `qualified`, `qualifiedAt` |
+| 当前资格 | `isUserEligible(roundId,user)` | 迁移感知的资格读取 |
+| 当前用户统计 | `DailyPurchaseTracker.getCurrentRoundUserStat(user)` | `roundId,totalAmount,qualified,qualifiedAt` |
+| 指定轮统计 | `DailyPurchaseTracker.getUserRoundStat(roundId,user)` | 本轮累计 USD1、是否已按单笔门槛获得资格 |
 | 最低达标金额 | `DailyPurchaseTracker.minPurchaseAmount()` | 单笔达标门槛 |
-| Tracker 安全版本 | `trackingSafetyVersion()` | 必须为 `3`；表示购买记录 fail-soft，并会在每次成功记录后 best-effort 检查/推进已到期轮次 |
-| 待同步资格 | `pendingQualificationCount(roundId)` | 非零时该轮不会关闭；任何地址可调用 `retryQualification` |
-| 待归属购买 | `unresolvedDeferredPurchaseCount()` | 非零时需运维及时 assign/discard；不会阻止无关当前轮关轮 |
-| 资格同步状态 | `qualificationSyncState(roundId,user)` | `None/Pending/Syncing/Synced/Expired` |
+| Lucky 跟踪状态 | `DailyPurchaseTracker.luckyTrackingEnabled()`, `DailyPurchaseTracker.paused()` | `luckyTrackingEnabled = !paused`；关闭时购买仍成功并发权威估值事件，但不累计、不授予资格、不访问 Pool |
+| Tracker 安全版本 | `trackingSafetyVersion()`, `REQUIRED_TRACKING_SAFETY_VERSION()` | 两边必须为 `5`；表示通用估值事件与开启状态下的 Lucky 强原子路径 |
 | 达标用户列表 | `getEligibleUsers(roundId, offset, limit)` | 管理/公开榜单 |
 | 中奖地址列表 | `getWinners(roundId)` | 开奖后展示 |
 | 单用户中奖信息 | `getWinnerInfo(roundId, user)` | `won`, `rewardAmount` |
+| VRF seed | `getRandomWords(roundId)` | 回调前 `[]`，回调后 `[seed]`；当前只请求一个 word |
+| 双 FIFO | `getQueueState()` | 等待请求与等待结算的数量及各自队首 |
 | 是否已领取 | `rewardClaimed(roundId, user)` | 用户成功执行 `claimRewardMixed` 后 true |
 | 奖励库存 | `rewardReserve()` | 管理页更重要 |
 | reserved | `reservedRewards()` | 已锁定未释放奖励 |
@@ -1004,22 +1010,28 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 
 | 来源 | 说明 |
 | --- | --- |
-| 活期质押 | `liquidStake` 由授权购买源记录 |
-| 定期质押 | `lockedStake` 由授权购买源记录 |
-| 债券 | Bond/BondHelper 路径记录 |
-| 复投 | 满足配置时可能记录 |
+| 活期质押 | 用户新 `liquidStake` 由 LiquidStaking 原子记录 |
+| 定期质押 | 用户单参数 `lockedStake(amount)` 由 LockedStaking 原子记录 |
+| 债券 | Bond/BondHelper 和 BurnBond 路径原子记录 |
+| 协议奖励复投 | 不作为新购买重复记录 |
 
 注意事项：
 
 - 用户不能主动 enterRound 。
 - 前端不要直接调用 DailyPurchaseTracker.recordPurchase 。
 - 资格按单笔 amount >= minPurchaseAmount ，不是多笔累计达标。
-- 每笔授权来源购买会先 best-effort 尝试 LuckyPool upkeep，再读取当前轮归属；若上一轮已到期且能推进，本笔计入新轮。Pool 不可读、推进失败或没有有效 Open 窗口时进入 PurchaseDeferred ，不会写入过期轮。
-- LuckyPool 暂停、窗口无效或临时异常不会让质押/债券交易回滚。来源合约的价格读取或 Tracker 调用失败会发出 PurchaseTrackingFailed ；主业务交易仍可能成功，前端须以质押/债券事件和仓位回读为准，并将该事件上报运维。
-- 前端可为 Pending 状态提供“重试资格同步”按钮，调用 retryQualification(roundId,user) ；待归属购买属于运维流程，不应由普通用户猜测轮次。
-- 自建 keeper 负责在任何 Open 轮到期后触发推进。有资格用户时请求 Chainlink VRF v2.5；零资格时不请求 VRF，直接以 Drawn / 0 人中奖完成并创建下一轮。
+- 每轮仍累计所有窗口内成功购买供用户查询；两笔小额累计超过门槛也不会获得资格。
+- 每笔成功的授权来源购买都会在同一交易发出一个 PurchaseValued(user,source,amount) ； amount 是 scanner 和前端历史账单的权威 18 位 USD1 金额。
+- Lucky 跟踪开启时，价格换算、Tracker 累计和资格加入仍是来源购买的一部分，任一步失败都会回滚整笔质押/债券及全部事件；前端不展示 pending、deferred 或“稍后补资格”状态。
+- Lucky 跟踪关闭时，Tracker 在 PurchaseValued 后发 PurchaseLuckySkipped 并返回，不访问 Pool、不增加轮内累计、不授予资格；这不是购买暂停，来源购买可以继续成功。
+- 提前激活后的首轮开始前，来源购买发出 PurchaseValued 与 PurchaseIgnoredBeforeRoundStart ，不增加本轮累计也不授予资格。到达 firstStartTime 后无需额外交易即可开始计入。
+- 管理端激活前必须核对 Pool/Tracker 双向绑定、 trackingSafetyVersion() == 5 、零历史状态以及固定 10 个来源的双向绑定；非零 firstStartTime 可以已经开始，但首轮 end 必须仍在未来。旧版 Tracker、错误绑定或已结束窗口均由合约最终回滚。
+- 当前轮到期后，Tracker 的下一笔购买或 Keeper 都可以 O(1) 推进一次并立即创建完整时长的新轮；不会循环补建历史空档。
+- 自建 Keeper 原样透传 checkUpkeep 返回的 performData ，依次执行 rollover、FIFO request 或 FIFO settle。
 - 空轮完成后 requestId=0 、 rewardAmount=0 、 winnerCount=0 ，并触发 RoundSkipped 。前端不能假设所有 Drawn 轮都会出现 RandomnessFulfilled 。
-- 有资格用户时，VRF 回调选择最多 maxWinners 个中奖者并记录待领取金额，不转账。
+- 非空轮先触发 RoundSealed 并进入请求 FIFO；请求阶段锁奖并触发 RandomnessRequested 。
+- VRF 回调只验证并保存一个 seed，触发 RandomnessReady ；不会在回调中选人或转账。
+- 后续 FIFO settle 从一个 seed 派生 min(eligibleCount,maxWinners) 名不重复赢家，依次发出 WinnerSelected ，最后以同交易的 RandomnessFulfilled 收尾。
 - 每位中奖者默认目标为 500 USD1；关轮请求 VRF 的交易会实时读取 AGX/USD1 价格并向上取整锁定 AGX 奖额。回调前后的价格变化都不会改写已锁定的奖额。
 - 开奖后若 won = true 且 rewardClaimed = false ，前端展示“领取”按钮；成功后刷新 rewardClaimed 、 reservedRewards 、 RewardQueue.totalEnqueued 和 AgxContributionSwap.userContribution 。
 - 领取前需确保中奖者有足够贡献值（ rewardAmount / contributionDivisor ），否则 claimRewardMixed revert ErrorInsufficientContribution ；前端可引导用户先 AgxContributionSwap.convert 补充贡献值。
@@ -1032,21 +1044,24 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 | 功能 | 方法 | 说明 |
 | --- | --- | --- |
 | 奖励充值 | `depositRewards(amount)` | 需要先 approve reward token |
-| 手工推进当前过期轮 | `closeCurrentAndRequestRandomness()` | permissionless 应急入口；有资格用户时请求 VRF，零资格时返回 0 并自动跳过 |
-| keeper 检查 | `checkUpkeep("0x")` | 每 1～5 分钟只读调用；到期且 Tracker backlog 清零才返回 true，零资格轮无需链下过滤 |
-| keeper 执行 | `performUpkeep(performData)` | 有资格用户时请求 VRF；零资格时发出 `RoundSkipped` 并创建下一轮 |
+| 重排首轮 | `setFirstStartTime(newStartTime)` | owner；仅 `activated=false && currentRoundId=0`；时间可在过去/现在/未来，但 end 必须仍在未来，发 `FirstStartTimeUpdated` |
+| 一次性激活 | `activate()` | owner；可在计划开始前后执行；合约强制校验首轮 end、`trackingSafetyVersion() == 5` 及 Tracker 双向绑定，非零首轮时间保持 `firstStartTime` |
+| keeper 检查 | `checkUpkeep("0x")` | 启动立即检查；`RoundSealed` / `RandomnessReady` 事件唤醒，默认每 5 秒轮询兜底；返回下一项 O(1) 动作和不透明 `performData` |
+| keeper 执行 | `performUpkeep(performData)` | 原样透传；执行 rollover、request 或 settle 中的一项，旧数据会因队列序号变化而回滚 |
+| 手工请求 | `requestRandomness(roundId)` | permissionless；只允许等待请求 FIFO 队首 |
+| 手工结算 | `settleRound(roundId)` | permissionless；只允许 ready FIFO 队首 |
 | 显式管理取消 | `cancelCurrentAndCreateNextRound()` | 仅 owner；保留的管理兼容入口，会将零资格轮标记为 `Cancelled`，正常 keeper 路径不需使用 |
 | 已废弃兼容入口 | `cancelTimedOutRound(roundId)` | 始终回滚，前端和运维不得调用 |
-| 迁移旧请求绑定 | `migrateLegacyRequestCoordinatorBindings(maxRounds)` | 代理升级后暂停状态下由 owner 分页执行 |
 | 配置默认值 | `setDefaults(rewardValueUsd1, roundDuration, maxWinners)` | owner |
 | 配置 VRF | `setVrfConfig(...)` | owner |
-| 暂停 | `setPaused(flag)` | owner |
+| Pool 暂停 | `LuckyPool.setPaused(flag)` | owner；暂停轮次推进、请求、结算等 Pool 操作 |
+| Lucky 跟踪开关 | `DailyPurchaseTracker.setPaused(flag)` | owner；`true` 只关闭 Lucky 累计和资格，购买仍发 `PurchaseValued`，并额外发 `PurchaseLuckySkipped` |
 
-`setVrfConfig` 切换 Coordinator 后，已经发出的新版本请求仍只接受其发起时的 Coordinator；前端应使用 `requestRoundIdByCoordinator(coordinator, requestId)` 联合查询，不能把 `requestId` 当作跨 Coordinator 全局唯一值。从旧实现升级后，应展示 `legacyRequestBindingCursor / roundCount` 进度并分页执行迁移；`legacyRequestBindingComplete=false` 时链上会拒绝切换 Coordinator。
+`setVrfConfig` 切换 Coordinator 后，已经发出的请求仍只接受其发起时的 Coordinator；前端应使用 `requestRoundIdByCoordinator(coordinator, requestId)` 联合查询，不能把 `requestId` 当作跨 Coordinator 全局唯一值。
 
 `setVrfConfig` 的链上实现只拦截零值，管理台必须在提交前按目标网络的 Chainlink 官方参数做硬校验：BNB Chain 的 `requestConfirmations` 必须在 `3..200`，`callbackGasLimit` 必须在 `1..2_500_000`，Coordinator 和 `keyHash` 只能从当前网络审批白名单选择，`subscriptionId` 必须非零且包含 LuckyPool proxy Consumer，Subscription 必须按 `nativePayment` 充足 BNB 或官方 LINK。不允许运营人员任意粘贴地址或越界数值。
 
-管理看板还应分别显示：VRF Subscription 的 LINK/BNB 余额与 `nativePayment`、keeper EOA 的 BNB gas 余额、上次检查时间、上次成功 `performUpkeep` 交易、当前轮 pending 数和全局 deferred 数，以及超过 SLA 仍为 Open 的过期轮告警。若 backlog 非零，先处理资格再告警 keeper；零资格轮的 `RoundSkipped` 是正常完成事件。
+管理看板还应分别显示：VRF Subscription 的 LINK/BNB 余额与 `nativePayment`、keeper EOA 的 BNB gas 余额、上次检查时间、上次成功 `performUpkeep` 交易、`getQueueState()` 的两条 FIFO 队首、超过 SLA 的 `AwaitingRandomness`/`RandomReady` 告警，以及过期仍未 rollover 的当前轮。零资格轮的 `RoundSkipped` 是正常完成事件。
 
 ### 15. XStakingPool X 挖矿
 
@@ -1077,6 +1092,8 @@ XStakingPool 页面用于 AGX -> gAGX 包装、gAGX 质押、warmup 激活、X �
 | pending X | `pendingReward(user)` | 已结算 + 未结算预览 |
 | pending 价值 | `pendingRewardValue(user)` | AGX/gAGX 价值口径 |
 | warmup 周期 | `WARMUP_PERIOD()` | 当前为 24 小时 |
+| 结算冷却 | `SETTLEMENT_COOLDOWN()` | 固定 24 小时 |
+| 上次价格结算 | `lastSettlementTime()` | 0 表示尚未显式结算；下一次允许时间为该值加冷却 |
 | X 余额 | `XToken.balanceOf(user)` | 领取后刷新 |
 
 #### 15.4 用户写方法
@@ -1096,7 +1113,7 @@ XStakingPool 页面用于 AGX -> gAGX 包装、gAGX 质押、warmup 激活、X �
 
 | 方法 | 说明 |
 | --- | --- |
-| `settleRewards()` | 管理员/Operator 结算 X 奖励；读取 AGX/X pair 储备价格，gAGX 按底层 AGX 1:1 价值计价 |
+| `settleRewards()` | 管理员/Operator 结算 X 奖励；读取 AGX/X pair 储备价格，gAGX 按底层 AGX 1:1 价值计价；两次成功调用至少间隔 24 小时 |
 | `setRewardPricePair(pair)` | 配置奖励价格 pair |
 | `setMiningQuotaSource(sources[])` | 配置 quota 来源 |
 | `injectRewards(rewardAmount, 0)` | owner/operator 给池子补 X 奖励；先授权 X，第二参数当前未使用但 ABI 必须传入 |
@@ -1106,6 +1123,7 @@ XStakingPool 页面用于 AGX -> gAGX 包装、gAGX 质押、warmup 激活、X �
 - warmup 未结束时不能领取 X，也不能 startUnstake 。
 - cancelWarmup() 当前会 revert ErrorWarmupExitDisabled ，不要做取消按钮。
 - X 奖励按秒产生 AGX 价值，但 X 数量由 settleRewards() 在合约内按 pair 实时价格结算，前端不传价格。
+- 前端应读取 lastSettlementTime + SETTLEMENT_COOLDOWN 禁用冷却中的结算按钮；首次 lastSettlementTime == 0 时立即允许。冷却错误为 ErrorSettlementCooldown(nextAllowedTime) 。
 - startUnstake() 会把 gAGX redeem 成 AGX，并经 AegisSplitterManager 路由创建分流器释放单，不是立即到账。
 - mining quota 由 Early、三个 Locked、三个 Bond、三个 BurnBond 的 alias-aware 锁定本金决定；A→B→C 后新地址 C 继续使用 root A 的本金配额，前端直接查询 miningQuotaOf(canonicalAccount) ，不要自行复制或相加 A/B/C。quota 不足会 revert ErrorMiningQuotaExceeded 。
 
@@ -1155,7 +1173,7 @@ Turbine 页面展示用户出售配额、需要支付的 USD1、冷却列表和�
 
 账户迁移页面用于把旧地址权益迁移到新地址。流程是旧地址申请、operator 审批、新地址激活。
 
-本轮全新主网发布部署新的 AccountMigrationManager 并启用迁移：21 个迁移目标（含全新部署的 Referral/PreSale，slot 0/1）owner 均为部署者，base verify 通过后由 `configure-account-migration-manager` 一脚本完成绑定 + `lockTargets` + `setOperator` + `setMigrationEnabled(true)`。最终验收 `migrationEnabled() == true`、`targetsLocked() == true`、21 target 全部 `migrationManager()` 指向新 Manager。前端可开放账户迁移入口（旧地址申请 → operator 审批 → 新地址激活）。
+父 release 全新部署的 AccountMigrationManager 按标准 21 个迁移目标启用（含全新部署的 Referral/PreSale，slot 0/1），owner 均为部署者，base verify 通过后由 `configure-account-migration-manager` 一脚本完成绑定 + `lockTargets` + `setOperator` + `setMigrationEnabled(true)`。当前主网为 22-target 过渡拓扑（21 个标准 + 临时保留旧 LuckyPool 历史领取迁移，见 §2.2 地址表）。最终验收 `migrationEnabled() == true`、`targetsLocked() == true`、22 个 target 全部 `migrationManager()` 指向新 Manager。前端可开放账户迁移入口（旧地址申请 → operator 审批 → 新地址激活）。
 
 #### 17.2 ABI 与地址
 
@@ -1195,7 +1213,7 @@ Turbine 页面展示用户出售配额、需要支付的 USD1、冷却列表和�
 
 #### 17.5 目标清单管理（仅运营后台）
 
-当前 Manager 使用动态 `address[]`，标准主网清单是 21 个唯一 target。Referral 永远位于索引 0；目标上限为 `MAX_MIGRATION_TARGET_COUNT() = 32`。普通用户端不得展示下列 owner 方法。
+当前 Manager 使用动态 `address[]`，标准全新部署清单是 21 个唯一 target；当前主网为 22-target 过渡拓扑（21 个标准 + 临时保留旧 LuckyPool 历史领取迁移）。Referral 永远位于索引 0；目标上限为 `MAX_MIGRATION_TARGET_COUNT() = 32`。普通用户端不得展示下列 owner 方法。
 
 | 方法 | 用途 | 关键约束 |
 | --- | --- | --- |
@@ -1241,7 +1259,7 @@ setMigrationEnabled(false)
 | 模块 | ABI | 地址 key | 主要读方法 | 主要写方法 |
 | --- | --- | --- | --- | --- |
 | Treasury | `Treasury` | `Treasury` | `totalReserves()`, `supplied()`, `excessReserves()` | 授权合约调用 reserve/mint 方法 |
-| RBS | `RBS` | `RBS` | `getTokenPrice(token)`, `quote(...)` | `mint`（仅 owner）、`swap`/`addLiquidity`/`burnLP`/`removeLiquidity`（owner 或 operator） |
+| RBS | `RBS` | `RBS` | `getTokenPrice(token)`, `getPresaleMintAmount()`, `presaleMintedAmount()`, `maxPresaleMint()` | `mint`/`addReserve`/`mintPresaleAgx(token,amount)`（仅 owner）、`swap`/`addLiquidity`/`burnLP`/`removeLiquidity`（owner 或 operator） |
 | AGX 防御 | `AegisXToken` | `AGX` | `sellRatio()`, `extraSellBP()`, `crashThresholdBP()`, `crashFuseActive()`, `snapshotPrice()`, `defenseEndTime()`, `consecutiveDropBlocks()`, `blockSellQuotaBlock()`, `blockStartAgxReserve()`, `blockSellThresholdBP()`, `blockSellLimit()`, `grossSoldInBlock()`, `pendingCrashThresholdBP()`, `crashThresholdEffectiveBlock()`, `crashThresholdUpdatePending()` | Governance 防御配置方法；`setDefenseMode(false)` 关闭持续熔断但不重开当块额度 |
 | RiskControl | `RiskControl` | `RiskControl` | `balanceControlAddress()`, `feeControlAddress()` 等公开状态 | `executeBalance()` 仅 balanceControlAddress；`updateFeeRatio(newTaxRate)` 仅 feeControlAddress；owner 只能配置控制地址 |
 | RewardManager | `RewardManager` | `RewardManager` | `previewEpochRewards()`, `recipientCount()`, `info(index)`, `nextRewardFor(recipient)` | `distributeEpochRewards()` 任何地址可触发，但区块未到 `endBlock` 时返回 false；`settleEpochRewards(epochNumber)` 仅 StakingPool 且只能结算 current-1 未发放 epoch |
@@ -1255,6 +1273,8 @@ setMigrationEnabled(false)
 - 所有 owner/operator 按钮必须先做权限判断。
 - 普通用户端不要展示 owner/operator 方法。
 - 后台执行类方法应保留操作日志，至少记录 tx hash、调用人、参数、事件。
+- RBS 预售卡片必须把累计分配、已铸、本次待铸和累计上限分开显示；待铸量由 getPresaleMintAmount() - presaleMintedAmount() 计算。AGX 使用 9 位精度，储备代币按其链上 decimals() 解析。
+- addReserve 和两参数 mintPresaleAgx(token,amount) 只允许 RBS owner；operator 不可调用。任何关键读取失败都要禁用写操作；交易前在 BSC simulation，成功后刷新 RBS/Treasury/EarlyStaking 三方余额。
 - FeeBot/TokenFeeBot 执行前先读 isExecSwap() ，如果 shouldExecute=false 不要让用户发交易。
 - AGX 默认跌幅阈值为 5%，单区块低税毛卖出额度按阈值的一半计算，即第一笔受管控卖出前 AGX 储备的 2.5%。同块后续卖出会按当前储备单调收紧额度但不会扩大；累计量严格大于 blockSellLimit 时，越界交易整笔改用防御税并进入 RBS，但 crashFuseActive 不会因此自动变为 true。
 - AGX 持续熔断需要在两个不同区块各出现一次符合跌幅条件的卖出观察，区块无需相邻；同一区块只计一次，激活前观察到价格恢复至阈值线或以上会清空确认。治理调用 snapshotDefensePrice() 刷新快照时也会清空旧快照下的确认，旧确认不会跨快照累计。 consecutiveDropBlocks() 为兼容保留的历史命名，实际表示当前低价区间内的不同区块确认数。监听 BlockSellQuotaInitialized 、 BlockSellQuotaReduced 、 BlockSellDefenseTaxApplied 、 CrashThresholdUpdateScheduled 、 CrashThresholdUpdated 、 DropConfirmed 、 ExtraSellTaxActivated 和 ExtraSellTaxDeactivated 更新管理台状态。
@@ -1305,10 +1325,13 @@ setMigrationEnabled(false)
 | DaoPool | `RewardsClaimedMixed`, `RestakeClaimed` | DAO Mixed 领奖 |
 | RewardQueue | `EnteredQueue`, `RewardReleased`, `RewardClaimedFromQueue` | 释放队列 |
 | 分流器（本金释放） | `AegisSplitter` 的 `Deposited`, `Claimed`；历史 PRV 单沿用 `ReleaseCreated`, `PrincipalClaimed`（归档 ABI） | 本金释放 |
-| LuckyPool | `RoundCreated`, `RoundSkipped`, `EligibleUserAdded`, `RandomnessRequested`, `RandomnessFulfilled`, `WinnerSelected`, `LuckyRewardClaimedMixed`, `RewardPaid`, `RewardClaimed` | 抽奖全过程；`RoundSkipped` 表示零资格轮以 0 人中奖完成 |
+| LuckyPool | `RoundCreated`, `Activated`, `RoundSkipped`, `RoundSealed`, `EligibleUserAdded`, `RandomnessRequested`, `RandomnessReady`, `WinnerSelected`, `RandomnessFulfilled`, `LuckyRewardClaimedMixed`, `RewardPaid`, `RewardClaimed` | 抽奖全过程；`RoundSkipped` 是空轮终态，`RandomnessReady` 只是 seed 到达，`RandomnessFulfilled` 才是 settle 终态 |
+| DailyPurchaseTracker | `PurchaseValued`, `PurchaseRecorded`, `PurchaseLuckySkipped`, `PurchaseIgnoredBeforeRoundStart`, `UserQualified` | 每笔成功来源购买的权威 USD1 估值、轮内累计、Lucky 关闭跳过、计划开始前明确忽略、单笔达标资格 |
 | XStakingPool | `Staked`, `WarmupActivated`, `RewardSettlement`, `RewardClaimed`, `Unstaked` | X 挖矿 |
 | Turbine | `Received`, `Silenced`, `CooledGagxClaimed`, `CooldownUpdated` | 配额、冷却和配置变化 |
 | AccountMigrationManager | `MigrationRequested`, `MigrationApproved`, `MigrationRejected`, `MigrationCancelled`, `MigrationCompleted`, `OperatorMigrationCompleted`, `TargetsUpdated`, `MigrationTargetAdded`, `MigrationTargetRemoved`, `TargetsLocked`, `TargetsUnlocked`, `MigrationEnabledChanged` | 用户迁移流程与动态目标治理 |
+
+事件归属注意：BurnBond 的业务用户取 `AgxBurned.buyer`（当前实现即 `depositor`）或同交易 `Staked._user`/`BondPurchased.depositor`，三者在新部署中一致；不要取 `tx.from`、Helper 地址或迁移后的 Tracker root。历史金额取同交易 `PurchaseValued.amount`。
 
 ### 21. 前端交付检查清单
 
@@ -1323,10 +1346,10 @@ setMigrationEnabled(false)
 | 释放计划 | RewardQueue plan 从链上读取，不写死 |
 | 复投计划 | 用 `getPlanCount + getPlan(i)` 保留原始 index，不把过滤列表下标当 planIndex |
 | LuckyPool | 不提供 `enterRound`，不直接调用 `recordPurchase` |
-| Lucky keeper | 只调用 `checkUpkeep("0x") -> performUpkeep(performData)`；无 owner 权限，不在链下排除零资格轮，keeper BNB 与 VRF Subscription 余额分开监控 |
+| Lucky keeper | `RoundSealed` / `RandomnessReady` 只负责唤醒，写路径仍只调用 `checkUpkeep("0x") -> performUpkeep(performData)`；保留 5 秒轮询兜底，无 owner 权限，不在链下排除零资格轮，keeper BNB 与 VRF Subscription 余额分开监控 |
 | XStaking | 不传价格；等待管理员 `settleRewards` 后用户领取 X |
 | 分流器 ABI | 使用 `AegisSplitterManager`/`AegisSplitter` 规范 ABI（`abi/AegisSplitterManager.json`、`abi/AegisSplitter.json`）；历史 PRV 释放单用归档 ABI（`archive/PrincipalReleaseVault/`）；`claim(index)` 只有一个参数 |
-| 账户迁移 | 当前独立启用回执已通过：`migrationEnabled=true`、`targetsLocked=true`、21 个 target；前端启用迁移入口前仍须回读链上状态，若后续被暂停或目标解锁则立即禁用写操作 |
+| 账户迁移 | 当前独立启用回执已通过：`migrationEnabled=true`、`targetsLocked=true`、22 个 target（主网过渡拓扑）；前端启用迁移入口前仍须回读链上状态，若后续被暂停或目标解锁则立即禁用写操作 |
 | 错误提示 | 自定义错误名映射为用户可理解文案 |
 
 ### 22. 本地验证

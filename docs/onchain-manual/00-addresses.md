@@ -6,8 +6,8 @@
 deployment keys
 前端规则
 地址来自
-deployments/20260807112833274.bsc.xstaking-liquidity.addresses.json
-deployments/verifications/bb680398-e7c0-46fa-ad87-139446fb4120.mainnet-configuration.json
+deployments/staging/f25c7887-1ec0-43a2-b16c-32de9dbbb314.lucky-v5.addresses.json
+deployments/verifications/f25c7887-1ec0-43a2-b16c-32de9dbbb314.mainnet-upgrade.json
 proxy
 address
 USD1
@@ -92,6 +92,6 @@ USD1
 
 | 部署键 | 前端交互地址 | 类型 | 合约文档 |
 | --- | --- | --- | --- |
-| `LuckyPool` | [`0xe91148Fe7248b528398442e8eA4e8a7d107c994A`](https://bscscan.com/address/0xe91148Fe7248b528398442e8eA4e8a7d107c994A)复制 | Proxy | AegisLuckyPool 合约文档 |
-| `DailyPurchaseTracker` | [`0xf4328953616607aCc04F1e7Ba90bc379987c1945`](https://bscscan.com/address/0xf4328953616607aCc04F1e7Ba90bc379987c1945)复制 | Proxy | AegisDailyPurchaseTracker 合约文档 |
+| `LuckyPool` | [`0x6ACdd260F7926EA60991b566B272b338E0222C44`](https://bscscan.com/address/0x6ACdd260F7926EA60991b566B272b338E0222C44)复制 | Proxy | AegisLuckyPool 前端与运维说明 |
+| `DailyPurchaseTracker` | [`0xAC1ba469F79Ac63698af66BA6824A718b964Cc81`](https://bscscan.com/address/0xAC1ba469F79Ac63698af66BA6824A718b964Cc81)复制 | Proxy | AegisDailyPurchaseTracker 前端与集成说明 |
 | `AccountMigrationManager` | [`0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778`](https://bscscan.com/address/0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778)复制 | Proxy | AccountMigrationManager 合约文档 |

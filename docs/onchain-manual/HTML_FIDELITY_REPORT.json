@@ -1,8 +1,8 @@
 {
-  "html_sha256": "4414a0597f856efeb25d5223dcb851b2f3c7df8c3364c20087baf8e32085ed31",
+  "html_sha256": "549465718a31e92f510c5e1a543d08047c7d4e01986e8b7ec5daa19525f2d342",
   "addresses": 47,
   "abis": 38,
-  "meaningful_html_lines_checked": 9450,
+  "meaningful_html_lines_checked": 9728,
   "missing_in_md_lines": 0,
   "status": "PASS"
 }

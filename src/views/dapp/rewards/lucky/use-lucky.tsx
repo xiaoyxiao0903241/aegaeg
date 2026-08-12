@@ -150,7 +150,7 @@ export function useLucky() {
     { digits: 2, prefix: '$' },
   )
   const countdown =
-    walletReady && roundQuery.data != null
+    walletReady && roundQuery.data != null && roundQuery.data.accepting
       ? formatCountdown(roundQuery.data.endTimeSec, nowSec)
       : null
   const todayPoolHint =

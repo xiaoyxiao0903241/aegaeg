@@ -269,6 +269,10 @@ async function claimGagx(turbine, index, signer) {
 
 `setRewardGagx` 修改 gAGX 地址时触发。
 
+#### SplitterManagerUpdated(address indexed manager, uint256 timestamp)
+
+`setSplitterManager` 修改分流器 Manager 地址时触发。
+
 #### ReserveRatioThresholdsUpdated(uint256 stressedBP, uint256 healthyBP, uint256 timestamp)
 
 `setReserveRatioThresholds` 修改储备率阈值时触发。

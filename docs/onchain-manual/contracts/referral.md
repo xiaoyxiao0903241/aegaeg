@@ -118,7 +118,7 @@ console.log(`根节点: ${root}`)
 
 ##### getReferrals(address, uint256)
 
-获取用户的上溯 `_num` 层推荐链（源码 Referral.sol:230）。返回从直接父节点开始向上的地址数组，长度 ≤ `_num`。
+获取用户的上溯 `_num` 层推荐链（源码 Referral.sol:289）。返回从直接父节点开始向上的地址数组，长度 ≤ `_num`。
 
 javascript
 ```javascript
@@ -128,7 +128,7 @@ console.log(`上溯推荐链:`, chain)
 
 ##### getChildAt(address, uint256 index)
 
-获取用户指定下标的直接子节点（源码 Referral.sol:214）。`index` 越界回滚 `Referral__UserZero()`（无该子节点）。
+获取用户指定下标的直接子节点（源码 Referral.sol:273）。`index` 越界回滚 `Referral__UserZero()`（无该子节点）。
 
 javascript
 ```javascript
@@ -154,6 +154,15 @@ javascript
 ```javascript
 const canonical = await referral.canonicalOf(oldAddress)
 console.log(`规范地址: ${canonical}`)
+```
+
+##### getBindTimestamp(address) -> (uint256)
+
+查询某个用户的绑定（注册）时间戳。内部走 `_original(_address)`，迁移后的账户会返回其原始账户的绑定时间。
+
+javascript
+```javascript
+const ts = await referral.getBindTimestamp(userAddress)
 ```
 
 ---
@@ -202,11 +211,15 @@ if (event) {
 
 ##### setRootAddress(address[] chain) (onlyOwner)
 
-重置/重建推荐树的根链（源码 Referral.sol:71）。`chain` 不能为空（空回滚 `Referral__RootZero()`）；链中每个 child→parent 必须未被绑定且 parent 已绑定（除根），否则回滚 `Referral__AlreadyBound` / `Referral__ParentNotBound` / `Referral__SelfReferral`。用于初始化或修复根链，触发 `RootUpdated`。
+重置/重建推荐树的根链（源码 Referral.sol:86）。`chain` 不能为空（空回滚 `Referral__RootZero()`）；链中每个 child→parent 必须未被绑定且 parent 已绑定（除根），否则回滚 `Referral__AlreadyBound` / `Referral__ParentNotBound` / `Referral__SelfReferral`。用于初始化或修复根链，触发 `RootUpdated`。
+
+##### setBindTimestamps(address[] users, uint256 timestamp) (onlyOwner)
+
+批量设置一批**已绑定**用户的绑定（注册）时间为同一时间戳（源码 Referral.sol:217）。`timestamp == 0` 回滚 `Referral__TimestampZero()`；每个用户必须已绑定且非零地址，否则回滚 `Referral__NotBound`。触发 `BindTimestampsSet(users, timestamp, at)`。用于历史数据导入或绑定时间校正。
 
 ##### setMigrationManager(address manager) (onlyOwner, 一次性不可变)
 
-设置统一迁移管理器（源码 Referral.sol:116）。`manager` 零地址回滚 `MigrationManagerZeroAddress`；`migrationManager` 非零后再改回滚 `MigrationManagerImmutable`。部署前必须确认。
+设置统一迁移管理器（源码 Referral.sol:140）。`manager` 零地址回滚 `MigrationManagerZeroAddress`；`migrationManager` 非零后再改回滚 `MigrationManagerImmutable`。部署前必须确认。
 
 ##### migrateAccount(oldAccount, newAccount)
 
@@ -294,6 +307,15 @@ referral.on('IdentityMigrated', (from, to, timestamp) => {
 })
 ```
 
+#### BindTimestampsSet
+
+`setBindTimestamps` 批量校正绑定时间时触发。
+
+solidity
+```solidity
+event BindTimestampsSet(address[] users, uint256 timestamp, uint256 at)
+```
+
 ---
 
 ### 错误码
@@ -308,6 +330,8 @@ referral.on('IdentityMigrated', (from, to, timestamp) => {
 | `Referral__ParentNotBound(address)` | 父节点未绑定 | 选择已绑定的父节点 |
 | `Referral__MigratedAccount(address)` | 账户已迁移 | 使用迁移后的新地址 |
 | `Referral__NotMigrationManager(address)` | 调用者无迁移权限 | 使用正确的调用者 |
+| `Referral__NotBound(address)` | `setBindTimestamps` 的目标用户未绑定 | 仅对已绑定用户批量校正 |
+| `Referral__TimestampZero()` | `setBindTimestamps` 传入 0 时间戳 | 传入非零时间戳 |
 | `MigrationManagerZeroAddress()` | `setMigrationManager` 传入零地址 | 传入有效地址 |
 | `MigrationManagerImmutable(address)` | 二次修改 migrationManager | 一次性不可变，部署前确认 |
 

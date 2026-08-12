@@ -9,9 +9,9 @@
 - [主网发布地址](00-addresses.md)
 - [AEGIS X 前端合约对接与功能流程说明](01-frontend-integration-guide.md)
 - [AccountMigrationManager 合约文档](contracts/accountmigrationmanager.md) · 含 ABI
-- [AegisDailyPurchaseTracker 合约文档](contracts/aegisdailypurchasetracker.md) · 含 ABI
+- [AegisDailyPurchaseTracker 前端与集成说明](contracts/aegisdailypurchasetracker.md) · 含 ABI
 - [AegisLpBondingCalculator 集成说明](contracts/aegislpbondingcalculator.md) · 含 ABI
-- [AegisLuckyPool 合约文档](contracts/aegisluckypool.md) · 含 ABI
+- [AegisLuckyPool 前端与运维说明](contracts/aegisluckypool.md) · 含 ABI
 - [AegisSplitter 合约文档](contracts/aegissplitter.md) · 含 ABI
 - [AegisSplitterManager 合约文档](contracts/aegissplittermanager.md) · 含 ABI
 - [AGX (AegisXToken) 合约文档](contracts/agx.md) · 含 ABI
@@ -53,4 +53,4 @@
 
 - 文档章节：41
 - ABI 文件：40
-- 总大小：3,055,126 bytes
+- 总大小：3,064,697 bytes

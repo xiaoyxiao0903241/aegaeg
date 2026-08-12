@@ -26,6 +26,8 @@ export interface BscContracts {
   marketFund: Address
   /** LuckyPool——幸运 Mixed 领取（手册 §14 LuckyPool 去中心化抽奖；可能暂停） */
   luckyPool: Address
+  /** DailyPurchaseTracker——轮内购买资格（手册 §14.1） */
+  dailyPurchaseTracker: Address
   /** Usd1Swap 代理——USDT → USD1 兑换（手册 §7.2 Usd1Swap） */
   usd1Swap: Address
   /** AGX 代币（部署 key 为 `AGX`） */
@@ -112,6 +114,7 @@ export const BSC_CONTRACTS = {
   daoPool: requireEnvAddress('VITE_BSC_DAO_POOL'),
   marketFund: requireEnvAddress('VITE_BSC_MARKET_FUND'),
   luckyPool: requireEnvAddress('VITE_BSC_LUCKY_POOL'),
+  dailyPurchaseTracker: requireEnvAddress('VITE_BSC_DAILY_PURCHASE_TRACKER'),
   usd1Swap: requireEnvAddress('VITE_BSC_USD1_SWAP'),
   agx: requireEnvAddress('VITE_BSC_AGX'),
   gagx: requireEnvAddress('VITE_BSC_GAGX'),

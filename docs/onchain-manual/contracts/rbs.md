@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/AegisReserveMarketMaker.json
-SHA-256 37a3971e2403…
+SHA-256 f3c90278d0b6…
+55
 40
-30
-5
+10
 5
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/rbs.json`](../abis/rbs.json)（40 entries）。
+完整 ABI 已导出为 [`abis/rbs.json`](../abis/rbs.json)（55 entries）。
 
 </details>
 
@@ -23,129 +23,173 @@ SHA-256 37a3971e2403…
 
 ### 概述
 
-`AegisReserveMarketMaker` 是 AEGIS X 的储备做市商合约，负责 LP 管理、价格查询、流动性添加/移除和向 Treasury 铸造。
+`AegisReserveMarketMaker` 负责协议储备做市、LP 管理、Treasury 储备入库，以及按 PreSale 累计分配量为 EarlyStaking 增量铸造 AGX。
 
-**部署 key**: `RBS`
+- 部署 key： RBS
+- BNB Chain 主网 proxy： 0xde591E8C3DD60be77481Ea335d7A038e09357034 （当前实现与新增预售配置已通过增量 release f25c7887-1ec0-43a2-b16c-32de9dbbb314 升级终验）
+- ABI： abi/AegisReserveMarketMaker.json
+- AGX 精度：9 位
+- USD1 精度：18 位
+- 新增储备/预售写入口：仅 owner
+- Keeper：无需增加或改变调用；新增操作是管理动作
 
-**ABI 路径**: `abi/AegisReserveMarketMaker.json`
+### 权限模型
 
----
+| 权限 | 可调用方法 |
+| --- | --- |
+| `owner` | 全部方法，包括 `mint`、`addReserve`、`mintPresaleAgx` 和配置方法 |
+| `operator` | 仅 `swap`、`addLiquidity`、`burnLP`、`removeLiquidity` |
+| 普通地址 | 只读方法 |
 
-### 前端 API
+`operator` 不能调用储备入库、AGX 铸造或配置方法。
 
-#### 视图函数
+### 预售记账模型
 
-##### getTokenPrice(address token) -> (uint256 price)
+核心状态：
 
-获取指定代币的 LP 价格（按 1e18 定点）。
+| Getter | 含义 |
+| --- | --- |
+| `earlyStaking()` | 预售 AGX 的最终接收池 |
+| `preSaleContract()` | `totalAllocatedAgx()` 的来源 |
+| `presaleMintedAmount()` | RBS 已处理的累计预售 AGX |
+| `maxPresaleMint()` | Owner 可调整的累计铸造上限 |
+| `getPresaleMintAmount()` | PreSale 当前累计分配总量；不是本次待铸量 |
 
-js
-```js
-const price = await rbs.getTokenPrice(agxAddress);
-console.log('AGX price:', ethers.formatUnits(price, 18));
+每次 `mintPresaleAgx` 只铸造新增差额：
+
+text
+```text
+pending = PreSale.totalAllocatedAgx - RBS.presaleMintedAmount
 ```
 
-##### estimateLiquidityAmount(amount0, amount1) -> (lpAmount, totalSupply)
+同一累计值重复调用会在任何资金转移前以 `No new AGX to mint` 回滚。PreSale 暂停或重开不影响该算法；有新购买时只处理新增部分，但累计值不能超过 `maxPresaleMint`。
 
-预估添加流动性可获得的 LP 数量（使用默认 `pair`）。
+### 精度与抵押价值
 
-##### estimateLiquidityAmountForPair(address _pair, uint256 _amount0, uint256 _amount1) -> (lpAmount, totalSupply)
+PreSale 的累计分配量和 RBS 的铸币状态都使用 AGX 9 位原始精度。储备代币使用自身精度。以 18 位 USD1 为例：
 
-针对指定 Pair 预估 LP 数量。源码 `src/RBS.sol:235`
+text
+```text
+500,000 AGX raw = 500,000 × 1e9
+500,000 USD1 raw = 500,000 × 1e18
 
-##### getAmountForPair(address _pair, address _token, uint256 _amountIn) -> (uint256 amount)
+Treasury.valueOf(USD1, amount)
+  = amount / 1e9
+  = 500,000 × 1e9
+```
 
-按指定 Pair 储备计算等价 amount。源码 `:214`
+`mintPresaleAgx` 要求 `Treasury.valueOf(token, amount) >= pending`。前端必须按所选 ERC-20 的链上 `decimals()` 解析输入，不能统一写死 18 位。合约不接收链下确认的 pending 参数，交易执行时会重新读取 PreSale 累计量。
 
-##### quote(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) -> (uint256)
+### 主要写方法
 
-纯函数 Uniswap quote。源码 `:245`
+#### addReserve(address token, uint256 amount)
 
-##### calculateLiquidityAmount(amount0, amount1, reserve0, reserve1, totalSupply) -> (uint256)
+仅 owner。将 RBS 持有的、已被 Treasury 接受的储备代币存入 Treasury，`payout=0`，不铸造 AGX。
 
-纯函数计算 LP 数量。源码 `:252`
+合约校验：
 
-##### getAmountsIn(amountOut, path) -> (uint[]) / getAmountsOut(amountIn, path) -> (uint[])
+- token 非零、 amount > 0 且不超过 RBS 余额；
+- RBS 使用 safeIncreaseAllowance 授权 Treasury；
+- 调用 Treasury.depositStableReserve(token, amount, 0) ；
+- 成功发出 ReserveAdded 。
 
-路由器价格查询代理。
+该版本不额外核对 Treasury 实际到账差额，也不检查 Treasury 的返回值；生产配置只应使用 Treasury 已接受的标准储备代币。
 
-#### 状态修改函数
+#### mintPresaleAgx(address token, uint256 amount)
 
-##### mint(uint256 _usdAmount, uint256 _profitAmount)
+仅 owner。将储备代币存入 Treasury，铸造当前待铸 AGX，并把全部新铸 AGX 转给 `earlyStaking`。
 
-向 Treasury 存入储备并铸造 AGX（仅 `owner`，源码 `src/RBS.sol:335`）。三条硬约束：
+链上按以下顺序校验：
 
-1. _usdAmount <= IERC20(usd).balanceOf(address(this)) ，否则 revert "Insufficient balance"
-2. lastMintTime == 0 || block.timestamp > lastMintTime + MINT_COOLDOWN ，否则 revert "invalid times" （30 分钟冷却）
-3. _usdAmount <= 200_000 * 1e18 ，否则 revert "max balance" （单次上限 20 万 USD）
-4. monitorToken == address(0) || _normalizedMonitorBalance() < monitorTokenCap ，否则 revert "Unauthorized" （监控代币归一化余额超上限）
+1. EarlyStaking、PreSale、token、amount 和 RBS 余额非零或有效；
+2. totalAllocatedAgx > presaleMintedAmount ；
+3. 新累计值不超过 maxPresaleMint ；
+4. Treasury 估值覆盖本次待铸 AGX；
+5. Treasury 返回的铸币量等于待铸量；
+6. 更新 presaleMintedAmount ，并把相同数量 AGX 转给 EarlyStaking。
 
-##### swap(path, amountIn, amountOutMin, deadline)
+任一步回滚时，当前交易内的储备转账、AGX 铸造和 `presaleMintedAmount` 更新都会回滚。该版本不额外核对 Treasury/RBS/EarlyStaking 的真实余额增量。
 
-执行代币交换（`onlyOwnerOrOperator`）。
+#### mint(uint256 usdAmount, uint256 profitAmount)
 
-##### addLiquidity(tokenA, tokenB, amountAIn, amountBIn, deadline)
+原有仅 owner 的 Treasury 铸币入口，仍受 30 分钟冷却、单次 200,000 USD1 上限和 monitorToken 条件约束。它与预售增量记账相互独立；预售应使用 `mintPresaleAgx`。
 
-添加流动性（`onlyOwnerOrOperator`）。
+#### 做市方法
 
-##### burnLP(uint256 amount)
+- swap(path, amountIn, amountOutMin, deadline)
+- addLiquidity(tokenA, tokenB, amountAIn, amountBIn, deadline)
+- burnLP(amount)
+- removeLiquidity(pair, liquidity, amountAMin, amountBMin, deadline)
 
-销毁 LP 代币到 dead 地址（`onlyOwnerOrOperator`）。
+这些方法允许 owner 或 operator 调用。
 
-##### removeLiquidity(address _pair, uint256 _liquidity, uint256 _amountAMin, uint256 _amountBMin, uint256 _deadline)
+### 配置与升级
 
-移除指定 Pair 的流动性（`onlyOwnerOrOperator`，源码 `src/RBS.sol:312`）。
+| 方法 | 约束 |
+| --- | --- |
+| `setEarlyStaking(address)` | 地址非零；Owner 可再次修改 |
+| `setPreSaleContract(address)` | 地址非零，且只能在 `presaleMintedAmount == 0` 时修改 |
+| `setMaxPresaleMint(uint256)` | 大于 0；Owner 后续可再次修改 |
 
-#### Admin 函数
+新增状态严格追加在旧布局 slots 9–12。升级旧 RBS 后，这四个槽默认都是 0；升级交易只替换实现，不携带初始化调用。随后必须由 RBS owner 分别设置 EarlyStaking、PreSale 和累计上限。
 
-| 函数 | 权限 | 说明 |
-| --- | --- | --- |
-| `setMonitorToken(address _token)` | `onlyOwner` | 设置监控代币，非零地址时自动读取其 decimals。源码 `:124` |
-| `setMonitorTokenCap(uint256 _cap)` | `onlyOwner` | 设置监控代币归一化余额上限。源码 `:132` |
-| `setOperator(address _operator, bool _enabled)` | `onlyOwner` | 设置 operator（要求非零地址，否则 `"Invalid operator"`）。源码 `:137` |
+这一语义要求目标代理历史上没有已经铸造并交付、但未记录到 `presaleMintedAmount` 的预售 AGX。若存在历史铸造，第一次执行会从 0 开始重新计算累计分配并可能重复铸币，不能直接采用本升级流程。
 
----
+### 主网升级与配置
+
+`.env.mainnet` 可选配置：
+
+dotenv
+```dotenv
+RBS_MAX_PRESALE_MINT=        # 可留空；留空表示不限额
+RBS_EARLY_STAKING=            # 预售 AGX 接收地址
+RBS_PRESALE_CONTRACT=         # PreSale 地址
+```
+
+`RBS_EARLY_STAKING` 和 `RBS_PRESALE_CONTRACT` 留空时使用当前发布快照中的 canonical 地址。`RBS_MAX_PRESALE_MINT` 留空时写入 `uint256.max`；实际待铸量始终按 `PreSale.totalAllocatedAgx() - RBS.presaleMintedAmount()` 计算。
+
+bash
+```bash
+# 直接执行 12 个代理升级、RBS 配置、Tracker 切换与迁移拓扑收口
+npm run upgrade:mainnet
+
+# 最终只读验收
+npm run upgrade:mainnet:verify
+```
+
+升级和配置不是单笔原子交易；脚本会在 AccountMigrationManager 已关闭且无 pending 的窗口内逐步完成，已升级或已配置的项目在重跑时自动跳过。升级后到三个配置交易全部确认前，禁止调用 `mintPresaleAgx`。最终验收会回读 owner、EarlyStaking、PreSale、累计上限和已铸量，并拒绝 `presaleMintedAmount` 超过累计上限。
 
 ### 事件
 
-| 事件 | 说明 |
+| 事件 | 用途 |
 | --- | --- |
-| `Minted(address indexed _send, uint256 _amount, uint256 timestamp)` | mint 成功铸造 |
-| `Burned(address indexed _to, uint256 _amount, uint256 timestamp)` | burnLP 销毁 |
-| `OperatorUpdated(address indexed operator, bool enabled, uint256 timestamp)` | operator 状态变更 |
+| `Minted` | 原有 `mint` 成功 |
+| `Burned` | LP 已销毁 |
+| `OperatorUpdated` | operator 状态变化 |
+| `ReserveAdded` | 储备代币已从 RBS 入 Treasury |
+| `PresaleAgxMinted` | 预售新增 AGX 已铸造并转入 EarlyStaking |
+| `EarlyStakingSet` | EarlyStaking 地址更新 |
+| `PreSaleContractSet` | PreSale 地址更新 |
+| `MaxPresaleMintSet` | 累计上限更新 |
 
-源码：`src/RBS.sol:117-121`
+### 前端接入要求
 
-### 错误码
+- 新增操作只展示给 RBS owner，operator 不得启用按钮。
+- addReserve 和 mintPresaleAgx 的 token 输入要动态读取 decimals() 与 balanceOf(RBS) 。
+- 预售卡片同时展示累计分配、已铸、待铸和累计上限；待铸量由前端计算 getPresaleMintAmount() - presaleMintedAmount() 。
+- 任何关键读取失败都必须禁用写按钮，不能把 undefined 当成 0。
+- 提交两参数 mintPresaleAgx(token, amount) 前应在 BSC 上立即执行 simulation；交易上链时会按最新累计分配量重新计算待铸量。
+- 非幂等管理交易广播后应等待确定回执，不应因前端超时重新开放并诱导重复提交。
+- 成功后刷新 RBS 状态、RBS/Treasury token 余额和 EarlyStaking AGX 余额。
+- 扫链方新增监听 ReserveAdded 、 PresaleAgxMinted 和配置事件时，应以 txHash + logIndex 幂等入库。
 
-| 错误字符串 | 原因 | 解决方案 |
-| --- | --- | --- |
-| `"RBS: not authorized"` | 非 owner/operator | 使用正确地址 |
-| `"Invalid operator"` | setOperator 传零地址 | 传入非零地址 |
-| `"Zero address"` | getTokenPrice 传零地址 | 传入非零地址 |
-| `"Empty pool"` | 储备为 0 | 检查 Pair 储备 |
-| `"Insufficient balance"` | swap/addLiquidity 余额不足 | 充值 |
-| `"Insufficient input amount"` | quote amountIn 为 0 | 传入正数 |
-| `"Insufficient liquidity"` | quote 储备为 0 | 检查储备 |
-| `"Insufficient liquidity for mint"` | calculateLiquidityAmount 最小 LP 不足 | 增大输入数量 |
-| `"Insufficient LP balance"` | burnLP/removeLiquidity LP 余额不足 | 充值 LP |
-| `"invalid times"` | mint 命中 30 分钟冷却 | 等待冷却结束 |
-| `"max balance"` | mint 单次超过 200_000 * 1e18 | 拆分多次 |
-| `"Unauthorized"` | 监控代币归一化余额 >= monitorTokenCap | 调高 cap 或减少余额 |
+### 常见回滚
 
-### 配置参数
-
-| 参数 | 默认值 | 说明 | 设置者 |
-| --- | --- | --- | --- |
-| `swapRouter` | - | PancakeSwap 路由器 | 初始化时设置 |
-| `pair` | - | 默认 LP 交易对 | 初始化时设置 |
-| `treasury` | - | 国库地址 | 初始化时设置 |
-| `usd` | - | USD 代币地址 | 初始化时设置 |
-| `monitorToken` | 初始化时设置 | 监控代币地址 | owner（`setMonitorToken`） |
-| `monitorTokenDecimals` | 跟随 monitorToken | 监控代币精度 | 随 setMonitorToken 自动设置 |
-| `monitorTokenCap` | `20_000 * 1e9` | 监控代币归一化余额上限 | owner（`setMonitorTokenCap`） |
-| `operators` | - | operator 白名单 | owner（`setOperator`） |
-| `lastMintTime` | 0 | 上次 mint 时间戳 | mint 时自动更新 |
-| `MINT_COOLDOWN` | 30 minutes | mint 冷却（常量） | - |
-
-> 权限模型：`mint` 为 `onlyOwner`；`swap` / `addLiquidity` / `burnLP` / `removeLiquidity` 为 `onlyOwnerOrOperator`（owner 或 operators 中地址）。
+| 错误 | 含义 |
+| --- | --- |
+| `Early staking not set` / `Presale not set` | 预售接线未完成 |
+| `No new AGX to mint` | 当前没有新增预售分配 |
+| `Already minted` | 已发生预售铸币后尝试修改 PreSale 地址 |
+| `Exceeds max presale mint` | 新累计值超过硬上限 |
+| `Insufficient deposit value` | Treasury 估值不足以覆盖本次待铸量 |
+| `Mint amount mismatch` | Treasury 返回的铸币量与本次增量不一致 |

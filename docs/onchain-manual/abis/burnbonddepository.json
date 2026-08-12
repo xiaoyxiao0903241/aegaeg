@@ -101,6 +101,17 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorInvalidPurchaseValue",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "restakeBps",
         "type": "uint256"
       }
@@ -124,6 +135,17 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "ErrorNotContract",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "ErrorNotInitialized",
     "type": "error"
@@ -141,6 +163,11 @@
   {
     "inputs": [],
     "name": "ErrorProfitNotAvailable",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorPurchaseTrackingNotConfigured",
     "type": "error"
   },
   {
@@ -551,37 +578,6 @@
       }
     ],
     "name": "PrincipalReleaseVaultUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "agxAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "stage",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "reason",
-        "type": "bytes"
-      }
-    ],
-    "name": "PurchaseTrackingFailed",
     "type": "event"
   },
   {

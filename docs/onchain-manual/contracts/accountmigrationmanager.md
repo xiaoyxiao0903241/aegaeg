@@ -23,11 +23,11 @@ SHA-256 20293ab2477e…
 
 ### 概述
 
-`AccountMigrationManager` 是 AEGIS X 的统一账户迁移管理中心。当用户需要更换钱包地址时，通过此合约原子协调已配置的下游目标，确保推荐关系、质押记录、债券、释放单和奖励仍归属于同一个身份根地址。当前标准部署清单为 21 个目标，合约允许在 1–32 个目标范围内维护。
+`AccountMigrationManager` 是 AEGIS X 的统一账户迁移管理中心。当用户需要更换钱包地址时，通过此合约原子协调已配置的下游目标，确保推荐关系、质押记录、债券、释放单和奖励仍归属于同一个身份根地址。标准全新部署清单为 21 个目标；当前主网为临时保留旧 LuckyPool 的 22-target 过渡拓扑。合约允许在 1–32 个目标范围内维护。
 
 **部署 key**: `AccountMigrationManager`
 
-**BNB Chain 主网 proxy**：`0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778`（release `bb680398-e7c0-46fa-ad87-139446fb4120`）。21 个迁移目标（含全新部署的 Referral/PreSale，slot 0/1）已绑定并锁定，独立启用回执证明 `migrationEnabled=true`、`targetsLocked=true`。
+**BNB Chain 主网 proxy**：`0x6d4656a897cBF7fA1e199806F33f0dA51B9ff778`。增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 已移除旧 Tracker、保留仍有负债的旧 LuckyPool，并纳入新 Pool/Tracker；详细升级终验回执 `finalState.migration` 固化当前 22 个地址、`migrationEnabled=true`、`targetsLocked=true` 和 `pendingCount=0`。旧 Pool 退役前不得用通用 21-target 脚本重排。
 
 **ABI 路径**: `abi/AccountMigrationManager.json`
 
@@ -64,10 +64,10 @@ text
 - Referral、PreSale、EarlyStaking、XStakingPool
 - BondDepository 180/360/540 天、BurnBondDepository 180/360/540 天
 - LockedStaking 180/360/540 天、RewardQueue、Turbine
-- LiquidStaking、Governance
-- LuckyPool、DailyPurchaseTracker、AgxContributionSwap
+- LiquidStaking、Governance、AegisSplitter（AegisSplitterHead_0）
+- 旧 LuckyPool（保留历史领取迁移）、新 LuckyPool、新 DailyPurchaseTracker、AgxContributionSwap
 
-当前标准清单合计 21 个唯一合约地址（2026-08-03 移除 PrincipalReleaseVault、新增 AegisSplitterHead_0）。owner 只能在迁移暂停时修改清单；调用 `setTargets`、`addMigrationTarget` 或 `removeMigrationTarget` 后会自动解除 `targetsLocked`，必须重新调用 `lockTargets()` 完整校验后才能再次开启迁移。Referral 必须始终是数组第一个元素，首次配置后不能替换且禁止单独移除。每个 target 的 `migrationManager` 首次设置后也不可替换，只允许幂等写入同一个 Manager 代理地址，避免 target owner 绕过统一原子迁移制造状态分叉。
+当前主网过渡清单合计 22 个唯一合约地址：增量切换时移除旧 Tracker，保留旧 LuckyPool 的历史领取迁移目标，并加入新 LuckyPool 与新 Tracker。owner 只能在迁移暂停时修改清单；调用 `setTargets`、`addMigrationTarget` 或 `removeMigrationTarget` 后会自动解除 `targetsLocked`，必须重新调用 `lockTargets()` 完整校验后才能再次开启迁移。Referral 必须始终是数组第一个元素，首次配置后不能替换且禁止单独移除。每个 target 的 `migrationManager` 首次设置后也不可替换，只允许幂等写入同一个 Manager 代理地址，避免 target owner 绕过统一原子迁移制造状态分叉。
 
 目标清单允许在已经发生迁移后继续维护，因为后续迁移仍统一由 Manager 循环调用当前清单。不过，新增目标不会自动重放过去的 A→B，移除目标也不会清理其历史数据。因此新增项必须是新部署或已经完成历史 alias 回填的实例；移除项必须已经退役且不再需要参与账户迁移。这是部署治理前提，不是合约能够自动证明的状态。
 
@@ -630,6 +630,7 @@ async function adminMigrationPanel(migrationManager) {
 | RewardQueue | 迁移奖励队列 |
 | LiquidStaking | 迁移活期质押 |
 | Governance | 迁移投票记录 |
+| AegisSplitter | 迁移释放单（AegisSplitterHead_0） |
 | LuckyPool | 迁移彩票记录 |
 | AegisDailyPurchaseTracker | 迁移购买追踪 |
 | AgxContributionSwap | 迁移贡献点 |

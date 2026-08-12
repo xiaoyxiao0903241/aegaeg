@@ -61,6 +61,14 @@ console.log('USD1 reserve:', ethers.formatUnits(reserve, 18));
 
 获取完整配置。
 
+##### totalUsdtIn() -> (uint256) / totalUsd1Out() -> (uint256)
+
+累计输入 USDT 总量 / 累计输出 USD1 总量（全局）。
+
+##### userUsdtIn(address account) -> (uint256) / userUsd1Out(address account) -> (uint256)
+
+按账户查询累计输入 USDT / 累计输出 USD1（每次 `swap` 后累加，见 `Swapped` 事件）。前端展示用户历史兑换量时使用这两个 getter，而非自行累加事件。
+
 #### 状态修改函数
 
 ##### swap(uint256 usdtAmount, uint256 minUsd1Out)
@@ -108,7 +116,7 @@ await usd1Swap.depositUsd1(amount);
 
 ##### setRateBps(uint256 newRateBps) — onlyAuthorized（owner + operators）
 
-设置兑换比例 `rateBps`（BPS，0 禁用）。触发 `RateUpdated`。
+设置兑换比例 `rateBps`（BPS，必须非零，`0` 直接 revert `ErrorZeroRate`）。触发 `RateUpdated`。
 
 ##### setTreasuryWallet(address newWallet) — onlyOwner
 

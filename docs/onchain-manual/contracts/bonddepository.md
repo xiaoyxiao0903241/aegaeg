@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/BondDepository.json
-SHA-256 bb83a039e27e…
-106
+SHA-256 70fff1ad8bc7…
+108
 54
-15
-37
+14
+40
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/bonddepository.json`](../abis/bonddepository.json)（106 entries）。
+完整 ABI 已导出为 [`abis/bonddepository.json`](../abis/bonddepository.json)（108 entries）。
 
 </details>
 
@@ -25,11 +25,13 @@ SHA-256 bb83a039e27e…
 
 `BondDepository` 是 AEGIS X 的 Olympus 风格债券购买合约。用户可以用稳定币（principle）以折扣价购买 AGX 债券，经过线性解锁期（vesting）后领取 AGX。购买的 AGX 自动质押到 StakingPool 获得 sAGX 利息收益。
 
-Lucky 购买上报采用 gas 上限保护的 best-effort。债券本金、仓位和自动质押成功后，价格读取或 Tracker 异常只发出 `PurchaseTrackingFailed(user,agxAmount,stage,reason)`，不会回滚债券购买；前端应以债券事件和 `getBondInfo` 回读为成功依据。
+Lucky 购买追踪是债券购买交易的强原子组成部分。合约直接复用本次购买中 `Treasury.valueOf(principle, amount)` 已返回的 9 位 USD1 价值，扩展为 Tracker 的 18 位口径后调用 `AegisDailyPurchaseTracker.recordPurchase`，不会再按 AGX 价格二次计价；Treasury 估值、Tracker 或 LuckyPool 任一步失败都会回滚本金转入、Treasury 入库、自动质押和仓位写入。前端只在整笔交易成功后更新债券与 Lucky 状态。
 
 **白皮书 7.1 基准**：线性释放周期 180 / 360 / 540 天，动态折扣区间 85%-100% / 80%-100% / 75%-100%。当前部署采用三个独立代理实例 `BondDepository180d`、`BondDepository360d`、`BondDepository540d`，各实例的 `vestingTerm` 固定为对应期限；初始折扣分别由 `BOND_180D_DISCOUNT_RATE_BP`（默认 8500）、`BOND_360D_DISCOUNT_RATE_BP`（默认 8000）、`BOND_540D_DISCOUNT_RATE_BP`（默认 7500）配置。
 
 **部署 key**: `BondDepository`
+
+**BNB Chain 主网 proxies**（当前实现已通过增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 升级终验）：180d `0xaFe1cdDd0b6d20483ebC5087b98337370eaE249c`、360d `0xAA334F43999751B3cb0F3313bEda94BAF47980d7`、540d `0x236C5a112Dfa345D51d724362201c0650FaD2E0F`。
 
 **ABI 路径**: `abi/BondDepository.json`
 
@@ -227,7 +229,7 @@ const lpFromUsd = (usd1Amount - usd1Amount / 2n) * totalSupply / reserveU;
 const lpAmount = lpFromAgx < lpFromUsd ? lpFromAgx : lpFromUsd;
 // ③ LP 价值 + ④ 折扣
 const value = await bondingCalculator.valuation(pairAddr, lpAmount);
-const agxPrice = reserveU * 10n ** 9n / reserveAGX;
+const agxPrice = reserveU / reserveAGX;
 const payout = value * 10n ** 9n / agxPrice * 10000n / await bond.discountRateBP();
 const netPayout = payout - payout * (await bond.terms()).fee / 10000n;
 ```
@@ -314,7 +316,7 @@ _stake(_amount, netPayout, depositor)
 // 9. 支付fee给DAO
 if (fee > 0) IERC20(AGX).transfer(DAO, fee)
 
-// 10. best-effort 记录购买行为；失败只发 PurchaseTrackingFailed，不回滚债券
+// 10. 强原子记录购买行为；失败会回滚以上全部状态
 DailyPurchaseTracker.recordPurchase(depositor, usdValue)
 ```
 
@@ -343,7 +345,7 @@ async function purchaseBond(bondContract, principleContract, amount, depositor, 
   const token0 = await pair.token0();
   const agxAddr = await bondContract.AGX();
   const [reserveU, reserveAGX] = token0.toLowerCase() === agxAddr.toLowerCase() ? [r1, r0] : [r0, r1];
-  const agxPrice = reserveU * 10n ** 9n / reserveAGX; // USDT-per-AGX，18 位
+  const agxPrice = reserveU / reserveAGX; // USDT-per-AGX，9 位（与 _getAgxPrice 一致）
   const payout = value * 10n ** 9n / agxPrice * 10000n / discountBP;
 
   console.log(`存入: ${ethers.formatUnits(amount, 18)} USD1`);
@@ -575,9 +577,24 @@ async function claimBondProfit(bondContract, bondIndex, amount, signer) {
 | `ErrorInvalidFee()` | fee > 10000 BPS | 降低手续费 |
 | `ErrorInvalidDiscount()` | discountRateBP == 0 或 > 10000 | 校正折扣率 |
 | `ErrorCallerNotAuthorized()` | 非 owner 且非 operator 调用受限函数 | 通过 owner 或 operator 调用 |
+| `ErrorNotContract(address)` | 传入地址不是合约 | 传入合法合约地址 |
+| `ErrorPurchaseTrackingNotConfigured()` | 购买追踪未配置 | 等待配置 `daily-purchase-tracker` |
+| `ErrorInvalidPurchaseValue(uint256)` | 购买金额无效 | 检查购买金额 |
 | `BondDepositoryMigratedAccount(address)` | 账户已迁移或被迁移占用 | 使用迁移后的新账户 |
 | `BondDepositoryNotMigrationManager(address)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
 | `MigrationManagerImmutable(address)` | `setMigrationManager` 二次修改管理器 | 一次性不可变，部署前确认 |
+
+##### RestakeLib 复投错误（经 claimStakeProfitMixed / claimStakeProfit 可达）
+
+下列错误由 `RestakeLib`（`srccn/libraries/RestakeLib.sol`）在复投分支抛出，已编入本合约 ABI，前端解码 `claimStakeProfitMixed` 失败时需处理：
+
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorConfigNotSet()` | `restakeConfig` 未配置（地址 0） | 先调用 `setRestakeConfig` 配置 RestakeConfig |
+| `ErrorContributionLedgerNotSet()` | `contributionLedger` 未配置 | 在 RestakeConfig 中配置 contributionLedger |
+| `ErrorInvalidRestakeBps(uint256)` | `restakeBps > 10000` | 传入 ≤ 10000 的复投比例 |
+| `ErrorRestakeBelowMinimum(uint256,uint256)` | 启用 forceRestake 且 `restakeBps < minRestakeBps` | 提高 restakeBps 或关闭 forceRestake |
+| `ErrorInvalidRestakePlan()` | 复投目标计划未注册或地址为 0 | 在 RestakeConfig 注册有效计划 |
 
 #### 账户迁移
 
@@ -706,7 +723,7 @@ js
 | RestakeConfig | 复投配置 |
 | Referral | 验证存款人推荐关系 |
 | AegisSplitterManager / AegisSplitter | 必需；`redeem(..., false)` 的本金统一经 Manager 路由进入按配置周期锁定的线性释放，未配置时交易回滚 |
-| AegisDailyPurchaseTracker | 记录购买贡献 |
+| AegisDailyPurchaseTracker | 必需；原子记录本轮累计并按单笔门槛加入 Lucky 资格 |
 
 ### 配置参数
 

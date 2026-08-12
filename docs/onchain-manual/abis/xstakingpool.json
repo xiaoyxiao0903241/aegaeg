@@ -61,6 +61,17 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "nextAllowedTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorSettlementCooldown",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "ErrorSettlementPriceNotSet",
     "type": "error"
@@ -555,6 +566,19 @@
   },
   {
     "inputs": [],
+    "name": "SETTLEMENT_COOLDOWN",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "WARMUP_PERIOD",
     "outputs": [
       {
@@ -734,6 +758,19 @@
   {
     "inputs": [],
     "name": "lastRewardTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lastSettlementTime",
     "outputs": [
       {
         "internalType": "uint256",

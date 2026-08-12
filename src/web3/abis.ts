@@ -636,8 +636,8 @@ export const DAO_POOL_METHODS = {
 export const LUCKY_POOL_METHODS = {
   paused: 'function paused() view returns (bool)',
   currentRoundId: 'function currentRoundId() view returns (uint256)',
-  purchaseTracker: 'function purchaseTracker() view returns (address)',
-  isUserEligible: 'function isUserEligible(uint256 roundId, address user) view returns (bool)',
+  isRoundAcceptingPurchases:
+    'function isRoundAcceptingPurchases(uint256 roundId) view returns (bool)',
   getRound:
     'function getRound(uint256 roundId) view returns ((uint256 roundId, uint256 displayDay, uint256 startTime, uint256 endTime, uint256 rewardAmount, uint256 rewardPerWinner, uint256 maxWinners, uint256 requestId, uint256 eligibleCount, uint256 winnerCount, uint256 randomRequestBlock, uint8 status))',
   getWinnerInfo:
@@ -652,8 +652,8 @@ export const LUCKY_POOL_METHODS = {
  * @see 手册 §14.1 用户抽奖页
  */
 export const DAILY_PURCHASE_TRACKER_METHODS = {
-  getUserRoundStat:
-    'function getUserRoundStat(uint256 roundId, address user) view returns (uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
+  getCurrentRoundUserStat:
+    'function getCurrentRoundUserStat(address user) view returns (uint256 roundId, uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
 } as const
 
 /**

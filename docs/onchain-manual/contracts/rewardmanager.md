@@ -31,7 +31,7 @@ SHA-256 82bd0d206c38…
 
 `AegisEpochRewardManager` 在 `StakingPool` 每次区块 Epoch Rebase 时原子完成 AGX 配资：
 
-- 按 ppm 给 StakingPool 和其他普通 recipient 铸币（普通 recipient 按 supply * rate / 1,000,000 ，源码 src/RewardManager.sol:249 ）。
+- 按 ppm 给 StakingPool 和其他普通 recipient 铸币（普通 recipient 按 supply * rate / 1,000,000 ，源码 src/RewardManager.sol:270 ）。
 - 按本期刚完成的实际 Rebase profit 百分比给 DaoPool 补充奖励储备。
 - 按各长期池本金及基础 Rebase 加成比例铸币，并同步 globalExtraIndex 。
 
@@ -48,6 +48,8 @@ SHA-256 82bd0d206c38…
 | `LOCKED_180_BONUS_BPS` | BPS | `1000` | 180 天池获得基础 Rebase 收益的 10% 加成 |
 | `LOCKED_360_BONUS_BPS` | BPS | `1500` | 360 天池获得基础 Rebase 收益的 15% 加成 |
 | `LOCKED_540_BONUS_BPS` | BPS | `2000` | 540 天池获得基础 Rebase 收益的 20% 加成 |
+
+> 上表为部署配置值（见 `script/configure-reward-manager.ts` 与白皮书），**非合约常量**：基础 rate 经 `addRecipient(stakingPool, rate)` 配置、加成经 `setLockedPoolReward` 配置。
 
 白皮书明确的是每 12 小时基础 Rebase 0.25%—0.5%，以及 180/360/540 天池至少 10%/15%/20% 的“基础收益加成”。`DAO_REWARD_RATIO=168` 表示 DaoPool 获得本期实际 Rebase profit 的 168%，比例仍可由 owner 在 0—500 范围内调整。
 
@@ -78,24 +80,24 @@ RewardManager 不保存 `epochLength` 或 `nextEpochTime`，也不提供独立 E
 
 | 函数 | 说明 |
 | --- | --- |
-| `nextRewardAt(uint256 _rate)` | 按 ppm rate 预估下一轮奖励：`circulatingSupply × rate / 1,000,000`。源码 `:297` |
-| `nextRewardFor(address _recipient)` | 按地址查该 recipient 下一轮奖励。源码 `:302` |
-| `baseRewardRate()` | 基础 Rebase rate（ppm）。源码 `:312` |
-| `recipientCount()` | 普通 recipient 数量。源码 `:323` |
-| `lockedPoolRewardCount()` | 长期池奖励配置数量。源码 `:327` |
+| `nextRewardAt(uint256 _rate)` | 按 ppm rate 预估下一轮奖励：`circulatingSupply × rate / 1,000,000`。源码 `:319` |
+| `nextRewardFor(address _recipient)` | 按地址查该 recipient 下一轮奖励。源码 `:324` |
+| `baseRewardRate()` | 基础 Rebase rate（ppm）。源码 `:334` |
+| `recipientCount()` | 普通 recipient 数量。源码 `:345` |
+| `lockedPoolRewardCount()` | 长期池奖励配置数量。源码 `:349` |
 
 ### Admin / 状态修改函数
 
 | 函数 | 权限 | 说明 |
 | --- | --- | --- |
-| `addRecipient(address _recipient, uint256 _rewardRate)` | `onlyOwner` | 幂等新增或更新普通 recipient 的 ppm rate。源码 `:332` |
-| `removeRecipient(uint256 _index, address _recipient)` | `onlyOwner` | 清零指定 index 的 recipient（需 `_recipient == info[_index].recipient`）。源码 `:350` |
-| `setAdjustment(uint256 _index, bool _add, uint256 _rate, uint256 _target)` | `onlyOwner` | 配置 recipient rate 的渐变调整（加/减至 target）。源码 `:358` |
-| `setDaoRewardAddress(address _dao)` | `onlyOwner` | 更新 DAO 奖励地址（不可为零地址）。源码 `:368` |
-| `setDaoRewardRatio(uint256 _newRatio)` | `onlyOwner` | 更新本期实际 Rebase profit 的 DAO 奖励比例，要求 `_newRatio <= 500`。源码 `:375` |
-| `setSAgx(address _sAGX)` | `onlyOwner` | 更新 sAGX 地址（不可为零地址）。源码 `:382` |
-| `setStakingPool(address _stakingPool)` | `onlyOwner` | 设置唯一 Epoch 调用方（不可为零地址）。源码 `:388` |
-| `setLockedPoolReward(address _pool, uint256 _bonusBps, bool _enabled)` | `onlyOwner` | 幂等配置长期池加成，`_bonusBps <= 10_000`。源码 `:394` |
+| `addRecipient(address _recipient, uint256 _rewardRate)` | `onlyOwner` | 幂等新增或更新普通 recipient 的 ppm rate。源码 `:354` |
+| `removeRecipient(uint256 _index, address _recipient)` | `onlyOwner` | 清零指定 index 的 recipient（需 `_recipient == info[_index].recipient`）。源码 `:372` |
+| `setAdjustment(uint256 _index, bool _add, uint256 _rate, uint256 _target)` | `onlyOwner` | 配置 recipient rate 的渐变调整（加/减至 target）。源码 `:380` |
+| `setDaoRewardAddress(address _dao)` | `onlyOwner` | 更新 DAO 奖励地址（不可为零地址）。源码 `:390` |
+| `setDaoRewardRatio(uint256 _newRatio)` | `onlyOwner` | 更新本期实际 Rebase profit 的 DAO 奖励比例，要求 `_newRatio <= 500`。源码 `:397` |
+| `setSAgx(address _sAGX)` | `onlyOwner` | 更新 sAGX 地址（不可为零地址）。源码 `:404` |
+| `setStakingPool(address _stakingPool)` | `onlyOwner` | 设置唯一 Epoch 调用方（不可为零地址）。源码 `:410` |
+| `setLockedPoolReward(address _pool, uint256 _bonusBps, bool _enabled)` | `onlyOwner` | 幂等配置长期池加成，`_bonusBps <= 10_000`。源码 `:416` |
 | `distributeEpochRewards()` | 公开 | 任何地址可调用，触发 StakingPool rebase。源码 `:149` |
 | `settleEpochRewards(uint256 _epochNumber)` | 仅 `stakingPool` | 原子结算回调。源码 `:163` |
 

@@ -38,6 +38,8 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_BURN_BOND_DEPOSITORY_360D: 'burnBondDepository360d',
   VITE_BSC_BURN_BOND_DEPOSITORY_540D: 'burnBondDepository540d',
   VITE_BSC_X_STAKING_POOL: 'xStakingPool',
+  VITE_BSC_LUCKY_POOL: 'luckyPool',
+  VITE_BSC_DAILY_PURCHASE_TRACKER: 'dailyPurchaseTracker',
 }
 
 function normalizeAddress(address) {

@@ -64,6 +64,17 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorInvalidPurchaseValue",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "restakeBps",
         "type": "uint256"
       }
@@ -77,13 +88,40 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "ErrorNotContract",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "ErrorNotPrincipal",
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "ErrorNotRestakeSource",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "ErrorPrincipalReleaseVaultNotSet",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorPurchaseTrackingNotConfigured",
     "type": "error"
   },
   {
@@ -356,37 +394,6 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "agxAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "stage",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "reason",
-        "type": "bytes"
-      }
-    ],
-    "name": "PurchaseTrackingFailed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "_user",
         "type": "address"
       },
@@ -440,6 +447,25 @@
       }
     ],
     "name": "RestakeClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "source",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "RestakeSourceUpdated",
     "type": "event"
   },
   {
@@ -1318,6 +1344,25 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "restakeSources",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes32",
         "name": "role",
         "type": "bytes32"
@@ -1451,6 +1496,24 @@
       }
     ],
     "name": "setRestakeConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_source",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "setRestakeSource",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

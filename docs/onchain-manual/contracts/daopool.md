@@ -45,7 +45,7 @@ function claimRewardsMixed(
 
 ### 关键规则
 
-- _signType 必须等于 4 。
+- _signType 取 4 为约定值（后端签发侧约束）；合约 claimRewardsMixed 不校验 _signType == 4 ，它仅参与签名哈希。
 - 签名消息为：
 
 text
@@ -125,4 +125,16 @@ await (await daoPool.claimRewardsMixed(
 | `ErrorInvalidRate()` | `setReStakeContract` 费率 > 10000 | 校正费率 |
 | `ErrorZeroAddress()` | 传入零地址 | 传入有效地址 |
 | `ErrorInvalidStakeAddress()` | 已声明但当前实现未使用（复投目标校验由 RestakeLib 处理） | 检查复投合约配置 |
-| `ErrorInvalidSignType()` | `_signType != 4` | 使用 signType=4 |
+| `ErrorInvalidSignType()` | 已声明但当前实现未使用（`_signType` 仅参与签名哈希，约束在后端签发侧） | 使用 signType=4 |
+
+##### RestakeLib 复投错误（经 claimRewardsMixed 可达）
+
+下列错误由 `RestakeLib`（`srccn/libraries/RestakeLib.sol`）在复投分支抛出，已编入 DaoPool ABI，前端解码 `claimRewardsMixed` 失败时需处理：
+
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorConfigNotSet()` | `restakeConfig` 未配置（地址 0） | 先调用 `setRestakeConfig` 配置 RestakeConfig |
+| `ErrorContributionLedgerNotSet()` | `contributionLedger` 未配置 | 在 RestakeConfig 中配置 contributionLedger |
+| `ErrorInvalidRestakeBps(uint256)` | `restakeBps > 10000` | 传入 ≤ 10000 的复投比例 |
+| `ErrorRestakeBelowMinimum(uint256,uint256)` | 启用 forceRestake 且 `restakeBps < minRestakeBps` | 提高 restakeBps 或关闭 forceRestake |
+| `ErrorInvalidRestakePlan()` | 复投目标计划未注册或地址为 0 | 在 RestakeConfig 注册有效计划 |

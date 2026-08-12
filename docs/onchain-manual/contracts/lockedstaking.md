@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/LockedStaking.json
-SHA-256 bfbf6643a6a4…
-103
-59
+SHA-256 e01df5b0e22d…
+109
+61
 14
-30
+34
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/lockedstaking.json`](../abis/lockedstaking.json)（103 entries）。
+完整 ABI 已导出为 [`abis/lockedstaking.json`](../abis/lockedstaking.json)（109 entries）。
 
 </details>
 
@@ -27,7 +27,7 @@ SHA-256 bfbf6643a6a4…
 
 **部署 key**: `LockedStaking180d` / `LockedStaking360d` / `LockedStaking540d`
 
-**BNB Chain 主网地址**（release `bb680398-e7c0-46fa-ad87-139446fb4120`）：180d `0xb64C7718F372eB7792EdE434f93F0b556e444406`、360d `0xCA6bf54Dd4f7D05CA1b0C34Da4AC8fBC97dD8CeD`、540d `0x5aa7e8996FE0661B3D487f660E6a043BCe000487`。
+**BNB Chain 主网地址**（当前实现已通过增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 升级终验）：180d `0xb64C7718F372eB7792EdE434f93F0b556e444406`、360d `0xCA6bf54Dd4f7D05CA1b0C34Da4AC8fBC97dD8CeD`、540d `0x5aa7e8996FE0661B3D487f660E6a043BCe000487`。
 
 **ABI 路径**: `abi/LockedStaking.json`
 
@@ -209,17 +209,17 @@ async function lockedStake(lockedContract, agxContract, amount, signer) {
 
 ##### lockedStake(uint256 _amount, address _recipient)
 
-调用者支付并授权自己的 AGX，为 `_recipient` 创建定期仓位。该入口既支持代付/赠予质押，也供 Liquid、Early、Bond、BurnBond、DAO、Lucky 等合约把用户本人选择复投的收益送入目标定期池。
+该入口只允许 `restakeSources[msg.sender] == true` 的受信协议合约调用，用于把用户已经产生的收益复投到 `_recipient` 的定期仓位。普通用户不能通过该重载给其他地址代付或赠予质押；用户新购买必须调用单参数 `lockedStake(amount)`。
 
 约束：
 
 - _recipient 必须已绑定推荐关系。
 - 调用者和 _recipient 都不能是已经迁移的旧地址。
-- 仓位、本金统计、 Staked 事件以及 Lucky 购买记录都归 _recipient 。
+- 仓位、本金统计和 Staked 事件归 _recipient 。
 - 调用者只承担 AGX 转出，不获得该仓位的领取权。
-- Lucky 购买上报是 gas 上限保护的 best-effort： RestakeConfig 价格读取或 Tracker 调用失败只发出 PurchaseTrackingFailed(user,agxAmount,stage,reason) ，不会回滚已经完成的质押。前端仍以 Staked 和仓位回读判断主交易成功，并把该事件作为资格追踪告警。
+- 该受信复投重载不会把协议奖励再次算作一笔新购买，也不会调用 Tracker，避免奖励复投重复增加 Lucky 累计或资格。
 
-收益复投入口不会允许用户指定其他受益人：Bond/BurnBond 要求 `recipient == msg.sender`，其余 mixed 入口直接把用户 `msg.sender` 作为 recipient。
+单参数 `lockedStake(amount)` 才是用户的新购买路径。它对价格换算和 Tracker 使用强原子调用；配置缺失或 Tracker/LuckyPool 失败会回滚整笔锁仓购买。收益复投入口不会允许终端用户指定其他受益人：上游协议固定把实际领取用户作为 recipient。
 
 ##### claimPrincipal(uint256 _index)
 
@@ -278,27 +278,27 @@ async function claimReward(lockedContract, stakeIndex, signer) {
 
 ##### setRewardManager(address _rewardManager)
 
-ADMIN_ROLE 设置 RewardManager（源码 `setRewardManager`，:756）。`address(0)` revert `ErrorZeroAddress`。触发 `RewardManagerUpdated(old, new)`。
+ADMIN_ROLE 设置 RewardManager（源码 `setRewardManager`，:770）。`address(0)` revert `ErrorZeroAddress`。触发 `RewardManagerUpdated(old, new)`。
 
 ##### setPrincipalReleaseVault(address _vault)
 
-ADMIN_ROLE 设置本金释放入口（源码 `setPrincipalReleaseVault`，:749），当前指向 `AegisSplitterManager`（原 `PrincipalReleaseVault` 已于 2026-08-03 删除，ABI 归档 `archive/PrincipalReleaseVault/`）。`address(0)` revert `ErrorZeroAddress`。触发 `PrincipalReleaseVaultUpdated(old, new)`。未设置时 `claimPrincipal` 整笔回滚 `ErrorPrincipalReleaseVaultNotSet`。
+ADMIN_ROLE 设置本金释放入口（源码 `setPrincipalReleaseVault`，:763），当前指向 `AegisSplitterManager`（原 `PrincipalReleaseVault` 已于 2026-08-03 删除，ABI 归档 `archive/PrincipalReleaseVault/`）。`address(0)` revert `ErrorZeroAddress`。触发 `PrincipalReleaseVaultUpdated(old, new)`。未设置时 `claimPrincipal` 整笔回滚 `ErrorPrincipalReleaseVaultNotSet`。
 
 ##### applyEpochExtraReward(uint256 _epochNumber, uint256 _extraIndex, uint256 _rewardAmount)
 
-仅 `rewardManager` 可调用（源码 `applyEpochExtraReward`，:708）。在真实 StakingPool Epoch 中原子写入额外利息：`expectedAmount = totalLockedPrincipal * _extraIndex / 1e9`，`_rewardAmount` 必须精确匹配，否则 revert `ErrorRewardAmountMismatch`；`_epochNumber <= lastEpoch` 或 `_extraIndex > 1e18` revert `ErrorEpoch`；非 RewardManager 调用 revert `ErrorUnauthorizedRewardManager`。更新 `lastEpoch` 与 `globalExtraIndex`，触发 `EpochExtraRewardApplied`。
+仅 `rewardManager` 可调用（源码 `applyEpochExtraReward`，:720）。在真实 StakingPool Epoch 中原子写入额外利息：`expectedAmount = totalLockedPrincipal * _extraIndex / 1e9`，`_rewardAmount` 必须精确匹配，否则 revert `ErrorRewardAmountMismatch`；`_epochNumber <= lastEpoch` 或 `_extraIndex > 1e18` revert `ErrorEpoch`；非 RewardManager 调用 revert `ErrorUnauthorizedRewardManager`。更新 `lastEpoch` 与 `globalExtraIndex`，触发 `EpochExtraRewardApplied`。
 
 ##### setStakingLimitAmount(uint256 _stakingLimit, uint256 _singleLimit)
 
-ADMIN_ROLE 同时设置 UTC 日全局新增限额与单 root 历史累计质押限额（源码 :724）。0 表示对应门禁关闭。触发 `StakingLimitsUpdated`。
+ADMIN_ROLE 同时设置 UTC 日全局新增限额与单 root 历史累计质押限额（源码 :736）。0 表示对应门禁关闭。触发 `StakingLimitsUpdated`。
 
 ##### setPeriodTime(uint256 _time) / setContract(address _stakingPool, address _rewardQueue) / setStatus(bool _status)
 
-ADMIN_ROLE 配置入口（源码 :763 / :733 / :699）。`setContract` 任一参数为 `address(0)` revert `ErrorZeroAddress`。`updateGlobalIndex(uint256, uint256)` 已废弃，调用恒 revert `ErrorDeprecated`。
+ADMIN_ROLE 配置入口（源码 :777 / :745 / :711）。`setContract` 任一参数为 `address(0)` revert `ErrorZeroAddress`。`updateGlobalIndex(uint256, uint256)` 已废弃，调用恒 revert `ErrorDeprecated`。
 
 ##### setMigrationManager(address _manager) / migrateAccount(address oldAccount, address newAccount)
 
-ADMIN_ROLE 设置迁移管理器（源码 :814，一旦设非零 manager 后只允许设相同地址，否则 revert `MigrationManagerImmutable`）；`migrateAccount`（:822）仅由 `migrationManager` 调用，否则 revert `LockedStakingNotMigrationManager`。`newAccount` 必须从未有过仓位/本金/累计统计，否则 revert `LockedStakingMigratedAccount`。
+ADMIN_ROLE 设置迁移管理器（源码 :840，一旦设非零 manager 后只允许设相同地址，否则 revert `MigrationManagerImmutable`）；`migrateAccount`（:848）仅由 `migrationManager` 调用，否则 revert `LockedStakingNotMigrationManager`。`newAccount` 必须从未有过仓位/本金/累计统计，否则 revert `LockedStakingMigratedAccount`。
 
 ---
 
@@ -334,11 +334,11 @@ ADMIN_ROLE 设置迁移管理器（源码 :814，一旦设非零 manager 后只�
 
 #### RewardManagerUpdated(address indexed oldRewardManager, address indexed newRewardManager)
 
-`setRewardManager` 切换 RewardManager 时触发（源码 :153）。
+`setRewardManager` 切换 RewardManager 时触发（源码 :152）。
 
 #### EpochExtraRewardApplied(uint256 indexed epochNumber, uint256 extraIndex, uint256 rewardAmount)
 
-RewardManager 调用 `applyEpochExtraReward` 原子写入 epoch 额外利息时触发（源码 :155）。
+RewardManager 调用 `applyEpochExtraReward` 原子写入 epoch 额外利息时触发（源码 :156）。
 
 ---
 
@@ -365,6 +365,20 @@ RewardManager 调用 `applyEpochExtraReward` 原子写入 epoch 额外利息时�
 | `LockedStakingMigratedAccount(address account)` | `migrateAccount` 的目标/源地址非法（自迁移/已迁移/有历史仓位） | 使用未参与过的 canonical 地址 |
 | `LockedStakingNotMigrationManager(address caller)` | 非 migrationManager 调用 `migrateAccount` | 仅由迁移管理器调用 |
 | `MigrationManagerImmutable(address currentManager)` | 已设非零 manager 后改成不同地址 | 保留相同地址 |
+
+##### RestakeLib 复投错误（经 claimRewardMixed / claimExtraRewardMixed 可达）
+
+`claimRewardMixed` / `claimExtraRewardMixed` 无条件调用 `RestakeLib.splitReward` / `consumeContribution`，若 `RestakeConfig` 或 `contributionLedger` 未配置会直接回滚。下列错误已编入 LockedStaking ABI，前端解码领取失败时需处理：
+
+| 错误 | 原因 | 解决方案 |
+| --- | --- | --- |
+| `ErrorConfigNotSet()` | `restakeConfig` 未配置（地址 0） | 先调用 `setRestakeConfig` 配置 RestakeConfig |
+| `ErrorContributionLedgerNotSet()` | `contributionLedger` 未配置 | 在 RestakeConfig 中配置 contributionLedger |
+| `ErrorInvalidRestakeBps(uint256)` | `restakeBps > 10000` | 传入 ≤ 10000 的复投比例 |
+| `ErrorRestakeBelowMinimum(uint256,uint256)` | 启用 forceRestake 且 `restakeBps < minRestakeBps` | 提高 restakeBps 或关闭 forceRestake |
+| `ErrorInvalidRestakePlan()` | 复投目标计划未注册或地址为 0 | 在 RestakeConfig 注册有效计划 |
+
+> 与 LiquidStaking 一致：`claimRewardMixed` / `claimExtraRewardMixed` 要求 `restakeConfig` 与 `contributionLedger` 已正确配置，否则即使 `_restakeBps == 0` 也会在 RestakeLib 内回滚。
 
 ---
 
@@ -413,7 +427,7 @@ async function getUserStakes(lockedContract, userAddress) {
 | RewardQueue | 利息释放 |
 | RestakeConfig | 复投配置 |
 | AegisSplitterManager / AegisSplitter | 必需；定期本金提取后经 Manager 路由按配置周期锁定的线性释放 |
-| AegisDailyPurchaseTracker | 购买贡献追踪 |
+| AegisDailyPurchaseTracker | 必需；仅用户单参数新购买路径原子记录，协议奖励复投不重复计入 |
 
 ### 配置参数
 

@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/BurnBondDepository.json
-SHA-256 f4dd4805097e…
-105
+SHA-256 54ca4a03b254…
+107
 52
-16
-37
+15
+40
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/burnbonddepository.json`](../abis/burnbonddepository.json)（105 entries）。
+完整 ABI 已导出为 [`abis/burnbonddepository.json`](../abis/burnbonddepository.json)（107 entries）。
 
 </details>
 
@@ -25,11 +25,13 @@ SHA-256 f4dd4805097e…
 
 `BurnBondDepository` 与 BondDepository 功能相似，但关键区别在于：用户存入的 principle 代币会被**销毁**（转入 dead 地址）而非存入流动性储备。这实现了通缩机制，减少流通供应量。
 
-Lucky 购买上报采用 gas 上限保护的 best-effort。销毁、债券仓位和自动质押成功后，价格读取或 Tracker 异常只发出 `PurchaseTrackingFailed(user,agxAmount,stage,reason)`，不会回滚主交易；前端应以 `AgxBurned`、债券事件和仓位回读判断成功。
+Lucky 购买追踪是销毁债券购买交易的强原子组成部分。价格换算和 `AegisDailyPurchaseTracker.recordPurchase` 任一步失败都会回滚销毁转账、债券仓位、自动质押及相关事件，因此不会留下“资产已销毁但购买记录缺失”的部分成功状态。前端只在 receipt 成功后更新债券和 Lucky 状态。
 
 **白皮书 7.1 基准**（销毁债券）：线性释放周期 180 / 360 / 540 天，动态折扣区间 85%-100% / 80%-100% / 75%-100%（与 LP 债券一致）。当前部署采用三个独立代理实例 `BurnBondDepository180d`、`BurnBondDepository360d`、`BurnBondDepository540d`，各实例的 `vestingTerm` 固定为对应期限；初始折扣分别由 `BOND_180D_DISCOUNT_RATE_BP`（默认 8500）、`BOND_360D_DISCOUNT_RATE_BP`（默认 8000）、`BOND_540D_DISCOUNT_RATE_BP`（默认 7500）配置。
 
 **部署 key**: `BurnBondDepository`
+
+**BNB Chain 主网 proxies**（当前实现已通过增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 升级终验）：180d `0x7E45475E5729578eb4F08af7d2115491591295d6`、360d `0x63b399D2fe5a13c58d92E6a74771867516471deF`、540d `0xFb833116349280880E722203B1D80B69682F738E`。
 
 **ABI 路径**: `abi/BurnBondDepository.json`
 
@@ -126,7 +128,7 @@ const netPayout = payout - payout * (await burnBond.terms()).fee / 10000n;
 3. BondHelper.zapIntoBurnBond(burnBondDepository, USD1, amount) ：helper 把全部 USD1 换 AGX → 把 AGX 转入本合约 deposit(AGX, user) 。
 4. deposit 内部：定价 payout = value*10000/discountRateBP → 边界检查 → 扣费 → Treasury.depositBurnReserve （AGX 销毁到 dead，Treasury 铸币）→ 记账 + 自动质押。
 
-**成功判定**：以 `AgxBurned` + `BondPurchased` 事件 + `getBondInfo` 回读为准。
+**成功判定**：以 `AgxBurned` + `BondPurchased` + Tracker `PurchaseValued` 事件及 `getBondInfo` 回读为准。`PurchaseValued.amount` 才是本次购买的权威 18 位 USD1 金额。
 
 #### 状态修改函数
 
@@ -188,13 +190,15 @@ async function purchaseBurnBond(bondContract, principleContract, amount, signer)
 
 #### AgxBurned(address indexed buyer, uint256 burnAmount, uint256 bondValue, uint256 bondIndex, uint256 timestamp, uint256 termSeconds)
 
-**仅在 BurnBondDepository 中触发**。注意：参数 `burnAmount` 实际是 `principle`（USD1 等稳定币）的存入数量，**不是 AGX 数量**；`bondValue` 是 Treasury 计算出的 USD 价值。事件源码为 `emit AgxBurned(msg.sender, _amount, value, ...)`（BurnBondDepository.sol:588-595），`_amount` 即 principle 数量。前端展示销毁总量时应聚合该事件并按 principle 精度格式化（USD1 通常 18 位小数），不要按 AGX 9 位小数展示。
+**仅在 BurnBondDepository 中触发**。ABI 为兼容保留参数名 `buyer`，当前实现写入的是债券受益人 `_depositor`，不是付款调用者 `msg.sender`；经 `BondHelper` 购买时也会得到最终用户地址，不会得到 Helper 地址。
+
+`burnAmount` 是本合约 `principle` 的实际存入/销毁数量。当前标准 180/360/540 天 BurnBond 的 `principle` 都是 AGX，因此它是 9 位 AGX 数量。`bondValue` 是 `Treasury.valueOf(principle, burnAmount)` 返回的债券定价基数；当前 AGX principle 下同样是 9 位 AGX 记账值，**不是**本次购买的 USD1 金额。权威 USD1 金额必须读取同交易 Tracker `PurchaseValued.amount`（18 位）。
 
 js
 ```js
 burnBond.on('AgxBurned', (buyer, burnAmount, bondValue, bondIndex, timestamp) => {
-  // burnAmount 是 principle 数量，按其精度格式化（USD1 = 18 位）
-  console.log(`Burned ${ethers.formatUnits(burnAmount, 18)} principle tokens for bond #${bondIndex}`);
+  // 当前标准部署：buyer 是债券受益人；burnAmount/bondValue 均为 9 位 AGX 口径。
+  console.log(`${buyer} burned ${ethers.formatUnits(burnAmount, 9)} AGX for bond #${bondIndex}`);
 });
 ```
 
@@ -204,7 +208,7 @@ burnBond.on('AgxBurned', (buyer, burnAmount, bondValue, bondIndex, timestamp) =>
 
 ### 错误码
 
-与 BondDepository **完全相同**。额外关注：
+与 BondDepository **完全相同**（含 5 个 RestakeLib 复投错误 `ErrorConfigNotSet` / `ErrorContributionLedgerNotSet` / `ErrorInvalidRestakeBps` / `ErrorRestakeBelowMinimum` / `ErrorInvalidRestakePlan`，经 `claimStakeProfit` 复投分支可达，完整说明见 BondDepository.md 错误码）。额外关注：
 
 - ErrorNotApproved() - 未绑定推荐关系
 - ErrorDebtCapacityReached() - 达到债务上限
@@ -241,7 +245,8 @@ async function chooseBondType(userAddress) {
 js
 ```js
 async function getBurnStats(burnBondContract, provider, fromBlock = 0) {
-  // 聚合 AgxBurned 事件得到累计 principle 销毁数量与 USD 价值
+  // 聚合 AgxBurned 事件得到累计 principle 销毁数量与 Treasury 定价基数。
+  // 当前标准部署的两者都是 9 位 AGX 口径；精确 USD1 需聚合同交易 PurchaseValued。
   const filter = burnBondContract.filters.AgxBurned();
   const events = await burnBondContract.queryFilter(filter, fromBlock, 'latest');
 
@@ -249,15 +254,15 @@ async function getBurnStats(burnBondContract, provider, fromBlock = 0) {
   let totalBondValue = 0n;
   for (const log of events) {
     const { burnAmount, bondValue } = log.args;
-    totalPrincipleBurned += burnAmount; // principle 数量（USD1, 18 位）
-    totalBondValue += bondValue;        // USD 价值
+    totalPrincipleBurned += burnAmount; // 当前标准部署：AGX 数量（9 位）
+    totalBondValue += bondValue;        // 当前标准部署：AGX 定价基数（9 位）
   }
 
   // 全局已发行债务（AGX, 9 位）
   const terms = await burnBondContract.terms();
   console.log('Total deposits:', ethers.formatUnits(terms.totalDeposit, 9), 'AGX');
-  console.log('Total principle burned:', ethers.formatUnits(totalPrincipleBurned, 18));
-  console.log('Total bond value:', ethers.formatUnits(totalBondValue, 18));
+  console.log('Total AGX burned:', ethers.formatUnits(totalPrincipleBurned, 9));
+  console.log('Total bond accounting value:', ethers.formatUnits(totalBondValue, 9), 'AGX');
 
   return { totalPrincipleBurned, totalBondValue };
 }
@@ -306,4 +311,4 @@ BurnBondDepository 与 BondDepository 的配置**并不完全相同**，关键�
 | `restakeConfig` | 初始化后设置 | 复投配置地址 | owner (`setRestakeConfig`) |
 | `principalReleaseVault` | 初始化后设置 | 本金释放入口（`AegisSplitterManager`） | owner (`setPrincipalReleaseVault`) |
 | `stakingPool` / `rewardQueue` / `DAO` | `setContract` 设置 | 核心依赖地址 | owner (`setContract`, 3 参数) |
-| `purchaseTracker` | 可选 | 购买贡献追踪 | owner (`setPurchaseTracker`) |
+| `purchaseTracker` | 正式部署必需 | 强原子购买贡献追踪 | owner (`setPurchaseTracker`) |

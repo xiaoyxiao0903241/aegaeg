@@ -72,7 +72,7 @@ await tx.wait();
 
 ##### initialize(address _token, address _usd, address _router) — initializer
 
-初始化合约：设置费用代币、目标 USD、路由器，授予调用者 `DEFAULT_ADMIN_ROLE` 与 `ADMIN_ROLE`，默认 `threshold = 1e10`。
+初始化合约：设置费用代币、目标 USD、路由器，授予调用者 `DEFAULT_ADMIN_ROLE`、`ADMIN_ROLE` 与 `KEEPER_ROLE`，默认 `threshold = 1e10`。
 
 ##### addReceiver(address _receiver) — DEFAULT_ADMIN_ROLE
 

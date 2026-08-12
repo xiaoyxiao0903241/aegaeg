@@ -167,17 +167,17 @@ console.log('Gross sold in observed block:', ethers.formatUnits(config[11], 9));
 
 | 函数 | 权限 | 说明 |
 | --- | --- | --- |
-| `mint(address _to, uint256 _amount)` | 仅 `treasury`（`msg.sender != treasury` 时 revert `Unauthorized`） | 由 Treasury 调用的铸币入口，非 owner 后门。源码 `src/AGX.sol:593` |
+| `mint(address _to, uint256 _amount)` | 仅 `treasury`（`msg.sender != treasury` 时 revert `Unauthorized`） | 由 Treasury 调用的铸币入口，非 owner 后门。源码 `src/AGX.sol:591` |
 | `snapshotDefensePrice()` | `onlyGovernance` | 立即刷新防御价格快照，并清空旧快照下的低价确认。源码 `:429` |
-| `setDefenseSellTax(uint256 _bp)` | `onlyGovernance` | 设置防御模式卖出税。源码 `:440` |
+| `setDefenseSellTax(uint256 _bp)` | `onlyGovernance` | 设置防御模式卖出税。源码 `:438` |
 | `setDefenseDropThreshold(uint256 _bp)` | `onlyGovernance` | 设置熔断跌幅阈值（下一区块首次受管控卖出起生效）。源码 `:448` |
-| `setDefenseMode(bool _active)` | `onlyGovernance` | 手动开启/关闭持续熔断。源码 `:457` |
+| `setDefenseMode(bool _active)` | `onlyGovernance` | 手动开启/关闭持续熔断。源码 `:455` |
 | `setDefenseDurationSeconds(uint256 _duration)` | `onlyGovernance` | 设置防御持续时间。源码 `:481` |
 | `setBaseSellTax(uint256 _newTaxRate)` | `onlyGovernance` | 设置基础卖出税。源码 `:569` |
 | `setSellFeeReceiver(address _newReceiver)` | `onlyGovernance` | 设置基础税接收者。源码 `:555` |
 | `setPoolBurnRatio(uint256 _newRatio)` | `onlyGovernance` | 设置 LP 销毁比例 `targetRatio`。源码 `:534` |
-| `burnPoolBalance()` | `onlyGovernance` | 按比例销毁 LP 中的 AGX。源码 `:576` |
-| `setLiquidityPool(address _newPool)` | `onlyOwner` | 一次性设置流动性 Pair。源码 `:499` |
+| `burnPoolBalance()` | `onlyGovernance` | 按比例销毁 LP 中的 AGX。源码 `:574` |
+| `setLiquidityPool(address _newPool)` | `onlyOwner` | 一次性设置流动性 Pair。源码 `:497` |
 | `setPoolBuyEnabled(bool _enable)` | `onlyOwner` | 开启/关闭买入（`transferStatus`）。源码 `:541` |
 | `setTreasuryVault(address _newTreasury)` | `onlyOwner` | 设置 Treasury 地址。源码 `:527` |
 | `setRbsContract(address _newRbs)` | `onlyOwner` | 设置 RBS 合约地址。源码 `:562` |

@@ -1,4 +1,4 @@
-import { decodeFunctionResult, encodeFunctionData, parseAbi, zeroAddress } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import { isLuckyClaimable } from '~/core/rewards/rewards-block-reasons'
 import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
@@ -12,14 +12,13 @@ import { readAggregate3 } from '~/web3/multicall3-read'
 const luckyAbi = parseAbi([
   LUCKY_POOL_METHODS.paused,
   LUCKY_POOL_METHODS.currentRoundId,
-  LUCKY_POOL_METHODS.purchaseTracker,
-  LUCKY_POOL_METHODS.isUserEligible,
   LUCKY_POOL_METHODS.getRound,
+  LUCKY_POOL_METHODS.isRoundAcceptingPurchases,
   LUCKY_POOL_METHODS.getWinnerInfo,
   LUCKY_POOL_METHODS.rewardClaimed,
 ])
 
-const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getUserRoundStat])
+const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getCurrentRoundUserStat])
 
 /** 回溯闭轮上限（手册：旧轮按 ID 可查；禁只看上一轮）。 */
 const LUCKY_CLAIM_LOOKBACK = 10_000n
@@ -221,74 +220,79 @@ export async function readDaoPoolRewardAvailable(client: ChainReadClient): Promi
   return readErc20Balance(BSC_CONTRACTS.agx, BSC_CONTRACTS.daoPool, client)
 }
 
-/** 幸运详情右栏：当前轮倒计时 + 迁移感知资格 + Tracker 轮内购买额（USD1 18dec）。 */
+/** 幸运详情右栏：当前轮倒计时 + Tracker 资格 / 购买额（USD1 18dec）。 */
 export type LuckyRoundDisplaySnapshot = {
   openRoundId: bigint
   endTimeSec: bigint
   eligible: boolean
-  /** Tracker `totalAmount`；无 tracker 时 null */
+  /** Tracker `totalAmount`；无开放轮时 null */
   roundPurchaseUsd1: bigint | null
+  /** `isRoundAcceptingPurchases`；不能只看 Open */
+  accepting: boolean
+}
+
+function luckyRoundEndTimeSec(roundRaw: unknown): bigint {
+  if (roundRaw != null && typeof roundRaw === 'object' && 'endTime' in roundRaw) {
+    return (roundRaw as { endTime: bigint }).endTime
+  }
+  return (roundRaw as readonly bigint[])[3] ?? 0n
 }
 
 /**
- * 读取幸运详情右栏展示数据：当前轮倒计时 + 迁移感知资格 + Tracker 轮内购买额。
+ * 读取幸运详情右栏：Tracker 本轮统计 + 是否接受购买 + 结束时间。
+ *
+ * 未激活时 `getCurrentRoundUserStat.roundId == 0`，不再读 `getRound`。
+ * 资格用 Tracker `qualified`（单笔门槛、迁移感知），不以 `status=Open` 代替时间窗。
  *
  * @param user 钱包地址
  * @param client 链读取客户端，默认 BSC 主网
- * @returns 当前轮 id / 结束时间 / 资格 / 轮内购买额（USD1，18 位小数）
+ * @returns 当前轮 id / 结束时间 / 资格 / 轮内购买额 / 是否接受购买
  * @see 手册 §14.1 用户抽奖页
  */
 export async function readLuckyRoundDisplaySnapshot(
   user: Address,
   client: ChainReadClient = bscReadClient,
 ): Promise<LuckyRoundDisplaySnapshot> {
-  const openRoundId = (await client.readContract({
-    address: BSC_CONTRACTS.luckyPool,
-    abi: luckyAbi,
-    functionName: 'currentRoundId',
-  })) as bigint
+  const stat = (await client.readContract({
+    address: BSC_CONTRACTS.dailyPurchaseTracker,
+    abi: trackerAbi,
+    functionName: 'getCurrentRoundUserStat',
+    args: [user],
+  })) as readonly [bigint, bigint, boolean, bigint]
 
-  // getRound：named struct 或位置元组（endTime = index 3）
-  const roundRaw = await client.readContract({
-    address: BSC_CONTRACTS.luckyPool,
-    abi: luckyAbi,
-    functionName: 'getRound',
-    args: [openRoundId],
-  })
-  const endTimeSec =
-    roundRaw != null && typeof roundRaw === 'object' && 'endTime' in roundRaw
-      ? (roundRaw as { endTime: bigint }).endTime
-      : ((roundRaw as readonly bigint[])[3] ?? 0n)
+  const openRoundId = stat[0] ?? 0n
+  const totalAmount = stat[1] ?? 0n
+  const qualified = Boolean(stat[2])
+  if (openRoundId === 0n) {
+    return {
+      openRoundId: 0n,
+      endTimeSec: 0n,
+      eligible: false,
+      roundPurchaseUsd1: null,
+      accepting: false,
+    }
+  }
 
-  const eligible = Boolean(
-    await client.readContract({
+  const [roundRaw, accepting] = await Promise.all([
+    client.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
-      functionName: 'isUserEligible',
-      args: [openRoundId, user],
+      functionName: 'getRound',
+      args: [openRoundId],
     }),
-  )
-
-  let roundPurchaseUsd1: bigint | null = null
-  const tracker = (await client.readContract({
-    address: BSC_CONTRACTS.luckyPool,
-    abi: luckyAbi,
-    functionName: 'purchaseTracker',
-  })) as Address
-  if (tracker !== zeroAddress) {
-    const stat = (await client.readContract({
-      address: tracker,
-      abi: trackerAbi,
-      functionName: 'getUserRoundStat',
-      args: [openRoundId, user],
-    })) as readonly [bigint, boolean, bigint]
-    roundPurchaseUsd1 = stat[0] ?? 0n
-  }
+    client.readContract({
+      address: BSC_CONTRACTS.luckyPool,
+      abi: luckyAbi,
+      functionName: 'isRoundAcceptingPurchases',
+      args: [openRoundId],
+    }),
+  ])
 
   return {
     openRoundId,
-    endTimeSec,
-    eligible,
-    roundPurchaseUsd1,
+    endTimeSec: luckyRoundEndTimeSec(roundRaw),
+    eligible: qualified,
+    roundPurchaseUsd1: totalAmount,
+    accepting: Boolean(accepting),
   }
 }

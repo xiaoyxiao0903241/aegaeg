@@ -220,8 +220,8 @@
 |W-011|奖励|Hub FAQ|「AGX / gAGX 口径」说明文案|读取展示|`zh.ts` `rewards.faq`（Hub 条无「1:1」；1:1 在 cards/hint/子 FAQ）|链结算 AGX；API 多标 gAGX|—|✅ 已对齐|—|—|C-15|C-15|产品确认保留稿面（B 口径）；非接线错|
 |W-012|奖励|Hub 机制表|当前档位对应行高亮|读取展示|`tierRowIndex`∩静态 i18n 表|—|`making_rank`|✅ 已对齐|—|—|—|—|表内说明是静态文案|
 |W-013|奖励|Lucky 详情|今日奖池金额（美元，`today_total_prize`）|读取展示|`use-lucky.tsx`|—|`POST /lucky-reward/summary`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|个人金钱本轮未做线上样本对账；摘要接线保留；前端已接入|
-|W-014|奖励|Lucky 详情|开奖倒计时|读取展示|`readLuckyRoundDisplaySnapshot` 15s 刷新|链 `getRound(open).endTime`|—|✅ 已对齐|—|—|—|—|没连钱包就没有倒计时|
-|W-015|奖励|Lucky 详情|本轮是否有资格（Yes/No）+ 本轮购买额|读取展示|同上；hint 用 USD1 额|链 `isUserEligible` + Tracker `getUserRoundStat`|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|资格布尔 OK；金额无线上样本对账；前端已接入|
+|W-014|奖励|Lucky 详情|开奖倒计时|读取展示|`readLuckyRoundDisplaySnapshot` 15s 刷新；仅 `accepting` 时倒计时|链 `getCurrentRoundUserStat` + `getRound.endTime` + `isRoundAcceptingPurchases`|—|✅ 已对齐|—|—|—|—|未激活 / 未接受购买不显示倒计时；没连钱包也没有|
+|W-015|奖励|Lucky 详情|本轮是否有资格（Yes/No）+ 本轮购买额|读取展示|同上；hint 用 USD1 额|链 Tracker `getCurrentRoundUserStat`（`qualified` / `totalAmount`）|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|资格跟单笔门槛；不以 `status=Open` 代替时间窗；前端已接入|
 |W-016|奖励|Lucky 详情|累计中奖次数 `win_count`|读取展示|`formatApiCountLabel`|—|`POST /lucky-reward/summary`|✅ 已对齐|—|—|—|—|—|
 |W-017|奖励|Lucky 中奖榜|中奖额后缀写 gAGX（`reward_amount`）|读取展示|`mapLuckyWinnerToRow`|API winners 标 gAGX；链付 AGX|`POST /lucky-reward/winners`|✅ 已对齐|—|—|C-15|C-15|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |W-018|奖励|Lucky 我的记录|参与额 / 是否中奖 / 交易哈希|读取展示|`mapLuckyMyRoundToRow`|—|`POST /lucky-reward/my-rounds`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|中奖额单位见 W-017；前端已接入；线上对账非本表判断标准|

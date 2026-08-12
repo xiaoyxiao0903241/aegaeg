@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/LiquidStaking.json
-SHA-256 44f15231da4e…
-80
+SHA-256 77b55581acdf…
+82
 44
-11
-25
+10
+28
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/liquidstaking.json`](../abis/liquidstaking.json)（80 entries）。
+完整 ABI 已导出为 [`abis/liquidstaking.json`](../abis/liquidstaking.json)（82 entries）。
 
 </details>
 
@@ -25,9 +25,11 @@ SHA-256 44f15231da4e…
 
 `LiquidStaking` 是 AEGIS X 的活期质押合约，用户可以将 AGX 质押到 StakingPool 并获得 sAGX 生息奖励。质押后需要经过 2 个 epoch 的预热期，之后可以随时提取本金或领取奖励。
 
-Lucky 购买上报采用 gas 上限保护的 best-effort。价格读取或 Tracker 异常会发出 `PurchaseTrackingFailed(user,agxAmount,stage,reason)`，但不会回滚已经完成的活期质押；前端应以 `Staked` 和仓位回读判断业务成功，以该告警事件提示资格可能需要运维补查。
+Lucky 购买追踪是活期质押交易的强原子组成部分。`stake` 在完成仓位写入后会通过 `RestakeConfig.agxUsdValue` 换算 USD1 价值并调用 `AegisDailyPurchaseTracker.recordPurchase`；价格配置、Tracker 或 LuckyPool 任一步失败都会回滚整笔质押，不会留下“质押成功但购买记录缺失”的状态。前端只在交易 receipt 成功后更新仓位和 Lucky 统计。
 
 **部署 key**: `LiquidStaking`
+
+**BNB Chain 主网 proxy**：`0x73aFfdA5B6399db1666bA203aB9623CA5F48E2fb`；当前实现与 Tracker 强原子逻辑已通过增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 升级终验。
 
 **ABI 路径**: `abi/LiquidStaking.json`
 
@@ -219,7 +221,7 @@ if (event) {
 - 存在主仓位
 - 奖励金额 > 0
 - 奖励金额 <= 可用利息余额
-- 如果复投金额 > 0，则 restakeConfig 必须已设置，复投目标地址由 RestakeConfig plan 决定（ RestakeLib.calculateRestake 返回的 r.target ）
+- restakeConfig 与 contributionLedger 必须已设置： claimRewardMixed 无条件调用 RestakeLib.splitReward / consumeContribution ，未设置时整笔回滚 ErrorConfigNotSet / ErrorContributionLedgerNotSet （即使复投金额为 0）。复投目标地址由 RestakeConfig plan 决定（ RestakeLib.calculateRestake 返回的 r.target ）
 
 **触发事件**:
 
@@ -282,6 +284,54 @@ event RewardClaimedMixed(
   int256 gonsDelta
 )
 ```
+
+#### RewardClaimed
+
+用户领取混合奖励中的释放部分时触发。
+
+solidity
+```solidity
+event RewardClaimed(
+  address indexed _user,
+  uint256 _amount,
+  uint8 _lockIndex,
+  uint256 stakeIndex,
+  uint256 timestamp,
+  uint256 periodTime,
+  int256 gonsDelta
+)
+```
+
+#### RestakeClaimed
+
+复投金额进入 RestakeConfig 计划时触发。
+
+solidity
+```solidity
+event RestakeClaimed(
+  address indexed _user,
+  uint256 _reward,
+  uint256 _restakeAmount,
+  uint256 _taxBP,
+  uint256 _planIndex,
+  uint256 _period,
+  uint256 stakeIndex,
+  uint256 timestamp,
+  int256 gonsDelta
+)
+```
+
+#### StakingLimitsUpdated
+
+`setStakingLimitAmount` 更新两层限额时触发。
+
+#### SingleAddressDailyLimitUpdated
+
+`setSingleAddressDailyLimit` 更新单地址日限额时触发。
+
+#### PrincipalReleaseVaultUpdated
+
+`setPrincipalReleaseVault` 切换本金释放入口（当前指向 `AegisSplitterManager`）时触发。
 
 ---
 
@@ -376,16 +426,16 @@ async function claimMixedReward() {
   }
 
   // 决定释放/复投比例
-  const releasePercent = 40  // 40% 释放
-  const restakePercent = 60  // 60% 复投
-
-  const releaseAmount = stakeInterest * BigInt(releasePercent) / 100n
-  const restakeBps = BigInt(restakePercent * 100)  // 转换为 BPS
+  // 注意：claimRewardMixed 的 _amount 是「总领取量」，合约按 restakeBps
+  // 拆分为 releaseAmount 与 restakeAmount（RestakeLib.splitReward）。
+  // 因此要实现「40% 释放 / 60% 复投（针对全部利息）」，
+  // 应传入全部利息作为 _amount，并设 restakeBps = 6000（复投 60%）。
+  const restakeBps = 6000n  // 60% 复投 → 其余 40% 进 releasePlan
 
   const tx = await liquidStaking.claimRewardMixed(
-    0,      // releasePlanIndex (默认计划)
-    releaseAmount,
-    1,      // restakePlanIndex (LockedStaking 的某个计划)
+    0,            // releasePlanIndex（默认计划，承接 40% 释放部分）
+    stakeInterest, // 总领取量 = 全部利息（不要先乘 40%）
+    1,            // restakePlanIndex（LockedStaking 的某个计划，承接 60% 复投部分）
     restakeBps
   )
   const receipt = await tx.wait()
@@ -408,7 +458,7 @@ async function claimMixedReward() {
 | `LockedStaking` | 复投目标 |
 | `AegisSplitterManager` / `AegisSplitter` | 本金释放路由与线性释放 |
 | `RestakeConfig` | Restake 配置 |
-| `DailyPurchaseTracker` | 购买记录追踪 |
+| `DailyPurchaseTracker` | 必需；原子记录本轮累计并按单笔门槛加入 Lucky 资格 |
 
 ---
 

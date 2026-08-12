@@ -297,7 +297,7 @@ async function withdrawVoteRewards(governance, proposalId, signer) {
 - proposalId - 提案 ID（必须等于 proposalCount + 1 ）
 - voteEnd - 投票结束时间戳
 - minQuorum - 法定人数门槛
-- winRateBps - 通过所需赞成比例（基点）
+- winRateBps - 通过所需赞成比例（基点；后端按此签发提案。当前合约实现仅存储该参数，通过/失败判定固定为 forVotes > againstVotes ）
 
 **事件:**
 

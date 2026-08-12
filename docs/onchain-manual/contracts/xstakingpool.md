@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/AegisXMiningPool.json
-SHA-256 ab12c100ab95…
-88
-49
+SHA-256 6822894182cd…
+91
+51
 14
-25
+26
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/xstakingpool.json`](../abis/xstakingpool.json)（88 entries）。
+完整 ABI 已导出为 [`abis/xstakingpool.json`](../abis/xstakingpool.json)（91 entries）。
 
 </details>
 
@@ -27,7 +27,7 @@ SHA-256 ab12c100ab95…
 
 **部署 key**: `XStakingPool`
 
-**BNB Chain 主网 proxy**：`0x38af581462e25aABE1A25Ae128aE5a63aE015e1c`（release `bb680398-e7c0-46fa-ad87-139446fb4120`）。
+**BNB Chain 主网 proxy**：`0x38af581462e25aABE1A25Ae128aE5a63aE015e1c`（当前实现已通过增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314` 升级终验，`settleRewards()` 冷却时间为 86,400 秒）。
 
 **ABI 路径**: `abi/AegisXMiningPool.json`
 
@@ -62,6 +62,8 @@ SHA-256 ab12c100ab95…
 - settleRewards() 更新 X/AGX 价格比
 - 价格通过 LP 交易对获取
 - 每次结算后更新 xPerAgx
+- 两次成功结算至少间隔 SETTLEMENT_COOLDOWN = 24 hours ；首次显式调用立即允许
+- 冷却由独立 lastSettlementTime 记录，不受用户操作更新 lastRewardTime 的影响
 - 结算读取的是调用所在区块的 Pair 即时储备；当前没有 TWAP/价格偏差门禁。管理员/操作员必须避免在储备异常波动时结算，并在生产上线前接入经审计的可信价格方案
 
 #### 5. 提取流程
@@ -128,6 +130,8 @@ const xPerAgx = await xPool.xPerAgx(); // X/AGX 价格比
 const totalGons = await xPool.totalGons(); // 总 gons
 const activeGons = await xPool.activeGons(); // 活跃 gons
 const lastReward = await xPool.lastRewardTime(); // 上次奖励时间
+const lastSettlement = await xPool.lastSettlementTime(); // 上次成功价格结算时间，0 表示尚未调用
+const settlementCooldown = await xPool.SETTLEMENT_COOLDOWN(); // 固定 24 小时
 ```
 
 ##### stakes(address) -> (gons, warmupGons, warmupStartTime, warmupEndTime, rewardStartTime)
@@ -296,7 +300,7 @@ async function startMiningUnstake(xPool, signer) {
 
 #### 管理/Operator 写方法
 
-- settleRewards() ：按当前 AGX/X Pair 储备结算价格与奖励，只允许 owner/operator。
+- settleRewards() ：按当前 AGX/X Pair 储备结算价格与奖励，只允许 owner/operator；两次成功调用至少间隔 24 小时，冷却中回滚 ErrorSettlementCooldown(nextAllowedTime) 。
 - injectRewards(rewardAmount, 0) ：给池子补充 X；先对 XStakingPool 授权 X。第二参数当前未使用，但 ABI 调用仍必须传入。
 
 成功后分别监听 `RewardSettlement` / `RewardFunded` 并刷新池内 X 余额、`xPerAgx`、累计器和用户 pending。
@@ -335,23 +339,23 @@ async function startMiningUnstake(xPool, signer) {
 
 #### WarmupExitRejected(address indexed user, uint256 timestamp)
 
-预热取消被拒绝时触发（源码 :180）。当前 `cancelWarmup` 在 `ErrorWarmupExitDisabled` 下 revert，不会触发本事件；保留用于启用取消路径时。
+预热取消被拒绝时触发（源码 :186）。当前 `cancelWarmup` 在 `ErrorWarmupExitDisabled` 下 revert，不会触发本事件；保留用于启用取消路径时。
 
 #### RewardPricePairUpdated(address indexed pair, uint256 timestamp)
 
-`setRewardPricePair` 切换 AGX/X LP 时触发（源码 :190）。
+`setRewardPricePair` 切换 AGX/X LP 时触发（源码 :196）。
 
 #### MiningQuotaSourceUpdated(address[] principalSources, uint256 timestamp)
 
-`setMiningQuotaSource` 重置挖矿配额来源列表时触发（源码 :192）。
+`setMiningQuotaSource` 重置挖矿配额来源列表时触发（源码 :198）。
 
 #### MaxStakeRatioUpdated(uint256 bp, uint256 timestamp)
 
-`setMaxStakeRatioBP` 调整质押配额比例时触发（源码 :194）。
+`setMaxStakeRatioBP` 调整质押配额比例时触发（源码 :200）。
 
 #### PrincipalReleaseVaultUpdated(address indexed vault, uint256 timestamp)
 
-`setPrincipalReleaseVault` 切换本金释放入口（当前指向 `AegisSplitterManager`）时触发（源码 :196）。
+`setPrincipalReleaseVault` 切换本金释放入口（当前指向 `AegisSplitterManager`）时触发（源码 :202）。
 
 ---
 
@@ -367,6 +371,7 @@ async function startMiningUnstake(xPool, signer) {
 | `ErrorMiningQuotaExceeded(user, requested, quota)` | 超过挖矿配额 | 增加锁定本金 |
 | `ErrorRewardPricePairNotSet()` | LP 未设置 | 联系管理员 |
 | `ErrorSettlementPriceNotSet()` | 价格未结算 | 等待管理员 settle |
+| `ErrorSettlementCooldown(nextAllowedTime)` | 距离上次成功结算不足 24 小时 | 等待到 `nextAllowedTime` 后重试 |
 | `ErrorPrincipalReleaseVaultNotSet()` | 分流器 Manager 未设置 | 联系管理员配置 `AegisSplitterManager` |
 | `ErrorWarmupExitDisabled()` | 取消预热已禁用 | 无法取消 |
 | `ErrorZeroAddress()` | 传入 address(0) | 传入有效地址 |
@@ -436,6 +441,7 @@ async function miningDashboard(xPool, userAddress) {
 | 参数 | 默认值 | 说明 | 设置者 |
 | --- | --- | --- | --- |
 | `WARMUP_PERIOD` | 24 小时 | 预热期（常量） | - |
+| `SETTLEMENT_COOLDOWN` | 24 小时 | 两次成功 `settleRewards()` 的最短间隔（常量） | - |
 | `yieldRateBP` | 1 | 按天计息的 BP 参数，公式分母为 `10000 * 1 days` | owner/operator |
 | `maxStakeRatioBP` | 10000 (100%) | 质押配额比例，上限 `MAX_STAKE_RATIO_BP = 20000`（200%）；由 `setMaxStakeRatioBP` 设置，超过上限 revert `ErrorInvalidRatio` | owner |
 | `principalSources` | 初始化后设置 | 挖矿配额来源 | owner |

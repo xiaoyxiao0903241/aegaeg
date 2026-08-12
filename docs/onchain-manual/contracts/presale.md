@@ -76,9 +76,19 @@ AGX_BASE = 1e9
 | saleWallet | 82% | `usd.safeTransfer(saleWallet, saleAmount)` |
 | rewardContract | 10% | `forceApprove` 后 `deposit(teamReward)` |
 | communityFundContract | 5% | `forceApprove` 后 `deposit(systemReward)` |
-| referralBudget | 3% | `_issueReferralReward` 按推荐链匹配发放 |
+| referralBudget | 3% | `_issueReferralReward` 仅发放给首个有效推荐人（见下） |
 
 未发完的推荐预算会转给 `unclaimedReceiver`。
+
+#### 推荐奖励发放语义（重要）
+
+`_issueReferralReward` 取 `Referral.getReferrals(msg.sender, 50)` 得到推荐链后，**只发放给链中第一个“累计购买额 > 0”的推荐人**，随即 `break` 退出循环：
+
+- 奖励额 = min(referrerAmount, buyerAmount) * 300 / 10000 （3%，按推荐人与购买人累计额的较小值匹配）。
+- 链上零地址之前的位置、以及累计购买额为 0 的推荐人会被跳过；首个有效推荐人发放后 不再遍历后续推荐人 。
+- 预算余额（ referralBudget - 已发放 ）一次性转给 unclaimedReceiver 并触发 UnclaimedReferralWithdrawn 。
+
+因此“按推荐链多级匹配发放”并不成立——当前实现是**单层、首个有效推荐人**发放。
 
 PreSale 资金不进入 `Treasury`。
 
@@ -158,7 +168,7 @@ const preview = await presale.previewAirdropValue(userAddress, 0, amount);
 | `PreSalePhaseNotActive(uint256)` | 当前时间不在 phase 时间窗口内 |
 | `PreSaleBelowMin(uint256)` | 金额低于 phase minAmount |
 | `PreSaleExceedsMax(uint256,uint256,uint256)` | 金额超过 phase maxAmount |
-| `PreSalePhaseSoldOut(uint256)` | phase 已售罄 |
+| `PreSalePhaseSoldOut(uint256)` | 已声明但当前 `purchase` 未触发（源码无 `soldAmount >= maxAmount` 售罄检查；仅 `PreSaleExceedsMax` 限制单笔金额） |
 | `PreSaleInvalidDiscount(uint256)` | discount ≥ 10000 |
 | `PreSaleInvalidAirdropValueRatio(uint256)` | airdropValueRatio > 10000 |
 | `PreSaleInvalidAgxPrice(uint256)` | agxPrice 为 0 |

@@ -11,19 +11,13 @@
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "roundId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "ErrorAlreadyEligible",
+    "inputs": [],
+    "name": "ErrorActivationConfigIncomplete",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorAlreadyActivated",
     "type": "error"
   },
   {
@@ -44,6 +38,11 @@
   },
   {
     "inputs": [],
+    "name": "ErrorConfigImmutable",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "ErrorConfigNotSet",
     "type": "error"
   },
@@ -55,12 +54,38 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "coordinator",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
-        "name": "count",
+        "name": "requestId",
         "type": "uint256"
       }
     ],
-    "name": "ErrorDeferredPurchases",
+    "name": "ErrorDuplicateRequestBinding",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "firstStartTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorFirstRoundWindowExpired",
     "type": "error"
   },
   {
@@ -94,22 +119,6 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "firstStartTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "currentTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "ErrorInvalidFirstStartTime",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "maxWinners",
         "type": "uint256"
       }
@@ -120,6 +129,22 @@
   {
     "inputs": [],
     "name": "ErrorInvalidPage",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tracker",
+        "type": "address"
+      }
+    ],
+    "name": "ErrorInvalidPurchaseTrackerBinding",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorInvalidRequestId",
     "type": "error"
   },
   {
@@ -167,28 +192,12 @@
   },
   {
     "inputs": [],
-    "name": "ErrorInvalidVrfConfig",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "cursor",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "roundCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "ErrorLegacyRequestBindingIncomplete",
+    "name": "ErrorInvalidUpkeepData",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "ErrorLegacyRequestBindingRequiresPause",
+    "name": "ErrorInvalidVrfConfig",
     "type": "error"
   },
   {
@@ -200,6 +209,38 @@
       }
     ],
     "name": "ErrorNoEligibleUsers",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrorNotActivated",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expectedRoundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorNotAwaitingQueueHead",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "ErrorNotContract",
     "type": "error"
   },
   {
@@ -242,28 +283,28 @@
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
+        "name": "expectedRoundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorNotReadyQueueHead",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
+      },
+      {
         "internalType": "address",
         "name": "user",
         "type": "address"
       }
     ],
     "name": "ErrorNotWinner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "coordinator",
-        "type": "address"
-      }
-    ],
-    "name": "ErrorOnlyCoordinator",
     "type": "error"
   },
   {
@@ -285,43 +326,6 @@
   {
     "inputs": [],
     "name": "ErrorPaused",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "roundId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "count",
-        "type": "uint256"
-      }
-    ],
-    "name": "ErrorPendingQualifications",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "purchaseAt",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "endTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "ErrorPurchaseOutsideRound",
     "type": "error"
   },
   {
@@ -399,29 +403,45 @@
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "ErrorTrackerBacklogUnavailable",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "observedSequence",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentSequence",
+        "type": "uint256"
+      }
+    ],
+    "name": "ErrorStaleUpkeepData",
     "type": "error"
   },
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "roundId",
-        "type": "uint256"
+        "internalType": "enum AegisLuckyPool.UpkeepAction",
+        "name": "observedAction",
+        "type": "uint8"
       },
       {
         "internalType": "uint256",
-        "name": "blocksElapsed",
+        "name": "observedRoundId",
         "type": "uint256"
       },
       {
+        "internalType": "enum AegisLuckyPool.UpkeepAction",
+        "name": "expectedAction",
+        "type": "uint8"
+      },
+      {
         "internalType": "uint256",
-        "name": "requiredBlocks",
+        "name": "expectedRoundId",
         "type": "uint256"
       }
     ],
-    "name": "ErrorVrfNotTimedOut",
+    "name": "ErrorUnexpectedUpkeepAction",
     "type": "error"
   },
   {
@@ -518,6 +538,25 @@
       {
         "indexed": true,
         "internalType": "uint256",
+        "name": "firstRoundId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "Activated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
         "name": "roundId",
         "type": "uint256"
       },
@@ -592,37 +631,6 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "roundId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "purchaseAt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "alreadyEligible",
-        "type": "bool"
-      }
-    ],
-    "name": "EligibleUserSynchronized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
         "internalType": "address",
         "name": "token",
         "type": "address"
@@ -648,62 +656,31 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "oldStartTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newStartTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "FirstStartTimeUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "uint64",
         "name": "version",
         "type": "uint64"
       }
     ],
     "name": "Initialized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "cursor",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "roundCount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "complete",
-        "type": "bool"
-      }
-    ],
-    "name": "LegacyRequestBindingProgress",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "roundId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "coordinator",
-        "type": "address"
-      }
-    ],
-    "name": "LegacyRequestCoordinatorBound",
     "type": "event"
   },
   {
@@ -1006,6 +983,31 @@
         "internalType": "uint256",
         "name": "requestId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      }
+    ],
+    "name": "RandomnessReady",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
       }
     ],
     "name": "RandomnessRequested",
@@ -1201,9 +1203,15 @@
         "internalType": "uint256",
         "name": "roundId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "eligibleCount",
+        "type": "uint256"
       }
     ],
-    "name": "RoundSkipped",
+    "name": "RoundSealed",
     "type": "event"
   },
   {
@@ -1214,15 +1222,34 @@
         "internalType": "uint256",
         "name": "roundId",
         "type": "uint256"
+      }
+    ],
+    "name": "RoundSkipped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "enum AegisLuckyPool.UpkeepAction",
+        "name": "action",
+        "type": "uint8"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "blocksElapsed",
+        "name": "queueSequence",
         "type": "uint256"
       }
     ],
-    "name": "RoundTimeoutCancelled",
+    "name": "UpkeepPerformed",
     "type": "event"
   },
   {
@@ -1307,7 +1334,59 @@
   },
   {
     "inputs": [],
+    "name": "MAX_WINNERS",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "NUM_WORDS",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "REQUIRED_TRACKING_SAFETY_VERSION",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "UPKEEP_DATA_VERSION",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "VRF_NUM_WORDS",
     "outputs": [
       {
         "internalType": "uint32",
@@ -1332,6 +1411,26 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "activate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "activated",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -1345,7 +1444,13 @@
       }
     ],
     "name": "addEligibleUser",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "added",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -1450,19 +1555,6 @@
     ],
     "name": "claimRewardMixed",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "closeCurrentAndRequestRandomness",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      }
-    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -1574,6 +1666,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "ensureOpenRound",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -1587,6 +1692,19 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "firstStartTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1622,6 +1740,34 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getQueueState",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "awaitingCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nextAwaitingRoundId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "readyCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nextReadyRoundId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -1633,7 +1779,7 @@
     "outputs": [
       {
         "internalType": "uint256[]",
-        "name": "",
+        "name": "words",
         "type": "uint256[]"
       }
     ],
@@ -1891,6 +2037,25 @@
         "internalType": "uint256",
         "name": "roundId",
         "type": "uint256"
+      }
+    ],
+    "name": "isRoundAcceptingPurchases",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -1960,45 +2125,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "legacyRequestBindingComplete",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "legacyRequestBindingCoordinator",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "legacyRequestBindingCursor",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -2012,19 +2138,6 @@
       }
     ],
     "name": "migrateAccount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "maxRounds",
-        "type": "uint256"
-      }
-    ],
-    "name": "migrateLegacyRequestCoordinatorBindings",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -2159,6 +2272,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "queueSequence",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -2172,6 +2298,44 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "randomSeed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "randomSeedStored",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -2219,19 +2383,19 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "roundId",
         "type": "uint256"
       }
     ],
-    "name": "requestHasCoordinatorBinding",
+    "name": "requestRandomness",
     "outputs": [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -2248,25 +2412,6 @@
       }
     ],
     "name": "requestRoundIdByCoordinator",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "requestToRoundId",
     "outputs": [
       {
         "internalType": "uint256",
@@ -2450,6 +2595,19 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "newStartTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "setFirstStartTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_manager",
         "type": "address"
@@ -2567,6 +2725,19 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "settleRound",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       },
@@ -2598,29 +2769,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "roundId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "purchaseAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "syncEligibleUser",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
