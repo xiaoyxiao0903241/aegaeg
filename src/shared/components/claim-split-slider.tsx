@@ -22,6 +22,7 @@ function clampSliderPct(value: number): number {
  * 双色领取分配滑杆
  *
  * 珊瑚段 = 释放池；蓝色段 = 再质押；白色滑块内嵌百分比。
+ * Root 用 `touch-none` + 加高热区，避免 H5 竖滚抢走拖动手势。
  * 标签 / 无障碍文案 / 分配计算由调用方负责（见 `claimSplitFromReleasePct`）。
  *
  * @param value 归入释放池的比例（0–100）
@@ -39,7 +40,7 @@ export function ClaimSplitSlider({
   return (
     <SliderPrimitive.Root
       className={cn(
-        'relative flex h-7 w-full max-w-108 touch-none items-center select-none',
+        'relative flex h-8 w-full max-w-108 touch-none items-center select-none',
         disabled && 'pointer-events-none opacity-60',
         className,
       )}
@@ -51,7 +52,7 @@ export function ClaimSplitSlider({
       onValueChange={(next) => onChange(next[0] ?? 0)}
       aria-label={ariaLabel}
     >
-      <SliderPrimitive.Track className="relative h-2 w-full overflow-hidden rounded-full">
+      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full">
         <div
           aria-hidden
           className="absolute inset-y-0 left-0 bg-primary"
