@@ -2,10 +2,9 @@
 /**
  * 幸运奖 VRF 说明卡
  *
- * 深色底展示 Chainlink 随机开奖说明；验证教程按钮暂不可点。
+ * 深色底展示 Chainlink 随机开奖说明；验证教程为稿面白描边 pill（暂不可点）。
  */
 import { dappAssets } from '~/shared/assets/dapp'
-import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { Text } from '~/shared/components/text'
 
@@ -32,16 +31,20 @@ export function LuckyVrfCard({
             {title}
           </Text>
         </div>
-        <Button
-          className="w-auto shrink-0 rounded-full border border-white/25 bg-transparent px-4 text-white hover:bg-white/10"
+        {/* 原生 button：避 Button secondary 禁用态灰底，贴稿白描边 pill */}
+        <button
+          className="inline-flex shrink-0 items-center rounded-full border border-white/25 px-[15px] py-[7px] disabled:cursor-not-allowed"
           disabled
           type="button"
-          variant="secondary"
         >
-          <Text as="span" className="font-semibold text-white" variant="copy">
+          <Text
+            as="span"
+            className="leading-none font-semibold whitespace-nowrap text-white"
+            variant="copy"
+          >
             {verifyTutorial}
           </Text>
-        </Button>
+        </button>
       </div>
       <Text as="p" className="text-white/65" variant="support">
         {body}

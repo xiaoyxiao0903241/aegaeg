@@ -253,12 +253,27 @@ export function CalcResultCard({
           </Text>
         </div>
         <div className="flex h-3.5 overflow-hidden rounded-full">
-          <span className="bg-border" style={{ flex: `${100 - investShare} 0 0` }} />
+          {/*
+            绿段 flex 与灰段互补（合计 100）；有收益时绿段至少 18，避免 H5 文案折行。
+            文案 nowrap + 段内 overflow-hidden：过窄时裁切，不换行撑高。
+          */}
           <span
-            className="flex items-center justify-center bg-success"
-            style={{ flex: `${Math.max(investShare, 18)} 0 0` }}
+            className="min-w-0 bg-border"
+            style={{
+              flex: `${interestUsd > 0 ? 100 - Math.max(investShare, 18) : 100} 0 0`,
+            }}
+          />
+          <span
+            className="flex min-w-0 items-center overflow-hidden bg-success pl-2"
+            style={{
+              flex: `${interestUsd > 0 ? Math.max(investShare, 18) : 0} 0 0`,
+            }}
           >
-            <Text as="span" className="font-medium text-primary-foreground" variant="caption">
+            <Text
+              as="span"
+              className="font-medium whitespace-nowrap text-primary-foreground"
+              variant="caption"
+            >
               {interpolate(labels.yieldBar, { amount: calcUsd(interestUsd) })}
             </Text>
           </span>

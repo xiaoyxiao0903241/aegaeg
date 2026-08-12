@@ -23,11 +23,11 @@ const aboutCard = tv({
   slots: {
     root: 'relative flex min-w-0 flex-col justify-center overflow-hidden rounded-2xl px-4 py-6 shadow-subtle',
     washLavender:
-      'pointer-events-none absolute -top-2 right-0 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
+      'pointer-events-none absolute -top-2 right-0 h-42 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
     body: 'relative z-1 grid min-w-0 gap-3',
     /** 装饰插画：水平翻转朝左，仅 PC 渲染，由容器 overflow-hidden 裁切。 */
     decoration:
-      'pointer-events-none absolute top-2 right-4 z-2 w-25 -scale-x-100 object-contain object-bottom',
+      'pointer-events-none absolute top-2 right-4 z-2 h-36 w-25 -scale-x-100 object-contain object-bottom',
   },
   variants: {
     withDecoration: {

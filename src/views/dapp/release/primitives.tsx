@@ -115,8 +115,8 @@ function Metrics({
 
 function Bar({ width, 'data-slot-id': dataSlotId }: { width: string; 'data-slot-id'?: string }) {
   return (
-    <div className="overflow-hidden rounded-full bg-muted" data-slot-id={dataSlotId}>
-      <div className="rounded-full bg-primary" style={{ width }} />
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" data-slot-id={dataSlotId}>
+      <div className="h-full rounded-full bg-primary" style={{ width }} />
     </div>
   )
 }

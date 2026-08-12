@@ -2,7 +2,7 @@
  * 缓冲池左栏 Dock
  *
  * AGX / gAGX 双卡展示已释放、释放中与进度条（手册 §13 分流器多 token）；
- * 刷新重读链上快照；两卡各走独立领取 mutation（只领对应币种）。
+ * 刷新只转被点卡图标（与释放池单档刷新同构）；两卡各走独立领取 mutation。
  */
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { useBuffer } from '~/views/dapp/release/buffer/use-buffer'
@@ -29,11 +29,11 @@ export function BufferDock() {
           <ReleasePlanCard.Header>
             <ReleasePlanCard.Token iconSrc={tokenCarouselIcons.agxIcon} label="AGX" />
             <ReleasePlanCard.Refresh
-              busy={vm.refreshing}
+              busy={vm.refreshingToken === 'agx'}
               data-slot-id="release-buffer-refresh-agx"
-              disabled={vm.refreshing}
+              disabled={vm.refreshingToken != null}
               label={t.release.buffer.refresh}
-              onClick={() => void vm.onRefresh()}
+              onClick={() => void vm.onRefresh('agx')}
             />
           </ReleasePlanCard.Header>
           <ReleasePlanCard.Metrics
@@ -57,11 +57,11 @@ export function BufferDock() {
           <ReleasePlanCard.Header>
             <ReleasePlanCard.Token iconSrc={tokenCarouselIcons.gagxIcon} label="gAGX" />
             <ReleasePlanCard.Refresh
-              busy={vm.refreshing}
+              busy={vm.refreshingToken === 'gagx'}
               data-slot-id="release-buffer-refresh-gagx"
-              disabled={vm.refreshing}
+              disabled={vm.refreshingToken != null}
               label={t.release.buffer.refresh}
-              onClick={() => void vm.onRefresh()}
+              onClick={() => void vm.onRefresh('gagx')}
             />
           </ReleasePlanCard.Header>
           <ReleasePlanCard.Metrics

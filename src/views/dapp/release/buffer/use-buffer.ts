@@ -27,7 +27,8 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 /**
  * 缓冲池交互面板状态
  *
- * 读取分流器 + 归档 PRV 快照；AGX / gAGX 分卡、分 mutation 领取（同写路径互斥）。
+ * 读取分流器 + 归档 PRV 快照；AGX / gAGX 分卡、分 mutation 领取（同写路径互斥）；
+ * 刷新按币种隔离 busy，避免一点全卡转圈。
  */
 export function useBuffer() {
   const { messages: t } = useI18n()
@@ -40,7 +41,8 @@ export function useBuffer() {
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const durationQuery = usePrincipalReleaseDurationDays()
-  const [refreshing, setRefreshing] = useState(false)
+  /** 只转被点卡的刷新图标；与释放池 refreshingDays 同构 */
+  const [refreshingToken, setRefreshingToken] = useState<'agx' | 'gagx' | null>(null)
 
   const claimAgx = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
@@ -94,16 +96,16 @@ export function useBuffer() {
     await claimGagx.mutate()
   }
 
-  async function onRefresh() {
-    if (refreshing) return
-    setRefreshing(true)
+  async function onRefresh(token: 'agx' | 'gagx') {
+    if (refreshingToken != null) return
+    setRefreshingToken(token)
     try {
       await bufferQuery.refetch()
     } catch (error) {
-      setRefreshing(false)
+      setRefreshingToken(null)
       throw error
     }
-    setRefreshing(false)
+    setRefreshingToken(null)
   }
 
   const blockHint = !walletReady
@@ -144,6 +146,6 @@ export function useBuffer() {
     onClaimAgx,
     onClaimGagx,
     onRefresh,
-    refreshing,
+    refreshingToken,
   }
 }
