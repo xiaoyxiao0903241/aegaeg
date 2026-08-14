@@ -46,6 +46,9 @@ export const queryKeys = {
     protocolMarketStatsSeriesRoot: ['api', 'protocolMarketStats', 'series'] as const,
     protocolMarketStatsSeries: (range: string, metric: string) =>
       ['api', 'protocolMarketStats', 'series', range, metric] as const,
+    protocolMarketStatsAggregateRoot: ['api', 'protocolMarketStats', 'aggregate'] as const,
+    protocolMarketStatsAggregateSeries: (range: string, metric: string) =>
+      ['api', 'protocolMarketStats', 'aggregate', range, metric] as const,
     salesLogsRoot: ['api', 'salesLogs'] as const,
     salesLogs: (params: PaginationParams = {}) => paginated(['api', 'salesLogs'] as const, params),
     rewardLogsRoot: ['api', 'rewardLogs'] as const,

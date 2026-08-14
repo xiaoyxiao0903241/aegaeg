@@ -7,7 +7,7 @@
 |---|---|
 |标题|AEGIS API|
 |OpenAPI|3.0.3|
-|paths|59|
+|paths|60|
 |tags|17|
 |源|本目录（以 `openapi.json` 为准）|
 

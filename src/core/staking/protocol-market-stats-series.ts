@@ -1,14 +1,23 @@
+import type { CalcProduct } from '~/core/staking/staking-yield'
+
 /**
  * 协议市值 / 总质押历史序列：UI 参数映射与图表点构建。
  *
  * `range` / `metric` 字面量与 `~/shared/api/types` 线契约一致（类型 SSOT 在 API types）。
+ * 涨跌幅用接口 `latest_growth_rate`，不用序列首末点自行计算（year/all 抽稀后首点 ≠ 对比基准）。
  *
  * @see docs/backend-api/api.md #protocol-market-stats/series
+ * @see docs/backend-api/api.md #protocol-market-stats/aggregate-series
  */
 
 export type ProtocolMarketStatsSeriesRow = {
   date: string | number
   amount: string | number
+}
+
+export type ProtocolMarketStatsSeriesPayload = {
+  list?: readonly ProtocolMarketStatsSeriesRow[] | null
+  latest_growth_rate?: number | null
 }
 
 export type ProtocolMarketStatsChartPoint = {
@@ -50,6 +59,41 @@ export function resolveProtocolMarketStatsMetric(uiMetric: string): 'market' | '
   return uiMetric === 'mcap' ? 'market' : 'stake'
 }
 
+/** 子页四条趋势：`POST /protocol-market-stats/aggregate-series` 的 `metric` */
+export type ProtocolMarketStatsAggregateMetric = 'stake' | 'lp_bond' | 'burn_bond' | 'x_stake'
+
+const AGGREGATE_METRIC_BY_PRODUCT = {
+  stake: 'stake',
+  lpbond: 'lp_bond',
+  burnbond: 'burn_bond',
+  xmine: 'x_stake',
+} as const satisfies Record<CalcProduct, ProtocolMarketStatsAggregateMetric>
+
+/**
+ * 详情页产品映射为汇总趋势 `metric`。
+ *
+ * @param product 质押 / LP 债 / 销毁债 / X 挖矿
+ * @returns 对应 API metric
+ * @see docs/backend-api/api.md #protocol-market-stats/aggregate-series
+ */
+export function resolveProtocolMarketStatsAggregateMetric(
+  product: CalcProduct,
+): ProtocolMarketStatsAggregateMetric {
+  return AGGREGATE_METRIC_BY_PRODUCT[product]
+}
+
+/**
+ * 汇总趋势金额单位：`x_stake` 为 gAGX，其余为 AGX。
+ *
+ * @param metric aggregate-series `metric`
+ * @returns 展示后缀（不含空格）
+ */
+export function protocolMarketStatsAggregateUnit(
+  metric: ProtocolMarketStatsAggregateMetric,
+): 'AGX' | 'gAGX' {
+  return metric === 'x_stake' ? 'gAGX' : 'AGX'
+}
+
 /**
  * 解析序列日期为 UTC 秒；非法返回 null。
  * 支持 `yyyy-MM-dd`、unix 秒、unix 毫秒。
@@ -86,17 +130,17 @@ function parseAmount(raw: string | number): number | null {
 }
 
 /**
- * 将 API 序列转为升序图表点，并派生最新值与首末涨跌幅。
- * 非法 date/amount 行丢弃；首点 ≤0 时涨跌幅为 null。
+ * 将 API 序列信封转为升序图表点；涨跌幅取 `latest_growth_rate`。
+ * 非法 date/amount 行丢弃；缺数或非法增长率返回 null（UI 再显示 `+0.0%`）。
  *
- * @param rows API 序列行
- * @returns 图表点与最新值、涨跌幅
+ * @param payload `/series` 或 `/aggregate-series` 的 `data`
+ * @returns 图表点、最新值、接口增长率
  */
 export function buildProtocolMarketStatsChart(
-  rows: readonly ProtocolMarketStatsSeriesRow[],
+  payload: ProtocolMarketStatsSeriesPayload | null | undefined,
 ): ProtocolMarketStatsChart {
   const points: ProtocolMarketStatsChartPoint[] = []
-  for (const row of rows) {
+  for (const row of payload?.list ?? []) {
     const time = parseProtocolMarketStatsDate(row.date)
     const value = parseAmount(row.amount)
     if (time == null || value == null) continue
@@ -104,12 +148,12 @@ export function buildProtocolMarketStatsChart(
   }
   points.sort((a, b) => a.time - b.time)
 
+  const rate = payload?.latest_growth_rate
+  const percentChange = rate == null || !Number.isFinite(rate) ? null : rate
   if (points.length === 0) {
-    return { points: [], lastValue: null, percentChange: null }
+    return { points: [], lastValue: null, percentChange }
   }
 
-  const first = points[0]!.value
   const last = points[points.length - 1]!.value
-  const percentChange = first > 0 ? ((last - first) / first) * 100 : null
   return { points, lastValue: last, percentChange }
 }

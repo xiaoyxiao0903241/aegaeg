@@ -37,7 +37,7 @@ export function StakeDetail() {
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,
-  } = useStakingDetail()
+  } = useStakingDetail('stake')
   const epochSchedule = useEpochScheduleLabels()
   const bufferDays = usePrincipalReleaseDurationDays().data ?? 30
   const mechanismSteps = mapStepsWithEpochSchedule(t.staking.stake.mechanismSteps, epochSchedule)

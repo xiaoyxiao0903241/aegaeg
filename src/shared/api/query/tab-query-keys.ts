@@ -90,6 +90,7 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.migrationRoot,
     queryKeys.api.stakeAddressCount,
     queryKeys.api.protocolMarketStatsSeriesRoot,
+    queryKeys.api.protocolMarketStatsAggregateRoot,
     queryKeys.api.stakeFlowPositionsRoot,
     queryKeys.api.bondFlowLpPurchasesRoot,
     queryKeys.api.bondFlowBurnPurchasesRoot,

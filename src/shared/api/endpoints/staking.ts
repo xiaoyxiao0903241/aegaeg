@@ -6,8 +6,10 @@ import type {
   BondPurchasesPage,
   Paginated,
   PaginationParams,
+  ProtocolMarketStatsAggregateData,
+  ProtocolMarketStatsAggregateParams,
+  ProtocolMarketStatsSeriesData,
   ProtocolMarketStatsSeriesParams,
-  ProtocolMarketStatsSeriesPoint,
   StakeAddressCountStats,
   StakeFlowLogItem,
   StakeFlowLogsParams,
@@ -28,22 +30,43 @@ export async function getStakeAddressCount(token: string): Promise<StakeAddressC
 }
 
 /**
- * 协议总市值 / 总质押历史序列。
+ * 协议总市值 / 总质押历史序列（需登录）。
  *
- * 探活：暂按需登录带 Bearer，验证服务端是否仍 401（文档仍写 auth: none）。
+ * 解包 `data` 为 `{ metric, range, list, latest_growth_rate }`，点列在 `list`。
  *
  * @see docs/backend-api/api.md #protocol-market-stats/series
  */
 export async function getProtocolMarketStatsSeries(
   token: string,
   params: ProtocolMarketStatsSeriesParams,
-): Promise<ProtocolMarketStatsSeriesPoint[]> {
-  return apiRequest<ProtocolMarketStatsSeriesPoint[]>('/protocol-market-stats/series', {
+): Promise<ProtocolMarketStatsSeriesData> {
+  return apiRequest<ProtocolMarketStatsSeriesData>('/protocol-market-stats/series', {
     method: 'POST',
     token,
     body: {
       range: params.range,
       metric: params.metric,
+    },
+  })
+}
+
+/**
+ * 四类汇总趋势（质押 / LP 债 / 销毁债 / X 池）。
+ *
+ * 解包 `data` 为 `{ metric, range, mode, list, latest_growth_rate }`；默认 `mode=balance`。
+ *
+ * @see docs/backend-api/api.md #protocol-market-stats/aggregate-series
+ */
+export async function getProtocolMarketStatsAggregateSeries(
+  token: string,
+  params: ProtocolMarketStatsAggregateParams,
+): Promise<ProtocolMarketStatsAggregateData> {
+  return apiRequest<ProtocolMarketStatsAggregateData>('/protocol-market-stats/aggregate-series', {
+    method: 'POST',
+    token,
+    body: {
+      metric: params.metric,
+      range: params.range,
     },
   })
 }

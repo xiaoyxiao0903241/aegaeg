@@ -30,7 +30,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,
-  } = useStakingDetail()
+  } = useStakingDetail(kind === 'lp' ? 'lpbond' : 'burnbond')
   const recordsTitle =
     kind === 'lp' ? t.staking.aside.recordsTitles.lpbond : t.staking.aside.recordsTitles.burnbond
   const chartTitle =

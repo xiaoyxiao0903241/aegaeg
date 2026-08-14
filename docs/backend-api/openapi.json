@@ -77,8 +77,8 @@
       "description": "X0 挖矿流水与持仓\n\n一级路由：`POST /api/x0-mining/…`\n\n本组接口：\n- `POST /x0-mining/logs`\n- `POST /x0-mining/positions`"
     },
     {
-      "name": "protocol-market-stats（协议市值统计）",
-      "description": "协议总市值 / 总质押历史序列\n\n一级路由：`POST /api/protocol-market-stats/…`\n\n本组接口：\n- `POST /protocol-market-stats/series`"
+      "name": "protocol-market-stats（协议市值质押）",
+      "description": "协议总市值/总质押日点与四类汇总趋势：Redis 缓存；周/月/年/全部序列与 latest_growth_rate\n\n一级路由：`POST /api/protocol-market-stats/…`\n\n本组接口：\n- `POST /protocol-market-stats/aggregate-series`\n- `POST /protocol-market-stats/series`"
     },
     {
       "name": "一期接口",
@@ -1530,33 +1530,21 @@
           }
         }
       },
-      "ProtocolMarketStatsSeriesRequest": {
+      "ProtocolMarketStatsPoint": {
         "type": "object",
-        "required": ["range", "metric"],
-        "properties": {
-          "range": {
-            "type": "string",
-            "enum": ["week", "month", "year", "all"],
-            "description": "**说明：** 周期"
-          },
-          "metric": {
-            "type": "string",
-            "enum": ["market", "stake"],
-            "description": "**说明：** market=总市值，stake=总质押"
-          }
-        }
-      },
-      "ProtocolMarketStatsSeriesPoint": {
-        "type": "object",
-        "required": ["date", "amount"],
+        "description": "协议序列点（USD）",
         "properties": {
           "date": {
             "type": "string",
-            "description": "**说明：** 日期（如 yyyy-MM-dd）"
+            "description": "**说明：** YYYY-MM-DD",
+            "example": "2026-08-06",
+            "title": "date"
           },
           "amount": {
             "type": "string",
-            "description": "**说明：** 数值（十进制字符串）"
+            "description": "**说明：** 金额 USD；metric=market 为总市值，metric=stake 为总质押",
+            "example": "1234567.890123",
+            "title": "amount"
           }
         }
       },
@@ -1565,15 +1553,40 @@
         "properties": {
           "code": {
             "type": "integer",
-            "example": 0,
-            "description": "**说明：** 业务码，0=成功",
-            "title": "code"
+            "example": 0
           },
           "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProtocolMarketStatsSeriesPoint"
-            }
+            "type": "object",
+            "description": "**说明：** 区间序列；metric + range + list + latest_growth_rate",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": ["market", "stake"],
+                "description": "**说明：** market=总市值，stake=总质押（USD）",
+                "title": "metric"
+              },
+              "range": {
+                "type": "string",
+                "enum": ["week", "month", "year", "all"],
+                "description": "**说明：** 区间维度",
+                "title": "range"
+              },
+              "list": {
+                "type": "array",
+                "description": "**说明：** 区间内序列点",
+                "items": {
+                  "$ref": "#/components/schemas/ProtocolMarketStatsPoint"
+                },
+                "title": "list"
+              },
+              "latest_growth_rate": {
+                "type": "number",
+                "nullable": true,
+                "description": "**说明：** 最新点相对前一周期增长率（%）；week=−7天，month=上月同日，year=上年同日，all=最早；前一周期无数据则对比最早",
+                "title": "latest_growth_rate"
+              }
+            },
+            "title": "data"
           }
         }
       },
@@ -6673,16 +6686,33 @@
     },
     "/protocol-market-stats/series": {
       "post": {
-        "tags": ["protocol-market-stats（协议市值统计）"],
-        "summary": "协议总市值 / 总质押历史序列 / Protocol market & stake series",
-        "description": "按周期与指标返回历史点列。`range`：week / month / year / all；`metric`：market=总市值，stake=总质押。\ndata 为 `[{ date, amount }, …]`。无需登录。\n",
-        "security": [],
+        "tags": ["protocol-market-stats（协议市值质押）"],
+        "summary": "协议总市值与总质押序列 / Protocol market & stake series",
+        "description": "日点来源：总市值 = pool_liquidity_daily.agx_reserve * agx_price_usd（USD）；\n若当日无池子快照，写当日缓存时回退为 snapshot_date ≤ 当日 的最新市值。\n总质押 = SUM(user_performance_daily.sum_invest_usdt) 按日（USD 累计投入口径）。\n日点缓存于 Redis；miss 时全量回源后重查。定时：本地 01:00 增量、01:30 补偿。\n\n请求：range + metric（必填）\n- range：week=近 7 日逐日；month=近 30 日逐日；year=近 365 日按周抽稀；all=全量按自然月抽稀\n- metric：market=总市值，stake=总质押\n\n响应 data：\n{ metric, range, list:[{ date, amount }], latest_growth_rate }\n- amount：USD 字符串\n- latest_growth_rate：最新点相对前一周期增长率（百分比数值）；\n  week=最新−7天，month=上月同日，year=上年同日，all=相对最早日；\n  前一周期无快照则对比最早；分母<=0 或无可比基准为 null\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProtocolMarketStatsSeriesRequest"
+                "type": "object",
+                "required": ["range", "metric"],
+                "properties": {
+                  "range": {
+                    "type": "string",
+                    "enum": ["week", "month", "year", "all"],
+                    "description": "区间维度"
+                  },
+                  "metric": {
+                    "type": "string",
+                    "enum": ["market", "stake"],
+                    "description": "market=总市值，stake=总质押（USD）"
+                  }
+                }
               }
             }
           }
@@ -6694,6 +6724,139 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponseProtocolMarketStatsSeries"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/protocol-market-stats/aggregate-series": {
+      "post": {
+        "tags": ["protocol-market-stats（协议市值质押）"],
+        "summary": "四类汇总趋势（质押/LP债券/销毁债券/X质押） / Aggregate trends series",
+        "description": "数据源：user_performance_daily 日快照（scanner 权威投影）。\n指标列（balance 口径，SUM 全用户快照值）：\n  stake    = active_stake_balance（AGX 活跃质押余额；与 /series 的 stake=SUM(sum_invest_usdt) USD 累计投入口径不同）\n  lp_bond  = bond_lp\n  burn_bond= bond_burn\n  x_stake  = stake_x_pool（gAGX）\nmode：balance（默认）| delta（预留，使用 *_delta 增量列）\n\nrange：week(近7日逐日) / month(近30日逐日) / year(近365日按周) / all(按自然月)\n\n响应 data：{ metric, range, mode, list:[{ date, amount }], latest_growth_rate }\nlatest_growth_rate：最新点相对前一周期（week−7天 / month上月同日 / year上年同日 / all最早）；\n前一周期无快照则对比最早；分母<=0 或无可比基准为 null。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["metric", "range"],
+                "properties": {
+                  "metric": {
+                    "type": "string",
+                    "enum": ["stake", "lp_bond", "burn_bond", "x_stake"],
+                    "description": "指标"
+                  },
+                  "range": {
+                    "type": "string",
+                    "enum": ["week", "month", "year", "all"],
+                    "description": "区间维度"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": ["balance", "delta"],
+                    "default": "balance",
+                    "description": "口径（delta 为预留扩展）"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "metric": {
+                          "type": "string"
+                        },
+                        "range": {
+                          "type": "string"
+                        },
+                        "mode": {
+                          "type": "string"
+                        },
+                        "latest_growth_rate": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "example": "2026-08-06"
+                              },
+                              "amount": {
+                                "type": "string",
+                                "example": "1234567.890123"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误（metric/range/mode 非法）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
                 }
               }
             }
@@ -6721,7 +6884,7 @@
         "bond-flow（债券流水）",
         "turbine（涡轮）",
         "x0-mining（X0 挖矿）",
-        "protocol-market-stats（协议市值统计）"
+        "protocol-market-stats（协议市值质押）"
       ]
     },
     {

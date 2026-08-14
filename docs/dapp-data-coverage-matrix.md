@@ -135,7 +135,7 @@
 |S-008|质押|总览首页|还能持续多久|读取展示|`labels.runway`=`runwayUnknown`=`—`；不伪造 0 天|无公式/无链字段|—|⚪ 不适用|—|—|A-19|A-19|诚实空；与附录 Z-012 同|
 |S-009|质押|总览首页|有多少个地址参与了质押|读取展示|`useStakeAddressCount(sessionReady)`；`!sessionReady`/loading/fail 均 `formatNumber(0)`|—|`POST /performance/stake-address-count`|✅ 已对齐|设计取舍（缺数显0）|—|—|—|门控对；空/失败造 0，不是「—」|
 |S-010|质押|总览·周期表|基础日收益、锁定加成、各周期收益|读取展示|`formatYieldPct(null)`→`YIELD_EMPTY`=`0.00%`；算法跟 epoch×`epochsPerDay`+`lockedBonusBps`|手册 epoch×`epochsPerDay`；`lockedBonusBps`|—|✅ 已对齐|设计取舍（缺数显0）|—|B-44|—|债券段加成为 0 仍合法；空态造 0%|
-|S-011|质押|总览·图表|质押总量 / 市值历史曲线|读取展示|序列接线公开 API；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`|`docs/backend-api/api.md` #protocol-market-stats/series|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|主问题是空态造零；接线见附录；本行不靠线上序列抬档|
+|S-011|质押|总览·图表|质押总量 / 市值历史曲线|读取展示|`useProtocolMarketStatsChart` 读 `data.list`；涨跌幅=`latest_growth_rate`；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`|`docs/backend-api/api.md` #protocol-market-stats/series|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|主问题是空态造零；接线见附录；本行不靠线上序列抬档|
 |S-012|质押|总览·常见问题|写着「约 14,400 块 / 一轮约 12 小时 / 每天 2 次」|读取展示|hub FAQ `{blocks}/{hours}/{timesPerDay}`；本金缓冲 FAQ `{days}`←effectiveDuration|手册 epoch / Manager.duration|—|✅ 已对齐|—|—|C-14|C-14|Epoch+缓冲天数跟链；12 locale 占位齐全；产品确认跟链|
 |S-013|质押|总览·常见问题|写着「收益以 gAGX 结算 / 可直接挖 X」|读取展示|`zh.ts` hub/stake FAQ 已渲染 gAGX 结算叙事|手册 §8/§9 结算 AGX；§15 挖矿须 gAGX|—|✅ 已对齐|—|—|C-08 · A-07|C-08 · A-07|产品确认保留稿面（B 口径）；非接线错|
 |S-014|质押|总览·提示文案|「总销毁量」旁的说明（含销毁债券说法）|读取展示|`overview.metrics.burned.hint`|同 S-006|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|C-09|C-09|跟稿张力进改稿队列|
@@ -152,7 +152,7 @@
 |S-025|质押|活期/定期·详情|质押流水记录表|读取展示|`useStakeFlowPositions`|`docs/backend-api` #stake-flow/positions|`POST /stake-flow/positions`|✅ 已对齐|—|—|—|—|需要已登录|
 |S-026|质押|活期/定期·常见问题|「每天 2 次复利增发 / 约 12 小时」等|读取展示|`stake.faq`/`intro`：`{blocks}/{hours}/{timesPerDay}`；本金 FAQ `{days}`←effectiveDuration|`epoch.length` · Manager.duration|—|✅ 已对齐|—|—|C-14|C-14|Epoch+缓冲天数跟链；12 locale 占位齐全；产品确认跟链|
 |S-027|质押|活期/定期·机制说明|「收益以 gAGX」|读取展示|mechanismSteps / faq 已渲染|链 AGX|—|✅ 已对齐|—|—|C-02 · C-08|C-02 · C-08|产品确认保留稿面（B 口径）；非接线错|
-|S-028|质押|活期/定期·详情|趋势图|读取展示|共用 `useProtocolMarketStatsChart`；同 S-011 空态 `$0`/`+0%`|同 S-011|`POST /protocol-market-stats/series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|结论同 S-011；继承空态造零|
+|S-028|质押|活期/定期·详情|趋势图|读取展示|`useStakingDetail('stake')`→`aggregate-series` `metric=stake`（AGX）；涨跌幅=`latest_growth_rate`；空态 `0.00 AGX`/`+0.0%`|`docs/backend-api/api.md` #protocol-market-stats/aggregate-series|`POST /protocol-market-stats/aggregate-series`|✅ 已对齐|设计取舍（缺数显0）|—|A-18|A-18|LP/销毁/X 详情同 hook 换 metric（`lp_bond`/`burn_bond`/`x_stake`）；Hub 仍走 `/series`|
 |S-029|质押|债券·操作区|各周期折扣价率（如显示「85%」）|读取展示|`formatBondDiscountLabel`；Prod 180=8500→「85%」|手册 · BondDepository.`discountRateBP`|—|✅ 已对齐|—|—|—|—|这是协议配置价率，不是个人钱包金额；标签叫法问题见 S-030|
 |S-030|质押|债券·操作区/详情|标签写「溢价率」，数字却是价率（如 85%）|读取展示|标签「溢价率」/FAQ「收益空间」；值=`discountRateBP` 价率（85%）非 15% 空间|手册 discountRateBP=成交价率|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|产品确认保留「溢价率」稿面；数字是否等于手册「溢价」语义另核（不要擅自改成「折扣」文案）|C-16|C-16|数字对见 S-029；进改稿队列|
 |S-031|质押|债券·操作区|已售 / 还能买多少（债务剩余）|读取展示|`formatBondDebtRemainingDisplay`←maxDebt/totalDeposit；接线在|手册 BondDepository 债务|—|✅ 已对齐|设计取舍（缺数显0）|—|B-34|—|前端已接；本表不要求线上对账|

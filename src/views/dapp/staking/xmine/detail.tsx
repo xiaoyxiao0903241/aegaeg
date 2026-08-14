@@ -31,7 +31,7 @@ export function XmineDetail() {
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,
-  } = useStakingDetail()
+  } = useStakingDetail('xmine')
   const xValue = t.staking.aside.xValue
 
   return (

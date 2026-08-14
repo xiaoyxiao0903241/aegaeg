@@ -28,6 +28,31 @@ export interface ProtocolMarketStatsSeriesPoint {
   amount: string
 }
 
+/** POST /protocol-market-stats/series 解包后的 `data` */
+export interface ProtocolMarketStatsSeriesData {
+  metric: ProtocolMarketStatsMetric
+  range: ProtocolMarketStatsRange
+  list: ProtocolMarketStatsSeriesPoint[]
+  latest_growth_rate: number | null
+}
+
+/** POST /protocol-market-stats/aggregate-series · `metric` */
+export type ProtocolMarketStatsAggregateMetric = 'stake' | 'lp_bond' | 'burn_bond' | 'x_stake'
+
+export interface ProtocolMarketStatsAggregateParams {
+  range: ProtocolMarketStatsRange
+  metric: ProtocolMarketStatsAggregateMetric
+}
+
+/** POST /protocol-market-stats/aggregate-series 解包后的 `data` */
+export interface ProtocolMarketStatsAggregateData {
+  metric: ProtocolMarketStatsAggregateMetric
+  range: ProtocolMarketStatsRange
+  mode: string
+  list: ProtocolMarketStatsSeriesPoint[]
+  latest_growth_rate: number | null
+}
+
 export interface BondFlowLogItem {
   user_address: string
   operation: BondFlowOperation

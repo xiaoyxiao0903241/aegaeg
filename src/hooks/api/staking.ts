@@ -1,17 +1,20 @@
 /**
- * 质押域 API hooks：流水与协议市值序列均需登录（后者为探活，文档仍写公开）。
+ * 质押域 API hooks：流水与协议市值序列均需登录。
  */
 import {
   buildProtocolMarketStatsChart,
+  resolveProtocolMarketStatsAggregateMetric,
   resolveProtocolMarketStatsMetric,
   resolveProtocolMarketStatsRange,
 } from '~/core/staking/protocol-market-stats-series'
+import type { CalcProduct } from '~/core/staking/staking-yield'
 import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getBondFlowBurnLogs,
   getBondFlowBurnPurchases,
   getBondFlowLpLogs,
   getBondFlowLpPurchases,
+  getProtocolMarketStatsAggregateSeries,
   getProtocolMarketStatsSeries,
   getStakeAddressCount,
   getStakeFlowLogs,
@@ -23,6 +26,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type {
   BondFlowLogsParams,
   PaginationParams,
+  ProtocolMarketStatsAggregateMetric,
   ProtocolMarketStatsMetric,
   ProtocolMarketStatsRange,
   StakeFlowLogsParams,
@@ -40,7 +44,7 @@ export function useStakeAddressCount(enabled = true) {
 }
 
 /**
- * 协议总市值 / 总质押历史序列（探活：按需登录；未登录不发请求）。
+ * 协议总市值 / 总质押历史序列（需登录；未登录不发请求）。
  *
  * @param range API `range`
  * @param metric API `metric`
@@ -66,9 +70,9 @@ function useProtocolMarketStatsSeries(
  *
  * @param chartRange 当前选中的时间范围文案（与 `rangeLabels` 对齐）
  * @param rangeLabels i18n `chartRanges`
- * @param uiMetric Hub：`tvl`/`mcap`；子页趋势图固定 `tvl`
+ * @param uiMetric Hub：`tvl`/`mcap`
  * @param enabled false 时暂停请求
- * @returns API 查询视图，并附图表点、最新值与涨跌幅
+ * @returns API 查询视图，并附图表点、最新值与接口 `latest_growth_rate`
  */
 export function useProtocolMarketStatsChart(
   chartRange: string,
@@ -79,9 +83,59 @@ export function useProtocolMarketStatsChart(
   const range = resolveProtocolMarketStatsRange(chartRange, rangeLabels)
   const metric = resolveProtocolMarketStatsMetric(uiMetric)
   const seriesQuery = useProtocolMarketStatsSeries(range, metric, enabled)
-  const chart = buildProtocolMarketStatsChart(seriesQuery.data ?? [])
+  const chart = buildProtocolMarketStatsChart(seriesQuery.data)
   return {
     ...seriesQuery,
+    points: chart.points,
+    lastValue: chart.lastValue,
+    percentChange: chart.percentChange,
+  }
+}
+
+/**
+ * 子页四类汇总趋势（需登录；未登录不发请求）。
+ *
+ * @param range API `range`
+ * @param metric aggregate-series `metric`
+ * @param enabled false 时暂停请求
+ * @returns 汇总序列查询视图
+ */
+function useProtocolMarketStatsAggregateSeries(
+  range: ProtocolMarketStatsRange,
+  metric: ProtocolMarketStatsAggregateMetric,
+  enabled = true,
+) {
+  return useAuthenticatedQuery(
+    queryKeys.api.protocolMarketStatsAggregateSeries(range, metric),
+    (token) => getProtocolMarketStatsAggregateSeries(token, { range, metric }),
+    enabled,
+    { keepPreviousData: true },
+  )
+}
+
+/**
+ * 按详情页产品拉四类汇总趋势并构建图表点。
+ *
+ * @param chartRange 当前选中的时间范围文案（与 `rangeLabels` 对齐）
+ * @param rangeLabels i18n `chartRanges`
+ * @param product 质押 / LP 债 / 销毁债 / X 挖矿
+ * @param enabled false 时暂停请求
+ * @returns API 查询视图，并附图表点、最新值、接口增长率与 `metric`
+ * @see docs/backend-api/api.md #protocol-market-stats/aggregate-series
+ */
+export function useProtocolMarketStatsAggregateChart(
+  chartRange: string,
+  rangeLabels: readonly string[],
+  product: CalcProduct,
+  enabled = true,
+) {
+  const range = resolveProtocolMarketStatsRange(chartRange, rangeLabels)
+  const metric = resolveProtocolMarketStatsAggregateMetric(product)
+  const seriesQuery = useProtocolMarketStatsAggregateSeries(range, metric, enabled)
+  const chart = buildProtocolMarketStatsChart(seriesQuery.data)
+  return {
+    ...seriesQuery,
+    metric,
     points: chart.points,
     lastValue: chart.lastValue,
     percentChange: chart.percentChange,

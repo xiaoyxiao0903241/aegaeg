@@ -30,7 +30,7 @@ EVM 签名登录与销售记录接口 / EVM login and sales APIs
 - [bond-flow（债券流水）](#bond-flow-债券流水)（4）
 - [turbine（涡轮）](#turbine-涡轮)（2）
 - [x0-mining（X0 挖矿）](#x0-mining-x0-挖矿)（2）
-- [protocol-market-stats（协议市值统计）](#protocol-market-stats-协议市值统计)（1）
+- [protocol-market-stats（协议市值质押）](#protocol-market-stats-协议市值质押)（2）
 - [一期接口](#一期接口)（18）
 
 ## lucky-reward（幸运奖）
@@ -999,32 +999,78 @@ total_stake_amount = SUM(STAKE_X) − SUM(UNSTAKE_X)（gAGX 净质押，与投�
 |200|成功 / Success|`ApiResponseX0MiningPositions` {`code`:integer, `data`:object}|
 |401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
-## protocol-market-stats（协议市值统计）
+## protocol-market-stats（协议市值质押）
 
-协议总市值 / 总质押历史序列
+协议总市值/总质押日点与四类汇总趋势：Redis 缓存；周/月/年/全部序列与 latest_growth_rate
 
 一级路由：`POST /api/protocol-market-stats/…`
 
 本组接口：
 
+- `POST /protocol-market-stats/aggregate-series`
 - `POST /protocol-market-stats/series`
 
-### `POST` `/protocol-market-stats/series`
+### `POST` `/protocol-market-stats/aggregate-series`
 
-**协议总市值 / 总质押历史序列 / Protocol market & stake series**
+**四类汇总趋势（质押/LP债券/销毁债券/X质押） / Aggregate trends series**
 
-- auth: none
+- auth: required
 
-按周期与指标返回历史点列。`range`：week / month / year / all；`metric`：market=总市值，stake=总质押。
-data 为 `[{ date, amount }, …]`。无需登录。
+数据源：user_performance_daily 日快照（scanner 权威投影）。
+指标列（balance 口径，SUM 全用户快照值）：
+  stake    = active_stake_balance（AGX 活跃质押余额；与 /series 的 stake=SUM(sum_invest_usdt) USD 累计投入口径不同）
+  lp_bond  = bond_lp
+  burn_bond= bond_burn
+  x_stake  = stake_x_pool（gAGX）
+mode：balance（默认）| delta（预留，使用 *_delta 增量列）
+
+range：week(近7日逐日) / month(近30日逐日) / year(近365日按周) / all(按自然月)
+
+响应 data：{ metric, range, mode, list:[{ date, amount }], latest_growth_rate }
+latest_growth_rate：最新点相对前一周期（week−7天 / month上月同日 / year上年同日 / all最早）；
+前一周期无快照则对比最早；分母<=0 或无可比基准为 null。
 
 **Request body**
 
-- `application/json`: `ProtocolMarketStatsSeriesRequest` {`range`:string, `metric`:string}
+- `application/json`: {`metric`*:string, `range`*:string, `mode`:string}
 
 |status|description|schema|
 |---|---|---|
-|200|成功 / Success|`ApiResponseProtocolMarketStatsSeries` {`code`:integer, `data`:array<{date, amount}>}|
+|200|成功 / Success|{`code`:integer, `data`:object}|
+|400|参数错误（metric/range/mode 非法）|`ApiErrorResponse`|
+|401|未授权|`ApiErrorResponse`|
+
+### `POST` `/protocol-market-stats/series`
+
+**协议总市值与总质押序列 / Protocol market & stake series**
+
+- auth: required
+
+日点来源：总市值 = pool_liquidity_daily.agx_reserve * agx_price_usd（USD）；
+若当日无池子快照，写当日缓存时回退为 snapshot_date ≤ 当日 的最新市值。
+总质押 = SUM(user_performance_daily.sum_invest_usdt) 按日（USD 累计投入口径）。
+日点缓存于 Redis；miss 时全量回源后重查。定时：本地 01:00 增量、01:30 补偿。
+
+请求：range + metric（必填）
+- range：week=近 7 日逐日；month=近 30 日逐日；year=近 365 日按周抽稀；all=全量按自然月抽稀
+- metric：market=总市值，stake=总质押
+
+响应 data：
+{ metric, range, list:[{ date, amount }], latest_growth_rate }
+- amount：USD 字符串
+- latest_growth_rate：最新点相对前一周期增长率（百分比数值）；
+  week=最新−7天，month=上月同日，year=上年同日，all=相对最早日；
+  前一周期无快照则对比最早；分母<=0 或无可比基准为 null
+
+**Request body**
+
+- `application/json`: {`range`*:string, `metric`*:string}
+
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|`ApiResponseProtocolMarketStatsSeries` {`code`:integer, `data`:object}|
+|400|参数错误|`ApiErrorResponse`|
+|401|未授权|`ApiErrorResponse`|
 
 ## 一期接口
 

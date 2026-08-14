@@ -1,28 +1,37 @@
 import type { UTCTimestamp } from 'lightweight-charts'
 import { useState } from 'react'
 
-import { useProtocolMarketStatsChart } from '~/hooks/use-api-data'
+import { protocolMarketStatsAggregateUnit } from '~/core/staking/protocol-market-stats-series'
+import type { CalcProduct } from '~/core/staking/staking-yield'
+import { useProtocolMarketStatsAggregateChart } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import type { ChartPoint } from '~/shared/components/chart'
-import { formatPercentChange, formatUsd } from '~/shared/presenters/format'
+import { formatCompact, formatPercentChange } from '~/shared/presenters/format'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 
 /**
  * 质押各详情区块的共享文案与状态
  *
- * 提供 i18n 文案、资产页 Tab 跳转、图表时间范围与 TVL 序列等，
+ * 提供 i18n 文案、资产页 Tab 跳转、图表时间范围与按产品拆开的汇总趋势，
  * 供概览 / 仓位 / 记录 / 机制 / 图表 / FAQ 区块复用。
+ *
+ * @param product 决定 `aggregate-series` 的 metric 与金额单位
  */
-export function useStakingDetail() {
+export function useStakingDetail(product: CalcProduct) {
   const { messages: t } = useI18n()
   const selectTab = useDappHostStore((state) => state.selectTab)
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
-  const seriesChart = useProtocolMarketStatsChart(chartRange, t.staking.aside.chartRanges, 'tvl')
+  const seriesChart = useProtocolMarketStatsAggregateChart(
+    chartRange,
+    t.staking.aside.chartRanges,
+    product,
+  )
   const chartLoading = seriesChart.isLoading && seriesChart.data == null
   const chartPoints: readonly ChartPoint[] = seriesChart.points.map((p) => ({
     time: p.time as UTCTimestamp,
     value: p.value,
   }))
+  const unit = protocolMarketStatsAggregateUnit(seriesChart.metric)
 
   return {
     t,
@@ -31,7 +40,10 @@ export function useStakingDetail() {
     setChartRange,
     chartLoading,
     chartPoints,
-    chartValueLabel: formatUsd(seriesChart.lastValue),
+    chartValueLabel: formatCompact(seriesChart.lastValue ?? 0, {
+      digits: 2,
+      suffix: ` ${unit}`,
+    }),
     chartDeltaLabel: formatPercentChange(seriesChart.percentChange),
     xValue: t.staking.aside.xValue,
     defaultRecordColumns: t.staking.aside.recordColumns,

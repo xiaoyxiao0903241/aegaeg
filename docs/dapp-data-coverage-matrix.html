@@ -1627,7 +1627,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="2-质押" data-search="s-011 质押 总览·图表 质押总量 / 市值历史曲线 读取展示 序列接线公开 api；`chartvaluelabel`=`formatusd(lastvalue)` null→`$0.00`；`formatpercentchange(null)`→`+0.0%` `docs/backend-api/api.md` #protocol-market-stats/series `post /protocol-market-stats/series`  ✅ 已对齐 设计取舍（缺数显0） — a-18  a-18 主问题是空态造零；接线见附录；本行不靠线上序列抬档">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-011 质押 总览·图表 质押总量 / 市值历史曲线 读取展示 `useprotocolmarketstatschart` 读 `data.list`；涨跌幅=`latest_growth_rate`；`chartvaluelabel`=`formatusd(lastvalue)` null→`$0.00`；`formatpercentchange(null)`→`+0.0%` `docs/backend-api/api.md` #protocol-market-stats/series `post /protocol-market-stats/series`  ✅ 已对齐 设计取舍（缺数显0） — a-18  a-18 主问题是空态造零；接线见附录；本行不靠线上序列抬档">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-011</span>
     <span class="surface">总览·图表</span>
@@ -1642,7 +1642,7 @@
       <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-18</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>序列接线公开 API；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`useProtocolMarketStatsChart` 读 `data.list`；涨跌幅=`latest_growth_rate`；`chartValueLabel`=`formatUsd(lastValue)` null→`$0.00`；`formatPercentChange(null)`→`+0.0%`</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>`docs/backend-api/api.md` #protocol-market-stats/series</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>`POST /protocol-market-stats/series`</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
@@ -2018,7 +2018,7 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="2-质押" data-search="s-028 质押 活期/定期·详情 趋势图 读取展示 共用 `useprotocolmarketstatschart`；同 s-011 空态 `$0`/`+0%` 同 s-011 `post /protocol-market-stats/series`  ✅ 已对齐 设计取舍（缺数显0） — a-18  a-18 结论同 s-011；继承空态造零">
+<article class="row" data-status="ok" data-section="2-质押" data-search="s-028 质押 活期/定期·详情 趋势图 读取展示 `usestakingdetail('stake')`→`aggregate-series` `metric=stake`（agx）；涨跌幅=`latest_growth_rate`；空态 `0.00 agx`/`+0.0%` `docs/backend-api/api.md` #protocol-market-stats/aggregate-series `post /protocol-market-stats/aggregate-series`  ✅ 已对齐 设计取舍（缺数显0） — a-18  a-18 lp/销毁/x 详情同 hook 换 metric（`lp_bond`/`burn_bond`/`x_stake`）；hub 仍走 `/series`">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">S-028</span>
     <span class="surface">活期/定期·详情</span>
@@ -2033,11 +2033,11 @@
       <div><dt>T1 归因</dt><dd>设计取舍（缺数显0）</dd></div>
       <div><dt>继承自</dt><dd>A-18</dd></div>
       <div><dt>A/B/C 链</dt><dd>A-18</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>共用 `useProtocolMarketStatsChart`；同 S-011 空态 `$0`/`+0%`</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>同 S-011</dd></div>
-      <div class="wide"><dt>API 接口</dt><dd>`POST /protocol-market-stats/series`</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`useStakingDetail('stake')`→`aggregate-series` `metric=stake`（AGX）；涨跌幅=`latest_growth_rate`；空态 `0.00 AGX`/`+0.0%`</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>`docs/backend-api/api.md` #protocol-market-stats/aggregate-series</dd></div>
+      <div class="wide"><dt>API 接口</dt><dd>`POST /protocol-market-stats/aggregate-series`</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>结论同 S-011；继承空态造零</dd></div>
+      <div class="wide"><dt>备注</dt><dd>LP/销毁/X 详情同 hook 换 metric（`lp_bond`/`burn_bond`/`x_stake`）；Hub 仍走 `/series`</dd></div>
     </dl>
   </div>
 </article>
@@ -10166,7 +10166,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-12T16:54:24.917Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-14T02:02:26.165Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
