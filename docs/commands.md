@@ -8,7 +8,7 @@
 |---|---|
 |`pnpm dev`|tokens + render-home + Vite `:5174`（`/api` → `VITE_API_BASE_URL` 代理，避 CORS）|
 |`pnpm build`|tokens + `tsc -b` + render-home + production build|
-|`pnpm env:staging` / `env:prod` / `env:status`|切换 `.env.local`|
+|`pnpm env:staging` / `env:prod` / `env:status`|从 `env/prod.env` / `env/staging.env` 整份写入 `.env` 与 `.env.local`|
 |`pnpm docs:matrix`|从 `docs/dapp-data-coverage-matrix.md` 生成可读 HTML|
 |`pnpm react-doctor`|React Doctor 本地扫描（devDependency；勿用 `pnpm doctor`，那是 pnpm 自检）。配置：根目录 `doctor.config.jsonc`；Cursor skill：`.agents/skills/react-doctor`（兼 `.cursor/skills/react-doctor`）|
 |`pnpm react-doctor:staged`|提交钩子：仅 staged，`--blocking error`|

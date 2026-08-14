@@ -7,8 +7,8 @@
 React + Vite + TypeScript · AEGIS X DApp（BSC）。
 
 - Node **22+** · pnpm **11.17+**（Corepack）
-- `cp .env.example .env` → `pnpm install` → `pnpm dev`（`:5174`）
-- `pnpm env:staging` | `env:prod` | `env:status`
+- `pnpm env:staging`（或 `env:prod`）→ `pnpm install` → `pnpm dev`（`:5174`）
+- 完整 env 真源：`env/prod.env` / `env/staging.env`（含密钥）；`pnpm env:status` 查看当前模式
 - 门禁：`pnpm check` · 命令 SSOT：[`commands.md`](./commands.md)
 
 ## 文档表
