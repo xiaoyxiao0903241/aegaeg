@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 import { dappLocationFromHash, getInitialTab } from '~/shared/config/dapp-deep-links'
-import type { DappTab } from '~/shared/config/dapp-tabs'
+import { type DappTab, resolveDappTabSelect } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useReleaseViewStore } from '~/stores/release-view-store'
@@ -62,63 +62,79 @@ function writeTabHash(tab: DappTab) {
   }
 }
 
+const subviewStoreByTab = {
+  exchange: useExchangeViewStore,
+  staking: useStakingViewStore,
+  assets: useAssetsViewStore,
+  rewards: useRewardsViewStore,
+  release: useReleaseViewStore,
+} as const
+
 function resetForeignSubviewStores(tab: DappTab) {
-  if (tab !== 'exchange') {
-    useExchangeViewStore.getState().backToHub({ syncHash: false })
-  }
-  if (tab !== 'staking') {
-    useStakingViewStore.getState().backToHub({ syncHash: false })
-  }
-  if (tab !== 'assets') {
-    useAssetsViewStore.getState().backToHub({ syncHash: false })
-  }
-  if (tab !== 'rewards') {
-    useRewardsViewStore.getState().backToHub({ syncHash: false })
-  }
-  if (tab !== 'release') {
-    useReleaseViewStore.getState().backToHub({ syncHash: false })
+  for (const [id, store] of Object.entries(subviewStoreByTab)) {
+    if (id !== tab) {
+      store.getState().backToHub({ syncHash: false })
+    }
   }
 }
 
+function subviewStoreFor(tab: DappTab) {
+  if (!(tab in subviewStoreByTab)) return undefined
+  return subviewStoreByTab[tab as keyof typeof subviewStoreByTab]
+}
+
 /** 纯 Tab 状态；URL hash 同步属于外部系统（路由层），本仓库不负责。 */
-export const useDappHostStore = create<DappHostStore>((set) => ({
-  activeTab: getInitialTab(),
-  detailCollapsed: false,
-  mobileNavOpen: false,
-  selectTab: (tab) => {
-    set(() => ({
-      activeTab: tab,
-    }))
-    writeTabHash(tab)
-  },
-  selectMobileTab: (tab) => {
-    set({
-      activeTab: tab,
-      mobileNavOpen: false,
+export const useDappHostStore = create<DappHostStore>((set, get) => {
+  function applyTabSelect(tab: DappTab, extras?: { mobileNavOpen: false }) {
+    const store = subviewStoreFor(tab)
+    const intent = resolveDappTabSelect({
+      tab,
+      activeTab: get().activeTab,
+      subview: store?.getState().view,
     })
+    if (intent === 'back-to-hub') {
+      store?.getState().backToHub()
+      if (extras) set(extras)
+      return
+    }
+    if (intent === 'noop') {
+      if (extras) set(extras)
+      return
+    }
+    set({ activeTab: tab, ...extras })
     writeTabHash(tab)
-  },
-  toggleDetailCollapsed: () => set((state) => ({ detailCollapsed: !state.detailCollapsed })),
-  setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
-  resetForeignSubviewStores,
-  syncTabFromHash: () => {
-    const loc = dappLocationFromHash(window.location.hash.slice(1))
-    if (!loc) return
-    set({ activeTab: loc.tab })
-    if (loc.tab === 'exchange' && loc.exchangeView) {
-      useExchangeViewStore.getState().hydrateView(loc.exchangeView)
-    }
-    if (loc.tab === 'staking' && loc.stakingView) {
-      useStakingViewStore.getState().hydrateView(loc.stakingView)
-    }
-    if (loc.tab === 'assets' && loc.assetsView) {
-      useAssetsViewStore.getState().hydrateView(loc.assetsView)
-    }
-    if (loc.tab === 'rewards' && loc.rewardsView) {
-      useRewardsViewStore.getState().hydrateView(loc.rewardsView)
-    }
-    if (loc.tab === 'release' && loc.releaseView) {
-      useReleaseViewStore.getState().hydrateView(loc.releaseView)
-    }
-  },
-}))
+  }
+
+  return {
+    activeTab: getInitialTab(),
+    detailCollapsed: false,
+    mobileNavOpen: false,
+    selectTab: applyTabSelect,
+    selectMobileTab: (tab) => {
+      applyTabSelect(tab, { mobileNavOpen: false })
+    },
+    toggleDetailCollapsed: () => set((state) => ({ detailCollapsed: !state.detailCollapsed })),
+    setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
+    resetForeignSubviewStores,
+    syncTabFromHash: () => {
+      const loc = dappLocationFromHash(window.location.hash.slice(1))
+      if (!loc) return
+      set({ activeTab: loc.tab })
+      if (loc.tab === 'exchange' && loc.exchangeView) {
+        useExchangeViewStore.getState().hydrateView(loc.exchangeView)
+      }
+      if (loc.tab === 'staking' && loc.stakingView) {
+        useStakingViewStore.getState().hydrateView(loc.stakingView)
+      }
+      if (loc.tab === 'assets' && loc.assetsView) {
+        useAssetsViewStore.getState().hydrateView(loc.assetsView)
+      }
+      if (loc.tab === 'rewards' && loc.rewardsView) {
+        useRewardsViewStore.getState().hydrateView(loc.rewardsView)
+      }
+      if (loc.tab === 'release' && loc.releaseView) {
+        useReleaseViewStore.getState().hydrateView(loc.releaseView)
+      }
+    },
+  }
+})

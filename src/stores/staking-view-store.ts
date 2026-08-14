@@ -8,6 +8,6 @@ const stakingView = createDappSubviewStore<StakingView>({
   hashForView: stakingHashForView,
 })
 
-/** 当前质押子页与切换动画状态；滚动复位由宿主页面处理。 */
+/** 当前质押子页与切换动画状态。 */
 export const useStakingViewStore = stakingView.useStore
 export const useStakingViewMotion = stakingView.useMotion

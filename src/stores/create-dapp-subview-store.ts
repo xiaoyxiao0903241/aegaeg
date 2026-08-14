@@ -1,6 +1,8 @@
 import { create, type StoreApi, type UseBoundStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 
+import { scrollDappPanelsToTop } from '~/shared/lib/scroll-dapp-panels'
+
 /**
  * hub 与子视图切换动画时长，须与 theme.css 中 `--motion-dapp-subview` 一致
  * （另加少量缓冲，确保层在 CSS 动画结束后再卸载）。
@@ -56,6 +58,7 @@ function writeHash(hash: string) {
  * DApp Tab 视图仓库工厂（hub ↔ 子视图 + 进入/退出动画）
  *
  * 每个 Tab 各自持有 hash 映射与可选扩展字段，保证淡出动画期间状态稳定。
+ * view 实际变化时把窗口滚回顶部；切走其他 Tab 的 resetForeign 不滚。
  */
 export function createDappSubviewStore<TView extends string, TExtra extends object = object>(
   options: CreateDappSubviewStoreOptions<TView, TExtra>,
@@ -108,6 +111,7 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
           ...(leavingHub ? { hasSubviewHistory: true } : null),
         } as Partial<DappSubviewState<TView> & TExtra>)
         syncHash(view)
+        scrollDappPanelsToTop()
 
         transitionTimer = window.setTimeout(() => {
           set({
@@ -126,6 +130,7 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
         if (state.view === view && !state.motion) return
         if (state.motion && state.incomingView === view) return
 
+        const viewChanged = state.view !== view
         clearTransitionTimer()
         set({
           view,
@@ -135,8 +140,10 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
           incomingView: null,
           hasSubviewHistory: view !== hub,
         } as Partial<DappSubviewState<TView> & TExtra>)
+        if (viewChanged) scrollDappPanelsToTop()
       },
       backToHub: (backOptions) => {
+        const leavingSubview = get().view !== hub
         clearTransitionTimer()
         set({
           view: hub,
@@ -148,6 +155,10 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
         } as Partial<DappSubviewState<TView> & TExtra>)
         if (backOptions?.syncHash !== false) {
           syncHash(hub)
+        }
+        // 切走其他 Tab 时 resetForeign 带 syncHash:false，滚顶由 displayTab 负责
+        if (leavingSubview && backOptions?.syncHash !== false) {
+          scrollDappPanelsToTop()
         }
       },
     }

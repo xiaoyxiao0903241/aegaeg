@@ -8,6 +8,6 @@ const exchangeView = createDappSubviewStore<ExchangeView>({
   hashForView: exchangeHashForView,
 })
 
-/** 当前交换子页与切换动画状态；滚动复位由宿主页面处理。 */
+/** 当前交换子页与切换动画状态。 */
 export const useExchangeViewStore = exchangeView.useStore
 export const useExchangeViewMotion = exchangeView.useMotion

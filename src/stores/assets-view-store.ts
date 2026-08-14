@@ -8,6 +8,6 @@ const assetsView = createDappSubviewStore<AssetsView>({
   hashForView: assetsHashForView,
 })
 
-/** 当前资产视图与面板切换动画状态；滚动复位是宿主页面副作用。 */
+/** 当前资产视图与面板切换动画状态。 */
 export const useAssetsViewStore = assetsView.useStore
 export const useAssetsViewMotion = assetsView.useMotion

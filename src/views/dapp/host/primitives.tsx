@@ -60,31 +60,6 @@ export function railIconMask(icon: string): CSSProperties {
 }
 
 /**
- * 将 DApp 左右两个面板与整个窗口滚动到顶部。
- *
- * 切换 Tab 或点击引导类 CTA 后调用；
- * 用 requestAnimationFrame 延后到下一帧执行，确保新的面板已挂载。
- */
-export function scrollDappPanelsToTop() {
-  requestAnimationFrame(() => {
-    const hostWindow = document.querySelector('[data-dapp-window]')
-    const detail = document.querySelector('[data-dapp-detail]')
-    if (hostWindow instanceof HTMLElement) {
-      hostWindow.scrollTop = 0
-    }
-    document.querySelectorAll('[data-dapp-widget-scroll]').forEach((node) => {
-      if (node instanceof HTMLElement) {
-        node.scrollTop = 0
-      }
-    })
-    if (detail instanceof HTMLElement) {
-      detail.scrollTop = 0
-    }
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  })
-}
-
-/**
  * PC 左右内容面板的外层容器：子元素负责滚动，
  * 上下边缘各放一个固定淡出遮罩，滚动时内容渐隐渐显。
  */

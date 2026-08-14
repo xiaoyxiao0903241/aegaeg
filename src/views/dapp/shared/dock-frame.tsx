@@ -17,8 +17,8 @@ export function DockStack({ children, className }: { children: ReactNode; classN
 }
 
 /**
- * H5 顶栏挂载点：放在 `[data-dapp-window]` 内、aside 之前。
- * sticky 钉在窗口滚动口顶，不随左侧 aside 滚走。
+ * H5 顶栏挂载点：放在窗口滚动口内、aside 之前。
+ * sticky 钉在滚动口顶，不随左侧 aside 滚走。
  * PC：hidden（不占位）；勿用 `contents`（portal 目标会异常）。
  */
 export function DockH5HeaderSlot() {
