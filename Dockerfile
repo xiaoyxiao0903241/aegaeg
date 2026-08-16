@@ -1,14 +1,13 @@
-FROM mirror.gcr.io/library/node:20.19.0-slim AS builder
+FROM mirror.gcr.io/library/node:22-slim AS builder
 
 WORKDIR /app
 
 RUN corepack enable \
+    && corepack prepare pnpm@11.17.0 --activate
 
-    && corepack prepare pnpm@10.20.0 --activate
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 

@@ -1,0 +1,111 @@
+/**
+ * 仓位产品详情页
+ *
+ * 顶部为产品统计数字，中部为操作记录表格（可分页），底部为常见问题。
+ */
+import { claimDurationDaysLists } from '~/core/assets/claim-plans'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
+import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { tokenCarouselIcons } from '~/shared/assets/dapp'
+import { CountValue } from '~/shared/components/count-value'
+import { Detail } from '~/shared/components/detail'
+import { Faq } from '~/shared/components/faq'
+import { Grid } from '~/shared/components/grid'
+import { Icon } from '~/shared/components/icon'
+import { Section } from '~/shared/components/section'
+import { Text } from '~/shared/components/text'
+import { Tile } from '~/shared/components/tile'
+import {
+  type AssetsProduct,
+  useAssetsPositionOpsRows,
+  useAssetsPositionStats,
+} from '~/views/dapp/assets/position/use-position'
+import { AssetsOpsTable } from '~/views/dapp/assets/primitives'
+import { readClaimPlans } from '~/web3/assets/assets-read'
+
+export function PositionDetail({ product }: { product: AssetsProduct }) {
+  const { messages: t } = useI18n()
+  const copy = t.assets.products[product]
+  const stats = copy.stats
+  const values = useAssetsPositionStats(product)
+  const ops = useAssetsPositionOpsRows(product)
+  const columns = product === 'stake' ? 3 : 'upper3-lower2'
+  const bondFaq = product === 'lpbond' || product === 'burnbond'
+  const durationQuery = usePrincipalReleaseDurationDays()
+  const plansQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsClaimPlans,
+    queryFn: () => readClaimPlans(),
+    scope: 'public',
+    freshness: 'api',
+    enabled: bondFaq,
+  })
+  const { restakeDays } = claimDurationDaysLists(plansQuery.data)
+  const faqVars = {
+    days: durationQuery.data ?? 30,
+    ...(bondFaq ? { restakeDays: restakeDays.join('/') } : {}),
+  }
+  const faqItems = copy.faq.items.map((item) => ({
+    ...item,
+    a: interpolate(item.a, faqVars),
+  }))
+
+  return (
+    <Detail>
+      <Section>
+        <Section.Title>{stats.title}</Section.Title>
+        {/* jscpd:ignore-start — 右栏指标瓦页内同构 map */}
+        <Grid columns={columns}>
+          {stats.metrics.map((metric, index) => {
+            const cell = values[index]
+            const iconSrc =
+              cell?.icon === 'agx'
+                ? tokenCarouselIcons.agxIcon
+                : cell?.icon === 'gagx'
+                  ? tokenCarouselIcons.gagxIcon
+                  : null
+            return (
+              <Tile key={metric.label}>
+                <Tile.Label>{metric.label}</Tile.Label>
+                <div className="flex items-center gap-1.5">
+                  {iconSrc ? (
+                    <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
+                  ) : null}
+                  <Text as="strong" className="text-base/5 font-semibold" variant="copy">
+                    <CountValue text={cell?.value ?? '0.00'} />
+                  </Text>
+                </div>
+                {cell?.approx != null ? (
+                  <Tile.Note>
+                    <CountValue text={cell.approx} />
+                  </Tile.Note>
+                ) : null}
+              </Tile>
+            )
+          })}
+        </Grid>
+        {/* jscpd:ignore-end */}
+      </Section>
+      <Section>
+        <Section.Title>{copy.ops.title}</Section.Title>
+        <AssetsOpsTable
+          empty={copy.ops.empty}
+          headers={t.assets.opsColumns}
+          isLoading={ops.isLoading}
+          pagination={{
+            page: ops.page,
+            total: ops.sessionReady ? ops.total : 0,
+            onPageChange: ops.setPage,
+          }}
+          rows={ops.rows}
+        />
+      </Section>
+      <Section>
+        <Section.Title>{copy.faq.title}</Section.Title>
+        <Faq items={faqItems} variant="dapp" />
+      </Section>
+    </Detail>
+  )
+}

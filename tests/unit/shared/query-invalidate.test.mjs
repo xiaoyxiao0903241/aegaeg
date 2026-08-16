@@ -1,0 +1,224 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+
+import { loadModule } from '../load-module.mjs'
+
+const queryKeysModule = await loadModule('/src/shared/api/query/query-keys.ts')
+const { queryKeys } = queryKeysModule
+
+test('query keys normalize addresses and tokens to lowercase', () => {
+  const checksummed = '0xA0b86a33E6441E6C7D3D4B4C6f8B9a2D5e7C1F3a'
+  const lower = checksummed.toLowerCase()
+
+  assert.deepEqual(queryKeys.chain.referral, ['chain', 'referral'])
+  assert.deepEqual(queryKeys.chain.referralOf(checksummed), ['chain', 'referral', lower])
+  assert.deepEqual(queryKeys.chain.referralIsBoundOf(checksummed), [
+    'chain',
+    'referral',
+    'isBound',
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.presaleUserTotal, ['chain', 'presale', 'userTotal'])
+  assert.deepEqual(queryKeys.chain.presaleUserTotalOf(checksummed), [
+    'chain',
+    'presale',
+    'userTotal',
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.erc20Balance(checksummed), ['chain', 'erc20', 'balance', lower])
+  assert.deepEqual(queryKeys.chain.erc20BalanceOf(checksummed, checksummed), [
+    'chain',
+    'erc20',
+    'balance',
+    lower,
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.erc20Allowance(checksummed, checksummed, checksummed), [
+    'chain',
+    'erc20',
+    'allowance',
+    lower,
+    lower,
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.swapQuote(checksummed, checksummed, '1000'), [
+    'chain',
+    'swap',
+    'quote',
+    lower,
+    lower,
+    '1000',
+  ])
+})
+
+test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterGenesisPurchase } = await loadModule('/src/shared/api/query/invalidate.ts')
+
+  const address = '0xabc'
+  const userKey = queryKeys.chain.presaleUserTotalOf(address)
+  const totalKey = queryKeys.chain.presaleTotalPurchased
+
+  queryClient.setQueryData(userKey, 100n)
+  queryClient.setQueryData(totalKey, 1000n)
+
+  invalidateAfterGenesisPurchase(address, 50n)
+
+  assert.equal(queryClient.getQueryData(userKey), 150n)
+  assert.equal(queryClient.getQueryData(totalKey), 1050n)
+
+  queryClient.clear()
+})
+
+test('invalidateAfterWalletSwitch refreshes next address chain queries', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterWalletSwitch } = await loadModule('/src/shared/api/query/invalidate.ts')
+
+  const previous = '0xaaa'
+  const next = '0xbbb'
+  const prevKey = queryKeys.chain.presaleUserTotalOf(previous)
+  const nextKey = queryKeys.chain.presaleUserTotalOf(next)
+
+  queryClient.setQueryData(prevKey, 10n)
+  queryClient.setQueryData(nextKey, 20n)
+
+  // Mark both fresh then invalidate switch — previous cache value must remain.
+  invalidateAfterWalletSwitch(next)
+
+  assert.equal(queryClient.getQueryData(prevKey), 10n)
+  assert.equal(queryClient.getQueryData(nextKey), 20n)
+
+  const prevState = queryClient.getQueryState(prevKey)
+  const nextState = queryClient.getQueryState(nextKey)
+  // Next address queries are invalidated (stale); previous is untouched.
+  assert.ok(nextState?.isInvalidated === true || nextState?.isInvalidated === undefined)
+  assert.equal(prevState?.isInvalidated ?? false, false)
+
+  queryClient.clear()
+})
+
+test('canRunAuthenticatedQuery requires hydrate + session + token', async () => {
+  const { canRunAuthenticatedQuery } = await loadModule('/src/shared/api/query/session-request.ts')
+
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: true,
+      sessionReady: true,
+      hasToken: true,
+    }),
+    true,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: false,
+      sessionReady: true,
+      hasToken: true,
+    }),
+    false,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: true,
+      sessionReady: false,
+      hasToken: true,
+    }),
+    false,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: true,
+      sessionReady: true,
+      hasToken: false,
+    }),
+    false,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: false,
+      hasHydrated: true,
+      sessionReady: true,
+      hasToken: true,
+    }),
+    false,
+  )
+})
+
+test('salesLogAdvanced detects new purchase by total or first id', async () => {
+  const { salesLogAdvanced, pickSalesLogFingerprint } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  assert.equal(salesLogAdvanced({ total: 20, firstId: 1 }, { total: 21, firstId: 99 }), true)
+  assert.equal(salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 99 }), true)
+  assert.equal(salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 1 }), false)
+
+  const fingerprint = pickSalesLogFingerprint([
+    { total: 20, page: 1, page_size: 20, items: [{ id: 5 }] },
+    { total: 20, page: 1, page_size: 20, items: [] },
+  ])
+  assert.equal(fingerprint.total, 20)
+  assert.equal(fingerprint.firstId, 5)
+})
+
+test('indexerPageAdvanced mirrors sales-log advance rules on tx_hash head', async () => {
+  const { indexerPageAdvanced, pickIndexerPageFingerprint } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  assert.equal(indexerPageAdvanced({ total: 2, head: '0xa' }, { total: 3, head: '0xb' }), true)
+  assert.equal(indexerPageAdvanced({ total: 2, head: '0xa' }, { total: 2, head: '0xb' }), true)
+  assert.equal(indexerPageAdvanced({ total: 2, head: '0xa' }, { total: 2, head: '0xa' }), false)
+
+  const fingerprint = pickIndexerPageFingerprint([
+    { total: 4, items: [{ tx_hash: '0xabc' }] },
+    { total: 4, items: [] },
+  ])
+  assert.equal(fingerprint.total, 4)
+  assert.equal(fingerprint.head, '0xabc')
+})
+
+async function seedTabProbe(tab) {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { TAB_QUERY_KEYS } = await loadModule('/src/shared/api/query/tab-query-keys.ts')
+  const key = TAB_QUERY_KEYS[tab][0]
+  queryClient.setQueryData(key, 1)
+  return { queryClient, key }
+}
+
+function assertInvalidated(queryClient, key) {
+  assert.equal(queryClient.getQueryState(key)?.isInvalidated, true)
+}
+
+test('invalidateAfterAssetsClaim marks assets+staking+release', async () => {
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const assets = await seedTabProbe('assets')
+  const staking = await seedTabProbe('staking')
+  const release = await seedTabProbe('release')
+
+  invalidateAfterAssetsClaim()
+
+  assertInvalidated(assets.queryClient, assets.key)
+  assertInvalidated(staking.queryClient, staking.key)
+  assertInvalidated(release.queryClient, release.key)
+  assets.queryClient.clear()
+})
+
+test('invalidateAfterRewardsMixedClaim marks rewards+release+staking', async () => {
+  const { invalidateAfterRewardsMixedClaim } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+  const rewards = await seedTabProbe('rewards')
+  const release = await seedTabProbe('release')
+  const staking = await seedTabProbe('staking')
+
+  invalidateAfterRewardsMixedClaim()
+
+  assertInvalidated(rewards.queryClient, rewards.key)
+  assertInvalidated(release.queryClient, release.key)
+  assertInvalidated(staking.queryClient, staking.key)
+  rewards.queryClient.clear()
+})

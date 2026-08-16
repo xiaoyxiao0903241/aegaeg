@@ -1,0 +1,143 @@
+import type { CSSProperties, ReactNode } from 'react'
+import { useEffect } from 'react'
+
+import { Text } from '~/shared/components/text'
+import type { DappTab } from '~/shared/config/dapp-tabs'
+import { subscribeReveal } from '~/shared/lib/subscribe-reveal'
+import { cn } from '~/shared/lib/utils'
+
+export const railNavLabelKeys = {
+  exchange: 'exchange',
+  assets: 'assets',
+  staking: 'staking',
+  rewards: 'rewards',
+  release: 'release',
+  community: 'community',
+  genesis: 'genesis',
+} as const satisfies Record<
+  DappTab,
+  'exchange' | 'assets' | 'staking' | 'rewards' | 'release' | 'community' | 'genesis'
+>
+
+/** 导航各步骤在引导流程中的锚点标识；创世页不在引导范围内。 */
+export const railTourIds = {
+  exchange: 'nav-swap',
+  assets: 'nav-assets',
+  staking: 'nav-staking',
+  rewards: 'nav-rewards',
+  release: 'nav-release',
+  community: 'nav-community',
+  genesis: undefined,
+} as const satisfies Record<DappTab, string | undefined>
+
+/**
+ * 将图标文件作为 CSS 遮罩，使其显示为当前文字色。
+ *
+ * @param icon 图标资源路径
+ * @returns 遮罩相关样式，供 `style` 内联使用
+ */
+/** 导航可领红点（原型 10×10 · top-right · destructive）。 */
+export function RailClaimableDot({ kind }: { kind: 'exchange' | 'release' }) {
+  return (
+    <span
+      aria-hidden
+      className="absolute top-0 right-0 size-2.5 rounded-full bg-destructive"
+      {...(kind === 'exchange'
+        ? { 'data-exchange-claimable-dot': true }
+        : { 'data-release-claimable-dot': true })}
+    />
+  )
+}
+
+export function railIconMask(icon: string): CSSProperties {
+  return {
+    maskImage: `url(${icon})`,
+    WebkitMaskImage: `url(${icon})`,
+    maskSize: 'contain',
+    maskRepeat: 'no-repeat',
+    maskPosition: 'center',
+  }
+}
+
+/**
+ * PC 左右内容面板的外层容器：子元素负责滚动，
+ * 上下边缘各放一个固定淡出遮罩，滚动时内容渐隐渐显。
+ */
+export function ScrollFadeHost({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={cn(
+        'dapp-scroll-fade-host',
+        'dapp:relative dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:min-w-0',
+        className,
+      )}
+    >
+      {children}
+      <div aria-hidden className="dapp-scroll-fade-edge dapp-scroll-fade-edge-top" />
+      <div aria-hidden className="dapp-scroll-fade-edge dapp-scroll-fade-edge-bottom" />
+    </div>
+  )
+}
+
+/**
+ * 滚动进入视口的元素显示监听器。
+ *
+ * 在容器内查找 `[data-reveal]` 元素，进入视口后打上 `data-visible`，
+ * 只触发一次并停止观察；容器 DOM 变化（新增子元素）时重新扫描。
+ *
+ * @param container 监听范围，为 null 时不工作
+ */
+export function RevealObserver({ container }: { container: HTMLElement | null }) {
+  useEffect(() => {
+    if (!container) return
+    return subscribeReveal(container)
+  }, [container])
+
+  return null
+}
+
+/**
+ * 顶部栏「新手教程」入口，点击重播引导；未完成时右上角带提示点。
+ * H5（max-dapp）隐藏重播入口；首次自动引导仍由 storage 未完成时触发。
+ */
+export function OnboardingTourChip({
+  done,
+  label,
+  onClick,
+}: {
+  label: string
+  done: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      className={cn(
+        'relative inline-flex h-9 min-h-9 cursor-pointer items-center justify-center gap-1.5 rounded-full',
+        'border border-border bg-card px-3.5 text-xs leading-none font-semibold text-foreground',
+        'duration-dapp-fast transition-[border-color,transform,background-color] ease-out',
+        'hover:-translate-y-px hover:border-coral-hover-border hover:bg-coral-wash',
+        'max-dapp:hidden',
+      )}
+      data-onboarding-chip
+      onClick={onClick}
+      type="button"
+    >
+      <Text as="span" className="text-xs font-semibold" variant="caption">
+        {label}
+      </Text>
+      {!done ? (
+        <span
+          aria-hidden
+          className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-coral"
+          data-onboarding-chip-dot
+        />
+      ) : null}
+    </button>
+  )
+}

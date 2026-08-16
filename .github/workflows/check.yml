@@ -1,0 +1,44 @@
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [dev, main, 'refactor/**']
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Fail-closed env: no code address/secret fallbacks — CI uses committed public placeholders.
+      - run: cp env/ci.env .env
+      - run: pnpm check
+      - run: pnpm build
+      - run: pnpm probe:bundle
+
+  # Transitive thirdweb/vite advisories currently fail --audit-level high.
+  # Keep visibility in CI without blocking merges until upstream patches land.
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit:prod

@@ -1,557 +1,2685 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
 
 const app = defineMessages({
-    common: {
-        brand: 'AEGIS X',
-        bsc: 'BSC',
-        connectWallet: 'Cüzdanı Bağla',
-        language: 'Dil',
-        copy: 'Kopyala',
-        claimable: 'Talep Edilebilir',
-        max: 'Maks',
-        shareUnit: 'pay',
-        confirm: 'Onayla',
-        close: 'Kapat',
-        paginationTotal: 'Toplam {total} kayıt',
-        paginationPerPage: 'Sayfa başına {size} kayıt',
-        paginationPrev: 'Önceki',
-        paginationNext: 'Sonraki',
+  common: {
+    brand: 'AEGIS X',
+    bsc: 'BSC',
+    connectWallet: 'Cüzdanı Bağla',
+    language: 'Dil',
+    copy: 'Kopyala',
+    claimable: 'Talep Edilebilir',
+    max: 'Maks',
+    shareUnit: 'pay',
+    confirm: 'Onayla',
+    close: 'Kapat',
+    paginationTotal: 'Toplam {total} kayıt',
+    paginationPerPage: 'Sayfa başına {size} kayıt',
+    paginationPrev: 'Önceki',
+    paginationNext: 'Sonraki',
+  },
+  errors: {
+    api: {
+      network: 'Ağ bağlantısı başarısız. Bağlantınızı kontrol edip tekrar deneyin.',
+      timeout: 'İstek zaman aşımına uğradı. Lütfen daha sonra tekrar deneyin.',
+      unavailable: 'Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.',
+      badResponse: 'Beklenmeyen sunucu yanıtı. Lütfen daha sonra tekrar deneyin.',
+      fallback: 'Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin.',
     },
-    nav: {
-        swap: 'Swap',
-        genesis: 'Ortak İnşa',
-        rewards: 'Ödüller',
-        community: 'Topluluk',
-        rewardsTooltip: 'Öneri ödülleri ve takım ödüllerini görüntüleyin.',
-        communityTooltip: 'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın',
-        bscTooltip: 'Yalnızca BSC · AEGIS X, BNB Smart Chain üzerinde çalışır; şimdilik ağ değiştirme desteklenmiyor.',
+    chain: {
+      fallback: 'Zincir üstü işlem başarısız. Lütfen daha sonra tekrar deneyin.',
+      reverts: {
+        stakeAmountLimit: 'Günlük stake limiti aşıldı. Tutarı düşürün veya sıfırlanmayı bekleyin.',
+        debtCapacityReached: 'Tahvil kapasitesi dolu. Lütfen daha sonra tekrar deneyin.',
+        turbineCooldown:
+          'Soğuma bitmedi veya tutar geçersiz. Soğuma kayıtlarını yenileyip tekrar deneyin.',
+        pairNotExist: 'İşlem çifti yok. Token yapılandırmasını kontrol edin.',
+        notWinner: 'Bu turda kazanan değilsiniz, talep edilemez.',
+        rewardAlreadyClaimed: 'Ödül zaten alındı. Tekrar talep etmeyin.',
+        configNotReady: 'Protokol yapılandırması hazır değil. Lütfen daha sonra tekrar deneyin.',
+        exceedsMax: 'Tutar üst sınırı aşıyor. Lütfen düşürün.',
+        bondTooSmall: 'Tahvil ödemesi çok küçük. Satın alma tutarını artırın.',
+        bondTooLarge: 'Tek işlem tahvil üst sınırı aşıldı. Satın alma tutarını düşürün.',
+        stakeNotExist: 'Pozisyon yok veya kapatılmış. Listeyi yenileyip tekrar deneyin.',
+        yieldUnavailable:
+          'Talep edilebilir getiri yok veya tutar çok yüksek. Tutarı düşürün veya birikmeyi bekleyin.',
+        operationPaused: 'Bu işlem duraklatıldı. Lütfen daha sonra tekrar deneyin.',
+        belowMinAmount: 'Tutar alt sınırın altında. Lütfen artırın.',
+        aboveMaxAmount: 'Tutar üst sınırı aşıyor. Lütfen düşürün.',
+        zeroRate: 'Kur hazır değil. Lütfen daha sonra tekrar deneyin.',
+        zeroAmount: 'Geçerli bir tutar girin.',
+        turbineNoSilenceBalance: 'Çekilebilecek olgun soğuma bakiyesi yok.',
+        invalidAmount: 'Geçersiz tutar. Kontrol edip yeniden deneyin.',
+        zeroAddress: 'Geçersiz adres. Lütfen daha sonra yeniden deneyin.',
+        notAuthorized: 'Bu hesabın bu işlem için yetkisi yok.',
+        invalidLimits: 'Limit yapılandırması geçersiz. Lütfen daha sonra yeniden deneyin.',
+        nothingToClaim: 'Alınacak bir şey yok veya dizin geçersiz. Yenileyip tekrar deneyin.',
+        warmupOrLockActive: 'Hâlâ ısınma veya kilit süresinde. Bitmesini bekleyin.',
+        walletTokenInsufficient: 'Cüzdan token bakiyesi yetersiz.',
+        walletAgxInsufficient: 'Cüzdan AGX bakiyesi yetersiz.',
+        walletUsd1Insufficient: 'Cüzdan USD1 bakiyesi yetersiz.',
+        walletGagxInsufficient: 'Cüzdan gAGX bakiyesi yetersiz.',
+        contractPayableInsufficient:
+          'Sözleşmenin ödenebilir bakiyesi yetersiz. Daha sonra yeniden deneyin.',
+        extractableInsufficient: 'Çekilebilir bakiye yetersiz. Yenileyip tekrar deneyin.',
+        insufficientAllowance: 'Onay limiti yetersiz. Önce onaylayın.',
+      },
     },
-    topbar: {
-        currentNetwork: 'Mevcut Ağ',
-        openMenu: 'Navigasyonu aç',
-        closeMenu: 'Navigasyonu kapat',
-        hideDetails: 'Detay panelini gizle',
-        showDetails: 'Detay panelini göster',
-        toggleTooltip: 'Detay panelini göster veya gizle',
+    walletNotConnected: 'Önce cüzdanınızı bağlayın ve oturum açın.',
+    quoteFailed: 'Teklif başarısız. Lütfen daha sonra tekrar deneyin.',
+    loadFailed: 'Yükleme başarısız. Lütfen daha sonra tekrar deneyin.',
+    loginFailed: 'Oturum açma başarısız. Lütfen daha sonra tekrar deneyin.',
+    loginSignatureRejected: 'Giriş imzası geçersiz veya süresi dolmuş. Lütfen yeniden imzalayın.',
+    pageLoadFailed: 'Sayfa yüklenemedi',
+    pageLoadFailedBody:
+      'İşleme sırasında bir hata oluştu. Devam etmek için yenileyin — cüzdan bağlı kalır.',
+    reloadPage: 'Sayfayı yenile',
+  },
+  nav: {
+    exchange: 'Takas',
+    assets: 'Varlıklar',
+    staking: 'Stake işlemi',
+    genesis: 'Ortak İnşa',
+    rewards: 'Ödüller',
+    release: 'Serbest bırakma',
+    community: 'Topluluk',
+    rewardsTooltip: 'Öneri ödülleri ve takım ödüllerini görüntüleyin.',
+    communityTooltip:
+      'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın',
+    bscTooltip: 'Yalnızca BSC · AEGIS X BNB Smart Chain üzerinde çalışır.',
+  },
+  topbar: {
+    currentNetwork: 'Mevcut Ağ',
+    switchToBsc: 'BSC’ye geçin',
+    switchNetworkFailed: 'Ağ değiştirilemedi. Cüzdanınızda BSC’ye geçip tekrar deneyin.',
+    wrongNetworkTooltip: 'Yanlış ağ. BNB Smart Chain (BSC) ağına geçmek için tıklayın.',
+    openMenu: 'Navigasyonu aç',
+    closeMenu: 'Navigasyonu kapat',
+    hideDetails: 'Detay panelini gizle',
+    showDetails: 'Detay panelini göster',
+    toggleTooltip: 'Detay panelini göster veya gizle',
+  },
+  onboarding: {
+    chip: 'Eğitim',
+    skip: 'Atla',
+    prev: 'Geri',
+    next: 'İleri',
+    done: 'Tamam',
+    steps: [
+      {
+        title: 'Takas',
+        body: 'Takas ile ana tokenları piyasa kurundan AEGIS X ekosistem tokenlarıyla (AGX, gAGX, X) takas edin.',
+      },
+      {
+        title: 'İşlem',
+        body: 'İşlem ile USD1 kullanarak AGX satın alın.',
+      },
+      {
+        title: 'Stake işlemi',
+        body: 'Staking getirinin başlangıcıdır: AGX stake edin veya tahvil alın, her Rebase’de bileşik getiri kazanın.',
+      },
+      {
+        title: 'Tek varlık stake',
+        body: 'Stake kartında AGX stake edin. Günde {timesPerDay} Rebase bileşik büyür; süre uzadıkça getiri bonusu artar.',
+      },
+      {
+        title: 'Varlıklar',
+        body: 'Varlıklar tüm pozisyonlarınızı özetler: stake, LP tahvil, yakım tahvili ve X madenciliği pozisyon ile getirileri.',
+      },
+      {
+        title: 'Stake pozisyonları',
+        body: 'Varlıklar’daki Stake kartında pozisyon ve toplam getiriyi görün; talep, yeniden stake veya geri alma yapın.',
+      },
+      {
+        title: 'Serbest bırakma',
+        body: 'Serbest bırakma bekleyen fonları yönetir: getiri ve ödüller önce serbest bırakma / tampon havuzuna girer, süreye göre doğrusal serbest bırakılır.',
+      },
+      {
+        title: 'Serbest bırakma havuzu',
+        body: 'Talep edilen getiri ve ödüller seçilen sürede (5 / 20 / 40 / 60 gün) doğrusal serbest bırakılır; serbest bırakılan kısım Türbin’e alınabilir.',
+      },
+      {
+        title: 'Tampon havuzu',
+        body: 'Geri alınan anapara burada ~30 günlük blok doğrusal serbest bırakılır; serbest bırakılan kısım istediğiniz zaman cüzdana çekilebilir.',
+      },
+      {
+        title: 'Türbin',
+        body: 'Serbest bırakma havuzundan Türbin’e giren gAGX kilitlidir; USD1 ile zincir üstü fiyattan alım yaparak kilidi açın.',
+      },
+      {
+        title: 'Ödüller',
+        body: 'Ödüller referans, katılım, ortak inşa vb. içerir; Lucky/ortak inşa/referans/katılım Mixed talepleri katkı puanını {ratio} harcar; gelişim ödenekleri imzayla doğrudan cüzdana gider.',
+      },
+      {
+        title: 'Topluluk',
+        body: 'Topluluk ekibinizi gösterir: davet bağlantısı, üyeler ve ortak inşa seviyesi burada.',
+      },
+    ],
+  },
+  dapp: {
+    connect: {
+      promoTitle: 'AEGIS X özelliklerini keşfetmek için cüzdanınızı bağlayın',
+      promoBrandLine: 'Geleceğin Değer Ağını Koruyun',
+      recordsTitle: 'Kayıtlarınızı görüntülemek için lütfen cüzdanınızı bağlayın',
+      recordsBodyGenesis:
+        'Bağlantı kurulduktan sonra, ortak inşa geçmişiniz burada görüntülenecektir',
+      recordsBodyRewards: 'Bağlantı kurulduktan sonra, ödül geçmişiniz burada görüntülenecektir',
+      recordsBodyCommunity:
+        'Bağlantı kurulduktan sonra, davet kayıtlarınız burada görüntülenecektir',
     },
-    dapp: {
-        connect: {
-            promoTitle: 'AEGIS X özelliklerini keşfetmek için cüzdanınızı bağlayın',
-            promoBrandLine: 'Geleceğin Değer Ağını Koruyun',
-            recordsTitle: 'Kayıtlarınızı görüntülemek için lütfen cüzdanınızı bağlayın',
-            recordsBodyGenesis: 'Bağlantı kurulduktan sonra, ortak inşa geçmişiniz burada görüntülenecektir',
-            recordsBodyRewards: 'Bağlantı kurulduktan sonra, ödül geçmişiniz burada görüntülenecektir',
-            recordsBodyCommunity: 'Bağlantı kurulduktan sonra, davet kayıtlarınız burada görüntülenecektir',
-        },
+  },
+  wallet: {
+    connectTitle: 'Cüzdanı Bağla',
+    connecting: 'Bağlanıyor…',
+    copyAddress: 'Adresi kopyala',
+    copied: 'Kopyalandı',
+    copyFailed: 'Kopyalama başarısız. Manuel kopyalamak için uzun basın.',
+    disconnect: 'Bağlantıyı kes',
+    reconnectWallet: 'Cüzdanı yeniden bağla',
+    reconnectHint: 'Cüzdan bağlantısı kesildi, zincir üstü işlem yapmadan önce yeniden bağlanın.',
+    signInRequired: 'Giriş yap',
+    accountBanned: 'Hesabınız askıya alındı. Destek ile iletişime geçin.',
+    transactionErrors: {
+      gasLimitTooLow:
+        'Gas limiti çok düşük. Ağ ücretleri için cüzdanda yeterli BNB bırakıp tekrar deneyin.',
+      gasEstimateFailed: 'Bu işlem için gas tahmin edilemedi. Ağı kontrol edip tekrar deneyin.',
+      insufficientFunds: 'Ağ gas ücretlerini ödemek için yeterli BNB yok.',
+      transactionFailed: 'İşlem başarısız. Lütfen daha sonra tekrar deneyin.',
+      transactionUnknown:
+        'İşlem durumu bilinmiyor. Tekrar göndermeyin — önce cüzdanınızı veya blok gezginini kontrol edin.',
+      writeInFlight: 'Başka bir zincir üstü işlem sürüyor. Lütfen bekleyin.',
     },
-    wallet: {
-        connectTitle: 'Cüzdanı Bağla',
-        connectIntroTitle: 'AEGIS X özelliklerini keşfetmek için cüzdanınızı bağlayın',
-        connectIntroLink: 'AEGIS X özellikleri ↗',
-        connecting: 'Bağlanıyor…',
-        copyAddress: 'Adresi kopyala',
-        copied: 'Kopyalandı',
-        copyFailed: 'Kopyalama başarısız. Manuel kopyalamak için uzun basın.',
-        disconnect: 'Bağlantıyı kes',
-        reconnectWallet: 'Cüzdanı yeniden bağla',
-        reconnectHint: 'Cüzdan bağlantısı kesildi, zincir üstü işlem yapmadan önce yeniden bağlanın.',
-        signInRequired: 'Giriş yap',
-        accountBanned: 'Hesabınız askıya alındı. Destek ile iletişime geçin.',
-        transactionErrors: {
-            gasLimitTooLow: 'Gas limiti çok düşük. Ağ ücretleri için cüzdanda yeterli BNB bırakıp tekrar deneyin.',
-            gasEstimateFailed: 'Bu işlem için gas tahmin edilemedi. Ağı kontrol edip tekrar deneyin.',
-            insufficientFunds: 'Ağ gas ücretlerini ödemek için yeterli BNB yok.',
-            transactionFailed: 'İşlem başarısız. Lütfen daha sonra tekrar deneyin.',
-        },
-    },
-    swap: {
-        backToHub: 'Swap’a dön',
-        title: 'Swap',
-        intro: 'AEGIS X ekosistem tokenlarını en iyi kur ile edinin',
-        sell: 'Sat',
-        buy: 'Al',
-        flip: 'Takas yönünü değiştir',
-        balance: 'Bakiye',
-        exchangePrice: 'Takas fiyatı',
-        ratePlaceholder: '1 : 1',
-        slippage: 'Slipaj ayarı',
-        allowedSlippage: 'İzin verilen slipaj',
-        slippageSettings: 'İzin verilen slipaj ayarı',
-        route: 'Takas rotası',
-        provider: 'Sağlayıcı',
-        providerName: 'PancakeSwap',
-        openPancakeSwap: 'PancakeSwap üzerinde aç',
-        swapSuccess: 'Takas başarılı',
-        transactionCancelled: 'İşlem cüzdanda iptal edildi',
-        overview: 'Genel bakış',
-        exchangeRate: 'Takas oranı',
-        settlement: 'Uzlaşma',
-        settlementValue: 'PancakeSwap',
-        hub: {
-            modes: {
-                flash: {
-                    title: 'Dönüştür',
-                    body: 'USDT’yi USD1’e komisyonsuz, slipajsız dönüştür',
-                },
-                trade: {
-                    title: 'Al-Sat',
-                    body: 'Ana tokenleri AEGIS X tokenlerine çevir',
-                },
-                burn: {
-                    title: 'Yak',
-                    body: 'AGX yak, katkı puanı kazan',
-                },
-                comingSoon: 'Yakında',
-            },
-            about: {
-                title: 'Swap hakkında',
-                body: 'USDT’yi USD1’e dönüştür, ana tokenleri X DAO varlıklarına çevir, gAGX’i AGX’e yükselt veya puan için AGX yak.',
-            },
-            program: {
-                title: 'X DAO tokenleri al',
-                cards: [
-                    { title: 'Dönüştür', body: 'USDT’yi USD1’e dönüştür' },
-                    { title: 'USD1 al', body: 'PancakeSwap piyasa fiyatıyla USD1 al' },
-                    { title: 'AGX al', body: 'PancakeSwap piyasa fiyatıyla AGX al' },
-                    { title: 'X sat', body: 'X’i AEGIS X varlıklarına veya ana tokenlere çevir' },
-                    { title: 'Puan al', body: '1:6 oranla AGX yakıp puan al' },
-                ],
-            },
-            faq: {
-                items: [
-                    {
-                        q: 'Kripto cüzdan nedir?',
-                        a: 'Kripto cüzdan on-chain varlıkları yönetir. Non-custodial cüzdanda private key/seed phrase yalnızca sizdedir; güvenle saklayın. MetaMask ve TokenPocket yaygındır.',
-                    },
-                    {
-                        q: 'Gas ücreti nedir?',
-                        a: 'Her on-chain alım, satım, swap veya transfer gas gerektirir. Bunu AEGIS X değil BSC ağı alır. İşlemden önce cüzdanınızda BNB bulundurun.',
-                    },
-                    {
-                        q: 'Cüzdan nasıl çalışır?',
-                        a: 'Cüzdan public/private key kullanır. Private key veya seed phrase işlemleri imzalar ve gizli kalmalıdır. Public key adres oluşturma ve varlık alma için kullanılır.',
-                    },
-                ],
-            },
-        },
+  },
+  exchange: {
+    title: 'Takas',
+    intro: 'AEGIS X ekosistem tokenlarını en iyi kurlarla alın',
+    backToHub: 'Takasa dön',
+    sell: 'Sell',
+    buy: 'Satın al',
+    flip: 'Takas yönünü değiştir',
+    balance: 'Bakiye',
+    exchangePrice: 'Takas fiyatı',
+    slippage: 'Kayma toleransı',
+    allowedSlippage: 'İzin verilen kayma',
+    slippageSettings: 'Kayma toleransı ayarları',
+    route: 'Takas yolu',
+    provider: 'Sağlayıcı',
+    providerName: 'PancakeSwap',
+    openPancakeSwap: 'PancakeSwap’ta aç',
+    overview: 'Genel bakış',
+    exchangeRate: 'Takas oranı',
+    settlement: 'Uzlaşma',
+    settlementValue: 'PancakeSwap',
+    hub: {
+      modes: {
         flash: {
-            title: 'Dönüştür',
-            intro: 'USDT\'yi USD1\'e çevirin, ücret yok, slipaj yok',
-            providerName: 'AEGIS X',
-            openProvider: 'BscScan’da dönüştürme sözleşmesini gör',
-            settlementValue: 'On-chain · anında',
-            tokenAboutTitle: 'USD1 hakkında',
-            action: 'Dönüştür',
+          title: 'Hızlı Takas',
+          body: 'gAGX’i AGX’e veya USDT’yi USD1’e takas edin — ücretsiz, kaymasız',
         },
         trade: {
-            title: 'Al-Sat',
-            intro: 'PancakeSwap canlı fiyat · on-chain mutabakat',
-            action: 'Al-Sat',
-            priceImpact: 'Fiyat etkisi',
-            estimatedGas: 'Tahmini gas',
-            highPriceImpactWarning:
-                'Bu işlem havuz fiyatını önemli ölçüde etkileyebilir. Daha küçük bir miktar deneyin veya slipaj toleransını artırın.',
+          title: 'İşlem',
+          body: 'Ana tokenları AEGIS X ekosistem tokenlarıyla takas edin',
         },
-        tokenAbout: {
-            title: 'AEGIS X ekosistem tokenları hakkında',
-            items: [
-                {
-                    key: 'usd1',
-                    title: 'USD1 · Temel uzlaşma varlığı',
-                    body: 'AEGIS X ekosisteminin temel uzlaşma varlığı; değer dolaşımı, likidite ağı ve ödeme senaryolarını birbirine bağlar.',
-                },
-                {
-                    key: 'agx',
-                    title: 'AGX · Temel protokol varlığı',
-                    body: 'AGX, AEGIS X protokolünün temel varlığıdır; %150 aşırı teminat mekanizmasıyla oluşturulur ve değer büyümesi, getiri dağılımı ile ekosistem inşasında önemli bir rol üstlenir.',
-                },
-                {
-                    key: 'gagx',
-                    title: 'gAGX · Ödül uzlaşma belgesi',
-                    body: 'Protokol ödül uzlaşma belgesidir; AGX ile değiştirilebilir ve ekosistem madenciliği ile getiri yeniden döngüsüne katılabilir.',
-                },
-                {
-                    key: 'x',
-                    title: 'X · Ekosistem değer tokenı',
-                    body: "AEGIS X ekosistem değer taşıyıcısıdır; sabit toplam 210 milyon adetle ekosistem büyümesini ve değer birikimini destekler.",
-                },
-            ],
+        burn: {
+          title: 'Yakım',
+          body: 'Katkı puanı için AGX yakın',
         },
-        tokenContract: 'Sözleşmeyi görüntüle',
-        tokenPrevious: 'Önceki token',
-        tokenNext: 'Sonraki token',
-        faq: {
-            title: 'FAQs',
-            tabsTitle: 'FAQs',
-            tabs: {
-                usd1: {
-                    label: 'USD1',
-                    items: [
-                        {
-                            q: 'USD1 nedir?',
-                            a: 'USD1, AEGIS X’in ana settlement varlığıdır. Nakit, kısa vadeli ABD tahvilleri ve para piyasası fonları gibi rezervlerle %100 desteklenir; aylık rapor WLFI’dedir.',
-                        },
-                        {
-                            q: 'USD1, AEGIS X içinde hangi rolü üstlenir?',
-                            a: 'USD1, temel uzlaşma varlığı olarak likidite ağını, ödeme senaryolarını ve ekosistem değer dolaşımını birbirine bağlar.',
-                        },
-                        {
-                            q: 'USD1 nasıl takas edilir?',
-                            a: 'Kullanıcılar, zincir üstü takas işleviyle USDT’yi hızla USD1’e çevirebilir ve AEGIS X ekosistemine katılabilir.',
-                        },
-                    ],
-                },
-                agx: {
-                    label: 'AGX',
-                    items: [
-                        {
-                            q: 'AGX nedir?',
-                            a: 'AGX, AEGIS X protokolünün temel varlığıdır; %150 aşırı teminat mekanizmasıyla basılır ve değer büyümesi, getiri dağılımı ile ekosistem inşasında önemli bir rol üstlenir.',
-                        },
-                        {
-                            q: 'AGX sürekli büyümeyi nasıl sağlar?',
-                            a: 'Stake, tahvil ve Rebase ile uzun vadeli bileşik faiz döngüsü oluşturur ve AI think tank piyasa yapıcılığı ile geri alım-yakım mekanizmasını birleştirir.',
-                        },
-                        {
-                            q: 'AGX nasıl elde edilir?',
-                            a: 'Kullanıcılar protokol ekosistemine katılarak AGX elde edebilir veya protokolün desteklediği işlem pazarlarından temin edebilir.',
-                        },
-                    ],
-                },
-                gagx: {
-                    label: 'gAGX',
-                    items: [
-                        {
-                            q: 'gAGX nedir?',
-                            a: 'gAGX, protokol ödül uzlaşma belgesidir; getiri büyümesi ile ekosistem değerini birbirine bağlar ve ekosistem madenciliğine katılabilir.',
-                        },
-                        {
-                            q: 'gAGX nasıl elde edilir?',
-                            a: 'Kullanıcılar protokol getiri dağılımına katıldıktan sonra karşılık gelen miktarda gAGX alırlar.',
-                        },
-                        {
-                            q: 'gAGX ile AGX arasındaki fark nedir?',
-                            a: 'AGX, protokolün temel varlığıdır ve değer büyümesi ile getiri dağılımını üstlenir; gAGX ise ekosistem getiri belgesidir, AGX ile değiştirilebilir ve ekosistem madenciliğine katılım için önemli bir giriş noktasıdır.',
-                        },
-                    ],
-                },
-                x: {
-                    label: 'X',
-                    items: [
-                        {
-                            q: 'X nedir?',
-                            a: 'X, AEGIS X ekosistem değer tokenıdır; sabit toplam 210 milyon adetle ekosistem büyümesini ve değer birikimini destekler.',
-                        },
-                        {
-                            q: 'X nasıl elde edilir?',
-                            a: 'Kullanıcılar ekosistem madenciliğine katılarak X ödülleri kazanabilir ve ekosistem büyüme değerini paylaşabilir.',
-                        },
-                        {
-                            q: 'X airdropu nasıl serbest bırakılır?',
-                            a: 'X’in değeri ekosistem büyümesi, değer birikimi ve uzun vadeli mutabakattan gelir; ekosistem değerinin ana taşıyıcısıdır.',
-                        },
-                    ],
-                },
+        turbine: {
+          title: 'Türbin',
+          body: 'USD1 ile Türbin’deki kilidi açılmış gAGX satın alın',
+        },
+      },
+      program: {
+        title: 'AEGIS X protokol tokenlarını alın',
+        cards: [
+          { title: 'gAGX işle', body: 'gAGX’i AGX’e takas et' },
+          { title: 'Türbin', body: 'USD1 ile Türbin’deki kilidi açılmış gAGX satın alın' },
+          { title: 'USD1 al', body: 'Flash ile USDT’yi USD1’e çevir' },
+          { title: 'AGX al', body: 'PancakeSwap piyasa kurundan AGX al' },
+          { title: 'X sat', body: 'X’i AGX, USD1 veya diğer ekosistem tokenlarıyla takas et' },
+          { title: 'Katkı puanı al', body: '{ratio} oranında AGX yakarak katkı puanı alın' },
+        ],
+      },
+      faq: {
+        items: [
+          {
+            q: 'Takas sayfasında ne yapabilirim?',
+            a: 'Flash ile USDT→USD1 veya gAGX→AGX çevirin; PancakeSwap’ta ana tokenlarla AEGIS X varlıkları alın; AGX yakıp katkı puanı kazanın; USD1 ile Türbin’deki kilidi açılmış gAGX satın alın.',
+          },
+          {
+            q: 'Flash ile İşlem farkı nedir?',
+            a: 'Flash protokol sabit yolu kullanır, kullanıcı kayma ayarı yoktur. İşlem PancakeSwap canlı kurunu kullanır; kayma ayarlanabilir ve fiyat etkisi olabilir.',
+          },
+          {
+            q: 'Kripto cüzdan nedir ve nasıl alınır?',
+            a: 'Kripto cüzdan, zincir üstü dijital varlıkları görüntüleyip yöneten yazılımdır. Varlıklar cüzdanda değil blokzincirde kayıtlıdır. Saklamasız cüzdanda özel anahtarı yalnızca siz kontrol edersiniz — işlemleri yalnız siz imzalarsınız. Üçüncü taraf anahtar tutmaz; ancak özel anahtar veya tohum ifadesini kaybederseniz varlıklara erişimi kalıcı kaybedersiniz. Mobil uygulama veya donanım olabilir; yaygın seçenekler MetaMask ve TokenPocket’tır.',
+          },
+          {
+            q: 'Blokzincir işlem ücreti nedir?',
+            a: 'Zincir üstü her alım, satım, takas veya transfer gas ister. Bu ücret AEGIS X tarafından alınmaz; ağ talebi ve hesaplama maliyetine göre BSC’de BNB ile ödenir. AEGIS X’te işlem öncesi cüzdanınızda BNB bulundurun.',
+          },
+          {
+            q: 'Kripto cüzdan nasıl çalışır?',
+            a: 'Kripto cüzdanlar varlıklarınızı korumak için bir genel ve bir özel anahtar kullanır. Saklamasız cüzdan kurarken yazılım, anahtarları kurtarmak için kullanabileceğiniz bir tohum ifadesi (12, 18 veya 24 rastgele kelime) üretir. Güvenle saklayın, asla paylaşmayın. Özel anahtarınız cüzdanın tam kontrolünü verir; işlemleri imzalamak için kullanılır ve her zaman gizli tutulmalıdır. Genel anahtar özel anahtardan türetilir, paylaşılabilir; cüzdan adresi oluşturmak ve transfer almak için kullanılır.',
+          },
+        ],
+      },
+    },
+    flash: {
+      title: 'Hızlı Takas',
+      intros: {
+        gagx: 'gAGX’i AGX’e çevirin — ücretsiz, kaymasız',
+        gagxWrap: 'AGX’i gAGX’e sarın — ücretsiz, kaymasız',
+        usdt: 'USDT’yi USD1’e çevirin — ücretsiz, kaymasız',
+      },
+      providerName: 'AEGIS X',
+      openProvider: 'Flash sözleşmesini BscScan’de görüntüle',
+      settlementValue: 'Zincir üstü · saniyeler',
+      aboutTitle: 'Hakkında',
+      action: 'Hızlı Takas',
+      success: 'Flash takası başarılı',
+      pairAriaLabel: 'Flash çifti',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
+      blocked: {
+        paused: 'Flash duraklatıldı. Lütfen daha sonra tekrar deneyin.',
+        belowMin: 'Tek işlem minimum takas limitinin altında.',
+        aboveMax: 'Tek işlem maksimum takas limitini aşıyor.',
+        insufficientReserve: 'USD1 rezervi yetersiz. Lütfen daha sonra tekrar deneyin.',
+        zeroRate: 'Takas kuru hazır değil. Lütfen daha sonra tekrar deneyin.',
+        insufficientOutput: 'Teklif değişti. Lütfen tekrar deneyin.',
+        transferMismatch: 'Token transfer tutarı uyuşmuyor. Lütfen tekrar deneyin.',
+        zeroAddress: 'Sözleşme adresi geçersiz. Lütfen daha sonra tekrar deneyin.',
+        sameToken: 'Giriş/çıkış token yapılandırması geçersiz. Lütfen daha sonra tekrar deneyin.',
+        zeroAmount: '0’dan büyük bir yakım tutarı girin.',
+        notAuthorized: 'Bu işlem yetkilendirilmedi.',
+        invalidLimits: 'Takas limitleri hatalı yapılandırılmış. Lütfen daha sonra tekrar deneyin.',
+      },
+      faq: {
+        items: [
+          {
+            q: 'gAGX nedir?',
+            a: 'gAGX, Rebase ve DAO ödüllerinin birleşik uzlaşma belgesidir; AGX stake veya tahvillerden Rebase getirisi ile DAO ödülleri gAGX olarak ödenir.',
+          },
+          {
+            q: 'gAGX ile AGX takas oranı nedir?',
+            a: 'Her zaman sabit 1:1 — ücretsiz, kaymasız, zincir üstünde anında.',
+          },
+          {
+            q: 'Flash neden ücretsiz ve kaymasız?',
+            a: 'Flash, AMM takası değil protokol düzeyinde gAGX↔AGX 1:1 geri alımdır; fiyat kayması veya takas ücreti yoktur. Yalnızca BSC ağ gas’ını BNB ile ödersiniz.',
+          },
+          {
+            q: 'gAGX nasıl alınır?',
+            a: 'Protokol getiri dağıtımına katıldıktan sonra ilgili miktarda gAGX alırsınız.',
+          },
+          {
+            q: 'gAGX, AGX’e çevirmenin dışında ne işe yarar?',
+            a: '1:1 AGX’e çevirip stake bileşik getirisine devam edin veya gAGX stake ederek X madenciliği yapın. İki yol da açıktır.',
+          },
+          {
+            q: 'USDT nasıl USD1’e takas edilir?',
+            a: 'Flash’ta «USDT → USD1» çiftine geçin, tutar girin; protokol kurundan takas, zincir üstünde anında.',
+          },
+          {
+            q: 'USD1’i USDT’ye geri takas edebilir miyim?',
+            a: 'Flash tek yönlü USDT→USD1’dir. Diğer varlıklara dönmek için İşlem sayfasındaki piyasa takasını kullanın.',
+          },
+          {
+            q: 'Flash geçmişini nerede görürüm?',
+            a: 'Flash takasları zincir üstünde saniyeler içinde tamamlanır. Her işlemi cüzdanınızda veya blok gezgininde doğrulayın.',
+          },
+        ],
+      },
+    },
+    trade: {
+      title: 'İşlem',
+      intro: 'PancakeSwap canlı kur · zincir üstü uzlaşma',
+      aboutTitle: 'Hakkında',
+      selectSellToken: 'Satılacak tokenı seçin',
+      selectBuyToken: 'Alınacak tokenı seçin',
+      xBuyDisabledHint: 'X yalnızca satılabilir',
+      flipDisabledXSellOnly: 'X yalnızca satılabilir — alışa çevrilemez',
+      action: 'İşlem',
+      success: 'İşlem başarılı',
+      priceImpact: 'Fiyat etkisi',
+      estimatedGas: 'Tahmini Gas',
+      highPriceImpactWarning:
+        'Bu işlem havuz fiyatını önemli ölçüde etkileyebilir. Tutarı düşürün veya kayma toleransını artırın.',
+    },
+    burn: {
+      title: 'Yakım',
+      subtitle: 'Katkı puanı almak için AGX yakın',
+      sellLabel: 'Yakım',
+      receiveLabel: 'Alınacak',
+      pointsToken: 'Katkı puanlarım',
+      currentContribution: 'Mevcut katkı değeri',
+      burnRate: 'Yakım oranı',
+      destination: 'Yakım hedefi',
+      destinationValue: 'Kara delik {burnPct}% · LP {injectPct}%',
+      providerName: 'AEGIS X',
+      openProvider: 'Katkı takas sözleşmesini BscScan’de görüntüle',
+      action: 'Yakım',
+      success: 'Yakım başarılı',
+      aboutTitle: 'Hakkında',
+      blocked: {
+        paused: 'Yakım duraklatıldı. Lütfen daha sonra tekrar deneyin.',
+        belowMin: 'Tek işlem minimum yakım limitinin altında.',
+        aboveMax: 'Tek işlem maksimum yakım limitini aşıyor.',
+        zeroRate: 'Yakım oranı hazır değil. Lütfen daha sonra tekrar deneyin.',
+        zeroAmount: '0’dan büyük bir yakım tutarı girin.',
+      },
+      metrics: {
+        totalBurnedAgx: 'Toplam yakılan AGX',
+        totalEarnedContribution: 'Toplam kazanılan katkı puanı',
+        totalConsumedContribution: 'Toplam harcanan katkı puanı',
+      },
+      history: {
+        title: 'Yakım geçmişi',
+        emptyBurn: 'Henüz yakım kaydı yok. AGX yakıp katkı puanı alınca her işlem burada görünür.',
+        emptyConsume:
+          'Henüz harcama kaydı yok. Katkı harcayan getiri/ödül taleplerinden sonra kayıtlar burada görünür.',
+        tabsAriaLabel: 'Yakım geçmişi kategorileri',
+        tabs: {
+          burn: 'Yakım',
+          consume: 'Harcama',
+        },
+        burnColumns: ['Zaman', 'Yakılan AGX', 'Kazanılan katkı puanı', 'İşlem hash’i'],
+        consumeColumns: ['Zaman', 'Harcanan katkı puanı', 'İşlem hash’i'],
+      },
+      faq: {
+        items: [
+          {
+            q: 'Katkı puanları ne işe yarar?',
+            a: 'Karma getiri ve yeniden stake akışlarında katkı puanı gerekir; bakiye yetmezse talep başarısız olur — önce AGX yakarak tamamlayın.',
+          },
+          {
+            q: 'Ödül talep ederken neden katkı puanı gerekir?',
+            a: 'Protokol, talep ve yeniden stake için katkı puanı kullanır; tüketim ödül tutarıyla ilişkilidir — önce AGX yakarak katkı ekleyin.',
+          },
+          {
+            q: 'Yakım oranı nedir?',
+            a: 'Yakım oranı zincir üstünde (rateBps) ayarlıdır; katkı puanı = yakılan AGX × rateBps ÷ 10000.',
+          },
+          {
+            q: 'Yakılan AGX nereye gider?',
+            a: 'Zincir üstü bölüşüme göre yaklaşık %{burnPct} kara deliğe kalıcı yakılır; yaklaşık %{injectPct} LP likiditesine enjekte edilebilir.',
+          },
+          {
+            q: 'Katkı puanları aktarılabilir veya iade edilebilir mi?',
+            a: 'Katkı puanları AgxContributionSwap sözleşme hesap defterindedir; aktarılamaz ve AGX’e iade edilemez.',
+          },
+        ],
+      },
+    },
+    turbine: {
+      title: 'Türbin',
+      aboutTitle: 'Hakkında',
+      segmentAriaLabel: 'Türbin işlemleri',
+      segments: {
+        unlock: 'Kilidi aç',
+        claim: 'Talep et',
+      },
+      unlockLabel: 'Kilidi aç',
+      unlockable: 'Kilidi açılabilir',
+      equivalentBuyHint: 'Kilidi açarken eş tutarda alım da yapılır',
+      payUsd1Label: 'USD1 öde',
+      buyAgxLabel: 'AGX satın al',
+      buyToBoundWallet: 'Alım cüzdana geldi',
+      agxPrice: 'AGX fiyatı',
+      willReceiveAgx: 'Alacağınız AGX',
+      unlockRatio: 'Kilit açma oranı',
+      unlockRatioValue: '1 : 1 alımla kilit açma',
+      cooldown: 'Soğuma süresi',
+      cooldownHoursValue: '{hours} sa',
+      unlockAction: 'Kilidi aç',
+      unlockSuccess: 'Kilit açıldı — soğuma başladı',
+      claimAction: 'Talep et',
+      claimSuccess: 'Talep başarılı',
+      claimEmpty: 'Henüz kilit açma kaydı yok',
+      claimReady: 'Vadesi doldu, çekilebilir',
+      claimCoolingUntil: 'Soğumada · {time}',
+      dataTitle: 'Türbin verileri',
+      recordsTitle: 'Türbin kayıtları',
+      recordsEmpty:
+        'Henüz Türbin kaydı yok. Serbest bırakma havuzundan Türbin’e ödül girince her işlem burada görünür.',
+      mechanismTitle: 'Türbin mekanizması',
+      mechanismIntro:
+        'Satış likiditesini alım talebine bağlayın; her kilit açılışı eşit alımla eşlensin',
+      mechanism: [
+        {
+          title: 'Buy to unlock',
+          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+        },
+        {
+          title: 'Dinamik soğuma',
+          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+        },
+      ],
+      metrics: {
+        pendingUnlock: 'Kilidi açılacak gAGX',
+        cooling: 'Soğumadaki gAGX',
+        totalWithdrawn: 'Toplam çekilen',
+      },
+      faq: {
+        items: [
+          {
+            q: 'gAGX Türbin’e nasıl girer?',
+            a: 'After RewardQueue (and related) claims, rewards credit Turbine as unlockable quota (turbineBalances).',
+          },
+          {
+            q: 'Kilidi açmak için neden alım gerekir?',
+            a: 'Kilit açma, canlı fiyattan USD1 ile eşit miktarda AGX almayı gerektirir (miktar 1:1). Ödenen USD1 AGX teklifiyle değişir — sabit USD1:AGX fiyatı 1:1 değildir.',
+          },
+          {
+            q: 'Kilit açma ile çekme farkı nedir?',
+            a: 'Kilit açma: USD1 ödeyip AGX alın ve soğumayı başlatın. Çekme: soğuma bitince gAGX’i cüzdana alın.',
+          },
+          {
+            q: 'Soğuma süresi ne kadar?',
+            a: 'currentCooldownDuration — typically about 24–96 hours, adaptive to treasury health. The page shows the live period.',
+          },
+          {
+            q: 'Satın alınan AGX nereye gider?',
+            a: 'Alınan AGX cüzdanınıza gider; soğuma bitince gAGX ayrıca talep edilir.',
+          },
+        ],
+      },
+    },
+    tokenAbout: {
+      title: 'AEGIS X ekosistem tokenları hakkında',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · Temel uzlaşma varlığı',
+          body: 'AEGIS X ekosisteminin temel uzlaşma stablecoin’i; 1:1 sabit, kaymasız takas; Genesis abonelik, stake ve ödeme senaryolarını bağlar.',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · Temel protokol varlığı',
+          body: 'AGX, AEGIS X protokolünün temel varlığıdır; %150 aşırı teminatla üretilir; değer büyümesi, getiri dağıtımı ve ekosistem gelişiminde kilit rol oynar.',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · Getiri uzlaşma belgesi',
+          body: 'Rebase ve DAO ödüllerinin birleşik uzlaşma belgesi; 1:1 AGX’e çevrilebilir veya X madenciliği için stake edilebilir.',
+        },
+        {
+          key: 'gagxStake',
+          title: 'gAGX · Stake belgesi',
+          body: 'AGX stake ile elde edilen faiz getiren belge; otomatik bileşik getiri, yönetişim ağırlığı ve daha yüksek unvanlar açar.',
+        },
+        {
+          key: 'x',
+          title: 'X · Ecosystem value token',
+          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+      ],
+    },
+    tokenContract: 'Sözleşmeyi görüntüle',
+    tokenPrevious: 'Önceki token',
+    tokenNext: 'Sonraki token',
+    faq: {
+      title: 'FAQs',
+      tabsTitle: 'FAQs',
+      tabs: {
+        trade: {
+          label: 'İşlem',
+          items: [
+            {
+              q: 'İşlem ile Flash takası farkı nedir?',
+              a: 'İşlem, PancakeSwap’ta USD1, AGX, X vb. tokenları canlı piyasa kurundan takas eder; kayma ayarlanır ve gas ödenir. Flash, protokol içi gAGX↔AGX 1:1 sabittir — ücretsiz, kaymasız.',
             },
+            {
+              q: 'İzin verilen kayma nedir ve nasıl ayarlanır?',
+              a: 'Kayma, gönderim ile zincir üstü uzlaşma arasındaki fiyat değişimidir. İzin verilen kayma kabul ettiğiniz maksimum sapmadır: varsayılan veya özel yüzde. Gerçek kayma aşılırsa işlem geri alınır (gas yine harcanabilir); çok düşük kolay başarısız, çok yüksek daha kötü fiyattan doldurabilir.',
+            },
+            {
+              q: 'İşlem nasıl uzlaşır ve ücret var mı?',
+              a: 'İşlemler PancakeSwap zincir üstünde uzlaşır. AEGIS X ek takas ücreti almaz; her zincir üstü işlem BSC gas’ı (BNB) ister — cüzdanda yeterli BNB bulundurun.',
+            },
+            {
+              q: 'Neden gerçek tutar tahminden farklı olabilir?',
+              a: 'Tahmin, teklif anındaki kuru kullanır. Piyasa veya diğer işlemler dolumu değiştirebilir; nihai tutar kayma limitiniz içinde zincir üstünde uzlaşandır.',
+            },
+            {
+              q: 'Hangi tokenlar işlem görebilir?',
+              a: 'AEGIS X ekosistem tokenları (USD1, AGX, X) arasında piyasa kurundan takas edebilirsiniz. Ayrıntılar için üst sekmeleri kullanın.',
+            },
+            {
+              q: 'İşlem geçmişini nerede görürüm?',
+              a: 'İşlemler zincir üstünde yürütülür ve saniyeler içinde tamamlanır. Her işlemi cüzdanınızda veya blok gezgininde doğrulayın.',
+            },
+          ],
         },
-        tokenContractTooltip: 'Token ve sözleşme detaylarını görüntüle'
+        usd1: {
+          label: 'USD1',
+          items: [
+            {
+              q: 'USD1 nedir?',
+              a: 'USD1, AEGIS X’in temel değer uzlaşma varlığıdır; %100 rezervle desteklenir (nakit, kısa vadeli ABD Hazine tahvilleri, devlet para piyasası fonları vb.); aylık dağılım raporları WLFI sitesindedir.',
+            },
+            {
+              q: 'USD1 AEGIS X’te hangi rolü oynar?',
+              a: 'USD1 temel uzlaşma varlığı olarak likidite ağlarını, ödeme senaryolarını ve ekosistem değer akışını bağlar.',
+            },
+            {
+              q: 'USD1 nasıl alınır?',
+              a: 'Takas ana sayfasındaki «USD1 al» girişi ile PancakeSwap piyasa kurundan USD1 alın; veya İşlem sayfasında AGX, X ve diğer ekosistem tokenlarıyla takas edin.',
+            },
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+            {
+              q: 'AGX nedir?',
+              a: 'AGX, AEGIS X protokolünün temel varlığıdır; %150 aşırı teminatla basılır; değer büyümesi, getiri dağıtımı ve ekosistem gelişiminde kilit rol oynar.',
+            },
+            {
+              q: 'AGX sürdürülebilir büyümeyi nasıl sağlar?',
+              a: 'Staking, tahviller ve Rebase ile AGX uzun vadeli bileşik döngü oluşturur; AI düşünce kuruluşu piyasa yapıcılığı ve geri alım-yakım ile birleşir.',
+            },
+            {
+              q: 'AGX nasıl alınır?',
+              a: 'Kullanıcılar protokol ekosistemine katılarak veya protokolün desteklediği işlem piyasalarından AGX alabilir.',
+            },
+            {
+              q: 'AGX değer desteği nereden gelir?',
+              a: 'AGX, düşünce kuruluşu rezervleriyle desteklenen %150 aşırı teminatla basılır; staking, tahviller, Rebase bileşik getirisi ve geri alım-yakım ile uzun vadeli değer döngüsü oluşturur.',
+            },
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+            {
+              q: 'gAGX nedir?',
+              a: 'gAGX, getiri büyümesini ekosistem değeriyle bağlayan protokol ödül uzlaşma belgesidir; ekosistem madenciliğine katılabilir.',
+            },
+            {
+              q: 'gAGX nasıl alınır?',
+              a: 'Kullanıcılar protokol getiri dağıtımına katıldıktan sonra ilgili miktarda gAGX alır.',
+            },
+            {
+              q: 'gAGX ile AGX farkı nedir?',
+              a: 'AGX, değer büyümesi ve getiri dağıtımından sorumlu çekirdek protokol varlığıdır; gAGX, AGX’e çevrilebilen ekosistem getiri belgesidir ve ekosistem madenciliğine katılımın önemli girişidir.',
+            },
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+            {
+              q: 'X nedir?',
+              a: 'X, AEGIS X ekosistem değer tokenıdır; toplam arz sabit 210 milyondur; ekosistem büyümesi ve değer birikimini taşır.',
+            },
+            {
+              q: 'X nasıl alınır?',
+              a: 'Kullanıcılar ekosistem madenciliğine katılarak X ödülü kazanır ve büyüme değerini paylaşır.',
+            },
+            {
+              q: 'X airdrop nasıl serbest bırakılır?',
+              a: 'X’in değeri ekosistem büyümesi, değer birikimi ve uzun vadeli gelişim konsensüsünden gelir; ekosistem değerinin önemli taşıyıcısıdır.',
+            },
+            {
+              q: 'X neden sürekli deflasyonist?',
+              a: 'X’in arzı sabit 210 milyondur, ek basım yoktur ve her satışın %25’i yakılır. Büyüyen talep ve süregelen yakımlar dolaşımı zamanla küçültür.',
+            },
+          ],
+        },
+      },
     },
-    genesis: {
-        title: 'Ortak İnşa Planı',
-        intro: 'X DAO Ortak İnşa Planına katılın · Faz {season}  ({discount} indirim)',
-        shares: 'Pay (1 pay = 100 USD1 · maks {max} pay)',
-        quota: 'Faz ortak inşa kotası',
-        pay: 'Ödeme',
-        receive: 'Alınacak AGX',
-        value: 'Abonelik değeri',
-        xTokenAirdrop: 'Alınacak X başlangıç airdrop değeri',
-        xTokenAirdropHint: 'Faz bazında kümülatif ortak inşa tutarı ≥ {threshold} olduğunda airdrop ödülü kazanılır',
-        join: 'Ortak İnşaya Katıl',
-        joinGenesis: 'Genesis ortak inşaya katıl',
-        statsTitle: 'Faz {season} ortak inşa verileri',
-        startsIn: 'Başlangıç geri sayımı',
-        countdownUnits: { days: 'd', hours: 'h', minutes: 'm' },
-        endsIn: 'Bu fazda kalan süre',
-        referencePrice: 'AGX açılış referans fiyatı',
-        discountLabel: 'İndirim',
-        discountRatio: 'Faz indirim oranı',
-        xAirdropRatio: 'X airdrop oranı',
-        airdropLabel: 'X airdrop oranı',
-        myContributions: 'Ortak inşa kayıtlarım',
-        totalContributed: 'Bu faz ortak inşa',
-        cumulativeContributed: 'Toplam ortak inşa',
-        globalLabel: 'Küresel toplam ortak inşa',
-        globalBody: 'Küresel çekirdek ortak inşacıları bir araya getirerek AEGISX küresel ekosistem ağını birlikte inşa edin.',
-        viewContract: 'Sözleşmeyi görüntüle',
+    tokenContractTooltip: 'Token ve sözleşme ayrıntılarını görüntüle',
+  },
+  genesis: {
+    title: 'Ortak İnşa Planı',
+    intro: 'X DAO Ortak İnşa Planına katılın · Faz {season}  ({discount} indirim)',
+    introEnded: 'X DAO ortak inşa programı tamamlandı · Tüm ortak inşa edenlere teşekkürler',
+    shares: 'Pay (1 pay = {min} USD1 · maks {max} pay)',
+    quota: 'Faz ortak inşa kotası',
+    pay: 'Ödeme',
+    receive: 'Alınacak AGX',
+    value: 'Abonelik değeri',
+    xTokenAirdrop: 'Alınacak X başlangıç airdrop değeri',
+    xTokenAirdropHint:
+      'Faz bazında kümülatif ortak inşa tutarı ≥ {threshold} olduğunda airdrop ödülü kazanılır',
+    join: 'Ortak İnşaya Katıl',
+    joinEnded: 'Ortak İnşa sona erdi',
+    joinGenesis: 'Genesis ortak inşaya katıl',
+    statsTitle: 'Faz {season} ortak inşa verileri',
+    startsIn: 'Başlangıç geri sayımı',
+    countdownUnits: { days: 'g', hours: 'sn', minutes: 'g' },
+    endsIn: 'Bu fazda kalan süre',
+    referencePrice: 'AGX açılış referans fiyatı',
+    discountLabel: 'İndirim',
+    discountRatio: 'Faz indirim oranı',
+    xAirdropRatio: 'X airdrop oranı',
+    airdropLabel: 'X airdrop oranı',
+    myContributions: 'Ortak inşa kayıtlarım',
+    totalContributed: 'Bu faz ortak inşa',
+    cumulativeContributed: 'Toplam ortak inşa',
+    globalLabel: 'Küresel toplam ortak inşa',
+    globalBody:
+      'Küresel çekirdek ortak inşacıları bir araya getirerek AEGISX küresel ekosistem ağını birlikte inşa edin.',
+    viewContract: 'Sözleşmeyi görüntüle',
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'Ortak inşa planına nasıl katılınır?',
+          a: 'Kullanıcılar USD1 ile ortak inşaya katılarak ilgili faz indirimiyle AGX kazanabilir. Toplam {phaseCount} faz vardır; indirimler sırasıyla {discounts} şeklindedir.',
+        },
+        {
+          q: 'Ortak inşa kotası ve katılım koşulları nelerdir?',
+          a: 'Minimum katılım tutarı {minUsd} olup, {shareIncrement} USD1 katları şeklinde katılım gereklidir. Faz kotaları sırasıyla {phaseQuotas} şeklindedir.',
+        },
+        {
+          q: 'Ortak inşa döngüsü ne kadar sürer?',
+          a: 'Ortak inşa ile kazanılan AGX, 540 günlük bir kilit açma döngüsüne tabidir.',
+        },
+        {
+          q: 'X airdrop ödülü nasıl kazanılır?',
+          a: 'Tek hesapla toplam ortak inşa tutarı {threshold} ulaştığında, ilgili faz X airdrop ödülüne hak kazanılır. {phaseCount} faz için airdrop oranları sırasıyla {airdropRatios} şeklindedir.',
+        },
+        {
+          q: 'X airdrop ödülü nasıl dağıtılır?',
+          a: 'X airdrop ödülü 12 aylık doğrusal kilit açma mekanizmasına tabidir; her ay yaklaşık %8.33 açılır. İlk dağıtım, X stake protokolü yayına girdikten 30 gün sonra akıllı sözleşme tarafından otomatik olarak gerçekleştirilir.',
+        },
+      ],
+    },
+    promoTitleTemplate: 'Genesis ortak inşa Faz {season}  {discount} indirim',
+    promoLive: 'Devam ediyor — kota sınırlı, bitiş {endDate}',
+    promoUpcoming: 'Yakında başlıyor, kota sınırlı, {startDate} başlar',
+    promoEnded: '{status} · {date}',
+    joinSuccess: 'Abonelik başarılı',
+    insufficientUsd1: 'USD1 bakiyesi yetersiz, lütfen yeterli USD1 temin edin.',
+    insufficientAllowance: 'USD1 onayı yetersiz, lütfen önce onaylayın.',
+    purchaseUnavailable:
+      'Şu anda abone olunamaz; lütfen pay miktarını veya abonelik fazı durumunu kontrol edin.',
+    walletNotConnected:
+      'Cüzdan bağlantısı kesildi, lütfen işlem imzalamadan önce yeniden bağlanın.',
+    errors: {
+      notBound: 'Lütfen önce önereni bağlayın.',
+      paused: 'Abonelik duraklatıldı, lütfen daha sonra tekrar deneyin.',
+      invalidAmount: 'Abonelik tutarı 100 USD katları olmalıdır.',
+      phaseInactive: 'Mevcut abonelik fazı başlamadı veya sona erdi.',
+      belowMin: 'Abonelik tutarı mevcut fazın minimum limitinin altında.',
+      soldOut: 'Mevcut abonelik fazı tükendi.',
+      userLimitExceeded: 'Mevcut faz tek cüzdan abonelik üst limiti aşıldı; lütfen tutarı azaltın.',
+      invalidPhase: 'Geçersiz abonelik fazı.',
+      systemConfig: 'Sistem yapılandırması anormal, lütfen daha sonra tekrar deneyin.',
+    },
+    contributionsSyncPending:
+      'Zincir üstü abonelik onaylandı; geçmiş kayıtlar senkronize ediliyor, lütfen daha sonra yenileyin.',
+    contributionsEmpty: {
+      title: 'Henüz ortak inşa kaydı yok',
+    },
+    contributionsEmptyEnded: {
+      title: 'Henüz ortak inşa kaydı yok',
+      body: 'Ortak inşa programı sona erdi. Katılmayan hesapların burada kaydı yoktur.',
+    },
+    goBindReferrer: 'Referansı bağla',
+    seasonLive: 'Devam ediyor',
+    seasonEnded: 'Sona erdi',
+    seasonUpcoming: 'Yakında',
+  },
+  rewards: {
+    title: 'Ödüller',
+    intro: 'Ödül kartı bakiyelerini ve ödeme kayıtlarını görüntüleyin.',
+    backToHub: 'Ödüllere dön',
+    claim: 'Talep et',
+    claimSuccess: 'Talep başarılı',
+    restakeSuccess: 'Yeniden stake başarılı',
+    claimErrors: {
+      zeroAmount: 'Talep tutarı 0.',
+      invalidSigner: 'Geçersiz imza. Yenileyip tekrar deneyin.',
+      alreadyUsed: 'Bu ödül zaten alındı. Tekrar talep etmeyin.',
+      expired: 'İmza süresi doldu. Yenileyip tekrar talep edin.',
+      noOrder: 'Talep edilecek ödül yok.',
+      failed: 'Talep başarısız. Lütfen daha sonra tekrar deneyin.',
+      confirmSyncFailed:
+        'Ödül zincir üstünde başarıyla alındı ama senkron başarısız. Sayfayı yenileyin; tekrar talep etmeyin.',
+    },
+    hub: {
+      asideTitle: 'AEGIS X ödülleri hakkında',
+      asideBody:
+        'Altı ödül kartı şans çekilişi, referans, katılım, ortak inşa, gelişim ödeneği ve genesis ortak inşayı kapsar.',
+      aboutTitle: 'AEGIS X ödülleri hakkında',
+      balanceLabel: 'Bakiye',
+      filterAria: 'Ödülleri filtrele',
+      hideZero: '0 varlıkları gizle',
+      hideZeroEmpty: 'Sıfır olmayan ödül yok',
+      balancePlaceholder: '0.00',
+      signInForBalance: 'Görüntülemek için imzalayarak giriş yapın',
+      enterClaim: 'Talebe gir',
+      sessionHint:
+        'Talep öncesi cüzdan imza girişini tamamlayın. Cüzdan bağlamak iş girişi değildir.',
+      stats: {
+        totalRewards: 'Toplam ödül',
+        tier: 'Ortak inşa seviyesi',
+        tierEmpty: 'Henüz ortak inşa seviyesi yok',
+        personalHolding: 'Kişisel pozisyon',
+        totalPerformance: 'Toplam performans',
+        smallAreaPerformance: 'Küçük alan performansı',
+        contribution: 'Katkı puanlarım',
+        contributionHint: 'Talepler katkı puanını {ratio} harcar',
+        goBurn: 'Yakıma git',
+      },
+      mechanismTitle: 'Ortak inşa ödül mekanizması',
+      mechanismBody:
+        'Ortak inşa ödülleri ekip Rebase getirisinden gelir ve seviyeye göre paylaşılır.',
+      mechanismFooter:
+        'Gerekli seviyeye ulaşan herhangi iki hat yükseltmeyi açar. Seviye yükseldikçe oran artar; en üstte ömür boyu başarı ödülü ve küresel temettü.',
+      aboutSlides: {
+        lucky: {
+          title: 'Şans ödülü',
+          body: 'Ortak inşa edenlere blok şans çekilişi; kazanınca Mixed ile talep edin.',
+        },
+        referral: {
+          title: 'Referans ödülü',
+          body: 'Doğrudan referanslardan ödüller; DaoPool Mixed ile talep (katkı {ratio}).',
+        },
+        participate: {
+          title: 'Katılım ödülü',
+          body: 'Referansınızdan katılım ödülleri; DaoPool Mixed ile talep (katkı {ratio}).',
+        },
+        cobuild: {
+          title: 'Ortak İnşa',
+          body: 'Seviyeye göre uzun vadeli ekip teşvikleri; Mixed talepleri katkı puanı ister.',
+        },
+        grant: {
+          title: 'Gelişim ödeneği',
+          body: 'MarketFund imzalı taleplerle ekosistem ödeneği.',
+        },
+        genesis: {
+          title: 'Genesis ortak inşa ödülü',
+          body: 'Genesis dönemi referans, seviye ve gelişim fonu ödülleri; uzlaşma penceresi kapanınca talep edilemez.',
+        },
+      },
+      tierTable: {
+        columns: [
+          'Seviye',
+          'Kişisel pozisyon',
+          'Aktif hesaplar',
+          'Ekip performansı',
+          'Bonus oranı',
+        ],
+        rows: [
+          {
+            level: 'A1',
+            holding: '$100',
+            accounts: '2',
+            team: 'Toplam performans ≥ $6,000',
+            rate: '10%',
+          },
+          {
+            level: 'A2',
+            holding: '$100',
+            accounts: '2',
+            team: 'Toplam performans ≥ $20,000',
+            rate: '20%',
+          },
+          {
+            level: 'A3',
+            holding: '$100',
+            accounts: '2',
+            team: 'Toplam performans ≥ $60,000',
+            rate: '30%',
+          },
+          {
+            level: 'A4',
+            holding: '$500',
+            accounts: '5',
+            team: 'Toplam performans ≥ $180,000',
+            rate: '40%',
+          },
+          {
+            level: 'A5',
+            holding: '$1,000',
+            accounts: '5',
+            team: 'Toplam performans ≥ $550,000',
+            rate: '55%',
+          },
+          {
+            level: 'A6',
+            holding: '$2,000',
+            accounts: '5',
+            team: 'İki hat A5’e ulaşır',
+            rate: '68%',
+          },
+          {
+            level: 'A7',
+            holding: '$3,000',
+            accounts: '5',
+            team: 'İki hat A6’ya ulaşır',
+            rate: '78%',
+          },
+          {
+            level: 'A8',
+            holding: '$5,000',
+            accounts: '5',
+            team: 'İki hat A7’ye ulaşır',
+            rate: '88%',
+          },
+          {
+            level: 'A9',
+            holding: '$10,000',
+            accounts: '5',
+            team: 'İki hat A8’e ulaşır',
+            rate: '98%',
+          },
+          {
+            level: 'A10',
+            holding: '$20,000',
+            accounts: '5',
+            team: 'İki hat A9’a ulaşır',
+            rate: '108%',
+          },
+          {
+            level: 'A11',
+            holding: '$30,000',
+            accounts: '5',
+            team: 'İki hat A10’a ulaşır',
+            rate: '118%',
+          },
+          {
+            level: 'A12',
+            holding: '$40,000',
+            accounts: '5',
+            team: 'İki hat A11’e ulaşır',
+            rate: '125%',
+          },
+          {
+            level: 'A13',
+            holding: '$50,000',
+            accounts: '5',
+            team: 'İki hat A12’ye ulaşır',
+            rate: '130%',
+          },
+          {
+            level: 'Ömür boyu başarı ödülü',
+            holding: '$100,000',
+            accounts: '5',
+            team: 'İki hat A13’e ulaşır',
+            rate: '%130 + küresel temettü %5',
+          },
+        ],
+      },
+    },
+    cards: {
+      lucky: {
+        title: 'Şans ödülü',
+        body: 'Ortak inşa edenlere blok şans çekilişi',
+        aside: 'Şans ödülleri Chainlink VRF kullanır; kazananlar Mixed ile talep eder.',
+      },
+      referral: {
+        title: 'Referans ödülü',
+        body: 'Ortak inşaya ortak davet ederek ödül kazanın',
+        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+      },
+      participate: {
+        title: 'Katılım ödülü',
+        body: 'Referansınızdan ödüller',
+        aside: 'Referans bağından katılım ödülleri; DaoPool Mixed ile talep (katkı {ratio}).',
+      },
+      cobuild: {
+        title: 'Ortak İnşa',
+        body: 'Uzun vadeli ekip ortak inşa teşvik ödülleri',
+        aside: 'Ortak inşa ödülleri DaoPool Mixed ile alınır, katkı puanı gerekir.',
+      },
+      grant: {
+        title: 'Gelişim ödeneği',
+        body: 'Ekosistem gelişim özel ödeneği',
+        aside:
+          'Gelişim ödenekleri onay sonrası MarketFund imzasıyla talep edilir, doğrudan cüzdana gider.',
+      },
+      genesis: {
+        title: 'Genesis ortak inşa ödülleri',
+        body: 'Genesis dönemi doğrudan, seviye ve gelişim fonu ödülleri',
+        aside: 'Genesis ortak inşa ödülleri RewardClaimer imzasıyla talep edilir.',
+        badge: 'Yakında kapanıyor',
+      },
+    },
+    detail: {
+      claimable: 'Talep Edilebilir',
+      emptyClaimable: 'Talep edilecek ödül yok.',
+      signedAmountHint: 'Talep edilebilir tutar imzalı pakete göredir',
+      usdLabel: 'USD',
+    },
+
+    mixed: {
+      splitAria: 'Talep ve yeniden stake oranı',
+      releasePct: 'Talep %{pct}',
+      restakePct: 'Yeniden stake %{pct}',
+      releasePeriod: 'Serbest bırakma süresi seçimi',
+      restakePeriod: 'Yeniden stake süresi seçimi',
+      releaseAria: 'Serbest bırakma süresi seçimi',
+      restakeAria: 'Yeniden stake süresi seçimi',
+      releaseDays: '{days} g',
+      restakeDays: '{days} g',
+      daysTax: '{days} g · {tax}',
+      taxRate: 'Vergi %{rate}',
+      requiredContributionLabel: 'Bu talepte düşülecek katkı puanı',
+      insufficientContributionDetail: 'Katkı puanı yetersiz (gerekli {need}, mevcut {have}), ',
+      goBurnInline: 'Yakıma git',
+      getContributionSuffix: ' katkı puanı alın.',
+      releaseInto: 'Serbest bırakma havuzuna',
+      restakeInto: 'Tek varlık stake’ine',
+      restakeLabel: 'Yeniden stake',
+      tokenGagx: 'gAGX',
+      ctaReleaseLine: 'Talep et {amount}',
+      ctaRestakeLine: 'Yeniden stake {amount}',
+      requiredContribution: 'Bu talepte düşülecek katkı puanı: {amount}',
+      insufficientContribution: 'Katkı puanı yetersiz. Önce katkı puanı alın.',
+      goBurn: 'Katkı puanı al',
+      luckyPaused: 'Şans ödül havuzu duraklatıldı; talep edilemez.',
+      luckyNotClaimable: 'Talep edilecek şans ödülü yok.',
+    },
+
+    lucky: {
+      dataTitle: 'Veri',
+      todayPool: 'Bugünkü ödül havuzu',
+      countdownHint: 'Sonraki çekiliş {time}',
+      eligibility: 'Bugünkü uygunluk',
+      eligibilityYes: 'Kazanıldı',
+      eligibilityNo: 'Kazanılmadı',
+      maxStakeHint: 'Bugünkü alımlar {amount}',
+      cumulativeWins: 'Kümülatif kazanç',
+      winsCount: '{count} kez',
+      vrfTitle: 'Chainlink VRF v2 doğrulanabilir rastgelelik',
+      vrfBody:
+        'Şans ödülü Chainlink VRF v2 ile staking sözleşmelerini birleştirir: rastgelelik zincir üstünde şifreli kanıtla üretilir; sözleşme o günün listesinden 10 şanslı kullanıcı seçer. İnsan müdahalesi yok; herkes zincir üstünde doğrulayabilir.',
+      verifyTutorial: 'Doğrulama rehberi',
+      resultsTitle: 'Çekiliş sonuçları',
+      dateFilterAria: 'Çekiliş tarihini seçin',
+      resultsSummary: 'Çekiliş · {count} şanslı kullanıcı',
+      verifyHash: 'Bu turun çekiliş hash’ini doğrula',
+      meBadge: 'Ben',
+      resultWon: 'Kazandı {amount}',
+      resultLost: 'Kazanmadı',
+      resultsColumns: ['Sıra', 'Kazanan adres', 'Yatır', 'Ödül'],
+      emptyResults: 'Henüz çekiliş sonucu yok',
+      historyTitle: 'Çekiliş geçmişi',
+      historyColumns: ['Tarih', 'Yatır', 'Çekiliş sonucu', 'Doğrula'],
+      emptyHistory: 'Henüz çekiliş kaydı yok',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Çekiliş hakkı nasıl kazanılır?',
+            a: 'Günün ilk ≥ $5,000 stake veya tahvili otomatik o günün hakkını verir. Adres başına günde en fazla bir hak.',
+          },
+          {
+            q: 'Çekiliş nasıl sonuçlanır?',
+            a: '00:00 UTC’de Chainlink VRF v2 doğrulanabilir rastgelelik üretir; sözleşme o günün listesinden en fazla 10 kazanan seçer (günlük havuz hedefi ≥ $5,000).',
+          },
+          {
+            q: 'Adaleti nasıl doğrularım?',
+            a: 'VRF rastgeleliği zincir üstü kanıt içerir. Her sonucun yanındaki doğrulama bağlantısı ve doğrulama rehberiyle kazananları yeniden hesaplayın. Sonuçlar değiştirilemez.',
+          },
+          {
+            q: 'Ödüller nasıl ödenir?',
+            a: 'Ödüller çekiliş anı değerinde gAGX’e çevrilir ve Şans kartında birikir. Mixed kurallarıyla talep ({ratio} katkı, serbest bırakma havuzu veya yeniden stake).',
+          },
+          {
+            q: 'Neden $5,000 stake etmeme rağmen hakkım yok?',
+            a: 'Hak, uzlaşma piyasa değerine göredir. Fiyat hareketiyle kayıtlı stake $5,000 altındaysa o gün hak yoktur. Bir tampon bırakın.',
+          },
+          {
+            q: 'Vadeli olmayan staking çekiliş hakkı verir mi?',
+            a: 'Evet. Vadeli olmayan stake (liquidStake), tek işlem eşiği karşıladığında aynı gün hak verebilir; hak işlem bazlıdır, birikimli değildir. Günlük vadeli olmayan limitler eşiğe ulaşmayı engelleyebilir.',
+          },
+        ],
+      },
+    },
+    referral: {
+      dataTitle: 'Veri',
+      totalRewards: 'Toplam ödül',
+      myPosition: 'Pozisyonum',
+      directCount: 'Doğrudan referanslar',
+      contribution: 'Katkı puanlarım',
+      contributionHint: 'Talepler {ratio} harcar',
+      nextPayout: 'Sonraki ödül dağıtımı',
+      recordsTitle: 'Referans ödülü kayıtları',
+      recordsColumns: ['Zaman', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
+      emptyRecords: 'Henüz ödül kaydı yok. Dağıtımdan sonra kayıtlar burada görünür.',
+      referralsTitle: 'Referanslarım',
+      referralsColumns: ['Katılım zamanı', 'Adres', 'Pozisyon', 'Kümülatif referans ödülü'],
+      emptyReferrals:
+        'Henüz doğrudan referans yok. Davet bağlantınızı paylaşın; ortaklar burada listelenir.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Referans ödülü nasıl hesaplanır?',
+            a: 'Her doğrudan referansın Rebase getirisinin %10’unu kazanırsınız; zincir üstünde uzlaşır, Referans kartında birikir.',
+          },
+          {
+            q: 'Katılım ödülü koşulları neler?',
+            a: 'Stake/tahvil pozisyon değeri $100 üzerinde kalmalıdır. Sonra doğrudan referansların Rebase getirisi payınıza işler.',
+          },
+          {
+            q: 'Pozisyonum $100 görünürken neden katılım ödülü yok?',
+            a: 'AGX fiyatı dalgalanır; uzlaşmada pozisyon $99.99 işaretlenip eşiği kaçırabilirsiniz. Tampon tutun.',
+          },
+          {
+            q: 'Referansım benden çok daha fazla tutuyorsa yine tam %10 alır mıyım?',
+            a: 'Evet. >$100 koşulunu sağlarsanız, pozisyon farkına bakılmaksızın Rebase getirilerinin tam %10’unu alırsınız.',
+          },
+          {
+            q: 'Referans ödülü nasıl talep edilir?',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı {ratio} harcar (DaoPool Mixed).',
+          },
+          {
+            q: 'Doğrudan referans sayısı nedir?',
+            a: 'Davet bağlantınızla bağlanıp ilk katılımı tamamlayan cüzdanlar. Yalnızca ilk katman sayılır.',
+          },
+          {
+            q: 'Ortak çıktıktan sonra referans ödülü devam eder mi?',
+            a: 'Ödüller aktif pozisyona bağlıdır: pozisyon getiri üretirken devam eder, tamamen çıkınca durur. Kazanılmış tutarlar etkilenmez.',
+          },
+        ],
+      },
+    },
+    participate: {
+      dataTitle: 'Veri',
+      totalRewards: 'Toplam ödül',
+      myPosition: 'Pozisyonum',
+      contribution: 'Katkı puanlarım',
+      contributionHint: 'Talepler {ratio} harcar',
+      nextPayout: 'Sonraki ödül dağıtımı',
+      recordsTitle: 'Katılım ödülü kayıtları',
+      recordsColumns: ['Zaman', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
+      emptyRecords: 'Henüz ödül kaydı yok. Dağıtımdan sonra kayıtlar burada görünür.',
+      inviterTitle: 'Davet edenim',
+      inviterColumns: ['Bağlama zamanı', 'Adres', 'Pozisyon', 'Getirilen kümülatif ödül'],
+      emptyInviter:
+        'Henüz davet eden bağlı değil. Davet bağlantısıyla bağlandıktan sonra burada görünür.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Katılım ödülü nereden gelir?',
+            a: 'Davet edenin bağlantısıyla bağlanıp ortak inşaya katılınca, o ilişkiden katılım ödülü kazanırsınız; zincir üstünde uzlaşır, Katılım kartında birikir.',
+          },
+          {
+            q: 'Katılım ödülü nasıl hesaplanır?',
+            a: 'Davet edenin Rebase getirisinin, sizin pozisyonunuzla eşleşen kısmının %10’unu alırsınız. Örnek: siz $10,000, davet eden $1,000 tutuyorsa tamamı eşleşir; $20,000 tutuyorsa yalnızca eşleşen $10,000’lık kısımdan %10 alırsınız.',
+          },
+          {
+            q: 'Katılım ödülü koşulları neler?',
+            a: 'Davet edenin bağlantısıyla bağlanın ve stake/tahvil pozisyon değerini $100 üzerinde tutun.',
+          },
+          {
+            q: 'Pozisyonum $100 görünürken neden katılım ödülü yok?',
+            a: 'AGX fiyatı dalgalanır; uzlaşmada pozisyon $99.99 işaretlenip eşiği kaçırabilirsiniz. Tampon tutun.',
+          },
+          {
+            q: 'Katılım ödülü nasıl talep edilir?',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı {ratio} harcar (DaoPool Mixed).',
+          },
+          {
+            q: 'Davet eden değiştirilebilir mi?',
+            a: 'Hayır. Referans bağı ilk bağlamada zincire yazılır ve kalıcıdır.',
+          },
+        ],
+      },
+    },
+    cobuild: {
+      dataTitle: 'Veri',
+      totalRewards: 'Toplam ödül',
+      totalPerformance: 'Toplam performans',
+      myPosition: 'Pozisyonum',
+      directCount: 'Doğrudan referanslar',
+      contribution: 'Katkı puanlarım',
+      contributionHint: 'Talepler {ratio} harcar',
+      nextPayout: 'Sonraki ödül dağıtımı',
+      tierTitle: 'Ortak inşa seviyesi',
+      tierCurrent: 'Mevcut seviye',
+      tierNext: 'Sonraki seviye',
+      reqHolding: 'Kişisel pozisyon',
+      reqHoldingHint: 'Stake ve tahvil pozisyon değeri',
+      reqAccounts: 'Aktif hesaplar',
+      reqAccountsHint: 'Aktif doğrudan referans adresleri',
+      reqPerformance: 'Toplam performans',
+      reqPerformanceHint: 'Tüm alt hat pozisyon toplamı',
+      reqAchieved: 'Ulaşıldı',
+      recordsTitle: 'Ödül kayıtları',
+      recordsTabsAria: 'Ödül kayıt türü',
+      recordsTabCobuild: 'Ortak İnşa',
+      recordsTabEqualize: 'Eşitleme ödülü',
+      recordsColumns: ['Zaman', 'Seviye', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
+      emptyRecordsCobuild: 'Henüz ödül kaydı yok. Dağıtımdan sonra kayıtlar burada görünür.',
+      emptyRecordsEqualize: 'Henüz eşitleme ödülü kaydı yok. Dağıtımdan sonra burada görünür.',
+      directsTitle: 'Doğrudan referanslar',
+      directsColumns: ['Katılım zamanı', 'Adres', 'Pozisyon', 'Seviye'],
+      emptyDirects:
+        'Henüz doğrudan referans yok. Davet bağlantınızı paylaşın; ortaklar burada listelenir.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Ortak inşa ödülü nasıl hesaplanır?',
+            a: 'Ortak inşa ödülü ekip Rebase getirisinden gelir; seviye bonus oranınızla ödenir (A1 %10 – A13 %130). Ödül ana sayfasındaki ortak inşa mekanizma tablosuna bakın.',
+          },
+          {
+            q: 'Eşitleme ödülü nedir?',
+            a: 'Alt hat seviyenizi yakalayınca veya geçince ortak inşa ödülleri farkınıza girmez. Eşitleme, o alt hat ortak inşa ödülünün %10’unu telafi olarak öder.',
+          },
+          {
+            q: 'Eşitlemede seviye sınırı var mı?',
+            a: 'Evet. Yalnızca sizden en fazla 2 seviye yukarıdaki alt hatları kapsar. Örnek: A2 iken A3/A4 eşitlenebilir; A5+ kapsam dışıdır ta ki yükselene kadar.',
+          },
+          {
+            q: 'Ortak inşa seviyesi nasıl yükseltilir?',
+            a: 'A1–A5 kişisel pozisyon, aktif hesap ve ekip performansına göredir. A6’dan itibaren çift hat (gerekli seviyede herhangi iki hat); A6–A9 tek hat + diğer hatlar performansı yolunu da destekler.',
+          },
+          {
+            q: 'Ekip performansı nasıl sayılır?',
+            a: 'Ekip performansı, tüm referans ağacınızdaki stake ve tahvil pozisyonlarının uzlaşma piyasa değeri toplamıdır.',
+          },
+          {
+            q: 'Ortak inşa ve eşitleme ödülü nasıl talep edilir?',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep serbest bırakma havuzuna, yeniden stake tek varlık stake’ine gider. İkisi katkı {ratio} harcar. Eşitleme geçmişi sağda Ödül kayıtları sekmelerindedir.',
+          },
+          {
+            q: 'Yeni seviye oranı ne zaman geçerli olur?',
+            a: 'Seviyeler günlük uzlaşmada yeniden değerlendirilir; sonraki ortak inşa ödemesi yeni oranı kullanır; eşitleme kapsamı da yeni seviyeyle güncellenir.',
+          },
+        ],
+      },
+    },
+    grant: {
+      pendingLabel: 'Onay bekliyor',
+      pendingHint: 'Onay sonrası talep edilebilir hale gelir',
+      pendingBody:
+        'Ödenekleri açmak için destekle iletişime geçin; yalnızca onay sonrası talep edin.',
+      contactSupport: 'Açmak için destekle iletişime geçin',
+      claimIntoWallet: 'Cüzdana',
+      ctaToWallet: '{amount} tutarını cüzdana talep et',
+      dataTitle: 'Veri',
+      tier: 'Ortak inşa seviyesi',
+      totalClaimed: 'Toplam talep edilen ödül',
+      recordsTitle: 'Ödenek kayıtları',
+      recordsTabsAria: 'Ödenek kayıt türü',
+      recordsTabIssue: 'Dağıtım',
+      recordsTabClaim: 'Talep',
+      issueColumns: [
+        'Dağıtım zamanı',
+        'Hesaplanan tutar',
+        'Tür',
+        'Hash',
+        'Ödenek oranı',
+        'Ödenek tutarı',
+      ],
+      claimColumns: ['Talep zamanı', 'Hesaplanan tutar', 'Hash'],
+      emptyIssue: 'Henüz dağıtım kaydı yok. Ödenek birikince burada görünür.',
+      emptyClaim: 'Henüz talep kaydı yok. Talep sonrası burada görünür.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Gelişim ödeneği nedir?',
+            a: 'Ortak inşa edenlerin pazar açmasını destekleyen özel fon — tanıtım, topluluk etkinlikleri, kanallar; ekip stake pozisyonlarıyla orantılı birikir.',
+          },
+          {
+            q: 'Ödenek ne için kullanılabilir?',
+            a: 'Yalnızca pazar geliştirme: çevrimdışı salon ve yol gösteriler, topluluk operasyonu, tanıtım materyali, kanal genişletme.',
+          },
+          {
+            q: 'Ödenek nasıl kullanılır?',
+            a: 'İki yol: harcama öncesi başvuru (plana ve bütçeyi desteğe gönderin; onaylanan tutar talep edilebilir olur) veya sonrasında fiş/kanıtla geri ödeme.',
+          },
+          {
+            q: 'Ödeneğim neden onay bekliyor?',
+            a: 'Biriken ödenekler, kullanım planı veya gider kanıtı sunup destek onaylayana dek beklemede kalır. İlerleme ödenek kayıtlarında görünür.',
+          },
+          {
+            q: 'Ödenek talep etmek katkı puanı harcar mı?',
+            a: 'Hayır. Diğer ödüllerden farklı olarak gelişim ödenekleri katkı harcamaz ve serbest bırakma havuzuna girmez — gAGX doğrudan cüzdanınıza gider.',
+          },
+        ],
+      },
+    },
+
+    genesisDetail: {
+      pageTitle: 'Ortak inşa ödülleri',
+      pageSubtitle: 'Ortak inşaya katıl · büyüme değerini paylaş',
+      claimToWallet: 'Cüzdana talep et',
+      tierColumns: ['Seviye', 'Kişisel abonelik', 'Sistem performansı', 'Ödül oranı'],
+      recordsTabsAria: 'Genesis ödül kayıt türü',
+      recordsColumns: ['Zaman', 'Tür', 'Hesaplanan tutar', 'Durum'],
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Referans ödülü nasıl hesaplanır?',
+            a: 'Referans ödülü %3’tür; sıkıştırılmış eş tutar uzlaşması — yalnızca eşleşen tutar sayılır; boş hesaplar katman atlar; ödemeler otomatik uzlaşır.',
+          },
+          {
+            q: 'Genesis seviyesi nasıl yükseltilir?',
+            a: 'Kişisel ortak inşa tutarı ve organizasyon performansına göre S1’den S10’a kademeli yükselin.',
+          },
+          {
+            q: 'Seviye yükseltme ödülü nedir?',
+            a: 'Seviye ödülleri Genesis seviyenize göre ekip ortak inşa hacminin payını uzlaştırır; RewardClaimer imzasıyla cüzdana talep edilir.',
+          },
+          {
+            q: 'Genesis ekip ödülleri nasıl uzlaştırılır?',
+            a: 'Doğrudan referans ödülleri cüzdana otomatik uzlaşır; seviye ödülleri ve gelişim fonu RewardClaimer / CommunityFund imzasıyla talep edilir.',
+          },
+        ],
+      },
+    },
+
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'Ödüller hangi biçimde ödenir?',
+          a: 'Çoğu ödül AGX / gAGX cinsinden gösterilir; genesis ortak inşa RewardClaimer varlıklarına göredir. Mixed taleplerde serbest bırakma kısmı havuza girer.',
+        },
+        {
+          q: 'Talep için ne gerekir?',
+          a: 'Basit imzalı talepler için talep edilebilir bakiye ve geçerli imza gerekir. Lucky / DaoPool Mixed ayrıca yeterli katkı ve serbest bırakma/yeniden stake oranı ister.',
+        },
+        {
+          q: 'Talep edilen ödüller ne zaman gelir?',
+          a: 'Zincir üstü işlem onayından sonra. Serbest bırakma kısmı seçilen sürede açılır; yeniden stake kısmı ilgili stake pozisyonuna girer.',
+        },
+        {
+          q: 'Ödüller ne zaman uzlaşır?',
+          a: 'Her kaynak sözleşme ve arka uç tarama kurallarına göre uzlaşır. Ön yüz talep edilebilir bakiye ve imzalı paketleri kaynak alır.',
+        },
+        {
+          q: 'Bazı ödül kartları neden tutar göstermiyor?',
+          a: 'Bağlı değil veya imzasız oturumlarda giriş ipucu gösterilir; bu boş ödül demek değildir. Giriş sonrası — talep edilecek bir şey olmadığını veya verinin henüz hazır olmadığını gösterir.',
+        },
+      ],
+    },
+
+    teamRewardRate: 'Takım ödülü {rate}',
+    superCommunityBadge: 'Süper Sistem',
+    heroTierRewardBody: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın.',
+    superCommunityBenefitBody: 'Süper Sistemler özel gelişim fonu ve yönetişim hakları alır.',
+    shareholderNoRankTitle: 'Henüz Genesis Rezerv Valisi olmadınız',
+    shareholderNoRankBody:
+      'Genesis Rezerv Valisi olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
+    shareholderTitleForRank: '{rank} · Genesis Rezerv Valisi',
+    heroKicker: 'Genesis seviyesi',
+    currentTierSuffix: 'Mevcut',
+    progressPersonalTo: '{rank} · kişisel aboneliğe mesafe',
+    progressMaxPersonal: 'En yüksek kişisel seviyeye ulaşıldı',
+    progressMaxTeam: 'En yüksek takım seviyesine ulaşıldı',
+    teamLegRequirement: 'iki {rank} kolu',
+    tierDualLegRequirement: '2 {rank} kolu',
+    teamQualifiedPartitionsLabel: '{rank} kolu {count}/2',
+    teamVolume: 'Sistem performansı',
+    referralRewards: 'Doğrudan öneri ödülleri',
+    autoPaidLabel: 'Otomatik ödeme',
+    autoPaid: 'Ödüller cüzdana otomatik olarak ödenir',
+    teamRewards: 'Seviye ödülleri',
+    heroTitle: 'Mevcut seviye',
+    allTiers: 'Genesis onur sistemi',
+    history: 'Ödül kayıtları',
+    referralHistoryEmpty: {
+      title: 'Henüz doğrudan öneri ödül kaydı yok',
+      body: 'Önerilen kişi Genesis döneminde aboneliğini tamamladıktan sonra, doğrudan öneri ödülleri burada görüntülenecektir.',
+    },
+    teamHistoryEmpty: {
+      title: 'Henüz seviye ödül kaydı yok',
+      body: 'Seviye ödülü uzlaşma ve talep kayıtları, ödül oluştuktan sonra burada görüntülenecektir.',
+    },
+    communityFund: 'Gelişim fonu',
+    communityFundLocked: 'Kilitli: {amount}',
+    communityFundHistory: 'Gelişim fonu',
+    communityFundHistoryEmpty: {
+      title: 'Henüz gelişim fonu kaydı yok',
+      body: 'Gelişim fonu talep kayıtları ödül oluştuktan sonra burada görünecektir.',
+    },
+    rewardType: {
+      referralPaid: 'Öneri ödülü',
+      referralWithdrawn: 'Öneri ödülü talebi',
+      marketTeam: 'Piyasa yapıcı takım ödülü',
+      presaleTeam: 'Ön satış takım ödülü',
+      unknown: '—',
+    },
+    logStatus: {
+      pending: 'Beklemede',
+      processing: 'İşleniyor',
+      paid: 'Ödendi',
+      claimed: 'Talep edildi',
+      failed: 'Başarısız',
+      unknown: '—',
+    },
+  },
+  community: {
+    bindErrors: {
+      alreadyBound: 'Zaten bir önereniz bağlı, tekrar bağlayamazsınız.',
+      parentNotBound: 'Önereniz henüz bağlanmadı, lütfen önerenizle iletişime geçin.',
+      selfReferral: 'Kendi adresinizi giremezsiniz.',
+      invalidParent: 'Lütfen geçerli bir öneren adresi girin.',
+      migratedAccount: 'Bu adres taşındı, lütfen yeni adresi kullanın.',
+      systemConfig: 'Sistem yapılandırması anormal, lütfen daha sonra tekrar deneyin.',
+      failed: 'Bağlama başarısız, lütfen daha sonra tekrar deneyin.',
+    },
+    title: 'Topluluk',
+    intro:
+      'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın.',
+    disconnectedIntro:
+      'Cüzdan bağladıktan sonra öneri bağlantısı oluşturun ve davet edeninizi bağlayın.',
+    referralLink: 'Davet bağlantım',
+    shareReferral: 'Bağlantıyı kopyala',
+    referrer: 'Davet edenim',
+    bindReferrer: 'Bağla',
+    referrerPlaceholder: 'Öneren adresini girin (0x…)',
+    referrerHint: 'Davet ilişkisi etkinleştirildikten sonra kalıcıdır ve değiştirilemez.',
+    docs: 'Dokümanlar',
+    youtube: 'Youtube',
+    medium: 'Medium',
+    twitter: 'Twitter / X',
+    telegram: 'Telegram',
+    shareholder: 'Ortak inşaya katıl',
+    myCommunity: 'Topluluğum',
+    directReferrals: 'Doğrudan davet sayısı',
+    myTeam: 'Topluluk boyutu',
+    genesisTitle: 'Mevcut',
+    cobuildLevel: 'Ortak inşa seviyesi',
+    inviteTitle: 'Davet etmeye başlayın · Ekosistem büyüme değerini paylaşın',
+    programs: {
+      title: 'Ekosistem destek programları',
+      items: [
+        {
+          label: 'Genesis Ortak İnşa · Faz {season}',
+          title: 'Genesis Rezerv Valisi Programı',
+          body: 'İlk küresel ortak inşa koltukları açıldı',
+          action: 'Plan detaylarını görüntüle',
+          href: 'https://xdaoaegis.notion.site/genesis-rezerv-konseyi-program',
+        },
+        {
+          label: 'X Akademi',
+          title: 'Küresel DeFi Akademisi · Dijital Ekonomi Çağında Küresel Liderlik Akademisi',
+          body: 'Çağ için lider yetiştirmek · Gelecek için yetenek rezervi',
+          action: 'Plan detaylarını görüntüle',
+          href: 'https://xdaoaegis.notion.site/x-akademisi-tur',
+        },
+      ],
+    },
+    myInvites: 'Topluluk üyelerim ({count})',
+    referralBondPermanent: 'Davet ilişkisi etkinleştirildi · kalıcı olarak bağlandı.',
+    volumePrefix: 'Performans',
+    genesisShareholder: 'Genesis Rezerv Valisi',
+    statToday: 'Bugün +{count} · +{amount}',
+    statGenesisToday: 'Yayına girdikten sonra otomatik olarak 1 seviye yükselir',
+    postLaunchRankLabel: 'Yayın sonrası seviye',
+    totalTeamVolume: 'Toplam hacim {amount}',
+    postLaunch30DayBoost: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine yükselin',
+    postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
+    bindReferrerSuccess: 'Öneren bağlama başarılı',
+    inviteFlow: {
+      items: [
+        {
+          title: 'Davet bağlantısını paylaşın',
+          body: 'Cüzdanınızı bağlayın ve davet edeninizi doldurduktan sonra size özel davet bağlantısı oluşturulur.',
+        },
+        {
+          title: 'Arkadaşlar ortak inşaya katılır',
+          body: 'Arkadaşlarınız davet bağlantınız üzerinden kaydolduktan sonra ortak inşaya katılabilirler.',
+        },
+        {
+          title: 'Ortak inşa ödülleri kazanın',
+          body: 'Arkadaşlar ortak inşaya katıldıktan sonra ödüller akıllı sözleşme tarafından cüzdan adresinize otomatik olarak uzlaştırılır.',
+        },
+      ],
+    },
+    invitesEmpty: {
+      title: 'Henüz davet kaydı yok',
+      body: 'Öneri bağlantınızı paylaşarak arkadaşlarınızı topluluğunuza davet edin.',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'Davet ilişkisi nasıl kurulur?',
+          a: 'Arkadaşlar davet bağlantısı üzerinden ortak inşaya katıldığında davet ilişkisi otomatik olarak kurulur ve kalıcıdır.',
+        },
+        {
+          q: 'Genesis öneri ödülü nasıl hesaplanır?',
+          a: 'Genesis öneri ödülü %3’tür; sıkıştırılmış eşdeğer tutar uzlaşma mekanizması kullanılır ve yalnızca eşdeğer tutar üzerinden hesaplanır.',
+        },
+        {
+          q: 'Genesis seviyemi nasıl yükseltebilirim?',
+          a: 'Kişisel ortak inşa tutarı ve sistem performansı durumuna göre S1’den S10’a kadar kademeli olarak yükselirsiniz.',
+        },
+      ],
+    },
+  },
+  assets: {
+    title: 'Varlıklar',
+    intro: 'AEGIS X ekosistem fonlarınızı yönetin',
+    body: 'AEGIS X ekosistem fonlarınızı yönetin',
+    backToHub: 'Varlıklara dön',
+    blocked: {
+      zeroAmount: 'Geçerli bir tutar girin',
+      insufficientReward: 'Talep edilebilir getiri yetersiz',
+      insufficientContribution: 'Katkı yetersiz — önce AGX yakıp katkı puanı alın',
+      planUnresolved: 'Serbest bırakma/yeniden stake planı hazır değil — daha sonra deneyin',
+      nothingToRedeem: 'Şu an geri alınabilir tutar yok',
+      warmupActive: 'Isınma bitmedi, işlem yapılamaz',
+      warmupNotEnded: 'Isınma geri sayımı henüz bitmedi',
+      noWarmup: 'Etkinleştirilecek ısınma pozisyonu yok',
+      unavailable: 'İşlem geçici olarak kullanılamıyor, daha sonra deneyin',
+    },
+    position: {
+      sort: 'Sırala',
+      quoteCurrency: 'Fiyat birimi',
+      sortOptions: {
+        startNear: 'Başlangıç · yeniden eskiye',
+        startFar: 'Başlangıç · eskiden yeniye',
+        endNear: 'Vade · yakından uzağa',
+        endFar: 'Vade · uzaktan yakına',
+      },
+      emptyTitle: 'Varlıklarınızla getiri üretmeye başlayın',
+      pageSize: 5,
+      voucher: 'Belge',
+      remaining: 'Kalan süre',
+      staked: 'Stake edilen',
+      payout: 'Geri alınacak',
+      bondPrincipal: 'Tahvil anaparası',
+      yield: 'Getiri',
+      claim: 'Talep et',
+      redeem: 'Geri al',
+      unstake: 'Stake’ten çıkar',
+      liquid: 'Esnek',
+      lockedPrefix: 'Kilitli',
+      redeemAnytime: 'İstediğiniz zaman geri alınabilir',
+      activateWarmup: 'Kilidi aç',
+      activateWarmupSuccess: 'Kilit açıldı',
+      warmupRemainingEpochs: 'Kalan {n} Epoch',
+    },
+    opsColumns: ['Zaman', 'İşlem', 'Hesaplanan tutar', 'İşlem hash’i'],
+    claim: {
+      title: 'Getiriyi talep et',
+      amount: 'Talep tutarı',
+      splitAria: 'Serbest bırakma ve yeniden stake oranı',
+      releaseShare: 'Talep %{pct}',
+      restakeShare: 'Yeniden stake %{pct}',
+      releasePeriod: 'Serbest bırakma süresi seçimi',
+      releasePeriodAria: 'Serbest bırakma süresi seçimi',
+      restakePeriod: 'Yeniden stake süresi seçimi',
+      restakePeriodAria: 'Yeniden stake süresi seçimi',
+      releaseDays: '{days} g',
+      restakeDays: '{days} g',
+      restakeDaysTax: '{days} g · {tax}',
+      taxRate: 'vergi %{rate}',
+      contribNeed: 'Bu talep {amount} katkı düşer',
+      contribShort: 'Katkı yetersiz — önce AGX yakıp katkı puanı alın',
+      goBurn: 'Yakıma git',
+      ctaMixed: 'Talep et ve yeniden stake',
+      ctaRelease: 'Talep et',
+      ctaRestake: 'Yeniden stake',
+      success: 'Talep gönderildi',
+      restakeSuccess: 'Yeniden stake gönderildi',
+      xmineSuccess: 'X ödül talebi gönderildi',
+    },
+    claimOutput: {
+      title: 'Getiri talep et',
+      rewardLabel: 'Getiri',
+      boostLabel: 'Bonus',
+      claimReward: 'Getiri talep et',
+      claimBoost: 'Bonus talep et',
+      contribDeduct: '{amount} katkı düşülür',
+    },
+    redeem: {
+      releasedLabel: 'Serbest bırakıldı',
+      title: 'Stake geri al',
+      body: 'Geri alma sonrası varlıklar tampona girer ve {days} günlük doğrusal serbest bırakmaya tabi olur. Tampondaki varlıklar getiri üretmez',
+      confirmCta: 'Geri al',
+      success: 'Geri alma gönderildi — anapara serbest bırakma tamponuna girdi',
+    },
+    hub: {
+      filterAria: 'Varlıkları filtrele',
+      hideZero: '0 varlıkları gizle',
+      hideZeroEmpty: 'Sıfır olmayan pozisyon yok',
+      card: {
+        position: 'Pozisyon',
+        yield: 'Toplam getiri',
+      },
+      modes: {
+        stake: {
+          title: 'Yatır',
+          body: 'AGX esnek / vadeli pozisyonları yönet',
+          aprHint:
+            'Rebase bonusu ve bileşik getiriyi içerir; yalnızca pozisyondaki alınmamış getiri',
+        },
+        lpbond: {
+          title: 'LP Tahvil',
+          body: 'Likidite tahvil pozisyonlarını yönet',
+          aprHint: 'Bileşik getiriyi içerir; yalnızca pozisyondaki alınmamış getiri',
+        },
+        burnbond: {
+          title: 'Yakım Tahvili',
+          body: 'Yakım tahvil pozisyonlarını yönet',
+          aprHint: 'Bileşik getiriyi içerir; yalnızca pozisyondaki alınmamış getiri',
+        },
+        xmine: {
+          title: 'X Madencilik',
+          body: 'gAGX madencilik pozisyonlarını yönet',
+          aprHint: 'Pozisyondaki alınmamış madencilik çıktısı',
+        },
+      },
+      overview: {
+        title: 'Varlık özeti',
+        totalValue: 'Toplam varlık değeri',
+        totalValueHint:
+          'Anapara + alınmamış getirinin piyasa değeri; çapraz ürün teklifi yoksa — gösterir',
+        claimable: 'Talep edilebilir getiri',
+        claimed: 'Toplam talep edilen',
+        contribution: 'Katkı puanlarım',
+        contributionHint: 'Getiri talepleri {ratio} katkı harcar',
+        holdingsTitle: 'Pozisyonlar',
+        holdingsReleased: 'Serbest bırakıldı',
+        holdingsTotal: 'Toplam pozisyon',
+        bufferTitle: 'Tampon havuzu',
+        bufferTotal: 'Total',
+        bufferReleased: 'Serbest bırakıldı',
+        bufferAssetAgx: 'AGX',
+        bufferAssetGagx: 'gAGX',
+        bufferSwitchAria: 'Tampon varlık görünümünü değiştir',
+      },
+      distribution: {
+        title: 'Pozisyon dağılımı',
+        empty: 'Henüz pozisyon yok. Stake veya tahvil alınca dağılım burada görünür.',
+      },
+      rebase: {
+        title: 'Rebase getiri serbest bırakma mekanizması',
+        subtitle:
+          'Aşamalı uzlaşma ve sürekli serbest bırakma oynaklığı azaltır, uzun vadeli büyümeyi destekler',
+        steps: [
+          { title: 'Block', body: 'Blok çalışma\\nTemel birim' },
+          { title: 'Epoch', body: '~{blocks} blok\\n~{hours} saat' },
+          { title: 'Rebase', body: 'Epoch sonu\\nOtomatik uzlaşma' },
+          { title: 'Rebase', body: 'Getiri dağıtımı\\nGünde {timesPerDay} kez' },
+        ],
+        tags: [
+          'Blok güdümlü çalışma',
+          'Epoch güdümlü uzlaşma',
+          'Rebase güdümlü dağıtım',
+          'Yumuşak getiri serbest bırakma',
+        ],
+        footer: 'Bloklar döngüyü sürer; Epoch’lar uzlaştırır; Rebase getiriyi dağıtır',
+      },
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Toplam varlık değeri nasıl hesaplanır?',
+            a: 'Ürün anaparası ve alınmamış getiri değerlemelerinin toplamı; çapraz ürün teklifi yoksa — gösterir. Boştaki cüzdan bakiyesi dahil değildir.',
+          },
+          {
+            q: 'Getiri hangi biçimde ödenir?',
+            a: 'Stake/tahvil Rebase getirisi gAGX; X madencilik çıktısı X’tir.',
+          },
+          {
+            q: 'Neden getiri talep edemiyorum?',
+            a: 'Mixed talepler katkı harcar; yetmezse önce AGX yakıp katkı alın.',
+          },
+          {
+            q: 'Katkı değeri nasıl kazanılır?',
+            a: 'AGX alıp yakın; talepler katkıyı {ratio} harcar.',
+          },
+          {
+            q: 'Talepte neden serbest bırakma süresi seçilir?',
+            a: 'Talep edilen getiri serbest bırakma havuzuna girer ve doğrusal açılır; süre uzadıkça vergi genelde düşer.',
+          },
+          {
+            q: 'Talep edilen getiri nereye gider?',
+            a: 'Anında cüzdana değil — RewardQueue / serbest bırakma havuzuna; serbest bırakılan kısmı Serbest bırakma sayfasında alın.',
+          },
+          {
+            q: 'Yeniden stake ile talep farkı nedir?',
+            a: 'Yeniden stake getiriyi yeniden stake pozisyonuna yönlendirebilir; talep seçilen sürede kademeli gelir.',
+          },
+          {
+            q: 'Tampon havuzu nedir?',
+            a: 'Stake’ten çıkınca anapara splitter’da dönemsel doğrusal serbest bırakmaya girer (AGX veya gAGX).',
+          },
+        ],
+      },
+    },
+    products: {
+      stake: {
+        title: 'Stake pozisyonları',
+        intro: 'Her stake’i yönetin — istediğiniz zaman getiri talep edin veya anaparayı geri alın',
+        empty: 'No stake positions',
+        emptyCta: 'Go stake',
+        stats: {
+          title: 'Pozisyon verileri',
+          metrics: [
+            { label: 'Pozisyonlarım' },
+            { label: 'Serbest bırakıldı' },
+            { label: 'Serbest bırakılacak' },
+            { label: 'Güncel Rebase getiri oranı' },
+            { label: 'Güncel Rebase bonusu' },
+            { label: 'Toplam stake getirisi' },
+          ],
+        },
+        ops: { title: 'İşlem kayıtları', empty: 'Henüz işlem kaydı yok' },
         faq: {
-            title: 'FAQs',
-            items: [
-                {
-                    q: 'Ortak inşa planına nasıl katılınır?',
-                    a: 'Kullanıcılar USD1 ile ortak inşaya katılarak ilgili faz indirimiyle AGX kazanabilir. Toplam {phaseCount} faz vardır; indirimler sırasıyla {discounts} şeklindedir.',
-                },
-                {
-                    q: 'Ortak inşa kotası ve katılım koşulları nelerdir?',
-                    a: 'Minimum katılım tutarı {minUsd} olup, {shareIncrement} USD1 katları şeklinde katılım gereklidir. Faz kotaları sırasıyla {phaseQuotas} şeklindedir.',
-                },
-                {
-                    q: 'Ortak inşa döngüsü ne kadar sürer?',
-                    a: 'Ortak inşa ile kazanılan AGX, 540 günlük bir kilit açma döngüsüne tabidir.',
-                },
-                {
-                    q: 'X airdrop ödülü nasıl kazanılır?',
-                    a: 'Tek hesapla toplam ortak inşa tutarı {threshold} ulaştığında, ilgili faz X airdrop ödülüne hak kazanılır. {phaseCount} faz için airdrop oranları sırasıyla {airdropRatios} şeklindedir.',
-                },
-                {
-                    q: 'X airdrop ödülü nasıl dağıtılır?',
-                    a: 'X airdrop ödülü 12 aylık doğrusal kilit açma mekanizmasına tabidir; her ay yaklaşık %8.33 açılır. İlk dağıtım, X stake protokolü yayına girdikten 30 gün sonra akıllı sözleşme tarafından otomatik olarak gerçekleştirilir.',
-                },
-            ],
+          title: 'FAQs',
+          items: [
+            {
+              q: 'Talep ile geri alma farkı nedir?',
+              a: 'Talep getiriyi işler (isteğe bağlı yeniden stake); geri alma anaparayı serbest bırakma tamponuna gönderir.',
+            },
+            {
+              q: 'Neden her stake ayrı gösterilir?',
+              a: 'Her açılış bağımsız faiz ve serbest bırakma ilerlemesi izler; pozisyon bazında talep veya geri alma kolaydır.',
+            },
+            {
+              q: 'Serbest bırakıldı ne demek?',
+              a: 'Vadeli pozisyon vadesi dolunca geri alınabilir anapara kısmı.',
+            },
+            {
+              q: 'Geri sayım bitince ne olur?',
+              a: 'Kalan süre sıfırlanınca pozisyon geri alınabilir/işlenebilir olur; zincir üstü durum esas alınır.',
+            },
+            {
+              q: 'Talepte yeniden stake oranı nasıl çalışır?',
+              a: 'Kaydırıcıyla serbest bırakma ve yeniden stake oranını ayarlayın, süreleri seçip onaylayın.',
+            },
+          ],
         },
-        promoTitleTemplate: 'Genesis ortak inşa Faz {season}  {discount} indirim',
-        promoLive: 'Devam ediyor — kota sınırlı, bitiş {endDate}',
-        promoUpcoming: 'Yakında başlıyor, kota sınırlı, {startDate} başlar',
-        promoEnded: '{status} · {date}',
-        joinSuccess: 'Abonelik başarılı',
-        insufficientUsd1: 'USD1 bakiyesi yetersiz, lütfen yeterli USD1 temin edin.',
-        insufficientAllowance: 'USD1 onayı yetersiz, lütfen önce onaylayın.',
-        purchaseUnavailable: 'Şu anda abone olunamaz; lütfen pay miktarını veya abonelik fazı durumunu kontrol edin.',
-        walletNotConnected: 'Cüzdan bağlantısı kesildi, lütfen işlem imzalamadan önce yeniden bağlanın.',
-        errors: {
-            notBound: 'Lütfen önce önereni bağlayın.',
-            paused: 'Abonelik duraklatıldı, lütfen daha sonra tekrar deneyin.',
-            invalidAmount: 'Abonelik tutarı 100 USD katları olmalıdır.',
-            phaseInactive: 'Mevcut abonelik fazı başlamadı veya sona erdi.',
-            belowMin: 'Abonelik tutarı mevcut fazın minimum limitinin altında.',
-            soldOut: 'Mevcut abonelik fazı tükendi.',
-            userLimitExceeded: 'Mevcut faz tek cüzdan abonelik üst limiti aşıldı; lütfen tutarı azaltın.',
-            invalidPhase: 'Geçersiz abonelik fazı.',
-            systemConfig: 'Sistem yapılandırması anormal, lütfen daha sonra tekrar deneyin.',
+      },
+      lpbond: {
+        title: 'LP tahvil pozisyonları',
+        intro: 'Her tahvili yönetin — istediğiniz zaman getiri talep edin veya anaparayı geri alın',
+        empty: 'Henüz LP tahvil pozisyonu yok. Tahvil alınca her pozisyon burada görünür.',
+        emptyCta: 'İlk LP Tahvilinizi alın, getiri kazanmaya başlayın',
+        stats: {
+          title: 'Pozisyon verileri',
+          metrics: [
+            { label: 'Pozisyonlarım' },
+            { label: 'Serbest bırakıldı' },
+            { label: 'Serbest bırakılacak' },
+            { label: 'Güncel Rebase getiri oranı' },
+            { label: 'Toplam LP tahvil getirisi' },
+          ],
         },
-        contributionsSyncPending: 'Zincir üstü abonelik onaylandı; geçmiş kayıtlar senkronize ediliyor, lütfen daha sonra yenileyin.',
-        contributionsEmpty: {
-            title: 'Henüz ortak inşa kaydı yok',
-        },
-        seasonLive: 'Devam ediyor',
-        seasonEnded: 'Sona erdi',
-        seasonUpcoming: 'Yakında',
-    },
-    rewards: {
-        title: 'Ortak İnşa Ödülleri',
-        intro: 'Ortak inşaya katılın · Büyüme değerini paylaşın',
-        currentTitle: 'Mevcut seviye',
-        postLaunchRankTitle: 'Yayın sonrası seviye',
-        teamRewardRate: 'Takım ödülü {rate}',
-        postLaunch30DayRank: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine ulaşabilirsiniz',
-        postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
-        postLaunchRankTooltip: 'Yayın sonrası seviye, takım ortak inşa tutarının indirimli fiyattan AGX\'e dönüştürülmesine dayalı gerçek performansa göre hesaplanır.\nMevcut seviye yalnızca performans verilerine dayanır; yayın sonrası kişisel varlıklar ve geçerli doğrudan yönlendirmeler gibi diğer faktörler etkili olabilir.\nBu bilgiler yalnızca referans içindir; nihai veri yayın sonrası gerçek verilerdir.',
-        superCommunityBadge: 'Süper Sistem',
-        heroTierRewardBody: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın.',
-        superCommunityBenefitBody: 'Süper Sistemler özel gelişim fonu ve yönetişim hakları alır.',
-        shareholderHintNoRank: 'Genesis seviyesi',
-        shareholderNoRankTitle: 'Henüz Genesis Rezerv Valisi olmadınız',
-        shareholderNoRankBody: 'Genesis Rezerv Valisi olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
-        shareholderTitleForRank: '{rank} · Genesis Rezerv Valisi',
-        heroKicker: 'Genesis seviyesi',
-        currentTierSuffix: 'Mevcut',
-        progressPersonalTo: '{rank} · kişisel aboneliğe mesafe',
-        progressMaxPersonal: 'En yüksek kişisel seviyeye ulaşıldı',
-        progressMaxTeam: 'En yüksek takım seviyesine ulaşıldı',
-        teamLegRequirement: 'iki {rank} kolu',
-        tierDualLegRequirement: '2 {rank} kolu',
-        teamQualifiedPartitionsLabel: '{rank} kolu {count}/2',
-        teamVolume: 'Sistem performansı',
-        referralRewards: 'Doğrudan öneri ödülleri',
-        autoPaidLabel: 'Otomatik ödeme',
-        autoPaid: 'Ödüller cüzdana otomatik olarak ödenir',
-        teamRewards: 'Seviye ödülleri',
-        claimed: 'Talep edildi {amount}',
-        claim: 'Cüzdana talep et',
-        claimSuccess: 'Talep başarılı',
-        claimErrors: {
-            zeroAmount: 'Talep tutarı 0.',
-            invalidSigner: 'İmza geçersiz, lütfen yeniden alın ve talep edin.',
-            alreadyUsed: 'Bu ödül zaten talep edildi, lütfen tekrar etmeyin.',
-            expired: 'İmza süresi doldu, lütfen yenileyin ve tekrar talep edin.',
-            noOrder: 'Şu anda talep edilecek ödül yok.',
-            failed: 'Talep başarısız, lütfen daha sonra tekrar deneyin.',
-        },
-        heroTitle: 'Mevcut seviye',
-        allTiers: 'Genesis onur sistemi',
-        history: 'Ödül kayıtları',
-        referralHistoryEmpty: {
-            title: 'Henüz doğrudan öneri ödül kaydı yok',
-            body: 'Önerilen kişi Genesis döneminde aboneliğini tamamladıktan sonra, doğrudan öneri ödülleri burada görüntülenecektir.',
-        },
-        teamHistoryEmpty: {
-            title: 'Henüz seviye ödül kaydı yok',
-            body: 'Seviye ödülü uzlaşma ve talep kayıtları, ödül oluştuktan sonra burada görüntülenecektir.',
-        },
-        communityFund: 'Gelişim fonu',
-        communityFundTooltip: 'Süper sistemler, sistem gelişim fonunun %5\'ini alır; sistem inşası, günlük operasyonlar, sistem toplantıları ve sistem eğitmenleri dahil olmak üzere sistem öz-işletimine ayrılır.',
-        communityFundLocked: 'Kilitli: {amount}',
-        communityFundUnlockedSuffix: 'kilidi açıldı',
-        communityFundClaimed: 'Talep ettiniz {amount}',
-        communityFundHistory: 'Gelişim fonu',
-        communityFundCumulativeClaimed: 'Toplam talep {amount}',
-        communityFundHistoryEmpty: {
-            title: 'Henüz gelişim fonu kaydı yok',
-            body: 'Gelişim fonu talep kayıtları ödül oluştuktan sonra burada görünecektir.',
+        ops: {
+          title: 'İşlem kayıtları',
+          empty: 'Henüz işlem yok. Stake, talep veya geri alma sonrası kayıtlar burada görünür.',
         },
         faq: {
-            title: 'FAQs',
-            items: [
-                {
-                    q: 'Öneri ödülleri nasıl hesaplanır?',
-                    a: 'Öneri ödülü %3’tür; sıkıştırılmış eşdeğer tutar uzlaşma mekanizması kullanılır, yalnızca eşdeğer tutar üzerinden hesaplanır, boş hesaplar ödül katmanına dahil edilmez ve ödüller otomatik olarak uzlaştırılır.',
-                },
-                {
-                    q: 'Genesis seviyesi nasıl yükseltilir?',
-                    a: 'Genesis seviyeleri S1’den S10’a kadar kişisel ortak inşa tutarı ve sistem toplam performansına göre belirlenir; yüksek seviyeler çift bölge yükselme koşulunu gerektirir.',
-                },
-                {
-                    q: 'Seviye yükseltme ödülü nedir?',
-                    a: 'Ortak inşa döneminde ulaşılan Genesis seviyesi, protokol yayına girdikten sonra otomatik olarak 1 seviye yükseltilir ve 30 gün geçerlidir; ardından gerçek seviyeye döner.',
-                },
-                {
-                    q: 'Genesis takım ödülü nasıl uzlaştırılır?',
-                    a: 'Genesis takım ödülleri ilgili Genesis seviye oranına göre otomatik uzlaştırılır; kullanıcılar manuel olarak cüzdanlarına talep etmelidir. Ortak inşa dönemi sona erdikten sonra mevcut sayfa kapanır; talep edilmemiş ödüller artık talep edilemez ve akıllı piyasa yapıcı sözleşmesine gönderilir.',
-                },
-            ],
+          title: 'FAQs',
+          items: [
+            {
+              q: 'Talep ile geri alma farkı nedir?',
+              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX {days} günlük tampona girer, sonra cüzdana gelir.',
+            },
+            {
+              q: '«Tahvil anaparası» nereden gelir?',
+              a: 'LP tahvil için ödenen USD1 indirimli AGX’e çevrilir — bu AGX tahvil anaparasıdır. 180/360/540 günde blok doğrusal serbest bırakılır; «serbest bırakılan» kısım istediğiniz zaman geri alınabilir.',
+            },
+            {
+              q: 'Neden her tahvil ayrı gösterilir?',
+              a: 'Her tahvil kendi süresi, indirimi, getirisi ve serbest bırakmasını izler; işlemler pozisyon bazlı kalır.',
+            },
+            {
+              q: 'Tahvil getirisi yeniden stake edilebilir mi?',
+              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake {restakeDays} tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
+            },
+            {
+              q: 'Geri sayım bitince ne olur?',
+              a: 'Geri sayım bitince anapara serbest bırakması tamamdır; tüm anapara istenince geri alınabilir. Alınmamış getiri bileşik üretmeye devam eder.',
+            },
+            {
+              q: 'LP tahvilinin LP’si geri alınabilir mi?',
+              a: 'Hayır. AGX/USD1 LP, protokol likiditesi olarak yakım adresine kalıcı kilitlenir; siz indirimli AGX anaparası ve getirisini tutarsınız.',
+            },
+          ],
         },
-        rewardType: {
-            referralPaid: 'Öneri ödülü',
-            referralWithdrawn: 'Öneri ödülü talebi',
-            marketTeam: 'Piyasa yapıcı takım ödülü',
-            presaleTeam: 'Ön satış takım ödülü',
-            unknown: '—',
+      },
+      burnbond: {
+        title: 'Yakım tahvil pozisyonları',
+        intro: 'Her tahvili yönetin — istediğiniz zaman getiri talep edin veya anaparayı geri alın',
+        empty: 'Henüz yakım tahvil pozisyonu yok. Tahvil alınca her pozisyon burada görünür.',
+        emptyCta: 'İlk Yakım Tahvilinizi alın, getiri kazanmaya başlayın',
+        stats: {
+          title: 'Pozisyon verileri',
+          metrics: [
+            { label: 'Pozisyonlarım' },
+            { label: 'Serbest bırakıldı' },
+            { label: 'Serbest bırakılacak' },
+            { label: 'Güncel Rebase getiri oranı' },
+            { label: 'Toplam yakım tahvil getirisi' },
+          ],
         },
-        logStatus: {
-            pending: 'Beklemede',
-            processing: 'İşleniyor',
-            paid: 'Ödendi',
-            claimed: 'Talep edildi',
-            failed: 'Başarısız',
-            unknown: '—',
-        }
-    },
-    community: {
-        bindErrors: {
-            alreadyBound: 'Zaten bir önereniz bağlı, tekrar bağlayamazsınız.',
-            parentNotBound: 'Önereniz henüz bağlanmadı, lütfen önerenizle iletişime geçin.',
-            selfReferral: 'Kendi adresinizi giremezsiniz.',
-            invalidParent: 'Lütfen geçerli bir öneren adresi girin.',
-            migratedAccount: 'Bu adres taşındı, lütfen yeni adresi kullanın.',
-            systemConfig: 'Sistem yapılandırması anormal, lütfen daha sonra tekrar deneyin.',
-            failed: 'Bağlama başarısız, lütfen daha sonra tekrar deneyin.',
-        },
-        title: 'Topluluk',
-        intro: 'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın.',
-        disconnectedIntro: 'Cüzdan bağladıktan sonra öneri bağlantısı oluşturun ve davet edeninizi bağlayın.',
-        referralLink: 'Davet bağlantım',
-        shareReferral: 'Bağlantıyı kopyala',
-        referrer: 'Davet edenim',
-        bindReferrer: 'Bağla',
-        referrerPlaceholder: 'Öneren adresini girin (0x…)',
-        referrerHint: 'Davet ilişkisi etkinleştirildikten sonra kalıcıdır ve değiştirilemez.',
-        docs: 'Dokümanlar',
-        youtube: 'Youtube',
-        medium: 'Medium',
-        twitter: 'Twitter / X',
-        telegram: 'Telegram',
-        shareholder: 'Ortak inşaya katıl',
-        myCommunity: 'Topluluğum',
-        directReferrals: 'Doğrudan davet sayısı',
-        myTeam: 'Topluluk boyutu',
-        genesisTitle: 'Mevcut',
-        inviteTitle: 'Davet etmeye başlayın · Ekosistem büyüme değerini paylaşın',
-        programs: {
-            title: 'Ekosistem destek programları',
-            items: [
-                {
-                    label: 'Genesis Ortak İnşa · Faz {season}',
-                    title: 'Genesis Rezerv Valisi Programı',
-                    body: 'İlk küresel ortak inşa koltukları açıldı',
-                    action: 'Plan detaylarını görüntüle →',
-                    href: 'https://xdaoaegis.notion.site/genesis-rezerv-konseyi-program',
-                },
-                {
-                    label: 'X Akademi',
-                    title: 'Küresel DeFi Akademisi · Dijital Ekonomi Çağında Küresel Liderlik Akademisi',
-                    body: 'Çağ için lider yetiştirmek · Gelecek için yetenek rezervi',
-                    action: 'Plan detaylarını görüntüle →',
-                    href: 'https://xdaoaegis.notion.site/x-akademisi-tur',
-                },
-            ],
-        },
-        myInvites: 'Topluluk üyelerim ({count})',
-        referralBondPermanent: 'Davet ilişkisi etkinleştirildi · kalıcı olarak bağlandı.',
-        volumePrefix: 'Performans',
-        genesisShareholder: 'Genesis Rezerv Valisi',
-        statToday: 'Bugün +{count} · +{amount}',
-        statGenesisToday: 'Yayına girdikten sonra otomatik olarak 1 seviye yükselir',
-        postLaunchRankLabel: 'Yayın sonrası seviye',
-        totalTeamVolume: 'Toplam hacim {amount}',
-        postLaunch30DayBoost: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine yükselin',
-        postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
-        bindReferrerSuccess: 'Öneren bağlama başarılı',
-        inviteFlow: {
-            items: [
-                {
-                    title: 'Davet bağlantısını paylaşın',
-                    body: 'Cüzdanınızı bağlayın ve davet edeninizi doldurduktan sonra size özel davet bağlantısı oluşturulur.',
-                },
-                {
-                    title: 'Arkadaşlar ortak inşaya katılır',
-                    body: 'Arkadaşlarınız davet bağlantınız üzerinden kaydolduktan sonra ortak inşaya katılabilirler.',
-                },
-                {
-                    title: 'Ortak inşa ödülleri kazanın',
-                    body: 'Arkadaşlar ortak inşaya katıldıktan sonra ödüller akıllı sözleşme tarafından cüzdan adresinize otomatik olarak uzlaştırılır.',
-                },
-            ],
-        },
-        invitesEmpty: {
-            title: 'Henüz davet kaydı yok',
-            body: 'Öneri bağlantınızı paylaşarak arkadaşlarınızı topluluğunuza davet edin.',
+        ops: {
+          title: 'İşlem kayıtları',
+          empty: 'Henüz işlem yok. Stake, talep veya geri alma sonrası kayıtlar burada görünür.',
         },
         faq: {
-            title: 'FAQs',
-            items: [
-                {
-                    q: 'Davet ilişkisi nasıl kurulur?',
-                    a: 'Arkadaşlar davet bağlantısı üzerinden ortak inşaya katıldığında davet ilişkisi otomatik olarak kurulur ve kalıcıdır.',
-                },
-                {
-                    q: 'Genesis öneri ödülü nasıl hesaplanır?',
-                    a: 'Genesis öneri ödülü %3’tür; sıkıştırılmış eşdeğer tutar uzlaşma mekanizması kullanılır ve yalnızca eşdeğer tutar üzerinden hesaplanır.',
-                },
-                {
-                    q: 'Genesis seviyemi nasıl yükseltebilirim?',
-                    a: 'Kişisel ortak inşa tutarı ve sistem performansı durumuna göre S1’den S10’a kadar kademeli olarak yükselirsiniz.',
-                },
+          title: 'FAQs',
+          items: [
+            {
+              q: 'Talep ile geri alma farkı nedir?',
+              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX {days} günlük tampona girer, sonra cüzdana gelir.',
+            },
+            {
+              q: '«Tahvil anaparası» nereden gelir?',
+              a: 'Yakım tahvili için ödenen USD1 indirimli AGX’e çevrilir — bu AGX tahvil anaparasıdır. 180/360/540 günde blok doğrusal serbest bırakılır; «serbest bırakılan» kısım istediğiniz zaman geri alınabilir.',
+            },
+            {
+              q: 'Neden her tahvil ayrı gösterilir?',
+              a: 'Her tahvil kendi süresi, indirimi, getirisi ve serbest bırakmasını izler; işlemler pozisyon bazlı kalır.',
+            },
+            {
+              q: 'Tahvil getirisi yeniden stake edilebilir mi?',
+              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake {restakeDays} tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
+            },
+            {
+              q: 'Geri sayım bitince ne olur?',
+              a: 'Geri sayım bitince anapara serbest bırakması tamamdır; tüm anapara istenince geri alınabilir. Alınmamış getiri bileşik üretmeye devam eder.',
+            },
+            {
+              q: 'Yakım Tahvili AGX’i nasıl etkiler?',
+              a: 'Yakım Tahvili fonları AGX alır ve kara delik adresine kalıcı yakar — dolaşımı azaltır, deflasyonu güçlendirir; siz indirimli anapara ve getiri kazanırsınız.',
+            },
+          ],
+        },
+      },
+      xmine: {
+        title: 'X madencilik pozisyonları',
+        intro:
+          'Her madencilik stake’ini yönetin — istediğiniz zaman çıktıyı talep edin veya anaparayı geri alın',
+        empty:
+          'Henüz X madencilik pozisyonu yok. gAGX stake edip madenciliğe başlayınca pozisyonlar burada görünür.',
+        emptyCta: 'X madenciliği için gAGX stake edin',
+        periodPill: 'Madencilik stake’i',
+        output: 'Çıktı',
+        stats: {
+          title: 'Pozisyon verileri',
+          metrics: [
+            { label: 'Madencilik stake’im' },
+            { label: 'Serbest bırakıldı' },
+            { label: 'Güncel madencilik çıktısı' },
+            { label: 'Toplam madencilik çıktısı' },
+          ],
+        },
+        ops: {
+          title: 'İşlem kayıtları',
+          empty: 'Henüz işlem yok. Stake, talep veya geri alma sonrası kayıtlar burada görünür.',
+        },
+        faq: {
+          title: 'FAQs',
+          items: [
+            {
+              q: 'Çıktı talebi ile stake geri alma farkı nedir?',
+              a: 'Talep madencilik çıktısını alır: X serbest bırakma süresi olmadan cüzdana gider. Geri alma anaparayı hedefler: gAGX {days} günlük tampona girer ve getiri üretmez.',
+            },
+            {
+              q: 'Bazı pozisyonlar neden «Kilitli» gösterir?',
+              a: 'Her gAGX stake 24 saat kilitlenir; kilitte geri alınamaz. Geri sayım sonrası «İstediğiniz zaman geri alınabilir» görünür.',
+            },
+            {
+              q: 'Madencilik çıktısı nasıl hesaplanır?',
+              a: 'Her gün UTC 0’da altın standardıyla uzlaşır: stake gAGX’in USD değeri × günlük oran, X olarak ödenir. Tutar AGX ve X fiyatlarıyla değişir.',
+            },
+            {
+              q: 'Madencilik çıktısı bileşik midir?',
+              a: 'Otomatik bileşik yok. X’i elle talep edin; pozisyonu büyütmek için kota içinde daha fazla gAGX stake edin.',
+            },
+            {
+              q: 'Stake kotam neden değişir?',
+              a: 'gAGX stake kotası ≥180 gün AGX tahvil + AGX stake toplamını aşamaz. Tahvil/uzun stake artırınca kota yükselir; vade bitince düşer.',
+            },
+            {
+              q: 'Geri alma sonrası çıktı devam eder mi?',
+              a: 'Hayır. Geri alınan gAGX tampona girince madenciliği durur; diğer pozisyonlar normal devam eder.',
+            },
+          ],
+        },
+      },
+    },
+  },
+  staking: {
+    title: 'Stake işlemi',
+    intro: 'Stake ve tahvillerle ortak inşa — Rebase bileşik getiriyi paylaşın',
+    body: 'Stake ve tahvillerle ortak inşa — Rebase bileşik getiriyi paylaşın',
+    backToHub: 'Staking’e dön',
+    max: 'Maks',
+    capUnlimited: 'Sınırsız',
+    blocked: {
+      notBound: 'Önce referans bağlayın',
+      accountMigrated: 'Bu adres taşındı — yeni adresi kullanın',
+      migrationNotOpen: 'Hesap taşıma henüz açık değil',
+      insufficientBalance:
+        'Cüzdan bakiyesi yetersiz, tutarı azaltın veya önce yükleyip tekrar deneyin',
+      insufficientGagx:
+        'gAGX bakiyesi yetersiz: önce Flash ile AGX’i gAGX’e sarın, sonra tekrar deneyin',
+      insufficientAllowance: 'Yetersiz onay',
+      insufficientQuota: 'Stake kotası aşıldı, tutarı küçültüp tekrar deneyin',
+      insufficientQuotaWithAmount:
+        'Stake kotası aşıldı: şu an en fazla {quota} AGX daha stake edilebilir. Tutarı küçültüp tekrar deneyin.',
+      insufficientQuotaPersonalWithAmount:
+        'Kişisel stake kotanız aşıldı: kişisel kümülatif üst sınırınızda {quota} AGX kaldı, tutarı küçültüp tekrar deneyin.',
+      insufficientQuotaPersonalDailyWithAmount:
+        'Bugünkü stake kotanız aşıldı: bugünkü kişisel kotanızda {quota} AGX kaldı, tutarı küçültün veya kota yenilenene kadar bekleyip tekrar deneyin.',
+      insufficientQuotaPoolWithAmount:
+        'Zincir üstü stake havuzu kotası yetersiz: havuzda şu an {quota} AGX kaldı, tutarı küçültün veya daha sonra tekrar deneyin.',
+      insufficientXmineQuotaWithAmount:
+        'Mining kotanız aşıldı: mining kotası kilitli anaparanıza bağlıdır, şu an en fazla {quota} gAGX daha stake edilebilir. Tutarı küçültün veya önce kilitli pozisyon ekleyip tekrar deneyin.',
+      poolPaused: 'Bu staking havuzu geçici olarak kapalı, lütfen daha sonra tekrar deneyin',
+      depositoryNotAuth:
+        'Bu tahvil piyasası henüz alıma açılmadı, dönem değiştirin veya daha sonra tekrar deneyin',
+      insufficientDebtCapacity:
+        'Bu tahvil piyasasının kalan satış kotası yetersiz, satın alma tutarını azaltın veya daha sonra tekrar deneyin',
+      bondTooSmall:
+        'Satın alma tutarı çok küçük: iskonto sonrası ödeme asgari tutarın altında. Satın alma tutarını artırıp tekrar deneyin',
+      bondTooLarge:
+        'Satın alma tutarı çok büyük: bu tahvilin işlem başına ödeme üst sınırını aşıyor. Satın alma tutarını azaltıp tekrar deneyin',
+      zeroAmount: 'Geçerli bir tutar girin',
+      unavailable: 'İşlem geçici olarak kullanılamıyor — daha sonra deneyin',
+    },
+    hub: {
+      modes: {
+        stake: {
+          title: 'Yatır',
+          body: 'AGX stake edin — günde {timesPerDay} Rebase bileşik getiri',
+        },
+        lpbond: {
+          title: 'LP Tahvil',
+          body: 'USD1 ile taban havuzu inşa edin — indirimli AGX alın',
+        },
+        burnbond: {
+          title: 'Yakım Tahvili',
+          body: 'İndirimli AGX basın ve deflasyon için kalıcı yakın',
+        },
+        xmine: {
+          title: 'X Madencilik',
+          body: 'gAGX stake edin, zararsız X ekosistem ödülü madenciliği',
+        },
+        calc: {
+          title: 'Getiri hesaplayıcı',
+          body: 'Farklı süre ve fiyatlarda beklenen getiriyi hesaplayın',
+        },
+      },
+      overview: {
+        title: 'Genel bakış',
+        metrics: [
+          {
+            id: 'tvl',
+            label: 'Stake TVL',
+            hint: 'Protokolde stake edilen toplam AGX ve yaklaşık USD değeri',
+          },
+          {
+            id: 'mcap',
+            label: 'Piyasa değeri',
+            hint: 'Dolaşımdaki AGX’in toplam değeri',
+          },
+          {
+            id: 'circulating',
+            label: 'AGX dolaşımı',
+            hint: 'Piyasada dolaşan AGX miktarı',
+          },
+          {
+            id: 'treasury',
+            label: 'Düşünce kuruluşu rezervi',
+            hint: 'Basım, piyasa yapıcılık ve risk savunmasını destekleyen rezerv varlıklar',
+          },
+          {
+            id: 'price',
+            label: 'AGX fiyatı',
+            hint: 'AGX’in USD1’e göre piyasa referans fiyatı',
+          },
+          {
+            id: 'burned',
+            label: 'Toplam yakım',
+            hint: 'Yakım tahvili ve katkı alımıyla yakılan AGX toplamı',
+          },
+          {
+            id: 'rebase',
+            label: 'Güncel Rebase getiri oranı',
+            hint: 'Her Epoch’ta (~{hours} sa) bir kez uzlaşır; protokol durumuna göre ayarlanır',
+          },
+          {
+            id: 'runway',
+            label: 'Çalışabilir dönem',
+            hint: 'Güncel rezerv ve harcamaya göre tahmini sürdürülebilir çalışma süresi',
+          },
+          {
+            id: 'stakers',
+            label: 'Stake adresi sayısı',
+            hint: 'Ağda stake eden benzersiz adres sayısı',
+          },
+        ],
+      },
+      periodTable: {
+        title: 'Stake süreleri ve getiriler',
+        segmentAria: 'Süre tablosu ürün geçişi',
+        segs: {
+          stake: 'Yatır',
+          lpbond: 'LP Tahvil',
+          burnbond: 'Yakım Tahvili',
+        },
+        columns: [
+          'Hesaplanan süre',
+          'Temel günlük getiri oranı',
+          'Getiri bonusu',
+          'Dönem getiri oranı',
+        ],
+        rows: [
+          { id: 'liquid', period: 'Esnek (süreli)' },
+          { id: '180', period: '180 g' },
+          { id: '360', period: '360 g' },
+          { id: '540', period: '540 g' },
+        ],
+      },
+      runwayUnknown: '—',
+      chart: {
+        title: 'Metrikler',
+        metricTabs: {
+          tvl: 'Stake TVL',
+          mcap: 'Piyasa değeri',
+        },
+        metricAria: 'Metrik geçişi',
+      },
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Rebase nasıl uzlaşır?',
+            a: 'Protokol bloklarla çalışır: ~{blocks} blok = 1 Epoch (~{hours} saat). Rebase her Epoch sonunda uzlaşır — günde {timesPerDay} kez.',
+          },
+          {
+            q: 'Anapara nasıl serbest bırakılır?',
+            a: 'Stake ve tahvil anaparası blok düzeyinde doğrusal serbest bırakılır (~3 sn/blok). Çekim sonrası serbest bırakılan anapara {days} günlük tampona girer.',
+          },
+          {
+            q: 'Stake, LP Tahvil ve Yakım Tahvili farkı nedir?',
+            a: 'Stake doğrudan AGX yatırıp Rebase bileşik getirisi alır. LP ve Yakım tahvilleri USD1 ile indirimli AGX alır — LP kalıcı taban likidite kurar; Yakım AGX’i kalıcı yakarak deflasyonu güçlendirir. Üçünde de anapara süreye göre doğrusal serbest bırakılır ve Rebase kazanılır.',
+          },
+          {
+            q: 'Getiri hangi biçimde ödenir?',
+            a: 'Ürünlerdeki Rebase getirileri gAGX olarak uzlaşır. gAGX’i 1:1 AGX’e çevirin veya X madenciliği için stake edin.',
+          },
+          {
+            q: 'Düşünce kuruluşu rezervi ne işe yarar?',
+            a: 'Rezerv (USD1) protokolü destekler: %150 aşırı teminatlı AGX basımı, AI piyasa yapıcılık ve risk savunması. Çalışabilir dönem rezerv/harcama tahminidir.',
+          },
+          {
+            q: 'Ürünü nasıl seçmeliyim?',
+            a: 'Bileşik tercih → Stake. İndirimli AGX → LP veya Yakım Tahvili. gAGX ile ekosistem getirisi → X Madencilik. Önce hesaplayıcıyla süreleri karşılaştırın.',
+          },
+          {
+            q: 'Piyasa değeri ve AGX dolaşımı nasıl anlaşılır?',
+            a: 'Dolaşımdaki arz piyasadaki AGX’tir; piyasa değeri = dolaşım × fiyat. TVL ve yakılan arzla birlikte kilit oranı ve deflasyon ilerlemesini gösterir.',
+          },
+        ],
+      },
+    },
+    aside: {
+      countdownUnits: { hours: 'sa', minutes: 'dk', seconds: 'sn' },
+      overview: 'Genel bakış',
+      positions: 'Pozisyonlarım',
+      positionsHint: 'Talep, geri alma ve stake’ten çıkarma Varlıklar sekmesindedir.',
+      viewPositions: 'Görüntüle',
+      mechanism: 'Nasıl çalışır',
+      faq: 'SSS',
+      recordsTitles: {
+        stake: 'Staking kayıtlarım',
+        lpbond: 'Tahvil satın alma kayıtları',
+        burnbond: 'Tahvil satın alma kayıtları',
+        xmine: 'Madencilik kayıtlarım',
+      },
+      recordColumns: [
+        'Zaman',
+        'Hesaplanan süre',
+        'Hesaplanan tutar',
+        'Serbest bırakıldı',
+        'İşlem hash’i',
+      ],
+      bondRecordColumns: [
+        'Zaman',
+        'Hesaplanan süre',
+        'Ödenen',
+        'İndirim',
+        'Alınan AGX',
+        'İşlem hash’i',
+      ],
+      xmineRecordColumns: ['Zaman', 'İşlem', 'Hesaplanan tutar', 'İşlem hash’i'],
+      recordsEmpty: {
+        stake: 'Henüz staking kaydı yok. Stake tamamlanınca her kayıt burada görünür.',
+        lpbond: 'Henüz satın alma kaydı yok. LP tahvil alınca her alım burada görünür.',
+        burnbond: 'Henüz satın alma kaydı yok. Yakım tahvili alınca her alım burada görünür.',
+        xmine:
+          'Henüz madencilik kaydı yok. gAGX stake edip madenciliğe başlayınca her işlem burada görünür.',
+      },
+      chartTitles: {
+        stake: 'TVL (Staking) metrikleri',
+        lpbond: 'TVL (LP Tahvil) metrikleri',
+        burnbond: 'TVL (Yakım Tahvili) metrikleri',
+        xmine: 'TVL (X Madencilik) metrikleri',
+      },
+      chartRangeAria: 'Grafik zaman aralığı',
+      chartRanges: ['1 haf', '1 ay', '1 yıl', 'Tümü'],
+      chartEmpty: 'Henüz geçmiş veri yok',
+      positionMetrics: [
+        { label: 'Pozisyonum' },
+        { label: 'Serbest bırakıldı' },
+        { label: 'Serbest bırakılacak' },
+        { label: 'Güncel Rebase getiri oranı' },
+        { label: 'Güncel Rebase bonusu' },
+      ],
+      xValue: {
+        title: 'X uzun vadeli değer sistemi',
+        supplyLabel: 'X toplam arz',
+        supplyValue: '210,000,000',
+        badge: 'Sabit arz · asla enflasyon yok',
+        columns: [
+          {
+            pct: '47.62%',
+            title: 'LP likidite inşası',
+            bullets: ['İlk likidite inşası', 'Piyasa yapıcılık ve likidite desteği'],
+          },
+          {
+            pct: '52.38%',
+            title: 'Küresel ödüller ve büyüme',
+            bullets: [
+              'gAGX madencilik ödülleri',
+              'Pazar genişletme ve marka ortaklıkları',
+              'Ekosistem inşası ve uzun vadeli büyüme',
             ],
-        }
+          },
+        ],
+      },
     },
-    tables: {
-        time: 'Zaman',
-        claimTime: 'Talep zamanı',
-        paid: 'Tutar',
-        status: 'Durum',
-        discount: 'İndirim',
-        estimatedAgx: 'Tahmini AGX',
-        tx: 'İşlem',
-        title: 'Genesis unvanı',
-        totalVolume: 'Toplam performans',
-        rewardRate: 'Ödül oranı',
-        amount: 'Tutar',
-        from: 'Kaynak adres',
-        genesisRank: 'Genesis seviyesi',
-        joined: 'Katılım zamanı',
-        address: 'Adres',
-        communityVolume: 'Topluluk performansı',
-        contribution: 'Abonelik'
+
+    stake: {
+      title: 'Yatır',
+      intro: 'AGX stake · günde {timesPerDay} Rebase bileşik getiri',
+      periodLabel: 'Stake süresini seçin',
+      periodAria: 'Stake süresini seçin',
+      amountAria: 'Stake tutarı',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance} AGX)',
+      submit: 'Yatır',
+      bindCta: 'Referans bağla',
+      success: 'Stake başarılı',
+      periods: {
+        liquid: 'Esnek',
+        d180: '180 g',
+        d360: '360 g',
+        d540: '540 g',
+      },
+      meta: {
+        baseDaily: 'Temel günlük getiri oranı',
+        periodYield: 'Dönem getiri oranı',
+        bonus: 'Getiri bonusu',
+        lock: 'Kilit günleri',
+        remaining: 'Kalan kota',
+        contract: 'Sözleşmeyi görüntüle',
+        lockLiquid: 'Esnek',
+        lockDays: '{days} günlük doğrusal serbest bırakma',
+      },
+      overviewMetrics: [
+        { label: 'Toplam stake' },
+        { label: 'Güncel Epoch' },
+        { label: 'Sonraki Rebase dağıtımı' },
+        { label: 'Güncel Rebase getiri oranı' },
+      ],
+      mechanismTitle: 'Staking işleyişi',
+      mechanism:
+        'Esnek stake etkinleştirmeden önce warmup’a girer; vadeli stake seçilen havuza kilitlenir. Ödül talebi ve anapara çıkışı Varlıklar’dadır.',
+      mechanismSteps: [
+        {
+          title: 'AGX stake et',
+          body: 'Esnek veya 180/360/540 gün kilit seçin. Daha uzun kilit daha yüksek Rebase bonusu verir.',
+        },
+        {
+          title: 'Günlük Rebase getirisi',
+          body: 'Her Epoch (~{hours} sa) uzlaşır; getiri gAGX olarak birikir.',
+        },
+        {
+          title: 'Vade serbest bırakma ve talep',
+          body: 'Anapara bloklara göre doğrusal serbest bırakılır; gAGX 1:1 AGX’e çevrilebilir veya X madenciliği için stake edilebilir.',
+        },
+      ],
+      faq: [
+        {
+          q: 'Stake getirisi nasıl hesaplanır?',
+          a: 'Günde {timesPerDay} Rebase; günlük getiri yaklaşık %0,5–%1. Daha uzun kilit daha yüksek bonus: 180g ≥%10, 360g ≥%15, 540g ≥%20; Rebase katsayısıyla ayarlanır.',
+        },
+        {
+          q: 'Anapara ne zaman çekilebilir?',
+          a: 'Anapara blok doğrusal serbest bırakılır (~3 sn). Serbest bırakılan kısım istenince alınır; çekimler {days} günlük tampona girer.',
+        },
+        {
+          q: 'Referans APY sabit midir?',
+          a: 'Hayır. APY göstergedir; gerçek getiri Rebase katsayısı, protokol durumu ve arz/talep ile değişir.',
+        },
+        {
+          q: 'Rebase getirisi ile Rebase bonusu farkı nedir?',
+          a: 'Rebase getirisi alınmadıkça her Epoch’ta bileşik birikir. Rebase bonusu vadeli kilit ekidir; alınmadıkça bileşik üretmez — zamanında talep edin.',
+        },
+        {
+          q: 'Getiri hangi biçimde ödenir?',
+          a: 'Stake getirileri gAGX olarak ödenir. İstediğiniz zaman 1:1 AGX’e çevirin veya X Madencilik’te stake ederek X alın.',
+        },
+        {
+          q: 'Vade öncesi çıkabilir miyim?',
+          a: 'Erken çıkış yok. Anapara seçilen sürede doğrusal serbest bırakılır; yalnızca serbest bırakılan kısım alınabilir. Planınıza uygun süre seçin.',
+        },
+        {
+          q: 'Esnek stake’e hangi sınırlar uygulanır?',
+          a: 'Esnek stake getiri bonusu almaz; günlük küresel ve hesap başına kotalarla sınırlıdır, günlük sıfırlanır (önce gelen alır).',
+        },
+        {
+          q: 'Aynı hesapta birden fazla stake olabilir mi?',
+          a: 'Evet. Her stake kendi süresi, getirisi ve serbest bırakma ilerlemesini izler; Staking kayıtlarım altında ayrı görünür.',
+        },
+      ],
     },
+    lpbond: {
+      title: 'LP Tahvil',
+      intro: 'USD1 ile taban havuzu inşa edin, indirimli AGX alın',
+      periodLabel: 'Tahvil süresini seçin',
+      periodAria: 'LP tahvil süresi',
+      amountAria: 'Satın alma tutarı',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance} USD1)',
+      submit: 'Satın al',
+      success: 'Satın alma başarılı',
+      footnote:
+        'Sistem AGX/USD1 LP’yi otomatik kurar ve kalıcı taban likidite için kara deliğe yakar.',
+      card: {
+        yield: 'Dönem getiri oranı',
+        discountRange: 'İndirim aralığı',
+        sold: 'Satıldı',
+        currentDiscount: 'Güncel indirim',
+        discountPrice: 'İndirimli fiyat',
+      },
+      meta: {
+        discount: 'İndirimli fiyat (%{pct})',
+        slippage: 'İzin verilen kayma',
+        pay: 'Öde',
+        receive: 'AGX al',
+        cap: 'Maksimum alım',
+        release: 'Anapara serbest bırakma',
+        releaseLinear: '{days} günlük blok doğrusal serbest bırakma',
+        contract: 'Sözleşmeyi görüntüle',
+      },
+      overviewMetrics: [
+        { label: 'LP tahvil toplam TVL' },
+        { label: 'Tahvil prim oranı' },
+        { label: 'Sonraki Rebase dağıtımı' },
+        { label: 'Güncel Rebase getiri oranı' },
+      ],
+      positionMetrics: [
+        { label: 'My stake' },
+        { label: 'Talep' },
+        { label: 'Serbest bırakılacak' },
+        { label: 'Current Rebase reward' },
+      ],
+      mechanismTitle: 'LP Tahvil işleyişi',
+      mechanism:
+        'BondHelper ile USD1 zap, ilgili dönem BondDepository’ye girer. Geri alma ve getiri Varlıklar’da.',
+      mechanismSteps: [
+        {
+          title: 'LP Tahvil satın al',
+          body: 'USD1 ile taban havuzuna ortak inşa edin, indirimli AGX basın.',
+        },
+        {
+          title: 'Otomatik LP inşası',
+          body: 'Sözleşmeler AGX/USD1 likiditesini otomatik kurar.',
+        },
+        {
+          title: 'Kara delik kalıcı kilit',
+          body: 'LP Token kara delik adresine gider — kalıcı kilitlenir.',
+        },
+      ],
+      faq: [
+        {
+          q: 'LP Tahvil nedir?',
+          a: 'USD1 ile taban havuzuna ortak inşa: indirimli AGX basımı, AGX/USD1 LP otomatik inşası ve kalıcı taban likidite için LP’nin kara deliğe yakımı.',
+        },
+        {
+          q: 'İndirim nasıl belirlenir?',
+          a: 'Dynamic Bond Control arz/taleple ayarlar: 180g %85–%100, 360g %80–%100, 540g %75–%100 — daha uzun süre daha iyi indirim.',
+        },
+        {
+          q: 'Satın alma sonrası LP Token tutar mıyım?',
+          a: 'Hayır. LP kara deliğe yakılır. Tahvil süresince doğrusal serbest bırakılan indirimli basılmış AGX alırsınız.',
+        },
+        {
+          q: 'Tahvil prim oranı nedir?',
+          a: 'Prim, indirimli fiyat ile AGX piyasa fiyatı arasındaki farktır. Pozitif prim, tahvilin spot alımdan daha avantajlı olduğunu gösterir.',
+        },
+        {
+          q: 'Erken geri alabilir miyim?',
+          a: 'Erken geri alma yok. Anapara blok doğrusal serbest bırakılır; serbest bırakılan kısım istenince alınır.',
+        },
+        {
+          q: 'Ödediğim USD1 nereye gider?',
+          a: 'Ödenen USD1, indirimli basılan AGX ile AGX/USD1 LP oluşturur; LP Token kara deliğe yakılarak protokolün kalıcı likiditesi olur.',
+        },
+      ],
+    },
+    burnbond: {
+      title: 'Yakım Tahvili',
+      intro: 'İndirimli AGX basın ve deflasyon için kalıcı yakın',
+      periodLabel: 'Tahvil süresini seçin',
+      periodAria: 'Yakım tahvil süresi',
+      amountAria: 'Satın alma tutarı',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance} USD1)',
+      submit: 'Satın al',
+      success: 'Satın alma başarılı',
+      footnote: 'Sistem indirimli AGX basar, otomatik alır ve kara deliğe kalıcı yakar.',
+      card: {
+        yield: 'Dönem getiri oranı',
+        discountRange: 'İndirim aralığı',
+        sold: 'Satıldı',
+        currentDiscount: 'Güncel indirim',
+        discountPrice: 'İndirimli fiyat',
+      },
+      meta: {
+        discount: 'İndirimli fiyat (%{pct})',
+        slippage: 'İzin verilen kayma',
+        pay: 'Öde',
+        receive: 'AGX al',
+        cap: 'Maksimum alım',
+        release: 'Anapara serbest bırakma',
+        releaseLinear: '{days} günlük blok doğrusal serbest bırakma',
+        contract: 'Sözleşmeyi görüntüle',
+      },
+      overviewMetrics: [
+        { label: 'Yakım tahvil toplam TVL' },
+        { label: 'Tahvil prim oranı' },
+        { label: 'Sonraki Rebase dağıtımı' },
+        { label: 'Güncel Rebase getiri oranı' },
+      ],
+      positionMetrics: [
+        { label: 'My bonds' },
+        { label: 'Serbest bırakıldı' },
+        { label: 'Serbest bırakılacak' },
+        { label: 'Current Rebase reward' },
+      ],
+      mechanismTitle: 'Yakım Tahvili işleyişi',
+      mechanism:
+        'BondHelper ile USD1 zap, ilgili dönem BurnBondDepository’ye girer. Geri alma ve getiri Varlıklar’da.',
+      mechanismSteps: [
+        {
+          title: 'USD1 öde',
+          body: 'Serbest bırakma süresi seçin ve güncel indirimle Yakım Tahviline katılın.',
+        },
+        {
+          title: 'İndirimli AGX basımı',
+          body: 'Sistem ilgili indirim oranında AGX basar.',
+        },
+        {
+          title: 'Al ve kalıcı yakın',
+          body: 'AGX’i otomatik alıp kara deliğe yakarak deflasyonu güçlendirin.',
+        },
+      ],
+      faq: [
+        {
+          q: 'Yakım Tahvili nedir?',
+          a: 'USD1 ödeyin: indirimli AGX basımı, otomatik AGX alımı ve kalıcı yakım (Blackhole Lock) ile dolaşımı azaltıp uzun vadeli değeri destekleyin.',
+        },
+        {
+          q: 'LP Tahvilden farkı nedir?',
+          a: 'LP Tahvil kalıcı taban likidite kurar; Yakım Tahvili dolaşımı deflate eder. Aynı indirim bantları (%75–%100 süreye göre); anapara her iki yolda da doğrusal serbest bırakılır.',
+        },
+        {
+          q: 'Tahvil prim oranı nedir?',
+          a: 'Prim, indirimli fiyat ile AGX piyasa fiyatı arasındaki farktır. Pozitif prim, tahvilin spot alımdan daha avantajlı olduğunu gösterir.',
+        },
+        {
+          q: 'Erken geri alabilir miyim?',
+          a: 'Erken geri alma yok. Anapara blok doğrusal serbest bırakılır; serbest bırakılan kısım istenince alınır.',
+        },
+        {
+          q: 'Ödediğim USD1 nereye gider?',
+          a: 'Ödenen USD1, basım, piyasa yapıcılık ve risk savunması için hazine rezervine girer; sistem indirimli AGX basar, alır ve kara deliğe kalıcı yakar.',
+        },
+      ],
+    },
+    xmine: {
+      title: 'X Madencilik',
+      intro: 'gAGX stake ederek X ekosistem ödülü madenciliği yapın',
+      amountAria: 'Stake gAGX tutarı',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance} gAGX)',
+      quotaInline: 'Stake kotası: {quota} gAGX',
+      submit: 'Yatır',
+      success: 'Stake başarılı',
+      meta: {
+        quota: 'Stake kotası',
+        daily: 'Getiri oranı (günlük)',
+        max: 'Maksimum stake',
+        lock: 'Kilit günleri',
+        lockValue: '24 saat sonra serbest bırakılır',
+        h24: '24h',
+        contract: 'Sözleşmeyi görüntüle',
+      },
+      overviewMetrics: [
+        { label: 'X Madencilik toplam TVL' },
+        { label: 'X fiyatı' },
+        { label: 'Kümülatif madencilik çıktısı' },
+        { label: 'Günlük getiri oranı' },
+        { label: 'Sonraki madencilik çıktısı' },
+      ],
+      positionMetrics: [
+        { label: 'Madencilik stake’im' },
+        { label: 'Serbest bırakıldı' },
+        { label: 'Madencilik çıktısı' },
+      ],
+      mechanismTitle: 'X Madencilik işleyişi',
+      mechanism:
+        'miningQuotaOf ile kotayı doğrulayıp stakeGagxForMining yapın. X talebi ve stake’ten çıkarma Varlıklar’da; bu sayfada warmup iptali yok.',
+      mechanismSteps: [
+        {
+          title: 'Rebase + DAO ödülleri',
+          body: 'Getiriler birleşik olarak gAGX uzlaşır.',
+        },
+        { title: 'gAGX stake et', body: 'Stake edilen gAGX 24 saat kilitlenir.' },
+        {
+          title: 'Dinamik X dağıtımı',
+          body: 'Sistem protokol getiri oranına göre X ödülünü dinamik dağıtır.',
+        },
+        {
+          title: 'Stake’ten çıkarma doğrusal serbest bırakma',
+          body: 'Kilit açıldıktan sonra gAGX ~30 günde blok doğrusal serbest bırakılır.',
+        },
+      ],
+      faq: [
+        {
+          q: 'X Madenciliğe nasıl katılırım?',
+          a: 'gAGX stake ederek X madenciliğine katılın. Stake sonrası gAGX 24 saat kilitlenir; X ödülleri protokol getirisine göre dağıtılır.',
+        },
+        {
+          q: 'Stake üst sınırı nedir?',
+          a: 'gAGX stake, ≥180 gün AGX tahvil + AGX stake toplamını aşamaz.',
+        },
+        {
+          q: 'Stake’ten çıkarma sonrası varlıklar nasıl serbest bırakılır?',
+          a: 'Kilidi açılmış gAGX ~30 günlük blok doğrusal serbest bırakma kullanır; satış baskısını azaltır.',
+        },
+        {
+          q: 'X arzı nedir? Enflasyon olur mu?',
+          a: 'Sabit 210M X, asla enflasyon yok. %47,62 LP likidite; %52,38 küresel ödül ve büyüme.',
+        },
+        {
+          q: 'gAGX nasıl alınır?',
+          a: 'gAGX, stake ve tahvillerden Rebase ile DAO ödüllerinin birleşik uzlaşma belgesidir.',
+        },
+        {
+          q: 'gAGX madencilik dışında ne yapabilir?',
+          a: '1:1 AGX’e çevirip stake edin veya gAGX stake ederek X madenciliği yapın.',
+        },
+        {
+          q: 'X neden sürekli deflate olur?',
+          a: 'Her X satışında %25 yakılır. Büyüme talebi artırırken yakımlar arzı küçültür.',
+        },
+        {
+          q: 'X değerinin kaynağı nedir?',
+          a: 'Madencilik talebi, protokol gelir geri dönüşü ve ekosistem büyümesi X talebini güçlendirir.',
+        },
+        {
+          q: 'Üst sınır neden tahvil/uzun vadeli stake’e bağlı?',
+          a: 'Madencilerin uzun vadeli inşa edenler olmasını sağlar; daha fazla tahvil veya uzun stake miningQuotaOf ile üst sınırı yükseltir.',
+        },
+      ],
+    },
+    calc: {
+      title: 'Getiri hesaplayıcı',
+      intro: 'Farklı ürün, süre ve fiyatlarda beklenen getiriyi hesaplayın — zincir üstü işlem yok',
+      productAria: 'Hesaplanan ürün',
+      products: {
+        stake: 'Yatır',
+        lpbond: 'LP Tahvil',
+        burnbond: 'Yakım Tahvili',
+        xmine: 'X Madencilik',
+      },
+      periodLabel: 'Süre seçin',
+      periodAria: 'Hesaplanan süre',
+      amountLabel: 'Hesaplanan tutar',
+      amountAria: 'Hesaplanan tutar',
+      price: 'Vade AGX fiyatı',
+      priceCurrent: 'Güncel {price}',
+      priceAria: 'Fiyat girişi',
+      days: 'Tutma günleri',
+      dayBubble: '{day}. gün',
+      daysAria: 'Tutma günleri',
+      submit: 'Hesapla',
+      result: {
+        interest: 'Tahmini getiri',
+        total: 'Toplam getiri',
+        rate: 'Getiri oranı',
+        sellTotal: 'Satış toplamı',
+        invested: 'Toplam yatırım',
+        yieldBar: 'Getiri {amount}',
+        legend: {
+          released: 'Serbest bırakılan anapara değeri',
+          netYield: 'Net getiri değeri',
+          cost: 'Maliyet',
+          grossYield: 'Toplam getiri',
+        },
+      },
+      aside: {
+        result: 'Hesap sonucu',
+        resultHint: 'Solda parametreleri girip Hesapla’ya dokunun.',
+        tags: { day: '{day}. gün' },
+        curve: 'Getiri eğrisi',
+        curveHint: 'Günlük kümülatif getiri; vade sonunda geri alınmazsa bileşik getiri sürer',
+        nodes: 'Kritik düğümler',
+        nodeEndLabel: '{day}. güne kadar tut',
+        nodeCards: [
+          {
+            label: 'Pozitif getiri başlangıç günü',
+            hint: 'Bu günden itibaren satmak pozitif getiri sağlayabilir',
+          },
+          { label: 'Anapara tamamen serbest bırakıldı', hint: '' },
+          { label: 'Süre sonuna kadar tut', hint: 'Anaparaya göre kümülatif getiri gösterimi' },
+        ],
+        notes: 'Hesaplama notları',
+        notesBody: 'Yalnızca yerel tahmin — zincir üstü teklif veya getiri vaadi değildir.',
+        notesItems: [
+          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
+          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
+          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
+          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+        ],
+      },
+    },
+  },
+
+  release: {
+    title: 'Serbest bırakma',
+    intro: 'Getiri ve anapara serbest bırakmayı yönetin',
+    backToHub: 'Serbest bırakmaya dön',
+    recordColumns: ['Zaman', 'İşlem', 'Hesaplanan tutar', 'İşlem hash’i'],
+    recordsEmpty: 'Henüz zincir üstü indeks kaydı yok (indexer bekleniyor)',
+    labels: {
+      releasing: 'Serbest bırakılıyor',
+      released: 'Serbest bırakıldı',
+      releasedPct: 'Serbest bırakıldı %{pct}',
+    },
+    units: {
+      queue: 'gAGX',
+    },
+    errors: {
+      claimFailed: 'Talep başarısız. Lütfen tekrar deneyin.',
+    },
+    hub: {
+      aboutTitle: 'Serbest bırakma hakkında',
+      aboutCardTitle: 'Serbest bırakma havuzu · getiri ve ödül serbest bırakma',
+      aboutCardBody:
+        'Serbest bırakma havuzu anlık satış baskısını günler süren yumuşak akışa çevirir. Her talep seçilen sürede doğrusal açılır; protokol çıkışları ekosistem büyümesiyle uyumlu kalır.',
+
+      aboutSlides: [
+        {
+          title: 'Serbest bırakma havuzu · getiri ve ödül serbest bırakma',
+          body: 'Serbest bırakma havuzu anlık satış baskısını günler süren yumuşak akışa çevirir. Her talep seçilen sürede doğrusal açılır; getiri çıkışı ekosistem büyümesiyle uyumlu kalır, yoğun nakde çevirmenin AGX fiyatına etkisini azaltır ve uzun vadeli katılımcılar için bileşik büyümeyi korur.',
+        },
+        {
+          title: 'Tampon havuzu · anapara ikincil serbest bırakma',
+          body: 'Stake/tahvil anaparası çıkınca fonlar, piyasa emilim kapasitesine uyum için ikincil doğrusal serbest bırakma tamponuna girer.',
+        },
+      ],
+      purposeTitle: 'Serbest bırakmanın işlevi',
+      purposeBody:
+        'Tüm getiri Türbin’den önce serbest bırakma havuzundan geçer. Nakde çevirmeyi zamana yaymak baskıyı azaltır; daha uzun süre daha düşük vergiyle tutmayı ödüllendirir.',
+
+      mechanismTitle: 'Getiri talep mekanizması',
+      mechanismSubtitle:
+        'Serbest bırakma, getirinin üretilmesi ile Türbin arasında zorunlu adımdır — zamanla vergiyi, ritimle istikrarı takas edin',
+      mechanismSteps: [
+        { title: 'Rebase / DAO ödüllerini talep et', body: 'Getiri üretilir' },
+        { title: '{divisor} : 1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
+        {
+          title: 'Serbest bırakma havuzuna gir · doğrusal serbest bırakma',
+          body: '5 / 20 / 40 / 60 gün seçin',
+        },
+        { title: 'Türbin’e talep et', body: '1:1 alımla satış kotası aç' },
+      ],
+      taxTitle: 'Daha uzun serbest bırakma, daha düşük vergi',
+      taxPeriod: 'Hesaplanan süre',
+      taxRate: 'Talep vergisi',
+      taxRows: {
+        periods: ['5 g', '20 g', '40 g', '60 g'],
+        rates: ['20%', '10%', '5%', '1%'],
+      },
+    },
+    queue: {
+      title: 'Serbest bırakma havuzu',
+      intro:
+        'Talep edilen getiri ve ödüller burada seçilen sürede doğrusal serbest bırakılır; serbest bırakılan kısım istediğiniz zaman Türbin’e alınabilir',
+      planDays: '{days} g',
+      claim: 'Talep et',
+      refresh: 'Yenile',
+      claimSuccess: 'Türbin kotasına talep edildi',
+      goTurbine: 'Türbin’e git',
+      statsTitle: 'Serbest bırakma havuzu verileri',
+      lifetimeClaimed: 'Havuzdan kümülatif talep',
+      recordsTitle: 'Serbest bırakma havuzu kayıtları',
+    },
+    buffer: {
+      title: 'Tampon havuzu',
+      intro:
+        'İtfa edilen anapara burada {days} günlük ikincil doğrusal serbest bırakmadan geçer. Serbest kalan AGX cüzdanınıza çekilebilir.',
+      claim: 'Çek',
+      refresh: 'Yenile',
+      claimSuccess: 'AGX cüzdana çekildi',
+      statsTitle: 'Tampon havuzu verileri',
+      entered: 'Toplam giriş',
+      extracted: 'Toplam çekilen',
+      recordsTitle: 'Tampon havuzu kayıtları',
+      mechanismTitle: 'Fon serbest bırakma mekanizması',
+      mechanismSubtitle:
+        'Stake ve tahvil anaparası piyasa istikrarı için iki aşamalı serbest bırakma kullanır',
+      mechanismSteps: [
+        { title: 'Stake/', body: 'tahvil anaparası' },
+        { title: 'Blok düzeyinde', body: 'serbest bırakma' },
+        { title: 'Çekim sonrası', body: '{days} günlük tampon' },
+        { title: 'İkincil doğrusal', body: 'serbest bırakma' },
+      ],
+      mechanismBenefits: [
+        'Yoğun kilit açılışlarını önle',
+        'Piyasa satış baskısını azalt',
+        'Fon serbest bırakmayı yumuşat',
+        'Piyasa istikrarını güçlendir',
+      ],
+    },
+    faq: {
+      title: 'FAQs',
+      hub: [
+        {
+          q: 'Serbest bırakma süresi değiştirilebilir mi?',
+          a: 'Kuyruğa girerken seçilen süre değiştirilemez; yeni talepler farklı süre seçebilir.',
+        },
+        {
+          q: 'Vergi ne zaman kesilir?',
+          a: 'Seçilen serbest bırakma planı oranıyla, serbest bırakılmış kısım talep edilirken kesilir.',
+        },
+        {
+          q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
+          a: 'Zincir üstünde AGX Türbin satış kotasına girer; ardından Türbin ile gAGX alın.',
+        },
+        {
+          q: 'Serbest bırakılan kısmı hemen almazsam kayıp olur mu?',
+          a: 'Hayır. Kilidi açılmış tutarlar istenince talep edilebilir.',
+        },
+        {
+          q: 'Uygun serbest bırakma süresi nasıl seçilir?',
+          a: 'Süre uzadıkça vergi düşer; likidite ihtiyacına göre 5 / 20 / 40 / 60 gün seçin.',
+        },
+      ],
+      queue: [
+        {
+          q: 'Serbest bırakma süresi değiştirilebilir mi?',
+          a: 'Kuyruğa girerken seçilen süre değiştirilemez; yeni talepler farklı süre seçebilir.',
+        },
+        {
+          q: 'Vergi ne zaman kesilir?',
+          a: 'Seçilen serbest bırakma planı oranıyla, serbest bırakılmış kısım talep edilirken kesilir.',
+        },
+        {
+          q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
+          a: 'Türbin kotasına girer — Takas → Türbin’e gidin.',
+        },
+        {
+          q: 'Serbest bırakılan kısmı hemen almazsam kayıp olur mu?',
+          a: 'Gecikmeli talep nedeniyle azalmaz.',
+        },
+        {
+          q: 'Uygun serbest bırakma süresi nasıl seçilir?',
+          a: 'Süre uzadıkça vergi düşer.',
+        },
+      ],
+      buffer: [
+        {
+          q: 'Tampon havuzu nedir?',
+          a: 'Geri alma/stake’ten çıkarma sonrası anapara splitter’da doğrusal serbest bırakılır.',
+        },
+        {
+          q: 'Tampon havuzundaki varlıklar hâlâ getiri üretir mi?',
+          a: 'Tampon süresince stake getirisi üretilmez.',
+        },
+        {
+          q: 'Serbest bırakılan kısım nasıl çekilir?',
+          a: 'Çek’e dokunun — AGX doğrudan cüzdana gider.',
+        },
+        {
+          q: 'Tampon havuzunda neden AGX ve gAGX var?',
+          a: 'Tasarım her iki kartı tutar; zincir üstü tampon yalnızca AGX uzlaştırır — gAGX çıkışı çevrilmiştir.',
+        },
+        {
+          q: 'Serbest bırakılmış varlıkların tümünü neden bir kerede çekemem?',
+          a: 'Yalnızca şu an kilidi açılmış tutarlar çekilebilir; vadesi gelmeyenler beklemelidir.',
+        },
+      ],
+    },
+  },
+  tables: {
+    time: 'Zaman',
+    claimTime: 'Talep zamanı',
+    paid: 'Tutar',
+    status: 'Durum',
+    discount: 'İndirim',
+    estimatedAgx: 'Tahmini AGX',
+    tx: 'İşlem',
+    title: 'Genesis unvanı',
+    totalVolume: 'Toplam performans',
+    rewardRate: 'Ödül oranı',
+    amount: 'Tutar',
+    from: 'Kaynak adres',
+    genesisRank: 'Genesis seviyesi',
+    joined: 'Katılım zamanı',
+    address: 'Adres',
+    communityVolume: 'Topluluk performansı',
+    contribution: 'Abonelik',
+  },
 })
 
 export type AppMessagesBundle = typeof app
