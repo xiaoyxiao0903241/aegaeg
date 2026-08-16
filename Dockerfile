@@ -11,6 +11,8 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+RUN cp .env.example .env
+
 RUN pnpm run build
 
 
