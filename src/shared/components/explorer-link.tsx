@@ -9,7 +9,7 @@ type ExplorerLinkKind = 'address' | 'tx'
 
 /**
  * 链上地址 / 交易哈希：打开 BscScan。
- * 地址默认主色、hover 才下划线；交易哈希用 claim-restake 并常显下划线。
+ * 默认主色并常显下划线。
  */
 export function ExplorerLink({
   value,
@@ -33,11 +33,7 @@ export function ExplorerLink({
   return (
     <Text
       as="a"
-      className={cn(
-        'inline-flex items-center gap-1 font-mono',
-        kind === 'tx' ? 'text-claim-restake underline' : 'no-underline hover:underline',
-        className,
-      )}
+      className={cn('inline-flex items-center gap-1 font-mono underline', className)}
       href={href}
       rel="noopener noreferrer"
       target="_blank"

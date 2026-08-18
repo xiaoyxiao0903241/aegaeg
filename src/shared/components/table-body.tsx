@@ -22,7 +22,7 @@ const cellTv = tv({
       false: '',
     },
     link: {
-      true: 'text-claim-restake underline [&_a]:text-claim-restake [&_a]:underline',
+      true: 'text-primary underline [&_a]:text-primary [&_a]:underline',
       false: '',
     },
     emphasis: {
@@ -60,7 +60,7 @@ const cellTv = tv({
 const cellTextTv = tv({
   base: '',
   variants: {
-    link: { true: 'text-claim-restake underline', false: '' },
+    link: { true: 'text-primary underline', false: '' },
     emphasis: { true: 'font-bold', false: '' },
     muted: { true: 'text-muted-foreground tabular-nums', false: '' },
     positive: {

@@ -406,7 +406,7 @@ export function mapParticipationAwardLogToRow(
 export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    <ExplorerLink key={item.address} tone="muted-foreground" value={item.address} />,
+    <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.active_stake_balance, { digits: 2, prefix: '$' }),
     formatApiAmount(item.total_brought_reward, { digits: 4, suffix: ' gAGX' }),
   ]
@@ -441,7 +441,7 @@ export function mapRankRewardLogToRow(
 export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    <ExplorerLink key={item.address} tone="muted-foreground" value={item.address} />,
+    <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.making_market, { digits: 2, prefix: '$' }),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
@@ -470,7 +470,7 @@ export function mapReferralAwardLogToRow(
 export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    <ExplorerLink key={item.address} tone="muted-foreground" value={item.address} />,
+    <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.active_stake_balance, { digits: 2, prefix: '$' }),
     formatApiAmount(item.contributed_reward_total, { digits: 4, suffix: ' gAGX' }),
   ]
@@ -540,13 +540,13 @@ export function mapLuckyWinnerToRow(
   const addressCell =
     isSelf && opts?.meLabel ? (
       <span className="inline-flex items-center gap-2">
-        <ExplorerLink tone="muted-foreground" value={item.address} />
+        <ExplorerLink value={item.address} />
         <StatusBadge size="compact" tone="pending">
           {opts.meLabel}
         </StatusBadge>
       </span>
     ) : (
-      <ExplorerLink tone="muted-foreground" value={item.address} />
+      <ExplorerLink value={item.address} />
     )
 
   return [
