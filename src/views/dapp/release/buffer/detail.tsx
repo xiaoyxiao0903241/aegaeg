@@ -39,7 +39,8 @@ export function BufferDetail() {
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const apiSummaryQuery = useBufferPoolSummary(sessionReady)
   const bufferLogsQuery = useBufferPoolLogs(tablePageQuery(recordsPage), sessionReady)
-  const bufferLogRows = bufferLogsQuery.data?.items.map(mapBufferPoolLogToRow) ?? []
+  const bufferLogRows =
+    bufferLogsQuery.data?.items.map((item) => mapBufferPoolLogToRow(item, t.flowOps)) ?? []
   const bufferLogsTotal = bufferLogsQuery.data?.total ?? 0
   const bufferLogsLoading = sessionReady && bufferLogsQuery.isLoading
   const amount = bufferQuery.data?.agx.totalAmount ?? ZERO_BI
@@ -164,9 +165,11 @@ export function BufferDetail() {
         <Table>
           <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+            emphasisColumns={[1]}
             empty={t.release.recordsEmpty}
             headers={[...t.release.recordColumns]}
             isLoading={bufferLogsLoading}
+            mutedColumns={[0]}
             rows={bufferLogRows}
           />
           {shouldShowTablePagination(bufferLogsTotal) ? (

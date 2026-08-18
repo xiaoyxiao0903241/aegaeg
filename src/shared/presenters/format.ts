@@ -192,7 +192,7 @@ export function formatPercentChange(value: number | null | undefined, digits = 1
   return `${sign}${formatNumber(value, { digits, trimZeros: true })}%`
 }
 
-/** 把链上区块时间（unix 秒）格式化为 `MM-DD HH:mm`；0 返回 `—`。 */
+/** 把链上区块时间（unix 秒）格式化为 `YYYY-MM-DD HH:mm`；0 返回 `—`。 */
 export function formatBlockTime(timestamp: number): string {
   if (!timestamp) return '—'
 
@@ -200,7 +200,7 @@ export function formatBlockTime(timestamp: number): string {
   return formatDateTimeParts(date)
 }
 
-/** 把后端 ISO 时间格式化为 `MM-DD HH:mm`；空值或非法日期返回 `—`。 */
+/** 把后端 ISO 时间格式化为 `YYYY-MM-DD HH:mm`；空值或非法日期返回 `—`。 */
 export function formatApiDateTime(iso: string | null): string {
   if (!iso) return '—'
 
@@ -211,12 +211,13 @@ export function formatApiDateTime(iso: string | null): string {
 }
 
 function formatDateTimeParts(date: Date): string {
+  const year = String(date.getFullYear())
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
   const hours = String(date.getHours()).padStart(2, '0')
   const minutes = String(date.getMinutes()).padStart(2, '0')
 
-  return `${month}-${day} ${hours}:${minutes}`
+  return `${year}-${month}-${day} ${hours}:${minutes}`
 }
 
 /** 把 ISO 时间格式化为 `YYYY-MM-DD`；空值或非法日期返回 `-`。 */
@@ -239,8 +240,9 @@ export function formatShortAddress(
   return `${address.slice(0, head)}…${address.slice(-tail)}`
 }
 
-/** 折扣 BPS → 百分比文本（如 `-1.5%`）；非法或非正返回 `0%`。 */
-export function formatDiscountBps(discountBps: number): string {
+/** 折扣 BPS → 百分比文本。默认带负号（横幅）；表内绿列用 `{ signed: false }`。 */
+export function formatDiscountBps(discountBps: number, options: { signed?: boolean } = {}): string {
   if (!Number.isFinite(discountBps) || discountBps <= 0) return '0%'
-  return `-${discountBps / 100}%`
+  const pct = `${discountBps / 100}%`
+  return options.signed === false ? pct : `-${pct}`
 }

@@ -4,8 +4,8 @@ import type { TeamReferralItem } from '~/shared/api/types'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
+  formatApiDateTime,
   formatNumber,
-  formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
 } from '~/shared/presenters/format'
@@ -21,7 +21,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[]
   const teamMarket = Number(item.sales_team_market)
 
   return [
-    formatRegisterDate(item.register_time),
+    formatApiDateTime(item.register_time),
     <ExplorerLink key={item.address} shortOptions={{ head: 4, tail: 4 }} value={item.address} />,
     Number.isFinite(volume)
       ? formatNumber(volume, { prefix: '$' })
@@ -29,8 +29,8 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[]
     formatTableGenesisRank(item.presale_rank),
     formatNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
     Number.isFinite(teamMarket)
-      ? formatNumber(teamMarket, { digits: 0, trimZeros: true })
-      : formatNumber(0, { digits: 0, trimZeros: true }),
+      ? formatNumber(teamMarket, { digits: 0, trimZeros: true, prefix: '$' })
+      : formatNumber(0, { digits: 0, trimZeros: true, prefix: '$' }),
   ]
 }
 
@@ -55,7 +55,7 @@ export function readAndClearBindSuccess(flag: { current: boolean }): boolean {
 
 /** 社区邀请表列宽预设（16px 根字号）。 */
 export const communityInviteColWidths = [
-  '6.5rem',
+  '9.5rem',
   '6.5rem',
   '6.5rem',
   '5.5rem',

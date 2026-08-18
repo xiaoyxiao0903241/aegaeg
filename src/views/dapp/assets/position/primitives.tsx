@@ -6,6 +6,7 @@
 import type { ReactNode } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
+import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -373,8 +374,8 @@ export function AssetsPositionBondRow({
   row,
 }: AssetsPositionRowFrameProps<AssetsBondRow>) {
   const { messages: t } = useI18n()
-  const canClaim = row.profit > ZERO_BI
-  const canRedeem = row.pendingPayout > ZERO_BI
+  const canClaim = isAssetsActionableAmount(row.profit, ASSETS_POSITION_GAGX_DECIMALS)
+  const canRedeem = isAssetsActionableAmount(row.pendingPayout, ASSETS_POSITION_AGX_DECIMALS)
   const periodLabel = formatPeriodLabel(String(row.period))
   const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
 
@@ -443,19 +444,21 @@ export function AssetsPositionStakeRow(
   const { formatPeriodLabel, formatAmount, locked, busy, onClaim, onRedeem, onActivate, row } =
     props
   const { messages: t } = useI18n()
-  // 收益 / 加成分列展示；可领门槛看普通奖励与加成合计
+  // 收益 / 加成分列展示；领取门槛：任一档 ≥ 0.01（活期仅普通收益）
   const reward = row.blockReward
   const boost = row.extraInterest
-  const claimableYield = reward + boost
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
-  // 与手册一致：无利息不开放领取（bond 卡同口径 profit>0）
-  const canClaim = !inWarmup && claimableYield > ZERO_BI
+  const canClaim =
+    !inWarmup &&
+    (isAssetsActionableAmount(reward, ASSETS_POSITION_GAGX_DECIMALS) ||
+      (row.kind !== 'liquid' && isAssetsActionableAmount(boost, ASSETS_POSITION_GAGX_DECIMALS)))
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
-    : row.kind === 'liquid'
-      ? row.principal > ZERO_BI
-      : row.claimableBalance > ZERO_BI
+    : isAssetsActionableAmount(
+        row.kind === 'liquid' ? row.principal : row.claimableBalance,
+        ASSETS_POSITION_AGX_DECIMALS,
+      )
   const periodLabel = formatPeriodLabel(row.period)
   const voucherAddress = row.kind === 'locked' && row.pool ? row.pool : null
   const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()

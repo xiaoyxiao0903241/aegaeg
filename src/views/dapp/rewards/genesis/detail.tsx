@@ -62,6 +62,7 @@ export function GenesisDetail() {
         <Table>
           <Table.Body
             colWidths={['14.375rem', '11.875rem', '11.875rem', '7.875rem']}
+            endColumns={[3]}
             headers={[...vm.g.tierColumns]}
             highlightedRows={vm.highlightedRows}
             rows={vm.tierRows}
@@ -84,6 +85,7 @@ export function GenesisDetail() {
             colWidths={['16.75rem', '8.375rem', '9.8125rem', '1fr']}
             emphasisColumns={[2]}
             empty={!vm.sessionReady ? t.rewards.hub.signInForBalance : vm.historyEmpty.title}
+            mutedColumns={[0]}
             headers={[...vm.g.recordsColumns]}
             isLoading={vm.sessionReady && vm.historyLoading}
             rows={vm.historyRows}

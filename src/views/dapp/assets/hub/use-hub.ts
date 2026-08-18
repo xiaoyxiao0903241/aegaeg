@@ -262,7 +262,7 @@ export function useAssetsHub(): AssetsHubOverview {
   const burnYieldNum = formatTokenAmountToNumber(burnYield, GAGX_DECIMALS)
   const xPendingNum = formatTokenAmountToNumber(xPending, X_DECIMALS)
 
-  /** 产品口径「可赎回已释放」= 仓位层可领本金（Locked getReleasedPrincipal / Bond pendingPayout） */
+  /** 产品口径「已释放」= 仓位层可领本金（Locked getReleasedPrincipal / Bond pendingPayout） */
   const redeemableReleasedWei = chainYieldReady
     ? stakeRows.reduce((sum, row) => sum + row.releasedPrincipal, ZERO_BI) +
       lpRows.reduce((sum, row) => sum + row.pendingPayout, ZERO_BI) +
@@ -318,7 +318,7 @@ export function useAssetsHub(): AssetsHubOverview {
     const claimed = `${formatApiDecimalOrZero(apiReward.total_reward_claimed)} gAGX`
     const contribution = formatApiDecimalOrZero(apiReward.available_contribution)
     const holdingsTotal = formatApiTokenLabel(apiHoldings.total_holdings_agx, 'AGX')
-    // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「可赎回已释放」不符
+    // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「已释放」不符
     const holdingsReleased = redeemableReleasedLabel
     // 钱包就绪且有分流器快照时 AGX/gAGX 缓冲同源链上；否则 AGX 回落 API
     const bufferTotal = buffer

@@ -88,6 +88,44 @@ const app = defineMessages({
       'Приглашайте партнёров к со-строительству, делитесь ростом экосистемы и наградами Genesis.',
     bscTooltip: 'Только BSC · AEGIS X работает в BNB Smart Chain.',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'Стейк',
+      REWARD: 'Получение награды',
+      EXTRA_REWARD: 'Доп. награда',
+      CLAIM_PRINCIPAL: 'Вывод',
+      RESTAKE: 'Рестейк',
+    },
+    bond: {
+      PURCHASE: 'Покупка',
+      REDEEM: 'Вывод',
+      REWARD: 'Получение',
+      RESTAKE: 'Рестейк',
+    },
+    xmine: {
+      STAKE_X: 'Стейк',
+      UNSTAKE_X: 'Анстейк',
+      REWARD: 'Получение',
+    },
+    buffer: {
+      RELEASE_CREATED: 'Вход',
+      PRINCIPAL_CLAIMED: 'Вывод',
+    },
+    release: {
+      entered_queue: 'В очередь',
+      claimed: 'Получение',
+      released: 'Выпущено',
+    },
+    turbine: {
+      received: 'Вход',
+      silenced: 'Разблокировка',
+      cooled_claimed: 'Вывод',
+    },
+    termDays: ' ({n}д)',
+    termLiquid: ' (гибкий)',
+    liquid: 'Гибкий',
+    periodDays: '{n} дн.',
+  },
   topbar: {
     currentNetwork: 'Текущая сеть',
     switchToBsc: 'Переключитесь на BSC',
@@ -395,7 +433,13 @@ const app = defineMessages({
           consume: 'Расход',
         },
         burnColumns: ['Время', 'Сожжено AGX', 'Получено очков вклада', 'Хеш транзакции'],
-        consumeColumns: ['Время', 'Израсходовано очков вклада', 'Хеш транзакции'],
+        consumeColumns: [
+          'Время',
+          'Назначение',
+          'Сумма получения',
+          'Израсходовано очков вклада',
+          'Хеш транзакции',
+        ],
       },
       faq: {
         items: [
@@ -1556,8 +1600,7 @@ const app = defineMessages({
       overview: {
         title: 'Обзор активов',
         totalValue: 'Общая стоимость',
-        totalValueHint:
-          'Рыночная оценка основной суммы + неполученной доходности; показывает —, если нет кросс-продуктовой котировки',
+        totalValueHint: 'Рыночная оценка основной суммы + неполученной доходности',
         claimable: 'Доходность к получению',
         claimed: 'Всего получено',
         contribution: 'Очки вклада',

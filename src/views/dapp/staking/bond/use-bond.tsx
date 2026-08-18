@@ -259,7 +259,8 @@ export function useBondDetail(kind: BondKind) {
     },
   ]
 
-  const recordRows = purchasesQuery.data?.items.map(mapBondPurchaseToAsideRow) ?? []
+  const recordRows =
+    purchasesQuery.data?.items.map((item) => mapBondPurchaseToAsideRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && purchasesQuery.isLoading && purchasesQuery.data == null
 
   return {

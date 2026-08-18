@@ -3,17 +3,23 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
+const AGX_DECIMALS = 9
+const X_DECIMALS = 18
+const AGX_ACTION_FLOOR = 10n ** 7n
+const X_ACTION_FLOOR = 10n ** 16n
+
 test('evaluateMixedClaim fails when live reward is below claim amount', async () => {
   const { evaluateMixedClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
 
   assert.equal(
     evaluateMixedClaim({
-      amount: 100n,
-      rewardAvailable: 50n,
+      amount: AGX_ACTION_FLOOR,
+      rewardAvailable: AGX_ACTION_FLOOR / 2n,
       contribution: 1_000n,
       requiredContribution: 10n,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
     }),
     'insufficientReward',
   )
@@ -21,7 +27,7 @@ test('evaluateMixedClaim fails when live reward is below claim amount', async ()
 
 test('evaluateMixedClaim does not treat requested amount as available', async () => {
   const { evaluateMixedClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
-  const amount = 100n
+  const amount = AGX_ACTION_FLOOR
 
   assert.equal(
     evaluateMixedClaim({
@@ -31,6 +37,7 @@ test('evaluateMixedClaim does not treat requested amount as available', async ()
       requiredContribution: 10n,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
     }),
     'insufficientContribution',
   )
@@ -42,30 +49,98 @@ test('evaluateMixedClaim does not treat requested amount as available', async ()
       requiredContribution: 10n,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
     }),
     null,
   )
 })
 
-test('evaluateRedeem blocks non-positive redeemable amount', async () => {
+test('evaluateMixedClaim blocks amounts below the 0.01 display floor', async () => {
+  const { evaluateMixedClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
+
+  assert.equal(
+    evaluateMixedClaim({
+      amount: AGX_ACTION_FLOOR - 1n,
+      rewardAvailable: AGX_ACTION_FLOOR,
+      contribution: 100n,
+      requiredContribution: 10n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
+    }),
+    'zeroAmount',
+  )
+})
+
+test('evaluateRedeem blocks amounts below the 0.01 display floor', async () => {
   const { evaluateRedeem } = await loadModule('/src/core/assets/assets-block-reasons.ts')
 
-  assert.equal(evaluateRedeem({ amount: 0n }), 'nothingToRedeem')
-  assert.equal(evaluateRedeem({ amount: 1n }), null)
+  assert.equal(evaluateRedeem({ amount: 0n, decimals: AGX_DECIMALS }), 'nothingToRedeem')
+  assert.equal(
+    evaluateRedeem({ amount: AGX_ACTION_FLOOR - 1n, decimals: AGX_DECIMALS }),
+    'nothingToRedeem',
+  )
+  assert.equal(evaluateRedeem({ amount: AGX_ACTION_FLOOR, decimals: AGX_DECIMALS }), null)
 })
 
-test('evaluateXmineClaim blocks zero pending and active warmup', async () => {
+test('evaluateXmineClaim blocks dust pending and active warmup', async () => {
   const { evaluateXmineClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
 
-  assert.equal(evaluateXmineClaim({ pending: 0n, warmupGons: 0n }), 'zeroAmount')
-  assert.equal(evaluateXmineClaim({ pending: 1n, warmupGons: 1n }), 'warmupActive')
-  assert.equal(evaluateXmineClaim({ pending: 1n, warmupGons: 0n }), null)
+  assert.equal(
+    evaluateXmineClaim({ pending: 0n, warmupGons: 0n, decimals: X_DECIMALS }),
+    'zeroAmount',
+  )
+  assert.equal(
+    evaluateXmineClaim({ pending: X_ACTION_FLOOR - 1n, warmupGons: 0n, decimals: X_DECIMALS }),
+    'zeroAmount',
+  )
+  assert.equal(
+    evaluateXmineClaim({ pending: X_ACTION_FLOOR, warmupGons: 1n, decimals: X_DECIMALS }),
+    'warmupActive',
+  )
+  assert.equal(
+    evaluateXmineClaim({ pending: X_ACTION_FLOOR, warmupGons: 0n, decimals: X_DECIMALS }),
+    null,
+  )
 })
 
-test('evaluateXmineUnstake prefers warmup block then nothing-to-redeem', async () => {
+test('evaluateXmineUnstake prefers warmup then dust miningStake', async () => {
   const { evaluateXmineUnstake } = await loadModule('/src/core/assets/assets-block-reasons.ts')
 
-  assert.equal(evaluateXmineUnstake({ activeGons: 10n, warmupGons: 1n }), 'warmupActive')
-  assert.equal(evaluateXmineUnstake({ activeGons: 0n, warmupGons: 0n }), 'nothingToRedeem')
-  assert.equal(evaluateXmineUnstake({ activeGons: 10n, warmupGons: 0n }), null)
+  assert.equal(
+    evaluateXmineUnstake({
+      activeGons: 10n,
+      warmupGons: 1n,
+      miningStake: AGX_ACTION_FLOOR,
+      stakeDecimals: AGX_DECIMALS,
+    }),
+    'warmupActive',
+  )
+  assert.equal(
+    evaluateXmineUnstake({
+      activeGons: 0n,
+      warmupGons: 0n,
+      miningStake: 0n,
+      stakeDecimals: AGX_DECIMALS,
+    }),
+    'nothingToRedeem',
+  )
+  assert.equal(
+    evaluateXmineUnstake({
+      activeGons: 10n,
+      warmupGons: 0n,
+      miningStake: AGX_ACTION_FLOOR - 1n,
+      stakeDecimals: AGX_DECIMALS,
+    }),
+    'nothingToRedeem',
+  )
+  assert.equal(
+    evaluateXmineUnstake({
+      activeGons: 10n,
+      warmupGons: 0n,
+      miningStake: AGX_ACTION_FLOOR,
+      stakeDecimals: AGX_DECIMALS,
+    }),
+    null,
+  )
 })

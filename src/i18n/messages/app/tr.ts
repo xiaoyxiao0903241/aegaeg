@@ -87,6 +87,44 @@ const app = defineMessages({
       'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın',
     bscTooltip: 'Yalnızca BSC · AEGIS X BNB Smart Chain üzerinde çalışır.',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'Stake',
+      REWARD: 'Ödül alma',
+      EXTRA_REWARD: 'Ek ödül alma',
+      CLAIM_PRINCIPAL: 'Geri al',
+      RESTAKE: 'Yeniden stake',
+    },
+    bond: {
+      PURCHASE: 'Satın al',
+      REDEEM: 'Geri al',
+      REWARD: 'Al',
+      RESTAKE: 'Yeniden stake',
+    },
+    xmine: {
+      STAKE_X: 'Stake',
+      UNSTAKE_X: 'Unstake',
+      REWARD: 'Al',
+    },
+    buffer: {
+      RELEASE_CREATED: 'Giriş',
+      PRINCIPAL_CLAIMED: 'Çekim',
+    },
+    release: {
+      entered_queue: 'Kuyruğa gir',
+      claimed: 'Al',
+      released: 'Serbest',
+    },
+    turbine: {
+      received: 'Giriş',
+      silenced: 'Kilidi aç',
+      cooled_claimed: 'Çekim',
+    },
+    termDays: ' ({n}g)',
+    termLiquid: ' (Esnek)',
+    liquid: 'Esnek',
+    periodDays: '{n} gün',
+  },
   topbar: {
     currentNetwork: 'Mevcut Ağ',
     switchToBsc: 'BSC’ye geçin',
@@ -394,7 +432,13 @@ const app = defineMessages({
           consume: 'Harcama',
         },
         burnColumns: ['Zaman', 'Yakılan AGX', 'Kazanılan katkı puanı', 'İşlem hash’i'],
-        consumeColumns: ['Zaman', 'Harcanan katkı puanı', 'İşlem hash’i'],
+        consumeColumns: [
+          'Zaman',
+          'Kullanım',
+          'Alınan miktar',
+          'Harcanan katkı puanı',
+          'İşlem hash’i',
+        ],
       },
       faq: {
         items: [
@@ -1600,8 +1644,7 @@ const app = defineMessages({
       overview: {
         title: 'Varlık özeti',
         totalValue: 'Toplam varlık değeri',
-        totalValueHint:
-          'Anapara + alınmamış getirinin piyasa değeri; çapraz ürün teklifi yoksa — gösterir',
+        totalValueHint: 'Anapara + alınmamış getirinin piyasa değeri',
         claimable: 'Talep edilebilir getiri',
         claimed: 'Toplam talep edilen',
         contribution: 'Katkı puanlarım',

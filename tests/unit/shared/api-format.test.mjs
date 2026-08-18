@@ -122,6 +122,14 @@ test('agxUsd1SpotPriceWeiFromReserves is USD1 wei per 1 AGX', async () => {
   )
 })
 
+test('formatDiscountBps signs promo; table can drop the minus', async () => {
+  const { formatDiscountBps } = await loadModule('/src/shared/presenters/format.ts')
+
+  assert.equal(formatDiscountBps(3000), '-30%')
+  assert.equal(formatDiscountBps(3000, { signed: false }), '30%')
+  assert.equal(formatDiscountBps(0), '0%')
+})
+
 test('formatTableGenesisRank hides S0 in community member table', async () => {
   const { formatTableGenesisRank } = await loadModule('/src/shared/presenters/format.ts')
 
@@ -133,22 +141,28 @@ test('formatTableGenesisRank hides S0 in community member table', async () => {
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
   const { mapTeamReferralToCompactRow } = await loadModule('/src/views/dapp/community/shared.tsx')
 
+  const registerTime = '2026-04-12T08:00:00.000Z'
   const row = mapTeamReferralToCompactRow({
     address: '0x05A1E51500000000000000000000000000000000',
-    register_time: '2026-04-12T08:00:00.000Z',
+    register_time: registerTime,
     presale_volume: '8000',
     presale_rank: 0,
     direct_referral_count: 16,
     sales_team_market: '245960',
   })
 
-  assert.equal(row[0], '2026-04-12')
+  const date = new Date(registerTime)
+  const pad = (n) => String(n).padStart(2, '0')
+  assert.equal(
+    row[0],
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`,
+  )
   assert.equal(row[1]?.props?.value, '0x05A1E51500000000000000000000000000000000')
   assert.deepEqual(row[1]?.props?.shortOptions, { head: 4, tail: 4 })
   assert.equal(row[2], '$8,000')
   assert.equal(row[3], '-')
   assert.equal(row[4], '16')
-  assert.equal(row[5], '245,960')
+  assert.equal(row[5], '$245,960')
 })
 
 test('mapRewardLogToRow uses i18n labels for status', async () => {
@@ -236,6 +250,22 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
   assert.equal(row.length, 3)
   assert.equal(row[1], '$60.00')
   assert.equal(row[2], '已支付')
+})
+
+test('mapMarketAllowancePaidLogToRow formats subsidy rate as percent', async () => {
+  const { mapMarketAllowancePaidLogToRow } = await loadModule('/src/views/dapp/rewards/shared.tsx')
+
+  const row = mapMarketAllowancePaidLogToRow({
+    paid_time: 1_700_000_000,
+    agx_amount: '2000',
+    operation_type: '质押',
+    tx_hash: null,
+    subsidy_rate: '8',
+    allowance_amount: '160',
+  })
+
+  assert.equal(row[1], '2,000.0000 AGX')
+  assert.equal(row[4], '8%')
 })
 
 test('claimableAmountValue subtracts claimed from total', async () => {

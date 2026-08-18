@@ -64,7 +64,8 @@ export function TurbineExchangeDetail({
   }))
   const [logsPage, setLogsPage] = useState(1)
   const turbineLogsQuery = useTurbineLogs(tablePageQuery(logsPage), sessionReady)
-  const turbineLogRows = turbineLogsQuery.data?.items.map(mapTurbineLogToOpsRow) ?? []
+  const turbineLogRows =
+    turbineLogsQuery.data?.items.map((item) => mapTurbineLogToOpsRow(item, t.flowOps)) ?? []
   const turbineLogsTotal = turbineLogsQuery.data?.total ?? 0
   const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading
   // 三张概览卡：空态显示 0.00 / ≈ $0.00（不显示 —）
@@ -130,9 +131,11 @@ export function TurbineExchangeDetail({
         <Table>
           <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+            emphasisColumns={[1]}
             empty={t.exchange.turbine.recordsEmpty}
             headers={[...t.assets.opsColumns]}
             isLoading={turbineLogsLoading}
+            mutedColumns={[0]}
             rows={turbineLogRows}
           />
           {shouldShowTablePagination(turbineLogsTotal) ? (

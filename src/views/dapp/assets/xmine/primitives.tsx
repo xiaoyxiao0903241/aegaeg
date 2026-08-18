@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatAssetsActionAmount, isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { Card } from '~/shared/components/card'
 import { CountdownValue } from '~/shared/components/countdown-value'
 import { MainButton } from '~/shared/components/main-button'
@@ -34,7 +34,6 @@ export type AssetsXminePositionCardProps = {
   quote: 'agx' | 'usd'
   miningStake: bigint
   pending: bigint
-  gons: bigint
   warmupGons: bigint
   warmupEndTime: bigint
   busy: boolean
@@ -60,7 +59,6 @@ export function AssetsXminePositionCard({
   quote,
   miningStake,
   pending,
-  gons,
   warmupGons,
   warmupEndTime,
   busy,
@@ -108,13 +106,13 @@ export function AssetsXminePositionCard({
       />
       <div className="grid grid-cols-2 gap-2">
         <AssetsPositionPrincipalColumn
-          amountText={`${formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX`}
-          badgeText={`${formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX`}
+          amountText={`${formatAssetsActionAmount(miningStake, GAGX_DECIMALS)} gAGX`}
+          badgeText={`${formatAssetsActionAmount(redeemableStake, GAGX_DECIMALS)} gAGX`}
           badgeVisible
           label={stakedCaption}
         />
         <AssetsPositionYieldColumn
-          amountText={`${formatTokenAmount(pending, X_DECIMALS, 2)} X`}
+          amountText={`${formatAssetsActionAmount(pending, X_DECIMALS)} X`}
           badge={usdApproxBadge}
           yieldLabel={outputCaption}
         />
@@ -132,8 +130,8 @@ export function AssetsXminePositionCard({
       ) : (
         <AssetsPositionRowActions
           busy={busy}
-          canClaim={pending > ZERO_BI && !inWarmup}
-          canRedeem={gons > ZERO_BI && !inWarmup}
+          canClaim={isAssetsActionableAmount(pending, X_DECIMALS) && !inWarmup}
+          canRedeem={isAssetsActionableAmount(miningStake, GAGX_DECIMALS) && !inWarmup}
           claimLabel={claimLabel}
           locked={locked}
           onClaim={onClaim}

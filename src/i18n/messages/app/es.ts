@@ -90,6 +90,44 @@ const app = defineMessages({
       'Invita a socios a co-construir y comparte el valor de crecimiento del ecosistema y las recompensas Génesis.',
     bscTooltip: 'Solo BSC · AEGIS X funciona en BNB Smart Chain.',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'Stake',
+      REWARD: 'Reclamo de recompensa',
+      EXTRA_REWARD: 'Reclamo extra',
+      CLAIM_PRINCIPAL: 'Rescate',
+      RESTAKE: 'Reinvertir',
+    },
+    bond: {
+      PURCHASE: 'Compra',
+      REDEEM: 'Rescate',
+      REWARD: 'Reclamar',
+      RESTAKE: 'Reinvertir',
+    },
+    xmine: {
+      STAKE_X: 'Stake',
+      UNSTAKE_X: 'Retirar stake',
+      REWARD: 'Reclamar',
+    },
+    buffer: {
+      RELEASE_CREATED: 'Entrada',
+      PRINCIPAL_CLAIMED: 'Retiro',
+    },
+    release: {
+      entered_queue: 'Entrar en cola',
+      claimed: 'Reclamar',
+      released: 'Liberado',
+    },
+    turbine: {
+      received: 'Entrada',
+      silenced: 'Desbloquear',
+      cooled_claimed: 'Retiro',
+    },
+    termDays: ' ({n}d)',
+    termLiquid: ' (Flexible)',
+    liquid: 'Flexible',
+    periodDays: '{n} días',
+  },
   topbar: {
     currentNetwork: 'Red actual',
     switchToBsc: 'Cambiar a BSC',
@@ -407,7 +445,13 @@ const app = defineMessages({
           'Puntos de contribución obtenidos',
           'Hash de transacción',
         ],
-        consumeColumns: ['Hora', 'Puntos de contribución consumidos', 'Hash de transacción'],
+        consumeColumns: [
+          'Hora',
+          'Uso',
+          'Cantidad reclamada',
+          'Puntos de contribución consumidos',
+          'Hash de transacción',
+        ],
       },
       faq: {
         items: [
@@ -1609,7 +1653,7 @@ const app = defineMessages({
         title: 'Resumen de activos',
         totalValue: 'Valor total de activos',
         totalValueHint:
-          'Valoración a precio de mercado · incluye principal y rendimiento no reclamado; muestra — sin cotización cruzada entre productos',
+          'Valoración a precio de mercado · incluye principal y rendimiento no reclamado',
         claimable: 'Rendimiento reclamable',
         claimed: 'Reclamado acumulado',
         contribution: 'Mis puntos de contribución',

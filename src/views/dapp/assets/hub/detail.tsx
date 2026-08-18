@@ -119,16 +119,16 @@ export function AssetsHubDetail() {
       ),
       metrics: (
         <>
+          <AssetsHubMetricPlain
+            approx={values.holdingsTotalApprox}
+            label={overview.holdingsTotal}
+            value={values.holdingsTotal}
+          />
           <AssetsHubMetricWithIcon
             approx={values.holdingsReleasedApprox}
             icon={tokenCarouselIcons.agxIcon}
             label={overview.holdingsReleased}
             value={values.holdingsReleased}
-          />
-          <AssetsHubMetricPlain
-            approx={values.holdingsTotalApprox}
-            label={overview.holdingsTotal}
-            value={values.holdingsTotal}
           />
         </>
       ),

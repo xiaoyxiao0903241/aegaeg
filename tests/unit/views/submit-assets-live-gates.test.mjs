@@ -148,7 +148,7 @@ test('submitXmineClaim fail-closed while warmup gons remain', async () => {
   const { submitXmineClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(xmineReadClient({ pending: 5n, warmupGons: 1n }))
+  const session = sessionWithReadClient(xmineReadClient({ pending: 10n ** 16n, warmupGons: 1n }))
   await assert.rejects(
     () => submitXmineClaim({ session }),
     (err) => err === ASSETS_BLOCKED.warmupActive,

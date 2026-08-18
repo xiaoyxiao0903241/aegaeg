@@ -103,6 +103,8 @@ export function BondDetail({ kind }: { kind: BondKind }) {
             colWidths={['8.75rem', '4.375rem', '5.625rem', '4.375rem', '6.875rem', '1fr']}
             empty={recordsEmpty}
             headers={[...t.staking.aside.bondRecordColumns]}
+            mutedColumns={[0]}
+            positiveColumns={[3]}
             rows={[...(recordRows ?? [])]}
           />
         </Table>

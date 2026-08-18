@@ -29,8 +29,20 @@ const cellTv = tv({
       true: 'font-bold text-foreground',
       false: '',
     },
+    muted: {
+      true: 'text-muted-foreground tabular-nums',
+      false: '',
+    },
     positive: {
       true: 'font-bold text-success group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
+      false: '',
+    },
+    primary: {
+      true: 'font-semibold text-primary',
+      false: '',
+    },
+    end: {
+      true: 'text-right',
       false: '',
     },
   },
@@ -38,7 +50,10 @@ const cellTv = tv({
     last: false,
     link: false,
     emphasis: false,
+    muted: false,
     positive: false,
+    primary: false,
+    end: false,
   },
 })
 
@@ -47,12 +62,14 @@ const cellTextTv = tv({
   variants: {
     link: { true: 'text-primary', false: '' },
     emphasis: { true: 'font-bold', false: '' },
+    muted: { true: 'text-muted-foreground tabular-nums', false: '' },
     positive: {
       true: 'font-bold text-success group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
       false: '',
     },
+    primary: { true: 'font-semibold text-primary', false: '' },
   },
-  defaultVariants: { link: false, emphasis: false, positive: false },
+  defaultVariants: { link: false, emphasis: false, muted: false, positive: false, primary: false },
 })
 
 const gridRoot = tv({
@@ -75,11 +92,14 @@ type CellProps = {
   children?: ReactNode
   className?: string
   emphasis?: boolean
+  end?: boolean
   /** 列头：弱字阶（`as="th"` 时默认）。 */
   head?: boolean
   last?: boolean
   link?: boolean
+  muted?: boolean
   positive?: boolean
+  primary?: boolean
   status?: boolean
 }
 
@@ -90,10 +110,13 @@ function Cell({
   children,
   className,
   emphasis = false,
+  end = false,
   head = false,
   last = false,
   link = false,
+  muted = false,
   positive = false,
+  primary = false,
   status = false,
 }: CellProps) {
   const isHead = as === 'th' || head
@@ -109,7 +132,10 @@ function Cell({
           last,
           link: toneOnCell && link,
           emphasis: toneOnCell && emphasis,
+          muted: toneOnCell && muted,
           positive: toneOnCell && positive,
+          primary: toneOnCell && primary,
+          end,
         }),
         className,
       )}
@@ -127,7 +153,9 @@ function Cell({
           className={cellTextTv({
             link,
             emphasis,
+            muted,
             positive,
+            primary,
             class: accent ? 'text-coral' : undefined,
           })}
         >
@@ -148,12 +176,18 @@ type BodyProps = {
   empty?: string
   emptyBody?: string
   emphasisColumns?: number[]
+  /** 右对齐（奖金 / 比例等）。 */
+  endColumns?: number[]
   headers: string[]
   highlightedRows?: number[]
   isLoading?: boolean
   linkColumns?: number[]
   loadingRowCount?: number
+  /** 弱时间 / 次级数字：`muted-foreground` + 等宽数字。 */
+  mutedColumns?: number[]
   positiveColumns?: number[]
+  /** 珊瑚强调（非链接）：`primary`。 */
+  primaryColumns?: number[]
   rows: ReactNode[][]
   statusColumns?: number[]
 }
@@ -175,20 +209,26 @@ function Body({
   empty,
   emptyBody,
   emphasisColumns = [],
+  endColumns = [],
   headers,
   highlightedRows = [],
   isLoading = false,
   linkColumns = [],
   loadingRowCount = 3,
+  mutedColumns = [],
   positiveColumns = [],
+  primaryColumns = [],
   rows,
   statusColumns = [],
 }: BodyProps) {
   const showEmpty = !isLoading && rows.length === 0
   const highlightedRowSet = new Set(highlightedRows)
   const emphasisColumnSet = new Set(emphasisColumns)
+  const endColumnSet = new Set(endColumns)
   const linkColumnSet = new Set(linkColumns)
+  const mutedColumnSet = new Set(mutedColumns)
   const positiveColumnSet = new Set(positiveColumns)
+  const primaryColumnSet = new Set(primaryColumns)
   const statusColumnSet = new Set(statusColumns)
 
   if (showEmpty) {
@@ -210,8 +250,8 @@ function Body({
         ) : null}
         <thead>
           <tr>
-            {headers.map((header) => (
-              <Cell as="th" head key={header}>
+            {headers.map((header, index) => (
+              <Cell as="th" end={endColumnSet.has(index)} head key={header}>
                 {header}
               </Cell>
             ))}
@@ -235,10 +275,13 @@ function Body({
                     <Cell
                       accent={highlightedRowSet.has(rowIndex) && index === 0}
                       emphasis={emphasisColumnSet.has(index)}
+                      end={endColumnSet.has(index)}
                       key={`${rowIndex}-${index}`}
                       last={rowIndex === rows.length - 1}
                       link={linkColumnSet.has(index)}
+                      muted={mutedColumnSet.has(index)}
                       positive={positiveColumnSet.has(index)}
+                      primary={primaryColumnSet.has(index)}
                       status={statusColumnSet.has(index)}
                     >
                       {cell}

@@ -92,6 +92,44 @@ const app = defineMessages({
       'Undang mitra untuk ikut pembangunan bersama, bagikan nilai pertumbuhan ekosistem dan hadiah Genesis.',
     bscTooltip: 'Hanya BSC · AEGIS X berjalan di BNB Smart Chain.',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'Stake',
+      REWARD: 'Klaim imbalan',
+      EXTRA_REWARD: 'Klaim imbalan ekstra',
+      CLAIM_PRINCIPAL: 'Tarik pokok',
+      RESTAKE: 'Stake ulang',
+    },
+    bond: {
+      PURCHASE: 'Beli',
+      REDEEM: 'Tarik',
+      REWARD: 'Klaim',
+      RESTAKE: 'Stake ulang',
+    },
+    xmine: {
+      STAKE_X: 'Stake',
+      UNSTAKE_X: 'Unstake',
+      REWARD: 'Klaim',
+    },
+    buffer: {
+      RELEASE_CREATED: 'Masuk',
+      PRINCIPAL_CLAIMED: 'Tarik',
+    },
+    release: {
+      entered_queue: 'Masuk antrean',
+      claimed: 'Klaim',
+      released: 'Dirilis',
+    },
+    turbine: {
+      received: 'Masuk',
+      silenced: 'Buka kunci',
+      cooled_claimed: 'Tarik',
+    },
+    termDays: ' ({n}h)',
+    termLiquid: ' (Fleksibel)',
+    liquid: 'Fleksibel',
+    periodDays: '{n} hari',
+  },
   topbar: {
     currentNetwork: 'Jaringan saat ini',
     switchToBsc: 'Beralih ke BSC',
@@ -403,7 +441,13 @@ const app = defineMessages({
           consume: 'Konsumsi',
         },
         burnColumns: ['Waktu', 'AGX dibakar', 'Poin kontribusi diperoleh', 'Hash transaksi'],
-        consumeColumns: ['Waktu', 'Poin kontribusi dikonsumsi', 'Hash transaksi'],
+        consumeColumns: [
+          'Waktu',
+          'Penggunaan',
+          'Jumlah klaim',
+          'Poin kontribusi dikonsumsi',
+          'Hash transaksi',
+        ],
       },
       faq: {
         items: [
@@ -1606,8 +1650,7 @@ const app = defineMessages({
       overview: {
         title: 'Ikhtisar aset',
         totalValue: 'Total nilai aset',
-        totalValueHint:
-          'Mark-to-market pokok + yield belum diklaim; menampilkan — jika belum ada kuotasi lintas produk',
+        totalValueHint: 'Mark-to-market pokok + yield belum diklaim',
         claimable: 'Hasil yang dapat diklaim',
         claimed: 'Total sudah diklaim',
         contribution: 'Poin kontribusi saya',

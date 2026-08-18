@@ -4,6 +4,8 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 const pool = '0x1111111111111111111111111111111111111111'
+const GAGX_DECIMALS = 9
+const GAGX_ACTION_FLOOR = 10n ** 7n
 
 test('claimOutputAmountForKind picks reward vs boost', async () => {
   const { claimOutputAmountForKind } = await loadModule('/src/core/assets/claim-output.ts')
@@ -14,10 +16,12 @@ test('claimOutputAmountForKind picks reward vs boost', async () => {
   assert.equal(claimOutputAmountForKind({ kind: 'boost', blockReward: 10n, extraInterest: 3n }), 3n)
 })
 
-test('canSelectClaimOutput requires positive amount', async () => {
+test('canSelectClaimOutput requires amount at the 0.01 display floor', async () => {
   const { canSelectClaimOutput } = await loadModule('/src/core/assets/claim-output.ts')
-  assert.equal(canSelectClaimOutput(0n), false)
-  assert.equal(canSelectClaimOutput(1n), true)
+  assert.equal(canSelectClaimOutput(0n, GAGX_DECIMALS), false)
+  assert.equal(canSelectClaimOutput(1n, GAGX_DECIMALS), false)
+  assert.equal(canSelectClaimOutput(GAGX_ACTION_FLOOR - 1n, GAGX_DECIMALS), false)
+  assert.equal(canSelectClaimOutput(GAGX_ACTION_FLOOR, GAGX_DECIMALS), true)
 })
 
 test('claimContribRequiredOrZero treats missing as 0', async () => {
@@ -33,21 +37,23 @@ test('buildStakeMixedClaimTarget: liquid reward only; boost rejected', async () 
     buildStakeMixedClaimTarget({
       stakeKind: 'liquid',
       outputKind: 'reward',
-      blockReward: 5n,
-      extraInterest: 9n,
+      blockReward: GAGX_ACTION_FLOOR * 5n,
+      extraInterest: GAGX_ACTION_FLOOR * 9n,
       pool,
       stakeIndex: null,
+      decimals: GAGX_DECIMALS,
     }),
-    { source: 'liquid', amount: 5n },
+    { source: 'liquid', amount: GAGX_ACTION_FLOOR * 5n },
   )
   assert.equal(
     buildStakeMixedClaimTarget({
       stakeKind: 'liquid',
       outputKind: 'boost',
-      blockReward: 5n,
-      extraInterest: 9n,
+      blockReward: GAGX_ACTION_FLOOR * 5n,
+      extraInterest: GAGX_ACTION_FLOOR * 9n,
       pool,
       stakeIndex: null,
+      decimals: GAGX_DECIMALS,
     }),
     null,
   )
@@ -59,34 +65,36 @@ test('buildStakeMixedClaimTarget: locked maps reward/boost to write entry', asyn
     buildStakeMixedClaimTarget({
       stakeKind: 'locked',
       outputKind: 'reward',
-      blockReward: 8n,
-      extraInterest: 2n,
+      blockReward: GAGX_ACTION_FLOOR * 8n,
+      extraInterest: GAGX_ACTION_FLOOR * 2n,
       pool,
       stakeIndex: 3,
+      decimals: GAGX_DECIMALS,
     }),
     {
       source: 'locked',
       pool,
       stakeIndex: 3,
-      amount: 8n,
-      entries: [{ amount: 8n, extra: false }],
+      amount: GAGX_ACTION_FLOOR * 8n,
+      entries: [{ amount: GAGX_ACTION_FLOOR * 8n, extra: false }],
     },
   )
   assert.deepEqual(
     buildStakeMixedClaimTarget({
       stakeKind: 'locked',
       outputKind: 'boost',
-      blockReward: 8n,
-      extraInterest: 2n,
+      blockReward: GAGX_ACTION_FLOOR * 8n,
+      extraInterest: GAGX_ACTION_FLOOR * 2n,
       pool,
       stakeIndex: 3,
+      decimals: GAGX_DECIMALS,
     }),
     {
       source: 'locked',
       pool,
       stakeIndex: 3,
-      amount: 2n,
-      entries: [{ amount: 2n, extra: true }],
+      amount: GAGX_ACTION_FLOOR * 2n,
+      entries: [{ amount: GAGX_ACTION_FLOOR * 2n, extra: true }],
     },
   )
 })
@@ -101,6 +109,19 @@ test('buildStakeMixedClaimTarget fail-closed on zero / missing stakeIndex', asyn
       extraInterest: 0n,
       pool,
       stakeIndex: 0,
+      decimals: GAGX_DECIMALS,
+    }),
+    null,
+  )
+  assert.equal(
+    buildStakeMixedClaimTarget({
+      stakeKind: 'locked',
+      outputKind: 'reward',
+      blockReward: GAGX_ACTION_FLOOR - 1n,
+      extraInterest: 0n,
+      pool,
+      stakeIndex: 0,
+      decimals: GAGX_DECIMALS,
     }),
     null,
   )
@@ -112,6 +133,7 @@ test('buildStakeMixedClaimTarget fail-closed on zero / missing stakeIndex', asyn
       extraInterest: 0n,
       pool,
       stakeIndex: null,
+      decimals: GAGX_DECIMALS,
     }),
     null,
   )
@@ -127,7 +149,8 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
       isPending: false,
       contributionOk: true,
       plansOk: true,
-      claimable: 1n,
+      claimable: GAGX_ACTION_FLOOR,
+      decimals: GAGX_DECIMALS,
     }),
     false,
   )
@@ -139,7 +162,8 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
       isPending: false,
       contributionOk: false,
       plansOk: true,
-      claimable: 1n,
+      claimable: GAGX_ACTION_FLOOR,
+      decimals: GAGX_DECIMALS,
     }),
     false,
   )
@@ -152,6 +176,20 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
       contributionOk: true,
       plansOk: true,
       claimable: 1n,
+      decimals: GAGX_DECIMALS,
+    }),
+    false,
+  )
+  assert.equal(
+    evaluateAssetsClaimConfirmGate({
+      walletReady: true,
+      writeReady: true,
+      isLocked: false,
+      isPending: false,
+      contributionOk: true,
+      plansOk: true,
+      claimable: GAGX_ACTION_FLOOR,
+      decimals: GAGX_DECIMALS,
     }),
     true,
   )
@@ -168,6 +206,7 @@ test('evaluateAssetsClaimWritePhase uses assets money blocks (not UI claimable a
       contributionOk: true,
       plansOk: true,
       claimable: 0n,
+      decimals: GAGX_DECIMALS,
     }),
     'blocked',
   )
@@ -178,7 +217,8 @@ test('evaluateAssetsClaimWritePhase uses assets money blocks (not UI claimable a
       isSubmitting: false,
       contributionOk: false,
       plansOk: true,
-      claimable: 1n,
+      claimable: GAGX_ACTION_FLOOR,
+      decimals: GAGX_DECIMALS,
     }),
     'blocked',
   )
@@ -189,7 +229,8 @@ test('evaluateAssetsClaimWritePhase uses assets money blocks (not UI claimable a
       isSubmitting: false,
       contributionOk: true,
       plansOk: false,
-      claimable: 1n,
+      claimable: GAGX_ACTION_FLOOR,
+      decimals: GAGX_DECIMALS,
     }),
     'blocked',
   )
@@ -200,7 +241,20 @@ test('evaluateAssetsClaimWritePhase uses assets money blocks (not UI claimable a
       isSubmitting: false,
       contributionOk: true,
       plansOk: true,
-      claimable: 1n,
+      claimable: GAGX_ACTION_FLOOR - 1n,
+      decimals: GAGX_DECIMALS,
+    }),
+    'blocked',
+  )
+  assert.equal(
+    evaluateAssetsClaimWritePhase({
+      walletReady: true,
+      writeReady: true,
+      isSubmitting: false,
+      contributionOk: true,
+      plansOk: true,
+      claimable: GAGX_ACTION_FLOOR,
+      decimals: GAGX_DECIMALS,
     }),
     'ready',
   )

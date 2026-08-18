@@ -209,10 +209,11 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
 
 /** X 挖矿操作记录：拉取挖矿日志并映射为表格行 */
 export function useAssetsXmineOpsRows() {
+  const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
   const logs = useX0MiningLogs({}, sessionReady)
   return {
-    rows: logs.data?.items.map(mapX0MiningLogToOpsRow) ?? [],
+    rows: logs.data?.items.map((item) => mapX0MiningLogToOpsRow(item, t.flowOps)) ?? [],
     isLoading: sessionReady && logs.isLoading,
   }
 }

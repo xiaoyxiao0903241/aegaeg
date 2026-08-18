@@ -208,13 +208,13 @@ export function useLucky() {
   const resultsSummary = interpolate(lucky.resultsSummary, { count: winnersTotal })
   const verifyChrome: ReactNode = (
     <span className="inline-flex items-center gap-1">
-      <Text as="span" className="text-primary" variant="copy">
+      <Text as="span" tone="primary" variant="copy">
         {lucky.verifyHash}
       </Text>
       {drawHash ? (
-        <ExplorerLink className="text-primary underline" kind="tx" showIcon value={drawHash} />
+        <ExplorerLink kind="tx" showIcon value={drawHash} />
       ) : (
-        <Text as="span" className="text-primary" variant="copy">
+        <Text as="span" tone="primary" variant="copy">
           {NON_NUMERIC_EMPTY}
         </Text>
       )}

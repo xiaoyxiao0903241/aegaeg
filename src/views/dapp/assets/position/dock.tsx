@@ -9,7 +9,11 @@ import {
   AssetsPositionStakeRow,
 } from '~/views/dapp/assets/position/primitives'
 import { type AssetsProduct, usePositionDock } from '~/views/dapp/assets/position/use-position'
-import { AssetsPositionEmptyCard, AssetsQuoteToolbar } from '~/views/dapp/assets/primitives'
+import {
+  AssetsDockScrollClearance,
+  AssetsPositionEmptyCard,
+  AssetsQuoteToolbar,
+} from '~/views/dapp/assets/primitives'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
@@ -32,7 +36,7 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
         subtitle={w.copy.intro}
         title={w.copy.title}
       >
-        <DockStack fill>
+        <DockStack fill={!w.walletReady || w.isEmpty}>
           <AssetsQuoteToolbar
             onQuoteChange={w.setQuote}
             onSortChange={w.setSort}
@@ -95,6 +99,7 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
               total={w.totalRows}
             />
           ) : null}
+          <AssetsDockScrollClearance />
         </DockStack>
       </TabHeader>
 

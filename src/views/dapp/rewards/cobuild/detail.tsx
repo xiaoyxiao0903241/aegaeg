@@ -137,10 +137,12 @@ export function CobuildDetail() {
           </Table.Header>
           <Table.Body
             colWidths={['12.0625rem', '3.9375rem', '9.1875rem', '6.125rem', '1fr']}
+            emphasisColumns={[1, 2]}
             empty={
               recordsTab === 'cobuild' ? cobuild.emptyRecordsCobuild : cobuild.emptyRecordsEqualize
             }
             headers={[...cobuild.recordsColumns]}
+            mutedColumns={[0, 4]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
@@ -161,8 +163,9 @@ export function CobuildDetail() {
         <Table>
           <Table.Body
             colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
-            emphasisColumns={[2]}
+            emphasisColumns={[3]}
             empty={cobuild.emptyDirects}
+            mutedColumns={[0]}
             headers={[...cobuild.directsColumns]}
             isLoading={directsLoading}
             rows={directRows}

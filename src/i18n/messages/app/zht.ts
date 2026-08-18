@@ -86,6 +86,44 @@ const app = defineMessages({
     communityTooltip: '邀請夥伴參與共建，共享生態成長價值與創世獎勵',
     bscTooltip: '僅 BSC · AEGIS X 運行在 BNB Smart Chain。',
   },
+  flowOps: {
+    stake: {
+      STAKE: '質押',
+      REWARD: '獎勵領取',
+      EXTRA_REWARD: '額外獎勵領取',
+      CLAIM_PRINCIPAL: '贖回',
+      RESTAKE: '復投',
+    },
+    bond: {
+      PURCHASE: '購買',
+      REDEEM: '贖回',
+      REWARD: '領取',
+      RESTAKE: '復投',
+    },
+    xmine: {
+      STAKE_X: '質押',
+      UNSTAKE_X: '解押',
+      REWARD: '領取',
+    },
+    buffer: {
+      RELEASE_CREATED: '進入',
+      PRINCIPAL_CLAIMED: '提取',
+    },
+    release: {
+      entered_queue: '進入隊列',
+      claimed: '領取',
+      released: '已釋放',
+    },
+    turbine: {
+      received: '進入',
+      silenced: '解鎖',
+      cooled_claimed: '提取',
+    },
+    termDays: '（{n}天）',
+    termLiquid: '（活期）',
+    liquid: '活期',
+    periodDays: '{n} 天',
+  },
   topbar: {
     currentNetwork: '當前網絡',
     switchToBsc: '請切換 BSC',
@@ -387,7 +425,7 @@ const app = defineMessages({
           consume: '消耗',
         },
         burnColumns: ['時間', '銷燬 AGX', '獲得貢獻點數', '交易哈希'],
-        consumeColumns: ['時間', '消耗貢獻點數', '交易哈希'],
+        consumeColumns: ['時間', '用途', '領取數量', '消耗貢獻點數', '交易哈希'],
       },
       faq: {
         items: [
@@ -1474,13 +1512,13 @@ const app = defineMessages({
       overview: {
         title: '資產總覽',
         totalValue: '總資產價值',
-        totalValueHint: '按當前市場價格估值 · 含持倉本金與未提取收益；暫無跨產品報價時顯示 —',
+        totalValueHint: '按當前市場價格估值 · 含持倉本金與未提取收益',
         claimable: '可領取收益',
         claimed: '累計已領取',
         contribution: '我的貢獻點數',
         contributionHint: '領取收益按 {ratio} 消耗',
         holdingsTitle: '持倉',
-        holdingsReleased: '可贖回已釋放',
+        holdingsReleased: '已釋放',
         holdingsTotal: '總持倉',
         bufferTitle: '緩衝池',
         bufferHint:

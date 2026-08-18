@@ -44,7 +44,8 @@ export function QueueDetail() {
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const apiSummaryQuery = useReleasePoolSummary(sessionReady)
   const queueLogsQuery = useReleasePoolLogs(tablePageQuery(recordsPage), sessionReady)
-  const queueLogRows = queueLogsQuery.data?.items.map(mapReleasePoolLogToRow) ?? []
+  const queueLogRows =
+    queueLogsQuery.data?.items.map((item) => mapReleasePoolLogToRow(item, t.flowOps)) ?? []
   const queueLogsTotal = queueLogsQuery.data?.total ?? 0
   const queueLogsLoading = sessionReady && queueLogsQuery.isLoading
   const releasing = queueQuery.data?.totalReleasing ?? ZERO_BI
@@ -164,9 +165,11 @@ export function QueueDetail() {
         <Table>
           <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+            emphasisColumns={[1]}
             empty={t.release.recordsEmpty}
             headers={[...t.release.recordColumns]}
             isLoading={queueLogsLoading}
+            mutedColumns={[0]}
             rows={queueLogRows}
           />
           {shouldShowTablePagination(queueLogsTotal) ? (

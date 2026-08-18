@@ -154,7 +154,12 @@ export function StakingHubDetail() {
           }}
         />
         <Table>
-          <Table.Body headers={[...table.columns]} positiveColumns={[3]} rows={periodRows} />
+          <Table.Body
+            headers={[...table.columns]}
+            positiveColumns={[2]}
+            primaryColumns={[3]}
+            rows={periodRows}
+          />
         </Table>
       </Section>
 

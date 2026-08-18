@@ -89,6 +89,44 @@ const app = defineMessages({
       'Invite partners to co-build and share ecosystem growth value and Genesis rewards.',
     bscTooltip: 'BSC only · AEGIS X runs on BNB Smart Chain.',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'Stake',
+      REWARD: 'Reward claim',
+      EXTRA_REWARD: 'Extra reward claim',
+      CLAIM_PRINCIPAL: 'Redeem',
+      RESTAKE: 'Restake',
+    },
+    bond: {
+      PURCHASE: 'Purchase',
+      REDEEM: 'Redeem',
+      REWARD: 'Claim',
+      RESTAKE: 'Restake',
+    },
+    xmine: {
+      STAKE_X: 'Stake',
+      UNSTAKE_X: 'Unstake',
+      REWARD: 'Claim',
+    },
+    buffer: {
+      RELEASE_CREATED: 'Enter',
+      PRINCIPAL_CLAIMED: 'Withdraw',
+    },
+    release: {
+      entered_queue: 'Enter queue',
+      claimed: 'Claim',
+      released: 'Released',
+    },
+    turbine: {
+      received: 'Enter',
+      silenced: 'Unlock',
+      cooled_claimed: 'Withdraw',
+    },
+    termDays: ' ({n}d)',
+    termLiquid: ' (Flexible)',
+    liquid: 'Flexible',
+    periodDays: '{n} days',
+  },
   topbar: {
     currentNetwork: 'Current network',
     switchToBsc: 'Switch to BSC',
@@ -396,7 +434,13 @@ const app = defineMessages({
           consume: 'Consume',
         },
         burnColumns: ['Time', 'Burned AGX', 'Contribution earned', 'Transaction hash'],
-        consumeColumns: ['Time', 'Contribution consumed', 'Transaction hash'],
+        consumeColumns: [
+          'Time',
+          'Usage',
+          'Claim amount',
+          'Contribution consumed',
+          'Transaction hash',
+        ],
       },
       faq: {
         items: [
@@ -1550,14 +1594,13 @@ const app = defineMessages({
       overview: {
         title: 'Assets overview',
         totalValue: 'Total value',
-        totalValueHint:
-          'Mark-to-market of principal + unclaimed yield; shows — without a cross-product quote',
+        totalValueHint: 'Mark-to-market of principal + unclaimed yield',
         claimable: 'Claimable yield',
         claimed: 'Claimed total',
         contribution: 'Contribution points',
         contributionHint: 'Claims consume {ratio} contribution',
         holdingsTitle: 'Holdings',
-        holdingsReleased: 'Redeemable released',
+        holdingsReleased: 'Released',
         holdingsTotal: 'Total holdings',
         bufferTitle: 'Buffer pool',
         bufferHint:

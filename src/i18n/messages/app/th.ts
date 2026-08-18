@@ -86,6 +86,44 @@ const app = defineMessages({
       'เชิญพาร์ทเนอร์ร่วมสร้าง และแบ่งปันมูลค่าการเติบโตของระบบนิเวศกับรางวัล Genesis',
     bscTooltip: 'BSC เท่านั้น · AEGIS X ทำงานบน BNB Smart Chain',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'สเตก',
+      REWARD: 'รับรางวัล',
+      EXTRA_REWARD: 'รับรางวัลเพิ่ม',
+      CLAIM_PRINCIPAL: 'ไถ่ถอน',
+      RESTAKE: 'สเตกซ้ำ',
+    },
+    bond: {
+      PURCHASE: 'ซื้อ',
+      REDEEM: 'ไถ่ถอน',
+      REWARD: 'รับ',
+      RESTAKE: 'สเตกซ้ำ',
+    },
+    xmine: {
+      STAKE_X: 'สเตก',
+      UNSTAKE_X: 'ยกเลิกสเตก',
+      REWARD: 'รับ',
+    },
+    buffer: {
+      RELEASE_CREATED: 'เข้า',
+      PRINCIPAL_CLAIMED: 'ถอน',
+    },
+    release: {
+      entered_queue: 'เข้าคิว',
+      claimed: 'รับ',
+      released: 'ปล่อยแล้ว',
+    },
+    turbine: {
+      received: 'เข้า',
+      silenced: 'ปลดล็อก',
+      cooled_claimed: 'ถอน',
+    },
+    termDays: ' ({n} วัน)',
+    termLiquid: ' (ยืดหยุ่น)',
+    liquid: 'ยืดหยุ่น',
+    periodDays: '{n} วัน',
+  },
   topbar: {
     currentNetwork: 'เครือข่ายปัจจุบัน',
     switchToBsc: 'โปรดสลับเป็น BSC',
@@ -395,7 +433,13 @@ const app = defineMessages({
           consume: 'ใช้ไป',
         },
         burnColumns: ['เวลา', 'AGX ที่เบิร์น', 'คะแนนการมีส่วนร่วมที่ได้รับ', 'แฮชธุรกรรม'],
-        consumeColumns: ['เวลา', 'คะแนนการมีส่วนร่วมที่ใช้ไป', 'แฮชธุรกรรม'],
+        consumeColumns: [
+          'เวลา',
+          'การใช้',
+          'จำนวนที่รับ',
+          'คะแนนการมีส่วนร่วมที่ใช้ไป',
+          'แฮชธุรกรรม',
+        ],
       },
       faq: {
         items: [
@@ -1550,8 +1594,7 @@ const app = defineMessages({
       overview: {
         title: 'ภาพรวมสินทรัพย์',
         totalValue: 'มูลค่ารวม',
-        totalValueHint:
-          'มูลค่าตลาดของเงินต้น + ผลตอบแทนที่ยังไม่รับ; แสดง — เมื่อยังไม่มีใบเสนอข้ามผลิตภัณฑ์',
+        totalValueHint: 'มูลค่าตลาดของเงินต้น + ผลตอบแทนที่ยังไม่รับ',
         claimable: 'ผลตอบแทนที่รับได้',
         claimed: 'รับสะสมแล้ว',
         contribution: 'คะแนนการมีส่วนร่วมของฉัน',

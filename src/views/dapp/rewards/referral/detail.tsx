@@ -121,6 +121,7 @@ export function ReferralDetail() {
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
             empty={referral.emptyRecords}
+            mutedColumns={[0, 3]}
             headers={[...referral.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
@@ -144,8 +145,9 @@ export function ReferralDetail() {
         <Table>
           <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
-            emphasisColumns={[2]}
+            emphasisColumns={[3]}
             empty={referral.emptyReferrals}
+            mutedColumns={[0]}
             headers={[...referral.referralsColumns]}
             isLoading={referralsLoading}
             rows={referralRows}

@@ -1,6 +1,6 @@
 import { dappAssets } from '~/shared/assets/dapp'
 import { Icon } from '~/shared/components/icon'
-import { Text } from '~/shared/components/text'
+import { Text, type TextTone } from '~/shared/components/text'
 import { bscscanAddress, bscscanTx } from '~/shared/config/explorer'
 import { cn } from '~/shared/lib/utils'
 import { formatShortAddress } from '~/shared/presenters/format'
@@ -8,7 +8,8 @@ import { formatShortAddress } from '~/shared/presenters/format'
 type ExplorerLinkKind = 'address' | 'tx'
 
 /**
- * 链上地址 / 交易哈希：打开 BscScan；默认无下划线，hover 显示下划线。
+ * 链上地址 / 交易哈希：打开 BscScan；默认 primary，无下划线，hover 显示下划线。
+ * Hex 用等宽，避免同一列宽窄不一。
  */
 export function ExplorerLink({
   value,
@@ -16,6 +17,7 @@ export function ExplorerLink({
   showIcon = false,
   className,
   shortOptions,
+  tone = 'primary',
 }: {
   value: string
   kind?: ExplorerLinkKind
@@ -23,6 +25,7 @@ export function ExplorerLink({
   showIcon?: boolean
   className?: string
   shortOptions?: { head?: number; tail?: number }
+  tone?: Extract<TextTone, 'primary' | 'muted-foreground'>
 }) {
   const href = kind === 'tx' ? bscscanTx(value) : bscscanAddress(value)
   const label = formatShortAddress(value, shortOptions)
@@ -31,12 +34,13 @@ export function ExplorerLink({
     <Text
       as="a"
       className={cn(
-        'inline-flex items-center gap-1 tabular-nums no-underline hover:underline',
+        'inline-flex items-center gap-1 font-mono no-underline hover:underline',
         className,
       )}
       href={href}
       rel="noopener noreferrer"
       target="_blank"
+      tone={tone}
       variant="copy"
     >
       {label}

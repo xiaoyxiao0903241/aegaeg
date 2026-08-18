@@ -3,7 +3,11 @@ import { toast } from 'sonner'
 
 import { buildStakeMixedClaimTarget, type ClaimOutputKind } from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  isAssetsActionableAmount,
+} from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
@@ -287,6 +291,7 @@ export function usePositionDock(product: AssetsProduct) {
         extraInterest: row.extraInterest,
         pool: row.pool,
         stakeIndex: row.stakeIndex,
+        decimals: GAGX_DECIMALS,
       })
       if (!target) return
       openMixedClaim({ capturedAddress: address, label: periodLabel, target })
@@ -306,6 +311,7 @@ export function usePositionDock(product: AssetsProduct) {
       extraInterest: row.extraInterest,
       pool: row.pool,
       stakeIndex: row.stakeIndex,
+      decimals: GAGX_DECIMALS,
     })
     if (!built) return
     openMixedClaim({
@@ -317,6 +323,7 @@ export function usePositionDock(product: AssetsProduct) {
 
   function openBondClaim(row: AssetsBondRow) {
     if (!address) return
+    if (!isAssetsActionableAmount(row.profit, GAGX_DECIMALS)) return
     const periodLabel = formatPeriodLabel(String(row.period))
     openMixedClaim({
       capturedAddress: address,
@@ -493,12 +500,14 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
 
 /** 仓位产品的操作记录：按产品类型拉取对应日志并映射为表格行 */
 export function useAssetsPositionOpsRows(product: AssetsProduct) {
+  const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
   const s = usePositionSessionStore()
   s.syncProduct(product)
   const page = s.opsPage
   const setPage = s.setOpsPage
   const params = tablePageQuery(page)
+  const ops = t.flowOps
 
   const stakeLogs = useStakeFlowLogs(params, sessionReady && product === 'stake')
   const lpLogs = useBondFlowLpLogs(params, sessionReady && product === 'lpbond')
@@ -509,7 +518,7 @@ export function useAssetsPositionOpsRows(product: AssetsProduct) {
   if (product === 'stake') {
     return {
       ...base,
-      rows: stakeLogs.data?.items.map(mapStakeFlowLogToOpsRow) ?? [],
+      rows: stakeLogs.data?.items.map((item) => mapStakeFlowLogToOpsRow(item, ops)) ?? [],
       total: stakeLogs.data?.total ?? 0,
       isLoading: sessionReady && stakeLogs.isLoading,
     }
@@ -517,14 +526,14 @@ export function useAssetsPositionOpsRows(product: AssetsProduct) {
   if (product === 'lpbond') {
     return {
       ...base,
-      rows: lpLogs.data?.items.map(mapBondFlowLogToOpsRow) ?? [],
+      rows: lpLogs.data?.items.map((item) => mapBondFlowLogToOpsRow(item, ops)) ?? [],
       total: lpLogs.data?.total ?? 0,
       isLoading: sessionReady && lpLogs.isLoading,
     }
   }
   return {
     ...base,
-    rows: burnLogs.data?.items.map(mapBondFlowLogToOpsRow) ?? [],
+    rows: burnLogs.data?.items.map((item) => mapBondFlowLogToOpsRow(item, ops)) ?? [],
     total: burnLogs.data?.total ?? 0,
     isLoading: sessionReady && burnLogs.isLoading,
   }

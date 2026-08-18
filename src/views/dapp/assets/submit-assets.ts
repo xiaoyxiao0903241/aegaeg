@@ -9,6 +9,7 @@ import { matchClaimPlanIndices, restakeBpsFromPct } from '~/core/assets/claim-pl
 import type { LockedClaimEntry } from '~/core/assets/locked-claim-entry'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import type { Address } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   type AssetsBondRow,
   type AssetsStakeRow,
@@ -34,6 +35,10 @@ import type { ChainReadClient } from '~/web3/chain-read-client'
 import { ASSETS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
+
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 
 /** 弹窗打开时锁定的地址须仍是当前会话钱包，防止切钱包后按旧地址提交。 */
 function assertSessionMatchesCapturedAddress(
@@ -143,6 +148,7 @@ export async function submitMixedClaim(args: {
           requiredContribution: snap.requiredContribution,
           releasePlanIndex: snap.releasePlanIndex,
           restakePlanIndex: snap.restakePlanIndex,
+          decimals: GAGX_DECIMALS,
         }),
       mapBlockError: (reason) => ASSETS_BLOCKED[reason],
       write: async (live) => {
@@ -236,7 +242,7 @@ export async function submitStakeRedeem(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async () => ({ amount: await readStakeRedeemableAmount(row, user, readClient) }),
-    evaluate: (snap) => evaluateRedeem(snap),
+    evaluate: (snap) => evaluateRedeem({ amount: snap.amount, decimals: AGX_DECIMALS }),
     mapBlockError: (reason) => ASSETS_BLOCKED[reason],
     write: async (live) => {
       if (row.kind === 'liquid') {
@@ -272,7 +278,7 @@ export async function submitBondRedeem(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async () => ({ amount: await readBondRedeemableAmount(row, user, readClient) }),
-    evaluate: (snap) => evaluateRedeem(snap),
+    evaluate: (snap) => evaluateRedeem({ amount: snap.amount, decimals: AGX_DECIMALS }),
     mapBlockError: (reason) => ASSETS_BLOCKED[reason],
     write: async () => {
       await writeBondRedeem({
@@ -321,6 +327,7 @@ export async function submitXmineClaim(args: { session: WriteSession }): Promise
       evaluateXmineClaim({
         pending: position.pending,
         warmupGons: position.warmupGons,
+        decimals: X_DECIMALS,
       }),
     write: async (wallet) => {
       await writeXmineClaimReward({ wallet })
@@ -340,6 +347,8 @@ export async function submitXmineUnstake(args: { session: WriteSession }): Promi
       evaluateXmineUnstake({
         activeGons: position.gons,
         warmupGons: position.warmupGons,
+        miningStake: position.miningStake,
+        stakeDecimals: GAGX_DECIMALS,
       }),
     write: async (wallet) => {
       await writeXmineStartUnstake({ wallet })

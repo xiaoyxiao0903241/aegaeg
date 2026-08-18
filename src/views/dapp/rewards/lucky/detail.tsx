@@ -144,8 +144,10 @@ export function LuckyDetail() {
           ) : null}
           <Table.Body
             colWidths={['5.625rem', '15.9375rem', '10.9375rem', '1fr']}
-            emphasisColumns={[2, 3]}
+            emphasisColumns={[0, 3]}
             empty={lucky.emptyResults}
+            endColumns={[3]}
+            mutedColumns={[2]}
             headers={[...lucky.resultsColumns]}
             highlightedRows={highlightedWinnerRows}
             isLoading={winnersLoading}
@@ -170,6 +172,7 @@ export function LuckyDetail() {
             colWidths={['9.375rem', '9.25rem', '14.6875rem', '1fr']}
             emphasisColumns={[1]}
             empty={lucky.emptyHistory}
+            mutedColumns={[0]}
             headers={[...lucky.historyColumns]}
             isLoading={historyLoading}
             rows={historyRows}

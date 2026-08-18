@@ -84,6 +84,7 @@ export function GrantDetail() {
             }
             emphasisColumns={[1]}
             empty={isIssue ? grant.emptyIssue : grant.emptyClaim}
+            mutedColumns={[0]}
             headers={[...(isIssue ? grant.issueColumns : grant.claimColumns)]}
             isLoading={recordsLoading}
             rows={recordRows}

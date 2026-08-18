@@ -229,6 +229,7 @@ export function CommunityDetail() {
               headers={inviteTableHeaders}
               isLoading={invitesTable.showSkeleton}
               linkColumns={[1]}
+              mutedColumns={[0]}
               rows={compactRows}
             />
           )}

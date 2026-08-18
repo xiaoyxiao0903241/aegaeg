@@ -89,6 +89,44 @@ const app = defineMessages({
       'Mời đối tác cùng xây dựng, chia sẻ giá trị tăng trưởng hệ sinh thái và phần thưởng Genesis.',
     bscTooltip: 'Chỉ BSC · AEGIS X chạy trên BNB Smart Chain.',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'Stake',
+      REWARD: 'Nhận thưởng',
+      EXTRA_REWARD: 'Nhận thưởng thêm',
+      CLAIM_PRINCIPAL: 'Rút gốc',
+      RESTAKE: 'Tái stake',
+    },
+    bond: {
+      PURCHASE: 'Mua',
+      REDEEM: 'Rút',
+      REWARD: 'Nhận',
+      RESTAKE: 'Tái stake',
+    },
+    xmine: {
+      STAKE_X: 'Stake',
+      UNSTAKE_X: 'Gỡ stake',
+      REWARD: 'Nhận',
+    },
+    buffer: {
+      RELEASE_CREATED: 'Vào',
+      PRINCIPAL_CLAIMED: 'Rút',
+    },
+    release: {
+      entered_queue: 'Vào hàng đợi',
+      claimed: 'Nhận',
+      released: 'Đã phát hành',
+    },
+    turbine: {
+      received: 'Vào',
+      silenced: 'Mở khóa',
+      cooled_claimed: 'Rút',
+    },
+    termDays: ' ({n} ngày)',
+    termLiquid: ' (Linh hoạt)',
+    liquid: 'Linh hoạt',
+    periodDays: '{n} ngày',
+  },
   topbar: {
     currentNetwork: 'Mạng hiện tại',
     switchToBsc: 'Hãy chuyển sang BSC',
@@ -395,7 +433,13 @@ const app = defineMessages({
           consume: 'Tiêu',
         },
         burnColumns: ['Thời gian', 'Đốt AGX', 'Điểm đóng góp nhận được', 'Hash giao dịch'],
-        consumeColumns: ['Thời gian', 'Điểm đóng góp đã tiêu', 'Hash giao dịch'],
+        consumeColumns: [
+          'Thời gian',
+          'Mục đích',
+          'Số lượng nhận',
+          'Điểm đóng góp đã tiêu',
+          'Hash giao dịch',
+        ],
       },
       faq: {
         items: [
@@ -1595,7 +1639,7 @@ const app = defineMessages({
         title: 'Tổng quan tài sản',
         totalValue: 'Tổng giá trị tài sản',
         totalValueHint:
-          'Định giá theo giá thị trường hiện tại · gồm gốc vị thế và lợi nhuận chưa rút; chưa có báo giá xuyên sản phẩm thì hiện —',
+          'Định giá theo giá thị trường hiện tại · gồm gốc vị thế và lợi nhuận chưa rút',
         claimable: 'Lợi nhuận chờ nhận',
         claimed: 'Tổng đã nhận',
         contribution: 'Điểm đóng góp của tôi',

@@ -87,6 +87,6 @@ test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () 
     },
   )
 
-  assert.equal(row[2], '-30%')
-  assert.equal(row[3], '21.98')
+  assert.equal(row[2], '30%')
+  assert.equal(row[3], '21.98 AGX')
 })

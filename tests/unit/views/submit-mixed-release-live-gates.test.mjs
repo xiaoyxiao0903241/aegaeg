@@ -30,7 +30,7 @@ test('submitMixedClaim fail-closed when live liquid reward is below claim amount
       submitMixedClaim({
         session,
         capturedAddress: USER,
-        target: { source: 'liquid', amount: 100n },
+        target: { source: 'liquid', amount: 10n ** 7n },
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
@@ -49,7 +49,7 @@ test('submitMixedClaim fail-closed when contribution is below live required', as
   })
 
   const session = sessionWithReadClient(async (request) => {
-    if (request.functionName === 'getStakeRewards') return [0n, 100n]
+    if (request.functionName === 'getStakeRewards') return [0n, 10n ** 7n]
     return dispatchRead(plans, request)
   })
 
@@ -58,7 +58,7 @@ test('submitMixedClaim fail-closed when contribution is below live required', as
       submitMixedClaim({
         session,
         capturedAddress: USER,
-        target: { source: 'liquid', amount: 100n },
+        target: { source: 'liquid', amount: 10n ** 7n },
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,

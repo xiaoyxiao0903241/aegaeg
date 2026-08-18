@@ -1,5 +1,6 @@
 import type { LockedClaimEntry } from '~/core/assets/locked-claim-entry'
 import { ZERO_BI } from '~/core/constants'
+import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { evaluateWriteButtonPhase, type WriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 
@@ -34,9 +35,9 @@ export function claimOutputAmountForKind(args: {
   return args.kind === 'boost' ? args.extraInterest : args.blockReward
 }
 
-/** 可领额为正才允许进入金额确认。 */
-export function canSelectClaimOutput(amount: bigint): boolean {
-  return amount > ZERO_BI
+/** 可领额达到展示位 0.01 才允许进入金额确认。 */
+export function canSelectClaimOutput(amount: bigint, decimals: number): boolean {
+  return isAssetsActionableAmount(amount, decimals)
 }
 
 /**
@@ -65,7 +66,7 @@ export function claimContribRequiredOrZero(required: bigint | null | undefined):
  * 活期 / 定期仓 → Mixed 领取目标。
  *
  * 活期禁止加成（手册仅 `claimRewardMixed`）；定期须有 stakeIndex。
- * 金额非正或非法组合返回 null。
+ * 金额低于 0.01 或非法组合返回 null。
  */
 export function buildStakeMixedClaimTarget(args: {
   stakeKind: StakeClaimKind
@@ -74,13 +75,14 @@ export function buildStakeMixedClaimTarget(args: {
   extraInterest: bigint
   pool: `0x${string}`
   stakeIndex: number | null
+  decimals: number
 }): BuiltStakeMixedClaimTarget | null {
   const amount = claimOutputAmountForKind({
     kind: args.outputKind,
     blockReward: args.blockReward,
     extraInterest: args.extraInterest,
   })
-  if (!canSelectClaimOutput(amount)) return null
+  if (!canSelectClaimOutput(amount, args.decimals)) return null
 
   if (args.stakeKind === 'liquid') {
     if (args.outputKind === 'boost') return null
@@ -106,8 +108,9 @@ export function assetsClaimMoneyBlock(args: {
   contributionOk: boolean
   plansOk: boolean
   claimable: bigint
+  decimals: number
 }): 'zeroAmount' | 'unavailable' | null {
-  if (args.claimable <= ZERO_BI) return 'zeroAmount'
+  if (!isAssetsActionableAmount(args.claimable, args.decimals)) return 'zeroAmount'
   if (!args.plansOk || !args.contributionOk) return 'unavailable'
   return null
 }
@@ -123,6 +126,7 @@ export function evaluateAssetsClaimConfirmGate(args: {
   contributionOk: boolean
   plansOk: boolean
   claimable: bigint
+  decimals: number
 }): boolean {
   if (assetsClaimMoneyBlock(args) != null) return false
   return canClaimWhen({
@@ -144,6 +148,7 @@ export function evaluateAssetsClaimWritePhase(args: {
   contributionOk: boolean
   plansOk: boolean
   claimable: bigint
+  decimals: number
 }): WriteButtonPhase {
   return evaluateWriteButtonPhase({
     walletReady: args.walletReady,

@@ -116,6 +116,21 @@ export function tokenDisplayFloorWei(decimals: number, digits: number): bigint {
   return 10n ** BigInt(d - frac)
 }
 
+/** 资产页操作门槛：展示 2 位的 `0.01`（AGX/gAGX = 1e7 wei，X = 1e16 wei）。 */
+export const ASSETS_ACTION_DISPLAY_DIGITS = 2
+
+/**
+ * 是否达到资产页可操作金额（≥ 展示位 0.01）。
+ *
+ * 低于该值按钮置灰，写路径同样阻断，避免粉尘成交。
+ *
+ * @param amount 最小单位数量
+ * @param decimals 代币精度
+ */
+export function isAssetsActionableAmount(amount: bigint, decimals: number): boolean {
+  return amount >= tokenDisplayFloorWei(decimals, ASSETS_ACTION_DISPLAY_DIGITS)
+}
+
 /** `digits=2` → `0.01`；`digits=4` → `0.0001`。 */
 function tokenDustFloorLabel(digits: number): string {
   const d = Math.max(1, Math.floor(digits))
@@ -165,6 +180,20 @@ export function formatTokenAmount(
   const fractionText = fraction.toString().padStart(decimals, '0').replace(/0+$/, '')
   const trimmed = fractionText.slice(0, digits).replace(/0+$/, '')
   return trimmed ? `${groupedWhole}.${trimmed}` : groupedWhole
+}
+
+/**
+ * 资产页金额展示：固定 2 位，粉尘记 `0.00`，不输出 `<0.01`。
+ *
+ * @param amount 最小单位数量
+ * @param decimals 代币精度
+ */
+export function formatAssetsActionAmount(amount: bigint, decimals: number): string {
+  return formatTokenAmount(amount, decimals, {
+    digits: ASSETS_ACTION_DISPLAY_DIGITS,
+    dust: false,
+    trimZeros: false,
+  })
 }
 
 /**

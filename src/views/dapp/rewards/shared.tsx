@@ -377,7 +377,7 @@ function mapDaoGrantAwardLogToRow(
 ): string[] {
   return [
     formatApiDateTime(item.created_at),
-    formatApiAmount(item.awarded_gross),
+    formatApiAmount(item.awarded_gross, { digits: 4, suffix: ' gAGX' }),
     formatDaoGrantStatus(item.status, labels),
     formatApiDateTime(item.fully_claimed_at),
   ]
@@ -406,9 +406,9 @@ export function mapParticipationAwardLogToRow(
 export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    <ExplorerLink key={item.address} value={item.address} />,
-    formatApiAmount(item.active_stake_balance),
-    formatApiAmount(item.total_brought_reward),
+    <ExplorerLink key={item.address} tone="muted-foreground" value={item.address} />,
+    formatApiAmount(item.active_stake_balance, { digits: 2, prefix: '$' }),
+    formatApiAmount(item.total_brought_reward, { digits: 4, suffix: ' gAGX' }),
   ]
 }
 
@@ -441,8 +441,8 @@ export function mapRankRewardLogToRow(
 export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    <ExplorerLink key={item.address} value={item.address} />,
-    formatApiAmount(item.making_market),
+    <ExplorerLink key={item.address} tone="muted-foreground" value={item.address} />,
+    formatApiAmount(item.making_market, { digits: 2, prefix: '$' }),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
 }
@@ -470,10 +470,21 @@ export function mapReferralAwardLogToRow(
 export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
-    <ExplorerLink key={item.address} value={item.address} />,
-    formatApiAmount(item.active_stake_balance),
-    formatApiAmount(item.contributed_reward_total),
+    <ExplorerLink key={item.address} tone="muted-foreground" value={item.address} />,
+    formatApiAmount(item.active_stake_balance, { digits: 2, prefix: '$' }),
+    formatApiAmount(item.contributed_reward_total, { digits: 4, suffix: ' gAGX' }),
   ]
+}
+
+/** API 津贴比例为百分比数字；已带 `%` 则原样展示。 */
+function formatSubsidyRate(raw: string | null | undefined): string {
+  if (raw == null) return TABLE_EMPTY
+  const trimmed = raw.trim()
+  if (!trimmed) return TABLE_EMPTY
+  if (trimmed.endsWith('%')) return trimmed
+  const n = parseApiAmount(trimmed)
+  if (n == null) return TABLE_EMPTY
+  return `${formatNumber(n, { digits: 2, trimZeros: true })}%`
 }
 
 /**
@@ -485,10 +496,14 @@ export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralIte
 export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem): ReactNode[] {
   return [
     formatBlockTime(item.paid_time),
-    formatApiAmount(item.agx_amount),
+    formatApiAmount(item.agx_amount, { digits: 4, suffix: ' AGX' }),
     item.operation_type || TABLE_EMPTY,
-    item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
-    item.subsidy_rate || TABLE_EMPTY,
+    item.tx_hash ? (
+      <ExplorerLink key={item.tx_hash} kind="tx" showIcon value={item.tx_hash} />
+    ) : (
+      TABLE_EMPTY
+    ),
+    formatSubsidyRate(item.subsidy_rate),
     formatApiAmount(item.allowance_amount),
   ]
 }
@@ -502,7 +517,7 @@ export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem)
 export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): ReactNode[] {
   return [
     formatBlockTime(item.claim_time),
-    formatApiAmount(item.allowance_amount),
+    formatApiAmount(item.allowance_amount, { digits: 4, suffix: ' gAGX' }),
     item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
   ]
 }
@@ -525,13 +540,13 @@ export function mapLuckyWinnerToRow(
   const addressCell =
     isSelf && opts?.meLabel ? (
       <span className="inline-flex items-center gap-2">
-        <ExplorerLink value={item.address} />
+        <ExplorerLink tone="muted-foreground" value={item.address} />
         <StatusBadge size="compact" tone="pending">
           {opts.meLabel}
         </StatusBadge>
       </span>
     ) : (
-      <ExplorerLink value={item.address} />
+      <ExplorerLink tone="muted-foreground" value={item.address} />
     )
 
   return [

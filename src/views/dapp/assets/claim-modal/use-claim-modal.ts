@@ -14,7 +14,7 @@ import {
   planLabel,
 } from '~/core/assets/claim-plans'
 import { HUNDRED_BI } from '~/core/constants'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatAssetsActionAmount, formatTokenAmount } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -112,6 +112,7 @@ export function useAssetsClaimModal(args: {
     contributionOk,
     plansOk,
     claimable: target.amount,
+    decimals: GAGX_DECIMALS,
   })
   const writePhase = evaluateAssetsClaimWritePhase({
     walletReady,
@@ -120,6 +121,7 @@ export function useAssetsClaimModal(args: {
     contributionOk,
     plansOk,
     claimable: target.amount,
+    decimals: GAGX_DECIMALS,
   })
 
   const releaseAmount = (target.amount * BigInt(releasePct)) / HUNDRED_BI
@@ -184,10 +186,9 @@ export function useAssetsClaimModal(args: {
         ? t.assets.claim.ctaRestake
         : t.assets.claim.ctaMixed
 
-  const requiredContributionLabel = formatTokenAmount(
+  const requiredContributionLabel = formatAssetsActionAmount(
     claimContribRequiredOrZero(contribQuery.data?.requiredContribution),
     GAGX_DECIMALS,
-    4,
   )
 
   return {

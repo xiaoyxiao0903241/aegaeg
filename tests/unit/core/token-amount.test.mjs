@@ -126,6 +126,26 @@ test('formatTokenAmount dust: positive below display floor → <0.01 / <0.0001',
   assert.equal(formatTokenAmount(1n, 9, 0), '0')
 })
 
+test('isAssetsActionableAmount is the 0.01 display floor', async () => {
+  const { isAssetsActionableAmount, formatAssetsActionAmount, tokenDisplayFloorWei } =
+    await loadModule('/src/core/exchange/token-amount.ts')
+
+  const agxFloor = tokenDisplayFloorWei(9, 2)
+  const xFloor = tokenDisplayFloorWei(18, 2)
+  assert.equal(agxFloor, 10n ** 7n)
+  assert.equal(xFloor, 10n ** 16n)
+
+  assert.equal(isAssetsActionableAmount(0n, 9), false)
+  assert.equal(isAssetsActionableAmount(agxFloor - 1n, 9), false)
+  assert.equal(isAssetsActionableAmount(agxFloor, 9), true)
+  assert.equal(isAssetsActionableAmount(xFloor - 1n, 18), false)
+  assert.equal(isAssetsActionableAmount(xFloor, 18), true)
+
+  assert.equal(formatAssetsActionAmount(0n, 9), '0.00')
+  assert.equal(formatAssetsActionAmount(agxFloor - 1n, 9), '0.00')
+  assert.equal(formatAssetsActionAmount(agxFloor, 9), '0.01')
+})
+
 test('formatNumber is the human-number display core', async () => {
   const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
 

@@ -91,6 +91,44 @@ const app = defineMessages({
       'साझेदारों को सह-निर्माण के लिए आमंत्रित करें, इकोसिस्टम वृद्धि मूल्य और Genesis पुरस्कार साझा करें।',
     bscTooltip: 'केवल BSC · AEGIS X BNB Smart Chain पर चलता है।',
   },
+  flowOps: {
+    stake: {
+      STAKE: 'स्टेक',
+      REWARD: 'इनाम दावा',
+      EXTRA_REWARD: 'अतिरिक्त इनाम दावा',
+      CLAIM_PRINCIPAL: 'रिडीम',
+      RESTAKE: 'फिर स्टेक',
+    },
+    bond: {
+      PURCHASE: 'खरीद',
+      REDEEM: 'रिडीम',
+      REWARD: 'दावा',
+      RESTAKE: 'फिर स्टेक',
+    },
+    xmine: {
+      STAKE_X: 'स्टेक',
+      UNSTAKE_X: 'अनस्टेक',
+      REWARD: 'दावा',
+    },
+    buffer: {
+      RELEASE_CREATED: 'प्रवेश',
+      PRINCIPAL_CLAIMED: 'निकासी',
+    },
+    release: {
+      entered_queue: 'कतार में प्रवेश',
+      claimed: 'दावा',
+      released: 'रिलीज़ हुआ',
+    },
+    turbine: {
+      received: 'प्रवेश',
+      silenced: 'अनलॉक',
+      cooled_claimed: 'निकासी',
+    },
+    termDays: ' ({n} दिन)',
+    termLiquid: ' (लचीला)',
+    liquid: 'लचीला',
+    periodDays: '{n} दिन',
+  },
   topbar: {
     currentNetwork: 'वर्तमान नेटवर्क',
     switchToBsc: 'BSC पर स्विच करें',
@@ -398,7 +436,7 @@ const app = defineMessages({
           consume: 'खपत',
         },
         burnColumns: ['समय', 'बर्न किया AGX', 'अर्जित योगदान', 'लेनदेन हैश'],
-        consumeColumns: ['समय', 'खपत योगदान', 'लेनदेन हैश'],
+        consumeColumns: ['समय', 'उपयोग', 'दावा राशि', 'खपत योगदान', 'लेनदेन हैश'],
       },
       faq: {
         items: [
@@ -1557,8 +1595,7 @@ const app = defineMessages({
       overview: {
         title: 'संपत्ति अवलोकन',
         totalValue: 'कुल मूल्य',
-        totalValueHint:
-          'मूलधन + अनक्लेम्ड यील्ड का मार्क-टू-मार्केट; क्रॉस-प्रोडक्ट कोट के बिना — दिखाता है',
+        totalValueHint: 'मूलधन + अनक्लेम्ड यील्ड का मार्क-टू-मार्केट',
         claimable: 'दावा योग्य यील्ड',
         claimed: 'कुल दावा किया',
         contribution: 'योगदान अंक',

@@ -5,7 +5,11 @@ import {
   AssetsListPager,
   AssetsPositionListSkeleton,
 } from '~/views/dapp/assets/position/primitives'
-import { AssetsPositionEmptyCard, AssetsQuoteToolbar } from '~/views/dapp/assets/primitives'
+import {
+  AssetsDockScrollClearance,
+  AssetsPositionEmptyCard,
+  AssetsQuoteToolbar,
+} from '~/views/dapp/assets/primitives'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/primitives'
 import { useXmineDock } from '~/views/dapp/assets/xmine/use-xmine'
@@ -27,7 +31,7 @@ export function XmineDock() {
         subtitle={copy.intro}
         title={copy.title}
       >
-        <DockStack fill>
+        <DockStack fill={!vm.walletReady || vm.isEmpty || !position}>
           <AssetsQuoteToolbar
             onQuoteChange={vm.setQuote}
             onSortChange={vm.setSort}
@@ -54,7 +58,6 @@ export function XmineDock() {
               activateWarmupLabel={t.assets.position.activateWarmup}
               busy={vm.busy}
               claimLabel={t.assets.position.claim}
-              gons={position.gons}
               locked={vm.locked}
               lockedPrefix={t.assets.position.lockedPrefix}
               miningStake={position.miningStake}
@@ -85,6 +88,7 @@ export function XmineDock() {
               total={vm.totalRows}
             />
           ) : null}
+          <AssetsDockScrollClearance />
         </DockStack>
       </TabHeader>
 

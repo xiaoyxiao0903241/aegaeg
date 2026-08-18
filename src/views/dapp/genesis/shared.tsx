@@ -215,18 +215,22 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
   const agxPriceUsd = options.agxPriceUsd ?? 0
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
-    return formatNumber(tokens, { digits: 2 })
+    return formatNumber(tokens, { digits: 2, suffix: ' AGX' })
   }
 
   const amountUsd1 = Number(item.amount)
-  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return formatNumber(0, { digits: 2 })
+  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) {
+    return formatNumber(0, { digits: 2, suffix: ' AGX' })
+  }
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
     phaseDiscountBps(item.phase_id, options.phases),
     agxPriceUsd,
   )
-  return estimated > 0 ? formatNumber(estimated, { digits: 2 }) : formatNumber(0, { digits: 2 })
+  return estimated > 0
+    ? formatNumber(estimated, { digits: 2, suffix: ' AGX' })
+    : formatNumber(0, { digits: 2, suffix: ' AGX' })
 }
 
 /**
@@ -242,7 +246,7 @@ export function mapSalesLogToDesktopRow(
   return [
     formatBlockTime(item.block_time),
     formatNumber(Number(item.amount), { digits: 0, prefix: '$' }),
-    formatDiscountBps(phaseDiscountBps(item.phase_id, options.phases)),
+    formatDiscountBps(phaseDiscountBps(item.phase_id, options.phases), { signed: false }),
     formatSalesLogAgx(item, options),
     item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
   ]

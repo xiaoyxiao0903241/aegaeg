@@ -113,6 +113,8 @@ export function StakeDetail() {
             colWidths={['10.9375rem', '5rem', '8.75rem', '5.625rem', '1fr']}
             empty={recordsLoading ? '…' : t.staking.aside.recordsEmpty.stake}
             headers={[...t.staking.aside.recordColumns]}
+            mutedColumns={[0]}
+            positiveColumns={[3]}
             rows={[...(recordRows ?? [])]}
           />
         </Table>

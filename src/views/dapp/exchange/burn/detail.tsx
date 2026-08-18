@@ -168,9 +168,11 @@ export function BurnExchangeDetail({
           </Table.Header>
           <Table.Body
             colWidths={[...history.colWidths]}
+            emphasisColumns={history.tab === 'burn' ? [2] : [1]}
             empty={history.emptyTitle}
             headers={history.headers}
             isLoading={history.isLoading}
+            mutedColumns={[0]}
             rows={history.rows}
           />
           {shouldShowTablePagination(history.total) ? (

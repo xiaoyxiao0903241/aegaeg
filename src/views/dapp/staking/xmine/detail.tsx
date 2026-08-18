@@ -117,7 +117,9 @@ export function XmineDetail() {
           <Table.Body
             colWidths={['10.9375rem', '6.25rem', '8.75rem', '1fr']}
             empty={recordsLoading ? '…' : t.staking.aside.recordsEmpty.xmine}
+            emphasisColumns={[1]}
             headers={[...t.staking.aside.xmineRecordColumns]}
+            mutedColumns={[0]}
             rows={[...(recordRows ?? [])]}
           />
         </Table>

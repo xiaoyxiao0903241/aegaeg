@@ -8,7 +8,7 @@ import {
   claimContribRequiredOrZero,
   type ClaimOutputKind,
 } from '~/core/assets/claim-output'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatAssetsActionAmount } from '~/core/exchange/token-amount'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -31,7 +31,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  * 领取产出中间层（定期仓）
  *
  * 左：收益 → claimRewardMixed；右：加成 → claimExtraRewardMixed。
- * 金额为 0 时对应按钮禁用；点可用项后进入 Mixed「领取数量」。
+ * 单档低于 0.01 时对应按钮禁用；点可用项后进入 Mixed「领取数量」。
  */
 export function AssetsClaimOutputModal({
   onOpenChange,
@@ -92,8 +92,8 @@ function AssetsClaimOutputModalOpen({
 
   const reward = row.blockReward
   const boost = row.extraInterest
-  const canReward = canSelectClaimOutput(reward)
-  const canBoost = canSelectClaimOutput(boost)
+  const canReward = canSelectClaimOutput(reward, GAGX_DECIMALS)
+  const canBoost = canSelectClaimOutput(boost, GAGX_DECIMALS)
 
   const rewardContrib = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-reward:${String(reward)}`),
@@ -108,18 +108,16 @@ function AssetsClaimOutputModalOpen({
     placeholderData: keepPreviousData,
   })
 
-  const rewardAmountLabel = `${formatTokenAmount(reward, GAGX_DECIMALS, 2)} gAGX`
-  const boostAmountLabel = `${formatTokenAmount(boost, GAGX_DECIMALS, 2)} gAGX`
-  // 缺数显 0（覆盖矩阵）
-  const rewardContribLabel = formatTokenAmount(
+  const rewardAmountLabel = `${formatAssetsActionAmount(reward, GAGX_DECIMALS)} gAGX`
+  const boostAmountLabel = `${formatAssetsActionAmount(boost, GAGX_DECIMALS)} gAGX`
+  // 缺数显 0；粉尘贡献记 0.00，不出现 `<0.01`
+  const rewardContribLabel = formatAssetsActionAmount(
     claimContribRequiredOrZero(rewardContrib.data?.requiredContribution),
     GAGX_DECIMALS,
-    2,
   )
-  const boostContribLabel = formatTokenAmount(
+  const boostContribLabel = formatAssetsActionAmount(
     claimContribRequiredOrZero(boostContrib.data?.requiredContribution),
     GAGX_DECIMALS,
-    2,
   )
 
   return (

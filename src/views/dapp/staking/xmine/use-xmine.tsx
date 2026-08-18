@@ -374,7 +374,8 @@ export function useXmineDetail() {
     },
   ]
 
-  const recordRows = logsQuery.data?.items.map(mapX0MiningLogToOpsRow) ?? []
+  const recordRows =
+    logsQuery.data?.items.map((item) => mapX0MiningLogToOpsRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && logsQuery.isLoading && logsQuery.data == null
 
   return {

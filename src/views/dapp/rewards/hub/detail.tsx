@@ -160,6 +160,7 @@ export function RewardsHubDetail() {
           <Table.Body
             className="[&_tbody_tr:last-child>td]:align-top"
             colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
+            endColumns={[4]}
             headers={[...tier.columns]}
             highlightedRows={statsView.tierRowIndex != null ? [statsView.tierRowIndex] : []}
             rows={tier.rows.map((row, rowIndex) => {

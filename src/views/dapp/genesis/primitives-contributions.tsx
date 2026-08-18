@@ -119,6 +119,7 @@ export function GenesisContributionsTable({
             headers={vm.tableHeaders}
             isLoading={vm.showContributionsSkeleton}
             loadingRowCount={4}
+            mutedColumns={[0]}
             positiveColumns={[2]}
             rows={vm.desktopRows}
           />

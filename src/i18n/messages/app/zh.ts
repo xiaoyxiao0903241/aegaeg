@@ -84,6 +84,45 @@ const app = defineMessages({
     communityTooltip: '邀请伙伴参与共建，共享生态成长价值与创世奖励',
     bscTooltip: '仅 BSC · AEGIS X 运行在 BNB Smart Chain。',
   },
+  /** 流水操作列：标签跟 API 枚举中文，周期括号跟原型。 */
+  flowOps: {
+    stake: {
+      STAKE: '质押',
+      REWARD: '奖励领取',
+      EXTRA_REWARD: '额外奖励领取',
+      CLAIM_PRINCIPAL: '赎回',
+      RESTAKE: '复投',
+    },
+    bond: {
+      PURCHASE: '购买',
+      REDEEM: '赎回',
+      REWARD: '领取',
+      RESTAKE: '复投',
+    },
+    xmine: {
+      STAKE_X: '质押',
+      UNSTAKE_X: '解押',
+      REWARD: '领取',
+    },
+    buffer: {
+      RELEASE_CREATED: '进入',
+      PRINCIPAL_CLAIMED: '提取',
+    },
+    release: {
+      entered_queue: '进入队列',
+      claimed: '领取',
+      released: '已释放',
+    },
+    turbine: {
+      received: '进入',
+      silenced: '解锁',
+      cooled_claimed: '提取',
+    },
+    termDays: '（{n}天）',
+    termLiquid: '（活期）',
+    liquid: '活期',
+    periodDays: '{n} 天',
+  },
   topbar: {
     currentNetwork: '当前网络',
     switchToBsc: '请切换 BSC',
@@ -385,7 +424,7 @@ const app = defineMessages({
           consume: '消耗',
         },
         burnColumns: ['时间', '销毁 AGX', '获得贡献点数', '交易哈希'],
-        consumeColumns: ['时间', '消耗贡献点数', '交易哈希'],
+        consumeColumns: ['时间', '用途', '领取数量', '消耗贡献点数', '交易哈希'],
       },
       faq: {
         items: [
@@ -1472,13 +1511,13 @@ const app = defineMessages({
       overview: {
         title: '资产总览',
         totalValue: '总资产价值',
-        totalValueHint: '按当前市场价格估值 · 含持仓本金与未提取收益；暂无跨产品报价时显示 —',
+        totalValueHint: '按当前市场价格估值 · 含持仓本金与未提取收益',
         claimable: '可领取收益',
         claimed: '累计已领取',
         contribution: '我的贡献点数',
         contributionHint: '领取收益按 {ratio} 消耗',
         holdingsTitle: '持仓',
-        holdingsReleased: '可赎回已释放',
+        holdingsReleased: '已释放',
         holdingsTotal: '总持仓',
         bufferTitle: '缓冲池',
         bufferHint:

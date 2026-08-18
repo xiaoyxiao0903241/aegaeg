@@ -91,6 +91,44 @@ const app = defineMessages({
       '파트너를 초대하여 공동 구축에 참여하고, 생태계 성장 가치와 창세 리워드를 함께 누리세요.',
     bscTooltip: 'BSC 전용 · AEGIS X는 BNB Smart Chain에서 실행됩니다.',
   },
+  flowOps: {
+    stake: {
+      STAKE: '스테이킹',
+      REWARD: '보상 수령',
+      EXTRA_REWARD: '추가 보상 수령',
+      CLAIM_PRINCIPAL: '상환',
+      RESTAKE: '재스테이킹',
+    },
+    bond: {
+      PURCHASE: '구매',
+      REDEEM: '상환',
+      REWARD: '수령',
+      RESTAKE: '재스테이킹',
+    },
+    xmine: {
+      STAKE_X: '스테이킹',
+      UNSTAKE_X: '언스테이킹',
+      REWARD: '수령',
+    },
+    buffer: {
+      RELEASE_CREATED: '진입',
+      PRINCIPAL_CLAIMED: '인출',
+    },
+    release: {
+      entered_queue: '대기열 진입',
+      claimed: '수령',
+      released: '릴리스됨',
+    },
+    turbine: {
+      received: '진입',
+      silenced: '잠금 해제',
+      cooled_claimed: '인출',
+    },
+    termDays: '({n}일)',
+    termLiquid: '(수시)',
+    liquid: '수시',
+    periodDays: '{n}일',
+  },
   topbar: {
     currentNetwork: '현재 네트워크',
     switchToBsc: 'BSC로 전환하세요',
@@ -399,7 +437,7 @@ const app = defineMessages({
           consume: '소모',
         },
         burnColumns: ['시간', '소각 AGX', '획득 기여 포인트', '거래 해시'],
-        consumeColumns: ['시간', '소모 기여 포인트', '거래 해시'],
+        consumeColumns: ['시간', '용도', '수령 수량', '소모 기여 포인트', '거래 해시'],
       },
       faq: {
         items: [
@@ -1559,8 +1597,7 @@ const app = defineMessages({
       overview: {
         title: '자산 개요',
         totalValue: '총 자산 가치',
-        totalValueHint:
-          '현재 시장가로 평가 · 보유 원금과 미출금 수익 포함; 교차 제품 호가가 없으면 — 표시',
+        totalValueHint: '현재 시장가로 평가 · 보유 원금과 미출금 수익 포함',
         claimable: '수령 가능 수익',
         claimed: '누적 수령액',
         contribution: '내 기여 포인트',

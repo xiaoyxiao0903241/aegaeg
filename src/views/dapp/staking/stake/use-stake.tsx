@@ -280,7 +280,8 @@ export function useStakeDetail() {
     },
   ]
 
-  const recordRows = recordsQuery.data?.items.map(mapStakePositionToAsideRow) ?? []
+  const recordRows =
+    recordsQuery.data?.items.map((item) => mapStakePositionToAsideRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && recordsQuery.isLoading && recordsQuery.data == null
 
   return {

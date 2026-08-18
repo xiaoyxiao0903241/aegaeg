@@ -21,6 +21,16 @@ import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
 
+/** 资产子页列表底部留白：滚出左栏渐隐，不改共享 DockPanel。 */
+export function AssetsDockScrollClearance() {
+  return (
+    <div
+      aria-hidden
+      className="hidden shrink-0 dapp:block dapp:h-[calc(var(--app-scroll-fade)+0.5rem)]"
+    />
+  )
+}
+
 /** 仓位空态：顶上一行骨架，下面主卡 PC 吃满剩余高度，按钮贴底 */
 export function AssetsPositionEmptyCard({
   title,
@@ -194,9 +204,11 @@ export function AssetsOpsTable({
     <Table>
       <Table.Body
         colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+        emphasisColumns={[1]}
         empty={empty}
         headers={[...headers]}
         isLoading={isLoading}
+        mutedColumns={[0]}
         rows={rows}
       />
       {pagination && shouldShowTablePagination(pagination.total) ? (

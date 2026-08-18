@@ -99,6 +99,7 @@ export function ParticipateDetail() {
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
             empty={participate.emptyRecords}
+            mutedColumns={[0, 3]}
             headers={[...participate.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
@@ -122,8 +123,9 @@ export function ParticipateDetail() {
         <Table>
           <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
-            emphasisColumns={[2, 3]}
+            emphasisColumns={[3]}
             empty={participate.emptyInviter}
+            mutedColumns={[0]}
             headers={[...participate.inviterColumns]}
             isLoading={inviterLoading}
             rows={inviterRows}
