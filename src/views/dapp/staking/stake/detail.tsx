@@ -13,9 +13,11 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
 import {
   mapFaqWithEpochSchedule,
   mapStepsWithEpochSchedule,
+  withEpochSchedule,
 } from '~/views/dapp/shared/epoch-schedule'
 import {
   StakingMechanismCard,
@@ -56,7 +58,12 @@ export function StakeDetail() {
         <Grid columns={2}>
           {overviewItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
-              <Tile.Label>{item.label}</Tile.Label>
+              <Tile.Label>
+                {item.label}
+                {item.hint ? (
+                  <Tooltip.Info content={withEpochSchedule(item.hint, epochSchedule)} />
+                ) : null}
+              </Tile.Label>
               <StakingMetricValue value={item.value} />
             </Tile>
           ))}
@@ -86,7 +93,12 @@ export function StakeDetail() {
               }
               key={item.label}
             >
-              <Tile.Label>{item.label}</Tile.Label>
+              <Tile.Label>
+                {item.label}
+                {item.hint ? (
+                  <Tooltip.Info content={withEpochSchedule(item.hint, epochSchedule)} />
+                ) : null}
+              </Tile.Label>
               <StakingMetricValue value={item.value} />
             </Tile>
           ))}

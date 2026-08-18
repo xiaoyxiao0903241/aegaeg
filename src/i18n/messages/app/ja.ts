@@ -479,6 +479,10 @@ const app = defineMessages({
         pendingUnlock: 'アンロック待ち gAGX',
         cooling: 'クールダウン中 gAGX',
         totalWithdrawn: '累計引出',
+        pendingUnlockHint:
+          'リリースプールからタービンへ受け取り、まだアンロックされていない gAGX 総量',
+        coolingHint: '買いアンロックを完了し、クールダウン中の gAGX 総量',
+        totalWithdrawnHint: 'タービンからウォレットへ引き出した累計 gAGX',
       },
       faq: {
         items: [
@@ -1565,6 +1569,8 @@ const app = defineMessages({
         holdingsReleased: 'リリース済み',
         holdingsTotal: '総保有',
         bufferTitle: 'バッファプール',
+        bufferHint:
+          '元本のアンステーク後はバッファプールで {days} 日間の二次線形リリースが行われ、短期の集中流出が市場流動性へ与える衝撃を抑え、資金放出の連続性と市場安定のバランスを取ります。',
         bufferTotal: 'Total',
         bufferReleased: 'リリース済み',
         bufferAssetAgx: 'AGX',
@@ -1637,9 +1643,18 @@ const app = defineMessages({
             { label: 'マイ保有' },
             { label: 'リリース済み' },
             { label: 'リリース待ち' },
-            { label: '現在の Rebase 収益率' },
-            { label: '現在の Rebase ボーナス' },
-            { label: 'ステーキング総収益' },
+            {
+              label: '現在の Rebase 収益率',
+              hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
+            },
+            {
+              label: '現在の Rebase ボーナス',
+              hint: '未受取の Rebase ボーナスは複利を生みません',
+            },
+            {
+              label: 'ステーキング総収益',
+              hint: '受取済みと未受取のステーキング収益の合計',
+            },
           ],
         },
         ops: {
@@ -1684,8 +1699,14 @@ const app = defineMessages({
             { label: 'マイ保有' },
             { label: 'リリース済み' },
             { label: 'リリース待ち' },
-            { label: '現在の Rebase 収益率' },
-            { label: 'LP債券総収益' },
+            {
+              label: '現在の Rebase 収益率',
+              hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
+            },
+            {
+              label: 'LP債券総収益',
+              hint: '受取済みと未受取の LP 債券収益の合計',
+            },
           ],
         },
         ops: {
@@ -1735,8 +1756,14 @@ const app = defineMessages({
             { label: 'マイ保有' },
             { label: 'リリース済み' },
             { label: 'リリース待ち' },
-            { label: '現在の Rebase 収益率' },
-            { label: 'バーン債券総収益' },
+            {
+              label: '現在の Rebase 収益率',
+              hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
+            },
+            {
+              label: 'バーン債券総収益',
+              hint: '受取済みと未受取のバーン債券収益の合計',
+            },
           ],
         },
         ops: {
@@ -1788,7 +1815,10 @@ const app = defineMessages({
             { label: 'マイマイニングステーキング' },
             { label: 'リリース済み' },
             { label: '現在のマイニング産出' },
-            { label: 'マイニング総産出' },
+            {
+              label: 'マイニング総産出',
+              hint: '受取済みと未受取のマイニング産出の合計',
+            },
           ],
         },
         ops: {
@@ -2043,8 +2073,14 @@ const app = defineMessages({
         { label: 'マイポジション' },
         { label: 'リリース済み' },
         { label: 'リリース待ち' },
-        { label: '現在の Rebase 収益率' },
-        { label: '現在の Rebase ボーナス' },
+        {
+          label: '現在の Rebase 収益率',
+          hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
+        },
+        {
+          label: '現在の Rebase ボーナス',
+          hint: '未受取の Rebase ボーナスは複利を生みません',
+        },
       ],
       xValue: {
         title: 'X 長期価値システム',
@@ -2098,9 +2134,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '総ステーキング量' },
-        { label: '現在の Epoch' },
+        {
+          label: '現在の Epoch',
+          hint: '各 Epoch は約 {hours} 時間（{blocks} ブロック）で、ステーキング収益は Epoch ごとに決済されます',
+        },
         { label: '次回 Rebase 支給' },
-        { label: '現在の Rebase 収益率' },
+        {
+          label: '現在の Rebase 収益率',
+          hint: '各 Epoch（約 {hours} 時間）に1回決済し、プロトコル運行状態に応じて動的調整',
+        },
       ],
       mechanismTitle: 'ステーキングの仕組み',
       mechanism:
@@ -2184,15 +2226,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP債券総ステーキング量' },
-        { label: '債券プレミアム率' },
+        {
+          label: '債券プレミアム率',
+          hint: '現在の割引価格が AGX 市場価格に対して持つ収益余地',
+        },
         { label: '次回 Rebase 支給' },
-        { label: '現在の Rebase 収益率' },
+        {
+          label: '現在の Rebase 収益率',
+          hint: '各 Epoch（約 {hours} 時間）に1回決済し、プロトコル運行状態に応じて動的調整',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: '受取' },
         { label: 'リリース待ち' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
+        },
       ],
       mechanismTitle: 'LP債券の仕組み',
       mechanism:
@@ -2267,15 +2318,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'バーン債券総ステーキング量' },
-        { label: '債券プレミアム率' },
+        {
+          label: '債券プレミアム率',
+          hint: '現在の割引価格が AGX 市場価格に対して持つ収益余地',
+        },
         { label: '次回 Rebase 支給' },
-        { label: '現在の Rebase 収益率' },
+        {
+          label: '現在の Rebase 収益率',
+          hint: '各 Epoch（約 {hours} 時間）に1回決済し、プロトコル運行状態に応じて動的調整',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'リリース済み' },
         { label: 'リリース待ち' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
+        },
       ],
       mechanismTitle: 'バーン債券の仕組み',
       mechanism:
@@ -2338,8 +2398,14 @@ const app = defineMessages({
         { label: 'Xマイニング総ステーキング量' },
         { label: 'X 価格' },
         { label: '累計マイニング産出' },
-        { label: '当日収益率' },
-        { label: '次回マイニング産出' },
+        {
+          label: '当日収益率',
+          hint: 'プロトコル収益率とネットワーク全体のステーク量に応じて動的配分し、毎日調整',
+        },
+        {
+          label: '次回マイニング産出',
+          hint: 'X マイニング収益は毎日 UTC 0 時に産出されます',
+        },
       ],
       positionMetrics: [
         { label: 'マイマイニングステーキング' },
@@ -2447,9 +2513,12 @@ const app = defineMessages({
         nodes: '主要ノード',
         nodeEndLabel: '第 {day} 日まで保有',
         nodeCards: [
-          { label: 'プラス収益開始日', hint: 'この日から売却するとプラス収益を実現可能' },
-          { label: '元本完全リリース', hint: '' },
-          { label: '期間末日まで保有', hint: '元本に対する累計収益のイメージ' },
+          { label: 'プラス収益開始日', note: 'この日から売却するとプラス収益を実現可能' },
+          {
+            label: '元本完全リリース',
+            hint: '元本は期間ブロックで線形リリースされ、この日から全額引き出せます',
+          },
+          { label: '期間末日まで保有', note: '元本に対する累計収益のイメージ' },
         ],
         notes: '計算の説明',
         notesBody: '本計算機はローカル試算の参考のみで、オンチェーン見積や収益保証ではありません。',
@@ -2524,6 +2593,11 @@ const app = defineMessages({
       goTurbine: 'タービンへ',
       statsTitle: 'リリースプールデータ',
       lifetimeClaimed: 'リリースプールからの累計受取',
+      hints: {
+        releasing: 'リリースプール内にあり、選択した期間で線形リリース中の gAGX 総量',
+        released: 'リリース完了済みで、いつでもタービンへ受け取れる gAGX 総量',
+        lifetimeClaimed: 'リリースプールからタービンへ受け取った累計 gAGX',
+      },
       recordsTitle: 'リリースプール記録',
     },
     buffer: {
@@ -2536,6 +2610,14 @@ const app = defineMessages({
       statsTitle: 'バッファプールデータ',
       entered: '累計入庫',
       extracted: '累計引出',
+      hints: {
+        enteredAgx: 'ステーキングと債券償還後にバッファへ入った累計 AGX',
+        extractedAgx: 'バッファからウォレットへ引き出した累計 AGX',
+        releasingAgx: 'バッファ内でリリース中の AGX 総量',
+        enteredGagx: 'X マイニング償還後にバッファへ入った累計 gAGX',
+        extractedGagx: 'バッファからウォレットへ引き出した累計 gAGX',
+        releasingGagx: 'バッファ内でリリース中の gAGX 総量',
+      },
       recordsTitle: 'バッファプール記録',
       mechanismTitle: '資金リリースの仕組み',
       mechanismSubtitle: 'ステーキングと債券の元本は二段階リリースモデルで市場安定性を高めます',

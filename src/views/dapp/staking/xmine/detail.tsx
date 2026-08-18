@@ -13,6 +13,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
 import {
   StakingMechanismCard,
   StakingMetricValue,
@@ -56,7 +57,10 @@ export function XmineDetail() {
               }
               key={item.label}
             >
-              <Tile.Label>{item.label}</Tile.Label>
+              <Tile.Label>
+                {item.label}
+                {item.hint ? <Tooltip.Info content={item.hint} /> : null}
+              </Tile.Label>
               <StakingMetricValue value={item.value} />
             </Tile>
           ))}
@@ -96,7 +100,10 @@ export function XmineDetail() {
               }
               key={item.label}
             >
-              <Tile.Label>{item.label}</Tile.Label>
+              <Tile.Label>
+                {item.label}
+                {item.hint ? <Tooltip.Info content={item.hint} /> : null}
+              </Tile.Label>
               <StakingMetricValue value={item.value} />
             </Tile>
           ))}

@@ -18,6 +18,7 @@ import { Grid } from '~/shared/components/grid'
 import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import {
   AssetsHoldingsDistributionCard,
   AssetsHoldingsDistributionSkeleton,
@@ -111,7 +112,11 @@ export function AssetsHubDetail() {
   const metricGroups = [
     {
       key: 'holdings',
-      title: overview.holdingsTitle,
+      title: (
+        <Text as="span" className="leading-4 font-medium" variant="copy">
+          {overview.holdingsTitle}
+        </Text>
+      ),
       metrics: (
         <>
           <AssetsHubMetricWithIcon
@@ -130,7 +135,14 @@ export function AssetsHubDetail() {
     },
     {
       key: 'buffer',
-      title: overview.bufferTitle,
+      title: (
+        <div className="flex items-center gap-1">
+          <Text as="span" className="leading-4 font-medium" variant="copy">
+            {overview.bufferTitle}
+          </Text>
+          <Tooltip.Info content={interpolate(overview.bufferHint, { days: bufferDays })} />
+        </div>
+      ),
       titleAction: (
         <button
           aria-label={overview.bufferSwitchAria}

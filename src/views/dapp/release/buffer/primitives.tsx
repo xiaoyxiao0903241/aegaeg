@@ -6,11 +6,13 @@ import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 
 type BufferStat = {
   label: string
   value: string
   approx: string
+  hint?: string
 }
 
 function BufferStatCells({ stats }: { stats: ReadonlyArray<BufferStat> }) {
@@ -18,9 +20,12 @@ function BufferStatCells({ stats }: { stats: ReadonlyArray<BufferStat> }) {
     <div className="grid grid-cols-2 gap-x-2 gap-y-3 dapp:grid-cols-3">
       {stats.map((stat) => (
         <div className="grid min-w-0 gap-1" key={stat.label}>
-          <Text as="span" className="font-medium text-foreground/70" variant="support">
-            {stat.label}
-          </Text>
+          <div className="flex items-center gap-1">
+            <Text as="span" className="font-medium text-foreground/70" variant="support">
+              {stat.label}
+            </Text>
+            {stat.hint ? <Tooltip.Info content={stat.hint} /> : null}
+          </div>
           <Text as="strong" className="font-semibold break-all" variant="detail">
             <CountValue text={stat.value} />
           </Text>

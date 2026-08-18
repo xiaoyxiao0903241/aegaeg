@@ -63,6 +63,7 @@ export function BufferDetail() {
   const agxStats = [
     {
       label: t.release.buffer.entered,
+      hint: t.release.buffer.hints.enteredAgx,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiRaw: api?.cumulative_amount,
@@ -75,6 +76,7 @@ export function BufferDetail() {
     },
     {
       label: t.release.buffer.extracted,
+      hint: t.release.buffer.hints.extractedAgx,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiRaw: api?.released_amount,
@@ -87,6 +89,7 @@ export function BufferDetail() {
     },
     {
       label: t.release.labels.releasing,
+      hint: t.release.buffer.hints.releasingAgx,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiRaw: api?.releasing_amount,
@@ -103,6 +106,7 @@ export function BufferDetail() {
   const gagxStats = [
     {
       label: t.release.buffer.entered,
+      hint: t.release.buffer.hints.enteredGagx,
       value: chainReady ? `${formatTokenAmount(gagxAmount, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
       approx: formatUsdApprox(
         chainReady ? formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS) : 0,
@@ -111,6 +115,7 @@ export function BufferDetail() {
     },
     {
       label: t.release.buffer.extracted,
+      hint: t.release.buffer.hints.extractedGagx,
       value: chainReady ? `${formatTokenAmount(gagxClaimed, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
       approx: formatUsdApprox(
         chainReady ? formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS) : 0,
@@ -119,6 +124,7 @@ export function BufferDetail() {
     },
     {
       label: t.release.labels.releasing,
+      hint: t.release.buffer.hints.releasingGagx,
       value: chainReady ? `${formatTokenAmount(gagxReleasing, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
       approx: formatUsdApprox(
         chainReady ? formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS) : 0,

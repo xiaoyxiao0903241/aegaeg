@@ -18,6 +18,7 @@ import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { CalcNotesCard, CalcResultCard } from '~/views/dapp/staking/calc/primitives'
@@ -142,7 +143,8 @@ export function CalcDetail() {
         <Grid columns={3}>
           {aside.nodeCards.map((card, index) => {
             let value = PLACEHOLDER
-            let hint = card.hint
+            const hint = 'hint' in card ? card.hint : undefined
+            let note = 'note' in card ? card.note : undefined
             if (result && index === 0) {
               value = interpolate(aside.tags.day, { day: 1 })
             } else if (result && index === 1) {
@@ -151,12 +153,13 @@ export function CalcDetail() {
               })
             } else if (result && endEstimate && index === 2) {
               value = formatNumber(endEstimate.interestUsd, { digits: 2, prefix: '$' })
-              hint = `${endEstimate.ratePct >= 0 ? '+' : ''}${formatNumber(endEstimate.ratePct, { digits: 2 })}%`
+              note = `${endEstimate.ratePct >= 0 ? '+' : ''}${formatNumber(endEstimate.ratePct, { digits: 2 })}%`
             }
             return (
               <Tile key={card.label}>
                 <Tile.Label>
                   {index === 2 ? interpolate(aside.nodeEndLabel, { day: endDays }) : card.label}
+                  {hint ? <Tooltip.Info content={hint} /> : null}
                 </Tile.Label>
                 <div className="flex flex-wrap items-center gap-1.5">
                   <Text
@@ -172,9 +175,9 @@ export function CalcDetail() {
                   >
                     {value}
                   </Text>
-                  {hint ? (
+                  {note ? (
                     <Text as="span" className="text-foreground/40" variant="support">
-                      {hint}
+                      {note}
                     </Text>
                   ) : null}
                 </div>

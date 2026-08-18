@@ -473,6 +473,9 @@ const app = defineMessages({
         pendingUnlock: 'लंबित अनलॉक gAGX',
         cooling: 'कूलिंग gAGX',
         totalWithdrawn: 'कुल निकासी',
+        pendingUnlockHint: 'रिलीज़ पूल से टर्बाइन में दावा किया गया, अभी अनलॉक न हुआ कुल gAGX',
+        coolingHint: 'बाय-टू-अनलॉक पूरा करके कूलडाउन में कुल gAGX',
+        totalWithdrawnHint: 'टर्बाइन से वॉलेट में निकाला गया आजीवन gAGX',
       },
       faq: {
         items: [
@@ -1563,6 +1566,8 @@ const app = defineMessages({
         holdingsReleased: 'रिलीज़ हो गया',
         holdingsTotal: 'कुल होल्डिंग्स',
         bufferTitle: 'बफ़र पूल',
+        bufferHint:
+          'अनस्टेक के बाद मूलधन बफ़र पूल में {days} दिन की द्वितीयक रैखिक रिलीज़ में जाता है, जिससे अल्पकालिक बहिर्वाह का दबाव कम होता है और रिलीज़ की निरंतरता व बाज़ार स्थिरता संतुलित रहती है।',
         bufferTotal: 'Total',
         bufferReleased: 'रिलीज़ हो गया',
         bufferAssetAgx: 'AGX',
@@ -1636,9 +1641,18 @@ const app = defineMessages({
             { label: 'मेरी होल्डिंग्स' },
             { label: 'रिलीज़ हो गया' },
             { label: 'लंबित रिलीज़' },
-            { label: 'वर्तमान Rebase यील्ड' },
-            { label: 'वर्तमान Rebase बोनस' },
-            { label: 'कुल स्टेक यील्ड' },
+            {
+              label: 'वर्तमान Rebase यील्ड',
+              hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
+            },
+            {
+              label: 'वर्तमान Rebase बोनस',
+              hint: 'दावा न किया गया Rebase बोनस चक्रवृद्धि नहीं करता',
+            },
+            {
+              label: 'कुल स्टेक यील्ड',
+              hint: 'दावा की गई और न की गई स्टेकिंग आय का योग',
+            },
           ],
         },
         ops: {
@@ -1682,8 +1696,14 @@ const app = defineMessages({
             { label: 'मेरी होल्डिंग्स' },
             { label: 'रिलीज़ हो गया' },
             { label: 'लंबित रिलीज़' },
-            { label: 'वर्तमान Rebase यील्ड' },
-            { label: 'कुल LP बॉन्ड यील्ड' },
+            {
+              label: 'वर्तमान Rebase यील्ड',
+              hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
+            },
+            {
+              label: 'कुल LP बॉन्ड यील्ड',
+              hint: 'दावा की गई और न की गई LP बॉन्ड आय का योग',
+            },
           ],
         },
         ops: {
@@ -1731,8 +1751,14 @@ const app = defineMessages({
             { label: 'मेरी होल्डिंग्स' },
             { label: 'रिलीज़ हो गया' },
             { label: 'लंबित रिलीज़' },
-            { label: 'वर्तमान Rebase यील्ड' },
-            { label: 'कुल बर्न बॉन्ड यील्ड' },
+            {
+              label: 'वर्तमान Rebase यील्ड',
+              hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
+            },
+            {
+              label: 'कुल बर्न बॉन्ड यील्ड',
+              hint: 'दावा की गई और न की गई बर्न बॉन्ड आय का योग',
+            },
           ],
         },
         ops: {
@@ -1783,7 +1809,10 @@ const app = defineMessages({
             { label: 'मेरा माइनिंग स्टेक' },
             { label: 'रिलीज़ हो गया' },
             { label: 'वर्तमान माइनिंग आउटपुट' },
-            { label: 'कुल माइनिंग आउटपुट' },
+            {
+              label: 'कुल माइनिंग आउटपुट',
+              hint: 'दावा किए गए और न किए गए माइनिंग आउटपुट का योग',
+            },
           ],
         },
         ops: {
@@ -2030,8 +2059,14 @@ const app = defineMessages({
         { label: 'मेरी पोज़ीशन' },
         { label: 'रिलीज़ हो गया' },
         { label: 'लंबित रिलीज़' },
-        { label: 'वर्तमान Rebase यील्ड' },
-        { label: 'वर्तमान Rebase बोनस' },
+        {
+          label: 'वर्तमान Rebase यील्ड',
+          hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
+        },
+        {
+          label: 'वर्तमान Rebase बोनस',
+          hint: 'दावा न किया गया Rebase बोनस चक्रवृद्धि नहीं करता',
+        },
       ],
       xValue: {
         title: 'X दीर्घकालिक मूल्य',
@@ -2085,9 +2120,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'कुल स्टेक' },
-        { label: 'वर्तमान Epoch' },
+        {
+          label: 'वर्तमान Epoch',
+          hint: 'प्रत्येक Epoch लगभग {hours} घंटे ({blocks} ब्लॉक) है; स्टेकिंग आय Epoch पर सेटल होती है',
+        },
         { label: 'अगला rebase' },
-        { label: 'वर्तमान rebase यील्ड' },
+        {
+          label: 'वर्तमान rebase यील्ड',
+          hint: 'प्रत्येक Epoch (~{hours}घं) एक बार सेटल; प्रोटोकॉल स्थिति से समायोजित',
+        },
       ],
       mechanismTitle: 'स्टेकिंग कैसे काम करती है',
       mechanism:
@@ -2171,15 +2212,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP बॉन्ड TVL' },
-        { label: 'बॉन्ड प्रीमियम' },
+        {
+          label: 'बॉन्ड प्रीमियम',
+          hint: 'वर्तमान छूट मूल्य का AGX बाज़ार मूल्य के सापेक्ष प्रतिफल अंतर',
+        },
         { label: 'अगला Rebase भुगतान' },
-        { label: 'वर्तमान Rebase यील्ड' },
+        {
+          label: 'वर्तमान Rebase यील्ड',
+          hint: 'प्रत्येक Epoch (~{hours}घं) एक बार सेटल; प्रोटोकॉल स्थिति से समायोजित',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: 'दावा किया' },
         { label: 'लंबित रिलीज़' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
+        },
       ],
       mechanismTitle: 'LP बॉन्ड कैसे काम करता है',
       mechanism: 'BondHelper से USD1 zap अवधि BondDepository में। रिडीम और यील्ड संपत्ति पर।',
@@ -2254,15 +2304,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'बर्न बॉन्ड TVL' },
-        { label: 'बॉन्ड प्रीमियम' },
+        {
+          label: 'बॉन्ड प्रीमियम',
+          hint: 'वर्तमान छूट मूल्य का AGX बाज़ार मूल्य के सापेक्ष प्रतिफल अंतर',
+        },
         { label: 'अगला Rebase भुगतान' },
-        { label: 'वर्तमान Rebase यील्ड' },
+        {
+          label: 'वर्तमान Rebase यील्ड',
+          hint: 'प्रत्येक Epoch (~{hours}घं) एक बार सेटल; प्रोटोकॉल स्थिति से समायोजित',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'रिलीज़ हो गया' },
         { label: 'लंबित रिलीज़' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
+        },
       ],
       mechanismTitle: 'बर्न बॉन्ड कैसे काम करता है',
       mechanism: 'BondHelper से USD1 zap अवधि BurnBondDepository में। रिडीम और यील्ड संपत्ति पर।',
@@ -2324,8 +2383,14 @@ const app = defineMessages({
         { label: 'X माइनिंग TVL' },
         { label: 'X मूल्य' },
         { label: 'कुल माइंड' },
-        { label: 'दैनिक यील्ड दर' },
-        { label: 'अगला माइनिंग भुगतान' },
+        {
+          label: 'दैनिक यील्ड दर',
+          hint: 'प्रोटोकॉल यील्ड और नेटवर्क स्टेक से गतिशील आवंटन; प्रतिदिन समायोजित',
+        },
+        {
+          label: 'अगला माइनिंग भुगतान',
+          hint: 'X माइनिंग आय प्रतिदिन UTC 0 बजे उत्पन्न होती है',
+        },
       ],
       positionMetrics: [
         { label: 'मेरा माइनिंग स्टेक' },
@@ -2433,9 +2498,12 @@ const app = defineMessages({
         nodes: 'मुख्य नोड',
         nodeEndLabel: 'दिन {day} तक होल्ड',
         nodeCards: [
-          { label: 'ब्रेकईवन दिन', hint: 'इस दिन से बेचने पर सकारात्मक यील्ड प्राप्त हो सकती है' },
-          { label: 'मूलधन पूर्ण रिलीज़', hint: '' },
-          { label: 'अवधि अंत तक होल्ड', hint: 'मूलधन के सापेक्ष संचयी यील्ड' },
+          { label: 'ब्रेकईवन दिन', note: 'इस दिन से बेचने पर सकारात्मक यील्ड प्राप्त हो सकती है' },
+          {
+            label: 'मूलधन पूर्ण रिलीज़',
+            hint: 'मूलधन अवधि ब्लॉकों पर रैखिक खुलता है; उस दिन से पूरा निकाला जा सकता है',
+          },
+          { label: 'अवधि अंत तक होल्ड', note: 'मूलधन के सापेक्ष संचयी यील्ड' },
         ],
         notes: 'नोट्स',
         notesBody: 'केवल स्थानीय अनुमान — ऑन-चेन कोट या यील्ड वादा नहीं।',
@@ -2510,6 +2578,11 @@ const app = defineMessages({
       goTurbine: 'टरबाइन पर जाएँ',
       statsTitle: 'रिलीज़ पूल डेटा',
       lifetimeClaimed: 'पूल से आजीवन दावा',
+      hints: {
+        releasing: 'रिलीज़ पूल में शेष gAGX कुल, चुनी अवधि में रैखिक रूप से खुल रहा',
+        released: 'रिलीज़ पूरी हो चुका gAGX जिसे कभी भी टर्बाइन में दावा किया जा सकता है',
+        lifetimeClaimed: 'रिलीज़ पूल से टर्बाइन में दावा किया गया आजीवन gAGX',
+      },
       recordsTitle: 'रिलीज़ पूल रिकॉर्ड',
     },
     buffer: {
@@ -2522,6 +2595,14 @@ const app = defineMessages({
       statsTitle: 'बफ़र पूल डेटा',
       entered: 'कुल प्रवेश',
       extracted: 'कुल निकासी',
+      hints: {
+        enteredAgx: 'स्टेकिंग व बॉन्ड रिडीम के बाद बफ़र में गया कुल AGX',
+        extractedAgx: 'बफ़र से वॉलेट में निकाला गया कुल AGX',
+        releasingAgx: 'बफ़र में अभी रिलीज़ हो रहा AGX',
+        enteredGagx: 'X माइनिंग रिडीम के बाद बफ़र में गया कुल gAGX',
+        extractedGagx: 'बफ़र से वॉलेट में निकाला गया कुल gAGX',
+        releasingGagx: 'बफ़र में अभी रिलीज़ हो रहा gAGX',
+      },
       recordsTitle: 'बफ़र पूल रिकॉर्ड',
       mechanismTitle: 'मूलधन रिलीज़ प्रवाह',
       mechanismSubtitle:

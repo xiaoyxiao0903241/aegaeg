@@ -458,6 +458,9 @@ const app = defineMessages({
         pendingUnlock: '待解锁 gAGX',
         cooling: '冷却中 gAGX',
         totalWithdrawn: '累计已提取',
+        pendingUnlockHint: '从释放池领取进入涡轮、尚未解锁的 gAGX 总量',
+        coolingHint: '已完成买入解锁、正处于冷却期的 gAGX 总量',
+        totalWithdrawnHint: '历史累计从涡轮提取至钱包的 gAGX 总量',
       },
       faq: {
         items: [
@@ -1477,6 +1480,8 @@ const app = defineMessages({
         holdingsReleased: '可赎回已释放',
         holdingsTotal: '总持仓',
         bufferTitle: '缓冲池',
+        bufferHint:
+          '本金解除质押后将进入缓冲池进行 {days} 天的二次线性释放，降低短期集中流出对市场流动性的冲击，实现资金释放的连续性与市场稳定性的平衡。',
         bufferTotal: '在池总量',
         bufferReleased: '已提取',
         bufferAssetAgx: 'AGX',
@@ -1549,9 +1554,18 @@ const app = defineMessages({
             { label: '我的持仓' },
             { label: '已释放' },
             { label: '待释放' },
-            { label: '当前 Rebase 收益' },
-            { label: '当前 Rebase 加成' },
-            { label: '质押总收益' },
+            {
+              label: '当前 Rebase 收益',
+              hint: '未领取的 Rebase 收益将跟随每一次爆块奖励持续产生复利收益',
+            },
+            {
+              label: '当前 Rebase 加成',
+              hint: '未领取的 Rebase 加成不会产生复利收益',
+            },
+            {
+              label: '质押总收益',
+              hint: '已领取的质押收益与未领取的质押收益的总和',
+            },
           ],
         },
         ops: {
@@ -1595,8 +1609,14 @@ const app = defineMessages({
             { label: '我的持仓' },
             { label: '已释放' },
             { label: '待释放' },
-            { label: '当前Rebase 收益' },
-            { label: 'LP债券总收益' },
+            {
+              label: '当前Rebase 收益',
+              hint: '未领取的 Rebase 收益将跟随每一次爆块奖励持续产生复利收益',
+            },
+            {
+              label: 'LP债券总收益',
+              hint: '已领取的LP债券收益与未领取的LP债券收益的总和',
+            },
           ],
         },
         ops: {
@@ -1644,8 +1664,14 @@ const app = defineMessages({
             { label: '我的持仓' },
             { label: '已释放' },
             { label: '待释放' },
-            { label: '当前Rebase 收益' },
-            { label: '销毁债券总收益' },
+            {
+              label: '当前Rebase 收益',
+              hint: '未领取的 Rebase 收益将跟随每一次爆块奖励持续产生复利收益',
+            },
+            {
+              label: '销毁债券总收益',
+              hint: '已领取的销毁债券收益与未领取的销毁债券收益的总和',
+            },
           ],
         },
         ops: {
@@ -1695,7 +1721,10 @@ const app = defineMessages({
             { label: '我的挖矿质押' },
             { label: '已释放' },
             { label: '当前挖矿产出' },
-            { label: '挖矿总产出' },
+            {
+              label: '挖矿总产出',
+              hint: '已领取的挖矿产出与未领取的挖矿产出的总和',
+            },
           ],
         },
         ops: {
@@ -1935,8 +1964,14 @@ const app = defineMessages({
         { label: '我的持仓' },
         { label: '已释放' },
         { label: '待释放' },
-        { label: '当前Rebase 收益' },
-        { label: '当前Rebase 加成' },
+        {
+          label: '当前Rebase 收益',
+          hint: '未领取的 Rebase 收益将跟随每一次爆块奖励持续产生复利收益',
+        },
+        {
+          label: '当前Rebase 加成',
+          hint: '未领取的 Rebase 加成不会产生复利收益',
+        },
       ],
       xValue: {
         title: 'X长期价值系统',
@@ -1985,9 +2020,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '总质押量' },
-        { label: '当前 Epoch' },
+        {
+          label: '当前 Epoch',
+          hint: '每个 Epoch 约 {hours} 小时（{blocks} 区块），质押收益按 Epoch 结算',
+        },
         { label: '下一次 Rebase 发放' },
-        { label: '当前 Rebase 收益率' },
+        {
+          label: '当前 Rebase 收益率',
+          hint: '每个 Epoch（约 {hours} 小时）结算一次，随协议运行状态动态调节',
+        },
       ],
       mechanismTitle: '质押运行机制',
       mechanism:
@@ -2070,15 +2111,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP债券总质押量' },
-        { label: '债券溢价率' },
+        {
+          label: '债券溢价率',
+          hint: '当前折扣价相对 AGX 市场价的收益空间',
+        },
         { label: '下一次 Rebase 发放' },
-        { label: '当前 Rebase 收益率' },
+        {
+          label: '当前 Rebase 收益率',
+          hint: '每个 Epoch（约 {hours} 小时）结算一次，随协议运行状态动态调节',
+        },
       ],
       positionMetrics: [
         { label: '我的持仓' },
         { label: '已释放' },
         { label: '待释放' },
-        { label: '当前Rebase 收益' },
+        {
+          label: '当前Rebase 收益',
+          hint: '未领取的 Rebase 收益将跟随每一次爆块奖励持续产生复利收益',
+        },
       ],
       mechanismTitle: 'LP债券运行机制',
       mechanism: '经 BondHelper 以 USD1 zap 进入对应周期的 BondDepository。赎回与收益在资产页。',
@@ -2152,15 +2202,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '销毁债券总质押量' },
-        { label: '债券溢价率' },
+        {
+          label: '债券溢价率',
+          hint: '当前折扣价相对 AGX 市场价的收益空间',
+        },
         { label: '下一次 Rebase 发放' },
-        { label: '当前 Rebase 收益率' },
+        {
+          label: '当前 Rebase 收益率',
+          hint: '每个 Epoch（约 {hours} 小时）结算一次，随协议运行状态动态调节',
+        },
       ],
       positionMetrics: [
         { label: '我的持仓' },
         { label: '已释放' },
         { label: '待释放' },
-        { label: '当前Rebase 收益' },
+        {
+          label: '当前Rebase 收益',
+          hint: '未领取的 Rebase 收益将跟随每一次爆块奖励持续产生复利收益',
+        },
       ],
       mechanismTitle: '销毁债券运行机制',
       mechanism:
@@ -2223,8 +2282,14 @@ const app = defineMessages({
         { label: 'X挖矿总质押量' },
         { label: 'X 价格' },
         { label: '累计挖矿产出' },
-        { label: '当日收益率' },
-        { label: '下一次挖矿产出' },
+        {
+          label: '当日收益率',
+          hint: '按协议收益率与全网质押量动态分配，每日调节',
+        },
+        {
+          label: '下一次挖矿产出',
+          hint: 'X 挖矿收益每日 UTC 0 点产出',
+        },
       ],
       positionMetrics: [{ label: '我的挖矿质押' }, { label: '已释放' }, { label: '挖矿产出' }],
       mechanismTitle: 'X挖矿运行机制',
@@ -2335,15 +2400,15 @@ const app = defineMessages({
         nodeCards: [
           {
             label: '正收益起始日',
-            hint: '从该天起卖出可实现正收益',
+            note: '从该天起卖出可实现正收益',
           },
           {
             label: '本金完全释放',
-            hint: '',
+            hint: '本金按周期区块线性释放，该天起本金全部可提取',
           },
           {
             label: '持有至周期末日',
-            hint: '相对本金的累计收益示意',
+            note: '相对本金的累计收益示意',
           },
         ],
         notes: '计算说明',
@@ -2414,6 +2479,11 @@ const app = defineMessages({
       goTurbine: '前往涡轮',
       statsTitle: '释放池数据',
       lifetimeClaimed: '累计从释放池领取',
+      hints: {
+        releasing: '尚在释放池中、按所选周期线性释放的 gAGX 总量',
+        released: '已完成释放、可随时领取进入涡轮的 gAGX 总量',
+        lifetimeClaimed: '历史累计从释放池领取进入涡轮的 gAGX 总量',
+      },
       recordsTitle: '释放池记录',
     },
     buffer: {
@@ -2425,6 +2495,14 @@ const app = defineMessages({
       statsTitle: '缓冲池数据',
       entered: '累计进入',
       extracted: '累计提取',
+      hints: {
+        enteredAgx: '质押与债券赎回后累计进入缓冲池的 AGX 总量',
+        extractedAgx: '已从缓冲池提取至钱包的 AGX 总量',
+        releasingAgx: '尚在缓冲池释放中的 AGX 总量',
+        enteredGagx: 'X挖矿赎回后累计进入缓冲池的 gAGX 总量',
+        extractedGagx: '已从缓冲池提取至钱包的 gAGX 总量',
+        releasingGagx: '尚在缓冲池释放中的 gAGX 总量',
+      },
       recordsTitle: '缓冲池记录',
       mechanismTitle: '资金释放机制',
       mechanismSubtitle: '质押与债券本金采用双阶段释放模型，增强市场稳定性',

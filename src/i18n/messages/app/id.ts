@@ -478,6 +478,9 @@ const app = defineMessages({
         pendingUnlock: 'gAGX menunggu dibuka',
         cooling: 'gAGX dalam cooldown',
         totalWithdrawn: 'Total ditarik',
+        pendingUnlockHint: 'Total gAGX yang diklaim dari pool rilis ke Turbine dan belum dibuka',
+        coolingHint: 'Total gAGX yang sudah beli-untuk-unlock dan sedang cooldown',
+        totalWithdrawnHint: 'Total gAGX historis yang ditarik dari Turbine ke dompet',
       },
       faq: {
         items: [
@@ -1612,6 +1615,8 @@ const app = defineMessages({
         holdingsReleased: 'Dirilis',
         holdingsTotal: 'Total kepemilikan',
         bufferTitle: 'Pool buffer',
+        bufferHint:
+          'Setelah unstake, pokok masuk pool buffer untuk rilis linear sekunder {days} hari, menekan outflow jangka pendek terhadap likuiditas pasar dan menyeimbangkan kelangsungan rilis dengan stabilitas pasar.',
         bufferTotal: 'Total',
         bufferReleased: 'Dirilis',
         bufferAssetAgx: 'AGX',
@@ -1691,9 +1696,18 @@ const app = defineMessages({
             { label: 'Posisi saya' },
             { label: 'Dirilis' },
             { label: 'Menunggu rilis' },
-            { label: 'Yield Rebase saat ini' },
-            { label: 'Bonus Rebase saat ini' },
-            { label: 'Total yield staking' },
+            {
+              label: 'Yield Rebase saat ini',
+              hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
+            },
+            {
+              label: 'Bonus Rebase saat ini',
+              hint: 'Bonus Rebase yang belum diklaim tidak berbunga majemuk',
+            },
+            {
+              label: 'Total yield staking',
+              hint: 'Jumlah imbal hasil staking yang sudah dan belum diklaim',
+            },
           ],
         },
         ops: {
@@ -1738,8 +1752,14 @@ const app = defineMessages({
             { label: 'Posisi saya' },
             { label: 'Dirilis' },
             { label: 'Menunggu rilis' },
-            { label: 'Yield Rebase saat ini' },
-            { label: 'Total yield Bond LP' },
+            {
+              label: 'Yield Rebase saat ini',
+              hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
+            },
+            {
+              label: 'Total yield Bond LP',
+              hint: 'Jumlah imbal hasil LP Bond yang sudah dan belum diklaim',
+            },
           ],
         },
         ops: {
@@ -1789,8 +1809,14 @@ const app = defineMessages({
             { label: 'Posisi saya' },
             { label: 'Dirilis' },
             { label: 'Menunggu rilis' },
-            { label: 'Yield Rebase saat ini' },
-            { label: 'Total yield Bond Burn' },
+            {
+              label: 'Yield Rebase saat ini',
+              hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
+            },
+            {
+              label: 'Total yield Bond Burn',
+              hint: 'Jumlah imbal hasil Burn Bond yang sudah dan belum diklaim',
+            },
           ],
         },
         ops: {
@@ -1842,7 +1868,10 @@ const app = defineMessages({
             { label: 'Staking mining saya' },
             { label: 'Dirilis' },
             { label: 'Output mining saat ini' },
-            { label: 'Total output mining' },
+            {
+              label: 'Total output mining',
+              hint: 'Jumlah output mining yang sudah dan belum diklaim',
+            },
           ],
         },
         ops: {
@@ -2098,8 +2127,14 @@ const app = defineMessages({
         { label: 'Posisi saya' },
         { label: 'Dirilis' },
         { label: 'Menunggu rilis' },
-        { label: 'Yield Rebase saat ini' },
-        { label: 'Bonus Rebase saat ini' },
+        {
+          label: 'Yield Rebase saat ini',
+          hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
+        },
+        {
+          label: 'Bonus Rebase saat ini',
+          hint: 'Bonus Rebase yang belum diklaim tidak berbunga majemuk',
+        },
       ],
       xValue: {
         title: 'Sistem nilai jangka panjang X',
@@ -2153,9 +2188,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Total di-stake' },
-        { label: 'Epoch saat ini' },
+        {
+          label: 'Epoch saat ini',
+          hint: 'Setiap Epoch sekitar {hours} jam ({blocks} blok); imbal hasil staking settle per Epoch',
+        },
         { label: 'Rebase berikutnya' },
-        { label: 'Yield Rebase saat ini' },
+        {
+          label: 'Yield Rebase saat ini',
+          hint: 'Settle sekali per Epoch (~{hours} jam); menyesuaikan status protokol',
+        },
       ],
       mechanismTitle: 'Cara kerja staking',
       mechanism:
@@ -2239,15 +2280,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'TVL Bond LP' },
-        { label: 'Premi bond' },
+        {
+          label: 'Premi bond',
+          hint: 'Ruang imbal hasil harga diskon saat ini terhadap harga pasar AGX',
+        },
         { label: 'Pembayaran Rebase berikutnya' },
-        { label: 'Yield Rebase saat ini' },
+        {
+          label: 'Yield Rebase saat ini',
+          hint: 'Settle sekali per Epoch (~{hours} jam); menyesuaikan status protokol',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: 'Diklaim' },
         { label: 'Menunggu rilis' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
+        },
       ],
       mechanismTitle: 'Cara kerja LP Bond',
       mechanism:
@@ -2322,15 +2372,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'TVL Bond Burn' },
-        { label: 'Premi bond' },
+        {
+          label: 'Premi bond',
+          hint: 'Ruang imbal hasil harga diskon saat ini terhadap harga pasar AGX',
+        },
         { label: 'Pembayaran Rebase berikutnya' },
-        { label: 'Yield Rebase saat ini' },
+        {
+          label: 'Yield Rebase saat ini',
+          hint: 'Settle sekali per Epoch (~{hours} jam); menyesuaikan status protokol',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'Dirilis' },
         { label: 'Menunggu rilis' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
+        },
       ],
       mechanismTitle: 'Cara kerja Burn Bond',
       mechanism:
@@ -2393,8 +2452,14 @@ const app = defineMessages({
         { label: 'TVL X Mine' },
         { label: 'Harga X' },
         { label: 'Total hasil mining' },
-        { label: 'Tingkat yield harian' },
-        { label: 'Output mining berikutnya' },
+        {
+          label: 'Tingkat yield harian',
+          hint: 'Dialokasikan dinamis dari imbal hasil protokol dan stake jaringan; disesuaikan harian',
+        },
+        {
+          label: 'Output mining berikutnya',
+          hint: 'Imbal hasil mining X diproduksi setiap hari pukul 00:00 UTC',
+        },
       ],
       positionMetrics: [
         { label: 'Staking mining saya' },
@@ -2505,10 +2570,13 @@ const app = defineMessages({
         nodeCards: [
           {
             label: 'Hari mulai profit',
-            hint: 'Mulai hari itu, menjual dapat merealisasikan yield positif',
+            note: 'Mulai hari itu, menjual dapat merealisasikan yield positif',
           },
-          { label: 'Pokok sepenuhnya dirilis', hint: '' },
-          { label: 'Tahan hingga akhir periode', hint: 'Ilustrasi yield kumulatif vs pokok' },
+          {
+            label: 'Pokok sepenuhnya dirilis',
+            hint: 'Pokok rilis linear per blok periode; sejak hari itu seluruhnya bisa ditarik',
+          },
+          { label: 'Tahan hingga akhir periode', note: 'Ilustrasi yield kumulatif vs pokok' },
         ],
         notes: 'Catatan perhitungan',
         notesBody: 'Kalkulator ini hanya estimasi lokal, bukan kuotasi on-chain atau janji hasil.',
@@ -2583,6 +2651,12 @@ const app = defineMessages({
       goTurbine: 'Pergi ke Turbine',
       statsTitle: 'Data pool rilis',
       lifetimeClaimed: 'Total diklaim dari pool rilis',
+      hints: {
+        releasing:
+          'Total gAGX yang masih di pool rilis, dilepas linear sesuai periode yang dipilih',
+        released: 'gAGX yang sudah selesai rilis dan bisa diklaim ke Turbine kapan saja',
+        lifetimeClaimed: 'Total gAGX historis yang diklaim dari pool rilis ke Turbine',
+      },
       recordsTitle: 'Catatan pool rilis',
     },
     buffer: {
@@ -2595,6 +2669,14 @@ const app = defineMessages({
       statsTitle: 'Data pool buffer',
       entered: 'Total masuk',
       extracted: 'Total ditarik',
+      hints: {
+        enteredAgx: 'Total AGX yang masuk buffer setelah tebus staking dan bond',
+        extractedAgx: 'Total AGX yang ditarik dari buffer ke dompet',
+        releasingAgx: 'AGX yang masih rilis di buffer',
+        enteredGagx: 'Total gAGX yang masuk buffer setelah tebus X mining',
+        extractedGagx: 'Total gAGX yang ditarik dari buffer ke dompet',
+        releasingGagx: 'gAGX yang masih rilis di buffer',
+      },
       recordsTitle: 'Catatan pool buffer',
       mechanismTitle: 'Mekanisme rilis dana',
       mechanismSubtitle:

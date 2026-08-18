@@ -260,9 +260,10 @@ export function useXmineDetail() {
       : ZERO_PCT
   const lifetimeX = rewardLifetime.data ?? 0
 
-  const overviewItems: Array<{ label: string; value: ReactNode }> = [
+  const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: t.staking.xmine.overviewMetrics[0]?.label ?? '',
+      hint: t.staking.xmine.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(tvlGagx, priceUsd)}
@@ -273,6 +274,7 @@ export function useXmineDetail() {
     },
     {
       label: t.staking.xmine.overviewMetrics[1]?.label ?? '',
+      hint: t.staking.xmine.overviewMetrics[1]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(agxPerX, priceUsd)}
@@ -283,6 +285,7 @@ export function useXmineDetail() {
     },
     {
       label: t.staking.xmine.overviewMetrics[2]?.label ?? '',
+      hint: t.staking.xmine.overviewMetrics[2]?.hint,
       value: (
         <StakingTokenMetricValue
           icon="x"
@@ -292,6 +295,7 @@ export function useXmineDetail() {
     },
     {
       label: t.staking.xmine.overviewMetrics[3]?.label ?? '',
+      hint: t.staking.xmine.overviewMetrics[3]?.hint,
       value: (
         <Text as="span" className="font-semibold text-success" variant="copy">
           {dailyYield}
@@ -300,6 +304,7 @@ export function useXmineDetail() {
     },
     {
       label: t.staking.xmine.overviewMetrics[4]?.label ?? '',
+      hint: t.staking.xmine.overviewMetrics[4]?.hint,
       value: (
         <Text as="span" className="font-semibold" variant="detail">
           {NEXT_EMISSION_EMPTY}
@@ -335,7 +340,7 @@ export function useXmineDetail() {
       ? `${formatTokenAmount(chainPosition.data.pending, X_DECIMALS, 2)} X`
       : formatNumber(pendingX, { digits: 2, suffix: ' X' })
 
-  const positionItems: Array<{ label: string; value: ReactNode }> = [
+  const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: t.staking.xmine.positionMetrics[0]?.label ?? '',
       value: (

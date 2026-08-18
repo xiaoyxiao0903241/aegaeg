@@ -469,6 +469,10 @@ const app = defineMessages({
         pendingUnlock: 'Kilidi açılacak gAGX',
         cooling: 'Soğumadaki gAGX',
         totalWithdrawn: 'Toplam çekilen',
+        pendingUnlockHint:
+          'Serbest bırakma havuzundan Türbine alınan, henüz kilidi açılmamış toplam gAGX',
+        coolingHint: 'Alımla kilidi açılmış ve soğuma süresindeki toplam gAGX',
+        totalWithdrawnHint: 'Türbinden cüzdana çekilen kümülatif gAGX',
       },
       faq: {
         items: [
@@ -1605,6 +1609,8 @@ const app = defineMessages({
         holdingsReleased: 'Serbest bırakıldı',
         holdingsTotal: 'Toplam pozisyon',
         bufferTitle: 'Tampon havuzu',
+        bufferHint:
+          'Stake çözülünce anapara, {days} günlük ikincil doğrusal serbest bırakma için tampon havuzuna girer; kısa vadeli toplu çıkışın likiditeye baskısını azaltır ve süreklilik ile piyasa istikrarını dengeler.',
         bufferTotal: 'Total',
         bufferReleased: 'Serbest bırakıldı',
         bufferAssetAgx: 'AGX',
@@ -1683,9 +1689,18 @@ const app = defineMessages({
             { label: 'Pozisyonlarım' },
             { label: 'Serbest bırakıldı' },
             { label: 'Serbest bırakılacak' },
-            { label: 'Güncel Rebase getiri oranı' },
-            { label: 'Güncel Rebase bonusu' },
-            { label: 'Toplam stake getirisi' },
+            {
+              label: 'Güncel Rebase getiri oranı',
+              hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
+            },
+            {
+              label: 'Güncel Rebase bonusu',
+              hint: 'Talep edilmemiş Rebase bonusu bileşik getiri üretmez',
+            },
+            {
+              label: 'Toplam stake getirisi',
+              hint: 'Talep edilmiş ve edilmemiş stake getirisinin toplamı',
+            },
           ],
         },
         ops: {
@@ -1729,8 +1744,14 @@ const app = defineMessages({
             { label: 'Pozisyonlarım' },
             { label: 'Serbest bırakıldı' },
             { label: 'Serbest bırakılacak' },
-            { label: 'Güncel Rebase getiri oranı' },
-            { label: 'Toplam LP tahvil getirisi' },
+            {
+              label: 'Güncel Rebase getiri oranı',
+              hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
+            },
+            {
+              label: 'Toplam LP tahvil getirisi',
+              hint: 'Talep edilmiş ve edilmemiş LP tahvil getirisinin toplamı',
+            },
           ],
         },
         ops: {
@@ -1778,8 +1799,14 @@ const app = defineMessages({
             { label: 'Pozisyonlarım' },
             { label: 'Serbest bırakıldı' },
             { label: 'Serbest bırakılacak' },
-            { label: 'Güncel Rebase getiri oranı' },
-            { label: 'Toplam yakım tahvil getirisi' },
+            {
+              label: 'Güncel Rebase getiri oranı',
+              hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
+            },
+            {
+              label: 'Toplam yakım tahvil getirisi',
+              hint: 'Talep edilmiş ve edilmemiş yakım tahvili getirisinin toplamı',
+            },
           ],
         },
         ops: {
@@ -1831,7 +1858,10 @@ const app = defineMessages({
             { label: 'Madencilik stake’im' },
             { label: 'Serbest bırakıldı' },
             { label: 'Güncel madencilik çıktısı' },
-            { label: 'Toplam madencilik çıktısı' },
+            {
+              label: 'Toplam madencilik çıktısı',
+              hint: 'Talep edilmiş ve edilmemiş madencilik çıktısının toplamı',
+            },
           ],
         },
         ops: {
@@ -2096,8 +2126,14 @@ const app = defineMessages({
         { label: 'Pozisyonum' },
         { label: 'Serbest bırakıldı' },
         { label: 'Serbest bırakılacak' },
-        { label: 'Güncel Rebase getiri oranı' },
-        { label: 'Güncel Rebase bonusu' },
+        {
+          label: 'Güncel Rebase getiri oranı',
+          hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
+        },
+        {
+          label: 'Güncel Rebase bonusu',
+          hint: 'Talep edilmemiş Rebase bonusu bileşik getiri üretmez',
+        },
       ],
       xValue: {
         title: 'X uzun vadeli değer sistemi',
@@ -2151,9 +2187,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Toplam stake' },
-        { label: 'Güncel Epoch' },
+        {
+          label: 'Güncel Epoch',
+          hint: 'Her Epoch yaklaşık {hours} sa ({blocks} blok); stake getirisi Epoch başına uzlaşır',
+        },
         { label: 'Sonraki Rebase dağıtımı' },
-        { label: 'Güncel Rebase getiri oranı' },
+        {
+          label: 'Güncel Rebase getiri oranı',
+          hint: 'Her Epoch’ta (~{hours} sa) bir kez uzlaşır; protokol durumuna göre ayarlanır',
+        },
       ],
       mechanismTitle: 'Staking işleyişi',
       mechanism:
@@ -2237,15 +2279,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP tahvil toplam TVL' },
-        { label: 'Tahvil prim oranı' },
+        {
+          label: 'Tahvil prim oranı',
+          hint: 'Güncel indirimli fiyatın AGX piyasa fiyatına göre getiri farkı',
+        },
         { label: 'Sonraki Rebase dağıtımı' },
-        { label: 'Güncel Rebase getiri oranı' },
+        {
+          label: 'Güncel Rebase getiri oranı',
+          hint: 'Her Epoch’ta (~{hours} sa) bir kez uzlaşır; protokol durumuna göre ayarlanır',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: 'Talep' },
         { label: 'Serbest bırakılacak' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
+        },
       ],
       mechanismTitle: 'LP Tahvil işleyişi',
       mechanism:
@@ -2320,15 +2371,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Yakım tahvil toplam TVL' },
-        { label: 'Tahvil prim oranı' },
+        {
+          label: 'Tahvil prim oranı',
+          hint: 'Güncel indirimli fiyatın AGX piyasa fiyatına göre getiri farkı',
+        },
         { label: 'Sonraki Rebase dağıtımı' },
-        { label: 'Güncel Rebase getiri oranı' },
+        {
+          label: 'Güncel Rebase getiri oranı',
+          hint: 'Her Epoch’ta (~{hours} sa) bir kez uzlaşır; protokol durumuna göre ayarlanır',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'Serbest bırakıldı' },
         { label: 'Serbest bırakılacak' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
+        },
       ],
       mechanismTitle: 'Yakım Tahvili işleyişi',
       mechanism:
@@ -2391,8 +2451,14 @@ const app = defineMessages({
         { label: 'X Madencilik toplam TVL' },
         { label: 'X fiyatı' },
         { label: 'Kümülatif madencilik çıktısı' },
-        { label: 'Günlük getiri oranı' },
-        { label: 'Sonraki madencilik çıktısı' },
+        {
+          label: 'Günlük getiri oranı',
+          hint: 'Protokol getirisi ve ağ stake’ine göre dinamik dağıtılır; günlük ayarlanır',
+        },
+        {
+          label: 'Sonraki madencilik çıktısı',
+          hint: 'X madencilik getirisi her gün 00:00 UTC’de üretilir',
+        },
       ],
       positionMetrics: [
         { label: 'Madencilik stake’im' },
@@ -2502,10 +2568,13 @@ const app = defineMessages({
         nodeCards: [
           {
             label: 'Pozitif getiri başlangıç günü',
-            hint: 'Bu günden itibaren satmak pozitif getiri sağlayabilir',
+            note: 'Bu günden itibaren satmak pozitif getiri sağlayabilir',
           },
-          { label: 'Anapara tamamen serbest bırakıldı', hint: '' },
-          { label: 'Süre sonuna kadar tut', hint: 'Anaparaya göre kümülatif getiri gösterimi' },
+          {
+            label: 'Anapara tamamen serbest bırakıldı',
+            hint: 'Anapara dönem bloklarıyla doğrusal serbest kalır; o günden itibaren tamamı çekilebilir',
+          },
+          { label: 'Süre sonuna kadar tut', note: 'Anaparaya göre kümülatif getiri gösterimi' },
         ],
         notes: 'Hesaplama notları',
         notesBody: 'Yalnızca yerel tahmin — zincir üstü teklif veya getiri vaadi değildir.',
@@ -2583,6 +2652,11 @@ const app = defineMessages({
       goTurbine: 'Türbin’e git',
       statsTitle: 'Serbest bırakma havuzu verileri',
       lifetimeClaimed: 'Havuzdan kümülatif talep',
+      hints: {
+        releasing: 'Serbest bırakma havuzunda kalan, seçilen dönemde doğrusal açılan toplam gAGX',
+        released: 'Serbest bırakılması bitmiş, istediğiniz an Türbine talep edilebilen gAGX',
+        lifetimeClaimed: 'Serbest bırakma havuzundan Türbine talep edilen kümülatif gAGX',
+      },
       recordsTitle: 'Serbest bırakma havuzu kayıtları',
     },
     buffer: {
@@ -2595,6 +2669,14 @@ const app = defineMessages({
       statsTitle: 'Tampon havuzu verileri',
       entered: 'Toplam giriş',
       extracted: 'Toplam çekilen',
+      hints: {
+        enteredAgx: 'Stake ve tahvil bozumundan sonra tampona giren kümülatif AGX',
+        extractedAgx: 'Tampondan cüzdana çekilen toplam AGX',
+        releasingAgx: 'Tamponda hâlâ serbest bırakılan AGX',
+        enteredGagx: 'X madenciliği bozumundan sonra tampona giren kümülatif gAGX',
+        extractedGagx: 'Tampondan cüzdana çekilen toplam gAGX',
+        releasingGagx: 'Tamponda hâlâ serbest bırakılan gAGX',
+      },
       recordsTitle: 'Tampon havuzu kayıtları',
       mechanismTitle: 'Fon serbest bırakma mekanizması',
       mechanismSubtitle:

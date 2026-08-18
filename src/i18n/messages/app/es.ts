@@ -482,6 +482,10 @@ const app = defineMessages({
         pendingUnlock: 'gAGX pendiente de desbloqueo',
         cooling: 'gAGX en espera',
         totalWithdrawn: 'Retirado acumulado',
+        pendingUnlockHint:
+          'Total de gAGX reclamado del pool de liberación al Turbine que aún no se ha desbloqueado',
+        coolingHint: 'Total de gAGX que ya desbloqueó con compra y está en enfriamiento',
+        totalWithdrawnHint: 'gAGX acumulado retirado del Turbine a la cartera',
       },
       faq: {
         items: [
@@ -1613,6 +1617,8 @@ const app = defineMessages({
         holdingsReleased: 'Liberado',
         holdingsTotal: 'Posiciones totales',
         bufferTitle: 'Pool búfer',
+        bufferHint:
+          'Tras desestacar, el principal entra en el búfer para una liberación lineal secundaria de {days} días, reduciendo la presión de salida concentrada a corto plazo sobre la liquidez y equilibrando continuidad y estabilidad.',
         bufferTotal: 'Total',
         bufferReleased: 'Liberado',
         bufferAssetAgx: 'AGX',
@@ -1692,9 +1698,18 @@ const app = defineMessages({
             { label: 'Mis posiciones' },
             { label: 'Liberado' },
             { label: 'Pendiente de liberación' },
-            { label: 'Rendimiento Rebase actual' },
-            { label: 'Bonificación Rebase actual' },
-            { label: 'Rendimiento total de staking' },
+            {
+              label: 'Rendimiento Rebase actual',
+              hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
+            },
+            {
+              label: 'Bonificación Rebase actual',
+              hint: 'El bono Rebase no reclamado no capitaliza',
+            },
+            {
+              label: 'Rendimiento total de staking',
+              hint: 'Suma del rendimiento de staking reclamado y no reclamado',
+            },
           ],
         },
         ops: {
@@ -1740,8 +1755,14 @@ const app = defineMessages({
             { label: 'Mis posiciones' },
             { label: 'Liberado' },
             { label: 'Pendiente de liberación' },
-            { label: 'Rendimiento Rebase actual' },
-            { label: 'Rendimiento total del bono LP' },
+            {
+              label: 'Rendimiento Rebase actual',
+              hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
+            },
+            {
+              label: 'Rendimiento total del bono LP',
+              hint: 'Suma del rendimiento de bonos LP reclamado y no reclamado',
+            },
           ],
         },
         ops: {
@@ -1791,8 +1812,14 @@ const app = defineMessages({
             { label: 'Mis posiciones' },
             { label: 'Liberado' },
             { label: 'Pendiente de liberación' },
-            { label: 'Rendimiento Rebase actual' },
-            { label: 'Rendimiento total del bono de quema' },
+            {
+              label: 'Rendimiento Rebase actual',
+              hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
+            },
+            {
+              label: 'Rendimiento total del bono de quema',
+              hint: 'Suma del rendimiento de bonos de quema reclamado y no reclamado',
+            },
           ],
         },
         ops: {
@@ -1845,7 +1872,10 @@ const app = defineMessages({
             { label: 'Mi staking de minado' },
             { label: 'Liberado' },
             { label: 'Producción de minado actual' },
-            { label: 'Producción total de minado' },
+            {
+              label: 'Producción total de minado',
+              hint: 'Suma de la producción de minería reclamada y no reclamada',
+            },
           ],
         },
         ops: {
@@ -2108,8 +2138,14 @@ const app = defineMessages({
         { label: 'Mi posición' },
         { label: 'Liberado' },
         { label: 'Pendiente de liberación' },
-        { label: 'Rendimiento Rebase actual' },
-        { label: 'Bonificación Rebase actual' },
+        {
+          label: 'Rendimiento Rebase actual',
+          hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
+        },
+        {
+          label: 'Bonificación Rebase actual',
+          hint: 'El bono Rebase no reclamado no capitaliza',
+        },
       ],
       xValue: {
         title: 'Sistema de valor a largo plazo de X',
@@ -2163,9 +2199,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Total en staking' },
-        { label: 'Epoch actual' },
+        {
+          label: 'Epoch actual',
+          hint: 'Cada Epoch dura unos {hours} h ({blocks} bloques); el rendimiento de staking se liquida por Epoch',
+        },
         { label: 'Próximo pago Rebase' },
-        { label: 'Rendimiento Rebase actual' },
+        {
+          label: 'Rendimiento Rebase actual',
+          hint: 'Se liquida una vez por Epoch (~{hours} h); se ajusta con el estado del protocolo',
+        },
       ],
       mechanismTitle: 'Cómo funciona el staking',
       mechanism:
@@ -2249,15 +2291,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'TVL total del bono LP' },
-        { label: 'Prima del bono' },
+        {
+          label: 'Prima del bono',
+          hint: 'Margen de retorno del descuento actual frente al precio de mercado de AGX',
+        },
         { label: 'Próximo pago Rebase' },
-        { label: 'Rendimiento Rebase actual' },
+        {
+          label: 'Rendimiento Rebase actual',
+          hint: 'Se liquida una vez por Epoch (~{hours} h); se ajusta con el estado del protocolo',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: 'Reclamado' },
         { label: 'Pendiente de liberación' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
+        },
       ],
       mechanismTitle: 'Cómo funciona el bono LP',
       mechanism:
@@ -2333,15 +2384,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'TVL total del bono de quema' },
-        { label: 'Prima del bono' },
+        {
+          label: 'Prima del bono',
+          hint: 'Margen de retorno del descuento actual frente al precio de mercado de AGX',
+        },
         { label: 'Próximo pago Rebase' },
-        { label: 'Rendimiento Rebase actual' },
+        {
+          label: 'Rendimiento Rebase actual',
+          hint: 'Se liquida una vez por Epoch (~{hours} h); se ajusta con el estado del protocolo',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'Liberado' },
         { label: 'Pendiente de liberación' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
+        },
       ],
       mechanismTitle: 'Cómo funciona el bono de quema',
       mechanism:
@@ -2404,8 +2464,14 @@ const app = defineMessages({
         { label: 'TVL total de minado X' },
         { label: 'Precio de X' },
         { label: 'Producción de minado acumulada' },
-        { label: 'Tasa de rendimiento del día' },
-        { label: 'Próxima producción de minado' },
+        {
+          label: 'Tasa de rendimiento del día',
+          hint: 'Se asigna dinámicamente según el rendimiento del protocolo y el stake de la red; se ajusta a diario',
+        },
+        {
+          label: 'Próxima producción de minado',
+          hint: 'El rendimiento de minería X se produce a diario a las 00:00 UTC',
+        },
       ],
       positionMetrics: [
         { label: 'Mi staking de minado' },
@@ -2519,12 +2585,15 @@ const app = defineMessages({
         nodeCards: [
           {
             label: 'Día de inicio de rendimiento positivo',
-            hint: 'Desde ese día, vender puede realizar rendimiento positivo',
+            note: 'Desde ese día, vender puede realizar rendimiento positivo',
           },
-          { label: 'Principal totalmente liberado', hint: '' },
+          {
+            label: 'Principal totalmente liberado',
+            hint: 'El principal se libera linealmente por bloques del periodo; desde ese día se puede retirar por completo',
+          },
           {
             label: 'Mantener hasta el último día del periodo',
-            hint: 'Rendimiento acumulado relativo al principal',
+            note: 'Rendimiento acumulado relativo al principal',
           },
         ],
         notes: 'Notas del cálculo',
@@ -2607,6 +2676,12 @@ const app = defineMessages({
       goTurbine: 'Ir a Turbina',
       statsTitle: 'Datos del pool de liberación',
       lifetimeClaimed: 'Reclamado acumulado del pool de liberación',
+      hints: {
+        releasing:
+          'Total de gAGX aún en el pool de liberación, liberándose linealmente en el periodo elegido',
+        released: 'gAGX ya liberado que se puede reclamar al Turbine en cualquier momento',
+        lifetimeClaimed: 'gAGX acumulado reclamado del pool de liberación al Turbine',
+      },
       recordsTitle: 'Registros del pool de liberación',
     },
     buffer: {
@@ -2619,6 +2694,14 @@ const app = defineMessages({
       statsTitle: 'Datos del pool búfer',
       entered: 'Entrada acumulada',
       extracted: 'Retirado acumulado',
+      hints: {
+        enteredAgx: 'Total de AGX que entró al búfer tras redimir staking y bonos',
+        extractedAgx: 'Total de AGX retirado del búfer a la cartera',
+        releasingAgx: 'AGX aún en liberación dentro del búfer',
+        enteredGagx: 'Total de gAGX que entró al búfer tras redimir minería X',
+        extractedGagx: 'Total de gAGX retirado del búfer a la cartera',
+        releasingGagx: 'gAGX aún en liberación dentro del búfer',
+      },
       recordsTitle: 'Registros del pool búfer',
       mechanismTitle: 'Mecanismo de liberación de fondos',
       mechanismSubtitle:

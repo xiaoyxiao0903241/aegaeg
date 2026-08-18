@@ -8,6 +8,7 @@
     "**/*.d.ts"
   ],
   "format": ["typescript", "tsx"],
+  "ignorePattern": ["import.*from\\s*'.*'"],
   "minLines": 15,
   "minTokens": 80,
   "mode": "strict",

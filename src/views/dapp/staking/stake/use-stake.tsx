@@ -169,9 +169,10 @@ export function useStakeDetail() {
   const epochNumber = overviewQuery.data?.epochNumber ?? ZERO_BI
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
 
-  const overviewItems: Array<{ label: string; value: ReactNode }> = [
+  const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: t.staking.stake.overviewMetrics[0]?.label ?? '总质押量',
+      hint: t.staking.stake.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(poolAgx, priceUsd)}
@@ -182,10 +183,12 @@ export function useStakeDetail() {
     },
     {
       label: t.staking.stake.overviewMetrics[1]?.label ?? '当前 Epoch',
+      hint: t.staking.stake.overviewMetrics[1]?.hint,
       value: `#${epochNumber.toString()}`,
     },
     {
       label: t.staking.stake.overviewMetrics[2]?.label ?? '下一次 Rebase 发放',
+      hint: t.staking.stake.overviewMetrics[2]?.hint,
       value: (
         <RebaseCountdownValue
           currentBlock={overviewQuery.data?.currentBlock}
@@ -196,6 +199,7 @@ export function useStakeDetail() {
     },
     {
       label: t.staking.stake.overviewMetrics[3]?.label ?? '当前 Rebase 收益率',
+      hint: t.staking.stake.overviewMetrics[3]?.hint,
       value: rebaseLabel,
     },
   ]
@@ -218,9 +222,10 @@ export function useStakeDetail() {
   const bonusGagx = formatTokenAmountToNumber(extraInterest, GAGX_DECIMALS)
 
   const metrics = t.staking.aside.positionMetrics
-  const positionItems: Array<{ label: string; value: ReactNode }> = [
+  const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: metrics[0]?.label ?? '我的持仓',
+      hint: metrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeHeld, priceUsd)}
@@ -231,6 +236,7 @@ export function useStakeDetail() {
     },
     {
       label: metrics[1]?.label ?? '已释放',
+      hint: metrics[1]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeReleased, priceUsd)}
@@ -241,6 +247,7 @@ export function useStakeDetail() {
     },
     {
       label: metrics[2]?.label ?? '待释放',
+      hint: metrics[2]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakePending, priceUsd)}
@@ -251,6 +258,7 @@ export function useStakeDetail() {
     },
     {
       label: metrics[3]?.label ?? '当前Rebase 收益',
+      hint: metrics[3]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
@@ -261,6 +269,7 @@ export function useStakeDetail() {
     },
     {
       label: metrics[4]?.label ?? '当前Rebase 加成',
+      hint: metrics[4]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(bonusGagx, priceUsd)}

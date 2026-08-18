@@ -177,9 +177,10 @@ export function useBondDetail(kind: BondKind) {
   const pending = formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS)
   const rebaseGagx = formatTokenAmountToNumber(profit, GAGX_DECIMALS)
 
-  const overviewItems: Array<{ label: string; value: ReactNode }> = [
+  const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: copy.overviewMetrics[0]?.label ?? '',
+      hint: copy.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(totalDepositNum, priceUsd)}
@@ -190,10 +191,12 @@ export function useBondDetail(kind: BondKind) {
     },
     {
       label: copy.overviewMetrics[1]?.label ?? '',
+      hint: copy.overviewMetrics[1]?.hint,
       value: premiumLabel,
     },
     {
       label: copy.overviewMetrics[2]?.label ?? '',
+      hint: copy.overviewMetrics[2]?.hint,
       value: (
         <RebaseCountdownValue
           currentBlock={overviewQuery.data?.currentBlock}
@@ -204,13 +207,15 @@ export function useBondDetail(kind: BondKind) {
     },
     {
       label: copy.overviewMetrics[3]?.label ?? '',
+      hint: copy.overviewMetrics[3]?.hint,
       value: rebaseLabel,
     },
   ]
 
-  const positionItems: Array<{ label: string; value: ReactNode }> = [
+  const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: copy.positionMetrics[0]?.label ?? '',
+      hint: copy.positionMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(held, priceUsd)}
@@ -221,6 +226,7 @@ export function useBondDetail(kind: BondKind) {
     },
     {
       label: copy.positionMetrics[1]?.label ?? '',
+      hint: copy.positionMetrics[1]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(released, priceUsd)}
@@ -231,6 +237,7 @@ export function useBondDetail(kind: BondKind) {
     },
     {
       label: copy.positionMetrics[2]?.label ?? '',
+      hint: copy.positionMetrics[2]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(pending, priceUsd)}
@@ -241,6 +248,7 @@ export function useBondDetail(kind: BondKind) {
     },
     {
       label: copy.positionMetrics[3]?.label ?? '',
+      hint: copy.positionMetrics[3]?.hint,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}

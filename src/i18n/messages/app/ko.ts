@@ -474,6 +474,9 @@ const app = defineMessages({
         pendingUnlock: '잠금 해제 대기 gAGX',
         cooling: '쿨다운 중 gAGX',
         totalWithdrawn: '누적 출금',
+        pendingUnlockHint: '릴리스 풀에서 터빈으로 수령했지만 아직 잠금 해제되지 않은 gAGX 총량',
+        coolingHint: '매수 잠금 해제를 마치고 쿨다운 중인 gAGX 총량',
+        totalWithdrawnHint: '터빈에서 지갑으로 인출한 누적 gAGX',
       },
       faq: {
         items: [
@@ -1565,6 +1568,8 @@ const app = defineMessages({
         holdingsReleased: '릴리스됨',
         holdingsTotal: '총 보유',
         bufferTitle: '버퍼 풀',
+        bufferHint:
+          '원금 언스테이킹 후 버퍼 풀에서 {days}일 이차 선형 릴리스가 진행되어 단기 집중 유출이 시장 유동성에 주는 충격을 줄이고, 자금 방출의 연속성과 시장 안정성의 균형을 맞춥니다.',
         bufferTotal: 'Total',
         bufferReleased: '릴리스됨',
         bufferAssetAgx: 'AGX',
@@ -1637,9 +1642,18 @@ const app = defineMessages({
             { label: '내 보유' },
             { label: '릴리스됨' },
             { label: '릴리스 대기' },
-            { label: '현재 Rebase 수익률' },
-            { label: '현재 Rebase 가산' },
-            { label: '스테이킹 총 수익' },
+            {
+              label: '현재 Rebase 수익률',
+              hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
+            },
+            {
+              label: '현재 Rebase 가산',
+              hint: '미수령 Rebase 보너스는 복리를 만들지 않습니다',
+            },
+            {
+              label: '스테이킹 총 수익',
+              hint: '수령한 스테이킹 수익과 미수령 스테이킹 수익의 합',
+            },
           ],
         },
         ops: {
@@ -1683,8 +1697,14 @@ const app = defineMessages({
             { label: '내 보유' },
             { label: '릴리스됨' },
             { label: '릴리스 대기' },
-            { label: '현재 Rebase 수익률' },
-            { label: 'LP 채권 총 수익' },
+            {
+              label: '현재 Rebase 수익률',
+              hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
+            },
+            {
+              label: 'LP 채권 총 수익',
+              hint: '수령한 LP 채권 수익과 미수령 LP 채권 수익의 합',
+            },
           ],
         },
         ops: {
@@ -1732,8 +1752,14 @@ const app = defineMessages({
             { label: '내 보유' },
             { label: '릴리스됨' },
             { label: '릴리스 대기' },
-            { label: '현재 Rebase 수익률' },
-            { label: '소각 채권 총 수익' },
+            {
+              label: '현재 Rebase 수익률',
+              hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
+            },
+            {
+              label: '소각 채권 총 수익',
+              hint: '수령한 소각 채권 수익과 미수령 소각 채권 수익의 합',
+            },
           ],
         },
         ops: {
@@ -1784,7 +1810,10 @@ const app = defineMessages({
             { label: '내 마이닝 스테이킹' },
             { label: '릴리스됨' },
             { label: '현재 마이닝 산출' },
-            { label: '마이닝 총 산출' },
+            {
+              label: '마이닝 총 산출',
+              hint: '수령한 채굴 산출과 미수령 채굴 산출의 합',
+            },
           ],
         },
         ops: {
@@ -2031,8 +2060,14 @@ const app = defineMessages({
         { label: '내 포지션' },
         { label: '릴리스됨' },
         { label: '릴리스 대기' },
-        { label: '현재 Rebase 수익률' },
-        { label: '현재 Rebase 가산' },
+        {
+          label: '현재 Rebase 수익률',
+          hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
+        },
+        {
+          label: '현재 Rebase 가산',
+          hint: '미수령 Rebase 보너스는 복리를 만들지 않습니다',
+        },
       ],
       xValue: {
         title: 'X 장기 가치 시스템',
@@ -2086,9 +2121,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '총 스테이킹량' },
-        { label: '현재 Epoch' },
+        {
+          label: '현재 Epoch',
+          hint: '각 Epoch는 약 {hours}시간({blocks}블록)이며, 스테이킹 수익은 Epoch마다 정산됩니다',
+        },
         { label: '다음 Rebase 지급' },
-        { label: '현재 Rebase 수익률' },
+        {
+          label: '현재 Rebase 수익률',
+          hint: 'Epoch마다(약 {hours}시간) 한 번 정산되며 프로토콜 상태에 따라 동적으로 조절됩니다',
+        },
       ],
       mechanismTitle: '스테이킹 운영 메커니즘',
       mechanism:
@@ -2171,15 +2212,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP 채권 총 스테이킹량' },
-        { label: '채권 프리미엄율' },
+        {
+          label: '채권 프리미엄율',
+          hint: '현재 할인가가 AGX 시장가 대비 갖는 수익 여지',
+        },
         { label: '다음 Rebase 지급' },
-        { label: '현재 Rebase 수익률' },
+        {
+          label: '현재 Rebase 수익률',
+          hint: 'Epoch마다(약 {hours}시간) 한 번 정산되며 프로토콜 상태에 따라 동적으로 조절됩니다',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: '수령' },
         { label: '릴리스 대기' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
+        },
       ],
       mechanismTitle: 'LP 채권 운영 메커니즘',
       mechanism:
@@ -2254,15 +2304,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '소각 채권 총 스테이킹량' },
-        { label: '채권 프리미엄율' },
+        {
+          label: '채권 프리미엄율',
+          hint: '현재 할인가가 AGX 시장가 대비 갖는 수익 여지',
+        },
         { label: '다음 Rebase 지급' },
-        { label: '현재 Rebase 수익률' },
+        {
+          label: '현재 Rebase 수익률',
+          hint: 'Epoch마다(약 {hours}시간) 한 번 정산되며 프로토콜 상태에 따라 동적으로 조절됩니다',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: '릴리스됨' },
         { label: '릴리스 대기' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
+        },
       ],
       mechanismTitle: '소각 채권 운영 메커니즘',
       mechanism:
@@ -2325,8 +2384,14 @@ const app = defineMessages({
         { label: 'X 마이닝 총 스테이킹량' },
         { label: 'X 가격' },
         { label: '누적 마이닝 산출' },
-        { label: '당일 수익률' },
-        { label: '다음 마이닝 산출' },
+        {
+          label: '당일 수익률',
+          hint: '프로토콜 수익률과 전역 스테이킹량에 따라 동적으로 배분되며 매일 조절됩니다',
+        },
+        {
+          label: '다음 마이닝 산출',
+          hint: 'X 채굴 수익은 매일 UTC 0시에 산출됩니다',
+        },
       ],
       positionMetrics: [
         { label: '내 마이닝 스테이킹' },
@@ -2435,9 +2500,12 @@ const app = defineMessages({
         nodes: '핵심 노드',
         nodeEndLabel: '{day}일째까지 보유',
         nodeCards: [
-          { label: '손익분기일', hint: '해당 일부터 매도하면 양의 수익을 실현할 수 있습니다' },
-          { label: '원금 완전 릴리스', hint: '' },
-          { label: '주기 말일까지 보유', hint: '원금 대비 누적 수익 예시' },
+          { label: '손익분기일', note: '해당 일부터 매도하면 양의 수익을 실현할 수 있습니다' },
+          {
+            label: '원금 완전 릴리스',
+            hint: '원금은 주기 블록에 따라 선형 릴리스되며, 이날부터 전액 인출할 수 있습니다',
+          },
+          { label: '주기 말일까지 보유', note: '원금 대비 누적 수익 예시' },
         ],
         notes: '계산 설명',
         notesBody: '본 계산기는 로컬 추정 참고용이며 온체인 호가나 수익 약속이 아닙니다.',
@@ -2512,6 +2580,11 @@ const app = defineMessages({
       goTurbine: '터빈으로 이동',
       statsTitle: '릴리스 풀 데이터',
       lifetimeClaimed: '릴리스 풀에서 누적 수령',
+      hints: {
+        releasing: '릴리스 풀에 남아 선택한 주기대로 선형 릴리스 중인 gAGX 총량',
+        released: '릴리스가 끝나 언제든 터빈으로 수령할 수 있는 gAGX 총량',
+        lifetimeClaimed: '릴리스 풀에서 터빈으로 수령한 누적 gAGX',
+      },
       recordsTitle: '릴리스 풀 기록',
     },
     buffer: {
@@ -2524,6 +2597,14 @@ const app = defineMessages({
       statsTitle: '버퍼 풀 데이터',
       entered: '누적 진입',
       extracted: '누적 출금',
+      hints: {
+        enteredAgx: '스테이킹·채권 상환 후 버퍼에 누적 입고된 AGX 총량',
+        extractedAgx: '버퍼에서 지갑으로 인출한 AGX 총량',
+        releasingAgx: '버퍼에서 아직 릴리스 중인 AGX 총량',
+        enteredGagx: 'X 채굴 상환 후 버퍼에 누적 입고된 gAGX 총량',
+        extractedGagx: '버퍼에서 지갑으로 인출한 gAGX 총량',
+        releasingGagx: '버퍼에서 아직 릴리스 중인 gAGX 총량',
+      },
       recordsTitle: '버퍼 풀 기록',
       mechanismTitle: '자금 릴리스 메커니즘',
       mechanismSubtitle: '스테이킹·채권 원금은 2단계 릴리스 모델로 시장 안정성을 높입니다',

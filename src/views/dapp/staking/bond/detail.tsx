@@ -11,6 +11,8 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
+import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { useBondDetail } from '~/views/dapp/staking/bond/use-bond'
 import {
   StakingMechanismCard,
@@ -18,6 +20,7 @@ import {
   StakingTvlChart,
 } from '~/views/dapp/staking/primitives'
 import { useStakingDetail } from '~/views/dapp/staking/use-detail'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 export function BondDetail({ kind }: { kind: BondKind }) {
   const { copy, overviewItems, positionItems, recordRows, recordsLoading } = useBondDetail(kind)
@@ -40,6 +43,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
     : kind === 'lp'
       ? t.staking.aside.recordsEmpty.lpbond
       : t.staking.aside.recordsEmpty.burnbond
+  const epochSchedule = useEpochScheduleLabels()
 
   return (
     <Detail>
@@ -49,7 +53,12 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <Grid columns={2}>
           {overviewItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
-              <Tile.Label>{item.label}</Tile.Label>
+              <Tile.Label>
+                {item.label}
+                {item.hint ? (
+                  <Tooltip.Info content={withEpochSchedule(item.hint, epochSchedule)} />
+                ) : null}
+              </Tile.Label>
               <StakingMetricValue value={item.value} />
             </Tile>
           ))}
@@ -74,7 +83,12 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <Grid columns={2}>
           {positionItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
-              <Tile.Label>{item.label}</Tile.Label>
+              <Tile.Label>
+                {item.label}
+                {item.hint ? (
+                  <Tooltip.Info content={withEpochSchedule(item.hint, epochSchedule)} />
+                ) : null}
+              </Tile.Label>
               <StakingMetricValue value={item.value} />
             </Tile>
           ))}

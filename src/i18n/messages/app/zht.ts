@@ -460,6 +460,9 @@ const app = defineMessages({
         pendingUnlock: '待解鎖 gAGX',
         cooling: '冷卻中 gAGX',
         totalWithdrawn: '累計已提取',
+        pendingUnlockHint: '從釋放池領取進入渦輪、尚未解鎖的 gAGX 總量',
+        coolingHint: '已完成買入解鎖、正處於冷卻期的 gAGX 總量',
+        totalWithdrawnHint: '歷史累計從渦輪提取至錢包的 gAGX 總量',
       },
       faq: {
         items: [
@@ -1479,6 +1482,8 @@ const app = defineMessages({
         holdingsReleased: '可贖回已釋放',
         holdingsTotal: '總持倉',
         bufferTitle: '緩衝池',
+        bufferHint:
+          '本金解除質押後將進入緩衝池進行 {days} 天的二次線性釋放，降低短期集中流出對市場流動性的衝擊，實現資金釋放的連續性與市場穩定性的平衡。',
         bufferTotal: '在池總量',
         bufferReleased: '已提取',
         bufferAssetAgx: 'AGX',
@@ -1551,9 +1556,18 @@ const app = defineMessages({
             { label: '我的持倉' },
             { label: '已釋放' },
             { label: '待釋放' },
-            { label: '當前 Rebase 收益' },
-            { label: '當前 Rebase 加成' },
-            { label: '質押總收益' },
+            {
+              label: '當前 Rebase 收益',
+              hint: '未領取的 Rebase 收益將跟隨每一次爆塊獎勵持續產生複利收益',
+            },
+            {
+              label: '當前 Rebase 加成',
+              hint: '未領取的 Rebase 加成不會產生複利收益',
+            },
+            {
+              label: '質押總收益',
+              hint: '已領取的質押收益與未領取的質押收益的總和',
+            },
           ],
         },
         ops: {
@@ -1597,8 +1611,14 @@ const app = defineMessages({
             { label: '我的持倉' },
             { label: '已釋放' },
             { label: '待釋放' },
-            { label: '當前Rebase 收益' },
-            { label: 'LP債券總收益' },
+            {
+              label: '當前Rebase 收益',
+              hint: '未領取的 Rebase 收益將跟隨每一次爆塊獎勵持續產生複利收益',
+            },
+            {
+              label: 'LP債券總收益',
+              hint: '已領取的 LP 債券收益與未領取的 LP 債券收益的總和',
+            },
           ],
         },
         ops: {
@@ -1646,8 +1666,14 @@ const app = defineMessages({
             { label: '我的持倉' },
             { label: '已釋放' },
             { label: '待釋放' },
-            { label: '當前Rebase 收益' },
-            { label: '銷燬債券總收益' },
+            {
+              label: '當前Rebase 收益',
+              hint: '未領取的 Rebase 收益將跟隨每一次爆塊獎勵持續產生複利收益',
+            },
+            {
+              label: '銷燬債券總收益',
+              hint: '已領取的銷燬債券收益與未領取的銷燬債券收益的總和',
+            },
           ],
         },
         ops: {
@@ -1697,7 +1723,10 @@ const app = defineMessages({
             { label: '我的挖礦質押' },
             { label: '已釋放' },
             { label: '當前挖礦產出' },
-            { label: '挖礦總產出' },
+            {
+              label: '挖礦總產出',
+              hint: '已領取的挖礦產出與未領取的挖礦產出的總和',
+            },
           ],
         },
         ops: {
@@ -1937,8 +1966,14 @@ const app = defineMessages({
         { label: '我的持倉' },
         { label: '已釋放' },
         { label: '待釋放' },
-        { label: '當前Rebase 收益' },
-        { label: '當前Rebase 加成' },
+        {
+          label: '當前Rebase 收益',
+          hint: '未領取的 Rebase 收益將跟隨每一次爆塊獎勵持續產生複利收益',
+        },
+        {
+          label: '當前Rebase 加成',
+          hint: '未領取的 Rebase 加成不會產生複利收益',
+        },
       ],
       xValue: {
         title: 'X長期價值系統',
@@ -1987,9 +2022,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '總質押量' },
-        { label: '當前 Epoch' },
+        {
+          label: '當前 Epoch',
+          hint: '每個 Epoch 約 {hours} 小時（{blocks} 區塊），質押收益按 Epoch 結算',
+        },
         { label: '下一次 Rebase 發放' },
-        { label: '當前 Rebase 收益率' },
+        {
+          label: '當前 Rebase 收益率',
+          hint: '每個 Epoch（約 {hours} 小時）結算一次，隨協議運行狀態動態調節',
+        },
       ],
       mechanismTitle: '質押運行機制',
       mechanism:
@@ -2072,15 +2113,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP債券總質押量' },
-        { label: '債券溢價率' },
+        {
+          label: '債券溢價率',
+          hint: '當前折扣價相對 AGX 市場價的收益空間',
+        },
         { label: '下一次 Rebase 發放' },
-        { label: '當前 Rebase 收益率' },
+        {
+          label: '當前 Rebase 收益率',
+          hint: '每個 Epoch（約 {hours} 小時）結算一次，隨協議運行狀態動態調節',
+        },
       ],
       positionMetrics: [
         { label: '我的持倉' },
         { label: '已釋放' },
         { label: '待釋放' },
-        { label: '當前Rebase 收益' },
+        {
+          label: '當前Rebase 收益',
+          hint: '未領取的 Rebase 收益將跟隨每一次爆塊獎勵持續產生複利收益',
+        },
       ],
       mechanismTitle: 'LP債券運行機制',
       mechanism: '經 BondHelper 以 USD1 zap 進入對應週期的 BondDepository。贖回與收益在資產頁。',
@@ -2154,15 +2204,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: '銷燬債券總質押量' },
-        { label: '債券溢價率' },
+        {
+          label: '債券溢價率',
+          hint: '當前折扣價相對 AGX 市場價的收益空間',
+        },
         { label: '下一次 Rebase 發放' },
-        { label: '當前 Rebase 收益率' },
+        {
+          label: '當前 Rebase 收益率',
+          hint: '每個 Epoch（約 {hours} 小時）結算一次，隨協議運行狀態動態調節',
+        },
       ],
       positionMetrics: [
         { label: '我的持倉' },
         { label: '已釋放' },
         { label: '待釋放' },
-        { label: '當前Rebase 收益' },
+        {
+          label: '當前Rebase 收益',
+          hint: '未領取的 Rebase 收益將跟隨每一次爆塊獎勵持續產生複利收益',
+        },
       ],
       mechanismTitle: '銷燬債券運行機制',
       mechanism:
@@ -2225,8 +2284,14 @@ const app = defineMessages({
         { label: 'X挖礦總質押量' },
         { label: 'X 價格' },
         { label: '累計挖礦產出' },
-        { label: '當日收益率' },
-        { label: '下一次挖礦產出' },
+        {
+          label: '當日收益率',
+          hint: '按協議收益率與全網質押量動態分配，每日調節',
+        },
+        {
+          label: '下一次挖礦產出',
+          hint: 'X 挖礦收益每日 UTC 0 點產出',
+        },
       ],
       positionMetrics: [{ label: '我的挖礦質押' }, { label: '已釋放' }, { label: '挖礦產出' }],
       mechanismTitle: 'X挖礦運行機制',
@@ -2337,15 +2402,15 @@ const app = defineMessages({
         nodeCards: [
           {
             label: '正收益起始日',
-            hint: '從該天起賣出可實現正收益',
+            note: '從該天起賣出可實現正收益',
           },
           {
             label: '本金完全釋放',
-            hint: '',
+            hint: '本金按週期區塊線性釋放，該天起本金全部可提取',
           },
           {
             label: '持有至週期末日',
-            hint: '相對本金的累計收益示意',
+            note: '相對本金的累計收益示意',
           },
         ],
         notes: '計算說明',
@@ -2416,6 +2481,11 @@ const app = defineMessages({
       goTurbine: '前往渦輪',
       statsTitle: '釋放池數據',
       lifetimeClaimed: '累計從釋放池領取',
+      hints: {
+        releasing: '尚在釋放池中、按所選週期線性釋放的 gAGX 總量',
+        released: '已完成釋放、可隨時領取進入渦輪的 gAGX 總量',
+        lifetimeClaimed: '歷史累計從釋放池領取進入渦輪的 gAGX 總量',
+      },
       recordsTitle: '釋放池記錄',
     },
     buffer: {
@@ -2427,6 +2497,14 @@ const app = defineMessages({
       statsTitle: '緩衝池數據',
       entered: '累計進入',
       extracted: '累計提取',
+      hints: {
+        enteredAgx: '質押與債券贖回後累計進入緩衝池的 AGX 總量',
+        extractedAgx: '已從緩衝池提取至錢包的 AGX 總量',
+        releasingAgx: '尚在緩衝池釋放中的 AGX 總量',
+        enteredGagx: 'X 挖礦贖回後累計進入緩衝池的 gAGX 總量',
+        extractedGagx: '已從緩衝池提取至錢包的 gAGX 總量',
+        releasingGagx: '尚在緩衝池釋放中的 gAGX 總量',
+      },
       recordsTitle: '緩衝池記錄',
       mechanismTitle: '資金釋放機制',
       mechanismSubtitle: '質押與債券本金採用雙階段釋放模型，增強市場穩定性',

@@ -24,6 +24,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
@@ -112,16 +113,19 @@ export function QueueDetail() {
   const stats = [
     {
       label: t.release.labels.releasing,
+      hint: t.release.queue.hints.releasing,
       value: formatReleasingLabel(),
       approx: formatUsdApprox(releasingNum, priceUsd),
     },
     {
       label: t.release.labels.released,
+      hint: t.release.queue.hints.released,
       value: formatReleasedLabel(),
       approx: formatUsdApprox(releasedNum, priceUsd),
     },
     {
       label: t.release.queue.lifetimeClaimed,
+      hint: t.release.queue.hints.lifetimeClaimed,
       value: formatLifetimeClaimed(),
       approx: formatUsdApprox(lifetimeApproxNum, priceUsd),
     },
@@ -134,7 +138,10 @@ export function QueueDetail() {
         <Grid columns={3}>
           {stats.map((stat) => (
             <Tile data-slot-id={`release-queue-stat-${stat.label}`} key={stat.label}>
-              <Tile.Label>{stat.label}</Tile.Label>
+              <Tile.Label>
+                {stat.label}
+                <Tooltip.Info content={stat.hint} />
+              </Tile.Label>
               <div className="flex items-center gap-2">
                 <Icon
                   alt=""

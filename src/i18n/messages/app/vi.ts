@@ -470,6 +470,9 @@ const app = defineMessages({
         pendingUnlock: 'gAGX chờ mở khóa',
         cooling: 'gAGX đang chờ',
         totalWithdrawn: 'Tổng đã rút',
+        pendingUnlockHint: 'Tổng gAGX đã nhận từ hồ giải phóng vào Turbine nhưng chưa mở khóa',
+        coolingHint: 'Tổng gAGX đã mua-để-mở-khóa và đang trong thời gian chờ',
+        totalWithdrawnHint: 'Tổng gAGX lịch sử đã rút từ Turbine về ví',
       },
       faq: {
         items: [
@@ -1600,6 +1603,8 @@ const app = defineMessages({
         holdingsReleased: 'Đã giải phóng',
         holdingsTotal: 'Tổng nắm giữ',
         bufferTitle: 'Hồ đệm',
+        bufferHint:
+          'Sau khi gỡ stake, gốc vào hồ đệm và giải phóng tuyến tính lần hai trong {days} ngày, giảm áp lực dòng ra tập trung ngắn hạn lên thanh khoản và cân bằng nhịp giải phóng với ổn định thị trường.',
         bufferTotal: 'Total',
         bufferReleased: 'Đã giải phóng',
         bufferAssetAgx: 'AGX',
@@ -1678,9 +1683,18 @@ const app = defineMessages({
             { label: 'Nắm giữ của tôi' },
             { label: 'Đã giải phóng' },
             { label: 'Chờ giải phóng' },
-            { label: 'Tỷ suất Rebase hiện tại' },
-            { label: 'Cộng Rebase hiện tại' },
-            { label: 'Tổng lợi nhuận staking' },
+            {
+              label: 'Tỷ suất Rebase hiện tại',
+              hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
+            },
+            {
+              label: 'Cộng Rebase hiện tại',
+              hint: 'Thưởng Rebase chưa nhận không sinh lãi kép',
+            },
+            {
+              label: 'Tổng lợi nhuận staking',
+              hint: 'Tổng lợi nhuận stake đã nhận và chưa nhận',
+            },
           ],
         },
         ops: {
@@ -1724,8 +1738,14 @@ const app = defineMessages({
             { label: 'Nắm giữ của tôi' },
             { label: 'Đã giải phóng' },
             { label: 'Chờ giải phóng' },
-            { label: 'Tỷ suất Rebase hiện tại' },
-            { label: 'Tổng lợi nhuận trái phiếu LP' },
+            {
+              label: 'Tỷ suất Rebase hiện tại',
+              hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
+            },
+            {
+              label: 'Tổng lợi nhuận trái phiếu LP',
+              hint: 'Tổng lợi nhuận trái phiếu LP đã nhận và chưa nhận',
+            },
           ],
         },
         ops: {
@@ -1773,8 +1793,14 @@ const app = defineMessages({
             { label: 'Nắm giữ của tôi' },
             { label: 'Đã giải phóng' },
             { label: 'Chờ giải phóng' },
-            { label: 'Tỷ suất Rebase hiện tại' },
-            { label: 'Tổng lợi nhuận trái phiếu đốt' },
+            {
+              label: 'Tỷ suất Rebase hiện tại',
+              hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
+            },
+            {
+              label: 'Tổng lợi nhuận trái phiếu đốt',
+              hint: 'Tổng lợi nhuận trái phiếu đốt đã nhận và chưa nhận',
+            },
           ],
         },
         ops: {
@@ -1824,7 +1850,10 @@ const app = defineMessages({
             { label: 'Staking đào của tôi' },
             { label: 'Đã giải phóng' },
             { label: 'Sản lượng đào hiện tại' },
-            { label: 'Tổng sản lượng đào' },
+            {
+              label: 'Tổng sản lượng đào',
+              hint: 'Tổng sản lượng đào đã nhận và chưa nhận',
+            },
           ],
         },
         ops: {
@@ -2080,8 +2109,14 @@ const app = defineMessages({
         { label: 'Vị thế của tôi' },
         { label: 'Đã giải phóng' },
         { label: 'Chờ giải phóng' },
-        { label: 'Tỷ suất Rebase hiện tại' },
-        { label: 'Cộng Rebase hiện tại' },
+        {
+          label: 'Tỷ suất Rebase hiện tại',
+          hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
+        },
+        {
+          label: 'Cộng Rebase hiện tại',
+          hint: 'Thưởng Rebase chưa nhận không sinh lãi kép',
+        },
       ],
       xValue: {
         title: 'Hệ thống giá trị dài hạn X',
@@ -2135,9 +2170,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Tổng đã stake' },
-        { label: 'Epoch hiện tại' },
+        {
+          label: 'Epoch hiện tại',
+          hint: 'Mỗi Epoch khoảng {hours} giờ ({blocks} khối); lợi nhuận stake tất toán theo Epoch',
+        },
         { label: 'Lần phát Rebase tiếp theo' },
-        { label: 'Tỷ suất Rebase hiện tại' },
+        {
+          label: 'Tỷ suất Rebase hiện tại',
+          hint: 'Tất toán mỗi Epoch (~{hours} giờ); điều chỉnh theo trạng thái chạy giao thức',
+        },
       ],
       mechanismTitle: 'Cơ chế vận hành staking',
       mechanism:
@@ -2220,15 +2261,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Tổng TVL trái phiếu LP' },
-        { label: 'Tỷ lệ premium trái phiếu' },
+        {
+          label: 'Tỷ lệ premium trái phiếu',
+          hint: 'Khoảng lợi nhuận của giá chiết khấu hiện tại so với giá thị trường AGX',
+        },
         { label: 'Lần phát Rebase tiếp theo' },
-        { label: 'Tỷ suất Rebase hiện tại' },
+        {
+          label: 'Tỷ suất Rebase hiện tại',
+          hint: 'Tất toán mỗi Epoch (~{hours} giờ); điều chỉnh theo trạng thái chạy giao thức',
+        },
       ],
       positionMetrics: [
         { label: 'My stake' },
         { label: 'Nhận' },
         { label: 'Chờ giải phóng' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
+        },
       ],
       mechanismTitle: 'Cơ chế vận hành trái phiếu LP',
       mechanism:
@@ -2303,15 +2353,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Tổng TVL trái phiếu đốt' },
-        { label: 'Tỷ lệ premium trái phiếu' },
+        {
+          label: 'Tỷ lệ premium trái phiếu',
+          hint: 'Khoảng lợi nhuận của giá chiết khấu hiện tại so với giá thị trường AGX',
+        },
         { label: 'Lần phát Rebase tiếp theo' },
-        { label: 'Tỷ suất Rebase hiện tại' },
+        {
+          label: 'Tỷ suất Rebase hiện tại',
+          hint: 'Tất toán mỗi Epoch (~{hours} giờ); điều chỉnh theo trạng thái chạy giao thức',
+        },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'Đã giải phóng' },
         { label: 'Chờ giải phóng' },
-        { label: 'Current Rebase reward' },
+        {
+          label: 'Current Rebase reward',
+          hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
+        },
       ],
       mechanismTitle: 'Cơ chế vận hành trái phiếu đốt',
       mechanism:
@@ -2374,8 +2433,14 @@ const app = defineMessages({
         { label: 'Tổng TVL đào X' },
         { label: 'Giá X' },
         { label: 'Tổng sản lượng đào' },
-        { label: 'Tỷ suất ngày' },
-        { label: 'Lần sản lượng đào tiếp theo' },
+        {
+          label: 'Tỷ suất ngày',
+          hint: 'Phân bổ động theo tỷ suất giao thức và lượng stake toàn mạng; điều chỉnh hàng ngày',
+        },
+        {
+          label: 'Lần sản lượng đào tiếp theo',
+          hint: 'Lợi nhuận đào X được phát mỗi ngày lúc 00:00 UTC',
+        },
       ],
       positionMetrics: [
         { label: 'Staking đào của tôi' },
@@ -2484,9 +2549,12 @@ const app = defineMessages({
         nodes: 'Nút then chốt',
         nodeEndLabel: 'Nắm đến ngày {day}',
         nodeCards: [
-          { label: 'Ngày bắt đầu lãi dương', hint: 'Từ ngày này bán ra có thể lãi dương' },
-          { label: 'Gốc giải phóng hết', hint: '' },
-          { label: 'Nắm đến ngày cuối chu kỳ', hint: 'Minh họa lợi nhuận tích lũy so với gốc' },
+          { label: 'Ngày bắt đầu lãi dương', note: 'Từ ngày này bán ra có thể lãi dương' },
+          {
+            label: 'Gốc giải phóng hết',
+            hint: 'Gốc giải phóng tuyến tính theo khối chu kỳ; từ ngày này có thể rút toàn bộ',
+          },
+          { label: 'Nắm đến ngày cuối chu kỳ', note: 'Minh họa lợi nhuận tích lũy so với gốc' },
         ],
         notes: 'Ghi chú tính toán',
         notesBody:
@@ -2565,6 +2633,11 @@ const app = defineMessages({
       goTurbine: 'Đi Turbine',
       statsTitle: 'Dữ liệu hồ giải phóng',
       lifetimeClaimed: 'Tổng đã nhận từ hồ giải phóng',
+      hints: {
+        releasing: 'Tổng gAGX còn trong hồ giải phóng, đang giải phóng tuyến tính theo kỳ đã chọn',
+        released: 'Tổng gAGX đã giải phóng xong, có thể nhận vào Turbine bất cứ lúc nào',
+        lifetimeClaimed: 'Tổng gAGX lịch sử đã nhận từ hồ giải phóng vào Turbine',
+      },
       recordsTitle: 'Bản ghi hồ giải phóng',
     },
     buffer: {
@@ -2577,6 +2650,14 @@ const app = defineMessages({
       statsTitle: 'Dữ liệu hồ đệm',
       entered: 'Tổng đã vào',
       extracted: 'Tổng đã rút',
+      hints: {
+        enteredAgx: 'Tổng AGX đã vào hồ đệm sau khi chuộc stake và trái phiếu',
+        extractedAgx: 'Tổng AGX đã rút từ hồ đệm về ví',
+        releasingAgx: 'Tổng AGX đang giải phóng trong hồ đệm',
+        enteredGagx: 'Tổng gAGX đã vào hồ đệm sau khi chuộc đào X',
+        extractedGagx: 'Tổng gAGX đã rút từ hồ đệm về ví',
+        releasingGagx: 'Tổng gAGX đang giải phóng trong hồ đệm',
+      },
       recordsTitle: 'Bản ghi hồ đệm',
       mechanismTitle: 'Cơ chế giải phóng vốn',
       mechanismSubtitle:

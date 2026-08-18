@@ -15,6 +15,7 @@ import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
 import { AssetsOpsTable } from '~/views/dapp/assets/primitives'
 import { useAssetsXmineOpsRows, useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-xmine'
 
@@ -45,7 +46,10 @@ export function XmineDetail() {
                   : null
             return (
               <Tile key={metric.label}>
-                <Tile.Label>{metric.label}</Tile.Label>
+                <Tile.Label>
+                  {metric.label}
+                  {'hint' in metric && metric.hint ? <Tooltip.Info content={metric.hint} /> : null}
+                </Tile.Label>
                 <div className="flex items-center gap-1.5">
                   {iconSrc ? (
                     <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />

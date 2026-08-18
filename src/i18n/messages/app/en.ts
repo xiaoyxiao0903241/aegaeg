@@ -471,6 +471,10 @@ const app = defineMessages({
         pendingUnlock: 'Pending unlock gAGX',
         cooling: 'Cooling gAGX',
         totalWithdrawn: 'Total withdrawn',
+        pendingUnlockHint:
+          'Total gAGX claimed from the release pool into Turbine that is not yet unlocked',
+        coolingHint: 'Total gAGX that finished buy-to-unlock and is in cooldown',
+        totalWithdrawnHint: 'Lifetime gAGX withdrawn from Turbine to the wallet',
       },
       faq: {
         items: [
@@ -1555,6 +1559,8 @@ const app = defineMessages({
         holdingsReleased: 'Redeemable released',
         holdingsTotal: 'Total holdings',
         bufferTitle: 'Buffer pool',
+        bufferHint:
+          'After unstaking, principal enters the buffer for a {days}-day secondary linear release, reducing short-term outflow pressure on market liquidity and balancing continuous release with market stability.',
         bufferTotal: 'In vault',
         bufferReleased: 'Withdrawn',
         bufferAssetAgx: 'AGX',
@@ -1628,9 +1634,18 @@ const app = defineMessages({
             { label: 'My holdings' },
             { label: 'Released' },
             { label: 'Pending release' },
-            { label: 'Current Rebase yield' },
-            { label: 'Current Rebase bonus' },
-            { label: 'Total stake yield' },
+            {
+              label: 'Current Rebase yield',
+              hint: 'Unclaimed Rebase yield keeps compounding with every block reward',
+            },
+            {
+              label: 'Current Rebase bonus',
+              hint: 'Unclaimed Rebase bonus does not compound',
+            },
+            {
+              label: 'Total stake yield',
+              hint: 'Sum of claimed and unclaimed staking yield',
+            },
           ],
         },
         ops: {
@@ -1674,8 +1689,14 @@ const app = defineMessages({
             { label: 'My holdings' },
             { label: 'Released' },
             { label: 'Pending release' },
-            { label: 'Current Rebase yield' },
-            { label: 'Total LP Bond yield' },
+            {
+              label: 'Current Rebase yield',
+              hint: 'Unclaimed Rebase yield keeps compounding with every block reward',
+            },
+            {
+              label: 'Total LP Bond yield',
+              hint: 'Sum of claimed and unclaimed LP Bond yield',
+            },
           ],
         },
         ops: {
@@ -1723,8 +1744,14 @@ const app = defineMessages({
             { label: 'My holdings' },
             { label: 'Released' },
             { label: 'Pending release' },
-            { label: 'Current Rebase yield' },
-            { label: 'Total Burn Bond yield' },
+            {
+              label: 'Current Rebase yield',
+              hint: 'Unclaimed Rebase yield keeps compounding with every block reward',
+            },
+            {
+              label: 'Total Burn Bond yield',
+              hint: 'Sum of claimed and unclaimed Burn Bond yield',
+            },
           ],
         },
         ops: {
@@ -1774,7 +1801,10 @@ const app = defineMessages({
             { label: 'My mining stake' },
             { label: 'Released' },
             { label: 'Current mining output' },
-            { label: 'Total mining output' },
+            {
+              label: 'Total mining output',
+              hint: 'Sum of claimed and unclaimed mining output',
+            },
           ],
         },
         ops: {
@@ -2019,8 +2049,14 @@ const app = defineMessages({
         { label: 'My position' },
         { label: 'Released' },
         { label: 'Pending release' },
-        { label: 'Current Rebase yield' },
-        { label: 'Current Rebase bonus' },
+        {
+          label: 'Current Rebase yield',
+          hint: 'Unclaimed Rebase yield keeps compounding with every block reward',
+        },
+        {
+          label: 'Current Rebase bonus',
+          hint: 'Unclaimed Rebase bonus does not compound',
+        },
       ],
       xValue: {
         title: 'X long-term value',
@@ -2074,9 +2110,15 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Total staked' },
-        { label: 'Current epoch' },
+        {
+          label: 'Current epoch',
+          hint: 'Each Epoch is about {hours} hours ({blocks} blocks); staking yield settles per Epoch',
+        },
         { label: 'Next rebase' },
-        { label: 'Current rebase yield' },
+        {
+          label: 'Current rebase yield',
+          hint: 'Settled once per Epoch (~{hours}h); adjusts with protocol state',
+        },
       ],
       mechanismTitle: 'How staking works',
       mechanism:
@@ -2160,15 +2202,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'LP bond TVL' },
-        { label: 'Bond premium' },
+        {
+          label: 'Bond premium',
+          hint: 'Return gap of the current discount versus the AGX market price',
+        },
         { label: 'Next Rebase payout' },
-        { label: 'Current Rebase yield' },
+        {
+          label: 'Current Rebase yield',
+          hint: 'Settled once per Epoch (~{hours}h); adjusts with protocol state',
+        },
       ],
       positionMetrics: [
         { label: 'My holdings' },
         { label: 'Released' },
         { label: 'Pending release' },
-        { label: 'Current Rebase yield' },
+        {
+          label: 'Current Rebase yield',
+          hint: 'Unclaimed Rebase yield keeps compounding with every block reward',
+        },
       ],
       mechanismTitle: 'How LP Bond works',
       mechanism:
@@ -2244,15 +2295,24 @@ const app = defineMessages({
       },
       overviewMetrics: [
         { label: 'Burn bond TVL' },
-        { label: 'Bond premium' },
+        {
+          label: 'Bond premium',
+          hint: 'Return gap of the current discount versus the AGX market price',
+        },
         { label: 'Next Rebase payout' },
-        { label: 'Current Rebase yield' },
+        {
+          label: 'Current Rebase yield',
+          hint: 'Settled once per Epoch (~{hours}h); adjusts with protocol state',
+        },
       ],
       positionMetrics: [
         { label: 'My holdings' },
         { label: 'Released' },
         { label: 'Pending release' },
-        { label: 'Current Rebase yield' },
+        {
+          label: 'Current Rebase yield',
+          hint: 'Unclaimed Rebase yield keeps compounding with every block reward',
+        },
       ],
       mechanismTitle: 'How Burn Bond works',
       mechanism:
@@ -2315,8 +2375,14 @@ const app = defineMessages({
         { label: 'X Mine TVL' },
         { label: 'X price' },
         { label: 'Total mined' },
-        { label: 'Daily yield rate' },
-        { label: 'Next mining payout' },
+        {
+          label: 'Daily yield rate',
+          hint: 'Allocated dynamically from protocol yield and network stake; adjusted daily',
+        },
+        {
+          label: 'Next mining payout',
+          hint: 'X mining yield is produced daily at 00:00 UTC',
+        },
       ],
       positionMetrics: [{ label: 'My mining stake' }, { label: 'Released' }, { label: 'Mined' }],
       mechanismTitle: 'How X Mine works',
@@ -2419,9 +2485,12 @@ const app = defineMessages({
         nodes: 'Key nodes',
         nodeEndLabel: 'Hold to day {day}',
         nodeCards: [
-          { label: 'Breakeven day', hint: 'Selling from this day can realize positive yield' },
-          { label: 'Principal fully released', hint: '' },
-          { label: 'Hold to term end', hint: 'Cumulative yield vs principal' },
+          { label: 'Breakeven day', note: 'Selling from this day can realize positive yield' },
+          {
+            label: 'Principal fully released',
+            hint: 'Principal unlocks linearly by period blocks; from this day it is fully withdrawable',
+          },
+          { label: 'Hold to term end', note: 'Cumulative yield vs principal' },
         ],
         notes: 'Notes',
         notesBody: 'Local estimate only — not an on-chain quote or yield promise.',
@@ -2496,6 +2565,12 @@ const app = defineMessages({
       goTurbine: 'Go to Turbine',
       statsTitle: 'Release pool data',
       lifetimeClaimed: 'Lifetime claimed from pool',
+      hints: {
+        releasing:
+          'Total gAGX still in the release pool, unlocking linearly over the chosen period',
+        released: 'gAGX that has finished releasing and can be claimed into Turbine anytime',
+        lifetimeClaimed: 'Lifetime gAGX claimed from the release pool into Turbine',
+      },
       recordsTitle: 'Release pool records',
     },
     buffer: {
@@ -2508,6 +2583,14 @@ const app = defineMessages({
       statsTitle: 'Buffer pool data',
       entered: 'Total entered',
       extracted: 'Total withdrawn',
+      hints: {
+        enteredAgx: 'Total AGX that entered the buffer after staking and bond redemptions',
+        extractedAgx: 'Total AGX withdrawn from the buffer to the wallet',
+        releasingAgx: 'AGX still releasing in the buffer',
+        enteredGagx: 'Total gAGX that entered the buffer after X mining redemptions',
+        extractedGagx: 'Total gAGX withdrawn from the buffer to the wallet',
+        releasingGagx: 'gAGX still releasing in the buffer',
+      },
       recordsTitle: 'Buffer pool records',
       mechanismTitle: 'Principal release flow',
       mechanismSubtitle:

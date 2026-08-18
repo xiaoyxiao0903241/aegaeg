@@ -89,22 +89,18 @@ export function AssetsMetricGroupCard({
   titleAction,
 }: {
   children: ReactNode
-  title: string
+  title: ReactNode
   titleAction?: ReactNode
 }) {
   return (
     <Card surface="elevated" className="grid gap-1.5">
       {titleAction != null ? (
         <div className="flex items-center justify-between gap-2">
-          <Text as="span" className="leading-4 font-medium" variant="copy">
-            {title}
-          </Text>
+          {title}
           {titleAction}
         </div>
       ) : (
-        <Text as="span" className="leading-4 font-medium" variant="copy">
-          {title}
-        </Text>
+        title
       )}
       <div className="grid grid-cols-2 gap-2">{children}</div>
     </Card>

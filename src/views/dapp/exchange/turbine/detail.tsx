@@ -23,6 +23,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { Tooltip } from '~/shared/components/tooltip'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapTurbineLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
@@ -70,16 +71,19 @@ export function TurbineExchangeDetail({
   const overviewMetrics = [
     {
       label: t.exchange.turbine.metrics.pendingUnlock,
+      hint: t.exchange.turbine.metrics.pendingUnlockHint,
       amount: pendingUnlockLabel,
       usd: pendingUnlockUsdHint,
     },
     {
       label: t.exchange.turbine.metrics.cooling,
+      hint: t.exchange.turbine.metrics.coolingHint,
       amount: coolingLabel,
       usd: coolingUsdHint,
     },
     {
       label: t.exchange.turbine.metrics.totalWithdrawn,
+      hint: t.exchange.turbine.metrics.totalWithdrawnHint,
       amount: totalWithdrawnLabel,
       usd: totalWithdrawnUsdHint,
     },
@@ -93,7 +97,10 @@ export function TurbineExchangeDetail({
         <Grid columns={3} stackOnDapp>
           {overviewMetrics.map((metric) => (
             <Tile key={metric.label}>
-              <Tile.Label>{metric.label}</Tile.Label>
+              <Tile.Label>
+                {metric.label}
+                <Tooltip.Info content={metric.hint} />
+              </Tile.Label>
               <div className="flex items-center gap-2">
                 <Icon
                   alt=""
