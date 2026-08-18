@@ -1518,6 +1518,7 @@ const app = defineMessages({
       liquid: 'Esnek',
       lockedPrefix: 'Kilitli',
       redeemAnytime: 'İstediğiniz zaman geri alınabilir',
+      fullyReleased: 'Tamamen serbest',
       activateWarmup: 'Kilidi aç',
       activateWarmupSuccess: 'Kilit açıldı',
       warmupRemainingEpochs: 'Kalan {n} Epoch',

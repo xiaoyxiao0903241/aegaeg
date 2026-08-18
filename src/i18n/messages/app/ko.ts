@@ -1481,6 +1481,7 @@ const app = defineMessages({
       liquid: '유동',
       lockedPrefix: '잠금',
       redeemAnytime: '언제든 상환 가능',
+      fullyReleased: '전액 해제됨',
       activateWarmup: '잠금 해제',
       activateWarmupSuccess: '잠금 해제됨',
       warmupRemainingEpochs: '남은 Epoch {n}개',

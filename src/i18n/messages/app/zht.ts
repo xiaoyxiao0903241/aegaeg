@@ -1396,6 +1396,7 @@ const app = defineMessages({
       voucher: '憑證',
       lockedPrefix: '鎖定',
       redeemAnytime: '隨時可贖回',
+      fullyReleased: '已完全釋放',
       activateWarmup: '解鎖',
       activateWarmupSuccess: '解鎖成功',
       warmupRemainingEpochs: '剩餘 {n} 個 Epoch',

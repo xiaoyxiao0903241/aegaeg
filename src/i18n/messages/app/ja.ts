@@ -1481,6 +1481,7 @@ const app = defineMessages({
       liquid: '流動',
       lockedPrefix: 'ロック',
       redeemAnytime: 'いつでも償還可能',
+      fullyReleased: '完全に解除済み',
       activateWarmup: 'アンロック',
       activateWarmupSuccess: 'アンロック完了',
       warmupRemainingEpochs: '残り {n} Epoch',

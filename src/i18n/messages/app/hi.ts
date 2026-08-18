@@ -1478,6 +1478,7 @@ const app = defineMessages({
       liquid: 'फ्लेक्सिबल',
       lockedPrefix: 'लॉक्ड',
       redeemAnytime: 'कभी भी रिडीम योग्य',
+      fullyReleased: 'पूरी तरह रिलीज़',
       activateWarmup: 'अनलॉक',
       activateWarmupSuccess: 'अनलॉक हो गया',
       warmupRemainingEpochs: '{n} Epoch शेष',

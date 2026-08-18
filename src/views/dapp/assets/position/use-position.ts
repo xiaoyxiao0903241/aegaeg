@@ -197,7 +197,15 @@ export function usePositionDock(product: AssetsProduct) {
   })
 
   const overviewQuery = useStakingHubOverviewQuery({ enabled: product === 'stake' })
-  const currentEpoch = overviewQuery.data?.epochNumber ?? null
+  const epochClock = overviewQuery.data
+    ? {
+        currentEpoch: overviewQuery.data.epochNumber,
+        epochEndBlock: overviewQuery.data.epochEndBlock,
+        currentBlock: overviewQuery.data.currentBlock,
+        epochLengthBlocks: overviewQuery.data.epochLengthBlocks,
+        secondsPerBlock: overviewQuery.data.secondsPerBlock,
+      }
+    : null
 
   function formatAmount(amount: bigint, decimals: number, unit: 'AGX' | 'gAGX'): string {
     return formatAssetsPositionAmount(amount, decimals, quote, agxPriceUsd, unit)
@@ -361,7 +369,7 @@ export function usePositionDock(product: AssetsProduct) {
     pageSize,
     formatAmount,
     formatPeriodLabel,
-    currentEpoch,
+    epochClock,
     isEmpty,
     isLoading,
     totalRows,

@@ -24,8 +24,8 @@ const REBASES_PROBE_CAP = 1_048_576n
 /** 按 client 缓存上次有效 rebase 下标，避免 Hub 每次从 0 倍增探测。 */
 const latestRebaseIndexByClient = new WeakMap<object, bigint>()
 
-/** 用最近 N 块时间戳差估出块秒数；样本不足或非法时回落 FAQ 兜底。 */
-const BLOCK_TIME_SAMPLE = 8
+/** 用最近 N 块时间戳差估出块秒数；256 ≈ 2 分钟窗，比 8 块稳；失败回落 FAQ 兜底。 */
+const BLOCK_TIME_SAMPLE = 256
 
 export type StakingHubOverview = {
   /** StakingPool.poolAgxBalance — AGX 9 decimals */

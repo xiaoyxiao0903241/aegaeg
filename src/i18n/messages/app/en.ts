@@ -1471,6 +1471,7 @@ const app = defineMessages({
       liquid: 'Flexible',
       lockedPrefix: 'Locked',
       redeemAnytime: 'Redeemable anytime',
+      fullyReleased: 'Fully released',
       activateWarmup: 'Unlock',
       activateWarmupSuccess: 'Unlocked',
       warmupRemainingEpochs: '{n} epochs remaining',

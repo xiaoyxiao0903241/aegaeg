@@ -71,3 +71,23 @@ test('remainingSecFromBlocks accepts secondsPerBlock', async () => {
   assert.equal(remainingSecFromBlocks(1200n, 0n, 2), 2400)
   assert.equal(remainingSecFromBlocks(101n, 100n, 2.5), 2)
 })
+
+test('remainingSecFromEpochs: this epoch remainder plus later full epochs', async () => {
+  const { remainingSecFromEpochs } = await loadModule('/src/shared/components/countdown-value.tsx')
+  // 2 epochs left, 40 blocks this epoch, length 100, 2s/block → 40*2 + 1*100*2 = 280
+  assert.equal(remainingSecFromEpochs(2, 140n, 100n, 100n, 2), 280)
+  // 1 epoch left → only this epoch remainder
+  assert.equal(remainingSecFromEpochs(1, 140n, 100n, 100n, 2), 80)
+  // this epoch already at endBlock, 2 epochs still on the number → 1 full epoch
+  assert.equal(remainingSecFromEpochs(2, 100n, 100n, 100n, 2), 200)
+  assert.equal(remainingSecFromEpochs(0, 140n, 100n, 100n, 2), 0)
+})
+
+test('remainingSecFromEpochs: null when chain window is missing', async () => {
+  const { remainingSecFromEpochs } = await loadModule('/src/shared/components/countdown-value.tsx')
+  assert.equal(remainingSecFromEpochs(2, undefined, 100n, 100n, 2), null)
+  assert.equal(remainingSecFromEpochs(2, 140n, 100n, undefined, 2), null)
+  assert.equal(remainingSecFromEpochs(null, 140n, 100n, 100n, 2), null)
+  // last epoch only needs remaining blocks, not length
+  assert.equal(remainingSecFromEpochs(1, 140n, 100n, undefined, 2), 80)
+})

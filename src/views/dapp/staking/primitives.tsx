@@ -2,7 +2,7 @@
  * 质押域跨 mode UI 零件（倒计时 / 曲线 / 机制卡 / 指标值 / TVL 图）。
  */
 import type { Time, UTCTimestamp } from 'lightweight-charts'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode } from 'react'
 
 import { resolveProtocolMarketStatsRange } from '~/core/staking/protocol-market-stats-series'
 import {
@@ -17,7 +17,11 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Chart, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
-import { CountdownValue, remainingSecFromBlocks } from '~/shared/components/countdown-value'
+import {
+  CountdownValue,
+  remainingSecFromBlocks,
+  useAnchoredRemainingSec,
+} from '~/shared/components/countdown-value'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Skeleton } from '~/shared/components/skeleton'
@@ -26,14 +30,6 @@ import { Text } from '~/shared/components/text'
 import { chartDateGrainFromRange } from '~/shared/lib/chart-axis-date'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
-import { useWallClockSec, useWallClockStore } from '~/stores/wall-clock-store'
-
-/** 链读与墙钟偏差超过此值才重锚定（避免 refetch 抖动）。 */
-const RESYNC_DRIFT_SEC = 3
-
-function anchorEndAtSec(chainRemainingSec: number, nowSec: number): number {
-  return nowSec + chainRemainingSec
-}
 
 /**
  * 下一次 Rebase 发放倒计时
@@ -55,29 +51,9 @@ export function RebaseCountdownValue({
 }) {
   const { messages: t } = useI18n()
   const units = t.staking.aside.countdownUnits
-  const chainRemainingSec = remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock)
-  const nowSec = useWallClockSec(true)
-
-  const [endAtSec, setEndAtSec] = useState(() => anchorEndAtSec(chainRemainingSec, nowSec))
-
-  // 链上块高变化后重锚定；setState 放进 microtask，避开 set-state-in-effect 同步写。
-  useEffect(() => {
-    let cancelled = false
-    queueMicrotask(() => {
-      if (cancelled) return
-      const now = useWallClockStore.getState().nowSec
-      setEndAtSec((prev) => {
-        const wallRemaining = Math.max(0, prev - now)
-        if (Math.abs(wallRemaining - chainRemainingSec) <= RESYNC_DRIFT_SEC) return prev
-        return anchorEndAtSec(chainRemainingSec, now)
-      })
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [chainRemainingSec, epochEndBlock, currentBlock])
-
-  const remainingSec = Math.max(0, endAtSec - nowSec)
+  const remainingSec = useAnchoredRemainingSec(
+    remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock),
+  )
 
   return (
     <CountdownValue

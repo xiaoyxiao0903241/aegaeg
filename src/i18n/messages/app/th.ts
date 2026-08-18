@@ -1469,6 +1469,7 @@ const app = defineMessages({
       liquid: 'ยืดหยุ่น',
       lockedPrefix: 'ล็อก',
       redeemAnytime: 'ไถ่ถอนได้ทุกเมื่อ',
+      fullyReleased: 'ปล่อยครบแล้ว',
       activateWarmup: 'ปลดล็อก',
       activateWarmupSuccess: 'ปลดล็อกแล้ว',
       warmupRemainingEpochs: 'เหลือ {n} Epoch',

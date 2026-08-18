@@ -1524,6 +1524,7 @@ const app = defineMessages({
       liquid: 'Fleksibel',
       lockedPrefix: 'Terkunci',
       redeemAnytime: 'Dapat ditebus kapan saja',
+      fullyReleased: 'Sudah dilepas penuh',
       activateWarmup: 'Buka kunci',
       activateWarmupSuccess: 'Kunci dibuka',
       warmupRemainingEpochs: 'Sisa {n} Epoch',

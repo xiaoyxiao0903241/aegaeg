@@ -12,7 +12,11 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
-import { CountdownValue } from '~/shared/components/countdown-value'
+import {
+  CountdownValue,
+  remainingSecFromEpochs,
+  useAnchoredRemainingSec,
+} from '~/shared/components/countdown-value'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { Icon } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
@@ -45,19 +49,42 @@ export function AssetsPositionRowHeader({
   remainingLabel,
   remainingAt,
   remainingValue,
+  remainingAsStatus = false,
+  expiredLabel,
   dayUnit,
 }: {
   periodLabel: string
   remainingLabel: string
   remainingAt: bigint
-  /** 活期可随时赎回 / warmup 文案 / 自定义倒计时；缺省且 remainingAt>0 → 倒计时 */
+  /** 自定义右侧值；时钟用组件，结束态用文案 */
   remainingValue?: ReactNode
+  /** true 时藏「剩余时间」：随时可赎回 / 已完全释放等状态 */
+  remainingAsStatus?: boolean
+  /** unix 倒计时归零后的结束态文案（定期 / 债券） */
+  expiredLabel?: string
   /** 倒计时「天」单位的本地化文案 */
   dayUnit: string
 }) {
   const needsClock = remainingValue == null && remainingAt > ZERO_BI
   const nowSec = useWallClockSec(needsClock)
   const remainingSec = needsClock ? Math.max(0, Number(remainingAt) - nowSec) : 0
+  const clockExpired = needsClock && remainingSec === 0
+  const showRemainingLabel =
+    remainingValue != null ? !remainingAsStatus : needsClock && !clockExpired
+  const value =
+    remainingValue != null ? (
+      remainingValue
+    ) : clockExpired && expiredLabel != null ? (
+      expiredLabel
+    ) : remainingAt > ZERO_BI ? (
+      <CountdownValue
+        separators={[`${dayUnit} `, ':', ':']}
+        totalSec={remainingSec}
+        units={['days', 'hours', 'minutes', 'seconds']}
+      />
+    ) : (
+      '—'
+    )
 
   return (
     <div className="flex items-center gap-2">
@@ -65,25 +92,34 @@ export function AssetsPositionRowHeader({
         {periodLabel}
       </span>
       <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-        {/* 剩余时间标签：弱化字色而非 muted 变体 */}
-        <Text as="span" className="leading-4 text-foreground/40" variant="support">
-          {remainingLabel}
-        </Text>
+        {showRemainingLabel ? (
+          <Text as="span" className="leading-4 text-foreground/40" variant="support">
+            {remainingLabel}
+          </Text>
+        ) : null}
         <Text as="span" className="text-sm/4" variant="copy">
-          {remainingValue != null ? (
-            remainingValue
-          ) : remainingAt > ZERO_BI ? (
-            <CountdownValue
-              separators={[`${dayUnit} `, ':', ':']}
-              totalSec={remainingSec}
-              units={['days', 'hours', 'minutes', 'seconds']}
-            />
-          ) : (
-            '—'
-          )}
+          {value}
         </Text>
       </div>
     </div>
+  )
+}
+
+/** 活期预热：用 epoch + 剩余块估秒后锚定墙钟 */
+function AssetsWarmupCountdown({
+  remainingSec,
+  dayUnit,
+}: {
+  remainingSec: number
+  dayUnit: string
+}) {
+  const totalSec = useAnchoredRemainingSec(remainingSec)
+  return (
+    <CountdownValue
+      separators={[`${dayUnit} `, ':', ':']}
+      totalSec={totalSec}
+      units={['days', 'hours', 'minutes', 'seconds']}
+    />
   )
 }
 
@@ -346,6 +382,7 @@ export function AssetsPositionBondRow({
     <Card surface="outlined" className="grid gap-2">
       <AssetsPositionRowHeader
         dayUnit={dayUnit}
+        expiredLabel={t.assets.position.fullyReleased}
         periodLabel={periodLabel}
         remainingAt={row.vestingEndTime}
         remainingLabel={t.assets.position.remaining}
@@ -392,8 +429,14 @@ export function AssetsPositionBondRow({
  */
 export function AssetsPositionStakeRow(
   props: AssetsPositionRowFrameProps<AssetsStakeRow> & {
-    /** 当前 staking epoch；warmup 剩余 epoch 倒计时用。 */
-    currentEpoch?: bigint | null
+    /** 当前 epoch 与块窗；预热剩余时间用 epoch + 剩余块估算。 */
+    epochClock?: {
+      currentEpoch: bigint
+      epochEndBlock: bigint
+      currentBlock: bigint
+      epochLengthBlocks: bigint
+      secondsPerBlock: number
+    } | null
     onActivate?: (row: AssetsStakeRow) => void
   },
 ) {
@@ -415,30 +458,50 @@ export function AssetsPositionStakeRow(
       : row.claimableBalance > ZERO_BI
   const periodLabel = formatPeriodLabel(row.period)
   const voucherAddress = row.kind === 'locked' && row.pool ? row.pool : null
+  const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
+  const epochClock = props.epochClock
 
   const remainingEpochs =
-    inWarmup && props.currentEpoch != null && row.expiry > props.currentEpoch
-      ? Number(row.expiry - props.currentEpoch)
-      : inWarmup && !warmupExpired
-        ? null
+    !inWarmup || warmupExpired || epochClock == null
+      ? null
+      : row.expiry > epochClock.currentEpoch
+        ? Number(row.expiry - epochClock.currentEpoch)
         : 0
-  const remainingValue = inWarmup
-    ? warmupExpired
-      ? t.assets.position.activateWarmup
-      : remainingEpochs != null && remainingEpochs > 0
-        ? interpolate(t.assets.position.warmupRemainingEpochs, { n: remainingEpochs })
-        : t.assets.blocked.warmupActive
+  const estimatedSec =
+    remainingEpochs == null || epochClock == null
+      ? null
+      : remainingSecFromEpochs(
+          remainingEpochs,
+          epochClock.epochEndBlock,
+          epochClock.currentBlock,
+          epochClock.epochLengthBlocks,
+          epochClock.secondsPerBlock,
+        )
+  const remainingAsStatus = inWarmup
+    ? warmupExpired || (estimatedSec == null && !(remainingEpochs != null && remainingEpochs > 0))
     : row.kind === 'liquid'
-      ? t.assets.position.redeemAnytime
-      : undefined
-  const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
+  const remainingValue = inWarmup ? (
+    warmupExpired ? (
+      t.assets.position.redeemAnytime
+    ) : estimatedSec != null ? (
+      <AssetsWarmupCountdown dayUnit={dayUnit} remainingSec={estimatedSec} />
+    ) : remainingEpochs != null && remainingEpochs > 0 ? (
+      interpolate(t.assets.position.warmupRemainingEpochs, { n: remainingEpochs })
+    ) : (
+      t.assets.blocked.warmupActive
+    )
+  ) : row.kind === 'liquid' ? (
+    t.assets.position.redeemAnytime
+  ) : undefined
   const secondaryLabel = inWarmup ? t.assets.position.activateWarmup : t.assets.position.redeem
 
   return (
     <Card surface="outlined" className="grid gap-2">
       <AssetsPositionRowHeader
         dayUnit={dayUnit}
+        expiredLabel={t.assets.position.fullyReleased}
         periodLabel={periodLabel}
+        remainingAsStatus={remainingAsStatus}
         remainingAt={inWarmup ? ZERO_BI : row.expiry}
         remainingLabel={t.assets.position.remaining}
         remainingValue={remainingValue}

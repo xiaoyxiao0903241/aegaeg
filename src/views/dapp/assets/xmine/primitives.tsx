@@ -85,8 +85,6 @@ export function AssetsXminePositionCard({
         units={['hours', 'minutes', 'seconds']}
       />
     </>
-  ) : warmupReady ? (
-    activateWarmupLabel
   ) : (
     redeemAnytimeLabel
   )
@@ -103,6 +101,7 @@ export function AssetsXminePositionCard({
       <AssetsPositionRowHeader
         dayUnit=""
         periodLabel={periodPill}
+        remainingAsStatus={!inWarmupLocked}
         remainingAt={ZERO_BI}
         remainingLabel={remainingCaption}
         remainingValue={remainingValue}

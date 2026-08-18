@@ -1526,6 +1526,7 @@ const app = defineMessages({
       liquid: 'Sin bloqueo',
       lockedPrefix: 'Bloqueado',
       redeemAnytime: 'Canjeable en cualquier momento',
+      fullyReleased: 'Totalmente liberado',
       activateWarmup: 'Desbloquear',
       activateWarmupSuccess: 'Desbloqueado',
       warmupRemainingEpochs: '{n} Epoch restantes',

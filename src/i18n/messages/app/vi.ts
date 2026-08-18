@@ -1513,6 +1513,7 @@ const app = defineMessages({
       liquid: 'Linh hoạt',
       lockedPrefix: 'Khóa',
       redeemAnytime: 'Chuộc bất cứ lúc nào',
+      fullyReleased: 'Đã mở khóa hoàn toàn',
       activateWarmup: 'Mở khóa',
       activateWarmupSuccess: 'Đã mở khóa',
       warmupRemainingEpochs: 'Còn {n} Epoch',

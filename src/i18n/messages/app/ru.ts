@@ -1476,6 +1476,7 @@ const app = defineMessages({
       liquid: 'Гибкий',
       lockedPrefix: 'Заблокировано',
       redeemAnytime: 'Выкуп в любое время',
+      fullyReleased: 'Полностью разблокировано',
       activateWarmup: 'Разблокировать',
       activateWarmupSuccess: 'Разблокировано',
       warmupRemainingEpochs: 'Осталось {n} эпох',
