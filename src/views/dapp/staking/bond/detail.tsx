@@ -114,7 +114,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
             empty={recordsEmpty}
             headers={[...t.staking.aside.bondRecordColumns]}
             mutedColumns={[0]}
-            positiveColumns={[3]}
+            primaryColumns={[3]}
             rows={[...(recordRows ?? [])]}
           />
           {/* jscpd:ignore-start — 记录表底栏页内拼装，禁再抽 Section 薄包装 */}

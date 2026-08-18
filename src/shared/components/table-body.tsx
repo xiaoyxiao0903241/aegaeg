@@ -22,7 +22,7 @@ const cellTv = tv({
       false: '',
     },
     link: {
-      true: 'text-primary underline [&_a]:text-primary [&_a]:underline',
+      true: 'text-claim-restake underline [&_a]:text-claim-restake [&_a]:underline',
       false: '',
     },
     emphasis: {
@@ -31,10 +31,6 @@ const cellTv = tv({
     },
     muted: {
       true: 'text-muted-foreground tabular-nums',
-      false: '',
-    },
-    positive: {
-      true: 'font-bold text-claim-restake group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
       false: '',
     },
     primary: {
@@ -51,7 +47,6 @@ const cellTv = tv({
     link: false,
     emphasis: false,
     muted: false,
-    positive: false,
     primary: false,
     end: false,
   },
@@ -60,16 +55,12 @@ const cellTv = tv({
 const cellTextTv = tv({
   base: '',
   variants: {
-    link: { true: 'text-primary underline', false: '' },
+    link: { true: 'text-claim-restake underline', false: '' },
     emphasis: { true: 'font-bold', false: '' },
     muted: { true: 'text-muted-foreground tabular-nums', false: '' },
-    positive: {
-      true: 'font-bold text-claim-restake group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
-      false: '',
-    },
     primary: { true: 'font-semibold text-primary', false: '' },
   },
-  defaultVariants: { link: false, emphasis: false, muted: false, positive: false, primary: false },
+  defaultVariants: { link: false, emphasis: false, muted: false, primary: false },
 })
 
 const gridRoot = tv({
@@ -98,7 +89,6 @@ type CellProps = {
   last?: boolean
   link?: boolean
   muted?: boolean
-  positive?: boolean
   primary?: boolean
   status?: boolean
 }
@@ -115,7 +105,6 @@ function Cell({
   last = false,
   link = false,
   muted = false,
-  positive = false,
   primary = false,
   status = false,
 }: CellProps) {
@@ -133,7 +122,6 @@ function Cell({
           link: toneOnCell && link,
           emphasis: toneOnCell && emphasis,
           muted: toneOnCell && muted,
-          positive: toneOnCell && positive,
           primary: toneOnCell && primary,
           end,
         }),
@@ -154,7 +142,6 @@ function Cell({
             link,
             emphasis,
             muted,
-            positive,
             primary,
             class: accent ? 'text-coral' : undefined,
           })}
@@ -181,11 +168,11 @@ type BodyProps = {
   headers: string[]
   highlightedRows?: number[]
   isLoading?: boolean
+  /** 链上地址 / 哈希列：蓝 + 下划线。 */
   linkColumns?: number[]
   loadingRowCount?: number
   /** 弱时间 / 次级数字：`muted-foreground` + 等宽数字。 */
   mutedColumns?: number[]
-  positiveColumns?: number[]
   /** 珊瑚强调（非链接）：`primary`。 */
   primaryColumns?: number[]
   rows: ReactNode[][]
@@ -216,7 +203,6 @@ function Body({
   linkColumns = [],
   loadingRowCount = 3,
   mutedColumns = [],
-  positiveColumns = [],
   primaryColumns = [],
   rows,
   statusColumns = [],
@@ -227,7 +213,6 @@ function Body({
   const endColumnSet = new Set(endColumns)
   const linkColumnSet = new Set(linkColumns)
   const mutedColumnSet = new Set(mutedColumns)
-  const positiveColumnSet = new Set(positiveColumns)
   const primaryColumnSet = new Set(primaryColumns)
   const statusColumnSet = new Set(statusColumns)
 
@@ -280,7 +265,6 @@ function Body({
                       last={rowIndex === rows.length - 1}
                       link={linkColumnSet.has(index)}
                       muted={mutedColumnSet.has(index)}
-                      positive={positiveColumnSet.has(index)}
                       primary={primaryColumnSet.has(index)}
                       status={statusColumnSet.has(index)}
                     >

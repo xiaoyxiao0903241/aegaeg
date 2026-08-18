@@ -123,7 +123,7 @@ export function StakeDetail() {
             empty={recordsLoading ? '…' : t.staking.aside.recordsEmpty.stake}
             headers={[...t.staking.aside.recordColumns]}
             mutedColumns={[0]}
-            positiveColumns={[3]}
+            primaryColumns={[3]}
             rows={[...(recordRows ?? [])]}
           />
           {/* jscpd:ignore-start — 记录表底栏页内拼装，禁再抽 Section 薄包装 */}

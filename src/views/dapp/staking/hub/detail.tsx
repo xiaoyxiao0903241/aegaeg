@@ -89,7 +89,14 @@ export function StakingHubDetail() {
     if (tableSeg !== 'stake' && row.id === 'liquid') continue
     const cells = periodTableRows[row.id]
     if (!cells) continue
-    periodRows.push([row.period, cells.baseDaily, cells.bonus, cells.periodYield])
+    periodRows.push([
+      row.period,
+      cells.baseDaily,
+      <Text as="span" className="font-bold" key="bonus" tone="claim-restake" variant="copy">
+        {cells.bonus}
+      </Text>,
+      cells.periodYield,
+    ])
   }
 
   function metricValue(id: HubMetricId): string {
@@ -156,7 +163,6 @@ export function StakingHubDetail() {
         <Table>
           <Table.Body
             headers={[...(tableSeg === 'stake' ? table.columns : table.bondColumns)]}
-            positiveColumns={[2]}
             primaryColumns={[3]}
             rows={periodRows}
           />

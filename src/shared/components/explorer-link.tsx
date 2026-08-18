@@ -9,7 +9,7 @@ type ExplorerLinkKind = 'address' | 'tx'
 
 /**
  * 链上地址 / 交易哈希：打开 BscScan。
- * 默认主色并常显下划线。
+ * 默认蓝，与表格珊瑚数字错开。
  */
 export function ExplorerLink({
   value,
@@ -17,7 +17,7 @@ export function ExplorerLink({
   showIcon = false,
   className,
   shortOptions,
-  tone = 'primary',
+  tone = 'claim-restake',
 }: {
   value: string
   kind?: ExplorerLinkKind
@@ -25,7 +25,7 @@ export function ExplorerLink({
   showIcon?: boolean
   className?: string
   shortOptions?: { head?: number; tail?: number }
-  tone?: Extract<TextTone, 'primary' | 'muted-foreground'>
+  tone?: Extract<TextTone, 'claim-restake' | 'primary' | 'muted-foreground'>
 }) {
   const href = kind === 'tx' ? bscscanTx(value) : bscscanAddress(value)
   const label = formatShortAddress(value, shortOptions)

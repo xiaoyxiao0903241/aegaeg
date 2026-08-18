@@ -297,7 +297,7 @@ export function AssetsPositionVoucherLink({ address, label }: { address: string;
       <Text as="span" className="text-xs text-foreground/40" variant="detail">
         {label}
       </Text>
-      <ExplorerLink className="text-xs font-medium text-foreground" value={address} />
+      <ExplorerLink className="text-xs font-medium" value={address} />
     </div>
   )
 }

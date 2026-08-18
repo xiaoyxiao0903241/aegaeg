@@ -120,7 +120,7 @@ export function GenesisContributionsTable({
             isLoading={vm.showContributionsSkeleton}
             loadingRowCount={4}
             mutedColumns={[0]}
-            positiveColumns={[2]}
+            primaryColumns={[2]}
             rows={vm.desktopRows}
           />
         )}
