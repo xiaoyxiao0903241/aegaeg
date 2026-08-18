@@ -4,6 +4,7 @@
  * 顶部轮播介绍释放机制，中部为流程步骤、目的说明与税率表，
  * 底部为常见问题。税率优先读链上 queuePlans。
  */
+import { formatPlanTaxSchedule } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
 import { MANUAL_CONTRIBUTION_DIVISOR_FALLBACK } from '~/core/exchange/burn-contribution-swap'
 import { interpolate } from '~/i18n/interpolate'
@@ -15,12 +16,26 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { ReleaseMechanismCard, ReleaseTaxCard } from '~/views/dapp/release/hub/primitives'
 import { useReleaseHub } from '~/views/dapp/release/hub/use-hub'
+import { useReleaseQueuePlans } from '~/views/dapp/release/use-release-reads'
 import { AboutCard } from '~/views/dapp/shared/about-card'
 import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
 
 export function ReleaseHubDetail() {
   const { messages: t } = useI18n()
   const { taxPeriods, taxRates } = useReleaseHub()
+  const plansQuery = useReleaseQueuePlans()
+  const mixed = t.rewards.mixed
+  const taxSchedule = formatPlanTaxSchedule(
+    plansQuery.data,
+    mixed.daysTax,
+    mixed.releaseDays,
+    mixed.taxRate,
+    mixed.scheduleJoin,
+  )
+  const faqItems = t.release.faq.hub.map((item) => ({
+    ...item,
+    a: interpolate(item.a, { taxSchedule }),
+  }))
   const burnSwapConfig = useBurnSwapConfigQuery()
   const slides = t.release.hub.aboutSlides
   const rawDivisor = burnSwapConfig.data?.contributionDivisor
@@ -77,7 +92,7 @@ export function ReleaseHubDetail() {
       <Section>
         <Section.Title>{t.release.faq.title}</Section.Title>
         {/* FAQ 默认全部折叠，避免首项展开撑乱节奏 */}
-        <Faq defaultOpenFirst={false} items={t.release.faq.hub} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

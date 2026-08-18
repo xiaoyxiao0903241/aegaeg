@@ -39,12 +39,14 @@ export function StakeDetail() {
     chartDeltaLabel,
   } = useStakingDetail('stake')
   const epochSchedule = useEpochScheduleLabels()
-  const bufferDays = usePrincipalReleaseDurationDays().data ?? 30
   const mechanismSteps = mapStepsWithEpochSchedule(t.staking.stake.mechanismSteps, epochSchedule)
+  // jscpd:ignore-start — FAQ 天数插值页内拼装，禁再抽统一包装
+  const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
   const faqItems = mapFaqWithEpochSchedule(t.staking.stake.faq, epochSchedule).map((item) => ({
     ...item,
     a: interpolate(item.a, { days: bufferDays }),
   }))
+  // jscpd:ignore-end
 
   return (
     <Detail>

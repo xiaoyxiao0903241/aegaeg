@@ -20,7 +20,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 /**
  * 释放总览交互面板状态
  *
- * 组合队列与缓冲池的 API / 链上标签与进度百分比；税率表优先读 queuePlans。
+ * 组合队列与缓冲池的 API / 链上标签与进度百分比；税率表只读 queuePlans。
  */
 export function useReleaseHub() {
   const { messages: t } = useI18n()
@@ -110,21 +110,19 @@ export function useReleaseHub() {
     : (parseApiAmount(bufferApi.data?.releasing_amount) ?? 0)
   const bufferGagxNum = bufferChainReady ? formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS) : 0
 
-  const fallbackPeriods = t.release.hub.taxRows.periods
-  const fallbackRates = t.release.hub.taxRows.rates
   const taxPeriods =
     plansQuery.data != null && plansQuery.data.length > 0
       ? plansQuery.data.map((plan) => {
           const days = Number(plan.durationSeconds / SECONDS_PER_DAY)
           return `${days}d`
         })
-      : fallbackPeriods
+      : []
   const taxRates =
     plansQuery.data != null && plansQuery.data.length > 0
       ? plansQuery.data.map(
           (plan) => `${formatNumber(Number(plan.taxBps) / 100, { digits: 0, trimZeros: true })}%`,
         )
-      : fallbackRates
+      : []
 
   return {
     t,

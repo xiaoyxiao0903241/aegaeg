@@ -7,7 +7,10 @@
  */
 import { ZERO_BI } from '~/core/constants'
 import { BPS_DENOM } from '~/core/exchange/bps'
-import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
+import {
+  formatBurnContributionRatioColon,
+  formatBurnSplitPercent,
+} from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
@@ -27,9 +30,10 @@ import { formatUsdApprox } from '~/shared/presenters/format'
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
-
-// 「销毁的 AGX 去了哪里？」FAQ 的销毁 / 注入比例来自链上 splitBps
-const FAQ_DESTINATION_INDEX = 3
+import {
+  useBurnSwapConfigQuery,
+  useContributionClaimRatioLabel,
+} from '~/web3/exchange/use-burn-swap-config'
 
 /** 详情页只接收概览标量，不承载金额输入。 */
 export type BurnExchangeDetailProps = {
@@ -51,6 +55,8 @@ export function BurnExchangeDetail({
   const { messages: t } = useI18n()
   const agxPriceUsd = useAgxPriceUsd()
   const history = useBurnHistory()
+  const claimRatio = useContributionClaimRatioLabel()
+  const burnConfigQuery = useBurnSwapConfigQuery()
 
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -75,20 +81,16 @@ export function BurnExchangeDetail({
     trimZeros: false,
   })
 
-  const faqItems = (() => {
-    const items = t.exchange.burn.faq.items
-    const splitBps = config?.splitBps
-    const burnPct = splitBps === undefined ? '0' : formatBurnSplitPercent(splitBps)
-    const injectPct = splitBps === undefined ? '0' : formatBurnSplitPercent(BPS_DENOM - splitBps)
-    return items.map((item, index) =>
-      index === FAQ_DESTINATION_INDEX
-        ? {
-            ...item,
-            a: interpolate(item.a, { burnPct, injectPct }),
-          }
-        : item,
-    )
-  })()
+  const splitBps = config?.splitBps
+  const burnPct = splitBps === undefined ? '—' : formatBurnSplitPercent(splitBps)
+  const injectPct = splitBps === undefined ? '—' : formatBurnSplitPercent(BPS_DENOM - splitBps)
+  const rateBps = burnConfigQuery.data?.rateBps
+  const burnRatio =
+    rateBps != null && rateBps > ZERO_BI ? formatBurnContributionRatioColon(rateBps) : '—'
+  const faqItems = t.exchange.burn.faq.items.map((item) => ({
+    ...item,
+    a: interpolate(item.a, { burnPct, injectPct, ratio: claimRatio, burnRatio }),
+  }))
 
   return (
     <Detail>

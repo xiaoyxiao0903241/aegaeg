@@ -3,7 +3,7 @@
  *
  * 顶部为产品统计数字，中部为操作记录表格（可分页），底部为常见问题。
  */
-import { claimDurationDaysLists } from '~/core/assets/claim-plans'
+import { durationDaysFromPlans } from '~/core/assets/claim-plans'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
@@ -42,10 +42,12 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
     freshness: 'api',
     enabled: bondFaq,
   })
-  const { restakeDays } = claimDurationDaysLists(plansQuery.data)
+  const restakeFromChain = durationDaysFromPlans(plansQuery.data?.restakePlans, [])
   const faqVars = {
-    days: durationQuery.data ?? 30,
-    ...(bondFaq ? { restakeDays: restakeDays.join('/') } : {}),
+    days: durationQuery.data ?? '—',
+    ...(bondFaq
+      ? { restakeDays: restakeFromChain.length > 0 ? restakeFromChain.join('/') : '—' }
+      : {}),
   }
   const faqItems = copy.faq.items.map((item) => ({
     ...item,

@@ -5,6 +5,7 @@
  * 中部为四种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
  * 未登录时摘要卡显示空态占位。
  */
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { StatusBadge } from '~/shared/components/badge'
@@ -28,6 +29,7 @@ import {
 } from '~/views/dapp/shared/contribution-claim-ratio'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
@@ -41,7 +43,11 @@ export function RewardsHubDetail() {
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
   const contributionHint = withContributionRatio(stats.contributionHint, claimRatio)
-  const faqItems = mapFaqWithContributionRatio(t.rewards.faq.items, claimRatio)
+  const epochSchedule = useEpochScheduleLabels()
+  const faqItems = mapFaqWithContributionRatio(t.rewards.faq.items, claimRatio).map((item) => ({
+    ...item,
+    a: interpolate(item.a, { hours: epochSchedule.hours }),
+  }))
 
   const tiles: RewardsSummaryItem[] = [
     {

@@ -258,11 +258,11 @@ const app = defineMessages({
         items: [
           {
             q: '¿Qué puedo hacer en la página de Intercambio?',
-            a: 'Convierte con Flash USDT a USD1 o gAGX a AGX, opera tokens principales por activos AEGIS X en PancakeSwap, quema AGX por puntos de contribución y compra gAGX desbloqueado de Turbina con USD1.',
+            a: 'La página de Intercambio reúne las formas habituales de obtener y gestionar tokens del protocolo AEGIS X: Flash (canjea gAGX por AGX a 1:1), Operar (intercambia USD1 / AGX / X y otros tokens al tipo de mercado), Turbina (compra con USD1 para desbloquear gAGX de Turbina) y Quemar AGX por puntos de contribución. Elige la entrada que necesites.',
           },
           {
             q: '¿Cuál es la diferencia entre Flash y Operar?',
-            a: 'Flash usa una ruta fija del protocolo sin control de deslizamiento. Operar usa tipos en vivo de PancakeSwap con deslizamiento configurable e impacto de precio.',
+            a: 'Flash es el canje 1:1 gAGX↔AGX del protocolo — sin comisiones, sin deslizamiento, acreditación instantánea en cadena. Operar pasa por PancakeSwap al tipo de mercado en vivo para USD1, AGX, X y otros tokens; el precio se mueve con el mercado, tú defines el deslizamiento permitido y pagas el gas de red.',
           },
           {
             q: '¿Qué es una billetera cripto y cómo obtengo una?',
@@ -315,7 +315,7 @@ const app = defineMessages({
         items: [
           {
             q: '¿Qué es gAGX?',
-            a: 'gAGX es el comprobante unificado de liquidación de recompensas Rebase y DAO. El rendimiento Rebase de staking AGX o bonos, y las recompensas DAO, se pagan como gAGX.',
+            a: 'gAGX es el comprobante unificado de liquidación de recompensas Rebase y DAO: el rendimiento Rebase de staking AGX o bonos, y las recompensas DAO, se pagan como gAGX.',
           },
           {
             q: '¿Cuál es el ratio de intercambio gAGX a AGX?',
@@ -327,23 +327,23 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo obtengo gAGX?',
-            a: 'Tras participar en la distribución de rendimientos del protocolo, recibes la cantidad correspondiente de gAGX.',
+            a: 'El rendimiento Rebase de staking AGX, bonos LP o bonos de quema, más las recompensas DAO, se pagan a tu cuenta como gAGX.',
           },
           {
             q: '¿Qué más puedo hacer con gAGX además de canjearlo por AGX?',
-            a: 'Canjea 1:1 a AGX para seguir el staking con capitalización, o haz staking de gAGX para minar X. Ambas rutas están disponibles.',
+            a: 'Haz staking de gAGX en Minado X para capturar X. Canjea a AGX o mina X — ambas rutas son tuyas.',
           },
           {
             q: '¿Cómo intercambio USDT por USD1?',
-            a: 'En Flash cambia al par «USDT → USD1», ingresa la cantidad e intercambia al tipo del protocolo; liquidación instantánea en cadena.',
+            a: 'En la parte superior de Flash cambia al par «USDT → USD1», ingresa la cantidad e intercambia 1:1 — sin comisiones, sin deslizamiento, liquidación instantánea en cadena.',
           },
           {
             q: '¿Puedo intercambiar USD1 de vuelta a USDT?',
-            a: 'Flash es unidireccional USDT→USD1. Para volver a otros activos usa Operar con intercambio de mercado.',
+            a: 'No. Flash solo convierte USDT a USD1 en un sentido. USD1 es el activo central de liquidación para operar, bonos y desbloqueos de Turbina.',
           },
           {
             q: '¿Dónde veo el historial de Flash?',
-            a: 'Flash se liquida en cadena en segundos. Confirma cada transacción en tu billetera o un explorador de bloques.',
+            a: 'Flash se ejecuta en cadena y acredita en segundos. Revisa tu billetera o un explorador de bloques.',
           },
         ],
       },
@@ -413,15 +413,15 @@ const app = defineMessages({
         items: [
           {
             q: '¿Para qué sirven los puntos de contribución?',
-            a: 'Reclamar rendimientos mixtos, reinvertir, etc. consume puntos de contribución; si el saldo no alcanza, la reclamación falla — quema AGX primero para reponer.',
+            a: 'Reclamar rendimiento de staking, bonos y otras fuentes consume contribución a {ratio}. Sin puntos suficientes no puedes reclamar.',
           },
           {
             q: '¿Por qué necesito puntos de contribución para reclamar?',
-            a: 'El protocolo usa puntos de contribución para acotar reclamaciones y reinversión; el consumo depende del monto de la recompensa. Si no alcanzan, quema AGX primero para añadir puntos.',
+            a: 'Vincula las reclamaciones a la deflación del protocolo: cada reclamación consume {ratio}; los puntos solo se obtienen quemando AGX. Cada retiro de rendimiento corresponde a AGX quemado.',
           },
           {
             q: '¿Cuál es el ratio de quema?',
-            a: 'El ratio de quema lo configura rateBps en cadena; puntos de contribución = AGX quemado × rateBps ÷ 10000.',
+            a: 'Quema a {burnRatio}: cada 1 AGX quemado genera puntos equivalentes. El AGX quemado se reparte en cadena entre el agujero negro y el LP.',
           },
           {
             q: '¿A dónde va el AGX quemado?',
@@ -429,7 +429,7 @@ const app = defineMessages({
           },
           {
             q: '¿Se pueden transferir o reembolsar los puntos de contribución?',
-            a: 'Los puntos de contribución están en el libro de cuentas del contrato AgxContributionSwap. No se pueden transferir ni reembolsar a AGX.',
+            a: 'No. Ligados a la cuenta — no se pueden transferir ni reembolsar. Solo se gastan al reclamar; quema según necesites.',
           },
         ],
       },
@@ -487,23 +487,23 @@ const app = defineMessages({
         items: [
           {
             q: '¿Cómo entra gAGX a Turbina?',
-            a: 'After RewardQueue (and related) claims, rewards credit Turbine as unlockable quota (turbineBalances).',
+            a: 'El gAGX del pool de liberación no va a la billetera: entra solo a Turbina bloqueado (en los registros aparece «Entrada»). Compra AGX equivalente con USD1 para «Desbloquear» y «Retirar» tras la espera.',
           },
           {
             q: '¿Por qué hace falta comprar para desbloquear?',
-            a: 'Para desbloquear debes comprar con USD1 una cantidad igual de AGX al precio en vivo (cantidad 1:1). El USD1 pagado sigue la cotización de AGX — no es un precio fijo USD1:AGX 1:1.',
+            a: 'Desbloquear 1 gAGX exige comprar 1 AGX con USD1 al precio actual. Cada venta potencial va emparejada con una compra igual.',
           },
           {
             q: '¿Cuál es la diferencia entre desbloquear y retirar?',
-            a: 'Desbloquear: pagas USD1, compras AGX e inicias la espera. Retirar: tras la espera, reclamas gAGX a la billetera.',
+            a: 'Desbloquear compra AGX equivalente con USD1, desbloquea gAGX e inicia la espera. Retirar mueve el gAGX desbloqueado a la billetera tras {cooldownHours} horas. Los registros muestran Desbloquear y Retirar.',
           },
           {
             q: '¿Cuánto dura la espera?',
-            a: 'currentCooldownDuration — typically about 24–96 hours, adaptive to treasury health. The page shows the live period.',
+            a: 'El periodo actual es {cooldownHours} horas, ajustado automáticamente por el mercado. Luego puedes retirar ese gAGX.',
           },
           {
             q: '¿A dónde va el AGX comprado al desbloquear?',
-            a: 'El AGX comprado va a tu billetera; tras la espera, retiras el gAGX por separado.',
+            a: 'El AGX comprado va directo a tu billetera, como una operación normal. El gAGX equivalente se desbloquea y entra en espera.',
           },
         ],
       },
@@ -972,6 +972,7 @@ const app = defineMessages({
       releaseDays: '{days} d',
       restakeDays: '{days} d',
       daysTax: '{days} d · {tax}',
+      scheduleJoin: ', ',
       taxRate: 'Impuesto {rate}%',
       requiredContributionLabel: 'Puntos de contribución a descontar en esta reclamación',
       insufficientContributionDetail:
@@ -1042,7 +1043,7 @@ const app = defineMessages({
           },
           {
             q: '¿El staking flexible otorga elegibilidad para el sorteo?',
-            a: 'Sí. El staking flexible (liquidStake) puede otorgar elegibilidad del mismo día si una sola compra alcanza el umbral; la elegibilidad es por compra, no acumulativa. Los topes diarios de flexible pueden impedir una compra calificante.',
+            a: 'No. El staking flexible tiene un tope diario por persona, así que una sola operación no superará $5,000 y no puede cumplir la elegibilidad del sorteo.',
           },
         ],
       },
@@ -1088,7 +1089,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo las recompensas por referidos?',
-            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución {ratio} (DaoPool Mixed).',
+            a: 'En el panel izquierdo ajusta reclamar vs reinvertir: lo reclamado entra al pool de liberación y se desbloquea linealmente; lo reinvertido va a staking de un solo token para capitalizar. Ambos consumen {ratio}.',
           },
           {
             q: '¿Qué es el número de direcciones de referidos directos?',
@@ -1205,7 +1206,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo co-construcción y nivelación?',
-            a: 'En el panel izquierdo reparte reclamar / reinvertir: reclamar va a la cola de liberación; reinvertir a staking de un solo activo. Ambos consumen contribución {ratio}. El historial de nivelación está en las pestañas de registros de recompensa a la derecha.',
+            a: 'En la parte superior del panel izquierdo cambia Co-construcción / Nivelación y elige la proporción. Misma liberación/reinversión y {ratio}.',
           },
           {
             q: '¿Cuándo aplica la nueva tasa de nivel?',
@@ -1283,15 +1284,15 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo se ascienden los niveles Génesis?',
-            a: 'Avanza de S1 a S10 según el monto personal de co-construcción y el volumen de la organización.',
+            a: 'Los niveles Génesis van de S1 a S10 según el monto personal de co-construcción y el volumen total de la organización. Los niveles altos requieren la condición de dos zonas.',
           },
           {
             q: '¿Qué es la recompensa por subida de nivel?',
-            a: 'Las recompensas de nivel liquidan una parte del volumen de co-construcción del equipo según tu nivel Génesis; se reclaman a la billetera con firmas de RewardClaimer.',
+            a: 'El nivel Génesis alcanzado durante la co-construcción se eleva automáticamente un nivel tras el lanzamiento, 30 días, y luego vuelve al nivel real.',
           },
           {
             q: '¿Cómo se liquidan las recompensas de equipo Génesis?',
-            a: 'Las recompensas de referidos directos se liquidan automáticamente a tu billetera; las de nivel y el fondo de desarrollo se reclaman con firmas de RewardClaimer / CommunityFund.',
+            a: 'Las recompensas de equipo Génesis se liquidan automáticamente al ratio del nivel; debes reclamarlas a la billetera. Tras el periodo de co-construcción esta página se cierra; lo no reclamado pasa al contrato de creación de mercado inteligente.',
           },
         ],
       },
@@ -1302,23 +1303,23 @@ const app = defineMessages({
       items: [
         {
           q: '¿En qué forma se pagan las recompensas?',
-          a: 'La mayoría se muestra en AGX / gAGX; las de co-construcción Génesis siguen los activos de RewardClaimer. En Mixed, la parte de liberación va a la cola de liberación.',
+          a: 'Todas las recompensas se liquidan como gAGX en las tarjetas correspondientes. Consulta el hub de Recompensas cuando quieras.',
         },
         {
           q: '¿Qué se necesita para reclamar?',
-          a: 'Las reclamaciones firmadas simples necesitan saldo reclamable y firma válida. Lucky / DaoPool Mixed también requieren puntos de contribución suficientes y proporción liberación/reinversión.',
+          a: 'Reclamar consume {ratio}. Si te faltan puntos, obténlos en la página Quemar.',
         },
         {
           q: '¿Cuándo llegan las recompensas reclamadas?',
-          a: 'Tras confirmarse la tx en cadena. La parte de liberación se desbloquea en el periodo elegido; la de reinversión entra a la posición de staking correspondiente.',
+          a: 'Elige un periodo de liberación; a más largo, menor impuesto. O reinviste parte o todo en staking de un solo token.',
         },
         {
           q: '¿Cuándo se liquidan las recompensas?',
-          a: 'Cada fuente liquida según contrato y reglas de escaneo del backend. El frontend toma como verdad saldos reclamables y payloads firmados.',
+          a: 'Lucky se liquida a las 00:00 UTC cada día. Las demás siguen el Rebase cada {hours} horas. La próxima hora está en el panel de datos de cada detalle.',
         },
         {
           q: '¿Por qué algunas tarjetas no muestran montos?',
-          a: 'Sin conexión o sin firma se muestra un aviso de inicio de sesión, no «sin recompensa». Tras iniciar sesión, — significa que no hay nada reclamable o que los datos aún no están listos.',
+          a: 'En ajustes (arriba a la derecha) está marcada por defecto «Ocultar activos en 0». Desmárcala para ver todas las tarjetas.',
         },
       ],
     },
@@ -1646,35 +1647,35 @@ const app = defineMessages({
         items: [
           {
             q: '¿Cómo se calcula el valor total de activos?',
-            a: 'Suma de valoraciones de principal y rendimiento no reclamado por producto; muestra — sin cotización cruzada. Los saldos ociosos de billetera no cuentan.',
+            a: 'Total = principal + rendimiento no reclamado + producción de minado, valorados a precios de mercado. Los saldos ociosos de billetera no cuentan.',
           },
           {
             q: '¿En qué forma se paga el rendimiento?',
-            a: 'El Rebase de staking/bonos se mide en gAGX; la producción de minado X es X.',
+            a: 'El Rebase de staking, bonos LP y bonos de quema se liquida en gAGX (1:1 a AGX o Minado X). La producción de Minado X es X, reclamable en cualquier momento.',
           },
           {
             q: '¿Por qué no puedo reclamar rendimiento?',
-            a: 'Reclamar vía Mixed consume contribución; si falta, quema AGX primero para obtener puntos.',
+            a: 'Hace falta contribución. Compra y quema AGX primero. Así cada retiro también deflacta el protocolo.',
           },
           {
             q: '¿Cómo obtengo contribución?',
-            a: 'Compra y quema AGX para obtener contribución; al reclamar se consume {ratio}.',
+            a: 'Compra y quema AGX. Reclamar consume {ratio}; prepara puntos suficientes.',
           },
           {
             q: '¿Por qué elegir un periodo de liberación al reclamar?',
-            a: 'El rendimiento reclamado entra a la cola de liberación y se desbloquea linealmente; a mayor periodo, suele haber menor impuesto.',
+            a: 'No es instantáneo; desbloqueo lineal; a más largo, menor impuesto: {taxSchedule}.',
           },
           {
             q: '¿A dónde va el rendimiento reclamado?',
-            a: 'No llega al instante a la billetera — entra a RewardQueue / pool de liberación; reclama lo liberado en Liberación.',
+            a: 'Entra al pool de liberación; síguelo allí; lo liberado se retira a la billetera.',
           },
           {
             q: '¿Cuál es la diferencia entre reinvertir y reclamar?',
-            a: 'Reinvertir puede enviar el rendimiento a staking de reinversión; reclamar se desbloquea en el periodo de liberación elegido.',
+            a: 'Reinvertir omite la liberación, tiene mejor impuesto ({restakeTax}) y capitaliza en staking de un solo token. Reclamar es más flexible.',
           },
           {
             q: '¿Qué es el pool búfer?',
-            a: 'Tras retirar el staking, el principal entra al splitter para liberación lineal (AGX o gAGX).',
+            a: 'Tras retirar el staking, el principal entra al búfer con liberación lineal secundaria de {days} días. Lo «liberado» en el búfer se puede canjear a la billetera en cualquier momento.',
           },
         ],
       },
@@ -1706,23 +1707,23 @@ const app = defineMessages({
           items: [
             {
               q: '¿Cuál es la diferencia entre reclamar y canjear?',
-              a: 'Reclamar gestiona el rendimiento (con reinversión opcional); canjear envía el principal al búfer de liberación.',
-            },
-            {
-              q: '¿Qué significa «Liberado»?',
-              a: 'La parte de principal canjeable tras el vencimiento de un staking a plazo.',
+              a: 'Reclamar es el rendimiento (periodo de liberación o reinversión). Canjear es el principal AGX liberado → búfer de {days} días y luego la billetera.',
             },
             {
               q: '¿Por qué se muestra cada staking por separado?',
-              a: 'Cada posición abierta acumula e interesa y libera de forma independiente para reclamar o canjear por posición.',
+              a: 'Cada staking tiene periodo, rendimiento, bonificación y liberación independientes — se muestra y opera por separado.',
+            },
+            {
+              q: '¿Qué significa «Liberado»?',
+              a: '«Liberado» es el principal ya desbloqueado linealmente por bloque (~3 s), canjeable en cualquier momento.',
             },
             {
               q: '¿Qué ocurre cuando termina la cuenta regresiva?',
-              a: 'Cuando el tiempo llega a cero, la posición pasa a canjeable/operable; prevalece el estado en cadena.',
+              a: 'El contador en cero significa que todo el principal está liberado; puedes canjearlo cuando quieras. El principal no reclamado sigue generando. Tras canjear el principal, el rendimiento no reclamado sigue capitalizando.',
             },
             {
               q: '¿Cómo funciona la proporción de reinversión al reclamar?',
-              a: 'Usa el control deslizante para repartir liberación y reinversión, elige periodos y confirma.',
+              a: 'El control deslizante reparte reinversión y reclamación. Lo reinvertido capitaliza en el periodo de staking elegido (mejor impuesto). Lo reclamado se desbloquea en el periodo de liberación.',
             },
           ],
         },
@@ -2443,31 +2444,31 @@ const app = defineMessages({
         },
         {
           q: '¿Cómo se liberan los activos al retirar staking?',
-          a: 'El gAGX desbloqueado usa liberación lineal por bloques de ~30 días para reducir la presión de venta.',
+          a: 'El gAGX desbloqueado se libera linealmente por bloques durante {days} días.',
         },
         {
           q: '¿Cuál es el suministro de X? ¿Se inflará?',
-          a: '210M de X fijos, nunca se inflan. 47.62% para liquidez LP; 52.38% para recompensas globales y desarrollo.',
+          a: 'Suministro fijo de 210 millones, nunca se infla. 47.62% para LP (pool inicial, creación de mercado y soporte de liquidez); 52.38% para recompensas globales (minado gAGX, expansión/marca, ecosistema).',
         },
         {
           q: '¿Cómo obtengo gAGX?',
-          a: 'gAGX es el comprobante unificado de liquidación de recompensas Rebase y DAO de staking y bonos.',
+          a: 'gAGX es el comprobante unificado de liquidación y la única entrada al ecosistema X.',
         },
         {
           q: '¿Qué más puede hacer gAGX además de minar?',
-          a: 'Canjea 1:1 a AGX para seguir staking, o haz staking de gAGX para minar X.',
+          a: 'Canjea 1:1 a AGX o mina X. Ambas rutas están disponibles.',
         },
         {
           q: '¿Por qué X se deflacta de forma continua?',
-          a: 'Cada venta de X quema el 25%. El crecimiento sube la demanda mientras las quemas reducen el suministro.',
+          a: 'Cada venta quema el 25%; la circulación se reduce; «menos oferta, más valor».',
         },
         {
           q: '¿Cuál es la fuente de valor de X?',
-          a: 'La demanda de minado, la recirculación de ingresos del protocolo y el crecimiento del ecosistema refuerzan la demanda de X.',
+          a: 'Tres capas: demanda de minado, recirculación de ingresos y crecimiento de apps/usuarios.',
         },
         {
           q: '¿Por qué el tope de staking está ligado a bonos y staking a largo plazo?',
-          a: 'Mantiene a los mineros como constructores a largo plazo; más bonos o staking largo elevan el tope vía miningQuotaOf.',
+          a: 'El tope de gAGX no supera tus bonos AGX ≥180 días más el staking AGX. Añade bonos o staking largo para subir el tope.',
         },
       ],
     },
@@ -2594,10 +2595,6 @@ const app = defineMessages({
       taxTitle: 'Liberación más larga, impuesto más bajo',
       taxPeriod: 'Periodo a estimar',
       taxRate: 'Impuesto al reclamar',
-      taxRows: {
-        periods: ['5 d', '20 d', '40 d', '60 d'],
-        rates: ['20%', '10%', '5%', '1%'],
-      },
     },
     queue: {
       title: 'Pool de liberación',
@@ -2644,67 +2641,67 @@ const app = defineMessages({
       hub: [
         {
           q: '¿Puedo cambiar el periodo de liberación?',
-          a: 'No para montos ya en cola. Las nuevas reclamaciones pueden elegir otro periodo.',
+          a: 'No. El periodo queda fijo al entrar en cola. La siguiente reclamación puede ser distinta.',
         },
         {
           q: '¿Cuándo se descuenta el impuesto?',
-          a: 'Al reclamar montos desbloqueados, según la tasa del plan de liberación.',
+          a: 'Se descuenta una vez al entrar en cola ({taxSchedule}). El pool muestra el monto neto. Luego no hay cargos extra.',
         },
         {
           q: '¿A dónde va el gAGX reclamado del pool de liberación?',
-          a: 'En cadena el AGX entra al cupo de venta de Turbina; luego usa Turbina para obtener gAGX.',
+          a: 'El gAGX reclamado va a Turbina, no a la billetera. Gestiónalo en la página Turbina.',
         },
         {
           q: '¿Pierdo lo desbloqueado si no lo reclamo de inmediato?',
-          a: 'No. Lo desbloqueado sigue reclamable.',
+          a: 'No caduca. Lo liberado que se queda no genera nada — reclámalo a Turbina a tiempo.',
         },
         {
           q: '¿Cómo elijo un periodo de liberación adecuado?',
-          a: 'A mayor periodo, menor impuesto; elige entre 5 / 20 / 40 / 60 días según liquidez.',
+          a: 'Periodo corto = más rápido y más impuesto; largo = menos impuesto. O divide en varias reclamaciones.',
         },
       ],
       queue: [
         {
           q: '¿Puedo cambiar el periodo de liberación?',
-          a: 'No para montos ya en cola; las nuevas reclamaciones pueden elegir otro periodo.',
+          a: 'No. El periodo queda fijo al entrar en cola. La siguiente reclamación puede ser distinta.',
         },
         {
           q: '¿Cuándo se descuenta el impuesto?',
-          a: 'Al reclamar montos desbloqueados, según la tasa del plan.',
+          a: 'Se descuenta una vez al entrar en cola ({taxSchedule}). El pool muestra el monto neto. Luego no hay cargos extra.',
         },
         {
           q: '¿A dónde va el gAGX reclamado del pool de liberación?',
-          a: 'Al cupo de Turbina — ve a Intercambio → Turbina.',
+          a: 'El gAGX reclamado va a Turbina, no a la billetera. Gestiónalo en la página Turbina.',
         },
         {
           q: '¿Pierdo lo desbloqueado si no lo reclamo de inmediato?',
-          a: 'No.',
+          a: 'No caduca. Lo liberado que se queda no genera nada — reclámalo a Turbina a tiempo.',
         },
         {
           q: '¿Cómo elijo un periodo de liberación adecuado?',
-          a: 'A mayor periodo, menor impuesto.',
+          a: 'Periodo corto = más rápido y más impuesto; largo = menos impuesto. O divide en varias reclamaciones.',
         },
       ],
       buffer: [
         {
           q: '¿Qué es el pool búfer?',
-          a: 'Tras canjear/retirar staking, el principal se libera linealmente en el splitter.',
+          a: 'Tras canjear, liberación lineal secundaria de {days} días. Suaviza las salidas.',
         },
         {
           q: '¿Los activos en el pool búfer siguen generando rendimiento?',
-          a: 'Durante el búfer no se acumula rendimiento de staking.',
+          a: 'No. Al entrar al búfer deja de generar rendimiento.',
         },
         {
           q: '¿Cómo retiro lo liberado?',
-          a: 'Pulsa Retirar — el AGX va a tu billetera.',
+          a: 'Liberación lineal por bloques; Retirar liberado → a la billetera al instante.',
         },
         {
           q: '¿Por qué el pool búfer muestra AGX y gAGX?',
-          a: 'El diseño conserva ambas tarjetas; en cadena el búfer solo liquida AGX tras convertir gAGX.',
+          a: 'Canje de staking/bono = AGX; retiro de Minado X = gAGX. Independientes.',
         },
         {
           q: '¿Por qué no puedo retirar de una vez todos los activos liberados?',
-          a: 'Solo se puede retirar el cupo ya desbloqueado; lo pendiente sigue en espera.',
+          a: 'Hay muchos registros; un retiro procesa un número limitado — pulsa Retirar de nuevo.',
         },
       ],
     },

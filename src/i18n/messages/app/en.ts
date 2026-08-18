@@ -252,11 +252,11 @@ const app = defineMessages({
         items: [
           {
             q: 'What can I do on the Swap page?',
-            a: 'Flash-convert USDT to USD1 or gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+            a: 'The Swap page gathers the usual ways to get and handle AEGIS X protocol tokens: Flash (redeem gAGX for AGX at 1:1), Trade (swap USD1 / AGX / X and other tokens at market rates), Turbine (buy with USD1 to unlock Turbine gAGX), and Burn AGX for contribution points. Pick the entry that fits what you need.',
           },
           {
             q: 'What is the difference between Flash and Trade?',
-            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
+            a: 'Flash is the protocol’s 1:1 gAGX↔AGX redeem — no fees, no slippage, instant on-chain credit. Trade routes through PancakeSwap at live market rates for USD1, AGX, X, and other tokens; price moves with the market, you set allowed slippage and pay network gas.',
           },
           {
             q: 'What is a crypto wallet, and how do I get one?',
@@ -309,7 +309,7 @@ const app = defineMessages({
         items: [
           {
             q: 'What is gAGX?',
-            a: 'gAGX is the unified settlement voucher for Rebase and DAO rewards. Rebase yield from AGX staking or bonds, and DAO rewards, are paid as gAGX.',
+            a: 'gAGX is the unified settlement voucher for Rebase and DAO rewards: rebase yield from AGX staking or bonds, and DAO rewards, are all paid as gAGX.',
           },
           {
             q: 'What is the gAGX to AGX exchange rate?',
@@ -321,23 +321,23 @@ const app = defineMessages({
           },
           {
             q: 'How do I get gAGX?',
-            a: 'After participating in protocol yield distribution, you receive a corresponding amount of gAGX.',
+            a: 'Rebase yield from AGX staking, LP bonds, or burn bonds, plus DAO rewards, is paid to your account as gAGX.',
           },
           {
             q: 'What else can I do with gAGX besides redeeming AGX?',
-            a: 'Redeem 1:1 to AGX for staking compounding, or stake gAGX to mine X. Both paths are available.',
+            a: 'You can stake gAGX in X Mine to capture X, the ecosystem value token. Redeem to AGX or mine X — both paths are yours to choose.',
           },
           {
             q: 'How do I swap USDT for USD1?',
-            a: 'Switch to the USDT → USD1 pair on Flash, enter an amount, and swap at the protocol rate with on-chain settlement.',
+            a: 'Switch to the USDT → USD1 pair at the top of Flash, enter an amount, and swap 1:1 — no fees, no slippage, instant on-chain credit.',
           },
           {
             q: 'Can I swap USD1 back to USDT?',
-            a: 'Flash is one-way USDT→USD1. Use Trade for market swaps to other assets.',
+            a: 'No. Flash only converts USDT one-way into USD1. USD1 is the AEGIS X core settlement asset and can be used in-ecosystem for trading, buying bonds, and Turbine unlocks.',
           },
           {
             q: 'Where can I see Flash history?',
-            a: 'Flash swaps settle on-chain in seconds. Confirm each transaction in your wallet or a block explorer.',
+            a: 'Flash runs on-chain and credits in seconds. Check each transaction in your wallet or a block explorer.',
           },
         ],
       },
@@ -402,15 +402,15 @@ const app = defineMessages({
         items: [
           {
             q: 'What are contribution points used for?',
-            a: 'Contribution points are required when claiming mixed rewards with restake. Restake and lucky-pool claims consume points based on the reward amount.',
+            a: 'Claiming yield from staking, bonds, and other sources spends contribution points at {ratio}. Without enough points you cannot claim.',
           },
           {
             q: 'Why do I need contribution points to claim rewards?',
-            a: 'The protocol uses contribution points to gate reward claims and restake flows. If your balance is insufficient, the claim reverts — burn AGX first to add points.',
+            a: 'This binds claims to protocol deflation: every claim spends contribution at {ratio}, and points come only from burning AGX. So each withdrawal of yield corresponds to AGX burned, continuously supporting AGX deflation.',
           },
           {
             q: 'What is the burn rate?',
-            a: 'The burn rate is set on-chain (rateBps). Each AGX burned yields contribution points at contribution = AGX × rateBps ÷ 10000.',
+            a: 'Burns at a {burnRatio} rate: each 1 AGX burned yields the matching contribution points. Burned AGX is split on-chain into the black hole and LP.',
           },
           {
             q: 'Where does burned AGX go?',
@@ -418,7 +418,7 @@ const app = defineMessages({
           },
           {
             q: 'Can contribution points be transferred or refunded?',
-            a: 'Contribution points are account-bound ledger balances on AgxContributionSwap. They cannot be transferred or refunded to AGX.',
+            a: 'No. Contribution points are bound to your account — they cannot be transferred or refunded. They are only spent when claiming yield; burn as needed.',
           },
         ],
       },
@@ -476,23 +476,23 @@ const app = defineMessages({
         items: [
           {
             q: 'How does gAGX enter Turbine?',
-            a: 'After release-queue claims, rewards credit Turbine as unlockable quota.',
+            a: 'gAGX claimed from the release pool does not go to your wallet. It automatically enters Turbine locked (shown as “Enter” in records). Buy an equal amount of AGX with USD1 to Unlock, then Extract to wallet after cooldown.',
           },
           {
             q: 'Why is a buy required to unlock?',
-            a: 'Unlock requires buying an equal amount of AGX with USD1 at the live price (quantity 1:1). The USD1 you pay moves with the AGX quote — it is not a fixed USD1:AGX price of 1:1.',
+            a: 'Turbine binds sell liquidity to buy demand: unlocking 1 gAGX requires buying 1 AGX with USD1 at the current price. Every potential sell is paired with an equal buy, avoiding one-sided sell pressure and protecting the base pool.',
           },
           {
             q: 'Unlock vs claim?',
-            a: 'Unlock pays USD1 to buy AGX and start cooldown. Claim withdraws gAGX after the silence matures.',
+            a: 'Unlock buys an equal amount of AGX with USD1 at the current price, unlocking locked gAGX and starting cooldown. Extract moves unlocked gAGX to your wallet after the cooldown ({cooldownHours} hours). The two steps appear in Turbine records as Unlock and Extract.',
           },
           {
             q: 'How long is the cooldown?',
-            a: 'Typically about 24–96 hours, adaptive to treasury health. The page shows the live period.',
+            a: 'Each unlock starts a cooldown. The current period is {cooldownHours} hours, auto-adjusted by market state. After it ends you can extract that gAGX to your wallet.',
           },
           {
             q: 'Where does the purchased AGX go?',
-            a: 'Bought AGX goes to your wallet; matured silences are claimed separately as gAGX.',
+            a: 'Bought AGX goes straight to your wallet, same as a normal trade buy. The matching gAGX unlocks and enters cooldown.',
           },
         ],
       },
@@ -943,6 +943,7 @@ const app = defineMessages({
       releaseDays: '{days}d',
       restakeDays: '{days}d',
       daysTax: '{days}d · {tax}',
+      scheduleJoin: ', ',
       taxRate: 'Tax {rate}%',
       requiredContributionLabel: 'Contribution required this claim',
       insufficientContributionDetail: 'Insufficient contribution (need {need}, have {have}), ',
@@ -1012,7 +1013,7 @@ const app = defineMessages({
           },
           {
             q: 'Does liquid staking grant eligibility?',
-            a: 'Yes. Liquid stake (liquidStake) can grant same-day eligibility when a single purchase meets the threshold; eligibility is per-purchase, not cumulative. Daily liquid caps may still prevent a qualifying single amount.',
+            a: 'No. Liquid staking has a per-person daily cap, so a single stake will not exceed $5,000 and cannot meet the draw eligibility amount.',
           },
         ],
       },
@@ -1052,7 +1053,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim referral rewards?',
-            a: 'Use the left panel to set claim vs restake: claimed portion enters the release pool for the selected term; restake enters single-token staking. Both spend contribution {ratio} (DaoPool Mixed).',
+            a: 'Use the left claim panel to set the claim vs restake split: the claimed portion enters the release pool and unlocks linearly over the chosen period; the restake portion goes straight into single-token staking to compound. Both claim and restake spend contribution at {ratio}.',
           },
           {
             q: 'What is direct referral count?',
@@ -1162,7 +1163,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim co-build and equalize rewards?',
-            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution {ratio}. Equalize history is under Reward records tabs on the right.',
+            a: 'Switch Co-build / Equalize at the top of the left claim panel, then set the claim vs restake split: claimed portion enters the release pool for linear unlock over the chosen period; restake goes straight into single-token staking to compound. Both spend contribution at {ratio}.',
           },
           {
             q: 'When does a new tier rate apply?',
@@ -1232,15 +1233,15 @@ const app = defineMessages({
           },
           {
             q: 'How do I advance Genesis tiers?',
-            a: 'Advance gradually from S1 to S10 based on personal co-build amount and organization performance.',
+            a: 'Genesis tiers run S1 to S10, rated by personal co-build amount and total organization volume. Higher tiers also require the dual-leg promotion condition.',
           },
           {
             q: 'What is the tier uplift reward?',
-            a: 'Tier rewards settle a share of team co-build volume by your Genesis tier and are claimed to wallet via RewardClaimer signatures.',
+            a: 'The Genesis tier reached during co-build automatically lifts one tier after protocol launch, valid for 30 days, then returns to your real tier.',
           },
           {
             q: 'How are Genesis team rewards settled?',
-            a: 'Direct referral rewards auto-settle to your wallet; tier rewards and the development fund are claimed via RewardClaimer / CommunityFund signatures.',
+            a: 'Genesis team rewards settle automatically at the matching Genesis tier rate and must be claimed to wallet by you. After the co-build period ends this page closes; unclaimed rewards can no longer be claimed and are sent to the smart market-making contract.',
           },
         ],
       },
@@ -1251,23 +1252,23 @@ const app = defineMessages({
       items: [
         {
           q: 'How are rewards paid out?',
-          a: 'Most rewards are shown in AGX / gAGX terms; genesis co-build rewards follow RewardClaimer assets. Mixed claims send the release portion to the release queue.',
+          a: 'All rewards settle as gAGX and are credited to the matching reward cards by each program’s rules. Check balances anytime on the Rewards hub.',
         },
         {
           q: 'What is required to claim?',
-          a: 'Simple signed claims need a claimable balance and a valid signature. Lucky / DaoPool Mixed also need enough contribution points and a release/restake split.',
+          a: 'Claiming spends contribution at {ratio}. Points come from burning AGX; if you are short, get them on the Burn page first.',
         },
         {
           q: 'When do claimed rewards arrive?',
-          a: 'After the on-chain transaction confirms. The release portion unlocks over the selected period; the restake portion enters the matching stake position.',
+          a: 'When claiming, pick a release period. Rewards enter the release pool and unlock linearly — longer periods, lower tax. You can also restake some or all rewards into single-token staking to compound.',
         },
         {
           q: 'When are rewards settled?',
-          a: 'Each source settles by contract and backend scan rules. The frontend uses claimable balances and signed payloads as source of truth.',
+          a: 'Lucky draws settle at 00:00 UTC daily. Other rewards follow Rebase, about every {hours} hours, so they settle on the same cadence. Next payout time is on each reward detail data panel.',
         },
         {
           q: 'Why do some cards hide amounts?',
-          a: 'Disconnected or unsigned sessions show a sign-in hint, not an empty reward. After sign-in, — means nothing claimable or data is not ready yet.',
+          a: 'Settings in the top-right default to “Hide 0-balance assets”, so cards with 0 balance are hidden. Uncheck it to see every reward card.',
         },
       ],
     },
@@ -1582,35 +1583,35 @@ const app = defineMessages({
         items: [
           {
             q: 'How is total asset value calculated?',
-            a: 'Sum of product principal and unclaimed yield valuations; shows — without a cross-product quote. Idle wallet balances are excluded.',
+            a: 'Total asset value = position principal + unclaimed yield + mining output, marked at current market prices. Idle wallet balances are excluded; price moves update the valuation in real time.',
           },
           {
             q: 'In what form is yield paid?',
-            a: 'Stake/bond rebase yield is in gAGX; X mine output is X.',
+            a: 'Rebase yield from staking, LP bonds, and burn bonds settles as gAGX. Redeem gAGX 1:1 for AGX or use it in X Mine. X Mine output is the ecosystem value token X and can be claimed anytime.',
           },
           {
             q: 'Why can I not claim yield?',
-            a: 'Mixed claims consume contribution; burn AGX for points first if short.',
+            a: 'Claiming yield spends contribution. If your account does not have enough, the claim cannot proceed — buy and burn AGX for contribution first, then return to Assets. The contribution mechanism ensures every yield withdrawal also contributes to protocol deflation.',
           },
           {
             q: 'How do I earn contribution points?',
-            a: 'Buy and burn AGX; claims consume contribution {ratio}.',
+            a: 'Buy AGX and burn it to receive contribution. Claims spend contribution at {ratio}; prepare enough for the yield you plan to claim.',
           },
           {
             q: 'Why choose a release period when claiming?',
-            a: 'Claimed yield enters the release queue and unlocks linearly; longer periods usually mean lower tax.',
+            a: 'Claimed yield is not instant. It unlocks linearly over the chosen period; longer periods have lower tax: {taxSchedule}.',
           },
           {
             q: 'Where does claimed yield go?',
-            a: 'Not instant wallet credit — into RewardQueue / release pool; claim vested amounts on Release.',
+            a: 'Claimed yield does not go straight to your wallet. It enters the release pool and unlocks linearly over the period you chose. Open the release pool to track each claim; released amounts can be withdrawn to your wallet.',
           },
           {
             q: 'Restake vs claim?',
-            a: 'Restake can route yield into restake staking; claim unlocks over the chosen release period.',
+            a: 'Restake skips the release period — yield goes straight into single-token staking to keep compounding, at a better tax rate ({restakeTax}), better for long-term participants. Claim unlocks to wallet over the release period and is more flexible.',
           },
           {
             q: 'What is the buffer pool?',
-            a: 'After unstaking, principal enters the splitter for linear release (AGX or gAGX).',
+            a: 'After principal is unstaked it enters the buffer pool for a {days}-day secondary linear release, reducing clustered short-term outflows. Amounts marked Released in the buffer can be redeemed to wallet anytime.',
           },
         ],
       },
@@ -1641,23 +1642,23 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim vs redeem?',
-              a: 'Claim handles yield (optional restake); redeem sends principal to the release buffer.',
-            },
-            {
-              q: 'What is released?',
-              a: 'Principal available to redeem after a locked stake matures.',
+              a: 'Claim is for yield: take accumulated gAGX over the chosen release period, or restake it. Redeem is for principal: take released AGX principal into a {days}-day buffer for a second linear release, then to your wallet.',
             },
             {
               q: 'Why is each stake shown separately?',
-              a: 'Each open position accrues and releases independently so you can claim or redeem per position.',
+              a: 'Each stake tracks its own period, yield, bonus, and release progress. Maturity and available actions do not affect other positions, so they are shown and operated separately.',
+            },
+            {
+              q: 'What does “Released” mean?',
+              a: 'Principal unlocks linearly by block (~3 seconds per block). “Released” is the portion already unlocked and redeemable anytime; the rest continues unlocking over the period.',
             },
             {
               q: 'What happens when the countdown ends?',
-              a: 'The position becomes redeemable/operable; on-chain status is authoritative.',
+              a: 'When the countdown ends, principal release is complete and you can redeem all principal anytime. Unclaimed principal still earns yield. After you redeem principal, unclaimed yield does not expire and keeps compounding.',
             },
             {
               q: 'How does the restake ratio work when claiming?',
-              a: 'Use the slider to split release vs restake, pick periods, then confirm.',
+              a: 'Use the slider to split restake vs claim. The restake portion goes straight into single-token staking for the chosen period and keeps compounding (better tax). The claim portion unlocks linearly over the chosen release period.',
             },
           ],
         },
@@ -2346,31 +2347,31 @@ const app = defineMessages({
         },
         {
           q: 'How does unstaking release assets?',
-          a: 'Unstaked gAGX uses a ~30-day block-linear release to reduce sell pressure.',
+          a: 'After unlock, gAGX uses a {days}-day block-linear release to reduce clustered sell pressure after unstake and strengthen long-term value capture.',
         },
         {
           q: 'What is the X supply? Will it inflate?',
-          a: 'Fixed 210M X, never inflated. 47.62% for LP liquidity; 52.38% for global rewards and growth.',
+          a: 'Fixed 210 million X, never inflated. 47.62% for LP liquidity (initial pool, market making, and liquidity support); 52.38% for global rewards and growth (gAGX mining rewards, market expansion and brand partnerships, ecosystem and long-term development).',
         },
         {
           q: 'How do I get gAGX?',
-          a: 'gAGX is the unified settlement voucher for Rebase and DAO rewards from staking and bonds.',
+          a: 'gAGX is the unified settlement voucher for Rebase and DAO rewards: rebase yield from AGX staking or bonds, and DAO rewards, are all paid as gAGX. gAGX is the only entry into the X ecosystem.',
         },
         {
           q: 'What else can gAGX do besides mining?',
-          a: 'Redeem 1:1 to AGX for staking, or stake gAGX to mine X.',
+          a: 'Redeem gAGX 1:1 for AGX anytime to keep compounding via staking, or stake gAGX to mine X. Both paths are yours to choose.',
         },
         {
           q: 'Why does X deflate?',
-          a: 'Each X sell burns 25%. Growth increases demand while burns shrink supply.',
+          a: 'Each X sell burns 25%. As ecosystem growth lifts demand and turnover, burns accumulate, X circulating supply shrinks, and a long-term deflation loop of “less supply, higher value” forms.',
         },
         {
           q: 'What drives X value?',
-          a: 'Mining demand, protocol revenue recirculation, and ecosystem growth reinforce X demand.',
+          a: 'Three demand layers: gAGX mining demand for X; protocol revenue recirculated into the ecosystem; and app expansion plus user growth. Together they keep reinforcing X demand.',
         },
         {
           q: 'Why is the cap tied to bonds and long-term stake?',
-          a: 'It keeps miners as long-term builders; more bonds or long stake raises the cap via miningQuotaOf.',
+          a: 'This keeps X miners as long-term protocol builders: your gAGX stake cap cannot exceed your ≥180-day AGX bond holdings plus AGX stake total. Add bonds or long-term stake to raise the mining cap.',
         },
       ],
     },
@@ -2483,10 +2484,6 @@ const app = defineMessages({
       taxTitle: 'Longer release, lower tax',
       taxPeriod: 'Period',
       taxRate: 'Claim tax',
-      taxRows: {
-        periods: ['5d', '20d', '40d', '60d'],
-        rates: ['20%', '10%', '5%', '1%'],
-      },
     },
     queue: {
       title: 'Release pool',
@@ -2533,67 +2530,67 @@ const app = defineMessages({
       hub: [
         {
           q: 'Can I change the release period?',
-          a: 'Not for amounts already queued. New claims can pick a different period.',
+          a: 'No. The period is fixed when yield enters the release pool and cannot be changed afterward. Each claim is independent, so the next one can use a different period.',
         },
         {
           q: 'When is the tax taken?',
-          a: 'When you claim unlocked amounts, using the plan fee rate.',
+          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate ({taxSchedule}). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
         },
         {
           q: 'Where does a release-pool claim go?',
-          a: 'On-chain AGX enters Turbine sell quota; then use Turbine to obtain gAGX.',
+          a: 'Claimed gAGX does not go straight to your wallet. It enters Turbine and continues under Turbine rules. Open the Turbine page to view and manage it.',
         },
         {
           q: 'Do I lose unlocked amounts if I wait?',
-          a: 'No. Unlocked amounts stay claimable.',
+          a: 'It does not expire — claim anytime. Released amounts sitting in the pool earn no yield, so claim promptly into Turbine.',
         },
         {
           q: 'How do I pick a period?',
-          a: 'Longer periods have lower tax. Choose among 5 / 20 / 40 / 60 days.',
+          a: 'If you want funds sooner, pick a short period (higher tax). If you can wait, pick a long period for a lower rate. You can also send yield into the pool in multiple claims with different periods to balance speed and tax.',
         },
       ],
       queue: [
         {
           q: 'Can I change the release period?',
-          a: 'Not for amounts already queued.',
+          a: 'No. The period is fixed when yield enters the release pool and cannot be changed afterward. Each claim is independent, so the next one can use a different period.',
         },
         {
           q: 'When is the tax taken?',
-          a: 'On claim of unlocked amounts.',
+          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate ({taxSchedule}). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
         },
         {
           q: 'Where does a release-pool claim go?',
-          a: 'Into Turbine quota — open Exchange → Turbine.',
+          a: 'Claimed gAGX does not go straight to your wallet. It enters Turbine and continues under Turbine rules. Open the Turbine page to view and manage it.',
         },
         {
           q: 'Do I lose unlocked amounts if I wait?',
-          a: 'No.',
+          a: 'It does not expire — claim anytime. Released amounts sitting in the pool earn no yield, so claim promptly into Turbine.',
         },
         {
           q: 'How do I pick a period?',
-          a: 'Longer periods, lower tax.',
+          a: 'If you want funds sooner, pick a short period (higher tax). If you can wait, pick a long period for a lower rate. You can also send yield into the pool in multiple claims with different periods to balance speed and tax.',
         },
       ],
       buffer: [
         {
           q: 'What is the buffer pool?',
-          a: 'After redeem/unstake, principal unlocks linearly in the splitter.',
+          a: 'After principal is unstaked (redeemed) it enters the buffer pool for a {days}-day secondary linear release. This reduces clustered short-term outflows and balances continuous release with market stability.',
         },
         {
           q: 'Do buffer assets still earn yield?',
-          a: 'No staking yield accrues while in the buffer.',
+          a: 'No. Assets stop earning any yield the moment they enter the buffer, so time redemptions to your own cash needs.',
         },
         {
           q: 'How do I withdraw released amounts?',
-          a: 'Tap Withdraw — AGX goes to your wallet.',
+          a: 'The buffer unlocks linearly by block. Tap Withdraw on the Released portion — it goes straight to your wallet with no extra wait.',
         },
         {
           q: 'Why show AGX and gAGX?',
-          a: 'Design keeps both cards; on-chain buffer is AGX-only after gAGX conversion.',
+          a: 'Principal from stake and bond redemptions is AGX; X Mine unstake is gAGX. The two assets release and withdraw independently.',
         },
         {
           q: 'Why can’t I withdraw everything at once?',
-          a: 'Only currently unlocked amounts are claimable.',
+          a: 'Buffer assets may come from many redeem records, each with its own buffer clock. When there are many records, one withdraw can only process a limited number, so you may not clear all released amounts in one tap. Tap Withdraw again until everything is out.',
         },
       ],
     },

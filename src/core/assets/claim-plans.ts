@@ -61,6 +61,41 @@ export function claimDurationDaysLists(plans: ClaimPlanBundle | null | undefined
 }
 
 /**
+ * 将链上计划档格式化为「天数 · 税率」列表，供 FAQ 展示。
+ * 核心层不引入 i18n；调用方传入模板。无可用计划时返回「—」。
+ *
+ * @param plans 链上释放 / 复投计划
+ * @param daysTax 含税档模板（`{days}` / `{tax}`）
+ * @param daysOnly 无税档模板（`{days}`）
+ * @param taxRate 税率模板（`{rate}`）
+ * @param join 列表分隔符
+ */
+export function formatPlanTaxSchedule(
+  plans: readonly DurationPlan[] | undefined,
+  daysTax: string,
+  daysOnly: string,
+  taxRate: string,
+  join: string,
+): string {
+  if (plans == null || plans.length === 0) return '—'
+  const parts: string[] = []
+  for (const plan of plans) {
+    if (plan.exists === false) continue
+    const days = Number(plan.durationSeconds / SECONDS_PER_DAY)
+    if (!Number.isFinite(days) || days <= 0 || !Number.isInteger(days)) continue
+    if (plan.taxBps == null) {
+      parts.push(interpolate(daysOnly, { days }))
+      continue
+    }
+    const rate = Number(plan.taxBps) / 100
+    if (!Number.isFinite(rate) || rate < 0) continue
+    const tax = interpolate(taxRate, { rate })
+    parts.push(interpolate(daysTax, { days, tax }))
+  }
+  return parts.length > 0 ? parts.join(join) : '—'
+}
+
+/**
  * 按天数（秒）匹配 UI 档位到链上计划索引。
  *
  * 未匹配到计划时返回 null，调用方须中止提交——写参数需要计划索引；

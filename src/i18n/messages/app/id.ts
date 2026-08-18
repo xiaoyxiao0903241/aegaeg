@@ -259,11 +259,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Apa yang bisa saya lakukan di halaman Tukar?',
-            a: 'Flash-konversi USDT ke USD1 atau gAGX ke AGX, trade token utama untuk aset AEGIS X di PancakeSwap, bakar AGX untuk poin kontribusi, dan beli gAGX Turbine yang terbuka dengan USD1.',
+            a: 'Halaman Tukar mengumpulkan cara umum untuk mendapatkan dan mengelola token protokol AEGIS X: Flash (tebus gAGX menjadi AGX 1:1), Trade (tukar USD1 / AGX / X dan token lain dengan kurs pasar), Turbine (beli dengan USD1 untuk membuka gAGX Turbine), dan Bakar AGX untuk poin kontribusi. Pilih pintu masuk yang sesuai kebutuhan Anda.',
           },
           {
             q: 'Apa perbedaan Flash dan Trade?',
-            a: 'Flash memakai rute protokol tetap tanpa kontrol slippage pengguna. Trade memakai kurs live PancakeSwap dengan slippage yang dapat dikonfigurasi dan dampak harga pasar.',
+            a: 'Flash adalah redeem protokol 1:1 gAGX↔AGX — tanpa biaya, tanpa slippage, kredit on-chain instan. Trade melalui PancakeSwap dengan kurs pasar live untuk USD1, AGX, X, dan token lain; harga mengikuti pasar, Anda mengatur slippage yang diizinkan dan membayar gas jaringan.',
           },
           {
             q: 'Apa itu wallet kripto, dan bagaimana mendapatkannya?',
@@ -316,7 +316,7 @@ const app = defineMessages({
         items: [
           {
             q: 'Apa itu gAGX?',
-            a: 'gAGX adalah voucher settlement terpadu untuk reward Rebase dan DAO. Yield Rebase dari staking AGX atau Bond, serta reward DAO, dibayar sebagai gAGX.',
+            a: 'gAGX adalah voucher settlement terpadu untuk reward Rebase dan DAO: yield Rebase dari staking AGX atau Bond, serta reward DAO, dibayar sebagai gAGX.',
           },
           {
             q: 'Berapa rasio tukar gAGX ke AGX?',
@@ -328,23 +328,23 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana cara mendapatkan gAGX?',
-            a: 'Setelah berpartisipasi dalam distribusi yield protokol, Anda menerima sejumlah gAGX yang sesuai.',
+            a: 'Yield Rebase dari staking AGX, LP Bond, atau Burn Bond, plus reward DAO, dibayar ke akun Anda sebagai gAGX.',
           },
           {
             q: 'Selain menebus AGX, apa lagi yang bisa dilakukan dengan gAGX?',
-            a: 'Tebus 1:1 ke AGX untuk staking berbunga majemuk, atau stake gAGX untuk menambang X. Kedua jalur tersedia.',
+            a: 'Stake gAGX di X Mine untuk menangkap X. Tebus ke AGX atau tambang X — kedua jalur terserah Anda.',
           },
           {
             q: 'Bagaimana menukar USDT menjadi USD1?',
-            a: 'Beralih ke pasangan USDT → USD1 di Flash, masukkan jumlah, dan tukar dengan kurs protokol serta settlement on-chain.',
+            a: 'Beralih ke pasangan USDT → USD1 di bagian atas Flash, masukkan jumlah, tukar 1:1 — tanpa biaya, tanpa slippage, on-chain instan.',
           },
           {
             q: 'Bisakah saya menukar USD1 kembali ke USDT?',
-            a: 'Flash bersifat satu arah USDT→USD1. Gunakan Trade untuk swap pasar ke aset lain.',
+            a: 'Tidak. Flash hanya mengonversi USDT satu arah menjadi USD1. USD1 adalah aset settlement inti untuk trading, Bond, dan unlock Turbine.',
           },
           {
             q: 'Di mana saya melihat riwayat Flash?',
-            a: 'Flash diselesaikan on-chain dalam hitungan detik. Konfirmasi setiap transaksi di dompet atau block explorer.',
+            a: 'Flash berjalan on-chain dan dikredit dalam hitungan detik. Periksa wallet atau block explorer.',
           },
         ],
       },
@@ -409,15 +409,15 @@ const app = defineMessages({
         items: [
           {
             q: 'Untuk apa poin kontribusi digunakan?',
-            a: 'Poin kontribusi diperlukan saat klaim hadiah campuran dengan restake. Klaim restake dan lucky-pool mengonsumsi poin berdasarkan jumlah hadiah.',
+            a: 'Klaim yield dari staking, Bond, dan sumber lain mengonsumsi poin kontribusi {ratio}. Tanpa poin cukup, Anda tidak dapat mengklaim.',
           },
           {
             q: 'Mengapa klaim hadiah perlu mengonsumsi poin kontribusi?',
-            a: 'Protokol memakai poin kontribusi untuk mengatur klaim hadiah dan alur restake. Jika saldo tidak cukup, klaim gagal — bakar AGX dulu untuk menambah poin.',
+            a: 'Mengikat klaim dengan deflasi protokol: setiap klaim mengonsumsi {ratio}; poin hanya dari membakar AGX. Setiap penarikan yield berpasangan dengan AGX yang dibakar.',
           },
           {
             q: 'Berapa rasio pembakaran?',
-            a: 'Rasio pembakaran diatur on-chain (rateBps). Setiap AGX yang dibakar menghasilkan poin kontribusi = AGX × rateBps ÷ 10000.',
+            a: 'Membakar pada {burnRatio}: setiap 1 AGX yang dibakar menghasilkan poin yang sesuai. AGX yang dibakar dipecah on-chain ke lubang hitam dan LP.',
           },
           {
             q: 'Ke mana AGX yang dibakar pergi?',
@@ -425,7 +425,7 @@ const app = defineMessages({
           },
           {
             q: 'Bisakah poin kontribusi ditransfer atau dikembalikan?',
-            a: 'Poin kontribusi tercatat di buku besar akun kontrak AgxContributionSwap, tidak dapat ditransfer, dan tidak dapat dikembalikan menjadi AGX.',
+            a: 'Tidak. Terikat akun — tidak dapat ditransfer atau dikembalikan. Hanya dikonsumsi saat klaim; bakar sesuai kebutuhan.',
           },
         ],
       },
@@ -483,23 +483,23 @@ const app = defineMessages({
         items: [
           {
             q: 'Bagaimana gAGX masuk ke Turbine?',
-            a: 'After RewardQueue (and related) claims, rewards credit Turbine as unlockable quota (turbineBalances).',
+            a: 'gAGX dari kolam rilis tidak masuk wallet. Otomatis masuk Turbine dalam keadaan terkunci (catatan menampilkan 「Masuk」). Beli AGX setara dengan USD1 untuk Buka, lalu Klaim setelah cooldown.',
           },
           {
             q: 'Mengapa perlu beli untuk membuka kunci?',
-            a: 'Unlock memerlukan pembelian AGX setara dengan USD1 pada harga live (kuantitas 1:1). Jumlah USD1 yang dibayar mengikuti kuotasi AGX — bukan harga tetap USD1:AGX 1:1.',
+            a: 'Membuka 1 gAGX mensyaratkan membeli 1 AGX dengan USD1 pada harga saat ini. Setiap potensi jual dipasangkan dengan pembelian setara.',
           },
           {
             q: 'Unlock vs klaim?',
-            a: 'Unlock: bayar USD1 untuk membeli AGX dan memulai cooldown. Klaim: tarik gAGX setelah silence matang.',
+            a: 'Buka membeli AGX setara dengan USD1, membuka gAGX, dan memulai cooldown. Klaim memindahkan gAGX yang sudah terbuka ke wallet setelah {cooldownHours} jam. Catatan menampilkan Buka dan Klaim.',
           },
           {
             q: 'Berapa lama cooldown?',
-            a: 'currentCooldownDuration — typically about 24–96 hours, adaptive to treasury health. The page shows the live period.',
+            a: 'Periode saat ini {cooldownHours} jam, disesuaikan otomatis oleh pasar. Setelah itu klaim gAGX tersebut.',
           },
           {
             q: 'Ke mana AGX yang dibeli saat membuka?',
-            a: 'AGX yang dibeli masuk ke dompet Anda; setelah cooldown selesai, klaim gAGX secara terpisah.',
+            a: 'AGX yang dibeli langsung masuk wallet seperti trade biasa. gAGX yang cocok terbuka dan masuk cooldown.',
           },
         ],
       },
@@ -982,6 +982,7 @@ const app = defineMessages({
       releaseDays: '{days} hari',
       restakeDays: '{days} hari',
       daysTax: '{days} hari · {tax}',
+      scheduleJoin: ', ',
       taxRate: 'Pajak {rate}%',
       requiredContributionLabel: 'Poin kontribusi yang dipotong klaim ini',
       insufficientContributionDetail:
@@ -1052,7 +1053,7 @@ const app = defineMessages({
           },
           {
             q: 'Apakah staking fleksibel memberi kelayakan undian?',
-            a: 'Ya. Staking fleksibel (liquidStake) juga mencatat kelayakan hari itu jika jumlah satu transaksi mencapai ambang; kelayakan dinilai per transaksi, bukan akumulasi. Jika batas harian mencegah satu transaksi mencapai ambang, transaksi itu tidak mendapat kelayakan.',
+            a: 'Tidak. Staking fleksibel memiliki batas harian per orang, jadi satu stake tidak akan melebihi $5,000 dan tidak memenuhi syarat undian.',
           },
         ],
       },
@@ -1094,7 +1095,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana cara mengklaim hadiah referral?',
-            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi {ratio} (DaoPool Mixed).',
+            a: 'Panel klaim kiri: atur klaim vs restake. Bagian yang diklaim masuk kolam rilis dan terbuka linear; restake masuk staking token tunggal untuk bunga majemuk. Keduanya mengonsumsi {ratio}.',
           },
           {
             q: 'Apa itu jumlah referral langsung?',
@@ -1208,7 +1209,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana mengklaim hadiah co-build dan equalize?',
-            a: 'Gunakan panel kiri untuk membagi klaim vs restake: klaim masuk antrean rilis; restake masuk staking aset tunggal. Keduanya mengonsumsi poin kontribusi {ratio}. Riwayat equalize ada di tab Catatan hadiah di kanan.',
+            a: 'Alihkan Bangun Bersama / Equalize di atas panel kiri, lalu atur pembagian. Mekanisme rilis/restake yang sama + {ratio}.',
           },
           {
             q: 'Kapan rasio bonus level baru berlaku?',
@@ -1285,15 +1286,15 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana naik tingkat Genesis?',
-            a: 'Naik bertahap dari S1 ke S10 berdasarkan jumlah co-build pribadi dan kinerja organisasi.',
+            a: 'Tingkat Genesis S1–S10 berdasarkan jumlah co-build pribadi dan total volume organisasi. Tingkat lebih tinggi memerlukan syarat dual-leg.',
           },
           {
             q: 'Apa itu hadiah kenaikan tingkat?',
-            a: 'Hadiah tingkat settle sebagian volume co-build tim sesuai tingkat Genesis Anda dan diklaim ke wallet lewat tanda tangan RewardClaimer.',
+            a: 'Tingkat Genesis yang dicapai selama co-build otomatis naik satu tingkat setelah peluncuran, berlaku 30 hari, lalu kembali ke tingkat nyata.',
           },
           {
             q: 'Bagaimana hadiah tim Genesis diselesaikan?',
-            a: 'Hadiah referral langsung otomatis ke dompet; hadiah level dan dana pengembangan diklaim via tanda tangan RewardClaimer / CommunityFund.',
+            a: 'Hadiah tim Genesis settle otomatis sesuai rasio tingkat; Anda harus klaim ke wallet. Setelah periode co-build, halaman ini ditutup; yang belum diklaim masuk kontrak market-making cerdas.',
           },
         ],
       },
@@ -1304,23 +1305,23 @@ const app = defineMessages({
       items: [
         {
           q: 'Dalam bentuk apa hadiah dibayar?',
-          a: 'Sebagian besar hadiah ditampilkan dalam AGX / gAGX; hadiah co-build genesis mengikuti aset RewardClaimer. Klaim Mixed mengirim porsi rilis ke antrean rilis.',
+          a: 'Semua hadiah settle sebagai gAGX ke kartu yang sesuai. Cek hub Hadiah kapan saja.',
         },
         {
           q: 'Apa syarat untuk mengklaim?',
-          a: 'Klaim bertanda tangan sederhana butuh saldo dapat diklaim dan tanda tangan valid. Lucky / DaoPool Mixed juga butuh poin kontribusi cukup serta pembagian rilis/restake.',
+          a: 'Klaim mengonsumsi {ratio}. Jika poin kurang, dapatkan di halaman Bakar.',
         },
         {
           q: 'Kapan hadiah yang diklaim masuk?',
-          a: 'Setelah transaksi on-chain dikonfirmasi. Porsi rilis terbuka sepanjang periode yang dipilih; porsi restake masuk posisi staking terkait.',
+          a: 'Pilih periode rilis; semakin panjang, pajak semakin rendah. Atau restake sebagian/seluruhnya ke staking token tunggal.',
         },
         {
           q: 'Kapan hadiah di-settle?',
-          a: 'Setiap sumber settle menurut kontrak dan aturan scan backend. Frontend memakai saldo dapat diklaim dan payload bertanda tangan sebagai sumber kebenaran.',
+          a: 'Lucky settle setiap hari pukul 00:00 UTC. Yang lain mengikuti Rebase setiap {hours} jam. Waktu berikutnya ada di panel data tiap halaman detail.',
         },
         {
           q: 'Mengapa beberapa kartu hadiah tidak menampilkan jumlah?',
-          a: 'Sesi belum terhubung atau belum masuk dengan tanda tangan menampilkan petunjuk masuk, bukan berarti tanpa hadiah. Setelah masuk, — berarti belum ada yang dapat diklaim atau data belum siap.',
+          a: 'Pengaturan kanan atas secara default 「Sembunyikan aset 0」. Hapus centang untuk melihat semua kartu.',
         },
       ],
     },
@@ -1645,35 +1646,35 @@ const app = defineMessages({
         items: [
           {
             q: 'Bagaimana nilai total aset dihitung?',
-            a: 'Jumlah valuasi pokok produk dan yield belum diklaim; menampilkan — jika belum ada kuotasi lintas produk. Saldo wallet menganggur tidak dihitung.',
+            a: 'Total = pokok + yield belum diklaim + output mining, dinilai dengan harga pasar. Saldo wallet menganggur tidak dihitung.',
           },
           {
             q: 'Dalam bentuk apa yield dibayar?',
-            a: 'Yield Rebase staking/bond dalam gAGX; output X Mine adalah X.',
+            a: 'Rebase staking, LP Bond, dan Burn Bond settle sebagai gAGX (1:1 ke AGX atau X Mine). Output X Mine adalah X, dapat diklaim kapan saja.',
           },
           {
             q: 'Mengapa saya tidak bisa mengklaim yield?',
-            a: 'Klaim Mixed mengonsumsi kontribusi; jika kurang, bakar AGX dulu untuk poin lalu klaim.',
+            a: 'Butuh poin kontribusi. Beli dan bakar AGX dulu. Ini memastikan setiap penarikan juga mendeflasi protokol.',
           },
           {
             q: 'Bagaimana mendapatkan poin kontribusi?',
-            a: 'Beli dan bakar AGX; klaim mengonsumsi kontribusi {ratio}.',
+            a: 'Beli dan bakar AGX. Klaim mengonsumsi {ratio}; siapkan cukup.',
           },
           {
             q: 'Mengapa harus memilih periode rilis saat mengklaim?',
-            a: 'Yield yang diklaim masuk antrean rilis dan terbuka secara linear; periode lebih panjang biasanya pajak lebih rendah.',
+            a: 'Tidak instan; terbuka linear; semakin panjang, pajak semakin rendah: {taxSchedule}.',
           },
           {
             q: 'Ke mana yield yang diklaim pergi?',
-            a: 'Tidak langsung ke wallet — masuk RewardQueue / kolam rilis; klaim jumlah yang sudah vested di halaman Rilis.',
+            a: 'Masuk kolam rilis; lacak di sana; jumlah yang sudah dirilis ditarik ke wallet.',
           },
           {
             q: 'Apa beda restake dan klaim?',
-            a: 'Restake dapat mengarahkan yield ke staking restake; klaim terbuka sepanjang periode rilis yang dipilih.',
+            a: 'Restake melewati rilis, pajak lebih baik ({restakeTax}), berbunga majemuk di staking token tunggal. Klaim lebih fleksibel.',
           },
           {
             q: 'Apa itu pool buffer?',
-            a: 'Setelah unstake, pokok masuk splitter untuk rilis linear berkala (AGX atau gAGX).',
+            a: 'Setelah unstake, buffer rilis linear sekunder {days} hari. Bagian yang sudah dirilis di buffer dapat ditebus kapan saja.',
           },
         ],
       },
@@ -1705,23 +1706,23 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim dan tebus?',
-              a: 'Klaim menangani yield (opsional restake); tebus mengirim pokok ke buffer rilis.',
+              a: 'Klaim untuk yield (periode rilis atau restake). Tebus untuk pokok AGX yang sudah dirilis → buffer {days} hari lalu ke wallet.',
             },
             {
               q: 'Mengapa setiap posisi staking ditampilkan terpisah?',
-              a: 'Setiap posisi dihitung bunga dan progres rilis sendiri, memudahkan klaim atau tebus per posisi.',
+              a: 'Setiap staking independen periode, yield, bonus, dan rilis — ditampilkan dan dioperasikan terpisah.',
             },
             {
-              q: 'Apa arti yang sudah dirilis?',
-              a: 'Bagok yang dapat ditebus setelah posisi berkala jatuh tempo.',
+              q: 'Apa arti 「Dirilis」?',
+              a: '「Dirilis」 adalah pokok yang sudah terbuka linear per blok (~3 detik), dapat ditebus kapan saja.',
             },
             {
               q: 'Apa yang terjadi saat countdown berakhir?',
-              a: 'Setelah sisa waktu nol, posisi masuk status dapat ditebus/dioperasikan; status on-chain yang berlaku.',
+              a: 'Countdown berakhir berarti seluruh pokok sudah dirilis, tebus kapan saja. Pokok belum diklaim tetap menghasilkan. Setelah tebus pokok, yield belum diklaim tetap berbunga majemuk.',
             },
             {
               q: 'Bagaimana rasio restake saat klaim?',
-              a: 'Gunakan slider untuk membagi rasio rilis vs restake, pilih periode, lalu konfirmasi.',
+              a: 'Slider membagi restake vs klaim. Restake berbunga majemuk di periode stake yang dipilih (pajak lebih baik). Klaim terbuka sepanjang periode rilis.',
             },
           ],
         },
@@ -2429,31 +2430,31 @@ const app = defineMessages({
         },
         {
           q: 'Bagaimana aset dirilis setelah unstake?',
-          a: 'gAGX yang terbuka memakai rilis linear blok ~30 hari untuk mengurangi tekanan jual.',
+          a: 'gAGX yang terbuka dirilis linear per blok selama {days} hari.',
         },
         {
           q: 'Berapa pasokan X? Apakah akan diinflasi?',
-          a: 'Tetap 210 juta X, tidak pernah diinflasi. 47,62% untuk likuiditas LP; 52,38% untuk hadiah global dan pertumbuhan.',
+          a: 'Pasokan tetap 210 juta, tidak pernah diinflasi. 47.62% untuk LP (pool awal, market making, dukungan likuiditas); 52.38% untuk hadiah global (mining gAGX, ekspansi/merek, ekosistem).',
         },
         {
           q: 'Bagaimana cara mendapatkan gAGX?',
-          a: 'gAGX adalah voucher settlement terpadu untuk hadiah Rebase dan DAO dari staking dan bond.',
+          a: 'gAGX adalah voucher settlement terpadu dan satu-satunya pintu masuk ke ekosistem X.',
         },
         {
           q: 'Selain mining, apa lagi yang bisa dilakukan gAGX?',
-          a: 'Tebus 1:1 ke AGX untuk staking, atau stake gAGX untuk menambang X.',
+          a: 'Tebus 1:1 ke AGX atau tambang X. Kedua jalur tersedia.',
         },
         {
           q: 'Mengapa X terus deflasi?',
-          a: 'Setiap penjualan X membakar 25%. Pertumbuhan meningkatkan permintaan sementara pembakaran menyusutkan pasokan.',
+          a: 'Setiap penjualan membakar 25%; peredaran menyusut; 「pasokan lebih sedikit, nilai lebih tinggi」.',
         },
         {
           q: 'Apa sumber nilai X?',
-          a: 'Tiga permintaan bertumpuk: permintaan X dari mining stake gAGX, arus balik pendapatan protokol, serta ekspansi aplikasi dan pertumbuhan pengguna.',
+          a: 'Tiga lapisan: permintaan mining, sirkulasi ulang pendapatan, pertumbuhan aplikasi/pengguna.',
         },
         {
           q: 'Mengapa batas atas terkait Bond/staking jangka panjang?',
-          a: 'Mekanisme ini memastikan peserta X Mine juga pembangun jangka panjang protokol; menambah Bond atau staking jangka panjang menaikkan batas. Kontrak mengembalikan kuota via miningQuotaOf.',
+          a: 'Batas gAGX tidak melebihi Bond AGX ≥180 hari plus stake AGX. Tambah Bond atau staking jangka panjang untuk menaikkan batas.',
         },
       ],
     },
@@ -2570,10 +2571,6 @@ const app = defineMessages({
       taxTitle: 'Rilis lebih lama, pajak lebih rendah',
       taxPeriod: 'Periode estimasi',
       taxRate: 'Pajak klaim',
-      taxRows: {
-        periods: ['5 hari', '20 hari', '40 hari', '60 hari'],
-        rates: ['20%', '10%', '5%', '1%'],
-      },
     },
     queue: {
       title: 'Pool rilis',
@@ -2620,67 +2617,67 @@ const app = defineMessages({
       hub: [
         {
           q: 'Bisakah mengubah periode rilis?',
-          a: 'Periode yang dipilih saat antre tidak dapat diubah; klaim baru dapat memilih periode lain.',
+          a: 'Tidak. Periode tetap saat masuk antre. Klaim berikutnya boleh berbeda.',
         },
         {
           q: 'Kapan pajak dipotong?',
-          a: 'Saat mengklaim bagian yang sudah terbuka, memakai tarif rencana rilis.',
+          a: 'Dipotong sekali saat masuk antre ({taxSchedule}). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
         },
         {
           q: 'Ke mana gAGX yang diklaim dari kolam rilis?',
-          a: 'On-chain masuk kuota jual Turbine sebagai AGX; lalu gunakan alur Turbine untuk memperoleh gAGX.',
+          a: 'gAGX yang diklaim masuk Turbine, bukan wallet. Kelola di halaman Turbine.',
         },
         {
           q: 'Apakah bagian yang sudah dirilis rugi jika tidak segera diklaim?',
-          a: 'Bagian yang sudah terbuka dapat diklaim kapan saja dan tidak menyusut karena ditunda.',
+          a: 'Tidak kedaluwarsa. Bagian yang sudah dirilis diam tidak menghasilkan — klaim ke Turbine segera.',
         },
         {
           q: 'Bagaimana memilih periode rilis yang tepat?',
-          a: 'Semakin panjang periode, semakin rendah pajak; pilih di antara 5/20/40/60 hari sesuai kebutuhan likuiditas.',
+          a: 'Periode pendek = lebih cepat + pajak lebih tinggi; panjang = pajak lebih rendah. Atau pecah ke beberapa klaim.',
         },
       ],
       queue: [
         {
           q: 'Bisakah mengubah periode rilis?',
-          a: 'Periode yang dipilih saat antre tidak dapat diubah; klaim baru dapat memilih periode lain.',
+          a: 'Tidak. Periode tetap saat masuk antre. Klaim berikutnya boleh berbeda.',
         },
         {
           q: 'Kapan pajak dipotong?',
-          a: 'Saat mengklaim bagian yang sudah terbuka, memakai tarif rencana rilis.',
+          a: 'Dipotong sekali saat masuk antre ({taxSchedule}). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
         },
         {
           q: 'Ke mana gAGX yang diklaim dari kolam rilis?',
-          a: 'Masuk kuota Turbine — buka Tukar → Turbine.',
+          a: 'gAGX yang diklaim masuk Turbine, bukan wallet. Kelola di halaman Turbine.',
         },
         {
           q: 'Apakah bagian yang sudah dirilis rugi jika tidak segera diklaim?',
-          a: 'Tidak menyusut karena ditunda klaim.',
+          a: 'Tidak kedaluwarsa. Bagian yang sudah dirilis diam tidak menghasilkan — klaim ke Turbine segera.',
         },
         {
           q: 'Bagaimana memilih periode rilis yang tepat?',
-          a: 'Semakin panjang periode, semakin rendah pajak.',
+          a: 'Periode pendek = lebih cepat + pajak lebih tinggi; panjang = pajak lebih rendah. Atau pecah ke beberapa klaim.',
         },
       ],
       buffer: [
         {
           q: 'Apa itu pool buffer?',
-          a: 'Setelah tebus/unstake, pokok dirilis linear di splitter.',
+          a: 'Setelah tebus, rilis linear sekunder {days} hari. Meratakan arus keluar.',
         },
         {
           q: 'Apakah aset di buffer masih menghasilkan?',
-          a: 'Tidak ada yield staking selama di buffer.',
+          a: 'Tidak. Begitu masuk buffer, tidak ada yield.',
         },
         {
           q: 'Bagaimana menarik bagian yang sudah dirilis?',
-          a: 'Ketuk Tarik — AGX langsung ke wallet.',
+          a: 'Rilis linear per blok; Tarik yang sudah dirilis → langsung ke wallet.',
         },
         {
           q: 'Mengapa buffer menampilkan AGX dan gAGX?',
-          a: 'Desain mempertahankan dua kartu; buffer on-chain hanya AGX setelah konversi gAGX.',
+          a: 'Tebus staking/Bond = AGX; unstake X Mine = gAGX. Independen.',
         },
         {
           q: 'Mengapa saya tidak bisa menarik semua aset yang sudah dirilis sekaligus?',
-          a: 'Hanya jumlah yang sudah terbuka saat ini yang dapat ditarik; bagian belum jatuh tempo harus menunggu.',
+          a: 'Banyak catatan, satu penarikan hanya memproses jumlah terbatas — ketuk Tarik lagi.',
         },
       ],
     },

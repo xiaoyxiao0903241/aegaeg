@@ -69,7 +69,7 @@ export function StakingHubDetail() {
     chart,
   } = useStakingHubDetail()
   const epochSchedule = useEpochScheduleLabels()
-  const bufferDays = usePrincipalReleaseDurationDays().data ?? 30
+  const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
   const faqItems = mapFaqWithEpochSchedule(t.staking.hub.faq.items, epochSchedule).map((item) => ({
     ...item,
     a: interpolate(item.a, { days: bufferDays }),

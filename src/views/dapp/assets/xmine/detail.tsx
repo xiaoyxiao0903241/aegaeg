@@ -3,6 +3,8 @@
  *
  * 顶部为挖矿统计数字，中部为操作记录表格，底部为常见问题。
  */
+import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
@@ -21,6 +23,11 @@ export function XmineDetail() {
   const copy = t.assets.products.xmine
   const values = useAssetsXmineStats()
   const ops = useAssetsXmineOpsRows()
+  const durationQuery = usePrincipalReleaseDurationDays()
+  const faqItems = copy.faq.items.map((item) => ({
+    ...item,
+    a: interpolate(item.a, { days: durationQuery.data ?? '—' }),
+  }))
 
   return (
     <Detail>
@@ -69,7 +76,7 @@ export function XmineDetail() {
       </Section>
       <Section>
         <Section.Title>{copy.faq.title}</Section.Title>
-        <Faq items={[...copy.faq.items]} variant="dapp" />
+        <Faq items={faqItems} variant="dapp" />
       </Section>
     </Detail>
   )

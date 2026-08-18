@@ -251,11 +251,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Takas sayfasında ne yapabilirim?',
-            a: 'Flash ile USDT→USD1 veya gAGX→AGX çevirin; PancakeSwap’ta ana tokenlarla AEGIS X varlıkları alın; AGX yakıp katkı puanı kazanın; USD1 ile Türbin’deki kilidi açılmış gAGX satın alın.',
+            a: 'Takas sayfası AEGIS X protokol tokenlarını alıp yönetmenin yaygın yollarını bir araya getirir: Flash (gAGX’i 1:1 AGX’e geri al), İşlem (USD1 / AGX / X’i piyasa kurundan takas et), Türbin (USD1 ile alım yapıp Türbin gAGX kilidini aç) ve katkı puanı için AGX yakımı. İhtiyacınıza uyan girişi seçin.',
           },
           {
             q: 'Flash ile İşlem farkı nedir?',
-            a: 'Flash protokol sabit yolu kullanır, kullanıcı kayma ayarı yoktur. İşlem PancakeSwap canlı kurunu kullanır; kayma ayarlanabilir ve fiyat etkisi olabilir.',
+            a: 'Flash, protokolün 1:1 gAGX↔AGX geri alımıdır — ücretsiz, kaymasız, zincir üstünde anında. İşlem PancakeSwap canlı piyasa kurlarından USD1, AGX, X ve diğer tokenları takas eder; fiyat piyasayla hareket eder, izin verilen kaymayı siz ayarlarsınız ve ağ gas’ı ödersiniz.',
           },
           {
             q: 'Kripto cüzdan nedir ve nasıl alınır?',
@@ -308,7 +308,7 @@ const app = defineMessages({
         items: [
           {
             q: 'gAGX nedir?',
-            a: 'gAGX, Rebase ve DAO ödüllerinin birleşik uzlaşma belgesidir; AGX stake veya tahvillerden Rebase getirisi ile DAO ödülleri gAGX olarak ödenir.',
+            a: 'gAGX, Rebase ve DAO ödüllerinin birleşik uzlaşma belgesidir: AGX stake veya tahvillerden Rebase getirisi ile DAO ödülleri gAGX olarak ödenir.',
           },
           {
             q: 'gAGX ile AGX takas oranı nedir?',
@@ -320,23 +320,23 @@ const app = defineMessages({
           },
           {
             q: 'gAGX nasıl alınır?',
-            a: 'Protokol getiri dağıtımına katıldıktan sonra ilgili miktarda gAGX alırsınız.',
+            a: 'AGX stake, LP tahvil veya yakım tahvilinden Rebase getirisi ile DAO ödülleri hesabınıza gAGX olarak ödenir.',
           },
           {
             q: 'gAGX, AGX’e çevirmenin dışında ne işe yarar?',
-            a: '1:1 AGX’e çevirip stake bileşik getirisine devam edin veya gAGX stake ederek X madenciliği yapın. İki yol da açıktır.',
+            a: 'gAGX’i X Madenciliğe stake ederek ekosistem değer tokenı X’i yakalayabilirsiniz. AGX’e çevirin veya X madenciliği yapın — iki yol da sizin.',
           },
           {
             q: 'USDT nasıl USD1’e takas edilir?',
-            a: 'Flash’ta «USDT → USD1» çiftine geçin, tutar girin; protokol kurundan takas, zincir üstünde anında.',
+            a: 'Flash’ın üstünden USDT → USD1 çiftine geçin, tutar girin ve 1:1 takas edin — ücretsiz, kaymasız, zincir üstünde anında.',
           },
           {
             q: 'USD1’i USDT’ye geri takas edebilir miyim?',
-            a: 'Flash tek yönlü USDT→USD1’dir. Diğer varlıklara dönmek için İşlem sayfasındaki piyasa takasını kullanın.',
+            a: 'Hayır. Flash yalnızca USDT’yi tek yönlü USD1’e çevirir. USD1 AEGIS X’in çekirdek uzlaşma varlığıdır; ekosistemde işlem, tahvil alımı ve Türbin kilit açma için kullanılır.',
           },
           {
             q: 'Flash geçmişini nerede görürüm?',
-            a: 'Flash takasları zincir üstünde saniyeler içinde tamamlanır. Her işlemi cüzdanınızda veya blok gezgininde doğrulayın.',
+            a: 'Flash zincir üstünde çalışır ve saniyeler içinde kredilendirilir. Her işlemi cüzdanınızda veya blok gezgininde görün.',
           },
         ],
       },
@@ -400,15 +400,15 @@ const app = defineMessages({
         items: [
           {
             q: 'Katkı puanları ne işe yarar?',
-            a: 'Karma getiri ve yeniden stake akışlarında katkı puanı gerekir; bakiye yetmezse talep başarısız olur — önce AGX yakarak tamamlayın.',
+            a: 'Stake, tahvil ve diğer kaynaklardan getiri talep etmek katkı puanını {ratio} harcar. Puan yetmezse talep edilemez.',
           },
           {
             q: 'Ödül talep ederken neden katkı puanı gerekir?',
-            a: 'Protokol, talep ve yeniden stake için katkı puanı kullanır; tüketim ödül tutarıyla ilişkilidir — önce AGX yakarak katkı ekleyin.',
+            a: 'Bu, talepleri protokol deflasyonuna bağlar: her talep katkıyı {ratio} harcar ve puan yalnızca AGX yakımından gelir. Böylece her getiri çekimi yakılan AGX’e karşılık gelir ve AGX deflasyonunu sürekli destekler.',
           },
           {
             q: 'Yakım oranı nedir?',
-            a: 'Yakım oranı zincir üstünde (rateBps) ayarlıdır; katkı puanı = yakılan AGX × rateBps ÷ 10000.',
+            a: '{burnRatio} oranında yakım: yakılan her 1 AGX eşleşen katkı puanı verir. Yakılan AGX zincir üstünde kara delik ve LP’ye bölünür.',
           },
           {
             q: 'Yakılan AGX nereye gider?',
@@ -416,7 +416,7 @@ const app = defineMessages({
           },
           {
             q: 'Katkı puanları aktarılabilir veya iade edilebilir mi?',
-            a: 'Katkı puanları AgxContributionSwap sözleşme hesap defterindedir; aktarılamaz ve AGX’e iade edilemez.',
+            a: 'Hayır. Katkı puanları hesabınıza bağlıdır — aktarılamaz ve iade edilemez. Yalnızca getiri talep ederken harcanır; ihtiyaca göre yakın.',
           },
         ],
       },
@@ -474,23 +474,23 @@ const app = defineMessages({
         items: [
           {
             q: 'gAGX Türbin’e nasıl girer?',
-            a: 'After RewardQueue (and related) claims, rewards credit Turbine as unlockable quota (turbineBalances).',
+            a: 'Serbest bırakma havuzundan talep edilen gAGX cüzdana gitmez. Otomatik olarak Türbin’e kilitli girer (kayıtlarda «Giriş»). Eşit miktarda AGX’i USD1 ile alarak kilidi açın, soğuma sonrası cüzdana çekin.',
           },
           {
             q: 'Kilidi açmak için neden alım gerekir?',
-            a: 'Kilit açma, canlı fiyattan USD1 ile eşit miktarda AGX almayı gerektirir (miktar 1:1). Ödenen USD1 AGX teklifiyle değişir — sabit USD1:AGX fiyatı 1:1 değildir.',
+            a: 'Türbin satış likiditesini alım talebine bağlar: 1 gAGX kilidini açmak için güncel fiyattan USD1 ile 1 AGX almak gerekir. Her olası satış eşit alımla eşlenir; tek yönlü satış baskısını önler ve taban havuzu korur.',
           },
           {
             q: 'Kilit açma ile çekme farkı nedir?',
-            a: 'Kilit açma: USD1 ödeyip AGX alın ve soğumayı başlatın. Çekme: soğuma bitince gAGX’i cüzdana alın.',
+            a: 'Kilit açma, güncel fiyattan USD1 ile eşit miktarda AGX alır, kilitli gAGX’i açar ve soğumayı başlatır. Çekme, soğuma ({cooldownHours} saat) bitince açılmış gAGX’i cüzdana taşır. İki adım Türbin kayıtlarında Kilit açma ve Çekme olarak görünür.',
           },
           {
             q: 'Soğuma süresi ne kadar?',
-            a: 'currentCooldownDuration — typically about 24–96 hours, adaptive to treasury health. The page shows the live period.',
+            a: 'Her kilit açılışı soğuma başlatır. Mevcut süre {cooldownHours} saattir, piyasa durumuna göre otomatik ayarlanır. Bittikten sonra o gAGX’i cüzdana çekebilirsiniz.',
           },
           {
             q: 'Satın alınan AGX nereye gider?',
-            a: 'Alınan AGX cüzdanınıza gider; soğuma bitince gAGX ayrıca talep edilir.',
+            a: 'Alınan AGX doğrudan cüzdanınıza gider, normal işlem alımı gibi. Eşleşen gAGX kilidi açılır ve soğumaya girer.',
           },
         ],
       },
@@ -978,6 +978,7 @@ const app = defineMessages({
       releaseDays: '{days} g',
       restakeDays: '{days} g',
       daysTax: '{days} g · {tax}',
+      scheduleJoin: ', ',
       taxRate: 'Vergi %{rate}',
       requiredContributionLabel: 'Bu talepte düşülecek katkı puanı',
       insufficientContributionDetail: 'Katkı puanı yetersiz (gerekli {need}, mevcut {have}), ',
@@ -1047,7 +1048,7 @@ const app = defineMessages({
           },
           {
             q: 'Vadeli olmayan staking çekiliş hakkı verir mi?',
-            a: 'Evet. Vadeli olmayan stake (liquidStake), tek işlem eşiği karşıladığında aynı gün hak verebilir; hak işlem bazlıdır, birikimli değildir. Günlük vadeli olmayan limitler eşiğe ulaşmayı engelleyebilir.',
+            a: 'Hayır. Vadeli olmayan staking kişi başı günlük limite tabidir; tek bir stake $5,000’i aşmaz ve çekiliş hakkı tutarını karşılayamaz.',
           },
         ],
       },
@@ -1088,7 +1089,7 @@ const app = defineMessages({
           },
           {
             q: 'Referans ödülü nasıl talep edilir?',
-            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı {ratio} harcar (DaoPool Mixed).',
+            a: 'Soldaki talep panelinde talep/yeniden stake oranını seçin: talep kısmı serbest bırakma havuzuna girer ve seçilen sürede doğrusal açılır; yeniden stake kısmı doğrudan tek token stake’ine girip bileşik üretir. Talep ve yeniden stake katkıyı {ratio} harcar.',
           },
           {
             q: 'Doğrudan referans sayısı nedir?',
@@ -1200,7 +1201,7 @@ const app = defineMessages({
           },
           {
             q: 'Ortak inşa ve eşitleme ödülü nasıl talep edilir?',
-            a: 'Sol panelde talep/yeniden stake oranını seçin: talep serbest bırakma havuzuna, yeniden stake tek varlık stake’ine gider. İkisi katkı {ratio} harcar. Eşitleme geçmişi sağda Ödül kayıtları sekmelerindedir.',
+            a: 'Soldaki talep panelinin üstünden Ortak inşa / Eşitleme’ye geçin, sonra talep/yeniden stake oranını ayarlayın: talep kısmı seçilen sürede doğrusal açılmak üzere serbest bırakma havuzuna girer; yeniden stake doğrudan tek token stake’ine girip bileşik üretir. İkisi de katkıyı {ratio} harcar.',
           },
           {
             q: 'Yeni seviye oranı ne zaman geçerli olur?',
@@ -1278,15 +1279,15 @@ const app = defineMessages({
           },
           {
             q: 'Genesis seviyesi nasıl yükseltilir?',
-            a: 'Kişisel ortak inşa tutarı ve organizasyon performansına göre S1’den S10’a kademeli yükselin.',
+            a: 'Genesis seviyeleri S1’den S10’a kadardır; kişisel ortak inşa tutarı ve toplam organizasyon hacmine göre değerlendirilir. Üst seviyeler ayrıca çift hat yükseltme koşulunu gerektirir.',
           },
           {
             q: 'Seviye yükseltme ödülü nedir?',
-            a: 'Seviye ödülleri Genesis seviyenize göre ekip ortak inşa hacminin payını uzlaştırır; RewardClaimer imzasıyla cüzdana talep edilir.',
+            a: 'Ortak inşa sırasında ulaşılan Genesis seviyesi, protokol yayınından sonra otomatik bir kademe yükselir; 30 gün geçerlidir, ardından gerçek seviyenize döner.',
           },
           {
             q: 'Genesis ekip ödülleri nasıl uzlaştırılır?',
-            a: 'Doğrudan referans ödülleri cüzdana otomatik uzlaşır; seviye ödülleri ve gelişim fonu RewardClaimer / CommunityFund imzasıyla talep edilir.',
+            a: 'Genesis ekip ödülleri eşleşen Genesis seviye oranında otomatik uzlaşır; cüzdana sizin talep etmeniz gerekir. Ortak inşa dönemi bitince bu sayfa kapanır; alınmamış ödüller bir daha talep edilemez ve akıllı piyasa yapıcı sözleşmeye gönderilir.',
           },
         ],
       },
@@ -1297,23 +1298,23 @@ const app = defineMessages({
       items: [
         {
           q: 'Ödüller hangi biçimde ödenir?',
-          a: 'Çoğu ödül AGX / gAGX cinsinden gösterilir; genesis ortak inşa RewardClaimer varlıklarına göredir. Mixed taleplerde serbest bırakma kısmı havuza girer.',
+          a: 'Tüm ödüller gAGX olarak uzlaşır ve her programın kurallarına göre eşleşen ödül kartlarına yatırılır. Bakiyeleri istediğiniz zaman Ödüller ana sayfasında görün.',
         },
         {
           q: 'Talep için ne gerekir?',
-          a: 'Basit imzalı talepler için talep edilebilir bakiye ve geçerli imza gerekir. Lucky / DaoPool Mixed ayrıca yeterli katkı ve serbest bırakma/yeniden stake oranı ister.',
+          a: 'Talep katkıyı {ratio} harcar. Puanlar AGX yakımından gelir; yetmezse önce Yakım sayfasından alın.',
         },
         {
           q: 'Talep edilen ödüller ne zaman gelir?',
-          a: 'Zincir üstü işlem onayından sonra. Serbest bırakma kısmı seçilen sürede açılır; yeniden stake kısmı ilgili stake pozisyonuna girer.',
+          a: 'Talep ederken serbest bırakma süresi seçin. Ödüller serbest bırakma havuzuna girer ve doğrusal açılır — süre uzadıkça vergi düşer. Ödüllerin bir kısmını veya tamamını tek token stake’ine yeniden stake de edebilirsiniz.',
         },
         {
           q: 'Ödüller ne zaman uzlaşır?',
-          a: 'Her kaynak sözleşme ve arka uç tarama kurallarına göre uzlaşır. Ön yüz talep edilebilir bakiye ve imzalı paketleri kaynak alır.',
+          a: 'Şans çekilişleri her gün 00:00 UTC’de uzlaşır. Diğer ödüller Rebase’i izler, yaklaşık her {hours} saatte bir, bu yüzden aynı ritimde uzlaşır. Sonraki ödeme zamanı her ödül ayrıntı veri panelindedir.',
         },
         {
           q: 'Bazı ödül kartları neden tutar göstermiyor?',
-          a: 'Bağlı değil veya imzasız oturumlarda giriş ipucu gösterilir; bu boş ödül demek değildir. Giriş sonrası — talep edilecek bir şey olmadığını veya verinin henüz hazır olmadığını gösterir.',
+          a: 'Sağ üst ayarlarda varsayılan «0 bakiyeli varlıkları gizle»dir, bu yüzden bakiyesi 0 olan kartlar gizlenir. Tüm ödül kartlarını görmek için işareti kaldırın.',
         },
       ],
     },
@@ -1637,35 +1638,35 @@ const app = defineMessages({
         items: [
           {
             q: 'Toplam varlık değeri nasıl hesaplanır?',
-            a: 'Ürün anaparası ve alınmamış getiri değerlemelerinin toplamı; çapraz ürün teklifi yoksa — gösterir. Boştaki cüzdan bakiyesi dahil değildir.',
+            a: 'Toplam varlık değeri = pozisyon anaparası + alınmamış getiri + madencilik çıktısı, güncel piyasa fiyatlarıyla. Boştaki cüzdan bakiyesi dahil değildir; fiyat hareketi değerlemeyi anlık günceller.',
           },
           {
             q: 'Getiri hangi biçimde ödenir?',
-            a: 'Stake/tahvil Rebase getirisi gAGX; X madencilik çıktısı X’tir.',
+            a: 'Stake, LP tahvil ve yakım tahvilinin Rebase getirisi gAGX olarak uzlaşır. gAGX’i 1:1 AGX’e çevirin veya X Madenciliğe kullanın. X Madencilik çıktısı ekosistem değer tokenı X’tir ve istediğiniz zaman talep edilebilir.',
           },
           {
             q: 'Neden getiri talep edemiyorum?',
-            a: 'Mixed talepler katkı harcar; yetmezse önce AGX yakıp katkı alın.',
+            a: 'Getiri talep etmek katkı harcar. Hesapta yeterli yoksa talep ilerleyemez — önce katkı için AGX alıp yakın, sonra Varlıklara dönün. Katkı mekanizması her getiri çekiminin protokol deflasyonuna da katkı vermesini sağlar.',
           },
           {
             q: 'Katkı değeri nasıl kazanılır?',
-            a: 'AGX alıp yakın; talepler katkıyı {ratio} harcar.',
+            a: 'AGX alıp yakarak katkı alın. Talepler katkıyı {ratio} harcar; talep edeceğiniz getiri için yeterince hazırlayın.',
           },
           {
             q: 'Talepte neden serbest bırakma süresi seçilir?',
-            a: 'Talep edilen getiri serbest bırakma havuzuna girer ve doğrusal açılır; süre uzadıkça vergi genelde düşer.',
+            a: 'Talep edilen getiri anında gelmez. Seçilen sürede doğrusal açılır; süre uzadıkça vergi düşer: {taxSchedule}.',
           },
           {
             q: 'Talep edilen getiri nereye gider?',
-            a: 'Anında cüzdana değil — RewardQueue / serbest bırakma havuzuna; serbest bırakılan kısmı Serbest bırakma sayfasında alın.',
+            a: 'Talep edilen getiri doğrudan cüzdana gitmez. Serbest bırakma havuzuna girer ve seçtiğiniz sürede doğrusal açılır. Her talebi izlemek için serbest bırakma havuzunu açın; serbest bırakılan tutarlar cüzdana çekilebilir.',
           },
           {
             q: 'Yeniden stake ile talep farkı nedir?',
-            a: 'Yeniden stake getiriyi yeniden stake pozisyonuna yönlendirebilir; talep seçilen sürede kademeli gelir.',
+            a: 'Yeniden stake serbest bırakma süresini atlar — getiri doğrudan tek token stake’ine girip bileşik üretmeye devam eder, daha iyi vergi oranıyla ({restakeTax}); uzun vadeli katılımcılara uygundur. Talep, serbest bırakma süresinde cüzdana açılır ve daha esnektir.',
           },
           {
             q: 'Tampon havuzu nedir?',
-            a: 'Stake’ten çıkınca anapara splitter’da dönemsel doğrusal serbest bırakmaya girer (AGX veya gAGX).',
+            a: 'Anapara stake’ten çıktıktan sonra tampon havuzuna {days} günlük ikincil doğrusal serbest bırakmaya girer; kısa vadeli yığılmış çıkışları azaltır. Tampondaki Serbest bırakıldı işaretli tutarlar istediğiniz zaman cüzdana geri alınabilir.',
           },
         ],
       },
@@ -1696,23 +1697,23 @@ const app = defineMessages({
           items: [
             {
               q: 'Talep ile geri alma farkı nedir?',
-              a: 'Talep getiriyi işler (isteğe bağlı yeniden stake); geri alma anaparayı serbest bırakma tamponuna gönderir.',
+              a: 'Talep getiri içindir: biriken gAGX’i seçilen serbest bırakma süresinde alın veya yeniden stake edin. Geri alma anapara içindir: serbest bırakılmış AGX anaparasını {days} günlük tampona ikinci doğrusal serbest bırakma için alın, sonra cüzdana.',
             },
             {
               q: 'Neden her stake ayrı gösterilir?',
-              a: 'Her açılış bağımsız faiz ve serbest bırakma ilerlemesi izler; pozisyon bazında talep veya geri alma kolaydır.',
+              a: 'Her stake kendi süresini, getirisini, bonusunu ve serbest bırakma ilerlemesini izler. Vade ve kullanılabilir işlemler diğer pozisyonları etkilemez, bu yüzden ayrı gösterilir ve işlenir.',
             },
             {
-              q: 'Serbest bırakıldı ne demek?',
-              a: 'Vadeli pozisyon vadesi dolunca geri alınabilir anapara kısmı.',
+              q: '«Serbest bırakıldı» ne demek?',
+              a: 'Anapara blok bazında doğrusal açılır (~3 saniye/blok). «Serbest bırakıldı» o anda açılmış ve istenince geri alınabilir kısımdır; geri kalan süre boyunca açılmaya devam eder.',
             },
             {
               q: 'Geri sayım bitince ne olur?',
-              a: 'Kalan süre sıfırlanınca pozisyon geri alınabilir/işlenebilir olur; zincir üstü durum esas alınır.',
+              a: 'Geri sayım bitince anapara serbest bırakması tamamdır ve tüm anapara istenince geri alınabilir. Alınmamış anapara hâlâ getiri üretir. Anaparayı geri aldıktan sonra alınmamış getiri geçersiz olmaz ve bileşik üretmeye devam eder.',
             },
             {
               q: 'Talepte yeniden stake oranı nasıl çalışır?',
-              a: 'Kaydırıcıyla serbest bırakma ve yeniden stake oranını ayarlayın, süreleri seçip onaylayın.',
+              a: 'Kaydırıcıyla yeniden stake ve talep oranını ayırın. Yeniden stake kısmı seçilen sürenin tek token stake’ine doğrudan girer ve bileşik üretir (daha iyi vergi). Talep kısmı seçilen serbest bırakma süresinde doğrusal açılır.',
             },
           ],
         },
@@ -2427,31 +2428,31 @@ const app = defineMessages({
         },
         {
           q: 'Stake’ten çıkarma sonrası varlıklar nasıl serbest bırakılır?',
-          a: 'Kilidi açılmış gAGX ~30 günlük blok doğrusal serbest bırakma kullanır; satış baskısını azaltır.',
+          a: 'Kilit açıldıktan sonra gAGX {days} günlük blok doğrusal serbest bırakma kullanır; çıkış sonrası yığılmış satış baskısını azaltır ve uzun vadeli değer yakalamayı güçlendirir.',
         },
         {
           q: 'X arzı nedir? Enflasyon olur mu?',
-          a: 'Sabit 210M X, asla enflasyon yok. %47,62 LP likidite; %52,38 küresel ödül ve büyüme.',
+          a: 'Sabit 210 million X, asla enflasyon yok. %47,62 LP likidite (başlangıç havuzu, piyasa yapıcılık ve likidite desteği); %52,38 küresel ödül ve büyüme (gAGX madencilik ödülleri, pazar genişlemesi ve marka ortaklıkları, ekosistem ve uzun vadeli gelişim).',
         },
         {
           q: 'gAGX nasıl alınır?',
-          a: 'gAGX, stake ve tahvillerden Rebase ile DAO ödüllerinin birleşik uzlaşma belgesidir.',
+          a: 'gAGX, Rebase ve DAO ödüllerinin birleşik uzlaşma belgesidir: AGX stake veya tahvillerden Rebase getirisi ile DAO ödülleri gAGX olarak ödenir. gAGX, X ekosistemine tek giriş yoludur.',
         },
         {
           q: 'gAGX madencilik dışında ne yapabilir?',
-          a: '1:1 AGX’e çevirip stake edin veya gAGX stake ederek X madenciliği yapın.',
+          a: 'gAGX’i istediğiniz zaman 1:1 AGX’e çevirip stake bileşik getirisine devam edin veya gAGX stake ederek X madenciliği yapın. İki yol da sizin.',
         },
         {
           q: 'X neden sürekli deflate olur?',
-          a: 'Her X satışında %25 yakılır. Büyüme talebi artırırken yakımlar arzı küçültür.',
+          a: 'Her X satışında %25 yakılır. Ekosistem büyümesi talep ve cironun artmasıyla yakımlar birikir, X dolaşımı küçülür ve «daha az arz, daha yüksek değer» uzun vadeli deflasyon döngüsü oluşur.',
         },
         {
           q: 'X değerinin kaynağı nedir?',
-          a: 'Madencilik talebi, protokol gelir geri dönüşü ve ekosistem büyümesi X talebini güçlendirir.',
+          a: 'Üç talep katmanı: gAGX madenciliğinden X talebi; protokol gelirinin ekosisteme geri dönüşü; uygulama genişlemesi ve kullanıcı artışı. Üçü birlikte X talebini sürekli güçlendirir.',
         },
         {
           q: 'Üst sınır neden tahvil/uzun vadeli stake’e bağlı?',
-          a: 'Madencilerin uzun vadeli inşa edenler olmasını sağlar; daha fazla tahvil veya uzun stake miningQuotaOf ile üst sınırı yükseltir.',
+          a: 'Bu, X madencilerinin protokolün uzun vadeli inşa edenleri olmasını sağlar: gAGX stake üst sınırınız ≥180 gün AGX tahvil pozisyonu artı AGX stake toplamını aşamaz. Üst sınırı yükseltmek için tahvil veya uzun vadeli stake ekleyin.',
         },
       ],
     },
@@ -2570,10 +2571,6 @@ const app = defineMessages({
       taxTitle: 'Daha uzun serbest bırakma, daha düşük vergi',
       taxPeriod: 'Hesaplanan süre',
       taxRate: 'Talep vergisi',
-      taxRows: {
-        periods: ['5 g', '20 g', '40 g', '60 g'],
-        rates: ['20%', '10%', '5%', '1%'],
-      },
     },
     queue: {
       title: 'Serbest bırakma havuzu',
@@ -2620,67 +2617,67 @@ const app = defineMessages({
       hub: [
         {
           q: 'Serbest bırakma süresi değiştirilebilir mi?',
-          a: 'Kuyruğa girerken seçilen süre değiştirilemez; yeni talepler farklı süre seçebilir.',
+          a: 'Hayır. Süre, getiri serbest bırakma havuzuna girerken sabitlenir ve sonra değiştirilemez. Her talep bağımsızdır, bu yüzden sonraki farklı süre kullanabilir.',
         },
         {
           q: 'Vergi ne zaman kesilir?',
-          a: 'Seçilen serbest bırakma planı oranıyla, serbest bırakılmış kısım talep edilirken kesilir.',
+          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır ({taxSchedule}). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
         },
         {
           q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
-          a: 'Zincir üstünde AGX Türbin satış kotasına girer; ardından Türbin ile gAGX alın.',
+          a: 'Talep edilen gAGX doğrudan cüzdana gitmez. Türbin’e girer ve Türbin kurallarıyla devam eder. Görüntülemek ve yönetmek için Türbin sayfasını açın.',
         },
         {
           q: 'Serbest bırakılan kısmı hemen almazsam kayıp olur mu?',
-          a: 'Hayır. Kilidi açılmış tutarlar istenince talep edilebilir.',
+          a: 'Süresi dolmaz — istediğiniz zaman talep edin. Havuzda bekleyen serbest bırakılmış tutarlar getiri üretmez, bu yüzden zamanında Türbin’e talep edin.',
         },
         {
           q: 'Uygun serbest bırakma süresi nasıl seçilir?',
-          a: 'Süre uzadıkça vergi düşer; likidite ihtiyacına göre 5 / 20 / 40 / 60 gün seçin.',
+          a: 'Fonları daha çabuk istiyorsanız kısa süre seçin (daha yüksek vergi). Bekleyebilirseniz daha düşük oran için uzun süre seçin. Hız ve vergiyi dengelemek için getiriyi farklı sürelerle birden fazla talebe de bölebilirsiniz.',
         },
       ],
       queue: [
         {
           q: 'Serbest bırakma süresi değiştirilebilir mi?',
-          a: 'Kuyruğa girerken seçilen süre değiştirilemez; yeni talepler farklı süre seçebilir.',
+          a: 'Hayır. Süre, getiri serbest bırakma havuzuna girerken sabitlenir ve sonra değiştirilemez. Her talep bağımsızdır, bu yüzden sonraki farklı süre kullanabilir.',
         },
         {
           q: 'Vergi ne zaman kesilir?',
-          a: 'Seçilen serbest bırakma planı oranıyla, serbest bırakılmış kısım talep edilirken kesilir.',
+          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır ({taxSchedule}). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
         },
         {
           q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
-          a: 'Türbin kotasına girer — Takas → Türbin’e gidin.',
+          a: 'Talep edilen gAGX doğrudan cüzdana gitmez. Türbin’e girer ve Türbin kurallarıyla devam eder. Görüntülemek ve yönetmek için Türbin sayfasını açın.',
         },
         {
           q: 'Serbest bırakılan kısmı hemen almazsam kayıp olur mu?',
-          a: 'Gecikmeli talep nedeniyle azalmaz.',
+          a: 'Süresi dolmaz — istediğiniz zaman talep edin. Havuzda bekleyen serbest bırakılmış tutarlar getiri üretmez, bu yüzden zamanında Türbin’e talep edin.',
         },
         {
           q: 'Uygun serbest bırakma süresi nasıl seçilir?',
-          a: 'Süre uzadıkça vergi düşer.',
+          a: 'Fonları daha çabuk istiyorsanız kısa süre seçin (daha yüksek vergi). Bekleyebilirseniz daha düşük oran için uzun süre seçin. Hız ve vergiyi dengelemek için getiriyi farklı sürelerle birden fazla talebe de bölebilirsiniz.',
         },
       ],
       buffer: [
         {
           q: 'Tampon havuzu nedir?',
-          a: 'Geri alma/stake’ten çıkarma sonrası anapara splitter’da doğrusal serbest bırakılır.',
+          a: 'Anapara stake’ten çıktıktan (geri alındıktan) sonra tampon havuzuna {days} günlük ikincil doğrusal serbest bırakmaya girer. Bu, kısa vadeli yığılmış çıkışları azaltır ve sürekli serbest bırakmayı piyasa istikrarıyla dengeler.',
         },
         {
           q: 'Tampon havuzundaki varlıklar hâlâ getiri üretir mi?',
-          a: 'Tampon süresince stake getirisi üretilmez.',
+          a: 'Hayır. Varlıklar tampona girdiği anda her türlü getiri üretmeyi durdurur; geri almaları kendi nakit ihtiyacınıza göre zamanlayın.',
         },
         {
           q: 'Serbest bırakılan kısım nasıl çekilir?',
-          a: 'Çek’e dokunun — AGX doğrudan cüzdana gider.',
+          a: 'Tampon blok bazında doğrusal açılır. Serbest bırakıldı kısmında Çek’e dokunun — ekstra beklemeden doğrudan cüzdana gider.',
         },
         {
           q: 'Tampon havuzunda neden AGX ve gAGX var?',
-          a: 'Tasarım her iki kartı tutar; zincir üstü tampon yalnızca AGX uzlaştırır — gAGX çıkışı çevrilmiştir.',
+          a: 'Stake ve tahvil geri almalarının anaparası AGX’tir; X Madencilik çıkışı gAGX’tir. İki varlık bağımsız serbest bırakılır ve çekilir.',
         },
         {
           q: 'Serbest bırakılmış varlıkların tümünü neden bir kerede çekemem?',
-          a: 'Yalnızca şu an kilidi açılmış tutarlar çekilebilir; vadesi gelmeyenler beklemelidir.',
+          a: 'Tampon varlıkları birçok geri alma kaydından gelebilir; her birinin kendi tampon saati vardır. Kayıt çoksa bir çekim sınırlı sayıda işleyebilir, bu yüzden tüm serbest bırakılmış tutarları tek dokunuşta boşaltamayabilirsiniz. Hepsi çıkana kadar Çek’e yeniden dokunun.',
         },
       ],
     },
