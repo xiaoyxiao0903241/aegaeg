@@ -32,7 +32,7 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
         subtitle={w.copy.intro}
         title={w.copy.title}
       >
-        <DockStack>
+        <DockStack fill>
           <AssetsQuoteToolbar
             onQuoteChange={w.setQuote}
             onSortChange={w.setSort}

@@ -15,11 +15,21 @@ export const DOCK_H5_HEADER_BODY_CLASS = 'flex h-14 min-h-14 items-center'
  * 操作区纵向堆叠：子项间距只走 gap，勿再给子项加外边距。
  * PC 吃满栏内剩余高度，未连接引导卡才能贴底。
  */
-export function DockStack({ children, className }: { children: ReactNode; className?: string }) {
+export function DockStack({
+  children,
+  className,
+  fill = false,
+}: {
+  children: ReactNode
+  className?: string
+  /** PC 吃满栏内剩余高度（空态主卡要贴底时打开） */
+  fill?: boolean
+}) {
   return (
     <div
       className={cn(
-        'flex min-h-0 flex-col gap-3.5 dapp:shrink-0 dapp:grow max-dapp:flex-none',
+        'flex min-h-0 flex-col gap-3.5 max-dapp:flex-none',
+        fill ? 'dapp:min-h-0 dapp:flex-1' : 'dapp:shrink-0 dapp:grow',
         className,
       )}
     >

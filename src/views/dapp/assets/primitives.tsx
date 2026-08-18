@@ -21,7 +21,7 @@ import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
 
-/** 空态卡片：顶部骨架行 + 插画空态提示 + 底部主操作按钮 */
+/** 仓位空态：顶上一行骨架，下面主卡 PC 吃满剩余高度，按钮贴底 */
 export function AssetsPositionEmptyCard({
   title,
   body,
@@ -34,19 +34,25 @@ export function AssetsPositionEmptyCard({
   onCta: () => void
 }) {
   return (
-    <div className="grid gap-3">
-      {/* 空态顶部的骨架占位行：阴影卡，无边框 */}
-      <Card surface="elevated" className="flex items-center gap-4 rounded-2xl px-5">
-        <span aria-hidden className="size-11 shrink-0 rounded-full bg-muted" />
-        <span aria-hidden className="grid min-w-0 flex-1 justify-items-start gap-2">
-          <span className="w-32 max-w-3/5 rounded-sm bg-muted" />
-          <span className="w-20 max-w-2/5 rounded-sm bg-muted" />
+    <div className="flex min-h-0 flex-col gap-3 dapp:min-h-0 dapp:flex-1 max-dapp:flex-none">
+      <Card
+        aria-hidden
+        className="flex shrink-0 items-center gap-4 rounded-2xl px-5 py-3.5"
+        surface="elevated"
+      >
+        <span className="size-11 shrink-0 rounded-full bg-muted" />
+        <span className="grid min-w-0 flex-1 justify-items-start gap-2">
+          <span className="h-3.5 w-[132px] max-w-3/5 rounded-md bg-muted" />
+          <span className="h-2.5 w-20 max-w-[38%] rounded-md bg-muted" />
         </span>
-        <span aria-hidden className="size-7 shrink-0 rounded-control bg-muted" />
+        <span className="size-7 shrink-0 rounded-[9px] bg-muted" />
       </Card>
 
-      <Card surface="elevated" className="grid gap-3.5 rounded-2xl">
-        <div className="grid flex-1 justify-items-center gap-3.5 px-5 py-6">
+      <Card
+        className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl p-3.5 max-dapp:min-h-[420px]"
+        surface="elevated"
+      >
+        <div className="flex flex-1 flex-col items-center justify-center gap-3.5 px-5 py-6">
           <img
             alt=""
             className="size-21 object-contain"
@@ -58,15 +64,14 @@ export function AssetsPositionEmptyCard({
           </Text>
           <Text
             as="p"
-            className="max-w-72 text-center leading-relaxed text-pretty"
-            tone="muted-foreground"
+            className="max-w-[300px] text-center leading-relaxed text-pretty text-foreground/40"
             variant="support"
           >
             {body}
           </Text>
         </div>
         <Button
-          className="w-full rounded-xl border-0 bg-dark text-white hover:bg-dark hover:text-white hover:opacity-90"
+          className="h-11.5 min-h-11.5 w-full shrink-0 rounded-xl border-0 bg-dark text-sm font-semibold text-white hover:bg-dark hover:text-white hover:opacity-90"
           onClick={onCta}
           shape="rounded"
           type="button"

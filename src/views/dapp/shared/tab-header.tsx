@@ -46,7 +46,7 @@ export function TabHeader({
         </div>
       }
     >
-      <div className="mb-4 grid gap-1.5">
+      <div className="mb-4 grid shrink-0 gap-1.5">
         <Text as="h1" variant="panel" className="m-0">
           {title}
         </Text>

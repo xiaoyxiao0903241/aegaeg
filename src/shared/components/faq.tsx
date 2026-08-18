@@ -26,7 +26,7 @@ const faqStyles = tv({
     answer: 'w-full text-left wrap-anywhere',
     // 重置按钮默认粗体，让 Text `question` 控制字重
     trigger:
-      'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left font-normal text-inherit outline-none',
+      'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left font-normal text-inherit transition-opacity duration-160 ease-out outline-none hover:opacity-70',
   },
   variants: {
     variant: {

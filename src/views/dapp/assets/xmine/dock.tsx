@@ -27,7 +27,7 @@ export function XmineDock() {
         subtitle={copy.intro}
         title={copy.title}
       >
-        <DockStack>
+        <DockStack fill>
           <AssetsQuoteToolbar
             onQuoteChange={vm.setQuote}
             onSortChange={vm.setSort}
