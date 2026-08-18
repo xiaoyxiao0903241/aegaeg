@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
@@ -28,6 +28,7 @@ import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -237,8 +238,9 @@ export function useXmineDetail() {
   const { messages: t } = useI18n()
   const { sessionReady, walletReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
+  const [recordsPage, setRecordsPage] = useState(1)
   const positionsQuery = useX0MiningPositions({}, sessionReady)
-  const logsQuery = useX0MiningLogs({}, sessionReady)
+  const logsQuery = useX0MiningLogs(tablePageQuery(recordsPage), sessionReady)
   // 累加用户历史 REWARD；翻页至覆盖 total（无协议累计 view）
   const rewardLifetime = useX0MiningLifetimeReward(sessionReady)
   const distQuery = useAssetsHoldingsDistribution(sessionReady)
@@ -377,11 +379,21 @@ export function useXmineDetail() {
   const recordRows =
     logsQuery.data?.items.map((item) => mapX0MiningLogToOpsRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && logsQuery.isLoading && logsQuery.data == null
+  const recordsTotal = logsQuery.data?.total ?? 0
+  const recordsSummary = interpolate(t.staking.aside.recordsFooter.xmine, {
+    amount: formatNumber(parseApiAmountOrZero(positionsQuery.data?.total_stake_amount), {
+      digits: 2,
+    }),
+  })
 
   return {
     overviewItems,
     positionItems,
     recordRows,
     recordsLoading,
+    recordsPage,
+    recordsTotal,
+    recordsSummary,
+    setRecordsPage,
   }
 }

@@ -2081,6 +2081,11 @@ const app = defineMessages({
         xmine:
           'No mining records yet. Stake gAGX to start mining and each action will show up here.',
       },
+      recordsFooter: {
+        stake: 'Total staked {amount} AGX',
+        bond: 'Total purchased {amount}',
+        xmine: 'Total staked {amount} gAGX',
+      },
       chartTitles: {
         stake: 'TVL (Staking) metrics',
         lpbond: 'TVL (LP Bond) metrics',

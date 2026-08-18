@@ -2085,6 +2085,11 @@ const app = defineMessages({
         xmine:
           'अभी कोई माइनिंग रिकॉर्ड नहीं। माइनिंग शुरू करने के लिए gAGX स्टेक करें और प्रत्येक क्रिया यहाँ दिखेगी।',
       },
+      recordsFooter: {
+        stake: 'कुल स्टेक {amount} AGX',
+        bond: 'कुल खरीद {amount}',
+        xmine: 'कुल स्टेक {amount} gAGX',
+      },
       chartTitles: {
         stake: 'TVL (स्टेकिंग) मेट्रिक्स',
         lpbond: 'TVL (LP बॉन्ड) मेट्रिक्स',

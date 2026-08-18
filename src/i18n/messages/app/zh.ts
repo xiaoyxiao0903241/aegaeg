@@ -1992,6 +1992,11 @@ const app = defineMessages({
         burnbond: '暂无购买记录，购买销毁债券后，这里将展示您的每一笔购买。',
         xmine: '暂无挖矿记录，质押 gAGX 开始挖矿后，这里将展示您的每一笔操作。',
       },
+      recordsFooter: {
+        stake: '累计质押 {amount} AGX',
+        bond: '累计购买 {amount}',
+        xmine: '累计质押 {amount} gAGX',
+      },
       chartTitles: {
         stake: 'TVL（质押）数据指标',
         lpbond: 'TVL（LP 债券）数据指标',

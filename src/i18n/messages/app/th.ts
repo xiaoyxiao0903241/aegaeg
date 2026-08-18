@@ -2095,6 +2095,11 @@ const app = defineMessages({
         burnbond: 'ยังไม่มีบันทึกการซื้อ หลังซื้อพันธบัตรเบิร์น จะแสดงทุกรายการที่นี่',
         xmine: 'ยังไม่มีบันทึกขุด สเตก gAGX เพื่อเริ่มขุด แล้วแต่ละการดำเนินการจะแสดงที่นี่',
       },
+      recordsFooter: {
+        stake: 'สเตกสะสม {amount} AGX',
+        bond: 'ซื้อสะสม {amount}',
+        xmine: 'สเตกสะสม {amount} gAGX',
+      },
       chartTitles: {
         stake: 'ตัวชี้วัด TVL (Staking)',
         lpbond: 'ตัวชี้วัด TVL (พันธบัตร LP)',

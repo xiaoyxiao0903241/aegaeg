@@ -24,7 +24,16 @@ import { StakingXValueCard } from '~/views/dapp/staking/xmine/primitives'
 import { useXmineDetail } from '~/views/dapp/staking/xmine/use-xmine'
 
 export function XmineDetail() {
-  const { overviewItems, positionItems, recordRows, recordsLoading } = useXmineDetail()
+  const {
+    overviewItems,
+    positionItems,
+    recordRows,
+    recordsLoading,
+    recordsPage,
+    recordsTotal,
+    recordsSummary,
+    setRecordsPage,
+  } = useXmineDetail()
   const {
     t,
     selectTab,
@@ -122,6 +131,16 @@ export function XmineDetail() {
             mutedColumns={[0]}
             rows={[...(recordRows ?? [])]}
           />
+          {/* jscpd:ignore-start — 记录表底栏页内拼装，禁再抽 Section 薄包装 */}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              summary={recordsSummary}
+              total={recordsTotal}
+            />
+          </Table.Footer>
+          {/* jscpd:ignore-end */}
         </Table>
       </Section>
 

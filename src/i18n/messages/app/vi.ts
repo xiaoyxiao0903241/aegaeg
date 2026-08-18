@@ -2147,6 +2147,11 @@ const app = defineMessages({
         burnbond: 'Chưa có bản ghi mua; mua trái phiếu đốt sẽ hiện từng lần mua ở đây.',
         xmine: 'Chưa có bản ghi đào; stake gAGX bắt đầu đào sẽ hiện từng thao tác ở đây.',
       },
+      recordsFooter: {
+        stake: 'Tổng stake {amount} AGX',
+        bond: 'Tổng mua {amount}',
+        xmine: 'Tổng stake {amount} gAGX',
+      },
       chartTitles: {
         stake: 'Chỉ số TVL (Staking)',
         lpbond: 'Chỉ số TVL (trái phiếu LP)',

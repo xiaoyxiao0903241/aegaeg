@@ -2086,6 +2086,11 @@ const app = defineMessages({
         xmine:
           '아직 마이닝 기록이 없습니다. gAGX를 스테이킹해 마이닝을 시작하면 여기에 각 작업이 표시됩니다.',
       },
+      recordsFooter: {
+        stake: '누적 스테이킹 {amount} AGX',
+        bond: '누적 구매 {amount}',
+        xmine: '누적 스테이킹 {amount} gAGX',
+      },
       chartTitles: {
         stake: 'TVL(스테이킹) 데이터 지표',
         lpbond: 'TVL(LP 채권) 데이터 지표',

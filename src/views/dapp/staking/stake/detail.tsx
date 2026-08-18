@@ -29,7 +29,16 @@ import { useStakingDetail } from '~/views/dapp/staking/use-detail'
 import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 export function StakeDetail() {
-  const { overviewItems, positionItems, recordRows, recordsLoading } = useStakeDetail()
+  const {
+    overviewItems,
+    positionItems,
+    recordRows,
+    recordsLoading,
+    recordsPage,
+    recordsTotal,
+    recordsSummary,
+    setRecordsPage,
+  } = useStakeDetail()
   const {
     t,
     selectTab,
@@ -117,6 +126,16 @@ export function StakeDetail() {
             positiveColumns={[3]}
             rows={[...(recordRows ?? [])]}
           />
+          {/* jscpd:ignore-start — 记录表底栏页内拼装，禁再抽 Section 薄包装 */}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              summary={recordsSummary}
+              total={recordsTotal}
+            />
+          </Table.Footer>
+          {/* jscpd:ignore-end */}
         </Table>
       </Section>
 

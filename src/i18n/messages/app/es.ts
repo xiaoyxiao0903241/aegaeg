@@ -2176,6 +2176,11 @@ const app = defineMessages({
         xmine:
           'Aún no hay registros de minado. Tras hacer staking de gAGX, cada acción aparecerá aquí.',
       },
+      recordsFooter: {
+        stake: 'Total apostado {amount} AGX',
+        bond: 'Total comprado {amount}',
+        xmine: 'Total apostado {amount} gAGX',
+      },
       chartTitles: {
         stake: 'Métricas TVL (Staking)',
         lpbond: 'Métricas TVL (Bono LP)',

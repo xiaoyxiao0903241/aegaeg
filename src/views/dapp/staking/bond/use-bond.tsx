@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
@@ -9,10 +9,12 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapBondPurchaseToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -20,7 +22,7 @@ import { goBindReferral } from '~/views/dapp/shared/navigation'
 import { BOND_ZAP_BLOCKED } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondSession } from '~/views/dapp/staking/bond/use-bond-session'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import { formatRebasePct } from '~/views/dapp/staking/shared'
+import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import {
@@ -141,8 +143,10 @@ export function useBondDetail(kind: BondKind) {
     queryFn: (addr) =>
       kind === 'lp' ? readLpBondPositions(addr as Address) : readBurnBondPositions(addr as Address),
   })
-  const lpPurchases = useBondFlowLpPurchases({}, sessionReady && kind === 'lp')
-  const burnPurchases = useBondFlowBurnPurchases({}, sessionReady && kind === 'burn')
+  const [recordsPage, setRecordsPage] = useState(1)
+  const pageParams = tablePageQuery(recordsPage)
+  const lpPurchases = useBondFlowLpPurchases(pageParams, sessionReady && kind === 'lp')
+  const burnPurchases = useBondFlowBurnPurchases(pageParams, sessionReady && kind === 'burn')
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
 
   const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
@@ -262,6 +266,13 @@ export function useBondDetail(kind: BondKind) {
   const recordRows =
     purchasesQuery.data?.items.map((item) => mapBondPurchaseToAsideRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && purchasesQuery.isLoading && purchasesQuery.data == null
+  const recordsTotal = purchasesQuery.data?.total ?? 0
+  const recordsSummary = interpolate(t.staking.aside.recordsFooter.bond, {
+    amount: formatNumber(parseApiAmountOrZero(purchasesQuery.data?.total_purchase_amount), {
+      digits: 2,
+      prefix: '$',
+    }),
+  })
 
   return {
     copy,
@@ -269,5 +280,9 @@ export function useBondDetail(kind: BondKind) {
     positionItems,
     recordRows,
     recordsLoading,
+    recordsPage,
+    recordsTotal,
+    recordsSummary,
+    setRecordsPage,
   }
 }

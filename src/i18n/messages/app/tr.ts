@@ -2163,6 +2163,11 @@ const app = defineMessages({
         xmine:
           'Henüz madencilik kaydı yok. gAGX stake edip madenciliğe başlayınca her işlem burada görünür.',
       },
+      recordsFooter: {
+        stake: 'Toplam stake {amount} AGX',
+        bond: 'Toplam alım {amount}',
+        xmine: 'Toplam stake {amount} gAGX',
+      },
       chartTitles: {
         stake: 'TVL (Staking) metrikleri',
         lpbond: 'TVL (LP Tahvil) metrikleri',

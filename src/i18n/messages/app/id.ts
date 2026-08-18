@@ -2164,6 +2164,11 @@ const app = defineMessages({
         xmine:
           'Belum ada catatan mining. Stake gAGX untuk mulai mining; setiap aksi akan muncul di sini.',
       },
+      recordsFooter: {
+        stake: 'Total staking {amount} AGX',
+        bond: 'Total pembelian {amount}',
+        xmine: 'Total staking {amount} gAGX',
+      },
       chartTitles: {
         stake: 'Metrik TVL (Staking)',
         lpbond: 'Metrik TVL (LP Bond)',

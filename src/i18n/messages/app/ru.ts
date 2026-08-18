@@ -2099,6 +2099,11 @@ const app = defineMessages({
         xmine:
           'Пока нет записей майнинга. Застейкайте gAGX, чтобы начать майнинг — каждое действие появится здесь.',
       },
+      recordsFooter: {
+        stake: 'Всего стейк {amount} AGX',
+        bond: 'Всего куплено {amount}',
+        xmine: 'Всего стейк {amount} gAGX',
+      },
       chartTitles: {
         stake: 'Метрики TVL (Стейкинг)',
         lpbond: 'Метрики TVL (LP Bond)',

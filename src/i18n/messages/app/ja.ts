@@ -2105,6 +2105,11 @@ const app = defineMessages({
         xmine:
           'マイニング記録はまだありません。gAGX をステーキングしてマイニング開始後、各操作がここに表示されます。',
       },
+      recordsFooter: {
+        stake: '累計ステーク {amount} AGX',
+        bond: '累計購入 {amount}',
+        xmine: '累計ステーク {amount} gAGX',
+      },
       chartTitles: {
         stake: 'TVL（ステーキング）データ指標',
         lpbond: 'TVL（LP 債券）データ指標',

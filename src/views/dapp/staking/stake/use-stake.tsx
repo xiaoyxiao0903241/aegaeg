@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
@@ -21,12 +21,13 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapStakePositionToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
 import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import { formatRebasePct } from '~/views/dapp/staking/shared'
+import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
 import { readStakePositions } from '~/web3/assets/assets-read'
@@ -158,7 +159,8 @@ export function useStakeDetail() {
   const walletReady = hasWalletAccount(account)
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
-  const recordsQuery = useStakeFlowPositions({}, sessionReady)
+  const [recordsPage, setRecordsPage] = useState(1)
+  const recordsQuery = useStakeFlowPositions(tablePageQuery(recordsPage), sessionReady)
   const stakeQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsStakePositions,
     queryFn: (addr) => readStakePositions(addr as Address),
@@ -283,11 +285,21 @@ export function useStakeDetail() {
   const recordRows =
     recordsQuery.data?.items.map((item) => mapStakePositionToAsideRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && recordsQuery.isLoading && recordsQuery.data == null
+  const recordsTotal = recordsQuery.data?.total ?? 0
+  const recordsSummary = interpolate(t.staking.aside.recordsFooter.stake, {
+    amount: formatNumber(parseApiAmountOrZero(recordsQuery.data?.total_stake_amount), {
+      digits: 2,
+    }),
+  })
 
   return {
     overviewItems,
     positionItems,
     recordRows,
     recordsLoading,
+    recordsPage,
+    recordsTotal,
+    recordsSummary,
+    setRecordsPage,
   }
 }
