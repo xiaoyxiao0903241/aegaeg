@@ -355,7 +355,7 @@
 |X-022|兑换|市价·操作区|路由合约对卖出币的授权额度|读取展示|同上 + `needsTokenApproval`|ERC20|—|✅ 已对齐|—|—|—|—|—|
 |X-023|兑换|市价·报价|路由报价；卖 AGX 先扣卖税再按净额报价|读取展示|`fetchExchangeQuote` / `readAgxSellTaxBps` + `effectiveAgxSellTaxBps`（块额度）|手册 §7.1 AGX 卖税|—|✅ 已对齐|—|—|**B-35**|B-35|已关闭；不是一律加固定卖税|
 |X-024|兑换|市价·操作区|价格影响百分比|读取展示|quote.`priceImpactBps`；高影响警告阈值|本地 `calcPriceImpactBps`|—|✅ 已对齐|—|—|—|—|—|
-|X-025|兑换|市价·操作区|「预估 Gas」|读取展示|`gasEstimate` 恒 `0n`（`exchange-read` 注释）→ 展示 `—`|无链/API gas 字段|—|✅ 已对齐|—|—|— **A-03**|A-03|不是金额；诚实显示「—」（A-03 记缺少 Gas 来源）|
+|X-025|兑换|市价·操作区|「预估 Gas」|读取展示|同笔 `fetchExchangeQuote`：已授权则本笔滑点下限 simulate → BNB；未授权/授权不足用路径典型 gas × gasPrice；真失败 `—` 不 toast、不画 0|simulate / estimateGas 或典型 gas × gasPrice|—|✅ 已对齐|—|—|—|—|展示网络费用（BNB）；精确授权不是估失败；行情报价不估 gas|
 |X-026|兑换|市价·操作区|滑点 / 最少到手量|读取展示与提交前置检查|`calcAmountOutMin`；提交 `assertStillSubmittable` 强制 refetch quote|手册 §7.1 用户滑点|—|✅ 已对齐|—|—|—|—|—|
 |X-027|兑换|市价·操作区|路径标签 / 跳转 Pancake 深链|读取展示|`formatTradeRouteLabel`；UI 仅邻接对|path helper|—|✅ 已对齐|—|—|—|—|—|
 |X-028|兑换|市价·提交|授权卖出币给路由 → 再读余额与报价 → 兑换 → 刷新|提交|`submitMarketTrade`；deadline 由 write 层生成|手册 §7.1|—|✅ 已对齐|—|—|—|—|—|

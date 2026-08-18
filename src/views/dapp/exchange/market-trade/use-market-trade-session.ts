@@ -4,6 +4,11 @@ import { ZERO_BI } from '~/core/constants'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
 import { formatTokenAmount, slippagePercentToBps } from '~/core/exchange/token-amount'
 import { autoTradeSlippagePercent, resolveTradeSlippagePercent } from '~/core/exchange/trade-path'
+import {
+  formatEstimatedGasBnb,
+  formatPriceImpactPercent,
+  marketTradeInfoMetricLabel,
+} from '~/core/exchange/trade-quote-metrics'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -102,7 +107,14 @@ export function useMarketTradeSession(
     slippageBps,
     quoteRefreshIntervalMs: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) =>
-      queryKeys.chain.swapQuote(pair.sell.address, pair.buy.address, amountIn.toString(), pathKey),
+      queryKeys.chain.swapQuote(
+        pair.sell.address,
+        pair.buy.address,
+        amountIn.toString(),
+        pathKey,
+        address ?? '',
+        slippageBps,
+      ),
     fetchQuote: (amountIn) =>
       fetchExchangeQuote({
         amountIn,
@@ -110,6 +122,9 @@ export function useMarketTradeSession(
         tokenOut: pair.buy.address,
         path,
         poolContext,
+        account: walletReady ? (address as `0x${string}`) : undefined,
+        slippageBps,
+        allowance,
       }),
     selectQuotedOut: (quote) => quote?.quotedOut ?? ZERO_BI,
   })
@@ -125,24 +140,32 @@ export function useMarketTradeSession(
 
   const amountQuote = core.amountQuoteQuery.data
   const priceImpactBps = amountQuote?.priceImpactBps ?? null
-  const gasEstimate = amountQuote?.gasEstimate ?? ZERO_BI
+  const metricsReady = sessionReady && core.amountIn > ZERO_BI
+  const quoteSettled = amountQuote != null
+  const quoteFailed = amountQuote == null && core.amountQuoteQuery.isError
 
   const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
   const pancakeSwapUrl = pancakeSwapDeepLink(pair.sell.address, pair.buy.address)
-  const priceImpactLabel =
-    !sessionReady || core.amountIn === ZERO_BI
-      ? ''
+  const priceImpactLabel = marketTradeInfoMetricLabel(
+    metricsReady,
+    !metricsReady || !quoteSettled
+      ? quoteFailed
+        ? null
+        : undefined
       : priceImpactBps == null
-        ? '—'
-        : `${(priceImpactBps / 100).toFixed(2)}%`
-  const gasEstimateLabel =
-    !sessionReady || core.amountIn === ZERO_BI
-      ? ''
-      : amountQuote == null || core.amountQuoteQuery.isFetching
-        ? '…'
-        : gasEstimate === ZERO_BI
-          ? '—'
-          : formatNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
+        ? null
+        : formatPriceImpactPercent(priceImpactBps),
+  )
+  const gasEstimateLabel = marketTradeInfoMetricLabel(
+    metricsReady,
+    !metricsReady || !quoteSettled
+      ? quoteFailed
+        ? null
+        : undefined
+      : amountQuote.gasCostWei == null
+        ? null
+        : formatEstimatedGasBnb(amountQuote.gasCostWei),
+  )
   const isHighPriceImpact =
     sessionReady &&
     core.amountIn > ZERO_BI &&

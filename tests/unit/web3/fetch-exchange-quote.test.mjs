@@ -119,8 +119,8 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
   assert.equal(result.quotedOut, quotedOut)
   assert.equal(result.tokenIn, usd1)
   assert.equal(result.tokenOut, agx)
-  assert.equal(result.gasEstimate, 0n)
   assert.ok(result.priceImpactBps > 0)
+  assert.equal(result.gasCostWei, null)
   assert.ok(client.calls.some((c) => c[0] === 'read' && c[1] === 'getAmountsOut'))
   assert.ok(client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === pool.toLowerCase()))
   assert.ok(
@@ -251,4 +251,116 @@ test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () =>
 
   assert.equal(result, 0n)
   assert.equal(client.calls.length, 0)
+})
+
+test('fetchExchangeQuote estimates gas in the same fetch using this quote min', async () => {
+  const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
+  const { clearExchangePoolImmutableCache } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+  const { agx, usd1 } = await loadExchangeAddresses()
+  clearExchangePoolImmutableCache()
+
+  const amountIn = 10n ** 18n
+  const quotedOut = 5n * 10n ** 8n
+  const client = createMockClient({
+    tokenIn: usd1,
+    tokenOut: agx,
+    reserve0: 10n ** 24n,
+    reserve1: 10n ** 15n,
+    quotedOut,
+  })
+  let simulatedMin
+  client.simulateContract = async (request) => {
+    simulatedMin = request.args[1]
+    return { request: { gas: 100_000n } }
+  }
+  client.estimateContractGas = async () => {
+    throw new Error('should not estimate when simulate returns gas')
+  }
+  client.getGasPrice = async () => 5_000_000_000n
+
+  const result = await fetchExchangeQuote({
+    amountIn,
+    tokenIn: usd1,
+    tokenOut: agx,
+    client,
+    account: '0x1111111111111111111111111111111111111111',
+    slippageBps: 50,
+  })
+
+  assert.equal(result.quotedOut, quotedOut)
+  assert.equal(simulatedMin, 497_500_000n)
+  assert.equal(result.gasCostWei, 120_000n * 5_000_000_000n)
+})
+
+test('fetchExchangeQuote keeps quotedOut when gas estimate fails', async () => {
+  const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
+  const { clearExchangePoolImmutableCache } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+  const { agx, usd1 } = await loadExchangeAddresses()
+  clearExchangePoolImmutableCache()
+
+  const quotedOut = 5n * 10n ** 8n
+  const client = createMockClient({
+    tokenIn: usd1,
+    tokenOut: agx,
+    quotedOut,
+  })
+  client.simulateContract = async () => {
+    throw new Error('boom')
+  }
+  client.estimateContractGas = async () => {
+    throw new Error('boom')
+  }
+  client.getGasPrice = async () => 5_000_000_000n
+
+  const result = await fetchExchangeQuote({
+    amountIn: 10n ** 18n,
+    tokenIn: usd1,
+    tokenOut: agx,
+    client,
+    account: '0x1111111111111111111111111111111111111111',
+    slippageBps: 50,
+  })
+
+  assert.equal(result.quotedOut, quotedOut)
+  assert.equal(result.gasCostWei, null)
+})
+
+test('fetchExchangeQuote still estimates gas when allowance is below amountIn', async () => {
+  const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
+  const { clearExchangePoolImmutableCache } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+  const { agx, usd1 } = await loadExchangeAddresses()
+  clearExchangePoolImmutableCache()
+
+  const quotedOut = 5n * 10n ** 8n
+  const client = createMockClient({
+    tokenIn: usd1,
+    tokenOut: agx,
+    quotedOut,
+  })
+  client.simulateContract = async () => {
+    throw new Error('should not simulate when allowance is insufficient')
+  }
+  client.estimateContractGas = async () => {
+    throw new Error('should not estimate when allowance is insufficient')
+  }
+  client.getGasPrice = async () => 5_000_000_000n
+
+  const result = await fetchExchangeQuote({
+    amountIn: 10n ** 18n,
+    tokenIn: usd1,
+    tokenOut: agx,
+    client,
+    account: '0x1111111111111111111111111111111111111111',
+    slippageBps: 50,
+    allowance: 0n,
+  })
+
+  assert.equal(result.quotedOut, quotedOut)
+  assert.equal(result.gasCostWei, 180_000n * 5_000_000_000n)
 })

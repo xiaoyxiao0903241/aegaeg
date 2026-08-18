@@ -1,20 +1,12 @@
-import { getAddress } from 'thirdweb/utils'
 import type { Wallet } from 'thirdweb/wallets'
-import { parseAbi } from 'viem'
 
-import { exchangeDeadline } from '~/core/exchange/exchange-math'
-import { requiresFeeOnTransferSwap } from '~/core/exchange/fee-on-transfer-swap'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { PANCAKE_ROUTER_V2_METHODS } from '~/web3/abis'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
+import { marketSwapWriteCall } from '~/web3/exchange/market-swap-write-call'
 import { writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const exchangeRouterWriteAbi = parseAbi([
-  PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens,
-  PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokensSupportingFeeOnTransferTokens,
-])
+export { marketSwapWriteCall }
 
 /** 路由器授权额度低于本次所需时返回 true，需在兑换前补 approve。 */
 export function needsTokenApproval(allowance: bigint, amountIn: bigint): boolean {
@@ -70,28 +62,19 @@ export async function exchangeTokens({
   if (!account) {
     throw WALLET_BLOCKED.NOT_CONNECTED
   }
-  if (path.length < 2) {
-    throw new Error(`EXCHANGE_PATH_TOO_SHORT:${path.length}`)
-  }
-  const tokenIn = path[0]
-  if (tokenIn === undefined) {
-    throw new Error('EXCHANGE_PATH_TOO_SHORT:0')
-  }
 
-  const deadline = BigInt(exchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
-  // AGX / X 卖币路径扣卖税，须走带费率转移支持的路径
-  const functionName = requiresFeeOnTransferSwap(tokenIn, {
-    agx: BSC_CONTRACTS.agx,
-    x: BSC_CONTRACTS.xToken,
+  const write = marketSwapWriteCall({
+    amountIn,
+    path,
+    amountOutMin,
+    recipient: account.address as `0x${string}`,
   })
-    ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
-    : 'swapExactTokensForTokens'
 
   return writeContractViaWallet({
     wallet,
-    address: EXCHANGE_CONFIG.router,
-    abi: exchangeRouterWriteAbi,
-    functionName,
-    args: [amountIn, amountOutMin, [...path], getAddress(account.address), deadline],
+    address: write.address,
+    abi: write.abi,
+    functionName: write.functionName,
+    args: write.args,
   })
 }

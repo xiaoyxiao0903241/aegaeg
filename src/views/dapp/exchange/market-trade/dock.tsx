@@ -13,7 +13,6 @@ import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { ExchangeTokenPicker } from '~/views/dapp/exchange/market-trade/primitives'
 import { ExchangeSlippagePanel } from '~/views/dapp/exchange/market-trade/slippage-panel'
@@ -138,11 +137,11 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
                 ? [
                     {
                       label: t.exchange.trade.priceImpact,
-                      value: trade.priceImpactLabel || formatNumber(0, { digits: 2, suffix: '%' }),
+                      value: <CountValue text={trade.priceImpactLabel} />,
                     },
                     {
                       label: t.exchange.trade.estimatedGas,
-                      value: trade.gasEstimateLabel || '—',
+                      value: <CountValue text={trade.gasEstimateLabel} />,
                     },
                   ]
                 : []),

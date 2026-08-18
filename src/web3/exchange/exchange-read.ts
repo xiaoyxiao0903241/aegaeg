@@ -7,12 +7,14 @@ import {
   isAgxSellPath,
 } from '~/core/exchange/agx-sell-tax'
 import { calcV2PriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
+import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import { applyXSellTaxToAmountIn, isXSellPath } from '~/core/exchange/x-sell-tax'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { AGX_SELL_TAX_METHODS, ERC20_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
+import { estimateMarketSwapGasWei } from '~/web3/exchange/estimate-market-swap-gas'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
 import {
   type ExchangePoolImmutableMetadata,
@@ -32,10 +34,14 @@ export interface ExchangeQuoteResult {
   quotedOut: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  /** V2 路由器没有 gas 估算；为 0 时 UI 显示「—」。 */
-  gasEstimate: bigint
   /** 仅 USD1/AGX 直连池可算；未知时 null，UI 显示「—」。 */
   priceImpactBps: number | null
+  /**
+   * 本笔兑换预估网络费用（BNB wei）。
+   * 未请求或 RPC/滑点等真失败时为 null（报价本身仍可用）。
+   * 未授权时用路径典型 gas，不把用户态 simulate revert 当成失败。
+   */
+  gasCostWei: bigint | null
 }
 
 const erc20Abi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
@@ -157,7 +163,10 @@ export async function readErc20Allowance(
  *
  * 通过 Pancake Router `getAmountsOut` 计算预期输出；AGX / X 卖币路径先扣卖税，
  * 再按净额报价。价格影响仅在直连 USD1/AGX 池时计算，其余路径返回 null（UI 显示 —）。
- * V2 路由器没有 gas 估算，gasEstimate 恒为 0。
+ *
+ * `getAmountsOut` 是 view，不含网络费用。传入账户与滑点时，在**同一笔报价**里
+ * 用本笔 `quotedOut` 算出 `amountOutMin`，再估这笔兑换的网络费用。
+ * 未授权不走会 revert 的用户态 simulate；RPC / 滑点等真失败只把 `gasCostWei` 置 null。
  *
  * @param amountIn 输入代币数量
  * @param tokenIn 输入代币地址
@@ -165,7 +174,10 @@ export async function readErc20Allowance(
  * @param path 兑换路径；省略时为直连 `[tokenIn, tokenOut]`
  * @param client 链上读取客户端，默认公共 RPC
  * @param poolContext 复用 React Query 中短暂过期的池读取，避免重复拉取
- * @returns 预期输出 / 输入输出地址 / gas 估算 / 价格影响基点
+ * @param account 有则估本笔兑换网络费用（from / 收款人）
+ * @param slippageBps 与提交相同的滑点；与 account 一起才估 gas
+ * @param allowance 当前 Router 授权；低于 amountIn 时跳过用户态 simulate
+ * @returns 预期输出 / 价格影响 / 网络费用（可能为 null）
  * @see docs/onchain-manual/contracts/agx.md
  * @see docs/onchain-manual/contracts/xtoken.md
  */
@@ -176,6 +188,9 @@ export async function fetchExchangeQuote({
   path: pathArg,
   client = bscReadClient,
   poolContext,
+  account,
+  slippageBps,
+  allowance,
 }: {
   amountIn: bigint
   tokenIn: `0x${string}`
@@ -185,6 +200,12 @@ export async function fetchExchangeQuote({
   client?: ChainReadClient
   /** 复用 React Query 中短暂过期的池读取，避免重复拉取。 */
   poolContext?: ExchangePoolReadContext
+  /** 有则在本笔报价后估兑换 gas；行情报价不要传。 */
+  account?: `0x${string}`
+  /** 与提交相同的滑点 BPS；缺省不估 gas。 */
+  slippageBps?: number
+  /** 当前 Router 授权；低于 amountIn 时跳过会 revert 的用户态 simulate。 */
+  allowance?: bigint
 }): Promise<ExchangeQuoteResult> {
   const path = pathArg ?? ([tokenIn, tokenOut] as const)
   const sellingAgx = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
@@ -241,12 +262,25 @@ export async function fetchExchangeQuote({
       })
     : null
 
+  // 必须用本笔 quotedOut 的滑点下限；另开查询会拿到占位 0 或过期下限，simulate 时成时败
+  const gasCostWei =
+    account != null && slippageBps != null && quotedOut > 0n
+      ? await estimateMarketSwapGasWei({
+          account,
+          amountIn,
+          path,
+          amountOutMin: calcAmountOutMin(quotedOut, slippageBps),
+          allowance,
+          client,
+        })
+      : null
+
   return {
     quotedOut,
     tokenIn,
     tokenOut,
-    gasEstimate: 0n,
     priceImpactBps,
+    gasCostWei,
   }
 }
 

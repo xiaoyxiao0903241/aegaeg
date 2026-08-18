@@ -218,8 +218,15 @@ export const queryKeys = {
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
     /** AGX/USD1 V2 即时价——每 1 AGX 对应 USD1 wei 数（展示/估值用；非 PreSale 定价）。 */
     agxUsd1SpotPrice: ['chain', 'swap', 'agxUsd1SpotPrice'] as const,
-    swapQuote: (tokenIn: string, tokenOut: string, amountIn: string, pathKey = '') =>
-      pathKey
+    swapQuote: (
+      tokenIn: string,
+      tokenOut: string,
+      amountIn: string,
+      pathKey = '',
+      account = '',
+      slippageBps = 0,
+    ) => {
+      const base = pathKey
         ? ([
             'chain',
             'swap',
@@ -236,7 +243,10 @@ export const queryKeys = {
             tokenIn.toLowerCase(),
             tokenOut.toLowerCase(),
             amountIn,
-          ] as const),
+          ] as const)
+      if (!account) return base
+      return [...base, account.toLowerCase(), slippageBps] as const
+    },
     flashSwapQuote: (pairId: string, direction: string, amountIn: string) =>
       ['chain', 'flashSwap', 'quote', pairId, direction, amountIn] as const,
     flashSwapBalances: flashSwapBalancesPrefix,
