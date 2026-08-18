@@ -11,9 +11,21 @@ import { DockHeader } from '~/views/dapp/shared/dock-header'
  */
 export const DOCK_H5_HEADER_BODY_CLASS = 'flex h-14 min-h-14 items-center'
 
-/** 操作区纵向堆叠容器：子项间距只走 gap，勿再给子项加外边距。 */
+/**
+ * 操作区纵向堆叠：子项间距只走 gap，勿再给子项加外边距。
+ * PC 吃满栏内剩余高度，未连接引导卡才能贴底。
+ */
 export function DockStack({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('flex min-h-0 flex-none flex-col gap-3.5', className)}>{children}</div>
+  return (
+    <div
+      className={cn(
+        'flex min-h-0 flex-col gap-3.5 dapp:shrink-0 dapp:grow max-dapp:flex-none',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
 }
 
 /**
@@ -108,7 +120,7 @@ export function DockPanel({
         />
         <div
           className={cn(
-            'dapp:h-full dapp:min-h-0 dapp:overflow-x-hidden dapp:overflow-y-auto dapp:px-6 dapp:pt-1 dapp:pb-5.5',
+            'dapp:flex dapp:h-full dapp:min-h-0 dapp:flex-col dapp:overflow-x-hidden dapp:overflow-y-auto dapp:px-6 dapp:pt-1 dapp:pb-5.5',
             'max-dapp:overflow-visible max-dapp:px-0 max-dapp:pt-1',
             bodyClassName,
           )}
