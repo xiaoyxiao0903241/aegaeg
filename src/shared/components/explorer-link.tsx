@@ -8,8 +8,8 @@ import { formatShortAddress } from '~/shared/presenters/format'
 type ExplorerLinkKind = 'address' | 'tx'
 
 /**
- * 链上地址 / 交易哈希：打开 BscScan；默认 primary，无下划线，hover 显示下划线。
- * Hex 用等宽，避免同一列宽窄不一。
+ * 链上地址 / 交易哈希：打开 BscScan。
+ * 地址默认主色、hover 才下划线；交易哈希用 claim-restake 并常显下划线。
  */
 export function ExplorerLink({
   value,
@@ -34,7 +34,8 @@ export function ExplorerLink({
     <Text
       as="a"
       className={cn(
-        'inline-flex items-center gap-1 font-mono no-underline hover:underline',
+        'inline-flex items-center gap-1 font-mono',
+        kind === 'tx' ? 'text-claim-restake underline' : 'no-underline hover:underline',
         className,
       )}
       href={href}

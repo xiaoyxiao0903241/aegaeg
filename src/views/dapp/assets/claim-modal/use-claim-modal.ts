@@ -13,13 +13,14 @@ import {
   matchClaimPlanIndices,
   planLabel,
 } from '~/core/assets/claim-plans'
-import { HUNDRED_BI } from '~/core/constants'
+import { HUNDRED_BI, ZERO_BI } from '~/core/constants'
 import { formatAssetsActionAmount, formatTokenAmount } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { parseLeadingMetricNumber } from '~/shared/components/count-value'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { type MixedClaimTarget, submitMixedClaim } from '~/views/dapp/assets/submit-assets'
@@ -42,8 +43,10 @@ export function useAssetsClaimModal(args: {
   onOpenChange: (open: boolean) => void
   capturedAddress: string
   target: MixedClaimTarget
+  /** 顶部领取数量文案；滑块到一端时复用其单位。 */
+  amountLabel: string
 }) {
-  const { open, onOpenChange, capturedAddress, target } = args
+  const { open, onOpenChange, capturedAddress, target, amountLabel } = args
   const { messages: t } = useI18n()
   const { walletReady, writeReady } = useWriteReadiness()
   const account = useActiveAccount()
@@ -128,6 +131,14 @@ export function useAssetsClaimModal(args: {
   const restakeAmount = target.amount - releaseAmount
   const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
   const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)
+  const claimUnit = parseLeadingMetricNumber(amountLabel)?.suffix.trim() ?? ''
+  const withClaimUnit = (text: string) => (claimUnit ? `${text} ${claimUnit}` : text)
+  let ctaAmountLine: string | null = null
+  if (releaseAmount === ZERO_BI) {
+    ctaAmountLine = withClaimUnit(restakeAmountText)
+  } else if (restakeAmount === ZERO_BI) {
+    ctaAmountLine = withClaimUnit(releaseAmountText)
+  }
 
   const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(
     plansQuery.data,
@@ -212,6 +223,7 @@ export function useAssetsClaimModal(args: {
     writePhase,
     releaseAmountText,
     restakeAmountText,
+    ctaAmountLine,
     ctaLabel,
     handleConfirm,
     goBurn,

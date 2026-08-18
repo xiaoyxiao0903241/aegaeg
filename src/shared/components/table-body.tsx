@@ -22,7 +22,7 @@ const cellTv = tv({
       false: '',
     },
     link: {
-      true: 'text-primary',
+      true: 'text-claim-restake underline [&_a]:text-claim-restake [&_a]:underline',
       false: '',
     },
     emphasis: {
@@ -34,7 +34,7 @@ const cellTv = tv({
       false: '',
     },
     positive: {
-      true: 'font-bold text-success group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
+      true: 'font-bold text-claim-restake group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
       false: '',
     },
     primary: {
@@ -60,11 +60,11 @@ const cellTv = tv({
 const cellTextTv = tv({
   base: '',
   variants: {
-    link: { true: 'text-primary', false: '' },
+    link: { true: 'text-claim-restake underline', false: '' },
     emphasis: { true: 'font-bold', false: '' },
     muted: { true: 'text-muted-foreground tabular-nums', false: '' },
     positive: {
-      true: 'font-bold text-success group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
+      true: 'font-bold text-claim-restake group-data-[tab=genesis]/host:font-normal group-data-[tab=rewards]/host:font-normal',
       false: '',
     },
     primary: { true: 'font-semibold text-primary', false: '' },
@@ -84,7 +84,7 @@ const gridRoot = tv({
 })
 
 const highlightedRow =
-  'bg-(--rewards-tier-current-bg) [&_td]:font-normal [&_td]:text-foreground [&_td.text-success]:text-success'
+  'bg-(--rewards-tier-current-bg) [&_td]:font-normal [&_td]:text-foreground [&_td.text-claim-restake]:text-claim-restake'
 type CellProps = {
   /** 高亮行首列珊瑚字。 */
   accent?: boolean

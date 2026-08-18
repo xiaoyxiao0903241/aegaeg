@@ -138,7 +138,7 @@ export function CountValue({
           )
         })}
       </span>
-      {suffix ? <span>{suffix}</span> : null}
+      {suffix ? <span>{suffix.replace(/^\s+/, '\u00A0')}</span> : null}
     </Comp>
   )
 }

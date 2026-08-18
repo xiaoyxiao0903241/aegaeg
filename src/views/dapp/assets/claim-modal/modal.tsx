@@ -97,7 +97,13 @@ function AssetsClaimModalOpen({
   positionLabel: string
   amountLabel: string
 }) {
-  const vm = useAssetsClaimModal({ open, onOpenChange, capturedAddress, target })
+  const vm = useAssetsClaimModal({
+    open,
+    onOpenChange,
+    capturedAddress,
+    target,
+    amountLabel,
+  })
   const { t } = vm
   // 始终 backgroundImage：两端同色渐变≈纯色，避免 Image↔Color 切换闪烁
   const ctaBackgroundImage =
@@ -227,9 +233,15 @@ function AssetsClaimModalOpen({
           <span className="flex flex-col items-center gap-0.5 leading-tight">
             <span>{vm.ctaLabel}</span>
             <span className="inline-flex items-baseline gap-1 text-xs font-medium tabular-nums opacity-90">
-              <CountValue text={vm.releaseAmountText} />
-              <span>&</span>
-              <CountValue text={vm.restakeAmountText} />
+              {vm.ctaAmountLine ? (
+                <CountValue text={vm.ctaAmountLine} />
+              ) : (
+                <>
+                  <CountValue text={vm.releaseAmountText} />
+                  <span>&</span>
+                  <CountValue text={vm.restakeAmountText} />
+                </>
+              )}
             </span>
           </span>
         </MainButton>
