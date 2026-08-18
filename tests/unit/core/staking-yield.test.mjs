@@ -27,18 +27,24 @@ test('lockedBonusBps matches RewardManager handbook defaults', () => {
 })
 
 test('epochRebasePctFrom1e18 + baseDailyPctFromEpoch uses epochsPerDay', () => {
-  // 0.41% stored as 0.41 * 1e18
-  const rate = 410000000000000000n // 0.41e18
+  // 0.41% stored as 0.0041 × 1e18（1e18 = 100%）
+  const rate = 4_100_000_000_000_000n
   const epoch = epochRebasePctFrom1e18(rate)
   assert.ok(epoch != null)
   assert.ok(Math.abs(epoch - 0.41) < 1e-9)
   assert.equal(baseDailyPctFromEpoch(epoch, null), null)
   assert.equal(baseDailyPctFromEpoch(epoch, undefined), null)
-  assert.equal(baseDailyPctFromEpoch(epoch, 2), 0.82)
-  assert.equal(baseDailyPctFromEpoch(epoch, 3), 1.23)
+  const daily2 = baseDailyPctFromEpoch(epoch, 2)
+  const daily3 = baseDailyPctFromEpoch(epoch, 3)
+  assert.ok(daily2 != null && Math.abs(daily2 - 0.82) < 1e-9)
+  assert.ok(daily3 != null && Math.abs(daily3 - 1.23) < 1e-9)
   assert.equal(baseDailyPctFromEpoch(null, 2), null)
   assert.equal(baseDailyPctFromEpoch(epoch, 0), null)
   assert.equal(epochRebasePctFrom1e18(null), null)
+  // 链上近值 0.0025 × 1e18 → 0.25%
+  const chainLike = epochRebasePctFrom1e18(2_499_999_999_939_652n)
+  assert.ok(chainLike != null)
+  assert.ok(Math.abs(chainLike - 0.25) < 1e-6)
 })
 
 test('epochsPerDayFromLength = daySec / (length × secPerBlock)', () => {

@@ -2075,6 +2075,12 @@ const app = defineMessages({
           burnbond: 'Bond Burn',
         },
         columns: ['Periode estimasi', 'Hasil dasar (harian)', 'Bonus hasil', 'Hasil periode'],
+        bondColumns: [
+          'Periode estimasi',
+          'Hasil dasar (harian)',
+          'Tingkat diskon',
+          'Hasil periode',
+        ],
         rows: [
           { id: 'liquid', period: 'Fleksibel (berjangka)' },
           { id: '180', period: '180 hari' },

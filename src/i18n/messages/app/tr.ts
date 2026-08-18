@@ -2070,6 +2070,12 @@ const app = defineMessages({
           'Getiri bonusu',
           'Dönem getiri oranı',
         ],
+        bondColumns: [
+          'Hesaplanan süre',
+          'Temel günlük getiri oranı',
+          'İndirim oranı',
+          'Dönem getiri oranı',
+        ],
         rows: [
           { id: 'liquid', period: 'Esnek (süreli)' },
           { id: '180', period: '180 g' },

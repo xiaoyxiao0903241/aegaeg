@@ -1919,6 +1919,7 @@ const app = defineMessages({
           burnbond: '銷燬債券',
         },
         columns: ['週期', '基礎收益率（日）', '收益率加成', '週期收益率'],
+        bondColumns: ['週期', '基礎收益率（日）', '折扣率', '週期收益率'],
         rows: [
           { id: 'liquid', period: '活期（限期）' },
           { id: '180', period: '180 天' },

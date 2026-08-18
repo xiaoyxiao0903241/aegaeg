@@ -1918,6 +1918,7 @@ const app = defineMessages({
           burnbond: '销毁债券',
         },
         columns: ['周期', '基础收益率（日）', '收益率加成', '周期收益率'],
+        bondColumns: ['周期', '基础收益率（日）', '折扣率', '周期收益率'],
         rows: [
           { id: 'liquid', period: '活期（限期）' },
           { id: '180', period: '180 天' },

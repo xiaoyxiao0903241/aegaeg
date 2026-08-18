@@ -1,4 +1,4 @@
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
 import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { formatNumber, parseApiAmount as parseApiAmountNullable } from '~/shared/presenters/format'
@@ -13,9 +13,8 @@ export function parseApiAmountOrZero(raw: string | undefined): number {
 /** rebaseRate1e18 → `x.xx%`；缺失回落 `0.00%`。 */
 export function formatRebasePct(rate1e18: bigint | null | undefined): string {
   const zero = `${formatNumber(0, { digits: 2 })}%`
-  if (rate1e18 == null) return zero
-  const pct = formatTokenAmountToNumber(rate1e18, 18)
-  if (!Number.isFinite(pct)) return zero
+  const pct = epochRebasePctFrom1e18(rate1e18)
+  if (pct == null) return zero
   return `${formatNumber(pct, { digits: 2 })}%`
 }
 

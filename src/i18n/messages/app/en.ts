@@ -2006,6 +2006,7 @@ const app = defineMessages({
           burnbond: 'Burn Bond',
         },
         columns: ['Period', 'Base daily yield', 'Yield bonus', 'Period yield'],
+        bondColumns: ['Period', 'Base daily yield', 'Discount rate', 'Period yield'],
         rows: [
           { id: 'liquid', period: 'Flexible (term)' },
           { id: '180', period: '180d' },

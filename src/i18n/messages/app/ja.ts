@@ -2023,6 +2023,7 @@ const app = defineMessages({
           burnbond: 'バーン債券',
         },
         columns: ['試算期間', '基礎収益率（日）', '収益率ボーナス', '期間収益率'],
+        bondColumns: ['試算期間', '基礎収益率（日）', '割引率', '期間収益率'],
         rows: [
           { id: 'liquid', period: '流動（期限付き）' },
           { id: '180', period: '180日' },

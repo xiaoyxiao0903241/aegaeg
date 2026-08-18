@@ -2055,6 +2055,12 @@ const app = defineMessages({
           burnbond: 'Trái phiếu đốt',
         },
         columns: ['Chu kỳ ước tính', 'Tỷ suất cơ sở (ngày)', 'Cộng tỷ suất', 'Tỷ suất chu kỳ'],
+        bondColumns: [
+          'Chu kỳ ước tính',
+          'Tỷ suất cơ sở (ngày)',
+          'Tỷ lệ chiết khấu',
+          'Tỷ suất chu kỳ',
+        ],
         rows: [
           { id: 'liquid', period: 'Linh hoạt (có hạn)' },
           { id: '180', period: '180 ngày' },

@@ -31,14 +31,16 @@ export function lockedBonusBps(period: StakePeriod): number {
 /**
  * sAGX.rebases(epoch).rebase（1e18 精度）→ 展示用百分比。
  *
- * 例如 0.41 → 0.41%。
+ * 链上存的是分数（1e18 = 100%），不是已经乘过 100 的百分数。
+ * 例如 `0.0025 × 1e18` → `0.25`（展示 `0.25%`）。
  *
  * @param rate1e18 链上 rebase 比率（1e18 精度）；未知时 null/undefined
  * @returns 百分比数值；未知返回 null
+ * @see docs/onchain-manual/contracts/sagx.md
  */
 export function epochRebasePctFrom1e18(rate1e18: bigint | null | undefined): number | null {
   if (rate1e18 == null) return null
-  const pct = Number(rate1e18) / 1e18
+  const pct = (Number(rate1e18) / 1e18) * 100
   return Number.isFinite(pct) ? pct : null
 }
 

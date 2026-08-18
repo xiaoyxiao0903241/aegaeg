@@ -2011,6 +2011,7 @@ const app = defineMessages({
           burnbond: '소각 채권',
         },
         columns: ['산출 주기', '기본 수익률(일)', '수익률 가산', '주기 수익률'],
+        bondColumns: ['산출 주기', '기본 수익률(일)', '할인율', '주기 수익률'],
         rows: [
           { id: 'liquid', period: '유동(기한)' },
           { id: '180', period: '180일' },

@@ -13,7 +13,9 @@ import {
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useProtocolMarketStatsChart, useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import type { ChartPoint } from '~/shared/components/chart'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
@@ -23,6 +25,11 @@ import {
   formatUsd,
   formatUsdApprox,
 } from '~/shared/presenters/format'
+import {
+  burnBondDepositoryAddress,
+  lpBondDepositoryAddress,
+} from '~/web3/staking/staking-addresses'
+import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
@@ -67,13 +74,6 @@ function formatTreasuryUsd1(
   }
 }
 
-function formatRebasePct(rate1e18: bigint | null | undefined): string {
-  if (rate1e18 == null) return YIELD_EMPTY
-  const pct = formatTokenAmountToNumber(rate1e18, 18)
-  if (!Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatNumber(pct, { digits: 2 })}%`
-}
-
 function formatYieldPct(pct: number | null): string {
   if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
   return `${formatNumber(pct, { digits: 2 })}%`
@@ -107,6 +107,30 @@ export function useStakingHubDetail() {
   const agxPriceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const stakersQuery = useStakeAddressCount(sessionReady)
+  const bondKind = tableSeg === 'lpbond' ? 'lp' : tableSeg === 'burnbond' ? 'burn' : null
+  const depositoryAddress =
+    bondKind === 'burn' ? burnBondDepositoryAddress : lpBondDepositoryAddress
+  const market180 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: bondKind != null,
+    queryFn: () => readBondMarketMeta(depositoryAddress('180')),
+  })
+  const market360 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('360')),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: bondKind != null,
+    queryFn: () => readBondMarketMeta(depositoryAddress('360')),
+  })
+  const market540 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('540')),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: bondKind != null,
+    queryFn: () => readBondMarketMeta(depositoryAddress('540')),
+  })
 
   const agxPriceLabel =
     agxPriceUsd != null
@@ -130,7 +154,9 @@ export function useStakingHubDetail() {
       : formatUsd(null)
   const treasuryDisplay = formatTreasuryUsd1(overviewQuery.data?.totalReserves, agxPriceUsd)
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
-  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatYieldPct(epochPct)
+  const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
 
   const stakersLabel = !sessionReady
     ? formatNumber(0, { digits: 0, trimZeros: true })
@@ -156,9 +182,6 @@ export function useStakingHubDetail() {
   const chartValueLabel = formatUsd(seriesChart.lastValue)
   const chartDeltaLabel = formatPercentChange(seriesChart.percentChange)
 
-  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
-  const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
-
   const periodTableRows: Record<string, HubPeriodTableRow> = Object.fromEntries(
     t.staking.hub.periodTable.rows.map((row) => {
       const isBond = tableSeg === 'lpbond' || tableSeg === 'burnbond'
@@ -174,13 +197,26 @@ export function useStakingHubDetail() {
         ]
       }
       const period = isStakePeriod(row.id) ? row.id : null
-      const bps = tableSeg === 'stake' && period != null ? lockedBonusBps(period) : 0
+      const bondDiscount =
+        period === '180'
+          ? market180.data?.discountRateBP
+          : period === '360'
+            ? market360.data?.discountRateBP
+            : period === '540'
+              ? market540.data?.discountRateBP
+              : undefined
+      const bonus =
+        tableSeg === 'stake' && period != null
+          ? formatBonusPct(lockedBonusBps(period))
+          : bondDiscount != null
+            ? formatBondDiscountLabel(bondDiscount)
+            : BONUS_EMPTY
       return [
         row.id,
         {
           id: row.id,
           baseDaily: formatYieldPct(baseDaily),
-          bonus: formatBonusPct(bps),
+          bonus,
           periodYield: formatYieldPct(
             baseDaily == null || period == null
               ? null

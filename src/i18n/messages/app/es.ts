@@ -2087,6 +2087,12 @@ const app = defineMessages({
           'Bonificación de rendimiento',
           'Rendimiento del periodo',
         ],
+        bondColumns: [
+          'Periodo a estimar',
+          'Rendimiento base (diario)',
+          'Tasa de descuento',
+          'Rendimiento del periodo',
+        ],
         rows: [
           { id: 'liquid', period: 'Flexible (con plazo)' },
           { id: '180', period: '180 d' },

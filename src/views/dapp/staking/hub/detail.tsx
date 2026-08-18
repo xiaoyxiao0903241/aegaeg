@@ -155,7 +155,7 @@ export function StakingHubDetail() {
         />
         <Table>
           <Table.Body
-            headers={[...table.columns]}
+            headers={[...(tableSeg === 'stake' ? table.columns : table.bondColumns)]}
             positiveColumns={[2]}
             primaryColumns={[3]}
             rows={periodRows}
