@@ -46,7 +46,6 @@ export function useMarketTradeDock(trade: MarketTradeState) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappHost()
-  const [slippageOpen, setSlippageOpen] = useState(false)
   const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 
   const { pair } = trade
@@ -105,8 +104,6 @@ export function useMarketTradeDock(trade: MarketTradeState) {
       flipBlocked || trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping,
     flipTooltip: flipBlocked ? t.exchange.trade.flipDisabledXSellOnly : t.exchange.flip,
     onBack: () => setView('hub'),
-    slippageOpen,
-    setSlippageOpen,
     exchangePriceDisplayLabel,
     onTogglePriceInverted: () => setExchangePriceInverted((inverted) => !inverted),
     buyLabel,

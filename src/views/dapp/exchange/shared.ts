@@ -239,7 +239,7 @@ export function formatTradeRouteLabel(sellKey: TradeTokenKey, buyKey: TradeToken
   return path.map((address) => byAddress.get(address.toLowerCase()) ?? '?').join(' → ')
 }
 
-/** 闪电兑换双币对：反向时 gAGX 包装↔赎回互换；USDT 仅正向（Usd1Swap 合约）。 */
+/** 闪电兑换双币对：gAGX→AGX、USDT→USD1 均为正向；token 映射仍保留 gAGX 反向包装。 */
 export function getFlashExchangePairTokens(
   pairId: FlashPairId,
   direction: ExchangeDirection = 'forward',
@@ -252,6 +252,11 @@ export function getFlashExchangePairTokens(
     : { sell: AGX_TOKEN, buy: GAGX_TOKEN }
 }
 
+/** 闪兑两对均为单向（gAGX→AGX、USDT→USD1），中间不提供翻转。 */
 export function flashPairAllowsFlip(pairId: FlashPairId): boolean {
-  return pairId === 'gagx'
+  switch (pairId) {
+    case 'gagx':
+    case 'usdt':
+      return false
+  }
 }

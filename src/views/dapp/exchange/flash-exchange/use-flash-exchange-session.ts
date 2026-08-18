@@ -35,13 +35,13 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
  */
 const FLASH_USDT_SLIPPAGE_BPS = 100
 
-/** 双币对闪兑：gAGX 包装↔赎回 + USDT→USD1，双向金额输入，无滑点设置项。 */
+/** 双币对闪兑：gAGX→AGX 赎回 + USDT→USD1，双向金额输入，无滑点设置项。 */
 type FlashIntroKey = 'gagx' | 'gagxWrap' | 'usdt'
 
 /**
  * 闪电兑换会话状态
  *
- * 管理币对、方向、余额 / 授权、报价与提交；gAGX 对可翻转方向，
+ * 管理币对、方向、余额 / 授权、报价与提交；两对均为单向，
  * USDT 对需等链上配置就绪后才开启报价。
  */
 export function useFlashExchangeSession(

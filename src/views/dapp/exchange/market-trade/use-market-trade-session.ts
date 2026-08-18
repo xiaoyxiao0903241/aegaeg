@@ -5,8 +5,10 @@ import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impac
 import {
   clampSlippagePercent,
   formatTokenAmount,
+  parseSlippagePercentInput,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
+import { autoTradeSlippagePercent } from '~/core/exchange/trade-path'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -54,12 +56,13 @@ export function useMarketTradeSession(
   const setSellKey = useExchangeTradePairStore((state) => state.setSellKey)
   const setBuyKey = useExchangeTradePairStore((state) => state.setBuyKey)
   const flipPair = useExchangeTradePairStore((state) => state.flipPair)
-  const [slippage, setSlippageRaw] = useState(() =>
-    clampSlippagePercent(EXCHANGE_CONFIG.defaultSlippageBps / 100),
+  const [slippageMode, setSlippageMode] = useState<'auto' | 'custom'>('auto')
+  const [slippageCustomText, setSlippageCustomText] = useState(() =>
+    String(clampSlippagePercent(EXCHANGE_CONFIG.defaultSlippageBps / 100)),
   )
-  function setSlippage(value: number) {
-    setSlippageRaw(clampSlippagePercent(value))
-  }
+  const autoSlippagePercent = autoTradeSlippagePercent(sellKey)
+  const slippage =
+    slippageMode === 'auto' ? autoSlippagePercent : parseSlippagePercentInput(slippageCustomText)
   const { poolContext } = useExchangePoolReads(readsEnabled, quotesEnabled)
 
   const pair = getTradePairTokens(sellKey, buyKey)
@@ -188,7 +191,11 @@ export function useMarketTradeSession(
     flipDirection,
     canFlip,
     slippage,
-    setSlippage,
+    slippageMode,
+    setSlippageMode,
+    slippageCustomText,
+    setSlippageCustomText,
+    autoSlippagePercent,
     pair,
     path,
     sellPickerKeys,

@@ -202,8 +202,8 @@ export function formatTokenAmountToNumber(amount: bigint, decimals: number): num
   return Number(amount) / 10 ** decimals
 }
 
-/** 可接受的最高滑点（%）：保证 BPS 严格低于 10_000 硬上限。 */
-export const MAX_SLIPPAGE_PERCENT = 99
+/** 可接受的最高滑点（%）：99.99% = 9999 BPS，保证严格低于 10_000。 */
+export const MAX_SLIPPAGE_PERCENT = 99.99
 
 /**
  * 将滑点百分比收敛到 [0, MAX_SLIPPAGE_PERCENT]。
@@ -214,6 +214,39 @@ export const MAX_SLIPPAGE_PERCENT = 99
 export function clampSlippagePercent(percent: number): number {
   if (!Number.isFinite(percent) || percent < 0) return 0
   return Math.min(percent, MAX_SLIPPAGE_PERCENT)
+}
+
+/**
+ * 判断自定义滑点草稿是否可写入输入框。
+ *
+ * Pancake Router 没有用户滑点上下限；约束来自 `amountOutMin`：BPS 必须 ∈ [0, 9999]。
+ * 100% 会使最低输出约束失效。空串允许（编辑中）；超过两位小数或大于 99.99 直接拒收。
+ *
+ * @param value 输入框草稿
+ * @returns 是否接受该草稿
+ * @see 手册 §7.1 PancakeSwap 买 AGX
+ */
+export function isAllowedSlippageDraft(value: string): boolean {
+  if (value === '') return true
+  if (!/^\d*(?:\.\d{0,2})?$/.test(value)) return false
+  const parsed = Number.parseFloat(value)
+  if (!Number.isFinite(parsed) || parsed < 0) return false
+  return parsed <= MAX_SLIPPAGE_PERCENT
+}
+
+/**
+ * 解析自定义滑点输入。
+ *
+ * 空串按 0；非数字或负数按 0；再收敛到 `MAX_SLIPPAGE_PERCENT`。
+ *
+ * @param value 输入框草稿
+ * @returns 可写入报价的滑点百分比
+ */
+export function parseSlippagePercentInput(value: string): number {
+  if (value === '') return 0
+  const parsed = Number.parseFloat(value)
+  if (!Number.isFinite(parsed) || parsed < 0) return 0
+  return clampSlippagePercent(parsed)
 }
 
 /**

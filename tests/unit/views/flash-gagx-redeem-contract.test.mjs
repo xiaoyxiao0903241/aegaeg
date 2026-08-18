@@ -3,7 +3,7 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('flash pair helpers: redeem forward, wrap reverse, usdt forward-only', async () => {
+test('flash pair helpers: redeem forward, wrap reverse, both pairs one-way', async () => {
   const { getFlashExchangePairTokens, flashPairAllowsFlip, FLASH_PAIR_DEFAULT } = await loadModule(
     '/src/views/dapp/exchange/shared.ts',
   )
@@ -22,7 +22,7 @@ test('flash pair helpers: redeem forward, wrap reverse, usdt forward-only', asyn
   const usdt = getFlashExchangePairTokens('usdt')
   assert.equal(usdt.sell.symbol, 'USDT')
   assert.equal(usdt.buy.symbol, 'USD1')
-  assert.equal(flashPairAllowsFlip('gagx'), true)
+  assert.equal(flashPairAllowsFlip('gagx'), false)
   assert.equal(flashPairAllowsFlip('usdt'), false)
 })
 

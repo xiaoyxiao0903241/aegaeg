@@ -109,6 +109,20 @@ export function isTradeTokenKey(value: string): value is TradeTokenKey {
 }
 
 /**
+ * 市价交易「默认」滑点百分比。
+ *
+ * USD1 卖出用更紧的稳定币档；AGX / X 波动更大，用更宽档。
+ * 自定义模式不走本函数；算出的百分比仍经 `amountOutMin` 进写链。
+ *
+ * @param sellKey 当前卖出代币
+ * @returns 滑点百分比
+ * @see 手册 §7.1 最小输出由前端滑点计算 amountOutMin
+ */
+export function autoTradeSlippagePercent(sellKey: TradeTokenKey): number {
+  return sellKey === 'usd1' ? 0.3 : 2.5
+}
+
+/**
  * 选币后纠偏成合法有向对。
  *
  * - 买侧点到仅卖代币 → 保持原对

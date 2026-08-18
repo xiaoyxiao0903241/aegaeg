@@ -140,6 +140,39 @@ test('slippagePercentToBps converts UI percent to basis points', async () => {
 
   assert.equal(slippagePercentToBps(0.5), 50)
   assert.equal(slippagePercentToBps(1), 100)
+  assert.equal(slippagePercentToBps(99.99), 9999)
+})
+
+test('parseSlippagePercentInput treats empty as zero and clamps the cap', async () => {
+  const { parseSlippagePercentInput } = await loadModule('/src/core/exchange/token-amount.ts')
+
+  assert.equal(parseSlippagePercentInput(''), 0)
+  assert.equal(parseSlippagePercentInput('0.3'), 0.3)
+  assert.equal(parseSlippagePercentInput('99.99'), 99.99)
+  assert.equal(parseSlippagePercentInput('abc'), 0)
+  assert.equal(parseSlippagePercentInput('120'), 99.99)
+})
+
+test('isAllowedSlippageDraft rejects values that would break amountOutMin', async () => {
+  const { isAllowedSlippageDraft } = await loadModule('/src/core/exchange/token-amount.ts')
+
+  assert.equal(isAllowedSlippageDraft(''), true)
+  assert.equal(isAllowedSlippageDraft('0'), true)
+  assert.equal(isAllowedSlippageDraft('0.3'), true)
+  assert.equal(isAllowedSlippageDraft('2.5'), true)
+  assert.equal(isAllowedSlippageDraft('99'), true)
+  assert.equal(isAllowedSlippageDraft('99.'), true)
+  assert.equal(isAllowedSlippageDraft('99.01'), true)
+  assert.equal(isAllowedSlippageDraft('99.99'), true)
+  assert.equal(isAllowedSlippageDraft('1.'), true)
+
+  assert.equal(isAllowedSlippageDraft('.'), false)
+  assert.equal(isAllowedSlippageDraft('-1'), false)
+  assert.equal(isAllowedSlippageDraft('abc'), false)
+  assert.equal(isAllowedSlippageDraft('1.234'), false)
+  assert.equal(isAllowedSlippageDraft('99.991'), false)
+  assert.equal(isAllowedSlippageDraft('100'), false)
+  assert.equal(isAllowedSlippageDraft('120'), false)
 })
 
 test('capTokenAmountInput clamps sell input to wallet balance', async () => {

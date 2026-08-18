@@ -14,8 +14,8 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 
-// 代币介绍卡顺序：gAGX 结算 · USD1 · X · gAGX 质押凭证（第 4 张是 gAGX 质押，不是 AGX）
-const FLASH_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'gagxStake'] as const
+// 代币介绍卡：USD1 · gAGX · AGX
+const FLASH_ABOUT_CARD_KEYS = ['usd1', 'gagx', 'agx'] as const
 
 /** 详情页只接收汇率标量，金额输入不触达 FAQ / 代币介绍，避免每敲一键都刷新。 */
 export function FlashExchangeDetail({ overviewRateLabel }: { overviewRateLabel: string }) {

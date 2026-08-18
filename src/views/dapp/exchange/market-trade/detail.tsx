@@ -17,8 +17,8 @@ import {
 } from '~/views/dapp/exchange/market-trade/primitives'
 import { useMarketTradeDetail } from '~/views/dapp/exchange/market-trade/use-market-trade'
 
-// 代币介绍卡顺序与闪兑一致
-const TRADE_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'agx'] as const
+// 代币介绍卡：USD1 · AGX · X
+const TRADE_ABOUT_CARD_KEYS = ['usd1', 'agx', 'x'] as const
 
 /** 详情页只接收汇率标量，金额输入不触达 FAQ / 代币介绍。 */
 export function MarketTradeDetail({ exchangePriceLabel }: { exchangePriceLabel: string }) {
