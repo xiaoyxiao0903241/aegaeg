@@ -1696,7 +1696,11 @@ const app = defineMessages({
             { label: 'Rendimiento total de staking' },
           ],
         },
-        ops: { title: 'Historial de operaciones', empty: 'Aún no hay operaciones' },
+        ops: {
+          title: 'Historial de operaciones',
+          empty:
+            'Aún no hay operaciones. Tras staking, reclamar o canjear, verás cada registro aquí.',
+        },
         faq: {
           title: 'FAQs',
           items: [

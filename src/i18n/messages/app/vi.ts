@@ -1682,7 +1682,10 @@ const app = defineMessages({
             { label: 'Tổng lợi nhuận staking' },
           ],
         },
-        ops: { title: 'Lịch sử thao tác', empty: 'Chưa có lịch sử thao tác' },
+        ops: {
+          title: 'Lịch sử thao tác',
+          empty: 'Chưa có lịch sử thao tác; staking, nhận hoặc chuộc sẽ hiện từng thao tác ở đây.',
+        },
         faq: {
           title: 'FAQs',
           items: [

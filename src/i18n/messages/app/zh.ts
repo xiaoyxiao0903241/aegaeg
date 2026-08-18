@@ -1553,7 +1553,10 @@ const app = defineMessages({
             { label: '质押总收益' },
           ],
         },
-        ops: { title: '操作记录', empty: '暂无操作记录' },
+        ops: {
+          title: '操作记录',
+          empty: '暂无操作记录，完成质押、领取或赎回后，这里将展示您的每一笔操作。',
+        },
         faq: {
           title: 'FAQs',
           items: [

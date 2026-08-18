@@ -1632,7 +1632,10 @@ const app = defineMessages({
             { label: 'Total stake yield' },
           ],
         },
-        ops: { title: 'Activity', empty: 'No activity yet' },
+        ops: {
+          title: 'Activity',
+          empty: 'No activity yet. Stake, claim, or redeem to see records here.',
+        },
         faq: {
           title: 'FAQs',
           items: [

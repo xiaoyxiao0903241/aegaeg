@@ -1641,7 +1641,10 @@ const app = defineMessages({
             { label: '스테이킹 총 수익' },
           ],
         },
-        ops: { title: '활동 기록', empty: '아직 활동 기록이 없습니다' },
+        ops: {
+          title: '활동 기록',
+          empty: '아직 활동 기록이 없습니다. 스테이킹·수령·상환 후 여기에 각 작업이 표시됩니다.',
+        },
         faq: {
           title: 'FAQs',
           items: [

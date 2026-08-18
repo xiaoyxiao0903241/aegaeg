@@ -1695,7 +1695,11 @@ const app = defineMessages({
             { label: 'Total yield staking' },
           ],
         },
-        ops: { title: 'Catatan operasi', empty: 'Belum ada catatan aktivitas' },
+        ops: {
+          title: 'Catatan operasi',
+          empty:
+            'Belum ada catatan operasi. Setelah staking, klaim, atau tebus, setiap operasi akan tampil di sini.',
+        },
         faq: {
           title: 'FAQs',
           items: [

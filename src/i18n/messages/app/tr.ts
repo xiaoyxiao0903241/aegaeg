@@ -1687,7 +1687,10 @@ const app = defineMessages({
             { label: 'Toplam stake getirisi' },
           ],
         },
-        ops: { title: 'İşlem kayıtları', empty: 'Henüz işlem kaydı yok' },
+        ops: {
+          title: 'İşlem kayıtları',
+          empty: 'Henüz işlem yok. Stake, talep veya geri alma sonrası kayıtlar burada görünür.',
+        },
         faq: {
           title: 'FAQs',
           items: [

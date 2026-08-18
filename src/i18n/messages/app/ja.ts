@@ -1641,7 +1641,11 @@ const app = defineMessages({
             { label: 'ステーキング総収益' },
           ],
         },
-        ops: { title: '操作記録', empty: '操作記録はまだありません' },
+        ops: {
+          title: '操作記録',
+          empty:
+            '操作記録はまだありません。ステーキング・受取・償還後、各操作がここに表示されます。',
+        },
         faq: {
           title: 'FAQs',
           items: [

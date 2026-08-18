@@ -1555,7 +1555,10 @@ const app = defineMessages({
             { label: '質押總收益' },
           ],
         },
-        ops: { title: '操作記錄', empty: '暫無操作記錄' },
+        ops: {
+          title: '操作記錄',
+          empty: '暫無操作記錄，完成質押、領取或贖回後，這裡將展示您的每一筆操作。',
+        },
         faq: {
           title: 'FAQs',
           items: [
