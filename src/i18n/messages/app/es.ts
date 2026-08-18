@@ -1578,22 +1578,25 @@ const app = defineMessages({
           title: 'Participación',
           body: 'Gestiona posiciones AGX flexibles / a plazo',
           aprHint:
-            'Incluye bono Rebase e interés compuesto; solo rendimiento no reclamado en la posición',
+            'Proporción del rendimiento de staking reclamado más el no reclamado y el rendimiento extra',
         },
         lpbond: {
           title: 'Bono LP',
           body: 'Gestiona posiciones de bono de liquidez',
-          aprHint: 'Incluye interés compuesto; solo rendimiento no reclamado en la posición',
+          aprHint:
+            'Proporción del rendimiento de bono LP reclamado más el rendimiento de bono LP no reclamado',
         },
         burnbond: {
           title: 'Bono de quema',
           body: 'Gestiona posiciones de bono de quema',
-          aprHint: 'Incluye interés compuesto; solo rendimiento no reclamado en la posición',
+          aprHint:
+            'Proporción del rendimiento de bono de quema reclamado más el rendimiento de bono de quema no reclamado',
         },
         xmine: {
           title: 'Minado X',
           body: 'Gestiona posiciones de minado gAGX',
-          aprHint: 'Producción de minado no reclamada en la posición',
+          aprHint:
+            'Proporción de la producción de minado reclamada más la producción de minado no reclamada',
         },
       },
       overview: {

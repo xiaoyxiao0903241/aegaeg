@@ -1566,22 +1566,24 @@ const app = defineMessages({
           title: 'Đặt cọc',
           body: 'Quản lý vị thế AGX linh hoạt / kỳ hạn',
           aprHint:
-            'Lợi nhuận gồm cộng Rebase và lãi kép, chỉ thống kê lợi nhuận chưa rút trong vị thế',
+            'Tỷ lệ của lợi nhuận staking đã nhận cộng lợi nhuận staking chưa nhận và lợi nhuận cộng thêm',
         },
         lpbond: {
           title: 'Trái phiếu LP',
           body: 'Quản lý vị thế trái phiếu thanh khoản',
-          aprHint: 'Lợi nhuận gồm lãi kép, chỉ thống kê lợi nhuận chưa rút trong vị thế',
+          aprHint:
+            'Tỷ lệ của lợi nhuận trái phiếu LP đã nhận cộng lợi nhuận trái phiếu LP chưa nhận',
         },
         burnbond: {
           title: 'Trái phiếu đốt',
           body: 'Quản lý vị thế trái phiếu đốt',
-          aprHint: 'Lợi nhuận gồm lãi kép, chỉ thống kê lợi nhuận chưa rút trong vị thế',
+          aprHint:
+            'Tỷ lệ của lợi nhuận trái phiếu đốt đã nhận cộng lợi nhuận trái phiếu đốt chưa nhận',
         },
         xmine: {
           title: 'Đào X',
           body: 'Quản lý vị thế đào gAGX',
-          aprHint: 'Lợi nhuận là sản lượng đào chưa nhận trong vị thế',
+          aprHint: 'Tỷ lệ của sản lượng đào đã nhận cộng sản lượng đào chưa nhận',
         },
       },
       overview: {

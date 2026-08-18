@@ -1448,22 +1448,22 @@ const app = defineMessages({
         stake: {
           title: '質押',
           body: '管理 AGX 活期/定期倉位',
-          aprHint: '收益包含 Rebase 加成與複利收益，僅統計持倉中未提取收益',
+          aprHint: '已領取的質押收益與未領取的質押收益、加成收益的總和的佔比',
         },
         lpbond: {
           title: 'LP債券',
           body: '管理流動性債券倉位',
-          aprHint: '收益包含複利收益，僅統計持倉中未提取收益',
+          aprHint: '已領取的LP債券收益與未領取的LP債券收益的總和的佔比',
         },
         burnbond: {
           title: '銷燬債券',
           body: '管理銷燬債券倉位',
-          aprHint: '收益包含複利收益，僅統計持倉中未提取收益',
+          aprHint: '已領取的銷燬債券收益與未領取的銷燬債券收益的總和的佔比',
         },
         xmine: {
           title: 'X挖礦',
           body: '管理 gAGX 挖礦倉位',
-          aprHint: '收益為持倉中未領取的挖礦產出',
+          aprHint: '已領取的挖礦產出與未領取的挖礦產出的總和的佔比',
         },
       },
       overview: {

@@ -1577,22 +1577,25 @@ const app = defineMessages({
           title: 'Stake',
           body: 'Kelola posisi AGX fleksibel/berjangka',
           aprHint:
-            'Hasil mencakup bonus Rebase dan bunga majemuk; hanya hasil belum diklaim di posisi',
+            'Porsi hasil staking yang sudah diklaim ditambah hasil staking belum diklaim dan hasil bonus',
         },
         lpbond: {
           title: 'Bond LP',
           body: 'Kelola posisi Bond likuiditas',
-          aprHint: 'Hasil mencakup bunga majemuk; hanya hasil belum diklaim di posisi',
+          aprHint:
+            'Porsi hasil Bond LP yang sudah diklaim ditambah hasil Bond LP yang belum diklaim',
         },
         burnbond: {
           title: 'Bond Burn',
           body: 'Kelola posisi Burn Bond',
-          aprHint: 'Hasil mencakup bunga majemuk; hanya hasil belum diklaim di posisi',
+          aprHint:
+            'Porsi hasil Bond Burn yang sudah diklaim ditambah hasil Bond Burn yang belum diklaim',
         },
         xmine: {
           title: 'Penambangan X',
           body: 'Kelola posisi mining gAGX',
-          aprHint: 'Hasil adalah output mining belum diklaim di posisi',
+          aprHint:
+            'Porsi output mining yang sudah diklaim ditambah output mining yang belum diklaim',
         },
       },
       overview: {

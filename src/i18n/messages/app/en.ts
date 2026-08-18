@@ -1522,22 +1522,23 @@ const app = defineMessages({
         stake: {
           title: 'Stake',
           body: 'Manage AGX flexible / term positions',
-          aprHint: 'Includes rebase bonus and compounding; unclaimed yield in position only',
+          aprHint:
+            'Share of claimed staking yield plus unclaimed staking yield and bonus yield combined',
         },
         lpbond: {
           title: 'LP Bond',
           body: 'Manage liquidity bond positions',
-          aprHint: 'Includes compounding; unclaimed yield in position only',
+          aprHint: 'Share of claimed LP bond yield plus unclaimed LP bond yield combined',
         },
         burnbond: {
           title: 'Burn Bond',
           body: 'Manage burn bond positions',
-          aprHint: 'Includes compounding; unclaimed yield in position only',
+          aprHint: 'Share of claimed burn bond yield plus unclaimed burn bond yield combined',
         },
         xmine: {
           title: 'X Mine',
           body: 'Manage gAGX mining positions',
-          aprHint: 'Unclaimed mining output in the position',
+          aprHint: 'Share of claimed mining output plus unclaimed mining output combined',
         },
       },
       overview: {

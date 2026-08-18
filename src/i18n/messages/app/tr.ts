@@ -1570,22 +1570,25 @@ const app = defineMessages({
           title: 'Yatır',
           body: 'AGX esnek / vadeli pozisyonları yönet',
           aprHint:
-            'Rebase bonusu ve bileşik getiriyi içerir; yalnızca pozisyondaki alınmamış getiri',
+            'Alınmış staking getirisi ile alınmamış staking getirisi ve bonus getirinin toplamının oranı',
         },
         lpbond: {
           title: 'LP Tahvil',
           body: 'Likidite tahvil pozisyonlarını yönet',
-          aprHint: 'Bileşik getiriyi içerir; yalnızca pozisyondaki alınmamış getiri',
+          aprHint:
+            'Alınmış LP tahvil getirisi ile alınmamış LP tahvil getirisinin toplamının oranı',
         },
         burnbond: {
           title: 'Yakım Tahvili',
           body: 'Yakım tahvil pozisyonlarını yönet',
-          aprHint: 'Bileşik getiriyi içerir; yalnızca pozisyondaki alınmamış getiri',
+          aprHint:
+            'Alınmış yakım tahvili getirisi ile alınmamış yakım tahvili getirisinin toplamının oranı',
         },
         xmine: {
           title: 'X Madencilik',
           body: 'gAGX madencilik pozisyonlarını yönet',
-          aprHint: 'Pozisyondaki alınmamış madencilik çıktısı',
+          aprHint:
+            'Alınmış madencilik çıktısı ile alınmamış madencilik çıktısının toplamının oranı',
         },
       },
       overview: {

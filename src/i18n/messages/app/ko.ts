@@ -1533,23 +1533,22 @@ const app = defineMessages({
         stake: {
           title: '스테이킹',
           body: 'AGX 유동/정기 포지션 관리',
-          aprHint:
-            '수익에는 Rebase 가산과 복리 수익이 포함되며, 포지션 내 미출금 수익만 집계합니다',
+          aprHint: '수령한 스테이킹 수익과 미수령 스테이킹 수익·가산 수익 합계가 차지하는 비율',
         },
         lpbond: {
           title: 'LP 채권',
           body: '유동성 채권 포지션 관리',
-          aprHint: '수익에는 복리 수익이 포함되며, 포지션 내 미출금 수익만 집계합니다',
+          aprHint: '수령한 LP 채권 수익과 미수령 LP 채권 수익 합계가 차지하는 비율',
         },
         burnbond: {
           title: '소각 채권',
           body: '소각 채권 포지션 관리',
-          aprHint: '수익에는 복리 수익이 포함되며, 포지션 내 미출금 수익만 집계합니다',
+          aprHint: '수령한 소각 채권 수익과 미수령 소각 채권 수익 합계가 차지하는 비율',
         },
         xmine: {
           title: 'X 마이닝',
           body: 'gAGX 마이닝 포지션 관리',
-          aprHint: '수익은 포지션 내 미수령 마이닝 산출입니다',
+          aprHint: '수령한 마이닝 산출과 미수령 마이닝 산출 합계가 차지하는 비율',
         },
       },
       overview: {
