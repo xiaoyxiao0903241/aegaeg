@@ -2,13 +2,8 @@ import { useState } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
-import {
-  clampSlippagePercent,
-  formatTokenAmount,
-  parseSlippagePercentInput,
-  slippagePercentToBps,
-} from '~/core/exchange/token-amount'
-import { autoTradeSlippagePercent } from '~/core/exchange/trade-path'
+import { formatTokenAmount, slippagePercentToBps } from '~/core/exchange/token-amount'
+import { autoTradeSlippagePercent, resolveTradeSlippagePercent } from '~/core/exchange/trade-path'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -18,6 +13,7 @@ import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-mar
 import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
 import { useMarketTradeSpotRates } from '~/views/dapp/exchange/market-trade/use-market-trade-spot-rates'
 import {
+  buyKeysForSell,
   canFlipTradePair,
   formatTradeRouteLabel,
   getTradePairTokens,
@@ -56,13 +52,16 @@ export function useMarketTradeSession(
   const setSellKey = useExchangeTradePairStore((state) => state.setSellKey)
   const setBuyKey = useExchangeTradePairStore((state) => state.setBuyKey)
   const flipPair = useExchangeTradePairStore((state) => state.flipPair)
-  const [slippageMode, setSlippageMode] = useState<'auto' | 'custom'>('auto')
-  const [slippageCustomText, setSlippageCustomText] = useState(() =>
-    String(clampSlippagePercent(EXCHANGE_CONFIG.defaultSlippageBps / 100)),
-  )
+  const [slippageMode, setSlippageModeState] = useState<'auto' | 'custom'>('auto')
+  const [slippageCustomText, setSlippageCustomTextState] = useState('')
   const autoSlippagePercent = autoTradeSlippagePercent(sellKey)
-  const slippage =
-    slippageMode === 'auto' ? autoSlippagePercent : parseSlippagePercentInput(slippageCustomText)
+  const slippage = resolveTradeSlippagePercent(slippageMode, slippageCustomText, sellKey)
+
+  function setSlippageMode(mode: 'auto' | 'custom') {
+    if (mode === 'auto') setSlippageCustomTextState('')
+    setSlippageModeState(mode)
+  }
+
   const { poolContext } = useExchangePoolReads(readsEnabled, quotesEnabled)
 
   const pair = getTradePairTokens(sellKey, buyKey)
@@ -178,7 +177,7 @@ export function useMarketTradeSession(
   }
 
   const sellPickerKeys: TradeTokenKey[] = [...TRADE_TOKEN_KEYS]
-  const buyPickerKeys: TradeTokenKey[] = [...TRADE_TOKEN_KEYS]
+  const buyPickerKeys: TradeTokenKey[] = [...buyKeysForSell(sellKey)]
 
   return {
     sellAmount: core.sellAmount,
@@ -193,8 +192,9 @@ export function useMarketTradeSession(
     slippage,
     slippageMode,
     setSlippageMode,
-    slippageCustomText,
-    setSlippageCustomText,
+    slippageCustomText:
+      slippageCustomText === '' ? String(autoSlippagePercent) : slippageCustomText,
+    setSlippageCustomText: setSlippageCustomTextState,
     autoSlippagePercent,
     pair,
     path,

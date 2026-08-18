@@ -131,6 +131,7 @@ export type { FlashPairId } from '~/core/exchange/flash-pair'
 export { FLASH_PAIR_DEFAULT, isFlashPairId }
 export type { TradeTokenKey } from '~/core/exchange/trade-path'
 export {
+  buyKeysForSell,
   canFlipTradePair,
   isSellOnlyTradeToken,
   isTradeTokenKey,
@@ -216,7 +217,7 @@ export function getTradeToken(key: TradeTokenKey): ExchangePairToken {
   return TRADE_TOKENS[key]
 }
 
-/** 市价交易币对：三种代币两两组合，路由路径由 tradePath 计算。 */
+/** 市价交易币对：USD1↔AGX、X→AGX / X→USD1；路由路径由 tradePath 计算。 */
 export function getTradePairTokens(
   sellKey: TradeTokenKey,
   buyKey: TradeTokenKey,

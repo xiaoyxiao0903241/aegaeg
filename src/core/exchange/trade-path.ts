@@ -1,3 +1,5 @@
+import { parseSlippagePercentInput } from '~/core/exchange/token-amount'
+
 /**
  * Trade 卖/买代币 key：USD1 / AGX / X。
  *
@@ -11,8 +13,25 @@ export const TRADE_TOKEN_KEYS = ['usd1', 'agx', 'x'] as const satisfies readonly
 
 export type TradeTokenAddresses = Record<TradeTokenKey, `0x${string}`>
 
-/** 池邻接序：usd1—agx—x（仅相邻可成对；USD1↔X 无直连池）。 */
-const RANK = { usd1: 0, agx: 1, x: 2 } as const
+/**
+ * 卖出侧对应的买入选项。
+ *
+ * USD1 只能买 AGX；AGX 只能买 USD1；X 可买 AGX 或经 AGX 中转到 USD1。
+ * 买入侧不可选 X（手册 `BuyNotAllowed`）。
+ *
+ * @param sell 卖出代币
+ * @returns 合法买入 key，顺序即下拉默认
+ */
+export function buyKeysForSell(sell: TradeTokenKey): readonly TradeTokenKey[] {
+  switch (sell) {
+    case 'usd1':
+      return ['agx']
+    case 'agx':
+      return ['usd1']
+    case 'x':
+      return ['usd1', 'agx']
+  }
+}
 
 /**
  * X 仅可卖出（买入侧不可选）。
@@ -25,19 +44,14 @@ export function isSellOnlyTradeToken(key: TradeTokenKey): boolean {
   return key === 'x'
 }
 
-/** 是否为合法无向市价对（相邻池）。 */
-export function isValidTradePair(a: TradeTokenKey, b: TradeTokenKey): boolean {
-  return a !== b && Math.abs(RANK[a] - RANK[b]) === 1
-}
-
 /**
- * 是否为合法有向市价对（相邻且买侧非仅卖代币）。
+ * 是否为合法有向市价对。
  *
  * @param sell 卖出代币
  * @param buy 买入代币
  */
 export function isValidDirectedTradePair(sell: TradeTokenKey, buy: TradeTokenKey): boolean {
-  return isValidTradePair(sell, buy) && !isSellOnlyTradeToken(buy)
+  return buyKeysForSell(sell).includes(buy)
 }
 
 /**
@@ -69,7 +83,7 @@ export function pairAfterFlip(
 /**
  * Trade 的 Pancake V2 兑换路径。
  *
- * - USD1↔AGX / AGX→X 卖出：单跳直达（X 买入在此拒绝）
+ * - USD1↔AGX / X→AGX：单跳直达（X 买入在此拒绝）
  * - X→USD1：经 AGX 中转
  *
  * @param sellKey 卖出代币
@@ -111,24 +125,55 @@ export function isTradeTokenKey(value: string): value is TradeTokenKey {
 /**
  * 市价交易「默认」滑点百分比。
  *
- * USD1 卖出用更紧的稳定币档；AGX / X 波动更大，用更宽档。
- * 自定义模式不走本函数；算出的百分比仍经 `amountOutMin` 进写链。
+ * USD1→AGX 1%；AGX→USD1 3%；卖 X 26%（覆盖链上 25% 卖出税 + 1% 池缓冲）。
+ * 自定义未填时也走本函数；算出的百分比仍经 `amountOutMin` 进写链。
  *
  * @param sellKey 当前卖出代币
  * @returns 滑点百分比
  * @see 手册 §7.1 最小输出由前端滑点计算 amountOutMin
+ * @see 手册 xtoken `SELL_TAX_BP = 2500`
  */
 export function autoTradeSlippagePercent(sellKey: TradeTokenKey): number {
-  return sellKey === 'usd1' ? 0.3 : 2.5
+  switch (sellKey) {
+    case 'usd1':
+      return 1
+    case 'agx':
+      return 3
+    case 'x':
+      return 26
+  }
+}
+
+/**
+ * 市价实际滑点：默认档跟卖出币；自定义未填则仍用该档，不回落到统一 0.5%。
+ *
+ * @param mode 默认 / 自定义
+ * @param customText 自定义输入；空串视为未设置
+ * @param sellKey 当前卖出代币
+ * @returns 写入报价的滑点百分比
+ */
+export function resolveTradeSlippagePercent(
+  mode: 'auto' | 'custom',
+  customText: string,
+  sellKey: TradeTokenKey,
+): number {
+  if (mode === 'custom' && customText !== '') {
+    return parseSlippagePercentInput(customText)
+  }
+  return autoTradeSlippagePercent(sellKey)
 }
 
 /**
  * 选币后纠偏成合法有向对。
  *
- * - 买侧点到仅卖代币 → 保持原对
- * - 点到对侧同币 → 尝试翻转；翻转后买侧非法则保持原对
- * - 仍相邻 → 只改本侧
- * - 非邻接（USD1↔X）→ 对侧落到默认对手（AGX；选 AGX 时默认 USD1）
+ * 卖出侧始终可点 USD1 / AGX / X；一点卖出，买入就落到该卖出的默认对手
+ *（USD1→AGX，AGX→USD1，X→USD1），不因与当前买入相同而拒绝。
+ * 买侧点到非法币（含 X）保持原对。
+ *
+ * @param side 改的是卖出还是买入
+ * @param key 新选中的代币
+ * @param sellKey 当前卖出
+ * @param buyKey 当前买入
  */
 export function pairAfterTokenSelect(
   side: 'sell' | 'buy',
@@ -136,23 +181,12 @@ export function pairAfterTokenSelect(
   sellKey: TradeTokenKey,
   buyKey: TradeTokenKey,
 ): { sellKey: TradeTokenKey; buyKey: TradeTokenKey } {
-  const current = { sellKey, buyKey }
-
-  if (side === 'buy' && isSellOnlyTradeToken(key)) {
-    return current
+  if (side === 'buy') {
+    if (!isValidDirectedTradePair(sellKey, key)) return { sellKey, buyKey }
+    return { sellKey, buyKey: key }
   }
 
-  let next: { sellKey: TradeTokenKey; buyKey: TradeTokenKey }
-  if (key === (side === 'sell' ? buyKey : sellKey)) {
-    next = { sellKey: buyKey, buyKey: sellKey }
-  } else {
-    const other = side === 'sell' ? buyKey : sellKey
-    const fixed = isValidTradePair(key, other) ? other : key === 'agx' ? 'usd1' : 'agx'
-    next = side === 'sell' ? { sellKey: key, buyKey: fixed } : { sellKey: fixed, buyKey: key }
-  }
-
-  if (isSellOnlyTradeToken(next.buyKey)) {
-    return current
-  }
-  return next
+  const [nextBuy] = buyKeysForSell(key)
+  if (!nextBuy) return { sellKey, buyKey }
+  return { sellKey: key, buyKey: nextBuy }
 }

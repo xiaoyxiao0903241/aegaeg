@@ -27,10 +27,3 @@ test('swap config enables flash tokens and trade X', async () => {
   assert.equal(EXCHANGE_CONFIG.tokens.x.enabled, true)
   assert.ok(EXCHANGE_CONFIG.tokens.x.icon)
 })
-
-test('swap config defaultSlippageBps maps to UI percent for Trade init', async () => {
-  const { EXCHANGE_CONFIG } = await loadModule('/src/shared/config/exchange.ts')
-  const { clampSlippagePercent } = await loadModule('/src/core/exchange/token-amount.ts')
-
-  assert.equal(clampSlippagePercent(EXCHANGE_CONFIG.defaultSlippageBps / 100), 0.5)
-})

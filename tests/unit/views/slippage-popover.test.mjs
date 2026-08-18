@@ -3,12 +3,27 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('auto trade slippage is tighter for USD1 than AGX/X', async () => {
+test('auto trade slippage follows sell token defaults', async () => {
   const { autoTradeSlippagePercent } = await loadModule('/src/core/exchange/trade-path.ts')
 
-  assert.equal(autoTradeSlippagePercent('usd1'), 0.3)
-  assert.equal(autoTradeSlippagePercent('agx'), 2.5)
-  assert.equal(autoTradeSlippagePercent('x'), 2.5)
+  assert.equal(autoTradeSlippagePercent('usd1'), 1)
+  assert.equal(autoTradeSlippagePercent('agx'), 3)
+  assert.equal(autoTradeSlippagePercent('x'), 26)
+})
+
+test('unset custom slippage uses the sell-token auto default', async () => {
+  const { resolveTradeSlippagePercent } = await loadModule('/src/core/exchange/trade-path.ts')
+
+  assert.equal(resolveTradeSlippagePercent('auto', '', 'usd1'), 1)
+  assert.equal(resolveTradeSlippagePercent('auto', '', 'agx'), 3)
+  assert.equal(resolveTradeSlippagePercent('auto', '', 'x'), 26)
+
+  assert.equal(resolveTradeSlippagePercent('custom', '', 'usd1'), 1)
+  assert.equal(resolveTradeSlippagePercent('custom', '', 'agx'), 3)
+  assert.equal(resolveTradeSlippagePercent('custom', '', 'x'), 26)
+
+  assert.equal(resolveTradeSlippagePercent('custom', '5', 'usd1'), 5)
+  assert.equal(resolveTradeSlippagePercent('custom', '5', 'x'), 5)
 })
 
 test('anchored slippage popover flips and stays inside the viewport', async () => {

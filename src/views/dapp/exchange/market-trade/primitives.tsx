@@ -44,8 +44,7 @@ export type ExchangeTokenPickerOption = {
 /**
  * 卖出 / 买入代币选择
  *
- * 胶囊触发器展示当前选中代币，下拉列表供选择；
- * 禁用项仍展示，并用提示说明原因。
+ * 可选多于一个时用胶囊下拉；只有一个选项时只展示代币，不下拉、不显示箭头。
  */
 export function ExchangeTokenPicker({
   ariaLabel,
@@ -67,6 +66,25 @@ export function ExchangeTokenPicker({
 
   if (!selected) return null
 
+  const token = (
+    <>
+      {selected.icon ? (
+        <Icon alt="" className="rounded-full" loading="lazy" size="token" src={selected.icon} />
+      ) : null}
+      <Text as="span" className="leading-none font-semibold" variant="copy">
+        {selected.symbol}
+      </Text>
+    </>
+  )
+
+  if (options.length < 2) {
+    return (
+      <span className={cn('inline-flex shrink-0 items-center gap-2', disabled && 'opacity-40')}>
+        {token}
+      </span>
+    )
+  }
+
   return (
     <DropdownMenu className="shrink-0 items-center" onOpenChange={setOpen} open={open}>
       <DropdownMenuTrigger
@@ -78,12 +96,7 @@ export function ExchangeTokenPicker({
         )}
         disabled={disabled}
       >
-        {selected.icon ? (
-          <Icon alt="" className="rounded-full" loading="lazy" size="token" src={selected.icon} />
-        ) : null}
-        <Text as="span" className="leading-none font-semibold" variant="copy">
-          {selected.symbol}
-        </Text>
+        {token}
         <CollapseChevron open={open} size="md" />
       </DropdownMenuTrigger>
 

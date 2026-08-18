@@ -1,8 +1,8 @@
 /**
  * 市价交易左栏 Dock
  *
- * 卖出 / 买入代币可下拉选择，中间可翻转方向；X 仅可卖，买入侧展示但禁用，
- * 卖出为 X 时禁用翻转。信息行展示汇率（可反向）、滑点设置、价格影响与预估 Gas。
+ * 卖出可选 USD1 / AGX / X；买入随卖出变化（USD1↔AGX，X 可买 USD1 或 AGX）。
+ * 买入只有一个时不下拉。卖出为 X 时禁用翻转。信息行展示汇率、滑点、价格影响与预估 Gas。
  */
 import { dappAssets } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
