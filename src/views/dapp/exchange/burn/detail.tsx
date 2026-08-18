@@ -3,6 +3,7 @@
  *
  * 概览三格始终个人：累计销毁 AGX、获得贡献、已消耗贡献。
  * 未连接或 userStats 缺 → 显 0（不绑 getConfig().total*）。
+ * 关于区走共用 TokenAboutCarousel，只传贡献点数一张卡。
  */
 import { ZERO_BI } from '~/core/constants'
 import { BPS_DENOM } from '~/core/exchange/bps'
@@ -140,7 +141,7 @@ export function BurnExchangeDetail({
 
       <Section>
         <Section.Title>{t.exchange.burn.aboutTitle}</Section.Title>
-        <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'agx']} />
+        <TokenAboutCarousel cardKeys={['contribution']} />
       </Section>
 
       <Section>

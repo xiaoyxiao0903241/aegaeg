@@ -362,7 +362,7 @@ const app = defineMessages({
       sellLabel: 'เบิร์น',
       receiveLabel: 'ได้รับ',
       pointsToken: 'คะแนนการมีส่วนร่วมของฉัน',
-      currentContribution: 'ค่าการมีส่วนร่วมปัจจุบัน',
+      currentContribution: 'คะแนนมีส่วนร่วมปัจจุบัน',
       burnRate: 'อัตราเบิร์น',
       destination: 'ปลายทางเบิร์น',
       destinationValue: 'หลุมดำ {burnPct}% · LP {injectPct}%',
@@ -370,7 +370,7 @@ const app = defineMessages({
       openProvider: 'ดูสัญญาแลกคะแนนบน BscScan',
       action: 'เบิร์น',
       success: 'เบิร์นสำเร็จ',
-      aboutTitle: 'เกี่ยวกับ',
+      aboutTitle: 'เกี่ยวกับคะแนนมีส่วนร่วม',
       blocked: {
         paused: 'เบิร์นถูกระงับชั่วคราว กรุณาลองใหม่ภายหลัง',
         belowMin: 'ต่ำกว่าขีดจำกัดเบิร์นขั้นต่ำต่อครั้ง',
@@ -424,7 +424,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'เทอร์ไบน์',
-      aboutTitle: 'เกี่ยวกับ',
+      aboutTitle: 'เกี่ยวกับเทอร์ไบน์',
       segmentAriaLabel: 'การดำเนินการเทอร์ไบน์',
       segments: {
         unlock: 'ปลดล็อก',
@@ -522,6 +522,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'คะแนนมีส่วนร่วม · หลักฐานรับผลตอบแทน',
+          body: 'การรับผลตอบแทนจะใช้คะแนนมีส่วนร่วมในอัตราส่วน {ratio} การเบิร์น AGX ได้คะแนนและเสริมเงินฝืดของโปรโตคอล',
+        },
+        {
+          key: 'turbine',
+          title: 'เทอร์ไบน์ · ศูนย์ปลดล็อกโควตา',
+          body: 'รางวัลจากคิวปล่อยเข้าโควตาเทอร์ไบน์ก่อน ซื้อ AGX เท่ากันด้วย USD1 จะเริ่มช่วงเงียบ 24–96 ชั่วโมง เมื่อครบกำหนด gAGX ถูกส่งผ่านสปลิตเตอร์เพื่อปล่อยแบบเส้นตรง ไม่เข้ากระเป๋าทันที',
         },
       ],
     },

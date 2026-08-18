@@ -362,7 +362,7 @@ const app = defineMessages({
       sellLabel: 'Сжигание',
       receiveLabel: 'Получить',
       pointsToken: 'Очки вклада',
-      currentContribution: 'Текущий вклад',
+      currentContribution: 'Текущие очки вклада',
       burnRate: 'Курс сжигания',
       destination: 'Назначение сжигания',
       destinationValue: 'Чёрная дыра {burnPct}% · LP {injectPct}%',
@@ -370,7 +370,7 @@ const app = defineMessages({
       openProvider: 'Смотреть обмен вклада на BscScan',
       action: 'Сжигание',
       success: 'Сжигание выполнено',
-      aboutTitle: 'О программе',
+      aboutTitle: 'Об очках вклада',
       blocked: {
         paused: 'Сжигание приостановлено. Попробуйте позже.',
         belowMin: 'Сумма ниже минимального лимита сжигания.',
@@ -424,7 +424,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'Турбина',
-      aboutTitle: 'О программе',
+      aboutTitle: 'О Турбине',
       segmentAriaLabel: 'Действия Турбины',
       segments: {
         unlock: 'Разблокировать',
@@ -523,6 +523,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'Очки вклада · Ваучер на получение дохода',
+          body: 'Получение дохода расходует очки вклада в соотношении {ratio}. Сжигание AGX даёт очки вклада и усиливает дефляцию протокола.',
+        },
+        {
+          key: 'turbine',
+          title: 'Турбина · Хаб разблокировки квоты',
+          body: 'Награды из очереди высвобождения сначала входят в квоту Турбины. Покупка равного объёма AGX за USD1 запускает тишину 24–96 ч. По истечении gAGX идёт через сплиттер на линейное высвобождение и не сразу попадает в кошелёк.',
         },
       ],
     },

@@ -362,7 +362,7 @@
 |X-029|兑换|市价·选币|X 可选为卖出/买入|读取展示|`TRADE_TOKEN_KEYS`；双栏全量；`pairAfterTokenSelect` 邻接纠偏|池：USD1—AGX—X|—|✅ 已对齐|—|—|A-02|A-02|合法对仅相邻；同币翻转；USD1↔X 对侧落到 AGX|
 |X-030|兑换|市价·常见问题|按代币切换的 FAQ 文案|读取展示|`MarketTradeFaqTabs` + `t.exchange.faq.tabs`|Visible+FAQ|—|✅ 已对齐|—|—|—|—|无独立金额断言|
 |X-031|兑换|销毁·操作区|AGX 余额 / 对贡献兑换合约的授权|读取展示|`readBurnExchangeBalances`|手册 §9.2|—|✅ 已对齐|设计取舍（缺数显0）|—|—|—|复审确认接线在；前端已接；线上对账非本表判断标准|
-|X-032|兑换|销毁·操作区|当前贡献值|读取展示|`readBurnUserStats`：`originalOf==0` 回退 user|手册 `originalOf`→`userContribution(root)`|—|✅ 已对齐|设计取舍（缺数显0）|—|**B-10**|B-10|复审确认算法已关；同奖励/资产贡献口径；前端已接；线上对账非本表判断标准|
+|X-032|兑换|销毁·操作区|当前贡献点数|读取展示|`readBurnUserStats`：`originalOf==0` 回退 user|手册 `originalOf`→`userContribution(root)`|—|✅ 已对齐|设计取舍（缺数显0）|—|**B-10**|B-10|复审确认算法已关；同奖励/资产贡献口径；前端已接；线上对账非本表判断标准|
 |X-033|兑换|销毁·操作区|销毁比率 / 预估贡献点|读取展示|config + `readBurnContributionQuote`；slippageBps=0|`rateBps` · `quoteContributionOut`|—|✅ 已对齐|—|—|—|—|—|
 |X-034|兑换|销毁·操作区|去向「黑洞% · LP%」|读取展示|dock destination + FAQ interpolate|`getSplitConfig().splitBps`|—|✅ 已对齐|—|—|—|—|—|
 |X-035|兑换|销毁·概览|累计销毁 AGX / 获得·消耗贡献点|读取展示|`burn/detail`：三格始终 `userStats`（agxBurned / contributionEarned / contributionConsumed）；缺→0；不绑 `getConfig().total*`|链 userStats（个人）|—|✅ 已对齐|设计取舍（缺数显0）|—|— **C-20**|C-20|稿标签未区分全网/个人；口径钉个人；缺数显 0|

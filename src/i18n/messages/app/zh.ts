@@ -354,7 +354,7 @@ const app = defineMessages({
       sellLabel: '销毁',
       receiveLabel: '获得',
       pointsToken: '贡献点数',
-      currentContribution: '当前贡献值',
+      currentContribution: '当前贡献点数',
       burnRate: '销毁比率',
       destination: '销毁去向',
       destinationValue: '黑洞 {burnPct}% · LP {injectPct}%',
@@ -362,7 +362,7 @@ const app = defineMessages({
       openProvider: '在 BscScan 查看贡献兑换合约',
       action: '销毁',
       success: '销毁成功',
-      aboutTitle: '关于',
+      aboutTitle: '关于贡献点数',
       blocked: {
         paused: '销毁已暂停，请稍后再试。',
         belowMin: '低于单笔最小销毁限额。',
@@ -414,7 +414,7 @@ const app = defineMessages({
     },
     turbine: {
       title: '涡轮',
-      aboutTitle: '关于',
+      aboutTitle: '关于涡轮',
       segmentAriaLabel: '涡轮操作',
       segments: {
         unlock: '解锁',
@@ -512,9 +512,19 @@ const app = defineMessages({
           title: 'X · 权益代币',
           body: '生态参与与权益代币，记录链上贡献，可兑换权益、参与活动并获得空投加成。',
         },
+        {
+          key: 'contribution',
+          title: '贡献点数 · 收益领取凭证',
+          body: '领取收益按 {ratio} 消耗贡献点数。销毁 AGX 即获得贡献点数，同时增强协议通缩。',
+        },
+        {
+          key: 'turbine',
+          title: '涡轮 · 配额解锁中枢',
+          body: '释放领取的奖励先进入涡轮配额。用 USD1 买入等量 AGX 后进入 24–96 小时静默期；到期提取的 gAGX 经分流器线性释放，不会立刻到钱包。',
+        },
       ],
     },
-    tokenContract: '查看合同',
+    tokenContract: '查看合约',
     tokenPrevious: '上一个代币',
     tokenNext: '下一个代币',
     faq: {

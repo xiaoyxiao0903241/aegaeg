@@ -19,11 +19,11 @@ type PromoLayout = 'desktop' | 'mobile'
 
 const exchangePromoCard = tv({
   slots: {
-    bodyGrid: 'relative z-1 grid gap-2',
+    bodyGrid: 'relative z-1 grid h-full content-start gap-2',
     titleRow: 'flex w-full min-w-0 items-center',
     titleCluster: 'flex min-w-0 items-center',
     title: 'wrap-break-word',
-    body: 'm-0 min-w-0 wrap-break-word',
+    body: 'm-0 min-h-[2lh] min-w-0 wrap-break-word',
     titleIcon: 'grid shrink-0 overflow-hidden rounded-full',
     mobileActionWrap: 'inline-flex shrink-0 self-center',
     decorationMobile: 'pointer-events-none absolute top-0 right-0 w-30',
@@ -37,7 +37,7 @@ const exchangePromoCard = tv({
         titleRow: 'gap-3',
         titleCluster: 'gap-3',
         title: 'wrap-break-word',
-        body: 'max-w-xl wrap-break-word',
+        body: 'min-h-[2lh] max-w-xl wrap-break-word',
         titleIcon: 'size-8',
       },
       mobile: {
@@ -45,7 +45,7 @@ const exchangePromoCard = tv({
         titleRow: 'flex-wrap justify-between gap-2',
         titleCluster: 'min-w-0 flex-1 gap-2',
         title: 'wrap-break-word',
-        body: 'max-w-none wrap-break-word',
+        body: 'min-h-[2lh] max-w-none wrap-break-word',
         titleIcon: 'size-7.5',
       },
     },
@@ -149,6 +149,7 @@ function TitleIcon({ layout, src }: { layout: PromoLayout; src: string }) {
  *
  * 桌面端操作按钮绝对定位在右侧，移动端按钮内联到标题行；
  * 装饰图与卡片图标按 layout / rays 变体渲染，进入视口时渐显。
+ * 正文至少两行高；在 TokenAboutCarousel 里撑满当前最高的那张卡。
  */
 export function ExchangePromoCard({
   action,
@@ -182,7 +183,7 @@ export function ExchangePromoCard({
       surface="soft"
       className={cn(
         // 圆角与阴影由 soft 表面提供，内边距由正文容器承担（此处清零）
-        'relative min-w-0 p-0',
+        'relative h-full min-w-0 flex-1 p-0',
         frameClassName,
         reveal && revealClass(),
         className,

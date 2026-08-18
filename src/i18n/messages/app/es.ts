@@ -369,7 +369,7 @@ const app = defineMessages({
       sellLabel: 'Quemar',
       receiveLabel: 'Recibir',
       pointsToken: 'Mis puntos de contribución',
-      currentContribution: 'Contribución actual',
+      currentContribution: 'Puntos de contribución actuales',
       burnRate: 'Ratio de quema',
       destination: 'Destino de la quema',
       destinationValue: 'Agujero negro {burnPct}% · LP {injectPct}%',
@@ -377,7 +377,7 @@ const app = defineMessages({
       openProvider: 'Ver contrato de contribución en BscScan',
       action: 'Quemar',
       success: 'Quema exitosa',
-      aboutTitle: 'Acerca de',
+      aboutTitle: 'Acerca de los puntos de contribución',
       blocked: {
         paused: 'La quema está pausada. Inténtalo más tarde.',
         belowMin: 'El monto está por debajo del mínimo de quema.',
@@ -436,7 +436,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'Turbina',
-      aboutTitle: 'Acerca de',
+      aboutTitle: 'Acerca de Turbina',
       segmentAriaLabel: 'Acciones de Turbina',
       segments: {
         unlock: 'Desbloquear',
@@ -535,6 +535,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'Puntos de contribución · Comprobante de recompensa',
+          body: 'Reclamar recompensas consume puntos de contribución a {ratio}. Quemar AGX otorga puntos de contribución y refuerza la deflación del protocolo.',
+        },
+        {
+          key: 'turbine',
+          title: 'Turbina · Centro de desbloqueo de cuota',
+          body: 'Las recompensas reclamadas de la cola de liberación entran en la cuota de Turbina. Comprar la misma cantidad de AGX con USD1 inicia un silencio de 24–96 h. Al vencer, el gAGX se enruta por el splitter para liberación lineal; no llega al monedero de inmediato.',
         },
       ],
     },

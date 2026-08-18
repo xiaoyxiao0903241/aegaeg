@@ -370,7 +370,7 @@ const app = defineMessages({
       sellLabel: 'Bakar',
       receiveLabel: 'Terima',
       pointsToken: 'Poin kontribusi saya',
-      currentContribution: 'Nilai kontribusi saat ini',
+      currentContribution: 'Poin kontribusi saat ini',
       burnRate: 'Rasio bakar',
       destination: 'Tujuan bakar',
       destinationValue: 'Lubang hitam {burnPct}% · LP {injectPct}%',
@@ -378,7 +378,7 @@ const app = defineMessages({
       openProvider: 'Lihat kontrak tukar kontribusi di BscScan',
       action: 'Bakar',
       success: 'Bakar berhasil',
-      aboutTitle: 'Tentang',
+      aboutTitle: 'Tentang poin kontribusi',
       blocked: {
         paused: 'Bakar dijeda. Silakan coba lagi nanti.',
         belowMin: 'Jumlah di bawah batas bakar minimum per transaksi.',
@@ -432,7 +432,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'Turbin',
-      aboutTitle: 'Tentang',
+      aboutTitle: 'Tentang Turbin',
       segmentAriaLabel: 'Aksi Turbine',
       segments: {
         unlock: 'Buka',
@@ -531,6 +531,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'Poin kontribusi · Voucher klaim imbalan',
+          body: 'Mengklaim imbalan mengonsumsi poin kontribusi pada {ratio}. Membakar AGX memberi poin kontribusi dan memperkuat deflasi protokol.',
+        },
+        {
+          key: 'turbine',
+          title: 'Turbin · Pusat buka kuota',
+          body: 'Imbalan dari antrean rilis masuk kuota Turbin. Membeli AGX setara dengan USD1 memulai keheningan 24–96 jam. Setelah berakhir, gAGX dialihkan lewat splitter untuk rilis linier, tidak langsung ke dompet.',
         },
       ],
     },

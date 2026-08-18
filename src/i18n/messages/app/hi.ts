@@ -365,7 +365,7 @@ const app = defineMessages({
       sellLabel: 'बर्न',
       receiveLabel: 'प्राप्त करें',
       pointsToken: 'योगदान अंक',
-      currentContribution: 'वर्तमान योगदान',
+      currentContribution: 'वर्तमान योगदान अंक',
       burnRate: 'बर्न दर',
       destination: 'बर्न गंतव्य',
       destinationValue: 'ब्लैक होल {burnPct}% · LP {injectPct}%',
@@ -373,7 +373,7 @@ const app = defineMessages({
       openProvider: 'BscScan पर योगदान स्वैप देखें',
       action: 'बर्न',
       success: 'बर्न सफल',
-      aboutTitle: 'परिचय',
+      aboutTitle: 'योगदान अंक के बारे में',
       blocked: {
         paused: 'बर्न रोक दिया गया है। कृपया बाद में पुनः प्रयास करें।',
         belowMin: 'राशि न्यूनतम बर्न सीमा से कम है।',
@@ -427,7 +427,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'टरबाइन',
-      aboutTitle: 'परिचय',
+      aboutTitle: 'टरबाइन के बारे में',
       segmentAriaLabel: 'टरबाइन क्रियाएँ',
       segments: {
         unlock: 'अनलॉक',
@@ -526,6 +526,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'योगदान अंक · पुरस्कार दावा वाउचर',
+          body: 'पुरस्कार दावा करने पर योगदान अंक {ratio} से खर्च होते हैं। AGX बर्न करने से अंक मिलते हैं और प्रोटोकॉल डिफ्लेशन बढ़ता है।',
+        },
+        {
+          key: 'turbine',
+          title: 'टरबाइन · कोटा अनलॉक हब',
+          body: 'रिलीज़ कतार से दावा किए गए पुरस्कार पहले टरबाइन कोटा में जाते हैं। USD1 से बराबर AGX खरीदने पर 24–96 घंटे का साइलेंस शुरू होता है; समाप्त होने पर gAGX स्प्लिटर से रैखिक रिलीज़ होता है और तुरंत वॉलेट में नहीं आता।',
         },
       ],
     },

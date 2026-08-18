@@ -1,8 +1,8 @@
 /**
  * Turbine 详情页
  *
- * 概览区展示待解锁、冷却中与累计提现三张统计卡，下方为代币
- * 介绍轮播、解锁记录、机制说明与 FAQ。
+ * 概览区展示待解锁、冷却中与累计提现三张统计卡，下方为涡轮
+ * 介绍卡、解锁记录、机制说明与 FAQ。
  */
 import { useState } from 'react'
 
@@ -98,8 +98,7 @@ export function TurbineExchangeDetail({
 
       <Section>
         <Section.Title>{t.exchange.turbine.aboutTitle}</Section.Title>
-        {/* 代币介绍轮播顺序：gAGX · USD1 · X · gAGX 质押 */}
-        <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'gagxStake']} />
+        <TokenAboutCarousel cardKeys={['turbine']} />
       </Section>
 
       <Section>

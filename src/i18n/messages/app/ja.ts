@@ -372,7 +372,7 @@ const app = defineMessages({
       sellLabel: 'バーン',
       receiveLabel: '獲得',
       pointsToken: '貢献ポイント',
-      currentContribution: '現在の貢献値',
+      currentContribution: '現在の貢献ポイント',
       burnRate: 'バーン比率',
       destination: 'バーン先',
       destinationValue: 'ブラックホール {burnPct}% · LP {injectPct}%',
@@ -380,7 +380,7 @@ const app = defineMessages({
       openProvider: 'BscScan で貢献交換契約を確認',
       action: 'バーン',
       success: 'バーン成功',
-      aboutTitle: 'について',
+      aboutTitle: '貢献ポイントについて',
       blocked: {
         paused: 'バーンは一時停止中です。しばらくしてから再度お試しください。',
         belowMin: '1回あたりの最小バーン額を下回っています。',
@@ -434,7 +434,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'タービン',
-      aboutTitle: 'について',
+      aboutTitle: 'タービンについて',
       segmentAriaLabel: 'タービン操作',
       segments: {
         unlock: 'アンロック',
@@ -532,6 +532,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: '貢献ポイント · 収益受取証憑',
+          body: '収益の受取は貢献ポイントを {ratio} で消費します。AGX をバーンすると貢献ポイントを得られ、プロトコルのデフレも強まります。',
+        },
+        {
+          key: 'turbine',
+          title: 'タービン · クォータ解除ハブ',
+          body: 'リリース受取の報酬はまずタービンクォータに入ります。USD1 で同量の AGX を買うと 24–96 時間のサイレンスが始まり、満了後の gAGX はスプリッター経由で線形リリースされ、すぐにはウォレットへ入りません。',
         },
       ],
     },

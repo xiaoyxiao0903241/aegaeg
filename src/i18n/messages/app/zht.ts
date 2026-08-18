@@ -356,7 +356,7 @@ const app = defineMessages({
       sellLabel: '銷燬',
       receiveLabel: '獲得',
       pointsToken: '貢獻點數',
-      currentContribution: '當前貢獻值',
+      currentContribution: '當前貢獻點數',
       burnRate: '銷燬比率',
       destination: '銷燬去向',
       destinationValue: '黑洞 {burnPct}% · LP {injectPct}%',
@@ -364,7 +364,7 @@ const app = defineMessages({
       openProvider: '在 BscScan 查看貢獻兌換合約',
       action: '銷燬',
       success: '銷燬成功',
-      aboutTitle: '關於',
+      aboutTitle: '關於貢獻點數',
       blocked: {
         paused: '銷燬已暫停，請稍後再試。',
         belowMin: '低於單筆最小銷燬限額。',
@@ -416,7 +416,7 @@ const app = defineMessages({
     },
     turbine: {
       title: '渦輪',
-      aboutTitle: '關於',
+      aboutTitle: '關於渦輪',
       segmentAriaLabel: '渦輪操作',
       segments: {
         unlock: '解鎖',
@@ -514,9 +514,19 @@ const app = defineMessages({
           title: 'X · 權益代幣',
           body: '生態參與與權益代幣，記錄鏈上貢獻，可兌換權益、參與活動並獲得空投加成。',
         },
+        {
+          key: 'contribution',
+          title: '貢獻點數 · 收益領取憑證',
+          body: '領取收益按 {ratio} 消耗貢獻點數。銷燬 AGX 即獲得貢獻點數，同時增強協議通縮。',
+        },
+        {
+          key: 'turbine',
+          title: '渦輪 · 配額解鎖中樞',
+          body: '釋放領取的獎勵先進入渦輪配額。用 USD1 買入等量 AGX 後進入 24–96 小時靜默期；到期提取的 gAGX 經分流器線性釋放，不會立刻到錢包。',
+        },
       ],
     },
-    tokenContract: '查看合同',
+    tokenContract: '查看合約',
     tokenPrevious: '上一個代幣',
     tokenNext: '下一個代幣',
     faq: {

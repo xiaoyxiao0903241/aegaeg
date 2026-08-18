@@ -362,7 +362,7 @@ const app = defineMessages({
       sellLabel: 'Đốt',
       receiveLabel: 'Nhận',
       pointsToken: 'Điểm đóng góp của tôi',
-      currentContribution: 'Đóng góp hiện tại',
+      currentContribution: 'Điểm đóng góp hiện tại',
       burnRate: 'Tỷ lệ đốt',
       destination: 'Đích đốt',
       destinationValue: 'Hố đen {burnPct}% · LP {injectPct}%',
@@ -370,7 +370,7 @@ const app = defineMessages({
       openProvider: 'Xem hợp đồng đổi đóng góp trên BscScan',
       action: 'Đốt',
       success: 'Đốt thành công',
-      aboutTitle: 'Giới thiệu',
+      aboutTitle: 'Về điểm đóng góp',
       blocked: {
         paused: 'Đốt đã tạm dừng, vui lòng thử lại sau.',
         belowMin: 'Thấp hơn hạn mức đốt tối thiểu mỗi lần.',
@@ -424,7 +424,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'Tuabin',
-      aboutTitle: 'Giới thiệu',
+      aboutTitle: 'Về Tuabin',
       segmentAriaLabel: 'Thao tác Turbine',
       segments: {
         unlock: 'Mở khóa',
@@ -523,6 +523,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'Điểm đóng góp · Chứng từ nhận lợi nhuận',
+          body: 'Nhận lợi nhuận tiêu điểm đóng góp theo {ratio}. Đốt AGX sẽ nhận điểm đóng góp và tăng giảm phát của giao thức.',
+        },
+        {
+          key: 'turbine',
+          title: 'Tuabin · Trung tâm mở khóa hạn ngạch',
+          body: 'Phần thưởng nhận từ hàng đợi giải phóng vào hạn ngạch Tuabin. Mua lượng AGX tương đương bằng USD1 bắt đầu im lặng 24–96 giờ; gAGX hết hạn được tuyến qua bộ chia để giải phóng tuyến tính, không vào ví ngay.',
         },
       ],
     },

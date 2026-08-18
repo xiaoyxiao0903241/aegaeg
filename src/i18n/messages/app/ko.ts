@@ -366,7 +366,7 @@ const app = defineMessages({
       sellLabel: '소각',
       receiveLabel: '획득',
       pointsToken: '내 기여 포인트',
-      currentContribution: '현재 기여값',
+      currentContribution: '현재 기여 포인트',
       burnRate: '소각 비율',
       destination: '소각 목적지',
       destinationValue: '블랙홀 {burnPct}% · LP {injectPct}%',
@@ -374,7 +374,7 @@ const app = defineMessages({
       openProvider: 'BscScan에서 기여 교환 컨트랙트 보기',
       action: '소각',
       success: '소각 성공',
-      aboutTitle: '정보',
+      aboutTitle: '기여 포인트 안내',
       blocked: {
         paused: '소각이 일시 중지되었습니다. 나중에 다시 시도해 주세요.',
         belowMin: '단일 최소 소각 한도보다 낮습니다.',
@@ -428,7 +428,7 @@ const app = defineMessages({
     },
     turbine: {
       title: '터빈',
-      aboutTitle: '정보',
+      aboutTitle: '터빈 안내',
       segmentAriaLabel: '터빈 작업',
       segments: {
         unlock: '잠금 해제',
@@ -527,6 +527,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: '기여 포인트 · 수익 수령 증빙',
+          body: '수익 수령 시 기여 포인트를 {ratio}로 소모합니다. AGX를 소각하면 기여 포인트를 얻고 프로토콜 디플레이션이 강화됩니다.',
+        },
+        {
+          key: 'turbine',
+          title: '터빈 · 쿼터 잠금 해제 허브',
+          body: '릴리스에서 수령한 보상은 먼저 터빈 쿼터로 들어갑니다. USD1로 같은 양의 AGX를 사면 24–96시간 사일런스가 시작되고, 만료 후 gAGX는 스플리터를 통해 선형 릴리스되며 바로 지갑에 들어오지 않습니다.',
         },
       ],
     },

@@ -363,7 +363,7 @@ const app = defineMessages({
       sellLabel: 'Burn',
       receiveLabel: 'Receive',
       pointsToken: 'Contribution points',
-      currentContribution: 'Current contribution',
+      currentContribution: 'Current contribution points',
       burnRate: 'Burn rate',
       destination: 'Burn destination',
       destinationValue: 'Black hole {burnPct}% · LP {injectPct}%',
@@ -371,7 +371,7 @@ const app = defineMessages({
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
       success: 'Burn successful',
-      aboutTitle: 'About',
+      aboutTitle: 'About contribution points',
       blocked: {
         paused: 'Burn is paused. Please try again later.',
         belowMin: 'Amount is below the minimum burn limit.',
@@ -425,7 +425,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'Turbine',
-      aboutTitle: 'About',
+      aboutTitle: 'About Turbine',
       segmentAriaLabel: 'Turbine actions',
       segments: {
         unlock: 'Unlock',
@@ -524,6 +524,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Equity token',
           body: 'An ecosystem participation and equity token that records on-chain contribution, redeemable for rights, events, and airdrop boosts.',
+        },
+        {
+          key: 'contribution',
+          title: 'Contribution points · Reward claim voucher',
+          body: 'Claiming rewards consumes contribution points at {ratio}. Burning AGX grants contribution points and strengthens protocol deflation.',
+        },
+        {
+          key: 'turbine',
+          title: 'Turbine · Quota unlock hub',
+          body: 'Rewards claimed from the release queue enter Turbine quota. Buying an equal amount of AGX with USD1 starts a 24–96 hour silence. After it ends, gAGX is routed through the splitter for linear release — it does not arrive in your wallet immediately.',
         },
       ],
     },

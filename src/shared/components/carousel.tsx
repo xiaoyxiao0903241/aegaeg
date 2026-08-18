@@ -169,6 +169,12 @@ function CarouselRoot({
     {
       ...opts,
       axis: 'x',
+      watchDrag: (emblaApi, event) => {
+        if (emblaApi.scrollSnapList().length <= 1) return false
+        const passed = opts?.watchDrag
+        if (typeof passed === 'function') return passed(emblaApi, event)
+        return passed !== false
+      },
     },
     plugins,
   )
@@ -215,6 +221,7 @@ function CarouselRoot({
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
+      if (snapCount <= 1) return
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
         scrollPrev()
@@ -223,17 +230,26 @@ function CarouselRoot({
         scrollNext()
       }
     },
-    [scrollPrev, scrollNext],
+    [scrollPrev, scrollNext, snapCount],
   )
 
   useEffect(() => {
     if (!api) return
-    api.on('init', onSelect)
-    api.on('reInit', onSelect)
+    const syncAutoplay = (instance: NonNullable<typeof api>) => {
+      const autoplay = instance.plugins()?.autoplay
+      if (!autoplay) return
+      if (instance.scrollSnapList().length <= 1) autoplay.stop()
+    }
+    const onInit = (instance: NonNullable<typeof api>) => {
+      onSelect(instance)
+      syncAutoplay(instance)
+    }
+    api.on('init', onInit)
+    api.on('reInit', onInit)
     api.on('select', onSelect)
     return () => {
-      api.off('init', onSelect)
-      api.off('reInit', onSelect)
+      api.off('init', onInit)
+      api.off('reInit', onInit)
       api.off('select', onSelect)
     }
   }, [api, onSelect])

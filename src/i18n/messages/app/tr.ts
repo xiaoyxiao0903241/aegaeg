@@ -362,7 +362,7 @@ const app = defineMessages({
       sellLabel: 'Yakım',
       receiveLabel: 'Alınacak',
       pointsToken: 'Katkı puanlarım',
-      currentContribution: 'Mevcut katkı değeri',
+      currentContribution: 'Mevcut katkı puanı',
       burnRate: 'Yakım oranı',
       destination: 'Yakım hedefi',
       destinationValue: 'Kara delik {burnPct}% · LP {injectPct}%',
@@ -370,7 +370,7 @@ const app = defineMessages({
       openProvider: 'Katkı takas sözleşmesini BscScan’de görüntüle',
       action: 'Yakım',
       success: 'Yakım başarılı',
-      aboutTitle: 'Hakkında',
+      aboutTitle: 'Katkı puanları hakkında',
       blocked: {
         paused: 'Yakım duraklatıldı. Lütfen daha sonra tekrar deneyin.',
         belowMin: 'Tek işlem minimum yakım limitinin altında.',
@@ -423,7 +423,7 @@ const app = defineMessages({
     },
     turbine: {
       title: 'Türbin',
-      aboutTitle: 'Hakkında',
+      aboutTitle: 'Türbin hakkında',
       segmentAriaLabel: 'Türbin işlemleri',
       segments: {
         unlock: 'Kilidi aç',
@@ -522,6 +522,16 @@ const app = defineMessages({
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+        },
+        {
+          key: 'contribution',
+          title: 'Katkı puanı · Ödül talep belgesi',
+          body: 'Ödül talep etmek katkı puanını {ratio} oranında tüketir. AGX yakmak puan kazandırır ve protokol deflasyonunu güçlendirir.',
+        },
+        {
+          key: 'turbine',
+          title: 'Türbin · Kota kilit açma merkezi',
+          body: 'Serbest bırakma kuyruğundan alınan ödüller önce Türbin kotasına girer. USD1 ile eşit AGX almak 24–96 saatlik sessizliği başlatır; süre bitince gAGX splitter üzerinden doğrusal serbest bırakılır ve cüzdana hemen gelmez.',
         },
       ],
     },
