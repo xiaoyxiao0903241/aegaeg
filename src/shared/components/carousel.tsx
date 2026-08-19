@@ -81,7 +81,9 @@ const carouselChrome = tv({
     layout: {
       desktop: {
         root: 'gap-0',
-        viewport: 'dapp:-mx-6 dapp:w-[calc(100%+3rem)] dapp:px-6 dapp:pb-(--shadow-bleed-subtle)',
+        // 多列滑页 min-content 会顶穿 calc(100%+出血)，须允许收缩并裁切
+        viewport:
+          'min-w-0 overflow-x-hidden dapp:-mx-6 dapp:w-[calc(100%+3rem)] dapp:px-6 dapp:pb-(--shadow-bleed-subtle)',
         indicatorBar: [
           'gap-3.5',
           'relative z-1 -mt-(--shadow-bleed-subtle) pt-(--carousel-pc-indicator-pt)',
@@ -91,6 +93,7 @@ const carouselChrome = tv({
       },
       mobile: {
         viewport: [
+          'min-w-0 overflow-x-hidden',
           '-mx-(--shadow-bleed-h5) w-[calc(100%+2*var(--shadow-bleed-h5))]',
           'px-(--shadow-bleed-h5) pt-(--carousel-h5-viewport-pad-y) pb-(--shadow-bleed-subtle)',
         ].join(' '),

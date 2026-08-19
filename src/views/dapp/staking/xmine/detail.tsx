@@ -1,7 +1,7 @@
 /**
  * Xmine 详情页（右栏）
  *
- * 展示 X 价值说明、协议概览、我的仓位、释放记录、
+ * 展示协议概览、X 价值轮播、我的仓位、释放记录、
  * 机制说明、趋势图与 FAQ。
  */
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
@@ -20,7 +20,7 @@ import {
   StakingTvlChart,
 } from '~/views/dapp/staking/primitives'
 import { useStakingDetail } from '~/views/dapp/staking/use-detail'
-import { StakingXValueCard } from '~/views/dapp/staking/xmine/primitives'
+import { StakingXValueCarousel } from '~/views/dapp/staking/xmine/primitives'
 import { useXmineDetail } from '~/views/dapp/staking/xmine/use-xmine'
 
 export function XmineDetail() {
@@ -79,12 +79,7 @@ export function XmineDetail() {
 
       <Section>
         <Section.Title>{xValue.title}</Section.Title>
-        <StakingXValueCard
-          badge={xValue.badge}
-          columns={xValue.columns}
-          supplyLabel={xValue.supplyLabel}
-          supplyValue={xValue.supplyValue}
-        />
+        <StakingXValueCarousel copy={xValue} />
       </Section>
 
       <Section>

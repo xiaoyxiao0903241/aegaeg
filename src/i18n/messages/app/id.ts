@@ -2212,6 +2212,38 @@ const app = defineMessages({
             ],
           },
         ],
+        sourcesKicker: 'Sumber nilai',
+        sourcesHeadline: 'Tiga lapisan permintaan',
+        sourcesBadge: 'Permintaan X terus menguat',
+        sources: [
+          { title: 'Permintaan gAGX', copy: 'Stake untuk menambang dan menciptakan permintaan X' },
+          {
+            title: 'Aliran balik imbal hasil',
+            copy: 'Imbal hasil protokol terus kembali ke ekosistem',
+          },
+          {
+            title: 'Pertumbuhan ekosistem',
+            copy: 'Aplikasi berkembang, pengguna mendorong permintaan',
+          },
+        ],
+        deflationKicker: 'Mekanisme deflasi X',
+        deflationHeadline: 'Deflasi berkelanjutan',
+        deflationBadge: 'Pasokan berkurang · nilai naik',
+        deflationSteps: [
+          { title: 'Pertumbuhan ekosistem', copy: 'Ekosistem terus berkembang' },
+          { title: 'Permintaan X naik', copy: 'Aplikasi dan perdagangan mengangkat permintaan' },
+          { title: 'Peredaran pasar', copy: 'X beredar dan dipakai di pasar' },
+          { title: 'Pajak jual 25% dibakar', copy: 'Setiap penjualan otomatis membakar 25%' },
+        ],
+        featuresKicker: 'Ciri inti X',
+        featuresHeadline: 'Pembawa nilai jangka panjang',
+        featuresBadge: 'Langka · deflasi · likuid · ekspansi',
+        features: [
+          { title: 'Pasokan tetap', copy: 'Total tetap, nilai kelangkaan' },
+          { title: 'Deflasi berkelanjutan', copy: 'Mekanisme bakar menaikkan nilai' },
+          { title: 'Penyangga likuiditas', copy: 'Likuiditas menstabilkan pasar' },
+          { title: 'Ekspansi ekosistem', copy: 'Aplikasi tumbuh, nilai terakumulasi' },
+        ],
       },
     },
 
