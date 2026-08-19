@@ -340,6 +340,29 @@
   animation: network-pill-wrong-breathe 2.2s ease-in-out infinite;
 }
 
+@keyframes dapp-release-flow {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 22px 0;
+  }
+}
+
+.dapp-release-flow {
+  background-image: repeating-linear-gradient(
+    115deg,
+    transparent 0,
+    transparent 6px,
+    rgb(255 255 255 / 0.35) 11px,
+    transparent 16px,
+    transparent 22px
+  );
+  background-size: 22px 100%;
+  animation: dapp-release-flow 2s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .onboarding-highlight-hit {
     animation: none;
@@ -349,5 +372,9 @@
   .network-pill-wrong-breathe {
     animation: none;
     box-shadow: 0 0 0 2px color-mix(in oklch, var(--destructive) 32%, transparent);
+  }
+
+  .dapp-release-flow {
+    animation: none;
   }
 }
