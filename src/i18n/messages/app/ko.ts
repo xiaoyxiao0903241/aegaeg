@@ -2460,6 +2460,7 @@ const app = defineMessages({
       quotaInline: '스테이킹 한도: {quota} gAGX',
       submit: '스테이킹',
       success: '스테이킹 성공',
+      openKlineChart: 'K선 차트 보기',
       meta: {
         quota: '스테이킹 한도',
         daily: '수익률(일)',

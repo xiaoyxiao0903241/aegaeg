@@ -2541,6 +2541,7 @@ const app = defineMessages({
       quotaInline: 'Stake kotası: {quota} gAGX',
       submit: 'Yatır',
       success: 'Stake başarılı',
+      openKlineChart: 'Mum grafiğini görüntüle',
       meta: {
         quota: 'Stake kotası',
         daily: 'Getiri oranı (günlük)',

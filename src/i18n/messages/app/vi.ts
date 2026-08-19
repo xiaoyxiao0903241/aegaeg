@@ -2524,6 +2524,7 @@ const app = defineMessages({
       quotaInline: 'Hạn mức stake: {quota} gAGX',
       submit: 'Đặt cọc',
       success: 'Staking thành công',
+      openKlineChart: 'Xem biểu đồ nến',
       meta: {
         quota: 'Hạn mức stake',
         daily: 'Tỷ suất (ngày)',

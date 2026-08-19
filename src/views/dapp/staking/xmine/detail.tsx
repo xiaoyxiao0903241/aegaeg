@@ -3,17 +3,21 @@
  *
  * 展示协议概览、X 价值轮播、我的仓位、释放记录、
  * 机制说明、趋势图与 FAQ。
+ * X 价格卡右侧可打开 DexScreener K 线。
  */
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
+import { xmineValueAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
+import { Icon } from '~/shared/components/icon'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
+import { cn } from '~/shared/lib/utils'
 import { openAssetsView } from '~/views/dapp/shared/navigation'
 import {
   StakingMechanismCard,
@@ -61,11 +65,25 @@ export function XmineDetail() {
         <Grid columns={6}>
           {overviewItems.map((item, index) => (
             <Tile
-              className={
-                index < 2 ? 'col-span-3 min-w-0' : 'col-span-2 min-w-0 max-dapp:col-span-3'
-              }
+              className={cn(
+                index < 2 ? 'col-span-3 min-w-0' : 'col-span-2 min-w-0 max-dapp:col-span-3',
+                item.klineHref ? 'relative pr-12' : null,
+              )}
               key={item.label}
             >
+              {item.klineHref ? (
+                <Text
+                  as="a"
+                  aria-label={t.staking.xmine.openKlineChart}
+                  className="duration-dapp-fast absolute top-1/2 right-3.5 grid size-8.5 -translate-y-1/2 place-items-center rounded-control border border-border bg-card no-underline transition-[border-color,transform] hover:-translate-y-[calc(50%+1px)] hover:border-primary/40"
+                  href={item.klineHref}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  tone="primary"
+                >
+                  <Icon alt="" src={xmineValueAssets.kline} />
+                </Text>
+              ) : null}
               <Tile.Label>
                 {item.label}
                 {item.hint ? <Tooltip.Info content={item.hint} /> : null}

@@ -2470,6 +2470,7 @@ const app = defineMessages({
       quotaInline: 'โควตาสเตก: {quota} gAGX',
       submit: 'สเตก',
       success: 'สเตกสำเร็จ',
+      openKlineChart: 'ดูกราฟแท่งเทียน',
       meta: {
         quota: 'โควตาสเตก',
         daily: 'อัตราผลตอบแทน (รายวัน)',

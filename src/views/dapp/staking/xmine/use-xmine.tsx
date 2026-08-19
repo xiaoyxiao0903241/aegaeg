@@ -262,7 +262,12 @@ export function useXmineDetail() {
       : ZERO_PCT
   const lifetimeX = rewardLifetime.data ?? 0
 
-  const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
+  const overviewItems: Array<{
+    hint?: string
+    klineHref?: string
+    label: string
+    value: ReactNode
+  }> = [
     {
       label: t.staking.xmine.overviewMetrics[0]?.label ?? '',
       hint: t.staking.xmine.overviewMetrics[0]?.hint,
@@ -277,6 +282,7 @@ export function useXmineDetail() {
     {
       label: t.staking.xmine.overviewMetrics[1]?.label ?? '',
       hint: t.staking.xmine.overviewMetrics[1]?.hint,
+      klineHref: `https://dexscreener.com/bsc/${BSC_CONTRACTS.xToken}`,
       value: (
         <StakingTokenMetricValue
           approx={formatUsdApprox(agxPerX, priceUsd)}

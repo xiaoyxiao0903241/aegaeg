@@ -2480,6 +2480,7 @@ const app = defineMessages({
       quotaInline: 'ステーキング枠：{quota} gAGX',
       submit: 'ステーキング',
       success: 'ステーキング成功',
+      openKlineChart: 'K線チャートを見る',
       meta: {
         quota: 'ステーキング枠',
         daily: '収益率（日）',

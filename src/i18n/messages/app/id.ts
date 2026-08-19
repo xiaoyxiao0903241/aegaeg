@@ -2546,6 +2546,7 @@ const app = defineMessages({
       quotaInline: 'Kuota staking: {quota} gAGX',
       submit: 'Stake',
       success: 'Staking berhasil',
+      openKlineChart: 'Lihat grafik candlestick',
       meta: {
         quota: 'Kuota staking',
         daily: 'Hasil (harian)',

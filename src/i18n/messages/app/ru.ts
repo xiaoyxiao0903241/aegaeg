@@ -2481,6 +2481,7 @@ const app = defineMessages({
       quotaInline: 'Квота майнинга: {quota} gAGX',
       submit: 'Стейк',
       success: 'Стейк выполнен',
+      openKlineChart: 'Открыть свечной график',
       meta: {
         quota: 'Квота майнинга',
         daily: 'Дневная доходность',

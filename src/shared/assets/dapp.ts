@@ -50,7 +50,7 @@ export const stakingHubAssets = {
   modeCalc: '/assets/figma/dapp/staking/ic-mode-calc.svg',
 } as const
 
-/** X 长期价值轮播格子图标（原型 SVG，与导航 / Hub 图标不是同一套）。 */
+/** X 挖矿页图标（价值轮播格子与价格卡 K 线；原型 SVG，与导航 / Hub 不是同一套）。 */
 export const xmineValueAssets = {
   mine: '/assets/figma/dapp/xmine/ic-mine.svg',
   rewards: '/assets/figma/dapp/xmine/ic-rewards.svg',
@@ -60,6 +60,7 @@ export const xmineValueAssets = {
   burn: '/assets/figma/dapp/xmine/ic-burn.svg',
   vault: '/assets/figma/dapp/xmine/ic-vault.svg',
   globe: '/assets/figma/dapp/xmine/ic-globe.svg',
+  kline: '/assets/figma/dapp/xmine/ic-kline.svg',
 } as const
 
 /** 资产中心各模式图标（与质押中心图标不是同一套）。 */

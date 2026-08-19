@@ -2385,6 +2385,7 @@ const app = defineMessages({
       quotaInline: '質押額度：{quota} gAGX',
       submit: '質押',
       success: '質押成功',
+      openKlineChart: '查看K線圖',
       meta: {
         quota: '質押額度',
         daily: '收益率(日)',

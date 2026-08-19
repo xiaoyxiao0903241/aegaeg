@@ -2458,6 +2458,7 @@ const app = defineMessages({
       quotaInline: 'Mining quota: {quota} gAGX',
       submit: 'Stake',
       success: 'Staked successfully',
+      openKlineChart: 'View candlestick chart',
       meta: {
         quota: 'Mining quota',
         daily: 'Daily yield',

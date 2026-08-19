@@ -2460,6 +2460,7 @@ const app = defineMessages({
       quotaInline: 'माइनिंग कोटा: {quota} gAGX',
       submit: 'स्टेक',
       success: 'स्टेक सफल',
+      openKlineChart: 'कैंडलस्टिक चार्ट देखें',
       meta: {
         quota: 'माइनिंग कोटा',
         daily: 'दैनिक यील्ड',
