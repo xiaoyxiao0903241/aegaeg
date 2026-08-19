@@ -19,6 +19,7 @@ import {
   mapStepsWithEpochSchedule,
   withEpochSchedule,
 } from '~/views/dapp/shared/epoch-schedule'
+import { openAssetsView } from '~/views/dapp/shared/navigation'
 import {
   StakingMechanismCard,
   StakingMetricValue,
@@ -41,7 +42,6 @@ export function StakeDetail() {
   } = useStakeDetail()
   const {
     t,
-    selectTab,
     chartRange,
     setChartRange,
     chartLoading,
@@ -86,7 +86,7 @@ export function StakeDetail() {
           <Section.Title>{t.staking.aside.positions}</Section.Title>
           <button
             className="inline-flex items-center rounded-full bg-primary/15 px-2.5"
-            onClick={() => selectTab('assets')}
+            onClick={() => openAssetsView('stake')}
             type="button"
           >
             <Text as="span" className="font-semibold" tone="primary" variant="support">

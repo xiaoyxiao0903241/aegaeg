@@ -13,6 +13,7 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
 import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
+import { openAssetsView } from '~/views/dapp/shared/navigation'
 import { useBondDetail } from '~/views/dapp/staking/bond/use-bond'
 import {
   StakingMechanismCard,
@@ -36,7 +37,6 @@ export function BondDetail({ kind }: { kind: BondKind }) {
   } = useBondDetail(kind)
   const {
     t,
-    selectTab,
     chartRange,
     setChartRange,
     chartLoading,
@@ -82,7 +82,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
           <Section.Title>{t.staking.aside.positions}</Section.Title>
           <button
             className="inline-flex items-center rounded-full bg-primary/15 px-2.5"
-            onClick={() => selectTab('assets')}
+            onClick={() => openAssetsView(kind === 'lp' ? 'lpbond' : 'burnbond')}
             type="button"
           >
             <Text as="span" className="font-semibold" tone="primary" variant="support">

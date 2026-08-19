@@ -14,6 +14,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
+import { openAssetsView } from '~/views/dapp/shared/navigation'
 import {
   StakingMechanismCard,
   StakingMetricValue,
@@ -36,7 +37,6 @@ export function XmineDetail() {
   } = useXmineDetail()
   const {
     t,
-    selectTab,
     chartRange,
     setChartRange,
     chartLoading,
@@ -88,7 +88,7 @@ export function XmineDetail() {
           <Section.Title>{t.staking.aside.positions}</Section.Title>
           <button
             className="inline-flex items-center rounded-full bg-primary/15 px-2.5"
-            onClick={() => selectTab('assets')}
+            onClick={() => openAssetsView('xmine')}
             type="button"
           >
             <Text as="span" className="font-semibold" tone="primary" variant="support">
