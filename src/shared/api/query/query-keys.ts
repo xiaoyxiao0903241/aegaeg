@@ -67,6 +67,7 @@ export const queryKeys = {
     teamReferrals: (params: PaginationParams = {}) =>
       paginated(['api', 'teamReferrals'] as const, params),
     teamOverview: ['api', 'teamOverview'] as const,
+    teamMakingOverview: ['api', 'teamMakingOverview'] as const,
     qualifiedPartitions: ['api', 'performance', 'qualified-partitions'] as const,
     homePopupNotices: (locale: string) => ['api', 'home', 'popupNotices', locale] as const,
     agxContributionSummary: ['api', 'agxContribution', 'summary'] as const,

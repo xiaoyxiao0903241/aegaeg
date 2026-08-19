@@ -11,6 +11,7 @@ import type {
   RewardTotals,
   SalesLogItem,
   TeamCommunityOverview,
+  TeamMakingOverview,
   TeamReferralItem,
   TeamRewardClaimLogItem,
   UserPerformance,
@@ -112,6 +113,21 @@ export async function getTeamReferrals(
 
 export async function getTeamOverview(token: string): Promise<TeamCommunityOverview> {
   return apiRequest<TeamCommunityOverview>('/team/overview', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+/**
+ * 查询当前用户做市社区概览。
+ *
+ * @param token 登录 JWT
+ * @returns 人数、USD 业绩与做市等级
+ * @see docs/backend-api/api.md #team/making-overview
+ */
+export async function getTeamMakingOverview(token: string): Promise<TeamMakingOverview> {
+  return apiRequest<TeamMakingOverview>('/team/making-overview', {
     method: 'POST',
     token,
     body: {},

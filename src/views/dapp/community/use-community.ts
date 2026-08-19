@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useMakingOverview, useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
+import { useTeamMakingOverview, useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
@@ -84,7 +84,7 @@ export function useCommunityDock() {
 /**
  * 社区正文数据组装
  *
- * 汇总团队概览、共建等级与邀请明细分页数据；
+ * 汇总做市社区概览、今日新增人数与邀请明细分页；
  * 分页状态在本地维护，取数均要求登录会话就绪。
  */
 export function useCommunityDetail() {
@@ -92,8 +92,9 @@ export function useCommunityDetail() {
   const { sessionReady, walletReady } = useDappHost()
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
+  const { data: makingOverview, isLoading: makingOverviewLoading } =
+    useTeamMakingOverview(sessionReady)
   const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
-  const { data: making, isLoading: makingLoading } = useMakingOverview(sessionReady)
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
     sessionReady,
@@ -106,10 +107,10 @@ export function useCommunityDetail() {
     isLoggingIn,
     invitesPage,
     setInvitesPage,
+    makingOverview,
+    makingOverviewLoading,
     overview,
     overviewLoading,
-    making,
-    makingLoading,
     referrals,
     referralsLoading,
   }

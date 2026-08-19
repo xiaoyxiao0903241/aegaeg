@@ -51,10 +51,10 @@ export function CommunityDetail() {
     isLoggingIn,
     invitesPage,
     setInvitesPage,
+    makingOverview,
+    makingOverviewLoading,
     overview,
     overviewLoading,
-    making,
-    makingLoading,
     referrals,
     referralsLoading,
   } = useCommunityDetail()
@@ -109,14 +109,15 @@ export function CommunityDetail() {
   })
   const inviteCount = !sessionReady
     ? formatNumber(0, { digits: 0, trimZeros: true })
-    : formatNumber(overview?.direct_referral_count ?? referrals?.total ?? 0, {
+    : formatNumber(makingOverview?.direct_referral_count ?? referrals?.total ?? 0, {
         digits: 0,
         trimZeros: true,
       })
   const inviteSectionTitle = interpolate(t.community.myInvites, { count: inviteCount })
   const authPending = sessionReady && isLoggingIn
   const statsLoading =
-    sessionReady && (overviewLoading || makingLoading) && overview == null && making == null
+    sessionReady &&
+    ((makingOverviewLoading && makingOverview == null) || (overviewLoading && overview == null))
 
   // 未连接钱包：只展示浏览流程与 FAQ，不造空成员态。
   if (!walletReady) {
@@ -132,26 +133,31 @@ export function CommunityDetail() {
   }
 
   // 不能用 isLoading ? 0：加载中 2000 会闪成 0 再变回 3000，用 ?? 0 兜底缺失字段
-  const directCount = formatNumber(overview?.direct_referral_count ?? 0, {
+  const directCount = formatNumber(makingOverview?.direct_referral_count ?? 0, {
     digits: 0,
     trimZeros: true,
   })
-  const directVolume = formatNumber(overview?.direct_presale_volume ?? 0, { prefix: '$' })
-  const teamCount = formatNumber(overview?.descendant_count ?? 0, {
+  const directVolume = formatNumber(makingOverview?.making_direct_team_market ?? 0, { prefix: '$' })
+  const teamCount = formatNumber(makingOverview?.team_count ?? 0, {
     digits: 0,
     trimZeros: true,
   })
-  const teamVolume = formatNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
+  const teamVolume = formatNumber(makingOverview?.making_market ?? 0, { prefix: '$' })
   const todayDirect = interpolate(t.community.statToday, {
-    count: formatNumber(overview?.today_addition_direct_count ?? 0, { digits: 0, trimZeros: true }),
-    amount: formatNumber(overview?.today_addition_direct_presale_volume ?? 0, { prefix: '$' }),
+    count: formatNumber(overview?.today_addition_direct_count ?? 0, {
+      digits: 0,
+      trimZeros: true,
+    }),
+    amount: formatNumber(makingOverview?.today_addition_making_direct_team_market ?? 0, {
+      prefix: '$',
+    }),
   })
   const todayTeam = interpolate(t.community.statToday, {
     count: formatNumber(overview?.today_addition_team_count ?? 0, { digits: 0, trimZeros: true }),
-    amount: formatNumber(overview?.today_addition_sales_team_market ?? 0, { prefix: '$' }),
+    amount: formatNumber(makingOverview?.today_addition_making_market ?? 0, { prefix: '$' }),
   })
 
-  const makingRank = sessionReady && !authPending ? making?.making_rank : null
+  const makingRank = sessionReady && !authPending ? makingOverview?.making_rank : null
   const rankValue = formatMakingRankLabel(makingRank, '—')
   const rewardRateNote = interpolate(t.community.statRewardRate, {
     rate: t.rewards.hub.tierTable.rows.find((row) => row.level === rankValue)?.rate ?? '—',

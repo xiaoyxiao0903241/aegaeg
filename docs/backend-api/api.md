@@ -1410,6 +1410,28 @@ today_addition_sales_team_market（团队业绩减今日 daily.sales_team_market
 |200|成功 / Success|`ApiResponseTeamOverview` {`code`:integer, `data`:TeamCommunityOverview}|
 |401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
+### `POST` `/team/making-overview`
+
+**获取做市社区概览 / Making-community overview**
+
+- auth: required
+
+返回当前登录用户的做市社区指标。人数/等级取自 user_performance(ACTIVE)；
+今日业绩增量取自当日 user_performance_daily 的 *_delta 列；
+四个业绩相关字段均已换算为 USD 后返回（字段名未加 `_usd` 后缀）。
+
+direct_referral_count、making_direct_team_market、today_addition_making_direct_team_market、
+team_count、making_market、today_addition_making_market、making_rank。
+
+**Request body**
+
+- `application/json`: `EmptyRequest` {}
+
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|{`code`:integer, `data`:object}|
+|401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
+
 ### `POST` `/team/referrals`
 
 **分页获取当前用户直推下级 / Paginated direct referrals**

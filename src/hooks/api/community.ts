@@ -8,6 +8,7 @@ import {
   getReferralTotal,
   getRewardLogs,
   getSalesLogs,
+  getTeamMakingOverview,
   getTeamOverview,
   getTeamReferrals,
   getTeamRewardClaimLogs,
@@ -163,10 +164,20 @@ export function useTeamReferrals(params: PaginationParams = {}, enabled = true) 
 }
 
 /**
- * 查询团队概览汇总。
+ * 查询团队概览汇总（预售口径；创世 Dock 用）。
  *
  * @param enabled false 时暂停请求
  */
 export function useTeamOverview(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.teamOverview, getTeamOverview, enabled)
+}
+
+/**
+ * 查询做市社区概览（人数、USD 业绩、做市等级）。
+ *
+ * @param enabled false 时暂停请求
+ * @see docs/backend-api/api.md #team/making-overview
+ */
+export function useTeamMakingOverview(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.teamMakingOverview, getTeamMakingOverview, enabled)
 }

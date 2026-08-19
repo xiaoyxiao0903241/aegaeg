@@ -52,11 +52,10 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.erc20Root,
   ],
   community: [
+    queryKeys.api.teamMakingOverview,
     queryKeys.api.teamOverview,
     queryKeys.api.teamReferralsRoot,
-    queryKeys.api.referralTotal,
     queryKeys.api.performance,
-    queryKeys.api.makingOverview,
     queryKeys.chain.referralRoot,
   ],
   exchange: [

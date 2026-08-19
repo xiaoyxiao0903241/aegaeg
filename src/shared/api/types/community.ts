@@ -102,6 +102,22 @@ export interface TeamCommunityOverview {
   today_addition_sales_team_market?: string
 }
 
+/**
+ * POST /team/making-overview 解包后的 `data`。
+ * 四个业绩字段已是 USD（无 `_usd` 后缀）。
+ *
+ * @see docs/backend-api/api.md #team/making-overview
+ */
+export interface TeamMakingOverview {
+  direct_referral_count: number
+  making_direct_team_market: string
+  today_addition_making_direct_team_market: string
+  team_count: number
+  making_market: string
+  today_addition_making_market: string
+  making_rank: number
+}
+
 export interface TeamRewardClaimLogItem {
   /** 0=待领取, 1=已领取, 2=已领取, 3=领取失败 */
   status: number
