@@ -148,6 +148,8 @@ export const dappAssets = {
   rewardsHubGoBurnChevron: '/assets/figma/dapp/rewards-hub/ic-go-burn-chevron.svg',
   /** 抽奖 Chainlink VRF 标识。 */
   rewardsHubChainlink: '/assets/figma/dapp/rewards-hub/ic-chainlink.svg',
+  /** 共建机制表 A6–A9 团队业绩切换。 */
+  rewardsHubTierToggle: '/assets/figma/dapp/rewards-hub/ic-tier-toggle.svg',
   /** 社区等级暗色卡片插画。 */
   communityRankDeco: '/assets/figma/dapp/community/rank-deco.png',
   /** 生态支持·创世火箭。 */

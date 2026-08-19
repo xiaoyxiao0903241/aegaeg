@@ -5,6 +5,8 @@
  * 中部为四种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
  * 未登录时摘要卡显示空态占位。
  */
+import { useState } from 'react'
+
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -33,6 +35,53 @@ import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
+
+/** 团队业绩：与其它单元格同 copy 字阶；A6–A9 可切单线条件 */
+function MechanismTeamCell({
+  team,
+  teamAlt,
+  toggleAria,
+}: {
+  team: string
+  teamAlt?: string
+  toggleAria: string
+}) {
+  const [alt, setAlt] = useState(false)
+  const label = (
+    <Text as="span" variant="copy">
+      {alt && teamAlt ? teamAlt : team}
+    </Text>
+  )
+  if (!teamAlt) return label
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      {label}
+      <button
+        aria-label={toggleAria}
+        aria-pressed={alt}
+        className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-foreground/40 hover:border-coral-hover-border hover:text-primary"
+        onClick={() => setAlt((value) => !value)}
+        type="button"
+      >
+        {/* 文件图标走遮罩，才能跟胶囊字色（灰 / 悬停珊瑚） */}
+        <span
+          aria-hidden
+          className="size-2.5 shrink-0 bg-current"
+          style={{
+            maskImage: `url(${dappAssets.rewardsHubTierToggle})`,
+            WebkitMaskImage: `url(${dappAssets.rewardsHubTierToggle})`,
+            maskSize: 'contain',
+            maskRepeat: 'no-repeat',
+            maskPosition: 'center',
+          }}
+        />
+        <Text as="span" className="leading-none font-semibold text-inherit" variant="caption">
+          {alt ? '2' : '1'}
+        </Text>
+      </button>
+    </span>
+  )
+}
 
 type RewardsSummaryItem = RewardsSummaryCardProps & { key: string }
 
@@ -159,7 +208,7 @@ export function RewardsHubDetail() {
           {/* 当前等级：有 making_rank 才高亮该行并标「当前」；无档不高亮 */}
           <Table.Body
             className="[&_tbody_tr:last-child>td]:align-top"
-            colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
+            colWidths={['8.75rem', '6.5rem', '5.25rem', '20rem', '6.5rem']}
             endColumns={[4]}
             headers={[...tier.columns]}
             highlightedRows={statsView.tierRowIndex != null ? [statsView.tierRowIndex] : []}
@@ -196,7 +245,14 @@ export function RewardsHubDetail() {
                     {row.rate}
                   </Text>
                 )
-              return [levelCell, row.holding, row.accounts, row.team, rateCell]
+              const teamCell = (
+                <MechanismTeamCell
+                  team={row.team}
+                  teamAlt={'teamAlt' in row ? row.teamAlt : undefined}
+                  toggleAria={t.rewards.hub.mechanismToggleAria}
+                />
+              )
+              return [levelCell, row.holding, row.accounts, teamCell, rateCell]
             })}
           />
           <Table.Footer>
