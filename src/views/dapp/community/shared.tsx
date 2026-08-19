@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 
 import type { TeamReferralItem } from '~/shared/api/types'
 import { ExplorerLink } from '~/shared/components/explorer-link'
+import { Text } from '~/shared/components/text'
+import { rewardsHashForView } from '~/shared/config/dapp-deep-links'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
   formatApiDateTime,
@@ -51,6 +53,28 @@ export function readAndClearBindSuccess(flag: { current: boolean }): boolean {
   const ok = flag.current
   flag.current = false
   return ok
+}
+
+/** 社区统计卡共建等级：有做市档显示 A#，否则 —。 */
+export function formatCommunityMakingRank(rank: number | null | undefined): string {
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return '—'
+  return `A${Math.trunc(rank)}`
+}
+
+/** 把步骤正文里的 `{link}` 换成跳转奖励/共建奖的链接。 */
+export function communityInviteRewardBody(template: string, linkLabel: string): ReactNode {
+  const marker = '{link}'
+  const idx = template.indexOf(marker)
+  if (idx < 0) return template
+  return (
+    <>
+      {template.slice(0, idx)}
+      <Text as="a" className="text-primary" href={rewardsHashForView('cobuild')}>
+        {linkLabel}
+      </Text>
+      {template.slice(idx + marker.length)}
+    </>
+  )
 }
 
 /** 社区邀请表列宽预设（16px 根字号）。 */

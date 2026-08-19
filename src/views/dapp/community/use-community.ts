@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
+import { useMakingOverview, useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { communityQuickLinkItems } from '~/shared/config/community-links'
@@ -96,7 +95,7 @@ export function useCommunityDetail() {
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
   const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
-  const { displayRank, isRankLoading } = useShareholderRank(sessionReady)
+  const { data: making, isLoading: makingLoading } = useMakingOverview(sessionReady)
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
     sessionReady,
@@ -112,8 +111,8 @@ export function useCommunityDetail() {
     setInvitesPage,
     overview,
     overviewLoading,
-    displayRank,
-    isRankLoading,
+    making,
+    makingLoading,
     referrals,
     referralsLoading,
   }

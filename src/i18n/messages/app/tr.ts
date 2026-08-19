@@ -1497,6 +1497,7 @@ const app = defineMessages({
     volumePrefix: 'Performans',
     genesisShareholder: 'Genesis Rezerv Valisi',
     statToday: 'Bugün +{count} · +{amount}',
+    statRewardRate: 'Ödül oranı {rate}',
     statGenesisToday: 'Yayına girdikten sonra otomatik olarak 1 seviye yükselir',
     postLaunchRankLabel: 'Yayın sonrası seviye',
     totalTeamVolume: 'Toplam hacim {amount}',
@@ -1504,6 +1505,7 @@ const app = defineMessages({
     postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
     bindReferrerSuccess: 'Öneren bağlama başarılı',
     inviteFlow: {
+      rewardLink: 'Ödüller',
       items: [
         {
           title: 'Davet bağlantısını paylaşın',
@@ -1514,8 +1516,8 @@ const app = defineMessages({
           body: 'Arkadaşlarınız davet bağlantınız üzerinden kaydolduktan sonra ortak inşaya katılabilirler.',
         },
         {
-          title: 'Ortak inşa ödülleri kazanın',
-          body: 'Arkadaşlar ortak inşaya katıldıktan sonra ödüller akıllı sözleşme tarafından cüzdan adresinize otomatik olarak uzlaştırılır.',
+          title: 'Ödül kazanın',
+          body: 'Ortak inşadan sonra ödüller rebase dağıtımıyla birlikte hesaplanır. Almak için {link} bölümüne gidin.',
         },
       ],
     },
@@ -1531,12 +1533,16 @@ const app = defineMessages({
           a: 'Arkadaşlar davet bağlantısı üzerinden ortak inşaya katıldığında davet ilişkisi otomatik olarak kurulur ve kalıcıdır.',
         },
         {
-          q: 'Genesis öneri ödülü nasıl hesaplanır?',
-          a: 'Genesis öneri ödülü %3’tür; sıkıştırılmış eşdeğer tutar uzlaşma mekanizması kullanılır ve yalnızca eşdeğer tutar üzerinden hesaplanır.',
+          q: 'Davet edenimi değiştirebilir miyim?',
+          a: 'Davet ilişkisi bağlandıktan sonra değiştirilemez.',
         },
         {
-          q: 'Genesis seviyemi nasıl yükseltebilirim?',
-          a: 'Kişisel ortak inşa tutarı ve sistem performansı durumuna göre S1’den S10’a kadar kademeli olarak yükselirsiniz.',
+          q: 'Ortak inşa seviyemi nasıl yükseltebilirim?',
+          a: 'Kişisel varlık ve takım performansına göre A1’den A13’e kademeli yükselirsiniz.',
+        },
+        {
+          q: 'Sistem gelişim ödeneği niteliği nasıl alınır?',
+          a: 'Sistem kümülatif performansı $1,000,000’a ulaşınca %5 gelişim fonu alabilirsiniz. Başvuru için davet edeninizden yardım isteyin.',
         },
       ],
     },
@@ -2892,7 +2898,7 @@ const app = defineMessages({
     genesisRank: 'Genesis seviyesi',
     joined: 'Katılım zamanı',
     address: 'Adres',
-    communityVolume: 'Topluluk performansı',
+    communityVolume: 'Takım performansı',
     contribution: 'Abonelik',
   },
 })

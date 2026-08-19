@@ -1393,6 +1393,7 @@ const app = defineMessages({
     volumePrefix: '業績',
     genesisShareholder: '創世儲備理事',
     statToday: '今日 +{count} · +{amount}',
+    statRewardRate: '獎勵比例 {rate}',
     statGenesisToday: '上線後自動提升1級',
     postLaunchRankLabel: '上線後級別',
     totalTeamVolume: '總業績 {amount}',
@@ -1400,6 +1401,7 @@ const app = defineMessages({
     postLaunchMaxRank: '您已達到最高等級',
     bindReferrerSuccess: '推薦人綁定成功',
     inviteFlow: {
+      rewardLink: '獎勵',
       items: [
         {
           title: '分享邀請鏈接',
@@ -1410,8 +1412,8 @@ const app = defineMessages({
           body: '夥伴通過您邀請鏈接註冊後，即可參與共建。',
         },
         {
-          title: '獲得共建獎勵',
-          body: '夥伴參與共建後，獎勵由智能合約自動結算到您的錢包地址。',
+          title: '獲得獎勵',
+          body: '夥伴參與共建後，獎勵將跟隨rebase收益發放進行結算，進入{link}欄目領取您的獎勵。',
         },
       ],
     },
@@ -1427,12 +1429,16 @@ const app = defineMessages({
           a: '夥伴通過邀請鏈接參與共建後，邀請關係自動建立且永久有效。',
         },
         {
-          q: '創世推薦獎勵如何計算？',
-          a: '創世推薦獎勵為3%，採用壓縮同等金額結算機制，僅按同等金額部分計算。',
+          q: '是否能夠修改我的邀請人？',
+          a: '邀請關係綁定後不可變更。',
         },
         {
-          q: '如何提升我的創世等級？',
-          a: '根據個人共建金額與體系業績達成情況，逐步晉升S1至S10等級。',
+          q: '如何提升我的共建等級？',
+          a: '根據個人持倉金額與團隊業績達成情況，逐步晉升A1至A13等級。',
+        },
+        {
+          q: '如何獲得體系發展津貼資格？',
+          a: '體系累計業績達到$1,000,000，可獲得5%發展基金支持。申請發展津貼可向您的邀請人獲得幫助。',
         },
       ],
     },
@@ -2723,7 +2729,7 @@ const app = defineMessages({
     genesisRank: '創世等級',
     joined: '加入時間',
     address: '地址',
-    communityVolume: '社區業績',
+    communityVolume: '團隊業績',
     contribution: '認購',
   },
 }) satisfies AppMessagesBundle

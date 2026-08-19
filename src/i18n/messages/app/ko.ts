@@ -1454,6 +1454,7 @@ const app = defineMessages({
     volumePrefix: '실적',
     genesisShareholder: '창세 준비금 이사',
     statToday: '오늘 +{count} · +{amount}',
+    statRewardRate: '보상 비율 {rate}',
     statGenesisToday: '출시 후 자동 1등급 상승',
     postLaunchRankLabel: '출시 후 등급',
     totalTeamVolume: '총 실적 {amount}',
@@ -1461,6 +1462,7 @@ const app = defineMessages({
     postLaunchMaxRank: '최고 등급에 도달했습니다',
     bindReferrerSuccess: '추천인 연결 완료',
     inviteFlow: {
+      rewardLink: '리워드',
       items: [
         {
           title: '초대 링크 공유',
@@ -1471,8 +1473,8 @@ const app = defineMessages({
           body: '파트너가 초대 링크로 등록하면 공동 구축에 참여할 수 있습니다.',
         },
         {
-          title: '공동 구축 리워드 획득',
-          body: '파트너가 공동 구축에 참여하면 리워드가 스마트 컨트랙트를 통해 지갑 주소로 자동 정산됩니다.',
+          title: '리워드 획득',
+          body: '파트너가 공동 구축에 참여하면 리워드는 rebase 수익 지급과 함께 정산됩니다. {link} 메뉴에서 수령하세요.',
         },
       ],
     },
@@ -1488,12 +1490,16 @@ const app = defineMessages({
           a: '파트너가 초대 링크를 통해 공동 구축에 참여하면 추천 관계가 자동으로 성립되며 영구적으로 유효합니다.',
         },
         {
-          q: '창세 추천 리워드는 어떻게 계산되나요?',
-          a: '창세 추천 리워드는 3%이며, 압축 동등 금액 정산 메커니즘을 사용해 동등 금액 부분만 계산합니다.',
+          q: '초대인을 변경할 수 있나요?',
+          a: '추천 관계가 바인딩된 후에는 변경할 수 없습니다.',
         },
         {
-          q: '창세 등급을 어떻게 올리나요?',
-          a: '개인 공동 구축 금액과 조직 실적 달성에 따라 S1에서 S10까지 단계적으로 승급합니다.',
+          q: '공동 구축 등급을 어떻게 올리나요?',
+          a: '개인 보유 금액과 팀 실적 달성에 따라 A1에서 A13까지 단계적으로 승급합니다.',
+        },
+        {
+          q: '체계 발전 수당 자격은 어떻게 얻나요?',
+          a: '체계 누적 실적이 $1,000,000에 도달하면 5% 발전 기금을 받을 수 있습니다. 신청은 초대인에게 도움을 요청하세요.',
         },
       ],
     },
@@ -2805,7 +2811,7 @@ const app = defineMessages({
     genesisRank: '창세 등급',
     joined: '가입 시간',
     address: '주소',
-    communityVolume: '커뮤니티 실적',
+    communityVolume: '팀 실적',
     contribution: '구독',
   },
 }) satisfies AppMessagesBundle

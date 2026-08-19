@@ -1,7 +1,7 @@
 /**
  * 社区页
  *
- * 顶部统计卡展示直邀人数、团队规模与创世共建等级；
+ * 顶部统计卡展示直邀人数、社区规模与共建等级；
  * 正文依次为邀请引导、生态支持双卡、邀请明细表与常见问题。
  * 未连接钱包时只展示浏览类区块与 FAQ，不出现空成员态。
  */
@@ -18,7 +18,7 @@ import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import { fillTemplate } from '~/shared/lib/utils'
-import { formatNumber, formatPresaleRank } from '~/shared/presenters/format'
+import { formatNumber } from '~/shared/presenters/format'
 import {
   CommunityInviteCard,
   CommunityProgramCard,
@@ -26,6 +26,8 @@ import {
 } from '~/views/dapp/community/primitives'
 import {
   communityInviteColWidths,
+  communityInviteRewardBody,
+  formatCommunityMakingRank,
   mapTeamReferralToCompactRow,
 } from '~/views/dapp/community/shared'
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
@@ -37,6 +39,7 @@ type CommunityStat = {
   dark?: boolean
   image?: string
   label: ReactNode
+  note?: ReactNode
   value: ReactNode
   volume?: ReactNode
 }
@@ -52,14 +55,17 @@ export function CommunityDetail() {
     setInvitesPage,
     overview,
     overviewLoading,
-    displayRank,
-    isRankLoading,
+    making,
+    makingLoading,
     referrals,
     referralsLoading,
   } = useCommunityDetail()
   const genesis = useGenesisPromoChrome()
 
-  const inviteSteps = t.community.inviteFlow.items.map(({ title, body }) => ({ body, title }))
+  const inviteSteps = t.community.inviteFlow.items.map(({ title, body }) => ({
+    title,
+    body: communityInviteRewardBody(body, t.community.inviteFlow.rewardLink),
+  }))
   const programItems = t.community.programs.items.map((program, index) => {
     if (index !== 0) return program
     return {
@@ -112,7 +118,8 @@ export function CommunityDetail() {
       })
   const inviteSectionTitle = interpolate(t.community.myInvites, { count: inviteCount })
   const authPending = sessionReady && isLoggingIn
-  const statsLoading = sessionReady && (overviewLoading || isRankLoading) && overview == null
+  const statsLoading =
+    sessionReady && (overviewLoading || makingLoading) && overview == null && making == null
 
   // 未连接钱包：只展示浏览流程与 FAQ，不造空成员态。
   if (!walletReady) {
@@ -138,15 +145,24 @@ export function CommunityDetail() {
     trimZeros: true,
   })
   const teamVolume = formatNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
+  const todayDirect = interpolate(t.community.statToday, {
+    count: formatNumber(overview?.today_addition_direct_count ?? 0, { digits: 0, trimZeros: true }),
+    amount: formatNumber(overview?.today_addition_direct_presale_volume ?? 0, { prefix: '$' }),
+  })
+  const todayTeam = interpolate(t.community.statToday, {
+    count: formatNumber(overview?.today_addition_team_count ?? 0, { digits: 0, trimZeros: true }),
+    amount: formatNumber(overview?.today_addition_sales_team_market ?? 0, { prefix: '$' }),
+  })
 
-  // 统计卡只有标签 / 数值 / 业绩|共建等级三行，无「今日」行。
-  // 等级只取创世（预售）共建等级，绝不用做市等级 making_rank（A0–A13）。
-  const genesisRankValue =
-    !sessionReady || authPending
-      ? formatPresaleRank(0)
-      : displayRank > 0
-        ? formatPresaleRank(displayRank)
-        : formatPresaleRank(0)
+  const makingRank = sessionReady && !authPending ? making?.making_rank : null
+  const rankValue = formatCommunityMakingRank(makingRank)
+  const rankRow =
+    rankValue === '—'
+      ? undefined
+      : t.rewards.hub.tierTable.rows.find((row) => row.level === rankValue)
+  const rewardRateNote = interpolate(t.community.statRewardRate, {
+    rate: rankRow?.rate ?? '—',
+  })
 
   const stats: CommunityStat[] = [
     {
@@ -157,6 +173,7 @@ export function CommunityDetail() {
       ) : (
         `${t.community.volumePrefix} ${directVolume}`
       ),
+      note: statsLoading ? <Skeleton className="h-3.5 w-28" /> : todayDirect,
     },
     {
       label: t.community.myTeam,
@@ -166,11 +183,13 @@ export function CommunityDetail() {
       ) : (
         `${t.community.volumePrefix} ${teamVolume}`
       ),
+      note: statsLoading ? <Skeleton className="h-3.5 w-28" /> : todayTeam,
     },
     {
       label: t.community.genesisTitle,
-      value: statsLoading ? <Skeleton className="h-7 w-20" tone="dark" /> : genesisRankValue,
+      value: statsLoading ? <Skeleton className="h-7 w-20" tone="dark" /> : rankValue,
       volume: t.community.cobuildLevel,
+      note: statsLoading ? <Skeleton className="h-3.5 w-24" tone="dark" /> : rewardRateNote,
       dark: !isMobileViewport,
       image: isMobileViewport ? undefined : dappAssets.communityRankDeco,
     },
@@ -198,6 +217,7 @@ export function CommunityDetail() {
               image={stat.image}
               key={index}
               label={stat.label}
+              note={stat.note}
               value={stat.value}
               volume={stat.volume}
             />

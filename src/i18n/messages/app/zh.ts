@@ -1392,6 +1392,7 @@ const app = defineMessages({
     volumePrefix: '业绩',
     genesisShareholder: '创世储备理事',
     statToday: '今日 +{count} · +{amount}',
+    statRewardRate: '奖励比例 {rate}',
     statGenesisToday: '上线后自动提升1级',
     postLaunchRankLabel: '上线后级别',
     totalTeamVolume: '总业绩 {amount}',
@@ -1399,6 +1400,7 @@ const app = defineMessages({
     postLaunchMaxRank: '您已达到最高等级',
     bindReferrerSuccess: '推荐人绑定成功',
     inviteFlow: {
+      rewardLink: '奖励',
       items: [
         {
           title: '分享邀请链接',
@@ -1409,8 +1411,8 @@ const app = defineMessages({
           body: '伙伴通过您邀请链接注册后，即可参与共建。',
         },
         {
-          title: '获得共建奖励',
-          body: '伙伴参与共建后，奖励由智能合约自动结算到您的钱包地址。',
+          title: '获得奖励',
+          body: '伙伴参与共建后，奖励将跟随rebase收益发放进行结算，进入{link}栏目领取您的奖励。',
         },
       ],
     },
@@ -1426,12 +1428,16 @@ const app = defineMessages({
           a: '伙伴通过邀请链接参与共建后，邀请关系自动建立且永久有效。',
         },
         {
-          q: '创世推荐奖励如何计算？',
-          a: '创世推荐奖励为3%，采用压缩同等金额结算机制，仅按同等金额部分计算。',
+          q: '是否能够修改我的邀请人？',
+          a: '邀请关系绑定后不可变更。',
         },
         {
-          q: '如何提升我的创世等级？',
-          a: '根据个人共建金额与体系业绩达成情况，逐步晋升S1至S10等级。',
+          q: '如何提升我的共建等级？',
+          a: '根据个人持仓金额与团队业绩达成情况，逐步晋升A1至A13等级。',
+        },
+        {
+          q: '如何获得体系发展津贴资格？',
+          a: '体系累计业绩达到$1,000,000，可获得5%发展基金支持。申请发展津贴可向您的邀请人获得帮助。',
         },
       ],
     },
@@ -2722,7 +2728,7 @@ const app = defineMessages({
     genesisRank: '创世等级',
     joined: '加入时间',
     address: '地址',
-    communityVolume: '社区业绩',
+    communityVolume: '团队业绩',
     contribution: '认购',
   },
 })

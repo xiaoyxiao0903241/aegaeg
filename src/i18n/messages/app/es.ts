@@ -1511,6 +1511,7 @@ const app = defineMessages({
     volumePrefix: 'Volumen',
     genesisShareholder: 'Gobernador de Reserva Génesis',
     statToday: 'Hoy +{count} · +{amount}',
+    statRewardRate: 'Tasa de recompensa {rate}',
     statGenesisToday: 'Ascenso automático de 1 nivel tras el lanzamiento',
     postLaunchRankLabel: 'Nivel tras el lanzamiento',
     totalTeamVolume: 'Volumen total {amount}',
@@ -1518,6 +1519,7 @@ const app = defineMessages({
     postLaunchMaxRank: 'Ha alcanzado el nivel máximo',
     bindReferrerSuccess: 'Referente vinculado correctamente',
     inviteFlow: {
+      rewardLink: 'Recompensas',
       items: [
         {
           title: 'Compartir enlace de invitación',
@@ -1528,8 +1530,8 @@ const app = defineMessages({
           body: 'Tras registrarse con tu enlace de invitación, los socios pueden participar en la co-construcción.',
         },
         {
-          title: 'Obtener recompensas de co-construcción',
-          body: 'Cuando los socios participan en la co-construcción, las recompensas se liquidan automáticamente en tu dirección de billetera mediante el contrato inteligente.',
+          title: 'Obtener recompensas',
+          body: 'Tras la co-construcción, las recompensas se liquidan con el rebase. Entra en {link} para reclamarlas.',
         },
       ],
     },
@@ -1545,12 +1547,16 @@ const app = defineMessages({
           a: 'Cuando un socio participa en la co-construcción a través de tu enlace de invitación, la relación de referido se establece automáticamente y es permanente.',
         },
         {
-          q: '¿Cómo se calculan las recompensas por referidos Génesis?',
-          a: 'Las recompensas por referidos Génesis son del 3%, con un mecanismo de liquidación por importes iguales comprimidos; solo cuenta la parte de importe igual.',
+          q: '¿Puedo cambiar a mi invitador?',
+          a: 'Una vez vinculada, la relación de referido no se puede cambiar.',
         },
         {
-          q: '¿Cómo subo mi nivel Génesis?',
-          a: 'Avanza gradualmente de S1 a S10 según tu monto personal de co-construcción y el rendimiento de la organización.',
+          q: '¿Cómo subo mi nivel de co-construcción?',
+          a: 'Según tus tenencias personales y el rendimiento del equipo, avanzas de A1 a A13.',
+        },
+        {
+          q: '¿Cómo califico para la asignación de desarrollo?',
+          a: 'Cuando el rendimiento acumulado del sistema alcanza $1,000,000, puedes recibir un 5% de fondo de desarrollo. Pide ayuda a tu invitador para solicitarla.',
         },
       ],
     },
@@ -2924,7 +2930,7 @@ const app = defineMessages({
     genesisRank: 'Rango Génesis',
     joined: 'Fecha de ingreso',
     address: 'Dirección',
-    communityVolume: 'Volumen de la comunidad',
+    communityVolume: 'Rendimiento del equipo',
     contribution: 'Suscripción',
   },
 }) satisfies AppMessagesBundle

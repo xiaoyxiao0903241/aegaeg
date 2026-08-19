@@ -1459,6 +1459,7 @@ const app = defineMessages({
     volumePrefix: '実績',
     genesisShareholder: '創世準備理事',
     statToday: '本日 +{count} · +{amount}',
+    statRewardRate: '報酬比率 {rate}',
     statGenesisToday: 'ローンチ後自動1ランク昇格',
     postLaunchRankLabel: 'ローンチ後レベル',
     totalTeamVolume: '総業績 {amount}',
@@ -1466,6 +1467,7 @@ const app = defineMessages({
     postLaunchMaxRank: '最高ランクに達しました',
     bindReferrerSuccess: '紹介者の紐付けが完了しました',
     inviteFlow: {
+      rewardLink: '報酬',
       items: [
         {
           title: '招待リンクを共有',
@@ -1476,8 +1478,8 @@ const app = defineMessages({
           body: 'パートナーがあなたの招待リンクで登録後、共創に参加できます。',
         },
         {
-          title: '共創リワードを獲得',
-          body: 'パートナーが共創に参加すると、リワードはスマートコントラクトからあなたのウォレットアドレスに自動決済されます。',
+          title: '報酬を獲得',
+          body: 'パートナーが共創に参加すると、報酬はrebase収益の配布に合わせて決済されます。{link}欄で報酬を受け取れます。',
         },
       ],
     },
@@ -1493,12 +1495,16 @@ const app = defineMessages({
           a: 'パートナーが招待リンクから共創に参加すると、紹介関係は自動的に成立し、永久に有効です。',
         },
         {
-          q: '創世紹介リワードはどのように計算されますか？',
-          a: '創世紹介リワードは3%で、圧縮同等金額決済メカニズムを採用し、同等金額部分のみで計算されます。',
+          q: '招待者を変更できますか？',
+          a: '紹介関係を紐付けた後は変更できません。',
         },
         {
-          q: '創世ランクをどう上げますか？',
-          a: '個人の共創金額と組織業績の達成状況に基づき、S1からS10まで段階的に昇格します。',
+          q: '共創ランクをどう上げますか？',
+          a: '個人の保有額とチーム業績の達成状況に基づき、A1からA13まで段階的に昇格します。',
+        },
+        {
+          q: '体系発展手当の資格はどう得ますか？',
+          a: '体系の累計業績が$1,000,000に達すると、5%の発展基金支援を受けられます。申請は招待者に相談できます。',
         },
       ],
     },
@@ -2824,7 +2830,7 @@ const app = defineMessages({
     genesisRank: '創世ランク',
     joined: '参加日時',
     address: 'アドレス',
-    communityVolume: 'コミュニティ実績',
+    communityVolume: 'チーム実績',
     contribution: '購入',
   },
 }) satisfies AppMessagesBundle

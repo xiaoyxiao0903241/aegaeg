@@ -1492,6 +1492,7 @@ const app = defineMessages({
     volumePrefix: 'Doanh số',
     genesisShareholder: 'Thống đốc Dự trữ Sáng lập',
     statToday: 'Hôm nay +{count} · +{amount}',
+    statRewardRate: 'Tỷ lệ thưởng {rate}',
     statGenesisToday: 'Tự động nâng 1 cấp sau ra mắt',
     postLaunchRankLabel: 'Cấp sau ra mắt',
     totalTeamVolume: 'Tổng hiệu suất {amount}',
@@ -1499,6 +1500,7 @@ const app = defineMessages({
     postLaunchMaxRank: 'Bạn đã đạt cấp cao nhất',
     bindReferrerSuccess: 'Liên kết người giới thiệu thành công',
     inviteFlow: {
+      rewardLink: 'Phần thưởng',
       items: [
         {
           title: 'Chia sẻ liên kết mời',
@@ -1509,8 +1511,8 @@ const app = defineMessages({
           body: 'Đối tác đăng ký qua liên kết mời của bạn có thể tham gia cùng xây dựng.',
         },
         {
-          title: 'Nhận phần thưởng cùng xây dựng',
-          body: 'Sau khi đối tác tham gia cùng xây dựng, phần thưởng tự động quyết toán vào địa chỉ ví của bạn bởi hợp đồng thông minh.',
+          title: 'Nhận phần thưởng',
+          body: 'Sau khi đối tác cùng xây dựng, phần thưởng được quyết toán theo phân phối rebase. Vào {link} để nhận.',
         },
       ],
     },
@@ -1526,12 +1528,16 @@ const app = defineMessages({
           a: 'Sau khi đối tác tham gia cùng xây dựng qua liên kết mời của bạn, quan hệ giới thiệu tự động thiết lập và có hiệu lực vĩnh viễn.',
         },
         {
-          q: 'Phần thưởng giới thiệu Genesis được tính như thế nào?',
-          a: 'Phần thưởng giới thiệu Genesis là 3%, áp dụng cơ chế thanh toán số tiền tương đương nén — chỉ tính phần số tiền tương đương.',
+          q: 'Tôi có thể đổi người mời không?',
+          a: 'Sau khi ràng buộc, quan hệ mời không thể thay đổi.',
         },
         {
-          q: 'Làm sao nâng cấp cấp Genesis của tôi?',
-          a: 'Thăng tiến dần từ S1 đến S10 dựa trên số tiền cùng xây dựng cá nhân và thành tích hệ thống.',
+          q: 'Làm sao nâng cấp cùng xây dựng?',
+          a: 'Theo nắm giữ cá nhân và thành tích đội, thăng từ A1 đến A13.',
+        },
+        {
+          q: 'Làm sao đủ điều kiện trợ cấp phát triển hệ thống?',
+          a: 'Khi thành tích tích lũy hệ thống đạt $1,000,000, bạn nhận quỹ phát triển 5%. Nhờ người mời hỗ trợ đăng ký.',
         },
       ],
     },
@@ -2873,7 +2879,7 @@ const app = defineMessages({
     genesisRank: 'Hạng Genesis',
     joined: 'Thời gian tham gia',
     address: 'Địa chỉ',
-    communityVolume: 'Doanh số cộng đồng',
+    communityVolume: 'Thành tích đội',
     contribution: 'Đăng ký',
   },
 }) satisfies AppMessagesBundle

@@ -1451,6 +1451,7 @@ const app = defineMessages({
     volumePrefix: 'Volume',
     genesisShareholder: 'Genesis Reserve Governor',
     statToday: 'Today +{count} · +{amount}',
+    statRewardRate: 'Reward rate {rate}',
     statGenesisToday: 'Auto-upgrade +1 tier after launch',
     postLaunchRankLabel: 'Post-launch tier',
     totalTeamVolume: 'Total volume {amount}',
@@ -1458,6 +1459,7 @@ const app = defineMessages({
     postLaunchMaxRank: 'You have reached the maximum tier',
     bindReferrerSuccess: 'Referrer bound successfully',
     inviteFlow: {
+      rewardLink: 'Rewards',
       items: [
         {
           title: 'Share your referral link',
@@ -1468,8 +1470,8 @@ const app = defineMessages({
           body: 'After partners register through your referral link, they can participate in co-build.',
         },
         {
-          title: 'Earn co-build rewards',
-          body: 'After partners participate in co-build, rewards are settled automatically to your wallet address by smart contract.',
+          title: 'Earn rewards',
+          body: 'After partners join co-build, rewards settle with rebase distributions. Go to the {link} section to claim yours.',
         },
       ],
     },
@@ -1485,12 +1487,16 @@ const app = defineMessages({
           a: 'After a partner participates in co-build through your referral link, the referral relationship is automatically established and permanently valid.',
         },
         {
-          q: 'How are Genesis referral rewards calculated?',
-          a: 'Genesis referral rewards are 3%, settled through compressed equal-amount matching — only the matched equal-amount portion counts.',
+          q: 'Can I change my inviter?',
+          a: 'Once the referral relationship is bound, it cannot be changed.',
         },
         {
-          q: 'How do I advance my Genesis tier?',
-          a: 'Advance gradually from S1 to S10 based on your personal co-build amount and organization performance.',
+          q: 'How do I raise my co-build tier?',
+          a: 'Based on your personal holdings and team performance, you can advance from A1 to A13.',
+        },
+        {
+          q: 'How do I qualify for the development allowance?',
+          a: 'When cumulative system performance reaches $1,000,000, you can receive 5% development fund support. Ask your inviter for help applying.',
         },
       ],
     },
@@ -2798,7 +2804,7 @@ const app = defineMessages({
     genesisRank: 'Genesis Rank',
     joined: 'Joined',
     address: 'Address',
-    communityVolume: 'Community volume',
+    communityVolume: 'Team performance',
     contribution: 'Subscription',
   },
 }) satisfies AppMessagesBundle

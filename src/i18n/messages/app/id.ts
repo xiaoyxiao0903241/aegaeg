@@ -1504,6 +1504,7 @@ const app = defineMessages({
     volumePrefix: 'Kinerja',
     genesisShareholder: 'Gubernur Cadangan Genesis',
     statToday: 'Hari ini +{count} · +{amount}',
+    statRewardRate: 'Rasio hadiah {rate}',
     statGenesisToday: 'Naik 1 level otomatis setelah peluncuran',
     postLaunchRankLabel: 'Tingkat setelah peluncuran',
     totalTeamVolume: 'Total kinerja {amount}',
@@ -1511,6 +1512,7 @@ const app = defineMessages({
     postLaunchMaxRank: 'Anda telah mencapai tingkat maksimum',
     bindReferrerSuccess: 'Pemberi referensi berhasil ditautkan',
     inviteFlow: {
+      rewardLink: 'Hadiah',
       items: [
         {
           title: 'Bagikan tautan undangan',
@@ -1521,8 +1523,8 @@ const app = defineMessages({
           body: 'Setelah mitra mendaftar melalui tautan undangan Anda, mereka dapat ikut pembangunan bersama.',
         },
         {
-          title: 'Dapatkan hadiah pembangunan bersama',
-          body: 'Setelah mitra ikut pembangunan bersama, hadiah diselesaikan otomatis oleh smart contract ke alamat dompet Anda.',
+          title: 'Dapatkan hadiah',
+          body: 'Setelah mitra ikut pembangunan bersama, hadiah diselesaikan mengikuti distribusi rebase. Masuk ke {link} untuk mengklaim.',
         },
       ],
     },
@@ -1538,12 +1540,16 @@ const app = defineMessages({
           a: 'Setelah mitra berpartisipasi dalam pembangunan bersama melalui tautan undangan Anda, hubungan referral otomatis terbentuk dan berlaku permanen.',
         },
         {
-          q: 'Bagaimana hadiah referral Genesis dihitung?',
-          a: 'Hadiah referral Genesis sebesar 3%, menggunakan mekanisme penyelesaian jumlah setara terkompresi — hanya bagian jumlah setara yang dihitung.',
+          q: 'Bisakah saya mengubah pengundang saya?',
+          a: 'Setelah diikat, hubungan undangan tidak dapat diubah.',
         },
         {
-          q: 'Bagaimana meningkatkan tingkat Genesis saya?',
-          a: 'Naik secara bertahap dari S1 ke S10 berdasarkan jumlah pembangunan bersama pribadi dan pencapaian kinerja organisasi.',
+          q: 'Bagaimana menaikkan tingkat pembangunan bersama?',
+          a: 'Berdasarkan kepemilikan pribadi dan kinerja tim, naik bertahap dari A1 ke A13.',
+        },
+        {
+          q: 'Bagaimana mendapat kualifikasi tunjangan pengembangan sistem?',
+          a: 'Jika kinerja kumulatif sistem mencapai $1,000,000, Anda mendapat dukungan dana pengembangan 5%. Minta bantuan pengundang untuk mengajukan.',
         },
       ],
     },
@@ -2896,7 +2902,7 @@ const app = defineMessages({
     genesisRank: 'Peringkat Genesis',
     joined: 'Bergabung',
     address: 'Alamat',
-    communityVolume: 'Volume komunitas',
+    communityVolume: 'Kinerja tim',
     contribution: 'Langganan',
   },
 }) satisfies AppMessagesBundle

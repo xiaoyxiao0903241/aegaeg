@@ -27,7 +27,7 @@ export const communityStatCardMobileFrame = tv({
 export function CommunityInviteCard({
   steps,
 }: {
-  steps: ReadonlyArray<{ title: string; body: string }>
+  steps: ReadonlyArray<{ title: string; body: ReactNode }>
 }) {
   return (
     <div data-slot-id="community-invite-steps">
@@ -132,6 +132,7 @@ const communityStatCard = tv({
     label: cn('relative z-1', 'max-dapp:w-full'),
     value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),
     volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
+    note: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
   },
   variants: {
     dark: {
@@ -157,6 +158,7 @@ export function CommunityStatCard({
   dark = false,
   image,
   label,
+  note,
   value,
   volume,
 }: {
@@ -165,6 +167,7 @@ export function CommunityStatCard({
   dark?: boolean
   image?: string
   label: ReactNode
+  note?: ReactNode
   value: ReactNode
   volume?: ReactNode
 }) {
@@ -204,6 +207,16 @@ export function CommunityStatCard({
           variant="support"
         >
           {volume}
+        </Text>
+      ) : null}
+      {note ? (
+        <Text
+          as="small"
+          className={cn(styles.note(), !dark && 'text-foreground/40')}
+          tone={dark ? 'inverse-muted' : undefined}
+          variant="caption"
+        >
+          {note}
         </Text>
       ) : null}
       {children}
