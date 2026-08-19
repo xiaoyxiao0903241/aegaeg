@@ -84,7 +84,7 @@ export function useStakeDock() {
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
     balance: sessionReady && walletReady ? stake.balanceLabel : '',
-    digits: 4,
+    digits: 2,
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {
@@ -132,6 +132,7 @@ export function useStakeDock() {
     periodOptions,
     lockLabel,
     amountLabel,
+    quotaLabel,
     ctaLabel,
     blockHint,
     yieldMeta,

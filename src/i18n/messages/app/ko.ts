@@ -2183,6 +2183,7 @@ const app = defineMessages({
       periodAria: '스테이킹 주기 선택',
       amountAria: '스테이킹 수량',
       amountBalance: '수량(지갑 잔액 {balance} AGX)',
+      quotaInline: '스테이킹 한도: {quota} AGX',
       submit: '스테이킹',
       bindCta: '추천 바인딩으로 이동',
       success: '스테이킹 성공',
@@ -2458,6 +2459,8 @@ const app = defineMessages({
         quota: '스테이킹 한도',
         daily: '수익률(일)',
         max: '최대 스테이킹량',
+        maxHint:
+          'gAGX 스테이킹 한도는 ≥180일 AGX 채권 보유량과 AGX 스테이킹 합계를 넘을 수 없습니다',
         lock: '잠금 일수',
         lockValue: '24시간 후 릴리스',
         h24: '24h',
@@ -2551,6 +2554,7 @@ const app = defineMessages({
       periodLabel: '주기 선택',
       periodAria: '산출 주기',
       amountLabel: '산출 수량',
+      amountBuy: '구매 금액',
       amountAria: '산출 수량',
       price: '만기 AGX 가격',
       priceCurrent: '현재 {price}',
@@ -2569,6 +2573,8 @@ const app = defineMessages({
         legend: {
           released: '릴리스된 원금 가치',
           netYield: '순수익 가치',
+          netYieldHint: '기여 포인트 차감 후 수익',
+          netYieldHintXmine: '채굴한 X 수량을 만기 X 가격으로 환산한 가치',
           cost: '투입 비용',
           grossYield: '수익 합계',
         },
@@ -2656,6 +2662,8 @@ const app = defineMessages({
       title: '릴리스 풀',
       intro:
         '수령한 수익과 리워드는 여기서 선택한 주기로 선형 릴리스되며, 릴리스된 분은 언제든 터빈으로 수령할 수 있습니다',
+      hubHint:
+        '수령한 수익과 리워드는 여기서 선택한 주기(5/20/40/60일)로 선형 릴리스되며, 릴리스된 분은 언제든 터빈으로 수령할 수 있습니다.',
       planDays: '{days}일',
       claim: '수령',
       refresh: '새로고침',
@@ -2674,6 +2682,8 @@ const app = defineMessages({
       title: '버퍼 풀',
       intro:
         '상환 자산은 여기서 {days}일간 2차 선형 릴리스되며, 릴리스된 금액은 언제든 인출할 수 있습니다.',
+      hubHint:
+        '상환한 자산은 버퍼 풀에 들어간 뒤 {days}일 동안 블록 단위로 선형 릴리스되며, 릴리스된 분은 언제든 지갑으로 인출할 수 있습니다.',
       claim: '출금',
       refresh: '새로고침',
       claimSuccess: 'AGX를 지갑으로 출금함',

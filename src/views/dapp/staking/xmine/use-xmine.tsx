@@ -153,7 +153,7 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, 4),
+        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, 2),
     quotaLabel:
       preflightQuery.data !== undefined
         ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, 4)
@@ -188,7 +188,7 @@ export function useXmineDock() {
 
   const amountLabel = formatAmountBalanceLabel(t.staking.xmine.amountBalance, {
     balance: sessionReady && walletReady ? xmine.balanceLabel : '',
-    digits: 4,
+    digits: 2,
   })
 
   const blockHint =

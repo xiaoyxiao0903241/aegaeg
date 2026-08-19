@@ -144,7 +144,7 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, 4),
+        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, 2),
     isBalancesLoading: walletReady && (!balancesLoaded || preflightQuery.isLoading),
     walletReady,
     canSubmit,

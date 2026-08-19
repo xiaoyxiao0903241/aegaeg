@@ -2202,6 +2202,7 @@ const app = defineMessages({
       periodAria: 'ステーキング期間を選択',
       amountAria: 'ステーキング数量',
       amountBalance: '数量（ウォレット残高 {balance} AGX）',
+      quotaInline: 'ステーキング枠：{quota} AGX',
       submit: 'ステーキング',
       bindCta: '紹介を紐付け',
       success: 'ステーキング成功',
@@ -2478,6 +2479,8 @@ const app = defineMessages({
         quota: 'ステーキング枠',
         daily: '収益率（日）',
         max: '最大ステーキング量',
+        maxHint:
+          'gAGX のステーキング上限は、≥180 日の AGX 債券保有と AGX ステーキング合計を超えられません',
         lock: 'ロック日数',
         lockValue: '24 時間後にリリース',
         h24: '24h',
@@ -2571,6 +2574,7 @@ const app = defineMessages({
       periodLabel: '期間を選択',
       periodAria: '試算期間',
       amountLabel: '試算数量',
+      amountBuy: '購入金額',
       amountAria: '試算数量',
       price: '満期 AGX 価格',
       priceCurrent: '現在 {price}',
@@ -2589,6 +2593,8 @@ const app = defineMessages({
         legend: {
           released: 'リリース済み元本価値',
           netYield: '純収益価値',
+          netYieldHint: '貢献ポイント控除後の収益',
+          netYieldHintXmine: '採掘した X の数量を満期 X 価格で換算した価値',
           cost: '投入コスト',
           grossYield: '収益合計',
         },
@@ -2675,6 +2681,8 @@ const app = defineMessages({
       title: 'リリースプール',
       intro:
         '受取した収益とリワードはここで選択期間どおり線形リリース。リリース済み分はいつでもタービンへ受取できます',
+      hubHint:
+        '受取した収益とリワードはここで選択期間（5/20/40/60 日）どおり線形リリース。リリース済み分はいつでもタービンへ受取できます。',
       planDays: '{days} 日',
       claim: '受取',
       refresh: '更新',
@@ -2693,6 +2701,8 @@ const app = defineMessages({
       title: 'バッファプール',
       intro:
         '償還資産はここで {days} 日間の二次線形リリースが行われ、リリース済み分はいつでも引き出せます。',
+      hubHint:
+        '償還した資産はバッファプールに入り、{days} 日間ブロック単位で線形リリース。リリース済み分はいつでもウォレットへ引き出せます。',
       claim: '引出',
       refresh: '更新',
       claimSuccess: 'AGX をウォレットへ引出済み',

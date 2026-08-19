@@ -8,6 +8,7 @@ import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -79,7 +80,13 @@ export function XmineDock() {
                 valueClassName: 'text-coral-emphasis',
               },
               {
-                label: t.staking.xmine.meta.max,
+                // 该行 Label 已自带样式，内层勿再套 Text variant/tone
+                label: (
+                  <span className="inline-flex items-center gap-1">
+                    {t.staking.xmine.meta.max}
+                    <Tooltip.Info content={t.staking.xmine.meta.maxHint} />
+                  </span>
+                ),
                 value: xmine.quotaLabel === '0' ? '0.00 gAGX' : `${xmine.quotaLabel} gAGX`,
               },
               {

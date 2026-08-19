@@ -2263,6 +2263,7 @@ const app = defineMessages({
       periodAria: 'Stake süresini seçin',
       amountAria: 'Stake tutarı',
       amountBalance: 'Tutar (cüzdan bakiyesi {balance} AGX)',
+      quotaInline: 'Stake kotası: {quota} AGX',
       submit: 'Yatır',
       bindCta: 'Referans bağla',
       success: 'Stake başarılı',
@@ -2539,6 +2540,8 @@ const app = defineMessages({
         quota: 'Stake kotası',
         daily: 'Getiri oranı (günlük)',
         max: 'Maksimum stake',
+        maxHint:
+          'gAGX stake üst sınırı, ≥180 günlük AGX tahvil pozisyonu ile AGX stake toplamını aşamaz',
         lock: 'Kilit günleri',
         lockValue: '24 saat sonra serbest bırakılır',
         h24: '24h',
@@ -2632,6 +2635,7 @@ const app = defineMessages({
       periodLabel: 'Süre seçin',
       periodAria: 'Hesaplanan süre',
       amountLabel: 'Hesaplanan tutar',
+      amountBuy: 'Satın alma tutarı',
       amountAria: 'Hesaplanan tutar',
       price: 'Vade AGX fiyatı',
       priceCurrent: 'Güncel {price}',
@@ -2650,6 +2654,8 @@ const app = defineMessages({
         legend: {
           released: 'Serbest bırakılan anapara değeri',
           netYield: 'Net getiri değeri',
+          netYieldHint: 'Katkı puanları düşüldükten sonraki getiri',
+          netYieldHintXmine: 'Çıkarılan X miktarı, vade X fiyatından değerlenir',
           cost: 'Maliyet',
           grossYield: 'Toplam getiri',
         },
@@ -2742,6 +2748,8 @@ const app = defineMessages({
       title: 'Serbest bırakma havuzu',
       intro:
         'Talep edilen getiri ve ödüller burada seçilen sürede doğrusal serbest bırakılır; serbest bırakılan kısım istediğiniz zaman Türbin’e alınabilir',
+      hubHint:
+        'Talep edilen getiri ve ödüller burada seçilen sürede (5/20/40/60 gün) doğrusal serbest bırakılır; serbest bırakılan kısım istediğiniz zaman Türbin’e alınabilir.',
       planDays: '{days} g',
       claim: 'Talep et',
       refresh: 'Yenile',
@@ -2760,6 +2768,8 @@ const app = defineMessages({
       title: 'Tampon havuzu',
       intro:
         'İtfa edilen anapara burada {days} günlük ikincil doğrusal serbest bırakmadan geçer. Serbest kalan AGX cüzdanınıza çekilebilir.',
+      hubHint:
+        'İtfa edilen varlıklar tampon havuzuna girer ve {days} gün boyunca blok bazında doğrusal serbest bırakılır; serbest bırakılan kısım istediğiniz zaman cüzdana çekilebilir.',
       claim: 'Çek',
       refresh: 'Yenile',
       claimSuccess: 'AGX cüzdana çekildi',

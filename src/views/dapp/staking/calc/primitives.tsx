@@ -9,6 +9,7 @@ import { interpolate } from '~/i18n/interpolate'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import { formatNumber } from '~/shared/presenters/format'
 
@@ -166,6 +167,7 @@ type CalcResultCardProps = {
       grossYield: string
     }
   }
+  netYieldHint: string
 }
 
 export function CalcResultCard({
@@ -176,6 +178,7 @@ export function CalcResultCard({
   sellShare,
   investShare,
   labels,
+  netYieldHint,
 }: CalcResultCardProps) {
   return (
     <Card className="grid gap-1.5" surface="elevated">
@@ -268,6 +271,12 @@ export function CalcResultCard({
             <Text as="strong" className="font-semibold" variant="support">
               {calcUsd(value)}
             </Text>
+            {key === 'netYield' ? (
+              <Tooltip.Info
+                className="size-3 text-foreground [&_svg]:size-3"
+                content={netYieldHint}
+              />
+            ) : null}
           </div>
         ))}
       </div>

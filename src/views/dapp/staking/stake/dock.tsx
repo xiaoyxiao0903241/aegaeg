@@ -1,3 +1,4 @@
+import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
@@ -32,6 +33,7 @@ export function StakeDock() {
     periodOptions,
     lockLabel,
     amountLabel,
+    quotaLabel,
     ctaLabel,
     blockHint,
     yieldMeta,
@@ -76,6 +78,13 @@ export function StakeDock() {
                 {t.staking.max}
               </AmountMaxChip>
             </AmountTokenEnd>
+          }
+          balance={
+            stake.period === 'liquid' ? (
+              <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
+                {interpolate(t.staking.stake.quotaInline, { quota: quotaLabel })}
+              </Text>
+            ) : undefined
           }
           headerOutside
           label={amountLabel}

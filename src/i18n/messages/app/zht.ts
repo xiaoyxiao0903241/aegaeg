@@ -2108,6 +2108,7 @@ const app = defineMessages({
       periodAria: '選擇質押週期',
       amountAria: '質押數量',
       amountBalance: '數量（錢包餘額 {balance} AGX）',
+      quotaInline: '質押額度：{quota} AGX',
       submit: '質押',
       bindCta: '去綁定推薦',
       success: '質押成功',
@@ -2382,6 +2383,7 @@ const app = defineMessages({
         quota: '質押額度',
         daily: '收益率(日)',
         max: '最大質押量',
+        maxHint: 'gAGX 可質押上限不高於帳戶 ≥180 天 AGX 債券持倉與 AGX 質押總量',
         lock: '鎖定天數',
         lockValue: '24 小時後釋放',
         h24: '24h',
@@ -2468,6 +2470,7 @@ const app = defineMessages({
       periodLabel: '選擇週期',
       periodAria: '測算週期',
       amountLabel: '質押數量',
+      amountBuy: '購買金額',
       amountAria: '測算數量',
       price: '到期AGX價格',
       priceAria: '價格輸入',
@@ -2492,6 +2495,8 @@ const app = defineMessages({
         legend: {
           released: '已釋放本金價值',
           netYield: '淨收益價值',
+          netYieldHint: '扣除貢獻點數後的收益',
+          netYieldHintXmine: '挖礦產出的 X 數量，按到期 X 價格折算價值',
           cost: '投入成本',
           grossYield: '收益總額',
         },
@@ -2581,6 +2586,8 @@ const app = defineMessages({
     queue: {
       title: '釋放池',
       intro: '領取的收益與獎勵在此按所選週期線性釋放，已釋放部分可隨時領取進入渦輪',
+      hubHint:
+        '領取的收益與獎勵在此按所選週期（5/20/40/60 天）線性釋放，已釋放部分可隨時領取進入渦輪。',
       planDays: '{days} 天',
       claim: '領取',
       refresh: '刷新',
@@ -2598,6 +2605,7 @@ const app = defineMessages({
     buffer: {
       title: '緩衝池',
       intro: '贖回資產在此進行 {days} 天二次線性釋放，已釋放部分可隨時提取',
+      hubHint: '贖回的資產進入緩衝池後按 {days} 天區塊線性釋放，已釋放部分可隨時提取至錢包。',
       claim: '提取',
       refresh: '刷新',
       claimSuccess: '已提取 AGX 到錢包',

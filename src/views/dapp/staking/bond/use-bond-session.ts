@@ -266,7 +266,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, 4),
+        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, 2),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
     isPayoutQuoting,

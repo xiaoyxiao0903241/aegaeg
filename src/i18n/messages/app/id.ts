@@ -2267,6 +2267,7 @@ const app = defineMessages({
       periodAria: 'Pilih periode staking',
       amountAria: 'Jumlah staking',
       amountBalance: 'Jumlah (saldo dompet {balance} AGX)',
+      quotaInline: 'Kuota staking: {quota} AGX',
       submit: 'Stake',
       bindCta: 'Ikat referral',
       success: 'Staking berhasil',
@@ -2543,6 +2544,8 @@ const app = defineMessages({
         quota: 'Kuota staking',
         daily: 'Hasil (harian)',
         max: 'Staking maksimum',
+        maxHint:
+          'Staking gAGX tidak boleh melebihi kepemilikan bond AGX ≥180 hari plus total staking AGX',
         lock: 'Hari terkunci',
         lockValue: 'Rilis setelah 24 jam',
         h24: '24h',
@@ -2636,6 +2639,7 @@ const app = defineMessages({
       periodLabel: 'Pilih periode',
       periodAria: 'Periode estimasi',
       amountLabel: 'Jumlah',
+      amountBuy: 'Jumlah pembelian',
       amountAria: 'Jumlah',
       price: 'Harga AGX jatuh tempo',
       priceCurrent: 'Saat ini ${price}',
@@ -2654,6 +2658,8 @@ const app = defineMessages({
         legend: {
           released: 'Nilai pokok yang dirilis',
           netYield: 'Nilai hasil bersih',
+          netYieldHint: 'Hasil setelah poin kontribusi dipotong',
+          netYieldHintXmine: 'Jumlah X yang ditambang, dinilai dengan harga X jatuh tempo',
           cost: 'Biaya investasi',
           grossYield: 'Total hasil',
         },
@@ -2744,6 +2750,8 @@ const app = defineMessages({
       title: 'Pool rilis',
       intro:
         'Yield dan hadiah yang diklaim dirilis linear di sini sesuai periode; bagian yang sudah dirilis dapat diklaim ke Turbine kapan saja',
+      hubHint:
+        'Yield dan hadiah yang diklaim dirilis linear di sini sesuai periode (5/20/40/60 hari); bagian yang sudah dirilis dapat diklaim ke Turbine kapan saja.',
       planDays: '{days} hari',
       claim: 'Klaim',
       refresh: 'Segarkan',
@@ -2763,6 +2771,8 @@ const app = defineMessages({
       title: 'Pool buffer',
       intro:
         'Aset yang ditebus di sini menjalani rilis linear sekunder selama {days} hari; bagian yang sudah dirilis dapat ditarik kapan saja.',
+      hubHint:
+        'Aset yang ditebus masuk ke pool buffer lalu dirilis linear per blok selama {days} hari; bagian yang sudah dirilis dapat ditarik ke dompet kapan saja.',
       claim: 'Tarik',
       refresh: 'Segarkan',
       claimSuccess: 'AGX ditarik ke dompet',

@@ -2276,6 +2276,7 @@ const app = defineMessages({
       periodAria: 'Elige el periodo de staking',
       amountAria: 'Cantidad de staking',
       amountBalance: 'Cantidad (saldo de billetera {balance} AGX)',
+      quotaInline: 'Cuota de staking: {quota} AGX',
       submit: 'Participación',
       bindCta: 'Ir a vincular referido',
       success: 'Staking exitoso',
@@ -2553,6 +2554,8 @@ const app = defineMessages({
         quota: 'Cupo de staking',
         daily: 'Rendimiento (diario)',
         max: 'Staking máximo',
+        maxHint:
+          'El staking de gAGX no puede superar tus bonos AGX de ≥180 días más el total de staking de AGX',
         lock: 'Días de bloqueo',
         lockValue: 'Se libera tras 24 horas',
         h24: '24h',
@@ -2649,6 +2652,7 @@ const app = defineMessages({
       periodLabel: 'Selecciona el periodo',
       periodAria: 'Periodo a estimar',
       amountLabel: 'Cantidad a estimar',
+      amountBuy: 'Importe de compra',
       amountAria: 'Cantidad a estimar',
       price: 'Precio AGX al vencimiento',
       priceCurrent: 'Actual ${price}',
@@ -2667,6 +2671,8 @@ const app = defineMessages({
         legend: {
           released: 'Valor del principal liberado',
           netYield: 'Valor neto del rendimiento',
+          netYieldHint: 'Rendimiento tras descontar los puntos de contribución',
+          netYieldHintXmine: 'X minado, valorado al precio de X al vencimiento',
           cost: 'Costo de inversión',
           grossYield: 'Rendimiento total',
         },
@@ -2767,6 +2773,8 @@ const app = defineMessages({
       title: 'Pool de liberación',
       intro:
         'El rendimiento y las recompensas reclamados se liberan aquí linealmente en el periodo elegido; lo liberado se puede reclamar hacia Turbina en cualquier momento',
+      hubHint:
+        'El rendimiento y las recompensas reclamados se liberan aquí linealmente en el periodo elegido (5/20/40/60 días). Lo liberado se puede reclamar hacia Turbina en cualquier momento.',
       planDays: '{days} d',
       claim: 'Reclamar',
       refresh: 'Actualizar',
@@ -2786,6 +2794,8 @@ const app = defineMessages({
       title: 'Pool búfer',
       intro:
         'El principal redimido se libera aquí con una liberación lineal secundaria de {days} días. El AGX liberado se puede retirar a tu billetera.',
+      hubHint:
+        'Los activos redimidos entran al pool búfer y se liberan linealmente por bloques durante {days} días. Lo liberado se puede retirar a tu billetera en cualquier momento.',
       claim: 'Retirar',
       refresh: 'Actualizar',
       claimSuccess: 'AGX retirado a la billetera',

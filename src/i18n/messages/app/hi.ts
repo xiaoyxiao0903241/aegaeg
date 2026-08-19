@@ -2182,6 +2182,7 @@ const app = defineMessages({
       periodAria: 'स्टेकिंग अवधि चुनें',
       amountAria: 'स्टेक राशि',
       amountBalance: 'राशि (वॉलेट बैलेंस {balance} AGX)',
+      quotaInline: 'स्टेक कोटा: {quota} AGX',
       submit: 'स्टेक',
       bindCta: 'रेफ़रल बाइंड करें',
       success: 'स्टेक सफल',
@@ -2457,6 +2458,7 @@ const app = defineMessages({
         quota: 'माइनिंग कोटा',
         daily: 'दैनिक यील्ड',
         max: 'अधिकतम स्टेक',
+        maxHint: 'gAGX स्टेक ≥180-दिन AGX बॉन्ड होल्डिंग और AGX स्टेक योग से अधिक नहीं हो सकता',
         lock: 'लॉक',
         lockValue: '24 घंटे बाद रिलीज़',
         h24: '24h',
@@ -2550,6 +2552,7 @@ const app = defineMessages({
       periodLabel: 'अवधि चुनें',
       periodAria: 'अवधि',
       amountLabel: 'राशि',
+      amountBuy: 'खरीद राशि',
       amountAria: 'राशि',
       price: 'एग्ज़िट मूल्य',
       priceCurrent: 'वर्तमान मूल्य ${price}',
@@ -2568,6 +2571,8 @@ const app = defineMessages({
         legend: {
           released: 'रिलीज़ मूलधन मूल्य',
           netYield: 'शुद्ध यील्ड मूल्य',
+          netYieldHint: 'योगदान पॉइंट काटने के बाद की यील्ड',
+          netYieldHintXmine: 'खनन किया गया X, समाप्ति X कीमत पर मूल्यांकित',
           cost: 'लागत आधार',
           grossYield: 'कुल यील्ड',
         },
@@ -2654,6 +2659,8 @@ const app = defineMessages({
       title: 'रिलीज़ पूल',
       intro:
         'दावा यील्ड यहाँ चयनित अवधि में अनलॉक होती है। रिलीज़ राशि कभी भी टरबाइन में दावा योग्य।',
+      hubHint:
+        'दावा की गई यील्ड और रिवॉर्ड यहाँ चयनित अवधि (5/20/40/60 दिन) में रैखिक रूप से अनलॉक होते हैं। रिलीज़ राशि कभी भी टरबाइन में दावा योग्य।',
       planDays: '{days}दि',
       claim: 'क्लेम',
       refresh: 'रिफ़्रेश',
@@ -2672,6 +2679,8 @@ const app = defineMessages({
       title: 'बफ़र पूल',
       intro:
         'रिडीम की गई संपत्ति यहाँ {days} दिनों की द्वितीयक रैखिक रिलीज़ से गुज़रती है; जारी राशि कभी भी वॉलेट में निकाल सकते हैं।',
+      hubHint:
+        'रिडीम की गई परिसंपत्तियाँ बफ़र पूल में जाती हैं और {days} दिनों तक ब्लॉक-वार रैखिक रूप से रिलीज़ होती हैं। रिलीज़ राशि कभी भी वॉलेट में निकाली जा सकती है।',
       claim: 'निकासी',
       refresh: 'रिफ़्रेश',
       claimSuccess: 'AGX वॉलेट में निकाला गया',

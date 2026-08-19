@@ -2247,6 +2247,7 @@ const app = defineMessages({
       periodAria: 'Chọn chu kỳ staking',
       amountAria: 'Số lượng stake',
       amountBalance: 'Số lượng (số dư ví {balance} AGX)',
+      quotaInline: 'Hạn mức stake: {quota} AGX',
       submit: 'Đặt cọc',
       bindCta: 'Đi gắn giới thiệu',
       success: 'Staking thành công',
@@ -2522,6 +2523,7 @@ const app = defineMessages({
         quota: 'Hạn mức stake',
         daily: 'Tỷ suất (ngày)',
         max: 'Mức stake tối đa',
+        maxHint: 'Mức stake gAGX không được vượt tổng trái phiếu AGX ≥180 ngày và AGX đang stake',
         lock: 'Số ngày khóa',
         lockValue: 'Giải phóng sau 24 giờ',
         h24: '24h',
@@ -2615,6 +2617,7 @@ const app = defineMessages({
       periodLabel: 'Chọn chu kỳ',
       periodAria: 'Chu kỳ ước tính',
       amountLabel: 'Số lượng ước tính',
+      amountBuy: 'Số tiền mua',
       amountAria: 'Số lượng ước tính',
       price: 'Giá AGX đáo hạn',
       priceCurrent: 'Hiện tại {price}',
@@ -2633,6 +2636,8 @@ const app = defineMessages({
         legend: {
           released: 'Giá trị gốc đã giải phóng',
           netYield: 'Giá trị lợi nhuận ròng',
+          netYieldHint: 'Lợi nhuận sau khi trừ điểm đóng góp',
+          netYieldHintXmine: 'Sản lượng X đào được, quy giá theo giá X đáo hạn',
           cost: 'Chi phí đầu tư',
           grossYield: 'Tổng lợi nhuận',
         },
@@ -2724,6 +2729,8 @@ const app = defineMessages({
       title: 'Hồ giải phóng',
       intro:
         'Lợi nhuận và phần thưởng đã nhận giải phóng tuyến tính theo chu kỳ đã chọn tại đây; phần đã giải phóng nhận vào Turbine bất cứ lúc nào',
+      hubHint:
+        'Lợi nhuận và phần thưởng đã nhận giải phóng tuyến tính theo chu kỳ đã chọn (5/20/40/60 ngày) tại đây; phần đã giải phóng nhận vào Turbine bất cứ lúc nào.',
       planDays: '{days} ngày',
       claim: 'Nhận',
       refresh: 'Làm mới',
@@ -2742,6 +2749,8 @@ const app = defineMessages({
       title: 'Hồ đệm',
       intro:
         'Tài sản đã chuộc tại đây được giải phóng tuyến tính lần hai trong {days} ngày; phần đã giải phóng có thể rút bất cứ lúc nào.',
+      hubHint:
+        'Tài sản chuộc vào hồ đệm rồi giải phóng tuyến tính theo khối trong {days} ngày; phần đã giải phóng rút về ví bất cứ lúc nào.',
       claim: 'Rút',
       refresh: 'Làm mới',
       claimSuccess: 'Đã rút AGX về ví',

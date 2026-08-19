@@ -124,6 +124,11 @@ export function CalcDetail() {
             investedUsd={result.investedUsd}
             investShare={investShare}
             labels={t.staking.calc.result}
+            netYieldHint={
+              result.product === 'xmine'
+                ? t.staking.calc.result.legend.netYieldHintXmine
+                : t.staking.calc.result.legend.netYieldHint
+            }
             ratePct={result.ratePct}
             sellShare={sellShare}
             sellUsd={result.sellUsd}

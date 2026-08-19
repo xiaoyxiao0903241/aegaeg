@@ -8,15 +8,18 @@ import { CountValue } from '~/shared/components/count-value'
 import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
+import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 
 function EntryRoot({
+  'aria-label': ariaLabel,
   children,
   className,
   onClick,
   tourId,
   'data-slot-id': dataSlotId,
 }: {
+  'aria-label': string
   children: ReactNode
   className?: string
   onClick: () => void
@@ -25,33 +28,39 @@ function EntryRoot({
 }) {
   return (
     <InteractiveCard
-      className={cn('flex flex-col', className)}
+      aria-label={ariaLabel}
       data-slot-id={dataSlotId}
+      hitArea="overlay"
       onClick={onClick}
       tourId={tourId}
     >
-      {children}
+      <div className={cn('pointer-events-none relative z-10 flex flex-col', className)}>
+        {children}
+      </div>
     </InteractiveCard>
   )
 }
 
 function EntryTitleGroup({ children }: { children: ReactNode }) {
-  return <div className="flex items-center gap-2.5">{children}</div>
+  return <div className="flex items-center justify-between gap-3">{children}</div>
 }
 
 function EntryTitle({ children }: { children: ReactNode }) {
   return (
-    <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
+    <Text as="span" className="min-w-0 font-semibold" variant="detail">
       {children}
     </Text>
   )
 }
 
-function EntryPercent({ value }: { value: string }) {
+function EntryPercent({ hint, value }: { hint: string; value: string }) {
   return (
-    <Text as="span" variant="detail">
-      <CountValue text={value} />
-    </Text>
+    <div className="pointer-events-auto flex shrink-0 items-center gap-1">
+      <Text as="span" variant="detail">
+        <CountValue text={value} />
+      </Text>
+      <Tooltip.Info className="size-3 text-foreground [&_svg]:size-3" content={hint} />
+    </div>
   )
 }
 

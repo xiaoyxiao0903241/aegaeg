@@ -2178,6 +2178,7 @@ const app = defineMessages({
       periodAria: 'Choose staking period',
       amountAria: 'Stake amount',
       amountBalance: 'Amount (wallet balance {balance} AGX)',
+      quotaInline: 'Stake quota: {quota} AGX',
       submit: 'Stake',
       bindCta: 'Bind referral',
       success: 'Staked successfully',
@@ -2455,6 +2456,7 @@ const app = defineMessages({
         quota: 'Mining quota',
         daily: 'Daily yield',
         max: 'Max stake',
+        maxHint: 'gAGX stake cannot exceed your ≥180-day AGX bond holdings plus AGX stake total',
         lock: 'Lock',
         lockValue: 'Releases after 24 hours',
         h24: '24h',
@@ -2543,6 +2545,7 @@ const app = defineMessages({
       periodLabel: 'Select period',
       periodAria: 'Period',
       amountLabel: 'Amount',
+      amountBuy: 'Purchase amount',
       amountAria: 'Amount',
       price: 'Exit price',
       priceCurrent: 'Current price ${price}',
@@ -2561,6 +2564,8 @@ const app = defineMessages({
         legend: {
           released: 'Released principal value',
           netYield: 'Net yield value',
+          netYieldHint: 'Yield after contribution points are deducted',
+          netYieldHintXmine: 'X mined, valued at the expiry X price',
           cost: 'Cost basis',
           grossYield: 'Total yield',
         },
@@ -2647,6 +2652,8 @@ const app = defineMessages({
       title: 'Release pool',
       intro:
         'Claimed yield unlocks here over the selected period. Released amounts can be claimed into Turbine anytime.',
+      hubHint:
+        'Claimed yield and rewards unlock here linearly over the selected period (5/20/40/60 days). Released amounts can be claimed into Turbine anytime.',
       planDays: '{days}d',
       claim: 'Claim',
       refresh: 'Refresh',
@@ -2666,6 +2673,8 @@ const app = defineMessages({
       title: 'Buffer pool',
       intro:
         'Redeemed principal unlocks here over {days} days of secondary linear release. Released AGX can be withdrawn to your wallet.',
+      hubHint:
+        'Redeemed assets enter the buffer pool and unlock linearly over {days} days by block. Released amounts can be withdrawn to your wallet anytime.',
       claim: 'Withdraw',
       refresh: 'Refresh',
       claimSuccess: 'Extracted to wallet',

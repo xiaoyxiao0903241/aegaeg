@@ -113,7 +113,11 @@ export function CalcDock() {
             </span>
           }
           headerOutside
-          label={t.staking.calc.amountLabel}
+          label={
+            s.product === 'lpbond' || s.product === 'burnbond'
+              ? t.staking.calc.amountBuy
+              : t.staking.calc.amountLabel
+          }
           sessionReady
           startAdornment={null}
         />

@@ -44,8 +44,8 @@ export type AmountBoxProps = {
   startAdornment: ReactNode
 }
 
-function renderMetricText(node: ReactNode) {
-  return typeof node === 'string' ? <CountValue text={node} /> : node
+function renderMetricText(node: ReactNode, animate: boolean) {
+  return typeof node === 'string' ? <CountValue animate={animate} text={node} /> : node
 }
 
 /**
@@ -55,7 +55,7 @@ function renderMetricText(node: ReactNode) {
  * `headerOutside` 为 true 时把标签与余额移到带边框输入框上方。
  *
  * @param amountProps 传给输入框的原生属性，需含 `aria-label`
- * @param label 标签文案（字符串会走数字滚动）
+ * @param label 标签文案；输入框内标签走数字滚动，框外整句（如「数量（钱包余额 …）」）不滚动
  * @param balance 余额展示（字符串会走数字滚动）
  * @param headerOutside 为 true 时标签/余额移到输入框上方；默认在卡片内
  */
@@ -83,7 +83,7 @@ export function AmountBox({
           headerOutside ? 'text-foreground/40' : 'leading-4 font-normal text-foreground/70',
         )}
       >
-        {renderMetricText(label)}
+        {renderMetricText(label, !headerOutside)}
       </Text>
       {balance ? (
         typeof balance === 'string' ? (
@@ -95,7 +95,7 @@ export function AmountBox({
               headerOutside ? 'text-foreground/40' : 'leading-4 font-normal text-foreground/70',
             )}
           >
-            {renderMetricText(balance)}
+            {renderMetricText(balance, true)}
           </Text>
         ) : (
           <span className={styles.balance()}>{balance}</span>
