@@ -3,6 +3,7 @@ import { type ReactNode } from 'react'
 import { formatUnits } from 'viem'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useLuckyRewardMyRounds,
   useLuckyRewardSummary,
@@ -13,16 +14,18 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { ExplorerLink } from '~/shared/components/explorer-link'
 import type { SelectMenuOption } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
+import { bscscanTx } from '~/shared/config/explorer'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { formatShortAddress } from '~/shared/presenters/format'
 import { useLuckySessionStore } from '~/stores/rewards-session-store'
 import { useWallClockSec } from '~/stores/wall-clock-store'
 import {
   formatApiCountLabel,
+  formatApiGagxApproxUsd,
   formatApiStatLabel,
   mapLuckyMyRoundToRow,
   mapLuckyWinnerToRow,
@@ -96,7 +99,7 @@ function formatUsd1Label(raw: bigint | null | undefined): string {
  *
  * 聚合今日奖池汇总、开奖名单与我的参与记录，
  * 另从链上读取本轮开奖快照计算参与资格与倒计时。
- * 日期 / 分页在 `useLuckySessionStore`；`selectedDate === null` 时用 summary 默认日。
+ * 日期 / 记录分页在 `useLuckySessionStore`；`selectedDate === null` 时用 summary 默认日。
  *
  * @see docs/backend-api/api.md #lucky-reward/summary
  */
@@ -105,19 +108,13 @@ export function useLucky() {
   const lucky = t.rewards.lucky
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
+  const agxPriceUsd = useAgxPriceUsd()
 
   const summaryQuery = useLuckyRewardSummary(sessionReady)
   const summary = summaryQuery.data
   const summaryDate = summary?.date?.trim() || ''
 
-  const {
-    selectedDate,
-    setSelectedDate,
-    winnersPage,
-    setWinnersPage,
-    historyPage,
-    setHistoryPage,
-  } = useLuckySessionStore()
+  const { selectedDate, setSelectedDate, historyPage, setHistoryPage } = useLuckySessionStore()
 
   const dateOptions = buildRecentDrawDateOptions(
     summaryDate || selectedDate || formatIsoDateUtc(utcToday()),
@@ -185,16 +182,19 @@ export function useLucky() {
 
   const winCount = formatApiCountLabel(sessionReady, summaryQuery.isLoading, summary?.win_count)
   const cumulativeWins = interpolate(lucky.winsCount, { count: winCount })
+  // summary 无累计金额字段；未返回按 0 画副标（稿：次数旁 gAGX ≈ $）
+  const cumulativeWinsHint = interpolate(lucky.winsAmountHint, {
+    amount: formatApiStatLabel(sessionReady, summaryQuery.isLoading, '0'),
+    approx: formatApiGagxApproxUsd(sessionReady, summaryQuery.isLoading, '0', agxPriceUsd),
+  })
 
   const selfAddress = account?.address ?? null
   const winners = winnersQuery.data?.items ?? []
   const winnersTotal = winners.length
-  const winnersPageStart = (winnersPage - 1) * DAPP_TABLE_PAGE_SIZE
-  const pagedWinners = winners.slice(winnersPageStart, winnersPageStart + DAPP_TABLE_PAGE_SIZE)
-  const winnerRows = pagedWinners.map((item) =>
+  const winnerRows = winners.map((item) =>
     mapLuckyWinnerToRow(item, { selfAddress, meLabel: lucky.meBadge }),
   )
-  const highlightedWinnerRows = pagedWinners.flatMap((item, index) =>
+  const highlightedWinnerRows = winners.flatMap((item, index) =>
     selfAddress != null &&
     selfAddress.length > 0 &&
     item.address.toLowerCase() === selfAddress.toLowerCase()
@@ -202,24 +202,31 @@ export function useLucky() {
       : [],
   )
   const winnersLoading = sessionReady && Boolean(drawDate) && winnersQuery.isLoading
-  /** 无中奖行时不展示表顶的日期 / 摘要 / 哈希控件 */
-  const showResultsChrome = !winnersLoading && winnersTotal > 0
   const drawHash = winnersQuery.data?.draw_tx_hash
   const resultsSummary = interpolate(lucky.resultsSummary, { count: winnersTotal })
-  const verifyChrome: ReactNode = (
-    <span className="inline-flex items-center gap-1">
-      <Text as="span" tone="primary" variant="copy">
-        {lucky.verifyHash}
+  const verifyChrome: ReactNode =
+    winnersTotal > 0 && drawHash ? (
+      <Text
+        as="a"
+        className="duration-dapp-base inline-flex items-center gap-1 font-semibold no-underline transition-opacity hover:opacity-70"
+        href={bscscanTx(drawHash)}
+        rel="noopener noreferrer"
+        target="_blank"
+        tone="claim-restake"
+        variant="copy"
+      >
+        {lucky.verifyHash} {formatShortAddress(drawHash)}
+        <svg aria-hidden className="size-[9px] shrink-0" fill="none" viewBox="0 0 10 10">
+          <path
+            d="M2 8L8 2M3.5 2H8v4.5"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.5"
+          />
+        </svg>
       </Text>
-      {drawHash ? (
-        <ExplorerLink kind="tx" showIcon value={drawHash} />
-      ) : (
-        <Text as="span" tone="primary" variant="copy">
-          {NON_NUMERIC_EMPTY}
-        </Text>
-      )}
-    </span>
-  )
+    ) : null
 
   const historyRows =
     historyQuery.data?.items.map((item) =>
@@ -233,17 +240,15 @@ export function useLucky() {
     eligibility,
     eligibilityHint,
     cumulativeWins,
+    cumulativeWinsHint,
     dateOptions,
     drawDate,
     onDrawDateChange: setSelectedDate,
-    showResultsChrome,
     resultsSummary,
     verifyChrome,
     winnerRows,
     highlightedWinnerRows,
     winnersLoading,
-    winnersPage,
-    setWinnersPage,
     winnersTotal,
     historyRows,
     historyLoading: sessionReady && historyQuery.isLoading,

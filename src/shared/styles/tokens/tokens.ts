@@ -72,7 +72,7 @@ export const colorHex = {
   "success": "#2bab6a",
   "claim-restake": "#4a7bec",
   "dark": "#1d212b",
-  "dark-panel": "#1d212b",
+  "dark-panel": "#1c2234",
   "inverse": "#fff",
   "inverse-muted": "#b8c0ce",
   "token-usd1": "#e86a43",

@@ -1055,10 +1055,18 @@ const app = defineMessages({
       maxStakeHint: 'Compras del día {amount}',
       cumulativeWins: 'Ganancias acumuladas',
       winsCount: '{count} veces',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Aleatoriedad verificable Chainlink VRF v2',
       vrfBody:
         'Los sorteos de la suerte usan Chainlink VRF v2 con los contratos de staking: la aleatoriedad se genera en cadena con prueba criptográfica; el contrato elige automáticamente 10 usuarios afortunados de la lista del día. Sin intervención humana; cualquiera puede verificar en cadena.',
       verifyTutorial: 'Guía de verificación',
+      collapseTutorial: 'Cerrar guía',
+      vrfGuideStep1:
+        'Haz clic en el hash de verificación de los resultados o del historial para abrir la transacción del sorteo en BscScan.',
+      vrfGuideStep2:
+        'En los Logs de la transacción, busca el callback de Chainlink VRF; randomWords es la aleatoriedad on-chain de esta ronda, con una prueba criptográfica que impide predecirla o alterarla.',
+      vrfGuideStep3:
+        'En la página Read Contract del contrato de staking, llama a verifyDraw con el ID de ronda del día para recalcular la lista de ganadores y compararla con los resultados publicados.',
       resultsTitle: 'Resultados del sorteo',
       dateFilterAria: 'Selecciona la fecha del sorteo',
       resultsSummary: 'Sorteo · {count} usuarios afortunados',

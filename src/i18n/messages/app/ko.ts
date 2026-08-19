@@ -1025,10 +1025,18 @@ const app = defineMessages({
       maxStakeHint: '오늘 누적 구매 {amount}',
       cumulativeWins: '누적 당첨',
       winsCount: '{count}회',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Chainlink VRF v2 검증 가능 랜덤 추첨',
       vrfBody:
         '럭키 리워드는 Chainlink VRF v2(검증 가능 랜덤 함수)와 스테이킹 컨트랙트를 결합해 추첨합니다. 난수는 Chainlink 오라클이 온체인에서 생성하고 암호 증명을 붙이며, 스테이킹 컨트랙트가 난수를 받아 당일 추첨 명단에서 행운 사용자 10명을 자동 선정합니다. 전 과정에 인위 개입이 없고 결과를 위조할 수 없으며, 누구나 온체인에서 검증할 수 있습니다.',
       verifyTutorial: '검증 튜토리얼',
+      collapseTutorial: '가이드 접기',
+      vrfGuideStep1:
+        '추첨 결과 또는 기록의 검증 해시를 클릭해 BscScan에서 해당 라운드 개찰 트랜잭션을 확인하세요.',
+      vrfGuideStep2:
+        '트랜잭션 Logs에서 Chainlink VRF 콜백을 찾으면, randomWords가 이번 라운드의 온체인 난수이며, 암호 증명이 예측·변조를 막습니다.',
+      vrfGuideStep3:
+        '스테이킹 컨트랙트의 Read Contract 페이지에서 verifyDraw를 호출하고 당일 라운드 번호를 입력하면 난수에 해당하는 당첨 명단을 재계산해 공시 결과와 대조할 수 있습니다.',
       resultsTitle: '추첨 결과',
       dateFilterAria: '추첨 날짜 선택',
       resultsSummary: '추첨 · 행운 사용자 {count}명',

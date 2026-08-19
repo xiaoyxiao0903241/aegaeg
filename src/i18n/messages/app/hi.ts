@@ -1023,10 +1023,18 @@ const app = defineMessages({
       maxStakeHint: 'आज की खरीदारी {amount}',
       cumulativeWins: 'संचयी जीत',
       winsCount: '{count} बार',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Chainlink VRF v2 सत्यापनीय यादृच्छिकता',
       vrfBody:
         'लकी ड्रॉ Chainlink VRF v2 को स्टेकिंग कॉन्ट्रैक्ट के साथ उपयोग करते हैं: यादृच्छिकता ऑन-चेन क्रिप्टोग्राफ़िक प्रूफ़ के साथ उत्पन्न होती है, फिर उस दिन की पात्रता सूची से विजेता चुने जाते हैं। कोई मानवीय हस्तक्षेप नहीं; कोई भी ऑन-चेन सत्यापित कर सकता है।',
       verifyTutorial: 'सत्यापन गाइड',
+      collapseTutorial: 'गाइड बंद करें',
+      vrfGuideStep1:
+        'परिणाम या इतिहास में सत्यापन हैश पर क्लिक करके उस राउंड की ड्रॉ लेनदेन BscScan पर खोलें।',
+      vrfGuideStep2:
+        'लेनदेन Logs में Chainlink VRF कॉलबैक खोजें; randomWords इस राउंड की ऑन-चेन यादृच्छिकता है, जिसके साथ क्रिप्टोग्राफ़िक प्रमाण है कि इसे अनुमान या छेड़छाड़ नहीं किया जा सकता।',
+      vrfGuideStep3:
+        'स्टेकिंग कॉन्ट्रैक्ट के Read Contract पेज पर उस दिन के राउंड ID के साथ verifyDraw कॉल करें, विजेता सूची की पुनर्गणना करें और प्रकाशित परिणामों से मिलाएँ।',
       resultsTitle: 'ड्रॉ परिणाम',
       dateFilterAria: 'ड्रॉ तिथि चुनें',
       resultsSummary: 'ड्रॉ · {count} विजेता',

@@ -85,12 +85,12 @@ type DestinationTone = 'release' | 'restake'
 
 const toneClass: Record<DestinationTone, string> = {
   release: 'border-primary/35 bg-accent',
-  restake: 'border-success/35 bg-success-soft',
+  restake: 'border-claim-restake/35 bg-claim-restake/12',
 }
 
-const titleTone: Record<DestinationTone, 'primary' | 'success'> = {
+const titleTone: Record<DestinationTone, 'primary' | 'claim-restake'> = {
   release: 'primary',
-  restake: 'success',
+  restake: 'claim-restake',
 }
 
 function DestinationRoot({ children, tone }: { children: ReactNode; tone: DestinationTone }) {

@@ -1,6 +1,7 @@
 import {
   type ButtonHTMLAttributes,
   createContext,
+  type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
   type RefObject,
@@ -12,6 +13,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { createPortal } from 'react-dom'
 
 import { cn } from '~/shared/lib/utils'
 
@@ -19,6 +21,7 @@ import { cn } from '~/shared/lib/utils'
 function useDismissOnOutside(
   open: boolean,
   rootRef: RefObject<HTMLElement | null>,
+  panelRef: RefObject<HTMLElement | null>,
   onDismiss: () => void,
 ) {
   const dismiss = useEffectEvent(onDismiss)
@@ -29,7 +32,8 @@ function useDismissOnOutside(
     function handlePointerDown(event: PointerEvent) {
       const target = event.target
       if (!(target instanceof Node)) return
-      if (rootRef.current && !rootRef.current.contains(target)) dismiss()
+      if (rootRef.current?.contains(target) || panelRef.current?.contains(target)) return
+      dismiss()
     }
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -42,18 +46,19 @@ function useDismissOnOutside(
       document.removeEventListener('pointerdown', handlePointerDown)
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [open, rootRef])
+  }, [open, panelRef, rootRef])
 }
 
 /**
  * DApp 列表菜单（兑换 TokenPicker / 资产排序 / SelectMenu 共用）
  *
- * 面板按视口剩余空间上下翻转；只提供容器与交互，
- * 选项 / 文案 / 图标由调用方组装进 Item。
+ * 面板 portal 到 body，避免被卡片 overflow 裁切；
+ * 按视口剩余空间上下翻转。选项 / 文案 / 图标由调用方组装进 Item。
  */
 
 const MENU_GAP_PX = 6
 const VIEWPORT_PADDING_PX = 8
+const MENU_MIN_WIDTH_PX = 176
 
 type MenuPlacement = 'above' | 'below'
 
@@ -62,6 +67,7 @@ type MenuCtx = {
   setOpen: (open: boolean) => void
   menuId: string
   triggerRef: RefObject<HTMLButtonElement | null>
+  panelRef: RefObject<HTMLDivElement | null>
 }
 
 const Ctx = createContext<MenuCtx | null>(null)
@@ -79,6 +85,38 @@ function placementForPanel(triggerRect: DOMRect, panelHeight: number): MenuPlace
   if (spaceBelow >= needed) return 'below'
   if (spaceAbove >= needed) return 'above'
   return spaceBelow >= spaceAbove ? 'below' : 'above'
+}
+
+/** 把面板钉在触发钮旁，并夹进视口。 */
+function styleForPortaledPanel(
+  triggerRect: DOMRect,
+  panelWidth: number,
+  panelHeight: number,
+  placement: MenuPlacement,
+  align: 'start' | 'end',
+  matchTriggerWidth: boolean,
+): CSSProperties {
+  let top =
+    placement === 'below'
+      ? triggerRect.bottom + MENU_GAP_PX
+      : triggerRect.top - MENU_GAP_PX - panelHeight
+  top = Math.max(
+    VIEWPORT_PADDING_PX,
+    Math.min(top, window.innerHeight - VIEWPORT_PADDING_PX - panelHeight),
+  )
+
+  let left = align === 'end' ? triggerRect.right - panelWidth : triggerRect.left
+  left = Math.max(
+    VIEWPORT_PADDING_PX,
+    Math.min(left, window.innerWidth - VIEWPORT_PADDING_PX - panelWidth),
+  )
+
+  return {
+    top,
+    left,
+    width: matchTriggerWidth ? triggerRect.width : undefined,
+    minWidth: matchTriggerWidth ? triggerRect.width : MENU_MIN_WIDTH_PX,
+  }
 }
 
 /**
@@ -110,16 +148,17 @@ export function DropdownMenu({
 
   const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
   const menuId = useId()
-  useDismissOnOutside(open, rootRef, () => setOpen(false))
+  useDismissOnOutside(open, rootRef, panelRef, () => setOpen(false))
 
   return (
     <div
-      className={cn('relative inline-flex', open && 'z-50', className)}
+      className={cn('relative inline-flex', className)}
       data-open={open ? '' : undefined}
       ref={rootRef}
     >
-      <Ctx value={{ open, setOpen, menuId, triggerRef }}>{children}</Ctx>
+      <Ctx value={{ open, setOpen, menuId, triggerRef, panelRef }}>{children}</Ctx>
     </div>
   )
 }
@@ -151,67 +190,78 @@ export function DropdownMenuTrigger({
   )
 }
 
-/** 列表菜单面板：按视口剩余空间决定向上或向下展开 */
+/** 列表菜单面板：portal 到 body，按视口剩余空间向上或向下展开 */
 export function DropdownMenuPanel({
   align = 'start',
   className,
   children,
+  matchTriggerWidth = false,
   ...props
-}: HTMLAttributes<HTMLDivElement> & { align?: 'start' | 'end' }) {
-  const { open, menuId, triggerRef } = useMenuCtx()
-  const panelRef = useRef<HTMLDivElement>(null)
-  const [placement, setPlacement] = useState<MenuPlacement>('below')
+}: HTMLAttributes<HTMLDivElement> & {
+  align?: 'start' | 'end'
+  /** 面板宽度对齐触发钮（领取弹窗 field） */
+  matchTriggerWidth?: boolean
+}) {
+  const { open, menuId, triggerRef, panelRef } = useMenuCtx()
+  const [coords, setCoords] = useState<CSSProperties>({})
+
+  const updatePosition = useEffectEvent(() => {
+    const trigger = triggerRef.current
+    const panel = panelRef.current
+    if (!trigger) return
+    const triggerRect = trigger.getBoundingClientRect()
+    const panelWidth = matchTriggerWidth
+      ? triggerRect.width
+      : Math.max(panel?.offsetWidth ?? 0, triggerRect.width, MENU_MIN_WIDTH_PX)
+    const panelHeight = panel?.offsetHeight ?? 0
+    const placement = placementForPanel(triggerRect, panelHeight)
+    setCoords(
+      styleForPortaledPanel(
+        triggerRect,
+        panelWidth,
+        panelHeight,
+        placement,
+        align,
+        matchTriggerWidth,
+      ),
+    )
+  })
 
   useLayoutEffect(() => {
     if (!open) return
-
-    function updatePlacement() {
-      const trigger = triggerRef.current
-      const panel = panelRef.current
-      if (!trigger || !panel) return
-      setPlacement(placementForPanel(trigger.getBoundingClientRect(), panel.offsetHeight))
-    }
-
-    updatePlacement()
-  }, [open, children, triggerRef])
+    updatePosition()
+  }, [children, open])
 
   useEffect(() => {
     if (!open) return
-
-    function updatePlacement() {
-      const trigger = triggerRef.current
-      const panel = panelRef.current
-      if (!trigger || !panel) return
-      setPlacement(placementForPanel(trigger.getBoundingClientRect(), panel.offsetHeight))
-    }
-
-    const timer = window.setTimeout(updatePlacement, 0)
-    window.addEventListener('resize', updatePlacement)
-    window.addEventListener('scroll', updatePlacement, true)
+    const timer = window.setTimeout(() => updatePosition(), 0)
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
     return () => {
       window.clearTimeout(timer)
-      window.removeEventListener('resize', updatePlacement)
-      window.removeEventListener('scroll', updatePlacement, true)
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
     }
-  }, [open, triggerRef])
+  }, [open])
 
-  if (!open) return null
-  return (
+  if (!open || typeof document === 'undefined') return null
+
+  return createPortal(
     <div
       {...props}
       className={cn(
-        'absolute z-50 grid min-w-44 gap-0.5',
-        placement === 'below' ? 'top-[calc(100%+0.375rem)]' : 'bottom-[calc(100%+0.375rem)]',
+        'fixed z-130 grid min-w-44 gap-0.5',
         'rounded-sm border border-border bg-card p-1.5 shadow-menu',
-        align === 'end' ? 'right-0' : 'left-0',
         className,
       )}
       id={menuId}
       ref={panelRef}
       role="listbox"
+      style={coords}
     >
       {children}
-    </div>
+    </div>,
+    document.body,
   )
 }
 

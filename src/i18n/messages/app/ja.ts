@@ -1032,10 +1032,18 @@ const app = defineMessages({
       maxStakeHint: '本日累計購入 {amount}',
       cumulativeWins: '累計当選',
       winsCount: '{count} 回',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Chainlink VRF v2 検証可能ランダム抽選',
       vrfBody:
         'ラッキー賞は Chainlink VRF v2（検証可能乱数）とステーキング契約を組み合わせて抽選します。乱数は Chainlink オラクルがオンチェーンで生成し暗号証明を付与し、ステーキング契約が受け取った後、当日の抽選名簿から自動で幸運ユーザー 10 名を選びます。人為介入なし・改ざん不可で、誰でもオンチェーン検証でき、不正の余地はありません。',
       verifyTutorial: '検証ガイド',
+      collapseTutorial: 'ガイドを閉じる',
+      vrfGuideStep1:
+        '抽選結果または抽選履歴の検証ハッシュをクリックし、BscScan でそのラウンドの開賞トランザクションを確認します。',
+      vrfGuideStep2:
+        'トランザクションの Logs で Chainlink VRF のコールバックを探し、randomWords が本ラウンドのオンチェーン乱数です。暗号証明により予測・改ざんできません。',
+      vrfGuideStep3:
+        'ステーキング契約の Read Contract ページで verifyDraw を呼び、当日のラウンド番号を入力すると、乱数に対応する当選リストを再計算し、公示結果と照合できます。',
       resultsTitle: '抽選結果',
       dateFilterAria: '抽選日を選択',
       resultsSummary: '抽選 · 幸運ユーザー {count} 名',

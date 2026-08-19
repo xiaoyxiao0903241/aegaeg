@@ -1060,10 +1060,18 @@ const app = defineMessages({
       maxStakeHint: 'Bugünkü alımlar {amount}',
       cumulativeWins: 'Kümülatif kazanç',
       winsCount: '{count} kez',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Chainlink VRF v2 doğrulanabilir rastgelelik',
       vrfBody:
         'Şans ödülü Chainlink VRF v2 ile staking sözleşmelerini birleştirir: rastgelelik zincir üstünde şifreli kanıtla üretilir; sözleşme o günün listesinden 10 şanslı kullanıcı seçer. İnsan müdahalesi yok; herkes zincir üstünde doğrulayabilir.',
       verifyTutorial: 'Doğrulama rehberi',
+      collapseTutorial: 'Rehberi kapat',
+      vrfGuideStep1:
+        'Sonuçlardaki veya geçmişteki doğrulama karmasına tıklayarak o turun çekiliş işlemini BscScan’de açın.',
+      vrfGuideStep2:
+        'İşlem Logs içinde Chainlink VRF geri çağrısını bulun; randomWords bu turun zincir üstü rastgeleliğidir ve kriptografik kanıt tahmin veya müdahaleyi engeller.',
+      vrfGuideStep3:
+        'Staking sözleşmesinin Read Contract sayfasında o günün tur kimliğiyle verifyDraw çağırarak kazanan listesini yeniden hesaplayın ve yayımlanan sonuçlarla karşılaştırın.',
       resultsTitle: 'Çekiliş sonuçları',
       dateFilterAria: 'Çekiliş tarihini seçin',
       resultsSummary: 'Çekiliş · {count} şanslı kullanıcı',

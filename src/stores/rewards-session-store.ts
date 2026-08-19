@@ -50,17 +50,13 @@ export const useGenesisHistorySessionStore = create<{
 /** 幸运奖详情会话；`selectedDate === null` 时 UI 用 summary 默认日。 */
 export const useLuckySessionStore = create<{
   selectedDate: string | null
-  winnersPage: number
   historyPage: number
   setSelectedDate: (date: string) => void
-  setWinnersPage: (page: number) => void
   setHistoryPage: (page: number) => void
 }>((set) => ({
   selectedDate: null,
-  winnersPage: 1,
   historyPage: 1,
-  setSelectedDate: (date) => set({ selectedDate: date, winnersPage: 1 }),
-  setWinnersPage: (page) => set({ winnersPage: page }),
+  setSelectedDate: (date) => set({ selectedDate: date }),
   setHistoryPage: (page) => set({ historyPage: page }),
 }))
 

@@ -1023,10 +1023,18 @@ const app = defineMessages({
       maxStakeHint: 'ยอดซื้อวันนี้ {amount}',
       cumulativeWins: 'ถูกรางวัลสะสม',
       winsCount: '{count} ครั้ง',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'สุ่มที่ตรวจสอบได้ด้วย Chainlink VRF v2',
       vrfBody:
         'รางวัลลัคกี้ใช้ Chainlink VRF v2 ร่วมกับสัญญาสเตก: สุ่มบนเชนพร้อมหลักฐานเข้ารหัส แล้วเลือกผู้ชนะจากรายชื่อที่มีสิทธิ์วันนั้น ไม่มีการแทรกแซงด้วยมือ ใครก็ตรวจสอบบนเชนได้',
       verifyTutorial: 'คู่มือการตรวจสอบ',
+      collapseTutorial: 'ยุบคู่มือ',
+      vrfGuideStep1:
+        'คลิกแฮชยืนยันในผลหรือประวัติการจับรางวัลเพื่อเปิดธุรกรรมการออกรางวัลรอบนั้นบน BscScan',
+      vrfGuideStep2:
+        'ใน Logs ของธุรกรรม ให้หา callback ของ Chainlink VRF โดย randomWords คือค่าสุ่มบนเชนของรอบนี้ พร้อมหลักฐานเข้ารหัสที่ป้องกันการคาดเดาหรือดัดแปลง',
+      vrfGuideStep3:
+        'ในหน้า Read Contract ของสัญญา staking ให้เรียก verifyDraw พร้อมรหัสรอบของวันนั้น เพื่อคำนวณรายชื่อผู้ชนะใหม่แล้วเทียบกับผลที่ประกาศ',
       resultsTitle: 'ผลการเปิดรางวัล',
       dateFilterAria: 'เลือกวันที่เปิดรางวัล',
       resultsSummary: 'เปิดรางวัล · ผู้โชคดี {count} คน',

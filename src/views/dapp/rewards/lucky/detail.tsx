@@ -2,7 +2,7 @@
  * 幸运奖详情页
  *
  * 顶部展示今日奖池、参与资格与累计中奖；
- * 中部为 Chainlink VRF 随机开奖说明卡；
+ * 中部为 Chainlink VRF 随机开奖说明卡，可展开验证教程；
  * 下方按开奖日期查看中奖名单与我的参与记录，底部为 FAQ。
  */
 import { CountValue } from '~/shared/components/count-value'
@@ -28,17 +28,15 @@ export function LuckyDetail() {
     eligibility,
     eligibilityHint,
     cumulativeWins,
+    cumulativeWinsHint,
     dateOptions,
     drawDate,
     onDrawDateChange,
-    showResultsChrome,
     resultsSummary,
     verifyChrome,
     winnerRows,
     highlightedWinnerRows,
     winnersLoading,
-    winnersPage,
-    setWinnersPage,
     winnersTotal,
     historyRows,
     historyLoading,
@@ -83,6 +81,7 @@ export function LuckyDetail() {
       label: lucky.cumulativeWins,
       value: cumulativeWins,
       animateValue: true as const,
+      valueHint: cumulativeWinsHint,
     },
   ]
 
@@ -123,6 +122,8 @@ export function LuckyDetail() {
       <Section>
         <LuckyVrfCard
           body={lucky.vrfBody}
+          collapseTutorial={lucky.collapseTutorial}
+          guideSteps={[lucky.vrfGuideStep1, lucky.vrfGuideStep2, lucky.vrfGuideStep3]}
           title={lucky.vrfTitle}
           verifyTutorial={lucky.verifyTutorial}
         />
@@ -130,18 +131,20 @@ export function LuckyDetail() {
 
       <Section>
         <Section.Title>{lucky.resultsTitle}</Section.Title>
-        <Table>
-          {showResultsChrome ? (
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <Table contentClassName="px-2.5 py-1.5 max-dapp:px-2.5">
+          <Table.Header className="px-4.5 pt-3.5 pb-[13px] max-dapp:px-4.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 {dateMenu}
-                <Text as="span" className="font-semibold" variant="copy">
-                  {resultsSummary}
-                </Text>
+                {winnersTotal > 0 ? (
+                  <Text as="span" className="font-semibold" variant="copy">
+                    {resultsSummary}
+                  </Text>
+                ) : null}
               </div>
               {verifyChrome}
             </div>
-          ) : null}
+          </Table.Header>
           <Table.Body
             colWidths={['5.625rem', '15.9375rem', '10.9375rem', '1fr']}
             emphasisColumns={[0, 3]}
@@ -153,15 +156,6 @@ export function LuckyDetail() {
             isLoading={winnersLoading}
             rows={winnerRows}
           />
-          {shouldShowTablePagination(winnersTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setWinnersPage}
-                page={winnersPage}
-                total={winnersTotal}
-              />
-            </Table.Footer>
-          ) : null}
         </Table>
       </Section>
 

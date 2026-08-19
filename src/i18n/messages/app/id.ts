@@ -1064,10 +1064,18 @@ const app = defineMessages({
       maxStakeHint: 'Pembelian hari ini {amount}',
       cumulativeWins: 'Total kemenangan',
       winsCount: '{count} kali',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Keacakan terverifikasi Chainlink VRF v2',
       vrfBody:
         'Lucky draw memakai Chainlink VRF v2 dengan kontrak staking: randomness dihasilkan on-chain dengan bukti kriptografi, lalu pemenang dipilih dari daftar kelayakan hari itu. Tanpa intervensi manusia; siapa pun dapat memverifikasi on-chain.',
       verifyTutorial: 'Panduan verifikasi',
+      collapseTutorial: 'Tutup panduan',
+      vrfGuideStep1:
+        'Klik hash verifikasi di hasil atau riwayat undian untuk membuka transaksi undian putaran itu di BscScan.',
+      vrfGuideStep2:
+        'Di Logs transaksi, temukan callback Chainlink VRF; randomWords adalah keacakan on-chain putaran ini, dengan bukti kriptografi yang tidak bisa diprediksi atau diubah.',
+      vrfGuideStep3:
+        'Di halaman Read Contract kontrak staking, panggil verifyDraw dengan ID putaran hari itu untuk menghitung ulang daftar pemenang dan mencocokkannya dengan hasil yang dipublikasikan.',
       resultsTitle: 'Hasil undian',
       dateFilterAria: 'Pilih tanggal undian',
       resultsSummary: 'Undian · {count} pengguna beruntung',

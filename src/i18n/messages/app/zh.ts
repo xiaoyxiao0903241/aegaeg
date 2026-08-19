@@ -971,10 +971,17 @@ const app = defineMessages({
       maxStakeHint: '今日累计购买 {amount}',
       cumulativeWins: '累计中奖',
       winsCount: '{count} 次',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Chainlink VRF v2 可验证随机抽奖',
       vrfBody:
         '幸运奖采用 Chainlink VRF v2（可验证随机函数）与质押合约结合的方式开奖：随机数由 Chainlink 预言机网络在链上生成并附带加密证明，质押合约收到随机数后自动在当日抽奖名单中选出 10 位幸运用户。整个过程无人为干预、结果不可篡改，任何人都可以在链上验证，绝无作弊可能。',
       verifyTutorial: '验证教程',
+      collapseTutorial: '收起教程',
+      vrfGuideStep1: '点击中奖结果或抽奖记录中的验证哈希，跳转至 BscScan 查看该轮开奖交易。',
+      vrfGuideStep2:
+        '在交易日志（Logs）中找到 Chainlink VRF 回调事件，其中 randomWords 即本轮链上随机数，附带的加密证明确保其无法被预测或篡改。',
+      vrfGuideStep3:
+        '在质押合约的 Read Contract 页调用 verifyDraw，输入当日轮次编号，即可复算随机数对应的中奖名单，与公示结果逐一核对。',
       resultsTitle: '开奖结果',
       dateFilterAria: '选择开奖日期',
       resultsSummary: '开奖 · {count} 位幸运用户',

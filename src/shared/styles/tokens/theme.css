@@ -56,7 +56,7 @@
   --claim-restake: oklch(60.77% 0.1787 264.16);
   --dark: #1d212b;
   --dark: oklch(24.82% 0.0200 267.87);
-  --dark-panel: var(--dark);
+  --dark-panel: #1c2234;
   --inverse: #fff;
   --inverse: oklch(100% 0 89.88);
   --inverse-muted: #b8c0ce;

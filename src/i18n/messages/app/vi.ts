@@ -1052,10 +1052,18 @@ const app = defineMessages({
       maxStakeHint: 'Mua trong ngày {amount}',
       cumulativeWins: 'Tổng lần trúng',
       winsCount: '{count} lần',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Bốc thăm ngẫu nhiên có thể xác minh Chainlink VRF v2',
       vrfBody:
         'Thưởng may mắn dùng Chainlink VRF v2 (hàm ngẫu nhiên có thể xác minh) kết hợp hợp đồng staking: số ngẫu nhiên do mạng oracle Chainlink sinh on-chain kèm chứng minh mật mã; hợp đồng staking nhận số rồi tự chọn 10 người may mắn từ danh sách trong ngày. Không can thiệp người, kết quả không sửa được; ai cũng xác minh on-chain, không gian lận.',
       verifyTutorial: 'Hướng dẫn xác minh',
+      collapseTutorial: 'Thu gọn hướng dẫn',
+      vrfGuideStep1:
+        'Nhấp hash xác minh trong kết quả hoặc lịch sử để mở giao dịch mở thưởng của vòng đó trên BscScan.',
+      vrfGuideStep2:
+        'Trong Logs giao dịch, tìm sự kiện callback Chainlink VRF; randomWords là số ngẫu nhiên on-chain của vòng này, kèm chứng minh mật mã nên không thể dự đoán hay giả mạo.',
+      vrfGuideStep3:
+        'Trên trang Read Contract của hợp đồng staking, gọi verifyDraw với mã vòng trong ngày để tính lại danh sách thắng và đối chiếu với kết quả công bố.',
       resultsTitle: 'Kết quả mở thưởng',
       dateFilterAria: 'Chọn ngày mở thưởng',
       resultsSummary: 'Mở thưởng · {count} người may mắn',

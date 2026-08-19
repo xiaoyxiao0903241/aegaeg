@@ -1025,10 +1025,18 @@ const app = defineMessages({
       maxStakeHint: 'Purchases today {amount}',
       cumulativeWins: 'Cumulative wins',
       winsCount: '{count} times',
+      winsAmountHint: '{amount} gAGX {approx}',
       vrfTitle: 'Chainlink VRF v2 verifiable randomness',
       vrfBody:
         'Lucky draws use Chainlink VRF v2 with the staking contracts: randomness is generated on-chain with a cryptographic proof, then winners are selected from that day’s eligibility list. No human intervention; anyone can verify on-chain.',
       verifyTutorial: 'Verification guide',
+      collapseTutorial: 'Collapse guide',
+      vrfGuideStep1:
+        'Click a verification hash in the draw results or history to open that round’s draw transaction on BscScan.',
+      vrfGuideStep2:
+        'In the transaction Logs, find the Chainlink VRF callback; randomWords is this round’s on-chain randomness, with a cryptographic proof that it cannot be predicted or tampered with.',
+      vrfGuideStep3:
+        'On the staking contract’s Read Contract page, call verifyDraw with that day’s round ID to recompute the winner list and check it against the published results.',
       resultsTitle: 'Draw results',
       dateFilterAria: 'Select draw date',
       resultsSummary: 'Draw · {count} winners',

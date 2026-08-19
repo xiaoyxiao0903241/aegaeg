@@ -80,11 +80,8 @@ export function SelectMenu({
 
       <DropdownMenuPanel
         align={align}
-        className={cn(
-          SELECT_MENU_PANEL_MAX_H,
-          'overflow-y-auto',
-          variant === 'field' && 'w-full min-w-0',
-        )}
+        className={cn(SELECT_MENU_PANEL_MAX_H, 'overflow-y-auto')}
+        matchTriggerWidth={variant === 'field'}
       >
         {options.map((option) => {
           const active = option.value === value
