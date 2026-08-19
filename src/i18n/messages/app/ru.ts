@@ -1088,10 +1088,11 @@ const app = defineMessages({
       recordsTitle: 'Записи реферальных наград',
       recordsColumns: ['Время', 'Сумма', 'Статус', 'Получено в'],
       emptyRecords: 'Пока нет записей наград. Записи появятся после выдачи.',
-      referralsTitle: 'Мои рефералы',
+      referralsTitle: 'Мои рефералы ({count})',
       referralsColumns: ['Присоединился', 'Адрес', 'Позиция', 'Накопленные награды вклада'],
       emptyReferrals:
         'Пока нет прямых рефералов. Поделитесь ссылкой-приглашением, чтобы партнёры появились здесь.',
+      hideZeroPosition: 'Скрыть нулевые позиции',
       faq: {
         title: 'FAQs',
         items: [
@@ -1189,6 +1190,10 @@ const app = defineMessages({
       reqPerformance: 'Общий объём',
       reqPerformanceHint: 'Стоимость всех позиций даунлайна',
       reqAchieved: 'Достигнуто',
+      tierRate: 'Бонус {rate}',
+      tierProgress: 'Прогресс к {level}',
+      tierProgressCount: 'Выполнено {done}/{total}',
+      tierMax: 'Достигнут максимальный уровень',
       recordsTitle: 'Записи наград',
       recordsTabsAria: 'Тип записи награды',
       recordsTabCobuild: 'Со-строительство',
@@ -1196,10 +1201,11 @@ const app = defineMessages({
       recordsColumns: ['Время', 'Уровень', 'Сумма', 'Статус', 'Получено в'],
       emptyRecordsCobuild: 'Пока нет записей наград. Записи появятся после выдачи.',
       emptyRecordsEqualize: 'Пока нет записей выравнивания. Записи появятся после выдачи.',
-      directsTitle: 'Прямые рефералы',
-      directsColumns: ['Присоединился', 'Адрес', 'Позиция', 'Уровень'],
-      emptyDirects:
-        'Пока нет прямых рефералов. Поделитесь ссылкой-приглашением, чтобы партнёры появились здесь.',
+      teamTitle: 'Моя команда ({count})',
+      teamColumns: ['Присоединился', 'Адрес', 'Командный объём', 'Макс. уровень команды'],
+      emptyTeam:
+        'Пока нет членов команды. Поделитесь ссылкой-приглашением, чтобы партнёры появились здесь.',
+      hideZeroMarket: 'Скрыть нулевой объём',
       faq: {
         title: 'FAQs',
         items: [

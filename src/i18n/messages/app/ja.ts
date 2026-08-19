@@ -1097,10 +1097,11 @@ const app = defineMessages({
       recordsTitle: '紹介賞記録',
       recordsColumns: ['時間', '試算数量', 'ステータス', '受取日時'],
       emptyRecords: 'リワード記録はまだありません。配布後、各記録がここに表示されます。',
-      referralsTitle: 'マイ紹介',
+      referralsTitle: 'マイ紹介（{count}）',
       referralsColumns: ['参加日時', 'アドレス', 'ポジション', '累計貢献リワード'],
       emptyReferrals:
         '直紹介パートナーはまだいません。招待リンクを共有すると、参加後ここに表示されます。',
+      hideZeroPosition: '0 ポジションを非表示',
       faq: {
         title: 'FAQs',
         items: [
@@ -1198,6 +1199,10 @@ const app = defineMessages({
       reqPerformance: '総業績',
       reqPerformanceHint: '全紹介体系のポジション合計',
       reqAchieved: '達成済み',
+      tierRate: 'ボーナス比率 {rate}',
+      tierProgress: '{level} への昇進条件',
+      tierProgressCount: '達成 {done}/{total}',
+      tierMax: '最高ランクに到達',
       recordsTitle: 'リワード記録',
       recordsTabsAria: 'リワード記録タイプ',
       recordsTabCobuild: '共創賞',
@@ -1205,10 +1210,10 @@ const app = defineMessages({
       recordsColumns: ['時間', 'ランク', '試算数量', 'ステータス', '受取日時'],
       emptyRecordsCobuild: 'リワード記録はまだありません。配布後、各記録がここに表示されます。',
       emptyRecordsEqualize: 'イコライズ賞の記録はまだありません。配布後ここに表示されます。',
-      directsTitle: '直紹介明細',
-      directsColumns: ['参加日時', 'アドレス', 'ポジション', 'ランク'],
-      emptyDirects:
-        '直紹介パートナーはまだいません。招待リンクを共有すると、参加後ここに表示されます。',
+      teamTitle: 'マイチーム（{count}）',
+      teamColumns: ['参加日時', 'アドレス', 'チーム実績', 'チーム最高ランク'],
+      emptyTeam: 'チームメンバーはまだいません。招待リンクを共有すると、参加後ここに表示されます。',
+      hideZeroMarket: '実績0を非表示',
       faq: {
         title: 'FAQs',
         items: [

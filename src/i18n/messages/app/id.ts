@@ -1130,10 +1130,11 @@ const app = defineMessages({
       recordsColumns: ['Waktu', 'Jumlah', 'Status', 'Diklaim pada'],
       emptyRecords:
         'Belum ada catatan hadiah. Setelah hadiah diterbitkan, setiap catatan akan tampil di sini.',
-      referralsTitle: 'Referral saya',
+      referralsTitle: 'Referral saya ({count})',
       referralsColumns: ['Bergabung', 'Alamat', 'Posisi', 'Reward referral kumulatif'],
       emptyReferrals:
         'Belum ada mitra referral langsung. Bagikan tautan undangan Anda; mitra akan tampil di sini setelah bergabung.',
+      hideZeroPosition: 'Sembunyikan posisi 0',
       faq: {
         title: 'FAQs',
         items: [
@@ -1232,6 +1233,10 @@ const app = defineMessages({
       reqPerformance: 'Total kinerja',
       reqPerformanceHint: 'Total nilai posisi seluruh jaringan referral',
       reqAchieved: 'Tercapai',
+      tierRate: 'Rasio bonus {rate}',
+      tierProgress: 'Progres ke {level}',
+      tierProgressCount: 'Tercapai {done}/{total}',
+      tierMax: 'Level tertinggi tercapai',
       recordsTitle: 'Catatan hadiah',
       recordsTabsAria: 'Jenis catatan hadiah',
       recordsTabCobuild: 'Bangun Bersama',
@@ -1240,10 +1245,11 @@ const app = defineMessages({
       emptyRecordsCobuild:
         'Belum ada catatan hadiah. Setelah hadiah diterbitkan, setiap catatan akan tampil di sini.',
       emptyRecordsEqualize: 'Belum ada catatan equalize. Akan tampil di sini setelah diterbitkan.',
-      directsTitle: 'Detail referral langsung',
-      directsColumns: ['Bergabung', 'Alamat', 'Posisi', 'Tingkat'],
-      emptyDirects:
-        'Belum ada mitra referral langsung. Bagikan tautan undangan Anda; mitra akan tampil di sini setelah bergabung.',
+      teamTitle: 'Tim saya ({count})',
+      teamColumns: ['Bergabung', 'Alamat', 'Kinerja tim', 'Level tertinggi tim'],
+      emptyTeam:
+        'Belum ada anggota tim. Bagikan tautan undangan Anda; mitra akan tampil di sini setelah bergabung.',
+      hideZeroMarket: 'Sembunyikan kinerja 0',
       faq: {
         title: 'FAQs',
         items: [

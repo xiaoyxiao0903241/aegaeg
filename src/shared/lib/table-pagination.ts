@@ -2,7 +2,7 @@ import { DAPP_TABLE_PAGE_SIZE } from '~/shared/lib/constants'
 
 export { DAPP_TABLE_PAGE_SIZE }
 
-/** 结果行数超过每页行数时显示分页。 */
+/** 是否显示翻页器（上一页 / 页码 / 下一页）。一页也要 Footer 总数，不据此藏整栏。 */
 export function shouldShowTablePagination(
   total: number,
   pageSize: number = DAPP_TABLE_PAGE_SIZE,

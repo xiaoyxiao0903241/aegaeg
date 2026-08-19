@@ -89,7 +89,8 @@ type PaginationProps = {
 /**
  * 表格分页条
  *
- * 展示总数、每页条数与页码菜单；页码超出范围时自动回调到有效页。
+ * 展示总数、每页条数与页码菜单；一页也渲染总数，仅多页时显示翻页器。
+ * 页码超出范围时自动回调到有效页。
  *
  * @param page 当前页（1 起）
  * @param pageSize 每页条数
@@ -166,8 +167,7 @@ function Pagination({
     }
   }, [menuOpen])
 
-  const showPagination = shouldShowTablePagination(total, pageSize)
-  if (!showPagination && summary == null) return null
+  const showPager = shouldShowTablePagination(total, pageSize)
 
   return (
     <div
@@ -201,7 +201,7 @@ function Pagination({
         ) : null}
       </div>
 
-      {showPagination ? (
+      {showPager ? (
         <div className="flex flex-wrap items-center gap-4 sm:justify-end">
           <Text
             as="span"

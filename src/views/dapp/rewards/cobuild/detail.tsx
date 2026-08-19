@@ -1,10 +1,11 @@
 /**
  * 共建奖详情页
  *
- * 顶部六张统计卡（总奖励、做市、我的位置、直推数、贡献、下次发放），
- * 中部等级卡展示当前/下一级档位与需求进度徽章，
- * 下方为等级记录 / 超越记录双 Tab 表格与直推成员表，底部为 FAQ。
+ * 顶部六张统计卡（总奖励、做市、我的仓位、直推数、贡献、下次发放），
+ * 中部等级卡展示当前/下一级档位与晋升条件进度，
+ * 下方为等级记录 / 超越记录双 Tab 表格与「我的团队」表，底部为 FAQ。
  */
+import { interpolate } from '~/i18n/interpolate'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -13,10 +14,9 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
-import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
+import { HideZeroToggle, rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 import {
   mapFaqWithContributionRatio,
   withContributionRatio,
@@ -35,10 +35,16 @@ export function CobuildDetail() {
     totalPerformance,
     myPosition,
     nextPayout,
+    hideZeroMarket,
+    setHideZeroMarket,
     tierCurrent,
     tierNext,
     tierCurrentRate,
     tierNextRate,
+    tierHasNext,
+    tierMaxLabel,
+    tierProgressTitle,
+    tierProgressCount,
     achievedLabel,
     tierReqs,
     recordRows,
@@ -117,9 +123,13 @@ export function CobuildDetail() {
           currentLabel={cobuild.tierCurrent}
           currentRate={tierCurrentRate}
           currentValue={tierCurrent}
+          hasNext={tierHasNext}
+          maxLabel={tierMaxLabel}
           nextLabel={cobuild.tierNext}
           nextRate={tierNextRate}
           nextValue={tierNext}
+          progressCount={tierProgressCount}
+          progressTitle={tierProgressTitle}
           reqs={tierReqs}
         />
       </Section>
@@ -146,39 +156,42 @@ export function CobuildDetail() {
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {shouldShowTablePagination(recordsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              total={recordsTotal}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 
       <Section>
-        <Section.Title>{cobuild.directsTitle}</Section.Title>
+        <div className="flex items-center justify-between gap-3">
+          <Section.Title>{interpolate(cobuild.teamTitle, { count: referralCount })}</Section.Title>
+          <HideZeroToggle
+            checked={hideZeroMarket}
+            label={cobuild.hideZeroMarket}
+            onChange={setHideZeroMarket}
+          />
+        </div>
         <Table>
           <Table.Body
             colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
             emphasisColumns={[3]}
-            empty={cobuild.emptyDirects}
+            empty={cobuild.emptyTeam}
             mutedColumns={[0]}
-            headers={[...cobuild.directsColumns]}
+            headers={[...cobuild.teamColumns]}
             isLoading={directsLoading}
             rows={directRows}
           />
-          {shouldShowTablePagination(directsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setDirectsPage}
-                page={directsPage}
-                total={directsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setDirectsPage}
+              page={directsPage}
+              total={directsTotal}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 

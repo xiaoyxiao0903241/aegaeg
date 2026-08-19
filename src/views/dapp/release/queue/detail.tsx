@@ -26,7 +26,7 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { mapReleasePoolLogToRow } from '~/shared/presenters/map-flow-log-rows'
 import {
@@ -172,15 +172,13 @@ export function QueueDetail() {
             mutedColumns={[0]}
             rows={queueLogRows}
           />
-          {shouldShowTablePagination(queueLogsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={queueLogsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              total={queueLogsTotal}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 

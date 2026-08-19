@@ -241,7 +241,7 @@
 |`Table.Body`|列头+行；`empty` 时空态；列强调 props|
 |`Table.Cell`|单元格 chrome（手写表 / Body 内部）|
 |`Table.Footer`|卡内底槽|
-|`Table.Pagination`|分页控件（贴 Footer）|
+|`Table.Pagination`|分页控件（贴 Footer）；一页也渲染「共 N 条」，仅多页显示翻页器|
 |`Table.Empty` / `Auth` / `Frame`|空态（复用全局 `Empty`）/ 未连接（title·body·CTA 由 call site）/ 自建壳|
 
 ### MUST NOT（表）

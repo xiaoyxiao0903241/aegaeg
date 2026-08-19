@@ -18,7 +18,6 @@ import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
 
 /** 资产子页列表底部留白：滚出左栏渐隐，不改共享 DockPanel。 */
@@ -211,7 +210,7 @@ export function AssetsOpsTable({
         mutedColumns={[0]}
         rows={rows}
       />
-      {pagination && shouldShowTablePagination(pagination.total) ? (
+      {pagination ? (
         <Table.Footer>
           <Table.Pagination
             onPageChange={pagination.onPageChange}

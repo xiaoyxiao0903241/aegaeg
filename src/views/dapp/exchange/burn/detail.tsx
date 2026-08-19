@@ -25,7 +25,6 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { formatUsdApprox } from '~/shared/presenters/format'
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
@@ -175,15 +174,13 @@ export function BurnExchangeDetail({
             mutedColumns={[0]}
             rows={history.rows}
           />
-          {shouldShowTablePagination(history.total) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={history.setPage}
-                page={history.page}
-                total={history.total}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={history.setPage}
+              page={history.page}
+              total={history.total}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 

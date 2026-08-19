@@ -14,7 +14,6 @@ import { SelectMenu } from '~/shared/components/select-menu'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { LuckyVrfCard } from '~/views/dapp/rewards/lucky/primitives'
 import { useLucky } from '~/views/dapp/rewards/lucky/use-lucky'
 import { mapFaqWithContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
@@ -171,15 +170,13 @@ export function LuckyDetail() {
             isLoading={historyLoading}
             rows={historyRows}
           />
-          {shouldShowTablePagination(historyTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setHistoryPage}
-                page={historyPage}
-                total={historyTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setHistoryPage}
+              page={historyPage}
+              total={historyTotal}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 

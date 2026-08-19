@@ -1088,10 +1088,11 @@ const app = defineMessages({
       recordsTitle: 'บันทึกรางวัลแนะนำ',
       recordsColumns: ['เวลา', 'จำนวนคำนวณ', 'สถานะ', 'เวลารับ'],
       emptyRecords: 'ยังไม่มีบันทึกรางวัล หลังมีการจ่าย จะแสดงทุกรายการที่นี่',
-      referralsTitle: 'การแนะนำของฉัน',
+      referralsTitle: 'การแนะนำของฉัน ({count})',
       referralsColumns: ['เวลาเข้าร่วม', 'ที่อยู่', 'โพซิชัน', 'รางวัลแนะนำสะสม'],
       emptyReferrals:
         'ยังไม่มีพาร์ทเนอร์แนะนำตรง แชร์ลิงก์เชิญ เมื่อพาร์ทเนอร์เข้าร่วมจะแสดงที่นี่',
+      hideZeroPosition: 'ซ่อนโพซิชันที่เป็น 0',
       faq: {
         title: 'FAQs',
         items: [
@@ -1188,6 +1189,10 @@ const app = defineMessages({
       reqPerformance: 'ผลงานรวม',
       reqPerformanceHint: 'มูลค่ารวมโพซิชันทั้งสายแนะนำ',
       reqAchieved: 'บรรลุแล้ว',
+      tierRate: 'อัตราส่วนโบนัส {rate}',
+      tierProgress: 'ความคืบหน้าสู่ {level}',
+      tierProgressCount: 'บรรลุแล้ว {done}/{total}',
+      tierMax: 'ถึงระดับสูงสุดแล้ว',
       recordsTitle: 'บันทึกรางวัล',
       recordsTabsAria: 'ประเภทบันทึกรางวัล',
       recordsTabCobuild: 'ร่วมสร้าง',
@@ -1195,9 +1200,10 @@ const app = defineMessages({
       recordsColumns: ['เวลา', 'ระดับ', 'จำนวนคำนวณ', 'สถานะ', 'เวลารับ'],
       emptyRecordsCobuild: 'ยังไม่มีบันทึกรางวัล หลังมีการจ่าย จะแสดงทุกรายการที่นี่',
       emptyRecordsEqualize: 'ยังไม่มีบันทึกรางวัลปรับสมดุล หลังมีการจ่ายจะแสดงที่นี่',
-      directsTitle: 'รายละเอียดแนะนำตรง',
-      directsColumns: ['เวลาเข้าร่วม', 'ที่อยู่', 'โพซิชัน', 'ระดับ'],
-      emptyDirects: 'ยังไม่มีพาร์ทเนอร์แนะนำตรง แชร์ลิงก์เชิญ เมื่อพาร์ทเนอร์เข้าร่วมจะแสดงที่นี่',
+      teamTitle: 'ทีมของฉัน ({count})',
+      teamColumns: ['เวลาเข้าร่วม', 'ที่อยู่', 'ผลงานทีม', 'ระดับสูงสุดของทีม'],
+      emptyTeam: 'ยังไม่มีสมาชิกทีม แชร์ลิงก์เชิญ เมื่อพาร์ทเนอร์เข้าร่วมจะแสดงที่นี่',
+      hideZeroMarket: 'ซ่อนผลงานที่เป็น 0',
       faq: {
         title: 'FAQs',
         items: [

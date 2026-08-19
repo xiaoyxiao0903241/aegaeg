@@ -1117,7 +1117,7 @@ const app = defineMessages({
       recordsTitle: 'Bản ghi thưởng giới thiệu',
       recordsColumns: ['Thời gian', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
       emptyRecords: 'Chưa có bản ghi thưởng; sau khi phát sẽ hiện từng mục ở đây.',
-      referralsTitle: 'Giới thiệu của tôi',
+      referralsTitle: 'Giới thiệu của tôi ({count})',
       referralsColumns: [
         'Thời gian tham gia',
         'Địa chỉ',
@@ -1126,6 +1126,7 @@ const app = defineMessages({
       ],
       emptyReferrals:
         'Chưa có đối tác giới thiệu trực tiếp. Chia sẻ liên kết mời, họ tham gia sẽ hiện ở đây.',
+      hideZeroPosition: 'Ẩn vị thế 0',
       faq: {
         title: 'FAQs',
         items: [
@@ -1223,6 +1224,10 @@ const app = defineMessages({
       reqPerformance: 'Tổng hiệu suất',
       reqPerformanceHint: 'Tổng giá trị vị thế toàn hệ giới thiệu',
       reqAchieved: 'Đã đạt',
+      tierRate: 'Tỷ lệ thưởng {rate}',
+      tierProgress: 'Tiến độ lên {level}',
+      tierProgressCount: 'Đã đạt {done}/{total}',
+      tierMax: 'Đã đạt hạng cao nhất',
       recordsTitle: 'Bản ghi phần thưởng',
       recordsTabsAria: 'Loại bản ghi phần thưởng',
       recordsTabCobuild: 'Cùng xây dựng',
@@ -1230,10 +1235,10 @@ const app = defineMessages({
       recordsColumns: ['Thời gian', 'Hạng', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
       emptyRecordsCobuild: 'Chưa có bản ghi thưởng; sau khi phát sẽ hiện từng mục ở đây.',
       emptyRecordsEqualize: 'Chưa có bản ghi thưởng san bằng; sau khi phát sẽ hiện ở đây.',
-      directsTitle: 'Chi tiết giới thiệu trực tiếp',
-      directsColumns: ['Thời gian tham gia', 'Địa chỉ', 'Vị thế', 'Hạng'],
-      emptyDirects:
-        'Chưa có đối tác giới thiệu trực tiếp. Chia sẻ liên kết mời, họ tham gia sẽ hiện ở đây.',
+      teamTitle: 'Đội của tôi ({count})',
+      teamColumns: ['Thời gian tham gia', 'Địa chỉ', 'Hiệu suất đội', 'Hạng cao nhất của đội'],
+      emptyTeam: 'Chưa có thành viên đội. Chia sẻ liên kết mời, họ tham gia sẽ hiện ở đây.',
+      hideZeroMarket: 'Ẩn hiệu suất 0',
       faq: {
         title: 'FAQs',
         items: [

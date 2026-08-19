@@ -1120,7 +1120,7 @@ const app = defineMessages({
       recordsTitle: 'Registros de recompensa por referidos',
       recordsColumns: ['Hora', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
       emptyRecords: 'Aún no hay registros de recompensa. Aparecerán tras cada emisión.',
-      referralsTitle: 'Mis referidos',
+      referralsTitle: 'Mis referidos ({count})',
       referralsColumns: [
         'Fecha de ingreso',
         'Dirección',
@@ -1129,6 +1129,7 @@ const app = defineMessages({
       ],
       emptyReferrals:
         'Aún no hay referidos directos. Comparte tu enlace de invitación para listarlos aquí.',
+      hideZeroPosition: 'Ocultar posiciones en 0',
       faq: {
         title: 'FAQs',
         items: [
@@ -1231,6 +1232,10 @@ const app = defineMessages({
       reqPerformance: 'Rendimiento total',
       reqPerformanceHint: 'Valor total de posiciones de la red',
       reqAchieved: 'Logrado',
+      tierRate: 'Bonus {rate}',
+      tierProgress: 'Progreso hacia {level}',
+      tierProgressCount: 'Cumplido {done}/{total}',
+      tierMax: 'Nivel máximo alcanzado',
       recordsTitle: 'Registros de recompensa',
       recordsTabsAria: 'Tipo de registro de recompensa',
       recordsTabCobuild: 'Co-construcción',
@@ -1238,10 +1243,16 @@ const app = defineMessages({
       recordsColumns: ['Hora', 'Nivel', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
       emptyRecordsCobuild: 'Aún no hay registros de recompensa. Aparecerán tras cada emisión.',
       emptyRecordsEqualize: 'Aún no hay registros de nivelación. Aparecerán tras la emisión.',
-      directsTitle: 'Detalle de referidos directos',
-      directsColumns: ['Fecha de ingreso', 'Dirección', 'Posición', 'Nivel'],
-      emptyDirects:
-        'Aún no hay referidos directos. Comparte tu enlace de invitación para listarlos aquí.',
+      teamTitle: 'Mi equipo ({count})',
+      teamColumns: [
+        'Fecha de ingreso',
+        'Dirección',
+        'Rendimiento del equipo',
+        'Nivel máximo del equipo',
+      ],
+      emptyTeam:
+        'Aún no hay miembros de equipo. Comparte tu enlace de invitación para listarlos aquí.',
+      hideZeroMarket: 'Ocultar rendimiento 0',
       faq: {
         title: 'FAQs',
         items: [

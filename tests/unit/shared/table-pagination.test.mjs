@@ -11,7 +11,7 @@ test('tablePageQuery uses DApp table page size', async () => {
   assert.deepEqual(tablePageQuery(2), { page: 2, page_size: DAPP_TABLE_PAGE_SIZE })
 })
 
-test('shouldShowTablePagination hides when total fits one page', async () => {
+test('shouldShowTablePagination is the pager gate, not the footer gate', async () => {
   const { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } = await loadModule(
     '/src/shared/lib/table-pagination.ts',
   )

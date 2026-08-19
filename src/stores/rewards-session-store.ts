@@ -4,21 +4,25 @@ export type CobuildRecordsTab = 'cobuild' | 'equalize'
 export type GrantRecordsTab = 'issue' | 'claim'
 export type GenesisHistoryTab = 'referral' | 'team' | 'communityFund'
 
-/** 共建奖详情会话：切 Tab 归页。 */
+/** 共建奖详情会话：切 Tab 归页；隐藏 0 业绩默认开。 */
 export const useCobuildSessionStore = create<{
   recordsTab: CobuildRecordsTab
   recordsPage: number
   directsPage: number
+  hideZeroMarket: boolean
   setRecordsTab: (tab: CobuildRecordsTab) => void
   setRecordsPage: (page: number) => void
   setDirectsPage: (page: number) => void
+  setHideZeroMarket: (hide: boolean) => void
 }>((set) => ({
   recordsTab: 'cobuild',
   recordsPage: 1,
   directsPage: 1,
+  hideZeroMarket: true,
   setRecordsTab: (tab) => set({ recordsTab: tab, recordsPage: 1 }),
   setRecordsPage: (page) => set({ recordsPage: page }),
   setDirectsPage: (page) => set({ directsPage: page }),
+  setHideZeroMarket: (hide) => set({ hideZeroMarket: hide, directsPage: 1 }),
 }))
 
 /** 发展津贴详情会话。 */
@@ -60,15 +64,19 @@ export const useLuckySessionStore = create<{
   setHistoryPage: (page) => set({ historyPage: page }),
 }))
 
-/** 推荐奖详情分页。 */
+/** 推荐奖详情分页；隐藏 0 持仓默认开。 */
 export const useReferralSessionStore = create<{
   recordsPage: number
   referralsPage: number
+  hideZeroPosition: boolean
   setRecordsPage: (page: number) => void
   setReferralsPage: (page: number) => void
+  setHideZeroPosition: (hide: boolean) => void
 }>((set) => ({
   recordsPage: 1,
   referralsPage: 1,
+  hideZeroPosition: true,
   setRecordsPage: (page) => set({ recordsPage: page }),
   setReferralsPage: (page) => set({ referralsPage: page }),
+  setHideZeroPosition: (hide) => set({ hideZeroPosition: hide, referralsPage: 1 }),
 }))

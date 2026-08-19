@@ -10,7 +10,6 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { GenesisBanner } from '~/views/dapp/rewards/genesis/primitives'
 import { useRewardsGenesisDetail } from '~/views/dapp/rewards/genesis/use-genesis-detail'
 import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
@@ -90,15 +89,13 @@ export function GenesisDetail() {
             isLoading={vm.sessionReady && vm.historyLoading}
             rows={vm.historyRows}
           />
-          {shouldShowTablePagination(vm.historyTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={vm.setHistoryPage}
-                page={vm.historyPage}
-                total={vm.historyTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={vm.setHistoryPage}
+              page={vm.historyPage}
+              total={vm.historyTotal}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 

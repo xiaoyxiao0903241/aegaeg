@@ -302,7 +302,7 @@ export function AssetsPositionVoucherLink({ address, label }: { address: string;
   )
 }
 
-/** 左栏仓位列表分页：总数与每页条数 + 上一页 / 页码 / 下一页；不足一页时不渲染 */
+/** 左栏仓位列表分页：总数始终展示；仅多页时显示翻页器 */
 export function AssetsListPager({
   page,
   pageCount,
@@ -319,8 +319,7 @@ export function AssetsListPager({
 }) {
   const { messages: t } = useI18n()
   const safePage = Math.min(Math.max(page, 0), Math.max(0, pageCount - 1))
-
-  if (!shouldShowTablePagination(total, pageSize)) return null
+  const showPager = shouldShowTablePagination(total, pageSize)
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
@@ -328,33 +327,35 @@ export function AssetsListPager({
         {interpolate(t.common.paginationTotal, { total })} ·{' '}
         {interpolate(t.common.paginationPerPage, { size: pageSize })}
       </Text>
-      <div className="flex items-center gap-2">
-        <Button
-          className="size-auto min-h-0 px-2.5 py-1 text-xs font-medium"
-          disabled={safePage <= 0}
-          onClick={() => onPageChange(Math.max(0, safePage - 1))}
-          shape="rounded"
-          size="sm"
-          type="button"
-          variant="ghost"
-        >
-          {t.common.paginationPrev}
-        </Button>
-        <Text as="span" className="text-xs leading-none font-semibold" variant="support">
-          {safePage + 1} / {Math.max(1, pageCount)}
-        </Text>
-        <Button
-          className="size-auto min-h-0 px-2.5 py-1 text-xs font-medium"
-          disabled={safePage >= pageCount - 1}
-          onClick={() => onPageChange(Math.min(pageCount - 1, safePage + 1))}
-          shape="rounded"
-          size="sm"
-          type="button"
-          variant="ghost"
-        >
-          {t.common.paginationNext}
-        </Button>
-      </div>
+      {showPager ? (
+        <div className="flex items-center gap-2">
+          <Button
+            className="size-auto min-h-0 px-2.5 py-1 text-xs font-medium"
+            disabled={safePage <= 0}
+            onClick={() => onPageChange(Math.max(0, safePage - 1))}
+            shape="rounded"
+            size="sm"
+            type="button"
+            variant="ghost"
+          >
+            {t.common.paginationPrev}
+          </Button>
+          <Text as="span" className="text-xs leading-none font-semibold" variant="support">
+            {safePage + 1} / {Math.max(1, pageCount)}
+          </Text>
+          <Button
+            className="size-auto min-h-0 px-2.5 py-1 text-xs font-medium"
+            disabled={safePage >= pageCount - 1}
+            onClick={() => onPageChange(Math.min(pageCount - 1, safePage + 1))}
+            shape="rounded"
+            size="sm"
+            type="button"
+            variant="ghost"
+          >
+            {t.common.paginationNext}
+          </Button>
+        </div>
+      ) : null}
     </div>
   )
 }

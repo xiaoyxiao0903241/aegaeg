@@ -1035,9 +1035,10 @@ const app = defineMessages({
       recordsTitle: '推荐奖记录',
       recordsColumns: ['时间', '数量', '状态', '领取时间'],
       emptyRecords: '暂无奖励记录，获得奖励发放后，这里将展示您的每一笔记录。',
-      referralsTitle: '我的推荐',
+      referralsTitle: '我的推荐（{count}）',
       referralsColumns: ['加入时间', '地址', '持仓', '累计贡献奖励'],
       emptyReferrals: '暂无直推伙伴，分享您的邀请链接，伙伴加入后将展示在这里。',
+      hideZeroPosition: '隐藏0持仓',
       faq: {
         title: 'FAQs',
         items: [
@@ -1134,6 +1135,10 @@ const app = defineMessages({
       reqPerformance: '总业绩',
       reqPerformanceHint: '全部推荐体系仓位总和',
       reqAchieved: '已达成',
+      tierRate: '奖金比例 {rate}',
+      tierProgress: '晋升 {level} 条件进度',
+      tierProgressCount: '已达成 {done}/{total}',
+      tierMax: '已达最高级别',
       recordsTitle: '奖励记录',
       recordsTabsAria: '奖励记录类型',
       recordsTabCobuild: '共建奖',
@@ -1141,9 +1146,10 @@ const app = defineMessages({
       recordsColumns: ['时间', '级别', '数量', '状态', '领取时间'],
       emptyRecordsCobuild: '暂无奖励记录，获得奖励发放后，这里将展示您的每一笔记录。',
       emptyRecordsEqualize: '暂无平越奖记录，获得发放后将展示在这里。',
-      directsTitle: '直推明细',
-      directsColumns: ['加入时间', '地址', '持仓', '级别'],
-      emptyDirects: '暂无直推伙伴，分享您的邀请链接，伙伴加入后将展示在这里。',
+      teamTitle: '我的团队（{count}）',
+      teamColumns: ['加入时间', '地址', '团队业绩', '团队最高级别'],
+      emptyTeam: '暂无团队成员，分享您的邀请链接，伙伴加入后将展示在这里。',
+      hideZeroMarket: '隐藏0业绩',
       faq: {
         title: 'FAQs',
         items: [

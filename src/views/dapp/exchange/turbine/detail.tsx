@@ -24,7 +24,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
-import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapTurbineLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import { TurbineMechanismCard } from '~/views/dapp/exchange/turbine/primitives'
@@ -138,15 +138,9 @@ export function TurbineExchangeDetail({
             mutedColumns={[0]}
             rows={turbineLogRows}
           />
-          {shouldShowTablePagination(turbineLogsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setLogsPage}
-                page={logsPage}
-                total={turbineLogsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination onPageChange={setLogsPage} page={logsPage} total={turbineLogsTotal} />
+          </Table.Footer>
         </Table>
       </Section>
 

@@ -12,7 +12,6 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useGrant } from '~/views/dapp/rewards/grant/use-grant'
 import { rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 
@@ -89,15 +88,13 @@ export function GrantDetail() {
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {shouldShowTablePagination(recordsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              total={recordsTotal}
+            />
+          </Table.Footer>
         </Table>
         {/* jscpd:ignore-end */}
       </Section>

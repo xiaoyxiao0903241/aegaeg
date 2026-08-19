@@ -12,7 +12,6 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useParticipate } from '~/views/dapp/rewards/participate/use-participate'
 import {
   mapFaqWithContributionRatio,
@@ -104,15 +103,13 @@ export function ParticipateDetail() {
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {shouldShowTablePagination(recordsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              total={recordsTotal}
+            />
+          </Table.Footer>
         </Table>
         {/* jscpd:ignore-end */}
       </Section>

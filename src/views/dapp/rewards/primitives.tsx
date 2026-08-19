@@ -3,6 +3,7 @@
  *
  * 提供记录表的 Tab 头、状态徽标与各奖励域的表格单元格映射。
  */
+import { Check } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import type {
@@ -17,6 +18,7 @@ import type {
 import { StatusBadge } from '~/shared/components/badge'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 import { formatApiAmount, parseApiAmount } from '~/shared/presenters/format'
 import {
   daoGrantStatusTone,
@@ -31,6 +33,46 @@ import {
 } from '~/views/dapp/rewards/shared'
 
 type PillOption = { label: string; value: string }
+
+/**
+ * 「隐藏 0」勾选：表标题行右侧；勾选后请求只返回非零业绩 / 持仓。
+ */
+export function HideZeroToggle({
+  checked,
+  label,
+  onChange,
+}: {
+  checked: boolean
+  label: string
+  onChange: (next: boolean) => void
+}) {
+  return (
+    <button
+      aria-checked={checked}
+      className="inline-flex cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-foreground/55 transition-colors hover:text-foreground"
+      onClick={() => onChange(!checked)}
+      role="checkbox"
+      type="button"
+    >
+      <span
+        aria-hidden
+        className={cn(
+          'grid size-3.75 shrink-0 place-items-center rounded-[0.25rem] border-[1.5px] transition-colors',
+          checked ? 'border-primary bg-primary' : 'border-foreground/30 bg-transparent',
+        )}
+      >
+        <Check
+          aria-hidden
+          className={cn('size-2.25 text-white', checked ? 'opacity-100' : 'opacity-0')}
+          strokeWidth={3}
+        />
+      </span>
+      <Text as="span" variant="caption">
+        {label}
+      </Text>
+    </button>
+  )
+}
 
 /**
  * 奖励记录表的 pill Tab 表头

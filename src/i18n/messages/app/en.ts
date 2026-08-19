@@ -1090,9 +1090,10 @@ const app = defineMessages({
       recordsTitle: 'Referral reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
       emptyRecords: 'No reward records yet. Entries appear after rewards are issued.',
-      referralsTitle: 'My referrals',
+      referralsTitle: 'My referrals ({count})',
       referralsColumns: ['Joined', 'Address', 'Position', 'Cumulative referral rewards'],
       emptyReferrals: 'No direct referrals yet. Share your invite link to list partners here.',
+      hideZeroPosition: 'Hide 0 positions',
       faq: {
         title: 'FAQs',
         items: [
@@ -1189,6 +1190,10 @@ const app = defineMessages({
       reqPerformance: 'Total performance',
       reqPerformanceHint: 'All downline position value',
       reqAchieved: 'Achieved',
+      tierRate: 'Bonus {rate}',
+      tierProgress: 'Progress to {level}',
+      tierProgressCount: 'Met {done}/{total}',
+      tierMax: 'Highest tier reached',
       recordsTitle: 'Reward records',
       recordsTabsAria: 'Reward record type',
       recordsTabCobuild: 'Co-build',
@@ -1196,9 +1201,10 @@ const app = defineMessages({
       recordsColumns: ['Time', 'Tier', 'Amount', 'Status', 'Claimed at'],
       emptyRecordsCobuild: 'No reward records yet. Entries appear after rewards are issued.',
       emptyRecordsEqualize: 'No equalize records yet. Entries appear after rewards are issued.',
-      directsTitle: 'Direct referrals',
-      directsColumns: ['Joined', 'Address', 'Position', 'Tier'],
-      emptyDirects: 'No direct referrals yet. Share your invite link to list partners here.',
+      teamTitle: 'My team ({count})',
+      teamColumns: ['Joined', 'Address', 'Team performance', 'Highest team tier'],
+      emptyTeam: 'No team members yet. Share your invite link to list partners here.',
+      hideZeroMarket: 'Hide 0 performance',
       faq: {
         title: 'FAQs',
         items: [

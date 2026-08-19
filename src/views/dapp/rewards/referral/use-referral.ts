@@ -25,6 +25,7 @@ import {
  * 分页在 `useReferralSessionStore`。
  *
  * @see docs/backend-api/api.md #referral-award/summary
+ * @see docs/backend-api/api.md #referral-award/direct-referrals
  */
 export function useRewardsReferral() {
   const { messages: t } = useI18n()
@@ -32,11 +33,21 @@ export function useRewardsReferral() {
   const { sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
-  const { recordsPage, setRecordsPage, referralsPage, setReferralsPage } = useReferralSessionStore()
+  const {
+    recordsPage,
+    setRecordsPage,
+    referralsPage,
+    setReferralsPage,
+    hideZeroPosition,
+    setHideZeroPosition,
+  } = useReferralSessionStore()
 
   const summaryQuery = useReferralAwardSummary(sessionReady)
   const logsQuery = useReferralAwardLogs(tablePageQuery(recordsPage), sessionReady)
-  const directsQuery = useReferralAwardDirectReferrals(tablePageQuery(referralsPage), sessionReady)
+  const directsQuery = useReferralAwardDirectReferrals(
+    { ...tablePageQuery(referralsPage), hide_zero_position: hideZeroPosition },
+    sessionReady,
+  )
 
   const summary = summaryQuery.data
   const pending = summaryQuery.isLoading
@@ -79,6 +90,8 @@ export function useRewardsReferral() {
     referralsLoading: sessionReady && directsQuery.isLoading,
     referralsPage,
     setReferralsPage,
+    hideZeroPosition,
+    setHideZeroPosition,
     referralsTotal: directsQuery.data?.total ?? 0,
   }
 }

@@ -1090,10 +1090,11 @@ const app = defineMessages({
       recordsTitle: '추천 리워드 기록',
       recordsColumns: ['시간', '산출 수량', '상태', '수령 시간'],
       emptyRecords: '아직 리워드 기록이 없습니다. 리워드가 지급되면 여기에 각 기록이 표시됩니다.',
-      referralsTitle: '내 추천',
+      referralsTitle: '내 추천 ({count})',
       referralsColumns: ['가입 시간', '주소', '포지션', '누적 기여 리워드'],
       emptyReferrals:
         '아직 직추천 파트너가 없습니다. 초대 링크를 공유하면 파트너 가입 후 여기에 표시됩니다.',
+      hideZeroPosition: '0 포지션 숨기기',
       faq: {
         title: 'FAQs',
         items: [
@@ -1190,6 +1191,10 @@ const app = defineMessages({
       reqPerformance: '총 실적',
       reqPerformanceHint: '전체 추천 체계 포지션 합계',
       reqAchieved: '달성함',
+      tierRate: '보너스 비율 {rate}',
+      tierProgress: '{level} 승급 조건 진행',
+      tierProgressCount: '달성 {done}/{total}',
+      tierMax: '최고 등급 도달',
       recordsTitle: '리워드 기록',
       recordsTabsAria: '리워드 기록 유형',
       recordsTabCobuild: '공동 구축',
@@ -1198,10 +1203,10 @@ const app = defineMessages({
       emptyRecordsCobuild:
         '아직 리워드 기록이 없습니다. 리워드가 지급되면 여기에 각 기록이 표시됩니다.',
       emptyRecordsEqualize: '아직 평월상 기록이 없습니다. 지급 후 여기에 표시됩니다.',
-      directsTitle: '직추천 내역',
-      directsColumns: ['가입 시간', '주소', '포지션', '등급'],
-      emptyDirects:
-        '아직 직추천 파트너가 없습니다. 초대 링크를 공유하면 파트너 가입 후 여기에 표시됩니다.',
+      teamTitle: '내 팀（{count}）',
+      teamColumns: ['가입 시간', '주소', '팀 실적', '팀 최고 등급'],
+      emptyTeam: '아직 팀 멤버가 없습니다. 초대 링크를 공유하면 파트너 가입 후 여기에 표시됩니다.',
+      hideZeroMarket: '0 실적 숨기기',
       faq: {
         title: 'FAQs',
         items: [

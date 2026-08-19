@@ -21,7 +21,7 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { mapBufferPoolLogToRow } from '~/shared/presenters/map-flow-log-rows'
 import { BufferAssetCard, BufferMechanismCard } from '~/views/dapp/release/buffer/primitives'
@@ -172,15 +172,13 @@ export function BufferDetail() {
             mutedColumns={[0]}
             rows={bufferLogRows}
           />
-          {shouldShowTablePagination(bufferLogsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={bufferLogsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              total={bufferLogsTotal}
+            />
+          </Table.Footer>
         </Table>
       </Section>
 

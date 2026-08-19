@@ -12,6 +12,7 @@ import {
   useRankRewardTeamMembers,
 } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { useCobuildSessionStore } from '~/stores/rewards-session-store'
@@ -37,19 +38,28 @@ export type CobuildTierReq = {
 /**
  * 共建奖详情视图模型
  *
- * 聚合等级奖励接口（rank-reward）的汇总、等级记录与直推成员数据，
+ * 聚合等级奖励接口（rank-reward）的汇总、等级记录与团队成员数据，
  * 计算当前 / 下一级档位与需求进度徽章，供详情页渲染。
- * Tab / 分页在 `useCobuildSessionStore`（切 Tab 时 action 内归页）。
+ * Tab / 分页 / 隐藏 0 业绩在 `useCobuildSessionStore`（切 Tab 时 action 内归页）。
  *
  * @see docs/backend-api/api.md #rank-reward/summary
+ * @see docs/backend-api/api.md #rank-reward/team-members
  */
 export function useCobuild() {
   const { messages: t } = useI18n()
   const cobuild = t.rewards.cobuild
   const { sessionReady } = useDappHost()
   const agxPriceUsd = useAgxPriceUsd()
-  const { recordsTab, setRecordsTab, recordsPage, setRecordsPage, directsPage, setDirectsPage } =
-    useCobuildSessionStore()
+  const {
+    recordsTab,
+    setRecordsTab,
+    recordsPage,
+    setRecordsPage,
+    directsPage,
+    setDirectsPage,
+    hideZeroMarket,
+    setHideZeroMarket,
+  } = useCobuildSessionStore()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const tierEmpty = t.rewards.hub.stats.tierEmpty
   const tierRows = t.rewards.hub.tierTable.rows
@@ -62,7 +72,10 @@ export function useCobuild() {
     pageParams,
     sessionReady && recordsTab === 'equalize',
   )
-  const directsQuery = useRankRewardTeamMembers(tablePageQuery(directsPage), sessionReady)
+  const directsQuery = useRankRewardTeamMembers(
+    { ...tablePageQuery(directsPage), hide_zero_market: hideZeroMarket },
+    sessionReady,
+  )
 
   const summary = summaryQuery.data
   const label = bindApiLabelFormatters(sessionReady, summaryQuery.isLoading)
@@ -112,9 +125,19 @@ export function useCobuild() {
   const tierCurrentRate = currentRow?.rate ?? NON_NUMERIC_EMPTY
   const tierNextRate = nextRow?.rate ?? NON_NUMERIC_EMPTY
 
-  const holdingValue = label.stat(summary?.active_stake_balance)
+  const holdingValue = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
+    summary?.active_stake_balance,
+    agxPriceUsd,
+  )
   const accountsValue = label.count(summary?.effective_direct_referral_count)
-  const performanceValue = label.stat(summary?.making_market)
+  const performanceValue = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
+    summary?.making_market,
+    agxPriceUsd,
+  )
   const teamMoney = reqRow?.team?.match(/\$[\d,]+/)?.[0] ?? ''
   /**
    * 进度徽章读数：未连接按 0（与展示的 0.00 对齐，显示「0%」）；
@@ -168,7 +191,17 @@ export function useCobuild() {
   const recordRows =
     activeLogsQuery.data?.items.map((item) => mapRankRewardLogToCells(item, statusLabels)) ?? []
   const directRows =
-    directsQuery.data?.items.map((item) => mapRankRewardTeamMemberToRow(item)) ?? []
+    directsQuery.data?.items.map((item) => mapRankRewardTeamMemberToRow(item, agxPriceUsd)) ?? []
+  const achievedCount = tierReqs.filter((req) => req.badge.kind === 'achieved').length
+  const currentRateLabel =
+    tierCurrentRate !== NON_NUMERIC_EMPTY
+      ? interpolate(cobuild.tierRate, { rate: tierCurrentRate })
+      : NON_NUMERIC_EMPTY
+  const nextRateLabel =
+    tierNextRate !== NON_NUMERIC_EMPTY
+      ? interpolate(cobuild.tierRate, { rate: tierNextRate })
+      : NON_NUMERIC_EMPTY
+  const tierHasNext = nextRow != null
 
   return {
     t,
@@ -183,10 +216,19 @@ export function useCobuild() {
     totalPerformance,
     myPosition,
     nextPayout: NON_NUMERIC_EMPTY,
+    hideZeroMarket,
+    setHideZeroMarket,
     tierCurrent,
     tierNext,
-    tierCurrentRate,
-    tierNextRate,
+    tierCurrentRate: currentRateLabel,
+    tierNextRate: nextRateLabel,
+    tierHasNext,
+    tierMaxLabel: cobuild.tierMax,
+    tierProgressTitle: interpolate(cobuild.tierProgress, { level: tierNext }),
+    tierProgressCount: interpolate(cobuild.tierProgressCount, {
+      done: achievedCount,
+      total: tierReqs.length,
+    }),
     achievedLabel,
     tierReqs,
     recordRows,

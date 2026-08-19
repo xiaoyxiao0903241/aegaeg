@@ -1088,10 +1088,11 @@ const app = defineMessages({
       recordsTitle: 'रेफ़रल पुरस्कार रिकॉर्ड',
       recordsColumns: ['समय', 'राशि', 'स्थिति', 'दावा समय'],
       emptyRecords: 'अभी कोई पुरस्कार रिकॉर्ड नहीं। जारी होने के बाद प्रविष्टियाँ दिखेंगी।',
-      referralsTitle: 'मेरे रेफ़रल',
+      referralsTitle: 'मेरे रेफ़रल ({count})',
       referralsColumns: ['शामिल हुए', 'पता', 'पोज़ीशन', 'संचयी रेफ़रल पुरस्कार'],
       emptyReferrals:
         'अभी कोई प्रत्यक्ष रेफ़रल नहीं। साझेदारों को सूचीबद्ध करने के लिए आमंत्रण लिंक साझा करें।',
+      hideZeroPosition: '0 पोज़ीशन छिपाएँ',
       faq: {
         title: 'FAQs',
         items: [
@@ -1188,6 +1189,10 @@ const app = defineMessages({
       reqPerformance: 'कुल प्रदर्शन',
       reqPerformanceHint: 'सभी डाउनलाइन पोज़ीशन मूल्य',
       reqAchieved: 'प्राप्त',
+      tierRate: 'बोनस {rate}',
+      tierProgress: '{level} की प्रगति',
+      tierProgressCount: 'पूरा {done}/{total}',
+      tierMax: 'उच्चतम स्तर पहुँच गया',
       recordsTitle: 'पुरस्कार रिकॉर्ड',
       recordsTabsAria: 'पुरस्कार रिकॉर्ड प्रकार',
       recordsTabCobuild: 'सह-निर्माण',
@@ -1196,10 +1201,11 @@ const app = defineMessages({
       emptyRecordsCobuild: 'अभी कोई पुरस्कार रिकॉर्ड नहीं। जारी होने के बाद प्रविष्टियाँ दिखेंगी।',
       emptyRecordsEqualize:
         'अभी कोई इक्वलाइज़ रिकॉर्ड नहीं। जारी होने के बाद प्रविष्टियाँ दिखेंगी।',
-      directsTitle: 'प्रत्यक्ष रेफ़रल',
-      directsColumns: ['शामिल हुए', 'पता', 'पोज़ीशन', 'स्तर'],
-      emptyDirects:
-        'अभी कोई प्रत्यक्ष रेफ़रल नहीं। साझेदारों को सूचीबद्ध करने के लिए आमंत्रण लिंक साझा करें।',
+      teamTitle: 'मेरी टीम ({count})',
+      teamColumns: ['शामिल हुए', 'पता', 'टीम प्रदर्शन', 'टीम का उच्चतम स्तर'],
+      emptyTeam:
+        'अभी कोई टीम सदस्य नहीं। साझेदारों को सूचीबद्ध करने के लिए आमंत्रण लिंक साझा करें।',
+      hideZeroMarket: '0 प्रदर्शन छिपाएँ',
       faq: {
         title: 'FAQs',
         items: [

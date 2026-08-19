@@ -435,14 +435,20 @@ export function mapRankRewardLogToRow(
 /**
  * 等级共建团队成员 → 表格行。
  *
+ * making_market 为 AGX，按现价折 `$` 展示（与共建级别卡同一口径）。
+ *
  * @param item 后端团队成员记录
- * @returns 绑定时间、地址、做市业绩与等级的单元格数组
+ * @param agxPriceUsd AGX 美元单价；无价时 `$0.00`
+ * @returns 绑定时间、地址、团队业绩与做市等级的单元格数组
  */
-export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): ReactNode[] {
+export function mapRankRewardTeamMemberToRow(
+  item: RankRewardTeamMemberItem,
+  agxPriceUsd: number | null,
+): ReactNode[] {
   return [
     formatApiDateTime(item.bound_at),
     <ExplorerLink key={item.address} value={item.address} />,
-    formatApiAmount(item.making_market, { digits: 2, prefix: '$' }),
+    formatApiAgxUsdLabel(true, false, item.making_market, agxPriceUsd),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
 }

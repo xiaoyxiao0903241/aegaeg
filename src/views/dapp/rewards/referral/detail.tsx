@@ -2,8 +2,9 @@
  * 推荐奖详情页
  *
  * 顶部五张统计卡（总奖励、我的位置、直推数、贡献、下次发放），
- * 下方为奖励记录表与直推成员表，底部为 FAQ。
+ * 下方为奖励记录表与我的推荐表，底部为 FAQ。
  */
+import { interpolate } from '~/i18n/interpolate'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -12,7 +13,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
+import { HideZeroToggle } from '~/views/dapp/rewards/primitives'
 import { useRewardsReferral } from '~/views/dapp/rewards/referral/use-referral'
 import {
   mapFaqWithContributionRatio,
@@ -39,6 +40,8 @@ export function ReferralDetail() {
     referralsPage,
     setReferralsPage,
     referralsTotal,
+    hideZeroPosition,
+    setHideZeroPosition,
   } = useRewardsReferral()
   const claimRatio = useContributionClaimRatioLabel()
   const contributionHint = withContributionRatio(referral.contributionHint, claimRatio)
@@ -126,21 +129,28 @@ export function ReferralDetail() {
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {shouldShowTablePagination(recordsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setRecordsPage}
+              page={recordsPage}
+              total={recordsTotal}
+            />
+          </Table.Footer>
         </Table>
         {/* jscpd:ignore-end */}
       </Section>
 
       <Section>
-        <Section.Title>{referral.referralsTitle}</Section.Title>
+        <div className="flex items-center justify-between gap-3">
+          <Section.Title>
+            {interpolate(referral.referralsTitle, { count: referralCount })}
+          </Section.Title>
+          <HideZeroToggle
+            checked={hideZeroPosition}
+            label={referral.hideZeroPosition}
+            onChange={setHideZeroPosition}
+          />
+        </div>
         {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Body
@@ -152,15 +162,13 @@ export function ReferralDetail() {
             isLoading={referralsLoading}
             rows={referralRows}
           />
-          {shouldShowTablePagination(referralsTotal) ? (
-            <Table.Footer>
-              <Table.Pagination
-                onPageChange={setReferralsPage}
-                page={referralsPage}
-                total={referralsTotal}
-              />
-            </Table.Footer>
-          ) : null}
+          <Table.Footer>
+            <Table.Pagination
+              onPageChange={setReferralsPage}
+              page={referralsPage}
+              total={referralsTotal}
+            />
+          </Table.Footer>
         </Table>
         {/* jscpd:ignore-end */}
       </Section>
