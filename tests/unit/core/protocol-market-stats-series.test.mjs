@@ -39,12 +39,30 @@ test('protocolMarketStatsAggregateUnit is AGX except x_stake gAGX', () => {
   assert.equal(protocolMarketStatsAggregateUnit('x_stake'), 'gAGX')
 })
 
-test('parseProtocolMarketStatsDate accepts yyyy-MM-dd and unix', () => {
+test('parseProtocolMarketStatsDate accepts yyyy-MM-dd, yyyy-MM and unix', () => {
   assert.equal(parseProtocolMarketStatsDate('2026-08-01'), Date.UTC(2026, 7, 1) / 1000)
+  assert.equal(parseProtocolMarketStatsDate('2026-08'), Date.UTC(2026, 7, 1) / 1000)
   assert.equal(parseProtocolMarketStatsDate(1_722_470_400), 1_722_470_400)
   assert.equal(parseProtocolMarketStatsDate(1_722_470_400_000), 1_722_470_400)
   assert.equal(parseProtocolMarketStatsDate(''), null)
   assert.equal(parseProtocolMarketStatsDate('not-a-date'), null)
+})
+
+test('buildProtocolMarketStatsChart keeps mixed yyyy-MM and yyyy-MM-dd rows', () => {
+  const built = buildProtocolMarketStatsChart({
+    list: [
+      { date: '2025-09', amount: '10' },
+      { date: '2026-08-12', amount: '20' },
+    ],
+    latest_growth_rate: 1,
+  })
+  assert.deepEqual(
+    built.points.map((p) => ({ time: p.time, value: p.value })),
+    [
+      { time: Date.UTC(2025, 8, 1) / 1000, value: 10 },
+      { time: Date.UTC(2026, 7, 12) / 1000, value: 20 },
+    ],
+  )
 })
 
 test('buildProtocolMarketStatsChart sorts list and uses API latest_growth_rate', () => {

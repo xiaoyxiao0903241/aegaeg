@@ -4,7 +4,6 @@
 import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode } from 'react'
 
-import { resolveProtocolMarketStatsRange } from '~/core/staking/protocol-market-stats-series'
 import {
   buildCalcYieldCurvePoints,
   CALC_MAX_DAYS,
@@ -27,7 +26,6 @@ import { Segment } from '~/shared/components/segment'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
-import { chartDateGrainFromRange } from '~/shared/lib/chart-axis-date'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
@@ -296,9 +294,6 @@ export function StakingTvlChart({
   valueLabel: string
 }) {
   const hasSeries = points != null && points.length > 0
-  const dateGrain = chartDateGrainFromRange(
-    resolveProtocolMarketStatsRange(chartRange, rangeLabels),
-  )
 
   return (
     <Chart surface={surface}>
@@ -332,7 +327,7 @@ export function StakingTvlChart({
       {loading ? (
         <Chart.Skeleton />
       ) : hasSeries ? (
-        <Chart.Plot dateGrain={dateGrain} points={points} />
+        <Chart.Plot points={points} />
       ) : (
         <Chart.Empty title={emptyLabel} />
       )}

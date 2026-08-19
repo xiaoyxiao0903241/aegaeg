@@ -96,10 +96,11 @@ export function protocolMarketStatsAggregateUnit(
 
 /**
  * 解析序列日期为 UTC 秒；非法返回 null。
- * 支持 `yyyy-MM-dd`、unix 秒、unix 毫秒。
+ * 支持 `yyyy-MM-dd`、`yyyy-MM`（当月 1 日）、unix 秒、unix 毫秒。
  *
  * @param date 原始日期值
  * @returns UTC 秒；非法输入返回 null
+ * @see docs/backend-api/api.md #protocol-market-stats/series
  */
 export function parseProtocolMarketStatsDate(date: string | number): number | null {
   if (typeof date === 'number') {
@@ -115,6 +116,13 @@ export function parseProtocolMarketStatsDate(date: string | number): number | nu
     const d = Number(ymd[3])
     if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d)) return null
     return Date.UTC(y, m - 1, d) / 1000
+  }
+  const ym = /^(\d{4})-(\d{2})$/.exec(raw)
+  if (ym) {
+    const y = Number(ym[1])
+    const m = Number(ym[2])
+    if (!Number.isFinite(y) || !Number.isFinite(m)) return null
+    return Date.UTC(y, m - 1, 1) / 1000
   }
   const asNum = Number(raw)
   if (Number.isFinite(asNum) && asNum > 0) {

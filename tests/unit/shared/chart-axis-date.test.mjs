@@ -3,7 +3,6 @@ import test from 'node:test'
 
 import {
   CHART_SHORT_SPAN_MAX_S,
-  chartDateGrainFromRange,
   chartDateGrainFromSpan,
   formatChartAxisDate,
   formatChartTipDate,
@@ -11,13 +10,6 @@ import {
 } from '../../../src/shared/lib/chart-axis-date.ts'
 
 const day = (ymd) => Date.UTC(...ymd) / 1000
-
-test('week/month range grain is day; year/all is month', () => {
-  assert.equal(chartDateGrainFromRange('week'), 'day')
-  assert.equal(chartDateGrainFromRange('month'), 'day')
-  assert.equal(chartDateGrainFromRange('year'), 'month')
-  assert.equal(chartDateGrainFromRange('all'), 'month')
-})
 
 test('short span (week) axis uses MM-DD, not identical YYYY-MM', () => {
   const points = [
@@ -29,7 +21,7 @@ test('short span (week) axis uses MM-DD, not identical YYYY-MM', () => {
     { time: day([2026, 7, 11]) },
     { time: day([2026, 7, 12]) },
   ]
-  const labels = pickChartAxisLabels(points, 6, 'day')
+  const labels = pickChartAxisLabels(points, 6)
   assert.equal(labels.length, 6)
   assert.equal(labels[0], '08-06')
   assert.equal(labels[labels.length - 1], '08-12')
@@ -41,7 +33,7 @@ test('short span (month) axis stays day-grained within one calendar month', () =
   const points = Array.from({ length: 30 }, (_, i) => ({
     time: day([2026, 7, i + 1]),
   }))
-  const labels = pickChartAxisLabels(points, 6, 'day')
+  const labels = pickChartAxisLabels(points, 6)
   assert.equal(labels.length, 6)
   assert.equal(labels[0], '08-01')
   assert.equal(labels[labels.length - 1], '08-30')
@@ -49,13 +41,20 @@ test('short span (month) axis stays day-grained within one calendar month', () =
   assert.ok(new Set(labels).size > 1)
 })
 
-test('all range forces YYYY-MM even when data span is short', () => {
+test('few points keep one label each; short span stays day even for year/all data', () => {
   const points = [{ time: day([2026, 7, 9]) }, { time: day([2026, 7, 12]) }]
   assert.equal(chartDateGrainFromSpan(points[1].time - points[0].time), 'day')
-  const labels = pickChartAxisLabels(points, 6, chartDateGrainFromRange('all'))
-  assert.ok(labels.every((l) => /^\d{4}-\d{2}$/.test(l)))
-  assert.equal(labels[0], '2026-08')
-  assert.equal(labels[labels.length - 1], '2026-08')
+  assert.deepEqual(pickChartAxisLabels(points), ['08-09', '08-12'])
+})
+
+test('few points over a long span use YYYY-MM and do not pad to max labels', () => {
+  const points = [
+    { time: day([2025, 8, 1]) },
+    { time: day([2025, 11, 1]) },
+    { time: day([2026, 2, 1]) },
+  ]
+  assert.ok(points[2].time - points[0].time > CHART_SHORT_SPAN_MAX_S)
+  assert.deepEqual(pickChartAxisLabels(points), ['2025-09', '2025-12', '2026-03'])
 })
 
 test('long span (year) axis uses YYYY-MM', () => {
@@ -68,13 +67,23 @@ test('long span (year) axis uses YYYY-MM', () => {
   ]
   const span = points[points.length - 1].time - points[0].time
   assert.ok(span > CHART_SHORT_SPAN_MAX_S)
-  assert.deepEqual(pickChartAxisLabels(points, 6, 'month'), [
+  assert.deepEqual(pickChartAxisLabels(points, 6), [
     '2025-09',
     '2025-12',
     '2026-03',
     '2026-06',
     '2026-08',
   ])
+})
+
+test('many points cap at max labels and keep first/last', () => {
+  const points = Array.from({ length: 20 }, (_, i) => ({
+    time: day([2025, 0, 1]) + i * 30 * 86_400,
+  }))
+  const labels = pickChartAxisLabels(points, 6)
+  assert.equal(labels.length, 6)
+  assert.equal(labels[0], '2025-01')
+  assert.equal(labels[labels.length - 1], '2026-07')
 })
 
 test('formatChartAxisDate / tip follow grain', () => {

@@ -197,15 +197,12 @@ function Header({ className, children, ...props }: HTMLAttributes<HTMLDivElement
 function Plot({
   axisLabels: axisLabelsProp,
   className,
-  dateGrain: dateGrainProp,
   formatTipDate,
   height = 170,
   points,
 }: {
   axisLabels?: readonly string[]
   className?: string
-  /** 显式日期粒度；缺省按序列跨度回退 */
-  dateGrain?: ChartDateGrain
   formatTipDate?: (time: Time) => string | null
   height?: number
   points: readonly ChartPoint[]
@@ -226,8 +223,8 @@ function Plot({
     setTipPoints(points)
     setTip(null)
   }
-  const dateGrain = dateGrainProp ?? chartDateGrainFromSpan(chartPointsSpanSeconds(points))
-  const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points, 6, dateGrain)
+  const dateGrain = chartDateGrainFromSpan(chartPointsSpanSeconds(points))
+  const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points, 6)
   // 十字线回调在 chart 订阅里；用 Effect Event 读最新 formatTipDate / grain，避免 render 写 ref / 把 formatter 塞进 effect deps。
   const resolveTipDate = useEffectEvent((time: Time) => {
     return formatTipDate?.(time) ?? tipDateFromTime(time, dateGrain)

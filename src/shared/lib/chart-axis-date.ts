@@ -1,12 +1,12 @@
 /**
  * 面积图底部轴 / tip 日期文案。
  *
- * 优先跟 API `range`：`week`/`month` → 日粒度；`year`/`all` → 月粒度。
- * 未传 range 时才按序列跨度回退（约 ≤62 天为短窗）。
+ * 粒度只看返回点的首末跨度：约 ≤62 天为日（轴 `MM-DD`），更长为月（`YYYY-MM`）。
+ * 不跟 Segment 的 week/year/all 绑定——年/全部若只有几周数据，仍按短窗标日。
  */
 
 const DAY_S = 86_400
-/** 无 range 时的跨度回退：略大于 60 天，避免整月贴边误判为月粒度。 */
+/** 短窗上限：略大于 60 天，避免整月贴边误判为月粒度。 */
 export const CHART_SHORT_SPAN_MAX_S = 62 * DAY_S
 
 export type ChartAxisTimePoint = {
@@ -15,13 +15,6 @@ export type ChartAxisTimePoint = {
 
 /** 轴 / tip 日期粒度：日 → `MM-DD` / `YYYY-MM-DD`；月 → `YYYY-MM`。 */
 export type ChartDateGrain = 'day' | 'month'
-
-export type ChartStatsRange = 'week' | 'month' | 'year' | 'all'
-
-/** API range → 日期粒度；`全部`/`1年` 固定月，避免短数据被当成日窗。 */
-export function chartDateGrainFromRange(range: ChartStatsRange): ChartDateGrain {
-  return range === 'week' || range === 'month' ? 'day' : 'month'
-}
 
 /** UTC 秒 → `YYYY-MM` */
 export function formatChartYearMonth(timeSec: number): string {
@@ -60,13 +53,9 @@ export function chartPointsSpanSeconds(points: readonly ChartAxisTimePoint[]): n
   return Math.max(0, last - first)
 }
 
-export function isChartShortSpan(spanSeconds: number): boolean {
-  return spanSeconds <= CHART_SHORT_SPAN_MAX_S
-}
-
-/** 无显式 grain 时：短跨度 → day，否则 month。 */
+/** 短跨度 → day，否则 month。 */
 export function chartDateGrainFromSpan(spanSeconds: number): ChartDateGrain {
-  return isChartShortSpan(spanSeconds) ? 'day' : 'month'
+  return spanSeconds <= CHART_SHORT_SPAN_MAX_S ? 'day' : 'month'
 }
 
 /**
@@ -90,27 +79,26 @@ export function formatChartTipDate(timeSec: number, grain: ChartDateGrain): stri
 }
 
 /**
- * 均匀挑选轴标签，保证首尾都出现（默认最多 6 个）。
+ * 按点数抽轴标：点少全展示，点多最多 `maxLabels` 个且保证首尾。
+ * 文案格式由序列跨度决定。
  *
  * @param points 图表点
  * @param maxLabels 标签上限
- * @param grain 显式粒度；缺省按序列跨度回退
  */
 export function pickChartAxisLabels(
   points: readonly ChartAxisTimePoint[],
   maxLabels = 6,
-  grain?: ChartDateGrain,
 ): readonly string[] {
   if (points.length === 0) return []
-  const resolved = grain ?? chartDateGrainFromSpan(chartPointsSpanSeconds(points))
+  const grain = chartDateGrainFromSpan(chartPointsSpanSeconds(points))
   if (points.length <= maxLabels) {
-    return points.map((p) => formatChartAxisDate(p.time, resolved))
+    return points.map((p) => formatChartAxisDate(p.time, grain))
   }
   const last = maxLabels - 1
   const labels: string[] = []
   for (let i = 0; i < maxLabels; i += 1) {
     const idx = Math.round((i / last) * (points.length - 1))
-    labels.push(formatChartAxisDate(points[idx]!.time, resolved))
+    labels.push(formatChartAxisDate(points[idx]!.time, grain))
   }
   return labels
 }
