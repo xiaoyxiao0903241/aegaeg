@@ -118,8 +118,10 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
     t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
   [WALLET_WRITE_ERROR.IN_FLIGHT]: (t) =>
     t.wallet.transactionErrors.writeInFlight ?? t.errors.chain.fallback,
+  [WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ]: (t) => t.errors.chain.fallback,
   [EXCHANGE_QUOTE_FAILED]: (t) => t.errors.quoteFailed,
   [EXCHANGE_SUBMIT_BLOCKED]: (t) => t.errors.quoteFailed,
+  TURBINE_QUOTE_EXCEEDS_APPROVAL: (t) => t.exchange.flash.blocked.insufficientOutput,
 
   // —— flash / burn 阻断 ——
   [FLASH_USD1_BLOCKED.paused]: (t) => t.exchange.flash.blocked.paused,

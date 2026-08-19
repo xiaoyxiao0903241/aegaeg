@@ -54,9 +54,7 @@ export async function submitFlashExchange(args: {
           evaluate: evaluateGagx,
           mapBlockError: (reason) => new Error(reason),
           softPreBlocks: [],
-          approve: async () => {
-            await approveAgxForWrapIfNeeded({ wallet, amountIn })
-          },
+          approve: async () => approveAgxForWrapIfNeeded({ wallet, amountIn }),
           write: writeGagx,
         })
       } else {
@@ -104,7 +102,7 @@ export async function submitFlashExchange(args: {
       softPreBlocks: [],
       approve: async () => {
         const config = await readUsd1SwapConfig()
-        await approveUsdtForFlashExchangeIfNeeded({
+        return approveUsdtForFlashExchangeIfNeeded({
           wallet,
           amountIn,
           usdtToken: config.usdtToken,

@@ -44,6 +44,13 @@ type UseGenesisPurchaseActionsArgs = {
 type GenesisPurchaseBlock =
   'not_bound' | 'unavailable' | 'insufficient_allowance' | 'insufficient_usd1'
 
+type GenesisPurchaseSnap = {
+  postOk: boolean
+  postReason: 'not_bound' | 'unavailable' | null
+  allowance: bigint
+  balance: bigint
+}
+
 /**
  * 创世购买编排：经统一核做预检 → 按需授权 → 实时复核 → 购买
  *
@@ -67,7 +74,7 @@ export function useGenesisPurchaseActions({
   const purchaseMutation = useChainMutation({
     path: WRITE_PATH.GENESIS,
     mutation: async (_vars, session): Promise<true> => {
-      const { wallet, account, address: sessionAddress } = session
+      const { wallet, account, address: sessionAddress, readClient } = session
       if (isBoundQueryData !== true) {
         throw GENESIS_PURCHASE_ERROR.NOT_BOUND
       }
@@ -80,45 +87,29 @@ export function useGenesisPurchaseActions({
 
       const phase = activePhase
 
-      type Snap = {
-        postOk: boolean
-        postReason: 'not_bound' | 'unavailable' | null
-        allowance: bigint
-        balance: bigint
-      }
-
       await approveThenLiveWrite({
-        readSnapshot: async (): Promise<Snap> => {
+        readSnapshot: async (): Promise<GenesisPurchaseSnap> => {
           const post = await fetchLiveGenesisPostApprove({
             address: sessionAddress,
             purchaseAmount,
             activePhase: phase,
-            fetchIsBound: (addr) =>
-              queryClient.fetchQuery({
-                queryKey: queryKeys.chain.referralIsBoundOf(addr),
-                queryFn: () => readIsBindReferral(addr),
-                staleTime: 0,
-              }),
-            fetchPaused: () =>
-              queryClient.fetchQuery({
-                queryKey: queryKeys.chain.presalePaused,
-                queryFn: () => readPresalePaused(),
-                staleTime: 0,
-              }),
+            fetchIsBound: (addr) => readIsBindReferral(addr, readClient),
+            fetchPaused: () => readPresalePaused(readClient),
             fetchPhaseRemaining: (addr, phaseIndex) =>
-              queryClient.fetchQuery({
-                queryKey: queryKeys.chain.presaleUserPhaseRemaining(addr, phaseIndex),
-                queryFn: () => readUserPhaseRemainingAmount(addr, phaseIndex),
-                staleTime: 0,
-              }),
+              readUserPhaseRemainingAmount(addr, phaseIndex, readClient),
             fetchNowSeconds: async () => {
               const block = await bscReadClient.getBlock({ blockTag: 'latest' })
               return Number(block.timestamp)
             },
           })
           const [balance, allowance] = await Promise.all([
-            readErc20Balance(BSC_CONTRACTS.usd1, account.address),
-            readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
+            readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
+            readErc20Allowance(
+              BSC_CONTRACTS.usd1,
+              account.address,
+              BSC_CONTRACTS.preSale,
+              readClient,
+            ),
           ])
           if (sessionAddress) {
             queryClient.setQueryData(
@@ -145,8 +136,8 @@ export function useGenesisPurchaseActions({
           if (!snap.postOk) {
             return snap.postReason === 'not_bound' ? 'not_bound' : 'unavailable'
           }
-          if (snap.allowance < purchaseAmount) return 'insufficient_allowance'
           if (snap.balance < purchaseAmount) return 'insufficient_usd1'
+          if (snap.allowance < purchaseAmount) return 'insufficient_allowance'
           return null
         },
         mapBlockError: (reason) => {
@@ -159,8 +150,11 @@ export function useGenesisPurchaseActions({
         },
         softPreBlocks: ['insufficient_allowance'],
         approve: async () => {
-          await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
-          if (sessionAddress) {
+          const mined = await approveUsd1ForPresaleIfNeeded({
+            wallet,
+            amount: purchaseAmount,
+          })
+          if (mined && sessionAddress) {
             queryClient.setQueryData(
               queryKeys.chain.erc20Allowance(
                 BSC_CONTRACTS.usd1,
@@ -170,6 +164,7 @@ export function useGenesisPurchaseActions({
               purchaseAmount,
             )
           }
+          return mined
         },
         write: async () => {
           await purchasePresale({

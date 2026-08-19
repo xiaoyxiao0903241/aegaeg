@@ -30,13 +30,12 @@ export async function submitMarketTrade(args: {
       evaluate: (snap) => (snap.sellBalance < amountIn ? 'insufficientBalance' : null),
       mapBlockError: (reason) => new Error(reason),
       softPreBlocks: [],
-      approve: async () => {
-        await approveTokenIfNeeded({
+      approve: async () =>
+        approveTokenIfNeeded({
           wallet,
           token: pair.sell.address,
           amountIn,
-        })
-      },
+        }),
       write: async (live) => {
         const { amountOutMin } = await assertStillSubmittable({ sellBalance: live.sellBalance })
         await exchangeTokens({

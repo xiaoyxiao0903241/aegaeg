@@ -48,9 +48,7 @@ export async function submitBurnExchange(args: {
         return new Error(BURN_BLOCKED[reason])
       },
       softPreBlocks: [],
-      approve: async () => {
-        await approveAgxForBurnExchangeIfNeeded({ wallet, amountIn })
-      },
+      approve: async () => approveAgxForBurnExchangeIfNeeded({ wallet, amountIn }),
       write: async (live) => {
         await assertStillSubmittable({ sellBalance: live.sellBalance })
         await burnExchangeConvert({

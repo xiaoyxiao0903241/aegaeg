@@ -12,6 +12,7 @@ test('getErrorMessage maps ERC20 / genesis / referral / claim / quote (no raw le
     REFERRAL_BIND_ERROR,
     EXCHANGE_QUOTE_FAILED,
     EXCHANGE_SUBMIT_BLOCKED,
+    WALLET_WRITE_ERROR,
   } = await loadModule('/src/web3/errors/sentinels.ts')
 
   assert.equal(
@@ -58,6 +59,28 @@ test('getErrorMessage maps ERC20 / genesis / referral / claim / quote (no raw le
 
   assert.equal(getErrorMessage(EXCHANGE_QUOTE_FAILED, t), t.errors.quoteFailed)
   assert.equal(getErrorMessage(EXCHANGE_SUBMIT_BLOCKED, t), t.errors.quoteFailed)
+  assert.equal(
+    getErrorMessage(new Error('TURBINE_QUOTE_EXCEEDS_APPROVAL'), t),
+    t.exchange.flash.blocked.insufficientOutput,
+  )
+  assert.equal(getErrorMessage(WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ, t), t.errors.chain.fallback)
+  assert.equal(
+    getErrorMessage(new Error(WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ), t),
+    t.errors.chain.fallback,
+  )
+  assert.equal(
+    getErrorMessage(
+      new Error(WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ, {
+        cause: new Error('ERC20InsufficientAllowance'),
+      }),
+      t,
+    ),
+    t.errors.chain.fallback,
+  )
+  assert.notEqual(
+    getErrorMessage(new Error(WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ), t),
+    t.genesis.insufficientAllowance,
+  )
   assert.equal(getErrorMessage(new Error('weird rpc english leak'), t), t.errors.chain.fallback)
 
   // Team claim: mapped claim errors, not raw normalize throw text

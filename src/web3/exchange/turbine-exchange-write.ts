@@ -2,13 +2,13 @@ import type { Wallet } from 'thirdweb/wallets'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { TURBINE_ERRORS, TURBINE_METHODS } from '~/web3/abis'
-import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
+import { approveErc20 } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const buyAbi = parseWriteAbi(TURBINE_METHODS.buyAgxAndStartCooldown, TURBINE_ERRORS)
 const claimAbi = parseWriteAbi(TURBINE_METHODS.claimCooledGagx, TURBINE_ERRORS)
 
-/** USD1 → Turbine 授权：买入前按需补 approve。 */
+/** USD1 → Turbine 授权：预检已判定不足后发出 approve，不再读额度。 */
 export async function approveUsd1ForTurbineIfNeeded({
   wallet,
   amountIn,
@@ -16,7 +16,7 @@ export async function approveUsd1ForTurbineIfNeeded({
   wallet: Wallet
   amountIn: bigint
 }) {
-  return approveErc20IfNeeded({
+  return approveErc20({
     wallet,
     token: BSC_CONTRACTS.usd1,
     spender: BSC_CONTRACTS.turbine,

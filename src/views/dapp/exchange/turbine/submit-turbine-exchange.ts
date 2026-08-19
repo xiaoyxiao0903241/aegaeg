@@ -30,7 +30,7 @@ type TurbineSubmitCore = {
 /**
  * Turbine 解锁：经统一核预检 → 按需授权 → 实时复核 → 买入
  *
- * 授权金额按当时报价；若授权后报价再升高导致授权不足，实时复核硬挡，用户重试即可。
+ * 授权金额按预检报价；授权后实时再报价，升高则硬挡，用户重试即可。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -54,6 +54,9 @@ export async function submitTurbineUnlock(args: {
       approved: bigint
     }
 
+    let grantedUsd = 0n
+    let quotedUsd = 0n
+
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<Snap> => {
         const [liveBalances, liveQuota, liveUsd] = await Promise.all([
@@ -61,6 +64,7 @@ export async function submitTurbineUnlock(args: {
           readTurbineQuota(address, readClient),
           readTurbineUsdQuote(unlockAmountAgx, readClient),
         ])
+        if (quotedUsd === 0n) quotedUsd = liveUsd
         return {
           liveUsd,
           liveQuota,
@@ -75,12 +79,14 @@ export async function submitTurbineUnlock(args: {
           liveQuota: snap.liveQuota,
           usd1: snap.usd1,
           approved: snap.approved,
+          grantedUsd,
         }),
       mapBlockError: (reason) => new Error(reason),
       softPreBlocks: ['TURBINE_INSUFFICIENT_ALLOWANCE'],
       approve: async () => {
-        const usd = await readTurbineUsdQuote(unlockAmountAgx, readClient)
-        await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: usd })
+        const mined = await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: quotedUsd })
+        if (mined) grantedUsd = quotedUsd
+        return mined
       },
       write: async (live) => {
         await buyAgxAndStartCooldown({ wallet, usdAmount: live.liveUsd })

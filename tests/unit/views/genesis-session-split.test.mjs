@@ -8,6 +8,9 @@ test('genesis purchase must not revive retired genesisPurchaseBlock helper', asy
     'utf8',
   )
   assert.doesNotMatch(source, /genesisPurchaseBlock/)
+  assert.doesNotMatch(source, /createWalletReadClient/)
+  assert.doesNotMatch(source, /fetchQuery/)
+  assert.match(source, /bscReadClient\.getBlock/)
 })
 
 test('genesis session must not inline purchase writes (actions own money path)', async () => {

@@ -34,6 +34,8 @@ export const WALLET_WRITE_ERROR = {
   SUBMIT_UNKNOWN: 'WALLET_SUBMIT_UNKNOWN',
   /** 同 WRITE_PATH 信封仍在飞。 */
   IN_FLIGHT: 'WALLET_WRITE_IN_FLIGHT',
+  /** 本笔已确认授权后，读节点仍报额度不足（滞后）。 */
+  STALE_ALLOWANCE_READ: 'WALLET_STALE_ALLOWANCE_READ',
 } as const
 
 /** 报价 RPC / 路由失败 → i18n `errors.quoteFailed`。 */

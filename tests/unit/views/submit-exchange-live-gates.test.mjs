@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
@@ -73,6 +74,96 @@ test('submitTurbineUnlock fail-closed when live quota is zero', async () => {
   assert.equal(result.ok, false)
   assert.ok(result.error instanceof Error)
   assert.equal(result.error.message, 'TURBINE_QUOTA_EXCEEDED')
+})
+
+test('submitTurbineUnlock quotes twice and does not requote inside approve', async () => {
+  const source = await readFile(
+    new URL('../../../src/views/dapp/exchange/turbine/submit-turbine-exchange.ts', import.meta.url),
+    'utf8',
+  )
+  assert.doesNotMatch(source, /approve: async \(\) => \{[\s\S]*?readTurbineUsdQuote/)
+
+  const { submitTurbineUnlock } = await loadModule(
+    '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
+  )
+
+  let quotes = 0
+  const session = sessionWithReadClient(async (request) => {
+    switch (request.functionName) {
+      case 'migratedFrom':
+        return ZERO
+      case 'balanceOf':
+        return 1_000n
+      case 'allowance':
+        return 1_000n
+      case 'turbineBalances':
+        return 1_000n
+      case 'quoteUsdInForAgxOut':
+        quotes += 1
+        return 100n
+      default:
+        throw new Error(`unexpected ${request.functionName}`)
+    }
+  })
+
+  const result = await submitTurbineUnlock({
+    core: {
+      runSubmit: async (run) => {
+        try {
+          await run(session)
+          return { ok: true }
+        } catch (error) {
+          return { ok: false, error }
+        }
+      },
+    },
+    unlockAmountAgx: 10n,
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal(quotes, 2)
+})
+
+test('submitTurbineUnlock uses preflight quote when allowance is short', async () => {
+  const { submitTurbineUnlock } = await loadModule(
+    '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
+  )
+
+  let quotes = 0
+  const session = sessionWithReadClient(async (request) => {
+    switch (request.functionName) {
+      case 'migratedFrom':
+        return ZERO
+      case 'balanceOf':
+        return 1_000n
+      case 'allowance':
+        return 0n
+      case 'turbineBalances':
+        return 1_000n
+      case 'quoteUsdInForAgxOut':
+        quotes += 1
+        return 100n
+      default:
+        throw new Error(`unexpected ${request.functionName}`)
+    }
+  })
+
+  const result = await submitTurbineUnlock({
+    core: {
+      runSubmit: async (run) => {
+        try {
+          await run(session)
+          return { ok: true }
+        } catch (error) {
+          return { ok: false, error }
+        }
+      },
+    },
+    unlockAmountAgx: 10n,
+  })
+
+  assert.equal(result.ok, false)
+  assert.equal(quotes, 1)
 })
 
 test('submitBurnExchange fail-closed when live pool is paused', async () => {

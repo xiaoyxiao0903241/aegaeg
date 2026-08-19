@@ -11,7 +11,7 @@ import {
   X_STAKING_POOL_ERRORS,
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
-import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
+import { approveErc20 } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const liquidStakeAbi = parseWriteAbi(LIQUID_STAKING_METHODS.liquidStake, LIQUID_STAKING_ERRORS)
@@ -21,7 +21,7 @@ const bondLpZapAbi = parseWriteAbi(BOND_HELPER_METHODS.zapIntoLiquidityBond, BON
 const bondBurnZapAbi = parseWriteAbi(BOND_HELPER_METHODS.zapIntoBurnBond, BOND_HELPER_ERRORS)
 const xStakeAbi = parseWriteAbi(X_STAKING_POOL_METHODS.stakeGagxForMining, X_STAKING_POOL_ERRORS)
 
-/** AGX → 质押池授权：余额不足以覆盖本次质押时补 approve。 */
+/** AGX → 质押池授权：预检已判定不足后发出 approve，不再读额度。 */
 export async function approveAgxForStakeIfNeeded({
   wallet,
   pool,
@@ -31,7 +31,7 @@ export async function approveAgxForStakeIfNeeded({
   pool: Address
   amount: bigint
 }) {
-  return approveErc20IfNeeded({
+  return approveErc20({
     wallet,
     token: BSC_CONTRACTS.agx,
     spender: pool,
@@ -88,7 +88,7 @@ export async function claimLiquidWarmup({ wallet }: { wallet: Wallet }) {
   })
 }
 
-/** USD1 → BondHelper 授权：债券 zap 前按需补 approve。 */
+/** USD1 → BondHelper 授权：预检已判定不足后发出 approve，不再读额度。 */
 export async function approveUsd1ForBondHelperIfNeeded({
   wallet,
   amount,
@@ -96,7 +96,7 @@ export async function approveUsd1ForBondHelperIfNeeded({
   wallet: Wallet
   amount: bigint
 }) {
-  return approveErc20IfNeeded({
+  return approveErc20({
     wallet,
     token: BSC_CONTRACTS.usd1,
     spender: BSC_CONTRACTS.bondHelper,
@@ -142,7 +142,7 @@ export async function zapIntoBurnBond({
   })
 }
 
-/** gAGX → XStakingPool 授权：X 挖矿质押前按需补 approve。 */
+/** gAGX → XStakingPool 授权：预检已判定不足后发出 approve，不再读额度。 */
 export async function approveGagxForXmineIfNeeded({
   wallet,
   amount,
@@ -150,7 +150,7 @@ export async function approveGagxForXmineIfNeeded({
   wallet: Wallet
   amount: bigint
 }) {
-  return approveErc20IfNeeded({
+  return approveErc20({
     wallet,
     token: BSC_CONTRACTS.gagx,
     spender: BSC_CONTRACTS.xStakingPool,

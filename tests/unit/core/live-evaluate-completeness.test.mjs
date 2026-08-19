@@ -19,7 +19,12 @@ test('evaluateTurbineUnlockLive requires allowance cover liveUsd', async () => {
     evaluateTurbineUnlockLive({ ...base, approved: 99n }),
     'TURBINE_INSUFFICIENT_ALLOWANCE',
   )
-  assert.equal(evaluateTurbineUnlockLive({ ...base, usd1: 50n }), 'TURBINE_INSUFFICIENT_USD1')
+  assert.equal(evaluateTurbineUnlockLive({ ...base, approved: 99n, grantedUsd: 100n }), null)
+  assert.equal(evaluateTurbineUnlockLive({ ...base, approved: 0n, grantedUsd: 100n }), null)
+  assert.equal(
+    evaluateTurbineUnlockLive({ ...base, liveUsd: 101n, approved: 0n, grantedUsd: 100n }),
+    'TURBINE_QUOTE_EXCEEDS_APPROVAL',
+  )
   assert.equal(evaluateTurbineUnlockLive({ ...base, liveQuota: 0n }), 'TURBINE_QUOTA_EXCEEDED')
 })
 

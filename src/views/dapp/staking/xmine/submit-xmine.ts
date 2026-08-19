@@ -55,7 +55,7 @@ export async function submitXmineStake(args: {
     softPreBlocks: ['insufficientAllowance'] satisfies ReadonlyArray<XmineLiveBlockReason>,
     approve: async () => {
       pastPreflight = true
-      await approveGagxForXmineIfNeeded({ wallet, amount })
+      return approveGagxForXmineIfNeeded({ wallet, amount })
     },
     write: async () => {
       await stakeGagxForMining({ wallet, amount })

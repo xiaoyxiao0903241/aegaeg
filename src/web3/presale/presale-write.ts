@@ -2,17 +2,19 @@ import type { Wallet } from 'thirdweb/wallets'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { PRESALE_ERRORS, PRESALE_METHODS } from '~/web3/abis'
-import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
+import { approveErc20 } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase, PRESALE_ERRORS)
 
 /**
- * 若不足则为预售购买给 preSale 授权 USD1 额度。
+ * 为预售购买给 preSale 授权 USD1。
+ *
+ * 调用方预检已判定额度不足；此处不再读 allowance。
  *
  * @param wallet 钱包
  * @param amount 需要授权的金额（wei）
- * @returns 已确认的写交易结果；无需授权时返回 null
+ * @returns 已确认的 approve 回执
  */
 export async function approveUsd1ForPresaleIfNeeded({
   wallet,
@@ -21,7 +23,7 @@ export async function approveUsd1ForPresaleIfNeeded({
   wallet: Wallet
   amount: bigint
 }) {
-  return approveErc20IfNeeded({
+  return approveErc20({
     wallet,
     token: BSC_CONTRACTS.usd1,
     spender: BSC_CONTRACTS.preSale,
