@@ -9,7 +9,7 @@ type ExplorerLinkKind = 'address' | 'tx'
 
 /**
  * 链上地址 / 交易哈希：打开 BscScan。
- * 默认蓝，与表格珊瑚数字错开。
+ * 默认 primary；表内链接由 Table 着蓝，与珊瑚数字错开。
  */
 export function ExplorerLink({
   value,
@@ -17,7 +17,7 @@ export function ExplorerLink({
   showIcon = false,
   className,
   shortOptions,
-  tone = 'claim-restake',
+  tone = 'primary',
 }: {
   value: string
   kind?: ExplorerLinkKind

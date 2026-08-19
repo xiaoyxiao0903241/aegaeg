@@ -222,7 +222,7 @@ function Body({
 
   return (
     <div className={gridRoot({ compact, class: className })}>
-      <table className="w-max min-w-full table-auto border-collapse">
+      <table className="w-max min-w-full table-auto border-collapse [&_a]:text-claim-restake">
         {colWidths ? (
           <colgroup>
             {headers.map((header, index) => (
