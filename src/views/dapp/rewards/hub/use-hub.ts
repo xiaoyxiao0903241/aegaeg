@@ -2,12 +2,13 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMakingOverview } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import {
-  formatApiAmount,
-  formatApiStatLabel,
   formatMakingRankLabel,
-} from '~/views/dapp/rewards/shared'
+  formatNumber,
+  formatUsdApprox,
+  parseApiAmount,
+} from '~/shared/presenters/format'
+import { formatApiAmount, formatApiStatLabel } from '~/views/dapp/rewards/shared'
 import { useRewardsContribution } from '~/views/dapp/rewards/use-rewards-contribution'
 
 export type HubStats = {

@@ -18,7 +18,7 @@ import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import { fillTemplate } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatMakingRankLabel, formatNumber } from '~/shared/presenters/format'
 import {
   CommunityInviteCard,
   CommunityProgramCard,
@@ -27,7 +27,6 @@ import {
 import {
   communityInviteColWidths,
   communityInviteRewardBody,
-  formatCommunityMakingRank,
   mapTeamReferralToCompactRow,
 } from '~/views/dapp/community/shared'
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
@@ -49,7 +48,6 @@ export function CommunityDetail() {
     t,
     sessionReady,
     walletReady,
-    isMobileViewport,
     isLoggingIn,
     invitesPage,
     setInvitesPage,
@@ -101,8 +99,7 @@ export function CommunityDetail() {
     </>
   )
 
-  const inviteRowsCompact = referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
-  const compactRows = inviteRowsCompact
+  const compactRows = referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
   const invitesTotal = referrals?.total ?? 0
   const invitesTable = dappTableViewState({
     sessionReady,
@@ -155,13 +152,9 @@ export function CommunityDetail() {
   })
 
   const makingRank = sessionReady && !authPending ? making?.making_rank : null
-  const rankValue = formatCommunityMakingRank(makingRank)
-  const rankRow =
-    rankValue === '—'
-      ? undefined
-      : t.rewards.hub.tierTable.rows.find((row) => row.level === rankValue)
+  const rankValue = formatMakingRankLabel(makingRank, '—')
   const rewardRateNote = interpolate(t.community.statRewardRate, {
-    rate: rankRow?.rate ?? '—',
+    rate: t.rewards.hub.tierTable.rows.find((row) => row.level === rankValue)?.rate ?? '—',
   })
 
   const stats: CommunityStat[] = [
@@ -190,8 +183,8 @@ export function CommunityDetail() {
       value: statsLoading ? <Skeleton className="h-7 w-20" tone="dark" /> : rankValue,
       volume: t.community.cobuildLevel,
       note: statsLoading ? <Skeleton className="h-3.5 w-24" tone="dark" /> : rewardRateNote,
-      dark: !isMobileViewport,
-      image: isMobileViewport ? undefined : dappAssets.communityRankDeco,
+      dark: true,
+      image: dappAssets.communityRankDeco,
     },
   ]
 

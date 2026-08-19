@@ -223,12 +223,11 @@ export function CommunityStatCard({
       {image ? (
         <img
           alt=""
-          className="pointer-events-none absolute -right-1 bottom-0 z-0 h-auto w-17 object-contain object-bottom"
+          className="pointer-events-none absolute top-2.5 right-0 z-[1] h-full w-auto scale-x-[-1] object-cover object-top"
           data-slot-id="community-stat-rank-deco"
-          height="103"
-          loading="lazy"
+          height="312"
           src={image}
-          width="68"
+          width="208"
         />
       ) : null}
     </Card>

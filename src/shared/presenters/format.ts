@@ -29,6 +29,12 @@ export function formatTableGenesisRank(rank: number | undefined | null): string 
   return `S${Math.trunc(rank)}`
 }
 
+/** 做市等级 → `A#`；非法或非正返回 emptyLabel。 */
+export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
+  return `A${Math.trunc(rank)}`
+}
+
 /** 把 API 的 presale_rank（S1=1 …）映射为等级表中 0 基行号。 */
 export function getPresaleRankHighlightedRows(
   rank: number | undefined,

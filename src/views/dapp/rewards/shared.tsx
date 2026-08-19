@@ -32,6 +32,7 @@ import {
   formatApiAmount,
   formatApiDateTime,
   formatBlockTime,
+  formatMakingRankLabel,
   formatNumber,
   formatRegisterDate,
   formatTableGenesisRank,
@@ -173,17 +174,6 @@ export function daoGrantStatusTone(status: DaoGrantStatus): 'pending' | 'muted' 
     default:
       return 'pending'
   }
-}
-
-/**
- * 做市等级 → `A1` 这类展示文本；无效等级使用空态文案。
- *
- * @param rank 后端等级数字
- * @param emptyLabel 无等级时显示的占位文本
- */
-export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
-  if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
-  return `A${Math.trunc(rank)}`
 }
 
 /**

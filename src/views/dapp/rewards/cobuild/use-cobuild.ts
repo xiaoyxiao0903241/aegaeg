@@ -15,13 +15,13 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { formatMakingRankLabel } from '~/shared/presenters/format'
 import { useCobuildSessionStore } from '~/stores/rewards-session-store'
 import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
   formatApiAgxUsdLabel,
   formatApiGagxApproxUsd,
-  formatMakingRankLabel,
   mapRankRewardTeamMemberToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,

@@ -33,7 +33,7 @@ export function ExplorerLink({
   return (
     <Text
       as="a"
-      className={cn('inline-flex items-center gap-1 font-mono underline', className)}
+      className={cn('inline-flex items-center gap-1 underline', className)}
       href={href}
       rel="noopener noreferrer"
       target="_blank"

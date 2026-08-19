@@ -25,6 +25,15 @@ test('getPresaleRankHighlightedRows maps rank to tier table row index', async ()
   assert.deepEqual(getPresaleRankHighlightedRows(8, 10), [7])
 })
 
+test('formatMakingRankLabel maps making rank to A# or emptyLabel', async () => {
+  const { formatMakingRankLabel } = await loadModule('/src/shared/presenters/format.ts')
+
+  assert.equal(formatMakingRankLabel(3, '—'), 'A3')
+  assert.equal(formatMakingRankLabel(0, '—'), '—')
+  assert.equal(formatMakingRankLabel(null, '-'), '-')
+  assert.equal(formatMakingRankLabel(1.9, '—'), 'A1')
+})
+
 test('formatShareholderHintForRank renders tier-specific hint', async () => {
   const { formatShareholderHintForRank } = await loadModule('/src/shared/presenters/format.ts')
   const tiers = [

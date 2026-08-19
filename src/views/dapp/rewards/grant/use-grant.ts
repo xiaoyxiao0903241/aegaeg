@@ -7,16 +7,13 @@ import {
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { formatMakingRankLabel } from '~/shared/presenters/format'
 import { useGrantSessionStore } from '~/stores/rewards-session-store'
 import {
   mapMarketAllowanceClaimLogToCells,
   mapMarketAllowancePaidLogToCells,
 } from '~/views/dapp/rewards/primitives'
-import {
-  formatApiGagxApproxUsd,
-  formatApiStatLabel,
-  formatMakingRankLabel,
-} from '~/views/dapp/rewards/shared'
+import { formatApiGagxApproxUsd, formatApiStatLabel } from '~/views/dapp/rewards/shared'
 
 /**
  * 发展津贴详情视图模型

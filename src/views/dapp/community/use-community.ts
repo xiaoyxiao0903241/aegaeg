@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 import { useMakingOverview, useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
@@ -91,7 +90,6 @@ export function useCommunityDock() {
 export function useCommunityDetail() {
   const { messages: t } = useI18n()
   const { sessionReady, walletReady } = useDappHost()
-  const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
   const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
@@ -105,7 +103,6 @@ export function useCommunityDetail() {
     t,
     sessionReady,
     walletReady,
-    isMobileViewport,
     isLoggingIn,
     invitesPage,
     setInvitesPage,
