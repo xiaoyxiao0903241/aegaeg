@@ -1,16 +1,20 @@
 /**
  * 面积图底部轴 / tip 日期文案。
  *
- * 粒度只看返回点的首末跨度：约 ≤62 天为日（轴 `MM-DD`），更长为月（`YYYY-MM`）。
- * 不跟 Segment 的 week/year/all 绑定——年/全部若只有几周数据，仍按短窗标日。
+ * 若任一点的接口 `date` 是 `YYYY-MM`，整图按月（轴/tip `YYYY-MM`），避免当成日 1 号标成 `MM-01`。
+ * 全是逐日 `YYYY-MM-DD` 时才看首末跨度：约 ≤6 个月为日（轴 `MM-DD`），更长为月。
  */
 
 const DAY_S = 86_400
-/** 短窗上限：略大于 60 天，避免整月贴边误判为月粒度。 */
-export const CHART_SHORT_SPAN_MAX_S = 62 * DAY_S
+/** 短窗上限：略大于 6×31 天，避免满 6 个自然月的逐日窗被标成月。 */
+export const CHART_SHORT_SPAN_MAX_S = 186 * DAY_S
+
+const MONTH_DATE_RE = /^\d{4}-\d{2}$/
 
 export type ChartAxisTimePoint = {
   time: number
+  /** 接口原样 `date`；`YYYY-MM` 时强制月粒度 */
+  date?: string
 }
 
 /** 轴 / tip 日期粒度：日 → `MM-DD` / `YYYY-MM-DD`；月 → `YYYY-MM`。 */
@@ -59,6 +63,18 @@ export function chartDateGrainFromSpan(spanSeconds: number): ChartDateGrain {
 }
 
 /**
+ * 有 `YYYY-MM` 点则整图按月；否则按首末跨度。
+ *
+ * @param points 已按时间升序的点列
+ */
+export function chartDateGrainFromPoints(points: readonly ChartAxisTimePoint[]): ChartDateGrain {
+  for (const point of points) {
+    if (point.date != null && MONTH_DATE_RE.test(point.date.trim())) return 'month'
+  }
+  return chartDateGrainFromSpan(chartPointsSpanSeconds(points))
+}
+
+/**
  * 轴标签：日粒度 `MM-DD`，月粒度 `YYYY-MM`。
  *
  * @param timeSec UTC 秒
@@ -80,7 +96,7 @@ export function formatChartTipDate(timeSec: number, grain: ChartDateGrain): stri
 
 /**
  * 按点数抽轴标：点少全展示，点多最多 `maxLabels` 个且保证首尾。
- * 文案格式由序列跨度决定。
+ * 文案格式：有月点则 `YYYY-MM`，否则按跨度。
  *
  * @param points 图表点
  * @param maxLabels 标签上限
@@ -90,7 +106,7 @@ export function pickChartAxisLabels(
   maxLabels = 6,
 ): readonly string[] {
   if (points.length === 0) return []
-  const grain = chartDateGrainFromSpan(chartPointsSpanSeconds(points))
+  const grain = chartDateGrainFromPoints(points)
   if (points.length <= maxLabels) {
     return points.map((p) => formatChartAxisDate(p.time, grain))
   }

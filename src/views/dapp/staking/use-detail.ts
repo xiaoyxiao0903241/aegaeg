@@ -27,6 +27,7 @@ export function useStakingDetail(product: CalcProduct) {
   const chartPoints: readonly ChartPoint[] = seriesChart.points.map((p) => ({
     time: p.time as UTCTimestamp,
     value: p.value,
+    date: p.date,
   }))
   const unit = protocolMarketStatsAggregateUnit(seriesChart.metric)
 

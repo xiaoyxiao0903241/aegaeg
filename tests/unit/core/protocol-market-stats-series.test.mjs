@@ -57,10 +57,10 @@ test('buildProtocolMarketStatsChart keeps mixed yyyy-MM and yyyy-MM-dd rows', ()
     latest_growth_rate: 1,
   })
   assert.deepEqual(
-    built.points.map((p) => ({ time: p.time, value: p.value })),
+    built.points.map((p) => ({ time: p.time, value: p.value, date: p.date })),
     [
-      { time: Date.UTC(2025, 8, 1) / 1000, value: 10 },
-      { time: Date.UTC(2026, 7, 12) / 1000, value: 20 },
+      { time: Date.UTC(2025, 8, 1) / 1000, value: 10, date: '2025-09' },
+      { time: Date.UTC(2026, 7, 12) / 1000, value: 20, date: '2026-08-12' },
     ],
   )
 })

@@ -24,8 +24,7 @@ import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import {
   type ChartDateGrain,
-  chartDateGrainFromSpan,
-  chartPointsSpanSeconds,
+  chartDateGrainFromPoints,
   formatChartTipDate,
   formatChartYearMonth,
   pickChartAxisLabels,
@@ -54,6 +53,8 @@ export type ChartPoint = {
   /** UTC 秒（Lightweight Charts 的 `UTCTimestamp`） */
   time: UTCTimestamp
   value: number
+  /** 接口原样日期；`YYYY-MM` 时轴/tip 按月 */
+  date?: string
 }
 
 /** `#rrggbb` → `rgba(r,g,b,a)`；非法 hex 回退 primary 不透明。 */
@@ -223,7 +224,7 @@ function Plot({
     setTipPoints(points)
     setTip(null)
   }
-  const dateGrain = chartDateGrainFromSpan(chartPointsSpanSeconds(points))
+  const dateGrain = chartDateGrainFromPoints(points)
   const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points, 6)
   // 十字线回调在 chart 订阅里；用 Effect Event 读最新 formatTipDate / grain，避免 render 写 ref / 把 formatter 塞进 effect deps。
   const resolveTipDate = useEffectEvent((time: Time) => {

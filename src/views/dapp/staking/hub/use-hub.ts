@@ -178,6 +178,7 @@ export function useStakingHubDetail() {
   const chartPoints: readonly ChartPoint[] = seriesChart.points.map((p) => ({
     time: p.time as UTCTimestamp,
     value: p.value,
+    date: p.date,
   }))
   const chartValueLabel = formatUsd(seriesChart.lastValue)
   const chartDeltaLabel = formatPercentChange(seriesChart.percentChange)

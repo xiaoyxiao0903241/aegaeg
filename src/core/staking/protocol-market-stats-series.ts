@@ -24,6 +24,8 @@ export type ProtocolMarketStatsChartPoint = {
   /** UTC 秒 */
   time: number
   value: number
+  /** 接口原样 `date`（`yyyy-MM-dd` 或 `yyyy-MM`） */
+  date?: string
 }
 
 export type ProtocolMarketStatsChart = {
@@ -152,7 +154,8 @@ export function buildProtocolMarketStatsChart(
     const time = parseProtocolMarketStatsDate(row.date)
     const value = parseAmount(row.amount)
     if (time == null || value == null) continue
-    points.push({ time, value })
+    const date = typeof row.date === 'string' ? row.date.trim() : undefined
+    points.push(date ? { time, value, date } : { time, value })
   }
   points.sort((a, b) => a.time - b.time)
 
