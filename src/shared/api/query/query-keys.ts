@@ -332,9 +332,6 @@ export const queryKeys = {
     releaseBuffer: ['chain', 'release', 'buffer'] as const,
     releaseBufferOf: (address: string) =>
       chainWalletQueryKey(['chain', 'release', 'buffer'], address),
-    releaseClaimable: ['chain', 'release', 'claimable'] as const,
-    releaseClaimableOf: (address: string) =>
-      chainWalletQueryKey(['chain', 'release', 'claimable'], address),
     releaseDuration: ['chain', 'release', 'duration'] as const,
     releaseQueuePlans: ['chain', 'release', 'queuePlans'] as const,
   },

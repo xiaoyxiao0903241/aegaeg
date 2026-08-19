@@ -3,23 +3,20 @@ import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
-import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
-import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
+import {
+  useExchangeTurbineUnread,
+  useReleaseClaimableUnreads,
+  useRewardsClaimableUnreads,
+} from '~/hooks/use-nav-claimable-dots'
 import { useI18n } from '~/i18n/use-i18n'
 import { railItems } from '~/shared/assets/dapp'
+import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { dialogClose } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
-import {
-  RailClaimableDot,
-  railIconMask,
-  railNavLabelKeys,
-  railTourIds,
-} from '~/views/dapp/host/primitives'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
 
 const drawerItem = tv({
   base: cn(
@@ -57,9 +54,9 @@ export function MobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const walletReady = hasWalletAccount(useActiveAccount())
-  const exchangeClaimable = useTurbineExchangeRailDot(walletReady)
-  const releaseClaimable = useReleaseRailDot(walletReady)
+  const exchangeClaimable = useExchangeTurbineUnread()
+  const releaseClaimable = useReleaseClaimableUnreads().rail
+  const rewardsClaimable = useRewardsClaimableUnreads().rail
   const [mounted, setMounted] = useState(open)
   const [motion, setMotion] = useState<NavMotion | null>(open ? 'enter' : null)
   const [prevOpen, setPrevOpen] = useState(open)
@@ -174,12 +171,9 @@ export function MobileNav({
                 )}
                 style={railIconMask(item.icon)}
               />
-              {item.id === 'exchange' && exchangeClaimable ? (
-                <RailClaimableDot kind="exchange" />
-              ) : null}
-              {item.id === 'release' && releaseClaimable ? (
-                <RailClaimableDot kind="release" />
-              ) : null}
+              {item.id === 'exchange' && exchangeClaimable ? <ClaimableDot /> : null}
+              {item.id === 'release' && releaseClaimable ? <ClaimableDot /> : null}
+              {item.id === 'rewards' && rewardsClaimable ? <ClaimableDot /> : null}
               <Text
                 as="span"
                 variant="copy"

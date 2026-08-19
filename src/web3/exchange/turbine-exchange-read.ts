@@ -1,5 +1,6 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
+import { fingerprintIdList } from '~/core/claimable-unread'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_METHODS, TURBINE_METHODS } from '~/web3/abis'
@@ -269,20 +270,20 @@ export async function readTurbineSplitterManager(
 }
 
 /**
- * 判断是否有冷却买入可领取（兑换入口红点）
+ * 涡轮可领指纹：已到期冷却仓的 index 排序拼接。
  *
- * 只探测 `silencesSize` + 逐条 `isVested`，找到第一条可领即返回，
- * 不拉全表 silences，减少 RPC 调用。
+ * 只读 `silencesSize` + 逐条 `isVested`，不拉 silences 正文。
+ * 须扫完全表才能区分「新到期仓」与「仍是同一批」。
  *
  * @param user 钱包地址
  * @param client 链上读取客户端，默认公共 RPC
- * @returns 存在可领记录返回 true
+ * @returns 无到期仓为空串
  * @see docs/onchain-manual/contracts/turbine.md
  */
-export async function readTurbineHasClaimable(
+export async function readTurbineClaimableFingerprint(
   user: string,
   client: ChainReadClient = bscReadClient,
-): Promise<boolean> {
+): Promise<string> {
   const userAddress = user as `0x${string}`
   const size = await client.readContract({
     address: BSC_CONTRACTS.turbine,
@@ -291,15 +292,16 @@ export async function readTurbineHasClaimable(
     args: [userAddress],
   })
   const count = Number(size)
-  if (!Number.isFinite(count) || count <= 0) return false
+  if (!Number.isFinite(count) || count <= 0) return ''
+  const vested: string[] = []
   for (let index = 0; index < count; index += 1) {
-    const vested = await client.readContract({
+    const isVested = await client.readContract({
       address: BSC_CONTRACTS.turbine,
       abi: turbineReadAbi,
       functionName: 'isVested',
       args: [userAddress, BigInt(index)],
     })
-    if (vested) return true
+    if (isVested) vested.push(String(index))
   }
-  return false
+  return fingerprintIdList(vested)
 }

@@ -14,9 +14,11 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { useRewardsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets } from '~/shared/assets/dapp'
+import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { Icon } from '~/shared/components/icon'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -90,6 +92,7 @@ export function RewardsHubDock() {
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
   const [hideZero, setHideZero] = useState(false)
+  const dots = useRewardsClaimableUnreads()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
   const grantSummary = useMarketAllowanceSummary(sessionReady)
   const luckyQuery = useChainQuery({
@@ -178,11 +181,21 @@ export function RewardsHubDock() {
         const balanceLabel =
           isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
+        const unread =
+          view === 'lucky'
+            ? dots.lucky
+            : view === 'grant'
+              ? dots.grant
+              : view === 'genesis'
+                ? dots.genesis
+                : false
+
         return (
           <RewardsTypeCard
             key={`${view}:${REWARDS_CARD_CONTRACT[view]}`}
             onClick={() => openRewardsView(view)}
           >
+            {unread ? <ClaimableDot /> : null}
             <RewardsTypeCard.Head>
               <RewardsTypeCard.TitleGroup>
                 <Icon alt="" size={icon.size} src={icon.src} />

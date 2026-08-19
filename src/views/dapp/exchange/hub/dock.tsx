@@ -4,8 +4,10 @@
  * 列出四种兑换模式入口卡片，点击切换子视图；
  * 顶部为面板标题与收起按钮。
  */
+import { useExchangeTurbineUnread } from '~/hooks/use-nav-claimable-dots'
 import { useI18n } from '~/i18n/use-i18n'
 import { exchangeHubAssets } from '~/shared/assets/dapp'
+import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { ModeCard } from '~/shared/components/mode-card'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
@@ -26,6 +28,7 @@ const EXCHANGE_MODES: readonly {
 export function ExchangeHubDock() {
   const { messages: t } = useI18n()
   const copy = t.exchange.hub.modes
+  const turbineUnread = useExchangeTurbineUnread()
 
   return (
     <DockFrame
@@ -46,6 +49,7 @@ export function ExchangeHubDock() {
               <ModeCard.Title>{text.title}</ModeCard.Title>
               <ModeCard.Body>{text.body}</ModeCard.Body>
             </ModeCard.Copy>
+            {mode.view === 'turbine' && turbineUnread ? <ClaimableDot /> : null}
           </ModeCard>
         )
       })}

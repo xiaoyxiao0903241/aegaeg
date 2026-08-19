@@ -3,24 +3,21 @@ import { tv } from 'tailwind-variants'
 
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
-import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
-import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
+import {
+  useExchangeTurbineUnread,
+  useReleaseClaimableUnreads,
+  useRewardsClaimableUnreads,
+} from '~/hooks/use-nav-claimable-dots'
 import { useI18n } from '~/i18n/use-i18n'
 import { prefetchTabQueries } from '~/shared/api/query/prefetch'
 import { railItems } from '~/shared/assets/dapp'
+import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { subscribeResize } from '~/shared/lib/subscribe-resize'
 import { cn } from '~/shared/lib/utils'
-import {
-  RailClaimableDot,
-  railIconMask,
-  railNavLabelKeys,
-  railTourIds,
-} from '~/views/dapp/host/primitives'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
 
 type RailIndicator = {
   height: number
@@ -71,7 +68,7 @@ function useRailTooltips() {
  * DApp 左侧导航条
  *
  * 列出一级 Tab（兑换、资产、质押等），高亮当前项并显示跟随滚动的选中指示条。
- * 兑换与释放页有可领奖状态时右上角显示珊瑚色小点；
+ * 兑换 / 释放 / 奖励有未读可领时右上角显示红点；
  * 悬停 / 聚焦非当前项时预取该页查询。`mobile` 模式用于抽屉内横向布局。
  */
 export function Rail({
@@ -84,11 +81,10 @@ export function Rail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const walletReady = hasWalletAccount(useActiveAccount())
   const tooltips = useRailTooltips()
-  // 两边都是按地址的纯链读；统一 walletReady（不要求 JWT）
-  const exchangeClaimable = useTurbineExchangeRailDot(walletReady)
-  const releaseClaimable = useReleaseRailDot(walletReady)
+  const exchangeClaimable = useExchangeTurbineUnread()
+  const releaseClaimable = useReleaseClaimableUnreads().rail
+  const rewardsClaimable = useRewardsClaimableUnreads().rail
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)
@@ -176,12 +172,9 @@ export function Rail({
                 style={railIconMask(item.icon)}
                 aria-hidden="true"
               />
-              {item.id === 'exchange' && exchangeClaimable ? (
-                <RailClaimableDot kind="exchange" />
-              ) : null}
-              {item.id === 'release' && releaseClaimable ? (
-                <RailClaimableDot kind="release" />
-              ) : null}
+              {item.id === 'exchange' && exchangeClaimable ? <ClaimableDot /> : null}
+              {item.id === 'release' && releaseClaimable ? <ClaimableDot /> : null}
+              {item.id === 'rewards' && rewardsClaimable ? <ClaimableDot /> : null}
               <Text
                 as="span"
                 variant="caption"

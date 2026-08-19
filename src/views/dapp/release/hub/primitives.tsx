@@ -29,14 +29,14 @@ function EntryRoot({
   return (
     <InteractiveCard
       aria-label={ariaLabel}
+      className="grid"
       data-slot-id={dataSlotId}
       hitArea="overlay"
       onClick={onClick}
       tourId={tourId}
     >
-      <div className={cn('pointer-events-none relative z-10 flex flex-col', className)}>
-        {children}
-      </div>
+      {/* 不加 relative：红点才能锚到整张卡，而不是标题行 */}
+      <div className={cn('pointer-events-none z-10 flex flex-col', className)}>{children}</div>
     </InteractiveCard>
   )
 }

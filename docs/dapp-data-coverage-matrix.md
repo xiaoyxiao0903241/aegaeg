@@ -91,8 +91,8 @@
 |H-014|宿主|顶栏错误网络胶囊|不在 BSC 时引导用户切回 BSC|提交|`src/views/dapp/host/app-bar.tsx`handleSwitchToBsc`：`useSwitchActiveWalletChain(defaultChain)`；`switching`→disabled+`Loader2`；失败 toast|手册 §1.4 / §4.4|—（纯 UI）|✅ 已对齐|—|—|—|B-45|没有单独写「切换中…」文案，只用转圈表示|
 |H-015|宿主|连接钱包弹窗|打开连接钱包界面（第三方连接组件）|提交|`src/views/dapp/host/wallet/wallet-connect-modal.tsx`；`WalletConnectButton`：`needsSignIn` 时不挂 Embed（直接 `login`）|手册 §4.4|—（纯 UI）|✅ 已对齐|—|—|—|—|连接成功或已连接后会自动关窗|
 |H-016|宿主|钱包详情弹窗|钱包掉线后显示重新连接|提交|`src/views/dapp/host/wallet/wallet-details-modal.tsx`：`!walletReady`→`reconnectWallet` CTA + `WalletConnectModal`|手册 §4.4|—（纯 UI）|✅ 已对齐|—|—|—|—|—|
-|H-017|宿主|侧栏 / 手机底栏|「兑换」是否有可领红点（涡轮有可领时）|读取展示|`src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useTurbineExchangeRailDot(walletReady)`→`src/web3/exchange/turbine-exchange-read.ts`readTurbineHasClaimable`（`silencesSize`+`isVested`）|手册 §16 Turbine|—（纯链）|✅ 已对齐|—|—|—|—|与 H-018 一样：没连钱包不算可领红点|
-|H-018|宿主|侧栏 / 手机底栏|「释放」是否有可领红点（队列、分流器等有可领时）|读取展示|`src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useReleaseRailDot(walletReady)`→`src/web3/release/release-read.ts`readReleaseHasClaimable`|手册 §12–13|—（纯链）|✅ 已对齐|—|—|—|—|在 BSC 上公开读取即可，不要求已业务登录|
+|H-017|宿主|侧栏 / 手机底栏|「兑换」未读可领红点（涡轮有未看过的到期仓）|读取展示|`useExchangeTurbineUnread`→`readTurbineClaimableFingerprint`（vested index 指纹）；进涡轮子页后记下 seen|手册 §16 Turbine|—（纯链）|✅ 已对齐|—|—|—|—|没连钱包不亮；点进涡轮后灭，新到期仓再亮|
+|H-018|宿主|侧栏 / 手机底栏|「释放」未读可领红点（释放池或缓冲池有未看过的锅）|读取展示|`useReleaseClaimableUnreads`：队列 `planIndex:total`、缓冲本金指纹；导航 OR；进对应子页记 seen|手册 §12–13|—（纯链）|✅ 已对齐|—|—|—|—|滴漏不重新点亮；领空后再入账才亮|
 |H-019|宿主|侧栏共建提示|提示文案里的「第几季」|读取展示|`rail.tsx`→`formatGenesisSeasonIntro`；`GenesisPromoSync`：`activePhase`→index+1，else live，else **`return 1`**；loading 只把 discount 换成 `…`，season 仍可能 1|手册 §6；figma 教程/创世|—（纯链）|✅ 已对齐|设计取舍（故意空/0）|—|—|—|产品已确认：没有进行中阶段时回退季号 1；与社区/共建若干行同源壳层展示|
 |H-020|宿主|侧栏共建提示|提示文案里的折扣（如 -30%）|读取展示|`src/views/dapp/host/genesis-promo-sync.tsx`：`discountBps/100`→`-N%`；0/无活期→`—`；loading→`…`（`formatGenesisSeasonIntro`）|手册 §6 phase `discountBps`|—（纯链）|✅ 已对齐|—|—|—|—|没有数据时诚实显示空，不硬编折扣|
 |H-021|宿主|共建促销数据同步（挂在宿主）|把共建各阶段、当前阶段、AGX 价格写入共用状态，供侧栏提示使用|读取展示|`src/views/dapp/host/genesis-promo-sync.tsx`GenesisPromoSync`；`src/web3/presale/use-presale-queries.ts`usePresalePhasesQuery`等；`readAllPresalePhases`|手册 §6 PreSale|—（纯链）|✅ 已对齐|—|—|—|—|主要服务 H-019 / H-020|
@@ -311,7 +311,7 @@
 |L-034|释放|缓冲·详情|机制步骤「30 天缓冲」|读取展示|`mechanismSteps` `{days}`←`usePrincipalReleaseDurationDays`（与 intro 同源）|`effectiveDuration` / DEFAULT|—|✅ 已对齐|—|—|—|—|文案 {days}←effectiveDuration（共享既有 query）；产品确认跟链；措辞未改|
 |L-035|释放|缓冲·常见问题|「AGX 直接进入钱包」|读取展示|zh：「点击提取，AGX 直接进入钱包」；忽略 next 瀑布与 gAGX|手册：仅链尾 `next==0`；可有 gAGX|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|—|建议新 C|超出单位口径：忽略 next 瀑布与 gAGX 桶；与 L-030 张力；保留📘|
 |L-036|释放|缓冲·常见问题|AGX / gAGX 双资产|读取展示|zh 已写「分流器释放单可为 AGX 或 gAGX」|手册 splitter 多 token|—|✅ 已对齐|—|—|—|—|审计刻意不把断连显 0 记成假零缺口|
-|L-037|释放|侧栏红点|是否有可领|读取展示|`readReleaseHasClaimable` / host `use-release-rail-dot`：queue+splitter+archive|手册 §12–13|—|✅ 已对齐|—|—|—|—|表面在宿主，能力属释放|
+|L-037|释放|侧栏 / Hub 卡红点|未读可领（队列与缓冲拆开）|读取展示|`useReleaseClaimableUnreads`：Hub 卡各一点，导航 OR；指纹为本金身份不是可领 wei|手册 §12–13|—|✅ 已对齐|—|—|—|—|进子页后灭；滴漏不亮|
 |L-038|释放|写后刷新|领取成功后刷新|提交|`invalidateTabQueries('release')`；`TAB_QUERY_KEYS.release` 含 `releaseRoot`+`turbineRoot`+erc20+API|手册成功后刷配额/余额|release/buffer-pool API keys|✅ 已对齐|—|—|—|—|队列领取后涡轮配额可见性会更新|
 |L-039|释放|接口权威|释放池摘要币种|读取展示|有链时 Num 跟链；UI 标签仍 `units.queue`=gAGX|api.md「amount 均为 gAGX」vs 链 AGX|`/release-pool/summary`|✅ 已对齐|—|—|A-12|A-12|标签 gAGX；数源 AGX/API 回退（B）；产品确认；前端已对齐|
 |L-040|释放|接口权威|缓冲池摘要无「可领」|读取展示|FE 信链正确（`apiRaw: undefined`）|链有 claimableAmount；API 无|`/buffer-pool/summary`|🟡 部分|链/手册/接口未提供|后端补同口径可领，或文档写明「已提取≠可领」；前端继续信链|A-16|A-16|审计刻意不记成前端缺口|
@@ -382,7 +382,7 @@
 |X-049|兑换|涡轮·记录表|涡轮流水|读取展示|`useTurbineLogs` + presenter|—|`/turbine/logs`|✅ 已对齐|—|—|—|—|—|
 |X-050|兑换|涡轮·机制/常见问题|「gAGX 进涡轮」「提取到钱包」等文案|读取展示|mechanism 冷却步已写分流器；FAQ「到钱包」/配额 gAGX；toast `claimSuccess` 已写分流器|配额 AGX wei；claim→分流器|—|📘 稿链文案|文案/单位与链不匹配（稿如此）|改设计稿和文案表对齐链，或产品确认保留；不要前端擅自改|— **C-01**/**A-04**|C-01,A-04|机制已写分流器 vs FAQ「到钱包」事实张力；非纯单位 B；保留📘|
 |X-051|兑换|涡轮·配额账户|读配额用迁移根账户；写/冷却列表用当前钱包|读取展示|`readTurbineQuota` 走 migration root；silences(user)|链：quota@root（手册自相矛盾，FE 跟链）|—|✅ 已对齐|—|—|— **A-06**；**B-08**|A-06,B-08|前端跟链；手册债不挡已对齐|
-|X-052|兑换|涡轮·侧栏红点|有可领的冷却项|读取展示|`readTurbineHasClaimable` / `use-turbine-exchange-rail-dot`|`isVested` 探测|—|✅ 已对齐|—|—|**B-05**|B-05|—|
+|X-052|兑换|涡轮·侧栏 / Hub 卡红点|未看过的到期冷却仓|读取展示|`readTurbineClaimableFingerprint` / `useExchangeTurbineUnread`；Hub 涡轮卡角点同源|`isVested` index 指纹|—|✅ 已对齐|—|—|**B-05**|B-05|进涡轮子页后灭；新 vested index 再亮|
 |X-053|兑换|写后刷新（共用）|兑换成功后刷新覆盖哪些数据|提交·刷新|tab keys：swap/erc20/flash/burn/turbine + turbine API + contribution logs|手册成功后刷新|turbine/agx-contribution API|✅ 已对齐|—|—|—|—|涡轮提取另刷释放|
 |X-054|兑换|闪兑/市价/销毁|按钮上的「需要授权」提示|读取展示|`useExchangeQuote.needsApproval`；写内仍 `approve*IfNeeded`|allowance vs amountIn|—|✅ 已对齐|—|—|—|—|界面可提示，发起链上交易内再检查|
 |X-055|兑换|共用 FAQ（旁路）|闪兑 FAQ「以 gAGX 发放 / 收到 gAGX」叙事|读取展示|`exchange.flash.faq`：「均以 gAGX 形式发放」「收到相应数量的 gAGX」；hub.faq 无此发放句|链结算 AGX；主责 shared C-08|—|✅ 已对齐|—|—|— **C-08**|C-08|产品确认保留稿面（B 口径）；非接线错|

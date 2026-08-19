@@ -36,19 +36,6 @@ export const railTourIds = {
  * @param icon 图标资源路径
  * @returns 遮罩相关样式，供 `style` 内联使用
  */
-/** 导航可领红点（原型 10×10 · top-right · destructive）。 */
-export function RailClaimableDot({ kind }: { kind: 'exchange' | 'release' }) {
-  return (
-    <span
-      aria-hidden
-      className="absolute top-0 right-0 size-2.5 rounded-full bg-destructive"
-      {...(kind === 'exchange'
-        ? { 'data-exchange-claimable-dot': true }
-        : { 'data-release-claimable-dot': true })}
-    />
-  )
-}
-
 export function railIconMask(icon: string): CSSProperties {
   return {
     maskImage: `url(${icon})`,

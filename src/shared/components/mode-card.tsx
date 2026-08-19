@@ -17,7 +17,7 @@ function Root({
   ...props
 }: ComponentProps<typeof InteractiveCard> & { children: ReactNode }) {
   return (
-    <InteractiveCard className={cn('flex items-center gap-3', className)} {...props}>
+    <InteractiveCard className={cn('relative flex items-center gap-3', className)} {...props}>
       {children}
     </InteractiveCard>
   )

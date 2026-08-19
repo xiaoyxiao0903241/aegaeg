@@ -450,26 +450,6 @@ export function patchReleaseQueuePlan(
   return { plans, totalClaimable, totalLocked, totalReleasing }
 }
 
-/**
- * 读取用户释放队列可领总额（getUserTotalClaimable）。
- *
- * @param address 钱包地址
- * @param readClient 链读取客户端，默认 BSC 主网
- * @returns 可领总额（wei）
- * @see 手册 §12 RewardQueue 奖励释放队列
- */
-export async function readReleaseQueueClaimable(
-  address: Address,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return readClient.readContract({
-    address: BSC_CONTRACTS.rewardQueue,
-    abi: queueReadAbi,
-    functionName: 'getUserTotalClaimable',
-    args: [address],
-  }) as Promise<bigint>
-}
-
 type SplitterReleaseView = {
   release: {
     token: Address
@@ -723,50 +703,4 @@ export async function readReleaseBufferSnapshot(
     archiveClaimable: archive.claimable,
     archiveClaimWindows: archive.claimWindows,
   }
-}
-
-/** Release 页红点：queue + 分流器链/归档；每跳用 getReleases 短电路。 */
-export async function readReleaseHasClaimable(
-  address: Address,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<boolean> {
-  const queueClaimable = await readReleaseQueueClaimable(address, readClient)
-  if (queueClaimable > 0n) return true
-
-  const splitterRaw = (await readClient.readContract({
-    address: BSC_CONTRACTS.aegisSplitterManager,
-    abi: managerReadAbi,
-    functionName: 'getHeadSplitterForUser',
-    args: [address],
-  })) as Address
-  if (splitterRaw && !isZeroAddress(splitterRaw)) {
-    const hops = await resolveSplitterChain(splitterRaw, readClient)
-    for (const hop of hops) {
-      const page = await readSplitterPages(hop.address, address, readClient)
-      if (page.items.some((item) => item.claimableAmount > 0n)) return true
-    }
-  }
-
-  try {
-    const archiveCountRaw = (await readClient.readContract({
-      address: BSC_CONTRACTS.principalReleaseVault,
-      abi: archiveVaultReadAbi,
-      functionName: 'getReleaseCount',
-      args: [address],
-    })) as bigint
-    const archiveCount = Number(archiveCountRaw)
-    if (!Number.isFinite(archiveCount) || archiveCount <= 0) return false
-    for (let i = 0; i < archiveCount; i++) {
-      const amount = (await readClient.readContract({
-        address: BSC_CONTRACTS.principalReleaseVault,
-        abi: archiveVaultReadAbi,
-        functionName: 'claimable',
-        args: [address, BigInt(i)],
-      })) as bigint
-      if (amount > 0n) return true
-    }
-  } catch {
-    // 归档探测失败不影响「无分流器可领」结论
-  }
-  return false
 }

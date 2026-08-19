@@ -4,9 +4,11 @@
  * 两张入口卡展示释放队列与缓冲池的进度与金额，
  * 点击进入对应子视图；未连接钱包时展示连接引导。
  */
+import { useReleaseClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
+import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
 import { ReleaseEntryCard } from '~/views/dapp/release/hub/primitives'
@@ -19,6 +21,7 @@ export function ReleaseHubDock() {
   const vm = useReleaseHub()
   const { t } = vm
   const bufferDays = usePrincipalReleaseDurationDays().data ?? 30
+  const dots = useReleaseClaimableUnreads()
 
   return (
     <DockFrame
@@ -32,6 +35,7 @@ export function ReleaseHubDock() {
         onClick={() => openReleaseView('queue')}
         tourId="release-pool-card"
       >
+        {dots.queue ? <ClaimableDot /> : null}
         <ReleaseEntryCard.TitleGroup>
           <div className="inline-flex min-w-0 items-center gap-2.25">
             <img alt="" className="size-(--app-icon-caption)" src={dappAssets.releasePool} />
@@ -67,6 +71,7 @@ export function ReleaseHubDock() {
         onClick={() => openReleaseView('buffer')}
         tourId="buffer-pool-card"
       >
+        {dots.buffer ? <ClaimableDot /> : null}
         <ReleaseEntryCard.TitleGroup>
           <div className="inline-flex min-w-0 items-center gap-2.25">
             <img alt="" className="size-(--app-icon-caption)" src={dappAssets.bufferPool} />

@@ -838,11 +838,11 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-宿主与公共壳" data-search="h-017 宿主 侧栏 / 手机底栏 「兑换」是否有可领红点（涡轮有可领时） 读取展示 `src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useturbineexchangeraildot(walletready)`→`src/web3/exchange/turbine-exchange-read.ts`readturbinehasclaimable`（`silencessize`+`isvested`） 手册 §16 turbine —（纯链）  ✅ 已对齐 — — —  — 与 h-018 一样：没连钱包不算可领红点">
+<article class="row" data-status="ok" data-section="1-宿主与公共壳" data-search="h-017 宿主 侧栏 / 手机底栏 「兑换」未读可领红点（涡轮有未看过的到期仓） 读取展示 `useexchangeturbineunread`→`readturbineclaimablefingerprint`（vested index 指纹）；进涡轮子页后记下 seen 手册 §16 turbine —（纯链）  ✅ 已对齐 — — —  — 没连钱包不亮；点进涡轮后灭，新到期仓再亮">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-017</span>
     <span class="surface">侧栏 / 手机底栏</span>
-    <span class="datum">「兑换」是否有可领红点（涡轮有可领时）</span>
+    <span class="datum">「兑换」未读可领红点（涡轮有未看过的到期仓）</span>
     <span class="rw pill">读取展示</span>
     <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
@@ -853,19 +853,19 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useTurbineExchangeRailDot(walletReady)`→`src/web3/exchange/turbine-exchange-read.ts`readTurbineHasClaimable`（`silencesSize`+`isVested`）</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`useExchangeTurbineUnread`→`readTurbineClaimableFingerprint`（vested index 指纹）；进涡轮子页后记下 seen</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §16 Turbine</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>与 H-018 一样：没连钱包不算可领红点</dd></div>
+      <div class="wide"><dt>备注</dt><dd>没连钱包不亮；点进涡轮后灭，新到期仓再亮</dd></div>
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="1-宿主与公共壳" data-search="h-018 宿主 侧栏 / 手机底栏 「释放」是否有可领红点（队列、分流器等有可领时） 读取展示 `src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`usereleaseraildot(walletready)`→`src/web3/release/release-read.ts`readreleasehasclaimable` 手册 §12–13 —（纯链）  ✅ 已对齐 — — —  — 在 bsc 上公开读取即可，不要求已业务登录">
+<article class="row" data-status="ok" data-section="1-宿主与公共壳" data-search="h-018 宿主 侧栏 / 手机底栏 「释放」未读可领红点（释放池或缓冲池有未看过的锅） 读取展示 `usereleaseclaimableunreads`：队列 `planindex:total`、缓冲本金指纹；导航 or；进对应子页记 seen 手册 §12–13 —（纯链）  ✅ 已对齐 — — —  — 滴漏不重新点亮；领空后再入账才亮">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">H-018</span>
     <span class="surface">侧栏 / 手机底栏</span>
-    <span class="datum">「释放」是否有可领红点（队列、分流器等有可领时）</span>
+    <span class="datum">「释放」未读可领红点（释放池或缓冲池有未看过的锅）</span>
     <span class="rw pill">读取展示</span>
     <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
@@ -876,11 +876,11 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`src/views/dapp/host/rail.tsx`/`mobile-nav.tsx`；`useReleaseRailDot(walletReady)`→`src/web3/release/release-read.ts`readReleaseHasClaimable`</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`useReleaseClaimableUnreads`：队列 `planIndex:total`、缓冲本金指纹；导航 OR；进对应子页记 seen</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12–13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—（纯链）</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>在 BSC 上公开读取即可，不要求已业务登录</dd></div>
+      <div class="wide"><dt>备注</dt><dd>滴漏不重新点亮；领空后再入账才亮</dd></div>
     </dl>
   </div>
 </article>
@@ -5183,11 +5183,11 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="4-释放" data-search="l-037 释放 侧栏红点 是否有可领 读取展示 `readreleasehasclaimable` / host `use-release-rail-dot`：queue+splitter+archive 手册 §12–13 —  ✅ 已对齐 — — —  — 表面在宿主，能力属释放">
+<article class="row" data-status="ok" data-section="4-释放" data-search="l-037 释放 侧栏 / hub 卡红点 未读可领（队列与缓冲拆开） 读取展示 `usereleaseclaimableunreads`：hub 卡各一点，导航 or；指纹为本金身份不是可领 wei 手册 §12–13 —  ✅ 已对齐 — — —  — 进子页后灭；滴漏不亮">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">L-037</span>
-    <span class="surface">侧栏红点</span>
-    <span class="datum">是否有可领</span>
+    <span class="surface">侧栏 / Hub 卡红点</span>
+    <span class="datum">未读可领（队列与缓冲拆开）</span>
     <span class="rw pill">读取展示</span>
     <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
@@ -5198,11 +5198,11 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>—</dd></div>
       <div><dt>A/B/C 链</dt><dd>—</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`readReleaseHasClaimable` / host `use-release-rail-dot`：queue+splitter+archive</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`useReleaseClaimableUnreads`：Hub 卡各一点，导航 OR；指纹为本金身份不是可领 wei</dd></div>
       <div class="wide"><dt>文档位置</dt><dd>手册 §12–13</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>表面在宿主，能力属释放</dd></div>
+      <div class="wide"><dt>备注</dt><dd>进子页后灭；滴漏不亮</dd></div>
     </dl>
   </div>
 </article>
@@ -6547,11 +6547,11 @@
     </dl>
   </div>
 </article>
-<article class="row" data-status="ok" data-section="5-兑换" data-search="x-052 兑换 涡轮·侧栏红点 有可领的冷却项 读取展示 `readturbinehasclaimable` / `use-turbine-exchange-rail-dot` `isvested` 探测 —  ✅ 已对齐 — — **b-05**  b-05 —">
+<article class="row" data-status="ok" data-section="5-兑换" data-search="x-052 兑换 涡轮·侧栏 / hub 卡红点 未看过的到期冷却仓 读取展示 `readturbineclaimablefingerprint` / `useexchangeturbineunread`；hub 涡轮卡角点同源 `isvested` index 指纹 —  ✅ 已对齐 — — **b-05**  b-05 进涡轮子页后灭；新 vested index 再亮">
   <button type="button" class="row-main" aria-expanded="false">
     <span class="id mono">X-052</span>
-    <span class="surface">涡轮·侧栏红点</span>
-    <span class="datum">有可领的冷却项</span>
+    <span class="surface">涡轮·侧栏 / Hub 卡红点</span>
+    <span class="datum">未看过的到期冷却仓</span>
     <span class="rw pill">读取展示</span>
     <span class="status badge ok">✅ 已对齐</span>
     <span class="chev" aria-hidden="true"></span>
@@ -6562,11 +6562,11 @@
       <div><dt>T1 归因</dt><dd>—</dd></div>
       <div><dt>继承自</dt><dd>**B-05**</dd></div>
       <div><dt>A/B/C 链</dt><dd>B-05</dd></div>
-      <div class="wide"><dt>代码位置</dt><dd>`readTurbineHasClaimable` / `use-turbine-exchange-rail-dot`</dd></div>
-      <div class="wide"><dt>文档位置</dt><dd>`isVested` 探测</dd></div>
+      <div class="wide"><dt>代码位置</dt><dd>`readTurbineClaimableFingerprint` / `useExchangeTurbineUnread`；Hub 涡轮卡角点同源</dd></div>
+      <div class="wide"><dt>文档位置</dt><dd>`isVested` index 指纹</dd></div>
       <div class="wide"><dt>API 接口</dt><dd>—</dd></div>
       <div class="wide"><dt>修复方法</dt><dd>—</dd></div>
-      <div class="wide"><dt>备注</dt><dd>—</dd></div>
+      <div class="wide"><dt>备注</dt><dd>进涡轮子页后灭；新 vested index 再亮</dd></div>
     </dl>
   </div>
 </article>
@@ -10166,7 +10166,7 @@
 </section></div>
     <p class="empty" id="empty">没有匹配的行。试试清空筛选或换关键词。</p>
 
-    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-18T08:44:25.991Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
+    <footer class="gen">由 <code>scripts/render-coverage-matrix.mjs</code> 生成于 2026-08-19T14:57:40.687Z。请勿手改本 HTML；改 md 后运行 <code>pnpm docs:matrix</code>。</footer>
   </div>
 <script>
 (() => {
