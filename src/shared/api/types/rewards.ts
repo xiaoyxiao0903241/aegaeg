@@ -116,7 +116,9 @@ export interface RankRewardTeamMemberItem {
 }
 
 export interface RankRewardTeamMembersParams extends PaginationParams {
-  sort_time?: 'asc' | 'desc'
+  sort_bound_at?: 'asc' | 'desc'
+  sort_making_market?: 'asc' | 'desc'
+  sort_making_rank?: 'asc' | 'desc'
   hide_zero_market?: boolean
 }
 

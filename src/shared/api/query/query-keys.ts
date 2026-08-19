@@ -125,7 +125,9 @@ export const queryKeys = {
       paginated(
         ['api', 'rankReward', 'teamMembers'] as const,
         params,
-        params.sort_time ?? null,
+        params.sort_bound_at ?? null,
+        params.sort_making_market ?? null,
+        params.sort_making_rank ?? null,
         params.hide_zero_market ?? null,
       ),
     referralAwardSummary: ['api', 'referralAward', 'summary'] as const,

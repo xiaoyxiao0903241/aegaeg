@@ -159,7 +159,13 @@ export async function getRankRewardTeamMembers(
     token,
     body: {
       ...paginationBody(params),
-      ...(params.sort_time !== undefined ? { sort_time: params.sort_time } : {}),
+      ...(params.sort_bound_at !== undefined ? { sort_bound_at: params.sort_bound_at } : {}),
+      ...(params.sort_making_market !== undefined
+        ? { sort_making_market: params.sort_making_market }
+        : {}),
+      ...(params.sort_making_rank !== undefined
+        ? { sort_making_rank: params.sort_making_rank }
+        : {}),
       ...(params.hide_zero_market !== undefined
         ? { hide_zero_market: params.hide_zero_market }
         : {}),

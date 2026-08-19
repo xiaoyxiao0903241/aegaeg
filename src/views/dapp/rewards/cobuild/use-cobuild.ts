@@ -1,3 +1,4 @@
+import { cobuildTeamSortToParams } from '~/core/rewards/cobuild-team-sort'
 import {
   agxAmountToUsdProgressCurrent,
   parseMoneyish,
@@ -40,7 +41,7 @@ export type CobuildTierReq = {
  *
  * 聚合等级奖励接口（rank-reward）的汇总、等级记录与团队成员数据，
  * 计算当前 / 下一级档位与需求进度徽章，供详情页渲染。
- * Tab / 分页 / 隐藏 0 业绩在 `useCobuildSessionStore`（切 Tab 时 action 内归页）。
+ * Tab / 分页 / 隐藏 0 业绩 / 团队列头排序在 `useCobuildSessionStore`（切 Tab 时 action 内归页）。
  *
  * @see docs/backend-api/api.md #rank-reward/summary
  * @see docs/backend-api/api.md #rank-reward/team-members
@@ -59,6 +60,8 @@ export function useCobuild() {
     setDirectsPage,
     hideZeroMarket,
     setHideZeroMarket,
+    teamSort,
+    setTeamSortColumn,
   } = useCobuildSessionStore()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
   const tierEmpty = t.rewards.hub.stats.tierEmpty
@@ -73,7 +76,11 @@ export function useCobuild() {
     sessionReady && recordsTab === 'equalize',
   )
   const directsQuery = useRankRewardTeamMembers(
-    { ...tablePageQuery(directsPage), hide_zero_market: hideZeroMarket },
+    {
+      ...tablePageQuery(directsPage),
+      hide_zero_market: hideZeroMarket,
+      ...cobuildTeamSortToParams(teamSort),
+    },
     sessionReady,
   )
 
@@ -218,6 +225,8 @@ export function useCobuild() {
     nextPayout: NON_NUMERIC_EMPTY,
     hideZeroMarket,
     setHideZeroMarket,
+    teamSort,
+    setTeamSortColumn,
     tierCurrent,
     tierNext,
     tierCurrentRate: currentRateLabel,

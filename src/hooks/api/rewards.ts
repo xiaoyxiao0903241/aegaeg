@@ -210,7 +210,7 @@ export function useRankRewardPeerSurpassLogs(params: PaginationParams = {}, enab
 /**
  * 分页查询等级共建团队成员，翻页时保留上一页数据。
  *
- * @param params 分页与过滤参数
+ * @param params 分页、排序与过滤参数
  * @param enabled false 时暂停请求
  */
 export function useRankRewardTeamMembers(params: RankRewardTeamMembersParams = {}, enabled = true) {

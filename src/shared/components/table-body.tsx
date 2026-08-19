@@ -130,10 +130,12 @@ function Cell({
     >
       {status ? (
         <StatusBadge>{children}</StatusBadge>
-      ) : isHead ? (
+      ) : isHead && isPlain ? (
         <Text as="span" className="text-foreground/40" variant="copy">
           {children}
         </Text>
+      ) : isHead ? (
+        children
       ) : isPlain ? (
         <Text
           as="span"
@@ -165,7 +167,7 @@ type BodyProps = {
   emphasisColumns?: number[]
   /** 右对齐（奖金 / 比例等）。 */
   endColumns?: number[]
-  headers: string[]
+  headers: ReactNode[]
   highlightedRows?: number[]
   isLoading?: boolean
   /** 链上地址 / 哈希列：蓝 + 下划线。 */
@@ -184,7 +186,7 @@ type BodyProps = {
  *
  * 渲染列头与行，支持加载骨架、列语义样式与空态。
  *
- * @param headers 列头文案
+ * @param headers 列头（文案或可点节点）
  * @param rows 单元格二维数组
  * @param isLoading 为 true 时显示骨架行
  * @param empty 空态标题；缺省且 rows 空时不渲染空态
@@ -225,18 +227,15 @@ function Body({
       <table className="w-max min-w-full table-auto border-collapse [&_a]:text-claim-restake">
         {colWidths ? (
           <colgroup>
-            {headers.map((header, index) => (
-              <col
-                key={header}
-                style={colWidths[index] ? { width: colWidths[index] } : undefined}
-              />
+            {headers.map((_, index) => (
+              <col key={index} style={colWidths[index] ? { width: colWidths[index] } : undefined} />
             ))}
           </colgroup>
         ) : null}
         <thead>
           <tr>
             {headers.map((header, index) => (
-              <Cell as="th" end={endColumnSet.has(index)} head key={header}>
+              <Cell as="th" end={endColumnSet.has(index)} head key={index}>
                 {header}
               </Cell>
             ))}

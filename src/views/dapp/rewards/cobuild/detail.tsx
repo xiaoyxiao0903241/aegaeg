@@ -3,8 +3,9 @@
  *
  * 顶部六张统计卡（总奖励、做市、我的仓位、直推数、贡献、下次发放），
  * 中部等级卡展示当前/下一级档位与晋升条件进度，
- * 下方为等级记录 / 超越记录双 Tab 表格与「我的团队」表，底部为 FAQ。
+ * 下方为等级记录 / 超越记录双 Tab 表格与可按列排序的「我的团队」表，底部为 FAQ。
  */
+import { COBUILD_TEAM_COLUMN_SORT, type CobuildTeamSort } from '~/core/rewards/cobuild-team-sort'
 import { interpolate } from '~/i18n/interpolate'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -14,6 +15,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
+import { cn } from '~/shared/lib/utils'
 import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
 import { HideZeroToggle, rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
@@ -37,6 +39,8 @@ export function CobuildDetail() {
     nextPayout,
     hideZeroMarket,
     setHideZeroMarket,
+    teamSort,
+    setTeamSortColumn,
     tierCurrent,
     tierNext,
     tierCurrentRate,
@@ -168,7 +172,7 @@ export function CobuildDetail() {
 
       <Section>
         <div className="flex items-center justify-between gap-3">
-          <Section.Title>{interpolate(cobuild.teamTitle, { count: referralCount })}</Section.Title>
+          <Section.Title>{interpolate(cobuild.teamTitle, { count: directsTotal })}</Section.Title>
           <HideZeroToggle
             checked={hideZeroMarket}
             label={cobuild.hideZeroMarket}
@@ -181,7 +185,18 @@ export function CobuildDetail() {
             emphasisColumns={[3]}
             empty={cobuild.emptyTeam}
             mutedColumns={[0]}
-            headers={[...cobuild.teamColumns]}
+            headers={cobuild.teamColumns.map((label, index) => {
+              const column = COBUILD_TEAM_COLUMN_SORT[index]
+              if (column == null) return label
+              return (
+                <TeamSortHeader
+                  active={teamSort.column === column}
+                  dir={teamSort.dir}
+                  label={label}
+                  onClick={() => setTeamSortColumn(column)}
+                />
+              )
+            })}
             isLoading={directsLoading}
             rows={directRows}
           />
@@ -200,5 +215,37 @@ export function CobuildDetail() {
         <Faq items={faqItems} variant="dapp" />
       </Section>
     </Detail>
+  )
+}
+
+/** 团队表可排序列头：活动列珊瑚色三角，其余灰色双向箭头。 */
+function TeamSortHeader({
+  active,
+  dir,
+  label,
+  onClick,
+}: {
+  active: boolean
+  dir: CobuildTeamSort['dir']
+  label: string
+  onClick: () => void
+}) {
+  const icon = active ? (dir === 'desc' ? '▼' : '▲') : '⇅'
+  return (
+    <button
+      className="inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-foreground/40 hover:text-foreground"
+      onClick={onClick}
+      type="button"
+    >
+      <Text as="span" className="text-inherit" variant="copy">
+        {label}
+      </Text>
+      <span
+        aria-hidden
+        className={cn('text-[10px] leading-none', active ? 'text-primary' : 'text-foreground/40')}
+      >
+        {icon}
+      </span>
+    </button>
   )
 }

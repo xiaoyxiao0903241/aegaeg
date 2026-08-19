@@ -1,28 +1,43 @@
 import { create } from 'zustand'
 
+import {
+  type CobuildTeamSort,
+  type CobuildTeamSortColumn,
+  DEFAULT_COBUILD_TEAM_SORT,
+  toggleCobuildTeamSort,
+} from '~/core/rewards/cobuild-team-sort'
+
 export type CobuildRecordsTab = 'cobuild' | 'equalize'
 export type GrantRecordsTab = 'issue' | 'claim'
 export type GenesisHistoryTab = 'referral' | 'team' | 'communityFund'
 
-/** 共建奖详情会话：切 Tab 归页；隐藏 0 业绩默认开。 */
+/** 共建奖详情会话：切 Tab 归页；隐藏 0 业绩默认开；团队表列头排序。 */
 export const useCobuildSessionStore = create<{
   recordsTab: CobuildRecordsTab
   recordsPage: number
   directsPage: number
   hideZeroMarket: boolean
+  teamSort: CobuildTeamSort
   setRecordsTab: (tab: CobuildRecordsTab) => void
   setRecordsPage: (page: number) => void
   setDirectsPage: (page: number) => void
   setHideZeroMarket: (hide: boolean) => void
+  setTeamSortColumn: (column: CobuildTeamSortColumn) => void
 }>((set) => ({
   recordsTab: 'cobuild',
   recordsPage: 1,
   directsPage: 1,
   hideZeroMarket: true,
+  teamSort: DEFAULT_COBUILD_TEAM_SORT,
   setRecordsTab: (tab) => set({ recordsTab: tab, recordsPage: 1 }),
   setRecordsPage: (page) => set({ recordsPage: page }),
   setDirectsPage: (page) => set({ directsPage: page }),
   setHideZeroMarket: (hide) => set({ hideZeroMarket: hide, directsPage: 1 }),
+  setTeamSortColumn: (column) =>
+    set((state) => ({
+      teamSort: toggleCobuildTeamSort(state.teamSort, column),
+      directsPage: 1,
+    })),
 }))
 
 /** 发展津贴详情会话。 */

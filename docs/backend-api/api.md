@@ -317,12 +317,12 @@ active_stake_balance、available_contribution 与推荐奖同源。
 - auth: required
 
 referral_ancestors depth=1；bound_at(users)、making_market/making_rank(user_performance ACTIVE)。
-sort_time=asc|desc 按 bound_at 排序（默认 desc）；
+sort_bound_at / sort_making_market / sort_making_rank =asc|desc 分别按 bound_at、making_market、making_rank 排序；未传的键不参与排序。
 hide_zero_market=true 时仅 making_market&gt;0。
 
 **Request body**
 
-- `application/json`: `RankRewardTeamMembersRequest` {`page`:integer, `page_size`:integer, `sort_time`:string, `hide_zero_market`:boolean}
+- `application/json`: `RankRewardTeamMembersRequest` {`page`:integer, `page_size`:integer, `sort_bound_at`:string, `sort_making_market`:string, `sort_making_rank`:string, `hide_zero_market`:boolean}
 
 |status|description|schema|
 |---|---|---|

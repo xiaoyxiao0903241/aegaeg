@@ -3494,12 +3494,23 @@
             "type": "integer",
             "default": 20
           },
-          "sort_time": {
+          "sort_bound_at": {
             "type": "string",
             "enum": ["asc", "desc"],
-            "default": "desc",
             "description": "**说明：** 按 users.bound_at 排序",
-            "title": "sort_time"
+            "title": "sort_bound_at"
+          },
+          "sort_making_market": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "description": "**说明：** 按 making_market 排序",
+            "title": "sort_making_market"
+          },
+          "sort_making_rank": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "description": "**说明：** 按 making_rank 排序",
+            "title": "sort_making_rank"
           },
           "hide_zero_market": {
             "type": "boolean",
@@ -5610,7 +5621,7 @@
       "post": {
         "tags": ["rank-reward（等级共建奖）"],
         "summary": "分页我的团队（直推下级）/ Paginated direct team",
-        "description": "referral_ancestors depth=1；bound_at(users)、making_market/making_rank(user_performance ACTIVE)。\nsort_time=asc|desc 按 bound_at 排序（默认 desc）；\nhide_zero_market=true 时仅 making_market&gt;0。\n",
+        "description": "referral_ancestors depth=1；bound_at(users)、making_market/making_rank(user_performance ACTIVE)。\nsort_bound_at / sort_making_market / sort_making_rank =asc|desc 分别按 bound_at、making_market、making_rank 排序；未传的键不参与排序。\nhide_zero_market=true 时仅 making_market&gt;0。\n",
         "security": [
           {
             "BearerAuth": []
