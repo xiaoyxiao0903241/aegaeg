@@ -133,7 +133,7 @@ export function RewardsHubDetail() {
               return (
                 <Carousel.Item key={view}>
                   <AboutCard
-                    body={withContributionRatio(slide.body, claimRatio)}
+                    body={slide.body}
                     decorationSrc={dappAssets.aboutCarouselRewardsMascot}
                     title={slide.title}
                     wash="lavender"

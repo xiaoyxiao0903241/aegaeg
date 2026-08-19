@@ -73,7 +73,7 @@ export function AboutCard({
         </Text>
         <Text
           as="p"
-          className="m-0 leading-normal wrap-break-word text-foreground/40"
+          className="m-0 min-h-[2lh] leading-normal wrap-break-word text-foreground/40"
           variant="copy"
         >
           {body}

@@ -839,19 +839,19 @@ const app = defineMessages({
       aboutSlides: {
         lucky: {
           title: 'Thưởng may mắn',
-          body: 'Bốc thăm may mắn theo khối, phát ngẫu nhiên cho người cùng xây dựng; trúng thì nhận qua Mixed.',
+          body: 'Pool thưởng mỗi ngày không dưới $5,000. Một lần tham gia đủ $5,000 là có vé rút thăm; mỗi ngày rút ngẫu nhiên 10 người may mắn chia pool.',
         },
         referral: {
           title: 'Thưởng giới thiệu',
-          body: 'Thưởng liên quan giới thiệu sau khi đối tác trực tiếp tham gia Cùng xây dựng; nhận qua DaoPool Mixed (tiêu điểm đóng góp {ratio}).',
+          body: 'Sau khi đối tác giới thiệu trực tiếp tham gia Cùng xây dựng, bạn nhận 10% lợi nhuận Rebase mỗi lần của họ, tất toán on-chain ngay. Cần giữ giá trị vị thế của bạn trên $100.',
         },
         participate: {
           title: 'Thưởng tham gia',
-          body: 'Thưởng tham gia từ người giới thiệu; nhận qua DaoPool Mixed (tiêu điểm đóng góp {ratio}).',
+          body: 'Sau khi gắn qua liên kết giới thiệu và tham gia Cùng xây dựng, bạn nhận 10% lợi nhuận Rebase của người mời trên phần tương đương vị thế của bạn, như phần thưởng cho người được giới thiệu.',
         },
         cobuild: {
           title: 'Cùng xây dựng',
-          body: 'Ưu đãi bền vững qua hợp tác đội và Cùng xây dựng dài hạn; chia theo hạng, nhận Mixed cần điểm đóng góp.',
+          body: 'Lấy từ tổng lợi nhuận Rebase của đội, trả theo tỷ lệ thưởng của hạng Cùng xây dựng (A1 10% đến A13 130%). Hạng càng cao tỷ lệ càng lớn; xem bảng cơ chế bên dưới.',
         },
         grant: {
           title: 'Trợ cấp phát triển',

@@ -816,19 +816,19 @@ const app = defineMessages({
       aboutSlides: {
         lucky: {
           title: '幸運獎',
-          body: '爆塊幸運抽獎，隨機發放給幸運共建者；中獎後走 Mixed 領取。',
+          body: '每日獎池不低於 $5,000。單筆參與滿 $5,000 即獲抽獎資格，每日隨機抽取 10 位幸運用戶瓜分獎池。',
         },
         referral: {
           title: '推薦獎',
-          body: '直推夥伴參與共建後計發的推薦相關獎勵；通過 DaoPool Mixed 領取（按 {ratio} 消耗貢獻點）。',
+          body: '直推夥伴參與共建後，您可獲得其每次 Rebase 收益的 10%，鏈上即時結算。需保持自身倉位價值大於 $100。',
         },
         participate: {
           title: '參與獎',
-          body: '來自推薦人的參與獎勵；通過 DaoPool Mixed 領取（按 {ratio} 消耗貢獻點）。',
+          body: '透過推薦連結綁定並參與共建後，您可獲得與您持倉等額部分的邀請人 Rebase 收益的 10%，作為被推薦人的回饋。',
         },
         cobuild: {
           title: '共建獎',
-          body: '通過團隊協作與長期共建構建的可持續發展激勵；按等級比例分配，Mixed 領取需貢獻點數。',
+          body: '來源於團隊總 Rebase 收益，按共建等級對應的獎金比例計發（A1 10% 至 A13 130%），等級越高比例越高，詳見下方共建獎機制表。',
         },
         grant: {
           title: '發展津貼',

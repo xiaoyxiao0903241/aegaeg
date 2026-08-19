@@ -841,19 +841,19 @@ const app = defineMessages({
       aboutSlides: {
         lucky: {
           title: 'Şans ödülü',
-          body: 'Ortak inşa edenlere blok şans çekilişi; kazanınca Mixed ile talep edin.',
+          body: 'Günlük ödül havuzu en az $5,000. Tek seferde $5,000 ve üzeri katılım çekiliş hakkı verir; her gün 10 şanslı kullanıcı rastgele seçilerek havuz paylaşılır.',
         },
         referral: {
           title: 'Referans ödülü',
-          body: 'Doğrudan referanslardan ödüller; DaoPool Mixed ile talep (katkı {ratio}).',
+          body: 'Doğrudan davet ettiğiniz ortak inşaya katıldığında, her Rebase getirisinin %10’unu anında zincir üstünde alırsınız. Kendi pozisyon değerinizi $100’ün üzerinde tutun.',
         },
         participate: {
           title: 'Katılım ödülü',
-          body: 'Referansınızdan katılım ödülleri; DaoPool Mixed ile talep (katkı {ratio}).',
+          body: 'Davet bağlantısıyla bağlanıp ortak inşaya katıldıktan sonra, davet edenin Rebase getirisinin sizin pozisyonunuza eşit kısmının %10’unu, davet edilen olarak alırsınız.',
         },
         cobuild: {
           title: 'Ortak İnşa',
-          body: 'Seviyeye göre uzun vadeli ekip teşvikleri; Mixed talepleri katkı puanı ister.',
+          body: 'Ekibin toplam Rebase getirisinden, ortak inşa kademenizin prim oranıyla ödenir (A1 %10 – A13 %130). Kademe yükseldikçe oran artar; aşağıdaki mekanizma tablosuna bakın.',
         },
         grant: {
           title: 'Gelişim ödeneği',

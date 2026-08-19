@@ -857,19 +857,19 @@ const app = defineMessages({
       aboutSlides: {
         lucky: {
           title: 'Premio de la suerte',
-          body: 'Sorteo por bloque para co-constructores; al ganar, reclama vía Mixed.',
+          body: 'El pozo diario es de al menos $5,000. Una participación única de $5,000 o más otorga un boleto; cada día se sortean 10 usuarios afortunados para repartir el pozo.',
         },
         referral: {
           title: 'Recompensa por referidos',
-          body: 'Recompensas por referidos directos en co-construcción; reclama vía DaoPool Mixed (consume contribución {ratio}).',
+          body: 'Tras un referido directo que participa en la co-construcción, recibes el 10% de su rendimiento Rebase en cada ocasión, liquidado on-chain al instante. Mantén el valor de tu propia posición por encima de $100.',
         },
         participate: {
           title: 'Recompensa por participación',
-          body: 'Recompensas de tu referente vía DaoPool Mixed (consume contribución {ratio}).',
+          body: 'Tras vincularte con un enlace de referido y unirte a la co-construcción, recibes el 10% del rendimiento Rebase de tu invitador sobre la porción equivalente a tu posición, como recompensa por ser referido.',
         },
         cobuild: {
           title: 'Co-construcción',
-          body: 'Incentivos sostenibles por colaboración de equipo; reclamar vía Mixed requiere puntos de contribución.',
+          body: 'Proviene del rendimiento Rebase total del equipo y se paga según la tasa de tu nivel de co-construcción (A1 10% a A13 130%). A mayor nivel, mayor tasa; consulta la tabla de mecanismo más abajo.',
         },
         grant: {
           title: 'Subsidio de desarrollo',

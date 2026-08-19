@@ -841,19 +841,19 @@ const app = defineMessages({
       aboutSlides: {
         lucky: {
           title: 'Lucky',
-          body: 'Block-lucky draws for co-builders; claim via Mixed when won.',
+          body: 'Daily prize pool of at least $5,000. A single participation of $5,000 or more earns a draw ticket; 10 lucky users are drawn each day to share the pool.',
         },
         referral: {
           title: 'Referral',
-          body: 'Rewards from direct referrals; claim via DaoPool Mixed (contribution {ratio}).',
+          body: 'After a directly referred partner joins co-building, you receive 10% of their Rebase yield each time, settled on-chain instantly. Keep your own position value above $100.',
         },
         participate: {
           title: 'Participate',
-          body: 'Rewards from your referrer via DaoPool Mixed (contribution {ratio}).',
+          body: 'After binding via a referral link and joining co-building, you receive 10% of your inviter’s Rebase yield on the portion matching your position, as a reward for being referred.',
         },
         cobuild: {
           title: 'Co-build',
-          body: 'Long-term team incentives by tier; Mixed claims require contribution points.',
+          body: 'Drawn from the team’s total Rebase yield and paid at the bonus rate for your co-build tier (A1 10% to A13 130%). Higher tiers earn a higher rate; see the co-build mechanism table below.',
         },
         grant: {
           title: 'Growth grant',

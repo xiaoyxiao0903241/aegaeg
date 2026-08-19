@@ -849,19 +849,19 @@ const app = defineMessages({
       aboutSlides: {
         lucky: {
           title: 'Hadiah keberuntungan',
-          body: 'Undian keberuntungan blok, dibagikan acak kepada pembangun bersama; setelah menang klaim via Mixed.',
+          body: 'Pool hadiah harian minimal $5,000. Satu partisipasi $5,000 atau lebih mendapat tiket undian; setiap hari 10 pengguna beruntung dipilih acak untuk berbagi pool.',
         },
         referral: {
           title: 'Hadiah referral',
-          body: 'Hadiah terkait referral setelah mitra langsung ikut Bangun Bersama; klaim via DaoPool Mixed (konsumsi poin kontribusi {ratio}).',
+          body: 'Setelah mitra rujukan langsung ikut Bangun Bersama, Anda menerima 10% imbal hasil Rebase mereka setiap kali, diselesaikan on-chain seketika. Pertahankan nilai posisi Anda di atas $100.',
         },
         participate: {
           title: 'Hadiah partisipasi',
-          body: 'Hadiah partisipasi dari pereferensi Anda; klaim via DaoPool Mixed (konsumsi poin kontribusi {ratio}).',
+          body: 'Setelah terikat lewat tautan referral dan ikut Bangun Bersama, Anda menerima 10% imbal hasil Rebase pengundang pada porsi yang setara dengan posisi Anda, sebagai imbalan orang yang direferensikan.',
         },
         cobuild: {
           title: 'Bangun Bersama',
-          body: 'Insentif berkelanjutan melalui kolaborasi tim dan Bangun Bersama jangka panjang; dialokasikan per rasio level, klaim Mixed memerlukan poin kontribusi.',
+          body: 'Berasal dari total imbal hasil Rebase tim, dibayar sesuai rasio bonus tingkat Bangun Bersama (A1 10% hingga A13 130%). Semakin tinggi tingkat, semakin besar rasio; lihat tabel mekanisme di bawah.',
         },
         grant: {
           title: 'Tunjangan pengembangan',
