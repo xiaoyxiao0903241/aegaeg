@@ -1,8 +1,8 @@
 /**
  * 销毁详情页
  *
- * 概览三格始终个人：累计销毁 AGX、获得贡献、已消耗贡献。
- * 未连接或 userStats 缺 → 显 0（不绑 getConfig().total*）。
+ * 累计销毁 AGX 走 `/agx-contribution/summary` 的 total_burned_agx（个人投影）。
+ * 获得/已消耗贡献仍走链上 userStats。未登录或缺数显 0，不绑 getConfig().total*。
  * 关于区走共用 TokenAboutCarousel，只传贡献点数一张卡。
  */
 import { ZERO_BI } from '~/core/constants'
@@ -11,8 +11,10 @@ import {
   formatBurnContributionRatioColon,
   formatBurnSplitPercent,
 } from '~/core/exchange/burn-contribution-swap'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
+import { useAgxContributionSummary } from '~/hooks/use-api-data'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { ChipTabs } from '~/shared/components/chip-tabs'
@@ -25,7 +27,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatUsdApprox } from '~/shared/presenters/format'
+import { formatApiAmount, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
@@ -52,24 +54,23 @@ export function BurnExchangeDetail({
   userStats,
 }: BurnExchangeDetailProps) {
   const { messages: t } = useI18n()
+  const { sessionReady } = useDappHost()
   const agxPriceUsd = useAgxPriceUsd()
+  const contributionSummary = useAgxContributionSummary(sessionReady)
   const history = useBurnHistory()
   const claimRatio = useContributionClaimRatioLabel()
   const burnConfigQuery = useBurnSwapConfigQuery()
 
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
 
-  // 概览三格始终个人；缺 userStats → 0（缺数显 0）。不绑 getConfig().total*。
-  const totalBurnedAgx = userStats?.agxBurned ?? ZERO_BI
-  const totalEarnedContribution = userStats?.contributionEarned ?? ZERO_BI
-  const totalConsumedContribution = userStats?.contributionConsumed ?? ZERO_BI
-
-  const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
-  // 空态统一：无价格时显示 ≈ $0.00（不显示 ≈ —）
+  const burnedRaw = contributionSummary.data?.total_burned_agx
+  const burnedAgxLabel = formatApiAmount(burnedRaw, { digits: 2, suffix: ' AGX' })
   const burnedUsdApprox = formatUsdApprox(
-    formatTokenAmountToNumber(totalBurnedAgx, decimals),
+    parseApiAmount(burnedRaw) ?? 0,
     agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,
   )
+  const totalEarnedContribution = userStats?.contributionEarned ?? ZERO_BI
+  const totalConsumedContribution = userStats?.contributionConsumed ?? ZERO_BI
 
   const earnedLabel = formatTokenAmount(totalEarnedContribution, decimals, {
     digits: 2,
