@@ -1969,7 +1969,7 @@ const app = defineMessages({
           { id: '540', period: '540 天' },
         ],
       },
-      runwayUnknown: '—',
+      runwayDays: '{days} 天',
       chart: {
         title: '數據指標',
         metricTabs: {

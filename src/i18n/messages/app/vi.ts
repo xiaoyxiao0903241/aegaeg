@@ -2086,7 +2086,7 @@ const app = defineMessages({
           { id: '540', period: '540 ngày' },
         ],
       },
-      runwayUnknown: '—',
+      runwayDays: '{days} ngày',
       chart: {
         title: 'Chỉ số dữ liệu',
         metricTabs: {

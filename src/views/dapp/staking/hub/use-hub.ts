@@ -14,6 +14,7 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useProtocolMarketStatsChart, useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { ChartPoint } from '~/shared/components/chart'
@@ -34,6 +35,8 @@ import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 const BONUS_EMPTY = `${formatNumber(0, { digits: 0, trimZeros: true })}%`
+/** 可运行周期：稿面固定天数；尚无链上跑道公式。 */
+const HUB_RUNWAY_DAYS = 750
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -246,8 +249,7 @@ export function useStakingHubDetail() {
       price: agxPriceLabel,
       burned: burnedLabel,
       rebase: rebaseLabel,
-      // 暂无跑道公式 / 链上源，显示未知，不伪造「0 天」。
-      runway: t.staking.hub.runwayUnknown,
+      runway: interpolate(t.staking.hub.runwayDays, { days: HUB_RUNWAY_DAYS }),
       stakers: stakersLabel,
     },
     periodTableRows,
