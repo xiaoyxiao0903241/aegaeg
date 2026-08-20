@@ -66,6 +66,11 @@ export interface BondFlowLogsParams extends PaginationParams {
   operation?: BondFlowOperation[]
 }
 
+/** POST /bond-flow/lp-reward-total · /bond-flow/burn-reward-total · 已领取收益（gAGX） */
+export interface BondFlowRewardTotal {
+  total_reward: string
+}
+
 export interface BondPurchaseItem {
   block_time: number
   term_days: number

@@ -3,6 +3,7 @@ import { apiRequest } from '~/shared/api/request'
 import type {
   BondFlowLogItem,
   BondFlowLogsParams,
+  BondFlowRewardTotal,
   BondPurchasesPage,
   Paginated,
   PaginationParams,
@@ -76,6 +77,28 @@ export async function getBondFlowLpLogs(
   params: BondFlowLogsParams = {},
 ): Promise<Paginated<BondFlowLogItem>> {
   return postFilteredPage('/bond-flow/lp-logs', token, params, 'operation', params.operation)
+}
+
+/**
+ * 当前用户已领取的 LP 债券收益合计（不含未领 Rebase）。
+ */
+export async function getBondFlowLpRewardTotal(token: string): Promise<BondFlowRewardTotal> {
+  return apiRequest<BondFlowRewardTotal>('/bond-flow/lp-reward-total', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+/**
+ * 当前用户已领取的销毁债券收益合计（不含未领 Rebase）。
+ */
+export async function getBondFlowBurnRewardTotal(token: string): Promise<BondFlowRewardTotal> {
+  return apiRequest<BondFlowRewardTotal>('/bond-flow/burn-reward-total', {
+    method: 'POST',
+    token,
+    body: {},
+  })
 }
 
 export async function getBondFlowBurnLogs(

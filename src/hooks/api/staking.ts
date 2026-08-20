@@ -12,8 +12,10 @@ import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getBondFlowBurnLogs,
   getBondFlowBurnPurchases,
+  getBondFlowBurnRewardTotal,
   getBondFlowLpLogs,
   getBondFlowLpPurchases,
+  getBondFlowLpRewardTotal,
   getProtocolMarketStatsAggregateSeries,
   getProtocolMarketStatsSeries,
   getStakeAddressCount,
@@ -154,6 +156,32 @@ export function useBondFlowLpLogs(params: BondFlowLogsParams = {}, enabled = tru
     (token) => getBondFlowLpLogs(token, params),
     enabled,
     { keepPreviousData: true },
+  )
+}
+
+/**
+ * 已领取 LP 债券收益合计（gAGX）。页面总收益还要加链上未领 Rebase。
+ *
+ * @param enabled false 时暂停请求
+ */
+export function useBondFlowLpRewardTotal(enabled = true) {
+  return useAuthenticatedQuery(
+    queryKeys.api.bondFlowLpRewardTotal,
+    getBondFlowLpRewardTotal,
+    enabled,
+  )
+}
+
+/**
+ * 已领取销毁债券收益合计（gAGX）。页面总收益还要加链上未领 Rebase。
+ *
+ * @param enabled false 时暂停请求
+ */
+export function useBondFlowBurnRewardTotal(enabled = true) {
+  return useAuthenticatedQuery(
+    queryKeys.api.bondFlowBurnRewardTotal,
+    getBondFlowBurnRewardTotal,
+    enabled,
   )
 }
 

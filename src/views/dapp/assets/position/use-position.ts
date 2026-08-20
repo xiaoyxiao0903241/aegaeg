@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import { bondTotalRewardWei } from '~/core/assets/bond-total-reward'
 import { buildStakeMixedClaimTarget, type ClaimOutputKind } from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
 import {
@@ -10,7 +11,13 @@ import {
 } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
+import {
+  useBondFlowBurnLogs,
+  useBondFlowBurnRewardTotal,
+  useBondFlowLpLogs,
+  useBondFlowLpRewardTotal,
+  useStakeFlowLogs,
+} from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -435,11 +442,13 @@ function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPosit
 
 /** 仓位右侧统计：汇总链上持仓数据，读失败展示占位横线，不伪造数字 */
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
-  const { walletReady } = useDappHost()
+  const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
   const priceUsd = useAgxPriceUsd()
   const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
+  const lpRewardTotalQuery = useBondFlowLpRewardTotal(sessionReady && product === 'lpbond')
+  const burnRewardTotalQuery = useBondFlowBurnRewardTotal(sessionReady && product === 'burnbond')
   const stakeCount = 6
   const bondCount = 5
 
@@ -470,7 +479,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     )
   }
 
-  // LP / Burn：总收益无累计 API → 用「—」占位，不硬编码 0.00
+  // LP / 销毁总收益 = 已领接口 + 当前 Rebase（profit）
   if (bondQuery.isError) return errorStatCells(bondCount)
   if (bondQuery.data === undefined) return zeroStatCells(bondCount)
 
@@ -483,18 +492,28 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     return sum + left
   }, ZERO_BI)
   const profit = rows.reduce((sum, row) => sum + row.profit, ZERO_BI)
-
+  const priced = mapPricedStats(
+    [
+      { amount: total, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+      { amount: released, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+      { amount: pendingRelease, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+      { amount: profit, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' },
+    ],
+    priceUsd,
+  )
+  const claimedQuery = product === 'lpbond' ? lpRewardTotalQuery : burnRewardTotalQuery
+  const totalYieldWei = bondTotalRewardWei({
+    claimedRaw: claimedQuery.error ? null : claimedQuery.data?.total_reward,
+    unclaimedWei: profit,
+    decimals: GAGX_DECIMALS,
+  })
+  if (totalYieldWei == null) return [...priced, { value: '—' }]
   return [
+    ...priced,
     ...mapPricedStats(
-      [
-        { amount: total, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
-        { amount: released, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
-        { amount: pendingRelease, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
-        { amount: profit, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' },
-      ],
+      [{ amount: totalYieldWei, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' }],
       priceUsd,
     ),
-    { value: '—' },
   ]
 }
 
