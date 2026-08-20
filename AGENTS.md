@@ -127,4 +127,8 @@
 
 ## 5. 工具
 
-[`docs/README.md`](docs/README.md) · [`docs/commands.md`](docs/commands.md) · `rg` · CodeGraph。
+[`docs/README.md`](docs/README.md) · [`docs/commands.md`](docs/commands.md)。
+
+- **文本 / 文档 / 配置：** `rg`。
+- **读代码 / 调路径 / 改一处看影响：** 默认 CodeGraph（MCP `codegraph_explore`，终端 `codegraph explore` / `status` / `sync`）。索引不新先 `codegraph sync .`。
+- **GitNexus：** 第二套图谱（`.gitnexus/`），仅在 gitnexus-* skill 或用户明示时用；不要当第二套 `rg`，也不要用它替代 CodeGraph 的默认探查。
