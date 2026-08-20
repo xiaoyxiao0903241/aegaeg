@@ -196,14 +196,14 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
       term_days: 180,
       amount: 'bad',
       expire_at: 0,
-      released_pct: 'nan',
+      released_pct: '45.67',
       tx_hash: null,
     },
     copy,
   )
   assert.equal(aside[1], '180 天')
   assert.equal(aside[2], '0.00 AGX')
-  assert.equal(aside[3], '-')
+  assert.equal(aside[3], '45.67%')
 
   const bondAside = mapBondPurchaseToAsideRow(
     {

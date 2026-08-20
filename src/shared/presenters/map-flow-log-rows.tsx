@@ -197,8 +197,8 @@ export function mapStakePositionToAsideRow(item: StakePositionItem, copy: FlowOp
     digits: 2,
     suffix: ' AGX',
   })
-  const pctRaw = Number(item.released_pct)
-  const pctLabel = Number.isFinite(pctRaw) ? `${formatNumber(pctRaw, { digits: 1 })}%` : TABLE_EMPTY
+  const pct = item.released_pct.trim()
+  const pctLabel = pct === '' ? TABLE_EMPTY : `${pct}%`
   const termLabel =
     item.term_days <= 0
       ? copy.liquid
