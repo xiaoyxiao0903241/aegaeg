@@ -63,6 +63,26 @@ test('getErrorMessage maps ERC20 / genesis / referral / claim / quote (no raw le
     getErrorMessage(new Error('TURBINE_QUOTE_EXCEEDS_APPROVAL'), t),
     t.exchange.flash.blocked.insufficientOutput,
   )
+  assert.equal(
+    getErrorMessage(new Error('TURBINE_ZERO_AMOUNT'), t),
+    t.errors.chain.reverts.zeroAmount,
+  )
+  assert.equal(
+    getErrorMessage(new Error('TURBINE_QUOTA_EXCEEDED'), t),
+    t.exchange.flash.blocked.aboveMax,
+  )
+  assert.equal(
+    getErrorMessage(new Error('TURBINE_INSUFFICIENT_USD1'), t),
+    t.errors.chain.reverts.walletUsd1Insufficient,
+  )
+  assert.equal(
+    getErrorMessage(new Error('TURBINE_INSUFFICIENT_ALLOWANCE'), t),
+    t.errors.chain.reverts.insufficientAllowance,
+  )
+  assert.equal(
+    getErrorMessage(new Error('TURBINE_NOT_VESTED'), t),
+    t.errors.chain.reverts.turbineCooldown,
+  )
   assert.equal(getErrorMessage(WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ, t), t.errors.chain.fallback)
   assert.equal(
     getErrorMessage(new Error(WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ), t),

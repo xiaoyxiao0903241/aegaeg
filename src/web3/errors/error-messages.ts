@@ -122,6 +122,11 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [EXCHANGE_QUOTE_FAILED]: (t) => t.errors.quoteFailed,
   [EXCHANGE_SUBMIT_BLOCKED]: (t) => t.errors.quoteFailed,
   TURBINE_QUOTE_EXCEEDS_APPROVAL: (t) => t.exchange.flash.blocked.insufficientOutput,
+  TURBINE_ZERO_AMOUNT: (t) => t.errors.chain.reverts.zeroAmount,
+  TURBINE_QUOTA_EXCEEDED: (t) => t.exchange.flash.blocked.aboveMax,
+  TURBINE_INSUFFICIENT_USD1: (t) => t.errors.chain.reverts.walletUsd1Insufficient,
+  TURBINE_INSUFFICIENT_ALLOWANCE: (t) => t.errors.chain.reverts.insufficientAllowance,
+  TURBINE_NOT_VESTED: (t) => t.errors.chain.reverts.turbineCooldown,
 
   // —— flash / burn 阻断 ——
   [FLASH_USD1_BLOCKED.paused]: (t) => t.exchange.flash.blocked.paused,
