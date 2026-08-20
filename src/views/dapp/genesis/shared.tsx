@@ -251,12 +251,3 @@ export function mapSalesLogToDesktopRow(
     item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
   ]
 }
-
-/** 创世贡献表列宽预设（16px 根字号）。 */
-export const genesisContributionsColWidths = [
-  '8.25rem',
-  '6.5rem',
-  '6rem',
-  '8.5rem',
-  '6.5rem',
-] as const

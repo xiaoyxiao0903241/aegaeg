@@ -202,7 +202,6 @@ export function AssetsOpsTable({
   return (
     <Table>
       <Table.Body
-        colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
         emphasisColumns={[1]}
         empty={empty}
         headers={[...headers]}

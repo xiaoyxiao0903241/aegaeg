@@ -135,7 +135,6 @@ export function LuckyDetail() {
             </div>
           </Table.Header>
           <Table.Body
-            colWidths={['5.625rem', '15.9375rem', '10.9375rem', '1fr']}
             emphasisColumns={[0, 3]}
             empty={lucky.emptyResults}
             endColumns={[3]}
@@ -152,7 +151,6 @@ export function LuckyDetail() {
         <Section.Title>{lucky.historyTitle}</Section.Title>
         <Table>
           <Table.Body
-            colWidths={['9.375rem', '9.25rem', '14.6875rem', '1fr']}
             emphasisColumns={[1]}
             empty={lucky.emptyHistory}
             mutedColumns={[0]}

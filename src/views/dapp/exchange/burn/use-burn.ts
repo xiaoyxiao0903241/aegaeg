@@ -110,10 +110,6 @@ export function useBurnHistory() {
     page,
     setPage,
     total: activeQuery.data?.total ?? 0,
-    colWidths:
-      tab === 'burn'
-        ? (['12.5rem', '9.375rem', '11.25rem', '1fr'] as const)
-        : (['12.5rem', '7.5rem', '11.25rem', '11.25rem', '1fr'] as const),
     headers:
       tab === 'burn'
         ? ([...t.exchange.burn.history.burnColumns] as string[])

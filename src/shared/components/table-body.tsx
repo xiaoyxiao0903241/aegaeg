@@ -159,7 +159,6 @@ function Cell({
 
 type BodyProps = {
   className?: string
-  colWidths?: Array<string | undefined>
   compact?: boolean
   /** 空态标题；缺省且 rows 空时不渲染空态。 */
   empty?: string
@@ -185,6 +184,7 @@ type BodyProps = {
  * 表格网格
  *
  * 渲染列头与行，支持加载骨架、列语义样式与空态。
+ * 列宽跟 nowrap 内容走；表 min-w-full 铺满容器，不锁死最大宽。
  *
  * @param headers 列头（文案或可点节点）
  * @param rows 单元格二维数组
@@ -193,7 +193,6 @@ type BodyProps = {
  */
 function Body({
   className = '',
-  colWidths,
   compact = false,
   empty,
   emptyBody,
@@ -225,13 +224,6 @@ function Body({
   return (
     <div className={gridRoot({ compact, class: className })}>
       <table className="w-max min-w-full table-auto border-collapse [&_a]:text-claim-restake">
-        {colWidths ? (
-          <colgroup>
-            {headers.map((_, index) => (
-              <col key={index} style={colWidths[index] ? { width: colWidths[index] } : undefined} />
-            ))}
-          </colgroup>
-        ) : null}
         <thead>
           <tr>
             {headers.map((header, index) => (

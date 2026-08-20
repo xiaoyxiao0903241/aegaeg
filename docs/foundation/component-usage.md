@@ -244,6 +244,12 @@
 |`Table.Pagination`|分页控件（贴 Footer）；一页也渲染「共 N 条」，仅多页显示翻页器|
 |`Table.Empty` / `Auth` / `Frame`|空态（复用全局 `Empty`）/ 未连接（title·body·CTA 由 call site）/ 自建壳|
 
+### MUST（表布局）
+
+- 表：`min-w-full` 铺满容器，`w-max` 随内容变宽；禁 `w-full` / `table-fixed` 锁死最大宽
+- 单元格：`whitespace-nowrap`；禁靠换行消化列宽
+- 列宽由内容决定；禁 `<col width>`（`table-auto` 下会变成最小宽，空列也会撑出横滚）
+
 ### MUST NOT（表）
 
 - `DappTable*` / `ResponsiveTable`；`header=`/`footer=` 袋装冒充结构

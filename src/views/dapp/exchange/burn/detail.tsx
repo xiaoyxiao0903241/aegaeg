@@ -167,7 +167,6 @@ export function BurnExchangeDetail({
             />
           </Table.Header>
           <Table.Body
-            colWidths={[...history.colWidths]}
             emphasisColumns={history.tab === 'burn' ? [2] : [1]}
             empty={history.emptyTitle}
             headers={history.headers}

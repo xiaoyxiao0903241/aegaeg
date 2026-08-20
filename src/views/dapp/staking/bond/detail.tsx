@@ -110,7 +110,6 @@ export function BondDetail({ kind }: { kind: BondKind }) {
         <Section.Title>{recordsTitle}</Section.Title>
         <Table>
           <Table.Body
-            colWidths={['8.75rem', '4.375rem', '5.625rem', '4.375rem', '6.875rem', '1fr']}
             empty={recordsEmpty}
             headers={[...t.staking.aside.bondRecordColumns]}
             mutedColumns={[0]}

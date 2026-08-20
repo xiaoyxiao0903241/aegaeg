@@ -164,7 +164,6 @@ export function QueueDetail() {
         <Section.Title>{t.release.queue.recordsTitle}</Section.Title>
         <Table>
           <Table.Body
-            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             emphasisColumns={[1]}
             empty={t.release.recordsEmpty}
             headers={[...t.release.recordColumns]}

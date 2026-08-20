@@ -60,7 +60,6 @@ export function GenesisDetail() {
         {/* 静态荣誉档位表 · 非动态列表 · 不分页 */}
         <Table>
           <Table.Body
-            colWidths={['14.375rem', '11.875rem', '11.875rem', '7.875rem']}
             endColumns={[3]}
             headers={[...vm.g.tierColumns]}
             highlightedRows={vm.highlightedRows}
@@ -81,7 +80,6 @@ export function GenesisDetail() {
             })}
           </Table.Header>
           <Table.Body
-            colWidths={['16.75rem', '8.375rem', '9.8125rem', '1fr']}
             emphasisColumns={[2]}
             empty={!vm.sessionReady ? t.rewards.hub.signInForBalance : vm.historyEmpty.title}
             mutedColumns={[0]}

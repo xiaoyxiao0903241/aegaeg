@@ -119,7 +119,6 @@ export function StakeDetail() {
         <Section.Title>{t.staking.aside.recordsTitles.stake}</Section.Title>
         <Table>
           <Table.Body
-            colWidths={['10.9375rem', '5rem', '8.75rem', '5.625rem', '1fr']}
             empty={recordsLoading ? '…' : t.staking.aside.recordsEmpty.stake}
             headers={[...t.staking.aside.recordColumns]}
             mutedColumns={[0]}

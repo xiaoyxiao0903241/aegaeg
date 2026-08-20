@@ -76,11 +76,6 @@ export function GrantDetail() {
             })}
           </Table.Header>
           <Table.Body
-            colWidths={
-              isIssue
-                ? ['10rem', '8.75rem', '3.75rem', '8.125rem', '4.375rem', '1fr']
-                : ['11.875rem', '10rem', '1fr']
-            }
             emphasisColumns={[1]}
             empty={isIssue ? grant.emptyIssue : grant.emptyClaim}
             mutedColumns={[0]}

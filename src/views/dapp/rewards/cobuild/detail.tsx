@@ -150,7 +150,6 @@ export function CobuildDetail() {
             })}
           </Table.Header>
           <Table.Body
-            colWidths={['12.0625rem', '3.9375rem', '9.1875rem', '6.125rem', '1fr']}
             emphasisColumns={[1, 2]}
             empty={
               recordsTab === 'cobuild' ? cobuild.emptyRecordsCobuild : cobuild.emptyRecordsEqualize
@@ -181,7 +180,6 @@ export function CobuildDetail() {
         </div>
         <Table>
           <Table.Body
-            colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
             emphasisColumns={[3]}
             empty={cobuild.emptyTeam}
             mutedColumns={[0]}

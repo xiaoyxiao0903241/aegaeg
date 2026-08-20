@@ -130,7 +130,6 @@ export function TurbineExchangeDetail({
         <Section.Title>{t.exchange.turbine.recordsTitle}</Section.Title>
         <Table>
           <Table.Body
-            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             emphasisColumns={[1]}
             empty={t.exchange.turbine.recordsEmpty}
             headers={[...t.assets.opsColumns]}

@@ -137,7 +137,6 @@ export function XmineDetail() {
         <Section.Title>{t.staking.aside.recordsTitles.xmine}</Section.Title>
         <Table>
           <Table.Body
-            colWidths={['10.9375rem', '6.25rem', '8.75rem', '1fr']}
             empty={recordsLoading ? '…' : t.staking.aside.recordsEmpty.xmine}
             emphasisColumns={[1]}
             headers={[...t.staking.aside.xmineRecordColumns]}

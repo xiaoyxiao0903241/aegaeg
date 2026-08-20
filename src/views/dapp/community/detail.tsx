@@ -25,7 +25,6 @@ import {
   CommunityStatCard,
 } from '~/views/dapp/community/primitives'
 import {
-  communityInviteColWidths,
   communityInviteRewardBody,
   mapTeamReferralToCompactRow,
 } from '~/views/dapp/community/shared'
@@ -243,7 +242,6 @@ export function CommunityDetail() {
             </div>
           ) : (
             <Table.Body
-              colWidths={[...communityInviteColWidths]}
               compact
               headers={inviteTableHeaders}
               isLoading={invitesTable.showSkeleton}

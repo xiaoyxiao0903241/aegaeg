@@ -121,7 +121,6 @@ export function ReferralDetail() {
         {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Body
-            colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
             empty={referral.emptyRecords}
             mutedColumns={[0, 3]}
@@ -154,7 +153,6 @@ export function ReferralDetail() {
         {/* jscpd:ignore-start — Table 页内拼装（禁再抽薄包装） */}
         <Table>
           <Table.Body
-            colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             emphasisColumns={[3]}
             empty={referral.emptyReferrals}
             mutedColumns={[0]}

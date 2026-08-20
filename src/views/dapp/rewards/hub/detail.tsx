@@ -208,7 +208,6 @@ export function RewardsHubDetail() {
           {/* 当前等级：有 making_rank 才高亮该行并标「当前」；无档不高亮 */}
           <Table.Body
             className="[&_tbody_tr:last-child>td]:align-top"
-            colWidths={['8.75rem', '6.5rem', '5.25rem', '20rem', '6.5rem']}
             endColumns={[4]}
             headers={[...tier.columns]}
             highlightedRows={statsView.tierRowIndex != null ? [statsView.tierRowIndex] : []}

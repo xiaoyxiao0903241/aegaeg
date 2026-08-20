@@ -10,7 +10,6 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { cn, revealClass } from '~/shared/lib/utils'
 import { formatNumber } from '~/shared/presenters/format'
-import { genesisContributionsColWidths } from '~/views/dapp/genesis/shared'
 import type { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 
@@ -114,7 +113,6 @@ export function GenesisContributionsTable({
           <Table.Empty body={vm.emptyBody} embedded title={vm.emptyTitle} />
         ) : (
           <Table.Body
-            colWidths={[...genesisContributionsColWidths]}
             compact
             headers={vm.tableHeaders}
             isLoading={vm.showContributionsSkeleton}
