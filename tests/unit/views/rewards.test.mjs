@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
@@ -91,4 +92,19 @@ test('planLabel and splitAmountByPct', async () => {
     '5 天 · 税率 20%、20 天 · 税率 10%',
   )
   assert.equal(formatPlanTaxSchedule([], '{days}d', '{days}d', '{rate}%', ', '), '—')
+})
+
+test('lucky overview totals from summary.total_reward_amount; cards use Tile.Note', () => {
+  const hook = readFileSync(
+    new URL('../../../src/views/dapp/rewards/lucky/use-lucky.tsx', import.meta.url),
+    'utf8',
+  )
+  const detail = readFileSync(
+    new URL('../../../src/views/dapp/rewards/lucky/detail.tsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(hook, /total_reward_amount/)
+  assert.doesNotMatch(hook, /formatApiStatLabel\([^)]*'0'\)/)
+  assert.match(detail, /Tile\.Note/)
+  assert.doesNotMatch(detail, /flex-wrap items-baseline/)
 })

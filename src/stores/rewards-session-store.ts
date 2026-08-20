@@ -66,7 +66,7 @@ export const useGenesisHistorySessionStore = create<{
   setHistoryPage: (page) => set({ historyPage: page }),
 }))
 
-/** 幸运奖详情会话；`selectedDate === null` 时 UI 用 summary 默认日。 */
+/** 幸运奖详情会话；`selectedDate === null` 时默认请求不带 date，下拉展示接口返回的最新开奖日。 */
 export const useLuckySessionStore = create<{
   selectedDate: string | null
   historyPage: number

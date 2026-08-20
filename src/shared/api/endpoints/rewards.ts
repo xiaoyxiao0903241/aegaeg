@@ -50,12 +50,13 @@ export async function getLuckyRewardMyRounds(
 
 export async function getLuckyRewardWinners(
   token: string,
-  date: string,
+  date?: string,
 ): Promise<LuckyRewardWinnersResponse> {
+  const day = date?.trim() ?? ''
   return apiRequest<LuckyRewardWinnersResponse>('/lucky-reward/winners', {
     method: 'POST',
     token,
-    body: { date },
+    body: day ? { date: day } : {},
   })
 }
 

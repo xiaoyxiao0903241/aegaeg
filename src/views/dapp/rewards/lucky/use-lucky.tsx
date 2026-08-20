@@ -3,6 +3,7 @@ import { type ReactNode } from 'react'
 import { formatUnits } from 'viem'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { luckyWinnersDateList, luckyWinnersSelectedDate } from '~/core/rewards/lucky-winners-date'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useLuckyRewardMyRounds,
@@ -35,46 +36,6 @@ import { readLuckyRoundDisplaySnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
-/** 开奖结果日期 pill：近 5 个 UTC 自然日（含锚点） */
-const DRAW_DATE_OPTION_COUNT = 5
-
-function formatIsoDateUtc(date: Date): string {
-  const y = date.getUTCFullYear()
-  const m = String(date.getUTCMonth() + 1).padStart(2, '0')
-  const d = String(date.getUTCDate()).padStart(2, '0')
-  return `${y}-${m}-${d}`
-}
-
-function parseIsoDateUtc(iso: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim())
-  if (!match) return null
-  const year = Number(match[1])
-  const month = Number(match[2])
-  const day = Number(match[3])
-  const date = new Date(Date.UTC(year, month - 1, day))
-  return Number.isNaN(date.getTime()) ? null : date
-}
-
-function utcToday(): Date {
-  const now = new Date()
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
-}
-
-/** 自锚点日起倒推 count 天（含当日），供 SelectMenu。 */
-function buildRecentDrawDateOptions(
-  anchorIso: string,
-  count = DRAW_DATE_OPTION_COUNT,
-): SelectMenuOption[] {
-  const anchor = parseIsoDateUtc(anchorIso) ?? utcToday()
-  const options: SelectMenuOption[] = []
-  for (let i = 0; i < count; i++) {
-    const day = new Date(anchor)
-    day.setUTCDate(anchor.getUTCDate() - i)
-    const value = formatIsoDateUtc(day)
-    options.push({ value, label: value })
-  }
-  return options
-}
 
 function formatCountdown(endTimeSec: bigint, nowSec: number): string | null {
   const end = Number(endTimeSec)
@@ -99,7 +60,7 @@ function formatUsd1Label(raw: bigint | null | undefined): string {
  *
  * 聚合今日奖池汇总、开奖名单与我的参与记录，
  * 另从链上读取本轮开奖快照计算参与资格与倒计时。
- * 日期 / 记录分页在 `useLuckySessionStore`；`selectedDate === null` 时用 summary 默认日。
+ * 日期 / 记录分页在 `useLuckySessionStore`；`selectedDate === null` 时不传 date，用 winners 返回的最新开奖日。
  *
  * @see docs/backend-api/api.md #lucky-reward/summary
  */
@@ -112,21 +73,17 @@ export function useLucky() {
 
   const summaryQuery = useLuckyRewardSummary(sessionReady)
   const summary = summaryQuery.data
-  const summaryDate = summary?.date?.trim() || ''
 
   const { selectedDate, setSelectedDate, historyPage, setHistoryPage } = useLuckySessionStore()
 
-  const dateOptions = buildRecentDrawDateOptions(
-    summaryDate || selectedDate || formatIsoDateUtc(utcToday()),
-  )
-  const drawDateCandidate = selectedDate ?? summaryDate
-  const drawDate =
-    drawDateCandidate && dateOptions.some((option) => option.value === drawDateCandidate)
-      ? drawDateCandidate
-      : (dateOptions[0]?.value ?? '')
-
-  const winnersQuery = useLuckyRewardWinners(drawDate, sessionReady && drawDate.length > 0)
+  const winnersQuery = useLuckyRewardWinners(selectedDate, sessionReady)
   const historyQuery = useLuckyRewardMyRounds(tablePageQuery(historyPage), sessionReady)
+
+  const drawDate = luckyWinnersSelectedDate(selectedDate, winnersQuery.data?.date)
+  const dateOptions: SelectMenuOption[] = luckyWinnersDateList(
+    winnersQuery.data?.dates,
+    drawDate,
+  ).map((value) => ({ value, label: value }))
 
   const roundQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyRoundDisplay,
@@ -182,10 +139,15 @@ export function useLucky() {
 
   const winCount = formatApiCountLabel(sessionReady, summaryQuery.isLoading, summary?.win_count)
   const cumulativeWins = interpolate(lucky.winsCount, { count: winCount })
-  // summary 无累计金额字段；未返回按 0 画副标（稿：次数旁 gAGX ≈ $）
+  const totalRewardAmount = summary?.total_reward_amount
   const cumulativeWinsHint = interpolate(lucky.winsAmountHint, {
-    amount: formatApiStatLabel(sessionReady, summaryQuery.isLoading, '0'),
-    approx: formatApiGagxApproxUsd(sessionReady, summaryQuery.isLoading, '0', agxPriceUsd),
+    amount: formatApiStatLabel(sessionReady, summaryQuery.isLoading, totalRewardAmount),
+    approx: formatApiGagxApproxUsd(
+      sessionReady,
+      summaryQuery.isLoading,
+      totalRewardAmount,
+      agxPriceUsd,
+    ),
   })
 
   const selfAddress = account?.address ?? null
@@ -201,7 +163,7 @@ export function useLucky() {
       ? [index]
       : [],
   )
-  const winnersLoading = sessionReady && Boolean(drawDate) && winnersQuery.isLoading
+  const winnersLoading = sessionReady && winnersQuery.isLoading
   const drawHash = winnersQuery.data?.draw_tx_hash
   const resultsSummary = interpolate(lucky.resultsSummary, { count: winnersTotal })
   const verifyChrome: ReactNode =

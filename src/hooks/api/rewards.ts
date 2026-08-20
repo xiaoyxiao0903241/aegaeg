@@ -54,18 +54,21 @@ export function useLuckyRewardMyRounds(params: PaginationParams = {}, enabled = 
 }
 
 /**
- * 按日期查询幸运奖中奖名单；日期为空时不发起请求。
+ * 查询幸运奖中奖名单。
  *
- * @param date 中奖日期（yyyy-MM-dd）
+ * 未选日期时不传 `date`，由接口返回最新已开奖日与 `dates`。
+ *
+ * @param date 开奖日期（yyyy-MM-dd）；空则默认最新
  * @param enabled false 时暂停请求
  */
 export function useLuckyRewardWinners(date: string | null | undefined, enabled = true) {
   const day = date?.trim() ?? ''
 
   return useAuthenticatedQuery(
-    queryKeys.api.luckyRewardWinners(day || 'empty'),
-    (token) => getLuckyRewardWinners(token, day),
-    enabled && day.length > 0,
+    queryKeys.api.luckyRewardWinners(day || 'latest'),
+    (token) => getLuckyRewardWinners(token, day || undefined),
+    enabled,
+    { keepPreviousData: true },
   )
 }
 

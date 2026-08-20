@@ -93,25 +93,15 @@ export function LuckyDetail() {
           {overviewTiles.map((item) => (
             <Tile key={item.key}>
               <Tile.Label>{item.label}</Tile.Label>
-              <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-                <Text
-                  as="strong"
-                  className="leading-none font-semibold wrap-break-word"
-                  tone={'valueTone' in item ? item.valueTone : undefined}
-                  variant="headline"
-                >
-                  {item.animateValue === false ? item.value : <CountValue text={item.value} />}
-                </Text>
-                {'valueHint' in item && item.valueHint != null ? (
-                  <Text
-                    as="span"
-                    className="leading-none wrap-break-word text-foreground/40"
-                    variant="copy"
-                  >
-                    {item.valueHint}
-                  </Text>
-                ) : null}
-              </span>
+              <Text
+                as="strong"
+                className="leading-none font-semibold wrap-break-word"
+                tone={'valueTone' in item ? item.valueTone : undefined}
+                variant="headline"
+              >
+                {item.animateValue === false ? item.value : <CountValue text={item.value} />}
+              </Text>
+              {item.valueHint != null ? <Tile.Note>{item.valueHint}</Tile.Note> : null}
             </Tile>
           ))}
         </Grid>

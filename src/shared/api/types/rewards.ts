@@ -6,6 +6,8 @@ export interface LuckyRewardSummary {
   today_total_prize: string
   is_winner: boolean
   win_count: number
+  /** 累计中奖金额（AGX） */
+  total_reward_amount: string
 }
 
 export interface LuckyRewardMyRoundItem {
@@ -32,6 +34,8 @@ export interface LuckyRewardWinnerItem {
 export interface LuckyRewardWinnersResponse {
   date: string
   draw_tx_hash: string | null
+  /** 已开奖日期，供下拉；不含尚未开奖的当天 */
+  dates: string[]
   items: LuckyRewardWinnerItem[]
 }
 
