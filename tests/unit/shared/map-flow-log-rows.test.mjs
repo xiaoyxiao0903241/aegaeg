@@ -221,16 +221,33 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
   assert.equal(bondAside[3], '88%')
   assert.equal(bondAside[4], '20.98 AGX')
 
-  const consume = mapAgxContributionConsumeLogToRow({
-    block_time: 1_700_000_000,
-    claim_amount: '2.15',
-    contribution_consumed: '2.15',
-    contract_address: '0x1',
-    tx_hash: null,
-  })
+  const purpose = zh.exchange.burn.history.purpose
+  const consume = mapAgxContributionConsumeLogToRow(
+    {
+      block_time: 1_700_000_000,
+      claim_amount: '2.15',
+      contribution_consumed: '2.15',
+      contract_address: '0x1',
+      tx_hash: null,
+    },
+    purpose,
+  )
   assert.equal(consume.length, 5)
   assert.equal(consume[1], '-')
   assert.equal(consume[2], '2.1500 gAGX')
   assert.equal(consume[3], '2.15')
   assert.equal(consume[4], '-')
+
+  const ranked = mapAgxContributionConsumeLogToRow(
+    {
+      block_time: 1_700_000_000,
+      claim_amount: '1',
+      contribution_consumed: '1',
+      contract_address: '0x1',
+      sign_type: 41,
+      tx_hash: null,
+    },
+    purpose,
+  )
+  assert.equal(ranked[1], '等级奖')
 })

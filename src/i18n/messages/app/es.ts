@@ -452,6 +452,18 @@ const app = defineMessages({
           'Puntos de contribución consumidos',
           'Hash de transacción',
         ],
+        purpose: {
+          stakeYield: 'Rendimiento de stake',
+          lpBondYield: 'Rendimiento LP',
+          burnBondYield: 'Rendimiento de quema',
+          lucky: 'Suerte',
+          rank: 'Rango',
+          referral: 'Referidos',
+          participation: 'Participación',
+          surpass: 'Superación',
+          lifetime: 'Vitalicio',
+          market: 'Subsidio de mercado',
+        },
       },
       faq: {
         items: [

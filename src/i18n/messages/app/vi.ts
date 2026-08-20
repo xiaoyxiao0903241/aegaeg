@@ -440,6 +440,18 @@ const app = defineMessages({
           'Điểm đóng góp đã tiêu',
           'Hash giao dịch',
         ],
+        purpose: {
+          stakeYield: 'Lợi nhuận stake',
+          lpBondYield: 'Lợi nhuận LP',
+          burnBondYield: 'Lợi nhuận đốt',
+          lucky: 'May mắn',
+          rank: 'Hạng',
+          referral: 'Giới thiệu',
+          participation: 'Tham gia',
+          surpass: 'Vượt đồng cấp',
+          lifetime: 'Trọn đời',
+          market: 'Trợ cấp market',
+        },
       },
       faq: {
         items: [

@@ -425,6 +425,18 @@ const app = defineMessages({
         },
         burnColumns: ['时间', '销毁 AGX', '获得贡献点数', '交易哈希'],
         consumeColumns: ['时间', '用途', '领取数量', '消耗贡献点数', '交易哈希'],
+        purpose: {
+          stakeYield: '质押收益',
+          lpBondYield: 'LP债券收益',
+          burnBondYield: '销毁债券收益',
+          lucky: '幸运奖',
+          rank: '等级奖',
+          referral: '推荐奖',
+          participation: '参与奖',
+          surpass: '平超奖',
+          lifetime: '终身奖',
+          market: '做市津贴',
+        },
       },
       faq: {
         items: [

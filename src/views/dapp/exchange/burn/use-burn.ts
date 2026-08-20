@@ -92,7 +92,9 @@ export function useBurnHistory() {
   const rows =
     tab === 'burn'
       ? (burnLogs.data?.items.map(mapAgxContributionBurnLogToRow) ?? [])
-      : (consumeLogs.data?.items.map(mapAgxContributionConsumeLogToRow) ?? [])
+      : (consumeLogs.data?.items.map((item) =>
+          mapAgxContributionConsumeLogToRow(item, t.exchange.burn.history.purpose),
+        ) ?? [])
   const isLoading = sessionReady && activeQuery.isLoading
   const emptyTitle =
     tab === 'burn' ? t.exchange.burn.history.emptyBurn : t.exchange.burn.history.emptyConsume

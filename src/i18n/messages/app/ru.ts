@@ -440,6 +440,18 @@ const app = defineMessages({
           'Израсходовано очков вклада',
           'Хеш транзакции',
         ],
+        purpose: {
+          stakeYield: 'Доход стейкинга',
+          lpBondYield: 'Доход LP',
+          burnBondYield: 'Доход сжигания',
+          lucky: 'Удача',
+          rank: 'Ранг',
+          referral: 'Реферал',
+          participation: 'Участие',
+          surpass: 'Обгон',
+          lifetime: 'Пожизненная',
+          market: 'Маркет',
+        },
       },
       faq: {
         items: [

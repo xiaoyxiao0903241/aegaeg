@@ -17,6 +17,10 @@ import type {
 } from '~/shared/api/types'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import {
+  type ConsumeLogPurposeKey,
+  consumeLogPurposeKey,
+} from '~/shared/presenters/consume-log-purpose'
 import { formatBlockTime, formatNumber, TABLE_EMPTY } from '~/shared/presenters/format'
 
 /**
@@ -246,11 +250,15 @@ export function mapAgxContributionBurnLogToRow(item: AgxContributionBurnLogItem)
   ]
 }
 
-/** 消耗贡献日志 → 操作表格行。用途接口未给，空单元格用 TABLE_EMPTY。 */
-export function mapAgxContributionConsumeLogToRow(item: AgxContributionConsumeLogItem): FlowLogRow {
+/** 消耗贡献日志 → 操作表格行。用途：sign_type 优先，否则合约地址；对不上为 TABLE_EMPTY。 */
+export function mapAgxContributionConsumeLogToRow(
+  item: AgxContributionConsumeLogItem,
+  purpose: Record<ConsumeLogPurposeKey, string>,
+): FlowLogRow {
+  const key = consumeLogPurposeKey(item)
   return [
     formatBlockTime(item.block_time),
-    TABLE_EMPTY,
+    key == null ? TABLE_EMPTY : purpose[key],
     formatAmount(item.claim_amount, 4, ' gAGX'),
     formatAmount(item.contribution_consumed, 2),
     formatTx(item.tx_hash),

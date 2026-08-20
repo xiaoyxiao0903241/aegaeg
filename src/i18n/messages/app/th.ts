@@ -440,6 +440,18 @@ const app = defineMessages({
           'คะแนนการมีส่วนร่วมที่ใช้ไป',
           'แฮชธุรกรรม',
         ],
+        purpose: {
+          stakeYield: 'ผลตอบแทนสเตก',
+          lpBondYield: 'ผลตอบแทน LP',
+          burnBondYield: 'ผลตอบแทนเบิร์น',
+          lucky: 'ลักกี้',
+          rank: 'รางวัลระดับ',
+          referral: 'แนะนำ',
+          participation: 'ร่วม',
+          surpass: 'แซง',
+          lifetime: 'ตลอดชีพ',
+          market: 'เบี้ยตลาด',
+        },
       },
       faq: {
         items: [

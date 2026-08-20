@@ -439,6 +439,18 @@ const app = defineMessages({
           'Harcanan katkı puanı',
           'İşlem hash’i',
         ],
+        purpose: {
+          stakeYield: 'Stake getirisi',
+          lpBondYield: 'LP tahvil getirisi',
+          burnBondYield: 'Yakım tahvil getirisi',
+          lucky: 'Şans',
+          rank: 'Rütbe',
+          referral: 'Referans',
+          participation: 'Katılım',
+          surpass: 'Akran geçiş',
+          lifetime: 'Ömür boyu',
+          market: 'Piyasa ödeneği',
+        },
       },
       faq: {
         items: [

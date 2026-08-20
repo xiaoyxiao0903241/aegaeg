@@ -438,6 +438,18 @@ const app = defineMessages({
         },
         burnColumns: ['시간', '소각 AGX', '획득 기여 포인트', '거래 해시'],
         consumeColumns: ['시간', '용도', '수령 수량', '소모 기여 포인트', '거래 해시'],
+        purpose: {
+          stakeYield: '스테이킹 수익',
+          lpBondYield: 'LP채권 수익',
+          burnBondYield: '소각채권 수익',
+          lucky: '럭키',
+          rank: '등급 보상',
+          referral: '추천 보상',
+          participation: '참여 보상',
+          surpass: '동급 추월',
+          lifetime: '평생 보상',
+          market: '마켓 수당',
+        },
       },
       faq: {
         items: [

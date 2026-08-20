@@ -437,6 +437,18 @@ const app = defineMessages({
         },
         burnColumns: ['समय', 'बर्न किया AGX', 'अर्जित योगदान', 'लेनदेन हैश'],
         consumeColumns: ['समय', 'उपयोग', 'दावा राशि', 'खपत योगदान', 'लेनदेन हैश'],
+        purpose: {
+          stakeYield: 'स्टेक आय',
+          lpBondYield: 'LP बांड आय',
+          burnBondYield: 'बर्न बांड आय',
+          lucky: 'लकी',
+          rank: 'रैंक',
+          referral: 'रेफरल',
+          participation: 'भागीदारी',
+          surpass: 'पीयर सरपास',
+          lifetime: 'आजीवन',
+          market: 'मार्केट भत्ता',
+        },
       },
       faq: {
         items: [

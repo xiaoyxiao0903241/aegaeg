@@ -448,6 +448,18 @@ const app = defineMessages({
           'Poin kontribusi dikonsumsi',
           'Hash transaksi',
         ],
+        purpose: {
+          stakeYield: 'Imbal hasil stake',
+          lpBondYield: 'Imbal hasil LP',
+          burnBondYield: 'Imbal hasil bakar',
+          lucky: 'Lucky',
+          rank: 'Peringkat',
+          referral: 'Referral',
+          participation: 'Partisipasi',
+          surpass: 'Lampaui',
+          lifetime: 'Seumur hidup',
+          market: 'Tunjangan pasar',
+        },
       },
       faq: {
         items: [

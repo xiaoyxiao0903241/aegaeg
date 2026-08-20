@@ -426,6 +426,18 @@ const app = defineMessages({
         },
         burnColumns: ['時間', '銷燬 AGX', '獲得貢獻點數', '交易哈希'],
         consumeColumns: ['時間', '用途', '領取數量', '消耗貢獻點數', '交易哈希'],
+        purpose: {
+          stakeYield: '質押收益',
+          lpBondYield: 'LP債券收益',
+          burnBondYield: '銷燬債券收益',
+          lucky: '幸運獎',
+          rank: '等級獎',
+          referral: '推薦獎',
+          participation: '參與獎',
+          surpass: '平超獎',
+          lifetime: '終身獎',
+          market: '做市津貼',
+        },
       },
       faq: {
         items: [

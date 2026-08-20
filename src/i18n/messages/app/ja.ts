@@ -450,6 +450,18 @@ const app = defineMessages({
           '消費貢献ポイント',
           'トランザクションハッシュ',
         ],
+        purpose: {
+          stakeYield: 'ステーキング収益',
+          lpBondYield: 'LP債券収益',
+          burnBondYield: 'バーン債券収益',
+          lucky: 'ラッキー賞',
+          rank: 'ランク報酬',
+          referral: '紹介報酬',
+          participation: '参加報酬',
+          surpass: '同級超越',
+          lifetime: '生涯報酬',
+          market: 'マーケット手当',
+        },
       },
       faq: {
         items: [

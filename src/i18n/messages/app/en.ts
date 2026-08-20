@@ -441,6 +441,18 @@ const app = defineMessages({
           'Contribution consumed',
           'Transaction hash',
         ],
+        purpose: {
+          stakeYield: 'Stake yield',
+          lpBondYield: 'LP bond yield',
+          burnBondYield: 'Burn bond yield',
+          lucky: 'Lucky',
+          rank: 'Rank reward',
+          referral: 'Referral',
+          participation: 'Participation',
+          surpass: 'Peer surpass',
+          lifetime: 'Lifetime',
+          market: 'Market allowance',
+        },
       },
       faq: {
         items: [
