@@ -9,7 +9,6 @@
 |`pnpm dev`|tokens + render-home + Vite `:5174`（`/api` → `VITE_API_BASE_URL` 代理，避 CORS）|
 |`pnpm build`|tokens + `tsc -b` + render-home + production build|
 |`pnpm env:staging` / `env:prod` / `env:status`|从 `env/prod.env` / `env/staging.env` 整份写入 `.env` 与 `.env.local`|
-|`pnpm docs:matrix`|从 `docs/dapp-data-coverage-matrix.md` 生成可读 HTML|
 |`pnpm react-doctor`|React Doctor 本地扫描（devDependency；勿用 `pnpm doctor`，那是 pnpm 自检）。配置：根目录 `doctor.config.jsonc`；Cursor skill：`.agents/skills/react-doctor`（兼 `.cursor/skills/react-doctor`）|
 |`pnpm react-doctor:staged`|提交钩子：仅 staged，`--blocking error`|
 |`pnpm react-doctor:changed`|相对 base 的 changed 扫描（进 `pnpm check`）|
@@ -40,6 +39,5 @@
 |手册 HTML→MD|`python3 scripts/convert-frontend-manual-html.py`（需 `lxml`）；校验 `python3 scripts/verify-frontend-manual-html-fidelity.py`|
 |旧手册|[`onchain-manual-legacy.md`](./onchain-manual-legacy.md)|
 |后端 API|[`backend-api/`](./backend-api/)（机器真源 `openapi.json`）|
-|数据对齐矩阵（SSOT）|[`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md)|
 |各章对照源|[`research/dapp-tab-source-index.md`](./research/dapp-tab-source-index.md)|
 |页袋 Dock/Detail 合同|[`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md)|

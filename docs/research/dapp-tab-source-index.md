@@ -1,8 +1,6 @@
 # Dapp 各章对照源索引
 
-> 现行目录：各章对应的手册 / API / Figma / 原型 / 代码根。  
-> 对齐结论以 [`docs/dapp-data-coverage-matrix.md`](../dapp-data-coverage-matrix.md) 为准。  
-> 规则：[`docs/decisions/dapp-data-coverage-matrix-wayfinder.md`](../decisions/dapp-data-coverage-matrix-wayfinder.md)
+> 现行目录：各章对应的手册 / API / Figma / 原型 / 代码根。
 
 ## 全局真源（各章共用）
 
@@ -376,6 +374,5 @@ Legacy：**强烈需要** — [`onchain-manual-legacy.md`](../onchain-manual-leg
 
 ## 本索引边界
 
-- 对齐结论 → [`dapp-data-coverage-matrix.md`](../dapp-data-coverage-matrix.md)；规则 → [`dapp-data-coverage-matrix-wayfinder.md`](../decisions/dapp-data-coverage-matrix-wayfinder.md)
 - 不改写 `onchain-manual/` / `backend-api/` 入仓正文
 - 不含 home；治理 / 管理台 / 账户迁移若不在现行 tab 注册表，仅交叉引用

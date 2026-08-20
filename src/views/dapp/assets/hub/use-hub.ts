@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
+import {
+  assetsHubPieHoldingsAmount,
+  assetsHubTotalValueUsd,
+} from '~/core/assets/assets-hub-total-value'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { baseDailyPctFromEpoch, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
@@ -127,11 +131,6 @@ const EMPTY_XMINE: AssetsHubModeStats = {
 
 function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string {
   return `${formatApiAmount(raw, { digits })} ${unit}`
-}
-
-function formatApiUsdLabel(raw: string | undefined): string {
-  // 总览四列窄栏：≥$1K 走 formatUsd 的 K/M，避免叠字
-  return formatUsd(parseApiAmount(raw) ?? 0)
 }
 
 function formatApiApproxUsd(raw: string | undefined, priceUsd: number | null): string {
@@ -310,14 +309,27 @@ export function useAssetsHub(): AssetsHubOverview {
 
   if (apiReady) {
     const buffer = bufferQuery.data
-    const totalValue = formatApiUsdLabel(apiReward.stake_invest_usd_value)
     // 单行展示「x.xx gAGX」+ ≈$；金额只取本页 Mixed 可领子集，不能直接显示 API claimable_gagx
     const claimableGagxWei = stakeYield + lpYield + burnYield
     const claimableGagx = `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`
     const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)
+    const piePositions = {
+      stake: parseApiAmount(apiDist.stake_total_agx) ?? 0,
+      lpbond: parseApiAmount(apiDist.bond_lp) ?? 0,
+      burnbond: parseApiAmount(apiDist.bond_burn) ?? 0,
+      xmine: parseApiAmount(apiDist.stake_x_pool) ?? 0,
+    }
+    const holdingsAmount = assetsHubPieHoldingsAmount(piePositions)
+    const totalValue = formatUsd(
+      assetsHubTotalValueUsd({
+        ...piePositions,
+        claimable: claimableGagxNum,
+        priceUsd,
+      }),
+    )
     const claimed = `${formatApiDecimalOrZero(apiReward.total_reward_claimed)} gAGX`
     const contribution = formatApiDecimalOrZero(apiReward.available_contribution)
-    const holdingsTotal = formatApiTokenLabel(apiHoldings.total_holdings_agx, 'AGX')
+    const holdingsTotal = `${formatNumber(holdingsAmount, { digits: 2 })} AGX`
     // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「已释放」不符
     const holdingsReleased = redeemableReleasedLabel
     // 钱包就绪且有分流器快照时 AGX/gAGX 缓冲同源链上；否则 AGX 回落 API
@@ -351,7 +363,7 @@ export function useAssetsHub(): AssetsHubOverview {
       holdingsReleased,
       holdingsReleasedApprox: formatUsdApprox(redeemableReleasedNum, priceUsd),
       holdingsTotal,
-      holdingsTotalApprox: formatApiApproxUsd(apiHoldings.total_holdings_agx, priceUsd),
+      holdingsTotalApprox: formatUsdApprox(holdingsAmount, priceUsd),
       bufferTotal,
       bufferTotalApprox,
       bufferReleased,
@@ -441,16 +453,23 @@ export function useAssetsHub(): AssetsHubOverview {
   const lpPosNum = formatTokenAmountToNumber(lpPrincipal, AGX_DECIMALS)
   const burnPosNum = formatTokenAmountToNumber(burnPrincipal, AGX_DECIMALS)
   const xPosNum = formatTokenAmountToNumber(xStake, GAGX_DECIMALS)
-  // 持仓合计：质押 + LP/Burn 本金 + XMine stake + 缓冲 AGX
-  const holdingsPrincipal = stakePrincipal + lpPrincipal + burnPrincipal + xStake + bufferTotal
-  const holdingsTotalNum = formatTokenAmountToNumber(holdingsPrincipal, AGX_DECIMALS)
+  const piePositions = {
+    stake: stakePosNum,
+    lpbond: lpPosNum,
+    burnbond: burnPosNum,
+    xmine: xPosNum,
+  }
+  const holdingsAmount = assetsHubPieHoldingsAmount(piePositions)
   const bufferTotalNum = formatTokenAmountToNumber(bufferTotal, AGX_DECIMALS)
   const bufferReleasedNum = formatTokenAmountToNumber(bufferReleased, AGX_DECIMALS)
 
   const claimableGagxWei = stakeYield + lpYield + burnYield
   const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)
-  const totalValueUsd =
-    priceUsd != null && Number.isFinite(priceUsd) ? holdingsTotalNum * priceUsd : 0
+  const totalValueUsd = assetsHubTotalValueUsd({
+    ...piePositions,
+    claimable: claimableGagxNum,
+    priceUsd,
+  })
 
   return {
     totalValue: formatUsd(totalValueUsd),
@@ -462,8 +481,8 @@ export function useAssetsHub(): AssetsHubOverview {
     contribution: formatTokenAmount(contribution, AGX_DECIMALS, 2),
     holdingsReleased: redeemableReleasedLabel,
     holdingsReleasedApprox: formatUsdApprox(redeemableReleasedNum, priceUsd),
-    holdingsTotal: `${formatTokenAmount(holdingsPrincipal, AGX_DECIMALS, 2)} AGX`,
-    holdingsTotalApprox: formatUsdApprox(holdingsTotalNum, priceUsd),
+    holdingsTotal: `${formatNumber(holdingsAmount, { digits: 2 })} AGX`,
+    holdingsTotalApprox: formatUsdApprox(holdingsAmount, priceUsd),
     bufferTotal: `${formatTokenAmount(bufferTotal, AGX_DECIMALS, 2)} AGX`,
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
     bufferReleased: `${formatTokenAmount(bufferReleased, AGX_DECIMALS, 2)} AGX`,

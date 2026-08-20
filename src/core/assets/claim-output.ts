@@ -54,7 +54,7 @@ export function lockedClaimEntryFromOutput(
 }
 
 /**
- * 缺数展示：贡献需求未取到按 0（覆盖矩阵「金额没取到也显示 0」）。
+ * 缺数展示：贡献需求未取到按 0。
  *
  * @param required 链上所需贡献；缺省视为 0
  */

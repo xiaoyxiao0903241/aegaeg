@@ -27,8 +27,6 @@ React + Vite + TypeScript · AEGIS X DApp（BSC）。
 |代码注释|[`foundation/comment-conventions.md`](./foundation/comment-conventions.md)|
 |Matt 决策 / 票 / handoff|[`decisions/`](./decisions/) · [`tickets/`](./tickets/) · [`handoffs/`](./handoffs/)|
 |页袋 Dock/Detail 合同|[`decisions/dapp-page-bag-dock-detail.md`](./decisions/dapp-page-bag-dock-detail.md)|
-|Dapp 数据对齐（覆盖矩阵 SSOT）|[`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md) · 可读页 [`dapp-data-coverage-matrix.html`](./dapp-data-coverage-matrix.html)（`pnpm docs:matrix`）|
-|覆盖矩阵规则|[`decisions/dapp-data-coverage-matrix-wayfinder.md`](./decisions/dapp-data-coverage-matrix-wayfinder.md)|
 |各章对照源目录|[`research/dapp-tab-source-index.md`](./research/dapp-tab-source-index.md)|
 
 ## 手册优先级

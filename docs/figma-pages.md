@@ -98,6 +98,6 @@
 
 - 静态 UI 页表仍如上 **PC 产品页**；同名变体 / 非验收对照帧勿作验收源。
 - **本轮视觉修复**以 HTML 原型为准，不以本表否决与原型一致的改动：[`decisions/dapp-prototype-visual-qa.md`](./decisions/dapp-prototype-visual-qa.md)。
-- 动态数据 / 写路径对齐 → [`dapp-data-coverage-matrix.md`](./dapp-data-coverage-matrix.md)（不以本表代替）。
+- 动态数据 / 写路径对齐走手册 / API，不以本表代替。
 - 稿内几乎全部为 connected 外观；无 title 级「未连接」页帧。
 - Segment 样本（活期/180/360/540）：`4448:601` ⊂ 质押/质押 `4448:220`。

@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "render:home": "node scripts/render-home.mjs",
-    "docs:matrix": "node scripts/render-coverage-matrix.mjs",
     "react-doctor": "react-doctor",
     "react-doctor:staged": "react-doctor --staged -y --blocking error --no-score --project aegis-dapp",
     "react-doctor:changed": "react-doctor -y --blocking error --no-score --scope changed --project aegis-dapp",
