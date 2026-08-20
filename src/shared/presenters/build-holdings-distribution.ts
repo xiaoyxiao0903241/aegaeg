@@ -82,7 +82,7 @@ export function buildHoldingsDistributionView(
       textColor: palette.text,
       amountLabel: s.amountLabel,
       usdLabel: formatNumber(usd, { digits: 2, prefix: '$' }),
-      pctLabel: `${(frac * 100).toFixed(1)}%`,
+      pctLabel: formatNumber(frac * 100, { digits: 2, suffix: '%' }),
       frac,
       dash: `${arc.toFixed(2)} ${(PIE_C - arc).toFixed(2)}`,
       offset: (-pieAcc * PIE_C).toFixed(2),
