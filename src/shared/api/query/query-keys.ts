@@ -80,6 +80,9 @@ export const queryKeys = {
     assetsHoldingsDistribution: ['api', 'assets', 'holdingsDistribution'] as const,
     assetsHoldingsSummary: ['api', 'assets', 'holdingsSummary'] as const,
     assetsRewardSummary: ['api', 'assets', 'rewardSummary'] as const,
+    assetsProductInvestReward: ['api', 'assets', 'productInvestReward'] as const,
+    bondFlowLpRewardTotal: ['api', 'bondFlow', 'lpRewardTotal'] as const,
+    bondFlowBurnRewardTotal: ['api', 'bondFlow', 'burnRewardTotal'] as const,
     bondFlowLpLogsRoot: ['api', 'bondFlow', 'lpLogs'] as const,
     bondFlowLpLogs: (params: BondFlowLogsParams = {}) =>
       paginated(['api', 'bondFlow', 'lpLogs'] as const, params, params.operation ?? null),

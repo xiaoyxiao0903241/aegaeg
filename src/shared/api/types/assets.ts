@@ -21,3 +21,17 @@ export interface AssetsRewardSummary {
   total_reward_claimed: string
   available_contribution: string
 }
+
+/** POST /assets/product-invest-reward · 单产品已领收益与实际投资 */
+export interface AssetsProductInvestRewardBucket {
+  claimed_reward: string
+  invest_amount: string
+}
+
+/** 四类产品各自的已领取收益与实际投资（缺类型时桶内字段为 "0"） */
+export interface AssetsProductInvestReward {
+  stake: AssetsProductInvestRewardBucket
+  lp_bond: AssetsProductInvestRewardBucket
+  burn_bond: AssetsProductInvestRewardBucket
+  x_mining: AssetsProductInvestRewardBucket
+}
