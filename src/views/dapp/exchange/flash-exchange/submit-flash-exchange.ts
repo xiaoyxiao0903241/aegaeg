@@ -28,12 +28,12 @@ export async function submitFlashExchange(args: {
   const amountIn = core.debouncedAmountIn
 
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
-    const { wallet, address } = session
+    const { wallet, address, readClient } = session
 
     if (pairId === 'gagx') {
       type GagxSnap = { sellBalance: bigint }
       const readGagx = async (): Promise<GagxSnap> => {
-        const liveBalances = await readFlashPairBalances(pairId, direction, address)
+        const liveBalances = await readFlashPairBalances(pairId, direction, address, readClient)
         return { sellBalance: liveBalances.sell }
       }
       const evaluateGagx = (snap: GagxSnap) =>
@@ -77,8 +77,8 @@ export async function submitFlashExchange(args: {
 
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<UsdtSnap> => {
-        const config = await readUsd1SwapConfig()
-        const liveBalances = await readFlashPairBalances(pairId, direction, address)
+        const config = await readUsd1SwapConfig(readClient)
+        const liveBalances = await readFlashPairBalances(pairId, direction, address, readClient)
         const still = await assertStillSubmittable({ sellBalance: liveBalances.sell })
         return {
           sellBalance: liveBalances.sell,
@@ -101,7 +101,7 @@ export async function submitFlashExchange(args: {
       },
       softPreBlocks: [],
       approve: async () => {
-        const config = await readUsd1SwapConfig()
+        const config = await readUsd1SwapConfig(readClient)
         return approveUsdtForFlashExchangeIfNeeded({
           wallet,
           amountIn,
