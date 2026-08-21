@@ -1,5 +1,4 @@
 import type { LockedClaimEntry } from '~/core/assets/locked-claim-entry'
-import { ZERO_BI } from '~/core/constants'
 import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 
@@ -18,26 +17,6 @@ export type BuiltStakeMixedClaimTarget =
       amount: bigint
       entries: ReadonlyArray<LockedClaimEntry>
     }
-
-/**
- * 产出种类对应的可领数量。
- *
- * @param args.kind 所选产出种类
- * @param args.blockReward 普通奖励
- * @param args.extraInterest 额外利息
- */
-export function claimOutputAmountForKind(args: {
-  kind: ClaimOutputKind
-  blockReward: bigint
-  extraInterest: bigint
-}): bigint {
-  return args.kind === 'boost' ? args.extraInterest : args.blockReward
-}
-
-/** 可领额达到展示位 0.01 才允许进入金额确认。 */
-export function canSelectClaimOutput(amount: bigint, decimals: number): boolean {
-  return isAssetsActionableAmount(amount, decimals)
-}
 
 /** 产出弹层关闭动画用的仓位快照；金额变了必须换，不能只看仓位 id。 */
 export type ClaimOutputHeldRow = {
@@ -72,32 +51,11 @@ export function shouldReplaceHeldClaimOutput(args: {
 }
 
 /**
- * 产出种类 → 定期仓写入口参数。
- *
- * @param kind 产出选择
- * @param amount 已确认的正数量
- */
-export function lockedClaimEntryFromOutput(
-  kind: ClaimOutputKind,
-  amount: bigint,
-): LockedClaimEntry {
-  return { amount, extra: kind === 'boost' }
-}
-
-/**
- * 缺数展示：贡献需求未取到按 0。
- *
- * @param required 链上所需贡献；缺省视为 0
- */
-export function claimContribRequiredOrZero(required: bigint | null | undefined): bigint {
-  return required ?? ZERO_BI
-}
-
-/**
  * 活期 / 定期仓 → Mixed 领取目标。
  *
  * 活期禁止加成（手册仅 `claimRewardMixed`）；定期须有 stakeIndex。
  * 金额低于 0.01 或非法组合返回 null。
+ * `amount` 只决定能否打开确认弹窗；上链数量由提交时链上可领决定。
  */
 export function buildStakeMixedClaimTarget(args: {
   stakeKind: StakeClaimKind
@@ -108,12 +66,8 @@ export function buildStakeMixedClaimTarget(args: {
   stakeIndex: number | null
   decimals: number
 }): BuiltStakeMixedClaimTarget | null {
-  const amount = claimOutputAmountForKind({
-    kind: args.outputKind,
-    blockReward: args.blockReward,
-    extraInterest: args.extraInterest,
-  })
-  if (!canSelectClaimOutput(amount, args.decimals)) return null
+  const amount = args.outputKind === 'boost' ? args.extraInterest : args.blockReward
+  if (!isAssetsActionableAmount(amount, args.decimals)) return null
 
   if (args.stakeKind === 'liquid') {
     if (args.outputKind === 'boost') return null
@@ -126,24 +80,8 @@ export function buildStakeMixedClaimTarget(args: {
     pool: args.pool,
     stakeIndex: args.stakeIndex,
     amount,
-    entries: [lockedClaimEntryFromOutput(args.outputKind, amount)],
+    entries: [{ extra: args.outputKind === 'boost' }],
   }
-}
-
-/**
- * 资产 Mixed 确认门闸 → 写按钮资金阻断码。
- *
- * 贡献 / 计划失败统一 `unavailable`（细因在写路径再判）。
- */
-export function assetsClaimMoneyBlock(args: {
-  contributionOk: boolean
-  plansOk: boolean
-  claimable: bigint
-  decimals: number
-}): 'zeroAmount' | 'unavailable' | null {
-  if (!isAssetsActionableAmount(args.claimable, args.decimals)) return 'zeroAmount'
-  if (!args.plansOk || !args.contributionOk) return 'unavailable'
-  return null
 }
 
 /**
@@ -158,7 +96,8 @@ export function evaluateAssetsClaimConfirmGate(args: {
   claimable: bigint
   decimals: number
 }): boolean {
-  if (assetsClaimMoneyBlock(args) != null) return false
+  if (!isAssetsActionableAmount(args.claimable, args.decimals)) return false
+  if (!args.plansOk || !args.contributionOk) return false
   return canClaimWhen({
     walletReady: args.walletReady,
     writeReady: args.writeReady,

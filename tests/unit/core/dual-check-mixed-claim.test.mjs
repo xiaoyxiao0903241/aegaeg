@@ -9,4 +9,5 @@ test('money-path submit must not trust draft amount as live rewardAvailable', as
   )
   // Fail-closed: never pass the UI draft amount into evaluate as if it were chain state.
   assert.doesNotMatch(submitSrc, /rewardAvailable:\s*amount/)
+  assert.match(submitSrc, /const amount = live\.rewardAvailable/)
 })

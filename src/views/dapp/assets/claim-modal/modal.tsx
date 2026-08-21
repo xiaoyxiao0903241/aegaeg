@@ -26,7 +26,6 @@ import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
  * @see docs/onchain-manual/contracts/rewardqueue.md
  */
 export function AssetsClaimModal({
-  amountLabel,
   onOpenChange,
   open,
   capturedAddress,
@@ -39,7 +38,6 @@ export function AssetsClaimModal({
   capturedAddress: string | null
   target: MixedClaimTarget | null
   positionLabel: string
-  amountLabel: string
 }) {
   // 关闭时调用方会清空 target / capturedAddress；缓存上一帧，避免弹窗被立刻卸载导致关闭动画中断。
   // 用 render 期 setState 对齐 props（不用 render 写 ref），语义与原先 heldRef 相同。
@@ -47,15 +45,13 @@ export function AssetsClaimModal({
     capturedAddress: string
     target: MixedClaimTarget
     positionLabel: string
-    amountLabel: string
   } | null>(null)
   if (open && target && capturedAddress) {
-    const next = { capturedAddress, target, positionLabel, amountLabel }
+    const next = { capturedAddress, target, positionLabel }
     if (
       held?.capturedAddress !== next.capturedAddress ||
       held?.target !== next.target ||
-      held?.positionLabel !== next.positionLabel ||
-      held?.amountLabel !== next.amountLabel
+      held?.positionLabel !== next.positionLabel
     ) {
       setHeld(next)
     }
@@ -64,14 +60,13 @@ export function AssetsClaimModal({
 
   const targetKey =
     held.target.source === 'liquid'
-      ? `liquid:${held.target.amount}`
+      ? 'liquid'
       : held.target.source === 'locked'
-        ? `locked:${held.target.pool}:${held.target.stakeIndex}:${held.target.amount}`
-        : `bond:${held.target.depository}:${held.target.bondIndex}:${held.target.amount}`
+        ? `locked:${held.target.pool}:${held.target.stakeIndex}:${String(held.target.entries[0]?.extra === true)}`
+        : `bond:${held.target.depository}:${held.target.bondIndex}`
 
   return (
     <AssetsClaimModalOpen
-      amountLabel={held.amountLabel}
       key={`${held.capturedAddress}-${targetKey}`}
       onOpenChange={onOpenChange}
       open={open}
@@ -83,7 +78,6 @@ export function AssetsClaimModal({
 }
 
 function AssetsClaimModalOpen({
-  amountLabel,
   onOpenChange,
   open,
   capturedAddress,
@@ -95,16 +89,14 @@ function AssetsClaimModalOpen({
   capturedAddress: string
   target: MixedClaimTarget
   positionLabel: string
-  amountLabel: string
 }) {
   const vm = useAssetsClaimModal({
     open,
     onOpenChange,
     capturedAddress,
     target,
-    amountLabel,
   })
-  const { t } = vm
+  const { t, amountLabel } = vm
   // 始终 backgroundImage：两端同色渐变≈纯色，避免 Image↔Color 切换闪烁
   const ctaBackgroundImage =
     vm.releasePct >= 100

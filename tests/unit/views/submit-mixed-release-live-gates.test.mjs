@@ -11,7 +11,7 @@ import {
   USER,
 } from './_money-path-read-mock.mjs'
 
-test('submitMixedClaim fail-closed when live liquid reward is below claim amount', async () => {
+test('submitMixedClaim fail-closed when live liquid reward is below the 0.01 floor', async () => {
   const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
@@ -35,7 +35,35 @@ test('submitMixedClaim fail-closed when live liquid reward is below claim amount
         restakeDays: 360,
         restakePct: 50,
       }),
-    (err) => err === ASSETS_BLOCKED.insufficientReward,
+    (err) => err === ASSETS_BLOCKED.zeroAmount,
+  )
+})
+
+test('submitMixedClaim does not keep the open-modal amount when live available is larger', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+
+  const plans = claimPlanAndContribHandlers({
+    contribution: 1_000_000n,
+    requiredContribution: 1n,
+  })
+
+  const session = sessionWithReadClient(async (request) => {
+    if (request.functionName === 'getStakeRewards') return [0n, 2n * 10n ** 7n]
+    return dispatchRead(plans, request)
+  })
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: USER,
+        target: { source: 'liquid', amount: 10n ** 7n },
+        releaseDays: 5,
+        restakeDays: 360,
+        restakePct: 50,
+      }),
+    (err) => err !== ASSETS_BLOCKED.insufficientReward && err !== ASSETS_BLOCKED.zeroAmount,
   )
 })
 

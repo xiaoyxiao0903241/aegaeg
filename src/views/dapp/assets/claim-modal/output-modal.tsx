@@ -3,14 +3,10 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import {
-  canSelectClaimOutput,
-  claimContribRequiredOrZero,
-  type ClaimOutputKind,
-  shouldReplaceHeldClaimOutput,
-} from '~/core/assets/claim-output'
+import { type ClaimOutputKind, shouldReplaceHeldClaimOutput } from '~/core/assets/claim-output'
+import { ZERO_BI } from '~/core/constants'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
-import { formatAssetsActionAmount } from '~/core/exchange/token-amount'
+import { formatAssetsActionAmount, isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -96,8 +92,8 @@ function AssetsClaimOutputModalOpen({
 
   const reward = row.blockReward
   const boost = row.extraInterest
-  const canReward = canSelectClaimOutput(reward, GAGX_DECIMALS)
-  const canBoost = canSelectClaimOutput(boost, GAGX_DECIMALS)
+  const canReward = isAssetsActionableAmount(reward, GAGX_DECIMALS)
+  const canBoost = isAssetsActionableAmount(boost, GAGX_DECIMALS)
 
   const rewardContrib = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-reward:${String(reward)}`),
@@ -116,11 +112,11 @@ function AssetsClaimOutputModalOpen({
   const boostAmountLabel = `${formatAssetsActionAmount(boost, GAGX_DECIMALS)} gAGX`
   // 缺数显 0；粉尘贡献下舍为 0.0000
   const rewardContribLabel = formatContributionPoints(
-    claimContribRequiredOrZero(rewardContrib.data?.requiredContribution),
+    rewardContrib.data?.requiredContribution ?? ZERO_BI,
     AGX_DECIMALS,
   )
   const boostContribLabel = formatContributionPoints(
-    claimContribRequiredOrZero(boostContrib.data?.requiredContribution),
+    boostContrib.data?.requiredContribution ?? ZERO_BI,
     AGX_DECIMALS,
   )
 

@@ -84,7 +84,6 @@ type ClaimState =
       capturedAddress: string
       target: MixedClaimTarget
       label: string
-      amountLabel: string
     }
 
 type ClaimOutputState =
@@ -281,7 +280,6 @@ export function usePositionDock(product: AssetsProduct) {
       capturedAddress: args.capturedAddress,
       target: args.target,
       label: args.label,
-      amountLabel: `${formatTokenAmount(args.target.amount, GAGX_DECIMALS, 4)} gAGX`,
     })
   }
 
@@ -312,7 +310,8 @@ export function usePositionDock(product: AssetsProduct) {
 
   function selectClaimOutput(kind: ClaimOutputKind) {
     if (!claimOutput.open) return
-    const { capturedAddress, row, label } = claimOutput
+    const { capturedAddress, label } = claimOutput
+    const row = stakeRows.find((item) => item.id === claimOutput.row.id) ?? claimOutput.row
     const built = buildStakeMixedClaimTarget({
       stakeKind: row.kind === 'liquid' ? 'liquid' : 'locked',
       outputKind: kind,
@@ -367,6 +366,13 @@ export function usePositionDock(product: AssetsProduct) {
     void activateWarmupWrite.mutate()
   }
 
+  const liveClaimOutput: ClaimOutputState = claimOutput.open
+    ? {
+        ...claimOutput,
+        row: stakeRows.find((row) => row.id === claimOutput.row.id) ?? claimOutput.row,
+      }
+    : claimOutput
+
   return {
     product,
     walletReady,
@@ -377,7 +383,7 @@ export function usePositionDock(product: AssetsProduct) {
     setSort,
     sortOptions,
     claim,
-    claimOutput,
+    claimOutput: liveClaimOutput,
     redeem,
     copy,
     stakingTarget,

@@ -68,25 +68,22 @@ export type MixedClaimTarget =
 
 /** 单次读快照目标（定期需带 extra 以区分普通 / 额外可领余额）。 */
 type MixedClaimReadTarget =
-  | { source: 'liquid'; amount: bigint }
+  | { source: 'liquid' }
   | {
       source: 'locked'
       pool: Address
       stakeIndex: number
-      amount: bigint
       extra?: boolean
     }
   | {
       source: 'bond'
       depository: Address
       bondIndex: number
-      amount: bigint
     }
 
 async function readMixedClaimSnapshot(
   target: MixedClaimReadTarget,
   user: Address,
-  amount: bigint,
   releaseDays: number,
   restakeDays: number,
   readClient: ChainReadClient,
@@ -97,10 +94,8 @@ async function readMixedClaimSnapshot(
     releaseDays,
     restakeDays,
   )
-  const [rewardAvailable, contrib] = await Promise.all([
-    readMixedRewardAvailable(target, user, readClient),
-    readContributionSnapshot(user, amount, readClient),
-  ])
+  const rewardAvailable = await readMixedRewardAvailable(target, user, readClient)
+  const contrib = await readContributionSnapshot(user, rewardAvailable, readClient)
   return {
     rewardAvailable,
     contribution: contrib.contribution,
@@ -118,6 +113,7 @@ type MixedClaimSnapshot = Awaited<ReturnType<typeof readMixedClaimSnapshot>>
  * 按 `approveThenLiveWrite`：预检读 → 实时重读复核 → 再写。
  * 打开弹窗时锁定的地址须与会话钱包一致，否则拒绝提交。
  * 定期普通 / 额外为独立入口；若传入多项则按序各写一笔。
+ * 上链金额取提交时链上可领，不用打开弹窗时的快照。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  * @see 手册 §9.3 Mixed 领奖前端流程
@@ -136,13 +132,13 @@ export async function submitMixedClaim(args: {
 
   const restakeBps = restakeBpsFromPct(restakePct)
 
-  async function writeOne(readTarget: MixedClaimReadTarget, amount: bigint, extra?: boolean) {
+  async function writeOne(readTarget: MixedClaimReadTarget) {
     await approveThenLiveWrite({
       readSnapshot: () =>
-        readMixedClaimSnapshot(readTarget, user, amount, releaseDays, restakeDays, readClient),
+        readMixedClaimSnapshot(readTarget, user, releaseDays, restakeDays, readClient),
       evaluate: (snap: MixedClaimSnapshot) =>
         evaluateMixedClaim({
-          amount,
+          amount: snap.rewardAvailable,
           rewardAvailable: snap.rewardAvailable,
           contribution: snap.contribution,
           requiredContribution: snap.requiredContribution,
@@ -157,6 +153,7 @@ export async function submitMixedClaim(args: {
         if (releasePlanIndex == null || restakePlanIndex == null) {
           throw ASSETS_BLOCKED.unavailable
         }
+        const amount = live.rewardAvailable
         if (readTarget.source === 'locked') {
           await writeLockedClaimMixed({
             wallet,
@@ -166,7 +163,7 @@ export async function submitMixedClaim(args: {
             releasePlanIndex,
             restakePlanIndex,
             restakeBps,
-            extra: extra ?? false,
+            extra: readTarget.extra ?? false,
           })
           return
         }
@@ -198,17 +195,12 @@ export async function submitMixedClaim(args: {
     if (target.entries.length === 0) throw ASSETS_BLOCKED.unavailable
     for (const entry of target.entries) {
       try {
-        await writeOne(
-          {
-            source: 'locked',
-            pool: target.pool,
-            stakeIndex: target.stakeIndex,
-            amount: entry.amount,
-            extra: entry.extra,
-          },
-          entry.amount,
-          entry.extra,
-        )
+        await writeOne({
+          source: 'locked',
+          pool: target.pool,
+          stakeIndex: target.stakeIndex,
+          extra: entry.extra,
+        })
       } finally {
         // 半成功也刷新：已上链那笔的可领额立刻从界面消失，重试只针对未完成笔
         invalidateAfterAssetsClaim()
@@ -217,7 +209,7 @@ export async function submitMixedClaim(args: {
     return
   }
 
-  await writeOne(target, target.amount)
+  await writeOne(target)
   invalidateAfterAssetsClaim()
 }
 

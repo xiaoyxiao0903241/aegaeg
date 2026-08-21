@@ -317,6 +317,9 @@ export const queryKeys = {
     /** 钱包前缀键——金额不同键不同；useChainQuery 自动追加地址。 */
     assetsContributionForAmount: (amount: string) =>
       ['chain', 'assets', 'contribution', amount] as const,
+    /** Mixed 确认弹窗的当前可领；targetKey 区分活期 / 定期档 / 债券。 */
+    assetsMixedRewardAvailable: (targetKey: string) =>
+      ['chain', 'assets', 'mixedRewardAvailable', targetKey] as const,
     rewardsRoot: ['chain', 'rewards'] as const,
     rewardsLuckyClaim: ['chain', 'rewards', 'lucky'] as const,
     rewardsLuckyClaimOf: (address: string) =>

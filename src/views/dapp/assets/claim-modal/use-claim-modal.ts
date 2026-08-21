@@ -2,10 +2,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import {
-  claimContribRequiredOrZero,
-  evaluateAssetsClaimConfirmGate,
-} from '~/core/assets/claim-output'
+import { evaluateAssetsClaimConfirmGate } from '~/core/assets/claim-output'
 import {
   claimDurationDaysLists,
   claimSplitFromReleasePct,
@@ -20,12 +17,15 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { parseLeadingMetricNumber } from '~/shared/components/count-value'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { type MixedClaimTarget, submitMixedClaim } from '~/views/dapp/assets/submit-assets'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
-import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
+import {
+  readClaimPlans,
+  readContributionSnapshot,
+  readMixedRewardAvailable,
+} from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
@@ -38,16 +38,15 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * 贡献值与计划可用性校验，以及提交成功后的关闭处理。
  * 计划选择用本地 `useState`（随 modal remount / key 复位）。
  * RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60。
+ * 展示与确认门闸跟提交时同一笔链上可领，不用打开弹窗时冻住的数。
  */
 export function useAssetsClaimModal(args: {
   open: boolean
   onOpenChange: (open: boolean) => void
   capturedAddress: string
   target: MixedClaimTarget
-  /** 顶部领取数量文案；滑块到一端时复用其单位。 */
-  amountLabel: string
 }) {
-  const { open, onOpenChange, capturedAddress, target, amountLabel } = args
+  const { open, onOpenChange, capturedAddress, target } = args
   const { messages: t } = useI18n()
   const { walletReady, writeReady } = useWriteReadiness()
   const account = useActiveAccount()
@@ -89,11 +88,39 @@ export function useAssetsClaimModal(args: {
     placeholderData: keepPreviousData,
   })
 
-  const contribQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsContributionForAmount(String(target.amount)),
-    queryFn: (address) => readContributionSnapshot(address as Address, target.amount),
+  const rewardRead =
+    target.source === 'locked'
+      ? {
+          source: 'locked' as const,
+          pool: target.pool,
+          stakeIndex: target.stakeIndex,
+          extra: target.entries[0]?.extra === true,
+        }
+      : target.source === 'liquid'
+        ? ({ source: 'liquid' } as const)
+        : ({
+            source: 'bond',
+            depository: target.depository,
+            bondIndex: target.bondIndex,
+          } as const)
+  const availableQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsMixedRewardAvailable(
+      rewardRead.source === 'locked'
+        ? `locked:${rewardRead.pool}:${rewardRead.stakeIndex}:${String(rewardRead.extra)}`
+        : rewardRead.source === 'liquid'
+          ? 'liquid'
+          : `bond:${rewardRead.depository}:${rewardRead.bondIndex}`,
+    ),
+    queryFn: (address) => readMixedRewardAvailable(rewardRead, address as Address),
     enabled: open && Boolean(account?.address),
-    placeholderData: keepPreviousData,
+  })
+  const availableFresh = isDecisionFresh(availableQuery.isPlaceholderData, availableQuery.data)
+  const claimable = availableFresh ? availableQuery.data! : target.amount
+
+  const contribQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsContributionForAmount(String(claimable)),
+    queryFn: (address) => readContributionSnapshot(address as Address, claimable),
+    enabled: open && availableFresh && Boolean(account?.address),
   })
 
   const { releaseIndex, restakeIndex } = matchClaimPlanIndices(
@@ -108,22 +135,24 @@ export function useAssetsClaimModal(args: {
     isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
     releaseIndex != null &&
     restakeIndex != null
-  const canConfirm = evaluateAssetsClaimConfirmGate({
-    walletReady,
-    writeReady,
-    isPending: claim.isPending,
-    contributionOk,
-    plansOk,
-    claimable: target.amount,
-    decimals: GAGX_DECIMALS,
-  })
+  const canConfirm =
+    availableFresh &&
+    evaluateAssetsClaimConfirmGate({
+      walletReady,
+      writeReady,
+      isPending: claim.isPending,
+      contributionOk,
+      plansOk,
+      claimable,
+      decimals: GAGX_DECIMALS,
+    })
 
-  const releaseAmount = (target.amount * BigInt(releasePct)) / HUNDRED_BI
-  const restakeAmount = target.amount - releaseAmount
+  const releaseAmount = (claimable * BigInt(releasePct)) / HUNDRED_BI
+  const restakeAmount = claimable - releaseAmount
   const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
   const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)
-  const claimUnit = parseLeadingMetricNumber(amountLabel)?.suffix.trim() ?? ''
-  const withClaimUnit = (text: string) => (claimUnit ? `${text} ${claimUnit}` : text)
+  const amountLabel = `${formatTokenAmount(claimable, GAGX_DECIMALS, 4)} gAGX`
+  const withClaimUnit = (text: string) => `${text} gAGX`
   let ctaAmountLine: string | null = null
   if (releaseAmount === ZERO_BI) {
     ctaAmountLine = withClaimUnit(restakeAmountText)
@@ -156,18 +185,6 @@ export function useAssetsClaimModal(args: {
     value: String(days),
   }))
 
-  function setReleasePct(value: number) {
-    setReleasePctState(value)
-  }
-
-  function setReleaseDays(value: number) {
-    setReleaseDaysState(value)
-  }
-
-  function setRestakeDays(value: number) {
-    setRestakeDaysState(value)
-  }
-
   function handleConfirm() {
     if (!canConfirm) return
     void claim.mutate()
@@ -186,18 +203,18 @@ export function useAssetsClaimModal(args: {
         : t.assets.claim.ctaMixed
 
   const requiredContributionLabel = formatContributionPoints(
-    claimContribRequiredOrZero(contribQuery.data?.requiredContribution),
+    contribQuery.data?.requiredContribution ?? ZERO_BI,
     AGX_DECIMALS,
   )
 
   return {
     t,
     releasePct,
-    setReleasePct,
+    setReleasePct: setReleasePctState,
     releaseDays,
-    setReleaseDays,
+    setReleaseDays: setReleaseDaysState,
     restakeDays,
-    setRestakeDays,
+    setRestakeDays: setRestakeDaysState,
     restakePct,
     submitting: claim.isPending,
     contribQuery,
@@ -208,6 +225,7 @@ export function useAssetsClaimModal(args: {
     plansOk,
     plansQuery,
     canConfirm,
+    amountLabel,
     releaseAmountText,
     restakeAmountText,
     ctaAmountLine,

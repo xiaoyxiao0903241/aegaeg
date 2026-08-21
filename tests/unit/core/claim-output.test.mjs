@@ -7,23 +7,6 @@ const pool = '0x1111111111111111111111111111111111111111'
 const GAGX_DECIMALS = 9
 const GAGX_ACTION_FLOOR = 10n ** 7n
 
-test('claimOutputAmountForKind picks reward vs boost', async () => {
-  const { claimOutputAmountForKind } = await loadModule('/src/core/assets/claim-output.ts')
-  assert.equal(
-    claimOutputAmountForKind({ kind: 'reward', blockReward: 10n, extraInterest: 3n }),
-    10n,
-  )
-  assert.equal(claimOutputAmountForKind({ kind: 'boost', blockReward: 10n, extraInterest: 3n }), 3n)
-})
-
-test('canSelectClaimOutput requires amount at the 0.01 display floor', async () => {
-  const { canSelectClaimOutput } = await loadModule('/src/core/assets/claim-output.ts')
-  assert.equal(canSelectClaimOutput(0n, GAGX_DECIMALS), false)
-  assert.equal(canSelectClaimOutput(1n, GAGX_DECIMALS), false)
-  assert.equal(canSelectClaimOutput(GAGX_ACTION_FLOOR - 1n, GAGX_DECIMALS), false)
-  assert.equal(canSelectClaimOutput(GAGX_ACTION_FLOOR, GAGX_DECIMALS), true)
-})
-
 test('shouldReplaceHeldClaimOutput refreshes when extraInterest zeros on same stake', async () => {
   const { shouldReplaceHeldClaimOutput } = await loadModule('/src/core/assets/claim-output.ts')
   const address = '0xabc'
@@ -65,13 +48,6 @@ test('shouldReplaceHeldClaimOutput refreshes when extraInterest zeros on same st
     }),
     true,
   )
-})
-
-test('claimContribRequiredOrZero treats missing as 0', async () => {
-  const { claimContribRequiredOrZero } = await loadModule('/src/core/assets/claim-output.ts')
-  assert.equal(claimContribRequiredOrZero(undefined), 0n)
-  assert.equal(claimContribRequiredOrZero(null), 0n)
-  assert.equal(claimContribRequiredOrZero(12n), 12n)
 })
 
 test('buildStakeMixedClaimTarget: liquid reward only; boost rejected', async () => {
@@ -119,7 +95,7 @@ test('buildStakeMixedClaimTarget: locked maps reward/boost to write entry', asyn
       pool,
       stakeIndex: 3,
       amount: GAGX_ACTION_FLOOR * 8n,
-      entries: [{ amount: GAGX_ACTION_FLOOR * 8n, extra: false }],
+      entries: [{ extra: false }],
     },
   )
   assert.deepEqual(
@@ -137,7 +113,7 @@ test('buildStakeMixedClaimTarget: locked maps reward/boost to write entry', asyn
       pool,
       stakeIndex: 3,
       amount: GAGX_ACTION_FLOOR * 2n,
-      entries: [{ amount: GAGX_ACTION_FLOOR * 2n, extra: true }],
+      entries: [{ extra: true }],
     },
   )
 })

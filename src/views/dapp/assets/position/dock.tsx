@@ -112,7 +112,6 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
       />
 
       <AssetsClaimModal
-        amountLabel={w.claim.open ? w.claim.amountLabel : ''}
         onOpenChange={(open) => {
           if (!open) w.closeClaim()
         }}

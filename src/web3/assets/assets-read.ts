@@ -601,7 +601,7 @@ export async function readMixedRewardAvailable(
     | { source: 'locked'; pool: Address; stakeIndex: number; extra?: boolean }
     | { source: 'bond'; depository: Address; bondIndex: number },
   user: Address,
-  client: ChainReadClient,
+  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
   if (target.source === 'liquid') {
     const rewards = await client.readContract({
