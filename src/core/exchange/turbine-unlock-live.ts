@@ -1,5 +1,6 @@
 import { calcAmountInMax } from '~/core/exchange/exchange-math'
 import { parseSlippagePercentInput } from '~/core/exchange/token-amount'
+import { isDecisionFresh } from '~/core/query/decision-freshness'
 
 /** 涡轮解锁默认滑点（%）：应付 USD1 = 报价 × (1 + 2.5%)。 */
 export const TURBINE_AUTO_SLIPPAGE_PERCENT = 2.5
@@ -15,6 +16,25 @@ export function resolveTurbineSlippagePercent(mode: 'auto' | 'custom', customTex
     return parseSlippagePercentInput(customText)
   }
   return TURBINE_AUTO_SLIPPAGE_PERCENT
+}
+
+/**
+ * 非满额解锁是否已拿到本笔配额的全额报价。
+ *
+ * keepPreviousData 会把上一笔配额报价留在 data 里；当占位时不得截顶、不得点亮解锁。
+ *
+ * @param needsQuotaCapQuote 解锁量不等于当前配额时需要另报全配额价
+ * @param isPlaceholderData 全配额报价是否仍是上一笔占位
+ * @param quotedQuota 全配额报价；未返回则为 undefined
+ * @returns 满额或不需要截顶报价为 true；占位或尚未返回为 false
+ * @see 手册 §16 Turbine
+ */
+export function isTurbineQuotaCapReady(args: {
+  needsQuotaCapQuote: boolean
+  isPlaceholderData: boolean
+  quotedQuota: bigint | undefined
+}): boolean {
+  return !args.needsQuotaCapQuote || isDecisionFresh(args.isPlaceholderData, args.quotedQuota)
 }
 
 /**

@@ -10,6 +10,7 @@ import {
 import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-buckets'
 import {
   calcTurbinePayableUsd,
+  isTurbineQuotaCapReady,
   resolveTurbineSlippagePercent,
   TURBINE_AUTO_SLIPPAGE_PERCENT,
 } from '~/core/exchange/turbine-unlock-live'
@@ -180,7 +181,6 @@ export function useTurbineExchangeSession(
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled && sessionReady && needsQuotaCapQuote,
-    placeholderData: keepPreviousData,
   })
 
   // 概览「AGX 价格」用 1 AGX 的单位报价；读取失败时显示 —
@@ -195,7 +195,11 @@ export function useTurbineExchangeSession(
   const turbineSummaryQuery = useTurbineSummary(sessionReady)
 
   const quotedUsd = quoteQuery.data ?? ZERO_BI
-  const quotaCapReady = !needsQuotaCapQuote || quotaQuoteQuery.data !== undefined
+  const quotaCapReady = isTurbineQuotaCapReady({
+    needsQuotaCapQuote,
+    isPlaceholderData: quotaQuoteQuery.isPlaceholderData,
+    quotedQuota: quotaQuoteQuery.data,
+  })
   const quotedQuota =
     unlockAmountIn === decisionQuota ? quotedUsd : (quotaQuoteQuery.data ?? ZERO_BI)
   const usdNeeded =
@@ -261,6 +265,7 @@ export function useTurbineExchangeSession(
     unlockAmountIn <= decisionQuota &&
     usdNeeded > ZERO_BI &&
     usdNeeded <= decisionUsd1 &&
+    quotaCapReady &&
     // 冷启动无价才 busy；后台 refetch 保留上一笔 usdNeeded，勿闪灰。
     !quoteQuery.isPending &&
     (!needsQuotaCapQuote || !quotaQuoteQuery.isPending)
@@ -362,8 +367,9 @@ export function useTurbineExchangeSession(
     hasClaimable: claimableBalance > ZERO_BI,
     walletReady,
     canUnlock,
-    // quoteQuery 无 keepPreviousData；冷启动用 isPending，勿用 isFetching。
-    isQuoting: unlockAmountIn > ZERO_BI && quoteQuery.isPending,
+    // 冷启动用 isPending，勿用 isFetching；全配额截顶未就绪时同样视为 quoting。
+    isQuoting:
+      unlockAmountIn > ZERO_BI && (quoteQuery.isPending || (needsQuotaCapQuote && !quotaCapReady)),
     isBalancesLoading,
     isSubmitting,
     claimingIndex,

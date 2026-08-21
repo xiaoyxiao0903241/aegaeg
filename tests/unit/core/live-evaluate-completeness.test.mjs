@@ -38,6 +38,43 @@ test('resolveTurbineSlippagePercent defaults to 2.5 and parses custom', async ()
   assert.equal(resolveTurbineSlippagePercent('custom', '1'), 1)
 })
 
+test('isTurbineQuotaCapReady rejects keepPreviousData placeholder cap', async () => {
+  const { isTurbineQuotaCapReady } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
+  const staleQuotaQuote = 9_999n
+  assert.equal(
+    isTurbineQuotaCapReady({
+      needsQuotaCapQuote: false,
+      isPlaceholderData: true,
+      quotedQuota: staleQuotaQuote,
+    }),
+    true,
+  )
+  assert.equal(
+    isTurbineQuotaCapReady({
+      needsQuotaCapQuote: true,
+      isPlaceholderData: true,
+      quotedQuota: staleQuotaQuote,
+    }),
+    false,
+  )
+  assert.equal(
+    isTurbineQuotaCapReady({
+      needsQuotaCapQuote: true,
+      isPlaceholderData: false,
+      quotedQuota: staleQuotaQuote,
+    }),
+    true,
+  )
+  assert.equal(
+    isTurbineQuotaCapReady({
+      needsQuotaCapQuote: true,
+      isPlaceholderData: false,
+      quotedQuota: undefined,
+    }),
+    false,
+  )
+})
+
 test('calcTurbinePayableUsd pads then caps at full-quota quote', async () => {
   const { calcTurbinePayableUsd } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
   assert.equal(calcTurbinePayableUsd(500n, 10_000n, 100), 505n)
