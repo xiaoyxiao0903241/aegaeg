@@ -57,7 +57,7 @@ export function canSubmitQuotedExchange({
   /** 余额仍在加载时，勿把 sellBalance===0 当成空钱包。 */
   isBalancesLoading: boolean
   isSubmitting: boolean
-  /** `WalletTransactionWaitError` outcome `unknown` 后锁定，防双提交。 */
+  /** 广播后 / 发送未知结果后锁定，防双提交。 */
   blockResubmit?: boolean
   /** 金额报价的 `query.dataUpdatedAt`；与 `maxQuoteAgeMs` 联用。 */
   quoteUpdatedAt?: number

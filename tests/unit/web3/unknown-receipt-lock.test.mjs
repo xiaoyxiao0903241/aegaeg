@@ -28,6 +28,41 @@ test('unknown receipt lock blocks path until cleared for address', async () => {
   assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR_A), false)
 })
 
+test('referral-bind unknown latch does not lock other write paths', async () => {
+  const {
+    WRITE_PATH,
+    isUnknownReceiptLocked,
+    lockUnknownReceipt,
+    resetUnknownReceiptLocksForTests,
+    tryBeginWritePath,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  lockUnknownReceipt(WRITE_PATH.REFERRAL_BIND, Symbol('bind'), ADDR_A)
+
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REFERRAL_BIND, ADDR_A), true)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.REFERRAL_BIND, ADDR_B), false)
+
+  const otherPaths = [
+    WRITE_PATH.EXCHANGE,
+    WRITE_PATH.GENESIS,
+    WRITE_PATH.STAKING,
+    WRITE_PATH.BOND_ZAP,
+    WRITE_PATH.XMINE,
+    WRITE_PATH.ASSETS_CLAIM,
+    WRITE_PATH.RELEASE_CLAIM,
+    WRITE_PATH.REWARD_LUCKY_MIXED,
+    WRITE_PATH.REWARD_DAO_MIXED,
+    WRITE_PATH.REWARD_SIGNED_CLAIM,
+  ]
+  for (const path of otherPaths) {
+    assert.equal(isUnknownReceiptLocked(path, ADDR_A), false, path)
+    assert.equal(tryBeginWritePath(path, ADDR_A).ok, true, path)
+  }
+
+  resetUnknownReceiptLocksForTests()
+})
+
 test('legacy reward-claim latch blocks new reward paths until force-cleared', async () => {
   const {
     WRITE_PATH,
@@ -119,18 +154,7 @@ test('isUnknownSubmitOutcome covers wait and submit unknown errors', async () =>
     isUnknownSubmitOutcome(
       new WalletTransactionWaitError(
         '0x1111111111111111111111111111111111111111111111111111111111111111',
-        'pending',
-        'unknown',
-      ),
-    ),
-    true,
-  )
-  assert.equal(
-    isUnknownSubmitOutcome(
-      new WalletTransactionWaitError(
-        '0x1111111111111111111111111111111111111111111111111111111111111111',
         'reverted',
-        'failed',
       ),
     ),
     false,
@@ -169,4 +193,89 @@ test('unknown receipt lock persists across memory rehydrate (refresh simulation)
 
   resetUnknownReceiptLocksForTests()
   assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR_A), false)
+})
+
+const TX_HASH = `0x${'ab'.repeat(32)}`
+
+function mockSessionStorage() {
+  const store = new Map()
+  globalThis.sessionStorage = {
+    getItem: (key) => (store.has(key) ? store.get(key) : null),
+    setItem: (key, value) => {
+      store.set(key, String(value))
+    },
+    removeItem: (key) => {
+      store.delete(key)
+    },
+  }
+  return store
+}
+
+test('unknown receipt lock persists hash across rehydrate', async () => {
+  mockSessionStorage()
+  const {
+    WRITE_PATH,
+    getUnknownReceiptLatchEvidence,
+    isUnknownReceiptLocked,
+    lockUnknownReceipt,
+    rehydrateUnknownReceiptLocksForTests,
+    resetUnknownReceiptLocksForTests,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  lockUnknownReceipt(WRITE_PATH.EXCHANGE, Symbol('owner'), ADDR_A, {
+    hash: TX_HASH,
+  })
+  assert.deepEqual(getUnknownReceiptLatchEvidence(WRITE_PATH.EXCHANGE, ADDR_A), {
+    hash: TX_HASH,
+  })
+
+  rehydrateUnknownReceiptLocksForTests()
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR_A), true)
+  assert.deepEqual(getUnknownReceiptLatchEvidence(WRITE_PATH.EXCHANGE, ADDR_A), {
+    hash: TX_HASH,
+  })
+  resetUnknownReceiptLocksForTests()
+})
+
+test('v2 latches without hash still block and stay unobservable', async () => {
+  const store = mockSessionStorage()
+  const {
+    WRITE_PATH,
+    getUnknownReceiptLatchEvidence,
+    isUnknownReceiptLocked,
+    listUnknownReceiptLatches,
+    rehydrateUnknownReceiptLocksForTests,
+    resetUnknownReceiptLocksForTests,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  store.set('aegis:unknown-receipt-lock:v2', JSON.stringify([{ address: ADDR_A, path: 'swap' }]))
+  rehydrateUnknownReceiptLocksForTests()
+
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR_A), true)
+  assert.equal(getUnknownReceiptLatchEvidence(WRITE_PATH.EXCHANGE, ADDR_A), undefined)
+  const listed = listUnknownReceiptLatches()
+  assert.equal(listed.length, 1)
+  assert.equal(listed[0].hash, undefined)
+  resetUnknownReceiptLocksForTests()
+})
+
+test('settleUnknownReceiptLock force-clears without owner', async () => {
+  mockSessionStorage()
+  const {
+    WRITE_PATH,
+    isUnknownReceiptLocked,
+    lockUnknownReceipt,
+    resetUnknownReceiptLocksForTests,
+    settleUnknownReceiptLock,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  lockUnknownReceipt(WRITE_PATH.EXCHANGE, Symbol('owner'), ADDR_A, { hash: TX_HASH })
+
+  assert.equal(settleUnknownReceiptLock(WRITE_PATH.EXCHANGE, ADDR_A), true)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR_A), false)
+  assert.equal(settleUnknownReceiptLock(WRITE_PATH.EXCHANGE, ADDR_A), false)
+  resetUnknownReceiptLocksForTests()
 })

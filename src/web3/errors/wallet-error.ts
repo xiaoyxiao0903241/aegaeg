@@ -1,6 +1,5 @@
 import { readErrorCode, readErrorText } from '~/web3/errors/error-text'
 import { WALLET_BLOCKED, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
-import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
 import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
 
 const USER_REJECTED_PATTERN =
@@ -36,13 +35,6 @@ export function walletTransactionError(
   messages: WalletTransactionErrorMessages,
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
-  if (
-    error instanceof WalletTransactionWaitError &&
-    error.outcome === 'unknown' &&
-    messages.transactionUnknown
-  ) {
-    return messages.transactionUnknown
-  }
   if (error instanceof WalletSubmitUnknownError && messages.transactionUnknown) {
     return messages.transactionUnknown
   }

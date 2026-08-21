@@ -49,9 +49,8 @@ export type UseChainMutationArgs<TVars, TValue> = {
 /**
  * 链上写操作 mutation
  *
- * 通过未知回执互斥保护同一写入路径：回执状态未知期间再次写入会抛锁定错误，
- * 由本 hook 静默处理；路径上已有请求在途时提示用户等待。
- * `isLocked` 表示「锁定或在途」；`isLatched` 仅表示处于未知回执锁定。
+ * 同一写入路径在飞或确认中时禁止再点。收据由公共 RPC 等到成功或 revert；
+ * 刷新后用已存 hash 继续 wait。发送未拿到 hash 时锁定至改表单或关页。
  */
 export function useChainMutation<TVars = void, TValue = void>(
   args: UseChainMutationArgs<TVars, TValue>,

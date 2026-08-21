@@ -186,3 +186,89 @@ test('submitWithUnknownReceiptLock locks on unknown submit outcome only', async 
   assert.equal(isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM, ADDR), true)
   resetUnknownReceiptLocksForTests()
 })
+
+test('submitWithUnknownReceiptLock stores broadcast hash on the latch until success', async () => {
+  const { submitWithUnknownReceiptLock } = await loadModule(
+    '/src/web3/wallet/submit-with-unknown-receipt-lock.ts',
+  )
+  const {
+    WRITE_PATH,
+    getUnknownReceiptLatchEvidence,
+    isUnknownReceiptLocked,
+    notifyWriteHash,
+    resetUnknownReceiptLocksForTests,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  const hash = `0x${'cd'.repeat(32)}`
+  const result = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.EXCHANGE,
+    address: ADDR,
+    whenLocked: 'LOCKED',
+    whenInFlight: 'IN_FLIGHT',
+    run: async () => {
+      notifyWriteHash(hash)
+      assert.deepEqual(getUnknownReceiptLatchEvidence(WRITE_PATH.EXCHANGE, ADDR), { hash })
+      return 'mined'
+    },
+  })
+  assert.deepEqual(result, { ok: true, value: 'mined' })
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR), false)
+  resetUnknownReceiptLocksForTests()
+})
+
+test('submitWithUnknownReceiptLock send-timeout latch has no hash', async () => {
+  const { submitWithUnknownReceiptLock } = await loadModule(
+    '/src/web3/wallet/submit-with-unknown-receipt-lock.ts',
+  )
+  const { WalletSubmitUnknownError } = await loadModule(
+    '/src/web3/wallet/wallet-submit-unknown-error.ts',
+  )
+  const {
+    WRITE_PATH,
+    getUnknownReceiptLatchEvidence,
+    isUnknownReceiptLocked,
+    resetUnknownReceiptLocksForTests,
+  } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.EXCHANGE,
+    address: ADDR,
+    whenLocked: 'LOCKED',
+    whenInFlight: 'IN_FLIGHT',
+    run: async () => {
+      throw new WalletSubmitUnknownError()
+    },
+  })
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR), true)
+  assert.equal(getUnknownReceiptLatchEvidence(WRITE_PATH.EXCHANGE, ADDR), undefined)
+  resetUnknownReceiptLocksForTests()
+})
+
+test('submitWithUnknownReceiptLock unlocks when the receipt reverted', async () => {
+  const { submitWithUnknownReceiptLock } = await loadModule(
+    '/src/web3/wallet/submit-with-unknown-receipt-lock.ts',
+  )
+  const { WalletTransactionWaitError } = await loadModule(
+    '/src/web3/wallet/wait-wallet-transaction.ts',
+  )
+  const { WRITE_PATH, isUnknownReceiptLocked, notifyWriteHash, resetUnknownReceiptLocksForTests } =
+    await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+
+  resetUnknownReceiptLocksForTests()
+  const hash = `0x${'cd'.repeat(32)}`
+  const result = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.EXCHANGE,
+    address: ADDR,
+    whenLocked: 'LOCKED',
+    whenInFlight: 'IN_FLIGHT',
+    run: async () => {
+      notifyWriteHash(hash)
+      throw new WalletTransactionWaitError(hash, 'reverted')
+    },
+  })
+  assert.equal(result.ok, false)
+  assert.equal(isUnknownReceiptLocked(WRITE_PATH.EXCHANGE, ADDR), false)
+  resetUnknownReceiptLocksForTests()
+})

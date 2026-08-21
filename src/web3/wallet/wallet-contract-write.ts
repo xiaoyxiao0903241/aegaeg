@@ -25,6 +25,7 @@ import {
   createWriteIntent,
   parseEip1193ChainId,
 } from '~/web3/wallet/assert-write-intent'
+import { notifyWriteHash } from '~/web3/wallet/unknown-receipt-lock'
 import { waitForWalletTransactionConfirmation } from '~/web3/wallet/wait-wallet-transaction'
 import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
 import { walletProviderRequest } from '~/web3/wallet/wallet-provider-request'
@@ -151,7 +152,8 @@ async function preflightContractWrite(input: WalletWriteCallInput): Promise<bigi
  * 通过钱包提交合约写交易
  *
  * simulate 估 gas（加缓冲）→ 核对写意图 → `eth_sendTransaction` 提交 →
- * 等待确认收据。revert 在钱包弹窗前暴露；gas 显式传入，钱包无需再估算。
+ * 公共 RPC `waitForTransactionReceipt` 等到收据。revert 在钱包弹窗前暴露；
+ * gas 显式传入，钱包无需再估算。
  *
  * @param input 钱包与写调用参数
  * @returns 确认收据（含交易 hash）
@@ -209,8 +211,9 @@ export async function writeContractViaWallet(
   }
 
   assertWalletTransactionHash(hash)
+  notifyWriteHash(hash)
 
-  const receipt = await waitForWalletTransactionConfirmation({ provider, hash })
+  const receipt = await waitForWalletTransactionConfirmation({ hash })
   return { ...receipt, transactionHash: hash }
 }
 
