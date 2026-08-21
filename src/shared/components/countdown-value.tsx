@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode, useEffect, useState } from 'react'
 
+import { type CountdownPartId, formatCountdownParts } from '~/core/format-countdown'
 import { CountValue } from '~/shared/components/count-value'
 import { BSC_BLOCK_SECONDS } from '~/shared/lib/constants'
 import { cn } from '~/shared/lib/utils'
@@ -7,23 +8,6 @@ import { useWallClockSec, useWallClockStore } from '~/stores/wall-clock-store'
 
 /** 链读与墙钟偏差超过此值才重锚定（避免 refetch 抖动）。 */
 const RESYNC_DRIFT_SEC = 3
-
-export type CountdownPartId = 'days' | 'hours' | 'minutes' | 'seconds'
-
-export type CountdownPart = {
-  id: CountdownPartId
-  text: string
-}
-
-function pad2(n: number): string {
-  return String(n).padStart(2, '0')
-}
-
-function safeSec(totalSec: number): number {
-  const n = Math.floor(totalSec)
-  if (!Number.isFinite(n) || n <= 0) return 0
-  return n
-}
 
 /**
  * 剩余区块数 → 墙钟秒数。
@@ -44,7 +28,9 @@ export function remainingSecFromBlocks(
   if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return 0
   const remainingBlocks = epochEndBlock > currentBlock ? Number(epochEndBlock - currentBlock) : 0
   if (!Number.isFinite(remainingBlocks) || remainingBlocks <= 0) return 0
-  return Math.floor(remainingBlocks * secondsPerBlock)
+  const sec = Math.floor(remainingBlocks * secondsPerBlock)
+  // 亚秒剩余块 floor 成 0 会看起来已到期
+  return sec > 0 ? sec : 1
 }
 
 /**
@@ -114,46 +100,6 @@ export function useAnchoredRemainingSec(chainRemainingSec: number, enabled = tru
 
   if (!enabled) return 0
   return Math.max(0, endAtSec - nowSec)
-}
-
-/**
- * 剩余秒 → 倒计时各段文案。
- *
- * 不含 `seconds` 时精确到分钟：丢掉不足一分的秒；整段剩余不足 1 分钟仍显示 1 分钟。
- *
- * @param totalSec 剩余墙钟秒
- * @param units 格式阶梯（大→小）；含 `days` 时「时」为日内，否则为总小时
- * @param trim 是否从最大非 0 单位起裁掉左侧高位 0
- */
-export function formatCountdownParts(
-  totalSec: number,
-  units: readonly CountdownPartId[] = ['hours', 'minutes'],
-  trim = true,
-): CountdownPart[] {
-  let sec = safeSec(totalSec)
-  if (!units.includes('seconds') && sec > 0 && sec < 60) sec = 60
-  const hasDays = units.includes('days')
-  const days = Math.floor(sec / 86_400)
-  const hours = hasDays ? Math.floor((sec % 86_400) / 3600) : Math.floor(sec / 3600)
-  const minutes = Math.floor((sec % 3600) / 60)
-  const seconds = sec % 60
-
-  const byId: Record<CountdownPartId, { value: number; text: string }> = {
-    days: { value: days, text: String(days) },
-    hours: { value: hours, text: pad2(hours) },
-    minutes: { value: minutes, text: pad2(minutes) },
-    seconds: { value: seconds, text: pad2(seconds) },
-  }
-
-  const ordered = units.map((id) => ({ id, ...byId[id] }))
-
-  if (!trim) {
-    return ordered.map(({ id, text }) => ({ id, text }))
-  }
-
-  let start = ordered.findIndex((part) => part.value > 0)
-  if (start < 0) start = ordered.length - 1
-  return ordered.slice(start).map(({ id, text }) => ({ id, text }))
 }
 
 /**

@@ -104,26 +104,29 @@ function formatBlockCount(blocks: number): string {
 }
 
 /**
- * 由 epoch 区块长度与出块秒数生成文案插值（块数 / 小时 / 每日次数）。
+ * 由 epoch 区块长度与出块秒数生成 FAQ/引导插值（块数 / 小时 / 每日次数）。
+ *
+ * 墙钟必须用 length × 实测秒/块。按手册旧值 14400 块或 3 秒/块硬算，
+ * 在当前 BSC（length=96000、约 0.45 秒/块）会得到 80 小时 / 0.3 次。
+ * 入参非法时三项均为 `—`，不回填默认次数。
  *
  * @param epochLengthBlocks StakingPool.epoch().length
- * @param secondsPerBlock 出块秒数
- * @returns 插值标签；入参非法时三项均为 `—`
+ * @param secondsPerBlock 出块秒数（实测或兜底）
+ * @returns 插值标签
+ * @see docs/onchain-manual/contracts/stakingpool.md
  */
 export function formatEpochScheduleLabels(
   epochLengthBlocks: bigint | number | null | undefined,
   secondsPerBlock: number | null | undefined,
 ): EpochScheduleLabels {
   if (epochLengthBlocks == null || secondsPerBlock == null) return EMPTY_EPOCH_SCHEDULE
+  const epochsPerDay = epochsPerDayFromLength(epochLengthBlocks, secondsPerBlock)
+  if (epochsPerDay == null) return EMPTY_EPOCH_SCHEDULE
   const blocks = Number(epochLengthBlocks)
-  if (!(blocks > 0) || !Number.isFinite(blocks)) return EMPTY_EPOCH_SCHEDULE
-  if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return EMPTY_EPOCH_SCHEDULE
-  const epochSec = blocks * secondsPerBlock
-  if (!(epochSec > 0) || !Number.isFinite(epochSec)) return EMPTY_EPOCH_SCHEDULE
   return {
     blocks: formatBlockCount(blocks),
-    hours: formatScheduleCount(epochSec / 3_600),
-    timesPerDay: formatScheduleCount(SECONDS_PER_DAY / epochSec),
+    hours: formatScheduleCount((blocks * secondsPerBlock) / 3_600),
+    timesPerDay: formatScheduleCount(epochsPerDay),
   }
 }
 

@@ -3,6 +3,7 @@ import { type ReactNode } from 'react'
 import { formatUnits } from 'viem'
 
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatCountdownParts } from '~/core/format-countdown'
 import { luckyWinnersDateList, luckyWinnersSelectedDate } from '~/core/rewards/lucky-winners-date'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
@@ -40,12 +41,12 @@ const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 function formatCountdown(endTimeSec: bigint, nowSec: number): string | null {
   const end = Number(endTimeSec)
   if (!Number.isFinite(end) || end <= 0) return null
-  let remain = Math.max(0, end - nowSec)
-  if (remain > 0 && remain < 60) remain = 60
-  const h = Math.floor(remain / 3600)
-  const m = Math.floor((remain % 3600) / 60)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${pad(h)}:${pad(m)}`
+  const [hours, minutes] = formatCountdownParts(
+    Math.max(0, end - nowSec),
+    ['hours', 'minutes'],
+    false,
+  )
+  return `${hours?.text ?? '00'}:${minutes?.text ?? '00'}`
 }
 
 function formatUsd1Label(raw: bigint | null | undefined): string {

@@ -1,4 +1,5 @@
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatCountdownParts } from '~/core/format-countdown'
 
 /**
  * 预售购买相关的数学与状态判断（纯函数）。
@@ -374,7 +375,7 @@ export const DEFAULT_PHASE_COUNTDOWN_UNITS: PhaseCountdownUnits = {
 /**
  * 阶段倒计时文本：`天数 时 分`。
  *
- * 已到期返回全零；单位文案可注入（默认 d / h / m）。
+ * 分段规则与全站剩余时间相同：精确到分钟；不足 1 分钟仍显示 1 分。
  *
  * @param targetTime 目标时间（unix 秒）
  * @param nowSeconds 当前时间（unix 秒）
@@ -386,17 +387,12 @@ export function formatPhaseCountdown(
   nowSeconds = Math.floor(Date.now() / 1000),
   units: PhaseCountdownUnits = DEFAULT_PHASE_COUNTDOWN_UNITS,
 ): string {
-  let remaining = Number(targetTime) - nowSeconds
-  if (remaining <= 0) {
-    return `0${units.days} ${String(0).padStart(2, '0')}${units.hours} ${String(0).padStart(2, '0')}${units.minutes}`
-  }
-  if (remaining < 60) remaining = 60
-
-  const days = Math.floor(remaining / 86_400)
-  const hours = Math.floor((remaining % 86_400) / 3_600)
-  const minutes = Math.floor((remaining % 3_600) / 60)
-
-  return `${days}${units.days} ${String(hours).padStart(2, '0')}${units.hours} ${String(minutes).padStart(2, '0')}${units.minutes}`
+  const [days, hours, minutes] = formatCountdownParts(
+    Number(targetTime) - nowSeconds,
+    ['days', 'hours', 'minutes'],
+    false,
+  )
+  return `${days?.text ?? '0'}${units.days} ${hours?.text ?? '00'}${units.hours} ${minutes?.text ?? '00'}${units.minutes}`
 }
 
 /**
