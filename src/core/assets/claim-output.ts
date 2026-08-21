@@ -39,6 +39,38 @@ export function canSelectClaimOutput(amount: bigint, decimals: number): boolean 
   return isAssetsActionableAmount(amount, decimals)
 }
 
+/** 产出弹层关闭动画用的仓位快照；金额变了必须换，不能只看仓位 id。 */
+export type ClaimOutputHeldRow = {
+  id: string
+  blockReward: bigint
+  extraInterest: bigint
+}
+
+/**
+ * 产出弹层是否该换掉关闭动画缓存。
+ *
+ * 关闭时父组件会把 row 置空，缓存上一帧以免卸掉动画。
+ * 同一仓位领完加成后再打开时 id 不变、extraInterest 已是 0；只比 id 会继续显示可领按钮。
+ *
+ * @param held 当前缓存；尚未缓存视为需要写入
+ * @param next 本次打开的地址与仓位
+ * @returns 地址、仓位或可领金额任一不同则为 true
+ * @see src/views/dapp/assets/claim-modal/output-modal.tsx
+ */
+export function shouldReplaceHeldClaimOutput(args: {
+  held: { capturedAddress: string; row: ClaimOutputHeldRow } | null
+  next: { capturedAddress: string; row: ClaimOutputHeldRow }
+}): boolean {
+  const { held, next } = args
+  if (held == null) return true
+  return (
+    held.capturedAddress !== next.capturedAddress ||
+    held.row.id !== next.row.id ||
+    held.row.blockReward !== next.row.blockReward ||
+    held.row.extraInterest !== next.row.extraInterest
+  )
+}
+
 /**
  * 产出种类 → 定期仓写入口参数。
  *

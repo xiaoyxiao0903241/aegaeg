@@ -24,6 +24,49 @@ test('canSelectClaimOutput requires amount at the 0.01 display floor', async () 
   assert.equal(canSelectClaimOutput(GAGX_ACTION_FLOOR, GAGX_DECIMALS), true)
 })
 
+test('shouldReplaceHeldClaimOutput refreshes when extraInterest zeros on same stake', async () => {
+  const { shouldReplaceHeldClaimOutput } = await loadModule('/src/core/assets/claim-output.ts')
+  const address = '0xabc'
+  const held = {
+    capturedAddress: address,
+    row: { id: 'locked-180-0', blockReward: GAGX_ACTION_FLOOR, extraInterest: GAGX_ACTION_FLOOR },
+  }
+  assert.equal(
+    shouldReplaceHeldClaimOutput({
+      held,
+      next: {
+        capturedAddress: address,
+        row: {
+          id: 'locked-180-0',
+          blockReward: GAGX_ACTION_FLOOR,
+          extraInterest: GAGX_ACTION_FLOOR,
+        },
+      },
+    }),
+    false,
+  )
+  assert.equal(
+    shouldReplaceHeldClaimOutput({
+      held,
+      next: {
+        capturedAddress: address,
+        row: { id: 'locked-180-0', blockReward: GAGX_ACTION_FLOOR, extraInterest: 0n },
+      },
+    }),
+    true,
+  )
+  assert.equal(
+    shouldReplaceHeldClaimOutput({
+      held,
+      next: {
+        capturedAddress: address,
+        row: { id: 'locked-180-0', blockReward: 0n, extraInterest: GAGX_ACTION_FLOOR },
+      },
+    }),
+    true,
+  )
+})
+
 test('claimContribRequiredOrZero treats missing as 0', async () => {
   const { claimContribRequiredOrZero } = await loadModule('/src/core/assets/claim-output.ts')
   assert.equal(claimContribRequiredOrZero(undefined), 0n)

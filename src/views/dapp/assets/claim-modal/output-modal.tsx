@@ -7,6 +7,7 @@ import {
   canSelectClaimOutput,
   claimContribRequiredOrZero,
   type ClaimOutputKind,
+  shouldReplaceHeldClaimOutput,
 } from '~/core/assets/claim-output'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatAssetsActionAmount } from '~/core/exchange/token-amount'
@@ -49,9 +50,10 @@ export function AssetsClaimOutputModal({
   onSelectOutput: (kind: ClaimOutputKind) => void
 }) {
   const [held, setHeld] = useState<{ capturedAddress: string; row: AssetsStakeRow } | null>(null)
+  // 关闭动画要留上一帧；同一仓位领完后 id 不变，必须连可领金额一起比，否则加成按钮还会亮。
   if (open && capturedAddress && row) {
     const next = { capturedAddress, row }
-    if (held?.capturedAddress !== next.capturedAddress || held?.row.id !== next.row.id) {
+    if (shouldReplaceHeldClaimOutput({ held, next })) {
       setHeld(next)
     }
   }
