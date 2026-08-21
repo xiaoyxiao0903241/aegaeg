@@ -24,8 +24,10 @@ const REBASES_PROBE_CAP = 1_048_576n
 /** 按 client 缓存上次有效 rebase 下标，避免 Hub 每次从 0 倍增探测。 */
 const latestRebaseIndexByClient = new WeakMap<object, bigint>()
 
-/** 用最近 N 块时间戳差估出块秒数；256 ≈ 2 分钟窗，比 8 块稳；失败回落 FAQ 兜底。 */
-const BLOCK_TIME_SAMPLE = 256
+/**
+ * 近窗采样跨度（块）。只读头尾两个块，RPC 次数与跨度无关。
+ */
+const BLOCK_TIME_SAMPLE = 8_000
 
 export type StakingHubOverview = {
   /** StakingPool.poolAgxBalance — AGX 9 decimals */
@@ -50,7 +52,7 @@ export type StakingHubOverview = {
   currentBlock: bigint
   /** 近窗实测出块秒数；失败回落 BSC_BLOCK_SECONDS。 */
   secondsPerBlock: number
-  /** 由 epoch.length × secondsPerBlock 推算；失败为 null（禁 FAQ 默认）。 */
+  /** 由 epoch.length × secondsPerBlock 推算；失败为 null。 */
   epochsPerDay: number | null
 }
 

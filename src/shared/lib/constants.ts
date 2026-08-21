@@ -6,5 +6,5 @@
 /** DApp 表格默认每页行数。 */
 export const DAPP_TABLE_PAGE_SIZE = 5
 
-/** BSC 出块约 3 秒/块（FAQ 口径兜底）；有实测值时优先用实测。 */
-export const BSC_BLOCK_SECONDS = 3
+/** BSC 缺省出块秒数；无实测值时使用。 */
+export const BSC_BLOCK_SECONDS = 0.45

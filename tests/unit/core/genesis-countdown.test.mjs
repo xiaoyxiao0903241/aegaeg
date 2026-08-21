@@ -20,6 +20,10 @@ test('formatPhaseCountdown uses localized unit labels', async () => {
     formatPhaseCountdown(1_000n, 1_000, { days: 'd', hours: 'h', minutes: 'm' }),
     '0d 00h 00m',
   )
+  assert.equal(
+    formatPhaseCountdown(1_059n, 1_000, { days: 'd', hours: 'h', minutes: 'm' }),
+    '0d 00h 01m',
+  )
 })
 
 test('genesis countdown helpers detect elapsed boundaries', async () => {

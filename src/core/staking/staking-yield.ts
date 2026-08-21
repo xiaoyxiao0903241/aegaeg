@@ -68,15 +68,15 @@ export function epochsPerDayFromLength(
   return Number.isFinite(perDay) && perDay > 0 ? perDay : null
 }
 
-/** 链未就绪时 Epoch 文案占位；禁回退死写 14400 / 12 / 2。 */
+/** 链未就绪时 Epoch 文案占位。 */
 export const EPOCH_SCHEDULE_EMPTY = '—'
 
 export type EpochScheduleLabels = {
-  /** 单 epoch 区块数（千分位，如 `14,400`） */
+  /** 单 epoch 区块数（千分位） */
   blocks: string
-  /** 约小时数（整数优先，否则一位小数） */
+  /** 单 epoch 约小时数（最多一位小数） */
   hours: string
-  /** 每日 epoch 次数（整数优先，否则一位小数） */
+  /** 每日 epoch 次数（最多一位小数） */
   timesPerDay: string
 }
 
@@ -86,13 +86,14 @@ const EMPTY_EPOCH_SCHEDULE: EpochScheduleLabels = {
   timesPerDay: EPOCH_SCHEDULE_EMPTY,
 }
 
-/** 展示用约数：贴近整数则取整，否则一位小数。 */
-function formatApproxCount(n: number): string {
+/**
+ * 正数 → 文案：四舍五入到一位小数；整数不带 `.0`。
+ */
+function formatScheduleCount(n: number): string {
   if (!Number.isFinite(n) || !(n > 0)) return EPOCH_SCHEDULE_EMPTY
-  const rounded = Math.round(n)
-  if (Math.abs(n - rounded) < 1e-6) return String(rounded)
   const one = Math.round(n * 10) / 10
-  return one.toFixed(1)
+  if (!(one > 0) || !Number.isFinite(one)) return EPOCH_SCHEDULE_EMPTY
+  return String(one)
 }
 
 /** 区块数千分位（en-US 逗号，跨 locale 数字段一致）。 */
@@ -103,12 +104,11 @@ function formatBlockCount(blocks: number): string {
 }
 
 /**
- * 由链上 epoch.length × 秒/块 生成文案插值标签。
- *
- * 非法入参一律返回 `—`，禁止 FAQ 默认 2 / 12 / 14400。
+ * 由 epoch 区块长度与出块秒数生成文案插值（块数 / 小时 / 每日次数）。
  *
  * @param epochLengthBlocks StakingPool.epoch().length
- * @param secondsPerBlock 实测或兜底出块秒数
+ * @param secondsPerBlock 出块秒数
+ * @returns 插值标签；入参非法时三项均为 `—`
  */
 export function formatEpochScheduleLabels(
   epochLengthBlocks: bigint | number | null | undefined,
@@ -118,13 +118,12 @@ export function formatEpochScheduleLabels(
   const blocks = Number(epochLengthBlocks)
   if (!(blocks > 0) || !Number.isFinite(blocks)) return EMPTY_EPOCH_SCHEDULE
   if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return EMPTY_EPOCH_SCHEDULE
-  const epochsPerDay = epochsPerDayFromLength(epochLengthBlocks, secondsPerBlock)
-  if (epochsPerDay == null) return EMPTY_EPOCH_SCHEDULE
-  const hours = (blocks * secondsPerBlock) / 3_600
+  const epochSec = blocks * secondsPerBlock
+  if (!(epochSec > 0) || !Number.isFinite(epochSec)) return EMPTY_EPOCH_SCHEDULE
   return {
     blocks: formatBlockCount(blocks),
-    hours: formatApproxCount(hours),
-    timesPerDay: formatApproxCount(epochsPerDay),
+    hours: formatScheduleCount(epochSec / 3_600),
+    timesPerDay: formatScheduleCount(SECONDS_PER_DAY / epochSec),
   }
 }
 

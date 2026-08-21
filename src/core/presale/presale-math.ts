@@ -386,10 +386,11 @@ export function formatPhaseCountdown(
   nowSeconds = Math.floor(Date.now() / 1000),
   units: PhaseCountdownUnits = DEFAULT_PHASE_COUNTDOWN_UNITS,
 ): string {
-  const remaining = Number(targetTime) - nowSeconds
+  let remaining = Number(targetTime) - nowSeconds
   if (remaining <= 0) {
     return `0${units.days} ${String(0).padStart(2, '0')}${units.hours} ${String(0).padStart(2, '0')}${units.minutes}`
   }
+  if (remaining < 60) remaining = 60
 
   const days = Math.floor(remaining / 86_400)
   const hours = Math.floor((remaining % 86_400) / 3_600)

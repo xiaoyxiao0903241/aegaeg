@@ -75,11 +75,7 @@ export function AssetsXminePositionCard({
   const remainingValue: ReactNode = inWarmupLocked ? (
     <>
       {lockedPrefix}{' '}
-      <CountdownValue
-        separators={[':', ':']}
-        totalSec={remainingSec}
-        units={['hours', 'minutes', 'seconds']}
-      />
+      <CountdownValue separators={[':']} totalSec={remainingSec} units={['hours', 'minutes']} />
     </>
   ) : (
     redeemAnytimeLabel

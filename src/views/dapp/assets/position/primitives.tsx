@@ -78,9 +78,9 @@ export function AssetsPositionRowHeader({
       expiredLabel
     ) : remainingAt > ZERO_BI ? (
       <CountdownValue
-        separators={[`${dayUnit} `, ':', ':']}
+        separators={[`${dayUnit} `, ':']}
         totalSec={remainingSec}
-        units={['days', 'hours', 'minutes', 'seconds']}
+        units={['days', 'hours', 'minutes']}
       />
     ) : (
       '—'
@@ -116,9 +116,9 @@ function AssetsWarmupCountdown({
   const totalSec = useAnchoredRemainingSec(remainingSec)
   return (
     <CountdownValue
-      separators={[`${dayUnit} `, ':', ':']}
+      separators={[`${dayUnit} `, ':']}
       totalSec={totalSec}
-      units={['days', 'hours', 'minutes', 'seconds']}
+      units={['days', 'hours', 'minutes']}
     />
   )
 }

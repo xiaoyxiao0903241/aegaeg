@@ -54,31 +54,41 @@ test('epochsPerDayFromLength = daySec / (length × secPerBlock)', () => {
   assert.equal(epochsPerDayFromLength(14_400n, 0), null)
 })
 
-test('formatEpochScheduleLabels from epoch length; no FAQ defaults', () => {
+test('formatEpochScheduleLabels from epoch length × seconds/block', () => {
+  assert.deepEqual(formatEpochScheduleLabels(96_000n, 0.45), {
+    blocks: '96,000',
+    hours: '12',
+    timesPerDay: '2',
+  })
+  assert.deepEqual(formatEpochScheduleLabels(96_000n, 0.44921875), {
+    blocks: '96,000',
+    hours: '12',
+    timesPerDay: '2',
+  })
+  assert.deepEqual(formatEpochScheduleLabels(96_000n, 3), {
+    blocks: '96,000',
+    hours: '80',
+    timesPerDay: '0.3',
+  })
   assert.deepEqual(formatEpochScheduleLabels(14_400n, 3), {
     blocks: '14,400',
     hours: '12',
     timesPerDay: '2',
   })
-  assert.deepEqual(formatEpochScheduleLabels(7_200n, 3), {
-    blocks: '7,200',
-    hours: '6',
-    timesPerDay: '4',
-  })
-  assert.deepEqual(formatEpochScheduleLabels(10_000n, 3), {
-    blocks: '10,000',
-    hours: '8.3',
-    timesPerDay: '2.9',
+  assert.deepEqual(formatEpochScheduleLabels(15_000n, 3), {
+    blocks: '15,000',
+    hours: '12.5',
+    timesPerDay: '1.9',
   })
   const empty = {
     blocks: EPOCH_SCHEDULE_EMPTY,
     hours: EPOCH_SCHEDULE_EMPTY,
     timesPerDay: EPOCH_SCHEDULE_EMPTY,
   }
-  assert.deepEqual(formatEpochScheduleLabels(null, 3), empty)
-  assert.deepEqual(formatEpochScheduleLabels(14_400n, null), empty)
-  assert.deepEqual(formatEpochScheduleLabels(0n, 3), empty)
-  assert.deepEqual(formatEpochScheduleLabels(14_400n, 0), empty)
+  assert.deepEqual(formatEpochScheduleLabels(null, 0.45), empty)
+  assert.deepEqual(formatEpochScheduleLabels(96_000n, null), empty)
+  assert.deepEqual(formatEpochScheduleLabels(0n, 0.45), empty)
+  assert.deepEqual(formatEpochScheduleLabels(96_000n, 0), empty)
 })
 
 test('compoundInterest daily compounding', () => {

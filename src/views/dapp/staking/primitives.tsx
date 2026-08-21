@@ -67,15 +67,10 @@ export function RebaseCountdownValue({
             {units.minutes}
           </Text>
         ),
-        seconds: (
-          <Text as="span" variant="detail">
-            {units.seconds}
-          </Text>
-        ),
       }}
       totalSec={remainingSec}
       trim={false}
-      units={['hours', 'minutes', 'seconds']}
+      units={['hours', 'minutes']}
     />
   )
 }

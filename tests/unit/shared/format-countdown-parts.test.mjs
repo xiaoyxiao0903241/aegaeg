@@ -5,52 +5,54 @@ import { loadModule } from '../load-module.mjs'
 
 test('formatCountdownParts: units with days + trim drops leading zeros', async () => {
   const { formatCountdownParts } = await loadModule('/src/shared/components/countdown-value.tsx')
-  assert.deepEqual(formatCountdownParts(3661, ['days', 'hours', 'minutes', 'seconds'], true), [
+  assert.deepEqual(formatCountdownParts(3661, ['days', 'hours', 'minutes'], true), [
     { id: 'hours', text: '01' },
     { id: 'minutes', text: '01' },
-    { id: 'seconds', text: '01' },
   ])
-  assert.deepEqual(formatCountdownParts(61, ['days', 'hours', 'minutes', 'seconds'], true), [
+  assert.deepEqual(formatCountdownParts(61, ['days', 'hours', 'minutes'], true), [
     { id: 'minutes', text: '01' },
-    { id: 'seconds', text: '01' },
   ])
 })
 
 test('formatCountdownParts: trim=false keeps full ladder', async () => {
   const { formatCountdownParts } = await loadModule('/src/shared/components/countdown-value.tsx')
-  assert.deepEqual(formatCountdownParts(61, ['days', 'hours', 'minutes', 'seconds'], false), [
+  assert.deepEqual(formatCountdownParts(61, ['days', 'hours', 'minutes'], false), [
     { id: 'days', text: '0' },
     { id: 'hours', text: '00' },
     { id: 'minutes', text: '01' },
-    { id: 'seconds', text: '01' },
   ])
-  assert.deepEqual(formatCountdownParts(61, ['hours', 'minutes', 'seconds'], false), [
+  assert.deepEqual(formatCountdownParts(61, ['hours', 'minutes'], false), [
     { id: 'hours', text: '00' },
     { id: 'minutes', text: '01' },
-    { id: 'seconds', text: '01' },
   ])
 })
 
 test('formatCountdownParts: units without days uses total hours', async () => {
   const { formatCountdownParts } = await loadModule('/src/shared/components/countdown-value.tsx')
-  assert.deepEqual(formatCountdownParts(90_000, ['hours', 'minutes', 'seconds'], true), [
+  assert.deepEqual(formatCountdownParts(90_000, ['hours', 'minutes'], true), [
     { id: 'hours', text: '25' },
     { id: 'minutes', text: '00' },
-    { id: 'seconds', text: '00' },
   ])
 })
 
 test('formatCountdownParts: units with days keeps non-zero days', async () => {
   const { formatCountdownParts } = await loadModule('/src/shared/components/countdown-value.tsx')
-  assert.deepEqual(
-    formatCountdownParts(86_400 + 3661, ['days', 'hours', 'minutes', 'seconds'], true),
-    [
-      { id: 'days', text: '1' },
-      { id: 'hours', text: '01' },
-      { id: 'minutes', text: '01' },
-      { id: 'seconds', text: '01' },
-    ],
-  )
+  assert.deepEqual(formatCountdownParts(86_400 + 3661, ['days', 'hours', 'minutes'], true), [
+    { id: 'days', text: '1' },
+    { id: 'hours', text: '01' },
+    { id: 'minutes', text: '01' },
+  ])
+})
+
+test('formatCountdownParts: sub-minute remaining still shows 1 minute', async () => {
+  const { formatCountdownParts } = await loadModule('/src/shared/components/countdown-value.tsx')
+  assert.deepEqual(formatCountdownParts(59, ['hours', 'minutes'], true), [
+    { id: 'minutes', text: '01' },
+  ])
+  assert.deepEqual(formatCountdownParts(0, ['hours', 'minutes'], false), [
+    { id: 'hours', text: '00' },
+    { id: 'minutes', text: '00' },
+  ])
 })
 
 test('remainingSecFromBlocks zeros when missing or past', async () => {
@@ -60,10 +62,10 @@ test('remainingSecFromBlocks zeros when missing or past', async () => {
   assert.equal(remainingSecFromBlocks(5n, 10n), 0)
 })
 
-test('remainingSecFromBlocks defaults to 3s/block', async () => {
+test('remainingSecFromBlocks defaults to 0.45s/block', async () => {
   const { remainingSecFromBlocks } = await loadModule('/src/shared/components/countdown-value.tsx')
-  assert.equal(remainingSecFromBlocks(1200n, 0n), 3600)
-  assert.equal(remainingSecFromBlocks(101n, 100n), 3)
+  assert.equal(remainingSecFromBlocks(8000n, 0n), 3600)
+  assert.equal(remainingSecFromBlocks(10n, 0n), 4)
 })
 
 test('remainingSecFromBlocks accepts secondsPerBlock', async () => {

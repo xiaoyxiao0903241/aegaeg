@@ -119,16 +119,19 @@ export function useAnchoredRemainingSec(chainRemainingSec: number, enabled = tru
 /**
  * 剩余秒 → 倒计时各段文案。
  *
+ * 不含 `seconds` 时精确到分钟：丢掉不足一分的秒；整段剩余不足 1 分钟仍显示 1 分钟。
+ *
  * @param totalSec 剩余墙钟秒
  * @param units 格式阶梯（大→小）；含 `days` 时「时」为日内，否则为总小时
  * @param trim 是否从最大非 0 单位起裁掉左侧高位 0
  */
 export function formatCountdownParts(
   totalSec: number,
-  units: readonly CountdownPartId[] = ['hours', 'minutes', 'seconds'],
+  units: readonly CountdownPartId[] = ['hours', 'minutes'],
   trim = true,
 ): CountdownPart[] {
-  const sec = safeSec(totalSec)
+  let sec = safeSec(totalSec)
+  if (!units.includes('seconds') && sec > 0 && sec < 60) sec = 60
   const hasDays = units.includes('days')
   const days = Math.floor(sec / 86_400)
   const hours = hasDays ? Math.floor((sec % 86_400) / 3600) : Math.floor(sec / 3600)
@@ -159,11 +162,11 @@ export function formatCountdownParts(
  * - `units`：格式阶梯（大→小）
  * - `trim`：是否裁掉左侧高位 0
  * - `separators`：按 `units` 从左到右，段与段之间的分隔（已 i18n；含「天」这类单位文案）
- * - `labels`：各段数字后、分隔前的附加文案（如 rebase 的 时/分/秒）
+ * - `labels`：各段数字后、分隔前的附加文案（如 rebase 的 时/分）
  */
 export function CountdownValue({
   totalSec,
-  units = ['hours', 'minutes', 'seconds'],
+  units = ['hours', 'minutes'],
   trim = true,
   separators,
   labels,

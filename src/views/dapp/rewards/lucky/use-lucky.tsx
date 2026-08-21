@@ -40,12 +40,12 @@ const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 function formatCountdown(endTimeSec: bigint, nowSec: number): string | null {
   const end = Number(endTimeSec)
   if (!Number.isFinite(end) || end <= 0) return null
-  const remain = Math.max(0, end - nowSec)
+  let remain = Math.max(0, end - nowSec)
+  if (remain > 0 && remain < 60) remain = 60
   const h = Math.floor(remain / 3600)
   const m = Math.floor((remain % 3600) / 60)
-  const s = remain % 60
   const pad = (n: number) => String(n).padStart(2, '0')
-  return `${pad(h)}:${pad(m)}:${pad(s)}`
+  return `${pad(h)}:${pad(m)}`
 }
 
 function formatUsd1Label(raw: bigint | null | undefined): string {
