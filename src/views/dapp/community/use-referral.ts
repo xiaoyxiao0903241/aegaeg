@@ -43,13 +43,14 @@ function readPendingReferrerFromEnvironment(): Address | null {
  *
  * 链上读取是否已绑定、推荐人与直邀数；绑定前校验父节点已绑定或为 root，
  * 成功后失效相关查询缓存。绑定有 5 秒冷却，防止重复提交。
+ * 改推荐人输入会清掉本路径的未知回执锁，避免超时后按钮一直灰。
  *
  * @see docs/onchain-manual/contracts/referral.md
  */
 export function useCommunityReferral() {
   const account = useActiveAccount()
   const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
-  const [referrerInput, setReferrerInput] = useState(() => pendingReferrer ?? '')
+  const [referrerInput, setReferrerInputState] = useState(() => pendingReferrer ?? '')
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const bindSucceededRef = useRef(false)
@@ -131,6 +132,11 @@ export function useCommunityReferral() {
 
   const isSubmitting = bindMutation.isPending
   const isLocked = bindMutation.isLocked
+
+  function setReferrerInput(value: string) {
+    bindMutation.clearLock()
+    setReferrerInputState(value)
+  }
 
   const bind = useCallback(async () => {
     if (isBindCooldown || isSubmitting || isLocked) return false

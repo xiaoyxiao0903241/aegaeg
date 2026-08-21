@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { canClaimWhen } from '~/core/wallet/write-cta'
+import { canClaimWhen, unknownReceiptLocksIntent } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -43,6 +43,7 @@ export function useBuffer() {
   const durationQuery = usePrincipalReleaseDurationDays()
   /** 只转被点卡的刷新图标；与释放池 refreshingDays 同构 */
   const [refreshingToken, setRefreshingToken] = useState<'agx' | 'gagx' | null>(null)
+  const [latchedToken, setLatchedToken] = useState<'agx' | 'gagx' | null>(null)
 
   const claimAgx = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
@@ -65,14 +66,19 @@ export function useBuffer() {
   const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
   const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
   const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
-  // 同 WRITE_PATH：任一在途/锁定时两侧都不可再点
   const pathBusy = claimAgx.isLocked || claimGagx.isLocked
+  const pathLatched = claimAgx.isLatched || claimGagx.isLatched
   const canClaimAgx =
     migrationOk &&
     canClaimWhen({
       walletReady,
       writeReady,
-      unknownReceiptLocked: pathBusy,
+      unknownReceiptLocked: unknownReceiptLocksIntent({
+        pathBusy,
+        pathLatched,
+        latchedIntent: latchedToken,
+        intent: 'agx',
+      }),
       claimable: agxClaimable,
     })
   const canClaimGagx =
@@ -80,7 +86,12 @@ export function useBuffer() {
     canClaimWhen({
       walletReady,
       writeReady,
-      unknownReceiptLocked: pathBusy,
+      unknownReceiptLocked: unknownReceiptLocksIntent({
+        pathBusy,
+        pathLatched,
+        latchedIntent: latchedToken,
+        intent: 'gagx',
+      }),
       claimable: gagxClaimable,
     })
   const agxPctLabel = formatReleasePct(agxClaimable, agxReleasing)
@@ -88,11 +99,19 @@ export function useBuffer() {
 
   async function onClaimAgx() {
     if (!canClaimAgx) return
+    if (latchedToken !== 'agx') {
+      claimAgx.clearLock()
+      setLatchedToken('agx')
+    }
     await claimAgx.mutate()
   }
 
   async function onClaimGagx() {
     if (!canClaimGagx) return
+    if (latchedToken !== 'gagx') {
+      claimAgx.clearLock()
+      setLatchedToken('gagx')
+    }
     await claimGagx.mutate()
   }
 

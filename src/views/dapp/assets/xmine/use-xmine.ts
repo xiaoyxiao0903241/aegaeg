@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { unknownReceiptLocksIntent } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useX0MiningLifetimeReward, useX0MiningLogs } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -39,6 +40,7 @@ export function useXmineDock() {
   const { walletReady } = useDappHost()
   const { quote, setQuote, sort, setSort } = useXmineSessionStore()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
+  const [latchedAction, setLatchedAction] = useState<'claim' | 'activate' | 'unstake' | null>(null)
 
   const copy = t.assets.products.xmine
   const pageSize = t.assets.position.pageSize
@@ -89,13 +91,32 @@ export function useXmineDock() {
   const totalRows = isEmpty ? 0 : 1
 
   const busy = claim.isPending || activateWarmup.isPending || unstake.isPending
-  const locked = claim.isLocked
+  const pathBusy = claim.isLocked
+  const pathLatched = claim.isLatched
+
+  function noteAction(next: 'claim' | 'activate' | 'unstake') {
+    if (latchedAction !== next) {
+      claim.clearLock()
+      setLatchedAction(next)
+    }
+  }
+
+  function locksAction(intent: 'claim' | 'activate' | 'unstake') {
+    return unknownReceiptLocksIntent({
+      pathBusy,
+      pathLatched,
+      latchedIntent: latchedAction,
+      intent,
+    })
+  }
 
   function handleClaim() {
+    noteAction('claim')
     void claim.mutate()
   }
 
   function handleActivateWarmup() {
+    noteAction('activate')
     void activateWarmup.mutate()
   }
 
@@ -104,6 +125,7 @@ export function useXmineDock() {
   }
 
   function requestUnstake() {
+    noteAction('unstake')
     setConfirmUnstake(true)
   }
 
@@ -124,7 +146,9 @@ export function useXmineDock() {
     voucherAddress,
     totalRows,
     busy,
-    locked,
+    claimLocked: locksAction('claim'),
+    redeemLocked: locksAction('unstake'),
+    activateLocked: locksAction('activate'),
     confirmUnstake,
     setConfirmUnstake,
     handleClaim,

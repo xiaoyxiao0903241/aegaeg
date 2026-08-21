@@ -1,6 +1,9 @@
+import { useState } from 'react'
+
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { nextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
+import { unknownReceiptLocksIntent } from '~/core/wallet/write-cta'
 import {
   useCommunityFundTotal,
   useQualifiedPartitions,
@@ -46,6 +49,7 @@ export function useGenesisDock() {
     useCommunityFundTotal(sessionReady)
   const teamClaim = useTeamRewardClaim()
   const communityFundClaim = useCommunityFundClaim()
+  const [signedIntent, setSignedIntent] = useState<'team' | 'community' | null>(null)
 
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
   const hasRank = displayRank > 0
@@ -144,7 +148,15 @@ export function useGenesisDock() {
         ),
       })
 
+  function noteSignedIntent(next: 'team' | 'community') {
+    if (signedIntent !== next) {
+      teamClaim.clearLock()
+      setSignedIntent(next)
+    }
+  }
+
   function onClaimTeamReward() {
+    noteSignedIntent('team')
     void teamClaim.claim().then((result) => {
       toastClaimResult(result, {
         claimSuccess: t.rewards.claimSuccess,
@@ -154,6 +166,7 @@ export function useGenesisDock() {
   }
 
   function onClaimCommunityFund() {
+    noteSignedIntent('community')
     void communityFundClaim.claim().then((result) => {
       toastClaimResult(result, {
         claimSuccess: t.rewards.claimSuccess,
@@ -161,6 +174,25 @@ export function useGenesisDock() {
       })
     })
   }
+
+  const signedBusy = teamClaim.isLocked
+  const signedLatched = teamClaim.isLatched
+  const teamClaimCanClaim =
+    teamClaim.canAttempt &&
+    !unknownReceiptLocksIntent({
+      pathBusy: signedBusy,
+      pathLatched: signedLatched,
+      latchedIntent: signedIntent,
+      intent: 'team',
+    })
+  const communityFundClaimCanClaim =
+    communityFundClaim.canAttempt &&
+    !unknownReceiptLocksIntent({
+      pathBusy: signedBusy,
+      pathLatched: signedLatched,
+      latchedIntent: signedIntent,
+      intent: 'community',
+    })
 
   return {
     g,
@@ -184,14 +216,14 @@ export function useGenesisDock() {
     teamClaimableValue,
     teamLoading,
     teamClaimIsClaiming: teamClaim.isClaiming,
-    teamClaimCanClaim: teamClaim.canClaim,
+    teamClaimCanClaim,
     onClaimTeamReward,
     communityClaimable,
     communityLockedMeta,
     communityClaimableValue,
     communityFundLoading,
     communityFundClaimIsClaiming: communityFundClaim.isClaiming,
-    communityFundClaimCanClaim: communityFundClaim.canClaim,
+    communityFundClaimCanClaim,
     onClaimCommunityFund,
   }
 }

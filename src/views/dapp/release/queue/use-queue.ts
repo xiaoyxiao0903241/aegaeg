@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { canClaimWhen } from '~/core/wallet/write-cta'
+import { canClaimWhen, unknownReceiptLocksIntent } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -63,6 +63,7 @@ export function useQueue() {
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
+  const [latchedPlan, setLatchedPlan] = useState<number | null>(null)
   const [refreshingDays, setRefreshingDays] = useState<number | null>(null)
 
   const claim = useChainMutation({
@@ -105,7 +106,12 @@ export function useQueue() {
         canClaimWhen({
           walletReady,
           writeReady,
-          unknownReceiptLocked: locked,
+          unknownReceiptLocked: unknownReceiptLocksIntent({
+            pathBusy: locked,
+            pathLatched: claim.isLatched,
+            latchedIntent: latchedPlan,
+            intent: planIndex,
+          }),
           claimable,
           planIndexOk: planIndex >= 0,
         }),
@@ -121,7 +127,14 @@ export function useQueue() {
   })
 
   async function onClaim(planIndex: number) {
-    if (!writeReady || locked || planIndex < 0) return
+    if (!writeReady || planIndex < 0) return
+    if (latchedPlan !== planIndex) {
+      // 换档位等于换了一笔领取，先解除上次未知结果锁定
+      claim.clearLock()
+      setLatchedPlan(planIndex)
+    } else if (locked) {
+      return
+    }
     setPendingPlan(planIndex)
     try {
       await claim.mutate(planIndex)

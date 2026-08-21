@@ -75,6 +75,25 @@ export function canClaimWhen(args: {
 }
 
 /**
+ * 未知回执只闩住上次意图；提交在途仍挡住整条写路径。
+ *
+ * @param pathBusy `useChainMutation.isLocked`（latched 或 in-flight）
+ * @param pathLatched `useChainMutation.isLatched`（仅未知回执）
+ * @param latchedIntent 上次提交的意图
+ * @param intent 当前 CTA 的意图
+ */
+export function unknownReceiptLocksIntent<T>(args: {
+  pathBusy: boolean
+  pathLatched: boolean
+  latchedIntent: T | null
+  intent: T
+}): boolean {
+  if (!args.pathBusy) return false
+  if (!args.pathLatched) return true
+  return args.latchedIntent === args.intent
+}
+
+/**
  * 质押 / 债券 / xmine 主 CTA 是否禁用。
  *
  * 回执状态未知、正在提交或钱包/链未就绪时禁用，避免重复或过早发起写交易。

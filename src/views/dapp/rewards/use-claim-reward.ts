@@ -73,10 +73,15 @@ export function useClaimReward(execute: RewardClaimExecutor) {
     },
   })
 
+  const canAttempt = Boolean(account && token && sessionReady && writeReady)
   return {
     claim: () => claimMutation.mutate(),
     isClaiming: claimMutation.isPending,
-    canClaim: Boolean(account && token && sessionReady && writeReady) && !claimMutation.isLocked,
+    isLocked: claimMutation.isLocked,
+    isLatched: claimMutation.isLatched,
+    clearLock: () => claimMutation.clearLock(),
+    canAttempt,
+    canClaim: canAttempt && !claimMutation.isLocked,
   }
 }
 

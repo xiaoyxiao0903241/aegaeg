@@ -37,7 +37,10 @@ export type AssetsXminePositionCardProps = {
   warmupGons: bigint
   warmupEndTime: bigint
   busy: boolean
-  locked: boolean
+  locked?: boolean
+  claimLocked?: boolean
+  redeemLocked?: boolean
+  activateLocked?: boolean
   onClaim: () => void
   onActivateWarmup: () => void
   onRequestUnstake: () => void
@@ -63,6 +66,9 @@ export function AssetsXminePositionCard({
   warmupEndTime,
   busy,
   locked,
+  claimLocked,
+  redeemLocked,
+  activateLocked,
   onClaim,
   onActivateWarmup,
   onRequestUnstake,
@@ -122,7 +128,7 @@ export function AssetsXminePositionCard({
         <MainButton
           className="h-7 min-h-7 text-xs"
           density="inverse"
-          disabled={locked || busy}
+          disabled={(activateLocked ?? locked) || busy}
           onClick={onActivateWarmup}
         >
           {activateWarmupLabel}
@@ -133,10 +139,12 @@ export function AssetsXminePositionCard({
           canClaim={isAssetsActionableAmount(pending, X_DECIMALS) && !inWarmup}
           canRedeem={isAssetsActionableAmount(miningStake, GAGX_DECIMALS) && !inWarmup}
           claimLabel={claimLabel}
+          claimLocked={claimLocked}
           locked={locked}
           onClaim={onClaim}
           onRedeem={onRequestUnstake}
           redeemLabel={redeemLabel}
+          redeemLocked={redeemLocked}
         />
       )}
     </Card>

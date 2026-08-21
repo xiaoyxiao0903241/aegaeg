@@ -45,6 +45,47 @@ test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable
   )
 })
 
+test('unknownReceiptLocksIntent: in-flight blocks all; latch only same intent', async () => {
+  const { unknownReceiptLocksIntent } = await loadModule('/src/core/wallet/write-cta.ts')
+
+  assert.equal(
+    unknownReceiptLocksIntent({
+      pathBusy: false,
+      pathLatched: false,
+      latchedIntent: 0,
+      intent: 0,
+    }),
+    false,
+  )
+  assert.equal(
+    unknownReceiptLocksIntent({
+      pathBusy: true,
+      pathLatched: false,
+      latchedIntent: 0,
+      intent: 1,
+    }),
+    true,
+  )
+  assert.equal(
+    unknownReceiptLocksIntent({
+      pathBusy: true,
+      pathLatched: true,
+      latchedIntent: 0,
+      intent: 0,
+    }),
+    true,
+  )
+  assert.equal(
+    unknownReceiptLocksIntent({
+      pathBusy: true,
+      pathLatched: true,
+      latchedIntent: 0,
+      intent: 1,
+    }),
+    false,
+  )
+})
+
 test('writeCtaDisabled blocks when latched, submitting, or not ready', async () => {
   const { writeCtaDisabled } = await loadModule('/src/core/wallet/write-cta.ts')
 

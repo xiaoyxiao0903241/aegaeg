@@ -195,5 +195,6 @@ export function useGenesisPurchaseActions({
     submitPurchase: () => purchaseMutation.mutate(),
     isSubmitting: purchaseMutation.isPending,
     isLocked: purchaseMutation.isLocked,
+    clearLock: () => purchaseMutation.clearLock(),
   }
 }

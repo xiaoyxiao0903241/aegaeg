@@ -10,6 +10,7 @@ import {
   isAssetsActionableAmount,
 } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
+import { unknownReceiptLocksIntent } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useBondFlowBurnLogs,
@@ -160,6 +161,7 @@ export function usePositionDock(product: AssetsProduct) {
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [claimOutput, setClaimOutput] = useState<ClaimOutputState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
+  const [latchedIntent, setLatchedIntent] = useState<string | null>(null)
 
   const copy = t.assets.products[product]
   const stakingTarget: 'stake' | 'lpbond' | 'burnbond' =
@@ -227,6 +229,26 @@ export function usePositionDock(product: AssetsProduct) {
     return interpolate(t.assets.claim.releaseDays, { days: period })
   }
 
+  const pathBusy = redeemWrite.isLocked || activateWarmupWrite.isLocked
+  const pathLatched = redeemWrite.isLatched || activateWarmupWrite.isLatched
+
+  function noteIntent(next: string) {
+    if (latchedIntent !== next) {
+      // 换行或换操作等于换了一笔写入，先解除上次未知结果锁定
+      redeemWrite.clearLock()
+      setLatchedIntent(next)
+    }
+  }
+
+  function locksIntent(intent: string) {
+    return unknownReceiptLocksIntent({
+      pathBusy,
+      pathLatched,
+      latchedIntent,
+      intent,
+    })
+  }
+
   const stakeRows = useMemo(() => {
     const rows = [...(stakeQuery.data ?? [])]
     rows.sort((a, b) => compareBySort(stakeSortKey(a), stakeSortKey(b), sort))
@@ -258,6 +280,7 @@ export function usePositionDock(product: AssetsProduct) {
 
   function requestRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
     if (!address) return
+    noteIntent(`redeem:${row.id}`)
     const amount =
       kind === 'stake'
         ? (row as AssetsStakeRow).kind === 'liquid'
@@ -286,6 +309,7 @@ export function usePositionDock(product: AssetsProduct) {
   function openStakeClaim(row: AssetsStakeRow) {
     if (!address) return
     if (row.inWarmup) return
+    noteIntent(`claim:${row.id}`)
     const periodLabel = formatPeriodLabel(row.period)
     setClaim({ open: false })
 
@@ -331,6 +355,7 @@ export function usePositionDock(product: AssetsProduct) {
   function openBondClaim(row: AssetsBondRow) {
     if (!address) return
     if (!isAssetsActionableAmount(row.profit, GAGX_DECIMALS)) return
+    noteIntent(`claim:${row.id}`)
     const periodLabel = formatPeriodLabel(String(row.period))
     openMixedClaim({
       capturedAddress: address,
@@ -361,14 +386,15 @@ export function usePositionDock(product: AssetsProduct) {
     runRedeem(redeem.kind, redeem.row, redeem.capturedAddress)
   }
 
-  function activateWarmup() {
+  function activateWarmup(row?: AssetsStakeRow) {
+    noteIntent(`warmup:${row?.id ?? 'liquid-warmup'}`)
     void activateWarmupWrite.mutate()
   }
 
   return {
     product,
     walletReady,
-    locked: redeemWrite.isLocked || activateWarmupWrite.isLocked,
+    locksIntent,
     busy: redeemWrite.isPending || activateWarmupWrite.isPending,
     quote,
     setQuote,

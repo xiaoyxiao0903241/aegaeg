@@ -9,6 +9,10 @@ import {
   planLabel,
 } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
+import {
+  formatApiContributionPoints,
+  formatContributionPoints,
+} from '~/core/exchange/format-contribution-points'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import {
@@ -251,11 +255,11 @@ export function useMixedClaim(view: MixedClaimView) {
     ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
     : formatApiAmount(null)
   const requiredText = contribQuery.data
-    ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
-    : formatApiAmount(null)
+    ? formatContributionPoints(contribQuery.data.requiredContribution, AGX_DECIMALS)
+    : formatApiContributionPoints(null)
   const haveText = contribQuery.data
-    ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS)
-    : formatApiAmount(null)
+    ? formatContributionPoints(contribQuery.data.contribution, AGX_DECIMALS)
+    : formatApiContributionPoints(null)
   const showContributionShort =
     !contributionOk &&
     (view === 'lucky' ? amount > ZERO_BI && contribQuery.data != null : daoContributionBlocked)

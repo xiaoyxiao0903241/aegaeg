@@ -75,8 +75,9 @@ export function useTurbineExchangeSession(
   const { writeReady } = useWriteReadiness()
   const walletReady = hasWalletAccount(account)
 
-  const [segment, setSegment] = useState<TurbineSegment>('unlock')
+  const [segment, setSegmentState] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
+  const [latchedClaimIndex, setLatchedClaimIndex] = useState<number | null>(null)
 
   const quotaQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineQuota,
@@ -147,6 +148,11 @@ export function useTurbineExchangeSession(
   function fillPercent(percent: number) {
     clearLock()
     fillPercentRaw(percent)
+  }
+
+  function setSegment(next: TurbineSegment) {
+    if (next !== segment) clearLock()
+    setSegmentState(next)
   }
 
   const quoteQuery = useChainQuery({
@@ -277,6 +283,10 @@ export function useTurbineExchangeSession(
   }
 
   async function submitClaim(index: number) {
+    if (latchedClaimIndex !== index) {
+      clearLock()
+      setLatchedClaimIndex(index)
+    }
     setClaimingIndex(index)
     return submitTurbineClaim({
       core: { runSubmit },
@@ -353,6 +363,8 @@ export function useTurbineExchangeSession(
     isQuoting: unlockAmountIn > ZERO_BI && quoteQuery.isPending,
     isBalancesLoading,
     isSubmitting,
+    blockResubmit,
+    latchedClaimIndex,
     claimingIndex,
     submitUnlock,
     submitClaim,

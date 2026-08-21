@@ -41,10 +41,6 @@ export function useGenesisSession() {
   })
   const canPurchaseBase = model.canPurchase && writeReady
 
-  function setShares(next: number) {
-    setSharesDraft(next)
-  }
-
   const actions = useGenesisPurchaseActions({
     wallet: {
       account: reads.account,
@@ -62,6 +58,12 @@ export function useGenesisSession() {
       purchaseAmount: model.purchaseAmount,
     },
   })
+
+  function setShares(next: number) {
+    // 改份额等于换了一笔购买，先解除上次未知结果锁定
+    actions.clearLock()
+    setSharesDraft(next)
+  }
 
   return {
     shares: model.shares,
