@@ -119,7 +119,7 @@
 - **稿：** https://www.figma.com/design/uiKwzwIoD06phS0husdqjB/…（fileKey `uiKwzwIoD06phS0husdqjB`）；页表见 `figma-pages.md`；H5 不新增同义文案。
 - **链：** EVM · **仅 BSC**；地址 `contracts.ts` ← **仅** `VITE_BSC_*`（fail-closed）。
 - **栈：** React + Vite + TS + Tailwind；钱包 thirdweb v5；连接 ≠ 业务登录（SIWE + JWT / `sessionReady`）。
-- **写链：** intent → preflight → 再读 address/chainId → assert → send；approve 后 live 重闸；unknown → path lock。
+- **写链：** 核会话地址/链 → simulate 挡 revert → 再核一次 → send（不设 gas、不设墙钟超时）→ `waitForTransactionReceipt({ hash, timeout: 0 })`；approve 后 live 重闸。hash 留在调用栈；按钮看 `isPending`。刷新丢掉内存 pending。展示用 gas 另走 `estimateWriteGasLimit`。
 - **首页动效：** 禁 Framer/GSAP/Anime/Lottie；只动 `opacity`/`transform`/`clip-path`/`filter`/`box-shadow`。
 - **样式：** `tokens.json` → `theme.css`；禁遗留色与平行 class；用户可见文案必须 `<Text>`。
 
