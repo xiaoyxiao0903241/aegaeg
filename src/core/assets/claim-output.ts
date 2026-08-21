@@ -1,7 +1,6 @@
 import type { LockedClaimEntry } from '~/core/assets/locked-claim-entry'
 import { ZERO_BI } from '~/core/constants'
 import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
-import { evaluateWriteButtonPhase, type WriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 
 /** 领取产出可选种类：普通奖励 / 额外加成。 */
@@ -116,12 +115,11 @@ export function assetsClaimMoneyBlock(args: {
 }
 
 /**
- * 资产 Mixed 确认是否可点（钱包 / 链 / 锁 / 贡献 / 计划 / 可领额）。
+ * 资产 Mixed 确认是否可点（钱包 / 链 / 提交中 / 贡献 / 计划 / 可领额）。
  */
 export function evaluateAssetsClaimConfirmGate(args: {
   walletReady: boolean
   writeReady: boolean
-  isLocked: boolean
   isPending: boolean
   contributionOk: boolean
   plansOk: boolean
@@ -132,29 +130,8 @@ export function evaluateAssetsClaimConfirmGate(args: {
   return canClaimWhen({
     walletReady: args.walletReady,
     writeReady: args.writeReady,
-    unknownReceiptLocked: args.isLocked || args.isPending,
+    isPending: args.isPending,
     claimable: args.claimable,
     planIndexOk: true,
-  })
-}
-
-/**
- * 资产 Mixed 确认写按钮状态（与质押 / 兑换同构）。
- */
-export function evaluateAssetsClaimWritePhase(args: {
-  walletReady: boolean
-  writeReady: boolean
-  isSubmitting: boolean
-  contributionOk: boolean
-  plansOk: boolean
-  claimable: bigint
-  decimals: number
-}): WriteButtonPhase {
-  return evaluateWriteButtonPhase({
-    walletReady: args.walletReady,
-    writeReady: args.writeReady,
-    needReferral: false,
-    moneyBlock: assetsClaimMoneyBlock(args),
-    isSubmitting: args.isSubmitting,
   })
 }

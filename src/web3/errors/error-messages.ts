@@ -30,7 +30,7 @@ import {
   STAKING_BLOCKED,
   XMINE_BLOCKED,
 } from '~/web3/errors/write-block-errors'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 export type { ErrorMessageContext }
 
@@ -83,7 +83,6 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [RELEASE_BLOCKED.zeroAmount]: (t) => t.assets.blocked.zeroAmount,
   [RELEASE_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
   [RELEASE_BLOCKED.planUnresolved]: (t) => t.assets.blocked.planUnresolved,
-  [RELEASE_BLOCKED.lockedUnknown]: (t) => t.assets.blocked.unavailable,
   [RELEASE_BLOCKED.unavailable]: (t) => t.assets.blocked.unavailable,
 
   // —— 奖励阻断 ——
@@ -107,17 +106,9 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
 
   // —— 钱包 / 兑换阻断 ——
   [WALLET_BLOCKED.NOT_CONNECTED]: (t) => t.errors.walletNotConnected,
-  [WALLET_BLOCKED.PENDING_UNKNOWN]: (t) =>
-    t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
   [WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED]: (t) => t.wallet.transactionErrors.gasEstimateFailed,
-  [WALLET_WRITE_ERROR.INTENT_ADDRESS_MISMATCH]: (t) =>
-    t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
-  [WALLET_WRITE_ERROR.WRONG_CHAIN]: (t) =>
-    t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
-  [WALLET_WRITE_ERROR.SUBMIT_UNKNOWN]: (t) =>
-    t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
-  [WALLET_WRITE_ERROR.IN_FLIGHT]: (t) =>
-    t.wallet.transactionErrors.writeInFlight ?? t.errors.chain.fallback,
+  [WALLET_WRITE_ERROR.INTENT_ADDRESS_MISMATCH]: (t) => t.wallet.transactionErrors.accountChanged,
+  [WALLET_WRITE_ERROR.WRONG_CHAIN]: (t) => t.wallet.transactionErrors.wrongChain,
   [WALLET_WRITE_ERROR.STALE_ALLOWANCE_READ]: (t) => t.errors.chain.fallback,
   [EXCHANGE_QUOTE_FAILED]: (t) => t.errors.quoteFailed,
   [EXCHANGE_SUBMIT_BLOCKED]: (t) => t.errors.quoteFailed,

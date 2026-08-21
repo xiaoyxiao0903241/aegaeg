@@ -5,10 +5,8 @@
  * 组装顺序为国际化 → 全局 Provider → 错误边界 → DApp 宿主。
  */
 import { bootDappApp } from '~/boot/startup/boot'
-import { startUnknownReceiptResume } from '~/web3/wallet/unknown-receipt-resume'
 
 bootDappApp()
-startUnknownReceiptResume()
 
 import '~/shared/styles/app.css'
 

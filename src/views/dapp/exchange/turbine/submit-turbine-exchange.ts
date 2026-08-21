@@ -6,6 +6,7 @@ import {
   evaluateTurbineUnlockLive,
 } from '~/core/exchange/turbine-unlock-live'
 import { invalidateAfterExchange, invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
+import type { ExchangeSubmitResult } from '~/views/dapp/exchange/shared'
 import {
   readTurbineIsVested,
   readTurbineQuota,
@@ -22,9 +23,7 @@ import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type TurbineSubmitCore = {
-  runSubmit: (
-    run: (session: WriteSession) => Promise<void>,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
+  runSubmit: (run: (session: WriteSession) => Promise<void>) => Promise<ExchangeSubmitResult>
 }
 
 /**
@@ -38,7 +37,7 @@ export async function submitTurbineUnlock(args: {
   core: TurbineSubmitCore
   /** 本次解锁的 AGX 数量（以链上 turbineBalances 为准）。 */
   unlockAmountAgx: bigint
-}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+}): Promise<ExchangeSubmitResult> {
   const { core, unlockAmountAgx } = args
 
   return core.runSubmit(async (session) => {
@@ -105,7 +104,7 @@ export async function submitTurbineClaim(args: {
   core: TurbineSubmitCore
   index: number
   refetchSilences: () => Promise<QueryObserverResult>
-}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+}): Promise<ExchangeSubmitResult> {
   const { core, index, refetchSilences } = args
 
   return core.runSubmit(async (session) => {

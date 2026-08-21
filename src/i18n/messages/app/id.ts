@@ -226,10 +226,8 @@ const app = defineMessages({
       gasEstimateFailed:
         'Tidak dapat memperkirakan gas untuk transaksi ini. Periksa jaringan dan coba lagi.',
       insufficientFunds: 'BNB tidak cukup untuk membayar biaya gas jaringan.',
-      transactionFailed: 'Transaksi gagal. Silakan coba lagi nanti.',
-      transactionUnknown:
-        'Status transaksi tidak diketahui. Jangan kirim ulang — periksa dulu dompet atau block explorer.',
-      writeInFlight: 'Operasi on-chain lain sedang berlangsung. Harap tunggu.',
+      wrongChain: 'Alihkan ke BNB Smart Chain (BSC) lalu coba lagi.',
+      accountChanged: 'Akun dompet berubah. Kirim ulang.',
     },
   },
   exchange: {

@@ -5,7 +5,7 @@ import {
   matchSentinelMessage,
 } from '~/web3/errors/error-messages'
 import { readErrorText } from '~/web3/errors/error-text'
-import { isUserRejectedWalletError, walletTransactionError } from '~/web3/errors/wallet-error'
+import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'
 
 export type { ErrorMessageContext }
 
@@ -36,10 +36,6 @@ export function getErrorMessage(
 
   const fromRevert = matchRevertMessage(error, raw, t, ctx)
   if (fromRevert) return fromRevert
-
-  // 实例型钱包结果（unknown 收据 / 提交超时）。
-  const fromWallet = walletTransactionError(error, t.wallet.transactionErrors)
-  if (fromWallet) return fromWallet
 
   return t.errors.chain.fallback
 }

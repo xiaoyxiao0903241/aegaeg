@@ -224,10 +224,8 @@ const app = defineMessages({
       gasEstimateFailed:
         'इस लेनदेन के लिए gas का अनुमान नहीं लगाया जा सका। नेटवर्क जांचें और फिर कोशिश करें।',
       insufficientFunds: 'नेटवर्क gas शुल्क चुकाने के लिए BNB अपर्याप्त है।',
-      transactionFailed: 'लेनदेन विफल। कृपया बाद में फिर कोशिश करें।',
-      transactionUnknown:
-        'लेनदेन की स्थिति अज्ञात है। दोबारा सबमिट न करें — पहले वॉलेट या ब्लॉक एक्सप्लोरर जाँचें।',
-      writeInFlight: 'एक और ऑन-चेन राइट पहले से चल रहा है। कृपया प्रतीक्षा करें।',
+      wrongChain: 'BNB Smart Chain (BSC) पर स्विच करके फिर कोशिश करें।',
+      accountChanged: 'वॉलेट खाता बदल गया है। फिर से सबमिट करें।',
     },
   },
   exchange: {

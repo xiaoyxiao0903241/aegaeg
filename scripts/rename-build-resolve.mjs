@@ -121,7 +121,6 @@ const RENAMES = [
   // ── 钱包 / 链 ─────────────────────────────────────────────────────────────
   ['resolveWalletEip1193Provider', 'walletEip1193Provider'],
   ['resolveLegacyInjectedProvider', 'legacyInjectedProvider'],
-  ['resolveWalletTransactionError', 'walletTransactionError'],
   ['resolveWalletRemountKey', 'walletRemountKey'],
   ['resolveChainReadClient', 'chainReadClient'],
   ['resolveChainQueryEnabled', 'chainQueryEnabled'],

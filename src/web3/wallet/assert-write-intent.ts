@@ -57,19 +57,3 @@ export function assertWriteIntentMatches({
     throw new Error(WALLET_WRITE_ERROR.WRONG_CHAIN)
   }
 }
-
-/**
- * 解析 EIP-1193 十六进制链 id
- *
- * 解析失败即抛 WRONG_CHAIN——链 id 不可信时拒绝继续写交易。
- *
- * @param chainIdHex 钱包返回的十六进制链 id
- * @returns 十进制链 id
- */
-export function parseEip1193ChainId(chainIdHex: string): number {
-  const parsed = Number.parseInt(chainIdHex, 16)
-  if (!Number.isFinite(parsed)) {
-    throw new Error(WALLET_WRITE_ERROR.WRONG_CHAIN)
-  }
-  return parsed
-}

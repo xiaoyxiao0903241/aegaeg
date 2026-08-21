@@ -31,7 +31,3 @@ export {
 } from '../../src/shared/config/breakpoints'
 export { createMemoryAuthSessionStorage } from '../../src/web3/auth/session'
 export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'
-export {
-  rehydrateUnknownReceiptLocksForTests,
-  resetUnknownReceiptLocksForTests,
-} from '../../src/web3/wallet/unknown-receipt-lock'

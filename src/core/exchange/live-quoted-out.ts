@@ -21,7 +21,7 @@ export function liveQuotedOut(
 /**
  * Trade / Flash 在实时报价解析后的提交门闸。
  *
- * 钱包、余额、报价、滑点下限、报价时效与提交中/锁定任一条件不满足即拒绝；
+ * 钱包、余额、报价、滑点下限、报价时效与提交中任一条件不满足即拒绝；
  * 各字段语义见对象内联注释，调用方须先经 `liveQuotedOut` 把占位报价归零。
  *
  * UI 可点应传 `maxQuoteAgeMs` ≫ 轮询间隔（见 `EXCHANGE_CONFIG.quoteUiMaxAgeMs`）；
@@ -39,7 +39,6 @@ export function canSubmitQuotedExchange({
   isQuotePending,
   isBalancesLoading,
   isSubmitting,
-  blockResubmit = false,
   quoteUpdatedAt,
   maxQuoteAgeMs,
   nowMs = Date.now(),
@@ -57,8 +56,6 @@ export function canSubmitQuotedExchange({
   /** 余额仍在加载时，勿把 sellBalance===0 当成空钱包。 */
   isBalancesLoading: boolean
   isSubmitting: boolean
-  /** 广播后 / 发送未知结果后锁定，防双提交。 */
-  blockResubmit?: boolean
   /** 金额报价的 `query.dataUpdatedAt`；与 `maxQuoteAgeMs` 联用。 */
   quoteUpdatedAt?: number
   maxQuoteAgeMs?: number
@@ -82,8 +79,7 @@ export function canSubmitQuotedExchange({
     amountOutMin > 0n &&
     !isQuotePending &&
     !quoteTooOld &&
-    !isSubmitting &&
-    !blockResubmit
+    !isSubmitting
   )
 }
 

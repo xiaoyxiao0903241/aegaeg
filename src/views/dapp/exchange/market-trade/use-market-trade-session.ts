@@ -20,6 +20,7 @@ import { useMarketTradeSpotRates } from '~/views/dapp/exchange/market-trade/use-
 import {
   buyKeysForSell,
   canFlipTradePair,
+  type ExchangeSubmitResult,
   formatTradeRouteLabel,
   getTradePairTokens,
   getTradeSwapPath,
@@ -176,26 +177,23 @@ export function useMarketTradeSession(
 
   function flipDirection() {
     if (!canFlip) return
-    core.clearLock()
     flipPair()
     core.clearAmount()
   }
 
   function selectSellToken(key: TradeTokenKey) {
     if (key === sellKey) return
-    core.clearLock()
     setSellKey(key)
     core.clearAmount()
   }
 
   function selectBuyToken(key: TradeTokenKey) {
     if (key === buyKey || isSellOnlyTradeToken(key)) return
-    core.clearLock()
     setBuyKey(key)
     core.clearAmount()
   }
 
-  async function submit(): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+  async function submit(): Promise<ExchangeSubmitResult> {
     return submitMarketTrade({ pair, path, core })
   }
 

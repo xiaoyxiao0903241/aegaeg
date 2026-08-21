@@ -16,8 +16,8 @@ import {
 import { WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 type RewardClaimExecutor = (args: {
   wallet: WriteSession['wallet']
@@ -77,11 +77,8 @@ export function useClaimReward(execute: RewardClaimExecutor) {
   return {
     claim: () => claimMutation.mutate(),
     isClaiming: claimMutation.isPending,
-    isLocked: claimMutation.isLocked,
-    isLatched: claimMutation.isLatched,
-    clearLock: () => claimMutation.clearLock(),
     canAttempt,
-    canClaim: canAttempt && !claimMutation.isLocked,
+    canClaim: canAttempt && !claimMutation.isPending,
   }
 }
 

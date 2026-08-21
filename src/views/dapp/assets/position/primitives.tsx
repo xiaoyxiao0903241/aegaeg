@@ -35,9 +35,6 @@ export const ASSETS_POSITION_GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimal
 export type AssetsPositionRowFrameProps<TRow> = {
   row: TRow
   quote: 'agx' | 'usd'
-  locked?: boolean
-  claimLocked?: boolean
-  redeemLocked?: boolean
   busy: boolean
   formatPeriodLabel: (period: string) => string
   /** AGX/gAGX → 文案；quote=usd 时用缓存价换 `$…` */
@@ -212,9 +209,6 @@ export function AssetsPositionYieldColumn({
 export function AssetsPositionRowActions({
   canClaim,
   canRedeem,
-  locked = false,
-  claimLocked,
-  redeemLocked,
   busy,
   claimLabel,
   redeemLabel,
@@ -223,23 +217,18 @@ export function AssetsPositionRowActions({
 }: {
   canClaim: boolean
   canRedeem: boolean
-  locked?: boolean
-  claimLocked?: boolean
-  redeemLocked?: boolean
   busy: boolean
   claimLabel: string
   redeemLabel: string
   onClaim: () => void
   onRedeem: () => void
 }) {
-  const claimOff = claimLocked ?? locked
-  const redeemOff = redeemLocked ?? locked
   return (
     <div className="grid grid-cols-2 gap-3">
       <MainButton
         className="h-7 min-h-7 text-xs"
         density="inverse"
-        disabled={!canClaim || claimOff || busy}
+        disabled={!canClaim || busy}
         onClick={onClaim}
       >
         {claimLabel}
@@ -247,7 +236,7 @@ export function AssetsPositionRowActions({
       <MainButton
         className="h-7 min-h-7 text-xs"
         density="inverse"
-        disabled={!canRedeem || redeemOff || busy}
+        disabled={!canRedeem || busy}
         onClick={onRedeem}
         variant="secondary"
       >
@@ -376,9 +365,6 @@ export function AssetsListPager({
 export function AssetsPositionBondRow({
   formatPeriodLabel,
   formatAmount,
-  locked,
-  claimLocked,
-  redeemLocked,
   busy,
   onClaim,
   onRedeem,
@@ -424,12 +410,9 @@ export function AssetsPositionBondRow({
         canClaim={canClaim}
         canRedeem={canRedeem}
         claimLabel={t.assets.position.claim}
-        claimLocked={claimLocked}
-        locked={locked}
         onClaim={() => onClaim(row)}
         onRedeem={() => onRedeem(row)}
         redeemLabel={t.assets.position.redeem}
-        redeemLocked={redeemLocked}
       />
     </Card>
   )
@@ -454,18 +437,7 @@ export function AssetsPositionStakeRow(
     onActivate?: (row: AssetsStakeRow) => void
   },
 ) {
-  const {
-    formatPeriodLabel,
-    formatAmount,
-    locked,
-    claimLocked,
-    redeemLocked,
-    busy,
-    onClaim,
-    onRedeem,
-    onActivate,
-    row,
-  } = props
+  const { formatPeriodLabel, formatAmount, busy, onClaim, onRedeem, onActivate, row } = props
   const { messages: t } = useI18n()
   // 收益 / 加成分列展示；领取门槛：任一档 ≥ 0.01（活期仅普通收益）
   const reward = row.blockReward
@@ -559,15 +531,12 @@ export function AssetsPositionStakeRow(
         canClaim={canClaim}
         canRedeem={canRedeem}
         claimLabel={t.assets.position.claim}
-        claimLocked={claimLocked}
-        locked={locked}
         onClaim={() => onClaim(row)}
         onRedeem={() => {
           if (inWarmup) onActivate?.(row)
           else onRedeem(row)
         }}
         redeemLabel={secondaryLabel}
-        redeemLocked={redeemLocked}
       />
     </Card>
   )

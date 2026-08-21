@@ -1,5 +1,9 @@
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
-import type { ExchangePairTokens, QuotedSubmitCore } from '~/views/dapp/exchange/shared'
+import type {
+  ExchangePairTokens,
+  ExchangeSubmitResult,
+  QuotedSubmitCore,
+} from '~/views/dapp/exchange/shared'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { approveTokenIfNeeded, exchangeTokens } from '~/web3/exchange/exchange-write'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
@@ -9,7 +13,7 @@ export async function submitMarketTrade(args: {
   pair: ExchangePairTokens
   path: readonly `0x${string}`[]
   core: QuotedSubmitCore
-}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+}): Promise<ExchangeSubmitResult> {
   const { pair, path, core } = args
 
   // X 仅可卖：写路径 fail-closed，不依赖选币 UI

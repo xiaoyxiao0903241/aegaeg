@@ -225,10 +225,8 @@ const app = defineMessages({
       gasEstimateFailed:
         'No se pudo estimar el gas de esta transacción. Comprueba la red e inténtalo de nuevo.',
       insufficientFunds: 'BNB insuficiente para pagar las comisiones de gas de la red.',
-      transactionFailed: 'La transacción falló. Inténtalo de nuevo más tarde.',
-      transactionUnknown:
-        'El estado de la transacción es desconocido. No vuelva a enviar: revise primero la billetera o el explorador.',
-      writeInFlight: 'Otra operación en cadena está en curso. Espera un momento.',
+      wrongChain: 'Cambia a BNB Smart Chain (BSC) e inténtalo de nuevo.',
+      accountChanged: 'La cuenta de la billetera cambió. Vuelve a enviar.',
     },
   },
   exchange: {

@@ -221,10 +221,8 @@ const app = defineMessages({
         'Gas limiti çok düşük. Ağ ücretleri için cüzdanda yeterli BNB bırakıp tekrar deneyin.',
       gasEstimateFailed: 'Bu işlem için gas tahmin edilemedi. Ağı kontrol edip tekrar deneyin.',
       insufficientFunds: 'Ağ gas ücretlerini ödemek için yeterli BNB yok.',
-      transactionFailed: 'İşlem başarısız. Lütfen daha sonra tekrar deneyin.',
-      transactionUnknown:
-        'İşlem durumu bilinmiyor. Tekrar göndermeyin — önce cüzdanınızı veya blok gezginini kontrol edin.',
-      writeInFlight: 'Başka bir zincir üstü işlem sürüyor. Lütfen bekleyin.',
+      wrongChain: 'BNB Smart Chain (BSC) ağına geçip tekrar deneyin.',
+      accountChanged: 'Cüzdan hesabı değişti. Yeniden gönderin.',
     },
   },
   exchange: {

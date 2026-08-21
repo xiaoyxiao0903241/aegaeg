@@ -111,7 +111,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
       ) : null}
 
       <GenesisPurchaseSharesField
-        disabled={!vm.walletReady || genesis.maxShares <= 0}
+        disabled={!vm.walletReady || genesis.maxShares <= 0 || genesis.isSubmitting}
         inputRef={vm.sharesInputRef}
         label={interpolate(t.genesis.shares, {
           min: formatTokenAmount(genesis.minAmount, USD1_DECIMALS, 0),

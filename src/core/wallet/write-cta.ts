@@ -56,56 +56,35 @@ export function writeCtaLabel(
 /**
  * 释放 / 领取路径是否可发起写交易。
  *
- * 需要钱包已连接、处于预期链、回执状态已知，并且可领额度为正；
+ * 需要钱包已连接、处于预期链，并且可领额度为正；
  * 队列行还需已解析计划索引。
  */
 export function canClaimWhen(args: {
   walletReady: boolean
   writeReady: boolean
-  /** 历史参数名；传入 `useChainMutation.isLocked`（busy，非仅锁定）。 */
-  unknownReceiptLocked: boolean
+  /** 该 mutation 仍在 send/wait。 */
+  isPending: boolean
   claimable: bigint
   /** 若传入，还要求 planIndex 已解析（队列行）。 */
   planIndexOk?: boolean
 }): boolean {
-  if (!args.walletReady || !args.writeReady || args.unknownReceiptLocked) return false
+  if (!args.walletReady || !args.writeReady || args.isPending) return false
   if (args.claimable <= 0n) return false
   if (args.planIndexOk === false) return false
   return true
 }
 
 /**
- * 未知回执只闩住上次意图；提交在途仍挡住整条写路径。
- *
- * @param pathBusy `useChainMutation.isLocked`（latched 或 in-flight）
- * @param pathLatched `useChainMutation.isLatched`（仅未知回执）
- * @param latchedIntent 上次提交的意图
- * @param intent 当前 CTA 的意图
- */
-export function unknownReceiptLocksIntent<T>(args: {
-  pathBusy: boolean
-  pathLatched: boolean
-  latchedIntent: T | null
-  intent: T
-}): boolean {
-  if (!args.pathBusy) return false
-  if (!args.pathLatched) return true
-  return args.latchedIntent === args.intent
-}
-
-/**
  * 质押 / 债券 / xmine 主 CTA 是否禁用。
  *
- * 回执状态未知、正在提交或钱包/链未就绪时禁用，避免重复或过早发起写交易。
+ * 正在提交或钱包/链未就绪时禁用，避免重复或过早发起写交易。
  */
 export function writeCtaDisabled(args: {
-  /** 历史参数名；传入 `useChainMutation.isLocked`（busy，非仅锁定）。 */
-  unknownReceiptLocked: boolean
   isSubmitting: boolean
   writeReady: boolean
   walletReady: boolean
 }): boolean {
-  return args.unknownReceiptLocked || args.isSubmitting || !args.writeReady || !args.walletReady
+  return args.isSubmitting || !args.writeReady || !args.walletReady
 }
 
 /**

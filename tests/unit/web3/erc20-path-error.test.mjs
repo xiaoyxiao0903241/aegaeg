@@ -7,7 +7,7 @@ test('ERC20InsufficientBalance is path-scoped (not Genesis subscribe copy)', asy
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const t = enModule.default
   const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
-  const { WRITE_PATH } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+  const { WRITE_PATH } = await loadModule('/src/web3/wallet/write-path.ts')
 
   const hexOnly = new Error('reverted with 0xe450d38c')
 
@@ -48,7 +48,7 @@ test('ERC20InsufficientBalance uses decoded account vs wallet when available', a
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const t = enModule.default
   const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
-  const { WRITE_PATH } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+  const { WRITE_PATH } = await loadModule('/src/web3/wallet/write-path.ts')
 
   const wallet = '0x2222222222222222222222222222222222222222'
   const poolHex =
@@ -76,7 +76,7 @@ test('ERC20InsufficientAllowance is path-scoped (not Genesis USD1)', async () =>
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const t = enModule.default
   const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
-  const { WRITE_PATH } = await loadModule('/src/web3/wallet/unknown-receipt-lock.ts')
+  const { WRITE_PATH } = await loadModule('/src/web3/wallet/write-path.ts')
 
   const err = new Error('reverted with 0xfb8f41b2')
   assert.notEqual(getErrorMessage(err, t), t.genesis.insufficientAllowance)

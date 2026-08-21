@@ -19,6 +19,7 @@ type ApproveErc20Args = {
  * 发出 ERC20 approve 并等待确认。
  *
  * 调用方须已判定额度不足；本函数不再读 allowance。
+ * 本笔 hash 只在本函数调用栈里 wait，不进入业务写。
  *
  * @param wallet 当前钱包
  * @param token 代币合约地址

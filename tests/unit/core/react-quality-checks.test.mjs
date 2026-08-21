@@ -146,7 +146,6 @@ test('canSubmitQuotedExchange blocks placeholder-zero and pending quotes', async
   assert.equal(canSubmitQuotedExchange({ ...base, isPlaceholderData: true }), false)
   assert.equal(canSubmitQuotedExchange({ ...base, isQuotePending: true }), false)
   assert.equal(canSubmitQuotedExchange({ ...base, amountIn: 200n }), false)
-  assert.equal(canSubmitQuotedExchange({ ...base, blockResubmit: true }), false)
   assert.equal(canSubmitQuotedExchange({ ...base, isBalancesLoading: true }), false)
   assert.equal(canSubmitQuotedExchange({ ...base, amountOutMin: 0n }), false)
   assert.equal(canSubmitQuotedExchange({ ...base, nowMs: nowMs + 10_001 }), false)
@@ -190,28 +189,6 @@ test('canSubmitQuotedExchange UI max age stays true across refresh boundary', as
   )
 })
 
-test('canSubmitQuotedExchange blockResubmit models unknown-tx double-submit latch', async () => {
-  const { canSubmitQuotedExchange } = await loadModule('/src/core/exchange/live-quoted-out.ts')
-
-  const base = {
-    walletReady: true,
-    amountIn: 10n,
-    sellBalance: 100n,
-    quotedOut: 100n,
-    amountOutMin: 99n,
-    isPlaceholderData: false,
-    isQuotePending: false,
-    isBalancesLoading: false,
-    isSubmitting: false,
-    quoteUpdatedAt: 1_000_000,
-    maxQuoteAgeMs: 10_000,
-    nowMs: 1_000_000,
-  }
-
-  assert.equal(canSubmitQuotedExchange(base), true)
-  assert.equal(canSubmitQuotedExchange({ ...base, blockResubmit: true }), false)
-})
-
 test('assertQuotedExchangeStillSubmittable throws EXCHANGE_SUBMIT_BLOCKED when block fails', async () => {
   const { assertQuotedExchangeStillSubmittable, canSubmitQuotedExchange } = await loadModule(
     '/src/core/exchange/live-quoted-out.ts',
@@ -227,7 +204,7 @@ test('assertQuotedExchangeStillSubmittable throws EXCHANGE_SUBMIT_BLOCKED when b
     isPlaceholderData: false,
     isQuotePending: false,
     isBalancesLoading: false,
-    // Mid-submit re-gate must pass isSubmitting:false (in-flight latch is separate).
+    // Mid-submit re-gate must pass isSubmitting:false（mutation 已在途，门闸看报价而不是按钮 busy）。
     isSubmitting: false,
     quoteUpdatedAt: 1_000_000,
     maxQuoteAgeMs: 10_000,

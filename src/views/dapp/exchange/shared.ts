@@ -12,6 +12,9 @@ import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 // —— quoted-submit-core ——
 
+/** 兑换提交结果。写前硬挡才带 `error`。 */
+export type ExchangeSubmitResult = { ok: true } | { ok: false; error?: unknown }
+
 export type QuotedSubmitExecute = (helpers: {
   session: WriteSession
   assertStillSubmittable: (live?: {
@@ -22,9 +25,7 @@ export type QuotedSubmitExecute = (helpers: {
 /** 闪电兑换 / 市价交易 / 销毁共用的报价提交流程接口。 */
 export type QuotedSubmitCore = {
   debouncedAmountIn: bigint
-  runQuotedSubmit: (
-    run: QuotedSubmitExecute,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
+  runQuotedSubmit: (run: QuotedSubmitExecute) => Promise<ExchangeSubmitResult>
 }
 
 // —— exchange-views-needing-provider ——

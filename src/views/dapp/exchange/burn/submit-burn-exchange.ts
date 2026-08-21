@@ -1,6 +1,6 @@
 import { evaluateBurnContributionSwap } from '~/core/exchange/burn-contribution-swap'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
-import type { QuotedSubmitCore } from '~/views/dapp/exchange/shared'
+import type { ExchangeSubmitResult, QuotedSubmitCore } from '~/views/dapp/exchange/shared'
 import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
 import {
   readBurnContributionSwapConfig,
@@ -19,7 +19,7 @@ import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
  */
 export async function submitBurnExchange(args: {
   core: QuotedSubmitCore
-}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+}): Promise<ExchangeSubmitResult> {
   const { core } = args
 
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {

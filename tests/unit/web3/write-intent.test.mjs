@@ -38,8 +38,3 @@ test('assertWriteIntentMatches fails closed on address or chain drift', async ()
     /WALLET_WRONG_CHAIN/,
   )
 })
-
-test('parseEip1193ChainId reads hex chain ids', async () => {
-  const { parseEip1193ChainId } = await loadModule('/src/web3/wallet/assert-write-intent.ts')
-  assert.equal(parseEip1193ChainId('0x38'), 56)
-})

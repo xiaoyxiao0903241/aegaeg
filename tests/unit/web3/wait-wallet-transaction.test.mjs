@@ -15,13 +15,18 @@ describe('waitForWalletTransactionConfirmation', () => {
       status: 'success',
       from: '0x1111111111111111111111111111111111111111',
     }
+    let waitArgs
     const got = await waitForWalletTransactionConfirmation({
       hash: HASH,
       client: {
-        waitForTransactionReceipt: async () => receipt,
+        waitForTransactionReceipt: async (args) => {
+          waitArgs = args
+          return receipt
+        },
       },
     })
     assert.equal(got, receipt)
+    assert.deepEqual(waitArgs, { hash: HASH, timeout: 0 })
   })
 
   it('throws failed when the receipt reverted', async () => {

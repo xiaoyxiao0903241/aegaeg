@@ -7,7 +7,6 @@ const ready = {
   walletReady: true,
   writeReady: true,
   sessionReady: true,
-  isLocked: false,
   isPending: false,
   contributionOk: true,
   plansOk: true,
@@ -45,63 +44,4 @@ test('evaluateRewardsMixedClaimConfirmGate: Dao allows unknown amount; lucky nee
     }),
     false,
   )
-})
-
-test('evaluateRewardsMixedClaimWritePhase maps blocks to phase', async () => {
-  const { evaluateRewardsMixedClaimConfirmGate, evaluateRewardsMixedClaimWritePhase } =
-    await loadModule('/src/core/rewards/mixed-claim-gate.ts')
-  assert.equal(
-    evaluateRewardsMixedClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      sessionReady: true,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: true,
-      luckyOk: true,
-      claimable: 1n,
-      allowUnknownAmount: false,
-    }),
-    'ready',
-  )
-  assert.equal(
-    evaluateRewardsMixedClaimWritePhase({
-      walletReady: true,
-      writeReady: false,
-      sessionReady: true,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: true,
-      luckyOk: true,
-      claimable: 1n,
-      allowUnknownAmount: false,
-    }),
-    'wrong_network',
-  )
-  assert.equal(
-    evaluateRewardsMixedClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      sessionReady: false,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: true,
-      luckyOk: true,
-      claimable: 1n,
-      allowUnknownAmount: false,
-    }),
-    'need_wallet',
-  )
-  const phase = evaluateRewardsMixedClaimWritePhase({
-    walletReady: ready.walletReady,
-    writeReady: ready.writeReady,
-    sessionReady: ready.sessionReady,
-    isSubmitting: false,
-    contributionOk: ready.contributionOk,
-    plansOk: ready.plansOk,
-    luckyOk: ready.luckyOk,
-    claimable: ready.claimable,
-    allowUnknownAmount: ready.allowUnknownAmount,
-  })
-  assert.equal(phase === 'ready', evaluateRewardsMixedClaimConfirmGate(ready))
 })

@@ -5,7 +5,6 @@ import type { Paginated, SalesLogItem } from '~/shared/api/types'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { sleep } from '~/shared/lib/utils'
-import { WRITE_PATH, type WritePath } from '~/web3/wallet/unknown-receipt-lock'
 
 type SalesLogFingerprint = { total: number; firstId: number | null }
 
@@ -356,45 +355,4 @@ export function invalidateAfterAssetsClaim() {
  */
 export function invalidateAfterReleaseClaim() {
   invalidateTabQueries('release')
-}
-
-/**
- * 未知回执迟到终态：按写路径刷与准时成功相同的查询桶。
- * Genesis 没有当时的购买额，只标脏不乐观累加。
- *
- * @param path 写路径键
- * @param address 钱包地址；创世购买需要它才能刷用户额度
- */
-export function invalidateAfterWritePath(path: WritePath, address?: string): void {
-  switch (path) {
-    case WRITE_PATH.EXCHANGE:
-      invalidateAfterExchange()
-      return
-    case WRITE_PATH.GENESIS:
-      if (address) invalidateAfterGenesisPurchase(address)
-      else invalidateGenesisPage()
-      return
-    case WRITE_PATH.STAKING:
-    case WRITE_PATH.BOND_ZAP:
-    case WRITE_PATH.XMINE:
-      invalidateAfterStaking()
-      return
-    case WRITE_PATH.ASSETS_CLAIM:
-      invalidateAfterAssetsClaim()
-      return
-    case WRITE_PATH.RELEASE_CLAIM:
-      invalidateAfterReleaseClaim()
-      return
-    case WRITE_PATH.REFERRAL_BIND:
-      invalidateAfterReferralBind()
-      return
-    case WRITE_PATH.REWARD_LUCKY_MIXED:
-    case WRITE_PATH.REWARD_DAO_MIXED:
-      invalidateAfterRewardsMixedClaim()
-      return
-    case WRITE_PATH.REWARD_CLAIM:
-    case WRITE_PATH.REWARD_SIGNED_CLAIM:
-      invalidateAfterTeamClaim()
-      return
-  }
 }

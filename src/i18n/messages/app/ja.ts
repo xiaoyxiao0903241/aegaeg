@@ -228,10 +228,8 @@ const app = defineMessages({
       gasEstimateFailed:
         'この取引の Gas を見積もれませんでした。ネットワークを確認して再試行してください。',
       insufficientFunds: 'ネットワーク Gas 手数料を支払う BNB が不足しています。',
-      transactionFailed: '取引に失敗しました。しばらくしてから再試行してください。',
-      transactionUnknown:
-        '取引状態が不明です。再送信しないでください。先にウォレットまたはブロックエクスプローラーで確認してください。',
-      writeInFlight: '別のオンチェーン操作が進行中です。しばらくお待ちください。',
+      wrongChain: 'BNB Smart Chain（BSC）に切り替えてから再試行してください。',
+      accountChanged: 'ウォレットのアカウントが変わりました。もう一度送信してください。',
     },
   },
   exchange: {

@@ -43,9 +43,9 @@ import {
   formatXmineDailyYieldLabel,
 } from '~/web3/staking/xmine-overview-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
@@ -120,29 +120,23 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     onError: present.onError,
   })
 
-  const locked = writeCtaDisabled({
-    unknownReceiptLocked: stake.isLocked,
-    isSubmitting: stake.isPending,
-    writeReady,
-    walletReady,
-  })
-
   // 仅授权不足可点（内联补授权）；其它硬门禁用，文案不变
   const moneyOk = blockReason == null || blockReason === 'insufficientAllowance'
   const canSubmit =
-    !locked && amountInput.amountIn > ZERO_BI && moneyOk && preflightQuery.data !== undefined
-
-  function unlock() {
-    stake.clearLock()
-  }
+    !writeCtaDisabled({
+      isSubmitting: stake.isPending,
+      writeReady,
+      walletReady,
+    }) &&
+    amountInput.amountIn > ZERO_BI &&
+    moneyOk &&
+    preflightQuery.data !== undefined
 
   function setAmount(value: string) {
-    unlock()
     amountInput.setAmount(value)
   }
 
   function fillMax() {
-    unlock()
     amountInput.fillPercent(100)
   }
 

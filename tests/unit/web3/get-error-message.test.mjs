@@ -13,7 +13,7 @@ test('getErrorMessage maps sentinels, handbook reverts, and falls back', async (
   const { STAKING_BLOCKED, ASSETS_BLOCKED } = await loadModule(
     '/src/web3/errors/write-block-errors.ts',
   )
-  const { GENESIS_PURCHASE_ERROR, FLASH_USD1_BLOCKED } = await loadModule(
+  const { GENESIS_PURCHASE_ERROR, FLASH_USD1_BLOCKED, WALLET_WRITE_ERROR } = await loadModule(
     '/src/web3/errors/sentinels.ts',
   )
 
@@ -22,6 +22,14 @@ test('getErrorMessage maps sentinels, handbook reverts, and falls back', async (
   assert.equal(getErrorMessage(ASSETS_BLOCKED.warmupNotEnded, t), t.assets.blocked.warmupNotEnded)
   assert.equal(getErrorMessage(GENESIS_PURCHASE_ERROR.NOT_BOUND, t), t.genesis.errors.notBound)
   assert.equal(getErrorMessage(FLASH_USD1_BLOCKED.belowMin, t), t.exchange.flash.blocked.belowMin)
+  assert.equal(
+    getErrorMessage(new Error(WALLET_WRITE_ERROR.WRONG_CHAIN), t),
+    t.wallet.transactionErrors.wrongChain,
+  )
+  assert.equal(
+    getErrorMessage(new Error(WALLET_WRITE_ERROR.INTENT_ADDRESS_MISMATCH), t),
+    t.wallet.transactionErrors.accountChanged,
+  )
 
   // Handbook §19 / contract docs
   assert.equal(getErrorMessage(new Error('ErrorStakeNotApproved'), t), t.staking.blocked.notBound)

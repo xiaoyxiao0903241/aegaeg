@@ -15,7 +15,7 @@ import {
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
-  reason: 'zeroAmount' | 'lockedUnknown' | null,
+  reason: 'zeroAmount' | null,
 ): (typeof RELEASE_BLOCKED)[keyof typeof RELEASE_BLOCKED] | null {
   if (!reason) return null
   return RELEASE_BLOCKED[reason]
@@ -50,7 +50,6 @@ export async function submitReleaseQueueClaim(args: {
   const preErr = gateError(
     releaseClaimBlockReason({
       claimable: preRow?.claimable ?? 0n,
-      unknownLocked: false,
     }),
   )
   if (preErr) throw preErr
@@ -60,7 +59,6 @@ export async function submitReleaseQueueClaim(args: {
   const liveErr = gateError(
     releaseClaimBlockReason({
       claimable: liveRow?.claimable ?? 0n,
-      unknownLocked: false,
     }),
   )
   if (liveErr) throw liveErr
@@ -114,7 +112,6 @@ export async function submitReleaseBufferClaim(args: {
   const preErr = gateError(
     releaseClaimBlockReason({
       claimable: preClaimable,
-      unknownLocked: false,
     }),
   )
   if (preErr) throw preErr
@@ -124,7 +121,6 @@ export async function submitReleaseBufferClaim(args: {
   const liveErr = gateError(
     releaseClaimBlockReason({
       claimable: liveClaimable,
-      unknownLocked: false,
     }),
   )
   if (liveErr) throw liveErr

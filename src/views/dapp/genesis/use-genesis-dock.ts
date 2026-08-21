@@ -91,6 +91,8 @@ export function useGenesisDock(genesis: GenesisSessionState) {
   async function handlePurchase() {
     const ok = await genesis.submitPurchase()
     if (ok !== true) return
+    setShares(0)
+    setSharesText('')
     toast.success(t.genesis.joinSuccess)
     window.setTimeout(() => {
       invalidateGenesisPage()

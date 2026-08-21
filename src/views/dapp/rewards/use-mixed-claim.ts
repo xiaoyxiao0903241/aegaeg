@@ -15,10 +15,7 @@ import {
 } from '~/core/exchange/format-contribution-points'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
-import {
-  evaluateRewardsMixedClaimConfirmGate,
-  evaluateRewardsMixedClaimWritePhase,
-} from '~/core/rewards/mixed-claim-gate'
+import { evaluateRewardsMixedClaimConfirmGate } from '~/core/rewards/mixed-claim-gate'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -38,8 +35,8 @@ import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-r
 import { readErrorText } from '~/web3/errors/error-text'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -164,47 +161,30 @@ export function useMixedClaim(view: MixedClaimView) {
     },
   })
 
-  // 改比例、天数或奖种等于换了一笔领取，先解除上次未知结果锁定
   function setReleasePct(value: number) {
-    claim.clearLock()
     setDaoContributionBlocked(false)
     setReleasePctState(value)
   }
 
   function setReleaseDays(value: number) {
-    claim.clearLock()
     setDaoContributionBlocked(false)
     setReleaseDaysState(value)
   }
 
   function setRestakeDays(value: number) {
-    claim.clearLock()
     setDaoContributionBlocked(false)
     setRestakeDaysState(value)
   }
 
   function setCobuildRewardType(value: 'RANK_REWARD' | 'SURPASS_REWARD') {
-    claim.clearLock()
     setDaoContributionBlocked(false)
     setCobuildRewardTypeState(value)
   }
 
-  const writePhase = evaluateRewardsMixedClaimWritePhase({
-    walletReady,
-    writeReady,
-    sessionReady,
-    isSubmitting: claim.isPending,
-    contributionOk,
-    plansOk,
-    luckyOk,
-    claimable: amount,
-    allowUnknownAmount: isDaoMixed,
-  })
   const canConfirm = evaluateRewardsMixedClaimConfirmGate({
     walletReady,
     writeReady,
     sessionReady,
-    isLocked: claim.isLocked,
     isPending: claim.isPending,
     contributionOk,
     plansOk,
@@ -294,7 +274,6 @@ export function useMixedClaim(view: MixedClaimView) {
     haveText,
     showContributionShort,
     canConfirm,
-    writePhase,
     submitting: claim.isPending,
     luckyPaused: view === 'lucky' && Boolean(luckyQuery.data?.paused),
     luckyNotClaimable:

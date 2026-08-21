@@ -1,39 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
-import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
-import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
-import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
-import {
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  isWritePathBusy,
-  subscribeWritePathBusy,
-  type WritePath,
-} from '~/web3/wallet/unknown-receipt-lock'
-
-/** 写入路径被未知回执锁定：此时静默处理，按钮状态看 `isLocked`。 */
-class ChainMutationLockedError extends Error {
-  constructor() {
-    super('WRITE_PATH_LOCKED')
-    this.name = 'ChainMutationLockedError'
-  }
-}
-
-/** 同一写入路径仍有请求在途：必须弹提示，不能像锁定那样静默。 */
-class ChainMutationInFlightError extends Error {
-  constructor() {
-    super(WALLET_WRITE_ERROR.IN_FLIGHT)
-    this.name = 'ChainMutationInFlightError'
-  }
-}
-
-function isChainMutationLockedError(error: unknown): boolean {
-  return error instanceof ChainMutationLockedError
-}
+import type { WritePath } from '~/web3/wallet/write-path'
 
 export type UseChainMutationArgs<TVars, TValue> = {
   path: WritePath
@@ -47,10 +19,9 @@ export type UseChainMutationArgs<TVars, TValue> = {
 }
 
 /**
- * 链上写操作 mutation
+ * 链上写 mutation
  *
- * 同一写入路径在飞或确认中时禁止再点。收据由公共 RPC 等到成功或 revert；
- * 刷新后用已存 hash 继续 wait。发送未拿到 hash 时锁定至改表单或关页。
+ * `retry: false`。每笔 `writeContractViaWallet` 自己 send 再 wait；忙闲只看 `isPending`。
  */
 export function useChainMutation<TVars = void, TValue = void>(
   args: UseChainMutationArgs<TVars, TValue>,
@@ -65,30 +36,11 @@ export function useChainMutation<TVars = void, TValue = void>(
     walletRef.current = wallet
   }, [wallet])
 
-  const isLocked = useSyncExternalStore(
-    subscribeWritePathBusy,
-    () => isWritePathBusy(path, address),
-    () => isWritePathBusy(path, address),
-  )
-  const isLatched = useSyncExternalStore(
-    subscribeWritePathBusy,
-    () => isUnknownReceiptLocked(path, address),
-    () => isUnknownReceiptLocked(path, address),
-  )
-
   const mutation = useMutation({
     retry: false,
     mutationFn: async (vars: TVars): Promise<TValue> => {
       const session = makeWriteSession(walletRef.current)
-      const guarded = await submitWithUnknownReceiptLock({
-        path,
-        address: session.address,
-        whenLocked: new ChainMutationLockedError(),
-        whenInFlight: new ChainMutationInFlightError(),
-        run: () => args.mutation(vars, session),
-      })
-      if (!guarded.ok) throw guarded.error
-      return guarded.value as TValue
+      return args.mutation(vars, session)
     },
     onSuccess: (value, vars) => {
       try {
@@ -103,7 +55,6 @@ export function useChainMutation<TVars = void, TValue = void>(
       }
     },
     onError: (error, vars) => {
-      if (isChainMutationLockedError(error)) return
       if (args.onError?.(error, vars) === 'handled') return
       presentUserFacingError(error, t, { ctx: { path, walletAddress: address } })
     },
@@ -118,9 +69,5 @@ export function useChainMutation<TVars = void, TValue = void>(
       }
     },
     isPending: mutation.isPending,
-    isLocked,
-    isLatched,
-    clearLock: () => clearUnknownReceiptLock(path, address),
-    reset: mutation.reset,
   }
 }

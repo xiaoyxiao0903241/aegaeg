@@ -25,10 +25,9 @@ export function formatRebasePct(rate1e18: bigint | null | undefined): string {
  * 正在估算到账金额、或还在用上一笔金额的旧结果时，按钮不可点。
  *
  * @param args 写入状态、金额、阻塞原因等输入
- * @returns locked / canSubmit / writePhase 三态
+ * @returns canSubmit / writePhase
  */
 export function evaluateStakingAmountWrite(args: {
-  unknownReceiptLocked: boolean
   isSubmitting: boolean
   writeReady: boolean
   walletReady: boolean
@@ -40,16 +39,17 @@ export function evaluateStakingAmountWrite(args: {
   /** 到账金额还在算，或仍是上一笔金额的旧结果。 */
   isQuoting?: boolean
 }) {
-  const locked = writeCtaDisabled({
-    unknownReceiptLocked: args.unknownReceiptLocked,
-    isSubmitting: args.isSubmitting,
-    writeReady: args.writeReady,
-    walletReady: args.walletReady,
-  })
-
   const moneyOk = args.blockReason == null || args.blockReason === 'insufficientAllowance'
   const canSubmit =
-    !locked && args.amountIn > 0n && moneyOk && args.preflightReady && !args.isQuoting
+    !writeCtaDisabled({
+      isSubmitting: args.isSubmitting,
+      writeReady: args.writeReady,
+      walletReady: args.walletReady,
+    }) &&
+    args.amountIn > 0n &&
+    moneyOk &&
+    args.preflightReady &&
+    !args.isQuoting
 
   const writePhase = evaluateWriteButtonPhase({
     walletReady: args.walletReady,
@@ -61,31 +61,5 @@ export function evaluateStakingAmountWrite(args: {
     isSubmitting: args.isSubmitting,
   })
 
-  return { locked, canSubmit, writePhase }
-}
-
-/**
- * 编辑金额前先解锁（stake / bond 共用）
- *
- * @param unlock 解除未知回执锁定
- * @param amountInput 金额输入控制
- * @returns 包一层解锁的 setAmount / fillMax
- */
-export function bindUnlockedAmountEditors(
-  unlock: () => void,
-  amountInput: {
-    setAmount: (value: string) => void
-    fillPercent: (percent: number) => void
-  },
-) {
-  return {
-    setAmount(value: string) {
-      unlock()
-      amountInput.setAmount(value)
-    },
-    fillMax() {
-      unlock()
-      amountInput.fillPercent(100)
-    },
-  }
+  return { canSubmit, writePhase }
 }

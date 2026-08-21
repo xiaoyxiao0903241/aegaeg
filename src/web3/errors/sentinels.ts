@@ -1,8 +1,6 @@
 /** 钱包阻断哨兵（兑换 / 领取 / 推荐 / Genesis）。字面量冻结。 */
 export const WALLET_BLOCKED = {
   NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
-  /** 交易结果未知：显式重置前禁重提。 */
-  PENDING_UNKNOWN: 'WALLET_PENDING_UNKNOWN',
 } as const
 
 export const GENESIS_PURCHASE_ERROR = {
@@ -30,10 +28,6 @@ export const WALLET_WRITE_ERROR = {
   INTENT_ADDRESS_MISMATCH: 'WALLET_INTENT_ADDRESS_MISMATCH',
   /** 写时链 id 非应用链（BSC）。 */
   WRONG_CHAIN: 'WALLET_WRONG_CHAIN',
-  /** eth_sendTransaction 超时无 hash：可能已广播，按 unknown。 */
-  SUBMIT_UNKNOWN: 'WALLET_SUBMIT_UNKNOWN',
-  /** 同 WRITE_PATH 信封仍在飞。 */
-  IN_FLIGHT: 'WALLET_WRITE_IN_FLIGHT',
   /** 本笔已确认授权后，读节点仍报额度不足（滞后）。 */
   STALE_ALLOWANCE_READ: 'WALLET_STALE_ALLOWANCE_READ',
 } as const

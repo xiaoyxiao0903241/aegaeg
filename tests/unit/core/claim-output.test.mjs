@@ -145,7 +145,6 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
     evaluateAssetsClaimConfirmGate({
       walletReady: true,
       writeReady: false,
-      isLocked: false,
       isPending: false,
       contributionOk: true,
       plansOk: true,
@@ -158,7 +157,6 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
     evaluateAssetsClaimConfirmGate({
       walletReady: true,
       writeReady: true,
-      isLocked: false,
       isPending: false,
       contributionOk: false,
       plansOk: true,
@@ -171,7 +169,6 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
     evaluateAssetsClaimConfirmGate({
       walletReady: true,
       writeReady: true,
-      isLocked: false,
       isPending: false,
       contributionOk: true,
       plansOk: true,
@@ -184,7 +181,6 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
     evaluateAssetsClaimConfirmGate({
       walletReady: true,
       writeReady: true,
-      isLocked: false,
       isPending: false,
       contributionOk: true,
       plansOk: true,
@@ -192,70 +188,5 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
       decimals: GAGX_DECIMALS,
     }),
     true,
-  )
-})
-
-test('evaluateAssetsClaimWritePhase uses assets money blocks (not UI claimable alone)', async () => {
-  const { evaluateAssetsClaimWritePhase } = await loadModule('/src/core/assets/claim-output.ts')
-
-  assert.equal(
-    evaluateAssetsClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: true,
-      claimable: 0n,
-      decimals: GAGX_DECIMALS,
-    }),
-    'blocked',
-  )
-  assert.equal(
-    evaluateAssetsClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      isSubmitting: false,
-      contributionOk: false,
-      plansOk: true,
-      claimable: GAGX_ACTION_FLOOR,
-      decimals: GAGX_DECIMALS,
-    }),
-    'blocked',
-  )
-  assert.equal(
-    evaluateAssetsClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: false,
-      claimable: GAGX_ACTION_FLOOR,
-      decimals: GAGX_DECIMALS,
-    }),
-    'blocked',
-  )
-  assert.equal(
-    evaluateAssetsClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: true,
-      claimable: GAGX_ACTION_FLOOR - 1n,
-      decimals: GAGX_DECIMALS,
-    }),
-    'blocked',
-  )
-  assert.equal(
-    evaluateAssetsClaimWritePhase({
-      walletReady: true,
-      writeReady: true,
-      isSubmitting: false,
-      contributionOk: true,
-      plansOk: true,
-      claimable: GAGX_ACTION_FLOOR,
-      decimals: GAGX_DECIMALS,
-    }),
-    'ready',
   )
 })

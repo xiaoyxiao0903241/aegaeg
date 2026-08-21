@@ -71,7 +71,6 @@ export const REWARDS_BLOCKED = {
 export const RELEASE_BLOCKED = {
   accountMigrated: 'RELEASE_ACCOUNT_MIGRATED',
   zeroAmount: 'RELEASE_ZERO_AMOUNT',
-  lockedUnknown: 'RELEASE_LOCKED_UNKNOWN',
   planUnresolved: 'RELEASE_PLAN_UNRESOLVED',
   unavailable: 'RELEASE_UNAVAILABLE',
 } as const

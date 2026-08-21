@@ -21,7 +21,7 @@ import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/p
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 type UseGenesisPurchaseActionsArgs = {
   wallet: {
@@ -194,7 +194,5 @@ export function useGenesisPurchaseActions({
     refresh,
     submitPurchase: () => purchaseMutation.mutate(),
     isSubmitting: purchaseMutation.isPending,
-    isLocked: purchaseMutation.isLocked,
-    clearLock: () => purchaseMutation.clearLock(),
   }
 }

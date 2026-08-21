@@ -121,7 +121,7 @@ export function useBurnExchangeSession(
     configQuery.data !== undefined &&
     !burnContributionSwapBlocksSubmit(blockReason)
 
-  async function submit(): Promise<{ ok: true } | { ok: false; error: unknown }> {
+  async function submit() {
     return submitBurnExchange({
       core,
     })

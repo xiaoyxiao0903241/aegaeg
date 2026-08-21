@@ -25,7 +25,7 @@ import {
 } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const BIND_COOLDOWN_MS = 5_000
 const PENDING_REFERRER_KEY = 'aegis.pendingReferrer'
@@ -43,18 +43,17 @@ function readPendingReferrerFromEnvironment(): Address | null {
  *
  * 链上读取是否已绑定、推荐人与直邀数；绑定前校验父节点已绑定或为 root，
  * 成功后失效相关查询缓存。绑定有 5 秒冷却，防止重复提交。
- * 改推荐人输入会清掉本路径的未知回执锁，避免超时后按钮一直灰。
  *
  * @see docs/onchain-manual/contracts/referral.md
  */
 export function useCommunityReferral() {
   const account = useActiveAccount()
   const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
-  const [referrerInput, setReferrerInputState] = useState(() => pendingReferrer ?? '')
+  const [referrerInput, setReferrerInput] = useState(() => pendingReferrer ?? '')
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const bindSucceededRef = useRef(false)
-  // 这里只存软预检错误；链上错误与未知结果由统一提示展示
+  // 这里只存软预检错误；链上错误由统一 toast 展示
   const [error, setError] = useState<unknown>(null)
 
   const address = account?.address
@@ -131,15 +130,9 @@ export function useCommunityReferral() {
   )
 
   const isSubmitting = bindMutation.isPending
-  const isLocked = bindMutation.isLocked
-
-  function setReferrerInput(value: string) {
-    bindMutation.clearLock()
-    setReferrerInputState(value)
-  }
 
   const bind = useCallback(async () => {
-    if (isBindCooldown || isSubmitting || isLocked) return false
+    if (isBindCooldown || isSubmitting) return false
 
     startBindCooldown()
 
@@ -162,7 +155,6 @@ export function useCommunityReferral() {
     address,
     bindMutation,
     isBindCooldown,
-    isLocked,
     isSubmitting,
     pendingReferrer,
     referrerInput,
@@ -193,7 +185,6 @@ export function useCommunityReferral() {
       referralQuery.isFetched &&
       !isBound &&
       !isSubmitting &&
-      !isLocked &&
       !isBindCooldown &&
       Boolean(referrerInput.trim() || pendingReferrer),
     error,

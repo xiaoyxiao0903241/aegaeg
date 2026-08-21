@@ -221,10 +221,8 @@ const app = defineMessages({
       gasLimitTooLow: 'Giới hạn gas quá thấp. Hãy giữ đủ BNB trong ví để trả phí mạng rồi thử lại.',
       gasEstimateFailed: 'Không thể ước tính gas cho giao dịch này. Kiểm tra mạng và thử lại.',
       insufficientFunds: 'Không đủ BNB để trả phí gas mạng.',
-      transactionFailed: 'Giao dịch thất bại. Vui lòng thử lại sau.',
-      transactionUnknown:
-        'Trạng thái giao dịch chưa rõ. Đừng gửi lại — hãy kiểm tra ví hoặc trình duyệt khối trước.',
-      writeInFlight: 'Một thao tác on-chain khác đang chạy, vui lòng chờ.',
+      wrongChain: 'Hãy chuyển sang BNB Smart Chain (BSC) rồi thử lại.',
+      accountChanged: 'Tài khoản ví đã thay đổi. Vui lòng gửi lại.',
     },
   },
   exchange: {

@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { canClaimWhen, unknownReceiptLocksIntent } from '~/core/wallet/write-cta'
+import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -26,8 +26,8 @@ import {
   type ReleaseQueueSnapshot,
 } from '~/web3/release/release-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -63,7 +63,6 @@ export function useQueue() {
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
-  const [latchedPlan, setLatchedPlan] = useState<number | null>(null)
   const [refreshingDays, setRefreshingDays] = useState<number | null>(null)
 
   const claim = useChainMutation({
@@ -75,7 +74,7 @@ export function useQueue() {
     },
   })
 
-  const locked = claim.isLocked
+  const pending = claim.isPending
 
   const planSource =
     queueQuery.data?.plans.filter((p) => p.durationDays != null && p.planIndex >= 0) ?? []
@@ -106,12 +105,7 @@ export function useQueue() {
         canClaimWhen({
           walletReady,
           writeReady,
-          unknownReceiptLocked: unknownReceiptLocksIntent({
-            pathBusy: locked,
-            pathLatched: claim.isLatched,
-            latchedIntent: latchedPlan,
-            intent: planIndex,
-          }),
+          isPending: pending,
           claimable,
           planIndexOk: planIndex >= 0,
         }),
@@ -128,13 +122,7 @@ export function useQueue() {
 
   async function onClaim(planIndex: number) {
     if (!writeReady || planIndex < 0) return
-    if (latchedPlan !== planIndex) {
-      // 换档位等于换了一笔领取，先解除上次未知结果锁定
-      claim.clearLock()
-      setLatchedPlan(planIndex)
-    } else if (locked) {
-      return
-    }
+    if (pending) return
     setPendingPlan(planIndex)
     try {
       await claim.mutate(planIndex)

@@ -15,7 +15,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 import { submitBondZap } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { bindUnlockedAmountEditors, evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
+import { evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import {
   burnBondDepositoryAddress,
@@ -28,9 +28,9 @@ import {
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -177,7 +177,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const isSubmitting = zap.isPending
 
   const { canSubmit, writePhase } = evaluateStakingAmountWrite({
-    unknownReceiptLocked: zap.isLocked,
     isSubmitting,
     writeReady,
     walletReady,
@@ -242,16 +241,12 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
       ? ''
       : `${slippageQuery.data.toString()}%`
 
-  function unlock() {
-    zap.clearLock()
-  }
-
-  const { setAmount, fillMax } = bindUnlockedAmountEditors(unlock, amountInput)
+  const { setAmount } = amountInput
+  const fillMax = () => amountInput.fillPercent(100)
 
   function changePeriod(next: string) {
     if (next === period) return
     if (!isBondPeriod(next)) return
-    unlock()
     amountInput.clearAmount()
     setBondPeriod(kind, next)
   }

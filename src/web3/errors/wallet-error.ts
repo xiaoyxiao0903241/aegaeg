@@ -1,6 +1,4 @@
 import { readErrorCode, readErrorText } from '~/web3/errors/error-text'
-import { WALLET_BLOCKED, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
-import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
 
 const USER_REJECTED_PATTERN =
   /user rejected|action_rejected|request rejected|user denied|rejected the request|denied transaction signature/i
@@ -8,47 +6,6 @@ const USER_REJECTED_PATTERN =
 /** 钱包发送 / 模拟失败：即使错误码是 4001 也必须展示给用户。 */
 const WALLET_SEND_FAILURE_PATTERN =
   /transaction failed|interaction failed|likely to fail|execution reverted|cannot estimate gas|intrinsic gas too low|insufficient funds|not broadcast|reverted on-chain|wallet may have failed/i
-
-export interface WalletTransactionErrorMessages {
-  gasLimitTooLow: string
-  gasEstimateFailed: string
-  insufficientFunds: string
-  transactionFailed: string
-  /** pending 交易超时无收据——确认前不得重提。 */
-  transactionUnknown?: string
-}
-
-/**
- * 仅处理「实例型」钱包结果
- *
- * 覆盖未知收据 / 提交超时 / 写阻断哨兵；
- * gas 与余额不足等字符串规则在 `error-messages.ts` 的 revert 表，
- * 不在本函数重复。
- *
- * @param error 待判断的错误
- * @param messages 钱包交易文案包
- * @returns 对应文案；无法归为实例型结果时返回 null
- * @see 手册 §19 常见错误与前端提示
- */
-export function walletTransactionError(
-  error: unknown,
-  messages: WalletTransactionErrorMessages,
-): string | null {
-  if (isUserRejectedWalletError(error)) return null
-  if (error instanceof WalletSubmitUnknownError && messages.transactionUnknown) {
-    return messages.transactionUnknown
-  }
-  const rawEarly = readErrorText(error)
-  if (
-    (rawEarly === WALLET_WRITE_ERROR.WRONG_CHAIN ||
-      rawEarly === WALLET_WRITE_ERROR.INTENT_ADDRESS_MISMATCH ||
-      rawEarly === WALLET_WRITE_ERROR.SUBMIT_UNKNOWN) &&
-    messages.transactionUnknown
-  ) {
-    return messages.transactionUnknown
-  }
-  return null
-}
 
 /**
  * 判断钱包错误是否表示用户主动拒绝交易。
@@ -95,9 +52,5 @@ export function isUserRejectedWalletError(error: unknown): boolean {
 export function toWalletUserFacingMessage(error: unknown, fallback: string): string | null {
   if (isUserRejectedWalletError(error)) return null
   if (error == null) return null
-  const text = readErrorText(error).trim()
-  if (text === WALLET_BLOCKED.NOT_CONNECTED || /wallet not connected/i.test(text)) {
-    return fallback
-  }
   return fallback
 }

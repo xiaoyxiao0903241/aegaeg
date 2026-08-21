@@ -14,6 +14,7 @@ import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatNumber } from '~/shared/presenters/format'
+import type { ExchangeSubmitResult } from '~/views/dapp/exchange/shared'
 import {
   submitTurbineClaim,
   submitTurbineUnlock,
@@ -77,7 +78,6 @@ export function useTurbineExchangeSession(
 
   const [segment, setSegmentState] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
-  const [latchedClaimIndex, setLatchedClaimIndex] = useState<number | null>(null)
 
   const quotaQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineQuota,
@@ -133,25 +133,17 @@ export function useTurbineExchangeSession(
     sessionReady,
   })
 
-  const { chainWrite, submitOutcomeRef, isSubmitting, blockResubmit } =
-    useExchangeWriteMutation(clearAmountRaw)
-
-  function clearLock() {
-    chainWrite.clearLock()
-  }
+  const { chainWrite, isSubmitting } = useExchangeWriteMutation(clearAmountRaw)
 
   function setUnlockAmount(value: string) {
-    clearLock()
     setUnlockAmountRaw(value)
   }
 
   function fillPercent(percent: number) {
-    clearLock()
     fillPercentRaw(percent)
   }
 
   function setSegment(next: TurbineSegment) {
-    if (next !== segment) clearLock()
     setSegmentState(next)
   }
 
@@ -259,7 +251,6 @@ export function useTurbineExchangeSession(
     writeReady &&
     balancesLoaded &&
     !isSubmitting &&
-    !blockResubmit &&
     unlockAmountIn > ZERO_BI &&
     unlockAmountIn <= decisionQuota &&
     usdNeeded > ZERO_BI &&
@@ -267,12 +258,15 @@ export function useTurbineExchangeSession(
     // 冷启动无价才 busy；后台 refetch 保留上一笔 usdNeeded，勿闪灰。
     !quoteQuery.isPending
 
-  async function runSubmit(run: (session: WriteSession) => Promise<void>) {
-    await chainWrite.mutate(async (session) => {
+  async function runSubmit(
+    run: (session: WriteSession) => Promise<void>,
+  ): Promise<ExchangeSubmitResult> {
+    const ok = await chainWrite.mutate(async (session) => {
       await run(session)
     })
     setClaimingIndex(null)
-    return submitOutcomeRef.current
+    if (ok === true) return { ok: true }
+    return { ok: false }
   }
 
   async function submitUnlock() {
@@ -283,10 +277,6 @@ export function useTurbineExchangeSession(
   }
 
   async function submitClaim(index: number) {
-    if (latchedClaimIndex !== index) {
-      clearLock()
-      setLatchedClaimIndex(index)
-    }
     setClaimingIndex(index)
     return submitTurbineClaim({
       core: { runSubmit },
@@ -363,8 +353,6 @@ export function useTurbineExchangeSession(
     isQuoting: unlockAmountIn > ZERO_BI && quoteQuery.isPending,
     isBalancesLoading,
     isSubmitting,
-    blockResubmit,
-    latchedClaimIndex,
     claimingIndex,
     submitUnlock,
     submitClaim,

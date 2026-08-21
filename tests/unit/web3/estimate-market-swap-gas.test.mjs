@@ -35,10 +35,10 @@ test('estimateMarketSwapGasWei multiplies buffered gas by gas price', async () =
 
   const client = {
     async simulateContract() {
-      return { request: { gas: 100_000n } }
+      return { request: {} }
     },
     async estimateContractGas() {
-      throw new Error('should not estimate when simulate returns gas')
+      return 100_000n
     },
     async getGasPrice() {
       return 5_000_000_000n
@@ -51,6 +51,7 @@ test('estimateMarketSwapGasWei multiplies buffered gas by gas price', async () =
     path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
     amountOutMin: 1n,
     client,
+    fallbackClient: client,
   })
 
   assert.equal(wei, 120_000n * 5_000_000_000n)

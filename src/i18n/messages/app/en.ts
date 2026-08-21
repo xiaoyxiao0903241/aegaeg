@@ -222,10 +222,8 @@ const app = defineMessages({
       gasEstimateFailed:
         'Could not estimate gas for this transaction. Check your network and try again.',
       insufficientFunds: 'Insufficient BNB to pay network gas fees.',
-      transactionFailed: 'Transaction failed. Please try again.',
-      transactionUnknown:
-        'Transaction status is unknown. Do not submit again — check your wallet or the block explorer first.',
-      writeInFlight: 'Another write is already in progress. Please wait.',
+      wrongChain: 'Switch to BNB Smart Chain (BSC) and try again.',
+      accountChanged: 'Wallet account changed. Submit again.',
     },
   },
   exchange: {

@@ -60,8 +60,6 @@ export function useGenesisSession() {
   })
 
   function setShares(next: number) {
-    // 改份额等于换了一笔购买，先解除上次未知结果锁定
-    actions.clearLock()
     setSharesDraft(next)
   }
 
@@ -78,7 +76,7 @@ export function useGenesisSession() {
     needsApproval: model.needsApproval,
     isApproved: model.isApproved,
     hasSufficientBalance: model.hasSufficientBalance,
-    canPurchase: canPurchaseBase && !actions.isLocked,
+    canPurchase: canPurchaseBase && !actions.isSubmitting,
     isLoading: reads.isLoading,
     isSubmitting: actions.isSubmitting,
     error: reads.error,

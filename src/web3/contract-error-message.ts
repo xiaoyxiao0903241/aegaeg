@@ -11,9 +11,4 @@ export {
   WALLET_BLOCKED,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
-export {
-  isUserRejectedWalletError,
-  toWalletUserFacingMessage,
-  walletTransactionError,
-  type WalletTransactionErrorMessages,
-} from '~/web3/errors/wallet-error'
+export { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/errors/wallet-error'

@@ -216,9 +216,8 @@ const app = defineMessages({
       gasLimitTooLow: '交易 Gas 过低，请确保钱包有足够 BNB 支付网络费用后重试。',
       gasEstimateFailed: '无法估算交易 Gas，请检查网络连接或稍后重试。',
       insufficientFunds: 'BNB 余额不足，无法支付网络 Gas 费用。',
-      transactionFailed: '交易失败，请稍后重试。',
-      transactionUnknown: '交易状态未知，请勿重复提交。请先在钱包或区块浏览器确认结果。',
-      writeInFlight: '另一笔链上操作进行中，请稍候。',
+      wrongChain: '请切换到 BNB Smart Chain（BSC）后再试。',
+      accountChanged: '钱包账户已变更，请重新提交。',
     },
   },
   exchange: {

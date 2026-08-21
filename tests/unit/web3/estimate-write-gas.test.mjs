@@ -11,19 +11,19 @@ const CALL = {
   args: [],
 }
 
-test('estimateWriteGasLimit uses simulate gas with 20% buffer', async () => {
+test('estimateWriteGasLimit uses estimateContractGas with 20% buffer after simulate succeeds', async () => {
   const { estimateWriteGasLimit } = await loadModule('/src/web3/wallet/wallet-contract-write.ts')
 
   const walletClient = {
     async simulateContract() {
-      return { request: { gas: 100_000n } }
+      return { request: {} }
     },
     async estimateContractGas() {
-      throw new Error('should not estimate when simulate returns gas')
+      return 50_000n
     },
   }
 
-  assert.equal(await estimateWriteGasLimit(CALL, walletClient), 120_000n)
+  assert.equal(await estimateWriteGasLimit(CALL, walletClient), 60_000n)
 })
 
 test('estimateWriteGasLimit falls back to estimateContractGas after non-revert simulate failure', async () => {

@@ -223,8 +223,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                       !vm.sessionReady ||
                       !turbine.walletReady ||
                       !row.vested ||
-                      turbine.isSubmitting ||
-                      (turbine.blockResubmit && turbine.latchedClaimIndex === row.index)
+                      turbine.isSubmitting
                     }
                     loading={turbine.isSubmitting && turbine.claimingIndex === row.index}
                     onClick={() => void vm.handleClaim(row.index)}

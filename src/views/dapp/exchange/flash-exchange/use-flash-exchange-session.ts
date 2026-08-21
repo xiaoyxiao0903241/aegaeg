@@ -14,6 +14,7 @@ import { useExchangeFlashPairStore } from '~/stores/exchange-flash-pair-store'
 import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
 import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-spot-rates'
 import {
+  type ExchangeSubmitResult,
   flashPairAllowsFlip,
   getFlashExchangePairTokens,
   isFlashPairId,
@@ -173,7 +174,7 @@ export function useFlashExchangeSession(
     setDirection((prev) => (prev === 'forward' ? 'reverse' : 'forward'))
   }
 
-  async function submit(): Promise<{ ok: true } | { ok: false; error: unknown }> {
+  async function submit(): Promise<ExchangeSubmitResult> {
     return submitFlashExchange({
       pairId,
       direction,

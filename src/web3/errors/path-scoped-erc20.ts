@@ -1,6 +1,6 @@
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
 import { decodeContractRevert } from '~/web3/decode-contract-revert'
-import { WRITE_PATH, type WritePath } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH, type WritePath } from '~/web3/wallet/write-path'
 
 /** 可选写路径 / 钱包上下文，用于共享 revert 消歧。 */
 export type ErrorMessageContext = {
@@ -15,7 +15,6 @@ function defaultBalanceSide(path: WritePath | undefined): BalanceSide {
   switch (path) {
     case WRITE_PATH.ASSETS_CLAIM:
     case WRITE_PATH.RELEASE_CLAIM:
-    case WRITE_PATH.REWARD_CLAIM:
     case WRITE_PATH.REWARD_LUCKY_MIXED:
     case WRITE_PATH.REWARD_DAO_MIXED:
     case WRITE_PATH.REWARD_SIGNED_CLAIM:

@@ -273,11 +273,9 @@ test('fetchExchangeQuote estimates gas in the same fetch using this quote min', 
   let simulatedMin
   client.simulateContract = async (request) => {
     simulatedMin = request.args[1]
-    return { request: { gas: 100_000n } }
+    return { request: {} }
   }
-  client.estimateContractGas = async () => {
-    throw new Error('should not estimate when simulate returns gas')
-  }
+  client.estimateContractGas = async () => 100_000n
   client.getGasPrice = async () => 5_000_000_000n
 
   const result = await fetchExchangeQuote({

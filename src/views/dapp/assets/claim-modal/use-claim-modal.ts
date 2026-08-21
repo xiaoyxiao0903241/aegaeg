@@ -5,7 +5,6 @@ import { toast } from 'sonner'
 import {
   claimContribRequiredOrZero,
   evaluateAssetsClaimConfirmGate,
-  evaluateAssetsClaimWritePhase,
 } from '~/core/assets/claim-output'
 import {
   claimDurationDaysLists,
@@ -28,8 +27,8 @@ import { type MixedClaimTarget, submitMixedClaim } from '~/views/dapp/assets/sub
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -112,17 +111,7 @@ export function useAssetsClaimModal(args: {
   const canConfirm = evaluateAssetsClaimConfirmGate({
     walletReady,
     writeReady,
-    isLocked: claim.isLocked,
     isPending: claim.isPending,
-    contributionOk,
-    plansOk,
-    claimable: target.amount,
-    decimals: GAGX_DECIMALS,
-  })
-  const writePhase = evaluateAssetsClaimWritePhase({
-    walletReady,
-    writeReady,
-    isSubmitting: claim.isPending,
     contributionOk,
     plansOk,
     claimable: target.amount,
@@ -168,17 +157,14 @@ export function useAssetsClaimModal(args: {
   }))
 
   function setReleasePct(value: number) {
-    claim.clearLock()
     setReleasePctState(value)
   }
 
   function setReleaseDays(value: number) {
-    claim.clearLock()
     setReleaseDaysState(value)
   }
 
   function setRestakeDays(value: number) {
-    claim.clearLock()
     setRestakeDaysState(value)
   }
 
@@ -222,7 +208,6 @@ export function useAssetsClaimModal(args: {
     plansOk,
     plansQuery,
     canConfirm,
-    writePhase,
     releaseAmountText,
     restakeAmountText,
     ctaAmountLine,

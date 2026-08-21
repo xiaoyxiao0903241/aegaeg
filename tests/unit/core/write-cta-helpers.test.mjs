@@ -10,7 +10,7 @@ test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable
     canClaimWhen({
       walletReady: true,
       writeReady: true,
-      unknownReceiptLocked: false,
+      isPending: false,
       claimable: 1n,
     }),
     true,
@@ -19,7 +19,7 @@ test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable
     canClaimWhen({
       walletReady: true,
       writeReady: true,
-      unknownReceiptLocked: true,
+      isPending: true,
       claimable: 1n,
     }),
     false,
@@ -28,7 +28,7 @@ test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable
     canClaimWhen({
       walletReady: true,
       writeReady: true,
-      unknownReceiptLocked: false,
+      isPending: false,
       claimable: 0n,
     }),
     false,
@@ -37,7 +37,7 @@ test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable
     canClaimWhen({
       walletReady: true,
       writeReady: true,
-      unknownReceiptLocked: false,
+      isPending: false,
       claimable: 1n,
       planIndexOk: false,
     }),
@@ -45,53 +45,11 @@ test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable
   )
 })
 
-test('unknownReceiptLocksIntent: in-flight blocks all; latch only same intent', async () => {
-  const { unknownReceiptLocksIntent } = await loadModule('/src/core/wallet/write-cta.ts')
-
-  assert.equal(
-    unknownReceiptLocksIntent({
-      pathBusy: false,
-      pathLatched: false,
-      latchedIntent: 0,
-      intent: 0,
-    }),
-    false,
-  )
-  assert.equal(
-    unknownReceiptLocksIntent({
-      pathBusy: true,
-      pathLatched: false,
-      latchedIntent: 0,
-      intent: 1,
-    }),
-    true,
-  )
-  assert.equal(
-    unknownReceiptLocksIntent({
-      pathBusy: true,
-      pathLatched: true,
-      latchedIntent: 0,
-      intent: 0,
-    }),
-    true,
-  )
-  assert.equal(
-    unknownReceiptLocksIntent({
-      pathBusy: true,
-      pathLatched: true,
-      latchedIntent: 0,
-      intent: 1,
-    }),
-    false,
-  )
-})
-
-test('writeCtaDisabled blocks when latched, submitting, or not ready', async () => {
+test('writeCtaDisabled blocks when submitting or not ready', async () => {
   const { writeCtaDisabled } = await loadModule('/src/core/wallet/write-cta.ts')
 
   assert.equal(
     writeCtaDisabled({
-      unknownReceiptLocked: false,
       isSubmitting: false,
       writeReady: true,
       walletReady: true,
@@ -100,16 +58,6 @@ test('writeCtaDisabled blocks when latched, submitting, or not ready', async () 
   )
   assert.equal(
     writeCtaDisabled({
-      unknownReceiptLocked: true,
-      isSubmitting: false,
-      writeReady: true,
-      walletReady: true,
-    }),
-    true,
-  )
-  assert.equal(
-    writeCtaDisabled({
-      unknownReceiptLocked: false,
       isSubmitting: true,
       writeReady: true,
       walletReady: true,
@@ -160,7 +108,6 @@ test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', asy
   const { evaluateStakingAmountWrite } = await loadModule('/src/views/dapp/staking/shared.ts')
 
   const ready = {
-    unknownReceiptLocked: false,
     isSubmitting: false,
     writeReady: true,
     walletReady: true,

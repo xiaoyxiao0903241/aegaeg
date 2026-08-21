@@ -8,15 +8,15 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
-import { bindUnlockedAmountEditors, evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
+import { evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
 import { submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -106,10 +106,8 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
   })
 
   const isSubmitting = open.isPending
-  const isLocked = open.isLocked
 
   const { canSubmit, writePhase } = evaluateStakingAmountWrite({
-    unknownReceiptLocked: isLocked,
     isSubmitting,
     writeReady,
     walletReady,
@@ -120,16 +118,12 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     accountMigrated: migration.isOldAccount === true,
   })
 
-  function unlock() {
-    open.clearLock()
-  }
-
-  const { setAmount, fillMax } = bindUnlockedAmountEditors(unlock, amountInput)
+  const { setAmount } = amountInput
+  const fillMax = () => amountInput.fillPercent(100)
 
   function changePeriod(next: string) {
     if (next === period) return
     if (!isStakePeriod(next)) return
-    unlock()
     amountInput.clearAmount()
     setStakePeriod(next)
   }

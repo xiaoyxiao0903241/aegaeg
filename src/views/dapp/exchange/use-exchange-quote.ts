@@ -13,7 +13,11 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { QuotedSubmitCore, QuotedSubmitExecute } from '~/views/dapp/exchange/shared'
+import type {
+  ExchangeSubmitResult,
+  QuotedSubmitCore,
+  QuotedSubmitExecute,
+} from '~/views/dapp/exchange/shared'
 import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
 import { EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
@@ -94,8 +98,7 @@ export function useExchangeQuote<TQuote>({
     onBeforeCap,
   })
 
-  const { chainWrite, submitOutcomeRef, isSubmitting, blockResubmit } =
-    useExchangeWriteMutation(clearAmount)
+  const { chainWrite, isSubmitting } = useExchangeWriteMutation(clearAmount)
 
   const debouncedAmountIn = useDebouncedValue(amountIn, debounceMs)
   const isAmountDebouncing = amountIn > ZERO_BI && amountIn !== debouncedAmountIn
@@ -150,7 +153,6 @@ export function useExchangeQuote<TQuote>({
 
   const canSubmit =
     !isAmountDebouncing &&
-    !blockResubmit &&
     canSubmitQuotedExchange({
       walletReady: writeReady,
       amountIn: debouncedAmountIn,
@@ -161,33 +163,20 @@ export function useExchangeQuote<TQuote>({
       isQuotePending: amountQuoteQuery.isPending,
       isBalancesLoading,
       isSubmitting,
-      blockResubmit,
       quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
       // UI 可点：宽于轮询间隔，避免 refetch 交界闪灰；成交安全靠下方 live refetch。
       maxQuoteAgeMs: EXCHANGE_CONFIG.quoteUiMaxAgeMs,
     })
 
-  function clearLock() {
-    chainWrite.clearLock()
-  }
-
-  function setSellAmountAndUnlock(value: string) {
-    clearLock()
-    setSellAmount(value)
-  }
-
   function fillPercent(percent: number) {
     if (!walletReady) return
-    clearLock()
     fillSellPercent(percent)
   }
 
-  async function runQuotedSubmit(
-    execute: QuotedSubmitExecute,
-  ): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+  async function runQuotedSubmit(execute: QuotedSubmitExecute): Promise<ExchangeSubmitResult> {
     // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
     if (!canSubmit || amountIn !== debouncedAmountIn) {
-      return { ok: false, error: null }
+      return { ok: false }
     }
 
     // 提交前实时复检：授权后强制刷新报价（可能已超过报价有效期），
@@ -220,18 +209,17 @@ export function useExchangeQuote<TQuote>({
         isQuotePending: queryState?.status === 'pending',
         isBalancesLoading: false,
         isSubmitting: false,
-        blockResubmit: chainWrite.isLocked,
         quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
         maxQuoteAgeMs: QUERY_STALE_TIME.quote,
       })
       return { amountOutMin: liveAmountOutMin, quotedOut: quotedOutLive }
     }
 
-    await chainWrite.mutate(async (session) => {
+    const ok = await chainWrite.mutate(async (session) => {
       await execute({ session, assertStillSubmittable })
     })
-
-    return submitOutcomeRef.current
+    if (ok === true) return { ok: true }
+    return { ok: false }
   }
 
   return {
@@ -240,7 +228,7 @@ export function useExchangeQuote<TQuote>({
     amountIn,
     debouncedAmountIn,
     isAmountDebouncing,
-    setSellAmount: setSellAmountAndUnlock,
+    setSellAmount,
     clearAmount,
     fillPercent,
     buyAmount,
@@ -250,8 +238,6 @@ export function useExchangeQuote<TQuote>({
     canSubmit,
     needsApproval,
     isSubmitting,
-    blockResubmit,
-    clearLock,
     validationError,
     quoteErrorUpdatedAt,
     error: validationError,

@@ -66,8 +66,6 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
                 formatAmount={w.formatAmount}
                 formatPeriodLabel={w.formatPeriodLabel}
                 key={row.id}
-                claimLocked={w.locksIntent(`claim:${row.id}`)}
-                redeemLocked={w.locksIntent(row.inWarmup ? `warmup:${row.id}` : `redeem:${row.id}`)}
                 onActivate={w.activateWarmup}
                 onClaim={w.openStakeClaim}
                 onRedeem={(claimRow) => w.requestRedeem('stake', claimRow)}
@@ -82,8 +80,6 @@ export function PositionDock({ product }: { product: AssetsProduct }) {
                 formatAmount={w.formatAmount}
                 formatPeriodLabel={w.formatPeriodLabel}
                 key={row.id}
-                claimLocked={w.locksIntent(`claim:${row.id}`)}
-                redeemLocked={w.locksIntent(`redeem:${row.id}`)}
                 onClaim={w.openBondClaim}
                 onRedeem={(claimRow) => w.requestRedeem('bond', claimRow)}
                 quote={w.quote}

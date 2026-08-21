@@ -56,11 +56,8 @@ export function XmineDock() {
           ) : (
             <AssetsXminePositionCard
               activateWarmupLabel={t.assets.position.activateWarmup}
-              activateLocked={vm.activateLocked}
               busy={vm.busy}
               claimLabel={t.assets.position.claim}
-              claimLocked={vm.claimLocked}
-              redeemLocked={vm.redeemLocked}
               lockedPrefix={t.assets.position.lockedPrefix}
               miningStake={position.miningStake}
               onActivateWarmup={() => void vm.handleActivateWarmup()}
