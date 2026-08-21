@@ -159,12 +159,7 @@ export function dappLocationFromHash(hash: string): DappLocation | null {
   return emptyViews(tabPart)
 }
 
-/** 由 URL hash 解析出当前 Tab；兼容旧版 `#swap` 与 `#exchange/<view>`。 */
-export function tabFromHash(hash: string): DappTab | null {
-  return dappLocationFromHash(hash)?.tab ?? null
-}
-
 /** 从 `window.location.hash` 得到初始 Tab（仅浏览器环境）。 */
 export function getInitialTab(): DappTab {
-  return tabFromHash(window.location.hash.slice(1)) ?? 'exchange'
+  return dappLocationFromHash(window.location.hash.slice(1))?.tab ?? 'exchange'
 }

@@ -76,11 +76,6 @@ export function loginMessageFormats(): LoginMessageFormat[] {
   return loginMessageFormat() === 'simple' ? ['simple'] : ['siwe', 'simple']
 }
 
-/** 仅后端拒绝 SIWE 载荷时清除签名缓存；网络错误保留缓存以免反复弹窗。 */
-function isLoginSignatureRejected(error: unknown): boolean {
-  return shouldClearCachedLoginSignature(error)
-}
-
 /**
  * 用签名向后端 /login 换 token 并写入会话存储。
  *
@@ -194,7 +189,7 @@ async function signAndExchangeLogin({
 
       return { token, message, signature }
     } catch (error) {
-      if (!isLoginSignatureRejected(error)) {
+      if (!shouldClearCachedLoginSignature(error)) {
         throw error
       }
       lastError = error
@@ -254,7 +249,7 @@ export async function loginWithWallet({
         signature: cached.signature,
       }
     } catch (error) {
-      if (!isLoginSignatureRejected(error)) {
+      if (!shouldClearCachedLoginSignature(error)) {
         throw error
       }
 

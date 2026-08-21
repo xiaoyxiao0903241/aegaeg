@@ -62,12 +62,7 @@ export function createApiClient(options: { baseUrl: string }): ApiClient {
   }
 }
 
-/** 计算当前环境下的 API 基础地址。 */
-export function getApiBaseUrl(): string {
-  return apiBaseUrl()
-}
-
 /** 把 API 路径拼为完整 URL。 */
 export function apiClientUrl(path: string): string {
-  return createApiClient({ baseUrl: getApiBaseUrl() }).urlFor(path)
+  return createApiClient({ baseUrl: apiBaseUrl() }).urlFor(path)
 }

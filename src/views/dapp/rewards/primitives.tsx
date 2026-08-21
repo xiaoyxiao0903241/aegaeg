@@ -8,7 +8,6 @@ import type { ReactNode } from 'react'
 
 import type {
   DaoGrantStatus,
-  MarketAllowanceClaimLogItem,
   MarketAllowancePaidLogItem,
   ParticipationAwardLogItem,
   RankRewardLogItem,
@@ -23,11 +22,9 @@ import { formatApiAmount, parseApiAmount } from '~/shared/presenters/format'
 import {
   daoGrantStatusTone,
   formatDaoGrantStatus,
-  mapMarketAllowanceClaimLogToRow,
+  mapDaoGrantAwardLogToRow,
   mapMarketAllowancePaidLogToRow,
-  mapParticipationAwardLogToRow,
   mapRankRewardLogToRow,
-  mapReferralAwardLogToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/shared'
@@ -118,7 +115,7 @@ export function mapReferralAwardLogToCells(
   item: ReferralAwardLogItem,
   labels: RewardLogStatusLabels,
 ): ReactNode[] {
-  const cells = mapReferralAwardLogToRow(item, labels)
+  const cells = mapDaoGrantAwardLogToRow(item, labels)
   return [cells[0], cells[1], statusBadge(item.status, labels), cells[3]]
 }
 
@@ -126,7 +123,7 @@ export function mapParticipationAwardLogToCells(
   item: ParticipationAwardLogItem,
   labels: RewardLogStatusLabels,
 ): ReactNode[] {
-  const cells = mapParticipationAwardLogToRow(item, labels)
+  const cells = mapDaoGrantAwardLogToRow(item, labels)
   return [cells[0], cells[1], statusBadge(item.status, labels), cells[3]]
 }
 
@@ -199,8 +196,4 @@ export function mapMarketAllowancePaidLogToCells(item: MarketAllowancePaidLogIte
       {signed.text}
     </Text>,
   ]
-}
-
-export function mapMarketAllowanceClaimLogToCells(item: MarketAllowanceClaimLogItem): ReactNode[] {
-  return mapMarketAllowanceClaimLogToRow(item)
 }

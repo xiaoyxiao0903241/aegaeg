@@ -1,5 +1,3 @@
-import { useCallback } from 'react'
-
 import {
   type ClaimRewardExecuteResult,
   claimRewardOutcome,
@@ -86,31 +84,19 @@ export function useClaimReward(execute: RewardClaimExecutor) {
  * @see docs/backend-api/api.md #claim/team-reward
  */
 export function useTeamRewardClaim() {
-  const execute = useCallback(
-    (args: Parameters<typeof claimTeamReward>[0]) => claimTeamReward(args),
-    [],
-  )
-  return useClaimReward(execute)
+  return useClaimReward(claimTeamReward)
 }
 
 /** 发展基金（市场津贴）领取
  * @see docs/backend-api/api.md #claim/market-fund
  */
 export function useMarketFundClaim() {
-  const execute = useCallback(
-    (args: Parameters<typeof claimMarketFundReward>[0]) => claimMarketFundReward(args),
-    [],
-  )
-  return useClaimReward(execute)
+  return useClaimReward(claimMarketFundReward)
 }
 
 /** 社区基金领取
  * @see docs/backend-api/api.md #claim/community-fund
  */
 export function useCommunityFundClaim() {
-  const execute = useCallback(
-    (args: Parameters<typeof claimCommunityFund>[0]) => claimCommunityFund(args),
-    [],
-  )
-  return useClaimReward(execute)
+  return useClaimReward(claimCommunityFund)
 }

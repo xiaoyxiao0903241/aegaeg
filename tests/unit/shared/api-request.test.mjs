@@ -5,11 +5,11 @@ import { loadModule } from '../load-module.mjs'
 
 test('apiUrl appends query params', async () => {
   const { apiUrl } = await loadModule('/src/shared/api/request.ts')
-  const { getApiBaseUrl } = await loadModule('/src/shared/api/client.ts')
+  const { apiBaseUrl } = await loadModule('/src/shared/api/api-base-url.ts')
 
   // Derive the base from the same resolver the app uses so the test stays
   // hermetic — it verifies query-param handling, not the deploy-specific host.
-  const base = getApiBaseUrl().replace(/\/$/, '')
+  const base = apiBaseUrl().replace(/\/$/, '')
   assert.equal(
     apiUrl('/sales/logs', { page: 2, page_size: 10 }),
     `${base}/sales/logs?page=2&page_size=10`,

@@ -19,12 +19,10 @@ import type {
   MarketAllowanceClaimLogItem,
   MarketAllowancePaidLogItem,
   ParticipationAwardInviter,
-  ParticipationAwardLogItem,
   RankRewardLogItem,
   RankRewardPeerSurpassLogItem,
   RankRewardTeamMemberItem,
   ReferralAwardDirectReferralItem,
-  ReferralAwardLogItem,
   RewardLogItem,
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
@@ -366,7 +364,8 @@ export function mapCommunityFundLogToRow(
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
 }
 
-function mapDaoGrantAwardLogToRow(
+/** 参与奖 / 推荐奖发放记录与 DAO 发放同一列结构。 */
+export function mapDaoGrantAwardLogToRow(
   item: {
     created_at: string | null
     awarded_gross: string
@@ -381,20 +380,6 @@ function mapDaoGrantAwardLogToRow(
     formatDaoGrantStatus(item.status, labels),
     formatApiDateTime(item.fully_claimed_at),
   ]
-}
-
-/**
- * 参与奖发放记录 → 表格行，复用 DAO 发放展示格式。
- *
- * @param item 后端参与奖记录
- * @param labels 各状态对应的多语文案
- * @returns 发放时间、金额、状态与领取时间的单元格数组
- */
-export function mapParticipationAwardLogToRow(
-  item: ParticipationAwardLogItem,
-  labels: RewardLogStatusLabels,
-): string[] {
-  return mapDaoGrantAwardLogToRow(item, labels)
 }
 
 /**
@@ -451,20 +436,6 @@ export function mapRankRewardTeamMemberToRow(
     formatApiAgxUsdLabel(true, false, item.making_market, agxPriceUsd),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
-}
-
-/**
- * 推荐奖发放记录 → 表格行，复用 DAO 发放展示格式。
- *
- * @param item 后端推荐奖记录
- * @param labels 各状态对应的多语文案
- * @returns 发放时间、金额、状态与领取时间的单元格数组
- */
-export function mapReferralAwardLogToRow(
-  item: ReferralAwardLogItem,
-  labels: RewardLogStatusLabels,
-): string[] {
-  return mapDaoGrantAwardLogToRow(item, labels)
 }
 
 /**

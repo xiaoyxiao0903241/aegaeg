@@ -9,11 +9,12 @@ import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatMakingRankLabel } from '~/shared/presenters/format'
 import { useGrantSessionStore } from '~/stores/rewards-session-store'
+import { mapMarketAllowancePaidLogToCells } from '~/views/dapp/rewards/primitives'
 import {
-  mapMarketAllowanceClaimLogToCells,
-  mapMarketAllowancePaidLogToCells,
-} from '~/views/dapp/rewards/primitives'
-import { formatApiGagxApproxUsd, formatApiStatLabel } from '~/views/dapp/rewards/shared'
+  formatApiGagxApproxUsd,
+  formatApiStatLabel,
+  mapMarketAllowanceClaimLogToRow,
+} from '~/views/dapp/rewards/shared'
 
 /**
  * 发展津贴详情视图模型
@@ -63,7 +64,7 @@ export function useGrant() {
   const activeLogsQuery = isIssue ? issueLogsQuery : claimLogsQuery
   const recordRows = isIssue
     ? (issueLogsQuery.data?.items.map((item) => mapMarketAllowancePaidLogToCells(item)) ?? [])
-    : (claimLogsQuery.data?.items.map((item) => mapMarketAllowanceClaimLogToCells(item)) ?? [])
+    : (claimLogsQuery.data?.items.map((item) => mapMarketAllowanceClaimLogToRow(item)) ?? [])
 
   return {
     grant,
