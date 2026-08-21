@@ -65,14 +65,15 @@ function useDismissOnOutside(
 }
 
 /**
- * 市价交易滑点：行内齿轮打开深色浮层，默认 / 自定义即时生效。
+ * 滑点：行内齿轮打开深色浮层，默认 / 自定义即时生效。
  *
- * 浮层 portal 到 body，按视口剩余空间上下翻转并水平收进屏幕。
+ * 市价与涡轮共用。浮层 portal 到 body，按视口剩余空间上下翻转并水平收进屏幕。
  */
 export function ExchangeSlippagePanel({
   autoPercent,
   customText,
   disabled = false,
+  hint,
   mode,
   onCustomTextChange,
   onModeChange,
@@ -81,6 +82,7 @@ export function ExchangeSlippagePanel({
   autoPercent: number
   customText: string
   disabled?: boolean
+  hint?: string
   mode: SlippageMode
   onCustomTextChange: (value: string) => void
   onModeChange: (mode: SlippageMode) => void
@@ -228,7 +230,7 @@ export function ExchangeSlippagePanel({
                 {copy.title}
               </Text>
               <Text as="span" className="whitespace-normal" tone="inverse-muted" variant="support">
-                {copy.hint}
+                {hint ?? copy.hint}
               </Text>
               <div
                 aria-label={copy.title}

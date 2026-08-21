@@ -2,6 +2,7 @@ import type { QueryObserverResult } from '@tanstack/react-query'
 
 import { ZERO_ADDRESS } from '~/core/constants'
 import {
+  calcTurbinePayableUsd,
   evaluateTurbineClaimLive,
   evaluateTurbineUnlockLive,
 } from '~/core/exchange/turbine-unlock-live'
@@ -29,7 +30,7 @@ type TurbineSubmitCore = {
 /**
  * Turbine 解锁：经统一核预检 → 按需授权 → 实时复核 → 买入
  *
- * 授权金额按预检报价；授权后实时再报价，升高则硬挡，用户重试即可。
+ * 授权与提交均为 min(报价×(1+滑点), 全配额报价)；授权后实时再报价加码截顶，升高则硬挡。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -37,8 +38,10 @@ export async function submitTurbineUnlock(args: {
   core: TurbineSubmitCore
   /** 本次解锁的 AGX 数量（以链上 turbineBalances 为准）。 */
   unlockAmountAgx: bigint
+  /** 用户滑点（BPS）；应付 = min(quote×(1+滑点), 全配额报价)。 */
+  slippageBps: number
 }): Promise<ExchangeSubmitResult> {
-  const { core, unlockAmountAgx } = args
+  const { core, unlockAmountAgx, slippageBps } = args
 
   return core.runSubmit(async (session) => {
     const { wallet, address, readClient } = session
@@ -58,11 +61,17 @@ export async function submitTurbineUnlock(args: {
 
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<Snap> => {
-        const [liveBalances, liveQuota, liveUsd] = await Promise.all([
+        const [liveBalances, liveQuota] = await Promise.all([
           readTurbineUsd1Balances(address, readClient),
           readTurbineQuota(address, readClient),
-          readTurbineUsdQuote(unlockAmountAgx, readClient),
         ])
+        const quotedUnlockP = readTurbineUsdQuote(unlockAmountAgx, readClient)
+        const quotedQuotaP =
+          liveQuota > 0n && unlockAmountAgx !== liveQuota
+            ? readTurbineUsdQuote(liveQuota, readClient)
+            : quotedUnlockP
+        const [quotedUnlock, quotedQuota] = await Promise.all([quotedUnlockP, quotedQuotaP])
+        const liveUsd = calcTurbinePayableUsd(quotedUnlock, quotedQuota, slippageBps)
         if (quotedUsd === 0n) quotedUsd = liveUsd
         return {
           liveUsd,

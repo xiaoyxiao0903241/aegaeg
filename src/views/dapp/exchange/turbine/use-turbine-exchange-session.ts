@@ -2,9 +2,17 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { TEN_BI, ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { previewTurbineExpectedAgx } from '~/core/exchange/turbine-expected-agx'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  slippagePercentToBps,
+} from '~/core/exchange/token-amount'
 import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-buckets'
+import {
+  calcTurbinePayableUsd,
+  resolveTurbineSlippagePercent,
+  TURBINE_AUTO_SLIPPAGE_PERCENT,
+} from '~/core/exchange/turbine-unlock-live'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -24,7 +32,6 @@ import {
   readTurbineCooldownDuration,
   readTurbineQuota,
   readTurbineSilences,
-  readTurbineSwapSlippageBP,
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
 } from '~/web3/exchange/turbine-exchange-read'
@@ -63,7 +70,7 @@ function formatTurbineSummaryAmount(raw: string | null | undefined): string {
 /**
  * Turbine 会话状态：解锁（USD1 → AGX 进入冷却）+ 领取冷却完成的 gAGX
  *
- * 配额、余额、静默期与冷却时长均来自链上；概览金额按合约单位换算。
+ * 配额、余额、静默期与冷却时长均来自链上；应付 USD1 按报价加用户滑点，满额截到全配额报价。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -78,6 +85,16 @@ export function useTurbineExchangeSession(
 
   const [segment, setSegmentState] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
+  const [slippageMode, setSlippageModeState] = useState<'auto' | 'custom'>('auto')
+  const [slippageCustomText, setSlippageCustomTextState] = useState('')
+  const autoSlippagePercent = TURBINE_AUTO_SLIPPAGE_PERCENT
+  const slippage = resolveTurbineSlippagePercent(slippageMode, slippageCustomText)
+  const slippageBps = slippagePercentToBps(slippage)
+
+  function setSlippageMode(mode: 'auto' | 'custom') {
+    if (mode === 'auto') setSlippageCustomTextState('')
+    setSlippageModeState(mode)
+  }
 
   const quotaQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineQuota,
@@ -155,6 +172,17 @@ export function useTurbineExchangeSession(
     enabled: quotesEnabled && sessionReady && unlockAmountIn > ZERO_BI,
   })
 
+  const needsQuotaCapQuote =
+    unlockAmountIn > ZERO_BI && decisionQuota > ZERO_BI && unlockAmountIn !== decisionQuota
+  const quotaQuoteQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineUsdQuote(decisionQuota.toString()),
+    queryFn: () => readTurbineUsdQuote(decisionQuota),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: quotesEnabled && sessionReady && needsQuotaCapQuote,
+    placeholderData: keepPreviousData,
+  })
+
   // 概览「AGX 价格」用 1 AGX 的单位报价；读取失败时显示 —
   const unitPriceQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineUsdQuote(ONE_AGX.toString()),
@@ -164,40 +192,29 @@ export function useTurbineExchangeSession(
     enabled: quotesEnabled && sessionReady,
   })
 
-  // 滑点由合约 swapSlippageBP 固定（owner 配置），此处只读展示
-  const slippageQuery = useChainQuery({
-    queryKey: queryKeys.chain.turbineSwapSlippage,
-    queryFn: () => readTurbineSwapSlippageBP(),
-    scope: 'public',
-    freshness: 'static',
-    enabled: quotesEnabled && sessionReady,
-  })
-
   const turbineSummaryQuery = useTurbineSummary(sessionReady)
 
-  const usdNeeded = quoteQuery.data ?? ZERO_BI
-  // 预览实得 = min(输入按 swapSlippageBP 折减, 配额)；滑点未加载时不夸大展示
+  const quotedUsd = quoteQuery.data ?? ZERO_BI
+  const quotaCapReady = !needsQuotaCapQuote || quotaQuoteQuery.data !== undefined
+  const quotedQuota =
+    unlockAmountIn === decisionQuota ? quotedUsd : (quotaQuoteQuery.data ?? ZERO_BI)
+  const usdNeeded =
+    quotedUsd > ZERO_BI && quotaCapReady
+      ? calcTurbinePayableUsd(quotedUsd, quotedQuota, slippageBps)
+      : ZERO_BI
   const buyAgxLabel =
-    unlockAmountIn > ZERO_BI && slippageQuery.data !== undefined
-      ? formatTokenAmount(
-          previewTurbineExpectedAgx({
-            unlockAmountIn,
-            swapSlippageBP: slippageQuery.data,
-            quota: decisionQuota,
-          }),
-          AGX_DECIMALS,
-          4,
-        )
+    unlockAmountIn > ZERO_BI
+      ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4)
       : formatNumber(0, { digits: 4 })
-  // 所需 USD1 = 合约 quoteUsdInForAgxOut(agxAmount)，不伪造 1:1 或中间价
+  // 支付 USD1 = min(quote × (1 + 滑点), 全配额报价)
   const payUsd1Label =
     unlockAmountIn <= ZERO_BI
       ? formatNumber(0, { digits: 4 })
-      : quoteQuery.isError
+      : quoteQuery.isError || (needsQuotaCapQuote && quotaQuoteQuery.isError)
         ? formatNumber(0, { digits: 4 })
-        : quoteQuery.data === undefined
+        : quoteQuery.data === undefined || !quotaCapReady
           ? formatNumber(0, { digits: 4 })
-          : formatTokenAmount(quoteQuery.data, USD1_DECIMALS, 4)
+          : formatTokenAmount(usdNeeded, USD1_DECIMALS, 4)
 
   const unitUsd = unitPriceQuery.data
   const unitUsdNumber =
@@ -206,17 +223,6 @@ export function useTurbineExchangeSession(
     unitPriceQuery.isError || unitUsd === undefined || unitUsdNumber <= 0
       ? ''
       : formatNumber(unitUsdNumber, { digits: 2, prefix: '$' })
-
-  // BPS 转百分数：300 → 3%；30 → 0.3%（按位数精确转换，不硬编码示例值）
-  const slippageLabel = (() => {
-    if (slippageQuery.isError) return '—'
-    if (slippageQuery.data === undefined) return ''
-    const bps = Number(slippageQuery.data)
-    if (!Number.isFinite(bps) || bps < 0) return '—'
-    const pct = bps / 100
-    const text = Number.isInteger(pct) ? String(pct) : String(Number(pct.toFixed(4)))
-    return `${text}%`
-  })()
 
   const cooldownSeconds = Number(
     cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? ZERO_BI,
@@ -256,7 +262,8 @@ export function useTurbineExchangeSession(
     usdNeeded > ZERO_BI &&
     usdNeeded <= decisionUsd1 &&
     // 冷启动无价才 busy；后台 refetch 保留上一笔 usdNeeded，勿闪灰。
-    !quoteQuery.isPending
+    !quoteQuery.isPending &&
+    (!needsQuotaCapQuote || !quotaQuoteQuery.isPending)
 
   async function runSubmit(
     run: (session: WriteSession) => Promise<void>,
@@ -273,6 +280,7 @@ export function useTurbineExchangeSession(
     return submitTurbineUnlock({
       core: { runSubmit },
       unlockAmountAgx: unlockAmountIn,
+      slippageBps,
     })
   }
 
@@ -314,9 +322,14 @@ export function useTurbineExchangeSession(
           }),
     cooldownHours,
     agxPriceLabel,
-    slippageLabel,
+    slippage,
+    slippageMode,
+    setSlippageMode,
+    slippageCustomText:
+      slippageCustomText === '' ? String(autoSlippagePercent) : slippageCustomText,
+    setSlippageCustomText: setSlippageCustomTextState,
+    autoSlippagePercent,
     isAgxPriceQuoting: sessionReady && unitPriceQuery.isFetching && !agxPriceLabel,
-    isSlippageLoading: sessionReady && slippageQuery.isFetching && !slippageLabel,
     providerAddress: BSC_CONTRACTS.turbine,
     silences: silencesQuery.data?.rows ?? [],
     isSilencesLoading: walletReady && silencesQuery.isLoading,

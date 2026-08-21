@@ -501,6 +501,8 @@ const app = defineMessages({
       buyAgxLabel: 'AGX を購入',
       buyToBoundWallet: '購入分はウォレットへ着金',
       agxPrice: 'AGX 価格',
+      slippageHint:
+        '支払う USD1 は見積もりにスリッページを上乗せします。余剰は返金されます。緩衝が足りないと失敗し、Gas がかかることがあります。',
       willReceiveAgx: '獲得予定 AGX',
       unlockRatio: 'アンロック比率',
       unlockRatioValue: '1 : 1 購入でアンロック',
@@ -511,8 +513,12 @@ const app = defineMessages({
       claimAction: '受取',
       claimSuccess: '受取成功',
       claimEmpty: 'アンロック記録はまだありません',
-      claimReady: '期限到来 · 引出可能',
-      claimCoolingUntil: 'クールダウン中 · {time}',
+      claimable: '引出可',
+      cooling: 'クールダウン中',
+      countdownLabel: 'アンロックまで',
+      cooldownDone: 'クールダウン完了',
+      countdownHours: '時間',
+      countdownMinutes: '分',
       dataTitle: 'タービンデータ',
       recordsTitle: 'タービン記録',
       recordsEmpty:

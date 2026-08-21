@@ -25,6 +25,23 @@ export function calcAmountOutMin(quotedOut: bigint, slippageBps: number): bigint
 }
 
 /**
+ * 按滑点加码应付输入：报价 × (1 + 滑点)。
+ *
+ * 涡轮合约只收 USD1 数量；前端把报价加码后提交，多付部分由合约退回。
+ *
+ * @param quotedIn 实时报价的应付数量
+ * @param slippageBps 滑点（BPS，0–9999）
+ * @returns 加码后的应付；报价 ≤ 0 返回 0n
+ */
+export function calcAmountInMax(quotedIn: bigint, slippageBps: number): bigint {
+  if (slippageBps < 0 || slippageBps >= BPS_DENOM_NUMBER) {
+    throw new Error(`Invalid slippage bps: ${slippageBps}`)
+  }
+  if (quotedIn <= 0n) return 0n
+  return (quotedIn * BigInt(BPS_DENOM_NUMBER + slippageBps)) / BPS_DENOM
+}
+
+/**
  * 计算交易截止时间戳（unix 秒）。
  *
  * @param deadlineSeconds 从当前时刻起的有效期（秒）

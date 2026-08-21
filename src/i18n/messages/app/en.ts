@@ -492,6 +492,8 @@ const app = defineMessages({
       buyAgxLabel: 'Buy AGX',
       buyToBoundWallet: 'Bought to wallet',
       agxPrice: 'AGX price',
+      slippageHint:
+        'USD1 due is the quote plus your slippage; unused USD1 is refunded. Too little buffer may revert; failed transactions can still cost gas.',
       willReceiveAgx: 'AGX you will receive',
       unlockRatio: 'Unlock ratio',
       unlockRatioValue: '1 : 1 buy to unlock',
@@ -502,8 +504,12 @@ const app = defineMessages({
       claimAction: 'Claim',
       claimSuccess: 'Extract submitted — gAGX entered splitter release',
       claimEmpty: 'No unlock records yet',
-      claimReady: 'Ready to claim',
-      claimCoolingUntil: 'Cooling · {time}',
+      claimable: 'Claimable',
+      cooling: 'Cooling',
+      countdownLabel: 'Unlock countdown',
+      cooldownDone: 'Cooldown complete',
+      countdownHours: 'h',
+      countdownMinutes: 'm',
       dataTitle: 'Turbine data',
       recordsTitle: 'Turbine records',
       recordsEmpty:

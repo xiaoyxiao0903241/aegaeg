@@ -491,6 +491,8 @@ const app = defineMessages({
       buyAgxLabel: 'Купить AGX',
       buyToBoundWallet: 'Куплено на кошелёк',
       agxPrice: 'Цена AGX',
+      slippageHint:
+        'К оплате идёт котировка плюс проскальзывание; лишний USD1 возвращается. Если запаса мало, сделка может откатиться, газ всё равно может списаться.',
       willReceiveAgx: 'AGX, который вы получите',
       unlockRatio: 'Коэффициент разблокировки',
       unlockRatioValue: 'Покупка 1 : 1 для разблокировки',
@@ -501,8 +503,12 @@ const app = defineMessages({
       claimAction: 'Получить',
       claimSuccess: 'Успешно получено',
       claimEmpty: 'Пока нет записей разблокировки',
-      claimReady: 'Готово к получению',
-      claimCoolingUntil: 'Охлаждение · {time}',
+      claimable: 'Можно забрать',
+      cooling: 'Охлаждение',
+      countdownLabel: 'До разблокировки',
+      cooldownDone: 'Охлаждение завершено',
+      countdownHours: 'ч',
+      countdownMinutes: 'мин',
       dataTitle: 'Данные Турбины',
       recordsTitle: 'Записи Турбины',
       recordsEmpty:

@@ -2,13 +2,12 @@
  * Turbine 左栏 Dock
  *
  * 解锁段：输入 gAGX 数量并预览等值的 USD1 / AGX 换算；
- * 领取段：列出冷却中的静默期条目，冷却完成可领取。
- * 滑点由合约固定，页面不可修改。
+ * 领取段：冷却卡列表，到期后可提取。
+ * 应付 USD1 按报价加用户滑点，满额不超过全配额报价。
  */
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets, turbineExchangeAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
-import { CountValue } from '~/shared/components/count-value'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
@@ -17,12 +16,11 @@ import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { cn } from '~/shared/lib/utils'
-import { formatBlockTime } from '~/shared/presenters/format'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { ExchangeSlippagePanel } from '~/views/dapp/exchange/market-trade/slippage-panel'
 import { ExchangeOneWayFlowIndicator, PercentButtonRow } from '~/views/dapp/exchange/primitives'
 import { TokenChip } from '~/views/dapp/exchange/primitives'
-import { TurbineEqBuyTokenCell } from '~/views/dapp/exchange/turbine/primitives'
+import { TurbineClaimCard, TurbineEqBuyTokenCell } from '~/views/dapp/exchange/turbine/primitives'
 import { useTurbine } from '~/views/dapp/exchange/turbine/use-turbine'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
@@ -121,8 +119,19 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                   },
                   {
                     label: t.exchange.allowedSlippage,
-                    // 合约 swapSlippageBP（owner 固定）；非交易页用户可设滑点
-                    value: turbine.slippageLabel || '—',
+                    value: (
+                      <ExchangeSlippagePanel
+                        autoPercent={turbine.autoSlippagePercent}
+                        customText={turbine.slippageCustomText}
+                        disabled={vm.sessionReady && !turbine.walletReady}
+                        hint={t.exchange.turbine.slippageHint}
+                        mode={turbine.slippageMode}
+                        onCustomTextChange={turbine.setSlippageCustomText}
+                        onModeChange={turbine.setSlippageMode}
+                        slippage={turbine.slippage}
+                      />
+                    ),
+                    valueClassName: 'inline-flex items-center justify-end gap-1',
                   },
                   {
                     label: t.exchange.turbine.willReceiveAgx,
@@ -191,46 +200,29 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
               </Text>
             ) : (
               turbine.silences.map((row) => (
-                <div
+                <TurbineClaimCard
+                  amountLabel={`${formatTokenAmount(
+                    row.silenceBalance,
+                    EXCHANGE_CONFIG.tokens.agx.decimals,
+                    4,
+                  )} gAGX`}
+                  claimLabel={t.exchange.turbine.claimAction}
+                  claimableLabel={t.exchange.turbine.claimable}
+                  coolingLabel={t.exchange.turbine.cooling}
+                  cooldownDoneLabel={t.exchange.turbine.cooldownDone}
+                  countdownLabel={t.exchange.turbine.countdownLabel}
+                  disabled={
+                    !vm.sessionReady || !turbine.walletReady || !row.vested || turbine.isSubmitting
+                  }
+                  hourUnit={t.exchange.turbine.countdownHours}
+                  icon={unlock.icon}
                   key={`${row.index}-${row.startTime.toString()}`}
-                  className={cn(
-                    'flex items-center justify-between gap-3 rounded-lg border border-border p-3',
-                  )}
-                >
-                  <div className="min-w-0">
-                    <Text as="p" variant="detail" className="font-semibold">
-                      <CountValue
-                        text={`${formatTokenAmount(
-                          row.silenceBalance,
-                          // silenceBalance 的小数位与 AGX 一致（界面上标注为 gAGX）
-                          EXCHANGE_CONFIG.tokens.agx.decimals,
-                          4,
-                        )} gAGX`}
-                      />
-                    </Text>
-                    <Text as="p" variant="support" tone="muted-foreground">
-                      {row.vested
-                        ? t.exchange.turbine.claimReady
-                        : t.exchange.turbine.claimCoolingUntil.replace(
-                            '{time}',
-                            formatBlockTime(Number(row.unlockAt)),
-                          )}
-                    </Text>
-                  </div>
-                  <MainButton
-                    density="external"
-                    disabled={
-                      !vm.sessionReady ||
-                      !turbine.walletReady ||
-                      !row.vested ||
-                      turbine.isSubmitting
-                    }
-                    loading={turbine.isSubmitting && turbine.claimingIndex === row.index}
-                    onClick={() => void vm.handleClaim(row.index)}
-                  >
-                    {t.exchange.turbine.claimAction}
-                  </MainButton>
-                </div>
+                  loading={turbine.isSubmitting && turbine.claimingIndex === row.index}
+                  minuteUnit={t.exchange.turbine.countdownMinutes}
+                  onClaim={() => void vm.handleClaim(row.index)}
+                  unlockAt={row.unlockAt}
+                  vested={row.vested}
+                />
               ))
             )}
           </div>

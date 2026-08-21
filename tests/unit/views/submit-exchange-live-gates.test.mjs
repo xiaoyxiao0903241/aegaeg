@@ -69,6 +69,7 @@ test('submitTurbineUnlock fail-closed when live quota is zero', async () => {
       },
     },
     unlockAmountAgx: 10n,
+    slippageBps: 0,
   })
 
   assert.equal(result.ok, false)
@@ -118,10 +119,11 @@ test('submitTurbineUnlock quotes twice and does not requote inside approve', asy
       },
     },
     unlockAmountAgx: 10n,
+    slippageBps: 0,
   })
 
   assert.equal(result.ok, false)
-  assert.equal(quotes, 2)
+  assert.equal(quotes, 4)
 })
 
 test('submitTurbineUnlock uses preflight quote when allowance is short', async () => {
@@ -160,10 +162,102 @@ test('submitTurbineUnlock uses preflight quote when allowance is short', async (
       },
     },
     unlockAmountAgx: 10n,
+    slippageBps: 0,
   })
 
   assert.equal(result.ok, false)
-  assert.equal(quotes, 1)
+  assert.equal(quotes, 2)
+})
+
+test('submitTurbineUnlock pads quoted USD1 by slippage before balance check', async () => {
+  const { submitTurbineUnlock } = await loadModule(
+    '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
+  )
+
+  const session = sessionWithReadClient(async (request) => {
+    switch (request.functionName) {
+      case 'migratedFrom':
+        return ZERO
+      case 'balanceOf':
+        return 100n
+      case 'allowance':
+        return 1_000n
+      case 'turbineBalances':
+        return 1_000n
+      case 'quoteUsdInForAgxOut': {
+        const agx = request.args?.[0]
+        if (agx === 10n) return 100n
+        if (agx === 1_000n) return 10_000n
+        throw new Error(`unexpected quote ${agx}`)
+      }
+      default:
+        throw new Error(`unexpected ${request.functionName}`)
+    }
+  })
+
+  const result = await submitTurbineUnlock({
+    core: {
+      runSubmit: async (run) => {
+        try {
+          await run(session)
+          return { ok: true }
+        } catch (error) {
+          return { ok: false, error }
+        }
+      },
+    },
+    unlockAmountAgx: 10n,
+    slippageBps: 100,
+  })
+
+  assert.equal(result.ok, false)
+  assert.ok(result.error instanceof Error)
+  assert.equal(result.error.message, 'TURBINE_INSUFFICIENT_USD1')
+})
+
+test('submitTurbineUnlock caps full-quota unlock at the quota quote', async () => {
+  const { submitTurbineUnlock } = await loadModule(
+    '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
+  )
+
+  let quotes = 0
+  const session = sessionWithReadClient(async (request) => {
+    switch (request.functionName) {
+      case 'migratedFrom':
+        return ZERO
+      case 'balanceOf':
+        return 100n
+      case 'allowance':
+        return 1_000n
+      case 'turbineBalances':
+        return 1_000n
+      case 'quoteUsdInForAgxOut':
+        quotes += 1
+        return 100n
+      default:
+        throw new Error(`unexpected ${request.functionName}`)
+    }
+  })
+
+  const result = await submitTurbineUnlock({
+    core: {
+      runSubmit: async (run) => {
+        try {
+          await run(session)
+          return { ok: true }
+        } catch (error) {
+          return { ok: false, error }
+        }
+      },
+    },
+    unlockAmountAgx: 1_000n,
+    slippageBps: 100,
+  })
+
+  assert.equal(result.ok, false)
+  assert.ok(result.error instanceof Error)
+  assert.notEqual(result.error.message, 'TURBINE_INSUFFICIENT_USD1')
+  assert.equal(quotes, 2)
 })
 
 test('submitBurnExchange fail-closed when live pool is paused', async () => {

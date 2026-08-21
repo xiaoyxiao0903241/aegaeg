@@ -491,6 +491,8 @@ const app = defineMessages({
       buyAgxLabel: 'ซื้อ AGX',
       buyToBoundWallet: 'ซื้อเข้ากระเป๋า',
       agxPrice: 'ราคา AGX',
+      slippageHint:
+        'USD1 ที่ต้องจ่ายคือราคาประเมินบวก slippage ส่วนเกินคืนให้ หากกันไว้ไม่พออาจล้มเหลวและยังเสียแก๊ส',
       willReceiveAgx: 'AGX ที่จะได้รับ',
       unlockRatio: 'อัตราส่วนปลดล็อก',
       unlockRatioValue: 'ซื้อปลดล็อก 1 : 1',
@@ -501,8 +503,12 @@ const app = defineMessages({
       claimAction: 'รับ',
       claimSuccess: 'รับสำเร็จ',
       claimEmpty: 'ยังไม่มีบันทึกการปลดล็อก',
-      claimReady: 'ครบกำหนด ถอนได้',
-      claimCoolingUntil: 'คูลดาวน์ · {time}',
+      claimable: 'ถอนได้',
+      cooling: 'คูลดาวน์',
+      countdownLabel: 'นับถอยหลังปลดล็อก',
+      cooldownDone: 'คูลดาวน์เสร็จ',
+      countdownHours: 'ชม.',
+      countdownMinutes: 'น.',
       dataTitle: 'ข้อมูลเทอร์ไบน์',
       recordsTitle: 'บันทึกเทอร์ไบน์',
       recordsEmpty:

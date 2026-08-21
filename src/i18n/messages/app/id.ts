@@ -499,6 +499,8 @@ const app = defineMessages({
       buyAgxLabel: 'Beli AGX',
       buyToBoundWallet: 'Pembelian masuk ke dompet',
       agxPrice: 'Harga AGX',
+      slippageHint:
+        'USD1 yang dibayar adalah kuotasi plus slippage; sisanya dikembalikan. Buffer kurang bisa gagal dan tetap kena gas.',
       willReceiveAgx: 'AGX yang akan diterima',
       unlockRatio: 'Rasio buka',
       unlockRatioValue: '1 : 1 beli untuk membuka',
@@ -509,8 +511,12 @@ const app = defineMessages({
       claimAction: 'Klaim',
       claimSuccess: 'Berhasil diklaim',
       claimEmpty: 'Belum ada catatan pembukaan',
-      claimReady: 'Jatuh tempo, dapat ditarik',
-      claimCoolingUntil: 'Cooldown · {time}',
+      claimable: 'Dapat ditarik',
+      cooling: 'Cooldown',
+      countdownLabel: 'Hitung mundur buka kunci',
+      cooldownDone: 'Cooldown selesai',
+      countdownHours: 'j',
+      countdownMinutes: 'm',
       dataTitle: 'Data Turbine',
       recordsTitle: 'Catatan Turbine',
       recordsEmpty:

@@ -28,6 +28,25 @@ test('evaluateTurbineUnlockLive requires allowance cover liveUsd', async () => {
   assert.equal(evaluateTurbineUnlockLive({ ...base, liveQuota: 0n }), 'TURBINE_QUOTA_EXCEEDED')
 })
 
+test('resolveTurbineSlippagePercent defaults to 2.5 and parses custom', async () => {
+  const { resolveTurbineSlippagePercent, TURBINE_AUTO_SLIPPAGE_PERCENT } = await loadModule(
+    '/src/core/exchange/turbine-unlock-live.ts',
+  )
+  assert.equal(TURBINE_AUTO_SLIPPAGE_PERCENT, 2.5)
+  assert.equal(resolveTurbineSlippagePercent('auto', ''), 2.5)
+  assert.equal(resolveTurbineSlippagePercent('custom', ''), 2.5)
+  assert.equal(resolveTurbineSlippagePercent('custom', '1'), 1)
+})
+
+test('calcTurbinePayableUsd pads then caps at full-quota quote', async () => {
+  const { calcTurbinePayableUsd } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
+  assert.equal(calcTurbinePayableUsd(500n, 10_000n, 100), 505n)
+  assert.equal(calcTurbinePayableUsd(500n, 502n, 100), 502n)
+  assert.equal(calcTurbinePayableUsd(500n, 500n, 100), 500n)
+  assert.equal(calcTurbinePayableUsd(0n, 500n, 250), 0n)
+  assert.equal(calcTurbinePayableUsd(500n, 0n, 100), 505n)
+})
+
 test('evaluateTurbineClaimLive blocks when not vested', async () => {
   const { evaluateTurbineClaimLive } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
   assert.equal(evaluateTurbineClaimLive(true), null)

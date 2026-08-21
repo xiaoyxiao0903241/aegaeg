@@ -489,6 +489,8 @@ const app = defineMessages({
       buyAgxLabel: 'AGX 매수',
       buyToBoundWallet: '매수 후 지갑 입금',
       agxPrice: 'AGX 가격',
+      slippageHint:
+        '지불 USD1은 견적에 슬리피지를 더한 금액이며, 남은 금액은 환불됩니다. 완충이 부족하면 실패할 수 있고 Gas가 발생할 수 있습니다.',
       willReceiveAgx: '받게 될 AGX',
       unlockRatio: '잠금 해제 비율',
       unlockRatioValue: '1 : 1 매수로 잠금 해제',
@@ -499,8 +501,12 @@ const app = defineMessages({
       claimAction: '수령',
       claimSuccess: '수령 성공',
       claimEmpty: '잠금 해제 기록이 아직 없습니다',
-      claimReady: '만료됨 · 출금 가능',
-      claimCoolingUntil: '쿨다운 중 · {time}',
+      claimable: '출금 가능',
+      cooling: '쿨다운 중',
+      countdownLabel: '언락 카운트다운',
+      cooldownDone: '쿨다운 완료',
+      countdownHours: '시간',
+      countdownMinutes: '분',
       dataTitle: '터빈 데이터',
       recordsTitle: '터빈 기록',
       recordsEmpty:

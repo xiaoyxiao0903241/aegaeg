@@ -18,6 +18,21 @@ test('calcAmountOutMin rejects invalid slippage', async () => {
   assert.throws(() => calcAmountOutMin(100n, 10_000), /slippage/i)
 })
 
+test('calcAmountInMax pads quoted input by slippage bps', async () => {
+  const { calcAmountInMax } = await loadModule('/src/core/exchange/exchange-math.ts')
+
+  assert.equal(calcAmountInMax(500n, 100), 505n)
+  assert.equal(calcAmountInMax(10_000n, 250), 10_250n)
+  assert.equal(calcAmountInMax(0n, 250), 0n)
+})
+
+test('calcAmountInMax rejects invalid slippage', async () => {
+  const { calcAmountInMax } = await loadModule('/src/core/exchange/exchange-math.ts')
+
+  assert.throws(() => calcAmountInMax(100n, -1), /slippage/i)
+  assert.throws(() => calcAmountInMax(100n, 10_000), /slippage/i)
+})
+
 test('exchangeDeadline returns unix seconds in the future', async () => {
   const { exchangeDeadline } = await loadModule('/src/core/exchange/exchange-math.ts')
   const now = 1_700_000_000

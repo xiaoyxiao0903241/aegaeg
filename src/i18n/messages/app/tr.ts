@@ -490,6 +490,8 @@ const app = defineMessages({
       buyAgxLabel: 'AGX satın al',
       buyToBoundWallet: 'Alım cüzdana geldi',
       agxPrice: 'AGX fiyatı',
+      slippageHint:
+        'Ödenecek USD1 teklif artı slippage’dır; fazlası iade edilir. Tampon yetmezse işlem revert olabilir ve yine gas kesilebilir.',
       willReceiveAgx: 'Alacağınız AGX',
       unlockRatio: 'Kilit açma oranı',
       unlockRatioValue: '1 : 1 alımla kilit açma',
@@ -500,8 +502,12 @@ const app = defineMessages({
       claimAction: 'Talep et',
       claimSuccess: 'Talep başarılı',
       claimEmpty: 'Henüz kilit açma kaydı yok',
-      claimReady: 'Vadesi doldu, çekilebilir',
-      claimCoolingUntil: 'Soğumada · {time}',
+      claimable: 'Çekilebilir',
+      cooling: 'Soğuma',
+      countdownLabel: 'Kilit açma geri sayımı',
+      cooldownDone: 'Soğuma bitti',
+      countdownHours: 'sa',
+      countdownMinutes: 'dk',
       dataTitle: 'Türbin verileri',
       recordsTitle: 'Türbin kayıtları',
       recordsEmpty:

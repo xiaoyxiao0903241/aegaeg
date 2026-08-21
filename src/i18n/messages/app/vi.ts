@@ -491,6 +491,8 @@ const app = defineMessages({
       buyAgxLabel: 'Mua AGX',
       buyToBoundWallet: 'Mua về ví',
       agxPrice: 'Giá AGX',
+      slippageHint:
+        'USD1 phải trả = báo giá cộng slippage; phần dư được hoàn. Thiếu đệm có thể thất bại và vẫn tốn gas.',
       willReceiveAgx: 'AGX sẽ nhận',
       unlockRatio: 'Tỷ lệ mở khóa',
       unlockRatioValue: '1 : 1 mua để mở khóa',
@@ -501,8 +503,12 @@ const app = defineMessages({
       claimAction: 'Nhận',
       claimSuccess: 'Nhận thành công',
       claimEmpty: 'Chưa có bản ghi mở khóa',
-      claimReady: 'Đã đến hạn, có thể rút',
-      claimCoolingUntil: 'Đang chờ · {time}',
+      claimable: 'Có thể rút',
+      cooling: 'Đang chờ',
+      countdownLabel: 'Đếm ngược mở khóa',
+      cooldownDone: 'Hết thời gian chờ',
+      countdownHours: 'giờ',
+      countdownMinutes: 'phút',
       dataTitle: 'Dữ liệu Turbine',
       recordsTitle: 'Bản ghi Turbine',
       recordsEmpty:

@@ -488,6 +488,8 @@ const app = defineMessages({
       buyAgxLabel: 'AGX खरीदें',
       buyToBoundWallet: 'खरीद वॉलेट में आई',
       agxPrice: 'AGX मूल्य',
+      slippageHint:
+        'देय USD1 कोट प्लस स्लिपेज है; बची राशि वापस होती है। बफर कम हो तो लेनदेन फेल हो सकता है और गैस लग सकती है।',
       willReceiveAgx: 'आपको मिलने वाला AGX',
       unlockRatio: 'अनलॉक अनुपात',
       unlockRatioValue: '1 : 1 खरीद से अनलॉक',
@@ -498,8 +500,12 @@ const app = defineMessages({
       claimAction: 'क्लेम',
       claimSuccess: 'सफलतापूर्वक प्राप्त किया',
       claimEmpty: 'अभी कोई अनलॉक रिकॉर्ड नहीं',
-      claimReady: 'दावा के लिए तैयार',
-      claimCoolingUntil: 'कूलिंग · {time}',
+      claimable: 'निकाला जा सकता है',
+      cooling: 'कूलिंग',
+      countdownLabel: 'अनलॉक काउंटडाउन',
+      cooldownDone: 'कूलिंग पूरी',
+      countdownHours: 'घं',
+      countdownMinutes: 'मि',
       dataTitle: 'टरबाइन डेटा',
       recordsTitle: 'टरबाइन रिकॉर्ड',
       recordsEmpty:

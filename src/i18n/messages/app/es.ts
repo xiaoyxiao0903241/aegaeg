@@ -503,6 +503,8 @@ const app = defineMessages({
       buyAgxLabel: 'Comprar AGX',
       buyToBoundWallet: 'Compra acreditada a la billetera',
       agxPrice: 'Precio de AGX',
+      slippageHint:
+        'El USD1 a pagar es la cotización más tu deslizamiento; el sobrante se devuelve. Si el colchón no basta, la transacción puede fallar y aún así gastar gas.',
       willReceiveAgx: 'AGX que recibirás',
       unlockRatio: 'Ratio de desbloqueo',
       unlockRatioValue: 'Compra 1 : 1 para desbloquear',
@@ -513,8 +515,12 @@ const app = defineMessages({
       claimAction: 'Reclamar',
       claimSuccess: 'Reclamado con éxito',
       claimEmpty: 'Aún no hay registros de desbloqueo',
-      claimReady: 'Vencido; listo para retirar',
-      claimCoolingUntil: 'En espera · {time}',
+      claimable: 'Retirable',
+      cooling: 'En espera',
+      countdownLabel: 'Cuenta atrás de desbloqueo',
+      cooldownDone: 'Enfriamiento listo',
+      countdownHours: 'h',
+      countdownMinutes: 'min',
       dataTitle: 'Datos de Turbina',
       recordsTitle: 'Registros de Turbina',
       recordsEmpty:
