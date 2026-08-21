@@ -6,7 +6,10 @@
  */
 import type { ReactNode } from 'react'
 
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import {
+  formatApiContributionPoints,
+  formatContributionPoints,
+} from '~/core/exchange/format-contribution-points'
 import { interpolate } from '~/i18n/interpolate'
 import type {
   CommunityFundLogItem,
@@ -71,6 +74,18 @@ export function formatApiStatLabel(
   // 仅冷启动 pending+null 出零（refetch 时 keepPreviousData 仍带 raw）。
   if (!sessionReady || (isPending && raw == null)) return formatApiAmount(null, options)
   return formatApiAmount(raw, options)
+}
+
+/**
+ * 后端贡献点数统计：会话未就绪或冷启动 pending → `0.0000`，否则向下舍 4 位。
+ */
+export function formatApiContributionStatLabel(
+  sessionReady: boolean,
+  isPending: boolean,
+  raw: string | null | undefined,
+): string {
+  if (!sessionReady || (isPending && raw == null)) return formatApiContributionPoints(null)
+  return formatApiContributionPoints(raw)
 }
 
 /**
@@ -195,7 +210,6 @@ export function splitAmountByPct(amount: bigint, pct: number): bigint {
  * @param input.isPending 链上查询是否加载中
  * @param input.contribution 贡献值（bigint）
  * @param input.decimals 代币精度
- * @param input.fractionDigits 小数位
  */
 export function formatContributionPlaceholder(input: {
   walletReady: boolean
@@ -203,15 +217,11 @@ export function formatContributionPlaceholder(input: {
   isPending: boolean
   contribution: bigint | undefined
   decimals: number
-  fractionDigits?: number
 }): string {
   if (!input.walletReady || !input.hasAddress || input.contribution === undefined) {
-    return formatApiAmount(null, { digits: input.fractionDigits ?? 2 })
+    return formatApiContributionPoints(null)
   }
-  return (
-    formatTokenAmount(input.contribution, input.decimals, input.fractionDigits ?? 2) ||
-    formatApiAmount(null, { digits: input.fractionDigits ?? 2 })
-  )
+  return formatContributionPoints(input.contribution, input.decimals)
 }
 
 export type RewardLogStatusKey =

@@ -22,6 +22,7 @@ import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
   formatApiAgxUsdLabel,
+  formatApiContributionStatLabel,
   formatApiGagxApproxUsd,
   mapRankRewardTeamMemberToRow,
   NON_NUMERIC_EMPTY,
@@ -107,7 +108,11 @@ export function useCobuild() {
     agxPriceUsd,
   )
   const referralCount = label.count(summary?.direct_referral_count)
-  const contributionValue = label.stat(summary?.available_contribution)
+  const contributionValue = formatApiContributionStatLabel(
+    sessionReady,
+    pending,
+    summary?.available_contribution,
+  )
 
   const rank = sessionReady ? summary?.making_rank : null
   const hasRank = rank != null && Number.isFinite(rank) && rank > 0

@@ -235,7 +235,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
   assert.equal(consume.length, 5)
   assert.equal(consume[1], '-')
   assert.equal(consume[2], '2.1500 gAGX')
-  assert.equal(consume[3], '2.15')
+  assert.equal(consume[3], '2.1500')
   assert.equal(consume[4], '-')
 
   const ranked = mapAgxContributionConsumeLogToRow(

@@ -8,6 +8,7 @@ import {
   claimContribRequiredOrZero,
   type ClaimOutputKind,
 } from '~/core/assets/claim-output'
+import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatAssetsActionAmount } from '~/core/exchange/token-amount'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
@@ -26,6 +27,7 @@ import { readContributionSnapshot } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 /**
  * 领取产出中间层（定期仓）
@@ -110,14 +112,14 @@ function AssetsClaimOutputModalOpen({
 
   const rewardAmountLabel = `${formatAssetsActionAmount(reward, GAGX_DECIMALS)} gAGX`
   const boostAmountLabel = `${formatAssetsActionAmount(boost, GAGX_DECIMALS)} gAGX`
-  // 缺数显 0；粉尘贡献记 0.00，不出现 `<0.01`
-  const rewardContribLabel = formatAssetsActionAmount(
+  // 缺数显 0；粉尘贡献下舍为 0.0000
+  const rewardContribLabel = formatContributionPoints(
     claimContribRequiredOrZero(rewardContrib.data?.requiredContribution),
-    GAGX_DECIMALS,
+    AGX_DECIMALS,
   )
-  const boostContribLabel = formatAssetsActionAmount(
+  const boostContribLabel = formatContributionPoints(
     claimContribRequiredOrZero(boostContrib.data?.requiredContribution),
-    GAGX_DECIMALS,
+    AGX_DECIMALS,
   )
 
   return (

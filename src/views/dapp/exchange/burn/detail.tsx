@@ -11,7 +11,10 @@ import {
   formatBurnContributionRatioColon,
   formatBurnSplitPercent,
 } from '~/core/exchange/burn-contribution-swap'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import {
+  formatContributionConsumedTotal,
+  formatContributionPoints,
+} from '~/core/exchange/format-contribution-points'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useAgxContributionSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -72,14 +75,8 @@ export function BurnExchangeDetail({
   const totalEarnedContribution = userStats?.contributionEarned ?? ZERO_BI
   const totalConsumedContribution = userStats?.contributionConsumed ?? ZERO_BI
 
-  const earnedLabel = formatTokenAmount(totalEarnedContribution, decimals, {
-    digits: 2,
-    trimZeros: false,
-  })
-  const consumedLabel = formatTokenAmount(totalConsumedContribution, decimals, {
-    digits: 2,
-    trimZeros: false,
-  })
+  const earnedLabel = formatContributionPoints(totalEarnedContribution, decimals)
+  const consumedLabel = formatContributionConsumedTotal(totalConsumedContribution, decimals)
 
   const splitBps = config?.splitBps
   const burnPct = splitBps === undefined ? '—' : formatBurnSplitPercent(splitBps)

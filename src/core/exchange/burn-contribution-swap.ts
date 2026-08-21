@@ -1,5 +1,5 @@
 import { BPS_DENOM } from '~/core/exchange/bps'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 
 /**
  * 销毁贡献兑换的提交检查配置，来自手册 AgxContributionSwap 的 getConfig（前端不自造）。
@@ -103,7 +103,6 @@ export function burnContributionSwapBlocksSubmit(
  * @param decimals AGX 精度
  * @param agxSymbol AGX 展示符号
  * @param pointsLabel 贡献点名称
- * @param fractionDigits 保留小数位
  * @returns 「1 符号 = N 贡献点」文案
  */
 export function formatBurnContributionRateLabel({
@@ -111,13 +110,11 @@ export function formatBurnContributionRateLabel({
   decimals,
   agxSymbol,
   pointsLabel,
-  fractionDigits = 2,
 }: {
   rateBps: bigint
   decimals: number
   agxSymbol: string
   pointsLabel: string
-  fractionDigits?: number
 }): string {
   if (rateBps === 0n) {
     return `1 ${agxSymbol} = — ${pointsLabel}`
@@ -125,7 +122,7 @@ export function formatBurnContributionRateLabel({
 
   const oneAgx = 10n ** BigInt(decimals)
   const pointsPerAgx = (oneAgx * rateBps) / BPS_DENOM
-  const formatted = formatTokenAmount(pointsPerAgx, decimals, fractionDigits)
+  const formatted = formatContributionPoints(pointsPerAgx, decimals)
 
   return `1 ${agxSymbol} = ${formatted} ${pointsLabel}`
 }

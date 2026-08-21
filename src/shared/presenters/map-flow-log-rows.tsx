@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
+import { formatApiContributionPoints } from '~/core/exchange/format-contribution-points'
 import { interpolate } from '~/i18n/interpolate'
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
 import type {
@@ -245,7 +246,7 @@ export function mapAgxContributionBurnLogToRow(item: AgxContributionBurnLogItem)
   return [
     formatBlockTime(item.block_time),
     formatAmount(item.burned_agx, 4, ' AGX'),
-    formatAmount(item.contribution_earned, 2),
+    formatApiContributionPoints(item.contribution_earned),
     formatTx(item.tx_hash),
   ]
 }
@@ -260,7 +261,7 @@ export function mapAgxContributionConsumeLogToRow(
     formatBlockTime(item.block_time),
     key == null ? TABLE_EMPTY : purpose[key],
     formatAmount(item.claim_amount, 4, ' gAGX'),
-    formatAmount(item.contribution_consumed, 2),
+    formatApiContributionPoints(item.contribution_consumed),
     formatTx(item.tx_hash),
   ]
 }

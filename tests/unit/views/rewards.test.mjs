@@ -5,10 +5,8 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 test('formatContributionPlaceholder: disconnected / loading / value', async () => {
-  const { formatContributionPlaceholder, formatApiAmount } = await loadModule(
-    '/src/views/dapp/rewards/shared.tsx',
-  )
-  const zero = formatApiAmount(null)
+  const { formatContributionPlaceholder } = await loadModule('/src/views/dapp/rewards/shared.tsx')
+  const zero = '0.0000'
 
   assert.equal(
     formatContributionPlaceholder({
@@ -39,9 +37,8 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
       isPending: false,
       contribution: 1_500_000_000_000_000_000n,
       decimals: 18,
-      fractionDigits: 2,
     }),
-    '1.50',
+    '1.5000',
   )
 
   assert.equal(

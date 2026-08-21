@@ -12,6 +12,7 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapParticipationAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   formatApiAgxUsdLabel,
+  formatApiContributionStatLabel,
   formatApiGagxApproxUsd,
   formatApiStatLabel,
   mapParticipationAwardInviterToRow,
@@ -58,7 +59,7 @@ export function useParticipate() {
     summary?.active_stake_balance,
     priceUsd,
   )
-  const contributionValue = formatApiStatLabel(
+  const contributionValue = formatApiContributionStatLabel(
     sessionReady,
     pending,
     summary?.available_contribution,

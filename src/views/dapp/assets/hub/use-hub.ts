@@ -8,6 +8,10 @@ import {
 } from '~/core/assets/assets-hub-total-value'
 import { ZERO_BI } from '~/core/constants'
 import {
+  formatApiContributionPoints,
+  formatContributionPoints,
+} from '~/core/exchange/format-contribution-points'
+import {
   formatTokenAmount,
   formatTokenAmountToNumber,
   parseTokenAmount,
@@ -334,7 +338,7 @@ export function useAssetsHub(): AssetsHubOverview {
     claimableApprox: formatUsdApprox(0, null),
     claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimedApprox: formatUsdApprox(0, null),
-    contribution: formatNumber(0, { digits: 2 }),
+    contribution: formatApiContributionPoints(null),
     holdingsReleased: `${formatNumber(0, { digits: 2 })} AGX`,
     holdingsReleasedApprox: formatUsdApprox(0, null),
     holdingsTotal: `${formatNumber(0, { digits: 2 })} AGX`,
@@ -370,7 +374,7 @@ export function useAssetsHub(): AssetsHubOverview {
       }),
     )
     const claimed = `${formatApiDecimalOrZero(apiReward.total_reward_claimed)} gAGX`
-    const contribution = formatApiDecimalOrZero(apiReward.available_contribution)
+    const contribution = formatApiContributionPoints(apiReward.available_contribution)
     const holdingsTotal = `${formatNumber(holdingsAmount, { digits: 2 })} AGX`
     // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「已释放」不符
     const holdingsReleased = redeemableReleasedLabel
@@ -516,7 +520,7 @@ export function useAssetsHub(): AssetsHubOverview {
     // 链上无累计已领视图；未加载空结果显示 0.00 gAGX
     claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
     claimedApprox: formatUsdApprox(0, null),
-    contribution: formatTokenAmount(contribution, AGX_DECIMALS, 2),
+    contribution: formatContributionPoints(contribution, AGX_DECIMALS),
     holdingsReleased: redeemableReleasedLabel,
     holdingsReleasedApprox: formatUsdApprox(redeemableReleasedNum, priceUsd),
     holdingsTotal: `${formatNumber(holdingsAmount, { digits: 2 })} AGX`,

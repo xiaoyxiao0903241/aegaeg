@@ -6,6 +6,10 @@ import {
   evaluateBurnContributionSwap,
   formatBurnContributionRateLabel,
 } from '~/core/exchange/burn-contribution-swap'
+import {
+  formatApiContributionPoints,
+  formatContributionPoints,
+} from '~/core/exchange/format-contribution-points'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -138,8 +142,15 @@ export function useBurnExchangeSession(
     contributionBalanceLabel:
       userStatsQuery.data === undefined
         ? ''
-        : formatTokenAmount(contributionBalance, buyDecimals, 2),
-    buyAmount: core.buyAmount,
+        : formatContributionPoints(contributionBalance, buyDecimals),
+    buyAmount:
+      core.amountIn === ZERO_BI
+        ? ''
+        : core.quotedOut > ZERO_BI
+          ? formatContributionPoints(core.quotedOut, buyDecimals)
+          : core.buyAmount === ''
+            ? ''
+            : formatApiContributionPoints(core.buyAmount),
     exchangePriceLabel,
     overviewRateLabel,
     providerAddress: BSC_CONTRACTS.agxContributionSwap,

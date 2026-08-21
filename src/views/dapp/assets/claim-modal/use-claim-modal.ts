@@ -14,7 +14,8 @@ import {
   planLabel,
 } from '~/core/assets/claim-plans'
 import { HUNDRED_BI, ZERO_BI } from '~/core/constants'
-import { formatAssetsActionAmount, formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -31,6 +32,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 /**
  * 领奖弹窗的状态编排：释放比例、释放 / 复投周期选择、
@@ -197,9 +199,9 @@ export function useAssetsClaimModal(args: {
         ? t.assets.claim.ctaRestake
         : t.assets.claim.ctaMixed
 
-  const requiredContributionLabel = formatAssetsActionAmount(
+  const requiredContributionLabel = formatContributionPoints(
     claimContribRequiredOrZero(contribQuery.data?.requiredContribution),
-    GAGX_DECIMALS,
+    AGX_DECIMALS,
   )
 
   return {

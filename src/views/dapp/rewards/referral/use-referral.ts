@@ -12,6 +12,7 @@ import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
   bindApiLabelFormatters,
   formatApiAgxUsdLabel,
+  formatApiContributionStatLabel,
   formatApiGagxApproxUsd,
   mapReferralAwardDirectToRow,
   NON_NUMERIC_EMPTY,
@@ -66,7 +67,11 @@ export function useRewardsReferral() {
     priceUsd,
   )
   const referralCount = label.count(summary?.direct_referral_count)
-  const contributionValue = label.stat(summary?.available_contribution)
+  const contributionValue = formatApiContributionStatLabel(
+    sessionReady,
+    pending,
+    summary?.available_contribution,
+  )
 
   const recordRows =
     logsQuery.data?.items.map((item) => mapReferralAwardLogToCells(item, statusLabels)) ?? []
