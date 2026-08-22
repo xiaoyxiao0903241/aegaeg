@@ -6,7 +6,6 @@ import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import { isStakePeriod, STAKE_PERIODS } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 import { evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
@@ -36,8 +35,7 @@ export type StakeWritePresent = {
  * @returns 表单展示值与提交控制
  */
 export function useStakeSession(sessionReady: boolean, present: StakeWritePresent) {
-  const { walletReady } = useDappHost()
-  const { writeReady } = useWriteReadiness()
+  const { walletReady, writeReady } = useWriteReadiness()
   const period = useStakingPeriodsStore((state) => state.stakePeriod)
   const setStakePeriod = useStakingPeriodsStore((state) => state.setStakePeriod)
 

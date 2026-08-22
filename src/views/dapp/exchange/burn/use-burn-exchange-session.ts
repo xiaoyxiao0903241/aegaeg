@@ -13,7 +13,6 @@ import {
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -50,8 +49,7 @@ export function useBurnExchangeSession(
   readsEnabled = quotesEnabled,
 ) {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappHost()
-  const { writeReady } = useWriteReadiness()
+  const { walletReady, writeReady } = useWriteReadiness()
 
   const configQuery = useBurnSwapConfigQuery({ enabled: readsEnabled })
 

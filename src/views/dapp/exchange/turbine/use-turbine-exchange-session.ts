@@ -19,7 +19,6 @@ import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -80,8 +79,7 @@ export function useTurbineExchangeSession(
   quotesEnabled = true,
   readsEnabled = quotesEnabled,
 ) {
-  const { walletReady } = useDappHost()
-  const { writeReady } = useWriteReadiness()
+  const { walletReady, writeReady } = useWriteReadiness()
 
   const [segment, setSegmentState] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)

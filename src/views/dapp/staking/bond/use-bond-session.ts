@@ -11,7 +11,6 @@ import { BOND_PERIODS, type BondPeriod, isBondPeriod } from '~/core/staking/stak
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
@@ -52,8 +51,7 @@ export type BondWritePresent = {
  * @returns 表单展示值与提交控制
  */
 export function useBondSession(kind: BondKind, sessionReady: boolean, present: BondWritePresent) {
-  const { walletReady } = useDappHost()
-  const { writeReady } = useWriteReadiness()
+  const { walletReady, writeReady } = useWriteReadiness()
 
   const period = useStakingPeriodsStore((state) =>
     kind === 'lp' ? state.lpBondPeriod : state.burnBondPeriod,

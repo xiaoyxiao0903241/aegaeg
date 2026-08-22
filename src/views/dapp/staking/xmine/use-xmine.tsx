@@ -64,8 +64,7 @@ export type XmineWritePresent = {
  * @returns 表单展示值与提交控制
  */
 export function useXmineSession(sessionReady: boolean, present: XmineWritePresent) {
-  const { walletReady } = useDappHost()
-  const { writeReady } = useWriteReadiness()
+  const { walletReady, writeReady } = useWriteReadiness()
   const migration = useMigrationUser({ enabled: walletReady })
 
   const preflightQuery = useXminePreflightQuery({

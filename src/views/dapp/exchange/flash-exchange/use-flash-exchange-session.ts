@@ -7,7 +7,6 @@ import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -49,8 +48,7 @@ export function useFlashExchangeSession(
   quotesEnabled = true,
   readsEnabled = quotesEnabled,
 ) {
-  const { walletReady } = useDappHost()
-  const { writeReady } = useWriteReadiness()
+  const { walletReady, writeReady } = useWriteReadiness()
   const pairId = useExchangeFlashPairStore((s) => s.pairId)
   const setPairIdStore = useExchangeFlashPairStore((s) => s.setPairId)
   const [direction, setDirection] = useState<ExchangeDirection>('forward')
