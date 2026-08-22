@@ -114,7 +114,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'Vào hàng đợi',
-      claimed: 'Nhận',
+      claimed_from_queue: 'Nhận',
       released: 'Đã phát hành',
     },
     turbine: {
@@ -2102,7 +2102,7 @@ const app = defineMessages({
           { id: '540', period: '540 ngày' },
         ],
       },
-      runwayDays: '{days} ngày',
+      runwayDays: '> {days} ngày',
       chart: {
         title: 'Chỉ số dữ liệu',
         metricTabs: {

@@ -245,6 +245,32 @@ export function clampSlippagePercent(percent: number): number {
   return Math.min(percent, MAX_SLIPPAGE_PERCENT)
 }
 
+export type SlippageMode = 'auto' | 'custom'
+
+/**
+ * 切换默认 / 自定义后的输入草稿。
+ *
+ * 切回默认时保留自定义草稿，再切回来仍显示上次输入。
+ * 仅在从默认进入自定义且草稿为空时填入当前默认档。
+ * 已在自定义时不要回填——否则删光数字会被立刻写成默认值，无法再输入。
+ *
+ * @param nextMode 即将切到的档
+ * @param currentMode 当前档
+ * @param currentDraft 当前输入草稿
+ * @param autoPercent 当前默认档百分比
+ * @returns 切换后应写入输入框的草稿
+ */
+export function slippageDraftAfterModeChange(
+  nextMode: SlippageMode,
+  currentMode: SlippageMode,
+  currentDraft: string,
+  autoPercent: number,
+): string {
+  if (nextMode === currentMode) return currentDraft
+  if (nextMode === 'custom' && currentDraft === '') return String(autoPercent)
+  return currentDraft
+}
+
 /**
  * 判断自定义滑点草稿是否可写入输入框。
  *

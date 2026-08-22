@@ -473,7 +473,7 @@ total_claimed_allowance = market_fund_reward_totals.claimed（gAGX）。
 
 查询 reward_queue_logs，不按 status 过滤。
 可选 event_type（string[]，多值为 OR）；未传或空数组则返回全部事件类型。
-event_type 枚举：entered_queue=进入队列，claimed=领取，released=已释放。
+event_type 枚举：entered_queue=进入队列，claimed_from_queue=领取，released=已释放。
 列表项 event_type 原值返回。
 
 **Request body**
@@ -492,9 +492,9 @@ event_type 枚举：entered_queue=进入队列，claimed=领取，released=已�
 - auth: required
 
 基于 reward_queue_logs 事件流（只追加）汇总，amount 均为 gAGX。
-releasing_amount = SUM(entered_queue.amount) − SUM(claimed.amount) − SUM(released.amount)，结果不小于 0；
+releasing_amount = SUM(entered_queue.amount) − SUM(claimed_from_queue.amount) − SUM(released.amount)，结果不小于 0；
 released_amount = SUM(released.amount)；
-total_claimed_amount = SUM(claimed.amount)。
+total_claimed_amount = SUM(claimed_from_queue.amount)。
 
 **Request body**
 

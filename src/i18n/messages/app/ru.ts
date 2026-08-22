@@ -113,7 +113,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'В очередь',
-      claimed: 'Получение',
+      claimed_from_queue: 'Получение',
       released: 'Выпущено',
     },
     turbine: {
@@ -2067,7 +2067,7 @@ const app = defineMessages({
           { id: '540', period: '540д' },
         ],
       },
-      runwayDays: '{days}д',
+      runwayDays: '> {days}д',
       chart: {
         title: 'Метрики',
         metricTabs: {

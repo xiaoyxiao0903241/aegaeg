@@ -5,6 +5,7 @@ import { TEN_BI, ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
   formatTokenAmountToNumber,
+  slippageDraftAfterModeChange,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
 import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-buckets'
@@ -93,7 +94,9 @@ export function useTurbineExchangeSession(
   const slippageBps = slippagePercentToBps(slippage)
 
   function setSlippageMode(mode: 'auto' | 'custom') {
-    if (mode === 'auto') setSlippageCustomTextState('')
+    setSlippageCustomTextState(
+      slippageDraftAfterModeChange(mode, slippageMode, slippageCustomText, autoSlippagePercent),
+    )
     setSlippageModeState(mode)
   }
 
@@ -330,8 +333,8 @@ export function useTurbineExchangeSession(
     slippage,
     slippageMode,
     setSlippageMode,
-    slippageCustomText:
-      slippageCustomText === '' ? String(autoSlippagePercent) : slippageCustomText,
+    // 空草稿原样交给输入框；报价仍可用默认档，勿在此回填，否则无法删光再输入。
+    slippageCustomText,
     setSlippageCustomText: setSlippageCustomTextState,
     autoSlippagePercent,
     isAgxPriceQuoting: sessionReady && unitPriceQuery.isFetching && !agxPriceLabel,

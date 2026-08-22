@@ -112,7 +112,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'Kuyruğa gir',
-      claimed: 'Al',
+      claimed_from_queue: 'Al',
       released: 'Serbest',
     },
     turbine: {
@@ -2117,7 +2117,7 @@ const app = defineMessages({
           { id: '540', period: '540 g' },
         ],
       },
-      runwayDays: '{days} g',
+      runwayDays: '> {days} g',
       chart: {
         title: 'Metrikler',
         metricTabs: {
