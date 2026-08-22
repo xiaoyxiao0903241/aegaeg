@@ -102,16 +102,13 @@ export async function estimateMarketSwapGasWei({
       gasLimit = applyGasBuffer(typicalMarketSwapGasLimit(path))
     } else {
       try {
-        gasLimit = await estimateWriteGasLimit(
-          {
-            account: getAddress(account) as Address,
-            address: write.address,
-            abi: write.abi,
-            functionName: write.functionName,
-            args: write.args,
-          },
-          bscReadClient,
-        )
+        gasLimit = await estimateWriteGasLimit({
+          account: getAddress(account) as Address,
+          address: write.address,
+          abi: write.abi,
+          functionName: write.functionName,
+          args: write.args,
+        })
       } catch (error) {
         if (!isAllowanceOrBalanceSwapRevert(error)) return null
         gasLimit = applyGasBuffer(typicalMarketSwapGasLimit(path))

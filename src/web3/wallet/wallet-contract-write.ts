@@ -121,28 +121,20 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: PublicClie
  * 估算写交易 gas（展示用，不进入发送）
  *
  * 先 simulate 挡 revert，再 `estimateContractGas` 加 20% 缓冲。
- * simulate 因非 revert 失败时，再试默认读客户端估算。
+ * 读走 `bscReadClient`（已连 BSC 即钱包节点）。
  *
  * @param call 写调用参数
- * @param walletClient 钱包读客户端
- * @param fallbackClient 回退读客户端，默认 `bscReadClient`
  * @returns 加缓冲后的 gas 上限
  */
-export async function estimateWriteGasLimit(
-  call: WriteCallParams,
-  walletClient: PublicClient,
-  fallbackClient: PublicClient = bscReadClient,
-): Promise<bigint> {
+export async function estimateWriteGasLimit(call: WriteCallParams): Promise<bigint> {
   const callRequest = call as never
-  await simulateWriteCall(call, walletClient)
+  await simulateWriteCall(call, bscReadClient)
 
-  for (const client of [walletClient, fallbackClient]) {
-    try {
-      return applyGasBuffer(await client.estimateContractGas(callRequest))
-    } catch (error) {
-      if (isContractRevert(error)) {
-        throw normalizeContractRevertError(error, call.abi)
-      }
+  try {
+    return applyGasBuffer(await bscReadClient.estimateContractGas(callRequest))
+  } catch (error) {
+    if (isContractRevert(error)) {
+      throw normalizeContractRevertError(error, call.abi)
     }
   }
 
