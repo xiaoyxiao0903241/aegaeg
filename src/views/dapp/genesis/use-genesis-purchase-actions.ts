@@ -12,13 +12,10 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { fetchLiveGenesisPostApprove } from '~/views/dapp/genesis/fetch-live-genesis-post-approve'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
-import { bscReadClient } from '~/web3/bsc-read-client'
 import { GENESIS_PURCHASE_ERROR } from '~/web3/contract-error-message'
 import { readErrorText } from '~/web3/errors/error-text'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
-import { readPresalePaused, readUserPhaseRemainingAmount } from '~/web3/presale/presale-read'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
-import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
@@ -74,7 +71,7 @@ export function useGenesisPurchaseActions({
   const purchaseMutation = useChainMutation({
     path: WRITE_PATH.GENESIS,
     mutation: async (_vars, session): Promise<true> => {
-      const { wallet, account, address: sessionAddress, readClient } = session
+      const { wallet, account, address: sessionAddress } = session
       if (isBoundQueryData !== true) {
         throw GENESIS_PURCHASE_ERROR.NOT_BOUND
       }
@@ -93,23 +90,10 @@ export function useGenesisPurchaseActions({
             address: sessionAddress,
             purchaseAmount,
             activePhase: phase,
-            fetchIsBound: (addr) => readIsBindReferral(addr, readClient),
-            fetchPaused: () => readPresalePaused(readClient),
-            fetchPhaseRemaining: (addr, phaseIndex) =>
-              readUserPhaseRemainingAmount(addr, phaseIndex, readClient),
-            fetchNowSeconds: async () => {
-              const block = await bscReadClient.getBlock({ blockTag: 'latest' })
-              return Number(block.timestamp)
-            },
           })
           const [balance, allowance] = await Promise.all([
-            readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
-            readErc20Allowance(
-              BSC_CONTRACTS.usd1,
-              account.address,
-              BSC_CONTRACTS.preSale,
-              readClient,
-            ),
+            readErc20Balance(BSC_CONTRACTS.usd1, account.address),
+            readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
           ])
           if (sessionAddress) {
             queryClient.setQueryData(

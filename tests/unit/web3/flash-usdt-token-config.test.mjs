@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const OWNER = '0x1111111111111111111111111111111111111111'
 const CONFIG_USDT = '0x2222222222222222222222222222222222222222'
@@ -44,7 +45,7 @@ function createFlashConfigClient(opts) {
 test('readUsd1SwapConfig captures usdtToken from getConfig', async () => {
   const { readUsd1SwapConfig } = await loadModule('/src/web3/exchange/flash-exchange-read.ts')
   const client = createFlashConfigClient({ usdtToken: CONFIG_USDT })
-  const config = await readUsd1SwapConfig(client)
+  const config = await withBscReadClient(client, () => readUsd1SwapConfig())
   assert.equal(config.usdtToken.toLowerCase(), CONFIG_USDT.toLowerCase())
 })
 
@@ -61,7 +62,9 @@ test('readFlashPairBalances usdt path uses getConfig usdtToken not env', async (
     },
   })
 
-  const balances = await readFlashPairBalances('usdt', 'forward', OWNER, client)
+  const balances = await withBscReadClient(client, () =>
+    readFlashPairBalances('usdt', 'forward', OWNER),
+  )
   assert.equal(balances.sell, 11n)
   assert.equal(balances.approved, 22n)
   assert.ok(balanceTokens.includes(CONFIG_USDT.toLowerCase()))
@@ -71,5 +74,7 @@ test('readFlashPairBalances usdt path uses getConfig usdtToken not env', async (
 test('readFlashPairBalances usdt path fails closed on zero usdtToken', async () => {
   const { readFlashPairBalances } = await loadModule('/src/web3/exchange/flash-exchange-read.ts')
   const client = createFlashConfigClient({ usdtToken: ZERO })
-  await assert.rejects(() => readFlashPairBalances('usdt', 'forward', OWNER, client))
+  await assert.rejects(() =>
+    withBscReadClient(client, () => readFlashPairBalances('usdt', 'forward', OWNER)),
+  )
 })

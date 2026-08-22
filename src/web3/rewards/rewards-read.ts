@@ -5,7 +5,6 @@ import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { readAggregate3 } from '~/web3/multicall3-read'
 
@@ -40,22 +39,18 @@ export type LuckyClaimSnapshot = {
  * 取第一笔可领记录。每轮两读经 Multicall3（允许失败）。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 暂停状态 / 选中轮 / 是否中奖 / 是否已领 / 是否可领
  * @see 手册 §14 LuckyPool 去中心化抽奖
  */
-export async function readLuckyClaimSnapshot(
-  user: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<LuckyClaimSnapshot> {
+export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimSnapshot> {
   const paused = Boolean(
-    await client.readContract({
+    await bscReadClient.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
       functionName: 'paused',
     }),
   )
-  const openRoundId = (await client.readContract({
+  const openRoundId = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.luckyPool,
     abi: luckyAbi,
     functionName: 'currentRoundId',
@@ -83,7 +78,6 @@ export async function readLuckyClaimSnapshot(
     roundIds.length === 0
       ? []
       : await readAggregate3(
-          client,
           roundIds.flatMap((roundId) => [
             {
               target: pool,
@@ -159,28 +153,26 @@ export async function readLuckyClaimSnapshot(
  *
  * @param user 钱包地址
  * @param roundId 意图轮次
- * @param client 链读取客户端
  * @returns 该轮暂停 / 中奖 / 金额 / 是否已领 / 是否可领
  * @see 手册 §14 LuckyPool 去中心化抽奖
  */
 export async function readLuckyClaimRound(
   user: Address,
   roundId: bigint,
-  client: ChainReadClient = bscReadClient,
 ): Promise<LuckyClaimSnapshot> {
   const [paused, info, rewardClaimed] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
       functionName: 'paused',
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
       functionName: 'getWinnerInfo',
       args: [roundId, user],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
       functionName: 'rewardClaimed',
@@ -212,12 +204,11 @@ export async function readLuckyClaimRound(
  * Dao Mixed 无链上按用户的 pending，签名 amount 只是意图；这里读 DaoPool 持有的
  * AGX 余额作为偿付上限，签名金额不可直接当作可用。
  *
- * @param client 链读取客户端
  * @returns DaoPool 持有的 AGX 余额（wei）
  * @see docs/backend-api/api.md #claim/dao-reward
  */
-export async function readDaoPoolRewardAvailable(client: ChainReadClient): Promise<bigint> {
-  return readErc20Balance(BSC_CONTRACTS.agx, BSC_CONTRACTS.daoPool, client)
+export async function readDaoPoolRewardAvailable(): Promise<bigint> {
+  return readErc20Balance(BSC_CONTRACTS.agx, BSC_CONTRACTS.daoPool)
 }
 
 /** 幸运详情右栏：当前轮倒计时 + Tracker 资格 / 购买额（USD1 18dec）。 */
@@ -245,15 +236,13 @@ function luckyRoundEndTimeSec(roundRaw: unknown): bigint {
  * 资格用 Tracker `qualified`（单笔门槛、迁移感知），不以 `status=Open` 代替时间窗。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 当前轮 id / 结束时间 / 资格 / 轮内购买额 / 是否接受购买
  * @see 手册 §14.1 用户抽奖页
  */
 export async function readLuckyRoundDisplaySnapshot(
   user: Address,
-  client: ChainReadClient = bscReadClient,
 ): Promise<LuckyRoundDisplaySnapshot> {
-  const stat = (await client.readContract({
+  const stat = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.dailyPurchaseTracker,
     abi: trackerAbi,
     functionName: 'getCurrentRoundUserStat',
@@ -274,13 +263,13 @@ export async function readLuckyRoundDisplaySnapshot(
   }
 
   const [roundRaw, accepting] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
       functionName: 'getRound',
       args: [openRoundId],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.luckyPool,
       abi: luckyAbi,
       functionName: 'isRoundAcceptingPurchases',

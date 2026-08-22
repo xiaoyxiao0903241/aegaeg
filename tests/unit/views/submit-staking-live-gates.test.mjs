@@ -1,8 +1,16 @@
 import assert from 'node:assert/strict'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
-import { enc, ok, sessionWithReadClient, ZERO } from './_money-path-read-mock.mjs'
+import {
+  clearMoneyPathReadClient,
+  enc,
+  moneyPathSession,
+  ok,
+  ZERO,
+} from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
 
 function stakeLockedAggregate3(calls, opts) {
   const {
@@ -50,7 +58,7 @@ test('submitStakeOpen fail-closed when live referral is unbound', async () => {
   const { submitStakeOpen } = await loadModule('/src/views/dapp/staking/stake/submit-stake.ts')
   const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'aggregate3') {
       return stakeLockedAggregate3(request.args[0], { isBound: false })
     }
@@ -69,7 +77,7 @@ test('submitStakeOpen fail-closed when live quota is below amount', async () => 
   const { submitStakeOpen } = await loadModule('/src/views/dapp/staking/stake/submit-stake.ts')
   const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'aggregate3') {
       return stakeLockedAggregate3(request.args[0], { remaining: 10n })
     }
@@ -96,7 +104,7 @@ test('submitXmineStake fail-closed when live mining quota is exhausted', async (
     const { submitXmineStake } = await loadModule('/src/views/dapp/staking/xmine/submit-xmine.ts')
     const { XMINE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-    const session = sessionWithReadClient(async (request) => {
+    const session = await moneyPathSession(async (request) => {
       if (request.functionName === 'aggregate3') {
         return [
           ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', 1_000n)),
@@ -134,7 +142,7 @@ test('submitLiquidWarmupClaim fail-closed when warmup has not expired', async ()
   )
   const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName !== 'aggregate3') {
       throw new Error(`unexpected ${request.functionName}`)
     }

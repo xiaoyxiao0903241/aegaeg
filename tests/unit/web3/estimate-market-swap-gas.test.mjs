@@ -4,6 +4,7 @@ import test from 'node:test'
 import { encodeErrorResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111'
 const GAS_PRICE = 5_000_000_000n
@@ -45,14 +46,14 @@ test('estimateMarketSwapGasWei multiplies buffered gas by gas price', async () =
     },
   }
 
-  const wei = await estimateMarketSwapGasWei({
-    account: ACCOUNT,
-    amountIn: 10n ** 18n,
-    path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-    amountOutMin: 1n,
-    client,
-    fallbackClient: client,
-  })
+  const wei = await withBscReadClient(client, () =>
+    estimateMarketSwapGasWei({
+      account: ACCOUNT,
+      amountIn: 10n ** 18n,
+      path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
+      amountOutMin: 1n,
+    }),
+  )
 
   assert.equal(wei, 120_000n * 5_000_000_000n)
 })
@@ -75,14 +76,14 @@ test('estimateMarketSwapGasWei returns null on estimate failure without throwing
     },
   }
 
-  const wei = await estimateMarketSwapGasWei({
-    account: ACCOUNT,
-    amountIn: 10n ** 18n,
-    path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-    amountOutMin: 1n,
-    client: dead,
-    fallbackClient: dead,
-  })
+  const wei = await withBscReadClient(dead, () =>
+    estimateMarketSwapGasWei({
+      account: ACCOUNT,
+      amountIn: 10n ** 18n,
+      path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
+      amountOutMin: 1n,
+    }),
+  )
 
   assert.equal(wei, null)
 })
@@ -136,15 +137,15 @@ test('estimateMarketSwapGasWei skips user simulate when allowance is below amoun
     },
   }
 
-  const wei = await estimateMarketSwapGasWei({
-    account: ACCOUNT,
-    amountIn: 10n ** 18n,
-    path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-    amountOutMin: 1n,
-    allowance: 0n,
-    client,
-    fallbackClient: client,
-  })
+  const wei = await withBscReadClient(client, () =>
+    estimateMarketSwapGasWei({
+      account: ACCOUNT,
+      amountIn: 10n ** 18n,
+      path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
+      amountOutMin: 1n,
+      allowance: 0n,
+    }),
+  )
 
   assert.equal(wei, ONE_HOP_BUFFERED_GAS * GAS_PRICE)
 })
@@ -168,22 +169,22 @@ test('estimateMarketSwapGasWei falls back when simulate reverts on allowance', a
     },
   }
 
-  const usd1Wei = await estimateMarketSwapGasWei({
-    account: ACCOUNT,
-    amountIn: 10n ** 18n,
-    path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-    amountOutMin: 1n,
-    client,
-    fallbackClient: client,
-  })
-  const agxWei = await estimateMarketSwapGasWei({
-    account: ACCOUNT,
-    amountIn: 10n ** 18n,
-    path: [BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1],
-    amountOutMin: 1n,
-    client,
-    fallbackClient: client,
-  })
+  const usd1Wei = await withBscReadClient(client, () =>
+    estimateMarketSwapGasWei({
+      account: ACCOUNT,
+      amountIn: 10n ** 18n,
+      path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
+      amountOutMin: 1n,
+    }),
+  )
+  const agxWei = await withBscReadClient(client, () =>
+    estimateMarketSwapGasWei({
+      account: ACCOUNT,
+      amountIn: 10n ** 18n,
+      path: [BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1],
+      amountOutMin: 1n,
+    }),
+  )
 
   assert.equal(usd1Wei, ONE_HOP_BUFFERED_GAS * GAS_PRICE)
   assert.equal(agxWei, ONE_HOP_FOT_BUFFERED_GAS * GAS_PRICE)

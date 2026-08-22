@@ -13,7 +13,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { AGX_SELL_TAX_METHODS, ERC20_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { estimateMarketSwapGasWei } from '~/web3/exchange/estimate-market-swap-gas'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
 import {
@@ -62,7 +61,6 @@ const agxSellTaxAbi = parseAbi([
  * @see docs/onchain-manual/contracts/agx.md
  */
 export async function readAgxSellTaxBps(
-  client: ChainReadClient = bscReadClient,
   agx: `0x${string}` = BSC_CONTRACTS.agx,
   amountIn: bigint = 0n,
 ): Promise<number> {
@@ -84,8 +82,8 @@ export async function readAgxSellTaxBps(
   }))
 
   const [taxResults, currentBlock] = await Promise.all([
-    readAggregate3(client, taxCalls),
-    client.getBlockNumber(),
+    readAggregate3(taxCalls),
+    bscReadClient.getBlockNumber(),
   ])
 
   const decodeTax = <T>(
@@ -130,12 +128,8 @@ export async function readAgxSellTaxBps(
   return agxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
 }
 /** 读取任意 ERC20 代币余额（原始单位，未按 decimals 换算）。 */
-export async function readErc20Balance(
-  address: `0x${string}`,
-  owner: string,
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return client.readContract({
+export async function readErc20Balance(address: `0x${string}`, owner: string): Promise<bigint> {
+  return bscReadClient.readContract({
     address,
     abi: erc20Abi,
     functionName: 'balanceOf',
@@ -148,9 +142,8 @@ export async function readErc20Allowance(
   token: `0x${string}`,
   owner: string,
   spender: `0x${string}`,
-  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  return client.readContract({
+  return bscReadClient.readContract({
     address: token,
     abi: erc20Abi,
     functionName: 'allowance',
@@ -172,7 +165,6 @@ export async function readErc20Allowance(
  * @param tokenIn 输入代币地址
  * @param tokenOut 输出代币地址
  * @param path 兑换路径；省略时为直连 `[tokenIn, tokenOut]`
- * @param client 链上读取客户端，默认公共 RPC
  * @param poolContext 复用 React Query 中短暂过期的池读取，避免重复拉取
  * @param account 有则估本笔兑换网络费用（from / 收款人）
  * @param slippageBps 与提交相同的滑点；与 account 一起才估 gas
@@ -186,7 +178,6 @@ export async function fetchExchangeQuote({
   tokenIn,
   tokenOut,
   path: pathArg,
-  client = bscReadClient,
   poolContext,
   account,
   slippageBps,
@@ -197,7 +188,6 @@ export async function fetchExchangeQuote({
   tokenOut: `0x${string}`
   /** 省略时使用直连 `[tokenIn, tokenOut]` 一跳。 */
   path?: readonly `0x${string}`[]
-  client?: ChainReadClient
   /** 复用 React Query 中短暂过期的池读取，避免重复拉取。 */
   poolContext?: ExchangePoolReadContext
   /** 有则在本笔报价后估兑换 gas；行情报价不要传。 */
@@ -214,11 +204,11 @@ export async function fetchExchangeQuote({
   const [pool, spot, sellTaxBps] = await Promise.all([
     poolContext
       ? Promise.resolve(poolContext.pool)
-      : readExchangePoolImmutableMetadata(EXCHANGE_CONFIG.pool, client),
+      : readExchangePoolImmutableMetadata(EXCHANGE_CONFIG.pool),
     poolContext
       ? Promise.resolve(poolContext.spot)
-      : readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool, client),
-    sellingAgx ? readAgxSellTaxBps(client, BSC_CONTRACTS.agx, amountIn) : Promise.resolve(0),
+      : readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool),
+    sellingAgx ? readAgxSellTaxBps(BSC_CONTRACTS.agx, amountIn) : Promise.resolve(0),
   ])
 
   // 交易对收到的是扣税后的数量，Router.getAmountsOut 必须用净额报价
@@ -232,7 +222,6 @@ export async function fetchExchangeQuote({
     router: EXCHANGE_CONFIG.router,
     amountIn: amountInForQuote,
     path,
-    client,
   })
 
   // 价格影响只在已知的 USD1/AGX 池直连一跳计算；否则 null（UI 显示 —）
@@ -271,7 +260,6 @@ export async function fetchExchangeQuote({
           path,
           amountOutMin: calcAmountOutMin(quotedOut, slippageBps),
           allowance,
-          client,
         })
       : null
 

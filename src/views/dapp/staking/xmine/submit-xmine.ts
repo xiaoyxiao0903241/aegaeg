@@ -26,13 +26,13 @@ export async function submitXmineStake(args: {
   amount: bigint
 }): Promise<void> {
   const { session, amount } = args
-  const { wallet, address, readClient } = session
+  const { wallet, address } = session
 
   let pastPreflight = false
   await approveThenLiveWrite({
     readSnapshot: async () => {
-      const preflight = await readXminePreflight({ user: address, client: readClient })
-      const migration = await readMigrationStatus(address, readClient)
+      const preflight = await readXminePreflight({ user: address })
+      const migration = await readMigrationStatus(address)
       return { preflight, isOldAccount: migration.isOldAccount }
     },
     evaluate: ({ preflight, isOldAccount }): XmineLiveBlockReason | null => {

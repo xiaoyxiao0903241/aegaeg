@@ -33,7 +33,7 @@ export async function submitStakeOpen(args: {
   amount: bigint
 }): Promise<void> {
   const { session, period, amount } = args
-  const { wallet, address, readClient } = session
+  const { wallet, address } = session
 
   const pool = stakePoolAddress(period)
   const isLiquid = period === 'liquid'
@@ -44,9 +44,8 @@ export async function submitStakeOpen(args: {
         pool,
         isLiquid,
         user: address,
-        client: readClient,
       })
-      const migration = await readMigrationStatus(address, readClient)
+      const migration = await readMigrationStatus(address)
       return { preflight, isOldAccount: migration.isOldAccount }
     },
     evaluate: ({ preflight, isOldAccount }) =>

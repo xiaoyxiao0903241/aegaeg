@@ -100,10 +100,7 @@ export function useCommunityReferral() {
   const bindMutation = useChainMutation({
     path: WRITE_PATH.REFERRAL_BIND,
     mutation: async (target: Address, session) => {
-      const [parentBound, root] = await Promise.all([
-        readIsBindReferral(target, session.readClient),
-        readRootAddress(session.readClient),
-      ])
+      const [parentBound, root] = await Promise.all([readIsBindReferral(target), readRootAddress()])
       if (!isReferralParentAllowed({ parent: target, parentBound, root })) {
         throw REFERRAL_BIND_ERROR.PARENT_NOT_BOUND
       }

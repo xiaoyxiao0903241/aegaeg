@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const USER = '0x1111111111111111111111111111111111111111'
 const ROOT = '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa'
@@ -32,7 +33,7 @@ test('readBurnUserStats falls back to user when originalOf is zero', async () =>
       contributionArg = u
     },
   })
-  const stats = await readBurnUserStats(USER, client)
+  const stats = await withBscReadClient(client, () => readBurnUserStats(USER))
   assert.equal(contributionArg, USER.toLowerCase())
   assert.equal(stats.contributionBalance, 5n)
   assert.equal(stats.contributionEarned, 7n)
@@ -47,6 +48,6 @@ test('readBurnUserStats uses originalOf when non-zero', async () => {
       contributionArg = u
     },
   })
-  await readBurnUserStats(USER, client)
+  await withBscReadClient(client, () => readBurnUserStats(USER))
   assert.equal(contributionArg, ROOT.toLowerCase())
 })

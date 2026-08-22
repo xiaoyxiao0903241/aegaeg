@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { prefetchConnectWarm } from '~/shared/api/query/prefetch'
-import { bscReadClient } from '~/web3/bsc-read-client'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
@@ -13,6 +12,6 @@ export function useConnectWarmPrefetch() {
 
   useEffect(() => {
     if (!walletReady || !address) return
-    prefetchConnectWarm(address, bscReadClient)
+    prefetchConnectWarm(address)
   }, [walletReady, address])
 }

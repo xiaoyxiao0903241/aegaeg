@@ -7,11 +7,11 @@ import {
   type Hash,
   numberToHex,
   parseAbi,
+  type PublicClient,
   type TransactionReceipt,
 } from 'viem'
 
 import { bscReadClient, createWalletReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import {
   decodeContractRevert,
@@ -102,7 +102,7 @@ export function applyGasBuffer(estimatedGas: bigint): bigint {
  * 模拟写调用：合约 revert 在钱包弹窗前抛出。
  * 非 revert（RPC 超时等）不挡发送，交给钱包。
  */
-async function simulateWriteCall(call: WriteCallParams, walletClient: ChainReadClient) {
+async function simulateWriteCall(call: WriteCallParams, walletClient: PublicClient) {
   const callRequest = call as never
   try {
     await walletClient.simulateContract(callRequest)
@@ -130,8 +130,8 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: ChainReadC
  */
 export async function estimateWriteGasLimit(
   call: WriteCallParams,
-  walletClient: ChainReadClient,
-  fallbackClient: ChainReadClient = bscReadClient,
+  walletClient: PublicClient,
+  fallbackClient: PublicClient = bscReadClient,
 ): Promise<bigint> {
   const callRequest = call as never
   await simulateWriteCall(call, walletClient)

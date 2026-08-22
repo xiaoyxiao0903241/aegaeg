@@ -39,7 +39,7 @@ export async function submitBondZap(args: {
   amount: bigint
 }): Promise<void> {
   const { session, kind, period, amount } = args
-  const { wallet, address, readClient } = session
+  const { wallet, address } = session
 
   const depository =
     kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
@@ -50,16 +50,14 @@ export async function submitBondZap(args: {
         readBondZapPreflight({
           depository,
           user: address,
-          client: readClient,
         }),
-        readMigrationStatus(address, readClient),
-        readBondMarketMeta(depository, readClient),
+        readMigrationStatus(address),
+        readBondMarketMeta(depository),
       ])
       const payout = await readBondZapAgxPreview({
         kind,
         depository,
         depositUsd1: amount,
-        client: readClient,
         market,
       })
       return {

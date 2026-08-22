@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const USER = '0x1111111111111111111111111111111111111111'
 
@@ -30,7 +31,7 @@ test('readLuckyRoundDisplaySnapshot follows handbook §14.1 tracker + accepting 
     },
   }
 
-  const snap = await readLuckyRoundDisplaySnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readLuckyRoundDisplaySnapshot(USER))
 
   assert.equal(snap.openRoundId, 7n)
   assert.equal(snap.endTimeSec, 99n)
@@ -68,7 +69,7 @@ test('readLuckyRoundDisplaySnapshot skips round reads when tracker roundId is 0'
     },
   }
 
-  const snap = await readLuckyRoundDisplaySnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readLuckyRoundDisplaySnapshot(USER))
   assert.equal(snap.openRoundId, 0n)
   assert.equal(snap.endTimeSec, 0n)
   assert.equal(snap.eligible, false)
@@ -95,7 +96,7 @@ test('readLuckyRoundDisplaySnapshot keeps qualified false when window is not acc
     },
   }
 
-  const snap = await readLuckyRoundDisplaySnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readLuckyRoundDisplaySnapshot(USER))
   assert.equal(snap.openRoundId, 3n)
   assert.equal(snap.endTimeSec, 50n)
   assert.equal(snap.eligible, false)

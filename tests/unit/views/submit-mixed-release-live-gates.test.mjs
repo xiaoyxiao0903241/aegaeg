@@ -1,15 +1,18 @@
 import assert from 'node:assert/strict'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 import {
   claimPlanAndContribHandlers,
+  clearMoneyPathReadClient,
   dispatchRead,
   enc,
+  moneyPathSession,
   ok,
-  sessionWithReadClient,
   USER,
 } from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
 
 test('submitMixedClaim fail-closed when live liquid reward is below the 0.01 floor', async () => {
   const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
@@ -20,7 +23,7 @@ test('submitMixedClaim fail-closed when live liquid reward is below the 0.01 flo
     requiredContribution: 1n,
   })
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'getStakeRewards') return [0n, 50n]
     return dispatchRead(plans, request)
   })
@@ -48,7 +51,7 @@ test('submitMixedClaim does not keep the open-modal amount when live available i
     requiredContribution: 1n,
   })
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'getStakeRewards') return [0n, 2n * 10n ** 7n]
     return dispatchRead(plans, request)
   })
@@ -76,7 +79,7 @@ test('submitMixedClaim fail-closed when contribution is below live required', as
     requiredContribution: 100n,
   })
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'getStakeRewards') return [0n, 10n ** 7n]
     return dispatchRead(plans, request)
   })
@@ -100,7 +103,7 @@ test('submitReleaseQueueClaim rejects unresolved planIndex before chain reads', 
   const { RELEASE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
   let reads = 0
-  const session = sessionWithReadClient(async () => {
+  const session = await moneyPathSession(async () => {
     reads += 1
     throw new Error('should not read')
   })
@@ -116,7 +119,7 @@ test('submitReleaseQueueClaim fail-closed when live claimable is zero', async ()
   const { submitReleaseQueueClaim } = await loadModule('/src/views/dapp/release/submit-release.ts')
   const { RELEASE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'queuePlans') {
       return [{ releaseDuration: 5n * 86_400n, feeRate: 0n, feeRecipient: USER }]
     }
@@ -147,7 +150,7 @@ test('submitReleaseBufferClaim fail-closed when live claimable is zero', async (
   const { RELEASE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
   const { ZERO_ADDRESS } = await loadModule('/src/core/constants.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'getHeadSplitterForUser') return ZERO_ADDRESS
     if (request.functionName === 'getReleaseCount') return 0n
     throw new Error(`unexpected ${request.functionName}`)
@@ -163,7 +166,7 @@ test('submitReleaseQueueClaim fail-closed for migrated old account after live ga
   const { submitReleaseQueueClaim } = await loadModule('/src/views/dapp/release/submit-release.ts')
   const { RELEASE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'queuePlans') {
       return [{ releaseDuration: 5n * 86_400n, feeRate: 0n, feeRecipient: USER }]
     }

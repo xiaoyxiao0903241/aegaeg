@@ -1,15 +1,23 @@
 import { encodeFunctionResult, parseAbi } from 'viem'
 
+import { loadModule } from '../load-module.mjs'
+
 export const USER = '0x1111111111111111111111111111111111111111'
 export const ZERO = '0x0000000000000000000000000000000000000000'
 export const DAY = 86_400n
 
-export function sessionWithReadClient(readContract) {
+export async function moneyPathSession(readContract) {
+  const { setBscReadClientForTest } = await loadModule('/src/web3/bsc-read-client.ts')
+  setBscReadClientForTest({ readContract })
   return {
     wallet: { __test: 'must-not-write' },
     address: USER,
-    readClient: { readContract },
   }
+}
+
+export async function clearMoneyPathReadClient() {
+  const { setBscReadClientForTest } = await loadModule('/src/web3/bsc-read-client.ts')
+  setBscReadClientForTest(null)
 }
 
 export function enc(abiItem, functionName, result) {

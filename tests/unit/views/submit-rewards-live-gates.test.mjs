@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 import {
   claimPlanAndContribHandlers,
+  clearMoneyPathReadClient,
   dispatchRead,
-  sessionWithReadClient,
+  moneyPathSession,
 } from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
 
 function luckyReadClient(overrides = {}) {
   const {
@@ -35,7 +38,7 @@ test('submitLuckyMixedClaim fail-closed when live round is not claimable', async
   const { submitLuckyMixedClaim } = await loadModule('/src/views/dapp/rewards/submit-rewards.ts')
   const { REWARDS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(
+  const session = await moneyPathSession(
     luckyReadClient({ won: true, rewardAmount: 100n, rewardClaimed: true }),
   )
 
@@ -56,7 +59,7 @@ test('submitLuckyMixedClaim fail-closed when contribution is below live required
   const { submitLuckyMixedClaim } = await loadModule('/src/views/dapp/rewards/submit-rewards.ts')
   const { REWARDS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(
+  const session = await moneyPathSession(
     luckyReadClient({ contribution: 10n, requiredContribution: 100n }),
   )
 
@@ -83,7 +86,7 @@ test('submitDaoMixedClaim fail-closed when live DaoPool AGX is below signed amou
     requiredContribution: 1n,
     rewardAvailable: 50n,
   })
-  const session = sessionWithReadClient(async (request) => dispatchRead(plans, request))
+  const session = await moneyPathSession(async (request) => dispatchRead(plans, request))
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (input) => {
@@ -128,7 +131,7 @@ test('submitDaoMixedClaim rejects empty token before chain reads', async () => {
   const { WALLET_BLOCKED } = await loadModule('/src/web3/contract-error-message.ts')
 
   let reads = 0
-  const session = sessionWithReadClient(async () => {
+  const session = await moneyPathSession(async () => {
     reads += 1
     throw new Error('should not read')
   })

@@ -16,7 +16,6 @@ import {
   PANCAKE_PAIR_V2_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
 import {
   readExchangePoolImmutableMetadata,
@@ -45,10 +44,8 @@ export type BondZapAgxPreview = {
  *
  * @see docs/onchain-manual/contracts/bondhelper.md
  */
-export async function readBondHelperSlippage(
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return client.readContract({
+export async function readBondHelperSlippage(): Promise<bigint> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.bondHelper,
     abi: helperAbi,
     functionName: 'slippage',
@@ -69,26 +66,23 @@ export async function readBondZapAgxPreview(args: {
   kind: BondKind
   depository: Address
   depositUsd1: bigint
-  client?: ChainReadClient
   market?: BondMarketMeta
 }): Promise<BondZapAgxPreview> {
-  const client = args.client ?? bscReadClient
   if (args.depositUsd1 === 0n) return { netPayout: 0n, grossPayout: 0n }
 
-  const market = args.market ?? (await readMarketMeta(args.depository, client))
+  const market = args.market ?? (await readMarketMeta(args.depository))
 
   if (args.kind === 'burn') {
     const agxOut = await quoteV2AmountsOut({
       router: BSC_CONTRACTS.pancakeRouter,
       amountIn: args.depositUsd1,
       path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-      client,
     })
     const grossPayout = computeBurnBondGrossPayout(agxOut, market.discountRateBP)
     return { grossPayout, netPayout: computeNetBondPayout(grossPayout, market.feeBps) }
   }
 
-  const liquidityPool = (await client.readContract({
+  const liquidityPool = (await bscReadClient.readContract({
     address: args.depository,
     abi: depositoryAbi,
     functionName: 'liquidityPool',
@@ -102,11 +96,10 @@ export async function readBondZapAgxPreview(args: {
       router: BSC_CONTRACTS.pancakeRouter,
       amountIn: halfUsd,
       path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-      client,
     }),
-    readExchangePoolImmutableMetadata(liquidityPool, client),
-    readExchangePoolSpotPrice(liquidityPool, client),
-    client.readContract({
+    readExchangePoolImmutableMetadata(liquidityPool),
+    readExchangePoolSpotPrice(liquidityPool),
+    bscReadClient.readContract({
       address: liquidityPool,
       abi: pairSupplyAbi,
       functionName: 'totalSupply',
@@ -127,7 +120,7 @@ export async function readBondZapAgxPreview(args: {
   })
   if (lpAmount === 0n) return { netPayout: 0n, grossPayout: 0n }
 
-  const value = (await client.readContract({
+  const value = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.bondingCalculator,
     abi: calculatorAbi,
     functionName: 'valuation',
@@ -142,10 +135,7 @@ export async function readBondZapAgxPreview(args: {
   return { grossPayout, netPayout: computeNetBondPayout(grossPayout, market.feeBps) }
 }
 
-async function readMarketMeta(
-  depository: Address,
-  client: ChainReadClient,
-): Promise<BondMarketMeta> {
+async function readMarketMeta(depository: Address): Promise<BondMarketMeta> {
   const calls: Aggregate3Call[] = []
   const push = (functionName: string) => {
     const index = calls.length
@@ -161,7 +151,7 @@ async function readMarketMeta(
   const discountIdx = push('discountRateBP')
   const termsIdx = push('terms')
   const maxPayoutIdx = push('maxPayout')
-  const batch = await readAggregate3(client, calls)
+  const batch = await readAggregate3(calls)
 
   const discountRateBP = decodeAggregate3Result<bigint>(
     batch,

@@ -4,6 +4,7 @@ import test from 'node:test'
 import { decodeFunctionData, encodeFunctionResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const agxSellTaxAbi = parseAbi([
   'function sellRatio() view returns (uint256)',
@@ -109,12 +110,13 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
     quotedOut,
   })
 
-  const result = await fetchExchangeQuote({
-    amountIn,
-    tokenIn: usd1,
-    tokenOut: agx,
-    client,
-  })
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn,
+      tokenIn: usd1,
+      tokenOut: agx,
+    }),
+  )
 
   assert.equal(result.quotedOut, quotedOut)
   assert.equal(result.tokenIn, usd1)
@@ -153,12 +155,13 @@ test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', 
     },
   })
 
-  const result = await fetchExchangeQuote({
-    amountIn,
-    tokenIn: agx,
-    tokenOut: usd1,
-    client,
-  })
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn,
+      tokenIn: agx,
+      tokenOut: usd1,
+    }),
+  )
 
   assert.equal(client.getAmountsOutArg, netIn)
   assert.equal(result.quotedOut, netIn / 2n)
@@ -190,12 +193,13 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
     },
   })
 
-  await fetchExchangeQuote({
-    amountIn,
-    tokenIn: agx,
-    tokenOut: usd1,
-    client,
-  })
+  await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn,
+      tokenIn: agx,
+      tokenOut: usd1,
+    }),
+  )
 
   assert.equal(client.getAmountsOutArg, netIn)
 })
@@ -225,13 +229,14 @@ test('fetchExchangeQuote X to AGX uses post-tax amountIn for getAmountsOut', asy
     return originalRead(request)
   }
 
-  const result = await fetchExchangeQuote({
-    amountIn,
-    tokenIn: x,
-    tokenOut: agx,
-    path: [x, agx],
-    client,
-  })
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn,
+      tokenIn: x,
+      tokenOut: agx,
+      path: [x, agx],
+    }),
+  )
 
   assert.equal(client.getAmountsOutArg, netIn)
   assert.equal(result.quotedOut, netIn / 2n)
@@ -242,12 +247,13 @@ test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () =>
   const { agx, usd1, router } = await loadExchangeAddresses()
   const client = createMockClient({ tokenIn: usd1, tokenOut: agx })
 
-  const result = await quoteV2AmountsOut({
-    router,
-    amountIn: 0n,
-    path: [usd1, agx],
-    client,
-  })
+  const result = await withBscReadClient(client, () =>
+    quoteV2AmountsOut({
+      router,
+      amountIn: 0n,
+      path: [usd1, agx],
+    }),
+  )
 
   assert.equal(result, 0n)
   assert.equal(client.calls.length, 0)
@@ -278,14 +284,15 @@ test('fetchExchangeQuote estimates gas in the same fetch using this quote min', 
   client.estimateContractGas = async () => 100_000n
   client.getGasPrice = async () => 5_000_000_000n
 
-  const result = await fetchExchangeQuote({
-    amountIn,
-    tokenIn: usd1,
-    tokenOut: agx,
-    client,
-    account: '0x1111111111111111111111111111111111111111',
-    slippageBps: 50,
-  })
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn,
+      tokenIn: usd1,
+      tokenOut: agx,
+      account: '0x1111111111111111111111111111111111111111',
+      slippageBps: 50,
+    }),
+  )
 
   assert.equal(result.quotedOut, quotedOut)
   assert.equal(simulatedMin, 497_500_000n)
@@ -314,14 +321,15 @@ test('fetchExchangeQuote keeps quotedOut when gas estimate fails', async () => {
   }
   client.getGasPrice = async () => 5_000_000_000n
 
-  const result = await fetchExchangeQuote({
-    amountIn: 10n ** 18n,
-    tokenIn: usd1,
-    tokenOut: agx,
-    client,
-    account: '0x1111111111111111111111111111111111111111',
-    slippageBps: 50,
-  })
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn: 10n ** 18n,
+      tokenIn: usd1,
+      tokenOut: agx,
+      account: '0x1111111111111111111111111111111111111111',
+      slippageBps: 50,
+    }),
+  )
 
   assert.equal(result.quotedOut, quotedOut)
   assert.equal(result.gasCostWei, null)
@@ -349,15 +357,16 @@ test('fetchExchangeQuote still estimates gas when allowance is below amountIn', 
   }
   client.getGasPrice = async () => 5_000_000_000n
 
-  const result = await fetchExchangeQuote({
-    amountIn: 10n ** 18n,
-    tokenIn: usd1,
-    tokenOut: agx,
-    client,
-    account: '0x1111111111111111111111111111111111111111',
-    slippageBps: 50,
-    allowance: 0n,
-  })
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn: 10n ** 18n,
+      tokenIn: usd1,
+      tokenOut: agx,
+      account: '0x1111111111111111111111111111111111111111',
+      slippageBps: 50,
+      allowance: 0n,
+    }),
+  )
 
   assert.equal(result.quotedOut, quotedOut)
   assert.equal(result.gasCostWei, 180_000n * 5_000_000_000n)

@@ -4,7 +4,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { formatNumber } from '~/shared/presenters/format'
 import { ERC20_METHODS, X_STAKING_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 
 const overviewAbi = parseAbi([X_STAKING_POOL_METHODS.xPerAgx, X_STAKING_POOL_METHODS.yieldRateBP])
 const gagxBalanceAbi = parseAbi([ERC20_METHODS.balanceOf])
@@ -29,25 +28,22 @@ export type XmineOverview = {
  *
  * 并行读取 xPerAgx、日收益率基点与池内 gAGX 余额，供 X 挖矿页展示。
  *
- * @param client 链上读取客户端，默认公共 RPC
  * @returns xPerAgx / yieldRateBP / totalStakedGagx
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
-export async function readXmineOverview(
-  client: ChainReadClient = bscReadClient,
-): Promise<XmineOverview> {
+export async function readXmineOverview(): Promise<XmineOverview> {
   const [xPerAgx, yieldRateBP, totalStakedGagx] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: overviewAbi,
       functionName: 'xPerAgx',
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: overviewAbi,
       functionName: 'yieldRateBP',
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.gagx,
       abi: gagxBalanceAbi,
       functionName: 'balanceOf',

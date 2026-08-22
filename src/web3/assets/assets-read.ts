@@ -16,7 +16,6 @@ import {
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { type Aggregate3Call, readAggregate3 } from '~/web3/multicall3-read'
 import {
@@ -107,22 +106,21 @@ export type AssetsXminePosition = {
  * 释放计划由 RewardQueue.queuePlans 一次取回；复投计划逐档 RestakeConfig.getPlan 读取，
  * 保留链上原始 index，供 Mixed 领取参数使用。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns releasePlans / restakePlans 两个时长计划数组
  * @see 手册 §12 RewardQueue 奖励释放队列
  * @see 手册 §9 贡献值与 Mixed 领奖
  */
-export async function readClaimPlans(client: ChainReadClient = bscReadClient): Promise<{
+export async function readClaimPlans(): Promise<{
   releasePlans: DurationPlan[]
   restakePlans: DurationPlan[]
 }> {
   const [queuePlans, planCount] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.rewardQueue,
       abi: rewardQueueAbi,
       functionName: 'queuePlans',
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.restakeConfig,
       abi: restakeConfigAbi,
       functionName: 'getPlanCount',
@@ -144,7 +142,7 @@ export async function readClaimPlans(client: ChainReadClient = bscReadClient): P
   const count = Number(planCount)
   const restakePlans: DurationPlan[] = []
   for (let index = 0; index < count; index += 1) {
-    const plan = await client.readContract({
+    const plan = await bscReadClient.readContract({
       address: BSC_CONTRACTS.restakeConfig,
       abi: restakeConfigAbi,
       functionName: 'getPlan',
@@ -170,16 +168,14 @@ export async function readClaimPlans(client: ChainReadClient = bscReadClient): P
  *
  * @param user 钱包地址
  * @param rewardAmount 待领取奖励金额（wei）
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 当前贡献值 contribution 与所需贡献值 requiredContribution
  * @see 手册 §9.2 贡献值页面
  */
 export async function readContributionSnapshot(
   user: Address,
   rewardAmount: bigint,
-  client: ChainReadClient = bscReadClient,
 ): Promise<{ contribution: bigint; requiredContribution: bigint }> {
-  const root = (await client.readContract({
+  const root = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.agxContributionSwap,
     abi: contribAbi,
     functionName: 'originalOf',
@@ -188,13 +184,13 @@ export async function readContributionSnapshot(
   const contributionRoot = root.toLowerCase() === ZERO_ADDRESS ? user : root
 
   const [contribution, requiredContribution] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.agxContributionSwap,
       abi: contribAbi,
       functionName: 'userContribution',
       args: [contributionRoot],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.agxContributionSwap,
       abi: contribAbi,
       functionName: 'quoteRequiredContribution',
@@ -215,41 +211,37 @@ export async function readContributionSnapshot(
  * 仅返回有余额的仓位。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 资产页质押行数组，无仓位时为空数组
  * @see 手册 §8.2 活期 LiquidStaking
  * @see 手册 §8.3 定期 LockedStaking
  */
-export async function readStakePositions(
-  user: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<AssetsStakeRow[]> {
+export async function readStakePositions(user: Address): Promise<AssetsStakeRow[]> {
   const rows: AssetsStakeRow[] = []
 
   const liquidPool = stakePoolAddress('liquid')
   // `stakes`/`warmupStakes` 为裸 mapping：须先解析迁移 root；`getStakeRewards` 别名感知，直接传当前钱包。
-  const liquidMigratedFrom = await readMigratedFrom(user, client)
+  const liquidMigratedFrom = await readMigratedFrom(user)
   const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
   const [liquidStake, liquidWarmup, liquidRewards, warmupExpired] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: liquidPool,
       abi: liquidAbi,
       functionName: 'stakes',
       args: [liquidRoot],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: liquidPool,
       abi: liquidAbi,
       functionName: 'warmupStakes',
       args: [liquidRoot],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: liquidPool,
       abi: liquidAbi,
       functionName: 'getStakeRewards',
       args: [user],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: liquidPool,
       abi: liquidAbi,
       functionName: 'isWarmupExpired',
@@ -310,7 +302,7 @@ export async function readStakePositions(
     BOND_PERIODS.map(async (period) => {
       const pool = stakePoolAddress(period)
       const count = Number(
-        await client.readContract({
+        await bscReadClient.readContract({
           address: pool,
           abi: lockedAbi,
           functionName: 'getStakesCount',
@@ -325,7 +317,7 @@ export async function readStakePositions(
     // 手册：start >= total 会 revert；空仓勿调 getStakes。
     if (!Number.isFinite(count) || count <= 0) continue
 
-    const stakes = (await client.readContract({
+    const stakes = (await bscReadClient.readContract({
       address: pool,
       abi: lockedAbi,
       functionName: 'getStakes',
@@ -339,7 +331,6 @@ export async function readStakePositions(
     }[]
 
     const releasedResults = await readAggregate3(
-      client,
       stakes.map((_, index) => ({
         target: pool,
         callData: encodeFunctionData({
@@ -389,18 +380,14 @@ export async function readStakePositions(
   return rows
 }
 
-async function readBondPositionsFor(
-  kind: 'lp' | 'burn',
-  user: Address,
-  client: ChainReadClient,
-): Promise<AssetsBondRow[]> {
+async function readBondPositionsFor(kind: 'lp' | 'burn', user: Address): Promise<AssetsBondRow[]> {
   const rows: AssetsBondRow[] = []
   const poolCounts = await Promise.all(
     BOND_PERIODS.map(async (period) => {
       const depository =
         kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
       const count = Number(
-        await client.readContract({
+        await bscReadClient.readContract({
           address: depository,
           abi: bondAbi,
           functionName: 'getBondCount',
@@ -445,7 +432,7 @@ async function readBondPositionsFor(
       )
     }
 
-    const results = await readAggregate3(client, calls)
+    const results = await readAggregate3(calls)
     for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
       const base = bondIndex * 3
       const infoResult = results[base]
@@ -503,24 +490,22 @@ async function readBondPositionsFor(
  * 读取用户全部 LP 债券仓位。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 资产页 LP 债券行数组
  * @see 手册 §10 债券 Bond / BurnBond
  */
-export function readLpBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
-  return readBondPositionsFor('lp', user, client)
+export function readLpBondPositions(user: Address) {
+  return readBondPositionsFor('lp', user)
 }
 
 /**
  * 读取用户全部 Burn 债券仓位。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 资产页 Burn 债券行数组
  * @see 手册 §10 债券 Bond / BurnBond
  */
-export function readBurnBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
-  return readBondPositionsFor('burn', user, client)
+export function readBurnBondPositions(user: Address) {
+  return readBondPositionsFor('burn', user)
 }
 
 /**
@@ -529,38 +514,34 @@ export function readBurnBondPositions(user: Address, client: ChainReadClient = b
  * `stakes` 为裸 mapping，须先解析迁移 root；其余业务 view 直接传当前地址。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 挖矿持仓快照，含 pending 价值口径
  * @see 手册 §15 XStakingPool X 挖矿
  */
-export async function readXminePosition(
-  user: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<AssetsXminePosition> {
+export async function readXminePosition(user: Address): Promise<AssetsXminePosition> {
   // `stakes` 为裸 mapping：先解析迁移 root；业务 view 仍传当前地址。
-  const migratedFrom = await readMigratedFrom(user, client)
+  const migratedFrom = await readMigratedFrom(user)
   const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
 
   const [pending, pendingValue, miningStake, stake] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: xmineAbi,
       functionName: 'pendingReward',
       args: [user],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: xmineAbi,
       functionName: 'pendingRewardValue',
       args: [user],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: xmineAbi,
       functionName: 'miningStakeAmountOf',
       args: [user],
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: xmineAbi,
       functionName: 'stakes',
@@ -591,7 +572,6 @@ export async function readXminePosition(
  *
  * @param target 领取来源：活期 / 定期（可选额外利息）/ 债券
  * @param user 钱包地址
- * @param client 链读取客户端
  * @returns 可领取奖励金额（wei）
  * @see 手册 §9.3 Mixed 领奖前端流程
  */
@@ -601,10 +581,9 @@ export async function readMixedRewardAvailable(
     | { source: 'locked'; pool: Address; stakeIndex: number; extra?: boolean }
     | { source: 'bond'; depository: Address; bondIndex: number },
   user: Address,
-  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
   if (target.source === 'liquid') {
-    const rewards = await client.readContract({
+    const rewards = await bscReadClient.readContract({
       address: stakePoolAddress('liquid'),
       abi: liquidAbi,
       functionName: 'getStakeRewards',
@@ -615,7 +594,7 @@ export async function readMixedRewardAvailable(
   }
 
   if (target.source === 'locked') {
-    const stake = await client.readContract({
+    const stake = await bscReadClient.readContract({
       address: target.pool,
       abi: lockedAbi,
       functionName: 'getStake',
@@ -625,7 +604,7 @@ export async function readMixedRewardAvailable(
     return target.extra ? data.extraInterest : data.blockReward
   }
 
-  const profit = await client.readContract({
+  const profit = await bscReadClient.readContract({
     address: target.depository,
     abi: bondAbi,
     functionName: 'getStakeProfit',
@@ -641,20 +620,18 @@ export async function readMixedRewardAvailable(
  *
  * @param row 资产页质押行
  * @param user 钱包地址
- * @param client 链读取客户端
  * @returns 可赎回本金（wei）；无仓位返回 0n
  * @see 手册 §13 PrincipalReleaseVault 本金释放
  */
 export async function readStakeRedeemableAmount(
   row: AssetsStakeRow,
   user: Address,
-  client: ChainReadClient,
 ): Promise<bigint> {
   if (row.kind === 'liquid') {
     // 活期 `stakes` 裸 mapping：须迁移 root。
-    const migratedFrom = await readMigratedFrom(user, client)
+    const migratedFrom = await readMigratedFrom(user)
     const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
-    const liquidStake = await client.readContract({
+    const liquidStake = await bscReadClient.readContract({
       address: row.pool,
       abi: liquidAbi,
       functionName: 'stakes',
@@ -671,7 +648,7 @@ export async function readStakeRedeemableAmount(
   }
 
   if (row.stakeIndex == null) return 0n
-  const released = await client.readContract({
+  const released = await bscReadClient.readContract({
     address: row.pool,
     abi: lockedAbi,
     functionName: 'getReleasedPrincipal',
@@ -685,16 +662,11 @@ export async function readStakeRedeemableAmount(
  *
  * @param row 资产页债券行
  * @param user 钱包地址
- * @param client 链读取客户端
  * @returns 可赎回金额（wei）
  * @see 手册 §10 债券 Bond / BurnBond
  */
-export async function readBondRedeemableAmount(
-  row: AssetsBondRow,
-  user: Address,
-  client: ChainReadClient,
-): Promise<bigint> {
-  return (await client.readContract({
+export async function readBondRedeemableAmount(row: AssetsBondRow, user: Address): Promise<bigint> {
+  return (await bscReadClient.readContract({
     address: row.depository,
     abi: bondAbi,
     functionName: 'pendingPayoutFor',

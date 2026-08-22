@@ -18,8 +18,6 @@ import {
   REFERRAL_METHODS,
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
-import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const liquidAbi = parseAbi([
@@ -82,7 +80,6 @@ export type BondMarketMeta = {
  * @param args.pool 质押池合约地址
  * @param args.isLiquid 是否为活期质押
  * @param args.user 钱包地址
- * @param args.client 链上读取客户端，默认公共 RPC
  * @returns 是否绑定 / 余额 / 授权 / 有效剩余额度 / 池是否开放 / warmup 状态
  * @see 手册 §8.2 活期 LiquidStaking
  * @see 手册 §8.3 定期 LockedStaking
@@ -91,9 +88,7 @@ export async function readStakeOpenPreflight(args: {
   pool: Address
   isLiquid: boolean
   user: string
-  client?: ChainReadClient
 }): Promise<StakeOpenPreflight> {
-  const client = args.client ?? bscReadClient
   const user = args.user as `0x${string}`
   const remainingAbi = args.isLiquid ? liquidAbi : lockedAbi
 
@@ -157,7 +152,7 @@ export async function readStakeOpenPreflight(args: {
         }),
       },
     )
-    const round1Results = await readAggregate3(client, round1)
+    const round1Results = await readAggregate3(round1)
     const isBound = decodeAggregate3Result<boolean>(
       round1Results,
       0,
@@ -210,7 +205,7 @@ export async function readStakeOpenPreflight(args: {
 
     // 单地址本金与日额度都按迁移链上的首次 root 地址累计
     const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
-    const round2 = await readAggregate3(client, [
+    const round2 = await readAggregate3([
       {
         target: args.pool,
         callData: encodeFunctionData({
@@ -299,7 +294,7 @@ export async function readStakeOpenPreflight(args: {
       args: [user],
     }),
   })
-  const round1Results = await readAggregate3(client, round1)
+  const round1Results = await readAggregate3(round1)
   const isBound = decodeAggregate3Result<boolean>(
     round1Results,
     0,
@@ -338,7 +333,7 @@ export async function readStakeOpenPreflight(args: {
 
   // `userStakingAmounts` 按首次 root 累计，非别名感知。
   const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
-  const round2 = await readAggregate3(client, [
+  const round2 = await readAggregate3([
     {
       target: args.pool,
       callData: encodeFunctionData({
@@ -410,24 +405,18 @@ export async function readStakeOpenPreflight(args: {
  *
  * @param args.depository 债券市场合约地址
  * @param args.user 钱包地址
- * @param args.client 链上读取客户端，默认公共 RPC
  * @returns 是否绑定 / 余额 / 授权 / depository 是否被授权
  * @see 手册 §10.4 用户写方法
  * @see docs/onchain-manual/contracts/bondhelper.md
  */
-export async function readBondZapPreflight(args: {
-  depository: Address
-  user: string
-  client?: ChainReadClient
-}): Promise<{
+export async function readBondZapPreflight(args: { depository: Address; user: string }): Promise<{
   isBound: boolean
   balance: bigint
   allowance: bigint
   depositoryAuthorized: boolean
 }> {
-  const client = args.client ?? bscReadClient
   const user = args.user as `0x${string}`
-  const results = await readAggregate3(client, [
+  const results = await readAggregate3([
     {
       target: BSC_CONTRACTS.referral,
       callData: encodeFunctionData({
@@ -501,16 +490,12 @@ export async function readBondZapPreflight(args: {
  * 供债券页展示与 zap 预期回报计算使用。
  *
  * @param depository 债券市场合约地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 折扣基点 / 手续费基点 / 最大债务 / 总存款
  * @see 手册 §10.3 展示字段
  * @see docs/onchain-manual/contracts/bonddepository.md
  */
-export async function readBondMarketMeta(
-  depository: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<BondMarketMeta> {
-  const results = await readAggregate3(client, [
+export async function readBondMarketMeta(depository: Address): Promise<BondMarketMeta> {
+  const results = await readAggregate3([
     {
       target: depository,
       callData: encodeFunctionData({
@@ -590,24 +575,19 @@ export function formatBondDiscountLabel(discountRateBP: bigint): string {
  * 「Max / 可用」用 quota − staked 计算。
  *
  * @param args.user 钱包地址
- * @param args.client 链上读取客户端，默认公共 RPC
  * @returns 余额 / 授权 / 挖矿配额 / 已质押量
  * @see 手册 §15 XStakingPool X 挖矿
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
-export async function readXminePreflight(args: {
-  user: string
-  client?: ChainReadClient
-}): Promise<{
+export async function readXminePreflight(args: { user: string }): Promise<{
   balance: bigint
   allowance: bigint
   miningQuota: bigint
   /** active + warmup；可用额度用 quota − staked 计算。 */
   miningStaked: bigint
 }> {
-  const client = args.client ?? bscReadClient
   const user = args.user as `0x${string}`
-  const results = await readAggregate3(client, [
+  const results = await readAggregate3([
     {
       target: BSC_CONTRACTS.gagx,
       callData: encodeFunctionData({

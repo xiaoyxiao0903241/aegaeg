@@ -4,7 +4,6 @@ import type { Address } from 'viem'
 import { requiresFeeOnTransferSwap } from '~/core/exchange/fee-on-transfer-swap'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { ContractRevertError, decodeContractRevert } from '~/web3/decode-contract-revert'
 import { readErrorText } from '~/web3/errors/error-text'
 import { marketSwapWriteCall } from '~/web3/exchange/market-swap-write-call'
@@ -76,8 +75,6 @@ export function isAllowanceOrBalanceSwapRevert(error: unknown): boolean {
  * @param path 兑换路径，须与报价一致
  * @param amountOutMin 滑点下限
  * @param allowance 当前 Router 授权；低于 amountIn 时跳过用户态 simulate
- * @param client 优先用于 simulate / estimate 的读客户端
- * @param fallbackClient estimate 回退客户端
  * @returns 预估花费的 BNB wei；失败为 `null`
  */
 export async function estimateMarketSwapGasWei({
@@ -86,16 +83,12 @@ export async function estimateMarketSwapGasWei({
   path,
   amountOutMin,
   allowance,
-  client = bscReadClient,
-  fallbackClient = bscReadClient,
 }: {
   account: `0x${string}`
   amountIn: bigint
   path: readonly `0x${string}`[]
   amountOutMin: bigint
   allowance?: bigint
-  client?: ChainReadClient
-  fallbackClient?: ChainReadClient
 }): Promise<bigint | null> {
   try {
     const write = marketSwapWriteCall({
@@ -117,15 +110,14 @@ export async function estimateMarketSwapGasWei({
             functionName: write.functionName,
             args: write.args,
           },
-          client,
-          fallbackClient,
+          bscReadClient,
         )
       } catch (error) {
         if (!isAllowanceOrBalanceSwapRevert(error)) return null
         gasLimit = applyGasBuffer(typicalMarketSwapGasLimit(path))
       }
     }
-    const gasPrice = await client.getGasPrice()
+    const gasPrice = await bscReadClient.getGasPrice()
     if (gasPrice <= 0n) return null
     return gasLimit * gasPrice
   } catch {

@@ -1,7 +1,6 @@
 import type { Wallet } from 'thirdweb/wallets'
 
 import { ERC20_ERRORS, ERC20_METHODS } from '~/web3/abis'
-import { createWalletReadClient } from '~/web3/bsc-read-client'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
@@ -60,8 +59,7 @@ export async function approveErc20IfNeeded({ wallet, token, spender, amountIn }:
     throw WALLET_BLOCKED.NOT_CONNECTED
   }
 
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(token, account.address, spender, readClient)
+  const allowance = await readErc20Allowance(token, account.address, spender)
   if (allowance >= amountIn) return null
 
   return approveErc20({ wallet, token, spender, amountIn })

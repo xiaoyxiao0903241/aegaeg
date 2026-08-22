@@ -2,8 +2,10 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from '../web3/_bsc-read-client-test.mjs'
 
 const ADDRESS = '0x1111111111111111111111111111111111111111'
+const ZERO = '0x0000000000000000000000000000000000000000'
 
 const activePhase = {
   index: 0,
@@ -24,16 +26,45 @@ const enoughRemaining = {
   userPhaseAmountCurrent: 0n,
 }
 
-function baseArgs(overrides = {}) {
+function genesisReadClient(overrides = {}) {
+  const {
+    isBound = true,
+    isPaused = false,
+    remaining = enoughRemaining,
+    nowSeconds = 1_000_000,
+    throwOn,
+  } = overrides
+  const counts = { bound: 0, pause: 0, remaining: 0 }
   return {
-    address: ADDRESS,
-    purchaseAmount: 100n,
-    activePhase,
-    fetchIsBound: async () => true,
-    fetchPaused: async () => false,
-    fetchPhaseRemaining: async () => enoughRemaining,
-    fetchNowSeconds: async () => 1_000_000,
-    ...overrides,
+    counts,
+    client: {
+      async readContract(request) {
+        const fn = request.functionName
+        if (throwOn === fn) throw new Error('rpc down')
+        if (fn === 'isBindReferral') {
+          counts.bound += 1
+          return isBound
+        }
+        if (fn === 'paused') {
+          counts.pause += 1
+          return isPaused
+        }
+        if (fn === 'migratedFrom') return ZERO
+        if (fn === 'getUserPhaseRemainingAmount') {
+          counts.remaining += 1
+          return [
+            remaining.remainingPhaseAmount,
+            remaining.remainingUserAmount,
+            remaining.userPurchaseLimit,
+            remaining.userPhaseAmountCurrent,
+          ]
+        }
+        throw new Error(`unexpected ${fn}`)
+      },
+      async getBlock() {
+        return { timestamp: BigInt(nowSeconds) }
+      },
+    },
   }
 }
 
@@ -42,71 +73,81 @@ test('fetchLiveGenesisPostApprove re-reads bind/pause/remaining (not render snap
     '/src/views/dapp/genesis/fetch-live-genesis-post-approve.ts',
   )
 
-  let boundCalls = 0
-  let pauseCalls = 0
-  let remainingCalls = 0
-
-  const ok = await fetchLiveGenesisPostApprove(
-    baseArgs({
-      fetchIsBound: async () => {
-        boundCalls += 1
-        return true
-      },
-      fetchPaused: async () => {
-        pauseCalls += 1
-        return false
-      },
-      fetchPhaseRemaining: async () => {
-        remainingCalls += 1
-        return enoughRemaining
-      },
+  const okMock = genesisReadClient()
+  const ok = await withBscReadClient(okMock.client, () =>
+    fetchLiveGenesisPostApprove({
+      address: ADDRESS,
+      purchaseAmount: 100n,
+      activePhase,
     }),
   )
   assert.deepEqual(ok, { ok: true })
-  assert.equal(boundCalls, 1)
-  assert.equal(pauseCalls, 1)
-  assert.equal(remainingCalls, 1)
+  assert.equal(okMock.counts.bound, 1)
+  assert.equal(okMock.counts.pause, 1)
+  assert.equal(okMock.counts.remaining, 1)
 
-  const unboundAfterApprove = await fetchLiveGenesisPostApprove(
-    baseArgs({ fetchIsBound: async () => false }),
+  const unboundMock = genesisReadClient({ isBound: false })
+  const unboundAfterApprove = await withBscReadClient(unboundMock.client, () =>
+    fetchLiveGenesisPostApprove({
+      address: ADDRESS,
+      purchaseAmount: 100n,
+      activePhase,
+    }),
   )
   assert.deepEqual(unboundAfterApprove, { ok: false, reason: 'not_bound' })
 
-  const pausedAfterApprove = await fetchLiveGenesisPostApprove(
-    baseArgs({ fetchPaused: async () => true }),
+  const pausedMock = genesisReadClient({ isPaused: true })
+  const pausedAfterApprove = await withBscReadClient(pausedMock.client, () =>
+    fetchLiveGenesisPostApprove({
+      address: ADDRESS,
+      purchaseAmount: 100n,
+      activePhase,
+    }),
   )
   assert.deepEqual(pausedAfterApprove, { ok: false, reason: 'unavailable' })
 
-  const remainingDrift = await fetchLiveGenesisPostApprove(
-    baseArgs({
+  const remainingMock = genesisReadClient({
+    remaining: {
+      remainingPhaseAmount: 100n,
+      remainingUserAmount: 100n,
+      userPurchaseLimit: 0n,
+      userPhaseAmountCurrent: 0n,
+    },
+  })
+  const remainingDrift = await withBscReadClient(remainingMock.client, () =>
+    fetchLiveGenesisPostApprove({
+      address: ADDRESS,
       purchaseAmount: 200n,
-      fetchPhaseRemaining: async () => ({
-        remainingPhaseAmount: 100n,
-        remainingUserAmount: 100n,
-        userPurchaseLimit: 0n,
-        userPhaseAmountCurrent: 0n,
-      }),
+      activePhase,
     }),
   )
   assert.deepEqual(remainingDrift, { ok: false, reason: 'unavailable' })
 
-  const phaseEnded = await fetchLiveGenesisPostApprove(
-    baseArgs({
-      fetchNowSeconds: async () => Number(activePhase.endTime) + 1,
+  const endedMock = genesisReadClient({ nowSeconds: Number(activePhase.endTime) + 1 })
+  const phaseEnded = await withBscReadClient(endedMock.client, () =>
+    fetchLiveGenesisPostApprove({
+      address: ADDRESS,
+      purchaseAmount: 100n,
+      activePhase,
     }),
   )
   assert.deepEqual(phaseEnded, { ok: false, reason: 'unavailable' })
 
-  const readFailed = await fetchLiveGenesisPostApprove(
-    baseArgs({
-      fetchIsBound: async () => {
-        throw new Error('rpc down')
-      },
+  const failMock = genesisReadClient({ throwOn: 'isBindReferral' })
+  const readFailed = await withBscReadClient(failMock.client, () =>
+    fetchLiveGenesisPostApprove({
+      address: ADDRESS,
+      purchaseAmount: 100n,
+      activePhase,
     }),
   )
   assert.deepEqual(readFailed, { ok: false, reason: 'unavailable' })
 
-  const missingAddress = await fetchLiveGenesisPostApprove(baseArgs({ address: undefined }))
+  const missingAddress = await fetchLiveGenesisPostApprove({
+    address: undefined,
+    purchaseAmount: 100n,
+    activePhase,
+  })
   assert.deepEqual(missingAddress, { ok: false, reason: 'not_bound' })
 })
 

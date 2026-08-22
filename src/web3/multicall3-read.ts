@@ -2,7 +2,7 @@ import { type Address, decodeFunctionResult, type Hex, parseAbi } from 'viem'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { MULTICALL3_METHODS } from '~/web3/abis'
-import type { ChainReadClient } from '~/web3/chain-read-client'
+import { bscReadClient } from '~/web3/bsc-read-client'
 
 const multicallAbi = parseAbi([MULTICALL3_METHODS.aggregate3])
 
@@ -19,11 +19,10 @@ export type Aggregate3Result = {
 
 /** 一批 eth_call → Multicall3.aggregate3（单 RPC）。空数组不发请求。 */
 export async function readAggregate3(
-  client: ChainReadClient,
   calls: readonly Aggregate3Call[],
 ): Promise<Aggregate3Result[]> {
   if (calls.length === 0) return []
-  return (await client.readContract({
+  return (await bscReadClient.readContract({
     address: BSC_CONTRACTS.multicall3,
     abi: multicallAbi,
     functionName: 'aggregate3',

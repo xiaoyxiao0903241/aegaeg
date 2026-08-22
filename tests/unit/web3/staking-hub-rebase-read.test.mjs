@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 test('readLatestSagxRebaseRate1e18 returns null on empty rebases array', async () => {
   const { readLatestSagxRebaseRate1e18 } = await loadModule(
@@ -20,7 +21,7 @@ test('readLatestSagxRebaseRate1e18 returns null on empty rebases array', async (
     },
   }
 
-  assert.equal(await readLatestSagxRebaseRate1e18(reverting), null)
+  assert.equal(await withBscReadClient(reverting, () => readLatestSagxRebaseRate1e18()), null)
 })
 
 test('readLatestSagxRebaseRate1e18 returns last append entry', async () => {
@@ -50,6 +51,6 @@ test('readLatestSagxRebaseRate1e18 returns last append entry', async () => {
     },
   }
 
-  const rate = await readLatestSagxRebaseRate1e18(client)
+  const rate = await withBscReadClient(client, () => readLatestSagxRebaseRate1e18())
   assert.equal(rate, 250n)
 })

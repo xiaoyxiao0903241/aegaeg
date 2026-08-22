@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const USER = '0x1111111111111111111111111111111111111111'
 
@@ -24,7 +25,7 @@ test('readTurbineClaimableFingerprint lists all vested indices (no silences body
     },
   }
 
-  assert.equal(await readTurbineClaimableFingerprint(USER, client), '1|3')
+  assert.equal(await withBscReadClient(client, () => readTurbineClaimableFingerprint(USER)), '1|3')
   assert.deepEqual(calls, ['silencesSize', 'isVested', 'isVested', 'isVested', 'isVested'])
 })
 
@@ -43,6 +44,6 @@ test('readTurbineClaimableFingerprint is empty when none vested', async () => {
       throw new Error(`unexpected ${request.functionName}`)
     },
   }
-  assert.equal(await readTurbineClaimableFingerprint(USER, client), '')
+  assert.equal(await withBscReadClient(client, () => readTurbineClaimableFingerprint(USER)), '')
   assert.equal(vestedCalls, 3)
 })

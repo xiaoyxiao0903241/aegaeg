@@ -4,6 +4,7 @@ import test from 'node:test'
 import { encodeFunctionResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const USER = '0x1111111111111111111111111111111111111111'
 
@@ -77,7 +78,7 @@ test('readTurbineSilences budgets: size+cooldown + one aggregate3 (not 2N)', asy
   assert.equal(typeof BSC_CONTRACTS.turbine, 'string')
   assert.equal(typeof BSC_CONTRACTS.multicall3, 'string')
 
-  const { rows, claimableCount } = await readTurbineSilences(USER, client)
+  const { rows, claimableCount } = await withBscReadClient(client, () => readTurbineSilences(USER))
   assert.equal(rows.length, 4)
   assert.equal(claimableCount, 1)
   assert.deepEqual(calls.sort(), ['aggregate3', 'currentCooldownDuration', 'silencesSize'].sort())
@@ -150,7 +151,7 @@ test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ ar
     },
   }
 
-  const snap = await readReleaseBufferSnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readReleaseBufferSnapshot(USER))
   assert.equal(snap.splitterCount, 2)
   assert.equal(snap.chain.length, 1)
   assert.equal(snap.chain[0].isTail, true)
@@ -215,7 +216,7 @@ test('readReleaseBufferSnapshot walks next chain and merges hop claimables', asy
     },
   }
 
-  const snap = await readReleaseBufferSnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readReleaseBufferSnapshot(USER))
   assert.equal(snap.chain.length, 2)
   assert.equal(snap.chain[0].address, HEAD)
   assert.equal(snap.chain[0].isTail, false)
@@ -260,28 +261,34 @@ test('readReleaseBufferSnapshot archive: count fail soft; page fail closed', asy
   const { readReleaseBufferSnapshot } = await loadModule('/src/web3/release/release-read.ts')
   const ZERO = '0x0000000000000000000000000000000000000000'
 
-  const soft = await readReleaseBufferSnapshot(USER, {
-    async readContract(request) {
-      if (request.functionName === 'getHeadSplitterForUser') return ZERO
-      if (request.functionName === 'getReleaseCount') throw new Error('archive down')
-      throw new Error(`unexpected ${request.functionName}`)
+  const soft = await withBscReadClient(
+    {
+      async readContract(request) {
+        if (request.functionName === 'getHeadSplitterForUser') return ZERO
+        if (request.functionName === 'getReleaseCount') throw new Error('archive down')
+        throw new Error(`unexpected ${request.functionName}`)
+      },
     },
-  })
+    () => readReleaseBufferSnapshot(USER),
+  )
   assert.equal(soft.archiveCount, 0)
   assert.equal(soft.totalClaimable, 0n)
 
   await assert.rejects(
     () =>
-      readReleaseBufferSnapshot(USER, {
-        async readContract(request) {
-          if (request.functionName === 'getHeadSplitterForUser') return ZERO
-          if (request.functionName === 'getReleaseCount') return 1n
-          if (request.functionName === 'aggregate3') {
-            return [{ success: false, returnData: '0x' }]
-          }
-          throw new Error(`unexpected ${request.functionName}`)
+      withBscReadClient(
+        {
+          async readContract(request) {
+            if (request.functionName === 'getHeadSplitterForUser') return ZERO
+            if (request.functionName === 'getReleaseCount') return 1n
+            if (request.functionName === 'aggregate3') {
+              return [{ success: false, returnData: '0x' }]
+            }
+            throw new Error(`unexpected ${request.functionName}`)
+          },
         },
-      }),
+        () => readReleaseBufferSnapshot(USER),
+      ),
     /RELEASE_ARCHIVE_MULTICALL_FAILED/,
   )
 })
@@ -348,7 +355,7 @@ test('readStakePositions locked: count + getStakes + aggregate3 (not N getStake)
     },
   }
 
-  const rows = await readStakePositions(USER, client)
+  const rows = await withBscReadClient(client, () => readStakePositions(USER))
   assert.equal(rows.length, 2)
   assert.equal(rows[0].releasedPrincipal, 1n)
   assert.equal(rows[1].releasedPrincipal, 3n)
@@ -413,7 +420,7 @@ test('readLpBondPositions: getBondCount + one aggregate3 per non-empty pool (not
     },
   }
 
-  const rows = await readLpBondPositions(USER, client)
+  const rows = await withBscReadClient(client, () => readLpBondPositions(USER))
   assert.equal(rows.length, 2)
   assert.equal(rows[0].pendingPayout, 3n)
   assert.equal(rows[1].profit, 8n)

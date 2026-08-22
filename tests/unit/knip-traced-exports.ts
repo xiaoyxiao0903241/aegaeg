@@ -30,4 +30,5 @@ export {
   BREAKPOINT_ULTRA_WIDE_SCALE,
 } from '../../src/shared/config/breakpoints'
 export { createMemoryAuthSessionStorage } from '../../src/web3/auth/session'
+export { setBscReadClientForTest } from '../../src/web3/bsc-read-client'
 export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'

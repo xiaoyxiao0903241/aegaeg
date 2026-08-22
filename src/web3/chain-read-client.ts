@@ -1,10 +1,7 @@
 import { useLayoutEffect } from 'react'
-import type { PublicClient } from 'viem'
 
 import { setConnectedReadWallet } from '~/web3/bsc-read-client'
 import { useActiveWallet } from '~/web3/thirdweb-react'
-
-export type ChainReadClient = PublicClient
 
 /**
  * 把当前钱包写进默认读客户端。

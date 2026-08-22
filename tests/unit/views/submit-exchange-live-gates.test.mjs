@@ -1,16 +1,24 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
-import { enc, ok, sessionWithReadClient, ZERO } from './_money-path-read-mock.mjs'
+import {
+  clearMoneyPathReadClient,
+  enc,
+  moneyPathSession,
+  ok,
+  ZERO,
+} from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
 
 test('submitTurbineClaim fail-closed when live position is not vested', async () => {
   const { submitTurbineClaim } = await loadModule(
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'isVested') return false
     throw new Error(`unexpected ${request.functionName}`)
   })
@@ -40,7 +48,7 @@ test('submitTurbineUnlock fail-closed when live quota is zero', async () => {
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     switch (request.functionName) {
       case 'migratedFrom':
         return ZERO
@@ -89,7 +97,7 @@ test('submitTurbineUnlock quotes twice and does not requote inside approve', asy
   )
 
   let quotes = 0
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     switch (request.functionName) {
       case 'migratedFrom':
         return ZERO
@@ -132,7 +140,7 @@ test('submitTurbineUnlock uses preflight quote when allowance is short', async (
   )
 
   let quotes = 0
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     switch (request.functionName) {
       case 'migratedFrom':
         return ZERO
@@ -174,7 +182,7 @@ test('submitTurbineUnlock pads quoted USD1 by slippage before balance check', as
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     switch (request.functionName) {
       case 'migratedFrom':
         return ZERO
@@ -221,7 +229,7 @@ test('submitTurbineUnlock caps full-quota unlock at the quota quote', async () =
   )
 
   let quotes = 0
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     switch (request.functionName) {
       case 'migratedFrom':
         return ZERO
@@ -266,7 +274,7 @@ test('submitBurnExchange fail-closed when live pool is paused', async () => {
   )
   const { BURN_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'balanceOf') return 1_000n
     if (request.functionName === 'allowance') return 1_000n
     if (request.functionName === 'aggregate3') {

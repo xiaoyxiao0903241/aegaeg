@@ -3,7 +3,6 @@ import { parseAbi } from 'viem'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { PANCAKE_PAIR_V2_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 
 const pairAbi = parseAbi([
   PANCAKE_PAIR_V2_METHODS.token0,
@@ -35,24 +34,22 @@ export function clearExchangePoolImmutableCache() {
  * token0/token1 永不变更，故按地址进程内缓存；第二次起直接命中。
  *
  * @param poolAddress 交易对合约地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns token0 / token1 地址
  */
 export async function readExchangePoolImmutableMetadata(
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
-  client: ChainReadClient = bscReadClient,
 ): Promise<ExchangePoolImmutableMetadata> {
   const cacheKey = poolAddress.toLowerCase()
   const cached = cachedImmutablePools.get(cacheKey)
   if (cached) return cached
 
   const [token0, token1] = await Promise.all([
-    client.readContract({
+    bscReadClient.readContract({
       address: poolAddress,
       abi: pairAbi,
       functionName: 'token0',
     }),
-    client.readContract({
+    bscReadClient.readContract({
       address: poolAddress,
       abi: pairAbi,
       functionName: 'token1',
@@ -70,14 +67,12 @@ export async function readExchangePoolImmutableMetadata(
  * 调用 `getReserves` 返回两个方向储备，用于报价与价格影响计算。
  *
  * @param poolAddress 交易对合约地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 两个方向的储备量
  */
 export async function readExchangePoolSpotPrice(
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
-  client: ChainReadClient = bscReadClient,
 ): Promise<ExchangePoolSpotPrice> {
-  const reserves = await client.readContract({
+  const reserves = await bscReadClient.readContract({
     address: poolAddress,
     abi: pairAbi,
     functionName: 'getReserves',
@@ -168,12 +163,11 @@ export function agxUsd1SpotPriceWeiFromReserves({
 
 /** AGX/USD1 Pair 即时价（USD1 wei / 1 AGX）。 */
 export async function readAgxUsd1SpotPriceWei(
-  client: ChainReadClient = bscReadClient,
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
 ): Promise<bigint | null> {
   const [meta, spot] = await Promise.all([
-    readExchangePoolImmutableMetadata(poolAddress, client),
-    readExchangePoolSpotPrice(poolAddress, client),
+    readExchangePoolImmutableMetadata(poolAddress),
+    readExchangePoolSpotPrice(poolAddress),
   ])
   return agxUsd1SpotPriceWeiFromReserves({
     token0: meta.token0,

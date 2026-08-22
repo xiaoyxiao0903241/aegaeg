@@ -10,7 +10,6 @@ import {
   TREASURY_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { isContractRevert } from '~/web3/decode-contract-revert'
 
 const stakingPoolAbi = parseAbi([STAKING_POOL_METHODS.poolAgxBalance, STAKING_POOL_METHODS.epoch])
@@ -21,8 +20,8 @@ const burnSwapAbi = parseAbi([AGX_CONTRIBUTION_SWAP_METHODS.getConfig])
 /** 指数探测上限：避免异常链上状态打爆 RPC。 */
 const REBASES_PROBE_CAP = 1_048_576n
 
-/** 按 client 缓存上次有效 rebase 下标，避免 Hub 每次从 0 倍增探测。 */
-const latestRebaseIndexByClient = new WeakMap<object, bigint>()
+/** 缓存上次有效 rebase 下标，避免 Hub 每次从 0 倍增探测。 */
+let latestRebaseIndex: bigint | null = null
 
 /**
  * 近窗采样跨度（块）。只读头尾两个块，RPC 次数与跨度无关。
@@ -59,21 +58,19 @@ export type StakingHubOverview = {
 /**
  * 近窗块时间戳 → 秒/块。
  *
- * @param client 链上读取客户端
  * @param latest 链头高度
  * @param sampleBlocks 采样跨度（块数）
  * @returns 平均秒/块；样本不足或非法回落 BSC_BLOCK_SECONDS
  */
 async function measureSecondsPerBlock(
-  client: ChainReadClient,
   latest: bigint,
   sampleBlocks: number = BLOCK_TIME_SAMPLE,
 ): Promise<number> {
   if (sampleBlocks <= 0 || latest < BigInt(sampleBlocks)) return BSC_BLOCK_SECONDS
   const older = latest - BigInt(sampleBlocks)
   const [oldBlock, newBlock] = await Promise.all([
-    client.getBlock({ blockNumber: older }),
-    client.getBlock({ blockNumber: latest }),
+    bscReadClient.getBlock({ blockNumber: older }),
+    bscReadClient.getBlock({ blockNumber: latest }),
   ])
   const dt = Number(newBlock.timestamp - oldBlock.timestamp)
   if (!(dt > 0) || !Number.isFinite(dt)) return BSC_BLOCK_SECONDS
@@ -87,16 +84,14 @@ async function measureSecondsPerBlock(
  * `rebases` 为 public 动态数组，越界下标会 revert，
  * 因此把合约 revert 视为「该下标尚不存在」并返回 null。
  *
- * @param client 链上读取客户端
  * @param index 数组下标
  * @returns 七字段行数据；越界 / 从未 rebase → null
  */
 async function readRebaseAt(
-  client: ChainReadClient,
   index: bigint,
 ): Promise<readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint] | null> {
   try {
-    return await client.readContract({
+    return await bscReadClient.readContract({
       address: BSC_CONTRACTS.sagx,
       abi: sagxAbi,
       functionName: 'rebases',
@@ -115,22 +110,19 @@ async function readRebaseAt(
  * 找最后一个有效下标；数组为空时直接返回 null。下标是 append 序，
  * 不等于 `StakingPool.epoch().number`。
  *
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 最近一次 rebase 值（1e18）；从未 rebase → null
  * @see docs/onchain-manual/contracts/sagx.md
  */
-export async function readLatestSagxRebaseRate1e18(
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint | null> {
-  const zero = await readRebaseAt(client, 0n)
+export async function readLatestSagxRebaseRate1e18(): Promise<bigint | null> {
+  const zero = await readRebaseAt(0n)
   if (zero == null) return null
 
-  const cached = latestRebaseIndexByClient.get(client)
+  const cached = latestRebaseIndex
   let lo = 0n
   let hi = 1n
 
   if (cached != null) {
-    const atCached = await readRebaseAt(client, cached)
+    const atCached = await readRebaseAt(cached)
     if (atCached != null) {
       lo = cached
       hi = cached + 1n
@@ -138,26 +130,26 @@ export async function readLatestSagxRebaseRate1e18(
   }
 
   while (hi <= REBASES_PROBE_CAP) {
-    const row = await readRebaseAt(client, hi)
+    const row = await readRebaseAt(hi)
     if (row == null) break
     lo = hi
     hi *= 2n
   }
 
-  if (hi > REBASES_PROBE_CAP && (await readRebaseAt(client, hi)) != null) {
-    const row = await readRebaseAt(client, lo)
-    latestRebaseIndexByClient.set(client, lo)
+  if (hi > REBASES_PROBE_CAP && (await readRebaseAt(hi)) != null) {
+    const row = await readRebaseAt(lo)
+    latestRebaseIndex = lo
     return row?.[1] ?? null
   }
 
   while (lo + 1n < hi) {
     const mid = (lo + hi) / 2n
-    if ((await readRebaseAt(client, mid)) != null) lo = mid
+    if ((await readRebaseAt(mid)) != null) lo = mid
     else hi = mid
   }
 
-  latestRebaseIndexByClient.set(client, lo)
-  const latest = await readRebaseAt(client, lo)
+  latestRebaseIndex = lo
+  const latest = await readRebaseAt(lo)
   return latest?.[1] ?? null
 }
 
@@ -168,44 +160,41 @@ export async function readLatestSagxRebaseRate1e18(
  * 销毁配置与链头高度，并补读最近 rebase 率，供公开数据区展示。
  * 无钱包依赖；资金维持时长 / 周期表 APY / 图表历史因无数据源保持 0。
  *
- * @param client 链上读取客户端，默认公共 RPC
  * @returns StakingHubOverview 聚合结果
  * @see 手册 §8 质押 Staking
  * @see docs/onchain-manual/contracts/stakingpool.md
  * @see docs/onchain-manual/contracts/sagx.md
  * @see docs/onchain-manual/contracts/treasury.md
  */
-export async function readStakingHubOverview(
-  client: ChainReadClient = bscReadClient,
-): Promise<StakingHubOverview> {
+export async function readStakingHubOverview(): Promise<StakingHubOverview> {
   const [poolAgxBalance, epoch, circulatingSupply, totalReserves, burnConfig, currentBlock] =
     await Promise.all([
-      client.readContract({
+      bscReadClient.readContract({
         address: BSC_CONTRACTS.stakingPool,
         abi: stakingPoolAbi,
         functionName: 'poolAgxBalance',
       }),
-      client.readContract({
+      bscReadClient.readContract({
         address: BSC_CONTRACTS.stakingPool,
         abi: stakingPoolAbi,
         functionName: 'epoch',
       }),
-      client.readContract({
+      bscReadClient.readContract({
         address: BSC_CONTRACTS.sagx,
         abi: sagxAbi,
         functionName: 'circulatingSupply',
       }),
-      client.readContract({
+      bscReadClient.readContract({
         address: BSC_CONTRACTS.treasury,
         abi: treasuryAbi,
         functionName: 'totalReserves',
       }),
-      client.readContract({
+      bscReadClient.readContract({
         address: BSC_CONTRACTS.agxContributionSwap,
         abi: burnSwapAbi,
         functionName: 'getConfig',
       }),
-      client.getBlockNumber(),
+      bscReadClient.getBlockNumber(),
     ])
 
   // ABI: (length, number, endBlock, distribute) — 勿把 length 当 number。
@@ -214,8 +203,8 @@ export async function readStakingHubOverview(
   const epochEndBlock = epoch[2]
   const totalBurned = burnConfig[6]
   const [rebaseRate1e18, secondsPerBlock] = await Promise.all([
-    readLatestSagxRebaseRate1e18(client),
-    measureSecondsPerBlock(client, currentBlock),
+    readLatestSagxRebaseRate1e18(),
+    measureSecondsPerBlock(currentBlock),
   ])
   const epochsPerDay = epochsPerDayFromLength(epochLength, secondsPerBlock)
 

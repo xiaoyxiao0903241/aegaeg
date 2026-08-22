@@ -89,10 +89,17 @@ export function chainReadClient(wallet?: Wallet | null): PublicClient {
   return createWalletReadClient(live)
 }
 
+/** 仅单测替换默认读客户端；测完必须传回 `null`。 */
+let testReadClient: PublicClient | null = null
+
+export function setBscReadClientForTest(client: PublicClient | null): void {
+  testReadClient = client
+}
+
 /** 默认只读客户端：每次取方法时再选公共节点或钱包节点。 */
 export const bscReadClient: PublicClient = new Proxy(publicBscReadClient, {
   get(_target, prop) {
-    const client = chainReadClient()
+    const client = testReadClient ?? chainReadClient()
     const value = Reflect.get(client, prop, client)
     return typeof value === 'function'
       ? (value as (...args: unknown[]) => unknown).bind(client)
