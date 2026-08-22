@@ -173,17 +173,23 @@ function invalidateApiQueries() {
   return queryClient.invalidateQueries({ queryKey: queryKeys.api.all })
 }
 
+function invalidatePresaleUserPhaseRemainingOf(address: string) {
+  const owner = address.toLowerCase()
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.presaleUserPhaseRemainingRoot,
+    predicate: (query) => query.queryKey.at(-1) === owner,
+  })
+}
+
 function invalidateAddressScopedChainQueries(address?: string) {
   if (!address) return
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotalOf(address) })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
-  })
+  invalidatePresaleUserPhaseRemainingOf(address)
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, address),
   })
   void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+    queryKey: queryKeys.chain.erc20AllowanceOf(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
   })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralOf(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBoundOf(address) })
@@ -235,9 +241,7 @@ export function invalidatePresaleChainQueries(address?: string) {
   if (!address) return
 
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotalOf(address) })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
-  })
+  invalidatePresaleUserPhaseRemainingOf(address)
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
 }
 

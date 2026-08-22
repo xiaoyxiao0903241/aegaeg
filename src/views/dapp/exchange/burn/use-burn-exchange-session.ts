@@ -13,6 +13,7 @@ import {
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -25,9 +26,7 @@ import {
   readBurnUserStats,
 } from '~/web3/exchange/burn-exchange-read'
 import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const BURN_PAIR = {
   sell: EXCHANGE_CONFIG.tokens.agx,
@@ -51,9 +50,8 @@ export function useBurnExchangeSession(
   readsEnabled = quotesEnabled,
 ) {
   const { messages: t } = useI18n()
-  const account = useActiveAccount()
+  const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
-  const walletReady = hasWalletAccount(account)
 
   const configQuery = useBurnSwapConfigQuery({ enabled: readsEnabled })
 

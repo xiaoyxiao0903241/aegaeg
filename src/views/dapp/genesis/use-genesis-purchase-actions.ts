@@ -101,7 +101,7 @@ export function useGenesisPurchaseActions({
               balance,
             )
             queryClient.setQueryData(
-              queryKeys.chain.erc20Allowance(
+              queryKeys.chain.erc20AllowanceOf(
                 BSC_CONTRACTS.usd1,
                 sessionAddress,
                 BSC_CONTRACTS.preSale,
@@ -140,7 +140,7 @@ export function useGenesisPurchaseActions({
           })
           if (mined && sessionAddress) {
             queryClient.setQueryData(
-              queryKeys.chain.erc20Allowance(
+              queryKeys.chain.erc20AllowanceOf(
                 BSC_CONTRACTS.usd1,
                 sessionAddress,
                 BSC_CONTRACTS.preSale,

@@ -6,6 +6,7 @@ import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import { isStakePeriod, STAKE_PERIODS } from '~/core/staking/staking-period'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 import { evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
@@ -13,9 +14,7 @@ import { submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -37,13 +36,11 @@ export type StakeWritePresent = {
  * @returns 表单展示值与提交控制
  */
 export function useStakeSession(sessionReady: boolean, present: StakeWritePresent) {
-  const account = useActiveAccount()
+  const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
   const period = useStakingPeriodsStore((state) => state.stakePeriod)
   const setStakePeriod = useStakingPeriodsStore((state) => state.setStakePeriod)
 
-  const address = account?.address
-  const walletReady = hasWalletAccount(account)
   const pool = stakePoolAddress(period)
 
   // 预热各周期池，切换周期时命中缓存（池地址在查询键内）。
@@ -62,7 +59,7 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
   const periodPreflights = [preflightLiquid, preflight180, preflight360, preflight540] as const
   const preflightQuery = periodPreflights[STAKE_PERIODS.indexOf(period)]!
 
-  const migration = useMigrationUser(address, { enabled: walletReady })
+  const migration = useMigrationUser({ enabled: walletReady })
 
   const balance =
     decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI

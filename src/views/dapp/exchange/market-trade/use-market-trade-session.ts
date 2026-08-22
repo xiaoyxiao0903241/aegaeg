@@ -93,7 +93,6 @@ export function useMarketTradeSession(
     balancesLoaded,
     isBalancesLoading,
   } = useMarketTradeBalances({
-    address,
     sellKey,
     buyKey,
     readsEnabled,

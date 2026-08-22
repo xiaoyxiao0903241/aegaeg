@@ -17,7 +17,6 @@ import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
@@ -35,8 +34,7 @@ export function useBuffer() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
-  const account = useActiveAccount()
-  const migration = useMigrationUser(account?.address, { enabled: walletReady })
+  const migration = useMigrationUser({ enabled: walletReady })
   const migrationOk = migration.isOldAccount === false
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)

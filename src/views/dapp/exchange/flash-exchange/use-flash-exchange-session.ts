@@ -7,6 +7,7 @@ import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -25,9 +26,7 @@ import {
   readFlashPairQuote,
   readUsd1SwapConfig,
 } from '~/web3/exchange/flash-exchange-read'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * USDT 兑换滑点 1%（合约示例 minOut 取 99%）；gAGX 包装 / 赎回为 1:1，无滑点。
@@ -50,15 +49,13 @@ export function useFlashExchangeSession(
   quotesEnabled = true,
   readsEnabled = quotesEnabled,
 ) {
-  const account = useActiveAccount()
+  const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
   const pairId = useExchangeFlashPairStore((s) => s.pairId)
   const setPairIdStore = useExchangeFlashPairStore((s) => s.setPairId)
   const [direction, setDirection] = useState<ExchangeDirection>('forward')
   const pair = getFlashExchangePairTokens(pairId, direction)
   const isRedeemPair = pairId === 'gagx'
-
-  const walletReady = hasWalletAccount(account)
 
   // 闪兑会话挂载即预热配置，而非只在切到 USDT 段时读取
   const configQuery = useChainQuery({

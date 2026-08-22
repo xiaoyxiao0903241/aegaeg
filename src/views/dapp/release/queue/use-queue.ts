@@ -10,9 +10,6 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
-import { queryClient } from '~/shared/api/query/query-client'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatUsdApprox } from '~/shared/presenters/format'
 import { useReleaseViewStore } from '~/stores/release-view-store'
@@ -20,12 +17,6 @@ import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
-import {
-  patchReleaseQueuePlan,
-  readReleaseQueuePlanByDays,
-  type ReleaseQueueSnapshot,
-} from '~/web3/release/release-read'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
@@ -48,7 +39,7 @@ export type ReleaseQueueRowView = {
  * 释放队列交互面板状态
  *
  * 逐档位读取链上快照，组合领取门闸与进度文案；
- * 领取成功后提示并重读快照，刷新只重读被点档位并回填缓存。
+ * 领取成功后提示并重读快照，刷新重读整条队列快照。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  */
@@ -57,8 +48,7 @@ export function useQueue() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
-  const account = useActiveAccount()
-  const migration = useMigrationUser(account?.address, { enabled: walletReady })
+  const migration = useMigrationUser({ enabled: walletReady })
   const migrationOk = migration.isOldAccount === false
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
@@ -135,35 +125,9 @@ export function useQueue() {
 
   async function onRefresh(days: number) {
     if (refreshingDays != null) return
-    const address = account?.address?.toLowerCase()
-    if (!address) return
     setRefreshingDays(days)
     try {
-      const hint = queueQuery.data?.plans.find((p) => p.durationDays === days)?.planIndex ?? -1
-      // 只重读被点击的档位；有 planIndex 时用单次 Multicall，不读其它档
-      const row = await readReleaseQueuePlanByDays(address as Address, days, hint)
-      queryClient.setQueryData(
-        queryKeys.chain.releaseQueueOf(address),
-        (prev: ReleaseQueueSnapshot | undefined) => {
-          if (prev) return patchReleaseQueuePlan(prev, row)
-          return {
-            plans: RELEASE_DURATION_DAYS.map((d) =>
-              d === days
-                ? row
-                : {
-                    planIndex: -1,
-                    durationDays: d,
-                    claimable: ZERO_BI,
-                    total: ZERO_BI,
-                    releasing: ZERO_BI,
-                  },
-            ),
-            totalClaimable: row.claimable,
-            totalLocked: row.total,
-            totalReleasing: row.releasing,
-          }
-        },
-      )
+      await queueQuery.refetch()
     } catch (error) {
       setRefreshingDays(null)
       throw error

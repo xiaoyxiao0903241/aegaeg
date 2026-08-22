@@ -11,6 +11,7 @@ import { BOND_PERIODS, type BondPeriod, isBondPeriod } from '~/core/staking/stak
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
@@ -27,9 +28,7 @@ import {
   useBondZapAgxPreviewQuery,
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
@@ -53,11 +52,9 @@ export type BondWritePresent = {
  * @returns 表单展示值与提交控制
  */
 export function useBondSession(kind: BondKind, sessionReady: boolean, present: BondWritePresent) {
-  const account = useActiveAccount()
+  const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
 
-  const address = account?.address
-  const walletReady = hasWalletAccount(account)
   const period = useStakingPeriodsStore((state) =>
     kind === 'lp' ? state.lpBondPeriod : state.burnBondPeriod,
   )
@@ -78,7 +75,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const periodPreflights = [preflight180, preflight360, preflight540] as const
   const preflightQuery = periodPreflights[BOND_PERIODS.indexOf(period)]!
 
-  const migration = useMigrationUser(address, { enabled: walletReady })
+  const migration = useMigrationUser({ enabled: walletReady })
 
   const market180 = useChainQuery({
     queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),

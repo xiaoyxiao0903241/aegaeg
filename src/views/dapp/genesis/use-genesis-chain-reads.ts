@@ -56,19 +56,17 @@ export function useGenesisChainReads() {
   })
   const pausedQuery = usePresalePausedQuery({ enabled: purchaseQueriesEnabled })
   const userTotalQuery = usePresaleUserTotalQuery({ enabled: purchaseQueriesEnabled })
-  const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(
-    address,
-    activePhaseQuery.data?.index,
-    { enabled: purchaseQueriesEnabled },
-  )
-  const { usd1Balance, usd1BalanceKnown, allowance } = useUsd1PresaleWalletQuery(address, {
+  const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(activePhaseQuery.data?.index, {
+    enabled: purchaseQueriesEnabled,
+  })
+  const { usd1Balance, usd1BalanceKnown, allowance } = useUsd1PresaleWalletQuery({
     enabled: purchaseQueriesEnabled,
   })
   /** 推荐绑定状态由这里统一查询；其它调用方直接使用 readIsBindReferral */
   const isBoundQuery = useChainQuery({
     queryKey: queryKeys.chain.referralIsBound,
     freshness: 'balances',
-    enabled: purchaseQueriesEnabled && Boolean(address),
+    enabled: purchaseQueriesEnabled,
     queryFn: (walletAddress) => readIsBindReferral(walletAddress),
   })
   const isBound = isBoundQuery.data === true

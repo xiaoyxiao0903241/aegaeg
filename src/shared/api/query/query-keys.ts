@@ -30,6 +30,8 @@ function paginated<const P extends readonly unknown[]>(
 
 const erc20BalancePrefix = (token: string) =>
   ['chain', 'erc20', 'balance', token.toLowerCase()] as const
+const erc20AllowancePrefix = (token: string, spender: string) =>
+  ['chain', 'erc20', 'allowance', token.toLowerCase(), spender.toLowerCase()] as const
 const flashSwapBalancesPrefix = (pairId: string, direction: string) =>
   ['chain', 'flashSwap', 'balances', pairId, direction] as const
 const stakeOpenPrefix = (pool: string) => ['chain', 'staking', 'open', pool.toLowerCase()] as const
@@ -186,10 +188,11 @@ export const queryKeys = {
     presaleUserTotal: ['chain', 'presale', 'userTotal'] as const,
     presaleUserTotalOf: (address: string) =>
       chainWalletQueryKey(['chain', 'presale', 'userTotal'], address),
-    presaleUserPhaseRemainingByUser: (address: string) =>
-      ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase()] as const,
-    presaleUserPhaseRemaining: (address: string, phaseIndex: number) =>
-      ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase(), phaseIndex] as const,
+    /** 钱包前缀——`useChainQuery` 再追加地址。 */
+    presaleUserPhaseRemaining: (phaseIndex: number) =>
+      ['chain', 'presale', 'userPhaseRemaining', phaseIndex] as const,
+    presaleUserPhaseRemainingOf: (address: string, phaseIndex: number) =>
+      chainWalletQueryKey(['chain', 'presale', 'userPhaseRemaining', phaseIndex], address),
     presalePreviewAirdropValue: (user: string, phaseIndex: number, purchaseAmount: string) =>
       [
         'chain',
@@ -202,15 +205,9 @@ export const queryKeys = {
     erc20Balance: erc20BalancePrefix,
     erc20BalanceOf: (token: string, address: string) =>
       chainWalletQueryKey(erc20BalancePrefix(token), address),
-    erc20Allowance: (token: string, owner: string, spender: string) =>
-      [
-        'chain',
-        'erc20',
-        'allowance',
-        token.toLowerCase(),
-        owner.toLowerCase(),
-        spender.toLowerCase(),
-      ] as const,
+    erc20Allowance: erc20AllowancePrefix,
+    erc20AllowanceOf: (token: string, owner: string, spender: string) =>
+      chainWalletQueryKey(erc20AllowancePrefix(token, spender), owner),
     referral: ['chain', 'referral'] as const,
     referralOf: (address: string) => chainWalletQueryKey(['chain', 'referral'], address),
     referralIsBound: ['chain', 'referral', 'isBound'] as const,

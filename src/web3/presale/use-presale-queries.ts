@@ -151,23 +151,22 @@ export function usePresaleUserTotalQuery(options?: ChainQueryOptions) {
 }
 
 /**
- * 查询用户在指定档位的剩余可购额度。
+ * 查询当前钱包在指定档位的剩余可购额度（钱包作用域）。
  *
- * @param address 钱包地址
+ * 查询键含档位；当前钱包地址由 `useChainQuery` 追加。
+ *
  * @param phaseIndex 档位 index
  * @param options 查询选项（enabled 等）
  */
 export function usePresaleUserPhaseRemainingQuery(
-  address?: string,
   phaseIndex?: number,
   options?: ChainQueryOptions,
 ) {
   return useChainQuery({
-    queryKey: queryKeys.chain.presaleUserPhaseRemaining(address ?? '', phaseIndex ?? 0),
-    scope: 'public',
+    queryKey: queryKeys.chain.presaleUserPhaseRemaining(phaseIndex ?? 0),
     freshness: 'presale',
-    enabled: (options?.enabled ?? true) && Boolean(address) && phaseIndex !== undefined,
-    queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!),
+    enabled: (options?.enabled ?? true) && phaseIndex !== undefined,
+    queryFn: (addr) => readUserPhaseRemainingAmount(addr, phaseIndex!),
   })
 }
 
@@ -193,23 +192,19 @@ export function usePresalePreviewAirdropValueQuery(
 }
 
 /**
- * 查询钱包 USD1 余额与预售授权额度。
+ * 查询当前钱包 USD1 余额与预售授权额度（钱包作用域）。
  *
- * @param address 钱包地址
  * @param options 查询选项（enabled 等）
  */
-export function useUsd1PresaleWalletQuery(address?: string, options?: ChainQueryOptions) {
-  const queryEnabled = (options?.enabled ?? true) && Boolean(address)
+export function useUsd1PresaleWalletQuery(options?: ChainQueryOptions) {
+  const queryEnabled = options?.enabled ?? true
 
-  const balanceQuery = useErc20BalanceQuery(BSC_CONTRACTS.usd1, address, {
+  const balanceQuery = useErc20BalanceQuery(BSC_CONTRACTS.usd1, {
     enabled: queryEnabled,
   })
-  const allowanceQuery = useErc20AllowanceQuery(
-    BSC_CONTRACTS.usd1,
-    address,
-    BSC_CONTRACTS.preSale,
-    { enabled: queryEnabled },
-  )
+  const allowanceQuery = useErc20AllowanceQuery(BSC_CONTRACTS.usd1, BSC_CONTRACTS.preSale, {
+    enabled: queryEnabled,
+  })
 
   return {
     balanceQuery,

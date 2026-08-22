@@ -31,8 +31,6 @@ import {
 } from '~/web3/staking/staking-addresses'
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * 债券视图：组合表单状态、CTA 文案与提交入口
@@ -112,9 +110,7 @@ const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
  */
 export function useBondDetail(kind: BondKind) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappHost()
-  const account = useActiveAccount()
-  const walletReady = hasWalletAccount(account)
+  const { sessionReady, walletReady } = useDappHost()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()

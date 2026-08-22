@@ -19,6 +19,7 @@ import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -37,10 +38,8 @@ import {
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
 } from '~/web3/exchange/turbine-exchange-read'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 export type TurbineSegment = 'unlock' | 'claim'
 
@@ -81,9 +80,8 @@ export function useTurbineExchangeSession(
   quotesEnabled = true,
   readsEnabled = quotesEnabled,
 ) {
-  const account = useActiveAccount()
+  const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
-  const walletReady = hasWalletAccount(account)
 
   const [segment, setSegmentState] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
