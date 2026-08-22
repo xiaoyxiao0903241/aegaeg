@@ -1,7 +1,7 @@
 import type { Wallet } from 'thirdweb/wallets'
 
 import { ERC20_ERRORS, ERC20_METHODS } from '~/web3/abis'
-import { createWalletReadClient } from '~/web3/chain-read-client'
+import { createWalletReadClient } from '~/web3/bsc-read-client'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'

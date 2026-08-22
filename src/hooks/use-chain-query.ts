@@ -47,7 +47,7 @@ export type UseChainQueryArgs<TData> =
  * 链上展示数据查询 hook
  *
  * 按新鲜度档位设置 staleTime；钱包作用域自动以当前地址作为缓存键后缀并注入 queryFn。
- * 通过 read* 系列默认的 BSC 只读客户端读取，无需外部注入客户端。
+ * 通过 read* 默认的 `bscReadClient` 读取，无需外部注入客户端。
  * 提交时需实时校验的门禁数据不得使用本 hook，应直接读取或 staleTime 置 0。
  */
 export function useChainQuery<TData>(args: UseChainQueryArgs<TData>): UseQueryResult<TData> {

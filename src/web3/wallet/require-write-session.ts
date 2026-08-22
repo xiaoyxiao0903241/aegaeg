@@ -1,7 +1,8 @@
 import type { Account, Wallet } from 'thirdweb/wallets'
 
 import type { Address } from '~/shared/config/contracts'
-import { type ChainReadClient, chainReadClient } from '~/web3/chain-read-client'
+import { chainReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 
 export type WriteSession = {

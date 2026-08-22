@@ -1,5 +1,5 @@
 /**
- * 用公共 RPC 等待交易收据（照抄 viem `waitForTransactionReceipt`）。
+ * 等待交易收据（照抄 viem `waitForTransactionReceipt`）。
  *
  * 等到成功收据才返回；链上 revert 抛 failed。`timeout: 0` 表示一直等，不把墙钟当成结果。
  *
@@ -29,7 +29,7 @@ export type ReceiptWaitClient = {
  * 等待已广播交易的链上收据
  *
  * @param hash 交易 hash
- * @param client 公共读客户端，默认 `bscReadClient`；单测可注入
+ * @param client 读客户端，默认 `bscReadClient`；单测可注入
  * @returns 成功收据；revert 抛 WalletTransactionWaitError
  */
 export async function waitForWalletTransactionConfirmation({

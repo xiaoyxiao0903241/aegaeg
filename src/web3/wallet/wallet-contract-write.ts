@@ -10,8 +10,8 @@ import {
   type TransactionReceipt,
 } from 'viem'
 
-import { bscReadClient } from '~/web3/bsc-read-client'
-import { type ChainReadClient, createWalletReadClient } from '~/web3/chain-read-client'
+import { bscReadClient, createWalletReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import {
   decodeContractRevert,
@@ -121,11 +121,11 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: ChainReadC
  * 估算写交易 gas（展示用，不进入发送）
  *
  * 先 simulate 挡 revert，再 `estimateContractGas` 加 20% 缓冲。
- * simulate 因非 revert 失败时，仍回退到钱包读客户端与公共 RPC 估算。
+ * simulate 因非 revert 失败时，再试默认读客户端估算。
  *
  * @param call 写调用参数
  * @param walletClient 钱包读客户端
- * @param fallbackClient 回退读客户端，默认公共 RPC
+ * @param fallbackClient 回退读客户端，默认 `bscReadClient`
  * @returns 加缓冲后的 gas 上限
  */
 export async function estimateWriteGasLimit(
@@ -153,7 +153,7 @@ export async function estimateWriteGasLimit(
  * 通过钱包提交合约写交易
  *
  * 核对会话地址/链 → simulate 挡 revert → 再核一次 → `eth_sendTransaction`（不设 gas、不设墙钟）→
- * 公共 RPC `waitForTransactionReceipt({ timeout: 0 })`。
+ * `waitForTransactionReceipt({ timeout: 0 })`。
  * 授权与业务写各 send 各 wait；gas 由钱包估算。
  *
  * @param input 钱包与写调用参数
