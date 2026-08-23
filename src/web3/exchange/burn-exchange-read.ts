@@ -132,26 +132,54 @@ export async function readBurnUserStats(user: string): Promise<BurnUserStats> {
   const contributionRoot =
     root.toLowerCase() === ZERO_ADDRESS ? userAddress : (root as `0x${string}`)
 
-  const [contributionBalance, agxBurned, contributionConsumed] = await Promise.all([
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: burnSwapReadAbi,
-      functionName: 'userContribution',
-      args: [contributionRoot],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: burnSwapReadAbi,
-      functionName: 'userAgxBurned',
-      args: [userAddress],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: burnSwapReadAbi,
-      functionName: 'userContributionConsumed',
-      args: [userAddress],
-    }),
+  const swap = BSC_CONTRACTS.agxContributionSwap
+  const statsResults = await readAggregate3([
+    {
+      target: swap,
+      callData: encodeFunctionData({
+        abi: burnSwapReadAbi,
+        functionName: 'userContribution',
+        args: [contributionRoot],
+      }),
+    },
+    {
+      target: swap,
+      callData: encodeFunctionData({
+        abi: burnSwapReadAbi,
+        functionName: 'userAgxBurned',
+        args: [userAddress],
+      }),
+    },
+    {
+      target: swap,
+      callData: encodeFunctionData({
+        abi: burnSwapReadAbi,
+        functionName: 'userContributionConsumed',
+        args: [userAddress],
+      }),
+    },
   ])
+  const contributionBalance = decodeAggregate3Result<bigint>(
+    statsResults,
+    0,
+    burnSwapReadAbi,
+    'userContribution',
+    'BURN_STATS_MULTICALL_FAILED:contribution',
+  )
+  const agxBurned = decodeAggregate3Result<bigint>(
+    statsResults,
+    1,
+    burnSwapReadAbi,
+    'userAgxBurned',
+    'BURN_STATS_MULTICALL_FAILED:agxBurned',
+  )
+  const contributionConsumed = decodeAggregate3Result<bigint>(
+    statsResults,
+    2,
+    burnSwapReadAbi,
+    'userContributionConsumed',
+    'BURN_STATS_MULTICALL_FAILED:consumed',
+  )
 
   return {
     contributionBalance,
@@ -172,19 +200,38 @@ export async function readBurnUserStats(user: string): Promise<BurnUserStats> {
  */
 export async function readBurnExchangeBalances(owner: string) {
   const ownerAddress = owner as `0x${string}`
-  const [sell, approved] = await Promise.all([
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.agx,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.agx,
-      abi: erc20ReadAbi,
-      functionName: 'allowance',
-      args: [ownerAddress, BSC_CONTRACTS.agxContributionSwap],
-    }),
+  const results = await readAggregate3([
+    {
+      target: BSC_CONTRACTS.agx,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.agx,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'allowance',
+        args: [ownerAddress, BSC_CONTRACTS.agxContributionSwap],
+      }),
+    },
   ])
-  return { sell, approved }
+  return {
+    sell: decodeAggregate3Result<bigint>(
+      results,
+      0,
+      erc20ReadAbi,
+      'balanceOf',
+      'BURN_BALANCES_MULTICALL_FAILED:sell',
+    ),
+    approved: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      erc20ReadAbi,
+      'allowance',
+      'BURN_BALANCES_MULTICALL_FAILED:approved',
+    ),
+  }
 }

@@ -1,4 +1,4 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import { epochsPerDayFromLength } from '~/core/staking/staking-yield'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -11,6 +11,7 @@ import {
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { isContractRevert } from '~/web3/decode-contract-revert'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const stakingPoolAbi = parseAbi([STAKING_POOL_METHODS.poolAgxBalance, STAKING_POOL_METHODS.epoch])
 const sagxAbi = parseAbi([SAGX_METHODS.circulatingSupply, SAGX_METHODS.rebases])
@@ -167,35 +168,63 @@ export async function readLatestSagxRebaseRate1e18(): Promise<bigint | null> {
  * @see docs/onchain-manual/contracts/treasury.md
  */
 export async function readStakingHubOverview(): Promise<StakingHubOverview> {
-  const [poolAgxBalance, epoch, circulatingSupply, totalReserves, burnConfig, currentBlock] =
-    await Promise.all([
-      bscReadClient.readContract({
-        address: BSC_CONTRACTS.stakingPool,
-        abi: stakingPoolAbi,
-        functionName: 'poolAgxBalance',
-      }),
-      bscReadClient.readContract({
-        address: BSC_CONTRACTS.stakingPool,
-        abi: stakingPoolAbi,
-        functionName: 'epoch',
-      }),
-      bscReadClient.readContract({
-        address: BSC_CONTRACTS.sagx,
-        abi: sagxAbi,
-        functionName: 'circulatingSupply',
-      }),
-      bscReadClient.readContract({
-        address: BSC_CONTRACTS.treasury,
-        abi: treasuryAbi,
-        functionName: 'totalReserves',
-      }),
-      bscReadClient.readContract({
-        address: BSC_CONTRACTS.agxContributionSwap,
-        abi: burnSwapAbi,
-        functionName: 'getConfig',
-      }),
-      bscReadClient.getBlockNumber(),
-    ])
+  const [overviewResults, currentBlock] = await Promise.all([
+    readAggregate3([
+      {
+        target: BSC_CONTRACTS.stakingPool,
+        callData: encodeFunctionData({ abi: stakingPoolAbi, functionName: 'poolAgxBalance' }),
+      },
+      {
+        target: BSC_CONTRACTS.stakingPool,
+        callData: encodeFunctionData({ abi: stakingPoolAbi, functionName: 'epoch' }),
+      },
+      {
+        target: BSC_CONTRACTS.sagx,
+        callData: encodeFunctionData({ abi: sagxAbi, functionName: 'circulatingSupply' }),
+      },
+      {
+        target: BSC_CONTRACTS.treasury,
+        callData: encodeFunctionData({ abi: treasuryAbi, functionName: 'totalReserves' }),
+      },
+      {
+        target: BSC_CONTRACTS.agxContributionSwap,
+        callData: encodeFunctionData({ abi: burnSwapAbi, functionName: 'getConfig' }),
+      },
+    ]),
+    bscReadClient.getBlockNumber(),
+  ])
+
+  const poolAgxBalance = decodeAggregate3Result<bigint>(
+    overviewResults,
+    0,
+    stakingPoolAbi,
+    'poolAgxBalance',
+    'STAKING_HUB_MULTICALL_FAILED:poolAgxBalance',
+  )
+  const epoch = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint]>(
+    overviewResults,
+    1,
+    stakingPoolAbi,
+    'epoch',
+    'STAKING_HUB_MULTICALL_FAILED:epoch',
+  )
+  const circulatingSupply = decodeAggregate3Result<bigint>(
+    overviewResults,
+    2,
+    sagxAbi,
+    'circulatingSupply',
+    'STAKING_HUB_MULTICALL_FAILED:circulatingSupply',
+  )
+  const totalReserves = decodeAggregate3Result<bigint>(
+    overviewResults,
+    3,
+    treasuryAbi,
+    'totalReserves',
+    'STAKING_HUB_MULTICALL_FAILED:totalReserves',
+  )
+  const burnConfig = decodeAggregate3Result<
+    readonly [string, number, bigint, boolean, bigint, bigint, bigint, bigint]
+  >(overviewResults, 4, burnSwapAbi, 'getConfig', 'STAKING_HUB_MULTICALL_FAILED:burnConfig')
 
   // ABI: (length, number, endBlock, distribute) — 勿把 length 当 number。
   const epochLength = epoch[0]

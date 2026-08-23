@@ -51,6 +51,13 @@ function stakeLockedAggregate3(calls, opts) {
     ]
   }
 
+  if (calls.length === 2) {
+    return [
+      ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', false)),
+      ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', false)),
+    ]
+  }
+
   throw new Error(`unexpected aggregate3 arity ${calls.length}`)
 }
 
@@ -62,8 +69,6 @@ test('submitStakeOpen fail-closed when live referral is unbound', async () => {
     if (request.functionName === 'aggregate3') {
       return stakeLockedAggregate3(request.args[0], { isBound: false })
     }
-    if (request.functionName === 'migrationEnabled') return false
-    if (request.functionName === 'isOldAccount') return false
     throw new Error(`unexpected ${request.functionName}`)
   })
 
@@ -81,8 +86,6 @@ test('submitStakeOpen fail-closed when live quota is below amount', async () => 
     if (request.functionName === 'aggregate3') {
       return stakeLockedAggregate3(request.args[0], { remaining: 10n })
     }
-    if (request.functionName === 'migrationEnabled') return false
-    if (request.functionName === 'isOldAccount') return false
     throw new Error(`unexpected ${request.functionName}`)
   })
 
@@ -106,6 +109,13 @@ test('submitXmineStake fail-closed when live mining quota is exhausted', async (
 
     const session = await moneyPathSession(async (request) => {
       if (request.functionName === 'aggregate3') {
+        const calls = request.args[0]
+        if (calls.length === 2) {
+          return [
+            ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', false)),
+            ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', false)),
+          ]
+        }
         return [
           ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', 1_000n)),
           ok(
@@ -121,8 +131,6 @@ test('submitXmineStake fail-closed when live mining quota is exhausted', async (
           ),
         ]
       }
-      if (request.functionName === 'migrationEnabled') return false
-      if (request.functionName === 'isOldAccount') return false
       throw new Error(`unexpected ${request.functionName}`)
     })
 

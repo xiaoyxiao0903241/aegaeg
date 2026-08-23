@@ -1,6 +1,7 @@
 import { encodeFunctionResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
+import { expandAggregate3 } from '../web3/_bsc-read-client-test.mjs'
 
 export const USER = '0x1111111111111111111111111111111111111111'
 export const ZERO = '0x0000000000000000000000000000000000000000'
@@ -54,7 +55,27 @@ export function claimPlanAndContribHandlers(overrides = {}) {
   }
 }
 
+const CLAIM_DISPATCH_ABI = parseAbi([
+  'function queuePlans() view returns ((uint256 releaseDuration, uint256 feeRate, address feeRecipient)[])',
+  'function getPlanCount() view returns (uint256)',
+  'function getPlan(uint256 index) view returns (uint256 period, uint256 taxBP, address target, bool exists)',
+  'function originalOf(address account) view returns (address)',
+  'function userContribution(address user) view returns (uint256)',
+  'function quoteRequiredContribution(uint256 rewardAmount) view returns (uint256)',
+  'function paused() view returns (bool)',
+  'function getWinnerInfo(uint256 roundId, address user) view returns (bool won, uint256 rewardAmount)',
+  'function rewardClaimed(uint256 roundId, address user) view returns (bool)',
+  'function migrationEnabled() view returns (bool)',
+  'function isOldAccount(address account) view returns (bool)',
+  'function balanceOf(address owner) view returns (uint256)',
+  'function getReleasedRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
+  'function getRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
+])
+
 export function dispatchRead(handlers, request) {
+  if (request.functionName === 'aggregate3') {
+    return expandAggregate3(request, (inner) => dispatchRead(handlers, inner), CLAIM_DISPATCH_ABI)
+  }
   const byName = handlers[request.functionName]
   if (typeof byName === 'function') return byName(request)
   if (byName !== undefined) return byName

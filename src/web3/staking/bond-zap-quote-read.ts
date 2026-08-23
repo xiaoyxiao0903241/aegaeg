@@ -14,13 +14,10 @@ import {
   BOND_HELPER_METHODS,
   LP_BONDING_CALCULATOR_METHODS,
   PANCAKE_PAIR_V2_METHODS,
+  PANCAKE_ROUTER_V2_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
-import {
-  readExchangePoolImmutableMetadata,
-  readExchangePoolSpotPrice,
-} from '~/web3/exchange/read-exchange-pool'
 import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 import type { BondMarketMeta } from '~/web3/staking/staking-read'
 
@@ -31,7 +28,12 @@ const depositoryAbi = parseAbi([
   BOND_DEPOSITORY_MARKET_METHODS.maxPayout,
 ])
 const helperAbi = parseAbi([BOND_HELPER_METHODS.slippage])
-const pairSupplyAbi = parseAbi([PANCAKE_PAIR_V2_METHODS.totalSupply])
+const pairAbi = parseAbi([
+  PANCAKE_PAIR_V2_METHODS.token0,
+  PANCAKE_PAIR_V2_METHODS.getReserves,
+  PANCAKE_PAIR_V2_METHODS.totalSupply,
+])
+const routerAbi = parseAbi([PANCAKE_ROUTER_V2_METHODS.getAmountsOut])
 const calculatorAbi = parseAbi([LP_BONDING_CALCULATOR_METHODS.valuation])
 
 export type BondZapAgxPreview = {
@@ -91,25 +93,62 @@ export async function readBondZapAgxPreview(args: {
   const halfUsd = args.depositUsd1 / 2n
   if (halfUsd === 0n) return { netPayout: 0n, grossPayout: 0n }
 
-  const [agxOut, meta, spot, totalSupply] = await Promise.all([
-    quoteV2AmountsOut({
-      router: BSC_CONTRACTS.pancakeRouter,
-      amountIn: halfUsd,
-      path: [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx],
-    }),
-    readExchangePoolImmutableMetadata(liquidityPool),
-    readExchangePoolSpotPrice(liquidityPool),
-    bscReadClient.readContract({
-      address: liquidityPool,
-      abi: pairSupplyAbi,
-      functionName: 'totalSupply',
-    }) as Promise<bigint>,
+  const lpBatch = await readAggregate3([
+    {
+      target: BSC_CONTRACTS.pancakeRouter,
+      callData: encodeFunctionData({
+        abi: routerAbi,
+        functionName: 'getAmountsOut',
+        args: [halfUsd, [BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx]],
+      }),
+    },
+    {
+      target: liquidityPool,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'token0' }),
+    },
+    {
+      target: liquidityPool,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'getReserves' }),
+    },
+    {
+      target: liquidityPool,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'totalSupply' }),
+    },
   ])
+  const amountsOut = decodeAggregate3Result<readonly bigint[]>(
+    lpBatch,
+    0,
+    routerAbi,
+    'getAmountsOut',
+    'BOND_PREVIEW_MULTICALL_FAILED:agxOut',
+  )
+  const agxOut = amountsOut[amountsOut.length - 1] ?? 0n
+  const token0 = decodeAggregate3Result<Address>(
+    lpBatch,
+    1,
+    pairAbi,
+    'token0',
+    'BOND_PREVIEW_MULTICALL_FAILED:token0',
+  )
+  const reserves = decodeAggregate3Result<readonly [bigint, bigint, number]>(
+    lpBatch,
+    2,
+    pairAbi,
+    'getReserves',
+    'BOND_PREVIEW_MULTICALL_FAILED:reserves',
+  )
+  const totalSupply = decodeAggregate3Result<bigint>(
+    lpBatch,
+    3,
+    pairAbi,
+    'totalSupply',
+    'BOND_PREVIEW_MULTICALL_FAILED:totalSupply',
+  )
 
   const agxLower = BSC_CONTRACTS.agx.toLowerCase()
-  const token0IsAgx = meta.token0.toLowerCase() === agxLower
-  const reserveU = token0IsAgx ? spot.reserve1 : spot.reserve0
-  const reserveAGX = token0IsAgx ? spot.reserve0 : spot.reserve1
+  const token0IsAgx = token0.toLowerCase() === agxLower
+  const reserveU = token0IsAgx ? reserves[1] : reserves[0]
+  const reserveAGX = token0IsAgx ? reserves[0] : reserves[1]
 
   const lpAmount = quoteZapLpAmount({
     usd1Amount: args.depositUsd1,

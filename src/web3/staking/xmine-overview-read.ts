@@ -1,9 +1,9 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { formatNumber } from '~/shared/presenters/format'
 import { ERC20_METHODS, X_STAKING_POOL_METHODS } from '~/web3/abis'
-import { bscReadClient } from '~/web3/bsc-read-client'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const overviewAbi = parseAbi([X_STAKING_POOL_METHODS.xPerAgx, X_STAKING_POOL_METHODS.yieldRateBP])
 const gagxBalanceAbi = parseAbi([ERC20_METHODS.balanceOf])
@@ -26,34 +26,53 @@ export type XmineOverview = {
 /**
  * 读取 Xmine 概览（公开，无钱包依赖）
  *
- * 并行读取 xPerAgx、日收益率基点与池内 gAGX 余额，供 X 挖矿页展示。
+ * 并行读取 xPerAgx、日收益率基点与池内 gAGX 余额（一次 Multicall3），供 X 挖矿页展示。
  *
  * @returns xPerAgx / yieldRateBP / totalStakedGagx
  * @see docs/onchain-manual/contracts/xstakingpool.md
  */
 export async function readXmineOverview(): Promise<XmineOverview> {
-  const [xPerAgx, yieldRateBP, totalStakedGagx] = await Promise.all([
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: overviewAbi,
-      functionName: 'xPerAgx',
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: overviewAbi,
-      functionName: 'yieldRateBP',
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.gagx,
-      abi: gagxBalanceAbi,
-      functionName: 'balanceOf',
-      args: [BSC_CONTRACTS.xStakingPool],
-    }),
+  const pool = BSC_CONTRACTS.xStakingPool
+  const results = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: overviewAbi, functionName: 'xPerAgx' }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: overviewAbi, functionName: 'yieldRateBP' }),
+    },
+    {
+      target: BSC_CONTRACTS.gagx,
+      callData: encodeFunctionData({
+        abi: gagxBalanceAbi,
+        functionName: 'balanceOf',
+        args: [pool],
+      }),
+    },
   ])
   return {
-    xPerAgx: xPerAgx as bigint,
-    yieldRateBP: yieldRateBP as bigint,
-    totalStakedGagx: totalStakedGagx as bigint,
+    xPerAgx: decodeAggregate3Result<bigint>(
+      results,
+      0,
+      overviewAbi,
+      'xPerAgx',
+      'XMINE_OVERVIEW_MULTICALL_FAILED:xPerAgx',
+    ),
+    yieldRateBP: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      overviewAbi,
+      'yieldRateBP',
+      'XMINE_OVERVIEW_MULTICALL_FAILED:yieldRateBP',
+    ),
+    totalStakedGagx: decodeAggregate3Result<bigint>(
+      results,
+      2,
+      gagxBalanceAbi,
+      'balanceOf',
+      'XMINE_OVERVIEW_MULTICALL_FAILED:totalStakedGagx',
+    ),
   }
 }
 

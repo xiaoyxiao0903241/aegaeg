@@ -1,4 +1,4 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import { ZERO_ADDRESS } from '~/core/constants'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
@@ -7,6 +7,7 @@ import type { FlashUsd1SwapConfig } from '~/core/exchange/flash-usd1-swap'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_METHODS, USD1_SWAP_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const usd1ExchangeReadAbi = parseAbi([USD1_SWAP_METHODS.quoteUsd1Out, USD1_SWAP_METHODS.getConfig])
 const erc20ReadAbi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
@@ -89,28 +90,55 @@ async function readFlashUsdtBalances(owner: string) {
     throw new Error('ErrorZeroAddress')
   }
   const usdtToken = config.usdtToken
-
-  const [sell, buy, approved] = await Promise.all([
-    bscReadClient.readContract({
-      address: usdtToken,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.usd1,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-    bscReadClient.readContract({
-      address: usdtToken,
-      abi: erc20ReadAbi,
-      functionName: 'allowance',
-      args: [ownerAddress, BSC_CONTRACTS.usd1Swap],
-    }),
+  const results = await readAggregate3([
+    {
+      target: usdtToken,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+    {
+      target: usdtToken,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'allowance',
+        args: [ownerAddress, BSC_CONTRACTS.usd1Swap],
+      }),
+    },
   ])
-  return { sell, buy, approved }
+  return {
+    sell: decodeAggregate3Result<bigint>(
+      results,
+      0,
+      erc20ReadAbi,
+      'balanceOf',
+      'FLASH_USDT_BALANCES_MULTICALL_FAILED:sell',
+    ),
+    buy: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      erc20ReadAbi,
+      'balanceOf',
+      'FLASH_USDT_BALANCES_MULTICALL_FAILED:buy',
+    ),
+    approved: decodeAggregate3Result<bigint>(
+      results,
+      2,
+      erc20ReadAbi,
+      'allowance',
+      'FLASH_USDT_BALANCES_MULTICALL_FAILED:approved',
+    ),
+  }
 }
 
 /**
@@ -127,32 +155,64 @@ async function readFlashGagxBalances(owner: string, direction: ExchangeDirection
   const sellToken = direction === 'forward' ? BSC_CONTRACTS.gagx : BSC_CONTRACTS.agx
   const buyToken = direction === 'forward' ? BSC_CONTRACTS.agx : BSC_CONTRACTS.gagx
 
-  const [sell, buy] = await Promise.all([
-    bscReadClient.readContract({
-      address: sellToken,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-    bscReadClient.readContract({
-      address: buyToken,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-  ])
+  const calls = [
+    {
+      target: sellToken,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+    {
+      target: buyToken,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+  ]
+  if (direction !== 'forward') {
+    calls.push({
+      target: BSC_CONTRACTS.agx,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'allowance',
+        args: [ownerAddress, BSC_CONTRACTS.gagx],
+      }),
+    })
+  }
 
+  const results = await readAggregate3(calls)
+  const sell = decodeAggregate3Result<bigint>(
+    results,
+    0,
+    erc20ReadAbi,
+    'balanceOf',
+    'FLASH_GAGX_BALANCES_MULTICALL_FAILED:sell',
+  )
+  const buy = decodeAggregate3Result<bigint>(
+    results,
+    1,
+    erc20ReadAbi,
+    'balanceOf',
+    'FLASH_GAGX_BALANCES_MULTICALL_FAILED:buy',
+  )
   if (direction === 'forward') {
     return { sell, buy, approved: 0n }
   }
-
-  const approved = await bscReadClient.readContract({
-    address: BSC_CONTRACTS.agx,
-    abi: erc20ReadAbi,
-    functionName: 'allowance',
-    args: [ownerAddress, BSC_CONTRACTS.gagx],
-  })
-  return { sell, buy, approved }
+  return {
+    sell,
+    buy,
+    approved: decodeAggregate3Result<bigint>(
+      results,
+      2,
+      erc20ReadAbi,
+      'allowance',
+      'FLASH_GAGX_BALANCES_MULTICALL_FAILED:approved',
+    ),
+  }
 }
 
 /**

@@ -6,7 +6,7 @@ import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
-import { readAggregate3 } from '~/web3/multicall3-read'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const luckyAbi = parseAbi([
   LUCKY_POOL_METHODS.paused,
@@ -43,18 +43,33 @@ export type LuckyClaimSnapshot = {
  * @see 手册 §14 LuckyPool 去中心化抽奖
  */
 export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimSnapshot> {
+  const pool = BSC_CONTRACTS.luckyPool
+  const head = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'paused' }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'currentRoundId' }),
+    },
+  ])
   const paused = Boolean(
-    await bscReadClient.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'paused',
-    }),
+    decodeAggregate3Result<boolean>(
+      head,
+      0,
+      luckyAbi,
+      'paused',
+      'LUCKY_SNAPSHOT_MULTICALL_FAILED:paused',
+    ),
   )
-  const openRoundId = (await bscReadClient.readContract({
-    address: BSC_CONTRACTS.luckyPool,
-    abi: luckyAbi,
-    functionName: 'currentRoundId',
-  })) as bigint
+  const openRoundId = decodeAggregate3Result<bigint>(
+    head,
+    1,
+    luckyAbi,
+    'currentRoundId',
+    'LUCKY_SNAPSHOT_MULTICALL_FAILED:roundId',
+  )
 
   // currentRoundId 为进行中轮；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
   const latestClosed = openRoundId > 0n ? openRoundId - 1n : 0n
@@ -73,7 +88,6 @@ export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimS
     }
   }
 
-  const pool = BSC_CONTRACTS.luckyPool
   const results =
     roundIds.length === 0
       ? []
@@ -160,27 +174,54 @@ export async function readLuckyClaimRound(
   user: Address,
   roundId: bigint,
 ): Promise<LuckyClaimSnapshot> {
-  const [paused, info, rewardClaimed] = await Promise.all([
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'paused',
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'getWinnerInfo',
-      args: [roundId, user],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'rewardClaimed',
-      args: [roundId, user],
-    }),
+  const pool = BSC_CONTRACTS.luckyPool
+  const results = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'paused' }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'getWinnerInfo',
+        args: [roundId, user],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'rewardClaimed',
+        args: [roundId, user],
+      }),
+    },
   ])
-  const won = Boolean((info as readonly [boolean, bigint])[0])
-  const rewardAmount = (info as readonly [boolean, bigint])[1] ?? 0n
+  const paused = Boolean(
+    decodeAggregate3Result<boolean>(
+      results,
+      0,
+      luckyAbi,
+      'paused',
+      'LUCKY_ROUND_MULTICALL_FAILED:paused',
+    ),
+  )
+  const info = decodeAggregate3Result<readonly [boolean, bigint]>(
+    results,
+    1,
+    luckyAbi,
+    'getWinnerInfo',
+    'LUCKY_ROUND_MULTICALL_FAILED:winner',
+  )
+  const rewardClaimed = decodeAggregate3Result<boolean>(
+    results,
+    2,
+    luckyAbi,
+    'rewardClaimed',
+    'LUCKY_ROUND_MULTICALL_FAILED:claimed',
+  )
+  const won = Boolean(info[0])
+  const rewardAmount = info[1] ?? 0n
   const claimed = Boolean(rewardClaimed)
   const claimable = isLuckyClaimable({
     paused: Boolean(paused),
@@ -262,20 +303,39 @@ export async function readLuckyRoundDisplaySnapshot(
     }
   }
 
-  const [roundRaw, accepting] = await Promise.all([
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'getRound',
-      args: [openRoundId],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'isRoundAcceptingPurchases',
-      args: [openRoundId],
-    }),
+  const pool = BSC_CONTRACTS.luckyPool
+  const roundResults = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'getRound',
+        args: [openRoundId],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'isRoundAcceptingPurchases',
+        args: [openRoundId],
+      }),
+    },
   ])
+  const roundRaw = decodeAggregate3Result<unknown>(
+    roundResults,
+    0,
+    luckyAbi,
+    'getRound',
+    'LUCKY_DISPLAY_MULTICALL_FAILED:getRound',
+  )
+  const accepting = decodeAggregate3Result<boolean>(
+    roundResults,
+    1,
+    luckyAbi,
+    'isRoundAcceptingPurchases',
+    'LUCKY_DISPLAY_MULTICALL_FAILED:accepting',
+  )
 
   return {
     openRoundId,

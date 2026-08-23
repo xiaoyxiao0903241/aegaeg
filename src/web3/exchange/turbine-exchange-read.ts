@@ -6,7 +6,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_METHODS, TURBINE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
-import { readAggregate3 } from '~/web3/multicall3-read'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const turbineReadAbi = parseAbi([
   TURBINE_METHODS.turbineBalances,
@@ -92,15 +92,37 @@ export async function readTurbineSilences(
 ): Promise<{ rows: TurbineSilenceRow[]; cooldownDuration: bigint; claimableCount: number }> {
   const userAddress = user as `0x${string}`
   const turbine = BSC_CONTRACTS.turbine
-  const [size, cooldownDuration] = await Promise.all([
-    bscReadClient.readContract({
-      address: turbine,
-      abi: turbineReadAbi,
-      functionName: 'silencesSize',
-      args: [userAddress],
-    }),
-    readTurbineCooldownDuration(),
+  const head = await readAggregate3([
+    {
+      target: turbine,
+      callData: encodeFunctionData({
+        abi: turbineReadAbi,
+        functionName: 'silencesSize',
+        args: [userAddress],
+      }),
+    },
+    {
+      target: turbine,
+      callData: encodeFunctionData({
+        abi: turbineReadAbi,
+        functionName: 'currentCooldownDuration',
+      }),
+    },
   ])
+  const size = decodeAggregate3Result<bigint>(
+    head,
+    0,
+    turbineReadAbi,
+    'silencesSize',
+    'TURBINE_SILENCES_MULTICALL_FAILED:size',
+  )
+  const cooldownDuration = decodeAggregate3Result<bigint>(
+    head,
+    1,
+    turbineReadAbi,
+    'currentCooldownDuration',
+    'TURBINE_SILENCES_MULTICALL_FAILED:cooldown',
+  )
 
   const count = Number(size)
   if (!Number.isFinite(count) || count <= 0) {
@@ -173,21 +195,40 @@ export async function readTurbineSilences(
  */
 export async function readTurbineUsd1Balances(owner: string) {
   const ownerAddress = owner as `0x${string}`
-  const [usd1, approved] = await Promise.all([
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.usd1,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-    bscReadClient.readContract({
-      address: BSC_CONTRACTS.usd1,
-      abi: erc20ReadAbi,
-      functionName: 'allowance',
-      args: [ownerAddress, BSC_CONTRACTS.turbine],
-    }),
+  const results = await readAggregate3([
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'allowance',
+        args: [ownerAddress, BSC_CONTRACTS.turbine],
+      }),
+    },
   ])
-  return { usd1, approved }
+  return {
+    usd1: decodeAggregate3Result<bigint>(
+      results,
+      0,
+      erc20ReadAbi,
+      'balanceOf',
+      'TURBINE_USD1_MULTICALL_FAILED:balance',
+    ),
+    approved: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      erc20ReadAbi,
+      'allowance',
+      'TURBINE_USD1_MULTICALL_FAILED:allowance',
+    ),
+  }
 }
 
 /**
@@ -245,14 +286,25 @@ export async function readTurbineClaimableFingerprint(user: string): Promise<str
   })
   const count = Number(size)
   if (!Number.isFinite(count) || count <= 0) return ''
+  const vestedResults = await readAggregate3(
+    Array.from({ length: count }, (_, index) => ({
+      target: BSC_CONTRACTS.turbine,
+      callData: encodeFunctionData({
+        abi: turbineReadAbi,
+        functionName: 'isVested',
+        args: [userAddress, BigInt(index)],
+      }),
+    })),
+  )
   const vested: string[] = []
   for (let index = 0; index < count; index += 1) {
-    const isVested = await bscReadClient.readContract({
-      address: BSC_CONTRACTS.turbine,
-      abi: turbineReadAbi,
-      functionName: 'isVested',
-      args: [userAddress, BigInt(index)],
-    })
+    const isVested = decodeAggregate3Result<boolean>(
+      vestedResults,
+      index,
+      turbineReadAbi,
+      'isVested',
+      `TURBINE_FINGERPRINT_MULTICALL_FAILED:${index}`,
+    )
     if (isVested) vested.push(String(index))
   }
   return fingerprintIdList(vested)

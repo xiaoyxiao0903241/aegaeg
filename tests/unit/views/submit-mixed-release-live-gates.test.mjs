@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import test, { afterEach } from 'node:test'
 
+import { decodeFunctionData, parseAbi } from 'viem'
+
 import { loadModule } from '../load-module.mjs'
 import {
   claimPlanAndContribHandlers,
@@ -125,12 +127,12 @@ test('submitReleaseQueueClaim fail-closed when live claimable is zero', async ()
     }
     if (request.functionName === 'aggregate3') {
       const zero = enc(
-        'function getReleasedRewardsWithPlanIndex(address,uint256) view returns (uint256)',
+        'function getReleasedRewardsWithPlanIndex(address,uint8) view returns (uint256)',
         'getReleasedRewardsWithPlanIndex',
         0n,
       )
       const total = enc(
-        'function getRewardsWithPlanIndex(address,uint256) view returns (uint256)',
+        'function getRewardsWithPlanIndex(address,uint8) view returns (uint256)',
         'getRewardsWithPlanIndex',
         0n,
       )
@@ -171,20 +173,31 @@ test('submitReleaseQueueClaim fail-closed for migrated old account after live ga
       return [{ releaseDuration: 5n * 86_400n, feeRate: 0n, feeRecipient: USER }]
     }
     if (request.functionName === 'aggregate3') {
+      const first = decodeFunctionData({
+        abi: parseAbi([
+          'function getReleasedRewardsWithPlanIndex(address,uint8) view returns (uint256)',
+          'function migrationEnabled() view returns (bool)',
+        ]),
+        data: request.args[0][0].callData,
+      })
+      if (first.functionName === 'migrationEnabled') {
+        return [
+          ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', true)),
+          ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', true)),
+        ]
+      }
       const claimable = enc(
-        'function getReleasedRewardsWithPlanIndex(address,uint256) view returns (uint256)',
+        'function getReleasedRewardsWithPlanIndex(address,uint8) view returns (uint256)',
         'getReleasedRewardsWithPlanIndex',
         10n,
       )
       const total = enc(
-        'function getRewardsWithPlanIndex(address,uint256) view returns (uint256)',
+        'function getRewardsWithPlanIndex(address,uint8) view returns (uint256)',
         'getRewardsWithPlanIndex',
         10n,
       )
       return [ok(claimable), ok(total)]
     }
-    if (request.functionName === 'migrationEnabled') return true
-    if (request.functionName === 'isOldAccount') return true
     throw new Error(`unexpected ${request.functionName}`)
   })
 

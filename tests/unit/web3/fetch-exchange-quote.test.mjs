@@ -27,6 +27,20 @@ async function loadExchangeAddresses() {
   }
 }
 
+const pairAbi = parseAbi([
+  'function token0() view returns (address)',
+  'function token1() view returns (address)',
+  'function getReserves() view returns (uint112,uint112,uint32)',
+])
+
+function encodePairResult(functionName, value) {
+  return encodeFunctionResult({
+    abi: pairAbi,
+    functionName,
+    result: value,
+  })
+}
+
 function createMockClient({
   tokenIn,
   tokenOut,
@@ -39,9 +53,27 @@ function createMockClient({
     calls,
     async readContract(request) {
       calls.push(['read', request.functionName, request.address])
-      if (request.functionName === 'token0') return tokenIn
-      if (request.functionName === 'token1') return tokenOut
-      if (request.functionName === 'getReserves') return [reserve0, reserve1, 0]
+      if (request.functionName === 'aggregate3') {
+        return request.args[0].map((call) => {
+          const { functionName } = decodeFunctionData({
+            abi: pairAbi,
+            data: call.callData,
+          })
+          if (functionName === 'token0') {
+            return { success: true, returnData: encodePairResult('token0', tokenIn) }
+          }
+          if (functionName === 'token1') {
+            return { success: true, returnData: encodePairResult('token1', tokenOut) }
+          }
+          if (functionName === 'getReserves') {
+            return {
+              success: true,
+              returnData: encodePairResult('getReserves', [reserve0, reserve1, 0]),
+            }
+          }
+          throw new Error(`unexpected pair aggregate3 ${functionName}`)
+        })
+      }
       if (request.functionName === 'getAmountsOut') {
         const amountIn = request.args[0]
         const out = quotedOut ?? amountIn / 2n
@@ -69,11 +101,28 @@ function createAgxSellClient({ tokenIn, tokenOut, taxValues }) {
     },
     async readContract(request) {
       this.calls.push(['read', request.functionName, request.address])
-      if (request.functionName === 'token0') return tokenIn
-      if (request.functionName === 'token1') return tokenOut
-      if (request.functionName === 'getReserves') return [10n ** 24n, 10n ** 15n, 0]
       if (request.functionName === 'aggregate3') {
         return request.args[0].map((call) => {
+          try {
+            const { functionName } = decodeFunctionData({
+              abi: pairAbi,
+              data: call.callData,
+            })
+            if (functionName === 'token0') {
+              return { success: true, returnData: encodePairResult('token0', tokenIn) }
+            }
+            if (functionName === 'token1') {
+              return { success: true, returnData: encodePairResult('token1', tokenOut) }
+            }
+            if (functionName === 'getReserves') {
+              return {
+                success: true,
+                returnData: encodePairResult('getReserves', [10n ** 24n, 10n ** 15n, 0]),
+              }
+            }
+          } catch {
+            // tax batch
+          }
           const { functionName } = decodeFunctionData({
             abi: agxSellTaxAbi,
             data: call.callData,
@@ -97,7 +146,7 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
   const { clearExchangePoolImmutableCache } = await loadModule(
     '/src/web3/exchange/read-exchange-pool.ts',
   )
-  const { agx, usd1, pool, router } = await loadExchangeAddresses()
+  const { agx, usd1, router } = await loadExchangeAddresses()
   clearExchangePoolImmutableCache()
 
   const amountIn = 10n ** 18n
@@ -124,7 +173,7 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
   assert.ok(result.priceImpactBps > 0)
   assert.equal(result.gasCostWei, null)
   assert.ok(client.calls.some((c) => c[0] === 'read' && c[1] === 'getAmountsOut'))
-  assert.ok(client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === pool.toLowerCase()))
+  assert.ok(client.calls.some((c) => c[0] === 'read' && c[1] === 'aggregate3'))
   assert.ok(
     client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === router.toLowerCase()),
   )

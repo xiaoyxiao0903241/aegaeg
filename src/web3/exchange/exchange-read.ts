@@ -19,8 +19,7 @@ import {
   type ExchangePoolImmutableMetadata,
   type ExchangePoolSpotPrice,
   pairReservesForTokenIn,
-  readExchangePoolImmutableMetadata,
-  readExchangePoolSpotPrice,
+  readExchangePoolReadContext,
 } from '~/web3/exchange/read-exchange-pool'
 import { readAggregate3 } from '~/web3/multicall3-read'
 
@@ -201,15 +200,11 @@ export async function fetchExchangeQuote({
   const sellingAgx = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
   const sellingX = isXSellPath(tokenIn, BSC_CONTRACTS.xToken)
 
-  const [pool, spot, sellTaxBps] = await Promise.all([
-    poolContext
-      ? Promise.resolve(poolContext.pool)
-      : readExchangePoolImmutableMetadata(EXCHANGE_CONFIG.pool),
-    poolContext
-      ? Promise.resolve(poolContext.spot)
-      : readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool),
+  const [ctx, sellTaxBps] = await Promise.all([
+    poolContext ? Promise.resolve(poolContext) : readExchangePoolReadContext(EXCHANGE_CONFIG.pool),
     sellingAgx ? readAgxSellTaxBps(BSC_CONTRACTS.agx, amountIn) : Promise.resolve(0),
   ])
+  const { pool, spot } = ctx
 
   // 交易对收到的是扣税后的数量，Router.getAmountsOut 必须用净额报价
   const amountInForQuote = sellingAgx
