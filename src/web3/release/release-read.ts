@@ -3,6 +3,7 @@ import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plans'
 import { ZERO_ADDRESS } from '~/core/constants'
+import { pickFirstClaimPage, RELEASE_CLAIM_PAGE } from '~/core/release/pick-release-claim-page'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AEGIS_SPLITTER_MANAGER_METHODS,
@@ -15,9 +16,10 @@ import { readAggregate3 } from '~/web3/multicall3-read'
 
 const queueReadAbi = parseAbi([
   REWARD_QUEUE_METHODS.queuePlans,
-  REWARD_QUEUE_METHODS.getUserTotalClaimable,
   REWARD_QUEUE_METHODS.getReleasedRewardsWithPlanIndex,
+  REWARD_QUEUE_METHODS.getReleasedRewardsWithOffset,
   REWARD_QUEUE_METHODS.getRewardsWithPlanIndex,
+  REWARD_QUEUE_METHODS.getQueuePlanSize,
 ])
 
 const managerReadAbi = parseAbi([
@@ -35,16 +37,21 @@ const archiveVaultReadAbi = parseAbi([
 ])
 
 /** 手册 §13：getReleases / claimMany 单页上限 50 */
-export const SPLITTER_RELEASE_PAGE = 50
+export const SPLITTER_RELEASE_PAGE = RELEASE_CLAIM_PAGE
 /** 链式瀑布深度上限（防环）；与迁移 hops 同量级 */
 const SPLITTER_CHAIN_MAX = 8
 
 export type ReleaseQueuePlanRow = {
   planIndex: number
   durationDays: number | null
+  /** 当前 50 条窗待领（CTA / 一键领取） */
   claimable: bigint
+  /** 整档已解锁合计（进度 / Hub） */
+  overallClaimable: bigint
   total: bigint
   releasing: bigint
+  claimStart: number
+  claimLimit: number
 }
 
 export type ReleaseQueueSnapshot = {
@@ -58,6 +65,8 @@ export type ReleaseBufferTokenTotals = {
   totalAmount: bigint
   totalClaimed: bigint
   totalClaimable: bigint
+  /** 当前 50 条窗内该币待领（CTA） */
+  pageClaimable: bigint
   totalRemaining: bigint
   totalReleasing: bigint
 }
@@ -76,10 +85,8 @@ export type ReleaseBufferChainHop = {
   isTail: boolean
   count: number
   claimable: bigint
-  /** 本跳可领 AGX 的释放单 index（逐笔 claimMany(i,1)，禁混币窗） */
-  agxClaimIndexes: number[]
-  /** 本跳可领 gAGX 的释放单 index */
-  gagxClaimIndexes: number[]
+  /** 本跳可领窗（任意 token；空窗已跳过）；提交时 claimMany 一次领尽 */
+  claimWindows: ReleaseClaimWindow[]
 }
 
 export type ReleaseBufferSnapshot = {
@@ -108,6 +115,7 @@ const emptyTotals = (): ReleaseBufferTokenTotals => ({
   totalAmount: 0n,
   totalClaimed: 0n,
   totalClaimable: 0n,
+  pageClaimable: 0n,
   totalRemaining: 0n,
   totalReleasing: 0n,
 })
@@ -164,26 +172,6 @@ export function claimWindowsFromAmounts(
 }
 
 /**
- * 某币种可领释放单的 index 列表（用于按卡独立领取，避免 claimMany 混领）。
- *
- * @param items 分流器分页条目（顺序即链上 index）
- * @param token 目标代币地址
- */
-export function claimIndexesForToken(
-  items: readonly { release: { token: Address }; claimableAmount: bigint }[],
-  token: Address,
-): number[] {
-  const indexes: number[] = []
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i]!
-    if (item.claimableAmount <= 0n) continue
-    if (!isSameAddress(item.release.token, token)) continue
-    indexes.push(i)
-  }
-  return indexes
-}
-
-/**
  * 读取 RewardQueue 释放计划（queuePlans）。
  *
  * @returns 释放计划数组（含 index 与时长）
@@ -235,7 +223,8 @@ export async function readEffectiveReleaseDuration(address: Address): Promise<bi
  * 读取用户释放队列汇总。
  *
  * 按前端四档（5/20/40/60 天）匹配链上计划写入固定槽位；链上多出的档位
- * 仅在有余额时追加（读取失败不强行阻断）。每档两读合并为一次 Multicall3。
+ * 仅在有余额时追加（读取失败不强行阻断）。
+ * CTA 待领为当前 50 条窗（getReleasedRewardsWithOffset）；整档合计仍读 planIndex。
  *
  * @param address 钱包地址
  * @returns 释放队列汇总快照
@@ -256,8 +245,11 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
     planIndex: -1,
     durationDays: days,
     claimable: 0n,
+    overallClaimable: 0n,
     total: 0n,
     releasing: 0n,
+    claimStart: 0,
+    claimLimit: 0,
   }))
   const pending: PendingRow[] = []
   const planByDurationSeconds = new Map(
@@ -279,7 +271,7 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
     pending.push({ planIndex: plan.index, durationDays: days, uiSlot: null })
   }
 
-  // 每档 claimable+total → 单次 Multicall3（避免 N× eth_call）
+  // 每档 overall + total + size → 一次 Multicall3
   const results = await readAggregate3(
     pending.flatMap((row) => [
       {
@@ -298,18 +290,33 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
           args: [address, row.planIndex],
         }),
       },
+      {
+        target: queue,
+        callData: encodeFunctionData({
+          abi: queueReadAbi,
+          functionName: 'getQueuePlanSize',
+          args: [address, row.planIndex],
+        }),
+      },
     ]),
   )
 
-  const extraRows: ReleaseQueuePlanRow[] = []
+  type SizedRow = {
+    meta: PendingRow
+    overallClaimable: bigint
+    total: bigint
+    size: number
+  }
+  const sized: SizedRow[] = []
   for (let i = 0; i < pending.length; i++) {
     const meta = pending[i]!
-    const claimableSlot = results[i * 2]
-    const totalSlot = results[i * 2 + 1]
-    if (!claimableSlot?.success || !totalSlot?.success) {
+    const claimableSlot = results[i * 3]
+    const totalSlot = results[i * 3 + 1]
+    const sizeSlot = results[i * 3 + 2]
+    if (!claimableSlot?.success || !totalSlot?.success || !sizeSlot?.success) {
       throw new Error(`RELEASE_QUEUE_MULTICALL_FAILED:${meta.planIndex}`)
     }
-    const claimable = decodeFunctionResult({
+    const overallClaimable = decodeFunctionResult({
       abi: queueReadAbi,
       functionName: 'getReleasedRewardsWithPlanIndex',
       data: claimableSlot.returnData,
@@ -319,18 +326,80 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
       functionName: 'getRewardsWithPlanIndex',
       data: totalSlot.returnData,
     }) as bigint
+    const sizeRaw = decodeFunctionResult({
+      abi: queueReadAbi,
+      functionName: 'getQueuePlanSize',
+      data: sizeSlot.returnData,
+    }) as bigint
+    const size = Number(sizeRaw)
+    sized.push({
+      meta,
+      overallClaimable,
+      total,
+      size: Number.isFinite(size) && size > 0 ? size : 0,
+    })
+  }
+
+  const offsetCalls: Array<{ target: typeof queue; callData: `0x${string}` }> = []
+  const offsetIndex: Array<{ sizedIndex: number; start: number; limit: number }> = []
+  for (let i = 0; i < sized.length; i++) {
+    const row = sized[i]!
+    if (row.overallClaimable <= 0n || row.size <= 0) continue
+    for (let start = 0; start < row.size; start += RELEASE_CLAIM_PAGE) {
+      const limit = Math.min(RELEASE_CLAIM_PAGE, row.size - start)
+      offsetCalls.push({
+        target: queue,
+        callData: encodeFunctionData({
+          abi: queueReadAbi,
+          functionName: 'getReleasedRewardsWithOffset',
+          args: [address, row.meta.planIndex, BigInt(start), BigInt(limit)],
+        }),
+      })
+      offsetIndex.push({ sizedIndex: i, start, limit })
+    }
+  }
+  const offsetResults = offsetCalls.length === 0 ? [] : await readAggregate3(offsetCalls)
+  const pageBySized = new Map<number, Array<{ start: number; limit: number; claimable: bigint }>>()
+  for (let i = 0; i < offsetIndex.length; i++) {
+    const meta = offsetIndex[i]!
+    const slot = offsetResults[i]
+    if (!slot?.success) {
+      throw new Error(`RELEASE_QUEUE_OFFSET_FAILED:${sized[meta.sizedIndex]!.meta.planIndex}`)
+    }
+    const claimable = decodeFunctionResult({
+      abi: queueReadAbi,
+      functionName: 'getReleasedRewardsWithOffset',
+      data: slot.returnData,
+    }) as bigint
+    const list = pageBySized.get(meta.sizedIndex) ?? []
+    list.push({ start: meta.start, limit: meta.limit, claimable })
+    pageBySized.set(meta.sizedIndex, list)
+  }
+
+  const extraRows: ReleaseQueuePlanRow[] = []
+  for (let i = 0; i < sized.length; i++) {
+    const { meta, overallClaimable, total, size } = sized[i]!
+    const pages = pageBySized.get(i) ?? []
+    const page = pickFirstClaimPage({
+      size,
+      pageClaimable: (start, limit) =>
+        pages.find((item) => item.start === start && item.limit === limit)?.claimable ?? 0n,
+    })
     const row: ReleaseQueuePlanRow = {
       planIndex: meta.planIndex,
       durationDays: meta.durationDays,
-      claimable,
+      claimable: page?.claimable ?? 0n,
+      overallClaimable,
       total,
-      releasing: total > claimable ? total - claimable : 0n,
+      releasing: total > overallClaimable ? total - overallClaimable : 0n,
+      claimStart: page?.start ?? 0,
+      claimLimit: page?.limit ?? 0,
     }
     if (meta.uiSlot != null) {
       uiRows[meta.uiSlot] = row
       continue
     }
-    if (claimable <= 0n && total <= 0n) continue
+    if (overallClaimable <= 0n && total <= 0n) continue
     extraRows.push(row)
   }
 
@@ -339,7 +408,7 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
   let totalLocked = 0n
   let totalReleasing = 0n
   for (const row of rows) {
-    totalClaimable += row.claimable
+    totalClaimable += row.overallClaimable
     totalLocked += row.total
     totalReleasing += row.releasing
   }
@@ -438,12 +507,14 @@ async function readArchiveVaultTotals(user: Address): Promise<{
   totals: ReleaseBufferTokenTotals
   claimable: bigint
   claimWindows: ReleaseClaimWindow[]
+  claimables: bigint[]
 }> {
   const empty = {
     count: 0,
     totals: emptyTotals(),
     claimable: 0n,
     claimWindows: [] as ReleaseClaimWindow[],
+    claimables: [] as bigint[],
   }
   const vault = BSC_CONTRACTS.principalReleaseVault
 
@@ -503,6 +574,7 @@ async function readArchiveVaultTotals(user: Address): Promise<{
     totals,
     claimable: totals.totalClaimable,
     claimWindows: claimWindowsFromAmounts(claimables),
+    claimables,
   }
 }
 
@@ -533,6 +605,7 @@ export async function readReleaseBufferSnapshot(address: Address): Promise<Relea
   let splitterClaimable = 0n
   if (splitter !== ZERO_ADDRESS) {
     const hops = await resolveSplitterChain(splitter)
+    let pageAssigned = false
     for (const hop of hops) {
       const page = await readSplitterPages(hop.address, address)
       let hopClaimable = 0n
@@ -555,14 +628,27 @@ export async function readReleaseBufferSnapshot(address: Address): Promise<Relea
         )
         hopClaimable += item.claimableAmount
       }
+      const claimWindows = claimWindowsFromAmounts(page.items.map((item) => item.claimableAmount))
+      if (!pageAssigned) {
+        const window = claimWindows[0]
+        if (window) {
+          for (let i = window.start; i < window.start + window.limit; i++) {
+            const item = page.items[i]
+            if (!item) continue
+            const token = item.release.token
+            if (isSameAddress(token, agxToken)) agx.pageClaimable += item.claimableAmount
+            else if (isSameAddress(token, gagxToken)) gagx.pageClaimable += item.claimableAmount
+          }
+          pageAssigned = true
+        }
+      }
       chain.push({
         address: hop.address,
         next: hop.next,
         isTail: hop.isTail,
         count: page.count,
         claimable: hopClaimable,
-        agxClaimIndexes: claimIndexesForToken(page.items, agxToken),
-        gagxClaimIndexes: claimIndexesForToken(page.items, gagxToken),
+        claimWindows,
       })
       splitterCount += page.count
       splitterClaimable += hopClaimable
@@ -577,6 +663,14 @@ export async function readReleaseBufferSnapshot(address: Address): Promise<Relea
     archive.totals.totalClaimable,
     archive.totals.totalRemaining,
   )
+  if (agx.pageClaimable <= 0n && gagx.pageClaimable <= 0n) {
+    const window = archive.claimWindows[0]
+    if (window) {
+      for (let i = window.start; i < window.start + window.limit; i++) {
+        agx.pageClaimable += archive.claimables[i] ?? 0n
+      }
+    }
+  }
 
   return {
     splitter,

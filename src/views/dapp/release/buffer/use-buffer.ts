@@ -59,10 +59,12 @@ export function useBuffer() {
     },
   })
 
-  const agxClaimable = bufferQuery.data?.agx.totalClaimable ?? ZERO_BI
+  const agxClaimable = bufferQuery.data?.agx.pageClaimable ?? ZERO_BI
   const agxReleasing = bufferQuery.data?.agx.totalReleasing ?? ZERO_BI
-  const gagxClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
+  const agxOverallClaimable = bufferQuery.data?.agx.totalClaimable ?? ZERO_BI
+  const gagxClaimable = bufferQuery.data?.gagx.pageClaimable ?? ZERO_BI
   const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
+  const gagxOverallClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
   const canClaimAgx =
     migrationOk &&
     canClaimWhen({
@@ -79,8 +81,8 @@ export function useBuffer() {
       isPending: claimGagx.isPending,
       claimable: gagxClaimable,
     })
-  const agxPctLabel = formatReleasePct(agxClaimable, agxReleasing)
-  const gagxPctLabel = formatReleasePct(gagxClaimable, gagxReleasing)
+  const agxPctLabel = formatReleasePct(agxOverallClaimable, agxReleasing)
+  const gagxPctLabel = formatReleasePct(gagxOverallClaimable, gagxReleasing)
 
   async function onClaimAgx() {
     if (!canClaimAgx) return

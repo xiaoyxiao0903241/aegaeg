@@ -136,7 +136,12 @@ test('submitReleaseQueueClaim fail-closed when live claimable is zero', async ()
         'getRewardsWithPlanIndex',
         0n,
       )
-      return [ok(zero), ok(total)]
+      const size = enc(
+        'function getQueuePlanSize(address,uint8) view returns (uint256)',
+        'getQueuePlanSize',
+        0n,
+      )
+      return [ok(zero), ok(total), ok(size)]
     }
     throw new Error(`unexpected ${request.functionName}`)
   })
@@ -176,6 +181,7 @@ test('submitReleaseQueueClaim fail-closed for migrated old account after live ga
       const first = decodeFunctionData({
         abi: parseAbi([
           'function getReleasedRewardsWithPlanIndex(address,uint8) view returns (uint256)',
+          'function getReleasedRewardsWithOffset(address,uint8,uint256,uint256) view returns (uint256)',
           'function migrationEnabled() view returns (bool)',
         ]),
         data: request.args[0][0].callData,
@@ -184,6 +190,17 @@ test('submitReleaseQueueClaim fail-closed for migrated old account after live ga
         return [
           ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', true)),
           ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', true)),
+        ]
+      }
+      if (first.functionName === 'getReleasedRewardsWithOffset') {
+        return [
+          ok(
+            enc(
+              'function getReleasedRewardsWithOffset(address,uint8,uint256,uint256) view returns (uint256)',
+              'getReleasedRewardsWithOffset',
+              10n,
+            ),
+          ),
         ]
       }
       const claimable = enc(
@@ -196,7 +213,12 @@ test('submitReleaseQueueClaim fail-closed for migrated old account after live ga
         'getRewardsWithPlanIndex',
         10n,
       )
-      return [ok(claimable), ok(total)]
+      const size = enc(
+        'function getQueuePlanSize(address,uint8) view returns (uint256)',
+        'getQueuePlanSize',
+        1n,
+      )
+      return [ok(claimable), ok(total), ok(size)]
     }
     throw new Error(`unexpected ${request.functionName}`)
   })
