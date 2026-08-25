@@ -426,11 +426,14 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 | 按钮 | 方法 | 前置检查 | 成功后刷新 |
 | --- | --- | --- | --- |
 | 授权输入 token | ERC20 `approve(Usd1Swap, usdtAmount)` | 余额足够 | allowance |
-| 兑换 USD1 | `swap(usdtAmount, minUsd1Out)` | 不 paused；金额在限制内；库存足够；授权足够 | USD1/输入 token 余额、累计数据 |
+| 兑换 USD1 | `swap(usdtAmount, minUsd1Out)` | EOA 钱包直接调用；不 paused；金额在限制内；库存足够；授权足够 | USD1/输入 token 余额、累计数据 |
 
 注意事项：
 
 - e2e 为了流程覆盖使用 swap(amount, 0) ；生产前端必须先 quoteUsd1Out ，再按滑点传 minUsd1Out 。
+- swap 禁止合约地址调用，智能账户、聚合器和其他协议合约不能代用户兑换；必须由用户 EOA 钱包直接发起。
+- rateBps / BPS 名称为兼容既有 ABI 保留，但 Usd1Swap 汇率使用百万分制： 1000000 = 1:1 。
+- 当前 ABI 不提供 emergencyWithdraw ，管理端不得展示或调用该入口。
 - 这是 USDT/XXToken -> USD1 的单向兑换，不是 USD1 <-> AGX。
 - 不要把输入 token 固定为 18 位。初始化时合约会缓存 usdtDecimals / usd1Decimals ；前端从 getConfig() 或两个 ERC20 的 decimals() 读取并分别 parseUnits / formatUnits 。
 
@@ -973,6 +976,8 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 | ABI | `AegisLuckyPool`, `AegisDailyPurchaseTracker` |
 | 地址 key | `LuckyPool`, `DailyPurchaseTracker` |
 
+> 根目录 ABI 已对应累计奖励目标实现。主网必须先取得新的 `lucky-pool-cumulative-rewards-upgrade` 成功回执，再发布此前端接口；不能对仍为 `0x01a861...` 的旧实现提前调用新 selector。
+
 展示字段：
 
 | 字段 | 方法 | 说明 |
@@ -996,7 +1001,7 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 | 单用户中奖信息 | `getWinnerInfo(roundId, user)` | `won`, `rewardAmount` |
 | VRF seed | `getRandomWords(roundId)` | 回调前 `[]`，回调后 `[seed]`；当前只请求一个 word |
 | 双 FIFO | `getQueueState()` | 等待请求与等待结算的数量及各自队首 |
-| 是否已领取 | `rewardClaimed(roundId, user)` | 用户成功执行 `claimRewardMixed` 后 true |
+| 用户累计奖励 | `getRewardInfo(user)` | 返回迁移感知的 `totalReward, claimedReward, unclaimedReward`；三者均为 Lucky 毛奖励 |
 | 奖励库存 | `rewardReserve()` | 管理页更重要 |
 | reserved | `reservedRewards()` | 已锁定未释放奖励 |
 
@@ -1004,7 +1009,7 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 
 | 按钮 | 方法 | 适用场景 |
 | --- | --- | --- |
-| 领取幸运奖 | `claimRewardMixed(roundId, releasePlanIndex, restakePlanIndex, restakeBps)` | 用户中奖、奖励金额大于 0 且尚未领取；按贡献值系数消费贡献值，释放部分入 RewardQueue、复投部分进 LockedStaking |
+| 领取全部累计幸运奖 | `claimRewardMixed(releasePlanIndex, restakePlanIndex, restakeBps)` | `unclaimedReward > 0`；一次处理全部待领取毛奖励，按总额消费贡献值，释放部分入 RewardQueue、复投部分进 LockedStaking |
 
 用户获得资格的方式：
 
@@ -1031,10 +1036,10 @@ RewardQueue 展示 Mixed 领奖 release 部分进入的线性释放队列，并�
 - 空轮完成后 requestId=0 、 rewardAmount=0 、 winnerCount=0 ，并触发 RoundSkipped 。前端不能假设所有 Drawn 轮都会出现 RandomnessFulfilled 。
 - 非空轮先触发 RoundSealed 并进入请求 FIFO；请求阶段锁奖并触发 RandomnessRequested 。
 - VRF 回调只验证并保存一个 seed，触发 RandomnessReady ；不会在回调中选人或转账。
-- 后续 FIFO settle 从一个 seed 派生 min(eligibleCount,maxWinners) 名不重复赢家，依次发出 WinnerSelected ，最后以同交易的 RandomnessFulfilled 收尾。
+- 后续 FIFO settle 从一个 seed 派生 min(eligibleCount,maxWinners) 名不重复赢家，依次发出 WinnerSelected 与 RewardAccrued ，最后以同交易的 RandomnessFulfilled 收尾。
 - 每位中奖者默认目标为 500 USD1；关轮请求 VRF 的交易会实时读取 AGX/USD1 价格并向上取整锁定 AGX 奖额。回调前后的价格变化都不会改写已锁定的奖额。
-- 开奖后若 won = true 且 rewardClaimed = false ，前端展示“领取”按钮；成功后刷新 rewardClaimed 、 reservedRewards 、 RewardQueue.totalEnqueued 和 AgxContributionSwap.userContribution 。
-- 领取前需确保中奖者有足够贡献值（ rewardAmount / contributionDivisor ），否则 claimRewardMixed revert ErrorInsufficientContribution ；前端可引导用户先 AgxContributionSwap.convert 补充贡献值。
+- 前端以 getRewardInfo(user).unclaimedReward > 0 展示“领取全部”按钮；成功后刷新累计奖励、 reservedRewards 、 RewardQueue.totalEnqueued 和 AgxContributionSwap.userContribution 。旧 rewardClaimed(roundId,user) 已删除。
+- 领取前需确保中奖者有足够贡献值（ unclaimedReward / contributionDivisor ），否则 claimRewardMixed revert ErrorInsufficientContribution ；前端可引导用户先 AgxContributionSwap.convert 补充贡献值。一次领取使用同一组计划处理全部待领取奖励，不支持按轮或部分领取。
 - restakeBps 0 = 全部释放进 RewardQueue，10000 = 全部复投进 LockedStaking； releasePlanIndex / restakePlanIndex 对应 RestakeConfig 中的释放计划与复投计划。
 - 已迁移旧地址调用领取会报 ErrorAccountMigrated ，应切换到迁移后的新地址。
 - LuckyPool 跟随统一 root 迁移，支持 A→B→C（次数读取 Manager 的 maxMigrationHops ，默认 8）。前端应始终使用 canonicalAccount() 展示当前地址，并用 migratedFrom() 展示首次 root；旧地址和中间地址不能继续领取。
@@ -1325,7 +1330,7 @@ setMigrationEnabled(false)
 | DaoPool | `RewardsClaimedMixed`, `RestakeClaimed` | DAO Mixed 领奖 |
 | RewardQueue | `EnteredQueue`, `RewardReleased`, `RewardClaimedFromQueue` | 释放队列 |
 | 分流器（本金释放） | `AegisSplitter` 的 `Deposited`, `Claimed`；历史 PRV 单沿用 `ReleaseCreated`, `PrincipalClaimed`（归档 ABI） | 本金释放 |
-| LuckyPool | `RoundCreated`, `Activated`, `RoundSkipped`, `RoundSealed`, `EligibleUserAdded`, `RandomnessRequested`, `RandomnessReady`, `WinnerSelected`, `RandomnessFulfilled`, `LuckyRewardClaimedMixed`, `RewardPaid`, `RewardClaimed` | 抽奖全过程；`RoundSkipped` 是空轮终态，`RandomnessReady` 只是 seed 到达，`RandomnessFulfilled` 才是 settle 终态 |
+| LuckyPool | `RoundCreated`, `Activated`, `RoundSkipped`, `RoundSealed`, `EligibleUserAdded`, `RandomnessRequested`, `RandomnessReady`, `WinnerSelected`, `RewardAccrued`, `RandomnessFulfilled`, `LuckyRewardClaimedMixed`, `RewardClaimed` | 抽奖与累计领取全过程；`RewardAccrued` 更新用户 root 累计账本，`RandomnessReady` 只是 seed 到达，`RandomnessFulfilled` 才是 settle 终态 |
 | DailyPurchaseTracker | `PurchaseValued`, `PurchaseRecorded`, `PurchaseLuckySkipped`, `PurchaseIgnoredBeforeRoundStart`, `UserQualified` | 每笔成功来源购买的权威 USD1 估值、轮内累计、Lucky 关闭跳过、计划开始前明确忽略、单笔达标资格 |
 | XStakingPool | `Staked`, `WarmupActivated`, `RewardSettlement`, `RewardClaimed`, `Unstaked` | X 挖矿 |
 | Turbine | `Received`, `Silenced`, `CooledGagxClaimed`, `CooldownUpdated` | 配额、冷却和配置变化 |

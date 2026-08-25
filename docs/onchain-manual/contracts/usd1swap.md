@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/AegisUsd1Swap.json
-SHA-256 d74c842d7416…
-58
-30
-10
-18
+SHA-256 2cd31f020a81…
+57
+29
+9
+19
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/usd1swap.json`](../abis/usd1swap.json)（58 entries）。
+完整 ABI 已导出为 [`abis/usd1swap.json`](../abis/usd1swap.json)（57 entries）。
 
 </details>
 
@@ -77,6 +77,7 @@ USDT 兑换 USD1。
 
 **前提条件:**
 
+- 只能由 EOA 钱包直接调用，合约调用会回滚 ErrorContractNotAllowedCall
 - 合约未暂停
 - 有足够的 USD1 储备
 - minUsd1Out 滑点保护
@@ -116,7 +117,7 @@ await usd1Swap.depositUsd1(amount);
 
 ##### setRateBps(uint256 newRateBps) — onlyAuthorized（owner + operators）
 
-设置兑换比例 `rateBps`（BPS，必须非零，`0` 直接 revert `ErrorZeroRate`）。触发 `RateUpdated`。
+设置兑换比例 `rateBps`。该兼容字段现使用百万分制精度：`1000000 = 1:1`、`1001000 = 1 USDT → 1.001 USD1`；必须非零，`0` 直接 revert `ErrorZeroRate`。触发 `RateUpdated`。
 
 ##### setTreasuryWallet(address newWallet) — onlyOwner
 
@@ -134,9 +135,7 @@ await usd1Swap.depositUsd1(amount);
 
 授权/撤销 operator（operator 可调用 `onlyAuthorized` 接口）。触发 `OperatorUpdated`。
 
-##### emergencyWithdraw(address token, address to, uint256 amount) — onlyOwner
-
-紧急提取合约内任意 ERC20 代币。触发 `EmergencyWithdrawn`。
+当前版本不提供 owner 应急提取入口；已注入的 USD1 只能通过用户兑换流出。
 
 ---
 
@@ -170,10 +169,6 @@ await usd1Swap.depositUsd1(amount);
 
 `setOperator` 授权/撤销 operator 时触发。
 
-#### EmergencyWithdrawn(address indexed token, address indexed to, uint256 amount)
-
-`emergencyWithdraw` 提取代币时触发。
-
 ### 错误码
 
 | 错误 | 原因 | 解决方案 |
@@ -190,12 +185,13 @@ await usd1Swap.depositUsd1(amount);
 | `ErrorZeroRate()` | `rateBps` 为 0 | 设置非零汇率 |
 | `ErrorCallerNotAuthorized()` | 调用者非 owner/operator | 检查权限 |
 | `ErrorInvalidLimits(minAmount, maxAmount)` | 限额配置非法（max<min） | 修正限额 |
+| `ErrorContractNotAllowedCall()` | 合约地址调用 `swap` | 改由用户 EOA 钱包直接调用 |
 
 ### 配置参数
 
 | 参数 | 默认值 | 说明 | 设置者 |
 | --- | --- | --- | --- |
-| `rateBps` | 初始化时设置 | 兑换比例（BPS） | owner/operator |
+| `rateBps` | 初始化时设置 | 兑换比例（百万分制；字段名为兼容 ABI 保留） | owner/operator |
 | `treasuryWallet` | 初始化时设置 | USDT 接收地址 | owner |
 | `minUsdtIn` / `maxUsdtIn` | 0（无限制） | 兑换限额 | owner |
 | `paused` | false | 是否暂停 | owner/operator |

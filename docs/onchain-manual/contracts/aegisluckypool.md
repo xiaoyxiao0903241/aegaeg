@@ -6,24 +6,26 @@
 ## 完整 ABI
 
 abi/AegisLuckyPool.json
-SHA-256 006b17542bfd…
-168
+SHA-256 48d64c5eaf41…
+167
 84
 33
-51
+50
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/aegisluckypool.json`](../abis/aegisluckypool.json)（168 entries）。
+完整 ABI 已导出为 [`abis/aegisluckypool.json`](../abis/aegisluckypool.json)（167 entries）。
 
 </details>
 
 ## AegisLuckyPool 前端与运维说明
 
-`AegisLuckyPool` 是 AEGIS X 的每日抽奖合约。当前 canonical Pool 最初与 `AegisDailyPurchaseTracker` 成对全新部署，提供可重排首轮、O(1) 续轮、空轮跳过、双 FIFO 两阶段 VRF 和单 seed 派生最多 10 名不重复赢家。旧版 Pool/Tracker 仍不是本实现的升级来源；只有当前 canonical Pool 可按专用发布证据执行窄范围代理升级。
+`AegisLuckyPool` 是 AEGIS X 的每日抽奖合约。当前 canonical Pool 最初与 `AegisDailyPurchaseTracker` 成对全新部署，提供可重排首轮、O(1) 续轮、空轮跳过、双 FIFO 两阶段 VRF、单 seed 派生最多 10 名不重复赢家，以及按账户 root 累计后一次领取全部待领取奖励。旧版 Pool/Tracker 仍不是本实现的升级来源；只有当前 canonical Pool 可按专用发布证据执行代理升级。
 
 **BNB Chain 主网 proxy**：`0x6ACdd260F7926EA60991b566B272b338E0222C44`（增量 release `f25c7887-1ec0-43a2-b16c-32de9dbbb314`，部署块 `115038536`）。2026-08-10 首轮重排升级已通过：implementation `0x89dC32FE0B88cbd44dB68cFc54Cf063950F301cD → 0x01a861bAebB88cB17aB8b7c4d6A0D645C0774Fa3`，升级交易 `0x7e70efdb3eba105877c68f68b6a224df7eb02f936178011e5ee980fa891600d2`，排期交易 `0x40da34b95883baeafa88d8ea7c32f01390d6c61ca3cdf70a755966ca617541e2`。终验块 `115134221` 回读 `paused=true`、`activated=false`、零轮次、`firstStartTime=1786320000`（2026-08-10 00:00 UTC）、`endTime=1786406400`（2026-08-11 00:00 UTC）；权威回执见 [`20260810220903012...upgrade.json`](../../deployments/verifications/20260810220903012.bsc.lucky-pool-first-start-time-upgrade.json)。Pool 尚未激活，必须在 end 到达前完成激活；由于 start 已经过，激活后首轮只使用剩余窗口。
+
+本文的累计奖励接口对应当前仓库待发布实现；在产生新的 `lucky-pool-cumulative-rewards-upgrade` 链上回执前，主网 `0x01a861...` 实现仍使用旧 ABI，前端不得提前切换调用。
 
 ### 首轮计划与激活语义
 
@@ -168,7 +170,11 @@ const [awaitingCount, nextAwaitingRoundId, readyCount, nextReadyRoundId] =
 const seedWords = await luckyPool.getRandomWords(roundId); // [] 或 [seed]
 const winners = await luckyPool.getWinners(roundId);
 const [won, rewardAmount] = await luckyPool.getWinnerInfo(roundId, user);
+const [totalReward, claimedReward, unclaimedReward] =
+  await luckyPool.getRewardInfo(user);
 ```
+
+`getRewardInfo` 会把任意历史/当前别名解析到首次 root，因此 A→B→C 后使用 A、B、C 查询都返回同一累计账本；只有当前 canonical 地址可以执行领取。
 
 轮次分页使用 `roundCount()` 和 `getRoundIds(offset,limit)`；资格列表使用 `eligibleCount(roundId)` 与 `getEligibleUsers(roundId,offset,limit)`。
 
@@ -181,25 +187,31 @@ const [won, rewardAmount] = await luckyPool.getWinnerInfo(roundId, user);
 3. 发出 LuckyRewardAmountLocked(roundId,agxPrice,rewardAmount) ；
 4. 按实际赢家数量增加 reservedRewards 。
 
-因此 scanner 和前端必须以 `LuckyRewardAmountLocked` 区分“目标 USD1 价值”和“最终每名赢家 AGX 数量”。`rewardReserve()` 返回合约持有的奖励 Token 总余额；可自由提取额为该余额减去 `reservedRewards`，紧急提取会在链上强制执行这一预留保护。
+因此 scanner 和前端必须以 `LuckyRewardAmountLocked` 区分“目标 USD1 价值”和“最终每名赢家 AGX 数量”。每次 settle 在保留 `winnerReward(roundId,root)` 单轮审计记录的同时，把奖励加入 root 的累计总奖励。`rewardReserve()` 返回合约持有的奖励 Token 总余额；可自由提取额为该余额减去 `reservedRewards`，紧急提取会在链上强制执行这一预留保护。
 
-### 领取
+### 累计领取
 
-中奖不会自动转账。用户调用：
+中奖不会自动转账。开奖时奖励按首次 root 累计，用户调用下列无轮次入口，一次处理当前全部待领取毛奖励：
 
 solidity
 ```solidity
-claimRewardMixed(roundId, releasePlanIndex, restakePlanIndex, restakeBps)
+claimRewardMixed(releasePlanIndex, restakePlanIndex, restakeBps)
 ```
 
-合约在同一交易内标记已领取、扣减 `reservedRewards`，再按比例进入 RewardQueue 与 LockedStaking。前端应先读取：
+累计账本定义为：
 
-- getWinnerInfo(roundId,user) ；
-- rewardClaimed(roundId,user) ；
+text
+```text
+unclaimedReward = totalReward - claimedReward
+```
+
+合约把 `claimedReward` 更新到当前 `totalReward`、按本次全部 `unclaimedReward` 扣减 `reservedRewards`，再统一按一组 mixed 参数进入 RewardQueue 与 LockedStaking。任一贡献值、队列或复投调用失败会回滚整笔交易。前端应先读取：
+
+- getRewardInfo(user) ；
 - restakeConfig 中的贡献值与复投限制；
 - RewardQueue 计划和 LockedStaking 计划。
 
-迁移后的旧地址不能再次领取；迁移感知 getter 会把新地址映射到原始中奖记录。
+`rewardClaimed(roundId,user)` 已从 ABI 删除；`getWinnerInfo`/`winnerReward` 仅保留单轮中奖审计语义。迁移后的旧地址不能领取，A→B→C 后由 C 继承首次 root 的累计账本。领取后再次中奖只增加 `totalReward`，下一次领取仅处理新增差额。
 
 ### 管理接口
 
@@ -233,8 +245,11 @@ claimRewardMixed(roundId, releasePlanIndex, restakePlanIndex, restakeBps)
 | `LuckyRewardAmountLocked` | 固化每名赢家 AGX 数量和价格证明 |
 | `RandomnessRequested` | 保存 requestId |
 | `RandomnessReady` | 保存 seed 与回调交易证明，状态变为待结算 |
-| `WinnerSelected` | 保存槽位、候选索引和赢家 |
+| `WinnerSelected` | 保存槽位、候选索引和单轮赢家 |
+| `RewardAccrued` | 把单轮奖励累计到用户 root，并给出累计总奖励 |
 | `RandomnessFulfilled` | 结算终态，必须与同交易 WinnerSelected 数量一致 |
+| `RewardClaimed` | 记录用户一次领取的全部待领取毛奖励及累计领取值 |
+| `LuckyRewardClaimedMixed` | 记录本次累计奖励的释放/复投拆分、计划和贡献值 |
 | `UpkeepPerformed` | 记录实际执行动作和队列序号 |
 
 ### 部署/升级验收
@@ -247,5 +262,7 @@ claimRewardMixed(roundId, releasePlanIndex, restakePlanIndex, restakeBps)
 - 空轮只出现 RoundSkipped + RoundCreated ，无价格读取、奖励预留和 VRF 请求。
 - 非空轮 rollover 与新轮创建同交易完成，购买不等待旧轮开奖。
 - VRF 回调只发 RandomnessReady ，不发赢家事件。
-- settle 产生 min(eligibleCount,maxWinners) 名不重复赢家，并以 RandomnessFulfilled 收尾。
+- settle 产生 min(eligibleCount,maxWinners) 名不重复赢家，逐个发出 RewardAccrued ，并以 RandomnessFulfilled 收尾。
+- rewardClaimed(roundId,user) 与旧四参数 claimRewardMixed 不在 ABI；新三参数入口和 getRewardInfo 可用。
+- 多轮奖励一次领取、领取后新增奖励差额、A→B→C 继承和失败原子回滚均通过。
 - Keeper 原样透传 performData ，旧数据因 queueSequence 变化而失败关闭。
