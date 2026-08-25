@@ -1444,7 +1444,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: 'Chờ xử lý',
+      pending: 'Chờ nhận',
       processing: 'Đang xử lý',
       paid: 'Đã thanh toán',
       claimed: 'Đã nhận',

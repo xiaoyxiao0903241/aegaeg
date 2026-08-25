@@ -177,7 +177,7 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
 test('mapRewardLogToRow uses i18n labels for status', async () => {
   const { mapRewardLogToRow } = await loadModule('/src/views/dapp/rewards/shared.tsx')
   const labels = {
-    pending: '待处理',
+    pending: '待领取',
     processing: '处理中',
     paid: '已支付',
     claimed: '已领取',
@@ -238,7 +238,7 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
 test('mapCommunityFundLogToRow renders development fund history without genesis rank', async () => {
   const { mapCommunityFundLogToRow } = await loadModule('/src/views/dapp/rewards/shared.tsx')
   const labels = {
-    pending: '待处理',
+    pending: '待领取',
     processing: '处理中',
     paid: '已支付',
     claimed: '已领取',

@@ -1405,7 +1405,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: 'В ожидании',
+      pending: 'К получению',
       processing: 'Обработка',
       paid: 'Оплачено',
       claimed: 'Получено',

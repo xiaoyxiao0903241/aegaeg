@@ -1406,7 +1406,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: '대기 중',
+      pending: '수령 대기',
       processing: '처리 중',
       paid: '지불 완료',
       claimed: '수령 완료',

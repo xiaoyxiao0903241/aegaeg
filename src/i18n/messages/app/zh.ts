@@ -1346,7 +1346,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: '待处理',
+      pending: '待领取',
       processing: '处理中',
       paid: '已支付',
       claimed: '已领取',
