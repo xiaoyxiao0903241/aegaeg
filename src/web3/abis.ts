@@ -657,6 +657,8 @@ export const LUCKY_POOL_METHODS = {
 export const DAILY_PURCHASE_TRACKER_METHODS = {
   getCurrentRoundUserStat:
     'function getCurrentRoundUserStat(address user) view returns (uint256 roundId, uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
+  getUserRoundStat:
+    'function getUserRoundStat(uint256 roundId, address user) view returns (uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
 } as const
 
 /**

@@ -1,8 +1,6 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
-import { formatUnits } from 'viem'
 
-import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatCountdownParts } from '~/core/format-countdown'
 import { luckyWinnersDateList, luckyWinnersSelectedDate } from '~/core/rewards/lucky-winners-date'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -19,7 +17,6 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { SelectMenuOption } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanTx } from '~/shared/config/explorer'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatShortAddress } from '~/shared/presenters/format'
@@ -29,14 +26,18 @@ import {
   formatApiCountLabel,
   formatApiGagxApproxUsd,
   formatApiStatLabel,
+  formatLuckyUsd1Amount,
   mapLuckyMyRoundToRow,
   mapLuckyWinnerToRow,
   NON_NUMERIC_EMPTY,
 } from '~/views/dapp/rewards/shared'
-import { readLuckyRoundDisplaySnapshot } from '~/web3/rewards/rewards-read'
+import {
+  collectLuckyWinnerUsers,
+  readLuckyMyRoundStakes,
+  readLuckyRoundDisplaySnapshot,
+  readLuckyWinnerRoundStakes,
+} from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 function formatCountdown(endTimeSec: bigint, nowSec: number): string | null {
   const end = Number(endTimeSec)
@@ -49,18 +50,16 @@ function formatCountdown(endTimeSec: bigint, nowSec: number): string | null {
   return `${hours?.text ?? '00'}:${minutes?.text ?? '00'}`
 }
 
-function formatUsd1Label(raw: bigint | null | undefined): string {
-  if (raw == null) return NON_NUMERIC_EMPTY
-  const n = Number(formatUnits(raw, USD1_DECIMALS))
-  if (!Number.isFinite(n)) return NON_NUMERIC_EMPTY
-  return `$${formatTokenAmount(raw, USD1_DECIMALS, 2)}`
+function parseLuckyRoundId(raw: unknown): bigint | null {
+  if (typeof raw !== 'number' || !Number.isInteger(raw) || raw <= 0) return null
+  return BigInt(raw)
 }
 
 /**
  * 幸运奖详情视图模型
  *
  * 聚合今日奖池汇总、开奖名单与我的参与记录，
- * 另从链上读取本轮开奖快照计算参与资格与倒计时。
+ * 另从链上读取本轮开奖快照与中奖地址本轮累计 USD1。
  * 日期 / 记录分页在 `useLuckySessionStore`；`selectedDate === null` 时不传 date，用 winners 返回的最新开奖日。
  *
  * @see docs/backend-api/api.md #lucky-reward/summary
@@ -79,6 +78,37 @@ export function useLucky() {
 
   const winnersQuery = useLuckyRewardWinners(selectedDate, sessionReady)
   const historyQuery = useLuckyRewardMyRounds(tablePageQuery(historyPage), sessionReady)
+  const historyItems = historyQuery.data?.items ?? []
+  const historyRoundIds = [
+    ...new Set(
+      historyItems
+        .map((item) => parseLuckyRoundId(item.round_id))
+        .filter((id): id is bigint => id != null),
+    ),
+  ]
+  const myStakesQuery = useChainQuery({
+    queryKey: queryKeys.chain.rewardsLuckyMyRoundStakes(historyRoundIds.map(String)),
+    queryFn: (address) => readLuckyMyRoundStakes(address, historyRoundIds),
+    enabled: sessionReady && historyRoundIds.length > 0,
+    freshness: 'balances',
+  })
+
+  const winners = winnersQuery.data?.items ?? []
+  const roundId = parseLuckyRoundId(winnersQuery.data?.round_id)
+  const stakeUsers = collectLuckyWinnerUsers(winners.map((item) => item.address))
+  const stakesQuery = useChainQuery({
+    scope: 'public',
+    queryKey: queryKeys.chain.rewardsLuckyWinnerStakes(
+      roundId == null ? 0 : Number(roundId),
+      stakeUsers,
+    ),
+    queryFn: () =>
+      roundId == null
+        ? Promise.resolve(new Map<string, bigint>())
+        : readLuckyWinnerRoundStakes(roundId, stakeUsers),
+    enabled: sessionReady && roundId != null && stakeUsers.length > 0,
+    freshness: 'balances',
+  })
 
   const drawDate = luckyWinnersSelectedDate(selectedDate, winnersQuery.data?.date)
   const dateOptions: SelectMenuOption[] = luckyWinnersDateList(
@@ -134,7 +164,7 @@ export function useLucky() {
       ? undefined
       : lucky.maxStakeHint != null
         ? interpolate(lucky.maxStakeHint, {
-            amount: formatUsd1Label(roundQuery.data?.roundPurchaseUsd1),
+            amount: formatLuckyUsd1Amount(roundQuery.data?.roundPurchaseUsd1),
           })
         : undefined
 
@@ -152,10 +182,13 @@ export function useLucky() {
   })
 
   const selfAddress = account?.address ?? null
-  const winners = winnersQuery.data?.items ?? []
   const winnersTotal = winners.length
   const winnerRows = winners.map((item) =>
-    mapLuckyWinnerToRow(item, { selfAddress, meLabel: lucky.meBadge }),
+    mapLuckyWinnerToRow(item, {
+      selfAddress,
+      meLabel: lucky.meBadge,
+      stakeAmountUsd1: stakesQuery.data?.get(item.address.toLowerCase()) ?? null,
+    }),
   )
   const highlightedWinnerRows = winners.flatMap((item, index) =>
     selfAddress != null &&
@@ -164,7 +197,7 @@ export function useLucky() {
       ? [index]
       : [],
   )
-  const winnersLoading = sessionReady && winnersQuery.isLoading
+  const winnersLoading = sessionReady && (winnersQuery.isLoading || stakesQuery.isLoading)
   const drawHash = winnersQuery.data?.draw_tx_hash
   const resultsSummary = interpolate(lucky.resultsSummary, { count: winnersTotal })
   const verifyChrome: ReactNode =
@@ -191,10 +224,14 @@ export function useLucky() {
       </Text>
     ) : null
 
-  const historyRows =
-    historyQuery.data?.items.map((item) =>
-      mapLuckyMyRoundToRow(item, { won: lucky.resultWon, lost: lucky.resultLost }),
-    ) ?? []
+  const historyRows = historyItems.map((item) => {
+    const rid = parseLuckyRoundId(item.round_id)
+    return mapLuckyMyRoundToRow(item, {
+      won: lucky.resultWon,
+      lost: lucky.resultLost,
+      stakeAmountUsd1: rid == null ? null : (myStakesQuery.data?.get(rid) ?? null),
+    })
+  })
 
   return {
     lucky,
@@ -214,7 +251,7 @@ export function useLucky() {
     winnersLoading,
     winnersTotal,
     historyRows,
-    historyLoading: sessionReady && historyQuery.isLoading,
+    historyLoading: sessionReady && (historyQuery.isLoading || myStakesQuery.isLoading),
     historyPage,
     setHistoryPage,
     historyTotal: historyQuery.data?.total ?? 0,

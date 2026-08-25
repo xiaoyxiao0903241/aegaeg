@@ -14,7 +14,30 @@ const luckyAbi = parseAbi([
   LUCKY_POOL_METHODS.getRewardInfo,
 ])
 
-const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getCurrentRoundUserStat])
+const trackerAbi = parseAbi([
+  DAILY_PURCHASE_TRACKER_METHODS.getCurrentRoundUserStat,
+  DAILY_PURCHASE_TRACKER_METHODS.getUserRoundStat,
+])
+
+/** LuckyPool 单轮最多 10 名赢家；超过的地址不查、展示空。 */
+const LUCKY_MAX_WINNERS = 10
+const USER_ADDRESS = /^0x[a-fA-F0-9]{40}$/
+
+/** 开奖结果质押额：合法地址去重后最多 10 个，供 queryKey 与链上读取同一批。 */
+export function collectLuckyWinnerUsers(users: readonly string[]): Address[] {
+  const seen = new Set<string>()
+  const targets: Address[] = []
+  for (const raw of users) {
+    const address = raw.trim()
+    if (!USER_ADDRESS.test(address)) continue
+    const key = address.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    targets.push(address as Address)
+    if (targets.length >= LUCKY_MAX_WINNERS) break
+  }
+  return targets
+}
 
 /** 用户幸运奖领取快照（累计账本，无轮次）。 */
 export type LuckyClaimSnapshot = {
@@ -182,4 +205,90 @@ export async function readLuckyRoundDisplaySnapshot(
     roundPurchaseUsd1: totalAmount,
     accepting: Boolean(accepting),
   }
+}
+
+type RoundUserQuery = { roundId: bigint; user: Address }
+
+async function readUserRoundTotalAmounts(queries: readonly RoundUserQuery[]): Promise<bigint[]> {
+  if (queries.length === 0) return []
+  const tracker = BSC_CONTRACTS.dailyPurchaseTracker
+  const results = await readAggregate3(
+    queries.map(({ roundId, user }) => ({
+      target: tracker,
+      callData: encodeFunctionData({
+        abi: trackerAbi,
+        functionName: 'getUserRoundStat',
+        args: [roundId, user],
+      }),
+    })),
+  )
+  return queries.map((query, index) => {
+    const info = decodeAggregate3Result<readonly [bigint, boolean, bigint]>(
+      results,
+      index,
+      trackerAbi,
+      'getUserRoundStat',
+      `LUCKY_ROUND_STAKE_MULTICALL_FAILED:${query.roundId}:${query.user}`,
+    )
+    return info[0]
+  })
+}
+
+/**
+ * 按轮次批量读取中奖地址的本轮累计 USD1（质押金额列）。
+ *
+ * 走 Tracker.getUserRoundStat（迁移感知），一次 Multicall3；最多 10 个有效地址。
+ * roundId 为 0 或名单为空时不发 RPC。任一槽失败则整批抛错，不回退接口金额。
+ *
+ * @param roundId 开奖轮次
+ * @param users 中奖地址（顺序与表格一致；非法 / 重复跳过）
+ * @returns 小写地址 → `totalAmount`（USD1 18 位）
+ * @see docs/onchain-manual/contracts/aegisdailypurchasetracker.md 指定轮次统计
+ */
+export async function readLuckyWinnerRoundStakes(
+  roundId: bigint,
+  users: readonly string[],
+): Promise<ReadonlyMap<string, bigint>> {
+  const stakes = new Map<string, bigint>()
+  if (roundId <= 0n) return stakes
+
+  const queries = collectLuckyWinnerUsers(users).map((user) => ({ roundId, user }))
+  const amounts = await readUserRoundTotalAmounts(queries)
+  for (const [index, query] of queries.entries()) {
+    stakes.set(query.user.toLowerCase(), amounts[index] ?? 0n)
+  }
+  return stakes
+}
+
+/**
+ * 按当前用户的历史轮次批量读取本轮累计 USD1（抽奖记录质押金额列）。
+ *
+ * 同一地址、多个 roundId，一次 Multicall3；非法地址 / 非正轮次跳过。
+ * 任一槽失败则整批抛错，不回退接口金额。
+ *
+ * @param user 当前钱包地址
+ * @param roundIds 本页历史轮次（可重复；0 与非法值忽略）
+ * @returns roundId → `totalAmount`（USD1 18 位）
+ * @see docs/onchain-manual/contracts/aegisdailypurchasetracker.md 指定轮次统计
+ */
+export async function readLuckyMyRoundStakes(
+  user: string,
+  roundIds: readonly bigint[],
+): Promise<ReadonlyMap<bigint, bigint>> {
+  const stakes = new Map<bigint, bigint>()
+  const address = user.trim()
+  if (!USER_ADDRESS.test(address)) return stakes
+
+  const seen = new Set<bigint>()
+  const queries: RoundUserQuery[] = []
+  for (const roundId of roundIds) {
+    if (roundId <= 0n || seen.has(roundId)) continue
+    seen.add(roundId)
+    queries.push({ roundId, user: address as Address })
+  }
+  const amounts = await readUserRoundTotalAmounts(queries)
+  for (const [index, query] of queries.entries()) {
+    stakes.set(query.roundId, amounts[index] ?? 0n)
+  }
+  return stakes
 }

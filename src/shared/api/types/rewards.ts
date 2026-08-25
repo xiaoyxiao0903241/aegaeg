@@ -33,6 +33,8 @@ export interface LuckyRewardWinnerItem {
 
 export interface LuckyRewardWinnersResponse {
   date: string
+  /** 开奖轮次；质押金额按此 round 读 Tracker.getUserRoundStat */
+  round_id: number
   draw_tx_hash: string | null
   /** 已开奖日期，供下拉；不含尚未开奖的当天 */
   dates: string[]

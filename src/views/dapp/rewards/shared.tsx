@@ -5,11 +5,13 @@
  * 供各奖励详情页复用。
  */
 import type { ReactNode } from 'react'
+import { formatUnits } from 'viem'
 
 import {
   formatApiContributionPoints,
   formatContributionPoints,
 } from '~/core/exchange/format-contribution-points'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
 import type {
   CommunityFundLogItem,
@@ -29,6 +31,7 @@ import type {
 import { StatusBadge } from '~/shared/components/badge'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   formatApiAmount,
   formatApiDateTime,
@@ -47,6 +50,18 @@ import {
  * 金额 / 数量缺数走 `formatApiAmount` / `formatNumber(0…)`，显 0。
  */
 export const NON_NUMERIC_EMPTY = '—'
+
+const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
+
+/**
+ * Tracker 累计 USD1（18 位）→ `$1.23`；缺数显示「—」，不回退成 0。
+ */
+export function formatLuckyUsd1Amount(raw: bigint | null | undefined): string {
+  if (raw == null) return NON_NUMERIC_EMPTY
+  const n = Number(formatUnits(raw, USD1_DECIMALS))
+  if (!Number.isFinite(n)) return NON_NUMERIC_EMPTY
+  return `$${formatTokenAmount(raw, USD1_DECIMALS, 2)}`
+}
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
 
@@ -503,12 +518,16 @@ export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogIte
  * 幸运奖中奖名单 → 表格行；当前用户地址可附加「我」徽标。
  *
  * @param item 后端中奖记录
- * @param opts 可选当前地址与「我」文案
- * @returns 名次、地址、参与金额与奖励的单元格数组
+ * @param opts 当前地址、「我」文案，以及链上质押额
+ * @returns 名次、地址、质押金额与奖励的单元格数组
  */
 export function mapLuckyWinnerToRow(
   item: LuckyRewardWinnerItem,
-  opts?: { selfAddress?: string | null; meLabel?: string },
+  opts?: {
+    selfAddress?: string | null
+    meLabel?: string
+    stakeAmountUsd1?: bigint | null
+  },
 ): ReactNode[] {
   const isSelf =
     opts?.selfAddress != null &&
@@ -529,7 +548,7 @@ export function mapLuckyWinnerToRow(
   return [
     String(item.rank).padStart(2, '0'),
     addressCell,
-    formatApiAmount(item.participation_amount, { digits: 2, prefix: '$' }),
+    formatLuckyUsd1Amount(opts?.stakeAmountUsd1),
     formatApiAmount(item.reward_amount, { digits: 4, suffix: ' gAGX' }),
   ]
 }
@@ -538,12 +557,12 @@ export function mapLuckyWinnerToRow(
  * 当前用户幸运奖轮次 → 表格行；中奖轮次展示可领取奖励。
  *
  * @param item 后端轮次记录
- * @param labels 中奖与未中奖文案
- * @returns 日期、参与金额、结果与开奖交易哈希单元格
+ * @param labels 中奖与未中奖文案，以及链上质押额
+ * @returns 日期、质押金额、结果与开奖交易哈希单元格
  */
 export function mapLuckyMyRoundToRow(
   item: LuckyRewardMyRoundItem,
-  labels: { won: string; lost: string },
+  labels: { won: string; lost: string; stakeAmountUsd1?: bigint | null },
 ): ReactNode[] {
   const wonAmount = formatApiAmount(item.reward_amount, { digits: 4, suffix: ' gAGX' })
   const result =
@@ -559,7 +578,7 @@ export function mapLuckyMyRoundToRow(
 
   return [
     formatRegisterDate(item.date),
-    formatApiAmount(item.participation_amount, { digits: 2, prefix: '$' }),
+    formatLuckyUsd1Amount(labels.stakeAmountUsd1),
     result,
     item.draw_tx_hash ? (
       <ExplorerLink key={item.draw_tx_hash} kind="tx" showIcon value={item.draw_tx_hash} />
