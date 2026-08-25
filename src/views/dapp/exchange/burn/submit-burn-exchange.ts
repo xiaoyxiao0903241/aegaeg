@@ -1,5 +1,5 @@
 import { evaluateBurnContributionSwap } from '~/core/exchange/burn-contribution-swap'
-import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
+import { invalidateAfterBurnExchange } from '~/shared/api/query/invalidate'
 import type { ExchangeSubmitResult, QuotedSubmitCore } from '~/views/dapp/exchange/shared'
 import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
 import {
@@ -55,7 +55,7 @@ export async function submitBurnExchange(args: {
           wallet,
           agxAmount: amountIn,
         })
-        invalidateAfterExchange()
+        invalidateAfterBurnExchange()
       },
     })
   })
