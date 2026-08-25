@@ -1,5 +1,6 @@
 import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
+  getDaoRewardTypeTotals,
   getLuckyRewardMyRounds,
   getLuckyRewardSummary,
   getLuckyRewardWinners,
@@ -25,6 +26,18 @@ import type {
 } from '~/shared/api/types'
 
 /** 奖励域查询较多，这里集中暴露各汇总、流水与领取状态 hooks。 */
+
+/**
+ * 查询各类型 DAO 奖励待领取金额。
+ *
+ * 推荐 / 参与 / 共建 / 发展的 Hub 与子页待领预览用此汇总。
+ *
+ * @param enabled false 时暂停请求
+ * @see docs/backend-api/api.md #dao-reward/type-totals
+ */
+export function useDaoRewardTypeTotals(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.daoRewardTypeTotals, getDaoRewardTypeTotals, enabled)
+}
 
 /**
  * 查询今日幸运奖汇总。

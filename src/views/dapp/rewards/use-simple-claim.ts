@@ -1,6 +1,8 @@
-import { useMarketAllowanceSummary } from '~/hooks/use-api-data'
+import { useDaoRewardTypeTotals, useMarketAllowanceSummary } from '~/hooks/use-api-data'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatNumber } from '~/shared/presenters/format'
+import { hasTypeTotalClaimable, typeTotalAmount } from '~/views/dapp/rewards/hub/claimable'
 import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
@@ -23,20 +25,17 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
   const copy = grant
 
   const summaryQuery = useMarketAllowanceSummary(sessionReady && view === 'grant')
+  const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady && view === 'grant')
   const summary = summaryQuery.data
   const grantAmountReady = sessionReady && !(summaryQuery.isLoading && summary == null)
+  const grantPreview = view === 'grant' ? typeTotalAmount(typeTotals, 'MARKET_FUND') : null
+  const hasGrantClaimable = hasTypeTotalClaimable(grantPreview)
 
   const pendingAmount = formatApiAmount(
     view === 'grant' && grantAmountReady ? summary?.unlockable_allowance : null,
     { digits: 4 },
   )
-  const grantClaimableText = formatApiAmount(
-    view === 'grant' && grantAmountReady ? summary?.unlocked_claimable : null,
-    { digits: 4 },
-  )
-  const grantClaimableNum =
-    view === 'grant' && grantAmountReady ? Number(summary?.unlocked_claimable) : NaN
-  const hasGrantClaimable = Number.isFinite(grantClaimableNum) && grantClaimableNum > 0
+  const grantClaimableText = formatNumber(grantPreview ?? 0, { digits: 4 })
 
   const claimableText = grantClaimableText
   const ctaAmount = `${grantClaimableText} ${TOKEN_GAGX}`
@@ -64,5 +63,6 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
     tokenGagx: TOKEN_GAGX,
     claimIntoWallet: copy.claimIntoWallet,
     showTokenChip: true,
+    hasGrantClaimable,
   }
 }

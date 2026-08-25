@@ -134,6 +134,7 @@ Legacy：§4 团队奖励领取（预售签名领奖；与 `rewards/genesis` 详
 |`rank-reward`|`/rank-reward/summary` · `logs` · `peer-surpass-logs` · `team-members`|
 |`market-allowance`|`/market-allowance/summary` · `paid-logs` · `claim-logs`|
 |`claim（DAO领取签名）`|`/claim/dao-reward` · `/claim/market-fund`|
+|`dao-reward`|`/dao-reward/type-totals`|
 |`agx-contribution`（Mixed 贡献）|`/agx-contribution/summary` · `burn-logs` · `consume-logs`|
 |一期|`/claim/team-reward` · `/claim/community-fund` · `/claim/parse-signature` · `/claim/confirm` · `/team-reward/*` · `/community-fund/*` · `/rewards/logs`|
 

@@ -221,9 +221,13 @@ export function SimpleClaimableCard({
   return (
     <div className="grid gap-2 rounded-2xl border border-primary/35 bg-accent p-4">
       <div className="flex items-center justify-between gap-2">
-        <Text as="span" className="leading-5 text-foreground" variant="copy">
-          {claimableLabel}
-        </Text>
+        {claimableLabel ? (
+          <Text as="span" className="leading-5 text-foreground" variant="copy">
+            {claimableLabel}
+          </Text>
+        ) : (
+          <span />
+        )}
         <Text as="span" className="leading-4 text-foreground/40" variant="copy">
           {claimIntoWallet}
         </Text>
@@ -265,9 +269,11 @@ export function MixedClaimSummaryCard({
     <Card surface="outlined">
       <div className="flex items-start justify-between gap-3">
         <div className="grid gap-1">
-          <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-            {claimableLabel}
-          </Text>
+          {claimableLabel ? (
+            <Text as="p" className="leading-4 text-foreground/40" variant="copy">
+              {claimableLabel}
+            </Text>
+          ) : null}
           <RewardsGagxAmount textVariant="headline">
             {amountKnown ? `${amountText} ${tokenGagx}` : amountText}
           </RewardsGagxAmount>

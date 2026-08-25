@@ -101,6 +101,7 @@ export const queryKeys = {
     bufferPoolLogsRoot: ['api', 'bufferPool', 'logs'] as const,
     bufferPoolLogs: (params: BufferPoolLogsParams = {}) =>
       paginated(['api', 'bufferPool', 'logs'] as const, params, params.event_type ?? null),
+    daoRewardTypeTotals: ['api', 'daoReward', 'typeTotals'] as const,
     luckyRewardSummary: ['api', 'luckyReward', 'summary'] as const,
     luckyRewardMyRoundsRoot: ['api', 'luckyReward', 'myRounds'] as const,
     luckyRewardMyRounds: (params: PaginationParams = {}) =>

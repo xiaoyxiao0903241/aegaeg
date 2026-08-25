@@ -47,6 +47,17 @@ export interface MarketAllowanceSummary {
   unlocked_claimable: string
 }
 
+/** 各类型 DAO 待领金额（十进制 AGX）。Hub 共建卡 = RANK_REWARD + SURPASS_REWARD。 */
+export interface DaoRewardTypeTotals {
+  RANK_REWARD: string
+  REFERRAL_REWARD: string
+  PARTICIPATION_REWARD: string
+  SURPASS_REWARD: string
+  LIFETIME_REWARD: string
+  LUCKY_REWARD: string
+  MARKET_FUND: string
+}
+
 export interface MarketAllowanceClaimLogItem {
   claim_time: number
   allowance_amount: string

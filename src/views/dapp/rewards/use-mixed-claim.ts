@@ -16,6 +16,7 @@ import {
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateRewardsMixedClaimConfirmGate } from '~/core/rewards/mixed-claim-gate'
+import { useDaoRewardTypeTotals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -25,6 +26,8 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { DaoRewardType } from '~/shared/api/types'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatNumber } from '~/shared/presenters/format'
+import { hasTypeTotalClaimable, typeTotalAmount } from '~/views/dapp/rewards/hub/claimable'
 import { formatApiAmount, type MixedClaimView, splitAmountByPct } from '~/views/dapp/rewards/shared'
 import {
   REWARDS_BLOCKED,
@@ -44,12 +47,15 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * 混合领取（幸运 / 共建 / 推荐 / 参与）视图模型
  *
  * 管理释放 / 复投比例与时长、共建奖类型选择，
- * 汇总链上领取快照、释放计划与贡献校验，决定提交按钮可用性。
+ * 幸运读 LuckyPool；推荐/参与/共建待领读类型汇总，领取先签名再上链。
  * 计划与 `daoContributionBlocked` 用本地 `useState`（随 dock remount 复位，不跨奖种共享）。
  */
 export function useMixedClaim(view: MixedClaimView) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
+  const { data: typeTotals } = useDaoRewardTypeTotals(
+    sessionReady && (view === 'cobuild' || view === 'referral' || view === 'participate'),
+  )
   const { walletReady, writeReady } = useWriteReadiness()
   const { token, invalidateSession } = useAuth()
   const account = useActiveAccount()
@@ -113,6 +119,8 @@ export function useMixedClaim(view: MixedClaimView) {
         : view === 'cobuild'
           ? cobuildRewardType
           : 'RANK_REWARD'
+  const preview = isDaoMixed ? typeTotalAmount(typeTotals, daoRewardType) : null
+  const hasClaimablePreview = hasTypeTotalClaimable(preview)
   const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
   const plansOk =
     isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
@@ -190,7 +198,7 @@ export function useMixedClaim(view: MixedClaimView) {
     plansOk,
     luckyOk,
     claimable: amount,
-    allowUnknownAmount: isDaoMixed,
+    allowUnknownAmount: isDaoMixed && hasClaimablePreview,
   })
 
   const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(
@@ -218,22 +226,37 @@ export function useMixedClaim(view: MixedClaimView) {
     value: String(days),
   }))
 
-  const amountKnown = view === 'lucky' && luckyQuery.data != null
-  // Dao Mixed：签名前链上无预览额（amount 固定 ZERO_BI）——数字槽显示 0，说明另挂 caption
+  const amountKnown = view === 'lucky' ? luckyQuery.data != null : sessionReady
   const awaitingDaoSignature = isDaoMixed && sessionReady
-  const amountText = amountKnown
-    ? formatTokenAmount(amount, AGX_DECIMALS)
-    : sessionReady
-      ? formatApiAmount(null)
-      : t.rewards.hub.signInForBalance
-  const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : ZERO_BI
-  const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : ZERO_BI
-  const releaseAmountText = amountKnown
-    ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-    : formatApiAmount(null)
-  const restakeAmountText = amountKnown
-    ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-    : formatApiAmount(null)
+  const previewOrZero = preview ?? 0
+  const amountText =
+    view === 'lucky'
+      ? amountKnown
+        ? formatTokenAmount(amount, AGX_DECIMALS)
+        : t.rewards.hub.signInForBalance
+      : sessionReady
+        ? formatNumber(previewOrZero, { digits: 4 })
+        : t.rewards.hub.signInForBalance
+  const releaseAmount =
+    view === 'lucky' && amountKnown ? splitAmountByPct(amount, releasePct) : ZERO_BI
+  const restakeAmount =
+    view === 'lucky' && amountKnown ? splitAmountByPct(amount, restakePct) : ZERO_BI
+  const releaseAmountText =
+    view === 'lucky'
+      ? amountKnown
+        ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
+        : formatApiAmount(null)
+      : sessionReady
+        ? formatNumber((previewOrZero * releasePct) / 100, { digits: 4 })
+        : formatApiAmount(null)
+  const restakeAmountText =
+    view === 'lucky'
+      ? amountKnown
+        ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
+        : formatApiAmount(null)
+      : sessionReady
+        ? formatNumber((previewOrZero * restakePct) / 100, { digits: 4 })
+        : formatApiAmount(null)
   const requiredText = contribQuery.data
     ? formatContributionPoints(contribQuery.data.requiredContribution, AGX_DECIMALS)
     : formatApiContributionPoints(null)
@@ -259,6 +282,7 @@ export function useMixedClaim(view: MixedClaimView) {
     amountKnown,
     amountText,
     showSignedAmountHint: awaitingDaoSignature,
+    hasClaimablePreview,
     releasePct,
     setReleasePct,
     restakePct,

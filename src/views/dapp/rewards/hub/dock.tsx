@@ -2,8 +2,8 @@
  * 奖励总览左栏面板
  *
  * 六张奖励类型卡片，点击进入对应详情；
- * 各卡片金额来自不同数据源（链上快照 / 汇总接口），未登录显示空态占位。
- * 齿轮「隐藏 0」只过滤已知可领额为 0 的卡；Hub 无预览金额的入口卡始终保留。
+ * 幸运走链上快照，创世维持团队奖汇总，其余四张待领来自类型汇总。
+ * 齿轮「隐藏 0」只过滤已知可领额为 0 的卡。
  */
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -11,7 +11,7 @@ import { useState } from 'react'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useMarketAllowanceSummary, useTeamRewardTotal } from '~/hooks/use-api-data'
+import { useDaoRewardTypeTotals, useTeamRewardTotal } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useRewardsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
@@ -26,7 +26,8 @@ import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
+import { hubApiClaimableFromTypeTotals } from '~/views/dapp/rewards/hub/claimable'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
@@ -94,7 +95,7 @@ export function RewardsHubDock() {
   const [hideZero, setHideZero] = useState(false)
   const dots = useRewardsClaimableUnreads()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
-  const grantSummary = useMarketAllowanceSummary(sessionReady)
+  const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady)
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
     queryFn: (address) => readLuckyClaimSnapshot(address as Address),
@@ -106,11 +107,6 @@ export function RewardsHubDock() {
     ? claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
     : 0
 
-  const grantAmount = (() => {
-    if (!sessionReady) return null
-    return parseApiAmount(grantSummary.data?.unlocked_claimable)
-  })()
-
   const luckyWei = (() => {
     if (!walletReady) return null
     const snap = luckyQuery.data
@@ -121,12 +117,10 @@ export function RewardsHubDock() {
   const luckyAmount = luckyWei == null ? null : formatTokenAmountToNumber(luckyWei, AGX_DECIMALS)
 
   const amountValue = (view: (typeof REWARD_CARDS)[number]) => {
-    if (!sessionReady && view !== 'lucky') return null
-    if (view === 'genesis') return genesisAmount
-    if (view === 'grant') return grantAmount
     if (view === 'lucky') return luckyAmount
-    // 推荐/参与/共建：可领额来自领取签名，Hub 无预览，显示空态
-    return null
+    if (!sessionReady) return null
+    if (view === 'genesis') return genesisAmount
+    return hubApiClaimableFromTypeTotals(view, typeTotals)
   }
 
   const amountReady = (view: (typeof REWARD_CARDS)[number]) =>

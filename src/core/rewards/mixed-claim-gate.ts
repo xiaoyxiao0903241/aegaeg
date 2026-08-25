@@ -4,7 +4,7 @@ import { ZERO_BI } from '~/core/constants'
  * 奖励 Mixed 确认门闸（幸运 / 共建 / 推荐 / 参与）。
  *
  * 在资产 Mixed 同构条件上叠加：业务登录、幸运奖可领态；
- * Dao Mixed 签名前金额未知，不因可领额为 0 阻断。
+ * Dao Mixed 签名前链上无个人待领；待领预览为 0 时不允许点领取。
  */
 export function evaluateRewardsMixedClaimConfirmGate(args: {
   walletReady: boolean
