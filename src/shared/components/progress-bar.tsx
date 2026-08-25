@@ -5,14 +5,17 @@ import { cn } from '~/shared/lib/utils'
  *
  * @param label 无障碍标签
  * @param value 进度值，越界时收拢到 0–100，非法值按 0
+ * @param tone 填充色；已达成走复投蓝，默认主色
  */
 export function ProgressBar({
   className,
   label,
+  tone = 'primary',
   value,
 }: {
   className?: string
   label: string
+  tone?: 'primary' | 'claim-restake'
   value: number
 }) {
   const clampedValue = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0
@@ -25,6 +28,7 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuenow={Math.round(clampedValue)}
       className={cn('dapp-progress-meter', className)}
+      data-tone={tone}
       role="progressbar"
     >
       <div className="dapp-progress-meter__fill" style={{ width: fillWidth }} />
