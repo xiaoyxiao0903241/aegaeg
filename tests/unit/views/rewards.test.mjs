@@ -91,6 +91,25 @@ test('planLabel and splitAmountByPct', async () => {
   assert.equal(formatPlanTaxSchedule([], '{days}d', '{days}d', '{rate}%', ', '), '—')
 })
 
+test('formatDaoGrantStatus READY uses the pending label', async () => {
+  const { formatDaoGrantStatus } = await loadModule('/src/views/dapp/rewards/shared.tsx')
+  const labels = {
+    pending: '待领取',
+    processing: '处理中',
+    paid: '已支付',
+    claimed: '已领取',
+    failed: '失败',
+    unknown: '—',
+  }
+  assert.equal(formatDaoGrantStatus('READY', labels), '待领取')
+  assert.equal(formatDaoGrantStatus('CLAIMED', labels), '已领取')
+})
+
+test('zh READY status copy is 待领取', async () => {
+  const { default: zh } = await loadModule('/src/i18n/messages/app/zh.ts')
+  assert.equal(zh.rewards.logStatus.pending, '待领取')
+})
+
 test('lucky overview totals from summary.total_reward_amount; cards use Tile.Note', () => {
   const hook = readFileSync(
     new URL('../../../src/views/dapp/rewards/lucky/use-lucky.tsx', import.meta.url),

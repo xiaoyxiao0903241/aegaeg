@@ -1412,7 +1412,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: '保留中',
+      pending: '受取待ち',
       processing: '処理中',
       paid: '支払済み',
       claimed: '受取済み',

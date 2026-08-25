@@ -1448,7 +1448,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: 'Beklemede',
+      pending: 'Alınacak',
       processing: 'İşleniyor',
       paid: 'Ödendi',
       claimed: 'Talep edildi',

@@ -1404,7 +1404,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: 'लंबित',
+      pending: 'दावा हेतु',
       processing: 'प्रसंस्करण',
       paid: 'भुगतान हो चुका',
       claimed: 'दावा किया',

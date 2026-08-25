@@ -162,6 +162,31 @@ export function SheetHandle() {
   )
 }
 
+const PORTALED_MENU_SELECTOR = '[data-dropdown-menu-panel]'
+
+/** 点到挂在 body 上的菜单（含选项文字）时不关弹窗。 */
+export function isPortaledMenuEventTarget(target: EventTarget | null): boolean {
+  if (target == null) return false
+  const node = target as unknown as {
+    closest?: (selector: string) => unknown
+    parentElement?: { closest?: (selector: string) => unknown } | null
+  }
+  if (typeof node.closest === 'function') return node.closest(PORTALED_MENU_SELECTOR) != null
+  if (typeof node.parentElement?.closest === 'function') {
+    return node.parentElement.closest(PORTALED_MENU_SELECTOR) != null
+  }
+  return false
+}
+
+function preventDismissOnPortaledMenu(event: {
+  preventDefault: () => void
+  target: EventTarget | null
+  detail?: { originalEvent?: { target: EventTarget | null } }
+}) {
+  const target = event.detail?.originalEvent?.target ?? event.target
+  if (isPortaledMenuEventTarget(target)) event.preventDefault()
+}
+
 /**
  * 响应式弹窗 / 抽屉：默认浅色卡片壳（领取、赎回、滑点等）。
  *
@@ -190,6 +215,7 @@ export function ResponsiveDialog({
         <DialogPrimitive.Content
           aria-describedby={undefined}
           className={styles.panel({ class: className })}
+          onInteractOutside={preventDismissOnPortaledMenu}
         >
           {children}
         </DialogPrimitive.Content>

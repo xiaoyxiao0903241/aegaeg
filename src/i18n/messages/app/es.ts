@@ -1460,7 +1460,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: 'Pendiente',
+      pending: 'Por reclamar',
       processing: 'Procesando',
       paid: 'Pagado',
       claimed: 'Reclamado',

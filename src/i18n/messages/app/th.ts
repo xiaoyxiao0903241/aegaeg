@@ -1402,7 +1402,7 @@ const app = defineMessages({
       unknown: '—',
     },
     logStatus: {
-      pending: 'รอดำเนินการ',
+      pending: 'รอรับ',
       processing: 'กำลังดำเนินการ',
       paid: 'จ่ายแล้ว',
       claimed: 'รับแล้ว',

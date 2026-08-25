@@ -190,7 +190,7 @@ export function DropdownMenuTrigger({
   )
 }
 
-/** 列表菜单面板：portal 到 body，按视口剩余空间向上或向下展开 */
+/** 列表菜单面板：挂到 body，按视口剩余空间向上或向下展开 */
 export function DropdownMenuPanel({
   align = 'start',
   className,
@@ -250,10 +250,12 @@ export function DropdownMenuPanel({
     <div
       {...props}
       className={cn(
-        'fixed z-130 grid min-w-44 gap-0.5',
+        // 弹窗把页面锁成不可点；面板在 body 上，不自己可点就会点穿到领取按钮
+        'pointer-events-auto fixed z-130 grid min-w-44 gap-0.5',
         'rounded-sm border border-border bg-card p-1.5 shadow-menu',
         className,
       )}
+      data-dropdown-menu-panel=""
       id={menuId}
       ref={panelRef}
       role="listbox"
