@@ -63,12 +63,13 @@ const CLAIM_DISPATCH_ABI = parseAbi([
   'function userContribution(address user) view returns (uint256)',
   'function quoteRequiredContribution(uint256 rewardAmount) view returns (uint256)',
   'function paused() view returns (bool)',
-  'function getWinnerInfo(uint256 roundId, address user) view returns (bool won, uint256 rewardAmount)',
-  'function rewardClaimed(uint256 roundId, address user) view returns (bool)',
+  'function getRewardInfo(address user) view returns (uint256 accrued, uint256 claimed, uint256 pending)',
   'function migrationEnabled() view returns (bool)',
   'function isOldAccount(address account) view returns (bool)',
   'function balanceOf(address owner) view returns (uint256)',
   'function getReleasedRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
+  'function getReleasedRewardsWithOffset(address user, uint8 planIndex, uint256 start, uint256 limit) view returns (uint256)',
+  'function getQueuePlanSize(address user, uint8 planIndex) view returns (uint256)',
   'function getRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
 ])
 

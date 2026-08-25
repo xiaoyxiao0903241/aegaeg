@@ -14,39 +14,35 @@ afterEach(clearMoneyPathReadClient)
 function luckyReadClient(overrides = {}) {
   const {
     paused = false,
-    won = true,
     rewardAmount = 100n,
-    rewardClaimed = false,
+    claimed = 0n,
     contribution = 1_000_000n,
     requiredContribution = 1n,
   } = overrides
   const plans = claimPlanAndContribHandlers({ contribution, requiredContribution })
+  const accrued = claimed + rewardAmount
 
   return async (request) =>
     dispatchRead(
       {
         ...plans,
         paused: () => paused,
-        getWinnerInfo: () => [won, rewardAmount],
-        rewardClaimed: () => rewardClaimed,
+        getRewardInfo: () => [accrued, claimed, rewardAmount],
       },
       request,
     )
 }
 
-test('submitLuckyMixedClaim fail-closed when live round is not claimable', async () => {
+test('submitLuckyMixedClaim fail-closed when live ledger is not claimable', async () => {
   const { submitLuckyMixedClaim } = await loadModule('/src/views/dapp/rewards/submit-rewards.ts')
   const { REWARDS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = await moneyPathSession(
-    luckyReadClient({ won: true, rewardAmount: 100n, rewardClaimed: true }),
-  )
+  const session = await moneyPathSession(luckyReadClient({ rewardAmount: 0n, claimed: 100n }))
 
   await assert.rejects(
     () =>
       submitLuckyMixedClaim({
         session,
-        roundId: 1n,
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
@@ -67,7 +63,6 @@ test('submitLuckyMixedClaim fail-closed when contribution is below live required
     () =>
       submitLuckyMixedClaim({
         session,
-        roundId: 1n,
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,

@@ -1,6 +1,8 @@
 import { toast } from 'sonner'
 
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
+import { ContractRevertError, decodeContractRevert } from '~/web3/decode-contract-revert'
+import { readErrorText } from '~/web3/errors/error-text'
 import { type ErrorMessageContext, getErrorMessage } from '~/web3/errors/get-error-message'
 import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'
 
@@ -27,6 +29,26 @@ export function presentUserFacingError(
 ): void {
   if (error == null) return
   if (isUserRejectedWalletError(error)) return
+
+  if (import.meta.env.DEV) {
+    const decoded = decodeContractRevert(error)
+    const errorName =
+      decoded?.errorName ?? (error instanceof ContractRevertError ? error.errorName : undefined)
+    const args = decoded?.args ?? (error instanceof ContractRevertError ? error.args : undefined)
+    console.error(
+      [
+        '[chain write]',
+        options?.ctx?.path ? `path=${options.ctx.path}` : null,
+        options?.ctx?.walletAddress ? `wallet=${options.ctx.walletAddress}` : null,
+        errorName ? `errorName=${errorName}` : null,
+        args != null && args.length > 0 ? `args=${JSON.stringify(args)}` : null,
+        `text=${readErrorText(error) ?? String(error)}`,
+      ]
+        .filter(Boolean)
+        .join(' '),
+    )
+  }
+
   const message = options?.messageFor?.(error) ?? getErrorMessage(error, t, options?.ctx)
   if (message) toast.error(message, options?.id ? { id: options.id } : undefined)
 }

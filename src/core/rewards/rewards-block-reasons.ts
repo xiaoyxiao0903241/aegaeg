@@ -16,7 +16,7 @@ export type RewardsMixedBlockReason =
 /**
  * Mixed 领取（Lucky / DaoPool）的写前阻断
  *
- * 先看抽奖侧（池暂停 / 未中奖 / 已领），再核对金额与计划索引；
+ * 先看抽奖侧（池暂停 / 无可领 pending），再核对金额与计划索引；
  * 计划索引未解析或贡献不足也会阻断，避免发起链上必然失败的交易。
  *
  * @param amount 请求领取的数量
@@ -52,19 +52,11 @@ export function evaluateRewardsMixedClaim(args: {
 /**
  * 抽奖资金路径是否可领
  *
- * 仅当池未暂停、中奖、未领取且金额为正时才走抽奖资金；
- * 其余情况需回退到签名领取或直接阻断。
+ * 累计账本待领大于 0 且池未暂停才可领；一次无轮次入口清全部 pending。
  *
  * @param paused 池是否暂停
- * @param won 是否中奖
- * @param rewardClaimed 是否已领取
- * @param rewardAmount 奖励金额
+ * @param rewardAmount 待领取毛奖励
  */
-export function isLuckyClaimable(args: {
-  paused: boolean
-  won: boolean
-  rewardClaimed: boolean
-  rewardAmount: bigint
-}): boolean {
-  return !args.paused && args.won && !args.rewardClaimed && args.rewardAmount > 0n
+export function isLuckyClaimable(args: { paused: boolean; rewardAmount: bigint }): boolean {
+  return !args.paused && args.rewardAmount > 0n
 }

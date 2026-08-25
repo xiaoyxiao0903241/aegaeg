@@ -47,7 +47,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * 混合领取（幸运 / 共建 / 推荐 / 参与）视图模型
  *
  * 管理释放 / 复投比例与时长、共建奖类型选择，
- * 幸运读 LuckyPool；推荐/参与/共建待领读类型汇总，领取先签名再上链。
+ * 幸运读 getRewardInfo 待领，无轮次一次领取；推荐/参与/共建待领读类型汇总，领取先签名再上链。
  * 计划与 `daoContributionBlocked` 用本地 `useState`（随 dock remount 复位，不跨奖种共享）。
  */
 export function useMixedClaim(view: MixedClaimView) {
@@ -80,7 +80,7 @@ export function useMixedClaim(view: MixedClaimView) {
 
   const amount =
     view === 'lucky'
-      ? (luckyQuery.data?.rewardAmount ?? ZERO_BI)
+      ? (luckyQuery.data?.totalUnclaimedAmount ?? ZERO_BI)
       : ZERO_BI /* 共建奖：金额在提交签名时才可知 */
 
   const plansQuery = useChainQuery({
@@ -136,13 +136,11 @@ export function useMixedClaim(view: MixedClaimView) {
     path: view === 'lucky' ? WRITE_PATH.REWARD_LUCKY_MIXED : WRITE_PATH.REWARD_DAO_MIXED,
     mutation: async (_vars, session) => {
       if (view === 'lucky') {
-        const roundId = luckyQuery.data?.roundId
-        if (roundId == null || !luckyQuery.data?.claimable) {
+        if (!luckyQuery.data?.claimable) {
           throw REWARDS_BLOCKED.luckyNotClaimable
         }
         await submitLuckyMixedClaim({
           session,
-          roundId,
           releaseDays,
           restakeDays,
           restakePct,
@@ -233,7 +231,7 @@ export function useMixedClaim(view: MixedClaimView) {
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(amount, AGX_DECIMALS)
-        : t.rewards.hub.signInForBalance
+        : formatApiAmount(null)
       : sessionReady
         ? formatNumber(previewOrZero, { digits: 4 })
         : t.rewards.hub.signInForBalance

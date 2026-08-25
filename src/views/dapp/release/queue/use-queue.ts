@@ -75,16 +75,20 @@ export function useQueue() {
           planIndex: -1,
           durationDays: days as number | null,
           claimable: ZERO_BI,
+          overallClaimable: ZERO_BI,
           total: ZERO_BI,
           releasing: ZERO_BI,
+          claimStart: 0,
+          claimLimit: 0,
         }))
 
   const rows: ReleaseQueueRowView[] = rowPlans.map((found) => {
     const days = found.durationDays ?? 0
     const claimable = found.claimable ?? ZERO_BI
     const releasing = found.releasing ?? ZERO_BI
+    const overallClaimable = found.overallClaimable ?? claimable
     const planIndex = found.planIndex ?? -1
-    const pctLabel = formatReleasePct(claimable, releasing)
+    const pctLabel = formatReleasePct(overallClaimable, releasing)
 
     return {
       days,

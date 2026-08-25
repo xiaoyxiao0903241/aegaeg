@@ -78,19 +78,17 @@ export async function writeDaoMixedClaim(
 }
 
 /**
- * 幸运奖 Mixed 领取（LuckyPool.claimRewardMixed），带释放与复投分流。
+ * 幸运奖 Mixed 领取（LuckyPool.claimRewardMixed），一次清全部待领毛奖励。
  *
  * @param args.wallet 钱包
- * @param args.roundId 中奖轮 id
  * @param args.releasePlanIndex 释放计划 index
  * @param args.restakePlanIndex 复投计划 index
  * @param args.restakeBps 复投比例（0–10000）
  * @returns 已确认的写交易结果
- * @see 手册 §14 LuckyPool 去中心化抽奖
+ * @see LuckyPool.claimRewardMixed(releasePlanIndex, restakePlanIndex, restakeBps)
  */
 export async function writeLuckyMixedClaim(args: {
   wallet: Wallet
-  roundId: bigint
   releasePlanIndex: number
   restakePlanIndex: number
   restakeBps: number
@@ -100,11 +98,6 @@ export async function writeLuckyMixedClaim(args: {
     address: BSC_CONTRACTS.luckyPool,
     abi: luckyMixedWriteAbi,
     functionName: 'claimRewardMixed',
-    args: [
-      args.roundId,
-      args.releasePlanIndex,
-      BigInt(args.restakePlanIndex),
-      BigInt(args.restakeBps),
-    ],
+    args: [args.releasePlanIndex, BigInt(args.restakePlanIndex), BigInt(args.restakeBps)],
   })
 }

@@ -16,14 +16,24 @@ test('release progress bps is claimable / (claimable + releasing)', async () => 
   assert.equal(releaseProgressBps(100n, 0n), 10_000)
 })
 
-test('submit-release must not revive mixed claimWindows', async () => {
+test('submit-release claims one 50-item window per click', async () => {
   const { readFile } = await import('node:fs/promises')
   const submit = await readFile(
     new URL('../../../src/views/dapp/release/submit-release.ts', import.meta.url),
     'utf8',
   )
+  const read = await readFile(
+    new URL('../../../src/web3/release/release-read.ts', import.meta.url),
+    'utf8',
+  )
   assert.doesNotMatch(submit, /WRITE_PATH\.RELEASE_CLAIM/)
-  assert.doesNotMatch(submit, /hop\.claimWindows/)
   assert.doesNotMatch(submit, /evaluateReleaseBufferClaimGate/)
   assert.doesNotMatch(submit, /claimManyPaged/)
+  assert.doesNotMatch(submit, /for \(let start = 0; start < size/)
+  assert.doesNotMatch(submit, /claimWindows\(/)
+  assert.match(submit, /claimStart/)
+  assert.match(submit, /pickBufferFirstClaim/)
+  assert.match(submit, /writeClaimVestedRewardsInRange/)
+  assert.match(submit, /writeClaimManyReleases/)
+  assert.doesNotMatch(read, /REWARD_QUEUE_CLAIM_PAGE = 200/)
 })

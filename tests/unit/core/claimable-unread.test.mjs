@@ -64,12 +64,18 @@ test('fingerprintReleaseBuffer ignores drip; empty when nothing claimable', asyn
   assert.equal(fingerprintReleaseBuffer({ ...pot, agxClaimable: 9n }), '80|20')
 })
 
-test('fingerprintLucky uses round id only while claimable', async () => {
+test('fingerprintLucky uses total unclaimed while claimable', async () => {
   const { fingerprintLucky } = await loadModule('/src/core/claimable-unread.ts')
 
-  assert.equal(fingerprintLucky({ claimable: true, rewardAmount: 5n, roundId: 12n }), '12')
-  assert.equal(fingerprintLucky({ claimable: false, rewardAmount: 5n, roundId: 12n }), '')
-  assert.equal(fingerprintLucky({ claimable: true, rewardAmount: 0n, roundId: 12n }), '')
+  assert.equal(
+    fingerprintLucky({
+      claimable: true,
+      totalUnclaimedAmount: 15n,
+    }),
+    '15',
+  )
+  assert.equal(fingerprintLucky({ claimable: false, totalUnclaimedAmount: 5n }), '')
+  assert.equal(fingerprintLucky({ claimable: true, totalUnclaimedAmount: 0n }), '')
 })
 
 test('fingerprintPositiveDecimal skips zero and non-finite', async () => {

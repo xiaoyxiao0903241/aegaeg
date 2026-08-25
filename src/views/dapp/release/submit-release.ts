@@ -1,16 +1,15 @@
+import type { Address } from 'viem'
+
+import { pickBufferFirstClaim } from '~/core/release/pick-release-claim-page'
 import { releaseClaimBlockReason } from '~/core/release/release-block-reasons'
 import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { RELEASE_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
+import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import {
-  readReleaseBufferSnapshot,
-  readReleaseQueueSnapshot,
-  type ReleaseClaimWindow,
-} from '~/web3/release/release-read'
-import {
-  writeClaimAllVestedRewards,
   writeClaimManyArchiveReleases,
   writeClaimManyReleases,
+  writeClaimVestedRewardsInRange,
 } from '~/web3/release/release-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
@@ -29,11 +28,11 @@ async function assertReleaseWritesAllowed(address: string) {
 /**
  * 领取释放队列：只做领域层写操作
  *
- * 写前先读快照做门闸检查，再读一次确认；不通过则抛错中断。
+ * 写前两轮门闸后，只领当前 50 条窗；成功后由调用方刷新，再点领下一窗。
  *
  * @param args.session 已就绪的写会话
  * @param args.planIndex 要领取的天数档位
- * @see 手册 §12 RewardQueue 奖励释放队列
+ * @see RewardQueue.claimVestedRewardsInRange
  */
 export async function submitReleaseQueueClaim(args: {
   session: WriteSession
@@ -64,41 +63,23 @@ export async function submitReleaseQueueClaim(args: {
   if (liveErr) throw liveErr
 
   await assertReleaseWritesAllowed(address)
-  await writeClaimAllVestedRewards({ wallet, planIndex })
+
+  const start = liveRow?.claimStart ?? 0
+  const limit = liveRow?.claimLimit ?? 0
+  if (limit <= 0) throw RELEASE_BLOCKED.zeroAmount
+
+  await writeClaimVestedRewardsInRange({ wallet, planIndex, start, limit })
   invalidateAfterReleaseClaim()
-}
-
-/** 按快照窗 claimMany；跳过空窗，避免 ErrorNothingToClaim 阻断后续页。每笔成功后 invalidate，部分成功也刷新。 */
-async function claimWindows(args: {
-  windows: readonly ReleaseClaimWindow[]
-  write: (start: number, limit: number) => Promise<unknown>
-}): Promise<void> {
-  for (const window of args.windows) {
-    await args.write(window.start, window.limit)
-    invalidateAfterReleaseClaim()
-  }
-}
-
-/** 逐笔 claimMany(index, 1)：只领指定 index，避免混币窗误领另一 token。每笔成功后 invalidate。 */
-async function claimIndexes(args: {
-  indexes: readonly number[]
-  write: (start: number, limit: number) => Promise<unknown>
-}): Promise<void> {
-  for (const index of args.indexes) {
-    await args.write(index, 1)
-    invalidateAfterReleaseClaim()
-  }
 }
 
 export type ReleaseBufferClaimToken = 'agx' | 'gagx'
 
 /**
- * 领取缓冲池：按币种独立领取（AGX / gAGX 各一次写意图）。
+ * 领取缓冲池：对该币 CTA 门闸后，只领当前 50 条窗。
  *
- * 分流器多币共存于同一 index 序列；整窗 claimMany 会混领，故按该币 index 逐笔 claimMany(i,1)。
- * 归档 PRV 仅 AGX。写前对该币可领额做两轮门闸；每笔链上成功后 invalidate。
+ * 窗内可含 AGX/gAGX；成功后刷新再点领下一窗。归档 PRV 仅 AGX。
  *
- * @see 手册 §13 分流器本金释放
+ * @see 手册 §13.4 claimMany
  */
 export async function submitReleaseBufferClaim(args: {
   session: WriteSession
@@ -108,7 +89,7 @@ export async function submitReleaseBufferClaim(args: {
   const { wallet, address } = session
 
   const pre = await readReleaseBufferSnapshot(address)
-  const preClaimable = token === 'agx' ? pre.agx.totalClaimable : pre.gagx.totalClaimable
+  const preClaimable = token === 'agx' ? pre.agx.pageClaimable : pre.gagx.pageClaimable
   const preErr = gateError(
     releaseClaimBlockReason({
       claimable: preClaimable,
@@ -117,7 +98,7 @@ export async function submitReleaseBufferClaim(args: {
   if (preErr) throw preErr
 
   const live = await readReleaseBufferSnapshot(address)
-  const liveClaimable = token === 'agx' ? live.agx.totalClaimable : live.gagx.totalClaimable
+  const liveClaimable = token === 'agx' ? live.agx.pageClaimable : live.gagx.pageClaimable
   const liveErr = gateError(
     releaseClaimBlockReason({
       claimable: liveClaimable,
@@ -128,31 +109,25 @@ export async function submitReleaseBufferClaim(args: {
 
   await assertReleaseWritesAllowed(address)
 
-  for (const hop of live.chain) {
-    const indexes = token === 'agx' ? hop.agxClaimIndexes : hop.gagxClaimIndexes
-    if (indexes.length === 0) continue
-    await claimIndexes({
-      indexes,
-      write: (start, limit) =>
-        writeClaimManyReleases({
-          wallet,
-          splitter: hop.address,
-          start,
-          limit,
-        }),
-    })
-  }
+  const target = pickBufferFirstClaim({
+    chain: live.chain,
+    archiveClaimWindows: live.archiveClaimWindows,
+  })
+  if (!target) throw RELEASE_BLOCKED.zeroAmount
 
-  // 归档 PRV 无 token 字段，历史单计入 AGX 桶
-  if (token === 'agx' && live.archiveClaimWindows.length > 0) {
-    await claimWindows({
-      windows: live.archiveClaimWindows,
-      write: (start, limit) =>
-        writeClaimManyArchiveReleases({
-          wallet,
-          start,
-          limit,
-        }),
+  if (target.kind === 'splitter') {
+    await writeClaimManyReleases({
+      wallet,
+      splitter: target.splitter as Address,
+      start: target.start,
+      limit: target.limit,
+    })
+  } else {
+    await writeClaimManyArchiveReleases({
+      wallet,
+      start: target.start,
+      limit: target.limit,
     })
   }
+  invalidateAfterReleaseClaim()
 }

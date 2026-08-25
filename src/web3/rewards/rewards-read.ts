@@ -1,7 +1,6 @@
-import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
-import { isLuckyClaimable } from '~/core/rewards/rewards-block-reasons'
-import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
+import { mapLuckyRewardInfo } from '~/core/rewards/map-lucky-reward-info'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
@@ -10,24 +9,21 @@ import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const luckyAbi = parseAbi([
   LUCKY_POOL_METHODS.paused,
-  LUCKY_POOL_METHODS.currentRoundId,
   LUCKY_POOL_METHODS.getRound,
   LUCKY_POOL_METHODS.isRoundAcceptingPurchases,
-  LUCKY_POOL_METHODS.getWinnerInfo,
-  LUCKY_POOL_METHODS.rewardClaimed,
+  LUCKY_POOL_METHODS.getRewardInfo,
 ])
 
 const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getCurrentRoundUserStat])
 
-/** 回溯闭轮上限（手册：旧轮按 ID 可查；禁只看上一轮）。 */
-const LUCKY_CLAIM_LOOKBACK = 10_000n
-
-/** 用户幸运奖领取快照。 */
+/** 用户幸运奖领取快照（累计账本，无轮次）。 */
 export type LuckyClaimSnapshot = {
   paused: boolean
-  roundId: bigint
   won: boolean
+  /** 待领取毛奖励 */
   rewardAmount: bigint
+  /** 与 rewardAmount 相同；Hub / 领取面板展示 */
+  totalUnclaimedAmount: bigint
   rewardClaimed: boolean
   claimable: boolean
 }
@@ -35,145 +31,13 @@ export type LuckyClaimSnapshot = {
 /**
  * 读取用户可领的幸运奖快照。
  *
- * currentRoundId 为进行中轮，中奖发生在已关闭轮；从新到旧回溯（上限 10000 轮），
- * 取第一笔可领记录。每轮两读经 Multicall3（允许失败）。
+ * 待领金额来自 `getRewardInfo` 的 pending；领取不再按轮次。
  *
  * @param user 钱包地址
- * @returns 暂停状态 / 选中轮 / 是否中奖 / 是否已领 / 是否可领
- * @see 手册 §14 LuckyPool 去中心化抽奖
+ * @returns 暂停 / 待领毛额 / 是否可领
+ * @see LuckyPool.getRewardInfo
  */
 export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimSnapshot> {
-  const pool = BSC_CONTRACTS.luckyPool
-  const head = await readAggregate3([
-    {
-      target: pool,
-      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'paused' }),
-    },
-    {
-      target: pool,
-      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'currentRoundId' }),
-    },
-  ])
-  const paused = Boolean(
-    decodeAggregate3Result<boolean>(
-      head,
-      0,
-      luckyAbi,
-      'paused',
-      'LUCKY_SNAPSHOT_MULTICALL_FAILED:paused',
-    ),
-  )
-  const openRoundId = decodeAggregate3Result<bigint>(
-    head,
-    1,
-    luckyAbi,
-    'currentRoundId',
-    'LUCKY_SNAPSHOT_MULTICALL_FAILED:roundId',
-  )
-
-  // currentRoundId 为进行中轮；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
-  const latestClosed = openRoundId > 0n ? openRoundId - 1n : 0n
-  const oldest =
-    latestClosed === 0n
-      ? 0n
-      : latestClosed > LUCKY_CLAIM_LOOKBACK
-        ? latestClosed - LUCKY_CLAIM_LOOKBACK + 1n
-        : 1n
-
-  const roundIds: bigint[] = []
-  if (latestClosed > 0n) {
-    for (let id = latestClosed; id >= oldest; id--) {
-      roundIds.push(id)
-      if (id === 0n) break
-    }
-  }
-
-  const results =
-    roundIds.length === 0
-      ? []
-      : await readAggregate3(
-          roundIds.flatMap((roundId) => [
-            {
-              target: pool,
-              allowFailure: true,
-              callData: encodeFunctionData({
-                abi: luckyAbi,
-                functionName: 'getWinnerInfo',
-                args: [roundId, user],
-              }),
-            },
-            {
-              target: pool,
-              allowFailure: true,
-              callData: encodeFunctionData({
-                abi: luckyAbi,
-                functionName: 'rewardClaimed',
-                args: [roundId, user],
-              }),
-            },
-          ]),
-        )
-
-  const rows = []
-  for (let i = 0; i < roundIds.length; i++) {
-    const infoSlot = results[i * 2]
-    const claimedSlot = results[i * 2 + 1]
-    const roundId = roundIds[i]!
-    if (!infoSlot?.success || !claimedSlot?.success) {
-      rows.push({
-        roundId,
-        won: false,
-        rewardAmount: 0n,
-        rewardClaimed: false,
-      })
-      continue
-    }
-    const info = decodeFunctionResult({
-      abi: luckyAbi,
-      functionName: 'getWinnerInfo',
-      data: infoSlot.returnData,
-    }) as readonly [boolean, bigint]
-    const rewardClaimed = Boolean(
-      decodeFunctionResult({
-        abi: luckyAbi,
-        functionName: 'rewardClaimed',
-        data: claimedSlot.returnData,
-      }),
-    )
-    rows.push({
-      roundId,
-      won: Boolean(info[0]),
-      rewardAmount: info[1] ?? 0n,
-      rewardClaimed,
-    })
-  }
-
-  const selected = selectLuckyClaimRound({ openRoundId, paused, rows })
-  return {
-    paused,
-    roundId: selected.roundId,
-    won: selected.won,
-    rewardAmount: selected.rewardAmount,
-    rewardClaimed: selected.rewardClaimed,
-    claimable: selected.claimable,
-  }
-}
-
-/**
- * 读取指定轮的幸运奖状态（提交 live 重闸用）。
- *
- * 展示层已选出可领轮后，提交不得再全量回溯换轮；只重读该轮 winner / claimed / paused，
- * 贡献门槛按该轮金额计算，避免意图与上链轮次错配。
- *
- * @param user 钱包地址
- * @param roundId 意图轮次
- * @returns 该轮暂停 / 中奖 / 金额 / 是否已领 / 是否可领
- * @see 手册 §14 LuckyPool 去中心化抽奖
- */
-export async function readLuckyClaimRound(
-  user: Address,
-  roundId: bigint,
-): Promise<LuckyClaimSnapshot> {
   const pool = BSC_CONTRACTS.luckyPool
   const results = await readAggregate3([
     {
@@ -184,16 +48,8 @@ export async function readLuckyClaimRound(
       target: pool,
       callData: encodeFunctionData({
         abi: luckyAbi,
-        functionName: 'getWinnerInfo',
-        args: [roundId, user],
-      }),
-    },
-    {
-      target: pool,
-      callData: encodeFunctionData({
-        abi: luckyAbi,
-        functionName: 'rewardClaimed',
-        args: [roundId, user],
+        functionName: 'getRewardInfo',
+        args: [user],
       }),
     },
   ])
@@ -203,40 +59,22 @@ export async function readLuckyClaimRound(
       0,
       luckyAbi,
       'paused',
-      'LUCKY_ROUND_MULTICALL_FAILED:paused',
+      'LUCKY_SNAPSHOT_MULTICALL_FAILED:paused',
     ),
   )
-  const info = decodeAggregate3Result<readonly [boolean, bigint]>(
+  const info = decodeAggregate3Result<readonly [bigint, bigint, bigint]>(
     results,
     1,
     luckyAbi,
-    'getWinnerInfo',
-    'LUCKY_ROUND_MULTICALL_FAILED:winner',
+    'getRewardInfo',
+    'LUCKY_SNAPSHOT_MULTICALL_FAILED:rewardInfo',
   )
-  const rewardClaimed = decodeAggregate3Result<boolean>(
-    results,
-    2,
-    luckyAbi,
-    'rewardClaimed',
-    'LUCKY_ROUND_MULTICALL_FAILED:claimed',
-  )
-  const won = Boolean(info[0])
-  const rewardAmount = info[1] ?? 0n
-  const claimed = Boolean(rewardClaimed)
-  const claimable = isLuckyClaimable({
-    paused: Boolean(paused),
-    won,
-    rewardClaimed: claimed,
-    rewardAmount,
+  return mapLuckyRewardInfo({
+    paused,
+    accrued: info[0] ?? 0n,
+    claimed: info[1] ?? 0n,
+    pending: info[2] ?? 0n,
   })
-  return {
-    paused: Boolean(paused),
-    roundId,
-    won,
-    rewardAmount,
-    rewardClaimed: claimed,
-    claimable,
-  }
 }
 
 /**

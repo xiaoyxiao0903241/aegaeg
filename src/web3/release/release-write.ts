@@ -12,7 +12,10 @@ import {
 } from '~/web3/abis'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const claimAllAbi = parseWriteAbi(REWARD_QUEUE_METHODS.claimAllVestedRewards, REWARD_QUEUE_ERRORS)
+const claimInRangeAbi = parseWriteAbi(
+  REWARD_QUEUE_METHODS.claimVestedRewardsInRange,
+  REWARD_QUEUE_ERRORS,
+)
 const splitterClaimManyAbi = parseWriteAbi(AEGIS_SPLITTER_METHODS.claimMany, AEGIS_SPLITTER_ERRORS)
 const archiveClaimManyAbi = parseWriteAbi(
   PRINCIPAL_RELEASE_VAULT_METHODS.claimMany,
@@ -20,20 +23,27 @@ const archiveClaimManyAbi = parseWriteAbi(
 )
 
 /**
- * 领取某释放计划全部已解锁奖励（RewardQueue.claimAllVestedRewards）。
+ * 分页领取指定计划已解锁奖励（RewardQueue.claimVestedRewardsInRange）。
  *
  * @param args.wallet 钱包
  * @param args.planIndex 释放计划 index
+ * @param args.start 队列起始 index
+ * @param args.limit 本页条数上限
  * @returns 已确认的写交易结果
  * @see 手册 §12 RewardQueue 奖励释放队列
  */
-export async function writeClaimAllVestedRewards(args: { wallet: Wallet; planIndex: number }) {
+export async function writeClaimVestedRewardsInRange(args: {
+  wallet: Wallet
+  planIndex: number
+  start: number
+  limit: number
+}) {
   return writeContractViaWallet({
     wallet: args.wallet,
     address: BSC_CONTRACTS.rewardQueue,
-    abi: claimAllAbi,
-    functionName: 'claimAllVestedRewards',
-    args: [args.planIndex],
+    abi: claimInRangeAbi,
+    functionName: 'claimVestedRewardsInRange',
+    args: [args.planIndex, BigInt(args.start), BigInt(args.limit)],
   })
 }
 
