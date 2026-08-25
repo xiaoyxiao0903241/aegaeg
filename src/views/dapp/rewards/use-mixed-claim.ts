@@ -80,7 +80,7 @@ export function useMixedClaim(view: MixedClaimView) {
 
   const amount =
     view === 'lucky'
-      ? (luckyQuery.data?.rewardAmount ?? ZERO_BI)
+      ? (luckyQuery.data?.totalUnclaimedAmount ?? ZERO_BI)
       : ZERO_BI /* 共建奖：金额在提交签名时才可知 */
 
   const plansQuery = useChainQuery({
@@ -136,13 +136,13 @@ export function useMixedClaim(view: MixedClaimView) {
     path: view === 'lucky' ? WRITE_PATH.REWARD_LUCKY_MIXED : WRITE_PATH.REWARD_DAO_MIXED,
     mutation: async (_vars, session) => {
       if (view === 'lucky') {
-        const roundId = luckyQuery.data?.roundId
-        if (roundId == null || !luckyQuery.data?.claimable) {
+        const rounds = luckyQuery.data?.unclaimedRounds ?? []
+        if (!luckyQuery.data?.claimable || rounds.length === 0) {
           throw REWARDS_BLOCKED.luckyNotClaimable
         }
         await submitLuckyMixedClaim({
           session,
-          roundId,
+          roundIds: rounds.map((r) => r.roundId),
           releaseDays,
           restakeDays,
           restakePct,
@@ -233,7 +233,7 @@ export function useMixedClaim(view: MixedClaimView) {
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(amount, AGX_DECIMALS)
-        : t.rewards.hub.signInForBalance
+        : formatApiAmount(null)
       : sessionReady
         ? formatNumber(previewOrZero, { digits: 4 })
         : t.rewards.hub.signInForBalance

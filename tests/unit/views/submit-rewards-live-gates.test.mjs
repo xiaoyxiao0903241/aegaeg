@@ -46,7 +46,7 @@ test('submitLuckyMixedClaim fail-closed when live round is not claimable', async
     () =>
       submitLuckyMixedClaim({
         session,
-        roundId: 1n,
+        roundIds: [1n],
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
@@ -67,7 +67,7 @@ test('submitLuckyMixedClaim fail-closed when contribution is below live required
     () =>
       submitLuckyMixedClaim({
         session,
-        roundId: 1n,
+        roundIds: [1n],
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,

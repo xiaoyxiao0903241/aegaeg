@@ -7,6 +7,7 @@ import { requestWithSession } from '~/shared/api/query/session-request'
 import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { WALLET_BLOCKED } from '~/web3/contract-error-message'
+import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'
 import { REWARDS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readDaoPoolRewardAvailable, readLuckyClaimRound } from '~/web3/rewards/rewards-read'
 import { writeDaoMixedClaim, writeLuckyMixedClaim } from '~/web3/rewards/rewards-write'
@@ -36,25 +37,30 @@ function mapMixedBlockError(reason: NonNullable<ReturnType<typeof evaluateReward
 /**
  * 幸运奖混合领取提交（仅领域写入）
  *
- * 意图轮由调用方钉死；经统一编排核做预检与实时复核后再写。
- * 贡献门槛用该轮链上金额；两读之间轮次不可领或金额变化会阻断。
+ * 意图轮由调用方钉死（可多轮）；经统一编排核做预检与实时复核后再写。
+ * 合约无批量领取，多轮时按序逐笔 `claimRewardMixed`（每笔需钱包确认）。
+ * 贡献门槛按该轮链上金额；两读之间轮次不可领或金额变化会阻断。
  *
  * @param args.session 写会话
- * @param args.roundId 意图轮次
+ * @param args.roundIds 意图轮次（通常为全部未领，最新在前）
  * @param args.releaseDays 释放时长档位
  * @param args.restakeDays 复投时长档位
  * @param args.restakePct 复投占比
  */
 export async function submitLuckyMixedClaim(args: {
   session: WriteSession
-  roundId: bigint
+  roundIds: readonly bigint[]
   releaseDays: number
   restakeDays: number
   restakePct: number
 }): Promise<void> {
-  const { session, roundId, releaseDays, restakeDays, restakePct } = args
+  const { session, roundIds, releaseDays, restakeDays, restakePct } = args
   const { wallet, address: user } = session
   const restakeBps = restakeBpsFromPct(restakePct)
+
+  if (roundIds.length === 0) {
+    throw REWARDS_BLOCKED.luckyNotClaimable
+  }
 
   type LuckySnap = {
     rewardAmount: bigint
@@ -66,47 +72,63 @@ export async function submitLuckyMixedClaim(args: {
     requiredContribution: bigint
   }
 
-  await approveThenLiveWrite({
-    readSnapshot: async (): Promise<LuckySnap> => {
-      const snap = await readLuckyClaimRound(user, roundId)
-      const plans = await readClaimPlans()
-      const { releaseIndex, restakeIndex } = matchClaimPlanIndices(plans, releaseDays, restakeDays)
-      const contrib = await readContributionSnapshot(user, snap.rewardAmount)
-      return {
-        rewardAmount: snap.rewardAmount,
-        paused: snap.paused,
-        claimable: snap.claimable,
-        releaseIndex,
-        restakeIndex,
-        contribution: contrib.contribution,
-        requiredContribution: contrib.requiredContribution,
-      }
-    },
-    evaluate: (snap) =>
-      evaluateRewardsMixedClaim({
-        amount: snap.rewardAmount,
-        rewardAvailable: snap.rewardAmount,
-        contribution: snap.contribution,
-        requiredContribution: snap.requiredContribution,
-        releasePlanIndex: snap.releaseIndex,
-        restakePlanIndex: snap.restakeIndex,
-        luckyPaused: snap.paused,
-        luckyClaimable: snap.claimable,
-      }),
-    mapBlockError: mapMixedBlockError,
-    write: async (live) => {
-      if (live.releaseIndex == null || live.restakeIndex == null) {
-        throw REWARDS_BLOCKED.releasePlanUnresolved
-      }
-      await writeLuckyMixedClaim({
-        wallet,
-        roundId,
-        releasePlanIndex: live.releaseIndex,
-        restakePlanIndex: live.restakeIndex,
-        restakeBps,
+  for (const roundId of roundIds) {
+    try {
+      await approveThenLiveWrite({
+        readSnapshot: async (): Promise<LuckySnap> => {
+          const snap = await readLuckyClaimRound(user, roundId)
+          const plans = await readClaimPlans()
+          const { releaseIndex, restakeIndex } = matchClaimPlanIndices(
+            plans,
+            releaseDays,
+            restakeDays,
+          )
+          const contrib = await readContributionSnapshot(user, snap.rewardAmount)
+          return {
+            rewardAmount: snap.rewardAmount,
+            paused: snap.paused,
+            claimable: snap.claimable,
+            releaseIndex,
+            restakeIndex,
+            contribution: contrib.contribution,
+            requiredContribution: contrib.requiredContribution,
+          }
+        },
+        evaluate: (snap) =>
+          evaluateRewardsMixedClaim({
+            amount: snap.rewardAmount,
+            rewardAvailable: snap.rewardAmount,
+            contribution: snap.contribution,
+            requiredContribution: snap.requiredContribution,
+            releasePlanIndex: snap.releaseIndex,
+            restakePlanIndex: snap.restakeIndex,
+            luckyPaused: snap.paused,
+            luckyClaimable: snap.claimable,
+          }),
+        mapBlockError: mapMixedBlockError,
+        write: async (live) => {
+          if (live.releaseIndex == null || live.restakeIndex == null) {
+            throw REWARDS_BLOCKED.releasePlanUnresolved
+          }
+          await writeLuckyMixedClaim({
+            wallet,
+            roundId,
+            releasePlanIndex: live.releaseIndex,
+            restakePlanIndex: live.restakeIndex,
+            restakeBps,
+          })
+        },
       })
-    },
-  })
+    } catch (error) {
+      // 完整链上错误由 presentUserFacingError 打字符串；此处只补多轮上下文便于对照。
+      if (!isUserRejectedWalletError(error)) {
+        console.error(
+          `[submitLuckyMixedClaim] roundId=${roundId.toString()} roundIds=${roundIds.map(String).join(',')}`,
+        )
+      }
+      throw error
+    }
+  }
   invalidateAfterRewardsMixedClaim()
 }
 

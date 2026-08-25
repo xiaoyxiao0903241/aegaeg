@@ -1,7 +1,8 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
+import { mapLuckyClaimMulticallRow } from '~/core/rewards/map-lucky-claim-multicall-row'
 import { isLuckyClaimable } from '~/core/rewards/rewards-block-reasons'
-import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
+import { selectLuckyUnclaimedWins } from '~/core/rewards/select-lucky-unclaimed-wins'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
@@ -19,15 +20,21 @@ const luckyAbi = parseAbi([
 
 const trackerAbi = parseAbi([DAILY_PURCHASE_TRACKER_METHODS.getCurrentRoundUserStat])
 
-/** 回溯闭轮上限（手册：旧轮按 ID 可查；禁只看上一轮）。 */
+/** 回溯闭轮上限（按 roundId 读中奖；禁扫全链日志）。 */
 const LUCKY_CLAIM_LOOKBACK = 10_000n
 
 /** 用户幸运奖领取快照。 */
 export type LuckyClaimSnapshot = {
   paused: boolean
+  /** 最新一笔未领轮（兼容；批量领取用 unclaimedRounds） */
   roundId: bigint
   won: boolean
+  /** 最新一笔未领奖额（兼容） */
   rewardAmount: bigint
+  /** 全部未领奖额合计（Hub / 领取面板展示） */
+  totalUnclaimedAmount: bigint
+  /** 未领轮（roundId 降序），提交时逐轮 claimRewardMixed */
+  unclaimedRounds: readonly { roundId: bigint; rewardAmount: bigint }[]
   rewardClaimed: boolean
   claimable: boolean
 }
@@ -35,11 +42,11 @@ export type LuckyClaimSnapshot = {
 /**
  * 读取用户可领的幸运奖快照。
  *
- * currentRoundId 为进行中轮，中奖发生在已关闭轮；从新到旧回溯（上限 10000 轮），
- * 取第一笔可领记录。每轮两读经 Multicall3（允许失败）。
+ * `currentRoundId` 为进行中轮；对已关轮 Multicall `getWinnerInfo`（+ `rewardClaimed`，
+ * 失败按未领）筛出中奖轮后加总未领。`roundId`/`rewardAmount` 为最新一笔未领。
  *
  * @param user 钱包地址
- * @returns 暂停状态 / 选中轮 / 是否中奖 / 是否已领 / 是否可领
+ * @returns 暂停 / 下一笔轮 / 合计未领 / 是否可领
  * @see 手册 §14 LuckyPool 去中心化抽奖
  */
 export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimSnapshot> {
@@ -71,7 +78,6 @@ export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimS
     'LUCKY_SNAPSHOT_MULTICALL_FAILED:roundId',
   )
 
-  // currentRoundId 为进行中轮；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
   const latestClosed = openRoundId > 0n ? openRoundId - 1n : 0n
   const oldest =
     latestClosed === 0n
@@ -114,46 +120,52 @@ export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimS
           ]),
         )
 
-  const rows = []
+  const wins: { roundId: bigint; rewardAmount: bigint }[] = []
+  const claimedRoundIds = new Set<bigint>()
   for (let i = 0; i < roundIds.length; i++) {
     const infoSlot = results[i * 2]
     const claimedSlot = results[i * 2 + 1]
     const roundId = roundIds[i]!
-    if (!infoSlot?.success || !claimedSlot?.success) {
-      rows.push({
-        roundId,
-        won: false,
-        rewardAmount: 0n,
-        rewardClaimed: false,
-      })
-      continue
-    }
-    const info = decodeFunctionResult({
-      abi: luckyAbi,
-      functionName: 'getWinnerInfo',
-      data: infoSlot.returnData,
-    }) as readonly [boolean, bigint]
-    const rewardClaimed = Boolean(
-      decodeFunctionResult({
-        abi: luckyAbi,
-        functionName: 'rewardClaimed',
-        data: claimedSlot.returnData,
-      }),
-    )
-    rows.push({
+    const infoOk = Boolean(infoSlot?.success)
+    const claimedOk = Boolean(claimedSlot?.success)
+    const info = infoOk
+      ? (decodeFunctionResult({
+          abi: luckyAbi,
+          functionName: 'getWinnerInfo',
+          data: infoSlot!.returnData,
+        }) as readonly [boolean, bigint])
+      : null
+    const rewardClaimed = claimedOk
+      ? Boolean(
+          decodeFunctionResult({
+            abi: luckyAbi,
+            functionName: 'rewardClaimed',
+            data: claimedSlot!.returnData,
+          }),
+        )
+      : false
+    const row = mapLuckyClaimMulticallRow({
       roundId,
-      won: Boolean(info[0]),
-      rewardAmount: info[1] ?? 0n,
+      infoOk,
+      won: Boolean(info?.[0]),
+      rewardAmount: info?.[1] ?? 0n,
+      claimedOk,
       rewardClaimed,
     })
+    if (row.won && row.rewardAmount > 0n) {
+      wins.push({ roundId: row.roundId, rewardAmount: row.rewardAmount })
+      if (row.rewardClaimed) claimedRoundIds.add(row.roundId)
+    }
   }
 
-  const selected = selectLuckyClaimRound({ openRoundId, paused, rows })
+  const selected = selectLuckyUnclaimedWins({ paused, wins, claimedRoundIds })
   return {
     paused,
     roundId: selected.roundId,
     won: selected.won,
     rewardAmount: selected.rewardAmount,
+    totalUnclaimedAmount: selected.totalUnclaimedAmount,
+    unclaimedRounds: selected.unclaimedRounds,
     rewardClaimed: selected.rewardClaimed,
     claimable: selected.claimable,
   }
@@ -164,6 +176,7 @@ export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimS
  *
  * 展示层已选出可领轮后，提交不得再全量回溯换轮；只重读该轮 winner / claimed / paused，
  * 贡献门槛按该轮金额计算，避免意图与上链轮次错配。
+ * `rewardClaimed` 允许失败并按未领处理（与快照读一致）。
  *
  * @param user 钱包地址
  * @param roundId 意图轮次
@@ -190,6 +203,7 @@ export async function readLuckyClaimRound(
     },
     {
       target: pool,
+      allowFailure: true,
       callData: encodeFunctionData({
         abi: luckyAbi,
         functionName: 'rewardClaimed',
@@ -213,28 +227,39 @@ export async function readLuckyClaimRound(
     'getWinnerInfo',
     'LUCKY_ROUND_MULTICALL_FAILED:winner',
   )
-  const rewardClaimed = decodeAggregate3Result<boolean>(
-    results,
-    2,
-    luckyAbi,
-    'rewardClaimed',
-    'LUCKY_ROUND_MULTICALL_FAILED:claimed',
-  )
-  const won = Boolean(info[0])
-  const rewardAmount = info[1] ?? 0n
-  const claimed = Boolean(rewardClaimed)
+  const claimedSlot = results[2]
+  const claimedOk = Boolean(claimedSlot?.success)
+  const rewardClaimedRaw = claimedOk
+    ? Boolean(
+        decodeFunctionResult({
+          abi: luckyAbi,
+          functionName: 'rewardClaimed',
+          data: claimedSlot!.returnData,
+        }),
+      )
+    : false
+  const row = mapLuckyClaimMulticallRow({
+    roundId,
+    infoOk: true,
+    won: Boolean(info[0]),
+    rewardAmount: info[1] ?? 0n,
+    claimedOk,
+    rewardClaimed: rewardClaimedRaw,
+  })
   const claimable = isLuckyClaimable({
     paused: Boolean(paused),
-    won,
-    rewardClaimed: claimed,
-    rewardAmount,
+    won: row.won,
+    rewardClaimed: row.rewardClaimed,
+    rewardAmount: row.rewardAmount,
   })
   return {
     paused: Boolean(paused),
     roundId,
-    won,
-    rewardAmount,
-    rewardClaimed: claimed,
+    won: row.won,
+    rewardAmount: row.rewardAmount,
+    totalUnclaimedAmount: claimable ? row.rewardAmount : 0n,
+    unclaimedRounds: claimable ? [{ roundId, rewardAmount: row.rewardAmount }] : [],
+    rewardClaimed: row.rewardClaimed,
     claimable,
   }
 }

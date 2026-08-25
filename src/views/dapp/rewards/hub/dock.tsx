@@ -111,8 +111,8 @@ export function RewardsHubDock() {
     if (!walletReady) return null
     const snap = luckyQuery.data
     if (snap == null) return null
-    if (!snap.claimable || snap.rewardAmount <= ZERO_BI) return ZERO_BI
-    return snap.rewardAmount
+    if (!snap.claimable || snap.totalUnclaimedAmount <= ZERO_BI) return ZERO_BI
+    return snap.totalUnclaimedAmount
   })()
   const luckyAmount = luckyWei == null ? null : formatTokenAmountToNumber(luckyWei, AGX_DECIMALS)
 
