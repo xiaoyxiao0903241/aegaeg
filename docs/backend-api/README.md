@@ -7,9 +7,9 @@
 |---|---|
 |标题|AEGIS API|
 |OpenAPI|3.0.3|
-|paths|60|
+|paths|66|
 |tags|17|
 |源|本目录（以 `openapi.json` 为准）|
 
 接入约定：有字段 → 尽量接线；手册与 API 皆无 → 诚实空，禁止假数。  
-本目录 json / api.md **勿手改**；更新从上游重新生成。
+本目录 json / api.md **勿手改**；更新从上游 OpenAPI HTML 抽出 `openapi.json` 后跑 `python3 scripts/generate-backend-api-md.py`。

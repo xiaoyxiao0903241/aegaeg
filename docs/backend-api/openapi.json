@@ -46,7 +46,7 @@
     },
     {
       "name": "buffer-pool（缓冲池）",
-      "description": "缓冲池：principal_release_logs 分页流水（contract_address 原值返回）\n\n一级路由：`POST /api/buffer-pool/…`\n\n本组接口：\n- `POST /buffer-pool/logs`\n- `POST /buffer-pool/summary`"
+      "description": "缓冲池：splitter_events 分页流水（contract_address 原值返回）\n\n一级路由：`POST /api/buffer-pool/…`\n\n本组接口：\n- `POST /buffer-pool/logs`\n- `POST /buffer-pool/summary`"
     },
     {
       "name": "agx-contribution（销毁与贡献点）",
@@ -54,7 +54,7 @@
     },
     {
       "name": "assets（资产页）",
-      "description": "用户资产页统计：奖励概览、持仓汇总、持仓分布\n\n一级路由：`POST /api/assets/…`\n\n本组接口：\n- `POST /assets/holdings-distribution`\n- `POST /assets/holdings-summary`\n- `POST /assets/reward-summary`"
+      "description": "用户资产页统计：奖励概览、持仓汇总、持仓分布、各产品收益与投资\n\n一级路由：`POST /api/assets/…`\n\n本组接口：\n- `POST /assets/holdings-distribution`\n- `POST /assets/holdings-summary`\n- `POST /assets/product-invest-reward`\n- `POST /assets/reward-summary`"
     },
     {
       "name": "performance（做市概览）",
@@ -66,7 +66,7 @@
     },
     {
       "name": "bond-flow（债券流水）",
-      "description": "债券 LP / 销毁流水与申购记录\n\n一级路由：`POST /api/bond-flow/…`\n\n本组接口：\n- `POST /bond-flow/burn-logs`\n- `POST /bond-flow/burn-purchases`\n- `POST /bond-flow/lp-logs`\n- `POST /bond-flow/lp-purchases`"
+      "description": "债券 LP / 销毁流水与申购记录\n\n一级路由：`POST /api/bond-flow/…`\n\n本组接口：\n- `POST /bond-flow/burn-logs`\n- `POST /bond-flow/burn-purchases`\n- `POST /bond-flow/burn-reward-total`\n- `POST /bond-flow/lp-logs`\n- `POST /bond-flow/lp-purchases`\n- `POST /bond-flow/lp-reward-total`"
     },
     {
       "name": "turbine（涡轮）",
@@ -78,7 +78,7 @@
     },
     {
       "name": "protocol-market-stats（协议市值质押）",
-      "description": "协议总市值/总质押日点与四类汇总趋势：Redis 缓存；周/月/年/全部序列与 latest_growth_rate\n\n一级路由：`POST /api/protocol-market-stats/…`\n\n本组接口：\n- `POST /protocol-market-stats/aggregate-series`\n- `POST /protocol-market-stats/series`"
+      "description": "协议总市值/总质押日点与四类汇总趋势：Redis 缓存；周/月/年/全部序列与 latest_growth_rate\n\n一级路由：`POST /api/protocol-market-stats/…`\n\n本组接口：\n- `POST /protocol-market-stats/aggregate-series`\n- `POST /protocol-market-stats/rebuild`\n- `POST /protocol-market-stats/series`"
     },
     {
       "name": "一期接口",
@@ -1530,66 +1530,6 @@
           }
         }
       },
-      "ProtocolMarketStatsPoint": {
-        "type": "object",
-        "description": "协议序列点（USD）",
-        "properties": {
-          "date": {
-            "type": "string",
-            "description": "**说明：** YYYY-MM-DD",
-            "example": "2026-08-06",
-            "title": "date"
-          },
-          "amount": {
-            "type": "string",
-            "description": "**说明：** 金额 USD；metric=market 为总市值，metric=stake 为总质押",
-            "example": "1234567.890123",
-            "title": "amount"
-          }
-        }
-      },
-      "ApiResponseProtocolMarketStatsSeries": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "example": 0
-          },
-          "data": {
-            "type": "object",
-            "description": "**说明：** 区间序列；metric + range + list + latest_growth_rate",
-            "properties": {
-              "metric": {
-                "type": "string",
-                "enum": ["market", "stake"],
-                "description": "**说明：** market=总市值，stake=总质押（USD）",
-                "title": "metric"
-              },
-              "range": {
-                "type": "string",
-                "enum": ["week", "month", "year", "all"],
-                "description": "**说明：** 区间维度",
-                "title": "range"
-              },
-              "list": {
-                "type": "array",
-                "description": "**说明：** 区间内序列点",
-                "items": {
-                  "$ref": "#/components/schemas/ProtocolMarketStatsPoint"
-                },
-                "title": "list"
-              },
-              "latest_growth_rate": {
-                "type": "number",
-                "nullable": true,
-                "description": "**说明：** 最新点相对前一周期增长率（%）；week=−7天，month=上月同日，year=上年同日，all=最早；前一周期无数据则对比最早",
-                "title": "latest_growth_rate"
-              }
-            },
-            "title": "data"
-          }
-        }
-      },
       "TeamReferralItem": {
         "type": "object",
         "description": "直推下级项 / direct referral item",
@@ -1620,6 +1560,31 @@
             "type": "string",
             "description": "**说明：** 预售团队业绩",
             "title": "sales_team_market"
+          },
+          "making_market": {
+            "type": "string",
+            "description": "**说明：** 团队业绩(AGX)，user_performance.making_market",
+            "title": "making_market"
+          },
+          "making_market_usd": {
+            "type": "string",
+            "description": "**说明：** 团队业绩(USD) = making_market × agx_price_logs 最新价",
+            "title": "making_market_usd"
+          },
+          "making_rank": {
+            "type": "integer",
+            "description": "**说明：** 做市等级，user_performance.making_rank",
+            "title": "making_rank"
+          },
+          "active_stake_balance": {
+            "type": "string",
+            "description": "**说明：** 持仓(AGX)，user_performance.active_stake_balance",
+            "title": "active_stake_balance"
+          },
+          "active_stake_balance_usd": {
+            "type": "string",
+            "description": "**说明：** 持仓(USD) = active_stake_balance × agx_price_logs 最新价",
+            "title": "active_stake_balance_usd"
           }
         }
       },
@@ -1721,6 +1686,61 @@
           },
           "data": {
             "$ref": "#/components/schemas/TeamCommunityOverview"
+          }
+        }
+      },
+      "TeamMakingCommunityOverview": {
+        "type": "object",
+        "description": "做市社区概览 / making-market community overview",
+        "properties": {
+          "direct_referral_count": {
+            "type": "integer",
+            "description": "**说明：** 直推人数，user_performance.direct_referral_count",
+            "title": "direct_referral_count"
+          },
+          "making_direct_team_market": {
+            "type": "string",
+            "description": "**说明：** 直推业绩(USD) = making_direct_team_market(AGX) × agx_price_logs 最新价",
+            "title": "making_direct_team_market"
+          },
+          "today_addition_making_direct_team_market": {
+            "type": "string",
+            "description": "**说明：** 今日直推业绩增量(USD) = making_direct_team_market_delta(AGX) × 最新价",
+            "title": "today_addition_making_direct_team_market"
+          },
+          "team_count": {
+            "type": "integer",
+            "description": "**说明：** 团队人数，user_performance.team_count",
+            "title": "team_count"
+          },
+          "making_market": {
+            "type": "string",
+            "description": "**说明：** 团队业绩(USD) = making_market(AGX) × agx_price_logs 最新价",
+            "title": "making_market"
+          },
+          "today_addition_making_market": {
+            "type": "string",
+            "description": "**说明：** 今日团队业绩增量(USD) = making_market_delta(AGX) × 最新价",
+            "title": "today_addition_making_market"
+          },
+          "making_rank": {
+            "type": "integer",
+            "description": "**说明：** 做市等级，user_performance.making_rank",
+            "title": "making_rank"
+          }
+        }
+      },
+      "ApiResponseTeamMakingOverview": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 0,
+            "description": "**说明：** 业务码，0=成功",
+            "title": "code"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TeamMakingCommunityOverview"
           }
         }
       },
@@ -1987,12 +2007,11 @@
       },
       "LuckyRewardWinnersRequest": {
         "type": "object",
-        "required": ["date"],
         "properties": {
           "date": {
             "type": "string",
             "example": "2026-07-14",
-            "description": "**说明：** 抽奖日期，格式 yyyy-MM-dd（按 DATE(lucky_rounds.created_at) 匹配）",
+            "description": "**说明：** 可选。抽奖日期 yyyy-MM-dd（按 DATE(lucky_rounds.created_at) 匹配）；不传则返回最近有中奖记录的一天",
             "title": "date"
           }
         }
@@ -2018,7 +2037,7 @@
           },
           "reward_amount": {
             "type": "string",
-            "description": "**说明：** 奖金(gAGX)，lucky_winners.reward_amount",
+            "description": "**说明：** 奖金(AGX)，lucky_winners.reward_amount",
             "title": "reward_amount"
           }
         }
@@ -2037,14 +2056,30 @@
             "properties": {
               "date": {
                 "type": "string",
-                "description": "**说明：** 查询日期 yyyy-MM-dd",
+                "nullable": true,
+                "description": "**说明：** 实际返回的抽奖日期 yyyy-MM-dd；未传 date 时为最近已开奖日",
                 "title": "date"
+              },
+              "round_id": {
+                "type": "integer",
+                "nullable": true,
+                "description": "**说明：** 当日最大 DRAWN round_id；无轮次为 null",
+                "title": "round_id"
               },
               "draw_tx_hash": {
                 "type": "string",
                 "nullable": true,
                 "description": "**说明：** 开奖交易 hash（lucky_rounds.draw_tx_hash）",
                 "title": "draw_tx_hash"
+              },
+              "dates": {
+                "type": "array",
+                "description": "**说明：** 已开奖轮次日期 yyyy-MM-dd（status=DRAWN，DATE(created_at) 去重倒序）",
+                "items": {
+                  "type": "string",
+                  "example": "2026-08-20"
+                },
+                "title": "dates"
               },
               "items": {
                 "type": "array",
@@ -2089,6 +2124,11 @@
                 "type": "integer",
                 "description": "**说明：** 累计中奖次数（lucky_winners）",
                 "title": "win_count"
+              },
+              "total_reward_amount": {
+                "type": "string",
+                "description": "**说明：** 累计中奖金额(AGX)，SUM(lucky_winners.reward_amount)",
+                "title": "total_reward_amount"
               }
             }
           }
@@ -2096,12 +2136,12 @@
       },
       "LuckyRewardMyRoundItem": {
         "type": "object",
-        "description": "个人参与幸运奖轮次（lucky_eligible_users JOIN lucky_rounds；中奖/领取 LEFT JOIN）",
+        "description": "个人参与已开奖幸运奖轮次（lucky_eligible_users JOIN lucky_rounds status=DRAWN；LEFT JOIN lucky_winners）",
         "properties": {
           "date": {
             "type": "string",
             "nullable": true,
-            "description": "**说明：** 轮次展示日 yyyy-MM-dd（由 display_day 格式化）",
+            "description": "**说明：** 中奖日期 yyyy-MM-dd（lucky_winners.created_at 日历日）；未中奖为 null",
             "title": "date"
           },
           "round_id": {
@@ -2111,7 +2151,7 @@
           },
           "participation_amount": {
             "type": "string",
-            "description": "**说明：** 质押金额(USDT)，user_performance_daily.sum_invest_usdt（与轮次 date 同日快照）",
+            "description": "**说明：** 质押金额(USDT)，user_performance_daily.sum_invest_usdt（与 DATE(lucky_winners.created_at) 同日快照；未中奖为 \"0\"）",
             "title": "participation_amount"
           },
           "is_winner": {
@@ -2127,7 +2167,7 @@
           },
           "reward_amount": {
             "type": "string",
-            "description": "**说明：** 中奖奖金(gAGX)；未中为 \"0\"",
+            "description": "**说明：** 中奖奖金(AGX)；未中为 \"0\"",
             "title": "reward_amount"
           },
           "draw_tx_hash": {
@@ -2135,30 +2175,6 @@
             "nullable": true,
             "description": "**说明：** 开奖交易 hash（lucky_rounds.draw_tx_hash）",
             "title": "draw_tx_hash"
-          },
-          "winner_status": {
-            "type": "string",
-            "nullable": true,
-            "description": "**说明：** 中奖状态（lucky_winners.status，如 SELECTED/CLAIMED）",
-            "title": "winner_status"
-          },
-          "claim_status": {
-            "type": "string",
-            "nullable": true,
-            "description": "**说明：** 领取状态（lucky_claims.status，如 PENDING/CLAIMED）",
-            "title": "claim_status"
-          },
-          "claim_tx_hash": {
-            "type": "string",
-            "nullable": true,
-            "description": "**说明：** 混合领取交易 hash（lucky_claims.tx_hash）",
-            "title": "claim_tx_hash"
-          },
-          "claim_timestamp": {
-            "type": "integer",
-            "nullable": true,
-            "description": "**说明：** 链上领取时间戳（lucky_claims.claim_timestamp，秒）",
-            "title": "claim_timestamp"
           }
         }
       },
@@ -2236,7 +2252,7 @@
               },
               "small_market": {
                 "type": "string",
-                "description": "**说明：** 小区业绩（AGX）= making_market - MAX(直推分支 making_team_amount)",
+                "description": "**说明：** 小区业绩（AGX）= making_market − MAX(直推 making_market + making_personal_balance)",
                 "title": "small_market"
               },
               "available_contribution": {
@@ -2534,12 +2550,12 @@
           },
           "expire_at": {
             "type": "integer",
-            "description": "**说明：** 到期时间戳 = block_time + term_days×86400（秒）",
+            "description": "**说明：** 到期时间戳（秒）：锁仓 = block_time + term_days×86400；活期 term_days=0 时 = block_time + 86400",
             "title": "expire_at"
           },
           "released_pct": {
             "type": "string",
-            "description": "**说明：** 释放进度百分比 0~100；按 (now-block_time)/(term_days×86400)×100 计算，封顶 100；活期为 100",
+            "description": "**说明：** 释放进度百分比 0~100；锁仓按 (now-block_time)/(term_days×86400)×100 封顶 100；活期超过 24h 为 100，24h 以内为 0",
             "example": "45.67",
             "title": "released_pct"
           },
@@ -2720,7 +2736,7 @@
           },
           "deposit_amount": {
             "type": "string",
-            "description": "**说明：** 支付金额（存入代币数量 deposit_amount）",
+            "description": "**说明：** 支付金额（USD，取 bond_flow_logs.usd_value）",
             "title": "deposit_amount"
           },
           "discount_bp": {
@@ -2773,7 +2789,7 @@
               },
               "total_purchase_amount": {
                 "type": "string",
-                "description": "**说明：** 当前用户该 bond_type 下全部 PURCHASE 的 deposit_amount 累计",
+                "description": "**说明：** 当前用户该 bond_type 下全部 PURCHASE 的 usd_value 累计（USD）",
                 "title": "total_purchase_amount"
               },
               "items": {
@@ -2786,6 +2802,50 @@
               }
             },
             "title": "data"
+          }
+        }
+      },
+      "ApiResponseBondRewardTotal": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 0,
+            "description": "**说明：** 业务码，0=成功",
+            "title": "code"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total_reward": {
+                "type": "string",
+                "description": "**说明：** 债券累计收益(gAGX)，SUM(payout) WHERE operation=REWARD AND status=completed",
+                "example": "1234.567890123456789",
+                "title": "total_reward"
+              }
+            }
+          }
+        }
+      },
+      "ApiResponseBondLpRewardTotal": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 0,
+            "description": "**说明：** 业务码，0=成功",
+            "title": "code"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total_reward": {
+                "type": "string",
+                "description": "**说明：** 债券累计收益(gAGX)，SUM(payout) WHERE operation=REWARD AND status=completed",
+                "example": "1234.567890123456789",
+                "title": "total_reward"
+              }
+            }
           }
         }
       },
@@ -3497,25 +3557,32 @@
           "sort_bound_at": {
             "type": "string",
             "enum": ["asc", "desc"],
-            "description": "**说明：** 按 users.bound_at 排序",
+            "description": "**说明：** 按加入时间 users.bound_at 排序；不传则不参与（全都不传时默认 desc）",
             "title": "sort_bound_at"
           },
           "sort_making_market": {
             "type": "string",
             "enum": ["asc", "desc"],
-            "description": "**说明：** 按 making_market 排序",
+            "description": "**说明：** 按业绩 user_performance.making_market 排序；可与其它排序同时生效",
             "title": "sort_making_market"
           },
           "sort_making_rank": {
             "type": "string",
             "enum": ["asc", "desc"],
-            "description": "**说明：** 按 making_rank 排序",
+            "description": "**说明：** 按用户级别 user_performance.making_rank 排序；可与其它排序同时生效",
             "title": "sort_making_rank"
+          },
+          "sort_time": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "description": "**说明：** 兼容旧参数，等同 sort_bound_at",
+            "deprecated": true,
+            "title": "sort_time"
           },
           "hide_zero_market": {
             "type": "boolean",
             "default": false,
-            "description": "**说明：** true 时仅返回 making_market>0 的直推",
+            "description": "**说明：** true 时仅返回 making_market>0 的下级",
             "title": "hide_zero_market"
           }
         }
@@ -3858,12 +3925,12 @@
             "properties": {
               "total_burned_agx": {
                 "type": "string",
-                "description": "**说明：** 累计销毁 AGX（agx_contribution_totals.total_burned_raw）",
+                "description": "**说明：** 累计兑换 AGX（total_agx_in_raw，与获得贡献点约 1:6）；非 total_burned_raw",
                 "title": "total_burned_agx"
               },
               "total_contribution_earned": {
                 "type": "string",
-                "description": "**说明：** 累计获得贡献点（total_contribution_earned_raw，9 位小数）",
+                "description": "**说明：** 累计获得贡献点（total_contribution_earned_raw，9 位小数）；约 = total_burned_agx × 6",
                 "title": "total_contribution_earned"
               },
               "total_contribution_consumed": {
@@ -3890,12 +3957,12 @@
           },
           "burned_agx": {
             "type": "string",
-            "description": "**说明：** 销毁 AGX 数量",
+            "description": "**说明：** 兑换输入 AGX（agx_amount_raw）；与 contribution_earned 约 1:6",
             "title": "burned_agx"
           },
           "contribution_earned": {
             "type": "string",
-            "description": "**说明：** 获得贡献点数",
+            "description": "**说明：** 获得贡献点数（contribution_amount_raw）；约 = burned_agx × 6",
             "title": "contribution_earned"
           },
           "tx_hash": {
@@ -3953,12 +4020,19 @@
           },
           "contract_address": {
             "type": "string",
-            "description": "**说明：** 发出贡献值事件的合约地址（原值返回）",
+            "nullable": true,
+            "description": "**说明：** 实际发起操作地址（agx_contribution_logs.actor_address）",
             "title": "contract_address"
           },
           "tx_hash": {
             "type": "string",
             "nullable": true
+          },
+          "sign_type": {
+            "type": "integer",
+            "nullable": true,
+            "description": "**说明：** 签名类型（dao_mixed_claim_logs.sign_type，按 tx_hash 关联；无匹配为 null）。DAO claimRewardsMixed 链上固定为 4，不代表具体奖励类型",
+            "title": "sign_type"
           }
         }
       },
@@ -4133,7 +4207,7 @@
               },
               "total_reward_claimed": {
                 "type": "string",
-                "description": "**说明：** 累计已领取收益（gAGX），user_performance.total_reward_claimed",
+                "description": "**说明：** 累计已领取收益（gAGX）= DAO CLAIMED + 释放池 claimed_from_queue + 涡轮 cooled_claimed",
                 "title": "total_reward_claimed"
               },
               "available_contribution": {
@@ -4222,6 +4296,155 @@
             }
           }
         }
+      },
+      "ApiResponseAssetsProductInvestReward": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "stake": {
+                "type": "object",
+                "description": "**说明：** 质押",
+                "properties": {
+                  "claimed_reward": {
+                    "type": "string",
+                    "description": "**说明：** 已领取收益（gAGX），SUM(stake_flow_logs.amount) WHERE REWARD/EXTRA_REWARD；无数据为 \"0\"",
+                    "example": "12.345",
+                    "title": "claimed_reward"
+                  },
+                  "invest_amount": {
+                    "type": "string",
+                    "description": "**说明：** 实际投资金额（AGX），SUM(stake_flow_logs.amount) WHERE STAKE；无数据为 \"0\"",
+                    "example": "1000.00",
+                    "title": "invest_amount"
+                  }
+                },
+                "title": "stake"
+              },
+              "lp_bond": {
+                "type": "object",
+                "description": "**说明：** LP 债券",
+                "properties": {
+                  "claimed_reward": {
+                    "type": "string",
+                    "description": "**说明：** 已领取收益（gAGX），SUM(bond_flow_logs.payout) WHERE LP_BOND + REWARD；无数据为 \"0\"",
+                    "example": "56.78",
+                    "title": "claimed_reward"
+                  },
+                  "invest_amount": {
+                    "type": "string",
+                    "description": "**说明：** 实际投资金额（AGX），SUM(payout) WHERE LP_BOND + PURCHASE；无数据为 \"0\"",
+                    "example": "500.00",
+                    "title": "invest_amount"
+                  }
+                },
+                "title": "lp_bond"
+              },
+              "burn_bond": {
+                "type": "object",
+                "description": "**说明：** 销毁债券",
+                "properties": {
+                  "claimed_reward": {
+                    "type": "string",
+                    "description": "**说明：** 已领取收益（gAGX），SUM(bond_flow_logs.payout) WHERE BURN_BOND + REWARD；无数据为 \"0\"",
+                    "example": "34.56",
+                    "title": "claimed_reward"
+                  },
+                  "invest_amount": {
+                    "type": "string",
+                    "description": "**说明：** 实际投资金额（AGX），SUM(payout) WHERE BURN_BOND + PURCHASE；无数据为 \"0\"",
+                    "example": "300.00",
+                    "title": "invest_amount"
+                  }
+                },
+                "title": "burn_bond"
+              },
+              "x_mining": {
+                "type": "object",
+                "description": "**说明：** X 挖矿",
+                "properties": {
+                  "claimed_reward": {
+                    "type": "string",
+                    "description": "**说明：** 已领取收益（X），SUM(x_token_flow_logs.amount) WHERE REWARD；无数据为 \"0\"",
+                    "example": "100.0",
+                    "title": "claimed_reward"
+                  },
+                  "invest_amount": {
+                    "type": "string",
+                    "description": "**说明：** 实际投资金额（gAGX），SUM(STAKE_X) − SUM(UNSTAKE_X)；无数据为 \"0\"",
+                    "example": "80.0",
+                    "title": "invest_amount"
+                  }
+                },
+                "title": "x_mining"
+              }
+            }
+          }
+        }
+      },
+      "ProtocolMarketStatsPoint": {
+        "type": "object",
+        "description": "协议序列点（USD）",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "**说明：** 按天为 YYYY-MM-DD；year/all 且跨度≥6个月按月为 YYYY-MM",
+            "example": "2026-08-06",
+            "title": "date"
+          },
+          "amount": {
+            "type": "string",
+            "description": "**说明：** 金额 USD；metric=market 为总市值，metric=stake 为总质押",
+            "example": "1234567.890123",
+            "title": "amount"
+          }
+        }
+      },
+      "ApiResponseProtocolMarketStatsSeries": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "**说明：** 区间序列；metric + range + list + latest_growth_rate",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": ["market", "stake"],
+                "description": "**说明：** market=总市值，stake=总质押（USD）",
+                "title": "metric"
+              },
+              "range": {
+                "type": "string",
+                "enum": ["week", "month", "year", "all"],
+                "description": "**说明：** 区间维度",
+                "title": "range"
+              },
+              "list": {
+                "type": "array",
+                "description": "**说明：** 区间内序列点",
+                "items": {
+                  "$ref": "#/components/schemas/ProtocolMarketStatsPoint"
+                },
+                "title": "list"
+              },
+              "latest_growth_rate": {
+                "type": "number",
+                "description": "**说明：** 最新点相对前一周期增长率（%）；week=−7天，month=上月同日，year=上年同日，all=最早>0；前一周期无数据则对比最早金额>0；无可比快照返回 0",
+                "title": "latest_growth_rate"
+              }
+            },
+            "title": "data"
+          }
+        }
       }
     }
   },
@@ -4230,7 +4453,7 @@
       "post": {
         "tags": ["agx-contribution（销毁与贡献点）"],
         "summary": "销毁与贡献点统计 / AGX burn & contribution summary",
-        "description": "读取 agx_contribution_totals 投影：累计销毁、获得/消耗贡献点、剩余可用贡献点。\n数量字段由链上 raw 整数按 9 位小数换算为 decimal 字符串。\n",
+        "description": "读取 agx_contribution_totals 投影：累计兑换 AGX、获得/消耗贡献点、剩余可用贡献点。\ntotal_burned_agx 取 total_agx_in_raw（累计输入/兑换 AGX，与贡献点 1:6）；\n不用 total_burned_raw（那是 burn_split 后的实际销毁分拆量，与贡献点不成 1:6）。\n数量字段由链上 raw 整数按 9 位小数换算为 decimal 字符串。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4274,7 +4497,7 @@
       "post": {
         "tags": ["agx-contribution（销毁与贡献点）"],
         "summary": "分页销毁记录 / Paginated AGX burn logs",
-        "description": "agx_contribution_logs，event_type = CONVERTED（销毁换贡献点）。\n",
+        "description": "agx_contribution_logs，event_type = CONVERTED（销毁换贡献点）。\nburned_agx 取 agx_amount_raw（兑换输入 AGX，与 contribution_earned 约 1:6）；\n与 summary.total_burned_agx（total_agx_in_raw）口径一致。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4318,7 +4541,7 @@
       "post": {
         "tags": ["agx-contribution（销毁与贡献点）"],
         "summary": "分页贡献点消耗记录 / Paginated contribution consume logs",
-        "description": "agx_contribution_logs，event_type = CONSUMED（消耗贡献点领取奖励）。\n",
+        "description": "agx_contribution_logs，event_type = CONSUMED（消耗贡献点领取奖励）。\ncontract_address 取 actor_address（实际发起操作的账户地址）。\nsign_type：按 tx_hash LEFT JOIN dao_mixed_claim_logs（同 tx 多行取 MAX(sign_type)）；无匹配为 null。\n注：DAO claimRewardsMixed 链上 sign_type 固定为 4，不代表具体奖励类型。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4362,7 +4585,7 @@
       "post": {
         "tags": ["assets（资产页）"],
         "summary": "资产页奖励概览 / Assets reward summary",
-        "description": "返回总资产价值、可领取收益、累计已领取收益、剩余贡献点。\nstake_invest_usd_value = user_performance.stake_invest_usd_value（ACTIVE）；\ntotal_reward_claimed = user_performance.total_reward_claimed（gAGX）；\navailable_contribution = agx_contribution_totals.available_contribution_raw（÷ 10^9）；\nclaimable_gagx = DAO READY（按贡献点 cap）+ 释放池 releasing_amount + 涡轮 unclaimed_total；\nmarket_fund_claimable_agx = 做市津贴 unlocked_claimable（AGX，单独字段）。\n",
+        "description": "返回总资产价值、可领取收益、累计已领取收益、剩余贡献点。\nstake_invest_usd_value = user_performance.stake_invest_usd_value（ACTIVE）；\ntotal_reward_claimed = DAO CLAIMED + 释放池 claimed_from_queue + 涡轮 cooled_claimed（gAGX；\n不再读 user_performance.total_reward_claimed，该列 Scanner 未维护）；\navailable_contribution = agx_contribution_totals.available_contribution_raw（÷ 10^9）；\nclaimable_gagx = DAO READY（按贡献点 cap）+ 释放池 releasing_amount + 涡轮 unclaimed_total；\nmarket_fund_claimable_agx = 做市津贴 unlocked_claimable（AGX，单独字段）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4406,7 +4629,7 @@
       "post": {
         "tags": ["assets（资产页）"],
         "summary": "资产页持仓与缓冲池概览 / Assets holdings summary",
-        "description": "total_holdings_agx = user_performance.active_stake_balance（AGX）；\nbuffer_pool_cumulative / buffer_pool_released / buffer_pool_releasing 来自 principal_release_logs；\nstake_redeemed_agx = SUM(stake_flow_logs.amount) WHERE operation=CLAIM_PRINCIPAL；\ntotal_released_agx = buffer_pool_released + stake_redeemed_agx。\n",
+        "description": "total_holdings_agx = user_performance.active_stake_balance（AGX）；\nbuffer_pool_cumulative / buffer_pool_released / buffer_pool_releasing 来自 splitter_events；\nstake_redeemed_agx = SUM(stake_flow_logs.amount) WHERE operation=CLAIM_PRINCIPAL；\ntotal_released_agx = buffer_pool_released + stake_redeemed_agx。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4490,11 +4713,55 @@
         }
       }
     },
+    "/assets/product-invest-reward": {
+      "post": {
+        "tags": ["assets（资产页）"],
+        "summary": "各产品已领取收益与实际投资 / Product claimed reward & invest amount",
+        "description": "返回当前用户四类产品各自的已领取收益与实际投资金额（含地址家族）；无数据字段返回 \"0\"：\n- stake.claimed_reward（gAGX）= SUM(stake_flow_logs.amount) WHERE REWARD/EXTRA_REWARD；\n- stake.invest_amount（AGX）= SUM(stake_flow_logs.amount) WHERE STAKE；\n- lp_bond.claimed_reward（gAGX）= SUM(bond_flow_logs.payout) WHERE LP_BOND + REWARD；\n- lp_bond.invest_amount（AGX）= SUM(payout) WHERE LP_BOND + PURCHASE；\n- burn_bond.claimed_reward（gAGX）= SUM(payout) WHERE BURN_BOND + REWARD；\n- burn_bond.invest_amount（AGX）= SUM(payout) WHERE BURN_BOND + PURCHASE；\n- x_mining.claimed_reward（X）= SUM(x_token_flow_logs.amount) WHERE REWARD；\n- x_mining.invest_amount（gAGX）= SUM(STAKE_X) − SUM(UNSTAKE_X)（gagx_flow_logs）。\n流水汇总均仅计 status=completed。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAssetsProductInvestReward"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 / Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/login": {
       "post": {
         "tags": ["一期接口"],
         "summary": "使用签名登录并返回JWT / Login with signature and get JWT",
-        "description": "前端应使用钱包对原始消息message进行签名，提交address+message+signature，后端恢复地址一致即通过",
+        "description": "前端用钱包对 message 签名，提交 address + message + signature；验签通过即签发 JWT。\n用户可在绑定上级前登录（此时 users 表可能尚无记录，不因此拒绝）；\n仅当该地址已入库且 status=封禁时返回 403。\n已迁移的旧地址（account_identity_aliases.old_address）禁止登录，返回 403，请使用新地址。\n已入库用户会更新 last_login_time / last_login_ip。\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -4537,7 +4804,7 @@
             }
           },
           "403": {
-            "description": "账号被封禁 / Forbidden",
+            "description": "账号被封禁或地址已迁移 / Forbidden (banned or migrated address)",
             "content": {
               "application/json": {
                 "schema": {
@@ -4641,7 +4908,7 @@
       "post": {
         "tags": ["bond-flow（债券流水）"],
         "summary": "分页获取当前用户LP债券购买记录 / Paginated LP bond purchases",
-        "description": "查询 bond_flow_logs，bond_type=LP_BOND 且 operation=PURCHASE，按 block_time 倒序。\n不查询 STABLE_BOND。\n返回：block_time、term_days、deposit_amount（支付金额）、discount_bp（折扣基点）、\npayout（获取 AGX）、tx_hash；以及 total_purchase_amount（全部 PURCHASE 的 deposit_amount 累计）。\n",
+        "description": "查询 bond_flow_logs，bond_type=LP_BOND 且 operation=PURCHASE，按 block_time 倒序。\n不查询 STABLE_BOND。\n返回：block_time、term_days、deposit_amount（支付金额=usd_value，USD）、discount_bp（折扣基点）、\npayout（获取 AGX）、tx_hash；以及 total_purchase_amount（全部 PURCHASE 的 usd_value 累计）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4685,7 +4952,7 @@
       "post": {
         "tags": ["bond-flow（债券流水）"],
         "summary": "分页获取当前用户销毁债券购买记录 / Paginated burn bond purchases",
-        "description": "查询 bond_flow_logs，bond_type=BURN_BOND 且 operation=PURCHASE，按 block_time 倒序。\n不查询 STABLE_BOND。\n返回：block_time、term_days、deposit_amount（支付金额）、discount_bp（折扣基点）、\npayout（获取 AGX）、tx_hash；以及 total_purchase_amount（全部 PURCHASE 的 deposit_amount 累计）。\n",
+        "description": "查询 bond_flow_logs，bond_type=BURN_BOND 且 operation=PURCHASE，按 block_time 倒序。\n不查询 STABLE_BOND。\n返回：block_time、term_days、deposit_amount（支付金额=usd_value，USD）、discount_bp（折扣基点）、\npayout（获取 AGX）、tx_hash；以及 total_purchase_amount（全部 PURCHASE 的 usd_value 累计）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4725,11 +4992,99 @@
         }
       }
     },
+    "/bond-flow/lp-reward-total": {
+      "post": {
+        "tags": ["bond-flow（债券流水）"],
+        "summary": "当前用户 LP 债券累计收益（gAGX）/ LP bond total reward",
+        "description": "SUM(bond_flow_logs.payout)，条件：bond_type=LP_BOND、operation=REWARD、status=completed。\n含当前用户地址家族；单位 gAGX。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseBondRewardTotal"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 / Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bond-flow/burn-reward-total": {
+      "post": {
+        "tags": ["bond-flow（债券流水）"],
+        "summary": "当前用户销毁债券累计收益（gAGX）/ Burn bond total reward",
+        "description": "SUM(bond_flow_logs.payout)，条件：bond_type=BURN_BOND、operation=REWARD、status=completed。\n含当前用户地址家族；单位 gAGX。无数据返回 \"0\"。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseBondRewardTotal"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 / Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/buffer-pool/summary": {
       "post": {
         "tags": ["buffer-pool（缓冲池）"],
         "summary": "缓冲池统计 / Buffer pool summary",
-        "description": "基于 principal_release_logs 汇总 AGX 本金缓冲池。\ncumulative_amount = SUM(RELEASE_CREATED)；released_amount = SUM(PRINCIPAL_CLAIMED)；\nreleasing_amount = cumulative − released（不小于 0）。\n",
+        "description": "基于 splitter_events 汇总 AGX 本金缓冲池。\ncumulative_amount = SUM(DEPOSITED)；released_amount = SUM(CLAIMED)；\nreleasing_amount = cumulative − released（不小于 0）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -4773,7 +5128,7 @@
       "post": {
         "tags": ["buffer-pool（缓冲池）"],
         "summary": "分页缓冲池记录 / Paginated buffer pool logs",
-        "description": "查询 principal_release_logs，user_address 为当前用户，按 block_time 倒序。\n可选 event_type（string[]，多值为 OR）；未传或空数组则返回全部类型。\nevent_type：RELEASE_CREATED=进入，PRINCIPAL_CLAIMED=提取。\ncontract_address 原值返回（币种由前端按合约枚举映射）。\n",
+        "description": "查询 splitter_events，user_address 为当前用户，按 block_time 倒序。\n可选 event_type（string[]，多值为 OR）；未传或空数组则返回全部类型。\nevent_type：RELEASE_CREATED=进入，PRINCIPAL_CLAIMED=提取。\ncontract_address 原值返回（币种由前端按合约枚举映射）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -5103,6 +5458,93 @@
         }
       }
     },
+    "/dao-reward/type-totals": {
+      "post": {
+        "tags": ["二期·未分类"],
+        "summary": "当前用户各类型 DAO 奖励待领取汇总（gAGX）",
+        "description": "从 dao_reward_grants 按 reward_type 分组，SUM(pending_gross)（gAGX 税前待领取）。\n仅统计 active_generation 可见代次；接收方含别名家族（地址快照 OR 稳定账户ID）。\ndata 为 map：key=奖励类型，value=金额字符串。\n不传 type：返回全部类型（无数据为 \"0\"）：\nRANK_REWARD、REFERRAL_REWARD、PARTICIPATION_REWARD、SURPASS_REWARD、LIFETIME_REWARD、\nLUCKY_REWARD（幸运奖：SUM(lucky_winners.reward_amount) − SUM(lucky_claims.total_reward)，≤0 记 0）、\nMARKET_FUND（发展津贴：market_fund_reward_totals.unlocked_claimable，AGX）。\n传 type：仅返回该类型一项，如 `{ \"REFERRAL_REWARD\": \"12.34\" }`。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "可选；指定则只返回该类型金额",
+                    "enum": [
+                      "RANK_REWARD",
+                      "REFERRAL_REWARD",
+                      "PARTICIPATION_REWARD",
+                      "SURPASS_REWARD",
+                      "LIFETIME_REWARD",
+                      "LUCKY_REWARD",
+                      "MARKET_FUND"
+                    ],
+                    "example": "REFERRAL_REWARD"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "type → amount；指定 type 时仅含该 key",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "REFERRAL_REWARD": "12.34",
+                        "MARKET_FUND": "1.5"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "type 非法",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/home/popup-notices": {
       "post": {
         "tags": ["一期接口"],
@@ -5143,14 +5585,14 @@
       "post": {
         "tags": ["lucky-reward（幸运奖）"],
         "summary": "按日期查询幸运奖中奖名单 / List lucky reward winners by day",
-        "description": "查询 lucky_winners JOIN lucky_rounds，按 DATE(lucky_rounds.created_at) 匹配入参 date（yyyy-MM-dd）。\n同一天有多轮时取 round_id 最大的一轮。\n返回 rank（winner_slot + 1）、address、participation_amount(USDT)、reward_amount(gAGX)，按 rank 正序；\n另返回 draw_tx_hash（开奖交易 hash）。\nparticipation_amount 为质押金额(USDT)，取自 user_performance_daily.sum_invest_usdt（与 date 同日快照）。\n需登录。\n",
+        "description": "查询 lucky_winners JOIN lucky_rounds，按 DATE(lucky_rounds.created_at) 匹配入参 date（yyyy-MM-dd），\n且仅 status=DRAWN（已开奖）轮次；同日多轮取 round_id 最大。\ndate 可选：不传或空则返回最近已开奖有中奖记录的一天。\n传入日期（含今天）一律按入参查询，无特殊回退。\n返回 rank、address、participation_amount(USDT)、reward_amount(AGX)、round_id、draw_tx_hash；\ndates：全部已开奖轮次日期去重倒序（status=DRAWN）。\nparticipation_amount 取自 user_performance_daily.sum_invest_usdt（与返回 date 同日快照）。\n需登录。\n",
         "security": [
           {
             "BearerAuth": []
           }
         ],
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -5171,7 +5613,7 @@
             }
           },
           "400": {
-            "description": "缺少或非法日期参数 / Missing or invalid date",
+            "description": "非法日期参数 / Invalid date",
             "content": {
               "application/json": {
                 "schema": {
@@ -5197,7 +5639,7 @@
       "post": {
         "tags": ["lucky-reward（幸运奖）"],
         "summary": "当前用户幸运奖概览 / Lucky reward summary for current user",
-        "description": "today_total_prize：今日整池总额(USD)，lucky_rounds.reward_value_usd1 × max_winners；\nis_winner：今日是否中奖（lucky_winners）；\nwin_count：累计中奖次数（lucky_winners）。\n需登录。\n",
+        "description": "today_total_prize：今日整池总额(USD)，lucky_rounds.reward_value_usd1 × max_winners；\n今日轮次按 DATE(created_at) 匹配（不用 display_day）；\nis_winner：今日是否中奖（lucky_winners）；\nwin_count：累计中奖次数（lucky_winners）；\ntotal_reward_amount：累计中奖金额(AGX)，SUM(lucky_winners.reward_amount)。\n需登录。\n",
         "security": [
           {
             "BearerAuth": []
@@ -5240,8 +5682,8 @@
     "/lucky-reward/my-rounds": {
       "post": {
         "tags": ["lucky-reward（幸运奖）"],
-        "summary": "当前用户参与过的幸运奖轮次（含未中）/ My lucky rounds including non-wins",
-        "description": "以 lucky_eligible_users 为主表，JOIN lucky_rounds；\nLEFT JOIN lucky_winners（是否中奖、奖金）与 lucky_claims（领取状态/交易）。\nparticipation_amount 为质押金额(USDT)，取 user_performance_daily.sum_invest_usdt（与轮次 date 同日快照）；\nreward_amount 为中奖 gAGX（未中为 \"0\"）；\ndraw_tx_hash 为开奖交易 hash。\n按 round_id 倒序分页。需登录。\n",
+        "summary": "当前用户参与过的已开奖幸运奖轮次（含未中）/ My drawn lucky rounds including non-wins",
+        "description": "以 lucky_eligible_users 为主表，JOIN lucky_rounds（仅 status=DRAWN）；\nLEFT JOIN lucky_winners（是否中奖、奖金、名次）。\ndate 取 lucky_winners.created_at 的日历日（yyyy-MM-dd）；未中奖为 null；\nlucky_claims 已改为账户级混合领取（无 round_id），本接口不返回按轮次领取字段。\nparticipation_amount 为质押金额(USDT)，取 user_performance_daily.sum_invest_usdt（与 DATE(winners.created_at) 同日快照；未中奖为 \"0\"）；\nreward_amount 为中奖 AGX（未中为 \"0\"）；\ndraw_tx_hash 为开奖交易 hash。\n按 round_id 倒序分页。需登录。\n",
         "security": [
           {
             "BearerAuth": []
@@ -5515,6 +5957,241 @@
         }
       }
     },
+    "/protocol-market-stats/series": {
+      "post": {
+        "tags": ["protocol-market-stats（协议市值质押）"],
+        "summary": "协议总市值与总质押序列 / Protocol market & stake series",
+        "description": "日点来源：总市值 = pool_liquidity_daily.usd1_reserve * 2（USD）；\n若当日无池子快照，写当日缓存时回退为 snapshot_date ≤ 当日 的最新市值。\n总质押 = SUM(user_performance_daily.sum_invest_usdt) 按日（USD 累计投入口径）。\n日点缓存于 Redis；miss 时全量回源后重查。定时：本地 01:00 增量、01:30 补偿。\n最新日（服务器本地今天）不走 Redis：stake=SUM(user_performance.sum_invest_usdt, ACTIVE)；\nmarket 从 pool_liquidity_daily 实时解析（非缓存）。\n\n请求：range + metric（必填）\n- range：week=最近 7 日逐日；month=最近 31 日逐日；\n  year=跨度≥6个月则最近 12 个月按月（date=YYYY-MM），不足 6 个月则最近 365 日逐日（date=YYYY-MM-DD）；\n  all=跨度≥6个月则全部按月（date=YYYY-MM），不足 6 个月则全部日点逐日（date=YYYY-MM-DD）\n- metric：market=总市值，stake=总质押\n\n响应 data：\n{ metric, range, list:[{ date, amount }], latest_growth_rate }\n- amount：USD 字符串\n- latest_growth_rate：最新点相对前一周期增长率（百分比数值）；\n  week=最新−7天，month=上月同日，year=上年同日，all=相对最早金额>0的日；\n  前一周期无快照或金额<=0则对比最早金额>0的日；无可比快照一律返回 0（不返回 null）\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["range", "metric"],
+                "properties": {
+                  "range": {
+                    "type": "string",
+                    "enum": ["week", "month", "year", "all"],
+                    "description": "区间维度"
+                  },
+                  "metric": {
+                    "type": "string",
+                    "enum": ["market", "stake"],
+                    "description": "market=总市值，stake=总质押（USD）"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseProtocolMarketStatsSeries"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/protocol-market-stats/aggregate-series": {
+      "post": {
+        "tags": ["protocol-market-stats（协议市值质押）"],
+        "summary": "四类汇总趋势（质押/LP债券/销毁债券/X质押） / Aggregate trends series",
+        "description": "数据源：user_performance_daily 日快照（scanner 权威投影）。\n指标列（balance 口径，SUM 全用户快照值）：\n  stake    = active_stake_balance（AGX 活跃质押余额；与 /series 的 stake=SUM(sum_invest_usdt) USD 累计投入口径不同）\n  lp_bond  = bond_lp\n  burn_bond= bond_burn\n  x_stake  = stake_x_pool（gAGX）\nmode：balance（默认）| delta（预留，使用 *_delta 增量列）\n\nrange：week(最近7日逐日 YYYY-MM-DD) / month(最近31日逐日 YYYY-MM-DD) /\nyear(跨度≥6个月按月 YYYY-MM，不足则最近365日 YYYY-MM-DD) /\nall(跨度≥6个月按月 YYYY-MM，不足则全部日点 YYYY-MM-DD)\n\n历史日点读 Redis；最新日（本地今天）不走缓存，从 user_performance（projection_status=ACTIVE）\n实时 SUM：stake=active_stake_balance，lp_bond=bond_lp，burn_bond=bond_burn，x_stake=stake_x_pool。\n\n响应 data：{ metric, range, mode, list:[{ date, amount }], latest_growth_rate }\nlatest_growth_rate：最新点相对前一周期（week−7天 / month上月同日 / year上年同日 / all最早>0）；\n前一周期无快照或金额<=0则对比最早金额>0的日；无可比快照一律返回 0（不返回 null）。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["metric", "range"],
+                "properties": {
+                  "metric": {
+                    "type": "string",
+                    "enum": ["stake", "lp_bond", "burn_bond", "x_stake"],
+                    "description": "指标"
+                  },
+                  "range": {
+                    "type": "string",
+                    "enum": ["week", "month", "year", "all"],
+                    "description": "区间维度"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": ["balance", "delta"],
+                    "default": "balance",
+                    "description": "口径（delta 为预留扩展）"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "metric": {
+                          "type": "string"
+                        },
+                        "range": {
+                          "type": "string"
+                        },
+                        "mode": {
+                          "type": "string"
+                        },
+                        "latest_growth_rate": {
+                          "type": "number",
+                          "example": 0
+                        },
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "example": "2026-08-06"
+                              },
+                              "amount": {
+                                "type": "string",
+                                "example": "1234567.890123"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误（metric/range/mode 非法）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/protocol-market-stats/rebuild": {
+      "post": {
+        "tags": ["protocol-market-stats（协议市值质押）"],
+        "summary": "全量重建协议统计 Redis 缓存 / Rebuild protocol stats caches",
+        "description": "从 DB 全量覆盖写入 Redis：\n- stats:protocol:daily_series（总市值/总质押日点；市值=usd1_reserve*2）\n- stats:protocol:aggregate_daily（四类汇总日点）\n用于口径变更或缓存异常后的手动刷新；无需 body。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "series_count": {
+                          "type": "integer",
+                          "description": "daily_series 写入的日点数",
+                          "example": 120
+                        },
+                        "aggregate_count": {
+                          "type": "integer",
+                          "description": "aggregate_daily 写入的日点数",
+                          "example": 120
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/rank-reward/summary": {
       "post": {
         "tags": ["rank-reward（等级共建奖）"],
@@ -5620,8 +6297,8 @@
     "/rank-reward/team-members": {
       "post": {
         "tags": ["rank-reward（等级共建奖）"],
-        "summary": "分页我的团队（直推下级）/ Paginated direct team",
-        "description": "referral_ancestors depth=1；bound_at(users)、making_market/making_rank(user_performance ACTIVE)。\nsort_bound_at / sort_making_market / sort_making_rank =asc|desc 分别按 bound_at、making_market、making_rank 排序；未传的键不参与排序。\nhide_zero_market=true 时仅 making_market&gt;0。\n",
+        "summary": "分页我的团队明细（全部下级）/ Paginated team members",
+        "description": "referral_ancestors depth&gt;=1（全部下级，非仅直推）；\nbound_at(users)、making_market/making_rank(user_performance ACTIVE)。\n排序（均可选，可同时生效，固定优先级：加入时间 → 业绩 → 级别）：\nsort_bound_at / sort_making_market / sort_making_rank = asc|desc；\n均未传时默认 sort_bound_at=desc。兼容旧参数 sort_time（等同 sort_bound_at）。\nhide_zero_market=true 时仅 making_market&gt;0。\n",
         "security": [
           {
             "BearerAuth": []
@@ -6178,7 +6855,7 @@
       "post": {
         "tags": ["stake-flow（质押流水）"],
         "summary": "分页获取当前用户质押持仓记录 / Paginated stake positions",
-        "description": "查询 stake_flow_logs，仅 operation=STAKE，按 block_time 倒序。\n产品分类：LIQUID=活期，LOCKED=锁仓，EARLY=早期（对应 stake_category）。\n释放进度：expire_at = block_time + term_days×86400；\nreleased_pct = min(100, (now - block_time) / (term_days×86400) × 100)；\n活期 term_days=0 时 released_pct=100。\ntotal_stake_amount 为当前用户全部 STAKE 流水 amount 合计（AGX）。\n",
+        "description": "查询 stake_flow_logs，仅 operation=STAKE，按 block_time 倒序。\n产品分类：LIQUID=活期，LOCKED=锁仓，EARLY=早期（对应 stake_category）。\n释放进度：expire_at = block_time + term_days×86400；\nreleased_pct = min(100, (now - block_time) / (term_days×86400) × 100)；\n活期 term_days=0：expire_at = block_time + 86400；\n已质押超过 24 小时 released_pct=100，24 小时以内为 0。\ntotal_stake_amount 为当前用户全部 STAKE 流水 amount 合计（AGX）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -6222,7 +6899,7 @@
       "post": {
         "tags": ["一期接口"],
         "summary": "分页获取当前用户直推下级 / Paginated direct referrals",
-        "description": "通过 referral_ancestors 查询 ancestor_account_id 为当前用户且 depth=1 的直推下级，\n关联 users.register_time、user_performance.direct_referral_count（ACTIVE）、\nuser_performance.presale_rank 与 sales_team_market（ACTIVE）。\n",
+        "description": "通过 referral_ancestors 查询 ancestor_account_id 为当前用户且 depth=1 的直推下级，\n关联 users.register_time、user_performance.direct_referral_count（ACTIVE）、\nuser_performance.presale_rank 与 sales_team_market（ACTIVE）；\nmaking_market（团队业绩 AGX）、making_rank（做市等级）、active_stake_balance（持仓 AGX）；\nmaking_market_usd / active_stake_balance_usd = 对应 AGX × agx_price_logs 最新价。\n",
         "security": [
           {
             "BearerAuth": []
@@ -6289,6 +6966,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponseTeamOverview"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 / Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/team/making-overview": {
+      "post": {
+        "tags": ["二期·未分类"],
+        "summary": "获取做市社区概览 / Making-market community overview",
+        "description": "当前用户做市社区指标（user_performance ACTIVE + 今日 user_performance_daily）：\ndirect_referral_count（直推人数）、\nmaking_direct_team_market（直推业绩 USD = AGX × agx_price_logs 最新价）、\ntoday_addition_making_direct_team_market（今日直推业绩增量 USD，daily.making_direct_team_market_delta × 最新价）、\nteam_count（团队人数）、\nmaking_market（团队业绩 USD = AGX × 最新价）、\ntoday_addition_making_market（今日团队业绩增量 USD，daily.making_market_delta × 最新价）、\nmaking_rank（做市等级）。\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功 / Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseTeamMakingOverview"
                 }
               }
             }
@@ -6523,7 +7244,7 @@
       "post": {
         "tags": ["performance（做市概览）"],
         "summary": "用户做市业绩概览 / Making-market performance overview",
-        "description": "汇总当前用户做市相关概览数据：\ntotal_reward = user_performance.total_dao_reward（总奖励 gAGX）；\nmaking_rank = 团队/做市等级；\npersonal_position = user_performance.active_stake_balance（个人总持仓 AGX，与资产页一致）；\nmaking_market = 总业绩 AGX；\nsmall_market = making_market - MAX(referral_branch_state.making_team_amount)（小区业绩）；\navailable_contribution = agx_contribution_totals.available_contribution_raw（÷ 10^9）。\n",
+        "description": "汇总当前用户做市相关概览数据：\ntotal_reward = user_performance.total_dao_reward（总奖励 gAGX）；\nmaking_rank = 团队/做市等级；\npersonal_position = user_performance.active_stake_balance（个人总持仓 AGX，与资产页一致）；\nmaking_market = 总业绩 AGX；\nsmall_market = making_market − MAX(直推 making_market + making_personal_balance)（小区业绩）；\navailable_contribution = agx_contribution_totals.available_contribution_raw（÷ 10^9）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -6688,186 +7409,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/protocol-market-stats/series": {
-      "post": {
-        "tags": ["protocol-market-stats（协议市值质押）"],
-        "summary": "协议总市值与总质押序列 / Protocol market & stake series",
-        "description": "日点来源：总市值 = pool_liquidity_daily.agx_reserve * agx_price_usd（USD）；\n若当日无池子快照，写当日缓存时回退为 snapshot_date ≤ 当日 的最新市值。\n总质押 = SUM(user_performance_daily.sum_invest_usdt) 按日（USD 累计投入口径）。\n日点缓存于 Redis；miss 时全量回源后重查。定时：本地 01:00 增量、01:30 补偿。\n\n请求：range + metric（必填）\n- range：week=近 7 日逐日；month=近 30 日逐日；year=近 365 日按周抽稀；all=全量按自然月抽稀\n- metric：market=总市值，stake=总质押\n\n响应 data：\n{ metric, range, list:[{ date, amount }], latest_growth_rate }\n- amount：USD 字符串\n- latest_growth_rate：最新点相对前一周期增长率（百分比数值）；\n  week=最新−7天，month=上月同日，year=上年同日，all=相对最早日；\n  前一周期无快照则对比最早；分母<=0 或无可比基准为 null\n",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["range", "metric"],
-                "properties": {
-                  "range": {
-                    "type": "string",
-                    "enum": ["week", "month", "year", "all"],
-                    "description": "区间维度"
-                  },
-                  "metric": {
-                    "type": "string",
-                    "enum": ["market", "stake"],
-                    "description": "market=总市值，stake=总质押（USD）"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "成功 / Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseProtocolMarketStatsSeries"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "参数错误",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "未授权",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/protocol-market-stats/aggregate-series": {
-      "post": {
-        "tags": ["protocol-market-stats（协议市值质押）"],
-        "summary": "四类汇总趋势（质押/LP债券/销毁债券/X质押） / Aggregate trends series",
-        "description": "数据源：user_performance_daily 日快照（scanner 权威投影）。\n指标列（balance 口径，SUM 全用户快照值）：\n  stake    = active_stake_balance（AGX 活跃质押余额；与 /series 的 stake=SUM(sum_invest_usdt) USD 累计投入口径不同）\n  lp_bond  = bond_lp\n  burn_bond= bond_burn\n  x_stake  = stake_x_pool（gAGX）\nmode：balance（默认）| delta（预留，使用 *_delta 增量列）\n\nrange：week(近7日逐日) / month(近30日逐日) / year(近365日按周) / all(按自然月)\n\n响应 data：{ metric, range, mode, list:[{ date, amount }], latest_growth_rate }\nlatest_growth_rate：最新点相对前一周期（week−7天 / month上月同日 / year上年同日 / all最早）；\n前一周期无快照则对比最早；分母<=0 或无可比基准为 null。\n",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["metric", "range"],
-                "properties": {
-                  "metric": {
-                    "type": "string",
-                    "enum": ["stake", "lp_bond", "burn_bond", "x_stake"],
-                    "description": "指标"
-                  },
-                  "range": {
-                    "type": "string",
-                    "enum": ["week", "month", "year", "all"],
-                    "description": "区间维度"
-                  },
-                  "mode": {
-                    "type": "string",
-                    "enum": ["balance", "delta"],
-                    "default": "balance",
-                    "description": "口径（delta 为预留扩展）"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "成功 / Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "example": 0
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "metric": {
-                          "type": "string"
-                        },
-                        "range": {
-                          "type": "string"
-                        },
-                        "mode": {
-                          "type": "string"
-                        },
-                        "latest_growth_rate": {
-                          "type": "number",
-                          "nullable": true
-                        },
-                        "list": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "date": {
-                                "type": "string",
-                                "example": "2026-08-06"
-                              },
-                              "amount": {
-                                "type": "string",
-                                "example": "1234567.890123"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "参数错误（metric/range/mode 非法）",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "未授权",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
                 }
               }
             }

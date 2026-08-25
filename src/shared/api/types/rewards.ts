@@ -18,10 +18,6 @@ export interface LuckyRewardMyRoundItem {
   rank: number | null
   reward_amount: string
   draw_tx_hash: string | null
-  winner_status: string | null
-  claim_status: string | null
-  claim_tx_hash: string | null
-  claim_timestamp: number | null
 }
 
 export interface LuckyRewardWinnerItem {
@@ -32,9 +28,9 @@ export interface LuckyRewardWinnerItem {
 }
 
 export interface LuckyRewardWinnersResponse {
-  date: string
-  /** 开奖轮次；质押金额按此 round 读 Tracker.getUserRoundStat */
-  round_id: number
+  date: string | null
+  /** 当日最大 DRAWN round_id；无轮次为 null。质押金额按此 round 读 Tracker.getUserRoundStat */
+  round_id: number | null
   draw_tx_hash: string | null
   /** 已开奖日期，供下拉；不含尚未开奖的当天 */
   dates: string[]
