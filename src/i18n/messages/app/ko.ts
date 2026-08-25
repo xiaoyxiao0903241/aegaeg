@@ -36,8 +36,6 @@ const app = defineMessages({
         turbineCooldown:
           '쿨다운이 끝나지 않았거나 입력이 유효하지 않습니다. 쿨다운 기록을 새로고침한 후 다시 시도해 주세요.',
         pairNotExist: '거래쌍이 존재하지 않습니다. 토큰 설정을 확인해 주세요.',
-        notWinner: '이번 회차에 당첨되지 않아 수령할 수 없습니다.',
-        rewardAlreadyClaimed: '리워드를 이미 수령했습니다. 중복 수령하지 마세요.',
         configNotReady: '프로토콜 설정이 준비되지 않았습니다. 나중에 다시 시도해 주세요.',
         exceedsMax: '금액이 상한을 초과했습니다. 금액을 낮춰 주세요.',
         bondTooSmall: '채권 지급액이 너무 작습니다. 구매 금액을 늘려 주세요.',

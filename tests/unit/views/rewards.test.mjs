@@ -110,6 +110,48 @@ test('zh READY status copy is 待领取', async () => {
   assert.equal(zh.rewards.logStatus.pending, '待领取')
 })
 
+test('mapLuckyWinnerToRow stake column uses tracker USD1 not participation_amount', async () => {
+  const { mapLuckyWinnerToRow, NON_NUMERIC_EMPTY } = await loadModule(
+    '/src/views/dapp/rewards/shared.tsx',
+  )
+  const item = {
+    rank: 1,
+    address: '0x1111111111111111111111111111111111111111',
+    participation_amount: '999',
+    reward_amount: '1.5',
+  }
+
+  assert.equal(mapLuckyWinnerToRow(item)[2], NON_NUMERIC_EMPTY)
+  assert.equal(mapLuckyWinnerToRow(item, { stakeAmountUsd1: 5n * 10n ** 18n })[2], '$5.00')
+  assert.equal(mapLuckyWinnerToRow(item, { stakeAmountUsd1: 0n })[2], '$0.00')
+})
+
+test('mapLuckyMyRoundToRow stake column uses tracker USD1 not participation_amount', async () => {
+  const { mapLuckyMyRoundToRow, NON_NUMERIC_EMPTY } = await loadModule(
+    '/src/views/dapp/rewards/shared.tsx',
+  )
+  const item = {
+    date: '2026-08-19',
+    round_id: 7,
+    participation_amount: '999',
+    is_winner: false,
+    rank: null,
+    reward_amount: '0',
+    draw_tx_hash: null,
+    winner_status: null,
+    claim_status: null,
+    claim_tx_hash: null,
+    claim_timestamp: null,
+  }
+  const labels = { won: 'won {amount}', lost: 'lost' }
+
+  assert.equal(mapLuckyMyRoundToRow(item, labels)[1], NON_NUMERIC_EMPTY)
+  assert.equal(
+    mapLuckyMyRoundToRow(item, { ...labels, stakeAmountUsd1: 5n * 10n ** 18n })[1],
+    '$5.00',
+  )
+})
+
 test('lucky overview totals from summary.total_reward_amount; cards use Tile.Note', () => {
   const hook = readFileSync(
     new URL('../../../src/views/dapp/rewards/lucky/use-lucky.tsx', import.meta.url),

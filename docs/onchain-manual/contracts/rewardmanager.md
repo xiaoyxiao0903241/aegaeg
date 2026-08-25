@@ -6,16 +6,16 @@
 ## 完整 ABI
 
 abi/AegisEpochRewardManager.json
-SHA-256 82bd0d206c38…
-54
-30
-12
-12
+SHA-256 88e0fb159e47…
+62
+34
+15
+13
 
 <details>
 <summary>展开查看 ABI JSON</summary>
 
-完整 ABI 已导出为 [`abis/rewardmanager.json`](../abis/rewardmanager.json)（54 entries）。
+完整 ABI 已导出为 [`abis/rewardmanager.json`](../abis/rewardmanager.json)（62 entries）。
 
 </details>
 

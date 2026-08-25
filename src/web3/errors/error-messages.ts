@@ -371,9 +371,9 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.assets.blocked.noWarmup,
   },
   {
-    id: 'reward-already-claimed',
-    match: nameOrSelector(/ErrorRewardAlreadyClaimed\b/i, '0xa92cf93c'),
-    message: (t) => t.errors.chain.reverts.rewardAlreadyClaimed,
+    id: 'no-unclaimed-lucky-reward',
+    match: nameOrSelector(/ErrorNoUnclaimedReward\b/i, '0x60aea18d'),
+    message: (t) => t.rewards.mixed.luckyNotClaimable,
   },
   {
     id: 'insufficient-contribution',
@@ -389,11 +389,6 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
       '0xb0f1e580',
     ),
     message: (t) => t.errors.chain.reverts.configNotReady,
-  },
-  {
-    id: 'not-winner',
-    match: nameOrSelector(/ErrorNotWinner\b/i, '0x9a7defbc'),
-    message: (t) => t.errors.chain.reverts.notWinner,
   },
   {
     id: 'debt-capacity',

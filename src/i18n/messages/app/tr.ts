@@ -33,8 +33,6 @@ const app = defineMessages({
         turbineCooldown:
           'Soğuma bitmedi veya tutar geçersiz. Soğuma kayıtlarını yenileyip tekrar deneyin.',
         pairNotExist: 'İşlem çifti yok. Token yapılandırmasını kontrol edin.',
-        notWinner: 'Bu turda kazanan değilsiniz, talep edilemez.',
-        rewardAlreadyClaimed: 'Ödül zaten alındı. Tekrar talep etmeyin.',
         configNotReady: 'Protokol yapılandırması hazır değil. Lütfen daha sonra tekrar deneyin.',
         exceedsMax: 'Tutar üst sınırı aşıyor. Lütfen düşürün.',
         bondTooSmall: 'Tahvil ödemesi çok küçük. Satın alma tutarını artırın.',

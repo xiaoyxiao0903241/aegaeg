@@ -657,6 +657,8 @@ export const LUCKY_POOL_METHODS = {
 export const DAILY_PURCHASE_TRACKER_METHODS = {
   getCurrentRoundUserStat:
     'function getCurrentRoundUserStat(address user) view returns (uint256 roundId, uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
+  getUserRoundStat:
+    'function getUserRoundStat(uint256 roundId, address user) view returns (uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
 } as const
 
 /**
@@ -665,8 +667,7 @@ export const DAILY_PURCHASE_TRACKER_METHODS = {
  */
 export const LUCKY_POOL_ERRORS = [
   'error ErrorPaused()',
-  'error ErrorNotWinner(uint256 roundId, address user)',
-  'error ErrorRewardAlreadyClaimed(uint256 roundId, address user)',
+  'error ErrorNoUnclaimedReward(address user)',
   'error ErrorRestakeConfigNotSet()',
   'error ErrorRewardQueueNotSet()',
   'error ErrorInsufficientContribution(address user, uint256 required, uint256 available)',
