@@ -38,6 +38,7 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.rankRewardLogsRoot,
     queryKeys.api.rankRewardPeerSurpassLogsRoot,
     queryKeys.api.rankRewardTeamMembersRoot,
+    queryKeys.api.daoRewardTypeTotals,
     queryKeys.api.luckyRewardSummary,
     queryKeys.api.luckyRewardMyRoundsRoot,
     queryKeys.api.luckyRewardWinnersRoot,

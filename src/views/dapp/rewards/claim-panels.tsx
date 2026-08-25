@@ -68,7 +68,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
         <SimpleClaimableCard
           amountText={vm.claimableText}
           claimIntoWallet={vm.claimIntoWallet}
-          claimableLabel={t.rewards.detail.claimable}
+          claimableLabel={vm.hasGrantClaimable ? t.rewards.detail.claimable : ''}
           showTokenChip={vm.showTokenChip}
           tokenGagx={vm.tokenGagx}
           usdLabel={t.rewards.detail.usdLabel}
@@ -120,7 +120,9 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
         <MixedClaimSummaryCard
           amountKnown={vm.amountKnown}
           amountText={vm.amountText}
-          claimableLabel={t.rewards.detail.claimable}
+          claimableLabel={
+            view === 'lucky' || vm.hasClaimablePreview ? t.rewards.detail.claimable : ''
+          }
           requiredContributionLabel={vm.mixed.requiredContributionLabel}
           requiredText={
             view === 'lucky' && vm.amount > ZERO_BI ? vm.requiredText : formatApiAmount(null)

@@ -4,6 +4,7 @@ import type {
   ClaimConfirmRequest,
   ClaimConfirmResult,
   DaoRewardType,
+  DaoRewardTypeTotals,
   LuckyRewardMyRoundItem,
   LuckyRewardSummary,
   LuckyRewardWinnersResponse,
@@ -28,6 +29,23 @@ import type {
 } from '~/shared/api/types'
 
 /** 奖励页端点跨度较大：汇总、流水、领取签名与确认都走统一信封。 */
+
+/**
+ * 查询当前用户各类型 DAO 奖励待领取金额。
+ *
+ * Hub 一次拉全量，不传 type。共建卡在映射层把 RANK 与 SURPASS 相加。
+ *
+ * @param token 会话 token
+ * @returns 各 reward_type 待领十进制金额
+ * @see docs/backend-api/api.md #dao-reward/type-totals
+ */
+export async function getDaoRewardTypeTotals(token: string): Promise<DaoRewardTypeTotals> {
+  return apiRequest<DaoRewardTypeTotals>('/dao-reward/type-totals', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
 
 export async function getLuckyRewardSummary(token: string): Promise<LuckyRewardSummary> {
   return apiRequest<LuckyRewardSummary>('/lucky-reward/summary', {

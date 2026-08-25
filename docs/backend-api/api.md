@@ -20,6 +20,7 @@ EVM 签名登录与销售记录接口 / EVM login and sales APIs
 - [participation-award（参与奖）](#participation-award-参与奖)（3）
 - [rank-reward（等级共建奖）](#rank-reward-等级共建奖)（4）
 - [claim（DAO领取签名）](#claim-dao领取签名)（2）
+- [dao-reward（DAO待领汇总）](#dao-reward-dao待领汇总)（1）
 - [market-allowance（发展津贴）](#market-allowance-发展津贴)（3）
 - [release-pool（释放池）](#release-pool-释放池)（2）
 - [buffer-pool（缓冲池）](#buffer-pool-缓冲池)（2）
@@ -386,6 +387,36 @@ signType 固定为 51，order_type=5，合约地址为 MARKET_FUND_VAULT_ADDRESS
 |400|无可领取做市社区津贴||
 |401|未授权||
 |502|签名服务不可用||
+
+## dao-reward（DAO待领汇总）
+
+各类型 DAO 奖励待领取金额（十进制 AGX）
+
+一级路由：`POST /api/dao-reward/…`
+
+本组接口：
+
+- `POST /dao-reward/type-totals`
+
+### `POST` `/dao-reward/type-totals`
+
+**各类型 DAO 奖励待领取金额 / Pending DAO reward amounts by type**
+
+- auth: required
+
+按 token 用户地址返回各 reward_type 待领金额。
+Hub 概览一次拉全量；可选 `type` 只取单项。
+共建奖 `RANK_REWARD` 为单项，概览需加上平超奖 `SURPASS_REWARD`。
+幸运奖 Hub / 子页仍读链，不使用本接口的 `LUCKY_REWARD`。
+
+**Request body**
+
+- `application/json`: `DaoRewardTypeTotalsRequest` {`type`:string}
+
+|status|description|schema|
+|---|---|---|
+|200|返回各类型待领金额 / type totals returned|`ApiResponseDaoRewardTypeTotals` {`code`:integer, `data`:object}|
+|401|未授权||
 
 ## market-allowance（发展津贴）
 

@@ -1,4 +1,5 @@
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
+import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import {
   type ErrorMessageContext,
   matchRevertMessage,
@@ -10,10 +11,12 @@ import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'
 export type { ErrorMessageContext }
 
 /**
- * 链上写错误 → 用户文案（或 null 跳过 toast）
+ * 写操作错误 → 用户文案（或 null 跳过 toast）
  *
- * 文案对照表集中在 `error-messages.ts`；调用方传入当前 i18n 包，
- * 禁止在调用方各自维护文案。可选 `ctx.path` / `walletAddress` 用于共享 revert 消歧。
+ * 签名领取先打后端再上链；`ApiError` 走 API 文案，其余走哨兵 / revert，
+ * 未识别才落到链上兜底，避免把取签名失败说成链上失败。
+ * 文案对照表集中在 `error-messages.ts`；调用方传入当前 i18n 包。
+ * 可选 `ctx.path` / `walletAddress` 用于共享 revert 消歧。
  *
  * @param error 待映射的错误
  * @param t 当前 i18n 文案包
@@ -28,6 +31,9 @@ export function getErrorMessage(
 ): string | null {
   if (error == null) return null
   if (isUserRejectedWalletError(error)) return null
+
+  const fromApi = apiUserFacingError(error, t.errors.api)
+  if (fromApi) return fromApi
 
   const raw = readErrorText(error)
 

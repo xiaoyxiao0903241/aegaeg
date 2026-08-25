@@ -156,12 +156,8 @@ export function CobuildTierCard({
                   </span>
                   <span className="grid gap-1.5">
                     <ProgressBar
-                      className={
-                        achieved
-                          ? 'bg-claim-restake/14 [&_.dapp-progress-meter__fill]:!bg-claim-restake'
-                          : undefined
-                      }
                       label={req.label}
+                      tone={achieved ? 'claim-restake' : 'primary'}
                       value={reqBarPct(req)}
                     />
                     <Text as="p" className="leading-none text-foreground/40" variant="caption">

@@ -79,6 +79,46 @@ test('getErrorMessage maps sentinels, handbook reverts, and falls back', async (
   assert.equal(getErrorMessage(new Error('opaque rpc english'), t), t.errors.chain.fallback)
 })
 
+test('getErrorMessage maps claim-signature ApiError as API copy, not chain fallback', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
+  const { ApiError } = await loadModule('/src/shared/api/client.ts')
+  const { API_TRANSPORT_ERROR } = await loadModule('/src/shared/api/api-user-facing-error.ts')
+
+  const signatureRejected = new ApiError({
+    code: 400,
+    error: 'CLAIM_GATE_CLOSED',
+    message: 'claim gate 关闭',
+  })
+  assert.equal(getErrorMessage(signatureRejected, t), t.errors.api.fallback)
+  assert.notEqual(getErrorMessage(signatureRejected, t), t.errors.chain.fallback)
+
+  assert.equal(
+    getErrorMessage(
+      new ApiError({
+        code: 0,
+        error: API_TRANSPORT_ERROR.NETWORK,
+        message: 'Failed to fetch',
+      }),
+      t,
+    ),
+    t.errors.api.network,
+  )
+  assert.equal(
+    getErrorMessage(
+      new ApiError({
+        code: 502,
+        error: API_TRANSPORT_ERROR.UNAVAILABLE,
+        message: 'Bad Gateway',
+      }),
+      t,
+    ),
+    t.errors.api.unavailable,
+  )
+  assert.equal(getErrorMessage(new Error('ErrorAlreadyUsed'), t), t.rewards.claimErrors.alreadyUsed)
+})
+
 test('getErrorMessage maps production hex-only wallet shapes via selectors', async () => {
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const t = enModule.default
