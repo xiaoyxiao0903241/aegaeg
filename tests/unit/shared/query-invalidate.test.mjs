@@ -221,6 +221,50 @@ test('indexerPageAdvanced mirrors sales-log advance rules on tx_hash head', asyn
   assert.equal(fingerprint.head, '0xabc')
 })
 
+test('reward status fingerprint advances on READY→CLAIMED without new rows', async () => {
+  const { pickRewardStatusPageFingerprint, rewardScanAdvanced } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  const ready = pickRewardStatusPageFingerprint([
+    {
+      total: 2,
+      page: 1,
+      page_size: 20,
+      items: [{ status: 'READY', fully_claimed_at: null }],
+    },
+  ])
+  const claimed = pickRewardStatusPageFingerprint([
+    {
+      total: 2,
+      page: 1,
+      page_size: 20,
+      items: [{ status: 'CLAIMED', fully_claimed_at: '2026-01-01T00:00:00Z' }],
+    },
+  ])
+  assert.equal(ready, '2:READY|||')
+  assert.equal(claimed, '2:CLAIMED|2026-01-01T00:00:00Z||')
+  assert.notEqual(ready, claimed)
+
+  const empty = {
+    typeTotals: '',
+    grantLogs: '0:',
+    luckyLogs: '0:',
+    teamLogs: '0:',
+    marketLogs: '0:',
+    communityLogs: '0:',
+  }
+  assert.equal(rewardScanAdvanced(empty, empty), false)
+  assert.equal(
+    rewardScanAdvanced({ ...empty, grantLogs: ready }, { ...empty, grantLogs: claimed }),
+    true,
+  )
+  assert.equal(
+    rewardScanAdvanced({ ...empty, typeTotals: '1|0' }, { ...empty, typeTotals: '0|0' }),
+    true,
+  )
+})
+
 async function seedTabProbe(tab) {
   const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
   const { TAB_QUERY_KEYS } = await loadModule('/src/shared/api/query/tab-query-keys.ts')
@@ -247,18 +291,71 @@ test('invalidateAfterAssetsClaim marks assets+staking+release', async () => {
   assets.queryClient.clear()
 })
 
-test('invalidateAfterRewardsMixedClaim marks rewards+release+staking', async () => {
+test('invalidateAfterRewardsMixedClaim marks rewards+release+staking+assets', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
   const { invalidateAfterRewardsMixedClaim } = await loadModule(
     '/src/shared/api/query/invalidate.ts',
   )
   const rewards = await seedTabProbe('rewards')
   const release = await seedTabProbe('release')
   const staking = await seedTabProbe('staking')
+  queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
 
   invalidateAfterRewardsMixedClaim()
 
   assertInvalidated(rewards.queryClient, rewards.key)
   assertInvalidated(release.queryClient, release.key)
   assertInvalidated(staking.queryClient, staking.key)
+  assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
   rewards.queryClient.clear()
+})
+
+test('invalidateAfterTeamClaim marks rewards+assets', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterTeamClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const rewards = await seedTabProbe('rewards')
+  queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
+
+  invalidateAfterTeamClaim()
+
+  assertInvalidated(rewards.queryClient, rewards.key)
+  assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
+  rewards.queryClient.clear()
+})
+
+test('invalidateAfterReleaseClaim marks release+assets reward summary', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterReleaseClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const release = await seedTabProbe('release')
+  queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
+
+  invalidateAfterReleaseClaim()
+
+  assertInvalidated(release.queryClient, release.key)
+  assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
+  release.queryClient.clear()
+})
+
+test('invalidateAfterExchange marks contribution and assets reward summary', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
+  queryClient.setQueryData(queryKeys.api.agxContributionSummary, 1)
+
+  invalidateAfterExchange()
+
+  assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
+  assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
+  queryClient.clear()
+})
+
+test('invalidateAfterAssetsClaim marks rewards contribution summary', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  queryClient.setQueryData(queryKeys.api.agxContributionSummary, 1)
+
+  invalidateAfterAssetsClaim()
+
+  assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
+  queryClient.clear()
 })
