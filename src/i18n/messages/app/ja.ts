@@ -36,8 +36,6 @@ const app = defineMessages({
         turbineCooldown:
           'クールダウン未了、または入力が無効です。クールダウン記録を更新して再試行してください。',
         pairNotExist: '取引ペアが存在しません。トークン設定を確認してください。',
-        notWinner: '今回は当選していないため、受取できません。',
-        rewardAlreadyClaimed: 'リワードは既に受取済みです。重複操作はできません。',
         configNotReady:
           'プロトコル設定の準備ができていません。しばらくしてから再度お試しください。',
         exceedsMax: '金額が上限を超えています。金額を下げてください。',

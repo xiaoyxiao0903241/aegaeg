@@ -37,8 +37,6 @@ const app = defineMessages({
         turbineNoSilenceBalance: 'No matured silence balance to extract.',
         invalidAmount: 'Invalid amount. Check and try again.',
         pairNotExist: 'Trading pair does not exist. Check token configuration.',
-        notWinner: 'You are not a winner for this round.',
-        rewardAlreadyClaimed: 'Reward already claimed. Do not claim again.',
         configNotReady:
           'Splitter manager / release queue config is not ready. Please try again later.',
         exceedsMax: 'Amount exceeds the maximum. Please lower it.',

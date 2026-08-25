@@ -665,8 +665,7 @@ export const DAILY_PURCHASE_TRACKER_METHODS = {
  */
 export const LUCKY_POOL_ERRORS = [
   'error ErrorPaused()',
-  'error ErrorNotWinner(uint256 roundId, address user)',
-  'error ErrorRewardAlreadyClaimed(uint256 roundId, address user)',
+  'error ErrorNoUnclaimedReward(address user)',
   'error ErrorRestakeConfigNotSet()',
   'error ErrorRewardQueueNotSet()',
   'error ErrorInsufficientContribution(address user, uint256 required, uint256 available)',

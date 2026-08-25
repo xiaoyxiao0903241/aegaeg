@@ -36,8 +36,6 @@ const app = defineMessages({
         turbineCooldown:
           'La espera no ha terminado o el monto no es válido. Actualiza los registros de espera e inténtalo de nuevo.',
         pairNotExist: 'El par de trading no existe. Revisa la configuración del token.',
-        notWinner: 'No ganaste en esta ronda.',
-        rewardAlreadyClaimed: 'Recompensa ya reclamada. No vuelvas a reclamar.',
         configNotReady: 'La configuración del protocolo no está lista. Inténtalo más tarde.',
         exceedsMax: 'El monto supera el máximo. Redúcelo.',
         bondTooSmall: 'El pago del bono es demasiado pequeño. Aumenta el monto de compra.',

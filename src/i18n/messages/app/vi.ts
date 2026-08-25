@@ -35,8 +35,6 @@ const app = defineMessages({
         turbineCooldown:
           'Chưa hết thời gian chờ hoặc số lượng không hợp lệ. Làm mới bản ghi chờ rồi thử lại.',
         pairNotExist: 'Cặp giao dịch không tồn tại. Kiểm tra cấu hình token.',
-        notWinner: 'Bạn chưa trúng thưởng vòng này, không thể nhận.',
-        rewardAlreadyClaimed: 'Phần thưởng đã nhận, vui lòng không thao tác lại.',
         configNotReady: 'Cấu hình giao thức chưa sẵn sàng, vui lòng thử lại sau.',
         exceedsMax: 'Số lượng vượt giới hạn tối đa, vui lòng giảm.',
         bondTooSmall: 'Số trái phiếu nhận được quá nhỏ, hãy tăng số mua.',

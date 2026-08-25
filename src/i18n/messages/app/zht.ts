@@ -35,8 +35,6 @@ const app = defineMessages({
         debtCapacityReached: '債券容量不足，請稍後再試。',
         turbineCooldown: '冷卻尚未結束，請刷新冷卻記錄後重試。',
         pairNotExist: '交易對不存在，請檢查代幣配置。',
-        notWinner: '當前未中獎，無法領取。',
-        rewardAlreadyClaimed: '獎勵已領取，請勿重複操作。',
         configNotReady: '協議配置未就緒，請稍後再試。',
         exceedsMax: '金額超過上限，請降低金額。',
         bondTooSmall: '債券兌付過小，請增加購買金額。',

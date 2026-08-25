@@ -35,8 +35,6 @@ const app = defineMessages({
         turbineNoSilenceBalance: '暂无可提取的冷却完成额度。',
         invalidAmount: '金额无效，请检查后重试。',
         pairNotExist: '交易对不存在，请检查代币配置。',
-        notWinner: '当前未中奖，无法领取。',
-        rewardAlreadyClaimed: '奖励已领取，请勿重复操作。',
         configNotReady: '分流器 Manager / 释放队列等协议配置未就绪，请稍后再试。',
         exceedsMax: '金额超过上限，请降低金额。',
         bondTooSmall: '债券兑付过小，请增加购买金额。',

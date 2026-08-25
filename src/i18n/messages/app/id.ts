@@ -35,8 +35,6 @@ const app = defineMessages({
         turbineCooldown:
           'Cooldown belum selesai atau jumlah tidak valid. Segarkan catatan cooldown lalu coba lagi.',
         pairNotExist: 'Pasangan perdagangan tidak ada. Periksa konfigurasi token.',
-        notWinner: 'Anda tidak menang di putaran ini, tidak dapat diklaim.',
-        rewardAlreadyClaimed: 'Hadiah sudah diklaim. Jangan klaim lagi.',
         configNotReady: 'Konfigurasi protokol belum siap. Silakan coba lagi nanti.',
         exceedsMax: 'Jumlah melebihi batas maksimum. Harap turunkan.',
         bondTooSmall: 'Pembayaran Bond terlalu kecil. Tingkatkan jumlah pembelian.',
