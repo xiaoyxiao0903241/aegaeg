@@ -4,19 +4,10 @@ import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 import type { Paginated, SalesLogItem } from '~/shared/api/types'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
-
-/** 后台轮询间隔：浏览器照常等；Node 单测不因 timer 挂住进程。 */
-function pollSleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    const timer = setTimeout(resolve, ms)
-    if (typeof timer === 'object' && timer !== null && 'unref' in timer) {
-      timer.unref()
-    }
-  })
-}
+import { sleep } from '~/shared/lib/utils'
 
 /** 奖励发放/领取列表首行：扫描器把 READY 改成 CLAIMED 时 total 往往不变。 */
-export type RewardStatusRow = {
+type RewardStatusRow = {
   status?: string | number
   fully_claimed_at?: string | null
   claimed_at?: string | null
@@ -25,14 +16,19 @@ export type RewardStatusRow = {
   claim_tx_hash?: string | null
 }
 
-/** 奖励领取扫描指纹：待领汇总 + 各列表首行状态。 */
-export type RewardScanFingerprint = {
+/** 奖励领取扫描指纹：待领汇总 + 列表首行状态 + 被轮询的汇总。 */
+type RewardScanFingerprint = {
   typeTotals: string
   grantLogs: string
   luckyLogs: string
+  luckySummary: string
   teamLogs: string
+  teamTotal: string
   marketLogs: string
+  marketSummary: string
   communityLogs: string
+  communityTotal: string
+  assetsReward: string
 }
 
 type SalesLogFingerprint = { total: number; firstId: number | null }
@@ -110,7 +106,6 @@ export function salesLogAdvanced(
  * 领取核销常改同一行 READY→CLAIMED，不能只盯 total。
  *
  * @param pages 缓存中的分页结果
- * @returns `total:status|claimedAt|claimStatus|tx`
  */
 export function pickRewardStatusPageFingerprint(
   pages: Array<Paginated<RewardStatusRow> | undefined | null>,
@@ -151,13 +146,8 @@ export function rewardScanAdvanced(
   baseline: RewardScanFingerprint,
   current: RewardScanFingerprint,
 ): boolean {
-  return (
-    baseline.typeTotals !== current.typeTotals ||
-    baseline.grantLogs !== current.grantLogs ||
-    baseline.luckyLogs !== current.luckyLogs ||
-    baseline.teamLogs !== current.teamLogs ||
-    baseline.marketLogs !== current.marketLogs ||
-    baseline.communityLogs !== current.communityLogs
+  return (Object.keys(baseline) as Array<keyof RewardScanFingerprint>).some(
+    (key) => baseline[key] !== current[key],
   )
 }
 
@@ -182,7 +172,7 @@ async function pollGenesisContributions(baseline: { total: number; firstId: numb
   }
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
-    await pollSleep(2500)
+    await sleep(2500, { unref: true })
     await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
     await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
 
@@ -249,18 +239,22 @@ async function pollStakingIndexer(baselines: {
   if (anyAdvanced()) return
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
-    await pollSleep(2500)
+    await sleep(2500, { unref: true })
     await refetchIndexer()
     if (anyAdvanced()) return
   }
 }
 
-const REWARD_CLAIM_POLL_KEYS = [
-  queryKeys.api.daoRewardTypeTotals,
+const GRANT_LOG_ROOTS = [
   queryKeys.api.referralAwardLogsRoot,
   queryKeys.api.participationAwardLogsRoot,
   queryKeys.api.rankRewardLogsRoot,
   queryKeys.api.rankRewardPeerSurpassLogsRoot,
+] as const
+
+const REWARD_CLAIM_POLL_KEYS = [
+  queryKeys.api.daoRewardTypeTotals,
+  ...GRANT_LOG_ROOTS,
   queryKeys.api.luckyRewardSummary,
   queryKeys.api.luckyRewardMyRoundsRoot,
   queryKeys.api.marketAllowanceSummary,
@@ -270,13 +264,6 @@ const REWARD_CLAIM_POLL_KEYS = [
   queryKeys.api.communityFundTotal,
   queryKeys.api.communityFundLogsRoot,
   queryKeys.api.assetsRewardSummary,
-] as const
-
-const GRANT_LOG_ROOTS = [
-  queryKeys.api.referralAwardLogsRoot,
-  queryKeys.api.participationAwardLogsRoot,
-  queryKeys.api.rankRewardLogsRoot,
-  queryKeys.api.rankRewardPeerSurpassLogsRoot,
 ] as const
 
 function snapshotQueryData(key: readonly string[]): string {
@@ -299,61 +286,57 @@ function readRewardScanFingerprint(): RewardScanFingerprint {
     typeTotals: snapshotQueryData(queryKeys.api.daoRewardTypeTotals),
     grantLogs: GRANT_LOG_ROOTS.map((root) => readStatusPages(root)).join('~'),
     luckyLogs: readStatusPages(queryKeys.api.luckyRewardMyRoundsRoot),
+    luckySummary: snapshotQueryData(queryKeys.api.luckyRewardSummary),
     teamLogs: readStatusPages(queryKeys.api.teamRewardClaimLogsRoot),
+    teamTotal: snapshotQueryData(queryKeys.api.teamRewardTotal),
     marketLogs: readStatusPages(queryKeys.api.marketAllowanceClaimLogsRoot),
+    marketSummary: snapshotQueryData(queryKeys.api.marketAllowanceSummary),
     communityLogs: readStatusPages(queryKeys.api.communityFundLogsRoot),
+    communityTotal: snapshotQueryData(queryKeys.api.communityFundTotal),
+    assetsReward: snapshotQueryData(queryKeys.api.assetsRewardSummary),
   }
 }
 
-function hasFetchableQueries(keys: readonly (readonly string[])[]): boolean {
-  return keys.some((key) =>
-    queryClient
-      .getQueryCache()
-      .findAll({ queryKey: key })
-      .some((query) => query.options.queryFn != null),
-  )
+function refetchPollKey(key: readonly string[]) {
+  const matches = queryClient.getQueryCache().findAll({ queryKey: key })
+  if (matches.every((query) => query.options.queryFn == null)) return Promise.resolve()
+  return queryClient.refetchQueries({ queryKey: key })
 }
 
 /**
- * 奖励签名/Mixed 领取后：扫描器核销 READY→CLAIMED、待领汇总下降常落后于链确认。
- * 对标 Genesis `pollGenesisContributions`——立即 refetch + 有限次延迟轮询，指纹变化即停。
+ * 奖励领取后扫描器核销 READY→CLAIMED、待领汇总下降常落后于链确认。
+ * 立即 refetch + 有限次延迟轮询，指纹变化即停。
  *
  * @param baseline 写链前的列表/汇总指纹
  * @see docs/backend-api/api.md #claim/dao-reward
  */
 async function pollRewardsClaimIndexer(baseline: RewardScanFingerprint) {
-  if (!hasFetchableQueries(REWARD_CLAIM_POLL_KEYS)) return
-
-  const refetch = () =>
-    Promise.all(REWARD_CLAIM_POLL_KEYS.map((key) => queryClient.refetchQueries({ queryKey: key })))
+  const refetch = () => Promise.all(REWARD_CLAIM_POLL_KEYS.map((key) => refetchPollKey(key)))
 
   await refetch()
   if (rewardScanAdvanced(baseline, readRewardScanFingerprint())) return
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
-    await pollSleep(2500)
+    await sleep(2500, { unref: true })
     await refetch()
     if (rewardScanAdvanced(baseline, readRewardScanFingerprint())) return
   }
 }
 
-function invalidateContributionApis() {
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.api.agxContributionSummary,
-    refetchType: 'active',
-  })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.api.referralAwardSummary,
-    refetchType: 'active',
-  })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.api.participationAwardSummary,
-    refetchType: 'active',
-  })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.api.rankRewardSummary,
-    refetchType: 'active',
-  })
+function invalidateActive(key: readonly string[]) {
+  void queryClient.invalidateQueries({ queryKey: key, refetchType: 'active' })
+}
+
+function invalidateAssetsRewardSummary() {
+  invalidateActive(queryKeys.api.assetsRewardSummary)
+}
+
+/** 贡献点变动：总表 + 带 available_contribution 的发放汇总。 */
+function invalidateContributionChanged() {
+  invalidateActive(queryKeys.api.agxContributionSummary)
+  invalidateActive(queryKeys.api.referralAwardSummary)
+  invalidateActive(queryKeys.api.participationAwardSummary)
+  invalidateActive(queryKeys.api.rankRewardSummary)
 }
 
 function invalidateApiQueries() {
@@ -480,20 +463,20 @@ export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?:
 /**
  * 团队奖 / 发展津贴 / 社区基金签名领取写成功。
  *
- * rewards：待领汇总、发放记录；assets：累计已领取 / 做市可领（API staleTime 5 分钟，
- * 不标脏则切到资产页仍显示旧值）。列表等扫描器 READY→CLAIMED，短窗轮询。
+ * rewards：待领汇总、发放记录；assetsRewardSummary：累计已领取 / 做市可领。
+ * 列表等扫描器 READY→CLAIMED，短窗轮询。
  */
 export function invalidateAfterTeamClaim() {
   const baseline = readRewardScanFingerprint()
   invalidateTabQueries('rewards')
-  invalidateTabQueries('assets')
+  invalidateAssetsRewardSummary()
   void pollRewardsClaimIndexer(baseline)
 }
 
 /**
  * 奖励侧 Mixed（Lucky / Dao）写成功：
  * 进释放队列 / 可能复投 → 刷 rewards + release + staking；
- * 贡献点与累计已领取在资产页，一并标脏。
+ * 复投改持仓分布，累计已领取在 assetsRewardSummary。
  * 发放记录 / type-totals 等扫描器核销，短窗轮询。
  */
 export function invalidateAfterRewardsMixedClaim() {
@@ -501,7 +484,10 @@ export function invalidateAfterRewardsMixedClaim() {
   invalidateTabQueries('rewards')
   invalidateTabQueries('release')
   invalidateTabQueries('staking')
-  invalidateTabQueries('assets')
+  invalidateAssetsRewardSummary()
+  invalidateActive(queryKeys.api.assetsHoldingsSummary)
+  invalidateActive(queryKeys.api.assetsHoldingsDistribution)
+  invalidateActive(queryKeys.api.assetsProductInvestReward)
   void pollRewardsClaimIndexer(baseline)
 }
 
@@ -513,16 +499,18 @@ export function invalidateAfterReferralBind() {
 /**
  * 兑换写成功后刷新 exchange Tab。
  *
- * 销毁改贡献点、涡轮领取改 claimable_gagx；资产页这两项走独立 API，
- * 须一并标脏（5 分钟 staleTime）。
+ * 涡轮领取改 claimable_gagx，标脏 assetsRewardSummary。
+ * 销毁改贡献点走 `invalidateAfterBurnExchange`。
  */
 export function invalidateAfterExchange() {
   invalidateTabQueries('exchange')
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.api.assetsRewardSummary,
-    refetchType: 'active',
-  })
-  invalidateContributionApis()
+  invalidateAssetsRewardSummary()
+}
+
+/** 销毁 AGX 换贡献点：兑换缓存 + 贡献点总表 / 发放汇总。 */
+export function invalidateAfterBurnExchange() {
+  invalidateAfterExchange()
+  invalidateContributionChanged()
 }
 
 /**
@@ -561,15 +549,15 @@ export function invalidateAfterAssetsClaim() {
   invalidateTabQueries('assets')
   invalidateTabQueries('staking')
   invalidateTabQueries('release')
-  invalidateContributionApis()
+  invalidateContributionChanged()
 }
 
 /**
  * 释放队列领取 → 可能增加 Turbine 配额 + 释放相关读取。
  * 缓冲池领取 → 释放 + AGX 余额（turbineRoot 失效开销小、无副作用）。
- * 资产页 claimable_gagx 含释放池 / 涡轮未领，须标脏。
+ * 资产页 claimable_gagx 含释放池 / 涡轮未领。
  */
 export function invalidateAfterReleaseClaim() {
   invalidateTabQueries('release')
-  invalidateTabQueries('assets')
+  invalidateAssetsRewardSummary()
 }

@@ -250,9 +250,14 @@ test('reward status fingerprint advances on READY→CLAIMED without new rows', a
     typeTotals: '',
     grantLogs: '0:',
     luckyLogs: '0:',
+    luckySummary: '',
     teamLogs: '0:',
+    teamTotal: '',
     marketLogs: '0:',
+    marketSummary: '',
     communityLogs: '0:',
+    communityTotal: '',
+    assetsReward: '',
   }
   assert.equal(rewardScanAdvanced(empty, empty), false)
   assert.equal(
@@ -277,17 +282,20 @@ function assertInvalidated(queryClient, key) {
   assert.equal(queryClient.getQueryState(key)?.isInvalidated, true)
 }
 
-test('invalidateAfterAssetsClaim marks assets+staking+release', async () => {
+test('invalidateAfterAssetsClaim marks assets+staking+release and contribution', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
   const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
   const assets = await seedTabProbe('assets')
   const staking = await seedTabProbe('staking')
   const release = await seedTabProbe('release')
+  queryClient.setQueryData(queryKeys.api.agxContributionSummary, 1)
 
   invalidateAfterAssetsClaim()
 
   assertInvalidated(assets.queryClient, assets.key)
   assertInvalidated(staking.queryClient, staking.key)
   assertInvalidated(release.queryClient, release.key)
+  assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
   assets.queryClient.clear()
 })
 
@@ -300,6 +308,9 @@ test('invalidateAfterRewardsMixedClaim marks rewards+release+staking+assets', as
   const release = await seedTabProbe('release')
   const staking = await seedTabProbe('staking')
   queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
+  queryClient.setQueryData(queryKeys.api.assetsHoldingsSummary, 1)
+  queryClient.setQueryData(queryKeys.api.assetsHoldingsDistribution, 1)
+  queryClient.setQueryData(queryKeys.api.assetsProductInvestReward, 1)
 
   invalidateAfterRewardsMixedClaim()
 
@@ -307,6 +318,9 @@ test('invalidateAfterRewardsMixedClaim marks rewards+release+staking+assets', as
   assertInvalidated(release.queryClient, release.key)
   assertInvalidated(staking.queryClient, staking.key)
   assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
+  assertInvalidated(queryClient, queryKeys.api.assetsHoldingsSummary)
+  assertInvalidated(queryClient, queryKeys.api.assetsHoldingsDistribution)
+  assertInvalidated(queryClient, queryKeys.api.assetsProductInvestReward)
   rewards.queryClient.clear()
 })
 
@@ -336,7 +350,7 @@ test('invalidateAfterReleaseClaim marks release+assets reward summary', async ()
   release.queryClient.clear()
 })
 
-test('invalidateAfterExchange marks contribution and assets reward summary', async () => {
+test('invalidateAfterExchange marks assets reward summary, not contribution', async () => {
   const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
   const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
   queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
@@ -345,17 +359,22 @@ test('invalidateAfterExchange marks contribution and assets reward summary', asy
   invalidateAfterExchange()
 
   assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
-  assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
+  assert.equal(
+    queryClient.getQueryState(queryKeys.api.agxContributionSummary)?.isInvalidated,
+    false,
+  )
   queryClient.clear()
 })
 
-test('invalidateAfterAssetsClaim marks rewards contribution summary', async () => {
+test('invalidateAfterBurnExchange marks contribution and assets reward summary', async () => {
   const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
-  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const { invalidateAfterBurnExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
   queryClient.setQueryData(queryKeys.api.agxContributionSummary, 1)
 
-  invalidateAfterAssetsClaim()
+  invalidateAfterBurnExchange()
 
+  assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
   assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
   queryClient.clear()
 })

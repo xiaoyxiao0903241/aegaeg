@@ -19,9 +19,18 @@ export function navigableHref(href: string): string | null {
   }
 }
 
-/** Promise 延时；钱包等待 / 领取重试 / 缓存失效退避共用的唯一实现。 */
-export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+/**
+ * Promise 延时；钱包等待 / 领取重试 / 缓存失效退避共用。
+ *
+ * @param options.unref Node 后台轮询用：不阻止进程退出。浏览器忽略。
+ */
+export function sleep(ms: number, options?: { unref?: boolean }): Promise<void> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, ms)
+    if (options?.unref && typeof timer === 'object' && timer !== null && 'unref' in timer) {
+      timer.unref()
+    }
+  })
 }
 
 /** 按钱包隔离草稿状态的稳定 React 重挂载键。 */
