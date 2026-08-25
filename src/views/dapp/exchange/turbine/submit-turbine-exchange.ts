@@ -44,7 +44,7 @@ export async function submitTurbineUnlock(args: {
   const { core, unlockAmountAgx, slippageBps } = args
 
   return core.runSubmit(async (session) => {
-    const { wallet, address, readClient } = session
+    const { wallet, address } = session
     if (unlockAmountAgx <= 0n) {
       throw new Error('TURBINE_ZERO_AMOUNT')
     }
@@ -62,13 +62,13 @@ export async function submitTurbineUnlock(args: {
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<Snap> => {
         const [liveBalances, liveQuota] = await Promise.all([
-          readTurbineUsd1Balances(address, readClient),
-          readTurbineQuota(address, readClient),
+          readTurbineUsd1Balances(address),
+          readTurbineQuota(address),
         ])
-        const quotedUnlockP = readTurbineUsdQuote(unlockAmountAgx, readClient)
+        const quotedUnlockP = readTurbineUsdQuote(unlockAmountAgx)
         const quotedQuotaP =
           liveQuota > 0n && unlockAmountAgx !== liveQuota
-            ? readTurbineUsdQuote(liveQuota, readClient)
+            ? readTurbineUsdQuote(liveQuota)
             : quotedUnlockP
         const [quotedUnlock, quotedQuota] = await Promise.all([quotedUnlockP, quotedQuotaP])
         const liveUsd = calcTurbinePayableUsd(quotedUnlock, quotedQuota, slippageBps)
@@ -117,18 +117,18 @@ export async function submitTurbineClaim(args: {
   const { core, index, refetchSilences } = args
 
   return core.runSubmit(async (session) => {
-    const { wallet, address, readClient } = session
+    const { wallet, address } = session
 
     await approveThenLiveWrite({
       readSnapshot: async () => ({
-        vested: await readTurbineIsVested(address, index, readClient),
+        vested: await readTurbineIsVested(address, index),
       }),
       evaluate: (snap) => evaluateTurbineClaimLive(snap.vested),
       mapBlockError: (reason) => new Error(reason),
       write: async () => {
         let viaSplitter = true
         try {
-          const splitterManager = await readTurbineSplitterManager(readClient)
+          const splitterManager = await readTurbineSplitterManager()
           viaSplitter = Boolean(
             splitterManager && splitterManager.toLowerCase() !== ZERO_ADDRESS.toLowerCase(),
           )

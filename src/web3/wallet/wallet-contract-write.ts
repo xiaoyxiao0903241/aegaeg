@@ -7,11 +7,11 @@ import {
   type Hash,
   numberToHex,
   parseAbi,
+  type PublicClient,
   type TransactionReceipt,
 } from 'viem'
 
-import { bscReadClient } from '~/web3/bsc-read-client'
-import { type ChainReadClient, createWalletReadClient } from '~/web3/chain-read-client'
+import { bscReadClient, createWalletReadClient } from '~/web3/bsc-read-client'
 import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import {
   decodeContractRevert,
@@ -102,7 +102,7 @@ export function applyGasBuffer(estimatedGas: bigint): bigint {
  * 模拟写调用：合约 revert 在钱包弹窗前抛出。
  * 非 revert（RPC 超时等）不挡发送，交给钱包。
  */
-async function simulateWriteCall(call: WriteCallParams, walletClient: ChainReadClient) {
+async function simulateWriteCall(call: WriteCallParams, walletClient: PublicClient) {
   const callRequest = call as never
   try {
     await walletClient.simulateContract(callRequest)
@@ -121,28 +121,20 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: ChainReadC
  * 估算写交易 gas（展示用，不进入发送）
  *
  * 先 simulate 挡 revert，再 `estimateContractGas` 加 20% 缓冲。
- * simulate 因非 revert 失败时，仍回退到钱包读客户端与公共 RPC 估算。
+ * 读走 `bscReadClient`（已连 BSC 即钱包节点）。
  *
  * @param call 写调用参数
- * @param walletClient 钱包读客户端
- * @param fallbackClient 回退读客户端，默认公共 RPC
  * @returns 加缓冲后的 gas 上限
  */
-export async function estimateWriteGasLimit(
-  call: WriteCallParams,
-  walletClient: ChainReadClient,
-  fallbackClient: ChainReadClient = bscReadClient,
-): Promise<bigint> {
+export async function estimateWriteGasLimit(call: WriteCallParams): Promise<bigint> {
   const callRequest = call as never
-  await simulateWriteCall(call, walletClient)
+  await simulateWriteCall(call, bscReadClient)
 
-  for (const client of [walletClient, fallbackClient]) {
-    try {
-      return applyGasBuffer(await client.estimateContractGas(callRequest))
-    } catch (error) {
-      if (isContractRevert(error)) {
-        throw normalizeContractRevertError(error, call.abi)
-      }
+  try {
+    return applyGasBuffer(await bscReadClient.estimateContractGas(callRequest))
+  } catch (error) {
+    if (isContractRevert(error)) {
+      throw normalizeContractRevertError(error, call.abi)
     }
   }
 
@@ -153,7 +145,7 @@ export async function estimateWriteGasLimit(
  * 通过钱包提交合约写交易
  *
  * 核对会话地址/链 → simulate 挡 revert → 再核一次 → `eth_sendTransaction`（不设 gas、不设墙钟）→
- * 公共 RPC `waitForTransactionReceipt({ timeout: 0 })`。
+ * `waitForTransactionReceipt({ timeout: 0 })`。
  * 授权与业务写各 send 各 wait；gas 由钱包估算。
  *
  * @param input 钱包与写调用参数

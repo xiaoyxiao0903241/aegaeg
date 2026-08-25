@@ -4,7 +4,6 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 
@@ -21,17 +20,17 @@ const CONNECT_WARM_TOKENS: readonly Address[] = [
  * 钱包就绪后预取推荐绑定状态与核心 ERC20 余额。
  * 使用并行 `prefetchQuery`（原子键）；Multicall3 聚合读取保持可选。
  */
-export function prefetchConnectWarm(address: string, readClient: ChainReadClient): void {
+export function prefetchConnectWarm(address: string): void {
   void queryClient.prefetchQuery({
     queryKey: queryKeys.chain.referralIsBoundOf(address),
-    queryFn: () => readIsBindReferral(address, readClient),
+    queryFn: () => readIsBindReferral(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
 
   for (const token of CONNECT_WARM_TOKENS) {
     void queryClient.prefetchQuery({
       queryKey: queryKeys.chain.erc20BalanceOf(token, address),
-      queryFn: () => readErc20Balance(token, address, readClient),
+      queryFn: () => readErc20Balance(token, address),
       staleTime: QUERY_STALE_TIME.balances,
     })
   }

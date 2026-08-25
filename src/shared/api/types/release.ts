@@ -2,7 +2,7 @@ import type { PaginationParams } from '~/shared/api/types/common'
 
 export type BufferPoolEventType = 'RELEASE_CREATED' | 'PRINCIPAL_CLAIMED'
 
-export type ReleasePoolEventType = 'entered_queue' | 'claimed' | 'released'
+export type ReleasePoolEventType = 'entered_queue' | 'claimed_from_queue' | 'released'
 
 export interface BufferPoolSummary {
   cumulative_amount: string

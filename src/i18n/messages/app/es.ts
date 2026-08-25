@@ -115,7 +115,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'Entrar en cola',
-      claimed: 'Reclamar',
+      claimed_from_queue: 'Reclamar',
       released: 'Liberado',
     },
     turbine: {
@@ -2140,7 +2140,7 @@ const app = defineMessages({
           { id: '540', period: '540 d' },
         ],
       },
-      runwayDays: '{days} d',
+      runwayDays: '> {days} d',
       chart: {
         title: 'Métricas',
         metricTabs: {

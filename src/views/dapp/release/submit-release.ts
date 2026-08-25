@@ -21,8 +21,8 @@ function gateError(
   return RELEASE_BLOCKED[reason]
 }
 
-async function assertReleaseWritesAllowed(address: string, readClient: WriteSession['readClient']) {
-  const migration = await readMigrationStatus(address, readClient)
+async function assertReleaseWritesAllowed(address: string) {
+  const migration = await readMigrationStatus(address)
   if (migration.isOldAccount) throw RELEASE_BLOCKED.accountMigrated
 }
 
@@ -40,12 +40,12 @@ export async function submitReleaseQueueClaim(args: {
   planIndex: number
 }): Promise<void> {
   const { session, planIndex } = args
-  const { wallet, address, readClient } = session
+  const { wallet, address } = session
   if (planIndex < 0) {
     throw RELEASE_BLOCKED.planUnresolved
   }
 
-  const pre = await readReleaseQueueSnapshot(address, readClient)
+  const pre = await readReleaseQueueSnapshot(address)
   const preRow = pre.plans.find((row) => row.planIndex === planIndex)
   const preErr = gateError(
     releaseClaimBlockReason({
@@ -54,7 +54,7 @@ export async function submitReleaseQueueClaim(args: {
   )
   if (preErr) throw preErr
 
-  const live = await readReleaseQueueSnapshot(address, readClient)
+  const live = await readReleaseQueueSnapshot(address)
   const liveRow = live.plans.find((row) => row.planIndex === planIndex)
   const liveErr = gateError(
     releaseClaimBlockReason({
@@ -63,7 +63,7 @@ export async function submitReleaseQueueClaim(args: {
   )
   if (liveErr) throw liveErr
 
-  await assertReleaseWritesAllowed(address, readClient)
+  await assertReleaseWritesAllowed(address)
   await writeClaimAllVestedRewards({ wallet, planIndex })
   invalidateAfterReleaseClaim()
 }
@@ -105,9 +105,9 @@ export async function submitReleaseBufferClaim(args: {
   token: ReleaseBufferClaimToken
 }): Promise<void> {
   const { session, token } = args
-  const { wallet, address, readClient } = session
+  const { wallet, address } = session
 
-  const pre = await readReleaseBufferSnapshot(address, readClient)
+  const pre = await readReleaseBufferSnapshot(address)
   const preClaimable = token === 'agx' ? pre.agx.totalClaimable : pre.gagx.totalClaimable
   const preErr = gateError(
     releaseClaimBlockReason({
@@ -116,7 +116,7 @@ export async function submitReleaseBufferClaim(args: {
   )
   if (preErr) throw preErr
 
-  const live = await readReleaseBufferSnapshot(address, readClient)
+  const live = await readReleaseBufferSnapshot(address)
   const liveClaimable = token === 'agx' ? live.agx.totalClaimable : live.gagx.totalClaimable
   const liveErr = gateError(
     releaseClaimBlockReason({
@@ -126,7 +126,7 @@ export async function submitReleaseBufferClaim(args: {
   if (liveErr) throw liveErr
   if (liveClaimable <= 0n) throw RELEASE_BLOCKED.zeroAmount
 
-  await assertReleaseWritesAllowed(address, readClient)
+  await assertReleaseWritesAllowed(address)
 
   for (const hop of live.chain) {
     const indexes = token === 'agx' ? hop.agxClaimIndexes : hop.gagxClaimIndexes

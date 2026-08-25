@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const CURRENT = '0x1111111111111111111111111111111111111111'
 const ROOT = '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa'
@@ -32,7 +33,7 @@ test('readTurbineQuota uses migrationStakeRoot for turbineBalances', async () =>
       balancesArg = u
     },
   })
-  assert.equal(await readTurbineQuota(CURRENT, client), 77n)
+  assert.equal(await withBscReadClient(client, () => readTurbineQuota(CURRENT)), 77n)
   assert.equal(balancesArg, ROOT.toLowerCase())
 })
 
@@ -45,6 +46,6 @@ test('readTurbineQuota keeps current when migratedFrom is zero', async () => {
       balancesArg = u
     },
   })
-  await readTurbineQuota(CURRENT, client)
+  await withBscReadClient(client, () => readTurbineQuota(CURRENT))
   assert.equal(balancesArg, CURRENT.toLowerCase())
 })

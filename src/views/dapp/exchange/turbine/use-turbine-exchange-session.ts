@@ -5,6 +5,7 @@ import { TEN_BI, ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
   formatTokenAmountToNumber,
+  slippageDraftAfterModeChange,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
 import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-buckets'
@@ -36,10 +37,8 @@ import {
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
 } from '~/web3/exchange/turbine-exchange-read'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 export type TurbineSegment = 'unlock' | 'claim'
 
@@ -80,9 +79,7 @@ export function useTurbineExchangeSession(
   quotesEnabled = true,
   readsEnabled = quotesEnabled,
 ) {
-  const account = useActiveAccount()
-  const { writeReady } = useWriteReadiness()
-  const walletReady = hasWalletAccount(account)
+  const { walletReady, writeReady } = useWriteReadiness()
 
   const [segment, setSegmentState] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
@@ -93,7 +90,9 @@ export function useTurbineExchangeSession(
   const slippageBps = slippagePercentToBps(slippage)
 
   function setSlippageMode(mode: 'auto' | 'custom') {
-    if (mode === 'auto') setSlippageCustomTextState('')
+    setSlippageCustomTextState(
+      slippageDraftAfterModeChange(mode, slippageMode, slippageCustomText, autoSlippagePercent),
+    )
     setSlippageModeState(mode)
   }
 
@@ -330,8 +329,8 @@ export function useTurbineExchangeSession(
     slippage,
     slippageMode,
     setSlippageMode,
-    slippageCustomText:
-      slippageCustomText === '' ? String(autoSlippagePercent) : slippageCustomText,
+    // 空草稿原样交给输入框；报价仍可用默认档，勿在此回填，否则无法删光再输入。
+    slippageCustomText,
     setSlippageCustomText: setSlippageCustomTextState,
     autoSlippagePercent,
     isAgxPriceQuoting: sessionReady && unitPriceQuery.isFetching && !agxPriceLabel,

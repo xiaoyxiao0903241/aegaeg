@@ -42,7 +42,7 @@ export function WalletDetailsModal({
   const [connectOpen, setConnectOpen] = useState(false)
   const walletAddress = account?.address
   const walletReady = hasWalletAccount(account)
-  const { balanceQuery, usd1Balance } = useUsd1PresaleWalletQuery(open ? walletAddress : undefined)
+  const { balanceQuery, usd1Balance } = useUsd1PresaleWalletQuery({ enabled: open })
 
   const handleOpenChange = (next: boolean) => {
     if (!next) setCopied(false)

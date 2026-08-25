@@ -1,8 +1,16 @@
 import assert from 'node:assert/strict'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
-import { enc, ok, sessionWithReadClient, ZERO } from './_money-path-read-mock.mjs'
+import {
+  clearMoneyPathReadClient,
+  enc,
+  moneyPathSession,
+  ok,
+  ZERO,
+} from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
 
 function stakeLockedAggregate3(calls, opts) {
   const {
@@ -43,6 +51,13 @@ function stakeLockedAggregate3(calls, opts) {
     ]
   }
 
+  if (calls.length === 2) {
+    return [
+      ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', false)),
+      ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', false)),
+    ]
+  }
+
   throw new Error(`unexpected aggregate3 arity ${calls.length}`)
 }
 
@@ -50,12 +65,10 @@ test('submitStakeOpen fail-closed when live referral is unbound', async () => {
   const { submitStakeOpen } = await loadModule('/src/views/dapp/staking/stake/submit-stake.ts')
   const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'aggregate3') {
       return stakeLockedAggregate3(request.args[0], { isBound: false })
     }
-    if (request.functionName === 'migrationEnabled') return false
-    if (request.functionName === 'isOldAccount') return false
     throw new Error(`unexpected ${request.functionName}`)
   })
 
@@ -69,12 +82,10 @@ test('submitStakeOpen fail-closed when live quota is below amount', async () => 
   const { submitStakeOpen } = await loadModule('/src/views/dapp/staking/stake/submit-stake.ts')
   const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'aggregate3') {
       return stakeLockedAggregate3(request.args[0], { remaining: 10n })
     }
-    if (request.functionName === 'migrationEnabled') return false
-    if (request.functionName === 'isOldAccount') return false
     throw new Error(`unexpected ${request.functionName}`)
   })
 
@@ -96,8 +107,15 @@ test('submitXmineStake fail-closed when live mining quota is exhausted', async (
     const { submitXmineStake } = await loadModule('/src/views/dapp/staking/xmine/submit-xmine.ts')
     const { XMINE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-    const session = sessionWithReadClient(async (request) => {
+    const session = await moneyPathSession(async (request) => {
       if (request.functionName === 'aggregate3') {
+        const calls = request.args[0]
+        if (calls.length === 2) {
+          return [
+            ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', false)),
+            ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', false)),
+          ]
+        }
         return [
           ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', 1_000n)),
           ok(
@@ -113,8 +131,6 @@ test('submitXmineStake fail-closed when live mining quota is exhausted', async (
           ),
         ]
       }
-      if (request.functionName === 'migrationEnabled') return false
-      if (request.functionName === 'isOldAccount') return false
       throw new Error(`unexpected ${request.functionName}`)
     })
 
@@ -134,7 +150,7 @@ test('submitLiquidWarmupClaim fail-closed when warmup has not expired', async ()
   )
   const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName !== 'aggregate3') {
       throw new Error(`unexpected ${request.functionName}`)
     }

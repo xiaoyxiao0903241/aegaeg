@@ -22,14 +22,14 @@ export async function submitMarketTrade(args: {
   }
 
   return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
-    const { wallet, address, readClient } = session
+    const { wallet, address } = session
     const amountIn = core.debouncedAmountIn
 
     type Snap = { sellBalance: bigint }
 
     await approveThenLiveWrite({
       readSnapshot: async (): Promise<Snap> => ({
-        sellBalance: await readErc20Balance(pair.sell.address, address, readClient),
+        sellBalance: await readErc20Balance(pair.sell.address, address),
       }),
       evaluate: (snap) => (snap.sellBalance < amountIn ? 'insufficientBalance' : null),
       mapBlockError: (reason) => new Error(reason),

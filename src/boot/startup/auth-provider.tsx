@@ -24,6 +24,7 @@ import {
 import { useAuthStore } from '~/stores/auth-store'
 import { useDappHostStore } from '~/stores/dapp-host-store'
 import { loginWithWallet, toLoginErrorSentinel } from '~/web3/auth/login-with-wallet'
+import { useBindConnectedBscReadWallet } from '~/web3/chain-read-client'
 import { defaultChain } from '~/web3/thirdweb'
 import { useActiveAccount, useActiveWalletChain } from '~/web3/thirdweb-react'
 
@@ -76,6 +77,7 @@ const RENEW_THRESHOLD_MS = 60_000
  * 链未就绪时调度 idle；SIWE 消息始终声明期望链，不把异网写入 loginError。
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
+  useBindConnectedBscReadWallet()
   const account = useActiveAccount()
   const walletChain = useActiveWalletChain()
   const liveChainId = walletChain?.id

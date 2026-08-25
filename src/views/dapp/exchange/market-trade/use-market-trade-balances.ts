@@ -6,7 +6,6 @@ import { TRADE_TOKEN_ADDRESSES, type TradeTokenKey } from '~/views/dapp/exchange
 import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 
 type UseMarketTradeBalancesArgs = {
-  address: string | undefined
   sellKey: TradeTokenKey
   buyKey: TradeTokenKey
   /** 余额 / 授权查询开关（仅挂载中的市价交易会话）。 */
@@ -16,26 +15,23 @@ type UseMarketTradeBalancesArgs = {
 
 /** USD1/AGX/X 余额 + 当前卖出币对 Router 授权。 */
 export function useMarketTradeBalances({
-  address,
   sellKey,
   buyKey,
   readsEnabled,
   walletReady,
 }: UseMarketTradeBalancesArgs) {
-  const enabled = readsEnabled && Boolean(address)
   const sellAddress = TRADE_TOKEN_ADDRESSES[sellKey]
 
-  const usd1Query = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.usd1 as Address, address, {
-    enabled,
+  const usd1Query = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.usd1 as Address, {
+    enabled: readsEnabled,
   })
-  const agxQuery = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.agx as Address, address, { enabled })
-  const xQuery = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.x as Address, address, { enabled })
-  const allowanceQuery = useErc20AllowanceQuery(
-    sellAddress as Address,
-    address,
-    EXCHANGE_CONFIG.router,
-    { enabled },
-  )
+  const agxQuery = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.agx as Address, {
+    enabled: readsEnabled,
+  })
+  const xQuery = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.x as Address, { enabled: readsEnabled })
+  const allowanceQuery = useErc20AllowanceQuery(sellAddress as Address, EXCHANGE_CONFIG.router, {
+    enabled: readsEnabled,
+  })
 
   const byKey: Record<TradeTokenKey, bigint | undefined> = {
     usd1: usd1Query.data,

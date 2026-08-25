@@ -5,7 +5,6 @@ import { type PresalePhaseOnChain, type PresalePhaseRemaining } from '~/core/pre
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { PRESALE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { readAggregate3 } from '~/web3/multicall3-read'
 
@@ -69,14 +68,11 @@ function mapPhaseTupleToOnChain(
 /**
  * 读取预售档位总数（AegisPreSale.getPhaseCount）。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 档位数
  * @see 手册 §6 预售 PreSale
  */
-export async function readPresalePhaseCount(
-  client: ChainReadClient = bscReadClient,
-): Promise<number> {
-  const phaseCount = await client.readContract({
+export async function readPresalePhaseCount(): Promise<number> {
+  const phaseCount = await bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'getPhaseCount',
@@ -90,20 +86,16 @@ export async function readPresalePhaseCount(
  *
  * 各档 phases() 合并为一次 Multicall3，任一档读取失败即抛错。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 全部档位数组；无档位时为空数组
  * @see 手册 §6 预售 PreSale
  */
-export async function readAllPresalePhases(
-  client: ChainReadClient = bscReadClient,
-): Promise<PresalePhaseOnChain[]> {
-  const phaseCount = await readPresalePhaseCount(client)
+export async function readAllPresalePhases(): Promise<PresalePhaseOnChain[]> {
+  const phaseCount = await readPresalePhaseCount()
   if (phaseCount <= 0) {
     return []
   }
 
   const results = await readAggregate3(
-    client,
     Array.from({ length: phaseCount }, (_, phaseIndex) => ({
       target: BSC_CONTRACTS.preSale,
       callData: encodePhaseCallData(phaseIndex),
@@ -137,20 +129,18 @@ export async function readAllPresalePhases(
  *
  * @param address 钱包地址
  * @param phaseIndex 档位 index
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 档位/个人剩余额度与个人限购
  * @see 手册 §6 预售 PreSale
  */
 export async function readUserPhaseRemainingAmount(
   address: string,
   phaseIndex: number,
-  client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseRemaining> {
   // 手册 presale.md：额度查询先解析首次 root，再调 view（与 userTotalAmount 同口径）。
-  const migratedFrom = await readMigratedFrom(address, client)
+  const migratedFrom = await readMigratedFrom(address)
   const root = migrationStakeRoot(address, migratedFrom) as `0x${string}`
   const [remainingPhaseAmount, remainingUserAmount, userPurchaseLimit, userPhaseAmountCurrent] =
-    await client.readContract({
+    await bscReadClient.readContract({
       address: BSC_CONTRACTS.preSale,
       abi: presaleAbi,
       functionName: 'getUserPhaseRemainingAmount',
@@ -171,18 +161,14 @@ export async function readUserPhaseRemainingAmount(
  * userTotalAmount 为按迁移 root 键控的 public mapping，须先解析 root。
  *
  * @param address 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 累计购买额（wei）
  * @see 手册 §6 预售 PreSale
  */
-export async function readUserPresaleTotal(
-  address: string,
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
+export async function readUserPresaleTotal(address: string): Promise<bigint> {
   // `userTotalAmount` 为按首次 root 键控的 public mapping。
-  const migratedFrom = await readMigratedFrom(address, client)
+  const migratedFrom = await readMigratedFrom(address)
   const root = migrationStakeRoot(address, migratedFrom) as `0x${string}`
-  return client.readContract({
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'userTotalAmount',
@@ -193,14 +179,11 @@ export async function readUserPresaleTotal(
 /**
  * 读取全网预售累计购买额（AegisPreSale.totalPurchasedAmount）。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 累计购买额（wei）
  * @see 手册 §6 预售 PreSale
  */
-export async function readTotalPresalePurchased(
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return client.readContract({
+export async function readTotalPresalePurchased(): Promise<bigint> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'totalPurchasedAmount',
@@ -210,14 +193,11 @@ export async function readTotalPresalePurchased(
 /**
  * 读取空投门槛（AegisPreSale.AIRDROP_THRESHOLD，wei）。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 空投门槛（wei）
  * @see 手册 §6 预售 PreSale
  */
-export async function readPresaleAirdropThresholdWei(
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return client.readContract({
+export async function readPresaleAirdropThresholdWei(): Promise<bigint> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'AIRDROP_THRESHOLD',
@@ -227,14 +207,11 @@ export async function readPresaleAirdropThresholdWei(
 /**
  * 读取预售 AGX 单价（AegisPreSale.agxPrice，wei）。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 单价（wei）
  * @see 手册 §6 预售 PreSale
  */
-export async function readPresaleAgxPriceWei(
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return client.readContract({
+export async function readPresaleAgxPriceWei(): Promise<bigint> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'agxPrice',
@@ -244,12 +221,11 @@ export async function readPresaleAgxPriceWei(
 /**
  * 读取预售暂停状态（AegisPreSale.paused）。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 暂停时返回 true
  * @see 手册 §6 预售 PreSale
  */
-export async function readPresalePaused(client: ChainReadClient = bscReadClient): Promise<boolean> {
-  return client.readContract({
+export async function readPresalePaused(): Promise<boolean> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'paused',
@@ -264,7 +240,6 @@ export async function readPresalePaused(client: ChainReadClient = bscReadClient)
  * @param user 钱包地址（可为零地址）
  * @param phaseIndex 档位 index
  * @param purchaseAmount 拟购金额（wei）
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 新增空投价值（wei）
  * @see 手册 §6 预售 PreSale
  */
@@ -272,9 +247,8 @@ export async function readPreviewAirdropValue(
   user: string,
   phaseIndex: number,
   purchaseAmount: bigint,
-  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  const [addedAirdropValue] = await client.readContract({
+  const [addedAirdropValue] = await bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'previewAirdropValue',

@@ -4,6 +4,7 @@ import test from 'node:test'
 import { decodeFunctionData, encodeFunctionResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const CURRENT = '0x1111111111111111111111111111111111111111'
 const ROOT = '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa'
@@ -98,7 +99,7 @@ test('readStakePositions passes AMM root to liquid stakes and current to getStak
     },
   })
 
-  await readStakePositions(CURRENT, client)
+  await withBscReadClient(client, () => readStakePositions(CURRENT))
 
   assert.equal(stakesArg, ROOT.toLowerCase())
   assert.equal(rewardsArg, CURRENT.toLowerCase())
@@ -114,22 +115,23 @@ test('readStakeRedeemableAmount liquid uses migration root for stakes', async ()
     },
   })
 
-  const amount = await readStakeRedeemableAmount(
-    {
-      id: 'liquid',
-      kind: 'liquid',
-      period: 'liquid',
-      pool: '0x0C5173c87aB8684eEc028a2bF56061a37415d224',
-      stakeIndex: null,
-      principal: 100n,
-      releasedPrincipal: 0n,
-      blockReward: 0n,
-      extraInterest: 0n,
-      claimableBalance: 0n,
-      expiry: 0n,
-    },
-    CURRENT,
-    client,
+  const amount = await withBscReadClient(client, () =>
+    readStakeRedeemableAmount(
+      {
+        id: 'liquid',
+        kind: 'liquid',
+        period: 'liquid',
+        pool: '0x0C5173c87aB8684eEc028a2bF56061a37415d224',
+        stakeIndex: null,
+        principal: 100n,
+        releasedPrincipal: 0n,
+        blockReward: 0n,
+        extraInterest: 0n,
+        claimableBalance: 0n,
+        expiry: 0n,
+      },
+      CURRENT,
+    ),
   )
 
   assert.equal(amount, 100n)
@@ -146,12 +148,13 @@ test('readStakeOpenPreflight locked userStakingAmounts uses migration root', asy
     },
   })
 
-  await readStakeOpenPreflight({
-    pool: '0x0F2d6c38Dd74D6bBd3aFc6DA90Af39e15CAb2858',
-    isLiquid: false,
-    user: CURRENT,
-    client,
-  })
+  await withBscReadClient(client, () =>
+    readStakeOpenPreflight({
+      pool: '0x0F2d6c38Dd74D6bBd3aFc6DA90Af39e15CAb2858',
+      isLiquid: false,
+      user: CURRENT,
+    }),
+  )
 
   assert.equal(amountsArg, ROOT.toLowerCase())
 })
@@ -166,7 +169,7 @@ test('readUserPresaleTotal uses migration root; zero migratedFrom keeps current'
       totalArg = u.toLowerCase()
     },
   })
-  assert.equal(await readUserPresaleTotal(CURRENT, clientRoot), 42n)
+  assert.equal(await withBscReadClient(clientRoot, () => readUserPresaleTotal(CURRENT)), 42n)
   assert.equal(totalArg, ROOT.toLowerCase())
 
   totalArg = ''
@@ -176,6 +179,6 @@ test('readUserPresaleTotal uses migration root; zero migratedFrom keeps current'
       totalArg = u.toLowerCase()
     },
   })
-  await readUserPresaleTotal(CURRENT, clientZero)
+  await withBscReadClient(clientZero, () => readUserPresaleTotal(CURRENT))
   assert.equal(totalArg, CURRENT.toLowerCase())
 })

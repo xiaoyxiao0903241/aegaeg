@@ -33,8 +33,6 @@ import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
 import { readStakePositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 
@@ -155,9 +153,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  */
 export function useStakeDetail() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappHost()
-  const account = useActiveAccount()
-  const walletReady = hasWalletAccount(account)
+  const { sessionReady, walletReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const [recordsPage, setRecordsPage] = useState(1)

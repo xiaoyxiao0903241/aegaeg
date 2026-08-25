@@ -2,7 +2,11 @@ import { useState } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
-import { formatTokenAmount, slippagePercentToBps } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  slippageDraftAfterModeChange,
+  slippagePercentToBps,
+} from '~/core/exchange/token-amount'
 import { autoTradeSlippagePercent, resolveTradeSlippagePercent } from '~/core/exchange/trade-path'
 import {
   formatEstimatedGasBnb,
@@ -64,7 +68,9 @@ export function useMarketTradeSession(
   const slippage = resolveTradeSlippagePercent(slippageMode, slippageCustomText, sellKey)
 
   function setSlippageMode(mode: 'auto' | 'custom') {
-    if (mode === 'auto') setSlippageCustomTextState('')
+    setSlippageCustomTextState(
+      slippageDraftAfterModeChange(mode, slippageMode, slippageCustomText, autoSlippagePercent),
+    )
     setSlippageModeState(mode)
   }
 
@@ -87,7 +93,6 @@ export function useMarketTradeSession(
     balancesLoaded,
     isBalancesLoading,
   } = useMarketTradeBalances({
-    address,
     sellKey,
     buyKey,
     readsEnabled,
@@ -213,8 +218,8 @@ export function useMarketTradeSession(
     slippage,
     slippageMode,
     setSlippageMode,
-    slippageCustomText:
-      slippageCustomText === '' ? String(autoSlippagePercent) : slippageCustomText,
+    // 空草稿原样交给输入框；报价仍可用默认档，勿在此回填，否则无法删光再输入。
+    slippageCustomText,
     setSlippageCustomText: setSlippageCustomTextState,
     autoSlippagePercent,
     pair,

@@ -111,7 +111,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: '進入隊列',
-      claimed: '領取',
+      claimed_from_queue: '領取',
       released: '已釋放',
     },
     turbine: {
@@ -1986,7 +1986,7 @@ const app = defineMessages({
           { id: '540', period: '540 天' },
         ],
       },
-      runwayDays: '{days} 天',
+      runwayDays: '> {days} 天',
       chart: {
         title: '數據指標',
         metricTabs: {

@@ -1,15 +1,28 @@
 import assert from 'node:assert/strict'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
+
+import { parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
-import { sessionWithReadClient, USER, ZERO } from './_money-path-read-mock.mjs'
+import { withAggregate3 } from '../web3/_bsc-read-client-test.mjs'
+import { clearMoneyPathReadClient, moneyPathSession, USER, ZERO } from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
+
+const XMINE_POSITION_ABI = parseAbi([
+  'function migratedFrom(address account) view returns (address)',
+  'function pendingReward(address user) view returns (uint256)',
+  'function pendingRewardValue(address user) view returns (uint256)',
+  'function miningStakeAmountOf(address user) view returns (uint256)',
+  'function stakes(address user) view returns (uint256,uint256,uint256,uint256,uint256)',
+])
 
 test('submitBondRedeem fail-closed when live pending payout is zero', async () => {
   const { submitBondRedeem } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
   const calls = []
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     calls.push(request.functionName)
     if (request.functionName === 'pendingPayoutFor') return 0n
     throw new Error(`unexpected ${request.functionName}`)
@@ -43,7 +56,7 @@ test('submitStakeRedeem fail-closed for locked row with zero released principal'
   const { submitStakeRedeem } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'getReleasedPrincipal') return 0n
     throw new Error(`unexpected ${request.functionName}`)
   })
@@ -76,7 +89,7 @@ test('submitStakeRedeem blocks liquid warmup before any chain read', async () =>
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
   let readCalls = 0
-  const session = sessionWithReadClient(async () => {
+  const session = await moneyPathSession(async () => {
     readCalls += 1
     throw new Error('should not read')
   })
@@ -115,7 +128,7 @@ function xmineReadClient(overrides = {}) {
     warmupGons = 0n,
     warmupEndTime = 0n,
   } = overrides
-  return async (request) => {
+  return withAggregate3(async (request) => {
     switch (request.functionName) {
       case 'migratedFrom':
         return ZERO
@@ -130,14 +143,14 @@ function xmineReadClient(overrides = {}) {
       default:
         throw new Error(`unexpected ${request.functionName}`)
     }
-  }
+  }, XMINE_POSITION_ABI)
 }
 
 test('submitXmineClaim fail-closed when live pending is zero', async () => {
   const { submitXmineClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(xmineReadClient({ pending: 0n, warmupGons: 0n }))
+  const session = await moneyPathSession(xmineReadClient({ pending: 0n, warmupGons: 0n }))
   await assert.rejects(
     () => submitXmineClaim({ session }),
     (err) => err === ASSETS_BLOCKED.zeroAmount,
@@ -148,7 +161,7 @@ test('submitXmineClaim fail-closed while warmup gons remain', async () => {
   const { submitXmineClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(xmineReadClient({ pending: 10n ** 16n, warmupGons: 1n }))
+  const session = await moneyPathSession(xmineReadClient({ pending: 10n ** 16n, warmupGons: 1n }))
   await assert.rejects(
     () => submitXmineClaim({ session }),
     (err) => err === ASSETS_BLOCKED.warmupActive,
@@ -159,7 +172,7 @@ test('submitXmineUnstake fail-closed during warmup', async () => {
   const { submitXmineUnstake } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(xmineReadClient({ gons: 10n, warmupGons: 1n }))
+  const session = await moneyPathSession(xmineReadClient({ gons: 10n, warmupGons: 1n }))
   await assert.rejects(
     () => submitXmineUnstake({ session }),
     (err) => err === ASSETS_BLOCKED.warmupActive,
@@ -170,7 +183,7 @@ test('submitXmineActivateWarmup fail-closed when no warmup gons', async () => {
   const { submitXmineActivateWarmup } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(xmineReadClient({ warmupGons: 0n, warmupEndTime: 100n }))
+  const session = await moneyPathSession(xmineReadClient({ warmupGons: 0n, warmupEndTime: 100n }))
   await assert.rejects(
     () => submitXmineActivateWarmup({ session }),
     (err) => err === ASSETS_BLOCKED.noWarmup,

@@ -172,6 +172,18 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
   assert.equal(queue[1], '进入队列（5天）')
   assert.equal(queue[2], '1.2400 gAGX')
 
+  const queueClaimed = mapReleasePoolLogToRow(
+    {
+      event_time: 1_700_000_000,
+      event_type: 'claimed_from_queue',
+      amount: '0.5',
+      tx_hash: null,
+      plan_index: 0,
+    },
+    copy,
+  )
+  assert.equal(queueClaimed[1], '领取')
+
   const turbine = mapTurbineLogToOpsRow(
     {
       id: 1,

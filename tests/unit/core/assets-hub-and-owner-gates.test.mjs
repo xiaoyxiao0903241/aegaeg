@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { clearMoneyPathReadClient, moneyPathSession } from '../views/_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
 
 test('assetsHubNeedsChainFallback: API path skips full-table chain reads', async () => {
   const { assetsHubNeedsChainFallback } = await loadModule(
@@ -78,16 +81,11 @@ test('submitMixedClaim / redeem reject capturedAddress mismatch before chain rea
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
   let readCalls = 0
-  const session = {
-    wallet: {},
-    address: '0x1111111111111111111111111111111111111111',
-    readClient: {
-      async readContract() {
-        readCalls += 1
-        throw new Error('should not read')
-      },
-    },
-  }
+  const session = await moneyPathSession(async () => {
+    readCalls += 1
+    throw new Error('should not read')
+  })
+  session.address = '0x1111111111111111111111111111111111111111'
 
   await assert.rejects(
     () =>
@@ -131,16 +129,11 @@ test('submitMixedClaim treats session address match as case-insensitive', async 
   const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
 
   let readCalls = 0
-  const session = {
-    wallet: {},
-    address: '0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD',
-    readClient: {
-      async readContract() {
-        readCalls += 1
-        throw new Error('gate passed')
-      },
-    },
-  }
+  const session = await moneyPathSession(async () => {
+    readCalls += 1
+    throw new Error('gate passed')
+  })
+  session.address = '0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD'
 
   await assert.rejects(
     () =>

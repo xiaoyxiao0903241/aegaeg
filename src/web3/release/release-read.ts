@@ -11,7 +11,6 @@ import {
   REWARD_QUEUE_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readAggregate3 } from '~/web3/multicall3-read'
 
 const queueReadAbi = parseAbi([
@@ -187,14 +186,11 @@ export function claimIndexesForToken(
 /**
  * 读取 RewardQueue 释放计划（queuePlans）。
  *
- * @param readClient 链读取客户端，默认 BSC 主网
  * @returns 释放计划数组（含 index 与时长）
  * @see 手册 §12 RewardQueue 奖励释放队列
  */
-export async function readReleaseQueuePlans(
-  readClient: ChainReadClient = bscReadClient,
-): Promise<DurationPlan[]> {
-  const plans = await readClient.readContract({
+export async function readReleaseQueuePlans(): Promise<DurationPlan[]> {
+  const plans = await bscReadClient.readContract({
     address: BSC_CONTRACTS.rewardQueue,
     abi: queueReadAbi,
     functionName: 'queuePlans',
@@ -213,10 +209,8 @@ export async function readReleaseQueuePlans(
  *
  * @see 手册 §13 分流器本金释放
  */
-export async function readPrincipalReleaseDuration(
-  readClient: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return (await readClient.readContract({
+export async function readPrincipalReleaseDuration(): Promise<bigint> {
+  return (await bscReadClient.readContract({
     address: BSC_CONTRACTS.aegisSplitterManager,
     abi: managerReadAbi,
     functionName: 'DEFAULT_RELEASE_DURATION',
@@ -228,11 +222,8 @@ export async function readPrincipalReleaseDuration(
  *
  * @see 手册 §13.3
  */
-export async function readEffectiveReleaseDuration(
-  address: Address,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return (await readClient.readContract({
+export async function readEffectiveReleaseDuration(address: Address): Promise<bigint> {
+  return (await bscReadClient.readContract({
     address: BSC_CONTRACTS.aegisSplitterManager,
     abi: managerReadAbi,
     functionName: 'effectiveDuration',
@@ -247,15 +238,11 @@ export async function readEffectiveReleaseDuration(
  * 仅在有余额时追加（读取失败不强行阻断）。每档两读合并为一次 Multicall3。
  *
  * @param address 钱包地址
- * @param readClient 链读取客户端，默认 BSC 主网
  * @returns 释放队列汇总快照
  * @see 手册 §12 RewardQueue 奖励释放队列
  */
-export async function readReleaseQueueSnapshot(
-  address: Address,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<ReleaseQueueSnapshot> {
-  const durationPlans = await readReleaseQueuePlans(readClient)
+export async function readReleaseQueueSnapshot(address: Address): Promise<ReleaseQueueSnapshot> {
+  const durationPlans = await readReleaseQueuePlans()
   const queue = BSC_CONTRACTS.rewardQueue
 
   type PendingRow = {
@@ -294,7 +281,6 @@ export async function readReleaseQueueSnapshot(
 
   // 每档 claimable+total → 单次 Multicall3（避免 N× eth_call）
   const results = await readAggregate3(
-    readClient,
     pending.flatMap((row) => [
       {
         target: queue,
@@ -361,95 +347,6 @@ export async function readReleaseQueueSnapshot(
   return { plans: rows, totalClaimable, totalLocked, totalReleasing }
 }
 
-/** 单档读：已知 planIndex 时 1× Multicall（2 call）；未知则先 queuePlans 再读。 */
-export async function readReleaseQueuePlanByDays(
-  address: Address,
-  durationDays: number,
-  planIndexHint: number = -1,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<ReleaseQueuePlanRow> {
-  let planIndex = planIndexHint
-  if (planIndex < 0) {
-    const durationPlans = await readReleaseQueuePlans(readClient)
-    const matched = durationPlans.find(
-      (p) => p.durationSeconds === BigInt(durationDays) * SECONDS_PER_DAY,
-    )
-    if (!matched) {
-      return {
-        planIndex: -1,
-        durationDays,
-        claimable: 0n,
-        total: 0n,
-        releasing: 0n,
-      }
-    }
-    planIndex = matched.index
-  }
-
-  const queue = BSC_CONTRACTS.rewardQueue
-  const results = await readAggregate3(readClient, [
-    {
-      target: queue,
-      callData: encodeFunctionData({
-        abi: queueReadAbi,
-        functionName: 'getReleasedRewardsWithPlanIndex',
-        args: [address, planIndex],
-      }),
-    },
-    {
-      target: queue,
-      callData: encodeFunctionData({
-        abi: queueReadAbi,
-        functionName: 'getRewardsWithPlanIndex',
-        args: [address, planIndex],
-      }),
-    },
-  ])
-  const claimableSlot = results[0]
-  const totalSlot = results[1]
-  if (!claimableSlot?.success || !totalSlot?.success) {
-    throw new Error(`RELEASE_QUEUE_PLAN_MULTICALL_FAILED:${planIndex}`)
-  }
-  const claimable = decodeFunctionResult({
-    abi: queueReadAbi,
-    functionName: 'getReleasedRewardsWithPlanIndex',
-    data: claimableSlot.returnData,
-  }) as bigint
-  const total = decodeFunctionResult({
-    abi: queueReadAbi,
-    functionName: 'getRewardsWithPlanIndex',
-    data: totalSlot.returnData,
-  }) as bigint
-
-  return {
-    planIndex,
-    durationDays,
-    claimable,
-    total,
-    releasing: total > claimable ? total - claimable : 0n,
-  }
-}
-
-/** 用单档结果补丁 snapshot，并重算 totals（右栏链上合计会跟着变）。 */
-export function patchReleaseQueuePlan(
-  snapshot: ReleaseQueueSnapshot,
-  row: ReleaseQueuePlanRow,
-): ReleaseQueueSnapshot {
-  const plans = snapshot.plans.map((p) => (p.durationDays === row.durationDays ? row : p))
-  if (!plans.some((p) => p.durationDays === row.durationDays)) {
-    plans.push(row)
-  }
-  let totalClaimable = 0n
-  let totalLocked = 0n
-  let totalReleasing = 0n
-  for (const p of plans) {
-    totalClaimable += p.claimable
-    totalLocked += p.total
-    totalReleasing += p.releasing
-  }
-  return { plans, totalClaimable, totalLocked, totalReleasing }
-}
-
 type SplitterReleaseView = {
   release: {
     token: Address
@@ -467,9 +364,8 @@ type SplitterReleaseView = {
 async function readSplitterPages(
   splitter: Address,
   user: Address,
-  readClient: ChainReadClient,
 ): Promise<{ count: number; items: SplitterReleaseView[] }> {
-  const first = (await readClient.readContract({
+  const first = (await bscReadClient.readContract({
     address: splitter,
     abi: splitterReadAbi,
     functionName: 'getReleases',
@@ -484,7 +380,7 @@ async function readSplitterPages(
   const items = [...first[0]]
   let start = items.length
   while (start < totalCount) {
-    const page = (await readClient.readContract({
+    const page = (await bscReadClient.readContract({
       address: splitter,
       abi: splitterReadAbi,
       functionName: 'getReleases',
@@ -515,7 +411,6 @@ function isZeroAddress(addr: string): boolean {
  */
 async function resolveSplitterChain(
   head: Address,
-  readClient: ChainReadClient,
 ): Promise<Array<{ address: Address; next: Address; isTail: boolean }>> {
   const hops: Array<{ address: Address; next: Address; isTail: boolean }> = []
   const seen = new Set<string>()
@@ -524,7 +419,7 @@ async function resolveSplitterChain(
     const key = current.toLowerCase()
     if (seen.has(key) || isZeroAddress(key)) break
     seen.add(key)
-    const nextRaw = (await readClient.readContract({
+    const nextRaw = (await bscReadClient.readContract({
       address: current,
       abi: splitterReadAbi,
       functionName: 'next',
@@ -538,10 +433,7 @@ async function resolveSplitterChain(
   throw new Error(`RELEASE_SPLITTER_CHAIN_TRUNCATED:${head}`)
 }
 
-async function readArchiveVaultTotals(
-  user: Address,
-  readClient: ChainReadClient,
-): Promise<{
+async function readArchiveVaultTotals(user: Address): Promise<{
   count: number
   totals: ReleaseBufferTokenTotals
   claimable: bigint
@@ -558,7 +450,7 @@ async function readArchiveVaultTotals(
   // 只有 getReleaseCount 读取失败才降级为空（归档合约未部署/不可达时不阻塞分流器）
   let countRaw: bigint
   try {
-    countRaw = (await readClient.readContract({
+    countRaw = (await bscReadClient.readContract({
       address: vault,
       abi: archiveVaultReadAbi,
       functionName: 'getReleaseCount',
@@ -576,7 +468,6 @@ async function readArchiveVaultTotals(
 
   // count 已拿到后，分页 / 解码失败直接抛错，不能静默保留半截归档
   const results = await readAggregate3(
-    readClient,
     Array.from({ length: count }, (_, i) => ({
       target: vault,
       callData: encodeFunctionData({
@@ -622,17 +513,14 @@ async function readArchiveVaultTotals(
  *
  * @see 手册 §13 分流器本金释放
  */
-export async function readReleaseBufferSnapshot(
-  address: Address,
-  readClient: ChainReadClient = bscReadClient,
-): Promise<ReleaseBufferSnapshot> {
+export async function readReleaseBufferSnapshot(address: Address): Promise<ReleaseBufferSnapshot> {
   const agx = emptyTotals()
   const gagx = emptyTotals()
   const agxToken = BSC_CONTRACTS.agx
   const gagxToken = BSC_CONTRACTS.gagx
   const chain: ReleaseBufferChainHop[] = []
 
-  const splitterRaw = (await readClient.readContract({
+  const splitterRaw = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.aegisSplitterManager,
     abi: managerReadAbi,
     functionName: 'getHeadSplitterForUser',
@@ -644,9 +532,9 @@ export async function readReleaseBufferSnapshot(
   let splitterCount = 0
   let splitterClaimable = 0n
   if (splitter !== ZERO_ADDRESS) {
-    const hops = await resolveSplitterChain(splitter, readClient)
+    const hops = await resolveSplitterChain(splitter)
     for (const hop of hops) {
-      const page = await readSplitterPages(hop.address, address, readClient)
+      const page = await readSplitterPages(hop.address, address)
       let hopClaimable = 0n
       for (const item of page.items) {
         const token = item.release.token
@@ -681,7 +569,7 @@ export async function readReleaseBufferSnapshot(
     }
   }
 
-  const archive = await readArchiveVaultTotals(address, readClient)
+  const archive = await readArchiveVaultTotals(address)
   addTotals(
     agx,
     archive.totals.totalAmount,

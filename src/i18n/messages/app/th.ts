@@ -111,7 +111,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'เข้าคิว',
-      claimed: 'รับ',
+      claimed_from_queue: 'รับ',
       released: 'ปล่อยแล้ว',
     },
     turbine: {
@@ -2057,7 +2057,7 @@ const app = defineMessages({
           { id: '540', period: '540 วัน' },
         ],
       },
-      runwayDays: '{days} วัน',
+      runwayDays: '> {days} วัน',
       chart: {
         title: 'ตัวชี้วัด',
         metricTabs: {

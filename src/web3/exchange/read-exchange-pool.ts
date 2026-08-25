@@ -1,9 +1,13 @@
-import { parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { PANCAKE_PAIR_V2_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
+import {
+  type Aggregate3Result,
+  decodeAggregate3Result,
+  readAggregate3,
+} from '~/web3/multicall3-read'
 
 const pairAbi = parseAbi([
   PANCAKE_PAIR_V2_METHODS.token0,
@@ -24,6 +28,42 @@ export interface ExchangePoolSpotPrice {
 // 按交易对地址缓存：若用单槽缓存，调用方读取多个交易对时会拿到过期元数据
 const cachedImmutablePools = new Map<string, ExchangePoolImmutableMetadata>()
 
+function tokenPairCalls(poolAddress: `0x${string}`) {
+  return [
+    {
+      target: poolAddress,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'token0' }),
+    },
+    {
+      target: poolAddress,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'token1' }),
+    },
+  ]
+}
+
+function decodeAndCachePoolTokens(
+  poolAddress: `0x${string}`,
+  results: readonly Aggregate3Result[],
+): ExchangePoolImmutableMetadata {
+  const token0 = decodeAggregate3Result<`0x${string}`>(
+    results,
+    0,
+    pairAbi,
+    'token0',
+    'EXCHANGE_POOL_MULTICALL_FAILED:token0',
+  )
+  const token1 = decodeAggregate3Result<`0x${string}`>(
+    results,
+    1,
+    pairAbi,
+    'token1',
+    'EXCHANGE_POOL_MULTICALL_FAILED:token1',
+  )
+  const metadata: ExchangePoolImmutableMetadata = { token0, token1 }
+  cachedImmutablePools.set(poolAddress.toLowerCase(), metadata)
+  return metadata
+}
+
 /** 测试辅助：清空 token0/token1 进程级缓存。 */
 export function clearExchangePoolImmutableCache() {
   cachedImmutablePools.clear()
@@ -35,33 +75,17 @@ export function clearExchangePoolImmutableCache() {
  * token0/token1 永不变更，故按地址进程内缓存；第二次起直接命中。
  *
  * @param poolAddress 交易对合约地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns token0 / token1 地址
  */
 export async function readExchangePoolImmutableMetadata(
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
-  client: ChainReadClient = bscReadClient,
 ): Promise<ExchangePoolImmutableMetadata> {
   const cacheKey = poolAddress.toLowerCase()
   const cached = cachedImmutablePools.get(cacheKey)
   if (cached) return cached
 
-  const [token0, token1] = await Promise.all([
-    client.readContract({
-      address: poolAddress,
-      abi: pairAbi,
-      functionName: 'token0',
-    }),
-    client.readContract({
-      address: poolAddress,
-      abi: pairAbi,
-      functionName: 'token1',
-    }),
-  ])
-
-  const metadata: ExchangePoolImmutableMetadata = { token0, token1 }
-  cachedImmutablePools.set(cacheKey, metadata)
-  return metadata
+  const results = await readAggregate3(tokenPairCalls(poolAddress))
+  return decodeAndCachePoolTokens(poolAddress, results)
 }
 
 /**
@@ -70,14 +94,12 @@ export async function readExchangePoolImmutableMetadata(
  * 调用 `getReserves` 返回两个方向储备，用于报价与价格影响计算。
  *
  * @param poolAddress 交易对合约地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 两个方向的储备量
  */
 export async function readExchangePoolSpotPrice(
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
-  client: ChainReadClient = bscReadClient,
 ): Promise<ExchangePoolSpotPrice> {
-  const reserves = await client.readContract({
+  const reserves = await bscReadClient.readContract({
     address: poolAddress,
     abi: pairAbi,
     functionName: 'getReserves',
@@ -166,18 +188,48 @@ export function agxUsd1SpotPriceWeiFromReserves({
   return (reserveUsd1 * 10n ** BigInt(agxDecimals)) / reserveAgx
 }
 
+/**
+ * 读取交易对不可变元数据 + 实时储备（未命中 token 缓存时一次 Multicall3）。
+ *
+ * @param poolAddress 交易对合约地址
+ * @returns token0/token1 与两个方向储备
+ */
+export async function readExchangePoolReadContext(
+  poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
+): Promise<{ pool: ExchangePoolImmutableMetadata; spot: ExchangePoolSpotPrice }> {
+  const cacheKey = poolAddress.toLowerCase()
+  const cached = cachedImmutablePools.get(cacheKey)
+  if (cached) {
+    const spot = await readExchangePoolSpotPrice(poolAddress)
+    return { pool: cached, spot }
+  }
+
+  const results = await readAggregate3([
+    ...tokenPairCalls(poolAddress),
+    {
+      target: poolAddress,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'getReserves' }),
+    },
+  ])
+  const pool = decodeAndCachePoolTokens(poolAddress, results)
+  const reserves = decodeAggregate3Result<readonly [bigint, bigint, number]>(
+    results,
+    2,
+    pairAbi,
+    'getReserves',
+    'EXCHANGE_POOL_MULTICALL_FAILED:getReserves',
+  )
+  return { pool, spot: { reserve0: reserves[0], reserve1: reserves[1] } }
+}
+
 /** AGX/USD1 Pair 即时价（USD1 wei / 1 AGX）。 */
 export async function readAgxUsd1SpotPriceWei(
-  client: ChainReadClient = bscReadClient,
   poolAddress: `0x${string}` = EXCHANGE_CONFIG.pool,
 ): Promise<bigint | null> {
-  const [meta, spot] = await Promise.all([
-    readExchangePoolImmutableMetadata(poolAddress, client),
-    readExchangePoolSpotPrice(poolAddress, client),
-  ])
+  const { pool, spot } = await readExchangePoolReadContext(poolAddress)
   return agxUsd1SpotPriceWeiFromReserves({
-    token0: meta.token0,
-    token1: meta.token1,
+    token0: pool.token0,
+    token1: pool.token1,
     reserve0: spot.reserve0,
     reserve1: spot.reserve1,
     agx: EXCHANGE_CONFIG.tokens.agx.address,

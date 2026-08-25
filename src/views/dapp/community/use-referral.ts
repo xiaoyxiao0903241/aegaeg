@@ -17,12 +17,7 @@ import {
 import { formatNumber } from '~/shared/presenters/format'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
-import {
-  readIsBindReferral,
-  readReferralCount,
-  readReferrer,
-  readRootAddress,
-} from '~/web3/referral/referral-read'
+import { readReferralParentGate, readReferralWalletSnapshot } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
@@ -84,14 +79,7 @@ export function useCommunityReferral() {
 
   const referralQuery = useChainQuery({
     queryKey: queryKeys.chain.referral,
-    queryFn: async (addr) => {
-      const [isBound, referrer, directCount] = await Promise.all([
-        readIsBindReferral(addr),
-        readReferrer(addr),
-        readReferralCount(addr),
-      ])
-      return { isBound, referrer, directCount }
-    },
+    queryFn: (addr) => readReferralWalletSnapshot(addr),
     // 链上绑定态：仅需钱包（不要求 SIWE）。
   })
   const { sessionReady } = useDappHost()
@@ -100,10 +88,7 @@ export function useCommunityReferral() {
   const bindMutation = useChainMutation({
     path: WRITE_PATH.REFERRAL_BIND,
     mutation: async (target: Address, session) => {
-      const [parentBound, root] = await Promise.all([
-        readIsBindReferral(target, session.readClient),
-        readRootAddress(session.readClient),
-      ])
+      const { parentBound, root } = await readReferralParentGate(target)
       if (!isReferralParentAllowed({ parent: target, parentBound, root })) {
         throw REFERRAL_BIND_ERROR.PARENT_NOT_BOUND
       }

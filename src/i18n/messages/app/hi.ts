@@ -116,7 +116,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'कतार में प्रवेश',
-      claimed: 'दावा',
+      claimed_from_queue: 'दावा',
       released: 'रिलीज़ हुआ',
     },
     turbine: {
@@ -2053,7 +2053,7 @@ const app = defineMessages({
           { id: '540', period: '540दि' },
         ],
       },
-      runwayDays: '{days}दि',
+      runwayDays: '> {days}दि',
       chart: {
         title: 'मेट्रिक्स',
         metricTabs: {

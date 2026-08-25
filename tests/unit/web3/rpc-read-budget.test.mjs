@@ -4,6 +4,7 @@ import test from 'node:test'
 import { encodeFunctionResult, parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
+import { withAggregate3, withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const USER = '0x1111111111111111111111111111111111111111'
 
@@ -35,6 +36,8 @@ test('readTurbineSilences budgets: size+cooldown + one aggregate3 (not 2N)', asy
   const { readTurbineSilences } = await loadModule('/src/web3/exchange/turbine-exchange-read.ts')
   const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
   const turbineAbi = parseAbi([
+    'function silencesSize(address) view returns (uint256)',
+    'function currentCooldownDuration() view returns (uint256)',
     'function silences(address,uint256) view returns (uint256,uint256)',
     'function isVested(address,uint256) view returns (bool)',
   ])
@@ -42,10 +45,28 @@ test('readTurbineSilences budgets: size+cooldown + one aggregate3 (not 2N)', asy
   const client = {
     async readContract(request) {
       calls.push(request.functionName)
-      if (request.functionName === 'silencesSize') return 4n
-      if (request.functionName === 'currentCooldownDuration') return 3600n
       if (request.functionName === 'aggregate3') {
         const batch = request.args[0]
+        if (batch.length === 2) {
+          return [
+            {
+              success: true,
+              returnData: encodeFunctionResult({
+                abi: turbineAbi,
+                functionName: 'silencesSize',
+                result: 4n,
+              }),
+            },
+            {
+              success: true,
+              returnData: encodeFunctionResult({
+                abi: turbineAbi,
+                functionName: 'currentCooldownDuration',
+                result: 3600n,
+              }),
+            },
+          ]
+        }
         assert.equal(batch.length, 8)
         return batch.map((item, i) => {
           const odd = i % 2 === 1
@@ -77,12 +98,14 @@ test('readTurbineSilences budgets: size+cooldown + one aggregate3 (not 2N)', asy
   assert.equal(typeof BSC_CONTRACTS.turbine, 'string')
   assert.equal(typeof BSC_CONTRACTS.multicall3, 'string')
 
-  const { rows, claimableCount } = await readTurbineSilences(USER, client)
+  const { rows, claimableCount } = await withBscReadClient(client, () => readTurbineSilences(USER))
   assert.equal(rows.length, 4)
   assert.equal(claimableCount, 1)
-  assert.deepEqual(calls.sort(), ['aggregate3', 'currentCooldownDuration', 'silencesSize'].sort())
+  assert.deepEqual(calls, ['aggregate3', 'aggregate3'])
   assert.ok(!calls.includes('silences'))
   assert.ok(!calls.includes('isVested'))
+  assert.ok(!calls.includes('silencesSize'))
+  assert.ok(!calls.includes('currentCooldownDuration'))
 })
 
 test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ archive)', async () => {
@@ -150,7 +173,7 @@ test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ ar
     },
   }
 
-  const snap = await readReleaseBufferSnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readReleaseBufferSnapshot(USER))
   assert.equal(snap.splitterCount, 2)
   assert.equal(snap.chain.length, 1)
   assert.equal(snap.chain[0].isTail, true)
@@ -215,7 +238,7 @@ test('readReleaseBufferSnapshot walks next chain and merges hop claimables', asy
     },
   }
 
-  const snap = await readReleaseBufferSnapshot(USER, client)
+  const snap = await withBscReadClient(client, () => readReleaseBufferSnapshot(USER))
   assert.equal(snap.chain.length, 2)
   assert.equal(snap.chain[0].address, HEAD)
   assert.equal(snap.chain[0].isTail, false)
@@ -260,109 +283,123 @@ test('readReleaseBufferSnapshot archive: count fail soft; page fail closed', asy
   const { readReleaseBufferSnapshot } = await loadModule('/src/web3/release/release-read.ts')
   const ZERO = '0x0000000000000000000000000000000000000000'
 
-  const soft = await readReleaseBufferSnapshot(USER, {
-    async readContract(request) {
-      if (request.functionName === 'getHeadSplitterForUser') return ZERO
-      if (request.functionName === 'getReleaseCount') throw new Error('archive down')
-      throw new Error(`unexpected ${request.functionName}`)
+  const soft = await withBscReadClient(
+    {
+      async readContract(request) {
+        if (request.functionName === 'getHeadSplitterForUser') return ZERO
+        if (request.functionName === 'getReleaseCount') throw new Error('archive down')
+        throw new Error(`unexpected ${request.functionName}`)
+      },
     },
-  })
+    () => readReleaseBufferSnapshot(USER),
+  )
   assert.equal(soft.archiveCount, 0)
   assert.equal(soft.totalClaimable, 0n)
 
   await assert.rejects(
     () =>
-      readReleaseBufferSnapshot(USER, {
-        async readContract(request) {
-          if (request.functionName === 'getHeadSplitterForUser') return ZERO
-          if (request.functionName === 'getReleaseCount') return 1n
-          if (request.functionName === 'aggregate3') {
-            return [{ success: false, returnData: '0x' }]
-          }
-          throw new Error(`unexpected ${request.functionName}`)
+      withBscReadClient(
+        {
+          async readContract(request) {
+            if (request.functionName === 'getHeadSplitterForUser') return ZERO
+            if (request.functionName === 'getReleaseCount') return 1n
+            if (request.functionName === 'aggregate3') {
+              return [{ success: false, returnData: '0x' }]
+            }
+            throw new Error(`unexpected ${request.functionName}`)
+          },
         },
-      }),
+        () => readReleaseBufferSnapshot(USER),
+      ),
     /RELEASE_ARCHIVE_MULTICALL_FAILED/,
   )
 })
 
-test('readStakePositions locked: count + getStakes + aggregate3 (not N getStake)', async () => {
+test('readStakePositions locked: count + one aggregate3 of getStakes+released (not N getStake)', async () => {
   const { readStakePositions } = await loadModule('/src/web3/assets/assets-read.ts')
-  const { LOCKED_STAKING_ASSETS_METHODS } = await loadModule('/src/web3/abis.ts')
+  const { LIQUID_STAKING_ASSETS_METHODS, LIQUID_STAKING_METHODS, LOCKED_STAKING_ASSETS_METHODS } =
+    await loadModule('/src/web3/abis.ts')
+  const liquidAbi = parseAbi([
+    LIQUID_STAKING_ASSETS_METHODS.stakes,
+    LIQUID_STAKING_ASSETS_METHODS.warmupStakes,
+    LIQUID_STAKING_ASSETS_METHODS.getStakeRewards,
+    LIQUID_STAKING_METHODS.isWarmupExpired,
+  ])
   const lockedAbi = parseAbi([
+    LOCKED_STAKING_ASSETS_METHODS.getStakesCount,
     LOCKED_STAKING_ASSETS_METHODS.getStakes,
     LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
   ])
   const ZERO = '0x0000000000000000000000000000000000000000'
   const calls = []
+  let countCalls = 0
   const client = {
-    async readContract(request) {
-      calls.push(request.functionName)
-      if (request.functionName === 'migratedFrom') return ZERO
-      if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
-      if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
-      if (request.functionName === 'getStakeRewards') return [0n, 0n]
-      if (request.functionName === 'isWarmupExpired') return true
-      if (request.functionName === 'getStakesCount') {
-        // 仅第一个 locked 池有仓；其余 0 跳过 getStakes（手册空列表勿调）。
-        return calls.filter((name) => name === 'getStakesCount').length === 1 ? 3n : 0n
-      }
-      if (request.functionName === 'getStakes') {
-        assert.deepEqual(request.args.slice(1), [0n, 3n])
-        return [
-          {
-            pending: 10n,
-            blockReward: 1n,
-            extraInterest: 0n,
-            claimableBalance: 0n,
-            expiry: 1n,
-          },
-          {
-            pending: 0n,
-            blockReward: 0n,
-            extraInterest: 0n,
-            claimableBalance: 0n,
-            expiry: 0n,
-          },
-          {
-            pending: 20n,
-            blockReward: 2n,
-            extraInterest: 0n,
-            claimableBalance: 0n,
-            expiry: 2n,
-          },
-        ]
-      }
-      if (request.functionName === 'aggregate3') {
-        assert.equal(request.args[0].length, 3)
-        return request.args[0].map((_, i) => ({
-          success: true,
-          returnData: encodeFunctionResult({
-            abi: lockedAbi,
-            functionName: 'getReleasedPrincipal',
-            result: BigInt(i + 1),
-          }),
-        }))
-      }
-      throw new Error(`unexpected ${request.functionName}`)
-    },
+    readContract: withAggregate3(
+      async (request) => {
+        calls.push(request.functionName)
+        if (request.functionName === 'migratedFrom') return ZERO
+        if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
+        if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
+        if (request.functionName === 'getStakeRewards') return [0n, 0n]
+        if (request.functionName === 'isWarmupExpired') return true
+        if (request.functionName === 'getStakesCount') {
+          countCalls += 1
+          return countCalls === 1 ? 3n : 0n
+        }
+        if (request.functionName === 'getStakes') {
+          assert.deepEqual(request.args.slice(1), [0n, 3n])
+          return [
+            {
+              pending: 10n,
+              blockReward: 1n,
+              extraInterest: 0n,
+              claimableBalance: 0n,
+              expiry: 1n,
+            },
+            {
+              pending: 0n,
+              blockReward: 0n,
+              extraInterest: 0n,
+              claimableBalance: 0n,
+              expiry: 0n,
+            },
+            {
+              pending: 20n,
+              blockReward: 2n,
+              extraInterest: 0n,
+              claimableBalance: 0n,
+              expiry: 2n,
+            },
+          ]
+        }
+        if (request.functionName === 'getReleasedPrincipal') {
+          return BigInt(Number(request.args[1]) + 1)
+        }
+        throw new Error(`unexpected ${request.functionName}`)
+      },
+      [
+        parseAbi(['function migratedFrom(address account) view returns (address)']),
+        liquidAbi,
+        lockedAbi,
+      ],
+    ),
   }
 
-  const rows = await readStakePositions(USER, client)
+  const rows = await withBscReadClient(client, () => readStakePositions(USER))
   assert.equal(rows.length, 2)
   assert.equal(rows[0].releasedPrincipal, 1n)
   assert.equal(rows[1].releasedPrincipal, 3n)
   assert.ok(calls.includes('getStakes'))
-  assert.ok(calls.includes('aggregate3'))
   assert.ok(!calls.includes('getStake'))
   assert.equal(calls.filter((name) => name === 'getStakes').length, 1)
-  assert.equal(calls.filter((name) => name === 'aggregate3').length, 1)
+  assert.equal(countCalls, 3)
 })
 
-test('readLpBondPositions: getBondCount + one aggregate3 per non-empty pool (not 3N)', async () => {
+test('readLpBondPositions: getBondCount + one aggregate3 for all occupied pools (not 3N)', async () => {
   const { readLpBondPositions } = await loadModule('/src/web3/assets/assets-read.ts')
   const { BOND_DEPOSITORY_ASSETS_METHODS } = await loadModule('/src/web3/abis.ts')
   const bondAbi = parseAbi([
+    BOND_DEPOSITORY_ASSETS_METHODS.getBondCount,
     BOND_DEPOSITORY_ASSETS_METHODS.getBondInfo,
     BOND_DEPOSITORY_ASSETS_METHODS.pendingPayoutFor,
     BOND_DEPOSITORY_ASSETS_METHODS.getStakeProfit,
@@ -370,55 +407,31 @@ test('readLpBondPositions: getBondCount + one aggregate3 per non-empty pool (not
   const calls = []
   let bondCountCalls = 0
   const client = {
-    async readContract(request) {
+    readContract: withAggregate3(async (request) => {
       calls.push(request.functionName)
       if (request.functionName === 'getBondCount') {
         bondCountCalls += 1
         return bondCountCalls === 1 ? 2n : 0n
       }
-      if (request.functionName === 'aggregate3') {
-        assert.equal(request.args[0].length, 6)
-        const out = []
-        for (let i = 0; i < 2; i += 1) {
-          out.push(
-            {
-              success: true,
-              returnData: encodeFunctionResult({
-                abi: bondAbi,
-                functionName: 'getBondInfo',
-                result: [0n, 0n, 0n, 0n, true, 0n, 50n + BigInt(i), 9n, 0n, 0n],
-              }),
-            },
-            {
-              success: true,
-              returnData: encodeFunctionResult({
-                abi: bondAbi,
-                functionName: 'pendingPayoutFor',
-                result: 3n + BigInt(i),
-              }),
-            },
-            {
-              success: true,
-              returnData: encodeFunctionResult({
-                abi: bondAbi,
-                functionName: 'getStakeProfit',
-                result: 7n + BigInt(i),
-              }),
-            },
-          )
-        }
-        return out
+      if (request.functionName === 'getBondInfo') {
+        const index = Number(request.args[1])
+        return [0n, 0n, 0n, 0n, true, 0n, 50n + BigInt(index), 9n, 0n, 0n]
+      }
+      if (request.functionName === 'pendingPayoutFor') {
+        return 3n + BigInt(request.args[1])
+      }
+      if (request.functionName === 'getStakeProfit') {
+        return 7n + BigInt(request.args[1])
       }
       throw new Error(`unexpected ${request.functionName}`)
-    },
+    }, bondAbi),
   }
 
-  const rows = await readLpBondPositions(USER, client)
+  const rows = await withBscReadClient(client, () => readLpBondPositions(USER))
   assert.equal(rows.length, 2)
   assert.equal(rows[0].pendingPayout, 3n)
   assert.equal(rows[1].profit, 8n)
-  assert.equal(calls.filter((name) => name === 'aggregate3').length, 1)
-  assert.ok(!calls.includes('getBondInfo'))
-  assert.ok(!calls.includes('pendingPayoutFor'))
-  assert.ok(!calls.includes('getStakeProfit'))
+  assert.equal(bondCountCalls, 3)
+  assert.equal(calls.filter((name) => name === 'getBondInfo').length, 2)
+  assert.ok(!calls.includes('aggregate3'))
 })

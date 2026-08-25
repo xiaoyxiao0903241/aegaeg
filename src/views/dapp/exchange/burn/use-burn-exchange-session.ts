@@ -25,9 +25,7 @@ import {
   readBurnUserStats,
 } from '~/web3/exchange/burn-exchange-read'
 import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const BURN_PAIR = {
   sell: EXCHANGE_CONFIG.tokens.agx,
@@ -51,9 +49,7 @@ export function useBurnExchangeSession(
   readsEnabled = quotesEnabled,
 ) {
   const { messages: t } = useI18n()
-  const account = useActiveAccount()
-  const { writeReady } = useWriteReadiness()
-  const walletReady = hasWalletAccount(account)
+  const { walletReady, writeReady } = useWriteReadiness()
 
   const configQuery = useBurnSwapConfigQuery({ enabled: readsEnabled })
 

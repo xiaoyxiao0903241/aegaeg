@@ -31,7 +31,6 @@ import {
   writeXmineClaimReward,
   writeXmineStartUnstake,
 } from '~/web3/assets/assets-write'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { ASSETS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
@@ -86,16 +85,15 @@ async function readMixedClaimSnapshot(
   user: Address,
   releaseDays: number,
   restakeDays: number,
-  readClient: ChainReadClient,
 ) {
-  const plans = await readClaimPlans(readClient)
+  const plans = await readClaimPlans()
   const { releaseIndex: releasePlanIndex, restakeIndex: restakePlanIndex } = matchClaimPlanIndices(
     plans,
     releaseDays,
     restakeDays,
   )
-  const rewardAvailable = await readMixedRewardAvailable(target, user, readClient)
-  const contrib = await readContributionSnapshot(user, rewardAvailable, readClient)
+  const rewardAvailable = await readMixedRewardAvailable(target, user)
+  const contrib = await readContributionSnapshot(user, rewardAvailable)
   return {
     rewardAvailable,
     contribution: contrib.contribution,
@@ -127,15 +125,14 @@ export async function submitMixedClaim(args: {
   restakePct: number
 }): Promise<void> {
   const { session, capturedAddress, target, releaseDays, restakeDays, restakePct } = args
-  const { wallet, address: user, readClient } = session
+  const { wallet, address: user } = session
   assertSessionMatchesCapturedAddress(user, capturedAddress)
 
   const restakeBps = restakeBpsFromPct(restakePct)
 
   async function writeOne(readTarget: MixedClaimReadTarget) {
     await approveThenLiveWrite({
-      readSnapshot: () =>
-        readMixedClaimSnapshot(readTarget, user, releaseDays, restakeDays, readClient),
+      readSnapshot: () => readMixedClaimSnapshot(readTarget, user, releaseDays, restakeDays),
       evaluate: (snap: MixedClaimSnapshot) =>
         evaluateMixedClaim({
           amount: snap.rewardAvailable,
@@ -227,13 +224,13 @@ export async function submitStakeRedeem(args: {
   row: AssetsStakeRow
 }): Promise<void> {
   const { session, capturedAddress, row } = args
-  const { wallet, address: user, readClient } = session
+  const { wallet, address: user } = session
   assertSessionMatchesCapturedAddress(user, capturedAddress)
 
   if (row.inWarmup) throw ASSETS_BLOCKED.warmupActive
 
   await approveThenLiveWrite({
-    readSnapshot: async () => ({ amount: await readStakeRedeemableAmount(row, user, readClient) }),
+    readSnapshot: async () => ({ amount: await readStakeRedeemableAmount(row, user) }),
     evaluate: (snap) => evaluateRedeem({ amount: snap.amount, decimals: AGX_DECIMALS }),
     mapBlockError: (reason) => ASSETS_BLOCKED[reason],
     write: async (live) => {
@@ -265,11 +262,11 @@ export async function submitBondRedeem(args: {
   row: AssetsBondRow
 }): Promise<void> {
   const { session, capturedAddress, row } = args
-  const { wallet, address: user, readClient } = session
+  const { wallet, address: user } = session
   assertSessionMatchesCapturedAddress(user, capturedAddress)
 
   await approveThenLiveWrite({
-    readSnapshot: async () => ({ amount: await readBondRedeemableAmount(row, user, readClient) }),
+    readSnapshot: async () => ({ amount: await readBondRedeemableAmount(row, user) }),
     evaluate: (snap) => evaluateRedeem({ amount: snap.amount, decimals: AGX_DECIMALS }),
     mapBlockError: (reason) => ASSETS_BLOCKED[reason],
     write: async () => {
@@ -294,10 +291,10 @@ async function submitXmineLiveWrite(args: {
   ) => keyof typeof ASSETS_BLOCKED | null
   write: (wallet: WriteSession['wallet']) => Promise<unknown>
 }): Promise<void> {
-  const { wallet, address, readClient } = args.session
+  const { wallet, address } = args.session
 
   await approveThenLiveWrite({
-    readSnapshot: () => readXminePosition(address, readClient),
+    readSnapshot: () => readXminePosition(address),
     evaluate: args.evaluate,
     mapBlockError: (reason) => ASSETS_BLOCKED[reason],
     write: async () => {

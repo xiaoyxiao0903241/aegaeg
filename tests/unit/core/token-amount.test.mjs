@@ -173,6 +173,18 @@ test('parseSlippagePercentInput treats empty as zero and clamps the cap', async 
   assert.equal(parseSlippagePercentInput('120'), 99.99)
 })
 
+test('switching slippage mode keeps a custom draft and never refills after clear', async () => {
+  const { slippageDraftAfterModeChange } = await loadModule('/src/core/exchange/token-amount.ts')
+
+  assert.equal(slippageDraftAfterModeChange('custom', 'auto', '', 1), '1')
+  assert.equal(slippageDraftAfterModeChange('custom', 'auto', '', 2.5), '2.5')
+  assert.equal(slippageDraftAfterModeChange('custom', 'auto', '4', 1), '4')
+  assert.equal(slippageDraftAfterModeChange('auto', 'custom', '4', 1), '4')
+  assert.equal(slippageDraftAfterModeChange('custom', 'auto', '4', 1), '4')
+  assert.equal(slippageDraftAfterModeChange('custom', 'custom', '', 1), '')
+  assert.equal(slippageDraftAfterModeChange('custom', 'custom', '', 26), '')
+})
+
 test('isAllowedSlippageDraft rejects values that would break amountOutMin', async () => {
   const { isAllowedSlippageDraft } = await loadModule('/src/core/exchange/token-amount.ts')
 

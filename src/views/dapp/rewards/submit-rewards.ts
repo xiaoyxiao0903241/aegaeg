@@ -39,7 +39,7 @@ function mapMixedBlockError(reason: NonNullable<ReturnType<typeof evaluateReward
  * 意图轮由调用方钉死；经统一编排核做预检与实时复核后再写。
  * 贡献门槛用该轮链上金额；两读之间轮次不可领或金额变化会阻断。
  *
- * @param args.session 写会话（钱包 + 地址 + 读客户端）
+ * @param args.session 写会话
  * @param args.roundId 意图轮次
  * @param args.releaseDays 释放时长档位
  * @param args.restakeDays 复投时长档位
@@ -53,7 +53,7 @@ export async function submitLuckyMixedClaim(args: {
   restakePct: number
 }): Promise<void> {
   const { session, roundId, releaseDays, restakeDays, restakePct } = args
-  const { wallet, address: user, readClient } = session
+  const { wallet, address: user } = session
   const restakeBps = restakeBpsFromPct(restakePct)
 
   type LuckySnap = {
@@ -68,10 +68,10 @@ export async function submitLuckyMixedClaim(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async (): Promise<LuckySnap> => {
-      const snap = await readLuckyClaimRound(user, roundId, readClient)
-      const plans = await readClaimPlans(readClient)
+      const snap = await readLuckyClaimRound(user, roundId)
+      const plans = await readClaimPlans()
       const { releaseIndex, restakeIndex } = matchClaimPlanIndices(plans, releaseDays, restakeDays)
-      const contrib = await readContributionSnapshot(user, snap.rewardAmount, readClient)
+      const contrib = await readContributionSnapshot(user, snap.rewardAmount)
       return {
         rewardAmount: snap.rewardAmount,
         paused: snap.paused,
@@ -138,7 +138,7 @@ export async function submitDaoMixedClaim(args: {
   if (!token) {
     throw WALLET_BLOCKED.NOT_CONNECTED
   }
-  const { wallet, address: user, readClient } = session
+  const { wallet, address: user } = session
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const payload = await requestWithSession(
@@ -165,11 +165,11 @@ export async function submitDaoMixedClaim(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async (): Promise<DaoSnap> => {
-      const plans = await readClaimPlans(readClient)
+      const plans = await readClaimPlans()
       const { releaseIndex, restakeIndex } = matchClaimPlanIndices(plans, releaseDays, restakeDays)
       const [rewardAvailable, contrib] = await Promise.all([
-        readDaoPoolRewardAvailable(readClient),
-        readContributionSnapshot(user, amount, readClient),
+        readDaoPoolRewardAvailable(),
+        readContributionSnapshot(user, amount),
       ])
       return {
         rewardAvailable,

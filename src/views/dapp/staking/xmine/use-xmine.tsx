@@ -42,9 +42,7 @@ import {
   agxAmountPerXFromXPerAgx,
   formatXmineDailyYieldLabel,
 } from '~/web3/staking/xmine-overview-read'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -66,12 +64,8 @@ export type XmineWritePresent = {
  * @returns 表单展示值与提交控制
  */
 export function useXmineSession(sessionReady: boolean, present: XmineWritePresent) {
-  const account = useActiveAccount()
-  const { writeReady } = useWriteReadiness()
-
-  const walletReady = hasWalletAccount(account)
-  const address = account?.address
-  const migration = useMigrationUser(address, { enabled: walletReady })
+  const { walletReady, writeReady } = useWriteReadiness()
+  const migration = useMigrationUser({ enabled: walletReady })
 
   const preflightQuery = useXminePreflightQuery({
     enabled: sessionReady,

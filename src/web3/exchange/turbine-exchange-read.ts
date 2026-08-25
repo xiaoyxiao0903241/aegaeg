@@ -5,9 +5,8 @@ import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_METHODS, TURBINE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
-import { readAggregate3 } from '~/web3/multicall3-read'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const turbineReadAbi = parseAbi([
   TURBINE_METHODS.turbineBalances,
@@ -35,17 +34,13 @@ export type TurbineSilenceRow = {
  * 解析 root，再读 `turbineBalances(root)`。静默期 / claim 仍按调用方钱包键控。
  *
  * @param user 当前钱包地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 可出售 AGX 配额（wei）
  * @see docs/onchain-manual/contracts/turbine.md
  */
-export async function readTurbineQuota(
-  user: string,
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  const migratedFrom = await readMigratedFrom(user, client)
+export async function readTurbineQuota(user: string): Promise<bigint> {
+  const migratedFrom = await readMigratedFrom(user)
   const root = migrationStakeRoot(user, migratedFrom) as `0x${string}`
-  return client.readContract({
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'turbineBalances',
@@ -54,10 +49,8 @@ export async function readTurbineQuota(
 }
 
 /** 读取当前冷却时长（秒），用于计算每条买入的可领时间。 */
-export async function readTurbineCooldownDuration(
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
-  return client.readContract({
+export async function readTurbineCooldownDuration(): Promise<bigint> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'currentCooldownDuration',
@@ -70,16 +63,12 @@ export async function readTurbineCooldownDuration(
  * 调用 `quoteUsdInForAgxOut`；数量为 0 时直接返回 0，不发起链上读取。
  *
  * @param agxAmount 拟买入的 AGX 数量
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 所需 USD1 数量；agxAmount 为 0 时返回 0
  * @see docs/onchain-manual/contracts/turbine.md
  */
-export async function readTurbineUsdQuote(
-  agxAmount: bigint,
-  client: ChainReadClient = bscReadClient,
-): Promise<bigint> {
+export async function readTurbineUsdQuote(agxAmount: bigint): Promise<bigint> {
   if (agxAmount === 0n) return 0n
-  return client.readContract({
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'quoteUsdInForAgxOut',
@@ -94,26 +83,46 @@ export async function readTurbineUsdQuote(
  * 与是否可领；可领条数 = isVested 为 true 的条数。任一子调用失败即抛错。
  *
  * @param user 钱包地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 买入明细行、冷却时长与可领条数；无记录时返回空数组
  * @see 手册 §16.3 展示字段
  * @see docs/onchain-manual/contracts/turbine.md
  */
 export async function readTurbineSilences(
   user: string,
-  client: ChainReadClient = bscReadClient,
 ): Promise<{ rows: TurbineSilenceRow[]; cooldownDuration: bigint; claimableCount: number }> {
   const userAddress = user as `0x${string}`
   const turbine = BSC_CONTRACTS.turbine
-  const [size, cooldownDuration] = await Promise.all([
-    client.readContract({
-      address: turbine,
-      abi: turbineReadAbi,
-      functionName: 'silencesSize',
-      args: [userAddress],
-    }),
-    readTurbineCooldownDuration(client),
+  const head = await readAggregate3([
+    {
+      target: turbine,
+      callData: encodeFunctionData({
+        abi: turbineReadAbi,
+        functionName: 'silencesSize',
+        args: [userAddress],
+      }),
+    },
+    {
+      target: turbine,
+      callData: encodeFunctionData({
+        abi: turbineReadAbi,
+        functionName: 'currentCooldownDuration',
+      }),
+    },
   ])
+  const size = decodeAggregate3Result<bigint>(
+    head,
+    0,
+    turbineReadAbi,
+    'silencesSize',
+    'TURBINE_SILENCES_MULTICALL_FAILED:size',
+  )
+  const cooldownDuration = decodeAggregate3Result<bigint>(
+    head,
+    1,
+    turbineReadAbi,
+    'currentCooldownDuration',
+    'TURBINE_SILENCES_MULTICALL_FAILED:cooldown',
+  )
 
   const count = Number(size)
   if (!Number.isFinite(count) || count <= 0) {
@@ -142,7 +151,7 @@ export async function readTurbineSilences(
     ] as const
   }).flat()
 
-  const results = await readAggregate3(client, calls)
+  const results = await readAggregate3(calls)
   const rows: TurbineSilenceRow[] = []
   let claimableCount = 0
 
@@ -182,29 +191,44 @@ export async function readTurbineSilences(
  * 返回 USD1 可卖余额与对 Turbine 的授权额度，供输入上限与 approve 判断使用。
  *
  * @param owner 钱包地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns USD1 余额与授权额度
  */
-export async function readTurbineUsd1Balances(
-  owner: string,
-  client: ChainReadClient = bscReadClient,
-) {
+export async function readTurbineUsd1Balances(owner: string) {
   const ownerAddress = owner as `0x${string}`
-  const [usd1, approved] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.usd1,
-      abi: erc20ReadAbi,
-      functionName: 'balanceOf',
-      args: [ownerAddress],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.usd1,
-      abi: erc20ReadAbi,
-      functionName: 'allowance',
-      args: [ownerAddress, BSC_CONTRACTS.turbine],
-    }),
+  const results = await readAggregate3([
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'balanceOf',
+        args: [ownerAddress],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.usd1,
+      callData: encodeFunctionData({
+        abi: erc20ReadAbi,
+        functionName: 'allowance',
+        args: [ownerAddress, BSC_CONTRACTS.turbine],
+      }),
+    },
   ])
-  return { usd1, approved }
+  return {
+    usd1: decodeAggregate3Result<bigint>(
+      results,
+      0,
+      erc20ReadAbi,
+      'balanceOf',
+      'TURBINE_USD1_MULTICALL_FAILED:balance',
+    ),
+    approved: decodeAggregate3Result<bigint>(
+      results,
+      1,
+      erc20ReadAbi,
+      'allowance',
+      'TURBINE_USD1_MULTICALL_FAILED:allowance',
+    ),
+  }
 }
 
 /**
@@ -214,17 +238,12 @@ export async function readTurbineUsd1Balances(
  *
  * @param user 钱包地址
  * @param index 买入记录下标
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 冷却结束后可领返回 true
  * @see 手册 §16.4 用户写方法
  * @see docs/onchain-manual/contracts/turbine.md
  */
-export async function readTurbineIsVested(
-  user: string,
-  index: number,
-  client: ChainReadClient = bscReadClient,
-): Promise<boolean> {
-  return client.readContract({
+export async function readTurbineIsVested(user: string, index: number): Promise<boolean> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'isVested',
@@ -239,10 +258,8 @@ export async function readTurbineIsVested(
  *
  * @see 手册 §16.4–16.5 / turbine.md
  */
-export async function readTurbineSplitterManager(
-  client: ChainReadClient = bscReadClient,
-): Promise<`0x${string}`> {
-  return client.readContract({
+export async function readTurbineSplitterManager(): Promise<`0x${string}`> {
+  return bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'splitterManager',
@@ -256,16 +273,12 @@ export async function readTurbineSplitterManager(
  * 须扫完全表才能区分「新到期仓」与「仍是同一批」。
  *
  * @param user 钱包地址
- * @param client 链上读取客户端，默认公共 RPC
  * @returns 无到期仓为空串
  * @see docs/onchain-manual/contracts/turbine.md
  */
-export async function readTurbineClaimableFingerprint(
-  user: string,
-  client: ChainReadClient = bscReadClient,
-): Promise<string> {
+export async function readTurbineClaimableFingerprint(user: string): Promise<string> {
   const userAddress = user as `0x${string}`
-  const size = await client.readContract({
+  const size = await bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'silencesSize',
@@ -273,14 +286,25 @@ export async function readTurbineClaimableFingerprint(
   })
   const count = Number(size)
   if (!Number.isFinite(count) || count <= 0) return ''
+  const vestedResults = await readAggregate3(
+    Array.from({ length: count }, (_, index) => ({
+      target: BSC_CONTRACTS.turbine,
+      callData: encodeFunctionData({
+        abi: turbineReadAbi,
+        functionName: 'isVested',
+        args: [userAddress, BigInt(index)],
+      }),
+    })),
+  )
   const vested: string[] = []
   for (let index = 0; index < count; index += 1) {
-    const isVested = await client.readContract({
-      address: BSC_CONTRACTS.turbine,
-      abi: turbineReadAbi,
-      functionName: 'isVested',
-      args: [userAddress, BigInt(index)],
-    })
+    const isVested = decodeAggregate3Result<boolean>(
+      vestedResults,
+      index,
+      turbineReadAbi,
+      'isVested',
+      `TURBINE_FINGERPRINT_MULTICALL_FAILED:${index}`,
+    )
     if (isVested) vested.push(String(index))
   }
   return fingerprintIdList(vested)

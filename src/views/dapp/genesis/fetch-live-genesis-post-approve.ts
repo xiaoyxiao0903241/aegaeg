@@ -4,10 +4,12 @@ import {
   type GenesisPostApprove,
   isPhaseActive,
   type PresalePhaseOnChain,
-  type PresalePhaseRemaining,
   remainingPhaseAmount,
   remainingUserAmount,
 } from '~/core/presale/presale-math'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import { readPresalePaused, readUserPhaseRemainingAmount } from '~/web3/presale/presale-read'
+import { readIsBindReferral } from '~/web3/referral/referral-read'
 
 /**
  * 写操作后重读实时门闸状态
@@ -18,32 +20,25 @@ import {
  * @param args.address 钱包地址，缺失时直接判定未绑定
  * @param args.purchaseAmount 本次计划购买的金额
  * @param args.activePhase 当前预售阶段
- * @param args.fetchIsBound 读取推荐绑定状态的函数
- * @param args.fetchPaused 读取暂停状态的函数
- * @param args.fetchPhaseRemaining 读取阶段剩余额度的函数
- * @param args.fetchNowSeconds 读取最新块时间（unix 秒）
  * @see docs/onchain-manual/contracts/presale.md
  */
 export async function fetchLiveGenesisPostApprove(args: {
   address: string | undefined
   purchaseAmount: bigint
   activePhase: PresalePhaseOnChain
-  fetchIsBound: (address: string) => Promise<boolean>
-  fetchPaused: () => Promise<boolean>
-  fetchPhaseRemaining: (address: string, phaseIndex: number) => Promise<PresalePhaseRemaining>
-  fetchNowSeconds: () => Promise<number>
 }): Promise<GenesisPostApprove> {
   if (!args.address) {
     return { ok: false, reason: 'not_bound' }
   }
 
   try {
-    const [isBound, isPaused, phaseRemaining, nowSeconds] = await Promise.all([
-      args.fetchIsBound(args.address),
-      args.fetchPaused(),
-      args.fetchPhaseRemaining(args.address, args.activePhase.index),
-      args.fetchNowSeconds(),
+    const [isBound, isPaused, phaseRemaining, block] = await Promise.all([
+      readIsBindReferral(args.address),
+      readPresalePaused(),
+      readUserPhaseRemainingAmount(args.address, args.activePhase.index),
+      bscReadClient.getBlock({ blockTag: 'latest' }),
     ])
+    const nowSeconds = Number(block.timestamp)
     if (!isPhaseActive(args.activePhase, nowSeconds)) {
       return { ok: false, reason: 'unavailable' }
     }

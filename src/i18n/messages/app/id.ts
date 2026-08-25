@@ -117,7 +117,7 @@ const app = defineMessages({
     },
     release: {
       entered_queue: 'Masuk antrean',
-      claimed: 'Klaim',
+      claimed_from_queue: 'Klaim',
       released: 'Dirilis',
     },
     turbine: {
@@ -2123,7 +2123,7 @@ const app = defineMessages({
           { id: '540', period: '540 hari' },
         ],
       },
-      runwayDays: '{days} hari',
+      runwayDays: '> {days} hari',
       chart: {
         title: 'Metrik',
         metricTabs: {

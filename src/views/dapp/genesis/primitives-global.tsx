@@ -19,7 +19,8 @@ const genesisGlobeHeight = 250
 
 const genesisGlobalCard = tv({
   slots: {
-    root: cn(darkBanner().root(), 'px-6 py-4 max-dapp:p-4.5'),
+    // 底色跟地球图一致，压过 darkBanner 的 bg-dark
+    root: cn(darkBanner().root(), 'bg-dark-globe! px-6 py-4 max-dapp:p-4.5'),
     content: cn(darkBanner().content(), 'max-dapp:max-w-none'),
     // 移动端右留白不足会让标题折进按钮，故加大
     kicker: 'max-dapp:block max-dapp:pr-44',

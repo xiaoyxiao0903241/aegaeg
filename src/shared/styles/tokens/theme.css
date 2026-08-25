@@ -57,6 +57,7 @@
   --dark: #1d212b;
   --dark: oklch(24.82% 0.0200 267.87);
   --dark-panel: #1c2234;
+  --dark-globe: #11141d;
   --inverse: #fff;
   --inverse: oklch(100% 0 89.88);
   --inverse-muted: #b8c0ce;
@@ -268,6 +269,7 @@
   --color-claim-restake: var(--claim-restake);
   --color-dark: var(--dark);
   --color-dark-panel: var(--dark-panel);
+  --color-dark-globe: var(--dark-globe);
   --color-inverse: var(--inverse);
   --color-inverse-muted: var(--inverse-muted);
   --color-token-usd1: var(--token-usd1);

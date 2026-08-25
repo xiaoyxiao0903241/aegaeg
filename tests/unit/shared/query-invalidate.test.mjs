@@ -33,12 +33,32 @@ test('query keys normalize addresses and tokens to lowercase', () => {
     lower,
     lower,
   ])
-  assert.deepEqual(queryKeys.chain.erc20Allowance(checksummed, checksummed, checksummed), [
+  assert.deepEqual(queryKeys.chain.erc20Allowance(checksummed, checksummed), [
     'chain',
     'erc20',
     'allowance',
     lower,
     lower,
+  ])
+  assert.deepEqual(queryKeys.chain.erc20AllowanceOf(checksummed, checksummed, checksummed), [
+    'chain',
+    'erc20',
+    'allowance',
+    lower,
+    lower,
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.presaleUserPhaseRemaining(1), [
+    'chain',
+    'presale',
+    'userPhaseRemaining',
+    1,
+  ])
+  assert.deepEqual(queryKeys.chain.presaleUserPhaseRemainingOf(checksummed, 1), [
+    'chain',
+    'presale',
+    'userPhaseRemaining',
+    1,
     lower,
   ])
   assert.deepEqual(queryKeys.chain.swapQuote(checksummed, checksummed, '1000'), [
@@ -66,6 +86,26 @@ test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async 
 
   assert.equal(queryClient.getQueryData(userKey), 150n)
   assert.equal(queryClient.getQueryData(totalKey), 1050n)
+
+  queryClient.clear()
+})
+
+test('invalidateAfterWalletSwitch dirties only next address phase remaining', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterWalletSwitch } = await loadModule('/src/shared/api/query/invalidate.ts')
+
+  const previous = '0xaaa'
+  const next = '0xbbb'
+  const prevKey = queryKeys.chain.presaleUserPhaseRemainingOf(previous, 1)
+  const nextKey = queryKeys.chain.presaleUserPhaseRemainingOf(next, 1)
+
+  queryClient.setQueryData(prevKey, 10n)
+  queryClient.setQueryData(nextKey, 20n)
+
+  invalidateAfterWalletSwitch(next)
+
+  assert.equal(queryClient.getQueryState(prevKey)?.isInvalidated ?? false, false)
+  assert.equal(queryClient.getQueryState(nextKey)?.isInvalidated, true)
 
   queryClient.clear()
 })

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
+import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const CALL = {
   account: '0x1111111111111111111111111111111111111111',
@@ -14,7 +15,7 @@ const CALL = {
 test('estimateWriteGasLimit uses estimateContractGas with 20% buffer after simulate succeeds', async () => {
   const { estimateWriteGasLimit } = await loadModule('/src/web3/wallet/wallet-contract-write.ts')
 
-  const walletClient = {
+  const client = {
     async simulateContract() {
       return { request: {} }
     },
@@ -23,13 +24,13 @@ test('estimateWriteGasLimit uses estimateContractGas with 20% buffer after simul
     },
   }
 
-  assert.equal(await estimateWriteGasLimit(CALL, walletClient), 60_000n)
+  assert.equal(await withBscReadClient(client, () => estimateWriteGasLimit(CALL)), 60_000n)
 })
 
 test('estimateWriteGasLimit falls back to estimateContractGas after non-revert simulate failure', async () => {
   const { estimateWriteGasLimit } = await loadModule('/src/web3/wallet/wallet-contract-write.ts')
 
-  const walletClient = {
+  const client = {
     async simulateContract() {
       throw new Error('rpc timeout')
     },
@@ -38,10 +39,10 @@ test('estimateWriteGasLimit falls back to estimateContractGas after non-revert s
     },
   }
 
-  assert.equal(await estimateWriteGasLimit(CALL, walletClient), 60_000n)
+  assert.equal(await withBscReadClient(client, () => estimateWriteGasLimit(CALL)), 60_000n)
 })
 
-test('estimateWriteGasLimit throws GAS_ESTIMATE_FAILED when all estimators fail non-revert', async () => {
+test('estimateWriteGasLimit throws GAS_ESTIMATE_FAILED when estimator fails non-revert', async () => {
   const { estimateWriteGasLimit } = await loadModule('/src/web3/wallet/wallet-contract-write.ts')
 
   const dead = {
@@ -53,5 +54,8 @@ test('estimateWriteGasLimit throws GAS_ESTIMATE_FAILED when all estimators fail 
     },
   }
 
-  await assert.rejects(() => estimateWriteGasLimit(CALL, dead, dead), /WALLET_GAS_ESTIMATE_FAILED/)
+  await assert.rejects(
+    () => withBscReadClient(dead, () => estimateWriteGasLimit(CALL)),
+    /WALLET_GAS_ESTIMATE_FAILED/,
+  )
 })

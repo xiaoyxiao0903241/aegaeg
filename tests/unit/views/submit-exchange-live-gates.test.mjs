@@ -1,16 +1,36 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import test from 'node:test'
+import test, { afterEach } from 'node:test'
+
+import { parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
-import { enc, ok, sessionWithReadClient, ZERO } from './_money-path-read-mock.mjs'
+import { ERC20_TEST_ABI, withAggregate3 } from '../web3/_bsc-read-client-test.mjs'
+import {
+  clearMoneyPathReadClient,
+  enc,
+  moneyPathSession,
+  ok,
+  ZERO,
+} from './_money-path-read-mock.mjs'
+
+afterEach(clearMoneyPathReadClient)
+
+const TURBINE_UNLOCK_ABI = [
+  ERC20_TEST_ABI,
+  parseAbi([
+    'function migratedFrom(address account) view returns (address)',
+    'function turbineBalances(address user) view returns (uint256)',
+    'function quoteUsdInForAgxOut(uint256 agxAmount) view returns (uint256)',
+  ]),
+]
 
 test('submitTurbineClaim fail-closed when live position is not vested', async () => {
   const { submitTurbineClaim } = await loadModule(
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
 
-  const session = sessionWithReadClient(async (request) => {
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'isVested') return false
     throw new Error(`unexpected ${request.functionName}`)
   })
@@ -40,22 +60,24 @@ test('submitTurbineUnlock fail-closed when live quota is zero', async () => {
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
 
-  const session = sessionWithReadClient(async (request) => {
-    switch (request.functionName) {
-      case 'migratedFrom':
-        return ZERO
-      case 'balanceOf':
-        return 1_000n
-      case 'allowance':
-        return 1_000n
-      case 'turbineBalances':
-        return 0n
-      case 'quoteUsdInForAgxOut':
-        return 100n
-      default:
-        throw new Error(`unexpected ${request.functionName}`)
-    }
-  })
+  const session = await moneyPathSession(
+    withAggregate3(async (request) => {
+      switch (request.functionName) {
+        case 'migratedFrom':
+          return ZERO
+        case 'balanceOf':
+          return 1_000n
+        case 'allowance':
+          return 1_000n
+        case 'turbineBalances':
+          return 0n
+        case 'quoteUsdInForAgxOut':
+          return 100n
+        default:
+          throw new Error(`unexpected ${request.functionName}`)
+      }
+    }, TURBINE_UNLOCK_ABI),
+  )
 
   const result = await submitTurbineUnlock({
     core: {
@@ -89,23 +111,25 @@ test('submitTurbineUnlock quotes twice and does not requote inside approve', asy
   )
 
   let quotes = 0
-  const session = sessionWithReadClient(async (request) => {
-    switch (request.functionName) {
-      case 'migratedFrom':
-        return ZERO
-      case 'balanceOf':
-        return 1_000n
-      case 'allowance':
-        return 1_000n
-      case 'turbineBalances':
-        return 1_000n
-      case 'quoteUsdInForAgxOut':
-        quotes += 1
-        return 100n
-      default:
-        throw new Error(`unexpected ${request.functionName}`)
-    }
-  })
+  const session = await moneyPathSession(
+    withAggregate3(async (request) => {
+      switch (request.functionName) {
+        case 'migratedFrom':
+          return ZERO
+        case 'balanceOf':
+          return 1_000n
+        case 'allowance':
+          return 1_000n
+        case 'turbineBalances':
+          return 1_000n
+        case 'quoteUsdInForAgxOut':
+          quotes += 1
+          return 100n
+        default:
+          throw new Error(`unexpected ${request.functionName}`)
+      }
+    }, TURBINE_UNLOCK_ABI),
+  )
 
   const result = await submitTurbineUnlock({
     core: {
@@ -132,23 +156,25 @@ test('submitTurbineUnlock uses preflight quote when allowance is short', async (
   )
 
   let quotes = 0
-  const session = sessionWithReadClient(async (request) => {
-    switch (request.functionName) {
-      case 'migratedFrom':
-        return ZERO
-      case 'balanceOf':
-        return 1_000n
-      case 'allowance':
-        return 0n
-      case 'turbineBalances':
-        return 1_000n
-      case 'quoteUsdInForAgxOut':
-        quotes += 1
-        return 100n
-      default:
-        throw new Error(`unexpected ${request.functionName}`)
-    }
-  })
+  const session = await moneyPathSession(
+    withAggregate3(async (request) => {
+      switch (request.functionName) {
+        case 'migratedFrom':
+          return ZERO
+        case 'balanceOf':
+          return 1_000n
+        case 'allowance':
+          return 0n
+        case 'turbineBalances':
+          return 1_000n
+        case 'quoteUsdInForAgxOut':
+          quotes += 1
+          return 100n
+        default:
+          throw new Error(`unexpected ${request.functionName}`)
+      }
+    }, TURBINE_UNLOCK_ABI),
+  )
 
   const result = await submitTurbineUnlock({
     core: {
@@ -174,26 +200,28 @@ test('submitTurbineUnlock pads quoted USD1 by slippage before balance check', as
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
 
-  const session = sessionWithReadClient(async (request) => {
-    switch (request.functionName) {
-      case 'migratedFrom':
-        return ZERO
-      case 'balanceOf':
-        return 100n
-      case 'allowance':
-        return 1_000n
-      case 'turbineBalances':
-        return 1_000n
-      case 'quoteUsdInForAgxOut': {
-        const agx = request.args?.[0]
-        if (agx === 10n) return 100n
-        if (agx === 1_000n) return 10_000n
-        throw new Error(`unexpected quote ${agx}`)
+  const session = await moneyPathSession(
+    withAggregate3(async (request) => {
+      switch (request.functionName) {
+        case 'migratedFrom':
+          return ZERO
+        case 'balanceOf':
+          return 100n
+        case 'allowance':
+          return 1_000n
+        case 'turbineBalances':
+          return 1_000n
+        case 'quoteUsdInForAgxOut': {
+          const agx = request.args?.[0]
+          if (agx === 10n) return 100n
+          if (agx === 1_000n) return 10_000n
+          throw new Error(`unexpected quote ${agx}`)
+        }
+        default:
+          throw new Error(`unexpected ${request.functionName}`)
       }
-      default:
-        throw new Error(`unexpected ${request.functionName}`)
-    }
-  })
+    }, TURBINE_UNLOCK_ABI),
+  )
 
   const result = await submitTurbineUnlock({
     core: {
@@ -221,23 +249,25 @@ test('submitTurbineUnlock caps full-quota unlock at the quota quote', async () =
   )
 
   let quotes = 0
-  const session = sessionWithReadClient(async (request) => {
-    switch (request.functionName) {
-      case 'migratedFrom':
-        return ZERO
-      case 'balanceOf':
-        return 100n
-      case 'allowance':
-        return 1_000n
-      case 'turbineBalances':
-        return 1_000n
-      case 'quoteUsdInForAgxOut':
-        quotes += 1
-        return 100n
-      default:
-        throw new Error(`unexpected ${request.functionName}`)
-    }
-  })
+  const session = await moneyPathSession(
+    withAggregate3(async (request) => {
+      switch (request.functionName) {
+        case 'migratedFrom':
+          return ZERO
+        case 'balanceOf':
+          return 100n
+        case 'allowance':
+          return 1_000n
+        case 'turbineBalances':
+          return 1_000n
+        case 'quoteUsdInForAgxOut':
+          quotes += 1
+          return 100n
+        default:
+          throw new Error(`unexpected ${request.functionName}`)
+      }
+    }, TURBINE_UNLOCK_ABI),
+  )
 
   const result = await submitTurbineUnlock({
     core: {
@@ -266,10 +296,16 @@ test('submitBurnExchange fail-closed when live pool is paused', async () => {
   )
   const { BURN_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
-  const session = sessionWithReadClient(async (request) => {
-    if (request.functionName === 'balanceOf') return 1_000n
-    if (request.functionName === 'allowance') return 1_000n
+  const session = await moneyPathSession(async (request) => {
     if (request.functionName === 'aggregate3') {
+      if (request.args[0].length === 2) {
+        return [
+          ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', 1_000n)),
+          ok(
+            enc('function allowance(address,address) view returns (uint256)', 'allowance', 1_000n),
+          ),
+        ]
+      }
       return [
         ok(
           enc(

@@ -1,4 +1,4 @@
-import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { ZERO_ADDRESS } from '~/core/constants'
@@ -16,9 +16,8 @@ import {
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
-import { type Aggregate3Call, readAggregate3 } from '~/web3/multicall3-read'
+import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
@@ -107,27 +106,38 @@ export type AssetsXminePosition = {
  * 释放计划由 RewardQueue.queuePlans 一次取回；复投计划逐档 RestakeConfig.getPlan 读取，
  * 保留链上原始 index，供 Mixed 领取参数使用。
  *
- * @param client 链读取客户端，默认 BSC 主网
  * @returns releasePlans / restakePlans 两个时长计划数组
  * @see 手册 §12 RewardQueue 奖励释放队列
  * @see 手册 §9 贡献值与 Mixed 领奖
  */
-export async function readClaimPlans(client: ChainReadClient = bscReadClient): Promise<{
+export async function readClaimPlans(): Promise<{
   releasePlans: DurationPlan[]
   restakePlans: DurationPlan[]
 }> {
-  const [queuePlans, planCount] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.rewardQueue,
-      abi: rewardQueueAbi,
-      functionName: 'queuePlans',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.restakeConfig,
-      abi: restakeConfigAbi,
-      functionName: 'getPlanCount',
-    }),
+  const planHead = await readAggregate3([
+    {
+      target: BSC_CONTRACTS.rewardQueue,
+      callData: encodeFunctionData({ abi: rewardQueueAbi, functionName: 'queuePlans' }),
+    },
+    {
+      target: BSC_CONTRACTS.restakeConfig,
+      callData: encodeFunctionData({ abi: restakeConfigAbi, functionName: 'getPlanCount' }),
+    },
   ])
+  const queuePlans = decodeAggregate3Result<
+    readonly {
+      releaseDuration: bigint
+      feeRate: bigint
+      feeRecipient: Address
+    }[]
+  >(planHead, 0, rewardQueueAbi, 'queuePlans', 'CLAIM_PLANS_MULTICALL_FAILED:queuePlans')
+  const planCount = decodeAggregate3Result<bigint>(
+    planHead,
+    1,
+    restakeConfigAbi,
+    'getPlanCount',
+    'CLAIM_PLANS_MULTICALL_FAILED:planCount',
+  )
 
   const releasePlans: DurationPlan[] = (
     queuePlans as readonly {
@@ -143,20 +153,34 @@ export async function readClaimPlans(client: ChainReadClient = bscReadClient): P
 
   const count = Number(planCount)
   const restakePlans: DurationPlan[] = []
-  for (let index = 0; index < count; index += 1) {
-    const plan = await client.readContract({
-      address: BSC_CONTRACTS.restakeConfig,
-      abi: restakeConfigAbi,
-      functionName: 'getPlan',
-      args: [BigInt(index)],
-    })
-    const [period, taxBP, , exists] = plan as readonly [bigint, bigint, Address, boolean]
-    restakePlans.push({
-      index,
-      durationSeconds: period,
-      taxBps: taxBP,
-      exists,
-    })
+  if (count > 0) {
+    const planResults = await readAggregate3(
+      Array.from({ length: count }, (_, index) => ({
+        target: BSC_CONTRACTS.restakeConfig,
+        callData: encodeFunctionData({
+          abi: restakeConfigAbi,
+          functionName: 'getPlan',
+          args: [BigInt(index)],
+        }),
+      })),
+    )
+    for (let index = 0; index < count; index += 1) {
+      const [period, taxBP, , exists] = decodeAggregate3Result<
+        readonly [bigint, bigint, Address, boolean]
+      >(
+        planResults,
+        index,
+        restakeConfigAbi,
+        'getPlan',
+        `CLAIM_PLANS_MULTICALL_FAILED:plan:${index}`,
+      )
+      restakePlans.push({
+        index,
+        durationSeconds: period,
+        taxBps: taxBP,
+        exists,
+      })
+    }
   }
 
   return { releasePlans, restakePlans }
@@ -170,16 +194,14 @@ export async function readClaimPlans(client: ChainReadClient = bscReadClient): P
  *
  * @param user 钱包地址
  * @param rewardAmount 待领取奖励金额（wei）
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 当前贡献值 contribution 与所需贡献值 requiredContribution
  * @see 手册 §9.2 贡献值页面
  */
 export async function readContributionSnapshot(
   user: Address,
   rewardAmount: bigint,
-  client: ChainReadClient = bscReadClient,
 ): Promise<{ contribution: bigint; requiredContribution: bigint }> {
-  const root = (await client.readContract({
+  const root = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.agxContributionSwap,
     abi: contribAbi,
     functionName: 'originalOf',
@@ -187,24 +209,39 @@ export async function readContributionSnapshot(
   })) as Address
   const contributionRoot = root.toLowerCase() === ZERO_ADDRESS ? user : root
 
-  const [contribution, requiredContribution] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: contribAbi,
-      functionName: 'userContribution',
-      args: [contributionRoot],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: contribAbi,
-      functionName: 'quoteRequiredContribution',
-      args: [rewardAmount],
-    }),
+  const hop2 = await readAggregate3([
+    {
+      target: BSC_CONTRACTS.agxContributionSwap,
+      callData: encodeFunctionData({
+        abi: contribAbi,
+        functionName: 'userContribution',
+        args: [contributionRoot],
+      }),
+    },
+    {
+      target: BSC_CONTRACTS.agxContributionSwap,
+      callData: encodeFunctionData({
+        abi: contribAbi,
+        functionName: 'quoteRequiredContribution',
+        args: [rewardAmount],
+      }),
+    },
   ])
-
   return {
-    contribution: contribution as bigint,
-    requiredContribution: requiredContribution as bigint,
+    contribution: decodeAggregate3Result<bigint>(
+      hop2,
+      0,
+      contribAbi,
+      'userContribution',
+      'CONTRIBUTION_SNAPSHOT_MULTICALL_FAILED:contribution',
+    ),
+    requiredContribution: decodeAggregate3Result<bigint>(
+      hop2,
+      1,
+      contribAbi,
+      'quoteRequiredContribution',
+      'CONTRIBUTION_SNAPSHOT_MULTICALL_FAILED:required',
+    ),
   }
 }
 
@@ -212,50 +249,83 @@ export async function readContributionSnapshot(
  * 读取用户全部质押仓位（活期 + 180/360/540 定期）。
  *
  * 活期含 warmup 仓；定期先按 getStakesCount 判断，空仓跳过不调 getStakes。
+ * 非空池的 getStakes 与 getReleasedPrincipal 合并为一次 Multicall3。
  * 仅返回有余额的仓位。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 资产页质押行数组，无仓位时为空数组
  * @see 手册 §8.2 活期 LiquidStaking
  * @see 手册 §8.3 定期 LockedStaking
  */
-export async function readStakePositions(
-  user: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<AssetsStakeRow[]> {
+export async function readStakePositions(user: Address): Promise<AssetsStakeRow[]> {
   const rows: AssetsStakeRow[] = []
 
   const liquidPool = stakePoolAddress('liquid')
   // `stakes`/`warmupStakes` 为裸 mapping：须先解析迁移 root；`getStakeRewards` 别名感知，直接传当前钱包。
-  const liquidMigratedFrom = await readMigratedFrom(user, client)
+  const liquidMigratedFrom = await readMigratedFrom(user)
   const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
-  const [liquidStake, liquidWarmup, liquidRewards, warmupExpired] = await Promise.all([
-    client.readContract({
-      address: liquidPool,
-      abi: liquidAbi,
-      functionName: 'stakes',
-      args: [liquidRoot],
-    }),
-    client.readContract({
-      address: liquidPool,
-      abi: liquidAbi,
-      functionName: 'warmupStakes',
-      args: [liquidRoot],
-    }),
-    client.readContract({
-      address: liquidPool,
-      abi: liquidAbi,
-      functionName: 'getStakeRewards',
-      args: [user],
-    }),
-    client.readContract({
-      address: liquidPool,
-      abi: liquidAbi,
-      functionName: 'isWarmupExpired',
-      args: [user],
-    }),
+  const liquidResults = await readAggregate3([
+    {
+      target: liquidPool,
+      callData: encodeFunctionData({
+        abi: liquidAbi,
+        functionName: 'stakes',
+        args: [liquidRoot],
+      }),
+    },
+    {
+      target: liquidPool,
+      callData: encodeFunctionData({
+        abi: liquidAbi,
+        functionName: 'warmupStakes',
+        args: [liquidRoot],
+      }),
+    },
+    {
+      target: liquidPool,
+      callData: encodeFunctionData({
+        abi: liquidAbi,
+        functionName: 'getStakeRewards',
+        args: [user],
+      }),
+    },
+    {
+      target: liquidPool,
+      callData: encodeFunctionData({
+        abi: liquidAbi,
+        functionName: 'isWarmupExpired',
+        args: [user],
+      }),
+    },
   ])
+  const liquidStake = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint, boolean]>(
+    liquidResults,
+    0,
+    liquidAbi,
+    'stakes',
+    'STAKE_POSITIONS_MULTICALL_FAILED:stakes',
+  )
+  const liquidWarmup = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint, boolean]>(
+    liquidResults,
+    1,
+    liquidAbi,
+    'warmupStakes',
+    'STAKE_POSITIONS_MULTICALL_FAILED:warmupStakes',
+  )
+  const liquidRewards = decodeAggregate3Result<readonly [bigint, bigint]>(
+    liquidResults,
+    2,
+    liquidAbi,
+    'getStakeRewards',
+    'STAKE_POSITIONS_MULTICALL_FAILED:rewards',
+  )
+  const warmupExpired = decodeAggregate3Result<boolean>(
+    liquidResults,
+    3,
+    liquidAbi,
+    'isWarmupExpired',
+    'STAKE_POSITIONS_MULTICALL_FAILED:warmupExpired',
+  )
   const [principal, , , expiry, exists] = liquidStake as readonly [
     bigint,
     bigint,
@@ -306,51 +376,76 @@ export async function readStakePositions(
     })
   }
 
-  const lockedPoolCounts = await Promise.all(
-    BOND_PERIODS.map(async (period) => {
-      const pool = stakePoolAddress(period)
-      const count = Number(
-        await client.readContract({
-          address: pool,
-          abi: lockedAbi,
-          functionName: 'getStakesCount',
-          args: [user],
-        }),
-      )
-      return { period, pool, count }
-    }),
+  const lockedCountResults = await readAggregate3(
+    BOND_PERIODS.map((period) => ({
+      target: stakePoolAddress(period),
+      callData: encodeFunctionData({
+        abi: lockedAbi,
+        functionName: 'getStakesCount',
+        args: [user],
+      }),
+    })),
   )
+  const lockedPoolCounts = BOND_PERIODS.map((period, index) => {
+    const count = Number(
+      decodeAggregate3Result<bigint>(
+        lockedCountResults,
+        index,
+        lockedAbi,
+        'getStakesCount',
+        `STAKE_POSITIONS_MULTICALL_FAILED:count:${period}`,
+      ),
+    )
+    return { period, pool: stakePoolAddress(period), count }
+  })
 
-  for (const { period, pool, count } of lockedPoolCounts) {
-    // 手册：start >= total 会 revert；空仓勿调 getStakes。
-    if (!Number.isFinite(count) || count <= 0) continue
-
-    const stakes = (await client.readContract({
-      address: pool,
+  // getStakes / getReleasedPrincipal 都只依赖 count，空仓跳过（start >= total 会 revert）。
+  const occupiedPools = lockedPoolCounts.filter(
+    (item) => Number.isFinite(item.count) && item.count > 0,
+  )
+  const lockedCalls: Aggregate3Call[] = occupiedPools.map(({ pool, count }) => ({
+    target: pool,
+    callData: encodeFunctionData({
       abi: lockedAbi,
       functionName: 'getStakes',
       args: [user, 0n, BigInt(count)],
-    })) as readonly {
-      pending: bigint
-      blockReward: bigint
-      extraInterest: bigint
-      claimableBalance: bigint
-      expiry: bigint
-    }[]
-
-    const releasedResults = await readAggregate3(
-      client,
-      stakes.map((_, index) => ({
+    }),
+  }))
+  for (const { pool, count } of occupiedPools) {
+    for (let index = 0; index < count; index += 1) {
+      lockedCalls.push({
         target: pool,
         callData: encodeFunctionData({
           abi: lockedAbi,
           functionName: 'getReleasedPrincipal',
           args: [user, BigInt(index)],
         }),
-      })),
+      })
+    }
+  }
+
+  const lockedResults = await readAggregate3(lockedCalls)
+  let releasedBase = occupiedPools.length
+  for (let poolIndex = 0; poolIndex < occupiedPools.length; poolIndex += 1) {
+    const occupied = occupiedPools[poolIndex]!
+    const { period, pool, count } = occupied
+    const stakes = decodeAggregate3Result<
+      readonly {
+        pending: bigint
+        blockReward: bigint
+        extraInterest: bigint
+        claimableBalance: bigint
+        expiry: bigint
+      }[]
+    >(
+      lockedResults,
+      poolIndex,
+      lockedAbi,
+      'getStakes',
+      `STAKE_POSITIONS_MULTICALL_FAILED:stakes:${period}`,
     )
 
-    for (let index = 0; index < stakes.length; index += 1) {
+    for (let index = 0; index < count; index += 1) {
       const data = stakes[index]
       if (!data) continue
       if (
@@ -361,15 +456,13 @@ export async function readStakePositions(
       ) {
         continue
       }
-      const releasedResult = releasedResults[index]
-      if (!releasedResult?.success) {
-        throw new Error(`LOCKED_RELEASED_MULTICALL_FAILED:${period}:${index}`)
-      }
-      const released = decodeFunctionResult({
-        abi: lockedAbi,
-        functionName: 'getReleasedPrincipal',
-        data: releasedResult.returnData,
-      }) as bigint
+      const released = decodeAggregate3Result<bigint>(
+        lockedResults,
+        releasedBase + index,
+        lockedAbi,
+        'getReleasedPrincipal',
+        `LOCKED_RELEASED_MULTICALL_FAILED:${period}:${index}`,
+      )
       rows.push({
         id: `locked-${period}-${index}`,
         kind: 'locked',
@@ -384,40 +477,49 @@ export async function readStakePositions(
         expiry: data.expiry,
       })
     }
+    releasedBase += count
   }
 
   return rows
 }
 
-async function readBondPositionsFor(
-  kind: 'lp' | 'burn',
-  user: Address,
-  client: ChainReadClient,
-): Promise<AssetsBondRow[]> {
+async function readBondPositionsFor(kind: 'lp' | 'burn', user: Address): Promise<AssetsBondRow[]> {
   const rows: AssetsBondRow[] = []
-  const poolCounts = await Promise.all(
-    BOND_PERIODS.map(async (period) => {
+  const poolCountResults = await readAggregate3(
+    BOND_PERIODS.map((period) => {
       const depository =
         kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
-      const count = Number(
-        await client.readContract({
-          address: depository,
+      return {
+        target: depository,
+        callData: encodeFunctionData({
           abi: bondAbi,
           functionName: 'getBondCount',
           args: [user],
         }),
-      )
-      return { period, depository, count }
+      }
     }),
   )
+  const poolCounts = BOND_PERIODS.map((period, index) => {
+    const depository =
+      kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
+    const count = Number(
+      decodeAggregate3Result<bigint>(
+        poolCountResults,
+        index,
+        bondAbi,
+        'getBondCount',
+        `BOND_POSITION_MULTICALL_FAILED:count:${kind}:${period}`,
+      ),
+    )
+    return { period, depository, count }
+  })
 
-  for (const { period, depository, count } of poolCounts) {
-    if (!Number.isFinite(count) || count <= 0) continue
-
-    // Bond 无批量列表 view：每仓位 3 读合并为一次 Multicall3（禁 3N 串行 eth_call）。
-    const calls: Aggregate3Call[] = []
+  // Bond 无批量列表 view：所有非空池的仓位 3 读合并为一次 Multicall3。
+  const occupiedBonds = poolCounts.filter((item) => Number.isFinite(item.count) && item.count > 0)
+  const bondCalls: Aggregate3Call[] = []
+  for (const { depository, count } of occupiedBonds) {
     for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
-      calls.push(
+      bondCalls.push(
         {
           target: depository,
           callData: encodeFunctionData({
@@ -444,44 +546,38 @@ async function readBondPositionsFor(
         },
       )
     }
+  }
 
-    const results = await readAggregate3(client, calls)
+  const bondResults = await readAggregate3(bondCalls)
+  let bondCursor = 0
+  for (const { period, depository, count } of occupiedBonds) {
     for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
-      const base = bondIndex * 3
-      const infoResult = results[base]
-      const pendingResult = results[base + 1]
-      const profitResult = results[base + 2]
-      if (!infoResult?.success || !pendingResult?.success || !profitResult?.success) {
-        throw new Error(`BOND_POSITION_MULTICALL_FAILED:${kind}:${period}:${bondIndex}`)
-      }
-      const info = decodeFunctionResult({
-        abi: bondAbi,
-        functionName: 'getBondInfo',
-        data: infoResult.returnData,
-      }) as readonly [
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        boolean,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-      ]
+      const info = decodeAggregate3Result<
+        readonly [bigint, bigint, bigint, bigint, boolean, bigint, bigint, bigint, bigint, bigint]
+      >(
+        bondResults,
+        bondCursor,
+        bondAbi,
+        'getBondInfo',
+        `BOND_POSITION_MULTICALL_FAILED:${kind}:${period}:${bondIndex}`,
+      )
+      const pendingPayout = decodeAggregate3Result<bigint>(
+        bondResults,
+        bondCursor + 1,
+        bondAbi,
+        'pendingPayoutFor',
+        `BOND_POSITION_MULTICALL_FAILED:${kind}:${period}:${bondIndex}`,
+      )
+      const profit = decodeAggregate3Result<bigint>(
+        bondResults,
+        bondCursor + 2,
+        bondAbi,
+        'getStakeProfit',
+        `BOND_POSITION_MULTICALL_FAILED:${kind}:${period}:${bondIndex}`,
+      )
+      bondCursor += 3
       const [, , , , exists, , payoutRemaining, vestingEndTime] = info
       if (!exists) continue
-      const pendingPayout = decodeFunctionResult({
-        abi: bondAbi,
-        functionName: 'pendingPayoutFor',
-        data: pendingResult.returnData,
-      }) as bigint
-      const profit = decodeFunctionResult({
-        abi: bondAbi,
-        functionName: 'getStakeProfit',
-        data: profitResult.returnData,
-      }) as bigint
       rows.push({
         id: `${kind}-${period}-${bondIndex}`,
         kind,
@@ -503,24 +599,22 @@ async function readBondPositionsFor(
  * 读取用户全部 LP 债券仓位。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 资产页 LP 债券行数组
  * @see 手册 §10 债券 Bond / BurnBond
  */
-export function readLpBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
-  return readBondPositionsFor('lp', user, client)
+export function readLpBondPositions(user: Address) {
+  return readBondPositionsFor('lp', user)
 }
 
 /**
  * 读取用户全部 Burn 债券仓位。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 资产页 Burn 债券行数组
  * @see 手册 §10 债券 Bond / BurnBond
  */
-export function readBurnBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
-  return readBondPositionsFor('burn', user, client)
+export function readBurnBondPositions(user: Address) {
+  return readBondPositionsFor('burn', user)
 }
 
 /**
@@ -529,44 +623,77 @@ export function readBurnBondPositions(user: Address, client: ChainReadClient = b
  * `stakes` 为裸 mapping，须先解析迁移 root；其余业务 view 直接传当前地址。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 挖矿持仓快照，含 pending 价值口径
  * @see 手册 §15 XStakingPool X 挖矿
  */
-export async function readXminePosition(
-  user: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<AssetsXminePosition> {
+export async function readXminePosition(user: Address): Promise<AssetsXminePosition> {
   // `stakes` 为裸 mapping：先解析迁移 root；业务 view 仍传当前地址。
-  const migratedFrom = await readMigratedFrom(user, client)
+  const migratedFrom = await readMigratedFrom(user)
   const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
 
-  const [pending, pendingValue, miningStake, stake] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: xmineAbi,
-      functionName: 'pendingReward',
-      args: [user],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: xmineAbi,
-      functionName: 'pendingRewardValue',
-      args: [user],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: xmineAbi,
-      functionName: 'miningStakeAmountOf',
-      args: [user],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.xStakingPool,
-      abi: xmineAbi,
-      functionName: 'stakes',
-      args: [stakeRoot],
-    }),
+  const pool = BSC_CONTRACTS.xStakingPool
+  const results = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: xmineAbi,
+        functionName: 'pendingReward',
+        args: [user],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: xmineAbi,
+        functionName: 'pendingRewardValue',
+        args: [user],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: xmineAbi,
+        functionName: 'miningStakeAmountOf',
+        args: [user],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: xmineAbi,
+        functionName: 'stakes',
+        args: [stakeRoot],
+      }),
+    },
   ])
+  const pending = decodeAggregate3Result<bigint>(
+    results,
+    0,
+    xmineAbi,
+    'pendingReward',
+    'XMINE_POSITION_MULTICALL_FAILED:pending',
+  )
+  const pendingValue = decodeAggregate3Result<bigint>(
+    results,
+    1,
+    xmineAbi,
+    'pendingRewardValue',
+    'XMINE_POSITION_MULTICALL_FAILED:pendingValue',
+  )
+  const miningStake = decodeAggregate3Result<bigint>(
+    results,
+    2,
+    xmineAbi,
+    'miningStakeAmountOf',
+    'XMINE_POSITION_MULTICALL_FAILED:miningStake',
+  )
+  const stake = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint, bigint]>(
+    results,
+    3,
+    xmineAbi,
+    'stakes',
+    'XMINE_POSITION_MULTICALL_FAILED:stakes',
+  )
   const [gons, warmupGons, , warmupEndTime] = stake as readonly [
     bigint,
     bigint,
@@ -591,7 +718,6 @@ export async function readXminePosition(
  *
  * @param target 领取来源：活期 / 定期（可选额外利息）/ 债券
  * @param user 钱包地址
- * @param client 链读取客户端
  * @returns 可领取奖励金额（wei）
  * @see 手册 §9.3 Mixed 领奖前端流程
  */
@@ -601,10 +727,9 @@ export async function readMixedRewardAvailable(
     | { source: 'locked'; pool: Address; stakeIndex: number; extra?: boolean }
     | { source: 'bond'; depository: Address; bondIndex: number },
   user: Address,
-  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
   if (target.source === 'liquid') {
-    const rewards = await client.readContract({
+    const rewards = await bscReadClient.readContract({
       address: stakePoolAddress('liquid'),
       abi: liquidAbi,
       functionName: 'getStakeRewards',
@@ -615,7 +740,7 @@ export async function readMixedRewardAvailable(
   }
 
   if (target.source === 'locked') {
-    const stake = await client.readContract({
+    const stake = await bscReadClient.readContract({
       address: target.pool,
       abi: lockedAbi,
       functionName: 'getStake',
@@ -625,7 +750,7 @@ export async function readMixedRewardAvailable(
     return target.extra ? data.extraInterest : data.blockReward
   }
 
-  const profit = await client.readContract({
+  const profit = await bscReadClient.readContract({
     address: target.depository,
     abi: bondAbi,
     functionName: 'getStakeProfit',
@@ -641,20 +766,18 @@ export async function readMixedRewardAvailable(
  *
  * @param row 资产页质押行
  * @param user 钱包地址
- * @param client 链读取客户端
  * @returns 可赎回本金（wei）；无仓位返回 0n
  * @see 手册 §13 PrincipalReleaseVault 本金释放
  */
 export async function readStakeRedeemableAmount(
   row: AssetsStakeRow,
   user: Address,
-  client: ChainReadClient,
 ): Promise<bigint> {
   if (row.kind === 'liquid') {
     // 活期 `stakes` 裸 mapping：须迁移 root。
-    const migratedFrom = await readMigratedFrom(user, client)
+    const migratedFrom = await readMigratedFrom(user)
     const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
-    const liquidStake = await client.readContract({
+    const liquidStake = await bscReadClient.readContract({
       address: row.pool,
       abi: liquidAbi,
       functionName: 'stakes',
@@ -671,7 +794,7 @@ export async function readStakeRedeemableAmount(
   }
 
   if (row.stakeIndex == null) return 0n
-  const released = await client.readContract({
+  const released = await bscReadClient.readContract({
     address: row.pool,
     abi: lockedAbi,
     functionName: 'getReleasedPrincipal',
@@ -685,16 +808,11 @@ export async function readStakeRedeemableAmount(
  *
  * @param row 资产页债券行
  * @param user 钱包地址
- * @param client 链读取客户端
  * @returns 可赎回金额（wei）
  * @see 手册 §10 债券 Bond / BurnBond
  */
-export async function readBondRedeemableAmount(
-  row: AssetsBondRow,
-  user: Address,
-  client: ChainReadClient,
-): Promise<bigint> {
-  return (await client.readContract({
+export async function readBondRedeemableAmount(row: AssetsBondRow, user: Address): Promise<bigint> {
+  return (await bscReadClient.readContract({
     address: row.depository,
     abi: bondAbi,
     functionName: 'pendingPayoutFor',

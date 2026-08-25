@@ -5,9 +5,8 @@ import { selectLuckyClaimRound } from '~/core/rewards/select-lucky-claim-round'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { DAILY_PURCHASE_TRACKER_METHODS, LUCKY_POOL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
-import { readAggregate3 } from '~/web3/multicall3-read'
+import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const luckyAbi = parseAbi([
   LUCKY_POOL_METHODS.paused,
@@ -40,26 +39,37 @@ export type LuckyClaimSnapshot = {
  * 取第一笔可领记录。每轮两读经 Multicall3（允许失败）。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 暂停状态 / 选中轮 / 是否中奖 / 是否已领 / 是否可领
  * @see 手册 §14 LuckyPool 去中心化抽奖
  */
-export async function readLuckyClaimSnapshot(
-  user: Address,
-  client: ChainReadClient = bscReadClient,
-): Promise<LuckyClaimSnapshot> {
+export async function readLuckyClaimSnapshot(user: Address): Promise<LuckyClaimSnapshot> {
+  const pool = BSC_CONTRACTS.luckyPool
+  const head = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'paused' }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'currentRoundId' }),
+    },
+  ])
   const paused = Boolean(
-    await client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'paused',
-    }),
+    decodeAggregate3Result<boolean>(
+      head,
+      0,
+      luckyAbi,
+      'paused',
+      'LUCKY_SNAPSHOT_MULTICALL_FAILED:paused',
+    ),
   )
-  const openRoundId = (await client.readContract({
-    address: BSC_CONTRACTS.luckyPool,
-    abi: luckyAbi,
-    functionName: 'currentRoundId',
-  })) as bigint
+  const openRoundId = decodeAggregate3Result<bigint>(
+    head,
+    1,
+    luckyAbi,
+    'currentRoundId',
+    'LUCKY_SNAPSHOT_MULTICALL_FAILED:roundId',
+  )
 
   // currentRoundId 为进行中轮；中奖在已关闭轮。从新到旧回溯，找第一笔可领。
   const latestClosed = openRoundId > 0n ? openRoundId - 1n : 0n
@@ -78,12 +88,10 @@ export async function readLuckyClaimSnapshot(
     }
   }
 
-  const pool = BSC_CONTRACTS.luckyPool
   const results =
     roundIds.length === 0
       ? []
       : await readAggregate3(
-          client,
           roundIds.flatMap((roundId) => [
             {
               target: pool,
@@ -159,36 +167,61 @@ export async function readLuckyClaimSnapshot(
  *
  * @param user 钱包地址
  * @param roundId 意图轮次
- * @param client 链读取客户端
  * @returns 该轮暂停 / 中奖 / 金额 / 是否已领 / 是否可领
  * @see 手册 §14 LuckyPool 去中心化抽奖
  */
 export async function readLuckyClaimRound(
   user: Address,
   roundId: bigint,
-  client: ChainReadClient = bscReadClient,
 ): Promise<LuckyClaimSnapshot> {
-  const [paused, info, rewardClaimed] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'paused',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'getWinnerInfo',
-      args: [roundId, user],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'rewardClaimed',
-      args: [roundId, user],
-    }),
+  const pool = BSC_CONTRACTS.luckyPool
+  const results = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({ abi: luckyAbi, functionName: 'paused' }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'getWinnerInfo',
+        args: [roundId, user],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'rewardClaimed',
+        args: [roundId, user],
+      }),
+    },
   ])
-  const won = Boolean((info as readonly [boolean, bigint])[0])
-  const rewardAmount = (info as readonly [boolean, bigint])[1] ?? 0n
+  const paused = Boolean(
+    decodeAggregate3Result<boolean>(
+      results,
+      0,
+      luckyAbi,
+      'paused',
+      'LUCKY_ROUND_MULTICALL_FAILED:paused',
+    ),
+  )
+  const info = decodeAggregate3Result<readonly [boolean, bigint]>(
+    results,
+    1,
+    luckyAbi,
+    'getWinnerInfo',
+    'LUCKY_ROUND_MULTICALL_FAILED:winner',
+  )
+  const rewardClaimed = decodeAggregate3Result<boolean>(
+    results,
+    2,
+    luckyAbi,
+    'rewardClaimed',
+    'LUCKY_ROUND_MULTICALL_FAILED:claimed',
+  )
+  const won = Boolean(info[0])
+  const rewardAmount = info[1] ?? 0n
   const claimed = Boolean(rewardClaimed)
   const claimable = isLuckyClaimable({
     paused: Boolean(paused),
@@ -212,12 +245,11 @@ export async function readLuckyClaimRound(
  * Dao Mixed 无链上按用户的 pending，签名 amount 只是意图；这里读 DaoPool 持有的
  * AGX 余额作为偿付上限，签名金额不可直接当作可用。
  *
- * @param client 链读取客户端
  * @returns DaoPool 持有的 AGX 余额（wei）
  * @see docs/backend-api/api.md #claim/dao-reward
  */
-export async function readDaoPoolRewardAvailable(client: ChainReadClient): Promise<bigint> {
-  return readErc20Balance(BSC_CONTRACTS.agx, BSC_CONTRACTS.daoPool, client)
+export async function readDaoPoolRewardAvailable(): Promise<bigint> {
+  return readErc20Balance(BSC_CONTRACTS.agx, BSC_CONTRACTS.daoPool)
 }
 
 /** 幸运详情右栏：当前轮倒计时 + Tracker 资格 / 购买额（USD1 18dec）。 */
@@ -245,15 +277,13 @@ function luckyRoundEndTimeSec(roundRaw: unknown): bigint {
  * 资格用 Tracker `qualified`（单笔门槛、迁移感知），不以 `status=Open` 代替时间窗。
  *
  * @param user 钱包地址
- * @param client 链读取客户端，默认 BSC 主网
  * @returns 当前轮 id / 结束时间 / 资格 / 轮内购买额 / 是否接受购买
  * @see 手册 §14.1 用户抽奖页
  */
 export async function readLuckyRoundDisplaySnapshot(
   user: Address,
-  client: ChainReadClient = bscReadClient,
 ): Promise<LuckyRoundDisplaySnapshot> {
-  const stat = (await client.readContract({
+  const stat = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.dailyPurchaseTracker,
     abi: trackerAbi,
     functionName: 'getCurrentRoundUserStat',
@@ -273,20 +303,39 @@ export async function readLuckyRoundDisplaySnapshot(
     }
   }
 
-  const [roundRaw, accepting] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'getRound',
-      args: [openRoundId],
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.luckyPool,
-      abi: luckyAbi,
-      functionName: 'isRoundAcceptingPurchases',
-      args: [openRoundId],
-    }),
+  const pool = BSC_CONTRACTS.luckyPool
+  const roundResults = await readAggregate3([
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'getRound',
+        args: [openRoundId],
+      }),
+    },
+    {
+      target: pool,
+      callData: encodeFunctionData({
+        abi: luckyAbi,
+        functionName: 'isRoundAcceptingPurchases',
+        args: [openRoundId],
+      }),
+    },
   ])
+  const roundRaw = decodeAggregate3Result<unknown>(
+    roundResults,
+    0,
+    luckyAbi,
+    'getRound',
+    'LUCKY_DISPLAY_MULTICALL_FAILED:getRound',
+  )
+  const accepting = decodeAggregate3Result<boolean>(
+    roundResults,
+    1,
+    luckyAbi,
+    'isRoundAcceptingPurchases',
+    'LUCKY_DISPLAY_MULTICALL_FAILED:accepting',
+  )
 
   return {
     openRoundId,
