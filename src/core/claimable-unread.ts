@@ -61,17 +61,16 @@ export function fingerprintReleaseBuffer(input: ReleaseBufferFingerprintInput): 
 export type LuckyFingerprintInput = {
   claimable: boolean
   totalUnclaimedAmount: bigint
-  roundId: bigint
 }
 
 /**
- * 幸运奖指纹：可领时用「合计未领|下一笔轮」；不可领或合计为 0 为空。
+ * 幸运奖指纹：可领时用合计未领；不可领或合计为 0 为空。
  *
  * @param snap 幸运奖领取快照；缺数为空
  */
 export function fingerprintLucky(snap: LuckyFingerprintInput | null | undefined): string {
   if (!snap?.claimable || snap.totalUnclaimedAmount <= 0n) return ''
-  return `${snap.totalUnclaimedAmount.toString()}|${snap.roundId.toString()}`
+  return snap.totalUnclaimedAmount.toString()
 }
 
 /**

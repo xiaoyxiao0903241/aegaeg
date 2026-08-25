@@ -68,29 +68,13 @@ test('submit rewards mixed must not self-certify draft amount or revive gatePinn
     'utf8',
   )
   assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
-  assert.doesNotMatch(src, /readLuckyClaimSnapshot/)
+  assert.doesNotMatch(src, /roundIds/)
+  assert.doesNotMatch(src, /getWinnerInfo/)
   assert.doesNotMatch(src, /gatePinnedRound/)
 })
 
-test('isLuckyClaimable requires won + unclaimed + amount + not paused', () => {
-  assert.equal(
-    isLuckyClaimable({ paused: true, won: true, rewardClaimed: false, rewardAmount: 1n }),
-    false,
-  )
-  assert.equal(
-    isLuckyClaimable({ paused: false, won: false, rewardClaimed: false, rewardAmount: 1n }),
-    false,
-  )
-  assert.equal(
-    isLuckyClaimable({ paused: false, won: true, rewardClaimed: true, rewardAmount: 1n }),
-    false,
-  )
-  assert.equal(
-    isLuckyClaimable({ paused: false, won: true, rewardClaimed: false, rewardAmount: 0n }),
-    false,
-  )
-  assert.equal(
-    isLuckyClaimable({ paused: false, won: true, rewardClaimed: false, rewardAmount: 1n }),
-    true,
-  )
+test('isLuckyClaimable requires pending amount and not paused', () => {
+  assert.equal(isLuckyClaimable({ paused: true, rewardAmount: 1n }), false)
+  assert.equal(isLuckyClaimable({ paused: false, rewardAmount: 0n }), false)
+  assert.equal(isLuckyClaimable({ paused: false, rewardAmount: 1n }), true)
 })

@@ -508,12 +508,16 @@ export const BOND_DEPOSITORY_ERRORS = [
 export const REWARD_QUEUE_METHODS = {
   queuePlans:
     'function queuePlans() view returns ((uint256 releaseDuration, uint256 feeRate, address feeRecipient)[])',
-  getUserTotalClaimable: 'function getUserTotalClaimable(address user) view returns (uint256)',
   getReleasedRewardsWithPlanIndex:
     'function getReleasedRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
+  getReleasedRewardsWithOffset:
+    'function getReleasedRewardsWithOffset(address user, uint8 planIndex, uint256 start, uint256 limit) view returns (uint256)',
   getRewardsWithPlanIndex:
     'function getRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
-  claimAllVestedRewards: 'function claimAllVestedRewards(uint8 planIndex)',
+  getQueuePlanSize:
+    'function getQueuePlanSize(address user, uint8 planIndex) view returns (uint256)',
+  claimVestedRewardsInRange:
+    'function claimVestedRewardsInRange(uint8 planIndex, uint256 start, uint256 limit)',
 } as const
 
 /**
@@ -525,6 +529,7 @@ export const REWARD_QUEUE_ERRORS = [
   'error ErrorIndexOutOfBounds()',
   'error ErrorNotAuthorized()',
   'error ErrorZeroAddress()',
+  'error RewardQueueMigratedAccount(address account)',
 ] as const
 
 /**
@@ -630,21 +635,19 @@ export const DAO_POOL_METHODS = {
 } as const
 
 /**
- * LuckyPool — Mixed 领取 + 暂停 / 中奖 / 轮次查询。
- * @see 手册 §14 LuckyPool 去中心化抽奖
+ * LuckyPool — 累计账本待领 + 无轮次 Mixed 领取 + 轮次展示查询。
+ * @see LuckyPool.getRewardInfo / claimRewardMixed(releasePlanIndex, restakePlanIndex, restakeBps)
  */
 export const LUCKY_POOL_METHODS = {
   paused: 'function paused() view returns (bool)',
-  currentRoundId: 'function currentRoundId() view returns (uint256)',
   isRoundAcceptingPurchases:
     'function isRoundAcceptingPurchases(uint256 roundId) view returns (bool)',
   getRound:
     'function getRound(uint256 roundId) view returns ((uint256 roundId, uint256 displayDay, uint256 startTime, uint256 endTime, uint256 rewardAmount, uint256 rewardPerWinner, uint256 maxWinners, uint256 requestId, uint256 eligibleCount, uint256 winnerCount, uint256 randomRequestBlock, uint8 status))',
-  getWinnerInfo:
-    'function getWinnerInfo(uint256 roundId, address user) view returns (bool won, uint256 rewardAmount)',
-  rewardClaimed: 'function rewardClaimed(uint256 roundId, address user) view returns (bool)',
+  getRewardInfo:
+    'function getRewardInfo(address user) view returns (uint256 accrued, uint256 claimed, uint256 pending)',
   claimRewardMixed:
-    'function claimRewardMixed(uint256 roundId, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+    'function claimRewardMixed(uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
 
 /**
