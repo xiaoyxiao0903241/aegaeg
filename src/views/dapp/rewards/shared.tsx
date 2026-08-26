@@ -496,7 +496,7 @@ export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem)
       TABLE_EMPTY
     ),
     formatSubsidyRate(item.subsidy_rate),
-    formatApiAmount(item.allowance_amount),
+    formatApiAmount(item.allowance_amount, { digits: 4, suffix: ' gAGX' }),
   ]
 }
 
