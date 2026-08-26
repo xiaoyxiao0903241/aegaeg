@@ -206,7 +206,7 @@
 |`DockHeader`|wh|`title`, `subtitle`, `action`|4 页共用|
 |`AmountBox`|box / tk / rr / mx|`token`, `value`, `balance`, `sessionReady`|金额输入卡|
 |`Segment`|seg / pcts / htab|`options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg|滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n|
-|`ClaimSplitSlider`|slider `4812:221`|`value` (release%), `onChange`, `aria-label`|双色轨 + `%` thumb；Radix；文案由 call site 传入|
+|`ClaimSplitSlider`|slider `4812:221`|`value` (release%), `onChange`, `aria-label`|左复投橙 / 右领取蓝；thumb 在分界、显示复投%；CTA 同比例渐变|
 |`Card` elevated|—|children|elevated chrome SSOT；右栏数据卡优先走 `Tile`（`shared/components/tile.tsx`）|
 |`Tile`|`Label` / `Note`|主值 children；旁注用 `Tooltip.Info`|组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard|
 |`Carousel`|Content/Item/Indicators|`opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain|组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`|
@@ -224,7 +224,7 @@
 
 - `Faq` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ muted。折叠箭头 ≡ `CollapseChevron`（与 `Section.collapsible` 同 SSOT：收起 `ChevronDown`+foreground@40%，展开 rotate-180+primary）；展开高度走 `.faq-answer-panel` grid `0fr→1fr`。DApp 项圆角稿 `12` → `rounded-faq`（禁 `rounded-xl`：本仓 xl=28px）；pad `px-4 py-4.5`；**禁** call site `text-[Npx|Nrem]` / `rounded-[Nrem]` 覆盖 type/radius token（字阶走 `Text` variant）。
 - `Segment`：Figma `seg` 滑动白底 pill（闪兑样本 `4430:410`）；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。thumb = 白底 + **微阴影** `0 1px 2px rgba(18,26,51,0.06)`（禁 `shadow-sm` / card elevation）；**按选中 tab 实测 left/width，以轨宽 % 写出**（禁硬编码 gap/pad px 常量；轨 `gap`/`p`/`h` 一律 Tailwind spacing token）。列宽 `auto` hug。**`size`**：`sm`=`h-6`（图区间）| `md`=`h-9`（默认，周期/指标；对齐 Figma `seg` 4448:601 轨高 36）| `lg`=`h-10`（闪兑/涡轮）；call site 按稿面选。项 padding 随 size（md/lg：`px-3`；sm：`px-2.5`）。选中字色由 call site `tone` 传入：`coral`（默认，样本 `4448:601`）| `ink`（闪兑 tabs，semibold）。**Figma `htab`（珊瑚 soft / outlined 分立 pill，样本 hub `4371:233`）走 Chip，不走 Segment。** `options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
-- `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（释放%）· 右轨 `--app-claim-restake`（复投%）· 白底内嵌 `%` thumb；`aria-label` 必填（i18n）。
+- `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（复投%）· 右轨 `--app-claim-restake`（领取%）· 白底内嵌左侧复投 `%` thumb；`value`/`onChange` 仍是释放%（`restakePct = 100 − releasePct`）；CTA 背景走 `claimSplitCtaBackgroundImage`（同一套比例，100% 领取纯蓝、100% 复投纯橙）；`aria-label` 必填（i18n）。去向卡同色：复投 `primary`、领取 `claim-restake`。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `Detail`：右栏详情壳；`flex flex-col gap-8.5 max-dapp:gap-6`（节距 SSOT；PC 34 / H5 24）；子级直接列具名 Section（禁 bag Fragment）。
 - `Section`：右栏内容节；根 `flex flex-col gap-4`（节内 Title / Description / body 节奏 SSOT；节间距归 Detail）；`Title` 仅 `children`+可选 `id`（`Text section` · `m-0`）；`Description` 仅 `children`（`copy` · `m-0 text-foreground/40`）；**禁** call site `className` 改字阶/间距（`text-xl` fork 等）；**禁** `mt-*` 冒充节距；标题行伴生（CTA / chips）用外层 flex 组合；折叠箭头 ≡ `CollapseChevron`（与 FAQ 同）。`collapsible` **必然** reveal；高度 `grid-template-rows 0fr→1fr`（320ms）；折叠内层亦 `flex flex-col gap-4`；展开 settle 后内置 `overflow-visible`（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。禁再传 `bodyClassName` / 叠 `reveal`。

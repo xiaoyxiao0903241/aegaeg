@@ -19,9 +19,36 @@ function clampSliderPct(value: number): number {
 }
 
 /**
+ * 滑块左段复投、右段领取。与 CTA 渐变同一套比例。
+ *
+ * @param releasePct 归入释放池的比例（0–100）
+ */
+export function claimSplitTrackPct(releasePct: number): {
+  releasePct: number
+  restakePct: number
+} {
+  const release = clampSliderPct(releasePct)
+  return { releasePct: release, restakePct: 100 - release }
+}
+
+/**
+ * Mixed 确认按钮背景：左复投橙、右领取蓝，分界跟滑块一致。
+ *
+ * @param releasePct 归入释放池的比例（0–100）
+ */
+export function claimSplitCtaBackgroundImage(releasePct: number): string {
+  const { restakePct, releasePct: release } = claimSplitTrackPct(releasePct)
+  if (release >= 100) {
+    return 'linear-gradient(to right, var(--claim-restake), var(--claim-restake))'
+  }
+  if (restakePct >= 100) return 'linear-gradient(to right, var(--primary), var(--primary))'
+  return `linear-gradient(to right, var(--primary) 0%, color-mix(in oklab, var(--primary) 45%, var(--claim-restake) 55%) ${restakePct}%, var(--claim-restake) 100%)`
+}
+
+/**
  * 双色领取分配滑杆
  *
- * 珊瑚段 = 释放池；蓝色段 = 再质押；白色滑块内嵌百分比。
+ * 左橙 = 复投；右蓝 = 领取；白色滑块在分界上，内嵌左侧复投%。
  * Root 用 `touch-none` + 加高热区，避免 H5 竖滚抢走拖动手势。
  * 标签 / 无障碍文案 / 分配计算由调用方负责（见 `claimSplitFromReleasePct`）。
  *
@@ -35,7 +62,7 @@ export function ClaimSplitSlider({
   onChange,
   value,
 }: ClaimSplitSliderProps) {
-  const releasePct = clampSliderPct(value)
+  const { releasePct, restakePct } = claimSplitTrackPct(value)
 
   return (
     <SliderPrimitive.Root
@@ -45,23 +72,23 @@ export function ClaimSplitSlider({
         className,
       )}
       data-claim-split-slider=""
-      value={[releasePct]}
+      value={[restakePct]}
       max={100}
       step={1}
       disabled={disabled}
-      onValueChange={(next) => onChange(next[0] ?? 0)}
+      onValueChange={(next) => onChange(100 - clampSliderPct(next[0] ?? 0))}
       aria-label={ariaLabel}
     >
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full">
         <div
           aria-hidden
           className="absolute inset-y-0 left-0 bg-primary"
-          style={{ width: `${releasePct}%` }}
+          style={{ width: `${restakePct}%` }}
         />
         <div
           aria-hidden
           className="absolute inset-y-0 right-0 bg-(--app-claim-restake)"
-          style={{ width: `${100 - releasePct}%` }}
+          style={{ width: `${releasePct}%` }}
         />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb
@@ -75,7 +102,7 @@ export function ClaimSplitSlider({
       >
         <div>
           <Text as="span" variant="support" className="font-semibold text-foreground">
-            {releasePct}%
+            {restakePct}%
           </Text>
         </div>
       </SliderPrimitive.Thumb>

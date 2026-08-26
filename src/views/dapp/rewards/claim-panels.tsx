@@ -10,12 +10,16 @@ import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
-import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
+import {
+  claimSplitCtaBackgroundImage,
+  ClaimSplitSlider,
+} from '~/shared/components/claim-split-slider'
 import { MainButton } from '~/shared/components/main-button'
 import { Reveal } from '~/shared/components/reveal'
 import { Segment } from '~/shared/components/segment'
 import { SelectMenu } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
+import { cn } from '~/shared/lib/utils'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import {
   ClaimStackDivider,
@@ -183,34 +187,13 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           />
           <div className="mt-1 flex justify-between gap-2">
             <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
-              {interpolate(vm.mixed.releasePct, { pct: vm.releasePct })}
+              {interpolate(vm.mixed.restakePct, { pct: vm.restakePct })}
             </Text>
             <Text as="span" className="leading-4 font-semibold text-claim-restake" variant="detail">
-              {interpolate(vm.mixed.restakePct, { pct: vm.restakePct })}
+              {interpolate(vm.mixed.releasePct, { pct: vm.releasePct })}
             </Text>
           </div>
         </Card>
-
-        <RewardsDestinationCard tone="release">
-          <RewardsDestinationCard.Header
-            title={t.rewards.claim}
-            tone="release"
-            trailing={vm.mixed.releaseInto}
-          />
-          <RewardsDestinationCard.Amount
-            amountText={vm.releaseAmountText}
-            tokenLabel={vm.mixed.tokenGagx}
-          />
-          <RewardsDestinationCard.Period label={vm.mixed.releasePeriod}>
-            <SelectMenu
-              ariaLabel={vm.mixed.releaseAria}
-              onSelect={(value) => vm.setReleaseDays(Number(value))}
-              options={vm.releaseOptions}
-              value={String(vm.releaseDays)}
-              variant="pill"
-            />
-          </RewardsDestinationCard.Period>
-        </RewardsDestinationCard>
 
         <RewardsDestinationCard tone="restake">
           <RewardsDestinationCard.Header
@@ -233,25 +216,52 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           </RewardsDestinationCard.Period>
         </RewardsDestinationCard>
 
+        <RewardsDestinationCard tone="release">
+          <RewardsDestinationCard.Header
+            title={t.rewards.claim}
+            tone="release"
+            trailing={vm.mixed.releaseInto}
+          />
+          <RewardsDestinationCard.Amount
+            amountText={vm.releaseAmountText}
+            tokenLabel={vm.mixed.tokenGagx}
+          />
+          <RewardsDestinationCard.Period label={vm.mixed.releasePeriod}>
+            <SelectMenu
+              ariaLabel={vm.mixed.releaseAria}
+              onSelect={(value) => vm.setReleaseDays(Number(value))}
+              options={vm.releaseOptions}
+              value={String(vm.releaseDays)}
+              variant="pill"
+            />
+          </RewardsDestinationCard.Period>
+        </RewardsDestinationCard>
+
         {vm.walletReady ? (
           <MainButton
-            className="min-h-13 py-2! font-normal!"
+            className={cn(
+              'min-h-13 py-2! font-normal!',
+              'border-0 bg-transparent text-primary-foreground shadow-none',
+              'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
+              'transition-[border-color,box-shadow,transform,opacity,color]',
+            )}
             density="external"
             disabled={!vm.canConfirm}
             loading={vm.submitting}
             onClick={vm.onConfirm}
+            style={{ backgroundImage: claimSplitCtaBackgroundImage(vm.releasePct) }}
           >
             <span className="flex flex-col items-start gap-0.5 text-left font-normal! text-white">
-              <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
-                {vm.mixed.ctaReleaseLine.replace(
-                  '{amount}',
-                  `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,
-                )}
-              </Text>
               <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
                 {vm.mixed.ctaRestakeLine.replace(
                   '{amount}',
                   `${vm.restakeAmountText} ${vm.mixed.tokenGagx}`,
+                )}
+              </Text>
+              <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
+                {vm.mixed.ctaReleaseLine.replace(
+                  '{amount}',
+                  `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,
                 )}
               </Text>
             </span>
