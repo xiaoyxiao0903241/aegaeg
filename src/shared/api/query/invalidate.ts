@@ -322,6 +322,19 @@ const ASSETS_CLAIM_LOG_ROOTS = [
   queryKeys.api.x0MiningLogsRoot,
 ] as const
 
+const CONTRIBUTION_CONSUME_LOG_ROOTS = [queryKeys.api.agxContributionConsumeLogsRoot] as const
+
+const EXCHANGE_LOG_POLL_EXTRAS = [
+  queryKeys.api.turbineSummary,
+  queryKeys.api.assetsHoldingsSummary,
+  queryKeys.api.assetsHoldingsDistribution,
+] as const
+
+const RELEASE_LOG_POLL_EXTRAS = [
+  queryKeys.api.releasePoolSummary,
+  queryKeys.api.bufferPoolSummary,
+] as const
+
 const RELEASE_CLAIM_LOG_ROOTS = [
   queryKeys.api.releasePoolLogsRoot,
   queryKeys.api.bufferPoolLogsRoot,
@@ -405,6 +418,11 @@ function invalidateActive(key: readonly string[]) {
 
 function invalidateAssetsRewardSummary() {
   invalidateActive(queryKeys.api.assetsRewardSummary)
+}
+
+function invalidateAssetsHoldingsApi() {
+  invalidateActive(queryKeys.api.assetsHoldingsSummary)
+  invalidateActive(queryKeys.api.assetsHoldingsDistribution)
 }
 
 /** 贡献点变动：总表 + 带 available_contribution 的发放汇总。 */
@@ -554,17 +572,19 @@ export function invalidateAfterTeamClaim() {
  * 进释放队列 / 可能复投 → 刷 rewards + release + staking；
  * 复投改持仓分布，累计已领取在 assetsRewardSummary。
  * 发放记录 / type-totals 等扫描器核销，短窗轮询。
+ * Mixed 消耗贡献点：消耗流水有观察者时另跟 indexer poll。
  */
 export function invalidateAfterRewardsMixedClaim() {
   const baseline = readRewardScanFingerprint()
+  const consumePoll = captureIndexerLogPoll(CONTRIBUTION_CONSUME_LOG_ROOTS)
   invalidateTabQueries('rewards')
   invalidateTabQueries('release')
   invalidateTabQueries('staking')
   invalidateAssetsRewardSummary()
-  invalidateActive(queryKeys.api.assetsHoldingsSummary)
-  invalidateActive(queryKeys.api.assetsHoldingsDistribution)
+  invalidateAssetsHoldingsApi()
   invalidateActive(queryKeys.api.assetsProductInvestReward)
   void pollRewardsClaimIndexer(baseline)
+  void pollCapturedIndexerLogs(consumePoll)
 }
 
 /** 推荐绑定成功后刷新 community Tab 的查询。 */
@@ -578,12 +598,14 @@ export function invalidateAfterReferralBind() {
  * 涡轮领取改 claimable_gagx，标脏 assetsRewardSummary。
  * 销毁改贡献点走 `invalidateAfterBurnExchange`。
  * 涡轮 / 销毁流水走短窗 poll（当前页未订阅则跳过）。
+ * 持仓汇总是 indexer：标脏以便切到资产 Hub 时拉一次；有流水观察者时才跟 poll。
  */
 export function invalidateAfterExchange() {
   const logPoll = captureIndexerLogPoll(EXCHANGE_LOG_ROOTS)
   invalidateTabQueries('exchange')
   invalidateAssetsRewardSummary()
-  void pollCapturedIndexerLogs(logPoll)
+  invalidateAssetsHoldingsApi()
+  void pollCapturedIndexerLogs(logPoll, EXCHANGE_LOG_POLL_EXTRAS)
 }
 
 /** 销毁 AGX 换贡献点：兑换缓存 + 贡献点总表 / 发放汇总。 */
@@ -597,6 +619,7 @@ export function invalidateAfterBurnExchange() {
  * - 链：staking + assets（仓位 aside 用 assetsStakePositions；余额/额度在两桶交叉）
  * - 抽奖资格：lucky API（手册「成功后刷新…抽奖资格」；活期通常达不到门槛仍标脏）
  * - API 流水/持仓：立即 invalidate + 有限轮询（索引延迟）
+ * - 做市概览：performance / teamMakingOverview 标脏一次，不进入流水短窗
  */
 export function invalidateAfterStaking() {
   const baselines = {
@@ -620,16 +643,22 @@ export function invalidateAfterStaking() {
     queryKey: queryKeys.api.luckyRewardMyRoundsRoot,
     refetchType: 'active',
   })
+  invalidateActive(queryKeys.api.performance)
+  invalidateActive(queryKeys.api.teamMakingOverview)
   void pollStakingIndexer(baselines)
 }
 
-/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划、贡献值、释放，并短窗轮询操作流水。 */
+/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划、贡献值、释放，并短窗轮询操作流水与消耗记录。 */
 export function invalidateAfterAssetsClaim() {
-  const logPoll = captureIndexerLogPoll(ASSETS_CLAIM_LOG_ROOTS)
+  const logPoll = captureIndexerLogPoll([
+    ...ASSETS_CLAIM_LOG_ROOTS,
+    ...CONTRIBUTION_CONSUME_LOG_ROOTS,
+  ])
   invalidateTabQueries('assets')
   invalidateTabQueries('staking')
   invalidateTabQueries('release')
   invalidateContributionChanged()
+  invalidateActive(queryKeys.api.agxContributionConsumeLogsRoot)
   void pollCapturedIndexerLogs(logPoll, [queryKeys.api.x0MiningLifetimeReward])
 }
 
@@ -643,5 +672,5 @@ export function invalidateAfterReleaseClaim() {
   const logPoll = captureIndexerLogPoll(RELEASE_CLAIM_LOG_ROOTS)
   invalidateTabQueries('release')
   invalidateAssetsRewardSummary()
-  void pollCapturedIndexerLogs(logPoll)
+  void pollCapturedIndexerLogs(logPoll, RELEASE_LOG_POLL_EXTRAS)
 }
