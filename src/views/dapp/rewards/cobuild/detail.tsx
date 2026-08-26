@@ -20,6 +20,7 @@ import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
 import { HideZeroToggle, rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 
 export function CobuildDetail() {
   const {
@@ -32,7 +33,6 @@ export function CobuildDetail() {
     totalRewardsApprox,
     totalPerformance,
     myPosition,
-    nextPayout,
     hideZeroMarket,
     setHideZeroMarket,
     teamSort,
@@ -77,7 +77,7 @@ export function CobuildDetail() {
       value: contributionValue,
       valueHint: contributionHint,
     },
-    { key: 'nextPayout', label: cobuild.nextPayout, value: nextPayout },
+    { key: 'nextPayout', label: cobuild.nextPayout, value: <RebaseCountdownValue /> },
   ]
 
   return (
@@ -95,7 +95,7 @@ export function CobuildDetail() {
                   className="leading-none font-semibold wrap-break-word"
                   variant="headline"
                 >
-                  <CountValue text={item.value} />
+                  {typeof item.value === 'string' ? <CountValue text={item.value} /> : item.value}
                 </Text>
                 {'valueHint' in item && item.valueHint != null ? (
                   <Text

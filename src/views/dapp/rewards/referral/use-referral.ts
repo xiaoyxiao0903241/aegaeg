@@ -15,7 +15,6 @@ import {
   formatApiContributionStatLabel,
   formatApiGagxApproxUsd,
   mapReferralAwardDirectToRow,
-  NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/shared'
 
@@ -85,7 +84,6 @@ export function useRewardsReferral() {
     myPosition,
     referralCount,
     contributionValue,
-    nextPayout: NON_NUMERIC_EMPTY,
     recordRows,
     recordsLoading: sessionReady && logsQuery.isLoading,
     recordsPage,

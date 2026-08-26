@@ -1,5 +1,5 @@
 /**
- * 质押域跨 mode UI 零件（倒计时 / 曲线 / 机制卡 / 指标值 / TVL 图）。
+ * 质押域跨 mode UI 零件（曲线 / 机制卡 / 指标值 / TVL 图）。
  */
 import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode } from 'react'
@@ -11,11 +11,6 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Chart, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
-import {
-  CountdownValue,
-  remainingSecFromBlocks,
-  useAnchoredRemainingSec,
-} from '~/shared/components/countdown-value'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Skeleton } from '~/shared/components/skeleton'
@@ -23,52 +18,6 @@ import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
-
-/**
- * 下一次 Rebase 发放倒计时
- *
- * 以链上块差锚定墙钟后每秒滴答更新。
- *
- * @param epochEndBlock 周期结束区块高度
- * @param currentBlock 当前区块高度
- * @param secondsPerBlock 实测或兜底出块秒数
- */
-export function RebaseCountdownValue({
-  epochEndBlock,
-  currentBlock,
-  secondsPerBlock,
-}: {
-  epochEndBlock: bigint | undefined
-  currentBlock: bigint | undefined
-  secondsPerBlock?: number
-}) {
-  const { messages: t } = useI18n()
-  const units = t.staking.aside.countdownUnits
-  const remainingSec = useAnchoredRemainingSec(
-    remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock),
-  )
-
-  return (
-    <CountdownValue
-      className="gap-x-1"
-      labels={{
-        hours: (
-          <Text as="span" variant="detail">
-            {units.hours}
-          </Text>
-        ),
-        minutes: (
-          <Text as="span" variant="detail">
-            {units.minutes}
-          </Text>
-        ),
-      }}
-      totalSec={remainingSec}
-      trim={false}
-      units={['hours', 'minutes']}
-    />
-  )
-}
 
 const CURVE_PLACEHOLDER = '0.00'
 

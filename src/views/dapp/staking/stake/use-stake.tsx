@@ -25,7 +25,8 @@ import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapStakePositionToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
-import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
+import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
@@ -186,13 +187,7 @@ export function useStakeDetail() {
     {
       label: t.staking.stake.overviewMetrics[2]?.label ?? '下一次 Rebase 发放',
       hint: t.staking.stake.overviewMetrics[2]?.hint,
-      value: (
-        <RebaseCountdownValue
-          currentBlock={overviewQuery.data?.currentBlock}
-          epochEndBlock={overviewQuery.data?.epochEndBlock}
-          secondsPerBlock={overviewQuery.data?.secondsPerBlock}
-        />
-      ),
+      value: <RebaseCountdownValue />,
     },
     {
       label: t.staking.stake.overviewMetrics[3]?.label ?? '当前 Rebase 收益率',

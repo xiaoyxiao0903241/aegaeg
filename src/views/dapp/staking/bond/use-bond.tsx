@@ -19,9 +19,10 @@ import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapBondPurchaseToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 import { BOND_ZAP_BLOCKED } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondSession } from '~/views/dapp/staking/bond/use-bond-session'
-import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
+import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
@@ -197,13 +198,7 @@ export function useBondDetail(kind: BondKind) {
     {
       label: copy.overviewMetrics[2]?.label ?? '',
       hint: copy.overviewMetrics[2]?.hint,
-      value: (
-        <RebaseCountdownValue
-          currentBlock={overviewQuery.data?.currentBlock}
-          epochEndBlock={overviewQuery.data?.epochEndBlock}
-          secondsPerBlock={overviewQuery.data?.secondsPerBlock}
-        />
-      ),
+      value: <RebaseCountdownValue />,
     },
     {
       label: copy.overviewMetrics[3]?.label ?? '',
