@@ -465,19 +465,19 @@ const app = defineMessages({
         items: [
           {
             q: '¿Para qué sirven los puntos de contribución?',
-            a: 'Reclamar rendimiento de staking, bonos y otras fuentes consume contribución a {ratio}. Sin puntos suficientes no puedes reclamar.',
+            a: 'Reclamar rendimiento de staking, bonos y otras fuentes consume puntos de contribución a 1:1 (reclamar 1 gAGX gasta 1 punto). Sin puntos suficientes no puedes reclamar.',
           },
           {
             q: '¿Por qué necesito puntos de contribución para reclamar?',
-            a: 'Vincula las reclamaciones a la deflación del protocolo: cada reclamación consume {ratio}; los puntos solo se obtienen quemando AGX. Cada retiro de rendimiento corresponde a AGX quemado.',
+            a: 'Vincula las reclamaciones a la deflación del protocolo: cada 1 gAGX reclamado gasta 1 punto de contribución, y los puntos solo se obtienen quemando AGX. Cada retiro de rendimiento corresponde a una cantidad igual de AGX quemado, apoyando de forma continua la deflación de AGX.',
           },
           {
             q: '¿Cuál es el ratio de quema?',
-            a: 'Quema a {burnRatio}: cada 1 AGX quemado genera puntos equivalentes. El AGX quemado se reparte en cadena entre el agujero negro y el LP.',
+            a: 'Quema a 1:6: cada 1 AGX quemado genera 6 puntos de contribución. El AGX quemado va directo a la dirección del agujero negro y sale de circulación de forma permanente.',
           },
           {
             q: '¿A dónde va el AGX quemado?',
-            a: 'Según la configuración de reparto en cadena, ~{burnPct}% va al agujero negro de forma permanente; ~{injectPct}% puede inyectarse en liquidez LP.',
+            a: 'Todo el AGX quemado se transfiere a la dirección del agujero negro y se bloquea de forma permanente, reduce la oferta circulante y refuerza la deflación; forma parte del mecanismo de retorno de valor del protocolo.',
           },
           {
             q: '¿Se pueden transferir o reembolsar los puntos de contribución?',
@@ -557,11 +557,11 @@ const app = defineMessages({
           },
           {
             q: '¿Cuál es la diferencia entre desbloquear y retirar?',
-            a: 'Desbloquear compra AGX equivalente con USD1, desbloquea gAGX e inicia la espera. Retirar mueve el gAGX desbloqueado a la billetera tras {cooldownHours} horas. Los registros muestran Desbloquear y Retirar.',
+            a: 'Desbloquear compra AGX equivalente con USD1, desbloquea gAGX e inicia la espera. Retirar mueve el gAGX desbloqueado a la billetera tras 24–96 horas. Los registros muestran Desbloquear y Retirar.',
           },
           {
             q: '¿Cuánto dura la espera?',
-            a: 'El periodo actual es {cooldownHours} horas, ajustado automáticamente por el mercado. Luego puedes retirar ese gAGX.',
+            a: 'Cada desbloqueo entra en una espera de 24–96 horas; la duración concreta la ajusta automáticamente el sistema según el mercado. Luego puedes retirar ese gAGX.',
           },
           {
             q: '¿A dónde va el AGX comprado al desbloquear?',
@@ -764,11 +764,11 @@ const app = defineMessages({
       items: [
         {
           q: '¿Cómo participar en el plan de co-construcción?',
-          a: 'Los usuarios participan en la co-construcción con USD1 y pueden obtener AGX según el descuento de la fase correspondiente. {phaseCount} fases, con descuentos de {discounts} respectivamente.',
+          a: 'Los usuarios participan en la co-construcción con USD1 y pueden obtener AGX según el descuento de la fase correspondiente. 3 fases, con descuentos de 30%, 25%, 20% respectivamente.',
         },
         {
           q: '¿Cuota de co-construcción y requisitos de participación?',
-          a: 'El monto mínimo de participación es {minUsd}, y debe participarse en múltiplos de {shareIncrement} USD1. Cuotas por fase: {phaseQuotas}.',
+          a: 'El monto mínimo de participación es $100, y debe participarse en múltiplos de 100 USD1. Cuotas por fase: $100 – $10,000, $100 – $10,000, $100 – $30,000.',
         },
         {
           q: '¿Cuánto dura el ciclo de co-construcción?',
@@ -776,7 +776,7 @@ const app = defineMessages({
         },
         {
           q: '¿Cómo obtener recompensas de airdrop X?',
-          a: 'Cuando el monto acumulado de participación en co-construcción de una cuenta alcanza {threshold}, califica para las recompensas de airdrop X de la fase correspondiente. Proporciones de airdrop en {phaseCount} fases: {airdropRatios}.',
+          a: 'Cuando el monto acumulado de participación en co-construcción de una cuenta alcanza $1,000, califica para las recompensas de airdrop X de la fase correspondiente. Proporciones de airdrop en 3 fases: 5%, 2%, 1%.',
         },
         {
           q: '¿Cómo se liberan las recompensas de airdrop X?',
@@ -1110,7 +1110,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo se pagan los premios?',
-            a: 'Los premios se convierten a gAGX al valor del sorteo y se acumulan en la tarjeta Lucky. Reclama con reglas Mixed (contribución {ratio}, cola de liberación o reinversión).',
+            a: 'Los premios se convierten a gAGX al valor del sorteo y se acumulan en la tarjeta Lucky. Reclama con reglas Mixed (contribución 1:1, cola de liberación o reinversión).',
           },
           {
             q: '¿Por qué no tengo elegibilidad tras hacer staking de $5,000?',
@@ -1165,7 +1165,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo las recompensas por referidos?',
-            a: 'En el panel izquierdo ajusta reclamar vs reinvertir: lo reclamado entra al pool de liberación y se desbloquea linealmente; lo reinvertido va a staking de un solo token para capitalizar. Ambos consumen {ratio}.',
+            a: 'En el panel izquierdo ajusta reclamar vs reinvertir: lo reclamado entra al pool de liberación y se desbloquea linealmente; lo reinvertido va a staking de un solo token para capitalizar. Ambos consumen 1:1.',
           },
           {
             q: '¿Qué es el número de direcciones de referidos directos?',
@@ -1218,7 +1218,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo las recompensas por participación?',
-            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución {ratio} (DaoPool Mixed).',
+            a: 'En el panel izquierdo elige la proporción reclamar / reinvertir: lo reclamado entra al pool de liberación del periodo elegido; lo reinvertido va a staking de un solo token. Ambos consumen contribución 1:1 (DaoPool Mixed).',
           },
           {
             q: '¿Puedo cambiar de referente?',
@@ -1292,7 +1292,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo reclamo co-construcción y nivelación?',
-            a: 'En la parte superior del panel izquierdo cambia Co-construcción / Nivelación y elige la proporción. Misma liberación/reinversión y {ratio}.',
+            a: 'En la parte superior del panel izquierdo cambia Co-construcción / Nivelación y elige la proporción. Misma liberación/reinversión y 1:1.',
           },
           {
             q: '¿Cuándo aplica la nueva tasa de nivel?',
@@ -1393,7 +1393,7 @@ const app = defineMessages({
         },
         {
           q: '¿Qué se necesita para reclamar?',
-          a: 'Reclamar consume {ratio}. Si te faltan puntos, obténlos en la página Quemar.',
+          a: 'Reclamar consume contribución a 1:1 (reclamar 1 gAGX gasta 1 punto). Los puntos se obtienen quemando AGX; si te faltan, consíguelos primero en la página Quemar.',
         },
         {
           q: '¿Cuándo llegan las recompensas reclamadas?',
@@ -1401,7 +1401,7 @@ const app = defineMessages({
         },
         {
           q: '¿Cuándo se liquidan las recompensas?',
-          a: 'Lucky se liquida a las 00:00 UTC cada día. Las demás siguen el Rebase cada {hours} horas. La próxima hora está en el panel de datos de cada detalle.',
+          a: 'Lucky se liquida a las 00:00 UTC cada día. Las demás siguen el Rebase cada 12 horas. La próxima hora está en el panel de datos de cada detalle.',
         },
         {
           q: '¿Por qué algunas tarjetas no muestran montos?',
@@ -1555,12 +1555,12 @@ const app = defineMessages({
           a: 'Cuando un socio participa en la co-construcción a través de tu enlace de invitación, la relación de referido se establece automáticamente y es permanente.',
         },
         {
-          q: '¿Puedo cambiar a mi invitador?',
-          a: 'Una vez vinculada, la relación de referido no se puede cambiar.',
+          q: '¿Cómo se calculan las recompensas de referido Génesis?',
+          a: 'Las recompensas de referido Génesis son el 3%, con liquidación comprimida de importe igual: solo se cuenta la parte de importe equivalente.',
         },
         {
-          q: '¿Cómo subo mi nivel de co-construcción?',
-          a: 'Según tus tenencias personales y el rendimiento del equipo, avanzas de A1 a A13.',
+          q: '¿Cómo subo mi rango Génesis?',
+          a: 'Según tu importe personal de co-construcción y el rendimiento del sistema, avanzas de S1 a S10.',
         },
         {
           q: '¿Cómo califico para la asignación de desarrollo?',
@@ -1748,11 +1748,11 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo obtengo contribución?',
-            a: 'Compra y quema AGX. Reclamar consume {ratio}; prepara puntos suficientes.',
+            a: 'Compra y quema AGX para obtener contribución. Reclamar consume contribución a 1:1 (reclamar 1 gAGX gasta 1 punto de contribución); prepara puntos suficientes.',
           },
           {
             q: '¿Por qué elegir un periodo de liberación al reclamar?',
-            a: 'No es instantáneo; desbloqueo lineal; a más largo, menor impuesto: {taxSchedule}.',
+            a: 'No es instantáneo; desbloqueo lineal; a más largo, menor impuesto: 5 días 20%, 20 días 10%, 40 días 5%, 60 días 1%.',
           },
           {
             q: '¿A dónde va el rendimiento reclamado?',
@@ -1760,11 +1760,11 @@ const app = defineMessages({
           },
           {
             q: '¿Cuál es la diferencia entre reinvertir y reclamar?',
-            a: 'Reinvertir omite la liberación, tiene mejor impuesto ({restakeTax}) y capitaliza en staking de un solo token. Reclamar es más flexible.',
+            a: 'Reinvertir omite la liberación, tiene mejor impuesto (360 días 15%, 540 días 10%) y capitaliza en staking de un solo token. Reclamar es más flexible.',
           },
           {
             q: '¿Qué es el pool búfer?',
-            a: 'Tras retirar el staking, el principal entra al búfer con liberación lineal secundaria de {days} días. Lo «liberado» en el búfer se puede canjear a la billetera en cualquier momento.',
+            a: 'Tras retirar el staking, el principal entra al búfer con liberación lineal secundaria de 30 días. Lo «liberado» en el búfer se puede canjear a la billetera en cualquier momento.',
           },
         ],
       },
@@ -1805,7 +1805,7 @@ const app = defineMessages({
           items: [
             {
               q: '¿Cuál es la diferencia entre reclamar y canjear?',
-              a: 'Reclamar es el rendimiento (periodo de liberación o reinversión). Canjear es el principal AGX liberado → búfer de {days} días y luego la billetera.',
+              a: 'Reclamar es el rendimiento (periodo de liberación o reinversión). Canjear es el principal AGX liberado → búfer de 30 días y luego la billetera.',
             },
             {
               q: '¿Por qué se muestra cada staking por separado?',
@@ -1858,7 +1858,7 @@ const app = defineMessages({
           items: [
             {
               q: '¿Cuál es la diferencia entre reclamar y canjear?',
-              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de {days} días de liberación lineal secundaria y luego a la billetera.',
+              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de 30 días de liberación lineal secundaria y luego a la billetera.',
             },
             {
               q: '¿De dónde viene el «principal del bono»?',
@@ -1870,7 +1870,7 @@ const app = defineMessages({
             },
             {
               q: '¿Se puede reinvertir el rendimiento del bono?',
-              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo ({restakeDays}) con mejor impuesto que reclamar por periodo.',
+              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo (360/540 días) con mejor impuesto que reclamar por periodo.',
             },
             {
               q: '¿Qué ocurre cuando termina la cuenta regresiva?',
@@ -1915,7 +1915,7 @@ const app = defineMessages({
           items: [
             {
               q: '¿Cuál es la diferencia entre reclamar y canjear?',
-              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de {days} días de liberación lineal secundaria y luego a la billetera.',
+              a: 'Reclamar es sobre el rendimiento: saca el gAGX del bono en el periodo de liberación elegido o reinviste; canjear es sobre el principal: retira el AGX liberado, entra a un búfer de 30 días de liberación lineal secundaria y luego a la billetera.',
             },
             {
               q: '¿De dónde viene el «principal del bono»?',
@@ -1927,7 +1927,7 @@ const app = defineMessages({
             },
             {
               q: '¿Se puede reinvertir el rendimiento del bono?',
-              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo ({restakeDays}) con mejor impuesto que reclamar por periodo.',
+              a: 'Sí. Al reclamar reparte liberación y reinversión; lo reinvertido va a staking de un solo activo (360/540 días) con mejor impuesto que reclamar por periodo.',
             },
             {
               q: '¿Qué ocurre cuando termina la cuenta regresiva?',
@@ -2152,11 +2152,11 @@ const app = defineMessages({
         items: [
           {
             q: '¿Cómo se liquida el Rebase?',
-            a: 'El protocolo corre por bloques: ~{blocks} bloques = 1 Epoch (~{hours} horas). El Rebase se liquida al final de cada Epoch — {timesPerDay} veces al día.',
+            a: 'El protocolo corre por bloques: ~14,400 bloques = 1 Epoch (~12 horas). El Rebase se liquida al final de cada Epoch — 2 veces al día.',
           },
           {
             q: '¿Cómo se libera el principal?',
-            a: 'El principal de staking y bonos usa liberación lineal por bloques (~3 s por bloque). Tras retirarlo, entra a un búfer de {days} días para suavizar la salida.',
+            a: 'El principal de staking y bonos usa liberación lineal por bloques (~3 s por bloque). Tras retirarlo, entra a un búfer de 30 días para suavizar la salida.',
           },
           {
             q: '¿En qué se diferencian Staking, bono LP y bono de quema?',
@@ -2353,11 +2353,11 @@ const app = defineMessages({
       faq: [
         {
           q: '¿Cómo se calcula el rendimiento del staking?',
-          a: 'Rebase {timesPerDay} veces al día; rendimiento diario ~0.5%–1%. A mayor plazo, mayor bonificación: 180 d ≥10%, 360 d ≥15%, 540 d ≥20%, ajustado con el factor Rebase.',
+          a: 'Rebase 2 veces al día; rendimiento diario ~0.5%–1%. A mayor plazo, mayor bonificación: 180 d ≥10%, 360 d ≥15%, 540 d ≥20%, ajustado con el factor Rebase.',
         },
         {
           q: '¿Cuándo se puede retirar el principal?',
-          a: 'El principal se libera linealmente por bloques (~3 s). Lo liberado se puede retirar cuando quieras; tras retirarlo entra a un búfer de {days} días.',
+          a: 'El principal se libera linealmente por bloques (~3 s). Lo liberado se puede retirar cuando quieras; tras retirarlo entra a un búfer de 30 días.',
         },
         {
           q: '¿El APY de referencia es fijo?',
@@ -2637,7 +2637,7 @@ const app = defineMessages({
         },
         {
           q: '¿Cómo se liberan los activos al retirar staking?',
-          a: 'El gAGX desbloqueado se libera linealmente por bloques durante {days} días.',
+          a: 'El gAGX desbloqueado se libera linealmente por bloques durante 30 días.',
         },
         {
           q: '¿Cuál es el suministro de X? ¿Se inflará?',
@@ -2862,7 +2862,7 @@ const app = defineMessages({
         },
         {
           q: '¿Cuándo se descuenta el impuesto?',
-          a: 'Se descuenta una vez al entrar en cola ({taxSchedule}). El pool muestra el monto neto. Luego no hay cargos extra.',
+          a: 'Se descuenta una vez al entrar en cola (5 días 20%, 20 días 10%, 40 días 5%, 60 días 1%). El pool muestra el monto neto. Luego no hay cargos extra.',
         },
         {
           q: '¿A dónde va el gAGX reclamado del pool de liberación?',
@@ -2884,7 +2884,7 @@ const app = defineMessages({
         },
         {
           q: '¿Cuándo se descuenta el impuesto?',
-          a: 'Se descuenta una vez al entrar en cola ({taxSchedule}). El pool muestra el monto neto. Luego no hay cargos extra.',
+          a: 'Se descuenta una vez al entrar en cola (5 días 20%, 20 días 10%, 40 días 5%, 60 días 1%). El pool muestra el monto neto. Luego no hay cargos extra.',
         },
         {
           q: '¿A dónde va el gAGX reclamado del pool de liberación?',
@@ -2902,7 +2902,7 @@ const app = defineMessages({
       buffer: [
         {
           q: '¿Qué es el pool búfer?',
-          a: 'Tras canjear, liberación lineal secundaria de {days} días. Suaviza las salidas.',
+          a: 'Tras canjear, liberación lineal secundaria de 30 días. Suaviza las salidas.',
         },
         {
           q: '¿Los activos en el pool búfer siguen generando rendimiento?',
