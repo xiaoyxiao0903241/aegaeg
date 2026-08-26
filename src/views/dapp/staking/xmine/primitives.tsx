@@ -81,18 +81,20 @@ function SlideIcon({ src, tone = 'bright' }: { src: string; tone?: 'bright' | 'p
 function SlideShell({
   badge,
   children,
+  fill = false,
   headline,
   kicker,
 }: {
   badge: string
   children: ReactNode
+  fill?: boolean
   headline: string
   kicker: string
 }) {
   return (
     <Card
       as="article"
-      className="relative flex h-full min-h-52 min-w-0 flex-1 flex-col justify-between overflow-hidden p-5 max-dapp:px-4 max-dapp:py-3.5"
+      className="relative flex h-full min-h-52 min-w-0 flex-1 flex-col justify-between overflow-hidden p-5 max-dapp:justify-start max-dapp:px-4 max-dapp:py-3.5"
       surface="inverse"
     >
       <div className="flex min-w-0 items-center justify-between gap-4 border-b border-white/8 pb-4 max-dapp:flex-col max-dapp:items-start max-dapp:gap-2">
@@ -120,7 +122,14 @@ function SlideShell({
           {badge}
         </Text>
       </div>
-      <div className="min-w-0 pt-4 max-dapp:pt-3">{children}</div>
+      <div
+        className={cn(
+          'min-w-0 pt-4 max-dapp:pt-3',
+          fill && 'max-dapp:flex max-dapp:min-h-0 max-dapp:flex-1 max-dapp:flex-col',
+        )}
+      >
+        {children}
+      </div>
     </Card>
   )
 }
@@ -143,7 +152,7 @@ function Tile({
   return (
     <div
       className={cn(
-        'grid min-w-0 content-start rounded-faq',
+        'grid min-w-0 content-start rounded-faq max-dapp:h-full',
         compact ? 'gap-[5px] px-3 py-[9px]' : 'gap-1.5 px-3.5 py-3',
         wash ? 'bg-primary/10' : 'bg-white/5',
       )}
@@ -186,7 +195,7 @@ export function StakingXValueCarousel({ copy }: { copy: XValueCopy }) {
       key: 'supply',
       node: (
         <SlideShell badge={copy.badge} headline={copy.supplyValue} kicker={copy.supplyLabel}>
-          <div className="grid min-w-0 grid-cols-1 items-start gap-5 dapp:grid-cols-2 max-dapp:gap-3">
+          <div className="grid min-w-0 grid-cols-2 items-start gap-5 max-dapp:gap-3">
             {copy.columns.map((col) => (
               <div className="grid min-w-0 content-start gap-2" key={col.title}>
                 <span className="inline-flex flex-wrap items-baseline gap-2">
@@ -226,10 +235,11 @@ export function StakingXValueCarousel({ copy }: { copy: XValueCopy }) {
       node: (
         <SlideShell
           badge={copy.sourcesBadge}
+          fill
           headline={copy.sourcesHeadline}
           kicker={copy.sourcesKicker}
         >
-          <div className="grid min-w-0 grid-cols-1 items-stretch gap-2.5 dapp:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <div className="grid min-w-0 grid-cols-2 items-stretch gap-2.5 dapp:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] max-dapp:h-full max-dapp:flex-1 max-dapp:auto-rows-fr">
             {copy.sources.flatMap((item, index) => {
               const tile = (
                 <Tile
@@ -251,10 +261,11 @@ export function StakingXValueCarousel({ copy }: { copy: XValueCopy }) {
       node: (
         <SlideShell
           badge={copy.deflationBadge}
+          fill
           headline={copy.deflationHeadline}
           kicker={copy.deflationKicker}
         >
-          <div className="grid min-w-0 grid-cols-1 items-stretch gap-2 dapp:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <div className="grid min-w-0 grid-cols-2 items-stretch gap-2 dapp:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] max-dapp:h-full max-dapp:flex-1 max-dapp:auto-rows-fr">
             {copy.deflationSteps.flatMap((step, index) => {
               const last = index === copy.deflationSteps.length - 1
               const tile = (
@@ -280,10 +291,11 @@ export function StakingXValueCarousel({ copy }: { copy: XValueCopy }) {
       node: (
         <SlideShell
           badge={copy.featuresBadge}
+          fill
           headline={copy.featuresHeadline}
           kicker={copy.featuresKicker}
         >
-          <div className="grid min-w-0 grid-cols-1 gap-2.5 dapp:grid-cols-4">
+          <div className="grid min-w-0 grid-cols-2 gap-2.5 dapp:grid-cols-4 max-dapp:h-full max-dapp:flex-1 max-dapp:auto-rows-fr">
             {copy.features.map((item, index) => (
               <Tile
                 copy={item.copy}
