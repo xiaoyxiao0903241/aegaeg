@@ -10,6 +10,7 @@ import {
   formatContributionConsumedTotal,
   formatContributionPoints,
 } from '~/core/exchange/format-contribution-points'
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useAgxContributionSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -55,7 +56,10 @@ export function BurnExchangeDetail({
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
 
   const burnedRaw = contributionSummary.data?.total_burned_agx
-  const burnedAgxLabel = formatApiAmount(burnedRaw, { digits: 2, suffix: ' AGX' })
+  const burnedAgxLabel = formatApiAmount(burnedRaw, {
+    digits: PERSONAL_TOKEN_DIGITS,
+    suffix: ' AGX',
+  })
   const burnedUsdApprox = formatUsdApprox(
     parseApiAmount(burnedRaw) ?? 0,
     agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,

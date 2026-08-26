@@ -30,7 +30,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(missing[1], '质押（540天）')
-  assert.equal(missing[2], '0.00 AGX')
+  assert.equal(missing[2], '0.0000 AGX')
   assert.equal(missing[3], '-')
 
   const liquid = mapStakeFlowLogToOpsRow(
@@ -44,7 +44,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(liquid[1], '质押（活期）')
-  assert.equal(liquid[2], '25.00 AGX')
+  assert.equal(liquid[2], '25.0000 AGX')
 
   const reward = mapStakeFlowLogToOpsRow(
     {
@@ -83,7 +83,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(purchase[1], '购买（360天）')
-  assert.equal(purchase[2], '66.89 AGX')
+  assert.equal(purchase[2], '66.8900 AGX')
 
   const xClaim = mapX0MiningLogToOpsRow(
     {
@@ -226,7 +226,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(aside[1], '180 天')
-  assert.equal(aside[2], '0.00 AGX')
+  assert.equal(aside[2], '0.0000 AGX')
   assert.equal(aside[3], '45.67%')
 
   const bondAside = mapBondPurchaseToAsideRow(
@@ -243,7 +243,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
   assert.equal(bondAside[1], '360 天')
   assert.equal(bondAside[2], '$1,200')
   assert.equal(bondAside[3], '88%')
-  assert.equal(bondAside[4], '20.98 AGX')
+  assert.equal(bondAside[4], '20.9800 AGX')
 
   const purpose = zh.exchange.burn.history.purpose
   const consume = mapAgxContributionConsumeLogToRow(

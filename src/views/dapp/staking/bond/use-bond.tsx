@@ -2,7 +2,11 @@ import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import type { BondKind } from '~/core/staking/staking-period'
 import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -65,7 +69,6 @@ export function useBondDock(kind: BondKind) {
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
     balance: sessionReady && walletReady ? bond.balanceLabel : '',
-    digits: 2,
   })
 
   async function onSubmit() {
@@ -186,7 +189,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(totalDepositNum, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(totalDeposit, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(totalDeposit, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -215,7 +218,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(held, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(payoutRemaining, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(payoutRemaining, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -226,7 +229,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(released, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pendingPayout, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(pendingPayout, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -237,7 +240,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(pending, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(pendingRelease, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -248,7 +251,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(profit, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
         />
       ),
     },

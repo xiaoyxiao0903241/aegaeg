@@ -1,5 +1,5 @@
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   AssetsListPager,
@@ -97,7 +97,7 @@ export function XmineDock() {
             ? `${formatTokenAmount(
                 vm.position.warmupGons > ZERO_BI ? ZERO_BI : vm.position.miningStake,
                 EXCHANGE_CONFIG.tokens.gagx.decimals,
-                2,
+                PERSONAL_TOKEN_DIGITS,
               )} gAGX`
             : ''
         }

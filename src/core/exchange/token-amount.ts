@@ -79,8 +79,11 @@ export function parseTokenAmount(value: string, decimals: number): bigint {
   }
 }
 
+/** 登录用户代币展示位数（fixed、四舍五入）。协议总量与美元金额不用；已是 6 位的保持。 */
+export const PERSONAL_TOKEN_DIGITS = 4
+
 export type FormatTokenAmountOptions = {
-  /** 保留的小数位（缺省 4）。 */
+  /** 保留的小数位（缺省 `PERSONAL_TOKEN_DIGITS`）。 */
   digits?: number
   /**
    * 数字第三参默认 `false`（按 `digits` 补零，与 `formatNumber` 一致）。
@@ -92,18 +95,29 @@ export type FormatTokenAmountOptions = {
    * 输入草稿 / 须可 parse 的路径传 `false`。
    */
   dust?: boolean
+  /**
+   * `true`（默认）：按 `digits` 四舍五入。
+   * 输入草稿 / 须可 parse 回 wei 的路径传 `false`（截断，避免 100% 填入上溢余额）。
+   */
+  round?: boolean
 }
 
 function tokenAmountOptions(
-  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
+  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = PERSONAL_TOKEN_DIGITS,
 ): Required<FormatTokenAmountOptions> {
   if (typeof maxFractionDigitsOrOptions === 'number') {
-    return { digits: maxFractionDigitsOrOptions, trimZeros: false, dust: true }
+    return {
+      digits: maxFractionDigitsOrOptions,
+      trimZeros: false,
+      dust: true,
+      round: true,
+    }
   }
   return {
-    digits: maxFractionDigitsOrOptions.digits ?? 4,
+    digits: maxFractionDigitsOrOptions.digits ?? PERSONAL_TOKEN_DIGITS,
     trimZeros: maxFractionDigitsOrOptions.trimZeros !== false,
     dust: maxFractionDigitsOrOptions.dust !== false,
+    round: maxFractionDigitsOrOptions.round !== false,
   }
 }
 
@@ -116,7 +130,7 @@ export function tokenDisplayFloorWei(decimals: number, digits: number): bigint {
   return 10n ** BigInt(d - frac)
 }
 
-/** 资产页操作门槛：展示 2 位的 `0.01`（AGX/gAGX = 1e7 wei，X = 1e16 wei）。 */
+/** 资产页可操作门槛：≥ `0.01`（AGX/gAGX = 1e7 wei，X = 1e16 wei）。与展示位数无关。 */
 export const ASSETS_ACTION_DISPLAY_DIGITS = 2
 
 /**
@@ -137,30 +151,48 @@ function tokenDustFloorLabel(digits: number): string {
   return d === 1 ? '0.1' : `0.${'0'.repeat(d - 1)}1`
 }
 
+/** 把 wei 四舍五入到 `digits` 位小数对应的最小单位。 */
+function roundTokenAmountWei(amount: bigint, decimals: number, digits: number): bigint {
+  if (digits >= decimals) return amount
+  const unit = 10n ** BigInt(decimals - digits)
+  return ((amount + unit / 2n) / unit) * unit
+}
+
 /**
  * 链上最小单位数量 → 千分位分组的人类可读字符串。
  *
- * 第三个参数为最大小数位（数字参默认**补足**位数）或 `{ digits, trimZeros, dust }`。
- * 默认：正数低于展示位时返回 `<0.01`（随 digits）；真 0 随 digits 为 `0.00` 等。
+ * 第三个参数为最大小数位（数字参默认**补足**位数、四舍五入）或 `{ digits, trimZeros, dust, round }`。
+ * 默认：正数低于展示位时返回 `<0.0001`（随 digits）；真 0 随 digits 为 `0.0000` 等。
  *
  * @param amount 最小单位数量
  * @param decimals 代币精度
- * @param maxFractionDigitsOrOptions 最大小数位或配置对象；缺省 4
+ * @param maxFractionDigitsOrOptions 最大小数位或配置对象；缺省 `PERSONAL_TOKEN_DIGITS`
  * @returns 分组后的金额字符串
  */
 export function formatTokenAmount(
   amount: bigint,
   decimals: number,
-  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
+  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = PERSONAL_TOKEN_DIGITS,
 ): string {
-  const { digits: rawDigits, trimZeros, dust } = tokenAmountOptions(maxFractionDigitsOrOptions)
+  const {
+    digits: rawDigits,
+    trimZeros,
+    dust,
+    round,
+  } = tokenAmountOptions(maxFractionDigitsOrOptions)
   const digits = Math.max(0, Math.floor(rawDigits))
+  const displayAmount = round ? roundTokenAmountWei(amount, decimals, digits) : amount
   const divisor = 10n ** BigInt(decimals)
-  const whole = amount / divisor
-  const fraction = amount % divisor
+  const whole = displayAmount / divisor
+  const fraction = displayAmount % divisor
   const groupedWhole = formatIntegerGrouping(whole.toString())
 
-  if (dust && amount > 0n && digits >= 1 && amount < tokenDisplayFloorWei(decimals, digits)) {
+  if (
+    dust &&
+    amount > 0n &&
+    digits >= 1 &&
+    displayAmount < tokenDisplayFloorWei(decimals, digits)
+  ) {
     return `<${tokenDustFloorLabel(digits)}`
   }
 
@@ -174,7 +206,7 @@ export function formatTokenAmount(
     return `${groupedWhole}.${fractionText}`
   }
 
-  if (amount === 0n) return '0'
+  if (displayAmount === 0n) return '0'
   if (fraction === 0n) return groupedWhole
 
   const fractionText = fraction.toString().padStart(decimals, '0').replace(/0+$/, '')
@@ -183,14 +215,14 @@ export function formatTokenAmount(
 }
 
 /**
- * 资产页金额展示：固定 2 位，粉尘记 `0.00`，不输出 `<0.01`。
+ * 资产页金额展示：固定 4 位，粉尘记 `0.0000`，不输出 `<0.0001`。
  *
  * @param amount 最小单位数量
  * @param decimals 代币精度
  */
 export function formatAssetsActionAmount(amount: bigint, decimals: number): string {
   return formatTokenAmount(amount, decimals, {
-    digits: ASSETS_ACTION_DISPLAY_DIGITS,
+    digits: PERSONAL_TOKEN_DIGITS,
     dust: false,
     trimZeros: false,
   })
@@ -214,7 +246,9 @@ export function formatTokenAmountDraft(
 ): string {
   const digits = Math.min(decimals, Math.max(0, Math.floor(maxFractionDigits)))
   return stripTrailingAmountZeros(
-    stripTokenAmountGrouping(formatTokenAmount(amount, decimals, { digits, dust: false })),
+    stripTokenAmountGrouping(
+      formatTokenAmount(amount, decimals, { digits, dust: false, round: false }),
+    ),
   )
 }
 

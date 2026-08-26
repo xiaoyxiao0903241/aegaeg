@@ -8,6 +8,7 @@ import {
   formatTokenAmount,
   formatTokenAmountToNumber,
   isAssetsActionableAmount,
+  PERSONAL_TOKEN_DIGITS,
 } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -265,7 +266,7 @@ export function usePositionDock(product: AssetsProduct) {
           ? (row as AssetsStakeRow).principal
           : (row as AssetsStakeRow).claimableBalance
         : (row as AssetsBondRow).pendingPayout
-    const amountLabel = `${formatTokenAmount(amount, EXCHANGE_CONFIG.tokens.agx.decimals, 2)} AGX`
+    const amountLabel = `${formatTokenAmount(amount, EXCHANGE_CONFIG.tokens.agx.decimals, PERSONAL_TOKEN_DIGITS)} AGX`
     setRedeem({ open: true, capturedAddress: address, kind, row, amountLabel })
   }
 
@@ -429,20 +430,20 @@ function mapPricedStats(
   priceUsd: number | null,
 ): AssetsPositionStatCell[] {
   return rows.map(({ amount, decimals, unit, icon }) => ({
-    value: `${formatTokenAmount(amount, decimals, 2)} ${unit}`,
+    value: `${formatTokenAmount(amount, decimals, PERSONAL_TOKEN_DIGITS)} ${unit}`,
     icon,
     approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), priceUsd),
   }))
 }
 
-/** 读失败展示占位横线，不用 0.00 冒充实数；未连接 / 加载中仍用 0.00 空态 */
+/** 读失败展示占位横线，不用 0.00 冒充实数；未连接 / 加载中仍用 0.0000 空态 */
 function errorStatCells(count: number): AssetsPositionStatCell[] {
   return Array.from({ length: count }, () => ({ value: '—' }))
 }
 
 function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPositionStatCell[] {
   return Array.from({ length: count }, () => ({
-    value: `0.00 ${unit}`,
+    value: `0.0000 ${unit}`,
     approx: formatUsdApprox(0, null),
   }))
 }

@@ -1,3 +1,4 @@
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatNumber } from '~/shared/presenters/format'
@@ -19,16 +20,16 @@ export function useTurbine(turbine: TurbineExchangeState) {
   ]
 
   const unlockableAmountLabel = exchangePreview
-    ? '0.00 gAGX'
+    ? `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`
     : !turbine.walletReady
-      ? '0.00 gAGX'
-      : `${turbine.quotaLabel || formatNumber(0, { digits: 2 })} gAGX`
+      ? `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`
+      : `${turbine.quotaLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`
 
   const usd1AmountLabel = exchangePreview
-    ? formatNumber(0, { digits: 2 })
+    ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
     : !turbine.walletReady
-      ? formatNumber(0, { digits: 2 })
-      : turbine.usd1BalanceLabel || formatNumber(0, { digits: 2 })
+      ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
+      : turbine.usd1BalanceLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
 
   const willReceiveLabel = turbine.buyAgxLabel
 

@@ -165,7 +165,10 @@ export function AssetsOverviewMetric({
       </div>
       <Text
         as="strong"
-        className={cn('min-w-0 truncate font-semibold', featured ? 'leading-none' : 'text-base/5')}
+        className={cn(
+          'min-w-0 font-semibold wrap-break-word',
+          featured ? 'leading-none' : 'text-base/5',
+        )}
         tone="inverse"
         variant={featured ? 'stat' : undefined}
       >

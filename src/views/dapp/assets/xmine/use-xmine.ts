@@ -2,7 +2,11 @@ import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useX0MiningLifetimeReward, useX0MiningLogs } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -157,13 +161,13 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
 
   if (!walletReady || !address || positionQuery.isError) {
     return Array.from({ length: 4 }, () => ({
-      value: '0.00 gAGX',
+      value: '0.0000 gAGX',
       approx: formatUsdApprox(0, null),
     }))
   }
   if (positionQuery.data === undefined) {
     return Array.from({ length: 4 }, () => ({
-      value: '0.00 gAGX',
+      value: '0.0000 gAGX',
       approx: formatUsdApprox(0, null),
     }))
   }
@@ -193,12 +197,12 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
         { amount: pending, decimals: X_DECIMALS, unit: 'X', icon: 'x' as const, price: null },
       ] as const
     ).map(({ amount, decimals, unit, icon, price }) => ({
-      value: `${formatTokenAmount(amount, decimals, 2)} ${unit}`,
+      value: `${formatTokenAmount(amount, decimals, PERSONAL_TOKEN_DIGITS)} ${unit}`,
       icon,
       approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), price),
     })),
     {
-      value: `${formatNumber(lifetimeX, { digits: 2 })} X`,
+      value: `${formatNumber(lifetimeX, { digits: PERSONAL_TOKEN_DIGITS })} X`,
       icon: 'x',
       approx: formatUsdApprox(0, null),
     },

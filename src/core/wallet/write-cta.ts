@@ -1,3 +1,4 @@
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { interpolate } from '~/i18n/interpolate'
 
@@ -93,13 +94,13 @@ export function writeCtaDisabled(args: {
  *
  * @param template 含 `{balance}` 的模板文案
  * @param args.balance 余额文案；空串 = 未加载 / 未连接
- * @param args.digits 未知时零占位小数位（默认 2）
+ * @param args.digits 未知时零占位小数位（默认个人代币 4 位）
  */
 export function formatAmountBalanceLabel(
   template: string,
   args: { balance: string; digits?: number },
 ): string {
-  const digits = Math.max(0, Math.floor(args.digits ?? 2))
+  const digits = Math.max(0, Math.floor(args.digits ?? PERSONAL_TOKEN_DIGITS))
   const balance = args.balance.trim() === '' ? zeroGroupedPlaceholder(digits) : args.balance.trim()
   return interpolate(template, { balance })
 }

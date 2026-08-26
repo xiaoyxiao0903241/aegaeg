@@ -1,3 +1,4 @@
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMakingOverview } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -38,7 +39,7 @@ function formatUsdFromAgx(raw: string | null | undefined, priceUsd: number | nul
 }
 
 function formatAgxSecondary(raw: string | null | undefined): string {
-  return `${formatApiAmount(raw)} AGX`
+  return `${formatApiAmount(raw, { digits: PERSONAL_TOKEN_DIGITS })} AGX`
 }
 
 /** 档位序号：A1→0 … A13→12；>13 → 终身成就行（13）；无档 → null（不高亮） */

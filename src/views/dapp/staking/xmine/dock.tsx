@@ -87,7 +87,7 @@ export function XmineDock() {
                     <Tooltip.Info content={t.staking.xmine.meta.maxHint} />
                   </span>
                 ),
-                value: xmine.quotaLabel === '0' ? '0.00 gAGX' : `${xmine.quotaLabel} gAGX`,
+                value: xmine.quotaLabel === '0' ? '0.0000 gAGX' : `${xmine.quotaLabel} gAGX`,
               },
               {
                 label: t.staking.xmine.meta.lock,

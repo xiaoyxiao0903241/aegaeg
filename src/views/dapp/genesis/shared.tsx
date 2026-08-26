@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import {
   canPurchaseGenesis,
   clampGenesisShares,
@@ -82,9 +86,9 @@ export function genesisPurchaseSummary(args: {
       userPhaseAmountCurrent: reads.userPhaseAmountCurrent,
       seasonContributionMaxWei: reads.seasonContributionMaxWei,
       usd1BalanceLabel: reads.usd1BalanceKnown
-        ? formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, 2)
+        ? formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, PERSONAL_TOKEN_DIGITS)
         : '',
-      estimatedAgxLabel: formatNumber(estimatedAgx, { digits: 2 }),
+      estimatedAgxLabel: formatNumber(estimatedAgx, { digits: PERSONAL_TOKEN_DIGITS }),
       payUsd1Label: `${formatNumber(payUsd1, { digits: 0 })} USD1`,
       contributionValueLabel: formatNumber(contributionValueUsd, { prefix: '$' }),
       xTokenAirdropLabel: formatNumber(xTokenAirdropUsd, { prefix: '$' }),
@@ -111,12 +115,12 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
   const agxPriceUsd = options.agxPriceUsd ?? 0
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
-    return formatNumber(tokens, { digits: 2, suffix: ' AGX' })
+    return formatNumber(tokens, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
   }
 
   const amountUsd1 = Number(item.amount)
   if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) {
-    return formatNumber(0, { digits: 2, suffix: ' AGX' })
+    return formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
   }
 
   const estimated = estimateAgxFromUsd1(
@@ -125,8 +129,8 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
     agxPriceUsd,
   )
   return estimated > 0
-    ? formatNumber(estimated, { digits: 2, suffix: ' AGX' })
-    : formatNumber(0, { digits: 2, suffix: ' AGX' })
+    ? formatNumber(estimated, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
+    : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
 }
 
 /**

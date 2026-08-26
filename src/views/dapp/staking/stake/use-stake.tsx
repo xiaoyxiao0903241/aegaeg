@@ -2,7 +2,11 @@ import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import {
   baseDailyPctFromEpoch,
@@ -82,7 +86,6 @@ export function useStakeDock() {
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
     balance: sessionReady && walletReady ? stake.balanceLabel : '',
-    digits: 2,
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {
@@ -222,7 +225,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeHeld, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(principal, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(principal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -233,7 +236,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeReleased, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(released, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -244,7 +247,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakePending, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pending, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(pending, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -255,7 +258,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(blockReward, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(blockReward, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
         />
       ),
     },
@@ -266,7 +269,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(bonusGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(extraInterest, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(extraInterest, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
         />
       ),
     },
@@ -278,7 +281,7 @@ export function useStakeDetail() {
   const recordsTotal = recordsQuery.data?.total ?? 0
   const recordsSummary = interpolate(t.staking.aside.recordsFooter.stake, {
     amount: formatNumber(parseApiAmountOrZero(recordsQuery.data?.total_stake_amount), {
-      digits: 2,
+      digits: PERSONAL_TOKEN_DIGITS,
     }),
   })
 

@@ -5,6 +5,7 @@ import { TEN_BI, ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
   formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
   slippageDraftAfterModeChange,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
@@ -64,7 +65,7 @@ function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined)
 /** OpenAPI 的 turbine summary/logs 金额为小数字符串（勿当作 wei）。 */
 function formatTurbineSummaryAmount(raw: string | null | undefined): string {
   const n = raw == null || raw.trim() === '' ? Number.NaN : Number(raw)
-  return formatNumber(Number.isFinite(n) ? n : 0, { digits: 2 })
+  return formatNumber(Number.isFinite(n) ? n : 0, { digits: PERSONAL_TOKEN_DIGITS })
 }
 
 /**
@@ -315,13 +316,16 @@ export function useTurbineExchangeSession(
     buyAgxLabel,
     quotaLabel:
       quotaQuery.data === undefined
-        ? formatNumber(0, { digits: 2 })
-        : formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
+        ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
+        : formatTokenAmount(quota, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+          }),
     usd1BalanceLabel:
       balancesQuery.data === undefined
-        ? formatNumber(0, { digits: 2 })
+        ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
         : formatTokenAmount(usd1Balance, USD1_DECIMALS, {
-            digits: 2,
+            digits: PERSONAL_TOKEN_DIGITS,
             trimZeros: false,
           }),
     cooldownHours,
@@ -340,17 +344,20 @@ export function useTurbineExchangeSession(
     overview: {
       pendingUnlockLabel:
         quotaQuery.data === undefined
-          ? formatNumber(0, { digits: 2 })
-          : formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
+          ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
+          : formatTokenAmount(quota, AGX_DECIMALS, {
+              digits: PERSONAL_TOKEN_DIGITS,
+              trimZeros: false,
+            }),
       pendingUnlockUsdHint:
         quotaQuery.data === undefined || !unitUsdReady
           ? formatNumber(0, { digits: 2, prefix: '≈ $' })
           : formatAgxQuotaUsd(quota, unitUsd),
       coolingLabel:
         silencesQuery.data === undefined
-          ? formatNumber(0, { digits: 2 })
+          ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
           : formatTokenAmount(coolingBalance, AGX_DECIMALS, {
-              digits: 2,
+              digits: PERSONAL_TOKEN_DIGITS,
               trimZeros: false,
             }),
       coolingUsdHint:

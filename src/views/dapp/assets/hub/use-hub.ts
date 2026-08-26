@@ -15,6 +15,7 @@ import {
   formatTokenAmount,
   formatTokenAmountToNumber,
   parseTokenAmount,
+  PERSONAL_TOKEN_DIGITS,
 } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
@@ -115,7 +116,7 @@ function gagxProductYield(
   })
   return {
     aprLabel: formatReturnPct(pct),
-    yieldValue: `${formatTokenAmount(totalWei, GAGX_DECIMALS, 2)} gAGX`,
+    yieldValue: `${formatTokenAmount(totalWei, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
     yieldApprox: formatUsdApprox(formatTokenAmountToNumber(totalWei, GAGX_DECIMALS), priceUsd),
   }
 }
@@ -141,7 +142,7 @@ function xmineProductYield(
   })
   return {
     aprLabel: formatReturnPct(pct),
-    yieldValue: `${formatTokenAmount(totalXWei, X_DECIMALS, 2)} X`,
+    yieldValue: `${formatTokenAmount(totalXWei, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`,
     yieldApprox: formatUsdApprox(totalReward, priceUsd),
   }
 }
@@ -153,25 +154,29 @@ function positionUsdOf(amount: number, priceUsd: number | null): number {
 
 const EMPTY_MODE: AssetsHubModeStats = {
   aprLabel: APR_EMPTY,
-  positionValue: `${formatNumber(0, { digits: 2 })} AGX`,
+  positionValue: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} AGX`,
   positionApprox: formatUsdApprox(0, null),
   positionUsd: 0,
-  yieldValue: `${formatNumber(0, { digits: 2 })} gAGX`,
+  yieldValue: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
   yieldApprox: formatUsdApprox(0, null),
   hasBalance: false,
 }
 
 const EMPTY_XMINE: AssetsHubModeStats = {
   aprLabel: APR_EMPTY,
-  positionValue: `${formatNumber(0, { digits: 2 })} gAGX`,
+  positionValue: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
   positionApprox: formatUsdApprox(0, null),
   positionUsd: 0,
-  yieldValue: `${formatNumber(0, { digits: 2 })} X`,
+  yieldValue: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} X`,
   yieldApprox: formatUsdApprox(0, null),
   hasBalance: false,
 }
 
-function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string {
+function formatApiTokenLabel(
+  raw: string | undefined,
+  unit: string,
+  digits = PERSONAL_TOKEN_DIGITS,
+): string {
   return `${formatApiAmount(raw, { digits })} ${unit}`
 }
 
@@ -319,8 +324,8 @@ export function useAssetsHub(): AssetsHubOverview {
       : 0
   const redeemableReleasedLabel =
     redeemableReleasedWei != null
-      ? `${formatTokenAmount(redeemableReleasedWei, AGX_DECIMALS, 2)} AGX`
-      : `${formatNumber(0, { digits: 2 })} AGX`
+      ? `${formatTokenAmount(redeemableReleasedWei, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`
+      : `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} AGX`
 
   const emptyModes = {
     stake: EMPTY_MODE,
@@ -334,21 +339,21 @@ export function useAssetsHub(): AssetsHubOverview {
     overviewLoading = false,
   ): AssetsHubOverview => ({
     totalValue: formatUsd(0),
-    claimable: `${formatNumber(0, { digits: 2 })} gAGX`,
+    claimable: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
     claimableApprox: formatUsdApprox(0, null),
-    claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
+    claimed: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
     claimedApprox: formatUsdApprox(0, null),
     contribution: formatApiContributionPoints(null),
-    holdingsReleased: `${formatNumber(0, { digits: 2 })} AGX`,
+    holdingsReleased: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} AGX`,
     holdingsReleasedApprox: formatUsdApprox(0, null),
-    holdingsTotal: `${formatNumber(0, { digits: 2 })} AGX`,
+    holdingsTotal: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} AGX`,
     holdingsTotalApprox: formatUsdApprox(0, null),
-    bufferTotal: `${formatNumber(0, { digits: 2 })} AGX`,
+    bufferTotal: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} AGX`,
     bufferTotalApprox: formatUsdApprox(0, null),
-    bufferReleased: `${formatNumber(0, { digits: 2 })} AGX`,
+    bufferReleased: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} AGX`,
     bufferReleasedApprox: formatUsdApprox(0, null),
-    bufferGagxTotal: `${formatNumber(0, { digits: 2 })} gAGX`,
-    bufferGagxReleased: `${formatNumber(0, { digits: 2 })} gAGX`,
+    bufferGagxTotal: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
+    bufferGagxReleased: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
     modes,
     overviewLoading,
   })
@@ -357,7 +362,7 @@ export function useAssetsHub(): AssetsHubOverview {
     const buffer = bufferQuery.data
     // 单行展示「x.xx gAGX」+ ≈$；金额只取本页 Mixed 可领子集，不能直接显示 API claimable_gagx
     const claimableGagxWei = stakeYield + lpYield + burnYield
-    const claimableGagx = `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`
+    const claimableGagx = `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`
     const claimableGagxNum = formatTokenAmountToNumber(claimableGagxWei, GAGX_DECIMALS)
     const piePositions = {
       stake: parseApiAmount(apiDist.stake_total_agx) ?? 0,
@@ -373,17 +378,17 @@ export function useAssetsHub(): AssetsHubOverview {
         priceUsd,
       }),
     )
-    const claimed = `${formatApiDecimalOrZero(apiReward.total_reward_claimed)} gAGX`
+    const claimed = formatApiTokenLabel(apiReward.total_reward_claimed, 'gAGX')
     const contribution = formatApiContributionPoints(apiReward.available_contribution)
-    const holdingsTotal = `${formatNumber(holdingsAmount, { digits: 2 })} AGX`
+    const holdingsTotal = `${formatNumber(holdingsAmount, { digits: PERSONAL_TOKEN_DIGITS })} AGX`
     // 勿用 API total_released_agx（= 缓冲已提取 + CLAIM_PRINCIPAL 流水），与产品口径「已释放」不符
     const holdingsReleased = redeemableReleasedLabel
     // 钱包就绪且有分流器快照时 AGX/gAGX 缓冲同源链上；否则 AGX 回落 API
     const bufferTotal = buffer
-      ? `${formatTokenAmount(buffer.agx.totalRemaining, AGX_DECIMALS, 2)} AGX`
+      ? `${formatTokenAmount(buffer.agx.totalRemaining, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`
       : formatApiTokenLabel(apiHoldings.buffer_pool_releasing, 'AGX')
     const bufferReleased = buffer
-      ? `${formatTokenAmount(buffer.agx.totalClaimed, AGX_DECIMALS, 2)} AGX`
+      ? `${formatTokenAmount(buffer.agx.totalClaimed, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`
       : formatApiTokenLabel(apiHoldings.buffer_pool_released, 'AGX')
     const bufferTotalApprox = buffer
       ? formatUsdApprox(
@@ -413,10 +418,10 @@ export function useAssetsHub(): AssetsHubOverview {
       // API 尚未分 token；gAGX 桶以链上分流器快照为准（手册 §13）
       bufferGagxTotal: bufferQuery.isError
         ? '—'
-        : `${formatTokenAmount(buffer?.gagx.totalRemaining ?? ZERO_BI, GAGX_DECIMALS, 2)} gAGX`,
+        : `${formatTokenAmount(buffer?.gagx.totalRemaining ?? ZERO_BI, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
       bufferGagxReleased: bufferQuery.isError
         ? '—'
-        : `${formatTokenAmount(buffer?.gagx.totalClaimed ?? ZERO_BI, GAGX_DECIMALS, 2)} gAGX`,
+        : `${formatTokenAmount(buffer?.gagx.totalClaimed ?? ZERO_BI, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
       modes: {
         stake: modeFromApiAmount(
           apiDist.stake_total_agx,
@@ -515,26 +520,26 @@ export function useAssetsHub(): AssetsHubOverview {
 
   return {
     totalValue: formatUsd(totalValueUsd),
-    claimable: `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, 2)} gAGX`,
+    claimable: `${formatTokenAmount(claimableGagxWei, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
     claimableApprox: formatUsdApprox(claimableGagxNum, priceUsd),
-    // 链上无累计已领视图；未加载空结果显示 0.00 gAGX
-    claimed: `${formatNumber(0, { digits: 2 })} gAGX`,
+    // 链上无累计已领视图；未加载空结果显示 0.0000 gAGX
+    claimed: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`,
     claimedApprox: formatUsdApprox(0, null),
     contribution: formatContributionPoints(contribution, AGX_DECIMALS),
     holdingsReleased: redeemableReleasedLabel,
     holdingsReleasedApprox: formatUsdApprox(redeemableReleasedNum, priceUsd),
-    holdingsTotal: `${formatNumber(holdingsAmount, { digits: 2 })} AGX`,
+    holdingsTotal: `${formatNumber(holdingsAmount, { digits: PERSONAL_TOKEN_DIGITS })} AGX`,
     holdingsTotalApprox: formatUsdApprox(holdingsAmount, priceUsd),
-    bufferTotal: `${formatTokenAmount(bufferTotal, AGX_DECIMALS, 2)} AGX`,
+    bufferTotal: `${formatTokenAmount(bufferTotal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`,
     bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
-    bufferReleased: `${formatTokenAmount(bufferReleased, AGX_DECIMALS, 2)} AGX`,
+    bufferReleased: `${formatTokenAmount(bufferReleased, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`,
     bufferReleasedApprox: formatUsdApprox(bufferReleasedNum, priceUsd),
-    bufferGagxTotal: `${formatTokenAmount(bufferGagxTotal, GAGX_DECIMALS, 2)} gAGX`,
-    bufferGagxReleased: `${formatTokenAmount(bufferGagxReleased, GAGX_DECIMALS, 2)} gAGX`,
+    bufferGagxTotal: `${formatTokenAmount(bufferGagxTotal, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
+    bufferGagxReleased: `${formatTokenAmount(bufferGagxReleased, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
     modes: {
       stake: {
         aprLabel: stakeYieldUi.aprLabel,
-        positionValue: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
+        positionValue: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`,
         positionApprox: formatUsdApprox(stakePosNum, priceUsd),
         positionUsd: positionUsdOf(stakePosNum, priceUsd),
         yieldValue: stakeYieldUi.yieldValue,
@@ -543,7 +548,7 @@ export function useAssetsHub(): AssetsHubOverview {
       },
       lpbond: {
         aprLabel: lpYieldUi.aprLabel,
-        positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, 2)} AGX`,
+        positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`,
         positionApprox: formatUsdApprox(lpPosNum, priceUsd),
         positionUsd: positionUsdOf(lpPosNum, priceUsd),
         yieldValue: lpYieldUi.yieldValue,
@@ -552,7 +557,7 @@ export function useAssetsHub(): AssetsHubOverview {
       },
       burnbond: {
         aprLabel: burnYieldUi.aprLabel,
-        positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, 2)} AGX`,
+        positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`,
         positionApprox: formatUsdApprox(burnPosNum, priceUsd),
         positionUsd: positionUsdOf(burnPosNum, priceUsd),
         yieldValue: burnYieldUi.yieldValue,
@@ -561,7 +566,7 @@ export function useAssetsHub(): AssetsHubOverview {
       },
       xmine: {
         aprLabel: xYieldUi.aprLabel,
-        positionValue: `${formatTokenAmount(xStake, GAGX_DECIMALS, 2)} gAGX`,
+        positionValue: `${formatTokenAmount(xStake, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
         positionApprox: formatUsdApprox(xPosNum, priceUsd),
         positionUsd: positionUsdOf(xPosNum, priceUsd),
         yieldValue: xYieldUi.yieldValue,
@@ -571,10 +576,6 @@ export function useAssetsHub(): AssetsHubOverview {
     },
     overviewLoading: false,
   }
-}
-
-function formatApiDecimalOrZero(raw: string | undefined): string {
-  return formatApiAmount(raw, { digits: 2 })
 }
 
 const ZERO_APPROX = formatUsdApprox(0, null)

@@ -48,7 +48,7 @@ export function XmineDetail() {
                     <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
                   ) : null}
                   <Text as="strong" className="text-base/5 font-semibold" variant="copy">
-                    <CountValue text={cell?.value ?? '0.00'} />
+                    <CountValue text={cell?.value ?? '0.0000'} />
                   </Text>
                 </div>
                 {cell?.approx != null ? (

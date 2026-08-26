@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { formatApiContributionPoints } from '~/core/exchange/format-contribution-points'
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
 import type {
@@ -40,7 +41,7 @@ export type FlowOpsCopy = AppMessagesBundle['flowOps']
 
 function formatAmount(
   raw: string,
-  digits = 4,
+  digits = PERSONAL_TOKEN_DIGITS,
   suffix = '',
   prefix = '',
   trimZeros = false,
@@ -63,18 +64,20 @@ function stakeAmountUnit(operation: StakeFlowLogItem['operation']): {
   digits: number
   suffix: string
 } {
-  return operation === 'STAKE' || operation === 'CLAIM_PRINCIPAL'
-    ? { digits: 2, suffix: ' AGX' }
-    : { digits: 4, suffix: ' gAGX' }
+  return {
+    digits: PERSONAL_TOKEN_DIGITS,
+    suffix: operation === 'STAKE' || operation === 'CLAIM_PRINCIPAL' ? ' AGX' : ' gAGX',
+  }
 }
 
 function bondAmountUnit(operation: BondFlowLogItem['operation']): {
   digits: number
   suffix: string
 } {
-  return operation === 'PURCHASE' || operation === 'REDEEM'
-    ? { digits: 2, suffix: ' AGX' }
-    : { digits: 4, suffix: ' gAGX' }
+  return {
+    digits: PERSONAL_TOKEN_DIGITS,
+    suffix: operation === 'PURCHASE' || operation === 'REDEEM' ? ' AGX' : ' gAGX',
+  }
 }
 
 function sameAddr(left: string, right: string): boolean {
@@ -200,7 +203,7 @@ export function mapTurbineLogToOpsRow(item: TurbineLogItem, copy: FlowOpsCopy): 
 export function mapStakePositionToAsideRow(item: StakePositionItem, copy: FlowOpsCopy): FlowLogRow {
   const amount = Number(item.amount)
   const amountLabel = formatNumber(Number.isFinite(amount) ? amount : 0, {
-    digits: 2,
+    digits: PERSONAL_TOKEN_DIGITS,
     suffix: ' AGX',
   })
   const pct = item.released_pct.trim()
@@ -237,7 +240,7 @@ export function mapBondPurchaseToAsideRow(item: BondPurchaseItem, copy: FlowOpsC
     termLabel,
     formatAmount(item.deposit_amount, 2, '', '$', true),
     discount,
-    formatAmount(item.payout, 2, ' AGX'),
+    formatAmount(item.payout, PERSONAL_TOKEN_DIGITS, ' AGX'),
     formatTx(item.tx_hash),
   ]
 }

@@ -13,7 +13,7 @@ import {
   formatApiContributionPoints,
   formatContributionPoints,
 } from '~/core/exchange/format-contribution-points'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { parseApiTokenWei, previewDaoClaimContribution } from '~/core/rewards/claim-contribution'
 import { evaluateRewardsMixedClaimConfirmGate } from '~/core/rewards/mixed-claim-gate'
@@ -244,9 +244,9 @@ export function useMixedClaim(view: MixedClaimView) {
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(amount, AGX_DECIMALS)
-        : formatApiAmount(null)
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber(previewOrZero, { digits: 4 })
+        ? formatNumber(previewOrZero, { digits: PERSONAL_TOKEN_DIGITS })
         : t.rewards.hub.signInForBalance
   const releaseAmount =
     view === 'lucky' && amountKnown ? splitAmountByPct(amount, releasePct) : ZERO_BI
@@ -256,18 +256,18 @@ export function useMixedClaim(view: MixedClaimView) {
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-        : formatApiAmount(null)
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber((previewOrZero * releasePct) / 100, { digits: 4 })
-        : formatApiAmount(null)
+        ? formatNumber((previewOrZero * releasePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
   const restakeAmountText =
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-        : formatApiAmount(null)
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber((previewOrZero * restakePct) / 100, { digits: 4 })
-        : formatApiAmount(null)
+        ? formatNumber((previewOrZero * restakePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
   const requiredText = isDaoMixed
     ? daoClaimWei != null && daoClaimWei > ZERO_BI
       ? formatContributionPoints(daoClaimWei, AGX_DECIMALS)

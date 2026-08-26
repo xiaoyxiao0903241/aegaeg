@@ -11,7 +11,7 @@ import {
   formatApiContributionPoints,
   formatContributionPoints,
 } from '~/core/exchange/format-contribution-points'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
 import type {
   CommunityFundLogItem,
@@ -85,8 +85,11 @@ export function formatApiStatLabel(
   options?: { digits?: number; prefix?: string; suffix?: string },
 ): string {
   // 仅冷启动 pending+null 出零（refetch 时 keepPreviousData 仍带 raw）。
-  if (!sessionReady || (isPending && raw == null)) return formatApiAmount(null, options)
-  return formatApiAmount(raw, options)
+  const digits = options?.digits ?? PERSONAL_TOKEN_DIGITS
+  if (!sessionReady || (isPending && raw == null)) {
+    return formatApiAmount(null, { ...options, digits })
+  }
+  return formatApiAmount(raw, { ...options, digits })
 }
 
 /**

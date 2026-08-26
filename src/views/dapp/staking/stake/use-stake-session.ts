@@ -1,5 +1,9 @@
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountInputDisplay,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
@@ -133,7 +137,7 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, 2),
+        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS),
     isBalancesLoading: walletReady && (!balancesLoaded || preflightQuery.isLoading),
     walletReady,
     canSubmit,

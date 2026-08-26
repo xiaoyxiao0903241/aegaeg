@@ -1,7 +1,11 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountInputDisplay,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { formatBondDebtRemainingDisplay } from '~/core/staking/format-bond-debt-remaining'
@@ -247,7 +251,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, 2),
+        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, PERSONAL_TOKEN_DIGITS),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
     isPayoutQuoting,
