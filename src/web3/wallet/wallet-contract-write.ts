@@ -11,7 +11,7 @@ import {
   type TransactionReceipt,
 } from 'viem'
 
-import { bscReadClient, createWalletReadClient } from '~/web3/bsc-read-client'
+import { bscReadClient, chainReadClient } from '~/web3/bsc-read-client'
 import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import {
   decodeContractRevert,
@@ -121,7 +121,7 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: PublicClie
  * 估算写交易 gas（展示用，不进入发送）
  *
  * 先 simulate 挡 revert，再 `estimateContractGas` 加 20% 缓冲。
- * 读走 `bscReadClient`（已连 BSC 即钱包节点）。
+ * 读走 `bscReadClient`（BSC 钱包默认真钱包节点；OKX 走公共 RPC）。
  *
  * @param call 写调用参数
  * @returns 加缓冲后的 gas 上限
@@ -159,7 +159,7 @@ export async function writeContractViaWallet(
   const intent = createWriteIntent(account.address, defaultChain.id)
   assertWalletMatchesIntent(wallet, intent)
 
-  await simulateWriteCall(writeCallParams(input), createWalletReadClient(wallet))
+  await simulateWriteCall(writeCallParams(input), chainReadClient(wallet))
   assertWalletMatchesIntent(wallet, intent)
 
   const data = encodeFunctionData({
