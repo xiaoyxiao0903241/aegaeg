@@ -8,7 +8,7 @@
 |---|---|
 |链上手册入口|[`docs/onchain-manual/README.md`](../onchain-manual/README.md) · 流程主文 [`01-frontend-integration-guide.md`](../onchain-manual/01-frontend-integration-guide.md) · 地址 [`00-addresses.md`](../onchain-manual/00-addresses.md) · 合约拆页 [`contracts/`](../onchain-manual/contracts/) · ABI [`abis/`](../onchain-manual/abis/)|
 |旧手册（仅缺口）|[`docs/onchain-manual-legacy.md`](../onchain-manual-legacy.md)（绑定 / 预售 / 预售团队奖）|
-|Backend API|[`docs/backend-api/openapi.json`](../backend-api/openapi.json)（机器真源）· [`api.md`](../backend-api/api.md) · [`README.md`](../backend-api/README.md)（17 tags / 60 paths）|
+|Backend API|[`docs/backend-api/openapi.json`](../backend-api/openapi.json)（机器真源）· [`api.md`](../backend-api/api.md) · [`README.md`](../backend-api/README.md)（17 tags / 66 paths）|
 |Figma 页表|[`docs/figma-pages.md`](../figma-pages.md) · fileKey `uiKwzwIoD06phS0husdqjB` · canvas `4253:365`|
 |HTML 原型|仓库内**仅** [`public/proto/aegis-dapp-empty.html`](../../public/proto/aegis-dapp-empty.html)（标题「新用户空数据演示」；单文件多轨演示，非按 tab 拆文件）。`docs/onchain-manual/AEGIS_X_FRONTEND_MANUAL.html` 为手册源 HTML，**不是** UI 原型。`index.html` / `app.html` 为 Vite 入口，不计原型。|
 |Tab 注册|[`src/views/dapp/dapp-tab-registry.tsx`](../../src/views/dapp/dapp-tab-registry.tsx) · 会话 [`dapp-tab-sessions.ts`](../../src/views/dapp/dapp-tab-sessions.ts) · 槽位 [`tab-slots.tsx`](../../src/views/dapp/tab-slots.tsx)|

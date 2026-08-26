@@ -138,10 +138,6 @@ test('mapLuckyMyRoundToRow stake column uses tracker USD1 not participation_amou
     rank: null,
     reward_amount: '0',
     draw_tx_hash: null,
-    winner_status: null,
-    claim_status: null,
-    claim_tx_hash: null,
-    claim_timestamp: null,
   }
   const labels = { won: 'won {amount}', lost: 'lost' }
 

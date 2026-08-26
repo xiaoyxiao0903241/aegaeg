@@ -20,7 +20,7 @@ export interface AgxContributionConsumeLogItem {
   block_time: number
   claim_amount: string
   contribution_consumed: string
-  contract_address: string
+  contract_address: string | null
   /** Dao 领取 41–45 / 做市 51；缺省则按 contract_address 匹配 */
   sign_type?: number | string | null
   tx_hash: string | null
