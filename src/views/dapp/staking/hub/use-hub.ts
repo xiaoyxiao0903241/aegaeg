@@ -7,8 +7,7 @@ import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
   lockedBonusBps,
-  periodYieldPct,
-  stakePeriodDays,
+  scenarioPeriodYieldPct,
 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useProtocolMarketStatsChart, useStakeAddressCount } from '~/hooks/use-api-data'
@@ -222,9 +221,15 @@ export function useStakingHubDetail() {
           baseDaily: formatYieldPct(baseDaily),
           bonus,
           periodYield: formatYieldPct(
-            baseDaily == null || period == null
+            period == null
               ? null
-              : periodYieldPct(baseDaily, stakePeriodDays(period)),
+              : scenarioPeriodYieldPct(
+                  epochPct,
+                  overviewQuery.data?.epochsPerDay,
+                  period,
+                  tableSeg === 'stake' ? 'stake' : 'bond',
+                  tableSeg === 'stake' ? undefined : (bondDiscount ?? null),
+                ),
           ),
         },
       ]

@@ -1,11 +1,6 @@
 import { bondSoldUsd } from '~/core/staking/bond-sold-usd'
 import { BOND_PERIODS, type BondKind, type BondPeriod } from '~/core/staking/staking-period'
-import {
-  baseDailyPctFromEpoch,
-  epochRebasePctFrom1e18,
-  periodYieldPct,
-  stakePeriodDays,
-} from '~/core/staking/staking-yield'
+import { epochRebasePctFrom1e18, scenarioPeriodYieldPct } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -62,7 +57,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
   const spotUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
-  const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
+  const epochsPerDay = overviewQuery.data?.epochsPerDay
   const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [
@@ -81,8 +76,15 @@ export function BondDock({ kind }: { kind: BondKind }) {
   ) as Record<BondPeriod, string>
   const yieldLabels = Object.fromEntries(
     BOND_PERIODS.map((period) => {
-      const pct = baseDaily == null ? 0 : periodYieldPct(baseDaily, stakePeriodDays(period))
-      return [period, `${copy.card.yield} ${formatNumber(pct, { digits: 2 })}%`]
+      const discPct = parseDiscountPct(bond.periodDiscounts[period] || '')
+      const pct = scenarioPeriodYieldPct(
+        epochPct,
+        epochsPerDay,
+        period,
+        'bond',
+        discPct != null && discPct > 0 ? discPct * 100 : null,
+      )
+      return [period, `${copy.card.yield} ${formatNumber(pct ?? 0, { digits: 2 })}%`]
     }),
   ) as Record<BondPeriod, string>
   const discountUsd = formatBondDiscountUsd(spotUsd, bond.discountLabel)

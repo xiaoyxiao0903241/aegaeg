@@ -1,6 +1,6 @@
 import { type CalcProduct } from '~/core/staking/build-calc-estimate'
 import { type StakePeriod } from '~/core/staking/staking-period'
-import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
+import { CALC_MAX_DAYS, CALC_X_START_USD } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -26,8 +26,7 @@ const priceBox = amountBox()
  * 收益率计算器（左栏表单）
  *
  * 纯本地计算，不发起任何链上写操作；
- * 表单直订 `useCalcEstimateStore`，输入变更即刷新右侧结果。
- * 「计算」按钮暂隐藏、不删除（实时估算见 `useCalcEstimateLive`）。
+ * 表单直订 `useCalcEstimateStore`，点「计算」才刷新右侧结果。
  */
 export function CalcDock() {
   const { messages: t } = useI18n()
@@ -65,9 +64,18 @@ export function CalcDock() {
         ? dappAssets.tokenAgx
         : dappAssets.tokenUsd1
   const spotLabel =
-    spotUsd != null
-      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
+    s.product === 'xmine'
+      ? formatNumber(CALC_X_START_USD, { digits: 2, prefix: '$' })
+      : spotUsd != null
+        ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
+        : formatNumber(0, { digits: 2, prefix: '$' })
+  const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
+  const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
+  const ratesOk =
+    s.product === 'xmine'
+      ? s.rates?.xmineDailyPct != null
+      : s.rates?.epochRebasePct != null && s.rates?.epochsPerDay != null
+  const canCommit = amountN > 0 && priceN > 0 && ratesOk
 
   return (
     <TabHeader
@@ -125,7 +133,7 @@ export function CalcDock() {
         <div className="grid gap-2">
           <div className="flex items-center justify-between gap-3">
             <Text as="span" className="text-foreground/40" variant="copy">
-              {t.staking.calc.price}
+              {s.product === 'xmine' ? t.staking.calc.priceX : t.staking.calc.price}
             </Text>
             <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
               {interpolate(t.staking.calc.priceCurrent, { price: spotLabel })}
@@ -166,11 +174,11 @@ export function CalcDock() {
           />
         </div>
 
-        {/* 暂隐藏显式计算 CTA；实时估算见 useCalcEstimateLive。 */}
-        <FormActions className="hidden">
+        <FormActions>
           <MainButton
-            className="min-h-0 border-0 bg-coral-emphasis py-4 text-base/5 text-white"
             density="external"
+            disabled={!canCommit}
+            onClick={() => s.commit()}
             type="button"
           >
             {t.staking.calc.submit}

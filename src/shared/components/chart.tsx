@@ -200,12 +200,15 @@ function Plot({
   className,
   formatTipDate,
   height = 170,
+  mark,
   points,
 }: {
   axisLabels?: readonly string[]
   className?: string
   formatTipDate?: (time: Time) => string | null
   height?: number
+  /** 曲线上的测算日标记；无则不画。 */
+  mark?: { time: number; label?: string }
   points: readonly ChartPoint[]
 }) {
   const hostRef = useRef<HTMLDivElement>(null)
@@ -218,6 +221,7 @@ function Plot({
   /** chart 实例重建后递增，驱动重新落数。 */
   const [plotEpoch, setPlotEpoch] = useState(0)
   const [tip, setTip] = useState<ChartTip | null>(null)
+  const [markPos, setMarkPos] = useState<{ x: number; y: number } | null>(null)
   // points 换批时在 render 期清 tip，避免 effect 里 setState 造成一帧陈旧十字线。
   const [tipPoints, setTipPoints] = useState(points)
   if (points !== tipPoints) {
@@ -229,6 +233,27 @@ function Plot({
   // 十字线回调在 chart 订阅里；用 Effect Event 读最新 formatTipDate / grain，避免 render 写 ref / 把 formatter 塞进 effect deps。
   const resolveTipDate = useEffectEvent((time: Time) => {
     return formatTipDate?.(time) ?? tipDateFromTime(time, dateGrain)
+  })
+  const isMarkTime = useEffectEvent((time: Time) => mark != null && Number(time) === mark.time)
+  const syncMark = useEffectEvent(() => {
+    const chart = chartRef.current
+    const series = seriesRef.current
+    if (!chart || !series || mark == null) {
+      setMarkPos(null)
+      return
+    }
+    const hit = points.find((p) => Number(p.time) === mark.time)
+    if (!hit) {
+      setMarkPos(null)
+      return
+    }
+    const x = chart.timeScale().timeToCoordinate(mark.time as Time)
+    const y = series.priceToCoordinate(hit.value)
+    if (x == null || y == null) {
+      setMarkPos(null)
+      return
+    }
+    setMarkPos((prev) => (prev && prev.x === x && prev.y === y ? prev : { x, y }))
   })
 
   useEffect(() => {
@@ -304,6 +329,10 @@ function Plot({
         setTip(null)
         return
       }
+      if (isMarkTime(param.time)) {
+        setTip(null)
+        return
+      }
       const raw = param.seriesData.get(series)
       const value =
         raw && typeof raw === 'object' && 'value' in raw && typeof raw.value === 'number'
@@ -338,6 +367,7 @@ function Plot({
     const ro = new ResizeObserver(() => {
       if (!hostRef.current || !chartRef.current) return
       chartRef.current.applyOptions({ width: hostRef.current.clientWidth })
+      requestAnimationFrame(() => syncMark())
     })
     ro.observe(host)
 
@@ -351,6 +381,7 @@ function Plot({
       visualPointsRef.current = []
       appliedSigRef.current = ''
       setTip(null)
+      setMarkPos(null)
     }
   }, [height])
 
@@ -368,7 +399,7 @@ function Plot({
       value: p.value,
     }))
 
-    const paint = (next: readonly { time: number; value: number }[]) => {
+    const paint = (next: readonly { time: number; value: number }[], pinMark = false) => {
       const drawn = densifyForPaint(next)
       series.setData(drawn.map((p) => ({ time: p.time as Time, value: p.value })))
       // setData 后布局可能异步校正；下一帧再钉边，避免被内部 range 覆盖
@@ -376,6 +407,7 @@ function Plot({
       requestAnimationFrame(() => {
         if (seriesRef.current !== series || chartRef.current !== chart) return
         fitSeriesFlush(chart, drawn.length)
+        if (pinMark) syncMark()
       })
       visualPointsRef.current = drawn.map((p) => ({
         time: p.time as UTCTimestamp,
@@ -384,7 +416,7 @@ function Plot({
     }
 
     const commit = (next: readonly { time: number; value: number }[]) => {
-      paint(next)
+      paint(next, true)
       appliedSigRef.current = pointsSignature(
         next.map((p) => ({ time: p.time as UTCTimestamp, value: p.value })),
       )
@@ -424,6 +456,12 @@ function Plot({
     }
   }, [points, plotEpoch])
 
+  useEffect(() => {
+    syncMark()
+  }, [mark?.time, plotEpoch])
+
+  const markLabelAbove = markPos != null && markPos.y >= 36
+
   return (
     <div className={cn('grid w-full gap-2', className)}>
       <div className="relative w-full overflow-hidden rounded-md" style={{ height }}>
@@ -449,6 +487,31 @@ function Plot({
               {tip.valueLabel}
             </Text>
           </div>
+        ) : null}
+        {mark && markPos ? (
+          <>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute z-10 size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-white bg-primary"
+              style={{ left: markPos.x, top: markPos.y }}
+            />
+            {mark.label ? (
+              <Text
+                as="span"
+                className="pointer-events-none absolute z-10 rounded-full bg-card px-2 py-0.5 font-semibold whitespace-nowrap text-primary tabular-nums shadow-menu"
+                style={{
+                  left: markPos.x,
+                  top: markPos.y,
+                  transform: markLabelAbove
+                    ? 'translate(-50%, calc(-100% - 10px))'
+                    : 'translate(-50%, 12px)',
+                }}
+                variant="support"
+              >
+                {mark.label}
+              </Text>
+            ) : null}
+          </>
         ) : null}
       </div>
       {axisLabels.length > 0 ? (

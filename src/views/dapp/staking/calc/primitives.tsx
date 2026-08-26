@@ -5,6 +5,7 @@
  */
 import * as SliderPrimitive from '@radix-ui/react-slider'
 
+import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
@@ -66,14 +67,14 @@ export function CalcHtabRow<T extends string>({
  * 与领取分配滑杆同走 Radix：整轨可点、手柄可拖、`touch-none` 防 H5 竖滚抢手势。
  *
  * @param ariaLabel 滑杆无障碍标签
- * @param max 最大天数，默认 720
+ * @param max 最大天数，默认 CALC_MAX_DAYS
  * @param min 最小天数，默认 1
  * @param onChange 天数变化回调
  * @param value 当前天数
  */
 export function CalcDaySlider({
   ariaLabel,
-  max = 720,
+  max = CALC_MAX_DAYS,
   min = 1,
   onChange,
   value,
@@ -154,18 +155,19 @@ export function CalcNotesCard({ items }: { items: ReadonlyArray<string> }) {
  */
 
 type CalcResultCardProps = {
-  interestUsd: number
+  profitUsd: number
   ratePct: number
   sellUsd: number
   investedUsd: number
-  sellShare: number
-  investShare: number
+  releasedUsd: number
+  rewardsUsd: number
   labels: {
     total: string
     rate: string
     sellTotal: string
     invested: string
     yieldBar: string
+    lossBar: string
     legend: {
       released: string
       netYield: string
@@ -177,15 +179,31 @@ type CalcResultCardProps = {
 }
 
 export function CalcResultCard({
-  interestUsd,
+  profitUsd,
   ratePct,
   sellUsd,
   investedUsd,
-  sellShare,
-  investShare,
+  releasedUsd,
+  rewardsUsd,
   labels,
   netYieldHint,
 }: CalcResultCardProps) {
+  const profitable = profitUsd >= 0
+  const sellBase = sellUsd > 0 ? sellUsd : 0
+  // 上条：净收益占卖出总值；下条：收益总额叠在 max(卖出, 投入) 上
+  const releasedShare = sellBase > 0 ? (releasedUsd / sellBase) * 100 : 0
+  const rewardsShare = sellBase > 0 ? (rewardsUsd / sellBase) * 100 : 0
+  const full = Math.max(sellUsd, investedUsd, 0)
+  const costShare = full > 0 ? (investedUsd / full) * 100 : 0
+  const markShare = full > 0 ? (Math.min(sellUsd, investedUsd) / full) * 100 : 0
+  const overlayShare = Math.max(0, 100 - markShare)
+  const releasedTip = `${labels.legend.released} ${calcUsd(releasedUsd)}`
+  const rewardsTip = `${labels.legend.netYield} ${calcUsd(rewardsUsd)}`
+  const costTip = `${labels.legend.cost} ${calcUsd(investedUsd)}`
+  const profitTip = profitable
+    ? `${labels.legend.grossYield} ${calcUsd(profitUsd)}`
+    : interpolate(labels.lossBar, { amount: calcUsd(Math.abs(profitUsd)) })
+
   return (
     <Card className="grid gap-1.5" surface="elevated">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -193,15 +211,27 @@ export function CalcResultCard({
           <Text as="span" className="text-foreground/40" variant="copy">
             {labels.total}
           </Text>
-          <Text as="strong" className="text-success" variant="stat">
-            {calcUsd(interestUsd)}
+          <Text
+            as="strong"
+            className={profitable ? 'text-success' : 'text-destructive'}
+            variant="stat"
+          >
+            {calcUsd(profitUsd)}
           </Text>
         </div>
-        <span className="flex items-center gap-2 rounded-full bg-success-soft px-3 py-1.5">
+        <span
+          className={`flex items-center gap-2 rounded-full px-3 py-1.5 ${
+            profitable ? 'bg-success-soft' : 'bg-destructive/10'
+          }`}
+        >
           <Text as="span" className="text-foreground/40" variant="support">
             {labels.rate}
           </Text>
-          <Text as="span" className="font-semibold text-success" variant="copy">
+          <Text
+            as="span"
+            className={`font-semibold ${profitable ? 'text-success' : 'text-destructive'}`}
+            variant="copy"
+          >
             {calcPct(ratePct)}
           </Text>
         </span>
@@ -216,10 +246,23 @@ export function CalcResultCard({
             {calcUsd(sellUsd)}
           </Text>
         </div>
-        {/* 轨高对齐 Figma rcard bar 14px；空段无字时也必须有高，否则塌成 0 */}
-        <div className="flex h-3.5 overflow-hidden rounded-full">
-          <span className="bg-accent" style={{ flex: `${100 - sellShare} 0 0` }} />
-          <span className="bg-coral-emphasis" style={{ flex: `${sellShare} 0 0` }} />
+        <div className="flex h-3.5 overflow-hidden rounded-full bg-border">
+          {releasedShare > 0 ? (
+            <Tooltip content={releasedTip}>
+              <span
+                className="h-full shrink-0 cursor-help bg-accent"
+                style={{ width: `${releasedShare}%` }}
+              />
+            </Tooltip>
+          ) : null}
+          {rewardsShare > 0 ? (
+            <Tooltip content={rewardsTip}>
+              <span
+                className="h-full shrink-0 cursor-help bg-coral-emphasis"
+                style={{ width: `${rewardsShare}%` }}
+              />
+            </Tooltip>
+          ) : null}
         </div>
       </div>
 
@@ -232,41 +275,45 @@ export function CalcResultCard({
             {calcUsd(investedUsd)}
           </Text>
         </div>
-        <div className="flex h-3.5 overflow-hidden rounded-full">
-          {/*
-            绿段 flex 与灰段互补（合计 100）；有收益时绿段至少 18，避免 H5 文案折行。
-            文案 nowrap + 段内 overflow-hidden：过窄时裁切，不换行撑高。
-          */}
-          <span
-            className="min-w-0 bg-border"
-            style={{
-              flex: `${interestUsd > 0 ? 100 - Math.max(investShare, 18) : 100} 0 0`,
-            }}
-          />
-          <span
-            className="flex min-w-0 items-center overflow-hidden bg-success pl-2"
-            style={{
-              flex: `${interestUsd > 0 ? Math.max(investShare, 18) : 0} 0 0`,
-            }}
-          >
-            <Text
-              as="span"
-              className="font-medium whitespace-nowrap text-primary-foreground"
-              variant="caption"
-            >
-              {interpolate(labels.yieldBar, { amount: calcUsd(interestUsd) })}
-            </Text>
-          </span>
+        <div className="relative flex h-3.5 overflow-hidden rounded-full bg-border">
+          {costShare > 0 ? (
+            <Tooltip content={costTip}>
+              <span
+                className="h-full shrink-0 cursor-help bg-border"
+                style={{ width: `${costShare}%` }}
+              />
+            </Tooltip>
+          ) : null}
+          {overlayShare > 0 ? (
+            <Tooltip content={profitTip}>
+              <span
+                className={`absolute inset-y-0 flex min-w-0 cursor-help items-center overflow-hidden pl-2 ${
+                  profitable ? 'bg-success' : 'bg-destructive/80'
+                }`}
+                style={{ left: `${markShare}%`, width: `${overlayShare}%` }}
+              >
+                <Text
+                  as="span"
+                  className="font-medium whitespace-nowrap text-primary-foreground"
+                  variant="caption"
+                >
+                  {interpolate(profitable ? labels.yieldBar : labels.lossBar, {
+                    amount: calcUsd(Math.abs(profitUsd)),
+                  })}
+                </Text>
+              </span>
+            </Tooltip>
+          ) : null}
         </div>
       </div>
 
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {(
           [
-            ['released', investedUsd, 'bg-accent'],
-            ['netYield', interestUsd, 'bg-coral-emphasis'],
+            ['released', releasedUsd, 'bg-accent'],
+            ['netYield', rewardsUsd, 'bg-coral-emphasis'],
             ['cost', investedUsd, 'bg-border'],
-            ['grossYield', interestUsd, 'bg-success'],
+            ['grossYield', profitUsd, profitable ? 'bg-success' : 'bg-destructive'],
           ] as const
         ).map(([key, value, dot]) => (
           <div className="flex items-center gap-1.5" key={key}>

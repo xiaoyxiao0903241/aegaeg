@@ -1,9 +1,10 @@
 import { type StakePeriod } from '~/core/staking/staking-period'
 import {
   CALC_MAX_DAYS,
-  calcLocalInterest,
+  calcLockDays,
   type CalcProduct,
-  handbookBondDiscountRateBP,
+  computeCalcDay,
+  findBreakEvenDay,
 } from '~/core/staking/staking-yield'
 
 export type { CalcProduct } from '~/core/staking/staking-yield'
@@ -12,19 +13,28 @@ export type CalcEstimateResult = {
   product: CalcProduct
   period: StakePeriod
   days: number
-  /** 估算使用的本金金额。 */
+  /** 估算使用的本金金额（质押/挖矿为代币量，债券为 USD1）。 */
   principal: number
-  /** 假设的 USD 单价。 */
+  /** 用户到期价（AGX；挖矿为 X）。 */
   price: number
-  interestTokens: number
-  totalTokens: number
-  /** 净收益价值（收益总额）。 */
+  /** 净收益价值（rewards × Pd）。 */
   interestUsd: number
-  /** 本金 × 单价（总投入 / 液态已释放本金价值）。 */
+  /** 已释放本金价值。 */
+  releasedUsd: number
+  /** 总投入（成本计价 $65 / 债券实付）。 */
   investedUsd: number
-  /** 投入 + 收益（卖出总值）。 */
+  /** 已释放本金价值 + 净收益价值。 */
   sellUsd: number
+  /** 卖出总值 − 总投入。 */
+  profitUsd: number
   ratePct: number
+  /** 收益总额首次 ≥ 0 的天数；始终为负则为 null。 */
+  breakEvenDay: number | null
+  /** 本金全部可提取的天数。 */
+  fullReleaseDay: number
+  holdDay: number
+  holdProfitUsd: number
+  holdRatePct: number
   /** 该快照使用的周期 rebase 百分比（null 表示零收益）。 */
   epochRebasePct: number | null
   /** xmine 日收益率（%）；非 xmine 为 null。 */
@@ -34,35 +44,18 @@ export type CalcEstimateResult = {
 }
 
 /**
- * 计算收益预估的持仓天数。
- *
- * 定期（180/360/540 天）使用固定期限；活期使用滑块天数，
- * 并收敛到 1..CALC_MAX_DAYS 区间。
- *
- * @param period 产品周期
- * @param sliderDays 滑块选择的天数
- * @returns 用于估算的持仓天数
- */
-export function periodEndDays(period: StakePeriod, sliderDays: number): number {
-  if (period === '180') return 180
-  if (period === '360') return 360
-  if (period === '540') return 540
-  return Math.min(Math.max(1, sliderDays), CALC_MAX_DAYS)
-}
-
-/**
  * 生成本地收益估算快照，供计算器左右两侧同步，零链上读取。
  *
- * 债券：投入为 USD1；利息经折扣→AGX→rebase 后再折回 USD。质押本金/利息为 AGX，需乘现价折算 USD。
+ * 复利按 epoch、加成按单利毛 Rebase、本金线性释放；成本按 $65，卖出按用户到期价。
  *
  * @param args.product 产品类型（stake / lpbond / burnbond / xmine）
  * @param args.period 产品周期
  * @param args.amount 投入数量（允许含千分位逗号）
- * @param args.price 当前价格（质押 AGX 折算 USD / 债券折 AGX 用）
+ * @param args.price 到期 AGX 价（挖矿为到期 X 价）
  * @param args.days 预计持仓天数
- * @param args.epochRebasePct 实时 epoch 收益率（展示单位百分比）；null 表示按零收益计算
- * @param args.xmineDailyPct XMine 日收益率（%）；仅 product=xmine 时使用
- * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺 → 零利息
+ * @param args.epochRebasePct 链上 epoch 收益率（百分比）；null 表示按零收益计算
+ * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益
+ * @param args.epochsPerDay 链上每日 epoch 数；缺 → 零利息
  * @returns 本地收益估算结果
  */
 export function buildCalcEstimate(args: {
@@ -73,7 +66,7 @@ export function buildCalcEstimate(args: {
   days: number
   /** 实时 epoch 收益率（展示单位百分比）；null → 按零收益计算。 */
   epochRebasePct: number | null
-  /** XMine 日收益率（%）；仅 product=xmine 时使用。 */
+  /** 链上 X 挖矿日利率（%）；缺 → 挖矿零收益。 */
   xmineDailyPct?: number | null
   /** 每日 epoch 数（链上推算）；缺 → 零利息。 */
   epochsPerDay?: number | null
@@ -81,37 +74,40 @@ export function buildCalcEstimate(args: {
   const principal = Number.parseFloat(args.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(args.price.replace(/,/g, '')) || 0
   const days = Math.min(Math.max(1, Math.round(args.days)), CALC_MAX_DAYS)
-  const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
   const epochsPerDay = args.epochsPerDay ?? null
-  const estimate = calcLocalInterest({
+  const dayArgs = {
     product: args.product,
     period: args.period,
-    principal,
-    days,
+    amount: principal,
+    pd: priceN,
     epochRebasePct: args.epochRebasePct,
-    xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
-    agxPriceUsd: isBondUsd1 ? priceN : null,
-    discountRateBP: isBondUsd1 ? handbookBondDiscountRateBP(args.period) : null,
     epochsPerDay,
-  })
-  // 债券：投入为 USD1；利息已在 calcLocalInterest 内折 AGX 后再 × 现价成 USD。
-  // 质押/xmine：本金/利息为代币量，须 × 现价。
-  const investedUsd = isBondUsd1 ? principal : principal * priceN
-  const interestUsd = isBondUsd1 ? estimate.interest : estimate.interest * priceN
-  const sellUsd = investedUsd + interestUsd
-  const ratePct = investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0
+    xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
+    horizonDays: days,
+  }
+  const snap = computeCalcDay({ ...dayArgs, days })
+  const lock = calcLockDays(args.period)
+  const fullReleaseDay = lock ?? 1
+  const holdDay = lock ?? CALC_MAX_DAYS
+  const hold = computeCalcDay({ ...dayArgs, days: holdDay })
+  const breakEvenDay = findBreakEvenDay({ ...dayArgs, maxDays: CALC_MAX_DAYS })
   return {
     product: args.product,
     period: args.period,
     days,
     principal,
     price: priceN,
-    interestTokens: estimate.interest,
-    totalTokens: estimate.total,
-    interestUsd,
-    investedUsd,
-    sellUsd,
-    ratePct,
+    interestUsd: snap.rewardsUsd,
+    releasedUsd: snap.releasedUsd,
+    investedUsd: snap.costUsd,
+    sellUsd: snap.sellUsd,
+    profitUsd: snap.profitUsd,
+    ratePct: snap.ratePct,
+    breakEvenDay,
+    fullReleaseDay,
+    holdDay,
+    holdProfitUsd: hold.profitUsd,
+    holdRatePct: hold.ratePct,
     epochRebasePct: args.epochRebasePct,
     xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
     epochsPerDay,

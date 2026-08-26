@@ -8,8 +8,7 @@ import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
   lockedBonusBps,
-  periodYieldPct,
-  stakePeriodDays,
+  scenarioPeriodYieldPct,
 } from '~/core/staking/staking-yield'
 import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -103,13 +102,12 @@ export function useStakeDock() {
 
   const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
-  const bonusBps = lockedBonusBps(stake.period)
   const yieldMeta = {
     baseDaily: formatYieldPct(baseDaily),
     periodYield: formatYieldPct(
-      baseDaily == null ? null : periodYieldPct(baseDaily, stakePeriodDays(stake.period)),
+      scenarioPeriodYieldPct(epochPct, overviewQuery.data?.epochsPerDay, stake.period, 'stake'),
     ),
-    bonus: formatBonusPct(bonusBps),
+    bonus: formatBonusPct(lockedBonusBps(stake.period)),
   }
 
   async function onSubmit() {

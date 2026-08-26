@@ -4,18 +4,14 @@
  * 展示收益结果：总收益、卖出占比、投入占比、节点卡与曲线图。
  * 未填写表单或结果缺失时展示占位提示。
  */
-import { periodEndDays } from '~/core/staking/build-calc-estimate'
-import {
-  baseDailyPctFromEpoch,
-  calcLocalInterest,
-  handbookBondDiscountRateBP,
-} from '~/core/staking/staking-yield'
+import { baseDailyPctFromEpoch } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { Chip } from '~/shared/components/chip'
 import { Detail } from '~/shared/components/detail'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
@@ -30,55 +26,29 @@ export function CalcDetail() {
   const { messages: t } = useI18n()
   const aside = t.staking.calc.aside
   const result = useCalcEstimateStore((state) => state.result)
+  const rates = useCalcEstimateStore((state) => state.rates)
+  const formProduct = useCalcEstimateStore((state) => state.product)
+  const formPeriod = useCalcEstimateStore((state) => state.period)
+  const formDays = useCalcEstimateStore((state) => state.days)
 
-  const productLabel = result ? t.staking.calc.products[result.product] : null
-  const periodLabel = result
-    ? result.period === 'liquid'
+  const shownProduct = result?.product ?? formProduct
+  const shownPeriod = result?.period ?? formPeriod
+  const shownDays = result?.days ?? formDays
+  const productLabel = t.staking.calc.products[shownProduct]
+  const periodLabel =
+    shownPeriod === 'liquid'
       ? t.staking.stake.periods.liquid
-      : result.period === '180'
+      : shownPeriod === '180'
         ? t.staking.stake.periods.d180
-        : result.period === '360'
+        : shownPeriod === '360'
           ? t.staking.stake.periods.d360
-          : result.period === '540'
+          : shownPeriod === '540'
             ? t.staking.stake.periods.d540
-            : result.period
-    : null
-
-  const endDays = result ? periodEndDays(result.period, result.days) : 0
-  const endEstimate = result
-    ? (() => {
-        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
-        const est = calcLocalInterest({
-          product: result.product,
-          period: result.period,
-          principal: result.principal,
-          days: endDays,
-          epochRebasePct: result.epochRebasePct,
-          xmineDailyPct: result.xmineDailyPct,
-          agxPriceUsd: isBondUsd1 ? result.price : null,
-          discountRateBP: isBondUsd1 ? handbookBondDiscountRateBP(result.period) : null,
-          epochsPerDay: result.epochsPerDay,
-        })
-        // 债券利息已是 USD；质押/xmine 利息为代币量 × 现价。与 buildCalcEstimate 同口径。
-        const interestUsd = isBondUsd1 ? est.interest : est.interest * result.price
-        const investedUsd = isBondUsd1 ? result.principal : result.principal * result.price
-        return {
-          interestUsd,
-          ratePct: investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0,
-        }
-      })()
-    : null
-
-  const sellShare =
-    result && result.sellUsd > 0 ? Math.min(100, (result.interestUsd / result.sellUsd) * 100) : 50
-  const investShare =
-    result && result.interestUsd + result.investedUsd > 0
-      ? Math.min(100, (result.interestUsd / (result.interestUsd + result.investedUsd)) * 100)
-      : 50
+            : shownPeriod
 
   const baseDaily = result
     ? baseDailyPctFromEpoch(result.epochRebasePct, result.epochsPerDay)
-    : null
+    : baseDailyPctFromEpoch(rates?.epochRebasePct ?? null, rates?.epochsPerDay ?? null)
   const notesItems = aside.notesItems.map((item, index) => {
     if (index !== 0) return item
     const daily =
@@ -91,13 +61,13 @@ export function CalcDetail() {
       <Section>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Section.Title>{aside.result}</Section.Title>
-          {result ? (
+          {productLabel ? (
             <div className="flex flex-wrap gap-2">
               {(
                 [
                   productLabel,
                   periodLabel,
-                  interpolate(aside.tags.day, { day: result.days }),
+                  interpolate(aside.tags.day, { day: shownDays }),
                 ] as const
               ).map((label) =>
                 label ? (
@@ -120,23 +90,21 @@ export function CalcDetail() {
         </div>
         {result ? (
           <CalcResultCard
-            interestUsd={result.interestUsd}
             investedUsd={result.investedUsd}
-            investShare={investShare}
             labels={t.staking.calc.result}
             netYieldHint={
               result.product === 'xmine'
                 ? t.staking.calc.result.legend.netYieldHintXmine
                 : t.staking.calc.result.legend.netYieldHint
             }
+            profitUsd={result.profitUsd}
             ratePct={result.ratePct}
-            sellShare={sellShare}
+            releasedUsd={result.releasedUsd}
+            rewardsUsd={result.interestUsd}
             sellUsd={result.sellUsd}
           />
         ) : (
-          <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
-            {aside.resultHint}
-          </Text>
+          <Skeleton className="h-40 w-full rounded-2xl" />
         )}
       </Section>
       <Section>
@@ -151,19 +119,22 @@ export function CalcDetail() {
             const hint = 'hint' in card ? card.hint : undefined
             let note = 'note' in card ? card.note : undefined
             if (result && index === 0) {
-              value = interpolate(aside.tags.day, { day: 1 })
+              value =
+                result.breakEvenDay != null
+                  ? interpolate(aside.tags.day, { day: result.breakEvenDay })
+                  : PLACEHOLDER
             } else if (result && index === 1) {
-              value = interpolate(aside.tags.day, {
-                day: periodEndDays(result.period, result.days),
-              })
-            } else if (result && endEstimate && index === 2) {
-              value = formatNumber(endEstimate.interestUsd, { digits: 2, prefix: '$' })
-              note = `${endEstimate.ratePct >= 0 ? '+' : ''}${formatNumber(endEstimate.ratePct, { digits: 2 })}%`
+              value = interpolate(aside.tags.day, { day: result.fullReleaseDay })
+            } else if (result && index === 2) {
+              value = formatNumber(result.holdProfitUsd, { digits: 2, prefix: '$' })
+              note = `${result.holdRatePct >= 0 ? '+' : ''}${formatNumber(result.holdRatePct, { digits: 2 })}%`
             }
             return (
               <Tile key={card.label}>
                 <Tile.Label>
-                  {index === 2 ? interpolate(aside.nodeEndLabel, { day: endDays }) : card.label}
+                  {index === 2 && result
+                    ? interpolate(aside.nodeEndLabel, { day: result.holdDay })
+                    : card.label}
                   {hint ? <Tooltip.Info content={hint} /> : null}
                 </Tile.Label>
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -173,7 +144,9 @@ export function CalcDetail() {
                       index === 0
                         ? 'font-semibold text-coral-emphasis'
                         : index === 2
-                          ? 'font-semibold text-success'
+                          ? result && result.holdProfitUsd < 0
+                            ? 'font-semibold text-destructive'
+                            : 'font-semibold text-success'
                           : 'font-semibold'
                     }
                     variant="section"
