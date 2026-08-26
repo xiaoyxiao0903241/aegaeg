@@ -9,6 +9,8 @@ playwright-report
 env/.active
 .DS_Store
 *.tsbuildinfo
+.eslintcache
+.stylelintcache
 __pycache__/
 *.pyc
 
