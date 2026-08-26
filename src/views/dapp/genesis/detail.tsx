@@ -10,10 +10,8 @@ import { Faq } from '~/shared/components/faq'
 import { Section } from '~/shared/components/section'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { fillTemplate } from '~/shared/lib/utils'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisContributionsTable, GenesisGlobalCard } from '~/views/dapp/genesis/primitives'
-import { genesisFaqTemplateValues } from '~/views/dapp/genesis/shared'
 import { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
 
 function openPreSaleContract() {
@@ -23,17 +21,6 @@ function openPreSaleContract() {
 export function GenesisDetail({ genesis }: { genesis: GenesisSessionState }) {
   const { messages: t } = useI18n()
   const contributions = useGenesisDetail(genesis)
-
-  const genesisFaqValues = genesisFaqTemplateValues(
-    genesis.phases,
-    genesis.airdropThresholdUsd,
-    genesis.isLoading && genesis.phases.length === 0,
-  )
-
-  const genesisFaqItems = t.genesis.faq.items.map((item) => ({
-    q: item.q,
-    a: fillTemplate(item.a, genesisFaqValues),
-  }))
 
   return (
     <Detail>
@@ -60,7 +47,7 @@ export function GenesisDetail({ genesis }: { genesis: GenesisSessionState }) {
       </Section>
       <Section collapsible>
         <Section.Title>{t.genesis.faq.title}</Section.Title>
-        <Faq items={genesisFaqItems} variant="dapp" />
+        <Faq items={t.genesis.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

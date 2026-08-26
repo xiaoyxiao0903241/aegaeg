@@ -153,10 +153,6 @@ export const dappAssets = {
   rewardsHubTierToggle: '/assets/figma/dapp/rewards-hub/ic-tier-toggle.svg',
   /** 社区等级暗色卡片插画。 */
   communityRankDeco: '/assets/figma/dapp/community/rank-deco.png',
-  /** 生态支持·创世火箭。 */
-  communityProgramRocket: '/assets/figma/dapp/community/program-rocket.png',
-  /** 生态支持·X 学院星。 */
-  communityProgramStar: '/assets/figma/dapp/community/program-star.png',
 } as const
 
 export const railItems: Array<{

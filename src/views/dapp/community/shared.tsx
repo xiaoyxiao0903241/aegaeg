@@ -15,7 +15,7 @@ import {
 /**
  * 把团队邀请项映射为表格行
  *
- * 按列序输出注册时间、地址、业绩、等级与直邀数；
+ * 按列序输出注册时间、地址、持仓、等级、直邀数与团队业绩；
  * 数字空结果显示 0（不用「—」）。
  */
 export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[] {

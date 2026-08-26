@@ -38,14 +38,6 @@ export function walletRemountKey(address: string | null | undefined): string {
   return address?.toLowerCase() ?? 'disconnected'
 }
 
-/** 把模板中的 `{key}` 占位符替换为对应值。 */
-export function fillTemplate(template: string, values: Record<string, string>): string {
-  return Object.entries(values).reduce(
-    (result, [key, value]) => result.replaceAll(`{${key}}`, value),
-    template,
-  )
-}
-
 /** 滚动进场类名：默认可见，boot 后仅对未进入视口的块淡出；见 home-motion.css */
 export function revealClass(opts?: { delay?: boolean; className?: string }) {
   return cn(

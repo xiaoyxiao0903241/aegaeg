@@ -275,6 +275,20 @@ test('mapMarketAllowancePaidLogToRow formats subsidy rate as percent', async () 
 
   assert.equal(row[1], '2,000.0000 AGX')
   assert.equal(row[4], '8%')
+  assert.equal(row[5], '160.0000 gAGX')
+})
+
+test('mapMarketAllowanceClaimLogToRow keeps four gAGX decimals and unit', async () => {
+  const { mapMarketAllowanceClaimLogToRow } = await loadModule('/src/views/dapp/rewards/shared.tsx')
+
+  const row = mapMarketAllowanceClaimLogToRow({
+    claim_time: 1_700_000_000,
+    allowance_amount: '12.5',
+    tx_hash: null,
+  })
+
+  assert.equal(row[1], '12.5000 gAGX')
+  assert.equal(row[2], '-')
 })
 
 test('claimableAmountValue subtracts claimed from total', async () => {

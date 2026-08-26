@@ -189,14 +189,7 @@ export function BufferDetail() {
 
       <Section>
         <Section.Title>{t.release.faq.title}</Section.Title>
-        <Faq
-          defaultOpenFirst={false}
-          items={t.release.faq.buffer.map((item) => ({
-            ...item,
-            a: interpolate(item.a, { days: durationQuery.data ?? '—' }),
-          }))}
-          variant="dapp"
-        />
+        <Faq defaultOpenFirst={false} items={t.release.faq.buffer} variant="dapp" />
       </Section>
     </Detail>
   )

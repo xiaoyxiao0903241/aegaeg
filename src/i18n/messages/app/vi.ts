@@ -453,19 +453,19 @@ const app = defineMessages({
         items: [
           {
             q: 'Điểm đóng góp dùng để làm gì?',
-            a: 'Nhận lợi nhuận từ staking, trái phiếu và nguồn khác tiêu điểm đóng góp theo {ratio}. Không đủ điểm thì không nhận được.',
+            a: 'Nhận lợi nhuận từ staking, trái phiếu và nguồn khác tiêu điểm đóng góp theo 1:1 (nhận 1 gAGX tiêu 1 điểm). Không đủ điểm thì không nhận được.',
           },
           {
             q: 'Vì sao nhận lợi nhuận phải tiêu điểm đóng góp?',
-            a: 'Cơ chế gắn nhận thưởng với giảm phát giao thức: mỗi lần nhận tiêu {ratio}; điểm chỉ có từ đốt AGX. Mỗi lần rút lợi nhuận đều tương ứng AGX bị đốt.',
+            a: 'Cơ chế gắn nhận thưởng với giảm phát giao thức: mỗi lần nhận 1 gAGX tiêu 1 điểm đóng góp; điểm chỉ có từ đốt AGX. Mỗi lần rút lợi nhuận đều tương ứng lượng AGX bị đốt bằng nhau, liên tục chống đỡ giảm phát AGX.',
           },
           {
             q: 'Tỷ lệ đốt là bao nhiêu?',
-            a: 'Đốt theo tỷ lệ {burnRatio}: mỗi 1 AGX đốt nhận điểm đóng góp tương ứng. AGX đã đốt tách on-chain vào hố đen và LP.',
+            a: 'Đốt theo tỷ lệ 1:6: mỗi 1 AGX đốt nhận 6 điểm đóng góp. AGX đã đốt vào thẳng địa chỉ hố đen và rời lưu thông vĩnh viễn.',
           },
           {
             q: 'AGX đã đốt đi đâu?',
-            a: 'Theo cấu hình tách on-chain, khoảng {burnPct}% vào địa chỉ hố đen đốt vĩnh viễn; khoảng {injectPct}% có thể bơm vào thanh khoản LP.',
+            a: 'Toàn bộ AGX đã đốt chuyển vào địa chỉ hố đen và khóa vĩnh viễn, giảm lưu thông và tăng giảm phát — là một phần cơ chế hồi giá trị của giao thức.',
           },
           {
             q: 'Điểm đóng góp có thể chuyển hoặc hoàn lại không?',
@@ -544,11 +544,11 @@ const app = defineMessages({
           },
           {
             q: 'Mở khóa và rút khác nhau thế nào?',
-            a: 'Mở khóa là dùng USD1 mua cùng số AGX, mở khóa gAGX và bắt đầu chờ; rút là sau {cooldownHours} giờ chờ, chuyển gAGX đã mở khóa về ví. Hai bước hiện trong bản ghi Turbine là 「Mở khóa」 và 「Rút」.',
+            a: 'Mở khóa là dùng USD1 mua cùng số AGX, mở khóa gAGX và bắt đầu chờ; rút là sau 24–96 giờ chờ, chuyển gAGX đã mở khóa về ví. Hai bước hiện trong bản ghi Turbine là 「Mở khóa」 và 「Rút」.',
           },
           {
             q: 'Thời gian chờ bao lâu?',
-            a: 'Chu kỳ hiện tại là {cooldownHours} giờ, hệ thống tự điều chỉnh theo thị trường. Hết chờ thì rút được khoản gAGX đó.',
+            a: 'Mỗi lần mở khóa vào thời gian chờ 24–96 giờ; thời lượng cụ thể hệ thống tự điều chỉnh theo thị trường. Hết chờ thì rút được khoản gAGX đó.',
           },
           {
             q: 'AGX mua khi mở khóa đi đâu?',
@@ -749,11 +749,11 @@ const app = defineMessages({
       items: [
         {
           q: 'Làm thế nào để tham gia kế hoạch cùng xây dựng?',
-          a: 'Người dùng dùng USD1 tham gia cùng xây dựng, có thể nhận AGX theo mức giảm giá tương ứng từng giai đoạn. {phaseCount} giai đoạn, mức giảm giá lần lượt {discounts}.',
+          a: 'Người dùng dùng USD1 tham gia cùng xây dựng, có thể nhận AGX theo mức giảm giá tương ứng từng giai đoạn. 3 giai đoạn, mức giảm giá lần lượt 30%, 25%, 20%.',
         },
         {
           q: 'Hạn mức cùng xây dựng và yêu cầu tham gia?',
-          a: 'Tối thiểu {minUsd}, tham gia theo bội số {shareIncrement} USD1. Hạn mức từng giai đoạn: {phaseQuotas}.',
+          a: 'Tối thiểu $100, tham gia theo bội số 100 USD1. Hạn mức từng giai đoạn: $100 – $10,000, $100 – $10,000, $100 – $30,000.',
         },
         {
           q: 'Chu kỳ cùng xây dựng kéo dài bao lâu?',
@@ -761,7 +761,7 @@ const app = defineMessages({
         },
         {
           q: 'Làm thế nào để nhận phần thưởng airdrop X?',
-          a: 'Tài khoản tích lũy tham gia cùng xây dựng đạt {threshold} sẽ đủ điều kiện nhận phần thưởng airdrop X tương ứng giai đoạn. Tỷ lệ airdrop {phaseCount} giai đoạn: {airdropRatios}.',
+          a: 'Tài khoản tích lũy tham gia cùng xây dựng đạt $1,000 sẽ đủ điều kiện nhận phần thưởng airdrop X tương ứng giai đoạn. Tỷ lệ airdrop 3 giai đoạn: 5%, 2%, 1%.',
         },
         {
           q: 'Phần thưởng airdrop X được giải phóng như thế nào?',
@@ -1107,7 +1107,7 @@ const app = defineMessages({
           },
           {
             q: 'Trúng rồi tiền thưởng phát thế nào?',
-            a: 'Tiền thưởng quy ra gAGX theo giá trị lúc mở thưởng, tự tích trên thẻ thưởng may mắn; nhận theo quy tắc thưởng may mắn (tiêu điểm đóng góp {ratio}, qua hồ giải phóng tuyến tính hoặc tái stake).',
+            a: 'Tiền thưởng quy ra gAGX theo giá trị lúc mở thưởng, tự tích trên thẻ thưởng may mắn; nhận theo quy tắc thưởng may mắn (tiêu điểm đóng góp 1:1, qua hồ giải phóng tuyến tính hoặc tái stake).',
           },
           {
             q: 'Vì sao stake $5,000 mà không có tư cách?',
@@ -1162,7 +1162,7 @@ const app = defineMessages({
           },
           {
             q: 'Thưởng giới thiệu nhận thế nào?',
-            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng giải phóng tuyến tính theo chu kỳ đã chọn; phần tái stake vào staking đơn token lãi kép. Cả hai tiêu {ratio}.',
+            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng giải phóng tuyến tính theo chu kỳ đã chọn; phần tái stake vào staking đơn token lãi kép. Cả hai tiêu 1:1.',
           },
           {
             q: 'Số địa chỉ giới thiệu trực tiếp là gì?',
@@ -1210,7 +1210,7 @@ const app = defineMessages({
           },
           {
             q: 'Thưởng tham gia nhận thế nào?',
-            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ đã chọn; phần tái stake vào staking đơn token. Cả hai tiêu điểm đóng góp {ratio} (DaoPool Mixed).',
+            a: 'Ở bảng nhận bên trái chọn tỷ lệ nhận và tái stake: phần nhận vào hồ giải phóng theo chu kỳ đã chọn; phần tái stake vào staking đơn token. Cả hai tiêu điểm đóng góp 1:1 (DaoPool Mixed).',
           },
           {
             q: 'Có đổi người mời được không?',
@@ -1278,7 +1278,7 @@ const app = defineMessages({
           },
           {
             q: 'Thưởng Cùng xây dựng và san bằng nhận thế nào?',
-            a: 'Ở đầu bảng nhận bên trái chuyển Cùng xây dựng / San bằng, rồi chọn tỷ lệ. Cùng cơ chế giải phóng/tái stake và tiêu {ratio}.',
+            a: 'Ở đầu bảng nhận bên trái chuyển Cùng xây dựng / San bằng, rồi chọn tỷ lệ. Cùng cơ chế giải phóng/tái stake và tiêu 1:1.',
           },
           {
             q: 'Đổi hạng thì tỷ lệ thưởng có hiệu lực khi nào?',
@@ -1378,7 +1378,7 @@ const app = defineMessages({
         },
         {
           q: 'Nhận thưởng cần điều kiện gì?',
-          a: 'Nhận thưởng tiêu {ratio}. Thiếu điểm thì lấy trên trang Đốt.',
+          a: 'Nhận thưởng tiêu 1:1 (nhận 1 gAGX tiêu 1 điểm). Thiếu điểm thì lấy trên trang Đốt.',
         },
         {
           q: 'Thưởng đã nhận về khi nào?',
@@ -1386,7 +1386,7 @@ const app = defineMessages({
         },
         {
           q: 'Thưởng tất toán khi nào?',
-          a: 'Thưởng may mắn tất toán mỗi ngày 00:00 UTC. Các thưởng khác theo Rebase, khoảng mỗi {hours} giờ. Lần tiếp theo xem trên bảng dữ liệu từng trang chi tiết.',
+          a: 'Thưởng may mắn tất toán mỗi ngày 00:00 UTC. Các thưởng khác theo Rebase, khoảng mỗi 12 giờ. Lần tiếp theo xem trên bảng dữ liệu từng trang chi tiết.',
         },
         {
           q: 'Vì sao một số thẻ thưởng không hiện số?',
@@ -1486,17 +1486,17 @@ const app = defineMessages({
       title: 'Kế hoạch hỗ trợ hệ sinh thái',
       items: [
         {
-          label: 'Cùng xây dựng Sáng lập · Giai đoạn {season}',
-          title: 'Chương trình Thống đốc Dự trữ Sáng lập',
-          body: 'Mở ghế cùng xây dựng toàn cầu đầu tiên',
-          action: 'Xem chi tiết kế hoạch',
+          label: 'X DAO Cùng xây dựng · Giai đoạn {season}',
+          title: 'Chương trình cùng xây dựng toàn cầu đang diễn ra',
+          body: 'Tập hợp người cùng xây dựng trên toàn cầu, cùng tham gia xây dựng hệ sinh thái.',
+          action: 'Xem chi tiết kế hoạch →',
           href: 'https://xdaoaegis.notion.site/ch-ng-tr-nh-h-i-ng-d-tr-genesis-',
         },
         {
           label: 'Học viện X',
-          title: 'Học viện DeFi toàn cầu · Học viện lãnh đạo toàn cầu thời đại kinh tế số',
-          body: 'Đào tạo lãnh đạo cho thời đại · Dự trữ nhân tài cho tương lai',
-          action: 'Xem chi tiết kế hoạch',
+          title: 'Chương trình đào tạo hệ sinh thái dành cho người cùng xây dựng',
+          body: 'Giúp người cùng xây dựng hiểu sâu hơn về cơ chế hệ sinh thái và kế hoạch phát triển.',
+          action: 'Xem chi tiết kế hoạch →',
           href: 'https://xdaoaegis.notion.site/h-c-vi-n-x-vn',
         },
       ],
@@ -1536,12 +1536,12 @@ const app = defineMessages({
           a: 'Sau khi đối tác tham gia cùng xây dựng qua liên kết mời của bạn, quan hệ giới thiệu tự động thiết lập và có hiệu lực vĩnh viễn.',
         },
         {
-          q: 'Tôi có thể đổi người mời không?',
-          a: 'Sau khi ràng buộc, quan hệ mời không thể thay đổi.',
+          q: 'Thưởng giới thiệu Genesis tính thế nào?',
+          a: 'Thưởng giới thiệu Genesis là 3%, dùng quyết toán nén số tiền tương đương, chỉ tính phần số tiền bằng nhau.',
         },
         {
-          q: 'Làm sao nâng cấp cùng xây dựng?',
-          a: 'Theo nắm giữ cá nhân và thành tích đội, thăng từ A1 đến A13.',
+          q: 'Làm sao nâng cấp Genesis?',
+          a: 'Theo số tiền cùng xây dựng cá nhân và thành tích hệ thống, thăng từ S1 đến S10.',
         },
         {
           q: 'Làm sao đủ điều kiện trợ cấp phát triển hệ thống?',
@@ -1727,11 +1727,11 @@ const app = defineMessages({
           },
           {
             q: 'Làm sao nhận đóng góp?',
-            a: 'Mua và đốt AGX. Nhận tiêu {ratio}; hãy chuẩn bị đủ.',
+            a: 'Mua và đốt AGX. Nhận tiêu 1:1 (nhận 1 gAGX tiêu 1 điểm đóng góp); hãy chuẩn bị đủ.',
           },
           {
             q: 'Vì sao nhận lợi nhuận phải chọn chu kỳ giải phóng?',
-            a: 'Không về ngay; giải phóng tuyến tính; chu kỳ càng dài thuế càng thấp: {taxSchedule}.',
+            a: 'Không về ngay; giải phóng tuyến tính; chu kỳ càng dài thuế càng thấp: 5 ngày 20%, 20 ngày 10%, 40 ngày 5%, 60 ngày 1%.',
           },
           {
             q: 'Lợi nhuận sau nhận đi đâu?',
@@ -1739,11 +1739,11 @@ const app = defineMessages({
           },
           {
             q: 'Tái stake và nhận khác nhau thế nào?',
-            a: 'Tái stake bỏ qua giải phóng, thuế tốt hơn ({restakeTax}), lãi kép trong staking đơn token. Nhận linh hoạt hơn.',
+            a: 'Tái stake bỏ qua giải phóng, thuế tốt hơn (360 ngày 15%, 540 ngày 10%), lãi kép trong staking đơn token. Nhận linh hoạt hơn.',
           },
           {
             q: 'Hồ đệm là gì?',
-            a: 'Sau gỡ stake, gốc vào bộ đệm giải phóng tuyến tính lần hai {days} ngày. Phần 「đã giải phóng」 trong bộ đệm chuộc về ví bất cứ lúc nào.',
+            a: 'Sau gỡ stake, gốc vào bộ đệm giải phóng tuyến tính lần hai 30 ngày. Phần 「đã giải phóng」 trong bộ đệm chuộc về ví bất cứ lúc nào.',
           },
         ],
       },
@@ -1783,7 +1783,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận và chuộc khác nhau thế nào?',
-              a: 'Nhận cho lợi nhuận (chu kỳ giải phóng hoặc tái stake). Chuộc cho gốc AGX đã giải phóng → bộ đệm {days} ngày rồi về ví.',
+              a: 'Nhận cho lợi nhuận (chu kỳ giải phóng hoặc tái stake). Chuộc cho gốc AGX đã giải phóng → bộ đệm 30 ngày rồi về ví.',
             },
             {
               q: 'Vì sao mỗi khoản staking hiện riêng?',
@@ -1834,7 +1834,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận và chuộc khác nhau thế nào?',
-              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm {days} ngày giải phóng tuyến tính lần hai rồi về ví.',
+              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm 30 ngày giải phóng tuyến tính lần hai rồi về ví.',
             },
             {
               q: '「Gốc trái phiếu」đến từ đâu?',
@@ -1846,7 +1846,7 @@ const app = defineMessages({
             },
             {
               q: 'Lợi nhuận trái phiếu tái stake được không?',
-              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn ({restakeDays} ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
+              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn (360/540 ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
             },
             {
               q: 'Hết đếm ngược thì sao?',
@@ -1889,7 +1889,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận và chuộc khác nhau thế nào?',
-              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm {days} ngày giải phóng tuyến tính lần hai rồi về ví.',
+              a: 'Nhận cho lợi nhuận: lấy lợi nhuận gAGX từ trái phiếu theo chu kỳ giải phóng đã chọn, hoặc tái stake trực tiếp. Chuộc cho gốc: lấy gốc AGX đã giải phóng vào bộ đệm 30 ngày giải phóng tuyến tính lần hai rồi về ví.',
             },
             {
               q: '「Gốc trái phiếu」đến từ đâu?',
@@ -1901,7 +1901,7 @@ const app = defineMessages({
             },
             {
               q: 'Lợi nhuận trái phiếu tái stake được không?',
-              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn ({restakeDays} ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
+              a: 'Được. Khi nhận, dùng thanh trượt chia tái stake và nhận: phần tái stake vào staking đơn token chu kỳ đã chọn (360/540 ngày) tiếp tục lãi kép, thuế tốt hơn nhận theo chu kỳ.',
             },
             {
               q: 'Hết đếm ngược thì sao?',
@@ -1942,7 +1942,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Nhận sản lượng và chuộc stake khác nhau thế nào?',
-              a: 'Nhận cho sản lượng đào: thưởng X nhận bất cứ lúc nào, không chu kỳ giải phóng, về thẳng ví. Chuộc cho gốc stake: gAGX chuộc vào bộ đệm giải phóng tuyến tính lần hai {days} ngày; tài sản trong bộ đệm không còn sinh lợi nhuận.',
+              a: 'Nhận cho sản lượng đào: thưởng X nhận bất cứ lúc nào, không chu kỳ giải phóng, về thẳng ví. Chuộc cho gốc stake: gAGX chuộc vào bộ đệm giải phóng tuyến tính lần hai 30 ngày; tài sản trong bộ đệm không còn sinh lợi nhuận.',
             },
             {
               q: 'Vì sao một số vị thế hiện 「Khóa」?',
@@ -2114,11 +2114,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Rebase tất toán thế nào?',
-            a: 'Giao thức chạy theo khối: ~{blocks} khối = 1 Epoch (~{hours} giờ). Mỗi hết Epoch thực hiện một tất toán Rebase; hệ thống phân phối lợi nhuận {timesPerDay} lần/ngày.',
+            a: 'Giao thức chạy theo khối: ~14,400 khối = 1 Epoch (~12 giờ). Mỗi hết Epoch thực hiện một tất toán Rebase; hệ thống phân phối lợi nhuận 2 lần/ngày.',
           },
           {
             q: 'Gốc giải phóng thế nào?',
-            a: 'Gốc staking và trái phiếu giải phóng tuyến tính theo khối (~3 giây/khối). Gốc đã giải phóng sau rút vào chu kỳ đệm {days} ngày; hai lớp tuyến tính cân bằng liên tục giải phóng và ổn định thị trường.',
+            a: 'Gốc staking và trái phiếu giải phóng tuyến tính theo khối (~3 giây/khối). Gốc đã giải phóng sau rút vào chu kỳ đệm 30 ngày; hai lớp tuyến tính cân bằng liên tục giải phóng và ổn định thị trường.',
           },
           {
             q: 'Staking, trái phiếu LP và trái phiếu đốt khác nhau thế nào?',
@@ -2318,11 +2318,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'Lợi nhuận staking tính thế nào?',
-          a: 'Rebase {timesPerDay} lần/ngày; lợi nhuận ngày khoảng 0.5%–1%. Chu kỳ càng dài cộng càng cao: 180 ngày ≥10%, 360 ngày ≥15%, 540 ngày ≥20%, điều chỉnh theo hệ số Rebase.',
+          a: 'Rebase 2 lần/ngày; lợi nhuận ngày khoảng 0.5%–1%. Chu kỳ càng dài cộng càng cao: 180 ngày ≥10%, 360 ngày ≥15%, 540 ngày ≥20%, điều chỉnh theo hệ số Rebase.',
         },
         {
           q: 'Gốc staking khi nào rút được?',
-          a: 'Gốc giải phóng tuyến tính theo khối (~3 giây/khối); phần đã giải phóng rút bất cứ lúc nào; sau rút vào chu kỳ đệm {days} ngày.',
+          a: 'Gốc giải phóng tuyến tính theo khối (~3 giây/khối); phần đã giải phóng rút bất cứ lúc nào; sau rút vào chu kỳ đệm 30 ngày.',
         },
         {
           q: 'APY tham chiếu có cố định không?',
@@ -2596,7 +2596,7 @@ const app = defineMessages({
         },
         {
           q: 'Sau gỡ stake tài sản giải phóng thế nào?',
-          a: 'gAGX đã mở khóa giải phóng tuyến tính theo khối {days} ngày.',
+          a: 'gAGX đã mở khóa giải phóng tuyến tính theo khối 30 ngày.',
         },
         {
           q: 'Tổng X bao nhiêu? Có phát hành thêm không?',
@@ -2811,7 +2811,7 @@ const app = defineMessages({
         },
         {
           q: 'Thuế trừ khi nào?',
-          a: 'Trừ một lần lúc vào hàng ({taxSchedule}). Hồ hiện số sau thuế. Sau đó không thêm phí.',
+          a: 'Trừ một lần lúc vào hàng (5 ngày 20%, 20 ngày 10%, 40 ngày 5%, 60 ngày 1%). Hồ hiện số sau thuế. Sau đó không thêm phí.',
         },
         {
           q: 'gAGX nhận từ hồ giải phóng đi đâu?',
@@ -2833,7 +2833,7 @@ const app = defineMessages({
         },
         {
           q: 'Thuế trừ khi nào?',
-          a: 'Trừ một lần lúc vào hàng ({taxSchedule}). Hồ hiện số sau thuế. Sau đó không thêm phí.',
+          a: 'Trừ một lần lúc vào hàng (5 ngày 20%, 20 ngày 10%, 40 ngày 5%, 60 ngày 1%). Hồ hiện số sau thuế. Sau đó không thêm phí.',
         },
         {
           q: 'gAGX nhận từ hồ giải phóng đi đâu?',
@@ -2851,7 +2851,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'Hồ đệm là gì?',
-          a: 'Sau chuộc, giải phóng tuyến tính lần hai {days} ngày. Làm mượt dòng ra.',
+          a: 'Sau chuộc, giải phóng tuyến tính lần hai 30 ngày. Làm mượt dòng ra.',
         },
         {
           q: 'Tài sản trong hồ đệm còn lợi nhuận không?',
@@ -2889,6 +2889,7 @@ const app = defineMessages({
     joined: 'Thời gian tham gia',
     address: 'Địa chỉ',
     communityVolume: 'Thành tích đội',
+    holding: 'Nắm giữ',
     contribution: 'Đăng ký',
   },
 }) satisfies AppMessagesBundle

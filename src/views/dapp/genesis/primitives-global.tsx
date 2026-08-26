@@ -21,15 +21,15 @@ const genesisGlobalCard = tv({
   slots: {
     // 底色跟地球图一致，压过 darkBanner 的 bg-dark
     root: cn(darkBanner().root(), 'bg-dark-globe! px-6 py-4 max-dapp:p-4.5'),
-    content: cn(darkBanner().content(), 'max-dapp:max-w-none'),
-    // 移动端右留白不足会让标题折进按钮，故加大
+    // H5 拆行，按钮相对卡片绝对定位；PC 文案与按钮同一行垂直居中
+    row: 'relative z-1 dapp:flex dapp:items-center dapp:gap-4 max-dapp:contents',
+    content: cn(darkBanner().content(), 'min-w-0 dapp:flex-1'),
     kicker: 'max-dapp:block max-dapp:pr-44',
-    // 描边样式的按钮要压过 Button 次级样式的默认全宽，改用绝对定位贴右上
+    body: 'm-0 min-h-[2lh]',
+    // 胶囊钮默认全宽；箭头原色是珊瑚，实心钮上要反成白
     contractButton: cn(
-      'absolute top-11 right-5.5 z-2 max-dapp:top-4.5 max-dapp:right-4.5',
-      'w-auto! gap-1.5! border-white/45! bg-transparent! px-4.5! text-white!',
-      'hover:translate-y-0! hover:border-white/80! hover:shadow-none!',
-      'focus-visible:translate-y-0! focus-visible:border-white/80! focus-visible:shadow-none!',
+      'w-auto! shrink-0 gap-1.5',
+      'max-dapp:absolute max-dapp:top-4.5 max-dapp:right-4.5 max-dapp:z-2',
       '[&_img]:size-2.5 [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe: 'pointer-events-none absolute top-0 right-0 size-auto max-w-3/5 opacity-80 select-none',
@@ -55,33 +55,35 @@ export function GenesisGlobalCard({
 
   return (
     <div className={styles.root()} data-reveal>
-      <div className={styles.content()}>
-        <Text as="span" variant="eyebrow" tone="primary-bright" className={styles.kicker()}>
-          {kicker}
-        </Text>
-        <Text as="strong" tone="inverse" variant="panel" className="block">
-          {loading ? (
-            <Skeleton className="h-8 w-36 max-dapp:h-7 max-dapp:w-28" tone="dark" />
-          ) : typeof value === 'string' ? (
-            <CountValue text={value} />
-          ) : (
-            value
-          )}
-        </Text>
-        <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
-          {body}
-        </Text>
+      <div className={styles.row()}>
+        <div className={styles.content()}>
+          <Text as="span" variant="eyebrow" tone="primary-bright" className={styles.kicker()}>
+            {kicker}
+          </Text>
+          <Text as="strong" tone="inverse" variant="panel" className="block">
+            {loading ? (
+              <Skeleton className="h-8 w-36 max-dapp:h-7 max-dapp:w-28" tone="dark" />
+            ) : typeof value === 'string' ? (
+              <CountValue text={value} />
+            ) : (
+              value
+            )}
+          </Text>
+          <Text as="p" variant="copy" tone="inverse-muted" className={styles.body()}>
+            {body}
+          </Text>
+        </div>
+        <Button
+          className={styles.contractButton()}
+          onClick={onViewContract}
+          size="md"
+          type="button"
+          variant="primary"
+        >
+          {contractLabel}
+          <Icon alt="" className="size-2.5" src={dappAssets.arrowUpRight} />
+        </Button>
       </div>
-      <Button
-        className={styles.contractButton()}
-        onClick={onViewContract}
-        size="md"
-        type="button"
-        variant="secondary"
-      >
-        {contractLabel}
-        <Icon alt="" className="size-2.5" src={dappAssets.arrowUpRight} />
-      </Button>
       <img
         alt=""
         className={styles.globe()}

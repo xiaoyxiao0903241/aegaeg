@@ -461,19 +461,19 @@ const app = defineMessages({
         items: [
           {
             q: 'Untuk apa poin kontribusi digunakan?',
-            a: 'Klaim yield dari staking, Bond, dan sumber lain mengonsumsi poin kontribusi {ratio}. Tanpa poin cukup, Anda tidak dapat mengklaim.',
+            a: 'Klaim yield dari staking, Bond, dan sumber lain mengonsumsi poin kontribusi 1:1 (mengklaim 1 gAGX menghabiskan 1 poin). Tanpa poin cukup, Anda tidak dapat mengklaim.',
           },
           {
             q: 'Mengapa klaim hadiah perlu mengonsumsi poin kontribusi?',
-            a: 'Mengikat klaim dengan deflasi protokol: setiap klaim mengonsumsi {ratio}; poin hanya dari membakar AGX. Setiap penarikan yield berpasangan dengan AGX yang dibakar.',
+            a: 'Mengikat klaim dengan deflasi protokol: setiap 1 gAGX yang diklaim mengonsumsi 1 poin kontribusi; poin hanya dari membakar AGX. Setiap penarikan yield berpasangan dengan jumlah AGX yang dibakar setara, terus menopang deflasi AGX.',
           },
           {
             q: 'Berapa rasio pembakaran?',
-            a: 'Membakar pada {burnRatio}: setiap 1 AGX yang dibakar menghasilkan poin yang sesuai. AGX yang dibakar dipecah on-chain ke lubang hitam dan LP.',
+            a: 'Membakar pada 1:6: setiap 1 AGX yang dibakar menghasilkan 6 poin kontribusi. AGX yang dibakar masuk langsung ke alamat black-hole dan keluar dari peredaran secara permanen.',
           },
           {
             q: 'Ke mana AGX yang dibakar pergi?',
-            a: 'Menurut konfigurasi split on-chain, sekitar {burnPct}% masuk ke alamat black-hole secara permanen; sekitar {injectPct}% dapat diinjeksikan ke likuiditas LP.',
+            a: 'Seluruh AGX yang dibakar ditransfer ke alamat black-hole dan dikunci permanen, mengurangi peredaran dan memperkuat deflasi — bagian dari mekanisme pengembalian nilai protokol.',
           },
           {
             q: 'Bisakah poin kontribusi ditransfer atau dikembalikan?',
@@ -552,11 +552,11 @@ const app = defineMessages({
           },
           {
             q: 'Unlock vs klaim?',
-            a: 'Buka membeli AGX setara dengan USD1, membuka gAGX, dan memulai cooldown. Klaim memindahkan gAGX yang sudah terbuka ke wallet setelah {cooldownHours} jam. Catatan menampilkan Buka dan Klaim.',
+            a: 'Buka membeli AGX setara dengan USD1, membuka gAGX, dan memulai cooldown. Klaim memindahkan gAGX yang sudah terbuka ke wallet setelah 24–96 jam. Catatan menampilkan Buka dan Klaim.',
           },
           {
             q: 'Berapa lama cooldown?',
-            a: 'Periode saat ini {cooldownHours} jam, disesuaikan otomatis oleh pasar. Setelah itu klaim gAGX tersebut.',
+            a: 'Setiap buka masuk cooldown 24–96 jam; durasi konkret disesuaikan otomatis sistem menurut pasar. Setelah itu klaim gAGX tersebut.',
           },
           {
             q: 'Ke mana AGX yang dibeli saat membuka?',
@@ -758,11 +758,11 @@ const app = defineMessages({
       items: [
         {
           q: 'Bagaimana cara ikut program pembangunan bersama?',
-          a: 'Pengguna berpartisipasi dengan USD1 dan mendapatkan AGX sesuai diskon fase yang berlaku. {phaseCount} fase, dengan diskon {discounts}.',
+          a: 'Pengguna berpartisipasi dengan USD1 dan mendapatkan AGX sesuai diskon fase yang berlaku. 3 fase, dengan diskon 30%, 25%, 20%.',
         },
         {
           q: 'Kuota pembangunan bersama dan persyaratan partisipasi?',
-          a: 'Minimum {minUsd}, harus dalam kelipatan {shareIncrement} USD1. Kuota per fase: {phaseQuotas}.',
+          a: 'Minimum $100, harus dalam kelipatan 100 USD1. Kuota per fase: $100 – $10,000, $100 – $10,000, $100 – $30,000.',
         },
         {
           q: 'Berapa lama siklus pembangunan bersama?',
@@ -770,7 +770,7 @@ const app = defineMessages({
         },
         {
           q: 'Bagaimana mendapatkan hadiah airdrop X?',
-          a: 'Akun dengan total partisipasi pembangunan bersama kumulatif {threshold} memenuhi syarat hadiah airdrop X fase terkait. Rasio airdrop {phaseCount} fase: {airdropRatios}.',
+          a: 'Akun dengan total partisipasi pembangunan bersama kumulatif $1,000 memenuhi syarat hadiah airdrop X fase terkait. Rasio airdrop 3 fase: 5%, 2%, 1%.',
         },
         {
           q: 'Bagaimana hadiah airdrop X dirilis?',
@@ -1119,7 +1119,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana hadiah dibayar?',
-            a: 'Hadiah dikonversi ke gAGX pada nilai saat undian dan terakumulasi di kartu Lucky. Klaim via aturan Mixed (kontribusi {ratio}, antrean rilis atau restake).',
+            a: 'Hadiah dikonversi ke gAGX pada nilai saat undian dan terakumulasi di kartu Lucky. Klaim via aturan Mixed (kontribusi 1:1, antrean rilis atau restake).',
           },
           {
             q: 'Mengapa saya tidak eligible setelah staking $5,000?',
@@ -1170,7 +1170,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana cara mengklaim hadiah referral?',
-            a: 'Panel klaim kiri: atur klaim vs restake. Bagian yang diklaim masuk kolam rilis dan terbuka linear; restake masuk staking token tunggal untuk bunga majemuk. Keduanya mengonsumsi {ratio}.',
+            a: 'Panel klaim kiri: atur klaim vs restake. Bagian yang diklaim masuk kolam rilis dan terbuka linear; restake masuk staking token tunggal untuk bunga majemuk. Keduanya mengonsumsi 1:1.',
           },
           {
             q: 'Apa itu jumlah referral langsung?',
@@ -1219,7 +1219,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana cara mengklaim hadiah partisipasi?',
-            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi {ratio} (DaoPool Mixed).',
+            a: 'Gunakan panel kiri untuk mengatur klaim vs restake: bagian yang diklaim masuk kolam rilis sesuai periode; restake masuk staking token tunggal. Keduanya mengonsumsi poin kontribusi 1:1 (DaoPool Mixed).',
           },
           {
             q: 'Bisakah pereferensi diganti?',
@@ -1289,7 +1289,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana mengklaim hadiah co-build dan equalize?',
-            a: 'Alihkan Bangun Bersama / Equalize di atas panel kiri, lalu atur pembagian. Mekanisme rilis/restake yang sama + {ratio}.',
+            a: 'Alihkan Bangun Bersama / Equalize di atas panel kiri, lalu atur pembagian. Mekanisme rilis/restake yang sama + 1:1.',
           },
           {
             q: 'Kapan rasio bonus level baru berlaku?',
@@ -1389,7 +1389,7 @@ const app = defineMessages({
         },
         {
           q: 'Apa syarat untuk mengklaim?',
-          a: 'Klaim mengonsumsi {ratio}. Jika poin kurang, dapatkan di halaman Bakar.',
+          a: 'Klaim mengonsumsi 1:1 (mengklaim 1 gAGX menghabiskan 1 poin). Jika poin kurang, dapatkan di halaman Bakar.',
         },
         {
           q: 'Kapan hadiah yang diklaim masuk?',
@@ -1397,7 +1397,7 @@ const app = defineMessages({
         },
         {
           q: 'Kapan hadiah di-settle?',
-          a: 'Lucky settle setiap hari pukul 00:00 UTC. Yang lain mengikuti Rebase setiap {hours} jam. Waktu berikutnya ada di panel data tiap halaman detail.',
+          a: 'Lucky settle setiap hari pukul 00:00 UTC. Yang lain mengikuti Rebase setiap 12 jam. Waktu berikutnya ada di panel data tiap halaman detail.',
         },
         {
           q: 'Mengapa beberapa kartu hadiah tidak menampilkan jumlah?',
@@ -1498,17 +1498,17 @@ const app = defineMessages({
       title: 'Program dukungan ekosistem',
       items: [
         {
-          label: 'Pembangunan Bersama Genesis · Fase {season}',
-          title: 'Program Gubernur Cadangan Genesis',
-          body: 'Kursi pembangunan bersama global pertama dibuka',
-          action: 'Lihat detail program',
+          label: 'X DAO Pembangunan Bersama · Fase {season}',
+          title: 'Program pembangunan bersama global sedang berjalan',
+          body: 'Mengumpulkan pembangun bersama di seluruh dunia untuk ikut membangun ekosistem.',
+          action: 'Lihat detail program →',
           href: 'https://xdaoaegis.notion.site/program-dewan-cadangan-genesis',
         },
         {
           label: 'Akademi X',
-          title: 'Akademi DeFi Global · Akademi Kepemimpinan Global Era Ekonomi Digital',
-          body: 'Mencetak pemimpin untuk zaman · Menyimpan talenta untuk masa depan',
-          action: 'Lihat detail program',
+          title: 'Program pelatihan ekosistem bagi para pembangun bersama',
+          body: 'Membantu pembangun bersama memahami mekanisme ekosistem dan rencana pengembangan lebih dalam.',
+          action: 'Lihat detail program →',
           href: 'https://xdaoaegis.notion.site/akademi-x-id',
         },
       ],
@@ -1548,12 +1548,12 @@ const app = defineMessages({
           a: 'Setelah mitra berpartisipasi dalam pembangunan bersama melalui tautan undangan Anda, hubungan referral otomatis terbentuk dan berlaku permanen.',
         },
         {
-          q: 'Bisakah saya mengubah pengundang saya?',
-          a: 'Setelah diikat, hubungan undangan tidak dapat diubah.',
+          q: 'Bagaimana imbalan referral Genesis dihitung?',
+          a: 'Imbalan referral Genesis sebesar 3%, memakai penyelesaian jumlah setara yang dikompresi, hanya bagian jumlah yang sama yang dihitung.',
         },
         {
-          q: 'Bagaimana menaikkan tingkat pembangunan bersama?',
-          a: 'Berdasarkan kepemilikan pribadi dan kinerja tim, naik bertahap dari A1 ke A13.',
+          q: 'Bagaimana menaikkan peringkat Genesis?',
+          a: 'Berdasarkan jumlah pembangunan bersama pribadi dan kinerja sistem, naik bertahap dari S1 ke S10.',
         },
         {
           q: 'Bagaimana mendapat kualifikasi tunjangan pengembangan sistem?',
@@ -1740,11 +1740,11 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana mendapatkan poin kontribusi?',
-            a: 'Beli dan bakar AGX. Klaim mengonsumsi {ratio}; siapkan cukup.',
+            a: 'Beli dan bakar AGX. Klaim mengonsumsi 1:1 (mengklaim 1 gAGX menghabiskan 1 poin kontribusi); siapkan cukup.',
           },
           {
             q: 'Mengapa harus memilih periode rilis saat mengklaim?',
-            a: 'Tidak instan; terbuka linear; semakin panjang, pajak semakin rendah: {taxSchedule}.',
+            a: 'Tidak instan; terbuka linear; semakin panjang, pajak semakin rendah: 5 hari 20%, 20 hari 10%, 40 hari 5%, 60 hari 1%.',
           },
           {
             q: 'Ke mana yield yang diklaim pergi?',
@@ -1752,11 +1752,11 @@ const app = defineMessages({
           },
           {
             q: 'Apa beda restake dan klaim?',
-            a: 'Restake melewati rilis, pajak lebih baik ({restakeTax}), berbunga majemuk di staking token tunggal. Klaim lebih fleksibel.',
+            a: 'Restake melewati rilis, pajak lebih baik (360 hari 15%, 540 hari 10%), berbunga majemuk di staking token tunggal. Klaim lebih fleksibel.',
           },
           {
             q: 'Apa itu pool buffer?',
-            a: 'Setelah unstake, buffer rilis linear sekunder {days} hari. Bagian yang sudah dirilis di buffer dapat ditebus kapan saja.',
+            a: 'Setelah unstake, buffer rilis linear sekunder 30 hari. Bagian yang sudah dirilis di buffer dapat ditebus kapan saja.',
           },
         ],
       },
@@ -1797,7 +1797,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim dan tebus?',
-              a: 'Klaim untuk yield (periode rilis atau restake). Tebus untuk pokok AGX yang sudah dirilis → buffer {days} hari lalu ke wallet.',
+              a: 'Klaim untuk yield (periode rilis atau restake). Tebus untuk pokok AGX yang sudah dirilis → buffer 30 hari lalu ke wallet.',
             },
             {
               q: 'Mengapa setiap posisi staking ditampilkan terpisah?',
@@ -1849,7 +1849,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim dan tebus?',
-              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer {days} hari lalu ke wallet.',
+              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer 30 hari lalu ke wallet.',
             },
             {
               q: 'Dari mana pokok bond berasal?',
@@ -1861,7 +1861,7 @@ const app = defineMessages({
             },
             {
               q: 'Bisakah yield bond di-restake?',
-              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal ({restakeDays}) dengan pajak lebih baik daripada klaim periode.',
+              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal (360/540 hari) dengan pajak lebih baik daripada klaim periode.',
             },
             {
               q: 'Apa yang terjadi saat countdown berakhir?',
@@ -1906,7 +1906,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim dan tebus?',
-              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer {days} hari lalu ke wallet.',
+              a: 'Klaim untuk yield: keluarkan yield gAGX bond sesuai periode rilis atau restake langsung; tebus untuk pokok: ambil pokok AGX yang sudah dirilis, masuk buffer 30 hari lalu ke wallet.',
             },
             {
               q: 'Dari mana pokok bond berasal?',
@@ -1918,7 +1918,7 @@ const app = defineMessages({
             },
             {
               q: 'Bisakah yield bond di-restake?',
-              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal ({restakeDays}) dengan pajak lebih baik daripada klaim periode.',
+              a: 'Ya. Saat klaim, bagi rilis vs restake; restake masuk staking aset tunggal (360/540 hari) dengan pajak lebih baik daripada klaim periode.',
             },
             {
               q: 'Apa yang terjadi saat countdown berakhir?',
@@ -1961,7 +1961,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Apa beda klaim output dan tebus staking?',
-              a: 'Klaim untuk output mining: reward X dapat diklaim kapan saja tanpa periode rilis, langsung ke wallet. Tebus untuk pokok staking: gAGX masuk buffer dan dirilis linear {days} hari; aset di buffer tidak lagi menghasilkan.',
+              a: 'Klaim untuk output mining: reward X dapat diklaim kapan saja tanpa periode rilis, langsung ke wallet. Tebus untuk pokok staking: gAGX masuk buffer dan dirilis linear 30 hari; aset di buffer tidak lagi menghasilkan.',
             },
             {
               q: 'Mengapa beberapa posisi menampilkan Terkunci?',
@@ -2135,11 +2135,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Bagaimana Rebase di-settle?',
-            a: 'Protokol berjalan berbasis blok: ~{blocks} blok = 1 Epoch (~{hours} jam). Rebase settle di akhir setiap Epoch — {timesPerDay} kali sehari.',
+            a: 'Protokol berjalan berbasis blok: ~14,400 blok = 1 Epoch (~12 jam). Rebase settle di akhir setiap Epoch — 2 kali sehari.',
           },
           {
             q: 'Bagaimana pokok dirilis?',
-            a: 'Pokok staking dan bond memakai rilis linear tingkat blok (~3 dtk per blok). Setelah penarikan, pokok yang dirilis masuk buffer {days} hari agar aliran lebih mulus.',
+            a: 'Pokok staking dan bond memakai rilis linear tingkat blok (~3 dtk per blok). Setelah penarikan, pokok yang dirilis masuk buffer 30 hari agar aliran lebih mulus.',
           },
           {
             q: 'Apa beda Staking, Bond LP, dan Bond Burn?',
@@ -2339,11 +2339,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'Bagaimana yield staking dihitung?',
-          a: 'Rebase {timesPerDay} kali sehari; yield harian sekitar 0,5%–1%. Kunci lebih lama: 180h ≥10%, 360h ≥15%, 540h ≥20%, menyesuaikan faktor Rebase.',
+          a: 'Rebase 2 kali sehari; yield harian sekitar 0,5%–1%. Kunci lebih lama: 180h ≥10%, 360h ≥15%, 540h ≥20%, menyesuaikan faktor Rebase.',
         },
         {
           q: 'Kapan pokok staking dapat diambil?',
-          a: 'Pokok dirilis linear per blok (~3 dtk); bagian yang selesai dapat diambil kapan saja; setelah diambil masuk buffer rilis {days} hari.',
+          a: 'Pokok dirilis linear per blok (~3 dtk); bagian yang selesai dapat diambil kapan saja; setelah diambil masuk buffer rilis 30 hari.',
         },
         {
           q: 'Apakah APY referensi tetap?',
@@ -2619,7 +2619,7 @@ const app = defineMessages({
         },
         {
           q: 'Bagaimana aset dirilis setelah unstake?',
-          a: 'gAGX yang terbuka dirilis linear per blok selama {days} hari.',
+          a: 'gAGX yang terbuka dirilis linear per blok selama 30 hari.',
         },
         {
           q: 'Berapa pasokan X? Apakah akan diinflasi?',
@@ -2834,7 +2834,7 @@ const app = defineMessages({
         },
         {
           q: 'Kapan pajak dipotong?',
-          a: 'Dipotong sekali saat masuk antre ({taxSchedule}). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
+          a: 'Dipotong sekali saat masuk antre (5 hari 20%, 20 hari 10%, 40 hari 5%, 60 hari 1%). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
         },
         {
           q: 'Ke mana gAGX yang diklaim dari kolam rilis?',
@@ -2856,7 +2856,7 @@ const app = defineMessages({
         },
         {
           q: 'Kapan pajak dipotong?',
-          a: 'Dipotong sekali saat masuk antre ({taxSchedule}). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
+          a: 'Dipotong sekali saat masuk antre (5 hari 20%, 20 hari 10%, 40 hari 5%, 60 hari 1%). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
         },
         {
           q: 'Ke mana gAGX yang diklaim dari kolam rilis?',
@@ -2874,7 +2874,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'Apa itu pool buffer?',
-          a: 'Setelah tebus, rilis linear sekunder {days} hari. Meratakan arus keluar.',
+          a: 'Setelah tebus, rilis linear sekunder 30 hari. Meratakan arus keluar.',
         },
         {
           q: 'Apakah aset di buffer masih menghasilkan?',
@@ -2912,6 +2912,7 @@ const app = defineMessages({
     joined: 'Bergabung',
     address: 'Alamat',
     communityVolume: 'Kinerja tim',
+    holding: 'Kepemilikan',
     contribution: 'Langganan',
   },
 }) satisfies AppMessagesBundle

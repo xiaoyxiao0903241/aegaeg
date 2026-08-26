@@ -13,10 +13,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { useParticipate } from '~/views/dapp/rewards/participate/use-participate'
-import {
-  mapFaqWithContributionRatio,
-  withContributionRatio,
-} from '~/views/dapp/shared/contribution-claim-ratio'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function ParticipateDetail() {
@@ -37,7 +34,6 @@ export function ParticipateDetail() {
   } = useParticipate()
   const claimRatio = useContributionClaimRatioLabel()
   const contributionHint = withContributionRatio(participate.contributionHint, claimRatio)
-  const faqItems = mapFaqWithContributionRatio(participate.faq.items, claimRatio)
 
   const overviewTiles = [
     {
@@ -130,7 +126,7 @@ export function ParticipateDetail() {
 
       <Section>
         <Section.Title>{participate.faq.title}</Section.Title>
-        <Faq items={faqItems} variant="dapp" />
+        <Faq items={participate.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

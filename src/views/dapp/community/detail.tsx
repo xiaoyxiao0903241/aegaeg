@@ -17,7 +17,6 @@ import { Section } from '~/shared/components/section'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { fillTemplate } from '~/shared/lib/utils'
 import { formatMakingRankLabel, formatNumber } from '~/shared/presenters/format'
 import {
   CommunityInviteCard,
@@ -30,8 +29,6 @@ import {
 } from '~/views/dapp/community/shared'
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
-
-const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const
 
 type CommunityStat = {
   dark?: boolean
@@ -67,7 +64,7 @@ export function CommunityDetail() {
     if (index !== 0) return program
     return {
       ...program,
-      label: fillTemplate(program.label, {
+      label: interpolate(program.label, {
         season: String(genesis.activeSeasonNumber),
       }),
     }
@@ -82,12 +79,11 @@ export function CommunityDetail() {
       <Section reveal>
         <Section.Title>{t.community.programs.title}</Section.Title>
         <Grid columns={2} stackOnDapp>
-          {programItems.map((program, index) => (
+          {programItems.map((program) => (
             <CommunityProgramCard
               action={program.action}
               body={program.body}
               href={program.href}
-              image={PROGRAM_IMAGES[index]}
               key={program.label}
               label={program.label}
               title={program.title}
@@ -196,7 +192,7 @@ export function CommunityDetail() {
   const inviteTableHeaders = [
     t.tables.joined,
     t.tables.address,
-    t.community.shareholder,
+    t.tables.holding,
     t.community.cobuildLevel,
     t.community.directReferrals,
     t.tables.communityVolume,

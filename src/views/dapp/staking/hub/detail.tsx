@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 
-import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
-import { interpolate } from '~/i18n/interpolate'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -12,7 +10,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
-import { mapFaqWithEpochSchedule, withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
+import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { HubMetricValueRow } from '~/views/dapp/staking/hub/primitives'
 import { useStakingHubDetail } from '~/views/dapp/staking/hub/use-hub'
 import { StakingTvlChart } from '~/views/dapp/staking/primitives'
@@ -69,11 +67,6 @@ export function StakingHubDetail() {
     chart,
   } = useStakingHubDetail()
   const epochSchedule = useEpochScheduleLabels()
-  const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
-  const faqItems = mapFaqWithEpochSchedule(t.staking.hub.faq.items, epochSchedule).map((item) => ({
-    ...item,
-    a: interpolate(item.a, { days: bufferDays }),
-  }))
   const overviewMetrics = overview.metrics.map((metric) =>
     metric.hint ? { ...metric, hint: withEpochSchedule(metric.hint, epochSchedule) } : metric,
   )
@@ -200,7 +193,7 @@ export function StakingHubDetail() {
 
       <Section>
         <Section.Title>{t.staking.hub.faq.title}</Section.Title>
-        <Faq items={faqItems} variant="dapp" />
+        <Faq items={t.staking.hub.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

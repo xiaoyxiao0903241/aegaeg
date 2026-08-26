@@ -85,6 +85,7 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.bondFlowBurnRewardTotal,
     queryKeys.api.bondFlowBurnLogsRoot,
     queryKeys.api.x0MiningLogsRoot,
+    queryKeys.api.x0MiningLifetimeReward,
   ],
   staking: [
     queryKeys.chain.stakingRoot,

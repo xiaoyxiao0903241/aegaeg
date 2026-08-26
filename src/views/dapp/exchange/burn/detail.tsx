@@ -6,11 +6,6 @@
  * 关于区走共用 TokenAboutCarousel，只传贡献点数一张卡。
  */
 import { ZERO_BI } from '~/core/constants'
-import { BPS_DENOM } from '~/core/exchange/bps'
-import {
-  formatBurnContributionRatioColon,
-  formatBurnSplitPercent,
-} from '~/core/exchange/burn-contribution-swap'
 import {
   formatContributionConsumedTotal,
   formatContributionPoints,
@@ -18,7 +13,6 @@ import {
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useAgxContributionSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { ChipTabs } from '~/shared/components/chip-tabs'
 import { CountValue } from '~/shared/components/count-value'
@@ -34,10 +28,6 @@ import { formatApiAmount, formatUsdApprox, parseApiAmount } from '~/shared/prese
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
-import {
-  useBurnSwapConfigQuery,
-  useContributionClaimRatioLabel,
-} from '~/web3/exchange/use-burn-swap-config'
 
 /** 详情页只接收概览标量，不承载金额输入。 */
 export type BurnExchangeDetailProps = {
@@ -61,8 +51,6 @@ export function BurnExchangeDetail({
   const agxPriceUsd = useAgxPriceUsd()
   const contributionSummary = useAgxContributionSummary(sessionReady)
   const history = useBurnHistory()
-  const claimRatio = useContributionClaimRatioLabel()
-  const burnConfigQuery = useBurnSwapConfigQuery()
 
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -77,17 +65,6 @@ export function BurnExchangeDetail({
 
   const earnedLabel = formatContributionPoints(totalEarnedContribution, decimals)
   const consumedLabel = formatContributionConsumedTotal(totalConsumedContribution, decimals)
-
-  const splitBps = config?.splitBps
-  const burnPct = splitBps === undefined ? '—' : formatBurnSplitPercent(splitBps)
-  const injectPct = splitBps === undefined ? '—' : formatBurnSplitPercent(BPS_DENOM - splitBps)
-  const rateBps = burnConfigQuery.data?.rateBps
-  const burnRatio =
-    rateBps != null && rateBps > ZERO_BI ? formatBurnContributionRatioColon(rateBps) : '—'
-  const faqItems = t.exchange.burn.faq.items.map((item) => ({
-    ...item,
-    a: interpolate(item.a, { burnPct, injectPct, ratio: claimRatio, burnRatio }),
-  }))
 
   return (
     <Detail>
@@ -183,7 +160,7 @@ export function BurnExchangeDetail({
 
       <Section>
         <Section.Title>{t.exchange.faq.title}</Section.Title>
-        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.exchange.burn.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

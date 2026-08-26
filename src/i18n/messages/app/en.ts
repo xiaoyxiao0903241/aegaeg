@@ -454,19 +454,19 @@ const app = defineMessages({
         items: [
           {
             q: 'What are contribution points used for?',
-            a: 'Claiming yield from staking, bonds, and other sources spends contribution points at {ratio}. Without enough points you cannot claim.',
+            a: 'Claiming yield from staking, bonds, and other sources spends contribution points at 1:1 (claiming 1 gAGX spends 1 point). Without enough points you cannot claim.',
           },
           {
             q: 'Why do I need contribution points to claim rewards?',
-            a: 'This binds claims to protocol deflation: every claim spends contribution at {ratio}, and points come only from burning AGX. So each withdrawal of yield corresponds to AGX burned, continuously supporting AGX deflation.',
+            a: 'This binds claims to protocol deflation: every 1 gAGX claimed spends 1 contribution point, and points come only from burning AGX. So each withdrawal of yield corresponds to an equal amount of AGX burned, continuously supporting AGX deflation.',
           },
           {
             q: 'What is the burn rate?',
-            a: 'Burns at a {burnRatio} rate: each 1 AGX burned yields the matching contribution points. Burned AGX is split on-chain into the black hole and LP.',
+            a: 'Burns at a 1:6 rate: each 1 AGX burned yields 6 contribution points. Burned AGX goes directly to the black-hole address and is permanently removed from circulation.',
           },
           {
             q: 'Where does burned AGX go?',
-            a: 'Per on-chain split config, about {burnPct}% goes to the black-hole address permanently; about {injectPct}% may be injected into LP liquidity.',
+            a: 'All burned AGX is transferred to the black-hole address and locked permanently, reducing circulating supply and strengthening deflation. This is part of the protocol value-return mechanism.',
           },
           {
             q: 'Can contribution points be transferred or refunded?',
@@ -546,11 +546,11 @@ const app = defineMessages({
           },
           {
             q: 'Unlock vs claim?',
-            a: 'Unlock buys an equal amount of AGX with USD1 at the current price, unlocking locked gAGX and starting cooldown. Extract moves unlocked gAGX to your wallet after the cooldown ({cooldownHours} hours). The two steps appear in Turbine records as Unlock and Extract.',
+            a: 'Unlock buys an equal amount of AGX with USD1 at the current price, unlocking locked gAGX and starting cooldown. Extract moves unlocked gAGX to your wallet after the cooldown (24–96 hours). The two steps appear in Turbine records as Unlock and Extract.',
           },
           {
             q: 'How long is the cooldown?',
-            a: 'Each unlock starts a cooldown. The current period is {cooldownHours} hours, auto-adjusted by market state. After it ends you can extract that gAGX to your wallet.',
+            a: 'Each unlock enters a 24–96 hour cooldown; the exact duration is auto-adjusted by the system based on market state. After it ends you can extract that gAGX to your wallet.',
           },
           {
             q: 'Where does the purchased AGX go?',
@@ -751,11 +751,11 @@ const app = defineMessages({
       items: [
         {
           q: 'How do I join the co-build program?',
-          a: 'Users participate in co-build with USD1 and receive AGX at the corresponding Phase discount. {phaseCount} phases, with discounts of {discounts} respectively.',
+          a: 'Users participate in co-build with USD1 and receive AGX at the corresponding Phase discount. 3 phases, with discounts of 30%, 25%, 20% respectively.',
         },
         {
           q: 'What are the quota and participation requirements?',
-          a: 'Minimum participation is {minUsd} in increments of {shareIncrement} USD1. Quotas by phase: {phaseQuotas}.',
+          a: 'Minimum participation is $100 in increments of 100 USD1. Quotas by phase: $100 – $10,000, $100 – $10,000, $100 – $30,000.',
         },
         {
           q: 'How long is the co-build vesting period?',
@@ -763,7 +763,7 @@ const app = defineMessages({
         },
         {
           q: 'How do I qualify for X airdrop rewards?',
-          a: 'Accounts with cumulative co-build participation of {threshold} qualify for the corresponding phase X airdrop. Airdrop ratios across {phaseCount} phases: {airdropRatios}.',
+          a: 'Accounts with cumulative co-build participation of $1,000 qualify for the corresponding phase X airdrop. Airdrop ratios across 3 phases: 5%, 2%, 1%.',
         },
         {
           q: 'How are X airdrop rewards released?',
@@ -1080,7 +1080,7 @@ const app = defineMessages({
           },
           {
             q: 'How are prizes paid?',
-            a: 'Prizes convert to gAGX at draw-time value and accumulate on the Lucky card. Claim via Mixed rules ({ratio} contribution, release queue or restake).',
+            a: 'Prizes convert to gAGX at draw-time value and accumulate on the Lucky card. Claim via Mixed rules (1:1 contribution, release queue or restake).',
           },
           {
             q: 'Why am I not eligible after staking $5,000?',
@@ -1129,7 +1129,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim referral rewards?',
-            a: 'Use the left claim panel to set the claim vs restake split: the claimed portion enters the release pool and unlocks linearly over the chosen period; the restake portion goes straight into single-token staking to compound. Both claim and restake spend contribution at {ratio}.',
+            a: 'Use the left claim panel to set the claim vs restake split: the claimed portion enters the release pool and unlocks linearly over the chosen period; the restake portion goes straight into single-token staking to compound. Both claim and restake spend contribution at 1:1.',
           },
           {
             q: 'What is direct referral count?',
@@ -1176,7 +1176,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim participation rewards?',
-            a: 'On the left claim panel, choose the claim vs restake split: the claim share enters the release queue for linear vesting; the restake share goes into single-asset staking. Both spend contribution {ratio}.',
+            a: 'On the left claim panel, choose the claim vs restake split: the claim share enters the release queue for linear vesting; the restake share goes into single-asset staking. Both spend contribution 1:1.',
           },
           {
             q: 'Can I change my referrer?',
@@ -1244,7 +1244,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim co-build and equalize rewards?',
-            a: 'Switch Co-build / Equalize at the top of the left claim panel, then set the claim vs restake split: claimed portion enters the release pool for linear unlock over the chosen period; restake goes straight into single-token staking to compound. Both spend contribution at {ratio}.',
+            a: 'Switch Co-build / Equalize at the top of the left claim panel, then set the claim vs restake split: claimed portion enters the release pool for linear unlock over the chosen period; restake goes straight into single-token staking to compound. Both spend contribution at 1:1.',
           },
           {
             q: 'When does a new tier rate apply?',
@@ -1337,7 +1337,7 @@ const app = defineMessages({
         },
         {
           q: 'What is required to claim?',
-          a: 'Claiming spends contribution at {ratio}. Points come from burning AGX; if you are short, get them on the Burn page first.',
+          a: 'Claiming spends contribution at 1:1 (claiming 1 gAGX spends 1 point). Points come from burning AGX; if you are short, get them on the Burn page first.',
         },
         {
           q: 'When do claimed rewards arrive?',
@@ -1345,7 +1345,7 @@ const app = defineMessages({
         },
         {
           q: 'When are rewards settled?',
-          a: 'Lucky draws settle at 00:00 UTC daily. Other rewards follow Rebase, about every {hours} hours, so they settle on the same cadence. Next payout time is on each reward detail data panel.',
+          a: 'Lucky draws settle at 00:00 UTC daily. Other rewards follow Rebase, about every 12 hours, so they settle on the same cadence. Next payout time is on each reward detail data panel.',
         },
         {
           q: 'Why do some cards hide amounts?',
@@ -1445,17 +1445,17 @@ const app = defineMessages({
       title: 'Ecosystem support programs',
       items: [
         {
-          label: 'Genesis Co-build · Phase {season}',
-          title: 'Genesis Reserve Governor Program',
-          body: 'First global co-build seats now open',
-          action: 'View program details',
+          label: 'X DAO Co-build · Phase {season}',
+          title: 'Global co-build program underway',
+          body: 'Bringing together co-builders worldwide to take part in ecosystem building.',
+          action: 'View program details →',
           href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program',
         },
         {
           label: 'X Academy',
-          title: 'Global DeFi Academy · Global Leadership Academy for the Digital Economy Era',
-          body: 'Cultivating leaders for the era · Reserving talent for the future',
-          action: 'View program details',
+          title: 'Ecosystem training program for co-builders',
+          body: 'Helping co-builders understand the ecosystem mechanisms and roadmap more deeply.',
+          action: 'View program details →',
           href: 'https://xdaoaegis.notion.site/x-academy-en',
         },
       ],
@@ -1495,12 +1495,12 @@ const app = defineMessages({
           a: 'After a partner participates in co-build through your referral link, the referral relationship is automatically established and permanently valid.',
         },
         {
-          q: 'Can I change my inviter?',
-          a: 'Once the referral relationship is bound, it cannot be changed.',
+          q: 'How are genesis referral rewards calculated?',
+          a: 'Genesis referral rewards are 3%, using a compressed equal-amount settlement: only the matching amount is counted.',
         },
         {
-          q: 'How do I raise my co-build tier?',
-          a: 'Based on your personal holdings and team performance, you can advance from A1 to A13.',
+          q: 'How do I raise my genesis rank?',
+          a: 'Based on your personal co-build amount and system performance, you can advance from S1 to S10.',
         },
         {
           q: 'How do I qualify for the development allowance?',
@@ -1678,11 +1678,11 @@ const app = defineMessages({
           },
           {
             q: 'How do I earn contribution points?',
-            a: 'Buy AGX and burn it to receive contribution. Claims spend contribution at {ratio}; prepare enough for the yield you plan to claim.',
+            a: 'Buy AGX and burn it to receive contribution. Claims spend contribution at 1:1 (claiming 1 gAGX spends 1 contribution point); prepare enough for the yield you plan to claim.',
           },
           {
             q: 'Why choose a release period when claiming?',
-            a: 'Claimed yield is not instant. It unlocks linearly over the chosen period; longer periods have lower tax: {taxSchedule}.',
+            a: 'Claimed yield is not instant. It unlocks linearly over the chosen period; longer periods have lower tax: 5 days 20%, 20 days 10%, 40 days 5%, 60 days 1%.',
           },
           {
             q: 'Where does claimed yield go?',
@@ -1690,11 +1690,11 @@ const app = defineMessages({
           },
           {
             q: 'Restake vs claim?',
-            a: 'Restake skips the release period — yield goes straight into single-token staking to keep compounding, at a better tax rate ({restakeTax}), better for long-term participants. Claim unlocks to wallet over the release period and is more flexible.',
+            a: 'Restake skips the release period — yield goes straight into single-token staking to keep compounding, at a better tax rate (360 days 15%, 540 days 10%), better for long-term participants. Claim unlocks to wallet over the release period and is more flexible.',
           },
           {
             q: 'What is the buffer pool?',
-            a: 'After principal is unstaked it enters the buffer pool for a {days}-day secondary linear release, reducing clustered short-term outflows. Amounts marked Released in the buffer can be redeemed to wallet anytime.',
+            a: 'After principal is unstaked it enters the buffer pool for a 30-day secondary linear release, reducing clustered short-term outflows. Amounts marked Released in the buffer can be redeemed to wallet anytime.',
           },
         ],
       },
@@ -1734,7 +1734,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim vs redeem?',
-              a: 'Claim is for yield: take accumulated gAGX over the chosen release period, or restake it. Redeem is for principal: take released AGX principal into a {days}-day buffer for a second linear release, then to your wallet.',
+              a: 'Claim is for yield: take accumulated gAGX over the chosen release period, or restake it. Redeem is for principal: take released AGX principal into a 30-day buffer for a second linear release, then to your wallet.',
             },
             {
               q: 'Why is each stake shown separately?',
@@ -1785,7 +1785,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim vs redeem?',
-              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a {days}-day buffer before wallet credit.',
+              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a 30-day buffer before wallet credit.',
             },
             {
               q: 'Where does bond principal come from?',
@@ -1797,7 +1797,7 @@ const app = defineMessages({
             },
             {
               q: 'Can bond yield be restaked?',
-              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking ({restakeDays}) with better tax than period claim.',
+              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking (360/540 days) with better tax than period claim.',
             },
             {
               q: 'What happens when the countdown ends?',
@@ -1840,7 +1840,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim vs redeem?',
-              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a {days}-day buffer before wallet credit.',
+              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a 30-day buffer before wallet credit.',
             },
             {
               q: 'Where does bond principal come from?',
@@ -1852,7 +1852,7 @@ const app = defineMessages({
             },
             {
               q: 'Can bond yield be restaked?',
-              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking ({restakeDays}) with better tax than period claim.',
+              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking (360/540 days) with better tax than period claim.',
             },
             {
               q: 'What happens when the countdown ends?',
@@ -1893,7 +1893,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Claim output vs redeem stake?',
-              a: 'Claim takes mining output: X goes to your wallet with no release period. Redeem targets principal: gAGX enters the buffer for a {days}-day linear release and stops earning.',
+              a: 'Claim takes mining output: X goes to your wallet with no release period. Redeem targets principal: gAGX enters the buffer for a 30-day linear release and stops earning.',
             },
             {
               q: 'Why do some positions show Locked?',
@@ -2061,11 +2061,11 @@ const app = defineMessages({
         items: [
           {
             q: 'How is Rebase settled?',
-            a: 'The protocol runs on blocks: ~{blocks} blocks = 1 Epoch (~{hours} hours). Rebase settles at each Epoch end — {timesPerDay} times daily.',
+            a: 'The protocol runs on blocks: ~14,400 blocks = 1 Epoch (~12 hours). Rebase settles at each Epoch end — 2 times daily.',
           },
           {
             q: 'How is principal released?',
-            a: 'Stake and bond principal use block-level linear release (~3s per block). After withdrawal, released principal enters a {days}-day buffer release for smoother outflow.',
+            a: 'Stake and bond principal use block-level linear release (~3s per block). After withdrawal, released principal enters a 30-day buffer release for smoother outflow.',
           },
           {
             q: 'How do Stake, LP Bond, and Burn Bond differ?',
@@ -2250,11 +2250,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'How is staking yield calculated?',
-          a: 'Rebase {timesPerDay} times daily; daily yield is about 0.5%–1%. Longer locks earn higher bonuses: 180d ≥10%, 360d ≥15%, 540d ≥20%, adjusted with the rebase factor.',
+          a: 'Rebase 2 times daily; daily yield is about 0.5%–1%. Longer locks earn higher bonuses: 180d ≥10%, 360d ≥15%, 540d ≥20%, adjusted with the rebase factor.',
         },
         {
           q: 'When can principal be withdrawn?',
-          a: 'Principal unlocks linearly by block (~3s). Released amounts can be claimed anytime; claims enter a {days}-day buffer release.',
+          a: 'Principal unlocks linearly by block (~3s). Released amounts can be claimed anytime; claims enter a 30-day buffer release.',
         },
         {
           q: 'Is the reference APY fixed?',
@@ -2525,7 +2525,7 @@ const app = defineMessages({
         },
         {
           q: 'How does unstaking release assets?',
-          a: 'After unlock, gAGX uses a {days}-day block-linear release to reduce clustered sell pressure after unstake and strengthen long-term value capture.',
+          a: 'After unlock, gAGX uses a 30-day block-linear release to reduce clustered sell pressure after unstake and strengthen long-term value capture.',
         },
         {
           q: 'What is the X supply? Will it inflate?',
@@ -2736,7 +2736,7 @@ const app = defineMessages({
         },
         {
           q: 'When is the tax taken?',
-          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate ({taxSchedule}). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
+          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate (5 days 20%, 20 days 10%, 40 days 5%, 60 days 1%). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
         },
         {
           q: 'Where does a release-pool claim go?',
@@ -2758,7 +2758,7 @@ const app = defineMessages({
         },
         {
           q: 'When is the tax taken?',
-          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate ({taxSchedule}). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
+          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate (5 days 20%, 20 days 10%, 40 days 5%, 60 days 1%). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
         },
         {
           q: 'Where does a release-pool claim go?',
@@ -2776,7 +2776,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'What is the buffer pool?',
-          a: 'After principal is unstaked (redeemed) it enters the buffer pool for a {days}-day secondary linear release. This reduces clustered short-term outflows and balances continuous release with market stability.',
+          a: 'After principal is unstaked (redeemed) it enters the buffer pool for a 30-day secondary linear release. This reduces clustered short-term outflows and balances continuous release with market stability.',
         },
         {
           q: 'Do buffer assets still earn yield?',
@@ -2814,6 +2814,7 @@ const app = defineMessages({
     joined: 'Joined',
     address: 'Address',
     communityVolume: 'Team performance',
+    holding: 'Holdings',
     contribution: 'Subscription',
   },
 }) satisfies AppMessagesBundle

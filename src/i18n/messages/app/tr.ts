@@ -452,19 +452,19 @@ const app = defineMessages({
         items: [
           {
             q: 'Katkı puanları ne işe yarar?',
-            a: 'Stake, tahvil ve diğer kaynaklardan getiri talep etmek katkı puanını {ratio} harcar. Puan yetmezse talep edilemez.',
+            a: 'Stake, tahvil ve diğer kaynaklardan getiri talep etmek katkı puanını 1:1 harcar (1 gAGX talep etmek 1 puan harcar). Puan yetmezse talep edilemez.',
           },
           {
             q: 'Ödül talep ederken neden katkı puanı gerekir?',
-            a: 'Bu, talepleri protokol deflasyonuna bağlar: her talep katkıyı {ratio} harcar ve puan yalnızca AGX yakımından gelir. Böylece her getiri çekimi yakılan AGX’e karşılık gelir ve AGX deflasyonunu sürekli destekler.',
+            a: 'Bu, talepleri protokol deflasyonuna bağlar: her 1 gAGX talebi 1 katkı puanı harcar ve puan yalnızca AGX yakımından gelir. Böylece her getiri çekimi eşit miktarda yakılan AGX’e karşılık gelir ve AGX deflasyonunu sürekli destekler.',
           },
           {
             q: 'Yakım oranı nedir?',
-            a: '{burnRatio} oranında yakım: yakılan her 1 AGX eşleşen katkı puanı verir. Yakılan AGX zincir üstünde kara delik ve LP’ye bölünür.',
+            a: '1:6 oranında yakım: yakılan her 1 AGX 6 katkı puanı verir. Yakılan AGX doğrudan kara delik adresine gider ve dolaşımdan kalıcı çıkar.',
           },
           {
             q: 'Yakılan AGX nereye gider?',
-            a: 'Zincir üstü bölüşüme göre yaklaşık %{burnPct} kara deliğe kalıcı yakılır; yaklaşık %{injectPct} LP likiditesine enjekte edilebilir.',
+            a: 'Yakılan AGX’in tamamı kara delik adresine aktarılıp kalıcı kilitlenir; dolaşımı doğrudan azaltır, deflasyonu güçlendirir ve protokolün değer geri dönüş mekanizmasının parçasıdır.',
           },
           {
             q: 'Katkı puanları aktarılabilir veya iade edilebilir mi?',
@@ -544,11 +544,11 @@ const app = defineMessages({
           },
           {
             q: 'Kilit açma ile çekme farkı nedir?',
-            a: 'Kilit açma, güncel fiyattan USD1 ile eşit miktarda AGX alır, kilitli gAGX’i açar ve soğumayı başlatır. Çekme, soğuma ({cooldownHours} saat) bitince açılmış gAGX’i cüzdana taşır. İki adım Türbin kayıtlarında Kilit açma ve Çekme olarak görünür.',
+            a: 'Kilit açma, güncel fiyattan USD1 ile eşit miktarda AGX alır, kilitli gAGX’i açar ve soğumayı başlatır. Çekme, soğuma (24–96 saat) bitince açılmış gAGX’i cüzdana taşır. İki adım Türbin kayıtlarında Kilit açma ve Çekme olarak görünür.',
           },
           {
             q: 'Soğuma süresi ne kadar?',
-            a: 'Her kilit açılışı soğuma başlatır. Mevcut süre {cooldownHours} saattir, piyasa durumuna göre otomatik ayarlanır. Bittikten sonra o gAGX’i cüzdana çekebilirsiniz.',
+            a: 'Her kilit açılışı 24–96 saatlik soğumaya girer; süre piyasaya göre sistemce otomatik ayarlanır. Bittikten sonra o gAGX’i cüzdana çekebilirsiniz.',
           },
           {
             q: 'Satın alınan AGX nereye gider?',
@@ -749,11 +749,11 @@ const app = defineMessages({
       items: [
         {
           q: 'Ortak inşa planına nasıl katılınır?',
-          a: 'Kullanıcılar USD1 ile ortak inşaya katılarak ilgili faz indirimiyle AGX kazanabilir. Toplam {phaseCount} faz vardır; indirimler sırasıyla {discounts} şeklindedir.',
+          a: 'Kullanıcılar USD1 ile ortak inşaya katılarak ilgili faz indirimiyle AGX kazanabilir. Toplam 3 faz vardır; indirimler sırasıyla %30, %25, %20 şeklindedir.',
         },
         {
           q: 'Ortak inşa kotası ve katılım koşulları nelerdir?',
-          a: 'Minimum katılım tutarı {minUsd} olup, {shareIncrement} USD1 katları şeklinde katılım gereklidir. Faz kotaları sırasıyla {phaseQuotas} şeklindedir.',
+          a: 'Minimum katılım tutarı $100 olup, 100 USD1 katları şeklinde katılım gereklidir. Faz kotaları sırasıyla $100 – $10,000, $100 – $10,000, $100 – $30,000 şeklindedir.',
         },
         {
           q: 'Ortak inşa döngüsü ne kadar sürer?',
@@ -761,7 +761,7 @@ const app = defineMessages({
         },
         {
           q: 'X airdrop ödülü nasıl kazanılır?',
-          a: 'Tek hesapla toplam ortak inşa tutarı {threshold} ulaştığında, ilgili faz X airdrop ödülüne hak kazanılır. {phaseCount} faz için airdrop oranları sırasıyla {airdropRatios} şeklindedir.',
+          a: 'Tek hesapla toplam ortak inşa tutarı $1,000 ulaştığında, ilgili faz X airdrop ödülüne hak kazanılır. 3 faz için airdrop oranları sırasıyla %5, %2, %1 şeklindedir.',
         },
         {
           q: 'X airdrop ödülü nasıl dağıtılır?',
@@ -1115,7 +1115,7 @@ const app = defineMessages({
           },
           {
             q: 'Ödüller nasıl ödenir?',
-            a: 'Ödüller çekiliş anı değerinde gAGX’e çevrilir ve Şans kartında birikir. Mixed kurallarıyla talep ({ratio} katkı, serbest bırakma havuzu veya yeniden stake).',
+            a: 'Ödüller çekiliş anı değerinde gAGX’e çevrilir ve Şans kartında birikir. Mixed kurallarıyla talep (1:1 katkı, serbest bırakma havuzu veya yeniden stake).',
           },
           {
             q: 'Neden $5,000 stake etmeme rağmen hakkım yok?',
@@ -1165,7 +1165,7 @@ const app = defineMessages({
           },
           {
             q: 'Referans ödülü nasıl talep edilir?',
-            a: 'Soldaki talep panelinde talep/yeniden stake oranını seçin: talep kısmı serbest bırakma havuzuna girer ve seçilen sürede doğrusal açılır; yeniden stake kısmı doğrudan tek token stake’ine girip bileşik üretir. Talep ve yeniden stake katkıyı {ratio} harcar.',
+            a: 'Soldaki talep panelinde talep/yeniden stake oranını seçin: talep kısmı serbest bırakma havuzuna girer ve seçilen sürede doğrusal açılır; yeniden stake kısmı doğrudan tek token stake’ine girip bileşik üretir. Talep ve yeniden stake katkıyı 1:1 harcar.',
           },
           {
             q: 'Doğrudan referans sayısı nedir?',
@@ -1213,7 +1213,7 @@ const app = defineMessages({
           },
           {
             q: 'Katılım ödülü nasıl talep edilir?',
-            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı {ratio} harcar (DaoPool Mixed).',
+            a: 'Sol panelde talep/yeniden stake oranını seçin: talep kısmı seçilen sürede serbest bırakma havuzuna girer; yeniden stake tek varlık stake’ine gider. İkisi de katkı 1:1 harcar (DaoPool Mixed).',
           },
           {
             q: 'Davet eden değiştirilebilir mi?',
@@ -1281,7 +1281,7 @@ const app = defineMessages({
           },
           {
             q: 'Ortak inşa ve eşitleme ödülü nasıl talep edilir?',
-            a: 'Soldaki talep panelinin üstünden Ortak inşa / Eşitleme’ye geçin, sonra talep/yeniden stake oranını ayarlayın: talep kısmı seçilen sürede doğrusal açılmak üzere serbest bırakma havuzuna girer; yeniden stake doğrudan tek token stake’ine girip bileşik üretir. İkisi de katkıyı {ratio} harcar.',
+            a: 'Soldaki talep panelinin üstünden Ortak inşa / Eşitleme’ye geçin, sonra talep/yeniden stake oranını ayarlayın: talep kısmı seçilen sürede doğrusal açılmak üzere serbest bırakma havuzuna girer; yeniden stake doğrudan tek token stake’ine girip bileşik üretir. İkisi de katkıyı 1:1 harcar.',
           },
           {
             q: 'Yeni seviye oranı ne zaman geçerli olur?',
@@ -1382,7 +1382,7 @@ const app = defineMessages({
         },
         {
           q: 'Talep için ne gerekir?',
-          a: 'Talep katkıyı {ratio} harcar. Puanlar AGX yakımından gelir; yetmezse önce Yakım sayfasından alın.',
+          a: 'Talep katkıyı 1:1 harcar (1 gAGX talep etmek 1 puan harcar). Puanlar AGX yakımından gelir; yetmezse önce Yakım sayfasından alın.',
         },
         {
           q: 'Talep edilen ödüller ne zaman gelir?',
@@ -1390,7 +1390,7 @@ const app = defineMessages({
         },
         {
           q: 'Ödüller ne zaman uzlaşır?',
-          a: 'Şans çekilişleri her gün 00:00 UTC’de uzlaşır. Diğer ödüller Rebase’i izler, yaklaşık her {hours} saatte bir, bu yüzden aynı ritimde uzlaşır. Sonraki ödeme zamanı her ödül ayrıntı veri panelindedir.',
+          a: 'Şans çekilişleri her gün 00:00 UTC’de uzlaşır. Diğer ödüller Rebase’i izler, yaklaşık her 12 saatte bir, bu yüzden aynı ritimde uzlaşır. Sonraki ödeme zamanı her ödül ayrıntı veri panelindedir.',
         },
         {
           q: 'Bazı ödül kartları neden tutar göstermiyor?',
@@ -1491,17 +1491,17 @@ const app = defineMessages({
       title: 'Ekosistem destek programları',
       items: [
         {
-          label: 'Genesis Ortak İnşa · Faz {season}',
-          title: 'Genesis Rezerv Valisi Programı',
-          body: 'İlk küresel ortak inşa koltukları açıldı',
-          action: 'Plan detaylarını görüntüle',
+          label: 'X DAO Ortak İnşa · Faz {season}',
+          title: 'Küresel ortak inşa programı devam ediyor',
+          body: 'Dünya çapındaki ortak inşa edenleri bir araya getirerek ekosistem inşasına katılın.',
+          action: 'Plan detaylarını görüntüle →',
           href: 'https://xdaoaegis.notion.site/genesis-rezerv-konseyi-program',
         },
         {
           label: 'X Akademi',
-          title: 'Küresel DeFi Akademisi · Dijital Ekonomi Çağında Küresel Liderlik Akademisi',
-          body: 'Çağ için lider yetiştirmek · Gelecek için yetenek rezervi',
-          action: 'Plan detaylarını görüntüle',
+          title: 'Ortak inşa edenler için ekosistem eğitim programı',
+          body: 'Ortak inşa edenlerin ekosistem mekanizmalarını ve gelişim planını daha derin anlamasına yardımcı olur.',
+          action: 'Plan detaylarını görüntüle →',
           href: 'https://xdaoaegis.notion.site/x-akademisi-tur',
         },
       ],
@@ -1541,12 +1541,12 @@ const app = defineMessages({
           a: 'Arkadaşlar davet bağlantısı üzerinden ortak inşaya katıldığında davet ilişkisi otomatik olarak kurulur ve kalıcıdır.',
         },
         {
-          q: 'Davet edenimi değiştirebilir miyim?',
-          a: 'Davet ilişkisi bağlandıktan sonra değiştirilemez.',
+          q: 'Genesis referans ödülleri nasıl hesaplanır?',
+          a: 'Genesis referans ödülleri %3’tür; sıkıştırılmış eşit tutar mahsuplaşması kullanır, yalnızca eşit tutar kısmı sayılır.',
         },
         {
-          q: 'Ortak inşa seviyemi nasıl yükseltebilirim?',
-          a: 'Kişisel varlık ve takım performansına göre A1’den A13’e kademeli yükselirsiniz.',
+          q: 'Genesis rütbemi nasıl yükseltebilirim?',
+          a: 'Kişisel ortak inşa tutarı ve sistem performansına göre S1’den S10’a kademeli yükselirsiniz.',
         },
         {
           q: 'Sistem gelişim ödeneği niteliği nasıl alınır?',
@@ -1732,11 +1732,11 @@ const app = defineMessages({
           },
           {
             q: 'Katkı değeri nasıl kazanılır?',
-            a: 'AGX alıp yakarak katkı alın. Talepler katkıyı {ratio} harcar; talep edeceğiniz getiri için yeterince hazırlayın.',
+            a: 'AGX alıp yakarak katkı alın. Talepler katkıyı 1:1 harcar (1 gAGX talep etmek 1 katkı puanı harcar); talep edeceğiniz getiri için yeterince hazırlayın.',
           },
           {
             q: 'Talepte neden serbest bırakma süresi seçilir?',
-            a: 'Talep edilen getiri anında gelmez. Seçilen sürede doğrusal açılır; süre uzadıkça vergi düşer: {taxSchedule}.',
+            a: 'Talep edilen getiri anında gelmez. Seçilen sürede doğrusal açılır; süre uzadıkça vergi düşer: 5 gün %20, 20 gün %10, 40 gün %5, 60 gün %1.',
           },
           {
             q: 'Talep edilen getiri nereye gider?',
@@ -1744,11 +1744,11 @@ const app = defineMessages({
           },
           {
             q: 'Yeniden stake ile talep farkı nedir?',
-            a: 'Yeniden stake serbest bırakma süresini atlar — getiri doğrudan tek token stake’ine girip bileşik üretmeye devam eder, daha iyi vergi oranıyla ({restakeTax}); uzun vadeli katılımcılara uygundur. Talep, serbest bırakma süresinde cüzdana açılır ve daha esnektir.',
+            a: 'Yeniden stake serbest bırakma süresini atlar — getiri doğrudan tek token stake’ine girip bileşik üretmeye devam eder, daha iyi vergi oranıyla (360 gün %15, 540 gün %10); uzun vadeli katılımcılara uygundur. Talep, serbest bırakma süresinde cüzdana açılır ve daha esnektir.',
           },
           {
             q: 'Tampon havuzu nedir?',
-            a: 'Anapara stake’ten çıktıktan sonra tampon havuzuna {days} günlük ikincil doğrusal serbest bırakmaya girer; kısa vadeli yığılmış çıkışları azaltır. Tampondaki Serbest bırakıldı işaretli tutarlar istediğiniz zaman cüzdana geri alınabilir.',
+            a: 'Anapara stake’ten çıktıktan sonra tampon havuzuna 30 günlük ikincil doğrusal serbest bırakmaya girer; kısa vadeli yığılmış çıkışları azaltır. Tampondaki Serbest bırakıldı işaretli tutarlar istediğiniz zaman cüzdana geri alınabilir.',
           },
         ],
       },
@@ -1788,7 +1788,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Talep ile geri alma farkı nedir?',
-              a: 'Talep getiri içindir: biriken gAGX’i seçilen serbest bırakma süresinde alın veya yeniden stake edin. Geri alma anapara içindir: serbest bırakılmış AGX anaparasını {days} günlük tampona ikinci doğrusal serbest bırakma için alın, sonra cüzdana.',
+              a: 'Talep getiri içindir: biriken gAGX’i seçilen serbest bırakma süresinde alın veya yeniden stake edin. Geri alma anapara içindir: serbest bırakılmış AGX anaparasını 30 günlük tampona ikinci doğrusal serbest bırakma için alın, sonra cüzdana.',
             },
             {
               q: 'Neden her stake ayrı gösterilir?',
@@ -1839,7 +1839,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Talep ile geri alma farkı nedir?',
-              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX {days} günlük tampona girer, sonra cüzdana gelir.',
+              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX 30 günlük tampona girer, sonra cüzdana gelir.',
             },
             {
               q: '«Tahvil anaparası» nereden gelir?',
@@ -1851,7 +1851,7 @@ const app = defineMessages({
             },
             {
               q: 'Tahvil getirisi yeniden stake edilebilir mi?',
-              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake {restakeDays} tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
+              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake 360/540 gün tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
             },
             {
               q: 'Geri sayım bitince ne olur?',
@@ -1894,7 +1894,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Talep ile geri alma farkı nedir?',
-              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX {days} günlük tampona girer, sonra cüzdana gelir.',
+              a: 'Talep getiriyi işler: tahvil gAGX getirisini seçilen sürede alın veya yeniden stake edin. Geri alma anaparayı alır: serbest bırakılmış AGX 30 günlük tampona girer, sonra cüzdana gelir.',
             },
             {
               q: '«Tahvil anaparası» nereden gelir?',
@@ -1906,7 +1906,7 @@ const app = defineMessages({
             },
             {
               q: 'Tahvil getirisi yeniden stake edilebilir mi?',
-              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake {restakeDays} tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
+              a: 'Evet. Talepte serbest bırakma/yeniden stake oranını ayırın; yeniden stake 360/540 gün tek varlık stake’ine gider, vergi dönem talebinden daha iyidir.',
             },
             {
               q: 'Geri sayım bitince ne olur?',
@@ -1949,7 +1949,7 @@ const app = defineMessages({
           items: [
             {
               q: 'Çıktı talebi ile stake geri alma farkı nedir?',
-              a: 'Talep madencilik çıktısını alır: X serbest bırakma süresi olmadan cüzdana gider. Geri alma anaparayı hedefler: gAGX {days} günlük tampona girer ve getiri üretmez.',
+              a: 'Talep madencilik çıktısını alır: X serbest bırakma süresi olmadan cüzdana gider. Geri alma anaparayı hedefler: gAGX 30 günlük tampona girer ve getiri üretmez.',
             },
             {
               q: 'Bazı pozisyonlar neden «Kilitli» gösterir?',
@@ -2129,11 +2129,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Rebase nasıl uzlaşır?',
-            a: 'Protokol bloklarla çalışır: ~{blocks} blok = 1 Epoch (~{hours} saat). Rebase her Epoch sonunda uzlaşır — günde {timesPerDay} kez.',
+            a: 'Protokol bloklarla çalışır: ~14,400 blok = 1 Epoch (~12 saat). Rebase her Epoch sonunda uzlaşır — günde 2 kez.',
           },
           {
             q: 'Anapara nasıl serbest bırakılır?',
-            a: 'Stake ve tahvil anaparası blok düzeyinde doğrusal serbest bırakılır (~3 sn/blok). Çekim sonrası serbest bırakılan anapara {days} günlük tampona girer.',
+            a: 'Stake ve tahvil anaparası blok düzeyinde doğrusal serbest bırakılır (~3 sn/blok). Çekim sonrası serbest bırakılan anapara 30 günlük tampona girer.',
           },
           {
             q: 'Stake, LP Tahvil ve Yakım Tahvili farkı nedir?',
@@ -2334,11 +2334,11 @@ const app = defineMessages({
       faq: [
         {
           q: 'Stake getirisi nasıl hesaplanır?',
-          a: 'Günde {timesPerDay} Rebase; günlük getiri yaklaşık %0,5–%1. Daha uzun kilit daha yüksek bonus: 180g ≥%10, 360g ≥%15, 540g ≥%20; Rebase katsayısıyla ayarlanır.',
+          a: 'Günde 2 Rebase; günlük getiri yaklaşık %0,5–%1. Daha uzun kilit daha yüksek bonus: 180g ≥%10, 360g ≥%15, 540g ≥%20; Rebase katsayısıyla ayarlanır.',
         },
         {
           q: 'Anapara ne zaman çekilebilir?',
-          a: 'Anapara blok doğrusal serbest bırakılır (~3 sn). Serbest bırakılan kısım istenince alınır; çekimler {days} günlük tampona girer.',
+          a: 'Anapara blok doğrusal serbest bırakılır (~3 sn). Serbest bırakılan kısım istenince alınır; çekimler 30 günlük tampona girer.',
         },
         {
           q: 'Referans APY sabit midir?',
@@ -2614,7 +2614,7 @@ const app = defineMessages({
         },
         {
           q: 'Stake’ten çıkarma sonrası varlıklar nasıl serbest bırakılır?',
-          a: 'Kilit açıldıktan sonra gAGX {days} günlük blok doğrusal serbest bırakma kullanır; çıkış sonrası yığılmış satış baskısını azaltır ve uzun vadeli değer yakalamayı güçlendirir.',
+          a: 'Kilit açıldıktan sonra gAGX 30 günlük blok doğrusal serbest bırakma kullanır; çıkış sonrası yığılmış satış baskısını azaltır ve uzun vadeli değer yakalamayı güçlendirir.',
         },
         {
           q: 'X arzı nedir? Enflasyon olur mu?',
@@ -2830,7 +2830,7 @@ const app = defineMessages({
         },
         {
           q: 'Vergi ne zaman kesilir?',
-          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır ({taxSchedule}). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
+          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır (5 gün %20, 20 gün %10, 40 gün %5, 60 gün %1). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
         },
         {
           q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
@@ -2852,7 +2852,7 @@ const app = defineMessages({
         },
         {
           q: 'Vergi ne zaman kesilir?',
-          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır ({taxSchedule}). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
+          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır (5 gün %20, 20 gün %10, 40 gün %5, 60 gün %1). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
         },
         {
           q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
@@ -2870,7 +2870,7 @@ const app = defineMessages({
       buffer: [
         {
           q: 'Tampon havuzu nedir?',
-          a: 'Anapara stake’ten çıktıktan (geri alındıktan) sonra tampon havuzuna {days} günlük ikincil doğrusal serbest bırakmaya girer. Bu, kısa vadeli yığılmış çıkışları azaltır ve sürekli serbest bırakmayı piyasa istikrarıyla dengeler.',
+          a: 'Anapara stake’ten çıktıktan (geri alındıktan) sonra tampon havuzuna 30 günlük ikincil doğrusal serbest bırakmaya girer. Bu, kısa vadeli yığılmış çıkışları azaltır ve sürekli serbest bırakmayı piyasa istikrarıyla dengeler.',
         },
         {
           q: 'Tampon havuzundaki varlıklar hâlâ getiri üretir mi?',
@@ -2908,6 +2908,7 @@ const app = defineMessages({
     joined: 'Katılım zamanı',
     address: 'Adres',
     communityVolume: 'Takım performansı',
+    holding: 'Pozisyon',
     contribution: 'Abonelik',
   },
 })

@@ -289,6 +289,7 @@ test('invalidateAfterAssetsClaim marks assets+staking+release and contribution',
   const staking = await seedTabProbe('staking')
   const release = await seedTabProbe('release')
   queryClient.setQueryData(queryKeys.api.agxContributionSummary, 1)
+  queryClient.setQueryData(queryKeys.api.agxContributionConsumeLogsRoot, 1)
 
   invalidateAfterAssetsClaim()
 
@@ -296,6 +297,7 @@ test('invalidateAfterAssetsClaim marks assets+staking+release and contribution',
   assertInvalidated(staking.queryClient, staking.key)
   assertInvalidated(release.queryClient, release.key)
   assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
+  assertInvalidated(queryClient, queryKeys.api.agxContributionConsumeLogsRoot)
   assets.queryClient.clear()
 })
 
@@ -311,6 +313,7 @@ test('invalidateAfterRewardsMixedClaim marks rewards+release+staking+assets', as
   queryClient.setQueryData(queryKeys.api.assetsHoldingsSummary, 1)
   queryClient.setQueryData(queryKeys.api.assetsHoldingsDistribution, 1)
   queryClient.setQueryData(queryKeys.api.assetsProductInvestReward, 1)
+  queryClient.setQueryData(queryKeys.api.agxContributionConsumeLogsRoot, 1)
 
   invalidateAfterRewardsMixedClaim()
 
@@ -321,6 +324,7 @@ test('invalidateAfterRewardsMixedClaim marks rewards+release+staking+assets', as
   assertInvalidated(queryClient, queryKeys.api.assetsHoldingsSummary)
   assertInvalidated(queryClient, queryKeys.api.assetsHoldingsDistribution)
   assertInvalidated(queryClient, queryKeys.api.assetsProductInvestReward)
+  assertInvalidated(queryClient, queryKeys.api.agxContributionConsumeLogsRoot)
   rewards.queryClient.clear()
 })
 
@@ -355,14 +359,33 @@ test('invalidateAfterExchange marks assets reward summary, not contribution', as
   const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
   queryClient.setQueryData(queryKeys.api.assetsRewardSummary, 1)
   queryClient.setQueryData(queryKeys.api.agxContributionSummary, 1)
+  queryClient.setQueryData(queryKeys.api.assetsHoldingsSummary, 1)
+  queryClient.setQueryData(queryKeys.api.assetsHoldingsDistribution, 1)
 
   invalidateAfterExchange()
 
   assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
+  assertInvalidated(queryClient, queryKeys.api.assetsHoldingsSummary)
+  assertInvalidated(queryClient, queryKeys.api.assetsHoldingsDistribution)
   assert.equal(
     queryClient.getQueryState(queryKeys.api.agxContributionSummary)?.isInvalidated,
     false,
   )
+  queryClient.clear()
+})
+
+test('invalidateAfterStaking marks making overview APIs', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterStaking } = await loadModule('/src/shared/api/query/invalidate.ts')
+  queryClient.setQueryData(queryKeys.api.performance, 1)
+  queryClient.setQueryData(queryKeys.api.makingOverview, 1)
+  queryClient.setQueryData(queryKeys.api.teamMakingOverview, 1)
+
+  invalidateAfterStaking()
+
+  assertInvalidated(queryClient, queryKeys.api.performance)
+  assertInvalidated(queryClient, queryKeys.api.makingOverview)
+  assertInvalidated(queryClient, queryKeys.api.teamMakingOverview)
   queryClient.clear()
 })
 
@@ -377,4 +400,178 @@ test('invalidateAfterBurnExchange marks contribution and assets reward summary',
   assertInvalidated(queryClient, queryKeys.api.assetsRewardSummary)
   assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
   queryClient.clear()
+})
+
+const stalePage = { total: 1, items: [{ tx_hash: '0xold' }] }
+
+async function seedFetchablePage(queryClient, rootKey) {
+  const { QueryObserver } = await loadModule('@tanstack/react-query')
+  const queryKey = [...rootKey, 1, 5, null]
+  const queryFn = async () => stalePage
+  const observer = new QueryObserver(queryClient, { queryKey, queryFn })
+  const unsubscribe = observer.subscribe(() => {})
+  await queryClient.prefetchQuery({ queryKey, queryFn })
+  return unsubscribe
+}
+
+function countPrefixRefetches(queryClient, rootKey) {
+  const orig = queryClient.refetchQueries.bind(queryClient)
+  let count = 0
+  queryClient.refetchQueries = (opts) => {
+    const key = opts?.queryKey
+    if (
+      Array.isArray(key) &&
+      rootKey.length <= key.length &&
+      rootKey.every((part, index) => key[index] === part)
+    ) {
+      count += 1
+    }
+    return orig(opts)
+  }
+  return {
+    countOf: () => count,
+    restore: () => {
+      queryClient.refetchQueries = orig
+    },
+  }
+}
+
+async function assertLogsPollAfter(run, rootKey) {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const unsubscribe = await seedFetchablePage(queryClient, rootKey)
+  const spy = countPrefixRefetches(queryClient, rootKey)
+  try {
+    run()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    // invalidateQueries 自带一次 active refetch；短窗 poll 第一轮再拉一次
+    assert.ok(spy.countOf() >= 2, `expected logs poll refetch of ${rootKey.join('/')}`)
+  } finally {
+    unsubscribe()
+    spy.restore()
+    queryClient.clear()
+  }
+}
+
+test('invalidateAfterAssetsClaim polls stake-flow logs', async () => {
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(() => invalidateAfterAssetsClaim(), queryKeys.api.stakeFlowLogsRoot)
+})
+
+test('invalidateAfterReleaseClaim polls release-pool logs', async () => {
+  const { invalidateAfterReleaseClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(() => invalidateAfterReleaseClaim(), queryKeys.api.releasePoolLogsRoot)
+})
+
+test('invalidateAfterExchange polls turbine logs', async () => {
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(() => invalidateAfterExchange(), queryKeys.api.turbineLogsRoot)
+})
+
+test('invalidateAfterBurnExchange polls contribution burn logs', async () => {
+  const { invalidateAfterBurnExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(
+    () => invalidateAfterBurnExchange(),
+    queryKeys.api.agxContributionBurnLogsRoot,
+  )
+})
+
+test('invalidateAfterExchange skips logs poll when no log query is mounted', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const spy = countPrefixRefetches(queryClient, queryKeys.api.turbineLogsRoot)
+  try {
+    invalidateAfterExchange()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    assert.equal(spy.countOf(), 1)
+  } finally {
+    spy.restore()
+    queryClient.clear()
+  }
+})
+
+async function seedFetchableExact(queryClient, queryKey, data = { ok: true }) {
+  const { QueryObserver } = await loadModule('@tanstack/react-query')
+  const queryFn = async () => data
+  const observer = new QueryObserver(queryClient, { queryKey, queryFn })
+  const unsubscribe = observer.subscribe(() => {})
+  await queryClient.prefetchQuery({ queryKey, queryFn })
+  return unsubscribe
+}
+
+async function assertExtraKeyPollAfter(run, logRoot, extraKey) {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const unsubLog = await seedFetchablePage(queryClient, logRoot)
+  const unsubExtra = await seedFetchableExact(queryClient, extraKey)
+  const spy = countPrefixRefetches(queryClient, extraKey)
+  try {
+    run()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    assert.ok(spy.countOf() >= 2, `expected extraKey poll of ${extraKey.join('/')}`)
+  } finally {
+    unsubLog()
+    unsubExtra()
+    spy.restore()
+    queryClient.clear()
+  }
+}
+
+test('invalidateAfterAssetsClaim polls contribution consume logs', async () => {
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(
+    () => invalidateAfterAssetsClaim(),
+    queryKeys.api.agxContributionConsumeLogsRoot,
+  )
+})
+
+test('invalidateAfterRewardsMixedClaim polls contribution consume logs', async () => {
+  const { invalidateAfterRewardsMixedClaim } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+  await assertLogsPollAfter(
+    () => invalidateAfterRewardsMixedClaim(),
+    queryKeys.api.agxContributionConsumeLogsRoot,
+  )
+})
+
+test('invalidateAfterExchange polls holdings extraKeys when logs are mounted', async () => {
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertExtraKeyPollAfter(
+    () => invalidateAfterExchange(),
+    queryKeys.api.turbineLogsRoot,
+    queryKeys.api.assetsHoldingsSummary,
+  )
+})
+
+test('invalidateAfterExchange does not poll holdings when no logs are mounted', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const unsubscribe = await seedFetchableExact(queryClient, queryKeys.api.assetsHoldingsSummary)
+  const spy = countPrefixRefetches(queryClient, queryKeys.api.assetsHoldingsSummary)
+  try {
+    invalidateAfterExchange()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    assert.equal(spy.countOf(), 1)
+  } finally {
+    unsubscribe()
+    spy.restore()
+    queryClient.clear()
+  }
+})
+
+test('invalidateAfterReleaseClaim polls release summary extraKeys when logs are mounted', async () => {
+  const { invalidateAfterReleaseClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertExtraKeyPollAfter(
+    () => invalidateAfterReleaseClaim(),
+    queryKeys.api.releasePoolLogsRoot,
+    queryKeys.api.releasePoolSummary,
+  )
+})
+
+test('invalidateAfterExchange polls turbine summary extraKeys when logs are mounted', async () => {
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertExtraKeyPollAfter(
+    () => invalidateAfterExchange(),
+    queryKeys.api.turbineLogsRoot,
+    queryKeys.api.turbineSummary,
+  )
 })

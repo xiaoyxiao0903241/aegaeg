@@ -34,7 +34,12 @@ export function CommunityInviteCard({
       <Card className="rounded-2xl p-4" surface="elevated">
         <Steps align="start">
           {steps.map((step) => (
-            <Steps.Item body={step.body} key={String(step.title)} title={step.title} />
+            <Steps.Item
+              body={step.body}
+              key={String(step.title)}
+              title={step.title}
+              className="pr-9"
+            />
           ))}
         </Steps>
       </Card>
@@ -46,10 +51,10 @@ const communityProgramCard = tv({
   slots: {
     root: cn(
       revealClass(),
-      'relative flex w-full min-w-0 flex-col gap-3 overflow-clip rounded-2xl p-4',
+      'relative flex w-full min-w-0 flex-col gap-2 overflow-clip rounded-2xl p-5',
     ),
     action: cn(
-      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left font-medium text-primary underline',
+      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left font-semibold text-coral no-underline',
       'duration-dapp-fast transition-opacity ease-out hover:opacity-80',
     ),
   },
@@ -60,7 +65,6 @@ export function CommunityProgramCard({
   body,
   className,
   href = '',
-  image,
   label,
   title,
 }: {
@@ -68,7 +72,6 @@ export function CommunityProgramCard({
   body: ReactNode
   className?: string
   href?: string
-  image?: string
   label: string
   title: ReactNode
 }) {
@@ -76,31 +79,24 @@ export function CommunityProgramCard({
   const safeHref = navigableHref(href)
 
   const actionNode = (
-    <Text as="span" className="font-medium text-primary underline" variant="support">
+    <Text as="span" className="font-semibold text-coral" variant="copy">
       {action}
     </Text>
   )
 
   return (
     <Card as="article" className={cn(styles.root(), className)} data-reveal surface="elevated">
-      <Text as="span" className="m-0 text-foreground normal-case" variant="support">
+      <Text as="span" className="m-0 text-coral" variant="eyebrow">
         {label}
       </Text>
-      <div className="grid gap-1 pr-16">
-        <Text as="h3" className="m-0 font-semibold" tone="foreground" variant="detail">
-          {title}
-        </Text>
-        <Text as="p" className="m-0 text-foreground/40" variant="support">
-          {body}
-        </Text>
-      </div>
+      <Text as="h3" className="m-0 font-semibold" tone="foreground" variant="headline">
+        {title}
+      </Text>
+      <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
+        {body}
+      </Text>
       {safeHref ? (
-        <a
-          className={cn(styles.action(), 'no-underline')}
-          href={safeHref}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <a className={styles.action()} href={safeHref} rel="noopener noreferrer" target="_blank">
           {actionNode}
         </a>
       ) : (
@@ -108,16 +104,6 @@ export function CommunityProgramCard({
           {actionNode}
         </button>
       )}
-      {image ? (
-        <img
-          alt=""
-          className="pointer-events-none absolute right-2 bottom-2 size-18 object-contain"
-          height="72"
-          loading="lazy"
-          src={image}
-          width="72"
-        />
-      ) : null}
     </Card>
   )
 }
@@ -126,7 +112,7 @@ const communityStatCard = tv({
   slots: {
     root: cn(
       revealClass(),
-      'community-stat relative flex flex-col items-start gap-1 overflow-clip rounded-2xl p-4',
+      'community-stat relative flex flex-col items-start gap-1 rounded-2xl p-4',
       communityStatCardMobileFrame(),
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
@@ -142,8 +128,8 @@ const communityStatCard = tv({
       false: {},
     },
     withImage: {
-      true: { root: 'overflow-clip' },
-      false: {},
+      true: { root: 'overflow-visible max-dapp:overflow-clip' },
+      false: { root: 'overflow-clip' },
     },
   },
   defaultVariants: {
@@ -221,13 +207,12 @@ export function CommunityStatCard({
       ) : null}
       {children}
       {image ? (
+        // 底对齐且高于卡片，头超出上沿；H5 不展示
         <img
           alt=""
-          className="pointer-events-none absolute top-2.5 right-0 z-[1] h-full w-auto scale-x-[-1] object-cover object-top"
+          className="pointer-events-none absolute -right-3.5 bottom-0.5 z-2 h-36 w-30 object-contain object-bottom max-dapp:hidden"
           data-slot-id="community-stat-rank-deco"
-          height="312"
           src={image}
-          width="208"
         />
       ) : null}
     </Card>

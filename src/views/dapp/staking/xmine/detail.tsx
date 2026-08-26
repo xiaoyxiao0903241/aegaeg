@@ -5,8 +5,6 @@
  * 机制说明、趋势图与 FAQ。
  * X 价格卡右侧可打开 DexScreener K 线。
  */
-import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
-import { interpolate } from '~/i18n/interpolate'
 import { xmineValueAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
@@ -49,13 +47,6 @@ export function XmineDetail() {
     chartDeltaLabel,
   } = useStakingDetail('xmine')
   const xValue = t.staking.aside.xValue
-  // jscpd:ignore-start — FAQ 天数插值页内拼装，禁再抽统一包装
-  const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
-  const faqItems = t.staking.xmine.faq.map((item) => ({
-    ...item,
-    a: interpolate(item.a, { days: bufferDays }),
-  }))
-  // jscpd:ignore-end
 
   return (
     <Detail>
@@ -180,7 +171,7 @@ export function XmineDetail() {
 
       <Section>
         <Section.Title>{t.staking.aside.faq}</Section.Title>
-        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.staking.xmine.faq} variant="dapp" />
       </Section>
       {/* jscpd:ignore-end */}
     </Detail>

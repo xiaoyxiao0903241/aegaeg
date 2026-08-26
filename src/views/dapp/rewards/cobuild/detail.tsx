@@ -19,10 +19,7 @@ import { cn } from '~/shared/lib/utils'
 import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
 import { HideZeroToggle, rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
-import {
-  mapFaqWithContributionRatio,
-  withContributionRatio,
-} from '~/views/dapp/shared/contribution-claim-ratio'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function CobuildDetail() {
@@ -65,7 +62,6 @@ export function CobuildDetail() {
   } = useCobuild()
   const claimRatio = useContributionClaimRatioLabel()
   const contributionHint = withContributionRatio(cobuild.contributionHint, claimRatio)
-  const faqItems = mapFaqWithContributionRatio(cobuild.faq.items, claimRatio)
 
   const overviewTiles = [
     {
@@ -210,7 +206,7 @@ export function CobuildDetail() {
 
       <Section>
         <Section.Title>{cobuild.faq.title}</Section.Title>
-        <Faq items={faqItems} variant="dapp" />
+        <Faq items={cobuild.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

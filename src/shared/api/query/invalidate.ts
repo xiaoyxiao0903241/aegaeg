@@ -303,6 +303,95 @@ function refetchPollKey(key: readonly string[]) {
   return queryClient.refetchQueries({ queryKey: key })
 }
 
+function hasFetchableQuery(key: readonly string[]): boolean {
+  return queryClient
+    .getQueryCache()
+    .findAll({ queryKey: key, type: 'active' })
+    .some((query) => query.options.queryFn != null)
+}
+
+type CapturedIndexerLog = {
+  root: readonly string[]
+  baseline: IndexerPageFingerprint
+}
+
+const ASSETS_CLAIM_LOG_ROOTS = [
+  queryKeys.api.stakeFlowLogsRoot,
+  queryKeys.api.bondFlowLpLogsRoot,
+  queryKeys.api.bondFlowBurnLogsRoot,
+  queryKeys.api.x0MiningLogsRoot,
+] as const
+
+const CONTRIBUTION_CONSUME_LOG_ROOTS = [queryKeys.api.agxContributionConsumeLogsRoot] as const
+
+const EXCHANGE_LOG_POLL_EXTRAS = [
+  queryKeys.api.turbineSummary,
+  queryKeys.api.assetsHoldingsSummary,
+  queryKeys.api.assetsHoldingsDistribution,
+] as const
+
+const RELEASE_LOG_POLL_EXTRAS = [
+  queryKeys.api.releasePoolSummary,
+  queryKeys.api.bufferPoolSummary,
+] as const
+
+const RELEASE_CLAIM_LOG_ROOTS = [
+  queryKeys.api.releasePoolLogsRoot,
+  queryKeys.api.bufferPoolLogsRoot,
+] as const
+
+const EXCHANGE_LOG_ROOTS = [
+  queryKeys.api.turbineLogsRoot,
+  queryKeys.api.agxContributionBurnLogsRoot,
+  queryKeys.api.agxContributionConsumeLogsRoot,
+] as const
+
+/** 写前快照已挂载的流水根；闪兑等无记录表的路径得到空列表，poll 直接返回。 */
+function captureIndexerLogPoll(roots: readonly (readonly string[])[]): CapturedIndexerLog[] {
+  return roots.filter(hasFetchableQuery).map((root) => ({
+    root,
+    baseline: readIndexerFingerprint(root),
+  }))
+}
+
+/**
+ * 后端索引落后于链确认时，对流水根立即 refetch + 有限次延迟轮询，指纹前进即停。
+ *
+ * 只轮询写成功时仍有观察者的流水；闪兑/市价未挂记录表则空列表直接返回。
+ *
+ * @param captured 写前快照；空则 no-op
+ * @param extraKeys 随轮询一起拉的非分页键（如 xmine 累计产出）；不参与停表指纹
+ * @see docs/backend-api/api.md #stake-flow/logs
+ * @see docs/backend-api/api.md #release-pool/logs
+ * @see docs/backend-api/api.md #turbine/logs
+ */
+async function pollCapturedIndexerLogs(
+  captured: readonly CapturedIndexerLog[],
+  extraKeys: readonly (readonly string[])[] = [],
+) {
+  if (captured.length === 0) return
+
+  const extras = extraKeys.filter(hasFetchableQuery)
+  const refetch = () =>
+    Promise.all([
+      ...captured.map(({ root }) => refetchPollKey(root)),
+      ...extras.map((key) => refetchPollKey(key)),
+    ])
+  const advanced = () =>
+    captured.some(({ root, baseline }) =>
+      indexerPageAdvanced(baseline, readIndexerFingerprint(root)),
+    )
+
+  await refetch()
+  if (advanced()) return
+
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    await sleep(2500, { unref: true })
+    await refetch()
+    if (advanced()) return
+  }
+}
+
 /**
  * 奖励领取后扫描器核销 READY→CLAIMED、待领汇总下降常落后于链确认。
  * 立即 refetch + 有限次延迟轮询，指纹变化即停。
@@ -329,6 +418,11 @@ function invalidateActive(key: readonly string[]) {
 
 function invalidateAssetsRewardSummary() {
   invalidateActive(queryKeys.api.assetsRewardSummary)
+}
+
+function invalidateAssetsHoldingsApi() {
+  invalidateActive(queryKeys.api.assetsHoldingsSummary)
+  invalidateActive(queryKeys.api.assetsHoldingsDistribution)
 }
 
 /** 贡献点变动：总表 + 带 available_contribution 的发放汇总。 */
@@ -478,17 +572,19 @@ export function invalidateAfterTeamClaim() {
  * 进释放队列 / 可能复投 → 刷 rewards + release + staking；
  * 复投改持仓分布，累计已领取在 assetsRewardSummary。
  * 发放记录 / type-totals 等扫描器核销，短窗轮询。
+ * Mixed 消耗贡献点：消耗流水有观察者时另跟 indexer poll。
  */
 export function invalidateAfterRewardsMixedClaim() {
   const baseline = readRewardScanFingerprint()
+  const consumePoll = captureIndexerLogPoll(CONTRIBUTION_CONSUME_LOG_ROOTS)
   invalidateTabQueries('rewards')
   invalidateTabQueries('release')
   invalidateTabQueries('staking')
   invalidateAssetsRewardSummary()
-  invalidateActive(queryKeys.api.assetsHoldingsSummary)
-  invalidateActive(queryKeys.api.assetsHoldingsDistribution)
+  invalidateAssetsHoldingsApi()
   invalidateActive(queryKeys.api.assetsProductInvestReward)
   void pollRewardsClaimIndexer(baseline)
+  void pollCapturedIndexerLogs(consumePoll)
 }
 
 /** 推荐绑定成功后刷新 community Tab 的查询。 */
@@ -501,10 +597,15 @@ export function invalidateAfterReferralBind() {
  *
  * 涡轮领取改 claimable_gagx，标脏 assetsRewardSummary。
  * 销毁改贡献点走 `invalidateAfterBurnExchange`。
+ * 涡轮 / 销毁流水走短窗 poll（当前页未订阅则跳过）。
+ * 持仓汇总是 indexer：标脏以便切到资产 Hub 时拉一次；有流水观察者时才跟 poll。
  */
 export function invalidateAfterExchange() {
+  const logPoll = captureIndexerLogPoll(EXCHANGE_LOG_ROOTS)
   invalidateTabQueries('exchange')
   invalidateAssetsRewardSummary()
+  invalidateAssetsHoldingsApi()
+  void pollCapturedIndexerLogs(logPoll, EXCHANGE_LOG_POLL_EXTRAS)
 }
 
 /** 销毁 AGX 换贡献点：兑换缓存 + 贡献点总表 / 发放汇总。 */
@@ -518,6 +619,7 @@ export function invalidateAfterBurnExchange() {
  * - 链：staking + assets（仓位 aside 用 assetsStakePositions；余额/额度在两桶交叉）
  * - 抽奖资格：lucky API（手册「成功后刷新…抽奖资格」；活期通常达不到门槛仍标脏）
  * - API 流水/持仓：立即 invalidate + 有限轮询（索引延迟）
+ * - 做市概览：performance / teamMakingOverview 标脏一次，不进入流水短窗
  */
 export function invalidateAfterStaking() {
   const baselines = {
@@ -541,23 +643,34 @@ export function invalidateAfterStaking() {
     queryKey: queryKeys.api.luckyRewardMyRoundsRoot,
     refetchType: 'active',
   })
+  invalidateActive(queryKeys.api.performance)
+  invalidateActive(queryKeys.api.teamMakingOverview)
   void pollStakingIndexer(baselines)
 }
 
-/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划、贡献值与释放相关查询。 */
+/** Mixed 领取 / 赎回 / xmine 领取+退出——刷新持仓、计划、贡献值、释放，并短窗轮询操作流水与消耗记录。 */
 export function invalidateAfterAssetsClaim() {
+  const logPoll = captureIndexerLogPoll([
+    ...ASSETS_CLAIM_LOG_ROOTS,
+    ...CONTRIBUTION_CONSUME_LOG_ROOTS,
+  ])
   invalidateTabQueries('assets')
   invalidateTabQueries('staking')
   invalidateTabQueries('release')
   invalidateContributionChanged()
+  invalidateActive(queryKeys.api.agxContributionConsumeLogsRoot)
+  void pollCapturedIndexerLogs(logPoll, [queryKeys.api.x0MiningLifetimeReward])
 }
 
 /**
  * 释放队列领取 → 可能增加 Turbine 配额 + 释放相关读取。
  * 缓冲池领取 → 释放 + AGX 余额（turbineRoot 失效开销小、无副作用）。
  * 资产页 claimable_gagx 含释放池 / 涡轮未领。
+ * 队列 / 缓冲流水走短窗 poll（当前页未订阅则跳过）。
  */
 export function invalidateAfterReleaseClaim() {
+  const logPoll = captureIndexerLogPoll(RELEASE_CLAIM_LOG_ROOTS)
   invalidateTabQueries('release')
   invalidateAssetsRewardSummary()
+  void pollCapturedIndexerLogs(logPoll, RELEASE_LOG_POLL_EXTRAS)
 }
