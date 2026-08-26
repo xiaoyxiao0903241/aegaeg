@@ -21,20 +21,18 @@ export function GenesisBanner({ children }: { children: ReactNode }) {
   return (
     <div
       className={banner.root({
-        className: 'mt-4 overflow-visible p-6 max-dapp:p-4.5',
+        className: 'mt-4 p-6 max-dapp:p-4.5',
       })}
     >
       <div className={banner.content({ className: 'min-w-0 flex-1 pr-36 max-dapp:pr-0' })}>
         {children}
       </div>
-      {/* 荣誉头图：吉祥物动作素材，不做镜像 */}
+      {/* 荣誉头图：限制在横幅内，宽度随高度按原图比例，避免拉扁或溢出 */}
       <img
         alt=""
-        className="pointer-events-none absolute top-1.5 right-6.5 z-0 hidden w-25.75 object-contain select-none md:block"
-        height="155"
+        className="pointer-events-none absolute inset-y-0 right-0 z-0 hidden h-full w-auto object-contain object-right select-none md:block"
         loading="lazy"
         src={dappAssets.rewardsCharacter}
-        width="103"
       />
     </div>
   )
