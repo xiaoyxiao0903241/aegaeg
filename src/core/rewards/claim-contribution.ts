@@ -30,7 +30,7 @@ export type DaoClaimContributionPreview = {
 }
 
 /**
- * DAO 签名前贡献预检：所需 = 领取额（1:1）。
+ * DAO 签名前 / 资产 Mixed 确认：所需 = 领取额（1:1）。
  *
  * 领取额或可用点未知时返回 null，不预拦，交给签名接口裁决。
  *

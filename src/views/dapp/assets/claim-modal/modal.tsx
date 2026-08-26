@@ -22,6 +22,7 @@ import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
  *
  * 内容自顶向下：可领数量与贡献提示、分流滑条、释放 / 复投周期下拉（含税率）、确认 CTA。
  * 贡献值不足或释放 / 复投计划未就绪时展示拦截说明并禁写。
+ * 本次需扣除按领取额 1:1。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  */

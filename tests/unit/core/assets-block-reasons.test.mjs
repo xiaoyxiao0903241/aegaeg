@@ -16,7 +16,6 @@ test('evaluateMixedClaim fails when live reward is below claim amount', async ()
       amount: AGX_ACTION_FLOOR,
       rewardAvailable: AGX_ACTION_FLOOR / 2n,
       contribution: 1_000n,
-      requiredContribution: 10n,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
       decimals: AGX_DECIMALS,
@@ -34,7 +33,6 @@ test('evaluateMixedClaim does not treat requested amount as available', async ()
       amount,
       rewardAvailable: amount,
       contribution: 1n,
-      requiredContribution: 10n,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
       decimals: AGX_DECIMALS,
@@ -45,8 +43,47 @@ test('evaluateMixedClaim does not treat requested amount as available', async ()
     evaluateMixedClaim({
       amount,
       rewardAvailable: amount,
-      contribution: 100n,
-      requiredContribution: 10n,
+      contribution: amount,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
+    }),
+    null,
+  )
+})
+
+test('evaluateMixedClaim required contribution is 1:1 with claim amount, not quote/6', async () => {
+  const { evaluateMixedClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
+  const amount = 22_500_000n
+  const quoteDiv6 = 3_750_000n
+
+  assert.equal(
+    evaluateMixedClaim({
+      amount,
+      rewardAvailable: amount,
+      contribution: 4_000_000n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
+    }),
+    'insufficientContribution',
+  )
+  assert.equal(
+    evaluateMixedClaim({
+      amount,
+      rewardAvailable: amount,
+      contribution: quoteDiv6,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      decimals: AGX_DECIMALS,
+    }),
+    'insufficientContribution',
+  )
+  assert.equal(
+    evaluateMixedClaim({
+      amount,
+      rewardAvailable: amount,
+      contribution: amount,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
       decimals: AGX_DECIMALS,
@@ -63,7 +100,6 @@ test('evaluateMixedClaim blocks amounts below the 0.01 display floor', async () 
       amount: AGX_ACTION_FLOOR - 1n,
       rewardAvailable: AGX_ACTION_FLOOR,
       contribution: 100n,
-      requiredContribution: 10n,
       releasePlanIndex: 0,
       restakePlanIndex: 1,
       decimals: AGX_DECIMALS,

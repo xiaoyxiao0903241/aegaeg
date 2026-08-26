@@ -24,11 +24,11 @@ export type XmineActivateWarmupBlockReason = 'noWarmup' | 'warmupNotEnded'
  *
  * 金额低于展示位 0.01、可领不足、计划索引未解析或贡献不足时阻断，
  * 避免发起链上必然失败的交易。
+ * 所需贡献 = 领取额（1:1）；不读 quoteRequiredContribution（那是 Mixed 链上 ÷divisor）。
  *
  * @param amount 请求领取的数量
  * @param rewardAvailable 链上可领余额
  * @param contribution 当前贡献值
- * @param requiredContribution 所需贡献值
  * @param releasePlanIndex 已解析的释放计划索引
  * @param restakePlanIndex 已解析的复投计划索引
  * @param decimals 代币精度（门槛按展示位 0.01）
@@ -38,7 +38,6 @@ export function evaluateMixedClaim(args: {
   amount: bigint
   rewardAvailable: bigint
   contribution: bigint
-  requiredContribution: bigint
   releasePlanIndex: number | null
   restakePlanIndex: number | null
   decimals: number
@@ -47,7 +46,7 @@ export function evaluateMixedClaim(args: {
   if (args.rewardAvailable < args.amount) return 'insufficientReward'
   if (args.releasePlanIndex == null) return 'releasePlanUnresolved'
   if (args.restakePlanIndex == null) return 'restakePlanUnresolved'
-  if (args.contribution < args.requiredContribution) return 'insufficientContribution'
+  if (args.contribution < args.amount) return 'insufficientContribution'
   return null
 }
 
