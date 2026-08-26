@@ -1491,17 +1491,17 @@ const app = defineMessages({
       title: 'Ekosistem destek programları',
       items: [
         {
-          label: 'Genesis Ortak İnşa · Faz {season}',
-          title: 'Genesis Rezerv Valisi Programı',
-          body: 'İlk küresel ortak inşa koltukları açıldı',
-          action: 'Plan detaylarını görüntüle',
+          label: 'X DAO Ortak İnşa · Faz {season}',
+          title: 'Küresel ortak inşa programı devam ediyor',
+          body: 'Dünya çapındaki ortak inşa edenleri bir araya getirerek ekosistem inşasına katılın.',
+          action: 'Plan detaylarını görüntüle →',
           href: 'https://xdaoaegis.notion.site/genesis-rezerv-konseyi-program',
         },
         {
           label: 'X Akademi',
-          title: 'Küresel DeFi Akademisi · Dijital Ekonomi Çağında Küresel Liderlik Akademisi',
-          body: 'Çağ için lider yetiştirmek · Gelecek için yetenek rezervi',
-          action: 'Plan detaylarını görüntüle',
+          title: 'Ortak inşa edenler için ekosistem eğitim programı',
+          body: 'Ortak inşa edenlerin ekosistem mekanizmalarını ve gelişim planını daha derin anlamasına yardımcı olur.',
+          action: 'Plan detaylarını görüntüle →',
           href: 'https://xdaoaegis.notion.site/x-akademisi-tur',
         },
       ],
@@ -2908,6 +2908,7 @@ const app = defineMessages({
     joined: 'Katılım zamanı',
     address: 'Adres',
     communityVolume: 'Takım performansı',
+    holding: 'Pozisyon',
     contribution: 'Abonelik',
   },
 })

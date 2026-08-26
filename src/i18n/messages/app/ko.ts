@@ -1448,17 +1448,17 @@ const app = defineMessages({
       title: '생태계 지원 프로그램',
       items: [
         {
-          label: '창세 공동 구축 · 페이즈 {season}',
-          title: '창세 준비금 이사 프로그램',
-          body: '글로벌 최초 공동 구축 좌석 개방',
-          action: '프로그램 상세 보기',
+          label: 'X DAO 공동 구축 · 페이즈 {season}',
+          title: '글로벌 공동 구축 계획 진행 중',
+          body: '전 세계 공동 구축자를 모아 생태계 건설에 함께 참여합니다.',
+          action: '프로그램 상세 보기 →',
           href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program-kr',
         },
         {
-          label: 'X아카데미',
-          title: '글로벌 DeFi 아카데미·디지털 경제 시대 글로벌 리더십 아카데미',
-          body: '시대를 위한 리더 양성·미래를 위한 인재 비축',
-          action: '프로그램 상세 보기',
+          label: 'X 아카데미',
+          title: '공동 구축자를 위한 생태계 교육 프로그램',
+          body: '공동 구축자가 생태계 메커니즘과 발전 계획을 더 깊이 이해하도록 돕습니다.',
+          action: '프로그램 상세 보기 →',
           href: 'https://xdaoaegis.notion.site/x-kr',
         },
       ],
@@ -2821,6 +2821,7 @@ const app = defineMessages({
     joined: '가입 시간',
     address: '주소',
     communityVolume: '팀 실적',
+    holding: '보유',
     contribution: '구독',
   },
 }) satisfies AppMessagesBundle

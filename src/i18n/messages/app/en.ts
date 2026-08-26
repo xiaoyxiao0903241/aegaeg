@@ -1445,17 +1445,17 @@ const app = defineMessages({
       title: 'Ecosystem support programs',
       items: [
         {
-          label: 'Genesis Co-build · Phase {season}',
-          title: 'Genesis Reserve Governor Program',
-          body: 'First global co-build seats now open',
-          action: 'View program details',
+          label: 'X DAO Co-build · Phase {season}',
+          title: 'Global co-build program underway',
+          body: 'Bringing together co-builders worldwide to take part in ecosystem building.',
+          action: 'View program details →',
           href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program',
         },
         {
           label: 'X Academy',
-          title: 'Global DeFi Academy · Global Leadership Academy for the Digital Economy Era',
-          body: 'Cultivating leaders for the era · Reserving talent for the future',
-          action: 'View program details',
+          title: 'Ecosystem training program for co-builders',
+          body: 'Helping co-builders understand the ecosystem mechanisms and roadmap more deeply.',
+          action: 'View program details →',
           href: 'https://xdaoaegis.notion.site/x-academy-en',
         },
       ],
@@ -2814,6 +2814,7 @@ const app = defineMessages({
     joined: 'Joined',
     address: 'Address',
     communityVolume: 'Team performance',
+    holding: 'Holdings',
     contribution: 'Subscription',
   },
 }) satisfies AppMessagesBundle

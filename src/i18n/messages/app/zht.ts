@@ -1388,17 +1388,17 @@ const app = defineMessages({
       title: '生態支持計劃',
       items: [
         {
-          label: '創世共建 · 第{season}期',
-          title: '創世儲備理事計劃',
-          body: '全球首批共建席位開放',
-          action: '查看計劃詳情',
+          label: 'X DAO 共建 · 第{season}期',
+          title: '全球共建計劃進行中',
+          body: '匯聚全球共建者，共同參與生態建設。',
+          action: '查看計劃詳情 →',
           href: 'https://xdaoaegis.notion.site/390dd8755b9880ed8497ffcb02ba7301',
         },
         {
-          label: 'X學院',
-          title: '全球DeFi學院·數字經濟時代全球領導力學院',
-          body: '為時代培養領袖·為未來儲備人才',
-          action: '查看計劃詳情',
+          label: 'X 學院',
+          title: '面向共建者的生態培訓計劃',
+          body: '幫助共建者更深入了解生態機制與發展規劃。',
+          action: '查看計劃詳情 →',
           href: 'https://xdaoaegis.notion.site/xacademy',
         },
       ],
@@ -2740,6 +2740,7 @@ const app = defineMessages({
     joined: '加入時間',
     address: '地址',
     communityVolume: '團隊業績',
+    holding: '持倉',
     contribution: '認購',
   },
 }) satisfies AppMessagesBundle

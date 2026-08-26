@@ -1498,17 +1498,17 @@ const app = defineMessages({
       title: 'Program dukungan ekosistem',
       items: [
         {
-          label: 'Pembangunan Bersama Genesis · Fase {season}',
-          title: 'Program Gubernur Cadangan Genesis',
-          body: 'Kursi pembangunan bersama global pertama dibuka',
-          action: 'Lihat detail program',
+          label: 'X DAO Pembangunan Bersama · Fase {season}',
+          title: 'Program pembangunan bersama global sedang berjalan',
+          body: 'Mengumpulkan pembangun bersama di seluruh dunia untuk ikut membangun ekosistem.',
+          action: 'Lihat detail program →',
           href: 'https://xdaoaegis.notion.site/program-dewan-cadangan-genesis',
         },
         {
           label: 'Akademi X',
-          title: 'Akademi DeFi Global · Akademi Kepemimpinan Global Era Ekonomi Digital',
-          body: 'Mencetak pemimpin untuk zaman · Menyimpan talenta untuk masa depan',
-          action: 'Lihat detail program',
+          title: 'Program pelatihan ekosistem bagi para pembangun bersama',
+          body: 'Membantu pembangun bersama memahami mekanisme ekosistem dan rencana pengembangan lebih dalam.',
+          action: 'Lihat detail program →',
           href: 'https://xdaoaegis.notion.site/akademi-x-id',
         },
       ],
@@ -2912,6 +2912,7 @@ const app = defineMessages({
     joined: 'Bergabung',
     address: 'Alamat',
     communityVolume: 'Kinerja tim',
+    holding: 'Kepemilikan',
     contribution: 'Langganan',
   },
 }) satisfies AppMessagesBundle

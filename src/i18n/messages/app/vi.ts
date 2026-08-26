@@ -1486,17 +1486,17 @@ const app = defineMessages({
       title: 'Kế hoạch hỗ trợ hệ sinh thái',
       items: [
         {
-          label: 'Cùng xây dựng Sáng lập · Giai đoạn {season}',
-          title: 'Chương trình Thống đốc Dự trữ Sáng lập',
-          body: 'Mở ghế cùng xây dựng toàn cầu đầu tiên',
-          action: 'Xem chi tiết kế hoạch',
+          label: 'X DAO Cùng xây dựng · Giai đoạn {season}',
+          title: 'Chương trình cùng xây dựng toàn cầu đang diễn ra',
+          body: 'Tập hợp người cùng xây dựng trên toàn cầu, cùng tham gia xây dựng hệ sinh thái.',
+          action: 'Xem chi tiết kế hoạch →',
           href: 'https://xdaoaegis.notion.site/ch-ng-tr-nh-h-i-ng-d-tr-genesis-',
         },
         {
           label: 'Học viện X',
-          title: 'Học viện DeFi toàn cầu · Học viện lãnh đạo toàn cầu thời đại kinh tế số',
-          body: 'Đào tạo lãnh đạo cho thời đại · Dự trữ nhân tài cho tương lai',
-          action: 'Xem chi tiết kế hoạch',
+          title: 'Chương trình đào tạo hệ sinh thái dành cho người cùng xây dựng',
+          body: 'Giúp người cùng xây dựng hiểu sâu hơn về cơ chế hệ sinh thái và kế hoạch phát triển.',
+          action: 'Xem chi tiết kế hoạch →',
           href: 'https://xdaoaegis.notion.site/h-c-vi-n-x-vn',
         },
       ],
@@ -2889,6 +2889,7 @@ const app = defineMessages({
     joined: 'Thời gian tham gia',
     address: 'Địa chỉ',
     communityVolume: 'Thành tích đội',
+    holding: 'Nắm giữ',
     contribution: 'Đăng ký',
   },
 }) satisfies AppMessagesBundle

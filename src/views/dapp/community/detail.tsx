@@ -30,8 +30,6 @@ import {
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 
-const PROGRAM_IMAGES = [dappAssets.communityProgramRocket, dappAssets.communityProgramStar] as const
-
 type CommunityStat = {
   dark?: boolean
   image?: string
@@ -81,12 +79,11 @@ export function CommunityDetail() {
       <Section reveal>
         <Section.Title>{t.community.programs.title}</Section.Title>
         <Grid columns={2} stackOnDapp>
-          {programItems.map((program, index) => (
+          {programItems.map((program) => (
             <CommunityProgramCard
               action={program.action}
               body={program.body}
               href={program.href}
-              image={PROGRAM_IMAGES[index]}
               key={program.label}
               label={program.label}
               title={program.title}
@@ -195,7 +192,7 @@ export function CommunityDetail() {
   const inviteTableHeaders = [
     t.tables.joined,
     t.tables.address,
-    t.community.shareholder,
+    t.tables.holding,
     t.community.cobuildLevel,
     t.community.directReferrals,
     t.tables.communityVolume,

@@ -1453,17 +1453,17 @@ const app = defineMessages({
       title: 'エコシステム支援プラン',
       items: [
         {
-          label: '創世共創 · フェーズ{season}',
-          title: '創世準備理事プログラム',
-          body: '世界初の共創席位を開放',
-          action: 'プラン詳細を見る',
+          label: 'X DAO 共創 · フェーズ{season}',
+          title: 'グローバル共創計画を進行中',
+          body: '世界の共創者を集め、エコシステムの構築に共に参加します。',
+          action: 'プラン詳細を見る →',
           href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program-jp',
         },
         {
           label: 'X学院',
-          title: 'グローバルDeFi学院·デジタル経済時代のグローバルリーダーシップ学院',
-          body: '時代のためにリーダーを育て·未来のために人材を備える',
-          action: 'プラン詳細を見る',
+          title: '共創者向けエコシステム研修プログラム',
+          body: '共創者がエコシステムの仕組みと発展計画をより深く理解できるよう支援します。',
+          action: 'プラン詳細を見る →',
           href: 'https://xdaoaegis.notion.site/x-jp',
         },
       ],
@@ -2840,6 +2840,7 @@ const app = defineMessages({
     joined: '参加日時',
     address: 'アドレス',
     communityVolume: 'チーム実績',
+    holding: '保有',
     contribution: '購入',
   },
 }) satisfies AppMessagesBundle

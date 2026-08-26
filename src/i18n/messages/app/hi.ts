@@ -1446,17 +1446,17 @@ const app = defineMessages({
       title: 'इकोसिस्टम सहायता कार्यक्रम',
       items: [
         {
-          label: 'Genesis सह-निर्माण · फेज़ {season}',
-          title: 'Genesis रिज़र्व गवर्नर कार्यक्रम',
-          body: 'वैश्विक पहली सह-निर्माण सीटें अब खुली',
-          action: 'कार्यक्रम विवरण देखें',
+          label: 'X DAO सह-निर्माण · फेज़ {season}',
+          title: 'वैश्विक सह-निर्माण कार्यक्रम चल रहा है',
+          body: 'दुनिया भर के सह-निर्माताओं को एकत्र कर पारिस्थितिकी तंत्र के निर्माण में शामिल होना।',
+          action: 'कार्यक्रम विवरण देखें →',
           href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program',
         },
         {
           label: 'X अकादमी',
-          title: 'वैश्विक DeFi अकादमी · डिजिटल अर्थव्यवस्था युग की वैश्विक नेतृत्व अकादमी',
-          body: 'युग के लिए नेता तैयार करना · भविष्य के लिए प्रतिभा सुरक्षित रखना',
-          action: 'कार्यक्रम विवरण देखें',
+          title: 'सह-निर्माताओं के लिए इकोसिस्टम प्रशिक्षण कार्यक्रम',
+          body: 'सह-निर्माताओं को इकोसिस्टम तंत्र और विकास योजना को गहराई से समझने में मदद करना।',
+          action: 'कार्यक्रम विवरण देखें →',
           href: 'https://xdaoaegis.notion.site/x-academy-en',
         },
       ],
@@ -2820,6 +2820,7 @@ const app = defineMessages({
     joined: 'शामिल हुए',
     address: 'पता',
     communityVolume: 'टीम प्रदर्शन',
+    holding: 'होल्डिंग',
     contribution: 'सदस्यता',
   },
 }) satisfies AppMessagesBundle

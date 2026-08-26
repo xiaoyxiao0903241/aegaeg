@@ -1504,18 +1504,17 @@ const app = defineMessages({
       title: 'Programas de apoyo al ecosistema',
       items: [
         {
-          label: 'Co-construcción Génesis · Fase {season}',
-          title: 'Programa de Gobernadores de Reserva Génesis',
-          body: 'Abiertas las primeras plazas globales de co-construcción',
-          action: 'Ver detalles del plan',
+          label: 'Co-construcción X DAO · Fase {season}',
+          title: 'El programa global de co-construcción está en curso',
+          body: 'Reúne a co-constructores de todo el mundo para participar en la construcción del ecosistema.',
+          action: 'Ver detalles del plan →',
           href: 'https://xdaoaegis.notion.site/programa-del-consejo-de-reserva-genesis',
         },
         {
           label: 'Academia X',
-          title:
-            'Academia Global DeFi · Academia de Liderazgo Global para la Era de la Economía Digital',
-          body: 'Formar líderes para la era · Reservar talento para el futuro',
-          action: 'Ver detalles del plan',
+          title: 'Programa de formación del ecosistema para co-constructores',
+          body: 'Ayuda a los co-constructores a comprender mejor los mecanismos del ecosistema y el plan de desarrollo.',
+          action: 'Ver detalles del plan →',
           href: 'https://xdaoaegis.notion.site/academia-x-esp',
         },
       ],
@@ -2940,6 +2939,7 @@ const app = defineMessages({
     joined: 'Fecha de ingreso',
     address: 'Dirección',
     communityVolume: 'Rendimiento del equipo',
+    holding: 'Tenencias',
     contribution: 'Suscripción',
   },
 }) satisfies AppMessagesBundle

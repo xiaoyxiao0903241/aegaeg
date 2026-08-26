@@ -1443,17 +1443,17 @@ const app = defineMessages({
       title: 'โปรแกรมสนับสนุนระบบนิเวศ',
       items: [
         {
-          label: 'ร่วมสร้าง Genesis · เฟส {season}',
-          title: 'โปรแกรม Genesis Reserve Governor',
-          body: 'ที่นั่งร่วมสร้างทั่วโลกรอบแรกเปิดแล้ว',
-          action: 'ดูรายละเอียดโปรแกรม',
+          label: 'X DAO ร่วมสร้าง · เฟส {season}',
+          title: 'แผนร่วมสร้างระดับโลกกำลังดำเนินการ',
+          body: 'รวบรวมผู้ร่วมสร้างทั่วโลก ร่วมมีส่วนร่วมในการสร้างระบบนิเวศ',
+          action: 'ดูรายละเอียดโปรแกรม →',
           href: 'https://xdaoaegis.notion.site/39edd8755b9880a09c5ffc9edc96245d',
         },
         {
           label: 'สถาบัน X',
-          title: 'Global DeFi Academy · สถาบันผู้นำระดับโลกสำหรับยุคเศรษฐกิจดิจิทัล',
-          body: 'บ่มเพาะผู้นำแห่งยุค · สร้างกำลังคนเพื่ออนาคต',
-          action: 'ดูรายละเอียดโปรแกรม',
+          title: 'โปรแกรมอบรมระบบนิเวศสำหรับผู้ร่วมสร้าง',
+          body: 'ช่วยให้ผู้ร่วมสร้างเข้าใจกลไกของระบบนิเวศและแผนการพัฒนาได้ลึกขึ้น',
+          action: 'ดูรายละเอียดโปรแกรม →',
           href: 'https://xdaoaegis.notion.site/X-39edd8755b9880b69aafc0c68fc3487d',
         },
       ],
@@ -2826,6 +2826,7 @@ const app = defineMessages({
     joined: 'เข้าร่วมแล้ว',
     address: 'ที่อยู่',
     communityVolume: 'ผลงานทีม',
+    holding: 'โฮลดิ้ง',
     contribution: 'การสมัคร',
   },
 }) satisfies AppMessagesBundle
