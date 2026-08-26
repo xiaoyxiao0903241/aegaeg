@@ -120,7 +120,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(buffer[1], '进入')
-  assert.equal(buffer[2], '12.00')
+  assert.equal(buffer[2], '12.0000')
 
   const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
   const bufferAgx = mapBufferPoolLogToRow(
@@ -133,7 +133,19 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     },
     copy,
   )
-  assert.equal(bufferAgx[2], '12.00 AGX')
+  assert.equal(bufferAgx[2], '12.0000 AGX')
+
+  const bufferHead = mapBufferPoolLogToRow(
+    {
+      block_time: 1_700_000_000,
+      event_type: 'PRINCIPAL_CLAIMED',
+      amount: '0.002297498',
+      contract_address: BSC_CONTRACTS.aegisSplitterHead0,
+      tx_hash: null,
+    },
+    copy,
+  )
+  assert.equal(bufferHead[2], '0.0023 AGX')
 
   const bufferGagx = mapBufferPoolLogToRow(
     {
@@ -145,7 +157,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     },
     copy,
   )
-  assert.equal(bufferGagx[2], '2.00 gAGX')
+  assert.equal(bufferGagx[2], '2.0000 gAGX')
 
   const bufferUsd1 = mapBufferPoolLogToRow(
     {
@@ -157,7 +169,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     },
     copy,
   )
-  assert.equal(bufferUsd1[2], '12.00')
+  assert.equal(bufferUsd1[2], '12.0000')
 
   const queue = mapReleasePoolLogToRow(
     {
