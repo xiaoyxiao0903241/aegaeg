@@ -9,7 +9,8 @@ import {
   fingerprintReleaseBuffer,
   fingerprintReleaseQueue,
 } from '~/core/claimable-unread'
-import { useDaoRewardTypeTotals, useTeamRewardTotal } from '~/hooks/use-api-data'
+import { isGrantNodeEligible } from '~/core/rewards/grant-eligible'
+import { useDaoRewardTypeTotals, useTeamRewardTotal, useUserNodeType } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useClaimableUnread } from '~/hooks/use-claimable-unread'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -137,7 +138,8 @@ export function useReleaseClaimableUnreads(): {
  * 奖励未读红点：六张卡全接。
  *
  * 幸运走链上 `getRewardInfo` pending；推荐 / 参与 / 共建 / 津贴走 type-totals 金额；
- * 创世走团队奖差额。金额作指纹：有待领则亮，看过同额会灭，额变再亮。
+ * 创世走团队奖差额。发展津贴红点仅节点资格为真时计入。
+ * 金额作指纹：有待领则亮，看过同额会灭，额变再亮。
  *
  * @see docs/onchain-manual/contracts/aegisluckypool.md
  * @see docs/backend-api/api.md #dao-reward/type-totals
@@ -158,6 +160,8 @@ export function useRewardsClaimableUnreads(): {
   const onRewards = activeTab === 'rewards'
   const teamQuery = useTeamRewardTotal(sessionReady)
   const typeTotalsQuery = useDaoRewardTypeTotals(sessionReady)
+  const nodeTypeQuery = useUserNodeType(sessionReady)
+  const grantEligible = isGrantNodeEligible(nodeTypeQuery.data?.is_user_node_type)
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
     queryFn: (address) => readLuckyClaimSnapshot(address as Address),
@@ -210,7 +214,7 @@ export function useRewardsClaimableUnreads(): {
   )
   const grant = useClaimableUnread(
     'rewards.grant',
-    typeTotalFp('grant'),
+    grantEligible ? typeTotalFp('grant') : '',
     onRewards && view === 'grant',
   )
   const genesis = useClaimableUnread('rewards.genesis', genesisFp, onRewards && view === 'genesis')

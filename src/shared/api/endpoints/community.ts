@@ -14,6 +14,7 @@ import type {
   TeamMakingOverview,
   TeamReferralItem,
   TeamRewardClaimLogItem,
+  UserNodeType,
   UserPerformance,
 } from '~/shared/api/types'
 
@@ -37,6 +38,21 @@ export async function getQualifiedPartitions(token: string): Promise<QualifiedPa
 
 export async function getMakingOverview(token: string): Promise<MakingOverview> {
   return apiRequest<MakingOverview>('/performance/making-overview', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+/**
+ * 当前用户是否具备发展津贴领取资格。
+ *
+ * @param token 会话 JWT
+ * @returns `is_user_node_type`
+ * @see docs/backend-api/api.md #user/user-node-type
+ */
+export async function getUserNodeType(token: string): Promise<UserNodeType> {
+  return apiRequest<UserNodeType>('/user/user-node-type', {
     method: 'POST',
     token,
     body: {},

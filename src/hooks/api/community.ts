@@ -13,6 +13,7 @@ import {
   getTeamReferrals,
   getTeamRewardClaimLogs,
   getTeamRewardTotal,
+  getUserNodeType,
 } from '~/shared/api/endpoints'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -45,6 +46,18 @@ export function useQualifiedPartitions(enabled = true) {
  */
 export function useMakingOverview(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.makingOverview, getMakingOverview, enabled)
+}
+
+/**
+ * 查询当前用户是否具备发展津贴领取资格。
+ *
+ * 未登录不请求；缺数 / 失败由调用方按无资格处理。
+ *
+ * @param enabled false 时暂停请求
+ * @see docs/backend-api/api.md #user/user-node-type
+ */
+export function useUserNodeType(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.userNodeType, getUserNodeType, enabled)
 }
 
 /**

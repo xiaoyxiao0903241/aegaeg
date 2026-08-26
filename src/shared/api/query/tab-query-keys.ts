@@ -42,6 +42,7 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.luckyRewardSummary,
     queryKeys.api.luckyRewardMyRoundsRoot,
     queryKeys.api.luckyRewardWinnersRoot,
+    queryKeys.api.userNodeType,
     queryKeys.api.marketAllowanceSummary,
     queryKeys.api.marketAllowanceClaimLogsRoot,
     queryKeys.api.marketAllowancePaidLogsRoot,

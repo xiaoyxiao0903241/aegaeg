@@ -1,8 +1,9 @@
 /**
  * 奖励总览左栏面板
  *
- * 六张奖励类型卡片，点击进入对应详情；
- * 幸运走链上快照，创世维持团队奖汇总，其余四张待领来自类型汇总。
+ * 奖励类型卡片，点击进入对应详情；
+ * 幸运走链上快照，创世维持团队奖汇总，其余待领来自类型汇总。
+ * 发展津贴仅 `is_user_node_type` 为真时展示。
  * 齿轮「隐藏 0」只过滤已知可领额为 0 的卡。
  */
 import { keepPreviousData } from '@tanstack/react-query'
@@ -10,8 +11,9 @@ import { useState } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { isGrantNodeEligible } from '~/core/rewards/grant-eligible'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useDaoRewardTypeTotals, useTeamRewardTotal } from '~/hooks/use-api-data'
+import { useDaoRewardTypeTotals, useTeamRewardTotal, useUserNodeType } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useRewardsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
@@ -94,6 +96,8 @@ export function RewardsHubDock() {
   const dots = useRewardsClaimableUnreads()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
   const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady)
+  const { data: nodeType } = useUserNodeType(sessionReady)
+  const grantEligible = isGrantNodeEligible(nodeType?.is_user_node_type)
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
     queryFn: (address) => readLuckyClaimSnapshot(address as Address),
@@ -136,6 +140,7 @@ export function RewardsHubDock() {
         }
 
   const visibleCards = REWARD_CARDS.filter((view) => {
+    if (view === 'grant' && !grantEligible) return false
     if (!hideZero) return true
     return rewardCardHasBalance(amountValue(view), amountReady(view))
   })

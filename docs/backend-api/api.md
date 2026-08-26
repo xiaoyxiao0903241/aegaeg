@@ -32,7 +32,7 @@ EVM 签名登录与销售记录接口 / EVM login and sales APIs
 - [x0-mining（X0 挖矿）](#x0-mining-x0-挖矿)（2）
 - [protocol-market-stats（协议市值质押）](#protocol-market-stats-协议市值质押)（3）
 - [一期接口](#一期接口)（18）
-- [二期·未分类](#二期-未分类)（2）
+- [二期·未分类](#二期-未分类)（3）
 
 ## lucky-reward（幸运奖）
 
@@ -1533,6 +1533,23 @@ making_market_usd / active_stake_balance_usd = 对应 AGX × agx_price_logs 最�
 |401|未授权 / Unauthorized|`ErrorResponse` {`code`:integer, `error`:string, `message`:string, `data`:object}|
 
 ## 二期·未分类
+
+### `POST` `/user/user-node-type`
+
+**当前用户是否具备发展津贴领取资格 / User node type for market allowance**
+
+- auth: required
+
+`data.is_user_node_type`：是否有津贴领取资格。前端仅在该字段为 `true` 时展示发展津贴入口。
+
+**Request body**
+
+- `application/json`: `EmptyRequest` {}
+
+|status|description|schema|
+|---|---|---|
+|200|成功 / Success|{`code`:integer, `data`:object}|
+|401|未授权|`ApiErrorResponse`|
 
 ### `POST` `/dao-reward/type-totals`
 

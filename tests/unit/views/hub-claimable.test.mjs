@@ -66,10 +66,22 @@ test('rewards rail lucky probe is not gated to the rewards tab', () => {
   assert.match(nav, /rewards\.referral/)
   assert.match(nav, /rewards\.participate/)
   assert.match(nav, /rewards\.cobuild/)
+  assert.match(nav, /useUserNodeType/)
+  assert.match(nav, /isGrantNodeEligible/)
   assert.match(nav, /enabled: walletReady/)
   assert.doesNotMatch(nav, /enabled: walletReady && onRewards/)
   assert.doesNotMatch(nav, /!walletReady \|\| !onRewards/)
   assert.doesNotMatch(nav, /无预览可领额/)
+})
+
+test('rewards hub hides grant card unless node type is eligible', () => {
+  const dock = readFileSync(
+    new URL('../../../src/views/dapp/rewards/hub/dock.tsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(dock, /useUserNodeType/)
+  assert.match(dock, /isGrantNodeEligible/)
+  assert.match(dock, /view === 'grant' && !grantEligible/)
 })
 
 test('claimable dots poll every balances interval', () => {
