@@ -3,12 +3,7 @@
  *
  * 顶部为产品统计数字，中部为操作记录表格（可分页），底部为常见问题。
  */
-import { durationDaysFromPlans } from '~/core/assets/claim-plans'
-import { useChainQuery } from '~/hooks/use-chain-query'
-import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -25,7 +20,6 @@ import {
   useAssetsPositionStats,
 } from '~/views/dapp/assets/position/use-position'
 import { AssetsOpsTable } from '~/views/dapp/assets/primitives'
-import { readClaimPlans } from '~/web3/assets/assets-read'
 
 export function PositionDetail({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()
@@ -34,26 +28,6 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
   const values = useAssetsPositionStats(product)
   const ops = useAssetsPositionOpsRows(product)
   const columns = product === 'stake' ? 3 : 'upper3-lower2'
-  const bondFaq = product === 'lpbond' || product === 'burnbond'
-  const durationQuery = usePrincipalReleaseDurationDays()
-  const plansQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsClaimPlans,
-    queryFn: () => readClaimPlans(),
-    scope: 'public',
-    freshness: 'api',
-    enabled: bondFaq,
-  })
-  const restakeFromChain = durationDaysFromPlans(plansQuery.data?.restakePlans, [])
-  const faqVars = {
-    days: durationQuery.data ?? '—',
-    ...(bondFaq
-      ? { restakeDays: restakeFromChain.length > 0 ? restakeFromChain.join('/') : '—' }
-      : {}),
-  }
-  const faqItems = copy.faq.items.map((item) => ({
-    ...item,
-    a: interpolate(item.a, faqVars),
-  }))
 
   return (
     <Detail>
@@ -110,7 +84,7 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
       </Section>
       <Section>
         <Section.Title>{copy.faq.title}</Section.Title>
-        <Faq items={faqItems} variant="dapp" />
+        <Faq items={copy.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

@@ -6,13 +6,9 @@
  */
 import { useState } from 'react'
 
-import { ZERO_BI } from '~/core/constants'
 import { useTurbineLogs } from '~/hooks/use-api-data'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
@@ -28,7 +24,6 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { mapTurbineLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import { TurbineMechanismCard } from '~/views/dapp/exchange/turbine/primitives'
-import { readTurbineCooldownDuration } from '~/web3/exchange/turbine-exchange-read'
 
 /** 详情页只接收概览标量，解锁金额输入不触达详情。 */
 export type TurbineExchangeDetailProps = {
@@ -50,18 +45,6 @@ export function TurbineExchangeDetail({
 }: TurbineExchangeDetailProps) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
-  const cooldownQuery = useChainQuery({
-    queryKey: queryKeys.chain.turbineCooldown,
-    queryFn: () => readTurbineCooldownDuration(),
-    scope: 'public',
-    freshness: 'quote',
-  })
-  const cooldownSeconds = Number(cooldownQuery.data ?? ZERO_BI)
-  const cooldownHours = cooldownSeconds > 0 ? Math.round(cooldownSeconds / 3600) : '—'
-  const faqItems = t.exchange.turbine.faq.items.map((item) => ({
-    ...item,
-    a: interpolate(item.a, { cooldownHours }),
-  }))
   const [logsPage, setLogsPage] = useState(1)
   const turbineLogsQuery = useTurbineLogs(tablePageQuery(logsPage), sessionReady)
   const turbineLogRows =
@@ -155,7 +138,7 @@ export function TurbineExchangeDetail({
 
       <Section>
         <Section.Title>{t.exchange.faq.title}</Section.Title>
-        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.exchange.turbine.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

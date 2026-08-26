@@ -7,7 +7,6 @@
  */
 import { useState } from 'react'
 
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { StatusBadge } from '~/shared/components/badge'
@@ -25,13 +24,9 @@ import {
 } from '~/views/dapp/rewards/hub/primitives'
 import { useRewardsHub } from '~/views/dapp/rewards/hub/use-hub'
 import { AboutCard } from '~/views/dapp/shared/about-card'
-import {
-  mapFaqWithContributionRatio,
-  withContributionRatio,
-} from '~/views/dapp/shared/contribution-claim-ratio'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
-import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
@@ -92,11 +87,6 @@ export function RewardsHubDetail() {
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
   const contributionHint = withContributionRatio(stats.contributionHint, claimRatio)
-  const epochSchedule = useEpochScheduleLabels()
-  const faqItems = mapFaqWithContributionRatio(t.rewards.faq.items, claimRatio).map((item) => ({
-    ...item,
-    a: interpolate(item.a, { hours: epochSchedule.hours }),
-  }))
 
   const tiles: RewardsSummaryItem[] = [
     {
@@ -265,7 +255,7 @@ export function RewardsHubDetail() {
       <Section>
         <Section.Title>{t.rewards.faq.title}</Section.Title>
         {/* FAQ 收起项间距覆盖 dapp 默认值 */}
-        <Faq className="[&_[data-faq-item]>div]:py-4" items={faqItems} variant="dapp" />
+        <Faq className="[&_[data-faq-item]>div]:py-4" items={t.rewards.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

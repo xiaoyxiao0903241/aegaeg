@@ -4,8 +4,6 @@
  * 展示协议概览、我的持仓、释放记录、机制说明、趋势图与 FAQ。
  * 未连接钱包时仓位与记录为空态。
  */
-import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
-import { interpolate } from '~/i18n/interpolate'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -14,11 +12,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
-import {
-  mapFaqWithEpochSchedule,
-  mapStepsWithEpochSchedule,
-  withEpochSchedule,
-} from '~/views/dapp/shared/epoch-schedule'
+import { mapStepsWithEpochSchedule, withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import { openAssetsView } from '~/views/dapp/shared/navigation'
 import {
   StakingMechanismCard,
@@ -51,13 +45,6 @@ export function StakeDetail() {
   } = useStakingDetail('stake')
   const epochSchedule = useEpochScheduleLabels()
   const mechanismSteps = mapStepsWithEpochSchedule(t.staking.stake.mechanismSteps, epochSchedule)
-  // jscpd:ignore-start — FAQ 天数插值页内拼装，禁再抽统一包装
-  const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
-  const faqItems = mapFaqWithEpochSchedule(t.staking.stake.faq, epochSchedule).map((item) => ({
-    ...item,
-    a: interpolate(item.a, { days: bufferDays }),
-  }))
-  // jscpd:ignore-end
 
   return (
     <Detail>
@@ -162,7 +149,7 @@ export function StakeDetail() {
 
       <Section>
         <Section.Title>{t.staking.aside.faq}</Section.Title>
-        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.staking.stake.faq} variant="dapp" />
       </Section>
       {/* jscpd:ignore-end */}
     </Detail>

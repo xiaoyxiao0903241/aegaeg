@@ -66,7 +66,7 @@ test('lucky non-numeric empties stay dashes; counts stay integers', async () => 
 })
 
 test('planLabel and splitAmountByPct', async () => {
-  const { planLabel, formatPlanTaxSchedule } = await loadModule('/src/core/assets/claim-plans.ts')
+  const { planLabel } = await loadModule('/src/core/assets/claim-plans.ts')
   const { splitAmountByPct } = await loadModule('/src/views/dapp/rewards/shared.tsx')
 
   assert.equal(splitAmountByPct(1000n, 40), 400n)
@@ -74,21 +74,6 @@ test('planLabel and splitAmountByPct', async () => {
   const plans = [{ index: 0, exists: true, durationSeconds: 60n * 86_400n, taxBps: 500n }]
   assert.equal(planLabel(60, plans, '{days}d ({tax})', '{days}d', '{rate}%'), '60d (5%)')
   assert.equal(planLabel(90, plans, '{days}d ({tax})', '{days}d', '{rate}%'), '90d')
-
-  const schedule = [
-    { index: 0, exists: true, durationSeconds: 5n * 86_400n, taxBps: 2000n },
-    { index: 1, exists: true, durationSeconds: 20n * 86_400n, taxBps: 1000n },
-    { index: 2, exists: false, durationSeconds: 40n * 86_400n, taxBps: 500n },
-  ]
-  assert.equal(
-    formatPlanTaxSchedule(schedule, '{days}d · {tax}', '{days}d', '{rate}%', ', '),
-    '5d · 20%, 20d · 10%',
-  )
-  assert.equal(
-    formatPlanTaxSchedule(schedule, '{days} 天 · {tax}', '{days} 天', '税率 {rate}%', '、'),
-    '5 天 · 税率 20%、20 天 · 税率 10%',
-  )
-  assert.equal(formatPlanTaxSchedule([], '{days}d', '{days}d', '{rate}%', ', '), '—')
 })
 
 test('formatDaoGrantStatus READY uses the pending label', async () => {

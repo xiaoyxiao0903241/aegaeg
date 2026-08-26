@@ -15,10 +15,7 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { HideZeroToggle } from '~/views/dapp/rewards/primitives'
 import { useRewardsReferral } from '~/views/dapp/rewards/referral/use-referral'
-import {
-  mapFaqWithContributionRatio,
-  withContributionRatio,
-} from '~/views/dapp/shared/contribution-claim-ratio'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function ReferralDetail() {
@@ -45,7 +42,6 @@ export function ReferralDetail() {
   } = useRewardsReferral()
   const claimRatio = useContributionClaimRatioLabel()
   const contributionHint = withContributionRatio(referral.contributionHint, claimRatio)
-  const faqItems = mapFaqWithContributionRatio(referral.faq.items, claimRatio)
 
   const topTiles = [
     {
@@ -173,7 +169,7 @@ export function ReferralDetail() {
 
       <Section>
         <Section.Title>{referral.faq.title}</Section.Title>
-        <Faq items={faqItems} variant="dapp" />
+        <Faq items={referral.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

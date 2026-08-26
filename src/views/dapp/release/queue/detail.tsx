@@ -6,13 +6,11 @@
  */
 import { useState } from 'react'
 
-import { formatPlanTaxSchedule } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tokenCarouselIcons } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
@@ -29,10 +27,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
 import { mapReleasePoolLogToRow } from '~/shared/presenters/map-flow-log-rows'
-import {
-  useReleaseQueuePlans,
-  useReleaseQueueSnapshot,
-} from '~/views/dapp/release/use-release-reads'
+import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -53,19 +48,6 @@ export function QueueDetail() {
   const unit = t.release.units.queue
   const api = apiSummaryQuery.data
   const chainReady = walletReady && queueQuery.data != null
-  const plansQuery = useReleaseQueuePlans()
-  const mixed = t.rewards.mixed
-  const taxSchedule = formatPlanTaxSchedule(
-    plansQuery.data,
-    mixed.daysTax,
-    mixed.releaseDays,
-    mixed.taxRate,
-    mixed.scheduleJoin,
-  )
-  const faqItems = t.release.faq.queue.map((item) => ({
-    ...item,
-    a: interpolate(item.a, { taxSchedule }),
-  }))
 
   function parseApiOrChain(apiRaw: string | undefined, chain: bigint): number {
     if (chainReady) return formatTokenAmountToNumber(chain, AGX_DECIMALS)
@@ -183,7 +165,7 @@ export function QueueDetail() {
 
       <Section>
         <Section.Title>{t.release.faq.title}</Section.Title>
-        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.release.faq.queue} variant="dapp" />
       </Section>
     </Detail>
   )

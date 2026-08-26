@@ -6,10 +6,10 @@ import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/pres
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
-import { fillTemplate } from '~/shared/lib/utils'
 import { formatNumber } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 
@@ -41,7 +41,7 @@ export function useGenesisDock(genesis: GenesisSessionState) {
     sharesInputRef.current?.focus()
   }, [isMobileViewport])
 
-  const xTokenAirdropHint = fillTemplate(t.genesis.xTokenAirdropHint, {
+  const xTokenAirdropHint = interpolate(t.genesis.xTokenAirdropHint, {
     threshold:
       genesis.airdropThresholdLoading || genesis.airdropThresholdUsd == null
         ? '—'

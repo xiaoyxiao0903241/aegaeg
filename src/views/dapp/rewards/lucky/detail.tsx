@@ -16,8 +16,6 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { LuckyVrfCard } from '~/views/dapp/rewards/lucky/primitives'
 import { useLucky } from '~/views/dapp/rewards/lucky/use-lucky'
-import { mapFaqWithContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function LuckyDetail() {
   const {
@@ -43,8 +41,6 @@ export function LuckyDetail() {
     setHistoryPage,
     historyTotal,
   } = useLucky()
-  const claimRatio = useContributionClaimRatioLabel()
-  const faqItems = mapFaqWithContributionRatio(lucky.faq.items, claimRatio)
 
   const dateMenu =
     dateOptions.length > 0 ? (
@@ -170,7 +166,7 @@ export function LuckyDetail() {
 
       <Section>
         <Section.Title>{lucky.faq.title}</Section.Title>
-        <Faq items={faqItems} variant="dapp" />
+        <Faq items={lucky.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

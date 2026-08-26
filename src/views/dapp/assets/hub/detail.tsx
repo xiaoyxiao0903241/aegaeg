@@ -5,11 +5,8 @@
  * Rebase 步骤说明与常见问题。
  * 未连接钱包时各项展示 0 值占位。
  */
-import { formatPlanTaxSchedule } from '~/core/assets/claim-plans'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { assetsHubAssets, dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Empty } from '~/shared/components/empty'
@@ -30,12 +27,8 @@ import {
   AssetsRebaseCard,
 } from '~/views/dapp/assets/hub/primitives'
 import { useAssetsHubDetail } from '~/views/dapp/assets/hub/use-hub'
-import {
-  mapFaqWithContributionRatio,
-  withContributionRatio,
-} from '~/views/dapp/shared/contribution-claim-ratio'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { mapStepsWithEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
-import { readClaimPlans } from '~/web3/assets/assets-read'
 import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
@@ -46,31 +39,6 @@ export function AssetsHubDetail() {
   const epochSchedule = useEpochScheduleLabels()
   const contributionHint = withContributionRatio(overview.contributionHint, claimRatio)
   const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
-  const plansQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsClaimPlans,
-    queryFn: () => readClaimPlans(),
-    scope: 'public',
-    freshness: 'api',
-  })
-  const mixed = t.rewards.mixed
-  const taxSchedule = formatPlanTaxSchedule(
-    plansQuery.data?.releasePlans,
-    mixed.daysTax,
-    mixed.releaseDays,
-    mixed.taxRate,
-    mixed.scheduleJoin,
-  )
-  const restakeTax = formatPlanTaxSchedule(
-    plansQuery.data?.restakePlans,
-    mixed.daysTax,
-    mixed.restakeDays,
-    mixed.taxRate,
-    mixed.scheduleJoin,
-  )
-  const faqItems = mapFaqWithContributionRatio(t.assets.hub.faq.items, claimRatio).map((item) => ({
-    ...item,
-    a: interpolate(item.a, { days: bufferDays, taxSchedule, restakeTax }),
-  }))
   const rebaseSteps = mapStepsWithEpochSchedule(rebase.steps, epochSchedule)
   const {
     bufferTotal,
@@ -232,7 +200,7 @@ export function AssetsHubDetail() {
 
       <Section>
         <Section.Title>{t.assets.hub.faq.title}</Section.Title>
-        <Faq defaultOpenFirst={false} items={faqItems} variant="dapp" />
+        <Faq defaultOpenFirst={false} items={t.assets.hub.faq.items} variant="dapp" />
       </Section>
     </Detail>
   )

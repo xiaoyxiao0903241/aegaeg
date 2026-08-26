@@ -17,7 +17,6 @@ import { Section } from '~/shared/components/section'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { fillTemplate } from '~/shared/lib/utils'
 import { formatMakingRankLabel, formatNumber } from '~/shared/presenters/format'
 import {
   CommunityInviteCard,
@@ -67,7 +66,7 @@ export function CommunityDetail() {
     if (index !== 0) return program
     return {
       ...program,
-      label: fillTemplate(program.label, {
+      label: interpolate(program.label, {
         season: String(genesis.activeSeasonNumber),
       }),
     }
