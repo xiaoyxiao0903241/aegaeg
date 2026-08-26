@@ -12,6 +12,14 @@ import {
 } from '~/shared/api/query/session-request'
 import { useAuthStore } from '~/stores/auth-store'
 
+type AuthenticatedQueryOptions = {
+  keepPreviousData?: boolean
+  /** 缺省 `QUERY_STALE_TIME.api`（5 分钟）。 */
+  staleTime?: number
+  /** 未设则不轮询。后台标签页不拉。 */
+  refetchInterval?: number | false
+}
+
 /**
  * 带会话的 API 查询（本模块核心）
  *
@@ -23,7 +31,7 @@ export function useAuthenticatedQuery<T>(
   queryKey: QueryKey,
   fetcher: (token: string) => Promise<T>,
   enabled = true,
-  options?: { keepPreviousData?: boolean },
+  options?: AuthenticatedQueryOptions,
 ) {
   const { token, invalidateSession, sessionReady, hasHydrated, session } = useAuth()
   const { messages: t } = useI18n()
@@ -48,7 +56,9 @@ export function useAuthenticatedQuery<T>(
       sessionReady,
       hasToken: Boolean(token),
     }),
-    staleTime: QUERY_STALE_TIME.api,
+    staleTime: options?.staleTime ?? QUERY_STALE_TIME.api,
+    refetchInterval: options?.refetchInterval,
+    refetchIntervalInBackground: options?.refetchInterval ? false : undefined,
     placeholderData: options?.keepPreviousData
       ? (previousData, previousQuery) => {
           if (previousData == null || !scopeKey) return undefined

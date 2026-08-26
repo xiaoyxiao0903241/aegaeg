@@ -14,6 +14,7 @@ import {
   getTeamRewardClaimLogs,
   getTeamRewardTotal,
 } from '~/shared/api/endpoints'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { PaginationParams } from '~/shared/api/types'
 
@@ -94,10 +95,15 @@ export function useReferralTotal(enabled = true) {
 /**
  * 查询团队奖励可领汇总。
  *
+ * 创世待领与导航红点共用；新鲜度与链上余额同档，并按该间隔轮询。
+ *
  * @param enabled false 时暂停请求
  */
 export function useTeamRewardTotal(enabled = true) {
-  return useAuthenticatedQuery(queryKeys.api.teamRewardTotal, getTeamRewardTotal, enabled)
+  return useAuthenticatedQuery(queryKeys.api.teamRewardTotal, getTeamRewardTotal, enabled, {
+    staleTime: QUERY_STALE_TIME.balances,
+    refetchInterval: QUERY_STALE_TIME.balances,
+  })
 }
 
 /**

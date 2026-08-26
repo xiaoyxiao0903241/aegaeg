@@ -26,8 +26,8 @@ import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { hubApiClaimableFromTypeTotals } from '~/shared/lib/dao-reward-type-totals'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
-import { hubApiClaimableFromTypeTotals } from '~/views/dapp/rewards/hub/claimable'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
@@ -175,14 +175,7 @@ export function RewardsHubDock() {
         const balanceLabel =
           isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
-        const unread =
-          view === 'lucky'
-            ? dots.lucky
-            : view === 'grant'
-              ? dots.grant
-              : view === 'genesis'
-                ? dots.genesis
-                : false
+        const unread = dots[view]
 
         return (
           <RewardsTypeCard

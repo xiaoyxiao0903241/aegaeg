@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
 import {
+  useAssetsClaimableUnreads,
   useExchangeTurbineUnread,
   useReleaseClaimableUnreads,
   useRewardsClaimableUnreads,
@@ -55,6 +56,7 @@ export function MobileNav({
 }) {
   const { messages: t } = useI18n()
   const exchangeClaimable = useExchangeTurbineUnread()
+  const assetsClaimable = useAssetsClaimableUnreads().rail
   const releaseClaimable = useReleaseClaimableUnreads().rail
   const rewardsClaimable = useRewardsClaimableUnreads().rail
   const [mounted, setMounted] = useState(open)
@@ -172,6 +174,7 @@ export function MobileNav({
                 style={railIconMask(item.icon)}
               />
               {item.id === 'exchange' && exchangeClaimable ? <ClaimableDot /> : null}
+              {item.id === 'assets' && assetsClaimable ? <ClaimableDot /> : null}
               {item.id === 'release' && releaseClaimable ? <ClaimableDot /> : null}
               {item.id === 'rewards' && rewardsClaimable ? <ClaimableDot /> : null}
               <Text

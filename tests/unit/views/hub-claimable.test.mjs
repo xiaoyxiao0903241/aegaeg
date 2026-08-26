@@ -16,7 +16,7 @@ const SAMPLE = {
 
 test('hubApiClaimableFromTypeTotals maps four API cards; cobuild adds surpass', async () => {
   const { hubApiClaimableFromTypeTotals } = await loadModule(
-    '/src/views/dapp/rewards/hub/claimable.ts',
+    '/src/shared/lib/dao-reward-type-totals.ts',
   )
 
   assert.equal(hubApiClaimableFromTypeTotals('referral', SAMPLE), 2.25)
@@ -27,7 +27,7 @@ test('hubApiClaimableFromTypeTotals maps four API cards; cobuild adds surpass', 
 
 test('hubApiClaimableFromTypeTotals: missing totals or field is null; cobuild 0+0 is 0', async () => {
   const { hubApiClaimableFromTypeTotals } = await loadModule(
-    '/src/views/dapp/rewards/hub/claimable.ts',
+    '/src/shared/lib/dao-reward-type-totals.ts',
   )
 
   assert.equal(hubApiClaimableFromTypeTotals('referral', null), null)
@@ -44,7 +44,7 @@ test('hubApiClaimableFromTypeTotals: missing totals or field is null; cobuild 0+
 
 test('typeTotalAmount is one field; cobuild sub-page does not sum', async () => {
   const { typeTotalAmount, hasTypeTotalClaimable } = await loadModule(
-    '/src/views/dapp/rewards/hub/claimable.ts',
+    '/src/shared/lib/dao-reward-type-totals.ts',
   )
 
   assert.equal(typeTotalAmount(SAMPLE, 'RANK_REWARD'), 1.5)
@@ -53,6 +53,79 @@ test('typeTotalAmount is one field; cobuild sub-page does not sum', async () => 
   assert.equal(hasTypeTotalClaimable(null), false)
   assert.equal(hasTypeTotalClaimable(0), false)
   assert.equal(hasTypeTotalClaimable(0.0001), true)
+})
+
+test('rewards rail lucky probe is not gated to the rewards tab', () => {
+  const nav = readFileSync(
+    new URL('../../../src/hooks/use-nav-claimable-dots.ts', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(nav, /readLuckyClaimSnapshot/)
+  assert.match(nav, /useDaoRewardTypeTotals/)
+  assert.match(nav, /rewards\.referral/)
+  assert.match(nav, /rewards\.participate/)
+  assert.match(nav, /rewards\.cobuild/)
+  assert.match(nav, /enabled: walletReady/)
+  assert.doesNotMatch(nav, /enabled: walletReady && onRewards/)
+  assert.doesNotMatch(nav, /!walletReady \|\| !onRewards/)
+  assert.doesNotMatch(nav, /无预览可领额/)
+})
+
+test('claimable dots poll every balances interval', () => {
+  const nav = readFileSync(
+    new URL('../../../src/hooks/use-nav-claimable-dots.ts', import.meta.url),
+    'utf8',
+  )
+  const typeTotals = readFileSync(
+    new URL('../../../src/hooks/api/rewards.ts', import.meta.url),
+    'utf8',
+  )
+  const team = readFileSync(new URL('../../../src/hooks/api/community.ts', import.meta.url), 'utf8')
+  const auth = readFileSync(
+    new URL('../../../src/hooks/api/_authenticated-query.ts', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(auth, /staleTime: options\?\.staleTime \?\? QUERY_STALE_TIME\.api/)
+  assert.match(auth, /refetchInterval: options\?\.refetchInterval/)
+  assert.match(typeTotals, /useDaoRewardTypeTotals[\s\S]*staleTime: QUERY_STALE_TIME\.balances/)
+  assert.match(
+    typeTotals,
+    /useDaoRewardTypeTotals[\s\S]*refetchInterval: QUERY_STALE_TIME\.balances/,
+  )
+  assert.match(team, /useTeamRewardTotal[\s\S]*staleTime: QUERY_STALE_TIME\.balances/)
+  assert.match(team, /useTeamRewardTotal[\s\S]*refetchInterval: QUERY_STALE_TIME\.balances/)
+  assert.match(nav, /const CLAIMABLE_DOT_POLL_MS = QUERY_STALE_TIME\.balances/)
+  assert.equal((nav.match(/refetchInterval: CLAIMABLE_DOT_POLL_MS/g) ?? []).length, 8)
+})
+
+test('assets rail expiry probe is not gated to the assets tab', () => {
+  const nav = readFileSync(
+    new URL('../../../src/hooks/use-nav-claimable-dots.ts', import.meta.url),
+    'utf8',
+  )
+  const dock = readFileSync(
+    new URL('../../../src/views/dapp/assets/hub/dock.tsx', import.meta.url),
+    'utf8',
+  )
+  const rail = readFileSync(
+    new URL('../../../src/views/dapp/host/rail.tsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(nav, /readStakePositions/)
+  assert.match(nav, /readLpBondPositions/)
+  assert.match(nav, /readBurnBondPositions/)
+  assert.match(nav, /readXminePosition/)
+  assert.match(nav, /fingerprintAssetsStakeExpiry/)
+  assert.match(nav, /assets\.stake/)
+  assert.match(nav, /assets\.lpbond/)
+  assert.match(nav, /assets\.burnbond/)
+  assert.match(nav, /assets\.xmine/)
+  assert.doesNotMatch(nav, /enabled: walletReady && onAssets/)
+  assert.match(dock, /dots\[key\]/)
+  assert.match(rail, /item\.id === 'assets' && assetsClaimable/)
 })
 
 test('hub lucky stays on chain; four API cards use type-totals; genesis stays team-reward', () => {
@@ -81,6 +154,7 @@ test('hub lucky stays on chain; four API cards use type-totals; genesis stays te
   assert.match(dock, /useTeamRewardTotal/)
   assert.match(dock, /hubApiClaimableFromTypeTotals/)
   assert.match(dock, /useDaoRewardTypeTotals/)
+  assert.match(dock, /dots\[view\]/)
   assert.match(endpoint, /\/dao-reward\/type-totals/)
   assert.match(mixed, /typeTotalAmount/)
   assert.match(mixed, /allowUnknownAmount: isDaoMixed && hasClaimablePreview/)

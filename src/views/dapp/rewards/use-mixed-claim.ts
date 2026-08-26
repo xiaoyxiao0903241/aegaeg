@@ -26,8 +26,8 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { DaoRewardType } from '~/shared/api/types'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { hasTypeTotalClaimable, typeTotalAmount } from '~/shared/lib/dao-reward-type-totals'
 import { formatNumber } from '~/shared/presenters/format'
-import { hasTypeTotalClaimable, typeTotalAmount } from '~/views/dapp/rewards/hub/claimable'
 import { formatApiAmount, type MixedClaimView, splitAmountByPct } from '~/views/dapp/rewards/shared'
 import {
   REWARDS_BLOCKED,

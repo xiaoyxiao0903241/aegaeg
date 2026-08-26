@@ -18,6 +18,7 @@ import {
   getReferralAwardLogs,
   getReferralAwardSummary,
 } from '~/shared/api/endpoints'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type {
   PaginationParams,
@@ -32,11 +33,16 @@ import type {
  *
  * 推荐 / 参与 / 共建 / 发展的 Hub 与子页待领预览用此汇总。
  *
+ * 新鲜度与链上余额同档，并按该间隔轮询：导航红点才能自动出现。
+ *
  * @param enabled false 时暂停请求
  * @see docs/backend-api/api.md #dao-reward/type-totals
  */
 export function useDaoRewardTypeTotals(enabled = true) {
-  return useAuthenticatedQuery(queryKeys.api.daoRewardTypeTotals, getDaoRewardTypeTotals, enabled)
+  return useAuthenticatedQuery(queryKeys.api.daoRewardTypeTotals, getDaoRewardTypeTotals, enabled, {
+    staleTime: QUERY_STALE_TIME.balances,
+    refetchInterval: QUERY_STALE_TIME.balances,
+  })
 }
 
 /**
