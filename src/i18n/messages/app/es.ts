@@ -2781,7 +2781,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Reclamar recompensas Rebase / DAO', body: 'Se genera el rendimiento' },
         {
-          title: 'Mecanismo de contribución {divisor} : 1',
+          title: 'Mecanismo de contribución 1:1',
           body: '50% quema · 50% al pool base de X',
         },
         {

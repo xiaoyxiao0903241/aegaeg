@@ -35,7 +35,6 @@ import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
 import { openRewardsView } from '~/views/dapp/shared/navigation'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -88,7 +87,6 @@ function rewardCardHasBalance(value: number | null, amountReady: boolean): boole
 
 export function RewardsHubDock() {
   const { messages: t } = useI18n()
-  const claimRatio = useContributionClaimRatioLabel()
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
@@ -193,9 +191,7 @@ export function RewardsHubDock() {
                   <RewardsTypeCard.Badge>{t.rewards.cards.genesis.badge}</RewardsTypeCard.Badge>
                 ) : null}
               </RewardsTypeCard.TitleGroup>
-              <RewardsTypeCard.Body>
-                {withContributionRatio(card.body, claimRatio)}
-              </RewardsTypeCard.Body>
+              <RewardsTypeCard.Body>{withContributionRatio(card.body)}</RewardsTypeCard.Body>
             </RewardsTypeCard.Head>
             <RewardsTypeCard.Balance
               amount={balance.amount}

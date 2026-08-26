@@ -32,7 +32,6 @@ import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 /**
  * 简单领取左栏面板（发展津贴）
@@ -99,13 +98,12 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
   const vm = useMixedClaim(view)
   const t = vm.t
-  const claimRatio = useContributionClaimRatioLabel()
 
   return (
     <TabHeader
       backText={t.rewards.backToHub}
       onBack={() => setView('hub')}
-      subtitle={withContributionRatio(vm.card.body, claimRatio)}
+      subtitle={withContributionRatio(vm.card.body)}
       title={vm.card.title}
     >
       <DockStack>
@@ -125,7 +123,13 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           }
           requiredContributionLabel={vm.mixed.requiredContributionLabel}
           requiredText={
-            view === 'lucky' && vm.amount > ZERO_BI ? vm.requiredText : formatApiAmount(null)
+            view === 'lucky'
+              ? vm.amount > ZERO_BI
+                ? vm.requiredText
+                : formatApiAmount(null)
+              : vm.hasClaimablePreview
+                ? vm.requiredText
+                : formatApiAmount(null)
           }
           tokenGagx={vm.mixed.tokenGagx}
         />

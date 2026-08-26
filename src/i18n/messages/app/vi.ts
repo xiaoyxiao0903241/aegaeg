@@ -2734,7 +2734,7 @@ const app = defineMessages({
         'Giải phóng là bước bắt buộc từ lúc lợi nhuận sinh ra đến khi vào Turbine — đổi thời gian lấy thuế thấp, đổi nhịp lấy ổn định',
       mechanismSteps: [
         { title: 'Nhận thưởng Rebase / DAO', body: 'Lợi nhuận sinh ra' },
-        { title: 'Cơ chế đóng góp {divisor} : 1', body: '50% đốt · 50% bơm hồ nền X' },
+        { title: 'Cơ chế đóng góp 1:1', body: '50% đốt · 50% bơm hồ nền X' },
         {
           title: 'Vào hồ giải phóng · giải phóng tuyến tính',
           body: 'Chọn chu kỳ 5 / 20 / 40 / 60 ngày',

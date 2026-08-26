@@ -20,7 +20,6 @@ import { CobuildTierCard } from '~/views/dapp/rewards/cobuild/primitives'
 import { useCobuild } from '~/views/dapp/rewards/cobuild/use-cobuild'
 import { HideZeroToggle, rewardsRecordsChipTabsHeader } from '~/views/dapp/rewards/primitives'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function CobuildDetail() {
   const {
@@ -60,8 +59,7 @@ export function CobuildDetail() {
     directsTotal,
     recordsTabOptions,
   } = useCobuild()
-  const claimRatio = useContributionClaimRatioLabel()
-  const contributionHint = withContributionRatio(cobuild.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(cobuild.contributionHint)
 
   const overviewTiles = [
     {

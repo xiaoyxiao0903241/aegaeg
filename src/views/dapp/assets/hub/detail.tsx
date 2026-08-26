@@ -29,15 +29,13 @@ import {
 import { useAssetsHubDetail } from '~/views/dapp/assets/hub/use-hub'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { mapStepsWithEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 export function AssetsHubDetail() {
   const vm = useAssetsHubDetail()
   const { t, overview, rebase, values, setBufferAsset, distribution, distributionLoading } = vm
-  const claimRatio = useContributionClaimRatioLabel()
   const epochSchedule = useEpochScheduleLabels()
-  const contributionHint = withContributionRatio(overview.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(overview.contributionHint)
   const bufferDays = usePrincipalReleaseDurationDays().data ?? '—'
   const rebaseSteps = mapStepsWithEpochSchedule(rebase.steps, epochSchedule)
   const {

@@ -14,7 +14,6 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { useParticipate } from '~/views/dapp/rewards/participate/use-participate'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function ParticipateDetail() {
   const {
@@ -32,8 +31,7 @@ export function ParticipateDetail() {
     inviterRows,
     inviterLoading,
   } = useParticipate()
-  const claimRatio = useContributionClaimRatioLabel()
-  const contributionHint = withContributionRatio(participate.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(participate.contributionHint)
 
   const overviewTiles = [
     {

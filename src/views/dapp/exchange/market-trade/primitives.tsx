@@ -4,7 +4,6 @@
 import { Fragment, useState } from 'react'
 
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { Carousel } from '~/shared/components/carousel'
@@ -30,7 +29,7 @@ import {
 } from '~/shared/config/token-contracts'
 import { cn, revealClass } from '~/shared/lib/utils'
 import { ExchangePromoCard, ExchangePromoPillAction } from '~/views/dapp/exchange/primitives'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
+import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 
 export type ExchangeTokenPickerOption = {
   key: string
@@ -213,7 +212,6 @@ function TokenCarouselCard({
 function getExchangeTokenContent(
   t: ReturnType<typeof useI18n>['messages'],
   keys: readonly ExchangeTokenCarouselKey[],
-  vars: Readonly<Record<string, string>>,
 ) {
   const assets: Record<ExchangeTokenCarouselKey, string> = {
     agx: tokenCarouselIcons.agxIcon,
@@ -229,7 +227,7 @@ function getExchangeTokenContent(
     const copy = t.exchange.tokenAbout.items.find((item) => item.key === key)!
     return {
       asset: assets[key],
-      body: interpolate(copy.body, vars),
+      body: withContributionRatio(copy.body),
       key,
       title: copy.title,
     }
@@ -240,7 +238,7 @@ function getExchangeTokenContent(
  * 代币介绍轮播（闪电兑换 / 市价交易 / 销毁 / Turbine 共用）
  *
  * 按传入的卡片键从 i18n 取文案并组装卡片，轮播行为由 Carousel
- * 提供；每张卡片可跳转到对应 BscScan 页。贡献点数卡会插入领取消耗比。
+ * 提供；每张卡片可跳转到对应 BscScan 页。贡献点数卡写死领取 1:1。
  * 卡片高度共用：正文至少两行，同一次轮播跟最高卡对齐。
  */
 export function TokenAboutCarousel({
@@ -250,9 +248,7 @@ export function TokenAboutCarousel({
 } = {}) {
   const isDesktop = !useMobileViewport()
   const { messages: t } = useI18n()
-  const includeContribution = cardKeys.includes('contribution')
-  const ratio = useContributionClaimRatioLabel({ enabled: includeContribution })
-  const tokens = getExchangeTokenContent(t, cardKeys, { ratio })
+  const tokens = getExchangeTokenContent(t, cardKeys)
   const canSlide = tokens.length > 1
 
   return (

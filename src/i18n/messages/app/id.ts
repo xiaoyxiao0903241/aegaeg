@@ -2759,7 +2759,7 @@ const app = defineMessages({
         'Rilis adalah langkah wajib dari terciptanya yield hingga Turbine — tukar waktu untuk pajak lebih rendah dan keluar yang lebih stabil',
       mechanismSteps: [
         { title: 'Klaim hadiah Rebase / DAO', body: 'Yield tercipta' },
-        { title: 'Mekanisme kontribusi {divisor} : 1', body: '50% bakar · 50% ke pool X' },
+        { title: 'Mekanisme kontribusi 1:1', body: '50% bakar · 50% ke pool X' },
         { title: 'Masuk kolam rilis · rilis linear', body: 'Pilih periode 5 / 20 / 40 / 60 hari' },
         { title: 'Klaim masuk Turbine', body: 'Beli 1:1 untuk membuka kuota jual' },
       ],

@@ -2661,7 +2661,7 @@ const app = defineMessages({
         'Release sits between yield creation and Turbine — trade time for a lower tax rate and steadier exits.',
       mechanismSteps: [
         { title: 'Claim Rebase / DAO rewards', body: 'Yield is created' },
-        { title: '{divisor} : 1 contribution', body: '50% burn · 50% into X pool' },
+        { title: '1:1 contribution', body: '50% burn · 50% into X pool' },
         { title: 'Enter release pool', body: 'Choose 5 / 20 / 40 / 60 days' },
         { title: 'Claim into Turbine', body: '1:1 buy to unlock sell quota' },
       ],

@@ -2753,7 +2753,7 @@ const app = defineMessages({
         'Serbest bırakma, getirinin üretilmesi ile Türbin arasında zorunlu adımdır — zamanla vergiyi, ritimle istikrarı takas edin',
       mechanismSteps: [
         { title: 'Rebase / DAO ödüllerini talep et', body: 'Getiri üretilir' },
-        { title: '{divisor} : 1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
+        { title: '1:1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
         {
           title: 'Serbest bırakma havuzuna gir · doğrusal serbest bırakma',
           body: '5 / 20 / 40 / 60 gün seçin',

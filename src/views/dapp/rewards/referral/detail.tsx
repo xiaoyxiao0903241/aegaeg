@@ -16,7 +16,6 @@ import { Tile } from '~/shared/components/tile'
 import { HideZeroToggle } from '~/views/dapp/rewards/primitives'
 import { useRewardsReferral } from '~/views/dapp/rewards/referral/use-referral'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 export function ReferralDetail() {
   const {
@@ -40,8 +39,7 @@ export function ReferralDetail() {
     hideZeroPosition,
     setHideZeroPosition,
   } = useRewardsReferral()
-  const claimRatio = useContributionClaimRatioLabel()
-  const contributionHint = withContributionRatio(referral.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(referral.contributionHint)
 
   const topTiles = [
     {

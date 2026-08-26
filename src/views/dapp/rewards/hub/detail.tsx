@@ -26,7 +26,6 @@ import { useRewardsHub } from '~/views/dapp/rewards/hub/use-hub'
 import { AboutCard } from '~/views/dapp/shared/about-card'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 
 /** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
@@ -83,10 +82,9 @@ type RewardsSummaryItem = RewardsSummaryCardProps & { key: string }
 export function RewardsHubDetail() {
   const { messages: t } = useI18n()
   const statsView = useRewardsHub()
-  const claimRatio = useContributionClaimRatioLabel()
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
-  const contributionHint = withContributionRatio(stats.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(stats.contributionHint)
 
   const tiles: RewardsSummaryItem[] = [
     {
