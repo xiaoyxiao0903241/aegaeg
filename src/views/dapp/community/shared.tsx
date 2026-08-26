@@ -55,7 +55,7 @@ export function readAndClearBindSuccess(flag: { current: boolean }): boolean {
   return ok
 }
 
-/** 把步骤正文里的 `{link}` 换成跳转奖励/共建奖的链接。 */
+/** 把步骤正文里的 `{link}` 换成跳转奖励 Hub 的链接。 */
 export function communityInviteRewardBody(template: string, linkLabel: string): ReactNode {
   const marker = '{link}'
   const idx = template.indexOf(marker)
@@ -63,7 +63,7 @@ export function communityInviteRewardBody(template: string, linkLabel: string): 
   return (
     <>
       {template.slice(0, idx)}
-      <Text as="a" className="text-primary" href={rewardsHashForView('cobuild')}>
+      <Text as="a" className="text-primary" href={rewardsHashForView('hub')}>
         {linkLabel}
       </Text>
       {template.slice(idx + marker.length)}
