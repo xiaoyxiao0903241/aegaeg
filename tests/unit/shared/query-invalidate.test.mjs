@@ -378,3 +378,90 @@ test('invalidateAfterBurnExchange marks contribution and assets reward summary',
   assertInvalidated(queryClient, queryKeys.api.agxContributionSummary)
   queryClient.clear()
 })
+
+const stalePage = { total: 1, items: [{ tx_hash: '0xold' }] }
+
+async function seedFetchablePage(queryClient, rootKey) {
+  const { QueryObserver } = await loadModule('@tanstack/react-query')
+  const queryKey = [...rootKey, 1, 5, null]
+  const queryFn = async () => stalePage
+  const observer = new QueryObserver(queryClient, { queryKey, queryFn })
+  const unsubscribe = observer.subscribe(() => {})
+  await queryClient.prefetchQuery({ queryKey, queryFn })
+  return unsubscribe
+}
+
+function countPrefixRefetches(queryClient, rootKey) {
+  const orig = queryClient.refetchQueries.bind(queryClient)
+  let count = 0
+  queryClient.refetchQueries = (opts) => {
+    const key = opts?.queryKey
+    if (
+      Array.isArray(key) &&
+      rootKey.length <= key.length &&
+      rootKey.every((part, index) => key[index] === part)
+    ) {
+      count += 1
+    }
+    return orig(opts)
+  }
+  return {
+    countOf: () => count,
+    restore: () => {
+      queryClient.refetchQueries = orig
+    },
+  }
+}
+
+async function assertLogsPollAfter(run, rootKey) {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const unsubscribe = await seedFetchablePage(queryClient, rootKey)
+  const spy = countPrefixRefetches(queryClient, rootKey)
+  try {
+    run()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    // invalidateQueries 自带一次 active refetch；短窗 poll 第一轮再拉一次
+    assert.ok(spy.countOf() >= 2, `expected logs poll refetch of ${rootKey.join('/')}`)
+  } finally {
+    unsubscribe()
+    spy.restore()
+    queryClient.clear()
+  }
+}
+
+test('invalidateAfterAssetsClaim polls stake-flow logs', async () => {
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(() => invalidateAfterAssetsClaim(), queryKeys.api.stakeFlowLogsRoot)
+})
+
+test('invalidateAfterReleaseClaim polls release-pool logs', async () => {
+  const { invalidateAfterReleaseClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(() => invalidateAfterReleaseClaim(), queryKeys.api.releasePoolLogsRoot)
+})
+
+test('invalidateAfterExchange polls turbine logs', async () => {
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(() => invalidateAfterExchange(), queryKeys.api.turbineLogsRoot)
+})
+
+test('invalidateAfterBurnExchange polls contribution burn logs', async () => {
+  const { invalidateAfterBurnExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertLogsPollAfter(
+    () => invalidateAfterBurnExchange(),
+    queryKeys.api.agxContributionBurnLogsRoot,
+  )
+})
+
+test('invalidateAfterExchange skips logs poll when no log query is mounted', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterExchange } = await loadModule('/src/shared/api/query/invalidate.ts')
+  const spy = countPrefixRefetches(queryClient, queryKeys.api.turbineLogsRoot)
+  try {
+    invalidateAfterExchange()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    assert.equal(spy.countOf(), 1)
+  } finally {
+    spy.restore()
+    queryClient.clear()
+  }
+})
