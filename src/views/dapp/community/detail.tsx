@@ -9,7 +9,7 @@ import { type ReactNode } from 'react'
 
 import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { interpolate } from '~/i18n/interpolate'
-import { dappAssets } from '~/shared/assets/dapp'
+import { cobuildTierDecoSrc, dappAssets } from '~/shared/assets/dapp'
 import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
@@ -185,7 +185,7 @@ export function CommunityDetail() {
       volume: t.community.cobuildLevel,
       note: statsLoading ? <Skeleton className="h-3.5 w-24" tone="dark" /> : rewardRateNote,
       dark: true,
-      image: dappAssets.communityRankDeco,
+      image: cobuildTierDecoSrc(makingRank, dappAssets.communityRankDeco),
     },
   ]
 

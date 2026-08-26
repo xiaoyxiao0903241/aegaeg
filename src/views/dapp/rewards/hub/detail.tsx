@@ -98,7 +98,7 @@ export function RewardsHubDetail() {
       key: 'tier',
       label: stats.tier,
       mutedBody: statsView.tierLabel,
-      decorationSrc: dappAssets.rewardsHubTierDeco,
+      decorationSrc: statsView.tierDecoSrc,
     },
     {
       key: 'personalHolding',
