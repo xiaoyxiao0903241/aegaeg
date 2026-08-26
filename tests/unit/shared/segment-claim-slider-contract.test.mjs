@@ -34,7 +34,7 @@ test('claimSplitFromReleasePct keeps release + restake = 100', async () => {
 })
 
 test('claim split track and CTA gradient are left restake / right release', async () => {
-  const { claimSplitTrackPct, claimSplitCtaBackgroundImage } = await loadModule(
+  const { claimSplitTrackPct, claimSplitCtaBackgroundImage, claimSplitCtaStyle } = await loadModule(
     '/src/shared/components/claim-split-slider.tsx',
   )
 
@@ -54,4 +54,7 @@ test('claim split track and CTA gradient are left restake / right release', asyn
   const mixed = claimSplitCtaBackgroundImage(40)
   assert.match(mixed, /^linear-gradient\(to right, var\(--primary\) 0%/)
   assert.match(mixed, / 60%, var\(--claim-restake\) 100%\)$/)
+
+  assert.equal(claimSplitCtaStyle(40, true).backgroundImage, mixed)
+  assert.equal(claimSplitCtaStyle(40, false).backgroundImage, 'none')
 })

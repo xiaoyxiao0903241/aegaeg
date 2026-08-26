@@ -4,10 +4,7 @@ import { useState } from 'react'
 
 import { interpolate } from '~/i18n/interpolate'
 import { Button } from '~/shared/components/button'
-import {
-  claimSplitCtaBackgroundImage,
-  ClaimSplitSlider,
-} from '~/shared/components/claim-split-slider'
+import { claimSplitCtaStyle, ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
@@ -101,8 +98,7 @@ function AssetsClaimModalOpen({
     target,
   })
   const { t, amountLabel } = vm
-  // 始终 backgroundImage：两端同色渐变≈纯色，避免 Image↔Color 切换闪烁
-  const ctaBackgroundImage = claimSplitCtaBackgroundImage(vm.releasePct)
+  const splitCtaActive = vm.canConfirm && !vm.submitting
 
   return (
     <ResponsiveDialog
@@ -210,16 +206,19 @@ function AssetsClaimModalOpen({
 
         <MainButton
           className={cn(
-            'min-h-13 w-full border-0 bg-transparent py-2 text-primary-foreground shadow-none',
-            'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
-            // Button 默认 transition background-color；本 CTA 只改 image，关掉色过渡以免端点闪
-            'transition-[border-color,box-shadow,transform,opacity,color]',
+            'min-h-13 w-full py-2',
+            splitCtaActive && [
+              'border-0 bg-transparent text-primary-foreground shadow-none',
+              'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
+              // Button 默认 transition background-color；本 CTA 只改 image，关掉色过渡以免端点闪
+              'transition-[border-color,box-shadow,transform,opacity,color]',
+            ],
           )}
           density="external"
           disabled={!vm.canConfirm}
           loading={vm.submitting}
           onClick={() => void vm.handleConfirm()}
-          style={{ backgroundImage: ctaBackgroundImage }}
+          style={claimSplitCtaStyle(vm.releasePct, splitCtaActive)}
         >
           <span className="flex flex-col items-center gap-0.5 leading-tight">
             <span>{vm.ctaLabel}</span>

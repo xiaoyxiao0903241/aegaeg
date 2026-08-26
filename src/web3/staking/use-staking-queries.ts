@@ -6,7 +6,7 @@ import { type EpochScheduleLabels, formatEpochScheduleLabels } from '~/core/stak
 import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
-import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
+import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
 import { readStakingHubOverview } from '~/web3/staking/staking-hub-overview-read'
 import {
   readBondZapPreflight,
@@ -90,18 +90,6 @@ export function useBondZapPreflightQuery(depository: Address, options?: ChainQue
         depository,
         user,
       }),
-    placeholderData: keepPreviousData,
-  })
-}
-
-/** BondHelper 滑点查询（公开，报价级新鲜度）。 */
-export function useBondHelperSlippageQuery(options?: ChainQueryOptions) {
-  return useChainQuery({
-    queryKey: queryKeys.chain.bondHelperSlippage,
-    scope: 'public',
-    freshness: 'quote',
-    enabled: options?.enabled ?? true,
-    queryFn: () => readBondHelperSlippage(),
     placeholderData: keepPreviousData,
   })
 }

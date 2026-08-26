@@ -10,10 +10,7 @@ import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
-import {
-  claimSplitCtaBackgroundImage,
-  ClaimSplitSlider,
-} from '~/shared/components/claim-split-slider'
+import { claimSplitCtaStyle, ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { MainButton } from '~/shared/components/main-button'
 import { Reveal } from '~/shared/components/reveal'
 import { Segment } from '~/shared/components/segment'
@@ -102,6 +99,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
   const vm = useMixedClaim(view)
   const t = vm.t
+  const splitCtaActive = vm.canConfirm && !vm.submitting
 
   return (
     <TabHeader
@@ -241,24 +239,39 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           <MainButton
             className={cn(
               'min-h-13 py-2! font-normal!',
-              'border-0 bg-transparent text-primary-foreground shadow-none',
-              'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
-              'transition-[border-color,box-shadow,transform,opacity,color]',
+              splitCtaActive && [
+                'border-0 bg-transparent text-primary-foreground shadow-none',
+                'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
+                'transition-[border-color,box-shadow,transform,opacity,color]',
+              ],
             )}
             density="external"
             disabled={!vm.canConfirm}
             loading={vm.submitting}
             onClick={vm.onConfirm}
-            style={{ backgroundImage: claimSplitCtaBackgroundImage(vm.releasePct) }}
+            style={claimSplitCtaStyle(vm.releasePct, splitCtaActive)}
           >
-            <span className="flex flex-col items-start gap-0.5 text-left font-normal! text-white">
-              <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
+            <span
+              className={cn(
+                'flex flex-col items-start gap-0.5 text-left font-normal!',
+                splitCtaActive && 'text-white',
+              )}
+            >
+              <Text
+                as="span"
+                className={cn('leading-4 font-normal!', splitCtaActive && 'text-white')}
+                variant="detail"
+              >
                 {vm.mixed.ctaRestakeLine.replace(
                   '{amount}',
                   `${vm.restakeAmountText} ${vm.mixed.tokenGagx}`,
                 )}
               </Text>
-              <Text as="span" className="leading-4 font-normal! text-white" variant="detail">
+              <Text
+                as="span"
+                className={cn('leading-4 font-normal!', splitCtaActive && 'text-white')}
+                variant="detail"
+              >
                 {vm.mixed.ctaReleaseLine.replace(
                   '{amount}',
                   `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,

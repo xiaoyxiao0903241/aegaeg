@@ -161,10 +161,6 @@ export function BondDock({ kind }: { kind: BondKind }) {
                 ),
               },
               {
-                label: copy.meta.slippage,
-                value: bond.isSlippageLoading ? '0%' : bond.slippageLabel || '0%',
-              },
-              {
                 label: copy.meta.pay,
                 value: bond.amountDisplay ? `${bond.amountDisplay} USD1` : '0 USD1',
               },

@@ -23,7 +23,6 @@ import {
 } from '~/web3/staking/staking-addresses'
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
 import {
-  useBondHelperSlippageQuery,
   useBondZapAgxPreviewQuery,
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
@@ -42,7 +41,7 @@ export type BondWritePresent = {
 /**
  * 债券买入表单核心状态
  *
- * 维护周期 / 数量 / 预检 / 市场 / 滑点等状态，
+ * 维护周期 / 数量 / 预检 / 市场等状态，
  * 通过 evaluateBondZapLive 判定可写条件并执行 zap 提交。
  *
  * @param kind 债券类型：lp / burn
@@ -99,8 +98,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const periodMarketQueries = [market180, market360, market540] as const
 
   const marketQuery = periodMarketQueries[BOND_PERIODS.indexOf(period)]!
-
-  const slippageQuery = useBondHelperSlippageQuery()
 
   const balance =
     decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI
@@ -230,12 +227,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
             ? formatTokenAmount(payoutQuery.data!.netPayout, AGX_DECIMALS, 4)
             : '0'
 
-  const slippageLabel = slippageQuery.isError
-    ? '0'
-    : slippageQuery.data === undefined
-      ? ''
-      : `${slippageQuery.data.toString()}%`
-
   const { setAmount } = amountInput
   const fillMax = () => amountInput.fillPercent(100)
 
@@ -260,14 +251,12 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
     isPayoutQuoting,
-    isSlippageLoading: slippageQuery.isFetching && !slippageLabel && !slippageQuery.isError,
     discountLabel: discountLabel || '0',
     periodDiscounts,
     periodTotalDeposits,
     capUnlimited,
     capLabel: capLabel || '0',
     receiveLabel: receiveLabel || '0',
-    slippageLabel: slippageLabel || '0',
     walletReady,
     canSubmit,
     isSubmitting,

@@ -46,6 +46,23 @@ export function claimSplitCtaBackgroundImage(releasePct: number): string {
 }
 
 /**
+ * Mixed 确认 CTA 的 inline 背景。
+ *
+ * 可点时画分流渐变；禁用 / 加载返回 `none`，让主按钮走 muted，不要压住禁用底。
+ *
+ * @param releasePct 归入释放池的比例（0–100）
+ * @param active 按钮可点且未在提交
+ */
+export function claimSplitCtaStyle(
+  releasePct: number,
+  active: boolean,
+): { backgroundImage: string } {
+  return {
+    backgroundImage: active ? claimSplitCtaBackgroundImage(releasePct) : 'none',
+  }
+}
+
+/**
  * 双色领取分配滑杆
  *
  * 左橙 = 复投；右蓝 = 领取；白色滑块在分界上，内嵌左侧复投%。
