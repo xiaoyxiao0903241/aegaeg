@@ -54,6 +54,7 @@ export function StakingCurveChart() {
         period: result.period,
         principal: result.principal,
         price: result.price,
+        spotUsd: result.spotUsd,
         epochRebasePct: result.epochRebasePct,
         epochsPerDay: result.epochsPerDay,
         xmineDailyPct: result.xmineDailyPct,
@@ -83,16 +84,14 @@ export function StakingCurveChart() {
       {curvePoints.length > 0 && result ? (
         <Chart.Plot
           axisLabels={axisLabels}
+          fit="inset"
           formatTipDate={(time: Time) => {
             if (typeof time !== 'number') return null
             return interpolate(aside.tags.day, { day: time })
           }}
           mark={{
             time: result.days,
-            label:
-              result.days < CALC_MAX_DAYS
-                ? interpolate(aside.tags.day, { day: result.days })
-                : undefined,
+            label: interpolate(aside.tags.day, { day: result.days }),
           }}
           points={curvePoints}
         />

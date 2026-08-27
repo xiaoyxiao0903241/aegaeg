@@ -37,6 +37,7 @@ import {
   morphSeriesFrame,
   sampleSeriesNormalized,
 } from '~/shared/lib/chart-series-morph'
+import { chartVisibleLogicalRange } from '~/shared/lib/chart-visible-range'
 import { cn } from '~/shared/lib/utils'
 import { formatNumber, formatUsd } from '~/shared/presenters/format'
 import { colorHex } from '~/shared/styles/tokens/tokens'
@@ -97,23 +98,22 @@ function pointsSignature(points: readonly ChartPoint[]): string {
 }
 
 /**
- * 把首末点钉在绘图区左右边。
- *
- * LWC 把点画在 bar 槽中心；可见范围用 `0.5..n-1.5` 裁掉半槽。
+ * 按 fit 模式套上时间轴可见范围。
  *
  * @param chart 图表实例
  * @param pointCount 当前序列点数
+ * @param fit 贴边或内缩
+ * @param widthPx 绘图区宽度；inset 用来把像素留白换成逻辑槽
  */
-function fitSeriesFlush(chart: IChartApi, pointCount: number): void {
-  if (pointCount <= 0) return
-  if (pointCount === 1) {
-    chart.timeScale().setVisibleLogicalRange({ from: 0, to: 1 })
-    return
-  }
-  chart.timeScale().setVisibleLogicalRange({
-    from: 0.5,
-    to: pointCount - 1.5,
-  })
+function fitSeriesRange(
+  chart: IChartApi,
+  pointCount: number,
+  fit: 'flush' | 'inset',
+  widthPx: number,
+): void {
+  const range = chartVisibleLogicalRange(pointCount, fit, widthPx)
+  if (range == null) return
+  chart.timeScale().setVisibleLogicalRange(range)
 }
 
 /**
@@ -198,6 +198,7 @@ function Header({ className, children, ...props }: HTMLAttributes<HTMLDivElement
 function Plot({
   axisLabels: axisLabelsProp,
   className,
+  fit = 'flush',
   formatTipDate,
   height = 170,
   mark,
@@ -205,6 +206,8 @@ function Plot({
 }: {
   axisLabels?: readonly string[]
   className?: string
+  /** `flush` 首末贴边；`inset` 按像素留边，首末点能点到。 */
+  fit?: 'flush' | 'inset'
   formatTipDate?: (time: Time) => string | null
   height?: number
   /** 曲线上的测算日标记；无则不画。 */
@@ -234,7 +237,12 @@ function Plot({
   const resolveTipDate = useEffectEvent((time: Time) => {
     return formatTipDate?.(time) ?? tipDateFromTime(time, dateGrain)
   })
-  const isMarkTime = useEffectEvent((time: Time) => mark != null && Number(time) === mark.time)
+  const applyFit = useEffectEvent(() => {
+    const chart = chartRef.current
+    const host = hostRef.current
+    if (!chart || !host) return
+    fitSeriesRange(chart, visualPointsRef.current.length, fit, host.clientWidth)
+  })
   const syncMark = useEffectEvent(() => {
     const chart = chartRef.current
     const series = seriesRef.current
@@ -329,10 +337,6 @@ function Plot({
         setTip(null)
         return
       }
-      if (isMarkTime(param.time)) {
-        setTip(null)
-        return
-      }
       const raw = param.seriesData.get(series)
       const value =
         raw && typeof raw === 'object' && 'value' in raw && typeof raw.value === 'number'
@@ -350,12 +354,14 @@ function Plot({
       const tipW = 112
       const tipH = 48
       const pad = 10
+      const maxLeft = Math.max(0, host.clientWidth - tipW)
       let left = param.point.x + pad
+      if (left > maxLeft) left = param.point.x - tipW - pad
+      left = Math.min(maxLeft, Math.max(0, left))
       let top = param.point.y - tipH - pad
-      if (left + tipW > host.clientWidth) left = param.point.x - tipW - pad
       if (top < 0) top = param.point.y + pad
       setTip({
-        left: Math.max(0, left),
+        left,
         top: Math.max(0, top),
         dateLabel,
         valueLabel: tipValueLabel(value),
@@ -367,7 +373,11 @@ function Plot({
     const ro = new ResizeObserver(() => {
       if (!hostRef.current || !chartRef.current) return
       chartRef.current.applyOptions({ width: hostRef.current.clientWidth })
-      requestAnimationFrame(() => syncMark())
+      applyFit()
+      requestAnimationFrame(() => {
+        applyFit()
+        syncMark()
+      })
     })
     ro.observe(host)
 
@@ -402,17 +412,17 @@ function Plot({
     const paint = (next: readonly { time: number; value: number }[], pinMark = false) => {
       const drawn = densifyForPaint(next)
       series.setData(drawn.map((p) => ({ time: p.time as Time, value: p.value })))
-      // setData 后布局可能异步校正；下一帧再钉边，避免被内部 range 覆盖
-      fitSeriesFlush(chart, drawn.length)
-      requestAnimationFrame(() => {
-        if (seriesRef.current !== series || chartRef.current !== chart) return
-        fitSeriesFlush(chart, drawn.length)
-        if (pinMark) syncMark()
-      })
       visualPointsRef.current = drawn.map((p) => ({
         time: p.time as UTCTimestamp,
         value: p.value,
       }))
+      // setData 后布局可能异步校正；下一帧再钉边，避免被内部 range 覆盖
+      applyFit()
+      requestAnimationFrame(() => {
+        if (seriesRef.current !== series || chartRef.current !== chart) return
+        applyFit()
+        if (pinMark) syncMark()
+      })
     }
 
     const commit = (next: readonly { time: number; value: number }[]) => {
@@ -457,6 +467,12 @@ function Plot({
   }, [points, plotEpoch])
 
   useEffect(() => {
+    applyFit()
+    const id = requestAnimationFrame(() => applyFit())
+    return () => cancelAnimationFrame(id)
+  }, [fit])
+
+  useEffect(() => {
     syncMark()
   }, [mark?.time, plotEpoch])
 
@@ -464,9 +480,15 @@ function Plot({
 
   return (
     <div className={cn('grid w-full gap-2', className)}>
-      <div className="relative w-full overflow-hidden rounded-md" style={{ height }}>
+      <div
+        className={cn(
+          'relative w-full rounded-md',
+          fit === 'inset' ? 'overflow-visible' : 'overflow-hidden',
+        )}
+        style={{ height }}
+      >
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 overflow-hidden rounded-md"
           ref={hostRef}
           style={{
             backgroundImage: DOT_BG,
@@ -477,7 +499,7 @@ function Plot({
         {tip ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute z-10 min-w-26 rounded-md bg-card px-2.5 py-1.5 shadow-menu"
+            className="pointer-events-none absolute z-20 min-w-26 rounded-md bg-card px-2.5 py-1.5 shadow-menu"
             style={{ left: tip.left, top: tip.top }}
           >
             <Text as="p" className="m-0" tone="muted-foreground" variant="support">
@@ -495,7 +517,7 @@ function Plot({
               className="pointer-events-none absolute z-10 size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-white bg-primary"
               style={{ left: markPos.x, top: markPos.y }}
             />
-            {mark.label ? (
+            {mark.label && !tip ? (
               <Text
                 as="span"
                 className="pointer-events-none absolute z-10 rounded-full bg-card px-2 py-0.5 font-semibold whitespace-nowrap text-primary tabular-nums shadow-menu"

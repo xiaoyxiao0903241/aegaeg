@@ -4,7 +4,6 @@ import test from 'node:test'
 import {
   baseDailyPctFromEpoch,
   buildCalcYieldCurvePoints,
-  CALC_AGX_COST_USD,
   CALC_MAX_DAYS,
   computeCalcDay,
   EPOCH_SCHEDULE_EMPTY,
@@ -122,6 +121,7 @@ test('computeCalcDay: stake 180d uses handbook 10% bonus, per-epoch compound', (
     amount: 1000,
     days: 180,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -144,6 +144,7 @@ test('computeCalcDay: LP bond 180d uses handbook discountRateBP 8500', () => {
     amount: 65_000,
     days: 180,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -163,6 +164,7 @@ test('computeCalcDay: per-epoch compound, not daily 0.82%', () => {
     amount: 100,
     days: 1,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.5,
     epochsPerDay: 2,
   })
@@ -179,6 +181,7 @@ test('computeCalcDay: missing epochsPerDay → zero rewards, release still appli
     amount: 1000,
     days: 90,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: null,
   })
@@ -194,6 +197,7 @@ test('computeCalcDay: lock day 90 of 180 only half principal in sell', () => {
     amount: 1000,
     days: 90,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -204,6 +208,7 @@ test('computeCalcDay: lock day 90 of 180 only half principal in sell', () => {
     amount: 1000,
     days: 1,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -217,6 +222,7 @@ test('computeCalcDay: xmine daily X from on-chain daily pct, values at path pric
     amount: 100,
     days: 2,
     pd: 0.02,
+    spotUsd: 65,
     epochRebasePct: null,
     epochsPerDay: null,
     xmineDailyPct: 0.1,
@@ -224,7 +230,7 @@ test('computeCalcDay: xmine daily X from on-chain daily pct, values at path pric
   // flat AGX $65, flat X $0.02 → daily X = 100 * 65 * 0.001 / 0.02 = 325
   assert.ok(Math.abs(snap.rewards - 650) < 1e-6)
   assert.ok(snap.rewardsUsd > 0)
-  assert.equal(snap.costUsd, 100 * CALC_AGX_COST_USD)
+  assert.equal(snap.costUsd, 6500)
 })
 
 test('findBreakEvenDay: locked 180 with Pd=P0 turns positive before maturity', () => {
@@ -233,6 +239,7 @@ test('findBreakEvenDay: locked 180 with Pd=P0 turns positive before maturity', (
     period: '180',
     amount: 1000,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -243,6 +250,7 @@ test('findBreakEvenDay: locked 180 with Pd=P0 turns positive before maturity', (
     amount: 1000,
     days: day - 1,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -252,6 +260,7 @@ test('findBreakEvenDay: locked 180 with Pd=P0 turns positive before maturity', (
     amount: 1000,
     days: day,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -272,6 +281,7 @@ test('buildCalcYieldCurvePoints spans day 1..CALC_MAX_DAYS as profit', () => {
     period: 'liquid',
     principal: 1,
     price: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
@@ -288,6 +298,7 @@ test('buildCalcYieldCurvePoints: missing epochsPerDay → release-only profit (n
     period: 'liquid',
     principal: 100,
     price: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     maxDays: 3,
   })
@@ -297,11 +308,75 @@ test('buildCalcYieldCurvePoints: missing epochsPerDay → release-only profit (n
     amount: 100,
     days: 1,
     pd: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: null,
   })
   assert.equal(day1.rewards, 0)
   assert.ok(Math.abs((points[0]?.profitUsd ?? 0) - day1.profitUsd) < 1e-9)
+})
+
+test('computeCalcDay: stake cost uses spotUsd, not a hardcoded 65', () => {
+  const even = computeCalcDay({
+    product: 'stake',
+    period: 'liquid',
+    amount: 1000,
+    days: 1,
+    pd: 80,
+    spotUsd: 80,
+    epochRebasePct: 0,
+    epochsPerDay: 2,
+  })
+  assert.equal(even.costUsd, 80_000)
+  assert.equal(even.sellUsd, 80_000)
+  assert.equal(even.profitUsd, 0)
+
+  const cheaperExit = computeCalcDay({
+    product: 'stake',
+    period: 'liquid',
+    amount: 1000,
+    days: 1,
+    pd: 65,
+    spotUsd: 80,
+    epochRebasePct: 0,
+    epochsPerDay: 2,
+  })
+  assert.equal(cheaperExit.costUsd, 80_000)
+  assert.equal(cheaperExit.sellUsd, 65_000)
+  assert.equal(cheaperExit.profitUsd, -15_000)
+})
+
+test('computeCalcDay: missing spotUsd fail-closes instead of falling back to 65', () => {
+  const snap = computeCalcDay({
+    product: 'stake',
+    period: 'liquid',
+    amount: 1000,
+    days: 1,
+    pd: 80,
+    spotUsd: 0,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+  })
+  assert.equal(snap.principalAgx, 0)
+  assert.equal(snap.costUsd, 0)
+  assert.equal(snap.rewards, 0)
+})
+
+test('computeCalcDay: xmine daily X values AGX at spotUsd', () => {
+  const snap = computeCalcDay({
+    product: 'xmine',
+    period: 'liquid',
+    amount: 100,
+    days: 2,
+    pd: 0.02,
+    spotUsd: 80,
+    epochRebasePct: null,
+    epochsPerDay: null,
+    xmineDailyPct: 0.1,
+  })
+  // flat AGX $80, flat X $0.02 → daily X = 100 * 80 * 0.001 / 0.02 = 400
+  assert.ok(Math.abs(snap.rewards - 800) < 1e-6)
+  assert.equal(snap.costUsd, 8000)
 })
 
 test('buildCalcYieldCurvePoints: locked 180 profit is negative early, higher at maturity', () => {
@@ -310,6 +385,7 @@ test('buildCalcYieldCurvePoints: locked 180 profit is negative early, higher at 
     period: '180',
     principal: 1000,
     price: 65,
+    spotUsd: 65,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
     maxDays: 180,

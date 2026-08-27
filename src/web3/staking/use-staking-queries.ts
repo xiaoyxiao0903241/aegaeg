@@ -7,7 +7,11 @@ import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
-import { readStakingHubOverview } from '~/web3/staking/staking-hub-overview-read'
+import { readCalcLiveRates } from '~/web3/staking/calc-rates-read'
+import {
+  readLatestSagxRebaseRate,
+  readStakingHubOverview,
+} from '~/web3/staking/staking-hub-overview-read'
 import {
   readBondZapPreflight,
   readStakeOpenPreflight,
@@ -15,7 +19,7 @@ import {
 } from '~/web3/staking/staking-read'
 import { readXmineOverview } from '~/web3/staking/xmine-overview-read'
 
-/** 质押中心页公开概览查询：质押池 / 流通 / 国库 / 销毁 / rebase，无钱包依赖。 */
+/** 质押中心页公开概览查询：质押池 / 流通 / 国库 / 销毁 / epoch，无钱包依赖。 */
 export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.stakingHubOverview,
@@ -23,6 +27,30 @@ export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
     freshness: 'balances',
     enabled: options?.enabled ?? true,
     queryFn: () => readStakingHubOverview(),
+    placeholderData: keepPreviousData,
+  })
+}
+
+/** 计算器利率查询：当前 epoch rebase 与每日次数，不拉 Hub 整包。 */
+export function useCalcLiveRatesQuery(options?: ChainQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.calcLiveRates,
+    scope: 'public',
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: () => readCalcLiveRates(),
+    placeholderData: keepPreviousData,
+  })
+}
+
+/** 最近一次 sAGX rebase 率；与 Hub 概览拆开，避免探测拖住倒计时。 */
+export function useLatestSagxRebaseRateQuery(options?: ChainQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.sagxLatestRebase,
+    scope: 'public',
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: () => readLatestSagxRebaseRate(),
     placeholderData: keepPreviousData,
   })
 }

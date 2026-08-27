@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 import { type CalcProduct } from '~/core/staking/build-calc-estimate'
 import { type StakePeriod } from '~/core/staking/staking-period'
 import { CALC_MAX_DAYS, CALC_X_START_USD } from '~/core/staking/staking-yield'
@@ -22,6 +24,11 @@ import { useCalcEstimateLive } from '~/views/dapp/staking/calc/use-calc'
 
 const priceBox = amountBox()
 
+function formatSpotPriceDraft(n: number): string {
+  if (!Number.isFinite(n) || n <= 0) return ''
+  return formatNumber(n, { digits: 2, trimZeros: true }).replace(/,/g, '')
+}
+
 /**
  * 收益率计算器（左栏表单）
  *
@@ -33,7 +40,27 @@ export function CalcDock() {
   const setView = useStakingViewStore((s) => s.setView)
   const spotUsd = useAgxPriceUsd()
   const s = useCalcEstimateStore()
+  const setPrice = useCalcEstimateStore((st) => st.setPrice)
+  const setSpotUsd = useCalcEstimateStore((st) => st.setSpotUsd)
   useCalcEstimateLive()
+  /** 每种产品只自动灌一次到期价；用户清空后不再写回。 */
+  const filledPriceForProduct = useRef<CalcProduct | null>(null)
+
+  useEffect(() => {
+    setSpotUsd(spotUsd != null && spotUsd > 0 ? spotUsd : null)
+  }, [setSpotUsd, spotUsd])
+
+  useEffect(() => {
+    if (s.product === 'xmine') {
+      filledPriceForProduct.current = 'xmine'
+      return
+    }
+    if (filledPriceForProduct.current === s.product) return
+    if (spotUsd == null || !(spotUsd > 0)) return
+    filledPriceForProduct.current = s.product
+    if (s.price.trim() !== '') return
+    setPrice(formatSpotPriceDraft(spotUsd))
+  }, [s.price, s.product, setPrice, spotUsd])
 
   const productOptions: ReadonlyArray<{ label: string; value: CalcProduct }> = [
     { label: t.staking.calc.products.stake, value: 'stake' },
@@ -75,7 +102,8 @@ export function CalcDock() {
     s.product === 'xmine'
       ? s.rates?.xmineDailyPct != null
       : s.rates?.epochRebasePct != null && s.rates?.epochsPerDay != null
-  const canCommit = amountN > 0 && priceN > 0 && ratesOk
+  const spotReady = s.spotUsd != null && s.spotUsd > 0
+  const canCommit = amountN > 0 && priceN > 0 && ratesOk && spotReady
 
   return (
     <TabHeader

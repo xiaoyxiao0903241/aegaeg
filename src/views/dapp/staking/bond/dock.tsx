@@ -20,7 +20,10 @@ import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import {
+  useLatestSagxRebaseRateQuery,
+  useStakingHubOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
 
 function parseDiscountPct(label: string): number | null {
   const n = Number(label.replace(/%$/, '').trim())
@@ -56,7 +59,8 @@ export function BondDock({ kind }: { kind: BondKind }) {
   } = useBondDock(kind)
   const spotUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
-  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data)
   const epochsPerDay = overviewQuery.data?.epochsPerDay
   const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(

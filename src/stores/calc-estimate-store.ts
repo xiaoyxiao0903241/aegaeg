@@ -6,12 +6,7 @@ import {
   type CalcProduct,
 } from '~/core/staking/build-calc-estimate'
 import type { StakePeriod } from '~/core/staking/staking-period'
-import {
-  CALC_AGX_COST_USD,
-  CALC_DEFAULT_DAYS,
-  CALC_MAX_DAYS,
-  CALC_X_START_USD,
-} from '~/core/staking/staking-yield'
+import { CALC_DEFAULT_DAYS, CALC_MAX_DAYS, CALC_X_START_USD } from '~/core/staking/staking-yield'
 
 export type { CalcEstimateResult, CalcProduct } from '~/core/staking/build-calc-estimate'
 
@@ -26,6 +21,8 @@ type CalcEstimateStore = {
   period: StakePeriod
   amount: string
   price: string
+  /** AGX 投入现价；未灌入或失效时为 null。 */
+  spotUsd: number | null
   days: number
   /** 最近一次链上利率；点「计算」时写入快照。 */
   rates: LiveRates | null
@@ -34,6 +31,7 @@ type CalcEstimateStore = {
   setPeriod: (period: StakePeriod) => void
   setAmount: (amount: string) => void
   setPrice: (price: string) => void
+  setSpotUsd: (spotUsd: number | null) => void
   setDays: (days: number) => void
   /**
    * 灌链上利率。利率就绪且尚无结果时提交默认表单快照；之后只由「计算」刷新。
@@ -56,6 +54,7 @@ function snapshotFrom(s: {
   period: StakePeriod
   amount: string
   price: string
+  spotUsd: number | null
   days: number
   rates: LiveRates | null
 }): CalcEstimateResult {
@@ -65,6 +64,7 @@ function snapshotFrom(s: {
     period: s.period,
     amount: s.amount,
     price: s.price,
+    spotUsd: s.spotUsd ?? 0,
     days: s.days,
     epochRebasePct: rates?.epochRebasePct ?? null,
     xmineDailyPct: s.product === 'xmine' ? (rates?.xmineDailyPct ?? null) : null,
@@ -85,6 +85,19 @@ function ratesReady(product: CalcProduct, rates: LiveRates | null): boolean {
   )
 }
 
+function formReady(s: {
+  product: CalcProduct
+  amount: string
+  price: string
+  spotUsd: number | null
+  rates: LiveRates | null
+}): boolean {
+  const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
+  const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
+  const spotOk = s.spotUsd != null && Number.isFinite(s.spotUsd) && s.spotUsd > 0
+  return amountN > 0 && priceN > 0 && spotOk && ratesReady(s.product, s.rates)
+}
+
 /**
  * 计算器表单 + 右侧估算结果；左右栏共享，不涉及链上写。
  * UI 直订本 store（字段同名），禁止再包 rename 层。
@@ -93,7 +106,9 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
   product: 'stake',
   period: 'liquid',
   amount: '1',
-  price: String(CALC_AGX_COST_USD),
+  /** AGX 产品空着等现价灌入；挖矿用算法起点价。 */
+  price: '',
+  spotUsd: null,
   days: CALC_DEFAULT_DAYS,
   rates: null,
   result: null,
@@ -102,29 +117,42 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
     set({
       product,
       period: defaultPeriodFor(product),
-      price: xmine ? String(CALC_X_START_USD) : String(CALC_AGX_COST_USD),
+      price: xmine ? String(CALC_X_START_USD) : '',
     })
   },
   setPeriod: (period) => set({ period }),
   setAmount: (amount) => set({ amount }),
-  setPrice: (price) => set({ price }),
+  setPrice: (price) => {
+    const s = get()
+    const next = { ...s, price }
+    if (s.result == null && formReady(next)) {
+      set({ price, result: snapshotFrom(next) })
+      return
+    }
+    set({ price })
+  },
+  setSpotUsd: (spotUsd) => {
+    const s = get()
+    const next = { ...s, spotUsd }
+    if (s.result == null && formReady(next)) {
+      set({ spotUsd, result: snapshotFrom(next) })
+      return
+    }
+    set({ spotUsd })
+  },
   setDays: (days) => set({ days: Math.min(CALC_MAX_DAYS, Math.max(1, days)) }),
   liveSync: (rates) => {
     const s = get()
-    const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
-    const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
-    const canBuild = amountN > 0 && priceN > 0 && ratesReady(s.product, rates)
-    if (canBuild && s.result == null) {
-      set({ rates, result: snapshotFrom({ ...s, rates }) })
+    const next = { ...s, rates }
+    if (s.result == null && formReady(next)) {
+      set({ rates, result: snapshotFrom(next) })
       return
     }
     set({ rates })
   },
   commit: () => {
     const s = get()
-    const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
-    const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
-    if (!ratesReady(s.product, s.rates) || !(amountN > 0 && priceN > 0)) return
+    if (!formReady(s)) return
     set({ result: snapshotFrom(s) })
   },
 }))

@@ -36,7 +36,10 @@ import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
 import { readStakePositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import {
+  useLatestSagxRebaseRateQuery,
+  useStakingHubOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 
@@ -62,6 +65,7 @@ export function useStakeDock() {
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useDappHost()
   const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
 
   const stake = useStakeSession(sessionReady, {
     onOpenSuccess: () => {
@@ -104,7 +108,7 @@ export function useStakeDock() {
       ? interpolate(quotaCopy, { quota: quotaLabel })
       : writeBlockHint(stake.blockReason, t.staking.blocked)
 
-  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
   const yieldMeta = {
     baseDaily: formatYieldPct(baseDaily),
@@ -158,6 +162,7 @@ export function useStakeDetail() {
   const { sessionReady, walletReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
   const [recordsPage, setRecordsPage] = useState(1)
   const recordsQuery = useStakeFlowPositions(tablePageQuery(recordsPage), sessionReady)
   const stakeQuery = useChainQuery({
@@ -168,7 +173,7 @@ export function useStakeDetail() {
   const poolAgxWei = overviewQuery.data?.poolAgxBalance
   const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : 0
   const epochNumber = overviewQuery.data?.epochNumber ?? ZERO_BI
-  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatRebasePct(rebaseQuery.data)
 
   const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {

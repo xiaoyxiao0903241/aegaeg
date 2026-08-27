@@ -9,9 +9,6 @@ export const CALC_MAX_DAYS = 540
 /** 计算器滑杆默认落点（天）。 */
 export const CALC_DEFAULT_DAYS = 100
 
-/** 计算器成本计价基准价（USD / AGX）；投入按此计价，不跟用户到期价走。 */
-export const CALC_AGX_COST_USD = 65
-
 /** X 挖矿价格轨迹起点（USD）；算法常量，非链上参数。 */
 export const CALC_X_START_USD = 0.02
 
@@ -24,7 +21,7 @@ export type CalcYieldCurvePoint = {
 export type CalcDaySnapshot = {
   /** 折算后的 AGX 本金（债券为折扣后份额）。 */
   principalAgx: number
-  /** 总投入（质押/挖矿 = 数量 × $65；债券 = 实付 USD1）。 */
+  /** 总投入（质押/挖矿 = 数量 × AGX 现价；债券 = 实付 USD1）。 */
   costUsd: number
   releasedAgx: number
   /** 净收益数量（AGX 或 X），不扣 1/6。 */
@@ -257,8 +254,8 @@ export function releasedPrincipal(amount: number, days: number, lockDays: number
 }
 
 /**
- * X 挖矿逐日路径：AGX 按成本基准价，X 价从起点拟合到到期价。
- * 当日产出 = 本金 × AGX 基准价 × 日利率 / 当日 X 价。
+ * X 挖矿逐日路径：AGX 按投入现价，X 价从起点拟合到到期价。
+ * 当日产出 = 本金 × AGX 现价 × 日利率 / 当日 X 价。
  */
 function xminePath(args: {
   amount: number
@@ -266,6 +263,7 @@ function xminePath(args: {
   pdX: number
   maxDay: number
   dailyValueRate: number
+  spotUsd: number
 }): { px: number[]; cumX: number[] } {
   const d0 = Math.max(1, args.horizonDays)
   const startX = CALC_X_START_USD
@@ -273,10 +271,9 @@ function xminePath(args: {
   const px = [startX]
   const cumX = [0]
   let cum = 0
-  const agxUsd = CALC_AGX_COST_USD
   for (let t = 1; t <= args.maxDay; t += 1) {
     const pxT = startX * g ** t
-    cum += (args.amount * agxUsd * args.dailyValueRate) / Math.max(pxT, 1e-12)
+    cum += (args.amount * args.spotUsd * args.dailyValueRate) / Math.max(pxT, 1e-12)
     px.push(pxT)
     cumX.push(cum)
   }
@@ -300,15 +297,16 @@ function emptySnap(costUsd: number): CalcDaySnapshot {
 /**
  * 第 d 天测算：复利按 epoch、加成按单利毛 Rebase、本金线性释放。
  *
- * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (成本价 × discountRateBP/10000)。
- * 成本按基准价 $65，卖出按用户到期价。利率或日频缺省时收益为 0。
- * X 挖矿按当日 AGX 价值 × 链上日利率折成 X。
+ * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (现价 × discountRateBP/10000)。
+ * 投入按 AGX 现价，卖出按用户到期价。现价非法时 fail-closed。利率或日频缺省时收益为 0。
+ * X 挖矿按当日 AGX 现价 × 链上日利率折成 X。
  *
  * @param args.product 产品
  * @param args.period 周期
  * @param args.amount 质押 AGX / 挖矿 gAGX / 债券购买 USD1
  * @param args.days 测算天数
  * @param args.pd 到期 AGX 价（挖矿则为到期 X 价）
+ * @param args.spotUsd AGX 投入现价；≤0 时不计
  * @param args.epochRebasePct 链上单 epoch rebase（百分比）；缺则收益为 0
  * @param args.epochsPerDay 链上每日 epoch 数；缺则收益为 0
  * @param args.xmineDailyPct 链上 X 挖矿日利率（百分比）；缺则挖矿收益为 0
@@ -324,6 +322,7 @@ export function computeCalcDay(args: {
   amount: number
   days: number
   pd: number
+  spotUsd: number
   epochRebasePct: number | null
   epochsPerDay: number | null
   xmineDailyPct?: number | null
@@ -331,13 +330,15 @@ export function computeCalcDay(args: {
 }): CalcDaySnapshot {
   const days = Math.min(Math.max(0, Math.round(args.days)), CALC_MAX_DAYS)
   const pd = args.pd
+  const spotUsd = args.spotUsd
+  const spotOk = Number.isFinite(spotUsd) && spotUsd > 0
   const isBond = args.product === 'lpbond' || args.product === 'burnbond'
   const lock = calcLockDays(args.period)
 
   if (args.product === 'xmine') {
     const A = args.amount
-    const costUsd = A > 0 ? A * CALC_AGX_COST_USD : 0
-    if (!(A > 0) || !(days >= 1) || !(pd > 0)) return emptySnap(costUsd)
+    const costUsd = A > 0 && spotOk ? A * spotUsd : 0
+    if (!(A > 0) || !(days >= 1) || !(pd > 0) || !spotOk) return emptySnap(costUsd)
     const dailyPct = args.xmineDailyPct
     const dailyValueRate =
       dailyPct != null && Number.isFinite(dailyPct) && dailyPct >= 0 ? dailyPct / 100 : 0
@@ -348,10 +349,11 @@ export function computeCalcDay(args: {
       pdX: pd,
       maxDay: days,
       dailyValueRate,
+      spotUsd,
     })
     const releasedAgx = releasedPrincipal(A, days, lock)
     const rewards = path.cumX[days] ?? 0
-    const releasedUsd = releasedAgx * CALC_AGX_COST_USD
+    const releasedUsd = releasedAgx * spotUsd
     const rewardsUsd = rewards * (path.px[days] ?? pd)
     const sellUsd = releasedUsd + rewardsUsd
     const profitUsd = sellUsd - costUsd
@@ -373,14 +375,16 @@ export function computeCalcDay(args: {
   if (isBond) {
     const discountBP = handbookBondDiscountRateBP(args.period)
     costUsd = args.amount > 0 ? args.amount : 0
-    if (!(args.amount > 0) || discountBP == null || !(discountBP > 0)) return emptySnap(costUsd)
-    principalAgx = args.amount / (CALC_AGX_COST_USD * (discountBP / 10_000))
+    if (!(args.amount > 0) || discountBP == null || !(discountBP > 0) || !spotOk) {
+      return emptySnap(costUsd)
+    }
+    principalAgx = args.amount / (spotUsd * (discountBP / 10_000))
   } else {
     principalAgx = args.amount > 0 ? args.amount : 0
-    costUsd = principalAgx * CALC_AGX_COST_USD
+    costUsd = spotOk ? principalAgx * spotUsd : 0
   }
 
-  if (!(principalAgx > 0) || !(days >= 1) || !(pd > 0)) return emptySnap(costUsd)
+  if (!(principalAgx > 0) || !(days >= 1) || !(pd > 0) || !spotOk) return emptySnap(costUsd)
 
   const releasedAgx = releasedPrincipal(principalAgx, days, lock)
   let rewards = 0
@@ -444,6 +448,7 @@ export function findBreakEvenDay(
  * @param args.period 产品周期
  * @param args.principal 本金（stake/xmine 为代币量；债券为 USD1）
  * @param args.price 到期 AGX 价（挖矿则为到期 X 价）
+ * @param args.spotUsd AGX 投入现价
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
  * @param args.epochsPerDay 链上每日 epoch 数；缺 → 零利息曲线
  * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益
@@ -456,6 +461,7 @@ export function buildCalcYieldCurvePoints(args: {
   period: StakePeriod
   principal: number
   price: number
+  spotUsd: number
   epochRebasePct: number | null
   epochsPerDay?: number | null
   xmineDailyPct?: number | null
@@ -472,6 +478,7 @@ export function buildCalcYieldCurvePoints(args: {
       amount: args.principal,
       days: day,
       pd: args.price,
+      spotUsd: args.spotUsd,
       epochRebasePct: args.epochRebasePct,
       epochsPerDay: args.epochsPerDay ?? null,
       xmineDailyPct: args.xmineDailyPct,

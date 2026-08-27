@@ -35,7 +35,7 @@ import {
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import { useLatestSagxRebaseRateQuery } from '~/web3/staking/use-staking-queries'
 
 /**
  * 债券视图：组合表单状态、CTA 文案与提交入口
@@ -117,7 +117,7 @@ export function useBondDetail(kind: BondKind) {
   const { sessionReady, walletReady } = useDappHost()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
   const priceUsd = useAgxPriceUsd()
-  const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
   const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
   const market180 = useChainQuery({
     queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),
@@ -149,7 +149,7 @@ export function useBondDetail(kind: BondKind) {
   const burnPurchases = useBondFlowBurnPurchases(pageParams, sessionReady && kind === 'burn')
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
 
-  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatRebasePct(rebaseQuery.data)
 
   const totalDeposit = [market180.data, market360.data, market540.data].reduce(
     (sum, m) => sum + (m?.totalDeposit ?? ZERO_BI),

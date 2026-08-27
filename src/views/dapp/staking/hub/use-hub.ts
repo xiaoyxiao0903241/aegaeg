@@ -30,7 +30,10 @@ import {
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import {
+  useLatestSagxRebaseRateQuery,
+  useStakingHubOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
 const BONUS_EMPTY = `${formatNumber(0, { digits: 0, trimZeros: true })}%`
@@ -108,6 +111,7 @@ export function useStakingHubDetail() {
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
   const agxPriceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
   const stakersQuery = useStakeAddressCount(sessionReady)
   const bondKind = tableSeg === 'lpbond' ? 'lp' : tableSeg === 'burnbond' ? 'burn' : null
   const depositoryAddress =
@@ -156,7 +160,7 @@ export function useStakingHubDetail() {
       : formatUsd(null)
   const treasuryDisplay = formatTreasuryUsd1(overviewQuery.data?.totalReserves, agxPriceUsd)
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
-  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data)
   const rebaseLabel = formatYieldPct(epochPct)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
 
