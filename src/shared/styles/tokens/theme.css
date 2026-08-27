@@ -52,8 +52,8 @@
   --ring: var(--primary);
   --success: #2bab6a;
   --success: oklch(69.46% 0.1551 159.22);
-  --claim-restake: #4a7bec;
-  --claim-restake: oklch(60.77% 0.1787 264.16);
+  --claim: #4a7bec;
+  --claim: oklch(60.77% 0.1787 264.16);
   --dark: #1d212b;
   --dark: oklch(24.82% 0.0200 267.87);
   --dark-panel: #1c2234;
@@ -266,7 +266,7 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-success: var(--success);
-  --color-claim-restake: var(--claim-restake);
+  --color-claim: var(--claim);
   --color-dark: var(--dark);
   --color-dark-panel: var(--dark-panel);
   --color-dark-globe: var(--dark-globe);
@@ -321,8 +321,6 @@
   --dapp-h5-gradient-top: var(--app-h5-gradient-top);
   /* Home/DApp body wash — was bare oklch in shared.css */
   --app-body-wash: oklch(96% 0.028 45 / 70%);
-  /* Claim Mixed restake rail — alias of semantic claim-restake (tokens.json → --claim-restake) */
-  --app-claim-restake: var(--claim-restake);
 
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;

@@ -85,7 +85,7 @@ export function StakingHubDetail() {
     periodRows.push([
       row.period,
       cells.baseDaily,
-      <Text as="span" className="font-bold" key="bonus" tone="claim-restake" variant="copy">
+      <Text as="span" className="font-bold" key="bonus" tone="claim" variant="copy">
         {cells.bonus}
       </Text>,
       cells.periodYield,

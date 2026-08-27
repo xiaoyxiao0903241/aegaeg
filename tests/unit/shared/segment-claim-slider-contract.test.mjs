@@ -44,7 +44,7 @@ test('claim split track and CTA gradient are left restake / right release', asyn
 
   assert.equal(
     claimSplitCtaBackgroundImage(100),
-    'linear-gradient(to right, var(--claim-restake), var(--claim-restake))',
+    'linear-gradient(to right, var(--claim), var(--claim))',
   )
   assert.equal(
     claimSplitCtaBackgroundImage(0),
@@ -53,7 +53,7 @@ test('claim split track and CTA gradient are left restake / right release', asyn
 
   const mixed = claimSplitCtaBackgroundImage(40)
   assert.match(mixed, /^linear-gradient\(to right, var\(--primary\) 0%/)
-  assert.match(mixed, / 60%, var\(--claim-restake\) 100%\)$/)
+  assert.match(mixed, / 60%, var\(--claim\) 100%\)$/)
 
   assert.equal(claimSplitCtaStyle(40, true).backgroundImage, mixed)
   assert.equal(claimSplitCtaStyle(40, false).backgroundImage, 'none')

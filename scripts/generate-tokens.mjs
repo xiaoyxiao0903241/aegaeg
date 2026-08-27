@@ -268,8 +268,6 @@ function staticEngineeringVars() {
   --dapp-h5-gradient-top: var(--app-h5-gradient-top);
   /* Home/DApp body wash — was bare oklch in shared.css */
   --app-body-wash: oklch(96% 0.028 45 / 70%);
-  /* Claim Mixed restake rail — alias of semantic claim-restake (tokens.json → --claim-restake) */
-  --app-claim-restake: var(--claim-restake);
 
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;

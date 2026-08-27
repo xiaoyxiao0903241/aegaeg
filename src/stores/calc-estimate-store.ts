@@ -8,12 +8,12 @@ import {
 import type { StakePeriod } from '~/core/staking/staking-period'
 import { CALC_DEFAULT_DAYS, CALC_MAX_DAYS, CALC_X_START_USD } from '~/core/staking/staking-yield'
 
-export type { CalcEstimateResult, CalcProduct } from '~/core/staking/build-calc-estimate'
-
 type LiveRates = {
   epochRebasePct: number | null
   xmineDailyPct: number | null
   epochsPerDay: number | null
+  /** 链上债券成交价率 BPS；非债券为 null。 */
+  discountRateBP: number | null
 }
 
 type CalcEstimateStore = {
@@ -69,6 +69,8 @@ function snapshotFrom(s: {
     epochRebasePct: rates?.epochRebasePct ?? null,
     xmineDailyPct: s.product === 'xmine' ? (rates?.xmineDailyPct ?? null) : null,
     epochsPerDay: rates?.epochsPerDay ?? null,
+    discountRateBP:
+      s.product === 'lpbond' || s.product === 'burnbond' ? (rates?.discountRateBP ?? null) : null,
   })
 }
 
@@ -77,12 +79,20 @@ function ratesReady(product: CalcProduct, rates: LiveRates | null): boolean {
   if (product === 'xmine') {
     return rates.xmineDailyPct != null && Number.isFinite(rates.xmineDailyPct)
   }
-  return (
+  const rebaseOk =
     rates.epochRebasePct != null &&
     Number.isFinite(rates.epochRebasePct) &&
     rates.epochsPerDay != null &&
     rates.epochsPerDay > 0
-  )
+  if (!rebaseOk) return false
+  if (product === 'lpbond' || product === 'burnbond') {
+    return (
+      rates.discountRateBP != null &&
+      Number.isFinite(rates.discountRateBP) &&
+      rates.discountRateBP > 0
+    )
+  }
+  return true
 }
 
 function formReady(s: {

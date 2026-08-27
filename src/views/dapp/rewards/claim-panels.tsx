@@ -187,7 +187,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
             <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
               {interpolate(vm.mixed.restakePct, { pct: vm.restakePct })}
             </Text>
-            <Text as="span" className="leading-4 font-semibold text-claim-restake" variant="detail">
+            <Text as="span" className="leading-4 font-semibold text-claim" variant="detail">
               {interpolate(vm.mixed.releasePct, { pct: vm.releasePct })}
             </Text>
           </div>

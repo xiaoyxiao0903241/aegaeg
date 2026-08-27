@@ -91,7 +91,6 @@ function Note({ children }: { children: ReactNode }) {
 }
 
 /* jscpd:ignore-start — 组合卡按钮槽，density 与释放计划卡不同，禁抽共享 Action */
-/* jscpd:ignore-start — 组合卡按钮槽，density 与释放计划卡不同，禁抽共享 Action */
 function Action({
   children,
   disabled,
@@ -115,7 +114,6 @@ function Action({
     </MainButton>
   )
 }
-/* jscpd:ignore-end */
 /* jscpd:ignore-end */
 
 export const GenesisClaimCard = Object.assign(Root, {

@@ -11,7 +11,7 @@ import {
 } from '~/core/assets/claim-plans'
 import { HUNDRED_BI, ZERO_BI } from '~/core/constants'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { previewDaoClaimContribution } from '~/core/rewards/claim-contribution'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -155,9 +155,9 @@ export function useAssetsClaimModal(args: {
 
   const releaseAmount = (claimable * BigInt(releasePct)) / HUNDRED_BI
   const restakeAmount = claimable - releaseAmount
-  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
-  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)
-  const amountLabel = `${formatTokenAmount(claimable, GAGX_DECIMALS, 4)} gAGX`
+  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+  const amountLabel = `${formatTokenAmount(claimable, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`
   const withClaimUnit = (text: string) => `${text} gAGX`
   let ctaAmountLine: string | null = null
   if (releaseAmount === ZERO_BI) {

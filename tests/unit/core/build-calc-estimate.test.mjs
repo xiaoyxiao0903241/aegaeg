@@ -37,8 +37,10 @@ test('buildCalcEstimate: bond cost is USD1 paid, principal is discounted AGX', a
     days: 180,
     epochRebasePct: 0.41,
     epochsPerDay: 2,
+    discountRateBP: 8500,
   })
   assert.equal(bond.investedUsd, 65_000)
+  assert.equal(bond.discountRateBP, 8500)
   assert.ok(Math.abs(bond.ratePct - (1.0041 ** 360 / 0.85 - 1) * 100) < 1e-6)
   assert.ok(Math.abs(bond.interestUsd - (bond.sellUsd - bond.releasedUsd)) < 1e-6)
 })

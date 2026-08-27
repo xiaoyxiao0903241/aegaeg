@@ -155,10 +155,46 @@ test('liveSync keeps result empty until rebase rate is ready', async () => {
     epochRebasePct: 0.41,
     xmineDailyPct: null,
     epochsPerDay: 2,
+    discountRateBP: null,
   })
   const filled = useCalcEstimateStore.getState().result
   assert.ok(filled)
   assert.equal(filled.epochRebasePct, 0.41)
+})
+
+test('bond liveSync waits for live discountRateBP', async () => {
+  const { useCalcEstimateStore } = await loadModule('/src/stores/calc-estimate-store.ts')
+
+  useCalcEstimateStore.setState({
+    product: 'lpbond',
+    period: '180',
+    amount: '65000',
+    price: '80',
+    spotUsd: 80,
+    days: 180,
+    rates: null,
+    result: null,
+  })
+
+  const store = useCalcEstimateStore.getState()
+  store.liveSync({
+    epochRebasePct: 0.41,
+    xmineDailyPct: null,
+    epochsPerDay: 2,
+    discountRateBP: null,
+  })
+  assert.equal(useCalcEstimateStore.getState().result, null)
+
+  store.liveSync({
+    epochRebasePct: 0.41,
+    xmineDailyPct: null,
+    epochsPerDay: 2,
+    discountRateBP: 9200,
+  })
+  const first = useCalcEstimateStore.getState().result
+  assert.ok(first)
+  assert.equal(first.discountRateBP, 9200)
+  assert.ok(Math.abs(first.ratePct - (1.0041 ** 360 / 0.92 - 1) * 100) < 1e-6)
 })
 
 test('missing spotUsd blocks snapshot even with price and rates', async () => {

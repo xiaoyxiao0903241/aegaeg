@@ -58,6 +58,7 @@ export function StakingCurveChart() {
         epochRebasePct: result.epochRebasePct,
         epochsPerDay: result.epochsPerDay,
         xmineDailyPct: result.xmineDailyPct,
+        discountRateBP: result.discountRateBP,
         maxDays: CALC_MAX_DAYS,
         horizonDays: result.days,
       }).map((p) => ({

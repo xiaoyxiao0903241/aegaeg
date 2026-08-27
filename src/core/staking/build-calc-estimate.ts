@@ -43,6 +43,8 @@ export type CalcEstimateResult = {
   xmineDailyPct: number | null
   /** 每日 epoch 数（链上推算；缺为 null，禁 FAQ 默认）。 */
   epochsPerDay: number | null
+  /** 快照使用的链上债券成交价率 BPS；非债券为 null。 */
+  discountRateBP: number | null
 }
 
 /**
@@ -59,6 +61,7 @@ export type CalcEstimateResult = {
  * @param args.epochRebasePct 链上 epoch 收益率（百分比）；null 表示按零收益计算
  * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益
  * @param args.epochsPerDay 链上每日 epoch 数；缺 → 零利息
+ * @param args.discountRateBP 链上债券成交价率 BPS；债券缺 → 不计本金
  * @returns 本地收益估算结果
  */
 export function buildCalcEstimate(args: {
@@ -74,6 +77,8 @@ export function buildCalcEstimate(args: {
   xmineDailyPct?: number | null
   /** 每日 epoch 数（链上推算）；缺 → 零利息。 */
   epochsPerDay?: number | null
+  /** 链上债券成交价率 BPS；债券缺 → 不计本金。 */
+  discountRateBP?: number | null
 }): CalcEstimateResult {
   const principal = Number.parseFloat(args.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(args.price.replace(/,/g, '')) || 0
@@ -88,6 +93,10 @@ export function buildCalcEstimate(args: {
     epochRebasePct: args.epochRebasePct,
     epochsPerDay,
     xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
+    discountRateBP:
+      args.product === 'lpbond' || args.product === 'burnbond'
+        ? (args.discountRateBP ?? null)
+        : null,
     horizonDays: days,
   }
   const snap = computeCalcDay({ ...dayArgs, days })
@@ -117,5 +126,9 @@ export function buildCalcEstimate(args: {
     epochRebasePct: args.epochRebasePct,
     xmineDailyPct: args.product === 'xmine' ? (args.xmineDailyPct ?? null) : null,
     epochsPerDay,
+    discountRateBP:
+      args.product === 'lpbond' || args.product === 'burnbond'
+        ? (args.discountRateBP ?? null)
+        : null,
   }
 }

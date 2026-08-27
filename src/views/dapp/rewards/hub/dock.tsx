@@ -10,7 +10,11 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import { isGrantNodeEligible } from '~/core/rewards/grant-eligible'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useDaoRewardTypeTotals, useTeamRewardTotal, useUserNodeType } from '~/hooks/use-api-data'
@@ -67,12 +71,12 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
   // API 十进制金额无 wei；链上幸运额另走 formatTokenAmount
   if (!ready || value == null) {
     return {
-      amount: `${formatNumber(0, { digits: 4 })}gAGX`,
+      amount: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
       approx: formatUsdApprox(0, null),
     }
   }
   return {
-    amount: `${formatNumber(value, { digits: 4 })}gAGX`,
+    amount: `${formatNumber(value, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
     approx: formatUsdApprox(value, priceUsd),
   }
 }
@@ -131,11 +135,11 @@ export function RewardsHubDock() {
   const luckyBalance =
     !amountReady('lucky') || luckyWei == null
       ? {
-          amount: `${formatNumber(0, { digits: 4 })}gAGX`,
+          amount: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
           approx: formatUsdApprox(0, null),
         }
       : {
-          amount: `${formatTokenAmount(luckyWei, AGX_DECIMALS, 4)}gAGX`,
+          amount: `${formatTokenAmount(luckyWei, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)}gAGX`,
           approx: formatUsdApprox(formatTokenAmountToNumber(luckyWei, AGX_DECIMALS), priceUsd),
         }
 

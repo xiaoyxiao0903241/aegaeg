@@ -137,7 +137,28 @@ test('computeCalcDay: stake 180d uses handbook 10% bonus, per-epoch compound', (
   assert.ok(snap.rewards > compounded)
 })
 
-test('computeCalcDay: LP bond 180d uses handbook discountRateBP 8500', () => {
+test('computeCalcDay: LP bond 180d uses live discountRateBP', () => {
+  const snap = computeCalcDay({
+    product: 'lpbond',
+    period: '180',
+    amount: 65_000,
+    days: 180,
+    pd: 65,
+    spotUsd: 65,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+    discountRateBP: 9200,
+  })
+  const A = 65_000 / (65 * 0.92)
+  const compounded = A * (1.0041 ** 360 - 1)
+  assert.ok(Math.abs(snap.principalAgx - A) < 1e-9)
+  assert.ok(Math.abs(snap.rewards - compounded) < 1e-6)
+  assert.equal(snap.costUsd, 65_000)
+  const closed = 1.0041 ** 360 / 0.92 - 1
+  assert.ok(Math.abs(snap.ratePct / 100 - closed) < 1e-9)
+})
+
+test('computeCalcDay: LP bond missing discountRateBP does not use handbook', () => {
   const snap = computeCalcDay({
     product: 'lpbond',
     period: '180',
@@ -148,13 +169,9 @@ test('computeCalcDay: LP bond 180d uses handbook discountRateBP 8500', () => {
     epochRebasePct: 0.41,
     epochsPerDay: 2,
   })
-  const A = 65_000 / (65 * 0.85)
-  const compounded = A * (1.0041 ** 360 - 1)
-  assert.ok(Math.abs(snap.principalAgx - A) < 1e-9)
-  assert.ok(Math.abs(snap.rewards - compounded) < 1e-6)
+  assert.equal(snap.principalAgx, 0)
+  assert.equal(snap.rewards, 0)
   assert.equal(snap.costUsd, 65_000)
-  const closed = 1.0041 ** 360 / 0.85 - 1
-  assert.ok(Math.abs(snap.ratePct / 100 - closed) < 1e-9)
 })
 
 test('computeCalcDay: per-epoch compound, not daily 0.82%', () => {
@@ -273,6 +290,44 @@ test('handbookBondDiscountRateBP matches BondDepository defaults', () => {
   assert.equal(handbookBondDiscountRateBP('360'), 8000)
   assert.equal(handbookBondDiscountRateBP('540'), 7500)
   assert.equal(handbookBondDiscountRateBP('liquid'), null)
+})
+
+test('buildCalcYieldCurvePoints: LP bond uses live discountRateBP not handbook', () => {
+  const live = buildCalcYieldCurvePoints({
+    product: 'lpbond',
+    period: '180',
+    principal: 65_000,
+    price: 65,
+    spotUsd: 65,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+    discountRateBP: 9200,
+    maxDays: 1,
+  })
+  const missing = buildCalcYieldCurvePoints({
+    product: 'lpbond',
+    period: '180',
+    principal: 65_000,
+    price: 65,
+    spotUsd: 65,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+    maxDays: 1,
+  })
+  const liveDay1 = computeCalcDay({
+    product: 'lpbond',
+    period: '180',
+    amount: 65_000,
+    days: 1,
+    pd: 65,
+    spotUsd: 65,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+    discountRateBP: 9200,
+  })
+  assert.equal(live[0]?.profitUsd, liveDay1.profitUsd)
+  assert.equal(missing[0]?.profitUsd, -65_000)
+  assert.notEqual(live[0]?.profitUsd, missing[0]?.profitUsd)
 })
 
 test('buildCalcYieldCurvePoints spans day 1..CALC_MAX_DAYS as profit', () => {

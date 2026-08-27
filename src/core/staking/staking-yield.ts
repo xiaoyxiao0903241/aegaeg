@@ -67,7 +67,7 @@ export function epochRebasePctFrom1e18(rate1e18: bigint | null | undefined): num
 }
 
 /** 一天秒数；与 epoch.length × 秒/块 一起推 epochsPerDay。 */
-export const SECONDS_PER_DAY = 86_400
+const SECONDS_PER_DAY = 86_400
 
 /**
  * 由 epoch 区块长度与出块秒数推算每日 epoch 数。
@@ -297,9 +297,9 @@ function emptySnap(costUsd: number): CalcDaySnapshot {
 /**
  * 第 d 天测算：复利按 epoch、加成按单利毛 Rebase、本金线性释放。
  *
- * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (现价 × discountRateBP/10000)。
+ * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (现价 × 链上 discountRateBP/10000)。
  * 投入按 AGX 现价，卖出按用户到期价。现价 ≤0 时不计。利率或日频缺省时收益为 0。
- * X 挖矿按当日 AGX 现价 × 链上日利率折成 X。
+ * 债券缺成交价率时不计本金。X 挖矿按当日 AGX 现价 × 链上日利率折成 X。
  *
  * @param args.product 产品
  * @param args.period 周期
@@ -310,6 +310,7 @@ function emptySnap(costUsd: number): CalcDaySnapshot {
  * @param args.epochRebasePct 链上单 epoch rebase（百分比）；缺则收益为 0
  * @param args.epochsPerDay 链上每日 epoch 数；缺则收益为 0
  * @param args.xmineDailyPct 链上 X 挖矿日利率（百分比）；缺则挖矿收益为 0
+ * @param args.discountRateBP 链上债券成交价率 BPS；债券缺则不计
  * @param args.horizonDays 挖矿价格轨迹拟合天数；缺省与 days 相同
  * @returns 本金 / 释放 / 收益 / 卖出 / 收益率
  * @see docs/onchain-manual/contracts/rewardmanager.md
@@ -326,6 +327,7 @@ export function computeCalcDay(args: {
   epochRebasePct: number | null
   epochsPerDay: number | null
   xmineDailyPct?: number | null
+  discountRateBP?: number | null
   horizonDays?: number
 }): CalcDaySnapshot {
   const days = Math.min(Math.max(0, Math.round(args.days)), CALC_MAX_DAYS)
@@ -373,9 +375,15 @@ export function computeCalcDay(args: {
   let principalAgx: number
   let costUsd: number
   if (isBond) {
-    const discountBP = handbookBondDiscountRateBP(args.period)
+    const discountBP = args.discountRateBP
     costUsd = args.amount > 0 ? args.amount : 0
-    if (!(args.amount > 0) || discountBP == null || !(discountBP > 0) || !spotOk) {
+    if (
+      !(args.amount > 0) ||
+      discountBP == null ||
+      !Number.isFinite(discountBP) ||
+      !(discountBP > 0) ||
+      !spotOk
+    ) {
       return emptySnap(costUsd)
     }
     principalAgx = args.amount / (spotUsd * (discountBP / 10_000))
@@ -452,6 +460,7 @@ export function findBreakEvenDay(
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
  * @param args.epochsPerDay 链上每日 epoch 数；缺 → 零利息曲线
  * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益
+ * @param args.discountRateBP 链上债券成交价率 BPS；债券缺 → 不计本金
  * @param args.maxDays 曲线最大天数；缺省为 CALC_MAX_DAYS
  * @param args.horizonDays 挖矿轨迹拟合天数；缺省 maxDays
  * @returns 逐日收益总额点数组
@@ -465,6 +474,7 @@ export function buildCalcYieldCurvePoints(args: {
   epochRebasePct: number | null
   epochsPerDay?: number | null
   xmineDailyPct?: number | null
+  discountRateBP?: number | null
   maxDays?: number
   horizonDays?: number
 }): CalcYieldCurvePoint[] {
@@ -482,6 +492,7 @@ export function buildCalcYieldCurvePoints(args: {
       epochRebasePct: args.epochRebasePct,
       epochsPerDay: args.epochsPerDay ?? null,
       xmineDailyPct: args.xmineDailyPct,
+      discountRateBP: args.discountRateBP,
       horizonDays: horizon,
     })
     points.push({ day, profitUsd: snap.profitUsd })

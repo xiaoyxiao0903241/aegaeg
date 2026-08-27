@@ -208,7 +208,7 @@ export function useLucky() {
         href={bscscanTx(drawHash)}
         rel="noopener noreferrer"
         target="_blank"
-        tone="claim-restake"
+        tone="claim"
         variant="copy"
       >
         {lucky.verifyHash} {formatShortAddress(drawHash)}

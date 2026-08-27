@@ -58,7 +58,7 @@ const OKX_WALLET_ID = 'com.okex.wallet'
 
 function isOkxWallet(wallet: Wallet): boolean {
   const id = typeof wallet.id === 'string' ? wallet.id.toLowerCase() : ''
-  return id === OKX_WALLET_ID || id.includes('okx') || id.includes('okex')
+  return id === OKX_WALLET_ID
 }
 
 /**

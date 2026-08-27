@@ -351,12 +351,12 @@ html.dapp-app #root {
   transition: width var(--motion-dapp-emphasis) ease-out;
 }
 
-.dapp-progress-meter[data-tone='claim-restake'] {
-  background: color-mix(in oklab, var(--claim-restake) 14%, transparent);
+.dapp-progress-meter[data-tone='claim'] {
+  background: color-mix(in oklab, var(--claim) 14%, transparent);
 }
 
-.dapp-progress-meter[data-tone='claim-restake'] .dapp-progress-meter__fill {
-  background-color: var(--claim-restake);
+.dapp-progress-meter[data-tone='claim'] .dapp-progress-meter__fill {
+  background-color: var(--claim);
 }
 
 .dapp-collapsible-body {

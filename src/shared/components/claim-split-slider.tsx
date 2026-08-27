@@ -39,10 +39,10 @@ export function claimSplitTrackPct(releasePct: number): {
 export function claimSplitCtaBackgroundImage(releasePct: number): string {
   const { restakePct, releasePct: release } = claimSplitTrackPct(releasePct)
   if (release >= 100) {
-    return 'linear-gradient(to right, var(--claim-restake), var(--claim-restake))'
+    return 'linear-gradient(to right, var(--claim), var(--claim))'
   }
   if (restakePct >= 100) return 'linear-gradient(to right, var(--primary), var(--primary))'
-  return `linear-gradient(to right, var(--primary) 0%, color-mix(in oklab, var(--primary) 45%, var(--claim-restake) 55%) ${restakePct}%, var(--claim-restake) 100%)`
+  return `linear-gradient(to right, var(--primary) 0%, color-mix(in oklab, var(--primary) 45%, var(--claim) 55%) ${restakePct}%, var(--claim) 100%)`
 }
 
 /**
@@ -104,7 +104,7 @@ export function ClaimSplitSlider({
         />
         <div
           aria-hidden
-          className="absolute inset-y-0 right-0 bg-(--app-claim-restake)"
+          className="absolute inset-y-0 right-0 bg-claim"
           style={{ width: `${releasePct}%` }}
         />
       </SliderPrimitive.Track>

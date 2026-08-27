@@ -101,7 +101,11 @@ export function CalcDock() {
   const ratesOk =
     s.product === 'xmine'
       ? s.rates?.xmineDailyPct != null
-      : s.rates?.epochRebasePct != null && s.rates?.epochsPerDay != null
+      : s.rates?.epochRebasePct != null &&
+        s.rates?.epochsPerDay != null &&
+        (s.product === 'lpbond' || s.product === 'burnbond'
+          ? s.rates.discountRateBP != null && s.rates.discountRateBP > 0
+          : true)
   const spotReady = s.spotUsd != null && s.spotUsd > 0
   const canCommit = amountN > 0 && priceN > 0 && ratesOk && spotReady
 
