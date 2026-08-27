@@ -44,6 +44,7 @@ export const queryKeys = {
     all: ['api'] as const,
     performance: ['api', 'performance'] as const,
     makingOverview: ['api', 'performance', 'makingOverview'] as const,
+    userNodeType: ['api', 'user', 'nodeType'] as const,
     stakeAddressCount: ['api', 'performance', 'stakeAddressCount'] as const,
     protocolMarketStatsSeriesRoot: ['api', 'protocolMarketStats', 'series'] as const,
     protocolMarketStatsSeries: (range: string, metric: string) =>
@@ -282,6 +283,7 @@ export const queryKeys = {
       chainWalletQueryKey(['chain', 'turbine', 'claimable'], address),
     stakingRoot: ['chain', 'staking'] as const,
     stakingHubOverview: ['chain', 'staking', 'hubOverview'] as const,
+    sagxLatestRebase: ['chain', 'staking', 'sagxLatestRebase'] as const,
     stakeOpenPreflight: stakeOpenPrefix,
     stakeOpenPreflightOf: (pool: string, address: string) =>
       chainWalletQueryKey(stakeOpenPrefix(pool), address),
@@ -292,7 +294,6 @@ export const queryKeys = {
       ['chain', 'staking', 'bondMarket', depository.toLowerCase()] as const,
     bondZapAgxPreview: (kind: string, depository: string, amount: string) =>
       ['chain', 'staking', 'bondZapPreview', kind, depository.toLowerCase(), amount] as const,
-    bondHelperSlippage: ['chain', 'staking', 'bondHelper', 'slippage'] as const,
     xminePreflight: ['chain', 'staking', 'xmine'] as const,
     xminePreflightOf: (address: string) =>
       chainWalletQueryKey(['chain', 'staking', 'xmine'], address),

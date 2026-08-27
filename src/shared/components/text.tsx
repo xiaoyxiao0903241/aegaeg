@@ -16,8 +16,8 @@ const toneClass = {
   /** 深色面上的珊瑚强调色（非 primary） */
   'primary-bright': 'text-primary-bright',
   success: 'text-success',
-  /** 链上地址 / 哈希；与领取滑条复投色相同 */
-  'claim-restake': 'text-claim-restake',
+  /** 链上地址 / 哈希；与领取蓝相同 */
+  claim: 'text-claim',
   inverse: 'text-inverse',
   /** 深色 / 反色面上的次级文字 */
   'inverse-muted': 'text-inverse-muted',

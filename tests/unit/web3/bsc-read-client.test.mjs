@@ -3,8 +3,9 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-function walletStub(chainId, hasAccount = true) {
+function walletStub(chainId, hasAccount = true, id = 'io.metamask') {
   return {
+    id,
     getAccount: () =>
       hasAccount ? { address: '0x1111111111111111111111111111111111111111' } : null,
     getChain: () => (chainId == null ? undefined : { id: chainId }),
@@ -31,6 +32,24 @@ test('shouldUseWalletReadRpc: public until a BSC wallet is connected', async () 
   assert.equal(shouldUseWalletReadRpc(), false)
   setConnectedReadWallet(null)
   assert.equal(shouldUseWalletReadRpc(), false)
+})
+
+test('shouldUseWalletReadRpc: OKX on BSC still uses public RPC', async () => {
+  const { shouldUseWalletReadRpc, chainReadClient, setConnectedReadWallet } = await loadModule(
+    '/src/web3/bsc-read-client.ts',
+  )
+  const { defaultChain } = await loadModule('/src/web3/thirdweb.ts')
+  const bscId = defaultChain.id
+  const publicClient = chainReadClient(null)
+  const okx = walletStub(bscId, true, 'com.okex.wallet')
+
+  assert.equal(shouldUseWalletReadRpc(okx), false)
+  assert.equal(chainReadClient(okx), publicClient)
+
+  setConnectedReadWallet(okx)
+  assert.equal(shouldUseWalletReadRpc(), false)
+  assert.equal(chainReadClient(), publicClient)
+  setConnectedReadWallet(null)
 })
 
 test('chainReadClient: unbound and wrong-chain wallets are the public client', async () => {

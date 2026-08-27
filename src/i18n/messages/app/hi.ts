@@ -2306,7 +2306,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'डिस्काउंट मूल्य ({pct}%)',
-        slippage: 'अनुमत स्लिपेज',
         pay: 'भुगतान',
         receive: 'AGX प्राप्त करें',
         cap: 'अधिकतम खरीद',
@@ -2398,7 +2397,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'डिस्काउंट मूल्य ({pct}%)',
-        slippage: 'अनुमत स्लिपेज',
         pay: 'भुगतान',
         receive: 'AGX प्राप्त करें',
         cap: 'अधिकतम खरीद',
@@ -2576,6 +2574,7 @@ const app = defineMessages({
       amountBuy: 'खरीद राशि',
       amountAria: 'राशि',
       price: 'एग्ज़िट मूल्य',
+      priceX: 'एग्ज़िट X मूल्य',
       priceCurrent: 'वर्तमान मूल्य ${price}',
       priceAria: 'मूल्य इनपुट',
       days: 'होल्ड दिन',
@@ -2589,10 +2588,11 @@ const app = defineMessages({
         sellTotal: 'बिक्री आय',
         invested: 'कुल निवेश',
         yieldBar: 'यील्ड {amount}',
+        lossBar: 'घाटा {amount}',
         legend: {
           released: 'रिलीज़ मूलधन मूल्य',
           netYield: 'शुद्ध यील्ड मूल्य',
-          netYieldHint: 'योगदान पॉइंट काटने के बाद की यील्ड',
+          netYieldHint: 'रिबेस चक्रवृद्धि और अवधि बोनस; योगदान पॉइंट नहीं काटे जाते',
           netYieldHintXmine: 'खनन किया गया X, समाप्ति X कीमत पर मूल्यांकित',
           cost: 'लागत आधार',
           grossYield: 'कुल यील्ड',
@@ -2668,7 +2668,7 @@ const app = defineMessages({
         'रिलीज़ यील्ड निर्माण और टरबाइन के बीच बैठता है — कम कर दर और स्थिर निकास के लिए समय का व्यापार।',
       mechanismSteps: [
         { title: 'Rebase / DAO पुरस्कार दावा करें', body: 'यील्ड निर्मित होती है' },
-        { title: '{divisor} : 1 योगदान', body: '50% बर्न · 50% X पूल में' },
+        { title: '1:1 योगदान', body: '50% बर्न · 50% X पूल में' },
         { title: 'रिलीज़ पूल में प्रवेश', body: '5 / 20 / 40 / 60 दिन चुनें' },
         { title: 'टरबाइन में दावा करें', body: 'बेच कोटा अनलॉक हेतु 1:1 खरीद' },
       ],

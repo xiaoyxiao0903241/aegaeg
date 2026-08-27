@@ -2315,7 +2315,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'ราคาส่วนลด ({pct}%)',
-        slippage: 'สลิปเพจที่อนุญาต',
         pay: 'จ่าย',
         receive: 'ได้รับ AGX',
         cap: 'จำนวนซื้อสูงสุด',
@@ -2407,7 +2406,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'ราคาส่วนลด ({pct}%)',
-        slippage: 'สลิปเพจที่อนุญาต',
         pay: 'จ่าย',
         receive: 'ได้รับ AGX',
         cap: 'จำนวนซื้อสูงสุด',
@@ -2581,6 +2579,7 @@ const app = defineMessages({
       amountBuy: 'จำนวนเงินที่ซื้อ',
       amountAria: 'จำนวนคำนวณ',
       price: 'ราคา AGX ตอนครบกำหนด',
+      priceX: 'ราคา X ตอนครบกำหนด',
       priceCurrent: 'ปัจจุบัน {price}',
       priceAria: 'ป้อนราคา',
       days: 'วันถือครอง',
@@ -2594,10 +2593,11 @@ const app = defineMessages({
         sellTotal: 'มูลค่ารวมเมื่อขาย',
         invested: 'เงินลงทุนรวม',
         yieldBar: 'ผลตอบแทน {amount}',
+        lossBar: 'ขาดทุน {amount}',
         legend: {
           released: 'มูลค่าเงินต้นที่ปล่อยแล้ว',
           netYield: 'มูลค่าผลตอบแทนสุทธิ',
-          netYieldHint: 'ผลตอบแทนหลังหักแต้มคอนทริบิวชัน',
+          netYieldHint: 'Rebase ทบต้นและโบนัสระยะยาว ไม่หักแต้มคอนทริบิวชัน',
           netYieldHintXmine: 'จำนวน X ที่ขุดได้ คิดมูลค่าตามราคา X ณ วันครบกำหนด',
           cost: 'ต้นทุนลงทุน',
           grossYield: 'ผลตอบแทนรวม',
@@ -2675,7 +2675,7 @@ const app = defineMessages({
         'ปล่อยอยู่ระหว่างการสร้างผลตอบแทนกับเทอร์ไบน์ — แลกเวลาเพื่อภาษีต่ำกว่าและการออกที่นิ่งกว่า',
       mechanismSteps: [
         { title: 'รับรางวัล Rebase / DAO', body: 'เกิดผลตอบแทน' },
-        { title: 'กลไกการมีส่วนร่วม {divisor} : 1', body: 'เบิร์น 50% · ฉีดเข้าพูล X 50%' },
+        { title: 'กลไกการมีส่วนร่วม 1:1', body: 'เบิร์น 50% · ฉีดเข้าพูล X 50%' },
         { title: 'เข้าพูลปล่อย', body: 'เลือก 5 / 20 / 40 / 60 วัน' },
         { title: 'รับเข้าเทอร์ไบน์', body: 'ซื้อ 1:1 เพื่อปลดล็อกโควตาขาย' },
       ],

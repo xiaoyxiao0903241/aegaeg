@@ -52,8 +52,8 @@
   --ring: var(--primary);
   --success: #2bab6a;
   --success: oklch(69.46% 0.1551 159.22);
-  --claim-restake: #4a7bec;
-  --claim-restake: oklch(60.77% 0.1787 264.16);
+  --claim: #4a7bec;
+  --claim: oklch(60.77% 0.1787 264.16);
   --dark: #1d212b;
   --dark: oklch(24.82% 0.0200 267.87);
   --dark-panel: #1c2234;
@@ -266,7 +266,7 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-success: var(--success);
-  --color-claim-restake: var(--claim-restake);
+  --color-claim: var(--claim);
   --color-dark: var(--dark);
   --color-dark-panel: var(--dark-panel);
   --color-dark-globe: var(--dark-globe);
@@ -321,8 +321,6 @@
   --dapp-h5-gradient-top: var(--app-h5-gradient-top);
   /* Home/DApp body wash — was bare oklch in shared.css */
   --app-body-wash: oklch(96% 0.028 45 / 70%);
-  /* Claim Mixed restake rail — alias of semantic claim-restake (tokens.json → --claim-restake) */
-  --app-claim-restake: var(--claim-restake);
 
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;
@@ -355,6 +353,14 @@
   --motion-dapp-fade-in: 220ms;
 
   /* App chrome (rem @ 16px; scales with site-fluid) */
+  /* 面积图绘图区；16px 根上 170 */
+  --chart-plot-height: 10.625rem;
+  /* 点阵底纹；16px 根上 10 / 0.9 */
+  --chart-plot-dot: radial-gradient(circle, rgba(0, 0, 0, 0.14) calc(0.9rem / 16), transparent 0.0625rem);
+  --chart-plot-dot-size: 0.625rem;
+  /* 测算日标记 / 十字线圆点；16px 根上 9 / 1.5 */
+  --chart-mark-size: 0.5625rem;
+  --chart-mark-border: calc(1.5rem / 16);
   --app-icon-xs: 0.75rem;
   --app-icon-sm: 0.8125rem;
   --app-icon-md: 0.875rem;

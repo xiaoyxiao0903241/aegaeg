@@ -14,6 +14,7 @@ test('parseApiAmount fail-closed; formatApiAmount zeros empty', async () => {
   assert.equal(formatApiAmount(null), '0.00')
   assert.equal(formatApiAmount('1000'), '1,000.00')
   assert.equal(formatApiAmount('bad', { prefix: '$' }), '$0.00')
+  assert.equal(formatApiAmount('11.03', { digits: 4 }), '11.0300')
 })
 
 test('getPresaleRankHighlightedRows maps rank to tier table row index', async () => {

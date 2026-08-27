@@ -1,17 +1,23 @@
 /**
  * 奖励总览左栏面板
  *
- * 六张奖励类型卡片，点击进入对应详情；
- * 幸运走链上快照，创世维持团队奖汇总，其余四张待领来自类型汇总。
+ * 奖励类型卡片，点击进入对应详情；
+ * 幸运走链上快照，创世维持团队奖汇总，其余待领来自类型汇总。
+ * 发展津贴仅 `is_user_node_type` 为真时展示。
  * 齿轮「隐藏 0」只过滤已知可领额为 0 的卡。
  */
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
+import { isGrantNodeEligible } from '~/core/rewards/grant-eligible'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useDaoRewardTypeTotals, useTeamRewardTotal } from '~/hooks/use-api-data'
+import { useDaoRewardTypeTotals, useTeamRewardTotal, useUserNodeType } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useRewardsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
@@ -26,8 +32,8 @@ import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { hubApiClaimableFromTypeTotals } from '~/shared/lib/dao-reward-type-totals'
 import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
-import { hubApiClaimableFromTypeTotals } from '~/views/dapp/rewards/hub/claimable'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
@@ -35,7 +41,6 @@ import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
 import { openRewardsView } from '~/views/dapp/shared/navigation'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
@@ -66,12 +71,12 @@ function formatGagxBalance(value: number | null, ready: boolean, priceUsd: numbe
   // API 十进制金额无 wei；链上幸运额另走 formatTokenAmount
   if (!ready || value == null) {
     return {
-      amount: `${formatNumber(0, { digits: 4 })}gAGX`,
+      amount: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
       approx: formatUsdApprox(0, null),
     }
   }
   return {
-    amount: `${formatNumber(value, { digits: 4 })}gAGX`,
+    amount: `${formatNumber(value, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
     approx: formatUsdApprox(value, priceUsd),
   }
 }
@@ -88,7 +93,6 @@ function rewardCardHasBalance(value: number | null, amountReady: boolean): boole
 
 export function RewardsHubDock() {
   const { messages: t } = useI18n()
-  const claimRatio = useContributionClaimRatioLabel()
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
@@ -96,6 +100,8 @@ export function RewardsHubDock() {
   const dots = useRewardsClaimableUnreads()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
   const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady)
+  const { data: nodeType } = useUserNodeType(sessionReady)
+  const grantEligible = isGrantNodeEligible(nodeType?.is_user_node_type)
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
     queryFn: (address) => readLuckyClaimSnapshot(address as Address),
@@ -129,15 +135,16 @@ export function RewardsHubDock() {
   const luckyBalance =
     !amountReady('lucky') || luckyWei == null
       ? {
-          amount: `${formatNumber(0, { digits: 4 })}gAGX`,
+          amount: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
           approx: formatUsdApprox(0, null),
         }
       : {
-          amount: `${formatTokenAmount(luckyWei, AGX_DECIMALS, 4)}gAGX`,
+          amount: `${formatTokenAmount(luckyWei, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)}gAGX`,
           approx: formatUsdApprox(formatTokenAmountToNumber(luckyWei, AGX_DECIMALS), priceUsd),
         }
 
   const visibleCards = REWARD_CARDS.filter((view) => {
+    if (view === 'grant' && !grantEligible) return false
     if (!hideZero) return true
     return rewardCardHasBalance(amountValue(view), amountReady(view))
   })
@@ -175,14 +182,7 @@ export function RewardsHubDock() {
         const balanceLabel =
           isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
-        const unread =
-          view === 'lucky'
-            ? dots.lucky
-            : view === 'grant'
-              ? dots.grant
-              : view === 'genesis'
-                ? dots.genesis
-                : false
+        const unread = dots[view]
 
         return (
           <RewardsTypeCard
@@ -200,9 +200,7 @@ export function RewardsHubDock() {
                   <RewardsTypeCard.Badge>{t.rewards.cards.genesis.badge}</RewardsTypeCard.Badge>
                 ) : null}
               </RewardsTypeCard.TitleGroup>
-              <RewardsTypeCard.Body>
-                {withContributionRatio(card.body, claimRatio)}
-              </RewardsTypeCard.Body>
+              <RewardsTypeCard.Body>{withContributionRatio(card.body)}</RewardsTypeCard.Body>
             </RewardsTypeCard.Head>
             <RewardsTypeCard.Balance
               amount={balance.amount}

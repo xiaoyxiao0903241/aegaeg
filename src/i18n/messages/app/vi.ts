@@ -2369,7 +2369,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Giá chiết khấu ({pct}%)',
-        slippage: 'Cho phép trượt giá',
         pay: 'Thanh toán',
         receive: 'Nhận AGX',
         cap: 'Mức mua tối đa',
@@ -2461,7 +2460,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Giá chiết khấu ({pct}%)',
-        slippage: 'Cho phép trượt giá',
         pay: 'Thanh toán',
         receive: 'Nhận AGX',
         cap: 'Mức mua tối đa',
@@ -2640,6 +2638,7 @@ const app = defineMessages({
       amountBuy: 'Số tiền mua',
       amountAria: 'Số lượng ước tính',
       price: 'Giá AGX đáo hạn',
+      priceX: 'Giá X đáo hạn',
       priceCurrent: 'Hiện tại {price}',
       priceAria: 'Nhập giá',
       days: 'Số ngày nắm giữ',
@@ -2653,10 +2652,11 @@ const app = defineMessages({
         sellTotal: 'Tổng giá trị bán',
         invested: 'Tổng đầu tư',
         yieldBar: 'Lợi nhuận {amount}',
+        lossBar: 'Lỗ {amount}',
         legend: {
           released: 'Giá trị gốc đã giải phóng',
           netYield: 'Giá trị lợi nhuận ròng',
-          netYieldHint: 'Lợi nhuận sau khi trừ điểm đóng góp',
+          netYieldHint: 'Rebase kép và thưởng kỳ hạn; không trừ điểm đóng góp',
           netYieldHintXmine: 'Sản lượng X đào được, quy giá theo giá X đáo hạn',
           cost: 'Chi phí đầu tư',
           grossYield: 'Tổng lợi nhuận',
@@ -2734,7 +2734,7 @@ const app = defineMessages({
         'Giải phóng là bước bắt buộc từ lúc lợi nhuận sinh ra đến khi vào Turbine — đổi thời gian lấy thuế thấp, đổi nhịp lấy ổn định',
       mechanismSteps: [
         { title: 'Nhận thưởng Rebase / DAO', body: 'Lợi nhuận sinh ra' },
-        { title: 'Cơ chế đóng góp {divisor} : 1', body: '50% đốt · 50% bơm hồ nền X' },
+        { title: 'Cơ chế đóng góp 1:1', body: '50% đốt · 50% bơm hồ nền X' },
         {
           title: 'Vào hồ giải phóng · giải phóng tuyến tính',
           body: 'Chọn chu kỳ 5 / 20 / 40 / 60 ngày',

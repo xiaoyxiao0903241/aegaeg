@@ -16,7 +16,7 @@ import { Tile } from '~/shared/components/tile'
 import { HideZeroToggle } from '~/views/dapp/rewards/primitives'
 import { useRewardsReferral } from '~/views/dapp/rewards/referral/use-referral'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 
 export function ReferralDetail() {
   const {
@@ -26,7 +26,6 @@ export function ReferralDetail() {
     myPosition,
     referralCount,
     contributionValue,
-    nextPayout,
     recordRows,
     recordsLoading,
     recordsPage,
@@ -40,8 +39,7 @@ export function ReferralDetail() {
     hideZeroPosition,
     setHideZeroPosition,
   } = useRewardsReferral()
-  const claimRatio = useContributionClaimRatioLabel()
-  const contributionHint = withContributionRatio(referral.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(referral.contributionHint)
 
   const topTiles = [
     {
@@ -60,7 +58,7 @@ export function ReferralDetail() {
       value: contributionValue,
       valueHint: contributionHint,
     },
-    { key: 'nextPayout', label: referral.nextPayout, value: nextPayout },
+    { key: 'nextPayout', label: referral.nextPayout, value: <RebaseCountdownValue /> },
   ]
 
   return (
@@ -94,7 +92,7 @@ export function ReferralDetail() {
                   className="leading-none font-semibold wrap-break-word"
                   variant="headline"
                 >
-                  <CountValue text={item.value} />
+                  {typeof item.value === 'string' ? <CountValue text={item.value} /> : item.value}
                 </Text>
                 {'valueHint' in item && item.valueHint != null ? (
                   <Text

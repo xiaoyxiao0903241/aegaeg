@@ -49,7 +49,7 @@ test('submitMixedClaim does not keep the open-modal amount when live available i
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
   const plans = claimPlanAndContribHandlers({
-    contribution: 1_000_000n,
+    contribution: 10n ** 8n,
     requiredContribution: 1n,
   })
 
@@ -92,6 +92,35 @@ test('submitMixedClaim fail-closed when contribution is below live required', as
         session,
         capturedAddress: USER,
         target: { source: 'liquid', amount: 10n ** 7n },
+        releaseDays: 5,
+        restakeDays: 360,
+        restakePct: 50,
+      }),
+    (err) => err === ASSETS_BLOCKED.insufficientContribution,
+  )
+})
+
+test('submitMixedClaim 1:1: enough for quote/6 is still short', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+  const claimable = 22_500_000n
+
+  const plans = claimPlanAndContribHandlers({
+    contribution: 4_000_000n,
+    requiredContribution: 3_750_000n,
+  })
+
+  const session = await moneyPathSession(async (request) => {
+    if (request.functionName === 'getStakeRewards') return [0n, claimable]
+    return dispatchRead(plans, request)
+  })
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: USER,
+        target: { source: 'liquid', amount: claimable },
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,

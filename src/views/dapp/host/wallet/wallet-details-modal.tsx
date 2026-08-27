@@ -3,7 +3,7 @@ import { Wallet, X } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
@@ -58,7 +58,7 @@ export function WalletDetailsModal({
     ? '…'
     : balanceQuery.isError
       ? '—'
-      : formatTokenAmount(usd1Balance, USD1_DECIMALS, 2)
+      : formatTokenAmount(usd1Balance, USD1_DECIMALS, PERSONAL_TOKEN_DIGITS)
 
   async function handleCopy() {
     if (!walletAddress) return

@@ -1,7 +1,7 @@
 /**
  * 可领红点是否未读：空态永不亮；有可领且指纹与上次在子页看到的不同才亮。
  *
- * 指纹是锅的身份（档位本金、已到期冷却 index、轮次），不是此刻可领 wei。
+ * 指纹是锅的身份（档位本金、已到期冷却 index、到期仓 id、轮次），不是此刻可领 wei。
  * 线性释放滴漏不会重新点亮；领到 0 后若在子页聚焦会把 seen 写成空，下一锅才会再亮。
  *
  * @param current 当前指纹；无源可领为 `''`
@@ -89,4 +89,91 @@ export function fingerprintPositiveDecimal(value: number | string | null | undef
   const parsed = Number(trimmed)
   if (!Number.isFinite(parsed) || parsed <= 0) return ''
   return trimmed
+}
+
+function isUnixReached(at: bigint, nowSec: number): boolean {
+  if (at <= 0n) return false
+  return nowSec >= Number(at)
+}
+
+export type AssetsStakeExpiryRow = {
+  id: string
+  kind: 'liquid' | 'locked'
+  expiry: bigint
+  inWarmup?: boolean
+  warmupExpired?: boolean
+}
+
+export type AssetsBondExpiryRow = {
+  id: string
+  vestingEndTime: bigint
+}
+
+export type AssetsXmineExpiryInput = {
+  warmupGons: bigint
+  warmupEndTime: bigint
+}
+
+/**
+ * 质押到期指纹：活期只认预热已过；定期只认 unix `expiry` 已到。
+ *
+ * 身份是 `id:expiry`，不含可赎本金。未到期即使已有 claimable 也不纳入。
+ *
+ * @param rows 资产质押仓位
+ * @param nowSec 当前 unix 秒（定期倒计时用）
+ * @see docs/onchain-manual/contracts/lockedstaking.md
+ * @see docs/onchain-manual/contracts/liquidstaking.md
+ */
+export function fingerprintAssetsStakeExpiry(
+  rows: readonly AssetsStakeExpiryRow[],
+  nowSec: number,
+): string {
+  return fingerprintIdList(
+    rows.flatMap((row) => {
+      if (row.kind === 'liquid') {
+        if (!row.inWarmup || !row.warmupExpired) return []
+        return [`${row.id}:${row.expiry}`]
+      }
+      if (!isUnixReached(row.expiry, nowSec)) return []
+      return [`${row.id}:${row.expiry}`]
+    }),
+  )
+}
+
+/**
+ * 债券到期指纹：只认 `vestingEndTime` 已到的仓；身份是 `id:vestingEndTime`。
+ *
+ * 未到期的 `pendingPayout` 滴漏不造点。
+ *
+ * @param rows 资产债券仓位
+ * @param nowSec 当前 unix 秒
+ * @see docs/onchain-manual/01-frontend-integration-guide.md
+ */
+export function fingerprintAssetsBondExpiry(
+  rows: readonly AssetsBondExpiryRow[],
+  nowSec: number,
+): string {
+  return fingerprintIdList(
+    rows.flatMap((row) =>
+      isUnixReached(row.vestingEndTime, nowSec) ? [`${row.id}:${row.vestingEndTime}`] : [],
+    ),
+  )
+}
+
+/**
+ * X 挖矿到期指纹：仅预热仓已过 `warmupEndTime` 时亮；身份含结束时间以免下一轮同槽吞掉。
+ *
+ * 已激活的挖矿本金可随时解绑，不算到期。
+ *
+ * @param snap X 挖矿仓位；缺数为空
+ * @param nowSec 当前 unix 秒
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
+export function fingerprintAssetsXmineExpiry(
+  snap: AssetsXmineExpiryInput | null | undefined,
+  nowSec: number,
+): string {
+  if (!snap || snap.warmupGons <= 0n) return ''
+  if (!isUnixReached(snap.warmupEndTime, nowSec)) return ''
+  return `warmup:${snap.warmupEndTime}`
 }

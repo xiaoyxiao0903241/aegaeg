@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { interpolate } from '~/i18n/interpolate'
 import { Button } from '~/shared/components/button'
-import { ClaimSplitSlider } from '~/shared/components/claim-split-slider'
+import { claimSplitCtaStyle, ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
@@ -20,8 +20,9 @@ import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 /**
  * Mixed 领奖弹窗
  *
- * 内容自顶向下：可领数量与贡献提示、分流滑条、释放 / 复投周期下拉（含税率）、确认 CTA。
+ * 内容自顶向下：可领数量与贡献提示、分流滑条、复投 / 领取周期下拉（含税率）、确认 CTA。
  * 贡献值不足或释放 / 复投计划未就绪时展示拦截说明并禁写。
+ * 本次需扣除按领取额 1:1。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  */
@@ -97,13 +98,7 @@ function AssetsClaimModalOpen({
     target,
   })
   const { t, amountLabel } = vm
-  // 始终 backgroundImage：两端同色渐变≈纯色，避免 Image↔Color 切换闪烁
-  const ctaBackgroundImage =
-    vm.releasePct >= 100
-      ? 'linear-gradient(to right, var(--primary), var(--primary))'
-      : vm.releasePct <= 0
-        ? 'linear-gradient(to right, var(--claim-restake), var(--claim-restake))'
-        : `linear-gradient(to right, var(--primary) 0%, color-mix(in oklab, var(--primary) 45%, var(--claim-restake) 55%) ${vm.releasePct}%, var(--claim-restake) 100%)`
+  const splitCtaActive = vm.canConfirm && !vm.submitting
 
   return (
     <ResponsiveDialog
@@ -148,31 +143,17 @@ function AssetsClaimModalOpen({
         />
         <div className="flex justify-between gap-2">
           <Text as="span" className="font-semibold text-primary" variant="detail">
+            {interpolate(t.assets.claim.restakeShare, { pct: vm.restakePct })}
+          </Text>
+          <Text as="span" className="font-semibold text-claim" variant="detail">
             {interpolate(t.assets.claim.releaseShare, {
               pct: vm.releasePct,
               amount: amountLabel,
             })}
           </Text>
-          <Text as="span" className="font-semibold text-(--app-claim-restake)" variant="detail">
-            {interpolate(t.assets.claim.restakeShare, { pct: vm.restakePct })}
-          </Text>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="grid gap-2">
-            <Text as="span" className="font-medium" variant="copy">
-              {t.assets.claim.releasePeriod}
-            </Text>
-            <SelectMenu
-              align="start"
-              ariaLabel={t.assets.claim.releasePeriodAria}
-              className="w-full"
-              onSelect={(value) => vm.setReleaseDays(Number(value))}
-              options={vm.releaseOptions}
-              value={String(vm.releaseDays)}
-              variant="field"
-            />
-          </div>
           <div className="grid gap-2">
             <Text as="span" className="font-medium" variant="copy">
               {t.assets.claim.restakePeriod}
@@ -184,6 +165,20 @@ function AssetsClaimModalOpen({
               onSelect={(value) => vm.setRestakeDays(Number(value))}
               options={vm.restakeOptions}
               value={String(vm.restakeDays)}
+              variant="field"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Text as="span" className="font-medium" variant="copy">
+              {t.assets.claim.releasePeriod}
+            </Text>
+            <SelectMenu
+              align="start"
+              ariaLabel={t.assets.claim.releasePeriodAria}
+              className="w-full"
+              onSelect={(value) => vm.setReleaseDays(Number(value))}
+              options={vm.releaseOptions}
+              value={String(vm.releaseDays)}
               variant="field"
             />
           </div>
@@ -211,16 +206,19 @@ function AssetsClaimModalOpen({
 
         <MainButton
           className={cn(
-            'min-h-13 w-full border-0 bg-transparent py-2 text-primary-foreground shadow-none',
-            'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
-            // Button 默认 transition background-color；本 CTA 只改 image，关掉色过渡以免端点闪
-            'transition-[border-color,box-shadow,transform,opacity,color]',
+            'min-h-13 w-full py-2',
+            splitCtaActive && [
+              'border-0 bg-transparent text-primary-foreground shadow-none',
+              'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',
+              // Button 默认 transition background-color；本 CTA 只改 image，关掉色过渡以免端点闪
+              'transition-[border-color,box-shadow,transform,opacity,color]',
+            ],
           )}
           density="external"
           disabled={!vm.canConfirm}
           loading={vm.submitting}
           onClick={() => void vm.handleConfirm()}
-          style={{ backgroundImage: ctaBackgroundImage }}
+          style={claimSplitCtaStyle(vm.releasePct, splitCtaActive)}
         >
           <span className="flex flex-col items-center gap-0.5 leading-tight">
             <span>{vm.ctaLabel}</span>
@@ -229,9 +227,9 @@ function AssetsClaimModalOpen({
                 <CountValue text={vm.ctaAmountLine} />
               ) : (
                 <>
-                  <CountValue text={vm.releaseAmountText} />
-                  <span>&</span>
                   <CountValue text={vm.restakeAmountText} />
+                  <span>&</span>
+                  <CountValue text={vm.releaseAmountText} />
                 </>
               )}
             </span>

@@ -2305,7 +2305,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '할인가({pct}%)',
-        slippage: '허용 슬리피지',
         pay: '지불',
         receive: 'AGX 획득',
         cap: '최대 구매량',
@@ -2397,7 +2396,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '할인가({pct}%)',
-        slippage: '허용 슬리피지',
         pay: '지불',
         receive: 'AGX 획득',
         cap: '최대 구매량',
@@ -2577,6 +2575,7 @@ const app = defineMessages({
       amountBuy: '구매 금액',
       amountAria: '산출 수량',
       price: '만기 AGX 가격',
+      priceX: '만기 X 가격',
       priceCurrent: '현재 {price}',
       priceAria: '가격 입력',
       days: '보유 일수',
@@ -2590,10 +2589,11 @@ const app = defineMessages({
         sellTotal: '매도 총액',
         invested: '총 투입',
         yieldBar: '수익 {amount}',
+        lossBar: '손실 {amount}',
         legend: {
           released: '릴리스된 원금 가치',
           netYield: '순수익 가치',
-          netYieldHint: '기여 포인트 차감 후 수익',
+          netYieldHint: 'Rebase 복리와 장기 보너스. 기여 포인트는 차감하지 않음',
           netYieldHintXmine: '채굴한 X 수량을 만기 X 가격으로 환산한 가치',
           cost: '투입 비용',
           grossYield: '수익 합계',
@@ -2670,7 +2670,7 @@ const app = defineMessages({
         '릴리스는 수익이 발생해 터빈에 들어가기까지의 필수 단계입니다 — 시간으로 세율을, 리듬으로 안정을 바꿉니다',
       mechanismSteps: [
         { title: 'Rebase / DAO 리워드 수령', body: '수익 발생' },
-        { title: '{divisor} : 1 기여 메커니즘', body: '50% 소각 · 50% X 기반 풀 주입' },
+        { title: '1:1 기여 메커니즘', body: '50% 소각 · 50% X 기반 풀 주입' },
         { title: '릴리스 풀 진입 · 선형 릴리스', body: '5 / 20 / 40 / 60일 주기 선택' },
         { title: '터빈으로 수령', body: '1:1 매수로 매도 한도 잠금 해제' },
       ],

@@ -227,7 +227,6 @@ export function useCobuild() {
     totalRewardsApprox,
     totalPerformance,
     myPosition,
-    nextPayout: NON_NUMERIC_EMPTY,
     hideZeroMarket,
     setHideZeroMarket,
     teamSort,

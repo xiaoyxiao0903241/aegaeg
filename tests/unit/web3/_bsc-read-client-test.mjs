@@ -37,18 +37,23 @@ export async function expandAggregate3(request, readByName, abi) {
       if (!decoded || !matchedAbi) {
         throw new Error('undecodable aggregate3 call')
       }
-      const result = await readByName({
-        functionName: decoded.functionName,
-        args: decoded.args,
-        address: call.target,
-      })
-      return {
-        success: true,
-        returnData: encodeFunctionResult({
-          abi: matchedAbi,
+      try {
+        const result = await readByName({
           functionName: decoded.functionName,
-          result,
-        }),
+          args: decoded.args,
+          address: call.target,
+        })
+        return {
+          success: true,
+          returnData: encodeFunctionResult({
+            abi: matchedAbi,
+            functionName: decoded.functionName,
+            result,
+          }),
+        }
+      } catch (error) {
+        if (call.allowFailure) return { success: false, returnData: '0x' }
+        throw error
       }
     }),
   )

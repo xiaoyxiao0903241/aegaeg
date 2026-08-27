@@ -1,26 +1,20 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { keepPreviousData } from '@tanstack/react-query'
 import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { type ClaimOutputKind, shouldReplaceHeldClaimOutput } from '~/core/assets/claim-output'
-import { ZERO_BI } from '~/core/constants'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatAssetsActionAmount, isAssetsActionableAmount } from '~/core/exchange/token-amount'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
-import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
 import type { AssetsStakeRow } from '~/web3/assets/assets-read'
-import { readContributionSnapshot } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -95,30 +89,10 @@ function AssetsClaimOutputModalOpen({
   const canReward = isAssetsActionableAmount(reward, GAGX_DECIMALS)
   const canBoost = isAssetsActionableAmount(boost, GAGX_DECIMALS)
 
-  const rewardContrib = useChainQuery({
-    queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-reward:${String(reward)}`),
-    queryFn: (address) => readContributionSnapshot(address as Address, reward),
-    enabled: open && canReward && Boolean(account?.address),
-    placeholderData: keepPreviousData,
-  })
-  const boostContrib = useChainQuery({
-    queryKey: queryKeys.chain.assetsContributionForAmount(`claim-out-boost:${String(boost)}`),
-    queryFn: (address) => readContributionSnapshot(address as Address, boost),
-    enabled: open && canBoost && Boolean(account?.address),
-    placeholderData: keepPreviousData,
-  })
-
   const rewardAmountLabel = `${formatAssetsActionAmount(reward, GAGX_DECIMALS)} gAGX`
   const boostAmountLabel = `${formatAssetsActionAmount(boost, GAGX_DECIMALS)} gAGX`
-  // 缺数显 0；粉尘贡献下舍为 0.0000
-  const rewardContribLabel = formatContributionPoints(
-    rewardContrib.data?.requiredContribution ?? ZERO_BI,
-    AGX_DECIMALS,
-  )
-  const boostContribLabel = formatContributionPoints(
-    boostContrib.data?.requiredContribution ?? ZERO_BI,
-    AGX_DECIMALS,
-  )
+  const rewardContribLabel = formatContributionPoints(reward, AGX_DECIMALS)
+  const boostContribLabel = formatContributionPoints(boost, AGX_DECIMALS)
 
   return (
     <ResponsiveDialog

@@ -13,7 +13,9 @@ import {
   getTeamReferrals,
   getTeamRewardClaimLogs,
   getTeamRewardTotal,
+  getUserNodeType,
 } from '~/shared/api/endpoints'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { PaginationParams } from '~/shared/api/types'
 
@@ -44,6 +46,18 @@ export function useQualifiedPartitions(enabled = true) {
  */
 export function useMakingOverview(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.makingOverview, getMakingOverview, enabled)
+}
+
+/**
+ * 查询当前用户是否具备发展津贴领取资格。
+ *
+ * 未登录不请求；缺数 / 失败由调用方按无资格处理。
+ *
+ * @param enabled false 时暂停请求
+ * @see docs/backend-api/api.md #user/user-node-type
+ */
+export function useUserNodeType(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.userNodeType, getUserNodeType, enabled)
 }
 
 /**
@@ -94,10 +108,15 @@ export function useReferralTotal(enabled = true) {
 /**
  * 查询团队奖励可领汇总。
  *
+ * 创世待领与导航红点共用；新鲜度与链上余额同档，并按该间隔轮询。
+ *
  * @param enabled false 时暂停请求
  */
 export function useTeamRewardTotal(enabled = true) {
-  return useAuthenticatedQuery(queryKeys.api.teamRewardTotal, getTeamRewardTotal, enabled)
+  return useAuthenticatedQuery(queryKeys.api.teamRewardTotal, getTeamRewardTotal, enabled, {
+    staleTime: QUERY_STALE_TIME.balances,
+    refetchInterval: QUERY_STALE_TIME.balances,
+  })
 }
 
 /**

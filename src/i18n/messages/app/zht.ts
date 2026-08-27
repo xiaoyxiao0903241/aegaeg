@@ -2232,7 +2232,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '折扣價（{pct}%）',
-        slippage: '允許滑點',
         pay: '支付',
         receive: '獲得AGX',
         cap: '最大購買量',
@@ -2323,7 +2322,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '折扣價（{pct}%）',
-        slippage: '允許滑點',
         pay: '支付',
         receive: '獲得AGX',
         cap: '最大購買量',
@@ -2495,6 +2493,7 @@ const app = defineMessages({
       amountBuy: '購買金額',
       amountAria: '測算數量',
       price: '到期AGX價格',
+      priceX: '到期X價格',
       priceAria: '價格輸入',
       priceCurrent: '當前 {price}',
       days: '查看您在質押後第幾天的收益情況',
@@ -2514,10 +2513,11 @@ const app = defineMessages({
         sellTotal: '賣出總值',
         invested: '總投入',
         yieldBar: '收益 {amount}',
+        lossBar: '虧損 {amount}',
         legend: {
           released: '已釋放本金價值',
           netYield: '淨收益價值',
-          netYieldHint: '扣除貢獻點數後的收益',
+          netYieldHint: 'Rebase 複利加長週期加成，不扣貢獻點數',
           netYieldHintXmine: '挖礦產出的 X 數量，按到期 X 價格折算價值',
           cost: '投入成本',
           grossYield: '收益總額',
@@ -2597,7 +2597,7 @@ const app = defineMessages({
         '所有收益在到達渦輪之前，都要先經過釋放池按所選週期線性釋放。這一環節將集中的兌現需求分散到時間維度上，降低瞬時拋壓；配合週期越長、稅率越低的設計，引導長期持有，為生態的穩定運行提供緩衝。',
       mechanismSteps: [
         { title: '領取 Rebase / DAO 獎勵', body: '收益產生' },
-        { title: '{divisor} : 1 貢獻機制', body: '50% 銷燬 · 50% 注入 X 底池' },
+        { title: '1:1 貢獻機制', body: '50% 銷燬 · 50% 注入 X 底池' },
         { title: '進入釋放池 · 線性釋放', body: '選擇 5 / 20 / 40 / 60 天週期' },
         { title: '領取進入渦輪', body: '1:1 買入解鎖賣出額度' },
       ],

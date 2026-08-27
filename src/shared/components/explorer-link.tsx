@@ -25,7 +25,7 @@ export function ExplorerLink({
   showIcon?: boolean
   className?: string
   shortOptions?: { head?: number; tail?: number }
-  tone?: Extract<TextTone, 'claim-restake' | 'primary' | 'muted-foreground'>
+  tone?: Extract<TextTone, 'claim' | 'primary' | 'muted-foreground'>
 }) {
   const href = kind === 'tx' ? bscscanTx(value) : bscscanAddress(value)
   const label = formatShortAddress(value, shortOptions)

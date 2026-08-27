@@ -1,26 +1,16 @@
 /**
- * 质押域跨 mode UI 零件（倒计时 / 曲线 / 机制卡 / 指标值 / TVL 图）。
+ * 质押域跨 mode UI 零件（曲线 / 机制卡 / 指标值 / TVL 图）。
  */
 import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode } from 'react'
 
-import {
-  buildCalcYieldCurvePoints,
-  CALC_MAX_DAYS,
-  calcLocalInterest,
-  handbookBondDiscountRateBP,
-} from '~/core/staking/staking-yield'
+import { buildCalcYieldCurvePoints, CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Chart, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
-import {
-  CountdownValue,
-  remainingSecFromBlocks,
-  useAnchoredRemainingSec,
-} from '~/shared/components/countdown-value'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
 import { Skeleton } from '~/shared/components/skeleton'
@@ -28,52 +18,6 @@ import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
-
-/**
- * 下一次 Rebase 发放倒计时
- *
- * 以链上块差锚定墙钟后每秒滴答更新。
- *
- * @param epochEndBlock 周期结束区块高度
- * @param currentBlock 当前区块高度
- * @param secondsPerBlock 实测或兜底出块秒数
- */
-export function RebaseCountdownValue({
-  epochEndBlock,
-  currentBlock,
-  secondsPerBlock,
-}: {
-  epochEndBlock: bigint | undefined
-  currentBlock: bigint | undefined
-  secondsPerBlock?: number
-}) {
-  const { messages: t } = useI18n()
-  const units = t.staking.aside.countdownUnits
-  const remainingSec = useAnchoredRemainingSec(
-    remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock),
-  )
-
-  return (
-    <CountdownValue
-      className="gap-x-1"
-      labels={{
-        hours: (
-          <Text as="span" variant="detail">
-            {units.hours}
-          </Text>
-        ),
-        minutes: (
-          <Text as="span" variant="detail">
-            {units.minutes}
-          </Text>
-        ),
-      }}
-      totalSec={remainingSec}
-      trim={false}
-      units={['hours', 'minutes']}
-    />
-  )
-}
 
 const CURVE_PLACEHOLDER = '0.00'
 
@@ -87,7 +31,7 @@ function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): rea
   if (count <= 1) return [interpolate(dayTemplate, { day: 1 })]
   const labels: string[] = []
   for (let i = 0; i < count; i += 1) {
-    const day = Math.round(1 + (i / (count - 1)) * (maxDays - 1))
+    const day = i === 0 ? 1 : Math.round((i / (count - 1)) * maxDays)
     labels.push(interpolate(dayTemplate, { day }))
   }
   return labels
@@ -96,32 +40,13 @@ function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): rea
 /**
  * 测算累计收益曲线
  *
- * 曲线由本地公式按 day 1..720 生成；
- * 无测算结果时展示占位文案。
+ * 曲线由本地公式按 day 1..CALC_MAX_DAYS 生成；
+ * 有测算结果时在所选天数打点，否则展示骨架。
  */
 export function StakingCurveChart() {
   const { messages: t } = useI18n()
   const aside = t.staking.calc.aside
   const result = useCalcEstimateStore((state) => state.result)
-
-  const curveEndEstimate = result
-    ? (() => {
-        const isBondUsd1 = result.product === 'lpbond' || result.product === 'burnbond'
-        const est = calcLocalInterest({
-          product: result.product,
-          period: result.period,
-          principal: result.principal,
-          days: CALC_MAX_DAYS,
-          epochRebasePct: result.epochRebasePct,
-          xmineDailyPct: result.xmineDailyPct,
-          agxPriceUsd: isBondUsd1 ? result.price : null,
-          discountRateBP: isBondUsd1 ? handbookBondDiscountRateBP(result.period) : null,
-          epochsPerDay: result.epochsPerDay,
-        })
-        // 债券利息已是 USD；质押/xmine 利息为代币量 × 现价。与 buildCalcYieldCurvePoints 同口径。
-        return isBondUsd1 ? est.interest : est.interest * result.price
-      })()
-    : null
 
   const curvePoints: readonly ChartPoint[] = result
     ? buildCalcYieldCurvePoints({
@@ -129,19 +54,19 @@ export function StakingCurveChart() {
         period: result.period,
         principal: result.principal,
         price: result.price,
+        spotUsd: result.spotUsd,
         epochRebasePct: result.epochRebasePct,
-        xmineDailyPct: result.xmineDailyPct,
         epochsPerDay: result.epochsPerDay,
-        discountRateBP:
-          result.product === 'lpbond' || result.product === 'burnbond'
-            ? handbookBondDiscountRateBP(result.period)
-            : null,
+        xmineDailyPct: result.xmineDailyPct,
+        discountRateBP: result.discountRateBP,
         maxDays: CALC_MAX_DAYS,
+        horizonDays: result.days,
       }).map((p) => ({
         time: p.day as UTCTimestamp,
-        value: p.interestUsd,
+        value: p.profitUsd,
       }))
     : []
+  const curveEndEstimate = curvePoints[curvePoints.length - 1]?.value ?? null
 
   const axisLabels = pickDayAxisLabels(CALC_MAX_DAYS, aside.tags.day, 5)
 
@@ -155,23 +80,26 @@ export function StakingCurveChart() {
           <Text as="strong" className="font-semibold" variant="section">
             {formatUsdOrDash(curveEndEstimate)}
           </Text>
-        ) : null}
+        ) : (
+          <Skeleton className="h-7 w-28" />
+        )}
       </Chart.Header>
-      {curvePoints.length > 0 ? (
+      {curvePoints.length > 0 && result ? (
         <Chart.Plot
           axisLabels={axisLabels}
+          fit="inset"
           formatTipDate={(time: Time) => {
             if (typeof time !== 'number') return null
             return interpolate(aside.tags.day, { day: time })
           }}
+          mark={{
+            time: result.days,
+            label: interpolate(aside.tags.day, { day: result.days }),
+          }}
           points={curvePoints}
         />
       ) : (
-        <div className="flex items-center justify-center rounded-lg py-6">
-          <Text as="span" className="text-foreground/40" variant="copy">
-            {CURVE_PLACEHOLDER}
-          </Text>
-        </div>
+        <Chart.Skeleton />
       )}
     </Chart>
   )

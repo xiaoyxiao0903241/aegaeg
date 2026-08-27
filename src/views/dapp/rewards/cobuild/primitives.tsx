@@ -110,9 +110,7 @@ export function CobuildTierCard({
                 <article
                   className={cn(
                     'relative grid content-start gap-2.5 rounded-sm border p-4',
-                    achieved
-                      ? 'border-claim-restake/25 bg-claim-restake/4'
-                      : 'border-border bg-card',
+                    achieved ? 'border-claim/25 bg-claim/4' : 'border-border bg-card',
                   )}
                   key={req.label}
                 >
@@ -121,16 +119,12 @@ export function CobuildTierCard({
                       {req.label}
                     </Text>
                     {achieved ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-claim-restake/14 px-2 py-0.5">
-                        <Check
-                          aria-hidden
-                          className="size-2.25 text-claim-restake"
-                          strokeWidth={2.5}
-                        />
+                      <span className="inline-flex items-center gap-1 rounded-full bg-claim/14 px-2 py-0.5">
+                        <Check aria-hidden className="size-2.25 text-claim" strokeWidth={2.5} />
                         <Text
                           as="span"
                           className="leading-none font-semibold"
-                          tone="claim-restake"
+                          tone="claim"
                           variant="caption"
                         >
                           {achievedLabel}
@@ -157,7 +151,7 @@ export function CobuildTierCard({
                   <span className="grid gap-1.5">
                     <ProgressBar
                       label={req.label}
-                      tone={achieved ? 'claim-restake' : 'primary'}
+                      tone={achieved ? 'claim' : 'primary'}
                       value={reqBarPct(req)}
                     />
                     <Text as="p" className="leading-none text-foreground/40" variant="caption">

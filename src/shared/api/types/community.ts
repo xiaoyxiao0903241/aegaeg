@@ -151,3 +151,13 @@ export interface MakingOverview {
   small_market: string
   available_contribution: string
 }
+
+/**
+ * POST /user/user-node-type 解包后的 `data`。
+ *
+ * @see docs/backend-api/api.md #user/user-node-type
+ */
+export interface UserNodeType {
+  /** 是否有发展津贴领取资格。 */
+  is_user_node_type: boolean
+}

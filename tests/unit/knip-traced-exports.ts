@@ -32,3 +32,4 @@ export {
 export { createMemoryAuthSessionStorage } from '../../src/web3/auth/session'
 export { setBscReadClientForTest } from '../../src/web3/bsc-read-client'
 export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'
+export { readLatestSagxRebaseRate1e18 } from '../../src/web3/staking/staking-hub-overview-read'

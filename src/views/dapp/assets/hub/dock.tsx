@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { useAssetsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
 import { useI18n } from '~/i18n/use-i18n'
 import { assetsHubAssets } from '~/shared/assets/dapp'
+import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
@@ -36,6 +38,7 @@ export function AssetsHubDock() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappHost()
   const overview = useAssetsHub()
+  const dots = useAssetsClaimableUnreads()
   const [hideZero, setHideZero] = useState(false)
 
   const modes = ASSET_MODES.filter((key) => {
@@ -68,7 +71,9 @@ export function AssetsHubDock() {
             onClick={() => openAssetsView(key)}
             tourId={key === 'stake' ? 'asset-mode-stake' : undefined}
           >
-            <div className="pointer-events-none relative z-10 grid gap-2">
+            {/* 不加 relative：红点锚到整张卡，不锚到内容区 */}
+            <div className="pointer-events-none z-10 grid gap-2">
+              {dots[key] ? <ClaimableDot /> : null}
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                 <div className="flex min-w-0 items-center gap-1">
                   <Icon alt="" size="xl" src={ASSET_MODE_ICONS[key]} />

@@ -14,7 +14,7 @@ import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { useParticipate } from '~/views/dapp/rewards/participate/use-participate'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { useContributionClaimRatioLabel } from '~/web3/exchange/use-burn-swap-config'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 
 export function ParticipateDetail() {
   const {
@@ -23,7 +23,6 @@ export function ParticipateDetail() {
     totalRewardsApprox,
     myPosition,
     contributionValue,
-    nextPayout,
     recordRows,
     recordsLoading,
     recordsPage,
@@ -32,8 +31,7 @@ export function ParticipateDetail() {
     inviterRows,
     inviterLoading,
   } = useParticipate()
-  const claimRatio = useContributionClaimRatioLabel()
-  const contributionHint = withContributionRatio(participate.contributionHint, claimRatio)
+  const contributionHint = withContributionRatio(participate.contributionHint)
 
   const overviewTiles = [
     {
@@ -49,7 +47,7 @@ export function ParticipateDetail() {
       value: contributionValue,
       valueHint: contributionHint,
     },
-    { key: 'nextPayout', label: participate.nextPayout, value: nextPayout },
+    { key: 'nextPayout', label: participate.nextPayout, value: <RebaseCountdownValue /> },
   ]
 
   return (
@@ -67,7 +65,7 @@ export function ParticipateDetail() {
                   className="leading-none font-semibold wrap-break-word"
                   variant="headline"
                 >
-                  <CountValue text={item.value} />
+                  {typeof item.value === 'string' ? <CountValue text={item.value} /> : item.value}
                 </Text>
                 {'valueHint' in item && item.valueHint != null ? (
                   <Text

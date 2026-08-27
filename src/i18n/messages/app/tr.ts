@@ -2386,7 +2386,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'İndirimli fiyat (%{pct})',
-        slippage: 'İzin verilen kayma',
         pay: 'Öde',
         receive: 'AGX al',
         cap: 'Maksimum alım',
@@ -2478,7 +2477,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'İndirimli fiyat (%{pct})',
-        slippage: 'İzin verilen kayma',
         pay: 'Öde',
         receive: 'AGX al',
         cap: 'Maksimum alım',
@@ -2658,6 +2656,7 @@ const app = defineMessages({
       amountBuy: 'Satın alma tutarı',
       amountAria: 'Hesaplanan tutar',
       price: 'Vade AGX fiyatı',
+      priceX: 'Vade X fiyatı',
       priceCurrent: 'Güncel {price}',
       priceAria: 'Fiyat girişi',
       days: 'Tutma günleri',
@@ -2671,10 +2670,11 @@ const app = defineMessages({
         sellTotal: 'Satış toplamı',
         invested: 'Toplam yatırım',
         yieldBar: 'Getiri {amount}',
+        lossBar: 'Zarar {amount}',
         legend: {
           released: 'Serbest bırakılan anapara değeri',
           netYield: 'Net getiri değeri',
-          netYieldHint: 'Katkı puanları düşüldükten sonraki getiri',
+          netYieldHint: 'Bileşik rebase ve vade bonusu; katkı puanı düşülmez',
           netYieldHintXmine: 'Çıkarılan X miktarı, vade X fiyatından değerlenir',
           cost: 'Maliyet',
           grossYield: 'Toplam getiri',
@@ -2753,7 +2753,7 @@ const app = defineMessages({
         'Serbest bırakma, getirinin üretilmesi ile Türbin arasında zorunlu adımdır — zamanla vergiyi, ritimle istikrarı takas edin',
       mechanismSteps: [
         { title: 'Rebase / DAO ödüllerini talep et', body: 'Getiri üretilir' },
-        { title: '{divisor} : 1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
+        { title: '1:1 katkı mekanizması', body: '%50 yakım · %50 X taban havuzuna' },
         {
           title: 'Serbest bırakma havuzuna gir · doğrusal serbest bırakma',
           body: '5 / 20 / 40 / 60 gün seçin',

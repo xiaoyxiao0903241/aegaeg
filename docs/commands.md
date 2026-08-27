@@ -11,7 +11,7 @@
 |`pnpm env:staging` / `env:prod` / `env:status`|从 `env/prod.env` / `env/staging.env` 整份写入 `.env` 与 `.env.local`|
 |`pnpm react-doctor`|React Doctor 本地扫描（devDependency；勿用 `pnpm doctor`，那是 pnpm 自检）。配置：根目录 `doctor.config.jsonc`；Cursor skill：`.agents/skills/react-doctor`（兼 `.cursor/skills/react-doctor`）|
 |`pnpm react-doctor:staged`|提交钩子：仅 staged，`--blocking error`|
-|`pnpm react-doctor:changed`|相对 base 的 changed 扫描（进 `pnpm check`）|
+|`pnpm react-doctor:changed`|相对 `origin/dev` 的 changed 扫描（进 `pnpm check`）；跳过 supply-chain / dead-code|
 
 ## 门禁
 
@@ -23,7 +23,7 @@
 |`pnpm build:tokens` / `check:tokens`|从 `tokens.json` 生成并防手改漂移|
 |`pnpm probe:bundle`|Home sync 污染 / 体积上限（build 后）|
 |`pnpm audit:prod`|prod 依赖 high+（CI 可 soft-fail）|
-|`pnpm test:unit`|Node test runner|
+|`pnpm test:unit`|Node test runner；`--test-isolation=none` 共用一台 Vite|
 |`pnpm test:e2e`|Playwright（可选，不进 check）|
 |`pnpm measure:leaf`|UI leaf A5 实测（需自备 inventory；见 `scripts/ui-leaf-a5-measure/`）|
 

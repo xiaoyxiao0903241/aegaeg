@@ -143,7 +143,7 @@ export const dappAssets = {
   rewardsHubEnterClaim: '/assets/figma/dapp/rewards-hub/ic-enter-claim.svg',
   /** 总奖励卡 gAGX 圆标。 */
   rewardsHubGagxDot: '/assets/figma/dapp/rewards-hub/ic-gagx-ellipse.svg',
-  /** 共建级别卡右侧角色装饰。 */
+  /** 共建级别卡无档时的角色装饰。 */
   rewardsHubTierDeco: '/assets/figma/dapp/rewards-hub/deco-character.png',
   /** 贡献点数「去销毁」箭头。 */
   rewardsHubGoBurnChevron: '/assets/figma/dapp/rewards-hub/ic-go-burn-chevron.svg',
@@ -151,9 +151,41 @@ export const dappAssets = {
   rewardsHubChainlink: '/assets/figma/dapp/rewards-hub/ic-chainlink.svg',
   /** 共建机制表 A6–A9 团队业绩切换。 */
   rewardsHubTierToggle: '/assets/figma/dapp/rewards-hub/ic-tier-toggle.svg',
-  /** 社区等级暗色卡片插画。 */
+  /** 社区等级暗色卡片无档时的插画。 */
   communityRankDeco: '/assets/figma/dapp/community/rank-deco.png',
 } as const
+
+/** 共建级别 A1–A13 角色装饰（压缩 webp）。 */
+const cobuildTierDecos = [
+  '/assets/figma/dapp/cobuild-tier/a1.webp',
+  '/assets/figma/dapp/cobuild-tier/a2.webp',
+  '/assets/figma/dapp/cobuild-tier/a3.webp',
+  '/assets/figma/dapp/cobuild-tier/a4.webp',
+  '/assets/figma/dapp/cobuild-tier/a5.webp',
+  '/assets/figma/dapp/cobuild-tier/a6.webp',
+  '/assets/figma/dapp/cobuild-tier/a7.webp',
+  '/assets/figma/dapp/cobuild-tier/a8.webp',
+  '/assets/figma/dapp/cobuild-tier/a9.webp',
+  '/assets/figma/dapp/cobuild-tier/a10.webp',
+  '/assets/figma/dapp/cobuild-tier/a11.webp',
+  '/assets/figma/dapp/cobuild-tier/a12.webp',
+  '/assets/figma/dapp/cobuild-tier/a13.webp',
+] as const
+
+/**
+ * 按做市等级取共建级别装饰图。
+ *
+ * A1–A13 用对应压缩图；高于 A13 用 A13；无档 / 非法用 fallback。
+ *
+ * @param rank making_rank（1 = A1）
+ * @param fallback 无档时的插画
+ */
+export function cobuildTierDecoSrc(rank: number | null | undefined, fallback: string): string {
+  if (rank == null || !Number.isFinite(rank)) return fallback
+  const n = Math.trunc(rank)
+  if (n < 1) return fallback
+  return cobuildTierDecos[Math.min(n, cobuildTierDecos.length) - 1] ?? fallback
+}
 
 export const railItems: Array<{
   id: DappTab

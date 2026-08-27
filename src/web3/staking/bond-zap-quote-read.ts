@@ -11,7 +11,6 @@ import type { BondKind } from '~/core/staking/staking-period'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_MARKET_METHODS,
-  BOND_HELPER_METHODS,
   LP_BONDING_CALCULATOR_METHODS,
   PANCAKE_PAIR_V2_METHODS,
   PANCAKE_ROUTER_V2_METHODS,
@@ -27,7 +26,6 @@ const depositoryAbi = parseAbi([
   BOND_DEPOSITORY_MARKET_METHODS.terms,
   BOND_DEPOSITORY_MARKET_METHODS.maxPayout,
 ])
-const helperAbi = parseAbi([BOND_HELPER_METHODS.slippage])
 const pairAbi = parseAbi([
   PANCAKE_PAIR_V2_METHODS.token0,
   PANCAKE_PAIR_V2_METHODS.getReserves,
@@ -39,19 +37,6 @@ const calculatorAbi = parseAbi([LP_BONDING_CALCULATOR_METHODS.valuation])
 export type BondZapAgxPreview = {
   netPayout: bigint
   grossPayout: bigint
-}
-
-/**
- * 读取 BondHelper.slippage（Bond 页展示）。
- *
- * @see docs/onchain-manual/contracts/bondhelper.md
- */
-export async function readBondHelperSlippage(): Promise<bigint> {
-  return bscReadClient.readContract({
-    address: BSC_CONTRACTS.bondHelper,
-    abi: helperAbi,
-    functionName: 'slippage',
-  })
 }
 
 /**

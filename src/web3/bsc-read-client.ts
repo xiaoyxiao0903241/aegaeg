@@ -13,8 +13,8 @@ const BSC_PUBLIC_RPC_FALLBACKS = [
   'https://bsc-dataseed3.binance.org',
 ] as const
 
-/** 保序去重；单元测可直接调用。 */
-export function uniqueRpcUrls(urls: readonly string[]): string[] {
+/** 保序去重。 */
+function uniqueRpcUrls(urls: readonly string[]): string[] {
   const seen = new Set<string>()
   const out: string[] = []
   for (const url of urls) {
@@ -53,17 +53,28 @@ export function setConnectedReadWallet(wallet: Wallet | null): void {
   connectedReadWallet = wallet
 }
 
+/** OKX 注入钱包 id（EIP-6963 rdns）；其节点不适合当 BSC 只读 RPC。 */
+const OKX_WALLET_ID = 'com.okex.wallet'
+
+function isOkxWallet(wallet: Wallet): boolean {
+  const id = typeof wallet.id === 'string' ? wallet.id.toLowerCase() : ''
+  return id === OKX_WALLET_ID
+}
+
 /**
  * 读请求是否走钱包 EIP-1193。
  *
  * 未连接、没有账户、或当前链不是 BSC → 否（公共 HTTP）。
- * 已连接 BSC → 是。异网钱包节点会把 eth_call 打到别的链，不能当 BSC 读。
+ * OKX → 否（钱包节点不可靠，读走公共 RPC）。
+ * 其余已连接 BSC → 是。异网钱包节点会把 eth_call 打到别的链，不能当 BSC 读。
  *
  * @param wallet 显式钱包；`undefined` 表示用已绑定的连接态
  */
 export function shouldUseWalletReadRpc(wallet?: Wallet | null): boolean {
   const live = wallet === undefined ? connectedReadWallet : wallet
-  return Boolean(live?.getAccount() && live.getChain()?.id === defaultChain.id)
+  if (!live?.getAccount() || live.getChain()?.id !== defaultChain.id) return false
+  if (isOkxWallet(live)) return false
+  return true
 }
 
 /** 钱包节点只读客户端；同一钱包实例复用。 */

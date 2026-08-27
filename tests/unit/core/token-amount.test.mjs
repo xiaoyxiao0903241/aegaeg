@@ -40,12 +40,19 @@ test('formatTokenAmountDraft is ungrouped and strips trailing zeros', async () =
 })
 
 test('formatTokenAmountDraft at human digits hides 1-wei dust (no …000001)', async () => {
-  const { formatTokenAmountDraft } = await loadModule('/src/core/exchange/token-amount.ts')
+  const { formatTokenAmountDraft, formatTokenAmount, parseTokenAmount } = await loadModule(
+    '/src/core/exchange/token-amount.ts',
+  )
 
   // 17906.752442 + 1 wei at 18 decimals — full precision leaks dust into the input.
   const withDust = 17906752442000000000001n
   assert.equal(formatTokenAmountDraft(withDust, 18, 18), '17906.752442000000000001')
   assert.equal(formatTokenAmountDraft(withDust, 18, 6), '17906.752442')
+
+  // 展示四舍五入；草稿截断，避免 100% 填入上溢余额
+  const halfUp = parseTokenAmount('1.2345675', 18)
+  assert.equal(formatTokenAmount(halfUp, 18, 6), '1.234568')
+  assert.equal(formatTokenAmountDraft(halfUp, 18, 6), '1.234567')
 })
 
 test('sanitizeTokenAmountInput strips grouping separators', async () => {
@@ -65,9 +72,9 @@ test('formatTokenAmount renders human readable balance', async () => {
     '/src/core/exchange/token-amount.ts',
   )
 
-  // 数字第三参 = 展示位：与 formatNumber 一致，默认补足小数（禁 0.00→0）
+  // 数字第三参 = 展示位：与 formatNumber 一致，默认补足小数、四舍五入（禁 0.00→0）
   assert.equal(formatTokenAmount(10n ** 18n, 18), '1.0000')
-  assert.equal(formatTokenAmount(1234567890000000000n, 18, 4), '1.2345')
+  assert.equal(formatTokenAmount(1234567890000000000n, 18, 4), '1.2346')
   assert.equal(formatTokenAmount(0n, 18, 2), '0.00')
 
   // 100% fill path: full decimals must round-trip to exact balance (no dust).
@@ -96,7 +103,7 @@ test('formatTokenAmount fixed digits pads trailing zeros', async () => {
   )
   assert.equal(
     formatTokenAmount(parseTokenAmount('1234.567', 18), 18, { digits: 2, trimZeros: false }),
-    '1,234.56',
+    '1,234.57',
   )
 })
 
@@ -104,16 +111,20 @@ test('formatTokenAmount dust: positive below display floor → <0.01 / <0.0001',
   const { formatTokenAmount, formatTokenAmountDraft, parseTokenAmount, tokenDisplayFloorWei } =
     await loadModule('/src/core/exchange/token-amount.ts')
 
-  // AGX 9 decimals, digits 2 → floor 0.01 AGX = 1e7 wei
+  // AGX 9 decimals, digits 2 → floor 0.01 AGX = 1e7 wei；四舍五入后仍为 0 才走粉尘
   assert.equal(tokenDisplayFloorWei(9, 2), 10n ** 7n)
   assert.equal(formatTokenAmount(1n, 9, 2), '<0.01')
-  assert.equal(formatTokenAmount(10n ** 7n - 1n, 9, 2), '<0.01')
+  assert.equal(formatTokenAmount(5n * 10n ** 6n - 1n, 9, 2), '<0.01')
+  assert.equal(formatTokenAmount(5n * 10n ** 6n, 9, 2), '0.01')
+  assert.equal(formatTokenAmount(10n ** 7n - 1n, 9, 2), '0.01')
   assert.equal(formatTokenAmount(10n ** 7n, 9, 2), '0.01')
   assert.equal(formatTokenAmount(0n, 9, 2), '0.00')
   assert.equal(formatTokenAmount(0n, 9, { digits: 2, trimZeros: false }), '0.00')
 
-  // digits 4 → <0.0001
+  // digits 4 → <0.0001；0.00005 五入为 0.0001
   assert.equal(formatTokenAmount(1n, 9, 4), '<0.0001')
+  assert.equal(formatTokenAmount(5n * 10n ** 4n - 1n, 9, 4), '<0.0001')
+  assert.equal(formatTokenAmount(5n * 10n ** 4n, 9, 4), '0.0001')
   assert.equal(formatTokenAmount(10n ** 5n, 9, 4), '0.0001')
 
   // opt-out + draft stay parseable（对象默认仍 trim，便于草稿）
@@ -141,9 +152,9 @@ test('isAssetsActionableAmount is the 0.01 display floor', async () => {
   assert.equal(isAssetsActionableAmount(xFloor - 1n, 18), false)
   assert.equal(isAssetsActionableAmount(xFloor, 18), true)
 
-  assert.equal(formatAssetsActionAmount(0n, 9), '0.00')
-  assert.equal(formatAssetsActionAmount(agxFloor - 1n, 9), '0.00')
-  assert.equal(formatAssetsActionAmount(agxFloor, 9), '0.01')
+  assert.equal(formatAssetsActionAmount(0n, 9), '0.0000')
+  assert.equal(formatAssetsActionAmount(agxFloor - 1n, 9), '0.0100')
+  assert.equal(formatAssetsActionAmount(agxFloor, 9), '0.0100')
 })
 
 test('formatNumber is the human-number display core', async () => {

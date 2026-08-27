@@ -9,11 +9,7 @@ import { withAggregate3, withBscReadClient } from './_bsc-read-client-test.mjs'
 const USER = '0x1111111111111111111111111111111111111111'
 
 test('bscReadRpcUrls dedupes primary and appends public fallbacks', async () => {
-  const { bscReadRpcUrls, uniqueRpcUrls } = await loadModule('/src/web3/bsc-read-client.ts')
-  assert.deepEqual(uniqueRpcUrls(['https://A', 'https://a', 'https://B']), [
-    'https://A',
-    'https://B',
-  ])
+  const { bscReadRpcUrls } = await loadModule('/src/web3/bsc-read-client.ts')
   const urls = bscReadRpcUrls(
     'https://primary.example',
     ['https://fallback.example'],

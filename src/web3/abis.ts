@@ -149,7 +149,7 @@ export const AGX_CONTRIBUTION_SWAP_METHODS = {
     'function userContributionConsumed(address user) view returns (uint256)',
   quoteRequiredContribution:
     'function quoteRequiredContribution(uint256 rewardAmount) view returns (uint256)',
-  /** 领取消耗除数：所需贡献 = rewardAmount / contributionDivisor → 展示为 divisor:1 */
+  /** Mixed 消耗除数：所需贡献 = rewardAmount / contributionDivisor；领取文案不读此值 */
   contributionDivisor: 'function contributionDivisor() view returns (uint256)',
   convert: 'function convert(uint256 agxAmount)',
 } as const

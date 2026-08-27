@@ -13,10 +13,11 @@ import {
   formatApiContributionPoints,
   formatContributionPoints,
 } from '~/core/exchange/format-contribution-points'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
+import { parseApiTokenWei, previewDaoClaimContribution } from '~/core/rewards/claim-contribution'
 import { evaluateRewardsMixedClaimConfirmGate } from '~/core/rewards/mixed-claim-gate'
-import { useDaoRewardTypeTotals } from '~/hooks/use-api-data'
+import { useAgxContributionSummary, useDaoRewardTypeTotals } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -26,8 +27,8 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { DaoRewardType } from '~/shared/api/types'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { hasTypeTotalClaimable, typeTotalAmount } from '~/shared/lib/dao-reward-type-totals'
 import { formatNumber } from '~/shared/presenters/format'
-import { hasTypeTotalClaimable, typeTotalAmount } from '~/views/dapp/rewards/hub/claimable'
 import { formatApiAmount, type MixedClaimView, splitAmountByPct } from '~/views/dapp/rewards/shared'
 import {
   REWARDS_BLOCKED,
@@ -48,17 +49,18 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  *
  * 管理释放 / 复投比例与时长、共建奖类型选择，
  * 幸运读 getRewardInfo 待领，无轮次一次领取；推荐/参与/共建待领读类型汇总，领取先签名再上链。
+ * DAO 签名门槛按领取额 1:1 预检；链上 Mixed 实扣仍走 quoteRequiredContribution。
  * 计划与 `daoContributionBlocked` 用本地 `useState`（随 dock remount 复位，不跨奖种共享）。
  */
 export function useMixedClaim(view: MixedClaimView) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
-  const { data: typeTotals } = useDaoRewardTypeTotals(
-    sessionReady && (view === 'cobuild' || view === 'referral' || view === 'participate'),
-  )
   const { walletReady, writeReady } = useWriteReadiness()
   const { token, invalidateSession } = useAuth()
   const account = useActiveAccount()
+  const isDaoMixed = view === 'cobuild' || view === 'referral' || view === 'participate'
+  const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady && isDaoMixed)
+  const contributionSummary = useAgxContributionSummary(sessionReady && isDaoMixed)
   const card = t.rewards.cards[view]
   const mixed = t.rewards.mixed
   const [releasePct, setReleasePctState] = useState(50)
@@ -67,7 +69,7 @@ export function useMixedClaim(view: MixedClaimView) {
   const [cobuildRewardType, setCobuildRewardTypeState] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
     'RANK_REWARD',
   )
-  /** 共建奖金额需领取签名后才可知；实时校验发现贡献不足时置位 */
+  /** 签名接口按 1:1 拒绝后置位；预检已拦时不必等这次失败 */
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
@@ -81,7 +83,7 @@ export function useMixedClaim(view: MixedClaimView) {
   const amount =
     view === 'lucky'
       ? (luckyQuery.data?.totalUnclaimedAmount ?? ZERO_BI)
-      : ZERO_BI /* 共建奖：金额在提交签名时才可知 */
+      : ZERO_BI /* DAO Mixed：链上 amount 仍为 0；预览与 1:1 预检走 type-totals */
 
   const plansQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -98,7 +100,7 @@ export function useMixedClaim(view: MixedClaimView) {
         : queryKeys.chain.assetsContribution,
     queryFn: (address) => readContributionSnapshot(address as Address, amount),
     freshness: 'balances',
-    enabled: Boolean(account?.address) && (view !== 'lucky' || amount > ZERO_BI),
+    enabled: Boolean(account?.address) && view === 'lucky' && amount > ZERO_BI,
     placeholderData: keepPreviousData,
   })
 
@@ -110,7 +112,6 @@ export function useMixedClaim(view: MixedClaimView) {
   const luckyContributionOk =
     isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data) &&
     contribQuery.data!.contribution >= contribQuery.data!.requiredContribution
-  const isDaoMixed = view === 'cobuild' || view === 'referral' || view === 'participate'
   const daoRewardType: DaoRewardType =
     view === 'referral'
       ? 'REFERRAL_REWARD'
@@ -121,7 +122,19 @@ export function useMixedClaim(view: MixedClaimView) {
           : 'RANK_REWARD'
   const preview = isDaoMixed ? typeTotalAmount(typeTotals, daoRewardType) : null
   const hasClaimablePreview = hasTypeTotalClaimable(preview)
-  const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
+  const daoClaimWei = isDaoMixed
+    ? parseApiTokenWei(typeTotals?.[daoRewardType], AGX_DECIMALS)
+    : null
+  const daoAvailableWei = isDaoMixed
+    ? parseApiTokenWei(contributionSummary.data?.available_contribution, AGX_DECIMALS)
+    : null
+  const daoContributionPreview = previewDaoClaimContribution({
+    claimAmountWei: daoClaimWei,
+    availableWei: daoAvailableWei,
+  })
+  const contributionOk = isDaoMixed
+    ? !daoContributionBlocked && (daoContributionPreview == null || daoContributionPreview.ok)
+    : luckyContributionOk
   const plansOk =
     isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
     releaseIndex != null &&
@@ -231,9 +244,9 @@ export function useMixedClaim(view: MixedClaimView) {
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(amount, AGX_DECIMALS)
-        : formatApiAmount(null)
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber(previewOrZero, { digits: 4 })
+        ? formatNumber(previewOrZero, { digits: PERSONAL_TOKEN_DIGITS })
         : t.rewards.hub.signInForBalance
   const releaseAmount =
     view === 'lucky' && amountKnown ? splitAmountByPct(amount, releasePct) : ZERO_BI
@@ -243,27 +256,37 @@ export function useMixedClaim(view: MixedClaimView) {
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-        : formatApiAmount(null)
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber((previewOrZero * releasePct) / 100, { digits: 4 })
-        : formatApiAmount(null)
+        ? formatNumber((previewOrZero * releasePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
   const restakeAmountText =
     view === 'lucky'
       ? amountKnown
         ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-        : formatApiAmount(null)
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber((previewOrZero * restakePct) / 100, { digits: 4 })
-        : formatApiAmount(null)
-  const requiredText = contribQuery.data
-    ? formatContributionPoints(contribQuery.data.requiredContribution, AGX_DECIMALS)
-    : formatApiContributionPoints(null)
-  const haveText = contribQuery.data
-    ? formatContributionPoints(contribQuery.data.contribution, AGX_DECIMALS)
-    : formatApiContributionPoints(null)
+        ? formatNumber((previewOrZero * restakePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
+        : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
+  const requiredText = isDaoMixed
+    ? daoClaimWei != null && daoClaimWei > ZERO_BI
+      ? formatContributionPoints(daoClaimWei, AGX_DECIMALS)
+      : formatApiContributionPoints(null)
+    : contribQuery.data
+      ? formatContributionPoints(contribQuery.data.requiredContribution, AGX_DECIMALS)
+      : formatApiContributionPoints(null)
+  const haveText = isDaoMixed
+    ? daoAvailableWei != null
+      ? formatContributionPoints(daoAvailableWei, AGX_DECIMALS)
+      : formatApiContributionPoints(contributionSummary.data?.available_contribution ?? null)
+    : contribQuery.data
+      ? formatContributionPoints(contribQuery.data.contribution, AGX_DECIMALS)
+      : formatApiContributionPoints(null)
   const showContributionShort =
     !contributionOk &&
-    (view === 'lucky' ? amount > ZERO_BI && contribQuery.data != null : daoContributionBlocked)
+    (view === 'lucky'
+      ? amount > ZERO_BI && contribQuery.data != null
+      : daoContributionBlocked || daoContributionPreview?.ok === false)
 
   function onConfirm() {
     if (!canConfirm) return

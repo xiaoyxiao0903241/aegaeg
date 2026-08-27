@@ -1,6 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -41,7 +42,9 @@ export function AssetsRedeemConfirm({
   // 无金额文案时展示 0，但不放开确认（空串 / 旧诚实空「—」）
   const hasAmount = Boolean(amountLabel && amountLabel !== '—')
   const displayAmount =
-    amountLabel && amountLabel !== '—' ? amountLabel : formatNumber(0, { digits: 2 })
+    amountLabel && amountLabel !== '—'
+      ? amountLabel
+      : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
 
   return (
     <ResponsiveDialog

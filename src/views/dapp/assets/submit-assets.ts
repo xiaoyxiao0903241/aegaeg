@@ -93,11 +93,10 @@ async function readMixedClaimSnapshot(
     restakeDays,
   )
   const rewardAvailable = await readMixedRewardAvailable(target, user)
-  const contrib = await readContributionSnapshot(user, rewardAvailable)
+  const contrib = await readContributionSnapshot(user, rewardAvailable, false)
   return {
     rewardAvailable,
     contribution: contrib.contribution,
-    requiredContribution: contrib.requiredContribution,
     releasePlanIndex,
     restakePlanIndex,
   }
@@ -138,7 +137,6 @@ export async function submitMixedClaim(args: {
           amount: snap.rewardAvailable,
           rewardAvailable: snap.rewardAvailable,
           contribution: snap.contribution,
-          requiredContribution: snap.requiredContribution,
           releasePlanIndex: snap.releasePlanIndex,
           restakePlanIndex: snap.restakePlanIndex,
           decimals: GAGX_DECIMALS,

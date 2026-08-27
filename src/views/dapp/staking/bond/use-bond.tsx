@@ -2,7 +2,11 @@ import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import type { BondKind } from '~/core/staking/staking-period'
 import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -19,9 +23,10 @@ import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapBondPurchaseToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 import { BOND_ZAP_BLOCKED } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondSession } from '~/views/dapp/staking/bond/use-bond-session'
-import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
+import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
@@ -30,7 +35,7 @@ import {
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import { useLatestSagxRebaseRateQuery } from '~/web3/staking/use-staking-queries'
 
 /**
  * 债券视图：组合表单状态、CTA 文案与提交入口
@@ -64,7 +69,6 @@ export function useBondDock(kind: BondKind) {
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
     balance: sessionReady && walletReady ? bond.balanceLabel : '',
-    digits: 2,
   })
 
   async function onSubmit() {
@@ -113,7 +117,7 @@ export function useBondDetail(kind: BondKind) {
   const { sessionReady, walletReady } = useDappHost()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
   const priceUsd = useAgxPriceUsd()
-  const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
   const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
   const market180 = useChainQuery({
     queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),
@@ -145,7 +149,7 @@ export function useBondDetail(kind: BondKind) {
   const burnPurchases = useBondFlowBurnPurchases(pageParams, sessionReady && kind === 'burn')
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
 
-  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
   const totalDeposit = [market180.data, market360.data, market540.data].reduce(
     (sum, m) => sum + (m?.totalDeposit ?? ZERO_BI),
@@ -185,7 +189,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(totalDepositNum, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(totalDeposit, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(totalDeposit, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -197,13 +201,7 @@ export function useBondDetail(kind: BondKind) {
     {
       label: copy.overviewMetrics[2]?.label ?? '',
       hint: copy.overviewMetrics[2]?.hint,
-      value: (
-        <RebaseCountdownValue
-          currentBlock={overviewQuery.data?.currentBlock}
-          epochEndBlock={overviewQuery.data?.epochEndBlock}
-          secondsPerBlock={overviewQuery.data?.secondsPerBlock}
-        />
-      ),
+      value: <RebaseCountdownValue />,
     },
     {
       label: copy.overviewMetrics[3]?.label ?? '',
@@ -220,7 +218,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(held, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(payoutRemaining, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(payoutRemaining, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -231,7 +229,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(released, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pendingPayout, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(pendingPayout, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -242,7 +240,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(pending, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(pendingRelease, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -253,7 +251,7 @@ export function useBondDetail(kind: BondKind) {
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(profit, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
         />
       ),
     },

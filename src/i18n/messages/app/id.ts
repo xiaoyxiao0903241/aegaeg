@@ -2391,7 +2391,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Harga diskon ({pct}%)',
-        slippage: 'Slippage diizinkan',
         pay: 'Bayar',
         receive: 'Terima AGX',
         cap: 'Pembelian maksimum',
@@ -2483,7 +2482,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Harga diskon ({pct}%)',
-        slippage: 'Slippage diizinkan',
         pay: 'Bayar',
         receive: 'Terima AGX',
         cap: 'Pembelian maksimum',
@@ -2663,6 +2661,7 @@ const app = defineMessages({
       amountBuy: 'Jumlah pembelian',
       amountAria: 'Jumlah',
       price: 'Harga AGX jatuh tempo',
+      priceX: 'Harga X jatuh tempo',
       priceCurrent: 'Saat ini ${price}',
       priceAria: 'Input harga',
       days: 'Hari kepemilikan',
@@ -2676,10 +2675,11 @@ const app = defineMessages({
         sellTotal: 'Total penjualan',
         invested: 'Total investasi',
         yieldBar: 'Hasil {amount}',
+        lossBar: 'Rugi {amount}',
         legend: {
           released: 'Nilai pokok yang dirilis',
           netYield: 'Nilai hasil bersih',
-          netYieldHint: 'Hasil setelah poin kontribusi dipotong',
+          netYieldHint: 'Rebase berbunga plus bonus tenor; poin kontribusi tidak dipotong',
           netYieldHintXmine: 'Jumlah X yang ditambang, dinilai dengan harga X jatuh tempo',
           cost: 'Biaya investasi',
           grossYield: 'Total hasil',
@@ -2759,7 +2759,7 @@ const app = defineMessages({
         'Rilis adalah langkah wajib dari terciptanya yield hingga Turbine — tukar waktu untuk pajak lebih rendah dan keluar yang lebih stabil',
       mechanismSteps: [
         { title: 'Klaim hadiah Rebase / DAO', body: 'Yield tercipta' },
-        { title: 'Mekanisme kontribusi {divisor} : 1', body: '50% bakar · 50% ke pool X' },
+        { title: 'Mekanisme kontribusi 1:1', body: '50% bakar · 50% ke pool X' },
         { title: 'Masuk kolam rilis · rilis linear', body: 'Pilih periode 5 / 20 / 40 / 60 hari' },
         { title: 'Klaim masuk Turbine', body: 'Beli 1:1 untuk membuka kuota jual' },
       ],

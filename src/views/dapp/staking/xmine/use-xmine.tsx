@@ -6,6 +6,7 @@ import {
   formatTokenAmount,
   formatTokenAmountInputDisplay,
   formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
 } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateXmineLive, xmineSpendableCap } from '~/core/staking/staking-block-reasons'
@@ -141,11 +142,11 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, 2),
+        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS),
     quotaLabel:
       preflightQuery.data !== undefined
-        ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, 4)
-        : formatNumber(0, { digits: 4 }),
+        ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+        : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
@@ -176,13 +177,12 @@ export function useXmineDock() {
 
   const amountLabel = formatAmountBalanceLabel(t.staking.xmine.amountBalance, {
     balance: sessionReady && walletReady ? xmine.balanceLabel : '',
-    digits: 2,
   })
 
   const blockHint =
     xmine.blockReason === 'insufficientQuota'
       ? interpolate(t.staking.blocked.insufficientXmineQuotaWithAmount, {
-          quota: xmine.quotaLabel || formatNumber(0, { digits: 4 }),
+          quota: xmine.quotaLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS }),
         })
       : writeBlockHint(xmine.blockReason, t.staking.blocked)
 
@@ -285,7 +285,7 @@ export function useXmineDetail() {
       value: (
         <StakingTokenMetricValue
           icon="x"
-          value={formatNumber(lifetimeX, { digits: 2, suffix: ' X' })}
+          value={formatNumber(lifetimeX, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' X' })}
         />
       ),
     },
@@ -329,12 +329,12 @@ export function useXmineDetail() {
 
   const heldLabel =
     chainPosition.data != null
-      ? `${formatTokenAmount(chainPosition.data.miningStake, GAGX_DECIMALS, 2)} gAGX`
-      : formatNumber(held, { digits: 2, suffix: ' gAGX' })
+      ? `${formatTokenAmount(chainPosition.data.miningStake, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`
+      : formatNumber(held, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' })
   const pendingLabel =
     chainPosition.data != null
-      ? `${formatTokenAmount(chainPosition.data.pending, X_DECIMALS, 2)} X`
-      : formatNumber(pendingX, { digits: 2, suffix: ' X' })
+      ? `${formatTokenAmount(chainPosition.data.pending, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`
+      : formatNumber(pendingX, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' X' })
 
   const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
@@ -354,7 +354,7 @@ export function useXmineDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(0, priceUsd)}
           icon="gagx"
-          value={formatNumber(0, { digits: 2, suffix: ' gAGX' })}
+          value={formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' })}
         />
       ),
     },
@@ -376,7 +376,7 @@ export function useXmineDetail() {
   const recordsTotal = logsQuery.data?.total ?? 0
   const recordsSummary = interpolate(t.staking.aside.recordsFooter.xmine, {
     amount: formatNumber(parseApiAmountOrZero(positionsQuery.data?.total_stake_amount), {
-      digits: 2,
+      digits: PERSONAL_TOKEN_DIGITS,
     }),
   })
 

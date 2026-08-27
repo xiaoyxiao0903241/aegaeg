@@ -1,7 +1,7 @@
 /**
  * 可领红点「已看过」指纹的本地存储。
  *
- * 按钱包地址 + 源（涡轮 / 释放池 / 缓冲池 / 奖励卡）记下用户上次在子页聚焦时的指纹。
+ * 按钱包地址 + 源（涡轮 / 释放池 / 缓冲池 / 奖励六卡 / 资产四卡到期）记下用户上次在子页聚焦时的指纹。
  * 读失败一律视为从未看过（null），避免脏数据把红点永久掐灭。
  *
  * @see src/core/claimable-unread.ts
@@ -14,8 +14,15 @@ export type ClaimableSeenSource =
   | 'release.queue'
   | 'release.buffer'
   | 'rewards.lucky'
+  | 'rewards.referral'
+  | 'rewards.participate'
+  | 'rewards.cobuild'
   | 'rewards.grant'
   | 'rewards.genesis'
+  | 'assets.stake'
+  | 'assets.lpbond'
+  | 'assets.burnbond'
+  | 'assets.xmine'
 
 type SeenMap = Record<string, Partial<Record<ClaimableSeenSource, string>>>
 

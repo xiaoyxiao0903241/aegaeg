@@ -6,8 +6,11 @@ import { type EpochScheduleLabels, formatEpochScheduleLabels } from '~/core/stak
 import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
-import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
-import { readStakingHubOverview } from '~/web3/staking/staking-hub-overview-read'
+import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
+import {
+  readLatestSagxRebaseRate,
+  readStakingHubOverview,
+} from '~/web3/staking/staking-hub-overview-read'
 import {
   readBondZapPreflight,
   readStakeOpenPreflight,
@@ -15,7 +18,7 @@ import {
 } from '~/web3/staking/staking-read'
 import { readXmineOverview } from '~/web3/staking/xmine-overview-read'
 
-/** 质押中心页公开概览查询：质押池 / 流通 / 国库 / 销毁 / rebase，无钱包依赖。 */
+/** 质押中心页公开概览查询：质押池 / 流通 / 国库 / 销毁 / epoch，无钱包依赖。 */
 export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.stakingHubOverview,
@@ -23,6 +26,18 @@ export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
     freshness: 'balances',
     enabled: options?.enabled ?? true,
     queryFn: () => readStakingHubOverview(),
+    placeholderData: keepPreviousData,
+  })
+}
+
+/** 最近一次 sAGX rebase 率与每日 epoch 数；与 Hub 概览拆开。 */
+export function useLatestSagxRebaseRateQuery(options?: ChainQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.sagxLatestRebase,
+    scope: 'public',
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: () => readLatestSagxRebaseRate(),
     placeholderData: keepPreviousData,
   })
 }
@@ -90,18 +105,6 @@ export function useBondZapPreflightQuery(depository: Address, options?: ChainQue
         depository,
         user,
       }),
-    placeholderData: keepPreviousData,
-  })
-}
-
-/** BondHelper 滑点查询（公开，报价级新鲜度）。 */
-export function useBondHelperSlippageQuery(options?: ChainQueryOptions) {
-  return useChainQuery({
-    queryKey: queryKeys.chain.bondHelperSlippage,
-    scope: 'public',
-    freshness: 'quote',
-    enabled: options?.enabled ?? true,
-    queryFn: () => readBondHelperSlippage(),
     placeholderData: keepPreviousData,
   })
 }

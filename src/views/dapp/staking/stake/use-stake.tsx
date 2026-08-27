@@ -2,14 +2,17 @@ import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  formatTokenAmount,
+  formatTokenAmountToNumber,
+  PERSONAL_TOKEN_DIGITS,
+} from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
   lockedBonusBps,
-  periodYieldPct,
-  stakePeriodDays,
+  scenarioPeriodYieldPct,
 } from '~/core/staking/staking-yield'
 import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -26,24 +29,22 @@ import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { mapStakePositionToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
-import { RebaseCountdownValue, StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
+import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
+import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
+import {
+  formatBonusPct,
+  formatRebasePct,
+  formatYieldPct,
+  parseApiAmountOrZero,
+} from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
 import { readStakePositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
-
-const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
-
-function formatYieldPct(pct: number | null): string {
-  if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatNumber(pct, { digits: 2 })}%`
-}
-
-function formatBonusPct(bps: number): string {
-  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
-}
+import {
+  useLatestSagxRebaseRateQuery,
+  useStakingHubOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
 
 /**
  * 质押视图：组合表单状态、CTA 文案与提交入口
@@ -58,6 +59,7 @@ export function useStakeDock() {
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useDappHost()
   const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
 
   const stake = useStakeSession(sessionReady, {
     onOpenSuccess: () => {
@@ -82,14 +84,13 @@ export function useStakeDock() {
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
     balance: sessionReady && walletReady ? stake.balanceLabel : '',
-    digits: 2,
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {
     bindReferral: t.staking.stake.bindCta,
     submit: t.staking.stake.submit,
   })
-  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, 4)
+  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
   const quotaCopy =
     stake.quotaKind === 'personalDaily'
       ? t.staking.blocked.insufficientQuotaPersonalDailyWithAmount
@@ -101,15 +102,14 @@ export function useStakeDock() {
       ? interpolate(quotaCopy, { quota: quotaLabel })
       : writeBlockHint(stake.blockReason, t.staking.blocked)
 
-  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
-  const bonusBps = lockedBonusBps(stake.period)
   const yieldMeta = {
     baseDaily: formatYieldPct(baseDaily),
     periodYield: formatYieldPct(
-      baseDaily == null ? null : periodYieldPct(baseDaily, stakePeriodDays(stake.period)),
+      scenarioPeriodYieldPct(epochPct, overviewQuery.data?.epochsPerDay, stake.period, 'stake'),
     ),
-    bonus: formatBonusPct(bonusBps),
+    bonus: formatBonusPct(lockedBonusBps(stake.period)),
   }
 
   async function onSubmit() {
@@ -156,6 +156,7 @@ export function useStakeDetail() {
   const { sessionReady, walletReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
   const [recordsPage, setRecordsPage] = useState(1)
   const recordsQuery = useStakeFlowPositions(tablePageQuery(recordsPage), sessionReady)
   const stakeQuery = useChainQuery({
@@ -166,7 +167,7 @@ export function useStakeDetail() {
   const poolAgxWei = overviewQuery.data?.poolAgxBalance
   const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : 0
   const epochNumber = overviewQuery.data?.epochNumber ?? ZERO_BI
-  const rebaseLabel = formatRebasePct(overviewQuery.data?.rebaseRate1e18)
+  const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
@@ -188,13 +189,7 @@ export function useStakeDetail() {
     {
       label: t.staking.stake.overviewMetrics[2]?.label ?? '下一次 Rebase 发放',
       hint: t.staking.stake.overviewMetrics[2]?.hint,
-      value: (
-        <RebaseCountdownValue
-          currentBlock={overviewQuery.data?.currentBlock}
-          epochEndBlock={overviewQuery.data?.epochEndBlock}
-          secondsPerBlock={overviewQuery.data?.secondsPerBlock}
-        />
-      ),
+      value: <RebaseCountdownValue />,
     },
     {
       label: t.staking.stake.overviewMetrics[3]?.label ?? '当前 Rebase 收益率',
@@ -229,7 +224,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeHeld, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(principal, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(principal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -240,7 +235,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakeReleased, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(released, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -251,7 +246,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(stakePending, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pending, AGX_DECIMALS, 2)} AGX`}
+          value={`${formatTokenAmount(pending, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
         />
       ),
     },
@@ -262,7 +257,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(blockReward, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(blockReward, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
         />
       ),
     },
@@ -273,7 +268,7 @@ export function useStakeDetail() {
         <StakingTokenMetricValue
           approx={formatUsdApprox(bonusGagx, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(extraInterest, GAGX_DECIMALS, 2)} gAGX`}
+          value={`${formatTokenAmount(extraInterest, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
         />
       ),
     },
@@ -285,7 +280,7 @@ export function useStakeDetail() {
   const recordsTotal = recordsQuery.data?.total ?? 0
   const recordsSummary = interpolate(t.staking.aside.recordsFooter.stake, {
     amount: formatNumber(parseApiAmountOrZero(recordsQuery.data?.total_stake_amount), {
-      digits: 2,
+      digits: PERSONAL_TOKEN_DIGITS,
     }),
   })
 

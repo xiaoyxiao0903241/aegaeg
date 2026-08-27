@@ -9,6 +9,7 @@ export type RewardsApiClaimView = 'referral' | 'participate' | 'cobuild' | 'gran
  * @param totals 待领汇总；未加载为 null
  * @param field 接口字段
  * @returns 可领数量；未知为 null
+ * @see docs/backend-api/api.md #dao-reward/type-totals
  */
 export function typeTotalAmount(
   totals: DaoRewardTypeTotals | null | undefined,
@@ -31,6 +32,7 @@ export function hasTypeTotalClaimable(value: number | null | undefined): boolean
  * @param view 后端待领卡
  * @param totals 待领汇总
  * @returns 可领数量；未知为 null
+ * @see docs/backend-api/api.md #dao-reward/type-totals
  */
 export function hubApiClaimableFromTypeTotals(
   view: RewardsApiClaimView,

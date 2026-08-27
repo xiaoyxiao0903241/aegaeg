@@ -4,11 +4,33 @@ import type { StakePeriod } from '~/core/staking/staking-period'
 export type CalcProduct = 'stake' | 'lpbond' | 'burnbond' | 'xmine'
 
 /** 计算器滑块与预估曲线的最大天数范围（仅计算器用，非产品锁定期限）。 */
-export const CALC_MAX_DAYS = 720
+export const CALC_MAX_DAYS = 540
+
+/** 计算器滑杆默认落点（天）。 */
+export const CALC_DEFAULT_DAYS = 100
+
+/** X 挖矿价格轨迹起点（USD）；算法常量，非链上参数。 */
+export const CALC_X_START_USD = 0.02
 
 export type CalcYieldCurvePoint = {
   day: number
-  interestUsd: number
+  /** 第 day 天的收益总额（卖出总值 − 总投入），可为负。 */
+  profitUsd: number
+}
+
+export type CalcDaySnapshot = {
+  /** 折算后的 AGX 本金（债券为折扣后份额）。 */
+  principalAgx: number
+  /** 总投入（质押/挖矿 = 数量 × AGX 现价；债券 = 实付 USD1）。 */
+  costUsd: number
+  releasedAgx: number
+  /** 净收益数量（AGX 或 X），不扣 1/6。 */
+  rewards: number
+  releasedUsd: number
+  rewardsUsd: number
+  sellUsd: number
+  profitUsd: number
+  ratePct: number
 }
 
 /**
@@ -45,7 +67,7 @@ export function epochRebasePctFrom1e18(rate1e18: bigint | null | undefined): num
 }
 
 /** 一天秒数；与 epoch.length × 秒/块 一起推 epochsPerDay。 */
-export const SECONDS_PER_DAY = 86_400
+const SECONDS_PER_DAY = 86_400
 
 /**
  * 由 epoch 区块长度与出块秒数推算每日 epoch 数。
@@ -149,73 +171,41 @@ export function baseDailyPctFromEpoch(
 }
 
 /**
- * 本金按日利率复利计算的利息。
+ * 价格不变时持有至到期的周期收益率。
  *
- * @param principal 本金
- * @param dailyPct 日收益率（百分比，如 0.82 表示 0.82%/日）
- * @param days 复利天数
- * @returns 复利利息；任一入参非法返回 0
+ * 质押：((1+rp)^(epochs×T) + rp×epochs×T×bonus) − 1，bonus 为 LOCKED_*_BONUS_BPS。
+ * 债券：((1+rp)^(epochs×T) / disc) − 1，disc 为 discountRateBP/10000。
+ * 活期 T=1。利率或日频缺省返回 null。
+ *
+ * @param epochRebasePct 单 epoch rebase（百分比）
+ * @param epochsPerDay 每日 epoch 数
+ * @param period 产品周期
+ * @param product 质押或债券
+ * @param discountRateBP 债券成交价率 BPS；省略用手册档位，显式 null 则不算
+ * @returns 周期收益率（百分比）；输入无效返回 null
+ * @see docs/onchain-manual/contracts/rewardmanager.md
+ * @see docs/onchain-manual/contracts/bonddepository.md
  */
-export function compoundInterest(principal: number, dailyPct: number, days: number): number {
-  if (!(principal > 0) || !(dailyPct >= 0) || !(days > 0)) return 0
-  const r = dailyPct / 100
-  return principal * ((1 + r) ** days - 1)
-}
-
-/**
- * 定期池锁定加成利息。
- *
- * FAQ：未领取期间加成不参与复利。
- * 每 epoch：本金 × (epochPct/100) × (bps/10000)；再 × 天数 × 每日 epoch 数。
- *
- * @param principal 本金
- * @param epochPct 单 epoch 收益率（百分比）
- * @param bonusBps 锁定加成（BPS）
- * @param days 天数
- * @param epochsPerDay 每日 epoch 数（链上推算）；缺 / ≤0 / 非有限 → 0
- * @returns 锁定加成利息；任一入参非法返回 0
- */
-export function lockedBonusInterest(
-  principal: number,
-  epochPct: number,
-  bonusBps: number,
-  days: number,
+export function scenarioPeriodYieldPct(
+  epochRebasePct: number | null | undefined,
   epochsPerDay: number | null | undefined,
-): number {
-  if (!(principal > 0) || !(epochPct >= 0) || !(bonusBps > 0) || !(days > 0)) return 0
-  if (epochsPerDay == null || !(epochsPerDay > 0) || !Number.isFinite(epochsPerDay)) return 0
-  const perEpoch = principal * (epochPct / 100) * (bonusBps / 10_000)
-  return perEpoch * days * epochsPerDay
-}
-
-/**
- * 仅按基础日复利计算的周期收益率百分比。
- *
- * 锁定加成单独列出，不并入本值。
- *
- * @param baseDailyPct 基础日收益率（百分比）
- * @param periodDays 周期天数
- * @returns 周期收益率（百分比）；入参非法返回 0
- */
-export function periodYieldPct(baseDailyPct: number, periodDays: number): number {
-  if (!(baseDailyPct >= 0) || !(periodDays > 0)) return 0
-  const r = baseDailyPct / 100
-  return ((1 + r) ** periodDays - 1) * 100
-}
-
-/**
- * 质押/债券周期行展示用的期限天数。
- *
- * 活期无固定期限，展示为 1 天（对应“周期收益率”口径）。
- *
- * @param period 产品周期（'180' | '360' | '540' 或其他）
- * @returns 期限天数；非定期返回 1
- */
-export function stakePeriodDays(period: StakePeriod): number {
-  if (period === '180') return 180
-  if (period === '360') return 360
-  if (period === '540') return 540
-  return 1
+  period: StakePeriod,
+  product: 'stake' | 'bond',
+  discountRateBP?: bigint | number | null,
+): number | null {
+  if (epochRebasePct == null || !Number.isFinite(epochRebasePct) || epochRebasePct < 0) return null
+  if (epochsPerDay == null || !(epochsPerDay > 0) || !Number.isFinite(epochsPerDay)) return null
+  const days = calcLockDays(period) ?? 1
+  const n = epochsPerDay * days
+  const rp = epochRebasePct / 100
+  const compound = (1 + rp) ** n
+  if (product === 'bond') {
+    const raw =
+      discountRateBP === undefined ? handbookBondDiscountRateBP(period) : Number(discountRateBP)
+    if (raw == null || !(raw > 0) || !Number.isFinite(raw)) return null
+    return (compound / (raw / 10_000) - 1) * 100
+  }
+  return (compound + rp * n * (lockedBonusBps(period) / 10_000) - 1) * 100
 }
 
 /**
@@ -235,148 +225,277 @@ export function handbookBondDiscountRateBP(period: StakePeriod): number | null {
 }
 
 /**
- * 按日线性利息（非复利）：本金 ×（日收益率 / 100）× 天数。
- * 对齐 XStakingPool：本金 × yieldRateBP × 天数 / 10000（日收益率% = yieldRateBP/100）。
+ * 计算器锁仓天数；活期无锁仓，返回 null。
  *
- * @param principal 本金
- * @param dailyPct 日收益率（百分比，如 0.82 表示 0.82%/日）
- * @param days 天数
- * @returns 线性利息；任一入参非法返回 0
+ * @param period 产品周期
+ * @returns 180 / 360 / 540；非定期返回 null
  */
-export function linearInterest(principal: number, dailyPct: number, days: number): number {
-  if (!(principal > 0) || !(dailyPct >= 0) || !(days > 0)) return 0
-  return principal * (dailyPct / 100) * days
+export function calcLockDays(period: StakePeriod): number | null {
+  if (period === '180') return 180
+  if (period === '360') return 360
+  if (period === '540') return 540
+  return null
 }
 
 /**
- * 计算器用的本地代币利息。
+ * 第 d 天已释放本金。
  *
- * 质押：rebase 复利 + 定期锁定加成。
- * 债券：USD1 经 discountRateBP 折成 AGX 后再按 rebase 复利；返回利息为 USD（AGX 利息 × 现价）。
- * Xmine：按日线性（非复利）。
+ * 活期 d≥1 即全额；锁仓按 d/T 线性，上限 1。
  *
- * @param args.product 产品类型（stake / lpbond / burnbond / xmine）
- * @param args.period 产品周期
- * @param args.principal 本金（stake/xmine 为代币量；债券为 USD1）
- * @param args.days 天数
- * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
- * @param args.xmineDailyPct XMine 日收益率（百分比）；仅 xmine 使用
- * @param args.agxPriceUsd AGX 现价（USD）；债券必填
- * @param args.discountRateBP 债券成交价率 BPS；缺省用手册档位
- * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺 → 与无 rebase 同路零利息
- * @returns 利息与本金合计；本金或天数为 0 时利息为 0
+ * @param amount AGX 本金
+ * @param days 测算天数
+ * @param lockDays 锁仓天数；null 为活期
+ * @returns 已释放数量
  */
-export function calcLocalInterest(args: {
+export function releasedPrincipal(amount: number, days: number, lockDays: number | null): number {
+  if (!(amount > 0) || !(days >= 1)) return 0
+  if (lockDays == null) return amount
+  return amount * Math.min(days / lockDays, 1)
+}
+
+/**
+ * X 挖矿逐日路径：AGX 按投入现价，X 价从起点拟合到到期价。
+ * 当日产出 = 本金 × AGX 现价 × 日利率 / 当日 X 价。
+ */
+function xminePath(args: {
+  amount: number
+  horizonDays: number
+  pdX: number
+  maxDay: number
+  dailyValueRate: number
+  spotUsd: number
+}): { px: number[]; cumX: number[] } {
+  const d0 = Math.max(1, args.horizonDays)
+  const startX = CALC_X_START_USD
+  const g = (Math.max(args.pdX, 1e-12) / startX) ** (1 / d0)
+  const px = [startX]
+  const cumX = [0]
+  let cum = 0
+  for (let t = 1; t <= args.maxDay; t += 1) {
+    const pxT = startX * g ** t
+    cum += (args.amount * args.spotUsd * args.dailyValueRate) / Math.max(pxT, 1e-12)
+    px.push(pxT)
+    cumX.push(cum)
+  }
+  return { px, cumX }
+}
+
+function emptySnap(costUsd: number): CalcDaySnapshot {
+  return {
+    principalAgx: 0,
+    costUsd: Math.max(0, costUsd),
+    releasedAgx: 0,
+    rewards: 0,
+    releasedUsd: 0,
+    rewardsUsd: 0,
+    sellUsd: 0,
+    profitUsd: -Math.max(0, costUsd),
+    ratePct: costUsd > 0 ? -100 : 0,
+  }
+}
+
+/**
+ * 第 d 天测算：复利按 epoch、加成按单利毛 Rebase、本金线性释放。
+ *
+ * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (现价 × 链上 discountRateBP/10000)。
+ * 投入按 AGX 现价，卖出按用户到期价。现价 ≤0 时不计。利率或日频缺省时收益为 0。
+ * 债券缺成交价率时不计本金。X 挖矿按当日 AGX 现价 × 链上日利率折成 X。
+ *
+ * @param args.product 产品
+ * @param args.period 周期
+ * @param args.amount 质押 AGX / 挖矿 gAGX / 债券购买 USD1
+ * @param args.days 测算天数
+ * @param args.pd 到期 AGX 价（挖矿则为到期 X 价）
+ * @param args.spotUsd AGX 投入现价；≤0 时不计
+ * @param args.epochRebasePct 链上单 epoch rebase（百分比）；缺则收益为 0
+ * @param args.epochsPerDay 链上每日 epoch 数；缺则收益为 0
+ * @param args.xmineDailyPct 链上 X 挖矿日利率（百分比）；缺则挖矿收益为 0
+ * @param args.discountRateBP 链上债券成交价率 BPS；债券缺则不计
+ * @param args.horizonDays 挖矿价格轨迹拟合天数；缺省与 days 相同
+ * @returns 本金 / 释放 / 收益 / 卖出 / 收益率
+ * @see docs/onchain-manual/contracts/rewardmanager.md
+ * @see docs/onchain-manual/contracts/bonddepository.md
+ * @see docs/onchain-manual/contracts/xstakingpool.md
+ */
+export function computeCalcDay(args: {
   product: CalcProduct
   period: StakePeriod
-  principal: number
+  amount: number
   days: number
+  pd: number
+  spotUsd: number
   epochRebasePct: number | null
+  epochsPerDay: number | null
   xmineDailyPct?: number | null
-  agxPriceUsd?: number | null
   discountRateBP?: number | null
-  epochsPerDay?: number | null
-}): { interest: number; total: number } {
-  const { product, period, principal, days, epochRebasePct, xmineDailyPct, epochsPerDay } = args
+  horizonDays?: number
+}): CalcDaySnapshot {
+  const days = Math.min(Math.max(0, Math.round(args.days)), CALC_MAX_DAYS)
+  const pd = args.pd
+  const spotUsd = args.spotUsd
+  const spotOk = Number.isFinite(spotUsd) && spotUsd > 0
+  const isBond = args.product === 'lpbond' || args.product === 'burnbond'
+  const lock = calcLockDays(args.period)
 
-  if (!(principal > 0) || !(days > 0)) {
-    return { interest: 0, total: Math.max(0, principal) }
-  }
-
-  if (product === 'xmine') {
-    const daily = xmineDailyPct
-    if (daily == null || !(daily >= 0)) return { interest: 0, total: principal }
-    const interest = linearInterest(principal, daily, days)
-    return { interest, total: principal + interest }
-  }
-
-  if (epochRebasePct == null) {
-    return { interest: 0, total: principal }
-  }
-
-  const baseDaily = baseDailyPctFromEpoch(epochRebasePct, epochsPerDay)
-  if (baseDaily == null) return { interest: 0, total: principal }
-
-  const isBond = product === 'lpbond' || product === 'burnbond'
-  if (isBond) {
-    const price = args.agxPriceUsd
-    // 显式传入（含 0）优先生效；未传才回落手册档位
-    const discountBP =
-      args.discountRateBP !== undefined && args.discountRateBP !== null
-        ? args.discountRateBP
-        : handbookBondDiscountRateBP(period)
-    // 缺价或折扣非法 → 零利息，避免把 USD1 当 AGX 直接复利
-    if (price == null || !(price > 0) || discountBP == null || !(discountBP > 0)) {
-      return { interest: 0, total: principal }
+  if (args.product === 'xmine') {
+    const A = args.amount
+    const costUsd = A > 0 && spotOk ? A * spotUsd : 0
+    if (!(A > 0) || !(days >= 1) || !(pd > 0) || !spotOk) return emptySnap(costUsd)
+    const dailyPct = args.xmineDailyPct
+    const dailyValueRate =
+      dailyPct != null && Number.isFinite(dailyPct) && dailyPct >= 0 ? dailyPct / 100 : 0
+    const horizon = args.horizonDays ?? days
+    const path = xminePath({
+      amount: A,
+      horizonDays: horizon,
+      pdX: pd,
+      maxDay: days,
+      dailyValueRate,
+      spotUsd,
+    })
+    const releasedAgx = releasedPrincipal(A, days, lock)
+    const rewards = path.cumX[days] ?? 0
+    const releasedUsd = releasedAgx * spotUsd
+    const rewardsUsd = rewards * (path.px[days] ?? pd)
+    const sellUsd = releasedUsd + rewardsUsd
+    const profitUsd = sellUsd - costUsd
+    return {
+      principalAgx: A,
+      costUsd,
+      releasedAgx,
+      rewards,
+      releasedUsd,
+      rewardsUsd,
+      sellUsd,
+      profitUsd,
+      ratePct: costUsd > 0 ? (profitUsd / costUsd) * 100 : 0,
     }
-    // payout ≈ value/agxPrice × 10000/discountRateBP
-    const agxPrincipal = (principal / price) * (10_000 / discountBP)
-    const interestAgx = compoundInterest(agxPrincipal, baseDaily, days)
-    const interestUsd = interestAgx * price
-    return { interest: interestUsd, total: principal + interestUsd }
   }
 
-  const compound = compoundInterest(principal, baseDaily, days)
-  // 仅定期质押有锁定加成；债券已在上方分支处理。
-  const bonus = lockedBonusInterest(
-    principal,
-    epochRebasePct,
-    lockedBonusBps(period),
-    days,
-    epochsPerDay,
-  )
-  const interest = compound + bonus
-  return { interest, total: principal + interest }
+  let principalAgx: number
+  let costUsd: number
+  if (isBond) {
+    const discountBP = args.discountRateBP
+    costUsd = args.amount > 0 ? args.amount : 0
+    if (
+      !(args.amount > 0) ||
+      discountBP == null ||
+      !Number.isFinite(discountBP) ||
+      !(discountBP > 0) ||
+      !spotOk
+    ) {
+      return emptySnap(costUsd)
+    }
+    principalAgx = args.amount / (spotUsd * (discountBP / 10_000))
+  } else {
+    principalAgx = args.amount > 0 ? args.amount : 0
+    costUsd = spotOk ? principalAgx * spotUsd : 0
+  }
+
+  if (!(principalAgx > 0) || !(days >= 1) || !(pd > 0) || !spotOk) return emptySnap(costUsd)
+
+  const releasedAgx = releasedPrincipal(principalAgx, days, lock)
+  let rewards = 0
+  const rp = args.epochRebasePct
+  const perDay = args.epochsPerDay
+  if (
+    rp != null &&
+    Number.isFinite(rp) &&
+    rp >= 0 &&
+    perDay != null &&
+    perDay > 0 &&
+    Number.isFinite(perDay)
+  ) {
+    const n = perDay * days
+    const r = rp / 100
+    const compounded = principalAgx * ((1 + r) ** n - 1)
+    const bonusRate = isBond ? 0 : lockedBonusBps(args.period) / 10_000
+    const simple = principalAgx * r * n
+    rewards = compounded + simple * bonusRate
+  }
+
+  const releasedUsd = releasedAgx * pd
+  const rewardsUsd = rewards * pd
+  const sellUsd = releasedUsd + rewardsUsd
+  const profitUsd = sellUsd - costUsd
+  return {
+    principalAgx,
+    costUsd,
+    releasedAgx,
+    rewards,
+    releasedUsd,
+    rewardsUsd,
+    sellUsd,
+    profitUsd,
+    ratePct: costUsd > 0 ? (profitUsd / costUsd) * 100 : 0,
+  }
 }
 
 /**
- * 计算器预估曲线：第 1..maxDays 天的累计利息（USD）。
+ * 收益总额首次转正的天数；测满仍为负则 null。
  *
- * 债券利息已是 USD（折扣→AGX 后再 × 现价）；质押/xmine 利息为代币量 × 现价。
+ * @param args 与 computeCalcDay 相同，不含 days
+ * @returns 回本日；始终为负返回 null
+ */
+export function findBreakEvenDay(
+  args: Omit<Parameters<typeof computeCalcDay>[0], 'days'> & { maxDays?: number },
+): number | null {
+  const maxDays = args.maxDays ?? CALC_MAX_DAYS
+  for (let d = 1; d <= maxDays; d += 1) {
+    if (computeCalcDay({ ...args, days: d }).profitUsd >= 0) return d
+  }
+  return null
+}
+
+/**
+ * 计算器预估曲线：第 1..maxDays 天的收益总额（USD，可为负）。
+ *
+ * 挖矿价格轨迹按 `horizonDays`（缺省为 maxDays）拟合到到期价，再沿轨迹逐日取值。
  *
  * @param args.product 产品类型
  * @param args.period 产品周期
  * @param args.principal 本金（stake/xmine 为代币量；债券为 USD1）
- * @param args.price 现价（质押折算 USD / 债券折 AGX 用）
+ * @param args.price 到期 AGX 价（挖矿则为到期 X 价）
+ * @param args.spotUsd AGX 投入现价
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
- * @param args.xmineDailyPct XMine 日收益率（%）；仅 xmine 使用
- * @param args.discountRateBP 债券成交价率 BPS；缺省用手册档位
- * @param args.epochsPerDay 每日 epoch 数（链上推算）；缺 → 零利息曲线
+ * @param args.epochsPerDay 链上每日 epoch 数；缺 → 零利息曲线
+ * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益
+ * @param args.discountRateBP 链上债券成交价率 BPS；债券缺 → 不计本金
  * @param args.maxDays 曲线最大天数；缺省为 CALC_MAX_DAYS
- * @returns 逐日累计利息（USD）点数组
+ * @param args.horizonDays 挖矿轨迹拟合天数；缺省 maxDays
+ * @returns 逐日收益总额点数组
  */
 export function buildCalcYieldCurvePoints(args: {
   product: CalcProduct
   period: StakePeriod
   principal: number
   price: number
+  spotUsd: number
   epochRebasePct: number | null
+  epochsPerDay?: number | null
   xmineDailyPct?: number | null
   discountRateBP?: number | null
-  epochsPerDay?: number | null
   maxDays?: number
+  horizonDays?: number
 }): CalcYieldCurvePoint[] {
   const maxDays = args.maxDays ?? CALC_MAX_DAYS
-  const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
-  const price = Math.max(0, args.price)
+  const horizon = args.horizonDays ?? maxDays
   const points: CalcYieldCurvePoint[] = []
   for (let day = 1; day <= maxDays; day += 1) {
-    const { interest } = calcLocalInterest({
+    const snap = computeCalcDay({
       product: args.product,
       period: args.period,
-      principal: args.principal,
+      amount: args.principal,
       days: day,
+      pd: args.price,
+      spotUsd: args.spotUsd,
       epochRebasePct: args.epochRebasePct,
+      epochsPerDay: args.epochsPerDay ?? null,
       xmineDailyPct: args.xmineDailyPct,
-      agxPriceUsd: isBondUsd1 ? price : null,
       discountRateBP: args.discountRateBP,
-      epochsPerDay: args.epochsPerDay,
+      horizonDays: horizon,
     })
-    // 债券利息已是 USD；质押/xmine 利息为代币量 × 现价。
-    points.push({
-      day,
-      interestUsd: isBondUsd1 ? interest : interest * price,
-    })
+    points.push({ day, profitUsd: snap.profitUsd })
   }
   return points
 }

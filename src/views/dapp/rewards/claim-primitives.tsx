@@ -84,13 +84,13 @@ export function RewardsClaimTokenRow({
 type DestinationTone = 'release' | 'restake'
 
 const toneClass: Record<DestinationTone, string> = {
-  release: 'border-primary/35 bg-accent',
-  restake: 'border-claim-restake/35 bg-claim-restake/12',
+  release: 'border-claim/35 bg-claim/12',
+  restake: 'border-primary/35 bg-accent',
 }
 
-const titleTone: Record<DestinationTone, 'primary' | 'claim-restake'> = {
-  release: 'primary',
-  restake: 'claim-restake',
+const titleTone: Record<DestinationTone, 'primary' | 'claim'> = {
+  release: 'claim',
+  restake: 'primary',
 }
 
 function DestinationRoot({ children, tone }: { children: ReactNode; tone: DestinationTone }) {

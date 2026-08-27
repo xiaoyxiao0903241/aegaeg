@@ -1,7 +1,9 @@
+import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useMakingOverview } from '~/hooks/use-api-data'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
+import { cobuildTierDecoSrc, dappAssets } from '~/shared/assets/dapp'
 import {
   formatMakingRankLabel,
   formatNumber,
@@ -17,6 +19,8 @@ export type HubStats = {
   tierLabel: string
   /** 机制表高亮行：有 making_rank 才高亮；无档 / 未就绪 → null（不高亮） */
   tierRowIndex: number | null
+  /** 共建级别卡角色装饰。 */
+  tierDecoSrc: string
   personalUsd: string
   personalAgx: string
   makingMarketUsd: string
@@ -35,7 +39,7 @@ function formatUsdFromAgx(raw: string | null | undefined, priceUsd: number | nul
 }
 
 function formatAgxSecondary(raw: string | null | undefined): string {
-  return `${formatApiAmount(raw)} AGX`
+  return `${formatApiAmount(raw, { digits: PERSONAL_TOKEN_DIGITS })} AGX`
 }
 
 /** 档位序号：A1→0 … A13→12；>13 → 终身成就行（13）；无档 → null（不高亮） */
@@ -77,6 +81,7 @@ export function useRewardsHub(): HubStats {
         ? tierEmpty
         : formatMakingRankLabel(rank, tierEmpty),
     tierRowIndex: makingRankToRowIndex(rank),
+    tierDecoSrc: cobuildTierDecoSrc(rank, dappAssets.rewardsHubTierDeco),
     personalUsd: formatUsdFromAgx(sessionReady ? overview?.personal_position : null, priceUsd),
     personalAgx: formatAgxSecondary(sessionReady ? overview?.personal_position : null),
     makingMarketUsd: formatUsdFromAgx(sessionReady ? overview?.making_market : null, priceUsd),

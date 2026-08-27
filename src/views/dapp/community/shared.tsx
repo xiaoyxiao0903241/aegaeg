@@ -2,8 +2,6 @@ import type { ReactNode } from 'react'
 
 import type { TeamReferralItem } from '~/shared/api/types'
 import { ExplorerLink } from '~/shared/components/explorer-link'
-import { Text } from '~/shared/components/text'
-import { rewardsHashForView } from '~/shared/config/dapp-deep-links'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
   formatApiDateTime,
@@ -53,20 +51,4 @@ export function readAndClearBindSuccess(flag: { current: boolean }): boolean {
   const ok = flag.current
   flag.current = false
   return ok
-}
-
-/** 把步骤正文里的 `{link}` 换成跳转奖励/共建奖的链接。 */
-export function communityInviteRewardBody(template: string, linkLabel: string): ReactNode {
-  const marker = '{link}'
-  const idx = template.indexOf(marker)
-  if (idx < 0) return template
-  return (
-    <>
-      {template.slice(0, idx)}
-      <Text as="a" className="text-primary" href={rewardsHashForView('cobuild')}>
-        {linkLabel}
-      </Text>
-      {template.slice(idx + marker.length)}
-    </>
-  )
 }

@@ -86,3 +86,79 @@ test('fingerprintPositiveDecimal skips zero and non-finite', async () => {
   assert.equal(fingerprintPositiveDecimal(1.5), '1.5')
   assert.equal(fingerprintPositiveDecimal('2.00'), '2.00')
 })
+
+test('fingerprintAssetsStakeExpiry: locked clock and liquid warmup only', async () => {
+  const { fingerprintAssetsStakeExpiry } = await loadModule('/src/core/claimable-unread.ts')
+  const nowSec = 1_000
+
+  assert.equal(
+    fingerprintAssetsStakeExpiry([{ id: 'locked-180d-0', kind: 'locked', expiry: 1_001n }], nowSec),
+    '',
+  )
+  assert.equal(
+    fingerprintAssetsStakeExpiry([{ id: 'locked-180d-0', kind: 'locked', expiry: 1_000n }], nowSec),
+    'locked-180d-0:1000',
+  )
+  assert.equal(
+    fingerprintAssetsStakeExpiry([{ id: 'liquid', kind: 'liquid', expiry: 9n }], nowSec),
+    '',
+  )
+  assert.equal(
+    fingerprintAssetsStakeExpiry(
+      [
+        {
+          id: 'liquid-warmup',
+          kind: 'liquid',
+          expiry: 12n,
+          inWarmup: true,
+          warmupExpired: false,
+        },
+      ],
+      nowSec,
+    ),
+    '',
+  )
+  assert.equal(
+    fingerprintAssetsStakeExpiry(
+      [
+        {
+          id: 'liquid-warmup',
+          kind: 'liquid',
+          expiry: 12n,
+          inWarmup: true,
+          warmupExpired: true,
+        },
+      ],
+      nowSec,
+    ),
+    'liquid-warmup:12',
+  )
+})
+
+test('fingerprintAssetsBondExpiry ignores drip before vesting end', async () => {
+  const { fingerprintAssetsBondExpiry } = await loadModule('/src/core/claimable-unread.ts')
+  const nowSec = 5_000
+
+  assert.equal(
+    fingerprintAssetsBondExpiry([{ id: 'lp-180d-0', vestingEndTime: 5_001n }], nowSec),
+    '',
+  )
+  assert.equal(
+    fingerprintAssetsBondExpiry([{ id: 'lp-180d-0', vestingEndTime: 5_000n }], nowSec),
+    'lp-180d-0:5000',
+  )
+  assert.equal(fingerprintAssetsBondExpiry([{ id: 'burn-360d-1', vestingEndTime: 0n }], nowSec), '')
+})
+
+test('fingerprintAssetsXmineExpiry is warmup end identity, not active unstake', async () => {
+  const { fingerprintAssetsXmineExpiry } = await loadModule('/src/core/claimable-unread.ts')
+  const nowSec = 8_000
+
+  assert.equal(fingerprintAssetsXmineExpiry(null, nowSec), '')
+  assert.equal(fingerprintAssetsXmineExpiry({ warmupGons: 0n, warmupEndTime: 7_000n }, nowSec), '')
+  assert.equal(fingerprintAssetsXmineExpiry({ warmupGons: 1n, warmupEndTime: 8_001n }, nowSec), '')
+  assert.equal(
+    fingerprintAssetsXmineExpiry({ warmupGons: 1n, warmupEndTime: 8_000n }, nowSec),
+    'warmup:8000',
+  )
+})

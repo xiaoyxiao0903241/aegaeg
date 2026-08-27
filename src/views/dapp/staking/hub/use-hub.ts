@@ -7,8 +7,7 @@ import {
   baseDailyPctFromEpoch,
   epochRebasePctFrom1e18,
   lockedBonusBps,
-  periodYieldPct,
-  stakePeriodDays,
+  scenarioPeriodYieldPct,
 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useProtocolMarketStatsChart, useStakeAddressCount } from '~/hooks/use-api-data'
@@ -26,15 +25,17 @@ import {
   formatUsd,
   formatUsdApprox,
 } from '~/shared/presenters/format'
+import { formatBonusPct, formatYieldPct } from '~/views/dapp/staking/shared'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
-import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import {
+  useLatestSagxRebaseRateQuery,
+  useStakingHubOverviewQuery,
+} from '~/web3/staking/use-staking-queries'
 
-const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
-const BONUS_EMPTY = `${formatNumber(0, { digits: 0, trimZeros: true })}%`
 /** 可运行周期：稿面固定天数；尚无链上跑道公式。 */
 const HUB_RUNWAY_DAYS = 750
 
@@ -77,15 +78,6 @@ function formatTreasuryUsd1(
   }
 }
 
-function formatYieldPct(pct: number | null): string {
-  if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatNumber(pct, { digits: 2 })}%`
-}
-
-function formatBonusPct(bps: number): string {
-  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
-}
-
 export type HubPeriodTableRow = {
   id: string
   baseDaily: string
@@ -109,6 +101,7 @@ export function useStakingHubDetail() {
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
   const agxPriceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
+  const rebaseQuery = useLatestSagxRebaseRateQuery()
   const stakersQuery = useStakeAddressCount(sessionReady)
   const bondKind = tableSeg === 'lpbond' ? 'lp' : tableSeg === 'burnbond' ? 'burn' : null
   const depositoryAddress =
@@ -157,7 +150,7 @@ export function useStakingHubDetail() {
       : formatUsd(null)
   const treasuryDisplay = formatTreasuryUsd1(overviewQuery.data?.totalReserves, agxPriceUsd)
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
-  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const rebaseLabel = formatYieldPct(epochPct)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
 
@@ -194,9 +187,9 @@ export function useStakingHubDetail() {
           row.id,
           {
             id: row.id,
-            baseDaily: YIELD_EMPTY,
-            bonus: BONUS_EMPTY,
-            periodYield: YIELD_EMPTY,
+            baseDaily: formatYieldPct(null),
+            bonus: formatBonusPct(0),
+            periodYield: formatYieldPct(null),
           },
         ]
       }
@@ -214,7 +207,7 @@ export function useStakingHubDetail() {
           ? formatBonusPct(lockedBonusBps(period))
           : bondDiscount != null
             ? formatBondDiscountLabel(bondDiscount)
-            : BONUS_EMPTY
+            : formatBonusPct(0)
       return [
         row.id,
         {
@@ -222,9 +215,15 @@ export function useStakingHubDetail() {
           baseDaily: formatYieldPct(baseDaily),
           bonus,
           periodYield: formatYieldPct(
-            baseDaily == null || period == null
+            period == null
               ? null
-              : periodYieldPct(baseDaily, stakePeriodDays(period)),
+              : scenarioPeriodYieldPct(
+                  epochPct,
+                  overviewQuery.data?.epochsPerDay,
+                  period,
+                  tableSeg === 'stake' ? 'stake' : 'bond',
+                  tableSeg === 'stake' ? undefined : (bondDiscount ?? null),
+                ),
           ),
         },
       ]

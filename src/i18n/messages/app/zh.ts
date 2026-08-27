@@ -2231,7 +2231,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '折扣价（{pct}%）',
-        slippage: '允许滑点',
         pay: '支付',
         receive: '获得AGX',
         cap: '最大购买量',
@@ -2322,7 +2321,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '折扣价（{pct}%）',
-        slippage: '允许滑点',
         pay: '支付',
         receive: '获得AGX',
         cap: '最大购买量',
@@ -2494,6 +2492,7 @@ const app = defineMessages({
       amountBuy: '购买金额',
       amountAria: '测算数量',
       price: '到期AGX价格',
+      priceX: '到期X价格',
       priceAria: '价格输入',
       priceCurrent: '当前 {price}',
       days: '查看您在质押后第几天的收益情况',
@@ -2513,10 +2512,11 @@ const app = defineMessages({
         sellTotal: '卖出总值',
         invested: '总投入',
         yieldBar: '收益 {amount}',
+        lossBar: '亏损 {amount}',
         legend: {
           released: '已释放本金价值',
           netYield: '净收益价值',
-          netYieldHint: '扣除贡献点数后的收益',
+          netYieldHint: 'Rebase 复利加长周期加成，不扣贡献点数',
           netYieldHintXmine: '挖矿产出的 X 数量，按到期X价格折算价值',
           cost: '投入成本',
           grossYield: '收益总额',
@@ -2596,7 +2596,7 @@ const app = defineMessages({
         '所有收益在到达涡轮之前，都要先经过释放池按所选周期线性释放。这一环节将集中的兑现需求分散到时间维度上，降低瞬时抛压；配合周期越长、税率越低的设计，引导长期持有，为生态的稳定运行提供缓冲。',
       mechanismSteps: [
         { title: '领取 Rebase / DAO 奖励', body: '收益产生' },
-        { title: '{divisor} : 1 贡献机制', body: '50% 销毁 · 50% 注入 X 底池' },
+        { title: '1:1 贡献机制', body: '50% 销毁 · 50% 注入 X 底池' },
         { title: '进入释放池 · 线性释放', body: '选择 5 / 20 / 40 / 60 天周期' },
         { title: '领取进入涡轮', body: '1:1 买入解锁卖出额度' },
       ],

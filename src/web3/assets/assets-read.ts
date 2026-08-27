@@ -187,19 +187,21 @@ export async function readClaimPlans(): Promise<{
 }
 
 /**
- * 读取用户贡献值，以及领取 rewardAmount 所需贡献值。
+ * 读取用户贡献值；可选再读领取额对应的链上所需贡献。
  *
- * 贡献值按迁移 root 键控（AgxContributionSwap.originalOf 解析 root）；required 由
- * quoteRequiredContribution 预估。前端据此判断 Mixed 领取前是否满足贡献值门槛。
+ * 贡献值按迁移 root 键控（AgxContributionSwap.originalOf 解析 root）。
+ * 资产 Mixed 门槛已是领取额 1:1，不读 quote；Lucky / 奖励 Mixed 仍读 quote。
  *
  * @param user 钱包地址
- * @param rewardAmount 待领取奖励金额（wei）
+ * @param rewardAmount 待领取奖励金额（wei）；`quoteRequired` 为 false 时可忽略
+ * @param quoteRequired 是否调用 quoteRequiredContribution
  * @returns 当前贡献值 contribution 与所需贡献值 requiredContribution
  * @see 手册 §9.2 贡献值页面
  */
 export async function readContributionSnapshot(
   user: Address,
   rewardAmount: bigint,
+  quoteRequired = true,
 ): Promise<{ contribution: bigint; requiredContribution: bigint }> {
   const root = (await bscReadClient.readContract({
     address: BSC_CONTRACTS.agxContributionSwap,
@@ -209,7 +211,7 @@ export async function readContributionSnapshot(
   })) as Address
   const contributionRoot = root.toLowerCase() === ZERO_ADDRESS ? user : root
 
-  const hop2 = await readAggregate3([
+  const calls: Aggregate3Call[] = [
     {
       target: BSC_CONTRACTS.agxContributionSwap,
       callData: encodeFunctionData({
@@ -218,15 +220,18 @@ export async function readContributionSnapshot(
         args: [contributionRoot],
       }),
     },
-    {
+  ]
+  if (quoteRequired) {
+    calls.push({
       target: BSC_CONTRACTS.agxContributionSwap,
       callData: encodeFunctionData({
         abi: contribAbi,
         functionName: 'quoteRequiredContribution',
         args: [rewardAmount],
       }),
-    },
-  ])
+    })
+  }
+  const hop2 = await readAggregate3(calls)
   return {
     contribution: decodeAggregate3Result<bigint>(
       hop2,
@@ -235,13 +240,15 @@ export async function readContributionSnapshot(
       'userContribution',
       'CONTRIBUTION_SNAPSHOT_MULTICALL_FAILED:contribution',
     ),
-    requiredContribution: decodeAggregate3Result<bigint>(
-      hop2,
-      1,
-      contribAbi,
-      'quoteRequiredContribution',
-      'CONTRIBUTION_SNAPSHOT_MULTICALL_FAILED:required',
-    ),
+    requiredContribution: quoteRequired
+      ? decodeAggregate3Result<bigint>(
+          hop2,
+          1,
+          contribAbi,
+          'quoteRequiredContribution',
+          'CONTRIBUTION_SNAPSHOT_MULTICALL_FAILED:required',
+        )
+      : 0n,
   }
 }
 

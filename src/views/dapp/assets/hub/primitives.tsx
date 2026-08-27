@@ -165,7 +165,10 @@ export function AssetsOverviewMetric({
       </div>
       <Text
         as="strong"
-        className={cn('min-w-0 truncate font-semibold', featured ? 'leading-none' : 'text-base/5')}
+        className={cn(
+          'min-w-0 font-semibold wrap-break-word',
+          featured ? 'leading-none' : 'text-base/5',
+        )}
         tone="inverse"
         variant={featured ? 'stat' : undefined}
       >
@@ -307,7 +310,7 @@ export function AssetsHoldingsDistributionCard({
       className="flex items-center gap-11 rounded-2xl border border-border bg-card px-7.5 py-6.5 max-dapp:flex-col max-dapp:gap-6 max-dapp:px-4 max-dapp:py-5"
       onMouseLeave={() => setHoverIdx(null)}
     >
-      <div className="relative size-[264px] shrink-0 max-dapp:size-50">
+      <div className="relative size-66 shrink-0 max-dapp:size-50">
         <svg aria-hidden className="size-full overflow-visible" viewBox="0 0 160 160">
           {paintOrder.map((di) => {
             const seg = view.segs[di]
@@ -385,8 +388,9 @@ export function AssetsHoldingsDistributionCard({
         <span className="pointer-events-none absolute inset-0 grid place-content-center gap-0.5 text-center">
           <Text
             as="span"
-            className="text-[11px] leading-none tracking-tight"
+            className="leading-none tracking-tight"
             tone="muted-foreground"
+            variant="caption"
           >
             {totalCaption}
           </Text>
@@ -403,7 +407,7 @@ export function AssetsHoldingsDistributionCard({
               transform: 'translate(-20%, -110%)',
             }}
           >
-            <Text as="strong" className="text-[13px] leading-none font-bold tracking-tight">
+            <Text as="strong" className="leading-none font-bold tracking-tight" variant="copy">
               {tipSeg.label}
               <span className="font-normal">：{tipSeg.pctLabel}</span>
             </Text>
@@ -456,7 +460,8 @@ export function AssetsHoldingsDistributionCard({
               <span className="grid shrink-0 justify-items-end gap-1">
                 <Text
                   as="span"
-                  className="text-[13px] leading-none font-medium whitespace-nowrap tabular-nums"
+                  className="leading-none font-medium whitespace-nowrap tabular-nums"
+                  variant="copy"
                 >
                   <CountValue text={seg.amountLabel} />
                 </Text>
@@ -485,7 +490,7 @@ export function AssetsHoldingsDistributionSkeleton() {
       aria-busy="true"
       className="flex items-center gap-11 rounded-2xl border border-border bg-card px-7.5 py-6.5 max-dapp:flex-col max-dapp:gap-6 max-dapp:px-4 max-dapp:py-5"
     >
-      <Skeleton className="size-[264px] shrink-0 rounded-full max-dapp:size-50" />
+      <Skeleton className="size-66 shrink-0 rounded-full max-dapp:size-50" />
       <ul className="m-0 flex min-w-0 flex-1 list-none flex-col justify-center self-stretch p-0">
         {Array.from({ length: 4 }, (_, i) => (
           <li

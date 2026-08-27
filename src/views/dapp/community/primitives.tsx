@@ -207,10 +207,10 @@ export function CommunityStatCard({
       ) : null}
       {children}
       {image ? (
-        // 底对齐且高于卡片，头超出上沿；H5 不展示
+        // 站立角色脚贴卡片底边；H5 不展示
         <img
           alt=""
-          className="pointer-events-none absolute -right-3.5 bottom-0.5 z-2 h-36 w-30 object-contain object-bottom max-dapp:hidden"
+          className="pointer-events-none absolute -right-3.5 bottom-0 z-2 h-full w-30 object-contain object-bottom max-dapp:hidden"
           data-slot-id="community-stat-rank-deco"
           src={image}
         />

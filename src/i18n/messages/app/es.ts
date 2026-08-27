@@ -2404,7 +2404,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Precio con descuento ({pct}%)',
-        slippage: 'Deslizamiento permitido',
         pay: 'Pagar',
         receive: 'Recibir AGX',
         cap: 'Compra máxima',
@@ -2497,7 +2496,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Precio con descuento ({pct}%)',
-        slippage: 'Deslizamiento permitido',
         pay: 'Pagar',
         receive: 'Recibir AGX',
         cap: 'Compra máxima',
@@ -2680,6 +2678,7 @@ const app = defineMessages({
       amountBuy: 'Importe de compra',
       amountAria: 'Cantidad a estimar',
       price: 'Precio AGX al vencimiento',
+      priceX: 'Precio X al vencimiento',
       priceCurrent: 'Actual ${price}',
       priceAria: 'Entrada de precio',
       days: 'Días de tenencia',
@@ -2693,10 +2692,12 @@ const app = defineMessages({
         sellTotal: 'Valor total de venta',
         invested: 'Inversión total',
         yieldBar: 'Rendimiento {amount}',
+        lossBar: 'Pérdida {amount}',
         legend: {
           released: 'Valor del principal liberado',
           netYield: 'Valor neto del rendimiento',
-          netYieldHint: 'Rendimiento tras descontar los puntos de contribución',
+          netYieldHint:
+            'Rebase compuesto más bono de plazo; no se descuentan puntos de contribución',
           netYieldHintXmine: 'X minado, valorado al precio de X al vencimiento',
           cost: 'Costo de inversión',
           grossYield: 'Rendimiento total',
@@ -2781,7 +2782,7 @@ const app = defineMessages({
       mechanismSteps: [
         { title: 'Reclamar recompensas Rebase / DAO', body: 'Se genera el rendimiento' },
         {
-          title: 'Mecanismo de contribución {divisor} : 1',
+          title: 'Mecanismo de contribución 1:1',
           body: '50% quema · 50% al pool base de X',
         },
         {

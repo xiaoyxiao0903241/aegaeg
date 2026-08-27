@@ -144,7 +144,7 @@ test('formatAmountBalanceLabel keeps chrome with zero placeholder when balance p
     formatAmountBalanceLabel('数量（钱包余额 {balance} AGX）', { balance: '', digits: 4 }),
     '数量（钱包余额 0.0000 AGX）',
   )
-  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '' }), 'Bal 0.00')
+  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '' }), 'Bal 0.0000')
 })
 
 test('getErrorMessage maps write-block sentinels used by CTAs', async () => {

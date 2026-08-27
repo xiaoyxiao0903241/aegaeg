@@ -11,8 +11,9 @@ import {
 } from '~/core/assets/claim-plans'
 import { HUNDRED_BI, ZERO_BI } from '~/core/constants'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
+import { previewDaoClaimContribution } from '~/core/rewards/claim-contribution'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
@@ -39,6 +40,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * 计划选择用本地 `useState`（随 modal remount / key 复位）。
  * RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60。
  * 展示与确认门闸跟提交时同一笔链上可领，不用打开弹窗时冻住的数。
+ * 所需贡献按领取额 1:1，不读 quoteRequiredContribution。
  */
 export function useAssetsClaimModal(args: {
   open: boolean
@@ -119,7 +121,7 @@ export function useAssetsClaimModal(args: {
 
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(String(claimable)),
-    queryFn: (address) => readContributionSnapshot(address as Address, claimable),
+    queryFn: (address) => readContributionSnapshot(address as Address, claimable, false),
     enabled: open && availableFresh && Boolean(account?.address),
   })
 
@@ -129,8 +131,12 @@ export function useAssetsClaimModal(args: {
     restakeDays,
   )
   const contributionOk =
-    isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data) &&
-    contribQuery.data!.contribution >= contribQuery.data!.requiredContribution
+    previewDaoClaimContribution({
+      claimAmountWei: claimable > ZERO_BI ? claimable : null,
+      availableWei: isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data)
+        ? contribQuery.data!.contribution
+        : null,
+    })?.ok === true
   const plansOk =
     isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
     releaseIndex != null &&
@@ -149,9 +155,9 @@ export function useAssetsClaimModal(args: {
 
   const releaseAmount = (claimable * BigInt(releasePct)) / HUNDRED_BI
   const restakeAmount = claimable - releaseAmount
-  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
-  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)
-  const amountLabel = `${formatTokenAmount(claimable, GAGX_DECIMALS, 4)} gAGX`
+  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+  const amountLabel = `${formatTokenAmount(claimable, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`
   const withClaimUnit = (text: string) => `${text} gAGX`
   let ctaAmountLine: string | null = null
   if (releaseAmount === ZERO_BI) {
@@ -202,10 +208,7 @@ export function useAssetsClaimModal(args: {
         ? t.assets.claim.ctaRestake
         : t.assets.claim.ctaMixed
 
-  const requiredContributionLabel = formatContributionPoints(
-    contribQuery.data?.requiredContribution ?? ZERO_BI,
-    AGX_DECIMALS,
-  )
+  const requiredContributionLabel = formatContributionPoints(claimable, AGX_DECIMALS)
 
   return {
     t,

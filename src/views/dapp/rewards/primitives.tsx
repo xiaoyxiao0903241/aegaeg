@@ -164,7 +164,7 @@ export function mapMarketAllowancePaidLogToCells(item: MarketAllowancePaidLogIte
     ) : op === '赎回' ? (
       <Text
         as="span"
-        className="inline-flex items-center rounded-full bg-claim-restake/10 px-2.5 py-0.75 leading-none font-semibold text-claim-restake"
+        className="inline-flex items-center rounded-full bg-claim/10 px-2.5 py-0.75 leading-none font-semibold text-claim"
         variant="support"
       >
         {op}

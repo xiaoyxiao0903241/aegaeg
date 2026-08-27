@@ -2325,7 +2325,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '割引価格（{pct}%）',
-        slippage: '許容スリッページ',
         pay: '支払',
         receive: 'AGX を獲得',
         cap: '最大購入量',
@@ -2417,7 +2416,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '割引価格（{pct}%）',
-        slippage: '許容スリッページ',
         pay: '支払',
         receive: 'AGX を獲得',
         cap: '最大購入量',
@@ -2597,6 +2595,7 @@ const app = defineMessages({
       amountBuy: '購入金額',
       amountAria: '試算数量',
       price: '満期 AGX 価格',
+      priceX: '満期 X 価格',
       priceCurrent: '現在 {price}',
       priceAria: '価格入力',
       days: '保有日数',
@@ -2610,10 +2609,11 @@ const app = defineMessages({
         sellTotal: '売却総額',
         invested: '総投入',
         yieldBar: '収益 {amount}',
+        lossBar: '損失 {amount}',
         legend: {
           released: 'リリース済み元本価値',
           netYield: '純収益価値',
-          netYieldHint: '貢献ポイント控除後の収益',
+          netYieldHint: 'Rebase 複利と長期ボーナス。貢献ポイントは控除しない',
           netYieldHintXmine: '採掘した X の数量を満期 X 価格で換算した価値',
           cost: '投入コスト',
           grossYield: '収益合計',
@@ -2689,7 +2689,7 @@ const app = defineMessages({
         'リリースは収益発生からタービンへ入る必経の段階——時間で税率を、リズムで安定を換える',
       mechanismSteps: [
         { title: 'Rebase / DAO リワードを受取', body: '収益発生' },
-        { title: '{divisor} : 1 貢献メカニズム', body: '50% バーン · 50% を X 底プールへ注入' },
+        { title: '1:1 貢献メカニズム', body: '50% バーン · 50% を X 底プールへ注入' },
         { title: 'リリースプールへ · 線形リリース', body: '5 / 20 / 40 / 60 日の期間を選択' },
         { title: '受取してタービンへ', body: '1:1 購入で売却枠をアンロック' },
       ],

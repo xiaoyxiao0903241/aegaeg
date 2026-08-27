@@ -22,7 +22,7 @@ const cellTv = tv({
       false: '',
     },
     link: {
-      true: 'text-claim-restake underline [&_a]:text-claim-restake [&_a]:underline',
+      true: 'text-claim underline [&_a]:text-claim [&_a]:underline',
       false: '',
     },
     emphasis: {
@@ -55,7 +55,7 @@ const cellTv = tv({
 const cellTextTv = tv({
   base: '',
   variants: {
-    link: { true: 'text-claim-restake underline', false: '' },
+    link: { true: 'text-claim underline', false: '' },
     emphasis: { true: 'font-bold', false: '' },
     muted: { true: 'text-muted-foreground tabular-nums', false: '' },
     primary: { true: 'font-semibold text-primary', false: '' },
@@ -75,7 +75,7 @@ const gridRoot = tv({
 })
 
 const highlightedRow =
-  'bg-(--rewards-tier-current-bg) [&_td]:font-normal [&_td]:text-foreground [&_td.text-claim-restake]:text-claim-restake'
+  'bg-(--rewards-tier-current-bg) [&_td]:font-normal [&_td]:text-foreground [&_td.text-claim]:text-claim'
 type CellProps = {
   /** 高亮行首列珊瑚字。 */
   accent?: boolean
@@ -223,7 +223,7 @@ function Body({
 
   return (
     <div className={gridRoot({ compact, class: className })}>
-      <table className="w-max min-w-full table-auto border-collapse [&_a]:text-claim-restake">
+      <table className="w-max min-w-full table-auto border-collapse [&_a]:text-claim">
         <thead>
           <tr>
             {headers.map((header, index) => (

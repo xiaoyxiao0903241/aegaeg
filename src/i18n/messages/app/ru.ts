@@ -2325,7 +2325,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Цена со скидкой ({pct}%)',
-        slippage: 'Допустимое проскальзывание',
         pay: 'Оплатить',
         receive: 'Получить AGX',
         cap: 'Макс. покупка',
@@ -2417,7 +2416,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Цена со скидкой ({pct}%)',
-        slippage: 'Допустимое проскальзывание',
         pay: 'Оплатить',
         receive: 'Получить AGX',
         cap: 'Макс. покупка',
@@ -2596,6 +2594,7 @@ const app = defineMessages({
       amountBuy: 'Сумма покупки',
       amountAria: 'Сумма',
       price: 'Цена выхода',
+      priceX: 'Цена выхода X',
       priceCurrent: 'Текущая цена ${price}',
       priceAria: 'Ввод цены',
       days: 'Дни удержания',
@@ -2609,10 +2608,11 @@ const app = defineMessages({
         sellTotal: 'Выручка от продажи',
         invested: 'Всего вложено',
         yieldBar: 'Доходность {amount}',
+        lossBar: 'Убыток {amount}',
         legend: {
           released: 'Стоимость высвобожденной основной суммы',
           netYield: 'Чистая стоимость доходности',
-          netYieldHint: 'Доходность после вычета очков вклада',
+          netYieldHint: 'Сложный rebase и бонус срока; очки вклада не вычитаются',
           netYieldHintXmine: 'Добытое X, оценка по цене X на дату истечения',
           cost: 'База затрат',
           grossYield: 'Общая доходность',
@@ -2692,7 +2692,7 @@ const app = defineMessages({
         'Высвобождение стоит между созданием доходности и Турбиной — меняйте время на более низкую налоговую ставку и более стабильные выходы.',
       mechanismSteps: [
         { title: 'Получить награды Rebase / DAO', body: 'Доходность создана' },
-        { title: 'Вклад {divisor} : 1', body: '50% сжигание · 50% в пул X' },
+        { title: 'Вклад 1:1', body: '50% сжигание · 50% в пул X' },
         { title: 'Войти в пул высвобождения', body: 'Выберите период 5 / 20 / 40 / 60 дней' },
         { title: 'Получить в Турбину', body: 'Покупка 1:1 для разблокировки квоты продажи' },
       ],
