@@ -2232,7 +2232,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '折扣價（{pct}%）',
-        slippage: '允許滑點',
         pay: '支付',
         receive: '獲得AGX',
         cap: '最大購買量',
@@ -2323,7 +2322,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '折扣價（{pct}%）',
-        slippage: '允許滑點',
         pay: '支付',
         receive: '獲得AGX',
         cap: '最大購買量',

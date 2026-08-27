@@ -2391,7 +2391,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Harga diskon ({pct}%)',
-        slippage: 'Slippage diizinkan',
         pay: 'Bayar',
         receive: 'Terima AGX',
         cap: 'Pembelian maksimum',
@@ -2483,7 +2482,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Harga diskon ({pct}%)',
-        slippage: 'Slippage diizinkan',
         pay: 'Bayar',
         receive: 'Terima AGX',
         cap: 'Pembelian maksimum',

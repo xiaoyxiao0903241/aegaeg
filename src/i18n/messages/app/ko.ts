@@ -2305,7 +2305,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '할인가({pct}%)',
-        slippage: '허용 슬리피지',
         pay: '지불',
         receive: 'AGX 획득',
         cap: '최대 구매량',
@@ -2397,7 +2396,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '할인가({pct}%)',
-        slippage: '허용 슬리피지',
         pay: '지불',
         receive: 'AGX 획득',
         cap: '최대 구매량',

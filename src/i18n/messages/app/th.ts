@@ -2315,7 +2315,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'ราคาส่วนลด ({pct}%)',
-        slippage: 'สลิปเพจที่อนุญาต',
         pay: 'จ่าย',
         receive: 'ได้รับ AGX',
         cap: 'จำนวนซื้อสูงสุด',
@@ -2407,7 +2406,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'ราคาส่วนลด ({pct}%)',
-        slippage: 'สลิปเพจที่อนุญาต',
         pay: 'จ่าย',
         receive: 'ได้รับ AGX',
         cap: 'จำนวนซื้อสูงสุด',

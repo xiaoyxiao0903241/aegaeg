@@ -228,7 +228,7 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
         : !payoutFresh
           ? ''
           : payoutQuery.data!.netPayout > ZERO_BI
-            ? formatTokenAmount(payoutQuery.data!.netPayout, AGX_DECIMALS, 4)
+            ? formatTokenAmount(payoutQuery.data!.netPayout, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
             : '0'
 
   const { setAmount } = amountInput

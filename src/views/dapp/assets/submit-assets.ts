@@ -93,7 +93,7 @@ async function readMixedClaimSnapshot(
     restakeDays,
   )
   const rewardAvailable = await readMixedRewardAvailable(target, user)
-  const contrib = await readContributionSnapshot(user, rewardAvailable)
+  const contrib = await readContributionSnapshot(user, rewardAvailable, false)
   return {
     rewardAvailable,
     contribution: contrib.contribution,

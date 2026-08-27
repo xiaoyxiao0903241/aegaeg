@@ -7,7 +7,6 @@ import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
-import { readCalcLiveRates } from '~/web3/staking/calc-rates-read'
 import {
   readLatestSagxRebaseRate,
   readStakingHubOverview,
@@ -31,19 +30,7 @@ export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
   })
 }
 
-/** 计算器利率查询：当前 epoch rebase 与每日次数，不拉 Hub 整包。 */
-export function useCalcLiveRatesQuery(options?: ChainQueryOptions) {
-  return useChainQuery({
-    queryKey: queryKeys.chain.calcLiveRates,
-    scope: 'public',
-    freshness: 'balances',
-    enabled: options?.enabled ?? true,
-    queryFn: () => readCalcLiveRates(),
-    placeholderData: keepPreviousData,
-  })
-}
-
-/** 最近一次 sAGX rebase 率；与 Hub 概览拆开，避免探测拖住倒计时。 */
+/** 最近一次 sAGX rebase 率与每日 epoch 数；与 Hub 概览拆开。 */
 export function useLatestSagxRebaseRateQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.sagxLatestRebase,

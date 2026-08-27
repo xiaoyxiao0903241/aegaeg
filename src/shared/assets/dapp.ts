@@ -156,7 +156,7 @@ export const dappAssets = {
 } as const
 
 /** 共建级别 A1–A13 角色装饰（压缩 webp）。 */
-export const cobuildTierDecos = [
+const cobuildTierDecos = [
   '/assets/figma/dapp/cobuild-tier/a1.webp',
   '/assets/figma/dapp/cobuild-tier/a2.webp',
   '/assets/figma/dapp/cobuild-tier/a3.webp',

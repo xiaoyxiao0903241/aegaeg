@@ -273,7 +273,7 @@ export function useAssetsHub(): AssetsHubOverview {
   })
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContribution,
-    queryFn: (addr) => readContributionSnapshot(addr as Address, ZERO_BI),
+    queryFn: (addr) => readContributionSnapshot(addr as Address, ZERO_BI, false),
     enabled: chainFallbackEnabled,
   })
   // gAGX 缓冲以链上分流器快照为准；不能绑 API 回退开关，否则 API 就绪时会恒为 0

@@ -20,6 +20,7 @@ import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
+import { formatYieldPct } from '~/views/dapp/staking/shared'
 import {
   useLatestSagxRebaseRateQuery,
   useStakingHubOverviewQuery,
@@ -60,7 +61,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
   const spotUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const rebaseQuery = useLatestSagxRebaseRateQuery()
-  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const epochsPerDay = overviewQuery.data?.epochsPerDay
   const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(
@@ -88,7 +89,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
         'bond',
         discPct != null && discPct > 0 ? discPct * 100 : null,
       )
-      return [period, `${copy.card.yield} ${formatNumber(pct ?? 0, { digits: 2 })}%`]
+      return [period, `${copy.card.yield} ${formatYieldPct(pct)}`]
     }),
   ) as Record<BondPeriod, string>
   const discountUsd = formatBondDiscountUsd(spotUsd, bond.discountLabel)

@@ -2404,7 +2404,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Precio con descuento ({pct}%)',
-        slippage: 'Deslizamiento permitido',
         pay: 'Pagar',
         receive: 'Recibir AGX',
         cap: 'Compra máxima',
@@ -2497,7 +2496,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Precio con descuento ({pct}%)',
-        slippage: 'Deslizamiento permitido',
         pay: 'Pagar',
         receive: 'Recibir AGX',
         cap: 'Compra máxima',

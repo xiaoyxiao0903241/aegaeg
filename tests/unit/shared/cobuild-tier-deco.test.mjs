@@ -4,13 +4,12 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 test('cobuildTierDecoSrc maps A1–A13 and falls back off-range', async () => {
-  const { cobuildTierDecoSrc, cobuildTierDecos, dappAssets } = await loadModule(
-    '/src/shared/assets/dapp.ts',
-  )
-  assert.equal(cobuildTierDecos.length, 13)
-  assert.equal(cobuildTierDecoSrc(1, 'fb'), cobuildTierDecos[0])
-  assert.equal(cobuildTierDecoSrc(13, 'fb'), cobuildTierDecos[12])
-  assert.equal(cobuildTierDecoSrc(14, 'fb'), cobuildTierDecos[12])
+  const { cobuildTierDecoSrc, dappAssets } = await loadModule('/src/shared/assets/dapp.ts')
+  const a1 = cobuildTierDecoSrc(1, 'fb')
+  const a13 = cobuildTierDecoSrc(13, 'fb')
+  assert.notEqual(a1, a13)
+  assert.notEqual(a1, 'fb')
+  assert.equal(cobuildTierDecoSrc(14, 'fb'), a13)
   assert.equal(cobuildTierDecoSrc(0, 'fb'), 'fb')
   assert.equal(
     cobuildTierDecoSrc(null, dappAssets.rewardsHubTierDeco),

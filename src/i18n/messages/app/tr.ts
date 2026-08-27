@@ -2386,7 +2386,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'İndirimli fiyat (%{pct})',
-        slippage: 'İzin verilen kayma',
         pay: 'Öde',
         receive: 'AGX al',
         cap: 'Maksimum alım',
@@ -2478,7 +2477,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'İndirimli fiyat (%{pct})',
-        slippage: 'İzin verilen kayma',
         pay: 'Öde',
         receive: 'AGX al',
         cap: 'Maksimum alım',

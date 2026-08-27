@@ -17,48 +17,6 @@ const sagxAbi = parseAbi([SAGX_METHODS.circulatingSupply, SAGX_METHODS.rebases])
 const treasuryAbi = parseAbi([TREASURY_METHODS.totalReserves])
 const burnSwapAbi = parseAbi([AGX_CONTRIBUTION_SWAP_METHODS.getConfig])
 
-/** 缓存上次有效 rebase 下标，避免 Hub 每次从 0 倍增探测。 */
-let latestRebaseIndex: bigint | null = null
-
-const REBASE_INDEX_KEY = 'aegis:sagxRebaseIndex'
-
-const REBASE_PROBE_POWERS: bigint[] = [0n]
-for (let exp = 0; exp <= 20; exp += 1) REBASE_PROBE_POWERS.push(1n << BigInt(exp))
-
-function persistRebaseIndex(index: bigint) {
-  latestRebaseIndex = index
-  if (typeof sessionStorage === 'undefined') return
-  try {
-    sessionStorage.setItem(REBASE_INDEX_KEY, index.toString())
-  } catch {
-    /* private mode */
-  }
-}
-
-function seedRebaseIndex(): bigint | null {
-  if (latestRebaseIndex != null) return latestRebaseIndex
-  if (typeof sessionStorage === 'undefined') return null
-  try {
-    const raw = sessionStorage.getItem(REBASE_INDEX_KEY)
-    if (raw == null || raw === '') return null
-    const n = BigInt(raw)
-    return n >= 0n ? n : null
-  } catch {
-    return null
-  }
-}
-
-/** 测试辅助：清空 rebase 下标进程缓存。 */
-export function clearLatestSagxRebaseIndexCache() {
-  latestRebaseIndex = null
-  if (typeof sessionStorage === 'undefined') return
-  try {
-    sessionStorage.removeItem(REBASE_INDEX_KEY)
-  } catch {
-    /* private mode */
-  }
-}
-
 export type StakingHubOverview = {
   /** StakingPool.poolAgxBalance — AGX 9 decimals */
   poolAgxBalance: bigint
@@ -83,8 +41,14 @@ export type StakingHubOverview = {
 
 type RebaseRow = readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint]
 
-const HINT_WINDOW = 64n
 const FILL_CHUNK = 256n
+const REBASE_PROBE_POWERS: bigint[] = [0n]
+for (let exp = 0; exp <= 20; exp += 1) REBASE_PROBE_POWERS.push(1n << BigInt(exp))
+
+export type SagxRebaseSnapshot = {
+  rebaseRate1e18: bigint | null
+  epochsPerDay: number | null
+}
 
 /** 一次 multicall 读若干下标；越界槽为 null。 */
 async function readRebaseAtMany(indices: readonly bigint[]): Promise<(RebaseRow | null)[]> {
@@ -114,20 +78,6 @@ async function readRebaseAtMany(indices: readonly bigint[]): Promise<(RebaseRow 
   })
 }
 
-function uniqueSortedIndices(values: readonly bigint[]): bigint[] {
-  const seen = new Set<string>()
-  const out: bigint[] = []
-  for (const value of values) {
-    if (value < 0n) continue
-    const key = value.toString()
-    if (seen.has(key)) continue
-    seen.add(key)
-    out.push(value)
-  }
-  out.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
-  return out
-}
-
 function pickLatest(
   indices: readonly bigint[],
   rows: readonly (RebaseRow | null)[],
@@ -142,19 +92,23 @@ function pickLatest(
   return best
 }
 
-function hintWindow(seed: bigint): bigint[] {
-  const out: bigint[] = []
-  for (let d = 0n; d <= HINT_WINDOW; d += 1n) {
-    if (seed >= d) out.push(seed - d)
-    out.push(seed + d)
-  }
-  return out
-}
-
 function rangeInclusive(from: bigint, to: bigint): bigint[] {
   const out: bigint[] = []
   for (let i = from; i <= to; i += 1n) out.push(i)
   return out
+}
+
+function nextFailAfter(
+  indices: readonly bigint[],
+  rows: readonly (RebaseRow | null)[],
+  after: bigint,
+): bigint | null {
+  let nearest: bigint | null = null
+  for (let i = 0; i < indices.length; i += 1) {
+    const idx = indices[i]!
+    if (idx > after && rows[i] == null && (nearest == null || idx < nearest)) nearest = idx
+  }
+  return nearest
 }
 
 /** 缺口一次并行打满（分块 multicall），在返回值里取最大下标。 */
@@ -180,60 +134,55 @@ async function fillLatestInRange(
   return best
 }
 
+async function latestRateFromIndices(indices: readonly bigint[]): Promise<bigint | null> {
+  const rows = await readRebaseAtMany(indices)
+  const hit = pickLatest(indices, rows)
+  if (hit == null) return null
+  const nextFail = nextFailAfter(indices, rows, hit.index)
+  if (nextFail != null && nextFail === hit.index + 1n) return hit.row[1]
+  const fillTo = nextFail != null ? nextFail - 1n : hit.index + FILL_CHUNK
+  const filled = await fillLatestInRange(hit.index + 1n, fillTo)
+  return filled != null && filled.index > hit.index ? filled.row[1] : hit.row[1]
+}
+
 /**
  * 读取最近一次 rebase 率（1e18 标度）
  *
- * 一次 multicall：2^k 定界 + hint 窗口。在成功槽里取最大下标；
- * 若下一条未在本批证明缺席，再并行填满 (max, nextFail) 后取最大。
+ * 手册 `rebases(epochNumber)`：先一次 multicall `number-1` / `number` / `number+1`，
+ * 在返回值里取最大下标。都未命中再 2^k 定界并填满缺口。
  *
- * @param hintIndex 可选探测起点（通常为当前 epoch.number）
+ * @param hintIndex 当前 `StakingPool.epoch().number`
  * @returns 最近一次 rebase 值（1e18）；从未 rebase → null
  * @see docs/onchain-manual/contracts/sagx.md
  */
 export async function readLatestSagxRebaseRate1e18(hintIndex?: bigint): Promise<bigint | null> {
-  const seed = seedRebaseIndex() ?? (hintIndex != null && hintIndex >= 0n ? hintIndex : null)
-  const firstIndices = uniqueSortedIndices([
-    ...REBASE_PROBE_POWERS,
-    ...(seed != null ? hintWindow(seed) : []),
-  ])
-  const firstRows = await readRebaseAtMany(firstIndices)
-  const firstHit = pickLatest(firstIndices, firstRows)
-  if (firstHit == null) return null
-
-  let nextFail: bigint | null = null
-  for (let i = 0; i < firstIndices.length; i += 1) {
-    const idx = firstIndices[i]!
-    if (idx > firstHit.index && firstRows[i] == null) {
-      nextFail = idx
-      break
-    }
+  if (hintIndex != null && hintIndex >= 0n) {
+    const hinted = hintIndex === 0n ? [0n, 1n] : [hintIndex - 1n, hintIndex, hintIndex + 1n]
+    const fromHint = await latestRateFromIndices(hinted)
+    if (fromHint != null) return fromHint
   }
-  if (nextFail != null && nextFail === firstHit.index + 1n) {
-    persistRebaseIndex(firstHit.index)
-    return firstHit.row[1]
-  }
-  const fillTo = nextFail != null ? nextFail - 1n : firstHit.index + FILL_CHUNK
-  const filled = await fillLatestInRange(firstHit.index + 1n, fillTo)
-  const latest = filled != null && filled.index > firstHit.index ? filled : firstHit
-  persistRebaseIndex(latest.index)
-  return latest.row[1]
+  return latestRateFromIndices(REBASE_PROBE_POWERS)
 }
 
 /**
- * 最近一次 rebase 率：先读当前 epoch.number，再一次 multicall 多取下标，在返回值里取末条。
+ * 最近一次 rebase 率与每日 epoch 数。一次 `epoch()` + rebase 下标 multicall。
  *
  * 与 Hub 概览拆开，避免探测拖住倒计时 / TVL。
  *
- * @returns rebase（1e18）；从未 rebase → null
+ * @returns rebase（1e18）与日频；从未 rebase 时 rate 为 null
  * @see docs/onchain-manual/contracts/sagx.md
  */
-export async function readLatestSagxRebaseRate(): Promise<bigint | null> {
+export async function readLatestSagxRebaseRate(): Promise<SagxRebaseSnapshot> {
   const epoch = await bscReadClient.readContract({
     address: BSC_CONTRACTS.stakingPool,
     abi: stakingPoolAbi,
     functionName: 'epoch',
   })
-  return readLatestSagxRebaseRate1e18(epoch[1])
+  const rebaseRate1e18 = await readLatestSagxRebaseRate1e18(epoch[1])
+  return {
+    rebaseRate1e18,
+    epochsPerDay: epochsPerDayFromLength(epoch[0], BSC_BLOCK_SECONDS),
+  }
 }
 
 /**

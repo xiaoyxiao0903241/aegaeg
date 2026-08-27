@@ -2306,7 +2306,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'डिस्काउंट मूल्य ({pct}%)',
-        slippage: 'अनुमत स्लिपेज',
         pay: 'भुगतान',
         receive: 'AGX प्राप्त करें',
         cap: 'अधिकतम खरीद',
@@ -2398,7 +2397,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'डिस्काउंट मूल्य ({pct}%)',
-        slippage: 'अनुमत स्लिपेज',
         pay: 'भुगतान',
         receive: 'AGX प्राप्त करें',
         cap: 'अधिकतम खरीद',

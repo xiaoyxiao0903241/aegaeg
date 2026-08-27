@@ -298,7 +298,7 @@ function emptySnap(costUsd: number): CalcDaySnapshot {
  * 第 d 天测算：复利按 epoch、加成按单利毛 Rebase、本金线性释放。
  *
  * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (现价 × discountRateBP/10000)。
- * 投入按 AGX 现价，卖出按用户到期价。现价非法时 fail-closed。利率或日频缺省时收益为 0。
+ * 投入按 AGX 现价，卖出按用户到期价。现价 ≤0 时不计。利率或日频缺省时收益为 0。
  * X 挖矿按当日 AGX 现价 × 链上日利率折成 X。
  *
  * @param args.product 产品

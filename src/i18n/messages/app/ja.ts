@@ -2325,7 +2325,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '割引価格（{pct}%）',
-        slippage: '許容スリッページ',
         pay: '支払',
         receive: 'AGX を獲得',
         cap: '最大購入量',
@@ -2417,7 +2416,6 @@ const app = defineMessages({
       },
       meta: {
         discount: '割引価格（{pct}%）',
-        slippage: '許容スリッページ',
         pay: '支払',
         receive: 'AGX を獲得',
         cap: '最大購入量',

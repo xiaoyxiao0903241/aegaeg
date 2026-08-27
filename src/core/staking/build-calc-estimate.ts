@@ -54,7 +54,7 @@ export type CalcEstimateResult = {
  * @param args.period 产品周期
  * @param args.amount 投入数量（允许含千分位逗号）
  * @param args.price 到期 AGX 价（挖矿为到期 X 价）
- * @param args.spotUsd AGX 投入现价；≤0 时 fail-closed
+ * @param args.spotUsd AGX 投入现价；≤0 时不计
  * @param args.days 预计持仓天数
  * @param args.epochRebasePct 链上 epoch 收益率（百分比）；null 表示按零收益计算
  * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益

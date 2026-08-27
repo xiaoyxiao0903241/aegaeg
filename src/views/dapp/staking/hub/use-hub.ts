@@ -25,6 +25,7 @@ import {
   formatUsd,
   formatUsdApprox,
 } from '~/shared/presenters/format'
+import { formatBonusPct, formatYieldPct } from '~/views/dapp/staking/shared'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
@@ -35,8 +36,6 @@ import {
   useStakingHubOverviewQuery,
 } from '~/web3/staking/use-staking-queries'
 
-const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
-const BONUS_EMPTY = `${formatNumber(0, { digits: 0, trimZeros: true })}%`
 /** 可运行周期：稿面固定天数；尚无链上跑道公式。 */
 const HUB_RUNWAY_DAYS = 750
 
@@ -77,15 +76,6 @@ function formatTreasuryUsd1(
         ? formatCompact(usd1, { digits: 2, prefix: '≈ $' })
         : formatNumber(usd1, { digits: 2, prefix: '≈ $' }),
   }
-}
-
-function formatYieldPct(pct: number | null): string {
-  if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatNumber(pct, { digits: 2 })}%`
-}
-
-function formatBonusPct(bps: number): string {
-  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
 }
 
 export type HubPeriodTableRow = {
@@ -160,7 +150,7 @@ export function useStakingHubDetail() {
       : formatUsd(null)
   const treasuryDisplay = formatTreasuryUsd1(overviewQuery.data?.totalReserves, agxPriceUsd)
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
-  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const rebaseLabel = formatYieldPct(epochPct)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
 
@@ -197,9 +187,9 @@ export function useStakingHubDetail() {
           row.id,
           {
             id: row.id,
-            baseDaily: YIELD_EMPTY,
-            bonus: BONUS_EMPTY,
-            periodYield: YIELD_EMPTY,
+            baseDaily: formatYieldPct(null),
+            bonus: formatBonusPct(0),
+            periodYield: formatYieldPct(null),
           },
         ]
       }
@@ -217,7 +207,7 @@ export function useStakingHubDetail() {
           ? formatBonusPct(lockedBonusBps(period))
           : bondDiscount != null
             ? formatBondDiscountLabel(bondDiscount)
-            : BONUS_EMPTY
+            : formatBonusPct(0)
       return [
         row.id,
         {

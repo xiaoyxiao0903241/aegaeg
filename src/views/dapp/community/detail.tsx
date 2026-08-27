@@ -16,6 +16,8 @@ import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
+import { Text } from '~/shared/components/text'
+import { rewardsHashForView } from '~/shared/config/dapp-deep-links'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import { formatMakingRankLabel, formatNumber } from '~/shared/presenters/format'
 import {
@@ -23,12 +25,24 @@ import {
   CommunityProgramCard,
   CommunityStatCard,
 } from '~/views/dapp/community/primitives'
-import {
-  communityInviteRewardBody,
-  mapTeamReferralToCompactRow,
-} from '~/views/dapp/community/shared'
+import { mapTeamReferralToCompactRow } from '~/views/dapp/community/shared'
 import { useCommunityDetail } from '~/views/dapp/community/use-community'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
+
+function inviteRewardBody(template: string, linkLabel: string): ReactNode {
+  const marker = '{link}'
+  const idx = template.indexOf(marker)
+  if (idx < 0) return template
+  return (
+    <>
+      {template.slice(0, idx)}
+      <Text as="a" className="text-primary" href={rewardsHashForView('hub')}>
+        {linkLabel}
+      </Text>
+      {template.slice(idx + marker.length)}
+    </>
+  )
+}
 
 type CommunityStat = {
   dark?: boolean
@@ -58,7 +72,7 @@ export function CommunityDetail() {
 
   const inviteSteps = t.community.inviteFlow.items.map(({ title, body }) => ({
     title,
-    body: communityInviteRewardBody(body, t.community.inviteFlow.rewardLink),
+    body: inviteRewardBody(body, t.community.inviteFlow.rewardLink),
   }))
   const programItems = t.community.programs.items.map((program, index) => {
     if (index !== 0) return program

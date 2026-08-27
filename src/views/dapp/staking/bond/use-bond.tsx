@@ -149,7 +149,7 @@ export function useBondDetail(kind: BondKind) {
   const burnPurchases = useBondFlowBurnPurchases(pageParams, sessionReady && kind === 'burn')
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
 
-  const rebaseLabel = formatRebasePct(rebaseQuery.data)
+  const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
   const totalDeposit = [market180.data, market360.data, market540.data].reduce(
     (sum, m) => sum + (m?.totalDeposit ?? ZERO_BI),

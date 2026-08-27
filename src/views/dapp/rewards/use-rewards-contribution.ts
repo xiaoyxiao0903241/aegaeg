@@ -31,7 +31,7 @@ export function useRewardsContribution(walletReady: boolean) {
 
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContribution,
-    queryFn: (addr) => readContributionSnapshot(addr as Address, ZERO_BI),
+    queryFn: (addr) => readContributionSnapshot(addr as Address, ZERO_BI, false),
   })
 
   const contributionValue =

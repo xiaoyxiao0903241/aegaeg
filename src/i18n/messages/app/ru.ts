@@ -2325,7 +2325,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Цена со скидкой ({pct}%)',
-        slippage: 'Допустимое проскальзывание',
         pay: 'Оплатить',
         receive: 'Получить AGX',
         cap: 'Макс. покупка',
@@ -2417,7 +2416,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Цена со скидкой ({pct}%)',
-        slippage: 'Допустимое проскальзывание',
         pay: 'Оплатить',
         receive: 'Получить AGX',
         cap: 'Макс. покупка',

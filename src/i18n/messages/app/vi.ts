@@ -2369,7 +2369,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Giá chiết khấu ({pct}%)',
-        slippage: 'Cho phép trượt giá',
         pay: 'Thanh toán',
         receive: 'Nhận AGX',
         cap: 'Mức mua tối đa',
@@ -2461,7 +2460,6 @@ const app = defineMessages({
       },
       meta: {
         discount: 'Giá chiết khấu ({pct}%)',
-        slippage: 'Cho phép trượt giá',
         pay: 'Thanh toán',
         receive: 'Nhận AGX',
         cap: 'Mức mua tối đa',

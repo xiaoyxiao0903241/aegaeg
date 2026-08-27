@@ -283,7 +283,6 @@ export const queryKeys = {
       chainWalletQueryKey(['chain', 'turbine', 'claimable'], address),
     stakingRoot: ['chain', 'staking'] as const,
     stakingHubOverview: ['chain', 'staking', 'hubOverview'] as const,
-    calcLiveRates: ['chain', 'staking', 'calcLiveRates'] as const,
     sagxLatestRebase: ['chain', 'staking', 'sagxLatestRebase'] as const,
     stakeOpenPreflight: stakeOpenPrefix,
     stakeOpenPreflightOf: (pool: string, address: string) =>

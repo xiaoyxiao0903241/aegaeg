@@ -23,6 +23,9 @@ async function revertedRebase(index) {
 function rebaseRowsClient(rows, extra) {
   return {
     async readContract(request) {
+      if (request.functionName === 'epoch') {
+        return extra?.epoch?.() ?? [8000n, 0n, 0n, 0n]
+      }
       return withAggregate3(async ({ functionName, args }) => {
         if (extra?.[functionName]) return extra[functionName](args)
         const index = args[0]
@@ -34,11 +37,24 @@ function rebaseRowsClient(rows, extra) {
   }
 }
 
+function countingClient(rows, extra) {
+  let calls = 0
+  const inner = rebaseRowsClient(rows, extra)
+  return {
+    calls: () => calls,
+    client: {
+      async readContract(request) {
+        calls += 1
+        return inner.readContract(request)
+      },
+    },
+  }
+}
+
 test('readLatestSagxRebaseRate1e18 returns null on empty rebases array', async () => {
-  const { clearLatestSagxRebaseIndexCache, readLatestSagxRebaseRate1e18 } = await loadModule(
+  const { readLatestSagxRebaseRate1e18 } = await loadModule(
     '/src/web3/staking/staking-hub-overview-read.ts',
   )
-  clearLatestSagxRebaseIndexCache()
 
   assert.equal(
     await withBscReadClient(rebaseRowsClient(new Map()), () => readLatestSagxRebaseRate1e18()),
@@ -47,10 +63,9 @@ test('readLatestSagxRebaseRate1e18 returns null on empty rebases array', async (
 })
 
 test('readLatestSagxRebaseRate1e18 returns last append entry', async () => {
-  const { clearLatestSagxRebaseIndexCache, readLatestSagxRebaseRate1e18 } = await loadModule(
+  const { readLatestSagxRebaseRate1e18 } = await loadModule(
     '/src/web3/staking/staking-hub-overview-read.ts',
   )
-  clearLatestSagxRebaseIndexCache()
 
   const rows = new Map([
     [0n, [0n, 100n, 0n, 0n, 0n, 0n, 0n]],
@@ -62,7 +77,7 @@ test('readLatestSagxRebaseRate1e18 returns last append entry', async () => {
 })
 
 test('readLatestSagxRebaseRate1e18 hits epoch.number-1 in one multicall', async () => {
-  const { clearLatestSagxRebaseIndexCache, readLatestSagxRebaseRate1e18 } = await loadModule(
+  const { readLatestSagxRebaseRate1e18 } = await loadModule(
     '/src/web3/staking/staking-hub-overview-read.ts',
   )
 
@@ -72,22 +87,31 @@ test('readLatestSagxRebaseRate1e18 hits epoch.number-1 in one multicall', async 
     rows.set(i, [i, 1000n + i, 0n, 0n, 0n, 0n, 0n])
   }
 
-  let calls = 0
-  const client = {
-    async readContract(request) {
-      calls += 1
-      return rebaseRowsClient(rows).readContract(request)
-    },
-  }
-
-  clearLatestSagxRebaseIndexCache()
+  const { client, calls } = countingClient(rows)
   const hinted = await withBscReadClient(client, () => readLatestSagxRebaseRate1e18(last + 1n))
   assert.equal(hinted, 1000n + last)
-  assert.equal(calls, 1, `hinted lookup used ${calls} RPCs`)
+  assert.equal(calls(), 1, `hinted lookup used ${calls()} RPCs`)
+})
+
+test('readLatestSagxRebaseRate1e18 hits matching epoch.number in one multicall', async () => {
+  const { readLatestSagxRebaseRate1e18 } = await loadModule(
+    '/src/web3/staking/staking-hub-overview-read.ts',
+  )
+
+  const last = 99n
+  const rows = new Map()
+  for (let i = 0n; i <= last; i += 1n) {
+    rows.set(i, [i, 1000n + i, 0n, 0n, 0n, 0n, 0n])
+  }
+
+  const { client, calls } = countingClient(rows)
+  const hinted = await withBscReadClient(client, () => readLatestSagxRebaseRate1e18(last))
+  assert.equal(hinted, 1000n + last)
+  assert.equal(calls(), 1, `in-sync hint used ${calls()} RPCs`)
 })
 
 test('readLatestSagxRebaseRate1e18 fills the 2^k gap in one parallel round', async () => {
-  const { clearLatestSagxRebaseIndexCache, readLatestSagxRebaseRate1e18 } = await loadModule(
+  const { readLatestSagxRebaseRate1e18 } = await loadModule(
     '/src/web3/staking/staking-hub-overview-read.ts',
   )
 
@@ -97,16 +121,26 @@ test('readLatestSagxRebaseRate1e18 fills the 2^k gap in one parallel round', asy
     rows.set(i, [i, 1000n + i, 0n, 0n, 0n, 0n, 0n])
   }
 
-  let calls = 0
-  const client = {
-    async readContract(request) {
-      calls += 1
-      return rebaseRowsClient(rows).readContract(request)
-    },
-  }
-
-  clearLatestSagxRebaseIndexCache()
+  const { client, calls } = countingClient(rows)
   const rate = await withBscReadClient(client, () => readLatestSagxRebaseRate1e18())
   assert.equal(rate, 1000n + last)
-  assert.ok(calls <= 2, `gap fill used ${calls} RPCs`)
+  assert.ok(calls() <= 2, `gap fill used ${calls()} RPCs`)
+})
+
+test('readLatestSagxRebaseRate returns rate and daily epochs from epoch + hint', async () => {
+  const { readLatestSagxRebaseRate } = await loadModule(
+    '/src/web3/staking/staking-hub-overview-read.ts',
+  )
+
+  const last = 99n
+  const rows = new Map()
+  for (let i = 0n; i <= last; i += 1n) {
+    rows.set(i, [i, 1000n + i, 0n, 0n, 0n, 0n, 0n])
+  }
+
+  const { client, calls } = countingClient(rows, { epoch: () => [8000n, last, 0n, 0n] })
+  const snap = await withBscReadClient(client, () => readLatestSagxRebaseRate())
+  assert.equal(snap.rebaseRate1e18, 1000n + last)
+  assert.equal(snap.epochsPerDay, 24)
+  assert.equal(calls(), 2, `epoch + hint used ${calls()} RPCs`)
 })

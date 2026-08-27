@@ -13,8 +13,8 @@ const BSC_PUBLIC_RPC_FALLBACKS = [
   'https://bsc-dataseed3.binance.org',
 ] as const
 
-/** 保序去重；单元测可直接调用。 */
-export function uniqueRpcUrls(urls: readonly string[]): string[] {
+/** 保序去重。 */
+function uniqueRpcUrls(urls: readonly string[]): string[] {
   const seen = new Set<string>()
   const out: string[] = []
   for (const url of urls) {

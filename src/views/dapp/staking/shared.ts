@@ -12,10 +12,18 @@ export function parseApiAmountOrZero(raw: string | undefined): number {
 
 /** rebaseRate1e18 → `x.xx%`；缺失回落 `0.00%`。 */
 export function formatRebasePct(rate1e18: bigint | null | undefined): string {
-  const zero = `${formatNumber(0, { digits: 2 })}%`
-  const pct = epochRebasePctFrom1e18(rate1e18)
-  if (pct == null) return zero
+  return formatYieldPct(epochRebasePctFrom1e18(rate1e18))
+}
+
+/** 收益率百分比文案；非法回落 `0.00%`。 */
+export function formatYieldPct(pct: number | null | undefined): string {
+  if (pct == null || !Number.isFinite(pct)) return `${formatNumber(0, { digits: 2 })}%`
   return `${formatNumber(pct, { digits: 2 })}%`
+}
+
+/** 锁定加成 BPS → `x%`。 */
+export function formatBonusPct(bps: number): string {
+  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
 }
 
 /**

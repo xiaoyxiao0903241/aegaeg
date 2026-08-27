@@ -112,10 +112,12 @@ function matchesAny(addr: string, contracts: readonly string[]): boolean {
 /** 缓冲流水币种：白名单才加单位；未知或不在名单不加。 */
 function bufferAmountUnit(contractAddress: string): { digits: number; suffix: string } {
   const addr = contractAddress.trim()
-  if (!addr) return { digits: 4, suffix: '' }
-  if (matchesAny(addr, BUFFER_GAGX_CONTRACTS)) return { digits: 4, suffix: ' gAGX' }
-  if (matchesAny(addr, BUFFER_AGX_CONTRACTS)) return { digits: 4, suffix: ' AGX' }
-  return { digits: 4, suffix: '' }
+  if (!addr) return { digits: PERSONAL_TOKEN_DIGITS, suffix: '' }
+  if (matchesAny(addr, BUFFER_GAGX_CONTRACTS))
+    return { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' }
+  if (matchesAny(addr, BUFFER_AGX_CONTRACTS))
+    return { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' }
+  return { digits: PERSONAL_TOKEN_DIGITS, suffix: '' }
 }
 
 function releaseAction(item: ReleasePoolLogItem, copy: FlowOpsCopy): string {

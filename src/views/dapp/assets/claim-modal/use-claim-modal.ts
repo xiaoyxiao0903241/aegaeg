@@ -121,7 +121,7 @@ export function useAssetsClaimModal(args: {
 
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(String(claimable)),
-    queryFn: (address) => readContributionSnapshot(address as Address, claimable),
+    queryFn: (address) => readContributionSnapshot(address as Address, claimable, false),
     enabled: open && availableFresh && Boolean(account?.address),
   })
 

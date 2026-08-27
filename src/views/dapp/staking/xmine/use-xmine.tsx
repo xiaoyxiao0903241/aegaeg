@@ -145,8 +145,8 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
         : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS),
     quotaLabel:
       preflightQuery.data !== undefined
-        ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, 4)
-        : formatNumber(0, { digits: 4 }),
+        ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+        : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
@@ -182,7 +182,7 @@ export function useXmineDock() {
   const blockHint =
     xmine.blockReason === 'insufficientQuota'
       ? interpolate(t.staking.blocked.insufficientXmineQuotaWithAmount, {
-          quota: xmine.quotaLabel || formatNumber(0, { digits: 4 }),
+          quota: xmine.quotaLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS }),
         })
       : writeBlockHint(xmine.blockReason, t.staking.blocked)
 

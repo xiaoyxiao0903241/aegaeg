@@ -31,7 +31,12 @@ import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
 import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
+import {
+  formatBonusPct,
+  formatRebasePct,
+  formatYieldPct,
+  parseApiAmountOrZero,
+} from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
 import { readStakePositions } from '~/web3/assets/assets-read'
@@ -40,17 +45,6 @@ import {
   useLatestSagxRebaseRateQuery,
   useStakingHubOverviewQuery,
 } from '~/web3/staking/use-staking-queries'
-
-const YIELD_EMPTY = `${formatNumber(0, { digits: 2 })}%`
-
-function formatYieldPct(pct: number | null): string {
-  if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
-  return `${formatNumber(pct, { digits: 2 })}%`
-}
-
-function formatBonusPct(bps: number): string {
-  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
-}
 
 /**
  * 质押视图：组合表单状态、CTA 文案与提交入口
@@ -96,7 +90,7 @@ export function useStakeDock() {
     bindReferral: t.staking.stake.bindCta,
     submit: t.staking.stake.submit,
   })
-  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, 4)
+  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
   const quotaCopy =
     stake.quotaKind === 'personalDaily'
       ? t.staking.blocked.insufficientQuotaPersonalDailyWithAmount
@@ -108,7 +102,7 @@ export function useStakeDock() {
       ? interpolate(quotaCopy, { quota: quotaLabel })
       : writeBlockHint(stake.blockReason, t.staking.blocked)
 
-  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data)
+  const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
   const yieldMeta = {
     baseDaily: formatYieldPct(baseDaily),
@@ -173,7 +167,7 @@ export function useStakeDetail() {
   const poolAgxWei = overviewQuery.data?.poolAgxBalance
   const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : 0
   const epochNumber = overviewQuery.data?.epochNumber ?? ZERO_BI
-  const rebaseLabel = formatRebasePct(rebaseQuery.data)
+  const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
