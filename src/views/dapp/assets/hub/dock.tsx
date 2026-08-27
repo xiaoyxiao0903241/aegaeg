@@ -71,7 +71,8 @@ export function AssetsHubDock() {
             onClick={() => openAssetsView(key)}
             tourId={key === 'stake' ? 'asset-mode-stake' : undefined}
           >
-            <div className="pointer-events-none relative z-10 grid gap-2">
+            {/* 不加 relative：红点锚到整张卡，不锚到内容区 */}
+            <div className="pointer-events-none z-10 grid gap-2">
               {dots[key] ? <ClaimableDot /> : null}
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                 <div className="flex min-w-0 items-center gap-1">
