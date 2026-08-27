@@ -16,6 +16,32 @@ test('walletProviderRequest returns when the wallet resolves after a delay', asy
   assert.equal(hash, '0xabc')
 })
 
+test('walletProviderRequest keeps provider as this for request wrappers that call sendAsync', async () => {
+  const { walletProviderRequest } = await loadModule('/src/web3/wallet/wallet-provider-request.ts')
+
+  const provider = {
+    sendAsync(payload, callback) {
+      callback(null, { result: `signed:${payload.method}` })
+    },
+    request(args) {
+      return new Promise((resolve, reject) => {
+        this.sendAsync(
+          { jsonrpc: '2.0', id: 1, method: args.method, params: args.params ?? [] },
+          (error, response) => (error ? reject(error) : resolve(response.result)),
+        )
+      })
+    },
+  }
+
+  const hash = await walletProviderRequest({
+    provider,
+    method: 'eth_sendTransaction',
+    params: [{ to: '0x1' }],
+  })
+
+  assert.equal(hash, 'signed:eth_sendTransaction')
+})
+
 test('walletProviderRequest normalizes rejected wallet errors', async () => {
   const { walletProviderRequest } = await loadModule('/src/web3/wallet/wallet-provider-request.ts')
 
