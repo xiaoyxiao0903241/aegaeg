@@ -9,6 +9,7 @@ import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { Card } from '~/shared/components/card'
 import { Chip } from '~/shared/components/chip'
+import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
@@ -324,6 +325,73 @@ export function CalcResultCard({
             <Text as="strong" className="font-semibold" variant="support">
               {calcUsd(value)}
             </Text>
+            {key === 'netYield' ? (
+              <Tooltip.Info
+                className="size-3 text-foreground [&_svg]:size-3"
+                content={netYieldHint}
+              />
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+/** 结果卡骨架：标签与真卡同槽，金额与进度条占位。 */
+export function CalcResultCardSkeleton({
+  labels,
+  netYieldHint,
+}: {
+  labels: CalcResultCardProps['labels']
+  netYieldHint: string
+}) {
+  const legendKeys = ['released', 'netYield', 'cost', 'grossYield'] as const
+  return (
+    <Card aria-busy="true" className="grid gap-1.5" surface="elevated">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="grid gap-1">
+          <Text as="span" className="text-foreground/40" variant="copy">
+            {labels.total}
+          </Text>
+          <Skeleton className="h-8 w-36" />
+        </div>
+        <span className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+          <Text as="span" className="text-foreground/40" variant="support">
+            {labels.rate}
+          </Text>
+          <Skeleton className="h-4 w-14" />
+        </span>
+      </div>
+
+      <div className="grid gap-2">
+        <div className="flex items-center justify-between gap-3">
+          <Text as="span" className="text-foreground/40" variant="copy">
+            {labels.sellTotal}
+          </Text>
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-3.5 w-full rounded-full" />
+      </div>
+
+      <div className="grid gap-2">
+        <div className="flex items-center justify-between gap-3">
+          <Text as="span" className="text-foreground/40" variant="copy">
+            {labels.invested}
+          </Text>
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-3.5 w-full rounded-full" />
+      </div>
+
+      <div className="flex flex-wrap gap-x-5 gap-y-2">
+        {legendKeys.map((key) => (
+          <div className="flex items-center gap-1.5" key={key}>
+            <Skeleton className="size-2 rounded-full" />
+            <Text as="span" className="text-foreground/40" variant="support">
+              {labels.legend[key]}
+            </Text>
+            <Skeleton className="h-3.5 w-14" />
             {key === 'netYield' ? (
               <Tooltip.Info
                 className="size-3 text-foreground [&_svg]:size-3"

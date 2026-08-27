@@ -80,7 +80,9 @@ export function StakingCurveChart() {
           <Text as="strong" className="font-semibold" variant="section">
             {formatUsdOrDash(curveEndEstimate)}
           </Text>
-        ) : null}
+        ) : (
+          <Skeleton className="h-7 w-28" />
+        )}
       </Chart.Header>
       {curvePoints.length > 0 && result ? (
         <Chart.Plot
