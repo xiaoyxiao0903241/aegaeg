@@ -31,32 +31,23 @@ export function GenesisPromoSync() {
 
   const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
   const activePhase = activePhaseQuery.data ?? null
-  const phaseIndex = activePhase?.index ?? 0
   const agxPriceWei = agxPriceQuery.data ?? ZERO_BI
   const agxPriceUsd = useMemo(() => {
     const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)
     return fromChain > 0 ? fromChain : 0
   }, [agxPriceWei])
 
-  const discountBps = Number(activePhase?.discountBps ?? 0)
-  const discountLabel = discountBps > 0 ? `-${(discountBps / 100).toFixed(0)}%` : '—'
-
   const seasonOptions = useMemo(
     () => seasonOptionsFromPhases(phases, agxPriceUsd, nowSeconds),
     [agxPriceUsd, nowSeconds, phases],
   )
 
-  const activeSeasonNumber = useMemo(() => {
-    if (activePhase) return phaseIndex + 1
-    const liveIndex = seasonOptions.findIndex((season) => season.active)
-    if (liveIndex >= 0) return liveIndex + 1
-    return 1
-  }, [activePhase, phaseIndex, seasonOptions])
-
   const promoSnapshot = useMemo(
     () => genesisPromoSnapshot(phases, activePhase, agxPriceUsd, nowSeconds),
     [activePhase, agxPriceUsd, nowSeconds, phases],
   )
+  const activeSeasonNumber = promoSnapshot?.season ?? 1
+  const discountLabel = promoSnapshot?.discount ?? '—'
 
   const isLoading = phasesQuery.isLoading || activePhaseQuery.isLoading || agxPriceQuery.isLoading
 

@@ -105,7 +105,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
         </div>
       ) : genesis.seasonOptions.length > 0 ? (
         <GenesisSeasonCarousel
-          activePhaseIndex={genesis.phaseIndex}
+          activePhaseIndex={genesis.activeSeasonNumber - 1}
           seasons={genesis.seasonOptions}
         />
       ) : null}
