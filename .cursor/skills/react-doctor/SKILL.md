@@ -10,7 +10,9 @@ Scans React codebases for security, performance, correctness, and architecture i
 
 ## After making React code changes:
 
-Run `npx react-doctor@latest --verbose --scope changed` and check the score did not regress.
+This repo’s SSOT is `pnpm react-doctor:changed` (`--scope changed --base origin/dev`). Do **not** run `npx react-doctor@latest --scope changed`: that defaults to `main` and will rescan the whole `dev` delta.
+
+Commit already runs `pnpm react-doctor:staged` (staged files only).
 
 If the score dropped, fix the regressions before committing.
 
@@ -43,14 +45,14 @@ When the user wants to understand a rule, disagrees with one, or wants to disabl
 ## Command
 
 ```bash
-npx react-doctor@latest --verbose --scope changed
+pnpm react-doctor:changed
 ```
 
 | Flag              | Purpose                                                          |
 | ----------------- | ---------------------------------------------------------------- |
 | `.`               | Scan current directory                                           |
 | `--verbose`       | Show affected files and line numbers per rule                    |
-| `--scope changed` | Only report issues introduced vs the base branch (default: full) |
+| `--scope changed` | Only files vs `--base` (this repo: `origin/dev`, not `main`) |
 | `--scope lines`   | Only report issues on the changed lines                          |
 | `--score`         | Output only the numeric score                                    |
 | `design`          | Run only the focused UI design diagnostics                       |
