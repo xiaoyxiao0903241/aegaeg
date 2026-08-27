@@ -219,7 +219,7 @@ export function RewardsHubDetail() {
               const plusIdx = row.rate.indexOf('+')
               const rateCell =
                 plusIdx > 0 ? (
-                  <span className="flex flex-col items-start leading-normal">
+                  <span className="flex flex-col items-end leading-normal">
                     <Text as="span" className="font-semibold" variant="copy">
                       {row.rate.slice(0, plusIdx).trim()}
                     </Text>
