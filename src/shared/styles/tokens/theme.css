@@ -353,6 +353,14 @@
   --motion-dapp-fade-in: 220ms;
 
   /* App chrome (rem @ 16px; scales with site-fluid) */
+  /* 面积图绘图区；16px 根上 170 */
+  --chart-plot-height: 10.625rem;
+  /* 点阵底纹；16px 根上 10 / 0.9 */
+  --chart-plot-dot: radial-gradient(circle, rgba(0, 0, 0, 0.14) calc(0.9rem / 16), transparent 0.0625rem);
+  --chart-plot-dot-size: 0.625rem;
+  /* 测算日标记 / 十字线圆点；16px 根上 9 / 1.5 */
+  --chart-mark-size: 0.5625rem;
+  --chart-mark-border: calc(1.5rem / 16);
   --app-icon-xs: 0.75rem;
   --app-icon-sm: 0.8125rem;
   --app-icon-md: 0.875rem;

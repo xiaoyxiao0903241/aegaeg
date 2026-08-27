@@ -38,6 +38,7 @@ import {
   sampleSeriesNormalized,
 } from '~/shared/lib/chart-series-morph'
 import { chartVisibleLogicalRange } from '~/shared/lib/chart-visible-range'
+import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { cn } from '~/shared/lib/utils'
 import { formatNumber, formatUsd } from '~/shared/presenters/format'
 import { colorHex } from '~/shared/styles/tokens/tokens'
@@ -79,8 +80,17 @@ const LINE = colorHex.primary
 const AREA_TOP = withAlpha(colorHex.primary, 0.38)
 const AREA_BOTTOM = withAlpha(colorHex.primary, 0.02)
 
-/** 浅灰点阵底纹（不是实线网格） */
-const DOT_BG = 'radial-gradient(circle, rgba(0, 0, 0, 0.14) 0.9px, transparent 1px)'
+const MARK_DOT_CLASS =
+  'pointer-events-none absolute z-10 size-(--chart-mark-size) -translate-x-1/2 -translate-y-1/2 rounded-full border-solid'
+
+function chartMarkStyle(pos: { x: number; y: number }) {
+  return {
+    left: pos.x,
+    top: pos.y,
+    // 描边用 rem token；写进 style，避免被边框颜色 class 盖成 1px
+    borderWidth: 'var(--chart-mark-border)',
+  }
+}
 
 type ChartTip = {
   left: number
@@ -200,7 +210,6 @@ function Plot({
   className,
   fit = 'flush',
   formatTipDate,
-  height = 170,
   mark,
   points,
 }: {
@@ -209,7 +218,6 @@ function Plot({
   /** `flush` 首末贴边；`inset` 按像素留边，首末点能点到。 */
   fit?: 'flush' | 'inset'
   formatTipDate?: (time: Time) => string | null
-  height?: number
   /** 曲线上的测算日标记；无则不画。 */
   mark?: { time: number; label?: string }
   points: readonly ChartPoint[]
@@ -225,11 +233,13 @@ function Plot({
   const [plotEpoch, setPlotEpoch] = useState(0)
   const [tip, setTip] = useState<ChartTip | null>(null)
   const [markPos, setMarkPos] = useState<{ x: number; y: number } | null>(null)
+  const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null)
   // points 换批时在 render 期清 tip，避免 effect 里 setState 造成一帧陈旧十字线。
   const [tipPoints, setTipPoints] = useState(points)
   if (points !== tipPoints) {
     setTipPoints(points)
     setTip(null)
+    setHoverPos(null)
   }
   const dateGrain = chartDateGrainFromPoints(points)
   const axisLabels = axisLabelsProp ?? pickChartAxisLabels(points, 6)
@@ -270,7 +280,7 @@ function Plot({
 
     const chart = createChart(host, {
       width: host.clientWidth,
-      height,
+      height: Math.max(1, host.clientHeight),
       layout: {
         background: { type: ColorType.Solid, color: 'transparent' },
         fontFamily: 'Montserrat, ui-sans-serif, system-ui, sans-serif',
@@ -315,9 +325,7 @@ function Plot({
       lineWidth: 2,
       priceLineVisible: false,
       lastValueVisible: false,
-      crosshairMarkerVisible: true,
-      crosshairMarkerBorderColor: LINE,
-      crosshairMarkerBackgroundColor: '#fff',
+      crosshairMarkerVisible: false,
       priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
     })
 
@@ -332,9 +340,10 @@ function Plot({
         param.point.x < 0 ||
         param.point.y < 0 ||
         param.point.x > host.clientWidth ||
-        param.point.y > height
+        param.point.y > host.clientHeight
       ) {
         setTip(null)
+        setHoverPos(null)
         return
       }
       const raw = param.seriesData.get(series)
@@ -344,11 +353,13 @@ function Plot({
           : null
       if (value == null) {
         setTip(null)
+        setHoverPos(null)
         return
       }
       const dateLabel = resolveTipDate(param.time)
       if (dateLabel == null) {
         setTip(null)
+        setHoverPos(null)
         return
       }
       const tipW = 112
@@ -360,6 +371,10 @@ function Plot({
       left = Math.min(maxLeft, Math.max(0, left))
       let top = param.point.y - tipH - pad
       if (top < 0) top = param.point.y + pad
+      const hx = chart.timeScale().timeToCoordinate(param.time)
+      const hy = series.priceToCoordinate(value)
+      if (hx != null && hy != null) setHoverPos({ x: hx, y: hy })
+      else setHoverPos(null)
       setTip({
         left,
         top: Math.max(0, top),
@@ -372,7 +387,10 @@ function Plot({
 
     const ro = new ResizeObserver(() => {
       if (!hostRef.current || !chartRef.current) return
-      chartRef.current.applyOptions({ width: hostRef.current.clientWidth })
+      chartRef.current.applyOptions({
+        width: hostRef.current.clientWidth,
+        height: Math.max(1, hostRef.current.clientHeight),
+      })
       applyFit()
       requestAnimationFrame(() => {
         applyFit()
@@ -391,9 +409,10 @@ function Plot({
       visualPointsRef.current = []
       appliedSigRef.current = ''
       setTip(null)
+      setHoverPos(null)
       setMarkPos(null)
     }
-  }, [height])
+  }, [])
 
   useEffect(() => {
     const series = seriesRef.current
@@ -476,24 +495,23 @@ function Plot({
     syncMark()
   }, [mark?.time, plotEpoch])
 
-  const markLabelAbove = markPos != null && markPos.y >= 36
+  const markLabelAbove =
+    markPos != null && markPos.y >= cssRemVarPx('--chart-mark-size', 0.5625) * 4
 
   return (
     <div className={cn('grid w-full gap-2', className)}>
       <div
         className={cn(
-          'relative w-full rounded-md',
+          'relative h-(--chart-plot-height) w-full rounded-md',
           fit === 'inset' ? 'overflow-visible' : 'overflow-hidden',
         )}
-        style={{ height }}
       >
         <div
           className="absolute inset-0 overflow-hidden rounded-md"
           ref={hostRef}
           style={{
-            backgroundImage: DOT_BG,
-            backgroundSize: '10px 10px',
-            backgroundPosition: '0 0',
+            backgroundImage: 'var(--chart-plot-dot)',
+            backgroundSize: 'var(--chart-plot-dot-size) var(--chart-plot-dot-size)',
           }}
         />
         {tip ? (
@@ -510,12 +528,19 @@ function Plot({
             </Text>
           </div>
         ) : null}
+        {hoverPos ? (
+          <div
+            aria-hidden
+            className={cn(MARK_DOT_CLASS, 'border-primary bg-card')}
+            style={chartMarkStyle(hoverPos)}
+          />
+        ) : null}
         {mark && markPos ? (
           <>
             <div
               aria-hidden
-              className="pointer-events-none absolute z-10 size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-white bg-primary"
-              style={{ left: markPos.x, top: markPos.y }}
+              className={cn(MARK_DOT_CLASS, 'border-white bg-primary')}
+              style={chartMarkStyle(markPos)}
             />
             {mark.label && !tip ? (
               <Text
@@ -525,8 +550,8 @@ function Plot({
                   left: markPos.x,
                   top: markPos.y,
                   transform: markLabelAbove
-                    ? 'translate(-50%, calc(-100% - 10px))'
-                    : 'translate(-50%, 12px)',
+                    ? 'translate(-50%, calc(-100% - 0.625rem))'
+                    : 'translate(-50%, 0.75rem)',
                 }}
                 variant="support"
               >
@@ -556,12 +581,12 @@ function Plot({
 }
 
 /**
- * 曲线 / 面积图加载骨架：绘图区与底部轴标占位，高度对齐 `Plot` 的 170px。
+ * 曲线 / 面积图加载骨架：绘图区与底部轴标占位，高度对齐 `Plot`（`--chart-plot-height`）。
  */
 function ChartSkeleton({ className }: { className?: string }) {
   return (
     <div aria-busy="true" className={cn('grid w-full gap-2', className)}>
-      <Skeleton className="h-[170px] w-full rounded-md" />
+      <Skeleton className="h-(--chart-plot-height) w-full rounded-md" />
       <div className="flex w-full items-center justify-between gap-1">
         {Array.from({ length: 4 }, (_, i) => (
           <Skeleton className="h-3 w-10 shrink" key={i} />
