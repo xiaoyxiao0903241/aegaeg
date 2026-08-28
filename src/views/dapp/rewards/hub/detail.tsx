@@ -92,7 +92,7 @@ export function RewardsHubDetail() {
       label: stats.totalRewards,
       value: statsView.totalRewardGagx,
       approx: statsView.totalRewardApprox,
-      iconSrc: dappAssets.rewardsHubGagxDot,
+      iconSrc: dappAssets.tokenGagx,
     },
     {
       key: 'tier',

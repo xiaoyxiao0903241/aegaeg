@@ -141,8 +141,6 @@ export const dappAssets = {
   rewardsHubGrant: '/assets/figma/dapp/rewards-hub/ic-mode-grant.svg',
   rewardsHubGenesis: '/assets/figma/dapp/rewards-hub/ic-mode-genesis.svg',
   rewardsHubEnterClaim: '/assets/figma/dapp/rewards-hub/ic-enter-claim.svg',
-  /** 总奖励卡 gAGX 圆标。 */
-  rewardsHubGagxDot: '/assets/figma/dapp/rewards-hub/ic-gagx-ellipse.svg',
   /** 共建级别卡无档时的角色装饰。 */
   rewardsHubTierDeco: '/assets/figma/dapp/rewards-hub/deco-character.png',
   /** 贡献点数「去销毁」箭头。 */

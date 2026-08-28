@@ -130,9 +130,7 @@ export function RewardsSummaryCard({
       )}
       {value != null ? (
         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-          {iconSrc != null ? (
-            <Icon alt="" className="size-4.5 shrink-0" size="sm" src={iconSrc} />
-          ) : null}
+          {iconSrc != null ? <Icon alt="" shape="circle" size="lg" src={iconSrc} /> : null}
           <Text as="p" className="leading-none font-semibold wrap-break-word" variant="headline">
             <CountValue text={value} />
           </Text>

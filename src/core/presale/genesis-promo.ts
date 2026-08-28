@@ -5,39 +5,30 @@ import { formatPhaseDate } from '~/core/presale/presale-math'
 
 export type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
+/**
+ * 主推阶段下标：有进行中用进行中；无 LIVE 时有 Upcoming 用第一期，否则用最后一期。
+ *
+ * @param phases 链上预售阶段（调用方保证非空）
+ * @param activePhase 当前进行中阶段；null 表示无
+ * @param nowSeconds 当前时间（unix 秒）
+ * @returns 主推阶段下标
+ */
 function featuredPhaseIndex(
   phases: PresalePhaseOnChain[],
   activePhase: PresalePhaseOnChain | null,
   nowSeconds: number,
 ): number {
-  if (activePhase) {
-    return activePhase.index
-  }
-
-  const upcomingIndex = phases.findIndex((phase) => Number(phase.startTime) > nowSeconds)
-  if (upcomingIndex >= 0) {
-    return upcomingIndex
-  }
-
-  const lastEndedIndex = phases.reduce((latest, phase, index) => {
-    if (nowSeconds > Number(phase.endTime)) {
-      return index
-    }
-    return latest
-  }, -1)
-
-  if (lastEndedIndex >= 0) {
-    return lastEndedIndex
-  }
-
-  return 0
+  if (activePhase) return activePhase.index
+  const hasUpcoming = phases.some((phase) => Number(phase.startTime) > nowSeconds)
+  if (hasUpcoming) return 0
+  return phases.length - 1
 }
 
 /**
  * 构建预售首页横幅快照。
  *
- * 先由各阶段生成季节选项，再按当前阶段（或最近的进行 / 已结束阶段）
- * 选定主推季节；无阶段时返回 null。
+ * 先由各阶段生成季节选项，再按进行中阶段选定主推季节；
+ * 无 LIVE 时有 Upcoming 取第一期，否则取最后一期。无阶段时返回 null。
  *
  * @param phases 链上预售阶段
  * @param activePhase 当前进行中的阶段；null 表示无
