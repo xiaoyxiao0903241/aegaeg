@@ -72,6 +72,7 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
         </Grid>
         {/* jscpd:ignore-end */}
       </Section>
+      {/* jscpd:ignore-start — 操作记录与 FAQ 页内拼装，禁再抽 Section 薄包装 */}
       <Section>
         <Section.Title>{copy.ops.title}</Section.Title>
         <AssetsOpsTable
@@ -90,6 +91,7 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
         <Section.Title>{copy.faq.title}</Section.Title>
         <Faq items={copy.faq.items} variant="dapp" />
       </Section>
+      {/* jscpd:ignore-end */}
     </Detail>
   )
 }

@@ -18,6 +18,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useXmineSessionStore } from '~/stores/assets-session-store'
@@ -208,13 +209,19 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   ]
 }
 
-/** X 挖矿操作记录：拉取挖矿日志并映射为表格行 */
+/** X 挖矿操作记录：分页拉取挖矿日志并映射为表格行 */
 export function useAssetsXmineOpsRows() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
-  const logs = useX0MiningLogs({}, sessionReady)
+  const page = useXmineSessionStore((s) => s.opsPage)
+  const setPage = useXmineSessionStore((s) => s.setOpsPage)
+  const logs = useX0MiningLogs(tablePageQuery(page), sessionReady)
   return {
+    page,
+    setPage,
+    sessionReady,
     rows: logs.data?.items.map((item) => mapX0MiningLogToOpsRow(item, t.flowOps)) ?? [],
+    total: logs.data?.total ?? 0,
     isLoading: sessionReady && logs.isLoading,
   }
 }

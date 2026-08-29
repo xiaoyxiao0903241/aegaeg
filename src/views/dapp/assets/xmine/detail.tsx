@@ -66,12 +66,18 @@ export function XmineDetail() {
         </Grid>
         {/* jscpd:ignore-end */}
       </Section>
+      {/* jscpd:ignore-start — 操作记录与 FAQ 页内拼装，禁再抽 Section 薄包装 */}
       <Section>
         <Section.Title>{copy.ops.title}</Section.Title>
         <AssetsOpsTable
           empty={copy.ops.empty}
           headers={t.assets.opsColumns}
           isLoading={ops.isLoading}
+          pagination={{
+            page: ops.page,
+            total: ops.sessionReady ? ops.total : 0,
+            onPageChange: ops.setPage,
+          }}
           rows={ops.rows}
         />
       </Section>
@@ -79,6 +85,7 @@ export function XmineDetail() {
         <Section.Title>{copy.faq.title}</Section.Title>
         <Faq items={copy.faq.items} variant="dapp" />
       </Section>
+      {/* jscpd:ignore-end */}
     </Detail>
   )
 }
