@@ -23,6 +23,7 @@ import {
   getStakeFlowPositions,
   getX0MiningLogs,
   getX0MiningPositions,
+  getX0MiningSummary,
 } from '~/shared/api/endpoints'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type {
@@ -300,6 +301,16 @@ export function useX0MiningLifetimeReward(enabled = true) {
       }),
     enabled,
   )
+}
+
+/**
+ * 个人 X 挖矿概览：已释放 gAGX 与已领取 X。
+ *
+ * @param enabled false 时暂停请求
+ * @see docs/backend-api/api.md #x0-mining/summary
+ */
+export function useX0MiningSummary(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.x0MiningSummary, getX0MiningSummary, enabled)
 }
 
 /**

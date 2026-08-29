@@ -18,6 +18,7 @@ import type {
   X0MiningLogItem,
   X0MiningLogsParams,
   X0MiningPositionsPage,
+  X0MiningSummary,
 } from '~/shared/api/types'
 
 /** 质押、债券与 X 挖矿端点按指标与流水分组封装。 */
@@ -163,5 +164,18 @@ export async function getX0MiningPositions(
     method: 'POST',
     token,
     body: paginationBody(params),
+  })
+}
+
+/**
+ * 当前用户 X 挖矿概览：已释放 gAGX 与已领取 X。
+ *
+ * @see docs/backend-api/api.md #x0-mining/summary
+ */
+export async function getX0MiningSummary(token: string): Promise<X0MiningSummary> {
+  return apiRequest<X0MiningSummary>('/x0-mining/summary', {
+    method: 'POST',
+    token,
+    body: {},
   })
 }

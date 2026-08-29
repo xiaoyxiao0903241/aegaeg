@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import { xmineSummaryAmountWei } from '~/core/assets/xmine-summary-stats'
 import { ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
@@ -8,7 +9,7 @@ import {
   PERSONAL_TOKEN_DIGITS,
 } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useX0MiningLifetimeReward, useX0MiningLogs } from '~/hooks/use-api-data'
+import { useX0MiningLogs, useX0MiningSummary } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -17,7 +18,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
+import { formatUsdApprox } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useXmineSessionStore } from '~/stores/assets-session-store'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
@@ -145,7 +146,7 @@ export type AssetsXmineStatCell = {
   icon?: 'gagx' | 'x'
 }
 
-/** X 挖矿右侧统计：链上仓位 + 用户 REWARD 流水累加「累计产出」 */
+/** X 挖矿右侧统计：链上仓位 + `/x0-mining/summary` 的已释放 / 总产出 */
 export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
@@ -156,8 +157,7 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
     queryKey: queryKeys.chain.assetsXminePosition,
     queryFn: (addr) => readXminePosition(addr as Address),
   })
-  // 累加用户历史 REWARD；翻页至覆盖 total（无协议累计 view）
-  const rewardLifetime = useX0MiningLifetimeReward(sessionReady)
+  const summaryQuery = useX0MiningSummary(sessionReady)
 
   if (!walletReady || !address || positionQuery.isError) {
     return Array.from({ length: 4 }, () => ({
@@ -173,39 +173,38 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   }
 
   const { miningStake, pending } = positionQuery.data
-  // 无 PRV「已释放」映射 → 不把 miningStake 冒充已释放
-  const released = ZERO_BI
-  const lifetimeX = rewardLifetime.data ?? 0
+  const releasedWei = summaryQuery.error
+    ? null
+    : xmineSummaryAmountWei(summaryQuery.data?.total_redeemed_amount, GAGX_DECIMALS)
+  const totalOutputWei = summaryQuery.error
+    ? null
+    : xmineSummaryAmountWei(summaryQuery.data?.claimed_x_reward, X_DECIMALS)
 
   return [
-    ...(
-      [
-        {
-          amount: miningStake,
-          decimals: GAGX_DECIMALS,
-          unit: 'gAGX',
-          icon: 'gagx' as const,
-          price: priceUsd,
-        },
-        {
-          amount: released,
-          decimals: GAGX_DECIMALS,
-          unit: 'gAGX',
-          icon: 'gagx' as const,
-          price: priceUsd,
-        },
-        { amount: pending, decimals: X_DECIMALS, unit: 'X', icon: 'x' as const, price: null },
-      ] as const
-    ).map(({ amount, decimals, unit, icon, price }) => ({
-      value: `${formatTokenAmount(amount, decimals, PERSONAL_TOKEN_DIGITS)} ${unit}`,
-      icon,
-      approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), price),
-    })),
     {
-      value: `${formatNumber(lifetimeX, { digits: PERSONAL_TOKEN_DIGITS })} X`,
+      value: `${formatTokenAmount(miningStake, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
+      icon: 'gagx',
+      approx: formatUsdApprox(formatTokenAmountToNumber(miningStake, GAGX_DECIMALS), priceUsd),
+    },
+    releasedWei == null
+      ? { value: '—', icon: 'gagx' }
+      : {
+          value: `${formatTokenAmount(releasedWei, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
+          icon: 'gagx',
+          approx: formatUsdApprox(formatTokenAmountToNumber(releasedWei, GAGX_DECIMALS), priceUsd),
+        },
+    {
+      value: `${formatTokenAmount(pending, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`,
       icon: 'x',
       approx: formatUsdApprox(0, null),
     },
+    totalOutputWei == null
+      ? { value: '—', icon: 'x' }
+      : {
+          value: `${formatTokenAmount(totalOutputWei, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`,
+          icon: 'x',
+          approx: formatUsdApprox(0, null),
+        },
   ]
 }
 

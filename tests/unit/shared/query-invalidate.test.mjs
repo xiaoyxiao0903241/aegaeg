@@ -515,6 +515,15 @@ async function assertExtraKeyPollAfter(run, logRoot, extraKey) {
   }
 }
 
+test('invalidateAfterAssetsClaim polls x0-mining summary extraKeys when logs are mounted', async () => {
+  const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
+  await assertExtraKeyPollAfter(
+    () => invalidateAfterAssetsClaim(),
+    queryKeys.api.x0MiningLogsRoot,
+    queryKeys.api.x0MiningSummary,
+  )
+})
+
 test('invalidateAfterAssetsClaim polls contribution consume logs', async () => {
   const { invalidateAfterAssetsClaim } = await loadModule('/src/shared/api/query/invalidate.ts')
   await assertLogsPollAfter(
