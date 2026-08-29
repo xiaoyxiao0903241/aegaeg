@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import {
+  assetsBondSortTimes,
+  assetsStakeSortTimes,
+  compareAssetsPositionSort,
+} from '~/core/assets/assets-position-sort'
 import { bondTotalRewardWei } from '~/core/assets/bond-total-reward'
 import { buildStakeMixedClaimTarget, type ClaimOutputKind } from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
@@ -36,9 +41,9 @@ import {
 import {
   ASSETS_SORT_KEYS,
   type AssetsProduct,
-  type AssetsSortKey,
   usePositionSessionStore,
 } from '~/stores/assets-session-store'
+import { useWallClockSec } from '~/stores/wall-clock-store'
 import { formatAssetsPositionAmount } from '~/views/dapp/assets/position/format-assets-position-amount'
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 import { submitBondRedeem, submitStakeRedeem } from '~/views/dapp/assets/submit-assets'
@@ -112,34 +117,6 @@ type RedeemVars = {
   row: AssetsStakeRow | AssetsBondRow
 }
 
-function stakeSortKey(row: AssetsStakeRow): { start: number; end: number } {
-  const end = row.expiry > ZERO_BI ? Number(row.expiry) : Number.MAX_SAFE_INTEGER
-  const start = row.stakeIndex == null ? Number.MAX_SAFE_INTEGER : row.stakeIndex
-  return { start, end }
-}
-
-function bondSortKey(row: AssetsBondRow): { start: number; end: number } {
-  const end = row.vestingEndTime > ZERO_BI ? Number(row.vestingEndTime) : Number.MAX_SAFE_INTEGER
-  return { start: row.bondIndex, end }
-}
-
-function compareBySort(
-  left: { start: number; end: number },
-  right: { start: number; end: number },
-  sort: AssetsSortKey,
-): number {
-  switch (sort) {
-    case 'startNear':
-      return right.start - left.start
-    case 'startFar':
-      return left.start - right.start
-    case 'endNear':
-      return left.end - right.end
-    case 'endFar':
-      return right.end - left.end
-  }
-}
-
 /**
  * 仓位产品侧栏的状态编排
  *
@@ -157,6 +134,7 @@ export function usePositionDock(product: AssetsProduct) {
   const s = usePositionSessionStore()
   s.syncProduct(product)
   const { quote, setQuote, sort, setSort, page, setPage } = s
+  const nowSec = useWallClockSec()
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [claimOutput, setClaimOutput] = useState<ClaimOutputState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
@@ -208,15 +186,19 @@ export function usePositionDock(product: AssetsProduct) {
   })
 
   const overviewQuery = useStakingHubOverviewQuery({ enabled: product === 'stake' })
-  const epochClock = overviewQuery.data
-    ? {
-        currentEpoch: overviewQuery.data.epochNumber,
-        epochEndBlock: overviewQuery.data.epochEndBlock,
-        currentBlock: overviewQuery.data.currentBlock,
-        epochLengthBlocks: overviewQuery.data.epochLengthBlocks,
-        secondsPerBlock: overviewQuery.data.secondsPerBlock,
-      }
-    : null
+  const epochClock = useMemo(
+    () =>
+      overviewQuery.data
+        ? {
+            currentEpoch: overviewQuery.data.epochNumber,
+            epochEndBlock: overviewQuery.data.epochEndBlock,
+            currentBlock: overviewQuery.data.currentBlock,
+            epochLengthBlocks: overviewQuery.data.epochLengthBlocks,
+            secondsPerBlock: overviewQuery.data.secondsPerBlock,
+          }
+        : null,
+    [overviewQuery.data],
+  )
 
   function formatAmount(amount: bigint, decimals: number, unit: 'AGX' | 'gAGX'): string {
     return formatAssetsPositionAmount(amount, decimals, quote, agxPriceUsd, unit)
@@ -231,15 +213,31 @@ export function usePositionDock(product: AssetsProduct) {
 
   const stakeRows = useMemo(() => {
     const rows = [...(stakeQuery.data ?? [])]
-    rows.sort((a, b) => compareBySort(stakeSortKey(a), stakeSortKey(b), sort))
+    rows.sort((a, b) =>
+      compareAssetsPositionSort(
+        assetsStakeSortTimes(a, nowSec, epochClock),
+        assetsStakeSortTimes(b, nowSec, epochClock),
+        sort,
+        a.id,
+        b.id,
+      ),
+    )
     return rows
-  }, [stakeQuery.data, sort])
+  }, [epochClock, nowSec, sort, stakeQuery.data])
 
   const bondRows = useMemo(() => {
     const rows = [...(bondQuery.data ?? [])]
-    rows.sort((a, b) => compareBySort(bondSortKey(a), bondSortKey(b), sort))
+    rows.sort((a, b) =>
+      compareAssetsPositionSort(
+        assetsBondSortTimes(a, nowSec),
+        assetsBondSortTimes(b, nowSec),
+        sort,
+        a.id,
+        b.id,
+      ),
+    )
     return rows
-  }, [bondQuery.data, sort])
+  }, [bondQuery.data, nowSec, sort])
 
   const isEmpty = product === 'stake' ? stakeRows.length === 0 : bondRows.length === 0
   const isLoading = product === 'stake' ? stakeQuery.isLoading : bondQuery.isLoading
