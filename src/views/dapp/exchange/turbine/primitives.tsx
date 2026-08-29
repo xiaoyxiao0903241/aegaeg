@@ -25,12 +25,12 @@ export function TurbineEqBuyTokenCell({
   footer: ReactNode
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1.5 rounded-control bg-background p-3">
+    <div className="flex h-full min-w-0 flex-col gap-1.5 rounded-control bg-background p-3">
       <Text as="p" variant="support" className="text-foreground/40">
         {label}
       </Text>
       <div className="flex min-w-0 items-center gap-2">
-        <Icon alt="" className="size-5 rounded-md" size="token" src={icon} />
+        <Icon alt="" className="size-5 shrink-0 rounded-md" size="token" src={icon} />
         <Text
           as="span"
           variant="copy"
@@ -39,8 +39,8 @@ export function TurbineEqBuyTokenCell({
           <CountValue text={value} />
         </Text>
       </div>
-      <Text as="p" variant="support" className="min-w-0 wrap-break-word text-foreground/40">
-        {typeof footer === 'string' ? <CountValue text={footer} /> : footer}
+      <Text as="p" variant="support" className="mt-auto min-w-0 text-foreground/40">
+        {footer}
       </Text>
     </div>
   )
