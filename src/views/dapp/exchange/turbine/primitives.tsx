@@ -29,13 +29,17 @@ export function TurbineEqBuyTokenCell({
       <Text as="p" variant="support" className="text-foreground/40">
         {label}
       </Text>
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <Icon alt="" className="size-5 rounded-md" size="token" src={icon} />
-        <Text as="span" variant="copy" className="text-base/5 font-semibold">
+        <Text
+          as="span"
+          variant="copy"
+          className="min-w-0 text-base/5 font-semibold wrap-break-word"
+        >
           <CountValue text={value} />
         </Text>
       </div>
-      <Text as="p" variant="support" className="text-foreground/40">
+      <Text as="p" variant="support" className="min-w-0 wrap-break-word text-foreground/40">
         {typeof footer === 'string' ? <CountValue text={footer} /> : footer}
       </Text>
     </div>

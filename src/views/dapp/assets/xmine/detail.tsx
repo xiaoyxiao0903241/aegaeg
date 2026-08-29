@@ -28,7 +28,7 @@ export function XmineDetail() {
       <Section>
         <Section.Title>{copy.stats.title}</Section.Title>
         {/* jscpd:ignore-start — 右栏指标瓦页内同构 map */}
-        <Grid columns={2}>
+        <Grid columns={2} stackOnDapp>
           {copy.stats.metrics.map((metric, index) => {
             const cell = values[index]
             const iconSrc =
@@ -43,11 +43,15 @@ export function XmineDetail() {
                   {metric.label}
                   {'hint' in metric && metric.hint ? <Tooltip.Info content={metric.hint} /> : null}
                 </Tile.Label>
-                <div className="flex items-center gap-1.5">
+                <div className="flex min-w-0 items-center gap-1.5">
                   {iconSrc ? (
                     <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
                   ) : null}
-                  <Text as="strong" className="text-base/5 font-semibold" variant="copy">
+                  <Text
+                    as="strong"
+                    className="min-w-0 text-base/5 font-semibold wrap-break-word"
+                    variant="copy"
+                  >
                     <CountValue text={cell?.value ?? '0.0000'} />
                   </Text>
                 </div>

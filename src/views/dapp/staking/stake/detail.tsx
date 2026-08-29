@@ -81,7 +81,7 @@ export function StakeDetail() {
             </Text>
           </button>
         </div>
-        <Grid columns={6}>
+        <Grid columns={6} stackOnDapp>
           {positionItems.map((item, index) => (
             <Tile
               className={

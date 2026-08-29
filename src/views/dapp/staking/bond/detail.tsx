@@ -90,7 +90,7 @@ export function BondDetail({ kind }: { kind: BondKind }) {
             </Text>
           </button>
         </div>
-        <Grid columns={2}>
+        <Grid columns={2} stackOnDapp>
           {positionItems.map((item) => (
             <Tile className="min-w-0" key={item.label}>
               <Tile.Label>

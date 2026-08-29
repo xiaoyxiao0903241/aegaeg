@@ -74,7 +74,7 @@ export function BurnExchangeDetail({
     <Detail>
       <Section>
         <Section.Title id="exchange-title">{t.exchange.overview}</Section.Title>
-        <Grid columns={2}>
+        <Grid columns={2} stackOnDapp>
           {(
             [
               { key: 'rate', label: t.exchange.burn.burnRate, value: overviewRateLabel },
