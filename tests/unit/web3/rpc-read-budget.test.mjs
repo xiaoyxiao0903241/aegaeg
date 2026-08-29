@@ -299,8 +299,12 @@ test('readReleaseBufferSnapshot archive: count fail soft; page fail closed', asy
 
 test('readStakePositions locked: count + one aggregate3 of getStakes+released (not N getStake)', async () => {
   const { readStakePositions } = await loadModule('/src/web3/assets/assets-read.ts')
-  const { LIQUID_STAKING_ASSETS_METHODS, LIQUID_STAKING_METHODS, LOCKED_STAKING_ASSETS_METHODS } =
-    await loadModule('/src/web3/abis.ts')
+  const {
+    LIQUID_STAKING_ASSETS_METHODS,
+    LIQUID_STAKING_METHODS,
+    LOCKED_STAKING_ASSETS_METHODS,
+    LOCKED_STAKING_METHODS,
+  } = await loadModule('/src/web3/abis.ts')
   const liquidAbi = parseAbi([
     LIQUID_STAKING_ASSETS_METHODS.stakes,
     LIQUID_STAKING_ASSETS_METHODS.warmupStakes,
@@ -311,6 +315,7 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
     LOCKED_STAKING_ASSETS_METHODS.getStakesCount,
     LOCKED_STAKING_ASSETS_METHODS.getStakes,
     LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
+    LOCKED_STAKING_METHODS.periodTime,
   ])
   const ZERO = '0x0000000000000000000000000000000000000000'
   const calls = []
@@ -357,6 +362,7 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
         if (request.functionName === 'getReleasedPrincipal') {
           return BigInt(Number(request.args[1]) + 1)
         }
+        if (request.functionName === 'periodTime') return 180n * 86_400n
         throw new Error(`unexpected ${request.functionName}`)
       },
       [
@@ -379,12 +385,14 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
 
 test('readLpBondPositions: getBondCount + one aggregate3 for all occupied pools (not 3N)', async () => {
   const { readLpBondPositions } = await loadModule('/src/web3/assets/assets-read.ts')
-  const { BOND_DEPOSITORY_ASSETS_METHODS } = await loadModule('/src/web3/abis.ts')
+  const { BOND_DEPOSITORY_ASSETS_METHODS, BOND_DEPOSITORY_MARKET_METHODS } =
+    await loadModule('/src/web3/abis.ts')
   const bondAbi = parseAbi([
     BOND_DEPOSITORY_ASSETS_METHODS.getBondCount,
     BOND_DEPOSITORY_ASSETS_METHODS.getBondInfo,
     BOND_DEPOSITORY_ASSETS_METHODS.pendingPayoutFor,
     BOND_DEPOSITORY_ASSETS_METHODS.getStakeProfit,
+    BOND_DEPOSITORY_MARKET_METHODS.terms,
   ])
   const calls = []
   let bondCountCalls = 0
@@ -404,6 +412,9 @@ test('readLpBondPositions: getBondCount + one aggregate3 for all occupied pools 
       }
       if (request.functionName === 'getStakeProfit') {
         return 7n + BigInt(request.args[1])
+      }
+      if (request.functionName === 'terms') {
+        return [180n * 86_400n, 0n, 0n, 0n, 0n]
       }
       throw new Error(`unexpected ${request.functionName}`)
     }, bondAbi),

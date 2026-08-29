@@ -32,7 +32,12 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
   const unlock = turbine.pair.unlock
 
   const unlockableBalance = `${t.exchange.turbine.unlockable}: ${vm.unlockableAmountLabel}`
-  const usd1Balance = `${t.exchange.balance} ${vm.usd1AmountLabel}`
+  const usd1Balance = (
+    <>
+      <span className="whitespace-nowrap">{t.exchange.balance} </span>
+      <span className="break-all">{vm.usd1AmountLabel}</span>
+    </>
+  )
 
   return (
     <TabHeader
@@ -88,7 +93,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
               <Text as="p" variant="copy" className="text-foreground/40">
                 {t.exchange.turbine.equivalentBuyHint}
               </Text>
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-3 max-dapp:grid-cols-1">
                 <TurbineEqBuyTokenCell
                   footer={usd1Balance}
                   icon={turbine.pair.pay.icon}
@@ -97,7 +102,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                 />
                 <Icon
                   alt=""
-                  className="size-3.5 shrink-0"
+                  className="size-3.5 shrink-0 self-center max-dapp:rotate-90 max-dapp:justify-self-center"
                   size="base"
                   src={turbineExchangeAssets.eqBuyArrow}
                 />

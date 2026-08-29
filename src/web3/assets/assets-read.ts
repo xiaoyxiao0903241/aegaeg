@@ -8,9 +8,11 @@ import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
   BOND_DEPOSITORY_ASSETS_METHODS,
+  BOND_DEPOSITORY_MARKET_METHODS,
   LIQUID_STAKING_ASSETS_METHODS,
   LIQUID_STAKING_METHODS,
   LOCKED_STAKING_ASSETS_METHODS,
+  LOCKED_STAKING_METHODS,
   RESTAKE_CONFIG_METHODS,
   REWARD_QUEUE_METHODS,
   X_STAKING_POOL_METHODS,
@@ -45,12 +47,14 @@ const lockedAbi = parseAbi([
   LOCKED_STAKING_ASSETS_METHODS.getStakes,
   LOCKED_STAKING_ASSETS_METHODS.getStake,
   LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
+  LOCKED_STAKING_METHODS.periodTime,
 ])
 const bondAbi = parseAbi([
   BOND_DEPOSITORY_ASSETS_METHODS.getBondCount,
   BOND_DEPOSITORY_ASSETS_METHODS.getBondInfo,
   BOND_DEPOSITORY_ASSETS_METHODS.pendingPayoutFor,
   BOND_DEPOSITORY_ASSETS_METHODS.getStakeProfit,
+  BOND_DEPOSITORY_MARKET_METHODS.terms,
 ])
 const xmineAbi = parseAbi([
   X_STAKING_POOL_METHODS.pendingReward,
@@ -75,6 +79,10 @@ export type AssetsStakeRow = {
   inWarmup?: boolean
   /** 是否已过 warmup（isWarmupExpired），仅 warmup 行有意义。 */
   warmupExpired?: boolean
+  /** 活期 `stakes`/`warmupStakes` 的 startEpoch；定期无此字段。 */
+  startEpoch?: bigint
+  /** 定期池 `periodTime()`（秒）；活期无此字段。 */
+  periodTime?: bigint
 }
 
 export type AssetsBondRow = {
@@ -88,6 +96,8 @@ export type AssetsBondRow = {
   profit: bigint
   vestingEndTime: bigint
   exists: boolean
+  /** `terms().vestingTerm`（秒），用于反推开始时间。 */
+  vestingTerm?: bigint
 }
 
 export type AssetsXminePosition = {
@@ -333,7 +343,7 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
     'isWarmupExpired',
     'STAKE_POSITIONS_MULTICALL_FAILED:warmupExpired',
   )
-  const [principal, , , expiry, exists] = liquidStake as readonly [
+  const [principal, , startEpoch, expiry, exists] = liquidStake as readonly [
     bigint,
     bigint,
     bigint,
@@ -341,13 +351,8 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
     boolean,
   ]
   // warmupStakes：principal · gons · startEpoch · expiry(epoch) · exists
-  const [warmupPrincipal, , , warmupExpiry, warmupExists] = liquidWarmup as readonly [
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-    boolean,
-  ]
+  const [warmupPrincipal, , warmupStartEpoch, warmupExpiry, warmupExists] =
+    liquidWarmup as readonly [bigint, bigint, bigint, bigint, boolean]
   const [warmupReward, activeReward] = liquidRewards as readonly [bigint, bigint]
   // liquidStake 先进 warmup；expiry 为 epoch 编号，勿当 unix 展示。
   if (warmupExists && warmupPrincipal > 0n) {
@@ -363,6 +368,7 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
       extraInterest: 0n,
       claimableBalance: 0n,
       expiry: warmupExpiry,
+      startEpoch: warmupStartEpoch,
       inWarmup: true,
       warmupExpired: Boolean(warmupExpired),
     })
@@ -380,6 +386,7 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
       extraInterest: 0n,
       claimableBalance: 0n,
       expiry,
+      startEpoch,
     })
   }
 
@@ -430,9 +437,33 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
       })
     }
   }
+  for (const { pool } of occupiedPools) {
+    lockedCalls.push({
+      target: pool,
+      callData: encodeFunctionData({
+        abi: lockedAbi,
+        functionName: 'periodTime',
+      }),
+    })
+  }
 
   const lockedResults = await readAggregate3(lockedCalls)
   let releasedBase = occupiedPools.length
+  const releasedCount = occupiedPools.reduce((sum, item) => sum + item.count, 0)
+  const periodTimeByPeriod = new Map<(typeof occupiedPools)[number]['period'], bigint>()
+  for (let poolIndex = 0; poolIndex < occupiedPools.length; poolIndex += 1) {
+    const occupied = occupiedPools[poolIndex]!
+    periodTimeByPeriod.set(
+      occupied.period,
+      decodeAggregate3Result<bigint>(
+        lockedResults,
+        releasedBase + releasedCount + poolIndex,
+        lockedAbi,
+        'periodTime',
+        `STAKE_POSITIONS_MULTICALL_FAILED:periodTime:${occupied.period}`,
+      ),
+    )
+  }
   for (let poolIndex = 0; poolIndex < occupiedPools.length; poolIndex += 1) {
     const occupied = occupiedPools[poolIndex]!
     const { period, pool, count } = occupied
@@ -482,6 +513,7 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
         extraInterest: data.extraInterest,
         claimableBalance: data.claimableBalance,
         expiry: data.expiry,
+        periodTime: periodTimeByPeriod.get(period),
       })
     }
     releasedBase += count
@@ -524,6 +556,15 @@ async function readBondPositionsFor(kind: 'lp' | 'burn', user: Address): Promise
   // Bond 无批量列表 view：所有非空池的仓位 3 读合并为一次 Multicall3。
   const occupiedBonds = poolCounts.filter((item) => Number.isFinite(item.count) && item.count > 0)
   const bondCalls: Aggregate3Call[] = []
+  for (const { depository } of occupiedBonds) {
+    bondCalls.push({
+      target: depository,
+      callData: encodeFunctionData({
+        abi: bondAbi,
+        functionName: 'terms',
+      }),
+    })
+  }
   for (const { depository, count } of occupiedBonds) {
     for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
       bondCalls.push(
@@ -556,7 +597,19 @@ async function readBondPositionsFor(kind: 'lp' | 'burn', user: Address): Promise
   }
 
   const bondResults = await readAggregate3(bondCalls)
-  let bondCursor = 0
+  const vestingTermByDepository = new Map<string, bigint>()
+  for (let poolIndex = 0; poolIndex < occupiedBonds.length; poolIndex += 1) {
+    const occupied = occupiedBonds[poolIndex]!
+    const terms = decodeAggregate3Result<readonly [bigint, bigint, bigint, bigint, bigint]>(
+      bondResults,
+      poolIndex,
+      bondAbi,
+      'terms',
+      `BOND_POSITION_MULTICALL_FAILED:terms:${kind}:${occupied.period}`,
+    )
+    vestingTermByDepository.set(occupied.depository, terms[0])
+  }
+  let bondCursor = occupiedBonds.length
   for (const { period, depository, count } of occupiedBonds) {
     for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
       const info = decodeAggregate3Result<
@@ -596,6 +649,7 @@ async function readBondPositionsFor(kind: 'lp' | 'burn', user: Address): Promise
         profit,
         vestingEndTime,
         exists,
+        vestingTerm: vestingTermByDepository.get(depository),
       })
     }
   }

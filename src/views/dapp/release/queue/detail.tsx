@@ -118,21 +118,25 @@ export function QueueDetail() {
     <Detail>
       <Section>
         <Section.Title id="release-queue-title">{t.release.queue.statsTitle}</Section.Title>
-        <Grid columns={3}>
+        <Grid columns={3} stackOnDapp>
           {stats.map((stat) => (
             <Tile data-slot-id={`release-queue-stat-${stat.label}`} key={stat.label}>
               <Tile.Label>
                 {stat.label}
                 <Tooltip.Info content={stat.hint} />
               </Tile.Label>
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <Icon
                   alt=""
                   className="size-(--app-icon-rail) shrink-0 rounded-md"
                   size="rail"
                   src={tokenCarouselIcons.gagxIcon}
                 />
-                <Text as="strong" className="font-semibold" variant="section">
+                <Text
+                  as="strong"
+                  className="min-w-0 font-semibold wrap-break-word"
+                  variant="section"
+                >
                   <CountValue text={stat.value} />
                 </Text>
               </div>

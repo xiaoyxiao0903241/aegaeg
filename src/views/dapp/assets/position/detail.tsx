@@ -34,7 +34,7 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
       <Section>
         <Section.Title>{stats.title}</Section.Title>
         {/* jscpd:ignore-start — 右栏指标瓦页内同构 map */}
-        <Grid columns={columns}>
+        <Grid columns={columns} stackOnDapp>
           {stats.metrics.map((metric, index) => {
             const cell = values[index]
             const iconSrc =
@@ -49,11 +49,15 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
                   {metric.label}
                   {'hint' in metric && metric.hint ? <Tooltip.Info content={metric.hint} /> : null}
                 </Tile.Label>
-                <div className="flex items-center gap-1.5">
+                <div className="flex min-w-0 items-center gap-1.5">
                   {iconSrc ? (
                     <Icon alt="" className="rounded-control" size="lg" src={iconSrc} />
                   ) : null}
-                  <Text as="strong" className="text-base/5 font-semibold" variant="copy">
+                  <Text
+                    as="strong"
+                    className="min-w-0 text-base/5 font-semibold wrap-break-word"
+                    variant="copy"
+                  >
                     <CountValue text={cell?.value ?? '0.0000'} />
                   </Text>
                 </div>
@@ -68,6 +72,7 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
         </Grid>
         {/* jscpd:ignore-end */}
       </Section>
+      {/* jscpd:ignore-start — 操作记录与 FAQ 页内拼装，禁再抽 Section 薄包装 */}
       <Section>
         <Section.Title>{copy.ops.title}</Section.Title>
         <AssetsOpsTable
@@ -86,6 +91,7 @@ export function PositionDetail({ product }: { product: AssetsProduct }) {
         <Section.Title>{copy.faq.title}</Section.Title>
         <Faq items={copy.faq.items} variant="dapp" />
       </Section>
+      {/* jscpd:ignore-end */}
     </Detail>
   )
 }

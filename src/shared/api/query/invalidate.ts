@@ -322,6 +322,12 @@ const ASSETS_CLAIM_LOG_ROOTS = [
   queryKeys.api.x0MiningLogsRoot,
 ] as const
 
+/** 领取/赎回后跟流水短窗：索引器汇总晚于链确认。 */
+const ASSETS_CLAIM_POLL_EXTRAS = [
+  queryKeys.api.x0MiningSummary,
+  queryKeys.api.x0MiningLifetimeReward,
+] as const
+
 const CONTRIBUTION_CONSUME_LOG_ROOTS = [queryKeys.api.agxContributionConsumeLogsRoot] as const
 
 const EXCHANGE_LOG_POLL_EXTRAS = [
@@ -360,7 +366,7 @@ function captureIndexerLogPoll(roots: readonly (readonly string[])[]): CapturedI
  * 只轮询写成功时仍有观察者的流水；闪兑/市价未挂记录表则空列表直接返回。
  *
  * @param captured 写前快照；空则 no-op
- * @param extraKeys 随轮询一起拉的非分页键（如 xmine 累计产出）；不参与停表指纹
+ * @param extraKeys 随轮询一起拉的非分页键（如 xmine 概览）；不参与停表指纹
  * @see docs/backend-api/api.md #stake-flow/logs
  * @see docs/backend-api/api.md #release-pool/logs
  * @see docs/backend-api/api.md #turbine/logs
@@ -659,7 +665,7 @@ export function invalidateAfterAssetsClaim() {
   invalidateTabQueries('release')
   invalidateContributionChanged()
   invalidateActive(queryKeys.api.agxContributionConsumeLogsRoot)
-  void pollCapturedIndexerLogs(logPoll, [queryKeys.api.x0MiningLifetimeReward])
+  void pollCapturedIndexerLogs(logPoll, ASSETS_CLAIM_POLL_EXTRAS)
 }
 
 /**

@@ -131,3 +131,11 @@ export interface X0MiningPositionItem {
 export interface X0MiningPositionsPage extends Paginated<X0MiningPositionItem> {
   total_stake_amount: string
 }
+
+/** POST /x0-mining/summary · 个人挖矿概览 */
+export interface X0MiningSummary {
+  /** 已释放（gAGX） */
+  total_redeemed_amount: string
+  /** 已领取的挖矿产出（X）；页面「挖矿总产出」原样展示 */
+  claimed_x_reward: string
+}

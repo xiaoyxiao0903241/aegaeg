@@ -44,15 +44,19 @@ export const usePositionSessionStore = create<{
   setOpsPage: (page) => set({ opsPage: page }),
 }))
 
-/** X 挖矿侧栏会话（报价 / 排序）。退出确认弹窗留在 dock 内 `useState`。 */
+/** X 挖矿侧栏会话（报价 / 排序 / 操作记录页码）。退出确认弹窗留在 dock 内 `useState`。 */
 export const useXmineSessionStore = create<{
   quote: 'agx' | 'usd'
   sort: AssetsSortKey
+  opsPage: number
   setQuote: (quote: 'agx' | 'usd') => void
   setSort: (sort: AssetsSortKey) => void
+  setOpsPage: (page: number) => void
 }>((set) => ({
   quote: 'agx',
   sort: 'startNear',
+  opsPage: 1,
   setQuote: (quote) => set({ quote }),
   setSort: (sort) => set({ sort }),
+  setOpsPage: (page) => set({ opsPage: page }),
 }))
