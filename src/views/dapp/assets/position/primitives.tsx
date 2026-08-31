@@ -5,6 +5,7 @@
  */
 import type { ReactNode } from 'react'
 
+import { isStakeRowClaimEnabled } from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
 import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
@@ -422,7 +423,7 @@ export function AssetsPositionBondRow({
  * 质押仓位卡
  *
  * 展示周期与剩余 / warmup 状态、本金与收益、凭证链接；
- * 底部操作随状态变化：warmup 结束可激活，活期可随时赎回。
+ * 底部操作随状态变化：warmup 结束可激活或领取，活期可随时赎回。
  */
 export function AssetsPositionStakeRow(
   props: AssetsPositionRowFrameProps<AssetsStakeRow> & {
@@ -444,10 +445,7 @@ export function AssetsPositionStakeRow(
   const boost = row.extraInterest
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
-  const canClaim =
-    !inWarmup &&
-    (isAssetsActionableAmount(reward, ASSETS_POSITION_GAGX_DECIMALS) ||
-      (row.kind !== 'liquid' && isAssetsActionableAmount(boost, ASSETS_POSITION_GAGX_DECIMALS)))
+  const canClaim = isStakeRowClaimEnabled(row, ASSETS_POSITION_GAGX_DECIMALS)
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
     : isAssetsActionableAmount(

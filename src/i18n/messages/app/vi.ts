@@ -94,6 +94,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Nhận thưởng thêm',
       CLAIM_PRINCIPAL: 'Rút gốc',
       RESTAKE: 'Tái stake',
+      EARLY_STAKE: 'Cùng xây dựng',
     },
     bond: {
       PURCHASE: 'Mua',
@@ -2647,6 +2648,8 @@ const app = defineMessages({
       priceAria: 'Nhập giá',
       days: 'Số ngày nắm giữ',
       dayBubble: 'Ngày {day}',
+      sliderBreakEven: 'Lợi nhuận dương',
+      sliderMaturity: 'Đáo hạn {days} ngày',
       daysAria: 'Số ngày nắm giữ',
       submit: 'Tính',
       result: {

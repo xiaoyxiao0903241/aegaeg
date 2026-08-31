@@ -60,13 +60,19 @@ function formatTermedOp(action: string, termDays: number, copy: FlowOpsCopy): st
   return `${action}${suffix}`
 }
 
+/** 索引可能写 earlyStake；展示与单位跟 EARLY_STAKE 同一套。 */
+function canonicalStakeOp(operation: string): string {
+  return operation === 'earlyStake' ? 'EARLY_STAKE' : operation
+}
+
 function stakeAmountUnit(operation: StakeFlowLogItem['operation']): {
   digits: number
   suffix: string
 } {
+  const op = canonicalStakeOp(operation)
   return {
     digits: PERSONAL_TOKEN_DIGITS,
-    suffix: operation === 'STAKE' || operation === 'CLAIM_PRINCIPAL' ? ' AGX' : ' gAGX',
+    suffix: op === 'STAKE' || op === 'CLAIM_PRINCIPAL' || op === 'EARLY_STAKE' ? ' AGX' : ' gAGX',
   }
 }
 
@@ -137,11 +143,13 @@ function xmineAction(operation: string, copy: FlowOpsCopy): string {
 
 /** 资产质押操作记录：[时间, 操作, 数量, 交易] */
 export function mapStakeFlowLogToOpsRow(item: StakeFlowLogItem, copy: FlowOpsCopy): FlowLogRow {
-  const action = copy.stake[item.operation] ?? item.operation
+  const op = canonicalStakeOp(item.operation)
+  const action = copy.stake[op as keyof FlowOpsCopy['stake']] ?? item.operation
   const amount = stakeAmountUnit(item.operation)
+  const label = op === 'EARLY_STAKE' ? action : formatTermedOp(action, item.term_days, copy)
   return [
     formatBlockTime(item.block_time),
-    formatTermedOp(action, item.term_days, copy),
+    label,
     formatAmount(item.amount, amount.digits, amount.suffix),
     formatTx(item.tx_hash),
   ]
@@ -211,11 +219,13 @@ export function mapStakePositionToAsideRow(item: StakePositionItem, copy: FlowOp
   const pct = item.released_pct.trim()
   const pctLabel = pct === '' ? TABLE_EMPTY : `${pct}%`
   const termLabel =
-    item.term_days <= 0
-      ? copy.liquid
-      : interpolate(copy.periodDays, {
-          n: formatNumber(item.term_days, { digits: 0, trimZeros: true }),
-        })
+    item.stake_category === 'EARLY'
+      ? copy.stake.EARLY_STAKE
+      : item.term_days <= 0
+        ? copy.liquid
+        : interpolate(copy.periodDays, {
+            n: formatNumber(item.term_days, { digits: 0, trimZeros: true }),
+          })
   return [
     formatBlockTime(item.block_time),
     termLabel,

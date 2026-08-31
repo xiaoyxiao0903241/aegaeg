@@ -94,6 +94,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Extra reward claim',
       CLAIM_PRINCIPAL: 'Redeem',
       RESTAKE: 'Restake',
+      EARLY_STAKE: 'Co-build',
     },
     bond: {
       PURCHASE: 'Purchase',
@@ -2576,6 +2577,8 @@ const app = defineMessages({
       priceAria: 'Price input',
       days: 'Hold days',
       dayBubble: 'Day {day}',
+      sliderBreakEven: 'Positive yield',
+      sliderMaturity: '{days}-day maturity',
       daysAria: 'Hold days',
       submit: 'Calculate',
       result: {

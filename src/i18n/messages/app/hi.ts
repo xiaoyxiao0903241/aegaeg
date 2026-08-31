@@ -96,6 +96,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'अतिरिक्त इनाम दावा',
       CLAIM_PRINCIPAL: 'रिडीम',
       RESTAKE: 'फिर स्टेक',
+      EARLY_STAKE: 'सह-निर्माण',
     },
     bond: {
       PURCHASE: 'खरीद',
@@ -2583,6 +2584,8 @@ const app = defineMessages({
       priceAria: 'मूल्य इनपुट',
       days: 'होल्ड दिन',
       dayBubble: 'दिन {day}',
+      sliderBreakEven: 'धनात्मक उपज',
+      sliderMaturity: '{days} दिन परिपक्व',
       daysAria: 'होल्ड दिन',
       submit: 'गणना करें',
       result: {

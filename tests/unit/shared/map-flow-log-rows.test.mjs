@@ -71,6 +71,32 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
   )
   assert.equal(extra[1], '额外奖励领取（20天）')
 
+  const early = mapStakeFlowLogToOpsRow(
+    {
+      operation: 'EARLY_STAKE',
+      term_days: 540,
+      amount: '100',
+      block_time: 1_700_000_000,
+      tx_hash: null,
+    },
+    copy,
+  )
+  assert.equal(early[1], '共建')
+  assert.equal(early[2], '100.0000 AGX')
+
+  const earlyAlias = mapStakeFlowLogToOpsRow(
+    {
+      operation: 'earlyStake',
+      term_days: 0,
+      amount: '8',
+      block_time: 1_700_000_000,
+      tx_hash: null,
+    },
+    copy,
+  )
+  assert.equal(earlyAlias[1], '共建')
+  assert.equal(earlyAlias[2], '8.0000 AGX')
+
   const purchase = mapBondFlowLogToOpsRow(
     {
       user_address: '0x1',
@@ -228,6 +254,21 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
   assert.equal(aside[1], '180 天')
   assert.equal(aside[2], '0.0000 AGX')
   assert.equal(aside[3], '45.67%')
+
+  const asideEarly = mapStakePositionToAsideRow(
+    {
+      stake_category: 'EARLY',
+      block_time: 1_700_000_000,
+      term_days: 540,
+      amount: '50',
+      expire_at: 0,
+      released_pct: '10',
+      tx_hash: null,
+    },
+    copy,
+  )
+  assert.equal(asideEarly[1], '共建')
+  assert.equal(asideEarly[2], '50.0000 AGX')
 
   const bondAside = mapBondPurchaseToAsideRow(
     {

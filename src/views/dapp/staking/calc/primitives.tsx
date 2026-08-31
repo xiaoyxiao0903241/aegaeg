@@ -3,8 +3,14 @@
  *
  * 提供产品 / 周期 Tab、天数滑杆、结果卡等测算相关展示组件。
  */
-import * as SliderPrimitive from '@radix-ui/react-slider'
+import { useRef } from 'react'
 
+import {
+  CALC_SLIDER_MIN_DAY,
+  calcSliderPct,
+  showCalcSliderTrackDay,
+  snapCalcSliderDay,
+} from '~/core/staking/calc-slider-marks'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { Card } from '~/shared/components/card'
@@ -62,61 +68,189 @@ export function CalcHtabRow<T extends string>({
   )
 }
 
+function dayFromPointer(clientX: number, track: HTMLElement, min: number, max: number): number {
+  const rect = track.getBoundingClientRect()
+  const ratio = (clientX - rect.left) / Math.max(1, rect.width)
+  return Math.round(Math.min(1, Math.max(0, ratio)) * (max - min) + min)
+}
+
+/** 半个手柄宽：两端边缘对齐时把 thumb 收进轨道里。 */
+const THUMB_HALF = '1.4375rem'
+
 /**
  * 测算天数滑杆
  *
- * 与领取分配滑杆同走 Radix：整轨可点、手柄可拖、`touch-none` 防 H5 竖滚抢手势。
+ * 轴为 1…max（540 时 180 约在 1/3）。轨上标 1、到期日、最大天；
+ * 轨下短竖线接住「正收益 / N天到期」。手柄两端贴齐轨道边缘。
  *
  * @param ariaLabel 滑杆无障碍标签
- * @param max 最大天数，默认 CALC_MAX_DAYS
- * @param min 最小天数，默认 1
+ * @param breakEvenDay 正收益日
+ * @param breakEvenLabel 正收益说明
+ * @param maturityDay 到期日；活期为 null
+ * @param maturityLabel 到期说明
+ * @param max 最大天数
  * @param onChange 天数变化回调
  * @param value 当前天数
  */
 export function CalcDaySlider({
   ariaLabel,
+  breakEvenDay = null,
+  breakEvenLabel,
+  maturityDay = null,
+  maturityLabel,
   max = CALC_MAX_DAYS,
-  min = 1,
   onChange,
   value,
 }: {
   ariaLabel: string
+  breakEvenDay?: number | null
+  breakEvenLabel: string
+  maturityDay?: number | null
+  maturityLabel: string
   max?: number
-  min?: number
   onChange: (day: number) => void
   value: number
 }) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const min = CALC_SLIDER_MIN_DAY
+  const marks = { minDay: min, maxDay: max, maturityDay, breakEvenDay }
   const clamped = Math.min(max, Math.max(min, Math.round(value)))
+  const thumbPct = calcSliderPct(clamped, max, min)
+  const fillPct = thumbPct
+  const showMin = Math.abs(clamped - min) > 8
+  const showMax = Math.abs(clamped - max) > 8
+  const midDays = [breakEvenDay, maturityDay].filter(
+    (day, index, all): day is number =>
+      day != null && all.indexOf(day) === index && showCalcSliderTrackDay(day, max, clamped, min),
+  )
+  const captions: Array<{ key: string; day: number; label: string }> = []
+  if (breakEvenDay != null && breakEvenDay > min && breakEvenDay < max) {
+    captions.push({ key: 'break-even', day: breakEvenDay, label: breakEvenLabel })
+  }
+  if (maturityDay != null && maturityLabel) {
+    captions.push({ key: 'maturity', day: maturityDay, label: maturityLabel })
+  }
+
+  function commitFromClientX(clientX: number) {
+    const track = trackRef.current
+    if (track == null) return
+    onChange(snapCalcSliderDay(dayFromPointer(clientX, track, min, max), marks))
+  }
 
   return (
-    <SliderPrimitive.Root
-      aria-label={ariaLabel}
-      className="relative flex h-7 w-full touch-none items-center select-none"
-      max={max}
-      min={min}
-      onValueChange={(next) => onChange(next[0] ?? min)}
-      step={1}
-      value={[clamped]}
-    >
-      <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-sm bg-background">
-        <SliderPrimitive.Range className="absolute h-full bg-coral-emphasis" />
-      </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb
-        asChild
-        className={cn(
-          'flex h-5.25 min-w-11.25 cursor-grab items-center justify-center rounded-full',
-          'border border-coral-emphasis bg-coral-emphasis px-3 py-1',
-          'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'active:cursor-grabbing',
-        )}
+    <div className="relative pb-5">
+      <div
+        aria-label={ariaLabel}
+        aria-orientation="horizontal"
+        aria-valuemax={max}
+        aria-valuemin={min}
+        aria-valuenow={clamped}
+        className="relative h-7.5 cursor-pointer touch-none select-none"
+        onKeyDown={(event) => {
+          const step =
+            event.key === 'ArrowRight' || event.key === 'ArrowUp'
+              ? 1
+              : event.key === 'ArrowLeft' || event.key === 'ArrowDown'
+                ? -1
+                : event.key === 'Home'
+                  ? min - clamped
+                  : event.key === 'End'
+                    ? max - clamped
+                    : 0
+          if (step === 0 && event.key !== 'Home' && event.key !== 'End') return
+          event.preventDefault()
+          onChange(snapCalcSliderDay(Math.min(max, Math.max(min, clamped + step)), marks))
+        }}
+        onPointerDown={(event) => {
+          event.currentTarget.setPointerCapture(event.pointerId)
+          commitFromClientX(event.clientX)
+        }}
+        onPointerMove={(event) => {
+          if (!event.currentTarget.hasPointerCapture(event.pointerId)) return
+          commitFromClientX(event.clientX)
+        }}
+        ref={trackRef}
+        role="slider"
+        tabIndex={0}
       >
-        <div>
-          <Text as="span" className="leading-none font-medium" tone="inverse" variant="caption">
+        <div className="absolute inset-0 overflow-hidden rounded-full bg-muted">
+          <div className="h-full bg-coral-emphasis" style={{ width: `${fillPct}%` }} />
+        </div>
+        <div className="pointer-events-none absolute inset-0">
+          {showMin ? (
+            <Text
+              as="span"
+              className={cn(
+                'absolute top-1/2 left-3 -translate-y-1/2 font-bold tabular-nums',
+                fillPct > 9 ? 'text-primary-foreground' : 'text-coral-emphasis',
+              )}
+              variant="copy"
+            >
+              {min}
+            </Text>
+          ) : null}
+          {midDays.map((day) => (
+            <Text
+              as="span"
+              className={cn(
+                'absolute top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold tabular-nums',
+                fillPct >= calcSliderPct(day, max, min)
+                  ? 'text-primary-foreground'
+                  : 'text-foreground/40',
+              )}
+              key={day}
+              style={{ left: `${calcSliderPct(day, max, min)}%` }}
+              variant="caption"
+            >
+              {day}
+            </Text>
+          ))}
+          {showMax ? (
+            <Text
+              as="span"
+              className={cn(
+                'absolute top-1/2 right-3 -translate-y-1/2 font-bold tabular-nums',
+                fillPct > 93 ? 'text-primary-foreground' : 'text-coral-emphasis',
+              )}
+              variant="copy"
+            >
+              {max}
+            </Text>
+          ) : null}
+        </div>
+        <div
+          className={cn(
+            'pointer-events-none absolute top-1/2 z-10 flex min-h-7.5 min-w-11.5 -translate-x-1/2 -translate-y-1/2',
+            'items-center justify-center rounded-full border-2 border-coral-emphasis bg-card px-2.5 py-2 shadow-sm',
+          )}
+          style={{ left: `clamp(${THUMB_HALF}, ${thumbPct}%, calc(100% - ${THUMB_HALF}))` }}
+        >
+          <Text
+            as="span"
+            className="leading-none font-bold text-coral-emphasis tabular-nums"
+            variant="copy"
+          >
             {clamped}
           </Text>
         </div>
-      </SliderPrimitive.Thumb>
-    </SliderPrimitive.Root>
+      </div>
+      {captions.map((caption) => (
+        <div
+          className="absolute top-7.5 flex -translate-x-1/2 flex-col items-center"
+          key={caption.key}
+          style={{ left: `${calcSliderPct(caption.day, max, min)}%` }}
+        >
+          <span aria-hidden className="block h-1.5 w-0.5 bg-coral-emphasis" />
+          <Text
+            as="span"
+            className="font-semibold whitespace-nowrap text-coral-emphasis tabular-nums"
+            variant="caption"
+          >
+            {caption.label}
+          </Text>
+        </div>
+      ))}
+    </div>
   )
 }
 

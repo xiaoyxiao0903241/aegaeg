@@ -97,6 +97,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Klaim imbalan ekstra',
       CLAIM_PRINCIPAL: 'Tarik pokok',
       RESTAKE: 'Stake ulang',
+      EARLY_STAKE: 'Bangun Bersama',
     },
     bond: {
       PURCHASE: 'Beli',
@@ -2670,6 +2671,8 @@ const app = defineMessages({
       priceAria: 'Input harga',
       days: 'Hari kepemilikan',
       dayBubble: 'Hari ke-{day}',
+      sliderBreakEven: 'Imbal hasil positif',
+      sliderMaturity: 'Jatuh tempo {days} hari',
       daysAria: 'Hari kepemilikan',
       submit: 'Hitung',
       result: {

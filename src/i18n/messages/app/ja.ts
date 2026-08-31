@@ -99,6 +99,7 @@ const app = defineMessages({
       EXTRA_REWARD: '追加報酬受取',
       CLAIM_PRINCIPAL: '償還',
       RESTAKE: '再ステーク',
+      EARLY_STAKE: '共創',
     },
     bond: {
       PURCHASE: '購入',
@@ -2604,6 +2605,8 @@ const app = defineMessages({
       priceAria: '価格入力',
       days: '保有日数',
       dayBubble: '第 {day} 日',
+      sliderBreakEven: 'プラス収益',
+      sliderMaturity: '{days}日満期',
       daysAria: '保有日数',
       submit: '計算',
       result: {

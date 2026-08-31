@@ -13,7 +13,6 @@ import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsHub } from '~/views/dapp/assets/hub/use-hub'
-import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
 import { openAssetsView } from '~/views/dapp/shared/navigation'
@@ -33,7 +32,7 @@ const ASSET_MODE_ICONS = {
   xmine: assetsHubAssets.modeXmine,
 } as const
 
-/** 资产 Hub 侧栏：四个仓位模式的入口卡，勾选隐藏零余额时过滤；未连接钱包时展示引导 */
+/** 资产 Hub 侧栏：四个仓位模式的入口卡，勾选隐藏零余额时过滤 */
 export function AssetsHubDock() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappHost()
@@ -127,8 +126,6 @@ export function AssetsHubDock() {
       {walletReady && hideZero && modes.length === 0 ? (
         <Table.Empty embedded title={t.assets.hub.hideZeroEmpty} />
       ) : null}
-
-      {!walletReady ? <DockConnectPromo /> : null}
     </DockFrame>
   )
 }

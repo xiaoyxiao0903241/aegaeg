@@ -90,6 +90,7 @@ const app = defineMessages({
       EXTRA_REWARD: '额外奖励领取',
       CLAIM_PRINCIPAL: '赎回',
       RESTAKE: '复投',
+      EARLY_STAKE: '共建',
     },
     bond: {
       PURCHASE: '购买',
@@ -2502,6 +2503,8 @@ const app = defineMessages({
       days: '查看您在质押后第几天的收益情况',
       daysAria: '持有天数',
       dayBubble: '第 {day} 天',
+      sliderBreakEven: '正收益',
+      sliderMaturity: '{days}天到期',
       submit: '计算',
       products: {
         stake: '质押',

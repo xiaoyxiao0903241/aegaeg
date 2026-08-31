@@ -93,6 +93,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Доп. награда',
       CLAIM_PRINCIPAL: 'Вывод',
       RESTAKE: 'Рестейк',
+      EARLY_STAKE: 'Со-строительство',
     },
     bond: {
       PURCHASE: 'Покупка',
@@ -2603,6 +2604,8 @@ const app = defineMessages({
       priceAria: 'Ввод цены',
       days: 'Дни удержания',
       dayBubble: 'День {day}',
+      sliderBreakEven: 'Положительный доход',
+      sliderMaturity: 'Срок {days} дн.',
       daysAria: 'Дни удержания',
       submit: 'Рассчитать',
       result: {

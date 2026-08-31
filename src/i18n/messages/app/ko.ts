@@ -96,6 +96,7 @@ const app = defineMessages({
       EXTRA_REWARD: '추가 보상 수령',
       CLAIM_PRINCIPAL: '상환',
       RESTAKE: '재스테이킹',
+      EARLY_STAKE: '공동 구축',
     },
     bond: {
       PURCHASE: '구매',
@@ -2584,6 +2585,8 @@ const app = defineMessages({
       priceAria: '가격 입력',
       days: '보유 일수',
       dayBubble: '{day}일째',
+      sliderBreakEven: '양수익',
+      sliderMaturity: '{days}일 만기',
       daysAria: '보유 일수',
       submit: '계산',
       result: {

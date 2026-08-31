@@ -91,6 +91,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'รับรางวัลเพิ่ม',
       CLAIM_PRINCIPAL: 'ไถ่ถอน',
       RESTAKE: 'สเตกซ้ำ',
+      EARLY_STAKE: 'ร่วมสร้าง',
     },
     bond: {
       PURCHASE: 'ซื้อ',
@@ -2588,6 +2589,8 @@ const app = defineMessages({
       priceAria: 'ป้อนราคา',
       days: 'วันถือครอง',
       dayBubble: 'วันที่ {day}',
+      sliderBreakEven: 'กำไรบวก',
+      sliderMaturity: 'ครบ {days} วัน',
       daysAria: 'วันถือครอง',
       submit: 'คำนวณ',
       result: {

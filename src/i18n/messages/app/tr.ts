@@ -92,6 +92,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Ek ödül alma',
       CLAIM_PRINCIPAL: 'Geri al',
       RESTAKE: 'Yeniden stake',
+      EARLY_STAKE: 'Ortak İnşa',
     },
     bond: {
       PURCHASE: 'Satın al',
@@ -2665,6 +2666,8 @@ const app = defineMessages({
       priceAria: 'Fiyat girişi',
       days: 'Tutma günleri',
       dayBubble: '{day}. gün',
+      sliderBreakEven: 'Pozitif getiri',
+      sliderMaturity: '{days} gün vade',
       daysAria: 'Tutma günleri',
       submit: 'Hesapla',
       result: {

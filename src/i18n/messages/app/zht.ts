@@ -91,6 +91,7 @@ const app = defineMessages({
       EXTRA_REWARD: '額外獎勵領取',
       CLAIM_PRINCIPAL: '贖回',
       RESTAKE: '復投',
+      EARLY_STAKE: '共建',
     },
     bond: {
       PURCHASE: '購買',
@@ -2503,6 +2504,8 @@ const app = defineMessages({
       days: '查看您在質押後第幾天的收益情況',
       daysAria: '持有天數',
       dayBubble: '第 {day} 天',
+      sliderBreakEven: '正收益',
+      sliderMaturity: '{days}天到期',
       submit: '計算',
       products: {
         stake: '質押',

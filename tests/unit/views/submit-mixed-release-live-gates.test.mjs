@@ -129,6 +129,64 @@ test('submitMixedClaim 1:1: enough for quote/6 is still short', async () => {
   )
 })
 
+test('submitMixedClaim fail-closed on warmup reward while warmup still active', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+
+  const plans = claimPlanAndContribHandlers({
+    contribution: 1_000_000n,
+    requiredContribution: 1n,
+  })
+
+  const session = await moneyPathSession(async (request) => {
+    if (request.functionName === 'getStakeRewards') return [10n ** 7n, 0n]
+    if (request.functionName === 'isWarmupExpired') return false
+    return dispatchRead(plans, request)
+  })
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: USER,
+        target: { source: 'liquid', amount: 10n ** 7n },
+        releaseDays: 5,
+        restakeDays: 360,
+        restakePct: 50,
+      }),
+    (err) => err === ASSETS_BLOCKED.zeroAmount,
+  )
+})
+
+test('submitMixedClaim uses warmup reward when warmup expired and active is zero', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+
+  const plans = claimPlanAndContribHandlers({
+    contribution: 10n ** 8n,
+    requiredContribution: 1n,
+  })
+
+  const session = await moneyPathSession(async (request) => {
+    if (request.functionName === 'getStakeRewards') return [10n ** 7n, 0n]
+    if (request.functionName === 'isWarmupExpired') return true
+    return dispatchRead(plans, request)
+  })
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: USER,
+        target: { source: 'liquid', amount: 10n ** 7n },
+        releaseDays: 5,
+        restakeDays: 360,
+        restakePct: 50,
+      }),
+    (err) => err !== ASSETS_BLOCKED.insufficientReward && err !== ASSETS_BLOCKED.zeroAmount,
+  )
+})
+
 test('submitReleaseQueueClaim rejects unresolved planIndex before chain reads', async () => {
   const { submitReleaseQueueClaim } = await loadModule('/src/views/dapp/release/submit-release.ts')
   const { RELEASE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')

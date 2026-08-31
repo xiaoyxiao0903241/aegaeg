@@ -150,7 +150,7 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
     }
     set({ spotUsd })
   },
-  setDays: (days) => set({ days: Math.min(CALC_MAX_DAYS, Math.max(1, days)) }),
+  setDays: (days) => set({ days: Math.min(CALC_MAX_DAYS, Math.max(1, Math.round(days))) }),
   liveSync: (rates) => {
     const s = get()
     const next = { ...s, rates }
