@@ -179,10 +179,10 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
             value={vm.releasePct}
           />
           <div className="mt-1 flex justify-between gap-2">
-            <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
+            <Text as="span" className="leading-4 font-semibold text-claim" variant="detail">
               {interpolate(vm.mixed.restakePct, { pct: vm.restakePct })}
             </Text>
-            <Text as="span" className="leading-4 font-semibold text-claim" variant="detail">
+            <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
               {interpolate(vm.mixed.releasePct, { pct: vm.releasePct })}
             </Text>
           </div>

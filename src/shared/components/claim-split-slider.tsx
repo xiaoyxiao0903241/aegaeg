@@ -32,17 +32,17 @@ export function claimSplitTrackPct(releasePct: number): {
 }
 
 /**
- * Mixed 确认按钮背景：左复投橙、右领取蓝，分界跟滑块一致。
+ * Mixed 确认按钮背景：左复投蓝、右领取橙，分界跟滑块一致。
  *
  * @param releasePct 归入释放池的比例（0–100）
  */
 export function claimSplitCtaBackgroundImage(releasePct: number): string {
   const { restakePct, releasePct: release } = claimSplitTrackPct(releasePct)
   if (release >= 100) {
-    return 'linear-gradient(to right, var(--claim), var(--claim))'
+    return 'linear-gradient(to right, var(--primary), var(--primary))'
   }
-  if (restakePct >= 100) return 'linear-gradient(to right, var(--primary), var(--primary))'
-  return `linear-gradient(to right, var(--primary) 0%, color-mix(in oklab, var(--primary) 45%, var(--claim) 55%) ${restakePct}%, var(--claim) 100%)`
+  if (restakePct >= 100) return 'linear-gradient(to right, var(--claim), var(--claim))'
+  return `linear-gradient(to right, var(--claim) 0%, color-mix(in oklab, var(--claim) 45%, var(--primary) 55%) ${restakePct}%, var(--primary) 100%)`
 }
 
 /**
@@ -65,7 +65,7 @@ export function claimSplitCtaStyle(
 /**
  * 双色领取分配滑杆
  *
- * 左橙 = 复投；右蓝 = 领取；白色滑块在分界上，内嵌左侧复投%。
+ * 左蓝 = 复投；右橙 = 领取；白色滑块在分界上，内嵌左侧复投%。
  * Root 用 `touch-none` + 加高热区，避免 H5 竖滚抢走拖动手势。
  * 标签 / 无障碍文案 / 分配计算由调用方负责（见 `claimSplitFromReleasePct`）。
  *
@@ -99,12 +99,12 @@ export function ClaimSplitSlider({
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full">
         <div
           aria-hidden
-          className="absolute inset-y-0 left-0 bg-primary"
+          className="absolute inset-y-0 left-0 bg-claim"
           style={{ width: `${restakePct}%` }}
         />
         <div
           aria-hidden
-          className="absolute inset-y-0 right-0 bg-claim"
+          className="absolute inset-y-0 right-0 bg-primary"
           style={{ width: `${releasePct}%` }}
         />
       </SliderPrimitive.Track>

@@ -142,10 +142,10 @@ function AssetsClaimModalOpen({
           value={vm.releasePct}
         />
         <div className="flex justify-between gap-2">
-          <Text as="span" className="font-semibold text-primary" variant="detail">
+          <Text as="span" className="font-semibold text-claim" variant="detail">
             {interpolate(t.assets.claim.restakeShare, { pct: vm.restakePct })}
           </Text>
-          <Text as="span" className="font-semibold text-claim" variant="detail">
+          <Text as="span" className="font-semibold text-primary" variant="detail">
             {interpolate(t.assets.claim.releaseShare, {
               pct: vm.releasePct,
               amount: amountLabel,
