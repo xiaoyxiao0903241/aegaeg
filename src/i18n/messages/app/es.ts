@@ -144,6 +144,11 @@ const app = defineMessages({
     prev: 'Atrás',
     next: 'Siguiente',
     done: 'Listo',
+    complete: {
+      title: 'Guía completada',
+      body: 'Ya conoces las funciones principales de AEGIS X. Empieza a explorar; puedes repetir la guía cuando quieras desde Guía introductoria en la barra superior.',
+      cta: 'Empezar',
+    },
     steps: [
       {
         title: 'Intercambio',
@@ -183,11 +188,11 @@ const app = defineMessages({
       },
       {
         title: 'Turbina',
-        body: 'El gAGX que pasa del pool de liberación a Turbina queda bloqueado; desbloquéalo comprando con USD1 a la cotización en cadena.',
+        body: 'El gAGX que pasa del pool de liberación a Turbina queda bloqueado; desbloquéalo comprando 1:1 con USD1.',
       },
       {
         title: 'Recompensas',
-        body: 'Recompensas incluye referidos, participación, co-construcción y más. Reclamar vía Mixed (Lucky/co-construcción/referidos/participación) consume contribución {ratio}; los subsidios van a la billetera con firma.',
+        body: 'Recompensas incluye referidos, participación, co-construcción y más incentivos. Reclamar recompensas consume contribución 1:1.',
       },
       {
         title: 'Comunidad',
@@ -2729,10 +2734,10 @@ const app = defineMessages({
         notesBody:
           'Solo estimación local de referencia; no es cotización en cadena ni promesa de rendimiento.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2856,24 +2861,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: '¿Puedo cambiar el periodo de liberación?',
-          a: 'No. El periodo queda fijo al entrar en cola. La siguiente reclamación puede ser distinta.',
+          q: '¿Por qué el rendimiento no va directo a la cartera?',
+          a: 'La liberación es el paso obligatorio entre generar rendimiento y usarlo con libertad. El rendimiento se desbloquea primero de forma lineal en el pool de liberación según el periodo que elijas, y luego se desbloquea en Turbina antes de llegar a la cartera. Ese ritmo convierte la presión vendedora concentrada en demanda de compra continua, y es el diseño central para proteger el precio de AGX y el funcionamiento a largo plazo del protocolo.',
         },
         {
-          q: '¿Cuándo se descuenta el impuesto?',
-          a: 'Se descuenta una vez al entrar en cola (5 días 20%, 20 días 10%, 40 días 5%, 60 días 1%). El pool muestra el monto neto. Luego no hay cargos extra.',
+          q: '¿Pool de liberación vs pool buffer?',
+          a: 'El pool de liberación recibe el rendimiento que reclamas de staking, bonos, minería y recompensas. Se desbloquea de forma lineal en el periodo elegido y luego se reclama hacia Turbina. El buffer recibe ciertos ingresos que no requieren elegir periodo; al terminar la liberación retiras directo a la cartera. No se afectan entre sí: míralos y reclámalos por separado.',
         },
         {
-          q: '¿A dónde va el gAGX reclamado del pool de liberación?',
-          a: 'El gAGX reclamado va a Turbina, no a la billetera. Gestiónalo en la página Turbina.',
+          q: '¿Cuál es la ruta completa de liberación?',
+          a: 'Reclamar rendimiento → gastar puntos de contribución 1:1 → entrar al pool de liberación (impuesto una vez según el periodo) → desbloqueo lineal → reclamar hacia Turbina → comprar AGX equivalente con USD1 para desbloquear → extraer a la cartera tras el enfriamiento. La ruta del buffer es más corta: retira cuando termine la liberación.',
         },
         {
-          q: '¿Pierdo lo desbloqueado si no lo reclamo de inmediato?',
-          a: 'No caduca. Lo liberado que se queda no genera nada — reclámalo a Turbina a tiempo.',
+          q: '¿Por qué reclamar rendimiento gasta puntos de contribución?',
+          a: 'El reclamo gasta contribución 1:1 con el importe reclamado. Los puntos salen de quemar AGX: 50% se quema y 50% entra al pool base de X. Cada cobro de rendimiento aporta también deflación y liquidez. Si no tienes puntos suficientes, consíguelos en la página de Quema.',
         },
         {
-          q: '¿Cómo elijo un periodo de liberación adecuado?',
-          a: 'Periodo corto = más rápido y más impuesto; largo = menos impuesto. O divide en varias reclamaciones.',
+          q: '¿Cómo sopesar impuesto vs periodo?',
+          a: 'Periodos más cortos pagan más impuesto (5 días 20%, 20 días 10%, 40 días 5%, 60 días 1%). El impuesto se toma una vez al entrar al pool. Necesitas fondos pronto → periodo corto. Quieres conservar más → periodo largo. También puedes enviar el rendimiento en tandas con periodos distintos para equilibrar velocidad y coste.',
         },
       ],
       queue: [

@@ -4,7 +4,6 @@
  * 展示收益结果：总收益、卖出占比、投入占比、节点卡与曲线图。
  * 结果未就绪时骨架对齐结果卡、曲线金额与节点主值。
  */
-import { baseDailyPctFromEpoch } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { Chip } from '~/shared/components/chip'
@@ -17,12 +16,14 @@ import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import {
   CalcNotesCard,
   CalcResultCard,
   CalcResultCardSkeleton,
 } from '~/views/dapp/staking/calc/primitives'
 import { StakingCurveChart } from '~/views/dapp/staking/primitives'
+import { useEpochScheduleLabels } from '~/web3/staking/use-staking-queries'
 
 const PLACEHOLDER = '0.00'
 
@@ -34,6 +35,7 @@ export function CalcDetail() {
   const formProduct = useCalcEstimateStore((state) => state.product)
   const formPeriod = useCalcEstimateStore((state) => state.period)
   const formDays = useCalcEstimateStore((state) => state.days)
+  const epochSchedule = useEpochScheduleLabels()
 
   const shownProduct = result?.product ?? formProduct
   const shownPeriod = result?.period ?? formPeriod
@@ -50,15 +52,12 @@ export function CalcDetail() {
             ? t.staking.stake.periods.d540
             : shownPeriod
 
-  const baseDaily = result
-    ? baseDailyPctFromEpoch(result.epochRebasePct, result.epochsPerDay)
-    : baseDailyPctFromEpoch(rates?.epochRebasePct ?? null, rates?.epochsPerDay ?? null)
-  const notesItems = aside.notesItems.map((item, index) => {
-    if (index !== 0) return item
-    const daily =
-      baseDaily != null ? formatNumber(baseDaily, { digits: 2 }) : formatNumber(0, { digits: 2 })
-    return item.replaceAll('{daily}', daily)
-  })
+  const rebasePct = result?.epochRebasePct ?? rates?.epochRebasePct ?? null
+  const rebase =
+    rebasePct != null ? formatNumber(rebasePct, { digits: 2 }) : formatNumber(0, { digits: 2 })
+  const notesItems = aside.notesItems.map((item) =>
+    interpolate(withEpochSchedule(item, epochSchedule), { rebase }),
+  )
 
   return (
     <Detail>

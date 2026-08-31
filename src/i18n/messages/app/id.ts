@@ -145,6 +145,11 @@ const app = defineMessages({
     prev: 'Kembali',
     next: 'Lanjut',
     done: 'Selesai',
+    complete: {
+      title: 'Panduan selesai',
+      body: 'Anda sudah mengenal fitur inti AEGIS X. Mulai jelajahi — putar ulang kapan saja dari Panduan pemula di bilah atas.',
+      cta: 'Mulai',
+    },
     steps: [
       {
         title: 'Tukar',
@@ -184,11 +189,11 @@ const app = defineMessages({
       },
       {
         title: 'Turbin',
-        body: 'gAGX dari kolam rilis yang masuk Turbine tetap terkunci; beli dengan USD1 sesuai kuotasi Turbine di rantai untuk membuka.',
+        body: 'gAGX dari kolam rilis yang masuk Turbine tetap terkunci; beli 1:1 dengan USD1 untuk membuka.',
       },
       {
         title: 'Hadiah',
-        body: '「Hadiah」 mencakup referral, partisipasi, co-build, dan lainnya. Klaim Mixed (Lucky/co-build/referral/partisipasi) mengonsumsi poin kontribusi {ratio}; tunjangan memakai klaim bertanda tangan ke wallet.',
+        body: '「Hadiah」 mencakup referral, partisipasi, co-build, dan insentif lainnya. Klaim hadiah mengonsumsi poin kontribusi 1:1.',
       },
       {
         title: 'Komunitas',
@@ -2707,10 +2712,10 @@ const app = defineMessages({
         notes: 'Catatan perhitungan',
         notesBody: 'Kalkulator ini hanya estimasi lokal, bukan kuotasi on-chain atau janji hasil.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2828,24 +2833,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: 'Bisakah mengubah periode rilis?',
-          a: 'Tidak. Periode tetap saat masuk antre. Klaim berikutnya boleh berbeda.',
+          q: 'Mengapa imbal hasil tidak langsung ke dompet?',
+          a: 'Rilis adalah langkah wajib dari imbal hasil tercipta hingga bisa dipakai bebas. Imbal hasil dulu unlock linear di pool rilis sesuai periode yang Anda pilih, lalu unlock lewat Turbin sebelum masuk dompet. Ritme ini mengubah tekanan jual terpusat menjadi permintaan beli yang berkelanjutan, dan merupakan desain inti untuk melindungi harga AGX serta operasi jangka panjang protokol.',
         },
         {
-          q: 'Kapan pajak dipotong?',
-          a: 'Dipotong sekali saat masuk antre (5 hari 20%, 20 hari 10%, 40 hari 5%, 60 hari 1%). Kolam menampilkan jumlah setelah pajak. Tidak ada biaya tambahan kemudian.',
+          q: 'Pool rilis vs pool buffer?',
+          a: 'Pool rilis menampung imbal hasil yang Anda klaim aktif dari staking, obligasi, mining, dan hadiah. Unlock linear sesuai periode yang dipilih, lalu klaim masuk Turbin. Buffer menampung arus masuk tertentu yang tidak perlu pilih periode; setelah rilis, tarik langsung ke dompet. Keduanya tidak saling memengaruhi — lihat dan klaim terpisah.',
         },
         {
-          q: 'Ke mana gAGX yang diklaim dari kolam rilis?',
-          a: 'gAGX yang diklaim masuk Turbine, bukan wallet. Kelola di halaman Turbine.',
+          q: 'Bagaimana jalur rilis lengkapnya?',
+          a: 'Klaim imbal hasil → konsumsi poin kontribusi 1:1 → masuk pool rilis (pajak dipotong sekali sesuai periode) → unlock linear → klaim masuk Turbin → beli AGX setara dengan USD1 untuk unlock → tarik ke dompet setelah cooldown. Jalur buffer lebih pendek: tarik begitu rilis selesai.',
         },
         {
-          q: 'Apakah bagian yang sudah dirilis rugi jika tidak segera diklaim?',
-          a: 'Tidak kedaluwarsa. Bagian yang sudah dirilis diam tidak menghasilkan — klaim ke Turbine segera.',
+          q: 'Mengapa klaim imbal hasil mengonsumsi poin kontribusi?',
+          a: 'Klaim mengonsumsi poin kontribusi 1:1 dengan jumlah yang diklaim. Poin didapat dari burn AGX: 50% diburn dan 50% masuk ke pool dasar X. Setiap pencairan imbal hasil sekaligus menambah deflasi dan likuiditas. Jika poin kurang, dapatkan di halaman Burn.',
         },
         {
-          q: 'Bagaimana memilih periode rilis yang tepat?',
-          a: 'Periode pendek = lebih cepat + pajak lebih tinggi; panjang = pajak lebih rendah. Atau pecah ke beberapa klaim.',
+          q: 'Bagaimana menimbang pajak vs periode?',
+          a: 'Periode lebih pendek pajaknya lebih tinggi (5 hari 20%, 20 hari 10%, 40 hari 5%, 60 hari 1%). Pajak dipotong sekali saat imbal hasil masuk pool. Butuh dana cepat → periode pendek. Ingin menyisakan lebih banyak → periode panjang. Anda juga bisa mengirim imbal hasil bertahap dengan periode berbeda untuk menyeimbangkan kecepatan dan biaya.',
         },
       ],
       queue: [

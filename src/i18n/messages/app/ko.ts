@@ -145,6 +145,11 @@ const app = defineMessages({
     prev: '이전',
     next: '다음',
     done: '완료',
+    complete: {
+      title: '튜토리얼 완료',
+      body: 'AEGIS X의 핵심 기능을 확인했습니다. 지금 바로 탐색을 시작하세요. 상단 「튜토리얼」에서 언제든 다시 볼 수 있습니다.',
+      cta: '시작하기',
+    },
     steps: [
       {
         title: '교환',
@@ -184,11 +189,11 @@ const app = defineMessages({
       },
       {
         title: '터빈',
-        body: '릴리스 풀에서 터빈으로 들어온 gAGX는 잠금 상태이며, USD1로 온체인 호가에 맞춰 매수하면 잠금 해제됩니다.',
+        body: '릴리스 풀에서 터빈으로 들어온 gAGX는 잠금 상태이며, USD1로 1:1 매수하면 잠금 해제됩니다.',
       },
       {
         title: '리워드',
-        body: '「리워드」에는 추천·참여·공동 구축 등이 포함됩니다. Lucky/공동 구축/추천/참여 등 Mixed 수령은 기여 포인트를 {ratio}로 소모하며, 발전 수당 등은 서명으로 지갑에 바로 입금됩니다.',
+        body: '「리워드」에는 추천상, 참여상, 공동 구축상 등 다양한 인센티브가 포함되며, 리워드를 수령하려면 기여 포인트를 1:1로 소모해야 합니다.',
       },
       {
         title: '커뮤니티',
@@ -2618,10 +2623,10 @@ const app = defineMessages({
         notes: '계산 설명',
         notesBody: '본 계산기는 로컬 추정 참고용이며 온체인 호가나 수익 약속이 아닙니다.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2737,24 +2742,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: '릴리스 주기를 변경할 수 있나요?',
-          a: '할 수 없습니다. 주기는 수익이 릴리스 풀에 들어가는 시점에 고정되며 이후 변경할 수 없습니다. 각 수령은 독립이므로, 다음에는 다른 주기를 고를 수 있습니다.',
+          q: '수익이 지갑으로 바로 갈 수 없는 이유는?',
+          a: '릴리스는 수익이 생긴 뒤 자유롭게 쓰기까지의 필수 단계입니다. 수익은 먼저 선택한 주기에 따라 릴리스 풀에서 선형으로 잠금 해제된 뒤, 터빈에서 언락을 마치고 지갑에 들어갑니다. 이 리듬이 집중 매도 압력을 지속적인 매수 수요로 바꾸며, AGX 가격과 프로토콜의 장기 운영을 지키는 핵심 설계입니다.',
         },
         {
-          q: '세율은 언제 차감되나요?',
-          a: '세율은 수익이 릴리스 풀에 들어갈 때, 선택한 주기 요율로 한 번만 차감됩니다(5일 20%, 20일 10%, 40일 5%, 60일 1%). 풀에 표시되는 수량은 이미 세후이며, 릴리스와 이후 수령에 추가 수수료는 없습니다.',
+          q: '릴리스 풀과 버퍼 풀의 차이는?',
+          a: '릴리스 풀은 스테이킹·채권·채굴·각종 보상에서 직접 수령한 수익을 받으며, 선택한 주기로 선형 릴리스한 뒤 터빈으로 수령됩니다. 버퍼 풀은 주기를 고를 필요 없는 특정 입금이며, 릴리스가 끝나면 지갑으로 바로 출금할 수 있습니다. 둘은 서로 영향을 주지 않으니 따로 확인하고 수령하세요.',
         },
         {
-          q: '릴리스 풀에서 수령한 gAGX는 어디로 가나요?',
-          a: '수령한 gAGX는 지갑으로 바로 가지 않고 터빈으로 들어가, 터빈 규칙에 따라 이어집니다. 터빈 페이지에서 확인하고 관리하세요.',
+          q: '전체 릴리스 경로는 어떻게 되나요?',
+          a: '수익 수령 → 기여 포인트 1:1 소모 → 릴리스 풀 진입(주기별 세금 한 번 차감) → 선형 릴리스 → 터빈으로 수령 → USD1로 등량 AGX를 매수해 언락 → 쿨다운 종료 후 지갑으로 출금. 버퍼 풀 경로는 더 짧습니다: 릴리스가 끝나면 바로 출금할 수 있습니다.',
         },
         {
-          q: '릴리스된 분을 바로 수령하지 않으면 손실이 있나요?',
-          a: '소멸하지 않으며 언제든 수령할 수 있습니다. 다만 풀에 머무는 릴리스분은 수익을 내지 않으므로, 제때 터빈으로 수령하세요.',
+          q: '수익 수령 시 기여 포인트를 소모하는 이유는?',
+          a: '수령 수량과 1:1로 기여 포인트를 소모합니다. 포인트는 AGX를 소각해 얻으며, 50%는 바로 소각되고 50%는 X 베이스 풀에 들어갑니다. 따라서 수익을 실현할 때마다 프로토콜에 디플레이션과 유동성을 함께 기여합니다. 포인트가 부족하면 소각 페이지에서 받으세요.',
         },
         {
-          q: '적절한 릴리스 주기는 어떻게 고르나요?',
-          a: '자금을 빨리 쓰고 싶으면 짧은 주기(세율 높음)를, 기다릴 수 있으면 긴 주기로 낮은 세율을 고르세요. 수령을 여러 번 나눠 주기를 달리하면 속도와 세율을 균형 잡을 수 있습니다.',
+          q: '세율과 주기는 어떻게 저울질하나요?',
+          a: '주기가 짧을수록 세율이 높습니다(5일 20%, 20일 10%, 40일 5%, 60일 1%). 세금은 릴리스 풀에 들어갈 때 한 번만 차감됩니다. 급하면 짧은 주기, 남기고 싶으면 긴 주기. 수익을 나눠 다른 주기로 넣으면 속도와 비용을 함께 맞출 수 있습니다.',
         },
       ],
       queue: [

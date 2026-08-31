@@ -142,6 +142,11 @@ const app = defineMessages({
     prev: 'Quay lại',
     next: 'Tiếp',
     done: 'Xong',
+    complete: {
+      title: 'Hướng dẫn hoàn tất',
+      body: 'Bạn đã nắm các chức năng cốt lõi của AEGIS X. Bắt đầu khám phá — mở lại bất cứ lúc nào từ Hướng dẫn trên thanh trên.',
+      cta: 'Bắt đầu',
+    },
     steps: [
       {
         title: 'Đổi',
@@ -181,11 +186,11 @@ const app = defineMessages({
       },
       {
         title: 'Tuabin',
-        body: 'gAGX từ hồ giải phóng vào Turbine đang khóa; dùng USD1 mua theo báo giá on-chain để mở khóa.',
+        body: 'gAGX từ hồ giải phóng vào Turbine đang khóa; dùng USD1 mua 1:1 để mở khóa.',
       },
       {
         title: 'Phần thưởng',
-        body: '「Phần thưởng」gồm thưởng giới thiệu, tham gia, Cùng xây dựng…; Mixed (Lucky/Cùng xây dựng/giới thiệu/tham gia) nhận tiêu điểm đóng góp {ratio}; trợ cấp phát triển nhận bằng chữ ký về ví.',
+        body: '「Phần thưởng」gồm thưởng giới thiệu, tham gia, Cùng xây dựng và nhiều khích lệ khác; nhận thưởng tiêu điểm đóng góp 1:1.',
       },
       {
         title: 'Cộng đồng',
@@ -2682,10 +2687,10 @@ const app = defineMessages({
         notesBody:
           'Máy tính chỉ để ước lượng cục bộ, không phải báo giá on-chain hay cam kết lợi nhuận.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2805,24 +2810,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: 'Chu kỳ giải phóng đổi được không?',
-          a: 'Không. Chu kỳ cố định lúc vào hàng. Lần nhận sau có thể khác.',
+          q: 'Vì sao lợi nhuận không vào ví ngay?',
+          a: 'Giải phóng là bước bắt buộc từ lúc lợi nhuận sinh ra đến khi dùng tự do. Lợi nhuận trước hết mở khóa tuyến tính trong hồ giải phóng theo chu kỳ bạn chọn, rồi qua Turbine mới vào ví. Nhịp này biến áp lực bán tập trung thành nhu cầu mua liên tục, là thiết kế lõi để bảo vệ giá AGX và vận hành dài hạn của giao thức.',
         },
         {
-          q: 'Thuế trừ khi nào?',
-          a: 'Trừ một lần lúc vào hàng (5 ngày 20%, 20 ngày 10%, 40 ngày 5%, 60 ngày 1%). Hồ hiện số sau thuế. Sau đó không thêm phí.',
+          q: 'Hồ giải phóng khác hồ đệm thế nào?',
+          a: 'Hồ giải phóng nhận lợi nhuận bạn chủ động nhận từ staking, trái phiếu, đào và các thưởng. Mở khóa tuyến tính theo chu kỳ đã chọn, rồi nhận vào Turbine. Hồ đệm nhận một số dòng vào không cần chọn chu kỳ; giải phóng xong rút thẳng về ví. Hai bên không ảnh hưởng nhau — xem và nhận riêng.',
         },
         {
-          q: 'gAGX nhận từ hồ giải phóng đi đâu?',
-          a: 'gAGX đã nhận vào Turbine, không vào ví. Quản lý trên trang Turbine.',
+          q: 'Toàn bộ đường giải phóng ra sao?',
+          a: 'Nhận lợi nhuận → tiêu điểm đóng góp 1:1 → vào hồ giải phóng (thuế trừ một lần theo chu kỳ) → mở khóa tuyến tính → nhận vào Turbine → dùng USD1 mua AGX tương đương để mở khóa → hết chờ rút về ví. Đường hồ đệm ngắn hơn: giải phóng xong rút ngay.',
         },
         {
-          q: 'Phần đã giải phóng không nhận ngay có mất không?',
-          a: 'Không hết hạn. Phần đã giải phóng nằm im không sinh lợi — hãy nhận vào Turbine sớm.',
+          q: 'Vì sao nhận lợi nhuận phải tiêu điểm đóng góp?',
+          a: 'Nhận tiêu điểm đóng góp 1:1 theo số lượng nhận. Điểm lấy từ đốt AGX: 50% đốt thẳng, 50% vào bể nền X. Mỗi lần hiện thực lợi nhuận đồng thời góp giảm phát và thanh khoản. Thiếu điểm thì lấy thêm ở trang Đốt.',
         },
         {
-          q: 'Chọn chu kỳ giải phóng thế nào?',
-          a: 'Chu kỳ ngắn = nhanh hơn + thuế cao hơn; dài = thuế thấp hơn. Hoặc tách thành nhiều lần nhận.',
+          q: 'Thuế và chu kỳ cân nhắc thế nào?',
+          a: 'Chu kỳ càng ngắn thuế càng cao (5 ngày 20%, 20 ngày 10%, 40 ngày 5%, 60 ngày 1%). Thuế trừ một lần khi vào hồ. Cần tiền sớm → chu kỳ ngắn. Muốn giữ nhiều hơn → chu kỳ dài. Cũng có thể chia lợi nhuận vào hồ theo nhiều chu kỳ khác nhau để cân tốc độ và chi phí.',
         },
       ],
       queue: [

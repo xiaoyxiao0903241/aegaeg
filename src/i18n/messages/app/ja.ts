@@ -148,6 +148,11 @@ const app = defineMessages({
     prev: '戻る',
     next: '次へ',
     done: '完了',
+    complete: {
+      title: 'チュートリアル完了',
+      body: 'AEGIS X の中核機能を確認しました。さっそく探索を始めましょう。上部の「チュートリアル」からいつでもやり直せます。',
+      cta: 'はじめる',
+    },
     steps: [
       {
         title: '交換',
@@ -187,11 +192,11 @@ const app = defineMessages({
       },
       {
         title: 'タービン',
-        body: 'リリースプールからタービンへ入った gAGX はロック状態です。USD1 でオンチェーン相場どおりに買うとアンロックできます。',
+        body: 'リリースプールからタービンへ入った gAGX はロック状態です。USD1 で 1:1 に買うとアンロックできます。',
       },
       {
         title: 'リワード',
-        body: '「リワード」には紹介賞・参加賞・共創賞などがあります。Lucky/共創/紹介/参加などの Mixed 受取は貢献ポイントを {ratio} で消費し、発展手当などは署名でウォレットへ直送されます。',
+        body: '「リワード」には紹介賞・参加賞・共創賞など複数のインセンティブがあり、受取には貢献ポイントを 1:1 で消費します。',
       },
       {
         title: 'コミュニティ',
@@ -2637,10 +2642,10 @@ const app = defineMessages({
         notes: '計算の説明',
         notesBody: '本計算機はローカル試算の参考のみで、オンチェーン見積や収益保証ではありません。',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2756,24 +2761,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: 'リリース期間は変更できますか？',
-          a: 'できません。期間は収益がリリースプールに入った時点で固定され、あとから変更できません。各受取は独立しているため、次回は別の期間を選べます。',
+          q: '収益がウォレットへ直接入れない理由は？',
+          a: 'リリースは、収益が発生してから自由に使えるまでの必須ステップです。収益はまず選択した期間でリリースプールを線形にロック解除し、タービンでアンロックを終えてからウォレットに入ります。このリズムが集中売圧を継続的な買い需要に変え、AGX 価格とプロトコルの長期運営を守る中核設計です。',
         },
         {
-          q: '税率はいつ控除されますか？',
-          a: '税率は収益がリリースプールに入るときに、選択期間の料率で一度だけ控除されます（5日 20%、20日 10%、40日 5%、60日 1%）。プールに表示される数量は税引き後です。リリースと以降の受取に追加手数料はありません。',
+          q: 'リリースプールとバッファプールの違いは？',
+          a: 'リリースプールは、ステーキング・債券・マイニング・各種報酬から能動的に受取した収益を受け、選択期間で線形リリースしたあとタービンへ受取します。バッファプールは期間選択不要の特定入金で、リリース完了後にウォレットへ直接引き出せます。両者は互いに影響せず、別々に確認・受取できます。',
         },
         {
-          q: 'リリースプールから受取した gAGX はどこへ行きますか？',
-          a: '受取した gAGX はウォレットへ直接入らず、タービンへ入り、タービンのルールで続きます。タービンページで確認・管理してください。',
+          q: 'リリースの全体パスは？',
+          a: '収益を受取 → 貢献ポイントを 1:1 で消費 → リリースプールへ（期間に応じて税を一度控除）→ 線形リリース → タービンへ受取 → USD1 で同量 AGX を買ってアンロック → クールダウン終了後にウォレットへ引出。バッファプールのパスはより短いです：リリース完了後に直接引き出せます。',
         },
         {
-          q: 'リリース済み分をすぐ受取しないと損失がありますか？',
-          a: '失効しません。いつでも受取れます。ただしプールに留まっているリリース済み分は収益を生まないため、早めにタービンへ受取してください。',
+          q: '収益受取で貢献ポイントを消費する理由は？',
+          a: '受取数量と 1:1 で貢献ポイントを消費します。ポイントは AGX をバーンして得られ、50% は直接バーン、50% は X ベースプールに入ります。収益の現金化のたびにプロトコルへデフレと流動性を同時に貢献します。ポイントが足りないときはバーンページで取得してください。',
         },
         {
-          q: '適切なリリース期間はどう選びますか？',
-          a: '早く資金が必要なら短期間（税率は高め）を選び、待てるなら長期間で低い税率を選んでください。受取を複数回に分け、期間を変えて速度と税率のバランスを取ることもできます。',
+          q: '税率と期間はどうバランスしますか？',
+          a: '期間が短いほど税率は高くなります（5日 20%、20日 10%、40日 5%、60日 1%）。税はリリースプールに入るときに一度だけ控除されます。急ぎなら短期間、多く残したいなら長期間。収益を分けて異なる期間で入れると、着金速度とコストを両立できます。',
         },
       ],
       queue: [

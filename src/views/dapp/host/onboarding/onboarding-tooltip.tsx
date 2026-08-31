@@ -40,6 +40,7 @@ export function OnboardingTourTooltip({
   const isFirst = currentStep <= 0
   const isLast = currentStep >= ONBOARDING_STEP_COUNT - 1
   const navLocked = Boolean(disabledActions)
+  const prevEnabled = !isFirst && !navLocked
 
   if (!step) return null
 
@@ -53,21 +54,27 @@ export function OnboardingTourTooltip({
     >
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <Text as="p" className="m-0 font-normal" tone="foreground" variant="copy">
+          <Text
+            as="p"
+            className="m-0 text-[length:var(--type-headline-size)] leading-normal"
+            variant="copy"
+          >
             {step.title}
           </Text>
           {isLast ? null : (
             <button
-              className="cursor-pointer border-0 bg-transparent p-0 text-xs leading-none text-muted-foreground"
+              className="cursor-pointer border-0 bg-transparent p-0 disabled:cursor-not-allowed"
               disabled={navLocked}
               onClick={onSkip}
               type="button"
             >
-              {copy.skip}
+              <Text as="span" className="text-foreground/40" variant="copy">
+                {copy.skip}
+              </Text>
             </button>
           )}
         </div>
-        <Text as="p" className="m-0 leading-normal" tone="muted-foreground" variant="caption">
+        <Text as="p" className="m-0 text-foreground/70" variant="copy">
           {step.body}
         </Text>
       </div>
@@ -75,16 +82,21 @@ export function OnboardingTourTooltip({
       <div className="flex items-center justify-between gap-2">
         <button
           className={cn(
-            'rounded-full px-3 py-1 text-xs leading-none',
-            isFirst || navLocked
-              ? 'cursor-not-allowed bg-border text-muted-foreground'
-              : 'cursor-pointer bg-border text-foreground hover:bg-muted',
+            'rounded-full px-3 py-1',
+            prevEnabled ? 'cursor-pointer bg-primary' : 'cursor-not-allowed bg-border',
           )}
-          disabled={isFirst || navLocked}
+          disabled={!prevEnabled}
           onClick={onPrev}
           type="button"
         >
-          {copy.prev}
+          <Text
+            as="span"
+            className={prevEnabled ? undefined : 'text-foreground/40'}
+            tone={prevEnabled ? 'inverse' : undefined}
+            variant="copy"
+          >
+            {copy.prev}
+          </Text>
         </button>
 
         <div aria-hidden className="flex h-1.5 items-center gap-1.5" data-onboarding-dots>
@@ -95,7 +107,7 @@ export function OnboardingTourTooltip({
 
         <button
           className={cn(
-            'rounded-full bg-primary px-3 py-1 text-xs leading-none text-primary-foreground',
+            'rounded-full bg-primary px-3 py-1',
             navLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
           )}
           disabled={navLocked}
@@ -108,7 +120,9 @@ export function OnboardingTourTooltip({
           }}
           type="button"
         >
-          {isLast ? copy.done : copy.next}
+          <Text as="span" tone="inverse" variant="copy">
+            {isLast ? copy.done : copy.next}
+          </Text>
         </button>
       </div>
     </div>
