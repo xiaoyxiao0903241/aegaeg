@@ -9,7 +9,6 @@ import {
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { maxUsd1ForBondPurchase } from '~/core/staking/bond-max-usd1'
-import { bondPurchaseCapAgx } from '~/core/staking/format-bond-debt-remaining'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondKind } from '~/core/staking/staking-period'
 import { BOND_PERIODS, type BondPeriod, isBondPeriod } from '~/core/staking/staking-period'
@@ -226,15 +225,8 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
       return [p, null]
     }),
   ) as Record<BondPeriod, bigint | null>
-  const capAgx =
-    market === undefined
-      ? null
-      : bondPurchaseCapAgx({
-          maxPayoutAmount: market.maxPayoutAmount,
-          maxDebt: market.maxDebt,
-          totalDeposit: market.totalDeposit,
-          feeBps: market.feeBps,
-        })
+  // 最大购买量只展示链上 maxPayout() 毛上限，不扣 fee / 债务
+  const capAgx = market === undefined ? null : market.maxPayoutAmount
   const capLabel =
     capAgx == null ? (marketQuery.isError ? '0' : '') : formatTokenAmount(capAgx, AGX_DECIMALS, 2)
 
