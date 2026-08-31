@@ -181,13 +181,11 @@ export function BondDock({ kind }: { kind: BondKind }) {
               },
               {
                 label: copy.meta.cap,
-                value: bond.capUnlimited
-                  ? t.staking.capUnlimited
-                  : bond.isMarketLoading
+                value: bond.isMarketLoading
+                  ? '0 AGX'
+                  : bond.capLabel === '0' || bond.capLabel === ''
                     ? '0 AGX'
-                    : bond.capLabel === '0' || bond.capLabel === ''
-                      ? '0 AGX'
-                      : `${bond.capLabel} AGX`,
+                    : `${bond.capLabel} AGX`,
               },
               {
                 label: copy.meta.release,

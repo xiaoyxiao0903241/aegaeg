@@ -1,5 +1,6 @@
 import { encodeFunctionData, parseAbi } from 'viem'
 
+import { liquidMixedClaimable } from '~/core/assets/claim-output'
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { ZERO_ADDRESS } from '~/core/constants'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
@@ -75,7 +76,7 @@ export type AssetsStakeRow = {
   extraInterest: bigint
   claimableBalance: bigint
   expiry: bigint
-  /** 活期 warmup 仓：禁本金退出 / Mixed，须 claim() 激活。 */
+  /** 活期 warmup 仓：未到期禁本金退出 / Mixed；到期后 Mixed 可领（合约会激活预热仓）。 */
   inWarmup?: boolean
   /** 是否已过 warmup（isWarmupExpired），仅 warmup 行有意义。 */
   warmupExpired?: boolean
@@ -776,11 +777,13 @@ export async function readXminePosition(user: Address): Promise<AssetsXminePosit
  * 读取某一来源当前可 Mixed 领取的实时奖励。
  *
  * 弹窗里的快照可能已过期，提交前用本函数复读，避免基于旧数据下单。
+ * 活期在预热到期后把 warmupReward 算进可领，供 claimRewardMixed 激活并领取。
  *
  * @param target 领取来源：活期 / 定期（可选额外利息）/ 债券
  * @param user 钱包地址
  * @returns 可领取奖励金额（wei）
  * @see 手册 §9.3 Mixed 领奖前端流程
+ * @see docs/onchain-manual/contracts/liquidstaking.md
  */
 export async function readMixedRewardAvailable(
   target:
@@ -790,14 +793,22 @@ export async function readMixedRewardAvailable(
   user: Address,
 ): Promise<bigint> {
   if (target.source === 'liquid') {
+    const pool = stakePoolAddress('liquid')
     const rewards = await bscReadClient.readContract({
-      address: stakePoolAddress('liquid'),
+      address: pool,
       abi: liquidAbi,
       functionName: 'getStakeRewards',
       args: [user],
     })
-    const [, activeReward] = rewards as readonly [bigint, bigint]
-    return activeReward
+    const [warmupReward, activeReward] = rewards as readonly [bigint, bigint]
+    if (warmupReward <= 0n) return activeReward
+    const warmupExpired = await bscReadClient.readContract({
+      address: pool,
+      abi: liquidAbi,
+      functionName: 'isWarmupExpired',
+      args: [user],
+    })
+    return liquidMixedClaimable(warmupReward, activeReward, Boolean(warmupExpired))
   }
 
   if (target.source === 'locked') {

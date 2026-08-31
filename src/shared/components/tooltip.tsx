@@ -107,6 +107,8 @@ function TooltipRoot({
 
   const trigger = cloneElement(children as ReactElement<TriggerChildProps>, {
     onPointerDown: (event) => {
+      // 拦住冒泡，避免点 info 时整卡 overlay / 外层 button 跟着跳转
+      event.stopPropagation()
       childProps.onPointerDown?.(event)
       if (isMobileViewport) {
         // 阻止触摸时焦点切换闪烁；info 图标走下方点击开合
@@ -114,6 +116,7 @@ function TooltipRoot({
       }
     },
     onClick: (event) => {
+      event.stopPropagation()
       childOnClick?.(event)
       if (isMobileViewport && isInfoOnly) {
         setMobileOpen((open) => !open)
@@ -140,21 +143,27 @@ type InfoProps = Pick<TooltipProps, 'align' | 'content' | 'position'> & {
   className?: string
 }
 
-/** Info 图标触发器预设。 */
+/** Info 图标触发器预设。图标视觉不变；内部 hitSpot 只扩大可点范围。 */
 function Info({ align, ariaLabel, className, content, position }: InfoProps) {
   return (
     <TooltipRoot align={align} content={content} position={position}>
       <button
         aria-label={ariaLabel ?? content}
         className={cn(
-          'duration-dapp-fast inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
+          'relative z-10 inline-flex size-3 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0',
+          'duration-dapp-fast transition-opacity ease-out hover:opacity-80',
           className,
         )}
         type="button"
       >
+        {/* hitSpot：44px 热区，absolute 不占间距，避免点偏落到整卡 */}
+        <span
+          aria-hidden
+          className="absolute top-1/2 left-1/2 size-11 -translate-x-1/2 -translate-y-1/2"
+        />
         <InfoIcon
           aria-hidden
-          className="block size-3 shrink-0 text-foreground/40"
+          className="relative block size-3 shrink-0 text-foreground/40"
           strokeWidth={1.75}
         />
       </button>

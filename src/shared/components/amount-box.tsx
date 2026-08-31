@@ -12,17 +12,16 @@ export const amountBox = tv({
   slots: {
     // 标签在卡片内：聚焦珊瑚描边
     root: 'flex flex-col gap-2 p-4 focus-within:border-coral',
-    /** 高度由内边距、字号与边框合成，勿写死固定高度 */
-    rootOutside: 'flex items-center gap-0 rounded-md p-0 px-3.5 py-3 focus-within:border-coral',
+    /** 块级铺满，避免再套一层横向 flex 把右侧顶出边框 */
+    rootOutside: 'w-full min-w-0 rounded-md p-0 px-3.5 py-3 focus-within:border-coral',
     header: 'flex items-center justify-between gap-3',
     label: '',
     balance: 'text-right',
-    body: 'flex items-center justify-between gap-3 max-dapp:items-start',
+    body: 'flex w-full min-w-0 items-center justify-between gap-3 max-dapp:items-start',
     /** 兑换页数量右对齐；质押页标签在外时数量左对齐 */
     input: 'ml-auto max-w-[65%]',
-    /** 去掉浏览器默认内边距，避免撑高输入框 */
-    inputOutside:
-      'mr-auto max-w-[50%] p-0 text-left text-foreground placeholder:text-foreground/40',
+    /** 压掉原生 input 默认宽度，数字吃剩余空间，币种 / MAX 贴右 */
+    inputOutside: 'w-0 min-w-0 flex-1 p-0 text-left text-foreground placeholder:text-foreground/40',
   },
 })
 
@@ -116,8 +115,9 @@ export function AmountBox({
           inputClassName,
         )}
         {...amountProps}
+        size={headerOutside ? 1 : undefined}
       />
-      {endAdornment}
+      {endAdornment ? <span className="shrink-0">{endAdornment}</span> : null}
     </div>
   )
 

@@ -295,6 +295,7 @@ export const queryKeys = {
       ['chain', 'staking', 'bondMarket', depository.toLowerCase()] as const,
     bondZapAgxPreview: (kind: string, depository: string, amount: string) =>
       ['chain', 'staking', 'bondZapPreview', kind, depository.toLowerCase(), amount] as const,
+    bondZapPoolSnapshot: ['chain', 'staking', 'bondZapPool'] as const,
     xminePreflight: ['chain', 'staking', 'xmine'] as const,
     xminePreflightOf: (address: string) =>
       chainWalletQueryKey(['chain', 'staking', 'xmine'], address),

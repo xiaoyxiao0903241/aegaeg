@@ -75,14 +75,23 @@ export interface QualifiedPartitionsResponse {
   early_return: boolean
 }
 
+/** 与 OpenAPI TeamReferralItem 对齐（`POST /team/referrals`）。 */
 export interface TeamReferralItem {
   address: string
   register_time: string | null
-  /** 个人共建 / 认购金额（USD）。 */
-  presale_volume?: string
   presale_rank: number
   direct_referral_count: number
   sales_team_market: string
+  /** 团队业绩（AGX） */
+  making_market: string
+  /** 团队业绩（USD） */
+  making_market_usd: string
+  /** 做市等级 */
+  making_rank: number
+  /** 持仓（AGX） */
+  active_stake_balance: string
+  /** 持仓（USD） */
+  active_stake_balance_usd: string
 }
 
 export interface TeamCommunityOverview {

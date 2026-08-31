@@ -2,11 +2,11 @@ import { calcAmountInMax } from '~/core/exchange/exchange-math'
 import { parseSlippagePercentInput } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 
-/** 涡轮解锁默认滑点（%）：应付 USD1 = 报价 × (1 + 2.5%)。 */
-export const TURBINE_AUTO_SLIPPAGE_PERCENT = 2.5
+/** 涡轮解锁默认滑点（%）：应付 USD1 = 报价 × (1 + 1%)。 */
+export const TURBINE_AUTO_SLIPPAGE_PERCENT = 1
 
 /**
- * 涡轮实际滑点：默认 2.5%；自定义未填仍用默认档。
+ * 涡轮实际滑点：默认 1%；自定义未填仍用默认档。
  *
  * @param mode 默认 / 自定义
  * @param customText 自定义输入；空串视为未设置

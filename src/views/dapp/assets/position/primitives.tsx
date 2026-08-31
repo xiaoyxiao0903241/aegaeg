@@ -5,6 +5,7 @@
  */
 import type { ReactNode } from 'react'
 
+import { isStakeRowClaimEnabled } from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
 import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
@@ -205,7 +206,7 @@ export function AssetsPositionYieldColumn({
   )
 }
 
-/** 仓位卡的领取 + 赎回 / 解锁操作按钮组，质押与债券卡共用 */
+/** 仓位卡的赎回 / 解锁 + 领取操作按钮组，质押、债券与 X 挖矿卡共用 */
 export function AssetsPositionRowActions({
   canClaim,
   canRedeem,
@@ -228,19 +229,19 @@ export function AssetsPositionRowActions({
       <MainButton
         className="h-7 min-h-7 text-xs"
         density="inverse"
-        disabled={!canClaim || busy}
-        onClick={onClaim}
-      >
-        {claimLabel}
-      </MainButton>
-      <MainButton
-        className="h-7 min-h-7 text-xs"
-        density="inverse"
         disabled={!canRedeem || busy}
         onClick={onRedeem}
         variant="secondary"
       >
         {redeemLabel}
+      </MainButton>
+      <MainButton
+        className="h-7 min-h-7 text-xs"
+        density="inverse"
+        disabled={!canClaim || busy}
+        onClick={onClaim}
+      >
+        {claimLabel}
       </MainButton>
     </div>
   )
@@ -360,7 +361,7 @@ export function AssetsListPager({
 /**
  * LP / 燃烧债券仓位卡
  *
- * 展示周期与剩余时间、本金与收益、凭证链接，底部提供领取 / 赎回操作。
+ * 展示周期与剩余时间、本金与收益、凭证链接，底部提供赎回 / 领取操作。
  */
 export function AssetsPositionBondRow({
   formatPeriodLabel,
@@ -422,7 +423,7 @@ export function AssetsPositionBondRow({
  * 质押仓位卡
  *
  * 展示周期与剩余 / warmup 状态、本金与收益、凭证链接；
- * 底部操作随状态变化：warmup 结束可激活，活期可随时赎回。
+ * 底部操作随状态变化：warmup 结束可激活或领取，活期可随时赎回。
  */
 export function AssetsPositionStakeRow(
   props: AssetsPositionRowFrameProps<AssetsStakeRow> & {
@@ -444,10 +445,7 @@ export function AssetsPositionStakeRow(
   const boost = row.extraInterest
   const inWarmup = Boolean(row.inWarmup)
   const warmupExpired = Boolean(row.warmupExpired)
-  const canClaim =
-    !inWarmup &&
-    (isAssetsActionableAmount(reward, ASSETS_POSITION_GAGX_DECIMALS) ||
-      (row.kind !== 'liquid' && isAssetsActionableAmount(boost, ASSETS_POSITION_GAGX_DECIMALS)))
+  const canClaim = isStakeRowClaimEnabled(row, ASSETS_POSITION_GAGX_DECIMALS)
   const canRedeem = inWarmup
     ? warmupExpired && Boolean(onActivate)
     : isAssetsActionableAmount(

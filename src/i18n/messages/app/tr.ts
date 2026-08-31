@@ -92,6 +92,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Ek ödül alma',
       CLAIM_PRINCIPAL: 'Geri al',
       RESTAKE: 'Yeniden stake',
+      EARLY_STAKE: 'Ortak İnşa',
     },
     bond: {
       PURCHASE: 'Satın al',
@@ -140,6 +141,11 @@ const app = defineMessages({
     prev: 'Geri',
     next: 'İleri',
     done: 'Tamam',
+    complete: {
+      title: 'Eğitim tamamlandı',
+      body: 'AEGIS X’in temel özelliklerini öğrendiniz. Keşfetmeye başlayın — üst çubuktaki Eğitim’den istediğiniz zaman yeniden izleyebilirsiniz.',
+      cta: 'Başla',
+    },
     steps: [
       {
         title: 'Takas',
@@ -179,11 +185,11 @@ const app = defineMessages({
       },
       {
         title: 'Türbin',
-        body: 'Serbest bırakma havuzundan Türbin’e giren gAGX kilitlidir; USD1 ile zincir üstü fiyattan alım yaparak kilidi açın.',
+        body: 'Serbest bırakma havuzundan Türbin’e giren gAGX kilitlidir; USD1 ile 1:1 alım yaparak kilidi açın.',
       },
       {
         title: 'Ödüller',
-        body: 'Ödüller referans, katılım, ortak inşa vb. içerir; Lucky/ortak inşa/referans/katılım Mixed talepleri katkı puanını {ratio} harcar; gelişim ödenekleri imzayla doğrudan cüzdana gider.',
+        body: 'Ödüller referans, katılım, ortak inşa gibi çeşitli teşvikler içerir; ödül talep etmek katkı puanını 1:1 harcar.',
       },
       {
         title: 'Topluluk',
@@ -1030,7 +1036,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Talep Edilebilir',
       emptyClaimable: 'Talep edilecek ödül yok.',
-      signedAmountHint: 'Talep edilebilir tutar imzalı pakete göredir',
       usdLabel: 'USD',
     },
 
@@ -1075,9 +1080,9 @@ const app = defineMessages({
       cumulativeWins: 'Kümülatif kazanç',
       winsCount: '{count} kez',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 doğrulanabilir rastgelelik',
+      vrfTitle: 'Chainlink VRF v2.5 doğrulanabilir rastgelelik',
       vrfBody:
-        'Şans ödülü Chainlink VRF v2 ile staking sözleşmelerini birleştirir: rastgelelik zincir üstünde şifreli kanıtla üretilir; sözleşme o günün listesinden 10 şanslı kullanıcı seçer. İnsan müdahalesi yok; herkes zincir üstünde doğrulayabilir.',
+        'Şans ödülü Chainlink VRF v2.5 ile staking sözleşmelerini birleştirir: rastgelelik zincir üstünde şifreli kanıtla üretilir; sözleşme o günün listesinden 10 şanslı kullanıcı seçer. İnsan müdahalesi yok; herkes zincir üstünde doğrulayabilir.',
       verifyTutorial: 'Doğrulama rehberi',
       collapseTutorial: 'Rehberi kapat',
       vrfGuideStep1:
@@ -1107,7 +1112,7 @@ const app = defineMessages({
           },
           {
             q: 'Çekiliş nasıl sonuçlanır?',
-            a: '00:00 UTC’de Chainlink VRF v2 doğrulanabilir rastgelelik üretir; sözleşme o günün listesinden en fazla 10 kazanan seçer (günlük havuz hedefi ≥ $5,000).',
+            a: '00:00 UTC’de Chainlink VRF v2.5 doğrulanabilir rastgelelik üretir; sözleşme o günün listesinden en fazla 10 kazanan seçer (günlük havuz hedefi ≥ $5,000).',
           },
           {
             q: 'Adaleti nasıl doğrularım?',
@@ -1486,6 +1491,7 @@ const app = defineMessages({
     myTeam: 'Topluluk boyutu',
     genesisTitle: 'Mevcut',
     cobuildLevel: 'Ortak inşa seviyesi',
+    makingLevel: 'Piyasa yapıcılık seviyesi',
     inviteTitle: 'Davet etmeye başlayın · Ekosistem büyüme değerini paylaşın',
     programs: {
       title: 'Ekosistem destek programları',
@@ -1982,7 +1988,6 @@ const app = defineMessages({
     body: 'Stake ve tahvillerle ortak inşa — Rebase bileşik getiriyi paylaşın',
     backToHub: 'Staking’e dön',
     max: 'Maks',
-    capUnlimited: 'Sınırsız',
     blocked: {
       notBound: 'Önce referans bağlayın',
       accountMigrated: 'Bu adres taşındı — yeni adresi kullanın',
@@ -2661,6 +2666,8 @@ const app = defineMessages({
       priceAria: 'Fiyat girişi',
       days: 'Tutma günleri',
       dayBubble: '{day}. gün',
+      sliderBreakEven: 'Pozitif getiri',
+      sliderMaturity: '{days} gün vade',
       daysAria: 'Tutma günleri',
       submit: 'Hesapla',
       result: {
@@ -2702,10 +2709,10 @@ const app = defineMessages({
         notes: 'Hesaplama notları',
         notesBody: 'Yalnızca yerel tahmin — zincir üstü teklif veya getiri vaadi değildir.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
-          'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
-          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2825,24 +2832,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: 'Serbest bırakma süresi değiştirilebilir mi?',
-          a: 'Hayır. Süre, getiri serbest bırakma havuzuna girerken sabitlenir ve sonra değiştirilemez. Her talep bağımsızdır, bu yüzden sonraki farklı süre kullanabilir.',
+          q: 'Getiri neden doğrudan cüzdana gitmez?',
+          a: 'Serbest bırakma, getirinin oluşmasından serbestçe kullanılmasına kadar zorunlu adımdır. Getiri önce seçtiğiniz sürede serbest bırakma havuzunda doğrusal açılır, sonra Türbin üzerinden kilit açılıp cüzdana girer. Bu ritim toplanmış satış baskısını süren alım talebine çevirir ve AGX fiyatı ile protokolün uzun vadeli işleyişini korumanın çekirdek tasarımıdır.',
         },
         {
-          q: 'Vergi ne zaman kesilir?',
-          a: 'Vergi, getiri serbest bırakma havuzuna girerken bir kez kesilir; seçilen sürenin oranı kullanılır (5 gün %20, 20 gün %10, 40 gün %5, 60 gün %1). Havuzda görünen tutarlar zaten vergi sonrasıdır; serbest bırakma ve sonraki talepler ek ücret eklemez.',
+          q: 'Serbest bırakma havuzu ile tampon havuzu farkı?',
+          a: 'Serbest bırakma havuzu staking, tahvil, madencilik ve ödüllerden aktif talep ettiğiniz getiriyi alır. Seçilen sürede doğrusal açılır, sonra Türbine talep edilir. Tampon, süre seçimi gerektirmeyen belirli girişleri alır; serbest bırakma bitince doğrudan cüzdana çekilir. İkisi birbirini etkilemez — ayrı bakın ve talep edin.',
         },
         {
-          q: 'Serbest bırakma havuzundan talep edilen gAGX nereye gider?',
-          a: 'Talep edilen gAGX doğrudan cüzdana gitmez. Türbin’e girer ve Türbin kurallarıyla devam eder. Görüntülemek ve yönetmek için Türbin sayfasını açın.',
+          q: 'Tam serbest bırakma yolu nedir?',
+          a: 'Getiri talep et → katkı puanını 1:1 harca → serbest bırakma havuzuna gir (vergi süreye göre bir kez kesilir) → doğrusal açılma → Türbine talep → kilidi açmak için USD1 ile eşit AGX al → soğuma bitince cüzdana çek. Tampon yolu daha kısa: serbest bırakma bitince çek.',
         },
         {
-          q: 'Serbest bırakılan kısmı hemen almazsam kayıp olur mu?',
-          a: 'Süresi dolmaz — istediğiniz zaman talep edin. Havuzda bekleyen serbest bırakılmış tutarlar getiri üretmez, bu yüzden zamanında Türbin’e talep edin.',
+          q: 'Getiri talep etmek neden katkı puanı harcar?',
+          a: 'Talep, talep edilen tutarla 1:1 katkı puanı harcar. Puanlar AGX yakarak gelir: %50 yakılır, %50 X taban havuzuna eklenir. Her getiri ödemesi böylece deflasyon ve likidite de ekler. Puan yetmezse Yakma sayfasından alın.',
         },
         {
-          q: 'Uygun serbest bırakma süresi nasıl seçilir?',
-          a: 'Fonları daha çabuk istiyorsanız kısa süre seçin (daha yüksek vergi). Bekleyebilirseniz daha düşük oran için uzun süre seçin. Hız ve vergiyi dengelemek için getiriyi farklı sürelerle birden fazla talebe de bölebilirsiniz.',
+          q: 'Vergi ile süre nasıl dengelenir?',
+          a: 'Daha kısa süre daha yüksek vergi (5 gün %20, 20 gün %10, 40 gün %5, 60 gün %1). Vergi havuza girerken bir kez kesilir. Acil nakit → kısa süre. Daha çok tutmak → uzun süre. Hız ve maliyeti dengelemek için getiriyi farklı sürelerle parçalar halinde de gönderebilirsiniz.',
         },
       ],
       queue: [

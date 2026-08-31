@@ -28,14 +28,14 @@ test('evaluateTurbineUnlockLive requires allowance cover liveUsd', async () => {
   assert.equal(evaluateTurbineUnlockLive({ ...base, liveQuota: 0n }), 'TURBINE_QUOTA_EXCEEDED')
 })
 
-test('resolveTurbineSlippagePercent defaults to 2.5 and parses custom', async () => {
+test('resolveTurbineSlippagePercent defaults to 1 and parses custom', async () => {
   const { resolveTurbineSlippagePercent, TURBINE_AUTO_SLIPPAGE_PERCENT } = await loadModule(
     '/src/core/exchange/turbine-unlock-live.ts',
   )
-  assert.equal(TURBINE_AUTO_SLIPPAGE_PERCENT, 2.5)
-  assert.equal(resolveTurbineSlippagePercent('auto', ''), 2.5)
-  assert.equal(resolveTurbineSlippagePercent('custom', ''), 2.5)
-  assert.equal(resolveTurbineSlippagePercent('custom', '1'), 1)
+  assert.equal(TURBINE_AUTO_SLIPPAGE_PERCENT, 1)
+  assert.equal(resolveTurbineSlippagePercent('auto', ''), 1)
+  assert.equal(resolveTurbineSlippagePercent('custom', ''), 1)
+  assert.equal(resolveTurbineSlippagePercent('custom', '3'), 3)
 })
 
 test('isTurbineQuotaCapReady rejects keepPreviousData placeholder cap', async () => {

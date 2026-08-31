@@ -209,3 +209,28 @@ test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', asyn
     true,
   )
 })
+
+test('liquidMixedClaimable includes warmup only after expiry', async () => {
+  const { liquidMixedClaimable } = await loadModule('/src/core/assets/claim-output.ts')
+  assert.equal(liquidMixedClaimable(10n, 3n, false), 3n)
+  assert.equal(liquidMixedClaimable(10n, 3n, true), 13n)
+  assert.equal(liquidMixedClaimable(10n, 0n, true), 10n)
+  assert.equal(liquidMixedClaimable(0n, 3n, true), 3n)
+})
+
+test('isStakeRowClaimEnabled: expired warmup with reward can claim; active warmup cannot', async () => {
+  const { isStakeRowClaimEnabled } = await loadModule('/src/core/assets/claim-output.ts')
+  const warmup = {
+    kind: 'liquid',
+    blockReward: GAGX_ACTION_FLOOR,
+    extraInterest: 0n,
+    inWarmup: true,
+    warmupExpired: false,
+  }
+  assert.equal(isStakeRowClaimEnabled(warmup, GAGX_DECIMALS), false)
+  assert.equal(isStakeRowClaimEnabled({ ...warmup, warmupExpired: true }, GAGX_DECIMALS), true)
+  assert.equal(
+    isStakeRowClaimEnabled({ ...warmup, warmupExpired: true, blockReward: 0n }, GAGX_DECIMALS),
+    false,
+  )
+})

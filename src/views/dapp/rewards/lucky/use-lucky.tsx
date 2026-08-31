@@ -14,7 +14,6 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import type { SelectMenuOption } from '~/shared/components/select-menu'
 import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { bscscanTx } from '~/shared/config/explorer'
@@ -111,10 +110,7 @@ export function useLucky() {
   })
 
   const drawDate = luckyWinnersSelectedDate(selectedDate, winnersQuery.data?.date)
-  const dateOptions: SelectMenuOption[] = luckyWinnersDateList(
-    winnersQuery.data?.dates,
-    drawDate,
-  ).map((value) => ({ value, label: value }))
+  const drawDates = luckyWinnersDateList(winnersQuery.data?.dates)
 
   const roundQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyRoundDisplay,
@@ -241,7 +237,7 @@ export function useLucky() {
     eligibilityHint,
     cumulativeWins,
     cumulativeWinsHint,
-    dateOptions,
+    drawDates,
     drawDate,
     onDrawDateChange: setSelectedDate,
     resultsSummary,

@@ -1,17 +1,106 @@
-/** Lucky mode UI 零件。 */
+/**
+ * 幸运奖详情零件：开奖日期选择与 VRF 说明卡。
+ */
+import { CalendarDays } from 'lucide-react'
+import { useId, useState } from 'react'
+
+import {
+  formatIsoDay,
+  isLuckyWinnersDateAllowed,
+  luckyWinnersCalendarBounds,
+  parseIsoDay,
+} from '~/core/rewards/lucky-winners-date'
+import { getHtmlLang } from '~/i18n/locales'
+import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/shared/assets/dapp'
+import { Calendar } from '~/shared/components/calendar'
+import { Card } from '~/shared/components/card'
+import {
+  DropdownMenu,
+  DropdownMenuPanel,
+  DropdownMenuTrigger,
+} from '~/shared/components/dropdown-menu'
+import { Reveal } from '~/shared/components/reveal'
+import { Text } from '~/shared/components/text'
+
+/**
+ * 开奖日期选择
+ *
+ * 弹出日历；只有后端 `dates` 里的日子能点。
+ *
+ * @param allowedDates 接口返回的已开奖日期
+ * @param ariaLabel 触发按钮无障碍名
+ * @param onSelect 选中 yyyy-MM-dd
+ * @param value 当前选中日
+ */
+export function LuckyDrawDatePicker({
+  allowedDates,
+  ariaLabel,
+  onSelect,
+  value,
+}: {
+  allowedDates: readonly string[]
+  ariaLabel: string
+  onSelect: (date: string) => void
+  value: string
+}) {
+  const { locale } = useI18n()
+  const htmlLang = getHtmlLang(locale)
+  const [open, setOpen] = useState(false)
+  const allowed = new Set(allowedDates)
+  const selected = parseIsoDay(value)
+  const { startMonth, endMonth } = luckyWinnersCalendarBounds(allowedDates)
+  const label = value || allowedDates[0] || ''
+
+  if (allowedDates.length === 0) return null
+
+  return (
+    <DropdownMenu onOpenChange={setOpen} open={open}>
+      <DropdownMenuTrigger
+        aria-haspopup="dialog"
+        aria-label={ariaLabel}
+        className="inline-flex h-8.5 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-card px-3.5"
+      >
+        <Text as="span" className="font-medium" variant="copy">
+          {label}
+        </Text>
+        <CalendarDays aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+      </DropdownMenuTrigger>
+      <DropdownMenuPanel
+        align="start"
+        aria-label={ariaLabel}
+        className="w-auto gap-0 p-0"
+        role="dialog"
+      >
+        <Calendar
+          disabled={(date) => !isLuckyWinnersDateAllowed(date, allowed)}
+          defaultMonth={selected ?? endMonth}
+          endMonth={endMonth}
+          formatters={{
+            formatCaption: (date) =>
+              date.toLocaleDateString(htmlLang, { year: 'numeric', month: 'long' }),
+            formatWeekdayName: (date) => date.toLocaleDateString(htmlLang, { weekday: 'short' }),
+          }}
+          mode="single"
+          onSelect={(date) => {
+            if (!date || !isLuckyWinnersDateAllowed(date, allowed)) return
+            onSelect(formatIsoDay(date))
+            setOpen(false)
+          }}
+          selected={selected}
+          startMonth={startMonth}
+        />
+      </DropdownMenuPanel>
+    </DropdownMenu>
+  )
+}
+
 /**
  * 幸运奖 VRF 说明卡
  *
  * 深色底展示 Chainlink 随机开奖说明；
  * 「验证教程」切换三步链上核对步骤，高度用 Reveal 缓动。
  */
-import { useId, useState } from 'react'
-
-import { dappAssets } from '~/shared/assets/dapp'
-import { Card } from '~/shared/components/card'
-import { Reveal } from '~/shared/components/reveal'
-import { Text } from '~/shared/components/text'
-
 export function LuckyVrfCard({
   body,
   collapseTutorial,

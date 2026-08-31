@@ -238,7 +238,6 @@ export function useMixedClaim(view: MixedClaimView) {
   }))
 
   const amountKnown = view === 'lucky' ? luckyQuery.data != null : sessionReady
-  const awaitingDaoSignature = isDaoMixed && sessionReady
   const previewOrZero = preview ?? 0
   const amountText =
     view === 'lucky'
@@ -302,7 +301,6 @@ export function useMixedClaim(view: MixedClaimView) {
     amount,
     amountKnown,
     amountText,
-    showSignedAmountHint: awaitingDaoSignature,
     hasClaimablePreview,
     releasePct,
     setReleasePct,

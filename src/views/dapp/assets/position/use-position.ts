@@ -7,7 +7,11 @@ import {
   compareAssetsPositionSort,
 } from '~/core/assets/assets-position-sort'
 import { bondTotalRewardWei } from '~/core/assets/bond-total-reward'
-import { buildStakeMixedClaimTarget, type ClaimOutputKind } from '~/core/assets/claim-output'
+import {
+  buildStakeMixedClaimTarget,
+  type ClaimOutputKind,
+  isStakeRowClaimEnabled,
+} from '~/core/assets/claim-output'
 import { ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
@@ -284,7 +288,7 @@ export function usePositionDock(product: AssetsProduct) {
 
   function openStakeClaim(row: AssetsStakeRow) {
     if (!address) return
-    if (row.inWarmup) return
+    if (!isStakeRowClaimEnabled(row, GAGX_DECIMALS)) return
     const periodLabel = formatPeriodLabel(row.period)
     setClaim({ open: false })
 

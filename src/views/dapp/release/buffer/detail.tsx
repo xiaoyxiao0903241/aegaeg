@@ -93,13 +93,16 @@ export function BufferDetail() {
       hint: t.release.buffer.hints.releasingAgx,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
-        apiRaw: api?.releasing_amount,
+        apiRaw: undefined,
         chainReady,
         chainValue: releasing,
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(amountNum(api?.releasing_amount, releasing, AGX_DECIMALS), priceUsd),
+      approx: formatUsdApprox(
+        chainReady ? formatTokenAmountToNumber(releasing, AGX_DECIMALS) : 0,
+        priceUsd,
+      ),
     },
   ]
 

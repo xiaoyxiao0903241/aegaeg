@@ -51,6 +51,49 @@ export function shouldReplaceHeldClaimOutput(args: {
 }
 
 /**
+ * 活期 Mixed 可领额。
+ *
+ * 预热未到期只算主仓利息；到期后把预热利息算进去。
+ * `claimRewardMixed` 传入预热利息会激活预热仓并领取。
+ *
+ * @param warmupReward `getStakeRewards` 预热利息
+ * @param activeReward `getStakeRewards` 主仓利息
+ * @param warmupExpired `isWarmupExpired`
+ * @returns 本次 Mixed 应传入的总领取量
+ */
+export function liquidMixedClaimable(
+  warmupReward: bigint,
+  activeReward: bigint,
+  warmupExpired: boolean,
+): bigint {
+  return warmupExpired ? warmupReward + activeReward : activeReward
+}
+
+/**
+ * 质押仓位「领取」是否可点。
+ *
+ * 预热未到期不可领；到期后只要普通收益（或定期加成）达到 0.01 即可。
+ *
+ * @param row 仓位收益与预热状态
+ * @param decimals gAGX 精度
+ * @returns 可点领取为 true
+ */
+export function isStakeRowClaimEnabled(
+  row: {
+    kind: StakeClaimKind
+    blockReward: bigint
+    extraInterest: bigint
+    inWarmup?: boolean
+    warmupExpired?: boolean
+  },
+  decimals: number,
+): boolean {
+  if (row.inWarmup && !row.warmupExpired) return false
+  if (isAssetsActionableAmount(row.blockReward, decimals)) return true
+  return row.kind !== 'liquid' && isAssetsActionableAmount(row.extraInterest, decimals)
+}
+
+/**
  * 活期 / 定期仓 → Mixed 领取目标。
  *
  * 活期禁止加成（手册仅 `claimRewardMixed`）；定期须有 stakeIndex。

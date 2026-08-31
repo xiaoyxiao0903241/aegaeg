@@ -37,7 +37,6 @@ import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
-import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
 import { openRewardsView } from '~/views/dapp/shared/navigation'
@@ -230,9 +229,7 @@ export function RewardsHubDock() {
         <Table.Empty embedded title={t.rewards.hub.hideZeroEmpty} />
       ) : null}
 
-      {!walletReady ? (
-        <DockConnectPromo />
-      ) : !sessionReady ? (
+      {walletReady && !sessionReady ? (
         <Text as="p" tone="muted-foreground" variant="copy">
           {t.rewards.hub.sessionHint}
         </Text>

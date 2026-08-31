@@ -2,7 +2,7 @@
  * 释放总览左栏 Dock
  *
  * 两张入口卡展示释放队列与缓冲池的进度与金额，
- * 点击进入对应子视图；未连接钱包时展示连接引导。
+ * 点击进入对应子视图。
  */
 import { useReleaseClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
@@ -13,7 +13,6 @@ import { CountValue } from '~/shared/components/count-value'
 import { Text } from '~/shared/components/text'
 import { ReleaseEntryCard } from '~/views/dapp/release/hub/primitives'
 import { useReleaseHub } from '~/views/dapp/release/hub/use-hub'
-import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { openReleaseView } from '~/views/dapp/shared/navigation'
 
@@ -115,8 +114,6 @@ export function ReleaseHubDock() {
           </div>
         </div>
       </ReleaseEntryCard>
-
-      {!vm.walletReady ? <DockConnectPromo /> : null}
     </DockFrame>
   )
 }

@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { type CalcProduct } from '~/core/staking/build-calc-estimate'
+import { calcSliderMarks } from '~/core/staking/calc-slider-marks'
 import { type StakePeriod } from '~/core/staking/staking-period'
-import { CALC_MAX_DAYS, CALC_X_START_USD } from '~/core/staking/staking-yield'
+import { CALC_MAX_DAYS, CALC_X_START_USD, findBreakEvenDay } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -42,6 +43,7 @@ export function CalcDock() {
   const s = useCalcEstimateStore()
   const setPrice = useCalcEstimateStore((st) => st.setPrice)
   const setSpotUsd = useCalcEstimateStore((st) => st.setSpotUsd)
+  const setDays = useCalcEstimateStore((st) => st.setDays)
   useCalcEstimateLive()
   /** 每种产品只自动灌一次到期价；用户清空后不再写回。 */
   const filledPriceForProduct = useRef<CalcProduct | null>(null)
@@ -108,6 +110,39 @@ export function CalcDock() {
           : true)
   const spotReady = s.spotUsd != null && s.spotUsd > 0
   const canCommit = amountN > 0 && priceN > 0 && ratesOk && spotReady
+
+  const breakEvenDay = useMemo(() => {
+    if (!ratesOk || !spotReady || priceN <= 0) return null
+    return findBreakEvenDay({
+      product: s.product,
+      period: s.period,
+      amount: amountN > 0 ? amountN : 1,
+      pd: priceN,
+      spotUsd: s.spotUsd ?? 0,
+      epochRebasePct: s.rates?.epochRebasePct ?? null,
+      epochsPerDay: s.rates?.epochsPerDay ?? null,
+      xmineDailyPct: s.product === 'xmine' ? (s.rates?.xmineDailyPct ?? null) : null,
+      discountRateBP:
+        s.product === 'lpbond' || s.product === 'burnbond'
+          ? (s.rates?.discountRateBP ?? null)
+          : null,
+      horizonDays: CALC_MAX_DAYS,
+      maxDays: CALC_MAX_DAYS,
+    })
+  }, [
+    amountN,
+    priceN,
+    ratesOk,
+    s.period,
+    s.product,
+    s.rates?.discountRateBP,
+    s.rates?.epochRebasePct,
+    s.rates?.epochsPerDay,
+    s.rates?.xmineDailyPct,
+    s.spotUsd,
+    spotReady,
+  ])
+  const marks = calcSliderMarks({ period: s.period, breakEvenDay })
 
   return (
     <TabHeader
@@ -200,8 +235,16 @@ export function CalcDock() {
           </div>
           <CalcDaySlider
             ariaLabel={t.staking.calc.daysAria}
-            max={CALC_MAX_DAYS}
-            onChange={s.setDays}
+            breakEvenDay={marks.breakEvenDay}
+            breakEvenLabel={t.staking.calc.sliderBreakEven}
+            maturityDay={marks.maturityDay}
+            maturityLabel={
+              marks.maturityDay != null
+                ? interpolate(t.staking.calc.sliderMaturity, { days: marks.maturityDay })
+                : ''
+            }
+            max={marks.maxDay}
+            onChange={setDays}
             value={s.days}
           />
         </div>

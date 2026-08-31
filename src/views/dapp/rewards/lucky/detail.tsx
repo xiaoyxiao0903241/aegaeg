@@ -10,11 +10,10 @@ import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
-import { SelectMenu } from '~/shared/components/select-menu'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { LuckyVrfCard } from '~/views/dapp/rewards/lucky/primitives'
+import { LuckyDrawDatePicker, LuckyVrfCard } from '~/views/dapp/rewards/lucky/primitives'
 import { useLucky } from '~/views/dapp/rewards/lucky/use-lucky'
 
 export function LuckyDetail() {
@@ -26,7 +25,7 @@ export function LuckyDetail() {
     eligibilityHint,
     cumulativeWins,
     cumulativeWinsHint,
-    dateOptions,
+    drawDates,
     drawDate,
     onDrawDateChange,
     resultsSummary,
@@ -43,14 +42,12 @@ export function LuckyDetail() {
   } = useLucky()
 
   const dateMenu =
-    dateOptions.length > 0 ? (
-      <SelectMenu
-        align="start"
+    drawDates.length > 0 ? (
+      <LuckyDrawDatePicker
+        allowedDates={drawDates}
         ariaLabel={lucky.dateFilterAria}
         onSelect={onDrawDateChange}
-        options={dateOptions}
-        value={drawDate || dateOptions[0]?.value || ''}
-        variant="pill"
+        value={drawDate || drawDates[0] || ''}
       />
     ) : null
 

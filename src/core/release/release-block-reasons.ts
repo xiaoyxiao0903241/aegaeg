@@ -29,6 +29,19 @@ export function releaseClaimBlockReason(args: {
 }
 
 /**
+ * 释放中 = 尚未线性释放的部分。
+ *
+ * remainingUnclaimed 为池内未领（队列 lockedAmount / 分流器 amount−claimed）。
+ * 释放完成后 remainingUnclaimed === claimable，结果为 0。
+ *
+ * @param remainingUnclaimed 未领取剩余
+ * @param claimable 已解锁可领
+ */
+export function unvestedRemaining(remainingUnclaimed: bigint, claimable: bigint): bigint {
+  return remainingUnclaimed > claimable ? remainingUnclaimed - claimable : 0n
+}
+
+/**
  * 已释放进度（可领额占总量的万分比）。
  *
  * @param claimable 可领取金额

@@ -2,7 +2,9 @@ import type { Paginated, PaginationParams } from '~/shared/api/types/common'
 
 export type BondFlowOperation = 'PURCHASE' | 'REDEEM' | 'REWARD' | 'RESTAKE'
 
-export type StakeFlowOperation = 'STAKE' | 'REWARD' | 'EXTRA_REWARD' | 'CLAIM_PRINCIPAL' | 'RESTAKE'
+/** 质押流水操作；EARLY_STAKE 为共建（EarlyStaking），索引也可能写 earlyStake。 */
+export type StakeFlowOperation =
+  'STAKE' | 'REWARD' | 'EXTRA_REWARD' | 'CLAIM_PRINCIPAL' | 'RESTAKE' | 'EARLY_STAKE'
 
 export type X0MiningLogOperation = 'STAKE_X' | 'UNSTAKE_X' | 'REWARD'
 

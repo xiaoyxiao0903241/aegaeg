@@ -94,6 +94,7 @@ const app = defineMessages({
       EXTRA_REWARD: 'Extra reward claim',
       CLAIM_PRINCIPAL: 'Redeem',
       RESTAKE: 'Restake',
+      EARLY_STAKE: 'Co-build',
     },
     bond: {
       PURCHASE: 'Purchase',
@@ -142,6 +143,11 @@ const app = defineMessages({
     prev: 'Back',
     next: 'Next',
     done: 'Done',
+    complete: {
+      title: 'Tutorial complete',
+      body: 'You now know the core features of AEGIS X. Start exploring — replay anytime from Tutorial in the top bar.',
+      cta: 'Get started',
+    },
     steps: [
       {
         title: 'Exchange',
@@ -177,15 +183,15 @@ const app = defineMessages({
       },
       {
         title: 'Buffer pool',
-        body: 'Redeemed principal unlocks linearly in the splitter; released amounts can be withdrawn anytime.',
+        body: 'Redeemed principal unlocks linearly here over a 30-day block vest; released amounts can be withdrawn to your wallet anytime.',
       },
       {
         title: 'Turbine',
-        body: 'gAGX from the release pool stays locked until you unlock it with USD1 at the live Turbine quote.',
+        body: 'gAGX from the release pool stays locked until you unlock it by buying 1:1 with USD1.',
       },
       {
         title: 'Rewards',
-        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build/referral/participation) spend contribution {ratio}; stipends use signed claims to wallet.',
+        body: 'Rewards include referral, participation, co-build, and more. Claiming rewards spends contribution 1:1.',
       },
       {
         title: 'Community',
@@ -995,7 +1001,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Claimable',
       emptyClaimable: 'No reward available to claim.',
-      signedAmountHint: 'Claimable amount follows the signed payload',
       usdLabel: 'USD',
     },
 
@@ -1040,9 +1045,9 @@ const app = defineMessages({
       cumulativeWins: 'Cumulative wins',
       winsCount: '{count} times',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 verifiable randomness',
+      vrfTitle: 'Chainlink VRF v2.5 verifiable randomness',
       vrfBody:
-        'Lucky draws use Chainlink VRF v2 with the staking contracts: randomness is generated on-chain with a cryptographic proof, then winners are selected from that day’s eligibility list. No human intervention; anyone can verify on-chain.',
+        'Lucky draws use Chainlink VRF v2.5 with the staking contracts: randomness is generated on-chain with a cryptographic proof, then winners are selected from that day’s eligibility list. No human intervention; anyone can verify on-chain.',
       verifyTutorial: 'Verification guide',
       collapseTutorial: 'Collapse guide',
       vrfGuideStep1:
@@ -1072,7 +1077,7 @@ const app = defineMessages({
           },
           {
             q: 'How is the draw settled?',
-            a: 'At 00:00 UTC, Chainlink VRF v2 produces verifiable randomness; the contract selects up to 10 winners from that day’s list to share the pool (daily pool target ≥ $5,000).',
+            a: 'At 00:00 UTC, Chainlink VRF v2.5 produces verifiable randomness; the contract selects up to 10 winners from that day’s list to share the pool (daily pool target ≥ $5,000).',
           },
           {
             q: 'How do I verify fairness?',
@@ -1440,6 +1445,7 @@ const app = defineMessages({
     myTeam: 'Community members',
     genesisTitle: 'Current',
     cobuildLevel: 'Co-build tier',
+    makingLevel: 'Making rank',
     inviteTitle: 'Start inviting · Share ecosystem growth value',
     programs: {
       title: 'Ecosystem support programs',
@@ -1926,7 +1932,6 @@ const app = defineMessages({
     body: 'Stake and bonds co-build — share Rebase compounding',
     backToHub: 'Back to Staking',
     max: 'Max',
-    capUnlimited: 'Unlimited',
     blocked: {
       notBound: 'Bind a referral first',
       accountMigrated: 'This address has migrated — use the new address',
@@ -2572,6 +2577,8 @@ const app = defineMessages({
       priceAria: 'Price input',
       days: 'Hold days',
       dayBubble: 'Day {day}',
+      sliderBreakEven: 'Positive yield',
+      sliderMaturity: '{days}-day maturity',
       daysAria: 'Hold days',
       submit: 'Calculate',
       result: {
@@ -2610,10 +2617,10 @@ const app = defineMessages({
         notes: 'Notes',
         notesBody: 'Local estimate only — not an on-chain quote or yield promise.',
         notesItems: [
-          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20% (bonus does not compound).',
-          'The calculator applies interest to the full principal for the selected days (same as calcLocalInterest); it does not truncate to unlocked principal only.',
-          'Local estimate does not deduct 1/6 burn contribution or model claim tax / price moves; illustrative only.',
-          'Actual yield follows on-chain settlement and protocol state.',
+          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
+          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
+          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
+          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
         ],
       },
     },
@@ -2731,24 +2738,24 @@ const app = defineMessages({
       title: 'FAQs',
       hub: [
         {
-          q: 'Can I change the release period?',
-          a: 'No. The period is fixed when yield enters the release pool and cannot be changed afterward. Each claim is independent, so the next one can use a different period.',
+          q: 'Why can’t yield go straight to my wallet?',
+          a: 'Release sits between earning yield and using it freely. Yield first unlocks linearly in the release pool over the period you choose, then unlocks through Turbine before it reaches your wallet. That pacing turns clustered sell pressure into ongoing buy demand, and is core to protecting AGX price and the protocol’s long-term run.',
         },
         {
-          q: 'When is the tax taken?',
-          a: 'Tax is taken once when yield enters the release pool, using the chosen period’s rate (5 days 20%, 20 days 10%, 40 days 5%, 60 days 1%). Amounts shown in the pool are already after tax; release and later claims add no extra fee.',
+          q: 'Release pool vs buffer pool?',
+          a: 'The release pool takes yield you actively claim from staking, bonds, mining, and rewards. It unlocks linearly over the period you choose, then claims into Turbine. The buffer takes certain inflows that do not need a period choice; after release you withdraw straight to wallet. The two do not affect each other — view and claim them separately.',
         },
         {
-          q: 'Where does a release-pool claim go?',
-          a: 'Claimed gAGX does not go straight to your wallet. It enters Turbine and continues under Turbine rules. Open the Turbine page to view and manage it.',
+          q: 'What is the full release path?',
+          a: 'Claim yield → spend contribution 1:1 → enter the release pool (tax taken once by period) → linear unlock → claim into Turbine → buy equal AGX with USD1 to unlock → extract to wallet after cooldown. The buffer path is shorter: withdraw once release finishes.',
         },
         {
-          q: 'Do I lose unlocked amounts if I wait?',
-          a: 'It does not expire — claim anytime. Released amounts sitting in the pool earn no yield, so claim promptly into Turbine.',
+          q: 'Why does claiming yield spend contribution points?',
+          a: 'Claims spend contribution 1:1 with the amount claimed. Points come from burning AGX: 50% is burned and 50% is added to the X base pool. Every yield payout thus also adds deflation and liquidity. If you do not have enough points, get more on the Burn page.',
         },
         {
-          q: 'How do I pick a period?',
-          a: 'If you want funds sooner, pick a short period (higher tax). If you can wait, pick a long period for a lower rate. You can also send yield into the pool in multiple claims with different periods to balance speed and tax.',
+          q: 'How should I weigh tax vs period?',
+          a: 'Shorter periods tax more (5 days 20%, 20 days 10%, 40 days 5%, 60 days 1%). Tax is taken once when yield enters the pool. Need funds soon → short period. Want to keep more → long period. You can also send yield in batches with different periods to balance speed and cost.',
         },
       ],
       queue: [

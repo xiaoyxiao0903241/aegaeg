@@ -1,5 +1,6 @@
 import { encodeFunctionData, parseAbi } from 'viem'
 
+import type { BondZapPoolSnapshot } from '~/core/staking/bond-max-usd1'
 import {
   computeBondPoolAgxPrice,
   computeBurnBondGrossPayout,
@@ -200,4 +201,60 @@ async function readMarketMeta(depository: Address): Promise<BondMarketMeta> {
   )
   const [, , feeBps, maxDebt, totalDeposit] = terms
   return { discountRateBP, feeBps, maxDebt, totalDeposit, maxPayoutAmount }
+}
+
+/**
+ * 读取 AGX/USD1 池储备，供债券最大可买 USD1 链下反推。
+ *
+ * 交易对不是 AGX/USD1 时返回全 0（不能买）。
+ *
+ * @see docs/onchain-manual/contracts/bondhelper.md
+ */
+export async function readBondZapPoolSnapshot(): Promise<BondZapPoolSnapshot> {
+  const pair = BSC_CONTRACTS.pancakePair
+  const batch = await readAggregate3([
+    {
+      target: pair,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'token0' }),
+    },
+    {
+      target: pair,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'getReserves' }),
+    },
+    {
+      target: pair,
+      callData: encodeFunctionData({ abi: pairAbi, functionName: 'totalSupply' }),
+    },
+  ])
+  const token0 = decodeAggregate3Result<Address>(
+    batch,
+    0,
+    pairAbi,
+    'token0',
+    'BOND_POOL_MULTICALL_FAILED:token0',
+  )
+  const reserves = decodeAggregate3Result<readonly [bigint, bigint, number]>(
+    batch,
+    1,
+    pairAbi,
+    'getReserves',
+    'BOND_POOL_MULTICALL_FAILED:reserves',
+  )
+  const totalSupply = decodeAggregate3Result<bigint>(
+    batch,
+    2,
+    pairAbi,
+    'totalSupply',
+    'BOND_POOL_MULTICALL_FAILED:totalSupply',
+  )
+  const token0IsAgx = token0.toLowerCase() === BSC_CONTRACTS.agx.toLowerCase()
+  const token0IsUsd1 = token0.toLowerCase() === BSC_CONTRACTS.usd1.toLowerCase()
+  if (!token0IsAgx && !token0IsUsd1) {
+    return { reserveU: 0n, reserveAGX: 0n, totalSupply: 0n }
+  }
+  return {
+    reserveU: token0IsAgx ? reserves[1] : reserves[0],
+    reserveAGX: token0IsAgx ? reserves[0] : reserves[1],
+    totalSupply,
+  }
 }

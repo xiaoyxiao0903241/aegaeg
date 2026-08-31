@@ -175,7 +175,7 @@ export function DropdownMenuTrigger({
       {...props}
       aria-controls={menuId}
       aria-expanded={open}
-      aria-haspopup="listbox"
+      aria-haspopup={props['aria-haspopup'] ?? 'listbox'}
       className={className}
       onClick={(event) => {
         props.onClick?.(event)
@@ -196,6 +196,7 @@ export function DropdownMenuPanel({
   className,
   children,
   matchTriggerWidth = false,
+  role = 'listbox',
   ...props
 }: HTMLAttributes<HTMLDivElement> & {
   align?: 'start' | 'end'
@@ -258,7 +259,7 @@ export function DropdownMenuPanel({
       data-dropdown-menu-panel=""
       id={menuId}
       ref={panelRef}
-      role="listbox"
+      role={role}
       style={coords}
     >
       {children}
