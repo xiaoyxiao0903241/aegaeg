@@ -142,7 +142,7 @@ export function TurbineClaimCard({
         disabled={disabled}
         loading={loading}
         onClick={onClaim}
-        variant="secondary"
+        variant="primary"
       >
         {claimLabel}
       </MainButton>
