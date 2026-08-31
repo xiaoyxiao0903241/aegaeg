@@ -30,6 +30,15 @@ test('all-liquid portfolio: released and pending are 0', () => {
   assert.equal(out.pending, 0n)
 })
 
+test('early rows count released and pending like locked', () => {
+  const out = aggregateStakeRelease([
+    { kind: 'early', principal: 120n, releasedPrincipal: 20n },
+    { kind: 'locked', principal: 10n, releasedPrincipal: 10n },
+  ])
+  assert.equal(out.released, 30n)
+  assert.equal(out.pending, 100n)
+})
+
 test('locked-only keeps principal − released pending', () => {
   const out = aggregateStakeRelease([
     { kind: 'locked', principal: 100n, releasedPrincipal: 40n },

@@ -48,6 +48,8 @@ export interface BscContracts {
   lockedStaking360d: Address
   /** LockedStaking 540 天 */
   lockedStaking540d: Address
+  /** EarlyStaking——预售用户专属锁仓（手册 §8.4 EarlyStaking） */
+  earlyStaking: Address
   /** BondHelper——LP / Burn 债券一键入口（手册 §10 债券 Bond / BurnBond） */
   bondHelper: Address
   /**
@@ -132,6 +134,7 @@ export const BSC_CONTRACTS = {
   lockedStaking180d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_180D'),
   lockedStaking360d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_360D'),
   lockedStaking540d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_540D'),
+  earlyStaking: requireEnvAddress('VITE_BSC_EARLY_STAKING'),
   bondHelper: requireEnvAddress('VITE_BSC_BOND_HELPER'),
   bondingCalculator: requireEnvAddress('VITE_BSC_BONDING_CALCULATOR'),
   bondDepository180d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_180D'),

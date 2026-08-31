@@ -43,6 +43,7 @@ interface ImportMetaEnv {
   readonly VITE_BSC_LOCKED_STAKING_180D?: string
   readonly VITE_BSC_LOCKED_STAKING_360D?: string
   readonly VITE_BSC_LOCKED_STAKING_540D?: string
+  readonly VITE_BSC_EARLY_STAKING?: string
   readonly VITE_BSC_BOND_HELPER?: string
   readonly VITE_BSC_BOND_DEPOSITORY_180D?: string
   readonly VITE_BSC_BOND_DEPOSITORY_360D?: string

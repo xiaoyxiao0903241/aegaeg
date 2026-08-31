@@ -302,6 +302,7 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
   const {
     LIQUID_STAKING_ASSETS_METHODS,
     LIQUID_STAKING_METHODS,
+    EARLY_STAKING_ASSETS_METHODS,
     LOCKED_STAKING_ASSETS_METHODS,
     LOCKED_STAKING_METHODS,
   } = await loadModule('/src/web3/abis.ts')
@@ -316,6 +317,11 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
     LOCKED_STAKING_ASSETS_METHODS.getStakes,
     LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
     LOCKED_STAKING_METHODS.periodTime,
+  ])
+  const earlyAbi = parseAbi([
+    EARLY_STAKING_ASSETS_METHODS.getStake,
+    EARLY_STAKING_ASSETS_METHODS.getReleasedPrincipal,
+    EARLY_STAKING_ASSETS_METHODS.periodTime,
   ])
   const ZERO = '0x0000000000000000000000000000000000000000'
   const calls = []
@@ -359,7 +365,17 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
             },
           ]
         }
+        if (request.functionName === 'getStake') {
+          return {
+            pending: 0n,
+            blockReward: 0n,
+            extraInterest: 0n,
+            claimableBalance: 0n,
+            expiry: 0n,
+          }
+        }
         if (request.functionName === 'getReleasedPrincipal') {
+          if (request.args.length < 2) return 0n
           return BigInt(Number(request.args[1]) + 1)
         }
         if (request.functionName === 'periodTime') return 180n * 86_400n
@@ -369,6 +385,7 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
         parseAbi(['function migratedFrom(address account) view returns (address)']),
         liquidAbi,
         lockedAbi,
+        earlyAbi,
       ],
     ),
   }
@@ -378,9 +395,78 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
   assert.equal(rows[0].releasedPrincipal, 1n)
   assert.equal(rows[1].releasedPrincipal, 3n)
   assert.ok(calls.includes('getStakes'))
-  assert.ok(!calls.includes('getStake'))
+  assert.equal(calls.filter((name) => name === 'getStake').length, 1)
   assert.equal(calls.filter((name) => name === 'getStakes').length, 1)
   assert.equal(countCalls, 3)
+})
+
+test('readStakePositions includes EarlyStaking when pending > 0', async () => {
+  const { readStakePositions } = await loadModule('/src/web3/assets/assets-read.ts')
+  const {
+    LIQUID_STAKING_ASSETS_METHODS,
+    LIQUID_STAKING_METHODS,
+    EARLY_STAKING_ASSETS_METHODS,
+    LOCKED_STAKING_ASSETS_METHODS,
+    LOCKED_STAKING_METHODS,
+  } = await loadModule('/src/web3/abis.ts')
+  const liquidAbi = parseAbi([
+    LIQUID_STAKING_ASSETS_METHODS.stakes,
+    LIQUID_STAKING_ASSETS_METHODS.warmupStakes,
+    LIQUID_STAKING_ASSETS_METHODS.getStakeRewards,
+    LIQUID_STAKING_METHODS.isWarmupExpired,
+  ])
+  const lockedAbi = parseAbi([
+    LOCKED_STAKING_ASSETS_METHODS.getStakesCount,
+    LOCKED_STAKING_ASSETS_METHODS.getStakes,
+    LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
+    LOCKED_STAKING_METHODS.periodTime,
+  ])
+  const earlyAbi = parseAbi([
+    EARLY_STAKING_ASSETS_METHODS.getStake,
+    EARLY_STAKING_ASSETS_METHODS.getReleasedPrincipal,
+    EARLY_STAKING_ASSETS_METHODS.periodTime,
+  ])
+  const ZERO = '0x0000000000000000000000000000000000000000'
+  const client = {
+    readContract: withAggregate3(
+      async (request) => {
+        if (request.functionName === 'migratedFrom') return ZERO
+        if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
+        if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
+        if (request.functionName === 'getStakeRewards') return [0n, 0n]
+        if (request.functionName === 'isWarmupExpired') return true
+        if (request.functionName === 'getStakesCount') return 0n
+        if (request.functionName === 'getStake') {
+          return {
+            pending: 120_520_756_883n,
+            blockReward: 0n,
+            extraInterest: 0n,
+            claimableBalance: 96_416_605n,
+            expiry: 1_819_249_368n,
+          }
+        }
+        if (request.functionName === 'getReleasedPrincipal') return 96_416_605n
+        if (request.functionName === 'periodTime') return 31_104_000n
+        throw new Error(`unexpected ${request.functionName}`)
+      },
+      [
+        parseAbi(['function migratedFrom(address account) view returns (address)']),
+        liquidAbi,
+        lockedAbi,
+        earlyAbi,
+      ],
+    ),
+  }
+
+  const rows = await withBscReadClient(client, () => readStakePositions(USER))
+  assert.equal(rows.length, 1)
+  assert.equal(rows[0].kind, 'early')
+  assert.equal(rows[0].period, 'early')
+  assert.equal(rows[0].stakeIndex, null)
+  assert.equal(rows[0].principal, 120_520_756_883n)
+  assert.equal(rows[0].claimableBalance, 96_416_605n)
+  assert.equal(rows[0].releasedPrincipal, 96_416_605n)
+  assert.equal(rows[0].periodTime, 31_104_000n)
 })
 
 test('readLpBondPositions: getBondCount + one aggregate3 for all occupied pools (not 3N)', async () => {

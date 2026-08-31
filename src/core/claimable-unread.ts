@@ -98,7 +98,7 @@ function isUnixReached(at: bigint, nowSec: number): boolean {
 
 export type AssetsStakeExpiryRow = {
   id: string
-  kind: 'liquid' | 'locked'
+  kind: 'liquid' | 'locked' | 'early'
   expiry: bigint
   inWarmup?: boolean
   warmupExpired?: boolean
@@ -122,6 +122,7 @@ export type AssetsXmineExpiryInput = {
  * @param rows 资产质押仓位
  * @param nowSec 当前 unix 秒（定期倒计时用）
  * @see docs/onchain-manual/contracts/lockedstaking.md
+ * @see docs/onchain-manual/contracts/earlystaking.md
  * @see docs/onchain-manual/contracts/liquidstaking.md
  */
 export function fingerprintAssetsStakeExpiry(

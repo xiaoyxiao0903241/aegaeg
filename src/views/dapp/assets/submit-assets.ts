@@ -23,6 +23,8 @@ import {
 import {
   writeBondClaimMixed,
   writeBondRedeem,
+  writeEarlyClaimMixed,
+  writeEarlyClaimPrincipal,
   writeLiquidClaimMixed,
   writeLiquidClaimPrincipal,
   writeLockedClaimMixed,
@@ -50,6 +52,7 @@ function assertSessionMatchesCapturedAddress(
 
 export type MixedClaimTarget =
   | { source: 'liquid'; amount: bigint }
+  | { source: 'early'; amount: bigint }
   | {
       source: 'locked'
       pool: Address
@@ -68,6 +71,7 @@ export type MixedClaimTarget =
 /** 单次读快照目标（定期需带 extra 以区分普通 / 额外可领余额）。 */
 type MixedClaimReadTarget =
   | { source: 'liquid' }
+  | { source: 'early' }
   | {
       source: 'locked'
       pool: Address
@@ -172,6 +176,16 @@ export async function submitMixedClaim(args: {
           })
           return
         }
+        if (readTarget.source === 'early') {
+          await writeEarlyClaimMixed({
+            wallet,
+            amount,
+            releasePlanIndex,
+            restakePlanIndex,
+            restakeBps,
+          })
+          return
+        }
         await writeBondClaimMixed({
           wallet,
           depository: readTarget.depository,
@@ -215,6 +229,7 @@ export async function submitMixedClaim(args: {
  *
  * @see docs/onchain-manual/contracts/liquidstaking.md
  * @see docs/onchain-manual/contracts/lockedstaking.md
+ * @see docs/onchain-manual/contracts/earlystaking.md
  */
 export async function submitStakeRedeem(args: {
   session: WriteSession
@@ -234,6 +249,10 @@ export async function submitStakeRedeem(args: {
     write: async (live) => {
       if (row.kind === 'liquid') {
         await writeLiquidClaimPrincipal({ wallet, amount: live.amount })
+        return
+      }
+      if (row.kind === 'early') {
+        await writeEarlyClaimPrincipal({ wallet })
         return
       }
       if (row.stakeIndex == null) throw ASSETS_BLOCKED.nothingToRedeem

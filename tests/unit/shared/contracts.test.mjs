@@ -29,6 +29,7 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_LOCKED_STAKING_180D: 'lockedStaking180d',
   VITE_BSC_LOCKED_STAKING_360D: 'lockedStaking360d',
   VITE_BSC_LOCKED_STAKING_540D: 'lockedStaking540d',
+  VITE_BSC_EARLY_STAKING: 'earlyStaking',
   VITE_BSC_BOND_HELPER: 'bondHelper',
   VITE_BSC_BONDING_CALCULATOR: 'bondingCalculator',
   VITE_BSC_BOND_DEPOSITORY_180D: 'bondDepository180d',

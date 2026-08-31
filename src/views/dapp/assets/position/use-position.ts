@@ -20,6 +20,7 @@ import {
   PERSONAL_TOKEN_DIGITS,
 } from '~/core/exchange/token-amount'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
+import { lockDaysFromPeriodSec } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useBondFlowBurnLogs,
@@ -208,8 +209,14 @@ export function usePositionDock(product: AssetsProduct) {
     return formatAssetsPositionAmount(amount, decimals, quote, agxPriceUsd, unit)
   }
 
-  function formatPeriodLabel(period: string): string {
+  function formatPeriodLabel(period: string, periodTime?: bigint): string {
     if (period === 'liquid') return t.assets.position.liquid
+    if (period === 'early') {
+      const days = lockDaysFromPeriodSec(periodTime)
+      if (days == null) return t.flowOps.stake.EARLY_STAKE
+      const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
+      return `${t.flowOps.stake.EARLY_STAKE}(${days}${dayUnit})`
+    }
     return interpolate(t.assets.claim.releaseDays, { days: period })
   }
 
@@ -289,13 +296,13 @@ export function usePositionDock(product: AssetsProduct) {
   function openStakeClaim(row: AssetsStakeRow) {
     if (!address) return
     if (!isStakeRowClaimEnabled(row, GAGX_DECIMALS)) return
-    const periodLabel = formatPeriodLabel(row.period)
+    const periodLabel = formatPeriodLabel(row.period, row.periodTime)
     setClaim({ open: false })
 
-    // 活期仅普通奖励入口（手册 claimRewardMixed）；不经产出选择弹层
-    if (row.kind === 'liquid') {
+    // 活期 / Early 仅普通奖励入口（手册 claimRewardMixed）；不经产出选择弹层
+    if (row.kind === 'liquid' || row.kind === 'early') {
       const target = buildStakeMixedClaimTarget({
-        stakeKind: 'liquid',
+        stakeKind: row.kind,
         outputKind: 'reward',
         blockReward: row.blockReward,
         extraInterest: row.extraInterest,
@@ -316,7 +323,7 @@ export function usePositionDock(product: AssetsProduct) {
     const { capturedAddress, label } = claimOutput
     const row = stakeRows.find((item) => item.id === claimOutput.row.id) ?? claimOutput.row
     const built = buildStakeMixedClaimTarget({
-      stakeKind: row.kind === 'liquid' ? 'liquid' : 'locked',
+      stakeKind: row.kind === 'liquid' ? 'liquid' : row.kind === 'early' ? 'early' : 'locked',
       outputKind: kind,
       blockReward: row.blockReward,
       extraInterest: row.extraInterest,

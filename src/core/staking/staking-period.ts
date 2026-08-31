@@ -28,6 +28,27 @@ export function isStakePeriod(value: string): value is StakePeriod {
 export function isBondPeriod(value: string): value is BondPeriod {
   return (BOND_PERIODS as readonly string[]).includes(value)
 }
+
+const SECONDS_PER_DAY = 86_400
+
+/**
+ * 合约 `periodTime`（秒）→ 锁仓整天数。
+ *
+ * EarlyStaking / LockedStaking 的 periodTime 按秒；展示用整天。
+ * 非整除四舍五入。缺数、非正、无法安全转 number 为 null（不猜天数）。
+ *
+ * @param periodTime 链上 periodTime（秒）
+ * @returns 整天数；无法换算为 null
+ * @see 手册 §8.4 EarlyStaking
+ */
+export function lockDaysFromPeriodSec(periodTime: bigint | undefined): number | null {
+  if (periodTime == null || periodTime <= 0n) return null
+  const sec = Number(periodTime)
+  if (!Number.isFinite(sec) || sec <= 0) return null
+  const days = Math.round(sec / SECONDS_PER_DAY)
+  return days > 0 ? days : null
+}
+
 export type StakePoolContractKey =
   'liquidStaking' | 'lockedStaking180d' | 'lockedStaking360d' | 'lockedStaking540d'
 

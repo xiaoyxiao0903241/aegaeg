@@ -22,6 +22,7 @@ test('consumeLogPurposeKey: sign_type then contract; unknown is null', async () 
     consumeLogPurposeKey({ contract_address: BSC_CONTRACTS.lockedStaking540d.toUpperCase() }),
     'stakeYield',
   )
+  assert.equal(consumeLogPurposeKey({ contract_address: BSC_CONTRACTS.earlyStaking }), 'stakeYield')
   assert.equal(
     consumeLogPurposeKey({ contract_address: BSC_CONTRACTS.bondDepository180d }),
     'lpBondYield',

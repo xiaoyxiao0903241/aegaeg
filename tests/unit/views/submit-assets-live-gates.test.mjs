@@ -84,6 +84,38 @@ test('submitStakeRedeem fail-closed for locked row with zero released principal'
   )
 })
 
+test('submitStakeRedeem fail-closed for early row with zero released principal', async () => {
+  const { submitStakeRedeem } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+
+  const session = await moneyPathSession(async (request) => {
+    if (request.functionName === 'getReleasedPrincipal') return 0n
+    throw new Error(`unexpected ${request.functionName}`)
+  })
+
+  await assert.rejects(
+    () =>
+      submitStakeRedeem({
+        session,
+        capturedAddress: USER,
+        row: {
+          id: 'early',
+          kind: 'early',
+          period: 'early',
+          pool: '0x3B525564aF73ae22d36e7615E6330db698F80592',
+          stakeIndex: null,
+          principal: 1n,
+          releasedPrincipal: 1n,
+          blockReward: 0n,
+          extraInterest: 0n,
+          claimableBalance: 0n,
+          expiry: 0n,
+        },
+      }),
+    (err) => err === ASSETS_BLOCKED.nothingToRedeem,
+  )
+})
+
 test('submitStakeRedeem blocks liquid warmup before any chain read', async () => {
   const { submitStakeRedeem } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')

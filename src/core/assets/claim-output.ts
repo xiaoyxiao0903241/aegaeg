@@ -5,11 +5,12 @@ import { canClaimWhen } from '~/core/wallet/write-cta'
 /** 领取产出可选种类：普通奖励 / 额外加成。 */
 export type ClaimOutputKind = 'reward' | 'boost'
 
-export type StakeClaimKind = 'liquid' | 'locked'
+export type StakeClaimKind = 'liquid' | 'locked' | 'early'
 
-/** 由产出选择拼出的 Mixed 目标（活期单入口；定期带写入口列表）。 */
+/** 由产出选择拼出的 Mixed 目标（活期 / Early 单入口；定期带写入口列表）。 */
 export type BuiltStakeMixedClaimTarget =
   | { source: 'liquid'; amount: bigint }
+  | { source: 'early'; amount: bigint }
   | {
       source: 'locked'
       pool: `0x${string}`
@@ -72,7 +73,7 @@ export function liquidMixedClaimable(
 /**
  * 质押仓位「领取」是否可点。
  *
- * 预热未到期不可领；到期后只要普通收益（或定期加成）达到 0.01 即可。
+ * 活期与 Early 只看普通收益；定期加成单独可点。
  *
  * @param row 仓位收益与预热状态
  * @param decimals gAGX 精度
@@ -90,13 +91,13 @@ export function isStakeRowClaimEnabled(
 ): boolean {
   if (row.inWarmup && !row.warmupExpired) return false
   if (isAssetsActionableAmount(row.blockReward, decimals)) return true
-  return row.kind !== 'liquid' && isAssetsActionableAmount(row.extraInterest, decimals)
+  return row.kind === 'locked' && isAssetsActionableAmount(row.extraInterest, decimals)
 }
 
 /**
- * 活期 / 定期仓 → Mixed 领取目标。
+ * 活期 / Early / 定期仓 → Mixed 领取目标。
  *
- * 活期禁止加成（手册仅 `claimRewardMixed`）；定期须有 stakeIndex。
+ * 活期与 Early 禁止加成（手册仅 `claimRewardMixed`，Early 无 extraInterest）；定期须有 stakeIndex。
  * 金额低于 0.01 或非法组合返回 null。
  * `amount` 只决定能否打开确认弹窗；上链数量由提交时链上可领决定。
  */
@@ -115,6 +116,11 @@ export function buildStakeMixedClaimTarget(args: {
   if (args.stakeKind === 'liquid') {
     if (args.outputKind === 'boost') return null
     return { source: 'liquid', amount }
+  }
+
+  if (args.stakeKind === 'early') {
+    if (args.outputKind === 'boost') return null
+    return { source: 'early', amount }
   }
 
   if (args.stakeIndex == null) return null

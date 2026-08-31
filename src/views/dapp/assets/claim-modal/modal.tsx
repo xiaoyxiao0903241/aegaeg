@@ -62,9 +62,11 @@ export function AssetsClaimModal({
   const targetKey =
     held.target.source === 'liquid'
       ? 'liquid'
-      : held.target.source === 'locked'
-        ? `locked:${held.target.pool}:${held.target.stakeIndex}:${String(held.target.entries[0]?.extra === true)}`
-        : `bond:${held.target.depository}:${held.target.bondIndex}`
+      : held.target.source === 'early'
+        ? 'early'
+        : held.target.source === 'locked'
+          ? `locked:${held.target.pool}:${held.target.stakeIndex}:${String(held.target.entries[0]?.extra === true)}`
+          : `bond:${held.target.depository}:${held.target.bondIndex}`
 
   return (
     <AssetsClaimModalOpen

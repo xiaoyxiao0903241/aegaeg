@@ -28,6 +28,23 @@ test('locked sort uses expiry remaining and expiry minus periodTime', async () =
   })
 })
 
+test('early sort uses unix expiry like locked', async () => {
+  const { assetsStakeSortTimes } = await loadModule('/src/core/assets/assets-position-sort.ts')
+  const nowSec = 1_787_971_000
+  const periodTime = 360 * 86_400
+  const row = {
+    id: 'early',
+    kind: 'early',
+    expiry: BigInt(nowSec + 800),
+    periodTime: BigInt(periodTime),
+  }
+
+  assert.deepEqual(assetsStakeSortTimes(row, nowSec, clock), {
+    startAt: nowSec + 800 - periodTime,
+    remaining: 800,
+  })
+})
+
 test('locked expiry 0 is unknown, not infinite', async () => {
   const { assetsStakeSortTimes } = await loadModule('/src/core/assets/assets-position-sort.ts')
   const row = { id: 'locked-180-0', kind: 'locked', expiry: 0n, periodTime: 100n }

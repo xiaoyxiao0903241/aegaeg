@@ -414,6 +414,39 @@ export const LOCKED_STAKING_ASSETS_METHODS = {
 } as const
 
 /**
+ * EarlyStaking 领取 / 退出（资产页用）。无 index、无额外利息。
+ * @see 手册 §8.4 EarlyStaking
+ */
+export const EARLY_STAKING_ASSETS_METHODS = {
+  getStake:
+    'function getStake(address user) view returns ((uint256 pending, uint256 blockReward, uint256 extraInterest, uint256 claimableBalance, uint256 expiry))',
+  getReleasedPrincipal: 'function getReleasedPrincipal(address user) view returns (uint256)',
+  periodTime: 'function periodTime() view returns (uint256)',
+  claimPrincipal: 'function claimPrincipal()',
+  claimRewardMixed:
+    'function claimRewardMixed(uint256 amount, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+} as const
+
+/**
+ * EarlyStaking 自定义错误。
+ * @see docs/onchain-manual/contracts/earlystaking.md
+ */
+export const EARLY_STAKING_ERRORS = [
+  'error ErrorStakeNotExist()',
+  'error ErrorNoPrincipal()',
+  'error ErrorAmountExceeds()',
+  'error ErrorAmountZero()',
+  'error ErrorInsufficientBalance()',
+  'error ErrorPrincipalExceeds()',
+  'error ErrorPrincipalReleaseVaultNotSet()',
+  'error ErrorInvalidRestakeBps(uint256 restakeBps)',
+  'error ErrorInvalidRestakePlan()',
+  'error ErrorRestakeBelowMinimum(uint256 restakeBps, uint256 minRestakeBps)',
+  'error ErrorConfigNotSet()',
+  'error ErrorContributionLedgerNotSet()',
+] as const
+
+/**
  * Bond / BurnBond 市场查询（质押购买页用）。
  * @see 手册 §10 债券 Bond / BurnBond
  */

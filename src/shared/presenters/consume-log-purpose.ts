@@ -47,6 +47,7 @@ const STAKE_CONTRACTS = [
   BSC_CONTRACTS.lockedStaking180d,
   BSC_CONTRACTS.lockedStaking360d,
   BSC_CONTRACTS.lockedStaking540d,
+  BSC_CONTRACTS.earlyStaking,
   BSC_CONTRACTS.stakingPool,
 ] as const
 
