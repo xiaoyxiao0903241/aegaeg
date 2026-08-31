@@ -55,7 +55,7 @@ export function useReleaseHub() {
   const queueUnit = t.release.units.queue
   const queueReleasingLabel = formatReleaseApiOrChainLabel({
     sessionReady,
-    apiRaw: releaseApi.data?.releasing_amount,
+    apiRaw: undefined,
     chainReady,
     chainValue: queueReleasing,
     decimals: AGX_DECIMALS,
@@ -99,9 +99,7 @@ export function useReleaseHub() {
     ? `${formatTokenAmount(bufferGagxClaimable, GAGX_DECIMALS, 4)} gAGX`
     : gagxEmptyLabel
 
-  const queueReleasingNum = chainReady
-    ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS)
-    : (parseApiAmount(releaseApi.data?.releasing_amount) ?? 0)
+  const queueReleasingNum = chainReady ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS) : 0
   const queueClaimableNum = chainReady
     ? formatTokenAmountToNumber(queueClaimable, AGX_DECIMALS)
     : (parseApiAmount(apiQueueClaimableRaw) ?? 0)

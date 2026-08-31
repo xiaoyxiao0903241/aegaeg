@@ -9,6 +9,14 @@ test('queue claim gate fails closed on zero claimable', async () => {
   assert.equal(releaseClaimBlockReason({ claimable: 1n }), null)
 })
 
+test('unvested remaining is leftover minus claimable; 0 after vest completes', async () => {
+  const { unvestedRemaining } = await loadModule('/src/core/release/release-block-reasons.ts')
+  assert.equal(unvestedRemaining(100n, 40n), 60n)
+  assert.equal(unvestedRemaining(100n, 100n), 0n)
+  assert.equal(unvestedRemaining(0n, 0n), 0n)
+  assert.equal(unvestedRemaining(50n, 80n), 0n)
+})
+
 test('release progress bps is claimable / (claimable + releasing)', async () => {
   const { releaseProgressBps } = await loadModule('/src/core/release/release-block-reasons.ts')
   assert.equal(releaseProgressBps(0n, 0n), 0)

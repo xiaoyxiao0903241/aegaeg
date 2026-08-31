@@ -49,19 +49,8 @@ export function QueueDetail() {
   const api = apiSummaryQuery.data
   const chainReady = walletReady && queueQuery.data != null
 
-  function parseApiOrChain(apiRaw: string | undefined, chain: bigint): number {
-    if (chainReady) return formatTokenAmountToNumber(chain, AGX_DECIMALS)
-    if (sessionReady) {
-      const n = parseApiAmount(apiRaw)
-      if (n != null) return n
-    }
-    return 0
-  }
-
   function formatReleasingLabel(): string {
     if (chainReady) return `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}`
-    const n = sessionReady ? parseApiAmount(api?.releasing_amount) : null
-    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
     return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 
@@ -83,7 +72,7 @@ export function QueueDetail() {
     return `${formatNumber(0, { digits: 4 })} ${unit}`
   }
 
-  const releasingNum = parseApiOrChain(api?.releasing_amount, releasing)
+  const releasingNum = chainReady ? formatTokenAmountToNumber(releasing, AGX_DECIMALS) : 0
   const releasedNum = (() => {
     if (chainReady) return formatTokenAmountToNumber(claimable, AGX_DECIMALS)
     const released = sessionReady ? parseApiAmount(api?.released_amount) : null

@@ -4,6 +4,7 @@ import type { DurationPlan } from '~/core/assets/claim-plans'
 import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plans'
 import { ZERO_ADDRESS } from '~/core/constants'
 import { pickFirstClaimPage, RELEASE_CLAIM_PAGE } from '~/core/release/pick-release-claim-page'
+import { unvestedRemaining } from '~/core/release/release-block-reasons'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AEGIS_SPLITTER_MANAGER_METHODS,
@@ -49,6 +50,7 @@ export type ReleaseQueuePlanRow = {
   /** 整档已解锁合计（进度 / Hub） */
   overallClaimable: bigint
   total: bigint
+  /** 尚未线性释放（locked − claimable）；释放完成后为 0 */
   releasing: bigint
   claimStart: number
   claimLimit: number
@@ -68,6 +70,7 @@ export type ReleaseBufferTokenTotals = {
   /** 当前 50 条窗内该币待领（CTA） */
   pageClaimable: bigint
   totalRemaining: bigint
+  /** 尚未线性释放（remaining − claimable）；释放完成后为 0 */
   totalReleasing: bigint
 }
 
@@ -137,10 +140,7 @@ function addTotals(
   target.totalClaimed += claimed
   target.totalClaimable += claimable
   target.totalRemaining += remaining
-  target.totalReleasing =
-    target.totalRemaining > target.totalClaimable
-      ? target.totalRemaining - target.totalClaimable
-      : 0n
+  target.totalReleasing = unvestedRemaining(target.totalRemaining, target.totalClaimable)
 }
 
 function isSameAddress(a: string, b: string): boolean {
@@ -391,7 +391,7 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
       claimable: page?.claimable ?? 0n,
       overallClaimable,
       total,
-      releasing: total > overallClaimable ? total - overallClaimable : 0n,
+      releasing: unvestedRemaining(total, overallClaimable),
       claimStart: page?.start ?? 0,
       claimLimit: page?.limit ?? 0,
     }
