@@ -205,7 +205,7 @@ export function AssetsPositionYieldColumn({
   )
 }
 
-/** 仓位卡的领取 + 赎回 / 解锁操作按钮组，质押与债券卡共用 */
+/** 仓位卡的赎回 / 解锁 + 领取操作按钮组，质押、债券与 X 挖矿卡共用 */
 export function AssetsPositionRowActions({
   canClaim,
   canRedeem,
@@ -228,19 +228,19 @@ export function AssetsPositionRowActions({
       <MainButton
         className="h-7 min-h-7 text-xs"
         density="inverse"
-        disabled={!canClaim || busy}
-        onClick={onClaim}
-      >
-        {claimLabel}
-      </MainButton>
-      <MainButton
-        className="h-7 min-h-7 text-xs"
-        density="inverse"
         disabled={!canRedeem || busy}
         onClick={onRedeem}
         variant="secondary"
       >
         {redeemLabel}
+      </MainButton>
+      <MainButton
+        className="h-7 min-h-7 text-xs"
+        density="inverse"
+        disabled={!canClaim || busy}
+        onClick={onClaim}
+      >
+        {claimLabel}
       </MainButton>
     </div>
   )
@@ -360,7 +360,7 @@ export function AssetsListPager({
 /**
  * LP / 燃烧债券仓位卡
  *
- * 展示周期与剩余时间、本金与收益、凭证链接，底部提供领取 / 赎回操作。
+ * 展示周期与剩余时间、本金与收益、凭证链接，底部提供赎回 / 领取操作。
  */
 export function AssetsPositionBondRow({
   formatPeriodLabel,
