@@ -158,6 +158,52 @@ test('buildStakeMixedClaimTarget fail-closed on zero / missing stakeIndex', asyn
   )
 })
 
+test('buildStakeMixedClaimTarget: early reward only; boost rejected; no stakeIndex', async () => {
+  const { buildStakeMixedClaimTarget } = await loadModule('/src/core/assets/claim-output.ts')
+  assert.deepEqual(
+    buildStakeMixedClaimTarget({
+      stakeKind: 'early',
+      outputKind: 'reward',
+      blockReward: GAGX_ACTION_FLOOR * 5n,
+      extraInterest: GAGX_ACTION_FLOOR * 9n,
+      pool,
+      stakeIndex: null,
+      decimals: GAGX_DECIMALS,
+    }),
+    { source: 'early', amount: GAGX_ACTION_FLOOR * 5n },
+  )
+  assert.equal(
+    buildStakeMixedClaimTarget({
+      stakeKind: 'early',
+      outputKind: 'boost',
+      blockReward: GAGX_ACTION_FLOOR * 5n,
+      extraInterest: GAGX_ACTION_FLOOR * 9n,
+      pool,
+      stakeIndex: null,
+      decimals: GAGX_DECIMALS,
+    }),
+    null,
+  )
+})
+
+test('isStakeRowClaimEnabled: early ignores extraInterest', async () => {
+  const { isStakeRowClaimEnabled } = await loadModule('/src/core/assets/claim-output.ts')
+  assert.equal(
+    isStakeRowClaimEnabled(
+      { kind: 'early', blockReward: 0n, extraInterest: GAGX_ACTION_FLOOR },
+      GAGX_DECIMALS,
+    ),
+    false,
+  )
+  assert.equal(
+    isStakeRowClaimEnabled(
+      { kind: 'early', blockReward: GAGX_ACTION_FLOOR, extraInterest: 0n },
+      GAGX_DECIMALS,
+    ),
+    true,
+  )
+})
+
 test('evaluateAssetsClaimConfirmGate requires writeReady and contribution', async () => {
   const { evaluateAssetsClaimConfirmGate } = await loadModule('/src/core/assets/claim-output.ts')
   assert.equal(

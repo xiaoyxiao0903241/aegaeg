@@ -100,18 +100,22 @@ export function useAssetsClaimModal(args: {
         }
       : target.source === 'liquid'
         ? ({ source: 'liquid' } as const)
-        : ({
-            source: 'bond',
-            depository: target.depository,
-            bondIndex: target.bondIndex,
-          } as const)
+        : target.source === 'early'
+          ? ({ source: 'early' } as const)
+          : ({
+              source: 'bond',
+              depository: target.depository,
+              bondIndex: target.bondIndex,
+            } as const)
   const availableQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsMixedRewardAvailable(
       rewardRead.source === 'locked'
         ? `locked:${rewardRead.pool}:${rewardRead.stakeIndex}:${String(rewardRead.extra)}`
         : rewardRead.source === 'liquid'
           ? 'liquid'
-          : `bond:${rewardRead.depository}:${rewardRead.bondIndex}`,
+          : rewardRead.source === 'early'
+            ? 'early'
+            : `bond:${rewardRead.depository}:${rewardRead.bondIndex}`,
     ),
     queryFn: (address) => readMixedRewardAvailable(rewardRead, address as Address),
     enabled: open && Boolean(account?.address),

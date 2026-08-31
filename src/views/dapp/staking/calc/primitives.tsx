@@ -7,6 +7,8 @@ import { useRef } from 'react'
 
 import {
   CALC_SLIDER_MIN_DAY,
+  calcSliderCaptionVis,
+  calcSliderDayFromRatio,
   calcSliderPct,
   showCalcSliderTrackDay,
   snapCalcSliderDay,
@@ -68,10 +70,10 @@ export function CalcHtabRow<T extends string>({
   )
 }
 
-function dayFromPointer(clientX: number, track: HTMLElement, min: number, max: number): number {
-  const rect = track.getBoundingClientRect()
+function dayFromPointer(clientX: number, inner: HTMLElement, min: number, max: number): number {
+  const rect = inner.getBoundingClientRect()
   const ratio = (clientX - rect.left) / Math.max(1, rect.width)
-  return Math.round(Math.min(1, Math.max(0, ratio)) * (max - min) + min)
+  return calcSliderDayFromRatio(ratio, max, min)
 }
 
 /** 半个手柄宽：两端边缘对齐时把 thumb 收进轨道里。 */
@@ -80,8 +82,9 @@ const THUMB_HALF = '1.4375rem'
 /**
  * 测算天数滑杆
  *
- * 轴为 1…max（540 时 180 约在 1/3）。轨上标 1、到期日、最大天；
- * 轨下短竖线接住「正收益 / N天到期」。手柄两端贴齐轨道边缘。
+ * 轴为 1…max。两端各留半个手柄宽，不参与进度；
+ * 第 1 天对准手柄中线的左端行程，最大天对准右端行程。
+ * 贴边的「正收益」只画短竖线，不写字。
  *
  * @param ariaLabel 滑杆无障碍标签
  * @param breakEvenDay 正收益日
@@ -111,30 +114,50 @@ export function CalcDaySlider({
   onChange: (day: number) => void
   value: number
 }) {
-  const trackRef = useRef<HTMLDivElement>(null)
+  const innerRef = useRef<HTMLDivElement>(null)
   const min = CALC_SLIDER_MIN_DAY
   const marks = { minDay: min, maxDay: max, maturityDay, breakEvenDay }
   const clamped = Math.min(max, Math.max(min, Math.round(value)))
   const thumbPct = calcSliderPct(clamped, max, min)
-  const fillPct = thumbPct
+  const fillWidth = `calc(${THUMB_HALF} + (100% - 2 * ${THUMB_HALF}) * ${thumbPct / 100})`
   const showMin = Math.abs(clamped - min) > 8
   const showMax = Math.abs(clamped - max) > 8
   const midDays = [breakEvenDay, maturityDay].filter(
     (day, index, all): day is number =>
       day != null && all.indexOf(day) === index && showCalcSliderTrackDay(day, max, clamped, min),
   )
-  const captions: Array<{ key: string; day: number; label: string }> = []
+  const captions: Array<{
+    key: string
+    day: number
+    label: string
+    tick: boolean
+    showLabel: boolean
+  }> = []
   if (breakEvenDay != null && breakEvenDay > min && breakEvenDay < max) {
-    captions.push({ key: 'break-even', day: breakEvenDay, label: breakEvenLabel })
+    const vis = calcSliderCaptionVis(breakEvenDay, max, clamped, min)
+    captions.push({
+      key: 'break-even',
+      day: breakEvenDay,
+      label: breakEvenLabel,
+      tick: vis.tick,
+      showLabel: vis.label,
+    })
   }
   if (maturityDay != null && maturityLabel) {
-    captions.push({ key: 'maturity', day: maturityDay, label: maturityLabel })
+    const vis = calcSliderCaptionVis(maturityDay, max, clamped, min)
+    captions.push({
+      key: 'maturity',
+      day: maturityDay,
+      label: maturityLabel,
+      tick: vis.tick,
+      showLabel: vis.label,
+    })
   }
 
   function commitFromClientX(clientX: number) {
-    const track = trackRef.current
-    if (track == null) return
-    onChange(snapCalcSliderDay(dayFromPointer(clientX, track, min, max), marks))
+    const inner = innerRef.current
+    if (inner == null) return
+    onChange(snapCalcSliderDay(dayFromPointer(clientX, inner, min, max), marks))
   }
 
   return (
@@ -169,20 +192,23 @@ export function CalcDaySlider({
           if (!event.currentTarget.hasPointerCapture(event.pointerId)) return
           commitFromClientX(event.clientX)
         }}
-        ref={trackRef}
         role="slider"
         tabIndex={0}
       >
         <div className="absolute inset-0 overflow-hidden rounded-full bg-muted">
-          <div className="h-full bg-coral-emphasis" style={{ width: `${fillPct}%` }} />
+          <div className="h-full bg-coral-emphasis" style={{ width: fillWidth }} />
         </div>
-        <div className="pointer-events-none absolute inset-0">
+        <div
+          className="pointer-events-none absolute inset-y-0"
+          ref={innerRef}
+          style={{ left: THUMB_HALF, right: THUMB_HALF }}
+        >
           {showMin ? (
             <Text
               as="span"
               className={cn(
-                'absolute top-1/2 left-3 -translate-y-1/2 font-bold tabular-nums',
-                fillPct > 9 ? 'text-primary-foreground' : 'text-coral-emphasis',
+                'absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 font-bold tabular-nums',
+                thumbPct > 9 ? 'text-primary-foreground' : 'text-coral-emphasis',
               )}
               variant="copy"
             >
@@ -194,7 +220,7 @@ export function CalcDaySlider({
               as="span"
               className={cn(
                 'absolute top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold tabular-nums',
-                fillPct >= calcSliderPct(day, max, min)
+                thumbPct >= calcSliderPct(day, max, min)
                   ? 'text-primary-foreground'
                   : 'text-foreground/40',
               )}
@@ -209,47 +235,56 @@ export function CalcDaySlider({
             <Text
               as="span"
               className={cn(
-                'absolute top-1/2 right-3 -translate-y-1/2 font-bold tabular-nums',
-                fillPct > 93 ? 'text-primary-foreground' : 'text-coral-emphasis',
+                'absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 font-bold tabular-nums',
+                thumbPct > 93 ? 'text-primary-foreground' : 'text-coral-emphasis',
               )}
               variant="copy"
             >
               {max}
             </Text>
           ) : null}
-        </div>
-        <div
-          className={cn(
-            'pointer-events-none absolute top-1/2 z-10 flex min-h-7.5 min-w-11.5 -translate-x-1/2 -translate-y-1/2',
-            'items-center justify-center rounded-full border-2 border-coral-emphasis bg-card px-2.5 py-2 shadow-sm',
-          )}
-          style={{ left: `clamp(${THUMB_HALF}, ${thumbPct}%, calc(100% - ${THUMB_HALF}))` }}
-        >
-          <Text
-            as="span"
-            className="leading-none font-bold text-coral-emphasis tabular-nums"
-            variant="copy"
+          <div
+            className={cn(
+              'absolute top-1/2 z-10 flex min-h-7.5 min-w-11.5 -translate-x-1/2 -translate-y-1/2',
+              'items-center justify-center rounded-full border-2 border-coral-emphasis bg-card px-2.5 py-2 shadow-sm',
+            )}
+            style={{ left: `${thumbPct}%` }}
           >
-            {clamped}
-          </Text>
+            <Text
+              as="span"
+              className="leading-none font-bold text-coral-emphasis tabular-nums"
+              variant="copy"
+            >
+              {clamped}
+            </Text>
+          </div>
         </div>
       </div>
-      {captions.map((caption) => (
-        <div
-          className="absolute top-7.5 flex -translate-x-1/2 flex-col items-center"
-          key={caption.key}
-          style={{ left: `${calcSliderPct(caption.day, max, min)}%` }}
-        >
-          <span aria-hidden className="block h-1.5 w-0.5 bg-coral-emphasis" />
-          <Text
-            as="span"
-            className="font-semibold whitespace-nowrap text-coral-emphasis tabular-nums"
-            variant="caption"
-          >
-            {caption.label}
-          </Text>
-        </div>
-      ))}
+      <div
+        className="pointer-events-none absolute top-7.5"
+        style={{ left: THUMB_HALF, right: THUMB_HALF }}
+      >
+        {captions.map((caption) =>
+          caption.tick ? (
+            <div
+              className="absolute flex -translate-x-1/2 flex-col items-center"
+              key={caption.key}
+              style={{ left: `${calcSliderPct(caption.day, max, min)}%` }}
+            >
+              <span aria-hidden className="block h-1.5 w-0.5 bg-coral-emphasis" />
+              {caption.showLabel ? (
+                <Text
+                  as="span"
+                  className="font-semibold whitespace-nowrap text-coral-emphasis tabular-nums"
+                  variant="caption"
+                >
+                  {caption.label}
+                </Text>
+              ) : null}
+            </div>
+          ) : null,
+        )}
+      </div>
     </div>
   )
 }

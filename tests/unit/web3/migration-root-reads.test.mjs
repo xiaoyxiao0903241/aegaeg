@@ -25,6 +25,9 @@ const migrationAwareAbi = parseAbi([
   'function status() view returns (bool)',
   'function singleAddressLimit() view returns (uint256)',
   'function getStakesCount(address user) view returns (uint256)',
+  'function getStake(address user) view returns ((uint256 pending, uint256 blockReward, uint256 extraInterest, uint256 claimableBalance, uint256 expiry))',
+  'function getReleasedPrincipal(address user) view returns (uint256)',
+  'function periodTime() view returns (uint256)',
 ])
 
 function resolveMigrationAware(fn, arg0, opts) {
@@ -56,6 +59,17 @@ function resolveMigrationAware(fn, arg0, opts) {
   if (fn === 'status') return true
   if (fn === 'singleAddressLimit') return 0n
   if (fn === 'getStakesCount') return 0n
+  if (fn === 'getStake') {
+    return {
+      pending: 0n,
+      blockReward: 0n,
+      extraInterest: 0n,
+      claimableBalance: 0n,
+      expiry: 0n,
+    }
+  }
+  if (fn === 'getReleasedPrincipal') return 0n
+  if (fn === 'periodTime') return 0n
   throw new Error(`unexpected ${fn}`)
 }
 

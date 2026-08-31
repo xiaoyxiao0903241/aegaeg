@@ -5,6 +5,7 @@
  * 活期已激活剩余为 0；预热剩余按 expiry epoch 估秒。活期开始用 startEpoch 换算。
  *
  * @see docs/onchain-manual/contracts/lockedstaking.md
+ * @see docs/onchain-manual/contracts/earlystaking.md
  * @see docs/onchain-manual/contracts/liquidstaking.md
  * @see docs/onchain-manual/contracts/bonddepository.md
  */
@@ -26,7 +27,7 @@ export type AssetsPositionSortTimes = {
 
 export type AssetsStakeSortInput = {
   id: string
-  kind: 'liquid' | 'locked'
+  kind: 'liquid' | 'locked' | 'early'
   expiry: bigint
   startEpoch?: bigint
   periodTime?: bigint
@@ -113,7 +114,7 @@ function remainingSecFromExpiryEpoch(
 /**
  * 质押行排序键。
  *
- * @param row 资产质押行（定期带 periodTime；活期带 startEpoch）
+ * @param row 资产质押行（定期 / Early 带 periodTime；活期带 startEpoch）
  * @param nowSec 当前 Unix 秒
  * @param clock 活期换算用的 epoch 钟；缺则活期开始 / 预热剩余为未知
  */
@@ -122,7 +123,7 @@ export function assetsStakeSortTimes(
   nowSec: number,
   clock: AssetsSortEpochClock | null,
 ): AssetsPositionSortTimes {
-  if (row.kind === 'locked') {
+  if (row.kind !== 'liquid') {
     return unixLockSortTimes(row.expiry, row.periodTime, nowSec)
   }
 

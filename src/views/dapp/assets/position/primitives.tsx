@@ -37,7 +37,7 @@ export type AssetsPositionRowFrameProps<TRow> = {
   row: TRow
   quote: 'agx' | 'usd'
   busy: boolean
-  formatPeriodLabel: (period: string) => string
+  formatPeriodLabel: (period: string, periodTime?: bigint) => string
   /** AGX/gAGX → 文案；quote=usd 时用缓存价换 `$…` */
   formatAmount: (amount: bigint, decimals: number, unit: 'AGX' | 'gAGX') => string
   onClaim: (row: TRow) => void
@@ -452,8 +452,8 @@ export function AssetsPositionStakeRow(
         row.kind === 'liquid' ? row.principal : row.claimableBalance,
         ASSETS_POSITION_AGX_DECIMALS,
       )
-  const periodLabel = formatPeriodLabel(row.period)
-  const voucherAddress = row.kind === 'locked' && row.pool ? row.pool : null
+  const periodLabel = formatPeriodLabel(row.period, row.periodTime)
+  const voucherAddress = row.kind !== 'liquid' && row.pool ? row.pool : null
   const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
   const epochClock = props.epochClock
 

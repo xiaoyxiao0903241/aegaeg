@@ -100,6 +100,7 @@ const BUFFER_AGX_CONTRACTS = [
   BSC_CONTRACTS.lockedStaking180d,
   BSC_CONTRACTS.lockedStaking360d,
   BSC_CONTRACTS.lockedStaking540d,
+  BSC_CONTRACTS.earlyStaking,
   BSC_CONTRACTS.bondDepository180d,
   BSC_CONTRACTS.bondDepository360d,
   BSC_CONTRACTS.bondDepository540d,

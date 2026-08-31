@@ -133,6 +133,10 @@ test('fingerprintAssetsStakeExpiry: locked clock and liquid warmup only', async 
     ),
     'liquid-warmup:12',
   )
+  assert.equal(
+    fingerprintAssetsStakeExpiry([{ id: 'early', kind: 'early', expiry: 1_000n }], nowSec),
+    'early:1000',
+  )
 })
 
 test('fingerprintAssetsBondExpiry ignores drip before vesting end', async () => {

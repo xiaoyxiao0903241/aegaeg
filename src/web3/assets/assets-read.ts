@@ -10,6 +10,7 @@ import {
   AGX_CONTRIBUTION_SWAP_METHODS,
   BOND_DEPOSITORY_ASSETS_METHODS,
   BOND_DEPOSITORY_MARKET_METHODS,
+  EARLY_STAKING_ASSETS_METHODS,
   LIQUID_STAKING_ASSETS_METHODS,
   LIQUID_STAKING_METHODS,
   LOCKED_STAKING_ASSETS_METHODS,
@@ -50,6 +51,11 @@ const lockedAbi = parseAbi([
   LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
   LOCKED_STAKING_METHODS.periodTime,
 ])
+const earlyAbi = parseAbi([
+  EARLY_STAKING_ASSETS_METHODS.getStake,
+  EARLY_STAKING_ASSETS_METHODS.getReleasedPrincipal,
+  EARLY_STAKING_ASSETS_METHODS.periodTime,
+])
 const bondAbi = parseAbi([
   BOND_DEPOSITORY_ASSETS_METHODS.getBondCount,
   BOND_DEPOSITORY_ASSETS_METHODS.getBondInfo,
@@ -66,8 +72,8 @@ const xmineAbi = parseAbi([
 
 export type AssetsStakeRow = {
   id: string
-  kind: 'liquid' | 'locked'
-  period: StakePeriod
+  kind: 'liquid' | 'locked' | 'early'
+  period: StakePeriod | 'early'
   pool: Address
   stakeIndex: number | null
   principal: bigint
@@ -264,16 +270,18 @@ export async function readContributionSnapshot(
 }
 
 /**
- * 读取用户全部质押仓位（活期 + 180/360/540 定期）。
+ * 读取用户全部质押仓位（活期 + 180/360/540 定期 + EarlyStaking）。
  *
  * 活期含 warmup 仓；定期先按 getStakesCount 判断，空仓跳过不调 getStakes。
  * 非空池的 getStakes 与 getReleasedPrincipal 合并为一次 Multicall3。
+ * Early 每用户至多 1 仓，getStake / getReleasedPrincipal / periodTime 一次 Multicall3。
  * 仅返回有余额的仓位。
  *
  * @param user 钱包地址
  * @returns 资产页质押行数组，无仓位时为空数组
  * @see 手册 §8.2 活期 LiquidStaking
  * @see 手册 §8.3 定期 LockedStaking
+ * @see 手册 §8.4 EarlyStaking
  */
 export async function readStakePositions(user: Address): Promise<AssetsStakeRow[]> {
   const rows: AssetsStakeRow[] = []
@@ -388,6 +396,75 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
       claimableBalance: 0n,
       expiry,
       startEpoch,
+    })
+  }
+
+  const earlyPool = BSC_CONTRACTS.earlyStaking
+  const earlyResults = await readAggregate3([
+    {
+      target: earlyPool,
+      callData: encodeFunctionData({
+        abi: earlyAbi,
+        functionName: 'getStake',
+        args: [user],
+      }),
+    },
+    {
+      target: earlyPool,
+      callData: encodeFunctionData({
+        abi: earlyAbi,
+        functionName: 'getReleasedPrincipal',
+        args: [user],
+      }),
+    },
+    {
+      target: earlyPool,
+      callData: encodeFunctionData({
+        abi: earlyAbi,
+        functionName: 'periodTime',
+      }),
+    },
+  ])
+  const earlyStake = decodeAggregate3Result<{
+    pending: bigint
+    blockReward: bigint
+    extraInterest: bigint
+    claimableBalance: bigint
+    expiry: bigint
+  }>(earlyResults, 0, earlyAbi, 'getStake', 'STAKE_POSITIONS_MULTICALL_FAILED:early:getStake')
+  const earlyReleased = decodeAggregate3Result<bigint>(
+    earlyResults,
+    1,
+    earlyAbi,
+    'getReleasedPrincipal',
+    'STAKE_POSITIONS_MULTICALL_FAILED:early:released',
+  )
+  const earlyPeriodTime = decodeAggregate3Result<bigint>(
+    earlyResults,
+    2,
+    earlyAbi,
+    'periodTime',
+    'STAKE_POSITIONS_MULTICALL_FAILED:early:periodTime',
+  )
+  if (
+    earlyStake.pending > 0n ||
+    earlyStake.blockReward > 0n ||
+    earlyStake.extraInterest > 0n ||
+    earlyStake.claimableBalance > 0n
+  ) {
+    rows.push({
+      id: 'early',
+      kind: 'early',
+      period: 'early',
+      pool: earlyPool,
+      stakeIndex: null,
+      principal: earlyStake.pending,
+      releasedPrincipal: earlyReleased,
+      blockReward: earlyStake.blockReward,
+      extraInterest: 0n,
+      claimableBalance: earlyStake.claimableBalance,
+      expiry: earlyStake.expiry,
+      periodTime: earlyPeriodTime,
     })
   }
 
@@ -779,15 +856,17 @@ export async function readXminePosition(user: Address): Promise<AssetsXminePosit
  * 弹窗里的快照可能已过期，提交前用本函数复读，避免基于旧数据下单。
  * 活期在预热到期后把 warmupReward 算进可领，供 claimRewardMixed 激活并领取。
  *
- * @param target 领取来源：活期 / 定期（可选额外利息）/ 债券
+ * @param target 领取来源：活期 / Early / 定期（可选额外利息）/ 债券
  * @param user 钱包地址
  * @returns 可领取奖励金额（wei）
  * @see 手册 §9.3 Mixed 领奖前端流程
  * @see docs/onchain-manual/contracts/liquidstaking.md
+ * @see docs/onchain-manual/contracts/earlystaking.md
  */
 export async function readMixedRewardAvailable(
   target:
     | { source: 'liquid' }
+    | { source: 'early' }
     | { source: 'locked'; pool: Address; stakeIndex: number; extra?: boolean }
     | { source: 'bond'; depository: Address; bondIndex: number },
   user: Address,
@@ -809,6 +888,17 @@ export async function readMixedRewardAvailable(
       args: [user],
     })
     return liquidMixedClaimable(warmupReward, activeReward, Boolean(warmupExpired))
+  }
+
+  if (target.source === 'early') {
+    const stake = await bscReadClient.readContract({
+      address: BSC_CONTRACTS.earlyStaking,
+      abi: earlyAbi,
+      functionName: 'getStake',
+      args: [user],
+    })
+    const data = stake as { blockReward: bigint }
+    return data.blockReward
   }
 
   if (target.source === 'locked') {
@@ -834,12 +924,13 @@ export async function readMixedRewardAvailable(
 /**
  * 读取质押行当前可赎回本金。
  *
- * 活期按迁移 root 查裸 mapping；定期读 getReleasedPrincipal。
+ * 活期按迁移 root 查裸 mapping；定期 / Early 读 getReleasedPrincipal。
  *
  * @param row 资产页质押行
  * @param user 钱包地址
  * @returns 可赎回本金（wei）；无仓位返回 0n
  * @see 手册 §13 PrincipalReleaseVault 本金释放
+ * @see 手册 §8.4 EarlyStaking
  */
 export async function readStakeRedeemableAmount(
   row: AssetsStakeRow,
@@ -863,6 +954,16 @@ export async function readStakeRedeemableAmount(
       boolean,
     ]
     return exists ? principal : 0n
+  }
+
+  if (row.kind === 'early') {
+    const released = await bscReadClient.readContract({
+      address: row.pool,
+      abi: earlyAbi,
+      functionName: 'getReleasedPrincipal',
+      args: [user],
+    })
+    return released as bigint
   }
 
   if (row.stakeIndex == null) return 0n

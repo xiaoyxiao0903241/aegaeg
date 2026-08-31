@@ -4,6 +4,8 @@ import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_ASSETS_METHODS,
   BOND_DEPOSITORY_ERRORS,
+  EARLY_STAKING_ASSETS_METHODS,
+  EARLY_STAKING_ERRORS,
   LIQUID_STAKING_ASSETS_METHODS,
   LIQUID_STAKING_ERRORS,
   LOCKED_STAKING_ASSETS_METHODS,
@@ -32,6 +34,14 @@ const lockedClaimExtraAbi = parseWriteAbi(
 const lockedClaimPrincipalAbi = parseWriteAbi(
   LOCKED_STAKING_ASSETS_METHODS.claimPrincipal,
   LOCKED_STAKING_ERRORS,
+)
+const earlyClaimMixedAbi = parseWriteAbi(
+  EARLY_STAKING_ASSETS_METHODS.claimRewardMixed,
+  EARLY_STAKING_ERRORS,
+)
+const earlyClaimPrincipalAbi = parseWriteAbi(
+  EARLY_STAKING_ASSETS_METHODS.claimPrincipal,
+  EARLY_STAKING_ERRORS,
 )
 const bondClaimMixedAbi = parseWriteAbi(
   BOND_DEPOSITORY_ASSETS_METHODS.claimStakeProfitMixed,
@@ -152,6 +162,53 @@ export async function writeLockedClaimPrincipal(args: {
     abi: lockedClaimPrincipalAbi,
     functionName: 'claimPrincipal',
     args: [BigInt(args.stakeIndex)],
+  })
+}
+
+/**
+ * EarlyStaking 奖励 Mixed 领取（claimRewardMixed）。无 index、无额外利息入口。
+ *
+ * @param args.wallet 钱包
+ * @param args.amount 领取金额（wei）
+ * @param args.releasePlanIndex 释放计划 index
+ * @param args.restakePlanIndex 复投计划 index
+ * @param args.restakeBps 复投比例（0–10000）
+ * @see 手册 §8.4 EarlyStaking
+ */
+export async function writeEarlyClaimMixed(args: {
+  wallet: Wallet
+  amount: bigint
+  releasePlanIndex: number
+  restakePlanIndex: number
+  restakeBps: number
+}) {
+  return writeContractViaWallet({
+    wallet: args.wallet,
+    address: BSC_CONTRACTS.earlyStaking,
+    abi: earlyClaimMixedAbi,
+    functionName: 'claimRewardMixed',
+    args: [
+      args.amount,
+      args.releasePlanIndex,
+      BigInt(args.restakePlanIndex),
+      BigInt(args.restakeBps),
+    ],
+  })
+}
+
+/**
+ * EarlyStaking 本金领取（claimPrincipal）。无 index；已释放本金进分流器。
+ *
+ * @param args.wallet 钱包
+ * @see 手册 §8.4 EarlyStaking
+ */
+export async function writeEarlyClaimPrincipal(args: { wallet: Wallet }) {
+  return writeContractViaWallet({
+    wallet: args.wallet,
+    address: BSC_CONTRACTS.earlyStaking,
+    abi: earlyClaimPrincipalAbi,
+    functionName: 'claimPrincipal',
+    args: [],
   })
 }
 

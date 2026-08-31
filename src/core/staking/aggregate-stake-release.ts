@@ -8,7 +8,7 @@
  */
 
 export type StakeReleaseRow = {
-  kind: 'liquid' | 'locked'
+  kind: 'liquid' | 'locked' | 'early'
   principal: bigint
   releasedPrincipal: bigint
 }
@@ -20,6 +20,8 @@ export type StakeReleaseAggregate = {
 
 /**
  * 聚合已释放与待释放本金；跳过 liquid 行。
+ *
+ * Early 与定期一样走线性释放，计入已释放 / 待释放。
  */
 export function aggregateStakeRelease(rows: ReadonlyArray<StakeReleaseRow>): StakeReleaseAggregate {
   let released = 0n
