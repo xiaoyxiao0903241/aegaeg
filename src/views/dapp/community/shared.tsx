@@ -5,32 +5,28 @@ import { ExplorerLink } from '~/shared/components/explorer-link'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
   formatApiDateTime,
+  formatMakingRankLabel,
   formatNumber,
   formatShortAddress,
-  formatTableGenesisRank,
+  TABLE_EMPTY,
 } from '~/shared/presenters/format'
 
 /**
  * 把团队邀请项映射为表格行
  *
- * 按列序输出注册时间、地址、持仓、等级、直邀数与团队业绩；
- * 数字空结果显示 0（不用「—」）。
+ * 列序：注册时间、地址、持仓 USD、做市等级、直邀数、团队业绩 USD。
+ *
+ * @param item `/team/referrals` 直推项
+ * @see docs/backend-api/api.md #team/referrals
  */
 export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[] {
-  const volume = Number(item.presale_volume)
-  const teamMarket = Number(item.sales_team_market)
-
   return [
     formatApiDateTime(item.register_time),
     <ExplorerLink key={item.address} shortOptions={{ head: 4, tail: 4 }} value={item.address} />,
-    Number.isFinite(volume)
-      ? formatNumber(volume, { prefix: '$' })
-      : formatNumber(0, { prefix: '$' }),
-    formatTableGenesisRank(item.presale_rank),
+    formatNumber(item.active_stake_balance_usd ?? 0, { prefix: '$' }),
+    formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
     formatNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
-    Number.isFinite(teamMarket)
-      ? formatNumber(teamMarket, { digits: 0, trimZeros: true, prefix: '$' })
-      : formatNumber(0, { digits: 0, trimZeros: true, prefix: '$' }),
+    formatNumber(item.making_market_usd ?? 0, { digits: 0, trimZeros: true, prefix: '$' }),
   ]
 }
 

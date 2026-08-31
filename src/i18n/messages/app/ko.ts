@@ -995,7 +995,6 @@ const app = defineMessages({
     detail: {
       claimable: '수령 대기',
       emptyClaimable: '수령 가능한 리워드가 없습니다.',
-      signedAmountHint: '수령 가능 금액은 서명 페이로드 기준입니다',
       usdLabel: 'USD',
     },
 
@@ -1040,9 +1039,9 @@ const app = defineMessages({
       cumulativeWins: '누적 당첨',
       winsCount: '{count}회',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 검증 가능 랜덤 추첨',
+      vrfTitle: 'Chainlink VRF v2.5 검증 가능 랜덤 추첨',
       vrfBody:
-        '럭키 리워드는 Chainlink VRF v2(검증 가능 랜덤 함수)와 스테이킹 컨트랙트를 결합해 추첨합니다. 난수는 Chainlink 오라클이 온체인에서 생성하고 암호 증명을 붙이며, 스테이킹 컨트랙트가 난수를 받아 당일 추첨 명단에서 행운 사용자 10명을 자동 선정합니다. 전 과정에 인위 개입이 없고 결과를 위조할 수 없으며, 누구나 온체인에서 검증할 수 있습니다.',
+        '럭키 리워드는 Chainlink VRF v2.5(검증 가능 랜덤 함수)와 스테이킹 컨트랙트를 결합해 추첨합니다. 난수는 Chainlink 오라클이 온체인에서 생성하고 암호 증명을 붙이며, 스테이킹 컨트랙트가 난수를 받아 당일 추첨 명단에서 행운 사용자 10명을 자동 선정합니다. 전 과정에 인위 개입이 없고 결과를 위조할 수 없으며, 누구나 온체인에서 검증할 수 있습니다.',
       verifyTutorial: '검증 튜토리얼',
       collapseTutorial: '가이드 접기',
       vrfGuideStep1:
@@ -1072,7 +1071,7 @@ const app = defineMessages({
           },
           {
             q: '추첨은 어떻게 개봉하나요?',
-            a: '매일 00:00(UTC)에 Chainlink VRF v2가 온체인 검증 가능 난수를 생성하고, 스테이킹 컨트랙트가 당일 전체 자격 명단에서 행운 사용자 최대 10명을 자동 선정해 상금 풀을 나눕니다(일일 풀 목표 ≥ $5,000). 전 과정에 인위 개입이 없습니다.',
+            a: '매일 00:00(UTC)에 Chainlink VRF v2.5가 온체인 검증 가능 난수를 생성하고, 스테이킹 컨트랙트가 당일 전체 자격 명단에서 행운 사용자 최대 10명을 자동 선정해 상금 풀을 나눕니다(일일 풀 목표 ≥ $5,000). 전 과정에 인위 개입이 없습니다.',
           },
           {
             q: '추첨 결과의 공정성은 어떻게 검증하나요?',
@@ -1443,6 +1442,7 @@ const app = defineMessages({
     myTeam: '커뮤니티 인원',
     genesisTitle: '현재',
     cobuildLevel: '공동 구축 등급',
+    makingLevel: '마켓 메이킹 등급',
     inviteTitle: '초대 시작 · 생태계 성장 가치 공유',
     programs: {
       title: '생태계 지원 프로그램',
@@ -1928,7 +1928,6 @@ const app = defineMessages({
     body: '스테이킹과 채권으로 공동 구축 — Rebase 복리 성장 공유',
     backToHub: '스테이킹으로 돌아가기',
     max: '최대',
-    capUnlimited: '무제한',
     blocked: {
       notBound: '먼저 추천 관계를 바인딩해 주세요',
       accountMigrated: '해당 주소는 이전되었습니다 — 새 주소로 조작해 주세요',

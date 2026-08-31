@@ -9,7 +9,7 @@ import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 
 function Root({ children }: { children: ReactNode }) {
-  return <span className="flex items-center gap-2.5">{children}</span>
+  return <span className="flex shrink-0 items-center gap-2.5">{children}</span>
 }
 
 function Token({ iconSrc, symbol }: { iconSrc: string; symbol: string }) {

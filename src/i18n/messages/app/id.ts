@@ -1033,7 +1033,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Dapat diklaim',
       emptyClaimable: 'Tidak ada hadiah yang dapat diklaim.',
-      signedAmountHint: 'Jumlah yang dapat diklaim mengikuti payload bertanda tangan',
       usdLabel: 'USD',
     },
 
@@ -1079,9 +1078,9 @@ const app = defineMessages({
       cumulativeWins: 'Total kemenangan',
       winsCount: '{count} kali',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Keacakan terverifikasi Chainlink VRF v2',
+      vrfTitle: 'Keacakan terverifikasi Chainlink VRF v2.5',
       vrfBody:
-        'Lucky draw memakai Chainlink VRF v2 dengan kontrak staking: randomness dihasilkan on-chain dengan bukti kriptografi, lalu pemenang dipilih dari daftar kelayakan hari itu. Tanpa intervensi manusia; siapa pun dapat memverifikasi on-chain.',
+        'Lucky draw memakai Chainlink VRF v2.5 dengan kontrak staking: randomness dihasilkan on-chain dengan bukti kriptografi, lalu pemenang dipilih dari daftar kelayakan hari itu. Tanpa intervensi manusia; siapa pun dapat memverifikasi on-chain.',
       verifyTutorial: 'Panduan verifikasi',
       collapseTutorial: 'Tutup panduan',
       vrfGuideStep1:
@@ -1111,7 +1110,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana undian diselesaikan?',
-            a: 'Pada 00:00 UTC, Chainlink VRF v2 menghasilkan randomness yang dapat diverifikasi; kontrak memilih hingga 10 pemenang dari daftar hari itu untuk berbagi pool (target pool harian ≥ $5,000).',
+            a: 'Pada 00:00 UTC, Chainlink VRF v2.5 menghasilkan randomness yang dapat diverifikasi; kontrak memilih hingga 10 pemenang dari daftar hari itu untuk berbagi pool (target pool harian ≥ $5,000).',
           },
           {
             q: 'Bagaimana memverifikasi keadilan?',
@@ -1493,6 +1492,7 @@ const app = defineMessages({
     myTeam: 'Anggota komunitas',
     genesisTitle: 'Saat ini',
     cobuildLevel: 'Level Bangun Bersama',
+    makingLevel: 'Peringkat market making',
     inviteTitle: 'Mulai mengundang · bagikan nilai pertumbuhan ekosistem',
     programs: {
       title: 'Program dukungan ekosistem',
@@ -1994,7 +1994,6 @@ const app = defineMessages({
     body: 'Staking dan Bond Bangun Bersama — berbagi pertumbuhan Rebase berbunga majemuk',
     backToHub: 'Kembali ke Staking',
     max: 'MAKS',
-    capUnlimited: 'Tidak terbatas',
     blocked: {
       notBound: 'Ikat referral dulu',
       accountMigrated: 'Alamat ini sudah dimigrasi — gunakan alamat baru',

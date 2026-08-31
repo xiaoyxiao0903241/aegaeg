@@ -1024,7 +1024,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Pendiente de reclamar',
       emptyClaimable: 'No hay recompensa disponible para reclamar.',
-      signedAmountHint: 'El monto reclamable sigue el payload firmado',
       usdLabel: 'USD',
     },
 
@@ -1070,9 +1069,9 @@ const app = defineMessages({
       cumulativeWins: 'Ganancias acumuladas',
       winsCount: '{count} veces',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Aleatoriedad verificable Chainlink VRF v2',
+      vrfTitle: 'Aleatoriedad verificable Chainlink VRF v2.5',
       vrfBody:
-        'Los sorteos de la suerte usan Chainlink VRF v2 con los contratos de staking: la aleatoriedad se genera en cadena con prueba criptográfica; el contrato elige automáticamente 10 usuarios afortunados de la lista del día. Sin intervención humana; cualquiera puede verificar en cadena.',
+        'Los sorteos de la suerte usan Chainlink VRF v2.5 con los contratos de staking: la aleatoriedad se genera en cadena con prueba criptográfica; el contrato elige automáticamente 10 usuarios afortunados de la lista del día. Sin intervención humana; cualquiera puede verificar en cadena.',
       verifyTutorial: 'Guía de verificación',
       collapseTutorial: 'Cerrar guía',
       vrfGuideStep1:
@@ -1102,7 +1101,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo se liquida el sorteo?',
-            a: 'A las 00:00 UTC, Chainlink VRF v2 genera aleatoriedad verificable; el contrato elige hasta 10 ganadores de la lista del día para repartir el pozo (objetivo diario ≥ $5,000).',
+            a: 'A las 00:00 UTC, Chainlink VRF v2.5 genera aleatoriedad verificable; el contrato elige hasta 10 ganadores de la lista del día para repartir el pozo (objetivo diario ≥ $5,000).',
           },
           {
             q: '¿Cómo verifico que el resultado es justo?',
@@ -1499,6 +1498,7 @@ const app = defineMessages({
     myTeam: 'Miembros de la comunidad',
     genesisTitle: 'Actual',
     cobuildLevel: 'Nivel de co-construcción',
+    makingLevel: 'Rango de market making',
     inviteTitle: 'Empieza a invitar · comparte el valor del crecimiento del ecosistema',
     programs: {
       title: 'Programas de apoyo al ecosistema',
@@ -2003,7 +2003,6 @@ const app = defineMessages({
     body: 'Staking y bonos co-construyen — comparte la capitalización Rebase',
     backToHub: 'Volver a Staking',
     max: 'Máx.',
-    capUnlimited: 'Ilimitado',
     blocked: {
       notBound: 'Vincula primero una relación de referido',
       accountMigrated: 'Esta dirección migró; usa la nueva dirección',

@@ -995,7 +995,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Claimable',
       emptyClaimable: 'No reward available to claim.',
-      signedAmountHint: 'Claimable amount follows the signed payload',
       usdLabel: 'USD',
     },
 
@@ -1040,9 +1039,9 @@ const app = defineMessages({
       cumulativeWins: 'Cumulative wins',
       winsCount: '{count} times',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 verifiable randomness',
+      vrfTitle: 'Chainlink VRF v2.5 verifiable randomness',
       vrfBody:
-        'Lucky draws use Chainlink VRF v2 with the staking contracts: randomness is generated on-chain with a cryptographic proof, then winners are selected from that day’s eligibility list. No human intervention; anyone can verify on-chain.',
+        'Lucky draws use Chainlink VRF v2.5 with the staking contracts: randomness is generated on-chain with a cryptographic proof, then winners are selected from that day’s eligibility list. No human intervention; anyone can verify on-chain.',
       verifyTutorial: 'Verification guide',
       collapseTutorial: 'Collapse guide',
       vrfGuideStep1:
@@ -1072,7 +1071,7 @@ const app = defineMessages({
           },
           {
             q: 'How is the draw settled?',
-            a: 'At 00:00 UTC, Chainlink VRF v2 produces verifiable randomness; the contract selects up to 10 winners from that day’s list to share the pool (daily pool target ≥ $5,000).',
+            a: 'At 00:00 UTC, Chainlink VRF v2.5 produces verifiable randomness; the contract selects up to 10 winners from that day’s list to share the pool (daily pool target ≥ $5,000).',
           },
           {
             q: 'How do I verify fairness?',
@@ -1440,6 +1439,7 @@ const app = defineMessages({
     myTeam: 'Community members',
     genesisTitle: 'Current',
     cobuildLevel: 'Co-build tier',
+    makingLevel: 'Making rank',
     inviteTitle: 'Start inviting · Share ecosystem growth value',
     programs: {
       title: 'Ecosystem support programs',
@@ -1926,7 +1926,6 @@ const app = defineMessages({
     body: 'Stake and bonds co-build — share Rebase compounding',
     backToHub: 'Back to Staking',
     max: 'Max',
-    capUnlimited: 'Unlimited',
     blocked: {
       notBound: 'Bind a referral first',
       accountMigrated: 'This address has migrated — use the new address',

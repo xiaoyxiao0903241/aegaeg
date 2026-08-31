@@ -13,19 +13,61 @@ test('luckyWinnersSelectedDate: user pick wins; else response date; empty stays 
   assert.equal(luckyWinnersSelectedDate('', ' 2026-08-19 '), '2026-08-19')
 })
 
-test('luckyWinnersDateList: dates from API; invalid skipped; fallback prepended if missing', async () => {
+test('luckyWinnersDateList: dates from API only; invalid skipped; no invented fallback', async () => {
   const { luckyWinnersDateList } = await loadModule('/src/core/rewards/lucky-winners-date.ts')
 
   assert.deepEqual(luckyWinnersDateList(['2026-08-19', '2026-08-18']), ['2026-08-19', '2026-08-18'])
   assert.deepEqual(luckyWinnersDateList(['2026-08-19', 'nope', '2026-08-19']), ['2026-08-19'])
-  assert.deepEqual(luckyWinnersDateList(['2026-08-18'], '2026-08-19'), ['2026-08-19', '2026-08-18'])
-  assert.deepEqual(luckyWinnersDateList(null, '2026-08-19'), ['2026-08-19'])
+  assert.deepEqual(luckyWinnersDateList(['2026-02-31']), [])
+  assert.deepEqual(luckyWinnersDateList(null), [])
   assert.deepEqual(luckyWinnersDateList(undefined), [])
 })
 
-test('lucky winners default query omits date; dropdown uses response dates', () => {
+test('parseIsoDay / formatIsoDay: local calendar day; invalid rejected', async () => {
+  const { formatIsoDay, parseIsoDay } = await loadModule('/src/core/rewards/lucky-winners-date.ts')
+
+  const parsed = parseIsoDay('2026-08-19')
+  assert.ok(parsed instanceof Date)
+  assert.equal(parsed.getFullYear(), 2026)
+  assert.equal(parsed.getMonth(), 7)
+  assert.equal(parsed.getDate(), 19)
+  assert.equal(formatIsoDay(parsed), '2026-08-19')
+  assert.equal(formatIsoDay(parseIsoDay(' 2026-08-19 ')), '2026-08-19')
+  assert.equal(parseIsoDay('2026-13-01'), undefined)
+  assert.equal(parseIsoDay('2026-02-31'), undefined)
+  assert.equal(parseIsoDay('nope'), undefined)
+  assert.equal(parseIsoDay(''), undefined)
+  assert.equal(parseIsoDay(null), undefined)
+})
+
+test('isLuckyWinnersDateAllowed: only ISO days in the backend set', async () => {
+  const { isLuckyWinnersDateAllowed } = await loadModule('/src/core/rewards/lucky-winners-date.ts')
+  const allowed = new Set(['2026-08-19'])
+
+  assert.equal(isLuckyWinnersDateAllowed(new Date(2026, 7, 19), allowed), true)
+  assert.equal(isLuckyWinnersDateAllowed(new Date(2026, 7, 18), allowed), false)
+})
+
+test('luckyWinnersCalendarBounds: min/max month from API dates', async () => {
+  const { luckyWinnersCalendarBounds } = await loadModule('/src/core/rewards/lucky-winners-date.ts')
+
+  assert.deepEqual(luckyWinnersCalendarBounds([]), { startMonth: undefined, endMonth: undefined })
+  const span = luckyWinnersCalendarBounds(['2026-08-19', 'nope', '2026-06-02'])
+  assert.equal(span.startMonth?.getFullYear(), 2026)
+  assert.equal(span.startMonth?.getMonth(), 5)
+  assert.equal(span.startMonth?.getDate(), 1)
+  assert.equal(span.endMonth?.getFullYear(), 2026)
+  assert.equal(span.endMonth?.getMonth(), 7)
+  assert.equal(span.endMonth?.getDate(), 1)
+})
+
+test('lucky winners default query omits date; picker uses response dates', () => {
   const hook = readFileSync(
     new URL('../../../src/views/dapp/rewards/lucky/use-lucky.tsx', import.meta.url),
+    'utf8',
+  )
+  const detail = readFileSync(
+    new URL('../../../src/views/dapp/rewards/lucky/detail.tsx', import.meta.url),
     'utf8',
   )
   const endpoint = readFileSync(
@@ -36,5 +78,8 @@ test('lucky winners default query omits date; dropdown uses response dates', () 
   assert.match(hook, /luckyWinnersDateList/)
   assert.doesNotMatch(hook, /DRAW_DATE_OPTION_COUNT/)
   assert.doesNotMatch(hook, /buildRecentDrawDateOptions/)
+  assert.doesNotMatch(hook, /SelectMenuOption/)
+  assert.match(detail, /LuckyDrawDatePicker/)
+  assert.doesNotMatch(detail, /SelectMenu/)
   assert.match(endpoint, /body: day \? \{ date: day \} : \{\}/)
 })

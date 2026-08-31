@@ -3,28 +3,86 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('formatBondDebtRemainingDisplay: maxDebt 0 is unlimited', async () => {
-  const { formatBondDebtRemainingDisplay } = await loadModule(
-    '/src/core/staking/format-bond-debt-remaining.ts',
+const AGX = 10n ** 9n
+
+test('bondPurchaseCapAgx: maxDebt 0 still caps at maxPayout net', async () => {
+  const { bondPurchaseCapAgx } = await loadModule('/src/core/staking/format-bond-debt-remaining.ts')
+
+  assert.equal(
+    bondPurchaseCapAgx({
+      maxPayoutAmount: 10n * AGX,
+      maxDebt: 0n,
+      totalDeposit: 100n * AGX,
+      feeBps: 0n,
+    }),
+    10n * AGX,
   )
-  assert.deepEqual(formatBondDebtRemainingDisplay(0n, 100n, 18, 2), { kind: 'unlimited' })
 })
 
-test('formatBondDebtRemainingDisplay: remaining is AGX debt units', async () => {
-  const { formatBondDebtRemainingDisplay } = await loadModule(
-    '/src/core/staking/format-bond-debt-remaining.ts',
+test('bondPurchaseCapAgx: remaining debt tighter than maxPayout', async () => {
+  const { bondPurchaseCapAgx } = await loadModule('/src/core/staking/format-bond-debt-remaining.ts')
+
+  assert.equal(
+    bondPurchaseCapAgx({
+      maxPayoutAmount: 10n * AGX,
+      maxDebt: 5n * AGX,
+      totalDeposit: 2n * AGX,
+      feeBps: 0n,
+    }),
+    3n * AGX,
   )
-  const one = 10n ** 18n
-  const out = formatBondDebtRemainingDisplay(5n * one, 2n * one, 18, 2)
-  assert.equal(out.kind, 'amount')
-  assert.equal(out.label, '3.00')
 })
 
-test('formatBondDebtRemainingDisplay: sold out shows zero', async () => {
-  const { formatBondDebtRemainingDisplay } = await loadModule(
-    '/src/core/staking/format-bond-debt-remaining.ts',
+test('bondPurchaseCapAgx: maxPayout tighter than remaining debt', async () => {
+  const { bondPurchaseCapAgx } = await loadModule('/src/core/staking/format-bond-debt-remaining.ts')
+
+  assert.equal(
+    bondPurchaseCapAgx({
+      maxPayoutAmount: 1n * AGX,
+      maxDebt: 5n * AGX,
+      totalDeposit: 2n * AGX,
+      feeBps: 0n,
+    }),
+    1n * AGX,
   )
-  const one = 10n ** 18n
-  const out = formatBondDebtRemainingDisplay(2n * one, 5n * one, 18, 2)
-  assert.deepEqual(out, { kind: 'amount', label: '0.00' })
+})
+
+test('bondPurchaseCapAgx: sold out is zero', async () => {
+  const { bondPurchaseCapAgx } = await loadModule('/src/core/staking/format-bond-debt-remaining.ts')
+
+  assert.equal(
+    bondPurchaseCapAgx({
+      maxPayoutAmount: 10n * AGX,
+      maxDebt: 2n * AGX,
+      totalDeposit: 5n * AGX,
+      feeBps: 0n,
+    }),
+    0n,
+  )
+})
+
+test('bondPurchaseCapAgx: fee shrinks maxPayout before min with remaining', async () => {
+  const { bondPurchaseCapAgx } = await loadModule('/src/core/staking/format-bond-debt-remaining.ts')
+
+  // 10 AGX gross、10% fee → 9 AGX net；债务剩余 8 → 8
+  assert.equal(
+    bondPurchaseCapAgx({
+      maxPayoutAmount: 10n * AGX,
+      maxDebt: 20n * AGX,
+      totalDeposit: 12n * AGX,
+      feeBps: 1000n,
+    }),
+    8n * AGX,
+  )
+
+  // 债务不限时只剩扣费后的 maxPayout
+  assert.equal(
+    bondPurchaseCapAgx({
+      maxPayoutAmount: 10n * AGX,
+      maxDebt: 0n,
+      totalDeposit: 0n,
+      feeBps: 1000n,
+    }),
+    9n * AGX,
+  )
 })

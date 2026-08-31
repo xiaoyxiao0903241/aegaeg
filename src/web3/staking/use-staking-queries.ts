@@ -6,7 +6,7 @@ import { type EpochScheduleLabels, formatEpochScheduleLabels } from '~/core/stak
 import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
-import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
+import { readBondZapAgxPreview, readBondZapPoolSnapshot } from '~/web3/staking/bond-zap-quote-read'
 import {
   readLatestSagxRebaseRate,
   readStakingHubOverview,
@@ -137,6 +137,20 @@ export function useBondZapAgxPreviewQuery(
         depository,
         depositUsd1,
       }),
+    placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * AGX/USD1 池储备快照（公开，报价级新鲜度），供债券最大可买 USD1 反推。
+ */
+export function useBondZapPoolSnapshotQuery(options?: ChainQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.bondZapPoolSnapshot,
+    scope: 'public',
+    freshness: 'quote',
+    enabled: options?.enabled ?? true,
+    queryFn: () => readBondZapPoolSnapshot(),
     placeholderData: keepPreviousData,
   })
 }

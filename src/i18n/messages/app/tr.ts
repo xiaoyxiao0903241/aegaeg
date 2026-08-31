@@ -1030,7 +1030,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Talep Edilebilir',
       emptyClaimable: 'Talep edilecek ödül yok.',
-      signedAmountHint: 'Talep edilebilir tutar imzalı pakete göredir',
       usdLabel: 'USD',
     },
 
@@ -1075,9 +1074,9 @@ const app = defineMessages({
       cumulativeWins: 'Kümülatif kazanç',
       winsCount: '{count} kez',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 doğrulanabilir rastgelelik',
+      vrfTitle: 'Chainlink VRF v2.5 doğrulanabilir rastgelelik',
       vrfBody:
-        'Şans ödülü Chainlink VRF v2 ile staking sözleşmelerini birleştirir: rastgelelik zincir üstünde şifreli kanıtla üretilir; sözleşme o günün listesinden 10 şanslı kullanıcı seçer. İnsan müdahalesi yok; herkes zincir üstünde doğrulayabilir.',
+        'Şans ödülü Chainlink VRF v2.5 ile staking sözleşmelerini birleştirir: rastgelelik zincir üstünde şifreli kanıtla üretilir; sözleşme o günün listesinden 10 şanslı kullanıcı seçer. İnsan müdahalesi yok; herkes zincir üstünde doğrulayabilir.',
       verifyTutorial: 'Doğrulama rehberi',
       collapseTutorial: 'Rehberi kapat',
       vrfGuideStep1:
@@ -1107,7 +1106,7 @@ const app = defineMessages({
           },
           {
             q: 'Çekiliş nasıl sonuçlanır?',
-            a: '00:00 UTC’de Chainlink VRF v2 doğrulanabilir rastgelelik üretir; sözleşme o günün listesinden en fazla 10 kazanan seçer (günlük havuz hedefi ≥ $5,000).',
+            a: '00:00 UTC’de Chainlink VRF v2.5 doğrulanabilir rastgelelik üretir; sözleşme o günün listesinden en fazla 10 kazanan seçer (günlük havuz hedefi ≥ $5,000).',
           },
           {
             q: 'Adaleti nasıl doğrularım?',
@@ -1486,6 +1485,7 @@ const app = defineMessages({
     myTeam: 'Topluluk boyutu',
     genesisTitle: 'Mevcut',
     cobuildLevel: 'Ortak inşa seviyesi',
+    makingLevel: 'Piyasa yapıcılık seviyesi',
     inviteTitle: 'Davet etmeye başlayın · Ekosistem büyüme değerini paylaşın',
     programs: {
       title: 'Ekosistem destek programları',
@@ -1982,7 +1982,6 @@ const app = defineMessages({
     body: 'Stake ve tahvillerle ortak inşa — Rebase bileşik getiriyi paylaşın',
     backToHub: 'Staking’e dön',
     max: 'Maks',
-    capUnlimited: 'Sınırsız',
     blocked: {
       notBound: 'Önce referans bağlayın',
       accountMigrated: 'Bu adres taşındı — yeni adresi kullanın',

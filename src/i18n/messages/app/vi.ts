@@ -1022,7 +1022,6 @@ const app = defineMessages({
     detail: {
       claimable: 'Chờ nhận',
       emptyClaimable: 'Chưa có phần thưởng để nhận.',
-      signedAmountHint: 'Số có thể nhận theo gói chữ ký',
       usdLabel: 'USD',
     },
 
@@ -1067,9 +1066,9 @@ const app = defineMessages({
       cumulativeWins: 'Tổng lần trúng',
       winsCount: '{count} lần',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Bốc thăm ngẫu nhiên có thể xác minh Chainlink VRF v2',
+      vrfTitle: 'Bốc thăm ngẫu nhiên có thể xác minh Chainlink VRF v2.5',
       vrfBody:
-        'Thưởng may mắn dùng Chainlink VRF v2 (hàm ngẫu nhiên có thể xác minh) kết hợp hợp đồng staking: số ngẫu nhiên do mạng oracle Chainlink sinh on-chain kèm chứng minh mật mã; hợp đồng staking nhận số rồi tự chọn 10 người may mắn từ danh sách trong ngày. Không can thiệp người, kết quả không sửa được; ai cũng xác minh on-chain, không gian lận.',
+        'Thưởng may mắn dùng Chainlink VRF v2.5 (hàm ngẫu nhiên có thể xác minh) kết hợp hợp đồng staking: số ngẫu nhiên do mạng oracle Chainlink sinh on-chain kèm chứng minh mật mã; hợp đồng staking nhận số rồi tự chọn 10 người may mắn từ danh sách trong ngày. Không can thiệp người, kết quả không sửa được; ai cũng xác minh on-chain, không gian lận.',
       verifyTutorial: 'Hướng dẫn xác minh',
       collapseTutorial: 'Thu gọn hướng dẫn',
       vrfGuideStep1:
@@ -1099,7 +1098,7 @@ const app = defineMessages({
           },
           {
             q: 'Bốc thăm mở thưởng thế nào?',
-            a: 'Mỗi ngày 00:00 (UTC) Chainlink VRF v2 sinh số ngẫu nhiên có thể xác minh on-chain; hợp đồng staking tự chọn 10 người may mắn từ danh sách ngày đó chia hồ (hồ thưởng ngày không dưới $5,000). Không can thiệp người.',
+            a: 'Mỗi ngày 00:00 (UTC) Chainlink VRF v2.5 sinh số ngẫu nhiên có thể xác minh on-chain; hợp đồng staking tự chọn 10 người may mắn từ danh sách ngày đó chia hồ (hồ thưởng ngày không dưới $5,000). Không can thiệp người.',
           },
           {
             q: 'Làm sao xác minh kết quả công bằng?',
@@ -1481,6 +1480,7 @@ const app = defineMessages({
     myTeam: 'Số thành viên cộng đồng',
     genesisTitle: 'Hiện tại',
     cobuildLevel: 'Hạng Cùng xây dựng',
+    makingLevel: 'Hạng tạo lập thị trường',
     inviteTitle: 'Bắt đầu mời · Chia sẻ giá trị tăng trưởng hệ sinh thái',
     programs: {
       title: 'Kế hoạch hỗ trợ hệ sinh thái',
@@ -1975,7 +1975,6 @@ const app = defineMessages({
     body: 'Staking và trái phiếu cùng xây dựng — chia sẻ lãi kép Rebase',
     backToHub: 'Quay lại Staking',
     max: 'Tối đa',
-    capUnlimited: 'Không giới hạn',
     blocked: {
       notBound: 'Hãy gắn quan hệ giới thiệu trước',
       accountMigrated: 'Địa chỉ này đã di chuyển, hãy dùng địa chỉ mới',

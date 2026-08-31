@@ -207,7 +207,7 @@ export function CommunityDetail() {
     t.tables.joined,
     t.tables.address,
     t.tables.holding,
-    t.community.cobuildLevel,
+    t.community.makingLevel,
     t.community.directReferrals,
     t.tables.communityVolume,
   ]

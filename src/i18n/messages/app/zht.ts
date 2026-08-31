@@ -945,7 +945,6 @@ const app = defineMessages({
     detail: {
       claimable: '可領取',
       emptyClaimable: '暫無可領取的獎勵。',
-      signedAmountHint: '可領金額以簽名包為準',
       usdLabel: 'USD',
     },
     mixed: {
@@ -988,9 +987,9 @@ const app = defineMessages({
       cumulativeWins: '累計中獎',
       winsCount: '{count} 次',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 可驗證隨機抽獎',
+      vrfTitle: 'Chainlink VRF v2.5 可驗證隨機抽獎',
       vrfBody:
-        '幸運獎採用 Chainlink VRF v2（可驗證隨機函數）與質押合約結合的方式開獎：隨機數由 Chainlink 預言機網絡在鏈上生成並附帶加密證明，質押合約收到隨機數後自動在當日抽獎名單中選出 10 位幸運用戶。整個過程無人為干預、結果不可篡改，任何人都可以在鏈上驗證，絕無作弊可能。',
+        '幸運獎採用 Chainlink VRF v2.5（可驗證隨機函數）與質押合約結合的方式開獎：隨機數由 Chainlink 預言機網絡在鏈上生成並附帶加密證明，質押合約收到隨機數後自動在當日抽獎名單中選出 10 位幸運用戶。整個過程無人為干預、結果不可篡改，任何人都可以在鏈上驗證，絕無作弊可能。',
       verifyTutorial: '驗證教程',
       collapseTutorial: '收起教程',
       vrfGuideStep1: '點擊中獎結果或抽獎記錄中的驗證哈希，跳轉至 BscScan 查看該輪開獎交易。',
@@ -1019,7 +1018,7 @@ const app = defineMessages({
           },
           {
             q: '抽獎是如何開獎的？',
-            a: '每日 00:00（UTC）由 Chainlink VRF v2 生成鏈上可驗證隨機數，質押合約據此從當日全部資格名單中自動選出 10 位幸運用戶瓜分獎池（獎池每日不低於 $5,000）。全程無人為干預。',
+            a: '每日 00:00（UTC）由 Chainlink VRF v2.5 生成鏈上可驗證隨機數，質押合約據此從當日全部資格名單中自動選出 10 位幸運用戶瓜分獎池（獎池每日不低於 $5,000）。全程無人為干預。',
           },
           {
             q: '如何驗證抽獎結果是公平的？',
@@ -1383,6 +1382,7 @@ const app = defineMessages({
     myTeam: '社區人數',
     genesisTitle: '當前',
     cobuildLevel: '共建等級',
+    makingLevel: '做市等級',
     inviteTitle: '開始邀請 · 共享生態成長價值',
     programs: {
       title: '生態支持計劃',
@@ -1867,7 +1867,6 @@ const app = defineMessages({
     body: '質押與債券共建，共享 Rebase 複利增長',
     backToHub: '返回質押',
     max: '最大',
-    capUnlimited: '不限',
     blocked: {
       notBound: '請先綁定推薦關係',
       accountMigrated: '該地址已遷移，請使用新地址操作',

@@ -32,7 +32,7 @@ export interface LuckyRewardWinnersResponse {
   /** 当日最大 DRAWN round_id；无轮次为 null。质押金额按此 round 读 Tracker.getUserRoundStat */
   round_id: number | null
   draw_tx_hash: string | null
-  /** 已开奖日期，供下拉；不含尚未开奖的当天 */
+  /** 已开奖日期，供日历选择；不含尚未开奖的当天 */
   dates: string[]
   items: LuckyRewardWinnerItem[]
 }

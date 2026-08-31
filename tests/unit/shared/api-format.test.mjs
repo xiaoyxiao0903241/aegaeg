@@ -155,10 +155,14 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
   const row = mapTeamReferralToCompactRow({
     address: '0x05A1E51500000000000000000000000000000000',
     register_time: registerTime,
-    presale_volume: '8000',
     presale_rank: 0,
     direct_referral_count: 16,
-    sales_team_market: '245960',
+    sales_team_market: '0',
+    making_market: '10',
+    making_market_usd: '245960',
+    making_rank: 0,
+    active_stake_balance: '100',
+    active_stake_balance_usd: '8000',
   })
 
   const date = new Date(registerTime)
@@ -173,6 +177,20 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
   assert.equal(row[3], '-')
   assert.equal(row[4], '16')
   assert.equal(row[5], '$245,960')
+
+  const ranked = mapTeamReferralToCompactRow({
+    address: '0x05A1E51500000000000000000000000000000000',
+    register_time: registerTime,
+    presale_rank: 0,
+    direct_referral_count: 0,
+    sales_team_market: '0',
+    making_market: '0',
+    making_market_usd: '0',
+    making_rank: 3,
+    active_stake_balance: '0',
+    active_stake_balance_usd: '0',
+  })
+  assert.equal(ranked[3], 'A3')
 })
 
 test('mapRewardLogToRow uses i18n labels for status', async () => {

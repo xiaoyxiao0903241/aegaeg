@@ -8,7 +8,8 @@ import {
 } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
-import { formatBondDebtRemainingDisplay } from '~/core/staking/format-bond-debt-remaining'
+import { maxUsd1ForBondPurchase } from '~/core/staking/bond-max-usd1'
+import { bondPurchaseCapAgx } from '~/core/staking/format-bond-debt-remaining'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondKind } from '~/core/staking/staking-period'
 import { BOND_PERIODS, type BondPeriod, isBondPeriod } from '~/core/staking/staking-period'
@@ -28,6 +29,7 @@ import {
 import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
 import {
   useBondZapAgxPreviewQuery,
+  useBondZapPoolSnapshotQuery,
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -46,6 +48,8 @@ export type BondWritePresent = {
  * 债券买入表单核心状态
  *
  * 维护周期 / 数量 / 预检 / 市场等状态，
+ * 输入上限为 min(钱包 USD1, 单笔 maxPayout 与债务剩余反推的可买 USD1)，
+ * 下方「最大购买量」仍按 AGX 净发放上限展示；
  * 通过 evaluateBondZapLive 判定可写条件并执行 zap 提交。
  *
  * @param kind 债券类型：lp / burn
@@ -102,16 +106,34 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const periodMarketQueries = [market180, market360, market540] as const
 
   const marketQuery = periodMarketQueries[BOND_PERIODS.indexOf(period)]!
+  const poolQuery = useBondZapPoolSnapshotQuery()
 
   const balance =
     decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
     decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
+  const market = marketQuery.data
+  const marketLoaded = isDecisionFresh(marketQuery.isPlaceholderData, market)
+  const pool = poolQuery.data
+  const poolLoaded = isDecisionFresh(poolQuery.isPlaceholderData, pool)
+  const usd1Cap =
+    marketLoaded && poolLoaded && market != null && pool != null
+      ? maxUsd1ForBondPurchase({
+          kind,
+          maxPayoutAmount: market.maxPayoutAmount,
+          maxDebt: market.maxDebt,
+          totalDeposit: market.totalDeposit,
+          feeBps: market.feeBps,
+          discountRateBP: market.discountRateBP,
+          pool,
+        })
+      : null
+  const spendable = usd1Cap == null ? balance : balance < usd1Cap ? balance : usd1Cap
 
   const amountInput = useCappedTokenAmountInput({
     decimals: USD1_DECIMALS,
-    balance,
+    balance: spendable,
     balancesLoaded,
     sessionReady,
   })
@@ -120,8 +142,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     enabled: sessionReady,
   })
 
-  const market = marketQuery.data
-  const marketLoaded = isDecisionFresh(marketQuery.isPlaceholderData, market)
   const payoutFresh = isDecisionFresh(payoutQuery.isPlaceholderData, payoutQuery.data)
   const payoutLoaded = amountInput.amountIn === ZERO_BI || payoutFresh
   // payoutFresh 已含 !placeholder；勿用 isFetching，后台 refetch 会闪灰。
@@ -206,19 +226,17 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
       return [p, null]
     }),
   ) as Record<BondPeriod, bigint | null>
-  const debtRemaining =
+  const capAgx =
     market === undefined
       ? null
-      : formatBondDebtRemainingDisplay(market.maxDebt, market.totalDeposit, AGX_DECIMALS, 2)
-  const capUnlimited = debtRemaining?.kind === 'unlimited'
+      : bondPurchaseCapAgx({
+          maxPayoutAmount: market.maxPayoutAmount,
+          maxDebt: market.maxDebt,
+          totalDeposit: market.totalDeposit,
+          feeBps: market.feeBps,
+        })
   const capLabel =
-    market === undefined
-      ? marketQuery.isError
-        ? '0'
-        : ''
-      : debtRemaining?.kind === 'amount'
-        ? debtRemaining.label
-        : ''
+    capAgx == null ? (marketQuery.isError ? '0' : '') : formatTokenAmount(capAgx, AGX_DECIMALS, 2)
 
   const receiveLabel =
     amountInput.amountIn === ZERO_BI
@@ -258,7 +276,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     discountLabel: discountLabel || '0',
     periodDiscounts,
     periodTotalDeposits,
-    capUnlimited,
     capLabel: capLabel || '0',
     receiveLabel: receiveLabel || '0',
     walletReady,

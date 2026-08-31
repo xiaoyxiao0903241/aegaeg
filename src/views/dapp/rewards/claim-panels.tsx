@@ -135,11 +135,6 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           }
           tokenGagx={vm.mixed.tokenGagx}
         />
-        {vm.showSignedAmountHint ? (
-          <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-            {t.rewards.detail.signedAmountHint}
-          </Text>
-        ) : null}
 
         <Reveal open={vm.luckyPaused}>
           <Text as="p" className="text-destructive" variant="copy">

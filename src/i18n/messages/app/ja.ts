@@ -1001,7 +1001,6 @@ const app = defineMessages({
     detail: {
       claimable: '受取待ち',
       emptyClaimable: '受取可能なリワードはありません。',
-      signedAmountHint: '受取可能額は署名ペイロードに準拠',
       usdLabel: 'USD',
     },
 
@@ -1047,9 +1046,9 @@ const app = defineMessages({
       cumulativeWins: '累計当選',
       winsCount: '{count} 回',
       winsAmountHint: '{amount} gAGX {approx}',
-      vrfTitle: 'Chainlink VRF v2 検証可能ランダム抽選',
+      vrfTitle: 'Chainlink VRF v2.5 検証可能ランダム抽選',
       vrfBody:
-        'ラッキー賞は Chainlink VRF v2（検証可能乱数）とステーキング契約を組み合わせて抽選します。乱数は Chainlink オラクルがオンチェーンで生成し暗号証明を付与し、ステーキング契約が受け取った後、当日の抽選名簿から自動で幸運ユーザー 10 名を選びます。人為介入なし・改ざん不可で、誰でもオンチェーン検証でき、不正の余地はありません。',
+        'ラッキー賞は Chainlink VRF v2.5（検証可能乱数）とステーキング契約を組み合わせて抽選します。乱数は Chainlink オラクルがオンチェーンで生成し暗号証明を付与し、ステーキング契約が受け取った後、当日の抽選名簿から自動で幸運ユーザー 10 名を選びます。人為介入なし・改ざん不可で、誰でもオンチェーン検証でき、不正の余地はありません。',
       verifyTutorial: '検証ガイド',
       collapseTutorial: 'ガイドを閉じる',
       vrfGuideStep1:
@@ -1079,7 +1078,7 @@ const app = defineMessages({
           },
           {
             q: '抽選はどう開かれますか？',
-            a: '毎日 00:00（UTC）に Chainlink VRF v2 がオンチェーン検証可能な乱数を生成し、ステーキング契約が当日の全資格名簿から自動で幸運ユーザー最大 10 名を選んで賞金プールを分配します（プールは毎日 ≥ $5,000）。全程人為介入なし。',
+            a: '毎日 00:00（UTC）に Chainlink VRF v2.5 がオンチェーン検証可能な乱数を生成し、ステーキング契約が当日の全資格名簿から自動で幸運ユーザー最大 10 名を選んで賞金プールを分配します（プールは毎日 ≥ $5,000）。全程人為介入なし。',
           },
           {
             q: '抽選結果の公平性はどう検証しますか？',
@@ -1448,6 +1447,7 @@ const app = defineMessages({
     myTeam: 'コミュニティ人数',
     genesisTitle: '現在',
     cobuildLevel: '共創ランク',
+    makingLevel: 'マーケットメイクランク',
     inviteTitle: '招待を始める · エコシステム成長価値を共有',
     programs: {
       title: 'エコシステム支援プラン',
@@ -1940,7 +1940,6 @@ const app = defineMessages({
     body: 'ステーキングと債券で共創 — Rebase 複利成長を共有',
     backToHub: 'ステーキングに戻る',
     max: '最大',
-    capUnlimited: '無制限',
     blocked: {
       notBound: '先に紹介関係を紐付けてください',
       accountMigrated: 'このアドレスは移行済みです — 新しいアドレスで操作してください',
