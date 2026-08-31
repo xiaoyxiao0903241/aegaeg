@@ -215,7 +215,7 @@ export function usePositionDock(product: AssetsProduct) {
       const days = lockDaysFromPeriodSec(periodTime)
       if (days == null) return t.flowOps.stake.EARLY_STAKE
       const dayUnit = interpolate(t.assets.claim.releaseDays, { days: '' }).trim()
-      return `${t.flowOps.stake.EARLY_STAKE}(${days}${dayUnit})`
+      return `${days}${dayUnit}(${t.flowOps.stake.EARLY_STAKE})`
     }
     return interpolate(t.assets.claim.releaseDays, { days: period })
   }
