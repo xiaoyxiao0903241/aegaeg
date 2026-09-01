@@ -175,17 +175,12 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           <ClaimSplitSlider
             aria-label={vm.mixed.splitAria}
             className="max-w-none"
+            hint={t.common.splitDragHint}
             onChange={vm.setReleasePct}
+            releaseLabel={t.rewards.claim}
+            restakeLabel={vm.mixed.restakeLabel}
             value={vm.releasePct}
           />
-          <div className="mt-1 flex justify-between gap-2">
-            <Text as="span" className="leading-4 font-semibold text-claim" variant="detail">
-              {interpolate(vm.mixed.restakePct, { pct: vm.restakePct })}
-            </Text>
-            <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
-              {interpolate(vm.mixed.releasePct, { pct: vm.releasePct })}
-            </Text>
-          </div>
         </Card>
 
         <RewardsDestinationCard tone="restake">

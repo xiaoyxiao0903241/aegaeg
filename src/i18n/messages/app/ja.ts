@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'シェア',
     confirm: '確認',
     close: '閉じる',
+    splitDragHint: 'ドラッグして調整',
     paginationTotal: '合計 {total} 件',
     paginationPerPage: '1ページ {size} 件',
     paginationPrev: '前のページ',
@@ -1012,8 +1013,6 @@ const app = defineMessages({
 
     mixed: {
       splitAria: '受取と再投資の比率',
-      releasePct: '受取 {pct}%',
-      restakePct: '再投資 {pct}%',
       releasePeriod: 'リリース期間の選択',
       restakePeriod: '再投資期間の選択',
       releaseAria: 'リリース期間の選択',
@@ -1474,7 +1473,7 @@ const app = defineMessages({
         },
       ],
     },
-    myInvites: 'マイコミュニティメンバー（{count}）',
+    myInvites: 'マイ直接紹介メンバー（{count}）',
     referralBondPermanent: '紹介関係が有効 · 紐付けは永久関係。',
     volumePrefix: '実績',
     statToday: '本日 +{count} · +{amount}',
@@ -1531,7 +1530,7 @@ const app = defineMessages({
     blocked: {
       zeroAmount: '有効な数量を入力してください',
       insufficientReward: '受取可能な収益が不足',
-      insufficientContribution: '貢献値が不足しています。先に貢献ポイントへ交換してください',
+      insufficientContribution: '貢献ポイントが不足しています。先に貢献ポイントへ交換してください',
       planUnresolved:
         'リリース/再投資プランの準備ができていません。しばらくしてから再試行してください',
       nothingToRedeem: '現在償還可能な枠はありません',
@@ -1573,8 +1572,6 @@ const app = defineMessages({
       title: '収益を受取',
       amount: '受取数量',
       splitAria: 'リリースと再投資の比率',
-      releaseShare: '受取 {pct}%',
-      restakeShare: '再投資 {pct}%',
       releasePeriod: 'リリース期間の選択',
       releasePeriodAria: 'リリース期間の選択',
       restakePeriod: '再投資期間の選択',
@@ -1583,10 +1580,10 @@ const app = defineMessages({
       restakeDays: '{days} 日',
       restakeDaysTax: '{days} 日 · {tax}',
       taxRate: '税率 {rate}%',
-      contribNeed: '今回の受取で控除する貢献値 {amount}',
-      contribShort: '貢献値が不足しています。先にバーンで貢献ポイントへ交換してください',
+      contribNeed: '今回の受取で控除する貢献ポイント {amount}',
+      contribShort: '貢献ポイントが不足しています。先にバーンで貢献ポイントへ交換してください',
       goBurn: 'バーン交換へ',
-      ctaMixed: '受取 & 再投資',
+      ctaMixed: '再投資 & 受取',
       ctaRelease: '受取',
       ctaRestake: '再投資',
       success: '受取を送信しました',
@@ -1599,7 +1596,7 @@ const app = defineMessages({
       boostLabel: 'ボーナス',
       claimReward: '収益を受取',
       claimBoost: 'ボーナスを受取',
-      contribDeduct: '貢献値を{amount}控除',
+      contribDeduct: '貢献ポイントを{amount}控除',
     },
     redeem: {
       releasedLabel: 'リリース済み',
@@ -1688,11 +1685,11 @@ const app = defineMessages({
           },
           {
             q: '収益を受取れない理由は？',
-            a: '収益の受取には貢献値を消費します。アカウントの貢献値が不足していると受取できません。先に AGX を購入してバーンし、貢献値を得てから資産ページへ戻ってください。貢献値の仕組みにより、収益の引出は必ずプロトコルのデフレにも寄与します。',
+            a: '収益の受取には貢献ポイントを消費します。アカウントの貢献ポイントが不足していると受取できません。先に AGX を購入してバーンし、貢献ポイントを得てから資産ページへ戻ってください。貢献ポイントの仕組みにより、収益の引出は必ずプロトコルのデフレにも寄与します。',
           },
           {
-            q: '貢献値はどう得ますか？',
-            a: 'AGX を購入してバーンすると貢献値を得られます。収益受取時は 1:1 で消費します（gAGX 1 を受取ると貢献値 1 消費）。受取る予定の収益に見合う分をあらかじめ用意してください。',
+            q: '貢献ポイントはどう得ますか？',
+            a: 'AGX を購入してバーンすると貢献ポイントを得られます。収益受取時は 1:1 で消費します（gAGX 1 を受取ると貢献ポイント 1 消費）。受取る予定の収益に見合う分をあらかじめ用意してください。',
           },
           {
             q: '収益受取時にリリース期間を選ぶ理由は？',

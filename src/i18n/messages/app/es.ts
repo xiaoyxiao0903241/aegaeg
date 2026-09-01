@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'participaciones',
     confirm: 'Confirmar',
     close: 'Cerrar',
+    splitDragHint: 'Arrastra para ajustar',
     paginationTotal: 'Total: {total}',
     paginationPerPage: '{size} por página',
     paginationPrev: 'Página anterior',
@@ -1035,8 +1036,6 @@ const app = defineMessages({
 
     mixed: {
       splitAria: 'Proporción reclamar / reinvertir',
-      releasePct: 'Reclamar {pct}%',
-      restakePct: 'Reinvertir {pct}%',
       releasePeriod: 'Periodo de liberación',
       restakePeriod: 'Periodo de reinversión',
       releaseAria: 'Periodo de liberación',
@@ -1525,7 +1524,7 @@ const app = defineMessages({
         },
       ],
     },
-    myInvites: 'Miembros de mi comunidad ({count})',
+    myInvites: 'Mis referidos directos ({count})',
     referralBondPermanent: 'Relación de referido activada · el vínculo es permanente.',
     volumePrefix: 'Volumen',
     statToday: 'Hoy +{count} · +{amount}',
@@ -1582,7 +1581,8 @@ const app = defineMessages({
     blocked: {
       zeroAmount: 'Ingresa un monto válido',
       insufficientReward: 'Rendimiento reclamable insuficiente',
-      insufficientContribution: 'Contribución insuficiente; quema AGX primero para obtener puntos',
+      insufficientContribution:
+        'Puntos de contribución insuficientes; quema AGX primero para obtener puntos',
       planUnresolved: 'Plan de liberación/reinversión no listo; inténtalo más tarde',
       nothingToRedeem: 'No hay cupo disponible para canjear',
       warmupActive: 'El precalentamiento no ha terminado; aún no se puede operar',
@@ -1623,8 +1623,6 @@ const app = defineMessages({
       title: 'Reclamar rendimiento',
       amount: 'Cantidad a reclamar',
       splitAria: 'Proporción liberación / reinversión',
-      releaseShare: 'Reclamar {pct}%',
-      restakeShare: 'Reinvertir {pct}%',
       releasePeriod: 'Periodo de liberación',
       releasePeriodAria: 'Periodo de liberación',
       restakePeriod: 'Periodo de reinversión',
@@ -1633,10 +1631,10 @@ const app = defineMessages({
       restakeDays: '{days} d',
       restakeDaysTax: '{days} d · {tax}',
       taxRate: 'impuesto {rate}%',
-      contribNeed: 'Esta reclamación descuenta contribución {amount}',
-      contribShort: 'Contribución insuficiente; ve a quemar AGX para obtener puntos',
+      contribNeed: 'Esta reclamación descuenta puntos de contribución {amount}',
+      contribShort: 'Puntos de contribución insuficientes; ve a quemar AGX para obtener puntos',
       goBurn: 'Ir a quemar',
-      ctaMixed: 'Reclamar y reinvertir',
+      ctaMixed: 'Reinvertir y reclamar',
       ctaRelease: 'Reclamar',
       ctaRestake: 'Reinvertir',
       success: 'Reclamación enviada',
@@ -1649,7 +1647,7 @@ const app = defineMessages({
       boostLabel: 'Bonus',
       claimReward: 'Reclamar rendimiento',
       claimBoost: 'Reclamar bonus',
-      contribDeduct: 'Deduce {amount} de contribución',
+      contribDeduct: 'Deduce {amount} puntos de contribución',
     },
     redeem: {
       releasedLabel: 'Liberado',
@@ -1749,11 +1747,11 @@ const app = defineMessages({
           },
           {
             q: '¿Por qué no puedo reclamar rendimiento?',
-            a: 'Hace falta contribución. Compra y quema AGX primero. Así cada retiro también deflacta el protocolo.',
+            a: 'Hacen falta puntos de contribución. Compra y quema AGX primero. Así cada retiro también deflacta el protocolo.',
           },
           {
-            q: '¿Cómo obtengo contribución?',
-            a: 'Compra y quema AGX para obtener contribución. Reclamar consume contribución a 1:1 (reclamar 1 gAGX gasta 1 punto de contribución); prepara puntos suficientes.',
+            q: '¿Cómo obtengo puntos de contribución?',
+            a: 'Compra y quema AGX para obtener puntos de contribución. Reclamar consume puntos de contribución a 1:1 (reclamar 1 gAGX gasta 1 punto de contribución); prepara puntos suficientes.',
           },
           {
             q: '¿Por qué elegir un periodo de liberación al reclamar?',
