@@ -140,20 +140,12 @@ function AssetsClaimModalOpen({
       <div className="grid gap-4">
         <ClaimSplitSlider
           aria-label={t.assets.claim.splitAria}
+          hint={t.common.splitDragHint}
           onChange={vm.setReleasePct}
+          releaseLabel={t.assets.claim.ctaRelease}
+          restakeLabel={t.assets.claim.ctaRestake}
           value={vm.releasePct}
         />
-        <div className="flex justify-between gap-2">
-          <Text as="span" className="font-semibold text-claim" variant="detail">
-            {interpolate(t.assets.claim.restakeShare, { pct: vm.restakePct })}
-          </Text>
-          <Text as="span" className="font-semibold text-primary" variant="detail">
-            {interpolate(t.assets.claim.releaseShare, {
-              pct: vm.releasePct,
-              amount: amountLabel,
-            })}
-          </Text>
-        </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="grid gap-2">
