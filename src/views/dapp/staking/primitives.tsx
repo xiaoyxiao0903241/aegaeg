@@ -43,7 +43,7 @@ function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): rea
  *
  * 曲线由本地公式按 day 1..CALC_MAX_DAYS 生成；
  * 有测算结果时在所选天数打实心点，周期日与 540 天画空心圆和参考线；
- * 左侧价签为选中日 / 周期日 / 540 天，不画正收益日。
+ * 价签贴在横虚线上下（选中日 / 周期日 / 540 天），不画正收益日。
  * 第一次无结果时骨架；之后换参走进度条与曲线过渡，不再回骨架。
  */
 export function StakingCurveChart() {
