@@ -42,15 +42,17 @@ export function CalcDetail() {
   const shownDays = result?.days ?? formDays
   const productLabel = t.staking.calc.products[shownProduct]
   const periodLabel =
-    shownPeriod === 'liquid'
-      ? t.staking.stake.periods.liquid
-      : shownPeriod === '180'
-        ? t.staking.stake.periods.d180
-        : shownPeriod === '360'
-          ? t.staking.stake.periods.d360
-          : shownPeriod === '540'
-            ? t.staking.stake.periods.d540
-            : shownPeriod
+    shownProduct === 'xmine'
+      ? ''
+      : shownPeriod === 'liquid'
+        ? t.staking.stake.periods.liquid
+        : shownPeriod === '180'
+          ? t.staking.stake.periods.d180
+          : shownPeriod === '360'
+            ? t.staking.stake.periods.d360
+            : shownPeriod === '540'
+              ? t.staking.stake.periods.d540
+              : shownPeriod
 
   const rebasePct = result?.epochRebasePct ?? rates?.epochRebasePct ?? null
   const rebase =
@@ -58,6 +60,10 @@ export function CalcDetail() {
   const notesItems = aside.notesItems.map((item) =>
     interpolate(withEpochSchedule(item, epochSchedule), { rebase }),
   )
+  const netYieldHint =
+    shownProduct === 'xmine'
+      ? t.staking.calc.result.legend.netYieldHintXmine
+      : t.staking.calc.result.legend.netYieldHint
 
   return (
     <Detail>
@@ -95,11 +101,7 @@ export function CalcDetail() {
           <CalcResultCard
             investedUsd={result.investedUsd}
             labels={t.staking.calc.result}
-            netYieldHint={
-              result.product === 'xmine'
-                ? t.staking.calc.result.legend.netYieldHintXmine
-                : t.staking.calc.result.legend.netYieldHint
-            }
+            netYieldHint={netYieldHint}
             profitUsd={result.profitUsd}
             ratePct={result.ratePct}
             releasedUsd={result.releasedUsd}
@@ -107,14 +109,7 @@ export function CalcDetail() {
             sellUsd={result.sellUsd}
           />
         ) : (
-          <CalcResultCardSkeleton
-            labels={t.staking.calc.result}
-            netYieldHint={
-              formProduct === 'xmine'
-                ? t.staking.calc.result.legend.netYieldHintXmine
-                : t.staking.calc.result.legend.netYieldHint
-            }
-          />
+          <CalcResultCardSkeleton labels={t.staking.calc.result} netYieldHint={netYieldHint} />
         )}
       </Section>
       <Section>

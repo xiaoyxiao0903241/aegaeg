@@ -58,12 +58,14 @@ export function StakingCurveChart() {
         principal: result.principal,
         price: result.price,
         spotUsd: result.spotUsd,
+        spotXUsd: result.spotXUsd,
+        horizonDays: result.days,
         epochRebasePct: result.epochRebasePct,
         epochsPerDay: result.epochsPerDay,
-        xmineDailyPct: result.xmineDailyPct,
         discountRateBP: result.discountRateBP,
+        yieldRateBP: result.yieldRateBP,
+        pdX: result.priceX,
         maxDays: CALC_MAX_DAYS,
-        horizonDays: result.days,
       })
     : []
   const curvePoints: readonly ChartPoint[] = yieldPoints.map((p) => ({

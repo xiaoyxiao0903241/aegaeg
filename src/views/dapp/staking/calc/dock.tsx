@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { type CalcProduct } from '~/core/staking/build-calc-estimate'
 import { calcSliderMarks } from '~/core/staking/calc-slider-marks'
 import { type StakePeriod } from '~/core/staking/staking-period'
-import { CALC_MAX_DAYS, CALC_X_START_USD, findBreakEvenDay } from '~/core/staking/staking-yield'
+import { CALC_MAX_DAYS, findBreakEvenDay } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -22,12 +22,56 @@ import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { CalcDaySlider, CalcHtabRow } from '~/views/dapp/staking/calc/primitives'
 import { useCalcEstimateLive } from '~/views/dapp/staking/calc/use-calc'
+import { useXmineOverviewQuery } from '~/web3/staking/use-staking-queries'
+import { xUsdFromAgxSpot } from '~/web3/staking/xmine-overview-read'
 
 const priceBox = amountBox()
 
-function formatSpotPriceDraft(n: number): string {
+function formatSpotPriceDraft(n: number, digits = 2): string {
   if (!Number.isFinite(n) || n <= 0) return ''
-  return formatNumber(n, { digits: 2, trimZeros: true }).replace(/,/g, '')
+  return formatNumber(n, { digits, trimZeros: true }).replace(/,/g, '')
+}
+
+function CalcExitPriceField({
+  ariaLabel,
+  current,
+  label,
+  onChange,
+  value,
+}: {
+  ariaLabel: string
+  current: string
+  label: string
+  onChange: (value: string) => void
+  value: string
+}) {
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <Text as="span" className="text-foreground/40" variant="copy">
+          {label}
+        </Text>
+        <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
+          {current}
+        </Text>
+      </div>
+      <Card as="div" className={priceBox.rootOutside()} surface="outlined">
+        <div className={priceBox.body()}>
+          <Input
+            aria-label={ariaLabel}
+            className={priceBox.inputOutside()}
+            inputMode="decimal"
+            onChange={(event) => onChange(event.target.value)}
+            value={value}
+            variant="amount"
+          />
+          <Text as="span" className="text-foreground/40" variant="headline">
+            $
+          </Text>
+        </div>
+      </Card>
+    </div>
+  )
 }
 
 /**
@@ -42,27 +86,44 @@ export function CalcDock() {
   const spotUsd = useAgxPriceUsd()
   const s = useCalcEstimateStore()
   const setPrice = useCalcEstimateStore((st) => st.setPrice)
+  const setPriceX = useCalcEstimateStore((st) => st.setPriceX)
   const setSpotUsd = useCalcEstimateStore((st) => st.setSpotUsd)
+  const setSpotXUsd = useCalcEstimateStore((st) => st.setSpotXUsd)
   const setDays = useCalcEstimateStore((st) => st.setDays)
   useCalcEstimateLive()
+  const xmineOverview = useXmineOverviewQuery({ enabled: s.product === 'xmine' })
+  const spotXUsd =
+    s.product === 'xmine' && spotUsd != null && xmineOverview.data != null
+      ? xUsdFromAgxSpot(spotUsd, xmineOverview.data.xPerAgx)
+      : null
   /** 每种产品只自动灌一次到期价；用户清空后不再写回。 */
   const filledPriceForProduct = useRef<CalcProduct | null>(null)
+  const filledPriceXForProduct = useRef<CalcProduct | null>(null)
 
   useEffect(() => {
     setSpotUsd(spotUsd != null && spotUsd > 0 ? spotUsd : null)
   }, [setSpotUsd, spotUsd])
 
   useEffect(() => {
-    if (s.product === 'xmine') {
-      filledPriceForProduct.current = 'xmine'
-      return
-    }
+    setSpotXUsd(spotXUsd != null && spotXUsd > 0 ? spotXUsd : null)
+  }, [setSpotXUsd, spotXUsd])
+
+  useEffect(() => {
     if (filledPriceForProduct.current === s.product) return
     if (spotUsd == null || !(spotUsd > 0)) return
     filledPriceForProduct.current = s.product
     if (s.price.trim() !== '') return
     setPrice(formatSpotPriceDraft(spotUsd))
   }, [s.price, s.product, setPrice, spotUsd])
+
+  useEffect(() => {
+    if (s.product !== 'xmine') return
+    if (filledPriceXForProduct.current === s.product) return
+    if (spotXUsd == null || !(spotXUsd > 0)) return
+    filledPriceXForProduct.current = s.product
+    if (s.priceX.trim() !== '') return
+    setPriceX(formatSpotPriceDraft(spotXUsd, 6))
+  }, [s.priceX, s.product, setPriceX, spotXUsd])
 
   const productOptions: ReadonlyArray<{ label: string; value: CalcProduct }> = [
     { label: t.staking.calc.products.stake, value: 'stake' },
@@ -91,54 +152,71 @@ export function CalcDock() {
         ? dappAssets.tokenAgx
         : dappAssets.tokenUsd1
   const spotLabel =
-    s.product === 'xmine'
-      ? formatNumber(CALC_X_START_USD, { digits: 2, prefix: '$' })
-      : spotUsd != null
-        ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
-        : formatNumber(0, { digits: 2, prefix: '$' })
+    spotUsd != null
+      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
+      : formatNumber(0, { digits: 2, prefix: '$' })
+  const spotXLabel =
+    spotXUsd != null
+      ? formatNumber(spotXUsd, { digits: 4, prefix: '$' })
+      : formatNumber(0, { digits: 4, prefix: '$' })
   const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
+  const priceXN = Number.parseFloat(s.priceX.replace(/,/g, '')) || 0
   const ratesOk =
     s.product === 'xmine'
-      ? s.rates?.xmineDailyPct != null
+      ? s.rates?.yieldRateBP != null && s.rates.yieldRateBP >= 0
       : s.rates?.epochRebasePct != null &&
         s.rates?.epochsPerDay != null &&
         (s.product === 'lpbond' || s.product === 'burnbond'
           ? s.rates.discountRateBP != null && s.rates.discountRateBP > 0
           : true)
   const spotReady = s.spotUsd != null && s.spotUsd > 0
-  const canCommit = amountN > 0 && priceN > 0 && ratesOk && spotReady
+  const spotXReady = s.product !== 'xmine' || (s.spotXUsd != null && s.spotXUsd > 0)
+  const canCommit =
+    amountN > 0 &&
+    priceN > 0 &&
+    ratesOk &&
+    spotReady &&
+    spotXReady &&
+    (s.product !== 'xmine' || priceXN > 0)
 
   const breakEvenDay = useMemo(() => {
     if (!ratesOk || !spotReady || priceN <= 0) return null
+    if (s.product === 'xmine' && (!(priceXN > 0) || !spotXReady)) return null
     return findBreakEvenDay({
       product: s.product,
       period: s.period,
       amount: amountN > 0 ? amountN : 1,
       pd: priceN,
+      pdX: s.product === 'xmine' ? priceXN : null,
       spotUsd: s.spotUsd ?? 0,
+      spotXUsd: s.product === 'xmine' ? s.spotXUsd : null,
+      horizonDays: s.days,
       epochRebasePct: s.rates?.epochRebasePct ?? null,
       epochsPerDay: s.rates?.epochsPerDay ?? null,
-      xmineDailyPct: s.product === 'xmine' ? (s.rates?.xmineDailyPct ?? null) : null,
       discountRateBP:
         s.product === 'lpbond' || s.product === 'burnbond'
           ? (s.rates?.discountRateBP ?? null)
           : null,
-      horizonDays: CALC_MAX_DAYS,
+      yieldRateBP: s.product === 'xmine' ? (s.rates?.yieldRateBP ?? null) : null,
       maxDays: CALC_MAX_DAYS,
     })
   }, [
     amountN,
     priceN,
+    priceXN,
     ratesOk,
     s.period,
     s.product,
     s.rates?.discountRateBP,
     s.rates?.epochRebasePct,
     s.rates?.epochsPerDay,
-    s.rates?.xmineDailyPct,
+    s.rates?.yieldRateBP,
     s.spotUsd,
+    s.spotXUsd,
+    s.days,
     spotReady,
+    spotXReady,
   ])
   const marks = calcSliderMarks({ period: s.period, breakEvenDay })
 
@@ -197,32 +275,23 @@ export function CalcDock() {
           startAdornment={null}
         />
 
-        <div className="grid gap-2">
-          <div className="flex items-center justify-between gap-3">
-            <Text as="span" className="text-foreground/40" variant="copy">
-              {s.product === 'xmine' ? t.staking.calc.priceX : t.staking.calc.price}
-            </Text>
-            <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-              {interpolate(t.staking.calc.priceCurrent, { price: spotLabel })}
-            </Text>
-          </div>
-          {/* 复用 AmountBox 外部标签样式，价格输入仍用 Input */}
-          <Card as="div" className={priceBox.rootOutside()} surface="outlined">
-            <div className={priceBox.body()}>
-              <Input
-                aria-label={t.staking.calc.priceAria}
-                className={priceBox.inputOutside()}
-                inputMode="decimal"
-                onChange={(event) => s.setPrice(event.target.value)}
-                value={s.price}
-                variant="amount"
-              />
-              <Text as="span" className="text-foreground/40" variant="headline">
-                $
-              </Text>
-            </div>
-          </Card>
-        </div>
+        <CalcExitPriceField
+          ariaLabel={t.staking.calc.priceAria}
+          current={interpolate(t.staking.calc.priceCurrent, { price: spotLabel })}
+          label={t.staking.calc.price}
+          onChange={s.setPrice}
+          value={s.price}
+        />
+
+        {s.product === 'xmine' ? (
+          <CalcExitPriceField
+            ariaLabel={t.staking.calc.priceXAria}
+            current={interpolate(t.staking.calc.priceCurrent, { price: spotXLabel })}
+            label={t.staking.calc.priceX}
+            onChange={setPriceX}
+            value={s.priceX}
+          />
+        ) : null}
 
         <div className="grid gap-2">
           <div className="flex items-center justify-between gap-3">

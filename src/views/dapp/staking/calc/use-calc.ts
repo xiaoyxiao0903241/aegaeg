@@ -20,13 +20,13 @@ import {
  * 计算器实时估算胶水
  *
  * 表单字段由 UI 直订 `useCalcEstimateStore`；本 hook 只把链上利率灌进 store。
- * rebase 与日频同一查询；债券再读当前档 `discountRateBP`。缺数保持 loading。
+ * rebase 与日频同一查询；债券再读当前档 `discountRateBP`；挖矿再读 `yieldRateBP`。缺数保持 loading。
  */
 export function useCalcEstimateLive() {
   const product = useCalcEstimateStore((s) => s.product)
   const period = useCalcEstimateStore((s) => s.period)
   const rebaseQuery = useLatestSagxRebaseRateQuery()
-  const xmineOverviewQuery = useXmineOverviewQuery()
+  const xmineQuery = useXmineOverviewQuery({ enabled: product === 'xmine' })
   const liveSync = useCalcEstimateStore((s) => s.liveSync)
   const isBond = product === 'lpbond' || product === 'burnbond'
   let depository: ReturnType<typeof lpBondDepositoryAddress> | null = null
@@ -46,8 +46,6 @@ export function useCalcEstimateLive() {
   })
 
   const epochRebasePct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
-  const xmineDailyPct =
-    xmineOverviewQuery.data != null ? Number(xmineOverviewQuery.data.yieldRateBP) / 100 : null
   const epochsPerDay = rebaseQuery.data?.epochsPerDay ?? null
   const liveDiscount = bondMarketQuery.data?.discountRateBP
   let discountRateBP: number | null = null
@@ -55,8 +53,14 @@ export function useCalcEstimateLive() {
     const n = Number(liveDiscount)
     if (Number.isFinite(n) && n > 0) discountRateBP = n
   }
+  const rawYield = product === 'xmine' ? xmineQuery.data?.yieldRateBP : null
+  let yieldRateBP: number | null = null
+  if (rawYield != null) {
+    const n = Number(rawYield)
+    if (Number.isFinite(n) && n >= 0) yieldRateBP = n
+  }
 
   useEffect(() => {
-    liveSync({ epochRebasePct, xmineDailyPct, epochsPerDay, discountRateBP })
-  }, [liveSync, epochRebasePct, xmineDailyPct, epochsPerDay, discountRateBP])
+    liveSync({ epochRebasePct, epochsPerDay, discountRateBP, yieldRateBP })
+  }, [liveSync, epochRebasePct, epochsPerDay, discountRateBP, yieldRateBP])
 }

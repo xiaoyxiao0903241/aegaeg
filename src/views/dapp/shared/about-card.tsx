@@ -25,9 +25,9 @@ const aboutCard = tv({
     washLavender:
       'pointer-events-none absolute -top-2 right-0 h-42 w-96 bg-linear-to-r from-transparent to-(--rewards-carousel-wash)',
     body: 'relative z-1 grid min-w-0 gap-3',
-    /** 装饰插画：水平翻转朝左，仅 PC 渲染，由容器 overflow-hidden 裁切。 */
+    /** 装饰插画：仅 PC 渲染，由容器 overflow-hidden 裁切。 */
     decoration:
-      'pointer-events-none absolute top-2 right-4 z-2 h-36 w-25 -scale-x-100 object-contain object-bottom',
+      'pointer-events-none absolute top-2 right-4 z-2 h-36 w-25 object-contain object-bottom',
   },
   variants: {
     withDecoration: {

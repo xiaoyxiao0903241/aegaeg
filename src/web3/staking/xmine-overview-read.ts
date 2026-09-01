@@ -93,3 +93,17 @@ export function agxAmountPerXFromXPerAgx(xPerAgx: bigint): bigint {
   if (xPerAgx === 0n) return 0n
   return (X_PER_AGX_SCALE * AGX_DECIMALS_FACTOR) / xPerAgx
 }
+
+/**
+ * 用 AGX 现价和链上 xPerAgx 折 X 美元价。
+ *
+ * @param spotUsd AGX 现价
+ * @param xPerAgx 1e18 标度 X-per-AGX
+ * @returns X 美元价；缺数或无效为 null
+ */
+export function xUsdFromAgxSpot(spotUsd: number, xPerAgx: bigint): number | null {
+  const agxPerX = agxAmountPerXFromXPerAgx(xPerAgx)
+  if (!(spotUsd > 0) || agxPerX <= 0n) return null
+  const px = (spotUsd * Number(agxPerX)) / Number(AGX_DECIMALS_FACTOR)
+  return Number.isFinite(px) && px > 0 ? px : null
+}

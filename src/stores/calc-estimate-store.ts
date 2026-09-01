@@ -6,14 +6,15 @@ import {
   type CalcProduct,
 } from '~/core/staking/build-calc-estimate'
 import type { StakePeriod } from '~/core/staking/staking-period'
-import { CALC_DEFAULT_DAYS, CALC_MAX_DAYS, CALC_X_START_USD } from '~/core/staking/staking-yield'
+import { CALC_DEFAULT_DAYS, CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 
 type LiveRates = {
   epochRebasePct: number | null
-  xmineDailyPct: number | null
   epochsPerDay: number | null
   /** 链上债券成交价率 BPS；非债券为 null。 */
-  discountRateBP: number | null
+  discountRateBP?: number | null
+  /** 链上挖矿日利率 BPS；非挖矿可缺。 */
+  yieldRateBP?: number | null
 }
 
 type CalcEstimateStore = {
@@ -21,8 +22,12 @@ type CalcEstimateStore = {
   period: StakePeriod
   amount: string
   price: string
+  /** 到期 X 价草稿；仅 X 挖矿使用。 */
+  priceX: string
   /** AGX 投入现价；未灌入或失效时为 null。 */
   spotUsd: number | null
+  /** X 现价；仅 X 挖矿使用，未灌入或失效时为 null。 */
+  spotXUsd: number | null
   days: number
   /** 最近一次链上利率；点「计算」时写入快照。 */
   rates: LiveRates | null
@@ -31,7 +36,9 @@ type CalcEstimateStore = {
   setPeriod: (period: StakePeriod) => void
   setAmount: (amount: string) => void
   setPrice: (price: string) => void
+  setPriceX: (priceX: string) => void
   setSpotUsd: (spotUsd: number | null) => void
+  setSpotXUsd: (spotXUsd: number | null) => void
   setDays: (days: number) => void
   /**
    * 灌链上利率。利率就绪且尚无结果、或当前快照已不是这个产品/周期时写入右侧；
@@ -56,30 +63,35 @@ function snapshotFrom(s: {
   period: StakePeriod
   amount: string
   price: string
+  priceX: string
   spotUsd: number | null
+  spotXUsd: number | null
   days: number
   rates: LiveRates | null
 }): CalcEstimateResult {
   const rates = s.rates
+  const isXmine = s.product === 'xmine'
   return buildCalcEstimate({
     product: s.product,
     period: s.period,
     amount: s.amount,
     price: s.price,
+    priceX: isXmine ? s.priceX : undefined,
     spotUsd: s.spotUsd ?? 0,
+    spotXUsd: isXmine ? s.spotXUsd : null,
     days: s.days,
     epochRebasePct: rates?.epochRebasePct ?? null,
-    xmineDailyPct: s.product === 'xmine' ? (rates?.xmineDailyPct ?? null) : null,
     epochsPerDay: rates?.epochsPerDay ?? null,
     discountRateBP:
       s.product === 'lpbond' || s.product === 'burnbond' ? (rates?.discountRateBP ?? null) : null,
+    yieldRateBP: isXmine ? (rates?.yieldRateBP ?? null) : null,
   })
 }
 
 function ratesReady(product: CalcProduct, rates: LiveRates | null): boolean {
   if (rates == null) return false
   if (product === 'xmine') {
-    return rates.xmineDailyPct != null && Number.isFinite(rates.xmineDailyPct)
+    return rates.yieldRateBP != null && Number.isFinite(rates.yieldRateBP) && rates.yieldRateBP >= 0
   }
   const rebaseOk =
     rates.epochRebasePct != null &&
@@ -101,12 +113,19 @@ function formReady(s: {
   product: CalcProduct
   amount: string
   price: string
+  priceX: string
   spotUsd: number | null
+  spotXUsd: number | null
   rates: LiveRates | null
 }): boolean {
   const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
+  const priceXN = Number.parseFloat(s.priceX.replace(/,/g, '')) || 0
   const spotOk = s.spotUsd != null && Number.isFinite(s.spotUsd) && s.spotUsd > 0
+  if (s.product === 'xmine') {
+    const spotXOk = s.spotXUsd != null && Number.isFinite(s.spotXUsd) && s.spotXUsd > 0
+    if (!(priceXN > 0) || !spotXOk) return false
+  }
   return amountN > 0 && priceN > 0 && spotOk && ratesReady(s.product, s.rates)
 }
 
@@ -115,7 +134,9 @@ function snapshotIfReady(s: {
   period: StakePeriod
   amount: string
   price: string
+  priceX: string
   spotUsd: number | null
+  spotXUsd: number | null
   days: number
   rates: LiveRates | null
 }): CalcEstimateResult | null {
@@ -152,9 +173,11 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
   product: 'stake',
   period: 'liquid',
   amount: '1',
-  /** AGX 产品空着等现价灌入；挖矿用算法起点价。 */
+  /** AGX 产品空着等现价灌入。 */
   price: '',
+  priceX: '',
   spotUsd: null,
+  spotXUsd: null,
   days: CALC_DEFAULT_DAYS,
   rates: null,
   result: null,
@@ -165,9 +188,8 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
       if (result) set({ result })
       return
     }
-    const xmine = product === 'xmine'
     const period = defaultPeriodFor(product)
-    const price = xmine ? String(CALC_X_START_USD) : draftAgxPrice(s.spotUsd)
+    const price = draftAgxPrice(s.spotUsd)
     const rates = ratesForProduct(product, s.rates)
     const next = { ...s, product, period, price, rates }
     // 新档利率未到时留下次快照，右栏不闪回骨架
@@ -194,6 +216,15 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
     }
     set({ price })
   },
+  setPriceX: (priceX) => {
+    const s = get()
+    const next = { ...s, priceX }
+    if (s.result == null && formReady(next)) {
+      set({ priceX, result: snapshotFrom(next) })
+      return
+    }
+    set({ priceX })
+  },
   setSpotUsd: (spotUsd) => {
     const s = get()
     const next = { ...s, spotUsd }
@@ -202,6 +233,15 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
       return
     }
     set({ spotUsd })
+  },
+  setSpotXUsd: (spotXUsd) => {
+    const s = get()
+    const next = { ...s, spotXUsd }
+    if (s.result == null && formReady(next)) {
+      set({ spotXUsd, result: snapshotFrom(next) })
+      return
+    }
+    set({ spotXUsd })
   },
   setDays: (days) => set({ days: Math.min(CALC_MAX_DAYS, Math.max(1, Math.round(days))) }),
   liveSync: (rates) => {

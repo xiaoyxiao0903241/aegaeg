@@ -10,7 +10,9 @@ test('store defaults to stake/liquid/day 100 with empty AGX price and no fake re
   assert.equal(s.period, 'liquid')
   assert.equal(s.days, 100)
   assert.equal(s.price, '')
+  assert.equal(s.priceX, '')
   assert.equal(s.spotUsd, null)
+  assert.equal(s.spotXUsd, null)
   assert.equal(s.result, null)
 })
 
@@ -31,7 +33,6 @@ test('liveSync waits for rates then writes first snapshot; later ticks do not re
   const store = useCalcEstimateStore.getState()
   store.liveSync({
     epochRebasePct: null,
-    xmineDailyPct: null,
     epochsPerDay: null,
   })
   assert.equal(useCalcEstimateStore.getState().result, null)
@@ -42,7 +43,6 @@ test('liveSync waits for rates then writes first snapshot; later ticks do not re
 
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
   })
   const first = useCalcEstimateStore.getState().result
@@ -53,7 +53,6 @@ test('liveSync waits for rates then writes first snapshot; later ticks do not re
 
   store.liveSync({
     epochRebasePct: 0.5,
-    xmineDailyPct: null,
     epochsPerDay: 2,
   })
   assert.equal(useCalcEstimateStore.getState().result, first)
@@ -92,7 +91,7 @@ test('setPeriod on ready stake rewrites the right-hand snapshot', async () => {
     price: '80',
     spotUsd: 80,
     days: 100,
-    rates: { epochRebasePct: 0.41, xmineDailyPct: null, epochsPerDay: 2, discountRateBP: null },
+    rates: { epochRebasePct: 0.41, epochsPerDay: 2, discountRateBP: null },
     result: null,
   })
   useCalcEstimateStore.getState().commit()
@@ -107,7 +106,7 @@ test('setPeriod on ready stake rewrites the right-hand snapshot', async () => {
   assert.notEqual(next, first)
 })
 
-test('setProduct to xmine with live daily pct rewrites snapshot', async () => {
+test('setProduct to xmine waits for yieldRateBP and X price', async () => {
   const { useCalcEstimateStore } = await loadModule('/src/stores/calc-estimate-store.ts')
 
   useCalcEstimateStore.setState({
@@ -115,20 +114,34 @@ test('setProduct to xmine with live daily pct rewrites snapshot', async () => {
     period: '180',
     amount: '1',
     price: '80',
+    priceX: '',
     spotUsd: 80,
+    spotXUsd: 0.02,
     days: 100,
-    rates: { epochRebasePct: 0.41, xmineDailyPct: 0.1, epochsPerDay: 2, discountRateBP: null },
+    rates: { epochRebasePct: 0.41, epochsPerDay: 2, discountRateBP: null },
     result: null,
   })
   useCalcEstimateStore.getState().commit()
   assert.equal(useCalcEstimateStore.getState().result?.product, 'stake')
 
   useCalcEstimateStore.getState().setProduct('xmine')
+  assert.equal(useCalcEstimateStore.getState().product, 'xmine')
+  assert.equal(useCalcEstimateStore.getState().period, 'liquid')
+  assert.equal(useCalcEstimateStore.getState().result?.product, 'stake')
+
+  useCalcEstimateStore.getState().setPriceX('0.02')
+  useCalcEstimateStore.getState().liveSync({
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+    yieldRateBP: 1,
+  })
   const next = useCalcEstimateStore.getState().result
   assert.ok(next)
   assert.equal(next.product, 'xmine')
   assert.equal(next.period, 'liquid')
-  assert.equal(next.price, 0.02)
+  assert.equal(next.price, 80)
+  assert.equal(next.priceX, 0.02)
+  assert.equal(next.yieldRateBP, 1)
 })
 
 test('setPeriod on bond keeps last snapshot until the new discount arrives', async () => {
@@ -141,7 +154,7 @@ test('setPeriod on bond keeps last snapshot until the new discount arrives', asy
     price: '80',
     spotUsd: 80,
     days: 180,
-    rates: { epochRebasePct: 0.41, xmineDailyPct: null, epochsPerDay: 2, discountRateBP: 9200 },
+    rates: { epochRebasePct: 0.41, epochsPerDay: 2, discountRateBP: 9200 },
     result: null,
   })
   useCalcEstimateStore.getState().commit()
@@ -156,7 +169,6 @@ test('setPeriod on bond keeps last snapshot until the new discount arrives', asy
 
   useCalcEstimateStore.getState().liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
     discountRateBP: 8000,
   })
@@ -166,15 +178,17 @@ test('setPeriod on bond keeps last snapshot until the new discount arrives', asy
   assert.equal(next.discountRateBP, 8000)
 })
 
-test('xmine liveSync waits for on-chain daily pct', async () => {
+test('xmine liveSync waits for yieldRateBP and X price, not rebase', async () => {
   const { useCalcEstimateStore } = await loadModule('/src/stores/calc-estimate-store.ts')
 
   useCalcEstimateStore.setState({
     product: 'xmine',
     period: 'liquid',
     amount: '1',
-    price: '0.02',
+    price: '80',
+    priceX: '0.02',
     spotUsd: 80,
+    spotXUsd: 0.02,
     days: 100,
     rates: null,
     result: null,
@@ -183,19 +197,19 @@ test('xmine liveSync waits for on-chain daily pct', async () => {
   const store = useCalcEstimateStore.getState()
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
   })
   assert.equal(useCalcEstimateStore.getState().result, null)
 
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: 0.1,
     epochsPerDay: 2,
+    yieldRateBP: 1,
   })
   const first = useCalcEstimateStore.getState().result
   assert.ok(first)
-  assert.equal(first.xmineDailyPct, 0.1)
+  assert.equal(first.product, 'xmine')
+  assert.equal(first.yieldRateBP, 1)
 })
 
 test('empty AGX price blocks first snapshot until setPrice', async () => {
@@ -215,7 +229,6 @@ test('empty AGX price blocks first snapshot until setPrice', async () => {
   const store = useCalcEstimateStore.getState()
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
   })
   assert.equal(useCalcEstimateStore.getState().result, null)
@@ -248,14 +261,12 @@ test('liveSync keeps result empty until rebase rate is ready', async () => {
   const store = useCalcEstimateStore.getState()
   store.liveSync({
     epochRebasePct: null,
-    xmineDailyPct: null,
     epochsPerDay: 2,
   })
   assert.equal(useCalcEstimateStore.getState().result, null)
 
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
     discountRateBP: null,
   })
@@ -281,7 +292,6 @@ test('bond liveSync waits for live discountRateBP', async () => {
   const store = useCalcEstimateStore.getState()
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
     discountRateBP: null,
   })
@@ -289,7 +299,6 @@ test('bond liveSync waits for live discountRateBP', async () => {
 
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
     discountRateBP: 9200,
   })
@@ -316,7 +325,6 @@ test('missing spotUsd blocks snapshot even with price and rates', async () => {
   const store = useCalcEstimateStore.getState()
   store.liveSync({
     epochRebasePct: 0.41,
-    xmineDailyPct: null,
     epochsPerDay: 2,
   })
   assert.equal(useCalcEstimateStore.getState().result, null)

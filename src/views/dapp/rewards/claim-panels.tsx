@@ -100,6 +100,8 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
   const vm = useMixedClaim(view)
   const t = vm.t
   const splitCtaActive = vm.canConfirm && !vm.submitting
+  const showRestake = vm.restakePct > 0
+  const showRelease = vm.releasePct > 0
 
   return (
     <TabHeader
@@ -183,47 +185,52 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           />
         </Card>
 
-        <RewardsDestinationCard tone="restake">
-          <RewardsDestinationCard.Header
-            title={vm.mixed.restakeLabel}
-            tone="restake"
-            trailing={vm.mixed.restakeInto}
-          />
-          <RewardsDestinationCard.Amount
-            amountText={vm.restakeAmountText}
-            tokenLabel={vm.mixed.tokenGagx}
-          />
-          <RewardsDestinationCard.Period label={vm.mixed.restakePeriod}>
-            <SelectMenu
-              ariaLabel={vm.mixed.restakeAria}
-              onSelect={(value) => vm.setRestakeDays(Number(value))}
-              options={vm.restakeOptions}
-              value={String(vm.restakeDays)}
-              variant="pill"
+        {/* 滑到端点时，占比为 0 的去向卡收起 */}
+        <Reveal appear={false} open={showRestake}>
+          <RewardsDestinationCard tone="restake">
+            <RewardsDestinationCard.Header
+              title={vm.mixed.restakeLabel}
+              tone="restake"
+              trailing={vm.mixed.restakeInto}
             />
-          </RewardsDestinationCard.Period>
-        </RewardsDestinationCard>
+            <RewardsDestinationCard.Amount
+              amountText={vm.restakeAmountText}
+              tokenLabel={vm.mixed.tokenGagx}
+            />
+            <RewardsDestinationCard.Period label={vm.mixed.restakePeriod}>
+              <SelectMenu
+                ariaLabel={vm.mixed.restakeAria}
+                onSelect={(value) => vm.setRestakeDays(Number(value))}
+                options={vm.restakeOptions}
+                value={String(vm.restakeDays)}
+                variant="pill"
+              />
+            </RewardsDestinationCard.Period>
+          </RewardsDestinationCard>
+        </Reveal>
 
-        <RewardsDestinationCard tone="release">
-          <RewardsDestinationCard.Header
-            title={t.rewards.claim}
-            tone="release"
-            trailing={vm.mixed.releaseInto}
-          />
-          <RewardsDestinationCard.Amount
-            amountText={vm.releaseAmountText}
-            tokenLabel={vm.mixed.tokenGagx}
-          />
-          <RewardsDestinationCard.Period label={vm.mixed.releasePeriod}>
-            <SelectMenu
-              ariaLabel={vm.mixed.releaseAria}
-              onSelect={(value) => vm.setReleaseDays(Number(value))}
-              options={vm.releaseOptions}
-              value={String(vm.releaseDays)}
-              variant="pill"
+        <Reveal appear={false} open={showRelease}>
+          <RewardsDestinationCard tone="release">
+            <RewardsDestinationCard.Header
+              title={t.rewards.claim}
+              tone="release"
+              trailing={vm.mixed.releaseInto}
             />
-          </RewardsDestinationCard.Period>
-        </RewardsDestinationCard>
+            <RewardsDestinationCard.Amount
+              amountText={vm.releaseAmountText}
+              tokenLabel={vm.mixed.tokenGagx}
+            />
+            <RewardsDestinationCard.Period label={vm.mixed.releasePeriod}>
+              <SelectMenu
+                ariaLabel={vm.mixed.releaseAria}
+                onSelect={(value) => vm.setReleaseDays(Number(value))}
+                options={vm.releaseOptions}
+                value={String(vm.releaseDays)}
+                variant="pill"
+              />
+            </RewardsDestinationCard.Period>
+          </RewardsDestinationCard>
+        </Reveal>
 
         {vm.walletReady ? (
           <MainButton
@@ -243,30 +250,34 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           >
             <span
               className={cn(
-                'flex flex-col items-start gap-0.5 text-left font-normal!',
+                'flex flex-col items-center gap-0.5 text-center font-normal!',
                 splitCtaActive && 'text-white',
               )}
             >
-              <Text
-                as="span"
-                className={cn('leading-4 font-normal!', splitCtaActive && 'text-white')}
-                variant="detail"
-              >
-                {vm.mixed.ctaRestakeLine.replace(
-                  '{amount}',
-                  `${vm.restakeAmountText} ${vm.mixed.tokenGagx}`,
-                )}
-              </Text>
-              <Text
-                as="span"
-                className={cn('leading-4 font-normal!', splitCtaActive && 'text-white')}
-                variant="detail"
-              >
-                {vm.mixed.ctaReleaseLine.replace(
-                  '{amount}',
-                  `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,
-                )}
-              </Text>
+              <Reveal appear={false} open={showRestake}>
+                <Text
+                  as="span"
+                  className={cn('leading-4 font-normal!', splitCtaActive && 'text-white')}
+                  variant="detail"
+                >
+                  {vm.mixed.ctaRestakeLine.replace(
+                    '{amount}',
+                    `${vm.restakeAmountText} ${vm.mixed.tokenGagx}`,
+                  )}
+                </Text>
+              </Reveal>
+              <Reveal appear={false} open={showRelease}>
+                <Text
+                  as="span"
+                  className={cn('leading-4 font-normal!', splitCtaActive && 'text-white')}
+                  variant="detail"
+                >
+                  {vm.mixed.ctaReleaseLine.replace(
+                    '{amount}',
+                    `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,
+                  )}
+                </Text>
+              </Reveal>
             </span>
           </MainButton>
         ) : (

@@ -232,22 +232,44 @@ test('computeCalcDay: lock day 90 of 180 only half principal in sell', () => {
   assert.ok(early.profitUsd < 0)
 })
 
-test('computeCalcDay: xmine daily X from on-chain daily pct, values at path prices', () => {
-  const snap = computeCalcDay({
-    product: 'xmine',
-    period: 'liquid',
-    amount: 100,
-    days: 2,
-    pd: 0.02,
-    spotUsd: 65,
-    epochRebasePct: null,
-    epochsPerDay: null,
-    xmineDailyPct: 0.1,
-  })
-  // flat AGX $65, flat X $0.02 → daily X = 100 * 65 * 0.001 / 0.02 = 325
-  assert.ok(Math.abs(snap.rewards - 650) < 1e-6)
-  assert.ok(snap.rewardsUsd > 0)
-  assert.equal(snap.costUsd, 6500)
+const xminePath = {
+  product: 'xmine',
+  period: 'liquid',
+  amount: 1000,
+  pd: 80,
+  pdX: 0.05,
+  spotUsd: 65,
+  spotXUsd: 0.02,
+  epochRebasePct: 0.41,
+  epochsPerDay: 2,
+  yieldRateBP: 1,
+}
+
+test('computeCalcDay: xmine walks spot→expiry then converts at each day price', () => {
+  const snap = computeCalcDay({ ...xminePath, days: 10 })
+  // 预热跳过 t=1；t=2..10 沿路径累 X，第 10 天钉在到期价 80 / 0.05
+  assert.ok(Math.abs(snap.rewards - 1951.712626547) < 1e-9)
+  assert.ok(Math.abs(snap.rewardsUsd - 97.585631327) < 1e-9)
+  assert.equal(snap.releasedUsd, 80_000)
+  assert.equal(snap.costUsd, 65_000)
+  assert.ok(Math.abs(snap.profitUsd - 15_097.585631327) < 1e-9)
+})
+
+test('computeCalcDay: xmine day 1 is warmup so mining rewards are 0', () => {
+  const snap = computeCalcDay({ ...xminePath, days: 1, horizonDays: 10 })
+  assert.equal(snap.rewards, 0)
+  assert.equal(snap.rewardsUsd, 0)
+  // 所选日=10 时第 1 天 AGX 线性走到 66.5
+  assert.equal(snap.releasedUsd, 66_500)
+})
+
+test('computeCalcDay: xmine higher expiry X price changes USD yield', () => {
+  const cheapX = computeCalcDay({ ...xminePath, days: 10, pdX: 0.02 })
+  const dearX = computeCalcDay({ ...xminePath, days: 10, pdX: 0.1 })
+  assert.equal(cheapX.rewards, 3330)
+  assert.equal(cheapX.rewardsUsd, 66.6)
+  assert.ok(dearX.rewards < cheapX.rewards)
+  assert.ok(dearX.rewardsUsd > cheapX.rewardsUsd)
 })
 
 test('findBreakEvenDay: locked 180 with Pd=P0 turns positive before maturity', () => {
@@ -417,21 +439,67 @@ test('computeCalcDay: missing spotUsd fail-closes instead of falling back to 65'
   assert.equal(snap.rewards, 0)
 })
 
-test('computeCalcDay: xmine daily X values AGX at spotUsd', () => {
-  const snap = computeCalcDay({
-    product: 'xmine',
+test('computeCalcDay: xmine does not use stake rebase when yieldRateBP is set', () => {
+  const xmine = computeCalcDay({
+    ...xminePath,
+    amount: 100,
+    days: 11,
+    pd: 80,
+    pdX: 0.02,
+    spotUsd: 80,
+  })
+  const stake = computeCalcDay({
+    product: 'stake',
     period: 'liquid',
     amount: 100,
-    days: 2,
-    pd: 0.02,
+    days: 11,
+    pd: 80,
     spotUsd: 80,
-    epochRebasePct: null,
-    epochsPerDay: null,
-    xmineDailyPct: 0.1,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
   })
-  // flat AGX $80, flat X $0.02 → daily X = 100 * 80 * 0.001 / 0.02 = 400
-  assert.ok(Math.abs(snap.rewards - 800) < 1e-6)
-  assert.equal(snap.costUsd, 8000)
+  assert.notEqual(xmine.rewards, stake.rewards)
+  assert.ok(xmine.rewards > 0)
+})
+
+test('computeCalcDay: xmine missing spotXUsd yields no mining rewards', () => {
+  const snap = computeCalcDay({
+    ...xminePath,
+    days: 10,
+    spotXUsd: 0,
+  })
+  assert.equal(snap.rewards, 0)
+  assert.equal(snap.rewardsUsd, 0)
+  assert.equal(snap.releasedUsd, 80_000)
+})
+
+test('buildCalcYieldCurvePoints: xmine curves to horizon then holds expiry prices', () => {
+  const points = buildCalcYieldCurvePoints({
+    product: 'xmine',
+    period: 'liquid',
+    principal: 1000,
+    price: 80,
+    pdX: 0.05,
+    spotUsd: 65,
+    spotXUsd: 0.02,
+    epochRebasePct: 0.41,
+    epochsPerDay: 2,
+    yieldRateBP: 1,
+    horizonDays: 10,
+    maxDays: 20,
+  })
+  const day10 = computeCalcDay({ ...xminePath, days: 10, horizonDays: 10 })
+  const day20 = computeCalcDay({ ...xminePath, days: 20, horizonDays: 10 })
+  assert.ok(Math.abs((points[9]?.profitUsd ?? 0) - day10.profitUsd) < 1e-9)
+  assert.ok(Math.abs((points[19]?.profitUsd ?? 0) - day20.profitUsd) < 1e-9)
+  const earlyStep = (points[1]?.profitUsd ?? 0) - (points[0]?.profitUsd ?? 0)
+  const latePathStep = (points[9]?.profitUsd ?? 0) - (points[8]?.profitUsd ?? 0)
+  const tailStep = (points[11]?.profitUsd ?? 0) - (points[10]?.profitUsd ?? 0)
+  const tailStep2 = (points[19]?.profitUsd ?? 0) - (points[18]?.profitUsd ?? 0)
+  assert.ok(Math.abs(earlyStep - latePathStep) > 1)
+  assert.ok(Math.abs(tailStep - 8) < 1e-9)
+  assert.ok(Math.abs(tailStep2 - 8) < 1e-9)
+  assert.ok(day20.profitUsd > day10.profitUsd)
 })
 
 test('buildCalcYieldCurvePoints: locked 180 profit is negative early, higher at maturity', () => {

@@ -9,9 +9,6 @@ export const CALC_MAX_DAYS = 540
 /** 计算器滑杆默认落点（天）。 */
 export const CALC_DEFAULT_DAYS = 100
 
-/** X 挖矿价格轨迹起点（USD）；算法常量，非链上参数。 */
-export const CALC_X_START_USD = 0.02
-
 export type CalcYieldCurvePoint = {
   day: number
   /** 第 day 天的收益总额（卖出总值 − 总投入），可为负。 */
@@ -253,33 +250,6 @@ export function releasedPrincipal(amount: number, days: number, lockDays: number
   return amount * Math.min(days / lockDays, 1)
 }
 
-/**
- * X 挖矿逐日路径：AGX 按投入现价，X 价从起点拟合到到期价。
- * 当日产出 = 本金 × AGX 现价 × 日利率 / 当日 X 价。
- */
-function xminePath(args: {
-  amount: number
-  horizonDays: number
-  pdX: number
-  maxDay: number
-  dailyValueRate: number
-  spotUsd: number
-}): { px: number[]; cumX: number[] } {
-  const d0 = Math.max(1, args.horizonDays)
-  const startX = CALC_X_START_USD
-  const g = (Math.max(args.pdX, 1e-12) / startX) ** (1 / d0)
-  const px = [startX]
-  const cumX = [0]
-  let cum = 0
-  for (let t = 1; t <= args.maxDay; t += 1) {
-    const pxT = startX * g ** t
-    cum += (args.amount * args.spotUsd * args.dailyValueRate) / Math.max(pxT, 1e-12)
-    px.push(pxT)
-    cumX.push(cum)
-  }
-  return { px, cumX }
-}
-
 function emptySnap(costUsd: number): CalcDaySnapshot {
   return {
     principalAgx: 0,
@@ -295,23 +265,52 @@ function emptySnap(costUsd: number): CalcDaySnapshot {
 }
 
 /**
+ * 现价走到到期价：未到所选日按 t/horizon，到达或之后钉住到期价。
+ *
+ * @param spot 现价
+ * @param end 到期价
+ * @param day 当前天
+ * @param horizon 价格走到到期价的天数
+ * @param kind linear=AGX；exp=X（与原型一致）
+ */
+function priceTowardExpiry(
+  spot: number,
+  end: number,
+  day: number,
+  horizon: number,
+  kind: 'linear' | 'exp',
+): number {
+  if (!(spot > 0) || !(end > 0) || !(horizon > 0) || day <= 0) return 0
+  const t = Math.min(day, horizon)
+  if (t >= horizon) return end
+  const frac = t / horizon
+  if (kind === 'exp') return spot * (end / spot) ** frac
+  return spot + (end - spot) * frac
+}
+
+/**
  * 第 d 天测算：复利按 epoch、加成按单利毛 Rebase、本金线性释放。
  *
  * 加成取 LOCKED_*_BONUS_BPS；债券 A = 购买额 / (现价 × 链上 discountRateBP/10000)。
  * 投入按 AGX 现价，卖出按用户到期价。现价 ≤0 时不计。利率或日频缺省时收益为 0。
- * 债券缺成交价率时不计本金。X 挖矿按当日 AGX 现价 × 链上日利率折成 X。
+ * 债券缺成交价率时不计本金。
+ * X 挖矿日利率用链上 yieldRateBP；所选日前 AGX 线性、X 指数从现价走到到期价，
+ * 每日 X = 本金 × 当日 AGX 价 × 日利率 ÷ 当日 X 价；过所选日钉住到期价继续计提。
+ * 第 1 天预热不计挖矿。缺 X 现价则挖矿收益为 0。
  *
  * @param args.product 产品
  * @param args.period 周期
  * @param args.amount 质押 AGX / 挖矿 gAGX / 债券购买 USD1
  * @param args.days 测算天数
- * @param args.pd 到期 AGX 价（挖矿则为到期 X 价）
+ * @param args.pd 到期 AGX 价
+ * @param args.pdX 到期 X 价；仅 X 挖矿
  * @param args.spotUsd AGX 投入现价；≤0 时不计
+ * @param args.spotXUsd X 现价；仅 X 挖矿，缺则挖矿收益为 0
+ * @param args.horizonDays 价格走到到期价的天数；缺则等于 days
  * @param args.epochRebasePct 链上单 epoch rebase（百分比）；缺则收益为 0
  * @param args.epochsPerDay 链上每日 epoch 数；缺则收益为 0
- * @param args.xmineDailyPct 链上 X 挖矿日利率（百分比）；缺则挖矿收益为 0
  * @param args.discountRateBP 链上债券成交价率 BPS；债券缺则不计
- * @param args.horizonDays 挖矿价格轨迹拟合天数；缺省与 days 相同
+ * @param args.yieldRateBP 链上挖矿日利率 BPS；仅 X 挖矿，缺则挖矿收益为 0
  * @returns 本金 / 释放 / 收益 / 卖出 / 收益率
  * @see docs/onchain-manual/contracts/rewardmanager.md
  * @see docs/onchain-manual/contracts/bonddepository.md
@@ -323,12 +322,14 @@ export function computeCalcDay(args: {
   amount: number
   days: number
   pd: number
+  pdX?: number | null
   spotUsd: number
+  spotXUsd?: number | null
+  horizonDays?: number | null
   epochRebasePct: number | null
   epochsPerDay: number | null
-  xmineDailyPct?: number | null
   discountRateBP?: number | null
-  horizonDays?: number
+  yieldRateBP?: number | null
 }): CalcDaySnapshot {
   const days = Math.min(Math.max(0, Math.round(args.days)), CALC_MAX_DAYS)
   const pd = args.pd
@@ -336,41 +337,6 @@ export function computeCalcDay(args: {
   const spotOk = Number.isFinite(spotUsd) && spotUsd > 0
   const isBond = args.product === 'lpbond' || args.product === 'burnbond'
   const lock = calcLockDays(args.period)
-
-  if (args.product === 'xmine') {
-    const A = args.amount
-    const costUsd = A > 0 && spotOk ? A * spotUsd : 0
-    if (!(A > 0) || !(days >= 1) || !(pd > 0) || !spotOk) return emptySnap(costUsd)
-    const dailyPct = args.xmineDailyPct
-    const dailyValueRate =
-      dailyPct != null && Number.isFinite(dailyPct) && dailyPct >= 0 ? dailyPct / 100 : 0
-    const horizon = args.horizonDays ?? days
-    const path = xminePath({
-      amount: A,
-      horizonDays: horizon,
-      pdX: pd,
-      maxDay: days,
-      dailyValueRate,
-      spotUsd,
-    })
-    const releasedAgx = releasedPrincipal(A, days, lock)
-    const rewards = path.cumX[days] ?? 0
-    const releasedUsd = releasedAgx * spotUsd
-    const rewardsUsd = rewards * (path.px[days] ?? pd)
-    const sellUsd = releasedUsd + rewardsUsd
-    const profitUsd = sellUsd - costUsd
-    return {
-      principalAgx: A,
-      costUsd,
-      releasedAgx,
-      rewards,
-      releasedUsd,
-      rewardsUsd,
-      sellUsd,
-      profitUsd,
-      ratePct: costUsd > 0 ? (profitUsd / costUsd) * 100 : 0,
-    }
-  }
 
   let principalAgx: number
   let costUsd: number
@@ -396,26 +362,61 @@ export function computeCalcDay(args: {
 
   const releasedAgx = releasedPrincipal(principalAgx, days, lock)
   let rewards = 0
-  const rp = args.epochRebasePct
-  const perDay = args.epochsPerDay
-  if (
-    rp != null &&
-    Number.isFinite(rp) &&
-    rp >= 0 &&
-    perDay != null &&
-    perDay > 0 &&
-    Number.isFinite(perDay)
-  ) {
-    const n = perDay * days
-    const r = rp / 100
-    const compounded = principalAgx * ((1 + r) ** n - 1)
-    const bonusRate = isBond ? 0 : lockedBonusBps(args.period) / 10_000
-    const simple = principalAgx * r * n
-    rewards = compounded + simple * bonusRate
+  let rewardsUsd = 0
+  const horizonRaw = args.horizonDays
+  const horizon =
+    horizonRaw != null && Number.isFinite(horizonRaw) && horizonRaw >= 1
+      ? Math.min(Math.max(1, Math.round(horizonRaw)), CALC_MAX_DAYS)
+      : days
+
+  if (args.product === 'xmine') {
+    const bp = args.yieldRateBP
+    const pdX = args.pdX
+    const spotX = args.spotXUsd
+    const rate = bp != null && Number.isFinite(bp) && bp >= 0 ? bp / 10_000 : 0
+    const pathOk =
+      pdX != null &&
+      Number.isFinite(pdX) &&
+      pdX > 0 &&
+      spotX != null &&
+      Number.isFinite(spotX) &&
+      spotX > 0 &&
+      rate > 0
+    if (pathOk) {
+      let totalX = 0
+      for (let t = 2; t <= days; t += 1) {
+        const pa = priceTowardExpiry(spotUsd, pd, t, horizon, 'linear')
+        const px = priceTowardExpiry(spotX, pdX, t, horizon, 'exp')
+        if (px > 0) totalX += (principalAgx * pa * rate) / px
+      }
+      rewards = totalX
+      const pxMark = priceTowardExpiry(spotX, pdX, days, horizon, 'exp')
+      rewardsUsd = totalX * pxMark
+    }
+  } else {
+    const rp = args.epochRebasePct
+    const perDay = args.epochsPerDay
+    if (
+      rp != null &&
+      Number.isFinite(rp) &&
+      rp >= 0 &&
+      perDay != null &&
+      perDay > 0 &&
+      Number.isFinite(perDay)
+    ) {
+      const n = perDay * days
+      const r = rp / 100
+      const compounded = principalAgx * ((1 + r) ** n - 1)
+      const bonusRate = isBond ? 0 : lockedBonusBps(args.period) / 10_000
+      const simple = principalAgx * r * n
+      rewards = compounded + simple * bonusRate
+    }
+    rewardsUsd = rewards * pd
   }
 
-  const releasedUsd = releasedAgx * pd
-  const rewardsUsd = rewards * pd
+  const markAgx =
+    args.product === 'xmine' ? priceTowardExpiry(spotUsd, pd, days, horizon, 'linear') : pd
+  const releasedUsd = releasedAgx * markAgx
   const sellUsd = releasedUsd + rewardsUsd
   const profitUsd = sellUsd - costUsd
   return {
@@ -450,19 +451,19 @@ export function findBreakEvenDay(
 /**
  * 计算器预估曲线：第 1..maxDays 天的收益总额（USD，可为负）。
  *
- * 挖矿价格轨迹按 `horizonDays`（缺省为 maxDays）拟合到到期价，再沿轨迹逐日取值。
- *
  * @param args.product 产品类型
  * @param args.period 产品周期
  * @param args.principal 本金（stake/xmine 为代币量；债券为 USD1）
- * @param args.price 到期 AGX 价（挖矿则为到期 X 价）
+ * @param args.price 到期 AGX 价
+ * @param args.pdX 到期 X 价；仅 X 挖矿
  * @param args.spotUsd AGX 投入现价
+ * @param args.spotXUsd X 现价；仅 X 挖矿
+ * @param args.horizonDays 价格走到到期价的天数；缺则每点各自走到该日
  * @param args.epochRebasePct 实时 epoch 收益率（百分比）；null 表示按零收益计算
  * @param args.epochsPerDay 链上每日 epoch 数；缺 → 零利息曲线
- * @param args.xmineDailyPct 链上 X 挖矿日利率（%）；缺 → 挖矿零收益
  * @param args.discountRateBP 链上债券成交价率 BPS；债券缺 → 不计本金
+ * @param args.yieldRateBP 链上挖矿日利率 BPS；挖矿缺 → 零挖矿收益
  * @param args.maxDays 曲线最大天数；缺省为 CALC_MAX_DAYS
- * @param args.horizonDays 挖矿轨迹拟合天数；缺省 maxDays
  * @returns 逐日收益总额点数组
  */
 export function buildCalcYieldCurvePoints(args: {
@@ -470,16 +471,17 @@ export function buildCalcYieldCurvePoints(args: {
   period: StakePeriod
   principal: number
   price: number
+  pdX?: number | null
   spotUsd: number
+  spotXUsd?: number | null
+  horizonDays?: number | null
   epochRebasePct: number | null
   epochsPerDay?: number | null
-  xmineDailyPct?: number | null
   discountRateBP?: number | null
+  yieldRateBP?: number | null
   maxDays?: number
-  horizonDays?: number
 }): CalcYieldCurvePoint[] {
   const maxDays = args.maxDays ?? CALC_MAX_DAYS
-  const horizon = args.horizonDays ?? maxDays
   const points: CalcYieldCurvePoint[] = []
   for (let day = 1; day <= maxDays; day += 1) {
     const snap = computeCalcDay({
@@ -488,12 +490,14 @@ export function buildCalcYieldCurvePoints(args: {
       amount: args.principal,
       days: day,
       pd: args.price,
+      pdX: args.pdX,
       spotUsd: args.spotUsd,
+      spotXUsd: args.spotXUsd,
+      horizonDays: args.horizonDays,
       epochRebasePct: args.epochRebasePct,
       epochsPerDay: args.epochsPerDay ?? null,
-      xmineDailyPct: args.xmineDailyPct,
       discountRateBP: args.discountRateBP,
-      horizonDays: horizon,
+      yieldRateBP: args.yieldRateBP,
     })
     points.push({ day, profitUsd: snap.profitUsd })
   }
