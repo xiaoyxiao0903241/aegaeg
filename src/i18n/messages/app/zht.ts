@@ -36,7 +36,7 @@ const app = defineMessages({
         debtCapacityReached: '債券容量不足，請稍後再試。',
         turbineCooldown: '冷卻尚未結束，請刷新冷卻記錄後重試。',
         pairNotExist: '交易對不存在，請檢查代幣配置。',
-        configNotReady: '協議配置未就緒，請稍後再試。',
+        configNotReady: '緩衝池／釋放隊列配置尚未就緒，請稍後再試。',
         exceedsMax: '金額超過上限，請降低金額。',
         bondTooSmall: '債券兌付過小，請增加購買金額。',
         bondTooLarge: '超過單筆債券上限，請降低購買金額。',
@@ -493,7 +493,7 @@ const app = defineMessages({
       unlockAction: '解鎖',
       unlockSuccess: '解鎖成功，已進入冷卻',
       claimAction: '提取',
-      claimSuccess: '提取成功',
+      claimSuccess: '已提交提取，gAGX 將轉入錢包',
       claimEmpty: '暫無解鎖記錄',
       claimable: '可提取',
       cooling: '冷卻中',
@@ -554,8 +554,8 @@ const app = defineMessages({
       items: [
         {
           key: 'usd1',
-          title: 'USD1 · 結算穩定幣',
-          body: '協議核心結算穩定幣，1:1 錨定、零滑點兌換，貫穿 Genesis 認購、質押與支付場景。',
+          title: 'USD1 · 核心結算資產',
+          body: 'AEGIS X 生態的核心結算資產，連接價值流轉、流動性網絡與支付場景。',
         },
         {
           key: 'agx',
@@ -565,7 +565,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · 收益結算憑證',
-          body: 'Rebase 與 DAO 獎勵的統一結算憑證，可 1:1 兌換 AGX，也可質押挖取 X。',
+          body: '協議收益結算憑證，可兌換為 AGX，並用於生態挖礦與收益再利用。',
         },
         {
           key: 'gagxStake',
@@ -585,7 +585,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: '渦輪 · 配額解鎖中樞',
-          body: '釋放領取的獎勵先進入渦輪配額。用 USD1 買入等量 AGX 後進入 24–96 小時靜默期；到期提取的 gAGX 經分流器線性釋放，不會立刻到錢包。',
+          body: '從釋放隊列領取的獎勵進入渦輪配額。使用 USD1 買入等量 AGX 後進入 24–96 小時冷卻期；冷卻結束後，可將已解鎖的 gAGX 提取至錢包。',
         },
       ],
     },
@@ -2557,7 +2557,7 @@ const app = defineMessages({
           'Rebase 每約 {hours} 小時結算一次（每日 {timesPerDay} 次），按單次 Rebase 收益率 {rebase}% 逐次複利測算；長週期在此基礎上按單利口徑的 Rebase 收益額外計發收益率加成：180 天 10%、360 天 15%、540 天 20%。',
           '本金按所選週期區塊線性釋放，賣出總值僅計入測算日已釋放的本金；未釋放本金不計入賣出。',
           '複利 Rebase 收益與加成收益之和構成淨收益，連同已釋放本金按您設定的到期價格全部賣出計算；測算未計入領取收益時需消耗的貢獻點數成本。',
-          '測算結果未扣除收益釋放時的所得稅，也未考慮收益與本金釋放期間價格波動的影響；結果僅供參考，實際收益隨協議運行狀態動態變化。',
+          '測算結果未扣除收益釋放稅費，也未考慮收益與本金釋放期間價格波動的影響；結果僅供參考，實際收益隨協議運行狀態動態變化。',
         ],
       },
     },

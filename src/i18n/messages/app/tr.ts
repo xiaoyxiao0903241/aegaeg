@@ -1,5 +1,7 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
 
+import type { AppMessagesBundle } from './types'
+
 const app = defineMessages({
   common: {
     brand: 'AEGIS X',
@@ -31,10 +33,10 @@ const app = defineMessages({
       reverts: {
         stakeAmountLimit: 'Günlük stake limiti aşıldı. Tutarı düşürün veya sıfırlanmayı bekleyin.',
         debtCapacityReached: 'Tahvil kapasitesi dolu. Lütfen daha sonra tekrar deneyin.',
-        turbineCooldown:
-          'Soğuma bitmedi veya tutar geçersiz. Soğuma kayıtlarını yenileyip tekrar deneyin.',
+        turbineCooldown: 'Bekleme süresi henüz bitmedi. Kayıtları yenileyip tekrar deneyin.',
         pairNotExist: 'İşlem çifti yok. Token yapılandırmasını kontrol edin.',
-        configNotReady: 'Protokol yapılandırması hazır değil. Lütfen daha sonra tekrar deneyin.',
+        configNotReady:
+          'Tampon havuzu / serbest bırakma kuyruğu yapılandırması hazır değil. Lütfen daha sonra tekrar deneyin.',
         exceedsMax: 'Tutar üst sınırı aşıyor. Lütfen düşürün.',
         bondTooSmall: 'Tahvil ödemesi çok küçük. Satın alma tutarını artırın.',
         bondTooLarge: 'Tek işlem tahvil üst sınırı aşıldı. Satın alma tutarını düşürün.',
@@ -103,7 +105,7 @@ const app = defineMessages({
     },
     xmine: {
       STAKE_X: 'Stake',
-      UNSTAKE_X: 'Unstake',
+      UNSTAKE_X: 'Stake’ten çıkar',
       REWARD: 'Al',
     },
     buffer: {
@@ -486,7 +488,7 @@ const app = defineMessages({
       segmentAriaLabel: 'Türbin işlemleri',
       segments: {
         unlock: 'Kilidi aç',
-        claim: 'Talep et',
+        claim: 'Çek',
       },
       unlockLabel: 'Kilidi aç',
       unlockable: 'Kilidi açılabilir',
@@ -504,8 +506,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours} sa',
       unlockAction: 'Kilidi aç',
       unlockSuccess: 'Kilit açıldı — soğuma başladı',
-      claimAction: 'Talep et',
-      claimSuccess: 'Talep başarılı',
+      claimAction: 'Çek',
+      claimSuccess: 'Çekim gönderildi—gAGX cüzdanınıza aktarılacak',
       claimEmpty: 'Henüz kilit açma kaydı yok',
       claimable: 'Çekilebilir',
       cooling: 'Soğuma',
@@ -522,12 +524,12 @@ const app = defineMessages({
         'Satış likiditesini alım talebine bağlayın; her kilit açılışı eşit alımla eşlensin',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'Kilidi açmak için 1:1 satın al',
+          body: 'Serbest bırakma havuzundan alınan gAGX, Türbin içinde kilitli kalır. Aynı miktarda gAGX’in kilidini açmak için güncel fiyattan USD1 ile eşit miktarda AGX satın alın; her kilit açma işlemi alım talebiyle desteklenir.',
         },
         {
           title: 'Dinamik soğuma',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'Her kilit açma işlemi, piyasa durumuna göre ayarlanan 24–96 saatlik bekleme süresine girer. Süre tamamlandığında kilidi açılan gAGX’i cüzdanınıza çekin.',
         },
       ],
       metrics: {
@@ -570,7 +572,7 @@ const app = defineMessages({
         {
           key: 'usd1',
           title: 'USD1 · Temel uzlaşma varlığı',
-          body: 'AEGIS X ekosisteminin temel uzlaşma stablecoin’i; 1:1 sabit, kaymasız takas; Genesis abonelik, stake ve ödeme senaryolarını bağlar.',
+          body: 'AEGIS X ekosisteminin temel uzlaşma varlığıdır; değer dolaşımını, likidite ağlarını ve ödeme senaryolarını birbirine bağlar.',
         },
         {
           key: 'agx',
@@ -580,7 +582,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · Getiri uzlaşma belgesi',
-          body: 'Rebase ve DAO ödüllerinin birleşik uzlaşma belgesi; 1:1 AGX’e çevrilebilir veya X madenciliği için stake edilebilir.',
+          body: 'AGX’e çevrilebilen ve ekosistem madenciliği ile getiri yeniden değerlendirmesinde kullanılan protokol ödül uzlaşma belgesidir.',
         },
         {
           key: 'gagxStake',
@@ -589,8 +591,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · Ekosistem hakları tokenı',
+          body: 'Zincir üstü katkıyı kaydeden ve haklar, etkinlikler ile airdrop avantajlarında kullanılabilen ekosistem katılım ve hak tokenıdır.',
         },
         {
           key: 'contribution',
@@ -600,7 +602,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'Türbin · Kota kilit açma merkezi',
-          body: 'Serbest bırakma kuyruğundan alınan ödüller önce Türbin kotasına girer. USD1 ile eşit AGX almak 24–96 saatlik sessizliği başlatır; süre bitince gAGX splitter üzerinden doğrusal serbest bırakılır ve cüzdana hemen gelmez.',
+          body: 'Serbest bırakma kuyruğundan alınan ödüller Türbin kotasına girer. USD1 ile eşit miktarda AGX satın almak 24–96 saatlik bekleme süresini başlatır. Süre tamamlandığında kilidi açılan gAGX cüzdana çekilebilir.',
         },
       ],
     },
@@ -1009,7 +1011,8 @@ const app = defineMessages({
       referral: {
         title: 'Referans ödülü',
         body: 'Ortak inşaya ortak davet ederek ödül kazanın',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'Doğrudan referansların Rebase’iyle ilgili ödüller; DaoPool Mixed üzerinden talep edilir (katkı {ratio}).',
       },
       participate: {
         title: 'Katılım ödülü',
@@ -1141,7 +1144,7 @@ const app = defineMessages({
       contributionHint: 'Talepler {ratio} harcar',
       nextPayout: 'Sonraki ödül dağıtımı',
       recordsTitle: 'Referans ödülü kayıtları',
-      recordsColumns: ['Zaman', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
+      recordsColumns: ['Zaman', 'Tutar', 'Durum', 'Talep zamanı'],
       emptyRecords: 'Henüz ödül kaydı yok. Dağıtımdan sonra kayıtlar burada görünür.',
       referralsTitle: 'Referanslarım ({count})',
       referralsColumns: ['Katılım zamanı', 'Adres', 'Pozisyon', 'Kümülatif referans ödülü'],
@@ -1190,7 +1193,7 @@ const app = defineMessages({
       contributionHint: 'Talepler {ratio} harcar',
       nextPayout: 'Sonraki ödül dağıtımı',
       recordsTitle: 'Katılım ödülü kayıtları',
-      recordsColumns: ['Zaman', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
+      recordsColumns: ['Zaman', 'Tutar', 'Durum', 'Talep zamanı'],
       emptyRecords: 'Henüz ödül kaydı yok. Dağıtımdan sonra kayıtlar burada görünür.',
       inviterTitle: 'Davet edenim',
       inviterColumns: ['Bağlama zamanı', 'Adres', 'Pozisyon', 'Getirilen kümülatif ödül'],
@@ -1253,7 +1256,7 @@ const app = defineMessages({
       recordsTabsAria: 'Ödül kayıt türü',
       recordsTabCobuild: 'Ortak İnşa',
       recordsTabEqualize: 'Eşitleme ödülü',
-      recordsColumns: ['Zaman', 'Seviye', 'Hesaplanan tutar', 'Durum', 'Talep zamanı'],
+      recordsColumns: ['Zaman', 'Seviye', 'Tutar', 'Durum', 'Talep zamanı'],
       emptyRecordsCobuild: 'Henüz ödül kaydı yok. Dağıtımdan sonra kayıtlar burada görünür.',
       emptyRecordsEqualize: 'Henüz eşitleme ödülü kaydı yok. Dağıtımdan sonra burada görünür.',
       teamTitle: 'Ekibim ({count})',
@@ -1309,15 +1312,8 @@ const app = defineMessages({
       recordsTabsAria: 'Ödenek kayıt türü',
       recordsTabIssue: 'Dağıtım',
       recordsTabClaim: 'Talep',
-      issueColumns: [
-        'Dağıtım zamanı',
-        'Hesaplanan tutar',
-        'Tür',
-        'Hash',
-        'Ödenek oranı',
-        'Ödenek tutarı',
-      ],
-      claimColumns: ['Talep zamanı', 'Hesaplanan tutar', 'Hash'],
+      issueColumns: ['Dağıtım zamanı', 'Tutar', 'Tür', 'Hash', 'Ödenek oranı', 'Ödenek tutarı'],
+      claimColumns: ['Talep zamanı', 'Tutar', 'Hash'],
       emptyIssue: 'Henüz dağıtım kaydı yok. Ödenek birikince burada görünür.',
       emptyClaim: 'Henüz talep kaydı yok. Talep sonrası burada görünür.',
       faq: {
@@ -1353,7 +1349,7 @@ const app = defineMessages({
       claimToWallet: 'Cüzdana talep et',
       tierColumns: ['Seviye', 'Kişisel abonelik', 'Sistem performansı', 'Ödül oranı'],
       recordsTabsAria: 'Genesis ödül kayıt türü',
-      recordsColumns: ['Zaman', 'Tür', 'Hesaplanan tutar', 'Durum'],
+      recordsColumns: ['Zaman', 'Tür', 'Tutar', 'Durum'],
       faq: {
         title: 'FAQs',
         items: [
@@ -1604,7 +1600,7 @@ const app = defineMessages({
       activateWarmupSuccess: 'Kilit açıldı',
       warmupRemainingEpochs: 'Kalan {n} Epoch',
     },
-    opsColumns: ['Zaman', 'İşlem', 'Hesaplanan tutar', 'İşlem hash’i'],
+    opsColumns: ['Zaman', 'İşlem', 'Tutar', 'İşlem hash’i'],
     claim: {
       title: 'Getiriyi talep et',
       amount: 'Talep tutarı',
@@ -1690,7 +1686,7 @@ const app = defineMessages({
         bufferTitle: 'Tampon havuzu',
         bufferHint:
           'Stake çözülünce anapara, {days} günlük ikincil doğrusal serbest bırakma için tampon havuzuna girer; kısa vadeli toplu çıkışın likiditeye baskısını azaltır ve süreklilik ile piyasa istikrarını dengeler.',
-        bufferTotal: 'Total',
+        bufferTotal: 'Kasada',
         bufferReleased: 'Serbest bırakıldı',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1760,8 +1756,9 @@ const app = defineMessages({
       stake: {
         title: 'Stake pozisyonları',
         intro: 'Her stake’i yönetin — istediğiniz zaman getiri talep edin veya anaparayı geri alın',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty:
+          'Henüz stake pozisyonu yok. Stake işlemi tamamlandığında her pozisyon burada görünür.',
+        emptyCta: 'İlk stake pozisyonunuzu açın ve getiri kazanmaya başlayın',
         stats: {
           title: 'Pozisyon verileri',
           metrics: [
@@ -2174,13 +2171,7 @@ const app = defineMessages({
         burnbond: 'Tahvil satın alma kayıtları',
         xmine: 'Madencilik kayıtlarım',
       },
-      recordColumns: [
-        'Zaman',
-        'Hesaplanan süre',
-        'Hesaplanan tutar',
-        'Serbest bırakıldı',
-        'İşlem hash’i',
-      ],
+      recordColumns: ['Zaman', 'Hesaplanan süre', 'Tutar', 'Serbest bırakıldı', 'İşlem hash’i'],
       bondRecordColumns: [
         'Zaman',
         'Hesaplanan süre',
@@ -2189,7 +2180,7 @@ const app = defineMessages({
         'Alınan AGX',
         'İşlem hash’i',
       ],
-      xmineRecordColumns: ['Zaman', 'İşlem', 'Hesaplanan tutar', 'İşlem hash’i'],
+      xmineRecordColumns: ['Zaman', 'İşlem', 'Tutar', 'İşlem hash’i'],
       recordsEmpty: {
         stake: 'Henüz staking kaydı yok. Stake tamamlanınca her kayıt burada görünür.',
         lpbond: 'Henüz satın alma kaydı yok. LP tahvil alınca her alım burada görünür.',
@@ -2408,11 +2399,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'Varlıklarım' },
         { label: 'Talep' },
         { label: 'Serbest bırakılacak' },
         {
-          label: 'Current Rebase reward',
+          label: 'Mevcut Rebase getirisi',
           hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
         },
       ],
@@ -2499,11 +2490,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'Varlıklarım' },
         { label: 'Serbest bırakıldı' },
         { label: 'Serbest bırakılacak' },
         {
-          label: 'Current Rebase reward',
+          label: 'Mevcut Rebase getirisi',
           hint: 'Talep edilmemiş Rebase getirisi her blok ödülüyle bileşik olarak artmaya devam eder',
         },
       ],
@@ -2654,9 +2645,9 @@ const app = defineMessages({
       },
       periodLabel: 'Süre seçin',
       periodAria: 'Hesaplanan süre',
-      amountLabel: 'Hesaplanan tutar',
+      amountLabel: 'Tutar',
       amountBuy: 'Satın alma tutarı',
-      amountAria: 'Hesaplanan tutar',
+      amountAria: 'Tutar',
       price: 'Vade AGX fiyatı',
       priceX: 'Vade X fiyatı',
       priceCurrent: 'Güncel {price}',
@@ -2706,10 +2697,10 @@ const app = defineMessages({
         notes: 'Hesaplama notları',
         notesBody: 'Yalnızca yerel tahmin — zincir üstü teklif veya getiri vaadi değildir.',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase yaklaşık her {hours} saatte bir (günde {timesPerDay} kez) uzlaşır. Getiri her Rebase başına %{rebase} bileşikleşir; daha uzun süreler Rebase getirisine basit faiz bonusu ekler: 180 gün %10, 360 gün %15, 540 gün %20.',
+          'Anapara seçilen süre boyunca doğrusal olarak açılır; satış değeri yalnızca o güne kadar serbest bırakılan anaparayı içerir. Serbest bırakılmamış anapara satış toplamına dahil edilmez.',
+          'Net getiri, bileşik Rebase ile süre bonusunun toplamıdır. Serbest bırakılan anapara ve net getiri, belirlediğiniz çıkış fiyatından satılmış kabul edilir. Getiri talebi için gereken katkı puanı maliyeti dahil değildir.',
+          'Tahmin, getiri serbest bırakma ücretini düşmez ve anapara ile getiri açılırken oluşabilecek fiyat hareketlerini modellemez. Yalnızca örnektir; gerçek getiri protokol durumuna göre değişir.',
         ],
       },
     },
@@ -2719,7 +2710,7 @@ const app = defineMessages({
     title: 'Serbest bırakma',
     intro: 'Getiri ve anapara serbest bırakmayı yönetin',
     backToHub: 'Serbest bırakmaya dön',
-    recordColumns: ['Zaman', 'İşlem', 'Hesaplanan tutar', 'İşlem hash’i'],
+    recordColumns: ['Zaman', 'İşlem', 'Tutar', 'İşlem hash’i'],
     recordsEmpty: 'Henüz zincir üstü indeks kaydı yok (indexer bekleniyor)',
     labels: {
       releasing: 'Serbest bırakılıyor',
@@ -2915,8 +2906,6 @@ const app = defineMessages({
     holding: 'Pozisyon',
     contribution: 'Abonelik',
   },
-})
-
-export type AppMessagesBundle = typeof app
+}) satisfies AppMessagesBundle
 
 export default app

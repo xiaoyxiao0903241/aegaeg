@@ -35,9 +35,10 @@ const app = defineMessages({
           'Se alcanzó el límite diario de staking. Reduce el monto o espera el reinicio.',
         debtCapacityReached: 'La capacidad del bono está llena. Inténtalo más tarde.',
         turbineCooldown:
-          'La espera no ha terminado o el monto no es válido. Actualiza los registros de espera e inténtalo de nuevo.',
+          'El enfriamiento no ha terminado. Actualiza los registros de enfriamiento e inténtalo de nuevo.',
         pairNotExist: 'El par de trading no existe. Revisa la configuración del token.',
-        configNotReady: 'La configuración del protocolo no está lista. Inténtalo más tarde.',
+        configNotReady:
+          'La configuración del pool de búfer / cola de liberación no está lista. Inténtalo más tarde.',
         exceedsMax: 'El monto supera el máximo. Redúcelo.',
         bondTooSmall: 'El pago del bono es demasiado pequeño. Aumenta el monto de compra.',
         bondTooLarge: 'El bono supera el pago máximo. Reduce el monto de compra.',
@@ -499,7 +500,7 @@ const app = defineMessages({
       segmentAriaLabel: 'Acciones de Turbina',
       segments: {
         unlock: 'Desbloquear',
-        claim: 'Reclamar',
+        claim: 'Extraer',
       },
       unlockLabel: 'Desbloquear',
       unlockable: 'Desbloqueable',
@@ -517,8 +518,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours} h',
       unlockAction: 'Desbloquear',
       unlockSuccess: 'Desbloqueo exitoso; espera iniciada',
-      claimAction: 'Reclamar',
-      claimSuccess: 'Reclamado con éxito',
+      claimAction: 'Extraer',
+      claimSuccess: 'Extracción enviada: el gAGX se enviará a tu billetera',
       claimEmpty: 'Aún no hay registros de desbloqueo',
       claimable: 'Retirable',
       cooling: 'En espera',
@@ -535,12 +536,12 @@ const app = defineMessages({
         'Vincula liquidez de venta con demanda de compra para que cada desbloqueo vaya con una compra equivalente',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'Compra 1:1 para desbloquear',
+          body: 'El gAGX reclamado del pool de liberación permanece bloqueado en Turbina. Compra la misma cantidad de AGX con USD1 al precio actual para desbloquear igual cantidad de gAGX; cada desbloqueo está respaldado por demanda de compra.',
         },
         {
-          title: 'Espera dinámica',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          title: 'Enfriamiento adaptativo',
+          body: 'Cada desbloqueo entra en un periodo de enfriamiento de 24–96 horas, ajustado según el estado del mercado. Al finalizar, retira el gAGX desbloqueado a tu billetera.',
         },
       ],
       metrics: {
@@ -583,7 +584,7 @@ const app = defineMessages({
         {
           key: 'usd1',
           title: 'USD1 · Activo de liquidación',
-          body: 'Stablecoin central de liquidación del ecosistema AEGIS X, anclaje 1:1 e intercambio sin deslizamiento; atraviesa suscripción Genesis, staking y pagos.',
+          body: 'Activo central de liquidación del ecosistema AEGIS X, que conecta la circulación de valor, las redes de liquidez y los escenarios de pago.',
         },
         {
           key: 'agx',
@@ -593,7 +594,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · Comprobante de liquidación de rendimientos',
-          body: 'Comprobante unificado de liquidación Rebase y DAO; canjeable 1:1 por AGX o usable en staking para minar X.',
+          body: 'Comprobante de liquidación de recompensas del protocolo, canjeable por AGX y utilizable en minería del ecosistema y reciclaje de rendimientos.',
         },
         {
           key: 'gagxStake',
@@ -602,8 +603,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · Token de derechos del ecosistema',
+          body: 'Token de participación y derechos del ecosistema que registra la contribución on-chain y da acceso a derechos, eventos y mejoras de airdrops.',
         },
         {
           key: 'contribution',
@@ -613,7 +614,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'Turbina · Centro de desbloqueo de cuota',
-          body: 'Las recompensas reclamadas de la cola de liberación entran en la cuota de Turbina. Comprar la misma cantidad de AGX con USD1 inicia un silencio de 24–96 h. Al vencer, el gAGX se enruta por el splitter para liberación lineal; no llega al monedero de inmediato.',
+          body: 'Las recompensas reclamadas de la cola de liberación entran en la cuota de Turbina. Comprar una cantidad equivalente de AGX con USD1 inicia un enfriamiento de 24–96 horas. Al finalizar, el gAGX desbloqueado puede retirarse a tu billetera.',
         },
       ],
     },
@@ -1001,7 +1002,8 @@ const app = defineMessages({
       referral: {
         title: 'Recompensa por referidos',
         body: 'Recompensas por invitar socios a la co-construcción',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'Recompensas relacionadas con el Rebase de referidos directos; reclámalas mediante DaoPool Mixed (contribución {ratio}).',
       },
       participate: {
         title: 'Recompensa por participación',
@@ -1136,7 +1138,7 @@ const app = defineMessages({
       contributionHint: 'Reclamar consume {ratio}',
       nextPayout: 'Próximo pago de recompensas',
       recordsTitle: 'Registros de recompensa por referidos',
-      recordsColumns: ['Hora', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
+      recordsColumns: ['Hora', 'Cantidad', 'Estado', 'Hora de reclamación'],
       emptyRecords: 'Aún no hay registros de recompensa. Aparecerán tras cada emisión.',
       referralsTitle: 'Mis referidos ({count})',
       referralsColumns: [
@@ -1190,7 +1192,7 @@ const app = defineMessages({
       contributionHint: 'Reclamar consume {ratio}',
       nextPayout: 'Próximo pago de recompensas',
       recordsTitle: 'Registros de recompensa por participación',
-      recordsColumns: ['Hora', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
+      recordsColumns: ['Hora', 'Cantidad', 'Estado', 'Hora de reclamación'],
       emptyRecords: 'Aún no hay registros de recompensa. Aparecerán tras cada emisión.',
       inviterTitle: 'Mi referente',
       inviterColumns: [
@@ -1250,7 +1252,7 @@ const app = defineMessages({
       reqPerformance: 'Rendimiento total',
       reqPerformanceHint: 'Valor total de posiciones de la red',
       reqAchieved: 'Logrado',
-      tierRate: 'Bonus {rate}',
+      tierRate: 'Bonificación {rate}',
       tierProgress: 'Progreso hacia {level}',
       tierProgressCount: 'Cumplido {done}/{total}',
       tierMax: 'Nivel máximo alcanzado',
@@ -1258,7 +1260,7 @@ const app = defineMessages({
       recordsTabsAria: 'Tipo de registro de recompensa',
       recordsTabCobuild: 'Co-construcción',
       recordsTabEqualize: 'Premio de nivelación',
-      recordsColumns: ['Hora', 'Nivel', 'Cantidad a estimar', 'Estado', 'Hora de reclamación'],
+      recordsColumns: ['Hora', 'Nivel', 'Cantidad', 'Estado', 'Hora de reclamación'],
       emptyRecordsCobuild: 'Aún no hay registros de recompensa. Aparecerán tras cada emisión.',
       emptyRecordsEqualize: 'Aún no hay registros de nivelación. Aparecerán tras la emisión.',
       teamTitle: 'Mi equipo ({count})',
@@ -1322,13 +1324,13 @@ const app = defineMessages({
       recordsTabClaim: 'Reclamado',
       issueColumns: [
         'Hora de emisión',
-        'Cantidad a estimar',
+        'Cantidad',
         'Tipo',
         'Hash',
         'Ratio del subsidio',
         'Cantidad del subsidio',
       ],
-      claimColumns: ['Hora de reclamación', 'Cantidad a estimar', 'Hash'],
+      claimColumns: ['Hora de reclamación', 'Cantidad', 'Hash'],
       emptyIssue: 'Aún no hay registros de emisión. Aparecerán cuando se acumulen subsidios.',
       emptyClaim: 'Aún no hay registros de reclamación. Aparecerán tras reclamar.',
       faq: {
@@ -1364,7 +1366,7 @@ const app = defineMessages({
       claimToWallet: 'Reclamar a la billetera',
       tierColumns: ['Nivel', 'Suscripción personal', 'Volumen del sistema', 'Ratio de recompensa'],
       recordsTabsAria: 'Tipo de registro de recompensa Génesis',
-      recordsColumns: ['Hora', 'Tipo', 'Cantidad a estimar', 'Estado'],
+      recordsColumns: ['Hora', 'Tipo', 'Cantidad', 'Estado'],
       faq: {
         title: 'FAQs',
         items: [
@@ -1618,7 +1620,7 @@ const app = defineMessages({
       activateWarmupSuccess: 'Desbloqueado',
       warmupRemainingEpochs: '{n} Epoch restantes',
     },
-    opsColumns: ['Hora', 'Acción', 'Cantidad a estimar', 'Hash de tx'],
+    opsColumns: ['Hora', 'Acción', 'Cantidad', 'Hash de tx'],
     claim: {
       title: 'Reclamar rendimiento',
       amount: 'Cantidad a reclamar',
@@ -1644,7 +1646,7 @@ const app = defineMessages({
     claimOutput: {
       title: 'Reclamar rendimiento',
       rewardLabel: 'Rendimiento',
-      boostLabel: 'Bonus',
+      boostLabel: 'Bonificación',
       claimReward: 'Reclamar rendimiento',
       claimBoost: 'Reclamar bonus',
       contribDeduct: 'Deduce {amount} puntos de contribución',
@@ -1705,7 +1707,7 @@ const app = defineMessages({
         bufferTitle: 'Pool búfer',
         bufferHint:
           'Tras desestacar, el principal entra en el búfer para una liberación lineal secundaria de {days} días, reduciendo la presión de salida concentrada a corto plazo sobre la liquidez y equilibrando continuidad y estabilidad.',
-        bufferTotal: 'Total',
+        bufferTotal: 'En la bóveda',
         bufferReleased: 'Liberado',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1776,8 +1778,9 @@ const app = defineMessages({
       stake: {
         title: 'Posiciones de staking',
         intro: 'Gestiona cada staking: reclama rendimiento o canjea el principal cuando quieras',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty:
+          'Aún no hay posiciones de staking. Completa un staking y cada posición aparecerá aquí.',
+        emptyCta: 'Abre tu primera posición de staking y empieza a generar rendimiento',
         stats: {
           title: 'Datos de la posición',
           metrics: [
@@ -2197,7 +2200,7 @@ const app = defineMessages({
         burnbond: 'Registros de compra de bonos',
         xmine: 'Mis registros de minado',
       },
-      recordColumns: ['Hora', 'Periodo a estimar', 'Cantidad a estimar', 'Liberado', 'Hash de tx'],
+      recordColumns: ['Hora', 'Periodo a estimar', 'Cantidad', 'Liberado', 'Hash de tx'],
       bondRecordColumns: [
         'Hora',
         'Periodo a estimar',
@@ -2206,7 +2209,7 @@ const app = defineMessages({
         'AGX recibido',
         'Hash de tx',
       ],
-      xmineRecordColumns: ['Hora', 'Acción', 'Cantidad a estimar', 'Hash de tx'],
+      xmineRecordColumns: ['Hora', 'Acción', 'Cantidad', 'Hash de tx'],
       recordsEmpty: {
         stake: 'Aún no hay registros de staking. Tras completar uno, cada staking aparecerá aquí.',
         lpbond:
@@ -2427,11 +2430,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'Mis tenencias' },
         { label: 'Reclamado' },
         { label: 'Pendiente de liberación' },
         {
-          label: 'Current Rebase reward',
+          label: 'Rendimiento Rebase actual',
           hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
         },
       ],
@@ -2519,11 +2522,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'Mis tenencias' },
         { label: 'Liberado' },
         { label: 'Pendiente de liberación' },
         {
-          label: 'Current Rebase reward',
+          label: 'Rendimiento Rebase actual',
           hint: 'El rendimiento Rebase no reclamado sigue capitalizando con cada recompensa de bloque',
         },
       ],
@@ -2677,9 +2680,9 @@ const app = defineMessages({
       },
       periodLabel: 'Selecciona el periodo',
       periodAria: 'Periodo a estimar',
-      amountLabel: 'Cantidad a estimar',
+      amountLabel: 'Cantidad',
       amountBuy: 'Importe de compra',
-      amountAria: 'Cantidad a estimar',
+      amountAria: 'Cantidad',
       price: 'Precio AGX al vencimiento',
       priceX: 'Precio X al vencimiento',
       priceCurrent: 'Actual ${price}',
@@ -2735,10 +2738,10 @@ const app = defineMessages({
         notesBody:
           'Solo estimación local de referencia; no es cotización en cadena ni promesa de rendimiento.',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase se liquida aproximadamente cada {hours} horas ({timesPerDay} veces al día). El rendimiento se capitaliza al {rebase}% por Rebase; los plazos más largos añaden una bonificación de interés simple sobre el rendimiento Rebase: 180 días 10%, 360 días 15%, 540 días 20%.',
+          'El principal se libera linealmente durante el plazo elegido; el valor de venta solo incluye el principal liberado hasta ese día. El principal no liberado no se incluye en el total de venta.',
+          'El rendimiento neto es la suma del Rebase capitalizado y la bonificación del plazo. El principal liberado y el rendimiento neto se venden al precio de salida que establezcas. No se incluye el coste en puntos de contribución para reclamar el rendimiento.',
+          'La estimación no descuenta la tasa de liberación del rendimiento ni modela los movimientos de precio mientras se liberan el principal y el rendimiento. Es solo ilustrativa; el rendimiento real varía según el estado del protocolo.',
         ],
       },
     },
@@ -2748,7 +2751,7 @@ const app = defineMessages({
     title: 'Liberación',
     intro: 'Gestiona y consulta la liberación de rendimiento y principal',
     backToHub: 'Volver a liberación',
-    recordColumns: ['Hora', 'Acción', 'Cantidad a estimar', 'Hash de tx'],
+    recordColumns: ['Hora', 'Acción', 'Cantidad', 'Hash de tx'],
     recordsEmpty: 'Aún no hay registros indexados en cadena (pendiente indexer)',
     labels: {
       releasing: 'En liberación',

@@ -35,9 +35,10 @@ const app = defineMessages({
           'दैनिक स्टेकिंग सीमा पूरी हो गई। राशि कम करें या रीसेट की प्रतीक्षा करें।',
         debtCapacityReached: 'बॉन्ड क्षमता भर गई है। कृपया बाद में पुनः प्रयास करें।',
         turbineCooldown:
-          'कूलडाउन अभी समाप्त नहीं हुआ या राशि अमान्य है। कूलडाउन रिकॉर्ड रिफ़्रेश करके पुनः प्रयास करें।',
+          'कूलडाउन अभी समाप्त नहीं हुआ है। कूलडाउन रिकॉर्ड रिफ़्रेश करके पुनः प्रयास करें।',
         pairNotExist: 'ट्रेडिंग पेयर मौजूद नहीं है। टोकन कॉन्फ़िगरेशन जाँचें।',
-        configNotReady: 'प्रोटोकॉल कॉन्फ़िग तैयार नहीं है। कृपया बाद में पुनः प्रयास करें।',
+        configNotReady:
+          'बफर पूल / रिलीज़ कतार कॉन्फ़िगरेशन तैयार नहीं है। कृपया बाद में पुनः प्रयास करें।',
         exceedsMax: 'राशि अधिकतम सीमा से अधिक है। कृपया इसे कम करें।',
         bondTooSmall: 'बॉन्ड भुगतान बहुत छोटा है। खरीद राशि बढ़ाएँ।',
         bondTooLarge: 'बॉन्ड अधिकतम भुगतान से अधिक है। खरीद राशि कम करें।',
@@ -484,7 +485,7 @@ const app = defineMessages({
       segmentAriaLabel: 'टरबाइन क्रियाएँ',
       segments: {
         unlock: 'अनलॉक',
-        claim: 'क्लेम',
+        claim: 'निकालें',
       },
       unlockLabel: 'अनलॉक',
       unlockable: 'अनलॉक योग्य',
@@ -502,8 +503,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours}घं',
       unlockAction: 'अनलॉक',
       unlockSuccess: 'अनलॉक हो गया — कूलडाउन शुरू',
-      claimAction: 'क्लेम',
-      claimSuccess: 'सफलतापूर्वक प्राप्त किया',
+      claimAction: 'निकालें',
+      claimSuccess: 'निकासी सबमिट हुई—gAGX आपके वॉलेट में भेजा जाएगा',
       claimEmpty: 'अभी कोई अनलॉक रिकॉर्ड नहीं',
       claimable: 'निकाला जा सकता है',
       cooling: 'कूलिंग',
@@ -520,12 +521,12 @@ const app = defineMessages({
         'बेचने की लिक्विडिटी को खरीद मांग से बाँधें ताकि हर अनलॉक समान खरीद के साथ हो',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'अनलॉक के लिए 1:1 खरीद',
+          body: 'रिलीज़ पूल से क्लेम किया गया gAGX टर्बाइन में लॉक रहता है। वर्तमान कीमत पर USD1 से बराबर मात्रा में AGX खरीदकर उतना ही gAGX अनलॉक करें—हर अनलॉक को खरीद मांग का समर्थन मिलता है।',
         },
         {
           title: 'अनुकूली कूलडाउन',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'हर अनलॉक बाजार की स्थिति के अनुसार समायोजित 24–96 घंटे के कूलडाउन में जाता है। अवधि पूरी होने पर अनलॉक gAGX को अपने वॉलेट में निकालें।',
         },
       ],
       metrics: {
@@ -586,8 +587,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · पारिस्थितिकी अधिकार टोकन',
+          body: 'पारिस्थितिकी भागीदारी और अधिकारों का टोकन, जो ऑन-चेन योगदान दर्ज करता है और अधिकारों, आयोजनों तथा एयरड्रॉप बूस्ट के लिए उपयोग किया जा सकता है।',
         },
         {
           key: 'contribution',
@@ -597,7 +598,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'टरबाइन · कोटा अनलॉक हब',
-          body: 'रिलीज़ कतार से दावा किए गए पुरस्कार पहले टरबाइन कोटा में जाते हैं। USD1 से बराबर AGX खरीदने पर 24–96 घंटे का साइलेंस शुरू होता है; समाप्त होने पर gAGX स्प्लिटर से रैखिक रिलीज़ होता है और तुरंत वॉलेट में नहीं आता।',
+          body: 'रिलीज़ कतार से क्लेम किए गए पुरस्कार टरबाइन कोटा में जाते हैं। USD1 से बराबर AGX खरीदने पर 24–96 घंटे का कूलडाउन शुरू होता है। समाप्त होने पर अनलॉक gAGX को वॉलेट में निकाला जा सकता है।',
         },
       ],
     },
@@ -972,7 +973,8 @@ const app = defineMessages({
       referral: {
         title: 'रेफ़रल',
         body: 'साझेदारों को सह-निर्माण में आमंत्रित करने पर पुरस्कार',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'प्रत्यक्ष रेफरल के Rebase से जुड़े पुरस्कार; DaoPool Mixed के जरिए क्लेम करें (योगदान {ratio})।',
       },
       participate: {
         title: 'पार्टिसिपेशन',
@@ -1642,7 +1644,7 @@ const app = defineMessages({
         bufferTitle: 'बफ़र पूल',
         bufferHint:
           'अनस्टेक के बाद मूलधन बफ़र पूल में {days} दिन की द्वितीयक रैखिक रिलीज़ में जाता है, जिससे अल्पकालिक बहिर्वाह का दबाव कम होता है और रिलीज़ की निरंतरता व बाज़ार स्थिरता संतुलित रहती है।',
-        bufferTotal: 'Total',
+        bufferTotal: 'वॉल्ट में',
         bufferReleased: 'रिलीज़ हो गया',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1707,8 +1709,8 @@ const app = defineMessages({
       stake: {
         title: 'स्टेक पोज़ीशन',
         intro: 'प्रत्येक स्टेक प्रबंधित करें — कभी भी यील्ड दावा करें या मूलधन रिडीम करें',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty: 'अभी कोई स्टेक पोज़िशन नहीं है। स्टेक पूरा करने पर हर पोज़िशन यहाँ दिखाई देगी।',
+        emptyCta: 'अपना पहला स्टेक खोलें और कमाई शुरू करें',
         stats: {
           title: 'पोज़ीशन आँकड़े',
           metrics: [
@@ -2328,11 +2330,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'मेरी होल्डिंग' },
         { label: 'दावा किया' },
         { label: 'लंबित रिलीज़' },
         {
-          label: 'Current Rebase reward',
+          label: 'वर्तमान Rebase यील्ड',
           hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
         },
       ],
@@ -2419,11 +2421,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'मेरी होल्डिंग' },
         { label: 'रिलीज़ हो गया' },
         { label: 'लंबित रिलीज़' },
         {
-          label: 'Current Rebase reward',
+          label: 'वर्तमान Rebase यील्ड',
           hint: 'दावा न की गई Rebase आय हर ब्लॉक रिवॉर्ड के साथ चक्रवृद्धि होती रहती है',
         },
       ],
@@ -2621,10 +2623,10 @@ const app = defineMessages({
         notes: 'नोट्स',
         notesBody: 'केवल स्थानीय अनुमान — ऑन-चेन कोट या यील्ड वादा नहीं।',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase लगभग हर {hours} घंटे में (प्रतिदिन {timesPerDay} बार) सेटल होता है। हर Rebase पर {rebase}% की दर से यील्ड चक्रवृद्धि होती है; लंबी अवधियाँ Rebase यील्ड पर साधारण-ब्याज बोनस जोड़ती हैं: 180 दिन 10%, 360 दिन 15%, 540 दिन 20%।',
+          'मूलधन चुनी गई अवधि में रैखिक रूप से अनलॉक होता है; बिक्री मूल्य में केवल उस दिन तक रिलीज़ हुआ मूलधन शामिल होता है। रिलीज़ न हुआ मूलधन बिक्री के कुल में शामिल नहीं है।',
+          'शुद्ध यील्ड चक्रवृद्धि Rebase और अवधि बोनस का योग है। रिलीज़ मूलधन और शुद्ध यील्ड को आपके तय निकास मूल्य पर बेचा जाता है। यील्ड क्लेम करने की योगदान-पॉइंट लागत इसमें शामिल नहीं है।',
+          'यह अनुमान यील्ड रिलीज़ शुल्क को नहीं घटाता और मूलधन व यील्ड के अनलॉक होने के दौरान कीमत में बदलाव का मॉडल नहीं बनाता। यह केवल उदाहरण है; वास्तविक यील्ड प्रोटोकॉल की स्थिति के अनुसार बदलती है।',
         ],
       },
     },

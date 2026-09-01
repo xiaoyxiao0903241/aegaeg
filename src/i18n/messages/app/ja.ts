@@ -35,10 +35,10 @@ const app = defineMessages({
           '日間ステーキング上限に達しました。金額を下げるか、上限のリセットをお待ちください。',
         debtCapacityReached: '債券の容量が不足しています。しばらくしてから再度お試しください。',
         turbineCooldown:
-          'クールダウン未了、または入力が無効です。クールダウン記録を更新して再試行してください。',
+          'クールダウンが完了していません。クールダウン記録を更新して再試行してください。',
         pairNotExist: '取引ペアが存在しません。トークン設定を確認してください。',
         configNotReady:
-          'プロトコル設定の準備ができていません。しばらくしてから再度お試しください。',
+          'バッファプール／リリースキューの設定が完了していません。しばらくしてから再度お試しください。',
         exceedsMax: '金額が上限を超えています。金額を下げてください。',
         bondTooSmall: '債券の償還額が小さすぎます。購入金額を増やしてください。',
         bondTooLarge: '1回あたりの債券上限を超えています。購入金額を下げてください。',
@@ -351,7 +351,7 @@ const app = defineMessages({
         transferMismatch: 'トークン送金数量が一致しません。再試行してください。',
         zeroAddress: '契約アドレスが異常です。しばらくしてから再試行してください。',
         sameToken: '入出力トークンの設定が異常です。しばらくしてから再試行してください。',
-        zeroAmount: '0 より大きいバーン金額を入力してください。',
+        zeroAmount: '0 より大きい交換数量を入力してください。',
         notAuthorized: 'この操作は認可されていません。',
         invalidLimits: '交換上限の設定が異常です。しばらくしてから再試行してください。',
       },
@@ -497,7 +497,7 @@ const app = defineMessages({
       segmentAriaLabel: 'タービン操作',
       segments: {
         unlock: 'アンロック',
-        claim: '受取',
+        claim: '引出',
       },
       unlockLabel: 'アンロック',
       unlockable: 'アンロック可能',
@@ -515,8 +515,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours}時間',
       unlockAction: 'アンロック',
       unlockSuccess: 'アンロック成功 — クールダウン開始',
-      claimAction: '受取',
-      claimSuccess: '受取成功',
+      claimAction: '引出',
+      claimSuccess: '引出を送信しました。gAGX はウォレットへ送られます',
       claimEmpty: 'アンロック記録はまだありません',
       claimable: '引出可',
       cooling: 'クールダウン中',
@@ -532,12 +532,12 @@ const app = defineMessages({
       mechanismIntro: '売却流動性を買い需要に紐付け、すべてのアンロックに同量の買いを伴わせます',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: '1:1購入でアンロック',
+          body: 'リリースプールから受け取った gAGX はタービン内でロックされたままです。現在価格で USD1 を使って同量の AGX を購入すると、同量の gAGX がアンロックされます。各アンロックは買い需要によって支えられます。',
         },
         {
           title: '動的クールダウン',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: '各アンロックは市場状況に応じて調整される24～96時間のクールダウンに入ります。終了後、アンロック済みの gAGX をウォレットへ引き出せます。',
         },
       ],
       metrics: {
@@ -579,8 +579,8 @@ const app = defineMessages({
       items: [
         {
           key: 'usd1',
-          title: 'USD1 · 決済ステーブルコイン',
-          body: 'プロトコルの中核決済ステーブルコイン。1:1 ペッグ・ゼロスリッページ交換で、Genesis 申込・ステーキング・支払いシーンをつなぎます。',
+          title: 'USD1 · 中核決済資産',
+          body: 'AEGIS X エコシステムの中核決済資産として、価値の流通、流動性ネットワーク、決済シーンをつなぎます。',
         },
         {
           key: 'agx',
@@ -590,7 +590,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · 収益決済バウチャー',
-          body: 'Rebase と DAO リワードの統一決済バウチャー。1:1 で AGX に交換でき、ステーキングして X を採掘することもできます。',
+          body: 'AGXへの交換、エコシステムマイニング、収益の再運用に利用できるプロトコル報酬の決済バウチャーです。',
         },
         {
           key: 'gagxStake',
@@ -599,8 +599,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · エコシステム権益トークン',
+          body: 'オンチェーンの貢献を記録し、権益、イベント参加、エアドロップ特典に利用できるエコシステム参加・権益トークンです。',
         },
         {
           key: 'contribution',
@@ -610,7 +610,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'タービン · クォータ解除ハブ',
-          body: 'リリース受取の報酬はまずタービンクォータに入ります。USD1 で同量の AGX を買うと 24–96 時間のサイレンスが始まり、満了後の gAGX はスプリッター経由で線形リリースされ、すぐにはウォレットへ入りません。',
+          body: 'リリースキューから受け取ったリワードはタービンクォータに入ります。USD1 で同量の AGX を購入すると24～96時間のクールダウンが始まり、終了後にアンロック済み gAGX をウォレットへ引き出せます。',
         },
       ],
     },
@@ -980,7 +980,8 @@ const app = defineMessages({
       referral: {
         title: '紹介賞',
         body: 'パートナーを共創に招待して得るリワード',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          '直接紹介者の Rebase に関連するリワードです。DaoPool Mixed から受け取ります（貢献ポイント {ratio}）。',
       },
       participate: {
         title: '参加賞',
@@ -1113,7 +1114,7 @@ const app = defineMessages({
       contributionHint: '受取は {ratio} で消費',
       nextPayout: '次回リワード配布',
       recordsTitle: '紹介賞記録',
-      recordsColumns: ['時間', '試算数量', 'ステータス', '受取日時'],
+      recordsColumns: ['時間', '数量', 'ステータス', '受取日時'],
       emptyRecords: 'リワード記録はまだありません。配布後、各記録がここに表示されます。',
       referralsTitle: 'マイ紹介（{count}）',
       referralsColumns: ['参加日時', 'アドレス', 'ポジション', '累計貢献リワード'],
@@ -1162,7 +1163,7 @@ const app = defineMessages({
       contributionHint: '受取は {ratio} で消費',
       nextPayout: '次回リワード配布',
       recordsTitle: '参加賞記録',
-      recordsColumns: ['時間', '試算数量', 'ステータス', '受取日時'],
+      recordsColumns: ['時間', '数量', 'ステータス', '受取日時'],
       emptyRecords: 'リワード記録はまだありません。配布後、各記録がここに表示されます。',
       inviterTitle: 'マイ紹介人',
       inviterColumns: ['紐付け日時', 'アドレス', 'ポジション', '累計もたらしたリワード'],
@@ -1225,7 +1226,7 @@ const app = defineMessages({
       recordsTabsAria: 'リワード記録タイプ',
       recordsTabCobuild: '共創賞',
       recordsTabEqualize: 'イコライズ賞',
-      recordsColumns: ['時間', 'ランク', '試算数量', 'ステータス', '受取日時'],
+      recordsColumns: ['時間', 'ランク', '数量', 'ステータス', '受取日時'],
       emptyRecordsCobuild: 'リワード記録はまだありません。配布後、各記録がここに表示されます。',
       emptyRecordsEqualize: 'イコライズ賞の記録はまだありません。配布後ここに表示されます。',
       teamTitle: 'マイチーム（{count}）',
@@ -1280,8 +1281,8 @@ const app = defineMessages({
       recordsTabsAria: '手当記録タイプ',
       recordsTabIssue: '配布',
       recordsTabClaim: '受取',
-      issueColumns: ['配布日時', '試算数量', 'タイプ', 'ハッシュ', '手当比率', '手当数量'],
-      claimColumns: ['受取日時', '試算数量', 'ハッシュ'],
+      issueColumns: ['配布日時', '数量', 'タイプ', 'ハッシュ', '手当比率', '手当数量'],
+      claimColumns: ['受取日時', '数量', 'ハッシュ'],
       emptyIssue: '配布記録はまだありません。手当が蓄積されるとここに表示されます。',
       emptyClaim: '受取記録はまだありません。受取完了後ここに表示されます。',
       faq: {
@@ -1317,7 +1318,7 @@ const app = defineMessages({
       claimToWallet: 'ウォレットへ受取',
       tierColumns: ['ランク', '個人申込', '体系業績', 'リワード比率'],
       recordsTabsAria: '創世リワード記録タイプ',
-      recordsColumns: ['時間', 'タイプ', '試算数量', 'ステータス'],
+      recordsColumns: ['時間', 'タイプ', '数量', 'ステータス'],
       faq: {
         title: 'FAQs',
         items: [
@@ -1567,7 +1568,7 @@ const app = defineMessages({
       activateWarmupSuccess: 'アンロック完了',
       warmupRemainingEpochs: '残り {n} Epoch',
     },
-    opsColumns: ['時間', '操作', '試算数量', 'トランザクションハッシュ'],
+    opsColumns: ['時間', '操作', '数量', 'トランザクションハッシュ'],
     claim: {
       title: '収益を受取',
       amount: '受取数量',
@@ -1650,7 +1651,7 @@ const app = defineMessages({
         bufferTitle: 'バッファプール',
         bufferHint:
           '元本のアンステーク後はバッファプールで {days} 日間の二次線形リリースが行われ、短期の集中流出が市場流動性へ与える衝撃を抑え、資金放出の連続性と市場安定のバランスを取ります。',
-        bufferTotal: 'Total',
+        bufferTotal: '保管中',
         bufferReleased: 'リリース済み',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1714,8 +1715,9 @@ const app = defineMessages({
       stake: {
         title: 'ステーキングポジション',
         intro: '各ステーキングを管理 — いつでも収益受取または元本償還',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty:
+          'ステーキングポジションはまだありません。ステーキングを完了すると、各ポジションがここに表示されます。',
+        emptyCta: '最初のステーキングを開始して収益を獲得',
         stats: {
           title: 'ポジションデータ',
           metrics: [
@@ -2122,7 +2124,7 @@ const app = defineMessages({
         burnbond: '債券購入記録',
         xmine: 'マイマイニング記録',
       },
-      recordColumns: ['時間', '試算期間', '試算数量', 'リリース済み', 'トランザクションハッシュ'],
+      recordColumns: ['時間', '試算期間', '数量', 'リリース済み', 'トランザクションハッシュ'],
       bondRecordColumns: [
         '時間',
         '試算期間',
@@ -2131,7 +2133,7 @@ const app = defineMessages({
         '獲得 AGX',
         'トランザクションハッシュ',
       ],
-      xmineRecordColumns: ['時間', '操作', '試算数量', 'トランザクションハッシュ'],
+      xmineRecordColumns: ['時間', '操作', '数量', 'トランザクションハッシュ'],
       recordsEmpty: {
         stake: 'ステーキング記録はまだありません。完了後、各ステーキングがここに表示されます。',
         lpbond: '購入記録はまだありません。LP 債券購入後、各購入がここに表示されます。',
@@ -2347,11 +2349,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: '保有量' },
         { label: '受取' },
         { label: 'リリース待ち' },
         {
-          label: 'Current Rebase reward',
+          label: '現在のRebase利回り',
           hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
         },
       ],
@@ -2438,11 +2440,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: '保有量' },
         { label: 'リリース済み' },
         { label: 'リリース待ち' },
         {
-          label: 'Current Rebase reward',
+          label: '現在のRebase利回り',
           hint: '未受取の Rebase 収益は、各ブロック報酬とともに複利で増え続けます',
         },
       ],
@@ -2593,9 +2595,9 @@ const app = defineMessages({
       },
       periodLabel: '期間を選択',
       periodAria: '試算期間',
-      amountLabel: '試算数量',
+      amountLabel: '数量',
       amountBuy: '購入金額',
-      amountAria: '試算数量',
+      amountAria: '数量',
       price: '満期 AGX 価格',
       priceX: '満期 X 価格',
       priceCurrent: '現在 {price}',
@@ -2642,10 +2644,10 @@ const app = defineMessages({
         notes: '計算の説明',
         notesBody: '本計算機はローカル試算の参考のみで、オンチェーン見積や収益保証ではありません。',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase は約 {hours} 時間ごと（1日 {timesPerDay} 回）に決済されます。利回りは Rebase 1回あたり {rebase}% で複利計算され、長期ほど Rebase 利回りに単利ボーナスが加算されます：180日 10%、360日 15%、540日 20%。',
+          '元本は選択期間にわたり直線的にアンロックされます。売却額にはその日までにリリースされた元本のみが含まれ、未リリースの元本は売却合計に含まれません。',
+          '純利回りは複利 Rebase と期間ボーナスの合計です。リリース済み元本と純利回りを、設定した売却価格で売却する前提で計算します。利回り受取に必要な貢献ポイントのコストは含まれません。',
+          'この試算では利回りリリース手数料を差し引かず、元本と利回りのアンロック期間中の価格変動も考慮しません。参考値であり、実際の利回りはプロトコルの状態により変動します。',
         ],
       },
     },
@@ -2655,7 +2657,7 @@ const app = defineMessages({
     title: 'リリース',
     intro: '収益と元本リリースを管理・確認',
     backToHub: 'リリースに戻る',
-    recordColumns: ['時間', '操作', '試算数量', 'トランザクションハッシュ'],
+    recordColumns: ['時間', '操作', '数量', 'トランザクションハッシュ'],
     recordsEmpty: 'オンチェーン索引記録はまだありません（indexer 待ち）',
     labels: {
       releasing: 'リリース中',

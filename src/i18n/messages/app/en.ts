@@ -1,7 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
 
-import type { AppMessagesBundle } from './types'
-
 const app = defineMessages({
   common: {
     brand: 'AEGIS X',
@@ -34,12 +32,11 @@ const app = defineMessages({
       reverts: {
         stakeAmountLimit: 'Daily stake limit reached. Lower the amount or wait for reset.',
         debtCapacityReached: 'Bond capacity is full. Please try again later.',
-        turbineCooldown: 'Cooldown not finished. Refresh silences and retry.',
-        turbineNoSilenceBalance: 'No matured silence balance to extract.',
+        turbineCooldown: 'Cooldown not finished. Refresh cooldown records and try again.',
+        turbineNoSilenceBalance: 'No completed cooldown balance to extract.',
         invalidAmount: 'Invalid amount. Check and try again.',
         pairNotExist: 'Trading pair does not exist. Check token configuration.',
-        configNotReady:
-          'Splitter manager / release queue config is not ready. Please try again later.',
+        configNotReady: 'Buffer pool / release queue config is not ready. Please try again later.',
         exceedsMax: 'Amount exceeds the maximum. Please lower it.',
         bondTooSmall: 'Bond payout is too small. Increase the purchase amount.',
         bondTooLarge: 'Bond exceeds max payout. Lower the purchase amount.',
@@ -488,7 +485,7 @@ const app = defineMessages({
       segmentAriaLabel: 'Turbine actions',
       segments: {
         unlock: 'Unlock',
-        claim: 'Claim',
+        claim: 'Extract',
       },
       unlockLabel: 'Unlock',
       unlockable: 'Unlockable',
@@ -506,8 +503,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours}h',
       unlockAction: 'Unlock',
       unlockSuccess: 'Unlocked — cooldown started',
-      claimAction: 'Claim',
-      claimSuccess: 'Extract submitted — gAGX entered splitter release',
+      claimAction: 'Extract',
+      claimSuccess: 'Extract submitted — gAGX will be sent to your wallet',
       claimEmpty: 'No unlock records yet',
       claimable: 'Claimable',
       cooling: 'Cooling',
@@ -602,7 +599,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'Turbine · Quota unlock hub',
-          body: 'Rewards claimed from the release queue enter Turbine quota. Buying an equal amount of AGX with USD1 starts a 24–96 hour silence. After it ends, gAGX is routed through the splitter for linear release — it does not arrive in your wallet immediately.',
+          body: 'Rewards claimed from the release queue enter Turbine quota. Buying an equal amount of AGX with USD1 starts a 24–96 hour cooldown. After it ends, the unlocked gAGX can be extracted to your wallet.',
         },
       ],
     },
@@ -2821,6 +2818,8 @@ const app = defineMessages({
     holding: 'Holdings',
     contribution: 'Subscription',
   },
-}) satisfies AppMessagesBundle
+})
+
+export type AppMessagesBundle = typeof app
 
 export default app

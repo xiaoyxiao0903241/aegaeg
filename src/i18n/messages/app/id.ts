@@ -33,10 +33,10 @@ const app = defineMessages({
       reverts: {
         stakeAmountLimit: 'Batas staking harian tercapai. Turunkan jumlah atau tunggu reset.',
         debtCapacityReached: 'Kapasitas Bond penuh. Silakan coba lagi nanti.',
-        turbineCooldown:
-          'Cooldown belum selesai atau jumlah tidak valid. Segarkan catatan cooldown lalu coba lagi.',
+        turbineCooldown: 'Cooldown belum selesai. Segarkan catatan cooldown lalu coba lagi.',
         pairNotExist: 'Pasangan perdagangan tidak ada. Periksa konfigurasi token.',
-        configNotReady: 'Konfigurasi protokol belum siap. Silakan coba lagi nanti.',
+        configNotReady:
+          'Konfigurasi pool buffer / antrean rilis belum siap. Silakan coba lagi nanti.',
         exceedsMax: 'Jumlah melebihi batas maksimum. Harap turunkan.',
         bondTooSmall: 'Pembayaran Bond terlalu kecil. Tingkatkan jumlah pembelian.',
         bondTooLarge: 'Melebihi batas Bond per transaksi. Turunkan jumlah pembelian.',
@@ -108,7 +108,7 @@ const app = defineMessages({
     },
     xmine: {
       STAKE_X: 'Stake',
-      UNSTAKE_X: 'Unstake',
+      UNSTAKE_X: 'Lepas stake',
       REWARD: 'Klaim',
     },
     buffer: {
@@ -495,7 +495,7 @@ const app = defineMessages({
       segmentAriaLabel: 'Aksi Turbine',
       segments: {
         unlock: 'Buka',
-        claim: 'Klaim',
+        claim: 'Tarik',
       },
       unlockLabel: 'Buka',
       unlockable: 'Dapat dibuka',
@@ -513,8 +513,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours} jam',
       unlockAction: 'Buka',
       unlockSuccess: 'Berhasil dibuka, cooldown dimulai',
-      claimAction: 'Klaim',
-      claimSuccess: 'Berhasil diklaim',
+      claimAction: 'Tarik',
+      claimSuccess: 'Penarikan dikirim—gAGX akan dikirim ke dompet Anda',
       claimEmpty: 'Belum ada catatan pembukaan',
       claimable: 'Dapat ditarik',
       cooling: 'Cooldown',
@@ -531,12 +531,12 @@ const app = defineMessages({
         'Ikat likuiditas jual dengan permintaan beli agar setiap unlock berpasangan dengan pembelian setara',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'Beli 1:1 untuk membuka',
+          body: 'gAGX yang diklaim dari pool rilis tetap terkunci di Turbin. Beli AGX dalam jumlah setara dengan USD1 pada harga saat ini untuk membuka jumlah gAGX yang sama—setiap pembukaan didukung oleh permintaan beli.',
         },
         {
           title: 'Mekanisme cooldown dinamis',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'Setiap pembukaan memasuki cooldown 24–96 jam yang disesuaikan dengan kondisi pasar. Setelah selesai, tarik gAGX yang telah terbuka ke dompet Anda.',
         },
       ],
       metrics: {
@@ -597,8 +597,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · Token hak ekosistem',
+          body: 'Token partisipasi dan hak ekosistem yang mencatat kontribusi on-chain serta dapat digunakan untuk hak, acara, dan peningkatan airdrop.',
         },
         {
           key: 'contribution',
@@ -608,7 +608,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'Turbin · Pusat buka kuota',
-          body: 'Imbalan dari antrean rilis masuk kuota Turbin. Membeli AGX setara dengan USD1 memulai keheningan 24–96 jam. Setelah berakhir, gAGX dialihkan lewat splitter untuk rilis linier, tidak langsung ke dompet.',
+          body: 'Imbalan yang diklaim dari antrean rilis masuk ke kuota Turbin. Membeli AGX dalam jumlah setara dengan USD1 memulai cooldown 24–96 jam. Setelah selesai, gAGX yang telah terbuka dapat ditarik ke dompet.',
         },
       ],
     },
@@ -1011,7 +1011,8 @@ const app = defineMessages({
       referral: {
         title: 'Hadiah referral',
         body: 'Dapatkan hadiah dengan mengundang mitra ke Bangun Bersama',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'Hadiah terkait Rebase dari referral langsung; klaim melalui DaoPool Mixed (kontribusi {ratio}).',
       },
       participate: {
         title: 'Hadiah partisipasi',
@@ -1697,7 +1698,7 @@ const app = defineMessages({
         bufferTitle: 'Pool buffer',
         bufferHint:
           'Setelah unstake, pokok masuk pool buffer untuk rilis linear sekunder {days} hari, menekan outflow jangka pendek terhadap likuiditas pasar dan menyeimbangkan kelangsungan rilis dengan stabilitas pasar.',
-        bufferTotal: 'Total',
+        bufferTotal: 'Di brankas',
         bufferReleased: 'Dirilis',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1768,8 +1769,9 @@ const app = defineMessages({
       stake: {
         title: 'Posisi staking',
         intro: 'Kelola setiap staking — klaim hasil atau tebus pokok kapan saja',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty:
+          'Belum ada posisi staking. Selesaikan staking dan setiap posisi akan tampil di sini.',
+        emptyCta: 'Buka staking pertama Anda dan mulai memperoleh yield',
         stats: {
           title: 'Data posisi',
           metrics: [
@@ -2413,11 +2415,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'Kepemilikan saya' },
         { label: 'Diklaim' },
         { label: 'Menunggu rilis' },
         {
-          label: 'Current Rebase reward',
+          label: 'Yield Rebase saat ini',
           hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
         },
       ],
@@ -2504,11 +2506,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'Kepemilikan saya' },
         { label: 'Dirilis' },
         { label: 'Menunggu rilis' },
         {
-          label: 'Current Rebase reward',
+          label: 'Yield Rebase saat ini',
           hint: 'Imbal hasil Rebase yang belum diklaim terus berbunga majemuk pada setiap block reward',
         },
       ],
@@ -2712,10 +2714,10 @@ const app = defineMessages({
         notes: 'Catatan perhitungan',
         notesBody: 'Kalkulator ini hanya estimasi lokal, bukan kuotasi on-chain atau janji hasil.',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase diselesaikan kira-kira setiap {hours} jam ({timesPerDay} kali per hari). Yield berbunga majemuk sebesar {rebase}% per Rebase; periode yang lebih panjang menambahkan bonus bunga sederhana pada yield Rebase: 180 hari 10%, 360 hari 15%, 540 hari 20%.',
+          'Pokok terbuka secara linear selama periode yang dipilih; nilai penjualan hanya menghitung pokok yang telah dirilis hingga hari tersebut. Pokok yang belum dirilis tidak termasuk dalam total penjualan.',
+          'Yield bersih adalah Rebase majemuk ditambah bonus periode. Pokok yang telah dirilis dan yield bersih dijual pada harga keluar yang Anda tetapkan. Biaya poin kontribusi untuk mengklaim yield tidak disertakan.',
+          'Estimasi tidak mengurangi biaya rilis yield atau memodelkan pergerakan harga selama pokok dan yield terbuka. Hanya sebagai ilustrasi; yield aktual berubah sesuai kondisi protokol.',
         ],
       },
     },

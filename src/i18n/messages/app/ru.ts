@@ -34,10 +34,10 @@ const app = defineMessages({
         stakeAmountLimit:
           'Достигнут дневной лимит стейкинга. Уменьшите сумму или дождитесь сброса.',
         debtCapacityReached: 'Ёмкость облигаций заполнена. Попробуйте позже.',
-        turbineCooldown:
-          'Охлаждение ещё не закончилось или сумма недействительна. Обновите записи охлаждения и повторите попытку.',
+        turbineCooldown: 'Период ожидания ещё не завершён. Обновите записи и повторите попытку.',
         pairNotExist: 'Торговая пара не существует. Проверьте конфигурацию токена.',
-        configNotReady: 'Конфигурация протокола не готова. Попробуйте позже.',
+        configNotReady:
+          'Конфигурация буферного пула / очереди высвобождения не готова. Попробуйте позже.',
         exceedsMax: 'Сумма превышает максимум. Уменьшите её.',
         bondTooSmall: 'Выплата по облигации слишком мала. Увеличьте сумму покупки.',
         bondTooLarge: 'Облигация превышает макс. выплату. Уменьшите сумму покупки.',
@@ -487,7 +487,7 @@ const app = defineMessages({
       segmentAriaLabel: 'Действия Турбины',
       segments: {
         unlock: 'Разблокировать',
-        claim: 'Получить',
+        claim: 'Вывести',
       },
       unlockLabel: 'Разблокировать',
       unlockable: 'Доступно к разблокировке',
@@ -505,8 +505,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours}ч',
       unlockAction: 'Разблокировать',
       unlockSuccess: 'Разблокировано — охлаждение началось',
-      claimAction: 'Получить',
-      claimSuccess: 'Успешно получено',
+      claimAction: 'Вывести',
+      claimSuccess: 'Вывод отправлен — gAGX будет переведён в ваш кошелёк',
       claimEmpty: 'Пока нет записей разблокировки',
       claimable: 'Можно забрать',
       cooling: 'Охлаждение',
@@ -523,12 +523,12 @@ const app = defineMessages({
         'Свяжите ликвидность продажи со спросом на покупку, чтобы каждая разблокировка сопровождалась равной покупкой',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'Покупка 1:1 для разблокировки',
+          body: 'gAGX, полученный из пула высвобождения, остаётся заблокированным в Турбине. Купите равное количество AGX за USD1 по текущей цене, чтобы разблокировать столько же gAGX: каждая разблокировка обеспечивается спросом на покупку.',
         },
         {
           title: 'Адаптивное охлаждение',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'После каждой разблокировки начинается период ожидания 24–96 часов, который регулируется состоянием рынка. По его завершении выведите разблокированный gAGX в свой кошелёк.',
         },
       ],
       metrics: {
@@ -590,8 +590,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · Токен прав экосистемы',
+          body: 'Токен участия и прав экосистемы, который фиксирует вклад в блокчейне и даёт доступ к правам, мероприятиям и бонусам аирдропов.',
         },
         {
           key: 'contribution',
@@ -601,7 +601,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'Турбина · Хаб разблокировки квоты',
-          body: 'Награды из очереди высвобождения сначала входят в квоту Турбины. Покупка равного объёма AGX за USD1 запускает тишину 24–96 ч. По истечении gAGX идёт через сплиттер на линейное высвобождение и не сразу попадает в кошелёк.',
+          body: 'Награды, полученные из очереди высвобождения, входят в квоту Турбины. Покупка равного количества AGX за USD1 запускает период ожидания 24–96 часов. После его завершения разблокированный gAGX можно вывести в кошелёк.',
         },
       ],
     },
@@ -972,7 +972,8 @@ const app = defineMessages({
       referral: {
         title: 'Реферальная',
         body: 'Награды за приглашение партнёров в со-строительство',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'Награды, связанные с Rebase прямых рефералов; получайте их через DaoPool Mixed (вклад {ratio}).',
       },
       participate: {
         title: 'Участие',
@@ -1646,7 +1647,7 @@ const app = defineMessages({
         bufferTitle: 'Буферный пул',
         bufferHint:
           'После анстейка основная сумма попадает в буфер на {days}-дневное вторичное линейное высвобождение, снижая краткосрочный отток с рынка и балансируя непрерывность выплат со стабильностью.',
-        bufferTotal: 'Total',
+        bufferTotal: 'В хранилище',
         bufferReleased: 'Высвобождено',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1713,8 +1714,9 @@ const app = defineMessages({
         title: 'Позиции стейкинга',
         intro:
           'Управляйте каждым стейком — получайте доходность или выкупайте основную сумму в любое время',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty:
+          'Позиций стейкинга пока нет. После завершения стейкинга каждая позиция появится здесь.',
+        emptyCta: 'Откройте первую позицию и начните получать доход',
         stats: {
           title: 'Статистика позиции',
           metrics: [
@@ -2347,11 +2349,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'Мои активы' },
         { label: 'Получено' },
         { label: 'Ожидает высвобождения' },
         {
-          label: 'Current Rebase reward',
+          label: 'Текущая доходность Rebase',
           hint: 'Невостребованный доход Rebase продолжает капитализироваться с каждой наградой блока',
         },
       ],
@@ -2438,11 +2440,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'Мои активы' },
         { label: 'Высвобождено' },
         { label: 'Ожидает высвобождения' },
         {
-          label: 'Current Rebase reward',
+          label: 'Текущая доходность Rebase',
           hint: 'Невостребованный доход Rebase продолжает капитализироваться с каждой наградой блока',
         },
       ],
@@ -2645,10 +2647,10 @@ const app = defineMessages({
         notes: 'Примечания',
         notesBody: 'Только локальная оценка — не ончейн-котировка и не обещание доходности.',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase рассчитывается примерно каждые {hours} ч ({timesPerDay} раза в день). Доход начисляется по сложной ставке {rebase}% за каждый Rebase; более длительные сроки добавляют простой бонус к доходу Rebase: 180 дней 10%, 360 дней 15%, 540 дней 20%.',
+          'Основная сумма разблокируется линейно в течение выбранного срока; в стоимость продажи входит только сумма, высвобожденная к этому дню. Невысвобожденная сумма не учитывается в общей продаже.',
+          'Чистый доход состоит из сложного Rebase и бонуса за срок. Высвобожденная основная сумма и чистый доход продаются по заданной вами цене выхода. Стоимость баллов вклада для получения дохода не учитывается.',
+          'Оценка не вычитает комиссию за высвобождение дохода и не моделирует изменение цены во время разблокировки основной суммы и дохода. Это лишь пример; фактический доход зависит от состояния протокола.',
         ],
       },
     },

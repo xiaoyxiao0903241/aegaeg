@@ -33,10 +33,10 @@ const app = defineMessages({
       reverts: {
         stakeAmountLimit: 'Đã vượt hạn mức staking ngày. Giảm số lượng hoặc chờ hạn mức khôi phục.',
         debtCapacityReached: 'Dung lượng trái phiếu không đủ, vui lòng thử lại sau.',
-        turbineCooldown:
-          'Chưa hết thời gian chờ hoặc số lượng không hợp lệ. Làm mới bản ghi chờ rồi thử lại.',
+        turbineCooldown: 'Thời gian chờ chưa kết thúc. Làm mới bản ghi chờ rồi thử lại.',
         pairNotExist: 'Cặp giao dịch không tồn tại. Kiểm tra cấu hình token.',
-        configNotReady: 'Cấu hình giao thức chưa sẵn sàng, vui lòng thử lại sau.',
+        configNotReady:
+          'Cấu hình pool đệm / hàng đợi giải phóng chưa sẵn sàng, vui lòng thử lại sau.',
         exceedsMax: 'Số lượng vượt giới hạn tối đa, vui lòng giảm.',
         bondTooSmall: 'Số trái phiếu nhận được quá nhỏ, hãy tăng số mua.',
         bondTooLarge: 'Vượt giới hạn trái phiếu mỗi lần, hãy giảm số mua.',
@@ -487,7 +487,7 @@ const app = defineMessages({
       segmentAriaLabel: 'Thao tác Turbine',
       segments: {
         unlock: 'Mở khóa',
-        claim: 'Nhận',
+        claim: 'Rút',
       },
       unlockLabel: 'Mở khóa',
       unlockable: 'Có thể mở khóa',
@@ -505,8 +505,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours} giờ',
       unlockAction: 'Mở khóa',
       unlockSuccess: 'Mở khóa thành công, đã vào chờ',
-      claimAction: 'Nhận',
-      claimSuccess: 'Nhận thành công',
+      claimAction: 'Rút',
+      claimSuccess: 'Đã gửi yêu cầu rút—gAGX sẽ được chuyển về ví của bạn',
       claimEmpty: 'Chưa có bản ghi mở khóa',
       claimable: 'Có thể rút',
       cooling: 'Đang chờ',
@@ -523,12 +523,12 @@ const app = defineMessages({
         'Gắn thanh khoản bán với nhu cầu mua, để mỗi lần mở khóa kèm mua cùng số lượng',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'Mua 1:1 để mở khóa',
+          body: 'gAGX nhận từ pool giải phóng vẫn bị khóa trong Turbine. Mua lượng AGX tương ứng bằng USD1 theo giá hiện tại để mở khóa cùng lượng gAGX; mỗi lần mở khóa đều được lực mua hỗ trợ.',
         },
         {
           title: 'Cơ chế chờ động',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'Mỗi lần mở khóa bước vào thời gian chờ 24–96 giờ, được điều chỉnh theo trạng thái thị trường. Khi kết thúc, hãy rút gAGX đã mở khóa về ví.',
         },
       ],
       metrics: {
@@ -569,8 +569,8 @@ const app = defineMessages({
       items: [
         {
           key: 'usd1',
-          title: 'USD1 · Stablecoin tất toán',
-          body: 'Stablecoin tất toán lõi giao thức, neo 1:1, đổi không trượt giá; xuyên suốt đăng ký Genesis, staking và thanh toán.',
+          title: 'USD1 · Tài sản tất toán cốt lõi',
+          body: 'Tài sản tất toán cốt lõi của hệ sinh thái AEGIS X, kết nối luân chuyển giá trị, mạng lưới thanh khoản và các tình huống thanh toán.',
         },
         {
           key: 'agx',
@@ -580,7 +580,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · Chứng từ tất toán lợi nhuận',
-          body: 'Chứng từ tất toán thống nhất thưởng Rebase và DAO; đổi 1:1 AGX hoặc stake đào X.',
+          body: 'Chứng từ tất toán phần thưởng giao thức, có thể đổi sang AGX và dùng cho khai thác hệ sinh thái cùng tái đầu tư lợi suất.',
         },
         {
           key: 'gagxStake',
@@ -589,8 +589,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · Token quyền lợi hệ sinh thái',
+          body: 'Token tham gia và quyền lợi hệ sinh thái, ghi nhận đóng góp on-chain và dùng cho quyền lợi, sự kiện cùng ưu đãi airdrop.',
         },
         {
           key: 'contribution',
@@ -600,7 +600,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'Tuabin · Trung tâm mở khóa hạn ngạch',
-          body: 'Phần thưởng nhận từ hàng đợi giải phóng vào hạn ngạch Tuabin. Mua lượng AGX tương đương bằng USD1 bắt đầu im lặng 24–96 giờ; gAGX hết hạn được tuyến qua bộ chia để giải phóng tuyến tính, không vào ví ngay.',
+          body: 'Phần thưởng nhận từ hàng đợi giải phóng sẽ vào hạn ngạch Tuabin. Mua lượng AGX tương đương bằng USD1 sẽ bắt đầu thời gian chờ 24–96 giờ. Khi kết thúc, gAGX đã mở khóa có thể được rút về ví.',
         },
       ],
     },
@@ -1001,7 +1001,8 @@ const app = defineMessages({
       referral: {
         title: 'Thưởng giới thiệu',
         body: 'Thưởng khi mời đối tác tham gia Cùng xây dựng',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'Phần thưởng liên quan đến Rebase của người được giới thiệu trực tiếp; nhận qua DaoPool Mixed (đóng góp {ratio}).',
       },
       participate: {
         title: 'Thưởng tham gia',
@@ -1133,7 +1134,7 @@ const app = defineMessages({
       contributionHint: 'Nhận thưởng tiêu {ratio}',
       nextPayout: 'Lần phát thưởng tiếp theo',
       recordsTitle: 'Bản ghi thưởng giới thiệu',
-      recordsColumns: ['Thời gian', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
+      recordsColumns: ['Thời gian', 'Số lượng', 'Trạng thái', 'Thời gian nhận'],
       emptyRecords: 'Chưa có bản ghi thưởng; sau khi phát sẽ hiện từng mục ở đây.',
       referralsTitle: 'Giới thiệu của tôi ({count})',
       referralsColumns: [
@@ -1187,7 +1188,7 @@ const app = defineMessages({
       contributionHint: 'Nhận thưởng tiêu {ratio}',
       nextPayout: 'Lần phát thưởng tiếp theo',
       recordsTitle: 'Bản ghi thưởng tham gia',
-      recordsColumns: ['Thời gian', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
+      recordsColumns: ['Thời gian', 'Số lượng', 'Trạng thái', 'Thời gian nhận'],
       emptyRecords: 'Chưa có bản ghi thưởng; sau khi phát sẽ hiện từng mục ở đây.',
       inviterTitle: 'Người mời của tôi',
       inviterColumns: ['Thời gian gắn', 'Địa chỉ', 'Vị thế', 'Tổng thưởng mang lại'],
@@ -1250,7 +1251,7 @@ const app = defineMessages({
       recordsTabsAria: 'Loại bản ghi phần thưởng',
       recordsTabCobuild: 'Cùng xây dựng',
       recordsTabEqualize: 'Thưởng san bằng',
-      recordsColumns: ['Thời gian', 'Hạng', 'Số lượng ước tính', 'Trạng thái', 'Thời gian nhận'],
+      recordsColumns: ['Thời gian', 'Hạng', 'Số lượng', 'Trạng thái', 'Thời gian nhận'],
       emptyRecordsCobuild: 'Chưa có bản ghi thưởng; sau khi phát sẽ hiện từng mục ở đây.',
       emptyRecordsEqualize: 'Chưa có bản ghi thưởng san bằng; sau khi phát sẽ hiện ở đây.',
       teamTitle: 'Đội của tôi ({count})',
@@ -1307,13 +1308,13 @@ const app = defineMessages({
       recordsTabClaim: 'Nhận',
       issueColumns: [
         'Thời gian phát',
-        'Số lượng ước tính',
+        'Số lượng',
         'Loại',
         'Mã hash',
         'Tỷ lệ trợ cấp',
         'Số lượng trợ cấp',
       ],
-      claimColumns: ['Thời gian nhận', 'Số lượng ước tính', 'Mã hash'],
+      claimColumns: ['Thời gian nhận', 'Số lượng', 'Mã hash'],
       emptyIssue: 'Chưa có bản ghi phát; trợ cấp tích lũy sẽ hiện ở đây.',
       emptyClaim: 'Chưa có bản ghi nhận; sau khi nhận sẽ hiện ở đây.',
       faq: {
@@ -1349,7 +1350,7 @@ const app = defineMessages({
       claimToWallet: 'Nhận về ví',
       tierColumns: ['Hạng', 'Đăng ký cá nhân', 'Hiệu suất hệ thống', 'Tỷ lệ thưởng'],
       recordsTabsAria: 'Loại bản ghi thưởng Genesis',
-      recordsColumns: ['Thời gian', 'Loại', 'Số lượng ước tính', 'Trạng thái'],
+      recordsColumns: ['Thời gian', 'Loại', 'Số lượng', 'Trạng thái'],
       faq: {
         title: 'FAQs',
         items: [
@@ -1599,7 +1600,7 @@ const app = defineMessages({
       activateWarmupSuccess: 'Đã mở khóa',
       warmupRemainingEpochs: 'Còn {n} Epoch',
     },
-    opsColumns: ['Thời gian', 'Thao tác', 'Số lượng ước tính', 'Hash giao dịch'],
+    opsColumns: ['Thời gian', 'Thao tác', 'Số lượng', 'Hash giao dịch'],
     claim: {
       title: 'Nhận lợi nhuận',
       amount: 'Số nhận',
@@ -1685,7 +1686,7 @@ const app = defineMessages({
         bufferTitle: 'Hồ đệm',
         bufferHint:
           'Sau khi gỡ stake, gốc vào hồ đệm và giải phóng tuyến tính lần hai trong {days} ngày, giảm áp lực dòng ra tập trung ngắn hạn lên thanh khoản và cân bằng nhịp giải phóng với ổn định thị trường.',
-        bufferTotal: 'Total',
+        bufferTotal: 'Trong kho',
         bufferReleased: 'Đã giải phóng',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1755,8 +1756,8 @@ const app = defineMessages({
       stake: {
         title: 'Vị thế staking',
         intro: 'Quản lý từng khoản staking, nhận lợi nhuận hoặc chuộc gốc bất cứ lúc nào',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty: 'Chưa có vị thế staking. Sau khi hoàn tất staking, từng vị thế sẽ hiển thị tại đây.',
+        emptyCta: 'Mở vị thế staking đầu tiên và bắt đầu nhận lợi suất',
         stats: {
           title: 'Dữ liệu vị thế',
           metrics: [
@@ -2162,7 +2163,7 @@ const app = defineMessages({
       recordColumns: [
         'Thời gian',
         'Chu kỳ ước tính',
-        'Số lượng ước tính',
+        'Số lượng',
         'Đã giải phóng',
         'Hash giao dịch',
       ],
@@ -2174,7 +2175,7 @@ const app = defineMessages({
         'Nhận AGX',
         'Hash giao dịch',
       ],
-      xmineRecordColumns: ['Thời gian', 'Thao tác', 'Số lượng ước tính', 'Hash giao dịch'],
+      xmineRecordColumns: ['Thời gian', 'Thao tác', 'Số lượng', 'Hash giao dịch'],
       recordsEmpty: {
         stake: 'Chưa có bản ghi staking; hoàn tất staking sẽ hiện từng khoản ở đây.',
         lpbond: 'Chưa có bản ghi mua; mua trái phiếu LP sẽ hiện từng lần mua ở đây.',
@@ -2391,11 +2392,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'Tài sản nắm giữ' },
         { label: 'Nhận' },
         { label: 'Chờ giải phóng' },
         {
-          label: 'Current Rebase reward',
+          label: 'Lợi suất Rebase hiện tại',
           hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
         },
       ],
@@ -2482,11 +2483,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'Tài sản nắm giữ' },
         { label: 'Đã giải phóng' },
         { label: 'Chờ giải phóng' },
         {
-          label: 'Current Rebase reward',
+          label: 'Lợi suất Rebase hiện tại',
           hint: 'Lợi nhuận Rebase chưa nhận tiếp tục sinh lãi kép theo mỗi phần thưởng block',
         },
       ],
@@ -2636,9 +2637,9 @@ const app = defineMessages({
       },
       periodLabel: 'Chọn chu kỳ',
       periodAria: 'Chu kỳ ước tính',
-      amountLabel: 'Số lượng ước tính',
+      amountLabel: 'Số lượng',
       amountBuy: 'Số tiền mua',
-      amountAria: 'Số lượng ước tính',
+      amountAria: 'Số lượng',
       price: 'Giá AGX đáo hạn',
       priceX: 'Giá X đáo hạn',
       priceCurrent: 'Hiện tại {price}',
@@ -2687,10 +2688,10 @@ const app = defineMessages({
         notesBody:
           'Máy tính chỉ để ước lượng cục bộ, không phải báo giá on-chain hay cam kết lợi nhuận.',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase được tất toán khoảng mỗi {hours} giờ ({timesPerDay} lần mỗi ngày). Lợi suất được tính lãi kép {rebase}% cho mỗi Rebase; kỳ hạn dài hơn cộng thêm phần thưởng lãi đơn trên lợi suất Rebase: 180 ngày 10%, 360 ngày 15%, 540 ngày 20%.',
+          'Tiền gốc được mở khóa tuyến tính trong kỳ hạn đã chọn; giá trị bán chỉ tính phần gốc đã giải phóng đến ngày đó. Phần gốc chưa giải phóng không được tính vào tổng giá trị bán.',
+          'Lợi suất ròng gồm Rebase lãi kép cộng phần thưởng kỳ hạn. Phần gốc đã giải phóng và lợi suất ròng được tính là bán theo giá thoát bạn đặt. Chi phí điểm đóng góp để nhận lợi suất chưa được tính.',
+          'Ước tính không khấu trừ phí giải phóng lợi suất và không mô phỏng biến động giá trong thời gian tiền gốc cùng lợi suất được mở khóa. Chỉ mang tính minh họa; lợi suất thực tế thay đổi theo trạng thái giao thức.',
         ],
       },
     },
@@ -2700,7 +2701,7 @@ const app = defineMessages({
     title: 'Giải phóng',
     intro: 'Quản lý và xem giải phóng lợi nhuận và gốc',
     backToHub: 'Quay lại Giải phóng',
-    recordColumns: ['Thời gian', 'Thao tác', 'Số lượng ước tính', 'Hash giao dịch'],
+    recordColumns: ['Thời gian', 'Thao tác', 'Số lượng', 'Hash giao dịch'],
     recordsEmpty: 'Chưa có bản ghi chỉ mục on-chain (chờ indexer)',
     labels: {
       releasing: 'Đang giải phóng',

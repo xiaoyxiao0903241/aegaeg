@@ -35,9 +35,10 @@ const app = defineMessages({
           '일일 스테이킹 한도를 초과했습니다. 금액을 낮추거나 한도 회복을 기다려 주세요.',
         debtCapacityReached: '채권 용량이 부족합니다. 나중에 다시 시도해 주세요.',
         turbineCooldown:
-          '쿨다운이 끝나지 않았거나 입력이 유효하지 않습니다. 쿨다운 기록을 새로고침한 후 다시 시도해 주세요.',
+          '쿨다운이 끝나지 않았습니다. 쿨다운 기록을 새로고침한 후 다시 시도해 주세요.',
         pairNotExist: '거래쌍이 존재하지 않습니다. 토큰 설정을 확인해 주세요.',
-        configNotReady: '프로토콜 설정이 준비되지 않았습니다. 나중에 다시 시도해 주세요.',
+        configNotReady:
+          '버퍼 풀 / 릴리스 대기열 설정이 준비되지 않았습니다. 나중에 다시 시도해 주세요.',
         exceedsMax: '금액이 상한을 초과했습니다. 금액을 낮춰 주세요.',
         bondTooSmall: '채권 지급액이 너무 작습니다. 구매 금액을 늘려 주세요.',
         bondTooLarge: '단일 채권 한도를 초과했습니다. 구매 금액을 낮춰 주세요.',
@@ -485,7 +486,7 @@ const app = defineMessages({
       segmentAriaLabel: '터빈 작업',
       segments: {
         unlock: '잠금 해제',
-        claim: '수령',
+        claim: '인출',
       },
       unlockLabel: '잠금 해제',
       unlockable: '잠금 해제 가능',
@@ -503,8 +504,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours}시간',
       unlockAction: '잠금 해제',
       unlockSuccess: '잠금 해제 성공 — 쿨다운 시작',
-      claimAction: '수령',
-      claimSuccess: '수령 성공',
+      claimAction: '인출',
+      claimSuccess: '인출이 제출되었습니다. gAGX가 지갑으로 전송됩니다',
       claimEmpty: '잠금 해제 기록이 아직 없습니다',
       claimable: '출금 가능',
       cooling: '쿨다운 중',
@@ -521,12 +522,12 @@ const app = defineMessages({
         '매도 유동성을 매수 수요에 묶어, 모든 잠금 해제가 동일 수량 매수와 함께하도록 합니다',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: '1:1 매수로 잠금 해제',
+          body: '릴리스 풀에서 수령한 gAGX는 터빈에서 잠긴 상태로 유지됩니다. 현재 가격으로 USD1을 사용해 같은 수량의 AGX를 매수하면 동일한 수량의 gAGX가 잠금 해제되며, 각 잠금 해제는 매수 수요의 지지를 받습니다.',
         },
         {
           title: '동적 쿨다운 메커니즘',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: '각 잠금 해제는 시장 상태에 따라 조정되는 24~96시간의 쿨다운에 들어갑니다. 종료 후 잠금 해제된 gAGX를 지갑으로 인출할 수 있습니다.',
         },
       ],
       metrics: {
@@ -568,7 +569,7 @@ const app = defineMessages({
         {
           key: 'usd1',
           title: 'USD1 · 핵심 정산 자산',
-          body: 'AEGIS X 생태계의 핵심 정산 스테이블코인으로, 1:1 페깅·제로 슬리피지 교환으로 Genesis 청약·스테이킹·결제 시나리오를 관통합니다.',
+          body: 'AEGIS X 생태계의 핵심 정산 자산으로, 가치 유통과 유동성 네트워크 및 결제 환경을 연결합니다.',
         },
         {
           key: 'agx',
@@ -578,7 +579,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · 수익 정산 증표',
-          body: 'Rebase와 DAO 리워드의 통합 정산 증표로, AGX와 1:1 교환하거나 X 마이닝에 스테이킹할 수 있습니다.',
+          body: 'AGX로 교환할 수 있으며 생태계 마이닝과 수익 재활용에 사용되는 프로토콜 리워드 정산 증표입니다.',
         },
         {
           key: 'gagxStake',
@@ -587,8 +588,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · 생태계 권익 토큰',
+          body: '온체인 기여를 기록하고 권익, 이벤트 참여, 에어드롭 혜택에 사용할 수 있는 생태계 참여·권익 토큰입니다.',
         },
         {
           key: 'contribution',
@@ -598,7 +599,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: '터빈 · 쿼터 잠금 해제 허브',
-          body: '릴리스에서 수령한 보상은 먼저 터빈 쿼터로 들어갑니다. USD1로 같은 양의 AGX를 사면 24–96시간 사일런스가 시작되고, 만료 후 gAGX는 스플리터를 통해 선형 릴리스되며 바로 지갑에 들어오지 않습니다.',
+          body: '릴리스 대기열에서 수령한 보상은 터빈 쿼터로 들어갑니다. USD1로 같은 수량의 AGX를 매수하면 24~96시간의 쿨다운이 시작되며, 종료 후 잠금 해제된 gAGX를 지갑으로 인출할 수 있습니다.',
         },
       ],
     },
@@ -974,7 +975,8 @@ const app = defineMessages({
       referral: {
         title: '추천',
         body: '파트너를 공동 구축에 초대해 리워드 획득',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          '직접 추천인의 Rebase 관련 리워드이며, DaoPool Mixed에서 수령합니다(기여 포인트 {ratio}).',
       },
       participate: {
         title: '참여',
@@ -1106,7 +1108,7 @@ const app = defineMessages({
       contributionHint: '수령 시 {ratio} 소모',
       nextPayout: '다음 리워드 지급',
       recordsTitle: '추천 리워드 기록',
-      recordsColumns: ['시간', '산출 수량', '상태', '수령 시간'],
+      recordsColumns: ['시간', '수량', '상태', '수령 시간'],
       emptyRecords: '아직 리워드 기록이 없습니다. 리워드가 지급되면 여기에 각 기록이 표시됩니다.',
       referralsTitle: '내 추천 ({count})',
       referralsColumns: ['가입 시간', '주소', '포지션', '누적 기여 리워드'],
@@ -1155,7 +1157,7 @@ const app = defineMessages({
       contributionHint: '수령 시 {ratio} 소모',
       nextPayout: '다음 리워드 지급',
       recordsTitle: '참여 리워드 기록',
-      recordsColumns: ['시간', '산출 수량', '상태', '수령 시간'],
+      recordsColumns: ['시간', '수량', '상태', '수령 시간'],
       emptyRecords: '아직 리워드 기록이 없습니다. 리워드가 지급되면 여기에 각 기록이 표시됩니다.',
       inviterTitle: '내 초대인',
       inviterColumns: ['바인딩 시간', '주소', '포지션', '누적 발생 리워드'],
@@ -1216,11 +1218,11 @@ const app = defineMessages({
       recordsTitle: '리워드 기록',
       recordsTabsAria: '리워드 기록 유형',
       recordsTabCobuild: '공동 구축',
-      recordsTabEqualize: '평월상',
-      recordsColumns: ['시간', '등급', '산출 수량', '상태', '수령 시간'],
+      recordsTabEqualize: '등급 균형 보상',
+      recordsColumns: ['시간', '등급', '수량', '상태', '수령 시간'],
       emptyRecordsCobuild:
         '아직 리워드 기록이 없습니다. 리워드가 지급되면 여기에 각 기록이 표시됩니다.',
-      emptyRecordsEqualize: '아직 평월상 기록이 없습니다. 지급 후 여기에 표시됩니다.',
+      emptyRecordsEqualize: '아직 등급 균형 보상 기록이 없습니다. 지급 후 여기에 표시됩니다.',
       teamTitle: '내 팀（{count}）',
       teamColumns: ['가입 시간', '주소', '팀 실적', '팀 최고 등급'],
       emptyTeam: '아직 팀 멤버가 없습니다. 초대 링크를 공유하면 파트너 가입 후 여기에 표시됩니다.',
@@ -1233,12 +1235,12 @@ const app = defineMessages({
             a: '공동 구축 리워드는 팀 총 Rebase 수익에서 나오며, 공동 구축 등급의 보너스 비율로 산정됩니다. 등급이 높을수록 비율이 높습니다(A1 10% ~ A13 130%). 리워드 홈의 공동 구축 메커니즘 표를 참고하세요.',
           },
           {
-            q: '평월상이란 무엇인가요?',
-            a: '하위 팀 등급이 귀하와 같거나 넘으면 해당 팀의 공동 구축 리워드가 더 이상 귀하의 차액 수익에 포함되지 않습니다. 평월상은 이에 대한 보상으로, 해당 하위 공동 구축 리워드의 10%를 평월상으로 받습니다.',
+            q: '등급 균형 보상이란 무엇인가요?',
+            a: '하위 팀의 등급이 귀하와 같거나 높아지면 해당 팀의 공동 구축 리워드는 더 이상 귀하의 차등 수익에 포함되지 않습니다. 이를 보완하기 위해 해당 하위 팀 공동 구축 리워드의 10%를 등급 균형 보상으로 받습니다.',
           },
           {
-            q: '평월상에 등급 제한이 있나요?',
-            a: '있습니다. 평월상은 귀하보다 최대 2등급 이내의 하위 팀만 포함합니다. 예: A2일 때 하위가 A3/A4이면 그 공동 구축 리워드의 10%를 받지만, A5 이상(2등급 초과)이면 해당 팀에서 평월상을 받지 못합니다. 본인 등급을 올리면 범위가 복구됩니다.',
+            q: '등급 균형 보상에 등급 제한이 있나요?',
+            a: '있습니다. 등급 균형 보상은 귀하보다 최대 2등급 이내의 하위 팀만 포함합니다. 예를 들어 A2일 때 하위가 A3/A4이면 해당 공동 구축 리워드의 10%를 받지만, A5 이상이면 범위를 벗어나 보상을 받지 못합니다. 본인 등급을 올리면 적용 범위가 갱신됩니다.',
           },
           {
             q: '공동 구축 등급은 어떻게 올리나요?',
@@ -1249,12 +1251,12 @@ const app = defineMessages({
             a: '팀 실적은 전체 추천 체계(각 라인)의 스테이킹·채권 포지션 가치 합계이며, 정산 시점 시장가로 계산됩니다.',
           },
           {
-            q: '공동 구축상과 평월상은 어떻게 수령하나요?',
-            a: '왼쪽 수령 패널 상단에서 공동 구축 / 평월상을 전환한 뒤, 수령과 재예치 배분을 설정하세요. 수령분은 릴리스 풀에 들어가 선택한 주기로 선형 릴리스되고, 재예치분은 단일 토큰 스테이킹으로 바로 들어가 복리됩니다. 둘 다 기여 포인트를 1:1로 소모합니다.',
+            q: '공동 구축 보상과 등급 균형 보상은 어떻게 수령하나요?',
+            a: '왼쪽 수령 패널 상단에서 공동 구축 / 등급 균형 보상을 전환한 뒤, 수령과 재예치 배분을 설정하세요. 수령분은 릴리스 풀에 들어가 선택한 주기로 선형 릴리스되고, 재예치분은 단일 토큰 스테이킹으로 바로 들어가 복리됩니다. 둘 다 기여 포인트를 1:1로 소모합니다.',
           },
           {
             q: '등급 변경 후 보너스 비율은 언제 적용되나요?',
-            a: '등급은 일일 정산 시 재평가됩니다. 새 등급 도달 후 다음 공동 구축 리워드 지급부터 새 보너스 비율이 적용되며, 평월상의 적용 범위도 새 등급에 맞춰 갱신됩니다.',
+            a: '등급은 일일 정산 시 재평가됩니다. 새 등급 도달 후 다음 공동 구축 리워드 지급부터 새 보너스 비율이 적용되며, 등급 균형 보상의 적용 범위도 새 등급에 맞춰 갱신됩니다.',
           },
         ],
       },
@@ -1274,8 +1276,8 @@ const app = defineMessages({
       recordsTabsAria: '수당 기록 유형',
       recordsTabIssue: '지급',
       recordsTabClaim: '수령',
-      issueColumns: ['지급 시간', '산출 수량', '유형', '해시', '수당 비율', '수당 수량'],
-      claimColumns: ['수령 시간', '산출 수량', '해시'],
+      issueColumns: ['지급 시간', '수량', '유형', '해시', '수당 비율', '수당 수량'],
+      claimColumns: ['수령 시간', '수량', '해시'],
       emptyIssue: '아직 지급 기록이 없습니다. 수당이 누적되면 여기에 표시됩니다.',
       emptyClaim: '아직 수령 기록이 없습니다. 수령 완료 후 여기에 표시됩니다.',
       faq: {
@@ -1311,7 +1313,7 @@ const app = defineMessages({
       claimToWallet: '지갑으로 수령',
       tierColumns: ['등급', '개인 청약', '체계 실적', '리워드 비율'],
       recordsTabsAria: '제네시스 리워드 기록 유형',
-      recordsColumns: ['시간', '유형', '산출 수량', '상태'],
+      recordsColumns: ['시간', '유형', '수량', '상태'],
       faq: {
         title: 'FAQs',
         items: [
@@ -1561,7 +1563,7 @@ const app = defineMessages({
       activateWarmupSuccess: '잠금 해제됨',
       warmupRemainingEpochs: '남은 Epoch {n}개',
     },
-    opsColumns: ['시간', '작업', '산출 수량', '거래 해시'],
+    opsColumns: ['시간', '작업', '수량', '거래 해시'],
     claim: {
       title: '수익 수령',
       amount: '수령 수량',
@@ -1643,7 +1645,7 @@ const app = defineMessages({
         bufferTitle: '버퍼 풀',
         bufferHint:
           '원금 언스테이킹 후 버퍼 풀에서 {days}일 이차 선형 릴리스가 진행되어 단기 집중 유출이 시장 유동성에 주는 충격을 줄이고, 자금 방출의 연속성과 시장 안정성의 균형을 맞춥니다.',
-        bufferTotal: 'Total',
+        bufferTotal: '볼트 보관 중',
         bufferReleased: '릴리스됨',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1707,8 +1709,9 @@ const app = defineMessages({
       stake: {
         title: '스테이킹 포지션',
         intro: '각 스테이킹을 관리하세요 — 언제든 수익 수령 또는 원금 상환',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty:
+          '아직 스테이킹 포지션이 없습니다. 스테이킹을 완료하면 각 포지션이 여기에 표시됩니다.',
+        emptyCta: '첫 스테이킹을 시작하고 수익 받기',
         stats: {
           title: '포지션 데이터',
           metrics: [
@@ -2110,9 +2113,9 @@ const app = defineMessages({
         burnbond: '채권 구매 기록',
         xmine: '내 마이닝 기록',
       },
-      recordColumns: ['시간', '산출 주기', '산출 수량', '릴리스됨', '거래 해시'],
+      recordColumns: ['시간', '산출 주기', '수량', '릴리스됨', '거래 해시'],
       bondRecordColumns: ['시간', '산출 주기', '지불', '할인', '획득 AGX', '거래 해시'],
-      xmineRecordColumns: ['시간', '작업', '산출 수량', '거래 해시'],
+      xmineRecordColumns: ['시간', '작업', '수량', '거래 해시'],
       recordsEmpty: {
         stake: '아직 스테이킹 기록이 없습니다. 스테이킹을 완료하면 여기에 각 건이 표시됩니다.',
         lpbond: '아직 구매 기록이 없습니다. LP 채권을 구매하면 여기에 각 구매가 표시됩니다.',
@@ -2327,11 +2330,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: '내 보유량' },
         { label: '수령' },
         { label: '릴리스 대기' },
         {
-          label: 'Current Rebase reward',
+          label: '현재 Rebase 수익',
           hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
         },
       ],
@@ -2418,11 +2421,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: '내 보유량' },
         { label: '릴리스됨' },
         { label: '릴리스 대기' },
         {
-          label: 'Current Rebase reward',
+          label: '현재 Rebase 수익',
           hint: '미수령 Rebase 수익은 매 블록 보상과 함께 복리로 계속 쌓입니다',
         },
       ],
@@ -2573,9 +2576,9 @@ const app = defineMessages({
       },
       periodLabel: '주기 선택',
       periodAria: '산출 주기',
-      amountLabel: '산출 수량',
+      amountLabel: '수량',
       amountBuy: '구매 금액',
-      amountAria: '산출 수량',
+      amountAria: '수량',
       price: '만기 AGX 가격',
       priceX: '만기 X 가격',
       priceCurrent: '현재 {price}',
@@ -2623,10 +2626,10 @@ const app = defineMessages({
         notes: '계산 설명',
         notesBody: '본 계산기는 로컬 추정 참고용이며 온체인 호가나 수익 약속이 아닙니다.',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase는 약 {hours}시간마다(하루 {timesPerDay}회) 정산됩니다. 수익은 Rebase 1회당 {rebase}%로 복리 계산되며, 장기 기간에는 Rebase 수익에 단리 보너스가 추가됩니다: 180일 10%, 360일 15%, 540일 20%.',
+          '원금은 선택한 기간에 걸쳐 선형으로 잠금 해제됩니다. 매도 금액에는 해당 날짜까지 릴리스된 원금만 포함되며, 아직 릴리스되지 않은 원금은 매도 합계에 포함되지 않습니다.',
+          '순수익은 복리 Rebase와 기간 보너스의 합계입니다. 릴리스된 원금과 순수익은 설정한 매도 가격으로 판매하는 것으로 계산합니다. 수익 수령에 필요한 기여 포인트 비용은 포함되지 않습니다.',
+          '이 추정치는 수익 릴리스 수수료를 차감하지 않으며 원금과 수익이 잠금 해제되는 동안의 가격 변동도 반영하지 않습니다. 참고용이며 실제 수익은 프로토콜 상태에 따라 달라집니다.',
         ],
       },
     },
@@ -2636,7 +2639,7 @@ const app = defineMessages({
     title: '릴리스',
     intro: '수익과 원금 릴리스를 관리·확인하세요',
     backToHub: '릴리스로 돌아가기',
-    recordColumns: ['시간', '작업', '산출 수량', '거래 해시'],
+    recordColumns: ['시간', '작업', '수량', '거래 해시'],
     recordsEmpty: '아직 온체인 인덱스 기록이 없습니다(indexer 대기)',
     labels: {
       releasing: '릴리스 중',

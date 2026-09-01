@@ -1,5 +1,7 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
 
+import type { AppMessagesBundle } from './types'
+
 const app = defineMessages({
   common: {
     brand: 'AEGIS X',
@@ -36,7 +38,7 @@ const app = defineMessages({
         turbineNoSilenceBalance: '暂无可提取的冷却完成额度。',
         invalidAmount: '金额无效，请检查后重试。',
         pairNotExist: '交易对不存在，请检查代币配置。',
-        configNotReady: '分流器 Manager / 释放队列等协议配置未就绪，请稍后再试。',
+        configNotReady: '缓冲池 / 释放队列配置未就绪，请稍后再试。',
         exceedsMax: '金额超过上限，请降低金额。',
         bondTooSmall: '债券兑付过小，请增加购买金额。',
         bondTooLarge: '超过单笔债券上限，请降低购买金额。',
@@ -492,7 +494,7 @@ const app = defineMessages({
       unlockAction: '解锁',
       unlockSuccess: '解锁成功，已进入冷却',
       claimAction: '提取',
-      claimSuccess: '已提交提取，gAGX 进入分流器释放',
+      claimSuccess: '已提交提取，gAGX 将转入钱包',
       claimEmpty: '暂无解锁记录',
       claimable: '可提取',
       cooling: '冷却中',
@@ -512,7 +514,7 @@ const app = defineMessages({
         },
         {
           title: '动态冷却机制',
-          body: '每次解锁后进入 24–96 小时的冷却期，时长由系统根据市场状态自动调节。冷却结束后领取的 gAGX 进入分流器线性释放，不是即时到钱包。',
+          body: '每次解锁后进入 24–96 小时的冷却期，时长由系统根据市场状态自动调节。冷却结束后即可将解锁的 gAGX 提取至钱包。',
         },
       ],
       metrics: {
@@ -553,8 +555,8 @@ const app = defineMessages({
       items: [
         {
           key: 'usd1',
-          title: 'USD1 · 结算稳定币',
-          body: '协议核心结算稳定币，1:1 锚定、零滑点兑换，贯穿 Genesis 认购、质押与支付场景。',
+          title: 'USD1 · 核心结算资产',
+          body: 'AEGIS X 生态的核心结算资产，连接价值流转、流动性网络与支付场景。',
         },
         {
           key: 'agx',
@@ -564,7 +566,7 @@ const app = defineMessages({
         {
           key: 'gagx',
           title: 'gAGX · 收益结算凭证',
-          body: 'Rebase 与 DAO 奖励的统一结算凭证，可 1:1 兑换 AGX，也可质押挖取 X。',
+          body: '协议收益结算凭证，可兑换为 AGX，并用于生态挖矿与收益再利用。',
         },
         {
           key: 'gagxStake',
@@ -584,7 +586,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: '涡轮 · 配额解锁中枢',
-          body: '释放领取的奖励先进入涡轮配额。用 USD1 买入等量 AGX 后进入 24–96 小时静默期；到期提取的 gAGX 经分流器线性释放，不会立刻到钱包。',
+          body: '从释放队列领取的奖励进入涡轮配额。使用 USD1 买入等量 AGX 后进入 24–96 小时冷却期；冷却结束后，可将已解锁的 gAGX 提取至钱包。',
         },
       ],
     },
@@ -2556,7 +2558,7 @@ const app = defineMessages({
           'Rebase 每约 {hours} 小时结算一次（每日 {timesPerDay} 次），按单次 Rebase 收益率 {rebase}% 逐次复利测算；长周期在此基础上按单利口径的 Rebase 收益额外计发收益率加成：180 天 10%、360 天 15%、540 天 20%。',
           '本金按所选周期区块线性释放，卖出总值仅计入测算日已释放的本金；未释放本金不计入卖出。',
           '复利 Rebase 收益与加成收益之和构成净收益，连同已释放本金按您设定的到期价格全部卖出计算；测算未计入领取收益时需消耗的贡献点数成本。',
-          '测算结果未扣除收益释放时的所得税，也未考虑收益与本金释放期间价格波动的影响；结果仅供参考，实际收益随协议运行状态动态变化。',
+          '测算结果未扣除收益释放税费，也未考虑收益与本金释放期间价格波动的影响；结果仅供参考，实际收益随协议运行状态动态变化。',
         ],
       },
     },
@@ -2746,8 +2748,6 @@ const app = defineMessages({
     holding: '持仓',
     contribution: '认购',
   },
-})
-
-export type AppMessagesBundle = typeof app
+}) satisfies AppMessagesBundle
 
 export default app

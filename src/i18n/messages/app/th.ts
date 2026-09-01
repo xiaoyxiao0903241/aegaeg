@@ -33,9 +33,9 @@ const app = defineMessages({
       reverts: {
         stakeAmountLimit: 'ถึงขีดจำกัดการสเตกรายวันแล้ว ลดจำนวนหรือรอรีเซ็ต',
         debtCapacityReached: 'ความจุพันธบัตรเต็มแล้ว กรุณาลองใหม่ภายหลัง',
-        turbineCooldown: 'คูลดาวน์ยังไม่สิ้นสุดหรือจำนวนไม่ถูกต้อง รีเฟรชบันทึกคูลดาวน์แล้วลองใหม่',
+        turbineCooldown: 'คูลดาวน์ยังไม่สิ้นสุด รีเฟรชบันทึกคูลดาวน์แล้วลองใหม่',
         pairNotExist: 'ไม่มีคู่เทรด กรุณาตรวจสอบการตั้งค่าโทเค็น',
-        configNotReady: 'การตั้งค่าโปรโตคอลยังไม่พร้อม กรุณาลองใหม่ภายหลัง',
+        configNotReady: 'การตั้งค่าพูลบัฟเฟอร์ / คิวปล่อยยังไม่พร้อม กรุณาลองใหม่ภายหลัง',
         exceedsMax: 'จำนวนเกินขีดสูงสุด กรุณาลดจำนวน',
         bondTooSmall: 'การจ่ายพันธบัตรน้อยเกินไป เพิ่มจำนวนซื้อ',
         bondTooLarge: 'เกินเพดานจ่ายพันธบัตรต่อครั้ง ลดจำนวนซื้อ',
@@ -487,7 +487,7 @@ const app = defineMessages({
       segmentAriaLabel: 'การดำเนินการเทอร์ไบน์',
       segments: {
         unlock: 'ปลดล็อก',
-        claim: 'รับ',
+        claim: 'ถอน',
       },
       unlockLabel: 'ปลดล็อก',
       unlockable: 'ปลดล็อกได้',
@@ -505,8 +505,8 @@ const app = defineMessages({
       cooldownHoursValue: '{hours} ชม.',
       unlockAction: 'ปลดล็อก',
       unlockSuccess: 'ปลดล็อกสำเร็จ — เริ่มคูลดาวน์แล้ว',
-      claimAction: 'รับ',
-      claimSuccess: 'รับสำเร็จ',
+      claimAction: 'ถอน',
+      claimSuccess: 'ส่งคำขอถอนแล้ว—gAGX จะถูกส่งไปยังกระเป๋าของคุณ',
       claimEmpty: 'ยังไม่มีบันทึกการปลดล็อก',
       claimable: 'ถอนได้',
       cooling: 'คูลดาวน์',
@@ -522,12 +522,12 @@ const app = defineMessages({
       mechanismIntro: 'ผูกสภาพคล่องขายกับความต้องการซื้อ ให้ทุกการปลดล็อกคู่กับการซื้อเท่ากัน',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: 'ซื้อ 1:1 เพื่อปลดล็อก',
+          body: 'gAGX ที่รับจากพูลปล่อยยังคงถูกล็อกในเทอร์ไบน์ ซื้อ AGX จำนวนเท่ากันด้วย USD1 ตามราคาปัจจุบันเพื่อปลดล็อก gAGX จำนวนเท่ากัน โดยทุกการปลดล็อกมีแรงซื้อรองรับ',
         },
         {
           title: 'กลไกคูลดาวน์แบบปรับได้',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'การปลดล็อกแต่ละครั้งเข้าสู่ช่วงคูลดาวน์ 24–96 ชั่วโมงซึ่งปรับตามสภาวะตลาด เมื่อครบเวลาแล้วสามารถถอน gAGX ที่ปลดล็อกไปยังกระเป๋าได้',
         },
       ],
       metrics: {
@@ -588,8 +588,8 @@ const app = defineMessages({
         },
         {
           key: 'x',
-          title: 'X · Ecosystem value token',
-          body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
+          title: 'X · โทเคนสิทธิประโยชน์ของระบบนิเวศ',
+          body: 'โทเคนการมีส่วนร่วมและสิทธิประโยชน์ของระบบนิเวศที่บันทึกการมีส่วนร่วมบนเชน และใช้รับสิทธิ์ เข้าร่วมกิจกรรม และเพิ่มสิทธิประโยชน์จากแอร์ดรอปได้',
         },
         {
           key: 'contribution',
@@ -599,7 +599,7 @@ const app = defineMessages({
         {
           key: 'turbine',
           title: 'เทอร์ไบน์ · ศูนย์ปลดล็อกโควตา',
-          body: 'รางวัลจากคิวปล่อยเข้าโควตาเทอร์ไบน์ก่อน ซื้อ AGX เท่ากันด้วย USD1 จะเริ่มช่วงเงียบ 24–96 ชั่วโมง เมื่อครบกำหนด gAGX ถูกส่งผ่านสปลิตเตอร์เพื่อปล่อยแบบเส้นตรง ไม่เข้ากระเป๋าทันที',
+          body: 'รางวัลที่รับจากคิวปล่อยจะเข้าโควตาเทอร์ไบน์ การซื้อ AGX จำนวนเท่ากันด้วย USD1 จะเริ่มคูลดาวน์ 24–96 ชั่วโมง เมื่อครบเวลาแล้วสามารถถอน gAGX ที่ปลดล็อกไปยังกระเป๋าได้',
         },
       ],
     },
@@ -971,7 +971,8 @@ const app = defineMessages({
       referral: {
         title: 'รางวัลแนะนำ',
         body: 'แนะนำพาร์ทเนอร์ร่วมสร้างเพื่อรับรางวัล',
-        aside: 'Direct-referral related rewards; claim via DaoPool Mixed (contribution {ratio}).',
+        aside:
+          'รางวัลที่เกี่ยวข้องกับ Rebase ของผู้แนะนำโดยตรง รับผ่าน DaoPool Mixed (ใช้แต้มมีส่วนร่วม {ratio})',
       },
       participate: {
         title: 'รางวัลมีส่วนร่วม',
@@ -1104,7 +1105,7 @@ const app = defineMessages({
       contributionHint: 'การรับใช้ {ratio}',
       nextPayout: 'รอบจ่ายรางวัลถัดไป',
       recordsTitle: 'บันทึกรางวัลแนะนำ',
-      recordsColumns: ['เวลา', 'จำนวนคำนวณ', 'สถานะ', 'เวลารับ'],
+      recordsColumns: ['เวลา', 'จำนวน', 'สถานะ', 'เวลารับ'],
       emptyRecords: 'ยังไม่มีบันทึกรางวัล หลังมีการจ่าย จะแสดงทุกรายการที่นี่',
       referralsTitle: 'การแนะนำของฉัน ({count})',
       referralsColumns: ['เวลาเข้าร่วม', 'ที่อยู่', 'โพซิชัน', 'รางวัลแนะนำสะสม'],
@@ -1153,7 +1154,7 @@ const app = defineMessages({
       contributionHint: 'การรับใช้ {ratio}',
       nextPayout: 'รอบจ่ายรางวัลถัดไป',
       recordsTitle: 'บันทึกรางวัลมีส่วนร่วม',
-      recordsColumns: ['เวลา', 'จำนวนคำนวณ', 'สถานะ', 'เวลารับ'],
+      recordsColumns: ['เวลา', 'จำนวน', 'สถานะ', 'เวลารับ'],
       emptyRecords: 'ยังไม่มีบันทึกรางวัล หลังมีการจ่าย จะแสดงทุกรายการที่นี่',
       inviterTitle: 'ผู้เชิญของฉัน',
       inviterColumns: ['ผูกเมื่อ', 'ที่อยู่', 'โพซิชัน', 'รางวัลที่นำมาสะสม'],
@@ -1215,7 +1216,7 @@ const app = defineMessages({
       recordsTabsAria: 'ประเภทบันทึกรางวัล',
       recordsTabCobuild: 'ร่วมสร้าง',
       recordsTabEqualize: 'รางวัลปรับสมดุล',
-      recordsColumns: ['เวลา', 'ระดับ', 'จำนวนคำนวณ', 'สถานะ', 'เวลารับ'],
+      recordsColumns: ['เวลา', 'ระดับ', 'จำนวน', 'สถานะ', 'เวลารับ'],
       emptyRecordsCobuild: 'ยังไม่มีบันทึกรางวัล หลังมีการจ่าย จะแสดงทุกรายการที่นี่',
       emptyRecordsEqualize: 'ยังไม่มีบันทึกรางวัลปรับสมดุล หลังมีการจ่ายจะแสดงที่นี่',
       teamTitle: 'ทีมของฉัน ({count})',
@@ -1270,8 +1271,8 @@ const app = defineMessages({
       recordsTabsAria: 'ประเภทบันทึกเงินอุดหนุน',
       recordsTabIssue: 'จ่ายแล้ว',
       recordsTabClaim: 'รับแล้ว',
-      issueColumns: ['ออกเมื่อ', 'จำนวนคำนวณ', 'ประเภท', 'แฮช', 'อัตรา', 'จำนวนเงินอุดหนุน'],
-      claimColumns: ['เวลารับ', 'จำนวนคำนวณ', 'แฮช'],
+      issueColumns: ['ออกเมื่อ', 'จำนวน', 'ประเภท', 'แฮช', 'อัตรา', 'จำนวนเงินอุดหนุน'],
+      claimColumns: ['เวลารับ', 'จำนวน', 'แฮช'],
       emptyIssue: 'ยังไม่มีบันทึกการจ่าย หลังเงินอุดหนุนสะสมจะแสดงที่นี่',
       emptyClaim: 'ยังไม่มีบันทึกการรับ หลังรับแล้วจะแสดงที่นี่',
       faq: {
@@ -1307,7 +1308,7 @@ const app = defineMessages({
       claimToWallet: 'รับเข้ากระเป๋า',
       tierColumns: ['ระดับ', 'การสมัครส่วนตัว', 'ผลงานระบบ', 'อัตรารางวัล'],
       recordsTabsAria: 'ประเภทบันทึกรางวัลปฐมกาล',
-      recordsColumns: ['เวลา', 'ประเภท', 'จำนวนคำนวณ', 'สถานะ'],
+      recordsColumns: ['เวลา', 'ประเภท', 'จำนวน', 'สถานะ'],
       faq: {
         title: 'FAQs',
         items: [
@@ -1556,7 +1557,7 @@ const app = defineMessages({
       activateWarmupSuccess: 'ปลดล็อกแล้ว',
       warmupRemainingEpochs: 'เหลือ {n} Epoch',
     },
-    opsColumns: ['เวลา', 'การดำเนินการ', 'จำนวนคำนวณ', 'แฮชธุรกรรม'],
+    opsColumns: ['เวลา', 'การดำเนินการ', 'จำนวน', 'แฮชธุรกรรม'],
     claim: {
       title: 'รับผลตอบแทน',
       amount: 'จำนวนที่รับ',
@@ -1641,7 +1642,7 @@ const app = defineMessages({
         bufferTitle: 'พูลบัฟเฟอร์',
         bufferHint:
           'หลังยกเลิกสเตก เงินต้นเข้าพูลบัฟเฟอร์เพื่อปล่อยเชิงเส้นรอบสอง {days} วัน ลดแรงกดดันจากการไหลออกระยะสั้นต่อสภาพคล่อง และรักษาสมดุลระหว่างการปล่อยต่อเนื่องกับเสถียรภาพตลาด',
-        bufferTotal: 'Total',
+        bufferTotal: 'อยู่ในคลัง',
         bufferReleased: 'ปล่อยแล้ว',
         bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
@@ -1705,8 +1706,8 @@ const app = defineMessages({
       stake: {
         title: 'โพซิชันสเตก',
         intro: 'จัดการการสเตกแต่ละรายการ รับผลตอบแทนหรือไถ่ถอนเงินต้นได้ทุกเมื่อ',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty: 'ยังไม่มีสถานะ staking เมื่อ staking สำเร็จแต่ละสถานะจะแสดงที่นี่',
+        emptyCta: 'เปิด staking แรกและเริ่มรับผลตอบแทน',
         stats: {
           title: 'ข้อมูลโพซิชัน',
           metrics: [
@@ -2114,7 +2115,7 @@ const app = defineMessages({
         burnbond: 'บันทึกการซื้อพันธบัตร',
         xmine: 'บันทึกการขุดของฉัน',
       },
-      recordColumns: ['เวลา', 'ช่วงที่คำนวณ', 'จำนวนคำนวณ', 'ปล่อยแล้ว', 'แฮชธุรกรรม'],
+      recordColumns: ['เวลา', 'ช่วงที่คำนวณ', 'จำนวน', 'ปล่อยแล้ว', 'แฮชธุรกรรม'],
       bondRecordColumns: [
         'เวลา',
         'ช่วงที่คำนวณ',
@@ -2123,7 +2124,7 @@ const app = defineMessages({
         'AGX ที่ได้รับ',
         'แฮชธุรกรรม',
       ],
-      xmineRecordColumns: ['เวลา', 'การดำเนินการ', 'จำนวนคำนวณ', 'แฮชธุรกรรม'],
+      xmineRecordColumns: ['เวลา', 'การดำเนินการ', 'จำนวน', 'แฮชธุรกรรม'],
       recordsEmpty: {
         stake: 'ยังไม่มีบันทึกการสเตก หลังสเตกแล้ว จะแสดงทุกรายการที่นี่',
         lpbond: 'ยังไม่มีบันทึกการซื้อ หลังซื้อพันธบัตร LP จะแสดงทุกรายการที่นี่',
@@ -2337,11 +2338,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My stake' },
+        { label: 'สินทรัพย์ของฉัน' },
         { label: 'รับแล้ว' },
         { label: 'รอปล่อย' },
         {
-          label: 'Current Rebase reward',
+          label: 'ผลตอบแทน Rebase ปัจจุบัน',
           hint: 'ผลตอบแทน Rebase ที่ยังไม่เบิกจะทบต้นตามรางวัลบล็อกทุกครั้ง',
         },
       ],
@@ -2428,11 +2429,11 @@ const app = defineMessages({
         },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'สินทรัพย์ของฉัน' },
         { label: 'ปล่อยแล้ว' },
         { label: 'รอปล่อย' },
         {
-          label: 'Current Rebase reward',
+          label: 'ผลตอบแทน Rebase ปัจจุบัน',
           hint: 'ผลตอบแทน Rebase ที่ยังไม่เบิกจะทบต้นตามรางวัลบล็อกทุกครั้ง',
         },
       ],
@@ -2577,9 +2578,9 @@ const app = defineMessages({
       },
       periodLabel: 'เลือกช่วง',
       periodAria: 'ช่วงที่คำนวณ',
-      amountLabel: 'จำนวนคำนวณ',
+      amountLabel: 'จำนวน',
       amountBuy: 'จำนวนเงินที่ซื้อ',
-      amountAria: 'จำนวนคำนวณ',
+      amountAria: 'จำนวน',
       price: 'ราคา AGX ตอนครบกำหนด',
       priceX: 'ราคา X ตอนครบกำหนด',
       priceCurrent: 'ปัจจุบัน {price}',
@@ -2628,10 +2629,10 @@ const app = defineMessages({
         notesBody:
           'เครื่องคิดนี้ใช้ประมาณในเครื่องเท่านั้น ไม่ใช่ใบเสนอราคาบนเชนหรือคำสัญญาผลตอบแทน',
         notesItems: [
-          'Rebase settles about every {hours} hours ({timesPerDay} times daily). Yield compounds at {rebase}% per Rebase; longer terms add a simple-interest bonus on Rebase yield: 180d 10%, 360d 15%, 540d 20%.',
-          'Principal unlocks linearly over the selected term; sell proceeds count only principal released by that day. Unreleased principal is not included in the sale total.',
-          'Net yield is compounded Rebase plus the term bonus. Released principal plus net yield are sold at the exit price you set. Contribution-point cost to claim yield is not included.',
-          'The estimate does not deduct yield-release tax or model price moves while principal and yield unlock. Illustrative only; actual yield varies with protocol state.',
+          'Rebase ชำระประมาณทุก {hours} ชั่วโมง ({timesPerDay} ครั้งต่อวัน) ผลตอบแทนทบต้นที่ {rebase}% ต่อ Rebase และระยะเวลาที่ยาวขึ้นจะเพิ่มโบนัสแบบดอกเบี้ยอย่างง่ายให้ผลตอบแทน Rebase: 180 วัน 10%, 360 วัน 15%, 540 วัน 20%',
+          'เงินต้นปลดล็อกแบบเส้นตรงตลอดระยะเวลาที่เลือก มูลค่าขายรวมเฉพาะเงินต้นที่ปล่อยแล้วภายในวันนั้น ส่วนเงินต้นที่ยังไม่ปล่อยจะไม่รวมในยอดขาย',
+          'ผลตอบแทนสุทธิคือ Rebase แบบทบต้นรวมกับโบนัสตามระยะเวลา เงินต้นที่ปล่อยแล้วและผลตอบแทนสุทธิจะคำนวณว่าขายตามราคาออกที่คุณกำหนด โดยไม่รวมต้นทุนแต้มมีส่วนร่วมสำหรับรับผลตอบแทน',
+          'การประมาณนี้ไม่หักค่าธรรมเนียมการปล่อยผลตอบแทนและไม่จำลองความผันผวนของราคาระหว่างที่เงินต้นและผลตอบแทนปลดล็อก ใช้เพื่อประกอบการพิจารณาเท่านั้น ผลตอบแทนจริงเปลี่ยนตามสถานะโปรโตคอล',
         ],
       },
     },
@@ -2641,7 +2642,7 @@ const app = defineMessages({
     title: 'ปล่อย',
     intro: 'จัดการและดูการปล่อยผลตอบแทนกับเงินต้น',
     backToHub: 'กลับไปปล่อย',
-    recordColumns: ['เวลา', 'การดำเนินการ', 'จำนวนคำนวณ', 'แฮชธุรกรรม'],
+    recordColumns: ['เวลา', 'การดำเนินการ', 'จำนวน', 'แฮชธุรกรรม'],
     recordsEmpty: 'ยังไม่มีบันทึกดัชนีบนเชน (รอ indexer)',
     labels: {
       releasing: 'กำลังปล่อย',
