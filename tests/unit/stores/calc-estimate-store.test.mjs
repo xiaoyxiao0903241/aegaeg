@@ -64,6 +64,24 @@ test('liveSync waits for rates then writes first snapshot; later ticks do not re
   assert.equal(useCalcEstimateStore.getState().result?.days, 90)
 })
 
+test('setProduct xmine resets period to liquid', async () => {
+  const { useCalcEstimateStore } = await loadModule('/src/stores/calc-estimate-store.ts')
+
+  useCalcEstimateStore.setState({
+    product: 'lpbond',
+    period: '360',
+    amount: '1',
+    price: '80',
+    spotUsd: 80,
+    days: 100,
+    rates: null,
+    result: null,
+  })
+  useCalcEstimateStore.getState().setProduct('xmine')
+  assert.equal(useCalcEstimateStore.getState().product, 'xmine')
+  assert.equal(useCalcEstimateStore.getState().period, 'liquid')
+})
+
 test('xmine liveSync waits for on-chain daily pct', async () => {
   const { useCalcEstimateStore } = await loadModule('/src/stores/calc-estimate-store.ts')
 

@@ -78,13 +78,11 @@ export function CalcDock() {
           { label: t.staking.stake.periods.d360, value: '360' },
           { label: t.staking.stake.periods.d540, value: '540' },
         ]
-      : s.product === 'xmine'
-        ? [{ label: t.staking.stake.periods.liquid, value: 'liquid' }]
-        : [
-            { label: t.staking.stake.periods.d180, value: '180' },
-            { label: t.staking.stake.periods.d360, value: '360' },
-            { label: t.staking.stake.periods.d540, value: '540' },
-          ]
+      : [
+          { label: t.staking.stake.periods.d180, value: '180' },
+          { label: t.staking.stake.periods.d360, value: '360' },
+          { label: t.staking.stake.periods.d540, value: '540' },
+        ]
   const tokenLabel = s.product === 'xmine' ? 'gAGX' : s.product === 'stake' ? 'AGX' : 'USD1'
   const tokenSrc =
     s.product === 'xmine'
@@ -159,17 +157,19 @@ export function CalcDock() {
           value={s.product}
         />
 
-        <div className="grid gap-2">
-          <Text as="span" className="text-foreground/40" variant="copy">
-            {t.staking.calc.periodLabel}
-          </Text>
-          <CalcHtabRow
-            ariaLabel={t.staking.calc.periodAria}
-            onChange={s.setPeriod}
-            options={periodOptions}
-            value={s.period}
-          />
-        </div>
+        {s.product === 'xmine' ? null : (
+          <div className="grid gap-2">
+            <Text as="span" className="text-foreground/40" variant="copy">
+              {t.staking.calc.periodLabel}
+            </Text>
+            <CalcHtabRow
+              ariaLabel={t.staking.calc.periodAria}
+              onChange={s.setPeriod}
+              options={periodOptions}
+              value={s.period}
+            />
+          </div>
+        )}
 
         <AmountBox
           amountProps={{
