@@ -138,7 +138,7 @@
 |---|---|
 |`Chart`|elevated 卡壳（Figma chart-card / ccard）|
 |`Chart.Header`|顶栏行（value+delta+range 或 hint+value）|
-|`Chart.Plot`|Lightweight Charts area + 点阵底 + tip + 轴标|
+|`Chart.Plot`|Lightweight Charts area + 点阵底 + tip + 轴标；可选 `mark`（选中日实心点）与 `guides`（空心圆 / 横虚线只到标记点 / 竖虚线 / 左侧价签）|
 |`Chart.Empty`|全局 `Empty`|
 |`Chart.Skeleton`|**曲线图**加载骨架（绘图区 + 轴标位）|
 

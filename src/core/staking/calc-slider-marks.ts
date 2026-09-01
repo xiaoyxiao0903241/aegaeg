@@ -7,12 +7,6 @@ export const CALC_SLIDER_MIN_DAY = 1
 /** 拖到刻度附近时吸附的天数窗口。 */
 export const CALC_SLIDER_SNAP_DAYS = 8
 
-/** 轨下说明距两端不足该内宽百分比则不写字，只留竖线。 */
-export const CALC_SLIDER_CAPTION_EDGE_PCT = 12
-
-/** 刻度落入手柄中线附近该内宽百分比则整段不画。 */
-export const CALC_SLIDER_CAPTION_THUMB_PCT = 8
-
 /** 轨上中间数字距两端太近则隐藏，避免叠在端点上。 */
 export const CALC_SLIDER_TICK_EDGE_DAYS = 20
 
@@ -82,30 +76,6 @@ export function calcSliderDayFromRatio(
   if (!(span > 0)) return minDay
   const t = Math.min(1, Math.max(0, ratio))
   return Math.round(t * span + minDay)
-}
-
-/**
- * 轨下刻度显隐：贴边只留竖线；落在手柄下则整段不画。
- *
- * @param day 刻度日
- * @param maxDay 轴右端
- * @param thumbDay 当前手柄天数
- * @param minDay 轴左端
- */
-export function calcSliderCaptionVis(
-  day: number,
-  maxDay: number,
-  thumbDay: number,
-  minDay = CALC_SLIDER_MIN_DAY,
-): { tick: boolean; label: boolean } {
-  const markPct = calcSliderPct(day, maxDay, minDay)
-  const thumbPct = calcSliderPct(thumbDay, maxDay, minDay)
-  if (Math.abs(markPct - thumbPct) <= CALC_SLIDER_CAPTION_THUMB_PCT) {
-    return { tick: false, label: false }
-  }
-  const label =
-    markPct >= CALC_SLIDER_CAPTION_EDGE_PCT && markPct <= 100 - CALC_SLIDER_CAPTION_EDGE_PCT
-  return { tick: true, label }
 }
 
 /**

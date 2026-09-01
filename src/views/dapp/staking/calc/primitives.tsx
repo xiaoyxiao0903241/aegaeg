@@ -7,7 +7,6 @@ import { useRef } from 'react'
 
 import {
   CALC_SLIDER_MIN_DAY,
-  calcSliderCaptionVis,
   calcSliderDayFromRatio,
   calcSliderPct,
   showCalcSliderTrackDay,
@@ -84,7 +83,7 @@ const THUMB_HALF = '1.4375rem'
  *
  * 轴为 1…max。两端各留半个手柄宽，不参与进度；
  * 第 1 天对准手柄中线的左端行程，最大天对准右端行程。
- * 贴边的「正收益」只画短竖线，不写字。
+ * 轨下正收益 / 到期竖线与文案始终画出。
  *
  * @param ariaLabel 滑杆无障碍标签
  * @param breakEvenDay 正收益日
@@ -126,31 +125,19 @@ export function CalcDaySlider({
     (day, index, all): day is number =>
       day != null && all.indexOf(day) === index && showCalcSliderTrackDay(day, max, clamped, min),
   )
-  const captions: Array<{
-    key: string
-    day: number
-    label: string
-    tick: boolean
-    showLabel: boolean
-  }> = []
+  const captions: Array<{ key: string; day: number; label: string }> = []
   if (breakEvenDay != null && breakEvenDay > min && breakEvenDay < max) {
-    const vis = calcSliderCaptionVis(breakEvenDay, max, clamped, min)
     captions.push({
       key: 'break-even',
       day: breakEvenDay,
       label: breakEvenLabel,
-      tick: vis.tick,
-      showLabel: vis.label,
     })
   }
   if (maturityDay != null && maturityLabel) {
-    const vis = calcSliderCaptionVis(maturityDay, max, clamped, min)
     captions.push({
       key: 'maturity',
       day: maturityDay,
       label: maturityLabel,
-      tick: vis.tick,
-      showLabel: vis.label,
     })
   }
 
@@ -245,15 +232,16 @@ export function CalcDaySlider({
           ) : null}
           <div
             className={cn(
-              'absolute top-1/2 z-10 flex min-h-7.5 min-w-11.5 -translate-x-1/2 -translate-y-1/2',
-              'items-center justify-center rounded-full border-2 border-coral-emphasis bg-card px-2.5 py-2 shadow-sm',
+              'absolute inset-y-0 z-10 flex w-11.5 -translate-x-1/2',
+              'cursor-grab items-center justify-center rounded-full border border-coral-emphasis bg-card shadow-sm',
+              'active:cursor-grabbing',
             )}
             style={{ left: `${thumbPct}%` }}
           >
             <Text
               as="span"
-              className="leading-none font-bold text-coral-emphasis tabular-nums"
-              variant="copy"
+              className="font-semibold text-coral-emphasis tabular-nums"
+              variant="support"
             >
               {clamped}
             </Text>
@@ -264,26 +252,22 @@ export function CalcDaySlider({
         className="pointer-events-none absolute top-7.5"
         style={{ left: THUMB_HALF, right: THUMB_HALF }}
       >
-        {captions.map((caption) =>
-          caption.tick ? (
-            <div
-              className="absolute flex -translate-x-1/2 flex-col items-center"
-              key={caption.key}
-              style={{ left: `${calcSliderPct(caption.day, max, min)}%` }}
+        {captions.map((caption) => (
+          <div
+            className="absolute flex -translate-x-1/2 flex-col items-center"
+            key={caption.key}
+            style={{ left: `${calcSliderPct(caption.day, max, min)}%` }}
+          >
+            <span aria-hidden className="block h-1.5 w-0.5 bg-coral-emphasis" />
+            <Text
+              as="span"
+              className="font-semibold whitespace-nowrap text-coral-emphasis tabular-nums"
+              variant="caption"
             >
-              <span aria-hidden className="block h-1.5 w-0.5 bg-coral-emphasis" />
-              {caption.showLabel ? (
-                <Text
-                  as="span"
-                  className="font-semibold whitespace-nowrap text-coral-emphasis tabular-nums"
-                  variant="caption"
-                >
-                  {caption.label}
-                </Text>
-              ) : null}
-            </div>
-          ) : null,
-        )}
+              {caption.label}
+            </Text>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -420,7 +404,7 @@ export function CalcResultCard({
           {releasedShare > 0 ? (
             <Tooltip content={releasedTip}>
               <span
-                className="h-full shrink-0 cursor-help bg-accent"
+                className="h-full shrink-0 cursor-help bg-accent transition-[width] duration-(--motion-dapp-emphasis) ease-out"
                 style={{ width: `${releasedShare}%` }}
               />
             </Tooltip>
@@ -428,7 +412,7 @@ export function CalcResultCard({
           {rewardsShare > 0 ? (
             <Tooltip content={rewardsTip}>
               <span
-                className="h-full shrink-0 cursor-help bg-coral-emphasis"
+                className="h-full shrink-0 cursor-help bg-coral-emphasis transition-[width] duration-(--motion-dapp-emphasis) ease-out"
                 style={{ width: `${rewardsShare}%` }}
               />
             </Tooltip>
@@ -449,7 +433,7 @@ export function CalcResultCard({
           {costShare > 0 ? (
             <Tooltip content={costTip}>
               <span
-                className="h-full shrink-0 cursor-help bg-border"
+                className="h-full shrink-0 cursor-help bg-border transition-[width] duration-(--motion-dapp-emphasis) ease-out"
                 style={{ width: `${costShare}%` }}
               />
             </Tooltip>
@@ -457,7 +441,7 @@ export function CalcResultCard({
           {overlayShare > 0 ? (
             <Tooltip content={profitTip}>
               <span
-                className={`absolute inset-y-0 flex min-w-0 cursor-help items-center overflow-hidden pl-2 ${
+                className={`absolute inset-y-0 flex min-w-0 cursor-help items-center overflow-hidden pl-2 transition-[left,width] duration-(--motion-dapp-emphasis) ease-out ${
                   profitable ? 'bg-success' : 'bg-destructive/80'
                 }`}
                 style={{ left: `${markShare}%`, width: `${overlayShare}%` }}

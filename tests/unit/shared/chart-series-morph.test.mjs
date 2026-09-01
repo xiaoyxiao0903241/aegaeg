@@ -50,6 +50,27 @@ test('ensureAscendingTimes nudges non-increasing times', () => {
   )
 })
 
+test('morphSeriesFrame equal-length series keeps point count and blends values', () => {
+  const from = [
+    { time: 1, value: 0 },
+    { time: 2, value: 10 },
+    { time: 3, value: 20 },
+  ]
+  const to = [
+    { time: 1, value: 100 },
+    { time: 2, value: 200 },
+    { time: 3, value: 300 },
+  ]
+  const mid = morphSeriesFrame(from, to, 0.5)
+  assert.equal(mid.length, 3)
+  assert.equal(mid[0].time, 1)
+  assert.equal(mid[1].time, 2)
+  assert.equal(mid[2].time, 3)
+  assert.equal(mid[0].value, 50)
+  assert.equal(mid[1].value, 105)
+  assert.equal(mid[2].value, 160)
+})
+
 test('easeOutCubic bounds', () => {
   assert.equal(easeOutCubic(0), 0)
   assert.equal(easeOutCubic(1), 1)

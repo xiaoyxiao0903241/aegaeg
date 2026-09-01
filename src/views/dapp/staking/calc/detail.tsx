@@ -2,7 +2,7 @@
  * 测算结果详情页（右栏）
  *
  * 展示收益结果：总收益、卖出占比、投入占比、节点卡与曲线图。
- * 结果未就绪时骨架对齐结果卡、曲线金额与节点主值。
+ * 第一次无结果时骨架；之后换产品 / 周期保留上次数字，进度条与曲线过渡。
  */
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -37,8 +37,8 @@ export function CalcDetail() {
   const formDays = useCalcEstimateStore((state) => state.days)
   const epochSchedule = useEpochScheduleLabels()
 
-  const shownProduct = result?.product ?? formProduct
-  const shownPeriod = result?.period ?? formPeriod
+  const shownProduct = formProduct
+  const shownPeriod = formPeriod
   const shownDays = result?.days ?? formDays
   const productLabel = t.staking.calc.products[shownProduct]
   const periodLabel =
