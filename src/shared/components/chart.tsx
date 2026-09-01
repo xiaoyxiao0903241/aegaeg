@@ -59,6 +59,28 @@ export type ChartPoint = {
   date?: string
 }
 
+/** 曲线参考点：空心圆 / 横竖虚线 / 左侧价签。测算图用；TVL 图不传。 */
+export type ChartGuide = {
+  time: number
+  value: number
+  priceLabel?: string
+  label?: string
+  marker?: 'hollow'
+  horizontal?: boolean
+  vertical?: boolean
+}
+
+type GuidePaint = {
+  key: string
+  x: number
+  y: number
+  priceLabel?: string
+  label?: string
+  marker: 'hollow' | 'none'
+  horizontal: boolean
+  vertical: boolean
+}
+
 /** `#rrggbb` → `rgba(r,g,b,a)`；非法 hex 回退 primary 不透明。 */
 function withAlpha(hex: string, alpha: number): string {
   const raw = hex.replace('#', '')
@@ -83,6 +105,11 @@ const AREA_BOTTOM = withAlpha(colorHex.primary, 0.02)
 const MARK_DOT_CLASS =
   'pointer-events-none absolute z-10 size-(--chart-mark-size) -translate-x-1/2 -translate-y-1/2 rounded-full border-solid'
 
+const GUIDE_DASH_H =
+  'pointer-events-none absolute left-0 z-[5] h-px text-foreground/20 [background-image:repeating-linear-gradient(90deg,currentColor_0_3px,transparent_3px_6px)]'
+const GUIDE_DASH_V =
+  'pointer-events-none absolute inset-y-0 z-[5] w-px text-foreground/20 [background-image:repeating-linear-gradient(180deg,currentColor_0_3px,transparent_3px_6px)]'
+
 function chartMarkStyle(pos: { x: number; y: number }) {
   return {
     left: pos.x,
@@ -99,7 +126,15 @@ type ChartTip = {
   valueLabel: string
 }
 
-/** 换批曲线 morph 用：点数 + 首末指纹（父级每次 map 出新数组）。 */
+function guidesSignature(guides: readonly ChartGuide[] | undefined): string {
+  if (guides == null || guides.length === 0) return ''
+  return guides
+    .map(
+      (guide) =>
+        `${guide.time}:${guide.value}:${guide.marker ?? ''}:${guide.horizontal ? 1 : 0}:${guide.vertical ? 1 : 0}:${guide.priceLabel ?? ''}:${guide.label ?? ''}`,
+    )
+    .join('|')
+}
 function pointsSignature(points: readonly ChartPoint[]): string {
   if (points.length === 0) return '0'
   const first = points[0]!
@@ -204,12 +239,14 @@ function Header({ className, children, ...props }: HTMLAttributes<HTMLDivElement
  *
  * 面积图渲染并跟随鼠标显示数值提示；
  * 坐标轴标签与提示文案可自定义。
+ * `mark` 是选中日实心点；`guides` 画空心圆、横虚线（只到标记点）/ 竖虚线和左侧价签，TVL 图不用。
  */
 function Plot({
   axisLabels: axisLabelsProp,
   className,
   fit = 'flush',
   formatTipDate,
+  guides,
   mark,
   points,
 }: {
@@ -218,8 +255,10 @@ function Plot({
   /** `flush` 首末贴边；`inset` 按像素留边，首末点能点到。 */
   fit?: 'flush' | 'inset'
   formatTipDate?: (time: Time) => string | null
+  /** 选中日 / 周期 / 终点参考线；无则不画。 */
+  guides?: readonly ChartGuide[]
   /** 曲线上的测算日标记；无则不画。 */
-  mark?: { time: number; label?: string }
+  mark?: { time: number; label?: string; horizontal?: boolean }
   points: readonly ChartPoint[]
 }) {
   const hostRef = useRef<HTMLDivElement>(null)
@@ -229,10 +268,13 @@ function Plot({
   const visualPointsRef = useRef<readonly ChartPoint[]>([])
   const appliedSigRef = useRef('')
   const morphRafRef = useRef(0)
+  /** 换批 morph 进行中时，overlay 只跟 paint 走，避免旧坐标再钉一次。 */
+  const morphingRef = useRef(false)
   /** chart 实例重建后递增，驱动重新落数。 */
   const [plotEpoch, setPlotEpoch] = useState(0)
   const [tip, setTip] = useState<ChartTip | null>(null)
   const [markPos, setMarkPos] = useState<{ x: number; y: number } | null>(null)
+  const [guidePaints, setGuidePaints] = useState<GuidePaint[]>([])
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null)
   // points 换批时在 render 期清 tip，避免 effect 里 setState 造成一帧陈旧十字线。
   const [tipPoints, setTipPoints] = useState(points)
@@ -253,25 +295,56 @@ function Plot({
     if (!chart || !host) return
     fitSeriesRange(chart, visualPointsRef.current.length, fit, host.clientWidth)
   })
-  const syncMark = useEffectEvent(() => {
+  const syncOverlays = useEffectEvent(() => {
     const chart = chartRef.current
     const series = seriesRef.current
-    if (!chart || !series || mark == null) {
+    if (!chart || !series) {
       setMarkPos(null)
+      setGuidePaints([])
       return
     }
-    const hit = points.find((p) => Number(p.time) === mark.time)
-    if (!hit) {
+    if (mark == null) {
       setMarkPos(null)
-      return
+    } else {
+      const visual = visualPointsRef.current.find((p) => Number(p.time) === mark.time)
+      const x = visual ? chart.timeScale().timeToCoordinate(mark.time as Time) : null
+      const y = visual ? series.priceToCoordinate(visual.value) : null
+      if (x == null || y == null) {
+        setMarkPos(null)
+      } else {
+        setMarkPos((prev) => (prev && prev.x === x && prev.y === y ? prev : { x, y }))
+      }
     }
-    const x = chart.timeScale().timeToCoordinate(mark.time as Time)
-    const y = series.priceToCoordinate(hit.value)
-    if (x == null || y == null) {
-      setMarkPos(null)
-      return
+    const next: GuidePaint[] = []
+    for (const [index, guide] of (guides ?? []).entries()) {
+      const visual = visualPointsRef.current.find((p) => Number(p.time) === guide.time)
+      const value = visual?.value ?? guide.value
+      const x = chart.timeScale().timeToCoordinate(guide.time as Time)
+      const y = series.priceToCoordinate(value)
+      if (x == null || y == null) continue
+      next.push({
+        key: `${guide.time}:${guide.value}:${index}`,
+        x,
+        y,
+        priceLabel: guide.priceLabel,
+        label: guide.label,
+        marker: guide.marker === 'hollow' ? 'hollow' : 'none',
+        horizontal: guide.horizontal === true,
+        vertical: guide.vertical === true,
+      })
     }
-    setMarkPos((prev) => (prev && prev.x === x && prev.y === y ? prev : { x, y }))
+    // 按传入顺序消叠：测算图把选中日放在最前，近距时优先保住它的左侧数值
+    const hidePrice = new Set<string>()
+    const keptY: number[] = []
+    for (const item of next) {
+      if (!item.priceLabel) continue
+      if (keptY.some((y) => Math.abs(y - item.y) < 14)) hidePrice.add(item.key)
+      else keptY.push(item.y)
+    }
+    const painted = next.map((item) =>
+      hidePrice.has(item.key) ? { ...item, priceLabel: undefined } : item,
+    )
+    setGuidePaints(painted)
   })
 
   useEffect(() => {
@@ -394,7 +467,7 @@ function Plot({
       applyFit()
       requestAnimationFrame(() => {
         applyFit()
-        syncMark()
+        syncOverlays()
       })
     })
     ro.observe(host)
@@ -411,6 +484,7 @@ function Plot({
       setTip(null)
       setHoverPos(null)
       setMarkPos(null)
+      setGuidePaints([])
     }
   }, [])
 
@@ -428,19 +502,20 @@ function Plot({
       value: p.value,
     }))
 
-    const paint = (next: readonly { time: number; value: number }[], pinMark = false) => {
+    const paint = (next: readonly { time: number; value: number }[], pinFit = false) => {
       const drawn = densifyForPaint(next)
+      const countChanged = drawn.length !== visualPointsRef.current.length
       series.setData(drawn.map((p) => ({ time: p.time as Time, value: p.value })))
       visualPointsRef.current = drawn.map((p) => ({
         time: p.time as UTCTimestamp,
         value: p.value,
       }))
-      // setData 后布局可能异步校正；下一帧再钉边，避免被内部 range 覆盖
-      applyFit()
+      // 等点数 morph 不必每帧重钉时间轴，否则横竖参考线会跟着逻辑槽来回跳
+      if (pinFit || countChanged) applyFit()
       requestAnimationFrame(() => {
         if (seriesRef.current !== series || chartRef.current !== chart) return
-        applyFit()
-        if (pinMark) syncMark()
+        if (pinFit || countChanged) applyFit()
+        syncOverlays()
       })
     }
 
@@ -456,9 +531,12 @@ function Plot({
     const reduceMotion =
       typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    morphingRef.current = true
+
     // 首绘 / 清空 / 减动效：直接落目标，不做 morph
     if (reduceMotion || from.length === 0 || to.length === 0) {
       commit(to)
+      morphingRef.current = false
       return
     }
 
@@ -471,6 +549,7 @@ function Plot({
       const eased = easeOutCubic(raw)
       if (raw >= 1) {
         commit(to)
+        morphingRef.current = false
         return
       }
       paint(morphSeriesFrame(from, to, eased))
@@ -481,6 +560,7 @@ function Plot({
 
     return () => {
       cancelled = true
+      morphingRef.current = false
       cancelAnimationFrame(morphRafRef.current)
     }
   }, [points, plotEpoch])
@@ -491,89 +571,159 @@ function Plot({
     return () => cancelAnimationFrame(id)
   }, [fit])
 
+  const overlaySig = `${guidesSignature(guides)}:${mark?.time ?? ''}:${mark?.horizontal ? 1 : 0}:${mark?.label ?? ''}`
   useEffect(() => {
-    syncMark()
-  }, [mark?.time, plotEpoch])
+    if (morphingRef.current) return
+    syncOverlays()
+  }, [overlaySig, plotEpoch])
 
   const markLabelAbove =
     markPos != null && markPos.y >= cssRemVarPx('--chart-mark-size', 0.5625) * 4
+  const priceGuides = guidePaints.filter((guide) => guide.priceLabel)
+  const showPriceGutter = priceGuides.length > 0
 
   return (
     <div className={cn('grid w-full gap-2', className)}>
-      <div
-        className={cn(
-          'relative h-(--chart-plot-height) w-full rounded-md',
-          fit === 'inset' ? 'overflow-visible' : 'overflow-hidden',
-        )}
-      >
-        <div
-          className="absolute inset-0 overflow-hidden rounded-md"
-          ref={hostRef}
-          style={{
-            backgroundImage: 'var(--chart-plot-dot)',
-            backgroundSize: 'var(--chart-plot-dot-size) var(--chart-plot-dot-size)',
-          }}
-        />
-        {tip ? (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute z-20 min-w-26 rounded-md bg-card px-2.5 py-1.5 shadow-menu"
-            style={{ left: tip.left, top: tip.top }}
-          >
-            <Text as="p" className="m-0" tone="muted-foreground" variant="support">
-              {tip.dateLabel}
-            </Text>
-            <Text as="p" className="m-0 font-semibold" variant="copy">
-              {tip.valueLabel}
-            </Text>
-          </div>
-        ) : null}
-        {hoverPos ? (
-          <div
-            aria-hidden
-            className={cn(MARK_DOT_CLASS, 'border-primary bg-card')}
-            style={chartMarkStyle(hoverPos)}
-          />
-        ) : null}
-        {mark && markPos ? (
-          <>
-            <div
-              aria-hidden
-              className={cn(MARK_DOT_CLASS, 'border-white bg-primary')}
-              style={chartMarkStyle(markPos)}
-            />
-            {mark.label && !tip ? (
+      <div className={cn(showPriceGutter && 'flex gap-1')}>
+        {showPriceGutter ? (
+          <div aria-hidden className="relative h-(--chart-plot-height) w-16 shrink-0">
+            {priceGuides.map((guide) => (
               <Text
                 as="span"
-                className="pointer-events-none absolute z-10 rounded-full bg-card px-2 py-0.5 font-semibold whitespace-nowrap text-primary tabular-nums shadow-menu"
-                style={{
-                  left: markPos.x,
-                  top: markPos.y,
-                  transform: markLabelAbove
-                    ? 'translate(-50%, calc(-100% - 0.625rem))'
-                    : 'translate(-50%, 0.75rem)',
-                }}
+                className="absolute right-0 font-semibold text-foreground/40"
+                key={guide.key}
+                style={{ top: guide.y, transform: 'translateY(-50%)' }}
                 variant="support"
               >
-                {mark.label}
+                {guide.priceLabel}
               </Text>
-            ) : null}
-          </>
+            ))}
+          </div>
         ) : null}
+        <div
+          className={cn(
+            'relative h-(--chart-plot-height) w-full rounded-md',
+            showPriceGutter && 'min-w-0 flex-1',
+            fit === 'inset' ? 'overflow-visible' : 'overflow-hidden',
+          )}
+        >
+          <div
+            className="absolute inset-0 overflow-hidden rounded-md"
+            ref={hostRef}
+            style={{
+              backgroundImage: 'var(--chart-plot-dot)',
+              backgroundSize: 'var(--chart-plot-dot-size) var(--chart-plot-dot-size)',
+            }}
+          />
+          {guidePaints.map((guide) => (
+            <div key={guide.key}>
+              {guide.horizontal ? (
+                <div
+                  aria-hidden
+                  className={GUIDE_DASH_H}
+                  style={{ top: guide.y, width: Math.max(0, guide.x) }}
+                />
+              ) : null}
+              {guide.vertical ? (
+                <div aria-hidden className={GUIDE_DASH_V} style={{ left: guide.x }} />
+              ) : null}
+              {guide.marker === 'hollow' ? (
+                <div
+                  aria-hidden
+                  className={cn(MARK_DOT_CLASS, 'border-primary bg-card')}
+                  style={chartMarkStyle(guide)}
+                />
+              ) : null}
+              {guide.label && !tip ? (
+                <Text
+                  as="span"
+                  className="pointer-events-none absolute z-10 rounded-full bg-card px-2 py-0.5 font-semibold whitespace-nowrap text-primary shadow-menu"
+                  style={{
+                    left: guide.x,
+                    top: guide.y,
+                    transform:
+                      guide.y >= cssRemVarPx('--chart-mark-size', 0.5625) * 4
+                        ? 'translate(-50%, calc(-100% - 0.625rem))'
+                        : 'translate(-50%, 0.75rem)',
+                  }}
+                  variant="support"
+                >
+                  {guide.label}
+                </Text>
+              ) : null}
+            </div>
+          ))}
+          {mark?.horizontal && markPos ? (
+            <div
+              aria-hidden
+              className={GUIDE_DASH_H}
+              style={{ top: markPos.y, width: Math.max(0, markPos.x) }}
+            />
+          ) : null}
+          {tip ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute z-20 min-w-26 rounded-md bg-card px-2.5 py-1.5 shadow-menu"
+              style={{ left: tip.left, top: tip.top }}
+            >
+              <Text as="p" className="m-0" tone="muted-foreground" variant="support">
+                {tip.dateLabel}
+              </Text>
+              <Text as="p" className="m-0 font-semibold" variant="copy">
+                {tip.valueLabel}
+              </Text>
+            </div>
+          ) : null}
+          {hoverPos ? (
+            <div
+              aria-hidden
+              className={cn(MARK_DOT_CLASS, 'border-primary bg-card')}
+              style={chartMarkStyle(hoverPos)}
+            />
+          ) : null}
+          {mark && markPos ? (
+            <>
+              <div
+                aria-hidden
+                className={cn(MARK_DOT_CLASS, 'z-10 border-white bg-primary')}
+                style={chartMarkStyle(markPos)}
+              />
+              {mark.label && !tip ? (
+                <Text
+                  as="span"
+                  className="pointer-events-none absolute z-10 rounded-full bg-card px-2 py-0.5 font-semibold whitespace-nowrap text-primary shadow-menu"
+                  style={{
+                    left: markPos.x,
+                    top: markPos.y,
+                    transform: markLabelAbove
+                      ? 'translate(-50%, calc(-100% - 0.625rem))'
+                      : 'translate(-50%, 0.75rem)',
+                  }}
+                  variant="support"
+                >
+                  {mark.label}
+                </Text>
+              ) : null}
+            </>
+          ) : null}
+        </div>
       </div>
       {axisLabels.length > 0 ? (
-        <div className="flex w-full items-center justify-between gap-1">
-          {axisLabels.map((label, i) => (
-            <Text
-              as="span"
-              className="min-w-0 shrink truncate"
-              key={`${label}-${i}`}
-              tone="muted-foreground"
-              variant="copy"
-            >
-              {label}
-            </Text>
-          ))}
+        <div className={cn('flex w-full gap-1', showPriceGutter && 'items-center')}>
+          {showPriceGutter ? <div className="w-16 shrink-0" /> : null}
+          <div className="flex min-w-0 flex-1 items-center justify-between gap-1">
+            {axisLabels.map((label, i) => (
+              <Text
+                as="span"
+                className="min-w-0 shrink truncate"
+                key={`${label}-${i}`}
+                tone="muted-foreground"
+                variant="copy"
+              >
+                {label}
+              </Text>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>

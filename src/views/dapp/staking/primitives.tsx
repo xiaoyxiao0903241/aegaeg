@@ -4,12 +4,13 @@
 import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode } from 'react'
 
+import { buildCalcChartGuides } from '~/core/staking/calc-chart-guides'
 import { buildCalcYieldCurvePoints, CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
-import { Chart, type ChartPoint } from '~/shared/components/chart'
+import { Chart, type ChartGuide, type ChartPoint } from '~/shared/components/chart'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
@@ -41,14 +42,16 @@ function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): rea
  * 测算累计收益曲线
  *
  * 曲线由本地公式按 day 1..CALC_MAX_DAYS 生成；
- * 有测算结果时在所选天数打点，否则展示骨架。
+ * 有测算结果时在所选天数打实心点，周期日与 540 天画空心圆和参考线；
+ * 左侧价签为选中日 / 周期日 / 540 天，不画正收益日。
+ * 第一次无结果时骨架；之后换参走进度条与曲线过渡，不再回骨架。
  */
 export function StakingCurveChart() {
   const { messages: t } = useI18n()
   const aside = t.staking.calc.aside
   const result = useCalcEstimateStore((state) => state.result)
 
-  const curvePoints: readonly ChartPoint[] = result
+  const yieldPoints = result
     ? buildCalcYieldCurvePoints({
         product: result.product,
         period: result.period,
@@ -61,28 +64,36 @@ export function StakingCurveChart() {
         discountRateBP: result.discountRateBP,
         maxDays: CALC_MAX_DAYS,
         horizonDays: result.days,
-      }).map((p) => ({
-        time: p.day as UTCTimestamp,
-        value: p.profitUsd,
+      })
+    : []
+  const curvePoints: readonly ChartPoint[] = yieldPoints.map((p) => ({
+    time: p.day as UTCTimestamp,
+    value: p.profitUsd,
+  }))
+  const curveGuides: readonly ChartGuide[] = result
+    ? buildCalcChartGuides({
+        period: result.period,
+        points: yieldPoints,
+        selectedDay: result.days,
+      }).map((guide) => ({
+        time: guide.day,
+        value: guide.profitUsd,
+        horizontal: guide.horizontal,
+        label: guide.showPill ? interpolate(aside.tags.day, { day: guide.day }) : undefined,
+        marker: guide.marker === 'hollow' ? 'hollow' : undefined,
+        priceLabel: guide.showPrice ? formatUsdOrDash(guide.profitUsd) : undefined,
+        vertical: guide.vertical,
       }))
     : []
-  const curveEndEstimate = curvePoints[curvePoints.length - 1]?.value ?? null
 
   const axisLabels = pickDayAxisLabels(CALC_MAX_DAYS, aside.tags.day, 5)
 
   return (
     <Chart surface="elevated">
-      <Chart.Header className="flex-col items-start justify-start gap-3">
+      <Chart.Header>
         <Text as="p" className="m-0 text-foreground/40" variant="copy">
           {aside.curveHint}
         </Text>
-        {curveEndEstimate != null ? (
-          <Text as="strong" className="font-semibold" variant="section">
-            {formatUsdOrDash(curveEndEstimate)}
-          </Text>
-        ) : (
-          <Skeleton className="h-7 w-28" />
-        )}
       </Chart.Header>
       {curvePoints.length > 0 && result ? (
         <Chart.Plot
@@ -92,9 +103,10 @@ export function StakingCurveChart() {
             if (typeof time !== 'number') return null
             return interpolate(aside.tags.day, { day: time })
           }}
+          guides={curveGuides}
           mark={{
-            time: result.days,
             label: interpolate(aside.tags.day, { day: result.days }),
+            time: result.days,
           }}
           points={curvePoints}
         />

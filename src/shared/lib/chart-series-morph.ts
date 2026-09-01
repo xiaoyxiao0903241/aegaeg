@@ -60,6 +60,7 @@ export function ensureAscendingTimes(points: readonly MorphPoint[]): MorphPoint[
 
 /**
  * 生成 morph 中间帧：progress=0 贴近 from，=1 为 to 原样。
+ * 两列等长时按索引插值，保持点数；否则采样到同一归一化轴。
  *
  * @param from 当前可视序列
  * @param to 目标序列
@@ -79,6 +80,20 @@ export function morphSeriesFrame(
   }
   if (t <= 0) {
     return from.map((p) => ({ time: p.time, value: p.value }))
+  }
+
+  // 等长序列逐点插值，避免先抽稀再落回原点数时参考线跟着跳
+  if (from.length === to.length) {
+    const out: MorphPoint[] = []
+    for (let i = 0; i < to.length; i += 1) {
+      const a = from[i]!
+      const b = to[i]!
+      out.push({
+        time: a.time + (b.time - a.time) * t,
+        value: a.value + (b.value - a.value) * t,
+      })
+    }
+    return ensureAscendingTimes(out)
   }
 
   const n = Math.max(2, samples)

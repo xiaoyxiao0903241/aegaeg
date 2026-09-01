@@ -34,13 +34,15 @@ type CalcEstimateStore = {
   setSpotUsd: (spotUsd: number | null) => void
   setDays: (days: number) => void
   /**
-   * 灌链上利率。利率就绪且尚无结果时提交默认表单快照；之后只由「计算」刷新。
+   * 灌链上利率。利率就绪且尚无结果、或当前快照已不是这个产品/周期时写入右侧；
+   * 同一产品周期的后续利率跳动不改快照，改天数 / 数量 / 价格仍要点「计算」。
    */
   liveSync: (rates: LiveRates) => void
   /**
    * 用当前表单与最近一次链上利率生成右侧快照。
    *
-   * 仅「计算」按钮调用；利率未就绪或表单非法时不写。
+   * 「计算」按钮调用；产品 / 周期切换也会走同一条路径。
+   * 利率未就绪或表单非法时不写。
    */
   commit: () => void
 }
@@ -108,6 +110,40 @@ function formReady(s: {
   return amountN > 0 && priceN > 0 && spotOk && ratesReady(s.product, s.rates)
 }
 
+function snapshotIfReady(s: {
+  product: CalcProduct
+  period: StakePeriod
+  amount: string
+  price: string
+  spotUsd: number | null
+  days: number
+  rates: LiveRates | null
+}): CalcEstimateResult | null {
+  return formReady(s) ? snapshotFrom(s) : null
+}
+
+/** 债券成交价跟档位走；切产品 / 周期后旧 BPS 不能继续用。 */
+function ratesForProduct(product: CalcProduct, rates: LiveRates | null): LiveRates | null {
+  if (rates == null) return null
+  if (product === 'lpbond' || product === 'burnbond') {
+    return { ...rates, discountRateBP: null }
+  }
+  return rates
+}
+
+function draftAgxPrice(spotUsd: number | null): string {
+  if (spotUsd == null || !(spotUsd > 0) || !Number.isFinite(spotUsd)) return ''
+  return String(Number(spotUsd.toFixed(2)))
+}
+
+function resultStaleForForm(
+  result: CalcEstimateResult | null,
+  product: CalcProduct,
+  period: StakePeriod,
+): boolean {
+  return result == null || result.product !== product || result.period !== period
+}
+
 /**
  * 计算器表单 + 右侧估算结果；左右栏共享，不涉及链上写。
  * UI 直订本 store（字段同名），禁止再包 rename 层。
@@ -123,14 +159,31 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
   rates: null,
   result: null,
   setProduct: (product) => {
+    const s = get()
+    if (s.product === product) {
+      const result = snapshotIfReady(s)
+      if (result) set({ result })
+      return
+    }
     const xmine = product === 'xmine'
-    set({
-      product,
-      period: defaultPeriodFor(product),
-      price: xmine ? String(CALC_X_START_USD) : '',
-    })
+    const period = defaultPeriodFor(product)
+    const price = xmine ? String(CALC_X_START_USD) : draftAgxPrice(s.spotUsd)
+    const rates = ratesForProduct(product, s.rates)
+    const next = { ...s, product, period, price, rates }
+    // 新档利率未到时留下次快照，右栏不闪回骨架
+    set({ product, period, price, rates, result: snapshotIfReady(next) ?? s.result })
   },
-  setPeriod: (period) => set({ period }),
+  setPeriod: (period) => {
+    const s = get()
+    if (s.period === period) {
+      const result = snapshotIfReady(s)
+      if (result) set({ result })
+      return
+    }
+    const rates = ratesForProduct(s.product, s.rates)
+    const next = { ...s, period, rates }
+    set({ period, rates, result: snapshotIfReady(next) ?? s.result })
+  },
   setAmount: (amount) => set({ amount }),
   setPrice: (price) => {
     const s = get()
@@ -154,7 +207,7 @@ export const useCalcEstimateStore = create<CalcEstimateStore>((set, get) => ({
   liveSync: (rates) => {
     const s = get()
     const next = { ...s, rates }
-    if (s.result == null && formReady(next)) {
+    if (resultStaleForForm(s.result, s.product, s.period) && formReady(next)) {
       set({ rates, result: snapshotFrom(next) })
       return
     }

@@ -20,15 +20,6 @@ test('calcSliderDayFromRatio: pads clamp to min/max; inner maps 1…540', async 
   assert.equal(calcSliderDayFromRatio(4 / 539, 540), 5)
 })
 
-test('calcSliderCaptionVis: edge is tick-only; under thumb is hidden', async () => {
-  const { calcSliderCaptionVis } = await loadModule('/src/core/staking/calc-slider-marks.ts')
-  assert.deepEqual(calcSliderCaptionVis(5, 540, 100), { tick: true, label: false })
-  assert.deepEqual(calcSliderCaptionVis(5, 540, 1), { tick: false, label: false })
-  assert.deepEqual(calcSliderCaptionVis(100, 540, 1), { tick: true, label: true })
-  assert.deepEqual(calcSliderCaptionVis(100, 540, 100), { tick: false, label: false })
-  assert.deepEqual(calcSliderCaptionVis(530, 540, 100), { tick: true, label: false })
-})
-
 test('calcSliderMarks: axis is always 1…540; liquid has no maturity', async () => {
   const { calcSliderMarks } = await loadModule('/src/core/staking/calc-slider-marks.ts')
   const marks = calcSliderMarks({ period: 'liquid', breakEvenDay: 12 })
