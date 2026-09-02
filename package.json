@@ -5,25 +5,58 @@
   "type": "module",
   "scripts": {
     "render:home": "node scripts/render-home.mjs",
+    "react-doctor": "react-doctor",
+    "react-doctor:staged": "react-doctor --staged -y --blocking error --no-score --project aegis-dapp --no-supply-chain --no-dead-code",
+    "react-doctor:changed": "react-doctor -y --blocking error --no-score --scope changed --base origin/dev --include-untracked --project aegis-dapp --no-supply-chain --no-dead-code",
+    "build:tokens": "node scripts/generate-tokens.mjs",
+    "check:tokens": "pnpm build:tokens && git diff --exit-code -- src/shared/styles/tokens/theme.css src/shared/styles/tokens/tokens.ts",
     "env:staging": "node scripts/switch-env.mjs staging",
     "env:prod": "node scripts/switch-env.mjs prod",
     "env:status": "node scripts/switch-env.mjs status",
-    "dev": "pnpm render:home && vite --host 0.0.0.0 --port 5174 --strictPort",
-    "build": "tsc -b && pnpm render:home && vite build",
-    "lint": "eslint .",
-    "test:unit": "node --test tests/unit/*.test.mjs",
+    "dev": "pnpm build:tokens && pnpm render:home && vite --host 0.0.0.0 --port 5174 --strictPort",
+    "build": "pnpm build:tokens && tsc -b && pnpm render:home && vite build",
+    "probe:bundle": "node scripts/probe-home-bundle.mjs",
+    "lint": "eslint . --cache --cache-strategy content",
+    "lint:src": "eslint src --quiet --cache --cache-strategy content",
+    "lint:css": "stylelint \"src/**/*.css\" --cache",
+    "lint:architecture": "depcruise src --config .dependency-cruiser.cjs",
+    "lint:hex": "node scripts/lint-hex.mjs",
+    "lint:deadcode": "knip",
+    "lint:duplicates": "jscpd",
+    "lint:deadcode:duplicates": "knip --include duplicates",
+    "lint:all": "pnpm lint && pnpm lint:css && pnpm lint:hex && pnpm lint:architecture && pnpm lint:deadcode && pnpm lint:duplicates",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"*.{js,cjs,mjs,json}\"",
+    "format:check": "prettier --check --cache \"src/**/*.{ts,tsx,css,json}\"",
+    "format:classnames": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "test:unit": "node --test --test-isolation=none --test-concurrency=1 tests/unit/**/*.test.mjs",
     "test:integration": "node tests/integration/swap-quote-live.mjs",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
+    "measure:leaf": "node scripts/ui-leaf-a5-measure/measure.mjs",
+    "check": "pnpm check:tokens && tsc -b && pnpm lint:src && pnpm lint:architecture && pnpm lint:hex && pnpm lint:css && pnpm lint:deadcode && pnpm lint:duplicates && pnpm format:check && pnpm test:unit && pnpm react-doctor:changed",
+    "audit:prod": "pnpm audit --prod --audit-level high",
+    "commitlint": "commitlint --edit",
     "dev:e2e": "pnpm render:home && vite --host 127.0.0.1 --port 5175 --strictPort --force",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs}": [
+      "eslint --quiet --fix",
+      "prettier --write"
+    ],
+    "*.{css,json}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.13",
     "@radix-ui/react-dialog": "^1.1.16",
-    "@radix-ui/react-select": "^2.3.0",
+    "@radix-ui/react-slider": "^1.4.7",
     "@radix-ui/react-slot": "^1.3.0",
-    "@radix-ui/react-tabs": "^1.1.14",
     "@radix-ui/react-tooltip": "^1.2.11",
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/react-query": "^5.101.0",
@@ -32,12 +65,11 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-    "i18next": "^26.3.1",
-    "i18next-browser-languagedetector": "^8.2.1",
+    "lightweight-charts": "^5.2.0",
     "lucide-react": "^1.18.0",
     "react": "^19.2.7",
+    "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.7",
-    "react-i18next": "^17.0.8",
     "regenerator-runtime": "^0.14.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
@@ -48,27 +80,41 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@babel/core": "^8.0.1",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.0",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@types/babel__core": "^7.20.5",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-legacy": "^8.1.0",
     "@vitejs/plugin-react": "^6.0.2",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "dependency-cruiser": "^18.0.0",
     "eslint": "^10.4.1",
+    "eslint-plugin-better-tailwindcss": "^4.6.1",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "jscpd": "^4.2.5",
+    "knip": "^6.24.0",
     "lightningcss": "^1.32.0",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.9.4",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "react-doctor": "^0.9.7",
+    "stylelint": "^17.14.0",
+    "stylelint-config-standard": "^40.0.0",
     "terser": "^5.48.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.16"
   },
-  "packageManager": "pnpm@10.33.0",
-  "pnpm": {
-    "overrides": {
-      "@tanstack/react-query": "5.101.0"
-    }
-  }
+  "packageManager": "pnpm@11.17.0+sha512.cca3cea332ad254bb84145f966d19f4879615210346fc92c79a047f23a0d7b3cca3c3792f0076ba1f1831d277efbcf0a9119b31a9a60eca7fb3d6231f331ef72"
 }

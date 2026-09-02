@@ -1,9 +1,14 @@
-import legacy from '@vitejs/plugin-legacy'
-import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
-import { defineConfig, type Plugin } from 'vite'
+
+import babel from '@rolldown/plugin-babel'
+import tailwindcss from '@tailwindcss/vite'
+import legacy from '@vitejs/plugin-legacy'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
+
+import localesJson from './src/i18n/locales.json'
 import { flattenCssCascadeLayersPlugin } from './vite-plugins/flatten-css-cascade-layers'
+import { viewportUnitFallbacksPlugin } from './vite-plugins/viewport-unit-fallbacks'
 
 /** Inline boot polyfill must parse before plugin-legacy module polyfills in <head>. */
 function legacyBootFirstPlugin(): Plugin {
@@ -12,7 +17,9 @@ function legacyBootFirstPlugin(): Plugin {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        const bootMatch = html.match(/<script>try\{if\('scrollRestoration'[\s\S]*?__patchPerfLists[\s\S]*?\}<\/script>/)
+        const bootMatch = html.match(
+          /<script>try\{if\('scrollRestoration'[\s\S]*?__patchPerfLists[\s\S]*?\}<\/script>/,
+        )
         if (!bootMatch) return html
         const boot = bootMatch[0]
         return html.replace(boot, '').replace('<head>', `<head>\n    ${boot}`)
@@ -21,7 +28,7 @@ function legacyBootFirstPlugin(): Plugin {
   }
 }
 
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr', 'th'] as const
+const locales = localesJson as readonly string[]
 
 const localeEntries = Object.fromEntries(
   locales.flatMap((locale) => [
@@ -47,58 +54,128 @@ const cssTargets = {
   firefox: 90 << 16,
 }
 
-export default defineConfig(({ command }) => ({
-  css:
-    command === 'build'
-      ? {
-          transformer: 'lightningcss',
-          lightningcss: {
-            targets: cssTargets,
-          },
-        }
-      : undefined,
-  resolve: {
-    alias: {
-      '~': resolve(__dirname, 'src'),
-      '@tanstack/react-query': resolve(__dirname, 'node_modules/@tanstack/react-query'),
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const rawBase = env.VITE_API_BASE_URL?.trim()
+  if (!rawBase) {
+    throw new Error('VITE_API_BASE_URL is required for the Vite /api proxy (no default upstream)')
+  }
+  const upstream = rawBase.replace(/\/$/, '')
+  if (!upstream.startsWith('http://') && !upstream.startsWith('https://')) {
+    throw new Error(
+      `VITE_API_BASE_URL must be an absolute http(s) URL for the Vite proxy (got ${JSON.stringify(rawBase)})`,
+    )
+  }
+  const apiProxyTarget = upstream.replace(/\/api$/, '')
+  if (!apiProxyTarget.startsWith('http://') && !apiProxyTarget.startsWith('https://')) {
+    throw new Error(
+      `VITE_API_BASE_URL origin empty after stripping /api (got ${JSON.stringify(rawBase)})`,
+    )
+  }
+  const apiProxy = {
+    '/api': {
+      target: apiProxyTarget,
+      changeOrigin: true,
+      secure: true,
     },
-    dedupe: ['@tanstack/react-query', 'react', 'react-dom'],
-  },
-  build: {
-    target: 'chrome90',
-    // 最终 minify 阶段以 cssTarget 为准（会覆盖 css.lightningcss.targets），须与 cssTargets 一致。
-    cssTarget: ['chrome90', 'safari14', 'ios14', 'firefox90'],
-    modulePreload: false,
-    rollupOptions: {
-      input: {
-        app: resolve(__dirname, 'app.html'),
-        index: resolve(__dirname, 'index.html'),
-        ...localeEntries,
+  } as const
+
+  return {
+    css:
+      command === 'build'
+        ? {
+            transformer: 'lightningcss',
+            lightningcss: {
+              targets: cssTargets,
+            },
+          }
+        : undefined,
+    server: {
+      proxy: apiProxy,
+    },
+    preview: {
+      proxy: apiProxy,
+    },
+    resolve: {
+      alias: {
+        '~': resolve(__dirname, 'src'),
+        '@tanstack/react-query': resolve(__dirname, 'node_modules/@tanstack/react-query'),
+      },
+      dedupe: ['@tanstack/react-query', 'react', 'react-dom'],
+    },
+    build: {
+      target: 'chrome90',
+      // 最终 minify 阶段以 cssTarget 为准（会覆盖 css.lightningcss.targets），须与 cssTargets 一致。
+      cssTarget: ['chrome90', 'safari14', 'ios14', 'firefox90'],
+      modulePreload: false,
+      rollupOptions: {
+        input: {
+          app: resolve(__dirname, 'app.html'),
+          index: resolve(__dirname, 'index.html'),
+          ...localeEntries,
+        },
+        output: {
+          /**
+           * Prefer several parallel vendor chunks over one opaque shared bag.
+           * Match `/node_modules/<pkg>/` only — never substring `/react/` inside other packages.
+           *
+           * thirdweb/viem: do not add here. Named chunks absorb shared deps; Home then
+           * sync-loads ~3.5MB via LocalizedErrorBoundary. codeSplitting +
+           * includeDependenciesRecursively:false keeps Home clean but inflates DApp
+           * sync (~1.6MB→~4.6MB) by collapsing thirdweb async splits.
+           */
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return
+            const path = id.replaceAll('\\', '/')
+
+            if (path.includes('/node_modules/react-dom/')) return 'react-dom'
+            if (path.includes('/node_modules/react/')) return 'react'
+            if (path.includes('/node_modules/@tanstack/react-query/')) return 'query'
+            if (path.includes('/node_modules/@radix-ui/')) return 'radix'
+            if (path.includes('/node_modules/lucide-react/')) return 'lucide'
+            if (
+              path.includes('/node_modules/tailwind-variants/') ||
+              path.includes('/node_modules/clsx/') ||
+              path.includes('/node_modules/tailwind-merge/')
+            ) {
+              return 'tv'
+            }
+            if (path.includes('/node_modules/sonner/')) return 'sonner'
+            return
+          },
+        },
       },
     },
-  },
-  optimizeDeps: {
-    include: [
-      'thirdweb',
-      'thirdweb/react',
-      'thirdweb/wallets',
-      '@tanstack/react-query',
-      'core-js/features/object/has-own',
-      'core-js/features/array/at',
-      'core-js/features/string/at',
+    optimizeDeps: {
+      include: [
+        'thirdweb',
+        'thirdweb/react',
+        'thirdweb/wallets',
+        '@tanstack/react-query',
+        'core-js/features/object/has-own',
+        'core-js/features/array/at',
+        'core-js/features/string/at',
+      ],
+    },
+    plugins: [
+      react(),
+      // React Compiler — full mode after Chrome90 build smoke.
+      // Must not share a PR with auth/home-reveal/blind memo deletion.
+      babel({
+        presets: [reactCompilerPreset()],
+      }),
+      tailwindcss(),
+      flattenCssCascadeLayersPlugin(),
+      // lightningcss does not rewrite dvh→vh (chrome90); inject classic fallbacks post-build.
+      viewportUnitFallbacksPlugin(),
+      legacyBootFirstPlugin(),
+      legacy({
+        targets: legacyBrowserTargets,
+        // Chrome 90+ 支持原生 ESM；modern chunk + polyfills 即可，无需 SystemJS legacy chunk
+        modernTargets: legacyBrowserTargets,
+        modernPolyfills: ['es.object.has-own', 'es.array.at'],
+        renderLegacyChunks: false,
+      }),
     ],
-  },
-  plugins: [
-    react(),
-    tailwindcss(),
-    flattenCssCascadeLayersPlugin(),
-    legacyBootFirstPlugin(),
-    legacy({
-      targets: legacyBrowserTargets,
-      // Chrome 90+ 支持原生 ESM；modern chunk + polyfills 即可，无需 SystemJS legacy chunk
-      modernTargets: legacyBrowserTargets,
-      modernPolyfills: ['es.object.has-own', 'es.array.at'],
-      renderLegacyChunks: false,
-    }),
-  ],
-}))
+  }
+})

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/boot/dapp-main.tsx",
+    "src/boot/home-main.tsx",
+    "src/shared/lib/legacy-core-js.ts",
+    "src/views/home/home-renderer.ts",
+    "src/i18n/messages/home/index.ts",
+    "tests/unit/**/*.test.mjs",
+    "tests/unit/knip-traced-exports.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignoreExportsUsedInFile": true,
+  "ignoreDependencies": ["regenerator-runtime", "lightningcss"],
+  "rules": {
+    "files": "error",
+    "dependencies": "error",
+    "devDependencies": "error",
+    "optionalPeerDependencies": "error",
+    "unlisted": "error",
+    "binaries": "error",
+    "unresolved": "error",
+    "exports": "error",
+    "nsExports": "error",
+    "types": "error",
+    "nsTypes": "error",
+    "enumMembers": "error",
+    "duplicates": "error"
+  },
+  "ignoreIssues": {
+    "src/web3/thirdweb.ts": ["types"],
+    "src/shared/styles/tokens/tokens.ts": ["types"],
+    "src/shared/components/card.tsx": ["types"],
+    "src/i18n/messages/app/**": ["types"],
+    "src/shared/components/text.tsx": ["types"]
+  }
+}

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 async function settleHome(page: import('@playwright/test').Page) {
   await page.goto('/en/', { waitUntil: 'domcontentloaded', timeout: 60_000 })
@@ -49,7 +49,9 @@ test.describe('Home — visual regression', () => {
 
   test('hero section', async ({ page }) => {
     await settleHome(page)
-    await expect(page.locator('.hero')).toHaveScreenshot('home-hero.png')
+    await expect(page.locator('section[aria-labelledby="hero-title"]')).toHaveScreenshot(
+      'home-hero.png',
+    )
   })
 
   test('protocol section', async ({ page }) => {

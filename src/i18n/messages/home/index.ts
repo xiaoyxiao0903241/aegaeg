@@ -6,11 +6,11 @@ import homeId from '~/i18n/messages/home/id'
 import homeJa from '~/i18n/messages/home/ja'
 import homeKo from '~/i18n/messages/home/ko'
 import homeRu from '~/i18n/messages/home/ru'
+import homeTh from '~/i18n/messages/home/th'
+import homeTr from '~/i18n/messages/home/tr'
 import homeVi from '~/i18n/messages/home/vi'
 import homeZh from '~/i18n/messages/home/zh'
 import homeZht from '~/i18n/messages/home/zht'
-import homeTr from '~/i18n/messages/home/tr'
-import homeTh from '~/i18n/messages/home/th'
 
 export type { HomeMessagesBundle } from '~/i18n/messages/home/types'
 

@@ -1,0 +1,380 @@
+@keyframes dapp-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes aegis-tooltip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes aegis-tooltip-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* 常见问题手风琴：动画作用于内层面板，Radix 会先清掉 Accordion.Content 的过渡 */
+.faq-answer-panel {
+  display: grid;
+  overflow: hidden;
+  grid-template-rows: 0fr;
+}
+
+.faq-answer-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+[data-faq-item][data-state='open'] .faq-answer-panel {
+  grid-template-rows: 1fr;
+}
+
+[data-faq-motion='true'] .faq-answer-panel {
+  transition: grid-template-rows 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* DApp 开合箭头：与 CollapseChevron 保持同一旋转、颜色与过渡配置 */
+.collapse-chevron {
+  transform: rotate(0deg);
+  color: color-mix(in oklab, var(--foreground) 40%, transparent);
+  transition:
+    transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.collapse-chevron[data-open='true'] {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+@keyframes language-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dapp-rays-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes hero-rays-drift {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes character-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes metric-count-pop {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.72;
+  }
+  58% {
+    transform: scale(1.045);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+[data-metric-count-pop] {
+  display: inline-block;
+  animation: metric-count-pop 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes roadmap-dot-grow {
+  0% {
+    opacity: 0;
+    transform: scale(0.28);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.16);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes roadmap-active-ripple {
+  0%,
+  100% {
+    box-shadow: var(--roadmap-ripple-68);
+  }
+  48% {
+    box-shadow: var(--roadmap-ripple-100);
+  }
+}
+
+@keyframes character-float-centered {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px);
+  }
+}
+
+@keyframes character-float-mobile {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes exchange-card-flip {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.96);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Radix Dialog：统一弹窗进入 / 退出的透明度与缩放动画 */
+@keyframes aegis-modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes aegis-modal-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes aegis-modal-content-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 12px)) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes aegis-modal-content-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 8px)) scale(0.98);
+  }
+}
+
+.aegis-modal-overlay[data-state='open'] {
+  animation: aegis-modal-overlay-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.aegis-modal-overlay[data-state='closed'] {
+  animation: aegis-modal-overlay-out 180ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.aegis-modal-content[data-state='open'] {
+  animation: aegis-modal-content-in 250ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.aegis-modal-content[data-state='closed'] {
+  animation: aegis-modal-content-out 180ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+/* 响应式弹窗：桌面居中显示，移动端从底部滑入 */
+@keyframes aegis-sheet-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes aegis-sheet-content-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+.aegis-responsive-panel {
+  position: fixed;
+  z-index: 50;
+  outline: none;
+}
+
+@media (max-width: 820px) {
+  .aegis-responsive-panel {
+    inset-inline: 0;
+    inset-block: auto 0;
+    inline-size: 100%;
+    max-block-size: min(92dvh, var(--dapp-sheet-max-height));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .aegis-responsive-panel[data-state='open'] {
+    animation: aegis-sheet-content-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  .aegis-responsive-panel[data-state='closed'] {
+    animation: aegis-sheet-content-out 220ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+}
+
+@media (min-width: 821px) {
+  .aegis-responsive-panel {
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
+  }
+
+  .aegis-responsive-panel[data-state='open'] {
+    animation: aegis-modal-content-in 250ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  .aegis-responsive-panel[data-state='closed'] {
+    animation: aegis-modal-content-out 180ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+}
+
+/* 新手引导高亮：落到新目标时外圈扩散一次后消失（仅 opacity + scale） */
+@keyframes onboarding-highlight-hit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+.onboarding-highlight-hit {
+  animation: onboarding-highlight-hit 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* AppBar 异网胶囊：红色阴影轻呼吸，提醒用户切到 BSC（仅 box-shadow） */
+@keyframes network-pill-wrong-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklch, var(--destructive) 0%, transparent),
+      0 0 0 0 color-mix(in oklch, var(--destructive) 0%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 3px color-mix(in oklch, var(--destructive) 28%, transparent),
+      0 0 14px 1px color-mix(in oklch, var(--destructive) 38%, transparent);
+  }
+}
+
+.network-pill-wrong-breathe {
+  animation: network-pill-wrong-breathe 2.2s ease-in-out infinite;
+}
+
+@keyframes dapp-release-flow {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 22px 0;
+  }
+}
+
+.dapp-release-flow {
+  background-image: repeating-linear-gradient(
+    115deg,
+    transparent 0,
+    transparent 6px,
+    rgb(255 255 255 / 0.35) 11px,
+    transparent 16px,
+    transparent 22px
+  );
+  background-size: 22px 100%;
+  animation: dapp-release-flow 2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-highlight-hit {
+    animation: none;
+    opacity: 0;
+  }
+
+  .network-pill-wrong-breathe {
+    animation: none;
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--destructive) 32%, transparent);
+  }
+
+  .dapp-release-flow {
+    animation: none;
+  }
+}

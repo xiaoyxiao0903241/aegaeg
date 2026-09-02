@@ -1,69 +1,24 @@
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react'
-import i18n from '~/i18n/config'
-import {
-  localeLabels,
-  type Locale,
-} from '~/i18n/locales'
-import {
-  getInitialLocale,
-  persistLocale,
-  withLocalePrefix,
-} from '~/i18n/locale'
-import {
-  getMessagesSync,
-  loadMessages,
-  type Messages,
-} from '~/i18n/messages'
+import { type ReactNode, useMemo, useRef, useState } from 'react'
+
 import { I18nContext, type I18nContextValue } from '~/i18n/context'
+import { getInitialLocale, persistLocale, withLocalePrefix } from '~/i18n/locale'
+import { type Locale, localeLabels } from '~/i18n/locales'
+import { getMessagesSync, loadMessages, type Messages } from '~/i18n/messages'
 
 function createInitialI18nState(): { locale: Locale; messages: Messages } {
   const locale = getInitialLocale()
   persistLocale(locale)
-  // Keep the standalone i18next instance in sync with the project's locale
-  // resolution (URL > storage > browser > default). This matters because some
-  // UI paths still read from react-i18next / i18n.language.
-  if (i18n.language !== locale) {
-    void i18n.changeLanguage(locale)
-  }
   return {
     locale,
     messages: getMessagesSync(locale),
   }
 }
 
+/** 全站文案 SSOT：仅走本 Provider，不再同步独立 i18next 实例。 */
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => createInitialI18nState().locale)
-  const [messages, setMessages] = useState<Messages>(() => createInitialI18nState().messages)
-  const localeSyncedRef = useRef(true)
-
-  useEffect(() => {
-    if (localeSyncedRef.current) {
-      localeSyncedRef.current = false
-      return
-    }
-
-    let cancelled = false
-
-    loadMessages(locale).then((nextMessages) => {
-      if (!cancelled) {
-        setMessages(nextMessages)
-      }
-    })
-
-    if (i18n.language !== locale) {
-      void i18n.changeLanguage(locale)
-    }
-
-    return () => {
-      cancelled = true
-    }
-  }, [locale])
+  const [{ locale, messages }, setState] = useState(createInitialI18nState)
+  /** Monotonic load id — drop stale `loadMessages` results after rapid setLocale. */
+  const localeLoadGeneration = useRef(0)
 
   const value = useMemo<I18nContextValue>(() => {
     function setLocale(nextLocale: Locale) {
@@ -79,7 +34,16 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      setLocaleState(nextLocale)
+      // Load then commit — avoid flash of previous locale copy; ignore superseded loads.
+      const generation = ++localeLoadGeneration.current
+      void loadMessages(nextLocale)
+        .then((nextMessages) => {
+          if (generation !== localeLoadGeneration.current) return
+          setState({ locale: nextLocale, messages: nextMessages })
+        })
+        .catch(() => {
+          // Keep current messages; cookie/URL already point at nextLocale for retry/reload.
+        })
     }
 
     return {

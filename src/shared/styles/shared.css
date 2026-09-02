@@ -1,0 +1,127 @@
+/**
+ * 共享基础样式：字体、重置、tokens、断点、滚动条与动画。
+ * 由 app.css 和 home.css 入口统一引入。
+ * `@import` 必须位于 `@source` 之前（stylelint 规则限制）。
+ */
+@import 'tailwindcss/theme.css';
+@import './tokens/theme.css';
+@import './legacy-breakpoints.css';
+@import './scrollbars.css';
+@import './animations.css';
+@import './hero-rays.css';
+
+@source '../../app';
+@source '../../views';
+@source '../../shared';
+
+@font-face {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/assets/fonts/montserrat-latin-variable.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light;
+  font-family:
+    Montserrat,
+    Inter,
+    'Noto Sans SC',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 20rem;
+  scroll-padding-top: 5.5rem;
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  min-width: 20rem;
+  overflow-x: hidden;
+  background:
+    radial-gradient(900px 520px at 78% -8%, var(--app-body-wash), transparent 58%),
+    var(--background);
+  color: var(--muted-foreground);
+  letter-spacing: 0;
+  /* 全站数字等宽，避免金额跳动 */
+  font-variant-numeric: tabular-nums;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  border: 0;
+  color: inherit;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+summary {
+  cursor: pointer;
+  color: inherit;
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+@utility container {
+  width: min(calc(100% - 3rem), var(--container));
+  margin-inline: auto;
+  max-width: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@media (max-width: 820px) {
+  html {
+    scroll-padding-top: 3.75rem;
+  }
+
+  body {
+    background: var(--background);
+  }
+}

@@ -1,71 +1,134 @@
-AI 工作规范
+# AGENTS.md — AI / 工程契约
 
-> **本节用于**：AI 助手自身的行为校准和工程决策。处理用户请求前应先回顾本节。
+> 写盘前先读本文件。索引：[`docs/README.md`](docs/README.md)。  
+> 仓库根**仅本文件**；其余文档在 `docs/`（kebab-case）。  
+> 通用 MUST NOT / 收工档 → 全局 Contract（`~/.agents/AGENTS.md`）；**本文件管本仓 SSOT + 流程 + 五柱**。
 
-> 以下规范指导 AI 编码助手在本项目中的工作方式、工程决策和工具使用。
+---
 
-### 8.1 工作方式
+## 0. 最高原则
 
-- **默认端到端完成**：理解问题、读取相关文件、实施最小充分修改、验证、报告。用户明确要求「只分析 / 暂不修改 / 只给建议」时才停在分析。
-- **先定义再实现**：先定义真实问题、约束、边界条件、失败模式和验收标准，再选择实现方式。
-- **暴露不确定性**：写代码前暴露会影响数据所有权、同步正确性、schema / API、性能目标或平台语义的不确定性；禁止静默假设。
-- **优先最小闭环**：优先做能验证目标的最小闭环。切片必须绑定一个用户可判断 case 或一个证明边界。
-- **找根因不用补丁**：找根因，不用补丁掩盖症状；失败来自流程时，同步修改文档或本文件，不靠聊天记忆。
-- **小而精准**：保持小而精准的改动；不要机会主义重写、重命名、格式化或清理无关代码。
-- **最终报告必须说明**：改了什么、为什么、如何验证、剩余风险。
+与下层冲突时**先满足本节**。行为层吸收 [Karpathy Guidelines](https://github.com/multica-ai/andrej-karpathy-skills/blob/main/skills/karpathy-guidelines/SKILL.md)（琐碎可缩短；金钱 fail-closed 不可破）。
 
-### 8.2 工程原则
+### 0.1 五柱
 
-- **决策优先级**：正确性 > 可验证性 > 简洁性 > 复用 > 速度。
+|柱|标准|
+|---|---|
+|**代码极简**|最少代码解决问题；无第二 call site 不抽层；禁未要求的功能/配置/「灵活性」；200 行能变 50 → 重写|
+|**逻辑清晰可测试**|决策与 IO 分离；门闸/报价用纯函数+单测；先定可验证成功标准再动手|
+|**算法精妙**|先定不变量再分支；重复回收唯一 owner；禁特例瀑布；**不是**炫技|
+|**性能优异**|热路径便宜；禁无故 N+1 RPC；禁 placeholder 驱动写 CTA；先消多余 IO 再微优化|
+|**遵循最佳实践**|**代码 / 框架 / 行业**通行实践（语言惯用法、安全、可访问性、Web3 fail-closed、测试与可观测性等）**与**本仓栈约定（手册∩API、Foundation/`<Text>`、目录落点）一并遵守；禁自创平行惯例。与本仓 SSOT 冲突时先暴露，再按决策序与层表裁决（不以「行业流行」静默覆盖 fail-closed / 手册）|
+
+**决策序：** 正确性（含 fail-closed 金钱）> 可验证性 > 极简清晰 > 算法与性能 > 复用 > 速度。
+
+### 0.2 行为硬门
+
+**A. 先想清楚** — 显式假设；多解读并列；有更简做法就说；不清则停并提问。
+
+**B. 第一性原理** — 修前：复现 → 根因证据 → 从根因改。禁症状补丁（特例 if / 再包一层 / 调文案掩盖）。根因在契约 → 同步改文档。未定位根因不写修复。
+
+**C. 目标驱动** — 「修 bug」→ 先复现测试再绿；「加校验」→ 先非法输入测试；多步：`步骤 → verify`。弱目标（「弄好」）先澄清。
+
+### 0.3 写盘后自检
+
+- [ ] 假设/取舍已暴露？根因有证据且从根因修？
+- [ ] 成功标准已验证（测试 / `pnpm check` / 手册）？无投机抽象？
+- [ ] 金钱 fail-closed？手册/API/Foundation 未开平行方案？
+- [ ] 是否符合语言/框架/行业通行实践（且未与本仓 SSOT 打架）？
+- [ ] 新增/改动注释是否符合 [`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)（分层密度、去 Figma 节点引用、禁黑话）？
+- [ ] 是否符合 §0.4（DRY/KISS/YAGNI/deletion-first）？
+
+### 0.4 工程原则
+
+- **决策优先级**：正确性 > 可验证性 > 简洁性 > 复用 > 速度。（与 §0.1 决策序同构；金钱路径另要求 fail-closed。）
 - **SSOT**：业务规则、配置语义、状态真相、schema 字段、协议状态和 Derived Fact（派生事实）只能有一个 owner。
 - **DRY**：只消除真实且稳定的重复；不要为了去重制造脆弱抽象。
 - **KISS**：优先最直接、最容易验证的数据流和实现。
 - **YAGNI**：没有当前不变量、成功标准或验证路径的未来能力不做。
-- **清晰优先于精巧；显式优先于隐式；项目内一致性优先于外部理想模式**。
+- **清晰优先于精巧；显式优先于隐式**。项目内一致性优先于「为跟风而跟风」的外部花样；**不**等于可以无视语言/框架/行业已证明的正确做法——后者与本仓 SSOT 同向时必须采用。
 - **抽象必须立刻降低认知负担**，或保护真实边界；否则不要引入。
 - **优先删除复杂度**，而不是把复杂度搬到另一层。
 
 **实现时**：
+
 - 优先复用既有工具函数、状态容器、脚本入口和测试基础设施。
 - 发现重复逻辑时，先判断是否应回收到现有 SSOT；不要默认再包一层。
 - **deletion-first**：实现后删除、内联或收窄不服务不变量、成功标准或验证路径的状态、字段、类型、分支、配置和 helper。
-- 代码或复杂脚本切片需要独立审查、受影响验证；用户要求提交时再按单切片单提交。
-- 人工审查只保留给视觉、手感、真实滚动物理、主观动效质量和真实辅助技术行为。
+- **代码或复杂脚本切片**：做 Post-Code（§0.3 + 本条 + `pnpm check`）；用户要求提交时再单切片单提交；提交前另过独立审查（§2「审查」；默认 Grok 4.5 high + deletion-first）。
+- 人工审查只保留给视觉、手感、真实滚动物理、主观动效质量和真实辅助技术行为（Post-Design 主观项）。
 
-### 8.3 工具规则
+---
 
-- 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
-- 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
-- **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。
-- 探索概念用 `codegraph context`；查调用关系用 `codegraph callers` / `codegraph callees`；评估影响面用 `codegraph impact`；文本兜底仍用 `rg`。
-- `.codegraph/` 是本地索引并被忽略。
+## 1. Matt 流程（路由表）
 
-### 8.4 设计稿来源
+全局 Contract「Matt 路由」指向本表。`/ask-matt` 为完整地图；此处为本仓落地。
 
-- **正式 Figma 设计稿 SSOT**：https://www.figma.com/design/sXWXDvBrLeg5r0NnP1SMZH/AEGIS-X--Copy---Copy---Copy-
-- 后续官网首页、H5、DApp 页面和组件的像素级对齐，以该 Figma 文件为准；历史 Figma 链接只作为过往参考，除非用户明确指定。
-- **像素级对齐的含义**：优先对齐元素归属、组件结构、视觉层级、字体、颜色、圆角、阴影、边框、间距节奏、素材、hover / active / connected / disconnected 状态。1-2px 的浏览器渲染、截图或布局取整偏差可以接受，禁止围绕这些误差反复修改。
-- **PC 是文案 SSOT**：H5 是 PC 的响应式布局，不是独立文案版本。PC / H5 文案不一致时，以 PC 为准；不要为了 H5 单独新增同义文案 key 或分叉 copy。
-- **动态数值不作为静态对齐重点**：余额、金额、兑换率、统计值、奖励数值后续会接入动态数据；静态阶段只保证数值区域的组件样式、状态表现、留白和可承载真实数据的布局正确。
+|意图|走|产物落盘（本仓）|
+|---|---|---|
+|有代码 + 磨清想法|`grill-with-docs`|结论 → [`docs/decisions/`](docs/decisions/)；**禁** `.scratch` 过程坟、禁根 `CONTEXT.md`|
+|多会话大建|`to-spec` → `to-tickets` → `implement`|Spec/票 → [`docs/tickets/`](docs/tickets/)；blocker 写在票内|
+|单切片可闭环|`implement`（内含 tdd + code-review）|代码 + 必要 docs；**commit 须用户明示**|
+|外来杂单|`triage` → `implement`|票 → `docs/tickets/`|
+|难 bug|`diagnosing-bugs`|先红反馈环；根因记入决策或票|
+|雾大不知从何建|`wayfinder` → 再 `to-spec`|决策票 → `docs/decisions/`；**勿**跳过 to-spec 直 implement|
+|架构变深|`improve-codebase-architecture` / `codebase-design`|想法回 grill 或决策|
+|跨会话|`handoff`；同会话阶段切 `compact`（勿中途 compact）|handoff 文件可暂放 `docs/handoffs/`，用后可删|
 
-### 8.5 首页动效与性能
+**禁止**复活 Matt 默认的 `.scratch/<feature>/` 过程目录作 SSOT。词表：[`docs/ubiquitous-language.md`](docs/ubiquitous-language.md)。
 
-- 参考站 `https://aegis-x5.vercel.app/` 只作为动效基准，不作为素材来源；生产素材必须来自正式 Figma 或项目 canonical public assets。
-- 首页不得为了动效引入 Framer Motion、GSAP、Anime、Lottie 等动画库；优先使用 CSS keyframes / transitions，加少量 `IntersectionObserver` / `requestAnimationFrame`。
-- 动效只动画 `opacity`、`transform`、`clip-path`、`filter`、`box-shadow` 等不触发布局重排的属性；hover 不改变卡片几何位置，使用阴影、边框和轻微背景 tint 模拟浮起。
-- 指标区动效顺序为：面板先从中线展开，数值再启动计数和轻微 pop；首页动效不根据 `prefers-reduced-motion` 降级，所有设备保持一致播放。
-- Figma SVG 导出经常包含整页背景、父容器和裁剪上下文；用于运行时的图标必须提取 leaf node / clean paths，不能直接使用污染的整卡导出。
+---
 
-### 8.6 AEGIS X DApp 技术约束
+## 2. 文档 SSOT
 
-- **DApp 页面推进顺序**：先收束共享 shell / rail / card / typography / table / action primitives，再按 Figma frame title 逐页实现：Swap → Genesis → Rewards → Community。不要在未完成当前页面结构对齐前随机跳到其他页面。
-- **页面归属规则**：页面内容归属以 Figma frame title 为准；例如 `DApp — Swap` 里的 Genesis 说明仍属于 Swap 页面展示，不迁移到 Genesis tab。连接 / 未连接状态也按对应 frame 处理。
-- **H5 响应式规则**：H5 是同一套 PC 文案与组件的响应式布局，不是独立页面。除非 Figma 明确表达为不同状态组件，否则不要为 H5 新增同义文案、独立数据表或单独业务逻辑。
-- **对齐验收重点**：DApp 对齐先看元素是否齐全、状态是否正确、组件视觉是否一致、素材是否来自 Figma、布局是否能承载未来动态数据；动态数值和 1-2px 渲染取整不作为阻塞项。
-- **当前第一版范围**：只做 EVM DApp，目标链为 **BSC + Ethereum**；不引入 Solana / Bitcoin / TON / TRON 多链能力，除非甲方明确变更范围。
-- **前端技术栈**：React + Vite + TypeScript + Tailwind CSS。
-- **钱包技术栈**：thirdweb React SDK v5；`ThirdwebProvider` / `ConnectButton` 负责连接 UI、钱包列表、自动重连、WalletConnect 和 EIP-6963 钱包发现；链上读写、签名、交易状态以 thirdweb SDK 的 client、account、wallet 和 transaction API 为 SSOT。
-- **钱包兼容策略**：必须同时保留 injected provider、WalletConnect fallback、EIP-6963 多钱包发现；移动钱包内置浏览器优先 injected，普通移动浏览器走 WalletConnect deep link / QR。
-- **链配置策略**：BSC / Ethereum chain 配置集中维护在 `src/web3/thirdweb.ts`；不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。
-- **登录语义**：连接钱包不等于业务登录。涉及推荐关系、奖励记录、用户态 session 时，应增加 SIWE/nonce 签名认证闭环。
-- **UI 实现**：钱包按钮优先用 thirdweb `ConnectButton` 的 `connectButton` / `detailsButton` / `connectModal` 配置承接项目设计，不直接暴露默认按钮样式到核心界面。
+按「管什么」读。产品语言 ≠ 实现归属。
+
+|问题|SSOT|
+|---|---|
+|用户可见行为|产品 Answer / Spec|
+|UI token / 用法|[`docs/foundation/`](docs/foundation/)|
+|代码注释|[`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)（严格层 / 逻辑层）|
+|文案|`src/i18n/messages/` · PC 为文案 SSOT|
+|静态 UI|Figma `uiKwzwIoD06phS0husdqjB` · [`docs/figma-pages.md`](docs/figma-pages.md)|
+|链上默认|[`docs/onchain-manual/`](docs/onchain-manual/)（入仓原文；**禁止**改写正文）|
+|链上旧切片补全|[`docs/onchain-manual-legacy.md`](docs/onchain-manual-legacy.md)（同上）|
+|后端读|[`docs/backend-api/`](docs/backend-api/)|
+|词表 / 命令|[`docs/ubiquitous-language.md`](docs/ubiquitous-language.md) · [`docs/commands.md`](docs/commands.md)|
+
+- **手册入仓只读：** `onchain-manual/` 与 legacy 正文来自外部手册拷贝；**禁止**为贴本仓路径 / 去考古句 / 审文档而改写。正文若写合约仓 `abi/`、`src/*.sol`、`deployments/` 等，以方法表语义为准；本仓运行时仍走 `abis.ts` + `VITE_BSC_*` / `contracts.ts`。换手册 → 从源重新拷贝，勿手改。
+- **`shared/components`**：只扩**无业务数据**的布局/控件 primitive（`Tile`/`Grid`/`MainButton`…）；业务档位 / locale / 地址不进。跨 tab **产品壳**（读 store / 绑钱包 / i18n 默认，如 `DockFrame`）进 `views/dapp/shared/`（非 tab）；**窗口级宿主**（`primitives` + `use-*` + rail/app-bar/…；onboarding/wallet 子袋）进 `views/dapp/host/`；**组合根**（`main` + startup）进 `src/boot/`。不确定宁放页袋。详见 [`docs/decisions/dapp-page-bag-dock-detail.md`](docs/decisions/dapp-page-bag-dock-detail.md)。
+- **组合式优先**：壳 + 具名子件表达槽位（`Tile.Label` / `Table.Header`）；禁袋装 `header=`/`tooltip=` 冒充结构。无第二 call site 不硬抽子件。见 [`docs/foundation/component-usage.md`](docs/foundation/component-usage.md) MUST §7。
+- **钱路**：新手册有 → 按新；新沉默且旧手册/可证旧码有 → 按旧；皆无 → 停手、写链 fail-closed。旧码须 `git`/commit+符号可证。钱路专文暂缺。
+- **稿 ∩ 手册**：稿有控件 → UI MUST；缺数诚实空；禁因手册缺数砍控件；数/写跟手册。
+- **裁决序：** §0 → 全局 MUST NOT → 本层表 → 产品 Answer → 过程稿（仅参考）。
+- **审查：** 贴稿对照（Figma + 原型）≠ Post-Code（§0.3 + `pnpm check`）；commit 前 Critical 未清禁止提交。
+
+---
+
+## 3. 工作方式
+
+- 默认端到端；「只分析」才停。
+- 样式重构 → [`docs/foundation/`](docs/foundation/) + [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。
+- 注释 → [`docs/foundation/comment-conventions.md`](docs/foundation/comment-conventions.md)：说明中文、标识符英文；严格层通俗短、逻辑层四要素+`@see`；禁 Figma 节点坐标注释；只改注释时禁改业务逻辑。
+- 报告：改了什么、根因、验证、风险；对照 §0 一句自评。
+
+---
+
+## 4. 栈与产品约束
+
+- **稿：** https://www.figma.com/design/uiKwzwIoD06phS0husdqjB/…（fileKey `uiKwzwIoD06phS0husdqjB`）；页表见 `figma-pages.md`；H5 不新增同义文案。
+- **链：** EVM · **仅 BSC**；地址 `contracts.ts` ← **仅** `VITE_BSC_*`（fail-closed）。
+- **栈：** React + Vite + TS + Tailwind；钱包 thirdweb v5；连接 ≠ 业务登录（SIWE + JWT / `sessionReady`）。
+- **写链：** 核会话地址/链 → simulate 挡 revert → 再核一次 → send（不设 gas、不设墙钟超时）→ `waitForTransactionReceipt({ hash, timeout: 0 })`；approve 后 live 重闸。hash 留在调用栈；按钮看 `isPending`。刷新丢掉内存 pending。展示用 gas 另走 `estimateWriteGasLimit`。
+- **首页动效：** 禁 Framer/GSAP/Anime/Lottie；只动 `opacity`/`transform`/`clip-path`/`filter`/`box-shadow`。
+- **样式：** `tokens.json` → `theme.css`；禁遗留色与平行 class；用户可见文案必须 `<Text>`。
+
+---
+
+## 5. 工具
+
+[`docs/README.md`](docs/README.md) · [`docs/commands.md`](docs/commands.md)。
+
+- **文本 / 文档 / 配置：** `rg`。
+- **读代码 / 调路径 / 改一处看影响：** 默认 CodeGraph（MCP `codegraph_explore`，终端 `codegraph explore` / `status` / `sync`）。索引不新先 `codegraph sync .`。
+- **GitNexus：** 第二套图谱（`.gitnexus/`），仅在 gitnexus-* skill 或用户明示时用；不要当第二套 `rg`，也不要用它替代 CodeGraph 的默认探查。

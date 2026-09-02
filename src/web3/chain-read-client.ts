@@ -1,20 +1,19 @@
-import { createPublicClient, custom, type PublicClient } from 'viem'
-import { bsc } from 'viem/chains'
-import type { Wallet } from 'thirdweb/wallets'
-import { bscReadClient } from '~/web3/bsc-read-client'
-import { resolveWalletEip1193Provider } from '~/web3/resolve-wallet-eip1193-provider'
+import { useLayoutEffect } from 'react'
 
-export type ChainReadClient = PublicClient
+import { setConnectedReadWallet } from '~/web3/bsc-read-client'
+import { useActiveWallet } from '~/web3/thirdweb-react'
 
-/** Viem public client backed by the connected wallet's EIP-1193 provider. */
-export function createWalletReadClient(wallet: Wallet): ChainReadClient {
-  return createPublicClient({
-    chain: bsc,
-    transport: custom(resolveWalletEip1193Provider(wallet)),
-  })
-}
+/**
+ * 把当前钱包写进默认读客户端。
+ *
+ * layout 阶段写入，赶在 Query 的 effect 拉数之前。
+ * 卸载或钱包实例变化时清掉绑定。
+ */
+export function useBindConnectedBscReadWallet() {
+  const wallet = useActiveWallet()
 
-/** Wallet RPC when connected; otherwise the app public read RPC (SSR / disconnected). */
-export function resolveChainReadClient(wallet?: Wallet | null): ChainReadClient {
-  return wallet ? createWalletReadClient(wallet) : bscReadClient
+  useLayoutEffect(() => {
+    setConnectedReadWallet(wallet ?? null)
+    return () => setConnectedReadWallet(null)
+  }, [wallet])
 }

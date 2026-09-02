@@ -1,21 +1,16 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { normalizeAuthAddress } from '~/lib/api/auth/auth-address'
-import { isJwtExpired, withJwtExpiry } from '~/lib/api/auth/jwt'
-import type { StoredLoginSignature } from '~/lib/api/auth/login-signature-cache'
-import {
-  AUTH_SESSION_STORAGE_KEY,
-  AUTH_SIGNATURE_STORAGE_KEY,
-  type StoredAuthSession,
-} from '~/lib/api/auth/session'
+
+import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
+import type { StoredAuthSession, StoredLoginSignature } from '~/core/auth/types'
+import { normalizeAuthAddress } from '~/core/auth/types'
+import { AUTH_SESSION_STORAGE_KEY, AUTH_SIGNATURE_STORAGE_KEY } from '~/core/auth/types'
 
 export const AUTH_STORE_STORAGE_KEY = 'aegis.auth.store'
 
 /**
- * Persisted auth data is two pure caches keyed by wallet address: the JWT
- * sessions and the SIWE signatures. There is no standalone "current session" —
- * the active session is always derived as `sessionsByAddress[walletAddress]`
- * (see `auth-machine.ts`), so switching wallets needs no backup/restore dance.
+ * 按地址缓存的 JWT 与 SIWE 签名。无独立「当前会话」对象——
+ * 活跃会话始终派生为 sessionsByAddress[walletAddress]。
  */
 interface AuthPersistState {
   signaturesByAddress: Record<string, StoredLoginSignature>
@@ -58,8 +53,8 @@ function normalizePersistedSessions(
 }
 
 /**
- * Migrate the pre-v2 single-session/single-signature localStorage keys into the
- * address-keyed tables. Runs once; the legacy keys are removed after reading.
+ * 迁移 v2 之前旧的单会话/单签名 localStorage 键到按地址存储的表。
+ * 仅执行一次；读取后移除旧键。
  */
 function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
   if (typeof localStorage === 'undefined') return null
@@ -69,12 +64,8 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
     const legacySignatureRaw = localStorage.getItem(AUTH_SIGNATURE_STORAGE_KEY)
     if (!legacySessionRaw && !legacySignatureRaw) return null
 
-    const session = legacySessionRaw
-      ? (JSON.parse(legacySessionRaw) as StoredAuthSession)
-      : null
-    const legacySignature = legacySignatureRaw
-      ? (JSON.parse(legacySignatureRaw) as unknown)
-      : null
+    const session = legacySessionRaw ? (JSON.parse(legacySessionRaw) as StoredAuthSession) : null
+    const legacySignature = legacySignatureRaw ? (JSON.parse(legacySignatureRaw) as unknown) : null
 
     localStorage.removeItem(AUTH_SESSION_STORAGE_KEY)
     localStorage.removeItem(AUTH_SIGNATURE_STORAGE_KEY)
@@ -85,7 +76,12 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
         signaturesByAddress[normalizeAuthAddress(legacySignature.address)] =
           legacySignature as StoredLoginSignature
       } else {
-        Object.assign(signaturesByAddress, legacySignature as Record<string, StoredLoginSignature>)
+        for (const [address, signature] of Object.entries(
+          legacySignature as Record<string, StoredLoginSignature>,
+        )) {
+          if (typeof address !== 'string' || address.length === 0) continue
+          signaturesByAddress[normalizeAuthAddress(address)] = signature
+        }
       }
     }
 
@@ -101,9 +97,13 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
   }
 }
 
-function mergePersistedState(
+/** 合并持久化状态与旧版迁移结果，生成按地址存储的认证表（导出供单元测试使用）。 */
+export function mergePersistedState(
   persistedState: Partial<
-    AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
+    AuthPersistState & {
+      session?: StoredAuthSession | null
+      signature?: StoredLoginSignature | null
+    }
   >,
   legacy: Partial<AuthPersistState> | null,
 ): AuthPersistState {
@@ -122,7 +122,7 @@ function mergePersistedState(
     ...(persistedState.sessionsByAddress ?? {}),
   })
 
-  // Fold any leftover pre-v2 top-level session into the address table.
+  // 把旧版顶层 session 归并进按地址的表
   const legacySession = normalizePersistedSession(persistedState.session ?? null)
   if (legacySession) {
     sessionsByAddress[normalizeAuthAddress(legacySession.address)] = legacySession
@@ -131,6 +131,7 @@ function mergePersistedState(
   return { signaturesByAddress, sessionsByAddress }
 }
 
+/** 认证状态仓库：按地址保存 JWT / SIWE 签名，并负责持久化与水合。 */
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -187,7 +188,10 @@ export const useAuthStore = create<AuthStore>()(
       merge: (persisted, currentState) => {
         const legacy = readLegacyPersistedAuth()
         const persistedState = (persisted ?? {}) as Partial<
-          AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
+          AuthPersistState & {
+            session?: StoredAuthSession | null
+            signature?: StoredLoginSignature | null
+          }
         >
         return {
           ...currentState,
@@ -200,23 +204,3 @@ export const useAuthStore = create<AuthStore>()(
     },
   ),
 )
-
-export function createMemoryAuthStoreState(
-  initial: Partial<AuthPersistState> = {},
-): AuthStore {
-  return {
-    signaturesByAddress: initial.signaturesByAddress ?? {},
-    sessionsByAddress: initial.sessionsByAddress ?? {},
-    hasHydrated: true,
-    loginError: null,
-    isLoggingIn: false,
-    setHasHydrated: () => {},
-    upsertSessionForAddress: () => {},
-    removeSessionForAddress: () => {},
-    upsertSignatureForAddress: () => {},
-    readSignatureForAddress: () => null,
-    clearSignatureForAddress: () => {},
-    setLoginError: () => {},
-    setIsLoggingIn: () => {},
-  }
-}

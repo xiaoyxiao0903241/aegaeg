@@ -1,0 +1,15 @@
+dist
+node_modules
+playwright-report
+test-results
+.codegraph
+pnpm-lock.yaml
+package-lock.json
+tmp
+src/shared/styles/tokens/theme.css
+src/shared/styles/tokens/tokens.ts
+*.min.js
+*.min.css
+# Markdown 表不做 Prettier 列宽对齐（表头会随单元格被拉长）
+*.md
+docs/**/*.html

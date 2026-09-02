@@ -1,0 +1,80 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+
+import {
+  evaluateRewardsMixedClaim,
+  isLuckyClaimable,
+} from '../../../src/core/rewards/rewards-block-reasons.ts'
+
+test('mixed claim fails closed on paused lucky and insufficient contribution', () => {
+  assert.equal(
+    evaluateRewardsMixedClaim({
+      amount: 100n,
+      rewardAvailable: 100n,
+      contribution: 10n,
+      requiredContribution: 10n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      luckyPaused: true,
+      luckyClaimable: true,
+    }),
+    'luckyPaused',
+  )
+  assert.equal(
+    evaluateRewardsMixedClaim({
+      amount: 100n,
+      rewardAvailable: 100n,
+      contribution: 1n,
+      requiredContribution: 10n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      luckyClaimable: true,
+    }),
+    'insufficientContribution',
+  )
+  assert.equal(
+    evaluateRewardsMixedClaim({
+      amount: 100n,
+      rewardAvailable: 100n,
+      contribution: 1_000n,
+      requiredContribution: 10n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+      luckyPaused: false,
+      luckyClaimable: false,
+    }),
+    'notClaimable',
+  )
+})
+
+test('mixed claim fails when live reward is below claim amount', () => {
+  assert.equal(
+    evaluateRewardsMixedClaim({
+      amount: 100n,
+      rewardAvailable: 50n,
+      contribution: 1_000n,
+      requiredContribution: 10n,
+      releasePlanIndex: 0,
+      restakePlanIndex: 1,
+    }),
+    'insufficientReward',
+  )
+})
+
+test('submit rewards mixed must not self-certify draft amount or revive gatePinnedRound', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(
+    new URL('../../../src/views/dapp/rewards/submit-rewards.ts', import.meta.url),
+    'utf8',
+  )
+  assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
+  assert.doesNotMatch(src, /roundIds/)
+  assert.doesNotMatch(src, /getWinnerInfo/)
+  assert.doesNotMatch(src, /gatePinnedRound/)
+})
+
+test('isLuckyClaimable requires pending amount and not paused', () => {
+  assert.equal(isLuckyClaimable({ paused: true, rewardAmount: 1n }), false)
+  assert.equal(isLuckyClaimable({ paused: false, rewardAmount: 0n }), false)
+  assert.equal(isLuckyClaimable({ paused: false, rewardAmount: 1n }), true)
+})

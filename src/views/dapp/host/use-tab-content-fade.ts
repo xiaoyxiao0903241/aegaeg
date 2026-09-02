@@ -1,0 +1,52 @@
+import { useEffect, useState } from 'react'
+
+import type { DappTab } from '~/shared/config/dapp-tabs'
+
+/** 与 theme.css 中 `--motion-dapp-fade-out` / `--motion-dapp-fade-in` 保持一致。 */
+export const DAPP_CONTENT_FADE_OUT_MS = 160
+export const DAPP_CONTENT_FADE_IN_MS = 220
+
+export type ContentFadePhase = 'idle' | 'out' | 'in'
+
+/**
+ * 延迟 Tab 内容切换，直到淡出动画播完。
+ *
+ * 这样会话组件可以在透明度为 0 时重挂载，不打断退场动画；
+ * 入场沿用上浮 + 淡入。
+ * 导航条应继续使用实时的 `activeTab`，两个内容面板用返回的 `displayTab`。
+ *
+ * @param activeTab 当前选中的 Tab
+ * @returns displayTab 当前实际展示的 Tab；phase 淡出 / 淡入 / 静止三态
+ */
+export function useTabContentFade(activeTab: DappTab): {
+  displayTab: DappTab
+  phase: ContentFadePhase
+} {
+  const [displayTab, setDisplayTab] = useState(activeTab)
+  const [phase, setPhase] = useState<ContentFadePhase>('idle')
+  const [pendingTab, setPendingTab] = useState(activeTab)
+
+  // Tab 变化时在 render 期进入淡出；若在淡出中又切回当前展示 Tab，取消淡出。
+  if (activeTab !== pendingTab) {
+    setPendingTab(activeTab)
+    if (activeTab !== displayTab) setPhase('out')
+    else setPhase('idle')
+  }
+
+  useEffect(() => {
+    if (phase !== 'out') return
+    const outTimer = window.setTimeout(() => {
+      setDisplayTab(pendingTab)
+      setPhase('in')
+    }, DAPP_CONTENT_FADE_OUT_MS)
+    return () => window.clearTimeout(outTimer)
+  }, [phase, pendingTab])
+
+  useEffect(() => {
+    if (phase !== 'in') return
+    const inTimer = window.setTimeout(() => setPhase('idle'), DAPP_CONTENT_FADE_IN_MS)
+    return () => window.clearTimeout(inTimer)
+  }, [phase])
+
+  return { displayTab, phase }
+}
