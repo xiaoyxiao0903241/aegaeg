@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 async function settleDappSwap(page: import('@playwright/test').Page) {
   await page.goto('/en/app.html')
@@ -7,9 +7,9 @@ async function settleDappSwap(page: import('@playwright/test').Page) {
 }
 
 test.describe('DApp Swap — visual regression', () => {
-  test('swap tab shell', async ({ page }) => {
+  test('swap tab host', async ({ page }) => {
     await settleDappSwap(page)
-    await expect(page.locator('[data-dapp-window]')).toHaveScreenshot('dapp-swap-shell.png')
+    await expect(page.locator('[data-dapp-window]')).toHaveScreenshot('dapp-swap-host.png')
   })
 
   test('swap widget column', async ({ page }) => {

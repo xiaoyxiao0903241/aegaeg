@@ -1,1 +1,1 @@
-export type { AppMessagesBundle } from './zh'
+export type { AppMessagesBundle } from './en'

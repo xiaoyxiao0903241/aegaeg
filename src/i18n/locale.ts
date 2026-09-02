@@ -1,5 +1,5 @@
-import { defaultLocale, locales, type Locale } from '~/i18n/locales'
 import { getHtmlLang } from '~/i18n/locale-meta'
+import { defaultLocale, type Locale, locales } from '~/i18n/locales'
 
 export const localeStorageKey = 'aegis.locale'
 
@@ -33,7 +33,7 @@ function normalizeLocaleTag(tag: string): Locale | null {
   return null
 }
 
-export function resolveBrowserLocale(
+export function browserLocale(
   language: string | undefined,
   languages: readonly string[] | undefined,
 ): Locale | null {
@@ -54,7 +54,7 @@ export function getBrowserLocale(): Locale {
     return defaultLocale
   }
 
-  return resolveBrowserLocale(navigator.language, navigator.languages) ?? defaultLocale
+  return browserLocale(navigator.language, navigator.languages) ?? defaultLocale
 }
 
 export function getLocaleFromPathname(pathname: string): Locale | null {
@@ -103,11 +103,7 @@ export function getInitialLocale(): Locale {
     return defaultLocale
   }
 
-  return (
-    getLocaleFromPathname(window.location.pathname) ??
-    getStoredLocale() ??
-    getBrowserLocale()
-  )
+  return getLocaleFromPathname(window.location.pathname) ?? getStoredLocale() ?? getBrowserLocale()
 }
 
 export function persistLocale(locale: Locale) {

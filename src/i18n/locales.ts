@@ -1,12 +1,8 @@
-export const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr', 'th'] as const
+/** Public locale barrel — re-exports leaf modules (no circular deps). */
+export { defaultLocale, type Locale, locales } from '~/i18n/locale-codes'
+export { getHtmlLang, type LocaleMeta, localeMeta } from '~/i18n/locale-meta'
 
-export type Locale = (typeof locales)[number]
-
-export const defaultLocale: Locale = 'en'
-
-export { localeMeta, type LocaleMeta } from '~/i18n/locale-meta'
-export { getHtmlLang } from '~/i18n/locale-meta'
-
+import { type Locale, locales } from '~/i18n/locale-codes'
 import { localeMeta } from '~/i18n/locale-meta'
 
 export const localeLabels: Record<Locale, string> = Object.fromEntries(

@@ -9,11 +9,20 @@ playwright-report
 env/.active
 .DS_Store
 *.tsbuildinfo
+.eslintcache
+.stylelintcache
+__pycache__/
+*.pyc
 
-references/
-docs/*
-!docs/dapp-data-sources.md
+# 根目录 references/（勿误伤 .agents/.cursor skills 内 references）
+/references/
+# 忽略 docs 下大型归档与无关配置；SSOT markdown 可提交
+docs/figma/
+docs/figma-captures/
+docs/*.cfg
+docs/superpowers/
 tmp/
+.scratch/
 tests/e2e/visual-*/
 
 # render-home.mjs 生成的 HTML 壳（dev/build 前自动生成）
@@ -29,3 +38,7 @@ tests/e2e/visual-*/
 /hi/
 /id/
 /zht/
+/tr/
+/th/
+# local proto HTML for WebBridge (do not commit)
+public/proto/

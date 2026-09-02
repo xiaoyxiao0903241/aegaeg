@@ -1,0 +1,159 @@
+/* 钱包界面样式：连接状态胶囊、ConnectEmbed 与独立弹窗外框。 */
+
+/* 已连接钱包胶囊：只展示地址，点击后打开自定义钱包详情弹窗 */
+.aegis-connected-wallet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.25rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-glass);
+  color: var(--foreground);
+  box-shadow: var(--shadow-card);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.aegis-connected-wallet-chip:hover {
+  border-color: var(--coral-hover-border);
+  transform: scale(1.008);
+}
+
+.aegis-connected-wallet-chip__status {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--success);
+}
+
+.aegis-connected-wallet-chip--reconnect .aegis-connected-wallet-chip__status {
+  background: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 22%, transparent);
+}
+
+.aegis-connected-wallet-chip[aria-busy='true'] .aegis-connected-wallet-chip__status {
+  background: var(--primary);
+  animation: aegis-wallet-status-pulse 1s ease-in-out infinite;
+}
+
+@keyframes aegis-wallet-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
+}
+
+/* ConnectEmbed 内嵌于自定义容器 — 去除自带边框/阴影，QR 在容器内切换 */
+.aegis-connect-embed {
+  inline-size: 100%;
+  zoom: var(--fluid-scale, 1);
+}
+
+.aegis-connect-embed > div {
+  inline-size: 100% !important;
+  max-inline-size: 100% !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.aegis-connect-embed .tw-wallet-selection,
+.aegis-connect-embed .tw-all-wallets-screen,
+.aegis-connect-embed .tw-qr-scan-screen,
+.aegis-connect-embed .tw-connecting-wallet-screen {
+  font-family: inherit !important;
+}
+
+.aegis-wallet-connect-close {
+  display: grid;
+  width: 2.125rem;
+  height: 2.125rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.aegis-wallet-connect-close:hover {
+  border-color: var(--primary);
+  transform: scale(1.008);
+}
+
+.aegis-wallet-connect-body {
+  max-block-size: min(68dvh, 35rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* thirdweb 独立弹窗的兜底样式（ConnectEmbed 子屏不应再弹出，保留以防边缘场景） */
+.tw-modal {
+  border-radius: 1.5rem !important;
+  box-shadow: var(--shadow-modal-panel) !important;
+  font-family: inherit !important;
+  zoom: var(--fluid-scale, 1);
+}
+
+@media (min-width: 821px) {
+  .tw-modal {
+    max-width: 26.875rem !important;
+    width: min(calc(100vw - 2.5rem), 26.875rem) !important;
+  }
+}
+
+/* 移动端：底部滑入面板（`--breakpoint-dapp`，覆盖 thirdweb 默认 640px） */
+@media (max-width: 820px) {
+  .tw-modal {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    transform: none !important;
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+    animation: aegis-tw-sheet-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  /* 移动端：缩小连接胶囊并改用卡片底色 */
+  .aegis-connected-wallet-chip {
+    min-block-size: 2.25rem;
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    font-size: 0.75rem;
+    background: var(--card);
+    box-shadow: none;
+  }
+}
+
+@keyframes aegis-tw-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

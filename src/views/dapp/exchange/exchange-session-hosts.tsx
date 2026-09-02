@@ -1,0 +1,195 @@
+import type { ReactNode } from 'react'
+
+import { useDappHost } from '~/hooks/use-dapp-host'
+import type { DappTab } from '~/shared/config/dapp-tabs'
+import { useExchangeViewMotion } from '~/stores/exchange-view-store'
+import { useBurnExchangeSession } from '~/views/dapp/exchange/burn/use-burn-exchange-session'
+import { useFlashExchangeSession } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-session'
+import { useMarketTradeSession } from '~/views/dapp/exchange/market-trade/use-market-trade-session'
+import { viewsNeedingProvider } from '~/views/dapp/exchange/shared'
+import { useTurbineExchangeSession } from '~/views/dapp/exchange/turbine/use-turbine-exchange-session'
+
+export type MarketTradeState = ReturnType<typeof useMarketTradeSession>
+export type FlashExchangeState = ReturnType<typeof useFlashExchangeSession>
+export type BurnExchangeState = ReturnType<typeof useBurnExchangeSession>
+export type TurbineExchangeState = ReturnType<typeof useTurbineExchangeSession>
+
+export type ExchangeSessions = {
+  trade: MarketTradeState | null
+  flash: FlashExchangeState | null
+  burn: BurnExchangeState | null
+  turbine: TurbineExchangeState | null
+}
+
+export function requireTrade(trade: MarketTradeState | null): MarketTradeState {
+  if (!trade) throw new Error('MarketTrade view requires a lifted trade session')
+  return trade
+}
+
+export function requireFlash(flash: FlashExchangeState | null): FlashExchangeState {
+  if (!flash) throw new Error('FlashExchange view requires a lifted flash session')
+  return flash
+}
+
+export function requireBurn(burn: BurnExchangeState | null): BurnExchangeState {
+  if (!burn) throw new Error('BurnExchange view requires a lifted burn session')
+  return burn
+}
+
+export function requireTurbine(turbine: TurbineExchangeState | null): TurbineExchangeState {
+  if (!turbine) throw new Error('TurbineExchange view requires a lifted turbine session')
+  return turbine
+}
+
+function MarketTradeSessionMounted({
+  sessionReady,
+  quotesEnabled,
+  readsEnabled,
+  children,
+}: {
+  sessionReady: boolean
+  quotesEnabled: boolean
+  readsEnabled: boolean
+  children: (trade: MarketTradeState) => ReactNode
+}) {
+  const trade = useMarketTradeSession(sessionReady, quotesEnabled, readsEnabled)
+  return children(trade)
+}
+
+function FlashExchangeSessionMounted({
+  sessionReady,
+  quotesEnabled,
+  readsEnabled,
+  children,
+}: {
+  sessionReady: boolean
+  quotesEnabled: boolean
+  readsEnabled: boolean
+  children: (flash: FlashExchangeState) => ReactNode
+}) {
+  const flash = useFlashExchangeSession(sessionReady, quotesEnabled, readsEnabled)
+  return children(flash)
+}
+
+function BurnExchangeSessionMounted({
+  sessionReady,
+  quotesEnabled,
+  readsEnabled,
+  children,
+}: {
+  sessionReady: boolean
+  quotesEnabled: boolean
+  readsEnabled: boolean
+  children: (burn: BurnExchangeState) => ReactNode
+}) {
+  const burn = useBurnExchangeSession(sessionReady, quotesEnabled, readsEnabled)
+  return children(burn)
+}
+
+function TurbineExchangeSessionMounted({
+  sessionReady,
+  quotesEnabled,
+  readsEnabled,
+  children,
+}: {
+  sessionReady: boolean
+  quotesEnabled: boolean
+  readsEnabled: boolean
+  children: (turbine: TurbineExchangeState) => ReactNode
+}) {
+  const turbine = useTurbineExchangeSession(sessionReady, quotesEnabled, readsEnabled)
+  return children(turbine)
+}
+
+/**
+ * 把四个模式的会话 hook 各提升一次，再把状态作为 props 注入
+ *
+ * 挂载与读取跟随 viewsNeedingProvider：离开子视图即卸载对应
+ * 会话，丢弃本地报价与提交状态。
+ */
+export function ExchangeSessionHosts({
+  activeTab,
+  children,
+}: {
+  activeTab: DappTab
+  children: (sessions: {
+    trade: MarketTradeState | null
+    flash: FlashExchangeState | null
+    burn: BurnExchangeState | null
+    turbine: TurbineExchangeState | null
+  }) => ReactNode
+}) {
+  const { sessionReady } = useDappHost()
+  const { view, motion, outgoingView, incomingView } = useExchangeViewMotion()
+  const exchangeTabActive = activeTab === 'exchange'
+  const needed = viewsNeedingProvider(view, motion, outgoingView, incomingView)
+  const idle = { flash: false, trade: false, burn: false, turbine: false } as const
+  const mount = exchangeTabActive ? needed : idle
+  const flashQuotesEnabled = mount.flash
+  const tradeQuotesEnabled = mount.trade
+  const burnQuotesEnabled = mount.burn
+  const turbineQuotesEnabled = mount.turbine
+
+  const renderWithTurbine = (
+    trade: MarketTradeState | null,
+    flash: FlashExchangeState | null,
+    burn: BurnExchangeState | null,
+  ) => {
+    if (!mount.turbine) {
+      return children({ trade, flash, burn, turbine: null })
+    }
+    return (
+      <TurbineExchangeSessionMounted
+        quotesEnabled={turbineQuotesEnabled}
+        readsEnabled={mount.turbine}
+        sessionReady={sessionReady}
+      >
+        {(turbine) => children({ trade, flash, burn, turbine })}
+      </TurbineExchangeSessionMounted>
+    )
+  }
+
+  const renderWithBurn = (trade: MarketTradeState | null, flash: FlashExchangeState | null) => {
+    if (!mount.burn) {
+      return renderWithTurbine(trade, flash, null)
+    }
+    return (
+      <BurnExchangeSessionMounted
+        quotesEnabled={burnQuotesEnabled}
+        readsEnabled={mount.burn}
+        sessionReady={sessionReady}
+      >
+        {(burn) => renderWithTurbine(trade, flash, burn)}
+      </BurnExchangeSessionMounted>
+    )
+  }
+
+  const renderWithFlash = (trade: MarketTradeState | null) => {
+    if (!mount.flash) {
+      return renderWithBurn(trade, null)
+    }
+    return (
+      <FlashExchangeSessionMounted
+        quotesEnabled={flashQuotesEnabled}
+        readsEnabled={mount.flash}
+        sessionReady={sessionReady}
+      >
+        {(flash) => renderWithBurn(trade, flash)}
+      </FlashExchangeSessionMounted>
+    )
+  }
+
+  if (!mount.trade) {
+    return renderWithFlash(null)
+  }
+
+  return (
+    <MarketTradeSessionMounted
+      quotesEnabled={tradeQuotesEnabled}
+      readsEnabled={mount.trade}
+      sessionReady={sessionReady}
+    >
+      {(trade) => renderWithFlash(trade)}
+    </MarketTradeSessionMounted>
+  )
+}

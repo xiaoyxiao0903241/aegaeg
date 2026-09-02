@@ -3,6 +3,13 @@ import type { Plugin } from 'vite'
 const LAYER_STATEMENT_RE = /@layer\s+[\w.-]+(?:\s*,\s*[\w.-]+)*\s*;/g
 const LAYER_BLOCK_RE = /@layer\s+[\w.-]+(?:\s*,\s*[\w.-]+)*\s*\{/g
 
+/**
+ * 从开括号位置找配对的闭括号，支持嵌套。
+ *
+ * @param css CSS 文本
+ * @param openBraceIndex 开括号下标
+ * @returns 闭括号下标；未闭合时返回 -1
+ */
 function findMatchingBrace(css: string, openBraceIndex: number) {
   let depth = 0
   let i = openBraceIndex
@@ -23,7 +30,14 @@ function findMatchingBrace(css: string, openBraceIndex: number) {
   return -1
 }
 
-/** Unwrap Tailwind v4 `@layer` blocks for Chromium <99 (no cascade layers). */
+/**
+ * 展开 Tailwind v4 的 `@layer` 块。
+ *
+ * 旧版 Chromium（<99）不支持 cascade layers，需去掉 layer 声明并保留块内规则。
+ *
+ * @param css 原始 CSS 文本
+ * @returns 去除 layer 包装后的 CSS 文本
+ */
 export function flattenCssCascadeLayers(css: string) {
   let out = css.replace(LAYER_STATEMENT_RE, '')
 
@@ -48,7 +62,9 @@ export function flattenCssCascadeLayers(css: string) {
   return out
 }
 
-/** Vite: flatten CSS cascade layers in dev transforms and production assets. */
+/**
+ * Vite 插件：开发转换与构建产物中统一展开 CSS cascade layers。
+ */
 export function flattenCssCascadeLayersPlugin(): Plugin {
   const shouldFlatten = (idOrFile: string) => idOrFile.endsWith('.css')
 
