@@ -859,8 +859,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'Inicia sesión con firma para ver',
       enterClaim: 'Entrar a reclamar',
-      sessionHint:
-        'Completa el inicio de sesión con firma de billetera antes de reclamar. Conectar la billetera no es lo mismo que el login de negocio.',
       stats: {
         totalRewards: 'Recompensas totales',
         tier: 'Nivel de co-construcción',

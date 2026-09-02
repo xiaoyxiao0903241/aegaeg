@@ -57,11 +57,11 @@ export function GenesisDock() {
                   {vm.teamRewardRate}
                 </Text>
               </Text>
-            ) : (
+            ) : vm.sessionReady ? (
               <Text as="p" className="leading-none text-white/60" variant="support">
-                {vm.sessionReady ? t.rewards.shareholderNoRankBody : t.rewards.hub.sessionHint}
+                {t.rewards.shareholderNoRankBody}
               </Text>
-            )}
+            ) : null}
           </div>
           <div className="grid gap-1">
             <div className="flex items-center justify-between gap-2">

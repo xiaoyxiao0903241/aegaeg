@@ -844,8 +844,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'Görüntülemek için imzalayarak giriş yapın',
       enterClaim: 'Talebe gir',
-      sessionHint:
-        'Talep öncesi cüzdan imza girişini tamamlayın. Cüzdan bağlamak iş girişi değildir.',
       stats: {
         totalRewards: 'Toplam ödül',
         tier: 'Ortak inşa seviyesi',

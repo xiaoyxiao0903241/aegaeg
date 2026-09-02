@@ -835,8 +835,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'ลงชื่อเข้าใช้เพื่อดู',
       enterClaim: 'เข้าไปรับ',
-      sessionHint:
-        'กรุณาลงชื่อเข้าใช้ด้วยลายเซ็นกระเป๋าก่อนรับรางวัล การเชื่อมกระเป๋าไม่เท่ากับล็อกอินทางธุรกิจ',
       stats: {
         totalRewards: 'รางวัลรวม',
         tier: 'ระดับร่วมสร้าง',

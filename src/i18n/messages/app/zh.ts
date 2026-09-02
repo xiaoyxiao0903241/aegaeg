@@ -820,7 +820,6 @@ const app = defineMessages({
       hideZeroEmpty: '暂无非零奖励',
       balancePlaceholder: '0.00',
       signInForBalance: '签名登录后查看',
-      sessionHint: '请完成钱包签名登录后再领取。连接钱包不等于业务登录。',
       enterClaim: '进入领取',
       stats: {
         totalRewards: '总奖励',

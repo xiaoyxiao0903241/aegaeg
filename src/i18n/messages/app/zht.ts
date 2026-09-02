@@ -819,7 +819,6 @@ const app = defineMessages({
       hideZeroEmpty: '暫無非零獎勵',
       balancePlaceholder: '0.00',
       signInForBalance: '簽名登錄後查看',
-      sessionHint: '請完成錢包簽名登錄後再領取。連接錢包不等於業務登錄。',
       enterClaim: '進入領取',
       stats: {
         totalRewards: '總獎勵',

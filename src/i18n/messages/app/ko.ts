@@ -839,8 +839,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: '서명 로그인 후 보기',
       enterClaim: '수령하러 가기',
-      sessionHint:
-        '수령 전에 지갑 서명 로그인을 완료하세요. 지갑 연결은 비즈니스 로그인과 다릅니다.',
       stats: {
         totalRewards: '총 리워드',
         tier: '공동 구축 등급',
