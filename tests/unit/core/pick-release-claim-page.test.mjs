@@ -46,7 +46,7 @@ test('pickFirstClaimPage: tail page uses remaining size; empty ledger is null', 
   assert.equal(pickFirstClaimPage({ size: 0, pageClaimable: () => 1n }), null)
 })
 
-test('pickBufferFirstClaim: one window — first hop then archive', async () => {
+test('pickBufferFirstClaim: first hop with a window', async () => {
   const { pickBufferFirstClaim } = await loadModule('/src/core/release/pick-release-claim-page.ts')
   const hop0 = '0x1111111111111111111111111111111111111111'
   const hop1 = '0x2222222222222222222222222222222222222222'
@@ -63,26 +63,13 @@ test('pickBufferFirstClaim: one window — first hop then archive', async () => 
           ],
         },
       ],
-      archiveClaimWindows: [{ start: 0, limit: 50 }],
     }),
-    { kind: 'splitter', splitter: hop1, start: 50, limit: 50 },
-  )
-
-  assert.deepEqual(
-    pickBufferFirstClaim({
-      chain: [{ address: hop0, claimWindows: [] }],
-      archiveClaimWindows: [
-        { start: 0, limit: 50 },
-        { start: 50, limit: 50 },
-      ],
-    }),
-    { kind: 'archive', start: 0, limit: 50 },
+    { splitter: hop1, start: 50, limit: 50 },
   )
 
   assert.equal(
     pickBufferFirstClaim({
       chain: [{ address: hop0, claimWindows: [] }],
-      archiveClaimWindows: [],
     }),
     null,
   )

@@ -154,7 +154,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
       block_time: 1_700_000_000,
       event_type: 'RELEASE_CREATED',
       amount: '12',
-      contract_address: BSC_CONTRACTS.principalReleaseVault,
+      contract_address: BSC_CONTRACTS.liquidStaking,
       tx_hash: null,
     },
     copy,

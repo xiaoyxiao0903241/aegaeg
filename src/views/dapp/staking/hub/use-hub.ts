@@ -8,6 +8,7 @@ import {
   epochRebasePctFrom1e18,
   lockedBonusBps,
   scenarioPeriodYieldPct,
+  YIELD_EPOCHS_PER_DAY,
 } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useProtocolMarketStatsChart, useStakeAddressCount } from '~/hooks/use-api-data'
@@ -152,7 +153,7 @@ export function useStakingHubDetail() {
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
   const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const rebaseLabel = formatYieldPct(epochPct)
-  const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
+  const baseDaily = baseDailyPctFromEpoch(epochPct, YIELD_EPOCHS_PER_DAY)
 
   const stakersLabel = !sessionReady
     ? formatNumber(0, { digits: 0, trimZeros: true })
@@ -219,7 +220,7 @@ export function useStakingHubDetail() {
               ? null
               : scenarioPeriodYieldPct(
                   epochPct,
-                  overviewQuery.data?.epochsPerDay,
+                  YIELD_EPOCHS_PER_DAY,
                   period,
                   tableSeg === 'stake' ? 'stake' : 'bond',
                   tableSeg === 'stake' ? undefined : (bondDiscount ?? null),

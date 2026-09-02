@@ -95,7 +95,6 @@ const BUFFER_GAGX_CONTRACTS = [BSC_CONTRACTS.gagx, BSC_CONTRACTS.xStakingPool] a
 /** 缓冲里会出 AGX 本金的合约；其它已登记地址不加单位，避免把 USD1 / X 猜成 AGX。 */
 const BUFFER_AGX_CONTRACTS = [
   BSC_CONTRACTS.agx,
-  BSC_CONTRACTS.principalReleaseVault,
   BSC_CONTRACTS.liquidStaking,
   BSC_CONTRACTS.lockedStaking180d,
   BSC_CONTRACTS.lockedStaking360d,

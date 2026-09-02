@@ -87,11 +87,6 @@ export interface BscContracts {
    * @see docs/onchain-manual/00-addresses.md
    */
   aegisSplitterHead0: Address
-  /**
-   * 归档 PrincipalReleaseVault——仅历史释放单（手册 §13）。
-   * 新本金不再进入；旧单仍用此地址 + 归档 ABI 领取。
-   */
-  principalReleaseVault: Address
   /** AccountMigrationManager——手册 §17 账户迁移；本轮 migrationEnabled=false */
   accountMigrationManager: Address
   /** sAGX——rebase 型质押份额（合约文档 docs/onchain-manual/contracts/sagx.md） */
@@ -100,6 +95,11 @@ export interface BscContracts {
   stakingPool: Address
   /** Treasury——总储备数据来源（合约文档 docs/onchain-manual/contracts/treasury.md） */
   treasury: Address
+  /**
+   * RewardManager——基础 Rebase ppm（手册 RewardManager.baseRewardRate）。
+   * @see docs/onchain-manual/contracts/rewardmanager.md
+   */
+  rewardManager: Address
 }
 
 /**
@@ -148,9 +148,9 @@ export const BSC_CONTRACTS = {
   restakeConfig: requireEnvAddress('VITE_BSC_RESTAKE_CONFIG'),
   aegisSplitterManager: requireEnvAddress('VITE_BSC_AEGIS_SPLITTER_MANAGER'),
   aegisSplitterHead0: requireEnvAddress('VITE_BSC_AEGIS_SPLITTER_HEAD_0'),
-  principalReleaseVault: requireEnvAddress('VITE_BSC_PRINCIPAL_RELEASE_VAULT'),
   accountMigrationManager: requireEnvAddress('VITE_BSC_ACCOUNT_MIGRATION_MANAGER'),
   sagx: requireEnvAddress('VITE_BSC_SAGX'),
   stakingPool: requireEnvAddress('VITE_BSC_STAKING_POOL'),
   treasury: requireEnvAddress('VITE_BSC_TREASURY'),
+  rewardManager: requireEnvAddress('VITE_BSC_REWARD_MANAGER'),
 } as const satisfies BscContracts

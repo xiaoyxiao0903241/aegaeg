@@ -471,6 +471,14 @@ export const TREASURY_METHODS = {
 } as const
 
 /**
+ * RewardManager — 基础 Rebase ppm（`addRecipient(stakingPool, rate)`）。
+ * @see docs/onchain-manual/contracts/rewardmanager.md
+ */
+export const REWARD_MANAGER_METHODS = {
+  baseRewardRate: 'function baseRewardRate() view returns (uint256)',
+} as const
+
+/**
  * StakingPool — 质押池 TVL / epoch。
  * @see docs/onchain-manual/contracts/stakingpool.md
  */
@@ -481,14 +489,11 @@ export const STAKING_POOL_METHODS = {
 } as const
 
 /**
- * sAGX — 流通量与 rebase 历史。
+ * sAGX — 流通量（Hub TVL 口径）。
  * @see docs/onchain-manual/contracts/sagx.md
  */
 export const SAGX_METHODS = {
   circulatingSupply: 'function circulatingSupply() view returns (uint256)',
-  totalSupply: 'function totalSupply() view returns (uint256)',
-  rebases:
-    'function rebases(uint256 epoch) view returns (uint256 epoch_, uint256 rebase, uint256 totalStakedBefore, uint256 totalStakedAfter, uint256 amountRebased, uint256 index, uint256 blockNumberOccured)',
 } as const
 
 /**
@@ -598,28 +603,6 @@ export const AEGIS_SPLITTER_ERRORS = [
   'error ErrorAlreadyMigrated()',
   'error ErrorCallerNotAuthorized()',
   'error ErrorNotPre()',
-] as const
-
-/**
- * 归档 PrincipalReleaseVault — 历史本金释放单领取（无 token 字段）。
- * @see 手册 §13（归档 ABI；新单不再进入）
- */
-export const PRINCIPAL_RELEASE_VAULT_METHODS = {
-  getReleaseCount: 'function getReleaseCount(address user) view returns (uint256)',
-  getRelease:
-    'function getRelease(address user, uint256 index) view returns ((uint256 amount, uint256 claimed, uint256 startTime, uint256 duration) release, uint256 claimableAmount, uint256 remainingAmount, uint256 endTime, bool fullyClaimed)',
-  claimable: 'function claimable(address user, uint256 index) view returns (uint256)',
-  claimMany: 'function claimMany(uint256 start, uint256 limit)',
-} as const
-
-export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
-  'error ErrorZeroAddress()',
-  'error ErrorZeroAmount()',
-  'error ErrorNotAuthorized()',
-  'error ErrorIndexOutOfBounds()',
-  'error ErrorNothingToClaim()',
-  'error ErrorCallerNotAuthorized()',
-  'error ErrorAlreadyMigrated()',
 ] as const
 
 /**
