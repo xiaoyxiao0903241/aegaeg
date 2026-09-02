@@ -9,7 +9,6 @@ import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AEGIS_SPLITTER_MANAGER_METHODS,
   AEGIS_SPLITTER_METHODS,
-  PRINCIPAL_RELEASE_VAULT_METHODS,
   REWARD_QUEUE_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
@@ -30,12 +29,6 @@ const managerReadAbi = parseAbi([
 ])
 
 const splitterReadAbi = parseAbi([AEGIS_SPLITTER_METHODS.getReleases, AEGIS_SPLITTER_METHODS.next])
-
-const archiveVaultReadAbi = parseAbi([
-  PRINCIPAL_RELEASE_VAULT_METHODS.getReleaseCount,
-  PRINCIPAL_RELEASE_VAULT_METHODS.getRelease,
-  PRINCIPAL_RELEASE_VAULT_METHODS.claimable,
-])
 
 /** 手册 §13：getReleases / claimMany 单页上限 50 */
 export const SPLITTER_RELEASE_PAGE = RELEASE_CLAIM_PAGE
@@ -98,9 +91,6 @@ export type ReleaseBufferSnapshot = {
   /** Head→next 链；领取须对每跳分别 claimMany */
   chain: ReleaseBufferChainHop[]
   splitterCount: number
-  archiveCount: number
-  /** 释放单条数（分流器链 + 归档） */
-  count: number
   /**
    * AGX + gAGX 可领之和，仅作「有无可领」门闸；
    * 展示金额一律用 agx / gagx 桶，禁止用本字段格式化。
@@ -109,9 +99,6 @@ export type ReleaseBufferSnapshot = {
   agx: ReleaseBufferTokenTotals
   gagx: ReleaseBufferTokenTotals
   splitterClaimable: bigint
-  archiveClaimable: bigint
-  /** 归档可领窗；空窗不调 claimMany */
-  archiveClaimWindows: ReleaseClaimWindow[]
 }
 
 const emptyTotals = (): ReleaseBufferTokenTotals => ({
@@ -502,86 +489,10 @@ async function resolveSplitterChain(
   throw new Error(`RELEASE_SPLITTER_CHAIN_TRUNCATED:${head}`)
 }
 
-async function readArchiveVaultTotals(user: Address): Promise<{
-  count: number
-  totals: ReleaseBufferTokenTotals
-  claimable: bigint
-  claimWindows: ReleaseClaimWindow[]
-  claimables: bigint[]
-}> {
-  const empty = {
-    count: 0,
-    totals: emptyTotals(),
-    claimable: 0n,
-    claimWindows: [] as ReleaseClaimWindow[],
-    claimables: [] as bigint[],
-  }
-  const vault = BSC_CONTRACTS.principalReleaseVault
-
-  // 只有 getReleaseCount 读取失败才降级为空（归档合约未部署/不可达时不阻塞分流器）
-  let countRaw: bigint
-  try {
-    countRaw = (await bscReadClient.readContract({
-      address: vault,
-      abi: archiveVaultReadAbi,
-      functionName: 'getReleaseCount',
-      args: [user],
-    })) as bigint
-  } catch {
-    return empty
-  }
-
-  const count = Number(countRaw)
-  const totals = emptyTotals()
-  if (!Number.isFinite(count) || count <= 0) {
-    return empty
-  }
-
-  // count 已拿到后，分页 / 解码失败直接抛错，不能静默保留半截归档
-  const results = await readAggregate3(
-    Array.from({ length: count }, (_, i) => ({
-      target: vault,
-      callData: encodeFunctionData({
-        abi: archiveVaultReadAbi,
-        functionName: 'getRelease',
-        args: [user, BigInt(i)],
-      }),
-    })),
-  )
-
-  const claimables: bigint[] = []
-  for (let i = 0; i < count; i++) {
-    const result = results[i]
-    if (!result?.success) {
-      throw new Error(`RELEASE_ARCHIVE_MULTICALL_FAILED:${i}`)
-    }
-    const raw = decodeFunctionResult({
-      abi: archiveVaultReadAbi,
-      functionName: 'getRelease',
-      data: result.returnData,
-    }) as readonly [
-      { amount: bigint; claimed: bigint; startTime: bigint; duration: bigint },
-      bigint,
-      bigint,
-      bigint,
-      boolean,
-    ]
-    claimables.push(raw[1])
-    addTotals(totals, raw[0].amount, raw[0].claimed, raw[1], raw[2])
-  }
-  return {
-    count,
-    totals,
-    claimable: totals.totalClaimable,
-    claimWindows: claimWindowsFromAmounts(claimables),
-    claimables,
-  }
-}
-
 /**
- * 读取用户本金释放汇总（现行分流器链 + 归档 PRV）。
+ * 读取用户本金释放汇总（分流器链）。
  *
- * 分流器链 Head / next 读失败直接抛错；归档只有 getReleaseCount 失败才降级为空。
+ * Head / next 读失败直接抛错。
  *
  * @see 手册 §13 分流器本金释放
  */
@@ -655,34 +566,13 @@ export async function readReleaseBufferSnapshot(address: Address): Promise<Relea
     }
   }
 
-  const archive = await readArchiveVaultTotals(address)
-  addTotals(
-    agx,
-    archive.totals.totalAmount,
-    archive.totals.totalClaimed,
-    archive.totals.totalClaimable,
-    archive.totals.totalRemaining,
-  )
-  if (agx.pageClaimable <= 0n && gagx.pageClaimable <= 0n) {
-    const window = archive.claimWindows[0]
-    if (window) {
-      for (let i = window.start; i < window.start + window.limit; i++) {
-        agx.pageClaimable += archive.claimables[i] ?? 0n
-      }
-    }
-  }
-
   return {
     splitter,
     chain,
     splitterCount,
-    archiveCount: archive.count,
-    count: splitterCount + archive.count,
     totalClaimable: agx.totalClaimable + gagx.totalClaimable,
     agx,
     gagx,
     splitterClaimable,
-    archiveClaimable: archive.claimable,
-    archiveClaimWindows: archive.claimWindows,
   }
 }

@@ -1497,7 +1497,7 @@ const app = defineMessages({
     myTeam: 'Anggota komunitas',
     genesisTitle: 'Saat ini',
     cobuildLevel: 'Level Bangun Bersama',
-    makingLevel: 'Peringkat market making',
+    makingLevel: 'Level Bangun Bersama',
     inviteTitle: 'Mulai mengundang · bagikan nilai pertumbuhan ekosistem',
     programs: {
       title: 'Program dukungan ekosistem',

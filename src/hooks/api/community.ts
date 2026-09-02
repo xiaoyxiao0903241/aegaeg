@@ -192,7 +192,7 @@ export function useTeamOverview(enabled = true) {
 }
 
 /**
- * 查询做市社区概览（人数、USD 业绩、做市等级）。
+ * 查询做市社区概览（人数、USD 业绩、共建级别）。
  *
  * @param enabled false 时暂停请求
  * @see docs/backend-api/api.md #team/making-overview

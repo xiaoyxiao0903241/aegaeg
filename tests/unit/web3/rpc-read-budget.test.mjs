@@ -104,13 +104,11 @@ test('readTurbineSilences budgets: size+cooldown + one aggregate3 (not 2N)', asy
   assert.ok(!calls.includes('currentCooldownDuration'))
 })
 
-test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ archive)', async () => {
+test('readReleaseBufferSnapshot budgets: manager head + next + getReleases', async () => {
   const { readReleaseBufferSnapshot } = await loadModule('/src/web3/release/release-read.ts')
-  const { AEGIS_SPLITTER_METHODS, PRINCIPAL_RELEASE_VAULT_METHODS } =
-    await loadModule('/src/web3/abis.ts')
+  const { AEGIS_SPLITTER_METHODS } = await loadModule('/src/web3/abis.ts')
   const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
   const splitterAbi = parseAbi([AEGIS_SPLITTER_METHODS.getReleases])
-  const archiveAbi = parseAbi([PRINCIPAL_RELEASE_VAULT_METHODS.getRelease])
   const HEAD = '0x1111111111111111111111111111111111111111'
   const ZERO = '0x0000000000000000000000000000000000000000'
   const calls = []
@@ -153,18 +151,6 @@ test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ ar
           2n,
         ]
       }
-      if (request.functionName === 'getReleaseCount') return 1n
-      if (request.functionName === 'aggregate3') {
-        assert.equal(request.args[0].length, 1)
-        return request.args[0].map(() => ({
-          success: true,
-          returnData: encodeFunctionResult({
-            abi: archiveAbi,
-            functionName: 'getRelease',
-            result: [{ amount: 3n, claimed: 1n, startTime: 0n, duration: 1n }, 1n, 2n, 0n, false],
-          }),
-        }))
-      }
       throw new Error(`unexpected ${request.functionName}`)
     },
   }
@@ -175,26 +161,23 @@ test('readReleaseBufferSnapshot budgets: manager head + next + getReleases (+ ar
   assert.equal(snap.chain[0].isTail, true)
   assert.equal(snap.chain[0].claimable, 3n)
   assert.deepEqual(snap.chain[0].claimWindows, [{ start: 0, limit: 2 }])
-  assert.equal(snap.archiveCount, 1)
-  assert.deepEqual(snap.archiveClaimWindows, [{ start: 0, limit: 1 }])
-  assert.equal(snap.agx.totalClaimable, 3n) // 2 splitter + 1 archive
-  assert.equal(snap.agx.pageClaimable, 2n) // first 50-window is splitter hop
+  assert.equal(snap.agx.totalClaimable, 2n)
+  assert.equal(snap.agx.pageClaimable, 2n)
   assert.equal(snap.gagx.totalClaimable, 1n)
   assert.equal(snap.gagx.pageClaimable, 1n)
-  assert.equal(snap.totalClaimable, 4n)
+  assert.equal(snap.totalClaimable, 3n)
   assert.equal(snap.totalAmount, undefined)
   assert.ok(calls.includes('getHeadSplitterForUser'))
   assert.ok(calls.includes('next'))
   assert.ok(calls.includes('getReleases'))
+  assert.ok(!calls.includes('getReleaseCount'))
   assert.ok(!calls.includes('getRelease'))
   void splitterAbi
 })
 
 test('readReleaseBufferSnapshot walks next chain and merges hop claimables', async () => {
   const { readReleaseBufferSnapshot } = await loadModule('/src/web3/release/release-read.ts')
-  const { PRINCIPAL_RELEASE_VAULT_METHODS } = await loadModule('/src/web3/abis.ts')
   const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
-  const archiveAbi = parseAbi([PRINCIPAL_RELEASE_VAULT_METHODS.getRelease])
   const HEAD = '0x1111111111111111111111111111111111111111'
   const MID = '0x2222222222222222222222222222222222222222'
   const ZERO = '0x0000000000000000000000000000000000000000'
@@ -226,10 +209,6 @@ test('readReleaseBufferSnapshot walks next chain and merges hop claimables', asy
           1n,
         ]
       }
-      if (request.functionName === 'getReleaseCount') return 0n
-      if (request.functionName === 'aggregate3') {
-        return []
-      }
       throw new Error(`unexpected ${request.functionName}`)
     },
   }
@@ -246,8 +225,6 @@ test('readReleaseBufferSnapshot walks next chain and merges hop claimables', asy
   assert.deepEqual(snap.chain[1].claimWindows, [{ start: 0, limit: 1 }])
   assert.equal(snap.splitterClaimable, 9n)
   assert.equal(snap.agx.totalClaimable, 9n)
-  assert.deepEqual(snap.archiveClaimWindows, [])
-  void archiveAbi
 })
 
 test('claimWindowsFromAmounts skips empty pages', async () => {
@@ -261,40 +238,24 @@ test('claimWindowsFromAmounts skips empty pages', async () => {
   assert.deepEqual(claimWindowsFromAmounts([0n, 0n, 0n], 50), [])
 })
 
-test('readReleaseBufferSnapshot archive: count fail soft; page fail closed', async () => {
+test('readReleaseBufferSnapshot: missing head is empty, no extra reads', async () => {
   const { readReleaseBufferSnapshot } = await loadModule('/src/web3/release/release-read.ts')
   const ZERO = '0x0000000000000000000000000000000000000000'
+  const calls = []
 
-  const soft = await withBscReadClient(
+  const snap = await withBscReadClient(
     {
       async readContract(request) {
+        calls.push(request.functionName)
         if (request.functionName === 'getHeadSplitterForUser') return ZERO
-        if (request.functionName === 'getReleaseCount') throw new Error('archive down')
         throw new Error(`unexpected ${request.functionName}`)
       },
     },
     () => readReleaseBufferSnapshot(USER),
   )
-  assert.equal(soft.archiveCount, 0)
-  assert.equal(soft.totalClaimable, 0n)
-
-  await assert.rejects(
-    () =>
-      withBscReadClient(
-        {
-          async readContract(request) {
-            if (request.functionName === 'getHeadSplitterForUser') return ZERO
-            if (request.functionName === 'getReleaseCount') return 1n
-            if (request.functionName === 'aggregate3') {
-              return [{ success: false, returnData: '0x' }]
-            }
-            throw new Error(`unexpected ${request.functionName}`)
-          },
-        },
-        () => readReleaseBufferSnapshot(USER),
-      ),
-    /RELEASE_ARCHIVE_MULTICALL_FAILED/,
-  )
+  assert.equal(snap.splitterCount, 0)
+  assert.equal(snap.totalClaimable, 0n)
+  assert.deepEqual(calls, ['getHeadSplitterForUser'])
 })
 
 test('readStakePositions locked: count + one aggregate3 of getStakes+released (not N getStake)', async () => {

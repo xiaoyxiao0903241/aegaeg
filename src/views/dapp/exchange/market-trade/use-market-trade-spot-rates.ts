@@ -5,25 +5,28 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { type ExchangePairTokens, formatExchangeRateApprox } from '~/views/dapp/exchange/shared'
-import { type ExchangePoolReadContext, fetchExchangeQuote } from '~/web3/exchange/exchange-read'
+import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
 
 type UseMarketTradeSpotRatesArgs = {
   pair: ExchangePairTokens
   path: readonly `0x${string}`[]
   pathKey: string
   quotesEnabled: boolean
-  poolContext: ExchangePoolReadContext | undefined
-  /** 当前卖出金额；为 0 时用行情报价驱动空态汇率骨架。 */
+  /** 当前卖出金额；为 0 时用单位报价驱动空态汇率骨架。 */
   amountIn: bigint
 }
 
-/** 当前币对的正向 / 反向行情报价，供信息行与概览使用。 */
+/**
+ * 当前币对的正向 / 反向兑换价格
+ *
+ * 只读 Pancake Router `getAmountsOut` 的返回值，不扣卖税、不走池子储备价。
+ * 成交数量仍由另一笔报价计算。
+ */
 export function useMarketTradeSpotRates({
   pair,
   path,
   pathKey,
   quotesEnabled,
-  poolContext,
   amountIn,
 }: UseMarketTradeSpotRatesArgs) {
   const spotQuoteAmount = TEN_BI ** BigInt(pair.sell.decimals)
@@ -32,19 +35,17 @@ export function useMarketTradeSpotRates({
   const invertedPathKey = invertedPath.join('-').toLowerCase()
 
   const spotQuoteQuery = useChainQuery({
-    queryKey: queryKeys.chain.swapQuote(
+    queryKey: queryKeys.chain.swapSpotRate(
       pair.sell.address,
       pair.buy.address,
       spotQuoteAmount.toString(),
       pathKey,
     ),
     queryFn: () =>
-      fetchExchangeQuote({
+      quoteV2AmountsOut({
+        router: EXCHANGE_CONFIG.router,
         amountIn: spotQuoteAmount,
-        tokenIn: pair.sell.address,
-        tokenOut: pair.buy.address,
         path,
-        poolContext,
       }),
     scope: 'public',
     freshness: 'quote',
@@ -54,19 +55,17 @@ export function useMarketTradeSpotRates({
   })
 
   const invertedSpotQuoteQuery = useChainQuery({
-    queryKey: queryKeys.chain.swapQuote(
+    queryKey: queryKeys.chain.swapSpotRate(
       pair.buy.address,
       pair.sell.address,
       invertedSpotAmount.toString(),
       invertedPathKey,
     ),
     queryFn: () =>
-      fetchExchangeQuote({
+      quoteV2AmountsOut({
+        router: EXCHANGE_CONFIG.router,
         amountIn: invertedSpotAmount,
-        tokenIn: pair.buy.address,
-        tokenOut: pair.sell.address,
         path: invertedPath,
-        poolContext,
       }),
     scope: 'public',
     freshness: 'quote',
@@ -76,8 +75,8 @@ export function useMarketTradeSpotRates({
   })
 
   // 展示面保留上一次报价，不用 liveQuotedOut 置零（那是提交门禁专用）
-  const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? ZERO_BI
-  const invertedQuotedOut = invertedSpotQuoteQuery.data?.quotedOut ?? ZERO_BI
+  const spotQuotedOut = spotQuoteQuery.data ?? ZERO_BI
+  const invertedQuotedOut = invertedSpotQuoteQuery.data ?? ZERO_BI
   const isSpotQuoting =
     amountIn === ZERO_BI &&
     (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&

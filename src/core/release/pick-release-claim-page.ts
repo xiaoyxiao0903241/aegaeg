@@ -12,9 +12,7 @@ export type ReleaseClaimWindow = {
   limit: number
 }
 
-export type BufferClaimTarget =
-  | { kind: 'splitter'; splitter: string; start: number; limit: number }
-  | { kind: 'archive'; start: number; limit: number }
+export type BufferClaimTarget = { splitter: string; start: number; limit: number }
 
 /**
  * 从队列条目数里挑第一窗有待领的页（默认 50 条）。
@@ -43,31 +41,24 @@ export function pickFirstClaimPage(args: {
 }
 
 /**
- * 缓冲池一键领取目标：Head→链尾第一窗，否则归档第一窗。
+ * 缓冲池一键领取目标：Head→链尾第一窗。
  *
  * @param args.chain 分流器跳
- * @param args.archiveClaimWindows 归档可领窗
  * @returns 单窗目标；没有可领窗为 null
  * @see 手册 §13.4 claimMany
  */
 export function pickBufferFirstClaim(args: {
   chain: readonly { address: string; claimWindows: readonly ReleaseClaimWindow[] }[]
-  archiveClaimWindows: readonly ReleaseClaimWindow[]
 }): BufferClaimTarget | null {
   for (const hop of args.chain) {
     const window = hop.claimWindows[0]
     if (window) {
       return {
-        kind: 'splitter',
         splitter: hop.address,
         start: window.start,
         limit: window.limit,
       }
     }
-  }
-  const archive = args.archiveClaimWindows[0]
-  if (archive) {
-    return { kind: 'archive', start: archive.start, limit: archive.limit }
   }
   return null
 }

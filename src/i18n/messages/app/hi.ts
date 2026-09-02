@@ -1447,7 +1447,7 @@ const app = defineMessages({
     myTeam: 'समुदाय सदस्य',
     genesisTitle: 'वर्तमान',
     cobuildLevel: 'सह-निर्माण स्तर',
-    makingLevel: 'मेकिंग रैंक',
+    makingLevel: 'सह-निर्माण स्तर',
     inviteTitle: 'आमंत्रण शुरू करें · इकोसिस्टम वृद्धि मूल्य साझा करें',
     programs: {
       title: 'इकोसिस्टम सहायता कार्यक्रम',

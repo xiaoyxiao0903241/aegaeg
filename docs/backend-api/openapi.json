@@ -1573,7 +1573,7 @@
           },
           "making_rank": {
             "type": "integer",
-            "description": "**说明：** 做市等级，user_performance.making_rank",
+            "description": "**说明：** 共建级别，user_performance.making_rank",
             "title": "making_rank"
           },
           "active_stake_balance": {
@@ -1725,7 +1725,7 @@
           },
           "making_rank": {
             "type": "integer",
-            "description": "**说明：** 做市等级，user_performance.making_rank",
+            "description": "**说明：** 共建级别，user_performance.making_rank",
             "title": "making_rank"
           }
         }
@@ -2237,7 +2237,7 @@
               },
               "making_rank": {
                 "type": "integer",
-                "description": "**说明：** 团队等级（做市等级 making_rank）",
+                "description": "**说明：** 团队等级（共建级别 making_rank）",
                 "title": "making_rank"
               },
               "personal_position": {
@@ -3396,7 +3396,7 @@
               },
               "making_rank": {
                 "type": "integer",
-                "description": "**说明：** 当前用户做市等级 A0–A13",
+                "description": "**说明：** 当前用户共建级别 A0–A13",
                 "title": "making_rank"
               },
               "active_stake_balance": {
@@ -3605,7 +3605,7 @@
           },
           "making_rank": {
             "type": "integer",
-            "description": "**说明：** 用户做市等级",
+            "description": "**说明：** 用户共建级别",
             "title": "making_rank"
           }
         }
@@ -3653,7 +3653,7 @@
             "properties": {
               "making_rank": {
                 "type": "integer",
-                "description": "**说明：** 当前用户做市等级，user_performance.making_rank（ACTIVE）",
+                "description": "**说明：** 当前用户共建级别，user_performance.making_rank（ACTIVE）",
                 "title": "making_rank"
               },
               "total_allowance": {
@@ -6899,7 +6899,7 @@
       "post": {
         "tags": ["一期接口"],
         "summary": "分页获取当前用户直推下级 / Paginated direct referrals",
-        "description": "通过 referral_ancestors 查询 ancestor_account_id 为当前用户且 depth=1 的直推下级，\n关联 users.register_time、user_performance.direct_referral_count（ACTIVE）、\nuser_performance.presale_rank 与 sales_team_market（ACTIVE）；\nmaking_market（团队业绩 AGX）、making_rank（做市等级）、active_stake_balance（持仓 AGX）；\nmaking_market_usd / active_stake_balance_usd = 对应 AGX × agx_price_logs 最新价。\n",
+        "description": "通过 referral_ancestors 查询 ancestor_account_id 为当前用户且 depth=1 的直推下级，\n关联 users.register_time、user_performance.direct_referral_count（ACTIVE）、\nuser_performance.presale_rank 与 sales_team_market（ACTIVE）；\nmaking_market（团队业绩 AGX）、making_rank（共建级别）、active_stake_balance（持仓 AGX）；\nmaking_market_usd / active_stake_balance_usd = 对应 AGX × agx_price_logs 最新价。\n",
         "security": [
           {
             "BearerAuth": []
@@ -6987,7 +6987,7 @@
       "post": {
         "tags": ["二期·未分类"],
         "summary": "获取做市社区概览 / Making-market community overview",
-        "description": "当前用户做市社区指标（user_performance ACTIVE + 今日 user_performance_daily）：\ndirect_referral_count（直推人数）、\nmaking_direct_team_market（直推业绩 USD = AGX × agx_price_logs 最新价）、\ntoday_addition_making_direct_team_market（今日直推业绩增量 USD，daily.making_direct_team_market_delta × 最新价）、\nteam_count（团队人数）、\nmaking_market（团队业绩 USD = AGX × 最新价）、\ntoday_addition_making_market（今日团队业绩增量 USD，daily.making_market_delta × 最新价）、\nmaking_rank（做市等级）。\n",
+        "description": "当前用户做市社区指标（user_performance ACTIVE + 今日 user_performance_daily）：\ndirect_referral_count（直推人数）、\nmaking_direct_team_market（直推业绩 USD = AGX × agx_price_logs 最新价）、\ntoday_addition_making_direct_team_market（今日直推业绩增量 USD，daily.making_direct_team_market_delta × 最新价）、\nteam_count（团队人数）、\nmaking_market（团队业绩 USD = AGX × 最新价）、\ntoday_addition_making_market（今日团队业绩增量 USD，daily.making_market_delta × 最新价）、\nmaking_rank（共建级别）。\n",
         "security": [
           {
             "BearerAuth": []
@@ -7244,7 +7244,7 @@
       "post": {
         "tags": ["performance（做市概览）"],
         "summary": "用户做市业绩概览 / Making-market performance overview",
-        "description": "汇总当前用户做市相关概览数据：\ntotal_reward = user_performance.total_dao_reward（总奖励 gAGX）；\nmaking_rank = 团队/做市等级；\npersonal_position = user_performance.active_stake_balance（个人总持仓 AGX，与资产页一致）；\nmaking_market = 总业绩 AGX；\nsmall_market = making_market − MAX(直推 making_market + making_personal_balance)（小区业绩）；\navailable_contribution = agx_contribution_totals.available_contribution_raw（÷ 10^9）。\n",
+        "description": "汇总当前用户做市相关概览数据：\ntotal_reward = user_performance.total_dao_reward（总奖励 gAGX）；\nmaking_rank = 团队/共建级别；\npersonal_position = user_performance.active_stake_balance（个人总持仓 AGX，与资产页一致）；\nmaking_market = 总业绩 AGX；\nsmall_market = making_market − MAX(直推 making_market + making_personal_balance)（小区业绩）；\navailable_contribution = agx_contribution_totals.available_contribution_raw（÷ 10^9）。\n",
         "security": [
           {
             "BearerAuth": []

@@ -1485,7 +1485,7 @@ const app = defineMessages({
     myTeam: 'Topluluk boyutu',
     genesisTitle: 'Mevcut',
     cobuildLevel: 'Ortak inşa seviyesi',
-    makingLevel: 'Piyasa yapıcılık seviyesi',
+    makingLevel: 'Ortak inşa seviyesi',
     inviteTitle: 'Davet etmeye başlayın · Ekosistem büyüme değerini paylaşın',
     programs: {
       title: 'Ekosistem destek programları',

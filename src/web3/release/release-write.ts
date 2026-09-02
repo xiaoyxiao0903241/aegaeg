@@ -5,8 +5,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AEGIS_SPLITTER_ERRORS,
   AEGIS_SPLITTER_METHODS,
-  PRINCIPAL_RELEASE_VAULT_ERRORS,
-  PRINCIPAL_RELEASE_VAULT_METHODS,
   REWARD_QUEUE_ERRORS,
   REWARD_QUEUE_METHODS,
 } from '~/web3/abis'
@@ -17,10 +15,6 @@ const claimInRangeAbi = parseWriteAbi(
   REWARD_QUEUE_ERRORS,
 )
 const splitterClaimManyAbi = parseWriteAbi(AEGIS_SPLITTER_METHODS.claimMany, AEGIS_SPLITTER_ERRORS)
-const archiveClaimManyAbi = parseWriteAbi(
-  PRINCIPAL_RELEASE_VAULT_METHODS.claimMany,
-  PRINCIPAL_RELEASE_VAULT_ERRORS,
-)
 
 /**
  * 分页领取指定计划已解锁奖励（RewardQueue.claimVestedRewardsInRange）。
@@ -48,7 +42,7 @@ export async function writeClaimVestedRewardsInRange(args: {
 }
 
 /**
- * 批量领取本金释放（现行分流器 AegisSplitter.claimMany）。
+ * 批量领取本金释放（分流器 AegisSplitter.claimMany）。
  *
  * @param args.wallet 钱包
  * @param args.splitter 用户头部分流器地址
@@ -66,25 +60,6 @@ export async function writeClaimManyReleases(args: {
     wallet: args.wallet,
     address: args.splitter,
     abi: splitterClaimManyAbi,
-    functionName: 'claimMany',
-    args: [BigInt(args.start), BigInt(args.limit)],
-  })
-}
-
-/**
- * 批量领取归档 PrincipalReleaseVault 历史释放单。
- *
- * @see 手册 §13（归档 ABI）
- */
-export async function writeClaimManyArchiveReleases(args: {
-  wallet: Wallet
-  start: number
-  limit: number
-}) {
-  return writeContractViaWallet({
-    wallet: args.wallet,
-    address: BSC_CONTRACTS.principalReleaseVault,
-    abi: archiveClaimManyAbi,
     functionName: 'claimMany',
     args: [BigInt(args.start), BigInt(args.limit)],
   })

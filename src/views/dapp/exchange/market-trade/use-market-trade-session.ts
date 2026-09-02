@@ -140,7 +140,6 @@ export function useMarketTradeSession(
     path,
     pathKey,
     quotesEnabled,
-    poolContext,
     amountIn: core.amountIn,
   })
 

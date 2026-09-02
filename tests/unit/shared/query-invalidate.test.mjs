@@ -69,6 +69,15 @@ test('query keys normalize addresses and tokens to lowercase', () => {
     lower,
     '1000',
   ])
+  assert.deepEqual(queryKeys.chain.swapSpotRate(checksummed, checksummed, '1000', 'a-b'), [
+    'chain',
+    'swap',
+    'spotRate',
+    lower,
+    lower,
+    '1000',
+    'a-b',
+  ])
 })
 
 test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async () => {

@@ -31,6 +31,25 @@ export type CalcDaySnapshot = {
 }
 
 /**
+ * 展示用每日 epoch 次数：配置的单次基础利率 × 2 = 日收益。
+ * 倒计时仍用链上 `epoch.length`，不与此常量混用。
+ */
+export const YIELD_EPOCHS_PER_DAY = 2
+
+/**
+ * RewardManager.baseRewardRate（ppm）→ 与 sAGX.rebases.rebase 相同的 1e18 分数。
+ * 2500 ppm = 0.25% = 2.5e15。
+ *
+ * @param ppm 百万分比；负值不当利率
+ * @returns 1e18 分数；非法为 null
+ * @see docs/onchain-manual/contracts/rewardmanager.md
+ */
+export function rebase1e18FromPpm(ppm: bigint | null | undefined): bigint | null {
+  if (ppm == null || ppm < 0n) return null
+  return ppm * 10n ** 12n
+}
+
+/**
  * 定期池锁定收益加成（BPS）。
  *
  * 数值来自手册 RewardManager 的 LOCKED_*_BONUS_BPS 常量；
@@ -48,14 +67,15 @@ export function lockedBonusBps(period: StakePeriod): number {
 }
 
 /**
- * sAGX.rebases(epoch).rebase（1e18 精度）→ 展示用百分比。
+ * Rebase 1e18 分数 → 展示用百分比。
  *
- * 链上存的是分数（1e18 = 100%），不是已经乘过 100 的百分数。
+ * 1e18 = 100%，不是已经乘过 100 的百分数。
  * 例如 `0.0025 × 1e18` → `0.25`（展示 `0.25%`）。
+ * 本仓展示来源是 `RewardManager.baseRewardRate` 转成的 1e18 分数。
  *
- * @param rate1e18 链上 rebase 比率（1e18 精度）；未知时 null/undefined
+ * @param rate1e18 rebase 比率（1e18 精度）；未知时 null/undefined
  * @returns 百分比数值；未知返回 null
- * @see docs/onchain-manual/contracts/sagx.md
+ * @see docs/onchain-manual/contracts/rewardmanager.md
  */
 export function epochRebasePctFrom1e18(rate1e18: bigint | null | undefined): number | null {
   if (rate1e18 == null) return null
@@ -152,10 +172,11 @@ export function formatEpochScheduleLabels(
 /**
  * 单 epoch 收益率 → 基础日收益率。
  *
- * 基础日收益率 = epochsPerDay × 单 epoch Rebase%。日频只信链上推算；缺省不造默认。
+ * 基础日收益率 = epochsPerDay × 单 epoch Rebase%。
+ * 展示日收益的调用方传入 `YIELD_EPOCHS_PER_DAY`（固定 2），不要用 epoch.length 推算值。
  *
  * @param epochPct 单 epoch 收益率（百分比）；未知或负数时 null
- * @param epochsPerDay 每日 epoch 数（链上推算）；缺 / ≤0 / 非有限 → null
+ * @param epochsPerDay 每日 epoch 数；缺 / ≤0 / 非有限 → null
  * @returns 基础日收益率；输入无效返回 null
  */
 export function baseDailyPctFromEpoch(

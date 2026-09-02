@@ -139,7 +139,7 @@ export async function getTeamOverview(token: string): Promise<TeamCommunityOverv
  * 查询当前用户做市社区概览。
  *
  * @param token 登录 JWT
- * @returns 人数、USD 业绩与做市等级
+ * @returns 人数、USD 业绩与共建级别
  * @see docs/backend-api/api.md #team/making-overview
  */
 export async function getTeamMakingOverview(token: string): Promise<TeamMakingOverview> {

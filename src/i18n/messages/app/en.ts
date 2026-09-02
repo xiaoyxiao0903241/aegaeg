@@ -1439,8 +1439,8 @@ const app = defineMessages({
     directReferrals: 'Direct referrals',
     myTeam: 'Community members',
     genesisTitle: 'Current',
-    cobuildLevel: 'Co-build tier',
-    makingLevel: 'Making rank',
+    cobuildLevel: 'Co-build level',
+    makingLevel: 'Co-build level',
     inviteTitle: 'Start inviting · Share ecosystem growth value',
     programs: {
       title: 'Ecosystem support programs',

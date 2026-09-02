@@ -1,10 +1,15 @@
-import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 
-import { epochsPerDayFromLength } from '~/core/staking/staking-yield'
+import {
+  epochsPerDayFromLength,
+  rebase1e18FromPpm,
+  YIELD_EPOCHS_PER_DAY,
+} from '~/core/staking/staking-yield'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { BSC_BLOCK_SECONDS } from '~/shared/lib/constants'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
+  REWARD_MANAGER_METHODS,
   SAGX_METHODS,
   STAKING_POOL_METHODS,
   TREASURY_METHODS,
@@ -13,9 +18,10 @@ import { bscReadClient } from '~/web3/bsc-read-client'
 import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const stakingPoolAbi = parseAbi([STAKING_POOL_METHODS.poolAgxBalance, STAKING_POOL_METHODS.epoch])
-const sagxAbi = parseAbi([SAGX_METHODS.circulatingSupply, SAGX_METHODS.rebases])
+const sagxAbi = parseAbi([SAGX_METHODS.circulatingSupply])
 const treasuryAbi = parseAbi([TREASURY_METHODS.totalReserves])
 const burnSwapAbi = parseAbi([AGX_CONTRIBUTION_SWAP_METHODS.getConfig])
+const rewardManagerAbi = parseAbi([REWARD_MANAGER_METHODS.baseRewardRate])
 
 export type StakingHubOverview = {
   /** StakingPool.poolAgxBalance — AGX 9 decimals */
@@ -39,149 +45,28 @@ export type StakingHubOverview = {
   epochsPerDay: number | null
 }
 
-type RebaseRow = readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint]
-
-const FILL_CHUNK = 256n
-const REBASE_PROBE_POWERS: bigint[] = [0n]
-for (let exp = 0; exp <= 20; exp += 1) REBASE_PROBE_POWERS.push(1n << BigInt(exp))
-
 export type SagxRebaseSnapshot = {
+  /** RewardManager.baseRewardRate 换成 1e18 分数；供现有百分数换算 */
   rebaseRate1e18: bigint | null
-  epochsPerDay: number | null
-}
-
-/** 一次 multicall 读若干下标；越界槽为 null。 */
-async function readRebaseAtMany(indices: readonly bigint[]): Promise<(RebaseRow | null)[]> {
-  if (indices.length === 0) return []
-  const results = await readAggregate3(
-    indices.map((index) => ({
-      target: BSC_CONTRACTS.sagx,
-      allowFailure: true,
-      callData: encodeFunctionData({
-        abi: sagxAbi,
-        functionName: 'rebases',
-        args: [index],
-      }),
-    })),
-  )
-  return results.map((slot) => {
-    if (!slot?.success || slot.returnData === '0x') return null
-    try {
-      return decodeFunctionResult({
-        abi: sagxAbi,
-        functionName: 'rebases',
-        data: slot.returnData,
-      }) as RebaseRow
-    } catch {
-      return null
-    }
-  })
-}
-
-function pickLatest(
-  indices: readonly bigint[],
-  rows: readonly (RebaseRow | null)[],
-): { index: bigint; row: RebaseRow } | null {
-  let best: { index: bigint; row: RebaseRow } | null = null
-  for (let i = 0; i < indices.length; i += 1) {
-    const row = rows[i]
-    const index = indices[i]
-    if (row == null || index == null) continue
-    if (best == null || index > best.index) best = { index, row }
-  }
-  return best
-}
-
-function rangeInclusive(from: bigint, to: bigint): bigint[] {
-  const out: bigint[] = []
-  for (let i = from; i <= to; i += 1n) out.push(i)
-  return out
-}
-
-function nextFailAfter(
-  indices: readonly bigint[],
-  rows: readonly (RebaseRow | null)[],
-  after: bigint,
-): bigint | null {
-  let nearest: bigint | null = null
-  for (let i = 0; i < indices.length; i += 1) {
-    const idx = indices[i]!
-    if (idx > after && rows[i] == null && (nearest == null || idx < nearest)) nearest = idx
-  }
-  return nearest
-}
-
-/** 缺口一次并行打满（分块 multicall），在返回值里取最大下标。 */
-async function fillLatestInRange(
-  from: bigint,
-  to: bigint,
-): Promise<{ index: bigint; row: RebaseRow } | null> {
-  if (from > to) return null
-  const chunks: Promise<(RebaseRow | null)[]>[] = []
-  const chunkIndices: bigint[][] = []
-  for (let start = from; start <= to; start += FILL_CHUNK) {
-    const end = start + FILL_CHUNK - 1n > to ? to : start + FILL_CHUNK - 1n
-    const indices = rangeInclusive(start, end)
-    chunkIndices.push(indices)
-    chunks.push(readRebaseAtMany(indices))
-  }
-  const parts = await Promise.all(chunks)
-  let best: { index: bigint; row: RebaseRow } | null = null
-  for (let c = 0; c < parts.length; c += 1) {
-    const hit = pickLatest(chunkIndices[c]!, parts[c]!)
-    if (hit != null && (best == null || hit.index > best.index)) best = hit
-  }
-  return best
-}
-
-async function latestRateFromIndices(indices: readonly bigint[]): Promise<bigint | null> {
-  const rows = await readRebaseAtMany(indices)
-  const hit = pickLatest(indices, rows)
-  if (hit == null) return null
-  const nextFail = nextFailAfter(indices, rows, hit.index)
-  if (nextFail != null && nextFail === hit.index + 1n) return hit.row[1]
-  const fillTo = nextFail != null ? nextFail - 1n : hit.index + FILL_CHUNK
-  const filled = await fillLatestInRange(hit.index + 1n, fillTo)
-  return filled != null && filled.index > hit.index ? filled.row[1] : hit.row[1]
+  /** 日收益固定 ×2，不是链上 epoch.length 推算 */
+  epochsPerDay: number
 }
 
 /**
- * 读取最近一次 rebase 率（1e18 标度）
+ * 读取配置的基础 Rebase 率（ppm）与展示用日频 2。
  *
- * 手册 `rebases(epochNumber)`：先一次 multicall `number-1` / `number` / `number+1`，
- * 在返回值里取最大下标。都未命中再 2^k 定界并填满缺口。
- *
- * @param hintIndex 当前 `StakingPool.epoch().number`
- * @returns 最近一次 rebase 值（1e18）；从未 rebase → null
- * @see docs/onchain-manual/contracts/sagx.md
- */
-export async function readLatestSagxRebaseRate1e18(hintIndex?: bigint): Promise<bigint | null> {
-  if (hintIndex != null && hintIndex >= 0n) {
-    const hinted = hintIndex === 0n ? [0n, 1n] : [hintIndex - 1n, hintIndex, hintIndex + 1n]
-    const fromHint = await latestRateFromIndices(hinted)
-    if (fromHint != null) return fromHint
-  }
-  return latestRateFromIndices(REBASE_PROBE_POWERS)
-}
-
-/**
- * 最近一次 rebase 率与每日 epoch 数。一次 `epoch()` + rebase 下标 multicall。
- *
- * 与 Hub 概览拆开，避免探测拖住倒计时 / TVL。
- *
- * @returns rebase（1e18）与日频；从未 rebase 时 rate 为 null
- * @see docs/onchain-manual/contracts/sagx.md
+ * @returns 1e18 分数 + 每日 2 次；读失败抛错
+ * @see docs/onchain-manual/contracts/rewardmanager.md
  */
 export async function readLatestSagxRebaseRate(): Promise<SagxRebaseSnapshot> {
-  const epoch = await bscReadClient.readContract({
-    address: BSC_CONTRACTS.stakingPool,
-    abi: stakingPoolAbi,
-    functionName: 'epoch',
-  })
-  const rebaseRate1e18 = await readLatestSagxRebaseRate1e18(epoch[1])
+  const ppm = (await bscReadClient.readContract({
+    address: BSC_CONTRACTS.rewardManager,
+    abi: rewardManagerAbi,
+    functionName: 'baseRewardRate',
+  })) as bigint
   return {
-    rebaseRate1e18,
-    epochsPerDay: epochsPerDayFromLength(epoch[0], BSC_BLOCK_SECONDS),
+    rebaseRate1e18: rebase1e18FromPpm(ppm),
+    epochsPerDay: YIELD_EPOCHS_PER_DAY,
   }
 }
 

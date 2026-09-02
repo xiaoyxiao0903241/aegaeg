@@ -41,6 +41,7 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_X_STAKING_POOL: 'xStakingPool',
   VITE_BSC_LUCKY_POOL: 'luckyPool',
   VITE_BSC_DAILY_PURCHASE_TRACKER: 'dailyPurchaseTracker',
+  VITE_BSC_REWARD_MANAGER: 'rewardManager',
 }
 
 function normalizeAddress(address) {

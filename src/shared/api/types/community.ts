@@ -86,7 +86,7 @@ export interface TeamReferralItem {
   making_market: string
   /** 团队业绩（USD） */
   making_market_usd: string
-  /** 做市等级 */
+  /** 共建级别 */
   making_rank: number
   /** 持仓（AGX） */
   active_stake_balance: string

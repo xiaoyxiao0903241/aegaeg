@@ -7,7 +7,6 @@ import { RELEASE_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import {
-  writeClaimManyArchiveReleases,
   writeClaimManyReleases,
   writeClaimVestedRewardsInRange,
 } from '~/web3/release/release-write'
@@ -77,7 +76,7 @@ export type ReleaseBufferClaimToken = 'agx' | 'gagx'
 /**
  * 领取缓冲池：对该币 CTA 门闸后，只领当前 50 条窗。
  *
- * 窗内可含 AGX/gAGX；成功后刷新再点领下一窗。归档 PRV 仅 AGX。
+ * 窗内可含 AGX/gAGX；成功后刷新再点领下一窗。
  *
  * @see 手册 §13.4 claimMany
  */
@@ -111,23 +110,14 @@ export async function submitReleaseBufferClaim(args: {
 
   const target = pickBufferFirstClaim({
     chain: live.chain,
-    archiveClaimWindows: live.archiveClaimWindows,
   })
   if (!target) throw RELEASE_BLOCKED.zeroAmount
 
-  if (target.kind === 'splitter') {
-    await writeClaimManyReleases({
-      wallet,
-      splitter: target.splitter as Address,
-      start: target.start,
-      limit: target.limit,
-    })
-  } else {
-    await writeClaimManyArchiveReleases({
-      wallet,
-      start: target.start,
-      limit: target.limit,
-    })
-  }
+  await writeClaimManyReleases({
+    wallet,
+    splitter: target.splitter as Address,
+    start: target.start,
+    limit: target.limit,
+  })
   invalidateAfterReleaseClaim()
 }

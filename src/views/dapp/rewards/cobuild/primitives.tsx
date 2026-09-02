@@ -21,7 +21,7 @@ function reqBarPct(req: CobuildTierReq): number {
 }
 
 /**
- * 共建等级进度卡
+ * 共建级别进度卡
  *
  * 当前/下一档同一行；下方为晋升条件进度条与徽章。
  * 未达成用主色；已达成用复投蓝。

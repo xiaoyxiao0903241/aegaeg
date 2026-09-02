@@ -13,8 +13,10 @@ import {
   formatEpochScheduleLabels,
   handbookBondDiscountRateBP,
   lockedBonusBps,
+  rebase1e18FromPpm,
   releasedPrincipal,
   scenarioPeriodYieldPct,
+  YIELD_EPOCHS_PER_DAY,
 } from '../../../src/core/staking/staking-yield.ts'
 
 test('lockedBonusBps matches RewardManager handbook defaults', () => {
@@ -23,6 +25,19 @@ test('lockedBonusBps matches RewardManager handbook defaults', () => {
   assert.equal(lockedBonusBps('360'), 1500)
   assert.equal(lockedBonusBps('540'), 2000)
   assert.equal(lockedBonusBps('unknown'), 0)
+})
+
+test('rebase1e18FromPpm 2500 → 0.25%; × YIELD_EPOCHS_PER_DAY → 0.50%', () => {
+  const rate1e18 = rebase1e18FromPpm(2500n)
+  const epoch = epochRebasePctFrom1e18(rate1e18)
+  assert.equal(YIELD_EPOCHS_PER_DAY, 2)
+  assert.ok(epoch != null)
+  assert.ok(Math.abs(epoch - 0.25) < 1e-12)
+  const daily = baseDailyPctFromEpoch(epoch, YIELD_EPOCHS_PER_DAY)
+  assert.ok(daily != null)
+  assert.ok(Math.abs(daily - 0.5) < 1e-12)
+  assert.equal(rebase1e18FromPpm(null), null)
+  assert.equal(rebase1e18FromPpm(-1n), null)
 })
 
 test('epochRebasePctFrom1e18 + baseDailyPctFromEpoch uses epochsPerDay', () => {

@@ -1448,7 +1448,7 @@ const app = defineMessages({
     myTeam: 'Участники сообщества',
     genesisTitle: 'Текущий',
     cobuildLevel: 'Уровень со-строительства',
-    makingLevel: 'Ранг маркет-мейкинга',
+    makingLevel: 'Уровень со-строительства',
     inviteTitle: 'Начните приглашать · делитесь ростом экосистемы',
     programs: {
       title: 'Программы поддержки экосистемы',
