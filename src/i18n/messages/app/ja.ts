@@ -1451,8 +1451,8 @@ const app = defineMessages({
     directReferrals: '直接紹介人数',
     myTeam: 'コミュニティ人数',
     genesisTitle: '現在',
-    cobuildLevel: '共創ランク',
-    makingLevel: 'マーケットメイクランク',
+    cobuildLevel: '共創レベル',
+    makingLevel: '共創レベル',
     inviteTitle: '招待を始める · エコシステム成長価値を共有',
     programs: {
       title: 'エコシステム支援プラン',

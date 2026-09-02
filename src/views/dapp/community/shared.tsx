@@ -14,7 +14,7 @@ import {
 /**
  * 把团队邀请项映射为表格行
  *
- * 列序：注册时间、地址、持仓 USD、做市等级、直邀数、团队业绩 USD。
+ * 列序：注册时间、地址、持仓 USD、共建级别、直邀数、团队业绩 USD。
  *
  * @param item `/team/referrals` 直推项
  * @see docs/backend-api/api.md #team/referrals

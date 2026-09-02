@@ -1447,8 +1447,8 @@ const app = defineMessages({
     directReferrals: '직접 추천 인원',
     myTeam: '커뮤니티 인원',
     genesisTitle: '현재',
-    cobuildLevel: '공동 구축 등급',
-    makingLevel: '마켓 메이킹 등급',
+    cobuildLevel: '공동 구축 레벨',
+    makingLevel: '공동 구축 레벨',
     inviteTitle: '초대 시작 · 생태계 성장 가치 공유',
     programs: {
       title: '생태계 지원 프로그램',
