@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'phần',
     confirm: 'Xác nhận',
     close: 'Đóng',
+    comingSoon: 'Sắp ra mắt',
     splitDragHint: 'Kéo để điều chỉnh',
     paginationTotal: 'Tổng {total} mục',
     paginationPerPage: '{size} mục / trang',

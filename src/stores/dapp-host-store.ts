@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 
-import { dappLocationFromHash, getInitialTab } from '~/shared/config/dapp-deep-links'
+import {
+  dappLocationFromHash,
+  getInitialTab,
+  replaceClosedXmineHash,
+} from '~/shared/config/dapp-deep-links'
 import { type DappTab, resolveDappTabSelect } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -117,7 +121,10 @@ export const useDappHostStore = create<DappHostStore>((set, get) => {
     setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
     resetForeignSubviewStores,
     syncTabFromHash: () => {
+      // 先按原 hash 解析（关闭中的 xmine → hub），再改地址栏。
+      // 若先改成 `#staking`，stakingView 为 null，hydrate 被跳过，店面可能仍停在挖矿。
       const loc = dappLocationFromHash(window.location.hash.slice(1))
+      replaceClosedXmineHash()
       if (!loc) return
       set({ activeTab: loc.tab })
       if (loc.tab === 'exchange' && loc.exchangeView) {

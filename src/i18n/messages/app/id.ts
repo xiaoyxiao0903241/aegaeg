@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'saham',
     confirm: 'Konfirmasi',
     close: 'Tutup',
+    comingSoon: 'Segera hadir',
     splitDragHint: 'Geser untuk menyesuaikan',
     paginationTotal: 'Total {total} entri',
     paginationPerPage: '{size} per halaman',

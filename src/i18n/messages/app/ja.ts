@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'シェア',
     confirm: '確認',
     close: '閉じる',
+    comingSoon: '近日公開',
     splitDragHint: 'ドラッグして調整',
     paginationTotal: '合計 {total} 件',
     paginationPerPage: '1ページ {size} 件',

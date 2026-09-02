@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: '지분',
     confirm: '확인',
     close: '닫기',
+    comingSoon: '곧 출시',
     splitDragHint: '드래그하여 조정',
     paginationTotal: '총 {total}건',
     paginationPerPage: '페이지당 {size}건',

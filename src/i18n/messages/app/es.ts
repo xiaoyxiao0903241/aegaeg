@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'participaciones',
     confirm: 'Confirmar',
     close: 'Cerrar',
+    comingSoon: 'Próximamente',
     splitDragHint: 'Arrastra para ajustar',
     paginationTotal: 'Total: {total}',
     paginationPerPage: '{size} por página',

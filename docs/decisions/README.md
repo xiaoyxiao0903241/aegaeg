@@ -12,6 +12,7 @@ grilling、wayfinder 等产出的**现行决策**放此目录（kebab-case 文�
 |DApp 视觉验收：本轮跟原型、不跟稿|**现行**|[`dapp-prototype-visual-qa.md`](./dapp-prototype-visual-qa.md)|
 |DApp 新手引导自研 Spotlight（卸 reactour）|**现行**|[`dapp-onboarding-custom-spotlight.md`](./dapp-onboarding-custom-spotlight.md)|
 |环境依赖不当参数传|**现行**|[`ambient-deps-not-call-args.md`](./ambient-deps-not-call-args.md)|
+|暂时关闭 X 挖矿子页|**现行（暂时关闭）**|[`xmine-subview-temporarily-closed.md`](./xmine-subview-temporarily-closed.md)|
 
 ## 废止
 

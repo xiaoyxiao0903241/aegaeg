@@ -52,6 +52,38 @@ export function isReleaseView(value: string): value is ReleaseView {
   return RELEASE_VIEWS.has(value as ReleaseView)
 }
 
+/** 暂时关闭 X 挖矿子页；恢复步骤见决策文档。 */
+const XMINE_SUBVIEW_CLOSED = true
+
+/**
+ * X 挖矿子页是否暂时关闭。
+ *
+ * 关闭时深链接与导航落到 hub；测算 Tab 不列出挖矿。
+ * 只改 `XMINE_SUBVIEW_CLOSED`，不要在各页再叠一层开关。
+ *
+ * @param view 子视图名
+ * @returns 该子视图当前不可进入
+ * @see docs/decisions/xmine-subview-temporarily-closed.md
+ */
+export function isXmineSubviewClosed(view: string): boolean {
+  return XMINE_SUBVIEW_CLOSED && view === 'xmine'
+}
+
+/**
+ * 把关闭中的 X 挖矿 hash 改回对应 Tab 的 hub。
+ *
+ * 须在 `dappLocationFromHash` 之后调用：先水合 hub，再改地址栏。
+ */
+export function replaceClosedXmineHash(): void {
+  const raw = window.location.hash.replace(/^#/, '').trim()
+  const [tab, view] = raw.split('/')
+  if ((tab === 'staking' || tab === 'assets') && isXmineSubviewClosed(view ?? '')) {
+    if (window.location.hash.slice(1) !== tab) {
+      window.location.hash = tab
+    }
+  }
+}
+
 function hashForTabView(tab: DappTab, view: string, hub: string): string {
   return view === hub ? `#${tab}` : `#${tab}/${view}`
 }
@@ -131,13 +163,17 @@ export function dappLocationFromHash(hash: string): DappLocation | null {
 
   if (tabPart === 'staking') {
     if (!viewPart) return emptyViews('staking')
-    if (!isStakingView(viewPart)) return emptyViews('staking', { stakingView: 'hub' })
+    if (!isStakingView(viewPart) || isXmineSubviewClosed(viewPart)) {
+      return emptyViews('staking', { stakingView: 'hub' })
+    }
     return emptyViews('staking', { stakingView: viewPart })
   }
 
   if (tabPart === 'assets') {
     if (!viewPart) return emptyViews('assets')
-    if (!isAssetsView(viewPart)) return emptyViews('assets', { assetsView: 'hub' })
+    if (!isAssetsView(viewPart) || isXmineSubviewClosed(viewPart)) {
+      return emptyViews('assets', { assetsView: 'hub' })
+    }
     return emptyViews('assets', { assetsView: viewPart })
   }
 

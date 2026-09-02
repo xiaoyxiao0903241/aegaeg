@@ -15,6 +15,7 @@ import { Icon } from '~/shared/components/icon'
 import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import { isXmineSubviewClosed } from '~/shared/config/dapp-deep-links'
 import { formatNumber } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -79,6 +80,7 @@ function CalcExitPriceField({
  *
  * 纯本地计算，不发起任何链上写操作；
  * 表单直订 `useCalcEstimateStore`，点「计算」才刷新右侧结果。
+ * X 挖矿暂时关闭时不展示该项。
  */
 export function CalcDock() {
   const { messages: t } = useI18n()
@@ -125,12 +127,22 @@ export function CalcDock() {
     setPriceX(formatSpotPriceDraft(spotXUsd, 6))
   }, [s.priceX, s.product, setPriceX, spotXUsd])
 
-  const productOptions: ReadonlyArray<{ label: string; value: CalcProduct }> = [
+  useEffect(() => {
+    if (!isXmineSubviewClosed('xmine')) return
+    const state = useCalcEstimateStore.getState()
+    if (state.product === 'xmine') state.setProduct('stake')
+    if (useCalcEstimateStore.getState().result?.product === 'xmine') {
+      useCalcEstimateStore.setState({ result: null })
+    }
+  }, [s.product])
+
+  const allProductOptions: ReadonlyArray<{ label: string; value: CalcProduct }> = [
     { label: t.staking.calc.products.stake, value: 'stake' },
     { label: t.staking.calc.products.lpbond, value: 'lpbond' },
     { label: t.staking.calc.products.burnbond, value: 'burnbond' },
     { label: t.staking.calc.products.xmine, value: 'xmine' },
   ]
+  const productOptions = allProductOptions.filter((option) => !isXmineSubviewClosed(option.value))
   const periodOptions: ReadonlyArray<{ label: string; value: StakePeriod }> =
     s.product === 'stake'
       ? [

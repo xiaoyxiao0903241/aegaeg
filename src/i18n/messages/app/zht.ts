@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: '份',
     confirm: '確認',
     close: '關閉',
+    comingSoon: '即將推出',
     splitDragHint: '拖動調整比例',
     paginationTotal: '共 {total} 條',
     paginationPerPage: '每頁 {size} 條',

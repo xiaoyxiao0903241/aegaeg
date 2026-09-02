@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'pay',
     confirm: 'Onayla',
     close: 'Kapat',
+    comingSoon: 'Yakında',
     splitDragHint: 'Sürükleyerek ayarla',
     paginationTotal: 'Toplam {total} kayıt',
     paginationPerPage: 'Sayfa başına {size} kayıt',

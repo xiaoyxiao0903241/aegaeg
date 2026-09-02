@@ -12,6 +12,7 @@ const app = defineMessages({
     shareUnit: 'shares',
     confirm: 'Confirm',
     close: 'Close',
+    comingSoon: 'Coming soon',
     splitDragHint: 'Drag to adjust',
     paginationTotal: '{total} total',
     paginationPerPage: '{size} per page',
