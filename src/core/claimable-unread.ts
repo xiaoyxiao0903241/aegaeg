@@ -1,18 +1,41 @@
 /**
- * 可领红点是否未读：空态永不亮；有可领且指纹与上次在子页看到的不同才亮。
+ * 可领红点：两种模式共用 `isClaimableDotLit`。
  *
- * 指纹是锅的身份（档位本金、已到期冷却 index、到期仓 id、轮次），不是此刻可领 wei。
- * 线性释放滴漏不会重新点亮；领到 0 后若在子页聚焦会把 seen 写成空，下一锅才会再亮。
+ * - `balance`（涡轮 / 奖励 / 释放完成 / 缓冲完成）：投影非空就亮，本地 ack 不参与。
+ * - `event`（定期质押 / 债券到期）：当前身份有不在 ack 里的才亮；进入子页后并入 ack。
  *
- * @param current 当前指纹；无源可领为 `''`
- * @param seen 该地址+源上次在子页写下的指纹；从未写过为 null
- * @returns 是否应显示红点
+ * 投影只决定谁进当前集合。滴漏、活期、X 挖矿、持仓发息不进集合。
+ * `balance` 身份不含金额，避免额变被当成新事件。
+ *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  * @see docs/onchain-manual/contracts/turbine.md
+ * @see docs/onchain-manual/contracts/aegissplitter.md
  */
-export function isUnread(current: string, seen: string | null | undefined): boolean {
+
+/** 欠账钉住 vs 到期看过即焚。 */
+export type ClaimableDotKind = 'balance' | 'event'
+
+/** 欠账类非空投影的占位身份；金额不进集合。 */
+export const CLAIMABLE_BALANCE_ID = 'pending'
+
+/**
+ * 红点是否应亮。
+ *
+ * 空投影永不亮。`balance` 只看当前非空；`event` 看当前相对 ack 的差集（禁止字符串整段相等）。
+ *
+ * @param kind 红点模式
+ * @param current 当前投影指纹；无事为 `''`
+ * @param ack `event` 已确认身份；从未写过为 null。`balance` 忽略
+ */
+export function isClaimableDotLit(
+  kind: ClaimableDotKind,
+  current: string,
+  ack: string | null | undefined,
+): boolean {
   if (current === '') return false
-  return current !== (seen ?? '')
+  if (kind === 'balance') return true
+  const seen = new Set(parseFingerprintIds(ack ?? ''))
+  return parseFingerprintIds(current).some((id) => !seen.has(id))
 }
 
 /**
@@ -24,38 +47,68 @@ export function fingerprintIdList(ids: readonly string[]): string {
   return [...new Set(ids.filter((id) => id.length > 0))].sort().join('|')
 }
 
-export type ReleaseQueueFingerprintPlan = {
-  planIndex: number
-  total: bigint
-  claimable: bigint
+/** 把 `|` 拼接的指纹拆成身份。 */
+export function parseFingerprintIds(fingerprint: string): string[] {
+  if (!fingerprint) return []
+  return fingerprint.split('|').filter((id) => id.length > 0)
 }
 
 /**
- * 释放队列指纹：仅纳入此刻有可领的档；身份是 `planIndex:total`（本金），不含可领 wei。
+ * `event` ack 单调并：进入子页时把当前身份并入已看过的集合，禁止用当前指纹覆盖。
+ *
+ * @param ack 已确认指纹
+ * @param current 当前投影
+ */
+export function mergeAckFingerprint(ack: string | null | undefined, current: string): string {
+  return fingerprintIdList([...parseFingerprintIds(ack ?? ''), ...parseFingerprintIds(current)])
+}
+
+export type ReleaseQueueFingerprintPlan = {
+  planIndex: number
+  total: bigint
+  /** 整档已解锁可领；完成判定用这个，不用当前 50 条窗。 */
+  overallClaimable: bigint
+  /** 尚未线性释放；完成后为 0。 */
+  releasing: bigint
+}
+
+/**
+ * 释放队列投影：仅纳入已释放完成且整档仍可领的档。
+ *
+ * 完成 = `releasing === 0` 且 `overallClaimable > 0`。滴漏中途（releasing > 0）不进。
+ * 部分领取后 overall 仍大于 0 则继续亮。
  *
  * @param plans 队列各档快照
  */
 export function fingerprintReleaseQueue(plans: readonly ReleaseQueueFingerprintPlan[]): string {
   return fingerprintIdList(
-    plans.filter((plan) => plan.claimable > 0n).map((plan) => `${plan.planIndex}:${plan.total}`),
+    plans
+      .filter((plan) => plan.releasing === 0n && plan.overallClaimable > 0n)
+      .map((plan) => `${plan.planIndex}:${plan.total}`),
   )
 }
 
 export type ReleaseBufferFingerprintInput = {
   agxClaimable: bigint
   gagxClaimable: bigint
-  agxAmount: bigint
-  gagxAmount: bigint
+  agxReleasing: bigint
+  gagxReleasing: bigint
+}
+
+function bufferBucketComplete(claimable: bigint, releasing: bigint): boolean {
+  return releasing === 0n && claimable > 0n
 }
 
 /**
- * 缓冲池指纹：无可领为空；有可领则用 AGX/gAGX 本金，滴漏不改变指纹。
+ * 缓冲池投影：AGX / gAGX 桶各自「释放完成且还可领」才纳入。
  *
- * @param input 缓冲池可领与本金
+ * @param input 缓冲池可领与尚未释放
  */
 export function fingerprintReleaseBuffer(input: ReleaseBufferFingerprintInput): string {
-  if (input.agxClaimable <= 0n && input.gagxClaimable <= 0n) return ''
-  return `${input.agxAmount}|${input.gagxAmount}`
+  const ids: string[] = []
+  if (bufferBucketComplete(input.agxClaimable, input.agxReleasing)) ids.push('agx')
+  if (bufferBucketComplete(input.gagxClaimable, input.gagxReleasing)) ids.push('gagx')
+  return fingerprintIdList(ids)
 }
 
 export type LuckyFingerprintInput = {
@@ -64,31 +117,31 @@ export type LuckyFingerprintInput = {
 }
 
 /**
- * 幸运奖指纹：可领时用合计未领；不可领或合计为 0 为空。
+ * 幸运奖欠账投影：可领且合计未领 > 0 则为占位身份，不含金额。
  *
  * @param snap 幸运奖领取快照；缺数为空
  */
 export function fingerprintLucky(snap: LuckyFingerprintInput | null | undefined): string {
   if (!snap?.claimable || snap.totalUnclaimedAmount <= 0n) return ''
-  return snap.totalUnclaimedAmount.toString()
+  return CLAIMABLE_BALANCE_ID
 }
 
 /**
- * 正数金额指纹（奖励卡 API / 链上换算后的预览）。
+ * 正数金额 → 欠账占位；缺数、非有限、≤0 为空。金额本身不进指纹。
  *
- * @param value 数字或十进制字符串；缺数、非有限、≤0 为空
+ * @param value 数字或十进制字符串
  */
 export function fingerprintPositiveDecimal(value: number | string | null | undefined): string {
   if (value == null) return ''
   if (typeof value === 'number') {
     if (!Number.isFinite(value) || value <= 0) return ''
-    return String(value)
+    return CLAIMABLE_BALANCE_ID
   }
   const trimmed = value.trim()
   if (!trimmed) return ''
   const parsed = Number(trimmed)
   if (!Number.isFinite(parsed) || parsed <= 0) return ''
-  return trimmed
+  return CLAIMABLE_BALANCE_ID
 }
 
 function isUnixReached(at: bigint, nowSec: number): boolean {
@@ -100,8 +153,6 @@ export type AssetsStakeExpiryRow = {
   id: string
   kind: 'liquid' | 'locked' | 'early'
   expiry: bigint
-  inWarmup?: boolean
-  warmupExpired?: boolean
 }
 
 export type AssetsBondExpiryRow = {
@@ -109,21 +160,15 @@ export type AssetsBondExpiryRow = {
   vestingEndTime: bigint
 }
 
-export type AssetsXmineExpiryInput = {
-  warmupGons: bigint
-  warmupEndTime: bigint
-}
-
 /**
- * 质押到期指纹：活期只认预热已过；定期只认 unix `expiry` 已到。
+ * 质押到期投影：只认定期 / 共建 unix `expiry` 已到。活期永不纳入。
  *
- * 身份是 `id:expiry`，不含可赎本金。未到期即使已有 claimable 也不纳入。
+ * 身份是 `id:expiry`。未到期即使已有 claimable 也不纳入。
  *
  * @param rows 资产质押仓位
- * @param nowSec 当前 unix 秒（定期倒计时用）
+ * @param nowSec 当前 unix 秒
  * @see docs/onchain-manual/contracts/lockedstaking.md
  * @see docs/onchain-manual/contracts/earlystaking.md
- * @see docs/onchain-manual/contracts/liquidstaking.md
  */
 export function fingerprintAssetsStakeExpiry(
   rows: readonly AssetsStakeExpiryRow[],
@@ -131,10 +176,7 @@ export function fingerprintAssetsStakeExpiry(
 ): string {
   return fingerprintIdList(
     rows.flatMap((row) => {
-      if (row.kind === 'liquid') {
-        if (!row.inWarmup || !row.warmupExpired) return []
-        return [`${row.id}:${row.expiry}`]
-      }
+      if (row.kind === 'liquid') return []
       if (!isUnixReached(row.expiry, nowSec)) return []
       return [`${row.id}:${row.expiry}`]
     }),
@@ -142,7 +184,7 @@ export function fingerprintAssetsStakeExpiry(
 }
 
 /**
- * 债券到期指纹：只认 `vestingEndTime` 已到的仓；身份是 `id:vestingEndTime`。
+ * 债券到期投影：只认 `vestingEndTime` 已到的仓；身份是 `id:vestingEndTime`。
  *
  * 未到期的 `pendingPayout` 滴漏不造点。
  *
@@ -159,22 +201,4 @@ export function fingerprintAssetsBondExpiry(
       isUnixReached(row.vestingEndTime, nowSec) ? [`${row.id}:${row.vestingEndTime}`] : [],
     ),
   )
-}
-
-/**
- * X 挖矿到期指纹：仅预热仓已过 `warmupEndTime` 时亮；身份含结束时间以免下一轮同槽吞掉。
- *
- * 已激活的挖矿本金可随时解绑，不算到期。
- *
- * @param snap X 挖矿仓位；缺数为空
- * @param nowSec 当前 unix 秒
- * @see docs/onchain-manual/contracts/xstakingpool.md
- */
-export function fingerprintAssetsXmineExpiry(
-  snap: AssetsXmineExpiryInput | null | undefined,
-  nowSec: number,
-): string {
-  if (!snap || snap.warmupGons <= 0n) return ''
-  if (!isUnixReached(snap.warmupEndTime, nowSec)) return ''
-  return `warmup:${snap.warmupEndTime}`
 }

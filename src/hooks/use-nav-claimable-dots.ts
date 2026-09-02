@@ -3,7 +3,6 @@ import { keepPreviousData } from '@tanstack/react-query'
 import {
   fingerprintAssetsBondExpiry,
   fingerprintAssetsStakeExpiry,
-  fingerprintAssetsXmineExpiry,
   fingerprintLucky,
   fingerprintPositiveDecimal,
   fingerprintReleaseBuffer,
@@ -31,7 +30,6 @@ import {
   readBurnBondPositions,
   readLpBondPositions,
   readStakePositions,
-  readXminePosition,
 } from '~/web3/assets/assets-read'
 import { readTurbineClaimableFingerprint } from '~/web3/exchange/turbine-exchange-read'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
@@ -45,7 +43,7 @@ function useWalletReady(): boolean {
   return hasWalletAccount(useActiveAccount())
 }
 
-/** 登录后 API 待领：加载中不亮不写 seen；金额 > 0 才有指纹。 */
+/** 登录后 API 待领：加载中不亮；金额 > 0 为欠账占位，不含金额本身。 */
 function sessionAmountFingerprint(
   sessionReady: boolean,
   pending: boolean,
@@ -57,7 +55,7 @@ function sessionAmountFingerprint(
 }
 
 /**
- * 兑换涡轮未读红点（导航与 Hub 卡共用查询键）。
+ * 兑换涡轮红点：冷却已结束且仍可领则亮，领完才灭。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -75,11 +73,12 @@ export function useExchangeTurbineUnread(): boolean {
     'exchange.turbine',
     query.isPlaceholderData || query.data === undefined ? null : query.data,
     activeTab === 'exchange' && view === 'turbine',
+    'balance',
   )
 }
 
 /**
- * 释放队列 / 缓冲池未读红点；导航为二者 OR。
+ * 释放队列 / 缓冲池红点：释放完成且仍可领才亮，领完才灭。导航为二者 OR。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  * @see docs/onchain-manual/contracts/aegissplitter.md
@@ -117,29 +116,30 @@ export function useReleaseClaimableUnreads(): {
       : fingerprintReleaseBuffer({
           agxClaimable: bufferQuery.data.agx.totalClaimable,
           gagxClaimable: bufferQuery.data.gagx.totalClaimable,
-          agxAmount: bufferQuery.data.agx.totalAmount,
-          gagxAmount: bufferQuery.data.gagx.totalAmount,
+          agxReleasing: bufferQuery.data.agx.totalReleasing,
+          gagxReleasing: bufferQuery.data.gagx.totalReleasing,
         })
 
   const queue = useClaimableUnread(
     'release.queue',
     queueFp,
     activeTab === 'release' && view === 'queue',
+    'balance',
   )
   const buffer = useClaimableUnread(
     'release.buffer',
     bufferFp,
     activeTab === 'release' && view === 'buffer',
+    'balance',
   )
   return { queue, buffer, rail: queue || buffer }
 }
 
 /**
- * 奖励未读红点：六张卡全接。
+ * 奖励红点：六张卡全接。待领 > 0 就亮，领到 0 才灭。
  *
- * 幸运走链上 `getRewardInfo` pending；推荐 / 参与 / 共建 / 津贴走 type-totals 金额；
- * 创世走团队奖差额。发展津贴红点仅节点资格为真时计入。
- * 金额作指纹：有待领则亮，看过同额会灭，额变再亮。
+ * 幸运走链上 `getRewardInfo` pending；推荐 / 参与 / 共建 / 津贴走 type-totals；
+ * 创世走团队奖差额。发展津贴仅节点资格为真时计入。
  *
  * @see docs/onchain-manual/contracts/aegisluckypool.md
  * @see docs/backend-api/api.md #dao-reward/type-totals
@@ -196,28 +196,42 @@ export function useRewardsClaimableUnreads(): {
       : null,
   )
 
-  const lucky = useClaimableUnread('rewards.lucky', luckyFp, onRewards && view === 'lucky')
+  const lucky = useClaimableUnread(
+    'rewards.lucky',
+    luckyFp,
+    onRewards && view === 'lucky',
+    'balance',
+  )
   const referral = useClaimableUnread(
     'rewards.referral',
     typeTotalFp('referral'),
     onRewards && view === 'referral',
+    'balance',
   )
   const participate = useClaimableUnread(
     'rewards.participate',
     typeTotalFp('participate'),
     onRewards && view === 'participate',
+    'balance',
   )
   const cobuild = useClaimableUnread(
     'rewards.cobuild',
     typeTotalFp('cobuild'),
     onRewards && view === 'cobuild',
+    'balance',
   )
   const grant = useClaimableUnread(
     'rewards.grant',
     grantEligible ? typeTotalFp('grant') : '',
     onRewards && view === 'grant',
+    'balance',
   )
-  const genesis = useClaimableUnread('rewards.genesis', genesisFp, onRewards && view === 'genesis')
+  const genesis = useClaimableUnread(
+    'rewards.genesis',
+    genesisFp,
+    onRewards && view === 'genesis',
+    'balance',
+  )
 
   return {
     lucky,
@@ -240,15 +254,13 @@ function snapshotFingerprint<T>(
 }
 
 /**
- * 资产到期未读红点：四张仓位卡只认锁定期 / 预热结束，不认收益或未到期滴漏。
+ * 资产到期红点：定期质押 / 债券锁定期结束亮一次，点进仓位子页后不再亮。
  *
- * 查询键与资产 Hub / 持仓列表共用；钱包连上后任意 Tab 都拉，并按余额档轮询。
- * 到期用该次链上查询的时间戳判定（与涡轮 `isVested` 同为拉取时刻）。
- * 进对应子页才记 seen；Hub 在前台不灭 Tab，四卡都灭 Tab 才灭。
+ * 活期与 X 挖矿暂不亮。查询键与资产 Hub / 持仓列表共用；钱包连上后任意 Tab 都拉。
+ * 到期用该次链上查询的时间戳判定。侧栏点到 Hub 不记 ack。
  *
  * @see docs/onchain-manual/contracts/lockedstaking.md
- * @see docs/onchain-manual/contracts/liquidstaking.md
- * @see docs/onchain-manual/contracts/xstakingpool.md
+ * @see docs/onchain-manual/contracts/bonddepository.md
  */
 export function useAssetsClaimableUnreads(): {
   stake: boolean
@@ -283,13 +295,6 @@ export function useAssetsClaimableUnreads(): {
     refetchInterval: CLAIMABLE_DOT_POLL_MS,
     placeholderData: keepPreviousData,
   })
-  const xmineQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsXminePosition,
-    queryFn: (addr) => readXminePosition(addr as Address),
-    enabled: walletReady,
-    refetchInterval: CLAIMABLE_DOT_POLL_MS,
-    placeholderData: keepPreviousData,
-  })
 
   const stakeFp = snapshotFingerprint(stakeQuery.isPlaceholderData, stakeQuery.data, (rows) =>
     fingerprintAssetsStakeExpiry(rows, Math.floor(stakeQuery.dataUpdatedAt / 1000)),
@@ -300,14 +305,15 @@ export function useAssetsClaimableUnreads(): {
   const burnFp = snapshotFingerprint(burnQuery.isPlaceholderData, burnQuery.data, (rows) =>
     fingerprintAssetsBondExpiry(rows, Math.floor(burnQuery.dataUpdatedAt / 1000)),
   )
-  const xmineFp = snapshotFingerprint(xmineQuery.isPlaceholderData, xmineQuery.data, (snap) =>
-    fingerprintAssetsXmineExpiry(snap, Math.floor(xmineQuery.dataUpdatedAt / 1000)),
+
+  const stake = useClaimableUnread('assets.stake', stakeFp, onAssets && view === 'stake', 'event')
+  const lpbond = useClaimableUnread('assets.lpbond', lpFp, onAssets && view === 'lpbond', 'event')
+  const burnbond = useClaimableUnread(
+    'assets.burnbond',
+    burnFp,
+    onAssets && view === 'burnbond',
+    'event',
   )
 
-  const stake = useClaimableUnread('assets.stake', stakeFp, onAssets && view === 'stake')
-  const lpbond = useClaimableUnread('assets.lpbond', lpFp, onAssets && view === 'lpbond')
-  const burnbond = useClaimableUnread('assets.burnbond', burnFp, onAssets && view === 'burnbond')
-  const xmine = useClaimableUnread('assets.xmine', xmineFp, onAssets && view === 'xmine')
-
-  return { stake, lpbond, burnbond, xmine, rail: stake || lpbond || burnbond || xmine }
+  return { stake, lpbond, burnbond, xmine: false, rail: stake || lpbond || burnbond }
 }

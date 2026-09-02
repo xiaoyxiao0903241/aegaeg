@@ -109,7 +109,7 @@ test('claimable dots poll every balances interval', () => {
   assert.match(team, /useTeamRewardTotal[\s\S]*staleTime: QUERY_STALE_TIME\.balances/)
   assert.match(team, /useTeamRewardTotal[\s\S]*refetchInterval: QUERY_STALE_TIME\.balances/)
   assert.match(nav, /const CLAIMABLE_DOT_POLL_MS = QUERY_STALE_TIME\.balances/)
-  assert.equal((nav.match(/refetchInterval: CLAIMABLE_DOT_POLL_MS/g) ?? []).length, 8)
+  assert.equal((nav.match(/refetchInterval: CLAIMABLE_DOT_POLL_MS/g) ?? []).length, 7)
 })
 
 test('assets rail expiry probe is not gated to the assets tab', () => {
@@ -129,12 +129,12 @@ test('assets rail expiry probe is not gated to the assets tab', () => {
   assert.match(nav, /readStakePositions/)
   assert.match(nav, /readLpBondPositions/)
   assert.match(nav, /readBurnBondPositions/)
-  assert.match(nav, /readXminePosition/)
   assert.match(nav, /fingerprintAssetsStakeExpiry/)
   assert.match(nav, /assets\.stake/)
   assert.match(nav, /assets\.lpbond/)
   assert.match(nav, /assets\.burnbond/)
-  assert.match(nav, /assets\.xmine/)
+  assert.match(nav, /xmine: false/)
+  assert.doesNotMatch(nav, /readXminePosition/)
   assert.doesNotMatch(nav, /enabled: walletReady && onAssets/)
   assert.match(dock, /dots\[key\]/)
   assert.match(rail, /item\.id === 'assets' && assetsClaimable/)
