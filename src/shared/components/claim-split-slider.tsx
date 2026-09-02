@@ -72,7 +72,7 @@ export function claimSplitCtaStyle(
  * 双色领取分配滑杆
  *
  * 左蓝 = 复投；右橙 = 领取。百分比标签在轨上方（左 `%`+复投，右领取+`%`），
- * 中间提示拖动。白色滑块在分界上，内嵌两侧数字；阴影与原先一致。
+ * 左 / 中 / 右三列均分宽度并折行，避免侧栏长词把中间挤成细条。
  * Root 用 `touch-none` + 加高热区，避免 H5 竖滚抢走拖动手势。
  * 文案由调用方传入（见 `claimSplitFromReleasePct`）。
  *
@@ -92,31 +92,36 @@ export function ClaimSplitSlider({
   const { releasePct, restakePct } = claimSplitTrackPct(value)
 
   return (
-    <div className={cn('grid w-full max-w-108 gap-3', disabled && 'opacity-60', className)}>
-      <div className="grid grid-cols-[1fr_auto_1fr] items-baseline gap-2">
-        <div className="flex min-w-0 items-baseline justify-start gap-1 whitespace-nowrap">
-          <Text as="strong" className="font-semibold tabular-nums" tone="claim" variant="headline">
+    <div className={cn('grid w-full max-w-108 min-w-0 gap-3', disabled && 'opacity-60', className)}>
+      <div className="flex w-full min-w-0 items-start gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-start gap-x-1">
+          <Text
+            as="strong"
+            className="shrink-0 font-semibold tabular-nums"
+            tone="claim"
+            variant="headline"
+          >
             {restakePct}%
           </Text>
-          <Text as="span" variant="copy">
+          <Text as="span" className="min-w-0 flex-1 wrap-break-word" variant="copy">
             {restakeLabel}
           </Text>
         </div>
         <Text
           as="span"
-          className="px-1 text-center whitespace-nowrap"
+          className="min-w-0 flex-1 px-1 text-center wrap-break-word"
           tone="muted-foreground"
           variant="copy"
         >
           {hint}
         </Text>
-        <div className="flex min-w-0 items-baseline justify-end gap-1 whitespace-nowrap">
-          <Text as="span" variant="copy">
+        <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-end gap-x-1">
+          <Text as="span" className="min-w-0 flex-1 text-right wrap-break-word" variant="copy">
             {releaseLabel}
           </Text>
           <Text
             as="strong"
-            className="font-semibold tabular-nums"
+            className="shrink-0 font-semibold tabular-nums"
             tone="primary"
             variant="headline"
           >
@@ -126,7 +131,7 @@ export function ClaimSplitSlider({
       </div>
       <SliderPrimitive.Root
         className={cn(
-          'relative flex h-8 w-full touch-none items-center select-none',
+          'relative flex h-8 w-full min-w-0 touch-none items-center select-none',
           disabled && 'pointer-events-none',
         )}
         data-claim-split-slider=""

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
@@ -57,4 +58,21 @@ test('claim split track and CTA gradient are left restake / right release', asyn
 
   assert.equal(claimSplitCtaStyle(40, true).backgroundImage, mixed)
   assert.equal(claimSplitCtaStyle(40, false).backgroundImage, 'none')
+})
+
+test('claim split hint takes remaining width, wraps, and stays centered', () => {
+  const src = readFileSync(
+    new URL('../../../src/shared/components/claim-split-slider.tsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(src, /grid min-w-0 w-full max-w-108/)
+  assert.match(src, /className="flex min-w-0 w-full items-start gap-2"/)
+  assert.match(src, /flex-1 flex-wrap items-baseline justify-start/)
+  assert.match(src, /flex-1 flex-wrap items-baseline justify-end/)
+  assert.match(src, /className="min-w-0 flex-1 wrap-break-word"/)
+  assert.match(src, /className="min-w-0 flex-1 wrap-break-word text-right"/)
+  assert.match(src, /className="min-w-0 flex-1 px-1 text-center wrap-break-word"/)
+  assert.doesNotMatch(src, /grid-cols-\[1fr_auto_1fr\]/)
+  assert.doesNotMatch(src, /whitespace-nowrap/)
 })

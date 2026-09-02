@@ -137,7 +137,7 @@ function AssetsClaimModalOpen({
         </DialogClose>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid min-w-0 gap-4">
         <ClaimSplitSlider
           aria-label={t.assets.claim.splitAria}
           hint={t.common.splitDragHint}

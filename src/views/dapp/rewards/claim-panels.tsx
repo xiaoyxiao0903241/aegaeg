@@ -173,7 +173,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
           </div>
         </Reveal>
 
-        <Card surface="outlined">
+        <Card className="min-w-0" surface="outlined">
           <ClaimSplitSlider
             aria-label={vm.mixed.splitAria}
             className="max-w-none"
