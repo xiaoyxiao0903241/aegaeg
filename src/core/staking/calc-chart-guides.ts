@@ -13,7 +13,6 @@ export type CalcChartGuide = {
   vertical: boolean
   /** 点上的「第 N 天」；与选中日重合时不画，避免叠两枚 pill */
   showPill: boolean
-  showPrice: boolean
 }
 
 function profitOnDay(points: readonly CalcYieldCurvePoint[], day: number): number | null {
@@ -56,7 +55,6 @@ export function buildCalcChartGuides(args: {
         horizontal: true,
         vertical: false,
         showPill: false,
-        showPrice: true,
       })
     }
   }
@@ -72,7 +70,6 @@ export function buildCalcChartGuides(args: {
         horizontal: true,
         vertical: true,
         showPill: !selectedOnLock,
-        showPrice: true,
       })
     }
   }
@@ -88,7 +85,6 @@ export function buildCalcChartGuides(args: {
         horizontal: true,
         vertical: false,
         showPill: false,
-        showPrice: true,
       })
     }
   }

@@ -22,7 +22,6 @@ export type ClaimableSeenSource =
   | 'assets.stake'
   | 'assets.lpbond'
   | 'assets.burnbond'
-  | 'assets.xmine'
 
 type SeenMap = Record<string, Partial<Record<ClaimableSeenSource, string>>>
 

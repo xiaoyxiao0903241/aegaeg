@@ -314,12 +314,12 @@ function staticEngineeringVars() {
   --chart-guide-gap: 0.125rem;
   --chart-guide-dash-h: repeating-linear-gradient(
     90deg,
-    currentColor 0 var(--chart-guide-dash),
+    currentcolor 0 var(--chart-guide-dash),
     transparent var(--chart-guide-dash) calc(var(--chart-guide-dash) + var(--chart-guide-gap))
   );
   --chart-guide-dash-v: repeating-linear-gradient(
     180deg,
-    currentColor 0 var(--chart-guide-dash),
+    currentcolor 0 var(--chart-guide-dash),
     transparent var(--chart-guide-dash) calc(var(--chart-guide-dash) + var(--chart-guide-gap))
   );
   --app-icon-xs: 0.75rem;

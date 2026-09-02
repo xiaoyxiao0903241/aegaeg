@@ -266,7 +266,6 @@ export function useAssetsClaimableUnreads(): {
   stake: boolean
   lpbond: boolean
   burnbond: boolean
-  xmine: boolean
   rail: boolean
 } {
   const walletReady = useWalletReady()
@@ -315,5 +314,5 @@ export function useAssetsClaimableUnreads(): {
     'event',
   )
 
-  return { stake, lpbond, burnbond, xmine: false, rail: stake || lpbond || burnbond }
+  return { stake, lpbond, burnbond, rail: stake || lpbond || burnbond }
 }

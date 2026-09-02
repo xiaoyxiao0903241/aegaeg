@@ -83,7 +83,7 @@ export function StakingCurveChart() {
         horizontal: guide.horizontal,
         label: guide.showPill ? interpolate(aside.tags.day, { day: guide.day }) : undefined,
         marker: guide.marker === 'hollow' ? 'hollow' : undefined,
-        priceLabel: guide.showPrice ? formatUsdOrDash(guide.profitUsd) : undefined,
+        priceLabel: formatUsdOrDash(guide.profitUsd),
         vertical: guide.vertical,
       }))
     : []

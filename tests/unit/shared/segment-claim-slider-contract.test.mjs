@@ -66,12 +66,12 @@ test('claim split hint takes remaining width, wraps, and stays centered', () => 
     'utf8',
   )
 
-  assert.match(src, /grid min-w-0 w-full max-w-108/)
-  assert.match(src, /className="flex min-w-0 w-full items-start gap-2"/)
+  assert.match(src, /grid w-full max-w-108 min-w-0 gap-3/)
+  assert.match(src, /flex w-full min-w-0 items-start gap-2/)
   assert.match(src, /flex-1 flex-wrap items-baseline justify-start/)
   assert.match(src, /flex-1 flex-wrap items-baseline justify-end/)
   assert.match(src, /className="min-w-0 flex-1 wrap-break-word"/)
-  assert.match(src, /className="min-w-0 flex-1 wrap-break-word text-right"/)
+  assert.match(src, /className="min-w-0 flex-1 text-right wrap-break-word"/)
   assert.match(src, /className="min-w-0 flex-1 px-1 text-center wrap-break-word"/)
   assert.doesNotMatch(src, /grid-cols-\[1fr_auto_1fr\]/)
   assert.doesNotMatch(src, /whitespace-nowrap/)

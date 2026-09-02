@@ -48,7 +48,7 @@ export function fingerprintIdList(ids: readonly string[]): string {
 }
 
 /** 把 `|` 拼接的指纹拆成身份。 */
-export function parseFingerprintIds(fingerprint: string): string[] {
+function parseFingerprintIds(fingerprint: string): string[] {
   if (!fingerprint) return []
   return fingerprint.split('|').filter((id) => id.length > 0)
 }

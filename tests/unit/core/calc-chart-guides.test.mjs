@@ -13,7 +13,6 @@ test('buildCalcChartGuides: 180d labels selected + period + 540, no break-even',
   })
   const byKind = Object.fromEntries(guides.map((g) => [g.kind, g]))
   assert.equal(byKind.selected.day, 100)
-  assert.equal(byKind.selected.showPrice, true)
   assert.equal(byKind.selected.vertical, false)
   assert.equal(byKind.selected.marker, 'none')
   assert.equal(byKind.period.day, 180)
@@ -41,7 +40,6 @@ test('buildCalcChartGuides: liquid has selected + 540, no period vert', async ()
     guides.some((g) => g.vertical),
     false,
   )
-  assert.equal(guides.find((g) => g.kind === 'selected')?.showPrice, true)
   assert.equal(guides.filter((g) => g.kind === 'horizon').length, 1)
   assert.equal(guides.find((g) => g.kind === 'horizon')?.marker, 'hollow')
 })
@@ -76,6 +74,5 @@ test('buildCalcChartGuides: selected on period day drops hollow and extra select
   assert.ok(period)
   assert.equal(period.marker, 'none')
   assert.equal(period.showPill, false)
-  assert.equal(period.showPrice, true)
   assert.equal(period.vertical, true)
 })

@@ -133,10 +133,10 @@ test('assets rail expiry probe is not gated to the assets tab', () => {
   assert.match(nav, /assets\.stake/)
   assert.match(nav, /assets\.lpbond/)
   assert.match(nav, /assets\.burnbond/)
-  assert.match(nav, /xmine: false/)
+  assert.doesNotMatch(nav, /xmine:/)
   assert.doesNotMatch(nav, /readXminePosition/)
   assert.doesNotMatch(nav, /enabled: walletReady && onAssets/)
-  assert.match(dock, /dots\[key\]/)
+  assert.match(dock, /key !== 'xmine' && dots\[key\]/)
   assert.match(rail, /item\.id === 'assets' && assetsClaimable/)
 })
 
