@@ -471,6 +471,14 @@ export const TREASURY_METHODS = {
 } as const
 
 /**
+ * RewardManager — 基础 Rebase ppm（`addRecipient(stakingPool, rate)`）。
+ * @see docs/onchain-manual/contracts/rewardmanager.md
+ */
+export const REWARD_MANAGER_METHODS = {
+  baseRewardRate: 'function baseRewardRate() view returns (uint256)',
+} as const
+
+/**
  * StakingPool — 质押池 TVL / epoch。
  * @see docs/onchain-manual/contracts/stakingpool.md
  */
@@ -481,14 +489,11 @@ export const STAKING_POOL_METHODS = {
 } as const
 
 /**
- * sAGX — 流通量与 rebase 历史。
+ * sAGX — 流通量（Hub TVL 口径）。
  * @see docs/onchain-manual/contracts/sagx.md
  */
 export const SAGX_METHODS = {
   circulatingSupply: 'function circulatingSupply() view returns (uint256)',
-  totalSupply: 'function totalSupply() view returns (uint256)',
-  rebases:
-    'function rebases(uint256 epoch) view returns (uint256 epoch_, uint256 rebase, uint256 totalStakedBefore, uint256 totalStakedAfter, uint256 amountRebased, uint256 index, uint256 blockNumberOccured)',
 } as const
 
 /**

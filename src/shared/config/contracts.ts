@@ -95,6 +95,11 @@ export interface BscContracts {
   stakingPool: Address
   /** Treasury——总储备数据来源（合约文档 docs/onchain-manual/contracts/treasury.md） */
   treasury: Address
+  /**
+   * RewardManager——基础 Rebase ppm（手册 RewardManager.baseRewardRate）。
+   * @see docs/onchain-manual/contracts/rewardmanager.md
+   */
+  rewardManager: Address
 }
 
 /**
@@ -147,4 +152,5 @@ export const BSC_CONTRACTS = {
   sagx: requireEnvAddress('VITE_BSC_SAGX'),
   stakingPool: requireEnvAddress('VITE_BSC_STAKING_POOL'),
   treasury: requireEnvAddress('VITE_BSC_TREASURY'),
+  rewardManager: requireEnvAddress('VITE_BSC_REWARD_MANAGER'),
 } as const satisfies BscContracts

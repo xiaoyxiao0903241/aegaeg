@@ -30,7 +30,7 @@ export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
   })
 }
 
-/** 最近一次 sAGX rebase 率与每日 epoch 数；与 Hub 概览拆开。 */
+/** RewardManager 基础 Rebase 率与展示用日频 2；与 Hub 概览拆开。 */
 export function useLatestSagxRebaseRateQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.sagxLatestRebase,

@@ -13,6 +13,7 @@ import {
   epochRebasePctFrom1e18,
   lockedBonusBps,
   scenarioPeriodYieldPct,
+  YIELD_EPOCHS_PER_DAY,
 } from '~/core/staking/staking-yield'
 import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -58,7 +59,6 @@ export function useStakeDock() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useDappHost()
-  const overviewQuery = useStakingHubOverviewQuery()
   const rebaseQuery = useLatestSagxRebaseRateQuery()
 
   const stake = useStakeSession(sessionReady, {
@@ -103,11 +103,11 @@ export function useStakeDock() {
       : writeBlockHint(stake.blockReason, t.staking.blocked)
 
   const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
-  const baseDaily = baseDailyPctFromEpoch(epochPct, overviewQuery.data?.epochsPerDay)
+  const baseDaily = baseDailyPctFromEpoch(epochPct, YIELD_EPOCHS_PER_DAY)
   const yieldMeta = {
     baseDaily: formatYieldPct(baseDaily),
     periodYield: formatYieldPct(
-      scenarioPeriodYieldPct(epochPct, overviewQuery.data?.epochsPerDay, stake.period, 'stake'),
+      scenarioPeriodYieldPct(epochPct, YIELD_EPOCHS_PER_DAY, stake.period, 'stake'),
     ),
     bonus: formatBonusPct(lockedBonusBps(stake.period)),
   }

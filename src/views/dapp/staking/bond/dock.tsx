@@ -1,6 +1,10 @@
 import { bondSoldUsd } from '~/core/staking/bond-sold-usd'
 import { BOND_PERIODS, type BondKind, type BondPeriod } from '~/core/staking/staking-period'
-import { epochRebasePctFrom1e18, scenarioPeriodYieldPct } from '~/core/staking/staking-yield'
+import {
+  epochRebasePctFrom1e18,
+  scenarioPeriodYieldPct,
+  YIELD_EPOCHS_PER_DAY,
+} from '~/core/staking/staking-yield'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -21,10 +25,7 @@ import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
 import { useBondDock } from '~/views/dapp/staking/bond/use-bond'
 import { formatYieldPct } from '~/views/dapp/staking/shared'
-import {
-  useLatestSagxRebaseRateQuery,
-  useStakingHubOverviewQuery,
-} from '~/web3/staking/use-staking-queries'
+import { useLatestSagxRebaseRateQuery } from '~/web3/staking/use-staking-queries'
 
 function parseDiscountPct(label: string): number | null {
   const n = Number(label.replace(/%$/, '').trim())
@@ -59,10 +60,9 @@ export function BondDock({ kind }: { kind: BondKind }) {
     periodLabels,
   } = useBondDock(kind)
   const spotUsd = useAgxPriceUsd()
-  const overviewQuery = useStakingHubOverviewQuery()
   const rebaseQuery = useLatestSagxRebaseRateQuery()
   const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
-  const epochsPerDay = overviewQuery.data?.epochsPerDay
+  const epochsPerDay = YIELD_EPOCHS_PER_DAY
   const agxDecimals = EXCHANGE_CONFIG.tokens.agx.decimals
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [
