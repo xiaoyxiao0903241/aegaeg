@@ -253,6 +253,17 @@ export const queryKeys = {
       if (!account) return base
       return [...base, account.toLowerCase(), slippageBps] as const
     },
+    /** 市价「兑换价格」：Router.getAmountsOut 原值，与成交报价（可含卖税）分缓存。 */
+    swapSpotRate: (tokenIn: string, tokenOut: string, amountIn: string, pathKey = '') =>
+      [
+        'chain',
+        'swap',
+        'spotRate',
+        tokenIn.toLowerCase(),
+        tokenOut.toLowerCase(),
+        amountIn,
+        pathKey,
+      ] as const,
     flashSwapQuote: (pairId: string, direction: string, amountIn: string) =>
       ['chain', 'flashSwap', 'quote', pairId, direction, amountIn] as const,
     flashSwapBalances: flashSwapBalancesPrefix,

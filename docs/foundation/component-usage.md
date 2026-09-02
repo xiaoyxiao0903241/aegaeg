@@ -76,7 +76,7 @@
 |布局|`flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`|
 |API|`Tile` · `Tile.Label` · 主值 children · `Tile.Note`|
 |网格|`Grid`（`shared/components/grid.tsx`；PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列并抵消子项 col-span；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数|
-|OUT|program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 奖励 Hub（pill/deco）→ **自建具名组件**（禁 `*-content` 内联 Card+div 汤）；表 → `Table`（下节）。标准 Label+主值+可选 Note 的 elevated 指标瓦漏迁必须 `Tile`+`Grid`；缓冲池 AGX/gAGX 多列行归「缓冲复卡」OUT|
+|OUT|program 导航 · 资产持仓/缓冲复卡 · 共建级别大卡 · 机制文案 · 奖励 Hub（pill/deco）→ **自建具名组件**（禁 `*-content` 内联 Card+div 汤）；表 → `Table`（下节）。标准 Label+主值+可选 Note 的 elevated 指标瓦漏迁必须 `Tile`+`Grid`；缓冲池 AGX/gAGX 多列行归「缓冲复卡」OUT|
 
 ### 内容 — 页袋组合
 

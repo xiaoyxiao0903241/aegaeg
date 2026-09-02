@@ -1504,7 +1504,7 @@ const app = defineMessages({
     myTeam: 'Miembros de la comunidad',
     genesisTitle: 'Actual',
     cobuildLevel: 'Nivel de co-construcción',
-    makingLevel: 'Rango de market making',
+    makingLevel: 'Nivel de co-construcción',
     inviteTitle: 'Empieza a invitar · comparte el valor del crecimiento del ecosistema',
     programs: {
       title: 'Programas de apoyo al ecosistema',

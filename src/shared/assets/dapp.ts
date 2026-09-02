@@ -171,7 +171,7 @@ const cobuildTierDecos = [
 ] as const
 
 /**
- * 按做市等级取共建级别装饰图。
+ * 按共建级别取共建级别装饰图。
  *
  * A1–A13 用对应压缩图；高于 A13 用 A13；无档 / 非法用 fallback。
  *

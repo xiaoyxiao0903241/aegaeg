@@ -1386,8 +1386,8 @@ const app = defineMessages({
     directReferrals: '直推人數',
     myTeam: '社區人數',
     genesisTitle: '當前',
-    cobuildLevel: '共建等級',
-    makingLevel: '做市等級',
+    cobuildLevel: '共建級別',
+    makingLevel: '共建級別',
     inviteTitle: '開始邀請 · 共享生態成長價值',
     programs: {
       title: '生態支持計劃',

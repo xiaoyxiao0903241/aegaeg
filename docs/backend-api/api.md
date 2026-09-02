@@ -745,7 +745,7 @@ market_fund_claimable_agx = 做市津贴 unlocked_claimable（AGX，单独字段
 
 汇总当前用户做市相关概览数据：
 total_reward = user_performance.total_dao_reward（总奖励 gAGX）；
-making_rank = 团队/做市等级；
+making_rank = 团队/共建级别；
 personal_position = user_performance.active_stake_balance（个人总持仓 AGX，与资产页一致）；
 making_market = 总业绩 AGX；
 small_market = making_market − MAX(直推 making_market + making_personal_balance)（小区业绩）；
@@ -1520,7 +1520,7 @@ today_addition_sales_team_market（团队业绩减今日 daily.sales_team_market
 通过 referral_ancestors 查询 ancestor_account_id 为当前用户且 depth=1 的直推下级，
 关联 users.register_time、user_performance.direct_referral_count（ACTIVE）、
 user_performance.presale_rank 与 sales_team_market（ACTIVE）；
-making_market（团队业绩 AGX）、making_rank（做市等级）、active_stake_balance（持仓 AGX）；
+making_market（团队业绩 AGX）、making_rank（共建级别）、active_stake_balance（持仓 AGX）；
 making_market_usd / active_stake_balance_usd = 对应 AGX × agx_price_logs 最新价。
 
 **Request body**
@@ -1589,7 +1589,7 @@ today_addition_making_direct_team_market（今日直推业绩增量 USD，daily.
 team_count（团队人数）、
 making_market（团队业绩 USD = AGX × 最新价）、
 today_addition_making_market（今日团队业绩增量 USD，daily.making_market_delta × 最新价）、
-making_rank（做市等级）。
+making_rank（共建级别）。
 
 **Request body**
 

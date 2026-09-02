@@ -442,7 +442,7 @@ export function mapRankRewardLogToRow(
  *
  * @param item 后端团队成员记录
  * @param agxPriceUsd AGX 美元单价；无价时 `$0.00`
- * @returns 绑定时间、地址、团队业绩与做市等级的单元格数组
+ * @returns 绑定时间、地址、团队业绩与共建级别的单元格数组
  */
 export function mapRankRewardTeamMemberToRow(
   item: RankRewardTeamMemberItem,

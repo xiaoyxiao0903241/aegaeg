@@ -1442,7 +1442,7 @@ const app = defineMessages({
     myTeam: 'สมาชิกชุมชน',
     genesisTitle: 'ปัจจุบัน',
     cobuildLevel: 'ระดับร่วมสร้าง',
-    makingLevel: 'ระดับทำตลาด',
+    makingLevel: 'ระดับร่วมสร้าง',
     inviteTitle: 'เริ่มเชิญ · แบ่งปันมูลค่าการเติบโตของระบบนิเวศ',
     programs: {
       title: 'โปรแกรมสนับสนุนระบบนิเวศ',

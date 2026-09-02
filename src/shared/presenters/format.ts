@@ -29,7 +29,7 @@ export function formatTableGenesisRank(rank: number | undefined | null): string 
   return `S${Math.trunc(rank)}`
 }
 
-/** 做市等级 → `A#`；非法或非正返回 emptyLabel。 */
+/** 共建级别 → `A#`；非法或非正返回 emptyLabel。 */
 export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
   return `A${Math.trunc(rank)}`
