@@ -72,7 +72,7 @@ export function isXmineSubviewClosed(view: string): boolean {
 /**
  * 把关闭中的 X 挖矿 hash 改回对应 Tab 的 hub。
  *
- * 解析已落到 hub 后，地址栏仍会停在 `#staking/xmine`；这里改掉，避免看起来像进了子页。
+ * 须在 `dappLocationFromHash` 之后调用：先水合 hub，再改地址栏。
  */
 export function replaceClosedXmineHash(): void {
   const raw = window.location.hash.replace(/^#/, '').trim()
