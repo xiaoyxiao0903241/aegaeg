@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'หุ้น',
     confirm: 'ยืนยัน',
     close: 'ปิด',
+    comingSoon: 'เร็วๆ นี้',
     splitDragHint: 'ลากเพื่อปรับสัดส่วน',
     paginationTotal: 'ทั้งหมด {total}',
     paginationPerPage: '{size} ต่อหน้า',

@@ -36,7 +36,9 @@ test('EX-B4 deep link resolves exchange/burn', async () => {
 })
 
 test('staking deep link resolves hub and subviews', async () => {
-  const { dappLocationFromHash } = await loadModule('/src/shared/config/dapp-deep-links.ts')
+  const { dappLocationFromHash, isXmineSubviewClosed } = await loadModule(
+    '/src/shared/config/dapp-deep-links.ts',
+  )
 
   assert.deepEqual(dappLocationFromHash('staking'), {
     tab: 'staking',
@@ -47,6 +49,11 @@ test('staking deep link resolves hub and subviews', async () => {
     ...empty,
     stakingView: 'stake',
   })
+  assert.deepEqual(dappLocationFromHash('#staking/xmine'), {
+    tab: 'staking',
+    ...empty,
+    stakingView: isXmineSubviewClosed('xmine') ? 'hub' : 'xmine',
+  })
   assert.deepEqual(dappLocationFromHash('staking/nope'), {
     tab: 'staking',
     ...empty,
@@ -55,7 +62,9 @@ test('staking deep link resolves hub and subviews', async () => {
 })
 
 test('assets deep link resolves hub and subviews', async () => {
-  const { dappLocationFromHash } = await loadModule('/src/shared/config/dapp-deep-links.ts')
+  const { dappLocationFromHash, isXmineSubviewClosed } = await loadModule(
+    '/src/shared/config/dapp-deep-links.ts',
+  )
 
   assert.deepEqual(dappLocationFromHash('assets'), {
     tab: 'assets',
@@ -65,6 +74,11 @@ test('assets deep link resolves hub and subviews', async () => {
     tab: 'assets',
     ...empty,
     assetsView: 'stake',
+  })
+  assert.deepEqual(dappLocationFromHash('#assets/xmine'), {
+    tab: 'assets',
+    ...empty,
+    assetsView: isXmineSubviewClosed('xmine') ? 'hub' : 'xmine',
   })
   assert.deepEqual(dappLocationFromHash('assets/nope'), {
     tab: 'assets',

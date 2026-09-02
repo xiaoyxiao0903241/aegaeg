@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'शेयर',
     confirm: 'पुष्टि करें',
     close: 'बंद करें',
+    comingSoon: 'जल्द आ रहा है',
     splitDragHint: 'खींचकर समायोजित करें',
     paginationTotal: 'कुल {total} प्रविष्टियाँ',
     paginationPerPage: 'प्रति पृष्ठ {size}',

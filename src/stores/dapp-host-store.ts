@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 
-import { dappLocationFromHash, getInitialTab } from '~/shared/config/dapp-deep-links'
+import {
+  dappLocationFromHash,
+  getInitialTab,
+  replaceClosedXmineHash,
+} from '~/shared/config/dapp-deep-links'
 import { type DappTab, resolveDappTabSelect } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -117,6 +121,7 @@ export const useDappHostStore = create<DappHostStore>((set, get) => {
     setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
     resetForeignSubviewStores,
     syncTabFromHash: () => {
+      replaceClosedXmineHash()
       const loc = dappLocationFromHash(window.location.hash.slice(1))
       if (!loc) return
       set({ activeTab: loc.tab })

@@ -3,6 +3,7 @@ import {
   type AssetsView,
   exchangeHashForView,
   type ExchangeView,
+  isXmineSubviewClosed,
   releaseHashForView,
   type ReleaseView,
   rewardsHashForView,
@@ -40,12 +41,20 @@ export function openExchangeView(view: ExchangeView) {
 
 /** 跳转到指定 assets 子视图（hub 卡片 / 空态按钮 / 深链接）。 */
 export function openAssetsView(view: AssetsView) {
-  openSubview(useAssetsViewStore.getState().setView, assetsHashForView, view)
+  openSubview(
+    useAssetsViewStore.getState().setView,
+    assetsHashForView,
+    isXmineSubviewClosed(view) ? 'hub' : view,
+  )
 }
 
 /** 跳转到指定 staking 子视图（hub 模式卡片 / 深链接）。 */
 export function openStakingView(view: StakingView) {
-  openSubview(useStakingViewStore.getState().setView, stakingHashForView, view)
+  openSubview(
+    useStakingViewStore.getState().setView,
+    stakingHashForView,
+    isXmineSubviewClosed(view) ? 'hub' : view,
+  )
 }
 
 /** 跳转到指定 rewards 子视图。 */

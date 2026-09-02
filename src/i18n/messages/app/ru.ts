@@ -14,6 +14,7 @@ const app = defineMessages({
     shareUnit: 'долей',
     confirm: 'Подтвердить',
     close: 'Закрыть',
+    comingSoon: 'Скоро',
     splitDragHint: 'Перетащите, чтобы изменить',
     paginationTotal: 'Всего {total}',
     paginationPerPage: '{size} на странице',

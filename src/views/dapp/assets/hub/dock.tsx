@@ -4,6 +4,7 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { useAssetsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
 import { useI18n } from '~/i18n/use-i18n'
 import { assetsHubAssets } from '~/shared/assets/dapp'
+import { StatusBadge } from '~/shared/components/badge'
 import { ClaimableDot } from '~/shared/components/claimable-dot'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
@@ -11,7 +12,7 @@ import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
-import type { AssetsView } from '~/shared/config/dapp-deep-links'
+import { type AssetsView, isXmineSubviewClosed } from '~/shared/config/dapp-deep-links'
 import { useAssetsHub } from '~/views/dapp/assets/hub/use-hub'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
@@ -62,23 +63,29 @@ export function AssetsHubDock() {
       {modes.map((key) => {
         const stats = overview.modes[key]
         const modeCopy = t.assets.hub.modes[key]
+        const closed = isXmineSubviewClosed(key)
         return (
           <InteractiveCard
             aria-label={modeCopy.title}
             hitArea="overlay"
             key={key}
-            onClick={() => openAssetsView(key)}
+            onClick={closed ? undefined : () => openAssetsView(key)}
             tourId={key === 'stake' ? 'asset-mode-stake' : undefined}
           >
             {/* 不加 relative：红点锚到整张卡，不锚到内容区 */}
             <div className="pointer-events-none z-10 grid gap-2">
               {key !== 'xmine' && dots[key] ? <ClaimableDot /> : null}
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                <div className="flex min-w-0 items-center gap-1">
+                <div className="flex min-w-0 flex-wrap items-center gap-1">
                   <Icon alt="" size="xl" src={ASSET_MODE_ICONS[key]} />
                   <Text as="span" className="font-semibold wrap-break-word" variant="detail">
                     {modeCopy.title}
                   </Text>
+                  {closed ? (
+                    <StatusBadge size="compact" tone="pending">
+                      {t.common.comingSoon}
+                    </StatusBadge>
+                  ) : null}
                 </div>
                 <div className="pointer-events-auto flex items-center gap-1">
                   <Text as="span" className="wrap-break-word" variant="copy">
