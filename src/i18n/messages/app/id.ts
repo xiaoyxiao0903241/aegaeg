@@ -850,8 +850,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'Masuk dengan tanda tangan untuk melihat',
       enterClaim: 'Masuk untuk klaim',
-      sessionHint:
-        'Selesaikan sign-in wallet sebelum klaim. Menghubungkan wallet tidak sama dengan login bisnis.',
       stats: {
         totalRewards: 'Total hadiah',
         tier: 'Level Bangun Bersama',

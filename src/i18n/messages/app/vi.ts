@@ -841,8 +841,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'Ký đăng nhập để xem',
       enterClaim: 'Vào nhận',
-      sessionHint:
-        'Hãy hoàn tất ký đăng nhập ví trước khi nhận. Kết nối ví không bằng đăng nhập nghiệp vụ.',
       stats: {
         totalRewards: 'Tổng phần thưởng',
         tier: 'Hạng Cùng xây dựng',

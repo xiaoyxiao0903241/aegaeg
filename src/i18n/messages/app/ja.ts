@@ -850,8 +850,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: '署名ログイン後に表示',
       enterClaim: '受け取りへ',
-      sessionHint:
-        '受取前にウォレット署名ログインを完了してください。ウォレット接続は業務ログインとは異なります。',
       stats: {
         totalRewards: '総リワード',
         tier: '共創ランク',

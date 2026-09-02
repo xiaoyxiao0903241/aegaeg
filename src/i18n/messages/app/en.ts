@@ -840,8 +840,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'Sign in to view',
       enterClaim: 'Enter to claim',
-      sessionHint:
-        'Complete wallet sign-in before claiming. Connecting a wallet is not the same as a business login.',
       stats: {
         totalRewards: 'Total rewards',
         tier: 'Co-build tier',

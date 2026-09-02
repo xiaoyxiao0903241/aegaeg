@@ -228,12 +228,6 @@ export function RewardsHubDock() {
       {walletReady && hideZero && visibleCards.length === 0 ? (
         <Table.Empty embedded title={t.rewards.hub.hideZeroEmpty} />
       ) : null}
-
-      {walletReady && !sessionReady ? (
-        <Text as="p" tone="muted-foreground" variant="copy">
-          {t.rewards.hub.sessionHint}
-        </Text>
-      ) : null}
     </DockFrame>
   )
 }

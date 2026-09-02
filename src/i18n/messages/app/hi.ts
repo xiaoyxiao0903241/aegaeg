@@ -837,7 +837,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'देखने के लिए साइन इन करें',
       enterClaim: 'दावा करने के लिए प्रवेश करें',
-      sessionHint: 'दावा से पहले वॉलेट साइन-इन पूरा करें। वॉलेट कनेक्ट करना व्यवसाय लॉगिन नहीं है।',
       stats: {
         totalRewards: 'कुल पुरस्कार',
         tier: 'सह-निर्माण स्तर',

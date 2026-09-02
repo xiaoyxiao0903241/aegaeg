@@ -842,8 +842,6 @@ const app = defineMessages({
       balancePlaceholder: '0.00',
       signInForBalance: 'Войдите по подписи, чтобы смотреть',
       enterClaim: 'Перейти к получению',
-      sessionHint:
-        'Перед получением завершите вход подписью кошелька. Подключение кошелька — не то же самое, что бизнес-логин.',
       stats: {
         totalRewards: 'Всего наград',
         tier: 'Уровень со-строительства',
