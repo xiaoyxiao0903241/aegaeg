@@ -26,7 +26,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 /**
  * 缓冲池交互面板状态
  *
- * 读取分流器 + 归档 PRV 快照；AGX / gAGX 分卡、分 mutation 领取；
+ * 读取分流器快照；AGX / gAGX 分卡、分 mutation 领取；
  * 刷新按币种隔离 busy，避免一点全卡转圈。
  */
 export function useBuffer() {

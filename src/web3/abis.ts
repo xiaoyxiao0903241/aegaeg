@@ -601,28 +601,6 @@ export const AEGIS_SPLITTER_ERRORS = [
 ] as const
 
 /**
- * 归档 PrincipalReleaseVault — 历史本金释放单领取（无 token 字段）。
- * @see 手册 §13（归档 ABI；新单不再进入）
- */
-export const PRINCIPAL_RELEASE_VAULT_METHODS = {
-  getReleaseCount: 'function getReleaseCount(address user) view returns (uint256)',
-  getRelease:
-    'function getRelease(address user, uint256 index) view returns ((uint256 amount, uint256 claimed, uint256 startTime, uint256 duration) release, uint256 claimableAmount, uint256 remainingAmount, uint256 endTime, bool fullyClaimed)',
-  claimable: 'function claimable(address user, uint256 index) view returns (uint256)',
-  claimMany: 'function claimMany(uint256 start, uint256 limit)',
-} as const
-
-export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
-  'error ErrorZeroAddress()',
-  'error ErrorZeroAmount()',
-  'error ErrorNotAuthorized()',
-  'error ErrorIndexOutOfBounds()',
-  'error ErrorNothingToClaim()',
-  'error ErrorCallerNotAuthorized()',
-  'error ErrorAlreadyMigrated()',
-] as const
-
-/**
  * RestakeConfig 复投计划 — 时长 → restakePlanIndex（保留链上原始 index）。
  * @see 手册 §9 贡献值与 Mixed 领奖
  */
