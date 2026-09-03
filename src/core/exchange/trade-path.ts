@@ -11,6 +11,14 @@ export type TradeTokenKey = 'usd1' | 'agx' | 'x'
 /** 市价可选代币。 */
 export const TRADE_TOKEN_KEYS = ['usd1', 'agx', 'x'] as const satisfies readonly TradeTokenKey[]
 
+/** 暂隐市价卖 X。恢复时改 `false`。 */
+export const TRADE_X_SELL_CLOSED = true
+
+/** 市价卖出侧是否暂时不提供该币。 */
+export function isTradeXSellClosed(key: TradeTokenKey): boolean {
+  return TRADE_X_SELL_CLOSED && key === 'x'
+}
+
 export type TradeTokenAddresses = Record<TradeTokenKey, `0x${string}`>
 
 /**
