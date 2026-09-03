@@ -1,6 +1,7 @@
 import { toast } from 'sonner'
 
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
+import { appEnv } from '~/shared/config/env'
 import { ContractRevertError, decodeContractRevert } from '~/web3/decode-contract-revert'
 import { readErrorText } from '~/web3/errors/error-text'
 import { type ErrorMessageContext, getErrorMessage } from '~/web3/errors/get-error-message'
@@ -30,7 +31,7 @@ export function presentUserFacingError(
   if (error == null) return
   if (isUserRejectedWalletError(error)) return
 
-  if (import.meta.env.DEV) {
+  if (appEnv.debugMode) {
     const decoded = decodeContractRevert(error)
     const errorName =
       decoded?.errorName ?? (error instanceof ContractRevertError ? error.errorName : undefined)

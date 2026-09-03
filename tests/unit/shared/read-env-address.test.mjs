@@ -32,3 +32,20 @@ test('parseRequiredString / number / boolean are fail-closed', async () => {
   assert.equal(parseRequiredBoolean('VITE_API_DERIVE_FROM_DOMAIN', '0'), false)
   assert.throws(() => parseRequiredBoolean('VITE_API_DERIVE_FROM_DOMAIN', 'maybe'), /Invalid/)
 })
+
+test('parseDebugMode is off when missing, empty, or not true/1', async () => {
+  const { parseDebugMode } = await loadModule('/src/shared/config/env.ts')
+  assert.equal(parseDebugMode(undefined), false)
+  assert.equal(parseDebugMode(''), false)
+  assert.equal(parseDebugMode('  '), false)
+  assert.equal(parseDebugMode('false'), false)
+  assert.equal(parseDebugMode('0'), false)
+  assert.equal(parseDebugMode('maybe'), false)
+})
+
+test('parseDebugMode is on only for true or 1', async () => {
+  const { parseDebugMode } = await loadModule('/src/shared/config/env.ts')
+  assert.equal(parseDebugMode('true'), true)
+  assert.equal(parseDebugMode('1'), true)
+  assert.equal(parseDebugMode(' true '), true)
+})

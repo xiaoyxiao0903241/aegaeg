@@ -11,6 +11,7 @@ import {
   type TransactionReceipt,
 } from 'viem'
 
+import { appEnv } from '~/shared/config/env'
 import { bscReadClient, chainReadClient } from '~/web3/bsc-read-client'
 import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import {
@@ -110,7 +111,7 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: PublicClie
     if (isContractRevert(error)) {
       throw normalizeContractRevertError(error, call.abi)
     }
-    if (import.meta.env.DEV) {
+    if (appEnv.debugMode) {
       const decoded = decodeContractRevert(error, call.abi)
       console.warn('[preflight] simulate skipped (non-revert):', decoded?.errorName ?? error)
     }
