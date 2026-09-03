@@ -29,10 +29,32 @@ export function formatTableGenesisRank(rank: number | undefined | null): string 
   return `S${Math.trunc(rank)}`
 }
 
-/** 共建级别 → `A#`；非法或非正返回 emptyLabel。 */
-export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
+/** 共建级别 → `A#`；非法或非正返回 emptyLabel。加赠仅在 `is_boost_rank` 且 `boost_rank>0` 时拼 `(+N)`。 */
+export function formatMakingRankLabel(
+  rank: number | null | undefined,
+  emptyLabel: string,
+  boost?: { is_boost_rank?: boolean | null; boost_rank?: number | null } | null,
+): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
-  return `A${Math.trunc(rank)}`
+  return `A${Math.trunc(rank)}${formatMakingRankBoostSuffix(rank, boost)}`
+}
+
+/**
+ * 加赠后缀。无真实档、未加赠或加赠为 0 时返回空串。
+ *
+ * @param makingRank 真实 `making_rank`
+ * @param boost 接口加赠字段
+ * @returns `(+N)` 或 `''`
+ */
+export function formatMakingRankBoostSuffix(
+  makingRank: number | null | undefined,
+  boost?: { is_boost_rank?: boolean | null; boost_rank?: number | null } | null,
+): string {
+  if (makingRank == null || !Number.isFinite(makingRank) || makingRank <= 0) return ''
+  if (boost?.is_boost_rank !== true) return ''
+  const n = boost.boost_rank
+  if (n == null || !Number.isFinite(n) || n <= 0) return ''
+  return `(+${Math.trunc(n)})`
 }
 
 /** 把 API 的 presale_rank（S1=1 …）映射为等级表中 0 基行号。 */

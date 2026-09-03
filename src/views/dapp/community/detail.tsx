@@ -167,9 +167,10 @@ export function CommunityDetail() {
   })
 
   const makingRank = sessionReady && !authPending ? makingOverview?.making_rank : null
-  const rankValue = formatMakingRankLabel(makingRank, '—')
+  const rankKey = formatMakingRankLabel(makingRank, '—')
+  const rankValue = formatMakingRankLabel(makingRank, '—', makingOverview)
   const rewardRateNote = interpolate(t.community.statRewardRate, {
-    rate: t.rewards.hub.tierTable.rows.find((row) => row.level === rankValue)?.rate ?? '—',
+    rate: t.rewards.hub.tierTable.rows.find((row) => row.level === rankKey)?.rate ?? '—',
   })
 
   const stats: CommunityStat[] = [

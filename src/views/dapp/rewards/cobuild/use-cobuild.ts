@@ -25,7 +25,7 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatMakingRankBoostSuffix, formatNumber } from '~/shared/presenters/format'
 import { useCobuildSessionStore } from '~/stores/rewards-session-store'
 import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
@@ -213,7 +213,9 @@ export function useCobuild() {
   const nextDef = cobuildNextTier(currentLevel)
   const liveLoading = !sessionReady || (pending && summary == null)
 
-  const tierCurrent = liveLoading ? tierEmpty : cobuildLevelLabel(currentLevel, cobuild)
+  const tierCurrent = liveLoading
+    ? tierEmpty
+    : `${cobuildLevelLabel(currentLevel, cobuild)}${formatMakingRankBoostSuffix(summary?.making_rank, summary)}`
   const tierNext = nextDef == null ? NON_NUMERIC_EMPTY : cobuildLevelLabel(nextDef.id, cobuild)
   const tierCurrentRate =
     isNone || liveLoading ? NON_NUMERIC_EMPTY : cobuildRateOf(currentLevel, tierRows)

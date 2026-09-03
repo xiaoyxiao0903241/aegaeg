@@ -1,3 +1,5 @@
+import type { MakingRankBoost } from '~/shared/api/types/common'
+
 export interface SalesLogItem {
   id: number
   /** 期数 (phaseIndex + 1) */
@@ -76,7 +78,7 @@ export interface QualifiedPartitionsResponse {
 }
 
 /** 与 OpenAPI TeamReferralItem 对齐（`POST /team/referrals`）。 */
-export interface TeamReferralItem {
+export interface TeamReferralItem extends MakingRankBoost {
   address: string
   register_time: string | null
   presale_rank: number
@@ -86,8 +88,6 @@ export interface TeamReferralItem {
   making_market: string
   /** 团队业绩（USD） */
   making_market_usd: string
-  /** 共建级别 */
-  making_rank: number
   /** 持仓（AGX） */
   active_stake_balance: string
   /** 持仓（USD） */
@@ -117,14 +117,13 @@ export interface TeamCommunityOverview {
  *
  * @see docs/backend-api/api.md #team/making-overview
  */
-export interface TeamMakingOverview {
+export interface TeamMakingOverview extends MakingRankBoost {
   direct_referral_count: number
   making_direct_team_market: string
   today_addition_making_direct_team_market: string
   team_count: number
   making_market: string
   today_addition_making_market: string
-  making_rank: number
 }
 
 export interface TeamRewardClaimLogItem {
@@ -152,9 +151,8 @@ export interface CommunityFundLogItem {
   amount: string
 }
 
-export interface MakingOverview {
+export interface MakingOverview extends MakingRankBoost {
   total_reward: string
-  making_rank: number
   personal_position: string
   making_market: string
   small_market: string

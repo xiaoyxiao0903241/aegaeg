@@ -79,7 +79,7 @@ export function useRewardsHub(): HubStats {
       ? tierEmpty
       : pending && overview == null
         ? tierEmpty
-        : formatMakingRankLabel(rank, tierEmpty),
+        : formatMakingRankLabel(rank, tierEmpty, overview),
     tierRowIndex: makingRankToRowIndex(rank),
     tierDecoSrc: cobuildTierDecoSrc(rank, dappAssets.rewardsHubTierDeco),
     personalUsd: formatUsdFromAgx(sessionReady ? overview?.personal_position : null, priceUsd),
