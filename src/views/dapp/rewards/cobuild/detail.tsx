@@ -2,7 +2,7 @@
  * 共建奖详情页
  *
  * 顶部六张统计卡（总奖励、做市、我的仓位、直推数、贡献、下次发放），
- * 中部等级卡展示当前/下一级档位与分档晋升条件；标题右侧可切换测试级别。
+ * 中部等级卡按接口级别展示当前/下一级档位与分档晋升条件。
  * 下方为等级记录 / 超越记录双 Tab 表格与可按列排序的「我的团队」表，底部为 FAQ。
  */
 import { COBUILD_TEAM_COLUMN_SORT, type CobuildTeamSort } from '~/core/rewards/cobuild-team-sort'
@@ -12,7 +12,6 @@ import { Detail } from '~/shared/components/detail'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { Section } from '~/shared/components/section'
-import { SelectMenu } from '~/shared/components/select-menu'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
@@ -50,9 +49,6 @@ export function CobuildDetail() {
     tierReqs,
     noLevelHint,
     reqCols,
-    previewLevel,
-    setPreviewLevel,
-    previewOptions,
     recordRows,
     recordsLoading,
     recordsPage,
@@ -121,20 +117,7 @@ export function CobuildDetail() {
       </Section>
 
       <Section>
-        <div className="flex items-center justify-between gap-3">
-          <Section.Title>{cobuild.tierTitle}</Section.Title>
-          <span className="inline-flex items-center gap-2">
-            <Text as="span" className="leading-none text-foreground/45" variant="caption">
-              {cobuild.tierSetLevel}
-            </Text>
-            <SelectMenu
-              ariaLabel={cobuild.tierSetLevelAria}
-              onSelect={(value) => setPreviewLevel(value as typeof previewLevel)}
-              options={previewOptions}
-              value={previewLevel}
-            />
-          </span>
-        </div>
+        <Section.Title>{cobuild.tierTitle}</Section.Title>
         <CobuildTierCard
           achievedLabel={achievedLabel}
           currentLabel={cobuild.tierCurrent}

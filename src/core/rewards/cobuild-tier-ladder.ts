@@ -29,7 +29,6 @@ export const COBUILD_DUAL_LINE_TARGET = 2
 
 export type CobuildNamedLevel = (typeof COBUILD_NAMED_LEVELS)[number]
 export type CobuildLevelId = typeof COBUILD_NONE_ID | CobuildNamedLevel | typeof COBUILD_LIFETIME_ID
-export type CobuildPreviewLevel = 'api' | CobuildLevelId
 
 type VolumeTeam = { kind: 'volume'; usd: number }
 type DualTeam = { kind: 'dual'; lineLevel: CobuildNamedLevel; otherUsd?: number }
@@ -77,21 +76,6 @@ export const COBUILD_TIER_LADDER: readonly CobuildTierDef[] = [
   { id: 'A13', holdingUsd: 50_000, accounts: 20, team: { kind: 'dual', lineLevel: 'A12' } },
   { id: 'LIFETIME', holdingUsd: 100_000, accounts: 20, team: { kind: 'dual', lineLevel: 'A13' } },
 ]
-
-/** 测试预览用的演示仓位（与 831 原型一致）。 */
-export const COBUILD_PREVIEW_STATS = {
-  holdingUsd: 10_000,
-  accounts: 19,
-  performanceUsd: 186_400,
-  dualLinesDone: 1,
-} as const
-
-export const COBUILD_PREVIEW_NONE_STATS = {
-  holdingUsd: 0,
-  accounts: 0,
-  performanceUsd: 0,
-  dualLinesDone: 0,
-} as const
 
 export type CobuildReqSpec =
   | { kind: 'holding'; targetUsd: number }
