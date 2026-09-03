@@ -23,7 +23,8 @@ function reqBarPct(req: CobuildTierReq): number {
 /**
  * 共建级别进度卡
  *
- * 当前/下一档同一行；下方为晋升条件进度条与徽章。
+ * 当前/下一档同一行；无级别时提示先达成 A1。
+ * 下方为晋升条件：A6–A9 四卡两列，其余三卡。
  * 未达成用主色；已达成用复投蓝。
  */
 export function CobuildTierCard({
@@ -36,8 +37,10 @@ export function CobuildTierCard({
   currentValue,
   hasNext,
   maxLabel,
+  noLevelHint,
   progressCount,
   progressTitle,
+  reqCols = 3,
   reqs,
 }: {
   achievedLabel: string
@@ -49,8 +52,10 @@ export function CobuildTierCard({
   nextLabel: string
   nextRate: string
   nextValue: string
+  noLevelHint: string | null
   progressCount: string
   progressTitle: string
+  reqCols?: 2 | 3
   reqs: ReadonlyArray<CobuildTierReq>
 }) {
   return (
@@ -63,7 +68,11 @@ export function CobuildTierCard({
           <Text as="strong" className="leading-none font-semibold" variant="figure">
             {currentValue}
           </Text>
-          {currentRate !== NON_NUMERIC_EMPTY ? (
+          {noLevelHint ? (
+            <Text as="span" className="leading-none text-foreground/45" variant="caption">
+              {noLevelHint}
+            </Text>
+          ) : currentRate !== NON_NUMERIC_EMPTY ? (
             <StatusBadge className="font-semibold" size="compact" tone="pending">
               {currentRate}
             </StatusBadge>
@@ -103,7 +112,7 @@ export function CobuildTierCard({
               {progressCount}
             </Text>
           </div>
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className={cn('grid gap-3', reqCols === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3')}>
             {reqs.map((req) => {
               const achieved = req.badge.kind === 'achieved'
               return (

@@ -2,7 +2,7 @@
  * 共建奖详情页
  *
  * 顶部六张统计卡（总奖励、做市、我的仓位、直推数、贡献、下次发放），
- * 中部等级卡展示当前/下一级档位与晋升条件进度，
+ * 中部等级卡按接口级别展示当前/下一级档位与分档晋升条件。
  * 下方为等级记录 / 超越记录双 Tab 表格与可按列排序的「我的团队」表，底部为 FAQ。
  */
 import { COBUILD_TEAM_COLUMN_SORT, type CobuildTeamSort } from '~/core/rewards/cobuild-team-sort'
@@ -47,6 +47,8 @@ export function CobuildDetail() {
     tierProgressCount,
     achievedLabel,
     tierReqs,
+    noLevelHint,
+    reqCols,
     recordRows,
     recordsLoading,
     recordsPage,
@@ -126,8 +128,10 @@ export function CobuildDetail() {
           nextLabel={cobuild.tierNext}
           nextRate={tierNextRate}
           nextValue={tierNext}
+          noLevelHint={noLevelHint}
           progressCount={tierProgressCount}
           progressTitle={tierProgressTitle}
+          reqCols={reqCols}
           reqs={tierReqs}
         />
       </Section>
