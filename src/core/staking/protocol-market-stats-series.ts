@@ -168,3 +168,28 @@ export function buildProtocolMarketStatsChart(
   const last = points[points.length - 1]!.value
   return { points, lastValue: last, percentChange }
 }
+
+/**
+ * 把币数量序列换成美元：每点 × 当前 AGX 现价。
+ *
+ * `aggregate-series` 没有当日汇率；缺价时不画美元曲线。
+ * 同一现价缩放不改变涨跌幅，沿用接口 `latest_growth_rate`。
+ * gAGX 与 AGX 1:1，共用现价。
+ *
+ * @param chart 币数量图表
+ * @param priceUsd AGX/USD1 现价
+ * @returns 美元图表；缺价时点与最新值为空
+ */
+export function scaleProtocolMarketStatsChartUsd(
+  chart: ProtocolMarketStatsChart,
+  priceUsd: number | null | undefined,
+): ProtocolMarketStatsChart {
+  if (priceUsd == null || !Number.isFinite(priceUsd) || priceUsd <= 0) {
+    return { points: [], lastValue: null, percentChange: chart.percentChange }
+  }
+  return {
+    points: chart.points.map((p) => ({ ...p, value: p.value * priceUsd })),
+    lastValue: chart.lastValue == null ? null : chart.lastValue * priceUsd,
+    percentChange: chart.percentChange,
+  }
+}

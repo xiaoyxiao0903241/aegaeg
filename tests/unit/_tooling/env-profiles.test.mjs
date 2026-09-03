@@ -72,6 +72,8 @@ test('staging profile overrides API host and test USDT; secrets are filled', () 
   assert.equal(staging.VITE_API_BASE_URL, 'https://api.xdpro.cc/api')
   assert.equal(staging.VITE_APP_HOST, 'xdpro.cc')
   assert.equal(prod.VITE_APP_HOST, 'aegis-x.io')
+  assert.equal(prod.VITE_DEBUG_MODE, 'false')
+  assert.equal(staging.VITE_DEBUG_MODE, 'false')
 
   assert.ok(prod.VITE_THIRDWEB_CLIENT_ID)
   assert.ok(prod.VITE_WALLETCONNECT_PROJECT_ID)

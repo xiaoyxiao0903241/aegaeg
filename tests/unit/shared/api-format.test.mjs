@@ -35,6 +35,21 @@ test('formatMakingRankLabel maps making rank to A# or emptyLabel', async () => {
   assert.equal(formatMakingRankLabel(1.9, '—'), 'A1')
 })
 
+test('formatMakingRankLabel appends (+1) on floor rank when boosted', async () => {
+  const { formatMakingRankBoostSuffix, formatMakingRankLabel, makingRankDisplayRank } =
+    await loadModule('/src/shared/presenters/format.ts')
+
+  // 真实 A3、托底 A5、加赠后 A6 → 展示 A5(+1)
+  assert.equal(formatMakingRankLabel(3, '—', { is_boost_rank: true, boost_rank: 5 }), 'A5(+1)')
+  assert.equal(makingRankDisplayRank(3, { is_boost_rank: true, boost_rank: 5 }), 5)
+  assert.equal(formatMakingRankBoostSuffix({ is_boost_rank: true, boost_rank: 5 }), '(+1)')
+  // 真实已到 A6，不再加赠
+  assert.equal(formatMakingRankLabel(6, '—', { is_boost_rank: false, boost_rank: 5 }), 'A6')
+  assert.equal(formatMakingRankLabel(3, '—', { is_boost_rank: false, boost_rank: 5 }), 'A3')
+  assert.equal(formatMakingRankLabel(3, '—', { is_boost_rank: true, boost_rank: 0 }), 'A3')
+  assert.equal(formatMakingRankLabel(0, '—', { is_boost_rank: true, boost_rank: 0 }), '—')
+})
+
 test('formatShareholderHintForRank renders tier-specific hint', async () => {
   const { formatShareholderHintForRank } = await loadModule('/src/shared/presenters/format.ts')
   const tiers = [
@@ -161,6 +176,8 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
     making_market: '10',
     making_market_usd: '245960',
     making_rank: 0,
+    boost_rank: 0,
+    is_boost_rank: false,
     active_stake_balance: '100',
     active_stake_balance_usd: '8000',
   })
@@ -187,10 +204,28 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
     making_market: '0',
     making_market_usd: '0',
     making_rank: 3,
+    boost_rank: 0,
+    is_boost_rank: false,
     active_stake_balance: '0',
     active_stake_balance_usd: '0',
   })
   assert.equal(ranked[3], 'A3')
+
+  const boosted = mapTeamReferralToCompactRow({
+    address: '0x05A1E51500000000000000000000000000000000',
+    register_time: registerTime,
+    presale_rank: 0,
+    direct_referral_count: 0,
+    sales_team_market: '0',
+    making_market: '0',
+    making_market_usd: '0',
+    making_rank: 3,
+    boost_rank: 5,
+    is_boost_rank: true,
+    active_stake_balance: '0',
+    active_stake_balance_usd: '0',
+  })
+  assert.equal(boosted[3], 'A5(+1)')
 })
 
 test('mapRewardLogToRow uses i18n labels for status', async () => {

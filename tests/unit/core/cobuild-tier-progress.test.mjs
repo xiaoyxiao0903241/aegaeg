@@ -3,6 +3,7 @@ import test from 'node:test'
 
 import {
   agxAmountToUsdProgressCurrent,
+  dualLineProgressBadge,
   progressPct,
 } from '../../../src/core/rewards/cobuild-tier-progress.ts'
 
@@ -20,4 +21,12 @@ test('progressPct: null current → empty (no AGX↔$ compare)', () => {
   assert.deepEqual(progressPct(650, '$1000'), { kind: 'pct', value: '65%' })
   assert.deepEqual(progressPct(1000, '$1000'), { kind: 'achieved' })
   assert.deepEqual(progressPct(0, '$1000'), { kind: 'pct', value: '0%' })
+})
+
+test('dualLineProgressBadge: backend qualified is achieved SSOT', () => {
+  assert.deepEqual(dualLineProgressBadge(null, false, 2), { kind: 'empty' })
+  assert.deepEqual(dualLineProgressBadge(1, null, 2), { kind: 'empty' })
+  assert.deepEqual(dualLineProgressBadge(1, true, 2), { kind: 'achieved' })
+  assert.deepEqual(dualLineProgressBadge(0, false, 2), { kind: 'pct', value: '0%' })
+  assert.deepEqual(dualLineProgressBadge(1, false, 2), { kind: 'pct', value: '50%' })
 })

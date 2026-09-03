@@ -49,7 +49,7 @@ export function useGrant() {
     ? tierEmpty
     : pending && summary == null
       ? '0.00'
-      : formatMakingRankLabel(summary?.making_rank, tierEmpty)
+      : formatMakingRankLabel(summary?.making_rank, tierEmpty, summary)
   const totalClaimed = formatApiStatLabel(sessionReady, pending, summary?.total_claimed_allowance, {
     suffix: ' gAGX',
   })

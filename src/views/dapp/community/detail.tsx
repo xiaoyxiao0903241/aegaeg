@@ -19,7 +19,11 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { rewardsHashForView } from '~/shared/config/dapp-deep-links'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { formatMakingRankLabel, formatNumber } from '~/shared/presenters/format'
+import {
+  formatMakingRankLabel,
+  formatNumber,
+  makingRankDisplayRank,
+} from '~/shared/presenters/format'
 import {
   CommunityInviteCard,
   CommunityProgramCard,
@@ -167,9 +171,12 @@ export function CommunityDetail() {
   })
 
   const makingRank = sessionReady && !authPending ? makingOverview?.making_rank : null
-  const rankValue = formatMakingRankLabel(makingRank, '—')
+  const displayRank =
+    sessionReady && !authPending ? makingRankDisplayRank(makingRank, makingOverview) : null
+  const rankKey = formatMakingRankLabel(displayRank, '—')
+  const rankValue = formatMakingRankLabel(makingRank, '—', makingOverview)
   const rewardRateNote = interpolate(t.community.statRewardRate, {
-    rate: t.rewards.hub.tierTable.rows.find((row) => row.level === rankValue)?.rate ?? '—',
+    rate: t.rewards.hub.tierTable.rows.find((row) => row.level === rankKey)?.rate ?? '—',
   })
 
   const stats: CommunityStat[] = [
@@ -199,7 +206,7 @@ export function CommunityDetail() {
       volume: t.community.cobuildLevel,
       note: statsLoading ? <Skeleton className="h-3.5 w-24" tone="dark" /> : rewardRateNote,
       dark: true,
-      image: cobuildTierDecoSrc(makingRank, dappAssets.communityRankDeco),
+      image: cobuildTierDecoSrc(displayRank, dappAssets.communityRankDeco),
     },
   ]
 

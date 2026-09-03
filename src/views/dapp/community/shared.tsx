@@ -24,7 +24,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[]
     formatApiDateTime(item.register_time),
     <ExplorerLink key={item.address} shortOptions={{ head: 4, tail: 4 }} value={item.address} />,
     formatNumber(item.active_stake_balance_usd ?? 0, { prefix: '$' }),
-    formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
+    formatMakingRankLabel(item.making_rank, TABLE_EMPTY, item),
     formatNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
     formatNumber(item.making_market_usd ?? 0, { digits: 0, trimZeros: true, prefix: '$' }),
   ]

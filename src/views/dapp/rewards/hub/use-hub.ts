@@ -8,6 +8,7 @@ import {
   formatMakingRankLabel,
   formatNumber,
   formatUsdApprox,
+  makingRankDisplayRank,
   parseApiAmount,
 } from '~/shared/presenters/format'
 import { formatApiAmount, formatApiStatLabel } from '~/views/dapp/rewards/shared'
@@ -70,7 +71,7 @@ export function useRewardsHub(): HubStats {
 
   const totalRaw = sessionReady ? overview?.total_reward : null
   const totalFinite = parseApiAmount(totalRaw) ?? 0
-  const rank = sessionReady ? overview?.making_rank : null
+  const rank = sessionReady ? makingRankDisplayRank(overview?.making_rank, overview) : null
 
   return {
     totalRewardGagx: `${formatApiStatLabel(sessionReady, pending, totalRaw)} gAGX`,
@@ -79,7 +80,7 @@ export function useRewardsHub(): HubStats {
       ? tierEmpty
       : pending && overview == null
         ? tierEmpty
-        : formatMakingRankLabel(rank, tierEmpty),
+        : formatMakingRankLabel(rank, tierEmpty, overview),
     tierRowIndex: makingRankToRowIndex(rank),
     tierDecoSrc: cobuildTierDecoSrc(rank, dappAssets.rewardsHubTierDeco),
     personalUsd: formatUsdFromAgx(sessionReady ? overview?.personal_position : null, priceUsd),

@@ -4,6 +4,7 @@ import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Text } from '~/shared/components/text'
+import { appEnv } from '~/shared/config/env'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -32,6 +33,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    if (!appEnv.debugMode) return
     console.error(
       `[ErrorBoundary${this.props.name ? `:${this.props.name}` : ''}]`,
       error,
