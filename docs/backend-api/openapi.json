@@ -3408,6 +3408,21 @@
                 "type": "string",
                 "description": "**说明：** 可用贡献点",
                 "title": "available_contribution"
+              },
+              "qualified_direct_rank_count": {
+                "type": "integer",
+                "description": "**说明：** 直推生效等级 ≥ max(R−1, 0) 的人数（含托底）",
+                "title": "qualified_direct_rank_count"
+              },
+              "is_dual_line_qualified": {
+                "type": "boolean",
+                "description": "**说明：** 是否双线达成：qualified_direct_rank_count ≥ 2",
+                "title": "is_dual_line_qualified"
+              },
+              "other_lines_market": {
+                "type": "string",
+                "description": "**说明：** 其他线业绩（AGX）",
+                "title": "other_lines_market"
               }
             }
           }
