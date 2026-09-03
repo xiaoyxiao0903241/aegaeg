@@ -1,5 +1,5 @@
 import type { DaoGrantStatus } from '~/shared/api/types/claim'
-import type { PaginationParams } from '~/shared/api/types/common'
+import type { MakingRankBoost, PaginationParams } from '~/shared/api/types/common'
 
 export interface LuckyRewardSummary {
   date: string
@@ -37,8 +37,7 @@ export interface LuckyRewardWinnersResponse {
   items: LuckyRewardWinnerItem[]
 }
 
-export interface MarketAllowanceSummary {
-  making_rank: number
+export interface MarketAllowanceSummary extends MakingRankBoost {
   total_allowance: string
   total_claimed_allowance: string
   unlockable_allowance: string
@@ -95,12 +94,11 @@ export interface ParticipationAwardInviterResponse {
   inviter: ParticipationAwardInviter | null
 }
 
-export interface RankRewardSummary {
+export interface RankRewardSummary extends MakingRankBoost {
   total_rank_reward: string
   making_market: string
   direct_referral_count: number
   effective_direct_referral_count: number
-  making_rank: number
   active_stake_balance: string
   available_contribution: string
   /** 直推生效等级 ≥ max(R−1, 0) 的人数（含托底） */

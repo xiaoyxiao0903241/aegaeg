@@ -43,6 +43,19 @@ export function parseRequiredBoolean(key: string, raw: string | undefined): bool
   throw new Error(`Invalid ${key} boolean (expected true/false/1/0): ${trimmed}`)
 }
 
+/**
+ * 解析调试开关：仅 `true` / `1` 才向控制台打印错误。
+ *
+ * 缺省、空值或其它字符串一律关闭，不抛错。
+ *
+ * @param raw `VITE_DEBUG_MODE` 原始值
+ * @returns 是否打印错误
+ */
+export function parseDebugMode(raw: string | undefined): boolean {
+  const trimmed = typeof raw === 'string' ? raw.trim() : ''
+  return trimmed === 'true' || trimmed === '1'
+}
+
 /** 纯解析函数——有单元测试；运行时读取器调用它。 */
 export function parseOptionalCsvUrls(raw: string | undefined): string[] {
   if (typeof raw !== 'string' || !raw.trim()) return []
@@ -97,4 +110,6 @@ export const appEnv = {
   notionEnWhitepaperUrl: requireEnvString('VITE_NOTION_EN_WHITEPAPER_URL'),
   notionEnDocsUrl: requireEnvString('VITE_NOTION_EN_DOCS_URL'),
   notionEnEconomicModelUrl: requireEnvString('VITE_NOTION_EN_ECONOMIC_MODEL_URL'),
+  /** 仅 `true`/`1` 打开控制台错误打印；缺省视为关闭。 */
+  debugMode: parseDebugMode(readRaw('VITE_DEBUG_MODE')),
 } as const
