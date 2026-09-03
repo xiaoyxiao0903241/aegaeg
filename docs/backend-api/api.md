@@ -304,6 +304,9 @@ active_stake_balance、available_contribution 与推荐奖 summary 同源。
 total_rank_reward = SUM(dao_reward_grants.awarded_gross) WHERE reward_type IN (RANK_REWARD, SURPASS_REWARD)（共建奖励合计，gAGX，仅 active_generation 可见代次）；
 making_market、direct_referral_count、effective_direct_referral_count、making_rank 来自 user_performance(ACTIVE)；
 active_stake_balance、available_contribution 与推荐奖同源。
+qualified_direct_rank_count：直推生效等级 ≥ max(R−1, 0) 的人数（含托底）；
+is_dual_line_qualified：上述人数 ≥ 2；
+other_lines_market：其他线业绩（AGX）。
 
 **Request body**
 

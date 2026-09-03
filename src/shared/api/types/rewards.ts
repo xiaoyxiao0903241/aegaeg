@@ -103,6 +103,12 @@ export interface RankRewardSummary {
   making_rank: number
   active_stake_balance: string
   available_contribution: string
+  /** 直推生效等级 ≥ max(R−1, 0) 的人数（含托底） */
+  qualified_direct_rank_count: number
+  /** 双线是否达成：`qualified_direct_rank_count` ≥ 2 */
+  is_dual_line_qualified: boolean
+  /** 其他线业绩（AGX） */
+  other_lines_market: string
 }
 
 export interface RankRewardLogItem {

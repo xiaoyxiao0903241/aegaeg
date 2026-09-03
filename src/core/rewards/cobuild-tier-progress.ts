@@ -1,7 +1,7 @@
 /**
  * 共建档位进度：AGX 量 ↔ USD 门槛（有价才比）。
  *
- * @see docs/backend-api/api.md #rank-reward/summary（active_stake_balance / making_market 为 AGX）
+ * @see docs/backend-api/api.md #rank-reward/summary（active_stake_balance / making_market / other_lines_market 为 AGX）
  */
 
 export type TierReqBadge = { kind: 'achieved' } | { kind: 'pct'; value: string } | { kind: 'empty' }
@@ -30,4 +30,21 @@ export function progressPct(current: number | null, targetRaw: string): TierReqB
   if (current >= target) return { kind: 'achieved' }
   const pct = Math.max(0, Math.min(99, Math.floor((current / target) * 100)))
   return { kind: 'pct', value: `${pct}%` }
+}
+
+/**
+ * 双线徽章：是否达成以后端 `is_dual_line_qualified` 为准；条数只用来画未达成时的百分比。
+ *
+ * @param count `qualified_direct_rank_count`
+ * @param qualified `is_dual_line_qualified`；缺任一则不画
+ * @param target 门槛条数（现为 2）
+ */
+export function dualLineProgressBadge(
+  count: number | null,
+  qualified: boolean | null,
+  target: number,
+): TierReqBadge {
+  if (count == null || qualified == null) return { kind: 'empty' }
+  if (qualified) return { kind: 'achieved' }
+  return progressPct(count, String(target))
 }

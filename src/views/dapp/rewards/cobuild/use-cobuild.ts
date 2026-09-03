@@ -9,6 +9,7 @@ import {
 } from '~/core/rewards/cobuild-tier-ladder'
 import {
   agxAmountToUsdProgressCurrent,
+  dualLineProgressBadge,
   parseMoneyish,
   progressPct,
   type TierReqBadge,
@@ -71,10 +72,13 @@ function specToReq(
     holding: string
     accounts: string
     performance: string
+    dualLines: string
+    otherLine: string
     holdingCurrent: number | null
     accountsCurrent: number | null
     performanceCurrent: number | null
     dualLinesCurrent: number | null
+    dualLineQualified: boolean | null
     otherLineCurrent: number | null
   },
 ): CobuildTierReq {
@@ -109,19 +113,19 @@ function specToReq(
     return {
       label: interpolate(cobuild.reqDualLines, { level: spec.lineLevel }),
       hint: interpolate(cobuild.reqDualLinesHint, { level: spec.lineLevel }),
-      value:
-        preview.dualLinesCurrent == null
-          ? NON_NUMERIC_EMPTY
-          : interpolate(cobuild.reqDualLinesValue, { count: preview.dualLinesCurrent }),
+      value: preview.dualLines,
       target: `/ ${cobuild.reqDualLinesTarget}`,
-      badge: progressPct(preview.dualLinesCurrent, String(spec.target)),
+      badge: dualLineProgressBadge(
+        preview.dualLinesCurrent,
+        preview.dualLineQualified,
+        spec.target,
+      ),
     }
   }
   return {
     label: cobuild.reqOtherLine,
     hint: interpolate(cobuild.reqOtherLineHint, { level: spec.lineLevel }),
-    value:
-      preview.otherLineCurrent == null ? NON_NUMERIC_EMPTY : usdLabel(preview.otherLineCurrent),
+    value: preview.otherLine,
     target: `/ ${usdLabel(spec.targetUsd)}`,
     badge: progressPct(preview.otherLineCurrent, String(spec.targetUsd)),
   }
@@ -230,9 +234,9 @@ export function useCobuild() {
   )
   /**
    * 进度徽章读数：未连接按 0（与展示的 0.00 对齐，显示「0%」）；
-   * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0 AGX。
-   * 持仓/做市门槛为 USD：无 AGX/$ 单价时不折、不画（禁 AGX↔$ 直比）。
-   * 双线 / 其他线接口暂无字段，不画徽章。
+   * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0。
+   * 持仓 / 做市 / 其他线门槛为 USD：无 AGX/$ 单价时不折、不画（禁 AGX↔$ 直比）。
+   * 双线是否达成以后端 `is_dual_line_qualified` 为准。
    */
   const holdingCurrent = !sessionReady
     ? 0
@@ -252,17 +256,44 @@ export function useCobuild() {
     : pending && summary == null
       ? null
       : agxAmountToUsdProgressCurrent(parseMoneyish(summary?.making_market) ?? 0, agxPriceUsd)
+  const dualLinesCurrent = !sessionReady
+    ? 0
+    : pending && summary == null
+      ? null
+      : (summary?.qualified_direct_rank_count ?? 0)
+  const dualLineQualified = !sessionReady
+    ? false
+    : pending && summary == null
+      ? null
+      : (summary?.is_dual_line_qualified ?? false)
+  const otherLineCurrent = !sessionReady
+    ? 0
+    : pending && summary == null
+      ? null
+      : agxAmountToUsdProgressCurrent(parseMoneyish(summary?.other_lines_market) ?? 0, agxPriceUsd)
+  const dualLinesValue = interpolate(cobuild.reqDualLinesValue, {
+    count: label.count(summary?.qualified_direct_rank_count),
+  })
+  const otherLineValue = formatApiAgxUsdLabel(
+    sessionReady,
+    pending,
+    summary?.other_lines_market,
+    agxPriceUsd,
+  )
 
   const tierReqs: CobuildTierReq[] = cobuildNextReqSpecs(currentLevel).map((spec) =>
     specToReq(spec, cobuild, {
       holding: holdingValue,
       accounts: accountsValue,
       performance: performanceValue,
+      dualLines: dualLinesValue,
+      otherLine: otherLineValue,
       holdingCurrent,
       accountsCurrent,
       performanceCurrent,
-      dualLinesCurrent: null,
-      otherLineCurrent: null,
+      dualLinesCurrent,
+      dualLineQualified,
+      otherLineCurrent,
     }),
   )
 
