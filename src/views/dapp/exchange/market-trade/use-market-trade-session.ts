@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 
 import { ZERO_BI } from '~/core/constants'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
@@ -30,6 +30,7 @@ import {
   getTradeSwapPath,
   getTradeToken,
   isSellOnlyTradeToken,
+  isTradeXSellClosed,
   TRADE_TOKEN_KEYS,
   type TradeTokenKey,
 } from '~/views/dapp/exchange/shared'
@@ -60,6 +61,10 @@ export function useMarketTradeSession(
   const sellKey = useExchangeTradePairStore((state) => state.sellKey)
   const buyKey = useExchangeTradePairStore((state) => state.buyKey)
   const setSellKey = useExchangeTradePairStore((state) => state.setSellKey)
+
+  useLayoutEffect(() => {
+    if (isTradeXSellClosed(sellKey)) setSellKey('usd1')
+  }, [sellKey, setSellKey])
   const setBuyKey = useExchangeTradePairStore((state) => state.setBuyKey)
   const flipPair = useExchangeTradePairStore((state) => state.flipPair)
   const [slippageMode, setSlippageModeState] = useState<'auto' | 'custom'>('auto')
@@ -201,7 +206,7 @@ export function useMarketTradeSession(
     return submitMarketTrade({ pair, path, core })
   }
 
-  const sellPickerKeys: TradeTokenKey[] = [...TRADE_TOKEN_KEYS]
+  const sellPickerKeys: TradeTokenKey[] = TRADE_TOKEN_KEYS.filter((key) => !isTradeXSellClosed(key))
   const buyPickerKeys: TradeTokenKey[] = [...buyKeysForSell(sellKey)]
 
   return {

@@ -5,6 +5,7 @@
  * 点击跳转到对应模式；下部为常见问题折叠列表。
  */
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
+import { isTradeXSellClosed } from '~/core/exchange/trade-path'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { exchangeHubAssets } from '~/shared/assets/dapp'
@@ -22,7 +23,7 @@ import { useBurnSwapConfigQuery } from '~/web3/exchange/use-burn-swap-config'
 /**
  * 程序卡片点击目标：0 Trade gAGX → 闪兑 · 1 Turbine → 涡轮
  * 2 Get USD1 → 闪兑 · 3 Get AGX → 市价（预选 USD1→AGX）
- * 4 Sell X → 市价（预选 X→AGX） · 5 Points → 销毁
+ * 4 Sell X → 市价（预选 X→AGX；`isTradeXSellClosed` 时不可点） · 5 Points → 销毁
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'flash',
@@ -69,7 +70,10 @@ export function ExchangeHubDetail() {
         <Section.Title>{t.exchange.hub.program.title}</Section.Title>
         <Grid columns={2} stackOnDapp>
           {cards.map((card, index) => {
-            const target = PROGRAM_TARGETS[index] ?? null
+            const target =
+              index === SELL_X_CARD_INDEX && isTradeXSellClosed('x')
+                ? null
+                : (PROGRAM_TARGETS[index] ?? null)
             const body =
               index === CONTRIBUTION_CARD_INDEX
                 ? interpolate(card.body, { ratio: contributionRatio })

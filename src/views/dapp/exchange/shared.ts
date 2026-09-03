@@ -136,6 +136,7 @@ export {
   canFlipTradePair,
   isSellOnlyTradeToken,
   isTradeTokenKey,
+  isTradeXSellClosed,
   pairAfterTokenSelect,
   TRADE_TOKEN_KEYS,
   tradePath,
