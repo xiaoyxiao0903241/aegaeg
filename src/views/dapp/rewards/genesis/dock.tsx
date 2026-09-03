@@ -2,7 +2,7 @@
  * 创世左栏面板
  *
  * 深色等级卡展示当前等级与个人 / 团队进度，
- * 下方为直推奖励、等级奖励、发展基金三张领取卡；未连接钱包时显示引导。
+ * 下方为直推奖励、等级奖励领取卡；超社区节点另显示发展基金。未连接钱包时显示引导。
  */
 import { useI18n } from '~/i18n/use-i18n'
 import { darkBanner } from '~/shared/components/dark-banner'
@@ -11,7 +11,6 @@ import { Text } from '~/shared/components/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { GenesisClaimCard } from '~/views/dapp/rewards/genesis/primitives'
 import { useGenesisDock } from '~/views/dapp/rewards/genesis/use-genesis'
-import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -125,30 +124,32 @@ export function GenesisDock() {
           ) : null}
         </GenesisClaimCard>
 
-        <GenesisClaimCard className="py-3.5">
-          <GenesisClaimCard.Header label={t.rewards.communityFund} meta={vm.communityLockedMeta} />
-          <GenesisClaimCard.Value className="mt-1.5">
-            {vm.isSuperCommunity || !vm.sessionReady
-              ? vm.communityClaimable
-              : formatApiAmount(null)}
-          </GenesisClaimCard.Value>
-          {vm.walletReady ? (
-            <GenesisClaimCard.Action
-              disabled={
-                !vm.sessionReady ||
-                !vm.isSuperCommunity ||
-                !(vm.communityClaimableValue > 0) ||
-                vm.communityFundLoading ||
-                vm.communityFundClaimIsClaiming ||
-                !vm.communityFundClaimCanClaim
-              }
-              loading={vm.communityFundClaimIsClaiming}
-              onClick={vm.onClaimCommunityFund}
-            >
-              {vm.g.claimToWallet}
-            </GenesisClaimCard.Action>
-          ) : null}
-        </GenesisClaimCard>
+        {vm.isSuperCommunity ? (
+          <GenesisClaimCard className="py-3.5">
+            <GenesisClaimCard.Header
+              label={t.rewards.communityFund}
+              meta={vm.communityLockedMeta}
+            />
+            <GenesisClaimCard.Value className="mt-1.5">
+              {vm.communityClaimable}
+            </GenesisClaimCard.Value>
+            {vm.walletReady ? (
+              <GenesisClaimCard.Action
+                disabled={
+                  !vm.sessionReady ||
+                  !(vm.communityClaimableValue > 0) ||
+                  vm.communityFundLoading ||
+                  vm.communityFundClaimIsClaiming ||
+                  !vm.communityFundClaimCanClaim
+                }
+                loading={vm.communityFundClaimIsClaiming}
+                onClick={vm.onClaimCommunityFund}
+              >
+                {vm.g.claimToWallet}
+              </GenesisClaimCard.Action>
+            ) : null}
+          </GenesisClaimCard>
+        ) : null}
 
         {!vm.walletReady ? <DockConnectPromo /> : null}
       </DockStack>

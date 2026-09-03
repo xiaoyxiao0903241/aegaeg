@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useLayoutEffect } from 'react'
 
 import { getTeamRequirementLegRank, rewardTierRows } from '~/core/presale/tier-table'
 import {
@@ -51,8 +51,8 @@ function withSignedUsdPrefix(amount: string): string {
 /**
  * 创世荣誉详情视图模型
  *
- * 聚合股东等级、社区基金节点状态与三类历史记录
- * （推荐 / 团队 / 社区基金），生成荣誉档位表与分页历史。
+ * 聚合股东等级、社区基金节点状态与历史记录
+ * （推荐 / 团队；超社区另含发展基金），生成荣誉档位表与分页历史。
  * Tab / 分页在 `useGenesisHistorySessionStore`（切 Tab 时 action 内归页）。
  *
  * @see docs/backend-api/api.md #community-fund/total
@@ -66,6 +66,12 @@ export function useRewardsGenesisDetail() {
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
   const hasRank = displayRank > 0
   const { historyTab, setHistoryTab, historyPage, setHistoryPage } = useGenesisHistorySessionStore()
+
+  useLayoutEffect(() => {
+    if (isSuperCommunity) return
+    if (useGenesisHistorySessionStore.getState().historyTab !== 'communityFund') return
+    setHistoryTab('referral')
+  }, [isSuperCommunity, setHistoryTab])
 
   const pageParams = tablePageQuery(historyPage)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
@@ -196,7 +202,9 @@ export function useRewardsGenesisDetail() {
   const historyTabOptions: Array<{ label: string; value: GenesisHistoryTab }> = [
     { label: t.rewards.referralRewards, value: 'referral' },
     { label: t.rewards.teamRewards, value: 'team' },
-    { label: t.rewards.communityFundHistory, value: 'communityFund' },
+    ...(isSuperCommunity
+      ? [{ label: t.rewards.communityFundHistory, value: 'communityFund' as const }]
+      : []),
   ]
 
   const showHeroSkeleton = sessionReady && isRankLoading
