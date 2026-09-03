@@ -1,4 +1,18 @@
+import { useState } from 'react'
+
 import { cobuildTeamSortToParams } from '~/core/rewards/cobuild-team-sort'
+import {
+  COBUILD_NAMED_LEVELS,
+  COBUILD_PREVIEW_NONE_STATS,
+  COBUILD_PREVIEW_STATS,
+  cobuildLevelFromRank,
+  type CobuildLevelId,
+  cobuildNextReqSpecs,
+  cobuildNextTier,
+  type CobuildPreviewLevel,
+  cobuildReqGridCols,
+  type CobuildReqSpec,
+} from '~/core/rewards/cobuild-tier-ladder'
 import {
   agxAmountToUsdProgressCurrent,
   parseMoneyish,
@@ -16,7 +30,7 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatMakingRankLabel } from '~/shared/presenters/format'
+import { formatNumber } from '~/shared/presenters/format'
 import { useCobuildSessionStore } from '~/stores/rewards-session-store'
 import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
@@ -37,11 +51,94 @@ export type CobuildTierReq = {
   badge: TierReqBadge
 }
 
+type CobuildCopy = ReturnType<typeof useI18n>['messages']['rewards']['cobuild']
+type HubTierRow = { level: string; rate: string }
+
+function cobuildRateOf(id: CobuildLevelId, rows: readonly HubTierRow[]): string {
+  if (id === 'NONE') return NON_NUMERIC_EMPTY
+  if (id === 'LIFETIME') return rows[rows.length - 1]?.rate ?? NON_NUMERIC_EMPTY
+  return rows.find((row) => row.level === id)?.rate ?? NON_NUMERIC_EMPTY
+}
+
+function cobuildLevelLabel(id: CobuildLevelId, cobuild: CobuildCopy): string {
+  if (id === 'NONE') return cobuild.tierNoLevel
+  if (id === 'LIFETIME') return cobuild.tierLifetime
+  return id
+}
+
+function usdLabel(n: number): string {
+  return formatNumber(n, { prefix: '$' })
+}
+
+function specToReq(
+  spec: CobuildReqSpec,
+  cobuild: CobuildCopy,
+  preview: {
+    holding: string
+    accounts: string
+    performance: string
+    holdingCurrent: number | null
+    accountsCurrent: number | null
+    performanceCurrent: number | null
+    dualLinesCurrent: number | null
+    otherLineCurrent: number | null
+  },
+): CobuildTierReq {
+  if (spec.kind === 'holding') {
+    return {
+      label: cobuild.reqHolding,
+      hint: cobuild.reqHoldingHint,
+      value: preview.holding,
+      target: `/ ${usdLabel(spec.targetUsd)}`,
+      badge: progressPct(preview.holdingCurrent, String(spec.targetUsd)),
+    }
+  }
+  if (spec.kind === 'accounts') {
+    return {
+      label: cobuild.reqAccounts,
+      hint: cobuild.reqAccountsHint,
+      value: preview.accounts,
+      target: `/ ${spec.target}`,
+      badge: progressPct(preview.accountsCurrent, String(spec.target)),
+    }
+  }
+  if (spec.kind === 'volume') {
+    return {
+      label: cobuild.reqPerformance,
+      hint: cobuild.reqPerformanceHint,
+      value: preview.performance,
+      target: `/ ${usdLabel(spec.targetUsd)}`,
+      badge: progressPct(preview.performanceCurrent, String(spec.targetUsd)),
+    }
+  }
+  if (spec.kind === 'dual') {
+    return {
+      label: interpolate(cobuild.reqDualLines, { level: spec.lineLevel }),
+      hint: interpolate(cobuild.reqDualLinesHint, { level: spec.lineLevel }),
+      value:
+        preview.dualLinesCurrent == null
+          ? NON_NUMERIC_EMPTY
+          : interpolate(cobuild.reqDualLinesValue, { count: preview.dualLinesCurrent }),
+      target: `/ ${cobuild.reqDualLinesTarget}`,
+      badge: progressPct(preview.dualLinesCurrent, String(spec.target)),
+    }
+  }
+  return {
+    label: cobuild.reqOtherLine,
+    hint: interpolate(cobuild.reqOtherLineHint, { level: spec.lineLevel }),
+    value:
+      preview.otherLineCurrent == null ? NON_NUMERIC_EMPTY : usdLabel(preview.otherLineCurrent),
+    target: `/ ${usdLabel(spec.targetUsd)}`,
+    badge: progressPct(preview.otherLineCurrent, String(spec.targetUsd)),
+  }
+}
+
 /**
  * 共建奖详情视图模型
  *
  * 聚合等级奖励接口（rank-reward）的汇总、等级记录与团队成员数据，
- * 计算当前 / 下一级档位与需求进度徽章，供详情页渲染。
+ * 按当前档计算下一档条件（A1–A5 总业绩、A6–A9 双线+其他线、A10 起仅双线）。
+ * 「设置级别(测试)」可覆盖当前档并用原型演示数预览各档布局。
  * Tab / 分页 / 隐藏 0 业绩 / 团队列头排序在 `useCobuildSessionStore`（切 Tab 时 action 内归页）。
  *
  * @see docs/backend-api/api.md #rank-reward/summary
@@ -52,6 +149,7 @@ export function useCobuild() {
   const cobuild = t.rewards.cobuild
   const { sessionReady } = useDappHost()
   const agxPriceUsd = useAgxPriceUsd()
+  const [previewLevel, setPreviewLevel] = useState<CobuildPreviewLevel>('api')
   const {
     recordsTab,
     setRecordsTab,
@@ -114,28 +212,19 @@ export function useCobuild() {
     summary?.available_contribution,
   )
 
-  const rank = sessionReady ? summary?.making_rank : null
-  const hasRank = rank != null && Number.isFinite(rank) && rank > 0
-  const truncRank = hasRank ? Math.trunc(rank) : 0
-  const tierCurrent =
-    !sessionReady || (summaryQuery.isLoading && summary == null)
-      ? tierEmpty
-      : formatMakingRankLabel(rank, tierEmpty)
-  const currentRow = hasRank ? tierRows.find((row) => row.level === `A${truncRank}`) : undefined
-  const currentIndex = hasRank ? tierRows.findIndex((row) => row.level === `A${truncRank}`) : -1
-  /**
-   * 下一级档位：未达任何档 → A1；已达 → 机制表下一行（A4→A5；A13→终身成就奖）。
-   * 需求门槛与进度徽章一律对齐「下一级」档位。
-   */
-  const nextRow = hasRank
-    ? currentIndex >= 0
-      ? tierRows[currentIndex + 1]
-      : tierRows.find((row) => row.level === `A${truncRank + 1}`)
-    : tierRows.find((row) => row.level === 'A1')
-  const reqRow = nextRow ?? currentRow
-  const tierNext = nextRow?.level ?? NON_NUMERIC_EMPTY
-  const tierCurrentRate = currentRow?.rate ?? NON_NUMERIC_EMPTY
-  const tierNextRate = nextRow?.rate ?? NON_NUMERIC_EMPTY
+  const apiLevel = cobuildLevelFromRank(sessionReady ? summary?.making_rank : null)
+  const currentLevel: CobuildLevelId = previewLevel === 'api' ? apiLevel : previewLevel
+  const isNone = currentLevel === 'NONE'
+  const isPreview = previewLevel !== 'api'
+  const previewStats = isNone ? COBUILD_PREVIEW_NONE_STATS : COBUILD_PREVIEW_STATS
+  const nextDef = cobuildNextTier(currentLevel)
+  const liveLoading = previewLevel === 'api' && (!sessionReady || (pending && summary == null))
+
+  const tierCurrent = liveLoading ? tierEmpty : cobuildLevelLabel(currentLevel, cobuild)
+  const tierNext = nextDef == null ? NON_NUMERIC_EMPTY : cobuildLevelLabel(nextDef.id, cobuild)
+  const tierCurrentRate =
+    isNone || liveLoading ? NON_NUMERIC_EMPTY : cobuildRateOf(currentLevel, tierRows)
+  const tierNextRate = nextDef == null ? NON_NUMERIC_EMPTY : cobuildRateOf(nextDef.id, tierRows)
 
   const holdingValue = formatApiAgxUsdLabel(
     sessionReady,
@@ -150,54 +239,51 @@ export function useCobuild() {
     summary?.making_market,
     agxPriceUsd,
   )
-  const teamMoney = reqRow?.team?.match(/\$[\d,]+/)?.[0] ?? ''
   /**
    * 进度徽章读数：未连接按 0（与展示的 0.00 对齐，显示「0%」）；
    * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0 AGX。
    * 持仓/做市门槛为 USD：无 AGX/$ 单价时不折、不画（禁 AGX↔$ 直比）。
+   * 测试预览用原型演示数；双线 / 其他线接口暂无字段，跟随接口时不画徽章。
    */
-  const holdingCurrent = !sessionReady
-    ? 0
-    : summaryQuery.isLoading && summary == null
-      ? null
-      : agxAmountToUsdProgressCurrent(
-          parseMoneyish(summary?.active_stake_balance) ?? 0,
-          agxPriceUsd,
-        )
-  const accountsCurrent = !sessionReady
-    ? 0
-    : summaryQuery.isLoading && summary == null
-      ? null
-      : (summary?.effective_direct_referral_count ?? 0)
-  const performanceCurrent = !sessionReady
-    ? 0
-    : summaryQuery.isLoading && summary == null
-      ? null
-      : agxAmountToUsdProgressCurrent(parseMoneyish(summary?.making_market) ?? 0, agxPriceUsd)
+  const holdingCurrent = isPreview
+    ? previewStats.holdingUsd
+    : !sessionReady
+      ? 0
+      : pending && summary == null
+        ? null
+        : agxAmountToUsdProgressCurrent(
+            parseMoneyish(summary?.active_stake_balance) ?? 0,
+            agxPriceUsd,
+          )
+  const accountsCurrent = isPreview
+    ? previewStats.accounts
+    : !sessionReady
+      ? 0
+      : pending && summary == null
+        ? null
+        : (summary?.effective_direct_referral_count ?? 0)
+  const performanceCurrent = isPreview
+    ? previewStats.performanceUsd
+    : !sessionReady
+      ? 0
+      : pending && summary == null
+        ? null
+        : agxAmountToUsdProgressCurrent(parseMoneyish(summary?.making_market) ?? 0, agxPriceUsd)
+  const dualLinesCurrent = isPreview ? previewStats.dualLinesDone : null
+  const otherLineCurrent = isPreview ? previewStats.performanceUsd : null
 
-  const tierReqs: CobuildTierReq[] = [
-    {
-      label: cobuild.reqHolding,
-      hint: cobuild.reqHoldingHint,
-      value: holdingValue,
-      target: reqRow?.holding ? `/ ${reqRow.holding}` : `/ ${NON_NUMERIC_EMPTY}`,
-      badge: progressPct(holdingCurrent, reqRow?.holding ?? ''),
-    },
-    {
-      label: cobuild.reqAccounts,
-      hint: cobuild.reqAccountsHint,
-      value: accountsValue,
-      target: reqRow?.accounts ? `/ ${reqRow.accounts}` : `/ ${NON_NUMERIC_EMPTY}`,
-      badge: progressPct(accountsCurrent, reqRow?.accounts ?? ''),
-    },
-    {
-      label: cobuild.reqPerformance,
-      hint: cobuild.reqPerformanceHint,
-      value: performanceValue,
-      target: teamMoney ? `/ ${teamMoney}` : `/ ${NON_NUMERIC_EMPTY}`,
-      badge: progressPct(performanceCurrent, teamMoney),
-    },
-  ]
+  const tierReqs: CobuildTierReq[] = cobuildNextReqSpecs(currentLevel).map((spec) =>
+    specToReq(spec, cobuild, {
+      holding: isPreview ? usdLabel(previewStats.holdingUsd) : holdingValue,
+      accounts: isPreview ? String(previewStats.accounts) : accountsValue,
+      performance: isPreview ? usdLabel(previewStats.performanceUsd) : performanceValue,
+      holdingCurrent,
+      accountsCurrent,
+      performanceCurrent,
+      dualLinesCurrent,
+      otherLineCurrent,
+    }),
+  )
 
   const activeLogsQuery = recordsTab === 'cobuild' ? cobuildLogsQuery : equalizeLogsQuery
   const recordRows =
@@ -213,7 +299,13 @@ export function useCobuild() {
     tierNextRate !== NON_NUMERIC_EMPTY
       ? interpolate(cobuild.tierRate, { rate: tierNextRate })
       : NON_NUMERIC_EMPTY
-  const tierHasNext = nextRow != null
+  const tierHasNext = nextDef != null
+  const previewOptions = [
+    { label: cobuild.tierFollowApi, value: 'api' },
+    { label: cobuild.tierNoneOption, value: 'NONE' },
+    ...COBUILD_NAMED_LEVELS.map((id) => ({ label: id, value: id })),
+    { label: cobuild.tierLifetime, value: 'LIFETIME' },
+  ]
 
   return {
     t,
@@ -237,7 +329,14 @@ export function useCobuild() {
     tierNextRate: nextRateLabel,
     tierHasNext,
     tierMaxLabel: cobuild.tierMax,
-    tierProgressTitle: interpolate(cobuild.tierProgress, { level: tierNext }),
+    noLevelHint: isNone && !liveLoading ? cobuild.tierNoLevelHint : null,
+    reqCols: cobuildReqGridCols(tierReqs.length),
+    previewLevel,
+    setPreviewLevel,
+    previewOptions,
+    tierProgressTitle: interpolate(isNone ? cobuild.tierProgressReach : cobuild.tierProgress, {
+      level: tierNext,
+    }),
     tierProgressCount: interpolate(cobuild.tierProgressCount, {
       done: achievedCount,
       total: tierReqs.length,
