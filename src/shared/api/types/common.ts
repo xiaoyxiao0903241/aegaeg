@@ -11,9 +11,9 @@ export interface PaginationParams {
 }
 
 /**
- * 共建级别：`making_rank` 为真实档；加赠只用于展示 `(+N)`。
+ * 共建级别：`making_rank` 为真实档；`boost_rank` 为托底档。
  *
- * 仅 `is_boost_rank === true` 且 `boost_rank > 0` 时拼括号。
+ * 加赠中（`is_boost_rank` 且托底档 > 0）展示 `A{boost_rank}(+1)`；否则展示真实档。
  */
 export type MakingRankBoost = {
   making_rank: number
