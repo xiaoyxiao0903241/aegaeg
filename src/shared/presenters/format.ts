@@ -29,32 +29,55 @@ export function formatTableGenesisRank(rank: number | undefined | null): string 
   return `S${Math.trunc(rank)}`
 }
 
-/** 共建级别 → `A#`；非法或非正返回 emptyLabel。加赠仅在 `is_boost_rank` 且 `boost_rank>0` 时拼 `(+N)`。 */
-export function formatMakingRankLabel(
-  rank: number | null | undefined,
-  emptyLabel: string,
-  boost?: { is_boost_rank?: boolean | null; boost_rank?: number | null } | null,
-): string {
-  if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
-  return `A${Math.trunc(rank)}${formatMakingRankBoostSuffix(rank, boost)}`
+export type MakingRankBoostSource = {
+  is_boost_rank?: boolean | null
+  boost_rank?: number | null
+}
+
+function positiveRank(rank: number | null | undefined): number | null {
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return null
+  return Math.trunc(rank)
 }
 
 /**
- * 加赠后缀。无真实档、未加赠或加赠为 0 时返回空串。
+ * 展示用档位：加赠时用托底 `boost_rank`，否则用真实 `making_rank`。
  *
  * @param makingRank 真实 `making_rank`
  * @param boost 接口加赠字段
- * @returns `(+N)` 或 `''`
+ * @returns 托底或真实档；皆无则 `null`
  */
-export function formatMakingRankBoostSuffix(
+export function makingRankDisplayRank(
   makingRank: number | null | undefined,
-  boost?: { is_boost_rank?: boolean | null; boost_rank?: number | null } | null,
+  boost?: MakingRankBoostSource | null,
+): number | null {
+  if (boost?.is_boost_rank === true) {
+    const floor = positiveRank(boost.boost_rank)
+    if (floor != null) return floor
+  }
+  return positiveRank(makingRank)
+}
+
+/** 共建级别 → `A#`；非法或非正返回 emptyLabel。加赠时展示托底档且固定 `(+1)`。 */
+export function formatMakingRankLabel(
+  rank: number | null | undefined,
+  emptyLabel: string,
+  boost?: MakingRankBoostSource | null,
 ): string {
-  if (makingRank == null || !Number.isFinite(makingRank) || makingRank <= 0) return ''
+  const n = makingRankDisplayRank(rank, boost)
+  if (n == null) return emptyLabel
+  return `A${n}${formatMakingRankBoostSuffix(boost)}`
+}
+
+/**
+ * 加赠后缀。仅 `is_boost_rank` 且托底档 `boost_rank>0` 时返回固定 `(+1)`。
+ *
+ * @param boost 接口加赠字段
+ * @returns `(+1)` 或 `''`
+ */
+export function formatMakingRankBoostSuffix(boost?: MakingRankBoostSource | null): string {
   if (boost?.is_boost_rank !== true) return ''
-  const n = boost.boost_rank
-  if (n == null || !Number.isFinite(n) || n <= 0) return ''
-  return `(+${Math.trunc(n)})`
+  if (positiveRank(boost.boost_rank) == null) return ''
+  return '(+1)'
 }
 
 /** 把 API 的 presale_rank（S1=1 …）映射为等级表中 0 基行号。 */
