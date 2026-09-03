@@ -8,6 +8,7 @@ import {
   resolveProtocolMarketStatsAggregateMetric,
   resolveProtocolMarketStatsMetric,
   resolveProtocolMarketStatsRange,
+  scaleProtocolMarketStatsChartUsd,
 } from '../../../src/core/staking/protocol-market-stats-series.ts'
 
 test('resolveProtocolMarketStatsRange maps label index to API range', () => {
@@ -98,4 +99,41 @@ test('buildProtocolMarketStatsChart missing payload → empty chart', () => {
   assert.deepEqual(built.points, [])
   assert.equal(built.lastValue, null)
   assert.equal(built.percentChange, null)
+})
+
+test('scaleProtocolMarketStatsChartUsd multiplies token amounts by live price', () => {
+  const scaled = scaleProtocolMarketStatsChartUsd(
+    {
+      points: [
+        { time: 1, value: 100, date: '2026-08-01' },
+        { time: 2, value: 250 },
+      ],
+      lastValue: 250,
+      percentChange: 7.5,
+    },
+    2,
+  )
+  assert.deepEqual(
+    scaled.points.map((p) => ({ time: p.time, value: p.value, date: p.date })),
+    [
+      { time: 1, value: 200, date: '2026-08-01' },
+      { time: 2, value: 500, date: undefined },
+    ],
+  )
+  assert.equal(scaled.lastValue, 500)
+  assert.equal(scaled.percentChange, 7.5)
+})
+
+test('scaleProtocolMarketStatsChartUsd missing price → empty USD series', () => {
+  const source = {
+    points: [{ time: 1, value: 100 }],
+    lastValue: 100,
+    percentChange: 3,
+  }
+  for (const price of [null, undefined, 0, -1, Number.NaN]) {
+    const scaled = scaleProtocolMarketStatsChartUsd(source, price)
+    assert.deepEqual(scaled.points, [])
+    assert.equal(scaled.lastValue, null)
+    assert.equal(scaled.percentChange, 3)
+  }
 })
