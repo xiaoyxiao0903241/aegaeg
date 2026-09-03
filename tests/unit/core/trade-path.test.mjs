@@ -78,3 +78,13 @@ test('pairAfterFlip blocks when flip would buy X', async () => {
   assert.equal(canFlipTradePair('usd1', 'agx'), true)
   assert.deepEqual(pairAfterFlip('usd1', 'agx'), { sellKey: 'agx', buyKey: 'usd1' })
 })
+
+test('isTradeXSellClosed only gates X when the temporary flag is on', async () => {
+  const { isTradeXSellClosed, TRADE_X_SELL_CLOSED } = await loadModule(
+    '/src/core/exchange/trade-path.ts',
+  )
+
+  assert.equal(isTradeXSellClosed('x'), TRADE_X_SELL_CLOSED)
+  assert.equal(isTradeXSellClosed('usd1'), false)
+  assert.equal(isTradeXSellClosed('agx'), false)
+})

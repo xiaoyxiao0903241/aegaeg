@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 
-import { pairAfterFlip, pairAfterTokenSelect, type TradeTokenKey } from '~/core/exchange/trade-path'
+import {
+  isTradeXSellClosed,
+  pairAfterFlip,
+  pairAfterTokenSelect,
+  type TradeTokenKey,
+} from '~/core/exchange/trade-path'
 
 interface ExchangeTradePairStore {
   sellKey: TradeTokenKey
@@ -22,6 +27,7 @@ export const useExchangeTradePairStore = create<ExchangeTradePairStore>((set) =>
   sellKey: 'usd1',
   buyKey: 'agx',
   setSellKey: (key) => {
+    if (isTradeXSellClosed(key)) return
     set((state) => pairAfterTokenSelect('sell', key, state.sellKey, state.buyKey))
   },
   setBuyKey: (key) => {
