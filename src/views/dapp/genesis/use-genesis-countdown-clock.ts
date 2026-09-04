@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
 import {
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
@@ -44,7 +45,7 @@ export function useGenesisCountdownClock(
   return {
     countdown: countdownTarget
       ? formatPhaseCountdown(countdownTarget.targetTime, nowSeconds, countdownUnits)
-      : '—',
+      : LIVE_DATA_PLACEHOLDER,
     countdownMode: countdownTarget?.mode ?? null,
   }
 }

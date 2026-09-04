@@ -5,8 +5,8 @@ function amountOrZero(value: number): number {
 /**
  * 资产 Hub 左卡：总收益 = 已领 + 未领；占比 = 总收益 / 实际投资。
  *
- * 缺数、非法、负数一律当 0（展示 0.00 / 0.00%），不用 —。
- * 投资 ≤ 0 时占比为 0，避免除零。
+ * 缺 claimed/unclaimed → 按 0 计入收益。缺投资或非法投资 → `pct: null`（展示 `--`）。
+ * 投资为真零 → 占比 `0`，避免除零。
  *
  * @param args.claimed 接口已领（与未领同单位）
  * @param args.unclaimed 链上当前可领
@@ -17,12 +17,14 @@ function amountOrZero(value: number): number {
 export function assetsHubProductReturn(args: {
   claimed: number
   unclaimed: number
-  invest: number
-}): { totalReward: number; pct: number } {
+  invest: number | null | undefined
+}): { totalReward: number; pct: number | null } {
   const totalReward = amountOrZero(args.claimed) + amountOrZero(args.unclaimed)
-  const invest = amountOrZero(args.invest)
-  if (!(invest > 0)) return { totalReward, pct: 0 }
-  const pct = (totalReward / invest) * 100
+  if (args.invest == null || !Number.isFinite(args.invest) || args.invest < 0) {
+    return { totalReward, pct: null }
+  }
+  if (!(args.invest > 0)) return { totalReward, pct: 0 }
+  const pct = (totalReward / args.invest) * 100
   if (!Number.isFinite(pct) || pct < 0) return { totalReward, pct: 0 }
   return { totalReward, pct }
 }

@@ -20,8 +20,9 @@ import { Text } from '~/shared/components/text'
 import { rewardsHashForView } from '~/shared/config/dapp-deep-links'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import {
+  formatDecimal,
   formatMakingRankLabel,
-  formatNumber,
+  interpolateLive,
   makingRankDisplayRank,
 } from '~/shared/presenters/format'
 import {
@@ -120,12 +121,13 @@ export function CommunityDetail() {
     isLoggingIn,
     rowCount: compactRows.length,
   })
-  const inviteCount = !sessionReady
-    ? formatNumber(0, { digits: 0, trimZeros: true })
-    : formatNumber(makingOverview?.direct_referral_count ?? referrals?.total ?? 0, {
-        digits: 0,
-        trimZeros: true,
-      })
+  const inviteCount = formatDecimal(
+    sessionReady ? (makingOverview?.direct_referral_count ?? referrals?.total) : null,
+    {
+      digits: 0,
+      fraction: 'natural',
+    },
+  )
   const inviteSectionTitle = interpolate(t.community.myInvites, { count: inviteCount })
   const authPending = sessionReady && isLoggingIn
   const statsLoading =
@@ -145,29 +147,28 @@ export function CommunityDetail() {
     )
   }
 
-  // 不能用 isLoading ? 0：加载中 2000 会闪成 0 再变回 3000，用 ?? 0 兜底缺失字段
-  const directCount = formatNumber(makingOverview?.direct_referral_count ?? 0, {
+  const directCount = formatDecimal(makingOverview?.direct_referral_count, {
     digits: 0,
-    trimZeros: true,
+    fraction: 'natural',
   })
-  const directVolume = formatNumber(makingOverview?.making_direct_team_market ?? 0, { prefix: '$' })
-  const teamCount = formatNumber(makingOverview?.team_count ?? 0, {
+  const directVolume = formatDecimal(makingOverview?.making_direct_team_market, { prefix: '$' })
+  const teamCount = formatDecimal(makingOverview?.team_count, {
     digits: 0,
-    trimZeros: true,
+    fraction: 'natural',
   })
-  const teamVolume = formatNumber(makingOverview?.making_market ?? 0, { prefix: '$' })
-  const todayDirect = interpolate(t.community.statToday, {
-    count: formatNumber(overview?.today_addition_direct_count ?? 0, {
+  const teamVolume = formatDecimal(makingOverview?.making_market, { prefix: '$' })
+  const todayDirect = interpolateLive(t.community.statToday, {
+    count: formatDecimal(overview?.today_addition_direct_count, {
       digits: 0,
-      trimZeros: true,
+      fraction: 'natural',
     }),
-    amount: formatNumber(makingOverview?.today_addition_making_direct_team_market ?? 0, {
+    amount: formatDecimal(makingOverview?.today_addition_making_direct_team_market, {
       prefix: '$',
     }),
   })
-  const todayTeam = interpolate(t.community.statToday, {
-    count: formatNumber(overview?.today_addition_team_count ?? 0, { digits: 0, trimZeros: true }),
-    amount: formatNumber(makingOverview?.today_addition_making_market ?? 0, { prefix: '$' }),
+  const todayTeam = interpolateLive(t.community.statToday, {
+    count: formatDecimal(overview?.today_addition_team_count, { digits: 0, fraction: 'natural' }),
+    amount: formatDecimal(makingOverview?.today_addition_making_market, { prefix: '$' }),
   })
 
   const makingRank = sessionReady && !authPending ? makingOverview?.making_rank : null

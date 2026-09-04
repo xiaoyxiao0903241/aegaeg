@@ -16,7 +16,6 @@ import {
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
-import { formatNumber } from '~/shared/presenters/format'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-market-trade'
 import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
@@ -239,7 +238,7 @@ export function useMarketTradeSession(
       : '',
     balanceLabelFor: (key: TradeTokenKey) => {
       const token = getTradeToken(key)
-      if (!balanceKnownByKey[key]) return formatNumber(0, { digits: 4 })
+      if (!balanceKnownByKey[key]) return formatTokenAmount(null, token.decimals, 4)
       return formatTokenAmount(balanceByKey[key], token.decimals, 4)
     },
     buyAmount: core.buyAmount,

@@ -22,7 +22,7 @@ import { Text } from '~/shared/components/text'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 
 const PAGE_MENU_VISIBLE_ITEMS = 5
 const PAGINATION_BTN_RADIUS = 'rounded-tight'
@@ -186,7 +186,7 @@ function Pagination({
         >
           {t.common.paginationTotal.replace(
             '{total}',
-            formatNumber(total, { digits: 0, trimZeros: true }),
+            formatDecimal(total, { digits: 0, fraction: 'natural' }),
           )}
         </Text>
         {summary ? (
@@ -211,7 +211,7 @@ function Pagination({
           >
             {t.common.paginationPerPage.replace(
               '{size}',
-              formatNumber(pageSize, { digits: 0, trimZeros: true }),
+              formatDecimal(pageSize, { digits: 0, fraction: 'natural' }),
             )}
           </Text>
 

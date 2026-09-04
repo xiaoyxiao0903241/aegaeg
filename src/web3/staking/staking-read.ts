@@ -1,5 +1,6 @@
 import { encodeFunctionData, parseAbi } from 'viem'
 
+import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
 import {
@@ -556,11 +557,12 @@ export async function readBondMarketMeta(depository: Address): Promise<BondMarke
  * 链上 `discountRateBP` 以 10000 为平价：9200 表示 92%、即约 8% 折扣；
  * 0 或超出平价视为无折扣。仅保留两位以内小数。
  *
- * @param discountRateBP 债券折扣率（基点）
- * @returns 百分比字符串，如「92%」「5.5%」
+ * @param discountRateBP 债券折扣率（基点）；缺数 → `--`
+ * @returns 百分比字符串，如「92%」「5.5%」；缺数为 `--`
  * @see 手册 §10.3 展示字段
  */
-export function formatBondDiscountLabel(discountRateBP: bigint): string {
+export function formatBondDiscountLabel(discountRateBP: bigint | null | undefined): string {
+  if (discountRateBP == null) return LIVE_DATA_PLACEHOLDER
   if (discountRateBP === 0n || discountRateBP > BPS_DENOM) return '0%'
   const whole = discountRateBP / 100n
   const frac = discountRateBP % 100n

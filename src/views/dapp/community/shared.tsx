@@ -5,8 +5,8 @@ import { ExplorerLink } from '~/shared/components/explorer-link'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import {
   formatApiDateTime,
+  formatDecimal,
   formatMakingRankLabel,
-  formatNumber,
   formatShortAddress,
   TABLE_EMPTY,
 } from '~/shared/presenters/format'
@@ -23,10 +23,10 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): ReactNode[]
   return [
     formatApiDateTime(item.register_time),
     <ExplorerLink key={item.address} shortOptions={{ head: 4, tail: 4 }} value={item.address} />,
-    formatNumber(item.active_stake_balance_usd ?? 0, { prefix: '$' }),
+    formatDecimal(item.active_stake_balance_usd, { prefix: '$' }),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY, item),
-    formatNumber(item.direct_referral_count ?? 0, { digits: 0, trimZeros: true }),
-    formatNumber(item.making_market_usd ?? 0, { digits: 0, trimZeros: true, prefix: '$' }),
+    formatDecimal(item.direct_referral_count, { digits: 0, fraction: 'natural' }),
+    formatDecimal(item.making_market_usd, { digits: 0, fraction: 'natural', prefix: '$' }),
   ]
 }
 

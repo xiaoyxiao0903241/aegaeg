@@ -26,8 +26,8 @@ import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
+  formatDecimal,
   formatMakingRankBoostSuffix,
-  formatNumber,
   makingRankDisplayRank,
 } from '~/shared/presenters/format'
 import { useCobuildSessionStore } from '~/stores/rewards-session-store'
@@ -66,7 +66,7 @@ function cobuildLevelLabel(id: CobuildLevelId, cobuild: CobuildCopy): string {
 }
 
 function usdLabel(n: number): string {
-  return formatNumber(n, { prefix: '$' })
+  return formatDecimal(n, { prefix: '$' })
 }
 
 function specToReq(

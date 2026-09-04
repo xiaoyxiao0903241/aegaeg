@@ -4,52 +4,22 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('formatContributionPlaceholder: disconnected / loading / value', async () => {
+test('formatContributionPlaceholder: missing contribution → --', async () => {
   const { formatContributionPlaceholder } = await loadModule('/src/views/dapp/rewards/shared.tsx')
-  const zero = '0.0000'
 
   assert.equal(
     formatContributionPlaceholder({
-      walletReady: false,
-      hasAddress: false,
-      isPending: false,
       contribution: undefined,
       decimals: 18,
     }),
-    zero,
+    '--',
   )
-
   assert.equal(
     formatContributionPlaceholder({
-      walletReady: true,
-      hasAddress: true,
-      isPending: true,
-      contribution: undefined,
-      decimals: 18,
-    }),
-    zero,
-  )
-
-  assert.equal(
-    formatContributionPlaceholder({
-      walletReady: true,
-      hasAddress: true,
-      isPending: false,
       contribution: 1_500_000_000_000_000_000n,
       decimals: 18,
     }),
     '1.5000',
-  )
-
-  assert.equal(
-    formatContributionPlaceholder({
-      walletReady: true,
-      hasAddress: true,
-      isPending: false,
-      contribution: undefined,
-      decimals: 18,
-    }),
-    zero,
   )
 })
 
@@ -60,8 +30,8 @@ test('lucky non-numeric empties stay dashes; counts stay integers', async () => 
 
   assert.equal(NON_NUMERIC_EMPTY, '\u2014')
   assert.notEqual(formatApiAmount(null), NON_NUMERIC_EMPTY)
-  assert.equal(formatApiCountLabel(false, false, null), '0')
-  assert.equal(formatApiCountLabel(true, true, null), '0')
+  assert.equal(formatApiCountLabel(false, false, null), '--')
+  assert.equal(formatApiCountLabel(true, true, null), '--')
   assert.equal(formatApiCountLabel(true, false, 3), '3')
 })
 
@@ -96,9 +66,7 @@ test('zh READY status copy is 待领取', async () => {
 })
 
 test('mapLuckyWinnerToRow stake column uses tracker USD1 not participation_amount', async () => {
-  const { mapLuckyWinnerToRow, NON_NUMERIC_EMPTY } = await loadModule(
-    '/src/views/dapp/rewards/shared.tsx',
-  )
+  const { mapLuckyWinnerToRow } = await loadModule('/src/views/dapp/rewards/shared.tsx')
   const item = {
     rank: 1,
     address: '0x1111111111111111111111111111111111111111',
@@ -106,15 +74,13 @@ test('mapLuckyWinnerToRow stake column uses tracker USD1 not participation_amoun
     reward_amount: '1.5',
   }
 
-  assert.equal(mapLuckyWinnerToRow(item)[2], NON_NUMERIC_EMPTY)
+  assert.equal(mapLuckyWinnerToRow(item)[2], '--')
   assert.equal(mapLuckyWinnerToRow(item, { stakeAmountUsd1: 5n * 10n ** 18n })[2], '$5.00')
   assert.equal(mapLuckyWinnerToRow(item, { stakeAmountUsd1: 0n })[2], '$0.00')
 })
 
 test('mapLuckyMyRoundToRow stake column uses tracker USD1 not participation_amount', async () => {
-  const { mapLuckyMyRoundToRow, NON_NUMERIC_EMPTY } = await loadModule(
-    '/src/views/dapp/rewards/shared.tsx',
-  )
+  const { mapLuckyMyRoundToRow } = await loadModule('/src/views/dapp/rewards/shared.tsx')
   const item = {
     date: '2026-08-19',
     round_id: 7,
@@ -126,7 +92,7 @@ test('mapLuckyMyRoundToRow stake column uses tracker USD1 not participation_amou
   }
   const labels = { won: 'won {amount}', lost: 'lost' }
 
-  assert.equal(mapLuckyMyRoundToRow(item, labels)[1], NON_NUMERIC_EMPTY)
+  assert.equal(mapLuckyMyRoundToRow(item, labels)[1], '--')
   assert.equal(
     mapLuckyMyRoundToRow(item, { ...labels, stakeAmountUsd1: 5n * 10n ** 18n })[1],
     '$5.00',
@@ -144,6 +110,8 @@ test('lucky overview totals from summary.total_reward_amount; cards use Tile.Not
   )
   assert.match(hook, /total_reward_amount/)
   assert.doesNotMatch(hook, /formatApiStatLabel\([^)]*'0'\)/)
+  assert.match(hook, /formatCountdownClock/)
+  assert.doesNotMatch(hook, /interpolateLive\(lucky.countdownHint/)
   assert.match(detail, /Tile\.Note/)
   assert.doesNotMatch(detail, /flex-wrap items-baseline/)
 })

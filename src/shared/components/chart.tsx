@@ -40,7 +40,7 @@ import {
 import { chartVisibleLogicalRange } from '~/shared/lib/chart-visible-range'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber, formatUsd } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { colorHex } from '~/shared/styles/tokens/tokens'
 
 /**
@@ -245,9 +245,11 @@ function densifyForPaint(
 }
 
 function tipValueLabel(value: number): string {
-  if (!Number.isFinite(value)) return formatUsd(null)
-  if (Math.abs(value) >= 1000) return formatUsd(value)
-  return formatNumber(value, { digits: 2, prefix: '$' })
+  return formatDecimal(value, {
+    digits: 2,
+    prefix: '$',
+    compact: Math.abs(value) >= 1000,
+  })
 }
 
 /**

@@ -8,7 +8,7 @@
  */
 
 import { Body, Cell } from '~/shared/components/table-body'
-import { Auth, TableEmpty } from '~/shared/components/table-empty'
+import { Auth, TableAuthActionProvider, TableEmpty } from '~/shared/components/table-empty'
 import { Footer, Frame, Header, TableRoot } from '~/shared/components/table-frame'
 import { Pagination } from '~/shared/components/table-pagination'
 
@@ -22,3 +22,5 @@ export const Table = Object.assign(TableRoot, {
   Auth,
   Frame,
 })
+
+export { TableAuthActionProvider }

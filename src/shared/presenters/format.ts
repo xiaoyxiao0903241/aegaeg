@@ -1,6 +1,36 @@
+import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
 import { interpolate } from '~/i18n/interpolate'
 
-/** 表格非金额空单元格占位（ASCII 连字符）；金额缺数请用 formatNumber(0…) / formatApiAmount。 */
+export { LIVE_DATA_PLACEHOLDER }
+
+/**
+ * 把已打印的数填进文案。任一值为 `--` 则整句是 `--`，避免 `-- 次`、`累计质押 -- AGX`。
+ *
+ * `次` / `times` 等随语言走文案模板，不要写进打印机。
+ *
+ * @param template 含 `{name}` 的文案
+ * @param values 已打印的片段
+ */
+export function interpolateLive(
+  template: string,
+  values: Readonly<Record<string, string>>,
+): string {
+  for (const value of Object.values(values)) {
+    if (value === LIVE_DATA_PLACEHOLDER) return LIVE_DATA_PLACEHOLDER
+  }
+  return interpolate(template, values)
+}
+
+/**
+ * 主值 + 旁注。主值没数 → `--`；旁注没数则只出主值（不要 `42.50 gAGX --`）。
+ */
+export function joinLiveLabels(primary: string, note: string): string {
+  if (primary === LIVE_DATA_PLACEHOLDER) return LIVE_DATA_PLACEHOLDER
+  if (note === LIVE_DATA_PLACEHOLDER) return primary
+  return `${primary} ${note}`
+}
+
+/** 表格非金额空单元格占位（ASCII 连字符）。金额缺数走 `LIVE_DATA_PLACEHOLDER`。 */
 export const TABLE_EMPTY = '-'
 
 const numberFormatters = new Map<string, Intl.NumberFormat>()
@@ -104,110 +134,126 @@ export function formatShareholderHintForRank(
   return interpolate(template, { bonus })
 }
 
-export type FormatNumberOptions = {
+export type DecimalFraction = 'fixed' | 'natural'
+
+export type FormatDecimalOptions = {
   digits?: number
-  /** 默认 `false`（补足位数）。`true` 允许少于 `digits` 个尾随零。 */
-  trimZeros?: boolean
+  /**
+   * `fixed`：补足 `digits` 位；`natural`：去掉尾随零（最多 `digits` 位）。
+   * 未传时：普通打印 `fixed`；compact 的 K/M 为 `natural`，未缩放为 `fixed`。
+   */
+  fraction?: DecimalFraction
   prefix?: string
   suffix?: string
+  /** `true`：≥1000 → K，≥100 万 → M。默认不切。 */
+  compact?: boolean
+}
+
+function toFiniteNumber(value: string | number | bigint | null | undefined): number | null {
+  if (value == null) return null
+  if (typeof value === 'bigint') {
+    const n = Number(value)
+    return Number.isFinite(n) ? n : null
+  }
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
+  return parseApiAmount(value)
 }
 
 /**
- * 人读数字（千分位 + 精度 + 前后缀）——展示唯一核心。
- * 非法值按 digits 回落 `0` / `0.00`。
+ * 用 `toFixed` 看展示位上的数，专门处理 `999.99999999` → 进位成 1000。
+ * 真正打印仍交给 `Intl`，避免二次舍入把 `8.385` 打成 `8.38`。
  */
-export function formatNumber(
-  value: string | number | bigint,
-  options: FormatNumberOptions = {},
-): string {
-  const digits = Math.max(0, Math.floor(options.digits ?? 0))
-  const trimZeros = options.trimZeros === true
-  const prefix = options.prefix ?? ''
-  const suffix = options.suffix ?? ''
-  const num = typeof value === 'bigint' ? Number(value) : Number(value)
-
-  if (!Number.isFinite(num)) {
-    const zero = digits > 0 && !trimZeros ? `0.${'0'.repeat(digits)}` : '0'
-    return `${prefix}${zero}${suffix}`
-  }
-
-  const formatted = numberFormatter(digits, trimZeros).format(num)
-
-  return `${prefix}${formatted}${suffix}`
+function displayMagnitude(num: number, digits: number): number {
+  if (!Number.isFinite(num)) return num
+  if (digits <= 0) return Math.round(num)
+  return Number(num.toFixed(digits))
 }
 
-export type FormatCompactOptions = {
-  /** K/M 缩放后的最大小数位（默认 2，且去掉尾随零）。 */
-  digits?: number
-  prefix?: string
-  suffix?: string
+function formatFixed(num: number, digits: number, natural: boolean): string {
+  return numberFormatter(digits, natural).format(num)
+}
+
+function trimsFractionZeros(fraction: DecimalFraction | undefined, unit: '' | 'K' | 'M'): boolean {
+  if (fraction === 'natural') return true
+  if (fraction === 'fixed') return false
+  return unit === 'K' || unit === 'M'
 }
 
 /**
- * 紧凑数字：`129K` / `$8.41M`。
- * <1000 补足 digits；≥1e3 → K；≥1e6 → M。
+ * compact 缩放：与旧 `formatCompact` 同阈值。
+ * 先按展示位看会不会进位过档（999.996 → 1K），打印值仍用未二次舍入的缩放结果。
  */
-export function formatCompact(
-  value: string | number | bigint,
-  options: FormatCompactOptions = {},
-): string {
-  const digits = Math.max(0, Math.floor(options.digits ?? 2))
-  const prefix = options.prefix ?? ''
-  const suffix = options.suffix ?? ''
-  const num = typeof value === 'bigint' ? Number(value) : Number(value)
-
-  if (!Number.isFinite(num)) {
-    const zero = digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
-    return `${prefix}${zero}${suffix}`
-  }
-
+function compactScale(num: number, digits: number): { value: number; unit: '' | 'K' | 'M' } {
   const abs = Math.abs(num)
+  let value = num
+  let unit: '' | 'K' | 'M' = ''
   if (abs >= 1_000_000) {
-    return `${prefix}${formatNumber(num / 1_000_000, { digits, trimZeros: true })}M${suffix}`
+    value = num / 1_000_000
+    unit = 'M'
+  } else if (abs >= 1_000) {
+    value = num / 1_000
+    unit = 'K'
   }
-  if (abs >= 1_000) {
-    return `${prefix}${formatNumber(num / 1_000, { digits, trimZeros: true })}K${suffix}`
+  if (unit === 'K' && Math.abs(displayMagnitude(value, digits)) >= 1_000) {
+    value = num / 1_000_000
+    unit = 'M'
+  } else if (unit === '' && Math.abs(displayMagnitude(value, digits)) >= 1_000) {
+    value = num / 1_000
+    unit = 'K'
+    if (Math.abs(displayMagnitude(value, digits)) >= 1_000) {
+      value = num / 1_000_000
+      unit = 'M'
+    }
   }
-  return `${prefix}${formatNumber(num, { digits, trimZeros: false })}${suffix}`
+  return { value, unit }
 }
 
 /**
- * 已是 USD 的金额 → `$…`；≥1000 时自动 K/M。
- * 空 / NaN → `$0.00`。
+ * 人读小数：千分位、小数位、前后缀。
+ *
+ * 没数 → `--`（不加前后缀）。有数（含 0）→ `prefix + 数字 + suffix`。
+ * `compact` 时到 1000 / 100 万切 K / M；K/M 默认自然位，未缩放默认固定位。
+ *
+ * @param value 数字、bigint，或后端十进制字符串
+ * @param options 小数位、固定/自然位、前后缀、是否紧凑
  */
-export function formatUsd(value: number | null | undefined): string {
-  if (value == null || !Number.isFinite(value)) {
-    return formatNumber(0, { digits: 2, prefix: '$' })
-  }
-  if (Math.abs(value) < 1_000) {
-    return formatNumber(value, { digits: 2, prefix: '$' })
-  }
-  return formatCompact(value, { digits: 2, prefix: '$' })
-}
-
-/**
- * 代币数量 × USD 单价 → `≈ $…`。
- * `compact: true` 时 ≥1000 用 K/M。
- * 缺失 / NaN / 无价格 → `≈ $0.00`。
- */
-export function formatUsdApprox(
-  amount: number,
-  priceUsd: number | null,
-  options: { compact?: boolean } = {},
+export function formatDecimal(
+  value: string | number | bigint | null | undefined,
+  options: FormatDecimalOptions = {},
 ): string {
-  if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
-    return formatNumber(0, { digits: 2, prefix: '≈ $' })
+  const compact = options.compact === true
+  const digits = Math.max(0, Math.floor(options.digits ?? (compact ? 2 : 0)))
+  const prefix = options.prefix ?? ''
+  const suffix = options.suffix ?? ''
+  const num = toFiniteNumber(value)
+  if (num == null) return LIVE_DATA_PLACEHOLDER
+
+  if (compact) {
+    const { value: scaled, unit } = compactScale(num, digits)
+    return `${prefix}${formatFixed(scaled, digits, trimsFractionZeros(options.fraction, unit))}${unit}${suffix}`
   }
-  const usd = amount * priceUsd
-  if (options.compact && Math.abs(usd) >= 1_000) {
-    return formatCompact(usd, { digits: 2, prefix: '≈ $' })
-  }
-  return formatNumber(usd, { digits: 2, prefix: '≈ $' })
+
+  return `${prefix}${formatFixed(num, digits, options.fraction === 'natural')}${suffix}`
+}
+
+/**
+ * 数量 × 单价 → USD。缺数量、缺价、非有限、负价 → `null`；单价 0 是真零。
+ *
+ * @param amount 代币数量
+ * @param priceUsd USD 单价
+ */
+export function toUsd(
+  amount: number | null | undefined,
+  priceUsd: number | null | undefined,
+): number | null {
+  if (amount == null || !Number.isFinite(amount)) return null
+  if (priceUsd == null || !Number.isFinite(priceUsd) || priceUsd < 0) return null
+  return amount * priceUsd
 }
 
 /**
  * 后端金额小数字符串 → number。
- * 空 / 空白 / 非有限数 → `null`；需要 0 兜底时写 `parseApiAmount(raw) ?? 0`。
+ * 空 / 空白 / 非有限数 → `null`。
  */
 export function parseApiAmount(raw: string | null | undefined): number | null {
   if (raw == null) return null
@@ -218,29 +264,47 @@ export function parseApiAmount(raw: string | null | undefined): number | null {
 }
 
 /**
- * 后端金额字符串 → 人读数字（千分位 + 前后缀）。
- * 空 / 非数字兜底 0。
+ * 后端金额字符串 → `formatDecimal`（默认 2 位小数）。
  */
 export function formatApiAmount(
   raw: string | null | undefined,
   options: { digits?: number; prefix?: string; suffix?: string } = {},
 ): string {
-  const digits = options.digits ?? 2
-  const n = parseApiAmount(raw) ?? 0
-  return formatNumber(n, {
-    digits,
+  return formatDecimal(raw, {
+    digits: options.digits ?? 2,
     prefix: options.prefix,
     suffix: options.suffix,
   })
 }
 
-/** 涨跌百分比——`+412.4%`；空态 → `+0.0%`。 */
+const CONTRIBUTION_DISPLAY_DIGITS = 4
+
+/** 截到 `digits` 位小数（向下舍，不四舍五入）；去逗号。非法 → `null`。 */
+function floorApiDecimal(raw: string | null | undefined, digits: number): string | null {
+  if (raw == null) return null
+  const trimmed = String(raw).trim().replace(/,/g, '')
+  if (!trimmed || trimmed.startsWith('-')) return null
+  if (!/^\d+(\.\d*)?$/.test(trimmed)) return null
+  const [wholePart, fractionPart = ''] = trimmed.split('.')
+  return `${wholePart || '0'}.${fractionPart.slice(0, digits)}`
+}
+
+/**
+ * 后端贡献点数字符串 → 向下舍 4 位再 `formatDecimal`。空 / 非法 → `--`。
+ *
+ * @param raw 十进制金额字符串
+ */
+export function formatApiContributionPoints(raw: string | null | undefined): string {
+  return formatDecimal(floorApiDecimal(raw, CONTRIBUTION_DISPLAY_DIGITS), {
+    digits: CONTRIBUTION_DISPLAY_DIGITS,
+  })
+}
+
+/** 涨跌百分比——`+412.4%`；空态 → `--`。 */
 export function formatPercentChange(value: number | null | undefined, digits = 1): string {
-  if (value == null || !Number.isFinite(value)) {
-    return `+${formatNumber(0, { digits })}%`
-  }
+  if (value == null || !Number.isFinite(value)) return LIVE_DATA_PLACEHOLDER
   const sign = value > 0 ? '+' : value < 0 ? '' : '+'
-  return `${sign}${formatNumber(value, { digits, trimZeros: true })}%`
+  return formatDecimal(value, { digits, fraction: 'natural', prefix: sign, suffix: '%' })
 }
 
 /** 把链上区块时间（unix 秒）格式化为 `YYYY-MM-DD HH:mm`；0 返回 `—`。 */
@@ -293,7 +357,12 @@ export function formatShortAddress(
 
 /** 折扣 BPS → 百分比文本。默认带负号（横幅）；表内绿列用 `{ signed: false }`。 */
 export function formatDiscountBps(discountBps: number, options: { signed?: boolean } = {}): string {
-  if (!Number.isFinite(discountBps) || discountBps <= 0) return '0%'
-  const pct = `${discountBps / 100}%`
-  return options.signed === false ? pct : `-${pct}`
+  if (!Number.isFinite(discountBps)) return LIVE_DATA_PLACEHOLDER
+  if (discountBps <= 0) return formatDecimal(0, { suffix: '%' })
+  return formatDecimal(discountBps / 100, {
+    digits: 2,
+    fraction: 'natural',
+    prefix: options.signed === false ? '' : '-',
+    suffix: '%',
+  })
 }

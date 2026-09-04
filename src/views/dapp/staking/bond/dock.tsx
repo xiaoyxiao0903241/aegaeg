@@ -17,7 +17,7 @@ import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -32,11 +32,13 @@ function parseDiscountPct(label: string): number | null {
   return Number.isFinite(n) ? n : null
 }
 
-/** 现价 × (折扣% / 100) 得折扣后单价；缺失 → `$0.00`。 */
+/** 现价 × (折扣% / 100) 得折扣后单价；缺失 → `--`。 */
 function formatBondDiscountUsd(spot: number | null, discountLabel: string): string {
   const pct = parseDiscountPct(discountLabel)
-  if (spot == null || pct == null) return formatNumber(0, { digits: 2, prefix: '$' })
-  return formatNumber(spot * (pct / 100), { digits: 2, prefix: '$' })
+  return formatDecimal(spot == null || pct == null ? null : spot * (pct / 100), {
+    digits: 2,
+    prefix: '$',
+  })
 }
 
 /**
@@ -67,13 +69,13 @@ export function BondDock({ kind }: { kind: BondKind }) {
   const discountPrices = Object.fromEntries(
     BOND_PERIODS.map((period) => [
       period,
-      formatBondDiscountUsd(spotUsd, bond.periodDiscounts[period] || '0'),
+      formatBondDiscountUsd(spotUsd, bond.periodDiscounts[period] ?? ''),
     ]),
   ) as Record<BondPeriod, string>
   const soldLabels = Object.fromEntries(
     BOND_PERIODS.map((period) => [
       period,
-      formatNumber(bondSoldUsd(bond.periodTotalDeposits[period], spotUsd, agxDecimals) ?? 0, {
+      formatDecimal(bondSoldUsd(bond.periodTotalDeposits[period], spotUsd, agxDecimals), {
         digits: 2,
         prefix: '$',
       }),
@@ -93,10 +95,7 @@ export function BondDock({ kind }: { kind: BondKind }) {
     }),
   ) as Record<BondPeriod, string>
   const discountUsd = formatBondDiscountUsd(spotUsd, bond.discountLabel)
-  const spotLabel =
-    spotUsd != null
-      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
+  const spotLabel = formatDecimal(spotUsd, { digits: 2, prefix: '$' })
 
   return (
     <TabHeader

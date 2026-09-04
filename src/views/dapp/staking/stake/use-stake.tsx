@@ -1,12 +1,12 @@
 import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
-import { ZERO_BI } from '~/core/constants'
 import {
   formatTokenAmount,
   formatTokenAmountToNumber,
   PERSONAL_TOKEN_DIGITS,
 } from '~/core/exchange/token-amount'
+import { sumLoadedWei } from '~/core/query/sum-loaded-wei'
 import { aggregateStakeRelease } from '~/core/staking/aggregate-stake-release'
 import {
   baseDailyPctFromEpoch,
@@ -26,7 +26,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, interpolateLive, toUsd } from '~/shared/presenters/format'
 import { mapStakePositionToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
@@ -35,8 +35,8 @@ import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import {
   formatBonusPct,
   formatRebasePct,
+  formatWeiUsdApprox,
   formatYieldPct,
-  parseApiAmountOrZero,
 } from '~/views/dapp/staking/shared'
 import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakeSession } from '~/views/dapp/staking/stake/use-stake-session'
@@ -153,7 +153,7 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
  */
 export function useStakeDetail() {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappHost()
+  const { sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const rebaseQuery = useLatestSagxRebaseRateQuery()
@@ -165,8 +165,8 @@ export function useStakeDetail() {
   })
 
   const poolAgxWei = overviewQuery.data?.poolAgxBalance
-  const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : 0
-  const epochNumber = overviewQuery.data?.epochNumber ?? ZERO_BI
+  const poolAgx = poolAgxWei != null ? formatTokenAmountToNumber(poolAgxWei, AGX_DECIMALS) : null
+  const epochNumber = overviewQuery.data?.epochNumber
   const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
   const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
@@ -175,16 +175,20 @@ export function useStakeDetail() {
       hint: t.staking.stake.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(poolAgx, priceUsd)}
+          approx={formatDecimal(toUsd(poolAgx, priceUsd), { digits: 2, prefix: '≈ $' })}
           icon="agx"
-          value={`${formatTokenAmount(poolAgxWei ?? ZERO_BI, AGX_DECIMALS, 2)} AGX`}
+          value={formatTokenAmount(poolAgxWei, AGX_DECIMALS, {
+            digits: 2,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
     {
       label: t.staking.stake.overviewMetrics[1]?.label ?? '当前 Epoch',
       hint: t.staking.stake.overviewMetrics[1]?.hint,
-      value: `#${epochNumber.toString()}`,
+      value: epochNumber != null ? `#${epochNumber.toString()}` : formatDecimal(null),
     },
     {
       label: t.staking.stake.overviewMetrics[2]?.label ?? '下一次 Rebase 发放',
@@ -198,22 +202,13 @@ export function useStakeDetail() {
     },
   ]
 
-  const stakeRows = walletReady && stakeQuery.data != null ? stakeQuery.data : []
-  let principal = ZERO_BI
-  let blockReward = ZERO_BI
-  let extraInterest = ZERO_BI
-  for (const row of stakeRows) {
-    principal += row.principal
-    blockReward += row.blockReward
-    extraInterest += row.extraInterest
-  }
-  const { released, pending } = aggregateStakeRelease(stakeRows)
-
-  const stakeHeld = formatTokenAmountToNumber(principal, AGX_DECIMALS)
-  const stakeReleased = formatTokenAmountToNumber(released, AGX_DECIMALS)
-  const stakePending = formatTokenAmountToNumber(pending, AGX_DECIMALS)
-  const rebaseGagx = formatTokenAmountToNumber(blockReward, GAGX_DECIMALS)
-  const bonusGagx = formatTokenAmountToNumber(extraInterest, GAGX_DECIMALS)
+  const stakeRows = stakeQuery.data
+  const principal = sumLoadedWei(stakeRows, (row) => row.principal)
+  const blockReward = sumLoadedWei(stakeRows, (row) => row.blockReward)
+  const extraInterest = sumLoadedWei(stakeRows, (row) => row.extraInterest)
+  const release = stakeRows == null ? null : aggregateStakeRelease(stakeRows)
+  const released = release?.released ?? null
+  const pending = release?.pending ?? null
 
   const metrics = t.staking.aside.positionMetrics
   const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
@@ -222,9 +217,13 @@ export function useStakeDetail() {
       hint: metrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(stakeHeld, priceUsd)}
+          approx={formatWeiUsdApprox(principal, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(principal, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(principal, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -233,9 +232,13 @@ export function useStakeDetail() {
       hint: metrics[1]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(stakeReleased, priceUsd)}
+          approx={formatWeiUsdApprox(released, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(released, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(released, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -244,9 +247,13 @@ export function useStakeDetail() {
       hint: metrics[2]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(stakePending, priceUsd)}
+          approx={formatWeiUsdApprox(pending, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pending, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(pending, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -255,9 +262,13 @@ export function useStakeDetail() {
       hint: metrics[3]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(rebaseGagx, priceUsd)}
+          approx={formatWeiUsdApprox(blockReward, GAGX_DECIMALS, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(blockReward, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
+          value={formatTokenAmount(blockReward, GAGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' gAGX',
+          })}
         />
       ),
     },
@@ -266,9 +277,13 @@ export function useStakeDetail() {
       hint: metrics[4]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(bonusGagx, priceUsd)}
+          approx={formatWeiUsdApprox(extraInterest, GAGX_DECIMALS, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(extraInterest, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
+          value={formatTokenAmount(extraInterest, GAGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' gAGX',
+          })}
         />
       ),
     },
@@ -278,8 +293,8 @@ export function useStakeDetail() {
     recordsQuery.data?.items.map((item) => mapStakePositionToAsideRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && recordsQuery.isLoading && recordsQuery.data == null
   const recordsTotal = recordsQuery.data?.total ?? 0
-  const recordsSummary = interpolate(t.staking.aside.recordsFooter.stake, {
-    amount: formatNumber(parseApiAmountOrZero(recordsQuery.data?.total_stake_amount), {
+  const recordsSummary = interpolateLive(t.staking.aside.recordsFooter.stake, {
+    amount: formatDecimal(recordsQuery.data?.total_stake_amount, {
       digits: PERSONAL_TOKEN_DIGITS,
     }),
   })

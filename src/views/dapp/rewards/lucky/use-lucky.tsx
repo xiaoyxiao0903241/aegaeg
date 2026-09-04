@@ -1,7 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
 
-import { formatCountdownParts } from '~/core/format-countdown'
+import { formatCountdownClock } from '~/core/format-countdown'
 import { luckyWinnersDateList, luckyWinnersSelectedDate } from '~/core/rewards/lucky-winners-date'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
@@ -18,7 +18,12 @@ import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
 import { bscscanTx } from '~/shared/config/explorer'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatShortAddress } from '~/shared/presenters/format'
+import {
+  formatShortAddress,
+  interpolateLive,
+  joinLiveLabels,
+  LIVE_DATA_PLACEHOLDER,
+} from '~/shared/presenters/format'
 import { useLuckySessionStore } from '~/stores/rewards-session-store'
 import { useWallClockSec } from '~/stores/wall-clock-store'
 import {
@@ -37,17 +42,6 @@ import {
   readLuckyWinnerRoundStakes,
 } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-
-function formatCountdown(endTimeSec: bigint, nowSec: number): string | null {
-  const end = Number(endTimeSec)
-  if (!Number.isFinite(end) || end <= 0) return null
-  const [hours, minutes] = formatCountdownParts(
-    Math.max(0, end - nowSec),
-    ['hours', 'minutes'],
-    false,
-  )
-  return `${hours?.text ?? '00'}:${minutes?.text ?? '00'}`
-}
 
 function parseLuckyRoundId(raw: unknown): bigint | null {
   if (typeof raw !== 'number' || !Number.isInteger(raw) || raw <= 0) return null
@@ -130,20 +124,14 @@ export function useLucky() {
     summary?.today_total_prize,
     { digits: 2, prefix: '$' },
   )
-  const countdown =
-    walletReady && roundQuery.data != null && roundQuery.data.accepting
-      ? formatCountdown(roundQuery.data.endTimeSec, nowSec)
-      : null
+  const clock =
+    roundQuery.data == null ? null : formatCountdownClock(roundQuery.data.endTimeSec, nowSec)
   const todayPoolHint =
-    countdown != null
-      ? lucky.countdownHint != null
-        ? interpolate(lucky.countdownHint, { time: countdown })
-        : undefined
-      : walletReady
-        ? lucky.countdownHint != null
-          ? interpolate(lucky.countdownHint, { time: NON_NUMERIC_EMPTY })
-          : undefined
-        : undefined
+    lucky.countdownHint == null
+      ? undefined
+      : clock == null
+        ? LIVE_DATA_PLACEHOLDER
+        : interpolate(lucky.countdownHint, { time: clock })
 
   const eligibilityPending = walletReady && roundQuery.isLoading && roundQuery.data == null
   const eligibilityFailed =
@@ -159,23 +147,20 @@ export function useLucky() {
     !walletReady || eligibilityPending || eligibilityFailed
       ? undefined
       : lucky.maxStakeHint != null
-        ? interpolate(lucky.maxStakeHint, {
+        ? interpolateLive(lucky.maxStakeHint, {
             amount: formatLuckyUsd1Amount(roundQuery.data?.roundPurchaseUsd1),
           })
         : undefined
 
   const winCount = formatApiCountLabel(sessionReady, summaryQuery.isLoading, summary?.win_count)
-  const cumulativeWins = interpolate(lucky.winsCount, { count: winCount })
+  const cumulativeWins = interpolateLive(lucky.winsCount, { count: winCount })
   const totalRewardAmount = summary?.total_reward_amount
-  const cumulativeWinsHint = interpolate(lucky.winsAmountHint, {
-    amount: formatApiStatLabel(sessionReady, summaryQuery.isLoading, totalRewardAmount),
-    approx: formatApiGagxApproxUsd(
-      sessionReady,
-      summaryQuery.isLoading,
-      totalRewardAmount,
-      agxPriceUsd,
-    ),
-  })
+  const cumulativeWinsHint = joinLiveLabels(
+    formatApiStatLabel(sessionReady, summaryQuery.isLoading, totalRewardAmount, {
+      suffix: ' gAGX',
+    }),
+    formatApiGagxApproxUsd(sessionReady, summaryQuery.isLoading, totalRewardAmount, agxPriceUsd),
+  )
 
   const selfAddress = account?.address ?? null
   const winnersTotal = winners.length

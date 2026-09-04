@@ -9,7 +9,7 @@ import { ProgressBar } from '~/shared/components/progress-bar'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { cn, revealClass } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import type { useGenesisDetail } from '~/views/dapp/genesis/use-genesis-detail'
 import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 
@@ -127,7 +127,7 @@ export function GenesisContributionsTable({
             <Table.Pagination
               onPageChange={vm.setContributionsPage}
               page={vm.contributionsPage}
-              summary={`${cumulativeLabel}${formatNumber(vm.cumulativeContributedUsd, { prefix: '$' })}`}
+              summary={`${cumulativeLabel}${formatDecimal(vm.cumulativeContributedUsd, { prefix: '$' })}`}
               total={vm.contributionsTotal}
             />
           </Table.Footer>

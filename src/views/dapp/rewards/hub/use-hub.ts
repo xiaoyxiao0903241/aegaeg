@@ -5,11 +5,11 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { cobuildTierDecoSrc, dappAssets } from '~/shared/assets/dapp'
 import {
+  formatDecimal,
   formatMakingRankLabel,
-  formatNumber,
-  formatUsdApprox,
   makingRankDisplayRank,
   parseApiAmount,
+  toUsd,
 } from '~/shared/presenters/format'
 import { formatApiAmount, formatApiStatLabel } from '~/views/dapp/rewards/shared'
 import { useRewardsContribution } from '~/views/dapp/rewards/use-rewards-contribution'
@@ -32,15 +32,11 @@ export type HubStats = {
 }
 
 function formatUsdFromAgx(raw: string | null | undefined, priceUsd: number | null): string {
-  const n = parseApiAmount(raw)
-  if (n == null || priceUsd == null || priceUsd <= 0) {
-    return formatNumber(0, { digits: 2, prefix: '$' })
-  }
-  return formatNumber(n * priceUsd, { digits: 2, prefix: '$' })
+  return formatDecimal(toUsd(parseApiAmount(raw), priceUsd), { digits: 2, prefix: '$' })
 }
 
 function formatAgxSecondary(raw: string | null | undefined): string {
-  return `${formatApiAmount(raw, { digits: PERSONAL_TOKEN_DIGITS })} AGX`
+  return formatApiAmount(raw, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
 }
 
 /** 档位序号：A1→0 … A13→12；>13 → 终身成就行（13）；无档 → null（不高亮） */
@@ -61,21 +57,23 @@ function makingRankToRowIndex(rank: number | null | undefined): number | null {
  */
 export function useRewardsHub(): HubStats {
   const { messages: t } = useI18n()
-  const { walletReady, sessionReady } = useDappHost()
+  const { sessionReady } = useDappHost()
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useMakingOverview(sessionReady)
-  const { contributionValue } = useRewardsContribution(walletReady)
+  const { contributionValue } = useRewardsContribution()
   const tierEmpty = t.rewards.hub.stats.tierEmpty
   const overview = overviewQuery.data
   const pending = overviewQuery.isLoading
 
   const totalRaw = sessionReady ? overview?.total_reward : null
-  const totalFinite = parseApiAmount(totalRaw) ?? 0
   const rank = sessionReady ? makingRankDisplayRank(overview?.making_rank, overview) : null
 
   return {
-    totalRewardGagx: `${formatApiStatLabel(sessionReady, pending, totalRaw)} gAGX`,
-    totalRewardApprox: formatUsdApprox(totalFinite, sessionReady ? priceUsd : null),
+    totalRewardGagx: formatApiStatLabel(sessionReady, pending, totalRaw, { suffix: ' gAGX' }),
+    totalRewardApprox: formatDecimal(toUsd(parseApiAmount(totalRaw), priceUsd), {
+      digits: 2,
+      prefix: '≈ $',
+    }),
     tierLabel: !sessionReady
       ? tierEmpty
       : pending && overview == null

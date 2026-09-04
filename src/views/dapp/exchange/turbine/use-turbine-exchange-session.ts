@@ -24,7 +24,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { dappAssets, tokenCarouselIcons } from '~/shared/assets/dapp'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal, LIVE_DATA_PLACEHOLDER } from '~/shared/presenters/format'
 import type { ExchangeSubmitResult } from '~/views/dapp/exchange/shared'
 import {
   submitTurbineClaim,
@@ -49,23 +49,22 @@ const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 const ONE_AGX = TEN_BI ** BigInt(AGX_DECIMALS)
 
 /**
- * 概览 USD 提示：缺少单位报价时显示 `$0.00`（空态统一值）
+ * 概览 USD 提示：缺少单位报价时显示 `--`
  */
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
-  if (unitUsdPerAgx === undefined || unitUsdPerAgx === ZERO_BI || amountAgx === ZERO_BI) {
-    return formatNumber(0, { digits: 2, prefix: '$' })
+  if (unitUsdPerAgx === undefined) return LIVE_DATA_PLACEHOLDER
+  if (unitUsdPerAgx === ZERO_BI || amountAgx === ZERO_BI) {
+    return formatDecimal(0, { digits: 2, prefix: '$' })
   }
-  const usdNumber = formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS)
-  if (!Number.isFinite(usdNumber) || usdNumber <= 0) {
-    return formatNumber(0, { digits: 2, prefix: '$' })
-  }
-  return formatNumber(usdNumber, { digits: 2, prefix: '$' })
+  return formatDecimal(
+    formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS),
+    { digits: 2, prefix: '$' },
+  )
 }
 
 /** OpenAPI 的 turbine summary/logs 金额为小数字符串（勿当作 wei）。 */
 function formatTurbineSummaryAmount(raw: string | null | undefined): string {
-  const n = raw == null || raw.trim() === '' ? Number.NaN : Number(raw)
-  return formatNumber(Number.isFinite(n) ? n : 0, { digits: PERSONAL_TOKEN_DIGITS })
+  return formatDecimal(raw, { digits: PERSONAL_TOKEN_DIGITS })
 }
 
 /**
@@ -206,19 +205,20 @@ export function useTurbineExchangeSession(
     quotedUsd > ZERO_BI && quotaCapReady
       ? calcTurbinePayableUsd(quotedUsd, quotedQuota, slippageBps)
       : ZERO_BI
-  const buyAgxLabel =
-    unlockAmountIn > ZERO_BI
-      ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4)
-      : formatNumber(0, { digits: 4 })
+  const buyAgxLabel = formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4)
   // 支付 USD1 = min(quote × (1 + 滑点), 全配额报价)
-  const payUsd1Label =
+  const payUsd1Label = formatTokenAmount(
     unlockAmountIn <= ZERO_BI
-      ? formatNumber(0, { digits: 4 })
-      : quoteQuery.isError || (needsQuotaCapQuote && quotaQuoteQuery.isError)
-        ? formatNumber(0, { digits: 4 })
-        : quoteQuery.data === undefined || !quotaCapReady
-          ? formatNumber(0, { digits: 4 })
-          : formatTokenAmount(usdNeeded, USD1_DECIMALS, 4)
+      ? ZERO_BI
+      : quoteQuery.isError ||
+          (needsQuotaCapQuote && quotaQuoteQuery.isError) ||
+          quoteQuery.data === undefined ||
+          !quotaCapReady
+        ? null
+        : usdNeeded,
+    USD1_DECIMALS,
+    4,
+  )
 
   const unitUsd = unitPriceQuery.data
   const unitUsdNumber =
@@ -226,7 +226,7 @@ export function useTurbineExchangeSession(
   const agxPriceLabel =
     unitPriceQuery.isError || unitUsd === undefined || unitUsdNumber <= 0
       ? ''
-      : formatNumber(unitUsdNumber, { digits: 2, prefix: '$' })
+      : formatDecimal(unitUsdNumber, { digits: 2, prefix: '$' })
 
   const cooldownSeconds = Number(
     cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? ZERO_BI,
@@ -242,17 +242,15 @@ export function useTurbineExchangeSession(
 
   // OpenAPI `/turbine/summary` 的 claimed_total 为已领取金额（小数字符串，勿当 wei）
   const claimedRaw = turbineSummaryQuery.data?.claimed_total
-  const totalWithdrawnLabel = !sessionReady
-    ? formatTurbineSummaryAmount(null)
-    : turbineSummaryQuery.isLoading && claimedRaw == null
-      ? formatTurbineSummaryAmount(null)
-      : formatTurbineSummaryAmount(claimedRaw)
+  const totalWithdrawnLabel = formatTurbineSummaryAmount(
+    !sessionReady || (turbineSummaryQuery.isLoading && claimedRaw == null) ? null : claimedRaw,
+  )
   const claimedAsNumber = claimedRaw != null ? Number(claimedRaw) : Number.NaN
   const totalWithdrawnUsdHint = (() => {
     if (!Number.isFinite(claimedAsNumber)) return ''
-    if (claimedAsNumber === 0) return formatNumber(0, { digits: 2, prefix: '$' })
+    if (claimedAsNumber === 0) return formatDecimal(0, { digits: 2, prefix: '$' })
     if (!unitUsdReady) return ''
-    return formatNumber(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '$' })
+    return formatDecimal(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '$' })
   })()
 
   const canUnlock =
@@ -314,20 +312,15 @@ export function useTurbineExchangeSession(
     fillPercent,
     payUsd1Label,
     buyAgxLabel,
-    quotaLabel:
-      quotaQuery.data === undefined
-        ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-        : formatTokenAmount(quota, AGX_DECIMALS, {
-            digits: PERSONAL_TOKEN_DIGITS,
-            trimZeros: false,
-          }),
-    usd1BalanceLabel:
-      balancesQuery.data === undefined
-        ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-        : formatTokenAmount(usd1Balance, USD1_DECIMALS, {
-            digits: PERSONAL_TOKEN_DIGITS,
-            trimZeros: false,
-          }),
+    quotaLabel: formatTokenAmount(quotaQuery.data, AGX_DECIMALS, {
+      digits: PERSONAL_TOKEN_DIGITS,
+      trimZeros: false,
+      suffix: ' gAGX',
+    }),
+    usd1BalanceLabel: formatTokenAmount(balancesQuery.data?.usd1, USD1_DECIMALS, {
+      digits: PERSONAL_TOKEN_DIGITS,
+      trimZeros: false,
+    }),
     cooldownHours,
     agxPriceLabel,
     slippage,
@@ -342,27 +335,25 @@ export function useTurbineExchangeSession(
     silences: silencesQuery.data?.rows ?? [],
     isSilencesLoading: walletReady && silencesQuery.isLoading,
     overview: {
-      pendingUnlockLabel:
-        quotaQuery.data === undefined
-          ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-          : formatTokenAmount(quota, AGX_DECIMALS, {
-              digits: PERSONAL_TOKEN_DIGITS,
-              trimZeros: false,
-            }),
+      pendingUnlockLabel: formatTokenAmount(quotaQuery.data, AGX_DECIMALS, {
+        digits: PERSONAL_TOKEN_DIGITS,
+        trimZeros: false,
+      }),
       pendingUnlockUsdHint:
         quotaQuery.data === undefined || !unitUsdReady
-          ? formatNumber(0, { digits: 2, prefix: '≈ $' })
+          ? LIVE_DATA_PLACEHOLDER
           : formatAgxQuotaUsd(quota, unitUsd),
-      coolingLabel:
-        silencesQuery.data === undefined
-          ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-          : formatTokenAmount(coolingBalance, AGX_DECIMALS, {
-              digits: PERSONAL_TOKEN_DIGITS,
-              trimZeros: false,
-            }),
+      coolingLabel: formatTokenAmount(
+        silencesQuery.data === undefined ? null : coolingBalance,
+        AGX_DECIMALS,
+        {
+          digits: PERSONAL_TOKEN_DIGITS,
+          trimZeros: false,
+        },
+      ),
       coolingUsdHint:
         silencesQuery.data === undefined || !unitUsdReady
-          ? formatNumber(0, { digits: 2, prefix: '≈ $' })
+          ? LIVE_DATA_PLACEHOLDER
           : formatAgxQuotaUsd(coolingBalance, unitUsd),
       totalWithdrawnLabel,
       totalWithdrawnUsdHint,

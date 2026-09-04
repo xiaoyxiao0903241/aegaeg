@@ -19,7 +19,7 @@ import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, LIVE_DATA_PLACEHOLDER, toUsd } from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useXmineSessionStore } from '~/stores/assets-session-store'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
@@ -160,16 +160,10 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   })
   const summaryQuery = useX0MiningSummary(sessionReady)
 
-  if (!walletReady || !address || positionQuery.isError) {
+  if (!walletReady || !address || positionQuery.isError || positionQuery.data === undefined) {
     return Array.from({ length: 4 }, () => ({
-      value: '0.0000 gAGX',
-      approx: formatUsdApprox(0, null),
-    }))
-  }
-  if (positionQuery.data === undefined) {
-    return Array.from({ length: 4 }, () => ({
-      value: '0.0000 gAGX',
-      approx: formatUsdApprox(0, null),
+      value: LIVE_DATA_PLACEHOLDER,
+      approx: LIVE_DATA_PLACEHOLDER,
     }))
   }
 
@@ -183,29 +177,50 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
 
   return [
     {
-      value: `${formatTokenAmount(miningStake, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
+      value: formatTokenAmount(miningStake, GAGX_DECIMALS, {
+        digits: PERSONAL_TOKEN_DIGITS,
+        trimZeros: false,
+        suffix: ' gAGX',
+      }),
       icon: 'gagx',
-      approx: formatUsdApprox(formatTokenAmountToNumber(miningStake, GAGX_DECIMALS), priceUsd),
+      approx: formatDecimal(
+        toUsd(formatTokenAmountToNumber(miningStake, GAGX_DECIMALS), priceUsd),
+        { digits: 2, prefix: '≈ $' },
+      ),
     },
-    releasedWei == null
-      ? { value: '—', icon: 'gagx' }
-      : {
-          value: `${formatTokenAmount(releasedWei, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`,
-          icon: 'gagx',
-          approx: formatUsdApprox(formatTokenAmountToNumber(releasedWei, GAGX_DECIMALS), priceUsd),
-        },
     {
-      value: `${formatTokenAmount(pending, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`,
-      icon: 'x',
-      approx: formatUsdApprox(0, null),
+      value: formatTokenAmount(releasedWei, GAGX_DECIMALS, {
+        digits: PERSONAL_TOKEN_DIGITS,
+        trimZeros: false,
+        suffix: ' gAGX',
+      }),
+      icon: 'gagx',
+      approx: formatDecimal(
+        toUsd(
+          releasedWei == null ? null : formatTokenAmountToNumber(releasedWei, GAGX_DECIMALS),
+          priceUsd,
+        ),
+        { digits: 2, prefix: '≈ $' },
+      ),
     },
-    totalOutputWei == null
-      ? { value: '—', icon: 'x' }
-      : {
-          value: `${formatTokenAmount(totalOutputWei, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`,
-          icon: 'x',
-          approx: formatUsdApprox(0, null),
-        },
+    {
+      value: formatTokenAmount(pending, X_DECIMALS, {
+        digits: PERSONAL_TOKEN_DIGITS,
+        trimZeros: false,
+        suffix: ' X',
+      }),
+      icon: 'x',
+      approx: LIVE_DATA_PLACEHOLDER,
+    },
+    {
+      value: formatTokenAmount(totalOutputWei, X_DECIMALS, {
+        digits: PERSONAL_TOKEN_DIGITS,
+        trimZeros: false,
+        suffix: ' X',
+      }),
+      icon: 'x',
+      approx: LIVE_DATA_PLACEHOLDER,
+    },
   ]
 }
 

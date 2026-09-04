@@ -206,11 +206,15 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
             ) : (
               turbine.silences.map((row) => (
                 <TurbineClaimCard
-                  amountLabel={`${formatTokenAmount(
+                  amountLabel={formatTokenAmount(
                     row.silenceBalance,
                     EXCHANGE_CONFIG.tokens.agx.decimals,
-                    4,
-                  )} gAGX`}
+                    {
+                      digits: 4,
+                      trimZeros: false,
+                      suffix: ' gAGX',
+                    },
+                  )}
                   claimLabel={t.exchange.turbine.claimAction}
                   claimableLabel={t.exchange.turbine.claimable}
                   coolingLabel={t.exchange.turbine.cooling}

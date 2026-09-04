@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 
 import { isStakeRowClaimEnabled } from '~/core/assets/claim-output'
-import { ZERO_BI } from '~/core/constants'
+import { LIVE_DATA_PLACEHOLDER, ZERO_BI } from '~/core/constants'
 import { isAssetsActionableAmount } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -84,7 +84,7 @@ export function AssetsPositionRowHeader({
         units={['days', 'hours', 'minutes']}
       />
     ) : (
-      '—'
+      LIVE_DATA_PLACEHOLDER
     )
 
   return (

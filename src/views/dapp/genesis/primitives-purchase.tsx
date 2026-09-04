@@ -15,7 +15,7 @@ import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn, revealClass } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { GenesisSeasonCarousel, SeasonOptionSkeleton } from '~/views/dapp/genesis/primitives-season'
 import { useGenesisDock } from '~/views/dapp/genesis/use-genesis-dock'
@@ -115,7 +115,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
         inputRef={vm.sharesInputRef}
         label={interpolate(t.genesis.shares, {
           min: formatTokenAmount(genesis.minAmount, USD1_DECIMALS, 0),
-          max: formatNumber(genesis.maxShares, { digits: 0, trimZeros: true }),
+          max: formatDecimal(genesis.maxShares, { digits: 0, fraction: 'natural' }),
         })}
         max={Math.max(genesis.maxShares, 1)}
         maxLabel={t.common.max}

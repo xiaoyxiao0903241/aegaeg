@@ -1,7 +1,5 @@
-import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatNumber } from '~/shared/presenters/format'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-with-success-toast'
@@ -18,20 +16,6 @@ export function useTurbine(turbine: TurbineExchangeState) {
     { label: t.exchange.turbine.segments.unlock, value: 'unlock' },
     { label: t.exchange.turbine.segments.claim, value: 'claim' },
   ]
-
-  const unlockableAmountLabel = exchangePreview
-    ? `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`
-    : !turbine.walletReady
-      ? `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`
-      : `${turbine.quotaLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })} gAGX`
-
-  const usd1AmountLabel = exchangePreview
-    ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-    : !turbine.walletReady
-      ? formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-      : turbine.usd1BalanceLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
-
-  const willReceiveLabel = turbine.buyAgxLabel
 
   async function handleUnlock() {
     // 错误由写链统一 toast（getErrorMessage），这里避免重复提示
@@ -51,9 +35,9 @@ export function useTurbine(turbine: TurbineExchangeState) {
     exchangePreview,
     sellDisabled,
     segmentOptions,
-    unlockableAmountLabel,
-    usd1AmountLabel,
-    willReceiveLabel,
+    unlockableAmountLabel: turbine.quotaLabel,
+    usd1AmountLabel: turbine.usd1BalanceLabel,
+    willReceiveLabel: turbine.buyAgxLabel,
     onBack: () => setView('hub'),
     handleUnlock,
     handleClaim,

@@ -5,14 +5,9 @@
  * 供各奖励详情页复用。
  */
 import type { ReactNode } from 'react'
-import { formatUnits } from 'viem'
 
-import {
-  formatApiContributionPoints,
-  formatContributionPoints,
-} from '~/core/exchange/format-contribution-points'
+import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
-import { interpolate } from '~/i18n/interpolate'
 import type {
   CommunityFundLogItem,
   DaoGrantStatus,
@@ -34,33 +29,33 @@ import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   formatApiAmount,
+  formatApiContributionPoints,
   formatApiDateTime,
   formatBlockTime,
+  formatDecimal,
   formatMakingRankLabel,
-  formatNumber,
   formatRegisterDate,
   formatTableGenesisRank,
-  formatUsdApprox,
+  interpolateLive,
+  LIVE_DATA_PLACEHOLDER,
   parseApiAmount,
   TABLE_EMPTY,
+  toUsd,
 } from '~/shared/presenters/format'
 
 /**
  * 非数值空态占位（日期、哈希、标签、无字段指标用「—」）。
- * 金额 / 数量缺数走 `formatApiAmount` / `formatNumber(0…)`，显 0。
+ * 金额 / 数量缺数走 `formatApiAmount`，显 `--`。
  */
 export const NON_NUMERIC_EMPTY = '—'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 /**
- * Tracker 累计 USD1（18 位）→ `$1.23`；缺数显示「—」，不回退成 0。
+ * Tracker 累计 USD1（18 位）→ `$1.23`；缺数显示 `--`。
  */
 export function formatLuckyUsd1Amount(raw: bigint | null | undefined): string {
-  if (raw == null) return NON_NUMERIC_EMPTY
-  const n = Number(formatUnits(raw, USD1_DECIMALS))
-  if (!Number.isFinite(n)) return NON_NUMERIC_EMPTY
-  return `$${formatTokenAmount(raw, USD1_DECIMALS, 2)}`
+  return formatTokenAmount(raw, USD1_DECIMALS, { digits: 2, trimZeros: false, prefix: '$' })
 }
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
@@ -69,54 +64,34 @@ export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referra
 export { formatApiAmount }
 
 /**
- * 指标统计标签：会话未就绪或冷启动加载中 → 显示 0
- *
- * 重新拉取时 keepPreviousData 会保留旧值，因此只有
- * 「会话未就绪」或「首次加载且无数据」才回退成 0。
- *
- * @param sessionReady 登录会话是否就绪
- * @param isPending 是否加载中
- * @param raw 后端数值字符串
+ * 后端金额统计。缺数 → `--`；已知 0 → 按精度印。
+ * `sessionReady` / `isPending` 保留给既有调用方，展示只看 `raw`。
  */
 export function formatApiStatLabel(
-  sessionReady: boolean,
-  isPending: boolean,
+  _sessionReady: boolean,
+  _isPending: boolean,
   raw: string | null | undefined,
   options?: { digits?: number; prefix?: string; suffix?: string },
 ): string {
-  // 仅冷启动 pending+null 出零（refetch 时 keepPreviousData 仍带 raw）。
-  const digits = options?.digits ?? PERSONAL_TOKEN_DIGITS
-  if (!sessionReady || (isPending && raw == null)) {
-    return formatApiAmount(null, { ...options, digits })
-  }
-  return formatApiAmount(raw, { ...options, digits })
+  return formatApiAmount(raw, { digits: PERSONAL_TOKEN_DIGITS, ...options })
 }
 
-/**
- * 后端贡献点数统计：会话未就绪或冷启动 pending → `0.0000`，否则向下舍 4 位。
- */
+/** 后端贡献点数统计。缺数 → `--`。 */
 export function formatApiContributionStatLabel(
-  sessionReady: boolean,
-  isPending: boolean,
+  _sessionReady: boolean,
+  _isPending: boolean,
   raw: string | null | undefined,
 ): string {
-  if (!sessionReady || (isPending && raw == null)) return formatApiContributionPoints(null)
   return formatApiContributionPoints(raw)
 }
 
-/**
- * 后端整数字段（计数）→ 文本
- *
- * 会话未就绪或加载中且无数据时返回「0」，规则同 formatApiStatLabel。
- */
+/** 后端整数字段。缺数 → `--`。 */
 export function formatApiCountLabel(
-  sessionReady: boolean,
-  isPending: boolean,
+  _sessionReady: boolean,
+  _isPending: boolean,
   raw: number | null | undefined,
 ): string {
-  if (!sessionReady) return '0'
-  if (isPending && raw == null) return '0'
-  if (raw == null) return '0'
+  if (raw == null) return LIVE_DATA_PLACEHOLDER
   return String(raw)
 }
 
@@ -135,37 +110,31 @@ export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean
 
 /**
  * AGX 数量 × 现价 → `$…`（仓位 / 业绩主值；设计稿用 `$` 前缀，无 ≈）。
- * 无会话 / 冷启动 / 无价 → `$0.00`。
+ * 缺数量或单价 → `--`；单价 0 → `$0.00`。
  */
 export function formatApiAgxUsdLabel(
-  sessionReady: boolean,
-  isPending: boolean,
+  _sessionReady: boolean,
+  _isPending: boolean,
   raw: string | null | undefined,
   priceUsd: number | null,
 ): string {
-  if (!sessionReady || (isPending && raw == null)) {
-    return formatNumber(0, { digits: 2, prefix: '$' })
-  }
   const n = parseApiAmount(raw)
-  if (n == null || priceUsd == null || priceUsd <= 0) {
-    return formatNumber(0, { digits: 2, prefix: '$' })
+  if (n == null || priceUsd == null || !Number.isFinite(priceUsd) || priceUsd < 0) {
+    return LIVE_DATA_PLACEHOLDER
   }
-  return formatNumber(n * priceUsd, { digits: 2, prefix: '$' })
+  return formatDecimal(n * priceUsd, { digits: 2, prefix: '$' })
 }
 
 /**
  * gAGX 奖励主值旁注：`≈ $…`（设计稿有 ≈ 才挂 Tile.Note）。
  */
 export function formatApiGagxApproxUsd(
-  sessionReady: boolean,
-  isPending: boolean,
+  _sessionReady: boolean,
+  _isPending: boolean,
   raw: string | null | undefined,
   priceUsd: number | null,
 ): string {
-  if (!sessionReady || (isPending && raw == null)) {
-    return formatUsdApprox(0, null)
-  }
-  return formatUsdApprox(parseApiAmount(raw) ?? 0, priceUsd)
+  return formatDecimal(toUsd(parseApiAmount(raw), priceUsd), { digits: 2, prefix: '≈ $' })
 }
 
 /**
@@ -219,24 +188,13 @@ export function splitAmountByPct(amount: bigint, pct: number): bigint {
 }
 
 /**
- * 贡献快照占位文本：未连接 / 加载中 → 空，有值 → 代币金额
- *
- * @param input.walletReady 钱包是否就绪
- * @param input.hasAddress 是否已连接地址
- * @param input.isPending 链上查询是否加载中
- * @param input.contribution 贡献值（bigint）
- * @param input.decimals 代币精度
+ * 贡献快照：没有 bigint → `--`。
  */
 export function formatContributionPlaceholder(input: {
-  walletReady: boolean
-  hasAddress: boolean
-  isPending: boolean
   contribution: bigint | undefined
   decimals: number
 }): string {
-  if (!input.walletReady || !input.hasAddress || input.contribution === undefined) {
-    return formatApiContributionPoints(null)
-  }
+  if (input.contribution === undefined) return LIVE_DATA_PLACEHOLDER
   return formatContributionPoints(input.contribution, input.decimals)
 }
 
@@ -318,13 +276,13 @@ export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLa
   const signedAmount = parseApiAmount(item.amount)
   const amountLabel =
     signedAmount != null
-      ? formatNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
+      ? formatDecimal(Math.abs(signedAmount), { digits: 2, prefix: '$' })
+      : LIVE_DATA_PLACEHOLDER
   const orderAmount = parseApiAmount(item.order_amount)
   const orderLabel =
     orderAmount != null && orderAmount > 0
-      ? formatNumber(orderAmount, { digits: 0, prefix: '$' })
-      : formatNumber(0, { digits: 0, prefix: '$' })
+      ? formatDecimal(orderAmount, { digits: 0, prefix: '$' })
+      : LIVE_DATA_PLACEHOLDER
 
   return [
     formatBlockTime(item.block_time),
@@ -349,8 +307,8 @@ export function mapTeamRewardClaimLogToRow(
   const amountNum = parseApiAmount(item.amount)
   const amountLabel =
     amountNum != null
-      ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
+      ? formatDecimal(Math.abs(amountNum), { digits: 2, prefix: '$' })
+      : LIVE_DATA_PLACEHOLDER
   const statusKey = teamRewardClaimStatusKey(item.status)
 
   return [
@@ -375,8 +333,8 @@ export function mapCommunityFundLogToRow(
   const amountNum = parseApiAmount(item.amount)
   const amountLabel =
     amountNum != null
-      ? formatNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
+      ? formatDecimal(Math.abs(amountNum), { digits: 2, prefix: '$' })
+      : LIVE_DATA_PLACEHOLDER
   const statusKey = communityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
@@ -473,13 +431,10 @@ export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralIte
 
 /** API 津贴比例为百分比数字；已带 `%` 则原样展示。 */
 function formatSubsidyRate(raw: string | null | undefined): string {
-  if (raw == null) return TABLE_EMPTY
-  const trimmed = raw.trim()
+  const trimmed = raw?.trim()
   if (!trimmed) return TABLE_EMPTY
   if (trimmed.endsWith('%')) return trimmed
-  const n = parseApiAmount(trimmed)
-  if (n == null) return TABLE_EMPTY
-  return `${formatNumber(n, { digits: 2, trimZeros: true })}%`
+  return formatDecimal(parseApiAmount(trimmed), { digits: 2, fraction: 'natural', suffix: '%' })
 }
 
 /**
@@ -571,7 +526,7 @@ export function mapLuckyMyRoundToRow(
   const result =
     item.is_winner === true ? (
       <StatusBadge size="compact" tone="pending">
-        {interpolate(labels.won, { amount: wonAmount })}
+        {interpolateLive(labels.won, { amount: wonAmount })}
       </StatusBadge>
     ) : (
       <StatusBadge size="compact" tone="muted">

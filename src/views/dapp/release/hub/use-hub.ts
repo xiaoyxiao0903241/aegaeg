@@ -6,7 +6,7 @@ import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-dat
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatDecimal, parseApiAmount, toUsd } from '~/shared/presenters/format'
 import { formatReleaseApiOrChainLabel, formatReleasePct } from '~/views/dapp/release/shared'
 import {
   useReleaseBufferSnapshot,
@@ -89,24 +89,35 @@ export function useReleaseHub() {
     decimals: AGX_DECIMALS,
     unit: 'AGX',
   })
-  const gagxEmptyLabel = `${formatNumber(0, { digits: 4 })} gAGX`
   const gagxTotal = bufferGagxClaimable + bufferGagxReleasing
-  const gagxTotalLabel = bufferChainReady
-    ? `${formatTokenAmount(gagxTotal, GAGX_DECIMALS, 4)} gAGX`
-    : gagxEmptyLabel
+  const gagxTotalLabel = formatTokenAmount(bufferChainReady ? gagxTotal : null, GAGX_DECIMALS, {
+    digits: 4,
+    trimZeros: false,
+    suffix: ' gAGX',
+  })
   // 与 AGX 对称：可领只信链上 gagx.totalClaimable（API 无同口径分项）
-  const bufferClaimableGagx = bufferChainReady
-    ? `${formatTokenAmount(bufferGagxClaimable, GAGX_DECIMALS, 4)} gAGX`
-    : gagxEmptyLabel
+  const bufferClaimableGagx = formatTokenAmount(
+    bufferChainReady ? bufferGagxClaimable : null,
+    GAGX_DECIMALS,
+    {
+      digits: 4,
+      trimZeros: false,
+      suffix: ' gAGX',
+    },
+  )
 
-  const queueReleasingNum = chainReady ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS) : 0
+  const queueReleasingNum = chainReady
+    ? formatTokenAmountToNumber(queueReleasing, AGX_DECIMALS)
+    : null
   const queueClaimableNum = chainReady
     ? formatTokenAmountToNumber(queueClaimable, AGX_DECIMALS)
-    : (parseApiAmount(apiQueueClaimableRaw) ?? 0)
+    : parseApiAmount(apiQueueClaimableRaw)
   const bufferTotalNum = bufferChainReady
     ? formatTokenAmountToNumber(bufferTotalChain, AGX_DECIMALS)
-    : (parseApiAmount(bufferApi.data?.releasing_amount) ?? 0)
-  const bufferGagxNum = bufferChainReady ? formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS) : 0
+    : parseApiAmount(bufferApi.data?.releasing_amount)
+  const bufferGagxNum = bufferChainReady
+    ? formatTokenAmountToNumber(gagxTotal, GAGX_DECIMALS)
+    : null
 
   const taxPeriods =
     plansQuery.data != null && plansQuery.data.length > 0
@@ -117,8 +128,12 @@ export function useReleaseHub() {
       : []
   const taxRates =
     plansQuery.data != null && plansQuery.data.length > 0
-      ? plansQuery.data.map(
-          (plan) => `${formatNumber(Number(plan.taxBps) / 100, { digits: 0, trimZeros: true })}%`,
+      ? plansQuery.data.map((plan) =>
+          formatDecimal(Number(plan.taxBps) / 100, {
+            digits: 0,
+            fraction: 'natural',
+            suffix: '%',
+          }),
         )
       : []
 
@@ -133,10 +148,16 @@ export function useReleaseHub() {
     bufferClaimableAgx,
     gagxTotalLabel,
     bufferClaimableGagx,
-    queueReleasingApprox: formatUsdApprox(queueReleasingNum, priceUsd),
-    queueClaimableApprox: formatUsdApprox(queueClaimableNum, priceUsd),
-    bufferTotalApprox: formatUsdApprox(bufferTotalNum, priceUsd),
-    bufferGagxApprox: formatUsdApprox(bufferGagxNum, priceUsd),
+    queueReleasingApprox: formatDecimal(toUsd(queueReleasingNum, priceUsd), {
+      digits: 2,
+      prefix: '≈ $',
+    }),
+    queueClaimableApprox: formatDecimal(toUsd(queueClaimableNum, priceUsd), {
+      digits: 2,
+      prefix: '≈ $',
+    }),
+    bufferTotalApprox: formatDecimal(toUsd(bufferTotalNum, priceUsd), { digits: 2, prefix: '≈ $' }),
+    bufferGagxApprox: formatDecimal(toUsd(bufferGagxNum, priceUsd), { digits: 2, prefix: '≈ $' }),
     taxPeriods,
     taxRates,
   }

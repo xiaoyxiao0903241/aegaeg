@@ -25,14 +25,10 @@ export function useBurn(burn: BurnExchangeState) {
   const sellBalanceLabel = formatExchangeBalanceLabel({
     label: t.exchange.balance,
     value: burn.sellBalanceLabel,
-    sessionReady,
-    walletReady: burn.walletReady,
   })
   const buyBalanceLabel = formatExchangeBalanceLabel({
     label: t.exchange.burn.currentContribution,
     value: burn.contributionBalanceLabel,
-    sessionReady,
-    walletReady: burn.walletReady,
   })
 
   const blockHint =

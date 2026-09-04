@@ -44,6 +44,14 @@ test('formatCountdownParts: units with days keeps non-zero days', async () => {
   ])
 })
 
+test('formatCountdownClock: missing end is null; loaded end prints HH:MM', async () => {
+  const { formatCountdownClock } = await loadModule('/src/core/format-countdown.ts')
+  assert.equal(formatCountdownClock(null, 1_000), null)
+  assert.equal(formatCountdownClock(0n, 1_000), null)
+  assert.equal(formatCountdownClock(1_000 + 3_661, 1_000), '01:01')
+  assert.equal(formatCountdownClock(1_000n, 1_000), '00:00')
+})
+
 test('formatCountdownParts: sub-minute remaining still shows 1 minute', async () => {
   const { formatCountdownParts } = await loadModule('/src/core/format-countdown.ts')
   assert.deepEqual(formatCountdownParts(59, ['hours', 'minutes'], true), [
@@ -55,9 +63,10 @@ test('formatCountdownParts: sub-minute remaining still shows 1 minute', async ()
   ])
 })
 
-test('remainingSecFromBlocks zeros when missing or past', async () => {
+test('remainingSecFromBlocks: missing blocks are null; past is 0', async () => {
   const { remainingSecFromBlocks } = await loadModule('/src/shared/components/countdown-value.tsx')
-  assert.equal(remainingSecFromBlocks(undefined, 10n), 0)
+  assert.equal(remainingSecFromBlocks(undefined, 10n), null)
+  assert.equal(remainingSecFromBlocks(10n, undefined), null)
   assert.equal(remainingSecFromBlocks(10n, 10n), 0)
   assert.equal(remainingSecFromBlocks(5n, 10n), 0)
 })
@@ -69,6 +78,7 @@ test('remainingSecFromBlocks defaults to 0.45s/block', async () => {
   // 1–2 块 × 0.45 秒 floor 为 0，仍计 1 秒以免显示已到期
   assert.equal(remainingSecFromBlocks(1n, 0n), 1)
   assert.equal(remainingSecFromBlocks(2n, 0n), 1)
+  assert.equal(remainingSecFromBlocks(10n, 0n, 0), null)
 })
 
 test('remainingSecFromBlocks accepts secondsPerBlock', async () => {

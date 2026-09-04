@@ -9,10 +9,7 @@ import {
   planLabel,
 } from '~/core/assets/claim-plans'
 import { ZERO_BI } from '~/core/constants'
-import {
-  formatApiContributionPoints,
-  formatContributionPoints,
-} from '~/core/exchange/format-contribution-points'
+import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { parseApiTokenWei, previewDaoClaimContribution } from '~/core/rewards/claim-contribution'
@@ -28,7 +25,7 @@ import type { DaoRewardType } from '~/shared/api/types'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { hasTypeTotalClaimable, typeTotalAmount } from '~/shared/lib/dao-reward-type-totals'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatApiContributionPoints, formatDecimal } from '~/shared/presenters/format'
 import { formatApiAmount, type MixedClaimView, splitAmountByPct } from '~/views/dapp/rewards/shared'
 import {
   REWARDS_BLOCKED,
@@ -245,7 +242,7 @@ export function useMixedClaim(view: MixedClaimView) {
         ? formatTokenAmount(amount, AGX_DECIMALS)
         : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber(previewOrZero, { digits: PERSONAL_TOKEN_DIGITS })
+        ? formatDecimal(previewOrZero, { digits: PERSONAL_TOKEN_DIGITS })
         : t.rewards.hub.signInForBalance
   const releaseAmount =
     view === 'lucky' && amountKnown ? splitAmountByPct(amount, releasePct) : ZERO_BI
@@ -257,7 +254,7 @@ export function useMixedClaim(view: MixedClaimView) {
         ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
         : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber((previewOrZero * releasePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
+        ? formatDecimal((previewOrZero * releasePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
         : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
   const restakeAmountText =
     view === 'lucky'
@@ -265,7 +262,7 @@ export function useMixedClaim(view: MixedClaimView) {
         ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
         : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
       : sessionReady
-        ? formatNumber((previewOrZero * restakePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
+        ? formatDecimal((previewOrZero * restakePct) / 100, { digits: PERSONAL_TOKEN_DIGITS })
         : formatApiAmount(null, { digits: PERSONAL_TOKEN_DIGITS })
   const requiredText = isDaoMixed
     ? daoClaimWei != null && daoClaimWei > ZERO_BI

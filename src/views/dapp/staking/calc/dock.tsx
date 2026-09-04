@@ -16,7 +16,7 @@ import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { isXmineSubviewClosed } from '~/shared/config/dapp-deep-links'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
@@ -30,7 +30,7 @@ const priceBox = amountBox()
 
 function formatSpotPriceDraft(n: number, digits = 2): string {
   if (!Number.isFinite(n) || n <= 0) return ''
-  return formatNumber(n, { digits, trimZeros: true }).replace(/,/g, '')
+  return formatDecimal(n, { digits, fraction: 'natural' }).replace(/,/g, '')
 }
 
 function CalcExitPriceField({
@@ -163,14 +163,8 @@ export function CalcDock() {
       : s.product === 'stake'
         ? dappAssets.tokenAgx
         : dappAssets.tokenUsd1
-  const spotLabel =
-    spotUsd != null
-      ? formatNumber(spotUsd, { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
-  const spotXLabel =
-    spotXUsd != null
-      ? formatNumber(spotXUsd, { digits: 4, prefix: '$' })
-      : formatNumber(0, { digits: 4, prefix: '$' })
+  const spotLabel = formatDecimal(spotUsd, { digits: 2, prefix: '$' })
+  const spotXLabel = formatDecimal(spotXUsd, { digits: 4, prefix: '$' })
   const amountN = Number.parseFloat(s.amount.replace(/,/g, '')) || 0
   const priceN = Number.parseFloat(s.price.replace(/,/g, '')) || 0
   const priceXN = Number.parseFloat(s.priceX.replace(/,/g, '')) || 0

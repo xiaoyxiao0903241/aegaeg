@@ -94,11 +94,15 @@ export function XmineDock() {
       <AssetsRedeemConfirm
         amountLabel={
           vm.position
-            ? `${formatTokenAmount(
+            ? formatTokenAmount(
                 vm.position.warmupGons > ZERO_BI ? ZERO_BI : vm.position.miningStake,
                 EXCHANGE_CONFIG.tokens.gagx.decimals,
-                PERSONAL_TOKEN_DIGITS,
-              )} gAGX`
+                {
+                  digits: PERSONAL_TOKEN_DIGITS,
+                  trimZeros: false,
+                  suffix: ' gAGX',
+                },
+              )
             : ''
         }
         busy={vm.busy}

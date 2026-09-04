@@ -33,7 +33,7 @@ import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { hubApiClaimableFromTypeTotals } from '~/shared/lib/dao-reward-type-totals'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, toUsd } from '~/shared/presenters/format'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
 import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
@@ -66,17 +66,10 @@ const REWARD_CARD_ICONS = {
 } as const
 
 function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
-  // 未就绪/无数据：显示 0.0000gAGX / ≈ $0.00；登录提示放在底栏
-  // API 十进制金额无 wei；链上幸运额另走 formatTokenAmount
-  if (!ready || value == null) {
-    return {
-      amount: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
-      approx: formatUsdApprox(0, null),
-    }
-  }
+  const amount = ready ? value : null
   return {
-    amount: `${formatNumber(value, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
-    approx: formatUsdApprox(value, priceUsd),
+    amount: formatDecimal(amount, { digits: PERSONAL_TOKEN_DIGITS, suffix: 'gAGX' }),
+    approx: formatDecimal(toUsd(amount, priceUsd), { digits: 2, prefix: '≈ $' }),
   }
 }
 
@@ -131,16 +124,22 @@ export function RewardsHubDock() {
   const amountReady = (view: (typeof REWARD_CARDS)[number]) =>
     view === 'lucky' ? walletReady : sessionReady
 
-  const luckyBalance =
-    !amountReady('lucky') || luckyWei == null
-      ? {
-          amount: `${formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })}gAGX`,
-          approx: formatUsdApprox(0, null),
-        }
-      : {
-          amount: `${formatTokenAmount(luckyWei, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)}gAGX`,
-          approx: formatUsdApprox(formatTokenAmountToNumber(luckyWei, AGX_DECIMALS), priceUsd),
-        }
+  const luckyBalance = {
+    amount: formatTokenAmount(amountReady('lucky') ? luckyWei : null, AGX_DECIMALS, {
+      digits: PERSONAL_TOKEN_DIGITS,
+      trimZeros: false,
+      suffix: 'gAGX',
+    }),
+    approx: formatDecimal(
+      toUsd(
+        amountReady('lucky') && luckyWei != null
+          ? formatTokenAmountToNumber(luckyWei, AGX_DECIMALS)
+          : null,
+        priceUsd,
+      ),
+      { digits: 2, prefix: '≈ $' },
+    ),
+  }
 
   const visibleCards = REWARD_CARDS.filter((view) => {
     if (view === 'grant' && !grantEligible) return false
@@ -169,10 +168,7 @@ export function RewardsHubDock() {
         const icon = REWARD_CARD_ICONS[view]
         const balance = isGenesis
           ? {
-              amount:
-                sessionReady && value != null
-                  ? formatNumber(value, { digits: 2, prefix: '$' })
-                  : formatNumber(0, { digits: 2, prefix: '$' }),
+              amount: formatDecimal(sessionReady ? value : null, { digits: 2, prefix: '$' }),
               approx: undefined as string | undefined,
             }
           : view === 'lucky'

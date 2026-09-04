@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
+import { useDappHost } from '~/hooks/use-dapp-host'
 import { cn } from '~/shared/lib/utils'
 import { ConnectPromoCard } from '~/views/dapp/shared/connect-promo-card'
 
@@ -23,8 +24,10 @@ function DockConnectFooter({ children, className }: { children: ReactNode; class
   )
 }
 
-/** 操作区底部贴底的「连接钱包」引导卡容器。 */
+/** 操作区底部贴底的「连接钱包」引导卡。已登录或水合中不渲染。 */
 export function DockConnectPromo({ className }: { className?: string }) {
+  const { sessionReady, sessionPending } = useDappHost()
+  if (sessionReady || sessionPending) return null
   return (
     <DockConnectFooter className={className}>
       <ConnectPromoCard />

@@ -7,7 +7,7 @@ import { useAgxPriceUsd, useAgxUsd1SpotPriceQuery } from '~/hooks/use-agx-price-
 import { useProtocolMarketStatsAggregateChart } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import type { ChartPoint } from '~/shared/components/chart'
-import { formatPercentChange, formatUsd } from '~/shared/presenters/format'
+import { formatDecimal, formatPercentChange } from '~/shared/presenters/format'
 
 /**
  * 质押各详情区块的共享文案与状态
@@ -43,7 +43,7 @@ export function useStakingDetail(product: CalcProduct) {
     setChartRange,
     chartLoading,
     chartPoints,
-    chartValueLabel: formatUsd(usdChart.lastValue),
+    chartValueLabel: formatDecimal(usdChart.lastValue, { digits: 2, prefix: '$', compact: true }),
     chartDeltaLabel: formatPercentChange(usdChart.percentChange),
     xValue: t.staking.aside.xValue,
     defaultRecordColumns: t.staking.aside.recordColumns,

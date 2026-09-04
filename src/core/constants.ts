@@ -14,3 +14,6 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as cons
 export const ZERO_BI = 0n
 export const TEN_BI = 10n
 export const HUNDRED_BI = 100n
+
+/** 可变数字诚实空：没有可展示的数。真零仍是 `0`。 */
+export const LIVE_DATA_PLACEHOLDER = '--'

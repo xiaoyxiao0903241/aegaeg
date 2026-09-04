@@ -18,12 +18,11 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
  * 奖励页统计卡所需的贡献快照
  *
  * 会话就绪时优先取后端可用贡献（agx-contribution/summary）；
- * 否则回退链上贡献快照，并按未连接 / 加载中 / 有值出占位文本。
+ * 否则回退链上贡献快照。没数 → `--`。
  *
- * @param walletReady 钱包是否就绪
  * @see docs/backend-api/api.md #agx-contribution/summary
  */
-export function useRewardsContribution(walletReady: boolean) {
+export function useRewardsContribution() {
   const { sessionReady } = useDappHost()
   const account = useActiveAccount()
   const address = account?.address
@@ -42,9 +41,6 @@ export function useRewardsContribution(walletReady: boolean) {
           apiSummary.data.available_contribution,
         )
       : formatContributionPlaceholder({
-          walletReady,
-          hasAddress: Boolean(address),
-          isPending: contribQuery.isPending,
           contribution: contribQuery.data?.contribution,
           decimals: AGX_DECIMALS,
         })

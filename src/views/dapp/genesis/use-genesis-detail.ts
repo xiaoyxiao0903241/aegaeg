@@ -9,7 +9,7 @@ import { useAuth } from '~/hooks/use-auth'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/shared'
 
@@ -36,7 +36,7 @@ export function useGenesisDetail(genesis: GenesisSessionState) {
     String(seasonContributedUsd),
     seasonMaxContributionUsd,
   )
-  const contributedLabel = `${formatNumber(seasonContributedUsd, { prefix: '$' })} / ${formatNumber(seasonMaxContributionUsd, { prefix: '$' })}`
+  const contributedLabel = `${formatDecimal(seasonContributedUsd, { prefix: '$' })} / ${formatDecimal(seasonMaxContributionUsd, { prefix: '$' })}`
 
   const desktopRows = genesis.isPhasesLoading
     ? []

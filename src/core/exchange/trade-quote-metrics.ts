@@ -22,11 +22,13 @@ export function formatPriceImpactPercent(bps: number): string {
  * @returns 如 `'~0.00021 BNB'`
  */
 export function formatEstimatedGasBnb(wei: bigint): string {
-  return `~${formatTokenAmount(wei, NATIVE_BNB_DECIMALS, {
+  return formatTokenAmount(wei, NATIVE_BNB_DECIMALS, {
     digits: 6,
     trimZeros: true,
     dust: false,
-  })} BNB`
+    prefix: '~',
+    suffix: ' BNB',
+  })
 }
 
 /**

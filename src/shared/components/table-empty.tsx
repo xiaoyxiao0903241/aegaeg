@@ -1,26 +1,87 @@
 /**
  * DApp 表空态 — Empty / Auth
+ *
+ * Empty / Body 自己读会话：水合中出骨架，未登录出连接提示，已登录才是「暂无记录」。
  */
 
-import type { ReactNode } from 'react'
+import { createContext, type ReactNode, useContext } from 'react'
 
+import { useDappHost } from '~/hooks/use-dapp-host'
+import { useI18n } from '~/i18n/use-i18n'
 import { Empty } from '~/shared/components/empty'
 import { Frame } from '~/shared/components/table-frame'
 import { Text } from '~/shared/components/text'
 import { cn, revealClass } from '~/shared/lib/utils'
 
+const TableAuthActionContext = createContext<(() => ReactNode) | null>(null)
+
+/** Host 注入连接按钮（shared 不能 import views）。 */
+export function TableAuthActionProvider({
+  children,
+  renderAction,
+}: {
+  children: ReactNode
+  renderAction: () => ReactNode
+}) {
+  return (
+    <TableAuthActionContext.Provider value={renderAction}>
+      {children}
+    </TableAuthActionContext.Provider>
+  )
+}
+
+export function useDappTableSessionGate(): 'pending' | 'auth' | 'ready' {
+  const { sessionReady, sessionPending } = useDappHost()
+  if (sessionPending) return 'pending'
+  if (!sessionReady) return 'auth'
+  return 'ready'
+}
+
+function DappTableAuthPanel({
+  authBody,
+  className,
+  embedded = false,
+}: {
+  authBody?: string
+  className?: string
+  embedded?: boolean
+}) {
+  const { messages: t } = useI18n()
+  const renderAction = useContext(TableAuthActionContext)
+  return (
+    <Auth
+      body={authBody ?? t.dapp.connect.recordsBodyRewards}
+      className={className}
+      embedded={embedded}
+      title={t.dapp.connect.recordsTitle}
+    >
+      {renderAction?.() ?? null}
+    </Auth>
+  )
+}
+
 /** 表格空态：嵌在表内或独立 Frame 展示 */
 function TableEmpty({
+  authBody,
   body,
   className,
   embedded = false,
   title,
 }: {
+  authBody?: string
   body?: string
   className?: string
   embedded?: boolean
   title: string
 }) {
+  const gate = useDappTableSessionGate()
+  if (gate === 'pending') {
+    return <EmptyState className={className} embedded={embedded} />
+  }
+  if (gate === 'auth') {
+    return <DappTableAuthPanel authBody={authBody} className={className} embedded={embedded} />
+  }
+
   if (embedded) {
     return <Empty body={body} className={className} title={title} />
   }
@@ -105,11 +166,8 @@ function EmptySkeletonRow({ className }: { className?: string }) {
 }
 
 /**
- * 未连接钱包空态。标题 / 正文 / 连接 CTA 均由调用方传入（shared 不嵌入文案）。
- * @example
- * <Table.Auth title={t…} body={t…}>
- *   <WalletConnectChip variant="primary" />
- * </Table.Auth>
+ * 未登录空态外观。标题 / 正文 / 连接 CTA 可由调用方传入。
+ * 日常请用 Empty / Body：它们会自己按会话切换。
  */
 function Auth({
   body,
@@ -141,4 +199,4 @@ function Auth({
   )
 }
 
-export { Auth, TableEmpty }
+export { Auth, DappTableAuthPanel, TableEmpty }

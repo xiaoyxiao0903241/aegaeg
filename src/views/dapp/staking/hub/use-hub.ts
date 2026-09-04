@@ -19,13 +19,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { ChartPoint } from '~/shared/components/chart'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import {
-  formatCompact,
-  formatNumber,
-  formatPercentChange,
-  formatUsd,
-  formatUsdApprox,
-} from '~/shared/presenters/format'
+import { formatDecimal, formatPercentChange, toUsd } from '~/shared/presenters/format'
 import { formatBonusPct, formatYieldPct } from '~/views/dapp/staking/shared'
 import {
   burnBondDepositoryAddress,
@@ -43,15 +37,13 @@ const HUB_RUNWAY_DAYS = 750
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 function formatAgxCompact(wei: bigint | undefined): string {
-  if (wei == null) return formatCompact(0, { digits: 2, suffix: ' AGX' })
-  const n = formatTokenAmountToNumber(wei, AGX_DECIMALS)
-  return formatCompact(n, { digits: 2, suffix: ' AGX' })
+  const n = wei == null ? null : formatTokenAmountToNumber(wei, AGX_DECIMALS)
+  return formatDecimal(n, { compact: true, digits: 2, suffix: ' AGX' })
 }
 
-/** 流通量：大数千分位、固定 2 位（空态 `0.00 AGX`；粉尘 `<0.01`）。 */
+/** 流通量：大数千分位、固定 2 位（缺数 `--`；粉尘 `<0.01`）。 */
 function formatAgxGrouped(wei: bigint | undefined): string {
-  if (wei == null) return formatNumber(0, { digits: 2, suffix: ' AGX' })
-  return `${formatTokenAmount(wei, AGX_DECIMALS, { digits: 2, trimZeros: false })} AGX`
+  return formatTokenAmount(wei, AGX_DECIMALS, { digits: 2, trimZeros: false, suffix: ' AGX' })
 }
 
 /**
@@ -62,20 +54,13 @@ function formatTreasuryUsd1(
   reservesAgxWei: bigint | undefined,
   agxPriceUsd: number | null,
 ): { label: string; usdSub: string } {
-  const empty = {
-    label: formatCompact(0, { digits: 2, suffix: ' USD1' }),
-    usdSub: formatNumber(0, { digits: 2, prefix: '≈ $' }),
-  }
-  if (reservesAgxWei == null || agxPriceUsd == null || !(agxPriceUsd > 0)) return empty
-  const agx = formatTokenAmountToNumber(reservesAgxWei, AGX_DECIMALS)
-  if (!Number.isFinite(agx)) return empty
-  const usd1 = agx * agxPriceUsd
+  const usd1 = toUsd(
+    reservesAgxWei == null ? null : formatTokenAmountToNumber(reservesAgxWei, AGX_DECIMALS),
+    agxPriceUsd,
+  )
   return {
-    label: formatCompact(usd1, { digits: 2, suffix: ' USD1' }),
-    usdSub:
-      Math.abs(usd1) >= 1_000
-        ? formatCompact(usd1, { digits: 2, prefix: '≈ $' })
-        : formatNumber(usd1, { digits: 2, prefix: '≈ $' }),
+    label: formatDecimal(usd1, { compact: true, digits: 2, suffix: ' USD1' }),
+    usdSub: formatDecimal(usd1, { compact: true, digits: 2, prefix: '≈ $' }),
   }
 }
 
@@ -90,7 +75,7 @@ export type HubPeriodTableRow = {
  * 质押 Hub 详情数据组装
  *
  * 聚合协议概览、周期收益率、图表序列等展示数据；
- * 数据未就绪或未连接钱包时各标签回落为 0 或占位文案。
+ * 数据未就绪时各标签为 `--`，真零仍印 `0`。
  *
  * @returns 右栏所需的全部展示字段与状态（概览 / 周期表 / 图表 / 文案）
  */
@@ -129,10 +114,7 @@ export function useStakingHubDetail() {
     queryFn: () => readBondMarketMeta(depositoryAddress('540')),
   })
 
-  const agxPriceLabel =
-    agxPriceUsd != null
-      ? formatNumber(agxPriceUsd, { digits: 2, prefix: '$' })
-      : formatNumber(0, { digits: 2, prefix: '$' })
+  const agxPriceLabel = formatDecimal(agxPriceUsd, { digits: 2, prefix: '$' })
 
   const poolAgx =
     overviewQuery.data != null
@@ -143,28 +125,27 @@ export function useStakingHubDetail() {
       ? formatTokenAmountToNumber(overviewQuery.data.circulatingSupply, AGX_DECIMALS)
       : null
   const tvlLabel = formatAgxCompact(overviewQuery.data?.poolAgxBalance)
-  const tvlUsdSub = formatUsdApprox(poolAgx ?? 0, agxPriceUsd, { compact: true })
+  const tvlUsdSub = formatDecimal(toUsd(poolAgx, agxPriceUsd), {
+    digits: 2,
+    prefix: '≈ $',
+    compact: true,
+  })
   const circulatingLabel = formatAgxGrouped(overviewQuery.data?.circulatingSupply)
-  const mcapLabel =
-    circulating != null && agxPriceUsd != null
-      ? formatUsd(circulating * agxPriceUsd)
-      : formatUsd(null)
+  const mcapLabel = formatDecimal(toUsd(circulating, agxPriceUsd), {
+    digits: 2,
+    prefix: '$',
+    compact: true,
+  })
   const treasuryDisplay = formatTreasuryUsd1(overviewQuery.data?.totalReserves, agxPriceUsd)
   const burnedLabel = formatAgxCompact(overviewQuery.data?.totalBurned)
   const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)
   const rebaseLabel = formatYieldPct(epochPct)
   const baseDaily = baseDailyPctFromEpoch(epochPct, YIELD_EPOCHS_PER_DAY)
 
-  const stakersLabel = !sessionReady
-    ? formatNumber(0, { digits: 0, trimZeros: true })
-    : stakersQuery.isLoading && stakersQuery.data == null
-      ? formatNumber(0, { digits: 0, trimZeros: true })
-      : stakersQuery.data != null
-        ? formatNumber(stakersQuery.data.stake_address_count, {
-            digits: 0,
-            trimZeros: true,
-          })
-        : formatNumber(0, { digits: 0, trimZeros: true })
+  const stakersLabel = formatDecimal(stakersQuery.data?.stake_address_count, {
+    digits: 0,
+    fraction: 'natural',
+  })
 
   const seriesChart = useProtocolMarketStatsChart(
     chartRange,
@@ -177,7 +158,11 @@ export function useStakingHubDetail() {
     value: p.value,
     date: p.date,
   }))
-  const chartValueLabel = formatUsd(seriesChart.lastValue)
+  const chartValueLabel = formatDecimal(seriesChart.lastValue, {
+    digits: 2,
+    prefix: '$',
+    compact: true,
+  })
   const chartDeltaLabel = formatPercentChange(seriesChart.percentChange)
 
   const periodTableRows: Record<string, HubPeriodTableRow> = Object.fromEntries(
@@ -189,7 +174,7 @@ export function useStakingHubDetail() {
           {
             id: row.id,
             baseDaily: formatYieldPct(null),
-            bonus: formatBonusPct(0),
+            bonus: formatBonusPct(null),
             periodYield: formatYieldPct(null),
           },
         ]
@@ -206,9 +191,7 @@ export function useStakingHubDetail() {
       const bonus =
         tableSeg === 'stake' && period != null
           ? formatBonusPct(lockedBonusBps(period))
-          : bondDiscount != null
-            ? formatBondDiscountLabel(bondDiscount)
-            : formatBonusPct(0)
+          : formatBondDiscountLabel(bondDiscount)
       return [
         row.id,
         {

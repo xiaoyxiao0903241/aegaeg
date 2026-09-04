@@ -1,3 +1,5 @@
+import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
+
 function stripTokenAmountGrouping(value: string): string {
   return value.replace(/,/g, '')
 }
@@ -86,7 +88,7 @@ export type FormatTokenAmountOptions = {
   /** 保留的小数位（缺省 `PERSONAL_TOKEN_DIGITS`）。 */
   digits?: number
   /**
-   * 数字第三参默认 `false`（按 `digits` 补零，与 `formatNumber` 一致）。
+   * 数字第三参默认 `false`（按 `digits` 补零，与 `formatDecimal` 一致）。
    * 对象缺省 `true`：去掉尾部零（输入草稿 / 紧凑展示）。
    */
   trimZeros?: boolean
@@ -100,11 +102,13 @@ export type FormatTokenAmountOptions = {
    * 输入草稿 / 须可 parse 回 wei 的路径传 `false`（截断，避免 100% 填入上溢余额）。
    */
   round?: boolean
+  prefix?: string
+  suffix?: string
 }
 
 function tokenAmountOptions(
   maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = PERSONAL_TOKEN_DIGITS,
-): Required<FormatTokenAmountOptions> {
+): { digits: number; trimZeros: boolean; dust: boolean; round: boolean } {
   if (typeof maxFractionDigitsOrOptions === 'number') {
     return {
       digits: maxFractionDigitsOrOptions,
@@ -161,15 +165,30 @@ function roundTokenAmountWei(amount: bigint, decimals: number, digits: number): 
 /**
  * 链上最小单位数量 → 千分位分组的人类可读字符串。
  *
- * 第三个参数为最大小数位（数字参默认**补足**位数、四舍五入）或 `{ digits, trimZeros, dust, round }`。
+ * 第三个参数为最大小数位（数字参默认**补足**位数、四舍五入）或 `{ digits, trimZeros, dust, round, prefix, suffix }`。
  * 默认：正数低于展示位时返回 `<0.0001`（随 digits）；真 0 随 digits 为 `0.0000` 等。
+ * 不是 bigint → `--`（不加前后缀）。有数时 `prefix + 数字 + suffix`。
  *
- * @param amount 最小单位数量
+ * @param amount 最小单位数量；缺数 `null` / `undefined`
  * @param decimals 代币精度
  * @param maxFractionDigitsOrOptions 最大小数位或配置对象；缺省 `PERSONAL_TOKEN_DIGITS`
- * @returns 分组后的金额字符串
+ * @returns 分组后的金额字符串，或缺数 `--`
  */
 export function formatTokenAmount(
+  amount: bigint | null | undefined,
+  decimals: number,
+  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = PERSONAL_TOKEN_DIGITS,
+): string {
+  const wrap =
+    typeof maxFractionDigitsOrOptions === 'object' ? maxFractionDigitsOrOptions : undefined
+  const prefix = wrap?.prefix ?? ''
+  const suffix = wrap?.suffix ?? ''
+  if (amount == null) return LIVE_DATA_PLACEHOLDER
+  const body = formatTokenAmountBody(amount, decimals, maxFractionDigitsOrOptions)
+  return `${prefix}${body}${suffix}`
+}
+
+function formatTokenAmountBody(
   amount: bigint,
   decimals: number,
   maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = PERSONAL_TOKEN_DIGITS,
@@ -219,12 +238,18 @@ export function formatTokenAmount(
  *
  * @param amount 最小单位数量
  * @param decimals 代币精度
+ * @param options.suffix 单位，如 ` gAGX`
  */
-export function formatAssetsActionAmount(amount: bigint, decimals: number): string {
+export function formatAssetsActionAmount(
+  amount: bigint,
+  decimals: number,
+  options?: Pick<FormatTokenAmountOptions, 'suffix'>,
+): string {
   return formatTokenAmount(amount, decimals, {
     digits: PERSONAL_TOKEN_DIGITS,
     dust: false,
     trimZeros: false,
+    suffix: options?.suffix,
   })
 }
 

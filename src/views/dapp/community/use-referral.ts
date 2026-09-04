@@ -14,7 +14,7 @@ import {
   parseReferrerAddress,
   parseReferrerFromSearch,
 } from '~/shared/config/referral'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readReferralParentGate, readReferralWalletSnapshot } from '~/web3/referral/referral-read'
@@ -157,7 +157,7 @@ export function useCommunityReferral() {
   return {
     isBound,
     referrer: effectiveReferrer,
-    directCount: formatNumber(directCount, { digits: 0, trimZeros: true }),
+    directCount: formatDecimal(directCount, { digits: 0, fraction: 'natural' }),
     referrerInput,
     setReferrerInput,
     isLoading: referralQuery.isLoading,

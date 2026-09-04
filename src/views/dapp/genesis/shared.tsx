@@ -20,8 +20,10 @@ import type { SalesLogItem } from '~/shared/api/types'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import {
   formatBlockTime,
+  formatDecimal,
   formatDiscountBps,
-  formatNumber,
+  interpolateLive,
+  LIVE_DATA_PLACEHOLDER,
   TABLE_EMPTY,
 } from '~/shared/presenters/format'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
@@ -51,7 +53,18 @@ export function genesisPurchaseSummary(args: {
     purchaseAmount > 0n && previewAddedAirdropValueWei != null
       ? formatTokenAmountToNumber(previewAddedAirdropValueWei, USD1_DECIMALS)
       : 0
-  const quotaLabel = `$${formatTokenAmount(reads.minAmount, USD1_DECIMALS, 0)} – $${formatTokenAmount(reads.maxAmount, USD1_DECIMALS, 0)}`
+  const quotaLabel = interpolateLive('{min} – {max}', {
+    min: formatTokenAmount(reads.minAmount, USD1_DECIMALS, {
+      digits: 0,
+      trimZeros: false,
+      prefix: '$',
+    }),
+    max: formatTokenAmount(reads.maxAmount, USD1_DECIMALS, {
+      digits: 0,
+      trimZeros: false,
+      prefix: '$',
+    }),
+  })
   const isApproved = reads.walletReady && purchaseAmount > 0n && reads.allowance >= purchaseAmount
   const needsApproval = reads.walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = reads.usd1Balance >= purchaseAmount
@@ -88,15 +101,15 @@ export function genesisPurchaseSummary(args: {
       usd1BalanceLabel: reads.usd1BalanceKnown
         ? formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, PERSONAL_TOKEN_DIGITS)
         : '',
-      estimatedAgxLabel: formatNumber(estimatedAgx, { digits: PERSONAL_TOKEN_DIGITS }),
-      payUsd1Label: `${formatNumber(payUsd1, { digits: 0 })} USD1`,
-      contributionValueLabel: formatNumber(contributionValueUsd, { prefix: '$' }),
-      xTokenAirdropLabel: formatNumber(xTokenAirdropUsd, { prefix: '$' }),
+      estimatedAgxLabel: formatDecimal(estimatedAgx, { digits: PERSONAL_TOKEN_DIGITS }),
+      payUsd1Label: formatDecimal(payUsd1, { digits: 0, suffix: ' USD1' }),
+      contributionValueLabel: formatDecimal(contributionValueUsd, { prefix: '$' }),
+      xTokenAirdropLabel: formatDecimal(xTokenAirdropUsd, { prefix: '$' }),
       airdropThresholdUsd: reads.airdropThresholdUsd,
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,
       minAmount: reads.minAmount,
-      referencePriceLabel: formatNumber(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
+      referencePriceLabel: formatDecimal(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
       airdropLabel: `+${(getAirdropBpsForPhase(reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
       agxPriceUsd: reads.agxPriceUsd,
       activeSeasonNumber: reads.activeSeasonNumber,
@@ -115,12 +128,12 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
   const agxPriceUsd = options.agxPriceUsd ?? 0
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
-    return formatNumber(tokens, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
+    return formatDecimal(tokens, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
   }
 
   const amountUsd1 = Number(item.amount)
   if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) {
-    return formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
+    return LIVE_DATA_PLACEHOLDER
   }
 
   const estimated = estimateAgxFromUsd1(
@@ -129,15 +142,15 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
     agxPriceUsd,
   )
   return estimated > 0
-    ? formatNumber(estimated, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
-    : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
+    ? formatDecimal(estimated, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' AGX' })
+    : LIVE_DATA_PLACEHOLDER
 }
 
 /**
  * 把销售记录映射为桌面表格行
  *
  * 列序为时间、金额、折扣、AGX 估算与交易哈希；
- * AGX 无法估算时显 0；交易哈希缺失仍为空表标记。
+ * AGX 无法估算时显 `--`；交易哈希缺失仍为空表标记。
  */
 export function mapSalesLogToDesktopRow(
   item: SalesLogItem,
@@ -145,7 +158,7 @@ export function mapSalesLogToDesktopRow(
 ): ReactNode[] {
   return [
     formatBlockTime(item.block_time),
-    formatNumber(Number(item.amount), { digits: 0, prefix: '$' }),
+    formatDecimal(Number(item.amount), { digits: 0, prefix: '$' }),
     formatDiscountBps(phaseDiscountBps(item.phase_id, options.phases), { signed: false }),
     formatSalesLogAgx(item, options),
     item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,

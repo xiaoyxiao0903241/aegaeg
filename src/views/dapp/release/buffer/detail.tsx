@@ -22,7 +22,7 @@ import { Section } from '~/shared/components/section'
 import { Table } from '~/shared/components/table'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatDecimal, parseApiAmount, toUsd } from '~/shared/presenters/format'
 import { mapBufferPoolLogToRow } from '~/shared/presenters/map-flow-log-rows'
 import { BufferAssetCard, BufferMechanismCard } from '~/views/dapp/release/buffer/primitives'
 import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/shared'
@@ -52,13 +52,9 @@ export function BufferDetail() {
   const api = apiSummaryQuery.data
   const chainReady = walletReady && bufferQuery.data != null
 
-  function amountNum(apiRaw: string | undefined, chain: bigint, decimals: number): number {
+  function amountNum(apiRaw: string | undefined, chain: bigint, decimals: number): number | null {
     if (chainReady) return formatTokenAmountToNumber(chain, decimals)
-    if (sessionReady) {
-      const n = parseApiAmount(apiRaw)
-      if (n != null) return n
-    }
-    return 0
+    return sessionReady ? parseApiAmount(apiRaw) : null
   }
 
   const agxStats = [
@@ -73,7 +69,10 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(amountNum(api?.cumulative_amount, amount, AGX_DECIMALS), priceUsd),
+      approx: formatDecimal(
+        toUsd(amountNum(api?.cumulative_amount, amount, AGX_DECIMALS), priceUsd),
+        { digits: 2, prefix: '≈ $' },
+      ),
     },
     {
       label: t.release.buffer.extracted,
@@ -86,7 +85,10 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(amountNum(api?.released_amount, claimed, AGX_DECIMALS), priceUsd),
+      approx: formatDecimal(
+        toUsd(amountNum(api?.released_amount, claimed, AGX_DECIMALS), priceUsd),
+        { digits: 2, prefix: '≈ $' },
+      ),
     },
     {
       label: t.release.labels.releasing,
@@ -99,40 +101,54 @@ export function BufferDetail() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
-      approx: formatUsdApprox(
-        chainReady ? formatTokenAmountToNumber(releasing, AGX_DECIMALS) : 0,
-        priceUsd,
+      approx: formatDecimal(
+        toUsd(chainReady ? formatTokenAmountToNumber(releasing, AGX_DECIMALS) : null, priceUsd),
+        { digits: 2, prefix: '≈ $' },
       ),
     },
   ]
 
-  const gagxEmpty = `${formatNumber(0, { digits: 4 })} gAGX`
   const gagxStats = [
     {
       label: t.release.buffer.entered,
       hint: t.release.buffer.hints.enteredGagx,
-      value: chainReady ? `${formatTokenAmount(gagxAmount, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
-      approx: formatUsdApprox(
-        chainReady ? formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS) : 0,
-        priceUsd,
+      value: formatTokenAmount(chainReady ? gagxAmount : null, GAGX_DECIMALS, {
+        digits: 4,
+        trimZeros: false,
+        suffix: ' gAGX',
+      }),
+      approx: formatDecimal(
+        toUsd(chainReady ? formatTokenAmountToNumber(gagxAmount, GAGX_DECIMALS) : null, priceUsd),
+        { digits: 2, prefix: '≈ $' },
       ),
     },
     {
       label: t.release.buffer.extracted,
       hint: t.release.buffer.hints.extractedGagx,
-      value: chainReady ? `${formatTokenAmount(gagxClaimed, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
-      approx: formatUsdApprox(
-        chainReady ? formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS) : 0,
-        priceUsd,
+      value: formatTokenAmount(chainReady ? gagxClaimed : null, GAGX_DECIMALS, {
+        digits: 4,
+        trimZeros: false,
+        suffix: ' gAGX',
+      }),
+      approx: formatDecimal(
+        toUsd(chainReady ? formatTokenAmountToNumber(gagxClaimed, GAGX_DECIMALS) : null, priceUsd),
+        { digits: 2, prefix: '≈ $' },
       ),
     },
     {
       label: t.release.labels.releasing,
       hint: t.release.buffer.hints.releasingGagx,
-      value: chainReady ? `${formatTokenAmount(gagxReleasing, GAGX_DECIMALS, 4)} gAGX` : gagxEmpty,
-      approx: formatUsdApprox(
-        chainReady ? formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS) : 0,
-        priceUsd,
+      value: formatTokenAmount(chainReady ? gagxReleasing : null, GAGX_DECIMALS, {
+        digits: 4,
+        trimZeros: false,
+        suffix: ' gAGX',
+      }),
+      approx: formatDecimal(
+        toUsd(
+          chainReady ? formatTokenAmountToNumber(gagxReleasing, GAGX_DECIMALS) : null,
+          priceUsd,
+        ),
+        { digits: 2, prefix: '≈ $' },
       ),
     },
   ]

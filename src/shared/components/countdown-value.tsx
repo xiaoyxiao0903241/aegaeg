@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode, useEffect, useState } from 'react'
 
+import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
 import { type CountdownPartId, formatCountdownParts } from '~/core/format-countdown'
 import { CountValue } from '~/shared/components/count-value'
 import { BSC_BLOCK_SECONDS } from '~/shared/lib/constants'
@@ -12,22 +13,23 @@ const RESYNC_DRIFT_SEC = 3
 /**
  * 剩余区块数 → 墙钟秒数。
  *
- * 未知区块或已过期（当前块 ≥ 结束块）返回 0，避免倒计时显示负值。
+ * 缺块高 → `null`（界面 `--`）；已过期（当前块 ≥ 结束块）→ `0`。
  *
  * @param epochEndBlock 当前 epoch 结束区块号；未知时 undefined
  * @param currentBlock 当前区块号；未知时 undefined
  * @param secondsPerBlock 每块秒数；缺省用 BSC_BLOCK_SECONDS
- * @returns 剩余墙钟秒数；任一块未知或已过期返回 0
+ * @returns 剩余墙钟秒数；缺数 `null`；已过期 `0`
  */
 export function remainingSecFromBlocks(
   epochEndBlock: bigint | undefined,
   currentBlock: bigint | undefined,
   secondsPerBlock: number = BSC_BLOCK_SECONDS,
-): number {
-  if (epochEndBlock == null || currentBlock == null) return 0
-  if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return 0
+): number | null {
+  if (epochEndBlock == null || currentBlock == null) return null
+  if (!(secondsPerBlock > 0) || !Number.isFinite(secondsPerBlock)) return null
   const remainingBlocks = epochEndBlock > currentBlock ? Number(epochEndBlock - currentBlock) : 0
-  if (!Number.isFinite(remainingBlocks) || remainingBlocks <= 0) return 0
+  if (!Number.isFinite(remainingBlocks)) return null
+  if (remainingBlocks <= 0) return 0
   const sec = Math.floor(remainingBlocks * secondsPerBlock)
   // 亚秒剩余块 floor 成 0 会看起来已到期
   return sec > 0 ? sec : 1
@@ -61,6 +63,7 @@ export function remainingSecFromEpochs(
   if (epochEndBlock == null || currentBlock == null) return null
 
   const thisEpochSec = remainingSecFromBlocks(epochEndBlock, currentBlock, secondsPerBlock)
+  if (thisEpochSec == null) return null
   if (epochs === 1) return thisEpochSec
 
   if (epochLengthBlocks == null) return null
@@ -74,20 +77,27 @@ export function remainingSecFromEpochs(
 /**
  * 把链上估出的剩余秒锚定到墙钟，每秒滴答；链读变化超过漂移才重锚定。
  *
- * @param chainRemainingSec 链上块/epoch 估出的剩余秒
+ * @param chainRemainingSec 链上块/epoch 估出的剩余秒；缺数不滴答
  * @param enabled 是否订阅墙钟；false 时不滴答、返回 0
  */
-export function useAnchoredRemainingSec(chainRemainingSec: number, enabled = true): number {
-  const nowSec = useWallClockSec(enabled)
-  const [endAtSec, setEndAtSec] = useState(() => nowSec + chainRemainingSec)
+export function useAnchoredRemainingSec(
+  chainRemainingSec: number | null,
+  enabled = true,
+): number | null {
+  const ticking = enabled && chainRemainingSec != null
+  const nowSec = useWallClockSec(ticking)
+  const [endAtSec, setEndAtSec] = useState<number | null>(() =>
+    chainRemainingSec == null ? null : nowSec + chainRemainingSec,
+  )
 
   useEffect(() => {
-    if (!enabled) return
+    if (!ticking || chainRemainingSec == null) return
     let cancelled = false
     queueMicrotask(() => {
       if (cancelled) return
       const now = useWallClockStore.getState().nowSec
       setEndAtSec((prev) => {
+        if (prev == null) return now + chainRemainingSec
         const wallRemaining = Math.max(0, prev - now)
         if (Math.abs(wallRemaining - chainRemainingSec) <= RESYNC_DRIFT_SEC) return prev
         return now + chainRemainingSec
@@ -96,15 +106,18 @@ export function useAnchoredRemainingSec(chainRemainingSec: number, enabled = tru
     return () => {
       cancelled = true
     }
-  }, [chainRemainingSec, enabled])
+  }, [chainRemainingSec, ticking])
 
+  if (chainRemainingSec == null) return null
   if (!enabled) return 0
+  if (endAtSec == null || nowSec <= 0) return chainRemainingSec
   return Math.max(0, endAtSec - nowSec)
 }
 
 /**
  * 分段倒计时：每段数字走 `CountValue` reel。
  *
+ * - `totalSec` 缺数 → `--`（不带时/分单位）
  * - `units`：格式阶梯（大→小）
  * - `trim`：是否裁掉左侧高位 0
  * - `separators`：按 `units` 从左到右，段与段之间的分隔（已 i18n；含「天」这类单位文案）
@@ -119,7 +132,7 @@ export function CountdownValue({
   animate = true,
   className,
 }: {
-  totalSec: number
+  totalSec: number | null | undefined
   units?: readonly CountdownPartId[]
   trim?: boolean
   /** 与 `units` 同序的段间分隔，长度应为 `units.length - 1` */
@@ -128,6 +141,14 @@ export function CountdownValue({
   animate?: boolean
   className?: string
 }) {
+  if (totalSec == null) {
+    return (
+      <span className={cn('inline-flex flex-wrap items-baseline tabular-nums', className)}>
+        <CountValue animate={false} text={LIVE_DATA_PLACEHOLDER} />
+      </span>
+    )
+  }
+
   const parts = formatCountdownParts(totalSec, units, trim)
 
   return (

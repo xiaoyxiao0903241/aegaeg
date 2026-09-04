@@ -2,24 +2,20 @@ import { type ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ZERO_BI } from '~/core/constants'
-import {
-  formatTokenAmount,
-  formatTokenAmountToNumber,
-  PERSONAL_TOKEN_DIGITS,
-} from '~/core/exchange/token-amount'
+import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
+import { sumLoadedWei, sumOptionalWei } from '~/core/query/sum-loaded-wei'
 import type { BondKind } from '~/core/staking/staking-period'
 import { formatAmountBalanceLabel, writeBlockHint, writeCtaLabel } from '~/core/wallet/write-cta'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, interpolateLive } from '~/shared/presenters/format'
 import { mapBondPurchaseToAsideRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { goBindReferral } from '~/views/dapp/shared/navigation'
@@ -27,7 +23,7 @@ import { RebaseCountdownValue } from '~/views/dapp/shared/rebase-countdown'
 import { BOND_ZAP_BLOCKED } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useBondSession } from '~/views/dapp/staking/bond/use-bond-session'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import { formatRebasePct, parseApiAmountOrZero } from '~/views/dapp/staking/shared'
+import { formatRebasePct, formatWeiUsdApprox } from '~/views/dapp/staking/shared'
 import { readBurnBondPositions, readLpBondPositions } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
 import {
@@ -101,7 +97,6 @@ export function useBondDock(kind: BondKind) {
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
 
 /**
  * 债券详情右栏（LP / 燃烧债券共用）
@@ -114,7 +109,7 @@ const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
  */
 export function useBondDetail(kind: BondKind) {
   const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappHost()
+  const { sessionReady } = useDappHost()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
   const priceUsd = useAgxPriceUsd()
   const rebaseQuery = useLatestSagxRebaseRateQuery()
@@ -151,11 +146,11 @@ export function useBondDetail(kind: BondKind) {
 
   const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
-  const totalDeposit = [market180.data, market360.data, market540.data].reduce(
-    (sum, m) => sum + (m?.totalDeposit ?? ZERO_BI),
-    ZERO_BI,
-  )
-  const totalDepositNum = formatTokenAmountToNumber(totalDeposit, AGX_DECIMALS)
+  const totalDeposit = sumOptionalWei([
+    market180.data?.totalDeposit,
+    market360.data?.totalDeposit,
+    market540.data?.totalDeposit,
+  ])
   // 溢价/折扣：取已加载周期中折扣最深（discountRateBP 最小）的展示
   const deepestDiscount = [market180.data, market360.data, market540.data]
     .filter((m): m is NonNullable<typeof m> => m != null)
@@ -163,23 +158,18 @@ export function useBondDetail(kind: BondKind) {
       if (best == null || m.discountRateBP < best) return m.discountRateBP
       return best
     }, null)
-  const premiumLabel = deepestDiscount == null ? ZERO_PCT : formatBondDiscountLabel(deepestDiscount)
+  const premiumLabel = formatBondDiscountLabel(deepestDiscount)
 
-  const rows = walletReady && bondQuery.data != null ? bondQuery.data : []
-  let payoutRemaining = ZERO_BI
-  let pendingPayout = ZERO_BI
-  let profit = ZERO_BI
-  for (const row of rows) {
-    payoutRemaining += row.payoutRemaining
-    pendingPayout += row.pendingPayout
-    profit += row.profit
-  }
-  const pendingRelease = payoutRemaining > pendingPayout ? payoutRemaining - pendingPayout : ZERO_BI
-
-  const held = formatTokenAmountToNumber(payoutRemaining, AGX_DECIMALS)
-  const released = formatTokenAmountToNumber(pendingPayout, AGX_DECIMALS)
-  const pending = formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS)
-  const rebaseGagx = formatTokenAmountToNumber(profit, GAGX_DECIMALS)
+  const rows = bondQuery.data
+  const payoutRemaining = sumLoadedWei(rows, (row) => row.payoutRemaining)
+  const pendingPayout = sumLoadedWei(rows, (row) => row.pendingPayout)
+  const profit = sumLoadedWei(rows, (row) => row.profit)
+  const pendingRelease =
+    payoutRemaining == null || pendingPayout == null
+      ? null
+      : payoutRemaining > pendingPayout
+        ? payoutRemaining - pendingPayout
+        : ZERO_BI
 
   const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
@@ -187,9 +177,13 @@ export function useBondDetail(kind: BondKind) {
       hint: copy.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(totalDepositNum, priceUsd)}
+          approx={formatWeiUsdApprox(totalDeposit, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(totalDeposit, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(totalDeposit, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -216,9 +210,13 @@ export function useBondDetail(kind: BondKind) {
       hint: copy.positionMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(held, priceUsd)}
+          approx={formatWeiUsdApprox(payoutRemaining, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(payoutRemaining, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(payoutRemaining, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -227,9 +225,13 @@ export function useBondDetail(kind: BondKind) {
       hint: copy.positionMetrics[1]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(released, priceUsd)}
+          approx={formatWeiUsdApprox(pendingPayout, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pendingPayout, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(pendingPayout, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -238,9 +240,13 @@ export function useBondDetail(kind: BondKind) {
       hint: copy.positionMetrics[2]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(pending, priceUsd)}
+          approx={formatWeiUsdApprox(pendingRelease, AGX_DECIMALS, priceUsd)}
           icon="agx"
-          value={`${formatTokenAmount(pendingRelease, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} AGX`}
+          value={formatTokenAmount(pendingRelease, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -249,9 +255,13 @@ export function useBondDetail(kind: BondKind) {
       hint: copy.positionMetrics[3]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(rebaseGagx, priceUsd)}
+          approx={formatWeiUsdApprox(profit, GAGX_DECIMALS, priceUsd)}
           icon="gagx"
-          value={`${formatTokenAmount(profit, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`}
+          value={formatTokenAmount(profit, GAGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' gAGX',
+          })}
         />
       ),
     },
@@ -261,8 +271,8 @@ export function useBondDetail(kind: BondKind) {
     purchasesQuery.data?.items.map((item) => mapBondPurchaseToAsideRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && purchasesQuery.isLoading && purchasesQuery.data == null
   const recordsTotal = purchasesQuery.data?.total ?? 0
-  const recordsSummary = interpolate(t.staking.aside.recordsFooter.bond, {
-    amount: formatNumber(parseApiAmountOrZero(purchasesQuery.data?.total_purchase_amount), {
+  const recordsSummary = interpolateLive(t.staking.aside.recordsFooter.bond, {
+    amount: formatDecimal(purchasesQuery.data?.total_purchase_amount, {
       digits: 2,
       prefix: '$',
     }),

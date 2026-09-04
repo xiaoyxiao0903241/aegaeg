@@ -19,7 +19,7 @@ test('assetsHubProductReturn: claimed + unclaimed over invest', async () => {
   })
 })
 
-test('assetsHubProductReturn: missing or invalid amounts → 0, never NaN', async () => {
+test('assetsHubProductReturn: missing or invalid invest → pct null; true-zero invest → 0', async () => {
   const { assetsHubProductReturn } = await loadModule(
     '/src/core/assets/assets-hub-product-return.ts',
   )
@@ -38,11 +38,11 @@ test('assetsHubProductReturn: missing or invalid amounts → 0, never NaN', asyn
   })
   assert.deepEqual(assetsHubProductReturn({ claimed: 50, unclaimed: 10, invest: Number.NaN }), {
     totalReward: 60,
-    pct: 0,
+    pct: null,
   })
   assert.deepEqual(assetsHubProductReturn({ claimed: 50, unclaimed: 10, invest: -1 }), {
     totalReward: 60,
-    pct: 0,
+    pct: null,
   })
 })
 

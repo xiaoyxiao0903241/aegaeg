@@ -25,7 +25,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatApiAmount, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatApiAmount, formatDecimal, parseApiAmount, toUsd } from '~/shared/presenters/format'
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
@@ -60,10 +60,10 @@ export function BurnExchangeDetail({
     digits: PERSONAL_TOKEN_DIGITS,
     suffix: ' AGX',
   })
-  const burnedUsdApprox = formatUsdApprox(
-    parseApiAmount(burnedRaw) ?? 0,
-    agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,
-  )
+  const burnedUsdApprox = formatDecimal(toUsd(parseApiAmount(burnedRaw), agxPriceUsd), {
+    digits: 2,
+    prefix: '≈ $',
+  })
   const totalEarnedContribution = userStats?.contributionEarned ?? ZERO_BI
   const totalConsumedContribution = userStats?.contributionConsumed ?? ZERO_BI
 

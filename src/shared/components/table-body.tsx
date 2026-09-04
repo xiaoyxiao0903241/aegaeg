@@ -6,7 +6,11 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { StatusBadge } from '~/shared/components/badge'
-import { TableEmpty } from '~/shared/components/table-empty'
+import {
+  DappTableAuthPanel,
+  TableEmpty,
+  useDappTableSessionGate,
+} from '~/shared/components/table-empty'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -158,6 +162,7 @@ function Cell({
 }
 
 type BodyProps = {
+  authBody?: string
   className?: string
   compact?: boolean
   /** 空态标题；缺省且 rows 空时不渲染空态。 */
@@ -192,6 +197,7 @@ type BodyProps = {
  * @param empty 空态标题；缺省且 rows 空时不渲染空态
  */
 function Body({
+  authBody,
   className = '',
   compact = false,
   empty,
@@ -208,7 +214,13 @@ function Body({
   rows,
   statusColumns = [],
 }: BodyProps) {
-  const showEmpty = !isLoading && rows.length === 0
+  const gate = useDappTableSessionGate()
+  if (gate === 'auth') {
+    return <DappTableAuthPanel authBody={authBody} embedded />
+  }
+
+  const showEmpty = !isLoading && gate !== 'pending' && rows.length === 0
+  const loading = isLoading || gate === 'pending'
   const highlightedRowSet = new Set(highlightedRows)
   const emphasisColumnSet = new Set(emphasisColumns)
   const endColumnSet = new Set(endColumns)
@@ -234,7 +246,7 @@ function Body({
           </tr>
         </thead>
         <tbody>
-          {isLoading
+          {loading
             ? Array.from({ length: loadingRowCount }, (_, rowIndex) => (
                 <RowSkeleton
                   columns={headers.length}

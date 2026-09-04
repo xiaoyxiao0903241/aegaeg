@@ -1,8 +1,7 @@
 import { useDaoRewardTypeTotals, useMarketAllowanceSummary } from '~/hooks/use-api-data'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { hasTypeTotalClaimable, typeTotalAmount } from '~/shared/lib/dao-reward-type-totals'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal, interpolateLive } from '~/shared/presenters/format'
 import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
@@ -35,11 +34,10 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
     view === 'grant' && grantAmountReady ? summary?.unlockable_allowance : null,
     { digits: 4 },
   )
-  const grantClaimableText = formatNumber(grantPreview ?? 0, { digits: 4 })
-
+  const grantClaimableText = formatDecimal(grantPreview, { digits: 4 })
   const claimableText = grantClaimableText
-  const ctaAmount = `${grantClaimableText} ${TOKEN_GAGX}`
-  const ctaLabel = interpolate(copy.ctaToWallet, { amount: ctaAmount })
+  const ctaAmount = formatDecimal(grantPreview, { digits: 4, suffix: ` ${TOKEN_GAGX}` })
+  const ctaLabel = interpolateLive(copy.ctaToWallet, { amount: ctaAmount })
   const canSubmit = sessionReady && !claim.isClaiming && claim.canClaim && hasGrantClaimable
 
   function onClaim() {

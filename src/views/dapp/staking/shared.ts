@@ -1,29 +1,40 @@
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { epochRebasePctFrom1e18 } from '~/core/staking/staking-yield'
 import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
-import { formatNumber, parseApiAmount as parseApiAmountNullable } from '~/shared/presenters/format'
+import { formatDecimal, toUsd } from '~/shared/presenters/format'
 
 type StakingMoneyBlock = Parameters<typeof evaluateWriteButtonPhase>[0]['moneyBlock']
 
-/** 旁注金额：API 非法时兜底 0（解析的唯一来源仍是 format `parseApiAmount`）。 */
-export function parseApiAmountOrZero(raw: string | undefined): number {
-  return parseApiAmountNullable(raw) ?? 0
-}
-
-/** rebaseRate1e18 → `x.xx%`；缺失回落 `0.00%`。 */
+/** rebaseRate1e18 → `x.xx%`；缺数 `--`。 */
 export function formatRebasePct(rate1e18: bigint | null | undefined): string {
   return formatYieldPct(epochRebasePctFrom1e18(rate1e18))
 }
 
-/** 收益率百分比文案；非法回落 `0.00%`。 */
+/** 收益率百分比文案；缺数 `--`。 */
 export function formatYieldPct(pct: number | null | undefined): string {
-  if (pct == null || !Number.isFinite(pct)) return `${formatNumber(0, { digits: 2 })}%`
-  return `${formatNumber(pct, { digits: 2 })}%`
+  return formatDecimal(pct, { digits: 2, suffix: '%' })
 }
 
-/** 锁定加成 BPS → `x%`。 */
-export function formatBonusPct(bps: number): string {
-  return `${formatNumber(bps / 100, { digits: 0, trimZeros: true })}%`
+/** 锁定加成 BPS → `x%`；缺数 `--`。 */
+export function formatBonusPct(bps: number | null | undefined): string {
+  return formatDecimal(bps == null ? null : bps / 100, {
+    digits: 0,
+    fraction: 'natural',
+    suffix: '%',
+  })
+}
+
+/** wei × 现价 → `≈ $…`；缺 wei 或缺价 → `--`。 */
+export function formatWeiUsdApprox(
+  wei: bigint | null | undefined,
+  decimals: number,
+  priceUsd: number | null,
+): string {
+  return formatDecimal(
+    toUsd(wei == null ? null : formatTokenAmountToNumber(wei, decimals), priceUsd),
+    { digits: 2, prefix: '≈ $' },
+  )
 }
 
 /**
