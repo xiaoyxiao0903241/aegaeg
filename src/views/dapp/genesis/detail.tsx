@@ -31,7 +31,7 @@ export function GenesisDetail({ genesis }: { genesis: GenesisSessionState }) {
           kicker={t.genesis.globalLabel}
           loading={genesis.globalPurchasedLoading}
           onViewContract={openPreSaleContract}
-          value={`$${genesis.globalPurchasedLabel}`}
+          value={genesis.globalPurchasedLabel}
         />
       </Section>
       <Section reveal>

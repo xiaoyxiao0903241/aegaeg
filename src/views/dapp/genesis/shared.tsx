@@ -92,16 +92,27 @@ export function genesisPurchaseSummary(args: {
       discountBps: reads.discountBps,
       countdown,
       countdownMode,
-      globalPurchasedLabel: formatTokenAmount(reads.totalPurchased, USD1_DECIMALS, 0),
+      globalPurchasedLabel: formatTokenAmount(reads.totalPurchased, USD1_DECIMALS, {
+        digits: 0,
+        trimZeros: false,
+        prefix: '$',
+      }),
       globalPurchasedLoading: reads.globalPurchasedLoading,
-      userTotalLabel: formatTokenAmount(reads.userTotal, USD1_DECIMALS, 0),
+      userTotalLabel: formatTokenAmount(reads.userTotal, USD1_DECIMALS, {
+        digits: 0,
+        trimZeros: false,
+        prefix: '$',
+      }),
       userTotal: reads.userTotal,
       userPhaseAmountCurrent: reads.userPhaseAmountCurrent,
       seasonContributionMaxWei: reads.seasonContributionMaxWei,
       usd1BalanceLabel: reads.usd1BalanceKnown
         ? formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, PERSONAL_TOKEN_DIGITS)
         : '',
-      estimatedAgxLabel: formatDecimal(estimatedAgx, { digits: PERSONAL_TOKEN_DIGITS }),
+      estimatedAgxLabel: formatDecimal(reads.agxPriceUsd > 0 ? estimatedAgx : null, {
+        digits: PERSONAL_TOKEN_DIGITS,
+        suffix: ' AGX',
+      }),
       payUsd1Label: formatDecimal(payUsd1, { digits: 0, suffix: ' USD1' }),
       contributionValueLabel: formatDecimal(contributionValueUsd, { prefix: '$' }),
       xTokenAirdropLabel: formatDecimal(xTokenAirdropUsd, { prefix: '$' }),
@@ -109,7 +120,10 @@ export function genesisPurchaseSummary(args: {
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,
       minAmount: reads.minAmount,
-      referencePriceLabel: formatDecimal(reads.agxPriceUsd, { digits: 2, prefix: '$' }),
+      referencePriceLabel: formatDecimal(reads.agxPriceUsd > 0 ? reads.agxPriceUsd : null, {
+        digits: 2,
+        prefix: '$',
+      }),
       airdropLabel: `+${(getAirdropBpsForPhase(reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
       agxPriceUsd: reads.agxPriceUsd,
       activeSeasonNumber: reads.activeSeasonNumber,

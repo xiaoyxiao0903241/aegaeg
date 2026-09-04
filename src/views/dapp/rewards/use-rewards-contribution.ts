@@ -35,11 +35,7 @@ export function useRewardsContribution() {
 
   const contributionValue =
     sessionReady && apiSummary.data != null
-      ? formatApiContributionStatLabel(
-          sessionReady,
-          apiSummary.isLoading,
-          apiSummary.data.available_contribution,
-        )
+      ? formatApiContributionStatLabel(apiSummary.data.available_contribution)
       : formatContributionPlaceholder({
           contribution: contribQuery.data?.contribution,
           decimals: AGX_DECIMALS,

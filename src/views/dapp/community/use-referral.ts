@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { ZERO_BI } from '~/core/constants'
 import { isReferralParentAllowed } from '~/core/referral/referral-parent-allowed'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -102,7 +101,7 @@ export function useCommunityReferral() {
 
   const isBound = referralQuery.data?.isBound ?? false
   const referrer = referralQuery.data?.referrer ?? null
-  const directCount = referralQuery.data?.directCount ?? ZERO_BI
+  const directCount = referralQuery.data?.directCount
 
   const effectiveReferrer = useMemo(
     () =>

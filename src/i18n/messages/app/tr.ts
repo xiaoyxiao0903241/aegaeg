@@ -2002,15 +2002,15 @@ const app = defineMessages({
       insufficientAllowance: 'Yetersiz onay',
       insufficientQuota: 'Stake kotası aşıldı, tutarı küçültüp tekrar deneyin',
       insufficientQuotaWithAmount:
-        'Stake kotası aşıldı: şu an en fazla {quota} AGX daha stake edilebilir. Tutarı küçültüp tekrar deneyin.',
+        'Stake kotası aşıldı: şu an en fazla {quota} daha stake edilebilir. Tutarı küçültüp tekrar deneyin.',
       insufficientQuotaPersonalWithAmount:
-        'Kişisel stake kotanız aşıldı: kişisel kümülatif üst sınırınızda {quota} AGX kaldı, tutarı küçültüp tekrar deneyin.',
+        'Kişisel stake kotanız aşıldı: kişisel kümülatif üst sınırınızda {quota} kaldı, tutarı küçültüp tekrar deneyin.',
       insufficientQuotaPersonalDailyWithAmount:
-        'Bugünkü stake kotanız aşıldı: bugünkü kişisel kotanızda {quota} AGX kaldı, tutarı küçültün veya kota yenilenene kadar bekleyip tekrar deneyin.',
+        'Bugünkü stake kotanız aşıldı: bugünkü kişisel kotanızda {quota} kaldı, tutarı küçültün veya kota yenilenene kadar bekleyip tekrar deneyin.',
       insufficientQuotaPoolWithAmount:
-        'Zincir üstü stake havuzu kotası yetersiz: havuzda şu an {quota} AGX kaldı, tutarı küçültün veya daha sonra tekrar deneyin.',
+        'Zincir üstü stake havuzu kotası yetersiz: havuzda şu an {quota} kaldı, tutarı küçültün veya daha sonra tekrar deneyin.',
       insufficientXmineQuotaWithAmount:
-        'Mining kotanız aşıldı: mining kotası kilitli anaparanıza bağlıdır, şu an en fazla {quota} gAGX daha stake edilebilir. Tutarı küçültün veya önce kilitli pozisyon ekleyip tekrar deneyin.',
+        'Mining kotanız aşıldı: mining kotası kilitli anaparanıza bağlıdır, şu an en fazla {quota} daha stake edilebilir. Tutarı küçültün veya önce kilitli pozisyon ekleyip tekrar deneyin.',
       poolPaused: 'Bu staking havuzu geçici olarak kapalı, lütfen daha sonra tekrar deneyin',
       depositoryNotAuth:
         'Bu tahvil piyasası henüz alıma açılmadı, dönem değiştirin veya daha sonra tekrar deneyin',
@@ -2283,8 +2283,8 @@ const app = defineMessages({
       periodLabel: 'Stake süresini seçin',
       periodAria: 'Stake süresini seçin',
       amountAria: 'Stake tutarı',
-      amountBalance: 'Tutar (cüzdan bakiyesi {balance} AGX)',
-      quotaInline: 'Stake kotası: {quota} AGX',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance})',
+      quotaInline: 'Stake kotası: {quota}',
       submit: 'Yatır',
       bindCta: 'Referans bağla',
       success: 'Stake başarılı',
@@ -2374,7 +2374,7 @@ const app = defineMessages({
       periodLabel: 'Tahvil süresini seçin',
       periodAria: 'LP tahvil süresi',
       amountAria: 'Satın alma tutarı',
-      amountBalance: 'Tutar (cüzdan bakiyesi {balance} USD1)',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance})',
       submit: 'Satın al',
       success: 'Satın alma başarılı',
       footnote:
@@ -2466,7 +2466,7 @@ const app = defineMessages({
       periodLabel: 'Tahvil süresini seçin',
       periodAria: 'Yakım tahvil süresi',
       amountAria: 'Satın alma tutarı',
-      amountBalance: 'Tutar (cüzdan bakiyesi {balance} USD1)',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance})',
       submit: 'Satın al',
       success: 'Satın alma başarılı',
       footnote: 'Sistem indirimli AGX basar, otomatik alır ve kara deliğe kalıcı yakar.',
@@ -2551,8 +2551,8 @@ const app = defineMessages({
       title: 'X Madencilik',
       intro: 'gAGX stake ederek X ekosistem ödülü madenciliği yapın',
       amountAria: 'Stake gAGX tutarı',
-      amountBalance: 'Tutar (cüzdan bakiyesi {balance} gAGX)',
-      quotaInline: 'Stake kotası: {quota} gAGX',
+      amountBalance: 'Tutar (cüzdan bakiyesi {balance})',
+      quotaInline: 'Stake kotası: {quota}',
       submit: 'Yatır',
       success: 'Stake başarılı',
       openKlineChart: 'Mum grafiğini görüntüle',

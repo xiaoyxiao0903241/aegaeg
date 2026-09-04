@@ -36,6 +36,22 @@ import { WRITE_PATH } from '~/web3/wallet/write-path'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const AGX_RECEIVE_DIGITS = {
+  digits: PERSONAL_TOKEN_DIGITS,
+  trimZeros: false,
+  suffix: ' AGX',
+} as const
+
+function bondReceiveWei(
+  amountIn: bigint,
+  payoutFresh: boolean,
+  isError: boolean,
+  netPayout: bigint | undefined,
+): bigint | null {
+  if (amountIn === ZERO_BI) return 0n
+  if (isError || !payoutFresh || netPayout == null) return null
+  return netPayout
+}
 
 export type BondWritePresent = {
   onSuccess: () => void | Promise<void>
@@ -227,19 +243,22 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   ) as Record<BondPeriod, bigint | null>
   // 最大购买量只展示链上 maxPayout() 毛上限，不扣 fee / 债务
   const capAgx = market === undefined ? null : market.maxPayoutAmount
-  const capLabel =
-    capAgx == null ? (marketQuery.isError ? '0' : '') : formatTokenAmount(capAgx, AGX_DECIMALS, 2)
+  const capLabel = formatTokenAmount(capAgx, AGX_DECIMALS, {
+    digits: 2,
+    trimZeros: false,
+    suffix: ' AGX',
+  })
 
-  const receiveLabel =
-    amountInput.amountIn === ZERO_BI
-      ? '0'
-      : payoutQuery.isError
-        ? '0'
-        : !payoutFresh
-          ? ''
-          : payoutQuery.data!.netPayout > ZERO_BI
-            ? formatTokenAmount(payoutQuery.data!.netPayout, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
-            : '0'
+  const receiveLabel = formatTokenAmount(
+    bondReceiveWei(
+      amountInput.amountIn,
+      payoutFresh,
+      payoutQuery.isError,
+      payoutQuery.data?.netPayout,
+    ),
+    AGX_DECIMALS,
+    AGX_RECEIVE_DIGITS,
+  )
 
   const { setAmount } = amountInput
   const fillMax = () => amountInput.fillPercent(100)
@@ -261,15 +280,24 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, PERSONAL_TOKEN_DIGITS),
+        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' USD1',
+          }),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
     isPayoutQuoting,
     discountLabel: discountLabel || '0',
     periodDiscounts,
     periodTotalDeposits,
-    capLabel: capLabel || '0',
-    receiveLabel: receiveLabel || '0',
+    capLabel,
+    receiveLabel,
+    payLabel: formatTokenAmount(amountInput.amountIn, USD1_DECIMALS, {
+      digits: PERSONAL_TOKEN_DIGITS,
+      trimZeros: false,
+      suffix: ' USD1',
+    }),
     walletReady,
     canSubmit,
     isSubmitting,

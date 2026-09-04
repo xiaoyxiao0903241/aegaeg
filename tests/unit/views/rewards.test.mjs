@@ -24,15 +24,16 @@ test('formatContributionPlaceholder: missing contribution → --', async () => {
 })
 
 test('lucky non-numeric empties stay dashes; counts stay integers', async () => {
-  const { NON_NUMERIC_EMPTY, formatApiCountLabel, formatApiAmount } = await loadModule(
-    '/src/views/dapp/rewards/shared.tsx',
-  )
+  const { NON_NUMERIC_EMPTY, formatApiCountLabel, formatApiStatLabel, formatApiAmount } =
+    await loadModule('/src/views/dapp/rewards/shared.tsx')
 
   assert.equal(NON_NUMERIC_EMPTY, '\u2014')
   assert.notEqual(formatApiAmount(null), NON_NUMERIC_EMPTY)
-  assert.equal(formatApiCountLabel(false, false, null), '--')
-  assert.equal(formatApiCountLabel(true, true, null), '--')
-  assert.equal(formatApiCountLabel(true, false, 3), '3')
+  assert.equal(formatApiCountLabel(null), '--')
+  assert.equal(formatApiCountLabel(undefined), '--')
+  assert.equal(formatApiCountLabel(3), '3')
+  assert.equal(formatApiStatLabel(null, { suffix: ' gAGX' }), '--')
+  assert.equal(formatApiStatLabel('1.5', { suffix: ' gAGX' }), '1.5000 gAGX')
 })
 
 test('planLabel and splitAmountByPct', async () => {

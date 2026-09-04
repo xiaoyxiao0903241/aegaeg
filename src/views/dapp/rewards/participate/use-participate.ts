@@ -39,30 +39,12 @@ export function useParticipate() {
   const inviterQuery = useParticipationAwardInviter(sessionReady)
 
   const summary = summaryQuery.data
-  const pending = summaryQuery.isLoading
-  const totalRewards = formatApiStatLabel(
-    sessionReady,
-    pending,
-    summary?.total_participation_reward,
-    { suffix: ' gAGX' },
-  )
-  const totalRewardsApprox = formatApiGagxApproxUsd(
-    sessionReady,
-    pending,
-    summary?.total_participation_reward,
-    priceUsd,
-  )
-  const myPosition = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.active_stake_balance,
-    priceUsd,
-  )
-  const contributionValue = formatApiContributionStatLabel(
-    sessionReady,
-    pending,
-    summary?.available_contribution,
-  )
+  const totalRewards = formatApiStatLabel(summary?.total_participation_reward, {
+    suffix: ' gAGX',
+  })
+  const totalRewardsApprox = formatApiGagxApproxUsd(summary?.total_participation_reward, priceUsd)
+  const myPosition = formatApiAgxUsdLabel(summary?.active_stake_balance, priceUsd)
+  const contributionValue = formatApiContributionStatLabel(summary?.available_contribution)
 
   const recordRows =
     logsQuery.data?.items.map((item) => mapParticipationAwardLogToCells(item, statusLabels)) ?? []

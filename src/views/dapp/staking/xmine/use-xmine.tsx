@@ -22,7 +22,6 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Text } from '~/shared/components/text'
@@ -147,11 +146,15 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS),
+        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' gAGX',
+          }),
     quotaLabel: formatTokenAmount(
       preflightQuery.data === undefined ? null : remainingQuota,
       GAGX_DECIMALS,
-      PERSONAL_TOKEN_DIGITS,
+      { digits: PERSONAL_TOKEN_DIGITS, trimZeros: false, suffix: ' gAGX' },
     ),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
@@ -185,7 +188,7 @@ export function useXmineDock() {
 
   const blockHint =
     xmine.blockReason === 'insufficientQuota'
-      ? interpolate(t.staking.blocked.insufficientXmineQuotaWithAmount, {
+      ? interpolateLive(t.staking.blocked.insufficientXmineQuotaWithAmount, {
           quota: xmine.quotaLabel,
         })
       : writeBlockHint(xmine.blockReason, t.staking.blocked)

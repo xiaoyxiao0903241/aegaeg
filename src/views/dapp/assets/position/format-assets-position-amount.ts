@@ -10,7 +10,9 @@ export function formatAssetsPositionAmount(
   unit: 'AGX' | 'gAGX',
 ): string {
   if (quote === 'usd') {
-    if (priceUsd == null || priceUsd <= 0) return '$0.00'
+    if (priceUsd == null || !Number.isFinite(priceUsd) || priceUsd < 0) {
+      return formatDecimal(null, { digits: 2, prefix: '$' })
+    }
     return formatDecimal(formatTokenAmountToNumber(amount, decimals) * priceUsd, {
       digits: 2,
       prefix: '$',

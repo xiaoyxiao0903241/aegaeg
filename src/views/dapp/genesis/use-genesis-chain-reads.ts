@@ -77,7 +77,6 @@ export function useGenesisChainReads() {
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
   const priceWei = sharePriceWei(activePhase)
-  const userTotal = userTotalQuery.data ?? ZERO_BI
   const phaseRemaining = phaseRemainingQuery.data ?? null
   const agxPriceWei = agxPriceQuery.data ?? ZERO_BI
   const airdropThresholdUsd =
@@ -127,7 +126,6 @@ export function useGenesisChainReads() {
     activePhase,
     phaseIndex,
     sharePriceWei: priceWei,
-    userTotal,
     phaseRemaining,
     usd1Balance,
     usd1BalanceKnown,
@@ -150,13 +148,19 @@ export function useGenesisChainReads() {
     maxPurchasableWei,
     activeSeasonNumber,
     seasonOptions,
-    totalPurchased: totalPurchasedQuery.data ?? ZERO_BI,
+    totalPurchased: totalPurchasedQuery.data ?? null,
     globalPurchasedLoading: totalPurchasedQuery.isLoading,
-    userPhaseAmountCurrent: phaseRemaining?.userPhaseAmountCurrent ?? ZERO_BI,
+    userTotal: userTotalQuery.data ?? null,
+    userPhaseAmountCurrent:
+      phaseRemainingQuery.data === undefined
+        ? null
+        : (phaseRemaining?.userPhaseAmountCurrent ?? ZERO_BI),
     seasonContributionMaxWei:
-      phaseRemaining && phaseRemaining.userPurchaseLimit > ZERO_BI
-        ? phaseRemaining.userPurchaseLimit
-        : maxAmount,
+      phaseRemainingQuery.data === undefined
+        ? null
+        : phaseRemaining && phaseRemaining.userPurchaseLimit > ZERO_BI
+          ? phaseRemaining.userPurchaseLimit
+          : maxAmount,
     error: queryError,
   }
 }

@@ -28,15 +28,17 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
   formatDecimal,
   formatMakingRankBoostSuffix,
+  interpolateLive,
   makingRankDisplayRank,
 } from '~/shared/presenters/format'
 import { useCobuildSessionStore } from '~/stores/rewards-session-store'
 import { mapRankRewardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
-  bindApiLabelFormatters,
   formatApiAgxUsdLabel,
   formatApiContributionStatLabel,
+  formatApiCountLabel,
   formatApiGagxApproxUsd,
+  formatApiStatLabel,
   mapRankRewardTeamMemberToRow,
   NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
@@ -184,33 +186,13 @@ export function useCobuild() {
   )
 
   const summary = summaryQuery.data
-  const label = bindApiLabelFormatters(sessionReady, summaryQuery.isLoading)
   const pending = summaryQuery.isLoading
-  const totalRewards = label.stat(summary?.total_rank_reward, { suffix: ' gAGX' })
-  const totalRewardsApprox = formatApiGagxApproxUsd(
-    sessionReady,
-    pending,
-    summary?.total_rank_reward,
-    agxPriceUsd,
-  )
-  const totalPerformance = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.making_market,
-    agxPriceUsd,
-  )
-  const myPosition = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.active_stake_balance,
-    agxPriceUsd,
-  )
-  const referralCount = label.count(summary?.direct_referral_count)
-  const contributionValue = formatApiContributionStatLabel(
-    sessionReady,
-    pending,
-    summary?.available_contribution,
-  )
+  const totalRewards = formatApiStatLabel(summary?.total_rank_reward, { suffix: ' gAGX' })
+  const totalRewardsApprox = formatApiGagxApproxUsd(summary?.total_rank_reward, agxPriceUsd)
+  const totalPerformance = formatApiAgxUsdLabel(summary?.making_market, agxPriceUsd)
+  const myPosition = formatApiAgxUsdLabel(summary?.active_stake_balance, agxPriceUsd)
+  const referralCount = formatApiCountLabel(summary?.direct_referral_count)
+  const contributionValue = formatApiContributionStatLabel(summary?.available_contribution)
 
   const currentLevel = cobuildLevelFromRank(
     sessionReady ? makingRankDisplayRank(summary?.making_rank, summary) : null,
@@ -227,19 +209,9 @@ export function useCobuild() {
     isNone || liveLoading ? NON_NUMERIC_EMPTY : cobuildRateOf(currentLevel, tierRows)
   const tierNextRate = nextDef == null ? NON_NUMERIC_EMPTY : cobuildRateOf(nextDef.id, tierRows)
 
-  const holdingValue = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.active_stake_balance,
-    agxPriceUsd,
-  )
-  const accountsValue = label.count(summary?.effective_direct_referral_count)
-  const performanceValue = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.making_market,
-    agxPriceUsd,
-  )
+  const holdingValue = formatApiAgxUsdLabel(summary?.active_stake_balance, agxPriceUsd)
+  const accountsValue = formatApiCountLabel(summary?.effective_direct_referral_count)
+  const performanceValue = formatApiAgxUsdLabel(summary?.making_market, agxPriceUsd)
   /**
    * 进度徽章读数：未连接按 0（与展示的 0.00 对齐，显示「0%」）；
    * 冷启动加载中且无数据 → null（不画徽章）；已加载但缺字段按 0。
@@ -279,15 +251,10 @@ export function useCobuild() {
     : pending && summary == null
       ? null
       : agxAmountToUsdProgressCurrent(parseMoneyish(summary?.other_lines_market) ?? 0, agxPriceUsd)
-  const dualLinesValue = interpolate(cobuild.reqDualLinesValue, {
-    count: label.count(summary?.qualified_direct_rank_count),
+  const dualLinesValue = interpolateLive(cobuild.reqDualLinesValue, {
+    count: formatApiCountLabel(summary?.qualified_direct_rank_count),
   })
-  const otherLineValue = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.other_lines_market,
-    agxPriceUsd,
-  )
+  const otherLineValue = formatApiAgxUsdLabel(summary?.other_lines_market, agxPriceUsd)
 
   const tierReqs: CobuildTierReq[] = cobuildNextReqSpecs(currentLevel).map((spec) =>
     specToReq(spec, cobuild, {

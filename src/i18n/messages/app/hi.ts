@@ -1954,15 +1954,15 @@ const app = defineMessages({
       insufficientAllowance: 'अपर्याप्त अनुमति',
       insufficientQuota: 'स्टेक कोटा पार हो गया — राशि कम करके फिर कोशिश करें',
       insufficientQuotaWithAmount:
-        'स्टेक कोटा पार हो गया: अभी अधिकतम {quota} AGX और स्टेक कर सकते हैं। राशि कम करके फिर कोशिश करें।',
+        'स्टेक कोटा पार हो गया: अभी अधिकतम {quota} और स्टेक कर सकते हैं। राशि कम करके फिर कोशिश करें।',
       insufficientQuotaPersonalWithAmount:
-        'आपका निजी स्टेक कोटा पार हो गया: व्यक्तिगत संचयी सीमा में {quota} AGX शेष है — राशि कम करके फिर कोशिश करें।',
+        'आपका निजी स्टेक कोटा पार हो गया: व्यक्तिगत संचयी सीमा में {quota} शेष है — राशि कम करके फिर कोशिश करें।',
       insufficientQuotaPersonalDailyWithAmount:
-        'आज का आपका स्टेक कोटा पार हो गया: आज की व्यक्तिगत सीमा में {quota} AGX शेष है — राशि कम करें, या कोटा रीसेट होने तक प्रतीक्षा करें।',
+        'आज का आपका स्टेक कोटा पार हो गया: आज की व्यक्तिगत सीमा में {quota} शेष है — राशि कम करें, या कोटा रीसेट होने तक प्रतीक्षा करें।',
       insufficientQuotaPoolWithAmount:
-        'ऑन-चेन स्टेक पूल की क्षमता पर्याप्त नहीं: पूल में {quota} AGX शेष है — राशि कम करें, या बाद में कोशिश करें।',
+        'ऑन-चेन स्टेक पूल की क्षमता पर्याप्त नहीं: पूल में {quota} शेष है — राशि कम करें, या बाद में कोशिश करें।',
       insufficientXmineQuotaWithAmount:
-        'आपका माइनिंग कोटा पार हो गया: माइनिंग कोटा लॉक प्रिंसिपल से तय होता है — अभी अधिकतम {quota} gAGX और स्टेक कर सकते हैं। राशि कम करें, या पहले लॉक पोज़ीशन बढ़ाएँ।',
+        'आपका माइनिंग कोटा पार हो गया: माइनिंग कोटा लॉक प्रिंसिपल से तय होता है — अभी अधिकतम {quota} और स्टेक कर सकते हैं। राशि कम करें, या पहले लॉक पोज़ीशन बढ़ाएँ।',
       poolPaused: 'यह स्टेकिंग पूल अस्थायी रूप से बंद है — बाद में कोशिश करें',
       depositoryNotAuth:
         'यह बॉन्ड बाज़ार अभी खरीद के लिए खुला नहीं है — कोई अन्य अवधि चुनें या बाद में कोशिश करें',
@@ -2215,8 +2215,8 @@ const app = defineMessages({
       periodLabel: 'स्टेकिंग अवधि चुनें',
       periodAria: 'स्टेकिंग अवधि चुनें',
       amountAria: 'स्टेक राशि',
-      amountBalance: 'राशि (वॉलेट बैलेंस {balance} AGX)',
-      quotaInline: 'स्टेक कोटा: {quota} AGX',
+      amountBalance: 'राशि (वॉलेट बैलेंस {balance})',
+      quotaInline: 'स्टेक कोटा: {quota}',
       submit: 'स्टेक',
       bindCta: 'रेफ़रल बाइंड करें',
       success: 'स्टेक सफल',
@@ -2306,7 +2306,7 @@ const app = defineMessages({
       periodLabel: 'बॉन्ड अवधि चुनें',
       periodAria: 'LP बॉन्ड अवधि',
       amountAria: 'खरीद राशि',
-      amountBalance: 'राशि (वॉलेट बैलेंस {balance} USD1)',
+      amountBalance: 'राशि (वॉलेट बैलेंस {balance})',
       submit: 'खरीदें',
       success: 'खरीद सफल',
       footnote:
@@ -2397,7 +2397,7 @@ const app = defineMessages({
       periodLabel: 'बॉन्ड अवधि चुनें',
       periodAria: 'बर्न बॉन्ड अवधि',
       amountAria: 'खरीद राशि',
-      amountBalance: 'राशि (वॉलेट बैलेंस {balance} USD1)',
+      amountBalance: 'राशि (वॉलेट बैलेंस {balance})',
       submit: 'खरीदें',
       success: 'खरीद सफल',
       footnote:
@@ -2482,8 +2482,8 @@ const app = defineMessages({
       title: 'X माइनिंग',
       intro: 'X इकोसिस्टम पुरस्कार माइनिंग हेतु gAGX स्टेक करें',
       amountAria: 'gAGX स्टेक राशि',
-      amountBalance: 'राशि (वॉलेट बैलेंस {balance} gAGX)',
-      quotaInline: 'माइनिंग कोटा: {quota} gAGX',
+      amountBalance: 'राशि (वॉलेट बैलेंस {balance})',
+      quotaInline: 'माइनिंग कोटा: {quota}',
       submit: 'स्टेक',
       success: 'स्टेक सफल',
       openKlineChart: 'कैंडलस्टिक चार्ट देखें',

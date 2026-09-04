@@ -2018,15 +2018,15 @@ const app = defineMessages({
       insufficientAllowance: 'Allowance tidak cukup',
       insufficientQuota: 'Melebihi kuota staking, kurangi jumlah lalu coba lagi',
       insufficientQuotaWithAmount:
-        'Melebihi kuota staking: saat ini paling banyak masih bisa stake {quota} AGX. Kurangi jumlah lalu coba lagi.',
+        'Melebihi kuota staking: saat ini paling banyak masih bisa stake {quota}. Kurangi jumlah lalu coba lagi.',
       insufficientQuotaPersonalWithAmount:
-        'Melebihi kuota staking pribadi Anda: sisa batas kumulatif pribadi Anda {quota} AGX, kurangi jumlah lalu coba lagi.',
+        'Melebihi kuota staking pribadi Anda: sisa batas kumulatif pribadi Anda {quota}, kurangi jumlah lalu coba lagi.',
       insufficientQuotaPersonalDailyWithAmount:
-        'Melebihi kuota staking harian Anda: sisa kuota pribadi hari ini {quota} AGX, kurangi jumlah, atau tunggu kuota di-reset lalu coba lagi.',
+        'Melebihi kuota staking harian Anda: sisa kuota pribadi hari ini {quota}, kurangi jumlah, atau tunggu kuota di-reset lalu coba lagi.',
       insufficientQuotaPoolWithAmount:
-        'Kuota pool staking on-chain tidak cukup: pool saat ini masih tersisa {quota} AGX, kurangi jumlah, atau coba lagi nanti.',
+        'Kuota pool staking on-chain tidak cukup: pool saat ini masih tersisa {quota}, kurangi jumlah, atau coba lagi nanti.',
       insufficientXmineQuotaWithAmount:
-        'Melebihi kuota mining Anda: kuota mining ditentukan oleh pokok terkunci Anda, saat ini paling banyak masih bisa stake {quota} gAGX. Kurangi jumlah, atau tambah posisi terkunci dulu lalu coba lagi.',
+        'Melebihi kuota mining Anda: kuota mining ditentukan oleh pokok terkunci Anda, saat ini paling banyak masih bisa stake {quota}. Kurangi jumlah, atau tambah posisi terkunci dulu lalu coba lagi.',
       poolPaused: 'Pool staking ini sementara ditutup, coba lagi nanti',
       depositoryNotAuth:
         'Pasar Bond ini belum dibuka untuk pembelian, ganti periode atau coba lagi nanti',
@@ -2299,8 +2299,8 @@ const app = defineMessages({
       periodLabel: 'Pilih periode staking',
       periodAria: 'Pilih periode staking',
       amountAria: 'Jumlah staking',
-      amountBalance: 'Jumlah (saldo dompet {balance} AGX)',
-      quotaInline: 'Kuota staking: {quota} AGX',
+      amountBalance: 'Jumlah (saldo dompet {balance})',
+      quotaInline: 'Kuota staking: {quota}',
       submit: 'Stake',
       bindCta: 'Ikat referral',
       success: 'Staking berhasil',
@@ -2390,7 +2390,7 @@ const app = defineMessages({
       periodLabel: 'Pilih periode Bond',
       periodAria: 'Periode LP Bond',
       amountAria: 'Jumlah pembelian',
-      amountBalance: 'Jumlah (saldo dompet {balance} USD1)',
+      amountBalance: 'Jumlah (saldo dompet {balance})',
       submit: 'Beli',
       success: 'Pembelian berhasil',
       footnote:
@@ -2482,7 +2482,7 @@ const app = defineMessages({
       periodLabel: 'Pilih periode Bond',
       periodAria: 'Periode Burn Bond',
       amountAria: 'Jumlah pembelian',
-      amountBalance: 'Jumlah (saldo dompet {balance} USD1)',
+      amountBalance: 'Jumlah (saldo dompet {balance})',
       submit: 'Beli',
       success: 'Pembelian berhasil',
       footnote: 'Sistem mint AGX dengan diskon, beli otomatis, dan bakar permanen ke black hole.',
@@ -2567,8 +2567,8 @@ const app = defineMessages({
       title: 'Penambangan X',
       intro: 'Staking gAGX untuk menambang hadiah ekosistem X',
       amountAria: 'Jumlah staking gAGX',
-      amountBalance: 'Jumlah (saldo dompet {balance} gAGX)',
-      quotaInline: 'Kuota staking: {quota} gAGX',
+      amountBalance: 'Jumlah (saldo dompet {balance})',
+      quotaInline: 'Kuota staking: {quota}',
       submit: 'Stake',
       success: 'Staking berhasil',
       openKlineChart: 'Lihat grafik candlestick',

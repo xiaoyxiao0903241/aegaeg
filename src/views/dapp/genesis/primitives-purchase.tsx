@@ -132,7 +132,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisSessionState 
           items={[
             { label: t.genesis.quota, value: genesis.quotaLabel },
             { label: t.genesis.pay, value: genesis.payUsd1Label },
-            { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
+            { label: t.genesis.receive, value: genesis.estimatedAgxLabel },
             { label: t.genesis.value, value: genesis.contributionValueLabel },
             {
               // 该行 Label 已自带样式，内层勿再套 Text variant/tone

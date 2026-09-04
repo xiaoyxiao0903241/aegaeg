@@ -69,7 +69,7 @@ export function useRewardsHub(): HubStats {
   const rank = sessionReady ? makingRankDisplayRank(overview?.making_rank, overview) : null
 
   return {
-    totalRewardGagx: formatApiStatLabel(sessionReady, pending, totalRaw, { suffix: ' gAGX' }),
+    totalRewardGagx: formatApiStatLabel(totalRaw, { suffix: ' gAGX' }),
     totalRewardApprox: formatDecimal(toUsd(parseApiAmount(totalRaw), priceUsd), {
       digits: 2,
       prefix: '≈ $',

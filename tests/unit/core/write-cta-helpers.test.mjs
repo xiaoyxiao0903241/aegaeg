@@ -137,14 +137,14 @@ test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', asy
   )
 })
 
-test('formatAmountBalanceLabel keeps chrome with zero placeholder when balance pending', async () => {
+test('formatAmountBalanceLabel is -- when balance is missing', async () => {
   const { formatAmountBalanceLabel } = await loadModule('/src/core/wallet/write-cta.ts')
-  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '1.0' }), 'Bal 1.0')
   assert.equal(
-    formatAmountBalanceLabel('数量（钱包余额 {balance} AGX）', { balance: '', digits: 4 }),
-    '数量（钱包余额 0.0000 AGX）',
+    formatAmountBalanceLabel('Bal {balance}', { balance: '1.0000 AGX' }),
+    'Bal 1.0000 AGX',
   )
-  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '' }), 'Bal 0.0000')
+  assert.equal(formatAmountBalanceLabel('数量（钱包余额 {balance}）', { balance: '' }), '--')
+  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '--' }), '--')
 })
 
 test('getErrorMessage maps write-block sentinels used by CTAs', async () => {

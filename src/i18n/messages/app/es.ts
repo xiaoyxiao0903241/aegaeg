@@ -2031,15 +2031,15 @@ const app = defineMessages({
       insufficientQuota:
         'Superaste el cupo de staking disponible; reduce la cantidad e inténtalo de nuevo',
       insufficientQuotaWithAmount:
-        'Superaste el cupo de staking disponible: aún puedes stakear como máximo {quota} AGX. Reduce la cantidad e inténtalo de nuevo.',
+        'Superaste el cupo de staking disponible: aún puedes stakear como máximo {quota}. Reduce la cantidad e inténtalo de nuevo.',
       insufficientQuotaPersonalWithAmount:
-        'Superaste tu cupo personal de staking: te quedan {quota} AGX del tope acumulado personal. Reduce la cantidad e inténtalo de nuevo.',
+        'Superaste tu cupo personal de staking: te quedan {quota} del tope acumulado personal. Reduce la cantidad e inténtalo de nuevo.',
       insufficientQuotaPersonalDailyWithAmount:
-        'Superaste tu cupo de staking de hoy: te quedan {quota} AGX del cupo personal diario. Reduce la cantidad, o espera a que se renueve el cupo.',
+        'Superaste tu cupo de staking de hoy: te quedan {quota} del cupo personal diario. Reduce la cantidad, o espera a que se renueve el cupo.',
       insufficientQuotaPoolWithAmount:
-        'El cupo del pool de staking on-chain no alcanza: al pool le quedan {quota} AGX. Reduce la cantidad, o inténtalo más tarde.',
+        'El cupo del pool de staking on-chain no alcanza: al pool le quedan {quota}. Reduce la cantidad, o inténtalo más tarde.',
       insufficientXmineQuotaWithAmount:
-        'Superaste tu cupo de minería: el cupo de minería lo determina tu principal bloqueado; aún puedes stakear como máximo {quota} gAGX. Reduce la cantidad, o primero aumenta posiciones bloqueadas e inténtalo de nuevo.',
+        'Superaste tu cupo de minería: el cupo de minería lo determina tu principal bloqueado; aún puedes stakear como máximo {quota}. Reduce la cantidad, o primero aumenta posiciones bloqueadas e inténtalo de nuevo.',
       poolPaused: 'Este pool de staking está temporalmente cerrado; inténtalo más tarde',
       depositoryNotAuth:
         'Este mercado de bonos aún no está abierto a la compra; elige otro plazo o inténtalo más tarde',
@@ -2314,8 +2314,8 @@ const app = defineMessages({
       periodLabel: 'Elige el periodo de staking',
       periodAria: 'Elige el periodo de staking',
       amountAria: 'Cantidad de staking',
-      amountBalance: 'Cantidad (saldo de billetera {balance} AGX)',
-      quotaInline: 'Cuota de staking: {quota} AGX',
+      amountBalance: 'Cantidad (saldo de billetera {balance})',
+      quotaInline: 'Cuota de staking: {quota}',
       submit: 'Participación',
       bindCta: 'Ir a vincular referido',
       success: 'Staking exitoso',
@@ -2405,7 +2405,7 @@ const app = defineMessages({
       periodLabel: 'Selecciona el periodo del bono',
       periodAria: 'Periodo del bono LP',
       amountAria: 'Cantidad de compra',
-      amountBalance: 'Cantidad (saldo de billetera {balance} USD1)',
+      amountBalance: 'Cantidad (saldo de billetera {balance})',
       submit: 'Comprar',
       success: 'Compra exitosa',
       footnote:
@@ -2497,7 +2497,7 @@ const app = defineMessages({
       periodLabel: 'Selecciona el periodo del bono',
       periodAria: 'Periodo del bono de quema',
       amountAria: 'Cantidad de compra',
-      amountBalance: 'Cantidad (saldo de billetera {balance} USD1)',
+      amountBalance: 'Cantidad (saldo de billetera {balance})',
       submit: 'Comprar',
       success: 'Compra exitosa',
       footnote:
@@ -2583,8 +2583,8 @@ const app = defineMessages({
       title: 'Minado X',
       intro: 'Haz staking de gAGX para minar recompensas del ecosistema X',
       amountAria: 'Cantidad de staking gAGX',
-      amountBalance: 'Cantidad (saldo de billetera {balance} gAGX)',
-      quotaInline: 'Cupo de staking: {quota} gAGX',
+      amountBalance: 'Cantidad (saldo de billetera {balance})',
+      quotaInline: 'Cupo de staking: {quota}',
       submit: 'Participación',
       success: 'Staking exitoso',
       openKlineChart: 'Ver gráfico de velas',

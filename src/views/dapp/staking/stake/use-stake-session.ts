@@ -137,14 +137,18 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS),
+        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' AGX',
+          }),
     isBalancesLoading: walletReady && (!balancesLoaded || preflightQuery.isLoading),
     walletReady,
     canSubmit,
     isSubmitting,
     blockReason,
     writePhase,
-    remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? ZERO_BI) : ZERO_BI,
+    remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? ZERO_BI) : null,
     quotaKind: balancesLoaded ? (preflightQuery.data?.quotaKind ?? 'pool') : 'pool',
     submit: () => open.mutate(),
     pool,

@@ -65,11 +65,8 @@ export { formatApiAmount }
 
 /**
  * 后端金额统计。缺数 → `--`；已知 0 → 按精度印。
- * `sessionReady` / `isPending` 保留给既有调用方，展示只看 `raw`。
  */
 export function formatApiStatLabel(
-  _sessionReady: boolean,
-  _isPending: boolean,
   raw: string | null | undefined,
   options?: { digits?: number; prefix?: string; suffix?: string },
 ): string {
@@ -77,35 +74,14 @@ export function formatApiStatLabel(
 }
 
 /** 后端贡献点数统计。缺数 → `--`。 */
-export function formatApiContributionStatLabel(
-  _sessionReady: boolean,
-  _isPending: boolean,
-  raw: string | null | undefined,
-): string {
+export function formatApiContributionStatLabel(raw: string | null | undefined): string {
   return formatApiContributionPoints(raw)
 }
 
 /** 后端整数字段。缺数 → `--`。 */
-export function formatApiCountLabel(
-  _sessionReady: boolean,
-  _isPending: boolean,
-  raw: number | null | undefined,
-): string {
+export function formatApiCountLabel(raw: number | null | undefined): string {
   if (raw == null) return LIVE_DATA_PLACEHOLDER
   return String(raw)
-}
-
-/**
- * 把会话就绪与加载中状态绑进格式化器，避免各详情视图重复判断
- */
-export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean) {
-  return {
-    stat: (
-      raw: string | null | undefined,
-      options?: { digits?: number; prefix?: string; suffix?: string },
-    ) => formatApiStatLabel(sessionReady, isPending, raw, options),
-    count: (raw: number | null | undefined) => formatApiCountLabel(sessionReady, isPending, raw),
-  }
 }
 
 /**
@@ -113,8 +89,6 @@ export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean
  * 缺数量或单价 → `--`；单价 0 → `$0.00`。
  */
 export function formatApiAgxUsdLabel(
-  _sessionReady: boolean,
-  _isPending: boolean,
   raw: string | null | undefined,
   priceUsd: number | null,
 ): string {
@@ -129,8 +103,6 @@ export function formatApiAgxUsdLabel(
  * gAGX 奖励主值旁注：`≈ $…`（设计稿有 ≈ 才挂 Tile.Note）。
  */
 export function formatApiGagxApproxUsd(
-  _sessionReady: boolean,
-  _isPending: boolean,
   raw: string | null | undefined,
   priceUsd: number | null,
 ): string {
@@ -399,7 +371,7 @@ export function mapRankRewardLogToRow(
  * making_market 为 AGX，按现价折 `$` 展示（与共建级别卡同一口径）。
  *
  * @param item 后端团队成员记录
- * @param agxPriceUsd AGX 美元单价；无价时 `$0.00`
+ * @param agxPriceUsd AGX 美元单价；无价时 `--`
  * @returns 绑定时间、地址、团队业绩与共建级别的单元格数组
  */
 export function mapRankRewardTeamMemberToRow(
@@ -409,7 +381,7 @@ export function mapRankRewardTeamMemberToRow(
   return [
     formatApiDateTime(item.bound_at),
     <ExplorerLink key={item.address} value={item.address} />,
-    formatApiAgxUsdLabel(true, false, item.making_market, agxPriceUsd),
+    formatApiAgxUsdLabel(item.making_market, agxPriceUsd),
     formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
   ]
 }

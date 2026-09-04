@@ -90,7 +90,11 @@ export function useStakeDock() {
     bindReferral: t.staking.stake.bindCta,
     submit: t.staking.stake.submit,
   })
-  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+  const quotaLabel = formatTokenAmount(stake.remainingQuota, AGX_DECIMALS, {
+    digits: PERSONAL_TOKEN_DIGITS,
+    trimZeros: false,
+    suffix: ' AGX',
+  })
   const quotaCopy =
     stake.quotaKind === 'personalDaily'
       ? t.staking.blocked.insufficientQuotaPersonalDailyWithAmount
@@ -99,7 +103,7 @@ export function useStakeDock() {
         : t.staking.blocked.insufficientQuotaPoolWithAmount
   const blockHint =
     stake.blockReason === 'insufficientQuota'
-      ? interpolate(quotaCopy, { quota: quotaLabel })
+      ? interpolateLive(quotaCopy, { quota: quotaLabel })
       : writeBlockHint(stake.blockReason, t.staking.blocked)
 
   const epochPct = epochRebasePctFrom1e18(rebaseQuery.data?.rebaseRate1e18)

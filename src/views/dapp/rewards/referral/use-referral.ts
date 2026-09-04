@@ -10,10 +10,11 @@ import { tablePageQuery } from '~/shared/lib/table-pagination'
 import { useReferralSessionStore } from '~/stores/rewards-session-store'
 import { mapReferralAwardLogToCells } from '~/views/dapp/rewards/primitives'
 import {
-  bindApiLabelFormatters,
   formatApiAgxUsdLabel,
   formatApiContributionStatLabel,
+  formatApiCountLabel,
   formatApiGagxApproxUsd,
+  formatApiStatLabel,
   mapReferralAwardDirectToRow,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/shared'
@@ -50,27 +51,11 @@ export function useRewardsReferral() {
   )
 
   const summary = summaryQuery.data
-  const pending = summaryQuery.isLoading
-  const label = bindApiLabelFormatters(sessionReady, pending)
-  const totalRewards = label.stat(summary?.total_referral_reward, { suffix: ' gAGX' })
-  const totalRewardsApprox = formatApiGagxApproxUsd(
-    sessionReady,
-    pending,
-    summary?.total_referral_reward,
-    priceUsd,
-  )
-  const myPosition = formatApiAgxUsdLabel(
-    sessionReady,
-    pending,
-    summary?.active_stake_balance,
-    priceUsd,
-  )
-  const referralCount = label.count(summary?.direct_referral_count)
-  const contributionValue = formatApiContributionStatLabel(
-    sessionReady,
-    pending,
-    summary?.available_contribution,
-  )
+  const totalRewards = formatApiStatLabel(summary?.total_referral_reward, { suffix: ' gAGX' })
+  const totalRewardsApprox = formatApiGagxApproxUsd(summary?.total_referral_reward, priceUsd)
+  const myPosition = formatApiAgxUsdLabel(summary?.active_stake_balance, priceUsd)
+  const referralCount = formatApiCountLabel(summary?.direct_referral_count)
+  const contributionValue = formatApiContributionStatLabel(summary?.available_contribution)
 
   const recordRows =
     logsQuery.data?.items.map((item) => mapReferralAwardLogToCells(item, statusLabels)) ?? []

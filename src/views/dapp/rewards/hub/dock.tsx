@@ -68,7 +68,7 @@ const REWARD_CARD_ICONS = {
 function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
   const amount = ready ? value : null
   return {
-    amount: formatDecimal(amount, { digits: PERSONAL_TOKEN_DIGITS, suffix: 'gAGX' }),
+    amount: formatDecimal(amount, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' }),
     approx: formatDecimal(toUsd(amount, priceUsd), { digits: 2, prefix: '≈ $' }),
   }
 }
@@ -128,7 +128,7 @@ export function RewardsHubDock() {
     amount: formatTokenAmount(amountReady('lucky') ? luckyWei : null, AGX_DECIMALS, {
       digits: PERSONAL_TOKEN_DIGITS,
       trimZeros: false,
-      suffix: 'gAGX',
+      suffix: ' gAGX',
     }),
     approx: formatDecimal(
       toUsd(
@@ -168,7 +168,7 @@ export function RewardsHubDock() {
         const icon = REWARD_CARD_ICONS[view]
         const balance = isGenesis
           ? {
-              amount: formatDecimal(sessionReady ? value : null, { digits: 2, prefix: '$' }),
+              amount: formatDecimal(value, { digits: 2, prefix: '$' }),
               approx: undefined as string | undefined,
             }
           : view === 'lucky'

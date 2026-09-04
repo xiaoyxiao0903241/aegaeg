@@ -1944,15 +1944,15 @@ const app = defineMessages({
       insufficientAllowance: 'Insufficient allowance',
       insufficientQuota: 'This amount is over your stake limit — enter a smaller amount',
       insufficientQuotaWithAmount:
-        'This amount is over the stake limit. You can stake at most {quota} AGX right now. Enter a smaller amount and try again.',
+        'This amount is over the stake limit. You can stake at most {quota} right now. Enter a smaller amount and try again.',
       insufficientQuotaPersonalWithAmount:
-        'This amount is over your personal stake limit. You have {quota} AGX left on your address cap. Enter a smaller amount and try again.',
+        'This amount is over your personal stake limit. You have {quota} left on your address cap. Enter a smaller amount and try again.',
       insufficientQuotaPersonalDailyWithAmount:
-        'This amount is over your daily personal stake limit. You have {quota} AGX left for today. Enter a smaller amount, or wait for the daily reset.',
+        'This amount is over your daily personal stake limit. You have {quota} left for today. Enter a smaller amount, or wait for the daily reset.',
       insufficientQuotaPoolWithAmount:
-        'The on-chain stake pool does not have enough capacity. Only {quota} AGX is left in the pool. Enter a smaller amount, or try again later.',
+        'The on-chain stake pool does not have enough capacity. Only {quota} is left in the pool. Enter a smaller amount, or try again later.',
       insufficientXmineQuotaWithAmount:
-        'This amount is over your mining quota. Mining quota comes from your locked principal — you can stake at most {quota} gAGX now. Enter a smaller amount, or add locked positions first.',
+        'This amount is over your mining quota. Mining quota comes from your locked principal — you can stake at most {quota} now. Enter a smaller amount, or add locked positions first.',
       poolPaused: 'This staking pool is temporarily closed — try again later',
       depositoryNotAuth:
         'This bond market is not open for purchase — try another term or come back later',
@@ -2205,8 +2205,8 @@ const app = defineMessages({
       periodLabel: 'Choose staking period',
       periodAria: 'Choose staking period',
       amountAria: 'Stake amount',
-      amountBalance: 'Amount (wallet balance {balance} AGX)',
-      quotaInline: 'Stake quota: {quota} AGX',
+      amountBalance: 'Amount (wallet balance {balance})',
+      quotaInline: 'Stake quota: {quota}',
       submit: 'Stake',
       bindCta: 'Bind referral',
       success: 'Staked successfully',
@@ -2296,7 +2296,7 @@ const app = defineMessages({
       periodLabel: 'Select bond period',
       periodAria: 'LP bond period',
       amountAria: 'Purchase amount',
-      amountBalance: 'Amount (wallet balance {balance} USD1)',
+      amountBalance: 'Amount (wallet balance {balance})',
       submit: 'Buy',
       success: 'Purchased successfully',
       footnote:
@@ -2388,7 +2388,7 @@ const app = defineMessages({
       periodLabel: 'Select bond period',
       periodAria: 'Burn bond period',
       amountAria: 'Purchase amount',
-      amountBalance: 'Amount (wallet balance {balance} USD1)',
+      amountBalance: 'Amount (wallet balance {balance})',
       submit: 'Buy',
       success: 'Purchased successfully',
       footnote:
@@ -2474,8 +2474,8 @@ const app = defineMessages({
       title: 'X Mine',
       intro: 'Stake gAGX to mine X ecosystem rewards',
       amountAria: 'gAGX stake amount',
-      amountBalance: 'Amount (wallet balance {balance} gAGX)',
-      quotaInline: 'Mining quota: {quota} gAGX',
+      amountBalance: 'Amount (wallet balance {balance})',
+      quotaInline: 'Mining quota: {quota}',
       submit: 'Stake',
       success: 'Staked successfully',
       openKlineChart: 'View candlestick chart',

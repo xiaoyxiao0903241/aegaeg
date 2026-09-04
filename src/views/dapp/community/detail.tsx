@@ -187,7 +187,7 @@ export function CommunityDetail() {
       volume: statsLoading ? (
         <Skeleton className="h-4 w-24" />
       ) : (
-        `${t.community.volumePrefix} ${directVolume}`
+        interpolateLive(`${t.community.volumePrefix} {amount}`, { amount: directVolume })
       ),
       note: statsLoading ? <Skeleton className="h-3.5 w-28" /> : todayDirect,
     },
@@ -197,7 +197,7 @@ export function CommunityDetail() {
       volume: statsLoading ? (
         <Skeleton className="h-4 w-24" />
       ) : (
-        `${t.community.volumePrefix} ${teamVolume}`
+        interpolateLive(`${t.community.volumePrefix} {amount}`, { amount: teamVolume })
       ),
       note: statsLoading ? <Skeleton className="h-3.5 w-28" /> : todayTeam,
     },

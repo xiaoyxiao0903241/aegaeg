@@ -168,23 +168,15 @@ export function BondDock({ kind }: { kind: BondKind }) {
               },
               {
                 label: copy.meta.pay,
-                value: bond.amountDisplay ? `${bond.amountDisplay} USD1` : '0 USD1',
+                value: bond.payLabel,
               },
               {
                 label: copy.meta.receive,
-                value: bond.isPayoutQuoting
-                  ? '0 AGX'
-                  : bond.receiveLabel === '0' || bond.receiveLabel === ''
-                    ? '0 AGX'
-                    : `${bond.receiveLabel} AGX`,
+                value: bond.receiveLabel,
               },
               {
                 label: copy.meta.cap,
-                value: bond.isMarketLoading
-                  ? '0 AGX'
-                  : bond.capLabel === '0' || bond.capLabel === ''
-                    ? '0 AGX'
-                    : `${bond.capLabel} AGX`,
+                value: bond.capLabel,
               },
               {
                 label: copy.meta.release,

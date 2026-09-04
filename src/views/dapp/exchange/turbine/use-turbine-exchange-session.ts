@@ -54,17 +54,17 @@ const ONE_AGX = TEN_BI ** BigInt(AGX_DECIMALS)
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
   if (unitUsdPerAgx === undefined) return LIVE_DATA_PLACEHOLDER
   if (unitUsdPerAgx === ZERO_BI || amountAgx === ZERO_BI) {
-    return formatDecimal(0, { digits: 2, prefix: '$' })
+    return formatDecimal(0, { digits: 2, prefix: '≈ $' })
   }
   return formatDecimal(
     formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS),
-    { digits: 2, prefix: '$' },
+    { digits: 2, prefix: '≈ $' },
   )
 }
 
 /** OpenAPI 的 turbine summary/logs 金额为小数字符串（勿当作 wei）。 */
 function formatTurbineSummaryAmount(raw: string | null | undefined): string {
-  return formatDecimal(raw, { digits: PERSONAL_TOKEN_DIGITS })
+  return formatDecimal(raw, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' })
 }
 
 /**
@@ -242,15 +242,13 @@ export function useTurbineExchangeSession(
 
   // OpenAPI `/turbine/summary` 的 claimed_total 为已领取金额（小数字符串，勿当 wei）
   const claimedRaw = turbineSummaryQuery.data?.claimed_total
-  const totalWithdrawnLabel = formatTurbineSummaryAmount(
-    !sessionReady || (turbineSummaryQuery.isLoading && claimedRaw == null) ? null : claimedRaw,
-  )
+  const totalWithdrawnLabel = formatTurbineSummaryAmount(claimedRaw)
   const claimedAsNumber = claimedRaw != null ? Number(claimedRaw) : Number.NaN
   const totalWithdrawnUsdHint = (() => {
-    if (!Number.isFinite(claimedAsNumber)) return ''
-    if (claimedAsNumber === 0) return formatDecimal(0, { digits: 2, prefix: '$' })
-    if (!unitUsdReady) return ''
-    return formatDecimal(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '$' })
+    if (!Number.isFinite(claimedAsNumber)) return LIVE_DATA_PLACEHOLDER
+    if (claimedAsNumber === 0) return formatDecimal(0, { digits: 2, prefix: '≈ $' })
+    if (!unitUsdReady) return LIVE_DATA_PLACEHOLDER
+    return formatDecimal(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '≈ $' })
   })()
 
   const canUnlock =
@@ -338,6 +336,7 @@ export function useTurbineExchangeSession(
       pendingUnlockLabel: formatTokenAmount(quotaQuery.data, AGX_DECIMALS, {
         digits: PERSONAL_TOKEN_DIGITS,
         trimZeros: false,
+        suffix: ' gAGX',
       }),
       pendingUnlockUsdHint:
         quotaQuery.data === undefined || !unitUsdReady
@@ -349,6 +348,7 @@ export function useTurbineExchangeSession(
         {
           digits: PERSONAL_TOKEN_DIGITS,
           trimZeros: false,
+          suffix: ' gAGX',
         },
       ),
       coolingUsdHint:

@@ -118,12 +118,10 @@ export function useLucky() {
   const needsCountdown = Boolean(account?.address) && walletReady
   const nowSec = useWallClockSec(needsCountdown)
 
-  const todayPool = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.today_total_prize,
-    { digits: 2, prefix: '$' },
-  )
+  const todayPool = formatApiStatLabel(summary?.today_total_prize, {
+    digits: 2,
+    prefix: '$',
+  })
   const clock =
     roundQuery.data == null ? null : formatCountdownClock(roundQuery.data.endTimeSec, nowSec)
   const todayPoolHint =
@@ -152,14 +150,14 @@ export function useLucky() {
           })
         : undefined
 
-  const winCount = formatApiCountLabel(sessionReady, summaryQuery.isLoading, summary?.win_count)
+  const winCount = formatApiCountLabel(summary?.win_count)
   const cumulativeWins = interpolateLive(lucky.winsCount, { count: winCount })
   const totalRewardAmount = summary?.total_reward_amount
   const cumulativeWinsHint = joinLiveLabels(
-    formatApiStatLabel(sessionReady, summaryQuery.isLoading, totalRewardAmount, {
+    formatApiStatLabel(totalRewardAmount, {
       suffix: ' gAGX',
     }),
-    formatApiGagxApproxUsd(sessionReady, summaryQuery.isLoading, totalRewardAmount, agxPriceUsd),
+    formatApiGagxApproxUsd(totalRewardAmount, agxPriceUsd),
   )
 
   const selfAddress = account?.address ?? null
