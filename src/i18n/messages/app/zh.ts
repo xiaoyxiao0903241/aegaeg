@@ -808,7 +808,6 @@ const app = defineMessages({
       expired: '签名已过期，请刷新后重新领取。',
       noOrder: '暂无可领取的奖励。',
       failed: '领取失败，请稍后再试。',
-      confirmSyncFailed: '奖励已在链上领取成功，但同步失败。请刷新页面，请勿重复领取。',
     },
     hub: {
       asideTitle: '关于 AEGIS X 奖励',

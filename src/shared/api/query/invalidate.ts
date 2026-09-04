@@ -561,10 +561,10 @@ export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?:
 }
 
 /**
- * 团队奖 / 发展津贴 / 社区基金签名领取写成功。
+ * 团队奖 / 发展津贴 / 社区基金签名领取：confirm 已尝试后刷新。
  *
- * rewards：待领汇总、发放记录；assetsRewardSummary：累计已领取 / 做市可领。
- * 列表等扫描器 READY→CLAIMED，短窗轮询。
+ * confirm 成败都调用。rewards：待领汇总、发放记录；assetsRewardSummary：累计已领取 / 做市可领。
+ * 列表等扫描器 READY→CLAIMED，短窗轮询；confirm 没核销上则交给扫描器。
  */
 export function invalidateAfterTeamClaim() {
   const baseline = readRewardScanFingerprint()

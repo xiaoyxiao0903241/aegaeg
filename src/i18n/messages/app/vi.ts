@@ -826,8 +826,6 @@ const app = defineMessages({
       expired: 'Chữ ký đã hết hạn, làm mới rồi nhận lại.',
       noOrder: 'Chưa có phần thưởng để nhận.',
       failed: 'Nhận thất bại, vui lòng thử lại sau.',
-      confirmSyncFailed:
-        'Phần thưởng đã nhận thành công on-chain nhưng đồng bộ thất bại. Làm mới trang, đừng nhận lại.',
     },
     hub: {
       asideTitle: 'Về phần thưởng AEGIS X',

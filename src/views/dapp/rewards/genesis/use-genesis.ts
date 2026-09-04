@@ -151,7 +151,6 @@ export function useGenesisDock() {
     void teamClaim.claim().then((result) => {
       toastClaimResult(result, {
         claimSuccess: t.rewards.claimSuccess,
-        confirmSyncFailed: t.rewards.claimErrors.confirmSyncFailed,
       })
     })
   }
@@ -160,7 +159,6 @@ export function useGenesisDock() {
     void communityFundClaim.claim().then((result) => {
       toastClaimResult(result, {
         claimSuccess: t.rewards.claimSuccess,
-        confirmSyncFailed: t.rewards.claimErrors.confirmSyncFailed,
       })
     })
   }

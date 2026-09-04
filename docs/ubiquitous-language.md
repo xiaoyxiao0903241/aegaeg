@@ -42,7 +42,7 @@
 |**领取团队奖励**|`claimTeamReward`|签名 → 上链 → confirm|`claim-reward`|
 |**领取社区基金**|`claimCommunityFund`|同上|`claim-reward`|
 |**领取签名**|`TeamRewardClaimSignature`|后端签名包（字段名兼容 snake/camel）|`claim-reward` / `parseTeamRewardClaim`|
-|**确认失败**|`confirm_failed`|链上成功但后端 confirm 失败|`useClaimReward`|
+|**领取确认**|`confirmClaimQuietly`|上链后 await POST `/claim/confirm`；无论成败都算领取成功并刷新缓存|`claim-reward`|
 |**写路径 id**|`WRITE_PATH`|错误 toast 的 ctx 键|`web3/wallet/write-path.ts`|
 |**授权后二次门闸写**|`approveThenLiveWrite`|pre 门闸 → approve? → live 重读门闸 → write|`web3/wallet/approve-then-live-write.ts`|
 |**链上读 query**|`useChainQuery`|wallet 前缀+address；public 全 key；freshness；read* 默认 bscReadClient|`hooks/use-chain-query.ts`|
@@ -73,5 +73,5 @@
 - 合约 / ABI / 后端 JSON **字段名**
 - React Query **key 字符串**（含 `['chain','swap',…]` / `'flashSwap'`）
 - `WRITE_PATH.EXCHANGE` 字面量 `'swap'`（与写链 path id 对齐；勿改）
-- 哨兵业务字面量：`confirm_failed`、`unknown`
+- 哨兵业务字面量：`unknown`
 - `core/presale` 目录名（链上域 SSOT，与产品面 Genesis 双层并存）

@@ -829,8 +829,6 @@ const app = defineMessages({
       expired: 'İmza süresi doldu. Yenileyip tekrar talep edin.',
       noOrder: 'Talep edilecek ödül yok.',
       failed: 'Talep başarısız. Lütfen daha sonra tekrar deneyin.',
-      confirmSyncFailed:
-        'Ödül zincir üstünde başarıyla alındı ama senkron başarısız. Sayfayı yenileyin; tekrar talep etmeyin.',
     },
     hub: {
       asideTitle: 'AEGIS X ödülleri hakkında',

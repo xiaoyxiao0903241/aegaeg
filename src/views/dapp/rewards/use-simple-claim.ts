@@ -45,7 +45,6 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
     void claim.claim().then((result) => {
       toastClaimResult(result, {
         claimSuccess: t.rewards.claimSuccess,
-        confirmSyncFailed: t.rewards.claimErrors.confirmSyncFailed,
       })
     })
   }

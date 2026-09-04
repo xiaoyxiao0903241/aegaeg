@@ -12,7 +12,6 @@ import {
   messageForErc20InsufficientBalance,
 } from '~/web3/errors/path-scoped-erc20'
 import {
-  CLAIM_CONFIRM_SYNC_FAILED,
   EXCHANGE_QUOTE_FAILED,
   EXCHANGE_SUBMIT_BLOCKED,
   FLASH_USD1_BLOCKED,
@@ -95,8 +94,6 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [REWARDS_BLOCKED.releasePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
   [REWARDS_BLOCKED.restakePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
   [REWARDS_BLOCKED.unavailable]: (t) => t.rewards.claimErrors.failed,
-  [CLAIM_CONFIRM_SYNC_FAILED]: (t) =>
-    t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimErrors.failed,
 
   // —— Genesis 阻断 ——
   [GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1]: (t) => t.genesis.insufficientUsd1,

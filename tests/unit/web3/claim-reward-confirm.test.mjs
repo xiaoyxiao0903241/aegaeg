@@ -63,6 +63,24 @@ test('confirmClaimWithRetry succeeds after transient failures', async () => {
   }
 })
 
+test('confirmClaimQuietly swallows confirm failure', async () => {
+  const { confirmClaimQuietly } = await loadModule('/src/web3/claim/claim-reward.ts')
+  const originalFetch = globalThis.fetch
+
+  globalThis.fetch = async () =>
+    Response.json({ code: 500, error: 'busy', message: 'busy' }, { status: 500 })
+
+  try {
+    const result = await confirmClaimQuietly('jwt', { salt: '0x1', txHash: '0xabc' }, () => {}, {
+      attempts: 2,
+      delayMs: 1,
+    })
+    assert.equal(result, null)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
 test('evaluateGenesisPostApprove blocks unbound / paused', async () => {
   const { evaluateGenesisPostApprove } = await loadModule('/src/core/presale/presale-math.ts')
 

@@ -824,8 +824,6 @@ const app = defineMessages({
       expired: '서명이 만료되었습니다. 새로고침 후 다시 수령해 주세요.',
       noOrder: '수령 가능한 리워드가 없습니다.',
       failed: '수령에 실패했습니다. 나중에 다시 시도해 주세요.',
-      confirmSyncFailed:
-        '리워드가 온체인에서 수령되었지만 동기화에 실패했습니다. 페이지를 새로고침하고 다시 수령하지 마세요.',
     },
     hub: {
       asideTitle: 'AEGIS X 리워드 정보',

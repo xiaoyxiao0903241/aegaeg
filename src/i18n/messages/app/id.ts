@@ -835,8 +835,6 @@ const app = defineMessages({
       expired: 'Tanda tangan kedaluwarsa. Segarkan lalu klaim lagi.',
       noOrder: 'Tidak ada hadiah yang dapat diklaim.',
       failed: 'Klaim gagal. Silakan coba lagi nanti.',
-      confirmSyncFailed:
-        'Klaim berhasil on-chain tetapi sinkronisasi gagal. Segarkan halaman dan jangan klaim lagi.',
     },
     hub: {
       asideTitle: 'Tentang hadiah AEGIS X',

@@ -844,8 +844,6 @@ const app = defineMessages({
       expired: 'La firma expiró. Actualiza y reclama de nuevo.',
       noOrder: 'No hay recompensa disponible para reclamar.',
       failed: 'Falló la reclamación. Inténtalo más tarde.',
-      confirmSyncFailed:
-        'La recompensa se reclamó en cadena, pero falló la sincronización. Actualiza la página y no vuelvas a reclamar.',
     },
     hub: {
       asideTitle: 'Acerca de las recompensas AEGIS X',

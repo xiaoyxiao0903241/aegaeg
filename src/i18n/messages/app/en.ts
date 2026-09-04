@@ -825,8 +825,6 @@ const app = defineMessages({
       expired: 'Signature expired. Refresh and claim again.',
       noOrder: 'No reward available to claim.',
       failed: 'Claim failed. Please try again later.',
-      confirmSyncFailed:
-        'Claim succeeded on-chain but sync failed. Refresh the page and do not claim again.',
     },
     hub: {
       asideTitle: 'About AEGIS X rewards',
