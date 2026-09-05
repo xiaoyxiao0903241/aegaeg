@@ -17,7 +17,7 @@ const CONNECT_WARM_TOKENS: readonly Address[] = [
 ]
 
 /**
- * 钱包就绪后预取推荐绑定状态与核心 ERC20 余额。
+ * 登录且在 BSC 上后预取推荐绑定状态与核心 ERC20 余额。
  * 使用并行 `prefetchQuery`（原子键）；Multicall3 聚合读取保持可选。
  */
 export function prefetchConnectWarm(address: string): void {

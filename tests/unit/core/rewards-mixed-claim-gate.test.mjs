@@ -4,7 +4,6 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 const ready = {
-  walletReady: true,
   writeReady: true,
   sessionReady: true,
   isPending: false,

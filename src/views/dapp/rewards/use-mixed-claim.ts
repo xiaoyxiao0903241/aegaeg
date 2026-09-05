@@ -198,7 +198,6 @@ export function useMixedClaim(view: MixedClaimView) {
   }
 
   const canConfirm = evaluateRewardsMixedClaimConfirmGate({
-    walletReady,
     writeReady,
     sessionReady,
     isPending: claim.isPending,

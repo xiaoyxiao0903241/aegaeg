@@ -16,7 +16,7 @@ import { LIVE_DATA_PLACEHOLDER } from '~/shared/presenters/format'
  * 赎回确认弹窗
  *
  * 浅色壳 + 珊瑚说明条；提示本金经分流器线性释放，不会即时到账。
- * 周期天数来自 Manager.effectiveDuration（未连钱包时默认 30）。
+ * 周期天数来自链上生效时长；未就绪时默认 30。
  *
  * @see 手册 §13 分流器本金释放
  */

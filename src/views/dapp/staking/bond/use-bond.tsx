@@ -64,7 +64,7 @@ export function useBondDock(kind: BondKind) {
   const blockHint = writeBlockHint(bond.blockReason, t.staking.blocked)
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
-    balance: sessionReady && walletReady ? bond.balanceLabel : '',
+    balance: sessionReady ? bond.balanceLabel : '',
   })
 
   async function onSubmit() {

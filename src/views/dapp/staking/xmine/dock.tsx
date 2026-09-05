@@ -5,12 +5,12 @@ import { AmountMaxChip } from '~/shared/components/chip'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
-import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { interpolateLive } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { useXmineDock } from '~/views/dapp/staking/xmine/use-xmine'
@@ -107,14 +107,14 @@ export function XmineDock() {
           <>
             <WriteBlockAlert hint={blockHint} />
             <FormActions>
-              <MainButton
+              <SessionButton
                 density="external"
                 disabled={!xmine.canSubmit}
                 loading={xmine.isSubmitting}
                 onClick={() => void onSubmit()}
               >
                 {t.staking.xmine.submit}
-              </MainButton>
+              </SessionButton>
             </FormActions>
           </>
         ) : (

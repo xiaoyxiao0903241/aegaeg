@@ -52,7 +52,7 @@ export function useMarketTradeDock(trade: MarketTradeState) {
   const flipBlocked = !trade.canFlip
   const { isFlipping, rotation, flipCardClass, onFlip } = useExchangeFlip({
     flipDirection: trade.flipDirection,
-    disabled: flipBlocked || (sessionReady && !trade.walletReady),
+    disabled: flipBlocked,
   })
 
   const exchangePriceDisplayLabel = exchangePriceInverted
@@ -65,7 +65,7 @@ export function useMarketTradeDock(trade: MarketTradeState) {
     sessionReady,
   })
 
-  const pickDisabled = trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping
+  const pickDisabled = trade.isSubmitting || isFlipping
   const sellPickerOptions = mapTradePickerOptions({
     keys: trade.sellPickerKeys,
     trade,
@@ -99,8 +99,7 @@ export function useMarketTradeDock(trade: MarketTradeState) {
     rotation,
     flipCardClass: flipBlocked ? undefined : flipCardClass,
     onFlip,
-    flipDisabled:
-      flipBlocked || trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping,
+    flipDisabled: flipBlocked || trade.isSubmitting || isFlipping,
     flipTooltip: flipBlocked ? t.exchange.trade.flipDisabledXSellOnly : t.exchange.flip,
     onBack: () => setView('hub'),
     exchangePriceDisplayLabel,
