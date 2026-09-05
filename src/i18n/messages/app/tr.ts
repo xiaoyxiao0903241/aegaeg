@@ -84,9 +84,11 @@ const app = defineMessages({
     rewards: 'Ödüller',
     release: 'Serbest bırakma',
     community: 'Topluluk',
+    notice: 'Duyurular',
     rewardsTooltip: 'Öneri ödülleri ve takım ödüllerini görüntüleyin.',
     communityTooltip:
       'Ortak inşaya katılmak için arkadaşlarınızı davet edin, ekosistem büyüme değerini ve Genesis ödüllerini paylaşın',
+    noticeTooltip: 'En yeni ekosistem duyurularını ve protokol güncellemelerini görüntüleyin.',
     bscTooltip: 'Yalnızca BSC · AEGIS X BNB Smart Chain üzerinde çalışır.',
   },
   flowOps: {

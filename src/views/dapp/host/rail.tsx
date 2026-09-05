@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
@@ -18,6 +18,7 @@ import { Tooltip } from '~/shared/components/tooltip'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { subscribeResize } from '~/shared/lib/subscribe-resize'
 import { cn } from '~/shared/lib/utils'
+import { NoticeRailButton } from '~/views/dapp/host/notices/notice-rail-button'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
 
 type RailIndicator = {
@@ -70,15 +71,20 @@ function useRailTooltips() {
  *
  * 列出一级 Tab（兑换、资产、质押等），高亮当前项并显示跟随滚动的选中指示条。
  * 兑换 / 资产 / 释放 / 奖励有未读可领或到期仓时右上角显示红点；
+ * 社区与共建之间插入公告入口（非 Tab）：外观与未选中项相同，有待展示公告时红点且可点。
  * 悬停 / 聚焦非当前项时预取该页查询。`mobile` 模式用于抽屉内横向布局。
  */
 export function Rail({
   activeTab,
   mobile = false,
+  noticeHasPopup,
+  onOpenNotice,
   onSelectTab,
 }: {
   activeTab: DappTab
   mobile?: boolean
+  noticeHasPopup: boolean
+  onOpenNotice: () => void
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
@@ -147,9 +153,8 @@ export function Rail({
       {railItems.map((item) => {
         const label = t.nav[railNavLabelKeys[item.id]]
         const active = item.id === activeTab
-
-        return (
-          <Tooltip content={tooltips[item.id]} key={item.id} position="right">
+        const tabButton = (
+          <Tooltip content={tooltips[item.id]} position="right">
             <button
               aria-label={label}
               aria-selected={active}
@@ -192,6 +197,29 @@ export function Rail({
               </Text>
             </button>
           </Tooltip>
+        )
+
+        if (item.id !== 'community') {
+          return <Fragment key={item.id}>{tabButton}</Fragment>
+        }
+
+        return (
+          <Fragment key={item.id}>
+            {tabButton}
+            <NoticeRailButton
+              className={railItem({ active: false, mobile })}
+              hasPopup={noticeHasPopup}
+              iconClassName="aspect-square size-(--dapp-icon-rail) bg-current"
+              labelClassName={cn(
+                mobile ? 'min-w-0 flex-1 truncate' : 'block w-full min-w-0 truncate text-center',
+                'text-xs/snug tracking-tight',
+              )}
+              labelTone="muted-foreground"
+              labelVariant="caption"
+              onOpen={onOpenNotice}
+              tooltip={t.nav.noticeTooltip}
+            />
+          </Fragment>
         )
       })}
     </nav>

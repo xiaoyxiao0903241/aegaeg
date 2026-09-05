@@ -84,9 +84,11 @@ const app = defineMessages({
     rewards: 'Phần thưởng',
     release: 'Giải phóng',
     community: 'Cộng đồng',
+    notice: 'Thông báo',
     rewardsTooltip: 'Xem phần thưởng giới thiệu và phần thưởng nhóm.',
     communityTooltip:
       'Mời đối tác cùng xây dựng, chia sẻ giá trị tăng trưởng hệ sinh thái và phần thưởng Genesis.',
+    noticeTooltip: 'Xem thông báo mới nhất và thay đổi giao thức.',
     bscTooltip: 'Chỉ BSC · AEGIS X chạy trên BNB Smart Chain.',
   },
   flowOps: {

@@ -83,9 +83,11 @@ const app = defineMessages({
     rewards: 'Награды',
     release: 'Высвобождение',
     community: 'Сообщество',
+    notice: 'Объявления',
     rewardsTooltip: 'Просматривайте реферальные и командные награды.',
     communityTooltip:
       'Приглашайте партнёров к со-строительству, делитесь ростом экосистемы и наградами Genesis.',
+    noticeTooltip: 'Смотреть свежие объявления экосистемы и изменения протокола.',
     bscTooltip: 'Только BSC · AEGIS X работает в BNB Smart Chain.',
   },
   flowOps: {

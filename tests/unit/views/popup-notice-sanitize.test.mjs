@@ -4,7 +4,9 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 test('sanitizePopupNoticeHtml without DOMParser escapes as plain text', async () => {
-  const { sanitizePopupNoticeHtml } = await loadModule('/src/views/home/popup-notice-content.tsx')
+  const { sanitizePopupNoticeHtml } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice-content.tsx',
+  )
   assert.equal(typeof DOMParser, 'undefined')
   const dirty =
     '<p onclick="alert(1)">hi</p><script>alert(2)</script><a href="javascript:alert(3)">x</a>'
@@ -16,7 +18,9 @@ test('sanitizePopupNoticeHtml without DOMParser escapes as plain text', async ()
 })
 
 test('sanitizePopupNoticeHtml with DOMParser strips unsafe tags and schemes', async () => {
-  const { sanitizePopupNoticeHtml } = await loadModule('/src/views/home/popup-notice-content.tsx')
+  const { sanitizePopupNoticeHtml } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice-content.tsx',
+  )
 
   class FakeElement {
     constructor(tagName, attrs = {}, children = []) {
