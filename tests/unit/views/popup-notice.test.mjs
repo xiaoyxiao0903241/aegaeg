@@ -218,13 +218,14 @@ test('isHomePopupNoticeWithinSchedule excludes items outside start/end window', 
   assert.equal(normalizeHomePopupNotice({ ...sampleApiItem, ...window }, 'zh', afterEnd), null)
 })
 
-test('getHomePopupNotices uses POST with locale body', async () => {
+test('getHomePopupNotices uses POST with JWT and locale body', async () => {
   const { getHomePopupNotices } = await loadModule('/src/shared/api/endpoints.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {
     assert.match(String(url), /\/home\/popup-notices$/)
     assert.equal(init?.method, 'POST')
+    assert.equal(init?.headers?.Authorization, 'Bearer jwt')
     assert.deepEqual(JSON.parse(String(init?.body)), { locale: 'zh' })
 
     return Response.json({
@@ -234,7 +235,7 @@ test('getHomePopupNotices uses POST with locale body', async () => {
   }
 
   try {
-    const data = await getHomePopupNotices('zh')
+    const data = await getHomePopupNotices('jwt', 'zh')
     assert.equal(data.items.length, 1)
     assert.equal(data.items[0].display_mode, 1)
   } finally {
