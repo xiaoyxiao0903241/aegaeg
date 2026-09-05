@@ -74,6 +74,8 @@ test('staging profile overrides API host and test USDT; secrets are filled', () 
   assert.equal(prod.VITE_APP_HOST, 'aegis-x.io')
   assert.equal(prod.VITE_DEBUG_MODE, 'false')
   assert.equal(staging.VITE_DEBUG_MODE, 'false')
+  assert.equal(prod.VITE_OKX_DESKTOP_EXTENSION_PUBLIC_RPC, 'false')
+  assert.equal(staging.VITE_OKX_DESKTOP_EXTENSION_PUBLIC_RPC, 'false')
 
   assert.ok(prod.VITE_THIRDWEB_CLIENT_ID)
   assert.ok(prod.VITE_WALLETCONNECT_PROJECT_ID)

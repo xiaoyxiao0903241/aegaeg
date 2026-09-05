@@ -44,12 +44,12 @@ export function parseRequiredBoolean(key: string, raw: string | undefined): bool
 }
 
 /**
- * 解析调试开关：仅 `true` / `1` 才向控制台打印错误。
+ * 解析可选开关：仅 `true` / `1` 为开。
  *
  * 缺省、空值或其它字符串一律关闭，不抛错。
  *
- * @param raw `VITE_DEBUG_MODE` 原始值
- * @returns 是否打印错误
+ * @param raw 环境变量原始值
+ * @returns 是否打开
  */
 export function parseDebugMode(raw: string | undefined): boolean {
   const trimmed = typeof raw === 'string' ? raw.trim() : ''
@@ -112,4 +112,9 @@ export const appEnv = {
   notionEnEconomicModelUrl: requireEnvString('VITE_NOTION_EN_ECONOMIC_MODEL_URL'),
   /** 仅 `true`/`1` 打开控制台错误打印；缺省视为关闭。 */
   debugMode: parseDebugMode(readRaw('VITE_DEBUG_MODE')),
+  /**
+   * 仅 `true`/`1` 时，PC 浏览器 OKX 插件的链上读走公共 HTTP。
+   * 缺省关闭：OKX（含 App 内置浏览器）一律走钱包 RPC。
+   */
+  okxDesktopExtensionPublicRpc: parseDebugMode(readRaw('VITE_OKX_DESKTOP_EXTENSION_PUBLIC_RPC')),
 } as const

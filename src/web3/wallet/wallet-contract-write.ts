@@ -122,7 +122,7 @@ async function simulateWriteCall(call: WriteCallParams, walletClient: PublicClie
  * 估算写交易 gas（展示用，不进入发送）
  *
  * 先 simulate 挡 revert，再 `estimateContractGas` 加 20% 缓冲。
- * 读走 `bscReadClient`（BSC 钱包默认真钱包节点；OKX 走公共 RPC）。
+ * 读走 `bscReadClient`（BSC 上默认真钱包节点；仅配置打开时 PC OKX 插件走公共 RPC）。
  *
  * @param call 写调用参数
  * @returns 加缓冲后的 gas 上限
