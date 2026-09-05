@@ -8,8 +8,8 @@ import { railIconMask } from '~/views/dapp/host/primitives'
 /**
  * 侧栏 / 抽屉的公告入口
  *
- * 不是 Tab：不高亮、不带动指示条。外观与相邻未选中项相同。
- * 队列里还有应展示的公告时才用按钮并带红点；否则只展示，避免假可点。
+ * 不是 Tab：不高亮、不带动指示条。外观与相邻未选中项相同（同样是 button）。
+ * 有待展示公告时带红点，点击打开弹窗；空队列点击无操作，也不用 disabled，避免变灰。
  *
  * @param className 与相邻导航项同一套外观
  * @param hasPopup 当前是否有待展示公告
@@ -43,8 +43,17 @@ export function NoticeRailButton({
   const { messages: t } = useI18n()
   const label = t.nav.notice
 
-  const inner = (
-    <>
+  const node = (
+    <button
+      aria-label={label}
+      className={className}
+      data-dapp-notice-rail=""
+      onClick={() => {
+        if (!hasPopup) return
+        onOpen()
+      }}
+      type="button"
+    >
       <span aria-hidden className={iconClassName} style={railIconMask(dappAssets.notice)} />
       {hasPopup ? <ClaimableDot /> : null}
       <Text
@@ -56,23 +65,7 @@ export function NoticeRailButton({
       >
         {label}
       </Text>
-    </>
-  )
-
-  const node = hasPopup ? (
-    <button
-      aria-label={label}
-      className={className}
-      data-dapp-notice-rail=""
-      onClick={onOpen}
-      type="button"
-    >
-      {inner}
     </button>
-  ) : (
-    <div className={className} data-dapp-notice-rail="">
-      {inner}
-    </div>
   )
 
   if (!tooltip) return node
