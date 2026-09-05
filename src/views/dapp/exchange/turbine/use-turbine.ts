@@ -10,7 +10,7 @@ export function useTurbine(turbine: TurbineExchangeState) {
   const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappHost()
   const exchangePreview = !sessionReady
-  const sellDisabled = (sessionReady && !turbine.walletReady) || turbine.isSubmitting
+  const sellDisabled = turbine.isSubmitting
 
   const segmentOptions = [
     { label: t.exchange.turbine.segments.unlock, value: 'unlock' },

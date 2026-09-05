@@ -83,7 +83,7 @@ export function useStakeDock() {
       : interpolate(t.staking.stake.meta.lockDays, { days: stake.period })
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
-    balance: sessionReady && walletReady ? stake.balanceLabel : '',
+    balance: sessionReady ? stake.balanceLabel : '',
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {

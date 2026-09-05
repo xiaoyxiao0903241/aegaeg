@@ -92,7 +92,6 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
             />
           }
           sessionReady={vm.sessionReady}
-          walletReady={trade.walletReady}
           amountLocked={trade.isSubmitting || vm.isFlipping}
         />
 
@@ -124,7 +123,6 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
                   <ExchangeSlippagePanel
                     autoPercent={trade.autoSlippagePercent}
                     customText={trade.slippageCustomText}
-                    disabled={vm.sessionReady && !trade.walletReady}
                     mode={trade.slippageMode}
                     onCustomTextChange={trade.setSlippageCustomText}
                     onModeChange={trade.setSlippageMode}

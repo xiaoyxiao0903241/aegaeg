@@ -86,7 +86,7 @@ function AppBarWalletActions() {
   const { writeReady, walletReady, chainId, expectedChainId } = useWriteReadiness()
   const switchChain = useSwitchActiveWalletChain()
   const [switching, setSwitching] = useState(false)
-  const fullyConnected = walletReady && sessionReady
+  const fullyConnected = sessionReady
   const knownWrongNetwork = walletReady && chainId != null && chainId !== expectedChainId
 
   async function handleSwitchToBsc() {

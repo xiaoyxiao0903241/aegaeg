@@ -82,7 +82,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
 
               <PercentButtonRow
                 aria-label={`${unlock.symbol} unlock percent`}
-                disabled={(!vm.exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
+                disabled={turbine.isSubmitting}
                 formatLabel={(percent) => (percent === 100 ? 'Max' : `${percent}%`)}
                 onSelect={(percent) => turbine.fillPercent(percent)}
               />
@@ -132,7 +132,6 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                       <ExchangeSlippagePanel
                         autoPercent={turbine.autoSlippagePercent}
                         customText={turbine.slippageCustomText}
-                        disabled={vm.sessionReady && !turbine.walletReady}
                         hint={t.exchange.turbine.slippageHint}
                         mode={turbine.slippageMode}
                         onCustomTextChange={turbine.setSlippageCustomText}

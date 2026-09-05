@@ -20,7 +20,6 @@ import { WalletConnectModal } from '~/views/dapp/host/wallet/wallet-connect-moda
 import { WalletDetailsModal } from '~/views/dapp/host/wallet/wallet-details-modal'
 import { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/contract-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const walletConnectChip = tv({
   slots: {
@@ -137,10 +136,9 @@ function ConnectedWalletChip() {
   const [menuOpen, setMenuOpen] = useState(false)
   const styles = walletConnectChip({ reconnect: Boolean(loginError) })
 
-  const walletReady = hasWalletAccount(account)
   const address = account?.address ?? session?.address
 
-  if (!sessionReady || !walletReady || !address) {
+  if (!sessionReady || !address) {
     return null
   }
 
@@ -276,14 +274,10 @@ export function WalletConnectChip({
   fullWidth?: boolean
   density?: 'card' | 'external' | 'inverse'
 }) {
-  const account = useActiveAccount()
   const { sessionReady } = useAuth()
-  const walletReady = hasWalletAccount(account)
 
-  if (variant === 'connected' || (walletReady && sessionReady)) {
-    if (walletReady && sessionReady) {
-      return <ConnectedWalletChip />
-    }
+  if (sessionReady) {
+    return <ConnectedWalletChip />
   }
 
   return (

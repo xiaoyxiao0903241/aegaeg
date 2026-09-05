@@ -183,7 +183,7 @@ export function useXmineDock() {
   })
 
   const amountLabel = formatAmountBalanceLabel(t.staking.xmine.amountBalance, {
-    balance: sessionReady && walletReady ? xmine.balanceLabel : '',
+    balance: sessionReady ? xmine.balanceLabel : '',
   })
 
   const blockHint =

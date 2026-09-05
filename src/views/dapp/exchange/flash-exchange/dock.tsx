@@ -59,9 +59,7 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
                 <Tooltip content={t.exchange.flip}>
                   <ExchangeFlowButton
                     aria-label={t.exchange.flip}
-                    disabled={
-                      flash.isSubmitting || vm.isFlipping || (vm.sessionReady && !flash.walletReady)
-                    }
+                    disabled={flash.isSubmitting || vm.isFlipping}
                     interactive
                     onClick={vm.onFlip}
                   >
@@ -79,7 +77,6 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
           sellAmountDisplay={flash.sellAmountDisplay}
           sellBalance={vm.sellLabel}
           sessionReady={vm.sessionReady}
-          walletReady={flash.walletReady}
           amountLocked={flash.isSubmitting || vm.isFlipping}
         />
 

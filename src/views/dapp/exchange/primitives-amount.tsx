@@ -13,7 +13,7 @@ type AmountToken = { icon?: string; symbol: string }
  *
  * 上方为可输入的卖出金额与百分比快捷按钮，中间插槽放置方向切换
  * 或单向指示，下方为只读买入金额；会话未就绪时整体进入预览态，
- * 未连接钱包或提交中时锁定卖出输入。
+ * 提交中锁定卖出输入。
  */
 export function ExchangeAmountFlow({
   amountBoxClassName,
@@ -31,7 +31,6 @@ export function ExchangeAmountFlow({
   sellLabel,
   sellTokenAdornment,
   sessionReady,
-  walletReady,
   amountLocked = false,
 }: {
   amountBoxClassName?: string
@@ -51,13 +50,11 @@ export function ExchangeAmountFlow({
   sellLabel?: string
   sellTokenAdornment?: ReactNode
   sessionReady: boolean
-  walletReady: boolean
   /** 交易进行中锁定卖出输入与百分比按钮（金额已快照）。 */
   amountLocked?: boolean
 }) {
   const { messages: t } = useI18n()
-  const exchangePreview = !sessionReady
-  const sellDisabled = (sessionReady && !walletReady) || amountLocked
+  const sellDisabled = amountLocked
 
   const sellAmountProps: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
     'aria-label': string
@@ -83,7 +80,7 @@ export function ExchangeAmountFlow({
 
       <PercentButtonRow
         aria-label={`${sell.symbol} sell percent`}
-        disabled={(!exchangePreview && !walletReady) || amountLocked}
+        disabled={amountLocked}
         onSelect={onFillPercent}
       />
 
@@ -97,7 +94,7 @@ export function ExchangeAmountFlow({
           placeholder: '0.00',
           readOnly: true,
           tabIndex: -1,
-          value: exchangePreview ? buyAmount || '0.00' : buyAmount || '0.00',
+          value: buyAmount || '0.00',
         }}
         balance={buyBalance}
         className={amountBoxClassName}

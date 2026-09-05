@@ -62,7 +62,6 @@ export function BurnDock({ burn }: { burn: BurnExchangeState }) {
           sellBalance={vm.sellBalanceLabel}
           sellLabel={t.exchange.burn.sellLabel}
           sessionReady={vm.sessionReady}
-          walletReady={burn.walletReady}
           amountLocked={burn.isSubmitting}
         />
 
