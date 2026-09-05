@@ -571,14 +571,13 @@ export const REWARD_QUEUE_ERRORS = [
 ] as const
 
 /**
- * AegisSplitterManager — 路由头部分流器 / 默认周期。
+ * AegisSplitterManager — 路由头部分流器 / 用户生效周期。
  * @see 手册 §13 分流器本金释放（原 PrincipalReleaseVault）
  * @see docs/onchain-manual/contracts/aegissplittermanager.md
  */
 export const AEGIS_SPLITTER_MANAGER_METHODS = {
   getHeadSplitterForUser: 'function getHeadSplitterForUser(address user) view returns (address)',
   effectiveDuration: 'function effectiveDuration(address user) view returns (uint256)',
-  DEFAULT_RELEASE_DURATION: 'function DEFAULT_RELEASE_DURATION() view returns (uint256)',
 } as const
 
 /**

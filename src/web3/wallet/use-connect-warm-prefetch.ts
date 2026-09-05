@@ -1,17 +1,23 @@
 import { useEffect } from 'react'
 
+import { useAuth } from '~/hooks/use-auth'
 import { prefetchConnectWarm } from '~/shared/api/query/prefetch'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
-/** 钱包就绪后暖热推荐绑定与余额缓存。 */
+/**
+ * 登录且在 BSC 上时暖热推荐绑定与余额缓存。
+ *
+ * 与展示读同一道闸：未签名 / 异网不预取。
+ *
+ * @see docs/ubiquitous-language.md
+ */
 export function useConnectWarmPrefetch() {
-  const account = useActiveAccount()
+  const { sessionReady } = useAuth()
+  const { account, writeReady } = useWriteReadiness()
   const address = account?.address
-  const walletReady = hasWalletAccount(account)
 
   useEffect(() => {
-    if (!walletReady || !address) return
+    if (!sessionReady || !writeReady || !address) return
     prefetchConnectWarm(address)
-  }, [walletReady, address])
+  }, [sessionReady, writeReady, address])
 }

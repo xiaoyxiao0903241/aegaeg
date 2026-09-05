@@ -24,7 +24,6 @@ const queueReadAbi = parseAbi([
 
 const managerReadAbi = parseAbi([
   AEGIS_SPLITTER_MANAGER_METHODS.getHeadSplitterForUser,
-  AEGIS_SPLITTER_MANAGER_METHODS.DEFAULT_RELEASE_DURATION,
   AEGIS_SPLITTER_MANAGER_METHODS.effectiveDuration,
 ])
 
@@ -175,21 +174,6 @@ export async function readReleaseQueuePlans(): Promise<DurationPlan[]> {
     durationSeconds: plan.releaseDuration,
     taxBps: plan.feeRate,
   }))
-}
-
-/**
- * 读取分流器默认新单释放周期（秒）。
- *
- * 未连钱包时的公共展示用 Manager.DEFAULT_RELEASE_DURATION。
- *
- * @see 手册 §13 分流器本金释放
- */
-export async function readPrincipalReleaseDuration(): Promise<bigint> {
-  return (await bscReadClient.readContract({
-    address: BSC_CONTRACTS.aegisSplitterManager,
-    abi: managerReadAbi,
-    functionName: 'DEFAULT_RELEASE_DURATION',
-  })) as bigint
 }
 
 /**

@@ -10,7 +10,7 @@ import { useAuth } from '~/hooks/use-auth'
 import { hideDisabledQueryData } from '~/shared/api/query/hide-disabled-query-data'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { chainWalletQueryKey } from '~/shared/api/query/query-keys'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 export type ChainQueryFreshness = keyof typeof QUERY_STALE_TIME
 
@@ -51,10 +51,11 @@ export type UseChainQueryArgs<TData> =
  * 按新鲜度档位设置 staleTime；钱包作用域自动以当前地址作为缓存键后缀并注入 queryFn。
  * 通过 read* 默认的 `bscReadClient` 读取，无需外部注入客户端。
  * 提交时需实时校验的门禁数据不得使用本 hook，应直接读取或 staleTime 置 0。
+ * 能写才读：异网 / 未登录不发链上展示查询。
  * 水合完成后查询关闭（含断开钱包）时不把缓存交给视图，避免界面继续印上一份数。
  */
 export function useChainQuery<TData>(args: UseChainQueryArgs<TData>): UseQueryResult<TData> {
-  const account = useActiveAccount()
+  const { account, writeReady } = useWriteReadiness()
   const { sessionReady, hasHydrated } = useAuth()
   const scope: ChainQueryScope = args.scope ?? 'wallet'
   const freshness = args.freshness ?? 'balances'
@@ -71,6 +72,7 @@ export function useChainQuery<TData>(args: UseChainQueryArgs<TData>): UseQueryRe
     address: walletAddress,
     sessionReady,
     hasHydrated,
+    writeReady,
   })
 
   const query = useQuery<TData, Error, TData, QueryKey>({

@@ -6,7 +6,9 @@
 
 |业务术语|代码名|含义|Owner|
 |---|---|---|---|
-|**业务已登录**|`sessionReady`|钱包已连接且当前地址 JWT 有效|`useAuth` / `useDappHost`|
+|**业务已登录**|`sessionReady`|钱包已连接且当前地址 JWT 有效；**不含**是否在 BSC|`useAuth` / `useDappHost`|
+|**钱包已连**|`walletReady`|thirdweb 当前账户有地址；不等于已登录|`useWriteReadiness`|
+|**可写链**|`writeReady`|`walletReady` 且当前链是 BSC；写闸；展示链上读同一道闸|`useWriteReadiness`|
 |**登录后主按钮**|`SessionButton`|无 `sessionReady` 不渲染；连钱包引导不走此组件|`views/dapp/shared/session-button`|
 |**需要签名登录**|`needsSignIn`|钱包已连但尚无有效会话|`useAuth`|
 |**钱包签名登录**|SIWE / `login`|签名换 JWT（含 simple fallback）|`login-with-wallet`|
@@ -16,6 +18,7 @@
 |**带会话请求**|`requestWithSession`|读/写 API；401 → `invalidateSession`|`shared/api/query/session-request`|
 
 > 禁止用 `isAuthenticated` 作 UI/对外同义词；状态机 `AuthState.kind` 用 `sessionReady`。
+> 展示链上读（`useChainQuery` / 暖热预取）= `sessionReady && writeReady`（能写才读）。已登录再切走 BSC：JWT 仍在，顶栏出切网，不误报请登录。
 
 ## 产品面与链上域
 
