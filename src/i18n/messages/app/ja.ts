@@ -89,9 +89,11 @@ const app = defineMessages({
     rewards: 'リワード',
     release: 'リリース',
     community: 'コミュニティ',
+    notice: 'お知らせ',
     rewardsTooltip: '紹介リワードとチームリワードを確認。',
     communityTooltip:
       'パートナーを招待して共創に参加し、エコシステム成長価値と創世リワードを共有。',
+    noticeTooltip: 'エコシステムの最新お知らせとプロトコルの更新を確認。',
     bscTooltip: 'BSCのみ · AEGIS XはBNB Smart Chainで稼働しています。',
   },
   flowOps: {

@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, useEffectEvent, useState } from 'react'
+import { Fragment, useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { tv } from 'tailwind-variants'
 
@@ -17,6 +17,7 @@ import { iconVariants } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { cn } from '~/shared/lib/utils'
+import { NoticeRailButton } from '~/views/dapp/host/notices/notice-rail-button'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/views/dapp/host/primitives'
 
 const drawerItem = tv({
@@ -41,17 +42,22 @@ type NavMotion = 'enter' | 'exit'
  * H5 移动端导航抽屉。
  *
  * 从左侧滑出，带半透明遮罩与毛玻璃面板；列出全部 Tab 并高亮当前项。
+ * 社区与共建之间插入公告入口（非 Tab）：外观与未选中项相同，有待展示公告时红点且可点。
  * 关闭时先播放退场动画再卸载，期间锁定页面滚动。
  */
 export function MobileNav({
   activeTab,
+  noticeHasPopup,
   onClose,
+  onOpenNotice,
   onSelectTab,
   open,
 }: {
   open: boolean
   activeTab: DappTab
+  noticeHasPopup: boolean
   onSelectTab: (tab: DappTab) => void
+  onOpenNotice: () => void
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
@@ -153,14 +159,12 @@ export function MobileNav({
         {railItems.map((item) => {
           const label = t.nav[railNavLabelKeys[item.id]]
           const active = item.id === activeTab
-
-          return (
+          const tabButton = (
             <button
               aria-label={label}
               aria-selected={active}
               className={cn(drawerItem({ active }), 'relative')}
               data-tour-id={railTourIds[item.id]}
-              key={item.id}
               onClick={() => onSelectTab(item.id)}
               role="tab"
               type="button"
@@ -187,6 +191,25 @@ export function MobileNav({
                 {label}
               </Text>
             </button>
+          )
+
+          if (item.id !== 'community') {
+            return <Fragment key={item.id}>{tabButton}</Fragment>
+          }
+
+          return (
+            <Fragment key={item.id}>
+              {tabButton}
+              <NoticeRailButton
+                className={cn(drawerItem({ active: false }), 'relative')}
+                hasPopup={noticeHasPopup}
+                iconClassName="size-5.5 shrink-0 bg-current text-foreground"
+                labelClassName="min-w-0 flex-1 truncate text-sm/snug font-semibold tracking-tight"
+                labelTone="foreground"
+                labelVariant="copy"
+                onOpen={onOpenNotice}
+              />
+            </Fragment>
           )
         })}
       </nav>

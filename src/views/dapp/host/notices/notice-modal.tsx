@@ -8,21 +8,21 @@ import { homeAssets } from '~/shared/assets/home'
 import { dialogChrome } from '~/shared/components/dialog'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
-import { PopupNoticeContent } from '~/views/home/popup-notice-content'
+import { PopupNoticeContent } from '~/views/dapp/host/notices/popup-notice-content'
 
 /**
- * 首页公告弹窗
+ * DApp 公告弹窗
  *
- * 用 Radix Dialog 实现，顶部为品牌与关闭按钮，正文支持图片与富文本；
- * 图片加载失败时隐藏图片区，若正文也为空则整窗关闭。
- * 按 Esc 或点击遮罩不会关闭，只能点关闭按钮退出。
+ * 与首页弹窗同一套内容结构：品牌头、图片、标题与消毒后的正文。
+ * 按 Esc 或点遮罩不关闭，只能点关闭；关闭后由队列选出下一条。
  *
- * @param notice 待展示的公告内容
- * @param open 是否显示弹窗
- * @param onDismiss 点击关闭按钮时回调
- * @param onImageLoadError 图片加载失败时回调
+ * @param notice 当前应展示的公告
+ * @param open 是否打开
+ * @param onDismiss 点击关闭
+ * @param onImageLoadError 图片损坏且无正文时回调
+ * @see docs/backend-api/api.md #一期接口/home/popup-notices
  */
-export function HomePopupNoticeModal({
+export function NoticeModal({
   notice,
   onDismiss,
   onImageLoadError,
@@ -44,18 +44,18 @@ export function HomePopupNoticeModal({
     <DialogPrimitive.Root open={open}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay
-          className={styles.overlay({ class: 'bg-black/55 backdrop-blur-sm' })}
+          className={styles.overlay({ class: 'z-70 bg-black/55 backdrop-blur-sm' })}
         />
         <DialogPrimitive.Content
-          aria-describedby={hasBody ? 'home-popup-notice-body' : undefined}
+          aria-describedby={hasBody ? 'dapp-notice-body' : undefined}
           className={styles.content({
-            class: 'w-[min(92vw,26rem)] max-w-none border-0 bg-transparent p-0 shadow-none',
+            class: 'z-70 w-[min(92vw,26rem)] max-w-none border-0 bg-transparent p-0 shadow-none',
           })}
           onEscapeKeyDown={(event) => event.preventDefault()}
           onPointerDownOutside={(event) => event.preventDefault()}
         >
           <DialogPrimitive.Title className="sr-only">
-            {notice.title || messages.home.meta.title}
+            {notice.title || messages.nav.notice}
           </DialogPrimitive.Title>
 
           <article className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-2xl bg-card shadow-modal-panel">
@@ -101,10 +101,7 @@ export function HomePopupNoticeModal({
               ) : null}
 
               {hasBody ? (
-                <div
-                  className={cn('px-5 pb-5', showHero ? 'pt-4' : 'pt-1')}
-                  id="home-popup-notice-body"
-                >
+                <div className={cn('px-5 pb-5', showHero ? 'pt-4' : 'pt-1')} id="dapp-notice-body">
                   {notice.title ? (
                     <Text
                       as="h2"

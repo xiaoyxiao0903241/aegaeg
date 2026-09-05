@@ -131,7 +131,7 @@ export default tseslint.config(
             '^duration-dapp-(?:fast|base|emphasis)$',
             '^faq-(?:answer-panel(?:-inner)?|chevron)$',
             '^hero-rays(?:__.+|-.+)?$',
-            '^home-popup-notice-content$',
+            '^popup-notice-content$',
             '^is-dark$',
             '^network-pill-wrong-breathe$',
             '^onboarding-highlight-hit$',

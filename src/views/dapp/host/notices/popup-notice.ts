@@ -5,11 +5,12 @@ import type {
   HomePopupNoticesResponse,
 } from '~/shared/api/types'
 
+/** 沿用旧键，避免已关闭的一次性公告再次出现红点。 */
 const DISMISSED_KEYS_STORAGE_KEY = 'aegis.home.popupNotice.dismissedKeys'
 /** @deprecated 已迁移至 dismissedKeys */
 const LEGACY_DISMISSED_VERSION_KEY = 'aegis.home.popupNotice.dismissedVersion'
 
-/** display_mode: 1=只弹一次, 2=每次进首页都弹 */
+/** display_mode: 1=只弹一次, 2=每次会话可再展示 */
 export function readShowOnceFromDisplayMode(displayMode: unknown): boolean {
   const mode = typeof displayMode === 'number' ? displayMode : Number(displayMode)
   if (Number.isNaN(mode)) return true
@@ -208,9 +209,11 @@ export function shouldShowHomePopupNotice(
  *
  * 按 sort_order 升序遍历，跳过本会话已关闭、图片已损坏或满足持久化
  * 关闭规则的公告，全部被跳过则返回 null。
+ * DApp 侧栏用同一结果决定红点与是否可点；点开后关闭仍走本函数选下一条。
  *
  * @param notices 已归一化的公告队列
  * @returns 应展示的公告，无可用公告时返回 null
+ * @see docs/backend-api/api.md #一期接口/home/popup-notices
  */
 export function selectNextHomePopupNotice(
   notices: HomePopupNotice[],

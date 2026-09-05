@@ -87,9 +87,11 @@ const app = defineMessages({
     rewards: 'Hadiah',
     release: 'Rilis',
     community: 'Komunitas',
+    notice: 'Pengumuman',
     rewardsTooltip: 'Lihat hadiah referral dan tim.',
     communityTooltip:
       'Undang mitra untuk ikut pembangunan bersama, bagikan nilai pertumbuhan ekosistem dan hadiah Genesis.',
+    noticeTooltip: 'Lihat pengumuman ekosistem terbaru dan perubahan protokol.',
     bscTooltip: 'Hanya BSC · AEGIS X berjalan di BNB Smart Chain.',
   },
   flowOps: {

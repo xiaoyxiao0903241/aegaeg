@@ -14,6 +14,9 @@ import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
 import { AppBar } from '~/views/dapp/host/app-bar'
 import { GenesisPromoSync } from '~/views/dapp/host/genesis-promo-sync'
 import { MobileNav } from '~/views/dapp/host/mobile-nav'
+import { NoticeModal } from '~/views/dapp/host/notices/notice-modal'
+import { noticeDismissKey } from '~/views/dapp/host/notices/popup-notice'
+import { useNoticeInbox } from '~/views/dapp/host/notices/use-notice-inbox'
 import {
   OnboardingGuide,
   useOnboardingAutoStart,
@@ -33,7 +36,7 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
  * DApp 宿主窗口
  *
  * 组装左侧导航、顶部栏与左右两个内容面板（左侧操作区、右侧详情区），
- * 并托管移动端抽屉、新手指引、创世促销数据同步等全局行为。
+ * 并托管移动端抽屉、公告弹窗、新手指引、创世促销数据同步等全局行为。
  * 当前 Tab 存于 dapp-host-store，URL hash 变化与点击导航都会驱动它；
  * 切换 Tab 时先播放内容淡出，再替换面板，保持会话组件在透明层下重挂载。
  * hash 只由 store 的 writeTabHash 写入，避免再剥 `#tab/view` 深链。
@@ -49,6 +52,7 @@ export function DappHost() {
   const resetForeignSubviewStores = useDappHostStore((state) => state.resetForeignSubviewStores)
   const detailCollapsed = useDappHostStore((state) => state.detailCollapsed)
   const { sessionReady } = useAuth()
+  const noticeInbox = useNoticeInbox()
   const walletReady = hasWalletAccount(useActiveAccount())
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
   const { displayTab, phase } = useTabContentFade(activeTab)
@@ -162,7 +166,12 @@ export function DappHost() {
                         )}
                         data-dapp-window-scroll
                       >
-                        <Rail activeTab={activeTab} onSelectTab={selectTab} />
+                        <Rail
+                          activeTab={activeTab}
+                          noticeHasPopup={noticeInbox.hasPopup}
+                          onOpenNotice={noticeInbox.start}
+                          onSelectTab={selectTab}
+                        />
 
                         <DockH5HeaderSlot />
 
@@ -177,7 +186,12 @@ export function DappHost() {
                         >
                           <MobileNav
                             activeTab={activeTab}
+                            noticeHasPopup={noticeInbox.hasPopup}
                             onClose={() => setMobileNavOpen(false)}
+                            onOpenNotice={() => {
+                              noticeInbox.start()
+                              setMobileNavOpen(false)
+                            }}
                             onSelectTab={selectMobileTab}
                             open={mobileNavOpen}
                           />
@@ -233,6 +247,15 @@ export function DappHost() {
       </section>
 
       <RevealObserver container={windowNode} />
+      {noticeInbox.open && noticeInbox.notice ? (
+        <NoticeModal
+          key={noticeDismissKey(noticeInbox.notice)}
+          notice={noticeInbox.notice}
+          onDismiss={noticeInbox.onDismiss}
+          onImageLoadError={noticeInbox.onImageLoadError}
+          open={noticeInbox.open}
+        />
+      ) : null}
     </main>
   )
 }

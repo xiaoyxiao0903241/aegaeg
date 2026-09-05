@@ -38,7 +38,9 @@ function notice(overrides) {
 }
 
 test('normalizeHomePopupNotice resolves i18n image and title by locale', async () => {
-  const { normalizeHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
+  const { normalizeHomePopupNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
 
   const result = normalizeHomePopupNotice(sampleApiItem, 'zh')
 
@@ -55,7 +57,9 @@ test('normalizeHomePopupNotice resolves i18n image and title by locale', async (
 })
 
 test('normalizeHomePopupNotices sorts by sort_order ascending', async () => {
-  const { normalizeHomePopupNotices } = await loadModule('/src/views/home/popup-notice.ts')
+  const { normalizeHomePopupNotices } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
 
   const notices = normalizeHomePopupNotices({
     items: [
@@ -72,14 +76,18 @@ test('normalizeHomePopupNotices sorts by sort_order ascending', async () => {
 })
 
 test('readShowOnceFromDisplayMode maps display_mode 1/2', async () => {
-  const { readShowOnceFromDisplayMode } = await loadModule('/src/views/home/popup-notice.ts')
+  const { readShowOnceFromDisplayMode } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
 
   assert.equal(readShowOnceFromDisplayMode(1), true)
   assert.equal(readShowOnceFromDisplayMode(2), false)
 })
 
 test('normalizeHomePopupNotice defaults version to 1', async () => {
-  const { normalizeHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
+  const { normalizeHomePopupNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
 
   const result = normalizeHomePopupNotice({ ...sampleApiItem, version: '', display_mode: 1 }, 'zh')
 
@@ -88,7 +96,7 @@ test('normalizeHomePopupNotice defaults version to 1', async () => {
 
 test('shouldShowHomePopupNotice persists by id:version for show_once', async () => {
   const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule(
-    '/src/views/home/popup-notice.ts',
+    '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
   const first = notice({ id: 1, version: 'v2' })
@@ -101,7 +109,7 @@ test('shouldShowHomePopupNotice persists by id:version for show_once', async () 
 
 test('shouldShowHomePopupNotice ignores dismissed keys for every-visit mode', async () => {
   const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule(
-    '/src/views/home/popup-notice.ts',
+    '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
   const everyVisit = notice({ id: 2, show_once: false, version: 'always' })
@@ -112,7 +120,7 @@ test('shouldShowHomePopupNotice ignores dismissed keys for every-visit mode', as
 
 test('selectNextHomePopupNotice walks queue after session dismiss', async () => {
   const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule(
-    '/src/views/home/popup-notice.ts',
+    '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
   const queue = [
@@ -132,11 +140,20 @@ test('selectNextHomePopupNotice walks queue after session dismiss', async () => 
     sessionDismissedKeys: new Set([noticeDismissKey(queue[0]), noticeDismissKey(queue[1])]),
   })
   assert.equal(afterSecondClose?.id, 3)
+
+  const afterQueueCleared = selectNextHomePopupNotice(queue, {
+    sessionDismissedKeys: new Set([
+      noticeDismissKey(queue[0]),
+      noticeDismissKey(queue[1]),
+      noticeDismissKey(queue[2]),
+    ]),
+  })
+  assert.equal(afterQueueCleared, null)
 })
 
 test('selectNextHomePopupNotice skips persistently dismissed show_once items', async () => {
   const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule(
-    '/src/views/home/popup-notice.ts',
+    '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
   const queue = [
@@ -152,7 +169,9 @@ test('selectNextHomePopupNotice skips persistently dismissed show_once items', a
 })
 
 test('normalizeHomePopupNotice accepts title/content without image', async () => {
-  const { normalizeHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
+  const { normalizeHomePopupNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
 
   const result = normalizeHomePopupNotice(
     {
@@ -177,7 +196,7 @@ test('normalizeHomePopupNotice accepts title/content without image', async () =>
 
 test('isHomePopupNoticeWithinSchedule excludes items outside start/end window', async () => {
   const { isHomePopupNoticeWithinSchedule, normalizeHomePopupNotice } = await loadModule(
-    '/src/views/home/popup-notice.ts',
+    '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
   const window = {
