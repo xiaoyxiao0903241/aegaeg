@@ -25,7 +25,7 @@ import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatDecimal, parseApiAmount, toUsd } from '~/shared/presenters/format'
 import { mapReleasePoolLogToRow } from '~/shared/presenters/map-flow-log-rows'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 
@@ -49,57 +49,68 @@ export function QueueDetail() {
   const api = apiSummaryQuery.data
   const chainReady = walletReady && queueQuery.data != null
 
+  const unitSuffix = ` ${unit}`
+
   function formatReleasingLabel(): string {
-    if (chainReady) return `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}`
-    return `${formatNumber(0, { digits: 4 })} ${unit}`
+    return formatTokenAmount(chainReady ? queueQuery.data?.totalReleasing : null, AGX_DECIMALS, {
+      digits: 4,
+      trimZeros: false,
+      suffix: unitSuffix,
+    })
   }
 
   function formatReleasedLabel(): string {
-    if (chainReady) return `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}`
+    if (chainReady) {
+      return formatTokenAmount(queueQuery.data?.totalClaimable, AGX_DECIMALS, {
+        digits: 4,
+        trimZeros: false,
+        suffix: unitSuffix,
+      })
+    }
     // API 可领 ≈ released − claimed；勿直接用累计 released_amount
     const released = sessionReady ? parseApiAmount(api?.released_amount) : null
     const claimed = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
-    if (released != null && claimed != null) {
-      return `${formatNumber(Math.max(0, released - claimed), { digits: 4 })} ${unit}`
-    }
-    return `${formatNumber(0, { digits: 4 })} ${unit}`
+    return formatDecimal(
+      released != null && claimed != null ? Math.max(0, released - claimed) : null,
+      { digits: 4, suffix: unitSuffix },
+    )
   }
 
   function formatLifetimeClaimed(): string {
-    const n = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
-    if (n != null) return `${formatNumber(n, { digits: 4 })} ${unit}`
-    // 累计领取没有链上数据源，未加载时显示 0
-    return `${formatNumber(0, { digits: 4 })} ${unit}`
+    return formatDecimal(sessionReady ? parseApiAmount(api?.total_claimed_amount) : null, {
+      digits: 4,
+      suffix: unitSuffix,
+    })
   }
 
-  const releasingNum = chainReady ? formatTokenAmountToNumber(releasing, AGX_DECIMALS) : 0
+  const releasingNum = chainReady ? formatTokenAmountToNumber(releasing, AGX_DECIMALS) : null
   const releasedNum = (() => {
     if (chainReady) return formatTokenAmountToNumber(claimable, AGX_DECIMALS)
     const released = sessionReady ? parseApiAmount(api?.released_amount) : null
     const claimed = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
     if (released != null && claimed != null) return Math.max(0, released - claimed)
-    return 0
+    return null
   })()
-  const lifetimeApproxNum = (sessionReady ? parseApiAmount(api?.total_claimed_amount) : null) ?? 0
+  const lifetimeApproxNum = sessionReady ? parseApiAmount(api?.total_claimed_amount) : null
 
   const stats = [
     {
       label: t.release.labels.releasing,
       hint: t.release.queue.hints.releasing,
       value: formatReleasingLabel(),
-      approx: formatUsdApprox(releasingNum, priceUsd),
+      approx: formatDecimal(toUsd(releasingNum, priceUsd), { digits: 2, prefix: '≈ $' }),
     },
     {
       label: t.release.labels.released,
       hint: t.release.queue.hints.released,
       value: formatReleasedLabel(),
-      approx: formatUsdApprox(releasedNum, priceUsd),
+      approx: formatDecimal(toUsd(releasedNum, priceUsd), { digits: 2, prefix: '≈ $' }),
     },
     {
       label: t.release.queue.lifetimeClaimed,
       hint: t.release.queue.hints.lifetimeClaimed,
       value: formatLifetimeClaimed(),
-      approx: formatUsdApprox(lifetimeApproxNum, priceUsd),
+      approx: formatDecimal(toUsd(lifetimeApproxNum, priceUsd), { digits: 2, prefix: '≈ $' }),
     },
   ]
 

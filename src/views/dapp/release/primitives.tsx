@@ -9,9 +9,9 @@ import { type ReactNode } from 'react'
 
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
-import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 
 function Root({
   children,
@@ -146,7 +146,7 @@ function Action({
   onClick?: () => void
 }) {
   return (
-    <MainButton
+    <SessionButton
       density="card"
       disabled={disabled}
       loading={loading}
@@ -154,7 +154,7 @@ function Action({
       type="button"
     >
       {children}
-    </MainButton>
+    </SessionButton>
   )
 }
 

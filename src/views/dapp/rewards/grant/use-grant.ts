@@ -50,15 +50,10 @@ export function useGrant() {
     : pending && summary == null
       ? '0.00'
       : formatMakingRankLabel(summary?.making_rank, tierEmpty, summary)
-  const totalClaimed = formatApiStatLabel(sessionReady, pending, summary?.total_claimed_allowance, {
+  const totalClaimed = formatApiStatLabel(summary?.total_claimed_allowance, {
     suffix: ' gAGX',
   })
-  const totalClaimedApprox = formatApiGagxApproxUsd(
-    sessionReady,
-    pending,
-    summary?.total_claimed_allowance,
-    priceUsd,
-  )
+  const totalClaimedApprox = formatApiGagxApproxUsd(summary?.total_claimed_allowance, priceUsd)
 
   const isIssue = recordsTab === 'issue'
   const activeLogsQuery = isIssue ? issueLogsQuery : claimLogsQuery

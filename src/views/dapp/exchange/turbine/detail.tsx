@@ -51,7 +51,7 @@ export function TurbineExchangeDetail({
     turbineLogsQuery.data?.items.map((item) => mapTurbineLogToOpsRow(item, t.flowOps)) ?? []
   const turbineLogsTotal = turbineLogsQuery.data?.total ?? 0
   const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading
-  // 三张概览卡：空态显示 0.00 / ≈ $0.00（不显示 —）
+  // 三张概览卡：没数 → `--`，真零按精度印
   const overviewMetrics = [
     {
       label: t.exchange.turbine.metrics.pendingUnlock,
@@ -93,11 +93,11 @@ export function TurbineExchangeDetail({
                   src={tokenCarouselIcons.gagxIcon}
                 />
                 <Text as="strong" className="m-0 text-base/5 font-semibold" variant="copy">
-                  <CountValue text={`${metric.amount} gAGX`} />
+                  <CountValue text={metric.amount} />
                 </Text>
               </div>
               <Tile.Note>
-                <CountValue text={`≈ ${metric.usd || '0.00'}`} />
+                <CountValue text={metric.usd} />
               </Tile.Note>
             </Tile>
           ))}

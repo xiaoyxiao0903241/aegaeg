@@ -19,9 +19,6 @@ export const REFERRAL_BIND_ERROR = {
 /** 本地领取过期预检 → claimErrors.expired。 */
 export const CLAIM_SIGNATURE_EXPIRED = 'ErrorSignatureExpired'
 
-/** 链上领取成功但 `/claim/confirm` 失败。 */
-export const CLAIM_CONFIRM_SYNC_FAILED = 'CLAIM_CONFIRM_SYNC_FAILED'
-
 export const WALLET_WRITE_ERROR = {
   GAS_ESTIMATE_FAILED: 'WALLET_GAS_ESTIMATE_FAILED',
   /** 写时地址与 intent 不一致。 */

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { ZERO_BI } from '~/core/constants'
 import { isReferralParentAllowed } from '~/core/referral/referral-parent-allowed'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -14,7 +13,7 @@ import {
   parseReferrerAddress,
   parseReferrerFromSearch,
 } from '~/shared/config/referral'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { readAndClearBindSuccess } from '~/views/dapp/community/shared'
 import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readReferralParentGate, readReferralWalletSnapshot } from '~/web3/referral/referral-read'
@@ -102,7 +101,7 @@ export function useCommunityReferral() {
 
   const isBound = referralQuery.data?.isBound ?? false
   const referrer = referralQuery.data?.referrer ?? null
-  const directCount = referralQuery.data?.directCount ?? ZERO_BI
+  const directCount = referralQuery.data?.directCount
 
   const effectiveReferrer = useMemo(
     () =>
@@ -157,7 +156,7 @@ export function useCommunityReferral() {
   return {
     isBound,
     referrer: effectiveReferrer,
-    directCount: formatNumber(directCount, { digits: 0, trimZeros: true }),
+    directCount: formatDecimal(directCount, { digits: 0, fraction: 'natural' }),
     referrerInput,
     setReferrerInput,
     isLoading: referralQuery.isLoading,

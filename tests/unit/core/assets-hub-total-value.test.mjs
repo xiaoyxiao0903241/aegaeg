@@ -77,14 +77,14 @@ test('assetsHubTotalValueUsd: four pie positions + claimable at AGX spot', async
   )
 })
 
-test('assetsHubTotalValueUsd: missing or invalid price / amount → 0', async () => {
+test('assetsHubTotalValueUsd: missing or invalid price → null; price 0 is true zero', async () => {
   const { assetsHubTotalValueUsd } = await loadModule('/src/core/assets/assets-hub-total-value.ts')
 
-  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: null }), 0)
-  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: undefined }), 0)
+  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: null }), null)
+  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: undefined }), null)
   assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: 0 }), 0)
-  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: -1 }), 0)
-  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: Number.NaN }), 0)
+  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: -1 }), null)
+  assert.equal(assetsHubTotalValueUsd({ ...pie, priceUsd: Number.NaN }), null)
   assert.equal(assetsHubTotalValueUsd({ ...pie, stake: Number.NaN, priceUsd: 10 }), 110)
   assert.equal(assetsHubTotalValueUsd({ ...pie, claimable: Number.NaN, priceUsd: 10 }), 200)
   assert.equal(assetsHubTotalValueUsd({ ...pie, stake: -4, priceUsd: 10 }), 110)

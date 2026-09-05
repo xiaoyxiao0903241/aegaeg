@@ -8,9 +8,9 @@ import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { CountdownValue } from '~/shared/components/countdown-value'
 import { Icon } from '~/shared/components/icon'
-import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { useWallClockSec } from '~/stores/wall-clock-store'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 
 /** 等值买入一侧的金额单元。 */
 export function TurbineEqBuyTokenCell({
@@ -102,8 +102,7 @@ export function TurbineClaimCard({
 }) {
   const nowSec = useWallClockSec(!vested)
   const unlockAtSec = Number(unlockAt)
-  const remainingSec =
-    vested || !Number.isFinite(unlockAtSec) ? 0 : Math.max(0, unlockAtSec - nowSec)
+  const remainingSec = !Number.isFinite(unlockAtSec) ? null : Math.max(0, unlockAtSec - nowSec)
 
   return (
     <Card as="div" className="grid gap-3" surface="outlined">
@@ -137,7 +136,7 @@ export function TurbineClaimCard({
           </Text>
         )}
       </div>
-      <MainButton
+      <SessionButton
         density="card"
         disabled={disabled}
         loading={loading}
@@ -145,7 +144,7 @@ export function TurbineClaimCard({
         variant="primary"
       >
         {claimLabel}
-      </MainButton>
+      </SessionButton>
     </Card>
   )
 }

@@ -11,12 +11,12 @@ import { AmountBox } from '~/shared/components/amount-box'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
-import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/labels'
 import { ExchangeSlippagePanel } from '~/views/dapp/exchange/market-trade/slippage-panel'
 import { ExchangeOneWayFlowIndicator, PercentButtonRow } from '~/views/dapp/exchange/primitives'
 import { TokenChip } from '~/views/dapp/exchange/primitives'
@@ -24,6 +24,7 @@ import { TurbineClaimCard, TurbineEqBuyTokenCell } from '~/views/dapp/exchange/t
 import { useTurbine } from '~/views/dapp/exchange/turbine/use-turbine'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
@@ -31,7 +32,10 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
   const { t } = vm
   const unlock = turbine.pair.unlock
 
-  const unlockableBalance = `${t.exchange.turbine.unlockable}: ${vm.unlockableAmountLabel}`
+  const unlockableBalance = formatExchangeBalanceLabel({
+    label: t.exchange.turbine.unlockable,
+    value: vm.unlockableAmountLabel,
+  })
   const usd1Balance = (
     <>
       <span className="whitespace-nowrap">{t.exchange.balance} </span>
@@ -78,7 +82,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
 
               <PercentButtonRow
                 aria-label={`${unlock.symbol} unlock percent`}
-                disabled={(!vm.exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
+                disabled={turbine.isSubmitting}
                 formatLabel={(percent) => (percent === 100 ? 'Max' : `${percent}%`)}
                 onSelect={(percent) => turbine.fillPercent(percent)}
               />
@@ -128,7 +132,6 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                       <ExchangeSlippagePanel
                         autoPercent={turbine.autoSlippagePercent}
                         customText={turbine.slippageCustomText}
-                        disabled={vm.sessionReady && !turbine.walletReady}
                         hint={t.exchange.turbine.slippageHint}
                         mode={turbine.slippageMode}
                         onCustomTextChange={turbine.setSlippageCustomText}
@@ -183,19 +186,17 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
               />
             </FormInfoCard>
 
-            {vm.sessionReady && turbine.walletReady ? (
-              <FormActions>
-                <MainButton
-                  className="col-span-full"
-                  density="external"
-                  disabled={!turbine.canUnlock}
-                  loading={turbine.isSubmitting && turbine.claimingIndex == null}
-                  onClick={() => void vm.handleUnlock()}
-                >
-                  {t.exchange.turbine.unlockAction}
-                </MainButton>
-              </FormActions>
-            ) : null}
+            <FormActions>
+              <SessionButton
+                className="col-span-full"
+                density="external"
+                disabled={!turbine.canUnlock}
+                loading={turbine.isSubmitting && turbine.claimingIndex == null}
+                onClick={() => void vm.handleUnlock()}
+              >
+                {t.exchange.turbine.unlockAction}
+              </SessionButton>
+            </FormActions>
           </>
         ) : (
           <div className="flex flex-col gap-2.5">
@@ -206,19 +207,21 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
             ) : (
               turbine.silences.map((row) => (
                 <TurbineClaimCard
-                  amountLabel={`${formatTokenAmount(
+                  amountLabel={formatTokenAmount(
                     row.silenceBalance,
                     EXCHANGE_CONFIG.tokens.agx.decimals,
-                    4,
-                  )} gAGX`}
+                    {
+                      digits: 4,
+                      trimZeros: false,
+                      suffix: ' gAGX',
+                    },
+                  )}
                   claimLabel={t.exchange.turbine.claimAction}
                   claimableLabel={t.exchange.turbine.claimable}
                   coolingLabel={t.exchange.turbine.cooling}
                   cooldownDoneLabel={t.exchange.turbine.cooldownDone}
                   countdownLabel={t.exchange.turbine.countdownLabel}
-                  disabled={
-                    !vm.sessionReady || !turbine.walletReady || !row.vested || turbine.isSubmitting
-                  }
+                  disabled={!row.vested || turbine.isSubmitting}
                   hourUnit={t.exchange.turbine.countdownHours}
                   icon={unlock.icon}
                   key={`${row.index}-${row.startTime.toString()}`}
@@ -233,7 +236,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
           </div>
         )}
 
-        {!vm.sessionReady || !turbine.walletReady ? <DockConnectPromo /> : null}
+        {!turbine.walletReady ? <DockConnectPromo /> : null}
       </DockStack>
     </TabHeader>
   )

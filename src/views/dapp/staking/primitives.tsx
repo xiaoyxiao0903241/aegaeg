@@ -17,14 +17,14 @@ import { Segment } from '~/shared/components/segment'
 import { Skeleton } from '~/shared/components/skeleton'
 import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
 const CURVE_PLACEHOLDER = '0.00'
 
 function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return CURVE_PLACEHOLDER
-  return formatNumber(value, { digits: 2, prefix: '$' })
+  return formatDecimal(value, { digits: 2, prefix: '$' })
 }
 
 function pickDayAxisLabels(maxDays: number, dayTemplate: string, count = 5): readonly string[] {

@@ -89,8 +89,8 @@ function AssetsClaimOutputModalOpen({
   const canReward = isAssetsActionableAmount(reward, GAGX_DECIMALS)
   const canBoost = isAssetsActionableAmount(boost, GAGX_DECIMALS)
 
-  const rewardAmountLabel = `${formatAssetsActionAmount(reward, GAGX_DECIMALS)} gAGX`
-  const boostAmountLabel = `${formatAssetsActionAmount(boost, GAGX_DECIMALS)} gAGX`
+  const rewardAmountLabel = formatAssetsActionAmount(reward, GAGX_DECIMALS, { suffix: ' gAGX' })
+  const boostAmountLabel = formatAssetsActionAmount(boost, GAGX_DECIMALS, { suffix: ' gAGX' })
   const rewardContribLabel = formatContributionPoints(reward, AGX_DECIMALS)
   const boostContribLabel = formatContributionPoints(boost, AGX_DECIMALS)
 

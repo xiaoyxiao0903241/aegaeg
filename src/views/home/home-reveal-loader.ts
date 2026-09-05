@@ -1,4 +1,4 @@
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 
 let booted = false
 
@@ -30,7 +30,7 @@ function isRevealCandidateInView(element: HTMLElement) {
 function setCountValue(element: HTMLElement, value: number) {
   const suffix = element.dataset.countSuffix ?? ''
   const digits = Number.isInteger(value) ? 0 : 1
-  element.textContent = `${formatNumber(value, { digits, trimZeros: true })}${suffix}`
+  element.textContent = formatDecimal(value, { digits, fraction: 'natural', suffix })
 }
 
 function resetCountValue(element: HTMLElement) {

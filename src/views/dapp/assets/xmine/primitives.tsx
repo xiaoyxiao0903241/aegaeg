@@ -100,13 +100,13 @@ export function AssetsXminePositionCard({
       />
       <div className="grid grid-cols-2 gap-2">
         <AssetsPositionPrincipalColumn
-          amountText={`${formatAssetsActionAmount(miningStake, GAGX_DECIMALS)} gAGX`}
-          badgeText={`${formatAssetsActionAmount(redeemableStake, GAGX_DECIMALS)} gAGX`}
+          amountText={formatAssetsActionAmount(miningStake, GAGX_DECIMALS, { suffix: ' gAGX' })}
+          badgeText={formatAssetsActionAmount(redeemableStake, GAGX_DECIMALS, { suffix: ' gAGX' })}
           badgeVisible
           label={stakedCaption}
         />
         <AssetsPositionYieldColumn
-          amountText={`${formatAssetsActionAmount(pending, X_DECIMALS)} X`}
+          amountText={formatAssetsActionAmount(pending, X_DECIMALS, { suffix: ' X' })}
           badge={usdApproxBadge}
           yieldLabel={outputCaption}
         />

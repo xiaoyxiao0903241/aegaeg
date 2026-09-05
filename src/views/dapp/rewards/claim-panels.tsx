@@ -11,7 +11,6 @@ import { useI18n } from '~/i18n/use-i18n'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { claimSplitCtaStyle, ClaimSplitSlider } from '~/shared/components/claim-split-slider'
-import { MainButton } from '~/shared/components/main-button'
 import { Reveal } from '~/shared/components/reveal'
 import { Segment } from '~/shared/components/segment'
 import { SelectMenu } from '~/shared/components/select-menu'
@@ -32,6 +31,7 @@ import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ra
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 /**
@@ -75,7 +75,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
         />
 
         {walletReady ? (
-          <MainButton
+          <SessionButton
             className="min-h-13 py-2 text-sm/4"
             density="external"
             disabled={!vm.canSubmit}
@@ -83,7 +83,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
             onClick={vm.onClaim}
           >
             {vm.ctaLabel}
-          </MainButton>
+          </SessionButton>
         ) : (
           <DockConnectPromo />
         )}
@@ -233,7 +233,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
         </Reveal>
 
         {vm.walletReady ? (
-          <MainButton
+          <SessionButton
             className={cn(
               'min-h-13 py-2! font-normal!',
               splitCtaActive && [
@@ -279,7 +279,7 @@ export function MixedClaimDock({ view }: { view: MixedClaimView }) {
                 </Text>
               </Reveal>
             </span>
-          </MainButton>
+          </SessionButton>
         ) : (
           <DockConnectPromo />
         )}

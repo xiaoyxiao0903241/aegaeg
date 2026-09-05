@@ -107,21 +107,18 @@ export function GenesisDock() {
         <GenesisClaimCard className="py-3.5">
           <GenesisClaimCard.Header label={t.rewards.teamRewards} meta={vm.teamMeta} />
           <GenesisClaimCard.Value className="mt-1.5">{vm.teamClaimable}</GenesisClaimCard.Value>
-          {vm.walletReady ? (
-            <GenesisClaimCard.Action
-              disabled={
-                !vm.sessionReady ||
-                vm.teamClaimableValue <= 0 ||
-                vm.teamLoading ||
-                vm.teamClaimIsClaiming ||
-                !vm.teamClaimCanClaim
-              }
-              loading={vm.teamClaimIsClaiming}
-              onClick={vm.onClaimTeamReward}
-            >
-              {vm.g.claimToWallet}
-            </GenesisClaimCard.Action>
-          ) : null}
+          <GenesisClaimCard.Action
+            disabled={
+              vm.teamClaimableValue <= 0 ||
+              vm.teamLoading ||
+              vm.teamClaimIsClaiming ||
+              !vm.teamClaimCanClaim
+            }
+            loading={vm.teamClaimIsClaiming}
+            onClick={vm.onClaimTeamReward}
+          >
+            {vm.g.claimToWallet}
+          </GenesisClaimCard.Action>
         </GenesisClaimCard>
 
         {vm.isSuperCommunity ? (
@@ -133,21 +130,18 @@ export function GenesisDock() {
             <GenesisClaimCard.Value className="mt-1.5">
               {vm.communityClaimable}
             </GenesisClaimCard.Value>
-            {vm.walletReady ? (
-              <GenesisClaimCard.Action
-                disabled={
-                  !vm.sessionReady ||
-                  !(vm.communityClaimableValue > 0) ||
-                  vm.communityFundLoading ||
-                  vm.communityFundClaimIsClaiming ||
-                  !vm.communityFundClaimCanClaim
-                }
-                loading={vm.communityFundClaimIsClaiming}
-                onClick={vm.onClaimCommunityFund}
-              >
-                {vm.g.claimToWallet}
-              </GenesisClaimCard.Action>
-            ) : null}
+            <GenesisClaimCard.Action
+              disabled={
+                !(vm.communityClaimableValue > 0) ||
+                vm.communityFundLoading ||
+                vm.communityFundClaimIsClaiming ||
+                !vm.communityFundClaimCanClaim
+              }
+              loading={vm.communityFundClaimIsClaiming}
+              onClick={vm.onClaimCommunityFund}
+            >
+              {vm.g.claimToWallet}
+            </GenesisClaimCard.Action>
           </GenesisClaimCard>
         ) : null}
 

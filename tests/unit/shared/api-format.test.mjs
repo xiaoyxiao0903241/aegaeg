@@ -3,18 +3,55 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('parseApiAmount fail-closed; formatApiAmount zeros empty', async () => {
-  const { formatApiAmount, parseApiAmount } = await loadModule('/src/shared/presenters/format.ts')
+test('parseApiAmount fail-closed; formatApiAmount uses -- for unknown, 0 for known zero', async () => {
+  const { formatApiAmount, parseApiAmount, LIVE_DATA_PLACEHOLDER } = await loadModule(
+    '/src/shared/presenters/format.ts',
+  )
 
   assert.equal(parseApiAmount(undefined), null)
   assert.equal(parseApiAmount(''), null)
   assert.equal(parseApiAmount('  '), null)
   assert.equal(parseApiAmount('abc'), null)
   assert.equal(parseApiAmount('12.5'), 12.5)
-  assert.equal(formatApiAmount(null), '0.00')
+  assert.equal(formatApiAmount(null), LIVE_DATA_PLACEHOLDER)
   assert.equal(formatApiAmount('1000'), '1,000.00')
-  assert.equal(formatApiAmount('bad', { prefix: '$' }), '$0.00')
+  assert.equal(formatApiAmount('bad', { prefix: '$' }), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatApiAmount('0'), '0.00')
   assert.equal(formatApiAmount('11.03', { digits: 4 }), '11.0300')
+})
+
+test('interpolateLive: any -- aborts the sentence; joinLiveLabels drops a missing note', async () => {
+  const { interpolateLive, joinLiveLabels, LIVE_DATA_PLACEHOLDER } = await loadModule(
+    '/src/shared/presenters/format.ts',
+  )
+
+  assert.equal(interpolateLive('{count} 次', { count: '3' }), '3 次')
+  assert.equal(
+    interpolateLive('{count} 次', { count: LIVE_DATA_PLACEHOLDER }),
+    LIVE_DATA_PLACEHOLDER,
+  )
+  assert.equal(
+    interpolateLive('累计质押 {amount} AGX', { amount: LIVE_DATA_PLACEHOLDER }),
+    LIVE_DATA_PLACEHOLDER,
+  )
+
+  assert.equal(joinLiveLabels('42.5024 gAGX', '≈ $2,885.78'), '42.5024 gAGX ≈ $2,885.78')
+  assert.equal(joinLiveLabels(LIVE_DATA_PLACEHOLDER, LIVE_DATA_PLACEHOLDER), LIVE_DATA_PLACEHOLDER)
+  assert.equal(joinLiveLabels('42.5024 gAGX', LIVE_DATA_PLACEHOLDER), '42.5024 gAGX')
+  assert.equal(joinLiveLabels(LIVE_DATA_PLACEHOLDER, '≈ $2,885.78'), LIVE_DATA_PLACEHOLDER)
+})
+
+test('formatApiContributionPoints floors extra digits then formatDecimal', async () => {
+  const { formatApiContributionPoints, LIVE_DATA_PLACEHOLDER } = await loadModule(
+    '/src/shared/presenters/format.ts',
+  )
+
+  assert.equal(formatApiContributionPoints(null), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatApiContributionPoints(''), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatApiContributionPoints('abc'), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatApiContributionPoints('2.15'), '2.1500')
+  assert.equal(formatApiContributionPoints('1.23456'), '1.2345')
+  assert.equal(formatApiContributionPoints('1,234.56789'), '1,234.5678')
 })
 
 test('getPresaleRankHighlightedRows maps rank to tier table row index', async () => {
@@ -62,42 +99,67 @@ test('formatShareholderHintForRank renders tier-specific hint', async () => {
   assert.equal(formatShareholderHintForRank(0, '{bonus}', 'fallback', tiers), 'fallback')
 })
 
-test('formatNumber supports $ prefix and USD suffix', async () => {
-  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
-
-  assert.equal(formatNumber(5000, { suffix: ' USD' }), '5,000 USD')
-  assert.equal(formatNumber('invalid', { suffix: ' USD' }), '0 USD')
-  assert.equal(formatNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
-  assert.equal(formatNumber(1000, { digits: 0, trimZeros: true }), '1,000')
-})
-
-test('formatUsdApprox: missing / no price / NaN → ≈ $0.00', async () => {
-  const { formatUsdApprox } = await loadModule('/src/shared/presenters/format.ts')
-
-  assert.equal(formatUsdApprox(0, null), '≈ $0.00')
-  assert.equal(formatUsdApprox(0, 65), '≈ $0.00')
-  assert.equal(formatUsdApprox(1, null), '≈ $0.00')
-  assert.equal(formatUsdApprox(1, 0), '≈ $0.00')
-  assert.equal(formatUsdApprox(2, 10), '≈ $20.00')
-  assert.equal(formatUsdApprox(Number.NaN, 10), '≈ $0.00')
-})
-
-test('formatCompact / formatUsd / formatPercentChange match hub Figma shapes', async () => {
-  const { formatCompact, formatUsd, formatPercentChange, formatUsdApprox } = await loadModule(
+test('formatDecimal supports prefix, suffix, fixed vs natural fraction', async () => {
+  const { formatDecimal, LIVE_DATA_PLACEHOLDER } = await loadModule(
     '/src/shared/presenters/format.ts',
   )
 
-  assert.equal(formatCompact(129_000, { suffix: ' AGX' }), '129K AGX')
-  assert.equal(formatCompact(8_410_000, { prefix: '$' }), '$8.41M')
-  assert.equal(formatCompact(0, { digits: 2, suffix: ' AGX' }), '0.00 AGX')
-  assert.equal(formatCompact(65, { digits: 2 }), '65.00')
-  assert.equal(formatUsd(18_600_000), '$18.6M')
-  assert.equal(formatUsd(65), '$65.00')
-  assert.equal(formatUsd(null), '$0.00')
-  assert.equal(formatUsdApprox(129_000, 65, { compact: true }), '≈ $8.39M')
-  assert.equal(formatUsdApprox(0, null, { compact: true }), '≈ $0.00')
+  assert.equal(formatDecimal(5000, { suffix: ' USD' }), '5,000 USD')
+  assert.equal(formatDecimal('invalid', { suffix: ' USD' }), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatDecimal(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
+  assert.equal(formatDecimal(1000, { digits: 0, fraction: 'natural' }), '1,000')
+  assert.equal(formatDecimal(1.99999999, { digits: 2 }), '2.00')
+  assert.equal(formatDecimal('8.409999999999999', { digits: 2 }), '8.41')
+})
+
+test('toUsd missing price is null; known zero prints', async () => {
+  const { formatDecimal, toUsd, LIVE_DATA_PLACEHOLDER } = await loadModule(
+    '/src/shared/presenters/format.ts',
+  )
+
+  assert.equal(formatDecimal(toUsd(0, null), { digits: 2, prefix: '≈ $' }), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatDecimal(toUsd(0, 65), { digits: 2, prefix: '≈ $' }), '≈ $0.00')
+  assert.equal(formatDecimal(toUsd(1, null), { digits: 2, prefix: '≈ $' }), LIVE_DATA_PLACEHOLDER)
+  assert.equal(formatDecimal(toUsd(1, 0), { digits: 2, prefix: '≈ $' }), '≈ $0.00')
+  assert.equal(formatDecimal(toUsd(2, 10), { digits: 2, prefix: '≈ $' }), '≈ $20.00')
+  assert.equal(
+    formatDecimal(toUsd(Number.NaN, 10), { digits: 2, prefix: '≈ $' }),
+    LIVE_DATA_PLACEHOLDER,
+  )
+  assert.equal(formatDecimal(toUsd(1, -1), { digits: 2, prefix: '≈ $' }), LIVE_DATA_PLACEHOLDER)
+})
+
+test('formatDecimal compact matches old formatCompact: K/M natural, below 1000 fixed', async () => {
+  const { formatDecimal, toUsd, formatPercentChange, LIVE_DATA_PLACEHOLDER } = await loadModule(
+    '/src/shared/presenters/format.ts',
+  )
+
+  assert.equal(formatDecimal(129_000, { compact: true, suffix: ' AGX' }), '129K AGX')
+  assert.equal(formatDecimal(8_410_000, { compact: true, prefix: '$' }), '$8.41M')
+  assert.equal(formatDecimal(0, { compact: true, digits: 2, suffix: ' AGX' }), '0.00 AGX')
+  assert.equal(formatDecimal(65, { compact: true, digits: 2 }), '65.00')
+  assert.equal(formatDecimal(18_600_000, { digits: 2, prefix: '$', compact: true }), '$18.6M')
+  assert.equal(formatDecimal(65, { digits: 2, prefix: '$', compact: true }), '$65.00')
+  assert.equal(
+    formatDecimal(null, { digits: 2, prefix: '$', compact: true }),
+    LIVE_DATA_PLACEHOLDER,
+  )
+  assert.equal(
+    formatDecimal(toUsd(129_000, 65), { digits: 2, prefix: '≈ $', compact: true }),
+    '≈ $8.39M',
+  )
+  assert.equal(
+    formatDecimal(toUsd(0, null), { digits: 2, prefix: '≈ $', compact: true }),
+    LIVE_DATA_PLACEHOLDER,
+  )
+  assert.equal(formatDecimal('8.409999999999999e6', { compact: true, prefix: '$' }), '$8.41M')
+  assert.equal(formatDecimal(999.996, { compact: true, digits: 2 }), '1K')
+  assert.equal(
+    formatDecimal(129_000, { compact: true, fraction: 'fixed', suffix: ' AGX' }),
+    '129.00K AGX',
+  )
   assert.equal(formatPercentChange(412.4), '+412.4%')
-  assert.equal(formatPercentChange(null), '+0.0%')
+  assert.equal(formatPercentChange(null), LIVE_DATA_PLACEHOLDER)
   assert.equal(formatPercentChange(-1.2), '-1.2%')
 })
 
@@ -347,15 +409,15 @@ test('mapMarketAllowanceClaimLogToRow keeps four gAGX decimals and unit', async 
 
 test('claimableAmountValue subtracts claimed from total', async () => {
   const { claimableAmountValue } = await loadModule('/src/views/dapp/rewards/shared.tsx')
-  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
+  const { formatDecimal } = await loadModule('/src/shared/presenters/format.ts')
 
   assert.equal(
-    formatNumber(claimableAmountValue('1000', '657.82'), { digits: 2, prefix: '$' }),
+    formatDecimal(claimableAmountValue('1000', '657.82'), { digits: 2, prefix: '$' }),
     '$342.18',
   )
   assert.ok(claimableAmountValue('0.004', '0') > 0)
   assert.equal(
-    formatNumber(claimableAmountValue('0.004', '0'), { digits: 2, prefix: '$' }),
+    formatDecimal(claimableAmountValue('0.004', '0'), { digits: 2, prefix: '$' }),
     '$0.00',
   )
 })

@@ -6,7 +6,10 @@
 
 |业务术语|代码名|含义|Owner|
 |---|---|---|---|
-|**业务已登录**|`sessionReady`|钱包已连接且当前地址 JWT 有效|`useAuth` / `useDappHost`|
+|**业务已登录**|`sessionReady`|钱包已连接且当前地址 JWT 有效；**不含**是否在 BSC|`useAuth` / `useDappHost`|
+|**钱包已连**|`walletReady`|thirdweb 当前账户有地址；不等于已登录|`useWriteReadiness`|
+|**可写链**|`writeReady`|`walletReady` 且当前链是 BSC；写闸；展示链上读同一道闸|`useWriteReadiness`|
+|**登录后主按钮**|`SessionButton`|无 `sessionReady` 不渲染；连钱包引导不走此组件|`views/dapp/shared/session-button`|
 |**需要签名登录**|`needsSignIn`|钱包已连但尚无有效会话|`useAuth`|
 |**钱包签名登录**|SIWE / `login`|签名换 JWT（含 simple fallback）|`login-with-wallet`|
 |**会话令牌**|`token` / JWT|业务 API Bearer；按地址缓存|`auth-store` + `AuthProvider`|
@@ -15,6 +18,7 @@
 |**带会话请求**|`requestWithSession`|读/写 API；401 → `invalidateSession`|`shared/api/query/session-request`|
 
 > 禁止用 `isAuthenticated` 作 UI/对外同义词；状态机 `AuthState.kind` 用 `sessionReady`。
+> 展示链上读（`useChainQuery` / 暖热预取）= `sessionReady && writeReady`（能写才读）。已登录再切走 BSC：JWT 仍在，顶栏出切网，不误报请登录。
 
 ## 产品面与链上域
 
@@ -42,7 +46,7 @@
 |**领取团队奖励**|`claimTeamReward`|签名 → 上链 → confirm|`claim-reward`|
 |**领取社区基金**|`claimCommunityFund`|同上|`claim-reward`|
 |**领取签名**|`TeamRewardClaimSignature`|后端签名包（字段名兼容 snake/camel）|`claim-reward` / `parseTeamRewardClaim`|
-|**确认失败**|`confirm_failed`|链上成功但后端 confirm 失败|`useClaimReward`|
+|**领取确认**|`confirmClaimQuietly`|上链后 await POST `/claim/confirm`；无论成败都算领取成功并刷新缓存|`claim-reward`|
 |**写路径 id**|`WRITE_PATH`|错误 toast 的 ctx 键|`web3/wallet/write-path.ts`|
 |**授权后二次门闸写**|`approveThenLiveWrite`|pre 门闸 → approve? → live 重读门闸 → write|`web3/wallet/approve-then-live-write.ts`|
 |**链上读 query**|`useChainQuery`|wallet 前缀+address；public 全 key；freshness；read* 默认 bscReadClient|`hooks/use-chain-query.ts`|
@@ -73,5 +77,5 @@
 - 合约 / ABI / 后端 JSON **字段名**
 - React Query **key 字符串**（含 `['chain','swap',…]` / `'flashSwap'`）
 - `WRITE_PATH.EXCHANGE` 字面量 `'swap'`（与写链 path id 对齐；勿改）
-- 哨兵业务字面量：`confirm_failed`、`unknown`
+- 哨兵业务字面量：`unknown`
 - `core/presale` 目录名（链上域 SSOT，与产品面 Genesis 双层并存）

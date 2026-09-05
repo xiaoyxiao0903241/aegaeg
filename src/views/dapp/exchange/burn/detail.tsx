@@ -2,10 +2,9 @@
  * 销毁详情页
  *
  * 累计销毁 AGX 走 `/agx-contribution/summary` 的 total_burned_agx（个人投影）。
- * 获得/已消耗贡献仍走链上 userStats。未登录或缺数显 0，不绑 getConfig().total*。
+ * 获得/已消耗贡献仍走链上 userStats。没数 → `--`，不绑 getConfig().total*。
  * 关于区走共用 TokenAboutCarousel，只传贡献点数一张卡。
  */
-import { ZERO_BI } from '~/core/constants'
 import {
   formatContributionConsumedTotal,
   formatContributionPoints,
@@ -25,7 +24,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatApiAmount, formatUsdApprox, parseApiAmount } from '~/shared/presenters/format'
+import { formatApiAmount, formatDecimal, parseApiAmount, toUsd } from '~/shared/presenters/format'
 import { useBurnHistory } from '~/views/dapp/exchange/burn/use-burn'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/primitives'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
@@ -60,15 +59,12 @@ export function BurnExchangeDetail({
     digits: PERSONAL_TOKEN_DIGITS,
     suffix: ' AGX',
   })
-  const burnedUsdApprox = formatUsdApprox(
-    parseApiAmount(burnedRaw) ?? 0,
-    agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,
-  )
-  const totalEarnedContribution = userStats?.contributionEarned ?? ZERO_BI
-  const totalConsumedContribution = userStats?.contributionConsumed ?? ZERO_BI
-
-  const earnedLabel = formatContributionPoints(totalEarnedContribution, decimals)
-  const consumedLabel = formatContributionConsumedTotal(totalConsumedContribution, decimals)
+  const burnedUsdApprox = formatDecimal(toUsd(parseApiAmount(burnedRaw), agxPriceUsd), {
+    digits: 2,
+    prefix: '≈ $',
+  })
+  const earnedLabel = formatContributionPoints(userStats?.contributionEarned, decimals)
+  const consumedLabel = formatContributionConsumedTotal(userStats?.contributionConsumed, decimals)
 
   return (
     <Detail>

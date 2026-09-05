@@ -4,6 +4,7 @@ import { normalizeAuthAddress } from '~/core/auth/types'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import type { ApiUserFacingErrorMessages } from '~/shared/api/api-user-facing-error'
+import { hideDisabledQueryData } from '~/shared/api/query/hide-disabled-query-data'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import {
   canRunAuthenticatedQuery,
@@ -26,6 +27,7 @@ type AuthenticatedQueryOptions = {
  * 缓存键追加规范化钱包地址：JWT 续期不丢缓存，切换钱包自动隔离账号数据。
  * token 优先取状态仓库中的最新值，静默续期可立即用于下一次拉取。
  * 未登录、未水合或会话未就绪时不发起查询，避免匿名请求。
+ * 水合完成后查询关闭（含断开钱包）时不把缓存交给视图。
  */
 export function useAuthenticatedQuery<T>(
   queryKey: QueryKey,
@@ -37,6 +39,12 @@ export function useAuthenticatedQuery<T>(
   const { messages: t } = useI18n()
   // 缓存键带钱包地址：JWT 续期不清缓存，切换钱包隔离数据
   const scopeKey = session?.address ? normalizeAuthAddress(session.address) : undefined
+  const queryEnabled = canRunAuthenticatedQuery({
+    enabled,
+    hasHydrated,
+    sessionReady,
+    hasToken: Boolean(token),
+  })
 
   const query = useQuery({
     queryKey: scopeKey ? [...queryKey, scopeKey] : queryKey,
@@ -50,27 +58,26 @@ export function useAuthenticatedQuery<T>(
       }
       return requestWithSession(fetcher, latestToken, invalidateSession)
     },
-    enabled: canRunAuthenticatedQuery({
-      enabled,
-      hasHydrated,
-      sessionReady,
-      hasToken: Boolean(token),
-    }),
+    enabled: queryEnabled,
     staleTime: options?.staleTime ?? QUERY_STALE_TIME.api,
     refetchInterval: options?.refetchInterval,
     refetchIntervalInBackground: options?.refetchInterval ? false : undefined,
-    placeholderData: options?.keepPreviousData
-      ? (previousData, previousQuery) => {
-          if (previousData == null || !scopeKey) return undefined
-          if (previousQuery == null) return undefined
-          const previousScope = previousQuery.queryKey.at(-1)
-          if (previousScope !== scopeKey) return undefined
-          return previousData
-        }
-      : undefined,
+    placeholderData:
+      queryEnabled && options?.keepPreviousData
+        ? (previousData, previousQuery) => {
+            if (previousData == null || !scopeKey) return undefined
+            if (previousQuery == null) return undefined
+            const previousScope = previousQuery.queryKey.at(-1)
+            if (previousScope !== scopeKey) return undefined
+            return previousData
+          }
+        : undefined,
   })
 
-  return toApiQueryView(query, t.errors.api)
+  return toApiQueryView(
+    hideDisabledQueryData(query, { enabled: queryEnabled, hasHydrated }),
+    t.errors.api,
+  )
 }
 
 /**

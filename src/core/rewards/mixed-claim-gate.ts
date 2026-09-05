@@ -7,7 +7,6 @@ import { ZERO_BI } from '~/core/constants'
  * Dao Mixed 签名前链上无个人待领；待领预览为 0 时不允许点领取。
  */
 export function evaluateRewardsMixedClaimConfirmGate(args: {
-  walletReady: boolean
   writeReady: boolean
   sessionReady: boolean
   isPending: boolean
@@ -17,7 +16,7 @@ export function evaluateRewardsMixedClaimConfirmGate(args: {
   claimable: bigint
   allowUnknownAmount: boolean
 }): boolean {
-  if (!args.walletReady || !args.writeReady || !args.sessionReady) return false
+  if (!args.writeReady || !args.sessionReady) return false
   if (args.isPending) return false
   if (!args.plansOk || !args.contributionOk || !args.luckyOk) return false
   if (!args.allowUnknownAmount && args.claimable <= ZERO_BI) return false

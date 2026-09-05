@@ -3,19 +3,17 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('claimRewardOutcome: confirm_failed must not invalidate', async () => {
+test('claimRewardOutcome: confirm fail still success and invalidate', async () => {
   const { claimRewardOutcome } = await loadModule('/src/core/rewards/claim-reward-outcome.ts')
 
-  const failed = claimRewardOutcome({
-    confirmError: new Error('backend sync failed'),
+  const failedConfirm = claimRewardOutcome({
     confirmResult: null,
     txHash: '0xabc',
   })
 
-  assert.equal(failed.status, 'confirm_failed')
-  assert.equal(failed.shouldInvalidate, false)
-  assert.equal(failed.confirmResult, null)
-  assert.equal(failed.txHash, '0xabc')
+  assert.equal(failedConfirm.status, 'success')
+  assert.equal(failedConfirm.shouldInvalidate, true)
+  assert.equal(failedConfirm.txHash, '0xabc')
 })
 
 test('claimRewardOutcome: success should invalidate', async () => {

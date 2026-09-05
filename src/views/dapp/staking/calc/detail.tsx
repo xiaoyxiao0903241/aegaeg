@@ -14,7 +14,7 @@ import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { Tooltip } from '~/shared/components/tooltip'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
 import {
@@ -55,8 +55,7 @@ export function CalcDetail() {
               : shownPeriod
 
   const rebasePct = result?.epochRebasePct ?? rates?.epochRebasePct ?? null
-  const rebase =
-    rebasePct != null ? formatNumber(rebasePct, { digits: 2 }) : formatNumber(0, { digits: 2 })
+  const rebase = formatDecimal(rebasePct, { digits: 2 })
   const notesItems = aside.notesItems.map((item) =>
     interpolate(withEpochSchedule(item, epochSchedule), { rebase }),
   )
@@ -145,8 +144,12 @@ export function CalcDetail() {
             } else if (index === 1) {
               value = interpolate(aside.tags.day, { day: result.fullReleaseDay })
             } else if (index === 2) {
-              value = formatNumber(result.holdProfitUsd, { digits: 2, prefix: '$' })
-              note = `${result.holdRatePct >= 0 ? '+' : ''}${formatNumber(result.holdRatePct, { digits: 2 })}%`
+              value = formatDecimal(result.holdProfitUsd, { digits: 2, prefix: '$' })
+              note = formatDecimal(result.holdRatePct, {
+                digits: 2,
+                prefix: result.holdRatePct >= 0 ? '+' : '',
+                suffix: '%',
+              })
             }
             return (
               <Tile key={card.label}>

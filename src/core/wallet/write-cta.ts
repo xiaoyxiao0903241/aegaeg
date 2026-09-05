@@ -1,11 +1,6 @@
-import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
+import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { interpolate } from '~/i18n/interpolate'
-
-/** 余额未知时显示零值；核心层不依赖 shared 展示工具。 */
-function zeroGroupedPlaceholder(digits: number): string {
-  return digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
-}
 
 /** 不弹 InlineAlert：内联授权、未输入、去绑定职责，或仍在加载/未知（勿当最终硬门吓人）。 */
 const WRITE_BLOCK_NO_ALERT = new Set([
@@ -89,18 +84,14 @@ export function writeCtaDisabled(args: {
 }
 
 /**
- * 用 `{balance}` 替换模板；余额未知时用零值兜底，保留整句完整文案
- *（如「数量（钱包余额 0.0000 AGX）」），禁止回空串导致 CountValue 裸 `0`。
+ * 用 `{balance}` 替换模板。余额未知或已是 `--` → 整句 `--`，
+ * 避免「钱包余额 0.0000 AGX」冒充已读到的数，也避免「钱包余额 -- AGX」。
  *
  * @param template 含 `{balance}` 的模板文案
- * @param args.balance 余额文案；空串 = 未加载 / 未连接
- * @param args.digits 未知时零占位小数位（默认个人代币 4 位）
+ * @param args.balance 已打印的余额（含代币符号）；空串 = 未加载 / 未连接
  */
-export function formatAmountBalanceLabel(
-  template: string,
-  args: { balance: string; digits?: number },
-): string {
-  const digits = Math.max(0, Math.floor(args.digits ?? PERSONAL_TOKEN_DIGITS))
-  const balance = args.balance.trim() === '' ? zeroGroupedPlaceholder(digits) : args.balance.trim()
+export function formatAmountBalanceLabel(template: string, args: { balance: string }): string {
+  const balance = args.balance.trim()
+  if (!balance || balance === LIVE_DATA_PLACEHOLDER) return LIVE_DATA_PLACEHOLDER
   return interpolate(template, { balance })
 }

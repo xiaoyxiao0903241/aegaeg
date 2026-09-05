@@ -22,7 +22,6 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
-import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { Text } from '~/shared/components/text'
@@ -30,11 +29,16 @@ import type { Address } from '~/shared/config/contracts'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatNumber, formatUsdApprox } from '~/shared/presenters/format'
+import {
+  formatDecimal,
+  interpolateLive,
+  LIVE_DATA_PLACEHOLDER,
+  parseApiAmount,
+  toUsd,
+} from '~/shared/presenters/format'
 import { mapX0MiningLogToOpsRow } from '~/shared/presenters/map-flow-log-rows'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
-import { parseApiAmountOrZero } from '~/views/dapp/staking/shared'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
@@ -142,11 +146,16 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     balanceLabel:
       preflightQuery.data === undefined
         ? ''
-        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS),
-    quotaLabel:
-      preflightQuery.data !== undefined
-        ? formatTokenAmount(remainingQuota, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
-        : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS }),
+        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, {
+            digits: PERSONAL_TOKEN_DIGITS,
+            trimZeros: false,
+            suffix: ' gAGX',
+          }),
+    quotaLabel: formatTokenAmount(
+      preflightQuery.data === undefined ? null : remainingQuota,
+      GAGX_DECIMALS,
+      { digits: PERSONAL_TOKEN_DIGITS, trimZeros: false, suffix: ' gAGX' },
+    ),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
@@ -156,8 +165,6 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     pool: BSC_CONTRACTS.xStakingPool,
   }
 }
-
-const ZERO_PCT = `${formatNumber(0, { digits: 2 })}%`
 
 /**
  * Xmine 视图：组合表单状态、余额文案与提交入口
@@ -176,20 +183,17 @@ export function useXmineDock() {
   })
 
   const amountLabel = formatAmountBalanceLabel(t.staking.xmine.amountBalance, {
-    balance: sessionReady && walletReady ? xmine.balanceLabel : '',
+    balance: sessionReady ? xmine.balanceLabel : '',
   })
 
   const blockHint =
     xmine.blockReason === 'insufficientQuota'
-      ? interpolate(t.staking.blocked.insufficientXmineQuotaWithAmount, {
-          quota: xmine.quotaLabel || formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS }),
+      ? interpolateLive(t.staking.blocked.insufficientXmineQuotaWithAmount, {
+          quota: xmine.quotaLabel,
         })
       : writeBlockHint(xmine.blockReason, t.staking.blocked)
 
-  const dailyYieldLabel =
-    overviewQuery.data != null
-      ? formatXmineDailyYieldLabel(overviewQuery.data.yieldRateBP)
-      : ZERO_PCT
+  const dailyYieldLabel = formatXmineDailyYieldLabel(overviewQuery.data?.yieldRateBP)
 
   return {
     t,
@@ -209,8 +213,6 @@ export function useXmineDock() {
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-/** 下次产出倒计时：没有结算时刻时显示 —，不伪造倒计时。 */
-const NEXT_EMISSION_EMPTY = '—'
 
 /**
  * Xmine 详情右栏
@@ -240,15 +242,12 @@ export function useXmineDetail() {
   })
 
   const tvlGagxWei = overviewQuery.data?.totalStakedGagx
-  const tvlGagx = tvlGagxWei != null ? formatTokenAmountToNumber(tvlGagxWei, GAGX_DECIMALS) : 0
+  const tvlGagx = tvlGagxWei != null ? formatTokenAmountToNumber(tvlGagxWei, GAGX_DECIMALS) : null
   const agxPerXWei =
     overviewQuery.data != null ? agxAmountPerXFromXPerAgx(overviewQuery.data.xPerAgx) : null
-  const agxPerX = agxPerXWei != null ? formatTokenAmountToNumber(agxPerXWei, AGX_DECIMALS) : 0
-  const dailyYield =
-    overviewQuery.data != null
-      ? formatXmineDailyYieldLabel(overviewQuery.data.yieldRateBP)
-      : ZERO_PCT
-  const lifetimeX = rewardLifetime.data ?? 0
+  const agxPerX = agxPerXWei != null ? formatTokenAmountToNumber(agxPerXWei, AGX_DECIMALS) : null
+  const dailyYield = formatXmineDailyYieldLabel(overviewQuery.data?.yieldRateBP)
+  const lifetimeX = rewardLifetime.data ?? null
 
   const overviewItems: Array<{
     hint?: string
@@ -261,9 +260,13 @@ export function useXmineDetail() {
       hint: t.staking.xmine.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(tvlGagx, priceUsd)}
+          approx={formatDecimal(toUsd(tvlGagx, priceUsd), { digits: 2, prefix: '≈ $' })}
           icon="gagx"
-          value={`${formatTokenAmount(tvlGagxWei ?? ZERO_BI, GAGX_DECIMALS, 2)} gAGX`}
+          value={formatTokenAmount(tvlGagxWei, GAGX_DECIMALS, {
+            digits: 2,
+            trimZeros: false,
+            suffix: ' gAGX',
+          })}
         />
       ),
     },
@@ -273,9 +276,13 @@ export function useXmineDetail() {
       klineHref: `https://dexscreener.com/bsc/${BSC_CONTRACTS.xToken}`,
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(agxPerX, priceUsd)}
+          approx={formatDecimal(toUsd(agxPerX, priceUsd), { digits: 2, prefix: '≈ $' })}
           icon="agx"
-          value={`${formatTokenAmount(agxPerXWei ?? ZERO_BI, AGX_DECIMALS, 2)} AGX`}
+          value={formatTokenAmount(agxPerXWei, AGX_DECIMALS, {
+            digits: 2,
+            trimZeros: false,
+            suffix: ' AGX',
+          })}
         />
       ),
     },
@@ -285,7 +292,7 @@ export function useXmineDetail() {
       value: (
         <StakingTokenMetricValue
           icon="x"
-          value={formatNumber(lifetimeX, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' X' })}
+          value={formatDecimal(lifetimeX, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' X' })}
         />
       ),
     },
@@ -303,45 +310,53 @@ export function useXmineDetail() {
       hint: t.staking.xmine.overviewMetrics[4]?.hint,
       value: (
         <Text as="span" className="font-semibold" variant="detail">
-          {NEXT_EMISSION_EMPTY}
+          {LIVE_DATA_PLACEHOLDER}
         </Text>
       ),
     },
   ]
 
-  const apiHeld = parseApiAmountOrZero(
+  const apiHeld = parseApiAmount(
     distQuery.data?.stake_x_pool ?? positionsQuery.data?.total_stake_amount,
   )
   const chainHeld =
     chainPosition.data != null
       ? formatTokenAmountToNumber(chainPosition.data.miningStake, GAGX_DECIMALS)
       : null
-  const held = chainHeld ?? (walletReady || sessionReady ? apiHeld : 0)
+  const held = chainHeld ?? apiHeld
 
   const pendingX =
     chainPosition.data != null
       ? formatTokenAmountToNumber(chainPosition.data.pending, X_DECIMALS)
-      : 0
+      : null
   const pendingValueGagx =
     chainPosition.data != null
       ? formatTokenAmountToNumber(chainPosition.data.pendingValue, GAGX_DECIMALS)
-      : 0
+      : null
 
   const heldLabel =
     chainPosition.data != null
-      ? `${formatTokenAmount(chainPosition.data.miningStake, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`
-      : formatNumber(held, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' })
+      ? formatTokenAmount(chainPosition.data.miningStake, GAGX_DECIMALS, {
+          digits: PERSONAL_TOKEN_DIGITS,
+          trimZeros: false,
+          suffix: ' gAGX',
+        })
+      : formatDecimal(held, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' })
   const pendingLabel =
     chainPosition.data != null
-      ? `${formatTokenAmount(chainPosition.data.pending, X_DECIMALS, PERSONAL_TOKEN_DIGITS)} X`
-      : formatNumber(pendingX, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' X' })
+      ? formatTokenAmount(chainPosition.data.pending, X_DECIMALS, {
+          digits: PERSONAL_TOKEN_DIGITS,
+          trimZeros: false,
+          suffix: ' X',
+        })
+      : formatDecimal(pendingX, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' X' })
 
   const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
       label: t.staking.xmine.positionMetrics[0]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(held, priceUsd)}
+          approx={formatDecimal(toUsd(held, priceUsd), { digits: 2, prefix: '≈ $' })}
           icon="gagx"
           value={heldLabel}
         />
@@ -349,12 +364,12 @@ export function useXmineDetail() {
     },
     {
       label: t.staking.xmine.positionMetrics[1]?.label ?? '',
-      // 已释放：本页没有 PRV 已释字段，先显示 0；资产页另有链上口径
+      // 已释放：本页没有 PRV 已释字段
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(0, priceUsd)}
+          approx={LIVE_DATA_PLACEHOLDER}
           icon="gagx"
-          value={formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' })}
+          value={LIVE_DATA_PLACEHOLDER}
         />
       ),
     },
@@ -362,7 +377,7 @@ export function useXmineDetail() {
       label: t.staking.xmine.positionMetrics[2]?.label ?? '',
       value: (
         <StakingTokenMetricValue
-          approx={formatUsdApprox(pendingValueGagx, priceUsd)}
+          approx={formatDecimal(toUsd(pendingValueGagx, priceUsd), { digits: 2, prefix: '≈ $' })}
           icon="x"
           value={pendingLabel}
         />
@@ -374,8 +389,8 @@ export function useXmineDetail() {
     logsQuery.data?.items.map((item) => mapX0MiningLogToOpsRow(item, t.flowOps)) ?? []
   const recordsLoading = sessionReady && logsQuery.isLoading && logsQuery.data == null
   const recordsTotal = logsQuery.data?.total ?? 0
-  const recordsSummary = interpolate(t.staking.aside.recordsFooter.xmine, {
-    amount: formatNumber(parseApiAmountOrZero(positionsQuery.data?.total_stake_amount), {
+  const recordsSummary = interpolateLive(t.staking.aside.recordsFooter.xmine, {
+    amount: formatDecimal(positionsQuery.data?.total_stake_amount, {
       digits: PERSONAL_TOKEN_DIGITS,
     }),
   })

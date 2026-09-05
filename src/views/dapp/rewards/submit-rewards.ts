@@ -6,6 +6,7 @@ import { invalidateAfterRewardsMixedClaim } from '~/shared/api/query/invalidate'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
+import { confirmClaimQuietly } from '~/web3/claim/claim-reward'
 import { WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { REWARDS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readDaoPoolRewardAvailable, readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
@@ -112,6 +113,7 @@ export async function submitLuckyMixedClaim(args: {
  *
  * 先向后端申请领取签名，校验签名类型与过期时间，
  * 再经统一编排核对池余额、贡献与计划做预检与实时复核，通过后上链。
+ * 上链成功后 await confirm，再刷新缓存；confirm 失败仍提示成功并照样刷新。
  *
  * @param args.session 写会话
  * @param args.token 登录会话令牌
@@ -160,6 +162,7 @@ export async function submitDaoMixedClaim(args: {
     restakeIndex: number | null
   }
 
+  let txHash = ''
   await approveThenLiveWrite({
     readSnapshot: async (): Promise<DaoSnap> => {
       const plans = await readClaimPlans()
@@ -190,7 +193,7 @@ export async function submitDaoMixedClaim(args: {
       if (live.releaseIndex == null || live.restakeIndex == null) {
         throw REWARDS_BLOCKED.releasePlanUnresolved
       }
-      await writeDaoMixedClaim({
+      const receipt = await writeDaoMixedClaim({
         wallet,
         signType: normalized.signType,
         amount,
@@ -201,7 +204,11 @@ export async function submitDaoMixedClaim(args: {
         restakePlanIndex: live.restakeIndex,
         restakeBps,
       })
+      txHash = receipt.transactionHash
     },
   })
+  if (txHash) {
+    await confirmClaimQuietly(token, { salt: normalized.salt, txHash }, onUnauthorized)
+  }
   invalidateAfterRewardsMixedClaim()
 }

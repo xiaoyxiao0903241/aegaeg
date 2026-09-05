@@ -1,10 +1,11 @@
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
 import { HeroRaysBackground } from '~/shared/components/hero-rays-background'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { TableAuthActionProvider } from '~/shared/components/table'
 import { scrollDappPanelsToTop } from '~/shared/lib/scroll-dapp-panels'
 import { cn } from '~/shared/lib/utils'
 import { useDappHostStore } from '~/stores/dapp-host-store'
@@ -20,6 +21,7 @@ import {
 import { RevealObserver, ScrollFadeHost } from '~/views/dapp/host/primitives'
 import { Rail } from '~/views/dapp/host/rail'
 import { useTabContentFade } from '~/views/dapp/host/use-tab-content-fade'
+import { WalletConnectChip } from '~/views/dapp/host/wallet/wallet-connect-chip'
 import { DockH5HeaderSlot } from '~/views/dapp/shared/dock-frame'
 import { TabDetail, TabDock } from '~/views/dapp/tab-slots'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
@@ -52,6 +54,7 @@ export function DappHost() {
   const { displayTab, phase } = useTabContentFade(activeTab)
   const onboarding = useOnboardingAutoStart()
   useConnectWarmPrefetch()
+  const renderTableAuthAction = useCallback(() => <WalletConnectChip variant="primary" />, [])
 
   const onHashChange = useEffectEvent(() => {
     syncTabFromHash()
@@ -128,102 +131,104 @@ export function DappHost() {
           )}
           data-dapp-host-container
         >
-          <GenesisPromoSync />
-          <GenesisSessionHost active={displayTab === 'genesis'}>
-            {(genesis) => (
-              <ExchangeSessionHosts activeTab={displayTab}>
-                {({ trade, flash, burn, turbine }) => (
-                  <div
-                    ref={setWindowNode}
-                    className={cn(
-                      'group/host relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
-                      'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
-                      !sessionReady && 'shadow-window-compact',
-                      'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col',
-                      'max-dapp:overflow-hidden max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0 max-dapp:shadow-card',
-                    )}
-                    data-collapsed={detailCollapsed ? 'true' : 'false'}
-                    data-session-ready={sessionReady ? 'true' : 'false'}
-                    data-dapp-window
-                    data-tab={displayTab}
-                    data-wallet-ready={walletReady ? 'true' : 'false'}
-                  >
-                    {/* H5：圆角裁切与纵向滚动拆开，避免部分浏览器在圆角处露出黑底 */}
+          <TableAuthActionProvider renderAction={renderTableAuthAction}>
+            <GenesisPromoSync />
+            <GenesisSessionHost active={displayTab === 'genesis'}>
+              {(genesis) => (
+                <ExchangeSessionHosts activeTab={displayTab}>
+                  {({ trade, flash, burn, turbine }) => (
                     <div
+                      ref={setWindowNode}
                       className={cn(
-                        'dapp:contents',
-                        'max-dapp:flex max-dapp:h-full max-dapp:min-h-0 max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
-                        'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto',
-                        'max-dapp:px-4.5 max-dapp:pt-0 max-dapp:pb-8',
+                        'group/host relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
+                        'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
+                        !sessionReady && 'shadow-window-compact',
+                        'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col',
+                        'max-dapp:overflow-hidden max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0 max-dapp:shadow-card',
                       )}
-                      data-dapp-window-scroll
+                      data-collapsed={detailCollapsed ? 'true' : 'false'}
+                      data-session-ready={sessionReady ? 'true' : 'false'}
+                      data-dapp-window
+                      data-tab={displayTab}
+                      data-wallet-ready={walletReady ? 'true' : 'false'}
                     >
-                      <Rail activeTab={activeTab} onSelectTab={selectTab} />
-
-                      <DockH5HeaderSlot />
-
-                      <aside
+                      {/* H5：圆角裁切与纵向滚动拆开，避免部分浏览器在圆角处露出黑底 */}
+                      <div
                         className={cn(
-                          'dapp-content-fade border-r border-border bg-card',
-                          'dapp:flex dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:flex-col dapp:overflow-hidden',
-                          'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0',
+                          'dapp:contents',
+                          'max-dapp:flex max-dapp:h-full max-dapp:min-h-0 max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
+                          'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto',
+                          'max-dapp:px-4.5 max-dapp:pt-0 max-dapp:pb-8',
                         )}
-                        data-dapp-widget-panel
-                        data-phase={phase}
+                        data-dapp-window-scroll
                       >
-                        <MobileNav
-                          activeTab={activeTab}
-                          onClose={() => setMobileNavOpen(false)}
-                          onSelectTab={selectMobileTab}
-                          open={mobileNavOpen}
-                        />
-                        <TabDock
-                          activeTab={displayTab}
-                          burn={burn}
-                          flash={flash}
-                          genesis={genesis}
-                          onSelectTab={selectTab}
-                          trade={trade}
-                          turbine={turbine}
-                        />
-                      </aside>
+                        <Rail activeTab={activeTab} onSelectTab={selectTab} />
 
-                      <ScrollFadeHost
-                        className={cn(
-                          'max-dapp:contents',
-                          detailCollapsed ? 'dapp:pointer-events-none' : undefined,
-                        )}
-                      >
-                        <section
+                        <DockH5HeaderSlot />
+
+                        <aside
                           className={cn(
-                            'dapp-content-fade min-w-0 overflow-x-hidden bg-card',
-                            'dapp:max-h-full dapp:min-h-0',
-                            detailCollapsed
-                              ? 'pointer-events-none overflow-y-hidden opacity-0'
-                              : 'dapp:overflow-y-auto',
-                            'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible',
+                            'dapp-content-fade border-r border-border bg-card',
+                            'dapp:flex dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:flex-col dapp:overflow-hidden',
+                            'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0',
                           )}
-                          aria-hidden={detailCollapsed}
-                          aria-labelledby={`${displayTab}-title`}
-                          data-dapp-detail
-                          data-phase={detailCollapsed ? 'idle' : phase}
+                          data-dapp-widget-panel
+                          data-phase={phase}
                         >
-                          <TabDetail
+                          <MobileNav
+                            activeTab={activeTab}
+                            onClose={() => setMobileNavOpen(false)}
+                            onSelectTab={selectMobileTab}
+                            open={mobileNavOpen}
+                          />
+                          <TabDock
                             activeTab={displayTab}
                             burn={burn}
                             flash={flash}
                             genesis={genesis}
+                            onSelectTab={selectTab}
                             trade={trade}
                             turbine={turbine}
                           />
-                        </section>
-                      </ScrollFadeHost>
+                        </aside>
+
+                        <ScrollFadeHost
+                          className={cn(
+                            'max-dapp:contents',
+                            detailCollapsed ? 'dapp:pointer-events-none' : undefined,
+                          )}
+                        >
+                          <section
+                            className={cn(
+                              'dapp-content-fade min-w-0 overflow-x-hidden bg-card',
+                              'dapp:max-h-full dapp:min-h-0',
+                              detailCollapsed
+                                ? 'pointer-events-none overflow-y-hidden opacity-0'
+                                : 'dapp:overflow-y-auto',
+                              'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible',
+                            )}
+                            aria-hidden={detailCollapsed}
+                            aria-labelledby={`${displayTab}-title`}
+                            data-dapp-detail
+                            data-phase={detailCollapsed ? 'idle' : phase}
+                          >
+                            <TabDetail
+                              activeTab={displayTab}
+                              burn={burn}
+                              flash={flash}
+                              genesis={genesis}
+                              trade={trade}
+                              turbine={turbine}
+                            />
+                          </section>
+                        </ScrollFadeHost>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </ExchangeSessionHosts>
-            )}
-          </GenesisSessionHost>
+                  )}
+                </ExchangeSessionHosts>
+              )}
+            </GenesisSessionHost>
+          </TableAuthActionProvider>
         </div>
       </section>
 

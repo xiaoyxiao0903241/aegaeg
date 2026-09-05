@@ -5,7 +5,7 @@
  * 分桶金额可由 API / 链读组装后传入；本模块只做展示几何。
  */
 
-import { formatNumber, formatUsd } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 
 export type HoldingsDistributionModeKey = 'stake' | 'lpbond' | 'burnbond' | 'xmine'
 
@@ -81,8 +81,8 @@ export function buildHoldingsDistributionView(
       color: palette.color,
       textColor: palette.text,
       amountLabel: s.amountLabel,
-      usdLabel: formatNumber(usd, { digits: 2, prefix: '$' }),
-      pctLabel: formatNumber(frac * 100, { digits: 2, suffix: '%' }),
+      usdLabel: formatDecimal(usd, { digits: 2, prefix: '$' }),
+      pctLabel: formatDecimal(frac * 100, { digits: 2, suffix: '%' }),
       frac,
       dash: `${arc.toFixed(2)} ${(PIE_C - arc).toFixed(2)}`,
       offset: (-pieAcc * PIE_C).toFixed(2),
@@ -96,7 +96,7 @@ export function buildHoldingsDistributionView(
 
   return {
     totalUsd,
-    totalLabel: formatUsd(totalUsd),
+    totalLabel: formatDecimal(totalUsd, { digits: 2, prefix: '$', compact: true }),
     segs,
   }
 }

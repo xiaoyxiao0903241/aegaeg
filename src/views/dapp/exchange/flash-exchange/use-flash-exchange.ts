@@ -17,7 +17,7 @@ export function useFlashExchange(flash: FlashExchangeState) {
 
   const { isFlipping, rotation, flipCardClass, onFlip } = useExchangeFlip({
     flipDirection: flash.flipDirection,
-    disabled: !flash.canFlip || flash.isSubmitting || (sessionReady && !flash.walletReady),
+    disabled: !flash.canFlip || flash.isSubmitting,
   })
 
   const pairOptions = [
@@ -29,7 +29,6 @@ export function useFlashExchange(flash: FlashExchangeState) {
     buyBalanceLabel: flash.buyBalanceLabel,
     sellBalanceLabel: flash.sellBalanceLabel,
     sessionReady,
-    walletReady: flash.walletReady,
   })
 
   const blockHint =

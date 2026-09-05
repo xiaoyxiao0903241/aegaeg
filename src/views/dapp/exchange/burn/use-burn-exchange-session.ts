@@ -6,10 +6,7 @@ import {
   evaluateBurnContributionSwap,
   formatBurnContributionRateLabel,
 } from '~/core/exchange/burn-contribution-swap'
-import {
-  formatApiContributionPoints,
-  formatContributionPoints,
-} from '~/core/exchange/format-contribution-points'
+import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -17,6 +14,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatApiContributionPoints } from '~/shared/presenters/format'
 import { submitBurnExchange } from '~/views/dapp/exchange/burn/submit-burn-exchange'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import {
