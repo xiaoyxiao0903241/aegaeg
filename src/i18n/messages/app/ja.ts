@@ -835,8 +835,6 @@ const app = defineMessages({
       expired: '署名の有効期限が切れました。更新してから再度受取してください。',
       noOrder: '受取可能なリワードはありません。',
       failed: '受取に失敗しました。しばらくしてから再度お試しください。',
-      confirmSyncFailed:
-        'リワードはオンチェーンで受取成功しましたが、同期に失敗しました。ページを更新し、重複受取しないでください。',
     },
     hub: {
       asideTitle: 'AEGIS X リワードについて',
@@ -1965,15 +1963,15 @@ const app = defineMessages({
       insufficientAllowance: '承認不足',
       insufficientQuota: 'ステーキング可能な枠を超えています。数量を減らしてから再度お試しください',
       insufficientQuotaWithAmount:
-        'ステーキング可能な枠を超えています：現在あと最大 {quota} AGX までステーキングできます。数量を減らしてから再度お試しください。',
+        'ステーキング可能な枠を超えています：現在あと最大 {quota} までステーキングできます。数量を減らしてから再度お試しください。',
       insufficientQuotaPersonalWithAmount:
-        'ご自身のステーキング可能枠を超えています：個人累計上限の残りは {quota} AGX です。数量を減らしてから再度お試しください。',
+        'ご自身のステーキング可能枠を超えています：個人累計上限の残りは {quota} です。数量を減らしてから再度お試しください。',
       insufficientQuotaPersonalDailyWithAmount:
-        '本日のステーキング可能枠を超えています：今日の個人枠の残りは {quota} AGX です。数量を減らすか、枠が更新されるまでお待ちください。',
+        '本日のステーキング可能枠を超えています：今日の個人枠の残りは {quota} です。数量を減らすか、枠が更新されるまでお待ちください。',
       insufficientQuotaPoolWithAmount:
-        'オンチェーンのステーキングプール枠が足りません：プールの残りは現在 {quota} AGX です。数量を減らすか、しばらくしてから再度お試しください。',
+        'オンチェーンのステーキングプール枠が足りません：プールの残りは現在 {quota} です。数量を減らすか、しばらくしてから再度お試しください。',
       insufficientXmineQuotaWithAmount:
-        'マイニング枠を超えています：マイニング枠はロック元本で決まり、現在あと最大 {quota} gAGX までステーキングできます。数量を減らすか、先にロックポジションを増やしてから再度お試しください。',
+        'マイニング枠を超えています：マイニング枠はロック元本で決まり、現在あと最大 {quota} までステーキングできます。数量を減らすか、先にロックポジションを増やしてから再度お試しください。',
       poolPaused: 'このステーキングプールは一時停止中です。しばらくしてから再度お試しください',
       depositoryNotAuth:
         'この債券市場はまだ購入できません。別の期間を選ぶか、しばらくしてから再度お試しください',
@@ -2233,8 +2231,8 @@ const app = defineMessages({
       periodLabel: 'ステーキング期間を選択',
       periodAria: 'ステーキング期間を選択',
       amountAria: 'ステーキング数量',
-      amountBalance: '数量（ウォレット残高 {balance} AGX）',
-      quotaInline: 'ステーキング枠：{quota} AGX',
+      amountBalance: '数量（ウォレット残高 {balance}）',
+      quotaInline: 'ステーキング枠：{quota}',
       submit: 'ステーキング',
       bindCta: '紹介を紐付け',
       success: 'ステーキング成功',
@@ -2324,7 +2322,7 @@ const app = defineMessages({
       periodLabel: '債券期間を選択',
       periodAria: 'LP 債券期間',
       amountAria: '購入数量',
-      amountBalance: '数量（ウォレット残高 {balance} USD1）',
+      amountBalance: '数量（ウォレット残高 {balance}）',
       submit: '購入',
       success: '購入成功',
       footnote:
@@ -2416,7 +2414,7 @@ const app = defineMessages({
       periodLabel: '債券期間を選択',
       periodAria: 'バーン債券期間',
       amountAria: '購入数量',
-      amountBalance: '数量（ウォレット残高 {balance} USD1）',
+      amountBalance: '数量（ウォレット残高 {balance}）',
       submit: '購入',
       success: '購入成功',
       footnote: 'システムは割引比率で AGX を鋳造し、自動購入してブラックホールへ永久バーンします。',
@@ -2501,8 +2499,8 @@ const app = defineMessages({
       title: 'Xマイニング',
       intro: 'gAGX をステーキング — 元本毀損なく X エコシステムリワードを採掘',
       amountAria: 'ステーキング gAGX 数量',
-      amountBalance: '数量（ウォレット残高 {balance} gAGX）',
-      quotaInline: 'ステーキング枠：{quota} gAGX',
+      amountBalance: '数量（ウォレット残高 {balance}）',
+      quotaInline: 'ステーキング枠：{quota}',
       submit: 'ステーキング',
       success: 'ステーキング成功',
       openKlineChart: 'K線チャートを見る',

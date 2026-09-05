@@ -1,7 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
-import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-duration-days'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
@@ -11,7 +10,8 @@ import { iconVariants } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
-import { formatNumber } from '~/shared/presenters/format'
+import { LIVE_DATA_PLACEHOLDER } from '~/shared/presenters/format'
+
 /**
  * 赎回确认弹窗
  *
@@ -39,12 +39,10 @@ export function AssetsRedeemConfirm({
   const { messages: t } = useI18n()
   const durationQuery = usePrincipalReleaseDurationDays()
   const body = interpolate(t.assets.redeem.body, { days: durationQuery.data ?? 30 })
-  // 无金额文案时展示 0，但不放开确认（空串 / 旧诚实空「—」）
-  const hasAmount = Boolean(amountLabel && amountLabel !== '—')
-  const displayAmount =
-    amountLabel && amountLabel !== '—'
-      ? amountLabel
-      : formatNumber(0, { digits: PERSONAL_TOKEN_DIGITS })
+  const hasAmount = Boolean(
+    amountLabel && amountLabel !== '—' && amountLabel !== LIVE_DATA_PLACEHOLDER,
+  )
+  const displayAmount = hasAmount ? amountLabel : LIVE_DATA_PLACEHOLDER
 
   return (
     <ResponsiveDialog

@@ -1,7 +1,6 @@
 /** 错误统一出口：汇总哨兵常量与钱包错误助手，用户可见文案一律走 `getErrorMessage`。 */
 export { getErrorMessage } from '~/web3/errors/get-error-message'
 export {
-  CLAIM_CONFIRM_SYNC_FAILED,
   CLAIM_SIGNATURE_EXPIRED,
   EXCHANGE_QUOTE_FAILED,
   EXCHANGE_SUBMIT_BLOCKED,

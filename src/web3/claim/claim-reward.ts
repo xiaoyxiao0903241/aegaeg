@@ -39,8 +39,6 @@ export interface TeamRewardClaimSignature {
 export type SignedRewardClaimResult = {
   receipt: ConfirmedWalletWrite
   confirmResult: ClaimConfirmResult | null
-  confirmError?: unknown
-  /** 链上已成功时始终带回，供 confirm 失败 UI 展示。 */
   txHash: string
 }
 
@@ -149,13 +147,38 @@ export async function confirmClaimWithRetry(
     : new Error('Claim confirm failed', { cause: lastError })
 }
 
+/**
+ * 链上已成功后的 confirm：失败返回 null，不抛。
+ *
+ * 调用方必须 await 后再提示成功并失效缓存（余额以后端为准）。
+ * confirm 失败仍算领取成功、仍要刷新；再对不齐交给扫描器，不再提示用户。
+ *
+ * @param token 会话 token
+ * @param request.salt 领取签名返回的 bytes32
+ * @param request.txHash 链上交易哈希
+ * @param onUnauthorized 未授权回调
+ * @returns 确认结果；重试耗尽时为 null
+ * @see confirmClaimWithRetry
+ */
+export async function confirmClaimQuietly(
+  token: string,
+  request: { salt: string; txHash: string },
+  onUnauthorized: () => void,
+  options: { attempts?: number; delayMs?: number } = {},
+): Promise<ClaimConfirmResult | null> {
+  try {
+    return await confirmClaimWithRetry(token, request, onUnauthorized, options)
+  } catch {
+    return null
+  }
+}
+
 async function claimSignedReward({
   wallet,
   token,
   onUnauthorized,
   requestSignature,
   claimOnChain,
-  skipConfirm = false,
 }: {
   wallet: Wallet
   token: string
@@ -169,8 +192,6 @@ async function claimSignedReward({
     salt: `0x${string}`
     signature: `0x${string}`
   }) => Promise<ConfirmedWalletWrite>
-  /** OpenAPI：order_type=5（做市）等由扫描器核销，禁止调 /claim/confirm。 */
-  skipConfirm?: boolean
 }): Promise<SignedRewardClaimResult> {
   const payload = (await requestWithSession(
     requestSignature,
@@ -189,22 +210,13 @@ async function claimSignedReward({
     signature: normalized.signature,
   })
   const txHash = receipt.transactionHash
-
-  if (skipConfirm) {
-    return { receipt, confirmResult: null, txHash }
-  }
-
-  try {
-    const confirmResult = await confirmClaimWithRetry(
-      token,
-      { salt: normalized.salt, txHash },
-      onUnauthorized,
-    )
-    return { receipt, confirmResult, txHash }
-  } catch (confirmError) {
-    // 资金已上链；保留 receipt/txHash，由 UI 提示同步失败，禁止当作未领取。
-    return { receipt, confirmResult: null, confirmError, txHash }
-  }
+  // 等 confirm 试完再返回，让成功提示与余额刷新落在同一时刻
+  const confirmResult = await confirmClaimQuietly(
+    token,
+    { salt: normalized.salt, txHash },
+    onUnauthorized,
+  )
+  return { receipt, confirmResult, txHash }
 }
 
 type SignedClaimOnChain = (args: {
@@ -219,14 +231,12 @@ type SignedClaimOnChain = (args: {
 function createSignedClaim(
   requestSignature: (token: string) => Promise<TeamRewardClaimSignature>,
   claimOnChain: SignedClaimOnChain,
-  options?: { skipConfirm?: boolean },
 ) {
   return (args: { wallet: Wallet; token: string; onUnauthorized: () => void }) =>
     claimSignedReward({
       ...args,
       requestSignature,
       claimOnChain,
-      skipConfirm: options?.skipConfirm,
     })
 }
 
@@ -250,11 +260,11 @@ export const claimCommunityFund = createSignedClaim(
   claimOnVault(BSC_CONTRACTS.communityFundVault),
 )
 
-/** 做市津贴 — OpenAPI 禁 confirm，扫描器核销。 */
-export const claimMarketFundReward = createSignedClaim(
-  requestMarketFundClaim,
-  writeMarketFundClaim,
-  {
-    skipConfirm: true,
-  },
-)
+/**
+ * 做市津贴签名领取（MarketFundVault.claimReward）。
+ *
+ * 上链成功后同样 POST /claim/confirm（salt 取自签名包）。
+ *
+ * @see docs/backend-api/api.md #claim/market-fund
+ */
+export const claimMarketFundReward = createSignedClaim(requestMarketFundClaim, writeMarketFundClaim)

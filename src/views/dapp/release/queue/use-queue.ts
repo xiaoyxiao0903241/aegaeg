@@ -11,7 +11,7 @@ import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, toUsd } from '~/shared/presenters/format'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
@@ -104,12 +104,26 @@ export function useQueue() {
           planIndexOk: planIndex >= 0,
         }),
       pending: pendingPlan === planIndex,
-      claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
-      releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
+      claimableLabel: formatTokenAmount(queueQuery.data == null ? null : claimable, AGX_DECIMALS, {
+        digits: 4,
+        trimZeros: false,
+        suffix: ` ${t.release.units.queue}`,
+      }),
+      releasingLabel: formatTokenAmount(queueQuery.data == null ? null : releasing, AGX_DECIMALS, {
+        digits: 4,
+        trimZeros: false,
+        suffix: ` ${t.release.units.queue}`,
+      }),
       releasedPctLabel: interpolate(t.release.labels.releasedPct, {
         pct: pctLabel.replace('%', ''),
       }),
-      valueHint: formatUsdApprox(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
+      valueHint: formatDecimal(
+        toUsd(
+          queueQuery.data == null ? null : formatTokenAmountToNumber(claimable, AGX_DECIMALS),
+          priceUsd,
+        ),
+        { digits: 2, prefix: '≈ $' },
+      ),
       progressWidth: pctLabel,
     }
   })

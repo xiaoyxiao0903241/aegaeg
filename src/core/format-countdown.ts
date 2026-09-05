@@ -56,3 +56,24 @@ export function formatCountdownParts(
   if (start < 0) start = ordered.length - 1
   return ordered.slice(start).map(({ id, text }) => ({ id, text }))
 }
+
+/**
+ * 结束时刻 → `HH:MM` 倒计时。缺结束时刻或非正 → `null`（界面走 `--`）。
+ *
+ * @param endTimeSec unix 秒
+ * @param nowSec 当前墙钟 unix 秒
+ */
+export function formatCountdownClock(
+  endTimeSec: bigint | number | null | undefined,
+  nowSec: number,
+): string | null {
+  if (endTimeSec == null) return null
+  const end = Number(endTimeSec)
+  if (!Number.isFinite(end) || end <= 0) return null
+  const [hours, minutes] = formatCountdownParts(
+    Math.max(0, end - nowSec),
+    ['hours', 'minutes'],
+    false,
+  )
+  return `${hours?.text ?? '00'}:${minutes?.text ?? '00'}`
+}

@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
-import { formatApiContributionPoints } from '~/core/exchange/format-contribution-points'
 import { PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
 import { interpolate } from '~/i18n/interpolate'
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
@@ -23,13 +22,18 @@ import {
   type ConsumeLogPurposeKey,
   consumeLogPurposeKey,
 } from '~/shared/presenters/consume-log-purpose'
-import { formatBlockTime, formatNumber, TABLE_EMPTY } from '~/shared/presenters/format'
+import {
+  formatApiContributionPoints,
+  formatBlockTime,
+  formatDecimal,
+  TABLE_EMPTY,
+} from '~/shared/presenters/format'
 
 /**
  * 各类流水/持仓记录 → 表格行映射
  *
  * 操作列文案由 i18n（`flowOps`）提供，标签跟 API 枚举；
- * 质押/债券带 `term_days` 周期后缀。金额缺数显 0；
+ * 质押/债券带 `term_days` 周期后缀。金额缺数显 `--`；
  * 交易哈希走 ExplorerLink（BscScan `/tx/...`）。
  *
  * @see docs/backend-api/api.md stake-flow / bond-flow / x0-mining / release / turbine
@@ -44,10 +48,9 @@ function formatAmount(
   digits = PERSONAL_TOKEN_DIGITS,
   suffix = '',
   prefix = '',
-  trimZeros = false,
+  fraction: 'fixed' | 'natural' = 'fixed',
 ): string {
-  const n = Number(raw)
-  return formatNumber(Number.isFinite(n) ? n : 0, { digits, suffix, prefix, trimZeros })
+  return formatDecimal(raw, { digits, suffix, prefix, fraction })
 }
 
 function formatTx(tx: string | null | undefined): ReactNode {
@@ -211,8 +214,7 @@ export function mapTurbineLogToOpsRow(item: TurbineLogItem, copy: FlowOpsCopy): 
 
 /** 质押持仓 → 侧栏表格行。 */
 export function mapStakePositionToAsideRow(item: StakePositionItem, copy: FlowOpsCopy): FlowLogRow {
-  const amount = Number(item.amount)
-  const amountLabel = formatNumber(Number.isFinite(amount) ? amount : 0, {
+  const amountLabel = formatDecimal(item.amount, {
     digits: PERSONAL_TOKEN_DIGITS,
     suffix: ' AGX',
   })
@@ -224,7 +226,7 @@ export function mapStakePositionToAsideRow(item: StakePositionItem, copy: FlowOp
       : item.term_days <= 0
         ? copy.liquid
         : interpolate(copy.periodDays, {
-            n: formatNumber(item.term_days, { digits: 0, trimZeros: true }),
+            n: formatDecimal(item.term_days, { digits: 0, fraction: 'natural' }),
           })
   return [
     formatBlockTime(item.block_time),
@@ -240,17 +242,17 @@ export function mapBondPurchaseToAsideRow(item: BondPurchaseItem, copy: FlowOpsC
   const discount =
     item.discount_bp == null
       ? TABLE_EMPTY
-      : `${formatNumber(item.discount_bp / 100, { digits: 2, trimZeros: true })}%`
+      : formatDecimal(item.discount_bp / 100, { digits: 2, fraction: 'natural', suffix: '%' })
   const termLabel =
     item.term_days <= 0
       ? copy.liquid
       : interpolate(copy.periodDays, {
-          n: formatNumber(item.term_days, { digits: 0, trimZeros: true }),
+          n: formatDecimal(item.term_days, { digits: 0, fraction: 'natural' }),
         })
   return [
     formatBlockTime(item.block_time),
     termLabel,
-    formatAmount(item.deposit_amount, 2, '', '$', true),
+    formatAmount(item.deposit_amount, 2, '', '$', 'natural'),
     discount,
     formatAmount(item.payout, PERSONAL_TOKEN_DIGITS, ' AGX'),
     formatTx(item.tx_hash),

@@ -1,7 +1,7 @@
 import { encodeFunctionData, parseAbi } from 'viem'
 
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import { ERC20_METHODS, X_STAKING_POOL_METHODS } from '~/web3/abis'
 import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
@@ -76,13 +76,12 @@ export async function readXmineOverview(): Promise<XmineOverview> {
   }
 }
 
-/** 日收益率：yieldRateBP / 100 → %（1 BP = 0.01%；公式分母 10000）。 */
-export function formatXmineDailyYieldLabel(yieldRateBP: bigint): string {
-  const pct = Number(yieldRateBP) / 100
-  if (!Number.isFinite(pct)) {
-    return `${formatNumber(0, { digits: 2 })}%`
-  }
-  return `${formatNumber(pct, { digits: 2 })}%`
+/** 日收益率：yieldRateBP / 100 → %（1 BP = 0.01%；公式分母 10000）。缺数 → `--`。 */
+export function formatXmineDailyYieldLabel(yieldRateBP: bigint | null | undefined): string {
+  return formatDecimal(yieldRateBP == null ? null : Number(yieldRateBP) / 100, {
+    digits: 2,
+    suffix: '%',
+  })
 }
 
 /**

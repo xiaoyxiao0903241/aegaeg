@@ -38,7 +38,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, LIVE_DATA_PLACEHOLDER, toUsd } from '~/shared/presenters/format'
 import {
   mapBondFlowLogToOpsRow,
   mapStakeFlowLogToOpsRow,
@@ -275,7 +275,11 @@ export function usePositionDock(product: AssetsProduct) {
           ? (row as AssetsStakeRow).principal
           : (row as AssetsStakeRow).claimableBalance
         : (row as AssetsBondRow).pendingPayout
-    const amountLabel = `${formatTokenAmount(amount, EXCHANGE_CONFIG.tokens.agx.decimals, PERSONAL_TOKEN_DIGITS)} AGX`
+    const amountLabel = formatTokenAmount(amount, EXCHANGE_CONFIG.tokens.agx.decimals, {
+      digits: PERSONAL_TOKEN_DIGITS,
+      trimZeros: false,
+      suffix: ' AGX',
+    })
     setRedeem({ open: true, capturedAddress: address, kind, row, amountLabel })
   }
 
@@ -439,25 +443,28 @@ function mapPricedStats(
   priceUsd: number | null,
 ): AssetsPositionStatCell[] {
   return rows.map(({ amount, decimals, unit, icon }) => ({
-    value: `${formatTokenAmount(amount, decimals, PERSONAL_TOKEN_DIGITS)} ${unit}`,
+    value: formatTokenAmount(amount, decimals, {
+      digits: PERSONAL_TOKEN_DIGITS,
+      trimZeros: false,
+      suffix: ` ${unit}`,
+    }),
     icon,
-    approx: formatUsdApprox(formatTokenAmountToNumber(amount, decimals), priceUsd),
+    approx: formatDecimal(toUsd(formatTokenAmountToNumber(amount, decimals), priceUsd), {
+      digits: 2,
+      prefix: '≈ $',
+    }),
   }))
 }
 
-/** 读失败展示占位横线，不用 0.00 冒充实数；未连接 / 加载中仍用 0.0000 空态 */
-function errorStatCells(count: number): AssetsPositionStatCell[] {
-  return Array.from({ length: count }, () => ({ value: '—' }))
-}
-
-function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPositionStatCell[] {
+/** 没数 → `--`；读失败与未连接 / 加载中同一空态，不伪造 0。 */
+function emptyStatCells(count: number): AssetsPositionStatCell[] {
   return Array.from({ length: count }, () => ({
-    value: `0.0000 ${unit}`,
-    approx: formatUsdApprox(0, null),
+    value: LIVE_DATA_PLACEHOLDER,
+    approx: LIVE_DATA_PLACEHOLDER,
   }))
 }
 
-/** 仓位右侧统计：汇总链上持仓数据，读失败展示占位横线，不伪造数字 */
+/** 仓位右侧统计：汇总链上持仓数据；没数 → `--`，不伪造 0。 */
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
   const { walletReady, sessionReady } = useDappHost()
   const account = useActiveAccount()
@@ -470,12 +477,12 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   const bondCount = 5
 
   if (!walletReady || !address) {
-    return zeroStatCells(product === 'stake' ? stakeCount : bondCount)
+    return emptyStatCells(product === 'stake' ? stakeCount : bondCount)
   }
 
   if (product === 'stake') {
-    if (stakeQuery.isError) return errorStatCells(stakeCount)
-    if (stakeQuery.data === undefined) return zeroStatCells(stakeCount)
+    if (stakeQuery.isError) return emptyStatCells(stakeCount)
+    if (stakeQuery.data === undefined) return emptyStatCells(stakeCount)
     const rows = stakeQuery.data
     const total = rows.reduce((sum, row) => sum + row.principal, ZERO_BI)
     const { released, pending: pendingRelease } = aggregateStakeRelease(rows)
@@ -497,8 +504,8 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   }
 
   // LP / 销毁总收益 = 已领接口 + 当前 Rebase（profit）
-  if (bondQuery.isError) return errorStatCells(bondCount)
-  if (bondQuery.data === undefined) return zeroStatCells(bondCount)
+  if (bondQuery.isError) return emptyStatCells(bondCount)
+  if (bondQuery.data === undefined) return emptyStatCells(bondCount)
 
   const rows = bondQuery.data
   const total = rows.reduce((sum, row) => sum + row.payoutRemaining, ZERO_BI)

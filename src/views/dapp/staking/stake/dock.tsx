@@ -1,4 +1,3 @@
-import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
@@ -9,6 +8,7 @@ import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
+import { interpolateLive } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { withEpochSchedule } from '~/views/dapp/shared/epoch-schedule'
@@ -82,7 +82,7 @@ export function StakeDock() {
           balance={
             stake.period === 'liquid' ? (
               <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-                {interpolate(t.staking.stake.quotaInline, { quota: quotaLabel })}
+                {interpolateLive(t.staking.stake.quotaInline, { quota: quotaLabel })}
               </Text>
             ) : undefined
           }

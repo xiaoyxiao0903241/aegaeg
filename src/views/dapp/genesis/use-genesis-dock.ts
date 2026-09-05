@@ -10,7 +10,7 @@ import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 import type { GenesisSessionState } from '~/views/dapp/genesis/genesis-session-host'
 
 /**
@@ -45,7 +45,7 @@ export function useGenesisDock(genesis: GenesisSessionState) {
     threshold:
       genesis.airdropThresholdLoading || genesis.airdropThresholdUsd == null
         ? '—'
-        : formatNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
+        : formatDecimal(genesis.airdropThresholdUsd, { suffix: ' USD' }),
   })
 
   function handleSharesChange(value: string) {

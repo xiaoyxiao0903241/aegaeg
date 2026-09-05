@@ -17,6 +17,7 @@ import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { bscscanAddress } from '~/shared/config/explorer'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/labels'
 import { ExchangeSlippagePanel } from '~/views/dapp/exchange/market-trade/slippage-panel'
 import { ExchangeOneWayFlowIndicator, PercentButtonRow } from '~/views/dapp/exchange/primitives'
 import { TokenChip } from '~/views/dapp/exchange/primitives'
@@ -31,7 +32,10 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
   const { t } = vm
   const unlock = turbine.pair.unlock
 
-  const unlockableBalance = `${t.exchange.turbine.unlockable}: ${vm.unlockableAmountLabel}`
+  const unlockableBalance = formatExchangeBalanceLabel({
+    label: t.exchange.turbine.unlockable,
+    value: vm.unlockableAmountLabel,
+  })
   const usd1Balance = (
     <>
       <span className="whitespace-nowrap">{t.exchange.balance} </span>
@@ -206,11 +210,15 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
             ) : (
               turbine.silences.map((row) => (
                 <TurbineClaimCard
-                  amountLabel={`${formatTokenAmount(
+                  amountLabel={formatTokenAmount(
                     row.silenceBalance,
                     EXCHANGE_CONFIG.tokens.agx.decimals,
-                    4,
-                  )} gAGX`}
+                    {
+                      digits: 4,
+                      trimZeros: false,
+                      suffix: ' gAGX',
+                    },
+                  )}
                   claimLabel={t.exchange.turbine.claimAction}
                   claimableLabel={t.exchange.turbine.claimable}
                   coolingLabel={t.exchange.turbine.cooling}

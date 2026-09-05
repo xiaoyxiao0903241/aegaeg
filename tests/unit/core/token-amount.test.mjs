@@ -72,7 +72,7 @@ test('formatTokenAmount renders human readable balance', async () => {
     '/src/core/exchange/token-amount.ts',
   )
 
-  // 数字第三参 = 展示位：与 formatNumber 一致，默认补足小数、四舍五入（禁 0.00→0）
+  // 数字第三参 = 展示位：与 formatDecimal 一致，默认补足小数、四舍五入（禁 0.00→0）
   assert.equal(formatTokenAmount(10n ** 18n, 18), '1.0000')
   assert.equal(formatTokenAmount(1234567890000000000n, 18, 4), '1.2346')
   assert.equal(formatTokenAmount(0n, 18, 2), '0.00')
@@ -135,6 +135,21 @@ test('formatTokenAmount dust: positive below display floor → <0.01 / <0.0001',
 
   // digits 0: no "<0.…" dust label
   assert.equal(formatTokenAmount(1n, 9, 0), '0')
+
+  const { LIVE_DATA_PLACEHOLDER } = await loadModule('/src/core/constants.ts')
+  assert.equal(
+    formatTokenAmount(null, 9, { digits: 4, trimZeros: false, suffix: ' AGX' }),
+    LIVE_DATA_PLACEHOLDER,
+  )
+  assert.equal(formatTokenAmount(undefined, 9, 4), LIVE_DATA_PLACEHOLDER)
+  assert.equal(
+    formatTokenAmount(1n, 9, { digits: 4, trimZeros: false, suffix: ' AGX' }),
+    '<0.0001 AGX',
+  )
+  assert.equal(
+    formatTokenAmount(0n, 9, { digits: 2, trimZeros: false, suffix: ' AGX' }),
+    '0.00 AGX',
+  )
 })
 
 test('isAssetsActionableAmount is the 0.01 display floor', async () => {
@@ -155,15 +170,16 @@ test('isAssetsActionableAmount is the 0.01 display floor', async () => {
   assert.equal(formatAssetsActionAmount(0n, 9), '0.0000')
   assert.equal(formatAssetsActionAmount(agxFloor - 1n, 9), '0.0100')
   assert.equal(formatAssetsActionAmount(agxFloor, 9), '0.0100')
+  assert.equal(formatAssetsActionAmount(agxFloor, 9, { suffix: ' AGX' }), '0.0100 AGX')
 })
 
-test('formatNumber is the human-number display core', async () => {
-  const { formatNumber } = await loadModule('/src/shared/presenters/format.ts')
+test('formatDecimal is the human-number display core', async () => {
+  const { formatDecimal } = await loadModule('/src/shared/presenters/format.ts')
 
-  assert.equal(formatNumber(1234.5, { digits: 2, trimZeros: false, prefix: '$' }), '$1,234.50')
-  assert.equal(formatNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
-  assert.equal(formatNumber(1000, { digits: 0, trimZeros: true }), '1,000')
-  assert.equal(formatNumber(42, { digits: 0, trimZeros: true }), '42')
+  assert.equal(formatDecimal(1234.5, { digits: 2, fraction: 'fixed', prefix: '$' }), '$1,234.50')
+  assert.equal(formatDecimal(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
+  assert.equal(formatDecimal(1000, { digits: 0, fraction: 'natural' }), '1,000')
+  assert.equal(formatDecimal(42, { digits: 0, fraction: 'natural' }), '42')
 })
 
 test('slippagePercentToBps converts UI percent to basis points', async () => {

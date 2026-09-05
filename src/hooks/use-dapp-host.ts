@@ -1,3 +1,4 @@
+import { isDappSessionPending } from '~/core/wallet/chain-query-enabled'
 import { useAuth } from '~/hooks/use-auth'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useDappHostStore } from '~/stores/dapp-host-store'
@@ -8,6 +9,8 @@ export interface DappHostState {
   tab: DappTab
   /** SIWE 会话已就绪——决定接口数据与登录态界面。 */
   sessionReady: boolean
+  /** 水合 / AutoConnect / 正在签名，不刷未登录空态。 */
+  sessionPending: boolean
   /** 钱包已连接但缺少 JWT——需要展示登录引导。 */
   needsSignIn: boolean
   /** thirdweb 当前账户——用于签名与交易，由钱包 SDK 实时提供。 */
@@ -29,7 +32,7 @@ export interface DappHostState {
 export function useDappHost(): DappHostState {
   const account = useActiveAccount()
   const isAutoConnecting = useIsAutoConnecting()
-  const { sessionReady, needsSignIn } = useAuth()
+  const { sessionReady, needsSignIn, hasHydrated, isLoggingIn } = useAuth()
   const tab = useDappHostStore((state) => state.activeTab)
   const detailCollapsed = useDappHostStore((state) => state.detailCollapsed)
   const walletReady = hasWalletAccount(account)
@@ -38,6 +41,11 @@ export function useDappHost(): DappHostState {
   return {
     tab,
     sessionReady,
+    sessionPending: isDappSessionPending({
+      hasHydrated,
+      isWalletConnecting,
+      isLoggingIn,
+    }),
     needsSignIn,
     walletReady,
     isWalletConnecting,

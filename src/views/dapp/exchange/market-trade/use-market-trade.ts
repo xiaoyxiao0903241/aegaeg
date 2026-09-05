@@ -63,7 +63,6 @@ export function useMarketTradeDock(trade: MarketTradeState) {
     buyBalanceLabel: trade.buyBalanceLabel,
     sellBalanceLabel: trade.sellBalanceLabel,
     sessionReady,
-    walletReady: trade.walletReady,
   })
 
   const pickDisabled = trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping

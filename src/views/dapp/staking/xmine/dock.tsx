@@ -1,4 +1,3 @@
-import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
 import { AmountBox } from '~/shared/components/amount-box'
 import { AmountTokenEnd } from '~/shared/components/amount-token-end'
@@ -9,6 +8,7 @@ import { FormInfoCard } from '~/shared/components/form-info-card'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
+import { interpolateLive } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
@@ -36,7 +36,7 @@ export function XmineDock() {
 
   const quotaBalance = (
     <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
-      {interpolate(t.staking.xmine.quotaInline, { quota: xmine.quotaLabel })}
+      {interpolateLive(t.staking.xmine.quotaInline, { quota: xmine.quotaLabel })}
     </Text>
   )
 
@@ -87,7 +87,7 @@ export function XmineDock() {
                     <Tooltip.Info content={t.staking.xmine.meta.maxHint} />
                   </span>
                 ),
-                value: xmine.quotaLabel === '0' ? '0.0000 gAGX' : `${xmine.quotaLabel} gAGX`,
+                value: xmine.quotaLabel,
               },
               {
                 label: t.staking.xmine.meta.lock,

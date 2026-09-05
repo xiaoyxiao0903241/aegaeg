@@ -5,7 +5,6 @@ import {
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
-import type { ClaimConfirmResult } from '~/shared/api/types'
 import {
   claimCommunityFund,
   claimMarketFundReward,
@@ -26,20 +25,19 @@ type RewardClaimExecutor = (args: {
 /**
  * 面向界面的领取结果
  *
- * confirm_failed 属于成功路径（链上已确认），不作为异常抛出。
+ * confirm 已尝试过后才返回；失败不单独成状态。
  */
 export type ClaimRewardUiResult = {
-  status: 'success' | 'confirm_failed'
-  confirmResult: ClaimConfirmResult | null
+  status: 'success'
   txHash?: string
 }
 
 /**
  * 领取通用封装：串起登录会话、写就绪检查与链上提交
  *
- * 提交失败时返回结果而非抛出，由调用方决定提示方式。
+ * 执行方会先上链再 await confirm。返回后一律刷新缓存。
  *
- * @param execute 具体领取执行函数（签发 + 上链）
+ * @param execute 具体领取执行函数（签发 + 上链 + confirm）
  */
 export function useClaimReward(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
@@ -59,13 +57,9 @@ export function useClaimReward(execute: RewardClaimExecutor) {
         onUnauthorized: invalidateSession,
       })
       const outcome = claimRewardOutcome(result)
-      // confirm_failed 表示链上已成功，不抛错；由视图 toast 区分警告与成功
-      if (outcome.shouldInvalidate) {
-        invalidateAfterTeamClaim()
-      }
+      invalidateAfterTeamClaim()
       return {
         status: outcome.status,
-        confirmResult: outcome.confirmResult as ClaimConfirmResult | null,
         txHash: outcome.txHash,
       }
     },

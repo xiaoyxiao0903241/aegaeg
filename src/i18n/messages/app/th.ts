@@ -821,7 +821,6 @@ const app = defineMessages({
       expired: 'ลายเซ็นหมดอายุ รีเฟรชแล้วรับใหม่',
       noOrder: 'ยังไม่มีรางวัลที่รับได้',
       failed: 'รับไม่สำเร็จ กรุณาลองใหม่ภายหลัง',
-      confirmSyncFailed: 'รับรางวัลบนเชนสำเร็จแล้ว แต่ซิงก์ล้มเหลว กรุณารีเฟรชหน้า และห้ามรับซ้ำ',
     },
     hub: {
       asideTitle: 'เกี่ยวกับรางวัล AEGIS X',
@@ -1947,15 +1946,15 @@ const app = defineMessages({
       insufficientAllowance: 'อนุญาตไม่พอ',
       insufficientQuota: 'เกินโควตาสเตกที่ใช้ได้ กรุณาลดจำนวนแล้วลองใหม่',
       insufficientQuotaWithAmount:
-        'เกินโควตาสเตกที่ใช้ได้: ขณะนี้สเตกได้อีกไม่เกิน {quota} AGX กรุณาลดจำนวนแล้วลองใหม่',
+        'เกินโควตาสเตกที่ใช้ได้: ขณะนี้สเตกได้อีกไม่เกิน {quota} กรุณาลดจำนวนแล้วลองใหม่',
       insufficientQuotaPersonalWithAmount:
-        'เกินโควตาสเตกส่วนตัวของคุณ: เพดานสะสมส่วนตัวเหลือ {quota} AGX กรุณาลดจำนวนแล้วลองใหม่',
+        'เกินโควตาสเตกส่วนตัวของคุณ: เพดานสะสมส่วนตัวเหลือ {quota} กรุณาลดจำนวนแล้วลองใหม่',
       insufficientQuotaPersonalDailyWithAmount:
-        'เกินโควตาสเตกวันนี้ของคุณ: โควตาส่วนตัววันนี้เหลือ {quota} AGX กรุณาลดจำนวน หรือรอให้โควตารีเซ็ตแล้วลองใหม่',
+        'เกินโควตาสเตกวันนี้ของคุณ: โควตาส่วนตัววันนี้เหลือ {quota} กรุณาลดจำนวน หรือรอให้โควตารีเซ็ตแล้วลองใหม่',
       insufficientQuotaPoolWithAmount:
-        'โควตาพูลสเตกบนเชนไม่พอ: พูลเหลือ {quota} AGX กรุณาลดจำนวน หรือลองใหม่ภายหลัง',
+        'โควตาพูลสเตกบนเชนไม่พอ: พูลเหลือ {quota} กรุณาลดจำนวน หรือลองใหม่ภายหลัง',
       insufficientXmineQuotaWithAmount:
-        'เกินโควตาขุดของคุณ: โควตาขุดขึ้นกับเงินต้นที่ล็อกไว้ ขณะนี้สเตกได้อีกไม่เกิน {quota} gAGX กรุณาลดจำนวน หรือเพิ่มโพสิชันล็อกก่อนแล้วลองใหม่',
+        'เกินโควตาขุดของคุณ: โควตาขุดขึ้นกับเงินต้นที่ล็อกไว้ ขณะนี้สเตกได้อีกไม่เกิน {quota} กรุณาลดจำนวน หรือเพิ่มโพสิชันล็อกก่อนแล้วลองใหม่',
       poolPaused: 'พูลสเตกนี้ปิดชั่วคราว กรุณาลองใหม่ภายหลัง',
       depositoryNotAuth: 'ตลาดพันธบัตรนี้ยังไม่เปิดให้ซื้อ กรุณาเลือกงวดอื่นหรือลองใหม่ภายหลัง',
       insufficientDebtCapacity:
@@ -2223,8 +2222,8 @@ const app = defineMessages({
       periodLabel: 'เลือกช่วงสเตก',
       periodAria: 'เลือกช่วงสเตก',
       amountAria: 'จำนวนที่สเตก',
-      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance} AGX)',
-      quotaInline: 'โควตาสเตก: {quota} AGX',
+      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance})',
+      quotaInline: 'โควตาสเตก: {quota}',
       submit: 'สเตก',
       bindCta: 'ไปผูกการแนะนำ',
       success: 'สเตกสำเร็จ',
@@ -2314,7 +2313,7 @@ const app = defineMessages({
       periodLabel: 'เลือกช่วงพันธบัตร',
       periodAria: 'ช่วงพันธบัตร LP',
       amountAria: 'จำนวนซื้อ',
-      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance} USD1)',
+      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance})',
       submit: 'ซื้อ',
       success: 'ซื้อสำเร็จ',
       footnote: 'ระบบสร้าง LP AGX/USD1 อัตโนมัติแล้วเบิร์นเข้าหลุมดำเพื่อสภาพคล่องฐานถาวร',
@@ -2405,7 +2404,7 @@ const app = defineMessages({
       periodLabel: 'เลือกช่วงพันธบัตร',
       periodAria: 'ช่วงพันธบัตรเบิร์น',
       amountAria: 'จำนวนซื้อ',
-      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance} USD1)',
+      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance})',
       submit: 'ซื้อ',
       success: 'ซื้อสำเร็จ',
       footnote: 'ระบบมิ้นต์ AGX ส่วนลด ซื้ออัตโนมัติ และเบิร์นถาวรเข้าหลุมดำ',
@@ -2490,8 +2489,8 @@ const app = defineMessages({
       title: 'ขุด X',
       intro: 'สเตก gAGX ขุดรางวัลระบบนิเวศ X โดยไม่สูญเสียต้นทาง',
       amountAria: 'จำนวนสเตก gAGX',
-      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance} gAGX)',
-      quotaInline: 'โควตาสเตก: {quota} gAGX',
+      amountBalance: 'จำนวน (ยอดในกระเป๋า {balance})',
+      quotaInline: 'โควตาสเตก: {quota}',
       submit: 'สเตก',
       success: 'สเตกสำเร็จ',
       openKlineChart: 'ดูกราฟแท่งเทียน',

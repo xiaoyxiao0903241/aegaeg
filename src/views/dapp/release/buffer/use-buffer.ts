@@ -11,7 +11,7 @@ import { usePrincipalReleaseDurationDays } from '~/hooks/use-principal-release-d
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatUsdApprox } from '~/shared/presenters/format'
+import { formatDecimal, toUsd } from '~/shared/presenters/format'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
@@ -120,21 +120,46 @@ export function useBuffer() {
     walletReady,
     blockHint,
     intro: interpolate(t.release.buffer.intro, { days: durationQuery.data ?? 30 }),
-    claimableLabel: `${formatTokenAmount(agxClaimable, AGX_DECIMALS, 4)} AGX`,
-    releasingLabel: `${formatTokenAmount(agxReleasing, AGX_DECIMALS, 4)} AGX`,
+    claimableLabel: formatTokenAmount(bufferQuery.data?.agx.pageClaimable, AGX_DECIMALS, {
+      digits: 4,
+      trimZeros: false,
+      suffix: ' AGX',
+    }),
+    releasingLabel: formatTokenAmount(bufferQuery.data?.agx.totalReleasing, AGX_DECIMALS, {
+      digits: 4,
+      trimZeros: false,
+      suffix: ' AGX',
+    }),
     releasedPctLabel: interpolate(t.release.labels.releasedPct, {
       pct: agxPctLabel.replace('%', ''),
     }),
-    valueHint: formatUsdApprox(formatTokenAmountToNumber(agxClaimable, AGX_DECIMALS), priceUsd),
+    valueHint: formatDecimal(
+      toUsd(
+        bufferQuery.data == null ? null : formatTokenAmountToNumber(agxClaimable, AGX_DECIMALS),
+        priceUsd,
+      ),
+      { digits: 2, prefix: '≈ $' },
+    ),
     progressWidth: agxPctLabel,
-    gagxClaimableLabel: `${formatTokenAmount(gagxClaimable, GAGX_DECIMALS, 4)} gAGX`,
-    gagxReleasingLabel: `${formatTokenAmount(gagxReleasing, GAGX_DECIMALS, 4)} gAGX`,
+    gagxClaimableLabel: formatTokenAmount(bufferQuery.data?.gagx.pageClaimable, GAGX_DECIMALS, {
+      digits: 4,
+      trimZeros: false,
+      suffix: ' gAGX',
+    }),
+    gagxReleasingLabel: formatTokenAmount(bufferQuery.data?.gagx.totalReleasing, GAGX_DECIMALS, {
+      digits: 4,
+      trimZeros: false,
+      suffix: ' gAGX',
+    }),
     gagxReleasedPctLabel: interpolate(t.release.labels.releasedPct, {
       pct: gagxPctLabel.replace('%', ''),
     }),
-    gagxValueHint: formatUsdApprox(
-      formatTokenAmountToNumber(gagxClaimable, GAGX_DECIMALS),
-      priceUsd,
+    gagxValueHint: formatDecimal(
+      toUsd(
+        bufferQuery.data == null ? null : formatTokenAmountToNumber(gagxClaimable, GAGX_DECIMALS),
+        priceUsd,
+      ),
+      { digits: 2, prefix: '≈ $' },
     ),
     gagxProgressWidth: gagxPctLabel,
     canClaimAgx,

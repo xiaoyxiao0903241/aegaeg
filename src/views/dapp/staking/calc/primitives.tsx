@@ -20,17 +20,18 @@ import { Skeleton } from '~/shared/components/skeleton'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
-import { formatNumber } from '~/shared/presenters/format'
+import { formatDecimal } from '~/shared/presenters/format'
 
 function calcUsd(value: number) {
-  if (!Number.isFinite(value)) return formatNumber(0, { digits: 2, prefix: '$' })
-  return formatNumber(value, { digits: 2, prefix: '$' })
+  return formatDecimal(value, { digits: 2, prefix: '$' })
 }
 
 function calcPct(value: number) {
-  if (!Number.isFinite(value)) return '0.00'
-  const sign = value >= 0 ? '+' : ''
-  return `${sign}${formatNumber(value, { digits: 2 })}%`
+  return formatDecimal(value, {
+    digits: 2,
+    prefix: value >= 0 ? '+' : '',
+    suffix: '%',
+  })
 }
 
 /** 产品 / 周期 Tab 行：用 Chip 拼装，不用 Segment 滑动条 */

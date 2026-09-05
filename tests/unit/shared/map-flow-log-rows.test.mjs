@@ -30,7 +30,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(missing[1], '质押（540天）')
-  assert.equal(missing[2], '0.0000 AGX')
+  assert.equal(missing[2], '--')
   assert.equal(missing[3], '-')
 
   const liquid = mapStakeFlowLogToOpsRow(
@@ -252,7 +252,7 @@ test('flow log rows use i18n ops labels, term suffix, and token units', async ()
     copy,
   )
   assert.equal(aside[1], '180 天')
-  assert.equal(aside[2], '0.0000 AGX')
+  assert.equal(aside[2], '--')
   assert.equal(aside[3], '45.67%')
 
   const asideEarly = mapStakePositionToAsideRow(

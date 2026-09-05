@@ -159,15 +159,26 @@ export function useAssetsClaimModal(args: {
 
   const releaseAmount = (claimable * BigInt(releasePct)) / HUNDRED_BI
   const restakeAmount = claimable - releaseAmount
-  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
-  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
-  const amountLabel = `${formatTokenAmount(claimable, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)} gAGX`
-  const withClaimUnit = (text: string) => `${text} gAGX`
+  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, {
+    digits: PERSONAL_TOKEN_DIGITS,
+    trimZeros: false,
+    suffix: ' gAGX',
+  })
+  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, {
+    digits: PERSONAL_TOKEN_DIGITS,
+    trimZeros: false,
+    suffix: ' gAGX',
+  })
+  const amountLabel = formatTokenAmount(claimable, GAGX_DECIMALS, {
+    digits: PERSONAL_TOKEN_DIGITS,
+    trimZeros: false,
+    suffix: ' gAGX',
+  })
   let ctaAmountLine: string | null = null
   if (releaseAmount === ZERO_BI) {
-    ctaAmountLine = withClaimUnit(restakeAmountText)
+    ctaAmountLine = restakeAmountText
   } else if (restakeAmount === ZERO_BI) {
-    ctaAmountLine = withClaimUnit(releaseAmountText)
+    ctaAmountLine = releaseAmountText
   }
 
   const { releaseDays: releaseDaysList, restakeDays: restakeDaysList } = claimDurationDaysLists(

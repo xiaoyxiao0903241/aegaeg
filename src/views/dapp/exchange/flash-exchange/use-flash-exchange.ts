@@ -29,7 +29,6 @@ export function useFlashExchange(flash: FlashExchangeState) {
     buyBalanceLabel: flash.buyBalanceLabel,
     sellBalanceLabel: flash.sellBalanceLabel,
     sessionReady,
-    walletReady: flash.walletReady,
   })
 
   const blockHint =
