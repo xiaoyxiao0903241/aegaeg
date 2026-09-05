@@ -6,9 +6,9 @@ import type { ReactNode } from 'react'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { darkBanner } from '~/shared/components/dark-banner'
-import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 
 /**
  * 创世荣誉顶部横幅
@@ -103,7 +103,7 @@ function Action({
   onClick?: () => void
 }) {
   return (
-    <MainButton
+    <SessionButton
       className="mt-2.5"
       density="inverse"
       disabled={disabled}
@@ -111,7 +111,7 @@ function Action({
       onClick={onClick}
     >
       {children}
-    </MainButton>
+    </SessionButton>
   )
 }
 /* jscpd:ignore-end */

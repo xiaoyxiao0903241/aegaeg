@@ -14,12 +14,12 @@ import { AmountMaxChip } from '~/shared/components/chip'
 import { ExplorerLink } from '~/shared/components/explorer-link'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
-import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatDecimal } from '~/shared/presenters/format'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 import { BondPeriodList } from '~/views/dapp/staking/bond/primitives'
@@ -201,14 +201,14 @@ export function BondDock({ kind }: { kind: BondKind }) {
           <>
             <WriteBlockAlert hint={blockHint} />
             <FormActions>
-              <MainButton
+              <SessionButton
                 density="external"
                 disabled={!bond.canSubmit && bond.blockReason !== 'notBound'}
                 loading={bond.isSubmitting}
                 onClick={() => void onSubmit()}
               >
                 {ctaLabel}
-              </MainButton>
+              </SessionButton>
             </FormActions>
           </>
         )}

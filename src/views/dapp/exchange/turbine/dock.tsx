@@ -11,7 +11,6 @@ import { AmountBox } from '~/shared/components/amount-box'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
-import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -25,6 +24,7 @@ import { TurbineClaimCard, TurbineEqBuyTokenCell } from '~/views/dapp/exchange/t
 import { useTurbine } from '~/views/dapp/exchange/turbine/use-turbine'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
@@ -187,19 +187,17 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
               />
             </FormInfoCard>
 
-            {vm.sessionReady && turbine.walletReady ? (
-              <FormActions>
-                <MainButton
-                  className="col-span-full"
-                  density="external"
-                  disabled={!turbine.canUnlock}
-                  loading={turbine.isSubmitting && turbine.claimingIndex == null}
-                  onClick={() => void vm.handleUnlock()}
-                >
-                  {t.exchange.turbine.unlockAction}
-                </MainButton>
-              </FormActions>
-            ) : null}
+            <FormActions>
+              <SessionButton
+                className="col-span-full"
+                density="external"
+                disabled={!turbine.canUnlock}
+                loading={turbine.isSubmitting && turbine.claimingIndex == null}
+                onClick={() => void vm.handleUnlock()}
+              >
+                {t.exchange.turbine.unlockAction}
+              </SessionButton>
+            </FormActions>
           </>
         ) : (
           <div className="flex flex-col gap-2.5">
@@ -224,9 +222,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
                   coolingLabel={t.exchange.turbine.cooling}
                   cooldownDoneLabel={t.exchange.turbine.cooldownDone}
                   countdownLabel={t.exchange.turbine.countdownLabel}
-                  disabled={
-                    !vm.sessionReady || !turbine.walletReady || !row.vested || turbine.isSubmitting
-                  }
+                  disabled={!row.vested || turbine.isSubmitting}
                   hourUnit={t.exchange.turbine.countdownHours}
                   icon={unlock.icon}
                   key={`${row.index}-${row.startTime.toString()}`}
@@ -241,7 +237,7 @@ export function TurbineDock({ turbine }: { turbine: TurbineExchangeState }) {
           </div>
         )}
 
-        {!vm.sessionReady || !turbine.walletReady ? <DockConnectPromo /> : null}
+        {!turbine.walletReady ? <DockConnectPromo /> : null}
       </DockStack>
     </TabHeader>
   )

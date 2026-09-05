@@ -10,7 +10,6 @@ import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
-import { MainButton } from '~/shared/components/main-button'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -25,6 +24,7 @@ import {
 } from '~/views/dapp/exchange/primitives'
 import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 
 export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
@@ -160,25 +160,24 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
           />
         </FormInfoCard>
 
-        <InlineAlert open={vm.sessionReady && trade.isHighPriceImpact} tone="notice">
-          {t.exchange.trade.highPriceImpactWarning}
-        </InlineAlert>
+        {vm.sessionReady && trade.isHighPriceImpact ? (
+          <InlineAlert open tone="notice">
+            {t.exchange.trade.highPriceImpactWarning}
+          </InlineAlert>
+        ) : null}
 
-        {vm.sessionReady && trade.walletReady ? (
-          <FormActions>
-            <MainButton
-              className="col-span-full"
-              density="external"
-              disabled={!trade.canSubmit}
-              loading={trade.isSubmitting}
-              onClick={() => void vm.onSubmit()}
-            >
-              {t.exchange.trade.action}
-            </MainButton>
-          </FormActions>
-        ) : (
-          <DockConnectPromo />
-        )}
+        <FormActions>
+          <SessionButton
+            className="col-span-full"
+            density="external"
+            disabled={!trade.canSubmit}
+            loading={trade.isSubmitting}
+            onClick={() => void vm.onSubmit()}
+          >
+            {t.exchange.trade.action}
+          </SessionButton>
+        </FormActions>
+        {!trade.walletReady ? <DockConnectPromo /> : null}
       </DockStack>
     </TabHeader>
   )

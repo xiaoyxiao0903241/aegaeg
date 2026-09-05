@@ -1,7 +1,7 @@
 /**
  * 社区左栏 Dock
  *
- * 绑定推荐关系是链上操作，需要已连接钱包；
+ * 绑定推荐关系是链上操作；「我的邀请人」卡片要 `sessionReady`。
  * 成员表格与业绩数据仍留在正文中按登录会话态展示。
  */
 import { useDappHost } from '~/hooks/use-dapp-host'
@@ -23,6 +23,7 @@ export function CommunityDock() {
 }
 
 function CommunityConnectedDock() {
+  const { sessionReady } = useDappHost()
   const {
     t,
     account,
@@ -46,28 +47,30 @@ function CommunityConnectedDock() {
         />
       ) : null}
 
-      {referral.isBound ? (
-        <CommunityReferrerBoundPanel
-          addressLabel={t.community.referrer}
-          copyLabel={t.common.copy}
-          note={t.community.referralBondPermanent}
-          onCopy={() => void onCopyReferrerAddress()}
-          referrer={referral.referrer}
-        />
-      ) : (
-        <CommunityReferrerBindCard
-          bindLabel={t.community.bindReferrer}
-          canBind={referral.canBind}
-          hint={t.community.referrerHint}
-          inputLabel={t.community.referrerPlaceholder}
-          isSubmitting={referral.isSubmitting}
-          onBind={() => void onBind()}
-          onInputChange={referral.setReferrerInput}
-          placeholder={t.community.referrerPlaceholder}
-          referrerLabel={t.community.referrer}
-          value={referral.referrerInput}
-        />
-      )}
+      {sessionReady ? (
+        referral.isBound ? (
+          <CommunityReferrerBoundPanel
+            addressLabel={t.community.referrer}
+            copyLabel={t.common.copy}
+            note={t.community.referralBondPermanent}
+            onCopy={() => void onCopyReferrerAddress()}
+            referrer={referral.referrer}
+          />
+        ) : (
+          <CommunityReferrerBindCard
+            bindLabel={t.community.bindReferrer}
+            canBind={referral.canBind}
+            hint={t.community.referrerHint}
+            inputLabel={t.community.referrerPlaceholder}
+            isSubmitting={referral.isSubmitting}
+            onBind={() => void onBind()}
+            onInputChange={referral.setReferrerInput}
+            placeholder={t.community.referrerPlaceholder}
+            referrerLabel={t.community.referrer}
+            value={referral.referrerInput}
+          />
+        )
+      ) : null}
 
       <div className="flex flex-col gap-2">
         {quickLinkItems.map((item) => (

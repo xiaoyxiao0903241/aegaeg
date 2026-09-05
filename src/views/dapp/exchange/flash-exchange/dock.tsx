@@ -8,7 +8,6 @@
 import { dappAssets } from '~/shared/assets/dapp'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
-import { MainButton } from '~/shared/components/main-button'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -23,6 +22,7 @@ import {
   ExchangeSessionFooter,
 } from '~/views/dapp/exchange/primitives'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
+import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
 import { WriteBlockAlert } from '~/views/dapp/shared/write-block-alert'
 
@@ -110,22 +110,18 @@ export function FlashExchangeDock({ flash }: { flash: FlashExchangeState }) {
           />
         </FormInfoCard>
 
-        {vm.sessionReady && flash.walletReady ? (
-          <>
-            <WriteBlockAlert hint={vm.blockHint} />
-            <FormActions>
-              <MainButton
-                className="col-span-full"
-                density="external"
-                disabled={!flash.canSubmit}
-                loading={flash.isSubmitting}
-                onClick={() => void vm.onSubmit()}
-              >
-                {t.exchange.flash.action}
-              </MainButton>
-            </FormActions>
-          </>
-        ) : null}
+        {flash.walletReady ? <WriteBlockAlert hint={vm.blockHint} /> : null}
+        <FormActions>
+          <SessionButton
+            className="col-span-full"
+            density="external"
+            disabled={!flash.canSubmit}
+            loading={flash.isSubmitting}
+            onClick={() => void vm.onSubmit()}
+          >
+            {t.exchange.flash.action}
+          </SessionButton>
+        </FormActions>
 
         <ExchangeSessionFooter sessionReady={vm.sessionReady} />
       </DockStack>
