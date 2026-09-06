@@ -82,8 +82,10 @@ const app = defineMessages({
     release: '释放',
     community: '社区',
     genesis: '共建',
+    notice: '公告',
     rewardsTooltip: '查看推荐奖励与团队奖励。',
     communityTooltip: '邀请伙伴参与共建，共享生态成长价值与创世奖励',
+    noticeTooltip: '查看生态最新公告与协议动态',
     bscTooltip: '仅 BSC · AEGIS X 运行在 BNB Smart Chain。',
   },
   /** 流水操作列：标签跟 API 枚举中文，周期括号跟原型。 */

@@ -81,9 +81,11 @@ const app = defineMessages({
     rewards: 'รางวัล',
     release: 'ปล่อย',
     community: 'ชุมชน',
+    notice: 'ประกาศ',
     rewardsTooltip: 'ดูรางวัลแนะนำและรางวัลทีม',
     communityTooltip:
       'เชิญพาร์ทเนอร์ร่วมสร้าง และแบ่งปันมูลค่าการเติบโตของระบบนิเวศกับรางวัล Genesis',
+    noticeTooltip: 'ดูประกาศล่าสุดของระบบนิเวศและการเปลี่ยนแปลงโปรโตคอล',
     bscTooltip: 'BSC เท่านั้น · AEGIS X ทำงานบน BNB Smart Chain',
   },
   flowOps: {

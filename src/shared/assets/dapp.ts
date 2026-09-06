@@ -81,6 +81,7 @@ export const dappAssets = {
   check: '/assets/figma/dapp/ic-check.svg',
   community: '/assets/figma/dapp/ic-community.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',
+  notice: '/assets/figma/dapp/ic-notice.svg',
   globe: '/assets/figma/dapp/ic-globe.svg',
   menu: '/assets/figma/dapp/ic-menu.svg',
   rewards: '/assets/figma/dapp/ic-rewards.svg',

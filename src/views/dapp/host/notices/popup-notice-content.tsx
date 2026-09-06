@@ -55,6 +55,7 @@ export function isPopupNoticeHtmlContent(content: string): boolean {
  *
  * @param html 待消毒的公告 HTML
  * @returns 可安全用于 innerHTML 的 HTML；无 DOMParser 时返回纯文本
+ * @see docs/backend-api/api.md #一期接口/home/popup-notices
  */
 export function sanitizePopupNoticeHtml(html: string): string {
   if (typeof DOMParser === 'undefined') {
@@ -117,6 +118,7 @@ function linkifyPlainText(text: string) {
  * HTML 经消毒后渲染；纯文本分段并自动链接化。
  *
  * @param content 公告正文
+ * @see docs/backend-api/api.md #一期接口/home/popup-notices
  */
 export function PopupNoticeContent({ content }: { content: string }) {
   if (!content.trim()) return null
@@ -125,7 +127,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
     const safeHtml = sanitizePopupNoticeHtml(content)
     return (
       <div
-        className="home-popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:underline-offset-2 [&_li]:ms-4 [&_li]:list-disc [&_ol]:list-decimal [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:space-y-1.5"
+        className="popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:underline-offset-2 [&_li]:ms-4 [&_li]:list-disc [&_ol]:list-decimal [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:space-y-1.5"
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
     )
@@ -137,7 +139,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
     .filter(Boolean)
 
   return (
-    <div className="home-popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground">
+    <div className="popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground">
       {paragraphs.map((paragraph) => (
         <Text as="p" key={paragraph} tone="foreground" variant="copy">
           {linkifyPlainText(paragraph)}
