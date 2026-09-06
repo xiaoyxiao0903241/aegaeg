@@ -147,10 +147,10 @@ export function RewardsSummaryCard({
         </Text>
       ) : null}
       {decorationSrc != null ? (
-        // 装饰图：超出卡片圆角部分裁掉
+        // 装饰图贴卡片底边，超出圆角裁掉
         <img
           alt=""
-          className="pointer-events-none absolute top-1.5 right-0 w-16 object-contain object-right max-dapp:hidden"
+          className="pointer-events-none absolute right-0 bottom-0 w-16 object-contain object-bottom max-dapp:hidden"
           src={decorationSrc}
         />
       ) : null}
