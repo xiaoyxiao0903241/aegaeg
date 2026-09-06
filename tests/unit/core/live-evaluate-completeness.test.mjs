@@ -85,6 +85,65 @@ test('calcTurbinePayableUsd discounts then caps at full-quota quote', async () =
   assert.equal(calcTurbinePayableUsd(500n, 0n, 100), 495n)
 })
 
+test('maxTurbineUnlockAgx is min of quota and USD1 converted at unit price with slippage', async () => {
+  const { maxTurbineUnlockAgx } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
+  const oneAgx = 1_000_000_000n
+  const unitUsd = 2_000_000_000_000_000_000n
+  const usd1 = 10_000_000_000_000_000_000n
+  const quota = 10n * oneAgx
+
+  assert.equal(
+    maxTurbineUnlockAgx({
+      quota,
+      usd1,
+      unitUsdPerAgx: unitUsd,
+      oneAgx,
+      slippageBps: 0,
+    }),
+    5n * oneAgx,
+  )
+  assert.equal(
+    maxTurbineUnlockAgx({
+      quota,
+      usd1,
+      unitUsdPerAgx: unitUsd,
+      oneAgx,
+      slippageBps: 100,
+    }),
+    5_050_505_050n,
+  )
+  assert.equal(
+    maxTurbineUnlockAgx({
+      quota: oneAgx,
+      usd1,
+      unitUsdPerAgx: unitUsd,
+      oneAgx,
+      slippageBps: 0,
+    }),
+    oneAgx,
+  )
+  assert.equal(
+    maxTurbineUnlockAgx({
+      quota,
+      usd1: 0n,
+      unitUsdPerAgx: unitUsd,
+      oneAgx,
+      slippageBps: 100,
+    }),
+    0n,
+  )
+  assert.equal(
+    maxTurbineUnlockAgx({
+      quota,
+      usd1,
+      unitUsdPerAgx: 0n,
+      oneAgx,
+      slippageBps: 100,
+    }),
+    0n,
+  )
+})
+
 test('evaluateTurbineClaimLive blocks when not vested', async () => {
   const { evaluateTurbineClaimLive } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
   assert.equal(evaluateTurbineClaimLive(true), null)

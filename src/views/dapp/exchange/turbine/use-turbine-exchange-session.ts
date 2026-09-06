@@ -13,6 +13,7 @@ import { sumTurbineSilenceBuckets } from '~/core/exchange/turbine-silence-bucket
 import {
   calcTurbinePayableUsd,
   isTurbineQuotaCapReady,
+  maxTurbineUnlockAgx,
   resolveTurbineSlippagePercent,
   TURBINE_AUTO_SLIPPAGE_PERCENT,
 } from '~/core/exchange/turbine-unlock-live'
@@ -70,7 +71,7 @@ function formatTurbineSummaryAmount(raw: string | null | undefined): string {
 /**
  * Turbine 会话状态：解锁（USD1 → AGX 进入冷却）+ 领取冷却完成的 gAGX
  *
- * 配额、余额、静默期与冷却时长均来自链上；应付 USD1 按报价减用户滑点，满额截到全配额报价。
+ * 配额、余额、静默期与冷却时长均来自链上；解锁输入上限为配额与 USD1 余额按单价、滑点换算的较小值。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -126,6 +127,15 @@ export function useTurbineExchangeSession(
     placeholderData: keepPreviousData,
   })
 
+  // 概览「AGX 价格」用 1 AGX 的单位报价；读取失败时显示 —
+  const unitPriceQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineUsdQuote(ONE_AGX.toString()),
+    queryFn: () => readTurbineUsdQuote(ONE_AGX),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: quotesEnabled && sessionReady,
+  })
+
   const quota = quotaQuery.data ?? ZERO_BI
   const usd1Balance = balancesQuery.data?.usd1 ?? ZERO_BI
   // 判断用余额：钱包切换时的旧值（keepPreviousData）不算已加载
@@ -137,6 +147,17 @@ export function useTurbineExchangeSession(
   const isBalancesLoading =
     walletReady && (!balancesLoaded || balancesQuery.isLoading || quotaQuery.isLoading)
 
+  const unlockCap =
+    unitPriceQuery.data != null && unitPriceQuery.data > ZERO_BI
+      ? maxTurbineUnlockAgx({
+          quota: decisionQuota,
+          usd1: decisionUsd1,
+          unitUsdPerAgx: unitPriceQuery.data,
+          oneAgx: ONE_AGX,
+          slippageBps,
+        })
+      : decisionQuota
+
   const {
     amount: unlockAmount,
     amountIn: unlockAmountIn,
@@ -145,7 +166,7 @@ export function useTurbineExchangeSession(
     fillPercent: fillPercentRaw,
   } = useCappedTokenAmountInput({
     decimals: AGX_DECIMALS,
-    balance: decisionQuota,
+    balance: unlockCap,
     balancesLoaded,
     sessionReady,
   })
@@ -180,15 +201,6 @@ export function useTurbineExchangeSession(
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled && sessionReady && needsQuotaCapQuote,
-  })
-
-  // 概览「AGX 价格」用 1 AGX 的单位报价；读取失败时显示 —
-  const unitPriceQuery = useChainQuery({
-    queryKey: queryKeys.chain.turbineUsdQuote(ONE_AGX.toString()),
-    queryFn: () => readTurbineUsdQuote(ONE_AGX),
-    scope: 'public',
-    freshness: 'quote',
-    enabled: quotesEnabled && sessionReady,
   })
 
   const turbineSummaryQuery = useTurbineSummary(sessionReady)

@@ -1,3 +1,4 @@
+import { BPS_DENOM, BPS_DENOM_NUMBER } from '~/core/exchange/bps'
 import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import { parseSlippagePercentInput } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
@@ -58,6 +59,38 @@ export function calcTurbinePayableUsd(
   if (discounted <= 0n) return 0n
   if (quotedQuota <= 0n) return discounted
   return discounted < quotedQuota ? discounted : quotedQuota
+}
+
+/**
+ * 涡轮解锁输入上限：配额与「USD1 余额按单价、滑点能换到的 AGX」取小。
+ *
+ * 应付是报价 × (1 − 滑点)，所以余额能覆盖的报价是余额 / (1 − 滑点)；
+ * 再用 1 AGX 单价换成数量。单价未就绪或为 0 时返回 0，避免用假价格放大上限。
+ *
+ * @param args.quota 当前可解锁配额
+ * @param args.usd1 钱包 USD1 余额
+ * @param args.unitUsdPerAgx `quoteUsdInForAgxOut(1 AGX)`
+ * @param args.oneAgx 1 个 AGX 的最小单位
+ * @param args.slippageBps 用户滑点（BPS）
+ * @returns 输入与 MAX 共用的上限；任一数量 ≤ 0 返回 0n
+ * @see 手册 §16 Turbine
+ */
+export function maxTurbineUnlockAgx(args: {
+  quota: bigint
+  usd1: bigint
+  unitUsdPerAgx: bigint
+  oneAgx: bigint
+  slippageBps: number
+}): bigint {
+  if (args.slippageBps < 0 || args.slippageBps >= BPS_DENOM_NUMBER) {
+    throw new Error(`Invalid slippage bps: ${args.slippageBps}`)
+  }
+  if (args.quota <= 0n || args.usd1 <= 0n || args.unitUsdPerAgx <= 0n || args.oneAgx <= 0n) {
+    return 0n
+  }
+  const slipKeep = BigInt(BPS_DENOM_NUMBER - args.slippageBps)
+  const fromUsd = (args.usd1 * args.oneAgx * BPS_DENOM) / (args.unitUsdPerAgx * slipKeep)
+  return fromUsd < args.quota ? fromUsd : args.quota
 }
 
 /**
