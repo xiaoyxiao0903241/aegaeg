@@ -42,12 +42,12 @@ type NavMotion = 'enter' | 'exit'
  * H5 移动端导航抽屉。
  *
  * 从左侧滑出，带半透明遮罩与毛玻璃面板；列出全部 Tab 并高亮当前项。
- * 社区与共建之间插入公告入口（非 Tab）：外观与未选中项相同，有待展示公告时红点且可点。
+ * 社区与共建之间插入公告入口（非 Tab）：外观与未选中项相同；未读红点，有未读或已读都可点。
  * 关闭时先播放退场动画再卸载，期间锁定页面滚动。
  */
 export function MobileNav({
   activeTab,
-  noticeHasPopup,
+  noticeHasUnread,
   onClose,
   onOpenNotice,
   onSelectTab,
@@ -55,7 +55,7 @@ export function MobileNav({
 }: {
   open: boolean
   activeTab: DappTab
-  noticeHasPopup: boolean
+  noticeHasUnread: boolean
   onSelectTab: (tab: DappTab) => void
   onOpenNotice: () => void
   onClose: () => void
@@ -202,7 +202,7 @@ export function MobileNav({
               {tabButton}
               <NoticeRailButton
                 className={cn(drawerItem({ active: false }), 'relative')}
-                hasPopup={noticeHasPopup}
+                hasUnread={noticeHasUnread}
                 iconClassName="size-5.5 shrink-0 bg-current text-foreground"
                 labelClassName="min-w-0 flex-1 truncate text-sm/snug font-semibold tracking-tight"
                 labelTone="foreground"

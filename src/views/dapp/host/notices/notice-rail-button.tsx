@@ -8,11 +8,11 @@ import { railIconMask } from '~/views/dapp/host/primitives'
 /**
  * 侧栏 / 抽屉的公告入口
  *
- * 不是 Tab：不高亮、不带动指示条。外观与相邻未选中项相同。
- * 队列里还有应展示的公告时才用按钮并带红点；否则只展示，避免假可点。
+ * 不是 Tab：不高亮、不带动指示条。外观与相邻未选中项相同（同样是 button）。
+ * 有未读时带红点；点开由队列决定未读或已读回看。空列表由 start 忽略，也不用 disabled，避免变灰。
  *
  * @param className 与相邻导航项同一套外观
- * @param hasPopup 当前是否有待展示公告
+ * @param hasUnread 是否有未读（红点）
  * @param iconClassName 图标遮罩盒
  * @param labelClassName 文案
  * @param labelTone 与相邻项同一字色
@@ -23,7 +23,7 @@ import { railIconMask } from '~/views/dapp/host/primitives'
  */
 export function NoticeRailButton({
   className,
-  hasPopup,
+  hasUnread,
   iconClassName,
   labelClassName,
   labelTone,
@@ -32,7 +32,7 @@ export function NoticeRailButton({
   tooltip,
 }: {
   className: string
-  hasPopup: boolean
+  hasUnread: boolean
   iconClassName: string
   labelClassName: string
   labelTone: TextProps['tone']
@@ -43,10 +43,16 @@ export function NoticeRailButton({
   const { messages: t } = useI18n()
   const label = t.nav.notice
 
-  const inner = (
-    <>
+  const node = (
+    <button
+      aria-label={label}
+      className={className}
+      data-dapp-notice-rail=""
+      onClick={onOpen}
+      type="button"
+    >
       <span aria-hidden className={iconClassName} style={railIconMask(dappAssets.notice)} />
-      {hasPopup ? <ClaimableDot /> : null}
+      {hasUnread ? <ClaimableDot /> : null}
       <Text
         as="span"
         className={labelClassName}
@@ -56,23 +62,7 @@ export function NoticeRailButton({
       >
         {label}
       </Text>
-    </>
-  )
-
-  const node = hasPopup ? (
-    <button
-      aria-label={label}
-      className={className}
-      data-dapp-notice-rail=""
-      onClick={onOpen}
-      type="button"
-    >
-      {inner}
     </button>
-  ) : (
-    <div className={className} data-dapp-notice-rail="">
-      {inner}
-    </div>
   )
 
   if (!tooltip) return node

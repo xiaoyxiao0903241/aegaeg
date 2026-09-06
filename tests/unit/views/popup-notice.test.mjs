@@ -26,7 +26,6 @@ const sampleApiItem = {
 function notice(overrides) {
   return {
     id: 1,
-    show_once: true,
     version: 'v1',
     image_url: 'https://cdn.example.com/popup.png',
     title: '',
@@ -52,7 +51,7 @@ test('normalizeHomePopupNotice resolves i18n image and title by locale', async (
     content: 'AEGIS X 上市信息发布',
     link_url: 'https://x-dao.io',
     link_target: 1,
-    show_once: true,
+    startMs: Date.parse('2026-07-04T07:04:26.711Z'),
   })
 })
 
@@ -75,13 +74,15 @@ test('normalizeHomePopupNotices sorts by sort_order ascending', async () => {
   )
 })
 
-test('readShowOnceFromDisplayMode maps display_mode 1/2', async () => {
-  const { readShowOnceFromDisplayMode } = await loadModule(
-    '/src/views/dapp/host/notices/popup-notice.ts',
-  )
+test('closed notices stay unread-false even when API sends display_mode 2', async () => {
+  const { normalizeHomePopupNotice, noticeDismissKey, shouldShowHomePopupNotice } =
+    await loadModule('/src/views/dapp/host/notices/popup-notice.ts')
 
-  assert.equal(readShowOnceFromDisplayMode(1), true)
-  assert.equal(readShowOnceFromDisplayMode(2), false)
+  const item = normalizeHomePopupNotice({ ...sampleApiItem, display_mode: 2 }, 'zh')
+  assert.ok(item)
+  assert.equal('show_once' in item, false)
+  const dismissed = new Set([noticeDismissKey(item)])
+  assert.equal(shouldShowHomePopupNotice(item, dismissed), false)
 })
 
 test('normalizeHomePopupNotice defaults version to 1', async () => {
@@ -94,7 +95,7 @@ test('normalizeHomePopupNotice defaults version to 1', async () => {
   assert.equal(result?.version, '1')
 })
 
-test('shouldShowHomePopupNotice persists by id:version for show_once', async () => {
+test('shouldShowHomePopupNotice persists by id:version', async () => {
   const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule(
     '/src/views/dapp/host/notices/popup-notice.ts',
   )
@@ -107,26 +108,15 @@ test('shouldShowHomePopupNotice persists by id:version for show_once', async () 
   assert.equal(shouldShowHomePopupNotice(sameIdNewVersion, dismissed), true)
 })
 
-test('shouldShowHomePopupNotice ignores dismissed keys for every-visit mode', async () => {
-  const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule(
-    '/src/views/dapp/host/notices/popup-notice.ts',
-  )
-
-  const everyVisit = notice({ id: 2, show_once: false, version: 'always' })
-  const dismissed = new Set([noticeDismissKey(everyVisit)])
-
-  assert.equal(shouldShowHomePopupNotice(everyVisit, dismissed), true)
-})
-
 test('selectNextHomePopupNotice walks queue after session dismiss', async () => {
   const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule(
     '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
   const queue = [
-    notice({ id: 1, version: 'a', show_once: true }),
-    notice({ id: 2, version: 'b', show_once: false }),
-    notice({ id: 3, version: 'c', show_once: true }),
+    notice({ id: 1, version: 'a' }),
+    notice({ id: 2, version: 'b' }),
+    notice({ id: 3, version: 'c' }),
   ]
 
   assert.equal(selectNextHomePopupNotice(queue)?.id, 1)
@@ -151,15 +141,110 @@ test('selectNextHomePopupNotice walks queue after session dismiss', async () => 
   assert.equal(afterQueueCleared, null)
 })
 
-test('selectNextHomePopupNotice skips persistently dismissed show_once items', async () => {
+test('selectLatestReadNotice picks newest start_time among read items', async () => {
+  const { noticeDismissKey, selectLatestReadNotice, selectNextHomePopupNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
+
+  const older = notice({
+    id: 1,
+    version: 'old',
+    startMs: Date.parse('2026-01-01T00:00:00.000Z'),
+  })
+  const newer = notice({
+    id: 2,
+    version: 'new',
+    startMs: Date.parse('2026-06-01T00:00:00.000Z'),
+  })
+  const unread = notice({
+    id: 3,
+    version: 'fresh',
+    startMs: Date.parse('2026-08-01T00:00:00.000Z'),
+  })
+  const dismissedKeys = new Set([noticeDismissKey(older), noticeDismissKey(newer)])
+  const queue = [older, newer, unread]
+
+  assert.equal(selectNextHomePopupNotice(queue, { dismissedKeys })?.id, 3)
+  assert.equal(selectLatestReadNotice(queue, { dismissedKeys })?.id, 2)
+})
+
+test('selectLatestReadNotice treats missing start_time as older', async () => {
+  const { noticeDismissKey, selectLatestReadNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
+
+  const undated = notice({ id: 10, version: 'none', startMs: null })
+  const dated = notice({
+    id: 11,
+    version: 'dated',
+    startMs: Date.parse('2026-02-01T00:00:00.000Z'),
+  })
+  const dismissedKeys = new Set([noticeDismissKey(undated), noticeDismissKey(dated)])
+
+  assert.equal(selectLatestReadNotice([undated, dated], { dismissedKeys })?.id, 11)
+})
+
+test('selectLatestReadNotice breaks start_time ties with larger id', async () => {
+  const { noticeDismissKey, selectLatestReadNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
+
+  const startMs = Date.parse('2026-03-01T00:00:00.000Z')
+  const first = notice({ id: 4, version: 'a', startMs })
+  const second = notice({ id: 9, version: 'b', startMs })
+  const dismissedKeys = new Set([noticeDismissKey(first), noticeDismissKey(second)])
+
+  assert.equal(selectLatestReadNotice([first, second], { dismissedKeys })?.id, 9)
+})
+
+test('selectLatestReadNotice uses session dismiss as read', async () => {
+  const { noticeDismissKey, selectLatestReadNotice, selectNextHomePopupNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
+
+  const closed = notice({
+    id: 5,
+    version: 'session',
+    startMs: Date.parse('2026-04-01T00:00:00.000Z'),
+  })
+  const sessionDismissedKeys = new Set([noticeDismissKey(closed)])
+
+  assert.equal(selectNextHomePopupNotice([closed], { sessionDismissedKeys }), null)
+  assert.equal(selectLatestReadNotice([closed], { sessionDismissedKeys })?.id, 5)
+})
+
+test('selectLatestReadNotice skips broken images', async () => {
+  const { noticeDismissKey, selectLatestReadNotice } = await loadModule(
+    '/src/views/dapp/host/notices/popup-notice.ts',
+  )
+
+  const broken = notice({
+    id: 6,
+    version: 'broken',
+    startMs: Date.parse('2026-09-01T00:00:00.000Z'),
+  })
+  const older = notice({
+    id: 7,
+    version: 'ok',
+    startMs: Date.parse('2026-01-01T00:00:00.000Z'),
+  })
+  const dismissedKeys = new Set([noticeDismissKey(broken), noticeDismissKey(older)])
+
+  assert.equal(
+    selectLatestReadNotice([broken, older], {
+      dismissedKeys,
+      brokenImageKeys: new Set([noticeDismissKey(broken)]),
+    })?.id,
+    7,
+  )
+})
+
+test('selectNextHomePopupNotice skips persistently dismissed items', async () => {
   const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule(
     '/src/views/dapp/host/notices/popup-notice.ts',
   )
 
-  const queue = [
-    notice({ id: 1, version: 'seen', show_once: true }),
-    notice({ id: 2, version: 'next', show_once: true }),
-  ]
+  const queue = [notice({ id: 1, version: 'seen' }), notice({ id: 2, version: 'next' })]
 
   const next = selectNextHomePopupNotice(queue, {
     dismissedKeys: new Set([noticeDismissKey(queue[0])]),
@@ -190,7 +275,7 @@ test('normalizeHomePopupNotice accepts title/content without image', async () =>
     content: '正文',
     link_url: 'https://x-dao.io',
     link_target: 1,
-    show_once: true,
+    startMs: Date.parse('2026-07-04T07:04:26.711Z'),
   })
 })
 
