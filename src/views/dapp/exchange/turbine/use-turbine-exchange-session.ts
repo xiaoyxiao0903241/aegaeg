@@ -70,7 +70,7 @@ function formatTurbineSummaryAmount(raw: string | null | undefined): string {
 /**
  * Turbine 会话状态：解锁（USD1 → AGX 进入冷却）+ 领取冷却完成的 gAGX
  *
- * 配额、余额、静默期与冷却时长均来自链上；应付 USD1 按报价加用户滑点，满额截到全配额报价。
+ * 配额、余额、静默期与冷却时长均来自链上；应付 USD1 按报价减用户滑点，满额截到全配额报价。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -206,7 +206,7 @@ export function useTurbineExchangeSession(
       ? calcTurbinePayableUsd(quotedUsd, quotedQuota, slippageBps)
       : ZERO_BI
   const buyAgxLabel = formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4)
-  // 支付 USD1 = min(quote × (1 + 滑点), 全配额报价)
+  // 支付 USD1 = min(quote × (1 − 滑点), 全配额报价)
   const payUsd1Label = formatTokenAmount(
     unlockAmountIn <= ZERO_BI
       ? ZERO_BI

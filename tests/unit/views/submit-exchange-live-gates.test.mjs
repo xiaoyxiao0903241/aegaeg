@@ -195,7 +195,7 @@ test('submitTurbineUnlock uses preflight quote when allowance is short', async (
   assert.equal(quotes, 2)
 })
 
-test('submitTurbineUnlock pads quoted USD1 by slippage before balance check', async () => {
+test('submitTurbineUnlock discounts quoted USD1 by slippage before balance check', async () => {
   const { submitTurbineUnlock } = await loadModule(
     '/src/views/dapp/exchange/turbine/submit-turbine-exchange.ts',
   )
@@ -206,7 +206,7 @@ test('submitTurbineUnlock pads quoted USD1 by slippage before balance check', as
         case 'migratedFrom':
           return ZERO
         case 'balanceOf':
-          return 100n
+          return 98n
         case 'allowance':
           return 1_000n
         case 'turbineBalances':

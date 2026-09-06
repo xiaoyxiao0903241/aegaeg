@@ -75,13 +75,14 @@ test('isTurbineQuotaCapReady rejects keepPreviousData placeholder cap', async ()
   )
 })
 
-test('calcTurbinePayableUsd pads then caps at full-quota quote', async () => {
+test('calcTurbinePayableUsd discounts then caps at full-quota quote', async () => {
   const { calcTurbinePayableUsd } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
-  assert.equal(calcTurbinePayableUsd(500n, 10_000n, 100), 505n)
-  assert.equal(calcTurbinePayableUsd(500n, 502n, 100), 502n)
-  assert.equal(calcTurbinePayableUsd(500n, 500n, 100), 500n)
+  assert.equal(calcTurbinePayableUsd(500n, 10_000n, 100), 495n)
+  assert.equal(calcTurbinePayableUsd(500n, 502n, 100), 495n)
+  assert.equal(calcTurbinePayableUsd(500n, 500n, 100), 495n)
+  assert.equal(calcTurbinePayableUsd(500n, 490n, 100), 490n)
   assert.equal(calcTurbinePayableUsd(0n, 500n, 250), 0n)
-  assert.equal(calcTurbinePayableUsd(500n, 0n, 100), 505n)
+  assert.equal(calcTurbinePayableUsd(500n, 0n, 100), 495n)
 })
 
 test('evaluateTurbineClaimLive blocks when not vested', async () => {

@@ -1,8 +1,8 @@
-import { calcAmountInMax } from '~/core/exchange/exchange-math'
+import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import { parseSlippagePercentInput } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 
-/** 涡轮解锁默认滑点（%）：应付 USD1 = 报价 × (1 + 1%)。 */
+/** 涡轮解锁默认滑点（%）：应付 USD1 = 报价 × (1 − 1%)。 */
 export const TURBINE_AUTO_SLIPPAGE_PERCENT = 1
 
 /**
@@ -38,10 +38,10 @@ export function isTurbineQuotaCapReady(args: {
 }
 
 /**
- * 涡轮应付 USD1：报价加滑点，且不超过全配额报价。
+ * 涡轮应付 USD1：报价减滑点，且不超过全配额报价。
  *
- * 合约 `buyAgxAndStartCooldown` 要求 usdAmount <= quote(全配额)。
- * 满额时加码会被截顶，缓冲为 0。
+ * 写入只收 USD1（exact-in），按报价 × (1 − 滑点) 提交；
+ * 合约还要求 usdAmount <= quote(全配额)，故再截一次顶。
  *
  * @param quotedUnlock `quoteUsdInForAgxOut(解锁量)`
  * @param quotedQuota `quoteUsdInForAgxOut(当前配额)`；未就绪或为 0 时不加顶
@@ -54,10 +54,10 @@ export function calcTurbinePayableUsd(
   quotedQuota: bigint,
   slippageBps: number,
 ): bigint {
-  const padded = calcAmountInMax(quotedUnlock, slippageBps)
-  if (padded <= 0n) return 0n
-  if (quotedQuota <= 0n) return padded
-  return padded < quotedQuota ? padded : quotedQuota
+  const discounted = calcAmountOutMin(quotedUnlock, slippageBps)
+  if (discounted <= 0n) return 0n
+  if (quotedQuota <= 0n) return discounted
+  return discounted < quotedQuota ? discounted : quotedQuota
 }
 
 /**
@@ -67,7 +67,7 @@ export function calcTurbinePayableUsd(
  * 失败或超出个人配额。
  *
  * @param args.unlockAmountAgx 拟解锁的 AGX 数量
- * @param args.liveUsd 加滑点并截顶后的 USD1 应付
+ * @param args.liveUsd 减滑点并截顶后的 USD1 应付
  * @param args.liveQuota 用户剩余出售配额
  * @param args.usd1 钱包 USD1 余额
  * @param args.approved 对 Turbine 的授权（链上读数）

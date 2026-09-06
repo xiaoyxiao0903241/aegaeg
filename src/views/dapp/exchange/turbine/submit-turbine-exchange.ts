@@ -30,7 +30,7 @@ type TurbineSubmitCore = {
 /**
  * Turbine 解锁：经统一核预检 → 按需授权 → 实时复核 → 买入
  *
- * 授权与提交均为 min(报价×(1+滑点), 全配额报价)；授权后实时再报价加码截顶，升高则硬挡。
+ * 授权与提交均为 min(报价×(1−滑点), 全配额报价)；授权后实时再报价减码截顶，升高则硬挡。
  *
  * @see docs/onchain-manual/contracts/turbine.md
  */
@@ -38,7 +38,7 @@ export async function submitTurbineUnlock(args: {
   core: TurbineSubmitCore
   /** 本次解锁的 AGX 数量（以链上 turbineBalances 为准）。 */
   unlockAmountAgx: bigint
-  /** 用户滑点（BPS）；应付 = min(quote×(1+滑点), 全配额报价)。 */
+  /** 用户滑点（BPS）；应付 = min(quote×(1−滑点), 全配额报价)。 */
   slippageBps: number
 }): Promise<ExchangeSubmitResult> {
   const { core, unlockAmountAgx, slippageBps } = args
