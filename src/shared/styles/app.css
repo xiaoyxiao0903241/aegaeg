@@ -487,6 +487,10 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
   --size: 1rem;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 /* Sonner 在 600px 以下会强制整行宽度，这里让移动端保持内容自适应 */
 @media (max-width: 600px) {
   html.dapp-app [data-sonner-toaster].app-toaster {
