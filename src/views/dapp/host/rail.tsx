@@ -71,19 +71,19 @@ function useRailTooltips() {
  *
  * 列出一级 Tab（兑换、资产、质押等），高亮当前项并显示跟随滚动的选中指示条。
  * 兑换 / 资产 / 释放 / 奖励有未读可领或到期仓时右上角显示红点；
- * 社区与共建之间插入公告入口（非 Tab）：外观与未选中项相同，有待展示公告时红点且可点。
+ * 社区与共建之间插入公告入口（非 Tab）：外观与未选中项相同；未读红点，有未读或已读都可点。
  * 悬停 / 聚焦非当前项时预取该页查询。`mobile` 模式用于抽屉内横向布局。
  */
 export function Rail({
   activeTab,
   mobile = false,
-  noticeHasPopup,
+  noticeHasUnread,
   onOpenNotice,
   onSelectTab,
 }: {
   activeTab: DappTab
   mobile?: boolean
-  noticeHasPopup: boolean
+  noticeHasUnread: boolean
   onOpenNotice: () => void
   onSelectTab: (tab: DappTab) => void
 }) {
@@ -208,7 +208,7 @@ export function Rail({
             {tabButton}
             <NoticeRailButton
               className={railItem({ active: false, mobile })}
-              hasPopup={noticeHasPopup}
+              hasUnread={noticeHasUnread}
               iconClassName="aspect-square size-(--dapp-icon-rail) bg-current"
               labelClassName={cn(
                 mobile ? 'min-w-0 flex-1 truncate' : 'block w-full min-w-0 truncate text-center',

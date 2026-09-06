@@ -168,7 +168,7 @@ export function DappHost() {
                       >
                         <Rail
                           activeTab={activeTab}
-                          noticeHasPopup={noticeInbox.hasPopup}
+                          noticeHasUnread={noticeInbox.hasUnread}
                           onOpenNotice={noticeInbox.start}
                           onSelectTab={selectTab}
                         />
@@ -186,7 +186,7 @@ export function DappHost() {
                         >
                           <MobileNav
                             activeTab={activeTab}
-                            noticeHasPopup={noticeInbox.hasPopup}
+                            noticeHasUnread={noticeInbox.hasUnread}
                             onClose={() => setMobileNavOpen(false)}
                             onOpenNotice={() => {
                               noticeInbox.start()

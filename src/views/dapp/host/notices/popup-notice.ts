@@ -5,17 +5,10 @@ import type {
   HomePopupNoticesResponse,
 } from '~/shared/api/types'
 
-/** 沿用旧键，避免已关闭的一次性公告再次出现红点。 */
+/** 沿用旧键，避免已关闭的公告再次出现红点。 */
 const DISMISSED_KEYS_STORAGE_KEY = 'aegis.home.popupNotice.dismissedKeys'
 /** @deprecated 已迁移至 dismissedKeys */
 const LEGACY_DISMISSED_VERSION_KEY = 'aegis.home.popupNotice.dismissedVersion'
-
-/** display_mode: 1=只弹一次, 2=每次会话可再展示 */
-export function readShowOnceFromDisplayMode(displayMode: unknown): boolean {
-  const mode = typeof displayMode === 'number' ? displayMode : Number(displayMode)
-  if (Number.isNaN(mode)) return true
-  return mode === 1
-}
 
 /**
  * 公告关闭标识
@@ -111,6 +104,7 @@ export function normalizeHomePopupNotice(
   if (!imageUrl && !title && !content) return null
 
   const linkUrl = readString(item.link_url)
+  const startMs = readOptionalTimestamp(item.start_time)
 
   return {
     id: readNumber(item.id),
@@ -120,7 +114,7 @@ export function normalizeHomePopupNotice(
     content,
     link_url: linkUrl || null,
     link_target: readNumber(item.link_target),
-    show_once: readShowOnceFromDisplayMode(item.display_mode),
+    startMs: startMs ?? null,
   }
 }
 
@@ -193,46 +187,102 @@ export function persistDismissedPopupKey(key: string): void {
   }
 }
 
-/** 是否展示该公告：一次性公告需未被持久化关闭，常驻公告始终展示。 */
+/** 是否仍算未读：有内容且未被持久化关闭。关过即已读，刷新后也不再红点。 */
 export function shouldShowHomePopupNotice(
   notice: HomePopupNotice,
   dismissedKeys: ReadonlySet<string> = readDismissedPopupKeys(),
 ): boolean {
   if (!notice.image_url && !notice.title && !notice.content) return false
-  if (!notice.show_once) return true
-
   return !dismissedKeys.has(noticeDismissKey(notice))
 }
 
+type NoticeQueueOptions = {
+  dismissedKeys?: ReadonlySet<string>
+  sessionDismissedKeys?: ReadonlySet<string>
+  brokenImageKeys?: ReadonlySet<string>
+}
+
+function resolveNoticeQueueOptions(options: NoticeQueueOptions = {}): {
+  dismissedKeys: ReadonlySet<string>
+  sessionDismissedKeys: ReadonlySet<string>
+  brokenImageKeys: ReadonlySet<string>
+} {
+  return {
+    dismissedKeys: options.dismissedKeys ?? readDismissedPopupKeys(),
+    sessionDismissedKeys: options.sessionDismissedKeys ?? new Set<string>(),
+    brokenImageKeys: options.brokenImageKeys ?? new Set<string>(),
+  }
+}
+
+function isUnreadNotice(
+  notice: HomePopupNotice,
+  options: {
+    dismissedKeys: ReadonlySet<string>
+    sessionDismissedKeys: ReadonlySet<string>
+    brokenImageKeys: ReadonlySet<string>
+  },
+): boolean {
+  const key = noticeDismissKey(notice)
+  if (options.sessionDismissedKeys.has(key) || options.brokenImageKeys.has(key)) return false
+  return shouldShowHomePopupNotice(notice, options.dismissedKeys)
+}
+
 /**
- * 取队列中应展示的第一条公告
+ * 取队列中应展示的第一条未读公告
  *
  * 按 sort_order 升序遍历，跳过本会话已关闭、图片已损坏或满足持久化
  * 关闭规则的公告，全部被跳过则返回 null。
- * DApp 侧栏用同一结果决定红点与是否可点；点开后关闭仍走本函数选下一条。
+ * 侧栏红点用同一结果；点开后关闭仍走本函数选下一条未读。
  *
  * @param notices 已归一化的公告队列
- * @returns 应展示的公告，无可用公告时返回 null
+ * @returns 应展示的未读公告，无未读时返回 null
  * @see docs/backend-api/api.md #一期接口/home/popup-notices
  */
 export function selectNextHomePopupNotice(
   notices: HomePopupNotice[],
-  options: {
-    dismissedKeys?: ReadonlySet<string>
-    sessionDismissedKeys?: ReadonlySet<string>
-    brokenImageKeys?: ReadonlySet<string>
-  } = {},
+  options: NoticeQueueOptions = {},
 ): HomePopupNotice | null {
-  const dismissedKeys = options.dismissedKeys ?? readDismissedPopupKeys()
-  const sessionDismissedKeys = options.sessionDismissedKeys ?? new Set<string>()
-  const brokenImageKeys = options.brokenImageKeys ?? new Set<string>()
+  const resolved = resolveNoticeQueueOptions(options)
 
   for (const notice of notices) {
-    const key = noticeDismissKey(notice)
-    if (sessionDismissedKeys.has(key) || brokenImageKeys.has(key)) continue
-    if (!shouldShowHomePopupNotice(notice, dismissedKeys)) continue
-    return notice
+    if (isUnreadNotice(notice, resolved)) return notice
   }
 
   return null
+}
+
+/**
+ * 已读回看：只取 start_time 最新的一条
+ *
+ * 未读不参与。无 start_time 视为更旧；时间相同则 id 更大的优先。
+ * 关掉后再次点击仍是这一条，不往更旧的已读走。
+ *
+ * @param notices 已归一化的公告队列
+ * @returns 最新已读公告；没有已读时返回 null
+ * @see docs/backend-api/api.md #一期接口/home/popup-notices
+ */
+export function selectLatestReadNotice(
+  notices: HomePopupNotice[],
+  options: NoticeQueueOptions = {},
+): HomePopupNotice | null {
+  const resolved = resolveNoticeQueueOptions(options)
+  let latest: HomePopupNotice | null = null
+
+  for (const notice of notices) {
+    const key = noticeDismissKey(notice)
+    if (resolved.brokenImageKeys.has(key)) continue
+    if (!notice.image_url && !notice.title && !notice.content) continue
+    if (isUnreadNotice(notice, resolved)) continue
+    if (!latest) {
+      latest = notice
+      continue
+    }
+    const latestStart = latest.startMs ?? Number.NEGATIVE_INFINITY
+    const noticeStart = notice.startMs ?? Number.NEGATIVE_INFINITY
+    if (noticeStart > latestStart || (noticeStart === latestStart && notice.id > latest.id)) {
+      latest = notice
+    }
+  }
+
+  return latest
 }

@@ -23,8 +23,6 @@ export interface HomePopupNoticeApiItem {
   link_url: string
   /** 0=当前页, 1=新标签 */
   link_target: number
-  /** 1=只弹一次, 2=每次会话可再展示 */
-  display_mode: number
   version: string
   sort_order: number
   start_time: string | null
@@ -45,6 +43,6 @@ export interface HomePopupNotice {
   content: string
   link_url: string | null
   link_target: number
-  /** true=关闭后不再出现；false=下次会话仍可展示 */
-  show_once: boolean
+  /** 投放开始时间；空表示无起始限制，已读回看时视为更旧 */
+  startMs: number | null
 }

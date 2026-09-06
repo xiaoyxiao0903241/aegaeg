@@ -10,21 +10,26 @@ import {
   noticeDismissKey,
   persistDismissedPopupKey,
   readDismissedPopupKeys,
+  selectLatestReadNotice,
   selectNextHomePopupNotice,
 } from '~/views/dapp/host/notices/popup-notice'
+
+type NoticeQueueKind = 'unread' | 'replay'
 
 /**
  * DApp 侧栏公告队列
  *
- * 登录就绪后带 JWT 拉取 `/home/popup-notices`。有待展示公告时侧栏可点并带红点；
- * 点击后打开当前条，关闭规则与原先首页弹窗相同（一次性写入本地，常驻本会话跳过，队列自动下一条）。
+ * 登录就绪后带 JWT 拉取 `/home/popup-notices`。
+ * 有未读：红点，点开后按原队列关一条出下一条；关掉即写入本地，一律只看一次。
+ * 无未读但有已读：无红点，点开只回看 `start_time` 最新的一条；关掉后再点仍是这一条。
+ * 未读走完不会自动接已读回看。
  *
- * @returns 当前公告、是否有待展示、是否打开，以及点击 / 关闭 / 坏图回调
+ * @returns 当前公告、未读红点，以及点击 / 关闭 / 坏图回调
  * @see docs/backend-api/api.md #一期接口/home/popup-notices
  */
 export function useNoticeInbox(): {
   notice: HomePopupNotice | null
-  hasPopup: boolean
+  hasUnread: boolean
   open: boolean
   start: () => void
   onDismiss: () => void
@@ -41,32 +46,38 @@ export function useNoticeInbox(): {
   const [dismissedKeys, setDismissedKeys] = useState(() => readDismissedPopupKeys())
   const [sessionDismissedKeys, setSessionDismissedKeys] = useState<Set<string>>(() => new Set())
   const [brokenImageKeys, setBrokenImageKeys] = useState<Set<string>>(() => new Set())
-  const [started, setStarted] = useState(false)
+  const [queueKind, setQueueKind] = useState<NoticeQueueKind | null>(null)
 
-  const notice = selectNextHomePopupNotice(sortedNotices, {
-    dismissedKeys,
-    sessionDismissedKeys,
-    brokenImageKeys,
-  })
-  const hasPopup = notice !== null
-  if (!hasPopup && started) setStarted(false)
-  const open = started && hasPopup
+  const queueOptions = { dismissedKeys, sessionDismissedKeys, brokenImageKeys }
+  const unread = selectNextHomePopupNotice(sortedNotices, queueOptions)
+  const replay = selectLatestReadNotice(sortedNotices, queueOptions)
+  const hasUnread = unread !== null
+
+  const notice = queueKind === 'unread' ? unread : queueKind === 'replay' ? replay : null
+  if (queueKind === 'unread' && unread === null) setQueueKind(null)
+  if (queueKind === 'replay' && replay === null) setQueueKind(null)
+  const open = queueKind !== null && notice !== null
 
   function start() {
-    if (!notice) return
-    setStarted(true)
+    if (unread) {
+      setQueueKind('unread')
+      return
+    }
+    if (replay) setQueueKind('replay')
   }
 
   function onDismiss() {
     if (!notice) return
 
+    if (queueKind === 'replay') {
+      setQueueKind(null)
+      return
+    }
+
     const key = noticeDismissKey(notice)
     setSessionDismissedKeys((current) => new Set(current).add(key))
-
-    if (notice.show_once) {
-      persistDismissedPopupKey(key)
-      setDismissedKeys(readDismissedPopupKeys())
-    }
+    persistDismissedPopupKey(key)
+    setDismissedKeys(readDismissedPopupKeys())
   }
 
   function onImageLoadError() {
@@ -78,7 +89,7 @@ export function useNoticeInbox(): {
 
   return {
     notice,
-    hasPopup,
+    hasUnread,
     open,
     start,
     onDismiss,
