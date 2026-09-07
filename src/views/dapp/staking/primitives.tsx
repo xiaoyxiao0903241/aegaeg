@@ -5,9 +5,14 @@ import type { Time, UTCTimestamp } from 'lightweight-charts'
 import { type ReactNode } from 'react'
 
 import { buildCalcChartGuides } from '~/core/staking/calc-chart-guides'
+import {
+  isProtocolMarketStatsRange,
+  PROTOCOL_MARKET_STATS_RANGES,
+} from '~/core/staking/protocol-market-stats-series'
 import { buildCalcYieldCurvePoints, CALC_MAX_DAYS } from '~/core/staking/staking-yield'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
+import type { ProtocolMarketStatsRange } from '~/shared/api/types'
 import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Chart, type ChartGuide, type ChartPoint } from '~/shared/components/chart'
@@ -219,14 +224,14 @@ export function StakingTvlChart({
   surface = 'elevated',
   valueLabel,
 }: {
-  chartRange: string
+  chartRange: ProtocolMarketStatsRange
   deltaLabel: string
   emptyLabel: string
   loading?: boolean
   points?: readonly ChartPoint[]
   rangeAriaLabel: string
   rangeLabels: readonly string[]
-  setChartRange: (value: string) => void
+  setChartRange: (value: ProtocolMarketStatsRange) => void
   surface?: 'elevated' | 'outlined'
   valueLabel: string
 }) {
@@ -254,8 +259,13 @@ export function StakingTvlChart({
         </div>
         <Segment
           aria-label={rangeAriaLabel}
-          onChange={setChartRange}
-          options={rangeLabels.map((label) => ({ label, value: label }))}
+          onChange={(value) => {
+            if (isProtocolMarketStatsRange(value)) setChartRange(value)
+          }}
+          options={PROTOCOL_MARKET_STATS_RANGES.flatMap((value, index) => {
+            const label = rangeLabels[index]
+            return label ? [{ label, value }] : []
+          })}
           size="sm"
           tone="ink"
           value={chartRange}
