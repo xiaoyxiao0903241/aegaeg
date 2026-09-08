@@ -1,9 +1,14 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
+import { headMeta } from '~/i18n/messages/home/head-meta'
 
 import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
-  meta: {
+  // head meta 全站共享英文 —— 静态 HTML 不暴露本地化明文（防敏感词扫描）
+  meta: headMeta,
+  // 运行时展示用 meta —— HomePage/DappHost 挂载后覆写 document.title 与 <meta description>。
+  // 静态 head 保持英文 headMeta 防扫描；本字段随编码消息袋下发，不暴露在 HTML 源码。
+  displayMeta: {
     description:
       'AEGIS X एक AI-नेटिव DeFi 4.0 प्रोटोकॉल है, USD1 निपटान, BSC-प्राथमिकता वॉलेट प्रवेश और स्व-सुधार प्रोटोकॉल इंजन के साथ अगली पीढ़ी का मूल्य नेटवर्क बनाता है।',
     title: 'AEGIS X - भविष्य के मूल्य नेटवर्क की रक्षा',

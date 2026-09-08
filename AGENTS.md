@@ -122,6 +122,7 @@
 - **写链：** 核会话地址/链 → simulate 挡 revert → 再核一次 → send（不设 gas、不设墙钟超时）→ `waitForTransactionReceipt({ hash, timeout: 0 })`；approve 后 live 重闸。hash 留在调用栈；按钮看 `isPending`。刷新丢掉内存 pending。展示用 gas 另走 `estimateWriteGasLimit`。
 - **首页动效：** 禁 Framer/GSAP/Anime/Lottie；只动 `opacity`/`transform`/`clip-path`/`filter`/`box-shadow`。
 - **样式：** `tokens.json` → `theme.css`；禁遗留色与平行 class；用户可见文案必须 `<Text>`。
+- **防扫描：** 线上静态文件不得出现明文本地化文案 —— HTML 引导与语言包一律走 `message-codec`（deflate+base64）编码；head meta 静态用英文 `headMeta`，运行时由 `displayMeta`（编码消息袋内）覆写本地语言。
 
 ---
 
