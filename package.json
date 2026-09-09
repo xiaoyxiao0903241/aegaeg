@@ -76,7 +76,7 @@
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.3.0",
-    "thirdweb": "^5.120.0",
+    "thirdweb": "5.120.0",
     "viem": "^2.54.0",
     "zustand": "^5.0.14"
   },
