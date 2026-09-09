@@ -61,11 +61,11 @@ export const thirdwebClient = createThirdwebClient({
 export const walletConnectProjectId = appEnv.walletConnectProjectId
 
 const THIRDWEB_SETUP_HINT = [
-  '未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
-  '1. 复制 .env.example 为 .env 并填入全部必填项（无代码 fallback）',
-  '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
-  '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
-  '4. 重启 pnpm dev',
+  'VITE_THIRDWEB_CLIENT_ID is not configured; wallet connection will hit 401.',
+  '1. Copy .env.example to .env and fill in every required key (no code fallback).',
+  '2. Create a Client ID at https://thirdweb.com/dashboard/settings/api-keys',
+  '3. Set VITE_THIRDWEB_CLIENT_ID=<your-client-id>',
+  '4. Restart pnpm dev',
 ].join('\n')
 
 /**

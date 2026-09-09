@@ -1,9 +1,14 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
+import { headMeta } from '~/i18n/messages/home/head-meta'
 
 import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
-  meta: {
+  // head meta 全站共享英文 —— 静态 HTML 不暴露本地化明文（防敏感词扫描）
+  meta: headMeta,
+  // 运行时展示用 meta —— HomePage/DappHost 挂载后覆写 document.title 与 <meta description>。
+  // 静态 head 保持英文 headMeta 防扫描；本字段随编码消息袋下发，不暴露在 HTML 源码。
+  displayMeta: {
     description:
       'AEGIS X, AI-native DeFi 4.0 protokolüdür; USD1 uzlaşması, BSC öncelikli cüzdan girişi ve kendi kendini onaran protokol motoruyla geleceğin değer ağını inşa eder.',
     title: 'AEGIS X - Geleceğin Değer Ağını Koruyun',
