@@ -6,7 +6,6 @@ RUN corepack enable \
     && corepack prepare pnpm@11.17.0 --activate
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY patches ./patches
 
 COPY patches ./patches
 
