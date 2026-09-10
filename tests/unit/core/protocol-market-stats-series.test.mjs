@@ -3,21 +3,21 @@ import test from 'node:test'
 
 import {
   buildProtocolMarketStatsChart,
+  DEFAULT_PROTOCOL_MARKET_STATS_RANGE,
+  isProtocolMarketStatsRange,
   parseProtocolMarketStatsDate,
+  PROTOCOL_MARKET_STATS_RANGES,
   protocolMarketStatsAggregateUnit,
   resolveProtocolMarketStatsAggregateMetric,
   resolveProtocolMarketStatsMetric,
-  resolveProtocolMarketStatsRange,
   scaleProtocolMarketStatsChartUsd,
 } from '../../../src/core/staking/protocol-market-stats-series.ts'
 
-test('resolveProtocolMarketStatsRange maps label index to API range', () => {
-  const labels = ['1周', '1月', '1年', '全部']
-  assert.equal(resolveProtocolMarketStatsRange('1周', labels), 'week')
-  assert.equal(resolveProtocolMarketStatsRange('1月', labels), 'month')
-  assert.equal(resolveProtocolMarketStatsRange('1年', labels), 'year')
-  assert.equal(resolveProtocolMarketStatsRange('全部', labels), 'all')
-  assert.equal(resolveProtocolMarketStatsRange('unknown', labels), 'all')
+test('protocol market stats ranges are week/month/year/all and default week', () => {
+  assert.deepEqual([...PROTOCOL_MARKET_STATS_RANGES], ['week', 'month', 'year', 'all'])
+  assert.equal(DEFAULT_PROTOCOL_MARKET_STATS_RANGE, 'week')
+  assert.equal(isProtocolMarketStatsRange('week'), true)
+  assert.equal(isProtocolMarketStatsRange('1周'), false)
 })
 
 test('resolveProtocolMarketStatsMetric maps UI tabs to API metric', () => {

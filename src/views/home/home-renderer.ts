@@ -1,4 +1,7 @@
+import { deflateRawSync } from 'node:zlib'
+
 import { BOOTSTRAP_SCRIPT_ID, getHtmlLang, type Locale, locales } from '~/i18n'
+import { MESSAGE_PAYLOAD_ENCODING } from '~/i18n/message-codec'
 import { getMessagesForRender } from '~/i18n/messages-catalog'
 import { homeAssets } from '~/shared/assets/home'
 import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/shared/lib/legacy-runtime-polyfills'
@@ -21,10 +24,25 @@ function escapeAttr(value: string) {
 }
 
 /**
+ * 文案引导脚本统一序列化：deflate-raw + base64 编码后内联。
+ *
+ * 编码端（node zlib）与浏览器解码端（message-codec 的 fflate）配对，
+ * 线上静态 HTML 不暴露明文文案（防敏感词扫描）。
+ * base64 字符集不含 `<`，无需再防 `</script>` 提前闭合。
+ *
+ * @param locale 目标语言
+ * @param bag 序列化的文案袋
+ */
+function renderMessagesBootstrap(locale: Locale, bag: unknown) {
+  const payload = deflateRawSync(JSON.stringify(bag)).toString('base64')
+  return `<script type="text/plain" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}" data-enc="${MESSAGE_PAYLOAD_ENCODING}">${payload}</script>`
+}
+
+/**
  * 首页文案引导脚本
  *
- * 把按语言取到的文案子集序列化成 JSON 内联进 <script>，
- * 转义 `<` 防止 `</script>` 提前闭合文档。首页只需注入 home、common、errors 三组。
+ * 把按语言取到的文案子集编码内联进 <script>，
+ * 首页只需注入 home、common、errors 三组。解码见 message-codec。
  *
  * @param locale 目标语言
  */
@@ -35,8 +53,7 @@ function serializeHomeMessagesBootstrap(locale: Locale) {
     errors: full.errors,
     home: full.home,
   }
-  const json = JSON.stringify(bag).replace(/</g, '\\u003c')
-  return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
+  return renderMessagesBootstrap(locale, bag)
 }
 
 /**
@@ -47,8 +64,7 @@ function serializeHomeMessagesBootstrap(locale: Locale) {
  * @param locale 目标语言
  */
 function serializeMessagesBootstrap(locale: Locale) {
-  const json = JSON.stringify(getMessagesForRender(locale)).replace(/</g, '\\u003c')
-  return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
+  return renderMessagesBootstrap(locale, getMessagesForRender(locale))
 }
 
 const faviconHead = `

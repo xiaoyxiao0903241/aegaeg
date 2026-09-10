@@ -2,6 +2,7 @@ import type { UTCTimestamp } from 'lightweight-charts'
 import { useState } from 'react'
 
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { DEFAULT_PROTOCOL_MARKET_STATS_RANGE } from '~/core/staking/protocol-market-stats-series'
 import { isStakePeriod } from '~/core/staking/staking-period'
 import {
   baseDailyPctFromEpoch,
@@ -84,7 +85,7 @@ export function useStakingHubDetail() {
   const { sessionReady } = useAuth()
   const [tableSeg, setTableSeg] = useState('stake')
   const [chartMetric, setChartMetric] = useState('tvl')
-  const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
+  const [chartRange, setChartRange] = useState(DEFAULT_PROTOCOL_MARKET_STATS_RANGE)
   const agxPriceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const rebaseQuery = useLatestSagxRebaseRateQuery()
@@ -147,11 +148,7 @@ export function useStakingHubDetail() {
     fraction: 'natural',
   })
 
-  const seriesChart = useProtocolMarketStatsChart(
-    chartRange,
-    t.staking.aside.chartRanges,
-    chartMetric,
-  )
+  const seriesChart = useProtocolMarketStatsChart(chartRange, chartMetric)
   const chartLoading = seriesChart.isLoading && seriesChart.data == null
   const chartPoints: readonly ChartPoint[] = seriesChart.points.map((p) => ({
     time: p.time as UTCTimestamp,

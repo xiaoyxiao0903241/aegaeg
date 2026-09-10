@@ -6,6 +6,7 @@ import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
 import { HeroRaysBackground } from '~/shared/components/hero-rays-background'
 import { InlineAlert } from '~/shared/components/inline-alert'
 import { TableAuthActionProvider } from '~/shared/components/table'
+import { applyLocalizedHeadDisplay } from '~/shared/lib/head-display'
 import { scrollDappPanelsToTop } from '~/shared/lib/scroll-dapp-panels'
 import { cn } from '~/shared/lib/utils'
 import { useDappHostStore } from '~/stores/dapp-host-store'
@@ -71,13 +72,8 @@ export function DappHost() {
   }, [])
 
   useEffect(() => {
-    document.title = messages.home.meta.title
-
-    const descriptionMeta = document.querySelector('meta[name="description"]')
-    if (descriptionMeta) {
-      descriptionMeta.setAttribute('content', messages.home.meta.description)
-    }
-  }, [messages.home.meta.description, messages.home.meta.title])
+    applyLocalizedHeadDisplay(messages)
+  }, [messages])
 
   useEffect(() => {
     scrollDappPanelsToTop()
@@ -113,10 +109,10 @@ export function DappHost() {
           role="status"
           className="relative z-1 mx-4 mb-2"
         >
-          未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
-          ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code> 为{' '}
-          <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client ID 后重启{' '}
-          <code className="font-mono">pnpm dev</code>。
+          VITE_THIRDWEB_CLIENT_ID is not configured; wallet connection will hit 401. Copy{' '}
+          <code className="font-mono">.env.example</code> to <code className="font-mono">.env</code>
+          , fill in the Client ID from the thirdweb Dashboard, then restart{' '}
+          <code className="font-mono">pnpm dev</code>.
         </InlineAlert>
       ) : null}
 

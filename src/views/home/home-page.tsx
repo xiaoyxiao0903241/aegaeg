@@ -7,6 +7,7 @@
 import { useEffect } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
+import { applyLocalizedHeadDisplay } from '~/shared/lib/head-display'
 import { HomeFaqSection } from '~/views/home/home-faq-section'
 import { HomeFooter } from '~/views/home/home-footer'
 import { HomeHeader } from '~/views/home/home-header'
@@ -20,16 +21,10 @@ import { HomeTokenSection } from '~/views/home/home-token-section'
 
 export function HomePage() {
   const { messages } = useI18n()
-  const { meta } = messages.home
 
   useEffect(() => {
-    document.title = meta.title
-
-    const descriptionMeta = document.querySelector('meta[name="description"]')
-    if (descriptionMeta) {
-      descriptionMeta.setAttribute('content', meta.description)
-    }
-  }, [meta.description, meta.title])
+    applyLocalizedHeadDisplay(messages)
+  }, [messages])
 
   return (
     <div className="min-h-screen overflow-x-clip">

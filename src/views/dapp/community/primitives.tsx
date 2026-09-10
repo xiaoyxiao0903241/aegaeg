@@ -128,7 +128,13 @@ const communityStatCard = tv({
       false: {},
     },
     withImage: {
-      true: { root: 'overflow-visible max-dapp:overflow-clip' },
+      true: {
+        root: 'overflow-visible',
+        label: 'max-dapp:pr-30',
+        value: 'max-dapp:pr-30',
+        volume: 'max-dapp:pr-30',
+        note: 'max-dapp:pr-30',
+      },
       false: { root: 'overflow-clip' },
     },
   },
@@ -207,10 +213,10 @@ export function CommunityStatCard({
       ) : null}
       {children}
       {image ? (
-        // 站立角色脚贴卡片底边；H5 不展示
+        // 脚贴底边；允许溢出圆角。H5 贴右缘，避免伸出屏外被裁
         <img
           alt=""
-          className="pointer-events-none absolute -right-3.5 bottom-0 z-2 h-full w-30 object-contain object-bottom max-dapp:hidden"
+          className="pointer-events-none absolute right-0 bottom-0 z-2 h-full w-30 object-contain object-bottom dapp:-right-3.5"
           data-slot-id="community-stat-rank-deco"
           src={image}
         />

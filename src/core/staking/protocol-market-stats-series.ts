@@ -34,21 +34,15 @@ export type ProtocolMarketStatsChart = {
   percentChange: number | null
 }
 
-const RANGE_BY_INDEX = ['week', 'month', 'year', 'all'] as const
+/** 与 i18n `chartRanges` 同序；图表默认一周，不存文案以免切语言对不上。 */
+export const PROTOCOL_MARKET_STATS_RANGES = ['week', 'month', 'year', 'all'] as const
+export const DEFAULT_PROTOCOL_MARKET_STATS_RANGE: (typeof PROTOCOL_MARKET_STATS_RANGES)[number] =
+  'week'
 
-/**
- * 把文案 Segment 选中值映射为 API `range`。
- *
- * @param label 当前选中的文案
- * @param rangeLabels 与 `week/month/year/all` 同序的文案列表
- * @returns 对应 API range；未命中回落 `all`
- */
-export function resolveProtocolMarketStatsRange(
-  label: string,
-  rangeLabels: readonly string[],
-): (typeof RANGE_BY_INDEX)[number] {
-  const idx = rangeLabels.indexOf(label)
-  return RANGE_BY_INDEX[idx] ?? 'all'
+export function isProtocolMarketStatsRange(
+  value: string,
+): value is (typeof PROTOCOL_MARKET_STATS_RANGES)[number] {
+  return (PROTOCOL_MARKET_STATS_RANGES as readonly string[]).includes(value)
 }
 
 /**

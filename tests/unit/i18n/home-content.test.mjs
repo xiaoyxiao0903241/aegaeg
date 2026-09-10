@@ -44,9 +44,12 @@ test('home localized copy covers meta, hero, and footer text', async () => {
   const en = homeMessagesByLocale.en
   const zht = homeMessagesByLocale.zht
 
-  assert.equal(zh.meta.title, 'AEGIS X - 守护未来价值网络')
+  // 静态 head meta 固定英文（防敏感词扫描），运行时由 displayMeta 按语言覆写展示
+  assert.equal(zh.meta.title, 'AEGIS X - Guarding the Future Value Network')
   assert.equal(en.meta.title, 'AEGIS X - Guarding the Future Value Network')
-  assert.equal(zht.meta.title, 'AEGIS X - 守護未來價值網絡')
+  assert.equal(zht.meta.title, 'AEGIS X - Guarding the Future Value Network')
+  assert.equal(zh.displayMeta.title, 'AEGIS X - 守护未来价值网络')
+  assert.equal(zht.displayMeta.title, 'AEGIS X - 守護未來價值網絡')
   assert.equal(zh.hero.title, '守护未来价值网络')
   assert.equal(en.hero.title, 'Guarding the Future Value Network')
   assert.equal(zh.hero.enterProtocol, '进入协议')

@@ -5,7 +5,6 @@ import {
   buildProtocolMarketStatsChart,
   resolveProtocolMarketStatsAggregateMetric,
   resolveProtocolMarketStatsMetric,
-  resolveProtocolMarketStatsRange,
 } from '~/core/staking/protocol-market-stats-series'
 import type { CalcProduct } from '~/core/staking/staking-yield'
 import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
@@ -69,21 +68,16 @@ function useProtocolMarketStatsSeries(
 }
 
 /**
- * 从 UI Segment 文案解析 range/metric 并拉取序列，构建图表点。
+ * 按 Hub 指标拉取协议序列并构建图表点。
  *
- * @param chartRange 当前选中的时间范围文案（与 `rangeLabels` 对齐）
- * @param rangeLabels i18n `chartRanges`
  * @param uiMetric Hub：`tvl`/`mcap`
  * @param enabled false 时暂停请求
- * @returns API 查询视图，并附图表点、最新值与接口 `latest_growth_rate`
  */
 export function useProtocolMarketStatsChart(
-  chartRange: string,
-  rangeLabels: readonly string[],
+  range: ProtocolMarketStatsRange,
   uiMetric: string,
   enabled = true,
 ) {
-  const range = resolveProtocolMarketStatsRange(chartRange, rangeLabels)
   const metric = resolveProtocolMarketStatsMetric(uiMetric)
   const seriesQuery = useProtocolMarketStatsSeries(range, metric, enabled)
   const chart = buildProtocolMarketStatsChart(seriesQuery.data)
@@ -119,20 +113,15 @@ function useProtocolMarketStatsAggregateSeries(
 /**
  * 按详情页产品拉四类汇总趋势并构建图表点。
  *
- * @param chartRange 当前选中的时间范围文案（与 `rangeLabels` 对齐）
- * @param rangeLabels i18n `chartRanges`
  * @param product 质押 / LP 债 / 销毁债 / X 挖矿
  * @param enabled false 时暂停请求
- * @returns API 查询视图，并附图表点、最新值、接口增长率与 `metric`
  * @see docs/backend-api/api.md #protocol-market-stats/aggregate-series
  */
 export function useProtocolMarketStatsAggregateChart(
-  chartRange: string,
-  rangeLabels: readonly string[],
+  range: ProtocolMarketStatsRange,
   product: CalcProduct,
   enabled = true,
 ) {
-  const range = resolveProtocolMarketStatsRange(chartRange, rangeLabels)
   const metric = resolveProtocolMarketStatsAggregateMetric(product)
   const seriesQuery = useProtocolMarketStatsAggregateSeries(range, metric, enabled)
   const chart = buildProtocolMarketStatsChart(seriesQuery.data)
