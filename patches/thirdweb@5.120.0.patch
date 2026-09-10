@@ -1,0 +1,190 @@
+diff --git a/dist/cjs/wallets/manager/index.js b/dist/cjs/wallets/manager/index.js
+index c018c3153c752712d06b384f05ba265f1aa7d3ff..669b7babbb4c081fbc1b8dc190af8c98aeb43350 100644
+--- a/dist/cjs/wallets/manager/index.js
++++ b/dist/cjs/wallets/manager/index.js
+@@ -90,6 +90,11 @@ function createConnectionManager(storage) {
+         onWalletDisconnect(wallet);
+         wallet.disconnect();
+     };
++    // Subscribe once per wallet. handleConnection used to add another
++    // accountChanged listener on every switch, doubling until OOM.
++    const accountChangedUnsubs = new WeakMap();
++    const connectionOptionsByWallet = new WeakMap();
++    let unsubActiveWalletEvents;
+     // handle the connection logic, but don't set the wallet as active
+     const handleConnection = async (wallet, options) => {
+         const account = wallet.getAccount();
+@@ -111,11 +116,15 @@ function createConnectionManager(storage) {
+         if (options?.setWalletAsActive !== false) {
+             handleSetActiveWallet(activeWallet);
+         }
+-        wallet.subscribe("accountChanged", async () => {
+-            // We reimplement connect here to prevent memory leaks
+-            const newWallet = await handleConnection(wallet, options);
+-            options?.onConnect?.(newWallet, connectedWallets.getValue());
+-        });
++        connectionOptionsByWallet.set(wallet, options);
++        if (!accountChangedUnsubs.has(wallet)) {
++            const unsubAccountChanged = wallet.subscribe("accountChanged", async () => {
++                const latestOptions = connectionOptionsByWallet.get(wallet);
++                const newWallet = await handleConnection(wallet, latestOptions);
++                latestOptions?.onConnect?.(newWallet, connectedWallets.getValue());
++            });
++            accountChangedUnsubs.set(wallet, unsubAccountChanged);
++        }
+         return activeWallet;
+     };
+     const connect = async (wallet, options) => {
+@@ -136,7 +145,9 @@ function createConnectionManager(storage) {
+         activeAccountStore.setValue(account);
+         activeWalletChainStore.setValue(activeWallet.getChain());
+         activeWalletConnectionStatusStore.setValue("connected");
+-        // setup listeners
++        if (unsubActiveWalletEvents) {
++            unsubActiveWalletEvents();
++        }
+         const onAccountsChanged = (newAccount) => {
+             activeAccountStore.setValue(newAccount);
+         };
+@@ -150,6 +161,12 @@ function createConnectionManager(storage) {
+             unsubAccounts();
+             unsubChainChanged();
+             unsubDisconnect();
++            unsubActiveWalletEvents = undefined;
++        };
++        unsubActiveWalletEvents = () => {
++            unsubAccounts();
++            unsubChainChanged();
++            unsubDisconnect();
+         };
+     };
+     const setActiveWallet = async (activeWallet) => {
+diff --git a/dist/esm/wallets/manager/index.js b/dist/esm/wallets/manager/index.js
+index df74495253ecaa2862f67fecd73a456be8bf8fb7..fd0f83ab49d064b1748a80411c6761d93b2d20fc 100644
+--- a/dist/esm/wallets/manager/index.js
++++ b/dist/esm/wallets/manager/index.js
+@@ -83,6 +83,11 @@ export function createConnectionManager(storage) {
+         onWalletDisconnect(wallet);
+         wallet.disconnect();
+     };
++    // Subscribe once per wallet. handleConnection used to add another
++    // accountChanged listener on every switch, doubling until OOM.
++    const accountChangedUnsubs = new WeakMap();
++    const connectionOptionsByWallet = new WeakMap();
++    let unsubActiveWalletEvents;
+     // handle the connection logic, but don't set the wallet as active
+     const handleConnection = async (wallet, options) => {
+         const account = wallet.getAccount();
+@@ -104,11 +109,15 @@ export function createConnectionManager(storage) {
+         if (options?.setWalletAsActive !== false) {
+             handleSetActiveWallet(activeWallet);
+         }
+-        wallet.subscribe("accountChanged", async () => {
+-            // We reimplement connect here to prevent memory leaks
+-            const newWallet = await handleConnection(wallet, options);
+-            options?.onConnect?.(newWallet, connectedWallets.getValue());
+-        });
++        connectionOptionsByWallet.set(wallet, options);
++        if (!accountChangedUnsubs.has(wallet)) {
++            const unsubAccountChanged = wallet.subscribe("accountChanged", async () => {
++                const latestOptions = connectionOptionsByWallet.get(wallet);
++                const newWallet = await handleConnection(wallet, latestOptions);
++                latestOptions?.onConnect?.(newWallet, connectedWallets.getValue());
++            });
++            accountChangedUnsubs.set(wallet, unsubAccountChanged);
++        }
+         return activeWallet;
+     };
+     const connect = async (wallet, options) => {
+@@ -129,7 +138,9 @@ export function createConnectionManager(storage) {
+         activeAccountStore.setValue(account);
+         activeWalletChainStore.setValue(activeWallet.getChain());
+         activeWalletConnectionStatusStore.setValue("connected");
+-        // setup listeners
++        if (unsubActiveWalletEvents) {
++            unsubActiveWalletEvents();
++        }
+         const onAccountsChanged = (newAccount) => {
+             activeAccountStore.setValue(newAccount);
+         };
+@@ -143,6 +154,12 @@ export function createConnectionManager(storage) {
+             unsubAccounts();
+             unsubChainChanged();
+             unsubDisconnect();
++            unsubActiveWalletEvents = undefined;
++        };
++        unsubActiveWalletEvents = () => {
++            unsubAccounts();
++            unsubChainChanged();
++            unsubDisconnect();
+         };
+     };
+     const setActiveWallet = async (activeWallet) => {
+diff --git a/src/wallets/manager/index.ts b/src/wallets/manager/index.ts
+index ce84e5584e3caaccba3385d4528d8f7a598867a4..01b79d674c1d75223ad6058c014fd4460d01ec8f 100644
+--- a/src/wallets/manager/index.ts
++++ b/src/wallets/manager/index.ts
+@@ -125,6 +125,15 @@ export function createConnectionManager(storage: AsyncStorage) {
+     wallet.disconnect();
+   };
+ 
++  // Subscribe once per wallet. handleConnection used to add another
++  // accountChanged listener on every switch, doubling until OOM.
++  const accountChangedUnsubs = new WeakMap<Wallet, () => void>();
++  const connectionOptionsByWallet = new WeakMap<
++    Wallet,
++    ConnectManagerOptions | undefined
++  >();
++  let unsubActiveWalletEvents: (() => void) | undefined;
++
+   // handle the connection logic, but don't set the wallet as active
+   const handleConnection = async (
+     wallet: Wallet,
+@@ -158,11 +167,18 @@ export function createConnectionManager(storage: AsyncStorage) {
+       handleSetActiveWallet(activeWallet);
+     }
+ 
+-    wallet.subscribe("accountChanged", async () => {
+-      // We reimplement connect here to prevent memory leaks
+-      const newWallet = await handleConnection(wallet, options);
+-      options?.onConnect?.(newWallet, connectedWallets.getValue());
+-    });
++    connectionOptionsByWallet.set(wallet, options);
++    if (!accountChangedUnsubs.has(wallet)) {
++      const unsubAccountChanged = wallet.subscribe(
++        "accountChanged",
++        async () => {
++          const latestOptions = connectionOptionsByWallet.get(wallet);
++          const newWallet = await handleConnection(wallet, latestOptions);
++          latestOptions?.onConnect?.(newWallet, connectedWallets.getValue());
++        },
++      );
++      accountChangedUnsubs.set(wallet, unsubAccountChanged);
++    }
+ 
+     return activeWallet;
+   };
+@@ -189,7 +205,9 @@ export function createConnectionManager(storage: AsyncStorage) {
+     activeWalletChainStore.setValue(activeWallet.getChain());
+     activeWalletConnectionStatusStore.setValue("connected");
+ 
+-    // setup listeners
++    if (unsubActiveWalletEvents) {
++      unsubActiveWalletEvents();
++    }
+ 
+     const onAccountsChanged = (newAccount: Account) => {
+       activeAccountStore.setValue(newAccount);
+@@ -212,6 +230,12 @@ export function createConnectionManager(storage: AsyncStorage) {
+       unsubAccounts();
+       unsubChainChanged();
+       unsubDisconnect();
++      unsubActiveWalletEvents = undefined;
++    };
++    unsubActiveWalletEvents = () => {
++      unsubAccounts();
++      unsubChainChanged();
++      unsubDisconnect();
+     };
+   };
+ 

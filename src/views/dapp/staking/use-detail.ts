@@ -1,7 +1,10 @@
 import type { UTCTimestamp } from 'lightweight-charts'
 import { useState } from 'react'
 
-import { scaleProtocolMarketStatsChartUsd } from '~/core/staking/protocol-market-stats-series'
+import {
+  DEFAULT_PROTOCOL_MARKET_STATS_RANGE,
+  scaleProtocolMarketStatsChartUsd,
+} from '~/core/staking/protocol-market-stats-series'
 import type { CalcProduct } from '~/core/staking/staking-yield'
 import { useAgxPriceUsd, useAgxUsd1SpotPriceQuery } from '~/hooks/use-agx-price-usd'
 import { useProtocolMarketStatsAggregateChart } from '~/hooks/use-api-data'
@@ -19,12 +22,8 @@ import { formatDecimal, formatPercentChange } from '~/shared/presenters/format'
  */
 export function useStakingDetail(product: CalcProduct) {
   const { messages: t } = useI18n()
-  const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
-  const seriesChart = useProtocolMarketStatsAggregateChart(
-    chartRange,
-    t.staking.aside.chartRanges,
-    product,
-  )
+  const [chartRange, setChartRange] = useState(DEFAULT_PROTOCOL_MARKET_STATS_RANGE)
+  const seriesChart = useProtocolMarketStatsAggregateChart(chartRange, product)
   const agxPriceUsd = useAgxPriceUsd()
   const spotQuery = useAgxUsd1SpotPriceQuery()
   const usdChart = scaleProtocolMarketStatsChartUsd(seriesChart, agxPriceUsd)

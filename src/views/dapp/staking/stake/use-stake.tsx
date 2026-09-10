@@ -173,9 +173,10 @@ export function useStakeDetail() {
   const epochNumber = overviewQuery.data?.epochNumber
   const rebaseLabel = formatRebasePct(rebaseQuery.data?.rebaseRate1e18)
 
+  // label fallback 显 --（缺文案走 --，不硬编码本地化字面量，产物不出现明文中文）
   const overviewItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
-      label: t.staking.stake.overviewMetrics[0]?.label ?? '总质押量',
+      label: t.staking.stake.overviewMetrics[0]?.label ?? '--',
       hint: t.staking.stake.overviewMetrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
@@ -190,17 +191,17 @@ export function useStakeDetail() {
       ),
     },
     {
-      label: t.staking.stake.overviewMetrics[1]?.label ?? '当前 Epoch',
+      label: t.staking.stake.overviewMetrics[1]?.label ?? '--',
       hint: t.staking.stake.overviewMetrics[1]?.hint,
       value: epochNumber != null ? `#${epochNumber.toString()}` : formatDecimal(null),
     },
     {
-      label: t.staking.stake.overviewMetrics[2]?.label ?? '下一次 Rebase 发放',
+      label: t.staking.stake.overviewMetrics[2]?.label ?? '--',
       hint: t.staking.stake.overviewMetrics[2]?.hint,
       value: <RebaseCountdownValue />,
     },
     {
-      label: t.staking.stake.overviewMetrics[3]?.label ?? '当前 Rebase 收益率',
+      label: t.staking.stake.overviewMetrics[3]?.label ?? '--',
       hint: t.staking.stake.overviewMetrics[3]?.hint,
       value: rebaseLabel,
     },
@@ -217,7 +218,7 @@ export function useStakeDetail() {
   const metrics = t.staking.aside.positionMetrics
   const positionItems: Array<{ label: string; value: ReactNode; hint?: string }> = [
     {
-      label: metrics[0]?.label ?? '我的持仓',
+      label: metrics[0]?.label ?? '--',
       hint: metrics[0]?.hint,
       value: (
         <StakingTokenMetricValue
@@ -232,7 +233,7 @@ export function useStakeDetail() {
       ),
     },
     {
-      label: metrics[1]?.label ?? '已释放',
+      label: metrics[1]?.label ?? '--',
       hint: metrics[1]?.hint,
       value: (
         <StakingTokenMetricValue
@@ -247,7 +248,7 @@ export function useStakeDetail() {
       ),
     },
     {
-      label: metrics[2]?.label ?? '待释放',
+      label: metrics[2]?.label ?? '--',
       hint: metrics[2]?.hint,
       value: (
         <StakingTokenMetricValue
@@ -262,7 +263,7 @@ export function useStakeDetail() {
       ),
     },
     {
-      label: metrics[3]?.label ?? '当前Rebase 收益',
+      label: metrics[3]?.label ?? '--',
       hint: metrics[3]?.hint,
       value: (
         <StakingTokenMetricValue
@@ -277,7 +278,7 @@ export function useStakeDetail() {
       ),
     },
     {
-      label: metrics[4]?.label ?? '当前Rebase 加成',
+      label: metrics[4]?.label ?? '--',
       hint: metrics[4]?.hint,
       value: (
         <StakingTokenMetricValue

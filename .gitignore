@@ -40,5 +40,7 @@ tests/e2e/visual-*/
 /zht/
 /tr/
 /th/
+# render-home.mjs 生成的编码语言包（防扫描，禁止提交）
+/public/i18n/
 # local proto HTML for WebBridge (do not commit)
 public/proto/

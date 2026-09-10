@@ -108,7 +108,7 @@ export function RewardsSummaryCard({
       as="div"
       className={cn(
         'flex flex-col gap-1.5',
-        decorationSrc != null ? 'relative overflow-hidden' : null,
+        decorationSrc != null ? 'relative overflow-visible' : null,
       )}
       surface="elevated"
     >
@@ -124,12 +124,24 @@ export function RewardsSummaryCard({
           {labelAction}
         </div>
       ) : (
-        <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
+        <Text
+          as="p"
+          className={cn(
+            'leading-none font-medium text-foreground/70',
+            decorationSrc != null && 'max-dapp:pr-12',
+          )}
+          variant="copy"
+        >
           {label}
         </Text>
       )}
       {value != null ? (
-        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+        <div
+          className={cn(
+            'flex flex-wrap items-center gap-x-1.5 gap-y-0.5',
+            decorationSrc != null && 'max-dapp:pr-12',
+          )}
+        >
           {iconSrc != null ? <Icon alt="" shape="circle" size="lg" src={iconSrc} /> : null}
           <Text as="p" className="leading-none font-semibold wrap-break-word" variant="headline">
             <CountValue text={value} />
@@ -142,15 +154,22 @@ export function RewardsSummaryCard({
         </div>
       ) : null}
       {mutedBody != null ? (
-        <Text as="p" className="leading-none wrap-break-word text-foreground/40" variant="copy">
+        <Text
+          as="p"
+          className={cn(
+            'leading-none wrap-break-word text-foreground/40',
+            decorationSrc != null && 'max-dapp:pr-12',
+          )}
+          variant="copy"
+        >
           {mutedBody}
         </Text>
       ) : null}
       {decorationSrc != null ? (
-        // 装饰图贴卡片底边，超出圆角裁掉
+        // 贴底对齐；无档立绘比卡高时允许溢出，不裁圆角
         <img
           alt=""
-          className="pointer-events-none absolute right-0 bottom-0 w-16 object-contain object-bottom max-dapp:hidden"
+          className="pointer-events-none absolute right-0 bottom-0 z-1 w-16 object-contain object-bottom"
           src={decorationSrc}
         />
       ) : null}
