@@ -85,9 +85,9 @@ importers:
         version: 4.3.0
       thirdweb:
         specifier: 5.120.0
-        version: 5.120.0(patch_hash=33fae989febf32843804ce8d45857da494d486227c87378ca43f6a91d3fe1566)(@hey-api/openapi-ts@0.98.2(magicast@0.5.4)(typescript@6.0.3))(@solana/sysvars@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@6.0.3))(@tanstack/query-core@5.101.0)(@types/react-dom@19.2.7(@types/react@19.2.16))(@types/react@19.2.16)(bufferutil@4.1.0)(debug@4.4.3(supports-color@10.2.2))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(supports-color@10.2.2)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.7))(utf-8-validate@5.0.10)(ws@8.20.1(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+        version: 5.120.0(patch_hash=33fae989febf32843804ce8d45857da494d486227c87378ca43f6a91d3fe1566)(@hey-api/openapi-ts@0.98.2(magicast@0.5.4)(typescript@6.0.3))(@solana/sysvars@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@6.0.3))(@tanstack/query-core@5.101.0)(@types/react-dom@19.2.7(@types/react@19.2.16))(@types/react@19.2.16)(bufferutil@4.1.0)(debug@4.4.3(supports-color@10.2.2))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(supports-color@10.2.2)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.7))(utf-8-validate@5.0.10)(ws@8.21.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
       viem:
-        specifier: ^2.54.2
+        specifier: ^2.54.0
         version: 2.56.1(bufferutil@4.1.0)(typescript@6.0.3)(utf-8-validate@5.0.10)(zod@3.25.75)
       zustand:
         specifier: ^5.0.14
@@ -10954,7 +10954,7 @@ snapshots:
       '@solana/functional': 5.5.1(typescript@6.0.3)
       '@solana/rpc-subscriptions-spec': 5.5.1(typescript@6.0.3)
       '@solana/subscribable': 5.5.1(typescript@6.0.3)
-      ws: 8.20.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      ws: 8.21.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -15105,7 +15105,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  thirdweb@5.120.0(patch_hash=33fae989febf32843804ce8d45857da494d486227c87378ca43f6a91d3fe1566)(@hey-api/openapi-ts@0.98.2(magicast@0.5.4)(typescript@6.0.3))(@solana/sysvars@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@6.0.3))(@tanstack/query-core@5.101.0)(@types/react-dom@19.2.7(@types/react@19.2.16))(@types/react@19.2.16)(bufferutil@4.1.0)(debug@4.4.3(supports-color@10.2.2))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(supports-color@10.2.2)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.7))(utf-8-validate@5.0.10)(ws@8.20.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)):
+  thirdweb@5.120.0(patch_hash=33fae989febf32843804ce8d45857da494d486227c87378ca43f6a91d3fe1566)(@hey-api/openapi-ts@0.98.2(magicast@0.5.4)(typescript@6.0.3))(@solana/sysvars@2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@6.0.3))(@tanstack/query-core@5.101.0)(@types/react-dom@19.2.7(@types/react@19.2.16))(@types/react@19.2.16)(bufferutil@4.1.0)(debug@4.4.3(supports-color@10.2.2))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(supports-color@10.2.2)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.7))(utf-8-validate@5.0.10)(ws@8.21.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)):
     dependencies:
       '@base-org/account': 2.5.0(@types/react@19.2.16)(bufferutil@4.1.0)(debug@4.4.3(supports-color@10.2.2))(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.4.0(react@19.2.7))(utf-8-validate@5.0.10)(zod@3.25.75)
       '@coinbase/wallet-sdk': 4.3.0
