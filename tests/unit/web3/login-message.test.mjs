@@ -63,3 +63,19 @@ test('loginMessage defaults to siwe format', async () => {
   assert.match(message, /Nonce: fixed-nonce/)
   assert.match(message, /Chain ID: 56/)
 })
+
+test('createSiweLoginFields defaults expiration to 24 hours', async () => {
+  const { createSiweLoginFields } = await loadModule('/src/web3/auth/login-message.ts')
+
+  const payload = createSiweLoginFields({
+    address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    chainId: 56,
+    domain: 'aegis-x.io',
+    nonce: 'test-nonce',
+    issuedAt: '2026-06-15T00:00:00.000Z',
+  })
+
+  assert.equal(payload.issued_at, '2026-06-15T00:00:00.000Z')
+  assert.equal(payload.expiration_time, '2026-06-16T00:00:00.000Z')
+  assert.equal(payload.invalid_before, '2026-06-14T00:00:00.000Z')
+})

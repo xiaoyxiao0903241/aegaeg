@@ -18,7 +18,7 @@ export interface SiweLoginFields {
 
 const DEFAULT_STATEMENT = 'Sign in to AEGIS X to access your account.'
 const DEFAULT_VERSION = '1'
-const DEFAULT_TTL_MS = 60 * 60 * 1000
+const DEFAULT_TTL_MS = 24 * 60 * 60 * 1000
 
 /**
  * 生成登录 nonce。
@@ -38,15 +38,15 @@ export function generateLoginNonce(): string {
 /**
  * 按参数生成 SIWE 登录字段。
  *
- * domain 默认取运行时 hostname；issuedAt 默认当前时间，有效期默认 1 小时，
- * invalid_before 置为 issuedAt 前一小时。
+ * domain 默认取运行时 hostname；issuedAt 默认当前时间，有效期默认 24 小时，
+ * invalid_before 置为 issuedAt 前 24 小时。
  *
  * @param params.address 钱包地址
  * @param params.chainId 链 ID
  * @param params.domain 站点域名，默认运行时 hostname
  * @param params.nonce 登录 nonce，默认自动生成
  * @param params.issuedAt 签发时间 ISO 字符串，默认当前时间
- * @param params.ttlMs 有效期毫秒，默认 1 小时
+ * @param params.ttlMs 有效期毫秒，默认 24 小时
  * @returns SIWE 登录字段对象
  */
 export function createSiweLoginFields(params: {
