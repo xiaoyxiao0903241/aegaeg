@@ -73,7 +73,9 @@ test('loginAttemptKey fingerprints address + token + signature', async () => {
 })
 
 test('deriveAuthAction decides idle / login / renew', async () => {
-  const { deriveAuthAction } = await loadModule('/src/core/auth/auth-machine.ts')
+  const { deriveAuthAction, FALLBACK_SESSION_TTL_MS } = await loadModule(
+    '/src/core/auth/auth-machine.ts',
+  )
   const renewThresholdMs = 60_000
   const now = 1_000_000_000
   const base = {
@@ -181,7 +183,7 @@ test('deriveAuthAction decides idle / login / renew', async () => {
         session: { token: 't', address: '0x1', savedAt },
       },
     }),
-    { type: 'renewAt', at: savedAt + 60 * 60_000 - renewThresholdMs },
+    { type: 'renewAt', at: savedAt + FALLBACK_SESSION_TTL_MS - renewThresholdMs },
   )
 })
 

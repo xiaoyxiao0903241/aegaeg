@@ -1,7 +1,7 @@
 import { authStatus } from '~/core/auth/auth-status'
 import type { StoredAuthSession, StoredLoginSignature } from '~/core/auth/types'
 
-/** JWT 缺省 exp 时沿用 SIWE 默认会话时长（1 小时）。 */
+/** JWT 缺省 exp 时前端按 1 小时调度续期；与 SIWE 消息有效期无关。 */
 export const FALLBACK_SESSION_TTL_MS = 60 * 60 * 1000
 
 /**
