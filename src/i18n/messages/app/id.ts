@@ -1358,7 +1358,7 @@ const app = defineMessages({
           },
           {
             q: 'Apakah klaim tunjangan mengonsumsi poin kontribusi?',
-            a: 'Tidak. Berbeda dari hadiah lain: tunjangan pengembangan tidak mengonsumsi poin kontribusi dan tidak melalui antrean rilis—gAGX langsung ke dompet Anda.',
+            a: 'Tidak. Berbeda dari hadiah lain: tunjangan pengembangan tidak mengonsumsi poin kontribusi dan tidak melalui antrean rilis—AGX langsung ke dompet Anda.',
           },
         ],
       },

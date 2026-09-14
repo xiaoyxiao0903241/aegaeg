@@ -1346,7 +1346,7 @@ const app = defineMessages({
           },
           {
             q: 'Ödenek talep etmek katkı puanı harcar mı?',
-            a: 'Hayır. Diğer ödüllerden farklı olarak gelişim ödenekleri katkı harcamaz ve serbest bırakma havuzuna girmez — gAGX doğrudan cüzdanınıza gider.',
+            a: 'Hayır. Diğer ödüllerden farklı olarak gelişim ödenekleri katkı harcamaz ve serbest bırakma havuzuna girmez — AGX doğrudan cüzdanınıza gider.',
           },
         ],
       },

@@ -1,13 +1,14 @@
 import { useDaoRewardTypeTotals, useMarketAllowanceSummary } from '~/hooks/use-api-data'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/shared/assets/dapp'
 import { hasTypeTotalClaimable, typeTotalAmount } from '~/shared/lib/dao-reward-type-totals'
 import { formatDecimal } from '~/shared/presenters/format'
 import { formatApiAmount } from '~/views/dapp/rewards/shared'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 
-const TOKEN_GAGX = 'gAGX'
+const TOKEN_AGX = 'AGX'
 
 /** 简单领取仅发展津贴；参与 / 推荐等走 Dao Mixed。 */
 export type SimpleClaimView = 'grant'
@@ -37,7 +38,7 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
   )
   const grantClaimableText = formatDecimal(grantPreview, { digits: 4 })
   const claimableText = grantClaimableText
-  const ctaAmount = formatDecimal(grantPreview, { digits: 4, suffix: ` ${TOKEN_GAGX}` })
+  const ctaAmount = formatDecimal(grantPreview, { digits: 4, suffix: ` ${TOKEN_AGX}` })
   const ctaLabel = interpolate(copy.ctaToWallet, { amount: ctaAmount })
   const canSubmit = sessionReady && !claim.isClaiming && claim.canClaim && hasGrantClaimable
 
@@ -58,7 +59,8 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
     canSubmit,
     onClaim,
     isClaiming: claim.isClaiming,
-    tokenGagx: TOKEN_GAGX,
+    tokenGagx: TOKEN_AGX,
+    tokenIcon: dappAssets.tokenAgx,
     claimIntoWallet: copy.claimIntoWallet,
     showTokenChip: true,
     hasGrantClaimable,

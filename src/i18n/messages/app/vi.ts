@@ -1347,7 +1347,7 @@ const app = defineMessages({
           },
           {
             q: 'Nhận trợ cấp có tiêu điểm đóng góp không?',
-            a: 'Không. Khác phần thưởng khác: trợ cấp phát triển không tiêu điểm đóng góp, cũng không qua hồ giải phóng — gAGX vào thẳng ví.',
+            a: 'Không. Khác phần thưởng khác: trợ cấp phát triển không tiêu điểm đóng góp, cũng không qua hồ giải phóng — AGX vào thẳng ví.',
           },
         ],
       },
