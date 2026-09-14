@@ -143,12 +143,12 @@ function formatSignedAllowance(raw: string): {
   const n = parseApiAmount(raw)
   if (n == null || n === 0) {
     return {
-      text: formatApiAmount(raw, { digits: 4, suffix: ' gAGX' }),
+      text: formatApiAmount(raw, { digits: 4, suffix: ' AGX' }),
       positive: false,
       negative: false,
     }
   }
-  const abs = formatApiAmount(String(Math.abs(n)), { digits: 4, suffix: ' gAGX' })
+  const abs = formatApiAmount(String(Math.abs(n)), { digits: 4, suffix: ' AGX' })
   if (n > 0) return { text: `+${abs}`, positive: true, negative: false }
   return { text: `−${abs}`, positive: false, negative: true }
 }

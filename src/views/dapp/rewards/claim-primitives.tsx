@@ -12,16 +12,21 @@ import { cn } from '~/shared/lib/utils'
 import { OneWayFlowIndicator } from '~/views/dapp/shared/one-way-flow-indicator'
 
 /**
- * gAGX 图标 + 数值 / 标签行（领取控件共用）
+ * 代币图标 + 数值 / 标签行（领取控件共用）
+ *
+ * 默认 gAGX 图；发展津贴传入 AGX 图。
  *
  * @param children 数值或标签内容
+ * @param iconSrc 代币图标；缺省为 gAGX
  * @param textVariant 文字样式
  */
 export function RewardsGagxAmount({
   children,
+  iconSrc = dappAssets.tokenGagx,
   textVariant = 'copy',
 }: {
   children: ReactNode
+  iconSrc?: string
   textVariant?: 'copy' | 'headline'
 }) {
   return (
@@ -31,7 +36,7 @@ export function RewardsGagxAmount({
         className="size-(--app-icon-lg) rounded-full"
         loading="lazy"
         size="token"
-        src={dappAssets.tokenGagx}
+        src={iconSrc}
       />
       <Text as="p" className="font-semibold" variant={textVariant}>
         {children}
@@ -47,24 +52,21 @@ export function RewardsGagxAmount({
  *
  * @param tokenLabel 代币名称
  * @param amountText 金额文本
+ * @param iconSrc 代币图标；缺省为 gAGX
  */
 export function RewardsClaimTokenRow({
   tokenLabel,
   amountText,
+  iconSrc = dappAssets.tokenGagx,
 }: {
   tokenLabel: string
   amountText: string
+  iconSrc?: string
 }) {
   return (
     <div className="flex items-center justify-between gap-2">
       <span className="inline-flex h-8.5 items-center gap-2 rounded-full bg-card pr-3.5 pl-2">
-        <Icon
-          alt=""
-          className="size-6 rounded-2xl"
-          loading="lazy"
-          size="token"
-          src={dappAssets.tokenGagx}
-        />
+        <Icon alt="" className="size-6 rounded-2xl" loading="lazy" size="token" src={iconSrc} />
         <Text as="span" className="leading-4 font-semibold" variant="detail">
           {tokenLabel}
         </Text>
@@ -147,6 +149,7 @@ export function GrantPendingCard({
   pendingHint,
   pendingLabel,
   tokenGagx,
+  tokenIcon,
 }: {
   contactSupport: string
   pendingAmount: string
@@ -154,6 +157,7 @@ export function GrantPendingCard({
   pendingHint: string
   pendingLabel: string
   tokenGagx: string
+  tokenIcon: string
 }) {
   return (
     <Card surface="outlined">
@@ -166,7 +170,9 @@ export function GrantPendingCard({
         </Text>
       </div>
       <div className="mt-1.5 flex items-center justify-between gap-3">
-        <RewardsGagxAmount textVariant="copy">{tokenGagx}</RewardsGagxAmount>
+        <RewardsGagxAmount iconSrc={tokenIcon} textVariant="copy">
+          {tokenGagx}
+        </RewardsGagxAmount>
         <Text as="p" className="text-2xl leading-none font-semibold" variant="headline">
           {pendingAmount}
         </Text>
@@ -208,6 +214,7 @@ export function SimpleClaimableCard({
   claimableLabel,
   showTokenChip,
   tokenGagx,
+  tokenIcon,
   usdLabel,
 }: {
   amountText: string
@@ -216,6 +223,7 @@ export function SimpleClaimableCard({
   claimableLabel: string
   showTokenChip: boolean
   tokenGagx: string
+  tokenIcon: string
   usdLabel: string
 }) {
   return (
@@ -233,7 +241,7 @@ export function SimpleClaimableCard({
         </Text>
       </div>
       {showTokenChip ? (
-        <RewardsClaimTokenRow amountText={amountText} tokenLabel={tokenGagx} />
+        <RewardsClaimTokenRow amountText={amountText} iconSrc={tokenIcon} tokenLabel={tokenGagx} />
       ) : (
         <div className="flex items-center justify-between gap-2">
           <Text as="span" className="font-semibold" variant="detail">

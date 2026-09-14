@@ -426,7 +426,7 @@ export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem)
       TABLE_EMPTY
     ),
     formatSubsidyRate(item.subsidy_rate),
-    formatApiAmount(item.allowance_amount, { digits: 4, suffix: ' gAGX' }),
+    formatApiAmount(item.allowance_amount, { digits: 4, suffix: ' AGX' }),
   ]
 }
 
@@ -439,7 +439,7 @@ export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem)
 export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): ReactNode[] {
   return [
     formatBlockTime(item.claim_time),
-    formatApiAmount(item.allowance_amount, { digits: 4, suffix: ' gAGX' }),
+    formatApiAmount(item.allowance_amount, { digits: 4, suffix: ' AGX' }),
     item.tx_hash ? <ExplorerLink key={item.tx_hash} kind="tx" value={item.tx_hash} /> : TABLE_EMPTY,
   ]
 }

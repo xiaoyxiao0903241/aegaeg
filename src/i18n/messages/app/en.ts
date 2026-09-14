@@ -1302,7 +1302,7 @@ const app = defineMessages({
           },
           {
             q: 'Does claiming spend contribution points?',
-            a: 'No. Unlike other rewards, development stipends spend no contribution and skip the release queue—gAGX goes straight to your wallet.',
+            a: 'No. Unlike other rewards, development stipends spend no contribution and skip the release queue—AGX goes straight to your wallet.',
           },
         ],
       },

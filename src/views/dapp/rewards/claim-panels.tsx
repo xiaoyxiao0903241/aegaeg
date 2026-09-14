@@ -60,6 +60,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
               pendingHint={vm.grant.pendingHint}
               pendingLabel={vm.grant.pendingLabel}
               tokenGagx={vm.tokenGagx}
+              tokenIcon={vm.tokenIcon}
             />
             <ClaimStackDivider />
           </>
@@ -71,6 +72,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
           claimableLabel={vm.hasGrantClaimable ? t.rewards.detail.claimable : ''}
           showTokenChip={vm.showTokenChip}
           tokenGagx={vm.tokenGagx}
+          tokenIcon={vm.tokenIcon}
           usdLabel={t.rewards.detail.usdLabel}
         />
 

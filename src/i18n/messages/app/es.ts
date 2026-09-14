@@ -1363,7 +1363,7 @@ const app = defineMessages({
           },
           {
             q: '¿Reclamar el subsidio consume puntos de contribución?',
-            a: 'No. A diferencia de otras recompensas, el subsidio de desarrollo no consume contribución ni pasa por la cola de liberación: el gAGX va directo a tu billetera.',
+            a: 'No. A diferencia de otras recompensas, el subsidio de desarrollo no consume contribución ni pasa por la cola de liberación: el AGX va directo a tu billetera.',
           },
         ],
       },
