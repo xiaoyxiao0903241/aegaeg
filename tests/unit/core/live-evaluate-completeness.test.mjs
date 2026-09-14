@@ -110,7 +110,7 @@ test('maxTurbineUnlockAgx is min of quota and USD1 converted at unit price with 
       oneAgx,
       slippageBps: 100,
     }),
-    5_050_505_050n,
+    4_950_000_000n,
   )
   assert.equal(
     maxTurbineUnlockAgx({

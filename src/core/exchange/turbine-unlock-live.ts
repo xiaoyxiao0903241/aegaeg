@@ -64,8 +64,7 @@ export function calcTurbinePayableUsd(
 /**
  * 涡轮解锁输入上限：配额与「USD1 余额按单价、滑点能换到的 AGX」取小。
  *
- * 应付是报价 × (1 − 滑点)，所以余额能覆盖的报价是余额 / (1 − 滑点)；
- * 再用 1 AGX 单价换成数量。单价未就绪或为 0 时返回 0，避免用假价格放大上限。
+ * 应付已是报价 × (1 − 滑点)。MAX 按余额 × (1 − 滑点) / 单价，把滑点留给曲线溢价。
  *
  * @param args.quota 当前可解锁配额
  * @param args.usd1 钱包 USD1 余额
@@ -89,7 +88,7 @@ export function maxTurbineUnlockAgx(args: {
     return 0n
   }
   const slipKeep = BigInt(BPS_DENOM_NUMBER - args.slippageBps)
-  const fromUsd = (args.usd1 * args.oneAgx * BPS_DENOM) / (args.unitUsdPerAgx * slipKeep)
+  const fromUsd = (args.usd1 * args.oneAgx * slipKeep) / (args.unitUsdPerAgx * BPS_DENOM)
   return fromUsd < args.quota ? fromUsd : args.quota
 }
 
