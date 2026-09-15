@@ -5,7 +5,7 @@
 
 ## 裁决
 
-全站只有一个当前 BSC 只读客户端（`bscReadClient`）。未连走公共 HTTP，已连 BSC 走钱包节点。  
+全站只有一个当前 BSC 只读客户端（`bscReadClient`）。未连走公共 HTTP；已连 BSC 默认走钱包节点，`VITE_PUBLIC_READ_WALLET_IDS` 命中则仍走公共 HTTP。  
 **不要**再把它当作 `client` / `readClient` 从 `WriteSession` 传到每个 `read*`。
 
 `WriteSession` 只保留这笔写需要的身份：`wallet` / `account` / `address`。  

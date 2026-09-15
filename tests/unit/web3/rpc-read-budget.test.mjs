@@ -22,10 +22,18 @@ test('bscReadRpcUrls dedupes primary and appends public fallbacks', async () => 
   ])
 })
 
-test('parseOptionalCsvUrls splits comma list', async () => {
-  const { parseOptionalCsvUrls } = await loadModule('/src/shared/config/env.ts')
-  assert.deepEqual(parseOptionalCsvUrls(''), [])
-  assert.deepEqual(parseOptionalCsvUrls(' https://a ,https://b '), ['https://a', 'https://b'])
+test('parseOptionalCsv splits comma list', async () => {
+  const { parseOptionalCsv } = await loadModule('/src/shared/config/env.ts')
+  assert.deepEqual(parseOptionalCsv(undefined), [])
+  assert.deepEqual(parseOptionalCsv(''), [])
+  assert.deepEqual(parseOptionalCsv(' com.okex.wallet , io.metamask '), [
+    'com.okex.wallet',
+    'io.metamask',
+  ])
+  assert.deepEqual(parseOptionalCsv('com.okex.wallet，io.metamask'), [
+    'com.okex.wallet，io.metamask',
+  ])
+  assert.deepEqual(parseOptionalCsv(' https://a ,https://b '), ['https://a', 'https://b'])
 })
 
 test('readTurbineSilences budgets: size+cooldown + one aggregate3 (not 2N)', async () => {

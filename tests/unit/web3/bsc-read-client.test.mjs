@@ -37,57 +37,32 @@ test('shouldUseWalletReadRpc: public until a BSC wallet is connected', async () 
   assert.equal(shouldUseWalletReadRpc(), false)
 })
 
-test('shouldUseWalletReadRpc: OKX on BSC uses wallet RPC unless desktop-extension public is forced', async () => {
-  const { shouldUseWalletReadRpc, setConnectedReadWallet } = await loadModule(
+test('shouldUseWalletReadRpc is the inverse of shouldUsePublicRpc for a connected BSC wallet', async () => {
+  const { shouldUsePublicRpc, shouldUseWalletReadRpc, setConnectedReadWallet } = await loadModule(
     '/src/web3/bsc-read-client.ts',
   )
   const { defaultChain } = await loadModule('/src/web3/thirdweb.ts')
   const bscId = defaultChain.id
-  const okx = walletStub(bscId, true, 'com.okex.wallet')
+  const listed = walletStub(bscId, true, 'com.okex.wallet')
 
-  assert.equal(shouldUseWalletReadRpc(okx), true)
+  assert.equal(shouldUseWalletReadRpc(listed), !shouldUsePublicRpc('com.okex.wallet'))
 
-  setConnectedReadWallet(okx)
-  assert.equal(shouldUseWalletReadRpc(), true)
+  setConnectedReadWallet(listed)
+  assert.equal(shouldUseWalletReadRpc(), !shouldUsePublicRpc('com.okex.wallet'))
   setConnectedReadWallet(null)
 })
 
-const DESKTOP_CHROME_UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-const OKX_APP_UA =
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 OKApp'
-const ANDROID_CHROME_UA =
-  'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36'
-
-test('shouldForceOkxPublicReadRpc only for PC OKX extension when enabled', async () => {
-  const { shouldForceOkxPublicReadRpc } = await loadModule('/src/web3/bsc-read-client.ts')
-  const okx = 'com.okex.wallet'
-
-  assert.equal(
-    shouldForceOkxPublicReadRpc({ walletId: okx, enabled: false, userAgent: DESKTOP_CHROME_UA }),
-    false,
-  )
-  assert.equal(
-    shouldForceOkxPublicReadRpc({ walletId: okx, enabled: true, userAgent: DESKTOP_CHROME_UA }),
-    true,
-  )
-  assert.equal(
-    shouldForceOkxPublicReadRpc({ walletId: okx, enabled: true, userAgent: OKX_APP_UA }),
-    false,
-  )
-  assert.equal(
-    shouldForceOkxPublicReadRpc({ walletId: okx, enabled: true, userAgent: ANDROID_CHROME_UA }),
-    false,
-  )
-  assert.equal(
-    shouldForceOkxPublicReadRpc({
-      walletId: 'io.metamask',
-      enabled: true,
-      userAgent: DESKTOP_CHROME_UA,
-    }),
-    false,
-  )
-  assert.equal(shouldForceOkxPublicReadRpc({ walletId: okx, enabled: true, userAgent: '' }), false)
+test('shouldUsePublicRpc matches the public-read wallet id list', async () => {
+  const { shouldUsePublicRpc } = await loadModule('/src/web3/bsc-read-client.ts')
+  const ids = ['com.okex.wallet']
+  assert.equal(shouldUsePublicRpc('com.okex.wallet', ids), true)
+  assert.equal(shouldUsePublicRpc('COM.OKEX.WALLET', ids), true)
+  assert.equal(shouldUsePublicRpc(' com.okex.wallet ', ids), true)
+  assert.equal(shouldUsePublicRpc('io.metamask', ids), false)
+  assert.equal(shouldUsePublicRpc(undefined, ids), false)
+  assert.equal(shouldUsePublicRpc('', ids), false)
+  assert.equal(shouldUsePublicRpc('com.okex.wallet', []), false)
+  assert.equal(shouldUsePublicRpc('io.metamask', [' io.metamask ', 'com.okex.wallet']), true)
 })
 
 test('chainReadClient: unbound and wrong-chain wallets are the public client', async () => {
