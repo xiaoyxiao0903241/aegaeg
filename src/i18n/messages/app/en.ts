@@ -473,7 +473,7 @@ const app = defineMessages({
           },
           {
             q: 'Where does burned AGX go?',
-            a: 'All burned AGX is transferred to the black-hole address and locked permanently, reducing circulating supply and strengthening deflation. This is part of the protocol value-return mechanism.',
+            a: '50% of burned AGX is transferred to the black-hole address and locked permanently, reducing circulating supply and strengthening deflation—this is part of the protocol value-return mechanism. The other 50% is injected into the ecosystem token X base pool, deepening X liquidity and pool stability, forming a positive loop of yield → burn → stronger liquidity.',
           },
           {
             q: 'Can contribution points be transferred or refunded?',

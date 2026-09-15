@@ -483,7 +483,7 @@ const app = defineMessages({
           },
           {
             q: 'Ke mana AGX yang dibakar pergi?',
-            a: 'Seluruh AGX yang dibakar ditransfer ke alamat black-hole dan dikunci permanen, mengurangi peredaran dan memperkuat deflasi — bagian dari mekanisme pengembalian nilai protokol.',
+            a: '50% AGX yang dibakar ditransfer ke alamat black-hole dan dikunci permanen, mengurangi peredaran dan memperkuat deflasi — bagian dari mekanisme pengembalian nilai protokol. 50% sisanya diinjeksikan ke kolam dasar token ekosistem X, memperdalam likuiditas X dan menstabilkan kolam, membentuk siklus nilai positif hasil → bakar → likuiditas lebih kuat.',
           },
           {
             q: 'Bisakah poin kontribusi ditransfer atau dikembalikan?',

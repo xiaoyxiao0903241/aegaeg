@@ -476,7 +476,7 @@ const app = defineMessages({
           },
           {
             q: 'Yakılan AGX nereye gider?',
-            a: 'Yakılan AGX’in tamamı kara delik adresine aktarılıp kalıcı kilitlenir; dolaşımı doğrudan azaltır, deflasyonu güçlendirir ve protokolün değer geri dönüş mekanizmasının parçasıdır.',
+            a: 'Yakılan AGX’in %50’si kara delik adresine aktarılıp kalıcı kilitlenir; dolaşımı doğrudan azaltır, deflasyonu güçlendirir ve protokolün değer geri dönüş mekanizmasının parçasıdır. Diğer %50 ekosistem tokenı X taban havuzuna enjekte edilir, X likidite derinliğini ve havuz istikrarını güçlendirir; getiri → yakım → likidite artışı değer döngüsünü kurar.',
           },
           {
             q: 'Katkı puanları aktarılabilir veya iade edilebilir mi?',
