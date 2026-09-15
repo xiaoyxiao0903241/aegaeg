@@ -108,61 +108,40 @@ export function setConnectedReadWallet(wallet: Wallet | null): void {
   connectedReadWallet = wallet
 }
 
-/** OKX 注入钱包 id（EIP-6963 rdns）。 */
-const OKX_WALLET_ID = 'com.okex.wallet'
-/** OKX App 内置浏览器 UA（tronwallet-adapter / 各 DApp 通行写法）。 */
-const OKX_IN_APP_UA = /OKApp/i
-const MOBILE_UA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i
-
 /**
- * OKX 是否改走公共 HTTP 读链。
+ * 连接中的钱包是否改用公共 HTTP 读链。
  *
- * 桌面插件自带节点不可靠，运维打开开关后才改打 `VITE_BSC_RPC_URL`。
- * App 内置浏览器的注入就是钱包节点，不能当插件处理。
+ * 只认当前连接的 rdns，不看页面上有没有装某款插件。
+ * 名单来自 `VITE_PUBLIC_READ_WALLET_IDS`。
  *
- * @param args.enabled `VITE_OKX_DESKTOP_EXTENSION_PUBLIC_RPC`
- * @param args.walletId 钱包 id
- * @param args.userAgent 当前页 UA
+ * @param walletId thirdweb / EIP-6963 rdns
+ * @param walletIds 命中则走公共 HTTP；默认 `appEnv.publicReadWalletIds`
+ * @returns 命中名单为 true
+ * @see https://eips.ethereum.org/EIPS/eip-6963
  */
-export function shouldForceOkxPublicReadRpc(args: {
-  walletId: string | undefined
-  enabled: boolean
-  userAgent: string
-}): boolean {
-  if (!args.enabled) return false
-  if (typeof args.walletId !== 'string' || args.walletId.toLowerCase() !== OKX_WALLET_ID) {
-    return false
-  }
-  const ua = args.userAgent.trim()
-  if (!ua || OKX_IN_APP_UA.test(ua) || MOBILE_UA.test(ua)) return false
-  return true
+export function shouldUsePublicRpc(
+  walletId: string | undefined,
+  walletIds: readonly string[] = appEnv.publicReadWalletIds,
+): boolean {
+  if (typeof walletId !== 'string') return false
+  const id = walletId.trim().toLowerCase()
+  if (!id) return false
+  return walletIds.some((entry) => entry.trim().toLowerCase() === id)
 }
 
 /**
  * 读请求是否走钱包 EIP-1193。
  *
  * 未连接、没有账户、或当前链不是 BSC → 否（公共 HTTP）。
- * 仅当环境变量打开且当前是 PC 上的 OKX 插件 → 否（插件节点不可靠）。
- * 其余已连接 BSC（含 OKX App 内置浏览器）→ 是。异网钱包节点会把 eth_call 打到别的链，不能当 BSC 读。
+ * `shouldUsePublicRpc` 为 true → 否。
+ * 其余已连接 BSC → 是。异网钱包节点会把 eth_call 打到别的链，不能当 BSC 读。
  *
  * @param wallet 显式钱包；`undefined` 表示用已绑定的连接态
  */
 export function shouldUseWalletReadRpc(wallet?: Wallet | null): boolean {
   const live = wallet === undefined ? connectedReadWallet : wallet
   if (!live?.getAccount() || live.getChain()?.id !== defaultChain.id) return false
-  const userAgent =
-    typeof navigator !== 'undefined' && typeof navigator.userAgent === 'string'
-      ? navigator.userAgent
-      : ''
-  if (
-    shouldForceOkxPublicReadRpc({
-      walletId: typeof live.id === 'string' ? live.id : undefined,
-      enabled: appEnv.okxDesktopExtensionPublicRpc,
-      userAgent,
-    })
-  ) {
-    return false
-  }
+  if (shouldUsePublicRpc(typeof live.id === 'string' ? live.id : undefined)) return false
   return true
 }
 
@@ -170,6 +149,7 @@ export function shouldUseWalletReadRpc(wallet?: Wallet | null): boolean {
  * 钱包优先的只读客户端；同一钱包实例复用。
  *
  * 已连 BSC 时 eth_call 先打钱包 EIP-1193。超时或网络失败才切公共 HTTP（`VITE_BSC_RPC_URL` → env fallback → Binance dataseed）。
+ * `VITE_PUBLIC_READ_WALLET_IDS` 名单内的钱包不经本客户端，直接用公共 HTTP。
  * 合约 revert / 用户拒签不切下一跳。写交易仍走 `walletEip1193Provider`，不经本客户端。
  */
 export function createWalletReadClient(wallet: Wallet): PublicClient {
