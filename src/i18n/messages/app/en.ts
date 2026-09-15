@@ -986,7 +986,7 @@ const app = defineMessages({
       grant: {
         title: 'Development stipend',
         body: 'Ecosystem development stipend',
-        aside: 'Development grants are claimed via MarketFund signatures.',
+        aside: 'Paid in AGX with no approval. Claim via MarketFund signature, straight to wallet.',
       },
       genesis: {
         title: 'Genesis co-build rewards',
@@ -1264,11 +1264,9 @@ const app = defineMessages({
       },
     },
     grant: {
-      pendingLabel: 'Pending approval',
-      pendingHint: 'Moves to claimable after approval',
-      pendingBody: 'Contact support to unlock stipends; claim only after approval.',
-      contactSupport: 'Contact support to unlock',
-      claimIntoWallet: 'To wallet',
+      claimIntoWallet: 'Straight to wallet',
+      claimHint:
+        'Development stipends are paid in AGX. No approval needed—claim to your wallet anytime. This does not spend contribution points or go through the release queue or turbine.',
       ctaToWallet: 'Claim {amount} to wallet',
       dataTitle: 'Data',
       tier: 'Co-build tier',
@@ -1289,20 +1287,28 @@ const app = defineMessages({
             a: 'A special fund to help co-builders expand markets—promotion, community events, channels—accruing with team stake positions.',
           },
           {
-            q: 'What can the stipend be used for?',
-            a: 'Market development only: offline salons and roadshows, community ops, promo materials, channel expansion.',
+            q: 'How is the stipend paid?',
+            a: 'In AGX. After it accrues it goes into your account; no approval needed, claim to your wallet anytime.',
           },
           {
-            q: 'How do I use the stipend?',
-            a: 'Two paths: apply before spending (submit a plan and budget to support; approved amounts become claimable), or reimburse afterward with receipts and proof.',
-          },
-          {
-            q: 'Why is my stipend pending approval?',
-            a: 'Accrued stipends start pending until you submit a use plan or reimbursement proof and support approves. Progress shows in stipend records.',
+            q: 'Does claiming require approval?',
+            a: 'No. Once issued it is claimable. Tap claim to send AGX to your wallet. You do not need to contact support to unlock.',
           },
           {
             q: 'Does claiming spend contribution points?',
-            a: 'No. Unlike other rewards, development stipends spend no contribution and skip the release queue—AGX goes straight to your wallet.',
+            a: 'No. Unlike other rewards, development stipends spend no contribution and skip the release queue and turbine—AGX goes straight to your wallet.',
+          },
+          {
+            q: 'What can the stipend be used for?',
+            a: 'Market development only: offline salons and roadshows, community ops, promo materials, channel expansion. Use it for real ecosystem needs and keep records for later review.',
+          },
+          {
+            q: 'How is the amount calculated?',
+            a: 'It tracks team stake changes and your co-build tier’s stipend rate: new team stakes accrue a share; team redemptions deduct the matching share. Details are on the Issued tab of stipend records.',
+          },
+          {
+            q: 'Why did my stipend decrease?',
+            a: 'When team members redeem positions, the matching share is deducted from the accrued amount and shows as a negative “Redeem” entry in issuance records. That is normal accounting.',
           },
         ],
       },

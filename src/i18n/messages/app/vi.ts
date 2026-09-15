@@ -1017,7 +1017,8 @@ const app = defineMessages({
       grant: {
         title: 'Trợ cấp phát triển',
         body: 'Trợ cấp phát triển hệ sinh thái chuyên biệt',
-        aside: 'Trợ cấp phát triển sau duyệt hỗ trợ được nhận qua chữ ký MarketFund, về thẳng ví.',
+        aside:
+          'Trợ cấp phát triển phát bằng AGX, không cần duyệt; nhận qua chữ ký MarketFund, về thẳng ví.',
       },
       genesis: {
         title: 'Thưởng Cùng xây dựng Genesis',
@@ -1302,11 +1303,9 @@ const app = defineMessages({
       },
     },
     grant: {
-      pendingLabel: 'Chờ duyệt',
-      pendingHint: 'Sau duyệt chuyển sang chờ nhận',
-      pendingBody: 'Liên hệ hỗ trợ để mở khóa trợ cấp; chỉ nhận sau khi duyệt.',
-      contactSupport: 'Liên hệ hỗ trợ xin mở khóa',
-      claimIntoWallet: 'Về ví',
+      claimIntoWallet: 'Thẳng vào ví',
+      claimHint:
+        'Trợ cấp phát triển phát bằng AGX, không cần duyệt, nhận về ví bất cứ lúc nào; không tiêu điểm đóng góp, cũng không qua hồ giải phóng hay turbine.',
       ctaToWallet: 'Nhận {amount} về ví',
       dataTitle: 'Dữ liệu',
       tier: 'Hạng Cùng xây dựng',
@@ -1334,20 +1333,28 @@ const app = defineMessages({
             a: 'Trợ cấp phát triển là ngân sách chuyên để hỗ trợ người cùng xây dựng mở thị trường — quảng bá, sự kiện cộng đồng, kênh…; tích theo tỷ lệ vị thế staking của đội bạn.',
           },
           {
-            q: 'Trợ cấp phát triển dùng làm gì?',
-            a: 'Chỉ dùng phát triển thị trường: salon/roadshow offline, vận hành cộng đồng và tài liệu quảng bá, mở rộng kênh. Hãy dùng theo nhu cầu thực của hệ sinh thái.',
+            q: 'Trợ cấp phát triển phát bằng hình thức nào?',
+            a: 'Bằng AGX. Sau khi tích lũy, trợ cấp vào thẳng tài khoản; không cần duyệt, nhận về ví bất cứ lúc nào.',
           },
           {
-            q: 'Dùng trợ cấp phát triển thế nào?',
-            a: 'Hai cách: xin trước — liên hệ hỗ trợ nộp kế hoạch và ngân sách; sau duyệt hạn mức vào chờ nhận. Hoặc hoàn sau — tự tạm ứng, nộp chứng từ (hóa đơn, ảnh hiện trường, chi tiết chi…) để xin hoàn; sau duyệt là nhận được.',
-          },
-          {
-            q: 'Vì sao trợ cấp hiện chờ duyệt?',
-            a: 'Trợ cấp tích lũy mặc định chờ duyệt; cần nộp đơn mục đích hoặc chứng từ hoàn, hỗ trợ duyệt rồi mới vào chờ nhận. Tiến độ xem trong bản ghi trợ cấp.',
+            q: 'Nhận trợ cấp có cần duyệt không?',
+            a: 'Không. Sau khi phát về là trạng thái có thể nhận; bấm nhận là AGX vào ví, không cần liên hệ hỗ trợ để mở khóa.',
           },
           {
             q: 'Nhận trợ cấp có tiêu điểm đóng góp không?',
-            a: 'Không. Khác phần thưởng khác: trợ cấp phát triển không tiêu điểm đóng góp, cũng không qua hồ giải phóng — AGX vào thẳng ví.',
+            a: 'Không. Khác phần thưởng khác: trợ cấp phát triển không tiêu điểm đóng góp, cũng không qua hồ giải phóng hay turbine — AGX vào thẳng ví.',
+          },
+          {
+            q: 'Trợ cấp phát triển dùng làm gì?',
+            a: 'Chỉ dùng phát triển thị trường: salon/roadshow offline, vận hành cộng đồng và tài liệu quảng bá, mở rộng kênh. Hãy dùng theo nhu cầu thực của hệ sinh thái và giữ hồ sơ để đối chiếu sau.',
+          },
+          {
+            q: 'Số lượng trợ cấp tính thế nào?',
+            a: 'Theo biến động vị thế staking của đội và tỷ lệ trợ cấp theo hạng cùng xây dựng: đội stake thêm thì tích theo tỷ lệ, đội redeem thì trừ phần tương ứng. Chi tiết xem tab Phát trong bản ghi trợ cấp.',
+          },
+          {
+            q: 'Vì sao số lượng trợ cấp của tôi giảm?',
+            a: 'Khi thành viên đội redeem vị thế, phần tỷ lệ tương ứng bị trừ khỏi số tích lũy và hiện là số âm loại «Redeem» trong bản ghi phát — đây là cơ chế hạch toán bình thường.',
           },
         ],
       },

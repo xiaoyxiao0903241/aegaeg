@@ -18,8 +18,6 @@ import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import {
-  ClaimStackDivider,
-  GrantPendingCard,
   MixedClaimSummaryCard,
   RewardsDestinationCard,
   SimpleClaimableCard,
@@ -51,30 +49,23 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
       title={vm.card.title}
     >
       <DockStack>
-        {view === 'grant' ? (
-          <>
-            <GrantPendingCard
-              contactSupport={vm.grant.contactSupport}
-              pendingAmount={vm.pendingAmount}
-              pendingBody={vm.grant.pendingBody}
-              pendingHint={vm.grant.pendingHint}
-              pendingLabel={vm.grant.pendingLabel}
-              tokenGagx={vm.tokenGagx}
-              tokenIcon={vm.tokenIcon}
-            />
-            <ClaimStackDivider />
-          </>
-        ) : null}
-
         <SimpleClaimableCard
           amountText={vm.claimableText}
           claimIntoWallet={vm.claimIntoWallet}
-          claimableLabel={vm.hasGrantClaimable ? t.rewards.detail.claimable : ''}
+          claimableLabel={t.rewards.detail.claimable}
           showTokenChip={vm.showTokenChip}
           tokenGagx={vm.tokenGagx}
           tokenIcon={vm.tokenIcon}
           usdLabel={t.rewards.detail.usdLabel}
-        />
+        >
+          <Text
+            as="p"
+            className="border-t border-primary/18 pt-3 leading-4 text-pretty text-foreground/50"
+            variant="copy"
+          >
+            {vm.grant.claimHint}
+          </Text>
+        </SimpleClaimableCard>
 
         {walletReady ? (
           <SessionButton
