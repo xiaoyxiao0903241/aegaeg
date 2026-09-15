@@ -56,8 +56,15 @@ export function parseDebugMode(raw: string | undefined): boolean {
   return trimmed === 'true' || trimmed === '1'
 }
 
-/** 纯解析函数——有单元测试；运行时读取器调用它。 */
-export function parseOptionalCsvUrls(raw: string | undefined): string[] {
+/**
+ * 解析可选英文逗号 `,` 分隔名单。
+ *
+ * 缺省、空值得到空数组，不抛错。中文逗号 `，` 不当分隔符。
+ *
+ * @param raw 环境变量原始值
+ * @returns 去空白后的非空片段
+ */
+export function parseOptionalCsv(raw: string | undefined): string[] {
   if (typeof raw !== 'string' || !raw.trim()) return []
   return raw
     .split(',')
@@ -90,7 +97,12 @@ export const appEnv = {
   walletConnectProjectId: requireEnvString('VITE_WALLETCONNECT_PROJECT_ID'),
   bscRpcUrl: requireEnvString('VITE_BSC_RPC_URL'),
   /** 可选；逗号分隔。缺省时读客户端仍挂公共 BSC 种子作故障转移。 */
-  bscRpcFallbackUrls: parseOptionalCsvUrls(readRaw('VITE_BSC_RPC_FALLBACK_URLS')),
+  bscRpcFallbackUrls: parseOptionalCsv(readRaw('VITE_BSC_RPC_FALLBACK_URLS')),
+  /**
+   * 读链走公共 HTTP 的钱包 rdns（thirdweb `wallet.id`）。
+   * 英文逗号 `,` 分隔；空名单则已连 BSC 的钱包仍走钱包节点。
+   */
+  publicReadWalletIds: parseOptionalCsv(readRaw('VITE_PUBLIC_READ_WALLET_IDS')),
   apiBaseUrl: requireEnvString('VITE_API_BASE_URL'),
   /** 仅主机名（不含协议），用于运行时 `location` 不可读时的兜底。 */
   appHost: requireEnvString('VITE_APP_HOST'),
@@ -112,9 +124,4 @@ export const appEnv = {
   notionEnEconomicModelUrl: requireEnvString('VITE_NOTION_EN_ECONOMIC_MODEL_URL'),
   /** 仅 `true`/`1` 打开控制台错误打印；缺省视为关闭。 */
   debugMode: parseDebugMode(readRaw('VITE_DEBUG_MODE')),
-  /**
-   * 仅 `true`/`1` 时，PC 浏览器 OKX 插件的链上读走公共 HTTP。
-   * 缺省关闭：OKX（含 App 内置浏览器）一律走钱包 RPC。
-   */
-  okxDesktopExtensionPublicRpc: parseDebugMode(readRaw('VITE_OKX_DESKTOP_EXTENSION_PUBLIC_RPC')),
 } as const
