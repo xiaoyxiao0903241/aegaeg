@@ -19,7 +19,6 @@ afterEach(clearMoneyPathReadClient)
 const TURBINE_UNLOCK_ABI = [
   ERC20_TEST_ABI,
   parseAbi([
-    'function migratedFrom(address account) view returns (address)',
     'function turbineBalances(address user) view returns (uint256)',
     'function quoteUsdInForAgxOut(uint256 agxAmount) view returns (uint256)',
   ]),
@@ -63,8 +62,6 @@ test('submitTurbineUnlock fail-closed when live quota is zero', async () => {
   const session = await moneyPathSession(
     withAggregate3(async (request) => {
       switch (request.functionName) {
-        case 'migratedFrom':
-          return ZERO
         case 'balanceOf':
           return 1_000n
         case 'allowance':
@@ -114,8 +111,6 @@ test('submitTurbineUnlock quotes twice and does not requote inside approve', asy
   const session = await moneyPathSession(
     withAggregate3(async (request) => {
       switch (request.functionName) {
-        case 'migratedFrom':
-          return ZERO
         case 'balanceOf':
           return 1_000n
         case 'allowance':
@@ -159,8 +154,6 @@ test('submitTurbineUnlock uses preflight quote when allowance is short', async (
   const session = await moneyPathSession(
     withAggregate3(async (request) => {
       switch (request.functionName) {
-        case 'migratedFrom':
-          return ZERO
         case 'balanceOf':
           return 1_000n
         case 'allowance':
@@ -203,8 +196,6 @@ test('submitTurbineUnlock discounts quoted USD1 by slippage before balance check
   const session = await moneyPathSession(
     withAggregate3(async (request) => {
       switch (request.functionName) {
-        case 'migratedFrom':
-          return ZERO
         case 'balanceOf':
           return 98n
         case 'allowance':
@@ -252,8 +243,6 @@ test('submitTurbineUnlock caps full-quota unlock at the quota quote', async () =
   const session = await moneyPathSession(
     withAggregate3(async (request) => {
       switch (request.functionName) {
-        case 'migratedFrom':
-          return ZERO
         case 'balanceOf':
           return 100n
         case 'allowance':

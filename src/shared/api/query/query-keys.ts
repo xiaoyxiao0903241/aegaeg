@@ -216,10 +216,6 @@ export const queryKeys = {
     referralIsBound: ['chain', 'referral', 'isBound'] as const,
     referralIsBoundOf: (address: string) =>
       chainWalletQueryKey(['chain', 'referral', 'isBound'], address),
-    migrationRoot: ['chain', 'migration'] as const,
-    migrationStatus: ['chain', 'migration', 'status'] as const,
-    migrationStatusOf: (address: string) =>
-      chainWalletQueryKey(['chain', 'migration', 'status'], address),
     swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
     /** AGX/USD1 V2 即时价——每 1 AGX 对应 USD1 wei 数（展示/估值用；非 PreSale 定价）。 */

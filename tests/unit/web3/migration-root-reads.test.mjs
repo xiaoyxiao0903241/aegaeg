@@ -14,6 +14,7 @@ const migrationAwareAbi = parseAbi([
   'function getStakeRewards(address user) view returns (uint256,uint256)',
   'function isWarmupExpired(address user) view returns (bool)',
   'function userTotalAmount(address user) view returns (uint256)',
+  'function userContribution(address user) view returns (uint256)',
   'function userStakingAmounts(address user) view returns (uint256)',
   'function userDailyStakingAmounts(uint256 day, address user) view returns (uint256)',
   'function timeBucket() view returns (uint256)',
@@ -46,6 +47,10 @@ function resolveMigrationAware(fn, arg0, opts) {
   if (fn === 'userTotalAmount') {
     opts.onUserTotal?.(String(arg0))
     return 42n
+  }
+  if (fn === 'userContribution') {
+    opts.onContribution?.(String(arg0))
+    return 9n
   }
   if (fn === 'userStakingAmounts') {
     opts.onUserStakingAmounts?.(String(arg0))
@@ -203,4 +208,18 @@ test('readUserPresaleTotal uses current wallet', async () => {
   })
   assert.equal(await withBscReadClient(client, () => readUserPresaleTotal(CURRENT)), 42n)
   assert.equal(totalArg, CURRENT.toLowerCase())
+})
+
+test('readContributionSnapshot reads userContribution for current wallet', async () => {
+  const { readContributionSnapshot } = await loadModule('/src/web3/assets/assets-read.ts')
+  let contributionArg = ''
+  const client = createMigrationAwareClient({
+    onContribution: (u) => {
+      contributionArg = u.toLowerCase()
+    },
+  })
+  const snap = await withBscReadClient(client, () => readContributionSnapshot(CURRENT, 1n, false))
+  assert.equal(contributionArg, CURRENT.toLowerCase())
+  assert.equal(snap.contribution, 9n)
+  assert.equal(snap.requiredContribution, 0n)
 })

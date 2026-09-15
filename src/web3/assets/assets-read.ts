@@ -2,7 +2,6 @@ import { encodeFunctionData, parseAbi } from 'viem'
 
 import { liquidMixedClaimable } from '~/core/assets/claim-output'
 import type { DurationPlan } from '~/core/assets/claim-plans'
-import { ZERO_ADDRESS } from '~/core/constants'
 import { BOND_PERIODS, type StakePeriod } from '~/core/staking/staking-period'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
@@ -32,7 +31,6 @@ const restakeConfigAbi = parseAbi([
   RESTAKE_CONFIG_METHODS.getPlan,
 ])
 const contribAbi = parseAbi([
-  AGX_CONTRIBUTION_SWAP_METHODS.originalOf,
   AGX_CONTRIBUTION_SWAP_METHODS.userContribution,
   AGX_CONTRIBUTION_SWAP_METHODS.quoteRequiredContribution,
 ])
@@ -204,8 +202,8 @@ export async function readClaimPlans(): Promise<{
 /**
  * 读取用户贡献值；可选再读领取额对应的链上所需贡献。
  *
- * 贡献值按迁移 root 键控（AgxContributionSwap.originalOf 解析 root）。
- * 资产 Mixed 门槛已是领取额 1:1，不读 quote；Lucky / 奖励 Mixed 仍读 quote。
+ * `userContribution` 按当前钱包键控。资产 Mixed 门槛已是领取额 1:1，不读 quote；
+ * Lucky / 奖励 Mixed 仍读 quote。
  *
  * @param user 钱包地址
  * @param rewardAmount 待领取奖励金额（wei）；`quoteRequired` 为 false 时可忽略
@@ -218,21 +216,13 @@ export async function readContributionSnapshot(
   rewardAmount: bigint,
   quoteRequired = true,
 ): Promise<{ contribution: bigint; requiredContribution: bigint }> {
-  const root = (await bscReadClient.readContract({
-    address: BSC_CONTRACTS.agxContributionSwap,
-    abi: contribAbi,
-    functionName: 'originalOf',
-    args: [user],
-  })) as Address
-  const contributionRoot = root.toLowerCase() === ZERO_ADDRESS ? user : root
-
   const calls: Aggregate3Call[] = [
     {
       target: BSC_CONTRACTS.agxContributionSwap,
       callData: encodeFunctionData({
         abi: contribAbi,
         functionName: 'userContribution',
-        args: [contributionRoot],
+        args: [user],
       }),
     },
   ]

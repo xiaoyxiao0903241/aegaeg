@@ -1,6 +1,5 @@
 import { encodeFunctionData, parseAbi } from 'viem'
 
-import { ZERO_ADDRESS } from '~/core/constants'
 import type { BurnContributionSwapConfig } from '~/core/exchange/burn-contribution-swap'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { AGX_CONTRIBUTION_SWAP_METHODS, ERC20_METHODS } from '~/web3/abis'
@@ -12,7 +11,6 @@ const burnSwapReadAbi = parseAbi([
   AGX_CONTRIBUTION_SWAP_METHODS.getSplitConfig,
   AGX_CONTRIBUTION_SWAP_METHODS.contributionDivisor,
   AGX_CONTRIBUTION_SWAP_METHODS.quoteContributionOut,
-  AGX_CONTRIBUTION_SWAP_METHODS.originalOf,
   AGX_CONTRIBUTION_SWAP_METHODS.userContribution,
   AGX_CONTRIBUTION_SWAP_METHODS.userAgxBurned,
   AGX_CONTRIBUTION_SWAP_METHODS.userContributionConsumed,
@@ -112,8 +110,8 @@ export async function readBurnContributionQuote(agxAmount: bigint): Promise<bigi
 /**
  * 读取用户销毁页统计
  *
- * 先经 `originalOf` 解析迁移根地址（别名感知），再按根地址读贡献值、
- * 按原地址读已销毁 AGX 与已消耗贡献值；已得贡献值 = 余额 + 已消耗。
+ * 贡献余额、已销毁 AGX、已消耗贡献值都按当前钱包读取；
+ * 已得贡献值 = 余额 + 已消耗。
  *
  * @param user 钱包地址
  * @returns 贡献值余额 / 已销毁 AGX / 已消耗 / 已得贡献值
@@ -122,16 +120,6 @@ export async function readBurnContributionQuote(agxAmount: bigint): Promise<bigi
  */
 export async function readBurnUserStats(user: string): Promise<BurnUserStats> {
   const userAddress = user as `0x${string}`
-  const root = await bscReadClient.readContract({
-    address: BSC_CONTRACTS.agxContributionSwap,
-    abi: burnSwapReadAbi,
-    functionName: 'originalOf',
-    args: [userAddress],
-  })
-  // originalOf 返回零地址时与资产页 readContributionSnapshot 同口径：回退当前用户
-  const contributionRoot =
-    root.toLowerCase() === ZERO_ADDRESS ? userAddress : (root as `0x${string}`)
-
   const swap = BSC_CONTRACTS.agxContributionSwap
   const statsResults = await readAggregate3([
     {
@@ -139,7 +127,7 @@ export async function readBurnUserStats(user: string): Promise<BurnUserStats> {
       callData: encodeFunctionData({
         abi: burnSwapReadAbi,
         functionName: 'userContribution',
-        args: [contributionRoot],
+        args: [userAddress],
       }),
     },
     {

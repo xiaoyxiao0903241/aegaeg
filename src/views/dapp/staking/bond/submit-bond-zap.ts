@@ -2,7 +2,6 @@ import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondKind, BondPeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
-import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
 import {
   burnBondDepositoryAddress,
@@ -22,7 +21,7 @@ export { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 /**
  * 提交债券买入（zap）
  *
- * 先读链上预检（余额 / 授权 / 仓库授权 / 老账户迁移状态）并判定阻塞原因，
+ * 先读链上预检（余额 / 授权 / 仓库授权）并判定阻塞原因，
  * 授权不足时内联 approve 后继续写；写入完成后失效质押相关缓存。
  *
  * @param session 已就绪的写会话
@@ -46,12 +45,11 @@ export async function submitBondZap(args: {
 
   await approveThenLiveWrite({
     readSnapshot: async () => {
-      const [preflight, migration, market] = await Promise.all([
+      const [preflight, market] = await Promise.all([
         readBondZapPreflight({
           depository,
           user: address,
         }),
-        readMigrationStatus(address),
         readBondMarketMeta(depository),
       ])
       const payout = await readBondZapAgxPreview({
@@ -62,7 +60,6 @@ export async function submitBondZap(args: {
       })
       return {
         preflight,
-        isOldAccount: migration.isOldAccount,
         maxDebt: market.maxDebt,
         totalDeposit: market.totalDeposit,
         maxPayout: market.maxPayoutAmount,
@@ -70,22 +67,13 @@ export async function submitBondZap(args: {
         grossPayout: payout.grossPayout,
       }
     },
-    evaluate: ({
-      preflight,
-      isOldAccount,
-      maxDebt,
-      totalDeposit,
-      maxPayout,
-      netPayout,
-      grossPayout,
-    }) =>
+    evaluate: ({ preflight, maxDebt, totalDeposit, maxPayout, netPayout, grossPayout }) =>
       evaluateBondZapLive({
         amount,
         isBound: preflight.isBound,
         balance: preflight.balance,
         allowance: preflight.allowance,
         depositoryAuthorized: preflight.depositoryAuthorized,
-        isOldAccount,
         maxDebt,
         totalDeposit,
         maxPayout,

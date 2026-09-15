@@ -16,7 +16,6 @@ import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
@@ -48,8 +47,6 @@ export function useQueue() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
-  const migration = useMigrationUser({ enabled: walletReady })
-  const migrationOk = migration.isOldAccount === false
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
@@ -94,15 +91,13 @@ export function useQueue() {
       days,
       planIndex,
       planLabel: interpolate(t.release.queue.planDays, { days }),
-      canClaim:
-        migrationOk &&
-        canClaimWhen({
-          walletReady,
-          writeReady,
-          isPending: pending,
-          claimable,
-          planIndexOk: planIndex >= 0,
-        }),
+      canClaim: canClaimWhen({
+        walletReady,
+        writeReady,
+        isPending: pending,
+        claimable,
+        planIndexOk: planIndex >= 0,
+      }),
       pending: pendingPlan === planIndex,
       claimableLabel: formatTokenAmount(queueQuery.data == null ? null : claimable, AGX_DECIMALS, {
         digits: 4,
@@ -157,13 +152,7 @@ export function useQueue() {
     t,
     onBack: () => setView('hub'),
     walletReady,
-    blockHint: !walletReady
-      ? null
-      : migration.isOldAccount === true
-        ? t.staking.blocked.accountMigrated
-        : migration.statusKnown && !writeReady
-          ? t.topbar.wrongNetworkTooltip
-          : null,
+    blockHint: !walletReady ? null : !writeReady ? t.topbar.wrongNetworkTooltip : null,
     rows,
     onClaim,
     onRefresh,
