@@ -1,5 +1,3 @@
-import { ZERO_ADDRESS } from '~/core/constants'
-
 /**
  * 账户迁移的用户侧校验（纯函数）。
  *
@@ -12,22 +10,6 @@ export type MigrationUserBlockReason = 'account_migrated' | 'migration_writes_cl
 export type MigrationStatus = {
   migrationEnabled: boolean
   isOldAccount: boolean
-}
-
-/**
- * 解析 stake 等公开映射的读取根地址。
- *
- * 迁移后映射以首次 root 为准：migratedFrom(current) 非零时用首次地址，
- * 否则用当前地址；多跳迁移 A→B→C 仍指向首次 root。
- *
- * @param current 当前查询地址
- * @param migratedFrom 当前地址的首次迁移来源；零地址视为未迁移
- * @returns 用于读取映射的根地址
- * @see 手册 §17.3 展示字段
- */
-export function migrationStakeRoot(current: string, migratedFrom: string): string {
-  if (!migratedFrom || migratedFrom.toLowerCase() === ZERO_ADDRESS) return current
-  return migratedFrom
 }
 
 /**

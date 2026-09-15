@@ -5,47 +5,19 @@ import { loadModule } from '../load-module.mjs'
 import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const CURRENT = '0x1111111111111111111111111111111111111111'
-const ROOT = '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa'
-const ZERO = '0x0000000000000000000000000000000000000000'
 
-function createTurbineQuotaClient(opts) {
-  return {
+test('readTurbineQuota reads turbineBalances for current wallet', async () => {
+  const { readTurbineQuota } = await loadModule('/src/web3/exchange/turbine-exchange-read.ts')
+  let balancesArg = ''
+  const client = {
     async readContract(request) {
-      const fn = request.functionName
-      if (fn === 'migratedFrom') {
-        return opts.migratedFrom
-      }
-      if (fn === 'turbineBalances') {
-        opts.onBalances?.(String(request.args[0]).toLowerCase())
+      if (request.functionName === 'turbineBalances') {
+        balancesArg = String(request.args[0]).toLowerCase()
         return 77n
       }
-      throw new Error(`unexpected ${fn}`)
+      throw new Error(`unexpected ${request.functionName}`)
     },
   }
-}
-
-test('readTurbineQuota uses migrationStakeRoot for turbineBalances', async () => {
-  const { readTurbineQuota } = await loadModule('/src/web3/exchange/turbine-exchange-read.ts')
-  let balancesArg = ''
-  const client = createTurbineQuotaClient({
-    migratedFrom: ROOT,
-    onBalances: (u) => {
-      balancesArg = u
-    },
-  })
   assert.equal(await withBscReadClient(client, () => readTurbineQuota(CURRENT)), 77n)
-  assert.equal(balancesArg, ROOT.toLowerCase())
-})
-
-test('readTurbineQuota keeps current when migratedFrom is zero', async () => {
-  const { readTurbineQuota } = await loadModule('/src/web3/exchange/turbine-exchange-read.ts')
-  let balancesArg = ''
-  const client = createTurbineQuotaClient({
-    migratedFrom: ZERO,
-    onBalances: (u) => {
-      balancesArg = u
-    },
-  })
-  await withBscReadClient(client, () => readTurbineQuota(CURRENT))
   assert.equal(balancesArg, CURRENT.toLowerCase())
 })

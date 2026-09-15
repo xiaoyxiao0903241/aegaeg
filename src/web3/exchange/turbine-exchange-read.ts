@@ -1,11 +1,9 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import { fingerprintIdList } from '~/core/claimable-unread'
-import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_METHODS, TURBINE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 
 const turbineReadAbi = parseAbi([
@@ -30,21 +28,18 @@ export type TurbineSilenceRow = {
 /**
  * 读取用户 Turbine 可出售配额
  *
- * `registerSellQuota` 沿迁移链记到根账户；先 `migratedFrom` + `migrationStakeRoot`
- * 解析 root，再读 `turbineBalances(root)`。静默期 / claim 仍按调用方钱包键控。
+ * `turbineBalances` 按当前钱包读取；静默期 / claim 同样按调用方钱包键控。
  *
  * @param user 当前钱包地址
  * @returns 可出售 AGX 配额（wei）
  * @see docs/onchain-manual/contracts/turbine.md
  */
 export async function readTurbineQuota(user: string): Promise<bigint> {
-  const migratedFrom = await readMigratedFrom(user)
-  const root = migrationStakeRoot(user, migratedFrom) as `0x${string}`
   return bscReadClient.readContract({
     address: BSC_CONTRACTS.turbine,
     abi: turbineReadAbi,
     functionName: 'turbineBalances',
-    args: [root],
+    args: [user as `0x${string}`],
   })
 }
 
