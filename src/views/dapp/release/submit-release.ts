@@ -4,7 +4,6 @@ import { pickBufferFirstClaim } from '~/core/release/pick-release-claim-page'
 import { releaseClaimBlockReason } from '~/core/release/release-block-reasons'
 import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { RELEASE_BLOCKED } from '~/web3/errors/write-block-errors'
-import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import {
   writeClaimManyReleases,
@@ -17,11 +16,6 @@ function gateError(
 ): (typeof RELEASE_BLOCKED)[keyof typeof RELEASE_BLOCKED] | null {
   if (!reason) return null
   return RELEASE_BLOCKED[reason]
-}
-
-async function assertReleaseWritesAllowed(address: string) {
-  const migration = await readMigrationStatus(address)
-  if (migration.isOldAccount) throw RELEASE_BLOCKED.accountMigrated
 }
 
 /**
@@ -60,8 +54,6 @@ export async function submitReleaseQueueClaim(args: {
     }),
   )
   if (liveErr) throw liveErr
-
-  await assertReleaseWritesAllowed(address)
 
   const start = liveRow?.claimStart ?? 0
   const limit = liveRow?.claimLimit ?? 0
@@ -105,8 +97,6 @@ export async function submitReleaseBufferClaim(args: {
   )
   if (liveErr) throw liveErr
   if (liveClaimable <= 0n) throw RELEASE_BLOCKED.zeroAmount
-
-  await assertReleaseWritesAllowed(address)
 
   const target = pickBufferFirstClaim({
     chain: live.chain,

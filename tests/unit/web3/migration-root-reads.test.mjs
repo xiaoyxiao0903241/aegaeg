@@ -7,17 +7,18 @@ import { loadModule } from '../load-module.mjs'
 import { withBscReadClient } from './_bsc-read-client-test.mjs'
 
 const CURRENT = '0x1111111111111111111111111111111111111111'
-const ROOT = '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa'
-const ZERO = '0x0000000000000000000000000000000000000000'
 
 const migrationAwareAbi = parseAbi([
-  'function migratedFrom(address account) view returns (address)',
   'function stakes(address user) view returns (uint256,uint256,uint256,uint256,bool)',
   'function warmupStakes(address user) view returns (uint256,uint256,uint256,uint256,bool)',
   'function getStakeRewards(address user) view returns (uint256,uint256)',
   'function isWarmupExpired(address user) view returns (bool)',
   'function userTotalAmount(address user) view returns (uint256)',
+  'function userContribution(address user) view returns (uint256)',
   'function userStakingAmounts(address user) view returns (uint256)',
+  'function userDailyStakingAmounts(uint256 day, address user) view returns (uint256)',
+  'function timeBucket() view returns (uint256)',
+  'function singleAddressDailyLimit() view returns (uint256)',
   'function isBindReferral(address user) view returns (bool)',
   'function balanceOf(address owner) view returns (uint256)',
   'function allowance(address owner, address spender) view returns (uint256)',
@@ -31,7 +32,6 @@ const migrationAwareAbi = parseAbi([
 ])
 
 function resolveMigrationAware(fn, arg0, opts) {
-  if (fn === 'migratedFrom') return opts.migratedFrom
   if (fn === 'stakes') {
     opts.onStakes?.(String(arg0))
     return [100n, 0n, 0n, 0n, true]
@@ -48,10 +48,17 @@ function resolveMigrationAware(fn, arg0, opts) {
     opts.onUserTotal?.(String(arg0))
     return 42n
   }
+  if (fn === 'userContribution') {
+    opts.onContribution?.(String(arg0))
+    return 9n
+  }
   if (fn === 'userStakingAmounts') {
     opts.onUserStakingAmounts?.(String(arg0))
     return 10n
   }
+  if (fn === 'userDailyStakingAmounts') return 0n
+  if (fn === 'timeBucket') return 0n
+  if (fn === 'singleAddressDailyLimit') return 0n
   if (fn === 'isBindReferral') return true
   if (fn === 'balanceOf') return 1000n
   if (fn === 'allowance') return 1000n
@@ -99,12 +106,11 @@ function createMigrationAwareClient(opts) {
   }
 }
 
-test('readStakePositions passes AMM root to liquid stakes and current to getStakeRewards', async () => {
+test('readStakePositions passes current wallet to liquid stakes and getStakeRewards', async () => {
   const { readStakePositions } = await loadModule('/src/web3/assets/assets-read.ts')
   let stakesArg = ''
   let rewardsArg = ''
   const client = createMigrationAwareClient({
-    migratedFrom: ROOT,
     onStakes: (u) => {
       stakesArg = u.toLowerCase()
     },
@@ -115,15 +121,14 @@ test('readStakePositions passes AMM root to liquid stakes and current to getStak
 
   await withBscReadClient(client, () => readStakePositions(CURRENT))
 
-  assert.equal(stakesArg, ROOT.toLowerCase())
+  assert.equal(stakesArg, CURRENT.toLowerCase())
   assert.equal(rewardsArg, CURRENT.toLowerCase())
 })
 
-test('readStakeRedeemableAmount liquid uses migration root for stakes', async () => {
+test('readStakeRedeemableAmount liquid uses current wallet for stakes', async () => {
   const { readStakeRedeemableAmount } = await loadModule('/src/web3/assets/assets-read.ts')
   let stakesArg = ''
   const client = createMigrationAwareClient({
-    migratedFrom: ROOT,
     onStakes: (u) => {
       stakesArg = u.toLowerCase()
     },
@@ -149,14 +154,13 @@ test('readStakeRedeemableAmount liquid uses migration root for stakes', async ()
   )
 
   assert.equal(amount, 100n)
-  assert.equal(stakesArg, ROOT.toLowerCase())
+  assert.equal(stakesArg, CURRENT.toLowerCase())
 })
 
-test('readStakeOpenPreflight locked userStakingAmounts uses migration root', async () => {
+test('readStakeOpenPreflight locked userStakingAmounts uses current wallet', async () => {
   const { readStakeOpenPreflight } = await loadModule('/src/web3/staking/staking-read.ts')
   let amountsArg = ''
   const client = createMigrationAwareClient({
-    migratedFrom: ROOT,
     onUserStakingAmounts: (u) => {
       amountsArg = u.toLowerCase()
     },
@@ -170,29 +174,52 @@ test('readStakeOpenPreflight locked userStakingAmounts uses migration root', asy
     }),
   )
 
-  assert.equal(amountsArg, ROOT.toLowerCase())
+  assert.equal(amountsArg, CURRENT.toLowerCase())
 })
 
-test('readUserPresaleTotal uses migration root; zero migratedFrom keeps current', async () => {
+test('readStakeOpenPreflight liquid userStakingAmounts uses current wallet', async () => {
+  const { readStakeOpenPreflight } = await loadModule('/src/web3/staking/staking-read.ts')
+  let amountsArg = ''
+  const client = createMigrationAwareClient({
+    onUserStakingAmounts: (u) => {
+      amountsArg = u.toLowerCase()
+    },
+  })
+
+  await withBscReadClient(client, () =>
+    readStakeOpenPreflight({
+      pool: '0x0C5173c87aB8684eEc028a2bF56061a37415d224',
+      isLiquid: true,
+      user: CURRENT,
+    }),
+  )
+
+  assert.equal(amountsArg, CURRENT.toLowerCase())
+})
+
+test('readUserPresaleTotal uses current wallet', async () => {
   const { readUserPresaleTotal } = await loadModule('/src/web3/presale/presale-read.ts')
 
   let totalArg = ''
-  const clientRoot = createMigrationAwareClient({
-    migratedFrom: ROOT,
+  const client = createMigrationAwareClient({
     onUserTotal: (u) => {
       totalArg = u.toLowerCase()
     },
   })
-  assert.equal(await withBscReadClient(clientRoot, () => readUserPresaleTotal(CURRENT)), 42n)
-  assert.equal(totalArg, ROOT.toLowerCase())
-
-  totalArg = ''
-  const clientZero = createMigrationAwareClient({
-    migratedFrom: ZERO,
-    onUserTotal: (u) => {
-      totalArg = u.toLowerCase()
-    },
-  })
-  await withBscReadClient(clientZero, () => readUserPresaleTotal(CURRENT))
+  assert.equal(await withBscReadClient(client, () => readUserPresaleTotal(CURRENT)), 42n)
   assert.equal(totalArg, CURRENT.toLowerCase())
+})
+
+test('readContributionSnapshot reads userContribution for current wallet', async () => {
+  const { readContributionSnapshot } = await loadModule('/src/web3/assets/assets-read.ts')
+  let contributionArg = ''
+  const client = createMigrationAwareClient({
+    onContribution: (u) => {
+      contributionArg = u.toLowerCase()
+    },
+  })
+  const snap = await withBscReadClient(client, () => readContributionSnapshot(CURRENT, 1n, false))
+  assert.equal(contributionArg, CURRENT.toLowerCase())
+  assert.equal(snap.contribution, 9n)
+  assert.equal(snap.requiredContribution, 0n)
 })

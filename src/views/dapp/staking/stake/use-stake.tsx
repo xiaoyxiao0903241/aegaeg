@@ -117,7 +117,6 @@ export function useStakeDock() {
   }
 
   async function onSubmit() {
-    if (stake.blockReason === 'accountMigrated') return
     if (stake.blockReason === 'notBound') {
       goBindReferral()
       return

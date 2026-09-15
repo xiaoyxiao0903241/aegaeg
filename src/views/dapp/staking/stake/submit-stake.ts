@@ -2,7 +2,6 @@ import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import type { StakePeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
-import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import {
@@ -18,7 +17,7 @@ export { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
 /**
  * 提交质押（活期 / 定期共用）
  *
- * 先读链上预检（余额 / 授权 / 剩余额度 / 池开关 / 迁移状态）并判定阻塞原因，
+ * 先读链上预检（余额 / 授权 / 剩余额度 / 池开关）并判定阻塞原因，
  * 授权不足时内联 approve 后继续写；写入完成后失效质押相关缓存。
  *
  * @param session 已就绪的写会话
@@ -45,10 +44,9 @@ export async function submitStakeOpen(args: {
         isLiquid,
         user: address,
       })
-      const migration = await readMigrationStatus(address)
-      return { preflight, isOldAccount: migration.isOldAccount }
+      return { preflight }
     },
-    evaluate: ({ preflight, isOldAccount }) =>
+    evaluate: ({ preflight }) =>
       evaluateStakeLive({
         amount,
         isBound: preflight.isBound,
@@ -56,7 +54,6 @@ export async function submitStakeOpen(args: {
         allowance: preflight.allowance,
         remainingQuota: preflight.remainingQuota,
         poolOpen: preflight.poolOpen,
-        isOldAccount,
       }),
     mapBlockError: (reason: NonNullable<ReturnType<typeof evaluateStakeLive>>) =>
       STAKING_BLOCKED[reason],

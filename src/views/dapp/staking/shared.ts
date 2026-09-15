@@ -54,7 +54,6 @@ export function evaluateStakingAmountWrite(args: {
   blockReason: StakingMoneyBlock
   preflightReady: boolean
   needReferral: boolean
-  accountMigrated: boolean
   /** 到账金额还在算，或仍是上一笔金额的旧结果。 */
   isQuoting?: boolean
 }) {
@@ -74,7 +73,6 @@ export function evaluateStakingAmountWrite(args: {
     walletReady: args.walletReady,
     writeReady: args.writeReady,
     needReferral: args.needReferral,
-    accountMigrated: args.accountMigrated,
     moneyBlock: args.blockReason,
     isQuoting: args.isQuoting,
     isSubmitting: args.isSubmitting,

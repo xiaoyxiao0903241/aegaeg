@@ -2,7 +2,6 @@ import { encodeFunctionData, parseAbi } from 'viem'
 
 import { LIVE_DATA_PLACEHOLDER } from '~/core/constants'
 import { BPS_DENOM } from '~/core/exchange/bps'
-import { migrationStakeRoot } from '~/core/migration/migration-user'
 import {
   pickStakeEffectiveQuota,
   remainingAfterFiniteLimit,
@@ -10,7 +9,6 @@ import {
 } from '~/core/staking/stake-quota'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
-  ACCOUNT_MIGRATION_METHODS,
   BOND_DEPOSITORY_MARKET_METHODS,
   BOND_HELPER_METHODS,
   ERC20_METHODS,
@@ -49,7 +47,6 @@ const xStakingAbi = parseAbi([
 ])
 const erc20Abi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
 const referralAbi = parseAbi([REFERRAL_METHODS.isBindReferral])
-const migrationAbi = parseAbi([ACCOUNT_MIGRATION_METHODS.migratedFrom])
 
 export type StakeOpenPreflight = {
   isBound: boolean
@@ -76,7 +73,7 @@ export type BondMarketMeta = {
  *
  * 并行读取推荐绑定、AGX 余额与对质押池的授权、池剩余额度，一次取齐
  * 写前所需数据；活期额外检查 warmup 是否过期，定期把个人额度与池额度
- * 取较小者，并按迁移根地址读取 `userStakingAmounts`（该映射非别名感知）。
+ * 取较小者。个人累计 / 日额度按当前钱包读取（不跟迁移 root）。
  *
  * @param args.pool 质押池合约地址
  * @param args.isLiquid 是否为活期质押
@@ -138,14 +135,6 @@ export async function readStakeOpenPreflight(args: {
         }),
       },
       {
-        target: BSC_CONTRACTS.accountMigrationManager,
-        callData: encodeFunctionData({
-          abi: migrationAbi,
-          functionName: 'migratedFrom',
-          args: [user],
-        }),
-      },
-      {
         target: args.pool,
         callData: encodeFunctionData({
           abi: liquidAbi,
@@ -189,23 +178,14 @@ export async function readStakeOpenPreflight(args: {
       'isWarmupExpired',
       'STAKE_PREFLIGHT_MULTICALL_FAILED:warmup',
     )
-    const migratedFrom = decodeAggregate3Result<Address>(
-      round1Results,
-      5,
-      migrationAbi,
-      'migratedFrom',
-      'STAKE_PREFLIGHT_MULTICALL_FAILED:migratedFrom',
-    )
     const timeBucket = decodeAggregate3Result<bigint>(
       round1Results,
-      6,
+      5,
       liquidAbi,
       'timeBucket',
       'STAKE_PREFLIGHT_MULTICALL_FAILED:timeBucket',
     )
 
-    // 单地址本金与日额度都按迁移链上的首次 root 地址累计
-    const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
     const round2 = await readAggregate3([
       {
         target: args.pool,
@@ -226,7 +206,7 @@ export async function readStakeOpenPreflight(args: {
         callData: encodeFunctionData({
           abi: liquidAbi,
           functionName: 'userStakingAmounts',
-          args: [stakeRoot],
+          args: [user],
         }),
       },
       {
@@ -234,7 +214,7 @@ export async function readStakeOpenPreflight(args: {
         callData: encodeFunctionData({
           abi: liquidAbi,
           functionName: 'userDailyStakingAmounts',
-          args: [timeBucket, stakeRoot],
+          args: [timeBucket, user],
         }),
       },
     ])
@@ -287,14 +267,6 @@ export async function readStakeOpenPreflight(args: {
     }
   }
 
-  round1.push({
-    target: BSC_CONTRACTS.accountMigrationManager,
-    callData: encodeFunctionData({
-      abi: migrationAbi,
-      functionName: 'migratedFrom',
-      args: [user],
-    }),
-  })
   const round1Results = await readAggregate3(round1)
   const isBound = decodeAggregate3Result<boolean>(
     round1Results,
@@ -324,16 +296,7 @@ export async function readStakeOpenPreflight(args: {
     'remainingStakeAmount',
     'STAKE_PREFLIGHT_MULTICALL_FAILED:remaining',
   )
-  const migratedFrom = decodeAggregate3Result<Address>(
-    round1Results,
-    4,
-    migrationAbi,
-    'migratedFrom',
-    'STAKE_PREFLIGHT_MULTICALL_FAILED:migratedFrom',
-  )
 
-  // `userStakingAmounts` 按首次 root 累计，非别名感知。
-  const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
   const round2 = await readAggregate3([
     {
       target: args.pool,
@@ -354,7 +317,7 @@ export async function readStakeOpenPreflight(args: {
       callData: encodeFunctionData({
         abi: lockedAbi,
         functionName: 'userStakingAmounts',
-        args: [stakeRoot],
+        args: [user],
       }),
     },
   ])

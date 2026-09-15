@@ -16,7 +16,6 @@ import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/shared'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { WRITE_PATH } from '~/web3/wallet/write-path'
 
@@ -34,8 +33,6 @@ export function useBuffer() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappHost()
   const { writeReady } = useWriteReadiness()
-  const migration = useMigrationUser({ enabled: walletReady })
-  const migrationOk = migration.isOldAccount === false
   const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const durationQuery = usePrincipalReleaseDurationDays()
@@ -65,22 +62,18 @@ export function useBuffer() {
   const gagxClaimable = bufferQuery.data?.gagx.pageClaimable ?? ZERO_BI
   const gagxReleasing = bufferQuery.data?.gagx.totalReleasing ?? ZERO_BI
   const gagxOverallClaimable = bufferQuery.data?.gagx.totalClaimable ?? ZERO_BI
-  const canClaimAgx =
-    migrationOk &&
-    canClaimWhen({
-      walletReady,
-      writeReady,
-      isPending: claimAgx.isPending,
-      claimable: agxClaimable,
-    })
-  const canClaimGagx =
-    migrationOk &&
-    canClaimWhen({
-      walletReady,
-      writeReady,
-      isPending: claimGagx.isPending,
-      claimable: gagxClaimable,
-    })
+  const canClaimAgx = canClaimWhen({
+    walletReady,
+    writeReady,
+    isPending: claimAgx.isPending,
+    claimable: agxClaimable,
+  })
+  const canClaimGagx = canClaimWhen({
+    walletReady,
+    writeReady,
+    isPending: claimGagx.isPending,
+    claimable: gagxClaimable,
+  })
   const agxPctLabel = formatReleasePct(agxOverallClaimable, agxReleasing)
   const gagxPctLabel = formatReleasePct(gagxOverallClaimable, gagxReleasing)
 
@@ -106,13 +99,7 @@ export function useBuffer() {
     setRefreshingToken(null)
   }
 
-  const blockHint = !walletReady
-    ? null
-    : migration.isOldAccount === true
-      ? t.staking.blocked.accountMigrated
-      : migration.statusKnown && !writeReady
-        ? t.topbar.wrongNetworkTooltip
-        : null
+  const blockHint = !walletReady ? null : !writeReady ? t.topbar.wrongNetworkTooltip : null
 
   return {
     t,

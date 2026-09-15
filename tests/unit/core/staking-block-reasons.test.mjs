@@ -67,56 +67,6 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
   )
 
   assert.equal(
-    evaluateStakeLive({
-      amount: 5n,
-      isBound: true,
-      balance: 10n,
-      allowance: 10n,
-      remainingQuota: 10n,
-      poolOpen: true,
-      isOldAccount: true,
-    }),
-    'accountMigrated',
-  )
-
-  assert.equal(
-    evaluateStakeLive({
-      amount: 5n,
-      isBound: true,
-      balance: 10n,
-      allowance: 10n,
-      remainingQuota: 10n,
-      poolOpen: true,
-      isOldAccount: null,
-    }),
-    'unavailable',
-  )
-
-  assert.equal(
-    evaluateBondZapLive({
-      amount: 1n,
-      isBound: true,
-      balance: 10n,
-      allowance: 10n,
-      depositoryAuthorized: true,
-      isOldAccount: true,
-    }),
-    'accountMigrated',
-  )
-
-  assert.equal(
-    evaluateBondZapLive({
-      amount: 1n,
-      isBound: true,
-      balance: 10n,
-      allowance: 10n,
-      depositoryAuthorized: true,
-      isOldAccount: null,
-    }),
-    'unavailable',
-  )
-
-  assert.equal(
     evaluateBondZapLive({
       amount: 1n,
       isBound: true,
@@ -296,7 +246,6 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       balance: 10n,
       allowance: 1n,
       miningQuota: 2n,
-      isOldAccount: false,
     }),
     'insufficientQuota',
   )
@@ -307,7 +256,6 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       balance: 10n,
       allowance: 10n,
       miningQuota: 2n,
-      isOldAccount: false,
     }),
     'insufficientQuota',
   )
@@ -318,20 +266,8 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
       balance: 10n,
       allowance: 10n,
       miningQuota: 10n,
-      isOldAccount: true,
     }),
-    'accountMigrated',
-  )
-
-  assert.equal(
-    evaluateXmineLive({
-      amount: 5n,
-      balance: 10n,
-      allowance: 10n,
-      miningQuota: 10n,
-      isOldAccount: null,
-    }),
-    'unavailable',
+    null,
   )
 })
 

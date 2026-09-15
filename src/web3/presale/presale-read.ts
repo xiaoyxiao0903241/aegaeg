@@ -1,11 +1,9 @@
 import { type AbiParameter, decodeAbiParameters, encodeFunctionData, parseAbi } from 'viem'
 
-import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { type PresalePhaseOnChain, type PresalePhaseRemaining } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { PRESALE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { readAggregate3 } from '~/web3/multicall3-read'
 
 const presaleAbi = parseAbi([
@@ -125,7 +123,7 @@ export async function readAllPresalePhases(): Promise<PresalePhaseOnChain[]> {
 /**
  * 读取用户在指定档位的剩余可购额度。
  *
- * 额度按迁移 root 键控，须先解析 root 再调 view，与 userTotalAmount 同口径。
+ * 额度按当前钱包键控，与 userTotalAmount 同口径。
  *
  * @param address 钱包地址
  * @param phaseIndex 档位 index
@@ -136,15 +134,13 @@ export async function readUserPhaseRemainingAmount(
   address: string,
   phaseIndex: number,
 ): Promise<PresalePhaseRemaining> {
-  // 手册 presale.md：额度查询先解析首次 root，再调 view（与 userTotalAmount 同口径）。
-  const migratedFrom = await readMigratedFrom(address)
-  const root = migrationStakeRoot(address, migratedFrom) as `0x${string}`
+  const user = address as `0x${string}`
   const [remainingPhaseAmount, remainingUserAmount, userPurchaseLimit, userPhaseAmountCurrent] =
     await bscReadClient.readContract({
       address: BSC_CONTRACTS.preSale,
       abi: presaleAbi,
       functionName: 'getUserPhaseRemainingAmount',
-      args: [root, BigInt(phaseIndex)],
+      args: [user, BigInt(phaseIndex)],
     })
 
   return {
@@ -158,21 +154,18 @@ export async function readUserPhaseRemainingAmount(
 /**
  * 读取用户预售累计购买额（wei）。
  *
- * userTotalAmount 为按迁移 root 键控的 public mapping，须先解析 root。
+ * `userTotalAmount` 按当前钱包键控。
  *
  * @param address 钱包地址
  * @returns 累计购买额（wei）
  * @see 手册 §6 预售 PreSale
  */
 export async function readUserPresaleTotal(address: string): Promise<bigint> {
-  // `userTotalAmount` 为按首次 root 键控的 public mapping。
-  const migratedFrom = await readMigratedFrom(address)
-  const root = migrationStakeRoot(address, migratedFrom) as `0x${string}`
   return bscReadClient.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'userTotalAmount',
-    args: [root],
+    args: [address as `0x${string}`],
   })
 }
 

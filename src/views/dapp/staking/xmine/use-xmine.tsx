@@ -41,7 +41,6 @@ import { useStakingViewStore } from '~/stores/staking-view-store'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/primitives'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 import { readXminePosition } from '~/web3/assets/assets-read'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { useXmineOverviewQuery, useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
 import {
   agxAmountPerXFromXPerAgx,
@@ -70,7 +69,6 @@ export type XmineWritePresent = {
  */
 export function useXmineSession(sessionReady: boolean, present: XmineWritePresent) {
   const { walletReady, writeReady } = useWriteReadiness()
-  const migration = useMigrationUser({ enabled: walletReady })
 
   const preflightQuery = useXminePreflightQuery({
     enabled: sessionReady,
@@ -102,7 +100,6 @@ export function useXmineSession(sessionReady: boolean, present: XmineWritePresen
     balance,
     allowance,
     miningQuota: remainingQuota,
-    isOldAccount: migration.isOldAccount,
   })
 
   const stake = useChainMutation({
@@ -205,7 +202,6 @@ export function useXmineDock() {
     dailyYieldLabel,
     blockHint,
     onSubmit: () => {
-      if (xmine.blockReason === 'accountMigrated') return
       xmine.submit()
     },
   }

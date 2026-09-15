@@ -284,14 +284,12 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
     EARLY_STAKING_ASSETS_METHODS.getReleasedPrincipal,
     EARLY_STAKING_ASSETS_METHODS.periodTime,
   ])
-  const ZERO = '0x0000000000000000000000000000000000000000'
   const calls = []
   let countCalls = 0
   const client = {
     readContract: withAggregate3(
       async (request) => {
         calls.push(request.functionName)
-        if (request.functionName === 'migratedFrom') return ZERO
         if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
         if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
         if (request.functionName === 'getStakeRewards') return [0n, 0n]
@@ -342,12 +340,7 @@ test('readStakePositions locked: count + one aggregate3 of getStakes+released (n
         if (request.functionName === 'periodTime') return 180n * 86_400n
         throw new Error(`unexpected ${request.functionName}`)
       },
-      [
-        parseAbi(['function migratedFrom(address account) view returns (address)']),
-        liquidAbi,
-        lockedAbi,
-        earlyAbi,
-      ],
+      [liquidAbi, lockedAbi, earlyAbi],
     ),
   }
 
@@ -387,11 +380,9 @@ test('readStakePositions includes EarlyStaking when pending > 0', async () => {
     EARLY_STAKING_ASSETS_METHODS.getReleasedPrincipal,
     EARLY_STAKING_ASSETS_METHODS.periodTime,
   ])
-  const ZERO = '0x0000000000000000000000000000000000000000'
   const client = {
     readContract: withAggregate3(
       async (request) => {
-        if (request.functionName === 'migratedFrom') return ZERO
         if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
         if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
         if (request.functionName === 'getStakeRewards') return [0n, 0n]
@@ -410,12 +401,7 @@ test('readStakePositions includes EarlyStaking when pending > 0', async () => {
         if (request.functionName === 'periodTime') return 31_104_000n
         throw new Error(`unexpected ${request.functionName}`)
       },
-      [
-        parseAbi(['function migratedFrom(address account) view returns (address)']),
-        liquidAbi,
-        lockedAbi,
-        earlyAbi,
-      ],
+      [liquidAbi, lockedAbi, earlyAbi],
     ),
   }
 

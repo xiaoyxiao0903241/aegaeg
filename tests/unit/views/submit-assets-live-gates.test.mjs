@@ -5,12 +5,11 @@ import { parseAbi } from 'viem'
 
 import { loadModule } from '../load-module.mjs'
 import { withAggregate3 } from '../web3/_bsc-read-client-test.mjs'
-import { clearMoneyPathReadClient, moneyPathSession, USER, ZERO } from './_money-path-read-mock.mjs'
+import { clearMoneyPathReadClient, moneyPathSession, USER } from './_money-path-read-mock.mjs'
 
 afterEach(clearMoneyPathReadClient)
 
 const XMINE_POSITION_ABI = parseAbi([
-  'function migratedFrom(address account) view returns (address)',
   'function pendingReward(address user) view returns (uint256)',
   'function pendingRewardValue(address user) view returns (uint256)',
   'function miningStakeAmountOf(address user) view returns (uint256)',
@@ -162,8 +161,6 @@ function xmineReadClient(overrides = {}) {
   } = overrides
   return withAggregate3(async (request) => {
     switch (request.functionName) {
-      case 'migratedFrom':
-        return ZERO
       case 'pendingReward':
         return pending
       case 'pendingRewardValue':

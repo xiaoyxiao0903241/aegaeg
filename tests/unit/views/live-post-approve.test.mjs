@@ -5,7 +5,6 @@ import { loadModule } from '../load-module.mjs'
 import { withBscReadClient } from '../web3/_bsc-read-client-test.mjs'
 
 const ADDRESS = '0x1111111111111111111111111111111111111111'
-const ZERO = '0x0000000000000000000000000000000000000000'
 
 const activePhase = {
   index: 0,
@@ -49,7 +48,6 @@ function genesisReadClient(overrides = {}) {
           counts.pause += 1
           return isPaused
         }
-        if (fn === 'migratedFrom') return ZERO
         if (fn === 'getUserPhaseRemainingAmount') {
           counts.remaining += 1
           return [

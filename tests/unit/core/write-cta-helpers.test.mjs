@@ -70,7 +70,6 @@ test('writeCtaLabel only rewrites bind-referral duty on the button', async () =>
   const { writeCtaLabel } = await loadModule('/src/core/wallet/write-cta.ts')
   const copy = { bindReferral: 'bind', submit: 'submit' }
   assert.equal(writeCtaLabel('need_referral', copy), 'bind')
-  assert.equal(writeCtaLabel('account_migrated', copy), 'submit')
   assert.equal(writeCtaLabel('ready', copy), 'submit')
 })
 
@@ -114,7 +113,6 @@ test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', asy
     amountIn: 1n,
     preflightReady: true,
     needReferral: false,
-    accountMigrated: false,
   }
 
   assert.equal(evaluateStakingAmountWrite({ ...ready, blockReason: null }).canSubmit, true)

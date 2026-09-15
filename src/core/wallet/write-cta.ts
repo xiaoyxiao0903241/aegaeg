@@ -11,8 +11,8 @@ const WRITE_BLOCK_NO_ALERT = new Set([
 ])
 
 /**
- * 硬门才需要 InlineAlert（额度 / 已确认迁移 / 池未开等）。
- * 「去绑定」改写按钮；`unavailable` 多为迁移/预检未就绪，只灰钮不告警。
+ * 硬门才需要 InlineAlert（额度 / 池未开等）。
+ * 「去绑定」改写按钮；`unavailable` 多为预检未就绪，只灰钮不告警。
  *
  * @param reason 写门闸原因；null = 无阻断
  */
@@ -36,7 +36,7 @@ export function writeBlockHint<R extends string>(
 }
 
 /**
- * 按钮职责文案：仅「去绑定推荐」改写主 CTA；迁移等长说明走 InlineAlert。
+ * 按钮职责文案：仅「去绑定推荐」改写主 CTA；长说明走 InlineAlert。
  *
  * @param phase 写按钮相位
  * @param copy 绑定 / 默认提交文案

@@ -20,7 +20,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 import { submitBondZap } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
@@ -95,8 +94,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
   const periodPreflights = [preflight180, preflight360, preflight540] as const
   const preflightQuery = periodPreflights[BOND_PERIODS.indexOf(period)]!
 
-  const migration = useMigrationUser({ enabled: walletReady })
-
   const market180 = useChainQuery({
     queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),
     scope: 'public',
@@ -169,7 +166,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     depositoryAuthorized: balancesLoaded
       ? (preflightQuery.data?.depositoryAuthorized ?? false)
       : false,
-    isOldAccount: migration.isOldAccount,
     maxDebt: marketLoaded ? market!.maxDebt : null,
     totalDeposit: marketLoaded ? market!.totalDeposit : null,
     maxPayout: marketLoaded ? market!.maxPayoutAmount : null,
@@ -215,7 +211,6 @@ export function useBondSession(kind: BondKind, sessionReady: boolean, present: B
     blockReason,
     preflightReady: preflightQuery.data !== undefined,
     needReferral,
-    accountMigrated: migration.isOldAccount === true,
     isQuoting: isPayoutQuoting,
   })
 

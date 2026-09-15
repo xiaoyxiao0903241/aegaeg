@@ -14,7 +14,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 import { evaluateStakingAmountWrite } from '~/views/dapp/staking/shared'
 import { submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -31,7 +30,7 @@ export type StakeWritePresent = {
 /**
  * 质押表单核心状态
  *
- * 维护周期 / 数量 / 预检 / 迁移状态，
+ * 维护周期 / 数量 / 预检，
  * 通过 evaluateStakeLive 判定可写条件并执行质押提交。
  *
  * @param sessionReady 会话是否就绪（决定是否取数）
@@ -61,8 +60,6 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
   const periodPreflights = [preflightLiquid, preflight180, preflight360, preflight540] as const
   const preflightQuery = periodPreflights[STAKE_PERIODS.indexOf(period)]!
 
-  const migration = useMigrationUser({ enabled: walletReady })
-
   const balance =
     decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? ZERO_BI
   const allowance =
@@ -86,7 +83,6 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     allowance,
     remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? ZERO_BI) : ZERO_BI,
     poolOpen: balancesLoaded ? preflightQuery.data?.poolOpen : undefined,
-    isOldAccount: migration.isOldAccount,
   })
 
   const open = useChainMutation({
@@ -114,7 +110,6 @@ export function useStakeSession(sessionReady: boolean, present: StakeWritePresen
     blockReason,
     preflightReady: preflightQuery.data !== undefined,
     needReferral,
-    accountMigrated: migration.isOldAccount === true,
   })
 
   const { setAmount } = amountInput

@@ -30,17 +30,6 @@ test('evaluateWriteButtonPhase maps handbook §1.4 phases', async () => {
     evaluateWriteButtonPhase({
       walletReady: true,
       writeReady: true,
-      needReferral: false,
-      accountMigrated: true,
-      moneyBlock: null,
-    }),
-    'account_migrated',
-  )
-
-  assert.equal(
-    evaluateWriteButtonPhase({
-      walletReady: true,
-      writeReady: true,
       needReferral: true,
       moneyBlock: 'notBound',
     }),
