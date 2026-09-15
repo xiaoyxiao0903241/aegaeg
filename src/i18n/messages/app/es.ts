@@ -488,7 +488,7 @@ const app = defineMessages({
           },
           {
             q: '¿A dónde va el AGX quemado?',
-            a: 'Todo el AGX quemado se transfiere a la dirección del agujero negro y se bloquea de forma permanente, reduce la oferta circulante y refuerza la deflación; forma parte del mecanismo de retorno de valor del protocolo.',
+            a: 'El 50% del AGX quemado se transfiere a la dirección del agujero negro y se bloquea de forma permanente, reduce la oferta circulante y refuerza la deflación; forma parte del mecanismo de retorno de valor del protocolo. El otro 50% se inyecta en el pool base del token ecológico X, refuerza la profundidad de liquidez y la estabilidad del pool, y construye el ciclo virtuoso rendimiento → quema → más liquidez.',
           },
           {
             q: '¿Se pueden transferir o reembolsar los puntos de contribución?',

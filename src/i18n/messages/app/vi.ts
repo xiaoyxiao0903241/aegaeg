@@ -475,7 +475,7 @@ const app = defineMessages({
           },
           {
             q: 'AGX đã đốt đi đâu?',
-            a: 'Toàn bộ AGX đã đốt chuyển vào địa chỉ hố đen và khóa vĩnh viễn, giảm lưu thông và tăng giảm phát — là một phần cơ chế hồi giá trị của giao thức.',
+            a: '50% AGX đã đốt chuyển vào địa chỉ hố đen và khóa vĩnh viễn, giảm lưu thông và tăng giảm phát — là một phần cơ chế hồi giá trị của giao thức. 50% còn lại bơm vào đáy pool token hệ sinh thái X, tăng độ sâu thanh khoản và ổn định đáy pool X, tạo vòng giá trị dương lợi nhuận → đốt → tăng thanh khoản.',
           },
           {
             q: 'Điểm đóng góp có thể chuyển hoặc hoàn lại không?',
