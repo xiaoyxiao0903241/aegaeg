@@ -2,8 +2,6 @@ import { encodeFunctionData, parseAbi } from 'viem'
 
 import { liquidMixedClaimable } from '~/core/assets/claim-output'
 import type { DurationPlan } from '~/core/assets/claim-plans'
-import { ZERO_ADDRESS } from '~/core/constants'
-import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { BOND_PERIODS, type StakePeriod } from '~/core/staking/staking-period'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
@@ -20,7 +18,6 @@ import {
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { type Aggregate3Call, decodeAggregate3Result, readAggregate3 } from '~/web3/multicall3-read'
 import {
   burnBondDepositoryAddress,
@@ -34,7 +31,6 @@ const restakeConfigAbi = parseAbi([
   RESTAKE_CONFIG_METHODS.getPlan,
 ])
 const contribAbi = parseAbi([
-  AGX_CONTRIBUTION_SWAP_METHODS.originalOf,
   AGX_CONTRIBUTION_SWAP_METHODS.userContribution,
   AGX_CONTRIBUTION_SWAP_METHODS.quoteRequiredContribution,
 ])
@@ -206,8 +202,8 @@ export async function readClaimPlans(): Promise<{
 /**
  * 读取用户贡献值；可选再读领取额对应的链上所需贡献。
  *
- * 贡献值按迁移 root 键控（AgxContributionSwap.originalOf 解析 root）。
- * 资产 Mixed 门槛已是领取额 1:1，不读 quote；Lucky / 奖励 Mixed 仍读 quote。
+ * `userContribution` 按当前钱包键控。资产 Mixed 门槛已是领取额 1:1，不读 quote；
+ * Lucky / 奖励 Mixed 仍读 quote。
  *
  * @param user 钱包地址
  * @param rewardAmount 待领取奖励金额（wei）；`quoteRequired` 为 false 时可忽略
@@ -220,21 +216,13 @@ export async function readContributionSnapshot(
   rewardAmount: bigint,
   quoteRequired = true,
 ): Promise<{ contribution: bigint; requiredContribution: bigint }> {
-  const root = (await bscReadClient.readContract({
-    address: BSC_CONTRACTS.agxContributionSwap,
-    abi: contribAbi,
-    functionName: 'originalOf',
-    args: [user],
-  })) as Address
-  const contributionRoot = root.toLowerCase() === ZERO_ADDRESS ? user : root
-
   const calls: Aggregate3Call[] = [
     {
       target: BSC_CONTRACTS.agxContributionSwap,
       callData: encodeFunctionData({
         abi: contribAbi,
         functionName: 'userContribution',
-        args: [contributionRoot],
+        args: [user],
       }),
     },
   ]
@@ -287,16 +275,14 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
   const rows: AssetsStakeRow[] = []
 
   const liquidPool = stakePoolAddress('liquid')
-  // `stakes`/`warmupStakes` 为裸 mapping：须先解析迁移 root；`getStakeRewards` 别名感知，直接传当前钱包。
-  const liquidMigratedFrom = await readMigratedFrom(user)
-  const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
+  // 仓位按当前钱包；`getStakeRewards` 别名感知，奖励仍能在新地址上看到。
   const liquidResults = await readAggregate3([
     {
       target: liquidPool,
       callData: encodeFunctionData({
         abi: liquidAbi,
         functionName: 'stakes',
-        args: [liquidRoot],
+        args: [user],
       }),
     },
     {
@@ -304,7 +290,7 @@ export async function readStakePositions(user: Address): Promise<AssetsStakeRow[
       callData: encodeFunctionData({
         abi: liquidAbi,
         functionName: 'warmupStakes',
-        args: [liquidRoot],
+        args: [user],
       }),
     },
     {
@@ -759,17 +745,13 @@ export function readBurnBondPositions(user: Address) {
 /**
  * 读取 X 挖矿持仓（pending 奖励、挖矿质押量、warmup 状态）。
  *
- * `stakes` 为裸 mapping，须先解析迁移 root；其余业务 view 直接传当前地址。
+ * `stakes` 与业务 view 均传当前钱包；奖励 view 别名感知，仓位不继承旧地址。
  *
  * @param user 钱包地址
  * @returns 挖矿持仓快照，含 pending 价值口径
  * @see 手册 §15 XStakingPool X 挖矿
  */
 export async function readXminePosition(user: Address): Promise<AssetsXminePosition> {
-  // `stakes` 为裸 mapping：先解析迁移 root；业务 view 仍传当前地址。
-  const migratedFrom = await readMigratedFrom(user)
-  const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
-
   const pool = BSC_CONTRACTS.xStakingPool
   const results = await readAggregate3([
     {
@@ -801,7 +783,7 @@ export async function readXminePosition(user: Address): Promise<AssetsXminePosit
       callData: encodeFunctionData({
         abi: xmineAbi,
         functionName: 'stakes',
-        args: [stakeRoot],
+        args: [user],
       }),
     },
   ])
@@ -937,14 +919,11 @@ export async function readStakeRedeemableAmount(
   user: Address,
 ): Promise<bigint> {
   if (row.kind === 'liquid') {
-    // 活期 `stakes` 裸 mapping：须迁移 root。
-    const migratedFrom = await readMigratedFrom(user)
-    const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
     const liquidStake = await bscReadClient.readContract({
       address: row.pool,
       abi: liquidAbi,
       functionName: 'stakes',
-      args: [stakeRoot],
+      args: [user],
     })
     const [principal, , , , exists] = liquidStake as readonly [
       bigint,

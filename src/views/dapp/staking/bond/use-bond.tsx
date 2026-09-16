@@ -68,7 +68,6 @@ export function useBondDock(kind: BondKind) {
   })
 
   async function onSubmit() {
-    if (bond.blockReason === 'accountMigrated') return
     if (bond.blockReason === 'notBound') {
       goBindReferral()
       return

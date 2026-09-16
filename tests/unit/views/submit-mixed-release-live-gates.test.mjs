@@ -1,8 +1,6 @@
 import assert from 'node:assert/strict'
 import test, { afterEach } from 'node:test'
 
-import { decodeFunctionData, parseAbi } from 'viem'
-
 import { loadModule } from '../load-module.mjs'
 import {
   claimPlanAndContribHandlers,
@@ -289,65 +287,5 @@ test('submitReleaseBufferClaim fail-closed when live claimable is zero', async (
   await assert.rejects(
     () => submitReleaseBufferClaim({ session, token: 'agx' }),
     (err) => err === RELEASE_BLOCKED.zeroAmount,
-  )
-})
-
-test('submitReleaseQueueClaim fail-closed for migrated old account after live gate passes', async () => {
-  const { submitReleaseQueueClaim } = await loadModule('/src/views/dapp/release/submit-release.ts')
-  const { RELEASE_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
-
-  const session = await moneyPathSession(async (request) => {
-    if (request.functionName === 'queuePlans') {
-      return [{ releaseDuration: 5n * 86_400n, feeRate: 0n, feeRecipient: USER }]
-    }
-    if (request.functionName === 'aggregate3') {
-      const first = decodeFunctionData({
-        abi: parseAbi([
-          'function getReleasedRewardsWithPlanIndex(address,uint8) view returns (uint256)',
-          'function getReleasedRewardsWithOffset(address,uint8,uint256,uint256) view returns (uint256)',
-          'function migrationEnabled() view returns (bool)',
-        ]),
-        data: request.args[0][0].callData,
-      })
-      if (first.functionName === 'migrationEnabled') {
-        return [
-          ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', true)),
-          ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', true)),
-        ]
-      }
-      if (first.functionName === 'getReleasedRewardsWithOffset') {
-        return [
-          ok(
-            enc(
-              'function getReleasedRewardsWithOffset(address,uint8,uint256,uint256) view returns (uint256)',
-              'getReleasedRewardsWithOffset',
-              10n,
-            ),
-          ),
-        ]
-      }
-      const claimable = enc(
-        'function getReleasedRewardsWithPlanIndex(address,uint8) view returns (uint256)',
-        'getReleasedRewardsWithPlanIndex',
-        10n,
-      )
-      const total = enc(
-        'function getRewardsWithPlanIndex(address,uint8) view returns (uint256)',
-        'getRewardsWithPlanIndex',
-        10n,
-      )
-      const size = enc(
-        'function getQueuePlanSize(address,uint8) view returns (uint256)',
-        'getQueuePlanSize',
-        1n,
-      )
-      return [ok(claimable), ok(total), ok(size)]
-    }
-    throw new Error(`unexpected ${request.functionName}`)
-  })
-
-  await assert.rejects(
-    () => submitReleaseQueueClaim({ session, planIndex: 0 }),
-    (err) => err === RELEASE_BLOCKED.accountMigrated,
   )
 })

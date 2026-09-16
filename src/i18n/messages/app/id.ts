@@ -483,7 +483,7 @@ const app = defineMessages({
           },
           {
             q: 'Ke mana AGX yang dibakar pergi?',
-            a: 'Seluruh AGX yang dibakar ditransfer ke alamat black-hole dan dikunci permanen, mengurangi peredaran dan memperkuat deflasi — bagian dari mekanisme pengembalian nilai protokol.',
+            a: '50% AGX yang dibakar ditransfer ke alamat black-hole dan dikunci permanen, mengurangi peredaran dan memperkuat deflasi — bagian dari mekanisme pengembalian nilai protokol. 50% sisanya diinjeksikan ke kolam dasar token ekosistem X, memperdalam likuiditas X dan menstabilkan kolam, membentuk siklus nilai positif hasil → bakar → likuiditas lebih kuat.',
           },
           {
             q: 'Bisakah poin kontribusi ditransfer atau dikembalikan?',
@@ -1028,7 +1028,7 @@ const app = defineMessages({
         title: 'Tunjangan pengembangan',
         body: 'Tunjangan khusus pengembangan ekosistem',
         aside:
-          'Tunjangan pengembangan diklaim via tanda tangan MarketFund setelah disetujui, langsung ke dompet.',
+          'Tunjangan pengembangan dibayar dalam AGX tanpa persetujuan. Klaim via tanda tangan MarketFund, langsung ke dompet.',
       },
       genesis: {
         title: 'Hadiah Bangun Bersama Genesis',
@@ -1313,11 +1313,9 @@ const app = defineMessages({
       },
     },
     grant: {
-      pendingLabel: 'Menunggu persetujuan',
-      pendingHint: 'Pindah ke dapat diklaim setelah disetujui',
-      pendingBody: 'Hubungi dukungan untuk membuka tunjangan; klaim hanya setelah disetujui.',
-      contactSupport: 'Hubungi dukungan untuk membuka',
-      claimIntoWallet: 'Ke dompet',
+      claimIntoWallet: 'Langsung ke dompet',
+      claimHint:
+        'Tunjangan pengembangan dibayar dalam AGX, tanpa persetujuan, klaim ke dompet kapan saja; tidak mengonsumsi poin kontribusi dan tidak melalui antrean rilis atau turbine.',
       ctaToWallet: 'Klaim {amount} ke dompet',
       dataTitle: 'Data',
       tier: 'Level Bangun Bersama',
@@ -1345,20 +1343,28 @@ const app = defineMessages({
             a: 'Dana khusus untuk membantu co-builder memperluas pasar—promosi, acara komunitas, saluran—terakumulasi sesuai posisi staking tim.',
           },
           {
-            q: 'Untuk apa tunjangan dapat digunakan?',
-            a: 'Hanya pengembangan pasar: salon & roadshow offline, operasi komunitas, materi promo, ekspansi saluran.',
+            q: 'Tunjangan dibayar dalam bentuk apa?',
+            a: 'Dalam AGX. Setelah terakumulasi, tunjangan masuk ke akun Anda; tanpa persetujuan, klaim ke dompet kapan saja.',
           },
           {
-            q: 'Bagaimana cara menggunakan tunjangan?',
-            a: 'Dua jalur: ajukan sebelum belanja (kirim rencana & anggaran ke support; jumlah yang disetujui menjadi dapat diklaim), atau reimbursement setelahnya dengan bukti & kwitansi.',
-          },
-          {
-            q: 'Mengapa tunjangan saya berstatus menunggu persetujuan?',
-            a: 'Tunjangan yang terakumulasi mulai pending sampai Anda kirim rencana penggunaan atau bukti reimbursement dan support menyetujui. Progres terlihat di catatan tunjangan.',
+            q: 'Apakah klaim tunjangan memerlukan persetujuan?',
+            a: 'Tidak. Setelah diterbitkan, tunjangan langsung dapat diklaim. Ketuk klaim agar AGX masuk ke dompet. Anda tidak perlu menghubungi dukungan untuk membuka kunci.',
           },
           {
             q: 'Apakah klaim tunjangan mengonsumsi poin kontribusi?',
-            a: 'Tidak. Berbeda dari hadiah lain: tunjangan pengembangan tidak mengonsumsi poin kontribusi dan tidak melalui antrean rilis—gAGX langsung ke dompet Anda.',
+            a: 'Tidak. Berbeda dari hadiah lain: tunjangan pengembangan tidak mengonsumsi poin kontribusi dan tidak melalui antrean rilis atau turbine—AGX langsung ke dompet Anda.',
+          },
+          {
+            q: 'Untuk apa tunjangan dapat digunakan?',
+            a: 'Hanya pengembangan pasar: salon & roadshow offline, operasi komunitas, materi promo, ekspansi saluran. Gunakan sesuai kebutuhan ekosistem yang nyata dan simpan catatan untuk pemeriksaan kemudian.',
+          },
+          {
+            q: 'Bagaimana jumlah tunjangan dihitung?',
+            a: 'Mengikuti perubahan posisi staking tim dan rasio tunjangan level Bangun Bersama Anda: staking baru tim menambah porsi, penebusan tim mengurangi porsi yang sesuai. Rincian ada di tab Diterbitkan pada catatan tunjangan.',
+          },
+          {
+            q: 'Mengapa jumlah tunjangan saya berkurang?',
+            a: 'Ketika anggota tim menebus posisi, porsi yang sesuai dikurangi dari akumulasi dan tampil sebagai entri negatif tipe «Penebusan» di catatan penerbitan. Ini mekanisme akuntansi yang normal.',
           },
         ],
       },

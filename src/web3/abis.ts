@@ -91,16 +91,6 @@ export const REFERRAL_METHODS = {
 } as const
 
 /**
- * AccountMigrationManager — 迁移状态查询（本期只读，写操作延后）。
- * @see 手册 §17 账户迁移
- */
-export const ACCOUNT_MIGRATION_METHODS = {
-  migrationEnabled: 'function migrationEnabled() view returns (bool)',
-  isOldAccount: 'function isOldAccount(address account) view returns (bool)',
-  migratedFrom: 'function migratedFrom(address account) view returns (address)',
-} as const
-
-/**
  * AegisUsd1Swap — USDT→USD1 兑换。
  * @see docs/onchain-manual/contracts/usd1swap.md
  */
@@ -142,7 +132,6 @@ export const AGX_CONTRIBUTION_SWAP_METHODS = {
     'function getConfig() view returns (address agxToken, uint8 decimals_, uint256 rateBps_, bool isPaused, uint256 minIn, uint256 maxIn, uint256 totalBurned, uint256 totalContribution)',
   getSplitConfig:
     'function getSplitConfig() view returns (address injector, uint256 splitBps, uint256 totalIn, uint256 totalBurned, uint256 totalInjected)',
-  originalOf: 'function originalOf(address account) view returns (address)',
   userContribution: 'function userContribution(address user) view returns (uint256)',
   userAgxBurned: 'function userAgxBurned(address user) view returns (uint256)',
   userContributionConsumed:

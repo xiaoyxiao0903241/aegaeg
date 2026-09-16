@@ -476,7 +476,7 @@ const app = defineMessages({
           },
           {
             q: 'Yakılan AGX nereye gider?',
-            a: 'Yakılan AGX’in tamamı kara delik adresine aktarılıp kalıcı kilitlenir; dolaşımı doğrudan azaltır, deflasyonu güçlendirir ve protokolün değer geri dönüş mekanizmasının parçasıdır.',
+            a: 'Yakılan AGX’in %50’si kara delik adresine aktarılıp kalıcı kilitlenir; dolaşımı doğrudan azaltır, deflasyonu güçlendirir ve protokolün değer geri dönüş mekanizmasının parçasıdır. Diğer %50 ekosistem tokenı X taban havuzuna enjekte edilir, X likidite derinliğini ve havuz istikrarını güçlendirir; getiri → yakım → likidite artışı değer döngüsünü kurar.',
           },
           {
             q: 'Katkı puanları aktarılabilir veya iade edilebilir mi?',
@@ -1027,7 +1027,7 @@ const app = defineMessages({
         title: 'Gelişim ödeneği',
         body: 'Ekosistem gelişim özel ödeneği',
         aside:
-          'Gelişim ödenekleri onay sonrası MarketFund imzasıyla talep edilir, doğrudan cüzdana gider.',
+          'Gelişim ödenekleri AGX olarak, onaysız ödenir. MarketFund imzasıyla doğrudan cüzdana talep edilir.',
       },
       genesis: {
         title: 'Genesis ortak inşa ödülleri',
@@ -1307,12 +1307,9 @@ const app = defineMessages({
       },
     },
     grant: {
-      pendingLabel: 'Onay bekliyor',
-      pendingHint: 'Onay sonrası talep edilebilir hale gelir',
-      pendingBody:
-        'Ödenekleri açmak için destekle iletişime geçin; yalnızca onay sonrası talep edin.',
-      contactSupport: 'Açmak için destekle iletişime geçin',
-      claimIntoWallet: 'Cüzdana',
+      claimIntoWallet: 'Doğrudan cüzdana',
+      claimHint:
+        'Gelişim ödeneği AGX olarak ödenir, onay gerekmez, istediğiniz zaman cüzdana talep edilir; katkı puanı harcamaz, serbest bırakma havuzu veya turbine girmez.',
       ctaToWallet: '{amount} tutarını cüzdana talep et',
       dataTitle: 'Veri',
       tier: 'Ortak inşa seviyesi',
@@ -1333,20 +1330,28 @@ const app = defineMessages({
             a: 'Ortak inşa edenlerin pazar açmasını destekleyen özel fon — tanıtım, topluluk etkinlikleri, kanallar; ekip stake pozisyonlarıyla orantılı birikir.',
           },
           {
-            q: 'Ödenek ne için kullanılabilir?',
-            a: 'Yalnızca pazar geliştirme: çevrimdışı salon ve yol gösteriler, topluluk operasyonu, tanıtım materyali, kanal genişletme.',
+            q: 'Ödenek hangi biçimde ödenir?',
+            a: 'AGX olarak. Birikince doğrudan hesabınıza girer; onay gerekmez, istediğiniz zaman cüzdana talep edebilirsiniz.',
           },
           {
-            q: 'Ödenek nasıl kullanılır?',
-            a: 'İki yol: harcama öncesi başvuru (plana ve bütçeyi desteğe gönderin; onaylanan tutar talep edilebilir olur) veya sonrasında fiş/kanıtla geri ödeme.',
-          },
-          {
-            q: 'Ödeneğim neden onay bekliyor?',
-            a: 'Biriken ödenekler, kullanım planı veya gider kanıtı sunup destek onaylayana dek beklemede kalır. İlerleme ödenek kayıtlarında görünür.',
+            q: 'Ödenek talep etmek onay ister mi?',
+            a: 'Hayır. Dağıtıldıktan sonra talep edilebilir. Talep düğmesine basınca AGX cüzdana gider; destekten kilit açtırmanız gerekmez.',
           },
           {
             q: 'Ödenek talep etmek katkı puanı harcar mı?',
-            a: 'Hayır. Diğer ödüllerden farklı olarak gelişim ödenekleri katkı harcamaz ve serbest bırakma havuzuna girmez — gAGX doğrudan cüzdanınıza gider.',
+            a: 'Hayır. Diğer ödüllerden farklı olarak gelişim ödenekleri katkı harcamaz ve serbest bırakma havuzu veya turbine girmez — AGX doğrudan cüzdanınıza gider.',
+          },
+          {
+            q: 'Ödenek ne için kullanılabilir?',
+            a: 'Yalnızca pazar geliştirme: çevrimdışı salon ve yol gösteriler, topluluk operasyonu, tanıtım materyali, kanal genişletme. Gerçek ekosistem ihtiyacına göre kullanın ve sonraki denetim için kayıt tutun.',
+          },
+          {
+            q: 'Ödenek tutarı nasıl hesaplanır?',
+            a: 'Ekip stake değişimleri ve ortak inşa seviyenizin ödenek oranına göre: ekip yeni stake edince pay birikir, ekip bozdurunca eşleşen pay düşülür. Ayrıntı ödenek kayıtlarının Dağıtım sekmesindedir.',
+          },
+          {
+            q: 'Ödeneğim neden azaldı?',
+            a: 'Ekip üyeleri pozisyon bozdurunca eşleşen pay birikimden düşülür ve dağıtım kayıtlarında negatif «Bozdurma» satırı olarak görünür. Bu normal muhasebedir.',
           },
         ],
       },

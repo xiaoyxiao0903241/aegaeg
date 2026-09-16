@@ -65,10 +65,16 @@ const REWARD_CARD_ICONS = {
   genesis: { src: dappAssets.rewardsHubGenesis, size: 'xl' },
 } as const
 
-function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
+/** Hub 卡片余额文案；发展津贴用 AGX，其余奖励用 gAGX。 */
+function formatGagxBalance(
+  value: number | null,
+  ready: boolean,
+  priceUsd: number | null,
+  suffix: string,
+) {
   const amount = ready ? value : null
   return {
-    amount: formatDecimal(amount, { digits: PERSONAL_TOKEN_DIGITS, suffix: ' gAGX' }),
+    amount: formatDecimal(amount, { digits: PERSONAL_TOKEN_DIGITS, suffix }),
     approx: formatDecimal(toUsd(amount, priceUsd), { digits: 2, prefix: '≈ $' }),
   }
 }
@@ -173,7 +179,12 @@ export function RewardsHubDock() {
             }
           : view === 'lucky'
             ? luckyBalance
-            : formatGagxBalance(value, amountReady(view), priceUsd)
+            : formatGagxBalance(
+                value,
+                amountReady(view),
+                priceUsd,
+                view === 'grant' ? ' AGX' : ' gAGX',
+              )
         const balanceLabel =
           isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 

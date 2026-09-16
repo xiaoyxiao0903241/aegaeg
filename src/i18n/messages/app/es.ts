@@ -488,7 +488,7 @@ const app = defineMessages({
           },
           {
             q: '¿A dónde va el AGX quemado?',
-            a: 'Todo el AGX quemado se transfiere a la dirección del agujero negro y se bloquea de forma permanente, reduce la oferta circulante y refuerza la deflación; forma parte del mecanismo de retorno de valor del protocolo.',
+            a: 'El 50% del AGX quemado se transfiere a la dirección del agujero negro y se bloquea de forma permanente, reduce la oferta circulante y refuerza la deflación; forma parte del mecanismo de retorno de valor del protocolo. El otro 50% se inyecta en el pool base del token ecológico X, refuerza la profundidad de liquidez y la estabilidad del pool, y construye el ciclo virtuoso rendimiento → quema → más liquidez.',
           },
           {
             q: '¿Se pueden transferir o reembolsar los puntos de contribución?',
@@ -1020,7 +1020,7 @@ const app = defineMessages({
         title: 'Subsidio de desarrollo',
         body: 'Subsidio especial de desarrollo del ecosistema',
         aside:
-          'Tras aprobación de soporte, el subsidio se reclama con firma de MarketFund, directo a la billetera.',
+          'El subsidio se paga en AGX sin aprobación. Se reclama con firma de MarketFund, directo a la billetera.',
       },
       genesis: {
         title: 'Recompensas de co-construcción Génesis',
@@ -1317,12 +1317,9 @@ const app = defineMessages({
       },
     },
     grant: {
-      pendingLabel: 'Pendiente de aprobación',
-      pendingHint: 'Pasa a reclamable tras la aprobación',
-      pendingBody:
-        'Contacta a soporte para desbloquear subsidios; reclama solo tras la aprobación.',
-      contactSupport: 'Contactar a soporte para desbloquear',
-      claimIntoWallet: 'A la billetera',
+      claimIntoWallet: 'Directo a la billetera',
+      claimHint:
+        'El subsidio de desarrollo se paga en AGX, sin aprobación, y se puede reclamar a la billetera en cualquier momento; no consume puntos de contribución ni pasa por la cola de liberación ni la turbina.',
       ctaToWallet: 'Reclamar {amount} a la billetera',
       dataTitle: 'Datos',
       tier: 'Nivel de co-construcción',
@@ -1350,20 +1347,28 @@ const app = defineMessages({
             a: 'Fondo especial para que los co-constructores expandan mercados — promoción, eventos de comunidad, canales — y se acumula con las posiciones de staking del equipo.',
           },
           {
-            q: '¿Para qué se puede usar el subsidio?',
-            a: 'Solo desarrollo de mercado: salones y roadshows, operación de comunidad, materiales promo, expansión de canales.',
+            q: '¿En qué forma se paga el subsidio?',
+            a: 'En AGX. Tras acumularse entra en tu cuenta; no hace falta aprobación, reclámalo a la billetera cuando quieras.',
           },
           {
-            q: '¿Cómo uso el subsidio de desarrollo?',
-            a: 'Dos vías: solicita antes de gastar (plan y presupuesto a soporte; lo aprobado pasa a reclamable) o reembolsa después con comprobantes.',
-          },
-          {
-            q: '¿Por qué mi subsidio está pendiente de aprobación?',
-            a: 'Los subsidios acumulados quedan pendientes hasta que envíes plan de uso o comprobantes y soporte apruebe. El progreso está en los registros de subsidio.',
+            q: '¿Reclamar el subsidio requiere aprobación?',
+            a: 'No. Una vez emitido ya es reclamable. Pulsa reclamar y el AGX va a la billetera. No hace falta contactar a soporte para desbloquear.',
           },
           {
             q: '¿Reclamar el subsidio consume puntos de contribución?',
-            a: 'No. A diferencia de otras recompensas, el subsidio de desarrollo no consume contribución ni pasa por la cola de liberación: el gAGX va directo a tu billetera.',
+            a: 'No. A diferencia de otras recompensas, el subsidio de desarrollo no consume contribución ni pasa por la cola de liberación ni la turbina: el AGX va directo a tu billetera.',
+          },
+          {
+            q: '¿Para qué se puede usar el subsidio?',
+            a: 'Solo desarrollo de mercado: salones y roadshows, operación de comunidad, materiales promo, expansión de canales. Úsalo según las necesidades reales del ecosistema y guarda registros para una revisión posterior.',
+          },
+          {
+            q: '¿Cómo se calcula la cantidad del subsidio?',
+            a: 'Según los cambios de staking del equipo y el ratio de subsidio de tu nivel de co-construcción: el staking nuevo acumula una parte; los rescates del equipo restan la parte correspondiente. El detalle está en la pestaña Emitido de los registros de subsidio.',
+          },
+          {
+            q: '¿Por qué bajó la cantidad de mi subsidio?',
+            a: 'Cuando miembros del equipo rescatan posiciones, la parte correspondiente se resta del acumulado y aparece como un asiento negativo de tipo «Rescate» en los registros de emisión. Es el mecanismo contable normal.',
           },
         ],
       },

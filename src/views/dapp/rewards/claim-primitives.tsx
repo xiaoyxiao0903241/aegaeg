@@ -7,21 +7,24 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
 import { Text } from '~/shared/components/text'
-import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { cn } from '~/shared/lib/utils'
-import { OneWayFlowIndicator } from '~/views/dapp/shared/one-way-flow-indicator'
 
 /**
- * gAGX 图标 + 数值 / 标签行（领取控件共用）
+ * 代币图标 + 数值 / 标签行（领取控件共用）
+ *
+ * 默认 gAGX 图；发展津贴传入 AGX 图。
  *
  * @param children 数值或标签内容
+ * @param iconSrc 代币图标；缺省为 gAGX
  * @param textVariant 文字样式
  */
 export function RewardsGagxAmount({
   children,
+  iconSrc = dappAssets.tokenGagx,
   textVariant = 'copy',
 }: {
   children: ReactNode
+  iconSrc?: string
   textVariant?: 'copy' | 'headline'
 }) {
   return (
@@ -31,7 +34,7 @@ export function RewardsGagxAmount({
         className="size-(--app-icon-lg) rounded-full"
         loading="lazy"
         size="token"
-        src={dappAssets.tokenGagx}
+        src={iconSrc}
       />
       <Text as="p" className="font-semibold" variant={textVariant}>
         {children}
@@ -47,24 +50,21 @@ export function RewardsGagxAmount({
  *
  * @param tokenLabel 代币名称
  * @param amountText 金额文本
+ * @param iconSrc 代币图标；缺省为 gAGX
  */
 export function RewardsClaimTokenRow({
   tokenLabel,
   amountText,
+  iconSrc = dappAssets.tokenGagx,
 }: {
   tokenLabel: string
   amountText: string
+  iconSrc?: string
 }) {
   return (
     <div className="flex items-center justify-between gap-2">
       <span className="inline-flex h-8.5 items-center gap-2 rounded-full bg-card pr-3.5 pl-2">
-        <Icon
-          alt=""
-          className="size-6 rounded-2xl"
-          loading="lazy"
-          size="token"
-          src={dappAssets.tokenGagx}
-        />
+        <Icon alt="" className="size-6 rounded-2xl" loading="lazy" size="token" src={iconSrc} />
         <Text as="span" className="leading-4 font-semibold" variant="detail">
           {tokenLabel}
         </Text>
@@ -139,67 +139,6 @@ export const RewardsDestinationCard = Object.assign(DestinationRoot, {
   Period: DestinationPeriod,
 })
 
-/** 发展津贴：待审批金额卡 */
-export function GrantPendingCard({
-  contactSupport,
-  pendingAmount,
-  pendingBody,
-  pendingHint,
-  pendingLabel,
-  tokenGagx,
-}: {
-  contactSupport: string
-  pendingAmount: string
-  pendingBody: string
-  pendingHint: string
-  pendingLabel: string
-  tokenGagx: string
-}) {
-  return (
-    <Card surface="outlined">
-      <div className="flex items-start justify-between gap-3">
-        <Text as="p" className="leading-4 text-foreground/40" variant="copy">
-          {pendingLabel}
-        </Text>
-        <Text as="p" className="max-w-40 text-right leading-4 text-foreground/40" variant="copy">
-          {pendingHint}
-        </Text>
-      </div>
-      <div className="mt-1.5 flex items-center justify-between gap-3">
-        <RewardsGagxAmount textVariant="copy">{tokenGagx}</RewardsGagxAmount>
-        <Text as="p" className="text-2xl leading-none font-semibold" variant="headline">
-          {pendingAmount}
-        </Text>
-      </div>
-      <div className="mt-1.5 grid gap-1">
-        <a
-          className="inline-flex w-fit items-center gap-1 font-medium text-coral-emphasis underline"
-          href={COMMUNITY_SOCIAL_LINKS.telegram}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <Text as="span" className="font-medium text-coral-emphasis" variant="copy">
-            {contactSupport}
-          </Text>
-          <img alt="" aria-hidden className="size-2.5 shrink-0" src={dappAssets.arrowUpRight} />
-        </a>
-        <Text as="p" className="leading-none text-foreground/40" variant="copy">
-          {pendingBody}
-        </Text>
-      </div>
-    </Card>
-  )
-}
-
-/** 待审批卡与可领卡之间的静态分隔（与兑换单向流箭头同规范） */
-export function ClaimStackDivider() {
-  return (
-    <div className="flex items-center justify-center">
-      <OneWayFlowIndicator />
-    </div>
-  )
-}
-
 /** 简单领取：可领至钱包的强调卡 */
 export function SimpleClaimableCard({
   amountText,
@@ -208,6 +147,7 @@ export function SimpleClaimableCard({
   claimableLabel,
   showTokenChip,
   tokenGagx,
+  tokenIcon,
   usdLabel,
 }: {
   amountText: string
@@ -216,6 +156,7 @@ export function SimpleClaimableCard({
   claimableLabel: string
   showTokenChip: boolean
   tokenGagx: string
+  tokenIcon: string
   usdLabel: string
 }) {
   return (
@@ -233,7 +174,7 @@ export function SimpleClaimableCard({
         </Text>
       </div>
       {showTokenChip ? (
-        <RewardsClaimTokenRow amountText={amountText} tokenLabel={tokenGagx} />
+        <RewardsClaimTokenRow amountText={amountText} iconSrc={tokenIcon} tokenLabel={tokenGagx} />
       ) : (
         <div className="flex items-center justify-between gap-2">
           <Text as="span" className="font-semibold" variant="detail">

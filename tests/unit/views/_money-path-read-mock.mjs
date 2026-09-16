@@ -48,7 +48,6 @@ export function claimPlanAndContribHandlers(overrides = {}) {
       const period = index === 0 ? 360n * DAY : 540n * DAY
       return [period, 0n, ZERO, true]
     },
-    originalOf: () => ZERO,
     userContribution: () => contribution,
     quoteRequiredContribution: () => requiredContribution,
     balanceOf: () => (rewardAvailable === undefined ? contribution : rewardAvailable),
@@ -59,13 +58,10 @@ const CLAIM_DISPATCH_ABI = parseAbi([
   'function queuePlans() view returns ((uint256 releaseDuration, uint256 feeRate, address feeRecipient)[])',
   'function getPlanCount() view returns (uint256)',
   'function getPlan(uint256 index) view returns (uint256 period, uint256 taxBP, address target, bool exists)',
-  'function originalOf(address account) view returns (address)',
   'function userContribution(address user) view returns (uint256)',
   'function quoteRequiredContribution(uint256 rewardAmount) view returns (uint256)',
   'function paused() view returns (bool)',
   'function getRewardInfo(address user) view returns (uint256 accrued, uint256 claimed, uint256 pending)',
-  'function migrationEnabled() view returns (bool)',
-  'function isOldAccount(address account) view returns (bool)',
   'function balanceOf(address owner) view returns (uint256)',
   'function getReleasedRewardsWithPlanIndex(address user, uint8 planIndex) view returns (uint256)',
   'function getReleasedRewardsWithOffset(address user, uint8 planIndex, uint256 start, uint256 limit) view returns (uint256)',

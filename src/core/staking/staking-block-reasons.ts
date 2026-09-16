@@ -4,7 +4,6 @@
  */
 
 export type StakeLiveBlockReason =
-  | 'accountMigrated'
   | 'notBound'
   | 'insufficientBalance'
   | 'insufficientAllowance'
@@ -14,7 +13,6 @@ export type StakeLiveBlockReason =
   | 'unavailable'
 
 export type BondZapLiveBlockReason =
-  | 'accountMigrated'
   | 'notBound'
   | 'insufficientBalance'
   | 'insufficientAllowance'
@@ -29,7 +27,6 @@ export type BondZapLiveBlockReason =
 export const BOND_MIN_PAYOUT_AGX = 10_000_000n
 
 export type XmineLiveBlockReason =
-  | 'accountMigrated'
   | 'insufficientBalance'
   | 'insufficientAllowance'
   | 'insufficientQuota'
@@ -39,9 +36,8 @@ export type XmineLiveBlockReason =
 /**
  * 质押入金前的实时门闸检查。
  *
- * 迁移旧地址不得再写、推荐必须已绑定、池未暂停、余额 / 授权 / 额度
- * 足够覆盖拟质押量，任一项不满足即阻断；迁移状态未知按阻断处理，
- * 避免合约拒绝或写错账户。
+ * 推荐必须已绑定、池未暂停、余额 / 授权 / 额度足够覆盖拟质押量，
+ * 任一项不满足即阻断。旧地址不再当前端写门闸（两边都可操作）。
  * 先检查剩余额度，再检查授权不足，避免用户先补授权后才发现额度不够。
  *
  * @param args.amount 拟质押数量
@@ -50,7 +46,6 @@ export type XmineLiveBlockReason =
  * @param args.allowance 对质押合约的授权
  * @param args.remainingQuota 剩余额度
  * @param args.poolOpen 仅定期池使用；活期恒视为开放
- * @param args.isOldAccount 迁移状态：true 阻断；false 正常；null 未知按阻断处理；undefined 本次不检查
  * @returns 首个阻断原因
  * @see 手册 §8 质押 Staking
  */
@@ -62,11 +57,7 @@ export function evaluateStakeLive(args: {
   remainingQuota: bigint
   /** 仅定期池使用；活期恒视为开放。 */
   poolOpen?: boolean
-  /** 手册 §17：已迁移旧地址不得继续写。 */
-  isOldAccount?: boolean | null
 }): StakeLiveBlockReason | null {
-  if (args.isOldAccount === null) return 'unavailable'
-  if (args.isOldAccount === true) return 'accountMigrated'
   if (args.amount <= 0n) return 'zeroAmount'
   if (!args.isBound) return 'notBound'
   if (args.poolOpen === false) return 'poolPaused'
@@ -79,8 +70,8 @@ export function evaluateStakeLive(args: {
 /**
  * 债券 zap 入金前的实时门闸检查。
  *
- * 迁移旧地址不得再写、推荐必须已绑定、depository 已授权，且余额与
- * 授权足够覆盖拟认购额，任一项不满足即阻断，避免链上交易必然失败。
+ * 推荐必须已绑定、depository 已授权，且余额与授权足够覆盖拟认购额，
+ * 任一项不满足即阻断，避免链上交易必然失败。旧地址不再当前端写门闸。
  *
  * 大小限制跟链上用毛发放量；债务容量跟链上用净发放量。
  * 先检查兑付过小/过大与债务容量，再检查授权不足：
@@ -92,7 +83,6 @@ export function evaluateStakeLive(args: {
  * @param args.balance 钱包 USD1 余额
  * @param args.allowance 对 BondHelper 的授权
  * @param args.depositoryAuthorized 目标债券是否已授权（authContracts）
- * @param args.isOldAccount 迁移旧地址；null = 未知按阻断处理；true = 已迁移阻断
  * @param args.maxDebt 债券债务上限；0 = 不限；null = 未知按阻断处理
  * @param args.totalDeposit 当前已占用债务
  * @param args.netPayout 扣 fee 后净发放量（记债 / 入库）
@@ -107,15 +97,12 @@ export function evaluateBondZapLive(args: {
   balance: bigint
   allowance: bigint
   depositoryAuthorized: boolean
-  isOldAccount?: boolean | null
   maxDebt?: bigint | null
   totalDeposit?: bigint | null
   netPayout?: bigint | null
   grossPayout?: bigint | null
   maxPayout?: bigint | null
 }): BondZapLiveBlockReason | null {
-  if (args.isOldAccount === null) return 'unavailable'
-  if (args.isOldAccount === true) return 'accountMigrated'
   if (args.amount <= 0n) return 'zeroAmount'
   if (!args.isBound) return 'notBound'
   if (!args.depositoryAuthorized) return 'depositoryNotAuth'
@@ -147,13 +134,12 @@ export function evaluateBondZapLive(args: {
  *
  * 拟质押量须为正，余额与授权足够覆盖，且未超过挖矿额度。
  * 先检查挖矿额度，再检查授权不足，避免用户先补授权后才发现额度不够。
- * 已迁移旧地址不得再写；迁移状态未知按不可用处理。
+ * 旧地址不再当前端写门闸。
  *
  * @param args.amount 拟质押的 gAGX 数量
  * @param args.balance 钱包 gAGX 余额
  * @param args.allowance 对 XStakingPool 的授权
  * @param args.miningQuota 挖矿额度剩余
- * @param args.isOldAccount 迁移状态：true 阻断；false 正常；null 未知按阻断（写路径必传）
  * @returns 首个阻断原因
  * @see 手册 §15 XStakingPool X 挖矿
  */
@@ -162,10 +148,7 @@ export function evaluateXmineLive(args: {
   balance: bigint
   allowance: bigint
   miningQuota: bigint
-  isOldAccount: boolean | null
 }): XmineLiveBlockReason | null {
-  if (args.isOldAccount == null) return 'unavailable'
-  if (args.isOldAccount === true) return 'accountMigrated'
   if (args.amount <= 0n) return 'zeroAmount'
   if (args.balance < args.amount) return 'insufficientBalance'
   if (args.miningQuota < args.amount) return 'insufficientQuota'

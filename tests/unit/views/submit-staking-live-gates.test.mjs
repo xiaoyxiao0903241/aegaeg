@@ -2,13 +2,7 @@ import assert from 'node:assert/strict'
 import test, { afterEach } from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
-import {
-  clearMoneyPathReadClient,
-  enc,
-  moneyPathSession,
-  ok,
-  ZERO,
-} from './_money-path-read-mock.mjs'
+import { clearMoneyPathReadClient, enc, moneyPathSession, ok } from './_money-path-read-mock.mjs'
 
 afterEach(clearMoneyPathReadClient)
 
@@ -21,7 +15,7 @@ function stakeLockedAggregate3(calls, opts) {
     poolOpen = true,
   } = opts
 
-  if (calls.length === 5) {
+  if (calls.length === 4) {
     return [
       ok(enc('function isBindReferral(address) view returns (bool)', 'isBindReferral', isBound)),
       ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', balance)),
@@ -33,7 +27,6 @@ function stakeLockedAggregate3(calls, opts) {
           remaining,
         ),
       ),
-      ok(enc('function migratedFrom(address) view returns (address)', 'migratedFrom', ZERO)),
     ]
   }
 
@@ -48,13 +41,6 @@ function stakeLockedAggregate3(calls, opts) {
           0n,
         ),
       ),
-    ]
-  }
-
-  if (calls.length === 2) {
-    return [
-      ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', false)),
-      ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', false)),
     ]
   }
 
@@ -109,13 +95,6 @@ test('submitXmineStake fail-closed when live mining quota is exhausted', async (
 
     const session = await moneyPathSession(async (request) => {
       if (request.functionName === 'aggregate3') {
-        const calls = request.args[0]
-        if (calls.length === 2) {
-          return [
-            ok(enc('function migrationEnabled() view returns (bool)', 'migrationEnabled', false)),
-            ok(enc('function isOldAccount(address) view returns (bool)', 'isOldAccount', false)),
-          ]
-        }
         return [
           ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', 1_000n)),
           ok(
@@ -155,8 +134,8 @@ test('submitLiquidWarmupClaim fail-closed when warmup has not expired', async ()
       throw new Error(`unexpected ${request.functionName}`)
     }
     const calls = request.args[0]
-    // liquid round1 = 7 calls
-    if (calls.length === 7) {
+    // liquid round1 = 6 calls
+    if (calls.length === 6) {
       return [
         ok(enc('function isBindReferral(address) view returns (bool)', 'isBindReferral', true)),
         ok(enc('function balanceOf(address) view returns (uint256)', 'balanceOf', 0n)),
@@ -165,7 +144,6 @@ test('submitLiquidWarmupClaim fail-closed when warmup has not expired', async ()
           enc('function remainingStakeAmount() view returns (uint256)', 'remainingStakeAmount', 0n),
         ),
         ok(enc('function isWarmupExpired(address) view returns (bool)', 'isWarmupExpired', false)),
-        ok(enc('function migratedFrom(address) view returns (address)', 'migratedFrom', ZERO)),
         ok(enc('function timeBucket() view returns (uint256)', 'timeBucket', 1n)),
       ]
     }

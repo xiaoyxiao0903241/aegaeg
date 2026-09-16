@@ -51,7 +51,7 @@ export function useGrant() {
       ? '0.00'
       : formatMakingRankLabel(summary?.making_rank, tierEmpty, summary)
   const totalClaimed = formatApiStatLabel(summary?.total_claimed_allowance, {
-    suffix: ' gAGX',
+    suffix: ' AGX',
   })
   const totalClaimedApprox = formatApiGagxApproxUsd(summary?.total_claimed_allowance, priceUsd)
 
