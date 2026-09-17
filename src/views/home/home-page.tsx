@@ -3,11 +3,14 @@
  *
  * 自上而下渲染 Hero、协议/引擎特性、代币、数据指标、路线图、
  * 安全、合作伙伴、FAQ 与页脚，区块进入视口时渐显并播放计数动画。
+ * 有生效公告时自动弹出，关闭后按只弹一次 / 每次都弹记忆。
  */
 import { useEffect } from 'react'
 
 import { useI18n } from '~/i18n/use-i18n'
 import { applyLocalizedHeadDisplay } from '~/shared/lib/head-display'
+import { NoticeModal } from '~/views/dapp/host/notices/notice-modal'
+import { noticeDismissKey } from '~/views/dapp/host/notices/popup-notice'
 import { HomeFaqSection } from '~/views/home/home-faq-section'
 import { HomeFooter } from '~/views/home/home-footer'
 import { HomeHeader } from '~/views/home/home-header'
@@ -18,9 +21,11 @@ import { HomePartnersSection } from '~/views/home/home-partners-section'
 import { HomeRoadmapSection } from '~/views/home/home-roadmap-section'
 import { HomeSecuritySection } from '~/views/home/home-security-section'
 import { HomeTokenSection } from '~/views/home/home-token-section'
+import { useHomePopupNotice } from '~/views/home/use-home-popup-notice'
 
 export function HomePage() {
   const { messages } = useI18n()
+  const popupNotice = useHomePopupNotice()
 
   useEffect(() => {
     applyLocalizedHeadDisplay(messages)
@@ -41,6 +46,15 @@ export function HomePage() {
         <HomeFaqSection />
       </main>
       <HomeFooter />
+      {popupNotice.open && popupNotice.notice ? (
+        <NoticeModal
+          key={noticeDismissKey(popupNotice.notice)}
+          notice={popupNotice.notice}
+          onDismiss={popupNotice.onDismiss}
+          onImageLoadError={popupNotice.onImageLoadError}
+          open={popupNotice.open}
+        />
+      ) : null}
     </div>
   )
 }
