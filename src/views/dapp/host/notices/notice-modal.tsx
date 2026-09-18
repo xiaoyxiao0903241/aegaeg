@@ -54,8 +54,9 @@ export function NoticeModal({
           onEscapeKeyDown={(event) => event.preventDefault()}
           onPointerDownOutside={(event) => event.preventDefault()}
         >
+          {/* 首页引导袋没有 app.nav；无标题时用品牌名当读屏标题 */}
           <DialogPrimitive.Title className="sr-only">
-            {notice.title || messages.nav.notice}
+            {notice.title || messages.common.brand}
           </DialogPrimitive.Title>
 
           <article className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-2xl bg-card shadow-modal-panel">

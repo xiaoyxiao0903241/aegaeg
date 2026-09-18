@@ -90,7 +90,6 @@ const app = defineMessages({
     rewardsTooltip: 'Consulta las recompensas por referidos y de equipo.',
     communityTooltip:
       'Invita a socios a co-construir y comparte el valor de crecimiento del ecosistema y las recompensas Génesis.',
-    noticeTooltip: 'Ver los últimos avisos del ecosistema y los cambios del protocolo.',
     bscTooltip: 'Solo BSC · AEGIS X funciona en BNB Smart Chain.',
   },
   flowOps: {

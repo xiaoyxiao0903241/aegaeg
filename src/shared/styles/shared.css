@@ -83,6 +83,10 @@ button {
   color: inherit;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 button:not(:disabled) {
   cursor: pointer;
 }
