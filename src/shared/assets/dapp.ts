@@ -80,6 +80,7 @@ export const dappAssets = {
   docs: '/assets/figma/dapp/ic-docs.svg',
   check: '/assets/figma/dapp/ic-check.svg',
   community: '/assets/figma/dapp/ic-community.svg',
+  proposal: '/assets/figma/dapp/ic-governance.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',
   globe: '/assets/figma/dapp/ic-globe.svg',
   menu: '/assets/figma/dapp/ic-menu.svg',
@@ -195,5 +196,6 @@ export const railItems: Array<{
   { id: 'rewards', icon: dappAssets.rewards },
   { id: 'release', icon: dappAssets.release },
   { id: 'community', icon: dappAssets.community },
+  { id: 'proposal', icon: dappAssets.proposal },
   { id: 'genesis', icon: dappAssets.genesis },
 ]

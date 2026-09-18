@@ -100,6 +100,11 @@ export interface BscContracts {
    * @see docs/onchain-manual/contracts/rewardmanager.md
    */
   rewardManager: Address
+  /**
+   * AegisProposal——提案投票（用户文档 AEGIS_PROPOSAL_FRONTEND）。
+   * 与入仓旧 Governance 地址不是同一份合约。
+   */
+  aegisProposal: Address
 }
 
 /**
@@ -153,4 +158,5 @@ export const BSC_CONTRACTS = {
   stakingPool: requireEnvAddress('VITE_BSC_STAKING_POOL'),
   treasury: requireEnvAddress('VITE_BSC_TREASURY'),
   rewardManager: requireEnvAddress('VITE_BSC_REWARD_MANAGER'),
+  aegisProposal: requireEnvAddress('VITE_BSC_AEGIS_PROPOSAL'),
 } as const satisfies BscContracts

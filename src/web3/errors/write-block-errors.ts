@@ -74,3 +74,18 @@ export const RELEASE_BLOCKED = {
   planUnresolved: 'RELEASE_PLAN_UNRESOLVED',
   unavailable: 'RELEASE_UNAVAILABLE',
 } as const
+
+export const PROPOSAL_BLOCKED = {
+  zeroAmount: 'PROPOSAL_ZERO_AMOUNT',
+  belowMin: 'PROPOSAL_BELOW_MIN',
+  notBound: 'PROPOSAL_NOT_BOUND',
+  notActive: 'PROPOSAL_NOT_ACTIVE',
+  supportMismatch: 'PROPOSAL_SUPPORT_MISMATCH',
+  votesLimited: 'PROPOSAL_VOTES_LIMITED',
+  insufficientBalance: 'PROPOSAL_INSUFFICIENT_BALANCE',
+  insufficientAllowance: 'PROPOSAL_INSUFFICIENT_ALLOWANCE',
+  unavailable: 'PROPOSAL_UNAVAILABLE',
+  notWithdrawable: 'PROPOSAL_NOT_WITHDRAWABLE',
+  expired: 'PROPOSAL_EXPIRED',
+  nothingToWithdraw: 'PROPOSAL_NOTHING_TO_WITHDRAW',
+} as const

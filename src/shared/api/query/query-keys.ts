@@ -172,6 +172,16 @@ export const queryKeys = {
     x0MiningPositionsRoot: ['api', 'x0Mining', 'positions'] as const,
     x0MiningPositions: (params: PaginationParams = {}) =>
       paginated(['api', 'x0Mining', 'positions'] as const, params),
+    governanceListRoot: ['api', 'governance', 'list'] as const,
+    governanceList: (locale: string, params: PaginationParams = {}) =>
+      paginated(['api', 'governance', 'list'] as const, params, locale),
+    governanceDetailRoot: ['api', 'governance', 'detail'] as const,
+    governanceDetail: (id: number, locale: string) =>
+      ['api', 'governance', 'detail', id, locale] as const,
+    governanceStats: ['api', 'governance', 'stats'] as const,
+    governanceMyVotesRoot: ['api', 'governance', 'myVotes'] as const,
+    governanceMyVotes: (params: PaginationParams = {}) =>
+      paginated(['api', 'governance', 'myVotes'] as const, params),
   },
   chain: {
     erc20Root: ['chain', 'erc20'] as const,
@@ -360,5 +370,10 @@ export const queryKeys = {
       chainWalletQueryKey(['chain', 'release', 'buffer'], address),
     releaseDuration: ['chain', 'release', 'duration'] as const,
     releaseQueuePlans: ['chain', 'release', 'queuePlans'] as const,
+    proposalRoot: ['chain', 'proposal'] as const,
+    proposalLive: (ids: readonly number[]) =>
+      ['chain', 'proposal', 'live', ...[...ids].sort((a, b) => a - b)] as const,
+    proposalPositions: ['chain', 'proposal', 'positions'] as const,
+    proposalVoteSnapshot: (id: number) => ['chain', 'proposal', 'voteSnapshot', id] as const,
   },
 } as const

@@ -1,0 +1,82 @@
+import { paginationBody } from '~/shared/api/endpoints/_helpers'
+import { apiRequest } from '~/shared/api/request'
+import type {
+  GovernanceDetail,
+  GovernanceListItem,
+  GovernanceMyVoteItem,
+  GovernanceStats,
+  Paginated,
+  PaginationParams,
+} from '~/shared/api/types'
+
+/**
+ * 提案分页列表（标题 / i18n）。
+ *
+ * @param token 会话 JWT
+ * @param locale 应用语言短码
+ * @param params 分页
+ * @see 用户文档 governance-apis #list
+ */
+export async function getGovernanceList(
+  token: string,
+  locale: string,
+  params: PaginationParams = {},
+): Promise<Paginated<GovernanceListItem>> {
+  return apiRequest<Paginated<GovernanceListItem>>('/governance/list', {
+    method: 'POST',
+    token,
+    body: { locale, ...paginationBody(params) },
+  })
+}
+
+/**
+ * 单提案标题与正文。
+ *
+ * @param token 会话 JWT
+ * @param proposalId 提案 id
+ * @param locale 应用语言短码
+ * @see 用户文档 governance-apis #detail
+ */
+export async function getGovernanceDetail(
+  token: string,
+  proposalId: number,
+  locale: string,
+): Promise<GovernanceDetail> {
+  return apiRequest<GovernanceDetail>('/governance/detail', {
+    method: 'POST',
+    token,
+    body: { proposal_id: proposalId, locale },
+  })
+}
+
+/**
+ * 提案统计卡（总数 / 进行中 / 参与率）。锁定金额仍读链。
+ *
+ * @param token 会话 JWT
+ * @see 用户文档 governance-apis #stats
+ */
+export async function getGovernanceStats(token: string): Promise<GovernanceStats> {
+  return apiRequest<GovernanceStats>('/governance/stats', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+/**
+ * 我的投票记录（一人一提案一行；时间戳）。锁定列以链上仓位为准。
+ *
+ * @param token 会话 JWT
+ * @param params 分页
+ * @see 用户文档 governance-apis #my-votes
+ */
+export async function getGovernanceMyVotes(
+  token: string,
+  params: PaginationParams = {},
+): Promise<Paginated<GovernanceMyVoteItem>> {
+  return apiRequest<Paginated<GovernanceMyVoteItem>>('/governance/my-votes', {
+    method: 'POST',
+    token,
+    body: paginationBody(params),
+  })
+}

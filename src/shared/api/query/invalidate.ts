@@ -1,7 +1,7 @@
 import { queryClient } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
-import type { Paginated, SalesLogItem } from '~/shared/api/types'
+import type { GovernanceMyVoteItem, Paginated, SalesLogItem } from '~/shared/api/types'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { sleep } from '~/shared/lib/utils'
@@ -88,6 +88,26 @@ export function pickSalesLogFingerprint(
   return best
 }
 
+/** 纯函数：我的投票页指纹——总量 + 首条 id / 时间 / 票数（加码时 total 不变）。 */
+export function pickGovernanceMyVotesFingerprint(
+  pages: Array<Paginated<GovernanceMyVoteItem> | undefined | null>,
+): IndexerPageFingerprint {
+  let best: IndexerPageFingerprint = { total: 0, head: null }
+  for (const data of pages) {
+    if (!data) continue
+    const item = data.items[0]
+    const head = item ? `${item.proposal_id}:${item.voted_at}:${item.votes}` : null
+    if (data.total > best.total) {
+      best = { total: data.total, head }
+      continue
+    }
+    if (data.total === best.total && head != null && best.head == null) {
+      best = { total: data.total, head }
+    }
+  }
+  return best
+}
+
 /** 纯函数：是否应停止轮询（出现了更新的销售日志）。 */
 export function salesLogAdvanced(
   baseline: SalesLogFingerprint,
@@ -163,6 +183,13 @@ function readIndexerFingerprint(rootKey: readonly string[]): IndexerPageFingerpr
   return pickIndexerPageFingerprint(entries.map(([, data]) => data))
 }
 
+function readGovernanceMyVotesFingerprint(): IndexerPageFingerprint {
+  const entries = queryClient.getQueriesData<Paginated<GovernanceMyVoteItem>>({
+    queryKey: queryKeys.api.governanceMyVotesRoot,
+  })
+  return pickGovernanceMyVotesFingerprint(entries.map(([, data]) => data))
+}
+
 async function pollGenesisContributions(baseline: { total: number; firstId: number | null }) {
   await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
   await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
@@ -179,6 +206,29 @@ async function pollGenesisContributions(baseline: { total: number; firstId: numb
     if (salesLogAdvanced(baseline, readSalesLogFingerprint())) {
       return
     }
+  }
+}
+
+/**
+ * 提案投票后：后端 my-votes 常落后于链确认。
+ * 对标 Genesis——立即 refetch + 有限次延迟轮询，指纹前进即停。
+ *
+ * @param baseline 写链前的 my-votes 页指纹
+ */
+async function pollGovernanceMyVotes(baseline: IndexerPageFingerprint) {
+  const refetch = () =>
+    Promise.all([
+      queryClient.refetchQueries({ queryKey: queryKeys.api.governanceMyVotesRoot }),
+      queryClient.refetchQueries({ queryKey: queryKeys.api.governanceStats }),
+    ])
+
+  await refetch()
+  if (indexerPageAdvanced(baseline, readGovernanceMyVotesFingerprint())) return
+
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    await sleep(2500, { unref: true })
+    await refetch()
+    if (indexerPageAdvanced(baseline, readGovernanceMyVotesFingerprint())) return
   }
 }
 
@@ -596,6 +646,22 @@ export function invalidateAfterRewardsMixedClaim() {
 /** 推荐绑定成功后刷新 community Tab 的查询。 */
 export function invalidateAfterReferralBind() {
   invalidateTabQueries('community')
+}
+
+/**
+ * 提案投票写成功：链读立刻标脏；my-votes / stats 短窗轮询直到索引追上。
+ */
+export function invalidateAfterProposalVote() {
+  const baseline = readGovernanceMyVotesFingerprint()
+  invalidateTabQueries('proposal')
+  void pollGovernanceMyVotes(baseline)
+}
+
+/**
+ * 提案领取写成功：仓位从链上消失，my-votes 行仍在，指纹不会前进。
+ */
+export function invalidateAfterProposalWithdraw() {
+  invalidateTabQueries('proposal')
 }
 
 /**

@@ -37,6 +37,7 @@ function walletBalanceMessage(t: AppMessagesBundle, path: WritePath | undefined)
     case WRITE_PATH.GENESIS:
       return t.genesis.insufficientUsd1
     case WRITE_PATH.STAKING:
+    case WRITE_PATH.PROPOSAL:
       return t.errors.chain.reverts.walletAgxInsufficient
     case WRITE_PATH.BOND_ZAP:
       return t.errors.chain.reverts.walletUsd1Insufficient

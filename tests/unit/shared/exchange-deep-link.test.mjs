@@ -9,6 +9,8 @@ const empty = {
   assetsView: null,
   rewardsView: null,
   releaseView: null,
+  proposalView: null,
+  proposalId: null,
 }
 
 test('EX-B4 deep link resolves exchange/burn', async () => {
@@ -133,4 +135,39 @@ test('release deep link resolves hub|queue|buffer and rejects rewards subview na
     ...empty,
     releaseView: 'hub',
   })
+})
+
+test('proposal deep link resolves hub and detail by id', async () => {
+  const { dappLocationFromHash, proposalHashForView } = await loadModule(
+    '/src/shared/config/dapp-deep-links.ts',
+  )
+
+  assert.deepEqual(dappLocationFromHash('proposal'), {
+    tab: 'proposal',
+    ...empty,
+  })
+  assert.deepEqual(dappLocationFromHash('#proposal/2'), {
+    tab: 'proposal',
+    ...empty,
+    proposalView: 'detail',
+    proposalId: 2,
+  })
+  assert.deepEqual(dappLocationFromHash('#proposal/detail'), {
+    tab: 'proposal',
+    ...empty,
+    proposalView: 'hub',
+  })
+  assert.deepEqual(dappLocationFromHash('#proposal/0'), {
+    tab: 'proposal',
+    ...empty,
+    proposalView: 'hub',
+  })
+  assert.deepEqual(dappLocationFromHash('proposal/nope'), {
+    tab: 'proposal',
+    ...empty,
+    proposalView: 'hub',
+  })
+  assert.equal(proposalHashForView(2), '#proposal/2')
+  assert.equal(proposalHashForView(null), '#proposal')
+  assert.equal(proposalHashForView(0), '#proposal')
 })

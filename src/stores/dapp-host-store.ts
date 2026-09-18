@@ -8,6 +8,7 @@ import {
 import { type DappTab, resolveDappTabSelect } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { hydrateProposalLocation, useProposalViewStore } from '~/stores/proposal-view-store'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -72,6 +73,7 @@ const subviewStoreByTab = {
   assets: useAssetsViewStore,
   rewards: useRewardsViewStore,
   release: useReleaseViewStore,
+  proposal: useProposalViewStore,
 } as const
 
 function resetForeignSubviewStores(tab: DappTab) {
@@ -141,6 +143,9 @@ export const useDappHostStore = create<DappHostStore>((set, get) => {
       }
       if (loc.tab === 'release' && loc.releaseView) {
         useReleaseViewStore.getState().hydrateView(loc.releaseView)
+      }
+      if (loc.tab === 'proposal') {
+        hydrateProposalLocation(loc.proposalId)
       }
     },
   }

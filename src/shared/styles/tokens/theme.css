@@ -54,6 +54,12 @@
   --success: oklch(69.46% 0.1551 159.22);
   --claim: #4a7bec;
   --claim: oklch(60.77% 0.1787 264.16);
+  --claim-soft: #eaeffe;
+  --claim-soft: oklch(95.5% 0.028 264);
+  --caution: #b8842c;
+  --caution: oklch(62% 0.13 75);
+  --caution-soft: #fdf4e7;
+  --caution-soft: oklch(96.8% 0.028 75);
   --dark: #1d212b;
   --dark: oklch(24.82% 0.0200 267.87);
   --dark-panel: #1c2234;
@@ -267,6 +273,9 @@
   --color-ring: var(--ring);
   --color-success: var(--success);
   --color-claim: var(--claim);
+  --color-claim-soft: var(--claim-soft);
+  --color-caution: var(--caution);
+  --color-caution-soft: var(--caution-soft);
   --color-dark: var(--dark);
   --color-dark-panel: var(--dark-panel);
   --color-dark-globe: var(--dark-globe);

@@ -60,6 +60,15 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.performance,
     queryKeys.chain.referralRoot,
   ],
+  proposal: [
+    queryKeys.api.governanceListRoot,
+    queryKeys.api.governanceDetailRoot,
+    queryKeys.api.governanceStats,
+    queryKeys.api.governanceMyVotesRoot,
+    queryKeys.chain.proposalRoot,
+    queryKeys.chain.erc20Root,
+    queryKeys.chain.referralRoot,
+  ],
   exchange: [
     queryKeys.chain.swapRoot,
     queryKeys.chain.erc20Root,

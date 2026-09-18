@@ -42,6 +42,7 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_LUCKY_POOL: 'luckyPool',
   VITE_BSC_DAILY_PURCHASE_TRACKER: 'dailyPurchaseTracker',
   VITE_BSC_REWARD_MANAGER: 'rewardManager',
+  VITE_BSC_AEGIS_PROPOSAL: 'aegisProposal',
 }
 
 function normalizeAddress(address) {

@@ -468,6 +468,23 @@ export const REWARD_MANAGER_METHODS = {
 } as const
 
 /**
+ * AegisProposal — 提案投票 / 领取。
+ * 用户文档 AEGIS_PROPOSAL_FRONTEND；与入仓旧 Governance ABI 不是同一份。
+ */
+export const AEGIS_PROPOSAL_METHODS = {
+  maxQuorumGlobal: 'function maxQuorumGlobal() view returns (uint256)',
+  getProposal:
+    'function getProposal(uint256 proposalId) view returns (address proposer, uint8 proposalState, uint64 voteStart, uint64 voteEnd, uint256 forVotes, uint256 againstVotes, uint256 abstainVotes, uint256 totalVoters, uint256 minQuorumSnapshot)',
+  queryProposalState: 'function queryProposalState(uint256 proposalId) view returns (uint8)',
+  getVoteReceipt:
+    'function getVoteReceipt(uint256 proposalId, address voter) view returns ((bool hasVoted, uint8 support, uint256 principal, uint256 gons, uint256 extraIndex, uint256 creditExtra))',
+  getUserVotePositions:
+    'function getUserVotePositions(address user, uint256 offset, uint256 limit) view returns ((uint256 proposalId, uint8 support, uint256 principal, uint256 claimable, uint256 earnings, uint8 proposalState, bool withdrawable, uint64 voteEnd, uint256 withdrawalDeadline)[] page)',
+  vote: 'function vote(uint256 proposalId, uint8 support, uint256 amount)',
+  withdrawal: 'function withdrawal(uint256 proposalId)',
+} as const
+
+/**
  * StakingPool — 质押池 TVL / epoch。
  * @see docs/onchain-manual/contracts/stakingpool.md
  */

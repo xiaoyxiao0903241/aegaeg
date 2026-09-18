@@ -307,12 +307,19 @@ export function formatPercentChange(value: number | null | undefined, digits = 1
   return formatDecimal(value, { digits, fraction: 'natural', prefix: sign, suffix: '%' })
 }
 
-/** 把链上区块时间（unix 秒）格式化为 `YYYY-MM-DD HH:mm`；0 返回 `—`。 */
+/** 把链上区块时间（unix 秒）格式化为 `YYYY-MM-DD HH:mm`；0 返回 `—`。本地时区。 */
 export function formatBlockTime(timestamp: number): string {
   if (!timestamp) return '—'
 
   const date = new Date(timestamp * 1000)
   return formatDateTimeParts(date)
+}
+
+/** 把 unix 秒格式化为 UTC `YYYY-MM-DD HH:mm (UTC)`；0 返回 `—`。 */
+export function formatUtcBlockTime(timestamp: number): string {
+  if (!timestamp) return '—'
+
+  return `${formatDateTimeParts(new Date(timestamp * 1000), true)} (UTC)`
 }
 
 /** 把后端 ISO 时间格式化为 `YYYY-MM-DD HH:mm`；空值或非法日期返回 `—`。 */
@@ -325,12 +332,12 @@ export function formatApiDateTime(iso: string | null): string {
   return formatDateTimeParts(date)
 }
 
-function formatDateTimeParts(date: Date): string {
-  const year = String(date.getFullYear())
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+function formatDateTimeParts(date: Date, utc = false): string {
+  const year = String(utc ? date.getUTCFullYear() : date.getFullYear())
+  const month = String((utc ? date.getUTCMonth() : date.getMonth()) + 1).padStart(2, '0')
+  const day = String(utc ? date.getUTCDate() : date.getDate()).padStart(2, '0')
+  const hours = String(utc ? date.getUTCHours() : date.getHours()).padStart(2, '0')
+  const minutes = String(utc ? date.getUTCMinutes() : date.getMinutes()).padStart(2, '0')
 
   return `${year}-${month}-${day} ${hours}:${minutes}`
 }

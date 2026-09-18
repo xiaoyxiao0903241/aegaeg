@@ -16,7 +16,7 @@
 
 |维度|集合|键数|
 |---|---|---|
-|color|`background` · `foreground` · `card` · `secondary` · `muted` · `muted-foreground` · `primary` · `accent` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `skeleton` · `modal-overlay*` · `footer` · `success` · `success-soft` · `claim` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*`|公开语义；工程色见 tokens.json|
+|color|`background` · `foreground` · `card` · `secondary` · `muted` · `muted-foreground` · `primary` · `accent` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `skeleton` · `modal-overlay*` · `footer` · `success` · `success-soft` · `claim` · `claim-soft` · `caution` · `caution-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*`|公开语义；工程色见 tokens.json|
 |type|`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`|12|
 |radius|`tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`|9|
 |shadow|`faq(E1)` · `card(E2)` · `subtle(E3)` · `window(E4)` · `modal-panel(E5)` · `tooltip(E6)` · `menu(E7)` · `dropdown(E8)`|8|

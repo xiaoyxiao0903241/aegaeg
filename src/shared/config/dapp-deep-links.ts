@@ -13,6 +13,7 @@ export type AssetsView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine'
 export type RewardsView =
   'hub' | 'lucky' | 'referral' | 'participate' | 'cobuild' | 'grant' | 'genesis'
 export type ReleaseView = 'hub' | 'queue' | 'buffer'
+export type ProposalView = 'hub' | 'detail'
 
 const EXCHANGE_VIEWS = new Set<ExchangeView>(['hub', 'flash', 'trade', 'burn', 'turbine'])
 const STAKING_VIEWS = new Set<StakingView>(['hub', 'stake', 'lpbond', 'burnbond', 'xmine', 'calc'])
@@ -108,6 +109,29 @@ export function releaseHashForView(view: ReleaseView): string {
   return hashForTabView('release', view, 'hub')
 }
 
+/**
+ * 提案详情写进 hash：`#proposal/{id}`。没有有效 id 时回列表。
+ *
+ * @param selectedId 当前提案数字 id
+ * @returns `#proposal` 或 `#proposal/{id}`
+ */
+export function proposalHashForView(selectedId: number | null = null): string {
+  if (selectedId == null || selectedId <= 0) return '#proposal'
+  return `#proposal/${selectedId}`
+}
+
+/**
+ * 解析 `#proposal/{id}` 里的正整数 id。
+ *
+ * @param value hash 第二段
+ * @returns 有效 id 或 null
+ */
+export function parseProposalHashId(value: string): number | null {
+  if (!/^[1-9]\d{0,15}$/.test(value)) return null
+  const id = Number(value)
+  return Number.isSafeInteger(id) ? id : null
+}
+
 /** 奖励卡片 → 对应合约 key 的映射。 */
 export const REWARDS_CARD_CONTRACT = {
   lucky: 'LuckyPool',
@@ -125,6 +149,8 @@ type DappLocation = {
   assetsView: AssetsView | null
   rewardsView: RewardsView | null
   releaseView: ReleaseView | null
+  proposalView: ProposalView | null
+  proposalId: number | null
 }
 
 function emptyViews(tab: DappTab, patch: Partial<DappLocation> = {}): DappLocation {
@@ -135,13 +161,15 @@ function emptyViews(tab: DappTab, patch: Partial<DappLocation> = {}): DappLocati
     assetsView: null,
     rewardsView: null,
     releaseView: null,
+    proposalView: null,
+    proposalId: null,
     ...patch,
   }
 }
 
 /**
  * 各 Tab 子视图的深链接解析（exchange / staking / assets / rewards / release）。
- * hash 形式：`#exchange` | `#exchange/burn` | `#staking/stake` | `#assets/lpbond` | `#rewards/lucky` | `#release/queue` | …
+ * hash 形式：`#exchange` | `#exchange/burn` | `#staking/stake` | `#assets/lpbond` | `#rewards/lucky` | `#release/queue` | `#proposal/12` | …
  * 旧版：`#swap` 映射到 exchange hub。
  * release 子视图只有 `hub|queue|buffer`，不接受 `rewards`。
  */
@@ -190,6 +218,15 @@ export function dappLocationFromHash(hash: string): DappLocation | null {
       return emptyViews('release', { releaseView: 'hub' })
     }
     return emptyViews('release', { releaseView: viewPart })
+  }
+
+  if (tabPart === 'proposal') {
+    if (!viewPart) return emptyViews('proposal')
+    const proposalId = parseProposalHashId(viewPart)
+    if (proposalId != null) {
+      return emptyViews('proposal', { proposalView: 'detail', proposalId })
+    }
+    return emptyViews('proposal', { proposalView: 'hub' })
   }
 
   return emptyViews(tabPart)

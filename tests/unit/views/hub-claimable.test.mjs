@@ -109,7 +109,7 @@ test('claimable dots poll every balances interval', () => {
   assert.match(team, /useTeamRewardTotal[\s\S]*staleTime: QUERY_STALE_TIME\.balances/)
   assert.match(team, /useTeamRewardTotal[\s\S]*refetchInterval: QUERY_STALE_TIME\.balances/)
   assert.match(nav, /const CLAIMABLE_DOT_POLL_MS = QUERY_STALE_TIME\.balances/)
-  assert.equal((nav.match(/refetchInterval: CLAIMABLE_DOT_POLL_MS/g) ?? []).length, 7)
+  assert.equal((nav.match(/refetchInterval: CLAIMABLE_DOT_POLL_MS/g) ?? []).length, 9)
 })
 
 test('assets rail expiry probe is not gated to the assets tab', () => {

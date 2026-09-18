@@ -5,14 +5,22 @@ import {
   fingerprintAssetsStakeExpiry,
   fingerprintLucky,
   fingerprintPositiveDecimal,
+  fingerprintProposalOpen,
+  fingerprintProposalWithdraw,
   fingerprintReleaseBuffer,
   fingerprintReleaseQueue,
 } from '~/core/claimable-unread'
 import { isGrantNodeEligible } from '~/core/rewards/grant-eligible'
-import { useDaoRewardTypeTotals, useTeamRewardTotal, useUserNodeType } from '~/hooks/use-api-data'
+import {
+  useDaoRewardTypeTotals,
+  useGovernanceList,
+  useTeamRewardTotal,
+  useUserNodeType,
+} from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useClaimableUnread } from '~/hooks/use-claimable-unread'
 import { useDappHost } from '~/hooks/use-dapp-host'
+import { useI18n } from '~/i18n/use-i18n'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -32,6 +40,7 @@ import {
   readStakePositions,
 } from '~/web3/assets/assets-read'
 import { readTurbineClaimableFingerprint } from '~/web3/exchange/turbine-exchange-read'
+import { readProposalLiveByIds, readProposalPositions } from '~/web3/proposal/proposal-read'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -315,4 +324,57 @@ export function useAssetsClaimableUnreads(): {
   )
 
   return { stake, lpbond, burnbond, rail: stake || lpbond || burnbond }
+}
+
+/**
+ * 提案红点：未读开标看过即焚；链上可取回钉住到领取。
+ *
+ * 列表最多取 100 条做未读投影。点进提案轨后记下已看过的开标 id。
+ */
+export function useProposalClaimableUnreads(): boolean {
+  const walletReady = useWalletReady()
+  const { sessionReady } = useDappHost()
+  const { locale } = useI18n()
+  const onProposal = useDappHostStore((state) => state.activeTab) === 'proposal'
+  const openQuery = useGovernanceList(locale, { page: 1, page_size: 100 }, sessionReady)
+  const openIds = (openQuery.data?.items ?? []).map((item) => item.proposal_id)
+  const liveQuery = useChainQuery({
+    scope: 'public',
+    queryKey: queryKeys.chain.proposalLive(openIds),
+    queryFn: () => readProposalLiveByIds(openIds),
+    enabled: sessionReady && openIds.length > 0,
+    refetchInterval: CLAIMABLE_DOT_POLL_MS,
+    placeholderData: keepPreviousData,
+  })
+  const positionsQuery = useChainQuery({
+    queryKey: queryKeys.chain.proposalPositions,
+    queryFn: (addr) => readProposalPositions(addr),
+    enabled: walletReady,
+    refetchInterval: CLAIMABLE_DOT_POLL_MS,
+    placeholderData: keepPreviousData,
+  })
+
+  const openFp = !sessionReady
+    ? ''
+    : openQuery.data == null && openQuery.isLoading
+      ? null
+      : openIds.length > 0 && liveQuery.data == null && liveQuery.isLoading
+        ? null
+        : fingerprintProposalOpen(
+            openIds.map((id) => ({
+              proposal_id: id,
+              state: liveQuery.data?.[id]?.state ?? null,
+            })),
+          )
+  const withdrawFp = !walletReady
+    ? ''
+    : snapshotFingerprint(
+        positionsQuery.isPlaceholderData,
+        positionsQuery.data,
+        fingerprintProposalWithdraw,
+      )
+
+  const open = useClaimableUnread('proposal.open', openFp, onProposal, 'event')
+  const withdraw = useClaimableUnread('proposal.withdraw', withdrawFp, onProposal, 'balance')
+  return open || withdraw
 }

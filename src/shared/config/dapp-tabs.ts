@@ -6,6 +6,7 @@ export const tabOrder = [
   'rewards',
   'release',
   'community',
+  'proposal',
   'genesis',
 ] as const
 

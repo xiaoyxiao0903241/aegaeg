@@ -1,7 +1,7 @@
 /**
  * 到期类红点（`event`）已确认身份的本地存储。
  *
- * 按钱包地址 + 源记下进入子页后并入的身份集合。欠账类（涡轮 / 奖励 / 释放完成）不写这里。
+ * 按钱包地址 + 源记下进入子页后并入的身份集合。欠账类（涡轮 / 奖励 / 释放完成 / 提案可取回）不写这里。
  * 读失败一律视为从未看过（null），避免脏数据把红点永久掐灭。
  *
  * @see src/core/claimable-unread.ts
@@ -22,6 +22,8 @@ export type ClaimableSeenSource =
   | 'assets.stake'
   | 'assets.lpbond'
   | 'assets.burnbond'
+  | 'proposal.open'
+  | 'proposal.withdraw'
 
 type SeenMap = Record<string, Partial<Record<ClaimableSeenSource, string>>>
 

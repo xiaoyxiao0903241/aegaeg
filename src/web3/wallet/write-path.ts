@@ -20,6 +20,8 @@ export const WRITE_PATH = {
   RELEASE_CLAIM: 'release-claim',
   /** ReferralRegistry.bindReferrer。 */
   REFERRAL_BIND: 'referral-bind',
+  /** AegisProposal 投票 / 领取。 */
+  PROPOSAL: 'proposal',
 } as const
 
 export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]

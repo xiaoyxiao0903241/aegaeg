@@ -13,10 +13,11 @@ export const railNavLabelKeys = {
   rewards: 'rewards',
   release: 'release',
   community: 'community',
+  proposal: 'proposal',
   genesis: 'genesis',
 } as const satisfies Record<
   DappTab,
-  'exchange' | 'assets' | 'staking' | 'rewards' | 'release' | 'community' | 'genesis'
+  'exchange' | 'assets' | 'staking' | 'rewards' | 'release' | 'community' | 'proposal' | 'genesis'
 >
 
 /** 导航各步骤在引导流程中的锚点标识；创世页不在引导范围内。 */
@@ -27,6 +28,7 @@ export const railTourIds = {
   rewards: 'nav-rewards',
   release: 'nav-release',
   community: 'nav-community',
+  proposal: undefined,
   genesis: undefined,
 } as const satisfies Record<DappTab, string | undefined>
 

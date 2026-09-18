@@ -11,6 +11,8 @@ import { ExchangeDetail } from '~/views/dapp/exchange/detail'
 import { ExchangeDock } from '~/views/dapp/exchange/dock'
 import { GenesisDetail } from '~/views/dapp/genesis/detail'
 import { GenesisDock } from '~/views/dapp/genesis/dock'
+import { ProposalDetail } from '~/views/dapp/proposal/detail'
+import { ProposalDock } from '~/views/dapp/proposal/dock'
 import { ReleaseDetail } from '~/views/dapp/release/detail'
 import { ReleaseDock } from '~/views/dapp/release/dock'
 import { RewardsDetail } from '~/views/dapp/rewards/detail'
@@ -63,6 +65,16 @@ function CommunityTabDetail() {
   return <CommunityDetail />
 }
 
+function ProposalTabDock() {
+  const account = useActiveAccount()
+  const remountKey = walletRemountKey(account?.address)
+  return <ProposalDock key={remountKey} />
+}
+
+function ProposalTabDetail() {
+  return <ProposalDetail />
+}
+
 /** Tab 注册表：只挂域根 Dock / Detail。 */
 export const dappTabEntries: readonly DappTabEntry[] = [
   { id: 'exchange', Dock: ExchangeTabDock, Detail: ExchangeTabDetail },
@@ -71,6 +83,7 @@ export const dappTabEntries: readonly DappTabEntry[] = [
   { id: 'rewards', Dock: RewardsDock, Detail: RewardsDetail },
   { id: 'release', Dock: ReleaseDock, Detail: ReleaseDetail },
   { id: 'community', Dock: CommunityTabDock, Detail: CommunityTabDetail },
+  { id: 'proposal', Dock: ProposalTabDock, Detail: ProposalTabDetail },
   { id: 'genesis', Dock: GenesisTabDock, Detail: GenesisTabDetail },
 ]
 

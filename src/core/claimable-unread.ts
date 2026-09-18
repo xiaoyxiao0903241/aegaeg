@@ -1,8 +1,8 @@
 /**
  * 可领红点：两种模式共用 `isClaimableDotLit`。
  *
- * - `balance`（涡轮 / 奖励 / 释放完成 / 缓冲完成）：投影非空就亮，本地 ack 不参与。
- * - `event`（定期质押 / 债券到期）：当前身份有不在 ack 里的才亮；进入子页后并入 ack。
+ * - `balance`（涡轮 / 奖励 / 释放完成 / 缓冲完成 / 提案可取回）：投影非空就亮，本地 ack 不参与。
+ * - `event`（定期质押 / 债券到期 / 未读开标）：当前身份有不在 ack 里的才亮；进入子页后并入 ack。
  *
  * 投影只决定谁进当前集合。滴漏、活期、X 挖矿、持仓发息不进集合。
  * `balance` 身份不含金额，避免额变被当成新事件。
@@ -11,6 +11,8 @@
  * @see docs/onchain-manual/contracts/turbine.md
  * @see docs/onchain-manual/contracts/aegissplitter.md
  */
+
+import { PROPOSAL_STATE, type ProposalStateValue } from '~/core/proposal/proposal-state'
 
 /** 欠账钉住 vs 到期看过即焚。 */
 export type ClaimableDotKind = 'balance' | 'event'
@@ -201,4 +203,32 @@ export function fingerprintAssetsBondExpiry(
       isUnixReached(row.vestingEndTime, nowSec) ? [`${row.id}:${row.vestingEndTime}`] : [],
     ),
   )
+}
+
+export type ProposalOpenFingerprintItem = {
+  proposal_id: number
+  state: ProposalStateValue | null
+}
+
+/**
+ * 未读开标投影：只纳入待开始 / 进行中的提案 id。点进提案轨后并入 ack。
+ *
+ * @param items 列表项；状态无法识别的跳过
+ */
+export function fingerprintProposalOpen(items: readonly ProposalOpenFingerprintItem[]): string {
+  return fingerprintIdList(
+    items.flatMap((item) => {
+      if (item.state !== PROPOSAL_STATE.pending && item.state !== PROPOSAL_STATE.active) return []
+      return [String(item.proposal_id)]
+    }),
+  )
+}
+
+/**
+ * 提案领取欠账投影：任一仓位可取回则为占位身份，不含金额与提案 id。
+ *
+ * @param rows 链上仓位
+ */
+export function fingerprintProposalWithdraw(rows: readonly { withdrawable: boolean }[]): string {
+  return rows.some((row) => row.withdrawable) ? CLAIMABLE_BALANCE_ID : ''
 }

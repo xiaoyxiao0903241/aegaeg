@@ -158,3 +158,32 @@ test('fingerprintAssetsBondExpiry ignores drip before vesting end', async () => 
   )
   assert.equal(fingerprintAssetsBondExpiry([{ id: 'burn-360d-1', vestingEndTime: 0n }], nowSec), '')
 })
+
+test('fingerprintProposalOpen only pending and active ids', async () => {
+  const { fingerprintProposalOpen } = await loadModule('/src/core/claimable-unread.ts')
+  const { PROPOSAL_STATE } = await loadModule('/src/core/proposal/proposal-state.ts')
+
+  assert.equal(fingerprintProposalOpen([]), '')
+  assert.equal(
+    fingerprintProposalOpen([
+      { proposal_id: 3, state: PROPOSAL_STATE.succeeded },
+      { proposal_id: 1, state: PROPOSAL_STATE.active },
+      { proposal_id: 2, state: PROPOSAL_STATE.pending },
+      { proposal_id: 1, state: PROPOSAL_STATE.active },
+    ]),
+    '1|2',
+  )
+})
+
+test('fingerprintProposalWithdraw is pending placeholder, not proposal id', async () => {
+  const { CLAIMABLE_BALANCE_ID, fingerprintProposalWithdraw } = await loadModule(
+    '/src/core/claimable-unread.ts',
+  )
+
+  assert.equal(fingerprintProposalWithdraw([]), '')
+  assert.equal(fingerprintProposalWithdraw([{ withdrawable: false }]), '')
+  assert.equal(
+    fingerprintProposalWithdraw([{ withdrawable: false }, { withdrawable: true }]),
+    CLAIMABLE_BALANCE_ID,
+  )
+})

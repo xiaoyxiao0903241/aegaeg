@@ -213,6 +213,42 @@ test('salesLogAdvanced detects new purchase by total or first id', async () => {
   assert.equal(fingerprint.firstId, 5)
 })
 
+test('pickGovernanceMyVotesFingerprint advances on new row or add-on votes', async () => {
+  const { indexerPageAdvanced, pickGovernanceMyVotesFingerprint } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  const before = pickGovernanceMyVotesFingerprint([
+    {
+      total: 1,
+      page: 1,
+      page_size: 5,
+      items: [{ proposal_id: 2, voted_at: 100, votes: '1000000000' }],
+    },
+  ])
+  const addon = pickGovernanceMyVotesFingerprint([
+    {
+      total: 1,
+      page: 1,
+      page_size: 5,
+      items: [{ proposal_id: 2, voted_at: 200, votes: '2500000000' }],
+    },
+  ])
+  const extra = pickGovernanceMyVotesFingerprint([
+    {
+      total: 2,
+      page: 1,
+      page_size: 5,
+      items: [{ proposal_id: 3, voted_at: 300, votes: '1000000000' }],
+    },
+  ])
+
+  assert.equal(before.head, '2:100:1000000000')
+  assert.equal(indexerPageAdvanced(before, addon), true)
+  assert.equal(indexerPageAdvanced(before, extra), true)
+  assert.equal(indexerPageAdvanced(before, before), false)
+})
+
 test('indexerPageAdvanced mirrors sales-log advance rules on tx_hash head', async () => {
   const { indexerPageAdvanced, pickIndexerPageFingerprint } = await loadModule(
     '/src/shared/api/query/invalidate.ts',

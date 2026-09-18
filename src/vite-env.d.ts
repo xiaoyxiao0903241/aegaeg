@@ -59,6 +59,7 @@ interface ImportMetaEnv {
   readonly VITE_BSC_REWARD_MANAGER?: string
   readonly VITE_BSC_AEGIS_SPLITTER_MANAGER?: string
   readonly VITE_BSC_AEGIS_SPLITTER_HEAD_0?: string
+  readonly VITE_BSC_AEGIS_PROPOSAL?: string
 }
 
 interface ImportMeta {

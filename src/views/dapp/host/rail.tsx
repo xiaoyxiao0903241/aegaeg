@@ -6,6 +6,7 @@ import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import {
   useAssetsClaimableUnreads,
   useExchangeTurbineUnread,
+  useProposalClaimableUnreads,
   useReleaseClaimableUnreads,
   useRewardsClaimableUnreads,
 } from '~/hooks/use-nav-claimable-dots'
@@ -54,6 +55,7 @@ function useRailTooltips() {
       rewards: t.nav.rewardsTooltip,
       release: t.release.intro,
       community: t.nav.communityTooltip,
+      proposal: t.nav.proposalTooltip,
       genesis: formatGenesisSeasonIntro(
         t.genesis.intro,
         genesis.activeSeasonNumber,
@@ -69,7 +71,7 @@ function useRailTooltips() {
  * DApp 左侧导航条
  *
  * 列出一级 Tab（兑换、资产、质押等），高亮当前项并显示跟随滚动的选中指示条。
- * 兑换 / 资产 / 释放 / 奖励有未读可领或到期仓时右上角显示红点。
+ * 兑换 / 资产 / 释放 / 奖励 / 提案有未读可领或到期仓时右上角显示红点。
  * 悬停 / 聚焦非当前项时预取该页查询。`mobile` 模式用于抽屉内横向布局。
  */
 export function Rail({
@@ -87,6 +89,7 @@ export function Rail({
   const assetsClaimable = useAssetsClaimableUnreads().rail
   const releaseClaimable = useReleaseClaimableUnreads().rail
   const rewardsClaimable = useRewardsClaimableUnreads().rail
+  const proposalClaimable = useProposalClaimableUnreads()
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)
@@ -177,6 +180,7 @@ export function Rail({
               {item.id === 'assets' && assetsClaimable ? <ClaimableDot /> : null}
               {item.id === 'release' && releaseClaimable ? <ClaimableDot /> : null}
               {item.id === 'rewards' && rewardsClaimable ? <ClaimableDot /> : null}
+              {item.id === 'proposal' && proposalClaimable ? <ClaimableDot /> : null}
               <Text
                 as="span"
                 variant="caption"

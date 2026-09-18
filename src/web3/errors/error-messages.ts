@@ -24,6 +24,7 @@ import {
   ASSETS_BLOCKED,
   BOND_ZAP_BLOCKED,
   BURN_BLOCKED,
+  PROPOSAL_BLOCKED,
   RELEASE_BLOCKED,
   REWARDS_BLOCKED,
   STAKING_BLOCKED,
@@ -95,6 +96,20 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [REWARDS_BLOCKED.restakePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
   [REWARDS_BLOCKED.unavailable]: (t) => t.rewards.claimErrors.failed,
 
+  // —— 提案 ——
+  [PROPOSAL_BLOCKED.zeroAmount]: (t) => t.proposal.blocked.zeroAmount,
+  [PROPOSAL_BLOCKED.belowMin]: (t) => t.proposal.blocked.belowMin,
+  [PROPOSAL_BLOCKED.notBound]: (t) => t.proposal.blocked.notBound,
+  [PROPOSAL_BLOCKED.notActive]: (t) => t.proposal.blocked.notActive,
+  [PROPOSAL_BLOCKED.supportMismatch]: (t) => t.proposal.blocked.supportMismatch,
+  [PROPOSAL_BLOCKED.votesLimited]: (t) => t.proposal.blocked.votesLimited,
+  [PROPOSAL_BLOCKED.insufficientBalance]: (t) => t.proposal.blocked.insufficientBalance,
+  [PROPOSAL_BLOCKED.insufficientAllowance]: (t) => t.proposal.blocked.insufficientAllowance,
+  [PROPOSAL_BLOCKED.unavailable]: (t) => t.proposal.blocked.unavailable,
+  [PROPOSAL_BLOCKED.notWithdrawable]: (t) => t.proposal.blocked.notWithdrawable,
+  [PROPOSAL_BLOCKED.expired]: (t) => t.proposal.blocked.expired,
+  [PROPOSAL_BLOCKED.nothingToWithdraw]: (t) => t.proposal.blocked.nothingToWithdraw,
+
   // —— Genesis 阻断 ——
   [GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1]: (t) => t.genesis.insufficientUsd1,
   [GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE]: (t) => t.genesis.insufficientAllowance,
@@ -160,6 +175,33 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     id: 'erc20-insufficient-allowance',
     match: ({ raw }) => raw.includes('0xfb8f41b2') || /ERC20InsufficientAllowance/i.test(raw),
     message: (t, ctx) => messageForErc20InsufficientAllowance(t, ctx),
+  },
+
+  // —— AegisProposal（require 字符串）——
+  {
+    id: 'proposal-not-bound',
+    match: ({ raw }) => /请先绑定推荐关系|bind referral/i.test(raw),
+    message: (t) => t.proposal.blocked.notBound,
+  },
+  {
+    id: 'proposal-below-min',
+    match: ({ raw }) => /投票数量太小|amount too small/i.test(raw),
+    message: (t) => t.proposal.blocked.belowMin,
+  },
+  {
+    id: 'proposal-votes-limited',
+    match: ({ raw }) => /票数已达上限|votes limited/i.test(raw),
+    message: (t) => t.proposal.blocked.votesLimited,
+  },
+  {
+    id: 'proposal-support-mismatch',
+    match: ({ raw }) => /同一立场|same (vote )?type|same stance/i.test(raw),
+    message: (t) => t.proposal.blocked.supportMismatch,
+  },
+  {
+    id: 'proposal-window-expired',
+    match: ({ raw }) => /领取窗口|withdrawal window|too late/i.test(raw),
+    message: (t) => t.proposal.blocked.expired,
   },
 
   // —— PreSale ——
