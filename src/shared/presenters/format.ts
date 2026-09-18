@@ -315,6 +315,49 @@ export function formatBlockTime(timestamp: number): string {
   return formatDateTimeParts(date)
 }
 
+const FROM_NOW_STEPS: readonly {
+  unit: Intl.RelativeTimeFormatUnit
+  seconds: number
+  limit: number
+}[] = [
+  { unit: 'second', seconds: 1, limit: 60 },
+  { unit: 'minute', seconds: 60, limit: 60 },
+  { unit: 'hour', seconds: 3600, limit: 24 },
+  { unit: 'day', seconds: 86_400, limit: 7 },
+  { unit: 'week', seconds: 604_800, limit: 4 },
+  { unit: 'month', seconds: 2_629_800, limit: 12 },
+  { unit: 'year', seconds: 31_557_600, limit: Number.POSITIVE_INFINITY },
+]
+
+const relativeTimeFormatters = new Map<string, Intl.RelativeTimeFormat>()
+
+function relativeTimeFormatter(locale: string): Intl.RelativeTimeFormat {
+  const cached = relativeTimeFormatters.get(locale)
+  if (cached) return cached
+  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' })
+  relativeTimeFormatters.set(locale, formatter)
+  return formatter
+}
+
+/**
+ * unix 秒相对现在。文案由 Intl 按 BCP 47 生成，0 或缺数返回 `—`。
+ *
+ * @param unixSec 事件 unix 秒
+ * @param nowSec 墙钟 unix 秒
+ * @param locale `getHtmlLang` 的语言标签
+ */
+export function formatFromNow(unixSec: number, nowSec: number, locale: string): string {
+  if (!unixSec) return '—'
+  const delta = unixSec - nowSec
+  for (const step of FROM_NOW_STEPS) {
+    const value = Math.round(delta / step.seconds)
+    if (Math.abs(value) < step.limit) {
+      return relativeTimeFormatter(locale).format(value, step.unit)
+    }
+  }
+  return '—'
+}
+
 /** 把 unix 秒格式化为 UTC `YYYY-MM-DD HH:mm (UTC)`；0 返回 `—`。 */
 export function formatUtcBlockTime(timestamp: number): string {
   if (!timestamp) return '—'

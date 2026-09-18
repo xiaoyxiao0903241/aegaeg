@@ -162,20 +162,9 @@ export function ProposalDetail() {
     <ProposalCodeLink code={row.code} key="code" onOpen={() => detail.openProposal(row.id)} />,
     row.power,
     row.reward,
-    row.claim === 'claimable' ? (
-      <TableAction
-        key="claim"
-        disabled={detail.withdrawing}
-        loading={detail.withdrawing}
-        onClick={() => detail.onWithdraw(row.id)}
-      >
-        {t.proposal.claim}
-      </TableAction>
-    ) : (
-      <ProposalClaimCopy key="claim-status" kind={row.claim}>
-        {t.proposal.claimStatus[row.claim]}
-      </ProposalClaimCopy>
-    ),
+    <ProposalClaimCopy key="claim-status" kind={row.claim}>
+      {row.claim === 'claimable' ? t.proposal.unlock : t.proposal.claimStatus[row.claim]}
+    </ProposalClaimCopy>,
   ])
 
   return (

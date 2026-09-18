@@ -34,13 +34,14 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { interpolate } from '~/i18n/interpolate'
+import { getHtmlLang } from '~/i18n/locale-meta'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { ProposalView } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
-import { formatBlockTime, formatUtcBlockTime, interpolateLive } from '~/shared/presenters/format'
+import { formatFromNow, formatUtcBlockTime, interpolateLive } from '~/shared/presenters/format'
 import {
   closeProposalDetail,
   openProposalDetail,
@@ -334,7 +335,7 @@ export function useProposalDock() {
  * 提案右栏：统计卡、投票/奖励表、机制与 FAQ。
  */
 export function useProposalDetail() {
-  const { messages: t } = useI18n()
+  const { locale, messages: t } = useI18n()
   const { sessionReady, walletReady } = useDappHost()
   const nowSec = useWallClockSec(true)
   const [votesPage, setVotesPage] = useState(1)
@@ -386,7 +387,7 @@ export function useProposalDetail() {
     })
     return {
       id: item.proposal_id,
-      time: formatBlockTime(item.voted_at),
+      time: formatFromNow(item.voted_at, nowSec, getHtmlLang(locale)),
       code: formatProposalCode(item.proposal_id),
       support: overlay.support,
       power: formatAgx(overlay.power),
