@@ -339,16 +339,24 @@ function relativeTimeFormatter(locale: string): Intl.RelativeTimeFormat {
   return formatter
 }
 
+/** unix 秒；大于 1e12 视为毫秒。 */
+function asUnixSec(raw: number | string): number {
+  const n = typeof raw === 'number' ? raw : Number(raw)
+  if (!Number.isFinite(n) || n <= 0) return 0
+  return n > 1e12 ? Math.floor(n / 1000) : Math.floor(n)
+}
+
 /**
  * unix 秒相对现在。文案由 Intl 按 BCP 47 生成，0 或缺数返回 `—`。
  *
- * @param unixSec 事件 unix 秒
+ * @param unixSec 事件 unix 秒；毫秒会先收成秒
  * @param nowSec 墙钟 unix 秒
  * @param locale `getHtmlLang` 的语言标签
  */
 export function formatFromNow(unixSec: number, nowSec: number, locale: string): string {
-  if (!unixSec) return '—'
-  const delta = unixSec - nowSec
+  const at = asUnixSec(unixSec)
+  if (!at) return '—'
+  const delta = at - asUnixSec(nowSec)
   for (const step of FROM_NOW_STEPS) {
     const value = Math.round(delta / step.seconds)
     if (Math.abs(value) < step.limit) {

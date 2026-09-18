@@ -2,6 +2,7 @@ import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getGovernanceDetail,
   getGovernanceList,
+  getGovernanceMyOperations,
   getGovernanceMyVotes,
   getGovernanceStats,
 } from '~/shared/api/endpoints'
@@ -62,6 +63,23 @@ export function useGovernanceMyVotes(params: PaginationParams = {}, enabled = tr
   return useAuthenticatedQuery(
     queryKeys.api.governanceMyVotes({ page, page_size: pageSize }),
     (token) => getGovernanceMyVotes(token, { page, page_size: pageSize }),
+    enabled,
+    { keepPreviousData: true },
+  )
+}
+
+/**
+ * 我的提案操作记录（奖励表）。
+ *
+ * @param params 分页
+ * @param enabled false 时暂停请求
+ */
+export function useGovernanceMyOperations(params: PaginationParams = {}, enabled = true) {
+  const page = params.page
+  const pageSize = params.page_size
+  return useAuthenticatedQuery(
+    queryKeys.api.governanceMyOperations({ page, page_size: pageSize }),
+    (token) => getGovernanceMyOperations(token, { page, page_size: pageSize }),
     enabled,
     { keepPreviousData: true },
   )

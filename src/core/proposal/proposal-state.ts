@@ -23,6 +23,9 @@ export type VoteSupportValue = (typeof VOTE_SUPPORT)[keyof typeof VOTE_SUPPORT]
 /** 单次投票下限：1 AGX = 1e9。 */
 export const MIN_VOTE_WEI = 1_000_000_000n
 
+/** AGX 精度；与手册 `formatUnits(principal, 9)` 一致。 */
+const AGX_WEI_DECIMALS = 9
+
 const API_STATE_BY_NAME: Record<string, ProposalStateValue> = {
   PENDING: PROPOSAL_STATE.pending,
   ACTIVE: PROPOSAL_STATE.active,
@@ -181,39 +184,31 @@ export function proposalLockKind(args: {
 
 export type ProposalClaimKind = 'in_progress' | 'claimable' | 'claimed' | 'expired' | 'none'
 
+const API_CLAIM_BY_NAME: Record<string, Exclude<ProposalClaimKind, 'expired' | 'none'>> = {
+  IN_PROGRESS: 'in_progress',
+  CLAIMABLE: 'claimable',
+  CLAIMED: 'claimed',
+}
+
 /**
- * 奖励列：进行中不领；可领与解锁共用同一笔 withdrawal。
+ * 奖励表状态：只认 my-operations 的 `claim_status`。
  *
- * @param args.state 提案状态
- * @param args.principal 仍锁着的本金
- * @param args.hasVoted 是否投过
- * @param args.withdrawable 现在能否领取
- * @param args.nowSec 当前 unix 秒
- * @param args.withdrawalDeadline 领取截止
+ * @param raw API `IN_PROGRESS` / `CLAIMABLE` / `CLAIMED`
+ * @returns 展示用档位；无法识别时 `none`
+ * @see 用户文档 governance-apis #my-operations
  */
-export function proposalClaimKind(args: {
-  state: ProposalStateValue | null
-  principal: bigint
-  hasVoted: boolean
-  withdrawable: boolean
-  nowSec: number
-  withdrawalDeadline: number
-}): ProposalClaimKind {
-  if (!args.hasVoted) return 'none'
-  if (args.state === PROPOSAL_STATE.pending || args.state === PROPOSAL_STATE.active) {
-    return 'in_progress'
+export function parseProposalClaimStatus(raw: unknown): ProposalClaimKind {
+  if (typeof raw === 'string') {
+    const mapped = API_CLAIM_BY_NAME[raw.trim().toUpperCase()]
+    if (mapped != null) return mapped
   }
-  if (args.principal <= 0n) return 'claimed'
-  if (args.withdrawable) return 'claimable'
-  if (args.withdrawalDeadline > 0 && args.nowSec > args.withdrawalDeadline) return 'expired'
   return 'none'
 }
 
 /**
  * 提案奖励列是否加 `+`。
  *
- * 原型：投票期未结束不加号；结束后（可领 / 已领）金额前加 `+`。
- * 金额本身走链上 earnings，不是原型里 power×1% 的占位。
+ * 原型：进行中不加号；可领 / 已领金额前加 `+`。
  *
  * @param claim 奖励列状态
  */
@@ -222,20 +217,49 @@ export function proposalRewardHasPlus(claim: ProposalClaimKind): boolean {
 }
 
 /**
- * 后端票数字符串收成 wei。只接受非负整数，缺数或乱码返回 null。
+ * 后端票数字段收成 wei。
  *
- * @param raw API `votes` / 同类最小单位字段
+ * 纯整数当最小单位；带小数点当 AGX（`18.00` → 18e9）。缺数或乱码返回 null。
+ *
+ * @param raw API `votes` / `reward`
  */
 export function parseProposalWei(raw: string | number | null | undefined): bigint | null {
   if (raw == null || raw === '') return null
-  const text = typeof raw === 'number' ? String(raw) : raw.trim()
-  if (!/^[0-9]+$/.test(text)) return null
-  return BigInt(text)
+  if (typeof raw === 'number') {
+    if (!Number.isFinite(raw) || raw < 0 || !Number.isInteger(raw)) return null
+    return BigInt(raw)
+  }
+  const text = raw.trim()
+  if (/^[0-9]+$/.test(text)) return BigInt(text)
+  if (!/^[0-9]+\.[0-9]+$/.test(text)) return null
+  const [whole = '0', fraction = ''] = text.split('.')
+  const frac = fraction.slice(0, AGX_WEI_DECIMALS).padEnd(AGX_WEI_DECIMALS, '0')
+  const combined = `${whole}${frac}`.replace(/^0+(?=\d)/, '')
+  return combined === '' ? null : BigInt(combined)
+}
+
+/**
+ * 提案 id 收成正整数。接口有时给字符串，仓位是 uint256。
+ *
+ * @param raw API `proposal_id` 或仓位 `proposalId`
+ */
+export function asProposalId(raw: unknown): number | null {
+  if (typeof raw === 'bigint') {
+    if (raw <= 0n || raw > BigInt(Number.MAX_SAFE_INTEGER)) return null
+    return Number(raw)
+  }
+  if (typeof raw === 'number') {
+    return Number.isInteger(raw) && raw > 0 ? raw : null
+  }
+  if (typeof raw === 'string' && /^[0-9]+$/.test(raw.trim())) {
+    const n = Number(raw)
+    return Number.isInteger(n) && n > 0 ? n : null
+  }
+  return null
 }
 
 export type OverlayMyVoteChain = {
   principal: bigint
-  earnings: bigint
   support: VoteSupportValue | null
   withdrawable: boolean
   withdrawalDeadline: number
@@ -243,16 +267,16 @@ export type OverlayMyVoteChain = {
 }
 
 /**
- * 我的投票表一行：后端给行，链上仓位 overlay 投票权 / 锁 / 领 / 收益。
+ * 我的投票表一行：后端给行与累计 `votes`；链上仓位 overlay 锁 / 方向 / 提案状态。
  *
- * 投票权 1:1 锁定 AGX。仓位还在用 `principal`；已取回才退回 API `votes` 作历史。
- * 仓位查询未完成时不能把缺行当成本金 0（否则已领取 / 已解锁）。
- * 仓位已到且该 id 不在页里：投票仍开放则保持进行中；已结束才视为已取回。
+ * 投票权只吃 API `votes`（累计质押）。仓位查询未完成时锁定列保持空，
+ * 不能把缺行当成本金 0（否则闪「已解锁」）。仓位已到且该 id 不在页里：
+ * 投票仍开放则锁定列空；已结束才视为已取回。
  *
  * @param args.positionsReady 仓位查询已返回（含空数组）
  * @param args.chain 该提案仓位；没有则为 null
- * @returns 展示用选项 / 投票权 / 收益 / 锁领状态
- * @see docs/backend-api/api.md #governance/my-votes
+ * @returns 展示用选项 / 投票权 / 提案状态 / 锁定
+ * @see 用户文档 governance-apis #my-votes
  * @see docs/onchain-manual/contracts/governance.md
  */
 export function overlayMyVoteRow(args: {
@@ -266,39 +290,24 @@ export function overlayMyVoteRow(args: {
 }): {
   support: VoteSupportValue | null
   power: bigint | null
-  earnings: bigint | null
   state: ProposalStateValue | null
   lock: ProposalLockKind
-  claim: ProposalClaimKind
 } {
-  const apiPower = parseProposalWei(args.votes)
-  const chainPower = args.chain != null && args.chain.principal > 0n ? args.chain.principal : null
-  const power = chainPower ?? apiPower
+  const power = parseProposalWei(args.votes)
   const apiSupport = displayVoteSupport(parseVoteSupport(args.voteType))
   const state = args.liveState ?? args.chain?.state ?? parseProposalState(args.proposalState)
   if (!args.positionsReady) {
-    return { support: apiSupport, power, earnings: null, state, lock: 'none', claim: 'none' }
+    return { support: apiSupport, power, state, lock: 'none' }
   }
   if (args.chain == null) {
     const voting = isProposalVotingOpen(state) || state === PROPOSAL_STATE.pending
     return {
       support: apiSupport,
       power,
-      earnings: voting ? null : 0n,
       state,
       lock: voting
         ? 'none'
         : proposalLockKind({
-            principal: 0n,
-            hasVoted: true,
-            withdrawable: false,
-            nowSec: args.nowSec,
-            withdrawalDeadline: 0,
-          }),
-      claim: voting
-        ? 'in_progress'
-        : proposalClaimKind({
-            state,
             principal: 0n,
             hasVoted: true,
             withdrawable: false,
@@ -311,17 +320,8 @@ export function overlayMyVoteRow(args: {
   return {
     support: displayVoteSupport(chain.support) ?? apiSupport,
     power,
-    earnings: chain.earnings,
     state,
     lock: proposalLockKind({
-      principal: chain.principal,
-      hasVoted: true,
-      withdrawable: chain.withdrawable,
-      nowSec: args.nowSec,
-      withdrawalDeadline: chain.withdrawalDeadline,
-    }),
-    claim: proposalClaimKind({
-      state,
       principal: chain.principal,
       hasVoted: true,
       withdrawable: chain.withdrawable,

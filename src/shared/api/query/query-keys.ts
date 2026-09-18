@@ -182,6 +182,9 @@ export const queryKeys = {
     governanceMyVotesRoot: ['api', 'governance', 'myVotes'] as const,
     governanceMyVotes: (params: PaginationParams = {}) =>
       paginated(['api', 'governance', 'myVotes'] as const, params),
+    governanceMyOperationsRoot: ['api', 'governance', 'myOperations'] as const,
+    governanceMyOperations: (params: PaginationParams = {}) =>
+      paginated(['api', 'governance', 'myOperations'] as const, params),
   },
   chain: {
     erc20Root: ['chain', 'erc20'] as const,

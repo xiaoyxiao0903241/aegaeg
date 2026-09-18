@@ -1,7 +1,12 @@
 import { queryClient } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
-import type { GovernanceMyVoteItem, Paginated, SalesLogItem } from '~/shared/api/types'
+import type {
+  GovernanceMyOperationItem,
+  GovernanceMyVoteItem,
+  Paginated,
+  SalesLogItem,
+} from '~/shared/api/types'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { sleep } from '~/shared/lib/utils'
@@ -108,6 +113,37 @@ export function pickGovernanceMyVotesFingerprint(
   return best
 }
 
+/** 纯函数：操作记录页指纹——总量 + 首条 id / 领取态 / 奖励（领取后 id 不变）。 */
+export function pickGovernanceMyOperationsFingerprint(
+  pages: Array<Paginated<GovernanceMyOperationItem> | undefined | null>,
+): IndexerPageFingerprint {
+  let best: IndexerPageFingerprint = { total: 0, head: null }
+  for (const data of pages) {
+    if (!data) continue
+    const item = data.items[0]
+    const head = item ? `${item.id}:${item.claim_status}:${item.reward}` : null
+    if (data.total > best.total) {
+      best = { total: data.total, head }
+      continue
+    }
+    if (data.total === best.total && head != null && best.head == null) {
+      best = { total: data.total, head }
+    }
+  }
+  return best
+}
+
+/** 立即 refetch；指纹未前进则最多再轮询 8 次。 */
+async function pollUntilAdvanced(refetch: () => Promise<unknown>, advanced: () => boolean) {
+  await refetch()
+  if (advanced()) return
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    await sleep(2500, { unref: true })
+    await refetch()
+    if (advanced()) return
+  }
+}
+
 /** 纯函数：是否应停止轮询（出现了更新的销售日志）。 */
 export function salesLogAdvanced(
   baseline: SalesLogFingerprint,
@@ -190,6 +226,13 @@ function readGovernanceMyVotesFingerprint(): IndexerPageFingerprint {
   return pickGovernanceMyVotesFingerprint(entries.map(([, data]) => data))
 }
 
+function readGovernanceMyOperationsFingerprint(): IndexerPageFingerprint {
+  const entries = queryClient.getQueriesData<Paginated<GovernanceMyOperationItem>>({
+    queryKey: queryKeys.api.governanceMyOperationsRoot,
+  })
+  return pickGovernanceMyOperationsFingerprint(entries.map(([, data]) => data))
+}
+
 async function pollGenesisContributions(baseline: { total: number; firstId: number | null }) {
   await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
   await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
@@ -210,26 +253,34 @@ async function pollGenesisContributions(baseline: { total: number; firstId: numb
 }
 
 /**
- * 提案投票后：后端 my-votes 常落后于链确认。
- * 对标 Genesis——立即 refetch + 有限次延迟轮询，指纹前进即停。
+ * 提案写链后：后端 my-votes / my-operations 常落后于链确认。
+ * 对标 Genesis——立即 refetch + 有限次延迟轮询，任一表指纹前进即停。
  *
- * @param baseline 写链前的 my-votes 页指纹
+ * @param votesBaseline 写链前的 my-votes 页指纹
+ * @param opsBaseline 写链前的 my-operations 页指纹
  */
-async function pollGovernanceMyVotes(baseline: IndexerPageFingerprint) {
+async function pollGovernanceTables(
+  votesBaseline: IndexerPageFingerprint,
+  opsBaseline: IndexerPageFingerprint,
+) {
   const refetch = () =>
     Promise.all([
       queryClient.refetchQueries({ queryKey: queryKeys.api.governanceMyVotesRoot }),
+      queryClient.refetchQueries({ queryKey: queryKeys.api.governanceMyOperationsRoot }),
       queryClient.refetchQueries({ queryKey: queryKeys.api.governanceStats }),
     ])
+  const advanced = () =>
+    indexerPageAdvanced(votesBaseline, readGovernanceMyVotesFingerprint()) ||
+    indexerPageAdvanced(opsBaseline, readGovernanceMyOperationsFingerprint())
 
-  await refetch()
-  if (indexerPageAdvanced(baseline, readGovernanceMyVotesFingerprint())) return
+  await pollUntilAdvanced(refetch, advanced)
+}
 
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    await sleep(2500, { unref: true })
-    await refetch()
-    if (indexerPageAdvanced(baseline, readGovernanceMyVotesFingerprint())) return
-  }
+function invalidateProposalTables() {
+  const votesBaseline = readGovernanceMyVotesFingerprint()
+  const opsBaseline = readGovernanceMyOperationsFingerprint()
+  invalidateTabQueries('proposal')
+  void pollGovernanceTables(votesBaseline, opsBaseline)
 }
 
 /**
@@ -285,14 +336,7 @@ async function pollStakingIndexer(baselines: {
     await Promise.all(apiRoots.map((key) => queryClient.refetchQueries({ queryKey: key })))
   }
 
-  await refetchIndexer()
-  if (anyAdvanced()) return
-
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    await sleep(2500, { unref: true })
-    await refetchIndexer()
-    if (anyAdvanced()) return
-  }
+  await pollUntilAdvanced(refetchIndexer, anyAdvanced)
 }
 
 const GRANT_LOG_ROOTS = [
@@ -438,14 +482,7 @@ async function pollCapturedIndexerLogs(
       indexerPageAdvanced(baseline, readIndexerFingerprint(root)),
     )
 
-  await refetch()
-  if (advanced()) return
-
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    await sleep(2500, { unref: true })
-    await refetch()
-    if (advanced()) return
-  }
+  await pollUntilAdvanced(refetch, advanced)
 }
 
 /**
@@ -457,15 +494,7 @@ async function pollCapturedIndexerLogs(
  */
 async function pollRewardsClaimIndexer(baseline: RewardScanFingerprint) {
   const refetch = () => Promise.all(REWARD_CLAIM_POLL_KEYS.map((key) => refetchPollKey(key)))
-
-  await refetch()
-  if (rewardScanAdvanced(baseline, readRewardScanFingerprint())) return
-
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    await sleep(2500, { unref: true })
-    await refetch()
-    if (rewardScanAdvanced(baseline, readRewardScanFingerprint())) return
-  }
+  await pollUntilAdvanced(refetch, () => rewardScanAdvanced(baseline, readRewardScanFingerprint()))
 }
 
 function invalidateActive(key: readonly string[]) {
@@ -649,19 +678,17 @@ export function invalidateAfterReferralBind() {
 }
 
 /**
- * 提案投票写成功：链读立刻标脏；my-votes / stats 短窗轮询直到索引追上。
+ * 提案投票写成功：链读立刻标脏；my-votes / my-operations / stats 短窗轮询直到索引追上。
  */
 export function invalidateAfterProposalVote() {
-  const baseline = readGovernanceMyVotesFingerprint()
-  invalidateTabQueries('proposal')
-  void pollGovernanceMyVotes(baseline)
+  invalidateProposalTables()
 }
 
 /**
- * 提案领取写成功：仓位从链上消失，my-votes 行仍在，指纹不会前进。
+ * 提案领取写成功：仓位从链上消失；my-operations 的 claim_status / reward 会变。
  */
 export function invalidateAfterProposalWithdraw() {
-  invalidateTabQueries('proposal')
+  invalidateProposalTables()
 }
 
 /**

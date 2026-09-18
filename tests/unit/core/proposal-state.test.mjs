@@ -3,6 +3,24 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
+test('parseProposalWei accepts wei integers and AGX decimals', async () => {
+  const { parseProposalWei } = await loadModule('/src/core/proposal/proposal-state.ts')
+  assert.equal(parseProposalWei('1000000000'), 1000000000n)
+  assert.equal(parseProposalWei('18.00'), 18000000000n)
+  assert.equal(parseProposalWei('0.00'), 0n)
+  assert.equal(parseProposalWei(''), null)
+  assert.equal(parseProposalWei('1.8e9'), null)
+})
+
+test('asProposalId coerces string ids', async () => {
+  const { asProposalId } = await loadModule('/src/core/proposal/proposal-state.ts')
+  assert.equal(asProposalId(4), 4)
+  assert.equal(asProposalId('4'), 4)
+  assert.equal(asProposalId(4n), 4)
+  assert.equal(asProposalId('AIP-4'), null)
+  assert.equal(asProposalId(0), null)
+})
+
 test('parseProposalState accepts chain numbers and API names', async () => {
   const { parseProposalState, PROPOSAL_STATE } = await loadModule(
     '/src/core/proposal/proposal-state.ts',
@@ -108,100 +126,34 @@ test('proposalLockKind prefers chain principal and deadline', async () => {
   )
 })
 
-test('proposalClaimKind hides claim until voting ends', async () => {
-  const { proposalClaimKind, PROPOSAL_STATE } = await loadModule(
-    '/src/core/proposal/proposal-state.ts',
-  )
-  assert.equal(
-    proposalClaimKind({
-      state: PROPOSAL_STATE.active,
-      principal: 10n,
-      hasVoted: true,
-      withdrawable: false,
-      nowSec: 1,
-      withdrawalDeadline: 9,
-    }),
-    'in_progress',
-  )
-  assert.equal(
-    proposalClaimKind({
-      state: PROPOSAL_STATE.succeeded,
-      principal: 10n,
-      hasVoted: true,
-      withdrawable: true,
-      nowSec: 1,
-      withdrawalDeadline: 9,
-    }),
-    'claimable',
-  )
-  assert.equal(
-    proposalClaimKind({
-      state: PROPOSAL_STATE.succeeded,
-      principal: 0n,
-      hasVoted: true,
-      withdrawable: false,
-      nowSec: 1,
-      withdrawalDeadline: 9,
-    }),
-    'claimed',
-  )
-  assert.equal(
-    proposalClaimKind({
-      state: PROPOSAL_STATE.defeated,
-      principal: 10n,
-      hasVoted: true,
-      withdrawable: true,
-      nowSec: 1,
-      withdrawalDeadline: 9,
-    }),
-    'claimable',
-  )
-  assert.equal(
-    proposalClaimKind({
-      state: PROPOSAL_STATE.succeeded,
-      principal: 10n,
-      hasVoted: true,
-      withdrawable: false,
-      nowSec: 20,
-      withdrawalDeadline: 9,
-    }),
-    'expired',
-  )
-  assert.equal(
-    proposalClaimKind({
-      state: PROPOSAL_STATE.succeeded,
-      principal: 10n,
-      hasVoted: true,
-      withdrawable: false,
-      nowSec: 1,
-      withdrawalDeadline: 9,
-    }),
-    'none',
-  )
+test('parseProposalClaimStatus maps my-operations claim_status', async () => {
+  const { parseProposalClaimStatus } = await loadModule('/src/core/proposal/proposal-state.ts')
+  assert.equal(parseProposalClaimStatus('IN_PROGRESS'), 'in_progress')
+  assert.equal(parseProposalClaimStatus('claimable'), 'claimable')
+  assert.equal(parseProposalClaimStatus('CLAIMED'), 'claimed')
+  assert.equal(parseProposalClaimStatus('EXPIRED'), 'none')
+  assert.equal(parseProposalClaimStatus(''), 'none')
 })
 
-test('overlayMyVoteRow does not treat missing position as claimed', async () => {
+test('overlayMyVoteRow uses API votes and overlays chain lock', async () => {
   const { overlayMyVoteRow, PROPOSAL_STATE } = await loadModule(
     '/src/core/proposal/proposal-state.ts',
   )
   const api = {
     voteType: 'FOR',
-    votes: '1000000000',
+    votes: '100.0',
     proposalState: 'SUCCEEDED',
     liveState: PROPOSAL_STATE.succeeded,
     nowSec: 50,
   }
   const missing = overlayMyVoteRow({ ...api, positionsReady: false, chain: null })
   assert.equal(missing.lock, 'none')
-  assert.equal(missing.claim, 'none')
-  assert.equal(missing.power, 1000000000n)
-  assert.equal(missing.earnings, null)
+  assert.equal(missing.power, 100000000000n)
   assert.equal(missing.support, 1)
 
   const withdrawn = overlayMyVoteRow({ ...api, positionsReady: true, chain: null })
   assert.equal(withdrawn.lock, 'unlocked')
-  assert.equal(withdrawn.claim, 'claimed')
-  assert.equal(withdrawn.earnings, 0n)
+  assert.equal(withdrawn.power, 100000000000n)
 
   const activeMissing = overlayMyVoteRow({
     ...api,
@@ -211,15 +163,12 @@ test('overlayMyVoteRow does not treat missing position as claimed', async () => 
     chain: null,
   })
   assert.equal(activeMissing.lock, 'none')
-  assert.equal(activeMissing.claim, 'in_progress')
-  assert.equal(activeMissing.earnings, null)
 
   const live = overlayMyVoteRow({
     ...api,
     positionsReady: true,
     chain: {
       principal: 5n,
-      earnings: 2n,
       support: 1,
       withdrawable: true,
       withdrawalDeadline: 90,
@@ -227,9 +176,7 @@ test('overlayMyVoteRow does not treat missing position as claimed', async () => 
     },
   })
   assert.equal(live.lock, 'unlockable')
-  assert.equal(live.claim, 'claimable')
-  assert.equal(live.power, 5n)
-  assert.equal(live.earnings, 2n)
+  assert.equal(live.power, 100000000000n)
 
   const emptyApi = overlayMyVoteRow({
     ...api,
@@ -237,14 +184,14 @@ test('overlayMyVoteRow does not treat missing position as claimed', async () => 
     positionsReady: true,
     chain: {
       principal: 8n,
-      earnings: 1n,
       support: 1,
       withdrawable: false,
       withdrawalDeadline: 90,
       state: PROPOSAL_STATE.active,
     },
   })
-  assert.equal(emptyApi.power, 8n)
+  assert.equal(emptyApi.power, null)
+  assert.equal(emptyApi.lock, 'locked')
 })
 
 test('closedNoteKey skips active and missing state', async () => {

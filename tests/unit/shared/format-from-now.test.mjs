@@ -17,3 +17,9 @@ test('formatFromNow: follows Intl locale', async () => {
   assert.equal(formatFromNow(now - 3 * 3600, now, 'en'), '3 hours ago')
   assert.equal(formatFromNow(now - 86_400, now, 'zh-Hant'), '昨天')
 })
+
+test('formatFromNow: milliseconds unix is treated as ms', async () => {
+  const { formatFromNow } = await loadModule('/src/shared/presenters/format.ts')
+  const sec = 1_700_000_000
+  assert.equal(formatFromNow(sec * 1000 - 3 * 3600 * 1000, sec, 'en'), '3 hours ago')
+})

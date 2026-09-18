@@ -8,13 +8,15 @@ import {
   isProposalVoteCtaEnabled,
 } from '~/core/proposal/proposal-block-reasons'
 import {
+  asProposalId,
   closedNoteKey,
   displayVoteSupport,
   formatProposalCode,
   isProposalVotingOpen,
   overlayMyVoteRow,
+  parseProposalClaimStatus,
+  parseProposalWei,
   PROPOSAL_STATE,
-  type ProposalClaimKind,
   type ProposalLockKind,
   proposalRewardHasPlus,
   type ProposalStateValue,
@@ -26,6 +28,7 @@ import { writeBlockHint } from '~/core/wallet/write-cta'
 import {
   useGovernanceDetail,
   useGovernanceList,
+  useGovernanceMyOperations,
   useGovernanceMyVotes,
   useGovernanceStats,
 } from '~/hooks/use-api-data'
@@ -85,7 +88,10 @@ function formatAgx(amount: bigint | null | undefined, options?: { plus?: boolean
 
 function positionById(rows: ChainVotePosition[] | undefined): Map<number, ChainVotePosition> {
   const map = new Map<number, ChainVotePosition>()
-  for (const row of rows ?? []) map.set(row.proposalId, row)
+  for (const row of rows ?? []) {
+    const id = asProposalId(row.proposalId)
+    if (id != null) map.set(id, row)
+  }
   return map
 }
 
@@ -125,7 +131,10 @@ export function useProposalDock() {
   const ids =
     onDetail && selectedId != null && selectedId > 0
       ? [selectedId]
-      : (listQuery.data?.items ?? []).map((item) => item.proposal_id)
+      : (listQuery.data?.items ?? []).flatMap((item) => {
+          const id = asProposalId(item.proposal_id)
+          return id == null ? [] : [id]
+        })
   const liveQuery = useChainQuery({
     scope: 'public',
     queryKey: queryKeys.chain.proposalLive(ids),
@@ -339,14 +348,19 @@ export function useProposalDetail() {
   const { sessionReady, walletReady } = useDappHost()
   const nowSec = useWallClockSec(true)
   const [votesPage, setVotesPage] = useState(1)
+  const [rewardsPage, setRewardsPage] = useState(1)
   const statsQuery = useGovernanceStats(sessionReady)
   const votesQuery = useGovernanceMyVotes(tablePageQuery(votesPage), sessionReady)
+  const rewardsQuery = useGovernanceMyOperations(tablePageQuery(rewardsPage), sessionReady)
   const positionsQuery = useChainQuery({
     queryKey: queryKeys.chain.proposalPositions,
     queryFn: (addr) => readProposalPositions(addr),
     enabled: walletReady,
   })
-  const voteIds = (votesQuery.data?.items ?? []).map((item) => item.proposal_id)
+  const voteIds = (votesQuery.data?.items ?? []).flatMap((item) => {
+    const id = asProposalId(item.proposal_id)
+    return id == null ? [] : [id]
+  })
   const liveQuery = useChainQuery({
     scope: 'public',
     queryKey: queryKeys.chain.proposalLive(voteIds),
@@ -375,12 +389,13 @@ export function useProposalDetail() {
 
   const liveMap = liveQuery.data ?? {}
   const voteRows = (votesQuery.data?.items ?? []).map((item) => {
-    const chain = positions.get(item.proposal_id)
+    const id = asProposalId(item.proposal_id)
+    const chain = id == null ? undefined : positions.get(id)
     const overlay = overlayMyVoteRow({
       voteType: item.vote_type,
       votes: item.votes,
       proposalState: item.proposal_state,
-      liveState: liveMap[item.proposal_id]?.state ?? null,
+      liveState: id == null ? null : (liveMap[id]?.state ?? null),
       positionsReady,
       chain: chain ?? null,
       nowSec,
@@ -391,10 +406,20 @@ export function useProposalDetail() {
       code: formatProposalCode(item.proposal_id),
       support: overlay.support,
       power: formatAgx(overlay.power),
-      reward: formatAgx(overlay.earnings, { plus: proposalRewardHasPlus(overlay.claim) }),
       state: overlay.state,
       lock: overlay.lock,
-      claim: overlay.claim,
+    }
+  })
+  const rewardRows = (rewardsQuery.data?.items ?? []).map((item) => {
+    const id = asProposalId(item.proposal_id)
+    const claim = parseProposalClaimStatus(item.claim_status)
+    return {
+      id: id ?? item.proposal_id,
+      time: formatFromNow(item.time, nowSec, getHtmlLang(locale)),
+      code: formatProposalCode(id ?? item.proposal_id),
+      power: formatAgx(parseProposalWei(item.votes)),
+      reward: formatAgx(parseProposalWei(item.reward), { plus: proposalRewardHasPlus(claim) }),
+      claim,
     }
   })
 
@@ -407,10 +432,13 @@ export function useProposalDetail() {
     votesPage,
     setVotesPage,
     votesTotal: votesQuery.data?.total ?? 0,
-    votesLoading:
-      sessionReady &&
-      (votesQuery.isLoading || (walletReady && positionsQuery.isLoading && !positionsReady)),
+    votesLoading: sessionReady && votesQuery.isLoading,
     voteRows,
+    rewardsPage,
+    setRewardsPage,
+    rewardsTotal: rewardsQuery.data?.total ?? 0,
+    rewardsLoading: sessionReady && rewardsQuery.isLoading,
+    rewardRows,
     openProposal: openProposalDetail,
     onWithdraw: (id: number) => {
       void withdrawMutation.mutate({ proposalId: id })
@@ -425,8 +453,6 @@ export type ProposalVoteRow = {
   code: string
   support: VoteSupportValue | null
   power: string
-  reward: string
   state: ProposalStateValue | null
   lock: ProposalLockKind
-  claim: ProposalClaimKind
 }

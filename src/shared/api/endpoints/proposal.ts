@@ -3,6 +3,7 @@ import { apiRequest } from '~/shared/api/request'
 import type {
   GovernanceDetail,
   GovernanceListItem,
+  GovernanceMyOperationItem,
   GovernanceMyVoteItem,
   GovernanceStats,
   Paginated,
@@ -75,6 +76,24 @@ export async function getGovernanceMyVotes(
   params: PaginationParams = {},
 ): Promise<Paginated<GovernanceMyVoteItem>> {
   return apiRequest<Paginated<GovernanceMyVoteItem>>('/governance/my-votes', {
+    method: 'POST',
+    token,
+    body: paginationBody(params),
+  })
+}
+
+/**
+ * 我的提案操作记录（一笔投票一行）。奖励表整行吃后端，不叠链。
+ *
+ * @param token 会话 JWT
+ * @param params 分页
+ * @see 用户文档 governance-apis #my-operations
+ */
+export async function getGovernanceMyOperations(
+  token: string,
+  params: PaginationParams = {},
+): Promise<Paginated<GovernanceMyOperationItem>> {
+  return apiRequest<Paginated<GovernanceMyOperationItem>>('/governance/my-operations', {
     method: 'POST',
     token,
     body: paginationBody(params),

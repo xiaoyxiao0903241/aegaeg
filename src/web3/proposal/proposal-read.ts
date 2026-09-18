@@ -68,6 +68,14 @@ function asNumber(value: unknown): number {
   return 0
 }
 
+function asPositionRows(page: unknown): readonly unknown[] {
+  if (Array.isArray(page)) return page
+  if (page && typeof page === 'object' && Array.isArray((page as { page?: unknown }).page)) {
+    return (page as { page: unknown[] }).page
+  }
+  throw new Error('proposal-positions-page')
+}
+
 function decodeProposal(raw: unknown): ChainProposalLive {
   const row = raw as Record<string, unknown> & readonly unknown[]
   const stateSrc = row.proposalState ?? row[1]
@@ -202,7 +210,7 @@ export async function readProposalPositions(user: string): Promise<ChainVotePosi
       functionName: 'getUserVotePositions',
       args: [user as `0x${string}`, BigInt(pageIndex) * POSITION_PAGE, POSITION_PAGE],
     })
-    const rows = (page as readonly unknown[]).map((row) => decodePosition(row))
+    const rows = asPositionRows(page).map((row) => decodePosition(row))
     out.push(...rows)
     if (rows.length < Number(POSITION_PAGE)) return out
   }

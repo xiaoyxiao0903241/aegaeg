@@ -213,6 +213,42 @@ test('salesLogAdvanced detects new purchase by total or first id', async () => {
   assert.equal(fingerprint.firstId, 5)
 })
 
+test('pickGovernanceMyOperationsFingerprint advances on new log or claim', async () => {
+  const { indexerPageAdvanced, pickGovernanceMyOperationsFingerprint } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  const before = pickGovernanceMyOperationsFingerprint([
+    {
+      total: 1,
+      page: 1,
+      page_size: 5,
+      items: [{ id: 88, claim_status: 'CLAIMABLE', reward: '0' }],
+    },
+  ])
+  const claimed = pickGovernanceMyOperationsFingerprint([
+    {
+      total: 1,
+      page: 1,
+      page_size: 5,
+      items: [{ id: 88, claim_status: 'CLAIMED', reward: '1.25' }],
+    },
+  ])
+  const extra = pickGovernanceMyOperationsFingerprint([
+    {
+      total: 2,
+      page: 1,
+      page_size: 5,
+      items: [{ id: 99, claim_status: 'IN_PROGRESS', reward: '0' }],
+    },
+  ])
+
+  assert.equal(before.head, '88:CLAIMABLE:0')
+  assert.equal(indexerPageAdvanced(before, claimed), true)
+  assert.equal(indexerPageAdvanced(before, extra), true)
+  assert.equal(indexerPageAdvanced(before, before), false)
+})
+
 test('pickGovernanceMyVotesFingerprint advances on new row or add-on votes', async () => {
   const { indexerPageAdvanced, pickGovernanceMyVotesFingerprint } = await loadModule(
     '/src/shared/api/query/invalidate.ts',

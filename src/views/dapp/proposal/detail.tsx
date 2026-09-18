@@ -157,7 +157,7 @@ export function ProposalDetail() {
     ]
   })
 
-  const rewardRows: ReactNode[][] = detail.voteRows.map((row) => [
+  const rewardRows: ReactNode[][] = detail.rewardRows.map((row) => [
     row.time,
     <ProposalCodeLink code={row.code} key="code" onOpen={() => detail.openProposal(row.id)} />,
     row.power,
@@ -236,16 +236,16 @@ export function ProposalDetail() {
             empty={t.proposal.rewardsEmpty}
             endColumns={[2, 3, 4]}
             headers={[...t.proposal.rewardColumns]}
-            isLoading={detail.votesLoading}
+            isLoading={detail.rewardsLoading}
             mutedColumns={[0]}
             primaryColumns={[1, 3]}
             rows={rewardRows}
           />
           <Table.Footer>
             <Table.Pagination
-              onPageChange={detail.setVotesPage}
-              page={detail.votesPage}
-              total={detail.votesTotal}
+              onPageChange={detail.setRewardsPage}
+              page={detail.rewardsPage}
+              total={detail.rewardsTotal}
             />
           </Table.Footer>
         </Table>
