@@ -23,6 +23,8 @@ export interface HomePopupNoticeApiItem {
   link_url: string
   /** 0=当前页, 1=新标签 */
   link_target: number
+  /** 1=只弹一次, 2=每次进首页都弹 */
+  display_mode: number
   version: string
   sort_order: number
   start_time: string | null
@@ -34,7 +36,7 @@ export interface HomePopupNoticesResponse {
   items: HomePopupNoticeApiItem[]
 }
 
-/** 归一化后的公告，供 DApp 弹窗展示。 */
+/** 归一化后的公告，供首页弹窗展示。 */
 export interface HomePopupNotice {
   id: number
   version: string
@@ -43,6 +45,6 @@ export interface HomePopupNotice {
   content: string
   link_url: string | null
   link_target: number
-  /** 投放开始时间；空表示无起始限制，已读回看时视为更旧 */
-  startMs: number | null
+  /** true=关过不再弹；false=每次进首页都弹（会话内关掉仍跳过） */
+  show_once: boolean
 }
