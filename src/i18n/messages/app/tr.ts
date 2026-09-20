@@ -1596,7 +1596,7 @@ const app = defineMessages({
     votedStanceNote: 'You voted {stance} with {amount}. Unlock after voting ends.',
     votedLockedNote: 'You have voted on this proposal. Unlock after voting ends.',
     state: {
-      pending: 'Upcoming',
+      pending: 'Not started',
       active: 'Active',
       succeeded: 'Passed',
       defeated: 'Defeated',
@@ -1639,8 +1639,8 @@ const app = defineMessages({
     votesEmpty: 'Your votes will appear here after you participate.',
     rewardsTitle: 'Proposal rewards',
     rewardsEmpty: 'Proposal rewards will appear here after settlement.',
-    voteColumns: ['Time', 'Proposal', 'Choice', 'Voting power', 'Status', 'Lock'],
-    rewardColumns: ['Time', 'Proposal', 'Voting power', 'Reward', 'Status'],
+    voteColumns: ['Proposal', 'Choice', 'Voting power', 'Status', 'Claimable reward', 'Lock'],
+    rewardColumns: ['Time', 'Proposal', 'Voting power', 'Reward', 'Status', 'Tx hash'],
     mechanismTitle: 'Proposal mechanics',
     mechanism: {
       items: [

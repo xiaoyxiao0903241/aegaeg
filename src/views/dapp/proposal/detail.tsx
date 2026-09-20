@@ -1,7 +1,8 @@
 /**
  * 提案右栏
  *
- * 统计卡、我的投票、机制说明、奖励记录与 FAQ。
+ * 统计卡、我的投票记录、机制说明、提案奖励记录与 FAQ。
+ * 第一张卡的总数 / 进行中 / 即将开始走链上汇总。
  * 未登录时表走 Body 会话闸（disable 空态），与涡轮 / 奖励记录同构。
  */
 import type { ReactNode } from 'react'
@@ -10,6 +11,7 @@ import { interpolate } from '~/i18n/interpolate'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Detail } from '~/shared/components/detail'
+import { ExplorerLink } from '~/shared/components/explorer-link'
 import { Faq } from '~/shared/components/faq'
 import { Grid } from '~/shared/components/grid'
 import { MainButton } from '~/shared/components/main-button'
@@ -18,7 +20,7 @@ import { Skeleton } from '~/shared/components/skeleton'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
-import { formatDecimal, interpolateLive } from '~/shared/presenters/format'
+import { formatDecimal, interpolateLive, TABLE_EMPTY } from '~/shared/presenters/format'
 import {
   MechanismCard,
   ProposalClaimCopy,
@@ -99,6 +101,8 @@ export function ProposalDetail() {
   const { t } = detail
   const stats = detail.stats
   const statsLoading = detail.sessionReady && stats == null
+  const summary = detail.stateSummary
+  const summaryLoading = detail.summaryLoading
 
   const mechanismSection = (
     <Section reveal>
@@ -119,15 +123,14 @@ export function ProposalDetail() {
     </Section>
   )
 
-  const total = formatDecimal(stats?.total, { digits: 0, fraction: 'natural' })
-  const active = formatDecimal(stats?.active_count, { digits: 0, fraction: 'natural' })
-  const pending = formatDecimal(stats?.pending_count, { digits: 0, fraction: 'natural' })
+  const total = formatDecimal(summary?.total, { digits: 0, fraction: 'natural' })
+  const active = formatDecimal(summary?.active, { digits: 0, fraction: 'natural' })
+  const pending = formatDecimal(summary?.pending, { digits: 0, fraction: 'natural' })
   const participation = formatParticipation(stats?.recent_participation_rate)
 
   const voteRows: ReactNode[][] = detail.voteRows.map((row) => {
     const support = supportKey(row.support)
     return [
-      row.time,
       <ProposalCodeLink code={row.code} key="code" onOpen={() => detail.openProposal(row.id)} />,
       support == null ? (
         '—'
@@ -140,6 +143,7 @@ export function ProposalDetail() {
       <ProposalStateBadge key="state" state={row.state}>
         {row.state == null ? '—' : t.proposal.state[proposalStateKey(row.state)]}
       </ProposalStateBadge>,
+      row.claimable,
       row.lock === 'unlockable' ? (
         <TableAction
           key="unlock"
@@ -165,6 +169,7 @@ export function ProposalDetail() {
     <ProposalClaimCopy key="claim-status" kind={row.claim}>
       {row.claim === 'claimable' ? t.proposal.unlock : t.proposal.claimStatus[row.claim]}
     </ProposalClaimCopy>,
+    row.txHash ? <ExplorerLink key="tx" kind="tx" value={row.txHash} /> : TABLE_EMPTY,
   ])
 
   return (
@@ -174,9 +179,9 @@ export function ProposalDetail() {
         <Grid columns={3} stackOnDapp>
           <Tile>
             <Tile.Label>{t.proposal.statTotal}</Tile.Label>
-            <StatValue loading={statsLoading} text={total} />
+            <StatValue loading={summaryLoading} text={total} />
             <Tile.Note>
-              {statsLoading ? (
+              {summaryLoading ? (
                 <Skeleton className="h-3.5 w-32" />
               ) : (
                 interpolateLive(t.proposal.statTotalNote, { active, pending })
@@ -208,11 +213,10 @@ export function ProposalDetail() {
             authBody={t.dapp.connect.recordsBodyProposal}
             compact
             empty={t.proposal.votesEmpty}
-            endColumns={[3, 5]}
+            endColumns={[2, 4, 5]}
             headers={[...t.proposal.voteColumns]}
             isLoading={detail.votesLoading}
-            mutedColumns={[0]}
-            primaryColumns={[1]}
+            primaryColumns={[0, 4]}
             rows={voteRows}
           />
           <Table.Footer>
@@ -237,6 +241,7 @@ export function ProposalDetail() {
             endColumns={[2, 3, 4]}
             headers={[...t.proposal.rewardColumns]}
             isLoading={detail.rewardsLoading}
+            linkColumns={[5]}
             mutedColumns={[0]}
             primaryColumns={[1, 3]}
             rows={rewardRows}

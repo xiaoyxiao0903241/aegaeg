@@ -43,7 +43,7 @@ export function useGovernanceDetail(proposalId: number | null, locale: string, e
 }
 
 /**
- * 提案统计卡。
+ * 提案页参与率（近 10 项）。总数卡走链上汇总。
  *
  * @param enabled false 时暂停请求
  */

@@ -61,6 +61,7 @@ import {
   type ChainVotePosition,
   readProposalLiveByIds,
   readProposalPositions,
+  readProposalStateSummary,
   readProposalVoteSnapshot,
 } from '~/web3/proposal/proposal-read'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -84,6 +85,12 @@ function formatAgx(amount: bigint | null | undefined, options?: { plus?: boolean
     prefix: options?.plus && amount != null ? '+' : '',
     suffix: ' AGX',
   })
+}
+
+function formatClaimableAgx(ready: boolean, chain: ChainVotePosition | undefined): string {
+  if (!ready) return formatAgx(null)
+  const amount = chain == null ? ZERO_BI : chain.claimable
+  return formatAgx(amount, { plus: amount !== ZERO_BI })
 }
 
 function positionById(rows: ChainVotePosition[] | undefined): Map<number, ChainVotePosition> {
@@ -350,6 +357,12 @@ export function useProposalDetail() {
   const [votesPage, setVotesPage] = useState(1)
   const [rewardsPage, setRewardsPage] = useState(1)
   const statsQuery = useGovernanceStats(sessionReady)
+  /** 第一张卡：一次公开读总数与进行中 / 即将开始，不扫列表。 */
+  const summaryQuery = useChainQuery({
+    scope: 'public',
+    queryKey: queryKeys.chain.proposalStateSummary,
+    queryFn: readProposalStateSummary,
+  })
   const votesQuery = useGovernanceMyVotes(tablePageQuery(votesPage), sessionReady)
   const rewardsQuery = useGovernanceMyOperations(tablePageQuery(rewardsPage), sessionReady)
   const positionsQuery = useChainQuery({
@@ -402,10 +415,10 @@ export function useProposalDetail() {
     })
     return {
       id: item.proposal_id,
-      time: formatFromNow(item.voted_at, nowSec, getHtmlLang(locale)),
       code: formatProposalCode(item.proposal_id),
       support: overlay.support,
       power: formatAgx(overlay.power),
+      claimable: formatClaimableAgx(positionsReady, chain),
       state: overlay.state,
       lock: overlay.lock,
     }
@@ -420,6 +433,7 @@ export function useProposalDetail() {
       power: formatAgx(parseProposalWei(item.votes)),
       reward: formatAgx(parseProposalWei(item.reward), { plus: proposalRewardHasPlus(claim) }),
       claim,
+      txHash: item.tx_hash ?? null,
     }
   })
 
@@ -427,6 +441,8 @@ export function useProposalDetail() {
     t,
     sessionReady,
     stats: sessionReady ? statsQuery.data : null,
+    stateSummary: summaryQuery.data ?? null,
+    summaryLoading: summaryQuery.isFetching && summaryQuery.data == null,
     lockedLabel: formatAgx(walletReady && positionsReady ? locked : null),
     availableLabel: formatAgx(balanceQuery.data),
     votesPage,
@@ -449,10 +465,10 @@ export function useProposalDetail() {
 
 export type ProposalVoteRow = {
   id: number
-  time: string
   code: string
   support: VoteSupportValue | null
   power: string
+  claimable: string
   state: ProposalStateValue | null
   lock: ProposalLockKind
 }

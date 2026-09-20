@@ -1501,11 +1501,11 @@ const app = defineMessages({
     votedStanceNote: '本提案已投{stance} {amount}，投票期结束后可解锁',
     votedLockedNote: '你已投票。投票期结束后可解锁',
     state: {
-      pending: '即将开始',
+      pending: '未开始',
       active: '进行中',
       succeeded: '已通过',
       defeated: '已否决',
-      canceled: '已撤销',
+      canceled: '已取消',
       expired: '已过期',
       executed: '已执行',
     },
@@ -1544,8 +1544,8 @@ const app = defineMessages({
     votesEmpty: '参与投票后，记录将显示在此处。',
     rewardsTitle: '提案奖励记录',
     rewardsEmpty: '结算完成后，提案奖励将显示在此处。',
-    voteColumns: ['时间', '提案', '选项', '投票权', '提案状态', '锁定状态'],
-    rewardColumns: ['时间', '提案', '投票权', '提案奖励', '状态'],
+    voteColumns: ['提案', '选项', '投票权', '提案状态', '可领取奖励', '锁定状态'],
+    rewardColumns: ['时间', '提案', '投票权', '提案奖励', '状态', '交易哈希'],
     mechanismTitle: '提案机制',
     mechanism: {
       items: [

@@ -15,6 +15,7 @@ const proposalAbi = parseAbi([
   AEGIS_PROPOSAL_METHODS.maxQuorumGlobal,
   AEGIS_PROPOSAL_METHODS.getProposal,
   AEGIS_PROPOSAL_METHODS.queryProposalState,
+  AEGIS_PROPOSAL_METHODS.getProposalStateSummary,
   AEGIS_PROPOSAL_METHODS.getVoteReceipt,
   AEGIS_PROPOSAL_METHODS.getUserVotePositions,
 ])
@@ -38,7 +39,7 @@ export type ChainVotePosition = {
   proposalId: number
   support: VoteSupportValue | null
   principal: bigint
-  earnings: bigint
+  claimable: bigint
   state: ProposalStateValue | null
   withdrawable: boolean
   withdrawalDeadline: number
@@ -62,10 +63,61 @@ export type ProposalWithdrawSnapshot = {
   withdrawalDeadline: number
 }
 
+/** 右栏第一张卡：链上提案个数，不是票数。 */
+export type ProposalStateSummary = {
+  total: number
+  pending: number
+  active: number
+}
+
 function asNumber(value: unknown): number {
   if (typeof value === 'number') return value
   if (typeof value === 'bigint') return Number(value)
   return 0
+}
+
+/** 提案个数：超过安全整数就失败，避免卡片显示错数。 */
+function asCount(value: unknown): number {
+  if (typeof value === 'bigint') {
+    if (value < 0n || value > BigInt(Number.MAX_SAFE_INTEGER)) {
+      throw new Error('proposal-state-summary')
+    }
+    return Number(value)
+  }
+  if (typeof value === 'number' && Number.isInteger(value) && value >= 0) return value
+  throw new Error('proposal-state-summary')
+}
+
+/**
+ * 解码 getProposalStateSummary 的七字段元组；卡片只用 total / pending / active。
+ *
+ * @param raw 合约返回值（具名或按下标）
+ * @returns 提案个数
+ */
+export function decodeProposalStateSummary(raw: unknown): ProposalStateSummary {
+  const row = raw as Record<string, unknown> & readonly unknown[]
+  return {
+    total: asCount(row.total ?? row[0]),
+    pending: asCount(row.pending ?? row[1]),
+    active: asCount(row.active ?? row[2]),
+  }
+}
+
+/**
+ * 一次 eth_call 读提案总数与六态数量，不扫列表。
+ *
+ * 六态是最近登记或同步时的快照，不保证与当前块实时一致。
+ * 右栏第一张卡只用 total / pending / active。
+ *
+ * @returns 总数、即将开始、进行中
+ */
+export async function readProposalStateSummary(): Promise<ProposalStateSummary> {
+  const raw = await bscReadClient.readContract({
+    address: BSC_CONTRACTS.aegisProposal,
+    abi: proposalAbi,
+    functionName: 'getProposalStateSummary',
+  })
+  return decodeProposalStateSummary(raw)
 }
 
 function asPositionRows(page: unknown): readonly unknown[] {
@@ -113,7 +165,7 @@ function decodePosition(raw: unknown): ChainVotePosition {
     proposalId: asNumber(row.proposalId ?? row[0]),
     support: parseVoteSupport(row.support ?? row[1]),
     principal: ((row.principal ?? row[2]) as bigint) ?? 0n,
-    earnings: ((row.earnings ?? row[4]) as bigint) ?? 0n,
+    claimable: ((row.claimable ?? row[3]) as bigint) ?? 0n,
     state: parseProposalState(row.proposalState ?? row[5]),
     withdrawable: Boolean(row.withdrawable ?? row[6]),
     withdrawalDeadline: asNumber(row.withdrawalDeadline ?? row[8]),

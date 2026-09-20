@@ -2,8 +2,8 @@
  * 治理提案 API 类型。
  *
  * 列表 / 详情标题走 JWT；左栏状态与票数叠链上。
- * 右上「我的投票」行来自 my-votes（累计 `votes`），锁 / 提案状态叠链上。
- * 右下「提案奖励」行来自 my-operations（本笔 `votes` / `reward` / `claim_status`）。
+ * 右上「我的投票记录」行来自 my-votes（累计 `votes`），锁 / 提案状态 / 可领取奖励叠链上。
+ * 右下「提案奖励」行来自 my-operations（本笔 `votes` / `reward` / `claim_status` / `tx_hash`）。
  *
  * @see 用户文档 governance-apis
  */
@@ -65,4 +65,5 @@ export type GovernanceMyOperationItem = {
   reward: string
   claim_status: string
   proposal_state: string
+  tx_hash: string | null
 }

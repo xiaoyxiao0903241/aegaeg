@@ -378,5 +378,6 @@ export const queryKeys = {
       ['chain', 'proposal', 'live', ...[...ids].sort((a, b) => a - b)] as const,
     proposalPositions: ['chain', 'proposal', 'positions'] as const,
     proposalVoteSnapshot: (id: number) => ['chain', 'proposal', 'voteSnapshot', id] as const,
+    proposalStateSummary: ['chain', 'proposal', 'stateSummary'] as const,
   },
 } as const

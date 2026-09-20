@@ -51,7 +51,7 @@ export async function getGovernanceDetail(
 }
 
 /**
- * 提案统计卡（总数 / 进行中 / 参与率）。锁定金额仍读链。
+ * 提案统计卡参与率。总数 / 进行中 / 即将开始走链上 getProposalStateSummary。
  *
  * @param token 会话 JWT
  * @see 用户文档 governance-apis #stats
@@ -65,7 +65,7 @@ export async function getGovernanceStats(token: string): Promise<GovernanceStats
 }
 
 /**
- * 我的投票记录（一人一提案一行；时间戳）。锁定列以链上仓位为准。
+ * 我的投票记录（一人一提案一行）。锁与可领取奖励叠链上仓位。
  *
  * @param token 会话 JWT
  * @param params 分页
