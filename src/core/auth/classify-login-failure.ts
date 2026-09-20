@@ -55,6 +55,8 @@ function isUserRejectedShape(error: unknown): boolean {
 
 function isSignatureRejectedShape(error: unknown): boolean {
   const code = readErrorCode(error)
+  // 登录接口 401 = 验签失败（手册），不依赖英文文案
+  if (code === 401) return true
   // ApiError 形态：优先看 error + message 拼接
   if (typeof error === 'object' && error !== null && 'error' in error) {
     const record = error as { error?: unknown; message?: unknown }

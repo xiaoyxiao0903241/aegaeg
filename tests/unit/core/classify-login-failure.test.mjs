@@ -20,5 +20,9 @@ test('classifyLoginFailure maps reject / signature / ban / transient', async () 
     classifyLoginFailure(new ApiError({ code: 403, error: 'FORBIDDEN', message: 'nope' })),
     'transient',
   )
+  assert.equal(
+    classifyLoginFailure(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: '验签失败' })),
+    'signature_rejected',
+  )
   assert.equal(classifyLoginFailure(new Error('network down')), 'transient')
 })

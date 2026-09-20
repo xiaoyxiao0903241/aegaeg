@@ -21,8 +21,8 @@ const walletConnectPanel = tv({
 /**
  * 钱包连接弹窗（H5 下为底部抽屉）。
  *
- * 内嵌 thirdweb ConnectEmbed；连接成功后自动关闭。
- * 已连接时打开则立即关闭，避免重复拉起。
+ * 内嵌 thirdweb ConnectEmbed；连接成功后稍等再关，避免同一下指针点穿到登录按钮。
+ * 已连接时打开则关闭，避免重复拉起。
  */
 export function WalletConnectModal({
   onOpenChange,
@@ -35,9 +35,9 @@ export function WalletConnectModal({
   const { messages: t } = useI18n()
 
   useEffect(() => {
-    if (account && open) {
-      onOpenChange(false)
-    }
+    if (!account || !open) return
+    const timerId = window.setTimeout(() => onOpenChange(false), 400)
+    return () => window.clearTimeout(timerId)
   }, [account, onOpenChange, open])
 
   return (
@@ -66,11 +66,7 @@ export function WalletConnectModal({
 
       <div className="aegis-wallet-connect-body">
         <div className="aegis-connect-embed">
-          <ConnectEmbed
-            {...connectEmbedProps}
-            appMetadata={appMetadata}
-            onConnect={() => onOpenChange(false)}
-          />
+          <ConnectEmbed {...connectEmbedProps} appMetadata={appMetadata} />
         </div>
       </div>
     </ResponsiveDialog>

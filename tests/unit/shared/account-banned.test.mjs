@@ -45,6 +45,8 @@ test('interceptApiError reports banned 403', async () => {
   try {
     interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'nope' }))
     assert.equal(reported, 0)
+    assert.equal(unauthorized, 0)
+    interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'nope' }), true)
     assert.equal(unauthorized, 1)
     interceptApiError(new ApiError({ code: 403, error: 'FORBIDDEN', message: '账号被封' }))
     assert.equal(reported, 1)

@@ -247,7 +247,7 @@ function WalletConnectButton({
           {labelNode}
         </Button>
       )}
-      {!needsSignIn ? (
+      {connectOpen || !needsSignIn ? (
         <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
       ) : null}
     </div>

@@ -24,10 +24,13 @@ test('401 reports unauthorized once; 403 banned stays separate', async () => {
   })
 
   try {
-    interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'expired' }))
-    interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'expired' }))
+    interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'expired' }), true)
+    interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'expired' }), true)
     assert.equal(unauthorized, 1)
     assert.equal(banned, 0)
+
+    interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: '验签失败' }))
+    assert.equal(unauthorized, 1)
 
     interceptApiError(new ApiError({ code: 403, error: 'FORBIDDEN', message: '账号被封' }))
     assert.equal(banned, 1)

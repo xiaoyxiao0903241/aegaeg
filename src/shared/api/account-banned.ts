@@ -89,12 +89,16 @@ export function reportUnauthorized(): void {
 /**
  * 全局 API 响应拦截器——`apiRequest` 抛错前调用。
  *
- * 401 只退出（清 JWT 与签名），不换票、不重登；403 封禁另走封禁通知。
- * 登录接口 401（验签失败）同样退出：无会话时是空操作。
+ * 带 Bearer 的 401 只退出（清 JWT 与签名），不换票、不重登。
+ * 登录接口无 Bearer，401 是验签失败，不退出。
+ * 403 封禁另走封禁通知。
+ *
+ * @param error 即将抛出的 API 错误
+ * @param hadToken 该请求是否带了会话令牌
  */
-export function interceptApiError(error: unknown): void {
+export function interceptApiError(error: unknown, hadToken = false): void {
   if (isUnauthorizedError(error)) {
-    reportUnauthorized()
+    if (hadToken) reportUnauthorized()
     return
   }
   if (isAccountBannedError(error)) {

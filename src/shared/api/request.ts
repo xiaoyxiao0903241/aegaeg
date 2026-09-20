@@ -86,8 +86,8 @@ export function apiUrl(
   return resolveApiRequestUrl(apiClientUrl(path), searchParams)
 }
 
-function rethrowAfterIntercept(error: unknown): never {
-  interceptApiError(error)
+function rethrowAfterIntercept(error: unknown, hadToken: boolean): never {
+  interceptApiError(error, hadToken)
   throw error
 }
 
@@ -95,7 +95,7 @@ function rethrowAfterIntercept(error: unknown): never {
  * 发起后端业务请求（默认 POST）。
  *
  * 统一处理认证头、超时、非 JSON 网关响应与业务信封；
- * 401/403 会触发认证与封禁钩子。
+ * 带令牌的 401 与 403 会触发认证与封禁钩子。
  *
  * @param path 业务路径
  * @param options 请求配置（方法、请求体、Bearer token、查询参数）
@@ -115,6 +115,8 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     Object.assign(headers, createAuthHeader(options.token))
   }
 
+  const hadToken = Boolean(options.token)
+
   let response: Response
   try {
     response = await fetch(apiUrl(path, options.searchParams), {
@@ -124,7 +126,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
       signal: createRequestAbortSignal(REQUEST_TIMEOUT_MS),
     })
   } catch (error) {
-    rethrowAfterIntercept(toTransportApiError(error))
+    rethrowAfterIntercept(toTransportApiError(error), hadToken)
   }
 
   let payload: ApiEnvelope<T>
@@ -133,12 +135,12 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     payload = (await response.json()) as ApiEnvelope<T>
   } catch {
     // 网关 HTML / 空响应体——按 HTTP 状态映射，保证 401/403 仍触发认证与封禁钩子
-    rethrowAfterIntercept(apiErrorFromHttpStatus(response.status))
+    rethrowAfterIntercept(apiErrorFromHttpStatus(response.status), hadToken)
   }
 
   try {
     return parseApiResponse(payload)
   } catch (error) {
-    rethrowAfterIntercept(error)
+    rethrowAfterIntercept(error, hadToken)
   }
 }
