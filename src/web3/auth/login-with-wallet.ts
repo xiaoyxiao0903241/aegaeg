@@ -1,9 +1,6 @@
 import type { Account } from 'thirdweb/wallets'
 
-import {
-  classifyLoginFailure,
-  shouldClearCachedLoginSignature,
-} from '~/core/auth/classify-login-failure'
+import { classifyLoginFailure } from '~/core/auth/classify-login-failure'
 import { withJwtExpiry } from '~/core/auth/jwt'
 import { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR } from '~/shared/api/account-banned'
 import { login } from '~/shared/api/endpoints'
@@ -170,7 +167,7 @@ async function signAndExchangeLogin({
 
       return { token, message, signature }
     } catch (error) {
-      if (!shouldClearCachedLoginSignature(error)) {
+      if (classifyLoginFailure(error) !== 'signature_rejected') {
         throw error
       }
       lastError = error

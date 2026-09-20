@@ -4,9 +4,7 @@ import test from 'node:test'
 import { loadModule } from '../load-module.mjs'
 
 test('classifyLoginFailure maps reject / signature / ban / transient', async () => {
-  const { classifyLoginFailure, shouldClearCachedLoginSignature } = await loadModule(
-    '/src/core/auth/classify-login-failure.ts',
-  )
+  const { classifyLoginFailure } = await loadModule('/src/core/auth/classify-login-failure.ts')
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   assert.equal(classifyLoginFailure({ code: 4001 }), 'user_rejected')
@@ -23,11 +21,4 @@ test('classifyLoginFailure maps reject / signature / ban / transient', async () 
     'transient',
   )
   assert.equal(classifyLoginFailure(new Error('network down')), 'transient')
-  assert.equal(
-    shouldClearCachedLoginSignature(
-      new ApiError({ code: 400, error: 'invalid signature', message: 'x' }),
-    ),
-    true,
-  )
-  assert.equal(shouldClearCachedLoginSignature(new Error('timeout')), false)
 })

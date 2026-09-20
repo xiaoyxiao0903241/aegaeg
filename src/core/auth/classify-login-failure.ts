@@ -84,15 +84,3 @@ export function classifyLoginFailure(error: unknown): LoginFailureKind {
   // 传输层 / 无稳定语义 → transient，允许重试
   return 'transient'
 }
-
-/**
- * 后端拒绝当前格式的签名时，是否应改试下一种登录消息格式。
- *
- * 验签失败视为本条消息不可用；用户拒绝 / 封禁 / 瞬时错误不换格式。
- *
- * @param error 登录抛出的异常
- * @returns 应切换格式时返回 true
- */
-export function shouldClearCachedLoginSignature(error: unknown): boolean {
-  return classifyLoginFailure(error) === 'signature_rejected'
-}
