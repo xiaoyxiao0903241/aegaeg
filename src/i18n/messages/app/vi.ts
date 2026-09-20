@@ -1673,7 +1673,7 @@ const app = defineMessages({
         },
         {
           q: 'Does voting lock my AGX? For how long?',
-          a: 'Yes. Voting requires locking AGX until that proposal’s voting period ends. After it ends, click Unlock in My votes to unlock, with no extra cooldown; you can use the AGX freely after unlocking.',
+          a: 'Yes. Voting requires locking AGX until that proposal’s voting period ends. After it ends, locked AGX unlocks automatically, with no extra cooldown; you can use the AGX freely after unlocking.',
         },
         {
           q: 'What rewards do I get for voting?',
@@ -1681,7 +1681,7 @@ const app = defineMessages({
         },
         {
           q: 'How do I claim proposal rewards?',
-          a: 'After the voting period ends and results are settled, that reward becomes claimable in Proposal rewards. Click Claim to send it straight to your wallet — no contribution points and no turbine. While the proposal is in progress it shows as In progress.',
+          a: 'After the voting period ends and results are settled, that reward becomes claimable in Voting records. Click Claim to send it straight to your wallet — no contribution points and no turbine. While the proposal is in progress it shows as In progress.',
         },
         {
           q: 'Who can create a proposal?',
@@ -1693,7 +1693,7 @@ const app = defineMessages({
         },
         {
           q: 'Can I vote more than once on a proposal?',
-          a: 'You can vote more than once on the same proposal while voting is open. Each vote must lock additional AGX; voting power is based on the cumulative locked amount. You may cast for and against separately.',
+          a: 'You can vote more than once on the same proposal while voting is open. Each vote must lock additional AGX; voting power is based on the cumulative locked amount. Once you choose a side it cannot be changed: if you first vote For, later add-on votes also count as For and you cannot vote Against, and vice versa.',
         },
       ],
     },
