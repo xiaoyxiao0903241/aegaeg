@@ -4,26 +4,18 @@ import {
 } from '~/shared/api/api-user-facing-error'
 import { ApiError } from '~/shared/api/client'
 
-function isUnauthorizedError(error: unknown): boolean {
-  return error instanceof ApiError && error.code === 401
-}
-
 /**
- * 带会话的业务 API 请求：401 时调用 onUnauthorized（通常为 invalidateSession）。
- * 读、写共用此入口。
+ * 带会话的业务 API 请求。
+ *
+ * 401 由 `apiRequest` 拦截器统一退出。读、写共用此入口。
  */
 export async function requestWithSession<T>(
   fetcher: (token: string) => Promise<T>,
   token: string,
-  onUnauthorized: () => void,
 ): Promise<T> {
   try {
     return await fetcher(token)
   } catch (error) {
-    if (isUnauthorizedError(error)) {
-      onUnauthorized()
-    }
-
     if (error instanceof ApiError) {
       throw error
     }

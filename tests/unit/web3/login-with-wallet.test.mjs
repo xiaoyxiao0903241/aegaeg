@@ -11,9 +11,7 @@ test('loginMessageFormats prefers siwe then simple by default', async () => {
 })
 
 test('loginWithWallet falls back to simple message when siwe signing fails', async () => {
-  const { loginWithWallet, createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/web3/auth/login-with-wallet.ts',
-  )
+  const { loginWithWallet } = await loadModule('/src/web3/auth/login-with-wallet.ts')
   const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
 
   const address = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
@@ -41,7 +39,6 @@ test('loginWithWallet falls back to simple message when siwe signing fails', asy
       chainId: 56,
       liveChainId: 56,
       storage: createMemoryAuthSessionStorage(),
-      signatureStorage: createMemoryLoginSignatureStorage(),
       signMessage,
     })
 
@@ -55,9 +52,7 @@ test('loginWithWallet falls back to simple message when siwe signing fails', asy
 })
 
 test('loginWithWallet rejects unknown or wrong live chain before exchange', async () => {
-  const { loginWithWallet, createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/web3/auth/login-with-wallet.ts',
-  )
+  const { loginWithWallet } = await loadModule('/src/web3/auth/login-with-wallet.ts')
   const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
   const { LOGIN_ERROR } = await loadModule('/src/shared/api/account-banned.ts')
 
@@ -66,7 +61,6 @@ test('loginWithWallet rejects unknown or wrong live chain before exchange', asyn
     signMessage: async () => 'sig',
   }
   const storage = createMemoryAuthSessionStorage()
-  const signatureStorage = createMemoryLoginSignatureStorage()
 
   await assert.rejects(
     () =>
@@ -75,7 +69,6 @@ test('loginWithWallet rejects unknown or wrong live chain before exchange', asyn
         chainId: 56,
         liveChainId: undefined,
         storage,
-        signatureStorage,
       }),
     (error) => error === LOGIN_ERROR.WALLET_NOT_CONNECTED,
   )
@@ -87,7 +80,6 @@ test('loginWithWallet rejects unknown or wrong live chain before exchange', asyn
         chainId: 56,
         liveChainId: 1,
         storage,
-        signatureStorage,
       }),
     (error) => error === LOGIN_ERROR.WRONG_NETWORK,
   )

@@ -53,7 +53,7 @@ export function useMixedClaim(view: MixedClaimView) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappHost()
   const { walletReady, writeReady } = useWriteReadiness()
-  const { token, invalidateSession } = useAuth()
+  const { token } = useAuth()
   const account = useActiveAccount()
   const isDaoMixed = view === 'cobuild' || view === 'referral' || view === 'participate'
   const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady && isDaoMixed)
@@ -160,7 +160,6 @@ export function useMixedClaim(view: MixedClaimView) {
       await submitDaoMixedClaim({
         session,
         token: token ?? '',
-        onUnauthorized: invalidateSession,
         rewardType: daoRewardType,
         releaseDays,
         restakeDays,

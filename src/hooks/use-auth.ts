@@ -13,9 +13,8 @@ export interface AuthContextValue {
   loginError: string | null
   login: () => Promise<void>
   logout: () => void
-  /** 钱包断开时仅清登录错误与静默重试状态，保留 JWT 表供下次连接直接复用。 */
+  /** 钱包断开时仅清登录错误，保留 JWT 表供下次连接直接复用。 */
   clearLoginErrorOnDisconnect: () => void
-  invalidateSession: () => void
   clearLoginError: () => void
 }
 

@@ -16,12 +16,16 @@ export const LOGIN_ERROR = {
 
 const ACCOUNT_BANNED_TOAST_ID = 'account-banned'
 
-/** 同一波 403 中抑制重复广播的冷却窗口。 */
+/** 同一波 403 / 401 中抑制重复广播的冷却窗口。 */
 const REPORT_COOLDOWN_MS = 3_000
 
 type AccountBannedListener = () => void
 const listeners = new Set<AccountBannedListener>()
 let lastReportedAt = 0
+
+type UnauthorizedListener = () => void
+const unauthorizedListeners = new Set<UnauthorizedListener>()
+let lastUnauthorizedReportedAt = 0
 
 /**
  * 判断错误是否为账号封禁（403 + 业务码/文案指向封禁）
@@ -59,8 +63,40 @@ export function reportAccountBanned(): void {
   }
 }
 
-/** 全局 API 响应拦截器——`apiRequest` 抛错前调用。 */
+function isUnauthorizedError(error: unknown): boolean {
+  return error instanceof ApiError && error.code === 401
+}
+
+/** 订阅未授权事件；返回取消订阅函数。 */
+export function subscribeUnauthorized(listener: UnauthorizedListener): () => void {
+  unauthorizedListeners.add(listener)
+  return () => unauthorizedListeners.delete(listener)
+}
+
+/**
+ * 广播一次 401。并行请求共用冷却，避免连着清会话。
+ */
+export function reportUnauthorized(): void {
+  const now = Date.now()
+  if (now - lastUnauthorizedReportedAt < REPORT_COOLDOWN_MS) return
+  lastUnauthorizedReportedAt = now
+
+  for (const listener of unauthorizedListeners) {
+    listener()
+  }
+}
+
+/**
+ * 全局 API 响应拦截器——`apiRequest` 抛错前调用。
+ *
+ * 401 只退出（清 JWT 与签名），不换票、不重登；403 封禁另走封禁通知。
+ * 登录接口 401（验签失败）同样退出：无会话时是空操作。
+ */
 export function interceptApiError(error: unknown): void {
+  if (isUnauthorizedError(error)) {
+    reportUnauthorized()
+    return
+  }
   if (isAccountBannedError(error)) {
     reportAccountBanned()
   }
@@ -69,6 +105,7 @@ export function interceptApiError(error: unknown): void {
 /** 仅测试用：Vite 服务器复用时，模块级通知状态在 ssrLoadModule 间残留，需重置冷却。 */
 export function resetAccountBannedReportCooldownForTests(): void {
   lastReportedAt = 0
+  lastUnauthorizedReportedAt = 0
 }
 
 /** 返回封禁提示的固定 toast id，供弹窗去重。 */

@@ -13,9 +13,9 @@
 |**需要签名登录**|`needsSignIn`|钱包已连但尚无有效会话|`useAuth`|
 |**钱包签名登录**|SIWE / `login`|签名换 JWT（含 simple fallback）|`login-with-wallet`|
 |**会话令牌**|`token` / JWT|业务 API Bearer；按地址缓存|`auth-store` + `AuthProvider`|
-|**清会话**|`invalidateSession`|清当前地址会话（如 401）|`AuthProvider`|
+|**清会话**|`logout`|清当前地址 JWT 与残留签名；401 与用户登出共用，不自动再登|`AuthProvider`|
 |**登录失败分类**|`classifyLoginFailure`|banned / reject / …|`core/auth/classify-login-failure`|
-|**带会话请求**|`requestWithSession`|读/写 API；401 → `invalidateSession`|`shared/api/query/session-request`|
+|**带会话请求**|`requestWithSession`|读/写 API；401 由拦截器退出|`shared/api/query/session-request`|
 
 > 禁止用 `isAuthenticated` 作 UI/对外同义词；状态机 `AuthState.kind` 用 `sessionReady`。
 > 展示链上读（`useChainQuery` / 暖热预取）= `sessionReady && writeReady`（能写才读）。已登录再切走 BSC：JWT 仍在，顶栏出切网，不误报请登录。

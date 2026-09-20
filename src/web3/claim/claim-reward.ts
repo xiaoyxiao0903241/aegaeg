@@ -111,7 +111,6 @@ function assertClaimSignatureNotExpired(
  * @param token 会话 token
  * @param request.salt 签名盐
  * @param request.txHash 链上交易哈希
- * @param onUnauthorized 未授权回调（登出等）
  * @param options.attempts 重试次数，默认 3
  * @param options.delayMs 重试间隔毫秒，默认 800
  * @returns 后端确认结果
@@ -120,7 +119,6 @@ function assertClaimSignatureNotExpired(
 export async function confirmClaimWithRetry(
   token: string,
   request: { salt: string; txHash: string },
-  onUnauthorized: () => void,
   options: { attempts?: number; delayMs?: number } = {},
 ): Promise<ClaimConfirmResult> {
   const attempts = options.attempts ?? CONFIRM_RETRY_ATTEMPTS
@@ -129,11 +127,7 @@ export async function confirmClaimWithRetry(
 
   for (let i = 0; i < attempts; i += 1) {
     try {
-      return await requestWithSession(
-        (t) => confirmTeamRewardClaim(t, request),
-        token,
-        onUnauthorized,
-      )
+      return await requestWithSession((t) => confirmTeamRewardClaim(t, request), token)
     } catch (error) {
       lastError = error
       if (i < attempts - 1) {
@@ -156,18 +150,16 @@ export async function confirmClaimWithRetry(
  * @param token 会话 token
  * @param request.salt 领取签名返回的 bytes32
  * @param request.txHash 链上交易哈希
- * @param onUnauthorized 未授权回调
  * @returns 确认结果；重试耗尽时为 null
  * @see confirmClaimWithRetry
  */
 export async function confirmClaimQuietly(
   token: string,
   request: { salt: string; txHash: string },
-  onUnauthorized: () => void,
   options: { attempts?: number; delayMs?: number } = {},
 ): Promise<ClaimConfirmResult | null> {
   try {
-    return await confirmClaimWithRetry(token, request, onUnauthorized, options)
+    return await confirmClaimWithRetry(token, request, options)
   } catch {
     return null
   }
@@ -176,13 +168,11 @@ export async function confirmClaimQuietly(
 async function claimSignedReward({
   wallet,
   token,
-  onUnauthorized,
   requestSignature,
   claimOnChain,
 }: {
   wallet: Wallet
   token: string
-  onUnauthorized: () => void
   requestSignature: (token: string) => Promise<TeamRewardClaimSignature>
   claimOnChain: (args: {
     wallet: Wallet
@@ -193,11 +183,7 @@ async function claimSignedReward({
     signature: `0x${string}`
   }) => Promise<ConfirmedWalletWrite>
 }): Promise<SignedRewardClaimResult> {
-  const payload = (await requestWithSession(
-    requestSignature,
-    token,
-    onUnauthorized,
-  )) as TeamRewardClaimSignature
+  const payload = (await requestWithSession(requestSignature, token)) as TeamRewardClaimSignature
   const normalized = parseTeamRewardClaim(payload)
   assertClaimSignatureNotExpired(normalized.expireTime)
 
@@ -211,11 +197,7 @@ async function claimSignedReward({
   })
   const txHash = receipt.transactionHash
   // 等 confirm 试完再返回，让成功提示与余额刷新落在同一时刻
-  const confirmResult = await confirmClaimQuietly(
-    token,
-    { salt: normalized.salt, txHash },
-    onUnauthorized,
-  )
+  const confirmResult = await confirmClaimQuietly(token, { salt: normalized.salt, txHash })
   return { receipt, confirmResult, txHash }
 }
 
@@ -232,7 +214,7 @@ function createSignedClaim(
   requestSignature: (token: string) => Promise<TeamRewardClaimSignature>,
   claimOnChain: SignedClaimOnChain,
 ) {
-  return (args: { wallet: Wallet; token: string; onUnauthorized: () => void }) =>
+  return (args: { wallet: Wallet; token: string }) =>
     claimSignedReward({
       ...args,
       requestSignature,

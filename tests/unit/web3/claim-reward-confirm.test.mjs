@@ -8,7 +8,6 @@ test('confirmClaimWithRetry succeeds after transient failures', async () => {
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   let calls = 0
-  let unauthorized = 0
   const originalFetch = globalThis.fetch
 
   globalThis.fetch = async () => {
@@ -26,19 +25,18 @@ test('confirmClaimWithRetry succeeds after transient failures', async () => {
     const result = await confirmClaimWithRetry(
       'jwt',
       { salt: '0x1', txHash: '0xabc' },
-      () => {
-        unauthorized += 1
+      {
+        attempts: 3,
+        delayMs: 1,
       },
-      { attempts: 3, delayMs: 1 },
     )
     assert.equal(calls, 3)
-    assert.equal(unauthorized, 0)
     assert.equal(result.order?.amount, '1.5')
   } finally {
     globalThis.fetch = originalFetch
   }
 
-  // 401 触发 onUnauthorized
+  // 401 仍抛 ApiError；退出由拦截器处理
   calls = 0
   globalThis.fetch = async () => {
     calls += 1
@@ -50,14 +48,14 @@ test('confirmClaimWithRetry succeeds after transient failures', async () => {
         confirmClaimWithRetry(
           'jwt',
           { salt: '0x1', txHash: '0xabc' },
-          () => {
-            unauthorized += 1
+          {
+            attempts: 2,
+            delayMs: 1,
           },
-          { attempts: 2, delayMs: 1 },
         ),
       (error) => error instanceof ApiError && error.code === 401,
     )
-    assert.ok(unauthorized >= 1)
+    assert.equal(calls, 2)
   } finally {
     globalThis.fetch = originalFetch
   }
@@ -71,10 +69,14 @@ test('confirmClaimQuietly swallows confirm failure', async () => {
     Response.json({ code: 500, error: 'busy', message: 'busy' }, { status: 500 })
 
   try {
-    const result = await confirmClaimQuietly('jwt', { salt: '0x1', txHash: '0xabc' }, () => {}, {
-      attempts: 2,
-      delayMs: 1,
-    })
+    const result = await confirmClaimQuietly(
+      'jwt',
+      { salt: '0x1', txHash: '0xabc' },
+      {
+        attempts: 2,
+        delayMs: 1,
+      },
+    )
     assert.equal(result, null)
   } finally {
     globalThis.fetch = originalFetch

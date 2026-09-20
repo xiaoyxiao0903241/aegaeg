@@ -13,13 +13,6 @@ import {
   type LoginMessageFormat,
   loginMessageFormat,
 } from '~/web3/auth/login-message'
-import {
-  createLocalLoginSignatureStorage,
-  createMemoryLoginSignatureStorage,
-  type LoginSignatureStorage,
-  readUsableLoginSignature,
-  type StoredLoginSignature,
-} from '~/web3/auth/login-signature-cache'
 import { type AuthSessionStorage, createLocalAuthSessionStorage } from '~/web3/auth/session'
 import { isUserRejectedWalletError } from '~/web3/contract-error-message'
 
@@ -51,12 +44,11 @@ export interface WalletLoginParams {
   account: Account
   /** SIWE 消息声明的期望链（BSC）；不得写入 live 异网 id。 */
   chainId: number
-  /** 钱包 live chain；未知或 ≠ chainId 时拒绝换票（含缓存签名路径）。 */
+  /** 钱包 live chain；未知或 ≠ chainId 时拒绝换票。 */
   liveChainId: number | null | undefined
   domain?: string
   signMessage?: (message: string) => Promise<string>
   storage?: AuthSessionStorage
-  signatureStorage?: LoginSignatureStorage
 }
 
 export interface WalletLoginResult {
@@ -114,7 +106,7 @@ async function exchangeLoginSignature({
 }
 
 /**
- * 依次尝试各消息格式完成签名换 token，成功后缓存签名。
+ * 依次尝试各消息格式完成签名换 token。
  *
  * 钱包拒绝签名仅在最后一种格式时抛错；后端拒绝签名则切换下一种格式。
  *
@@ -123,7 +115,6 @@ async function exchangeLoginSignature({
  * @param params.domain 站点域名
  * @param params.signMessage 签名回调
  * @param params.storage 会话存储
- * @param params.signatureStorage 签名缓存
  * @returns 登录结果（token / message / signature）
  */
 async function signAndExchangeLogin({
@@ -132,14 +123,12 @@ async function signAndExchangeLogin({
   domain,
   signMessage,
   storage,
-  signatureStorage,
 }: {
   account: Account
   chainId: number
   domain?: string
   signMessage: (message: string) => Promise<string>
   storage: AuthSessionStorage
-  signatureStorage: LoginSignatureStorage
 }): Promise<WalletLoginResult> {
   const formats = loginMessageFormats()
   let lastError: unknown = null
@@ -179,14 +168,6 @@ async function signAndExchangeLogin({
         storage,
       })
 
-      const cachedAttempt: StoredLoginSignature = {
-        address: account.address,
-        message,
-        signature,
-        savedAt: Date.now(),
-      }
-      signatureStorage.write(cachedAttempt)
-
       return { token, message, signature }
     } catch (error) {
       if (!shouldClearCachedLoginSignature(error)) {
@@ -203,18 +184,16 @@ async function signAndExchangeLogin({
 }
 
 /**
- * 用钱包完成登录：签名消息并向后端换取 token。
+ * 用钱包完成登录：先签名，再向后端换取 token。
  *
- * 优先复用未过期的缓存签名；无缓存或签名被后端拒绝时，重新走
- * 签名 → 换 token 流程。token 存入会话存储。
+ * `/auth/login` 只跟本次用户签名走。同一点击内 SIWE → simple 回退仍算用户发起。
  *
  * @param params.account 钱包账户
  * @param params.chainId SIWE 消息声明的期望链（BSC）
- * @param params.liveChainId 钱包 live chain；未知或 ≠ chainId 时拒绝（含缓存换票）
+ * @param params.liveChainId 钱包 live chain；未知或 ≠ chainId 时拒绝
  * @param params.domain 站点域名
  * @param params.signMessage 签名回调，默认用 account.signMessage
  * @param params.storage 会话存储，默认 localStorage
- * @param params.signatureStorage 签名缓存，默认 localStorage
  * @returns 登录结果（token / message / signature）
  */
 export async function loginWithWallet({
@@ -224,7 +203,6 @@ export async function loginWithWallet({
   domain,
   signMessage = (message) => account.signMessage({ message }),
   storage = createLocalAuthSessionStorage(localStorage),
-  signatureStorage = createLocalLoginSignatureStorage(localStorage),
 }: WalletLoginParams): Promise<WalletLoginResult> {
   if (liveChainId == null) {
     throw LOGIN_ERROR.WALLET_NOT_CONNECTED
@@ -233,38 +211,11 @@ export async function loginWithWallet({
     throw LOGIN_ERROR.WRONG_NETWORK
   }
 
-  const cached = readUsableLoginSignature(account.address, signatureStorage)
-  if (cached) {
-    try {
-      const token = await exchangeLoginSignature({
-        address: account.address,
-        message: cached.message,
-        signature: cached.signature,
-        storage,
-      })
-
-      return {
-        token,
-        message: cached.message,
-        signature: cached.signature,
-      }
-    } catch (error) {
-      if (!shouldClearCachedLoginSignature(error)) {
-        throw error
-      }
-
-      signatureStorage.clearForAddress(account.address)
-    }
-  }
-
   return signAndExchangeLogin({
     account,
     chainId,
     domain,
     signMessage,
     storage,
-    signatureStorage,
   })
 }
-
-export { createMemoryLoginSignatureStorage }

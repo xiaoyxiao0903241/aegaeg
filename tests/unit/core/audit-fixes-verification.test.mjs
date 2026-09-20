@@ -15,52 +15,20 @@ test('audit #16: legacy V2 swap quote modules removed', async () => {
   await assertMissing('src/config/community-stats.ts')
 })
 
-test('audit #11: JWT without exp schedules renewAt from savedAt + fallback TTL', async () => {
-  const { deriveAuthAction, FALLBACK_SESSION_TTL_MS } = await loadModule(
+test('audit #11: JWT without exp uses fallback TTL for local expiry, not renew', async () => {
+  const { FALLBACK_SESSION_TTL_MS, deriveAuthAction } = await loadModule(
     '/src/core/auth/auth-machine.ts',
   )
-  const renewThresholdMs = 60_000
-  const savedAt = 1_000_000_000
-  const action = deriveAuthAction({
-    state: {
-      kind: 'sessionReady',
-      session: { token: 't', address: '0x1', savedAt },
-    },
-    isLoggingIn: false,
-    loginError: null,
-    lastAttemptKey: null,
-    attemptKey: 'k1',
-    renewThresholdMs,
-    loginChainReady: true,
-  })
 
-  assert.deepEqual(action, {
-    type: 'renewAt',
-    at: savedAt + FALLBACK_SESSION_TTL_MS - renewThresholdMs,
-  })
+  assert.equal(FALLBACK_SESSION_TTL_MS, 60 * 60 * 1000)
+  assert.equal(deriveAuthAction, undefined)
 })
 
-test('audit #18: transient login errors allow retry; permanent errors block', async () => {
-  const { deriveAuthAction, isPermanentLoginErrorMessage } = await loadModule(
-    '/src/core/auth/auth-machine.ts',
-  )
-  const base = {
-    isLoggingIn: false,
-    lastAttemptKey: null,
-    attemptKey: 'k1',
-    renewThresholdMs: 60_000,
-    loginChainReady: true,
-    state: { kind: 'needsSignIn' },
-  }
+test('audit #18: needsSignIn is derived only; login API is never scheduled', async () => {
+  const { deriveAuthState } = await loadModule('/src/core/auth/auth-machine.ts')
 
-  assert.equal(isPermanentLoginErrorMessage('User rejected'), true)
-  assert.equal(isPermanentLoginErrorMessage('LOGIN_FAILED'), true)
-  assert.equal(isPermanentLoginErrorMessage('LOGIN_SIGNATURE_REJECTED'), true)
-  assert.equal(isPermanentLoginErrorMessage('Network request failed'), false)
-
-  assert.deepEqual(deriveAuthAction({ ...base, loginError: 'User rejected' }), { type: 'idle' })
-  assert.deepEqual(deriveAuthAction({ ...base, loginError: 'Network request failed' }), {
-    type: 'login',
+  assert.deepEqual(deriveAuthState({ walletAddress: '0xabc', sessionsByAddress: {} }), {
+    kind: 'needsSignIn',
   })
 })
 

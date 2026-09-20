@@ -19,7 +19,6 @@ import { WRITE_PATH } from '~/web3/wallet/write-path'
 type RewardClaimExecutor = (args: {
   wallet: WriteSession['wallet']
   token: string
-  onUnauthorized: () => void
 }) => Promise<ClaimRewardExecuteResult>
 
 /**
@@ -42,7 +41,7 @@ export type ClaimRewardUiResult = {
 export function useClaimReward(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
-  const { token, sessionReady, invalidateSession } = useAuth()
+  const { token, sessionReady } = useAuth()
 
   const claimMutation = useChainMutation({
     path: WRITE_PATH.REWARD_SIGNED_CLAIM,
@@ -54,7 +53,6 @@ export function useClaimReward(execute: RewardClaimExecutor) {
       const result = await execute({
         wallet: session.wallet,
         token,
-        onUnauthorized: invalidateSession,
       })
       const outcome = claimRewardOutcome(result)
       invalidateAfterTeamClaim()

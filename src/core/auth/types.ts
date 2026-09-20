@@ -1,7 +1,7 @@
 /**
  * 持久化的登录会话：地址 → JWT 的缓存条目。
  *
- * 会话有效性由 authStatus 判定；expiresAt 由 JWT exp 推导填充，用于主动续期。
+ * 会话有效性由 authStatus 判定；expiresAt 由 JWT exp 推导填充，用于本地过期。
  *
  * @see 手册 §1.3 前端全局状态
  */
@@ -9,11 +9,11 @@ export interface StoredAuthSession {
   address: string
   token: string
   savedAt: number
-  /** JWT exp（毫秒），用于主动续期。 */
+  /** JWT exp（毫秒），用于本地过期；到期不换票。 */
   expiresAt?: number
 }
 
-/** 持久化的 SIWE 登录签名，用于免弹窗静默续期。 */
+/** 持久化的登录签名；换票必须重新签名，不拿缓存直调登录接口。 */
 export interface StoredLoginSignature {
   address: string
   message: string

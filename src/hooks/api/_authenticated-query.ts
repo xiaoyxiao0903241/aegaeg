@@ -24,8 +24,8 @@ type AuthenticatedQueryOptions = {
 /**
  * 带会话的 API 查询（本模块核心）
  *
- * 缓存键追加规范化钱包地址：JWT 续期不丢缓存，切换钱包自动隔离账号数据。
- * token 优先取状态仓库中的最新值，静默续期可立即用于下一次拉取。
+ * 缓存键追加规范化钱包地址：切换钱包自动隔离账号数据。
+ * token 优先取状态仓库中的最新值。
  * 未登录、未水合或会话未就绪时不发起查询，避免匿名请求。
  * 水合完成后查询关闭（含断开钱包）时不把缓存交给视图。
  */
@@ -35,9 +35,9 @@ export function useAuthenticatedQuery<T>(
   enabled = true,
   options?: AuthenticatedQueryOptions,
 ) {
-  const { token, invalidateSession, sessionReady, hasHydrated, session } = useAuth()
+  const { token, sessionReady, hasHydrated, session } = useAuth()
   const { messages: t } = useI18n()
-  // 缓存键带钱包地址：JWT 续期不清缓存，切换钱包隔离数据
+  // 缓存键带钱包地址：切换钱包隔离数据
   const scopeKey = session?.address ? normalizeAuthAddress(session.address) : undefined
   const queryEnabled = canRunAuthenticatedQuery({
     enabled,
@@ -49,14 +49,14 @@ export function useAuthenticatedQuery<T>(
   const query = useQuery({
     queryKey: scopeKey ? [...queryKey, scopeKey] : queryKey,
     queryFn: () => {
-      // 优先取状态仓库里的最新 token，静默续期后无需等重渲染即可用于拉取
+      // 优先取状态仓库里的最新 token，避免闭包里的旧值
       const latestToken = scopeKey
         ? (useAuthStore.getState().sessionsByAddress[scopeKey]?.token ?? token)
         : token
       if (!latestToken) {
         throw new Error('Authenticated query ran without a session token')
       }
-      return requestWithSession(fetcher, latestToken, invalidateSession)
+      return requestWithSession(fetcher, latestToken)
     },
     enabled: queryEnabled,
     staleTime: options?.staleTime ?? QUERY_STALE_TIME.api,

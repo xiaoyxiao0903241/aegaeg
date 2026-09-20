@@ -23,24 +23,35 @@ test('isAccountBannedError requires 403 plus ban signal', async () => {
 })
 
 test('interceptApiError reports banned 403', async () => {
-  const { interceptApiError, resetAccountBannedReportCooldownForTests, subscribeAccountBanned } =
-    await loadModule('/src/shared/api/account-banned.ts')
+  const {
+    interceptApiError,
+    resetAccountBannedReportCooldownForTests,
+    subscribeAccountBanned,
+    subscribeUnauthorized,
+  } = await loadModule('/src/shared/api/account-banned.ts')
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   resetAccountBannedReportCooldownForTests()
 
   let reported = 0
+  let unauthorized = 0
   const unsubscribe = subscribeAccountBanned(() => {
     reported += 1
+  })
+  const unsubUnauthorized = subscribeUnauthorized(() => {
+    unauthorized += 1
   })
 
   try {
     interceptApiError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'nope' }))
     assert.equal(reported, 0)
+    assert.equal(unauthorized, 1)
     interceptApiError(new ApiError({ code: 403, error: 'FORBIDDEN', message: '账号被封' }))
     assert.equal(reported, 1)
+    assert.equal(unauthorized, 1)
   } finally {
     unsubscribe()
+    unsubUnauthorized()
   }
 })
 

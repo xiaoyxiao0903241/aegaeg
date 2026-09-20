@@ -108,7 +108,6 @@ test('submitDaoMixedClaim fail-closed when live DaoPool AGX is below signed amou
         submitDaoMixedClaim({
           session,
           token: 't',
-          onUnauthorized: () => {},
           rewardType: 'RANK_REWARD',
           releaseDays: 5,
           restakeDays: 360,
@@ -136,7 +135,6 @@ test('submitDaoMixedClaim rejects empty token before chain reads', async () => {
       submitDaoMixedClaim({
         session,
         token: '',
-        onUnauthorized: () => {},
         rewardType: 'RANK_REWARD',
         releaseDays: 5,
         restakeDays: 360,

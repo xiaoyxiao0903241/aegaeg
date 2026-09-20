@@ -117,7 +117,6 @@ export async function submitLuckyMixedClaim(args: {
  *
  * @param args.session 写会话
  * @param args.token 登录会话令牌
- * @param args.onUnauthorized 令牌失效回调
  * @param args.rewardType 共建奖励类型（等级 / 超越）
  * @param args.releaseDays 释放时长档位
  * @param args.restakeDays 复投时长档位
@@ -127,13 +126,12 @@ export async function submitLuckyMixedClaim(args: {
 export async function submitDaoMixedClaim(args: {
   session: WriteSession
   token: string
-  onUnauthorized: () => void
   rewardType: DaoRewardType
   releaseDays: number
   restakeDays: number
   restakePct: number
 }): Promise<void> {
-  const { session, token, onUnauthorized, rewardType, releaseDays, restakeDays, restakePct } = args
+  const { session, token, rewardType, releaseDays, restakeDays, restakePct } = args
   if (!token) {
     throw WALLET_BLOCKED.NOT_CONNECTED
   }
@@ -143,7 +141,6 @@ export async function submitDaoMixedClaim(args: {
   const payload = await requestWithSession(
     (sessionToken) => requestDaoClaim(sessionToken, rewardType),
     token,
-    onUnauthorized,
   )
   const normalized = parseTeamRewardClaim(payload)
   if (normalized.expireTime <= BigInt(Math.floor(Date.now() / 1000))) {
@@ -208,7 +205,7 @@ export async function submitDaoMixedClaim(args: {
     },
   })
   if (txHash) {
-    await confirmClaimQuietly(token, { salt: normalized.salt, txHash }, onUnauthorized)
+    await confirmClaimQuietly(token, { salt: normalized.salt, txHash })
   }
   invalidateAfterRewardsMixedClaim()
 }

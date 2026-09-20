@@ -1,9 +1,8 @@
 /**
  * 登录失败分类：将钱包 / 后端抛出的异常归类为稳定种类。
  *
- * 永久类（封禁、用户拒绝、签名被拒）用于锁定静默重试，transient 允许
- * 下一轮再试。分类只依赖错误对象本身，不依赖 React 或 API 客户端类型，
- * AuthProvider 再映射到 LOGIN_ERROR / ACCOUNT_BANNED 哨兵值。
+ * 永久类落盘为 loginError 哨兵（toast / chip）；transient 不落盘。
+ * 分类只依赖错误对象本身，不依赖 React 或 API 客户端类型。
  *
  * @see 手册 §19 常见错误与前端提示
  */
@@ -87,12 +86,12 @@ export function classifyLoginFailure(error: unknown): LoginFailureKind {
 }
 
 /**
- * 签名被拒（业务 4xx）时是否应清除本地 SIWE 签名缓存。
+ * 后端拒绝当前格式的签名时，是否应改试下一种登录消息格式。
  *
- * 后端已消费 nonce 等一次性值，缓存签名不可复用，需清除以便重新生成。
+ * 验签失败视为本条消息不可用；用户拒绝 / 封禁 / 瞬时错误不换格式。
  *
  * @param error 登录抛出的异常
- * @returns 需要清除时返回 true
+ * @returns 应切换格式时返回 true
  */
 export function shouldClearCachedLoginSignature(error: unknown): boolean {
   return classifyLoginFailure(error) === 'signature_rejected'
