@@ -1,12 +1,11 @@
-/** 提案状态：与手册 queryProposalState / getProposal.proposalState 对齐（含 Expired=5）。 */
+/** 提案状态：AegisProposal queryProposalState / getProposal.proposalState（0–5，无 Expired）。 */
 export const PROPOSAL_STATE = {
   pending: 0,
   active: 1,
   succeeded: 2,
   defeated: 3,
   canceled: 4,
-  expired: 5,
-  executed: 6,
+  executed: 5,
 } as const
 
 export type ProposalStateValue = (typeof PROPOSAL_STATE)[keyof typeof PROPOSAL_STATE]
@@ -33,7 +32,6 @@ const API_STATE_BY_NAME: Record<string, ProposalStateValue> = {
   DEFEATED: PROPOSAL_STATE.defeated,
   CANCELED: PROPOSAL_STATE.canceled,
   CANCELLED: PROPOSAL_STATE.canceled,
-  EXPIRED: PROPOSAL_STATE.expired,
   EXECUTED: PROPOSAL_STATE.executed,
 }
 
@@ -49,13 +47,13 @@ const API_SUPPORT_BY_NAME: Record<string, VoteSupportValue> = {
  * 无法识别时返回 null，调用方按缺数空展示，不猜测。
  *
  * @param raw 链上 uint8 或 API `PENDING` / `ACTIVE` 等
- * @returns 0–6 或 null
+ * @returns 0–5 或 null
  */
 export function parseProposalState(raw: unknown): ProposalStateValue | null {
-  if (typeof raw === 'number' && Number.isInteger(raw) && raw >= 0 && raw <= 6) {
+  if (typeof raw === 'number' && Number.isInteger(raw) && raw >= 0 && raw <= 5) {
     return raw as ProposalStateValue
   }
-  if (typeof raw === 'bigint' && raw >= 0n && raw <= 6n) {
+  if (typeof raw === 'bigint' && raw >= 0n && raw <= 5n) {
     return Number(raw) as ProposalStateValue
   }
   if (typeof raw === 'string') {
@@ -123,7 +121,6 @@ const PROPOSAL_STATE_KEYS = [
   'succeeded',
   'defeated',
   'canceled',
-  'expired',
   'executed',
 ] as const
 
@@ -132,7 +129,7 @@ export type ProposalStateKey = (typeof PROPOSAL_STATE_KEYS)[number]
 /**
  * 提案状态的 i18n key，与 `PROPOSAL_STATE` 数值一一对应。
  *
- * @param state 0–6
+ * @param state 0–5
  */
 export function proposalStateKey(state: ProposalStateValue): ProposalStateKey {
   return PROPOSAL_STATE_KEYS[state]

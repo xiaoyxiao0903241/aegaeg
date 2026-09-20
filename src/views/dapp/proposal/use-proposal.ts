@@ -59,9 +59,11 @@ import { PROPOSAL_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import {
   type ChainVotePosition,
+  type ProposalVoteRewards,
   readProposalLiveByIds,
   readProposalPositions,
   readProposalStateSummary,
+  readProposalVoteRewardsByIds,
   readProposalVoteSnapshot,
 } from '~/web3/proposal/proposal-read'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -87,10 +89,9 @@ function formatAgx(amount: bigint | null | undefined, options?: { plus?: boolean
   })
 }
 
-function formatClaimableAgx(ready: boolean, chain: ChainVotePosition | undefined): string {
-  if (!ready) return formatAgx(null)
-  const amount = chain == null ? ZERO_BI : chain.claimable
-  return formatAgx(amount, { plus: amount !== ZERO_BI })
+function formatUnlockableAgx(ready: boolean, rewards: ProposalVoteRewards | undefined): string {
+  if (!ready || rewards == null) return formatAgx(null)
+  return formatAgx(rewards.principal + rewards.blockReward + rewards.extraInterest)
 }
 
 function positionById(rows: ChainVotePosition[] | undefined): Map<number, ChainVotePosition> {
@@ -380,6 +381,11 @@ export function useProposalDetail() {
     queryFn: () => readProposalLiveByIds(voteIds),
     enabled: voteIds.length > 0,
   })
+  const voteRewardsQuery = useChainQuery({
+    queryKey: queryKeys.chain.proposalVoteRewards(voteIds),
+    queryFn: (addr) => readProposalVoteRewardsByIds(addr, voteIds),
+    enabled: walletReady && voteIds.length > 0,
+  })
   const balanceQuery = useChainQuery({
     queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.agx),
     queryFn: (addr) => readErc20Balance(BSC_CONTRACTS.agx, addr),
@@ -401,6 +407,8 @@ export function useProposalDetail() {
   for (const row of positions.values()) locked += row.principal
 
   const liveMap = liveQuery.data ?? {}
+  const voteRewardsMap = voteRewardsQuery.data ?? {}
+  const voteRewardsReady = walletReady && (voteIds.length === 0 || voteRewardsQuery.data != null)
   const voteRows = (votesQuery.data?.items ?? []).map((item) => {
     const id = asProposalId(item.proposal_id)
     const chain = id == null ? undefined : positions.get(id)
@@ -418,7 +426,10 @@ export function useProposalDetail() {
       code: formatProposalCode(item.proposal_id),
       support: overlay.support,
       power: formatAgx(overlay.power),
-      claimable: formatClaimableAgx(positionsReady, chain),
+      unlockable: formatUnlockableAgx(
+        voteRewardsReady,
+        id == null ? undefined : voteRewardsMap[id],
+      ),
       state: overlay.state,
       lock: overlay.lock,
     }
@@ -468,7 +479,7 @@ export type ProposalVoteRow = {
   code: string
   support: VoteSupportValue | null
   power: string
-  claimable: string
+  unlockable: string
   state: ProposalStateValue | null
   lock: ProposalLockKind
 }

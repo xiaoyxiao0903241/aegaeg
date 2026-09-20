@@ -143,7 +143,7 @@ export function ProposalDetail() {
       <ProposalStateBadge key="state" state={row.state}>
         {row.state == null ? '—' : t.proposal.state[proposalStateKey(row.state)]}
       </ProposalStateBadge>,
-      row.claimable,
+      row.unlockable,
       row.lock === 'unlockable' ? (
         <TableAction
           key="unlock"

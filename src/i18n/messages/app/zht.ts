@@ -1505,7 +1505,6 @@ const app = defineMessages({
       succeeded: '已通過',
       defeated: '已否決',
       canceled: '已取消',
-      expired: '已過期',
       executed: '已執行',
     },
     closed: {
@@ -1513,7 +1512,6 @@ const app = defineMessages({
       succeeded: '提案已通過，正由多簽合約執行上鏈',
       executed: '提案已通過並完成上鏈執行',
       canceled: '提案已由發起方撤銷，鎖定的 AGX 已全部解鎖',
-      expired: '提案已過期，未執行上鏈',
       defeated: '提案未獲通過',
     },
     blocked: {
@@ -1543,7 +1541,7 @@ const app = defineMessages({
     votesEmpty: '參與投票後，記錄將顯示在此處。',
     rewardsTitle: '提案獎勵記錄',
     rewardsEmpty: '結算完成後，提案獎勵將顯示在此處。',
-    voteColumns: ['提案', '選項', '投票權', '提案狀態', '可領取獎勵', '鎖定狀態'],
+    voteColumns: ['提案', '選項', '投票權', '提案狀態', '可解鎖金額', '鎖定狀態'],
     rewardColumns: ['時間', '提案', '投票權', '提案獎勵', '狀態', '交易哈希'],
     mechanismTitle: '提案機制',
     mechanism: {

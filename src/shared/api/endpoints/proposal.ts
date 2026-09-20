@@ -65,7 +65,7 @@ export async function getGovernanceStats(token: string): Promise<GovernanceStats
 }
 
 /**
- * 我的投票记录（一人一提案一行）。锁与可领取奖励叠链上仓位。
+ * 我的投票记录（一人一提案一行）。锁叠链上仓位；可解锁金额走 getVoteRewards。
  *
  * @param token 会话 JWT
  * @param params 分页

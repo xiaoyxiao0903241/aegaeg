@@ -478,6 +478,8 @@ export const AEGIS_PROPOSAL_METHODS = {
   queryProposalState: 'function queryProposalState(uint256 proposalId) view returns (uint8)',
   getProposalStateSummary:
     'function getProposalStateSummary() view returns (uint256 total, uint256 pending, uint256 active, uint256 succeeded, uint256 defeated, uint256 canceled, uint256 executed)',
+  getVoteRewards:
+    'function getVoteRewards(uint256 proposalId, address voter) view returns (uint256 principal, uint256 blockReward, uint256 extraInterest)',
   getVoteReceipt:
     'function getVoteReceipt(uint256 proposalId, address voter) view returns ((bool hasVoted, uint8 support, uint256 principal, uint256 gons, uint256 extraIndex, uint256 creditExtra))',
   getUserVotePositions:

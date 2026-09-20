@@ -36,3 +36,33 @@ test('decodeProposalStateSummary rejects unsafe or non-count values', async () =
   )
   assert.throws(() => decodeProposalStateSummary({ total: '12', pending: 0n, active: 0n }))
 })
+
+test('decodeProposalVoteRewards reads named or indexed wei', async () => {
+  const { decodeProposalVoteRewards } = await loadModule('/src/web3/proposal/proposal-read.ts')
+  assert.deepEqual(
+    decodeProposalVoteRewards({
+      principal: 10n,
+      blockReward: 2n,
+      extraInterest: 1n,
+    }),
+    { principal: 10n, blockReward: 2n, extraInterest: 1n },
+  )
+  assert.deepEqual(decodeProposalVoteRewards([9n, 3n, 4n]), {
+    principal: 9n,
+    blockReward: 3n,
+    extraInterest: 4n,
+  })
+})
+
+test('decodeProposalVoteRewards rejects non-wei values', async () => {
+  const { decodeProposalVoteRewards } = await loadModule('/src/web3/proposal/proposal-read.ts')
+  assert.throws(() =>
+    decodeProposalVoteRewards({ principal: -1n, blockReward: 0n, extraInterest: 0n }),
+  )
+  assert.throws(() =>
+    decodeProposalVoteRewards({ principal: 1, blockReward: 0n, extraInterest: 0n }),
+  )
+  assert.throws(() =>
+    decodeProposalVoteRewards({ principal: '1', blockReward: 0n, extraInterest: 0n }),
+  )
+})

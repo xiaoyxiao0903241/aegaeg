@@ -26,11 +26,12 @@ test('parseProposalState accepts chain numbers and API names', async () => {
     '/src/core/proposal/proposal-state.ts',
   )
   assert.equal(parseProposalState(1), PROPOSAL_STATE.active)
-  assert.equal(parseProposalState(5n), PROPOSAL_STATE.expired)
-  assert.equal(parseProposalState(6), PROPOSAL_STATE.executed)
+  assert.equal(parseProposalState(5n), PROPOSAL_STATE.executed)
+  assert.equal(parseProposalState(6), null)
   assert.equal(parseProposalState('SUCCEEDED'), PROPOSAL_STATE.succeeded)
   assert.equal(parseProposalState('cancelled'), PROPOSAL_STATE.canceled)
-  assert.equal(parseProposalState('EXPIRED'), PROPOSAL_STATE.expired)
+  assert.equal(parseProposalState('EXECUTED'), PROPOSAL_STATE.executed)
+  assert.equal(parseProposalState('EXPIRED'), null)
   assert.equal(parseProposalState('nope'), null)
 })
 
@@ -200,6 +201,7 @@ test('closedNoteKey skips active and missing state', async () => {
   assert.equal(closedNoteKey(PROPOSAL_STATE.active), null)
   assert.equal(closedNoteKey(PROPOSAL_STATE.pending), 'pending')
   assert.equal(closedNoteKey(PROPOSAL_STATE.canceled), 'canceled')
+  assert.equal(closedNoteKey(PROPOSAL_STATE.executed), 'executed')
 })
 
 test('proposalRewardHasPlus only after voting ends for claimable/claimed', async () => {

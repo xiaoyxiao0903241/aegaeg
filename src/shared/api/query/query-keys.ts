@@ -377,6 +377,8 @@ export const queryKeys = {
     proposalLive: (ids: readonly number[]) =>
       ['chain', 'proposal', 'live', ...[...ids].sort((a, b) => a - b)] as const,
     proposalPositions: ['chain', 'proposal', 'positions'] as const,
+    proposalVoteRewards: (ids: readonly number[]) =>
+      ['chain', 'proposal', 'voteRewards', ...[...ids].sort((a, b) => a - b)] as const,
     proposalVoteSnapshot: (id: number) => ['chain', 'proposal', 'voteSnapshot', id] as const,
     proposalStateSummary: ['chain', 'proposal', 'stateSummary'] as const,
   },

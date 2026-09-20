@@ -16,6 +16,7 @@ const proposalAbi = parseAbi([
   AEGIS_PROPOSAL_METHODS.getProposal,
   AEGIS_PROPOSAL_METHODS.queryProposalState,
   AEGIS_PROPOSAL_METHODS.getProposalStateSummary,
+  AEGIS_PROPOSAL_METHODS.getVoteRewards,
   AEGIS_PROPOSAL_METHODS.getVoteReceipt,
   AEGIS_PROPOSAL_METHODS.getUserVotePositions,
 ])
@@ -39,7 +40,6 @@ export type ChainVotePosition = {
   proposalId: number
   support: VoteSupportValue | null
   principal: bigint
-  claimable: bigint
   state: ProposalStateValue | null
   withdrawable: boolean
   withdrawalDeadline: number
@@ -70,6 +70,17 @@ export type ProposalStateSummary = {
   active: number
 }
 
+/**
+ * getVoteRewards 三字段。可解锁金额 = 本金 + rebase + 额外利息。
+ *
+ * @see docs/onchain-manual/contracts/governance.md
+ */
+export type ProposalVoteRewards = {
+  principal: bigint
+  blockReward: bigint
+  extraInterest: bigint
+}
+
 function asNumber(value: unknown): number {
   if (typeof value === 'number') return value
   if (typeof value === 'bigint') return Number(value)
@@ -86,6 +97,12 @@ function asCount(value: unknown): number {
   }
   if (typeof value === 'number' && Number.isInteger(value) && value >= 0) return value
   throw new Error('proposal-state-summary')
+}
+
+/** 金额必须是非负 bigint，否则失败，不当 0。 */
+function asWei(value: unknown): bigint {
+  if (typeof value === 'bigint' && value >= 0n) return value
+  throw new Error('proposal-vote-rewards')
 }
 
 /**
@@ -118,6 +135,69 @@ export async function readProposalStateSummary(): Promise<ProposalStateSummary> 
     functionName: 'getProposalStateSummary',
   })
   return decodeProposalStateSummary(raw)
+}
+
+/**
+ * 解码 getVoteRewards 的本金、rebase 收益、额外利息。
+ *
+ * @param raw 合约返回值（具名或按下标）
+ * @returns 三字段 wei
+ * @see docs/onchain-manual/contracts/governance.md
+ */
+export function decodeProposalVoteRewards(raw: unknown): ProposalVoteRewards {
+  const row = raw as Record<string, unknown> & readonly unknown[]
+  return {
+    principal: asWei(row.principal ?? row[0]),
+    blockReward: asWei(row.blockReward ?? row[1]),
+    extraInterest: asWei(row.extraInterest ?? row[2]),
+  }
+}
+
+/**
+ * 当前页投票记录的可解锁金额。
+ *
+ * 同批 Multicall3 调 getVoteRewards；单槽失败跳过该 id，表格该格显示空。
+ *
+ * @param user 钱包地址
+ * @param ids 当前页提案 id
+ * @returns 提案 id → 三字段
+ * @see docs/onchain-manual/01-frontend-integration-guide.md
+ */
+export async function readProposalVoteRewardsByIds(
+  user: string,
+  ids: readonly number[],
+): Promise<Record<number, ProposalVoteRewards>> {
+  if (ids.length === 0) return {}
+  const target = BSC_CONTRACTS.aegisProposal
+  const voter = user as `0x${string}`
+  const results = await readAggregate3(
+    ids.map((id) => ({
+      target,
+      allowFailure: true,
+      callData: encodeFunctionData({
+        abi: proposalAbi,
+        functionName: 'getVoteRewards',
+        args: [BigInt(id), voter],
+      }),
+    })),
+  )
+  const out: Record<number, ProposalVoteRewards> = {}
+  ids.forEach((id, index) => {
+    const slot = results[index]
+    if (!slot?.success) return
+    try {
+      out[id] = decodeProposalVoteRewards(
+        decodeFunctionResult({
+          abi: proposalAbi,
+          functionName: 'getVoteRewards',
+          data: slot.returnData,
+        }),
+      )
+    } catch {
+      /* 该 id 缺数 */
+    }
+  })
+  return out
 }
 
 function asPositionRows(page: unknown): readonly unknown[] {
@@ -165,7 +245,6 @@ function decodePosition(raw: unknown): ChainVotePosition {
     proposalId: asNumber(row.proposalId ?? row[0]),
     support: parseVoteSupport(row.support ?? row[1]),
     principal: ((row.principal ?? row[2]) as bigint) ?? 0n,
-    claimable: ((row.claimable ?? row[3]) as bigint) ?? 0n,
     state: parseProposalState(row.proposalState ?? row[5]),
     withdrawable: Boolean(row.withdrawable ?? row[6]),
     withdrawalDeadline: asNumber(row.withdrawalDeadline ?? row[8]),

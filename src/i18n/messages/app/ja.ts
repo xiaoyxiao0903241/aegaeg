@@ -1568,7 +1568,6 @@ const app = defineMessages({
       succeeded: 'Passed',
       defeated: 'Defeated',
       canceled: 'Canceled',
-      expired: 'Expired',
       executed: 'Executed',
     },
     closed: {
@@ -1576,7 +1575,6 @@ const app = defineMessages({
       succeeded: 'The proposal passed and is being executed on-chain by the multisig contract.',
       executed: 'The proposal passed and has been executed on-chain.',
       canceled: 'The proposal was withdrawn by the proposer. Locked AGX has been fully unlocked.',
-      expired: 'This proposal expired without execution.',
       defeated: 'The proposal did not pass.',
     },
     blocked: {
@@ -1606,7 +1604,7 @@ const app = defineMessages({
     votesEmpty: 'Your votes will appear here after you participate.',
     rewardsTitle: 'Proposal rewards',
     rewardsEmpty: 'Proposal rewards will appear here after settlement.',
-    voteColumns: ['Proposal', 'Choice', 'Voting power', 'Status', 'Claimable reward', 'Lock'],
+    voteColumns: ['Proposal', 'Choice', 'Voting power', 'Status', 'Unlockable amount', 'Lock'],
     rewardColumns: ['Time', 'Proposal', 'Voting power', 'Reward', 'Status', 'Tx hash'],
     mechanismTitle: 'Proposal mechanics',
     mechanism: {
