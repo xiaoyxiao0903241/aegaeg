@@ -22,7 +22,9 @@ export type GovernanceListItem = {
 export type GovernanceDetail = {
   proposal_id: number
   title: string | null
+  /** 带格式的正文 HTML */
   content: string | null
+  /** 去标签纯文本；无 HTML 时作正文兜底 */
   content_text: string | null
   image_url: string | null
   start_time: number

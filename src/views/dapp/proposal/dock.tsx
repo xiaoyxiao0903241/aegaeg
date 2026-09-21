@@ -18,6 +18,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import type { ProposalView } from '~/stores/proposal-view-store'
 import { useProposalViewMotion } from '~/stores/proposal-view-store'
+import { PopupNoticeContent } from '~/views/dapp/host/notices/popup-notice-content'
 import {
   ProposalCodeLabel,
   ProposalListCard,
@@ -104,7 +105,7 @@ function ProposalVoteDock() {
       title={dock.selectedTitle ?? dock.selectedCode}
     >
       <DockStack>
-        <Card className="grid gap-3.5 p-4.5">
+        <Card className="grid min-w-0 gap-3.5 p-4.5">
           <div className="flex items-center justify-between gap-2.5">
             <ProposalCodeLabel>{dock.selectedCode}</ProposalCodeLabel>
             <ProposalStateBadge state={dock.selectedState}>
@@ -120,9 +121,7 @@ function ProposalVoteDock() {
               <Skeleton className="h-4 w-2/3" />
             </div>
           ) : dock.selectedBody ? (
-            <Text as="p" className="m-0 text-pretty text-foreground/60" variant="copy">
-              {dock.selectedBody}
-            </Text>
+            <PopupNoticeContent content={dock.selectedBody} />
           ) : null}
           <Text as="span" className="text-foreground/40 tabular-nums" variant="caption">
             {dock.selectedMeta}

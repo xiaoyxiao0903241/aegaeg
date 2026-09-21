@@ -305,7 +305,7 @@ export function useProposalDock() {
     closeDetail: closeProposalDetail,
     selectedCode: selectedId != null ? formatProposalCode(selectedId) : '',
     selectedTitle: selectedApi?.title ?? null,
-    selectedBody: selectedApi?.content_text ?? null,
+    selectedBody: selectedApi?.content?.trim() || selectedApi?.content_text?.trim() || null,
     detailLoading: selectedId != null && selectedApi == null && detailQuery.isLoading,
     selectedState,
     selectedMeta: interpolate(t.proposal.voteMeta, {
