@@ -31,6 +31,12 @@ import {
 } from '~/views/dapp/proposal/primitives'
 import { type ProposalVoteRow, useProposalDetail } from '~/views/dapp/proposal/use-proposal'
 
+/** 合约总数大于 1 时，卡片少显示 1；1 与空值原样。 */
+function displayProposalTotal(total: number | null | undefined): number | null | undefined {
+  if (total == null || total <= 1) return total
+  return total - 1
+}
+
 /** 参与率：接口可能给 0–1 或已经是百分比，统一打成整数 %。 */
 function formatParticipation(rate: number | null | undefined): string {
   if (rate == null || !Number.isFinite(rate)) return formatDecimal(null)
@@ -123,7 +129,10 @@ export function ProposalDetail() {
     </Section>
   )
 
-  const total = formatDecimal(summary?.total, { digits: 0, fraction: 'natural' })
+  const total = formatDecimal(displayProposalTotal(summary?.total), {
+    digits: 0,
+    fraction: 'natural',
+  })
   const active = formatDecimal(summary?.active, { digits: 0, fraction: 'natural' })
   const pending = formatDecimal(summary?.pending, { digits: 0, fraction: 'natural' })
   const participation = formatParticipation(stats?.recent_participation_rate)
