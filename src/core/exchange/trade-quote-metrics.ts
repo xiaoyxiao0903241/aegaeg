@@ -16,6 +16,18 @@ export function formatPriceImpactPercent(bps: number): string {
 }
 
 /**
+ * 熔断税基点 → 百分比。整数不补小数。
+ *
+ * @param bps 熔断税基点，如 3000
+ * @returns 如 `'30%'`
+ */
+export function formatFuseTaxPercent(bps: number): string {
+  const percent = bps / 100
+  const text = Number.isInteger(percent) ? String(percent) : percent.toFixed(2)
+  return `${text}%`
+}
+
+/**
  * 预估网络费用（wei）→ BNB 文案。已结算零值显式 `~0 BNB`，不用空串。
  *
  * @param wei 预估花费的 BNB wei

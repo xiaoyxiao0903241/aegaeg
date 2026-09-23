@@ -400,6 +400,7 @@ const app = defineMessages({
       action: 'Торговля',
       success: 'Сделка выполнена',
       priceImpact: 'Влияние на цену',
+      fuseTax: 'Налог предохранителя',
       estimatedGas: 'Оценка Gas сети',
       highPriceImpactWarning:
         'Эта сделка может сильно сдвинуть цену пула. Уменьшите сумму или повысьте допуск проскальзывания.',

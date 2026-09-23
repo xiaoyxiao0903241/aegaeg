@@ -404,6 +404,7 @@ const app = defineMessages({
       action: 'ट्रेड',
       success: 'ट्रेड सफल',
       priceImpact: 'मूल्य प्रभाव',
+      fuseTax: 'फ्यूज कर',
       estimatedGas: 'अनुमानित नेटवर्क Gas',
       highPriceImpactWarning:
         'यह ट्रेड पूल मूल्य को काफी हिला सकता है। छोटी राशि आज़माएँ या स्लिपेज टॉलरेंस बढ़ाएँ।',

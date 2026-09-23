@@ -401,6 +401,7 @@ const app = defineMessages({
       action: 'เทรด',
       success: 'เทรดสำเร็จ',
       priceImpact: 'ผลกระทบต่อราคา',
+      fuseTax: 'ภาษีฟิวส์',
       estimatedGas: 'Gas โดยประมาณ',
       highPriceImpactWarning: 'ธุรกรรมนี้อาจขยับราคาพูลมาก ลองลดจำนวนหรือเพิ่มสลิปเพจที่อนุญาต',
     },

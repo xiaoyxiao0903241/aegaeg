@@ -10,6 +10,12 @@ test('formatPriceImpactPercent uses two fraction digits including settled zero',
   assert.equal(formatPriceImpactPercent(123), '1.23%')
 })
 
+test('formatFuseTaxPercent drops trailing zeros on whole percents', async () => {
+  const { formatFuseTaxPercent } = await loadModule('/src/core/exchange/trade-quote-metrics.ts')
+  assert.equal(formatFuseTaxPercent(3000), '30%')
+  assert.equal(formatFuseTaxPercent(3025), '30.25%')
+})
+
 test('formatEstimatedGasBnb shows native BNB cost not gas units', async () => {
   const { formatEstimatedGasBnb } = await loadModule('/src/core/exchange/trade-quote-metrics.ts')
 

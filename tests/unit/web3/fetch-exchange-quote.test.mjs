@@ -13,6 +13,11 @@ const agxSellTaxAbi = parseAbi([
   'function blockSellQuotaBlock() view returns (uint256)',
   'function blockSellLimit() view returns (uint256)',
   'function grossSoldInBlock() view returns (uint256)',
+  'function blockSellThresholdBP() view returns (uint256)',
+  'function crashThresholdBP() view returns (uint256)',
+  'function pendingCrashThresholdBP() view returns (uint256)',
+  'function crashThresholdEffectiveBlock() view returns (uint256)',
+  'function crashThresholdUpdatePending() view returns (bool)',
 ])
 
 async function loadExchangeAddresses() {
@@ -84,6 +89,8 @@ function createMockClient({
   }
 }
 
+const blockNumberAbi = parseAbi(['function getBlockNumber() view returns (uint256)'])
+
 function encodeTaxResult(functionName, value) {
   return encodeFunctionResult({
     abi: agxSellTaxAbi,
@@ -92,13 +99,10 @@ function encodeTaxResult(functionName, value) {
   })
 }
 
-function createAgxSellClient({ tokenIn, tokenOut, taxValues }) {
+function createAgxSellClient({ tokenIn, tokenOut, taxValues, agxReserve = 10n ** 24n }) {
   return {
     calls: [],
     getAmountsOutArg: null,
-    async getBlockNumber() {
-      return 100n
-    },
     async readContract(request) {
       this.calls.push(['read', request.functionName, request.address])
       if (request.functionName === 'aggregate3') {
@@ -117,19 +121,49 @@ function createAgxSellClient({ tokenIn, tokenOut, taxValues }) {
             if (functionName === 'getReserves') {
               return {
                 success: true,
-                returnData: encodePairResult('getReserves', [10n ** 24n, 10n ** 15n, 0]),
+                returnData: encodePairResult('getReserves', [agxReserve, 10n ** 15n, 0]),
               }
             }
           } catch {
-            // tax batch
+            // 税额或区块号
+          }
+          try {
+            const { functionName } = decodeFunctionData({
+              abi: blockNumberAbi,
+              data: call.callData,
+            })
+            if (functionName === 'getBlockNumber') {
+              return {
+                success: true,
+                returnData: encodeFunctionResult({
+                  abi: blockNumberAbi,
+                  functionName: 'getBlockNumber',
+                  result: 100n,
+                }),
+              }
+            }
+          } catch {
+            // 税额
           }
           const { functionName } = decodeFunctionData({
             abi: agxSellTaxAbi,
             data: call.callData,
           })
           const value = taxValues[functionName]
-          if (value === undefined) throw new Error(`unexpected aggregate3 ${functionName}`)
-          return { success: true, returnData: encodeTaxResult(functionName, value) }
+          if (value !== undefined) {
+            return { success: true, returnData: encodeTaxResult(functionName, value) }
+          }
+          if (
+            functionName === 'crashFuseActive' ||
+            functionName === 'crashThresholdUpdatePending'
+          ) {
+            return { success: true, returnData: encodeTaxResult(functionName, false) }
+          }
+          const defaultBps =
+            functionName === 'blockSellThresholdBP' || functionName === 'crashThresholdBP'
+              ? 500n
+              : 0n
+          return { success: true, returnData: encodeTaxResult(functionName, defaultBps) }
         })
       }
       if (request.functionName === 'getAmountsOut') {
@@ -170,6 +204,7 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
   assert.equal(result.quotedOut, quotedOut)
   assert.equal(result.tokenIn, usd1)
   assert.equal(result.tokenOut, agx)
+  assert.equal(result.fuseTaxBps, null)
   assert.ok(result.priceImpactBps > 0)
   assert.equal(result.gasCostWei, null)
   assert.ok(client.calls.some((c) => c[0] === 'read' && c[1] === 'getAmountsOut'))
@@ -214,6 +249,7 @@ test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', 
 
   assert.equal(client.getAmountsOutArg, netIn)
   assert.equal(result.quotedOut, netIn / 2n)
+  assert.equal(result.fuseTaxBps, 3000)
   assert.ok(client.calls.some((c) => c[1] === 'aggregate3'))
 })
 
@@ -242,7 +278,7 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
     },
   })
 
-  await withBscReadClient(client, () =>
+  const result = await withBscReadClient(client, () =>
     fetchExchangeQuote({
       amountIn,
       tokenIn: agx,
@@ -251,6 +287,44 @@ test('fetchExchangeQuote AGX sell uses extraSellBP when block sell limit exceede
   )
 
   assert.equal(client.getAmountsOutArg, netIn)
+  assert.equal(result.fuseTaxBps, 3000)
+})
+
+test('fetchExchangeQuote AGX sell recomputes a stale block limit from pool reserves', async () => {
+  const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
+  const { clearExchangePoolImmutableCache } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+  const { agx, usd1 } = await loadExchangeAddresses()
+  clearExchangePoolImmutableCache()
+
+  const amountIn = 5_001n
+  const netIn = (amountIn * 7_000n) / 10_000n
+  const client = createAgxSellClient({
+    tokenIn: agx,
+    tokenOut: usd1,
+    agxReserve: 200_000n,
+    taxValues: {
+      sellRatio: 350n,
+      extraSellBP: 3000n,
+      crashFuseActive: false,
+      blockSellQuotaBlock: 99n,
+      blockSellLimit: 1_000_000n,
+      grossSoldInBlock: 0n,
+      crashThresholdBP: 500n,
+    },
+  })
+
+  const result = await withBscReadClient(client, () =>
+    fetchExchangeQuote({
+      amountIn,
+      tokenIn: agx,
+      tokenOut: usd1,
+    }),
+  )
+
+  assert.equal(client.getAmountsOutArg, netIn)
+  assert.equal(result.fuseTaxBps, 3000)
 })
 
 test('fetchExchangeQuote X to AGX uses post-tax amountIn for getAmountsOut', async () => {
@@ -289,6 +363,7 @@ test('fetchExchangeQuote X to AGX uses post-tax amountIn for getAmountsOut', asy
 
   assert.equal(client.getAmountsOutArg, netIn)
   assert.equal(result.quotedOut, netIn / 2n)
+  assert.equal(result.fuseTaxBps, null)
 })
 
 test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () => {

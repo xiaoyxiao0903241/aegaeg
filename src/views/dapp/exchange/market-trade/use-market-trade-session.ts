@@ -10,6 +10,7 @@ import {
 import { autoTradeSlippagePercent, resolveTradeSlippagePercent } from '~/core/exchange/trade-path'
 import {
   formatEstimatedGasBnb,
+  formatFuseTaxPercent,
   formatPriceImpactPercent,
   marketTradeInfoMetricLabel,
 } from '~/core/exchange/trade-quote-metrics'
@@ -39,6 +40,18 @@ import { fetchExchangeQuote } from '~/web3/exchange/exchange-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+
+function quoteMatchesPair<T extends { tokenIn: string; tokenOut: string }>(
+  quote: T | null | undefined,
+  sell: string,
+  buy: string,
+): quote is T {
+  return (
+    quote != null &&
+    quote.tokenIn.toLowerCase() === sell.toLowerCase() &&
+    quote.tokenOut.toLowerCase() === buy.toLowerCase()
+  )
+}
 
 /**
  * 市价交易会话状态
@@ -136,7 +149,8 @@ export function useMarketTradeSession(
         slippageBps,
         allowance,
       }),
-    selectQuotedOut: (quote) => quote?.quotedOut ?? ZERO_BI,
+    selectQuotedOut: (quote) =>
+      quoteMatchesPair(quote, pair.sell.address, pair.buy.address) ? quote.quotedOut : ZERO_BI,
   })
 
   const spot = useMarketTradeSpotRates({
@@ -147,7 +161,13 @@ export function useMarketTradeSession(
     amountIn: core.amountIn,
   })
 
-  const amountQuote = core.amountQuoteQuery.data
+  const amountQuote = quoteMatchesPair(
+    core.amountQuoteQuery.data,
+    pair.sell.address,
+    pair.buy.address,
+  )
+    ? core.amountQuoteQuery.data
+    : null
   const priceImpactBps = amountQuote?.priceImpactBps ?? null
   const metricsReady = sessionReady && core.amountIn > ZERO_BI
   const quoteSettled = amountQuote != null
@@ -175,6 +195,10 @@ export function useMarketTradeSession(
         ? null
         : formatEstimatedGasBnb(amountQuote.gasCostWei),
   )
+  const fuseTaxLabel =
+    metricsReady && quoteSettled && amountQuote.fuseTaxBps != null
+      ? formatFuseTaxPercent(amountQuote.fuseTaxBps)
+      : null
   const isHighPriceImpact =
     sessionReady &&
     core.amountIn > ZERO_BI &&
@@ -247,6 +271,7 @@ export function useMarketTradeSession(
     routeLabel,
     pancakeSwapUrl,
     priceImpactLabel,
+    fuseTaxLabel,
     gasEstimateLabel,
     isHighPriceImpact,
     walletReady,

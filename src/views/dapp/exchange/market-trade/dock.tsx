@@ -3,13 +3,18 @@
  *
  * 卖出可选 USD1 / AGX / X；买入随卖出变化（USD1↔AGX，X 可买 USD1 或 AGX）。
  * 买入只有一个时不下拉。卖出为 X 时禁用翻转。信息行展示汇率、滑点、价格影响与预估 Gas。
+ * 卖出且本笔按熔断税计费时，在价格影响下多一行百分比，高度缓动展开或收起。
  */
+import { useState } from 'react'
+
 import { dappAssets } from '~/shared/assets/dapp'
 import { CountValue } from '~/shared/components/count-value'
 import { FormActions } from '~/shared/components/form-actions'
 import { FormInfoCard } from '~/shared/components/form-info-card'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { List } from '~/shared/components/list'
+import { Reveal } from '~/shared/components/reveal'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -26,6 +31,23 @@ import { DockConnectPromo } from '~/views/dapp/shared/dock-connect-promo'
 import { DockStack } from '~/views/dapp/shared/dock-frame'
 import { SessionButton } from '~/views/dapp/shared/session-button'
 import { TabHeader } from '~/views/dapp/shared/tab-header'
+
+/** 熔断税行：收起时留住上一档百分比，避免高度还在缩、文字已经空了。 */
+function FuseTaxRow({ label, title }: { label: string | null; title: string }) {
+  const [shown, setShown] = useState(label)
+  if (label != null && label !== shown) setShown(label)
+
+  return (
+    <Reveal open={label != null}>
+      <div className="flex items-center justify-between gap-3 pt-2.5">
+        <List.Label>{title}</List.Label>
+        <List.Value>
+          <CountValue text={shown ?? ''} />
+        </List.Value>
+      </div>
+    </Reveal>
+  )
+}
 
 export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
   const vm = useMarketTradeDock(trade)
@@ -137,6 +159,16 @@ export function MarketTradeDock({ trade }: { trade: MarketTradeState }) {
                       label: t.exchange.trade.priceImpact,
                       value: <CountValue text={trade.priceImpactLabel} />,
                     },
+                  ]
+                : []),
+            ]}
+          />
+          <FuseTaxRow label={trade.fuseTaxLabel} title={t.exchange.trade.fuseTax} />
+          <FormInfoCard.Rows
+            className="pt-2.5"
+            items={[
+              ...(vm.sessionReady && trade.sellAmount.trim().length > 0
+                ? [
                     {
                       label: t.exchange.trade.estimatedGas,
                       value: <CountValue text={trade.gasEstimateLabel} />,

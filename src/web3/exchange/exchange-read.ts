@@ -1,6 +1,7 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import {
+  agxFuseTaxDisplayBps,
   agxSellTaxBps,
   applyAgxSellTaxToAmountIn,
   effectiveAgxSellTaxBps,
@@ -11,7 +12,7 @@ import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import { applyXSellTaxToAmountIn, isXSellPath } from '~/core/exchange/x-sell-tax'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { AGX_SELL_TAX_METHODS, ERC20_METHODS } from '~/web3/abis'
+import { AGX_SELL_TAX_METHODS, ERC20_METHODS, PANCAKE_PAIR_V2_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { estimateMarketSwapGasWei } from '~/web3/exchange/estimate-market-swap-gas'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
@@ -34,6 +35,8 @@ export interface ExchangeQuoteResult {
   tokenOut: `0x${string}`
   /** 仅 USD1/AGX 直连池可算；未知时 null，UI 显示「—」。 */
   priceImpactBps: number | null
+  /** 卖出且本笔按熔断税计费时的基点；买入或只收基础税时为 null。 */
+  fuseTaxBps: number | null
   /**
    * 本笔兑换预估网络费用（BNB wei）。
    * 未请求或 RPC/滑点等真失败时为 null（报价本身仍可用）。
@@ -51,50 +54,99 @@ const agxSellTaxAbi = parseAbi([
   AGX_SELL_TAX_METHODS.blockSellQuotaBlock,
   AGX_SELL_TAX_METHODS.blockSellLimit,
   AGX_SELL_TAX_METHODS.grossSoldInBlock,
+  AGX_SELL_TAX_METHODS.blockSellThresholdBP,
+  AGX_SELL_TAX_METHODS.crashThresholdBP,
+  AGX_SELL_TAX_METHODS.pendingCrashThresholdBP,
+  AGX_SELL_TAX_METHODS.crashThresholdEffectiveBlock,
+  AGX_SELL_TAX_METHODS.crashThresholdUpdatePending,
 ])
 
+const pairReservesAbi = parseAbi([PANCAKE_PAIR_V2_METHODS.getReserves])
+const multicallBlockAbi = parseAbi(['function getBlockNumber() view returns (uint256)'])
+
+const AGX_SELL_TAX_CALLS = [
+  'sellRatio',
+  'extraSellBP',
+  'crashFuseActive',
+  'blockSellQuotaBlock',
+  'blockSellLimit',
+  'grossSoldInBlock',
+  'blockSellThresholdBP',
+  'crashThresholdBP',
+  'pendingCrashThresholdBP',
+  'crashThresholdEffectiveBlock',
+  'crashThresholdUpdatePending',
+] as const
+
+type AgxSellTaxState = {
+  crashFuseActive: boolean
+  sellRatio: bigint
+  extraSellBP: bigint
+  amountIn: bigint
+  blockSellLimit: bigint
+  grossSoldInBlock: bigint
+  blockSellQuotaBlock: bigint
+  currentBlock: bigint
+  blockSellThresholdBps: bigint
+  crashThresholdBps: bigint
+  pendingCrashThresholdBps: bigint
+  crashThresholdEffectiveBlock: bigint
+  crashThresholdUpdatePending: boolean
+}
+
+function sellTaxFromState(state: AgxSellTaxState, agxReserve: bigint | null) {
+  const taxInput = { ...state, agxReserve }
+  if (state.amountIn > 0n) {
+    return {
+      taxBps: effectiveAgxSellTaxBps(taxInput),
+      fuseTaxBps: agxFuseTaxDisplayBps(taxInput),
+    }
+  }
+  return {
+    taxBps: agxSellTaxBps(taxInput),
+    fuseTaxBps: null as number | null,
+  }
+}
+
 /**
- * 读取 AGX 卖税基点（含单区块额度越限 / 陈旧额度 → 防御税）。
+ * 读取这一笔 AGX 卖税要用的链上数。
  *
- * @param amountIn 本笔毛卖出量；>0 时走 effective（卖出路径必传）
+ * 区块号、跌幅阈值和池子储备在同一次 multicall 里，避免卡在额度边上时判错税率。
+ *
+ * @param amountIn 本笔毛卖出量
+ * @param pair AGX 池地址
  * @see docs/onchain-manual/contracts/agx.md
  */
-export async function readAgxSellTaxBps(
-  agx: `0x${string}` = BSC_CONTRACTS.agx,
-  amountIn: bigint = 0n,
-): Promise<number> {
-  const taxCalls = (
-    [
-      'sellRatio',
-      'extraSellBP',
-      'crashFuseActive',
-      'blockSellQuotaBlock',
-      'blockSellLimit',
-      'grossSoldInBlock',
-    ] as const
-  ).map((functionName) => ({
+async function readAgxSellTaxState(
+  agx: `0x${string}`,
+  pair: `0x${string}`,
+  amountIn: bigint,
+): Promise<AgxSellTaxState & { reserve0: bigint; reserve1: bigint }> {
+  const taxCalls = AGX_SELL_TAX_CALLS.map((functionName) => ({
     target: agx,
     callData: encodeFunctionData({
       abi: agxSellTaxAbi,
       functionName,
     }),
   }))
+  const calls = [
+    ...taxCalls,
+    {
+      target: BSC_CONTRACTS.multicall3,
+      callData: encodeFunctionData({ abi: multicallBlockAbi, functionName: 'getBlockNumber' }),
+    },
+    {
+      target: pair,
+      callData: encodeFunctionData({ abi: pairReservesAbi, functionName: 'getReserves' }),
+    },
+  ]
 
-  const [taxResults, currentBlock] = await Promise.all([
-    readAggregate3(taxCalls),
-    bscReadClient.getBlockNumber(),
-  ])
+  const taxResults = await readAggregate3(calls)
+  const blockIndex = AGX_SELL_TAX_CALLS.length
+  const reserveIndex = blockIndex + 1
 
-  const decodeTax = <T>(
-    index: number,
-    functionName:
-      | 'sellRatio'
-      | 'extraSellBP'
-      | 'crashFuseActive'
-      | 'blockSellQuotaBlock'
-      | 'blockSellLimit'
-      | 'grossSoldInBlock',
-  ): T => {
+  const decodeTax = <T>(index: number): T => {
+    const functionName = AGX_SELL_TAX_CALLS[index]
     const slot = taxResults[index]
     if (!slot?.success) throw new Error(`AGX_SELL_TAX_MULTICALL_FAILED:${functionName}`)
     return decodeFunctionResult({
@@ -104,27 +156,38 @@ export async function readAgxSellTaxBps(
     }) as T
   }
 
-  const sellRatio = decodeTax<bigint>(0, 'sellRatio')
-  const extraSellBP = decodeTax<bigint>(1, 'extraSellBP')
-  const crashFuseActive = decodeTax<boolean>(2, 'crashFuseActive')
-  const blockSellQuotaBlock = decodeTax<bigint>(3, 'blockSellQuotaBlock')
-  const blockSellLimit = decodeTax<bigint>(4, 'blockSellLimit')
-  const grossSoldInBlock = decodeTax<bigint>(5, 'grossSoldInBlock')
+  const blockSlot = taxResults[blockIndex]
+  if (!blockSlot?.success) throw new Error('AGX_SELL_TAX_MULTICALL_FAILED:getBlockNumber')
+  const reserveSlot = taxResults[reserveIndex]
+  if (!reserveSlot?.success) throw new Error('AGX_SELL_TAX_MULTICALL_FAILED:getReserves')
+  const currentBlock = decodeFunctionResult({
+    abi: multicallBlockAbi,
+    functionName: 'getBlockNumber',
+    data: blockSlot.returnData,
+  })
+  const [reserve0, reserve1] = decodeFunctionResult({
+    abi: pairReservesAbi,
+    functionName: 'getReserves',
+    data: reserveSlot.returnData,
+  })
 
-  if (amountIn > 0n) {
-    return effectiveAgxSellTaxBps({
-      crashFuseActive,
-      sellRatio,
-      extraSellBP,
-      amountIn,
-      blockSellLimit,
-      grossSoldInBlock,
-      blockSellQuotaBlock,
-      currentBlock,
-    })
+  return {
+    crashFuseActive: decodeTax<boolean>(2),
+    sellRatio: decodeTax<bigint>(0),
+    extraSellBP: decodeTax<bigint>(1),
+    amountIn,
+    blockSellLimit: decodeTax<bigint>(4),
+    grossSoldInBlock: decodeTax<bigint>(5),
+    blockSellQuotaBlock: decodeTax<bigint>(3),
+    currentBlock,
+    blockSellThresholdBps: decodeTax<bigint>(6),
+    crashThresholdBps: decodeTax<bigint>(7),
+    pendingCrashThresholdBps: decodeTax<bigint>(8),
+    crashThresholdEffectiveBlock: decodeTax<bigint>(9),
+    crashThresholdUpdatePending: decodeTax<boolean>(10),
+    reserve0,
+    reserve1,
   }
-
-  return agxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
 }
 /** 读取任意 ERC20 代币余额（原始单位，未按 decimals 换算）。 */
 export async function readErc20Balance(address: `0x${string}`, owner: string): Promise<bigint> {
@@ -200,15 +263,29 @@ export async function fetchExchangeQuote({
   const sellingAgx = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
   const sellingX = isXSellPath(tokenIn, BSC_CONTRACTS.xToken)
 
-  const [ctx, sellTaxBps] = await Promise.all([
+  const [ctx, taxState] = await Promise.all([
     poolContext ? Promise.resolve(poolContext) : readExchangePoolReadContext(EXCHANGE_CONFIG.pool),
-    sellingAgx ? readAgxSellTaxBps(BSC_CONTRACTS.agx, amountIn) : Promise.resolve(0),
+    sellingAgx
+      ? readAgxSellTaxState(BSC_CONTRACTS.agx, EXCHANGE_CONFIG.pool, amountIn)
+      : Promise.resolve(null),
   ])
   const { pool, spot } = ctx
+  const agxReserve = taxState
+    ? (pairReservesForTokenIn({
+        tokenIn: BSC_CONTRACTS.agx,
+        token0: pool.token0,
+        token1: pool.token1,
+        reserve0: taxState.reserve0,
+        reserve1: taxState.reserve1,
+      })?.reserveIn ?? null)
+    : null
+  const sellTax = taxState
+    ? sellTaxFromState(taxState, agxReserve)
+    : { taxBps: 0, fuseTaxBps: null }
 
   // 交易对收到的是扣税后的数量，Router.getAmountsOut 必须用净额报价
   const amountInForQuote = sellingAgx
-    ? applyAgxSellTaxToAmountIn(amountIn, sellTaxBps)
+    ? applyAgxSellTaxToAmountIn(amountIn, sellTax.taxBps)
     : sellingX
       ? applyXSellTaxToAmountIn(amountIn)
       : amountIn
@@ -263,6 +340,7 @@ export async function fetchExchangeQuote({
     tokenIn,
     tokenOut,
     priceImpactBps,
+    fuseTaxBps: sellTax.fuseTaxBps,
     gasCostWei,
   }
 }

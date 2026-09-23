@@ -36,6 +36,11 @@ export const AGX_SELL_TAX_METHODS = {
   blockSellQuotaBlock: 'function blockSellQuotaBlock() view returns (uint256)',
   blockSellLimit: 'function blockSellLimit() view returns (uint256)',
   grossSoldInBlock: 'function grossSoldInBlock() view returns (uint256)',
+  blockSellThresholdBP: 'function blockSellThresholdBP() view returns (uint256)',
+  crashThresholdBP: 'function crashThresholdBP() view returns (uint256)',
+  pendingCrashThresholdBP: 'function pendingCrashThresholdBP() view returns (uint256)',
+  crashThresholdEffectiveBlock: 'function crashThresholdEffectiveBlock() view returns (uint256)',
+  crashThresholdUpdatePending: 'function crashThresholdUpdatePending() view returns (bool)',
 } as const
 
 /**

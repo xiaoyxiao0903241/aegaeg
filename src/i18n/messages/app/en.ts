@@ -398,6 +398,7 @@ const app = defineMessages({
       action: 'Trade',
       success: 'Trade successful',
       priceImpact: 'Price impact',
+      fuseTax: 'Fuse tax',
       estimatedGas: 'Est. network gas',
       highPriceImpactWarning:
         'This trade may move the pool price significantly. Try a smaller amount or increase slippage tolerance.',

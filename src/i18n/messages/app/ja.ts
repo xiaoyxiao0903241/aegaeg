@@ -410,6 +410,7 @@ const app = defineMessages({
       action: '取引',
       success: '取引成功',
       priceImpact: '価格影響',
+      fuseTax: 'ヒューズ税',
       estimatedGas: '推定 Gas',
       highPriceImpactWarning:
         '現在の取引額はプール価格への影響が大きいです。金額を減らすか、スリッページ許容度を上げてください。',

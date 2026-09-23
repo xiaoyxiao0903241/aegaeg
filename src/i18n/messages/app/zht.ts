@@ -396,6 +396,7 @@ const app = defineMessages({
       action: '交易',
       success: '交易成功',
       priceImpact: '價格影響',
+      fuseTax: '熔斷稅',
       estimatedGas: '預估 Gas',
       highPriceImpactWarning: '當前交易額對池子價格影響較大，建議減小金額或提高滑點容忍度。',
     },

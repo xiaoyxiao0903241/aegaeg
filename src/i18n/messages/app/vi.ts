@@ -400,6 +400,7 @@ const app = defineMessages({
       action: 'Giao dịch',
       success: 'Giao dịch thành công',
       priceImpact: 'Tác động giá',
+      fuseTax: 'Thuế ngắt mạch',
       estimatedGas: 'Ước tính Gas',
       highPriceImpactWarning:
         'Khối lượng giao dịch hiện tại ảnh hưởng giá hồ khá lớn; nên giảm số lượng hoặc tăng độ trượt giá cho phép.',

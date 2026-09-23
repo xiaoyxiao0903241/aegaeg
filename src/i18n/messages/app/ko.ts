@@ -405,6 +405,7 @@ const app = defineMessages({
       action: '거래',
       success: '거래 성공',
       priceImpact: '가격 영향',
+      fuseTax: '퓨즈 세금',
       estimatedGas: '예상 Gas',
       highPriceImpactWarning:
         '현재 거래액이 풀 가격에 미치는 영향이 큽니다. 금액을 줄이거나 슬리피지 허용치를 높여 보세요.',

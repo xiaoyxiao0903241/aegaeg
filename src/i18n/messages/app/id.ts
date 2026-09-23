@@ -408,6 +408,7 @@ const app = defineMessages({
       action: 'Perdagangan',
       success: 'Perdagangan berhasil',
       priceImpact: 'Dampak harga',
+      fuseTax: 'Pajak fuse',
       estimatedGas: 'Estimasi Gas',
       highPriceImpactWarning:
         'Trade ini dapat menggerakkan harga pool secara signifikan. Coba jumlah lebih kecil atau tingkatkan toleransi slippage.',

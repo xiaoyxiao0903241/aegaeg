@@ -408,6 +408,7 @@ const app = defineMessages({
       action: 'Operar',
       success: 'Operación exitosa',
       priceImpact: 'Impacto en el precio',
+      fuseTax: 'Impuesto de fusible',
       estimatedGas: 'Gas estimado',
       highPriceImpactWarning:
         'Esta operación puede mover mucho el precio del pool. Prueba un monto menor o sube la tolerancia de deslizamiento.',

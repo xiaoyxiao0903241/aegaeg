@@ -402,6 +402,7 @@ const app = defineMessages({
       action: 'İşlem',
       success: 'İşlem başarılı',
       priceImpact: 'Fiyat etkisi',
+      fuseTax: 'Sigorta vergisi',
       estimatedGas: 'Tahmini Gas',
       highPriceImpactWarning:
         'Bu işlem havuz fiyatını önemli ölçüde etkileyebilir. Tutarı düşürün veya kayma toleransını artırın.',

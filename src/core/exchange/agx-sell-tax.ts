@@ -37,16 +37,7 @@ function assertAgxSellTaxBps(raw: bigint): number {
   return Number(raw)
 }
 
-/**
- * 有效卖出税（BPS）。
- *
- * - 额度观测块 ≠ 当前块 → 视同新块首笔（gross 归零），再按额度 / 熔断选税
- * - 同块且 `nextGross > blockSellLimit`，或 `blockSellLimit === 0 && amountIn > 0` → extraSellBP
- * - 否则按熔断选 fuse/sellRatio
- *
- * @see docs/onchain-manual/contracts/agx.md § 单区块额度
- */
-export function effectiveAgxSellTaxBps(args: {
+type AgxSellTaxInput = {
   crashFuseActive: boolean
   sellRatio: bigint
   extraSellBP: bigint
@@ -55,23 +46,88 @@ export function effectiveAgxSellTaxBps(args: {
   grossSoldInBlock: bigint
   blockSellQuotaBlock: bigint
   currentBlock: bigint
-}): number {
-  // 观测块陈旧 → 合约会在新块重置 gross；勿因陈旧块单独强制 extra
+  /** 当前池子里的 AGX 储备。缺省时沿用合约已冻结的 blockSellLimit。 */
+  agxReserve?: bigint | null
+  /** 本区块已冻结的跌幅阈值。同块收紧额度时用。 */
+  blockSellThresholdBps?: bigint
+  /** 当前配置的跌幅阈值。新区块首笔冻结时用。 */
+  crashThresholdBps?: bigint
+  pendingCrashThresholdBps?: bigint
+  crashThresholdEffectiveBlock?: bigint
+  crashThresholdUpdatePending?: boolean
+}
+
+/** 低税额度 = 储备 × floor(跌幅阈值 / 2) / 10000。 */
+function agxLowTaxSellLimit(agxReserve: bigint, thresholdBps: bigint): bigint {
+  if (agxReserve <= 0n || thresholdBps <= 0n) return 0n
+  return (agxReserve * (thresholdBps / 2n)) / BPS_DENOM
+}
+
+function thresholdForNewBlock(args: AgxSellTaxInput): bigint {
+  const pendingDue =
+    args.crashThresholdUpdatePending === true &&
+    args.currentBlock >= (args.crashThresholdEffectiveBlock ?? 0n)
+  if (pendingDue) return args.pendingCrashThresholdBps ?? 0n
+  return args.crashThresholdBps ?? 0n
+}
+
+/**
+ * 这一笔会被拿去比较的低税额度。
+ *
+ * 观测块不是当前块：按当前储备重新冻结，不用上一块留下的额度。
+ * 同一区块：按当前储备重算后只收紧、不放大。
+ * 没有储备读数时沿用已冻结额度。
+ */
+function resolveAgxBlockSellLimit(args: AgxSellTaxInput): bigint {
+  const sameBlock = args.blockSellQuotaBlock === args.currentBlock
+  if (args.agxReserve == null) return args.blockSellLimit
+
+  const threshold = sameBlock ? (args.blockSellThresholdBps ?? 0n) : thresholdForNewBlock(args)
+  const live = agxLowTaxSellLimit(args.agxReserve, threshold)
+  if (!sameBlock) return live
+  return live < args.blockSellLimit ? live : args.blockSellLimit
+}
+
+/**
+ * 本笔是否按防御税率计费。
+ *
+ * 持续熔断开着，或本笔毛量撑破这一笔的低税额度时为 true。
+ * 额度观测块不是当前块时，已卖出量按 0 算。
+ */
+function usesAgxDefenseSellTax(args: AgxSellTaxInput): boolean {
   const grossSoldInBlock =
     args.blockSellQuotaBlock === args.currentBlock ? args.grossSoldInBlock : 0n
-
+  const limit = resolveAgxBlockSellLimit(args)
   const nextGross = grossSoldInBlock + args.amountIn
-  const overBlockLimit =
-    nextGross > args.blockSellLimit || (args.blockSellLimit === 0n && args.amountIn > 0n)
-  if (overBlockLimit) {
-    return assertAgxSellTaxBps(args.extraSellBP)
-  }
+  const overBlockLimit = nextGross > limit || (limit === 0n && args.amountIn > 0n)
+  return overBlockLimit || args.crashFuseActive
+}
 
-  return agxSellTaxBps({
-    crashFuseActive: args.crashFuseActive,
-    sellRatio: args.sellRatio,
-    extraSellBP: args.extraSellBP,
-  })
+/**
+ * 有效卖出税（BPS）。
+ *
+ * 防御路径用 extraSellBP，否则用基础 sellRatio。
+ *
+ * @see docs/onchain-manual/contracts/agx.md § 单区块额度
+ */
+export function effectiveAgxSellTaxBps(args: AgxSellTaxInput): number {
+  const raw = usesAgxDefenseSellTax(args) ? args.extraSellBP : args.sellRatio
+  return assertAgxSellTaxBps(raw)
+}
+
+/**
+ * 信息区要展示的熔断税（BPS）。
+ *
+ * 本笔按防御税率计费时返回 extraSellBP，只收基础卖出税时返回 null。
+ * 买入不调用。
+ *
+ * @param args 与有效卖出税相同的链上读数和本笔数量
+ * @returns 熔断税 BPS；无熔断税时 null
+ * @see docs/onchain-manual/contracts/agx.md
+ */
+export function agxFuseTaxDisplayBps(args: AgxSellTaxInput): number | null {
+  if (!usesAgxDefenseSellTax(args)) return null
+  return assertAgxSellTaxBps(args.extraSellBP)
 }
 
 /**
