@@ -5,6 +5,8 @@ import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plan
 import { ZERO_ADDRESS } from '~/core/constants'
 import { pickFirstClaimPage, RELEASE_CLAIM_PAGE } from '~/core/release/pick-release-claim-page'
 import { unvestedRemaining } from '~/core/release/release-block-reasons'
+import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
+import { apiRequest } from '~/shared/api/request'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   AEGIS_SPLITTER_MANAGER_METHODS,
@@ -37,7 +39,7 @@ const SPLITTER_CHAIN_MAX = 8
 export type ReleaseQueuePlanRow = {
   planIndex: number
   durationDays: number | null
-  /** 当前 50 条窗待领（CTA / 一键领取） */
+  /** 当前领取窗待领（CTA / 一键领取） */
   claimable: bigint
   /** 整档已解锁合计（进度 / Hub） */
   overallClaimable: bigint
@@ -190,18 +192,51 @@ export async function readEffectiveReleaseDuration(address: Address): Promise<bi
   })) as bigint
 }
 
+const RELEASE_CLAIM_PAGE_KEY = ['api', 'sysConfig', 'RELEASE_POOL_CLAIM_DETAIL_LIMIT'] as const
+
+/**
+ * 释放池每次领取的条数。
+ *
+ * 成功结果交给查询缓存 5 分钟。出错时用上一次成功值，还没有就用默认 50。
+ *
+ * @returns 领取窗条数
+ * @see POST /api/sys-config/RELEASE_POOL_CLAIM_DETAIL_LIMIT
+ */
+function releaseClaimPageSize(): Promise<number> {
+  return queryClient
+    .fetchQuery({
+      queryKey: RELEASE_CLAIM_PAGE_KEY,
+      staleTime: QUERY_STALE_TIME.api,
+      queryFn: async () => {
+        const data = await apiRequest<{ value?: unknown }>(
+          '/sys-config/RELEASE_POOL_CLAIM_DETAIL_LIMIT',
+          { method: 'POST', body: {} },
+        )
+        const raw = typeof data.value === 'string' ? data.value.trim() : ''
+        if (!/^[1-9]\d*$/.test(raw)) throw new Error('RELEASE_POOL_CLAIM_DETAIL_LIMIT_INVALID')
+        const parsed = Number(raw)
+        if (!Number.isSafeInteger(parsed))
+          throw new Error('RELEASE_POOL_CLAIM_DETAIL_LIMIT_INVALID')
+        return parsed
+      },
+    })
+    .catch(() => queryClient.getQueryData<number>(RELEASE_CLAIM_PAGE_KEY) ?? RELEASE_CLAIM_PAGE)
+}
+
 /**
  * 读取用户释放队列汇总。
  *
  * 按前端四档（5/20/40/60 天）匹配链上计划写入固定槽位；链上多出的档位
  * 仅在有余额时追加（读取失败不强行阻断）。
- * CTA 待领为当前 50 条窗（getReleasedRewardsWithOffset）；整档合计仍读 planIndex。
+ * CTA 待领为当前领取窗（getReleasedRewardsWithOffset）；整档合计仍读 planIndex。
+ * 窗宽来自领取条数配置：出错用上一次成功值，还没有则用默认 50。
  *
  * @param address 钱包地址
  * @returns 释放队列汇总快照
  * @see 手册 §12 RewardQueue 奖励释放队列
  */
 export async function readReleaseQueueSnapshot(address: Address): Promise<ReleaseQueueSnapshot> {
+  const claimPageSize = await releaseClaimPageSize()
   const durationPlans = await readReleaseQueuePlans()
   const queue = BSC_CONTRACTS.rewardQueue
 
@@ -316,8 +351,8 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
   for (let i = 0; i < sized.length; i++) {
     const row = sized[i]!
     if (row.overallClaimable <= 0n || row.size <= 0) continue
-    for (let start = 0; start < row.size; start += RELEASE_CLAIM_PAGE) {
-      const limit = Math.min(RELEASE_CLAIM_PAGE, row.size - start)
+    for (let start = 0; start < row.size; start += claimPageSize) {
+      const limit = Math.min(claimPageSize, row.size - start)
       offsetCalls.push({
         target: queue,
         callData: encodeFunctionData({
@@ -353,6 +388,7 @@ export async function readReleaseQueueSnapshot(address: Address): Promise<Releas
     const pages = pageBySized.get(i) ?? []
     const page = pickFirstClaimPage({
       size,
+      pageSize: claimPageSize,
       pageClaimable: (start, limit) =>
         pages.find((item) => item.start === start && item.limit === limit)?.claimable ?? 0n,
     })
