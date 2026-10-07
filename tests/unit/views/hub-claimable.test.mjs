@@ -140,7 +140,7 @@ test('assets rail expiry probe is not gated to the assets tab', () => {
   assert.match(rail, /item\.id === 'assets' && assetsClaimable/)
 })
 
-test('hub lucky stays on chain; four API cards use type-totals; genesis stays team-reward', () => {
+test('hub lucky stays on chain; four API cards use type-totals; genesis page stays team-reward', () => {
   const dock = readFileSync(
     new URL('../../../src/views/dapp/rewards/hub/dock.tsx', import.meta.url),
     'utf8',
@@ -163,7 +163,9 @@ test('hub lucky stays on chain; four API cards use type-totals; genesis stays te
   )
 
   assert.match(dock, /readLuckyClaimSnapshot/)
-  assert.match(dock, /useTeamRewardTotal/)
+  assert.doesNotMatch(dock, /useTeamRewardTotal/)
+  assert.doesNotMatch(dock, /'genesis'/)
+  assert.match(genesis, /useTeamRewardTotal/)
   assert.match(dock, /hubApiClaimableFromTypeTotals/)
   assert.match(dock, /useDaoRewardTypeTotals/)
   assert.match(dock, /dots\[view\]/)

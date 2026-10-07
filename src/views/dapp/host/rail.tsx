@@ -1,8 +1,6 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
-import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
-import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import {
   useAssetsClaimableUnreads,
   useExchangeTurbineUnread,
@@ -45,7 +43,6 @@ const railItem = tv({
 
 function useRailTooltips() {
   const { messages: t } = useI18n()
-  const genesis = useGenesisPromoChrome()
 
   return useMemo(
     () => ({
@@ -56,14 +53,8 @@ function useRailTooltips() {
       release: t.release.intro,
       community: t.nav.communityTooltip,
       proposal: t.nav.proposalTooltip,
-      genesis: formatGenesisSeasonIntro(
-        t.genesis.intro,
-        genesis.activeSeasonNumber,
-        genesis.discountLabel,
-        genesis.isLoading,
-      ),
     }),
-    [genesis.activeSeasonNumber, genesis.discountLabel, genesis.isLoading, t],
+    [t],
   )
 }
 

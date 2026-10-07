@@ -148,7 +148,7 @@ export function useReleaseClaimableUnreads(): {
  * 奖励红点：六张卡全接。待领 > 0 就亮，领到 0 才灭。
  *
  * 幸运走链上 `getRewardInfo` pending；推荐 / 参与 / 共建 / 津贴走 type-totals；
- * 创世走团队奖差额。发展津贴仅节点资格为真时计入。
+ * 创世仍走团队奖差额，卡片已隐藏，所以不计入侧栏红点。发展津贴仅节点资格为真时计入。
  *
  * @see docs/onchain-manual/contracts/aegisluckypool.md
  * @see docs/backend-api/api.md #dao-reward/type-totals
@@ -249,7 +249,8 @@ export function useRewardsClaimableUnreads(): {
     cobuild,
     grant,
     genesis,
-    rail: lucky || referral || participate || cobuild || grant || genesis,
+    // 创世共建奖励卡片已隐藏，侧栏红点不再算它。
+    rail: lucky || referral || participate || cobuild || grant,
   }
 }
 

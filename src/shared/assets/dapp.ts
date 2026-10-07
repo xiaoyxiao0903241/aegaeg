@@ -186,10 +186,8 @@ export function cobuildTierDecoSrc(rank: number | null | undefined, fallback: st
   return cobuildTierDecos[Math.min(n, cobuildTierDecos.length) - 1] ?? fallback
 }
 
-export const railItems: Array<{
-  id: DappTab
-  icon: string
-}> = [
+/** 侧栏与抽屉菜单。共建页仍在，只是不出现在菜单里。 */
+export const railItems = [
   { id: 'exchange', icon: dappAssets.exchange },
   { id: 'assets', icon: dappAssets.assets },
   { id: 'staking', icon: dappAssets.staking },
@@ -197,5 +195,4 @@ export const railItems: Array<{
   { id: 'release', icon: dappAssets.release },
   { id: 'community', icon: dappAssets.community },
   { id: 'proposal', icon: dappAssets.proposal },
-  { id: 'genesis', icon: dappAssets.genesis },
-]
+] as const satisfies ReadonlyArray<{ id: Exclude<DappTab, 'genesis'>; icon: string }>

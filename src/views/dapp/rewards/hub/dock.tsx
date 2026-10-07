@@ -2,7 +2,7 @@
  * 奖励总览左栏面板
  *
  * 奖励类型卡片，点击进入对应详情；
- * 幸运走链上快照，创世维持团队奖汇总，其余待领来自类型汇总。
+ * 幸运走链上快照，其余待领来自类型汇总。创世共建奖励卡不在这里。
  * 发展津贴仅 `is_user_node_type` 为真时展示。
  * 齿轮「隐藏 0」只过滤已知可领额为 0 的卡。
  */
@@ -17,7 +17,7 @@ import {
 } from '~/core/exchange/token-amount'
 import { isGrantNodeEligible } from '~/core/rewards/grant-eligible'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import { useDaoRewardTypeTotals, useTeamRewardTotal, useUserNodeType } from '~/hooks/use-api-data'
+import { useDaoRewardTypeTotals, useUserNodeType } from '~/hooks/use-api-data'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useDappHost } from '~/hooks/use-dapp-host'
 import { useRewardsClaimableUnreads } from '~/hooks/use-nav-claimable-dots'
@@ -29,13 +29,11 @@ import { Icon } from '~/shared/components/icon'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import type { Address } from '~/shared/config/contracts'
-import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { hubApiClaimableFromTypeTotals } from '~/shared/lib/dao-reward-type-totals'
 import { formatDecimal, toUsd } from '~/shared/presenters/format'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
-import { claimableAmountValue } from '~/views/dapp/rewards/shared'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
@@ -43,15 +41,8 @@ import { openRewardsView } from '~/views/dapp/shared/navigation'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
-/** 六种奖励类型：幸运 / 推荐 / 参与 / 共建 / 发展 / 创世 */
-const REWARD_CARDS = [
-  'lucky',
-  'referral',
-  'participate',
-  'cobuild',
-  'grant',
-  'genesis',
-] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
+/** 奖励类型卡。创世共建奖励按原型隐藏，深链页仍在。 */
+const REWARD_CARDS = ['lucky', 'referral', 'participate', 'cobuild', 'grant'] as const
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -62,7 +53,6 @@ const REWARD_CARD_ICONS = {
   participate: { src: dappAssets.rewardsHubParticipate, size: 'token' },
   cobuild: { src: dappAssets.rewardsHubCobuild, size: 'token' },
   grant: { src: dappAssets.rewardsHubGrant, size: 'token' },
-  genesis: { src: dappAssets.rewardsHubGenesis, size: 'xl' },
 } as const
 
 /** Hub 卡片余额文案；发展津贴用 AGX，其余奖励用 gAGX。 */
@@ -96,7 +86,6 @@ export function RewardsHubDock() {
   const priceUsd = useAgxPriceUsd()
   const [hideZero, setHideZero] = useState(false)
   const dots = useRewardsClaimableUnreads()
-  const { data: teamTotal } = useTeamRewardTotal(sessionReady)
   const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady)
   const { data: nodeType } = useUserNodeType(sessionReady)
   const grantEligible = isGrantNodeEligible(nodeType?.is_user_node_type)
@@ -106,10 +95,6 @@ export function RewardsHubDock() {
     enabled: Boolean(account?.address),
     placeholderData: keepPreviousData,
   })
-
-  const genesisAmount = sessionReady
-    ? claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
-    : 0
 
   const luckyWei = (() => {
     if (!walletReady) return null
@@ -123,7 +108,6 @@ export function RewardsHubDock() {
   const amountValue = (view: (typeof REWARD_CARDS)[number]) => {
     if (view === 'lucky') return luckyAmount
     if (!sessionReady) return null
-    if (view === 'genesis') return genesisAmount
     return hubApiClaimableFromTypeTotals(view, typeTotals)
   }
 
@@ -170,14 +154,9 @@ export function RewardsHubDock() {
       {visibleCards.map((view) => {
         const card = t.rewards.cards[view]
         const value = amountValue(view)
-        const isGenesis = view === 'genesis'
         const icon = REWARD_CARD_ICONS[view]
-        const balance = isGenesis
-          ? {
-              amount: formatDecimal(value, { digits: 2, prefix: '$' }),
-              approx: undefined as string | undefined,
-            }
-          : view === 'lucky'
+        const balance =
+          view === 'lucky'
             ? luckyBalance
             : formatGagxBalance(
                 value,
@@ -186,7 +165,7 @@ export function RewardsHubDock() {
                 view === 'grant' ? ' AGX' : ' gAGX',
               )
         const balanceLabel =
-          isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
+          view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
         const unread = dots[view]
 
@@ -202,9 +181,6 @@ export function RewardsHubDock() {
                 <Text as="span" className="font-semibold wrap-break-word" variant="detail">
                   {card.title}
                 </Text>
-                {isGenesis ? (
-                  <RewardsTypeCard.Badge>{t.rewards.cards.genesis.badge}</RewardsTypeCard.Badge>
-                ) : null}
               </RewardsTypeCard.TitleGroup>
               <RewardsTypeCard.Body>{withContributionRatio(card.body)}</RewardsTypeCard.Body>
             </RewardsTypeCard.Head>
@@ -212,21 +188,6 @@ export function RewardsHubDock() {
               amount={balance.amount}
               approx={balance.approx}
               label={balanceLabel}
-              trailing={
-                isGenesis ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Text as="span" className="font-medium" tone="primary" variant="copy">
-                      {t.rewards.hub.enterClaim}
-                    </Text>
-                    <Icon
-                      alt=""
-                      className="size-4"
-                      size="sm"
-                      src={dappAssets.rewardsHubEnterClaim}
-                    />
-                  </span>
-                ) : null
-              }
             />
           </RewardsTypeCard>
         )
