@@ -1720,6 +1720,8 @@ const app = defineMessages({
     claim: {
       title: 'Claim yield',
       amount: 'Claim amount',
+      boostAmount: 'Bonus claim amount',
+      maxAvailable: 'Claimable {amount}',
       splitAria: 'Release vs restake split',
       releasePeriod: 'Release period',
       releasePeriodAria: 'Release period',
@@ -1740,7 +1742,7 @@ const app = defineMessages({
       xmineSuccess: 'X reward claim submitted',
     },
     claimOutput: {
-      title: 'Claim output',
+      title: 'Choose claim type',
       rewardLabel: 'Yield',
       boostLabel: 'Bonus',
       claimReward: 'Claim yield',

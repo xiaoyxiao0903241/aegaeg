@@ -1728,6 +1728,8 @@ const app = defineMessages({
     claim: {
       title: 'Получить доходность',
       amount: 'Сумма получения',
+      boostAmount: 'Сумма бонуса',
+      maxAvailable: 'Доступно {amount}',
       splitAria: 'Разделение высвобождение / рестейк',
       releasePeriod: 'Период высвобождения',
       releasePeriodAria: 'Период высвобождения',
@@ -1748,7 +1750,7 @@ const app = defineMessages({
       xmineSuccess: 'Получение награды X отправлено',
     },
     claimOutput: {
-      title: 'Забрать доход',
+      title: 'Выберите тип получения',
       rewardLabel: 'Доход',
       boostLabel: 'Бонус',
       claimReward: 'Забрать доход',

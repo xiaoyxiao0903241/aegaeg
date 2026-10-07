@@ -1764,6 +1764,8 @@ const app = defineMessages({
     claim: {
       title: 'Getiriyi talep et',
       amount: 'Talep tutarı',
+      boostAmount: 'Bonus talep tutarı',
+      maxAvailable: 'Talep edilebilir {amount}',
       splitAria: 'Serbest bırakma ve yeniden stake oranı',
       releasePeriod: 'Serbest bırakma süresi seçimi',
       releasePeriodAria: 'Serbest bırakma süresi seçimi',
@@ -1784,7 +1786,7 @@ const app = defineMessages({
       xmineSuccess: 'X ödül talebi gönderildi',
     },
     claimOutput: {
-      title: 'Getiri talep et',
+      title: 'Talep türünü seçin',
       rewardLabel: 'Getiri',
       boostLabel: 'Bonus',
       claimReward: 'Getiri talep et',

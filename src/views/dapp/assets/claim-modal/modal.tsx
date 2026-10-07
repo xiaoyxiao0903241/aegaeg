@@ -4,11 +4,13 @@ import { useState } from 'react'
 
 import { interpolate } from '~/i18n/interpolate'
 import { Button } from '~/shared/components/button'
+import { AmountMaxChip } from '~/shared/components/chip'
 import { claimSplitCtaStyle, ClaimSplitSlider } from '~/shared/components/claim-split-slider'
 import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { Input } from '~/shared/components/input'
 import { MainButton } from '~/shared/components/main-button'
 import { Reveal } from '~/shared/components/reveal'
 import { SelectMenu } from '~/shared/components/select-menu'
@@ -18,13 +20,10 @@ import { useAssetsClaimModal } from '~/views/dapp/assets/claim-modal/use-claim-m
 import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 
 /**
- * Mixed 领奖弹窗
+ * 领取收益 / 领取加成弹窗。
  *
- * 内容自顶向下：可领数量与贡献提示、分流滑条、复投 / 领取周期下拉（含税率）、确认 CTA。
- * 贡献值不足或释放 / 复投计划未就绪时展示拦截说明并禁写。
- * 本次需扣除按领取额 1:1。
- *
- * @see docs/onchain-manual/contracts/rewardqueue.md
+ * 先填本次数量，再拖分配、选复投和释放周期。
+ * 贡献点不够这次数量，或周期还没准备好时，不能确认。
  */
 export function AssetsClaimModal({
   onOpenChange,
@@ -99,45 +98,84 @@ function AssetsClaimModalOpen({
     capturedAddress,
     target,
   })
-  const { t, amountLabel } = vm
+  const { t } = vm
   const splitCtaActive = vm.canConfirm && !vm.submitting
+  const title =
+    target.source === 'locked' && target.entries.some((entry) => entry.extra)
+      ? t.assets.claim.boostAmount
+      : t.assets.claim.amount
 
   return (
     <ResponsiveDialog
+      className="dapp:max-w-115 dapp:px-7 dapp:py-6"
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-dim"
     >
       <SheetHandle />
-      <div className="flex items-start justify-between gap-3 pb-4">
-        <div className="grid min-w-0 gap-1">
-          <DialogPrimitive.Title asChild>
-            <Text as="h2" className="m-0 font-semibold" variant="copy">
-              {t.assets.claim.amount}
-            </Text>
-          </DialogPrimitive.Title>
-          <Text as="strong" className="text-xl font-semibold" variant="copy">
-            <CountValue text={amountLabel} />
+      <div className="flex items-center justify-between gap-4 pb-2">
+        <DialogPrimitive.Title asChild>
+          <Text as="h2" className="m-0" tone="muted-foreground" variant="copy">
+            {title}
           </Text>
-          {vm.requiredContributionLabel ? (
-            <Text as="span" tone="muted-foreground" variant="detail">
-              {interpolate(t.assets.claim.contribNeed, {
-                amount: vm.requiredContributionLabel,
-              })}
-            </Text>
-          ) : null}
-          {positionLabel ? (
-            <Text as="span" className="sr-only" variant="detail">
-              {positionLabel}
-            </Text>
-          ) : null}
-        </div>
+        </DialogPrimitive.Title>
         <DialogClose aria-label={t.common.close}>
           <X aria-hidden className={iconVariants({ size: 'sm' })} strokeWidth={2} />
         </DialogClose>
       </div>
+      {positionLabel ? (
+        <Text as="span" className="sr-only" variant="detail">
+          {positionLabel}
+        </Text>
+      ) : null}
 
       <div className="grid min-w-0 gap-4">
+        <div className="grid gap-2">
+          <div className="flex items-center gap-2.5 rounded-sm border border-border bg-card py-1.5 pr-2 pl-3.5 focus-within:border-coral">
+            <Input
+              aria-label={title}
+              className="text-left text-[1.75rem] leading-none"
+              disabled={vm.submitting}
+              inputMode="decimal"
+              onChange={(event) => vm.onAmountChange(event.target.value)}
+              placeholder="0.0000"
+              value={vm.amountDraft}
+              variant="amount"
+            />
+            <Text
+              as="span"
+              className="shrink-0 font-semibold"
+              tone="muted-foreground"
+              variant="detail"
+            >
+              gAGX
+            </Text>
+            <AmountMaxChip disabled={vm.submitting} onClick={vm.fillMax}>
+              {t.common.max}
+            </AmountMaxChip>
+          </div>
+          <div className="flex items-start justify-between gap-3">
+            <Text
+              as="span"
+              className={cn('min-w-0', vm.contributionShort && 'text-destructive')}
+              tone={vm.contributionShort ? undefined : 'muted-foreground'}
+              variant="detail"
+            >
+              {interpolate(t.assets.claim.contribNeed, {
+                amount: vm.requiredContributionLabel,
+              })}
+            </Text>
+            <Text
+              as="span"
+              className="shrink-0 text-right tabular-nums"
+              tone="muted-foreground"
+              variant="detail"
+            >
+              <CountValue text={vm.maxAvailableLabel} />
+            </Text>
+          </div>
+        </div>
+
         <ClaimSplitSlider
           aria-label={t.assets.claim.splitAria}
           hint={t.common.splitDragHint}
@@ -178,7 +216,7 @@ function AssetsClaimModalOpen({
           </div>
         </div>
 
-        <InlineAlert open={!vm.contributionOk && Boolean(vm.contribQuery.data)} role="status">
+        <InlineAlert open={vm.contributionShort} role="status">
           {t.assets.claim.contribShort}{' '}
           <Button
             className="inline h-auto w-auto! p-0 align-baseline text-[length:inherit] leading-[inherit] font-semibold text-primary underline"
@@ -200,7 +238,7 @@ function AssetsClaimModalOpen({
 
         <MainButton
           className={cn(
-            'min-h-13 w-full py-2',
+            'min-h-16.5 w-full rounded-2xl py-2',
             splitCtaActive && [
               'border-0 bg-transparent text-primary-foreground shadow-none',
               'hover:bg-transparent hover:shadow-none focus-visible:shadow-none',

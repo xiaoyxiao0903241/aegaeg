@@ -96,6 +96,7 @@ test('submitMixedClaim / redeem reject capturedAddress mismatch before chain rea
         releaseDays: 5,
         restakeDays: 540,
         restakePct: 50,
+        amount: 1n,
       }),
     (err) => err === ASSETS_BLOCKED.unavailable,
   )
@@ -144,6 +145,7 @@ test('submitMixedClaim treats session address match as case-insensitive', async 
         releaseDays: 5,
         restakeDays: 540,
         restakePct: 50,
+        amount: 10n ** 7n,
       }),
     (err) => err instanceof Error && err.message === 'gate passed',
   )

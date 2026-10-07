@@ -1723,6 +1723,8 @@ const app = defineMessages({
     claim: {
       title: 'รับผลตอบแทน',
       amount: 'จำนวนที่รับ',
+      boostAmount: 'จำนวนโบนัสที่รับ',
+      maxAvailable: 'รับได้ {amount}',
       splitAria: 'สัดส่วนปล่อยกับรีสเตก',
       releasePeriod: 'เลือกช่วงปล่อย',
       releasePeriodAria: 'เลือกช่วงปล่อย',
@@ -1743,7 +1745,7 @@ const app = defineMessages({
       xmineSuccess: 'ส่งคำขอรับรางวัล X แล้ว',
     },
     claimOutput: {
-      title: 'รับผลตอบแทน',
+      title: 'เลือกประเภทการรับ',
       rewardLabel: 'ผลตอบแทน',
       boostLabel: 'โบนัส',
       claimReward: 'รับผลตอบแทน',

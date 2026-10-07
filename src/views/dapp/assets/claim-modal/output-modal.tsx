@@ -3,28 +3,32 @@ import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { type ClaimOutputKind, shouldReplaceHeldClaimOutput } from '~/core/assets/claim-output'
+import { ZERO_BI } from '~/core/constants'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
 import { formatAssetsActionAmount, isAssetsActionableAmount } from '~/core/exchange/token-amount'
+import { isDecisionFresh } from '~/core/query/decision-freshness'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import { CountValue } from '~/shared/components/count-value'
 import { DialogClose, ResponsiveDialog, SheetHandle } from '~/shared/components/dialog'
 import { iconVariants } from '~/shared/components/icon'
 import { MainButton } from '~/shared/components/main-button'
 import { Text } from '~/shared/components/text'
+import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
-import type { AssetsStakeRow } from '~/web3/assets/assets-read'
+import { type AssetsStakeRow, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 /**
- * 领取产出中间层（定期仓）
+ * 定期仓先选领取收益或领取加成。
  *
- * 左：收益 → claimRewardMixed；右：加成 → claimExtraRewardMixed。
- * 单档低于 0.01 时对应按钮禁用；点可用项后进入 Mixed「领取数量」。
+ * 低于 0.01 的那一项不可点。贡献点不够整笔时仍可进入，再到数量框里改小。
  */
 export function AssetsClaimOutputModal({
   onOpenChange,
@@ -84,26 +88,29 @@ function AssetsClaimOutputModalOpen({
     }
   }, [account?.address, capturedAddress, onOpenChange])
 
+  const contribQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsContributionForAmount('0'),
+    queryFn: (address) => readContributionSnapshot(address as Address, ZERO_BI, false),
+    enabled: open && Boolean(account?.address),
+  })
+  const contribution = isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data)
+    ? contribQuery.data!.contribution
+    : null
+
   const reward = row.blockReward
   const boost = row.extraInterest
-  const canReward = isAssetsActionableAmount(reward, GAGX_DECIMALS)
-  const canBoost = isAssetsActionableAmount(boost, GAGX_DECIMALS)
-
-  const rewardAmountLabel = formatAssetsActionAmount(reward, GAGX_DECIMALS, { suffix: ' gAGX' })
-  const boostAmountLabel = formatAssetsActionAmount(boost, GAGX_DECIMALS, { suffix: ' gAGX' })
-  const rewardContribLabel = formatContributionPoints(reward, AGX_DECIMALS)
-  const boostContribLabel = formatContributionPoints(boost, AGX_DECIMALS)
 
   return (
     <ResponsiveDialog
+      className="dapp:max-w-100 dapp:px-7 dapp:py-6"
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-dim"
     >
       <SheetHandle />
-      <div className="flex h-10 items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-4">
         <DialogPrimitive.Title asChild>
-          <Text as="h2" className="m-0 font-semibold" variant="copy">
+          <Text as="h2" className="m-0 text-lg font-semibold" variant="copy">
             {t.assets.claimOutput.title}
           </Text>
         </DialogPrimitive.Title>
@@ -112,70 +119,79 @@ function AssetsClaimOutputModalOpen({
         </DialogClose>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 py-1">
-        <div className="grid min-w-0 gap-1">
-          <Text as="span" tone="muted-foreground" variant="detail">
-            {t.assets.claimOutput.rewardLabel}
-          </Text>
-          <Text as="strong" className="text-lg font-semibold" variant="copy">
-            <CountValue text={rewardAmountLabel} />
-          </Text>
-        </div>
-        <div className="grid min-w-0 justify-items-end gap-1 text-right">
-          <Text as="span" tone="muted-foreground" variant="detail">
-            {t.assets.claimOutput.boostLabel}
-          </Text>
-          <Text as="strong" className="text-lg font-semibold" variant="copy">
-            <CountValue text={boostAmountLabel} />
-          </Text>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <div className="grid min-w-0 content-start gap-2">
-          <MainButton
-            className="w-full"
-            density="modal"
-            disabled={!canReward}
-            onClick={() => onSelectOutput('reward')}
-            variant="primary"
-          >
-            {t.assets.claimOutput.claimReward}
-          </MainButton>
-          {/* 禁用时 invisible 占位，保证两列按钮底边对齐 */}
-          <Text
-            aria-hidden={!canReward}
-            as="span"
-            className={cn('text-center text-foreground/40', !canReward && 'invisible')}
-            variant="detail"
-          >
-            {canReward
-              ? interpolate(t.assets.claimOutput.contribDeduct, { amount: rewardContribLabel })
-              : '\u00a0'}
-          </Text>
-        </div>
-        <div className="grid min-w-0 content-start gap-2">
-          <MainButton
-            className="w-full"
-            density="modal"
-            disabled={!canBoost}
-            onClick={() => onSelectOutput('boost')}
-            variant="primary"
-          >
-            {t.assets.claimOutput.claimBoost}
-          </MainButton>
-          <Text
-            aria-hidden={!canBoost}
-            as="span"
-            className={cn('text-center text-foreground/40', !canBoost && 'invisible')}
-            variant="detail"
-          >
-            {canBoost
-              ? interpolate(t.assets.claimOutput.contribDeduct, { amount: boostContribLabel })
-              : '\u00a0'}
-          </Text>
-        </div>
+      <div className="grid gap-4 pt-5">
+        <ClaimOutputChoice
+          amountLabel={formatAssetsActionAmount(reward, GAGX_DECIMALS, { suffix: ' gAGX' })}
+          disabled={!isAssetsActionableAmount(reward, GAGX_DECIMALS)}
+          label={t.assets.claimOutput.claimReward}
+          note={choiceNote(t, reward, contribution)}
+          onClick={() => onSelectOutput('reward')}
+        />
+        <ClaimOutputChoice
+          amountLabel={formatAssetsActionAmount(boost, GAGX_DECIMALS, { suffix: ' gAGX' })}
+          disabled={!isAssetsActionableAmount(boost, GAGX_DECIMALS)}
+          label={t.assets.claimOutput.claimBoost}
+          note={choiceNote(t, boost, contribution)}
+          onClick={() => onSelectOutput('boost')}
+        />
       </div>
     </ResponsiveDialog>
+  )
+}
+
+function choiceNote(
+  t: ReturnType<typeof useI18n>['messages'],
+  amount: bigint,
+  contribution: bigint | null,
+): { text: string; short: boolean } | null {
+  if (!isAssetsActionableAmount(amount, GAGX_DECIMALS)) return null
+  if (contribution != null && contribution < amount) {
+    return { text: t.assets.claim.contribShort, short: true }
+  }
+  return {
+    text: interpolate(t.assets.claim.contribNeed, {
+      amount: formatContributionPoints(amount, AGX_DECIMALS),
+    }),
+    short: false,
+  }
+}
+
+function ClaimOutputChoice({
+  amountLabel,
+  disabled,
+  label,
+  note,
+  onClick,
+}: {
+  amountLabel: string
+  disabled: boolean
+  label: string
+  note: { text: string; short: boolean } | null
+  onClick: () => void
+}) {
+  return (
+    <div className="grid gap-2">
+      <MainButton
+        className="min-h-13 w-full rounded-sm whitespace-normal"
+        density="modal"
+        disabled={disabled}
+        onClick={onClick}
+        variant="primary"
+      >
+        <span className="inline-flex max-w-full flex-wrap items-baseline justify-center gap-x-1">
+          {label} <CountValue text={amountLabel} />
+        </span>
+      </MainButton>
+      {note ? (
+        <Text
+          as="span"
+          className={cn('text-center', note.short && 'text-destructive')}
+          tone={note.short ? undefined : 'muted-foreground'}
+          variant="detail"
+        >
+          {note.text}
+        </Text>
+      ) : null}
+    </div>
   )
 }

@@ -37,6 +37,7 @@ test('submitMixedClaim fail-closed when live liquid reward is below the 0.01 flo
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: 50n,
       }),
     (err) => err === ASSETS_BLOCKED.zeroAmount,
   )
@@ -73,17 +74,18 @@ test('submitMixedClaim fail-closed when live early reward is below the 0.01 floo
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: 50n,
       }),
     (err) => err === ASSETS_BLOCKED.zeroAmount,
   )
 })
 
-test('submitMixedClaim does not keep the open-modal amount when live available is larger', async () => {
+test('submitMixedClaim keeps the confirmed amount when live available is larger', async () => {
   const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
   const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
 
   const plans = claimPlanAndContribHandlers({
-    contribution: 10n ** 8n,
+    contribution: 12_000_000n,
     requiredContribution: 1n,
   })
 
@@ -101,8 +103,12 @@ test('submitMixedClaim does not keep the open-modal amount when live available i
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: 10n ** 7n,
       }),
-    (err) => err !== ASSETS_BLOCKED.insufficientReward && err !== ASSETS_BLOCKED.zeroAmount,
+    (err) =>
+      err !== ASSETS_BLOCKED.insufficientReward &&
+      err !== ASSETS_BLOCKED.zeroAmount &&
+      err !== ASSETS_BLOCKED.insufficientContribution,
   )
 })
 
@@ -129,6 +135,7 @@ test('submitMixedClaim fail-closed when contribution is below live required', as
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: 10n ** 7n,
       }),
     (err) => err === ASSETS_BLOCKED.insufficientContribution,
   )
@@ -158,8 +165,71 @@ test('submitMixedClaim 1:1: enough for quote/6 is still short', async () => {
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: claimable,
       }),
     (err) => err === ASSETS_BLOCKED.insufficientContribution,
+  )
+})
+
+test('submitMixedClaim allows a partial amount when contribution covers only that amount', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+  const available = 22_500_000n
+
+  const plans = claimPlanAndContribHandlers({
+    contribution: 15_000_000n,
+    requiredContribution: 3_750_000n,
+  })
+
+  const session = await moneyPathSession(async (request) => {
+    if (request.functionName === 'getStakeRewards') return [0n, available]
+    return dispatchRead(plans, request)
+  })
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: USER,
+        target: { source: 'liquid', amount: available },
+        releaseDays: 5,
+        restakeDays: 360,
+        restakePct: 50,
+        amount: 12_000_000n,
+      }),
+    (err) =>
+      err !== ASSETS_BLOCKED.insufficientContribution &&
+      err !== ASSETS_BLOCKED.insufficientReward &&
+      err !== ASSETS_BLOCKED.zeroAmount,
+  )
+})
+
+test('submitMixedClaim rejects a confirmed amount above live available', async () => {
+  const { submitMixedClaim } = await loadModule('/src/views/dapp/assets/submit-assets.ts')
+  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/write-block-errors.ts')
+
+  const plans = claimPlanAndContribHandlers({
+    contribution: 10n ** 8n,
+    requiredContribution: 1n,
+  })
+
+  const session = await moneyPathSession(async (request) => {
+    if (request.functionName === 'getStakeRewards') return [0n, 10n ** 7n]
+    return dispatchRead(plans, request)
+  })
+
+  await assert.rejects(
+    () =>
+      submitMixedClaim({
+        session,
+        capturedAddress: USER,
+        target: { source: 'liquid', amount: 2n * 10n ** 7n },
+        releaseDays: 5,
+        restakeDays: 360,
+        restakePct: 50,
+        amount: 2n * 10n ** 7n,
+      }),
+    (err) => err === ASSETS_BLOCKED.insufficientReward,
   )
 })
 
@@ -187,8 +257,9 @@ test('submitMixedClaim fail-closed on warmup reward while warmup still active', 
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: 10n ** 7n,
       }),
-    (err) => err === ASSETS_BLOCKED.zeroAmount,
+    (err) => err === ASSETS_BLOCKED.insufficientReward,
   )
 })
 
@@ -216,6 +287,7 @@ test('submitMixedClaim uses warmup reward when warmup expired and active is zero
         releaseDays: 5,
         restakeDays: 360,
         restakePct: 50,
+        amount: 10n ** 7n,
       }),
     (err) => err !== ASSETS_BLOCKED.insufficientReward && err !== ASSETS_BLOCKED.zeroAmount,
   )

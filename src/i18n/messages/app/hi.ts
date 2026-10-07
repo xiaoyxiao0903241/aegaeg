@@ -1728,6 +1728,8 @@ const app = defineMessages({
     claim: {
       title: 'यील्ड दावा करें',
       amount: 'दावा राशि',
+      boostAmount: 'बोनस दावा राशि',
+      maxAvailable: 'दावा योग्य {amount}',
       splitAria: 'रिलीज़ बनाम रिस्टेक विभाजन',
       releasePeriod: 'रिलीज़ अवधि',
       releasePeriodAria: 'रिलीज़ अवधि',
@@ -1748,7 +1750,7 @@ const app = defineMessages({
       xmineSuccess: 'X पुरस्कार दावा सबमिट हो गया',
     },
     claimOutput: {
-      title: 'आउटपुट क्लेम करें',
+      title: 'दावा प्रकार चुनें',
       rewardLabel: 'यील्ड',
       boostLabel: 'बोनस',
       claimReward: 'यील्ड क्लेम करें',

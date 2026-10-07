@@ -11,11 +11,18 @@ import {
 } from '~/core/assets/claim-plans'
 import { HUNDRED_BI, ZERO_BI } from '~/core/constants'
 import { formatContributionPoints } from '~/core/exchange/format-contribution-points'
-import { formatTokenAmount, PERSONAL_TOKEN_DIGITS } from '~/core/exchange/token-amount'
+import {
+  capTokenAmountInput,
+  formatTokenAmount,
+  parseTokenAmount,
+  PERSONAL_TOKEN_DIGITS,
+  sanitizeTokenAmountInput,
+} from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { previewDaoClaimContribution } from '~/core/rewards/claim-contribution'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { interpolate } from '~/i18n/interpolate'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
@@ -34,13 +41,21 @@ import { WRITE_PATH } from '~/web3/wallet/write-path'
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
+function formatClaimAmount(amount: bigint, suffix?: string): string {
+  return formatTokenAmount(amount, GAGX_DECIMALS, {
+    digits: PERSONAL_TOKEN_DIGITS,
+    trimZeros: false,
+    dust: false,
+    round: false,
+    suffix,
+  })
+}
+
 /**
- * 领奖弹窗的状态编排：释放比例、释放 / 复投周期选择、
- * 贡献值与计划可用性校验，以及提交成功后的关闭处理。
- * 计划选择用本地 `useState`（随 modal remount / key 复位）。
- * RewardQueue 默认计划 plan3=60 天费率最低，故默认选中 60。
- * 展示与确认门闸跟提交时同一笔链上可领，不用打开弹窗时冻住的数。
- * 所需贡献按领取额 1:1，不读 quoteRequiredContribution。
+ * 领奖弹窗：数量、释放比例、周期。
+ *
+ * 数量默认跟上当前可领；改过之后按输入计算。点「最大」回到全部可领。
+ * 释放计划默认 60 天。所需贡献等于这次要领的数量。
  */
 export function useAssetsClaimModal(args: {
   open: boolean
@@ -55,6 +70,8 @@ export function useAssetsClaimModal(args: {
   const [releasePct, setReleasePctState] = useState(50)
   const [releaseDays, setReleaseDaysState] = useState(60)
   const [restakeDays, setRestakeDaysState] = useState(540)
+  // null：跟着当前可领。字符串：用户改过的草稿。
+  const [pinnedDraft, setPinnedDraft] = useState<string | null>(null)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
   useEffect(() => {
@@ -63,23 +80,6 @@ export function useAssetsClaimModal(args: {
       onOpenChange(false)
     }
   }, [account?.address, capturedAddress, onOpenChange])
-
-  const claim = useChainMutation({
-    path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: (_vars, session) =>
-      submitMixedClaim({
-        session,
-        capturedAddress,
-        target,
-        releaseDays,
-        restakeDays,
-        restakePct,
-      }),
-    onSuccess: () => {
-      toast.success(restakePct === 100 ? t.assets.claim.restakeSuccess : t.assets.claim.success)
-      onOpenChange(false)
-    },
-  })
 
   const plansQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -122,6 +122,9 @@ export function useAssetsClaimModal(args: {
   })
   const availableFresh = isDecisionFresh(availableQuery.isPlaceholderData, availableQuery.data)
   const claimable = availableFresh ? availableQuery.data! : target.amount
+  const amountDraft = pinnedDraft ?? formatClaimAmount(claimable)
+  // 没改数字时按当前可领的全部上链，避免只领四位小数、零头留在链上。
+  const requested = pinnedDraft == null ? claimable : parseTokenAmount(pinnedDraft, GAGX_DECIMALS)
 
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(String(claimable)),
@@ -134,46 +137,54 @@ export function useAssetsClaimModal(args: {
     releaseDays,
     restakeDays,
   )
-  const contributionOk =
-    previewDaoClaimContribution({
-      claimAmountWei: claimable > ZERO_BI ? claimable : null,
-      availableWei: isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data)
-        ? contribQuery.data!.contribution
-        : null,
-    })?.ok === true
+  const contributionPreview = previewDaoClaimContribution({
+    claimAmountWei: requested > ZERO_BI ? requested : null,
+    availableWei: isDecisionFresh(contribQuery.isPlaceholderData, contribQuery.data)
+      ? contribQuery.data!.contribution
+      : null,
+  })
+  const contributionOk = contributionPreview?.ok === true
+  const contributionShort = contributionPreview != null && !contributionPreview.ok
   const plansOk =
     isDecisionFresh(plansQuery.isPlaceholderData, plansQuery.data) &&
     releaseIndex != null &&
     restakeIndex != null
   const canConfirm =
     availableFresh &&
+    requested <= claimable &&
     evaluateAssetsClaimConfirmGate({
       walletReady,
       writeReady,
-      isPending: claim.isPending,
+      isPending: false,
       contributionOk,
       plansOk,
-      claimable,
+      claimable: requested,
       decimals: GAGX_DECIMALS,
     })
 
-  const releaseAmount = (claimable * BigInt(releasePct)) / HUNDRED_BI
-  const restakeAmount = claimable - releaseAmount
-  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, {
-    digits: PERSONAL_TOKEN_DIGITS,
-    trimZeros: false,
-    suffix: ' gAGX',
+  const claim = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: (amount: bigint, session) =>
+      submitMixedClaim({
+        session,
+        capturedAddress,
+        target,
+        releaseDays,
+        restakeDays,
+        restakePct,
+        amount,
+      }),
+    onSuccess: () => {
+      toast.success(restakePct === 100 ? t.assets.claim.restakeSuccess : t.assets.claim.success)
+      onOpenChange(false)
+    },
   })
-  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, {
-    digits: PERSONAL_TOKEN_DIGITS,
-    trimZeros: false,
-    suffix: ' gAGX',
-  })
-  const amountLabel = formatTokenAmount(claimable, GAGX_DECIMALS, {
-    digits: PERSONAL_TOKEN_DIGITS,
-    trimZeros: false,
-    suffix: ' gAGX',
-  })
+  const canConfirmNow = canConfirm && !claim.isPending
+
+  const releaseAmount = (requested * BigInt(releasePct)) / HUNDRED_BI
+  const restakeAmount = requested - releaseAmount
+  const releaseAmountText = formatClaimAmount(releaseAmount, ' gAGX')
+  const restakeAmountText = formatClaimAmount(restakeAmount, ' gAGX')
   let ctaAmountLine: string | null = null
   if (releaseAmount === ZERO_BI) {
     ctaAmountLine = restakeAmountText
@@ -206,9 +217,31 @@ export function useAssetsClaimModal(args: {
     value: String(days),
   }))
 
+  function onAmountChange(raw: string) {
+    const capped = capTokenAmountInput(raw, claimable, GAGX_DECIMALS, PERSONAL_TOKEN_DIGITS)
+    const typed = parseTokenAmount(
+      sanitizeTokenAmountInput(raw, PERSONAL_TOKEN_DIGITS),
+      GAGX_DECIMALS,
+    )
+    if (!capped) {
+      setPinnedDraft('')
+      return
+    }
+    // 输入已经顶到上限时，改回「全部可领」，零头一并领走。
+    if (claimable > ZERO_BI && typed >= claimable) {
+      setPinnedDraft(null)
+      return
+    }
+    setPinnedDraft(capped)
+  }
+
+  function fillMax() {
+    setPinnedDraft(null)
+  }
+
   function handleConfirm() {
-    if (!canConfirm) return
-    void claim.mutate()
+    if (!canConfirmNow) return
+    void claim.mutate(requested)
   }
 
   function goBurn() {
@@ -223,7 +256,10 @@ export function useAssetsClaimModal(args: {
         ? t.assets.claim.ctaRestake
         : t.assets.claim.ctaMixed
 
-  const requiredContributionLabel = formatContributionPoints(claimable, AGX_DECIMALS)
+  const requiredContributionLabel = formatContributionPoints(requested, AGX_DECIMALS)
+  const maxAvailableLabel = interpolate(t.assets.claim.maxAvailable, {
+    amount: formatClaimAmount(claimable, ' gAGX'),
+  })
 
   return {
     t,
@@ -233,17 +269,18 @@ export function useAssetsClaimModal(args: {
     setReleaseDays: setReleaseDaysState,
     restakeDays,
     setRestakeDays: setRestakeDaysState,
-    restakePct,
     submitting: claim.isPending,
-    contribQuery,
     requiredContributionLabel,
+    maxAvailableLabel,
+    amountDraft,
+    onAmountChange,
+    fillMax,
     releaseOptions,
     restakeOptions,
-    contributionOk,
+    contributionShort,
     plansOk,
     plansQuery,
-    canConfirm,
-    amountLabel,
+    canConfirm: canConfirmNow,
     releaseAmountText,
     restakeAmountText,
     ctaAmountLine,

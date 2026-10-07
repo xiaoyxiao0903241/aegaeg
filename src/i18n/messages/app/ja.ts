@@ -1732,6 +1732,8 @@ const app = defineMessages({
     claim: {
       title: '収益を受取',
       amount: '受取数量',
+      boostAmount: 'ボーナス受取数量',
+      maxAvailable: '受取可能 {amount}',
       splitAria: 'リリースと再投資の比率',
       releasePeriod: 'リリース期間の選択',
       releasePeriodAria: 'リリース期間の選択',
@@ -1752,7 +1754,7 @@ const app = defineMessages({
       xmineSuccess: 'X リワードの受取を送信しました',
     },
     claimOutput: {
-      title: '産出を受取',
+      title: '受取タイプを選択',
       rewardLabel: '収益',
       boostLabel: 'ボーナス',
       claimReward: '収益を受取',

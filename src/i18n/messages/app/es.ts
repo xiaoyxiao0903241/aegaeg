@@ -1784,6 +1784,8 @@ const app = defineMessages({
     claim: {
       title: 'Reclamar rendimiento',
       amount: 'Cantidad a reclamar',
+      boostAmount: 'Cantidad de bonus',
+      maxAvailable: 'Reclamable {amount}',
       splitAria: 'Proporción liberación / reinversión',
       releasePeriod: 'Periodo de liberación',
       releasePeriodAria: 'Periodo de liberación',
@@ -1804,7 +1806,7 @@ const app = defineMessages({
       xmineSuccess: 'Reclamación de recompensa X enviada',
     },
     claimOutput: {
-      title: 'Reclamar rendimiento',
+      title: 'Elegir tipo de reclamo',
       rewardLabel: 'Rendimiento',
       boostLabel: 'Bonificación',
       claimReward: 'Reclamar rendimiento',

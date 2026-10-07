@@ -99,7 +99,7 @@ export function isStakeRowClaimEnabled(
  *
  * 活期与 Early 禁止加成（手册仅 `claimRewardMixed`，Early 无 extraInterest）；定期须有 stakeIndex。
  * 金额低于 0.01 或非法组合返回 null。
- * `amount` 只决定能否打开确认弹窗；上链数量由提交时链上可领决定。
+ * `amount` 是打开弹窗时的可领上限。上链数量是弹窗里确认的输入，提交时必须不超过当时的链上可领。
  */
 export function buildStakeMixedClaimTarget(args: {
   stakeKind: StakeClaimKind

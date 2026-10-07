@@ -114,7 +114,7 @@ type MixedClaimSnapshot = Awaited<ReturnType<typeof readMixedClaimSnapshot>>
  * 按 `approveThenLiveWrite`：预检读 → 实时重读复核 → 再写。
  * 打开弹窗时锁定的地址须与会话钱包一致，否则拒绝提交。
  * 定期普通 / 额外为独立入口；若传入多项则按序各写一笔。
- * 上链金额取提交时链上可领，不用打开弹窗时的快照。
+ * 上链数量是弹窗确认的数量，提交时必须不超过当时链上可领。
  *
  * @see docs/onchain-manual/contracts/rewardqueue.md
  * @see 手册 §9.3 Mixed 领奖前端流程
@@ -126,8 +126,10 @@ export async function submitMixedClaim(args: {
   releaseDays: number
   restakeDays: number
   restakePct: number
+  /** 弹窗确认的领取数量。预检和实时重读都拿它跟链上可领比，通过后原数上链。 */
+  amount: bigint
 }): Promise<void> {
-  const { session, capturedAddress, target, releaseDays, restakeDays, restakePct } = args
+  const { session, capturedAddress, target, releaseDays, restakeDays, restakePct, amount } = args
   const { wallet, address: user } = session
   assertSessionMatchesCapturedAddress(user, capturedAddress)
 
@@ -138,7 +140,7 @@ export async function submitMixedClaim(args: {
       readSnapshot: () => readMixedClaimSnapshot(readTarget, user, releaseDays, restakeDays),
       evaluate: (snap: MixedClaimSnapshot) =>
         evaluateMixedClaim({
-          amount: snap.rewardAvailable,
+          amount,
           rewardAvailable: snap.rewardAvailable,
           contribution: snap.contribution,
           releasePlanIndex: snap.releasePlanIndex,
@@ -152,7 +154,6 @@ export async function submitMixedClaim(args: {
         if (releasePlanIndex == null || restakePlanIndex == null) {
           throw ASSETS_BLOCKED.unavailable
         }
-        const amount = live.rewardAvailable
         if (readTarget.source === 'locked') {
           await writeLockedClaimMixed({
             wallet,

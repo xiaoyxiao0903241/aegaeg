@@ -1777,6 +1777,8 @@ const app = defineMessages({
     claim: {
       title: 'Klaim hasil',
       amount: 'Jumlah klaim',
+      boostAmount: 'Jumlah bonus',
+      maxAvailable: 'Dapat diklaim {amount}',
       splitAria: 'Rasio rilis vs restake',
       releasePeriod: 'Pilihan periode rilis',
       releasePeriodAria: 'Pilihan periode rilis',
@@ -1797,7 +1799,7 @@ const app = defineMessages({
       xmineSuccess: 'Klaim hadiah X dikirim',
     },
     claimOutput: {
-      title: 'Klaim hasil',
+      title: 'Pilih jenis klaim',
       rewardLabel: 'Hasil',
       boostLabel: 'Bonus',
       claimReward: 'Klaim hasil',

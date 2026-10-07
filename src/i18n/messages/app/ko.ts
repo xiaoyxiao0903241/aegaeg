@@ -1727,6 +1727,8 @@ const app = defineMessages({
     claim: {
       title: '수익 수령',
       amount: '수령 수량',
+      boostAmount: '보너스 수령 수량',
+      maxAvailable: '수령 가능 {amount}',
       splitAria: '릴리스와 재예치 비율',
       releasePeriod: '릴리스 주기 선택',
       releasePeriodAria: '릴리스 주기 선택',
@@ -1747,7 +1749,7 @@ const app = defineMessages({
       xmineSuccess: 'X 리워드 수령 제출됨',
     },
     claimOutput: {
-      title: '산출 수령',
+      title: '수령 유형 선택',
       rewardLabel: '수익',
       boostLabel: '보너스',
       claimReward: '수익 수령',

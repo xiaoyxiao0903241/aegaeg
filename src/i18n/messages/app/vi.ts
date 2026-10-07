@@ -1766,6 +1766,8 @@ const app = defineMessages({
     claim: {
       title: 'Nhận lợi nhuận',
       amount: 'Số nhận',
+      boostAmount: 'Số thưởng thêm',
+      maxAvailable: 'Có thể nhận {amount}',
       splitAria: 'Tỷ lệ giải phóng và tái stake',
       releasePeriod: 'Chọn chu kỳ giải phóng',
       releasePeriodAria: 'Chọn chu kỳ giải phóng',
@@ -1786,7 +1788,7 @@ const app = defineMessages({
       xmineSuccess: 'Đã gửi nhận thưởng X',
     },
     claimOutput: {
-      title: 'Nhận sản lượng',
+      title: 'Chọn loại nhận',
       rewardLabel: 'Lợi nhuận',
       boostLabel: 'Thưởng thêm',
       claimReward: 'Nhận lợi nhuận',

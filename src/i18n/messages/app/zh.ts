@@ -1669,6 +1669,8 @@ const app = defineMessages({
     claim: {
       title: '领取收益',
       amount: '领取数量',
+      boostAmount: '领取加成数量',
+      maxAvailable: '可领取 {amount}',
       splitAria: '释放与复投比例',
       releasePeriod: '释放周期',
       releasePeriodAria: '释放周期选择',
@@ -1689,7 +1691,7 @@ const app = defineMessages({
       xmineSuccess: 'X 奖励领取已提交',
     },
     claimOutput: {
-      title: '领取产出',
+      title: '选择领取类型',
       rewardLabel: '收益',
       boostLabel: '加成',
       claimReward: '领取收益',
