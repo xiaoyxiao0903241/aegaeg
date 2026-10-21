@@ -7,6 +7,7 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import {
   claimCommunityFund,
+  claimDirectReferral,
   claimMarketFundReward,
   claimTeamReward,
 } from '~/web3/claim/claim-reward'
@@ -84,6 +85,11 @@ export function useTeamRewardClaim() {
  */
 export function useMarketFundClaim() {
   return useClaimReward(claimMarketFundReward)
+}
+
+/** 直推奖（邀请奖）领取 */
+export function useDirectReferralClaim() {
+  return useClaimReward(claimDirectReferral)
 }
 
 /** 社区基金领取

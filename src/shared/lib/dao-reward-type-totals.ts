@@ -1,7 +1,7 @@
 import type { DaoRewardTypeTotals } from '~/shared/api/types'
 import { parseApiAmount } from '~/shared/presenters/format'
 
-export type RewardsApiClaimView = 'referral' | 'participate' | 'cobuild' | 'grant'
+export type RewardsApiClaimView = 'referral' | 'participate' | 'cobuild' | 'grant' | 'invite'
 
 /**
  * 读取待领汇总里的一个类型。缺字段不当成 0。
@@ -46,5 +46,6 @@ export function hubApiClaimableFromTypeTotals(
   }
   if (view === 'referral') return typeTotalAmount(totals, 'REFERRAL_REWARD')
   if (view === 'participate') return typeTotalAmount(totals, 'PARTICIPATION_REWARD')
+  if (view === 'invite') return typeTotalAmount(totals, 'DIRECT_REFERRAL')
   return typeTotalAmount(totals, 'MARKET_FUND')
 }

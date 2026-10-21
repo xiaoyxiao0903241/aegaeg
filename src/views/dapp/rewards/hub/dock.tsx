@@ -34,6 +34,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { hubApiClaimableFromTypeTotals } from '~/shared/lib/dao-reward-type-totals'
 import { formatDecimal, toUsd } from '~/shared/presenters/format'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
+import { LimitedCapsule } from '~/views/dapp/rewards/primitives'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
@@ -42,7 +43,7 @@ import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 /** 奖励类型卡。创世共建奖励按原型隐藏，深链页仍在。 */
-const REWARD_CARDS = ['lucky', 'referral', 'participate', 'cobuild', 'grant'] as const
+const REWARD_CARDS = ['lucky', 'referral', 'participate', 'invite', 'cobuild', 'grant'] as const
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -51,6 +52,7 @@ const REWARD_CARD_ICONS = {
   lucky: { src: dappAssets.rewardsHubLucky, size: 'xl' },
   referral: { src: dappAssets.rewardsHubReferral, size: 'xl' },
   participate: { src: dappAssets.rewardsHubParticipate, size: 'token' },
+  invite: { src: dappAssets.rewardsHubGrant, size: 'token' },
   cobuild: { src: dappAssets.rewardsHubCobuild, size: 'token' },
   grant: { src: dappAssets.rewardsHubGrant, size: 'token' },
 } as const
@@ -162,10 +164,12 @@ export function RewardsHubDock() {
                 value,
                 amountReady(view),
                 priceUsd,
-                view === 'grant' ? ' AGX' : ' gAGX',
+                view === 'grant' || view === 'invite' ? ' AGX' : ' gAGX',
               )
         const balanceLabel =
-          view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
+          view === 'grant' || view === 'invite'
+            ? t.rewards.detail.claimable
+            : t.rewards.hub.balanceLabel
 
         const unread = dots[view]
 
@@ -175,6 +179,9 @@ export function RewardsHubDock() {
             onClick={() => openRewardsView(view)}
           >
             {unread ? <ClaimableDot /> : null}
+            {view === 'invite' ? (
+              <LimitedCapsule placement="corner">{t.rewards.invite.limited}</LimitedCapsule>
+            ) : null}
             <RewardsTypeCard.Head>
               <RewardsTypeCard.TitleGroup>
                 <Icon alt="" size={icon.size} src={icon.src} />

@@ -157,6 +157,7 @@ export function useRewardsClaimableUnreads(): {
   lucky: boolean
   referral: boolean
   participate: boolean
+  invite: boolean
   cobuild: boolean
   grant: boolean
   genesis: boolean
@@ -223,6 +224,12 @@ export function useRewardsClaimableUnreads(): {
     onRewards && view === 'participate',
     'balance',
   )
+  const invite = useClaimableUnread(
+    'rewards.invite',
+    typeTotalFp('invite'),
+    onRewards && view === 'invite',
+    'balance',
+  )
   const cobuild = useClaimableUnread(
     'rewards.cobuild',
     typeTotalFp('cobuild'),
@@ -246,11 +253,12 @@ export function useRewardsClaimableUnreads(): {
     lucky,
     referral,
     participate,
+    invite,
     cobuild,
     grant,
     genesis,
     // 创世共建奖励卡片已隐藏，侧栏红点不再算它。
-    rail: lucky || referral || participate || cobuild || grant,
+    rail: lucky || referral || participate || invite || cobuild || grant,
   }
 }
 

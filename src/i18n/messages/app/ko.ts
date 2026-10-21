@@ -992,6 +992,12 @@ const app = defineMessages({
         body: '팀 협업과 장기 공동 구축으로 만드는 지속 가능 인센티브 리워드',
         aside: '공동 구축 리워드는 DaoPool Mixed로 수령하며 기여 포인트가 필요합니다.',
       },
+      invite: {
+        title: 'Invite reward',
+        body: 'Earn when direct referrals subscribe to LP or burn bonds',
+        aside:
+          'Paid in AGX and credited immediately. Claim straight to your wallet. Contribution points are not used.',
+      },
       grant: {
         title: '발전 수당',
         body: '생태계 발전 특별 수당',
@@ -1271,6 +1277,76 @@ const app = defineMessages({
           {
             q: '등급 변경 후 보너스 비율은 언제 적용되나요?',
             a: '등급은 일일 정산 시 재평가됩니다. 새 등급 도달 후 다음 공동 구축 리워드 지급부터 새 보너스 비율이 적용되며, 등급 균형 보상의 적용 범위도 새 등급에 맞춰 갱신됩니다.',
+          },
+        ],
+      },
+    },
+    invite: {
+      claimIntoWallet: 'Straight to wallet',
+      claimHint:
+        'Invite rewards are paid in AGX and credited as soon as a direct referral subscribes. Claim anytime to your wallet. Contribution points, the release pool, and Turbine are not used.',
+      ctaToWallet: 'Claim {amount} to wallet',
+      dataTitle: 'Data',
+      depositTitle: 'Direct subscription total',
+      depositNote: 'LP bonds + burn bonds',
+      countdownTitle: 'Campaign countdown',
+      countdownValue: '{days}d {clock}',
+      countdownPeriod: 'Campaign 2026-10-21 to 2026-11-20',
+      limited: 'Limited',
+      totalRewards: 'Total rewards',
+      referralsTitle: 'My direct referrals ({count})',
+      referralsColumns: ['Joined', 'Address', 'Position', 'Cumulative referral rewards'],
+      emptyReferrals: 'No direct referrals yet. Share your invite link to list partners here.',
+      hideZeroPosition: 'Hide 0 positions',
+      recordsTitle: 'Invite reward records',
+      recordsColumns: [
+        'Time',
+        'Referral',
+        'Bond',
+        'Term',
+        'Subscription',
+        'Rate',
+        'Reward',
+        'Status',
+      ],
+      emptyRecords: 'No invite reward records yet.',
+      termDays: '{days} days',
+      product: { lp: 'LP bond', burn: 'Burn bond' },
+      claimStatus: { unclaimed: 'Unclaimed', claimed: 'Claimed' },
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'How is the invite reward calculated?',
+            a: 'When a direct referral subscribes to an LP or burn bond, you earn 3% of the subscription on a 540-day bond and 1% on a 360-day bond, paid in AGX.',
+          },
+          {
+            q: 'Which subscriptions qualify?',
+            a: 'Only 540-day and 360-day LP bonds and burn bonds subscribed by your direct referrals.',
+          },
+          {
+            q: 'What do I need to qualify?',
+            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+          },
+          {
+            q: 'When is it credited?',
+            a: 'It is credited as soon as the subscription succeeds and can be claimed anytime. Each entry is listed in Invite reward records.',
+          },
+          {
+            q: 'Is it clawed back if they redeem?',
+            a: 'No. The reward is based on the subscription amount. A later redemption does not reduce what you already earned.',
+          },
+          {
+            q: 'Is there a cap?',
+            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+          },
+          {
+            q: 'Does claiming use contribution points?',
+            a: 'No. AGX is sent straight to your wallet, without contribution points, the release pool, or Turbine.',
+          },
+          {
+            q: 'Can it be restaked?',
+            a: 'There is no restake or release period. After you claim, the AGX is in your wallet.',
           },
         ],
       },

@@ -53,6 +53,8 @@ export interface DaoRewardTypeTotals {
   LIFETIME_REWARD: string
   LUCKY_REWARD: string
   MARKET_FUND: string
+  /** 直推奖待领（AGX） */
+  DIRECT_REFERRAL: string
 }
 
 export interface MarketAllowanceClaimLogItem {
@@ -162,4 +164,38 @@ export interface ReferralAwardDirectReferralItem {
 
 export interface ReferralAwardDirectReferralsParams extends PaginationParams {
   hide_zero_position?: boolean
+}
+
+export interface DirectReferralSummary {
+  /** 累计已确权直推奖（AGX） */
+  total: string
+  /** 直推认购总额（AGX） */
+  direct_deposit_total: string
+}
+
+export interface DirectReferralPaidLogItem {
+  paid_time: number
+  referee_address: string
+  product_type: string
+  term_days: number | null
+  subscribe_amount_usd: string
+  reward_rate: string
+  reward_amount: string
+  /** 0 未领取，1 已领取 */
+  claim_status: number
+}
+
+export interface DirectReferralDirectItem {
+  address: string
+  /** 总持仓（USD） */
+  active_stake_balance: string
+  /** 累计贡献奖励（AGX） */
+  contributed_reward_total: string
+  contributed_deposit_total: string
+  reward_count: number
+  last_paid_time: number
+}
+
+export interface DirectReferralDirectsParams extends PaginationParams {
+  hide_zero_position?: number | null
 }

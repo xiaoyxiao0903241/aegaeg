@@ -3,6 +3,7 @@ import type { QueryKey } from '@tanstack/react-query'
 import type {
   BondFlowLogsParams,
   BufferPoolLogsParams,
+  DirectReferralDirectsParams,
   PaginationParams,
   RankRewardTeamMembersParams,
   ReferralAwardDirectReferralsParams,
@@ -121,6 +122,17 @@ export const queryKeys = {
     participationAwardLogs: (params: PaginationParams = {}) =>
       paginated(['api', 'participationAward', 'logs'] as const, params),
     participationAwardInviter: ['api', 'participationAward', 'inviter'] as const,
+    directReferralSummary: ['api', 'directReferral', 'summary'] as const,
+    directReferralPaidLogsRoot: ['api', 'directReferral', 'paidLogs'] as const,
+    directReferralPaidLogs: (params: PaginationParams = {}) =>
+      paginated(['api', 'directReferral', 'paidLogs'] as const, params),
+    directReferralDirectsRoot: ['api', 'directReferral', 'directs'] as const,
+    directReferralDirects: (params: DirectReferralDirectsParams = {}) =>
+      paginated(
+        ['api', 'directReferral', 'directs'] as const,
+        params,
+        params.hide_zero_position ?? null,
+      ),
     rankRewardSummary: ['api', 'rankReward', 'summary'] as const,
     rankRewardLogsRoot: ['api', 'rankReward', 'logs'] as const,
     rankRewardLogs: (params: PaginationParams = {}) =>

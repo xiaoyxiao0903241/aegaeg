@@ -63,7 +63,7 @@ export function SimpleClaimDock({ view }: { view: SimpleClaimView }) {
             className="border-t border-primary/18 pt-3 leading-4 text-pretty text-foreground/50"
             variant="copy"
           >
-            {vm.grant.claimHint}
+            {vm.copy.claimHint}
           </Text>
         </SimpleClaimableCard>
 

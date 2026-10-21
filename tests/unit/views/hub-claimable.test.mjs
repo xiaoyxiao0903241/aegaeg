@@ -12,6 +12,7 @@ const SAMPLE = {
   LIFETIME_REWARD: '9.01',
   LUCKY_REWARD: '3',
   MARKET_FUND: '4.2',
+  DIRECT_REFERRAL: '8.5',
 }
 
 test('hubApiClaimableFromTypeTotals maps four API cards; cobuild adds surpass', async () => {
@@ -23,6 +24,7 @@ test('hubApiClaimableFromTypeTotals maps four API cards; cobuild adds surpass', 
   assert.equal(hubApiClaimableFromTypeTotals('participate', SAMPLE), 1.625522332)
   assert.equal(hubApiClaimableFromTypeTotals('cobuild', SAMPLE), 2)
   assert.equal(hubApiClaimableFromTypeTotals('grant', SAMPLE), 4.2)
+  assert.equal(hubApiClaimableFromTypeTotals('invite', SAMPLE), 8.5)
 })
 
 test('hubApiClaimableFromTypeTotals: missing totals or field is null; cobuild 0+0 is 0', async () => {

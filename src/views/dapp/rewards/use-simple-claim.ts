@@ -5,34 +5,34 @@ import { dappAssets } from '~/shared/assets/dapp'
 import { hasTypeTotalClaimable, typeTotalAmount } from '~/shared/lib/dao-reward-type-totals'
 import { formatDecimal } from '~/shared/presenters/format'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
-import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
+import { useDirectReferralClaim, useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 
 const TOKEN_AGX = 'AGX'
 
-/** 简单领取仅发展津贴；参与 / 推荐等走 Dao Mixed。 */
-export type SimpleClaimView = 'grant'
+/** 简单领取：发展津贴与邀请奖，都是 AGX 直达钱包。 */
+export type SimpleClaimView = 'grant' | 'invite'
 
 /**
- * 简单领取视图模型（发展津贴）
+ * 简单领取视图模型。
  *
- * 走市场基金签名领取；可领金额只看 MARKET_FUND 类型合计。
+ * 津贴看 MARKET_FUND，邀请奖看 DIRECT_REFERRAL；签名领取都进市场基金库。
  */
 export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
   const { messages: t } = useI18n()
   const card = t.rewards.cards[view]
-  const claim = useMarketFundClaim()
-  const grant = t.rewards.grant
-  const copy = grant
+  const grantClaim = useMarketFundClaim()
+  const inviteClaim = useDirectReferralClaim()
+  const claim = view === 'invite' ? inviteClaim : grantClaim
+  const copy = view === 'invite' ? t.rewards.invite : t.rewards.grant
+  const field = view === 'invite' ? 'DIRECT_REFERRAL' : 'MARKET_FUND'
 
-  const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady && view === 'grant')
-  const grantPreview = view === 'grant' ? typeTotalAmount(typeTotals, 'MARKET_FUND') : null
-  const hasGrantClaimable = hasTypeTotalClaimable(grantPreview)
-
-  const grantClaimableText = formatDecimal(grantPreview, { digits: 4 })
-  const claimableText = grantClaimableText
-  const ctaAmount = formatDecimal(grantPreview, { digits: 4, suffix: ` ${TOKEN_AGX}` })
+  const { data: typeTotals } = useDaoRewardTypeTotals(sessionReady)
+  const preview = typeTotalAmount(typeTotals, field)
+  const hasClaimable = hasTypeTotalClaimable(preview)
+  const claimableText = formatDecimal(preview, { digits: 4 })
+  const ctaAmount = formatDecimal(preview, { digits: 4, suffix: ` ${TOKEN_AGX}` })
   const ctaLabel = interpolate(copy.ctaToWallet, { amount: ctaAmount })
-  const canSubmit = sessionReady && !claim.isClaiming && claim.canClaim && hasGrantClaimable
+  const canSubmit = sessionReady && !claim.isClaiming && claim.canClaim && hasClaimable
 
   function onClaim() {
     void claim.claim().then((result) => {
@@ -44,7 +44,7 @@ export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
 
   return {
     card,
-    grant,
+    copy,
     claimableText,
     ctaLabel,
     canSubmit,

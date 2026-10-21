@@ -1,6 +1,9 @@
 import { useAuthenticatedQuery } from '~/hooks/api/_authenticated-query'
 import {
   getDaoRewardTypeTotals,
+  getDirectReferralDirects,
+  getDirectReferralPaidLogs,
+  getDirectReferralSummary,
   getLuckyRewardMyRounds,
   getLuckyRewardSummary,
   getLuckyRewardWinners,
@@ -21,6 +24,7 @@ import {
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type {
+  DirectReferralDirectsParams,
   PaginationParams,
   RankRewardTeamMembersParams,
   ReferralAwardDirectReferralsParams,
@@ -43,6 +47,45 @@ export function useDaoRewardTypeTotals(enabled = true) {
     staleTime: QUERY_STALE_TIME.balances,
     refetchInterval: QUERY_STALE_TIME.balances,
   })
+}
+
+/** 直推奖累计与认购总额。 */
+export function useDirectReferralSummary(enabled = true) {
+  return useAuthenticatedQuery(
+    queryKeys.api.directReferralSummary,
+    getDirectReferralSummary,
+    enabled,
+  )
+}
+
+/** 分页查询直推奖发放记录。 */
+export function useDirectReferralPaidLogs(params: PaginationParams = {}, enabled = true) {
+  const page = params.page
+  const pageSize = params.page_size
+  return useAuthenticatedQuery(
+    queryKeys.api.directReferralPaidLogs({ page, page_size: pageSize }),
+    (token) => getDirectReferralPaidLogs(token, { page, page_size: pageSize }),
+    enabled,
+    { keepPreviousData: true },
+  )
+}
+
+/** 分页查询我的直推。hide_zero_position=1 时只留总持仓大于 0 的地址。 */
+export function useDirectReferralDirects(params: DirectReferralDirectsParams = {}, enabled = true) {
+  const page = params.page
+  const pageSize = params.page_size
+  const hideZero = params.hide_zero_position ?? null
+  return useAuthenticatedQuery(
+    queryKeys.api.directReferralDirects({
+      page,
+      page_size: pageSize,
+      hide_zero_position: hideZero,
+    }),
+    (token) =>
+      getDirectReferralDirects(token, { page, page_size: pageSize, hide_zero_position: hideZero }),
+    enabled,
+    { keepPreviousData: true },
+  )
 }
 
 /**

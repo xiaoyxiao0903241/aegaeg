@@ -31,6 +31,33 @@ import {
 
 type PillOption = { label: string; value: string }
 
+/** 邀请奖「限时」：实心主色胶囊。卡片右上角与倒计时标题旁各一处，尺寸按原型分开。 */
+const limitedCapsuleClass = {
+  corner: 'absolute top-3.5 right-4 z-1 px-[9px] py-0.5 text-[11px] tracking-[0.02em]',
+  inline: 'px-[7px] py-0 text-[10.5px]',
+} as const
+
+export function LimitedCapsule({
+  children,
+  placement,
+}: {
+  children: ReactNode
+  placement: keyof typeof limitedCapsuleClass
+}) {
+  return (
+    <Text
+      as="span"
+      className={cn(
+        'inline-flex items-center rounded-full bg-primary leading-none font-semibold text-white',
+        limitedCapsuleClass[placement],
+      )}
+      variant="support"
+    >
+      {children}
+    </Text>
+  )
+}
+
 /**
  * 「隐藏 0」勾选：表标题行右侧；勾选后请求只返回非零业绩 / 持仓。
  */

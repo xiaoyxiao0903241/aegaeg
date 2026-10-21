@@ -11,7 +11,7 @@ export type ExchangeView = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
 export type StakingView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine' | 'calc'
 export type AssetsView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine'
 export type RewardsView =
-  'hub' | 'lucky' | 'referral' | 'participate' | 'cobuild' | 'grant' | 'genesis'
+  'hub' | 'lucky' | 'referral' | 'participate' | 'invite' | 'cobuild' | 'grant' | 'genesis'
 export type ReleaseView = 'hub' | 'queue' | 'buffer'
 export type ProposalView = 'hub' | 'detail'
 
@@ -23,6 +23,7 @@ const REWARDS_VIEWS = new Set<RewardsView>([
   'lucky',
   'referral',
   'participate',
+  'invite',
   'cobuild',
   'grant',
   'genesis',
@@ -137,6 +138,7 @@ export const REWARDS_CARD_CONTRACT = {
   lucky: 'LuckyPool',
   referral: 'CommunityFund',
   participate: 'DaoPool',
+  invite: 'MarketFund',
   cobuild: 'DaoPool',
   grant: 'MarketFund',
   genesis: 'RewardClaimer',

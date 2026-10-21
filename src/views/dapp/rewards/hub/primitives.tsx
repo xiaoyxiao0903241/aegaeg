@@ -3,7 +3,6 @@
  */
 import { type ReactNode } from 'react'
 
-import { StatusBadge } from '~/shared/components/badge'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
@@ -33,14 +32,6 @@ function TypeBody({ children }: { children: ReactNode }) {
     <Text as="p" className="m-0 wrap-break-word text-foreground/40" variant="copy">
       {children}
     </Text>
-  )
-}
-
-function TypeBadge({ children }: { children: ReactNode }) {
-  return (
-    <StatusBadge size="compact" tone="pending">
-      {children}
-    </StatusBadge>
   )
 }
 
@@ -79,7 +70,6 @@ export const RewardsTypeCard = Object.assign(TypeRoot, {
   Head: TypeHead,
   TitleGroup: TypeTitleGroup,
   Body: TypeBody,
-  Badge: TypeBadge,
   Balance: TypeBalance,
 })
 

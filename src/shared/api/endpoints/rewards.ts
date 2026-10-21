@@ -5,6 +5,10 @@ import type {
   ClaimConfirmResult,
   DaoRewardType,
   DaoRewardTypeTotals,
+  DirectReferralDirectItem,
+  DirectReferralDirectsParams,
+  DirectReferralPaidLogItem,
+  DirectReferralSummary,
   LuckyRewardMyRoundItem,
   LuckyRewardSummary,
   LuckyRewardWinnersResponse,
@@ -266,6 +270,51 @@ export async function requestMarketFundClaim(token: string): Promise<TeamRewardS
     method: 'POST',
     token,
     body: {},
+  })
+}
+
+/** 请求直推奖领取签名。合约与津贴相同，signType 由签名包给出。 */
+export async function requestDirectReferralClaim(token: string): Promise<TeamRewardSignature> {
+  return apiRequest<TeamRewardSignature>('/claim/direct-referral', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+/** 直推奖累计与直推认购总额。 */
+export async function getDirectReferralSummary(token: string): Promise<DirectReferralSummary> {
+  return apiRequest<DirectReferralSummary>('/direct-referral/summary', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+/** 分页查询直推奖发放记录。 */
+export async function getDirectReferralPaidLogs(
+  token: string,
+  params: PaginationParams = {},
+): Promise<Paginated<DirectReferralPaidLogItem>> {
+  return apiRequest<Paginated<DirectReferralPaidLogItem>>('/direct-referral/paid-logs', {
+    method: 'POST',
+    token,
+    body: paginationBody(params),
+  })
+}
+
+/** 分页查询我的直推。hide_zero_position=1 时只留总持仓大于 0 的地址。 */
+export async function getDirectReferralDirects(
+  token: string,
+  params: DirectReferralDirectsParams = {},
+): Promise<Paginated<DirectReferralDirectItem>> {
+  return apiRequest<Paginated<DirectReferralDirectItem>>('/direct-referral/directs', {
+    method: 'POST',
+    token,
+    body: {
+      ...paginationBody(params),
+      hide_zero_position: params.hide_zero_position ?? null,
+    },
   })
 }
 

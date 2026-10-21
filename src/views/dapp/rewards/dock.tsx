@@ -7,6 +7,7 @@ import { CobuildDock } from '~/views/dapp/rewards/cobuild/dock'
 import { GenesisDock } from '~/views/dapp/rewards/genesis/dock'
 import { GrantDock } from '~/views/dapp/rewards/grant/dock'
 import { RewardsHubDock } from '~/views/dapp/rewards/hub/dock'
+import { InviteDock } from '~/views/dapp/rewards/invite/dock'
 import { LuckyDock } from '~/views/dapp/rewards/lucky/dock'
 import { ParticipateDock } from '~/views/dapp/rewards/participate/dock'
 import { ReferralDock } from '~/views/dapp/rewards/referral/dock'
@@ -18,6 +19,7 @@ function RewardsDockBody() {
   if (view === 'lucky') return <LuckyDock />
   if (view === 'referral') return <ReferralDock />
   if (view === 'participate') return <ParticipateDock />
+  if (view === 'invite') return <InviteDock />
   if (view === 'cobuild') return <CobuildDock />
   if (view === 'grant') return <GrantDock />
   if (view === 'genesis') return <GenesisDock />

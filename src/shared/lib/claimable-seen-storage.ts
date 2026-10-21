@@ -16,6 +16,7 @@ export type ClaimableSeenSource =
   | 'rewards.lucky'
   | 'rewards.referral'
   | 'rewards.participate'
+  | 'rewards.invite'
   | 'rewards.cobuild'
   | 'rewards.grant'
   | 'rewards.genesis'

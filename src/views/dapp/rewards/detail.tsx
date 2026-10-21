@@ -7,6 +7,7 @@ import { CobuildDetail } from '~/views/dapp/rewards/cobuild/detail'
 import { GenesisDetail } from '~/views/dapp/rewards/genesis/detail'
 import { GrantDetail } from '~/views/dapp/rewards/grant/detail'
 import { RewardsHubDetail } from '~/views/dapp/rewards/hub/detail'
+import { InviteDetail } from '~/views/dapp/rewards/invite/detail'
 import { LuckyDetail } from '~/views/dapp/rewards/lucky/detail'
 import { ParticipateDetail } from '~/views/dapp/rewards/participate/detail'
 import { ReferralDetail } from '~/views/dapp/rewards/referral/detail'
@@ -19,6 +20,7 @@ function RewardsDetailBody() {
   if (view === 'lucky') return <LuckyDetail />
   if (view === 'referral') return <ReferralDetail />
   if (view === 'participate') return <ParticipateDetail />
+  if (view === 'invite') return <InviteDetail />
   if (view === 'cobuild') return <CobuildDetail />
   if (view === 'grant') return <GrantDetail />
   return <GenesisDetail />

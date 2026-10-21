@@ -3,6 +3,7 @@ import type { Wallet } from 'thirdweb/wallets'
 import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
+  requestDirectReferralClaim,
   requestMarketFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
@@ -250,3 +251,9 @@ export const claimCommunityFund = createSignedClaim(
  * @see docs/backend-api/api.md #claim/market-fund
  */
 export const claimMarketFundReward = createSignedClaim(requestMarketFundClaim, writeMarketFundClaim)
+
+/** 直推奖签名领取（MarketFundVault.claimReward，signType 61）。 */
+export const claimDirectReferral = createSignedClaim(
+  requestDirectReferralClaim,
+  writeMarketFundClaim,
+)
