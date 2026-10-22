@@ -873,6 +873,10 @@ const app = defineMessages({
           title: 'पार्टिसिपेट',
           body: 'रेफ़रल लिंक से बाइंड करके सह-निर्माण में शामिल होने पर, आमंत्रक की Rebase आय का 10% — आपकी पोज़ीशन के बराबर हिस्से पर — रेफ़र किए गए व्यक्ति के रूप में मिलता है।',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: 'सह-निर्माण',
           body: 'टीम की कुल Rebase आय से, आपके सह-निर्माण स्तर की बोनस दर पर भुगतान (A1 10% से A13 130%)। स्तर जितना ऊँचा, दर उतनी अधिक; नीचे की तंत्र तालिका देखें।',
@@ -1327,7 +1331,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1339,7 +1343,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

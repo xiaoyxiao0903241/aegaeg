@@ -873,6 +873,10 @@ const app = defineMessages({
           title: '참여',
           body: '추천 링크로 바인딩하고 공동 구축에 참여하면, 본인 보유액에 해당하는 부분의 초대인 Rebase 수익 10%를 피추천인 리워드로 받습니다.',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: '공동 구축',
           body: '팀 전체 Rebase 수익에서 공동 구축 등급에 따른 보너스 비율로 지급됩니다(A1 10% ~ A13 130%). 등급이 높을수록 비율이 높으며, 자세한 내용은 아래 공동 구축 메커니즘 표를 보세요.',
@@ -1326,7 +1330,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1338,7 +1342,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

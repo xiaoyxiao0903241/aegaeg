@@ -2,7 +2,7 @@
  * 奖励总览详情页
  *
  * 顶部六张摘要卡汇总总奖励、等级、持仓与做市数据；
- * 中部为四种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
+ * 中部为五种奖励类型的轮播介绍；下方为机制档位表与 FAQ。
  * 未登录时摘要卡显示空态占位。
  */
 import { useState } from 'react'
@@ -27,8 +27,8 @@ import { AboutCard } from '~/views/dapp/shared/about-card'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { openExchangeView } from '~/views/dapp/shared/navigation'
 
-/** 轮播展示的奖励类型：4 张（发展 / 创世不进轮播） */
-const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
+/** 轮播展示的奖励类型：发展津贴与创世不进轮播。 */
+const ABOUT_VIEWS = ['referral', 'participate', 'invite', 'cobuild', 'lucky'] as const
 
 /** 团队业绩：与其它单元格同 copy 字阶；A6–A9 可切单线条件 */
 function MechanismTeamCell({

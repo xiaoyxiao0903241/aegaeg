@@ -884,6 +884,10 @@ const app = defineMessages({
           title: '参加賞',
           body: '紹介リンクで紐付けて共創に参加すると、自分の保有額に相当する部分について、紹介人の Rebase 収益の 10% を被紹介特典として受け取れます。',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: '共創賞',
           body: 'チーム全体の Rebase 収益から、共創ランクに応じたボーナス率で計上されます（A1 10%〜A13 130%）。ランクが高いほど比率が高く、詳細は下の共創賞メカニズム表を参照。',
@@ -1331,7 +1335,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1343,7 +1347,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

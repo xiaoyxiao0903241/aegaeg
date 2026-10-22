@@ -894,6 +894,10 @@ const app = defineMessages({
           title: 'Recompensa por participación',
           body: 'Tras vincularte con un enlace de referido y unirte a la co-construcción, recibes el 10% del rendimiento Rebase de tu invitador sobre la porción equivalente a tu posición, como recompensa por ser referido.',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: 'Co-construcción',
           body: 'Proviene del rendimiento Rebase total del equipo y se paga según la tasa de tu nivel de co-construcción (A1 10% a A13 130%). A mayor nivel, mayor tasa; consulta la tabla de mecanismo más abajo.',
@@ -1372,7 +1376,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1384,7 +1388,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

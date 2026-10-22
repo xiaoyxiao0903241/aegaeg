@@ -874,6 +874,10 @@ const app = defineMessages({
           title: 'Participate',
           body: 'After binding via a referral link and joining co-building, you receive 10% of your inviter’s Rebase yield on the portion matching your position, as a reward for being referred.',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: 'Co-build',
           body: 'Drawn from the team’s total Rebase yield and paid at the bonus rate for your co-build tier (A1 10% to A13 130%). Higher tiers earn a higher rate; see the co-build mechanism table below.',
@@ -1319,7 +1323,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1331,7 +1335,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

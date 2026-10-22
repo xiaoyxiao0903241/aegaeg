@@ -879,6 +879,10 @@ const app = defineMessages({
           title: 'Katılım ödülü',
           body: 'Davet bağlantısıyla bağlanıp ortak inşaya katıldıktan sonra, davet edenin Rebase getirisinin sizin pozisyonunuza eşit kısmının %10’unu, davet edilen olarak alırsınız.',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: 'Ortak İnşa',
           body: 'Ekibin toplam Rebase getirisinden, ortak inşa kademenizin prim oranıyla ödenir (A1 %10 – A13 %130). Kademe yükseldikçe oran artar; aşağıdaki mekanizma tablosuna bakın.',
@@ -1362,7 +1366,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1374,7 +1378,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

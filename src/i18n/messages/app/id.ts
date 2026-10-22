@@ -885,6 +885,10 @@ const app = defineMessages({
           title: 'Hadiah partisipasi',
           body: 'Setelah terikat lewat tautan referral dan ikut Bangun Bersama, Anda menerima 10% imbal hasil Rebase pengundang pada porsi yang setara dengan posisi Anda, sebagai imbalan orang yang direferensikan.',
         },
+        invite: {
+          title: 'Invite reward',
+          body: 'When a direct referral subscribes to an LP or burn bond, you earn 3% on a 540-day bond and 1% on a 360-day bond. Paid in AGX, credited immediately, and claimed straight to your wallet.',
+        },
         cobuild: {
           title: 'Bangun Bersama',
           body: 'Berasal dari total imbal hasil Rebase tim, dibayar sesuai rasio bonus tingkat Bangun Bersama (A1 10% hingga A13 130%). Semakin tinggi tingkat, semakin besar rasio; lihat tabel mekanisme di bawah.',
@@ -1368,7 +1372,7 @@ const app = defineMessages({
           },
           {
             q: 'What do I need to qualify?',
-            a: 'Nothing extra. A qualifying subscription by a direct referral is enough. There is no holding requirement.',
+            a: 'Your personal position must be above $100, and each subscription counts only up to that position.',
           },
           {
             q: 'When is it credited?',
@@ -1380,7 +1384,7 @@ const app = defineMessages({
           },
           {
             q: 'Is there a cap?',
-            a: 'No per-order cap and no cumulative cap. Each subscription pays its own rate.',
+            a: 'Each subscription is capped at your personal position. Amounts above it earn nothing. There is no cumulative cap.',
           },
           {
             q: 'Does claiming use contribution points?',

@@ -15,6 +15,7 @@ import { ExplorerLink } from '~/shared/components/explorer-link'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 import {
   formatApiAmount,
+  formatBlockTime,
   formatDecimal,
   formatShortAddress,
   formatUtcBlockTime,
@@ -30,12 +31,11 @@ import {
 /**
  * 直推成员 → 我的直推行。
  *
- * 接口没有加入时间，该列留空，不把最近发放时间当成加入时间。
- * 持仓是美元；累计贡献奖励是 AGX。
+ * 加入时间用最近一笔发放时间。持仓是美元；累计贡献奖励是 AGX。
  */
 function mapDirectReferralDirectToRow(item: DirectReferralDirectItem): ReactNode[] {
   return [
-    TABLE_EMPTY,
+    formatBlockTime(item.last_paid_time),
     <ExplorerLink key={item.address} value={item.address} />,
     formatApiAmount(item.active_stake_balance, { digits: 2, prefix: '$' }),
     formatApiStatLabel(item.contributed_reward_total, { suffix: ' AGX' }),
