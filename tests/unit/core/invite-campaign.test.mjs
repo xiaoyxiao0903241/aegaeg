@@ -3,9 +3,9 @@ import test from 'node:test'
 
 import { loadModule } from '../load-module.mjs'
 
-test('invite countdown counts down to 2026-11-20 UTC and clamps at zero', async () => {
+test('invite countdown counts down to 2026-11-21 UTC and clamps at zero', async () => {
   const { inviteCampaignCountdown } = await loadModule('/src/core/rewards/invite-campaign.ts')
-  const end = Date.parse('2026-11-20T00:00:00Z')
+  const end = Date.parse('2026-11-21T00:00:00Z')
   assert.deepEqual(inviteCampaignCountdown(end - 86_400_000 - 3_600_000 - 60_000), {
     days: 1,
     clock: '01:01',

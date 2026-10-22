@@ -1,5 +1,5 @@
-/** 邀请奖活动结束：2026-11-20 00:00 UTC。 */
-const INVITE_CAMPAIGN_END_MS = Date.parse('2026-11-20T00:00:00Z')
+/** 邀请奖活动结束：2026-11-21 00:00 UTC。 */
+const INVITE_CAMPAIGN_END_MS = Date.parse('2026-11-21T00:00:00Z')
 
 /**
  * 邀请奖活动剩余时间。
