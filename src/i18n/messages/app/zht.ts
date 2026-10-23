@@ -1247,11 +1247,10 @@ const app = defineMessages({
       emptyReferrals: '暫無直推夥伴，分享您的邀請鏈接，夥伴加入後將展示在這裡。',
       hideZeroPosition: '隱藏0持倉',
       recordsTitle: '邀請獎記錄',
-      recordsColumns: ['時間', '下級地址', '債券類型', '期限', '認購金額', '比例', '獎勵', '狀態'],
+      recordsColumns: ['時間', '下級地址', '債券類型', '期限', '認購金額', '比例', '獎勵'],
       emptyRecords: '暫無邀請獎記錄。',
       termDays: '{days} 天',
       product: { lp: 'LP 債券', burn: '銷毀債券' },
-      claimStatus: { unclaimed: '未領取', claimed: '已領取' },
       faq: {
         title: 'FAQs',
         items: [

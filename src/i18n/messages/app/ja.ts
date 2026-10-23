@@ -1308,20 +1308,10 @@ const app = defineMessages({
       emptyReferrals: 'No direct referrals yet. Share your invite link to list partners here.',
       hideZeroPosition: 'Hide 0 positions',
       recordsTitle: 'Invite reward records',
-      recordsColumns: [
-        'Time',
-        'Referral',
-        'Bond',
-        'Term',
-        'Subscription',
-        'Rate',
-        'Reward',
-        'Status',
-      ],
+      recordsColumns: ['Time', 'Referral', 'Bond', 'Term', 'Subscription', 'Rate', 'Reward'],
       emptyRecords: 'No invite reward records yet.',
       termDays: '{days} days',
       product: { lp: 'LP bond', burn: 'Burn bond' },
-      claimStatus: { unclaimed: 'Unclaimed', claimed: 'Claimed' },
       faq: {
         title: 'FAQs',
         items: [

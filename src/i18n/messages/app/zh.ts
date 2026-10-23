@@ -1248,11 +1248,10 @@ const app = defineMessages({
       emptyReferrals: '暂无直推伙伴，分享您的邀请链接，伙伴加入后将展示在这里。',
       hideZeroPosition: '隐藏0持仓',
       recordsTitle: '邀请奖记录',
-      recordsColumns: ['时间', '下级地址', '债券类型', '期限', '认购金额', '比例', '奖励', '状态'],
+      recordsColumns: ['时间', '下级地址', '债券类型', '期限', '认购金额', '比例', '奖励'],
       emptyRecords: '暂无邀请奖记录。',
       termDays: '{days} 天',
       product: { lp: 'LP 债券', burn: '销毁债券' },
-      claimStatus: { unclaimed: '未领取', claimed: '已领取' },
       faq: {
         title: 'FAQs',
         items: [

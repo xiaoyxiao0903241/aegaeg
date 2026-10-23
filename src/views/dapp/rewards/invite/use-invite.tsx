@@ -88,11 +88,6 @@ export function useInviteDetail() {
     formatDecimal(parseApiAmount(item.subscribe_amount_usd), { digits: 2, prefix: '$' }),
     formatDecimal(parseApiAmount(item.reward_rate), { digits: 0, suffix: '%' }),
     formatApiStatLabel(item.reward_amount, { suffix: ' AGX' }),
-    item.claim_status === 1
-      ? invite.claimStatus.claimed
-      : item.claim_status === 0
-        ? invite.claimStatus.unclaimed
-        : TABLE_EMPTY,
   ])
 
   return {
