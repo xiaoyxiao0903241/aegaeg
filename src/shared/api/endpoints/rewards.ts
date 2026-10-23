@@ -273,7 +273,7 @@ export async function requestMarketFundClaim(token: string): Promise<TeamRewardS
   })
 }
 
-/** 请求直推奖领取签名。合约与津贴相同，signType 由签名包给出。 */
+/** 请求直推奖领取签名。上链走 DaoPool.claimReward，signType 由签名包给出。 */
 export async function requestDirectReferralClaim(token: string): Promise<TeamRewardSignature> {
   return apiRequest<TeamRewardSignature>('/claim/direct-referral', {
     method: 'POST',

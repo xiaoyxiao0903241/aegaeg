@@ -252,8 +252,8 @@ export const claimCommunityFund = createSignedClaim(
  */
 export const claimMarketFundReward = createSignedClaim(requestMarketFundClaim, writeMarketFundClaim)
 
-/** 直推奖签名领取（MarketFundVault.claimReward，signType 61）。 */
+/** 直推奖签名领取（DaoPool.claimReward）。signType 与金额用签名包原值。 */
 export const claimDirectReferral = createSignedClaim(
   requestDirectReferralClaim,
-  writeMarketFundClaim,
+  claimOnVault(BSC_CONTRACTS.daoPool),
 )

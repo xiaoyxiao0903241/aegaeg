@@ -15,7 +15,7 @@ export type SimpleClaimView = 'grant' | 'invite'
 /**
  * 简单领取视图模型。
  *
- * 津贴看 MARKET_FUND，邀请奖看 DIRECT_REFERRAL；签名领取都进市场基金库。
+ * 津贴看 MARKET_FUND，进市场基金库。邀请奖看 DIRECT_REFERRAL，进 DaoPool.claimReward。
  */
 export function useSimpleClaim(view: SimpleClaimView, sessionReady: boolean) {
   const { messages: t } = useI18n()

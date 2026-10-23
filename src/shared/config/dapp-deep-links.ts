@@ -138,7 +138,7 @@ export const REWARDS_CARD_CONTRACT = {
   lucky: 'LuckyPool',
   referral: 'CommunityFund',
   participate: 'DaoPool',
-  invite: 'MarketFund',
+  invite: 'DaoPool',
   cobuild: 'DaoPool',
   grant: 'MarketFund',
   genesis: 'RewardClaimer',
