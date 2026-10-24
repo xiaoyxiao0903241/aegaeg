@@ -1,7 +1,7 @@
 /**
  * 邀请奖详情
  *
- * 总奖励、直推认购总额、活动倒计时，以及邀请奖记录和我的直推。
+ * 总奖励、直推认购总额、已领取，以及邀请奖记录和我的直推。
  */
 import { interpolate } from '~/i18n/interpolate'
 import { dappAssets } from '~/shared/assets/dapp'
@@ -15,7 +15,7 @@ import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tile } from '~/shared/components/tile'
 import { useInviteDetail } from '~/views/dapp/rewards/invite/use-invite'
-import { HideZeroToggle, LimitedCapsule } from '~/views/dapp/rewards/primitives'
+import { HideZeroToggle } from '~/views/dapp/rewards/primitives'
 
 export function InviteDetail() {
   const {
@@ -23,7 +23,8 @@ export function InviteDetail() {
     totalRewards,
     totalRewardsApprox,
     deposit,
-    countdownLabel,
+    claimed,
+    claimedApprox,
     rows,
     recordsLoading,
     recordsPage,
@@ -72,18 +73,17 @@ export function InviteDetail() {
             <Tile.Note>{invite.depositNote}</Tile.Note>
           </Tile>
           <Tile>
-            <Tile.Label>
-              {invite.countdownTitle}
-              <LimitedCapsule placement="inline">{invite.limited}</LimitedCapsule>
-            </Tile.Label>
+            <Tile.Label>{invite.claimedTitle}</Tile.Label>
             <Text
               as="strong"
-              className="leading-none font-semibold wrap-break-word text-primary"
+              className="leading-none font-semibold wrap-break-word"
               variant="headline"
             >
-              <CountValue animate={false} text={countdownLabel} />
+              <CountValue text={claimed} />
             </Text>
-            <Tile.Note>{invite.countdownPeriod}</Tile.Note>
+            <Tile.Note>
+              <CountValue text={claimedApprox} />
+            </Tile.Note>
           </Tile>
         </Grid>
       </Section>

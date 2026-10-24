@@ -179,9 +179,7 @@ export function RewardsHubDock() {
             onClick={() => openRewardsView(view)}
           >
             {unread ? <ClaimableDot /> : null}
-            {view === 'invite' ? (
-              <LimitedCapsule placement="corner">{t.rewards.invite.limited}</LimitedCapsule>
-            ) : null}
+            {view === 'invite' ? <LimitedCapsule>{t.rewards.invite.limited}</LimitedCapsule> : null}
             <RewardsTypeCard.Head>
               <RewardsTypeCard.TitleGroup>
                 <Icon alt="" size={icon.size} src={icon.src} />

@@ -31,26 +31,12 @@ import {
 
 type PillOption = { label: string; value: string }
 
-/** 邀请奖「限时」：实心主色胶囊。卡片右上角与倒计时标题旁各一处，尺寸按原型分开。 */
-const limitedCapsuleClass = {
-  corner: 'absolute top-3.5 right-4 z-1 px-[9px] py-0.5 text-[11px] tracking-[0.02em]',
-  inline: 'px-[7px] py-0 text-[10.5px]',
-} as const
-
-export function LimitedCapsule({
-  children,
-  placement,
-}: {
-  children: ReactNode
-  placement: keyof typeof limitedCapsuleClass
-}) {
+/** 邀请奖 Hub 卡右上角「限时」胶囊。 */
+export function LimitedCapsule({ children }: { children: ReactNode }) {
   return (
     <Text
       as="span"
-      className={cn(
-        'inline-flex items-center rounded-full bg-primary leading-none font-semibold text-white',
-        limitedCapsuleClass[placement],
-      )}
+      className="absolute top-3.5 right-4 z-1 inline-flex items-center rounded-full bg-primary px-[9px] py-0.5 text-[11px] leading-none font-semibold tracking-[0.02em] text-white"
       variant="support"
     >
       {children}

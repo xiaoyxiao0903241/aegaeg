@@ -1,6 +1,5 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 
-import { inviteCampaignCountdown } from '~/core/rewards/invite-campaign'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useDirectReferralDirects,
@@ -43,7 +42,7 @@ function mapDirectReferralDirectToRow(item: DirectReferralDirectItem): ReactNode
 }
 
 /**
- * 邀请奖详情：总奖励、认购总额、活动倒计时、发放记录、我的直推。
+ * 邀请奖详情：总奖励、认购总额、已领取、发放记录、我的直推。
  */
 export function useInviteDetail() {
   const { messages: t } = useI18n()
@@ -53,7 +52,6 @@ export function useInviteDetail() {
   const [recordsPage, setRecordsPage] = useState(1)
   const [referralsPage, setReferralsPage] = useState(1)
   const [hideZeroPosition, setHideZeroPosition] = useState(true)
-  const [nowMs, setNowMs] = useState(() => Date.now())
   const summaryQuery = useDirectReferralSummary(sessionReady)
   const logsQuery = useDirectReferralPaidLogs(tablePageQuery(recordsPage), sessionReady)
   const directsQuery = useDirectReferralDirects(
@@ -68,13 +66,6 @@ export function useInviteDetail() {
     { page: 1, page_size: 1, hide_zero_position: null },
     sessionReady,
   )
-  const countdown = inviteCampaignCountdown(nowMs)
-
-  useEffect(() => {
-    const timerId = window.setInterval(() => setNowMs(Date.now()), 60_000)
-    return () => window.clearInterval(timerId)
-  }, [])
-
   const summary = summaryQuery.data
   const rows = (logsQuery.data?.items ?? []).map((item) => [
     formatUtcBlockTime(item.paid_time),
@@ -95,7 +86,8 @@ export function useInviteDetail() {
     totalRewards: formatApiStatLabel(summary?.total, { suffix: ' AGX' }),
     totalRewardsApprox: formatApiGagxApproxUsd(summary?.total, priceUsd),
     deposit: formatApiStatLabel(summary?.direct_deposit_total, { suffix: ' AGX' }),
-    countdownLabel: interpolate(invite.countdownValue, countdown),
+    claimed: formatApiStatLabel(summary?.claimed_total, { suffix: ' AGX' }),
+    claimedApprox: formatApiGagxApproxUsd(summary?.claimed_total, priceUsd),
     rows,
     recordsLoading: sessionReady && logsQuery.isLoading,
     recordsPage,

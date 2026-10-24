@@ -171,6 +171,8 @@ export interface DirectReferralSummary {
   total: string
   /** 直推认购总额（AGX） */
   direct_deposit_total: string
+  /** 已领取邀请奖（AGX） */
+  claimed_total: string
 }
 
 export interface DirectReferralPaidLogItem {
