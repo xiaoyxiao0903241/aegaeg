@@ -1239,7 +1239,6 @@ const app = defineMessages({
       depositTitle: '直推认购总额',
       depositNote: 'LP 债券 + 销毁债券',
       claimedTitle: '已领取',
-      limited: '限时',
       totalRewards: '总奖励',
       referralsTitle: '我的直推（{count}）',
       referralsColumns: ['加入时间', '地址', '持仓', '累计贡献奖励'],

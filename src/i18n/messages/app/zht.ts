@@ -1238,7 +1238,6 @@ const app = defineMessages({
       depositTitle: '直推認購總額',
       depositNote: 'LP 債券 + 銷毀債券',
       claimedTitle: '已領取',
-      limited: '限時',
       totalRewards: '總獎勵',
       referralsTitle: '我的直推（{count}）',
       referralsColumns: ['加入時間', '地址', '持倉', '累計貢獻獎勵'],

@@ -1340,7 +1340,6 @@ const app = defineMessages({
       depositTitle: 'Direct subscription total',
       depositNote: 'LP bonds + burn bonds',
       claimedTitle: 'Claimed',
-      limited: 'Limited',
       totalRewards: 'Total rewards',
       referralsTitle: 'My direct referrals ({count})',
       referralsColumns: ['Joined', 'Address', 'Position', 'Cumulative referral rewards'],

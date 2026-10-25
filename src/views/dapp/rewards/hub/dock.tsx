@@ -34,7 +34,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { hubApiClaimableFromTypeTotals } from '~/shared/lib/dao-reward-type-totals'
 import { formatDecimal, toUsd } from '~/shared/presenters/format'
 import { RewardsTypeCard } from '~/views/dapp/rewards/hub/primitives'
-import { LimitedCapsule } from '~/views/dapp/rewards/primitives'
 import { withContributionRatio } from '~/views/dapp/shared/contribution-claim-ratio'
 import { DockFrame } from '~/views/dapp/shared/dock-frame'
 import { HubFilterMenu } from '~/views/dapp/shared/hub-filter-menu'
@@ -179,7 +178,6 @@ export function RewardsHubDock() {
             onClick={() => openRewardsView(view)}
           >
             {unread ? <ClaimableDot /> : null}
-            {view === 'invite' ? <LimitedCapsule>{t.rewards.invite.limited}</LimitedCapsule> : null}
             <RewardsTypeCard.Head>
               <RewardsTypeCard.TitleGroup>
                 <Icon alt="" size={icon.size} src={icon.src} />

@@ -31,19 +31,6 @@ import {
 
 type PillOption = { label: string; value: string }
 
-/** 邀请奖 Hub 卡右上角「限时」胶囊。 */
-export function LimitedCapsule({ children }: { children: ReactNode }) {
-  return (
-    <Text
-      as="span"
-      className="absolute top-3.5 right-4 z-1 inline-flex items-center rounded-full bg-primary px-[9px] py-0.5 text-[11px] leading-none font-semibold tracking-[0.02em] text-white"
-      variant="support"
-    >
-      {children}
-    </Text>
-  )
-}
-
 /**
  * 「隐藏 0」勾选：表标题行右侧；勾选后请求只返回非零业绩 / 持仓。
  */
